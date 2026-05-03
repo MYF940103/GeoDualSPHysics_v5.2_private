@@ -1,0 +1,154 @@
+{
+  "version": "2.0.0",
+  "tasks": [
+    {
+      "label": "Build DualSPHysics5ReCpu Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+        "/m",
+        "/t:Build",
+        "/p:Configuration=DebugCPU",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": {
+        "kind": "build",
+        "isDefault": true
+      },
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build DualSPHysics5ReCpu Release x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+        "/m",
+        "/t:Build",
+        "/p:Configuration=ReleaseCPU",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build DualSPHysics5Re GPU Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5Re.sln",
+        "/m",
+        "/t:Build",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Build DualSPHysics5Re GPU Release x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5Re.sln",
+        "/m",
+        "/t:Build",
+        "/p:Configuration=Release",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Rebuild DualSPHysics5ReCpu Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+        "/m",
+        "/t:Rebuild",
+        "/p:Configuration=DebugCPU",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Rebuild DualSPHysics5ReCpu Release x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+        "/m",
+        "/t:Rebuild",
+        "/p:Configuration=ReleaseCPU",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Rebuild DualSPHysics5Re GPU Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5Re.sln",
+        "/m",
+        "/t:Rebuild",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Rebuild DualSPHysics5Re GPU Release x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5Re.sln",
+        "/m",
+        "/t:Rebuild",
+        "/p:Configuration=Release",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "group": "build",
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Clean DualSPHysics5ReCpu Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+        "/t:Clean",
+        "/p:Configuration=DebugCPU",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "problemMatcher": "$msCompile"
+    },
+    {
+      "label": "Clean DualSPHysics5Re GPU Debug x64",
+      "type": "shell",
+      "command": "msbuild",
+      "args": [
+        "${workspaceFolder}\\VS\\DualSPHysics5Re.sln",
+        "/t:Clean",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/v:minimal"
+      ],
+      "problemMatcher": "$msCompile"
+    }
+  ]
+}

@@ -1,0 +1,200 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase [Beta] v5.0.254 (10-03-2022)" date="13-03-2022 01:00:04">
+    <casedef requiredversion="v5.0.254">
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+            <rhop0 value="2100" comment="Reference density of the fluid" units_comment="kg/m^3" />
+            <hswl value="0.5" auto="false" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed (by default the dam-break propagation is used)" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="0" auto="true" comment="Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)" />
+            <_coefh value="1.0" comment="Coefficient to calculate the smoothing length (h=coefh*sqrt(3*dp^2) in 3D)" />
+            <hdp value="1.3" comment="Alternative option to calculate the smoothing length (h=hdp*dp)" />
+            <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+        </constantsdef>
+        <mkconfig boundcount="440" fluidcount="9" />
+        <geometry>
+            <!-- User-defined variables  -->
+            <predefinition>
+                <!-- SPH resolution -->
+                <newvarcte L="0.06" />
+                <newvarcte np="30" _rem="np:dp = 5:0.012, 10:0.006, 15:0.004, 20:0.003, 24:0.0025, 30:0.02" />
+                <newvarcte Dp="L/np" Dpm="Dp/2" Dpr="Dp*0.1" Dpr2="Dpr*2" />
+                <!-- Tank and fluid definition -->
+                <newvarcte tsx="1.2" tsy="0.48+L" tsz="0.5" />
+                <newvarcte fsx="0.30" fsy="tsy" fsz="0.30" />
+                <!-- Wall definition -->
+                <newvarcte wpx="0.5" wpy="L/2" wsy="tsy-L" wsz="0.18" />
+                <newvarcte nblocks="1" _rem="1:24, 2:96, 3:216, 4:384" />
+                <newvarcte tblocks="1" _rem="1:box, 2:cilindro-8, 3:cilindro-18, 4:cilindro-32" />
+                <newvarcte bs="L/nblocks" />
+                <newvarcte bny="round(wsy/bs)" bnz="round(wsz/bs)" />
+                <newvarcte bsep="Dpm" />
+                <newvarcte wtotmass="wsy*wsz*L*300" bmass="wtotmass/(bny*bnz)" />
+                <newvarstrcte ftmkbrange="11-[10+bny*bnz]" _rem="Mk range for floatings" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointref x="0" y="0" z="0" />
+                <pointmin x="#-L" y="#-L" z="#-L" />
+                <pointmax x="2" y="1" z="1" />
+            </definition>
+            <commands>
+                <list name="BlockBox" printcall="false">
+                    <!-- for particles -->
+                    <setactive drawpoints="1" drawshapes="0" />
+                    <setfrdrawmode auto="true" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#bsep" y="#bsep" z="#bsep" />
+                        <size x="#bs-bsep*2" y="#bs-bsep*2" z="#bs-bsep*2" />
+                    </drawbox>
+                    <setfrdrawmode auto="false" />
+                    <!-- for collision faces -->
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <drawbox>
+                        <boxfill>all</boxfill>
+                        <point x="#Dpr" y="#Dpr" z="#Dpr" />
+                        <size x="#bs-Dpr2" y="#bs-Dpr2" z="#bs-Dpr2" />
+                    </drawbox>
+                    <!-- Displacement for next block -->
+                    <move x="0" y="#bs" z="0" />
+                    <setmknextbound next="true" />
+                </list>
+                <list name="BlockCyl" printcall="false">
+                    <setdpctes ctecylindernumsides="8" if="tblocks==2" />
+                    <setdpctes ctecylindernumsides="18" if="tblocks==3" />
+                    <setdpctes ctecylindernumsides="32" if="tblocks==4" />
+                    <!-- for particles -->
+                    <setactive drawpoints="1" drawshapes="0" />
+                    <setfrdrawmode auto="true" />
+                    <drawcylinder radius="#bs/2-bsep">
+                        <point x="#bs/2" y="#bs/2" z="#bsep*1.01" />
+                        <point x="#bs/2" y="#bs/2" z="#bs-bsep*1.01" />
+                    </drawcylinder>
+                    <setfrdrawmode auto="false" />
+                    <!-- for collision faces -->
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <drawcylinder radius="#bs/2-Dpr">
+                        <point x="#bs/2" y="#bs/2" z="#Dpr" />
+                        <point x="#bs/2" y="#bs/2" z="#bs-Dpr" />
+                    </drawcylinder>
+                    <!-- Displacement for next block -->
+                    <move x="0" y="#bs" z="0" />
+                    <setmknextbound next="true" />
+                </list>
+                <list name="RowBlocks" printcall="false">
+                    <matrixsave />
+                    <runlist name="BlockBox" times="#bny" if="tblocks==1" />
+                    <runlist name="BlockCyl" times="#bny" if="tblocks>=2" />
+                    <matrixload />
+                    <move x="0" y="0" z="#bs" />
+                </list>
+                <mainlist>
+                    <setshapemode>actual | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setfrdpoverlap overlapdp="0.5" />
+                    <!-- Fluid -->
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="#fsx" y="#fsy" z="#fsz" />
+                    </drawbox>
+                    <!-- Tank for particles -->
+                    <setactive drawpoints="1" drawshapes="0" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>all^top</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="#tsx" y="#tsy" z="#tsz" />
+                        <layers vdp="1,2" />
+                    </drawbox>
+                    <!-- Tank for Chrono collisions -->
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <drawbox>
+                        <boxfill>all^top</boxfill>
+                        <point x="#-Dpr" y="#-Dpr" z="#-Dpr" />
+                        <size x="#tsx+Dpr2" y="#tsy+Dpr2" z="#tsz+Dpr2" />
+                    </drawbox>
+                    <shapeout file="tank" />
+                    <!-- Blocks -->
+                    <setdrawmode mode="full" />
+                    <move x="#wpx" y="#wpy" z="0" />
+                    <setmkbound mk="11" />
+                    <runlist name="RowBlocks" times="#bnz" />
+                    <shapeout file="" reset="true" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <floatings>
+            <floating mkbound="$[ftmkbrange]" property="soft-wood">
+                <massbody value="#bmass" />
+            </floating>
+        </floatings>
+        <properties>
+            <propertyfile file="Floating_Materials.xml" path="materials" />
+            <links>
+                <link mkbound="0" property="steel" comment="Property for the tank" />
+            </links>
+        </properties>
+    </casedef>
+    <execution>
+        <special>
+            <chrono>
+                <_savedata value="0.01" comment="Saves CSV with data exchange for each time interval (0=all steps)" />
+                <schemescale value="1" comment="Scale used to create the initial scheme of Chrono objects (default=1)" />
+                <collision activate="true">
+                    <distancedp value="0.1" comment="Allowed collision overlap according Dp (default=0.5)" />
+                    <contactmethod value="0" comment="Contact method type. 0:NSC (Non Smooth Contacts), 1:SMC (SMooth Contacts). (default=0)" />
+                </collision>
+                <_bodyfloating id="block" mkbound="11-34" modelfile="AutoActual" />
+                <_bodyfloating id="block" mkbound="11-106" modelfile="AutoActual" />
+                <_bodyfloating id="block" mkbound="11-226" modelfile="AutoActual" />
+                <_bodyfloating id="block" mkbound="11-394" modelfile="AutoActual" />
+                <bodyfloating id="block" mkbound="$[ftmkbrange]" modelfile="AutoActual" />
+                <bodyfixed id="tank" mkbound="0" modelfile="AutoActual" modelnormal="invert" />
+            </chrono>
+		    <soils>
+				<phi value="25" comment="friction angle" />
+				<coh value="0e3" comment="cohesion" />
+				<dlt value="0" comment="dilatancy angle" />
+				<ModulusE value="10e6" comment="elastic modulus" />
+				<PRvs value="0.3" comment="possion ratio" />
+            </soils>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision (default=0)" />
+            <parameter key="DPCtes" value="2" comment="DP constants type 1:3D DP circumscribed, 2:3D mid circumscribes, 3:2D Plain strain (default=1)" />
+			<parameter key="Boundary" value="1" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
+            <parameter key="SlipMode" value="1" comment="Slip mode for mDBC 1:DBC vel=0, 2:No-slip (default=1)" />
+            <parameter key="StepAlgorithm" value="1" comment="Step Algorithm 1:Verlet, 2:Symplectic (def=1)" />
+            <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Eulerian equations (def=40)" />
+            <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland (def=1)" />
+            <parameter key="ViscoTreatment" value="1" comment="Viscosity Formulation 1:Artificial, 2:Laminar+SPS (def=1)" />
+            <parameter key="Visco" value="0.1" comment="Viscosity value" />
+            <parameter key="ViscoBoundFactor" value="0" comment="Multiply viscosity value with boundary (default=1)" />
+            <parameter key="DensityDT" value="0" comment="Density Diffusion Term 0:None, 1:Molteni, 2:Fourtakas, 3:Fourtakas(full) (default=0)" />
+            <parameter key="DensityDTvalue" value="0.1" comment="DDT value (default=0.1)" />
+            <parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full (default=0)" />
+            <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
+            <parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface. Typically 1.5 for 2D and 2.75 for 3D (default=0)" />
+            <parameter key="RigidAlgorithm" value="3" comment="Rigid Algorithm 0:collision-free, 1:SPH, 2:DEM, 3:Chrono (default=1)" />
+            <parameter key="FtPause" value="0" comment="Time to freeze the floatings at simulation start (warmup) (def=0)" />
+            <parameter key="CoefDtMin" value="0.00005" comment="Coefficient to calculate minimum time step dtmin=coefdtmin*h/speedsound (default=0.05)" />
+			<parameter key="DtIni" value="5e-6" comment="Initial time step. Use 0 to defult use (default=h/speedsound)" units_comment="seconds" />
+            <parameter key="DtMin" value="5e-6" comment="Minimum time step. Use 0 to defult use (default=coefdtmin*h/speedsound)" units_comment="seconds" />
+            <parameter key="DtFixed" value="5e-6" comment="Fixed Dt value. Use 0 to disable (default=disabled)" units_comment="seconds" />
+            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating (default=0)" />
+            <parameter key="TimeMax" value="0.01" comment="Time of simulation" />
+            <parameter key="TimeOut" value="0.01" comment="Time between output files" />
+            <parameter key="PartsOutMax" value="1" comment="%/100 of fluid particles allowed to be excluded from domain (default=1)" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="1000" comment="Minimum rhop valid (default=700)" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3300" comment="Maximum rhop valid (default=1300)" units_comment="kg/m^3" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="default" y="default" z="default" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="default + 0.02" y="default" z="default + 30%" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>

@@ -1,0 +1,80 @@
+{
+  "configurations": [
+    {
+      "name": "Win64-MSVC-CPU-Debug",
+      "compilerPath": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+      "intelliSenseMode": "windows-msvc-x64",
+      "cppStandard": "c++17",
+      "cStandard": "c17",
+      "compilerArgs": [
+        "/openmp"
+      ],
+      "includePath": [
+        "${workspaceFolder}\\source",
+        "${workspaceFolder}\\source\\**",
+        "${workspaceFolder}\\lib",
+        "${workspaceFolder}\\lib\\**",
+        "${workspaceFolder}\\VS"
+      ],
+      "defines": [
+        "WIN32",
+        "_CONSOLE",
+        "_WINDOWS",
+        "_DEBUG",
+        "_MBCS",
+        "_CRT_SECURE_NO_WARNINGS",
+        "_USE_MATH_DEFINES",
+        "NOMINMAX"
+      ],
+      "browse": {
+        "path": [
+          "${workspaceFolder}\\source",
+          "${workspaceFolder}\\lib",
+          "${workspaceFolder}\\VS"
+        ],
+        "databaseFilename": "${env:LOCALAPPDATA}\\Microsoft\\vscode-cpptools\\GeoDualSPHysics_v5_2_src\\.BROWSE.VC.DB",
+        "limitSymbolsToIncludedHeaders": false
+      }
+    },
+    {
+      "name": "Win64-MSVC-GPU-Debug",
+      "compilerPath": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+      "intelliSenseMode": "windows-msvc-x64",
+      "cppStandard": "c++17",
+      "cStandard": "c17",
+      "compilerArgs": [
+        "/openmp"
+      ],
+      "includePath": [
+        "${workspaceFolder}\\source",
+        "${workspaceFolder}\\source\\**",
+        "${workspaceFolder}\\lib",
+        "${workspaceFolder}\\lib\\**",
+        "${workspaceFolder}\\VS",
+        "${env:CUDA_PATH_V11_7}\\include"
+      ],
+      "defines": [
+        "_WITHGPU",
+        "WIN32",
+        "_CONSOLE",
+        "_WINDOWS",
+        "_DEBUG",
+        "_MBCS",
+        "_CRT_SECURE_NO_WARNINGS",
+        "_USE_MATH_DEFINES",
+        "NOMINMAX"
+      ],
+      "browse": {
+        "path": [
+          "${workspaceFolder}\\source",
+          "${workspaceFolder}\\lib",
+          "${workspaceFolder}\\VS",
+          "${env:CUDA_PATH_V11_7}\\include"
+        ],
+        "databaseFilename": "${env:LOCALAPPDATA}\\Microsoft\\vscode-cpptools\\GeoDualSPHysics_v5_2_src\\.BROWSE.VC.DB",
+        "limitSymbolsToIncludedHeaders": false
+      }
+    }
+  ],
+  "version": 4
+}

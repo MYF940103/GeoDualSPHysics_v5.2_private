@@ -1,0 +1,69 @@
+{
+  "version": "0.2.0",
+  "configurations": [
+    {
+      "name": "Debug CPU slope45 ImpactForces",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\..\\bin\\windows\\DualSPHysics5.2CPU_win64_debug.exe",
+      "args": [
+        "-cpu",
+        "-mdbc",
+        "CaseImapctForces3D_slope45_out\\CaseImapctForces3D_slope45",
+        "CaseImapctForces3D_slope45_out",
+        "-dirdataout",
+        "data",
+        "-svres"
+      ],
+      "stopAtEntry": false,
+      "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_v5.2\\examples\\myf\\02_ImpactForces",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build DualSPHysics5ReCpu Debug x64"
+    },
+    {
+      "name": "Debug GPU slope45 ImpactForces",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\..\\bin\\windows\\DualSPHysics5.2_win64_debug.exe",
+      "args": [
+        "-gpu",
+        "-mdbc",
+        "CaseImapctForces3D_slope45_out\\CaseImapctForces3D_slope45",
+        "CaseImapctForces3D_slope45_out",
+        "-dirdataout",
+        "data",
+        "-svres"
+      ],
+      "stopAtEntry": false,
+      "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_v5.2\\examples\\myf\\02_ImpactForces",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build DualSPHysics5Re GPU Debug x64"
+    },
+    {
+      "name": "Debug CPU - Help",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\..\\bin\\windows\\DualSPHysics5.2CPU_win64_debug.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}\\..\\bin\\windows",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build DualSPHysics5ReCpu Debug x64"
+    },
+    {
+      "name": "Debug GPU - Help",
+      "type": "cppvsdbg",
+      "request": "launch",
+      "program": "${workspaceFolder}\\..\\bin\\windows\\DualSPHysics5.2_win64_debug.exe",
+      "args": [],
+      "stopAtEntry": false,
+      "cwd": "${workspaceFolder}\\..\\bin\\windows",
+      "environment": [],
+      "console": "integratedTerminal",
+      "preLaunchTask": "Build DualSPHysics5Re GPU Debug x64"
+    }
+  ]
+}

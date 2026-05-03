@@ -1,0 +1,20 @@
+请把这篇文献整理成适合 Codex 读取的 implementation notes.md。
+重点包括：
+1. 核心公式；
+2. 变量定义；
+3. 与 SPH 实现相关的算法步骤；
+4. 可能对应到 DualSPHysics 中的文件和函数；
+5. 实现时需要注意的数值稳定性问题。
+
+
+
+请先不要修改任何文件。请阅读 @papers/mdbc_paper_notes.md，以及 source/JSphCpu.cpp、source/JSphCpuSingle.cpp 中与 mDBC 相关的代码。
+
+请完成：
+1. 将文献变量映射到当前代码变量；
+2. 找出最接近文献公式的当前实现位置；
+3. 比较当前实现与文献方法的差异；
+4. 给出最小修改方案；
+5. 不要修改任何文件。
+
+请先不要修改任何文件。请分别阅读 @papers/bui2008_elastoplastic_sph_implementation_notes.md 和 @papers/feng2026_geodualsphysics_implementation_notes.md，并检查 source/JSphCpu.cpp、source/JSphCpuSingle.cpp、source/JSphGpu_ker.cu。请判断当前代码中哪些部分已经实现了 Drucker–Prager stress update、return mapping、stress diffusion、mDBC 和 shifting。只分析，不修改。
