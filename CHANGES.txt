@@ -1,4 +1,40 @@
-﻿DualSPHysics Package v5.2 (03) (02-02-2024)
+﻿GeoDualSPHysics local modifications (05-05-2026)
+===============================================
+Major GeoDualSPHysics solver modifications:
+- Added Bui et al. (2008) artificial stress treatment for tensile instability in cohesive soil simulations.
+- New execution parameters in <execution><parameters>: ArtificialStress, ArtificialStressCoef and ArtificialStressExp.
+- ArtificialStress=0 keeps the original behaviour; ArtificialStress=1 enables the Bui 2008 artificial stress correction.
+- ArtificialStressCoef defaults to 0.5. ArtificialStressExp uses the XML value when defined, otherwise it is computed from the kernel support ratio as 2.55*(KernelSize/Dp)/2.4, matching n=2.55 for h=1.2*Dp with a 2h kernel support.
+- The artificial stress contribution is applied only to fluid-fluid interactions. Boundary and mDBC interactions are excluded in this version.
+
+CPU implementation:
+- Added CPU-side artificial stress tensor precomputation before particle interactions to avoid repeated pairwise eigendecomposition.
+- Added per-particle temporary CPU storage for the artificial stress tensor only when ArtificialStress is enabled.
+- CPU Verlet and Symplectic paths use the existing interaction-force calls, so the artificial stress term is naturally included wherever Interaction_Forces() is executed.
+- The CPU pair interaction reads precomputed R_i and R_j and adds f_ij^n*(R_i+R_j) to the momentum equation.
+- Avoided unnecessary powf() calls when the pair artificial stress tensor contribution is zero.
+
+GPU implementation:
+- Added GPU-side artificial stress tensor storage and precomputation kernel.
+- Added GPU constants for ArtificialStress, ArtificialStressCoef and ArtificialStressExp.
+- GPU fluid-fluid interaction reads the precomputed artificial stress tensor and applies the same momentum correction as the CPU path.
+- GPU boundary interaction does not compute artificial-stress kernel ratios when artificial stress is disabled for boundary pairs.
+- CPU and GPU implementations now use the same full 3D symmetric eigendecomposition for artificial stress tensor construction, including 2D simulations.
+
+Stability and validation notes:
+- A temporary 2D-specific artificial stress eigendecomposition was tested and removed because it caused severe particle exclusion in 2D cohesive granular collapse cases.
+- Re-running the 2D cohesive granular collapse tests with full 3D eigendecomposition gave zero excluded particles for ArtificialStressCoef=0.3, 0.5 and 0.7.
+- The tested 2D cases used Shifting=0 and included the artificial-stress off case as a reference.
+- Artificial viscosity, stress diffusion/DensityDT and particle shifting remain independent stabilisation options.
+- ArtificialStress can be combined with other stabilisation options, but results should be compared against ArtificialStress=0 to isolate its effect.
+
+Examples and tests:
+- Added/updated 2D and 3D cohesive granular collapse test cases under examples/myf/08_CohesiveGranularCollapse.
+- Added CPU/GPU batch files and helper scripts for ArtificialStress off and ArtificialStressCoef=0.3, 0.5 and 0.7 cases.
+- Generated visualisation VTK particles with PartVTK for the tested 2D cases.
+- Verified CPU Debug, CPU Release, GPU Debug and GPU Release builds with Visual Studio 2022 / CUDA 11.7.
+
+DualSPHysics Package v5.2 (03) (02-02-2024)
 ===========================================
 Major SPH Solver novelties:
 • DualSPHysics updated for latest compilers (Visual Studio 2022 (v143), gcc 11.2, CUDA 11.7).

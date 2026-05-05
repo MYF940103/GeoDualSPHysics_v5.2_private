@@ -578,6 +578,108 @@ __device__ void GetStressRateTensor_Elastic(float2 e_tensor_xx_xy,float2 e_tenso
   rsigma_xz_yy.x = 2.f*DP_G*exz+Jxz ;// 
 }
 //------------------------------------------------------------------------------
+/// Computes eigenvalues and eigenvectors of a symmetric 3x3 stress tensor.
+//------------------------------------------------------------------------------
+__device__ void KerComputeSymmetricEigen3D(float xx,float yy,float zz,float xy,float yz,float xz,float eval[3],float evec[3][3]){
+  float a[3][3]={
+    {xx,xy,xz},
+    {xy,yy,yz},
+    {xz,yz,zz}
+  };
+  evec[0][0]=1.f; evec[0][1]=0.f; evec[0][2]=0.f;
+  evec[1][0]=0.f; evec[1][1]=1.f; evec[1][2]=0.f;
+  evec[2][0]=0.f; evec[2][1]=0.f; evec[2][2]=1.f;
+  for(int it=0;it<16;it++){
+    int p=0,q=1;
+    float maxoff=fabsf(a[0][1]);
+    const float a02=fabsf(a[0][2]);
+    const float a12=fabsf(a[1][2]);
+    if(a02>maxoff){maxoff=a02; p=0; q=2;}
+    if(a12>maxoff){maxoff=a12; p=1; q=2;}
+    const float scale=fabsf(a[0][0])+fabsf(a[1][1])+fabsf(a[2][2])+1.f;
+    if(maxoff<=1e-6f*scale)break;
+    const float phi=0.5f*atan2f(2.f*a[p][q],a[q][q]-a[p][p]);
+    const float c=cosf(phi);
+    const float sn=sinf(phi);
+    for(int k=0;k<3;k++){
+      const float akp=a[k][p];
+      const float akq=a[k][q];
+      a[k][p]=c*akp-sn*akq;
+      a[k][q]=sn*akp+c*akq;
+    }
+    for(int k=0;k<3;k++){
+      const float apk=a[p][k];
+      const float aqk=a[q][k];
+      a[p][k]=c*apk-sn*aqk;
+      a[q][k]=sn*apk+c*aqk;
+    }
+    for(int k=0;k<3;k++){
+      const float vkp=evec[k][p];
+      const float vkq=evec[k][q];
+      evec[k][p]=c*vkp-sn*vkq;
+      evec[k][q]=sn*vkp+c*vkq;
+    }
+  }
+  eval[0]=a[0][0];
+  eval[1]=a[1][1];
+  eval[2]=a[2][2];
+}
+//------------------------------------------------------------------------------
+/// Computes Bui 2008 artificial stress tensor in global coordinates.
+//------------------------------------------------------------------------------
+__device__ void KerComputeBuiArtificialStress(float2 sigma_xx_xy,float2 sigma_xz_yy,float2 sigma_yz_zz,float rhop,float coef
+  ,float2 &rstress_xx_xy,float2 &rstress_xz_yy,float2 &rstress_yz_zz)
+{
+  rstress_xx_xy=make_float2(0,0);
+  rstress_xz_yy=make_float2(0,0);
+  rstress_yz_zz=make_float2(0,0);
+  if(rhop<=0.f)return;
+  float eval[3];
+  float evec[3][3];
+  KerComputeSymmetricEigen3D(sigma_xx_xy.x,sigma_xz_yy.y,sigma_yz_zz.y,sigma_xx_xy.y,sigma_yz_zz.x,sigma_xz_yy.x,eval,evec);
+  const float rrhop2=1.f/(rhop*rhop);
+  float rp[3];
+  for(int a=0;a<3;a++)rp[a]=(eval[a]>0.f? -coef*eval[a]*rrhop2: 0.f);
+  for(int a=0;a<3;a++){
+    const float rx=evec[0][a],ry=evec[1][a],rz=evec[2][a];
+    rstress_xx_xy.x+=rp[a]*rx*rx;
+    rstress_xz_yy.y+=rp[a]*ry*ry;
+    rstress_yz_zz.y+=rp[a]*rz*rz;
+    rstress_xx_xy.y+=rp[a]*rx*ry;
+    rstress_yz_zz.x+=rp[a]*ry*rz;
+    rstress_xz_yy.x+=rp[a]*rx*rz;
+  }
+}
+//------------------------------------------------------------------------------
+/// Precomputes Bui 2008 artificial stress tensor for each non-boundary particle.
+//------------------------------------------------------------------------------
+__global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const float2 *sigma,float2 *artificialstress){
+  const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p<n){
+    float2 rstress_xx_xy=make_float2(0,0);
+    float2 rstress_xz_yy=make_float2(0,0);
+    float2 rstress_yz_zz=make_float2(0,0);
+    if(p>=nbound){
+      const bool ftp=CODE_IsFloating(code[p]);
+      if(!ftp){
+        KerComputeBuiArtificialStress(sigma[p*3],sigma[p*3+1],sigma[p*3+2],velrhop[p].w,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
+      }
+    }
+    artificialstress[p*3]=rstress_xx_xy;
+    artificialstress[p*3+1]=rstress_xz_yy;
+    artificialstress[p*3+2]=rstress_yz_zz;
+  }
+}
+//==============================================================================
+/// Precomputes Bui 2008 artificial stress tensor on GPU.
+//==============================================================================
+void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3f *sigma,tsymatrix3f *artificialstress){
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerComputeArtificialStress <<<sgrid,SPHBSIZE>>> (n,nbound,code,velrhop,(const float2*)sigma,(float2*)artificialstress);
+  }
+}
+//------------------------------------------------------------------------------
 /// Interaction of a particle with a set of particles. (Fluid/Float-Fluid/Float/Bound)
 /// Realiza la interaccion de una particula con un conjunto de ellas. (Fluid/Float-Fluid/Float/Bound)
 //------------------------------------------------------------------------------
@@ -587,14 +689,17 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,const float *ftomassp
   ,const float4 *poscell,const float4 *velrhop,const typecode *code,const unsigned *idp
   ,const float2 *sigma
+  ,const float2 *artificialstress
   ,float massp2,bool ftp1
   ,const float4 &pscellp1,const float4 &velrhop1,float pressp1
   ,float3 &gradvp1_xx_xy_xz,float3 &gradvp1_yx_yy_yz,float3 &gradvp1_zx_zy_zz
   ,float3 &acep1,float &arp1,float &visc,float &deltap1
   ,TpShifting shiftmode,float4 &shiftposfsp1
   ,float2 &sigmap1_xx_xy,float2 &sigmap1_xz_yy,float2 &sigmap1_yz_zz
+  ,const float2 &artstressp1_xx_xy,const float2 &artstressp1_xz_yy,const float2 &artstressp1_yz_zz,const float invwabdp
   ,float2 &dsigmap1_xx_xy,float2 &dsigmap1_xz_yy,float2 &dsigmap1_yz_zz)
 {
+  const bool useartstress=(CTE.artificialstress && !boundp2 && !ftp1 && invwabdp>0.f);
   for(int p2=pini;p2<pfin;p2++){
     const float4 pscellp2=poscell[p2];
     float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
@@ -604,7 +709,10 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     const float rr2=drx*drx+dry*dry+drz*drz;
     if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
       //-Computes kernel.
-      const float fac=cufsph::GetKernel_Fac<tker>(rr2);
+      float fac;
+      float wab=0.f;
+      if(useartstress)wab=cufsph::GetKernel_WabFac<tker>(rr2,fac);
+      else fac=cufsph::GetKernel_Fac<tker>(rr2);
       const float frx=fac*drx,fry=fac*dry,frz=fac*drz; //-Gradients.
 
       //-Obtains mass of particle p2 if any floating bodies exist.
@@ -645,6 +753,30 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 		  const float prsxz = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_xz_yy.x + sigmap2_xz_yy.x) / (velrhop1.w*velrhop2.w);
 		  const float prsyz = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_yz_zz.x + sigmap2_yz_zz.x) / (velrhop1.w*velrhop2.w);
 		  acep1.x += (prsxx*frx + prsxy*fry + prsxz*frz); acep1.y += (prsyy*fry + prsxy*frx + prsyz*frz); acep1.z += (prszz*frz + prsyz*fry + prsxz*frx);//form 1
+          if(useartstress && !ftp2){
+            const float2 artstressp2_xx_xy=artificialstress[p2*3];
+            const float2 artstressp2_xz_yy=artificialstress[p2*3+1];
+            const float2 artstressp2_yz_zz=artificialstress[p2*3+2];
+            const float ratio=wab*invwabdp;
+            const float arsxx0=artstressp1_xx_xy.x+artstressp2_xx_xy.x;
+            const float arsyy0=artstressp1_xz_yy.y+artstressp2_xz_yy.y;
+            const float arszz0=artstressp1_yz_zz.y+artstressp2_yz_zz.y;
+            const float arsxy0=artstressp1_xx_xy.y+artstressp2_xx_xy.y;
+            const float arsxz0=artstressp1_xz_yy.x+artstressp2_xz_yy.x;
+            const float arsyz0=artstressp1_yz_zz.x+artstressp2_yz_zz.x;
+            if(ratio>0.f && (arsxx0 || arsyy0 || arszz0 || arsxy0 || arsxz0 || arsyz0)){
+              const float artmass=(USE_FLOATING? ftmassp2: massp2)*powf(ratio,CTE.artificialstressexp);
+              const float arsxx=artmass*arsxx0;
+              const float arsyy=artmass*arsyy0;
+              const float arszz=artmass*arszz0;
+              const float arsxy=artmass*arsxy0;
+              const float arsxz=artmass*arsxz0;
+              const float arsyz=artmass*arsyz0;
+              acep1.x+=(arsxx*frx+arsxy*fry+arsxz*frz);
+              acep1.y+=(arsxy*frx+arsyy*fry+arsyz*frz);
+              acep1.z+=(arsxz*frx+arsyz*fry+arszz*frz);
+            }
+          }
       }
       
       //-Density derivative (Continuity equation).
@@ -771,7 +903,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *begincell,unsigned cellfluid,const unsigned *dcell
   ,const float *ftomassp
   ,const float4 *poscell,const float4 *velrhop,const typecode *code,const unsigned *idp
-  ,const float2 *sigma,float2 *rsigma
+  ,const float2 *sigma,const float2 *artificialstress,float2 *rsigma
   ,float *viscdt,float *ar,float3 *ace,float *delta
   ,TpShifting shiftmode,float4 *shiftposfs)
 {
@@ -799,7 +931,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     if(shift)shiftposfsp1=shiftposfs[p1];
 
     //-Obtains data of particle p1 in case there are floating bodies.
-    bool ftp1;       //-Indicates if it is floating. | Indica si es floating.
+    bool ftp1=false; //-Indicates if it is floating. | Indica si es floating.
     if(USE_FLOATING){
       const typecode cod=code[p1];
       ftp1=CODE_IsFloating(cod);
@@ -814,9 +946,20 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     const float pressp1=cufsph::ComputePressCte(velrhop1.w);
     const bool rsymp1=(symm && PSCEL_GetPartY(__float_as_uint(pscellp1.w))==0); //<vs_syymmetry>
     //-Obtains stress tensor == mdbr
-	float2 sigmap1_xx_xy=sigma[p1*3];
-	float2 sigmap1_xz_yy=sigma[p1*3+1];
-	float2 sigmap1_yz_zz=sigma[p1*3+2];
+    float2 sigmap1_xx_xy=sigma[p1*3];
+    float2 sigmap1_xz_yy=sigma[p1*3+1];
+    float2 sigmap1_yz_zz=sigma[p1*3+2];
+    float2 artstressp1_xx_xy=make_float2(0,0);
+    float2 artstressp1_xz_yy=make_float2(0,0);
+    float2 artstressp1_yz_zz=make_float2(0,0);
+    const bool useartstressp1=(CTE.artificialstress && !ftp1 && CTE.artificialstresscoef>0.f);
+    const float wabdp=(useartstressp1? cufsph::GetKernel_Wab<tker>(CTE.dp*CTE.dp): 0.f);
+    const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
+    if(useartstressp1 && invwabdp>0.f){
+      artstressp1_xx_xy=artificialstress[p1*3];
+      artstressp1_xz_yy=artificialstress[p1*3+1];
+      artstressp1_yz_zz=artificialstress[p1*3+2];
+    }
     //-Obtains elastic parameters
     float modulus_K=CTE.modulus_K;
     float modulus_G=CTE.modulus_G;
@@ -844,8 +987,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
-        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz); //<vs_syymmetry>
+                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz); //<vs_syymmetry>
       }
     }
     //-Interaction with boundaries.
@@ -853,8 +996,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
-      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
       }
     }
     //Calculate strain/spin rate tensor mdbr
@@ -1145,7 +1288,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 {
  #if CUDART_VERSION >= 6050
   {
-    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const typecode*,const unsigned*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
+    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const typecode*,const unsigned*,const float2*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
     fun_ptr ptr=&KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,symm>;
     int qblocksize=0,mingridsize=0;
     cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)ptr,0,0);
@@ -1209,12 +1352,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     if(t.symmetry) //<vs_syymmetry_ini>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,true> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
     else //<vs_syymmetry_end>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,false> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
   }
   //cudaProfilerStop();//mdbr

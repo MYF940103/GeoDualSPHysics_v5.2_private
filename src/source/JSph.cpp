@@ -182,6 +182,10 @@ void JSph::InitVars(){
   TBoundary=BC_DBC;
   SlipMode=SLIP_Vel0;
   DPCtes=DP_C;//mdbr
+  ArtificialStress=false;
+  ArtificialStressCoef=0.5f;
+  ArtificialStressExp=2.55f;
+  ArtificialStressExpAuto=true;
   MdbcCorrector=false;
   MdbcFastSingle=true;
   MdbcThreshold=0;
@@ -632,6 +636,16 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 3:  DPCtes=DP_PS;  break;
     default: Run_Exceptioon("DP Constant type is not valid.");
   }
+  switch(eparms.GetValueInt("ArtificialStress",true,0)){
+    case 0:  ArtificialStress=false;  break;
+    case 1:  ArtificialStress=true;   break;
+    default: Run_Exceptioon("ArtificialStress mode is not valid.");
+  }
+  ArtificialStressCoef=eparms.GetValueFloat("ArtificialStressCoef",true,0.5f);
+  ArtificialStressExpAuto=!eparms.Exists("ArtificialStressExp");
+  ArtificialStressExp=eparms.GetValueFloat("ArtificialStressExp",true,2.55f);
+  if(ArtificialStressCoef<0.f || ArtificialStressCoef>1.f)Run_Exceptioon("ArtificialStressCoef must be in [0,1].");
+  if(ArtificialStressExp<=0.f)Run_Exceptioon("ArtificialStressExp must be greater than zero.");
   //-Boundary configuration.
   switch(eparms.GetValueInt("Boundary",true,1)){
     case 1:  TBoundary=BC_DBC;      break;
@@ -1446,6 +1460,14 @@ void JSph::ConfigConstants1(bool simulate2d){
 /// Configures other constants and loads more values in CSP structure.
 //==============================================================================
 void JSph::ConfigConstants2(){
+  //-Constants for Bui 2008 artificial stress.
+  if(ArtificialStress && ArtificialStressExpAuto){
+    const float expref=2.55f;
+    const float supportref=2.4f; //-Bui 2008 reference: h=1.2*dp with a 2h kernel support.
+    if(Dp<=0)Run_Exceptioon("Dp is invalid for automatic ArtificialStressExp calculation.");
+    ArtificialStressExp=expref*(KernelSize/float(Dp))/supportref;
+    if(ArtificialStressExp<=0.f)Run_Exceptioon("Automatic ArtificialStressExp must be greater than zero.");
+  }
   //-Constants for Laminar viscosity + SPS turbulence model.
   if(TVisco==VISCO_LaminarSPS){
     const double dp_sps=(Simulate2D? sqrt(Dp*Dp*2.)/2.: sqrt(Dp*Dp*3.)/3.);  
@@ -1531,6 +1553,15 @@ void JSph::VisuConfig(){
   Log->Print(fun::VarStr("  ViscoBoundFactor",ViscoBoundFactor));
   if(ViscoTime)Log->Print(fun::VarStr("ViscoTime",ViscoTime->GetFile()));
   ConfigInfo=ConfigInfo+sep+"Visco_"+GetViscoName(TVisco)+fun::PrintStr("(%gb%g)",Visco,ViscoBoundFactor);
+  //-Artificial stress for tensile instability.
+  Log->Print(fun::VarStr("ArtificialStress",ArtificialStress? "Bui2008": "None"));
+  if(ArtificialStress){
+    Log->Print(fun::VarStr("  ArtificialStressCoef",ArtificialStressCoef));
+    Log->Print(fun::VarStr("  ArtificialStressExp",ArtificialStressExp));
+    Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "AutoSupportRatio": "XML"));
+    Log->Print(fun::VarStr("  ArtificialStressBoundary","Excluded"));
+    ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
+  }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
   ConfigInfo=ConfigInfo+sep+fun::PrintStr("DDT%d",int(TDensity));
@@ -1553,6 +1584,8 @@ void JSph::VisuConfig(){
     ConfigInfo=ConfigInfo+sep+Shifting->GetConfigInfo();
   }
   else Log->Print(fun::VarStr("Shifting","None"));
+  if(ArtificialStress && TDensity!=DDT_None)Log->PrintWarning("ArtificialStress is enabled together with DensityDiffusion; compare against ArtificialStress=0 to isolate stabilisation effects.");
+  if(ArtificialStress && Shifting)Log->PrintWarning("ArtificialStress is enabled together with Shifting; compare against ArtificialStress=0 to isolate tensile-instability treatment.");
   //-RigidAlgorithm.
   string rigidalgorithm=(!FtCount? "None": GetNameRigidMode(RigidMode));
   Log->Print(fun::VarStr("RigidAlgorithm",rigidalgorithm));

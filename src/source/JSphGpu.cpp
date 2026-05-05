@@ -150,6 +150,7 @@ void JSphGpu::InitVars(){
   ViscDtg=NULL; 
   Arg=NULL; Aceg=NULL; Deltag=NULL;
   Rsigmag=NULL;//ruofeng
+  ArtificialStressg=NULL;//mdbr
   ShiftPosfsg=NULL;                                //-Shifting.
   RidpMoveg=NULL;
   FtRidpg=NULL;   FtoMasspg=NULL;                  //-Floatings.
@@ -347,6 +348,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   //====== mdbr
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-sigma
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
+  if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 2);//-kplastic
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
@@ -598,6 +600,9 @@ void JSphGpu::ConstantDataUp(){
   ctes.scell=Scell; 
   ctes.kernelsize=KernelSize;
   ctes.dp=float(Dp);
+  ctes.artificialstress=(ArtificialStress? 1: 0);
+  ctes.artificialstresscoef=ArtificialStressCoef;
+  ctes.artificialstressexp=ArtificialStressExp;
   ctes.cteb=CteB; ctes.gamma=Gamma;
   ctes.rhopzero=RhopZero;
   ctes.ovrhopzero=1.f/RhopZero;
@@ -731,7 +736,7 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,NULL,NULL,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL
+        ,NULL,NULL,NULL,NULL
         ,NULL
         ,NULL,&kerinfo);
       cusph::Interaction_Forces(parms);
@@ -918,12 +923,14 @@ void JSphGpu::PreInteraction_Forces(){
   Arg=ArraysGpu->ReserveFloat();
   Aceg=ArraysGpu->ReserveFloat3();
   Rsigmag=ArraysGpu->ReserveSymatrix3f();//ruofeng
+  if(ArtificialStress)ArtificialStressg=ArraysGpu->ReserveSymatrix3f();
   if(DDTArray)Deltag=ArraysGpu->ReserveFloat();
   if(Shifting)ShiftPosfsg=ArraysGpu->ReserveFloat4();
   if(TVisco==VISCO_LaminarSPS)SpsGradvelg=ArraysGpu->ReserveSymatrix3f();
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
+  if(ArtificialStressg)cusph::ComputeArtificialStress(Np,Npb,Codeg,Velrhopg,Sigmag,ArtificialStressg);
 
   //-Computes VelMax: Includes the particles from floating bodies and does not affect the periodic conditions.
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
@@ -950,6 +957,7 @@ void JSphGpu::PosInteraction_Forces(){
   ArraysGpu->Free(ShiftPosfsg);  ShiftPosfsg=NULL;
   ArraysGpu->Free(SpsGradvelg);  SpsGradvelg=NULL;
   ArraysGpu->Free(Rsigmag);      Rsigmag=NULL;//ruofeng
+  ArraysGpu->Free(ArtificialStressg); ArtificialStressg=NULL;//mdbr
 }
 
 //==============================================================================

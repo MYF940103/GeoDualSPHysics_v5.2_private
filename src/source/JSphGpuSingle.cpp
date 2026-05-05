@@ -495,6 +495,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ViscDtg,Arg,Aceg,Deltag
     ,SpsGradvelg
     ,Sigmag,Rsigmag
+    ,ArtificialStressg
     ,ShiftPosfsg
     ,NULL,NULL);
   cusph::Interaction_Forces(parms);

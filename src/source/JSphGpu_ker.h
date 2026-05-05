@@ -54,6 +54,9 @@ typedef struct{
   float scell;              ///<Cell size: KernelSize/ScellDiv (KernelSize or KernelSize/2).
   float kernelsize;         ///<Maximum interaction distance between particles (KernelK*KernelH).
   float dp;                 ///<Initial distance between particles [m].
+  unsigned artificialstress; ///<Bui 2008 artificial stress for tensile instability (0:none, 1:enabled). //mdbr
+  float artificialstresscoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
+  float artificialstressexp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   float cteb;               ///<Constant used in the state equation [Pa].
   float gamma;              ///<Politropic constant for water used in the state equation.
   float rhopzero;           ///<Reference density of the fluid [kg/m3].
@@ -125,6 +128,7 @@ typedef struct StrInterParmsg{
   //=====mdbr
   const tsymatrix3f* sigma;
   tsymatrix3f* rsigma;
+  const tsymatrix3f* artificialstress;
 
   //-Output data arrays.
   float *viscdt;
@@ -155,6 +159,7 @@ typedef struct StrInterParmsg{
     ,float *viscdt_,float* ar_,float3 *ace_,float *delta_
     ,tsymatrix3f *spsgradvel_
     ,const tsymatrix3f *sigma_, tsymatrix3f* rsigma_
+    ,const tsymatrix3f *artificialstress_
     ,float4 *shiftposfs_
     ,cudaStream_t stm_
     ,StKerInfo *kerinfo_)
@@ -184,6 +189,7 @@ typedef struct StrInterParmsg{
     shiftposfs=shiftposfs_;
     //mdbr
     sigma=sigma_; rsigma=rsigma_;
+    artificialstress=artificialstress_;
     //-Other values and objects.
     stm=stm_;
     kerinfo=kerinfo_;
@@ -206,6 +212,7 @@ void ComputeAceMod(unsigned n,const float3 *ace,float *acemod);
 void ComputeAceMod(unsigned n,const typecode *code,const float3 *ace,float *acemod);
 
 void ComputeVelMod(unsigned n,const float4 *vel,float *velmod);
+void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3f *sigma,tsymatrix3f *artificialstress);
 
 //-Kernels for the force calculation.
 void Interaction_Forces(const StInterParmsg &t);

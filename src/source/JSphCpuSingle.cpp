@@ -577,6 +577,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ShiftingMode,ShiftPosfsc
     ,SpsTauc,SpsGradvelc
     ,Sigmac,Rsigmac
+    ,ArtificialStressc
   );
   StInterResultc res;
   res.viscdt=0;

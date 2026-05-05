@@ -184,6 +184,7 @@ protected:
   float *Arg; 
   float *Deltag;     ///<Accumulates adjustment of Delta-SPH with DELTA_DynamicExt. | Acumula ajuste de Delta-SPH con DELTA_DynamicExt.
   tsymatrix3f *Rsigmag; //Stress rate tensor ruofeng
+  tsymatrix3f *ArtificialStressg; ///<Precomputed Bui 2008 artificial stress tensor. //mdbr
 
   float4 *ShiftPosfsg;  ///<Particle displacement and free surface detection for Shifting.
 

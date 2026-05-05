@@ -44,8 +44,11 @@
 #include "JSphShifting.h"
 
 #include <climits>
+#include <cmath>
 
 using namespace std;
+
+static void ComputeArtificialStressArray(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
 
 //==============================================================================
 /// Constructor.
@@ -86,6 +89,7 @@ void JSphCpu::InitVars(){
   //====== mdbr
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
+  ArtificialStressc=NULL;
   //======
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
@@ -168,6 +172,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2); //-pos
   //====== mdbr
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2);//-sigma,rsigma
+  if(ArtificialStress)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-artificialstress
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   //======
@@ -526,6 +531,7 @@ void JSphCpu::PreInteraction_Forces(){
   Acec=ArraysCpu->ReserveFloat3();
   //=========== mdbr
   Rsigmac=ArraysCpu->ReserveSymatrix3f();
+  if(ArtificialStress)ArtificialStressc=ArraysCpu->ReserveSymatrix3f();
   //===========
   if(DDTArray)Deltac=ArraysCpu->ReserveFloat();
   if(Shifting)ShiftPosfsc=ArraysCpu->ReserveFloat4();
@@ -534,6 +540,7 @@ void JSphCpu::PreInteraction_Forces(){
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
+  if(ArtificialStressc)ComputeArtificialStressArray(Np,Npb,Codec,Velrhopc,Sigmac,ArtificialStressCoef,ArtificialStressc);
 
   //-Calculate VelMax: Floating object particles are included and do not affect use of periodic condition.
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
@@ -606,6 +613,7 @@ void JSphCpu::PosInteraction_Forces(){
   ArraysCpu->Free(SpsGradvelc);  SpsGradvelc=NULL;
    //-mdbr
   ArraysCpu->Free(Rsigmac);      Rsigmac=NULL;
+  ArraysCpu->Free(ArtificialStressc); ArtificialStressc=NULL;
 }
 
 //==============================================================================
@@ -760,6 +768,96 @@ void GetStressRateTensor_Elastic(tsymatrix3f e_tensor,tfloat3 w_tensor_xy_yz_xz
   rsigma.yz = 2.f*DP_G*eyz+Jyz;
   rsigma.xz = 2.f*DP_G*exz+Jxz;  
 }
+
+//==============================================================================
+/// Computes eigenvalues and eigenvectors of a symmetric 3x3 stress tensor.
+//==============================================================================
+static void ComputeSymmetricEigen3D(const tsymatrix3f &sigma,float eval[3],float evec[3][3]){
+  float a[3][3]={
+    {sigma.xx,sigma.xy,sigma.xz},
+    {sigma.xy,sigma.yy,sigma.yz},
+    {sigma.xz,sigma.yz,sigma.zz}
+  };
+  evec[0][0]=1.f; evec[0][1]=0.f; evec[0][2]=0.f;
+  evec[1][0]=0.f; evec[1][1]=1.f; evec[1][2]=0.f;
+  evec[2][0]=0.f; evec[2][1]=0.f; evec[2][2]=1.f;
+  for(int it=0;it<16;it++){
+    int p=0,q=1;
+    float maxoff=fabsf(a[0][1]);
+    const float a02=fabsf(a[0][2]);
+    const float a12=fabsf(a[1][2]);
+    if(a02>maxoff){maxoff=a02; p=0; q=2;}
+    if(a12>maxoff){maxoff=a12; p=1; q=2;}
+    const float scale=fabsf(a[0][0])+fabsf(a[1][1])+fabsf(a[2][2])+1.f;
+    if(maxoff<=1e-6f*scale)break;
+    const float phi=0.5f*atan2f(2.f*a[p][q],a[q][q]-a[p][p]);
+    const float c=cosf(phi);
+    const float sn=sinf(phi);
+    for(int k=0;k<3;k++){
+      const float akp=a[k][p];
+      const float akq=a[k][q];
+      a[k][p]=c*akp-sn*akq;
+      a[k][q]=sn*akp+c*akq;
+    }
+    for(int k=0;k<3;k++){
+      const float apk=a[p][k];
+      const float aqk=a[q][k];
+      a[p][k]=c*apk-sn*aqk;
+      a[q][k]=sn*apk+c*aqk;
+    }
+    for(int k=0;k<3;k++){
+      const float vkp=evec[k][p];
+      const float vkq=evec[k][q];
+      evec[k][p]=c*vkp-sn*vkq;
+      evec[k][q]=sn*vkp+c*vkq;
+    }
+  }
+  eval[0]=a[0][0];
+  eval[1]=a[1][1];
+  eval[2]=a[2][2];
+}
+
+//==============================================================================
+/// Computes Bui 2008 artificial stress tensor in global coordinates.
+//==============================================================================
+static tsymatrix3f ComputeBuiArtificialStress(const tsymatrix3f &sigma,const float rhop,const float coef){
+  tsymatrix3f rstress={0,0,0,0,0,0};
+  if(rhop<=0.f)return(rstress);
+  float eval[3];
+  float evec[3][3];
+  ComputeSymmetricEigen3D(sigma,eval,evec);
+  const float rrhop2=1.f/(rhop*rhop);
+  float rp[3];
+  for(int a=0;a<3;a++)rp[a]=(eval[a]>0.f? -coef*eval[a]*rrhop2: 0.f);
+  for(int a=0;a<3;a++){
+    const float rx=evec[0][a],ry=evec[1][a],rz=evec[2][a];
+    rstress.xx+=rp[a]*rx*rx;
+    rstress.yy+=rp[a]*ry*ry;
+    rstress.zz+=rp[a]*rz*rz;
+    rstress.xy+=rp[a]*rx*ry;
+    rstress.yz+=rp[a]*ry*rz;
+    rstress.xz+=rp[a]*rx*rz;
+  }
+  return(rstress);
+}
+
+//==============================================================================
+/// Precomputes Bui 2008 artificial stress tensor for each non-boundary particle.
+//==============================================================================
+static void ComputeArtificialStressArray(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress){
+  const int n=int(np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=0;p<n;p++){
+    tsymatrix3f rstress={0,0,0,0,0,0};
+    if(unsigned(p)>=npb && !CODE_IsFloating(code[p])){
+      rstress=ComputeBuiArtificialStress(sigma[p],velrhop[p].w,coef);
+    }
+    artificialstress[p]=rstress;
+  }
+}
+
 //==============================================================================
 /// Perform interaction between particles: Fluid/Float-Fluid/Float or Fluid/Float-Bound
 /// Realiza interaccion entre particulas: Fluid/Float-Fluid/Float or Fluid/Float-Bound
@@ -770,12 +868,16 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   ,const tsymatrix3f* tau,tsymatrix3f* gradvel
   ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
   ,const float *press,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+  ,const tsymatrix3f *artificialstress
   ,float &viscdt,float *ar,tfloat3 *ace,float *delta
   ,TpShifting shiftmode,tfloat4 *shiftposfs,tsymatrix3f *rsigma)const
 {
   //-Initialize viscth to calculate viscdt maximo con OpenMP. | Inicializa viscth para calcular visdt maximo con OpenMP.
   float viscth[OMP_MAXTHREADS*OMP_STRIDE];
   for(int th=0;th<OmpThreads;th++)viscth[th*OMP_STRIDE]=0;
+  const bool useartstress=(ArtificialStress && !boundp2 && artificialstress);
+  const float wabdp=(useartstress? fsph::GetKernel_Wab<tker>(CSP,float(Dp*Dp)): 0.f);
+  const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
   const int pfin=int(pinit+n);
   #ifdef OMP_USE
@@ -811,6 +913,8 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const float rhopp1=velrhop[p1].w;
     const float pressp1=press[p1];
     const tsymatrix3f sigmap1=sigma[p1]; //mdbr
+    tsymatrix3f artstressp1={0,0,0,0,0,0};
+    if(useartstress && !ftp1 && invwabdp>0.f)artstressp1=artificialstress[p1];
     //-Obtains elastic parameters
     float modulus_K=SoilCte.ModulusK;
     float modulus_G=SoilCte.ModulusG;
@@ -834,7 +938,10 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
         const float rr2=drx*drx+dry*dry+drz*drz;
         if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
           //-Computes kernel.
-          const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+          float fac;
+          float wab=0.f;
+          if(useartstress)wab=fsph::GetKernel_WabFac<tker>(CSP,rr2,fac);
+          else fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
           const float frx=fac*drx,fry=fac*dry,frz=fac*drz; //-Gradients.
 
           //===== Get mass of particle p2 ===== 
@@ -870,6 +977,28 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz + sigmap2.xz) / (rhopp1*velrhop2.w);
 			const float prsyz = massp2*(sigmap1.yz + sigmap2.yz) / (rhopp1*velrhop2.w);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            if(useartstress && !ftp1 && !ftp2 && invwabdp>0.f){
+              const tsymatrix3f artstressp2=artificialstress[p2];
+              const float ratio=wab*invwabdp;
+              const float arsxx0=artstressp1.xx+artstressp2.xx;
+              const float arsyy0=artstressp1.yy+artstressp2.yy;
+              const float arszz0=artstressp1.zz+artstressp2.zz;
+              const float arsxy0=artstressp1.xy+artstressp2.xy;
+              const float arsxz0=artstressp1.xz+artstressp2.xz;
+              const float arsyz0=artstressp1.yz+artstressp2.yz;
+              if(ratio>0.f && (arsxx0 || arsyy0 || arszz0 || arsxy0 || arsxz0 || arsyz0)){
+                const float artmass=massp2*powf(ratio,ArtificialStressExp);
+                const float arsxx=artmass*arsxx0;
+                const float arsyy=artmass*arsyy0;
+                const float arszz=artmass*arszz0;
+                const float arsxy=artmass*arsxy0;
+                const float arsxz=artmass*arsxz0;
+                const float arsyz=artmass*arsyz0;
+                acep1.x += (arsxx*frx+arsxy*fry+arsxz*frz);
+                acep1.y += (arsyy*fry+arsxy*frx+arsyz*frz);
+                acep1.z += (arszz*frz+arsyz*fry+arsxz*frx);
+              }
+            }
           }
 
           //-Density derivative (Continuity equation).
@@ -1183,11 +1312,11 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   if(t.npf){
     //-Interaction Fluid-Fluid.
     InteractionForcesFluid<tker,ftmode,tvisco,tdensity,shift> (t.npf,t.npb,false,Visco                 
-      ,t.divdata,t.dcell,t.spstau,t.spsgradvel,t.pos,t.velrhop,t.code,t.idp,t.press,t.sigma,t.dengradcorr
+      ,t.divdata,t.dcell,t.spstau,t.spsgradvel,t.pos,t.velrhop,t.code,t.idp,t.press,t.sigma,t.dengradcorr,t.artificialstress
       ,viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs,t.rsigma);
     //-Interaction Fluid-Bound.
     InteractionForcesFluid<tker,ftmode,tvisco,tdensity,shift> (t.npf,t.npb,true ,Visco*ViscoBoundFactor
-      ,t.divdata,t.dcell,t.spstau,t.spsgradvel,t.pos,t.velrhop,t.code,t.idp,t.press,t.sigma,NULL
+      ,t.divdata,t.dcell,t.spstau,t.spsgradvel,t.pos,t.velrhop,t.code,t.idp,t.press,t.sigma,NULL,t.artificialstress
       ,viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs,t.rsigma);
 
     //-Interaction of DEM Floating-Bound & Floating-Floating. //(DEM)

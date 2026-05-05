@@ -193,6 +193,10 @@ protected:
   TpBoundary TBoundary;       ///<Boundary condition: DBC, M-DBC.
   TpSlipMode SlipMode;        ///<Slip mode for mDBC 1:DBC vel=0, 2:No-slip, 3:Free slip (default=1).
   TpDPCtes DPCtes;            ///<DP constants 1:3D Circumscribed DP, 2:3D Mid Circumscribed DP, 3:Plain Strain condition (default=1). //mdbr
+  bool ArtificialStress;      ///<Bui 2008 artificial stress for tensile instability (default=0). //mdbr
+  float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
+  float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
+  bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).

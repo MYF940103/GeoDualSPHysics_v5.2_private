@@ -49,6 +49,7 @@ typedef struct{
   //=======mdbr
   tsymatrix3f* sigma;
   tsymatrix3f* rsigma;
+  const tsymatrix3f* artificialstress;
   //=======
 }stinterparmsc;
 
@@ -62,6 +63,7 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   ,TpShifting shiftmode,tfloat4 *shiftposfs
   ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
   ,tsymatrix3f* sigma, tsymatrix3f *rsigma
+  ,const tsymatrix3f *artificialstress
 )
 {
   stinterparmsc d={np,npb,npbok,(np-npb)
@@ -72,7 +74,7 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
     ,ar,ace,delta
     ,shiftmode,shiftposfs
     ,spstau,spsgradvel
-    ,sigma,rsigma
+    ,sigma,rsigma,artificialstress
   };
   return(d);
 }
@@ -137,6 +139,7 @@ protected:
   //=============== mdbr
   tsymatrix3f* Sigmac;
   tsymatrix3f* Rsigmac;
+  tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
   //===============  
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
@@ -239,6 +242,7 @@ protected:
     ,const tsymatrix3f* tau,tsymatrix3f* gradvel
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
     ,const float *press,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+    ,const tsymatrix3f *artificialstress
     ,float &viscdt,float *ar,tfloat3 *ace,float *delta
     ,TpShifting shiftmode,tfloat4 *shiftposfs,tsymatrix3f *rsigma)const;
 
