@@ -142,6 +142,7 @@ protected:
   tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
   //===============  
+  float* PorePressc;  ///<Passive pore pressure field for CPU hydromechanical prototype.
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
 

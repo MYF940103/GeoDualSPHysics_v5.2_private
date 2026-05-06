@@ -186,6 +186,16 @@ void JSph::InitVars(){
   ArtificialStressCoef=0.5f;
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
+  HydromechCoupling=false;
+  PorePressureModel=0;
+  PorePressureInit=0;
+  Porosity0=0.3f;
+  HydraulicConductivity=0.f;
+  WaterBulkModulus=2e8f;
+  WaterDensity=1000.f;
+  PorePressureDtSafety=0.1f;
+  PorePressureFeedback=false;
+  SavePorePressure=false;
   MdbcCorrector=false;
   MdbcFastSingle=true;
   MdbcThreshold=0;
@@ -646,6 +656,44 @@ void JSph::LoadConfigParameters(const JXml *xml){
   ArtificialStressExp=eparms.GetValueFloat("ArtificialStressExp",true,2.55f);
   if(ArtificialStressCoef<0.f || ArtificialStressCoef>1.f)Run_Exceptioon("ArtificialStressCoef must be in [0,1].");
   if(ArtificialStressExp<=0.f)Run_Exceptioon("ArtificialStressExp must be greater than zero.");
+  //-Hydromechanical / u-pw configuration. Phase 1 only reads and reports parameters.
+  switch(eparms.GetValueInt("HydromechCoupling",true,0)){
+    case 0:  HydromechCoupling=false;  break;
+    case 1:  HydromechCoupling=true;   break;
+    default: Run_Exceptioon("HydromechCoupling mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureModel",true,0)){
+    case 0:  PorePressureModel=0;  break;
+    case 1:  PorePressureModel=1;  break;
+    case 2:  PorePressureModel=2;  break;
+    default: Run_Exceptioon("PorePressureModel mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureInit",true,0)){
+    case 0:  PorePressureInit=0;  break;
+    case 1:  PorePressureInit=1;  break;
+    case 2:  PorePressureInit=2;  break;
+    default: Run_Exceptioon("PorePressureInit mode is not valid.");
+  }
+  Porosity0=eparms.GetValueFloat("Porosity0",true,0.3f);
+  HydraulicConductivity=eparms.GetValueFloat("HydraulicConductivity",true,0.f);
+  WaterBulkModulus=eparms.GetValueFloat("WaterBulkModulus",true,2e8f);
+  WaterDensity=eparms.GetValueFloat("WaterDensity",true,1000.f);
+  PorePressureDtSafety=eparms.GetValueFloat("PorePressureDtSafety",true,0.1f);
+  switch(eparms.GetValueInt("PorePressureFeedback",true,0)){
+    case 0:  PorePressureFeedback=false;  break;
+    case 1:  PorePressureFeedback=true;   break;
+    default: Run_Exceptioon("PorePressureFeedback mode is not valid.");
+  }
+  switch(eparms.GetValueInt("SavePorePressure",true,0)){
+    case 0:  SavePorePressure=false;  break;
+    case 1:  SavePorePressure=true;   break;
+    default: Run_Exceptioon("SavePorePressure mode is not valid.");
+  }
+  if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1.");
+  if(HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be greater than or equal to zero.");
+  if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
+  if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
+  if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   //-Boundary configuration.
   switch(eparms.GetValueInt("Boundary",true,1)){
     case 1:  TBoundary=BC_DBC;      break;
@@ -1561,6 +1609,22 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "AutoSupportRatio": "XML"));
     Log->Print(fun::VarStr("  ArtificialStressBoundary","Excluded"));
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
+  }
+  //-Hydromechanical / u-pw configuration.
+  Log->Print(fun::VarStr("HydromechCoupling",HydromechCoupling? "Enabled": "Disabled"));
+  if(HydromechCoupling){
+    const string ppmodel=(PorePressureModel==1? "PR explicit pore-pressure-rate": (PorePressureModel==2? "PPE pressure Poisson equation": "None"));
+    const string ppinit=(PorePressureInit==1? "Hydrostatic": (PorePressureInit==2? "FromFile": "Zero"));
+    Log->Print(fun::VarStr("  PorePressureModel",ppmodel));
+    Log->Print(fun::VarStr("  PorePressureInit",ppinit));
+    Log->Print(fun::VarStr("  Porosity0",Porosity0));
+    Log->Print(fun::VarStr("  HydraulicConductivity",HydraulicConductivity));
+    Log->Print(fun::VarStr("  WaterBulkModulus",WaterBulkModulus));
+    Log->Print(fun::VarStr("  WaterDensity",WaterDensity));
+    Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
+    Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
+    Log->Print(fun::VarStr("  SavePorePressure",SavePorePressure));
+    ConfigInfo=ConfigInfo+sep+fun::PrintStr("Hydromech(PP%d)",PorePressureModel);
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));

@@ -197,6 +197,16 @@ protected:
   float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
+  bool HydromechCoupling;       ///<Hydromechanical coupling switch. 0:None, 1:Enable (default=0).
+  int PorePressureModel;        ///<Pore pressure model. 0:None, 1:PR, 2:PPE placeholder (default=0).
+  int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile (default=0).
+  float Porosity0;              ///<Initial porosity for hydromechanical model.
+  float HydraulicConductivity;  ///<Hydraulic conductivity k [m/s].
+  float WaterBulkModulus;       ///<Water bulk modulus Kw [Pa].
+  float WaterDensity;           ///<Water density rho_w [kg/m3].
+  float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
+  bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
+  bool SavePorePressure;        ///<Save pore pressure field. 0:off, 1:on (default=0).
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).

@@ -91,6 +91,7 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   //======
+  PorePressc=NULL;
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
@@ -147,6 +148,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
+  PorePressc=NULL;
 }
 
 //==============================================================================
@@ -176,6 +178,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   //======
+  if(HydromechCoupling || SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1); //-porepress
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
@@ -226,6 +229,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
   tsymatrix3f  *sigmam1   =SaveArrayCpu(Np,SigmaM1c);
   float        *kplastic  =SaveArrayCpu(Np,Kplasticc);
+  float        *porepress =SaveArrayCpu(Np,PorePressc);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -244,6 +248,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(SigmaPrec);
   ArraysCpu->Free(SigmaM1c);
   ArraysCpu->Free(Kplasticc);
+  ArraysCpu->Free(PorePressc);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -266,6 +271,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
   if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticc = ArraysCpu->ReserveFloat();
+  if(porepress)  PorePressc = ArraysCpu->ReserveFloat();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -284,6 +290,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,sigmapre,SigmaPrec);
   RestoreArrayCpu(Np,sigmam1,SigmaM1c);
   RestoreArrayCpu(Np,kplastic,Kplasticc);
+  RestoreArrayCpu(Np,porepress,PorePressc);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -329,6 +336,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   Sigmac=ArraysCpu->ReserveSymatrix3f();
   Kplasticc=ArraysCpu->ReserveFloat();
   //=====
+  if(HydromechCoupling || SavePorePressure)PorePressc=ArraysCpu->ReserveFloat();
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
   SigmaM1c=ArraysCpu->ReserveSymatrix3f();}//mdbr
   if(TVisco==VISCO_LaminarSPS)SpsTauc=ArraysCpu->ReserveSymatrix3f();
