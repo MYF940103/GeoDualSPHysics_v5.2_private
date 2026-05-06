@@ -215,7 +215,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);

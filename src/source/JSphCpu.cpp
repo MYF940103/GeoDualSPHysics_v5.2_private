@@ -179,6 +179,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   //======
   if(HydromechCoupling || SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1); //-porepress
+  if(SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1); //-porepress output
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
@@ -379,7 +380,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -411,6 +412,9 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
           kplastic[p]=kplas;
       }  
   }
+  if(porepress){
+      for (unsigned p=0;p<n;p++)porepress[p]=PorePressc[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -433,6 +437,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         sigmakk[pdel]=sigmakk[p];
         sigmaij[pdel]=sigmaij[p];
         kplastic[pdel]=kplastic[p];
+        if(porepress)porepress[pdel]=porepress[p];
         //====
         code2[pdel]=code2[p];
       }

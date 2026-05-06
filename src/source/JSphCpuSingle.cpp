@@ -1203,6 +1203,7 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmakk=NULL;
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
+  float *porepress=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1214,8 +1215,9 @@ void JSphCpuSingle::SaveData(){
 	sigmakk=ArraysCpu->ReserveFloat3();
 	sigmaij=ArraysCpu->ReserveFloat3();
 	kplastic=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && PorePressc)porepress=ArraysCpu->ReserveFloat();
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1239,6 +1241,7 @@ void JSphCpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
+  if(SavePorePressure && porepress)arrays.AddArray("PorePress",npsave,porepress);
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1250,6 +1253,7 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(sigmakk);
   ArraysCpu->Free(sigmaij);
   ArraysCpu->Free(kplastic);
+  ArraysCpu->Free(porepress);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.
