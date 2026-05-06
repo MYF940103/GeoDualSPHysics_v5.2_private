@@ -129,6 +129,19 @@ void JSphCpuSingle::ConfigDomain(){
     if(PorePressureInit==2)Log->PrintWarning("PorePressureInit=FromFile is not implemented in Phase 2. Phase 2 uses zero pore pressure.");
     Log->Printf("Passive pore pressure field initialised on CPU: PorePress=0 for %u material particles.",Np-Npb);
   }
+  if(PorePressRatec){
+    memset(PorePressRatec,0,sizeof(float)*Np);
+    Log->Printf("Passive pore pressure rate field initialised on CPU: PorePressRate=0 for %u material particles.",Np-Npb);
+  }
+  if(HydromechCoupling && PorePressureModel==2)Log->PrintWarning("PorePressureModel=PPE is not implemented in Phase 3d. PorePressRate remains disabled.");
+  if(DivVelc){
+    memset(DivVelc,0,sizeof(float)*Np);
+    Log->Printf("Hydromechanical diagnostic field initialised on CPU: DivVel=0 for %u material particles.",Np-Npb);
+  }
+  if(LapPorePressc){
+    memset(LapPorePressc,0,sizeof(float)*Np);
+    Log->Printf("Hydromechanical diagnostic field initialised on CPU: LapPorePress=0 for %u material particles.",Np-Npb);
+  }
   //-Computes radius of floating bodies.
   if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
   //-Configures floating motion data storage with high frequency. //<vs_ftmottionsv>  
@@ -289,7 +302,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,float *porepressrate,float *divvel,float *lapporepress,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -307,6 +320,9 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
     velrhop[pnew]=velrhop[pcopy];
     sigma[pnew]=sigma[pcopy];//mdbr
     if(porepress)porepress[pnew]=porepress[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(divvel)divvel[pnew]=divvel[pcopy];
+    if(lapporepress)lapporepress[pnew]=lapporepress[pcopy];
     velrhopm1[pnew]=velrhopm1[pcopy];
     sigmam1[pnew]=sigmam1[pcopy];//mdbr
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -323,7 +339,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,float *porepressrate,float *divvel,float *lapporepress,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -341,6 +357,9 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     velrhop[pnew]=velrhop[pcopy];
     sigma[pnew]=sigma[pcopy];//mdbr
     if(porepress)porepress[pnew]=porepress[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(divvel)divvel[pnew]=divvel[pcopy];
+    if(lapporepress)lapporepress[pnew]=lapporepress[pcopy];
     if(pospre)pospre[pnew]=pospre[pcopy];
     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -437,10 +456,10 @@ void JSphCpuSingle::RunPeriodic(){
             run=false;
             //-Create new duplicate periodic particles in the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,VelrhopM1c,Sigmac,SigmaM1c);
+            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,VelrhopM1c,Sigmac,SigmaM1c);
             if(TStep==STEP_Symplectic){
               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
-              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec);
+              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec);
             }
             if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc);
 
@@ -484,6 +503,9 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   CellDivSingle->SortArray(Sigmac);
   CellDivSingle->SortArray(Kplasticc);
   if(PorePressc)CellDivSingle->SortArray(PorePressc);
+  if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
+  if(DivVelc)CellDivSingle->SortArray(DivVelc);
+  if(LapPorePressc)CellDivSingle->SortArray(LapPorePressc);
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
@@ -591,6 +613,9 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   StInterResultc res;
   res.viscdt=0;
   JSphCpu::Interaction_Forces_ct(parms,res);
+  if(HydromechCoupling && DivVelc)ComputeHydroDivVel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,DivVelc);
+  if(HydromechCoupling && PorePressureModel==1 && DivVelc && PorePressRatec)ComputeHydroPorePressRateDivVel(Np-Npb,Npb,Codec,DivVelc,PorePressRatec);
+  if(HydromechCoupling && PorePressc && LapPorePressc)ComputeHydroLapPorePress(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,LapPorePressc);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
   if(Simulate2D){
@@ -1204,6 +1229,9 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
   float *porepress=NULL;
+  float *porepressrate=NULL;
+  float *divvel=NULL;
+  float *lapporepress=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1216,8 +1244,11 @@ void JSphCpuSingle::SaveData(){
 	sigmaij=ArraysCpu->ReserveFloat3();
 	kplastic=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && PorePressc)porepress=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && PorePressRatec)porepressrate=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && DivVelc)divvel=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && LapPorePressc)lapporepress=ArraysCpu->ReserveFloat();
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1242,6 +1273,9 @@ void JSphCpuSingle::SaveData(){
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
   if(SavePorePressure && porepress)arrays.AddArray("PorePress",npsave,porepress);
+  if(SavePorePressure && porepressrate)arrays.AddArray("PorePressRate",npsave,porepressrate);
+  if(SavePorePressure && divvel)arrays.AddArray("DivVel",npsave,divvel);
+  if(SavePorePressure && lapporepress)arrays.AddArray("LapPorePress",npsave,lapporepress);
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1254,6 +1288,9 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(sigmaij);
   ArraysCpu->Free(kplastic);
   ArraysCpu->Free(porepress);
+  ArraysCpu->Free(porepressrate);
+  ArraysCpu->Free(divvel);
+  ArraysCpu->Free(lapporepress);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.

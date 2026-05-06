@@ -142,7 +142,10 @@ protected:
   tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
   //===============  
-  float* PorePressc;  ///<Passive pore pressure field for CPU hydromechanical prototype.
+  float* PorePressc;      ///<Passive pore pressure field for CPU hydromechanical prototype.
+  float* PorePressRatec;  ///<Passive pore pressure rate field for CPU hydromechanical prototype.
+  float* DivVelc;         ///<Skeleton velocity divergence diagnostic field for CPU hydromechanical prototype.
+  float* LapPorePressc;   ///<Pore-pressure Laplacian diagnostic field for CPU hydromechanical prototype.
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
 
@@ -215,7 +218,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -259,6 +262,16 @@ protected:
   template<TpKernel tker,TpFtMode ftmode> void Interaction_Forces_ct3(const stinterparmsc &t,StInterResultc &res)const;
   template<TpKernel tker> void Interaction_Forces_ct2(const stinterparmsc &t,StInterResultc &res)const;
   void Interaction_Forces_ct(const stinterparmsc &t,StInterResultc &res)const;
+  template<TpKernel tker> void ComputeHydroDivVelT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *divvel)const;
+  void ComputeHydroDivVel(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *divvel)const;
+  void ComputeHydroPorePressRateDivVel(unsigned n,unsigned pini
+    ,const typecode *code,const float *divvel,float *porepressrate)const;
+  template<TpKernel tker> void ComputeHydroLapPorePressT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const;
+  void ComputeHydroLapPorePress(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const;
 
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
