@@ -91,7 +91,7 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   //======
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL;
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
@@ -148,7 +148,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL;
 }
 
 //==============================================================================
@@ -178,8 +178,8 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   //======
-  if(HydromechCoupling || SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepress,porepressrate,divvel,lapporepress
-  if(SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepress,porepressrate,divvel,lapporepress output
+  if(HydromechCoupling || SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5); //-porepress,porepressrate,divvel,lapporepress,lapz
+  if(SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5); //-porepress,porepressrate,divvel,lapporepress,lapz output
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
@@ -234,6 +234,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
   float        *divvel    =SaveArrayCpu(Np,DivVelc);
   float        *lapporepress=SaveArrayCpu(Np,LapPorePressc);
+  float        *lapz      =SaveArrayCpu(Np,LapZc);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -256,6 +257,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(PorePressRatec);
   ArraysCpu->Free(DivVelc);
   ArraysCpu->Free(LapPorePressc);
+  ArraysCpu->Free(LapZc);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -282,6 +284,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
   if(divvel)        DivVelc = ArraysCpu->ReserveFloat();
   if(lapporepress)  LapPorePressc = ArraysCpu->ReserveFloat();
+  if(lapz)          LapZc = ArraysCpu->ReserveFloat();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -304,6 +307,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
   RestoreArrayCpu(Np,divvel,DivVelc);
   RestoreArrayCpu(Np,lapporepress,LapPorePressc);
+  RestoreArrayCpu(Np,lapz,LapZc);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -354,6 +358,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
     PorePressRatec=ArraysCpu->ReserveFloat();
     DivVelc=ArraysCpu->ReserveFloat();
     LapPorePressc=ArraysCpu->ReserveFloat();
+    LapZc=ArraysCpu->ReserveFloat();
   }
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
   SigmaM1c=ArraysCpu->ReserveSymatrix3f();}//mdbr
@@ -397,7 +402,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress,float *porepressrate,float *divvel,float *lapporepress)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -441,6 +446,9 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(lapporepress){
       for (unsigned p=0;p<n;p++)lapporepress[p]=LapPorePressc[p+pini];
   }
+  if(lapz){
+      for (unsigned p=0;p<n;p++)lapz[p]=LapZc[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -467,6 +475,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(porepressrate)porepressrate[pdel]=porepressrate[p];
         if(divvel)divvel[pdel]=divvel[p];
         if(lapporepress)lapporepress[pdel]=lapporepress[p];
+        if(lapz)lapz[pdel]=lapz[p];
         //====
         code2[pdel]=code2[p];
       }
@@ -1465,23 +1474,27 @@ void JSphCpu::ComputeHydroDivVel(unsigned n,unsigned pini
 }
 
 //==============================================================================
-/// Computes PR pore-pressure-rate contribution from skeleton velocity divergence.
+/// Computes PR pore-pressure-rate contribution from velocity divergence and pore-pressure diffusion.
 //==============================================================================
-void JSphCpu::ComputeHydroPorePressRateDivVel(unsigned n,unsigned pini
-  ,const typecode *code,const float *divvel,float *porepressrate)const
+void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
+  ,const typecode *code,const float *divvel,const float *lapporepress,float *porepressrate)const
 {
   if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1 for PR pore-pressure-rate update.");
   if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero for PR pore-pressure-rate update.");
+  if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for PR pore-pressure-rate update.");
+  const float gmag=sqrt(Gravity.x*Gravity.x+Gravity.y*Gravity.y+Gravity.z*Gravity.z);
+  if(HydraulicConductivity>0.f && gmag<=0.f)Run_Exceptioon("Gravity magnitude must be greater than zero when HydraulicConductivity is enabled.");
   const unsigned np=pini+n;
   memset(porepressrate,0,sizeof(float)*np);
   const float factor=WaterBulkModulus/Porosity0;
+  const float difcoef=(HydraulicConductivity>0.f? HydraulicConductivity/(WaterDensity*gmag): 0.f);
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int cp=0;cp<nint;cp++){
     const unsigned p1=pini+unsigned(cp);
-    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*divvel[p1];
+    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(divvel[p1]+difcoef*lapporepress[p1]);
   }
 }
 
@@ -1541,6 +1554,70 @@ void JSphCpu::ComputeHydroLapPorePress(unsigned n,unsigned pini
 {
        if(TKernel==KERNEL_Wendland)ComputeHydroLapPorePressT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,lapporepress);
   else if(TKernel==KERNEL_Cubic)   ComputeHydroLapPorePressT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,lapporepress);
+}
+
+//==============================================================================
+/// Computes diagnostic elevation-head Laplacian for material particles.
+//==============================================================================
+template<TpKernel tker> void JSphCpu::ComputeHydroLapZT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const
+{
+  const unsigned np=pini+n;
+  memset(lapz,0,sizeof(float)*np);
+  const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+  if(gmag<=0)return;
+  const double invg=1./gmag;
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    if(!CODE_IsFluid(code[p1]))continue;
+
+    float lapp1=0;
+    const tdouble3 posp1=pos[p1];
+    const double zp1=-(double(posp1.x)*Gravity.x+double(posp1.y)*Gravity.y+double(posp1.z)*Gravity.z)*invg;
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const tdouble3 posp2=pos[p2];
+        const float drx=float(posp1.x-posp2.x);
+              float dry=float(posp1.y-posp2.y);
+        const double posp2y=(rsym? -posp2.y: posp2.y); //<vs_syymmetry>
+        if(rsym)dry=float(posp1.y+posp2.y);            //<vs_syymmetry>
+        const float drz=float(posp1.z-posp2.z);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const float dotrgrad=drx*frx+dry*fry+drz*frz;
+          const float volp2=MassFluid/velrhop[p2].w;
+          const double zp2=-(double(posp2.x)*Gravity.x+posp2y*Gravity.y+double(posp2.z)*Gravity.z)*invg;
+          lapp1+=2.f*volp2*float(zp1-zp2)*dotrgrad/(rr2+ALMOSTZERO);
+          rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+          if(rsym)p2--;                                             //<vs_syymmetry>
+        }
+        else rsym=false;                                            //<vs_syymmetry>
+      }
+    }
+    lapz[p1]=lapp1;
+  }
+}
+
+//==============================================================================
+/// Computes diagnostic elevation-head Laplacian for material particles.
+//==============================================================================
+void JSphCpu::ComputeHydroLapZ(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const
+{
+       if(TKernel==KERNEL_Wendland)ComputeHydroLapZT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,lapz);
+  else if(TKernel==KERNEL_Cubic)   ComputeHydroLapZT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,lapz);
 }
 
 //==============================================================================

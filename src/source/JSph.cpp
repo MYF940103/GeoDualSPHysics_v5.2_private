@@ -189,6 +189,7 @@ void JSph::InitVars(){
   HydromechCoupling=false;
   PorePressureModel=0;
   PorePressureInit=0;
+  PorePressureWaterLevel=0.f;
   Porosity0=0.3f;
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
@@ -674,6 +675,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 2:  PorePressureInit=2;  break;
     default: Run_Exceptioon("PorePressureInit mode is not valid.");
   }
+  PorePressureWaterLevel=eparms.GetValueFloat("PorePressureWaterLevel",true,0.f);
   Porosity0=eparms.GetValueFloat("Porosity0",true,0.3f);
   HydraulicConductivity=eparms.GetValueFloat("HydraulicConductivity",true,0.f);
   WaterBulkModulus=eparms.GetValueFloat("WaterBulkModulus",true,2e8f);
@@ -1617,6 +1619,7 @@ void JSph::VisuConfig(){
     const string ppinit=(PorePressureInit==1? "Hydrostatic": (PorePressureInit==2? "FromFile": "Zero"));
     Log->Print(fun::VarStr("  PorePressureModel",ppmodel));
     Log->Print(fun::VarStr("  PorePressureInit",ppinit));
+    Log->Print(fun::VarStr("  PorePressureWaterLevel",PorePressureWaterLevel));
     Log->Print(fun::VarStr("  Porosity0",Porosity0));
     Log->Print(fun::VarStr("  HydraulicConductivity",HydraulicConductivity));
     Log->Print(fun::VarStr("  WaterBulkModulus",WaterBulkModulus));

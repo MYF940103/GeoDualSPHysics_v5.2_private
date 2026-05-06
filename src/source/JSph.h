@@ -200,6 +200,7 @@ protected:
   bool HydromechCoupling;       ///<Hydromechanical coupling switch. 0:None, 1:Enable (default=0).
   int PorePressureModel;        ///<Pore pressure model. 0:None, 1:PR, 2:PPE placeholder (default=0).
   int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile (default=0).
+  float PorePressureWaterLevel; ///<Water level for hydrostatic pore-pressure initialization.
   float Porosity0;              ///<Initial porosity for hydromechanical model.
   float HydraulicConductivity;  ///<Hydraulic conductivity k [m/s].
   float WaterBulkModulus;       ///<Water bulk modulus Kw [Pa].
