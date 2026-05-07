@@ -202,7 +202,7 @@ protected:
   int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile, 3:Hydrostatic+analytical excess (default=0).
   float PorePressureWaterLevel; ///<Water level for hydrostatic pore-pressure initialization.
   float PorePressureExcessAmp;  ///<Amplitude of analytical excess pore pressure [Pa].
-  int PorePressureAnalyticalProfile; ///<Analytical excess pore pressure profile. 1:sin(pi*eta), 2:cos(pi*eta/2).
+  int PorePressureAnalyticalProfile; ///<Analytical excess pore pressure profile. 1:sin(pi*eta), 2:cos(pi*eta/2), 3:uniform.
   bool PorePressureTopDrained;  ///<Top drained boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
@@ -214,6 +214,10 @@ protected:
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   bool SavePorePressure;        ///<Save pore pressure field. 0:off, 1:on (default=0).
+  tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
+  bool TopLoadEnabled;          ///<Enable top uniform load. 0:off, 1:on (default=0).
+  float TopLoad;                ///<Uniform vertical load applied to top material layer [Pa].
+  float TopLoadThickness;       ///<Top loaded layer thickness. If <=0, KernelH is used.
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).
@@ -515,6 +519,11 @@ protected:
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop)const;
   void SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
   void SaveData(unsigned npok,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
+
+  bool UseCustomHydraulicGravity()const;
+  tfloat3 GetHydraulicGravity()const;
+  double GetHydraulicGmag()const;
+  double GetHydraulicElevation(const tdouble3 &pos)const;
 
   void CheckTermination();
   void SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const;

@@ -181,6 +181,7 @@ protected:
   bool PorePressureUpdateDtPrint;  ///<True when pore-pressure update timestep warning has been printed.
   bool PorePressureTopDrainedStepPrint; ///<True when top drained post-update stats have been printed.
   bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
+  bool TopLoadStepPrint;          ///<True when top load application stats have been printed.
 
   //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
   float *Pressc;       ///<Pressure computed starting from density for interaction. Press[]=fsph::ComputePress(Rhop,CSP)
@@ -296,6 +297,8 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
   void ComputePorePressureAccel(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
+  void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,tfloat3 *ace)const;
+  unsigned ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,const char *stage,bool printlog)const;
 
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold

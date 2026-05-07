@@ -203,6 +203,10 @@ void JSph::InitVars(){
   PorePressureDtSafety=0.1f;
   PorePressureFeedback=false;
   SavePorePressure=false;
+  HydraulicGravity=TFloat3(0);
+  TopLoadEnabled=false;
+  TopLoad=0.f;
+  TopLoadThickness=0.f;
   MdbcCorrector=false;
   MdbcFastSingle=true;
   MdbcThreshold=0;
@@ -687,6 +691,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   switch(eparms.GetValueInt("PorePressureAnalyticalProfile",true,1)){
     case 1:  PorePressureAnalyticalProfile=1;  break;
     case 2:  PorePressureAnalyticalProfile=2;  break;
+    case 3:  PorePressureAnalyticalProfile=3;  break;
     default: Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
   }
   switch(eparms.GetValueInt("PorePressureTopDrained",true,0)){
@@ -716,11 +721,27 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  SavePorePressure=true;   break;
     default: Run_Exceptioon("SavePorePressure mode is not valid.");
   }
+  HydraulicGravity.x=eparms.GetValueFloat("HydraulicGravityX",true,0.f);
+  HydraulicGravity.y=eparms.GetValueFloat("HydraulicGravityY",true,0.f);
+  HydraulicGravity.z=eparms.GetValueFloat("HydraulicGravityZ",true,0.f);
+  switch(eparms.GetValueInt("TopLoadEnabled",true,0)){
+    case 0:  TopLoadEnabled=false;  break;
+    case 1:  TopLoadEnabled=true;   break;
+    default: Run_Exceptioon("TopLoadEnabled mode is not valid.");
+  }
+  TopLoad=eparms.GetValueFloat("TopLoad",true,0.f);
+  TopLoadThickness=eparms.GetValueFloat("TopLoadThickness",true,0.f);
   if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1.");
   if(HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be greater than or equal to zero.");
   if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
+  if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
+  if(HydromechCoupling){
+    const bool needsg=(HydraulicConductivity>0.f || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
+    if(needsg && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for the enabled hydromechanical features. Set body Gravity or HydraulicGravityX/Y/Z.");
+  }
+  if(TopLoadEnabled && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for TopLoad. Set body Gravity or HydraulicGravityX/Y/Z.");
   //-Boundary configuration.
   switch(eparms.GetValueInt("Boundary",true,1)){
     case 1:  TBoundary=BC_DBC;      break;
@@ -1647,6 +1668,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureWaterLevel",PorePressureWaterLevel));
     Log->Print(fun::VarStr("  PorePressureExcessAmp",PorePressureExcessAmp));
     Log->Print(fun::VarStr("  PorePressureAnalyticalProfile",PorePressureAnalyticalProfile));
+    Log->Print("  PorePressureAnalyticalProfile options: 1:sin(pi*eta), 2:cos(pi*eta/2), 3:uniform excess");
     Log->Print(fun::VarStr("  PorePressureTopDrained",PorePressureTopDrained));
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
@@ -1658,7 +1680,18 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  SavePorePressure",SavePorePressure));
+    Log->Print(fun::VarStr("  BodyGravity",Gravity));
+    Log->Print(fun::VarStr("  HydraulicGravityMode",UseCustomHydraulicGravity()? "Custom": "BodyGravityFallback"));
+    Log->Print(fun::VarStr("  HydraulicGravity",GetHydraulicGravity()));
+    Log->Print(fun::VarStr("  HydraulicGmag",GetHydraulicGmag()));
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("Hydromech(PP%d)",PorePressureModel);
+  }
+  Log->Print(fun::VarStr("TopLoadEnabled",TopLoadEnabled));
+  if(TopLoadEnabled){
+    Log->Print(fun::VarStr("  TopLoad",TopLoad));
+    Log->Print(fun::VarStr("  TopLoadThickness",TopLoadThickness));
+    Log->Print(fun::VarStr("  TopLoadDirection","positive along -HydraulicGravityUnit"));
+    ConfigInfo=ConfigInfo+sep+"TopLoad";
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
@@ -2731,6 +2764,38 @@ void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
   arrays.AddArray("Idp" ,np,idp);
   arrays.AddArray("Vel" ,np,vel);
   arrays.AddArray("Rhop",np,rhop);
+}
+
+//==============================================================================
+/// Returns true when hydraulic gravity uses the XML override vector.
+//==============================================================================
+bool JSph::UseCustomHydraulicGravity()const{
+  return(HydraulicGravity.x!=0.f || HydraulicGravity.y!=0.f || HydraulicGravity.z!=0.f);
+}
+
+//==============================================================================
+/// Returns the effective hydraulic gravity vector.
+//==============================================================================
+tfloat3 JSph::GetHydraulicGravity()const{
+  return(UseCustomHydraulicGravity()? HydraulicGravity: Gravity);
+}
+
+//==============================================================================
+/// Returns the magnitude of the effective hydraulic gravity vector.
+//==============================================================================
+double JSph::GetHydraulicGmag()const{
+  const tfloat3 hg=GetHydraulicGravity();
+  return(sqrt(double(hg.x)*double(hg.x)+double(hg.y)*double(hg.y)+double(hg.z)*double(hg.z)));
+}
+
+//==============================================================================
+/// Returns elevation coordinate along the opposite direction of hydraulic gravity.
+//==============================================================================
+double JSph::GetHydraulicElevation(const tdouble3 &pos)const{
+  const tfloat3 hg=GetHydraulicGravity();
+  const double gmag=sqrt(double(hg.x)*double(hg.x)+double(hg.y)*double(hg.y)+double(hg.z)*double(hg.z));
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to compute hydraulic elevation.");
+  return(-(pos.x*double(hg.x)+pos.y*double(hg.y)+pos.z*double(hg.z))/gmag);
 }
 
 //==============================================================================

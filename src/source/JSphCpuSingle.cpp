@@ -193,6 +193,8 @@ void JSphCpuSingle::ConfigDomain(){
     memset(PorePressureAcec,0,sizeof(tfloat3)*Np);
     Log->Printf("Pore-pressure acceleration diagnostic field initialised on CPU: PorePressureAccel=(0,0,0) for %u material particles.",Np-Npb);
   }
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback)
+    Log->Print("Pore-pressure feedback to momentum: enabled on CPU.");
   //-Computes radius of floating bodies.
   if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
   //-Configures floating motion data storage with high frequency. //<vs_ftmottionsv>  
@@ -206,9 +208,8 @@ void JSphCpuSingle::ConfigDomain(){
 
   if(PorePressc && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
     if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for pore pressure initialization.");
-    const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
-    if(gmag<=0)Run_Exceptioon("Gravity magnitude must be greater than zero for pore pressure initialization.");
-    const double invg=1./gmag;
+    const double gmag=GetHydraulicGmag();
+    if(gmag<=0)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore pressure initialization.");
     const double waterlevel=PorePressureWaterLevel;
     unsigned npmat=0,npnonzero=0;
     double zmin=DBL_MAX,zmax=-DBL_MAX;
@@ -216,7 +217,7 @@ void JSphCpuSingle::ConfigDomain(){
       if(CODE_IsFluid(Codec[p])){
         npmat++;
         const tdouble3 ps=Posc[p];
-        const double z=-(double(ps.x)*Gravity.x+double(ps.y)*Gravity.y+double(ps.z)*Gravity.z)*invg;
+        const double z=GetHydraulicElevation(ps);
         zmin=min(zmin,z);
         zmax=max(zmax,z);
       }
@@ -230,7 +231,7 @@ void JSphCpuSingle::ConfigDomain(){
     for(unsigned p=0;p<Np;p++){
       if(CODE_IsFluid(Codec[p])){
         const tdouble3 ps=Posc[p];
-        const double z=-(double(ps.x)*Gravity.x+double(ps.y)*Gravity.y+double(ps.z)*Gravity.z)*invg;
+        const double z=GetHydraulicElevation(ps);
         const double depth=waterlevel-z;
         const double hydrostatic=(depth>0? double(WaterDensity)*gmag*depth: 0.);
         double excess=0.;
@@ -239,6 +240,7 @@ void JSphCpuSingle::ConfigDomain(){
           eta=max(0.,min(1.,eta));
           if(PorePressureAnalyticalProfile==1)excess=double(PorePressureExcessAmp)*sin(PI*eta);
           else if(PorePressureAnalyticalProfile==2)excess=double(PorePressureExcessAmp)*cos(PIHALF*eta);
+          else if(PorePressureAnalyticalProfile==3)excess=double(PorePressureExcessAmp);
           else Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
         }
         const double pw=hydrostatic+excess;
@@ -264,6 +266,7 @@ void JSphCpuSingle::ConfigDomain(){
     else{
       Log->Printf("Analytical excess pore pressure field initialised on CPU: WaterLevel=%g, material elevation range=[%g,%g], ExcessAmp=%g Pa, Profile=%d, hydrostatic range=[%g,%g] Pa, excess range=[%g,%g] Pa, PorePress range=[%g,%g] Pa, nonzero=%u/%u."
         ,PorePressureWaterLevel,zmin,zmax,PorePressureExcessAmp,PorePressureAnalyticalProfile,hydromin,hydromax,excessmin,excessmax,pwmin,pwmax,npnonzero,npmat);
+      if(PorePressureAnalyticalProfile==3)Log->Print("Analytical excess profile 3: uniform excess pressure.");
       if(!PorePressureExcessAmp)Log->PrintWarning("Analytical excess pore pressure amplitude is zero.");
       if(npmat && PorePressureWaterLevel<zmax)Log->PrintWarning(fun::PrintStr("Analytical excess initialization is being used with a partial water-level field. WaterLevel=%g is below material max elevation=%g; this is not the recommended saturated PR verification setup.",PorePressureWaterLevel,zmax));
     }
@@ -746,6 +749,11 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(HydromechCoupling && PorePressc && LapPorePressc)ComputeHydroLapPorePress(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,LapPorePressc);
   if(HydromechCoupling && LapZc)ComputeHydroLapZ(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,LapZc);
   if(HydromechCoupling && PorePressc && PorePressureAcec)ComputePorePressureAccel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAcec);
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && PorePressureAcec && Acec)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,PorePressureAcec,Acec);
+  if(TopLoadEnabled && Acec){
+    ApplyTopLoad(Np-Npb,Npb,Posc,Velrhopc,Codec,Acec,"interaction",!TopLoadStepPrint);
+    TopLoadStepPrint=true;
+  }
   if(HydromechCoupling && PorePressureModel==1 && DivVelc && LapPorePressc && LapZc && PorePressRatec)ComputeHydroPorePressRatePR(Np-Npb,Npb,Codec,DivVelc,LapPorePressc,LapZc,PorePressRatec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
@@ -1408,14 +1416,13 @@ void JSphCpuSingle::SaveData(){
     unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
-      const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
-      if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero to output ExcessPorePress.");
-      const double invg=1./gmag;
+      const double gmag=GetHydraulicGmag();
+      if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to output ExcessPorePress.");
       const double rhog=double(WaterDensity)*gmag;
       for(unsigned p=0;p<npsave;p++){
         if(idp[p]>=CaseNbound){
           const tdouble3 ps=pos[p];
-          const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+          const double z=GetHydraulicElevation(ps);
           const double depth=double(PorePressureWaterLevel)-z;
           const double hydro=(depth>0.? rhog*depth: 0.);
           excessporepress[p]=porepress[p]-hydro;
