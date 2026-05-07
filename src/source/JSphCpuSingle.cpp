@@ -123,6 +123,44 @@ void JSphCpuSingle::ConfigDomain(){
   //========= mdbr
   memset(Sigmac, 0, sizeof(tsymatrix3f)*Np); 
   memset(Kplasticc, 0, sizeof(float)*Np);
+  if(PartBegin){
+    if(PartsLoaded->GetRestartSoilFields()){
+      const unsigned *ridp=PartsLoaded->GetIdp();
+      const tfloat3 *rsigkk=PartsLoaded->GetSigmaKk();
+      const tfloat3 *rsigij=PartsLoaded->GetSigmaIj();
+      const float *rkplastic=PartsLoaded->GetKplastic();
+      unsigned maxid=0;
+      for(unsigned p=0;p<Np;p++){
+        if(Idpc[p]>maxid)maxid=Idpc[p];
+        if(ridp[p]>maxid)maxid=ridp[p];
+      }
+      int *idmap=new int[maxid+1];
+      for(unsigned p=0;p<=maxid;p++)idmap[p]=-1;
+      for(unsigned p=0;p<Np;p++)idmap[ridp[p]]=int(p);
+      unsigned nrestored=0,nmissing=0;
+      for(unsigned p=0;p<Np;p++){
+        const unsigned id=Idpc[p];
+        const int pr=(id<=maxid? idmap[id]: -1);
+        if(pr>=0){
+          const tfloat3 skk=rsigkk[pr];
+          const tfloat3 sij=rsigij[pr];
+          Sigmac[p].xx=skk.x;
+          Sigmac[p].yy=skk.y;
+          Sigmac[p].zz=skk.z;
+          Sigmac[p].xy=sij.x;
+          Sigmac[p].yz=sij.y;
+          Sigmac[p].xz=sij.z;
+          Kplasticc[p]=rkplastic[pr];
+          nrestored++;
+        }
+        else nmissing++;
+      }
+      delete[] idmap; idmap=NULL;
+      Log->Printf("Restart soil state restored from PART_%04u: Sigma_kk, Sigma_ij and Kplastic restored for %u/%u particles using Idp mapping.",PartBegin,nrestored,Np);
+      if(nmissing)Log->PrintWarning(fun::PrintStr("Restart soil state was not restored for %u particles because their Idp was not found in the restart PART.",nmissing));
+    }
+    else Log->PrintWarning("Restart stress/plastic fields not found; Sigmac/Kplasticc initialized to zero. This restart is not stress-consistent for GeoDualSPHysics soil simulations.");
+  }
   //=========
   if((HydromechCoupling || SavePorePressure) && (!PorePressc || !PorePressRatec || !DivVelc || !LapPorePressc || !LapZc)){
     Run_Exceptioon("Hydromechanical CPU arrays were not fully allocated.");
@@ -226,6 +264,10 @@ void JSphCpuSingle::ConfigDomain(){
       if(npmat && PorePressureWaterLevel<zmax)Log->PrintWarning(fun::PrintStr("Analytical excess initialization is being used with a partial water-level field. WaterLevel=%g is below material max elevation=%g; this is not the recommended saturated PR verification setup.",PorePressureWaterLevel,zmax));
     }
   }
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureTopDrained && PorePressc)
+    ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,"initialization",true);
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureBottomNoFlux && PorePressc)
+    ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"initialization",true);
 
   //-Load normals for boundary particles (fixed and moving).
   if(UseNormals)LoadBoundNormals(Np,Npb,Idpc,Codec,BoundNormalc);
@@ -234,19 +276,22 @@ void JSphCpuSingle::ConfigDomain(){
   RunInitialize(Np,Npb,Posc,Idpc,Codec,Velrhopc,BoundNormalc);
   if(UseNormals)ConfigBoundNormals(Np,Npb,Posc,Idpc,BoundNormalc);
   //-Configure initial profile----mdbr
-  for (unsigned p = 0; p < Npb; p++) {
-	  Velrhopc[p].w=RhopZero; 	  
+  if(!PartBegin){
+    for (unsigned p = 0; p < Npb; p++) {
+	    Velrhopc[p].w=RhopZero; 	  
+    }
+    for (unsigned p = Npb; p < Np; p++)
+    {
+	    Velrhopc[p].w = RhopZero;
+	  //  if (SolidH != 0) {
+	  //	  Sigmac[p].zz=float(RhopZero*CSP.gravity.z*(SolidH - Posc[p].z));
+	  //  }
+	  //  else { Sigmac[p].zz = 0; }
+	  //  Sigmac[p].xx = float((1. - sin(Phi))*Sigmac[p].zz);
+	  //  Sigmac[p].yy = float((1. - sin(Phi))*Sigmac[p].zz);
+    }
   }
-  for (unsigned p = Npb; p < Np; p++)
-  {
-	  Velrhopc[p].w = RhopZero;
-	//  if (SolidH != 0) {
-	//	  Sigmac[p].zz=float(RhopZero*CSP.gravity.z*(SolidH - Posc[p].z));
-	//  }
-	//  else { Sigmac[p].zz = 0; }
-	//  Sigmac[p].xx = float((1. - sin(Phi))*Sigmac[p].zz);
-	//  Sigmac[p].yy = float((1. - sin(Phi))*Sigmac[p].zz);
-  }
+  else Log->Print("Restart detected: preserving VelRhop.w from PART file instead of resetting RhopZero.");
   //-Creates PartsInit object with initial particle data for automatic configurations.
   CreatePartsInit(Np,Posc,Codec);
 
@@ -838,11 +883,20 @@ void JSphCpuSingle::RunInitialDDTRamp(){
 double JSphCpuSingle::ComputeStep_Ver(){
   Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
   const double dt=DtVariable(true);        //-Calculate new dt.
-  if(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
+  if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
   ComputeVerlet(dt);                       //-Update particles using Verlet.
+  if(hydropressupdate && PorePressureTopDrained){
+    ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureTopDrainedStepPrint);
+    PorePressureTopDrainedStepPrint=true;
+  }
+  if(hydropressupdate && PorePressureBottomNoFlux){
+    ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
+    PorePressureBottomNoFluxStepPrint=true;
+  }
   if(CaseNfloat)RunFloating(dt,false);     //-Control of floating bodies.
   PosInteraction_Forces();                 //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
@@ -875,9 +929,18 @@ double JSphCpuSingle::ComputeStep_Sym(){
   RunCellDivide(true);
   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
-  if(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
+  if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+  if(hydropressupdate && PorePressureTopDrained){
+    ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureTopDrainedStepPrint);
+    PorePressureTopDrainedStepPrint=true;
+  }
+  if(hydropressupdate && PorePressureBottomNoFlux){
+    ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
+    PorePressureBottomNoFluxStepPrint=true;
+  }
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
@@ -1309,6 +1372,7 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
   double *porepress=NULL;
+  double *excessporepress=NULL;
   float *porepressrate=NULL;
   float *divvel=NULL;
   float *lapporepress=NULL;
@@ -1325,6 +1389,7 @@ void JSphCpuSingle::SaveData(){
 	sigmaij=ArraysCpu->ReserveFloat3();
 	kplastic=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && PorePressc)porepress=ArraysCpu->ReserveDouble();
+	if(SavePorePressure && HydromechCoupling && PorePressc)excessporepress=ArraysCpu->ReserveDouble();
 	if(SavePorePressure && PorePressRatec)porepressrate=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && DivVelc)divvel=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && LapPorePressc)lapporepress=ArraysCpu->ReserveFloat();
@@ -1332,6 +1397,22 @@ void JSphCpuSingle::SaveData(){
 	//=========
     unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
+    if(excessporepress){
+      const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+      if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero to output ExcessPorePress.");
+      const double invg=1./gmag;
+      const double rhog=double(WaterDensity)*gmag;
+      for(unsigned p=0;p<npsave;p++){
+        if(idp[p]>=CaseNbound){
+          const tdouble3 ps=pos[p];
+          const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+          const double depth=double(PorePressureWaterLevel)-z;
+          const double hydro=(depth>0.? rhog*depth: 0.);
+          excessporepress[p]=porepress[p]-hydro;
+        }
+        else excessporepress[p]=0.;
+      }
+    }
   }
   //-Gather additional information. | Reune informacion adicional.
   StInfoPartPlus infoplus;
@@ -1355,6 +1436,7 @@ void JSphCpuSingle::SaveData(){
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
   if(SavePorePressure && porepress)arrays.AddArray("PorePress",npsave,porepress);
+  if(SavePorePressure && excessporepress)arrays.AddArray("ExcessPorePress",npsave,excessporepress);
   if(SavePorePressure && porepressrate)arrays.AddArray("PorePressRate",npsave,porepressrate);
   if(SavePorePressure && divvel)arrays.AddArray("DivVel",npsave,divvel);
   if(SavePorePressure && lapporepress)arrays.AddArray("LapPorePress",npsave,lapporepress);
@@ -1371,6 +1453,7 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(sigmaij);
   ArraysCpu->Free(kplastic);
   ArraysCpu->Free(porepress);
+  ArraysCpu->Free(excessporepress);
   ArraysCpu->Free(porepressrate);
   ArraysCpu->Free(divvel);
   ArraysCpu->Free(lapporepress);

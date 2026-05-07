@@ -203,6 +203,10 @@ protected:
   float PorePressureWaterLevel; ///<Water level for hydrostatic pore-pressure initialization.
   float PorePressureExcessAmp;  ///<Amplitude of analytical excess pore pressure [Pa].
   int PorePressureAnalyticalProfile; ///<Analytical excess pore pressure profile. 1:sin(pi*eta), 2:cos(pi*eta/2).
+  bool PorePressureTopDrained;  ///<Top drained boundary for excess pore pressure. 0:off, 1:on.
+  float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
+  bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
+  float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
   float Porosity0;              ///<Initial porosity for hydromechanical model.
   float HydraulicConductivity;  ///<Hydraulic conductivity k [m/s].
   float WaterBulkModulus;       ///<Water bulk modulus Kw [Pa].

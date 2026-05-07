@@ -192,6 +192,10 @@ void JSph::InitVars(){
   PorePressureWaterLevel=0.f;
   PorePressureExcessAmp=0.f;
   PorePressureAnalyticalProfile=1;
+  PorePressureTopDrained=false;
+  PorePressureDrainThickness=0.f;
+  PorePressureBottomNoFlux=false;
+  PorePressureBottomNoFluxThickness=0.f;
   Porosity0=0.3f;
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
@@ -685,6 +689,18 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 2:  PorePressureAnalyticalProfile=2;  break;
     default: Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
   }
+  switch(eparms.GetValueInt("PorePressureTopDrained",true,0)){
+    case 0:  PorePressureTopDrained=false;  break;
+    case 1:  PorePressureTopDrained=true;   break;
+    default: Run_Exceptioon("PorePressureTopDrained mode is not valid.");
+  }
+  PorePressureDrainThickness=eparms.GetValueFloat("PorePressureDrainThickness",true,0.f);
+  switch(eparms.GetValueInt("PorePressureBottomNoFlux",true,0)){
+    case 0:  PorePressureBottomNoFlux=false;  break;
+    case 1:  PorePressureBottomNoFlux=true;   break;
+    default: Run_Exceptioon("PorePressureBottomNoFlux mode is not valid.");
+  }
+  PorePressureBottomNoFluxThickness=eparms.GetValueFloat("PorePressureBottomNoFluxThickness",true,0.f);
   Porosity0=eparms.GetValueFloat("Porosity0",true,0.3f);
   HydraulicConductivity=eparms.GetValueFloat("HydraulicConductivity",true,0.f);
   WaterBulkModulus=eparms.GetValueFloat("WaterBulkModulus",true,2e8f);
@@ -1631,6 +1647,10 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureWaterLevel",PorePressureWaterLevel));
     Log->Print(fun::VarStr("  PorePressureExcessAmp",PorePressureExcessAmp));
     Log->Print(fun::VarStr("  PorePressureAnalyticalProfile",PorePressureAnalyticalProfile));
+    Log->Print(fun::VarStr("  PorePressureTopDrained",PorePressureTopDrained));
+    Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
+    Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
+    Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
     Log->Print(fun::VarStr("  Porosity0",Porosity0));
     Log->Print(fun::VarStr("  HydraulicConductivity",HydraulicConductivity));
     Log->Print(fun::VarStr("  WaterBulkModulus",WaterBulkModulus));

@@ -178,6 +178,8 @@ protected:
   bool PorePressureDtLimitPrint;   ///<True when pore-pressure timestep limiting has been printed.
   bool PorePressureDtFixedPrint;   ///<True when fixed-dt warning has been printed for pore-pressure timestep.
   bool PorePressureUpdateDtPrint;  ///<True when pore-pressure update timestep warning has been printed.
+  bool PorePressureTopDrainedStepPrint; ///<True when top drained post-update stats have been printed.
+  bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
 
   //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
   float *Pressc;       ///<Pressure computed starting from density for interaction. Press[]=fsph::ComputePress(Rhop,CSP)
@@ -277,6 +279,10 @@ protected:
   void ComputeHydroPorePressRatePR(unsigned n,unsigned pini
     ,const typecode *code,const float *divvel,const float *lapporepress,const float *lapz,float *porepressrate)const;
   void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt,double *porepress,const float *porepressrate);
+  unsigned ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+    ,double *porepress,const char *stage,bool printlog);
+  unsigned ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+    ,double *porepress,const char *stage,bool printlog);
   template<TpKernel tker> void ComputeHydroLapPorePressT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const;
   void ComputeHydroLapPorePress(unsigned n,unsigned pini

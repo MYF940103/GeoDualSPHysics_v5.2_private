@@ -102,6 +102,8 @@ void JSphCpu::InitVars(){
   PorePressureDtActive=false;
   PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
   PorePressureUpdateDtPrint=false;
+  PorePressureTopDrainedStepPrint=false;
+  PorePressureBottomNoFluxStepPrint=false;
   RidpMove=NULL; 
   FtRidp=NULL;
   FtoForces=NULL;
@@ -187,7 +189,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz
   }
   if(SavePorePressure){
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,1); //-porepress output
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepress,excessporepress output
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz output
   }
   if(TStep==STEP_Verlet){
@@ -1568,6 +1570,157 @@ void JSphCpu::UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,d
 }
 
 //==============================================================================
+/// Applies a minimal top drained condition for excess pore pressure on material particles.
+//==============================================================================
+unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+  ,double *porepress,const char *stage,bool printlog)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureTopDrained || !porepress)return(0);
+  if(!pos || !code)Run_Exceptioon("Pointers without data for top drained pore-pressure boundary.");
+  const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+  if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero for top drained pore-pressure boundary.");
+  const double invg=1./gmag;
+  const double rhog=double(WaterDensity)*gmag;
+  const double drainthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+  if(drainthick<=0.)Run_Exceptioon("Top drained pore-pressure boundary requires a positive drain thickness or KernelH.");
+
+  unsigned npmat=0;
+  double zmax=-DBL_MAX;
+  double pwbeforemin=DBL_MAX,pwbeforemax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++){
+    if(CODE_IsFluid(code[p])){
+      npmat++;
+      const tdouble3 ps=pos[p];
+      const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+      zmax=max(zmax,z);
+      pwbeforemin=min(pwbeforemin,porepress[p]);
+      pwbeforemax=max(pwbeforemax,porepress[p]);
+    }
+  }
+  if(!npmat){
+    if(printlog)Log->PrintWarning("Top drained pore-pressure boundary found no material particles.");
+    return(0);
+  }
+
+  const double zthreshold=zmax-drainthick;
+  unsigned affected=0;
+  double pwaftermin=DBL_MAX,pwaftermax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++){
+    if(CODE_IsFluid(code[p])){
+      const tdouble3 ps=pos[p];
+      const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+      if(z>=zthreshold){
+        const double depth=double(PorePressureWaterLevel)-z;
+        porepress[p]=(depth>0.? rhog*depth: 0.);
+        affected++;
+      }
+      pwaftermin=min(pwaftermin,porepress[p]);
+      pwaftermax=max(pwaftermax,porepress[p]);
+    }
+  }
+
+  if(printlog){
+    Log->Printf("Top drained pore-pressure boundary (%s): enabled=True, zmax_material=%g, drain_thickness=%g, z_threshold=%g, affected=%u/%u, PorePress before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,(stage? stage: "unknown"),zmax,drainthick,zthreshold,affected,npmat,pwbeforemin,pwbeforemax,pwaftermin,pwaftermax);
+    if(double(PorePressureWaterLevel)<zmax)Log->PrintWarning(fun::PrintStr("Top drained pore-pressure boundary is used with WaterLevel=%g below top elevation=%g. The drained top layer may be above the water level.",PorePressureWaterLevel,zmax));
+  }
+  return(affected);
+}
+
+//==============================================================================
+/// Applies a minimal bottom no-flux condition for excess pore pressure on material particles.
+//==============================================================================
+unsigned JSphCpu::ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+  ,double *porepress,const char *stage,bool printlog)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureBottomNoFlux || !porepress)return(0);
+  if(!pos || !code)Run_Exceptioon("Pointers without data for bottom no-flux pore-pressure boundary.");
+  const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+  if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero for bottom no-flux pore-pressure boundary.");
+  const double invg=1./gmag;
+  const double rhog=double(WaterDensity)*gmag;
+  const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
+  if(bottomthick<=0.)Run_Exceptioon("Bottom no-flux pore-pressure boundary requires a positive thickness or KernelH.");
+
+  unsigned npmat=0;
+  double zmin=DBL_MAX,zmax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++){
+    if(CODE_IsFluid(code[p])){
+      npmat++;
+      const tdouble3 ps=pos[p];
+      const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+      zmin=min(zmin,z);
+      zmax=max(zmax,z);
+    }
+  }
+  if(!npmat){
+    if(printlog)Log->PrintWarning("Bottom no-flux pore-pressure boundary found no material particles.");
+    return(0);
+  }
+
+  const double zthreshold=zmin+bottomthick;
+  const double zrefmin=zthreshold;
+  const double zrefmax=zmin+2.*bottomthick;
+  unsigned refcount=0;
+  double excesssum=0.;
+  for(unsigned p=pini;p<pini+n;p++){
+    if(CODE_IsFluid(code[p])){
+      const tdouble3 ps=pos[p];
+      const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+      if(z>zrefmin && z<=zrefmax){
+        const double depth=double(PorePressureWaterLevel)-z;
+        const double hydro=(depth>0.? rhog*depth: 0.);
+        excesssum+=porepress[p]-hydro;
+        refcount++;
+      }
+    }
+  }
+  if(!refcount){
+    if(printlog)Log->PrintWarning(fun::PrintStr("Bottom no-flux pore-pressure boundary (%s) skipped: reference layer has no material particles. zmin=%g, reference=[%g,%g]."
+      ,(stage? stage: "unknown"),zmin,zrefmin,zrefmax));
+    return(0);
+  }
+  const double excessmean=excesssum/double(refcount);
+
+  unsigned affected=0;
+  double excessbeforemin=DBL_MAX,excessbeforemax=-DBL_MAX;
+  double excessaftermin=DBL_MAX,excessaftermax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++){
+    if(CODE_IsFluid(code[p])){
+      const tdouble3 ps=pos[p];
+      const double z=-(ps.x*double(Gravity.x)+ps.y*double(Gravity.y)+ps.z*double(Gravity.z))*invg;
+      if(z<=zthreshold){
+        const double depth=double(PorePressureWaterLevel)-z;
+        const double hydro=(depth>0.? rhog*depth: 0.);
+        const double excessbefore=porepress[p]-hydro;
+        excessbeforemin=min(excessbeforemin,excessbefore);
+        excessbeforemax=max(excessbeforemax,excessbefore);
+        porepress[p]=hydro+excessmean;
+        const double excessafter=porepress[p]-hydro;
+        excessaftermin=min(excessaftermin,excessafter);
+        excessaftermax=max(excessaftermax,excessafter);
+        affected++;
+      }
+    }
+  }
+  if(!affected){
+    excessbeforemin=excessbeforemax=excessaftermin=excessaftermax=0.;
+  }
+
+  if(printlog){
+    Log->Printf("Bottom no-flux pore-pressure boundary (%s): enabled=True, zmin_material=%g, bottom_thickness=%g, z_threshold=%g, reference=[%g,%g], affected=%u/%u, reference_count=%u, excess_ref_mean=%g Pa, bottom excess before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,(stage? stage: "unknown"),zmin,bottomthick,zthreshold,zrefmin,zrefmax,affected,npmat,refcount,excessmean,excessbeforemin,excessbeforemax,excessaftermin,excessaftermax);
+    if(PorePressureTopDrained){
+      const double topthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+      const double ztopthreshold=zmax-topthick;
+      if(zthreshold>=ztopthreshold)Log->PrintWarning(fun::PrintStr("Top drained and bottom no-flux pore-pressure correction layers overlap or touch. bottom_threshold=%g, top_threshold=%g.",zthreshold,ztopthreshold));
+    }
+    if(double(PorePressureWaterLevel)<zmax)Log->PrintWarning(fun::PrintStr("Bottom no-flux pore-pressure boundary is used with WaterLevel=%g below top elevation=%g. This is not the recommended saturated PR verification setup.",PorePressureWaterLevel,zmax));
+  }
+  return(affected);
+}
+
+//==============================================================================
 /// Computes diagnostic pore-pressure Laplacian for material particles.
 //==============================================================================
 template<TpKernel tker> void JSphCpu::ComputeHydroLapPorePressT(unsigned n,unsigned pini
@@ -2147,7 +2300,6 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
     //-Store the results.
     //--------------------
     if(sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)){
-      const tfloat3 dpos=(boundnormal[p1]*(-1.f)); //-Boundary particle position - ghost node position.
       if(sim2d){
         const double determ=fmath::Determinant3x3(a_corr2);
         if(fabs(determ)>=determlimit){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
