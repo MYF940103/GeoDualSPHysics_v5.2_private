@@ -36,6 +36,8 @@ using namespace std;
 JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
   ClassName="JPartsLoad4";
   Idp=NULL; Pos=NULL; VelRhop=NULL;
+  RestartSoilFields=false;
+  SigmaKk=NULL; SigmaIj=NULL; Kplastic=NULL;
   Reset();
 }
 
@@ -77,6 +79,10 @@ void JPartsLoad4::AllocMemory(unsigned count){
   delete[] Idp;      Idp=NULL; 
   delete[] Pos;      Pos=NULL; 
   delete[] VelRhop;  VelRhop=NULL; 
+  delete[] SigmaKk;  SigmaKk=NULL;
+  delete[] SigmaIj;  SigmaIj=NULL;
+  delete[] Kplastic; Kplastic=NULL;
+  RestartSoilFields=false;
   if(Count){
     try{
       Idp=new unsigned[Count];
@@ -99,6 +105,9 @@ llong JPartsLoad4::GetAllocMemory()const{
   if(Idp)s+=sizeof(unsigned)*Count;
   if(Pos)s+=sizeof(tdouble3)*Count;
   if(VelRhop)s+=sizeof(tfloat4)*Count;
+  if(SigmaKk)s+=sizeof(tfloat3)*Count;
+  if(SigmaIj)s+=sizeof(tfloat3)*Count;
+  if(Kplastic)s+=sizeof(float)*Count;
   return(s);
 }
 
@@ -192,6 +201,12 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   CasePosMin=pd.Get_CasePosMin();
   CasePosMax=pd.Get_CasePosMax();
   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
+  const bool loadsoil=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
+  if(loadsoil){
+    pd.GetArray("Sigma_kk",JBinaryDataDef::DatFloat3);
+    pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3);
+    pd.GetArray("Kplastic",JBinaryDataDef::DatFloat);
+  }
   //-Loads data for restarting.
   if(PartBegin){
     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
@@ -207,12 +222,24 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   }
   //-Allocates memory.
   AllocMemory(sizetot);
+  if(loadsoil){
+    try{
+      SigmaKk=new tfloat3[Count];
+      SigmaIj=new tfloat3[Count];
+      Kplastic=new float[Count];
+      RestartSoilFields=true;
+    }
+    catch(const std::bad_alloc){
+      Run_Exceptioon("Could not allocate the requested restart soil-state memory.");
+    }
+  }
   //-Loads particles.
   {
     unsigned ntot=0;
     unsigned auxsize=0;
     tfloat3 *auxf3=NULL;
     float *auxf=NULL;
+    tfloat3 *auxsigma=NULL;
     for(unsigned piece=0;piece<Npiece;piece++){
       if(piece){
         if(!PartBegin)pd.LoadFileCase(dir,casename,piece,Npiece);
@@ -224,8 +251,10 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
           auxsize=npok;
           delete[] auxf3; auxf3=NULL;
           delete[] auxf;  auxf=NULL;
+          delete[] auxsigma; auxsigma=NULL;
           auxf3=new tfloat3[auxsize];
           auxf=new float[auxsize];
+          auxsigma=new tfloat3[auxsize];
         }
         if(PosSingle){
           pd.Get_Pos(npok,auxf3);
@@ -236,11 +265,21 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         pd.Get_Vel(npok,auxf3);  
         pd.Get_Rhop(npok,auxf);  
         for(unsigned p=0;p<npok;p++)VelRhop[ntot+p]=TFloat4(auxf3[p].x,auxf3[p].y,auxf3[p].z,auxf[p]);
+        if(RestartSoilFields){
+          if(!(pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic")))
+            Run_Exceptioon("Restart soil-state arrays are not available in all PART pieces.");
+          pd.GetArray("Sigma_kk",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxsigma);
+          memcpy(SigmaKk+ntot,auxsigma,sizeof(tfloat3)*npok);
+          pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxsigma);
+          memcpy(SigmaIj+ntot,auxsigma,sizeof(tfloat3)*npok);
+          pd.GetArray("Kplastic",JBinaryDataDef::DatFloat)->GetDataCopy(npok,Kplastic+ntot);
+        }
       }
       ntot+=npok;
     }
     delete[] auxf3; auxf3=NULL;
     delete[] auxf;  auxf=NULL;
+    delete[] auxsigma; auxsigma=NULL;
   }
   //-In simulations 2D, if PosY is invalid then calculates starting from position of particles.
   if(Simulate2DPosY==DBL_MAX){

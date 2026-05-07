@@ -91,6 +91,10 @@ protected:
   unsigned *Idp;
   tdouble3 *Pos;
   tfloat4 *VelRhop;
+  bool RestartSoilFields;
+  tfloat3 *SigmaKk;
+  tfloat3 *SigmaIj;
+  float *Kplastic;
 
   void AllocMemory(unsigned count);
   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
@@ -119,10 +123,14 @@ public:
   bool GetPosSingle()const{ return(PosSingle); }
   double GetPartBeginTimeStep()const{ return(PartBeginTimeStep); }
   ullong GetPartBeginTotalNp()const{ return(PartBeginTotalNp); }
+  bool GetRestartSoilFields()const{ return(RestartSoilFields); }
 
   const unsigned* GetIdp(){ return(Idp); }
   const tdouble3* GetPos(){ return(Pos); }
   const tfloat4* GetVelRhop(){ return(VelRhop); }
+  const tfloat3* GetSigmaKk(){ return(SigmaKk); }
+  const tfloat3* GetSigmaIj(){ return(SigmaIj); }
+  const float* GetKplastic(){ return(Kplastic); }
 
   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
   tdouble3 GetCasePosMax()const{ return(CasePosMax); }
