@@ -142,7 +142,7 @@ protected:
   tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
   //===============  
-  float* PorePressc;      ///<Passive pore pressure field for CPU hydromechanical prototype.
+  double* PorePressc;     ///<Passive pore pressure field for CPU hydromechanical prototype.
   float* PorePressRatec;  ///<Passive pore pressure rate field for CPU hydromechanical prototype.
   float* DivVelc;         ///<Skeleton velocity divergence diagnostic field for CPU hydromechanical prototype.
   float* LapPorePressc;   ///<Pore-pressure Laplacian diagnostic field for CPU hydromechanical prototype.
@@ -172,6 +172,12 @@ protected:
   double VelMax;        ///<Maximum value of Vel[] sqrt(vel.x^2 + vel.y^2 + vel.z^2) computed in PreInteraction_Forces().
   double AceMax;        ///<Maximum value of Ace[] sqrt(ace.x^2 + ace.y^2 + ace.z^2) computed in Interaction_Forces().
   float ViscDtMax;      ///<Max value of ViscDt calculated in Interaction_Forces().
+  double PorePressureDt; ///<Pore-pressure stability timestep for CPU PR prototype.
+  bool PorePressureDtActive;       ///<True when pore-pressure timestep restriction is active.
+  bool PorePressureDtConfigPrint;  ///<True when pore-pressure timestep configuration has been printed.
+  bool PorePressureDtLimitPrint;   ///<True when pore-pressure timestep limiting has been printed.
+  bool PorePressureDtFixedPrint;   ///<True when fixed-dt warning has been printed for pore-pressure timestep.
+  bool PorePressureUpdateDtPrint;  ///<True when pore-pressure update timestep warning has been printed.
 
   //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
   float *Pressc;       ///<Pressure computed starting from density for interaction. Press[]=fsph::ComputePress(Rhop,CSP)
@@ -219,7 +225,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -228,6 +234,7 @@ protected:
   void ConfigCellDiv(JCellDivCpu* celldiv){ CellDiv=celldiv; }
   void InitFloating();
   void InitRunCpu();
+  double LimitInitialDtByPorePressure(double dt);
 
   float CalcVelMaxSeq(unsigned np,const tfloat4* velrhop)const;
   float CalcVelMaxOmp(unsigned np,const tfloat4* velrhop)const;
@@ -268,11 +275,12 @@ protected:
   void ComputeHydroDivVel(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *divvel)const;
   void ComputeHydroPorePressRatePR(unsigned n,unsigned pini
-    ,const typecode *code,const float *divvel,const float *lapporepress,float *porepressrate)const;
+    ,const typecode *code,const float *divvel,const float *lapporepress,const float *lapz,float *porepressrate)const;
+  void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt,double *porepress,const float *porepressrate);
   template<TpKernel tker> void ComputeHydroLapPorePressT(unsigned n,unsigned pini
-    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const;
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const;
   void ComputeHydroLapPorePress(unsigned n,unsigned pini
-    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const;
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const;
   template<TpKernel tker> void ComputeHydroLapZT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
   void ComputeHydroLapZ(unsigned n,unsigned pini

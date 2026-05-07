@@ -120,7 +120,8 @@ void JCellDivCpu::FreeMemoryAll(){
 void JCellDivCpu::SetMemoryVSort(byte *vsort){
   VSort=vsort;
   VSortInt=(int*)VSort;        VSortWord=(word*)VSort;
-  VSortFloat=(float*)VSort;    VSortFloat3=(tfloat3*)VSort;
+  VSortFloat=(float*)VSort;    VSortDouble=(double*)VSort;
+  VSortFloat3=(tfloat3*)VSort;
   VSortFloat4=(tfloat4*)VSort; VSortDouble3=(tdouble3*)VSort;
   VSortSymmatrix3f=(tsymatrix3f*)VSort;
 }
@@ -389,6 +390,20 @@ void JCellDivCpu::SortArray(float *vec){
   #endif
   for(int p=ini;p<n;p++)VSortFloat[p]=vec[SortPart[p]];
   memcpy(vec+ini,VSortFloat+ini,sizeof(float)*(n-ini));
+}
+
+//==============================================================================
+/// Reorder values of all particles (for type double).
+/// Reordena datos de todas las particulas (para tipo double).
+//==============================================================================
+void JCellDivCpu::SortArray(double *vec){
+  const int n=int(Nptot);
+  const int ini=(DivideFull? 0: int(NpbFinal));
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=ini;p<n;p++)VSortDouble[p]=vec[SortPart[p]];
+  memcpy(vec+ini,VSortDouble+ini,sizeof(double)*(n-ini));
 }
 
 //==============================================================================

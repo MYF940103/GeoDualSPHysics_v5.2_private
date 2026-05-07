@@ -98,6 +98,10 @@ void JSphCpu::InitVars(){
   Arc=NULL; Acec=NULL; Deltac=NULL;
   ShiftPosfsc=NULL;               //-Shifting.
   Pressc=NULL;
+  PorePressureDt=DBL_MAX;
+  PorePressureDtActive=false;
+  PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
+  PorePressureUpdateDtPrint=false;
   RidpMove=NULL; 
   FtRidp=NULL;
   FtoForces=NULL;
@@ -178,8 +182,14 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   //======
-  if(HydromechCoupling || SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5); //-porepress,porepressrate,divvel,lapporepress,lapz
-  if(SavePorePressure)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5); //-porepress,porepressrate,divvel,lapporepress,lapz output
+  if(HydromechCoupling || SavePorePressure){
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,1); //-porepress
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz
+  }
+  if(SavePorePressure){
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,1); //-porepress output
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz output
+  }
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
@@ -230,7 +240,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
   tsymatrix3f  *sigmam1   =SaveArrayCpu(Np,SigmaM1c);
   float        *kplastic  =SaveArrayCpu(Np,Kplasticc);
-  float        *porepress =SaveArrayCpu(Np,PorePressc);
+  double       *porepress =SaveArrayCpu(Np,PorePressc);
   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
   float        *divvel    =SaveArrayCpu(Np,DivVelc);
   float        *lapporepress=SaveArrayCpu(Np,LapPorePressc);
@@ -280,7 +290,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
   if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticc = ArraysCpu->ReserveFloat();
-  if(porepress)     PorePressc = ArraysCpu->ReserveFloat();
+  if(porepress)     PorePressc = ArraysCpu->ReserveDouble();
   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
   if(divvel)        DivVelc = ArraysCpu->ReserveFloat();
   if(lapporepress)  LapPorePressc = ArraysCpu->ReserveFloat();
@@ -354,7 +364,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   Kplasticc=ArraysCpu->ReserveFloat();
   //=====
   if(HydromechCoupling || SavePorePressure){
-    PorePressc=ArraysCpu->ReserveFloat();
+    PorePressc=ArraysCpu->ReserveDouble();
     PorePressRatec=ArraysCpu->ReserveFloat();
     DivVelc=ArraysCpu->ReserveFloat();
     LapPorePressc=ArraysCpu->ReserveFloat();
@@ -402,7 +412,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,float *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -534,11 +544,49 @@ void JSphCpu::ConfigRunMode(){
 //==============================================================================
 void JSphCpu::InitRunCpu(){
   InitRun(Np,Idpc,Posc);
+  if(TStep==STEP_Symplectic)SymplecticDtPre=LimitInitialDtByPorePressure(SymplecticDtPre);
 
   if(TStep==STEP_Verlet)memcpy(VelrhopM1c,Velrhopc,sizeof(tfloat4)*Np);
   if(TVisco==VISCO_LaminarSPS)memset(SpsTauc,0,sizeof(tsymatrix3f)*Np);
   if(CaseNfloat)InitFloating();
   if(MotionVelc)memset(MotionVelc,0,sizeof(tfloat3)*Np);
+}
+
+//==============================================================================
+/// Applies pore-pressure stability restriction to the initial CPU timestep.
+//==============================================================================
+double JSphCpu::LimitInitialDtByPorePressure(double dt){
+  if(!HydromechCoupling || PorePressureModel!=1)return(dt);
+  double dtpore=DBL_MAX;
+  bool dtporeactive=false;
+  if(HydraulicConductivity>0.f && WaterBulkModulus>0.f && WaterDensity>0.f && Porosity0>0.f && Porosity0<1.f && PorePressureDtSafety>0.f){
+    const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+    if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero for pore-pressure timestep restriction.");
+    const double cw=double(WaterDensity)*gmag*double(Porosity0)/double(WaterBulkModulus);
+    dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(HydraulicConductivity);
+    if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
+    dtporeactive=true;
+    if(!PorePressureDtConfigPrint){
+      Log->Printf("Pore-pressure timestep restriction: active=True, Cw=%g, dt_pore=%g, safety=%g, h(KernelH)=%g.",cw,dtpore,PorePressureDtSafety,KernelH);
+      if(FixedDt)Log->PrintWarning(fun::PrintStr("Fixed dt is enabled. Fixed dt should be <= dt_pore=%g for PR pore-pressure update.",dtpore));
+      PorePressureDtConfigPrint=true;
+      PorePressureDtFixedPrint=(FixedDt!=NULL);
+    }
+  }
+  else if(HydraulicConductivity==0.f){
+    if(!PorePressureDtConfigPrint){
+      Log->Print("Pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
+      PorePressureDtConfigPrint=true;
+    }
+  }
+  else if(HydraulicConductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
+  PorePressureDt=dtpore;
+  PorePressureDtActive=dtporeactive;
+  if(dtporeactive && dt>dtpore){
+    Log->Printf("Initial timestep limited by pore-pressure dt_pore: old_dt=%g, dt_pore=%g, new_dt=%g.",dt,dtpore,dtpore);
+    dt=dtpore;
+  }
+  return(dt);
 }
 
 //==============================================================================
@@ -1474,10 +1522,10 @@ void JSphCpu::ComputeHydroDivVel(unsigned n,unsigned pini
 }
 
 //==============================================================================
-/// Computes PR pore-pressure-rate contribution from velocity divergence and pore-pressure diffusion.
+/// Computes PR pore-pressure-rate contribution from velocity divergence and hydraulic head diffusion.
 //==============================================================================
 void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
-  ,const typecode *code,const float *divvel,const float *lapporepress,float *porepressrate)const
+  ,const typecode *code,const float *divvel,const float *lapporepress,const float *lapz,float *porepressrate)const
 {
   if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1 for PR pore-pressure-rate update.");
   if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero for PR pore-pressure-rate update.");
@@ -1494,7 +1542,28 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
   #endif
   for(int cp=0;cp<nint;cp++){
     const unsigned p1=pini+unsigned(cp);
-    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(divvel[p1]+difcoef*lapporepress[p1]);
+    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(divvel[p1]+difcoef*lapporepress[p1]+HydraulicConductivity*lapz[p1]);
+  }
+}
+
+//==============================================================================
+/// Updates pore pressure explicitly for material particles.
+//==============================================================================
+void JSphCpu::UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
+  ,double *porepress,const float *porepressrate)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !porepress || !porepressrate)return;
+  if(PorePressureDtActive && dt>PorePressureDt*(1.+1.e-6) && !PorePressureUpdateDtPrint){
+    Log->PrintWarning(fun::PrintStr("Pore-pressure update dt=%g is greater than dt_pore=%g. This can occur on the first Symplectic step before the next-step dt restriction is applied.",dt,PorePressureDt));
+    PorePressureUpdateDtPrint=true;
+  }
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    if(CODE_IsFluid(code[p1]))porepress[p1]+=double(porepressrate[p1])*dt;
   }
 }
 
@@ -1502,7 +1571,7 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
 /// Computes diagnostic pore-pressure Laplacian for material particles.
 //==============================================================================
 template<TpKernel tker> void JSphCpu::ComputeHydroLapPorePressT(unsigned n,unsigned pini
-  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const
 {
   const unsigned np=pini+n;
   memset(lapporepress,0,sizeof(float)*np);
@@ -1514,9 +1583,9 @@ template<TpKernel tker> void JSphCpu::ComputeHydroLapPorePressT(unsigned n,unsig
     const unsigned p1=pini+unsigned(cp);
     if(!CODE_IsFluid(code[p1]))continue;
 
-    float lapp1=0;
+    double lapp1=0;
     const tdouble3 posp1=pos[p1];
-    const float pwp1=porepress[p1];
+    const double pwp1=porepress[p1];
     const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
 
     const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
@@ -1535,14 +1604,14 @@ template<TpKernel tker> void JSphCpu::ComputeHydroLapPorePressT(unsigned n,unsig
           const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
           const float dotrgrad=drx*frx+dry*fry+drz*frz;
           const float volp2=MassFluid/velrhop[p2].w;
-          lapp1+=2.f*volp2*(pwp1-porepress[p2])*dotrgrad/(rr2+ALMOSTZERO);
+          lapp1+=2.*double(volp2)*(pwp1-porepress[p2])*double(dotrgrad)/(double(rr2)+ALMOSTZERO);
           rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
           if(rsym)p2--;                                             //<vs_syymmetry>
         }
         else rsym=false;                                            //<vs_syymmetry>
       }
     }
-    lapporepress[p1]=lapp1;
+    lapporepress[p1]=float(lapp1);
   }
 }
 
@@ -1550,7 +1619,7 @@ template<TpKernel tker> void JSphCpu::ComputeHydroLapPorePressT(unsigned n,unsig
 /// Computes diagnostic pore-pressure Laplacian for material particles.
 //==============================================================================
 void JSphCpu::ComputeHydroLapPorePress(unsigned n,unsigned pini
-  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const float *porepress,float *lapporepress)const
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const
 {
        if(TKernel==KERNEL_Wendland)ComputeHydroLapPorePressT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,lapporepress);
   else if(TKernel==KERNEL_Cubic)   ComputeHydroLapPorePressT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,lapporepress);
@@ -3021,6 +3090,41 @@ double JSphCpu::DtVariable(bool final){
       Log->PrintfWarning("%d DTs adjusted to DtMin (t:%g, nstep:%u)",DtModif,TimeStep,Nstep);
       DtModifWrn*=10;
     }
+  }
+  //-Pore-pressure stability timestep restriction for saturated u-pw PR prototype.
+  double dtpore=DBL_MAX;
+  bool dtporeactive=false;
+  if(HydromechCoupling && PorePressureModel==1){
+    if(HydraulicConductivity>0.f && WaterBulkModulus>0.f && WaterDensity>0.f && Porosity0>0.f && Porosity0<1.f && PorePressureDtSafety>0.f){
+      const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
+      if(gmag<=0.)Run_Exceptioon("Gravity magnitude must be greater than zero for pore-pressure timestep restriction.");
+      const double cw=double(WaterDensity)*gmag*double(Porosity0)/double(WaterBulkModulus);
+      dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(HydraulicConductivity);
+      if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
+      dtporeactive=true;
+      if(!PorePressureDtConfigPrint){
+        Log->Printf("Pore-pressure timestep restriction: active=True, Cw=%g, dt_pore=%g, safety=%g, h(KernelH)=%g.",cw,dtpore,PorePressureDtSafety,KernelH);
+        if(FixedDt)Log->PrintWarning(fun::PrintStr("Fixed dt is enabled. Fixed dt should be <= dt_pore=%g for PR pore-pressure update.",dtpore));
+        PorePressureDtConfigPrint=true;
+        PorePressureDtFixedPrint=(FixedDt!=NULL);
+      }
+    }
+    else if(HydraulicConductivity==0.f){
+      if(!PorePressureDtConfigPrint){
+        Log->Print("Pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
+        PorePressureDtConfigPrint=true;
+      }
+    }
+    else if(HydraulicConductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
+  }
+  PorePressureDt=dtpore;
+  PorePressureDtActive=dtporeactive;
+  if(dtporeactive && dt>dtpore){
+    if(final && !PorePressureDtLimitPrint){
+      Log->Printf("Current dt is limited by pore-pressure timestep: existing_dt=%g, dt_pore=%g.",dt,dtpore);
+      PorePressureDtLimitPrint=true;
+    }
+    dt=dtpore;
   }
 
   //-Saves information about dt.

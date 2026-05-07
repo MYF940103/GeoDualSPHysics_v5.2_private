@@ -190,6 +190,8 @@ void JSph::InitVars(){
   PorePressureModel=0;
   PorePressureInit=0;
   PorePressureWaterLevel=0.f;
+  PorePressureExcessAmp=0.f;
+  PorePressureAnalyticalProfile=1;
   Porosity0=0.3f;
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
@@ -673,9 +675,16 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  PorePressureInit=0;  break;
     case 1:  PorePressureInit=1;  break;
     case 2:  PorePressureInit=2;  break;
+    case 3:  PorePressureInit=3;  break;
     default: Run_Exceptioon("PorePressureInit mode is not valid.");
   }
   PorePressureWaterLevel=eparms.GetValueFloat("PorePressureWaterLevel",true,0.f);
+  PorePressureExcessAmp=eparms.GetValueFloat("PorePressureExcessAmp",true,0.f);
+  switch(eparms.GetValueInt("PorePressureAnalyticalProfile",true,1)){
+    case 1:  PorePressureAnalyticalProfile=1;  break;
+    case 2:  PorePressureAnalyticalProfile=2;  break;
+    default: Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
+  }
   Porosity0=eparms.GetValueFloat("Porosity0",true,0.3f);
   HydraulicConductivity=eparms.GetValueFloat("HydraulicConductivity",true,0.f);
   WaterBulkModulus=eparms.GetValueFloat("WaterBulkModulus",true,2e8f);
@@ -1616,10 +1625,12 @@ void JSph::VisuConfig(){
   Log->Print(fun::VarStr("HydromechCoupling",HydromechCoupling? "Enabled": "Disabled"));
   if(HydromechCoupling){
     const string ppmodel=(PorePressureModel==1? "PR explicit pore-pressure-rate": (PorePressureModel==2? "PPE pressure Poisson equation": "None"));
-    const string ppinit=(PorePressureInit==1? "Hydrostatic": (PorePressureInit==2? "FromFile": "Zero"));
+    const string ppinit=(PorePressureInit==1? "Hydrostatic": (PorePressureInit==2? "FromFile": (PorePressureInit==3? "Hydrostatic + analytical excess": "Zero")));
     Log->Print(fun::VarStr("  PorePressureModel",ppmodel));
     Log->Print(fun::VarStr("  PorePressureInit",ppinit));
     Log->Print(fun::VarStr("  PorePressureWaterLevel",PorePressureWaterLevel));
+    Log->Print(fun::VarStr("  PorePressureExcessAmp",PorePressureExcessAmp));
+    Log->Print(fun::VarStr("  PorePressureAnalyticalProfile",PorePressureAnalyticalProfile));
     Log->Print(fun::VarStr("  Porosity0",Porosity0));
     Log->Print(fun::VarStr("  HydraulicConductivity",HydraulicConductivity));
     Log->Print(fun::VarStr("  WaterBulkModulus",WaterBulkModulus));

@@ -128,8 +128,8 @@ void JSphCpuSingle::ConfigDomain(){
     Run_Exceptioon("Hydromechanical CPU arrays were not fully allocated.");
   }
   if(PorePressc){
-    memset(PorePressc,0,sizeof(float)*Np);
-    if(!(HydromechCoupling && PorePressureInit==1)){
+    memset(PorePressc,0,sizeof(double)*Np);
+    if(!(HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3))){
       if(HydromechCoupling && PorePressureInit==2)Log->PrintWarning("PorePressureInit=FromFile is not implemented in Phase 3g. Phase 3g uses zero pore pressure.");
       Log->Printf("Passive pore pressure field initialised on CPU: PorePress=0 for %u material particles.",Np-Npb);
     }
@@ -162,14 +162,14 @@ void JSphCpuSingle::ConfigDomain(){
   //-Load particle code. | Carga code de particulas.
   LoadCodeParticles(Np,Idpc,Codec);
 
-  if(PorePressc && HydromechCoupling && PorePressureInit==1){
-    if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for hydrostatic pore pressure initialization.");
+  if(PorePressc && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
+    if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for pore pressure initialization.");
     const double gmag=sqrt(double(Gravity.x)*double(Gravity.x)+double(Gravity.y)*double(Gravity.y)+double(Gravity.z)*double(Gravity.z));
-    if(gmag<=0)Run_Exceptioon("Gravity magnitude must be greater than zero for hydrostatic pore pressure initialization.");
+    if(gmag<=0)Run_Exceptioon("Gravity magnitude must be greater than zero for pore pressure initialization.");
     const double invg=1./gmag;
     const double waterlevel=PorePressureWaterLevel;
     unsigned npmat=0,npnonzero=0;
-    double pwmax=0,zmin=DBL_MAX,zmax=-DBL_MAX;
+    double zmin=DBL_MAX,zmax=-DBL_MAX;
     for(unsigned p=0;p<Np;p++){
       if(CODE_IsFluid(Codec[p])){
         npmat++;
@@ -177,18 +177,54 @@ void JSphCpuSingle::ConfigDomain(){
         const double z=-(double(ps.x)*Gravity.x+double(ps.y)*Gravity.y+double(ps.z)*Gravity.z)*invg;
         zmin=min(zmin,z);
         zmax=max(zmax,z);
-        const double depth=waterlevel-z;
-        if(depth>0){
-          const double pw=double(WaterDensity)*gmag*depth;
-          PorePressc[p]=float(pw);
-          pwmax=max(pwmax,pw);
-          npnonzero++;
-        }
       }
     }
-    Log->Printf("Hydrostatic pore pressure field initialised on CPU: WaterLevel=%g, nonzero=%u/%u, max(PorePress)=%g Pa.",PorePressureWaterLevel,npnonzero,npmat,pwmax);
-    if(!npmat)Log->PrintWarning("Hydrostatic pore pressure initialization found no material particles.");
-    else if(!npnonzero)Log->PrintWarning(fun::PrintStr("Hydrostatic pore pressure is zero for all material particles. WaterLevel=%g, material elevation range=[%g,%g].",PorePressureWaterLevel,zmin,zmax));
+    if(!npmat)Log->PrintWarning("Pore pressure initialization found no material particles.");
+    const double zrange=zmax-zmin;
+    if(PorePressureInit==3 && zrange<=0.)Log->PrintWarning("Analytical excess pore pressure initialization found zero material elevation range. eta is set to zero.");
+    double hydromin=DBL_MAX,hydromax=-DBL_MAX;
+    double excessmin=DBL_MAX,excessmax=-DBL_MAX;
+    double pwmin=DBL_MAX,pwmax=-DBL_MAX;
+    for(unsigned p=0;p<Np;p++){
+      if(CODE_IsFluid(Codec[p])){
+        const tdouble3 ps=Posc[p];
+        const double z=-(double(ps.x)*Gravity.x+double(ps.y)*Gravity.y+double(ps.z)*Gravity.z)*invg;
+        const double depth=waterlevel-z;
+        const double hydrostatic=(depth>0? double(WaterDensity)*gmag*depth: 0.);
+        double excess=0.;
+        if(PorePressureInit==3){
+          double eta=(zrange>0.? (z-zmin)/zrange: 0.);
+          eta=max(0.,min(1.,eta));
+          if(PorePressureAnalyticalProfile==1)excess=double(PorePressureExcessAmp)*sin(PI*eta);
+          else if(PorePressureAnalyticalProfile==2)excess=double(PorePressureExcessAmp)*cos(PIHALF*eta);
+          else Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
+        }
+        const double pw=hydrostatic+excess;
+        PorePressc[p]=pw;
+        hydromin=min(hydromin,hydrostatic);
+        hydromax=max(hydromax,hydrostatic);
+        excessmin=min(excessmin,excess);
+        excessmax=max(excessmax,excess);
+        pwmin=min(pwmin,pw);
+        pwmax=max(pwmax,pw);
+        if(pw)npnonzero++;
+      }
+    }
+    if(!npmat){
+      zmin=zmax=0.;
+      hydromin=hydromax=excessmin=excessmax=pwmin=pwmax=0.;
+    }
+    if(PorePressureInit==1){
+      Log->Printf("Hydrostatic pore pressure field initialised on CPU: WaterLevel=%g, nonzero=%u/%u, max(PorePress)=%g Pa.",PorePressureWaterLevel,npnonzero,npmat,pwmax);
+      if(npmat && !npnonzero)Log->PrintWarning(fun::PrintStr("Hydrostatic pore pressure is zero for all material particles. WaterLevel=%g, material elevation range=[%g,%g].",PorePressureWaterLevel,zmin,zmax));
+      else if(npmat && PorePressureWaterLevel<zmax)Log->PrintWarning(fun::PrintStr("Hydrostatic pore pressure uses a partial water-level field. WaterLevel=%g is below material max elevation=%g; this is not the recommended verification setup for the saturated u-pw PR prototype.",PorePressureWaterLevel,zmax));
+    }
+    else{
+      Log->Printf("Analytical excess pore pressure field initialised on CPU: WaterLevel=%g, material elevation range=[%g,%g], ExcessAmp=%g Pa, Profile=%d, hydrostatic range=[%g,%g] Pa, excess range=[%g,%g] Pa, PorePress range=[%g,%g] Pa, nonzero=%u/%u."
+        ,PorePressureWaterLevel,zmin,zmax,PorePressureExcessAmp,PorePressureAnalyticalProfile,hydromin,hydromax,excessmin,excessmax,pwmin,pwmax,npnonzero,npmat);
+      if(!PorePressureExcessAmp)Log->PrintWarning("Analytical excess pore pressure amplitude is zero.");
+      if(npmat && PorePressureWaterLevel<zmax)Log->PrintWarning(fun::PrintStr("Analytical excess initialization is being used with a partial water-level field. WaterLevel=%g is below material max elevation=%g; this is not the recommended saturated PR verification setup.",PorePressureWaterLevel,zmax));
+    }
   }
 
   //-Load normals for boundary particles (fixed and moving).
@@ -340,7 +376,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -378,7 +414,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,float *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -657,7 +693,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(HydromechCoupling && DivVelc)ComputeHydroDivVel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,DivVelc);
   if(HydromechCoupling && PorePressc && LapPorePressc)ComputeHydroLapPorePress(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,LapPorePressc);
   if(HydromechCoupling && LapZc)ComputeHydroLapZ(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,LapZc);
-  if(HydromechCoupling && PorePressureModel==1 && DivVelc && LapPorePressc && PorePressRatec)ComputeHydroPorePressRatePR(Np-Npb,Npb,Codec,DivVelc,LapPorePressc,PorePressRatec);
+  if(HydromechCoupling && PorePressureModel==1 && DivVelc && LapPorePressc && LapZc && PorePressRatec)ComputeHydroPorePressRatePR(Np-Npb,Npb,Codec,DivVelc,LapPorePressc,LapZc,PorePressRatec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
   if(Simulate2D){
@@ -802,6 +838,7 @@ void JSphCpuSingle::RunInitialDDTRamp(){
 double JSphCpuSingle::ComputeStep_Ver(){
   Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
   const double dt=DtVariable(true);        //-Calculate new dt.
+  if(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
@@ -838,6 +875,7 @@ double JSphCpuSingle::ComputeStep_Sym(){
   RunCellDivide(true);
   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
+  if(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
@@ -1270,7 +1308,7 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmakk=NULL;
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
-  float *porepress=NULL;
+  double *porepress=NULL;
   float *porepressrate=NULL;
   float *divvel=NULL;
   float *lapporepress=NULL;
@@ -1286,7 +1324,7 @@ void JSphCpuSingle::SaveData(){
 	sigmakk=ArraysCpu->ReserveFloat3();
 	sigmaij=ArraysCpu->ReserveFloat3();
 	kplastic=ArraysCpu->ReserveFloat();
-	if(SavePorePressure && PorePressc)porepress=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && PorePressc)porepress=ArraysCpu->ReserveDouble();
 	if(SavePorePressure && PorePressRatec)porepressrate=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && DivVelc)divvel=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && LapPorePressc)lapporepress=ArraysCpu->ReserveFloat();

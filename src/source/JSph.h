@@ -199,8 +199,10 @@ protected:
   bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
   bool HydromechCoupling;       ///<Hydromechanical coupling switch. 0:None, 1:Enable (default=0).
   int PorePressureModel;        ///<Pore pressure model. 0:None, 1:PR, 2:PPE placeholder (default=0).
-  int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile (default=0).
+  int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile, 3:Hydrostatic+analytical excess (default=0).
   float PorePressureWaterLevel; ///<Water level for hydrostatic pore-pressure initialization.
+  float PorePressureExcessAmp;  ///<Amplitude of analytical excess pore pressure [Pa].
+  int PorePressureAnalyticalProfile; ///<Analytical excess pore pressure profile. 1:sin(pi*eta), 2:cos(pi*eta/2).
   float Porosity0;              ///<Initial porosity for hydromechanical model.
   float HydraulicConductivity;  ///<Hydraulic conductivity k [m/s].
   float WaterBulkModulus;       ///<Water bulk modulus Kw [Pa].
