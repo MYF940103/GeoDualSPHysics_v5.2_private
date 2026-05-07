@@ -147,6 +147,7 @@ protected:
   float* DivVelc;         ///<Skeleton velocity divergence diagnostic field for CPU hydromechanical prototype.
   float* LapPorePressc;   ///<Pore-pressure Laplacian diagnostic field for CPU hydromechanical prototype.
   float* LapZc;           ///<Elevation-head Laplacian diagnostic field for CPU hydromechanical prototype.
+  tfloat3* PorePressureAcec; ///<Candidate pore-pressure feedback acceleration diagnostic field.
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
 
@@ -227,7 +228,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -291,6 +292,10 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
   void ComputeHydroLapZ(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
+  template<TpKernel tker> void ComputePorePressureAccelT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
+  void ComputePorePressureAccel(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
 
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
