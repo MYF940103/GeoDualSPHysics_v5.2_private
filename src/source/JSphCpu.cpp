@@ -1580,7 +1580,10 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
   #endif
   for(int cp=0;cp<nint;cp++){
     const unsigned p1=pini+unsigned(cp);
-    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(divvel[p1]+difcoef*lapporepress[p1]+HydraulicConductivity*lapz[p1]);
+    // DivVelc stores the mathematical divergence of the skeleton velocity.
+    // Compression gives DivVelc < 0, while pore-pressure generation is
+    // compression-positive, so the volumetric PR contribution is -DivVelc.
+    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(-divvel[p1]+difcoef*lapporepress[p1]+HydraulicConductivity*lapz[p1]);
   }
 }
 
