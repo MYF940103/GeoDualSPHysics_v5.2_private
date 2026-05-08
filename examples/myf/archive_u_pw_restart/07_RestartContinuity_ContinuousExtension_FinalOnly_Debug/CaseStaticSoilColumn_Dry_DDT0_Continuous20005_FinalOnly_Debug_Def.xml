@@ -1,0 +1,154 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="06-11-2021 11:49:53">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+      <rhop0 value="2100" comment="Reference density of the fluid" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+      <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+      <speedsystem value="0" auto="true" comment="Maximum system speed (by default the dam-break propagation is used)" />
+      <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+      <speedsound value="0" auto="true" comment="Speed of sound to use in the simulation (by default speedofsound=coefsound*speedsystem)" />
+      <_coefh value="0.975807" comment="Coefficient to calculate the smoothing length (h=coefh*sqrt(3*dp^2) in 3D)" />
+      <hdp value="1.8" comment="Alternative option to calculate the smoothing length (h=hdp*dp)" />
+      <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <predefinition>
+        <newvarcte sizefx="0.3" _rem="FluidLength" />
+        <newvarcte sizefz="1.0" _rem="FluidHeight" />
+        <newvarcte sizebx="0.3" _rem="BoundLength" />
+        <newvarcte sizebz="1.2" _rem="BoundHeight" />
+        <newvarcte Dp="0.02" _rem="ParticleSpace" />
+      </predefinition>
+      <definition dp="#Dp" units_comment="metres (m)">
+        <pointmin x="#-sizefz/2+Dp/2" y="0" z="#-sizefz/2+Dp/2" />
+        <pointmax x="#sizefz*1.5+Dp/2" y="0" z="#sizebz*1.5+Dp/2" />
+      </definition>
+      <commands>
+        <mainlist>
+          <!-- Actual geomet1ry at dp/2 for mDBC-->
+          <setshapemode>actual | bound</setshapemode>
+          <setnormalinvert invert="false" />
+          <move x="0" y="-0.1" z="0" />
+          <setmkbound mk="0" />
+          <drawbeach mask="1|2|6">
+            <point x="0" y="0.2" z="#sizebz" />
+            <point x="0" y="0.2" z="0" />
+            <point x="#sizebx" y="0.2" z="0" />
+            <point x="#sizebx" y="0.2" z="#sizebz" />
+          </drawbeach>
+          <matrixreset />
+          <shapeout file="hdp" />
+          <setmkvoid />
+          <redraw />
+          <!-- Particle generation -->
+          <setshapemode>actual | bound</setshapemode>
+          <!-- Boundary -->
+          <setdrawmode mode="full" />
+          <setmkbound mk="0" />
+          <setnormalinvert invert="true" />
+          <move x="0" y="-0.1" z="0" />
+          <drawbeach mask="1|2|6">
+            <point x="#-Dp/2" y="0.2" z="#sizebz+Dp/2" />
+            <point x="#-Dp/2" y="0.2" z="#-Dp/2" />
+            <point x="#sizebx+Dp/2" y="0.2" z="#-Dp/2" />
+            <point x="#sizebx+Dp/2" y="0.2" z="#sizebz+Dp/2" />
+          </drawbeach>
+          <shapeout file="Boundary" />
+          <matrixreset />
+          <!-- Extra layers of boundary -->
+          <setmkbound mk="1" />
+          <setboxlimitmode mode="full" />
+          <fillbox x="#-1.5*Dp" y="0" z="#-1.5*Dp">
+            <modefill>void</modefill>
+            <point x="#-Dp*10" y="-1" z="#-Dp*10" />
+            <size x="#(sizebx+Dp*20)" y="2" z="#(sizebz+Dp*10)" />
+          </fillbox>
+          <setboxlimitmode mode="full" />
+          <setmkbound mk="0" />
+          <redrawnear times="3" targettp="bound" targetmk="1" bordertp="bound" bordermk="0" />
+          <!--Remove the bc with mk=1-->
+          <setmkvoid />
+          <redraw mkbound="1" />
+          <!-- Fluid -->
+          <setmkfluid mk="0" />
+          <fillbox x="#Dp/2" y="0" z="#Dp/2">
+            <modefill>void</modefill>
+            <point x="#-Dp/2" y="-1" z="#-Dp/2" />
+            <size x="#(sizefx)" y="2" z="#(sizefz)" />
+          </fillbox>
+          <!--Remove the bc at two sides-->
+          <setmkvoid />
+          <fillbox x="#-Dp/2" y="0" z="#Dp/2">
+            <modefill>bound</modefill>
+            <point x="#-Dp*10.5" y="-1" z="#-Dp*10.5" />
+            <size x="#Dp*10" y="2" z="#(sizebz+Dp*10.5)" />
+          </fillbox>
+          <setmkvoid />
+          <fillbox x="#sizebx+Dp" y="0" z="#Dp">
+            <modefill>bound</modefill>
+            <point x="#sizefx+Dp/2" y="-1" z="#-Dp*10" />
+            <size x="#(Dp*10)" y="2" z="#(sizebz+Dp*10)" />
+          </fillbox>
+        </mainlist>
+      </commands>
+    </geometry>
+    <normals>
+      <distanceh value="2.0" comment="Maximum distance (H*distanceh) to compute normals data (default=2)" />
+      <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry (VTK format)" />
+      <svshapes value="1" comment="(default=0)" />
+    </normals>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <phi value="33" comment="friction angle" />
+        <coh value="10e3" comment="cohesion" />
+        <dlt value="0" comment="dilatancy angle" />
+        <ModulusE value="10e6" comment="elastic modulus" />
+        <PRvs value="0.3" comment="possion ratio" />
+      </soils>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision (default=0)" />
+      <parameter key="DPCtes" value="3" comment="DP constants type 1:3D DP circumscribed, 2:3D mid circumscribes, 3:2D Plain strain (default=1)" />
+      <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
+      <parameter key="SlipMode" value="1" comment="Slip mode for mDBC 1:DBC vel=0, 2:No-slip (default=1)" />
+      <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic (default=1)" />
+      <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping (default=40)" />
+      <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland, 3:Gaussian (default=2)" />
+      <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS (default=1)" />
+      <parameter key="Visco" value="1.0" comment="Viscosity value" />
+      <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary (default=1)" />
+      <parameter key="DensityDT" value="0" comment="Noise-free stress treatment 0:None, 1:Molteni, 2:Feng, 3:Feng(full) (default=0)" />
+      <parameter key="DensityDTvalue" value="0.1" comment="DDT value (default=0.1)" />
+      <parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full (default=0)" />
+      <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
+      <parameter key="ShiftTFS" value="1.5" comment="Threshold to detect free surface. Typically 1.5 for 2D and 2.75 for 3D (default=0)" />
+      <parameter key="RigidAlgorithm" value="1" comment="Rigid Algorithm 1:SPH, 2:DEM, 3:Chrono (default=1)" />
+      <parameter key="FtPause" value="0.0" comment="Time to freeze the floatings at simulation start (warmup) (default=0)" units_comment="seconds" />
+      <parameter key="CoefDtMin" value="0.01" comment="Coefficient to calculate minimum time step dtmin=coefdtmin*h/speedsound (default=0.05)" />
+      <parameter key="#DtIni" value="0.0001" comment="Initial time step (default=h/speedsound)" units_comment="seconds" />
+      <parameter key="#DtMin" value="0.00001" comment="Minimum time step (default=coefdtmin*h/speedsound)" units_comment="seconds" />
+      <parameter key="#DtFixed" value="DtFixed.dat" comment="Dt values are loaded from file (default=disabled)" />
+      <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating (default=0)" />
+      <parameter key="TimeMax" value="20.005" comment="Time of simulation" units_comment="seconds" />
+      <parameter key="TimeOut" value="20.005" comment="Time out data" units_comment="seconds" />
+      <parameter key="PartsOutMax" value="1" comment="Allowed %/100 of fluid particles out the domain (default=1)" units_comment="decimal" />
+      <parameter key="RhopOutMin" value="700" comment="Minimum rhop valid (default=700)" units_comment="kg/m^3" />
+      <parameter key="RhopOutMax" value="2500" comment="Maximum rhop valid (default=1300)" units_comment="kg/m^3" />
+      <parameter key="XPeriodicIncZ" value="0" comment="Increase of Z with periodic BC" />
+      <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+        <posmin x="default" y="default" z="default" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+        <posmax x="default" y="default" z="default" />
+      </simulationdomain>
+      <parameter key="HydromechCoupling" value="0" comment="Hydromechanical coupling switch. 0:None, 1:Enable. Default=0" />
+      <parameter key="PorePressureModel" value="0" comment="Pore pressure model. 0:None, 1:PR, 2:PPE. Default=0" />
+      <parameter key="PorePressureInit" value="0" comment="Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile, 3:Hydrostatic+analytical excess. Default=0" />
+      <parameter key="SavePorePressure" value="0" comment="Save pore pressure field. 0:off, 1:on. Default=0" />
+      <parameter key="SaveExtraParts" value="40" comment="Part interval/list for saving extra data required by restart, including mDBC normals." />
+    </parameters>
+  </execution>
+</case>
