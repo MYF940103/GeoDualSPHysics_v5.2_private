@@ -91,7 +91,7 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   //======
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureAceSymCorrc=NULL;
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
@@ -105,6 +105,7 @@ void JSphCpu::InitVars(){
   PorePressureTopDrainedStepPrint=false;
   PorePressureBottomNoFluxStepPrint=false;
   TopLoadStepPrint=false;
+  HydromechDampingStepPrint=false;
   RidpMove=NULL; 
   FtRidp=NULL;
   FtoForces=NULL;
@@ -155,7 +156,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureAceSymCorrc=NULL;
 }
 
 //==============================================================================
@@ -188,12 +189,12 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(HydromechCoupling || SavePorePressure){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,1); //-porepress
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-porepressureace
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,3); //-porepressureace,porepressureacediff,porepressureacesymcorr
   }
   if(SavePorePressure){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepress,excessporepress output
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz output
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-porepressureace output
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,3); //-porepressureace,porepressureacediff,porepressureacesymcorr output
   }
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
@@ -251,6 +252,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *lapporepress=SaveArrayCpu(Np,LapPorePressc);
   float        *lapz      =SaveArrayCpu(Np,LapZc);
   tfloat3      *porepressureace=SaveArrayCpu(Np,PorePressureAcec);
+  tfloat3      *porepressureacediff=SaveArrayCpu(Np,PorePressureAceDiffc);
+  tfloat3      *porepressureacesymcorr=SaveArrayCpu(Np,PorePressureAceSymCorrc);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -275,6 +278,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(LapPorePressc);
   ArraysCpu->Free(LapZc);
   ArraysCpu->Free(PorePressureAcec);
+  ArraysCpu->Free(PorePressureAceDiffc);
+  ArraysCpu->Free(PorePressureAceSymCorrc);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -303,6 +308,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(lapporepress)  LapPorePressc = ArraysCpu->ReserveFloat();
   if(lapz)          LapZc = ArraysCpu->ReserveFloat();
   if(porepressureace) PorePressureAcec = ArraysCpu->ReserveFloat3();
+  if(porepressureacediff) PorePressureAceDiffc = ArraysCpu->ReserveFloat3();
+  if(porepressureacesymcorr) PorePressureAceSymCorrc = ArraysCpu->ReserveFloat3();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -327,6 +334,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,lapporepress,LapPorePressc);
   RestoreArrayCpu(Np,lapz,LapZc);
   RestoreArrayCpu(Np,porepressureace,PorePressureAcec);
+  RestoreArrayCpu(Np,porepressureacediff,PorePressureAceDiffc);
+  RestoreArrayCpu(Np,porepressureacesymcorr,PorePressureAceSymCorrc);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -379,6 +388,8 @@ void JSphCpu::ReserveBasicArraysCpu(){
     LapPorePressc=ArraysCpu->ReserveFloat();
     LapZc=ArraysCpu->ReserveFloat();
     PorePressureAcec=ArraysCpu->ReserveFloat3();
+    PorePressureAceDiffc=ArraysCpu->ReserveFloat3();
+    PorePressureAceSymCorrc=ArraysCpu->ReserveFloat3();
   }
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
   SigmaM1c=ArraysCpu->ReserveSymatrix3f();}//mdbr
@@ -422,7 +433,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,tfloat3 *porepressureacesymcorr)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -472,6 +483,12 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(porepressureace){
       for (unsigned p=0;p<n;p++)porepressureace[p]=PorePressureAcec[p+pini];
   }
+  if(porepressureacediff){
+      for (unsigned p=0;p<n;p++)porepressureacediff[p]=PorePressureAceDiffc[p+pini];
+  }
+  if(porepressureacesymcorr){
+      for (unsigned p=0;p<n;p++)porepressureacesymcorr[p]=PorePressureAceSymCorrc[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -500,6 +517,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(lapporepress)lapporepress[pdel]=lapporepress[p];
         if(lapz)lapz[pdel]=lapz[p];
         if(porepressureace)porepressureace[pdel]=porepressureace[p];
+        if(porepressureacediff)porepressureacediff[pdel]=porepressureacediff[p];
+        if(porepressureacesymcorr)porepressureacesymcorr[pdel]=porepressureacesymcorr[p];
         //====
         code2[pdel]=code2[p];
       }
@@ -614,6 +633,8 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   if(Deltac)memset(Deltac,0,sizeof(float)*np);                       //Deltac[]=0
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
   if(PorePressureAcec)memset(PorePressureAcec,0,sizeof(tfloat3)*np);  //PorePressureAcec[]=(0,0,0)
+  if(PorePressureAceDiffc)memset(PorePressureAceDiffc,0,sizeof(tfloat3)*np); //PorePressureAceDiffc[]=(0,0,0)
+  if(PorePressureAceSymCorrc)memset(PorePressureAceSymCorrc,0,sizeof(tfloat3)*np); //PorePressureAceSymCorrc[]=(0,0,0)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
   memset(Rsigmac,0,sizeof(tsymatrix3f)*np);
@@ -1586,9 +1607,10 @@ void JSphCpu::UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,d
 /// Applies a minimal top drained condition for excess pore pressure on material particles.
 //==============================================================================
 unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
-  ,double *porepress,const char *stage,bool printlog)
+  ,double *porepress,double timestep,const char *stage,bool printlog)
 {
   if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureTopDrained || !porepress)return(0);
+  if(timestep<PorePressureTopDrainedStartTime)return(0);
   if(!pos || !code)Run_Exceptioon("Pointers without data for top drained pore-pressure boundary.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for top drained pore-pressure boundary.");
@@ -1632,8 +1654,8 @@ unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdo
   }
 
   if(printlog){
-    Log->Printf("Top drained pore-pressure boundary (%s): enabled=True, zmax_material=%g, drain_thickness=%g, z_threshold=%g, affected=%u/%u, PorePress before=[%g,%g] Pa, after=[%g,%g] Pa."
-      ,(stage? stage: "unknown"),zmax,drainthick,zthreshold,affected,npmat,pwbeforemin,pwbeforemax,pwaftermin,pwaftermax);
+    Log->Printf("Top drained pore-pressure boundary activated on CPU (%s): TimeStep=%g, start_time=%g, enabled=True, zmax_material=%g, drain_thickness=%g, z_threshold=%g, affected=%u/%u, PorePress before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,(stage? stage: "unknown"),timestep,PorePressureTopDrainedStartTime,zmax,drainthick,zthreshold,affected,npmat,pwbeforemin,pwbeforemax,pwaftermin,pwaftermax);
     if(double(PorePressureWaterLevel)<zmax)Log->PrintWarning(fun::PrintStr("Top drained pore-pressure boundary is used with WaterLevel=%g below top elevation=%g. The drained top layer may be above the water level.",PorePressureWaterLevel,zmax));
   }
   return(affected);
@@ -1860,6 +1882,9 @@ void JSphCpu::ComputeHydroLapZ(unsigned n,unsigned pini
 template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsigned pini
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const
 {
+  const bool excessmode=(PorePressureFeedbackMode==1);
+  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback mode.");
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -1870,7 +1895,8 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
 
     tfloat3 acep1=TFloat3(0);
     const tdouble3 posp1=pos[p1];
-    const double pwp1=porepress[p1];
+    const double hydro1=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(posp1),0.): 0.);
+    const double pwp1=porepress[p1]-hydro1;
     const double rhop1=double(velrhop[p1].w);
     if(rhop1<=0.)continue;
     const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
@@ -1891,7 +1917,9 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
           const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
           const double rhop2=double(velrhop[p2].w);
           if(rhop2>0.){
-            const double pterm=-double(MassFluid)*(pwp1+porepress[p2])/(rhop1*rhop2);
+            const double hydro2=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(pos[p2]),0.): 0.);
+            const double pwp2=porepress[p2]-hydro2;
+            const double pterm=-double(MassFluid)*(pwp1+pwp2)/(rhop1*rhop2);
             acep1.x+=float(pterm*double(frx));
             acep1.y+=float(pterm*double(fry));
             acep1.z+=float(pterm*double(frz));
@@ -1918,10 +1946,195 @@ void JSphCpu::ComputePorePressureAccel(unsigned n,unsigned pini
 }
 
 //==============================================================================
+/// Computes difference-gradient pore-pressure feedback acceleration diagnostic for material particles.
+//==============================================================================
+template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const
+{
+  const bool excessmode=(PorePressureFeedbackMode==1);
+  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback difference diagnostic.");
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    if(!CODE_IsFluid(code[p1]))continue;
+
+    tfloat3 acep1=TFloat3(0);
+    const tdouble3 posp1=pos[p1];
+    const double hydro1=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(posp1),0.): 0.);
+    const double pwp1=porepress[p1]-hydro1;
+    const double rhop1=double(velrhop[p1].w);
+    if(rhop1<=0.)continue;
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float drx=float(posp1.x-pos[p2].x);
+              float dry=float(posp1.y-pos[p2].y);
+        if(rsym)dry=float(posp1.y+pos[p2].y); //<vs_syymmetry>
+        const float drz=float(posp1.z-pos[p2].z);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const double rhop2=double(velrhop[p2].w);
+          if(rhop2>0.){
+            const double hydro2=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(pos[p2]),0.): 0.);
+            const double pwp2=porepress[p2]-hydro2;
+            const double coef=-double(MassFluid)*(pwp2-pwp1)/(rhop2*rhop1);
+            acep1.x+=float(coef*double(frx));
+            acep1.y+=float(coef*double(fry));
+            acep1.z+=float(coef*double(frz));
+          }
+          rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+          if(rsym)p2--;                                             //<vs_syymmetry>
+        }
+        else rsym=false;                                            //<vs_syymmetry>
+      }
+    }
+    porepressureacediff[p1]=acep1;
+  }
+}
+
+//==============================================================================
+/// Computes difference-gradient pore-pressure feedback acceleration diagnostic for material particles.
+//==============================================================================
+void JSphCpu::ComputePorePressureAccelDiff(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const
+{
+       if(TKernel==KERNEL_Wendland)ComputePorePressureAccelDiffT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacediff);
+  else if(TKernel==KERNEL_Cubic)   ComputePorePressureAccelDiffT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacediff);
+  else Run_Exceptioon("Kernel unknown.");
+}
+
+//==============================================================================
+/// Computes corrected-gradient symmetric pore-pressure acceleration diagnostic for material particles.
+//==============================================================================
+template<TpKernel tker> unsigned JSphCpu::ComputePorePressureAccelSymCorrT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacesymcorr)const
+{
+  const bool excessmode=(PorePressureFeedbackMode==1);
+  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for corrected-gradient pore-pressure feedback diagnostic.");
+  const double determlimit=1e-6;
+  int fallbackcount=0;
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) reduction(+:fallbackcount)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    tfloat3 acep1=TFloat3(0);
+    if(CODE_IsFluid(code[p1])){
+      const tdouble3 posp1=pos[p1];
+      const double rhopp1=double(velrhop[p1].w);
+      if(rhopp1<=0.){
+        porepressureacesymcorr[p1]=acep1;
+        continue;
+      }
+      const double pwp1=(excessmode? porepress[p1]-rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(posp1),0.): porepress[p1]);
+      tmatrix3d lcorr=TMatrix3d(0);
+      //-First pass: local kernel correction matrix L_i=-sum_j V_j r_ij tensor gradW_ij.
+      const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+      for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+        const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+        for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(code[p2])){
+          const float drx=float(posp1.x-pos[p2].x);
+          const float dry=float(posp1.y-pos[p2].y);
+          const float drz=float(posp1.z-pos[p2].z);
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+            const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+            const double frx=double(fac*drx),fry=double(fac*dry),frz=double(fac*drz);
+            const double rhopp2=double(velrhop[p2].w);
+            if(rhopp2>0.){
+              const double volp2=double(MassFluid)/rhopp2;
+              lcorr.a11+=-double(drx)*frx*volp2; lcorr.a12+=-double(drx)*fry*volp2; lcorr.a13+=-double(drx)*frz*volp2;
+              lcorr.a21+=-double(dry)*frx*volp2; lcorr.a22+=-double(dry)*fry*volp2; lcorr.a23+=-double(dry)*frz*volp2;
+              lcorr.a31+=-double(drz)*frx*volp2; lcorr.a32+=-double(drz)*fry*volp2; lcorr.a33+=-double(drz)*frz*volp2;
+            }
+          }
+        }
+      }
+      bool fallback=false;
+      tmatrix3d lcorrinv=TMatrix3d(0);
+      if(Simulate2D){
+        const double determ=lcorr.a11*lcorr.a33-lcorr.a13*lcorr.a31;
+        if(fabs(determ)>=determlimit){
+          lcorrinv.a11= lcorr.a33/determ;
+          lcorrinv.a13=-lcorr.a13/determ;
+          lcorrinv.a31=-lcorr.a31/determ;
+          lcorrinv.a33= lcorr.a11/determ;
+          lcorrinv.a22=1.;
+        }
+        else fallback=true;
+      }
+      else{
+        const double determ=fmath::Determinant3x3(lcorr);
+        if(fabs(determ)>=determlimit)lcorrinv=fmath::InverseMatrix3x3(lcorr,determ);
+        else fallback=true;
+      }
+      if(fallback)fallbackcount++;
+      //-Second pass: symmetric pressure operator with corrected gradients.
+      for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+        const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+        for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(code[p2])){
+          const float drx=float(posp1.x-pos[p2].x);
+          const float dry=float(posp1.y-pos[p2].y);
+          const float drz=float(posp1.z-pos[p2].z);
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+            const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+            const double frx=double(fac*drx),fry=double(fac*dry),frz=double(fac*drz);
+            double cfrx=frx,cfry=fry,cfrz=frz;
+            if(!fallback){
+              cfrx=lcorrinv.a11*frx+lcorrinv.a12*fry+lcorrinv.a13*frz;
+              cfry=lcorrinv.a21*frx+lcorrinv.a22*fry+lcorrinv.a23*frz;
+              cfrz=lcorrinv.a31*frx+lcorrinv.a32*fry+lcorrinv.a33*frz;
+            }
+            const double rhopp2=double(velrhop[p2].w);
+            if(rhopp2>0.){
+              const double pwp2=(excessmode? porepress[p2]-rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(pos[p2]),0.): porepress[p2]);
+              const double pterm=-double(MassFluid)*(pwp1+pwp2)/(rhopp1*rhopp2);
+              acep1.x+=float(pterm*cfrx);
+              acep1.y+=float(pterm*cfry);
+              acep1.z+=float(pterm*cfrz);
+            }
+          }
+        }
+      }
+    }
+    porepressureacesymcorr[p1]=acep1;
+  }
+  return(unsigned(fallbackcount));
+}
+
+//==============================================================================
+/// Computes corrected-gradient symmetric pore-pressure acceleration diagnostic for material particles.
+//==============================================================================
+unsigned JSphCpu::ComputePorePressureAccelSymCorr(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacesymcorr)const
+{
+       if(TKernel==KERNEL_Wendland)return(ComputePorePressureAccelSymCorrT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacesymcorr));
+  else if(TKernel==KERNEL_Cubic)   return(ComputePorePressureAccelSymCorrT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacesymcorr));
+  else Run_Exceptioon("Kernel unknown.");
+  return(0);
+}
+
+//==============================================================================
 /// Adds pore-pressure feedback acceleration to material particles.
 //==============================================================================
-void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,tfloat3 *ace)const
+void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *ace)const
 {
+  const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==1? porepressureacediff: porepressureace);
+  if(!porepressurefeedbackace)Run_Exceptioon("Selected pore-pressure feedback operator has no acceleration array.");
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -1929,9 +2142,9 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
   for(int cp=0;cp<nint;cp++){
     const unsigned p=pini+unsigned(cp);
     if(CODE_IsFluid(code[p])){
-      ace[p].x+=porepressureace[p].x;
-      ace[p].y+=porepressureace[p].y;
-      ace[p].z+=porepressureace[p].z;
+      ace[p].x+=porepressurefeedbackace[p].x;
+      ace[p].y+=porepressurefeedbackace[p].y;
+      ace[p].z+=porepressurefeedbackace[p].z;
     }
   }
 }
@@ -1943,6 +2156,13 @@ unsigned JSphCpu::ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,cons
 {
   if(!TopLoadEnabled || !ace)return(0);
   if(!pos || !velrhop || !code)Run_Exceptioon("Pointers without data for top load.");
+  double rampfactor=1.;
+  if(TopLoadRampEnd>TopLoadRampStart){
+    if(TimeStep<TopLoadRampStart)rampfactor=0.;
+    else if(TimeStep>=TopLoadRampEnd)rampfactor=1.;
+    else rampfactor=(TimeStep-TopLoadRampStart)/(TopLoadRampEnd-TopLoadRampStart);
+  }
+  const double topload=double(TopLoad)*rampfactor;
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for TopLoad.");
   const double loadthick=(TopLoadThickness>0.f? double(TopLoadThickness): double(KernelH));
@@ -1975,7 +2195,7 @@ unsigned JSphCpu::ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,cons
       if(z>=zthreshold){
         const double rho=double(velrhop[p].w);
         if(rho>0.){
-          const double aload=double(TopLoad)/(rho*loadthick);
+          const double aload=topload/(rho*loadthick);
           const double ax=aload*upx;
           const double ay=aload*upy;
           const double az=aload*upz;
@@ -1992,12 +2212,47 @@ unsigned JSphCpu::ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,cons
   }
   if(affected==0)amin=0.;
   if(printlog){
-    const double sign=(TopLoad>=0.f? 1.: -1.);
+    const double sign=(topload>=0.? 1.: -1.);
     const double dirx=sign*upx,diry=sign*upy,dirz=sign*upz;
-    Log->Printf("TopLoad applied on CPU (%s): TopLoad=%g Pa, thickness=%g, zmax=%g, z_threshold=%g, affected=%u/%u, acceleration magnitude range=[%g,%g] m/s2, direction=(%g,%g,%g)."
-      ,(stage? stage: "unknown"),TopLoad,loadthick,zmax,zthreshold,affected,npmat,amin,amax,dirx,diry,dirz);
+    Log->Printf("TopLoad applied on CPU (%s): TimeStep=%g, TopLoad=%g Pa, TopLoadEffective=%g Pa, ramp_factor=%g, ramp=[%g,%g] s, thickness=%g, zmax=%g, z_threshold=%g, affected=%u/%u, acceleration magnitude range=[%g,%g] m/s2, direction=(%g,%g,%g)."
+      ,(stage? stage: "unknown"),TimeStep,TopLoad,topload,rampfactor,TopLoadRampStart,TopLoadRampEnd,loadthick,zmax,zthreshold,affected,npmat,amin,amax,dirx,diry,dirz);
   }
   return(affected);
+}
+
+//==============================================================================
+/// Applies hydromechanical kinematic damping to material particles.
+//==============================================================================
+unsigned JSphCpu::ApplyHydromechDamping(unsigned n,unsigned pini,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,bool printlog)const
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureFeedback || !HydromechDamping || HydromechDampingCoef<=0.f || !ace)return(0);
+  if(!velrhop || !code)Run_Exceptioon("Pointers without data for hydromechanical damping.");
+  if(TimeStep<HydromechDampingStartTime)return(0);
+  if(HydromechDampingEndTime>HydromechDampingStartTime && TimeStep>HydromechDampingEndTime)return(0);
+  const double coef=double(HydromechDampingCoef);
+  unsigned affected=0;
+  double amin=DBL_MAX,amax=0.;
+  for(int cp=0;cp<int(n);cp++){
+    const unsigned p=pini+unsigned(cp);
+    if(CODE_IsFluid(code[p])){
+      const double ax=-coef*double(velrhop[p].x);
+      const double ay=-coef*double(velrhop[p].y);
+      const double az=-coef*double(velrhop[p].z);
+      ace[p].x+=float(ax);
+      ace[p].y+=float(ay);
+      ace[p].z+=float(az);
+      const double amag=sqrt(ax*ax+ay*ay+az*az);
+      amin=min(amin,amag);
+      amax=max(amax,amag);
+      affected++;
+    }
+  }
+  if(affected==0)amin=0.;
+  if(printlog && affected && amax>0.){
+    Log->Printf("Hydromechanical damping activated at TimeStep=%g: coef=%g 1/s, start=%g, end=%g, affected=%u/%u, acceleration magnitude range=[%g,%g] m/s2."
+      ,TimeStep,HydromechDampingCoef,HydromechDampingStartTime,HydromechDampingEndTime,affected,n,amin,amax);
+  }
+  return(amax>0.? affected: 0);
 }
 
 //==============================================================================

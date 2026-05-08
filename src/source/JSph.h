@@ -213,11 +213,20 @@ protected:
   float WaterDensity;           ///<Water density rho_w [kg/m3].
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
+  int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
+  int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient.
   bool SavePorePressure;        ///<Save pore pressure field. 0:off, 1:on (default=0).
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
   bool TopLoadEnabled;          ///<Enable top uniform load. 0:off, 1:on (default=0).
   float TopLoad;                ///<Uniform vertical load applied to top material layer [Pa].
   float TopLoadThickness;       ///<Top loaded layer thickness. If <=0, KernelH is used.
+  double TopLoadRampStart;      ///<Start time of top load ramp [s].
+  double TopLoadRampEnd;        ///<End time of top load ramp [s]. If <= start, load is applied immediately.
+  double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
+  bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.
+  float HydromechDampingCoef;   ///<Hydromechanical damping coefficient [1/s].
+  double HydromechDampingStartTime; ///<Start time for hydromechanical damping [s].
+  double HydromechDampingEndTime;   ///<End time for hydromechanical damping [s]. If <= start, active after start.
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).

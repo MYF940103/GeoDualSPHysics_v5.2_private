@@ -202,11 +202,20 @@ void JSph::InitVars(){
   WaterDensity=1000.f;
   PorePressureDtSafety=0.1f;
   PorePressureFeedback=false;
+  PorePressureFeedbackMode=0;
+  PorePressureFeedbackOperator=0;
   SavePorePressure=false;
   HydraulicGravity=TFloat3(0);
   TopLoadEnabled=false;
   TopLoad=0.f;
   TopLoadThickness=0.f;
+  TopLoadRampStart=0.;
+  TopLoadRampEnd=0.;
+  PorePressureTopDrainedStartTime=0.;
+  HydromechDamping=false;
+  HydromechDampingCoef=0.f;
+  HydromechDampingStartTime=0.;
+  HydromechDampingEndTime=0.;
   MdbcCorrector=false;
   MdbcFastSingle=true;
   MdbcThreshold=0;
@@ -700,6 +709,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     default: Run_Exceptioon("PorePressureTopDrained mode is not valid.");
   }
   PorePressureDrainThickness=eparms.GetValueFloat("PorePressureDrainThickness",true,0.f);
+  PorePressureTopDrainedStartTime=eparms.GetValueDouble("PorePressureTopDrainedStartTime",true,0.);
   switch(eparms.GetValueInt("PorePressureBottomNoFlux",true,0)){
     case 0:  PorePressureBottomNoFlux=false;  break;
     case 1:  PorePressureBottomNoFlux=true;   break;
@@ -716,6 +726,16 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  PorePressureFeedback=true;   break;
     default: Run_Exceptioon("PorePressureFeedback mode is not valid.");
   }
+  switch(eparms.GetValueInt("PorePressureFeedbackMode",true,0)){
+    case 0:  PorePressureFeedbackMode=0;  break;
+    case 1:  PorePressureFeedbackMode=1;  break;
+    default: Run_Exceptioon("PorePressureFeedbackMode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureFeedbackOperator",true,0)){
+    case 0:  PorePressureFeedbackOperator=0;  break;
+    case 1:  PorePressureFeedbackOperator=1;  break;
+    default: Run_Exceptioon("PorePressureFeedbackOperator is not valid.");
+  }
   switch(eparms.GetValueInt("SavePorePressure",true,0)){
     case 0:  SavePorePressure=false;  break;
     case 1:  SavePorePressure=true;   break;
@@ -731,12 +751,23 @@ void JSph::LoadConfigParameters(const JXml *xml){
   }
   TopLoad=eparms.GetValueFloat("TopLoad",true,0.f);
   TopLoadThickness=eparms.GetValueFloat("TopLoadThickness",true,0.f);
+  TopLoadRampStart=eparms.GetValueDouble("TopLoadRampStart",true,0.);
+  TopLoadRampEnd=eparms.GetValueDouble("TopLoadRampEnd",true,0.);
+  switch(eparms.GetValueInt("HydromechDamping",true,0)){
+    case 0:  HydromechDamping=false;  break;
+    case 1:  HydromechDamping=true;   break;
+    default: Run_Exceptioon("HydromechDamping mode is not valid.");
+  }
+  HydromechDampingCoef=eparms.GetValueFloat("HydromechDampingCoef",true,0.f);
+  HydromechDampingStartTime=eparms.GetValueDouble("HydromechDampingStartTime",true,0.);
+  HydromechDampingEndTime=eparms.GetValueDouble("HydromechDampingEndTime",true,0.);
   if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1.");
   if(HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be greater than or equal to zero.");
   if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
+  if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
   if(HydromechCoupling){
     const bool needsg=(HydraulicConductivity>0.f || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
     if(needsg && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for the enabled hydromechanical features. Set body Gravity or HydraulicGravityX/Y/Z.");
@@ -1670,6 +1701,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureAnalyticalProfile",PorePressureAnalyticalProfile));
     Log->Print("  PorePressureAnalyticalProfile options: 1:sin(pi*eta), 2:cos(pi*eta/2), 3:uniform excess");
     Log->Print(fun::VarStr("  PorePressureTopDrained",PorePressureTopDrained));
+    Log->Print(fun::VarStr("  PorePressureTopDrainedStartTime",PorePressureTopDrainedStartTime));
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
@@ -1679,17 +1711,27 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  WaterDensity",WaterDensity));
     Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
+    Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
+    Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle")));
     Log->Print(fun::VarStr("  SavePorePressure",SavePorePressure));
     Log->Print(fun::VarStr("  BodyGravity",Gravity));
     Log->Print(fun::VarStr("  HydraulicGravityMode",UseCustomHydraulicGravity()? "Custom": "BodyGravityFallback"));
     Log->Print(fun::VarStr("  HydraulicGravity",GetHydraulicGravity()));
     Log->Print(fun::VarStr("  HydraulicGmag",GetHydraulicGmag()));
+    Log->Print(fun::VarStr("  HydromechDamping",HydromechDamping));
+    if(HydromechDamping){
+      Log->Print(fun::VarStr("  HydromechDampingCoef",HydromechDampingCoef));
+      Log->Print(fun::VarStr("  HydromechDampingStartTime",HydromechDampingStartTime));
+      Log->Print(fun::VarStr("  HydromechDampingEndTime",HydromechDampingEndTime));
+    }
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("Hydromech(PP%d)",PorePressureModel);
   }
   Log->Print(fun::VarStr("TopLoadEnabled",TopLoadEnabled));
   if(TopLoadEnabled){
     Log->Print(fun::VarStr("  TopLoad",TopLoad));
     Log->Print(fun::VarStr("  TopLoadThickness",TopLoadThickness));
+    Log->Print(fun::VarStr("  TopLoadRampStart",TopLoadRampStart));
+    Log->Print(fun::VarStr("  TopLoadRampEnd",TopLoadRampEnd));
     Log->Print(fun::VarStr("  TopLoadDirection","positive along -HydraulicGravityUnit"));
     ConfigInfo=ConfigInfo+sep+"TopLoad";
   }
