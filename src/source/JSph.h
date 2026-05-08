@@ -215,6 +215,9 @@ protected:
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
   int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient.
+  bool PorePressureShepard;     ///<Apply Shepard regularization to pore pressure. 0:off, 1:on.
+  unsigned PorePressureShepardInterval; ///<Apply Shepard regularization every N steps.
+  int PorePressureShepardMode;  ///<Pore-pressure Shepard mode. 0:total pressure, 1:excess pressure.
   bool SavePorePressure;        ///<Save pore pressure field. 0:off, 1:on (default=0).
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
   bool TopLoadEnabled;          ///<Enable top uniform load. 0:off, 1:on (default=0).

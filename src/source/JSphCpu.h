@@ -183,6 +183,7 @@ protected:
   bool PorePressureUpdateDtPrint;  ///<True when pore-pressure update timestep warning has been printed.
   bool PorePressureTopDrainedStepPrint; ///<True when top drained post-update stats have been printed.
   bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
+  bool PorePressureShepardStepPrint; ///<True when pore-pressure Shepard regularization stats have been printed.
   bool TopLoadStepPrint;          ///<True when top load application stats have been printed.
   bool HydromechDampingStepPrint; ///<True when hydromechanical damping activation has been printed.
 
@@ -284,6 +285,12 @@ protected:
   void ComputeHydroPorePressRatePR(unsigned n,unsigned pini
     ,const typecode *code,const float *divvel,const float *lapporepress,const float *lapz,float *porepressrate)const;
   void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt,double *porepress,const float *porepressrate);
+  template<TpKernel tker> unsigned ApplyPorePressureShepardT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,double *porepress,unsigned step,bool printlog);
+  unsigned ApplyPorePressureShepard(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,double *porepress,unsigned step,bool printlog);
   unsigned ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
     ,double *porepress,double timestep,const char *stage,bool printlog);
   unsigned ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code

@@ -204,6 +204,9 @@ void JSph::InitVars(){
   PorePressureFeedback=false;
   PorePressureFeedbackMode=0;
   PorePressureFeedbackOperator=0;
+  PorePressureShepard=false;
+  PorePressureShepardInterval=20;
+  PorePressureShepardMode=0;
   SavePorePressure=false;
   HydraulicGravity=TFloat3(0);
   TopLoadEnabled=false;
@@ -736,6 +739,21 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  PorePressureFeedbackOperator=1;  break;
     default: Run_Exceptioon("PorePressureFeedbackOperator is not valid.");
   }
+  switch(eparms.GetValueInt("PorePressureShepard",true,0)){
+    case 0:  PorePressureShepard=false;  break;
+    case 1:  PorePressureShepard=true;   break;
+    default: Run_Exceptioon("PorePressureShepard mode is not valid.");
+  }
+  {
+    const int interval=eparms.GetValueInt("PorePressureShepardInterval",true,20);
+    if(interval<0)Run_Exceptioon("PorePressureShepardInterval must be greater than or equal to zero.");
+    PorePressureShepardInterval=unsigned(interval);
+  }
+  switch(eparms.GetValueInt("PorePressureShepardMode",true,0)){
+    case 0:  PorePressureShepardMode=0;  break;
+    case 1:  PorePressureShepardMode=1;  break;
+    default: Run_Exceptioon("PorePressureShepardMode is not valid.");
+  }
   switch(eparms.GetValueInt("SavePorePressure",true,0)){
     case 0:  SavePorePressure=false;  break;
     case 1:  SavePorePressure=true;   break;
@@ -766,6 +784,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
+  if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
   if(HydromechCoupling){
@@ -1713,6 +1732,11 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
     Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle")));
+    Log->Print(fun::VarStr("  PorePressureShepard",PorePressureShepard));
+    if(PorePressureShepard){
+      Log->Print(fun::VarStr("  PorePressureShepardInterval",PorePressureShepardInterval));
+      Log->Print(fun::VarStr("  PorePressureShepardMode",(PorePressureShepardMode==1? "ExcessPressure": "TotalPressure")));
+    }
     Log->Print(fun::VarStr("  SavePorePressure",SavePorePressure));
     Log->Print(fun::VarStr("  BodyGravity",Gravity));
     Log->Print(fun::VarStr("  HydraulicGravityMode",UseCustomHydraulicGravity()? "Custom": "BodyGravityFallback"));

@@ -939,6 +939,13 @@ double JSphCpuSingle::ComputeStep_Ver(){
   const double dt=DtVariable(true);        //-Calculate new dt.
   const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
   if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  if(hydropressupdate && PorePressureShepard && PorePressureShepardInterval){
+    const unsigned shepardstep=Nstep+1;
+    if((shepardstep%PorePressureShepardInterval)==0){
+      if(ApplyPorePressureShepard(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,shepardstep,!PorePressureShepardStepPrint))
+        PorePressureShepardStepPrint=true;
+    }
+  }
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
@@ -987,6 +994,13 @@ double JSphCpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
   if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  if(hydropressupdate && PorePressureShepard && PorePressureShepardInterval){
+    const unsigned shepardstep=Nstep+1;
+    if((shepardstep%PorePressureShepardInterval)==0){
+      if(ApplyPorePressureShepard(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,shepardstep,!PorePressureShepardStepPrint))
+        PorePressureShepardStepPrint=true;
+    }
+  }
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
   if(hydropressupdate && PorePressureTopDrained){

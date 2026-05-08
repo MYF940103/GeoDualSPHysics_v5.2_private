@@ -45,6 +45,7 @@
 
 #include <climits>
 #include <cmath>
+#include <vector>
 
 using namespace std;
 
@@ -104,6 +105,7 @@ void JSphCpu::InitVars(){
   PorePressureUpdateDtPrint=false;
   PorePressureTopDrainedStepPrint=false;
   PorePressureBottomNoFluxStepPrint=false;
+  PorePressureShepardStepPrint=false;
   TopLoadStepPrint=false;
   HydromechDampingStepPrint=false;
   RidpMove=NULL; 
@@ -1601,6 +1603,139 @@ void JSphCpu::UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,d
     const unsigned p1=pini+unsigned(cp);
     if(CODE_IsFluid(code[p1]))porepress[p1]+=double(porepressrate[p1])*dt;
   }
+}
+
+//==============================================================================
+/// Applies optional Shepard regularization to pore pressure on material particles.
+//==============================================================================
+template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+  ,double *porepress,unsigned step,bool printlog)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureShepard || !PorePressureShepardInterval || !porepress)return(0);
+  if(!pos || !velrhop || !code || !dcell)Run_Exceptioon("Pointers without data for pore-pressure Shepard regularization.");
+  if(PorePressureShepardMode==1 && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure Shepard regularization.");
+
+  const unsigned np=pini+n;
+  std::vector<double> preg(np,0.);
+  std::vector<unsigned char> valid(np,0);
+
+  unsigned npmat=0;
+  double pwbeforemin=DBL_MAX,pwbeforemax=-DBL_MAX;
+  double excessbeforemin=DBL_MAX,excessbeforemax=-DBL_MAX;
+  const double rhog=double(WaterDensity)*GetHydraulicGmag();
+  const bool excessmode=(PorePressureShepardMode==1);
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    npmat++;
+    pwbeforemin=min(pwbeforemin,porepress[p]);
+    pwbeforemax=max(pwbeforemax,porepress[p]);
+    if(excessmode){
+      const double z=GetHydraulicElevation(pos[p]);
+      const double depth=double(PorePressureWaterLevel)-z;
+      const double hydro=(depth>0.? rhog*depth: 0.);
+      const double excess=porepress[p]-hydro;
+      excessbeforemin=min(excessbeforemin,excess);
+      excessbeforemax=max(excessbeforemax,excess);
+    }
+  }
+  if(!npmat){
+    if(printlog)Log->PrintWarning("Pore-pressure Shepard regularization found no material particles.");
+    return(0);
+  }
+
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    if(!CODE_IsFluid(code[p1]))continue;
+    const tdouble3 posp1=pos[p1];
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+    const double z1=GetHydraulicElevation(posp1);
+    const double depth1=double(PorePressureWaterLevel)-z1;
+    const double hydro1=(depth1>0.? rhog*depth1: 0.);
+    const double pvalue1=(excessmode? porepress[p1]-hydro1: porepress[p1]);
+    const double volp1=double(MassFluid)/double(velrhop[p1].w);
+    double psum=volp1*pvalue1*double(fsph::GetKernel_Wab<tker>(CSP,0.f));
+    double wsum=volp1*double(fsph::GetKernel_Wab<tker>(CSP,0.f));
+
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float drx=float(posp1.x-pos[p2].x);
+              float dry=float(posp1.y-pos[p2].y);
+        if(rsym)dry=float(posp1.y+pos[p2].y); //<vs_syymmetry>
+        const float drz=float(posp1.z-pos[p2].z);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+          const float wab=fsph::GetKernel_Wab<tker>(CSP,rr2);
+          const double volp2=double(MassFluid)/double(velrhop[p2].w);
+          double pvalue=porepress[p2];
+          if(excessmode){
+            const double z2=GetHydraulicElevation(pos[p2]);
+            const double depth2=double(PorePressureWaterLevel)-z2;
+            const double hydro2=(depth2>0.? rhog*depth2: 0.);
+            pvalue-=hydro2;
+          }
+          psum+=volp2*pvalue*double(wab);
+          wsum+=volp2*double(wab);
+          rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+          if(rsym)p2--;                                             //<vs_syymmetry>
+        }
+        else rsym=false;                                            //<vs_syymmetry>
+      }
+    }
+    if(wsum>ALMOSTZERO){
+      const double pregvalue=psum/wsum;
+      preg[p1]=(excessmode? hydro1+pregvalue: pregvalue);
+      valid[p1]=1;
+    }
+  }
+
+  unsigned affected=0,skipped=0;
+  double pwaftermin=DBL_MAX,pwaftermax=-DBL_MAX;
+  double excessaftermin=DBL_MAX,excessaftermax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    if(valid[p]){
+      porepress[p]=preg[p];
+      affected++;
+    }
+    else skipped++;
+    pwaftermin=min(pwaftermin,porepress[p]);
+    pwaftermax=max(pwaftermax,porepress[p]);
+    if(excessmode){
+      const double z=GetHydraulicElevation(pos[p]);
+      const double depth=double(PorePressureWaterLevel)-z;
+      const double hydro=(depth>0.? rhog*depth: 0.);
+      const double excess=porepress[p]-hydro;
+      excessaftermin=min(excessaftermin,excess);
+      excessaftermax=max(excessaftermax,excess);
+    }
+  }
+
+  if(printlog){
+    Log->Printf("Pore-pressure Shepard regularization applied on CPU: step=%u, TimeStep=%g, mode=%s, interval=%u, affected=%u/%u, skipped=%u, PorePress before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,step,TimeStep,(excessmode? "ExcessPressure": "TotalPressure"),PorePressureShepardInterval,affected,npmat,skipped,pwbeforemin,pwbeforemax,pwaftermin,pwaftermax);
+    if(excessmode)Log->Printf("Pore-pressure Shepard excess stats: before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,excessbeforemin,excessbeforemax,excessaftermin,excessaftermax);
+  }
+  return(affected);
+}
+
+//==============================================================================
+/// Applies optional Shepard regularization to pore pressure on material particles.
+//==============================================================================
+unsigned JSphCpu::ApplyPorePressureShepard(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+  ,double *porepress,unsigned step,bool printlog)
+{
+       if(TKernel==KERNEL_Wendland)return(ApplyPorePressureShepardT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,step,printlog));
+  else if(TKernel==KERNEL_Cubic)   return(ApplyPorePressureShepardT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,step,printlog));
+  return(0);
 }
 
 //==============================================================================
