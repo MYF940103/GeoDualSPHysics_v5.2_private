@@ -216,6 +216,7 @@ void JSph::InitVars(){
   TopLoadRampEnd=0.;
   PorePressureTopDrainedStartTime=0.;
   HydromechDamping=false;
+  HydromechDampingXi=0.f;
   HydromechDampingCoef=0.f;
   HydromechDampingStartTime=0.;
   HydromechDampingEndTime=0.;
@@ -688,7 +689,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   switch(eparms.GetValueInt("PorePressureModel",true,0)){
     case 0:  PorePressureModel=0;  break;
     case 1:  PorePressureModel=1;  break;
-    case 2:  PorePressureModel=2;  break;
+    case 2:  Run_Exceptioon("PPE pore-pressure model is not implemented in this branch. Use PorePressureModel=1 for PR.");
     default: Run_Exceptioon("PorePressureModel mode is not valid.");
   }
   switch(eparms.GetValueInt("PorePressureInit",true,0)){
@@ -776,6 +777,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  HydromechDamping=true;   break;
     default: Run_Exceptioon("HydromechDamping mode is not valid.");
   }
+  HydromechDampingXi=eparms.GetValueFloat("HydromechDampingXi",true,0.f);
   HydromechDampingCoef=eparms.GetValueFloat("HydromechDampingCoef",true,0.f);
   HydromechDampingStartTime=eparms.GetValueDouble("HydromechDampingStartTime",true,0.);
   HydromechDampingEndTime=eparms.GetValueDouble("HydromechDampingEndTime",true,0.);
@@ -786,7 +788,9 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
+  if(HydromechDampingXi<0.f)Run_Exceptioon("HydromechDampingXi must be greater than or equal to zero.");
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
+  if(HydromechDampingXi>0.f && HydromechDampingCoef>0.f)Run_Exceptioon("Use either HydromechDampingXi or HydromechDampingCoef, not both.");
   if(HydromechCoupling){
     const bool needsg=(HydraulicConductivity>0.f || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
     if(needsg && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for the enabled hydromechanical features. Set body Gravity or HydraulicGravityX/Y/Z.");
@@ -1711,7 +1715,8 @@ void JSph::VisuConfig(){
   //-Hydromechanical / u-pw configuration.
   Log->Print(fun::VarStr("HydromechCoupling",HydromechCoupling? "Enabled": "Disabled"));
   if(HydromechCoupling){
-    const string ppmodel=(PorePressureModel==1? "PR explicit pore-pressure-rate": (PorePressureModel==2? "PPE pressure Poisson equation": "None"));
+    Log->Print("  PorePressureModel options: 0:disabled, 1:PR explicit pore-pressure-rate, 2:unsupported PPE not implemented");
+    const string ppmodel=(PorePressureModel==1? "PR explicit pore-pressure-rate": "None");
     const string ppinit=(PorePressureInit==1? "Hydrostatic": (PorePressureInit==2? "FromFile": (PorePressureInit==3? "Hydrostatic + analytical excess": "Zero")));
     Log->Print(fun::VarStr("  PorePressureModel",ppmodel));
     Log->Print(fun::VarStr("  PorePressureInit",ppinit));
@@ -1744,7 +1749,9 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  HydraulicGmag",GetHydraulicGmag()));
     Log->Print(fun::VarStr("  HydromechDamping",HydromechDamping));
     if(HydromechDamping){
+      Log->Print(fun::VarStr("  HydromechDampingXi",HydromechDampingXi));
       Log->Print(fun::VarStr("  HydromechDampingCoef",HydromechDampingCoef));
+      Log->Print("  HydromechDamping formula: a_damp=-c_d*v, c_d=xi*sqrt(E/(rho0*h^2)) when HydromechDampingXi>0; otherwise HydromechDampingCoef is used directly.");
       Log->Print(fun::VarStr("  HydromechDampingStartTime",HydromechDampingStartTime));
       Log->Print(fun::VarStr("  HydromechDampingEndTime",HydromechDampingEndTime));
     }
@@ -3580,6 +3587,12 @@ void JSph::ConfigConstantsSoil(){
         //-Constants for Dt.
         DtIni=KernelH/Cs0;
         DtMin=(KernelH/Cs0)*CoefDtMin;
+        if(HydromechDampingXi>0.f){
+          if(SoilCte.ModulusE<=0.f)Run_Exceptioon("Soil ModulusE must be greater than zero to compute HydromechDampingCoef from HydromechDampingXi.");
+          if(RhopZero<=0.f)Run_Exceptioon("RhopZero must be greater than zero to compute HydromechDampingCoef from HydromechDampingXi.");
+          if(KernelH<=0.)Run_Exceptioon("KernelH must be greater than zero to compute HydromechDampingCoef from HydromechDampingXi.");
+          HydromechDampingCoef=float(double(HydromechDampingXi)*sqrt(double(SoilCte.ModulusE)/(double(RhopZero)*KernelH*KernelH)));
+        }
 }
 
 

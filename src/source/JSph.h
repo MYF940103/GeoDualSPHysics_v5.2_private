@@ -198,7 +198,7 @@ protected:
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
   bool HydromechCoupling;       ///<Hydromechanical coupling switch. 0:None, 1:Enable (default=0).
-  int PorePressureModel;        ///<Pore pressure model. 0:None, 1:PR, 2:PPE placeholder (default=0).
+  int PorePressureModel;        ///<Pore pressure model. 0:None, 1:PR, 2:PPE unsupported (default=0).
   int PorePressureInit;         ///<Initial pore pressure. 0:Zero, 1:Hydrostatic, 2:FromFile, 3:Hydrostatic+analytical excess (default=0).
   float PorePressureWaterLevel; ///<Water level for hydrostatic pore-pressure initialization.
   float PorePressureExcessAmp;  ///<Amplitude of analytical excess pore pressure [Pa].
@@ -227,7 +227,8 @@ protected:
   double TopLoadRampEnd;        ///<End time of top load ramp [s]. If <= start, load is applied immediately.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.
-  float HydromechDampingCoef;   ///<Hydromechanical damping coefficient [1/s].
+  float HydromechDampingXi;     ///<Dimensionless damping coefficient xi. If >0, c_d=xi*sqrt(E/(rho0*h^2)).
+  float HydromechDampingCoef;   ///<Effective hydromechanical damping coefficient c_d [1/s].
   double HydromechDampingStartTime; ///<Start time for hydromechanical damping [s].
   double HydromechDampingEndTime;   ///<End time for hydromechanical damping [s]. If <= start, active after start.
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).

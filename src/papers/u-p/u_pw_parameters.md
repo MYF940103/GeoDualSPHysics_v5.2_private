@@ -134,7 +134,8 @@ Operator 1: difference-gradient feedback
 | `PorePressureShepardInterval` | integer `>0` when enabled | `20` | Applies Shepard regularization every N time steps. | Keep |
 | `PorePressureShepardMode` | `0/1` | `0` | `0`: regularize total `PorePress`; `1`: regularize excess pressure. | Keep |
 | `HydromechDamping` | `0/1` | `0` | Enables hydromechanical kinematic damping. | Keep |
-| `HydromechDampingCoef` | float [1/s] | `0` | Damping coefficient `c_d` in `a_damp=-c_d*v`. | Keep |
+| `HydromechDampingXi` | float | `0` | Dimensionless damping coefficient from the Supporting Information. If `>0`, the code computes `c_d=xi*sqrt(E/(rho0*h^2))`. | Keep |
+| `HydromechDampingCoef` | float [1/s] | `0` | Direct damping coefficient `c_d` in `a_damp=-c_d*v`. Compatibility/debug input; do not set together with `HydromechDampingXi`. | Keep |
 | `HydromechDampingStartTime` | double [s] | `0` | Damping activation time. | Keep |
 | `HydromechDampingEndTime` | double [s] | `0` | If `> start`, damping is disabled after this time. If `<= start`, damping remains active after start. | Keep |
 
@@ -159,13 +160,15 @@ Hydromechanical damping:
 a_damp = -c_d * v
 ```
 
-Important: `HydromechDampingCoef` is `c_d [1/s]`, not the dimensionless `xi` used in the Supporting Information.
-
-To match the Supporting Information:
+The preferred paper-aligned input is now `HydromechDampingXi`. When `HydromechDampingXi>0`, the effective coefficient is computed as:
 
 ```text
 c_d = xi * sqrt(E / (rho * h^2))
 ```
+
+where the implementation uses `E=SoilCte.ModulusE`, `rho=RhopZero`, and `h=KernelH`.
+
+`HydromechDampingCoef` is still supported as a direct `c_d [1/s]` compatibility/debug input. Do not set both `HydromechDampingXi` and `HydromechDampingCoef` in the same case.
 
 For a typical 1D consolidation case:
 
@@ -340,7 +343,7 @@ Purpose: compare early self-weight-generated undrained pore pressure to Supporti
 <parameter key="PorePressureShepardMode" value="1" />
 
 <parameter key="HydromechDamping" value="1" />
-<parameter key="HydromechDampingCoef" value="50" />
+<parameter key="HydromechDampingXi" value="0.05" />
 
 <parameter key="SavePorePressure" value="1" />
 ```
@@ -375,7 +378,7 @@ Suggested starting point:
 <parameter key="PorePressureShepardMode" value="1" />
 
 <parameter key="HydromechDamping" value="1" />
-<parameter key="HydromechDampingCoef" value="50" />
+<parameter key="HydromechDampingXi" value="0.05" />
 ```
 
 Notes:

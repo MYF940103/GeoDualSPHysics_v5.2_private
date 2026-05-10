@@ -177,7 +177,6 @@ void JSphCpuSingle::ConfigDomain(){
     memset(PorePressRatec,0,sizeof(float)*Np);
     Log->Printf("Passive pore pressure rate field initialised on CPU: PorePressRate=0 for %u material particles.",Np-Npb);
   }
-  if(HydromechCoupling && PorePressureModel==2)Log->PrintWarning("PorePressureModel=PPE is not implemented in Phase 3g. PorePressRate remains disabled.");
   if(DivVelc){
     memset(DivVelc,0,sizeof(float)*Np);
     Log->Printf("Hydromechanical diagnostic field initialised on CPU: DivVel=0 for %u material particles.",Np-Npb);
@@ -207,8 +206,8 @@ void JSphCpuSingle::ConfigDomain(){
       ,(PorePressureFeedbackMode==1? "excess pressure": "total pressure")
       ,(PorePressureFeedbackOperator==1? "difference-gradient": "symmetric stress-style"));
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && HydromechDamping)
-    Log->Printf("Hydromechanical damping enabled: coef=%g 1/s, start=%g, end=%g."
-      ,HydromechDampingCoef,HydromechDampingStartTime,HydromechDampingEndTime);
+    Log->Printf("Hydromechanical damping enabled: xi=%g, coef=%g 1/s, start=%g, end=%g."
+      ,HydromechDampingXi,HydromechDampingCoef,HydromechDampingStartTime,HydromechDampingEndTime);
   //-Computes radius of floating bodies.
   if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
   //-Configures floating motion data storage with high frequency. //<vs_ftmottionsv>  
