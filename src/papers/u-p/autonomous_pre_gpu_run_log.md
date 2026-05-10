@@ -4,7 +4,7 @@ Date: 2026-05-11
 
 ## Current Commit
 
-`0d9e726` - `Update pre-GPU readiness gate`
+`139c359` - `Add final pre-GPU readiness report`
 
 ## Working Tree Summary
 
@@ -90,19 +90,26 @@ CPU Debug rebuild:
 - Result: success.
 - Executable refreshed: `bin/windows/DualSPHysics5.2CPU_win64_debug.exe`.
 
-Short smoke attempt:
+Extended-timeout short smoke sanity:
 
-- Attempted the requested final sanity set: 01 pressure-only micro smoke, 02
-  Scenario 1 Stage A/B restart smoke, and 02 Scenario 2 micro smoke.
-- The run exceeded the allowed short-smoke budget and timed out after about
-  30 minutes (`1804 s` command timeout).
-- The running CPU Debug process was stopped and the `_autopregpu_smoke`
-  generated output folders were removed.
+| Smoke | GenCase | DualSPHysics | Excluded | Runtime | Key fields | Notes |
+|---|---:|---:|---:|---:|---|---|
+| 01 pressure-only micro | 0 | 0 | 0 | 19.95 s | ok | Pore-pressure diagnostics written. |
+| 02 Scenario 1 Stage A | 0 | 0 | 0 | 52.40 s | ok | Self-weight generation stage. |
+| 02 Scenario 1 Stage B restart | 0 | 0 | 0 | 25.50 s | ok | `PorePress` restored from restart; XML init skipped. |
+| 02 Scenario 2 micro | 0 | 0 | 0 | 80.69 s | ok | Gravity-on short dissipation smoke. |
+
+CSV scan:
+
+- No `NaN` / `Inf` tokens detected in `PartCsv_*.csv`.
+- Required fields were present: `PorePress`, `ExcessPorePress`,
+  `PorePressRate`, `DivVel`, `LapPorePress`, `LapZ`,
+  `PorePressureAccelDiff`.
 
 Conclusion:
 
 - The build sanity is valid.
-- The smoke sanity is recorded as deferred due to runtime, not accepted as a
-  completed short smoke result.
-- This reinforces the current conservative gate: do not enter GPU coding from
-  this automation run.
+- The 01/02 CPU smoke sanity passed under the extended 120-minute allowance.
+- This removes the previous automation timeout blocker, but it does not complete
+  strict 03-06 paper-case readiness.
+- Do not enter GPU coding from this automation run.

@@ -71,16 +71,21 @@ strict paper reproduction:
 
 CPU Debug rebuild was executed on 2026-05-11 and completed successfully.
 
-The final short smoke sanity set was attempted, but it exceeded the allowed
-automation runtime budget and was stopped after about 30 minutes. The generated
-temporary `_autopregpu_smoke` output folders were removed. Because the smoke
-run did not finish within the short-test budget, no new smoke result is accepted
-from this phase.
+The final CPU smoke sanity set was rerun with the user-approved extended timeout
+budget. All requested 01/02 micro smokes completed:
 
-This is not treated as a physics regression by itself; it is treated as a
-pre-GPU automation blocker for declaring the current branch ready. Future smoke
-checks should use intentionally smaller restart/micro templates before any GPU
-work is started.
+| Smoke | GenCase | DualSPHysics | Excluded | Runtime | Key fields | Notes |
+|---|---:|---:|---:|---:|---|---|
+| 01 pressure-only micro | 0 | 0 | 0 | 19.95 s | ok | Pore-pressure diagnostics written. |
+| 02 Scenario 1 Stage A | 0 | 0 | 0 | 52.40 s | ok | Self-weight generation stage. |
+| 02 Scenario 1 Stage B restart | 0 | 0 | 0 | 25.50 s | ok | `PorePress` restored from restart; XML init skipped. |
+| 02 Scenario 2 micro | 0 | 0 | 0 | 80.69 s | ok | Gravity-on short dissipation smoke. |
+
+No `NaN` / `Inf` tokens were detected in the generated `PartCsv_*.csv` files.
+The required pore-pressure output fields were present.
+
+This removes the previous automation smoke-timeout blocker. It does not remove
+the stricter paper-case blockers for 03-06.
 
 ## Final Readiness Judgment
 

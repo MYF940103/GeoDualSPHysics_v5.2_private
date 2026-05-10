@@ -22,6 +22,7 @@ strict reproduction completion.
 | `d230c6d` | Finalize CPU interface cleanup before GPU. |
 | `0d9e726` | Update pre-GPU readiness gate. |
 | `557b389` | Record final CPU smoke status before GPU. |
+| `139c359` | Add final pre-GPU readiness report. |
 
 All commits above were pushed to `origin/u-p`.
 
@@ -51,13 +52,21 @@ CPU Debug rebuild succeeded:
 msbuild .\src\VS\DualSPHysics5ReCpu_vs2022.sln /m /t:Build /p:Configuration=DebugCPU /p:Platform=x64 /v:minimal
 ```
 
-The final short smoke sanity set was attempted, but exceeded the allowed
-automation runtime budget and was stopped after about 30 minutes. Temporary
-`_autopregpu_smoke` generated output folders were removed. No new smoke result
-from that attempt is accepted.
+The final CPU smoke sanity set was rerun with the user-approved extended timeout
+budget. All requested 01/02 micro smokes completed:
 
-This does not change earlier smoke evidence; it simply prevents this automation
-run from declaring a clean pre-GPU smoke pass.
+| Smoke | GenCase | DualSPHysics | Excluded | Runtime | Key fields | Notes |
+|---|---:|---:|---:|---:|---|---|
+| 01 pressure-only micro | 0 | 0 | 0 | 19.95 s | ok | Pore-pressure diagnostics written. |
+| 02 Scenario 1 Stage A | 0 | 0 | 0 | 52.40 s | ok | Self-weight generation stage. |
+| 02 Scenario 1 Stage B restart | 0 | 0 | 0 | 25.50 s | ok | `PorePress` restored from restart; XML init skipped. |
+| 02 Scenario 2 micro | 0 | 0 | 0 | 80.69 s | ok | Gravity-on short dissipation smoke. |
+
+No `NaN` / `Inf` tokens were detected in the generated `PartCsv_*.csv` files.
+The required pore-pressure output fields were present.
+
+This removes the previous automation smoke-timeout blocker, but it does not
+complete the strict 03-06 paper-case reproduction gate.
 
 ## Case Readiness Table
 
@@ -87,7 +96,8 @@ paper reproduction:
 
 ## Output Cleanup
 
-Generated outputs from the final smoke attempt were removed:
+Generated outputs from the final smoke attempt were removed after extracting the
+summary above:
 
 - `examples/u-pw/01_1D_Consolidation/_autopregpu_smoke`
 - `examples/u-pw/02_SelfWeight_Consolidation/_autopregpu_smoke`
@@ -96,11 +106,14 @@ No formal XML/BAT/README/notes/scripts/SVG/summary CSV files were deleted.
 
 ## GPU Scope Recommendation
 
-Current recommendation: **do not start GPU G1 yet**.
+Current recommendation under the full CPU paper-case gate:
+**do not start GPU G1 yet**.
 
-The passive GPU plan remains technically scoped, but is not authorized by the
-current full CPU case completion gate. If the gate is later relaxed, the only
-allowed first GPU scope should be:
+The 01/02 CPU smoke sanity now passes, so the previous timeout-specific blocker
+is gone. However, the passive GPU plan is still not authorized by the current
+full CPU case completion gate because 03-06 remain reduced/scaffold-level rather
+than strict reproduction smokes. If the gate is later relaxed, the only allowed
+first GPU scope should be:
 
 - passive `PorePressg` allocation/free/resize;
 - sorting and periodic duplicate handling for `PorePressg`;
