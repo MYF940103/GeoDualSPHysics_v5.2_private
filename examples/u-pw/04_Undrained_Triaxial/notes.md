@@ -70,13 +70,15 @@ Known paper triaxial cases:
 
 ## Smoke Interpretation
 
-The current smoke passes only the reduced execution health check:
+The current smoke passes the strict/minimal CPU execution health check:
 
 - GenCase code=0.
 - DualSPHysics code=0.
 - Excluded particles=0.
 - Pore-pressure and stress fields are written.
 - The tiny compressive load gives small positive excess pore pressure.
+- `analyze_triaxial_smoke.py` produces `triaxial_smoke_summary.csv` with
+  framewise `p'`, `q`, pore-pressure, velocity, and axial-strain proxy metrics.
 
 Strict triaxial validation remains feature-blocked by loading/confinement,
 stress-path postprocessing, and material-model choices. It is no longer a pure

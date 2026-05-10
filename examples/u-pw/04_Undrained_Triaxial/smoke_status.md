@@ -1,12 +1,12 @@
 # Smoke Status: Undrained Triaxial Reduced PR Case
 
-Date: 2026-05-10
+Date: 2026-05-11
 
 ## Case
 
 - XML: `CaseUndrainedTriaxial_PR_Smoke_Def.xml`
 - Launcher: `xCaseUndrainedTriaxial_PR_Smoke_win64_CPU_debug.bat`
-- Solver path tested: CPU Debug
+- Solver path tested: CPU Release
 - TimeMax: `0.001 s`
 - TimeOut: `0.001 s`
 
@@ -18,9 +18,10 @@ Date: 2026-05-10
 | DualSPHysics | code=0 |
 | Excluded particles | 0 |
 | Steps | 1049 |
-| Runtime | 103.77 s |
-| Material particles | 1000 |
+| Runtime | 22.10 s |
+| Particle rows in CSV | 1040 |
 | Top AccInput layer | 10 particles, `mkfluid=1` |
+| NaN/Inf scan | not detected |
 
 ## Field Output
 
@@ -44,12 +45,11 @@ Date: 2026-05-10
 | Metric | Value |
 | --- | --- |
 | Max velocity | `1.86e-5 m/s` |
-| Mean velocity | `2.47e-6 m/s` |
-| PorePress min/max/mean | `64.53 / 9761.04 / 4908.76 Pa` |
-| ExcessPorePress min/max/mean | `0.0903 / 15.48 / 3.76 Pa` |
-| PorePressRate max | `3.74e4 Pa/s` |
-| DivVel min/max/mean | `-3.15e-4 / -4.01e-8 / -1.63e-5 1/s` |
-| PorePressureAccelDiff.z min/max/mean | `-2.21e-2 / 1.67e-6 / -7.24e-3 m/s2` |
+| Mean pore pressure | `4719.96 Pa` |
+| Mean excess pore pressure | `3.61 Pa` |
+| Mean `p'` proxy | `9.05e-3 Pa` |
+| Mean `q` proxy | `8.36e-3 Pa` |
+| Axial strain proxy | `0.0` over this tiny smoke window |
 
 ## Interpretation
 
@@ -58,4 +58,7 @@ not validate the strict undrained triaxial benchmark because prescribed
 confinement, controlled axial strain/stress, and a calibrated triaxial material
 model are still missing.
 
-Generated output was removed after recording these metrics.
+`analyze_triaxial_smoke.py` now writes `triaxial_smoke_summary.csv` with
+framewise `p'`, `q`, pore pressure, excess pore pressure, axial-strain proxy,
+and velocity metrics. Generated output was removed after recording these
+metrics.

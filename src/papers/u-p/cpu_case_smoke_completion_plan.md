@@ -55,7 +55,7 @@ with missing features documented.
 |---|---|---|---|
 | 02 SelfWeight formal smoke | Mostly available | Blocks GPU G1 only as a case-readiness gate | Formalize Scenario 1/2 XML/BAT and record one short smoke result for each. |
 | 03 Cryer scaffold/smoke | Cryer-like strict/minimal smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict geometry, drained curved boundary, pore-pressure ghost/MLS, and analytical center-pressure comparison remain missing. |
-| 04 Undrained triaxial scaffold/smoke | Reduced AccInput smoke only | Blocks the new full CPU gate | Strict axial loading/confinement, stress-path output, and MCC/DP material decision remain missing. |
+| 04 Undrained triaxial scaffold/smoke | Strict/minimal AccInput smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict axial loading/confinement and MCC/DP material decision remain missing; framewise `p'`/`q` proxy output exists. |
 | 05 Retrogressive slope scaffold/smoke | Reduced wedge smoke only | Blocks strict reproduction gate | Strict retrogression remains sensitive-clay/softening, initial-state, boundary, and GPU blocked. |
 | 06 Sainte-Monique scaffold/smoke | Reduced placeholder smoke only; field data blocked | Blocks strict field reproduction gate | Full field reproduction is data/material/GPU blocked; placeholder smoke is not a validated field case. |
 | `TopLoad*` cleanup/deprecation | Source-side path removed in CPU-F6a | Complete before GPU G1 | Formal external-load path is native `AccInput`; formal XML no longer depends on source `TopLoad*`. Archived experiments are historical only. |
@@ -100,10 +100,10 @@ with missing features documented.
 | Field | Status |
 |---|---|
 | Current state | README, notes, TODO XML, reduced AccInput smoke XML/BAT, load CSV, and stress-path analysis scaffold exist. |
-| Short runnable? | Yes, reduced DP/u-pw smoke passed: GenCase code=0, Dual code=0, excluded=0. |
+| Short runnable? | Yes, reduced DP/u-pw smoke passed again: GenCase code=0, Dual code=0, excluded=0. |
 | Missing features | Axial strain or stress control, confinement/lateral stress boundary, validated stress-path output (`p'`, `q`), and possibly MCC if strict material reproduction is required. Current DP can only be an approximate smoke path. |
-| Minimum smoke test | Current reduced smoke meets CPU case-readiness: tiny compressive AccInput, small positive excess pore pressure, no NaN/excluded, required fields written. |
-| Blocks GPU G1? | Yes under the new full CPU case gate until loading/confinement and material/postprocessing decisions are implemented or explicitly deferred. |
+| Minimum smoke test | Current strict/minimal smoke meets CPU execution readiness: tiny compressive AccInput, small positive excess pore pressure, no NaN/excluded, required fields written, and framewise `p'`/`q` proxy summary written by `analyze_triaxial_smoke.py`. |
+| Blocks GPU G1? | Still blocks full strict triaxial reproduction, but not because it is TODO-only. Remaining blockers are confinement/loading and MCC/material decisions. |
 
 ### 05: `05_Retrogressive_Slope`
 

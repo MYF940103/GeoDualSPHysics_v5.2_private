@@ -20,8 +20,9 @@ apply a tiny axial loading increment.
   Native AccInput history for the top material layer. The final axial
   acceleration is only `-0.047619 m/s2`.
 - `analyze_triaxial_smoke.py`  
-  Lightweight postprocessing scaffold for approximate `p'` and `q` estimates
-  from `Sigma_kk` / `Sigma_ij` fields.
+  Lightweight postprocessing scaffold for framewise approximate `p'`, `q`,
+  axial-strain proxy, velocity, and pore-pressure summaries from `PartCsv`
+  outputs.
 - `CaseUndrainedTriaxial_PR_TODO_Def.xml`  
   Historical TODO scaffold retained as a reminder that strict reproduction is
   not complete.
@@ -33,17 +34,16 @@ Latest short smoke:
 | Item | Result |
 | --- | --- |
 | GenCase | code=0 |
-| DualSPHysics CPU Debug | code=0 |
+| DualSPHysics CPU Release | code=0 |
 | TimeMax | 0.001 s |
 | Excluded particles | 0 |
-| Fluid/material particles | 1000 |
+| Particle rows in CSV | 1040 |
 | AccInput target layer | `mkfluid=1`, 10 particles |
 | Max velocity | `1.86e-5 m/s` |
-| Mean velocity | `2.47e-6 m/s` |
-| ExcessPorePress range | `0.0903` to `15.48 Pa` |
-| PorePressRate max | `3.74e4 Pa/s` |
-| DivVel range | `-3.15e-4` to `-4.01e-8 1/s` |
-| PorePressureAccelDiff.z range | `-2.21e-2` to `1.67e-6 m/s2` |
+| Mean pore pressure | `4719.96 Pa` |
+| Mean excess pore pressure | `3.61 Pa` |
+| Mean `p'` / `q` proxies | `9.05e-3 Pa` / `8.36e-3 Pa` |
+| NaN/Inf scan | not detected |
 
 The smoke test confirms code execution, pore-pressure fields, feedback
 diagnostics, damping, and native AccInput loading are wired correctly. The pore
