@@ -45,13 +45,28 @@ and is only meant to exercise the coupled field plumbing.
 
 ## Missing for Strict Triaxial Reproduction
 
-- Axial strain-rate or stress-control boundary.
+- Paper geometry and loading:
+  - cylinder height `0.15 m`;
+  - diameter `0.05 m`;
+  - particle spacing `0.002 m`;
+  - top vertical velocity `0.01 m/s`;
+  - bottom fixed;
+  - top/bottom free-slip;
+  - lateral flexible confined boundary.
 - Prescribed confining pressure / lateral stress boundary.
-- Calibrated constitutive law. MCC may be required for strict paper matching;
-  the current Drucker-Prager path is an approximation.
+- Calibrated constitutive law. The paper uses MCC for the triaxial tests; the
+  current Drucker-Prager path is an approximation.
 - Validated stress-path postprocessing for `p'`, `q`, axial strain, and
   volumetric strain.
 - Higher resolution and longer runtime, preferably after GPU porting.
+
+Known paper triaxial cases:
+
+- TU-L: `(pc)_0 = 200 kPa`, confining pressure / initial mean effective stress
+  `150 kPa`.
+- TU-M: `(pc)_0 = 200 kPa`, confining pressure `30 kPa`.
+- TU-N: `(pc)_0 = 200 kPa`, confining pressure `200 kPa`.
+- permeability `k=1e-8 m/s` for undrained behavior.
 
 ## Smoke Interpretation
 

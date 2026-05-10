@@ -1,5 +1,17 @@
 # Full CPU Case Completion Report Before GPU
 
+## Superseded Readiness Note, 2026-05-11
+
+This report documented an earlier reduced-smoke gate. It is now superseded by
+the stricter full CPU reproduction gate in:
+
+- `full_paper_case_audit.md`
+- `full_cpu_implementation_backlog.md`
+- `final_cpu_before_gpu_report.md`
+
+Reduced smokes for 03-06 remain useful execution checks, but they are not strict
+paper reproductions and no longer authorize GPU G1 by themselves.
+
 Date: 2026-05-10
 
 ## Scope
@@ -117,17 +129,8 @@ Explicit exclusions:
 
 ## GPU Readiness Decision
 
-The full CPU case-smoke gate is now satisfied for the reduced/current smoke
-scope: 01-06 all have runnable CPU smoke cases or, for strict reproduction,
-clear data/feature blockers with a reduced smoke substitute.
-
-Recommendation:
-
-- GPU coding may start next only as **G1 passive `PorePressg`**.
-- This does not authorize the full GPU PR loop, feedback, Shepard, damping,
-  boundary ghost production, corrected-gradient production, or long GPU runs.
-- Strict paper reproduction remains blocked until the deferred features above
-  are designed and implemented in later CPU/GPU phases.
+Superseded: GPU coding is blocked under the stricter full CPU reproduction gate.
+See `final_cpu_before_gpu_report.md`.
 
 ## Current Dirty-State Note
 

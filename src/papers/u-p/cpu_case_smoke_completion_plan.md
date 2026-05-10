@@ -286,9 +286,8 @@ The next productive work is a case-readiness pass:
 4. Keep `TopLoad*` cleanup marked complete; do not port it to GPU.
 5. Update the smoke matrix status.
 
-After that, GPU G1 can start from a cleaner target: the current uncorrected
-material-only PR path plus `PorePressureAccelDiff` feedback as the production
-coupled operator.
+That earlier sequence is now superseded by the full CPU reproduction gate.
+Completing a reduced-smoke matrix is not enough to start GPU G1.
 
 ## Phase 6 Smoke Matrix Update After R1-R4
 
@@ -316,6 +315,25 @@ Readiness judgment after R1-R4 is superseded by the full CPU gate. The reduced
 smokes for 03-06 remain useful health checks, but they do not authorize GPU G1.
 GPU coding remains blocked until the full paper audit/backlog items are
 completed or explicitly deferred.
+
+## Reference Ingestion Update, 2026-05-11
+
+The main paper PDF was converted to `converted/u_pw_paper_text.md`. This
+confirms additional paper details:
+
+- Cryer: drained poroelastic sphere under uniform surface traction `p0`;
+  Poisson sweep `0.1`, `0.2`, `0.3`, `0.45`; other material constants shared
+  with 1D Terzaghi.
+- Triaxial: MCC cylinder, height `0.15 m`, diameter `0.05 m`, `Delta=0.002 m`,
+  top velocity `0.01 m/s`, lateral flexible confinement, `k=1e-8 m/s`,
+  TU-L/TU-M/TU-N confining pressures `150/30/200 kPa`.
+- Retrogressive slopes: 5 m and 8 m sensitive-clay slopes, `Delta=0.1 m`,
+  Drucker-Prager plus exponential softening, `k=1e-8 m/s`.
+- Sainte-Monique: Table 1 values are extracted, but field topography and zoning
+  remain unavailable.
+
+These details improve the TODOs but do not change the strict-gate conclusion:
+03-06 remain incomplete strict reproductions.
 
 The reduced smokes for 03-06 are deliberately not strict reproductions. They
 exist to prove that every paper-case directory has a CPU-runnable minimum path

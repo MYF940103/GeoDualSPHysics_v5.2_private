@@ -21,6 +21,29 @@ unless the field data and material-model requirements are explicitly deferred.
 - `PorePressureFeedback=0` in the first reduced smoke.
 - Current material model is Drucker-Prager, not calibrated sensitive clay.
 
+## Paper Parameters Extracted From Main PDF
+
+The converted main-paper text provides Table 1 values:
+
+- initial interparticle distance `0.6 m`;
+- smoothing length factor `1.5`;
+- artificial viscosity parameters `0.1` and `0.0`;
+- damping coefficient `1.0e-5`;
+- mixture density `1700 kg/m3`;
+- porosity `0.2`;
+- `E=13 MPa`;
+- `nu=0.33`;
+- `Kw=200 MPa`;
+- peak/residual friction `10/0 deg`;
+- peak/residual cohesion `45/1 kPa`;
+- permeability `k=1e-8 m/s`;
+- softening coefficients `2`, `5`, `10`.
+
+The paper reports a runout around `52 m` compared with field `50 m` and a
+retrogression distance around `116 m` compared with field `100 m` for one
+chosen softening line. The field topography itself is not available in this
+repository.
+
 ## Data Blockers
 
 See `data/README.md`. A validated reproduction needs:

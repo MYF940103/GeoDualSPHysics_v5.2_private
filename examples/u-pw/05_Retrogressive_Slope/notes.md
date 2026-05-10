@@ -25,6 +25,28 @@ or explicitly deferred.
 - `PorePressureFeedback=0` in this first reduced smoke to isolate geometry,
   stress, and PR diagnostic output.
 
+## Paper Parameters Extracted From Main PDF
+
+The paper studies two sensitive-clay slopes:
+
+- 5 m high, 45 degree slope, base length 25 m, top length 20 m, `Delta=0.1 m`,
+  11,275 particles.
+- 8 m high slope, base length 17 m, top length 16 m, `Delta=0.1 m`, 8,470
+  particles.
+
+Material / hydraulic parameters:
+
+- `E=25 MPa`, `nu=0.3`;
+- mixture density `2150 kg/m3`, water density `1000 kg/m3`;
+- porosity `0.4`;
+- `Kw=0.2 GPa`;
+- `k=1e-8 m/s`;
+- peak cohesion `15.1 kPa`, residual cohesion `1.5 kPa`;
+- internal friction and dilatancy `0 deg`;
+- softening coefficient `5`;
+- initial stress with `K0=0.5`, gravity loading using peak strength and
+  `eta=0`, then cohesion strength reduction factor `1.65`.
+
 ## Missing Before Meaningful Reproduction
 
 - Sensitive clay / strain-softening model or calibrated remolding law.

@@ -14,9 +14,10 @@ completion standard unless explicitly deferred.
 
 ## Parameters
 
-Known paper-specific Cryer values were not complete in the current notes. The
-reduced smoke therefore uses the standard 1D consolidation material constants
-already used in the u-pw development cases:
+The converted main-paper text confirms that Cryer uses the same elastic and
+material constants as the one-dimensional Terzaghi consolidation simulation,
+except for a Poisson-ratio sweep. The reduced smoke currently uses the standard
+1D consolidation material constants:
 
 - `E = 2e6 Pa`
 - `nu = 0.3`
@@ -27,10 +28,19 @@ already used in the u-pw development cases:
 
 Unknown strict Cryer parameters remain TODO:
 
-- specimen radius / exact geometry;
-- drainage boundary definition;
+- selected sphere radius / exact geometry scaling for the GeoDualSPHysics XML;
+- drained exterior boundary implementation;
 - analytical center-pressure normalization;
 - strict boundary operator choice.
+
+Known strict Cryer features from the paper:
+
+- poroelastic sphere;
+- drained exterior surface;
+- uniform all-around normal traction `p0`;
+- normalized center pressure `p_w(r=0)/p0`;
+- Poisson ratios `0.1`, `0.2`, `0.3`, `0.45`;
+- Mandel-Cryer nonmonotonic center pressure response.
 
 ## Boundary Approximation
 
