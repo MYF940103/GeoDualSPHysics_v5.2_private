@@ -147,6 +147,12 @@ protected:
   float *DivVelg;        ///<GPU skeleton velocity divergence diagnostic.
   float *LapPorePressg;  ///<GPU pore-pressure Laplacian diagnostic.
   float *LapZg;          ///<GPU hydraulic elevation Laplacian diagnostic.
+  double PorePressureDt;        ///<Pore-pressure stability timestep for GPU PR prototype.
+  bool PorePressureDtActive;    ///<True when pore-pressure timestep restriction is active.
+  bool PorePressureDtConfigPrint; ///<True when pore-pressure timestep configuration has been printed.
+  bool PorePressureDtLimitPrint;  ///<True when pore-pressure timestep limiting has been printed.
+  bool PorePressureDtFixedPrint;  ///<True when fixed-dt warning has been printed for pore-pressure timestep.
+  bool PorePressureUpdateDtPrint; ///<True when pore-pressure update timestep warning has been printed.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -219,6 +225,8 @@ protected:
   void InitPorePressureGpu(unsigned n);
   void InitPorePressureDiagnosticsGpu(unsigned n);
   void ComputeHydroPrDiagnosticsGpu();
+  void UpdatePorePressureGpu(double dt);
+  double LimitInitialDtByPorePressure(double dt);
 
   bool CheckGpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=GpuParticlesSize); }
 

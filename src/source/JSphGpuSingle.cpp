@@ -525,6 +525,8 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,DivData,Dcellg,FtRidpg,DemDatag,FtoMasspg,float(DemDtForce)
     ,PosCellg,Velrhopg,Codeg,Idpg,ViscDtg,Aceg,NULL);
 
+  if(HydromechCoupling && PorePressureModel==1)ComputeHydroPrDiagnosticsGpu();
+
   //-For 2D simulations always overrides the 2nd component (Y axis).
   //-Para simulaciones 2D anula siempre la 2nd componente.
   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
@@ -623,6 +625,7 @@ void JSphGpuSingle::RunInitialDDTRamp(){
 double JSphGpuSingle::ComputeStep_Ver(){
   Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
   const double dt=DtVariable(true);        //-Calculate new dt.
+  UpdatePorePressureGpu(dt);               //-Explicit pore-pressure update for material particles.
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
@@ -659,6 +662,7 @@ double JSphGpuSingle::ComputeStep_Sym(){
   RunCellDivide(true);
   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
+  UpdatePorePressureGpu(dt);                   //-Explicit pore-pressure update for material particles.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.

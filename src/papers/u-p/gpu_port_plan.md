@@ -71,6 +71,33 @@ Next allowed phase is G3 only if explicitly requested. G3 should be limited to
 Shepard, damping, boundary ghost, softening, and long GPU runs unless those
 scopes are separately authorized.
 
+## G3 PorePress Update Status, 2026-05-11
+
+G3 has been implemented in the limited explicit pressure-update scope:
+
+- GPU `dt_pore` restriction uses the same formula as CPU:
+  `PorePressureDtSafety * (rho_w*g_h*n/Kw) * h^2 / k`.
+- The initial Symplectic timestep is limited by `dt_pore`.
+- `DtVariable()` applies the same `dt_pore` cap during the GPU run.
+- A GPU update kernel applies `PorePressg += PorePressRateg * dt` only to
+  material/fluid particles.
+- The update has no clamp, Shepard smoothing, top drained correction, bottom
+  no-flux correction, feedback, damping, boundary ghost, or softening.
+
+GPU Debug and GPU Release builds passed. The G3 micro-smoke cases in
+`examples/u-pw/01_1D_Consolidation/experiments/GPU_G3_PorePressUpdate/`
+completed with `code=0`, `excluded=0`, and finite output fields. The one-step
+hydrostatic case kept `ExcessPorePress` near zero with maxAbs about
+`8.33e-6 Pa`. The analytical-excess case changed pressure by about
+`7.60 Pa` over one `dt_pore` step. GPU-vs-CPU one-step pressure-delta
+differences were below `9e-6 Pa` in both smoke cases.
+
+Next allowed phase is G4 only if explicitly requested. G4 should focus on the
+remaining pressure-only parity pieces, especially GPU top drained and bottom
+no-flux corrections and the minimum boundary/update ordering needed for the
+1D diffusion baseline. GPU feedback, Shepard, damping, boundary ghost,
+softening, and long runs remain out of scope until separately authorized.
+
 ## Current CPU Hydromechanical State
 
 The CPU prototype currently owns the hydromechanical particle arrays in `JSphCpu`:

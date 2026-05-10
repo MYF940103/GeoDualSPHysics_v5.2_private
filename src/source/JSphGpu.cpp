@@ -144,6 +144,10 @@ void JSphGpu::InitVars(){
   Sigmag=NULL; Kplasticg=NULL;//ruofeng
   PorePressg=NULL;
   PorePressRateg=NULL; DivVelg=NULL; LapPorePressg=NULL; LapZg=NULL;
+  PorePressureDt=DBL_MAX;
+  PorePressureDtActive=false;
+  PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
+  PorePressureUpdateDtPrint=false;
   BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
@@ -839,6 +843,19 @@ void JSphGpu::ComputeHydroPrDiagnosticsGpu(){
 }
 
 //==============================================================================
+/// Updates passive GPU pore pressure explicitly for material particles.
+//==============================================================================
+void JSphGpu::UpdatePorePressureGpu(double dt){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressg || !PorePressRateg)return;
+  if(PorePressureDtActive && dt>PorePressureDt*(1.+1.e-6) && !PorePressureUpdateDtPrint){
+    Log->PrintWarning(fun::PrintStr("GPU pore-pressure update dt=%g is greater than dt_pore=%g. This can occur on the first Symplectic step before the next-step dt restriction is applied.",dt,PorePressureDt));
+    PorePressureUpdateDtPrint=true;
+  }
+  cusph::UpdatePorePressure(Np-Npb,Npb,Codeg,dt,PorePressg,PorePressRateg);
+  Check_CudaErroor("Failed updating GPU pore pressure.");
+}
+
+//==============================================================================
 /// Recovers particle data from the GPU and returns the particle number that
 /// are less than n if the paeriodic particles are removed.
 /// - code: Recovers data of Codeg.
@@ -1074,6 +1091,7 @@ void JSphGpu::InitFloating(){
 void JSphGpu::InitRunGpu(){
   ParticlesDataDown(Np,0,false,false);
   InitRun(Np,Idp,AuxPos);
+  if(TStep==STEP_Symplectic)SymplecticDtPre=LimitInitialDtByPorePressure(SymplecticDtPre);
 
   if(TStep==STEP_Verlet){cudaMemcpy(VelrhopM1g,Velrhopg,sizeof(float4)*Np,cudaMemcpyDeviceToDevice);
   //======mdbr
@@ -1083,6 +1101,47 @@ void JSphGpu::InitRunGpu(){
   if(CaseNfloat)InitFloating();
   if(MotionVelg)cudaMemset(MotionVelg,0,sizeof(float3)*Np);
   Check_CudaErroor("Failed initializing variables for execution.");
+}
+
+//==============================================================================
+/// Applies pore-pressure stability restriction to the initial GPU timestep.
+//==============================================================================
+double JSphGpu::LimitInitialDtByPorePressure(double dt){
+  if(!HydromechCoupling || PorePressureModel!=1)return(dt);
+  double dtpore=DBL_MAX;
+  bool dtporeactive=false;
+  const float porosity0=SoilCte.Porosity0;
+  const float hydraulicconductivity=SoilCte.HydraulicConductivity;
+  const float waterbulkmodulus=SoilCte.WaterBulkModulus;
+  const float waterdensity=SoilCte.WaterDensity;
+  if(hydraulicconductivity>0.f && waterbulkmodulus>0.f && waterdensity>0.f && porosity0>0.f && porosity0<1.f && PorePressureDtSafety>0.f){
+    const double gmag=GetHydraulicGmag();
+    if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU pore-pressure timestep restriction.");
+    const double cw=double(waterdensity)*gmag*double(porosity0)/double(waterbulkmodulus);
+    dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(hydraulicconductivity);
+    if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed GPU pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
+    dtporeactive=true;
+    if(!PorePressureDtConfigPrint){
+      Log->Printf("GPU pore-pressure timestep restriction: active=True, Cw=%g, dt_pore=%g, safety=%g, h(KernelH)=%g, hydraulic_gmag=%g.",cw,dtpore,PorePressureDtSafety,KernelH,gmag);
+      if(FixedDt)Log->PrintWarning(fun::PrintStr("Fixed dt is enabled. Fixed dt should be <= GPU dt_pore=%g for PR pore-pressure update.",dtpore));
+      PorePressureDtConfigPrint=true;
+      PorePressureDtFixedPrint=(FixedDt!=NULL);
+    }
+  }
+  else if(hydraulicconductivity==0.f){
+    if(!PorePressureDtConfigPrint){
+      Log->Print("GPU pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
+      PorePressureDtConfigPrint=true;
+    }
+  }
+  else if(hydraulicconductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for GPU pore-pressure timestep restriction.");
+  PorePressureDt=dtpore;
+  PorePressureDtActive=dtporeactive;
+  if(dtporeactive && dt>dtpore){
+    Log->Printf("Initial GPU timestep limited by pore-pressure dt_pore: old_dt=%g, dt_pore=%g, new_dt=%g.",dt,dtpore,dtpore);
+    dt=dtpore;
+  }
+  return(dt);
 }
 
 //==============================================================================
@@ -1294,6 +1353,45 @@ double JSphGpu::DtVariable(bool final){
       Log->PrintfWarning("%d DTs adjusted to DtMin (t:%g, nstep:%u)",DtModif,TimeStep,Nstep);
       DtModifWrn*=10;
     }
+  }
+  //-Pore-pressure stability timestep restriction for saturated u-pw PR GPU prototype.
+  double dtpore=DBL_MAX;
+  bool dtporeactive=false;
+  if(HydromechCoupling && PorePressureModel==1){
+    const float porosity0=SoilCte.Porosity0;
+    const float hydraulicconductivity=SoilCte.HydraulicConductivity;
+    const float waterbulkmodulus=SoilCte.WaterBulkModulus;
+    const float waterdensity=SoilCte.WaterDensity;
+    if(hydraulicconductivity>0.f && waterbulkmodulus>0.f && waterdensity>0.f && porosity0>0.f && porosity0<1.f && PorePressureDtSafety>0.f){
+      const double gmag=GetHydraulicGmag();
+      if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU pore-pressure timestep restriction.");
+      const double cw=double(waterdensity)*gmag*double(porosity0)/double(waterbulkmodulus);
+      dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(hydraulicconductivity);
+      if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed GPU pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
+      dtporeactive=true;
+      if(!PorePressureDtConfigPrint){
+        Log->Printf("GPU pore-pressure timestep restriction: active=True, Cw=%g, dt_pore=%g, safety=%g, h(KernelH)=%g, hydraulic_gmag=%g.",cw,dtpore,PorePressureDtSafety,KernelH,gmag);
+        if(FixedDt)Log->PrintWarning(fun::PrintStr("Fixed dt is enabled. Fixed dt should be <= GPU dt_pore=%g for PR pore-pressure update.",dtpore));
+        PorePressureDtConfigPrint=true;
+        PorePressureDtFixedPrint=(FixedDt!=NULL);
+      }
+    }
+    else if(hydraulicconductivity==0.f){
+      if(!PorePressureDtConfigPrint){
+        Log->Print("GPU pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
+        PorePressureDtConfigPrint=true;
+      }
+    }
+    else if(hydraulicconductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for GPU pore-pressure timestep restriction.");
+  }
+  PorePressureDt=dtpore;
+  PorePressureDtActive=dtporeactive;
+  if(dtporeactive && dt>dtpore){
+    if(final && !PorePressureDtLimitPrint){
+      Log->Printf("Current GPU dt is limited by pore-pressure timestep: existing_dt=%g, dt_pore=%g.",dt,dtpore);
+      PorePressureDtLimitPrint=true;
+    }
+    dt=dtpore;
   }
   //-Saves information about dt.
   if(final){

@@ -3614,6 +3614,31 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
   }
 }
 
+//------------------------------------------------------------------------------
+/// Explicitly updates material-particle pore pressure from the diagnostic rate.
+//------------------------------------------------------------------------------
+__global__ void KerUpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
+  ,double *porepress,const float *porepressrate)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    if(CODE_IsFluid(code[p1]))porepress[p1]+=double(porepressrate[p1])*dt;
+  }
+}
+
+//==============================================================================
+/// Explicitly updates pore pressure on GPU. No clamping or boundary correction.
+//==============================================================================
+void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
+  ,double *porepress,const float *porepressrate)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (n,pini,code,dt,porepress,porepressrate);
+  }
+}
+
 //##############################################################################
 //# Kernels for Periodic conditions
 //# Kernels para Periodic conditions

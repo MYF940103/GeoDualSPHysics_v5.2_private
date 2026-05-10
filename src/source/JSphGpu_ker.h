@@ -311,6 +311,8 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
   ,double hgx,double hgy,double hgz,double hmag
   ,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
   ,float *divvel,float *lapporepress,float *lapz,float *porepressrate);
+void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
+  ,double *porepress,const float *porepressrate);
 
 //-Kernels for Damping.
 void ComputeDampingPlane(double dt,double4 plane,float dist,float over
