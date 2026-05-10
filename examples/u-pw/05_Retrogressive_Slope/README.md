@@ -41,6 +41,14 @@ Latest reduced smoke:
 The smoke confirms that a reduced slope geometry can run with current CPU PR
 fields and write the expected pore-pressure diagnostics.
 
+## Strict Reproduction Reclassification
+
+This reduced wedge smoke must not be counted as strict retrogressive landslide
+reproduction complete. It does not include sensitive clay / strain softening,
+remolding or destructuration, a validated initial effective-stress and
+pore-pressure state, production non-horizontal hydraulic boundaries, or
+large-deformation validation. It is a reduced execution check only.
+
 ## Strict Reproduction Gaps
 
 - The paper-scale retrogressive mechanism requires sensitive clay /
@@ -54,5 +62,7 @@ fields and write the expected pore-pressure diagnostics.
   be attempted after smaller coupled cases and GPU porting are stable.
 - Meaningful run sizes require GPU implementation.
 
-This case now satisfies the CPU pre-GPU requirement for a runnable reduced smoke
-scaffold, but strict landslide reproduction remains feature- and GPU-blocked.
+This case now satisfies a runnable reduced smoke scaffold, but strict landslide
+reproduction remains feature- and GPU-blocked. Under the full CPU completion
+gate, this must be recorded as incomplete strict reproduction unless the
+sensitive-clay and field-scale requirements are explicitly deferred.

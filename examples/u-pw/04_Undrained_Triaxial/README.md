@@ -49,6 +49,15 @@ The smoke test confirms code execution, pore-pressure fields, feedback
 diagnostics, damping, and native AccInput loading are wired correctly. The pore
 pressure response is small and positive under the tiny compressive increment.
 
+## Strict Reproduction Reclassification
+
+This reduced DP/u-pw AccInput smoke must not be counted as strict triaxial
+reproduction complete. It lacks controlled axial strain or stress loading,
+proper confinement / lateral stress boundary conditions, validated `p'`-`q`
+stress-path output, and the paper's exact constitutive model choice. If the
+paper triaxial test requires Modified Cam Clay, the current Drucker-Prager
+smoke is only a qualitative plumbing check.
+
 ## Strict Reproduction Gaps
 
 - No calibrated Modified Cam Clay model is used. The current DP model can only

@@ -26,8 +26,13 @@ runnable reduced CPU smoke or an explicit data/feature block:
 - `06_Sainte_Monique`: reduced placeholder smoke runs, but field reproduction
   remains data/material/GPU blocked.
 
-These smokes are not long-time calibrations. They are CPU readiness checks for
-the pre-GPU gate.
+These smokes are not long-time calibrations. Under the stricter full CPU
+completion gate, they also are not enough to authorize GPU work by themselves.
+Reduced smoke proves that the directories and current PR fields are wired; it
+does not prove strict reproduction of the original paper case.
+
+GPU coding remains blocked until every paper case is either strict-smoke
+runnable or explicitly deferred with a documented reason in the CPU backlog.
 
 ## 1. Target Case List
 
@@ -36,10 +41,10 @@ the pre-GPU gate.
 | 1D consolidation / Terzaghi pressure-only baseline | Verify PR pore-pressure diffusion, drainage, no-flux behavior, and analytical decay without mechanics feedback. | First hydraulic sanity check before coupled reproduction. | Complete baseline exists. Keep as regression test. |
 | Self-weight consolidation Scenario 1 | Generate self-weight undrained pore pressure, then switch body gravity off and dissipate with hydraulic gravity retained. | Supporting Information Scenario 1. | Next major missing verification. |
 | Self-weight consolidation Scenario 2 | Generate self-weight pore pressure and keep body gravity on during drainage; total pressure should trend to hydrostatic. | Supporting Information Scenario 2. | Stable long-run line exists for xi=0.10; needs paper-compatible xi and formal comparison. |
-| Cryer problem | Coupled consolidation under spherical/cylindrical symmetry with pore-pressure Mandel-Cryer-type behavior. | Strong coupled u-pw benchmark. | Reduced PR CPU smoke exists; strict Cryer still needs geometry/boundary/postprocessing work. |
-| Undrained triaxial tests | Validate undrained response, effective stress, pore-pressure feedback, and constitutive behavior. | Material-level coupled validation. | Reduced DP/u-pw AccInput CPU smoke exists; strict reproduction still needs loading/confinement/MCC decisions. |
-| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on idealized retrogressive slope. | Main hydromechanical landslide benchmark before field case. | Reduced PR wedge CPU smoke exists; strict retrogression needs sensitive/softening material and GPU. |
-| Sainte-Monique landslide case | Field-scale reproduction. | Final application case. | Reduced placeholder CPU smoke exists; validated field case remains data/material/GPU blocked. |
+| Cryer problem | Coupled consolidation under spherical/cylindrical symmetry with pore-pressure Mandel-Cryer-type behavior. | Strong coupled u-pw benchmark. | Reduced PR CPU smoke exists only. Strict Cryer still needs paper geometry, drained curved boundary, boundary ghost/MLS, and center-pressure postprocessing. |
+| Undrained triaxial tests | Validate undrained response, effective stress, pore-pressure feedback, and constitutive behavior. | Material-level coupled validation. | Reduced DP/u-pw AccInput CPU smoke exists only. Strict reproduction still needs axial loading/confinement, stress-path output, and MCC/DP material decision. |
+| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on idealized retrogressive slope. | Main hydromechanical landslide benchmark before field case. | Reduced PR wedge CPU smoke exists only. Strict retrogression needs sensitive/softening material, initial-state workflow, boundary treatment, and GPU-scale execution. |
+| Sainte-Monique landslide case | Field-scale reproduction. | Final application case. | Reduced placeholder CPU smoke exists only. Validated field case remains data/material/calibration/GPU blocked. |
 
 ## 2. Recommended Directory Layout
 
@@ -153,6 +158,10 @@ Do this before strict Cryer or external-load Terzaghi.
 
 ### Phase R5: GPU port planning
 
+Status update, 2026-05-11: this phase is paused. GPU planning documents can
+remain as references, but GPU coding must not start until the stricter full CPU
+case gate is satisfied or explicitly relaxed.
+
 Before writing CUDA kernels, freeze the formal CPU data model:
 
 - `PorePress` double or GPU-compatible precision strategy.
@@ -223,7 +232,8 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/03_Cryer_Problem`
 
-Status: not started; current code not ready for strict reproduction.
+Status: reduced PR CPU smoke exists, but current code/setup is not ready for
+strict Cryer reproduction.
 
 Likely needed:
 
@@ -241,7 +251,8 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/04_Undrained_Triaxial`
 
-Status: not started.
+Status: reduced DP/u-pw AccInput CPU smoke exists, but strict triaxial
+reproduction is not complete.
 
 Likely needed:
 
@@ -261,7 +272,8 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/05_Retrogressive_Slope`
 
-Status: not started; do not run until CPU validations pass.
+Status: reduced wedge CPU smoke exists, but strict retrogressive slope
+reproduction is not complete.
 
 Likely needed:
 
@@ -280,7 +292,8 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/06_Sainte_Monique`
 
-Status: final target only; currently not ready.
+Status: reduced synthetic placeholder smoke exists, but validated field
+reproduction is not ready.
 
 Likely needed:
 
@@ -292,9 +305,10 @@ Likely needed:
 
 Smoke test:
 
-- Geometry-only GenCase check.
-- Tiny GPU/CPU dry run with outputs.
-- Then hydromechanical short run after all smaller benchmarks pass.
+- Geometry-only or reduced CPU smoke with outputs.
+- Do not use this placeholder as field validation.
+- GPU/production run only after data, material calibration, and initial-state
+  workflow are available.
 
 ## 8. Next Code Feature Recommendations
 

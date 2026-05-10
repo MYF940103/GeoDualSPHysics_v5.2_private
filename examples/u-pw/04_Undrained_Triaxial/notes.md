@@ -9,6 +9,12 @@ stress outputs are written.
 
 It is not a validated reproduction of the paper's triaxial results.
 
+Under the full CPU pre-GPU gate, this case remains incomplete for strict
+reproduction. The existing smoke proves that native AccInput, pore-pressure
+fields, and stress outputs can run briefly; it does not prove that the paper's
+triaxial loading path, confinement, material response, or stress-path outputs
+are reproduced.
+
 ## Current Numerical Setup
 
 - Mechanical body gravity is disabled.
@@ -49,8 +55,7 @@ and is only meant to exercise the coupled field plumbing.
 
 ## Smoke Interpretation
 
-The current smoke passes the CPU pre-GPU gate for this case in the reduced
-sense:
+The current smoke passes only the reduced execution health check:
 
 - GenCase code=0.
 - DualSPHysics code=0.
@@ -58,5 +63,7 @@ sense:
 - Pore-pressure and stress fields are written.
 - The tiny compressive load gives small positive excess pore pressure.
 
-Strict triaxial validation remains feature-blocked by loading/confinement and
-material-model choices, but the case is no longer a pure TODO scaffold.
+Strict triaxial validation remains feature-blocked by loading/confinement,
+stress-path postprocessing, and material-model choices. It is no longer a pure
+TODO scaffold, but it still blocks strict paper-case completion unless those
+items are implemented or explicitly deferred.

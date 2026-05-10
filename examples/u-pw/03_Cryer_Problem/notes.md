@@ -6,6 +6,12 @@ This directory has a reduced CPU smoke case plus a strict-reproduction TODO
 placeholder. The smoke case is intended only to verify that the current u-pw PR
 fields and mechanics can run in a Cryer-labeled scaffold without crashing.
 
+Reduced execution smoke is not strict reproduction. The strict Cryer path still
+requires paper geometry, a drained curved boundary, pore-pressure ghost / MLS or
+an equivalent boundary treatment, and center-pressure analytical
+postprocessing. These gaps remain GPU-pre blockers under the current full CPU
+completion standard unless explicitly deferred.
+
 ## Parameters
 
 Known paper-specific Cryer values were not complete in the current notes. The

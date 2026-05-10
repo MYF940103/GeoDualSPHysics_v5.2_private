@@ -9,6 +9,12 @@ diagnostic fields.
 
 It is not a strict reproduction of the paper's retrogressive landslide.
 
+The current case is reduced execution smoke only. It should not be promoted to
+strict reproduction status until sensitive clay / strain softening,
+remolding/destructuration, initial stress and pore-pressure construction,
+production hydraulic boundaries, and large-deformation validation are addressed
+or explicitly deferred.
+
 ## Current Setup
 
 - Narrow 3D wedge geometry with coarse `dp=0.02 m`.
@@ -31,6 +37,8 @@ It is not a strict reproduction of the paper's retrogressive landslide.
 
 ## Readiness Decision
 
-The reduced smoke is runnable and can serve as a CPU pre-GPU case-readiness
-check. Strict retrogressive behavior remains deferred until the material model,
-boundary treatment, and GPU path are ready.
+The reduced smoke is runnable and can serve as a health check for the current
+PR field plumbing. It does not satisfy the full CPU strict reproduction gate.
+Strict retrogressive behavior remains deferred until the material model,
+boundary treatment, initial-state workflow, and GPU path are ready or formally
+deferred.

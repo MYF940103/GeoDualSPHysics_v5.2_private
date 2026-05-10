@@ -20,6 +20,15 @@ drained boundary treatment are still TODO.
 - Key pore-pressure fields are written.
 - Strict Cryer reproduction is still feature-blocked.
 
+## Strict Reproduction Reclassification
+
+This reduced smoke must not be counted as strict Cryer reproduction complete.
+It does not yet include the paper Cryer geometry, a drained spherical/curved
+pore-pressure boundary, boundary ghost / MLS pressure reconstruction, or center
+pore-pressure analytical postprocessing. Under the full CPU pre-GPU gate, Cryer
+still blocks GPU readiness until these gaps are implemented or explicitly
+deferred.
+
 ## Missing Before Strict Cryer Reproduction
 
 - Paper geometry/radius and exact benchmark parameters.

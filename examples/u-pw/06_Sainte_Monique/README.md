@@ -43,6 +43,14 @@ The reduced smoke verifies that the current CPU PR implementation can generate
 and advance a small field-like geometry while writing the expected pore-pressure
 diagnostics.
 
+## Strict Reproduction Reclassification
+
+This reduced placeholder smoke must not be counted as Sainte-Monique
+reproduction complete. The validated field case remains blocked by missing
+topography, material zoning, sensitive-clay calibration, initial stress and
+pore-pressure state, production boundary assumptions, checkpoint/restart
+workflow, and GPU-scale runtime.
+
 ## Strict Reproduction Gaps
 
 - Missing Sainte-Monique field topography.
@@ -51,5 +59,6 @@ diagnostics.
 - Missing production boundary assumptions for the field domain.
 - Full-scale runs require GPU implementation and checkpoint/restart workflow.
 
-This case is CPU-smoke runnable in reduced placeholder form, but field
-reproduction remains data- and feature-blocked.
+This case is CPU-smoke runnable in reduced placeholder form only. Under the full
+CPU completion gate, it remains data- and feature-blocked unless the field
+application is explicitly deferred.

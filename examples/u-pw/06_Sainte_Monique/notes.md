@@ -8,6 +8,10 @@ only to keep the final field-case directory smoke-testable before GPU work.
 It does not contain Sainte-Monique topography, material zoning, or calibrated
 sensitive clay parameters.
 
+This is a reduced placeholder smoke only. It is not a validated field
+reproduction and should not be counted as strict CPU completion before GPU
+unless the field data and material-model requirements are explicitly deferred.
+
 ## Current Setup
 
 - Synthetic coarse 3D field-like slope geometry.
