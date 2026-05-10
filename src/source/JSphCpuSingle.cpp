@@ -235,6 +235,8 @@ void JSphCpuSingle::ConfigDomain(){
     memset(PorePressureBoundaryModec,0,sizeof(float)*Np);
     Log->Printf("Pore-pressure boundary ghost diagnostic fields initialised on CPU: mode=0, ghost pressure=0 for %u particles.",Np);
   }
+  if(LapPorePressGhostc)memset(LapPorePressGhostc,0,sizeof(float)*Np);
+  if(LapZGhostc)memset(LapZGhostc,0,sizeof(float)*Np);
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback)
     Log->Printf("Pore-pressure feedback to momentum: enabled on CPU. Feedback mode=%s, operator=%s."
       ,(PorePressureFeedbackMode==1? "excess pressure": "total pressure")
@@ -478,7 +480,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -505,6 +507,8 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
     if(porepressghost)porepressghost[pnew]=porepressghost[pcopy];
     if(excessporepressghost)excessporepressghost[pnew]=excessporepressghost[pcopy];
     if(porepressureboundarymode)porepressureboundarymode[pnew]=porepressureboundarymode[pcopy];
+    if(lapporepressghost)lapporepressghost[pnew]=lapporepressghost[pcopy];
+    if(lapzghost)lapzghost[pnew]=lapzghost[pcopy];
     velrhopm1[pnew]=velrhopm1[pcopy];
     sigmam1[pnew]=sigmam1[pcopy];//mdbr
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -521,7 +525,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -548,6 +552,8 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     if(porepressghost)porepressghost[pnew]=porepressghost[pcopy];
     if(excessporepressghost)excessporepressghost[pnew]=excessporepressghost[pcopy];
     if(porepressureboundarymode)porepressureboundarymode[pnew]=porepressureboundarymode[pcopy];
+    if(lapporepressghost)lapporepressghost[pnew]=lapporepressghost[pcopy];
+    if(lapzghost)lapzghost[pnew]=lapzghost[pcopy];
     if(pospre)pospre[pnew]=pospre[pcopy];
     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -644,10 +650,10 @@ void JSphCpuSingle::RunPeriodic(){
             run=false;
             //-Create new duplicate periodic particles in the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,LapZc,PorePressureAcec,PorePressureAceDiffc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,VelrhopM1c,Sigmac,SigmaM1c);
+            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,LapZc,PorePressureAcec,PorePressureAceDiffc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,LapPorePressGhostc,LapZGhostc,VelrhopM1c,Sigmac,SigmaM1c);
             if(TStep==STEP_Symplectic){
               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
-              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,LapZc,PorePressureAcec,PorePressureAceDiffc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,PosPrec,VelrhopPrec,Sigmac,SigmaPrec);
+              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PorePressc,PorePressRatec,DivVelc,LapPorePressc,LapZc,PorePressureAcec,PorePressureAceDiffc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,LapPorePressGhostc,LapZGhostc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec);
             }
             if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc);
 
@@ -700,6 +706,8 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(PorePressGhostc)CellDivSingle->SortArray(PorePressGhostc);
   if(ExcessPorePressGhostc)CellDivSingle->SortArray(ExcessPorePressGhostc);
   if(PorePressureBoundaryModec)CellDivSingle->SortArray(PorePressureBoundaryModec);
+  if(LapPorePressGhostc)CellDivSingle->SortArray(LapPorePressGhostc);
+  if(LapZGhostc)CellDivSingle->SortArray(LapZGhostc);
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
@@ -1486,6 +1494,8 @@ void JSphCpuSingle::SaveData(){
   double *porepressghost=NULL;
   double *excessporepressghost=NULL;
   float *porepressureboundarymode=NULL;
+  float *lapporepressghost=NULL;
+  float *lapzghost=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1508,12 +1518,16 @@ void JSphCpuSingle::SaveData(){
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && PorePressGhostc)porepressghost=ArraysCpu->ReserveDouble();
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && ExcessPorePressGhostc)excessporepressghost=ArraysCpu->ReserveDouble();
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && PorePressureBoundaryModec)porepressureboundarymode=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && LapPorePressGhostc)lapporepressghost=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && LapZGhostc)lapzghost=ArraysCpu->ReserveFloat();
 	//=========
     if(PorePressureBoundaryGhost && PorePressc && PorePressGhostc && ExcessPorePressGhostc && PorePressureBoundaryModec){
       ComputePorePressureBoundaryGhost(Np,0,Posc,Codec,PorePressc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,TimeStep,"save",!PorePressureBoundaryGhostPrint);
+      if(LapPorePressGhostc)ComputeHydroLapPorePressGhost(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressGhostc,PorePressureBoundaryModec,LapPorePressGhostc);
+      if(LapZGhostc)ComputeHydroLapZGhost(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressureBoundaryModec,LapZGhostc);
       PorePressureBoundaryGhostPrint=true;
     }
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
       const double gmag=GetHydraulicGmag();
@@ -1563,6 +1577,8 @@ void JSphCpuSingle::SaveData(){
   if(SavePorePressure && porepressghost)arrays.AddArray("PorePressGhost",npsave,porepressghost);
   if(SavePorePressure && excessporepressghost)arrays.AddArray("ExcessPorePressGhost",npsave,excessporepressghost);
   if(SavePorePressure && porepressureboundarymode)arrays.AddArray("PorePressureBoundaryMode",npsave,porepressureboundarymode);
+  if(SavePorePressure && lapporepressghost)arrays.AddArray("LapPorePressGhost",npsave,lapporepressghost);
+  if(SavePorePressure && lapzghost)arrays.AddArray("LapZGhost",npsave,lapzghost);
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1585,6 +1601,8 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(porepressghost);
   ArraysCpu->Free(excessporepressghost);
   ArraysCpu->Free(porepressureboundarymode);
+  ArraysCpu->Free(lapporepressghost);
+  ArraysCpu->Free(lapzghost);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.
