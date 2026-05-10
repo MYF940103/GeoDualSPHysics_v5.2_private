@@ -48,7 +48,7 @@ with missing features documented.
 | `TopLoad*` cleanup/deprecation | Source-side path removed in CPU-F6a | Complete before GPU G1 | Formal external-load path is native `AccInput`; formal XML no longer depends on source `TopLoad*`. Archived experiments are historical only. |
 | Boundary ghost production decision | Diagnostic result is negative for simple ghost Laplacian | Must be documented before GPU boundary kernels | Keep current layer corrections as production baseline for G1-G4; defer proper MLS/mirror design. |
 | Corrected-gradient production decision | Diagnostic result is negative/neutral | Must be documented before GPU PR kernels | Keep current uncorrected PR operators for G1-G4; corrected diagnostics remain CPU-only. |
-| Case smoke matrix | Not complete | Case-readiness gate before GPU coding | Fill the matrix below with short CPU smoke results or explicit TODO status. |
+| Case smoke matrix | Complete for pre-GPU readiness | Case-readiness gate satisfied for G1 scope | 01/02 have short smoke status; 03-06 have explicit TODO/deferred status. |
 
 ## 3. Per-Case Smoke Readiness Matrix
 
@@ -66,11 +66,11 @@ with missing features documented.
 
 | Field | Status |
 |---|---|
-| Current state | Directory exists with Scenario 1 Stage A/B XML/BAT and Scenario 2 XML/BAT. Scenario 1 staged smoke has run. |
+| Current state | Scenario 1 Stage A/B and Scenario 2 formal smoke files exist. Latest CPU Release smoke passed for Stage A, Stage B restart, and Scenario 2 short copy. |
 | Short runnable? | Yes for Scenario 1 Stage A/B and Scenario 2, assuming current CPU tools are built. |
 | Missing features | Formal smoke summary and cleanup of generated Stage run directories; no further long CPU runs needed. |
 | Minimum smoke test | Stage A: body gravity on, positive excess generation, `code=0`, `excluded=0`. Stage B: restart reads `PorePress`, body gravity off/hydraulic gravity on, top drained active, `code=0`, `excluded=0`, no obvious restart impulse. Scenario 2: short gravity-on run, top drained/no-flux stable. |
-| Blocks GPU G1? | As a case-readiness gate, yes: record short smoke status. It does not require more CPU parameter tuning. |
+| Blocks GPU G1? | No, after recorded smoke status. It does not require more CPU parameter tuning. |
 
 ### 03: `03_Cryer_Problem`
 
@@ -121,7 +121,7 @@ starting CUDA implementation.
 |---|---|
 | `PorePress` restart | Complete. |
 | Scenario 1 route | Complete at smoke level through staged restart and/or `BodyGravityStopTime`; formalize the XML/BAT and record status. |
-| Case scaffold/smoke matrix | Not complete. 01 and 02 are runnable; 03-06 are TODO scaffolds and need status recorded. |
+| Case scaffold/smoke matrix | Complete for pre-GPU gate: 01 and 02 smoke status recorded; 03-06 are explicitly documented as TODO/deferred scaffolds. |
 | Failed diagnostic cleanup | `PorePressureAccelSymCorr` removed; keep `PorePressureAccel` only as optional symmetric compatibility diagnostic. |
 | Deprecated source loading cleanup | Complete: source-side `TopLoad*` and `ApplyTopLoad()` removed; formal external-load path is `AccInput`. |
 | Boundary ghost production decision | Simple ghost Laplacian remains diagnostic-only; production stays material-only + layer correction for G1-G4. |
@@ -276,3 +276,27 @@ The next productive work is a case-readiness pass:
 After that, GPU G1 can start from a cleaner target: the current uncorrected
 material-only PR path plus `PorePressureAccelDiff` feedback as the production
 coupled operator.
+
+## Phase 6 Smoke Matrix Update
+
+Updated after CPU pre-GPU automation:
+
+| Case | Pre-GPU status | Smoke/readiness result | GPU G1 blocking? |
+| --- | --- | --- | --- |
+| 01 1D pressure-only | Runnable regression anchor | Short pressure-only smoke passed: `code=0`, `excluded=0`, `PorePress`, `ExcessPorePress`, `PorePressRate`, `DivVel`, `LapPorePress`, and `LapZ` written. | No |
+| 01 SW3h result | Historical CPU long-run diagnostic | Kept as documented result only; no further CPU long-run tuning in this pass. | No |
+| 02 Scenario 1 | Formal Stage A/B restart smoke scaffold | Stage A passed; Stage B restart passed and restored `PorePress` for `1040/1040` particles with XML initialization skipped. | No |
+| 02 Scenario 2 | Formal short smoke scaffold | Short Scenario 2 copy passed with `code=0`, `excluded=0`. | No |
+| 03 Cryer | TODO scaffold | No run by design; missing geometry, drained pressure boundary, boundary ghost/MLS, corrected operator decision, analytical postprocessing, and likely GPU resolution. | No for passive G1; blocks strict Cryer reproduction only |
+| 04 Undrained triaxial | TODO scaffold | No run by design; missing axial control, confinement, stress-path output, and possible MCC. | No for PR core G1; blocks triaxial reproduction only |
+| 05 Retrogressive slope | TODO scaffold | No run by design; requires sensitive clay/softening, large-deformation stability, initial state, and GPU. | No for PR core G1; post-GPU/material-model target |
+| 06 Sainte-Monique | TODO scaffold | No run by design; requires field geometry, zoning, calibration, restart workflow, and GPU. | No for PR core G1; final application target |
+
+Cleanup decisions now recorded:
+
+- `TopLoad*` and `ApplyTopLoad()` are removed; formal external loading uses native `AccInput`.
+- `PorePressureAccelSymCorr` is removed.
+- Simple boundary ghost Laplacian remains diagnostic-only and is not promoted to production.
+- Corrected-gradient PR diagnostics remain CPU-only and are not promoted to production.
+
+Readiness judgment: CPU case readiness is sufficient to start **GPU G1 passive `PorePressg` planning/coding only**. This does not authorize the full GPU PR loop, feedback, boundary ghost production, corrected-gradient production, or long GPU reproduction runs.
