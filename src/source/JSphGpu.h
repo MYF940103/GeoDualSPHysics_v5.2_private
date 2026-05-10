@@ -153,6 +153,8 @@ protected:
   bool PorePressureDtLimitPrint;  ///<True when pore-pressure timestep limiting has been printed.
   bool PorePressureDtFixedPrint;  ///<True when fixed-dt warning has been printed for pore-pressure timestep.
   bool PorePressureUpdateDtPrint; ///<True when pore-pressure update timestep warning has been printed.
+  bool PorePressureTopDrainedStepPrint; ///<True when GPU top drained post-update stats have been printed.
+  bool PorePressureBottomNoFluxStepPrint; ///<True when GPU bottom no-flux post-update stats have been printed.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -226,6 +228,8 @@ protected:
   void InitPorePressureDiagnosticsGpu(unsigned n);
   void ComputeHydroPrDiagnosticsGpu();
   void UpdatePorePressureGpu(double dt);
+  unsigned ApplyPorePressureTopDrainedGpu(double timestep,const char *stage,bool printlog);
+  unsigned ApplyPorePressureBottomNoFluxGpu(const char *stage,bool printlog);
   double LimitInitialDtByPorePressure(double dt);
 
   bool CheckGpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=GpuParticlesSize); }

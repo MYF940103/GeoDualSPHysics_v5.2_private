@@ -204,6 +204,8 @@ namespace cusph{
 inline unsigned ReduMaxFloatSize(unsigned ndata){ return((ndata/SPHBSIZE+1)+(ndata/(SPHBSIZE*SPHBSIZE)+SPHBSIZE)); }
 float ReduMaxFloat(unsigned ndata,unsigned inidata,float* data,float* resu);
 float ReduMaxFloat_w(unsigned ndata,unsigned inidata,float4* data,float* resu);
+inline unsigned ReduSumFloatSize(unsigned ndata){ return(ReduMaxFloatSize(ndata)); }
+float ReduSumFloat(unsigned ndata,unsigned inidata,float* data,float* resu);
 
 void CteInteractionUp(const StCteInteraction *cte);
 void InitArray(unsigned n,float3 *v,tfloat3 value);
@@ -313,6 +315,19 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
   ,float *divvel,float *lapporepress,float *lapz,float *porepressrate);
 void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
   ,double *porepress,const float *porepressrate);
+void PreparePorePressureBoundaryElevations(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,float *zmax,float *negzmin);
+void ApplyPorePressureTopDrained(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zthreshold,double *porepress,float *affected);
+void PreparePorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zmin,double bottomthick,const double *porepress
+  ,float *refexcess,float *refcount,float *bottomcount);
+void ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zthreshold,double excessmean,double *porepress,float *affected);
 
 //-Kernels for Damping.
 void ComputeDampingPlane(double dt,double4 plane,float dist,float over

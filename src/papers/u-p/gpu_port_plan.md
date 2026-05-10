@@ -437,3 +437,37 @@ Start with Phase G1 only:
 - run one hydrostatic-output parity case.
 
 Do not start by porting the full feedback loop. The validated CPU path is now broad enough that GPU work needs small, auditable parity milestones.
+
+## G4 Pressure-Only Boundary Status, 2026-05-11
+
+Implemented in G4:
+
+- GPU top drained correction:
+  `PorePress = hydrostatic(z_h)` in the top material layer once
+  `TimeStep >= PorePressureTopDrainedStartTime`.
+- GPU bottom no-flux layer correction:
+  the bottom layer excess pressure is set to the reference-layer mean excess.
+- GPU reductions for material `zmax`, `zmin`, reference excess sum/count, and
+  boundary affected counts.
+- CPU/GPU pressure-only smoke templates and summary script in
+  `examples/u-pw/01_1D_Consolidation/experiments/GPU_G4_PressureOnlyParity/`.
+
+Validation summary:
+
+- Static boundary smoke: GPU and CPU both finished with `code=0`,
+  `excluded=0`, `steps=1`.
+- Diffusion micro smoke: GPU and CPU both finished with `code=0`,
+  `excluded=0`, `steps=5`.
+- Top drained layer `maxAbs(ExcessPorePress)=0` in both GPU G4 smoke cases.
+- Bottom layer minus reference excess maxAbs:
+  - static boundary: `3.95e-08 Pa`;
+  - diffusion micro: `1.60e-01 Pa`.
+- GPU minus CPU `PorePress` final-frame maxAbs:
+  - static boundary: `6.10e-05 Pa`;
+  - diffusion micro: `2.10e-05 Pa`.
+
+G4 does not include GPU feedback, `PorePressureAccelDiff`, Shepard,
+hydromechanical damping, boundary ghost production operators, softening, or
+long-time reproduction runs.
+
+G5 may start only as a separately scoped feedback phase.

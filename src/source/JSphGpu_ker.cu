@@ -175,6 +175,65 @@ float ReduMaxFloat_w(unsigned ndata,unsigned inidata,float4* data,float* resu){
 }
 
 //==============================================================================
+/// Reduction using sum of float values in shared memory for a warp.
+/// Reduccion mediante suma de valores float en memoria shared para un warp.
+//==============================================================================
+template <unsigned blockSize> __device__ void KerReduSumFloatWarp(volatile float* sdat,unsigned tid){
+  if(blockSize>=64)sdat[tid]+=sdat[tid+32];
+  if(blockSize>=32)sdat[tid]+=sdat[tid+16];
+  if(blockSize>=16)sdat[tid]+=sdat[tid+8];
+  if(blockSize>=8)sdat[tid]+=sdat[tid+4];
+  if(blockSize>=4)sdat[tid]+=sdat[tid+2];
+  if(blockSize>=2)sdat[tid]+=sdat[tid+1];
+}
+
+//==============================================================================
+/// Accumulates the sum of n values of array dat[], storing the result in res[].
+/// Acumula la suma de n valores del vector dat[], guardando el resultado en res[].
+//==============================================================================
+template <unsigned blockSize> __global__ void KerReduSumFloat(unsigned n,unsigned ini,const float *dat,float *res){
+  extern __shared__ float sdat[];
+  unsigned tid=threadIdx.x;
+  unsigned c=blockIdx.x*blockDim.x + threadIdx.x;
+  sdat[tid]=(c<n? dat[c+ini]: 0.f);
+  __syncthreads();
+  if(blockSize>=512){ if(tid<256)sdat[tid]+=sdat[tid+256];  __syncthreads(); }
+  if(blockSize>=256){ if(tid<128)sdat[tid]+=sdat[tid+128];  __syncthreads(); }
+  if(blockSize>=128){ if(tid<64) sdat[tid]+=sdat[tid+64];   __syncthreads(); }
+  if(tid<32)KerReduSumFloatWarp<blockSize>(sdat,tid);
+  if(tid==0)res[blockIdx.x]=sdat[0];
+}
+
+//==============================================================================
+/// Returns the sum of an array, using resu[] as auxiliary array.
+/// Devuelve la suma de un vector, usando resu[] como vector auxiliar.
+//==============================================================================
+float ReduSumFloat(unsigned ndata,unsigned inidata,float* data,float* resu){
+  float resf=0.f;
+  if(ndata>=1){
+    unsigned n=ndata,ini=inidata;
+    unsigned smemSize=SPHBSIZE*sizeof(float);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    unsigned n_blocks=sgrid.x*sgrid.y;
+    float *dat=data;
+    float *resu1=resu,*resu2=resu+n_blocks;
+    float *res=resu1;
+    while(n>1){
+      KerReduSumFloat<SPHBSIZE><<<sgrid,SPHBSIZE,smemSize>>>(n,ini,dat,res);
+      n=n_blocks; ini=0;
+      sgrid=GetSimpleGridSize(n,SPHBSIZE);
+      n_blocks=sgrid.x*sgrid.y;
+      if(n>1){
+        dat=res; res=(dat==resu1? resu2: resu1);
+      }
+    }
+    if(ndata>1)cudaMemcpy(&resf,res,sizeof(float),cudaMemcpyDeviceToHost);
+    else cudaMemcpy(&resf,data+inidata,sizeof(float),cudaMemcpyDeviceToHost);
+  }
+  return(resf);
+}
+
+//==============================================================================
 /// Stores constants for the GPU interaction.
 /// Graba constantes para la interaccion a la GPU.
 //==============================================================================
@@ -3636,6 +3695,152 @@ void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
   if(n){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
     KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (n,pini,code,dt,porepress,porepressrate);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Prepares per-particle hydraulic elevations for top/bottom boundary reductions.
+//------------------------------------------------------------------------------
+__global__ void KerPreparePorePressureBoundaryElevations(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double4 hydraulicg,float *zmax,float *negzmin)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    const bool fluid=CODE_IsFluid(code[p1]);
+    const double z=(fluid? -(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w: 0.);
+    if(zmax)zmax[p1]=(fluid? float(z): -FLT_MAX);
+    if(negzmin)negzmin[p1]=(fluid? float(-z): -FLT_MAX);
+  }
+}
+
+//==============================================================================
+/// Prepares material-particle hydraulic elevations for boundary reductions.
+//==============================================================================
+void PreparePorePressureBoundaryElevations(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,float *zmax,float *negzmin)
+{
+  if(n){
+    const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerPreparePorePressureBoundaryElevations <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,hydraulicg,zmax,negzmin);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Applies top drained pressure correction and marks affected particles.
+//------------------------------------------------------------------------------
+__global__ void KerApplyPorePressureTopDrained(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double4 hydraulicg,double waterlevel,double waterdensity
+  ,double zthreshold,double *porepress,float *affected)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    affected[p1]=0.f;
+    if(CODE_IsFluid(code[p1])){
+      const double z=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+      if(z>=zthreshold){
+        const double depth=waterlevel-z;
+        porepress[p1]=(depth>0.? waterdensity*hydraulicg.w*depth: 0.);
+        affected[p1]=1.f;
+      }
+    }
+  }
+}
+
+//==============================================================================
+/// Applies top drained pressure correction on GPU.
+//==============================================================================
+void ApplyPorePressureTopDrained(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zthreshold,double *porepress,float *affected)
+{
+  if(n){
+    const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerApplyPorePressureTopDrained <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,hydraulicg,waterlevel,waterdensity,zthreshold,porepress,affected);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Prepares reference-layer excess and bottom-layer counts for no-flux correction.
+//------------------------------------------------------------------------------
+__global__ void KerPreparePorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double4 hydraulicg,double waterlevel,double waterdensity
+  ,double zmin,double bottomthick,const double *porepress,float *refexcess,float *refcount,float *bottomcount)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    refexcess[p1]=0.f;
+    refcount[p1]=0.f;
+    bottomcount[p1]=0.f;
+    if(CODE_IsFluid(code[p1])){
+      const double z=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+      const double zthreshold=zmin+bottomthick;
+      const double zrefmax=zmin+2.*bottomthick;
+      if(z<=zthreshold)bottomcount[p1]=1.f;
+      if(z>zthreshold && z<=zrefmax){
+        const double depth=waterlevel-z;
+        const double hydro=(depth>0.? waterdensity*hydraulicg.w*depth: 0.);
+        refexcess[p1]=float(porepress[p1]-hydro);
+        refcount[p1]=1.f;
+      }
+    }
+  }
+}
+
+//==============================================================================
+/// Prepares reference-layer data for bottom no-flux correction on GPU.
+//==============================================================================
+void PreparePorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zmin,double bottomthick,const double *porepress
+  ,float *refexcess,float *refcount,float *bottomcount)
+{
+  if(n){
+    const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerPreparePorePressureBottomNoFlux <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,hydraulicg,waterlevel,waterdensity,zmin,bottomthick,porepress,refexcess,refcount,bottomcount);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Applies bottom no-flux pressure correction and marks affected particles.
+//------------------------------------------------------------------------------
+__global__ void KerApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double4 hydraulicg,double waterlevel,double waterdensity
+  ,double zthreshold,double excessmean,double *porepress,float *affected)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    affected[p1]=0.f;
+    if(CODE_IsFluid(code[p1])){
+      const double z=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+      if(z<=zthreshold){
+        const double depth=waterlevel-z;
+        const double hydro=(depth>0.? waterdensity*hydraulicg.w*depth: 0.);
+        porepress[p1]=hydro+excessmean;
+        affected[p1]=1.f;
+      }
+    }
+  }
+}
+
+//==============================================================================
+/// Applies bottom no-flux pressure correction on GPU.
+//==============================================================================
+void ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const typecode *code
+  ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
+  ,double waterlevel,double waterdensity,double zthreshold,double excessmean,double *porepress,float *affected)
+{
+  if(n){
+    const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerApplyPorePressureBottomNoFlux <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,hydraulicg,waterlevel,waterdensity,zthreshold,excessmean,porepress,affected);
   }
 }
 

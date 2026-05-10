@@ -626,6 +626,18 @@ double JSphGpuSingle::ComputeStep_Ver(){
   Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
   const double dt=DtVariable(true);        //-Calculate new dt.
   UpdatePorePressureGpu(dt);               //-Explicit pore-pressure update for material particles.
+  if(HydromechCoupling && PorePressureModel==1 && PorePressg){
+    const double tpost=TimeStep+dt;
+    if(PorePressureTopDrained){
+      const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
+      ApplyPorePressureTopDrainedGpu(tpost,"post-update",topactive && !PorePressureTopDrainedStepPrint);
+      if(topactive)PorePressureTopDrainedStepPrint=true;
+    }
+    if(PorePressureBottomNoFlux){
+      ApplyPorePressureBottomNoFluxGpu("post-update",!PorePressureBottomNoFluxStepPrint);
+      PorePressureBottomNoFluxStepPrint=true;
+    }
+  }
   if(CaseNmoving)CalcMotion(dt);           //-Calculate motion for moving bodies.
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
@@ -663,6 +675,18 @@ double JSphGpuSingle::ComputeStep_Sym(){
   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   UpdatePorePressureGpu(dt);                   //-Explicit pore-pressure update for material particles.
+  if(HydromechCoupling && PorePressureModel==1 && PorePressg){
+    const double tpost=TimeStep+dt;
+    if(PorePressureTopDrained){
+      const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
+      ApplyPorePressureTopDrainedGpu(tpost,"post-update",topactive && !PorePressureTopDrainedStepPrint);
+      if(topactive)PorePressureTopDrainedStepPrint=true;
+    }
+    if(PorePressureBottomNoFlux){
+      ApplyPorePressureBottomNoFluxGpu("post-update",!PorePressureBottomNoFluxStepPrint);
+      PorePressureBottomNoFluxStepPrint=true;
+    }
+  }
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.

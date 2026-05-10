@@ -148,6 +148,8 @@ void JSphGpu::InitVars(){
   PorePressureDtActive=false;
   PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
   PorePressureUpdateDtPrint=false;
+  PorePressureTopDrainedStepPrint=false;
+  PorePressureBottomNoFluxStepPrint=false;
   BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
@@ -739,7 +741,13 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
   cudaMemcpy(Sigmag, Sigma, sizeof(tsymatrix3f)*n, cudaMemcpyHostToDevice);
   cudaMemcpy(Kplasticg, Kplastic, sizeof(float)*n, cudaMemcpyHostToDevice);
   //====
-  if(PorePressg)InitPorePressureGpu(n);
+  if(PorePressg){
+    InitPorePressureGpu(n);
+    if(HydromechCoupling && PorePressureModel==1){
+      if(PorePressureTopDrained)ApplyPorePressureTopDrainedGpu(TimeStep,"initialization",true);
+      if(PorePressureBottomNoFlux)ApplyPorePressureBottomNoFluxGpu("initialization",true);
+    }
+  }
   if(PorePressRateg || DivVelg || LapPorePressg || LapZg)InitPorePressureDiagnosticsGpu(n);
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
@@ -853,6 +861,125 @@ void JSphGpu::UpdatePorePressureGpu(double dt){
   }
   cusph::UpdatePorePressure(Np-Npb,Npb,Codeg,dt,PorePressg,PorePressRateg);
   Check_CudaErroor("Failed updating GPU pore pressure.");
+}
+
+//==============================================================================
+/// Applies GPU top drained condition to the total pore-pressure state.
+//==============================================================================
+unsigned JSphGpu::ApplyPorePressureTopDrainedGpu(double timestep,const char *stage,bool printlog){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureTopDrained || !PorePressg)return(0);
+  if(timestep<PorePressureTopDrainedStartTime)return(0);
+  const unsigned nfluid=(Np>Npb? Np-Npb: 0);
+  if(!nfluid)return(0);
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU top drained pore-pressure boundary.");
+  if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU top drained pore-pressure boundary.");
+  const double drainthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+  if(drainthick<=0.)Run_Exceptioon("GPU top drained pore-pressure boundary requires a positive drain thickness or KernelH.");
+  const tfloat3 hg=GetHydraulicGravity();
+
+  float *zmaxg=ArraysGpu->ReserveFloat();
+  float *auxmem=NULL;
+  cudaMalloc((void**)&auxmem,sizeof(float)*cusph::ReduMaxFloatSize(nfluid));
+  Check_CudaErroor("Failed allocating GPU top drained reduction memory.");
+  cusph::PreparePorePressureBoundaryElevations(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag,zmaxg,NULL);
+  Check_CudaErroor("Failed preparing GPU top drained boundary elevations.");
+  const float zmaxf=cusph::ReduMaxFloat(nfluid,Npb,zmaxg,auxmem);
+  ArraysGpu->Free(zmaxg);
+  zmaxg=NULL;
+  if(zmaxf<=-FLT_MAX/4.f){
+    cudaFree(auxmem);
+    if(printlog)Log->PrintWarning("GPU top drained pore-pressure boundary found no material particles.");
+    return(0);
+  }
+  const double zmax=double(zmaxf);
+  const double zthreshold=zmax-drainthick;
+
+  float *affectedg=ArraysGpu->ReserveFloat();
+  cusph::ApplyPorePressureTopDrained(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag
+    ,PorePressureWaterLevel,SoilCte.WaterDensity,zthreshold,PorePressg,affectedg);
+  Check_CudaErroor("Failed applying GPU top drained pore-pressure boundary.");
+  const float affectedf=cusph::ReduSumFloat(nfluid,Npb,affectedg,auxmem);
+  ArraysGpu->Free(affectedg);
+  cudaFree(auxmem);
+  const unsigned affected=unsigned(affectedf+0.5f);
+
+  if(printlog){
+    Log->Printf("Top drained pore-pressure boundary activated on GPU (%s): TimeStep=%g, start_time=%g, zmax_material=%g, drain_thickness=%g, z_threshold=%g, affected=%u."
+      ,(stage? stage: "unknown"),timestep,PorePressureTopDrainedStartTime,zmax,drainthick,zthreshold,affected);
+    if(double(PorePressureWaterLevel)<zmax)Log->PrintWarning(fun::PrintStr("GPU top drained pore-pressure boundary is used with WaterLevel=%g below top elevation=%g.",PorePressureWaterLevel,zmax));
+  }
+  return(affected);
+}
+
+//==============================================================================
+/// Applies GPU bottom no-flux layer correction to the total pore-pressure state.
+//==============================================================================
+unsigned JSphGpu::ApplyPorePressureBottomNoFluxGpu(const char *stage,bool printlog){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureBottomNoFlux || !PorePressg)return(0);
+  const unsigned nfluid=(Np>Npb? Np-Npb: 0);
+  if(!nfluid)return(0);
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU bottom no-flux pore-pressure boundary.");
+  if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU bottom no-flux pore-pressure boundary.");
+  const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
+  if(bottomthick<=0.)Run_Exceptioon("GPU bottom no-flux pore-pressure boundary requires a positive thickness or KernelH.");
+  const tfloat3 hg=GetHydraulicGravity();
+
+  float *negzming=ArraysGpu->ReserveFloat();
+  float *auxmem=NULL;
+  const unsigned auxsize=max(cusph::ReduMaxFloatSize(nfluid),cusph::ReduSumFloatSize(nfluid));
+  cudaMalloc((void**)&auxmem,sizeof(float)*auxsize);
+  Check_CudaErroor("Failed allocating GPU bottom no-flux reduction memory.");
+  cusph::PreparePorePressureBoundaryElevations(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag,NULL,negzming);
+  Check_CudaErroor("Failed preparing GPU bottom no-flux boundary elevations.");
+  const float negzminf=cusph::ReduMaxFloat(nfluid,Npb,negzming,auxmem);
+  ArraysGpu->Free(negzming);
+  negzming=NULL;
+  if(negzminf<=-FLT_MAX/4.f){
+    cudaFree(auxmem);
+    if(printlog)Log->PrintWarning("GPU bottom no-flux pore-pressure boundary found no material particles.");
+    return(0);
+  }
+  const double zmin=-double(negzminf);
+  const double zthreshold=zmin+bottomthick;
+  const double zrefmax=zmin+2.*bottomthick;
+
+  float *refexcessg=ArraysGpu->ReserveFloat();
+  float *refcountg=ArraysGpu->ReserveFloat();
+  float *bottomcountg=ArraysGpu->ReserveFloat();
+  cusph::PreparePorePressureBottomNoFlux(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag
+    ,PorePressureWaterLevel,SoilCte.WaterDensity,zmin,bottomthick,PorePressg,refexcessg,refcountg,bottomcountg);
+  Check_CudaErroor("Failed preparing GPU bottom no-flux pore-pressure reference layer.");
+  const float refsumf=cusph::ReduSumFloat(nfluid,Npb,refexcessg,auxmem);
+  const float refcountf=cusph::ReduSumFloat(nfluid,Npb,refcountg,auxmem);
+  const float bottomcountf=cusph::ReduSumFloat(nfluid,Npb,bottomcountg,auxmem);
+  ArraysGpu->Free(refexcessg);
+  ArraysGpu->Free(refcountg);
+  ArraysGpu->Free(bottomcountg);
+  const unsigned refcount=unsigned(refcountf+0.5f);
+  if(!refcount){
+    cudaFree(auxmem);
+    if(printlog)Log->PrintWarning(fun::PrintStr("GPU bottom no-flux pore-pressure boundary (%s) skipped: reference layer has no material particles. zmin=%g, reference=[%g,%g]."
+      ,(stage? stage: "unknown"),zmin,zthreshold,zrefmax));
+    return(0);
+  }
+  const double excessmean=double(refsumf)/double(refcountf);
+
+  float *affectedg=ArraysGpu->ReserveFloat();
+  cusph::ApplyPorePressureBottomNoFlux(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag
+    ,PorePressureWaterLevel,SoilCte.WaterDensity,zthreshold,excessmean,PorePressg,affectedg);
+  Check_CudaErroor("Failed applying GPU bottom no-flux pore-pressure boundary.");
+  const float affectedf=cusph::ReduSumFloat(nfluid,Npb,affectedg,auxmem);
+  ArraysGpu->Free(affectedg);
+  cudaFree(auxmem);
+  const unsigned affected=unsigned(affectedf+0.5f);
+
+  if(printlog){
+    Log->Printf("Bottom no-flux pore-pressure boundary on GPU (%s): zmin_material=%g, bottom_thickness=%g, z_threshold=%g, reference=[%g,%g], affected=%u, bottom_count=%u, reference_count=%u, excess_ref_mean=%g Pa."
+      ,(stage? stage: "unknown"),zmin,bottomthick,zthreshold,zthreshold,zrefmax,affected,unsigned(bottomcountf+0.5f),refcount,excessmean);
+  }
+  return(affected);
 }
 
 //==============================================================================
