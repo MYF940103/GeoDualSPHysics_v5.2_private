@@ -378,6 +378,18 @@ Compare against current fields on:
 - profile 2
 - 1D pressure-only diffusion
 
+CPU-BG3 result:
+
+- The simple boundary ghost Laplacian diagnostics did not improve hydrostatic
+  consistency near the bottom boundary.
+- In hydrostatic-only tests,
+  `LapPorePressGhost/(rho_w*g) + LapZGhost` showed larger bottom-region errors
+  than the material-only operator.
+- Therefore this simple ghost treatment should remain diagnostic-only and
+  should not be promoted to a production `PorePressureBoundaryOperator` mode.
+- A production boundary operator still requires a more consistent mirror,
+  MLS, or mDBC-compatible pore-pressure boundary treatment.
+
 ### CPU-BG4: enable ghost boundary in PR pressure-only path
 
 Add an option such as:
