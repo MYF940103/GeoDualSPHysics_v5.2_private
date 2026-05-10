@@ -41,10 +41,10 @@ with missing features documented.
 | Item | Status | GPU-G1 impact | Required action |
 |---|---|---|---|
 | 02 SelfWeight formal smoke | Mostly available | Blocks GPU G1 only as a case-readiness gate | Formalize Scenario 1/2 XML/BAT and record one short smoke result for each. |
-| 03 Cryer scaffold/smoke | Scaffold exists, smoke not done | Does not block G1 if marked TODO | Keep TODO XML until boundary strategy and geometry are clearer; define minimum smoke criteria. |
-| 04 Undrained triaxial scaffold/smoke | Scaffold exists, smoke not done | Does not block PR core G1 | Define loading/confinement gaps; do not force runnable XML before boundary/control design. |
-| 05 Retrogressive slope scaffold/smoke | Scaffold exists, TODO only | Does not block PR core G1 | Keep scaffold-only; GPU and material-model decisions are needed before meaningful runs. |
-| 06 Sainte-Monique scaffold/smoke | Scaffold exists, TODO only | Does not block PR core G1 | Keep scaffold-only; full field case is post-GPU and post-material-model. |
+| 03 Cryer scaffold/smoke | Reduced smoke complete | Does not block passive G1 | Keep strict Cryer marked boundary/geometry/postprocessing blocked; reduced smoke is runnable. |
+| 04 Undrained triaxial scaffold/smoke | Reduced AccInput smoke complete | Does not block PR core G1 | Strict loading/confinement/MCC remain blocked; reduced smoke is runnable. |
+| 05 Retrogressive slope scaffold/smoke | Reduced wedge smoke complete | Does not block PR core G1 | Strict retrogression remains sensitive-clay/GPU blocked; reduced smoke is runnable. |
+| 06 Sainte-Monique scaffold/smoke | Reduced placeholder smoke complete; field data blocked | Does not block passive G1 | Full field reproduction is still data/material/GPU blocked; reduced placeholder smoke is runnable. |
 | `TopLoad*` cleanup/deprecation | Source-side path removed in CPU-F6a | Complete before GPU G1 | Formal external-load path is native `AccInput`; formal XML no longer depends on source `TopLoad*`. Archived experiments are historical only. |
 | Boundary ghost production decision | Diagnostic result is negative for simple ghost Laplacian | Must be documented before GPU boundary kernels | Keep current layer corrections as production baseline for G1-G4; defer proper MLS/mirror design. |
 | Corrected-gradient production decision | Diagnostic result is negative/neutral | Must be documented before GPU PR kernels | Keep current uncorrected PR operators for G1-G4; corrected diagnostics remain CPU-only. |
@@ -76,40 +76,40 @@ with missing features documented.
 
 | Field | Status |
 |---|---|
-| Current state | README, notes, and TODO XML scaffold exist. |
-| Short runnable? | Not yet. |
-| Missing features | 3D/spherical or axisymmetric geometry, drained boundary treatment, pore-pressure ghost/MLS or equivalent boundary strategy, analytical postprocessing, likely GPU for useful resolution. |
-| Minimum smoke test | For now: GenCase-only or TODO XML parse status with explicit unsupported notes. Future CPU smoke: coarse geometry, bounded pressure, symmetry preserved, no NaN/excluded. |
+| Current state | README, notes, TODO XML, and `CaseCryer_PR_Smoke_Def.xml` reduced smoke exist. |
+| Short runnable? | Yes, reduced smoke passed: GenCase code=0, Dual code=0, excluded=0. |
+| Missing features | Strict 3D/spherical or axisymmetric geometry, drained boundary treatment, pore-pressure ghost/MLS or equivalent boundary strategy, analytical postprocessing, likely GPU for useful resolution. |
+| Minimum smoke test | Current reduced smoke meets CPU case-readiness: coarse geometry, bounded pressure field, no NaN/excluded, required fields written. |
 | Blocks GPU G1? | No. It should remain TODO until PR core GPU and boundary decisions mature. |
 
 ### 04: `04_Undrained_Triaxial`
 
 | Field | Status |
 |---|---|
-| Current state | README, notes, and TODO XML scaffold exist. |
-| Short runnable? | Not yet. |
-| Missing features | Axial strain or stress control, confinement/lateral stress boundary, stress-path output (`p'`, `q`), and possibly MCC if strict material reproduction is required. Current DP can only be an approximate smoke path. |
-| Minimum smoke test | Future CPU smoke should use tiny strain, `code=0`, `excluded=0`, correct pore-pressure sign, and bounded stress-path outputs. |
+| Current state | README, notes, TODO XML, reduced AccInput smoke XML/BAT, load CSV, and stress-path analysis scaffold exist. |
+| Short runnable? | Yes, reduced DP/u-pw smoke passed: GenCase code=0, Dual code=0, excluded=0. |
+| Missing features | Axial strain or stress control, confinement/lateral stress boundary, validated stress-path output (`p'`, `q`), and possibly MCC if strict material reproduction is required. Current DP can only be an approximate smoke path. |
+| Minimum smoke test | Current reduced smoke meets CPU case-readiness: tiny compressive AccInput, small positive excess pore pressure, no NaN/excluded, required fields written. |
 | Blocks GPU G1? | No. Loading/control and constitutive choices are case-specific and should not block PR core GPU. |
 
 ### 05: `05_Retrogressive_Slope`
 
 | Field | Status |
 |---|---|
-| Current state | README, notes, and TODO XML scaffold exist. |
-| Short runnable? | Not meaningfully yet. |
-| Missing features | Sensitive clay / strain-softening model, robust large-deformation settings, pore-pressure initial/boundary strategy, GPU kernels, and postfailure monitoring. |
-| Minimum smoke test | Future coarse CPU/GPU smoke: `code=0`, `excluded=0` for a tiny time window, key fields written, no immediate numerical blow-up. |
+| Current state | README, notes, TODO XML, and reduced 3D wedge PR smoke XML/BAT exist. |
+| Short runnable? | Yes, reduced smoke passed: GenCase code=0, Dual code=0, excluded=0. |
+| Missing features | Sensitive clay / strain-softening model, robust large-deformation settings, pore-pressure initial/boundary strategy, coupled feedback at slope scale, GPU kernels, and postfailure monitoring. |
+| Minimum smoke test | Current reduced smoke meets CPU case-readiness: `code=0`, `excluded=0` for a tiny time window, key fields written, no immediate numerical blow-up. |
 | Blocks GPU G1? | No. This is a post-GPU application benchmark. |
 
 ### 06: `06_Sainte_Monique`
 
 | Field | Status |
 |---|---|
-| Current state | README, notes, and TODO XML scaffold exist. |
-| Short runnable? | No. |
+| Current state | README, notes, TODO XML, `data/README.md`, and reduced synthetic field placeholder smoke XML/BAT exist. |
+| Short runnable? | Yes for the reduced placeholder smoke; field reproduction remains data-blocked. |
 | Missing features | Field geometry/topography, material zoning, sensitive clay calibration, initial stress and pore-pressure state, GPU implementation, checkpoint/restart workflow. |
-| Minimum smoke test | Future: geometry-only GenCase check, dry tiny run, then hydromechanical short run after smaller cases pass. |
+| Minimum smoke test | Current reduced placeholder smoke meets CPU case-readiness: GenCase code=0, Dual code=0, excluded=0, required fields written. |
 | Blocks GPU G1? | No. Full field reproduction is a final target. |
 
 ## 4. Required Before GPU G1
@@ -277,7 +277,7 @@ After that, GPU G1 can start from a cleaner target: the current uncorrected
 material-only PR path plus `PorePressureAccelDiff` feedback as the production
 coupled operator.
 
-## Phase 6 Smoke Matrix Update
+## Phase 6 Smoke Matrix Update After R1-R4
 
 Updated after CPU pre-GPU automation:
 
@@ -287,10 +287,10 @@ Updated after CPU pre-GPU automation:
 | 01 SW3h result | Historical CPU long-run diagnostic | Kept as documented result only; no further CPU long-run tuning in this pass. | No |
 | 02 Scenario 1 | Formal Stage A/B restart smoke scaffold | Stage A passed; Stage B restart passed and restored `PorePress` for `1040/1040` particles with XML initialization skipped. | No |
 | 02 Scenario 2 | Formal short smoke scaffold | Short Scenario 2 copy passed with `code=0`, `excluded=0`. | No |
-| 03 Cryer | TODO scaffold | No run by design; missing geometry, drained pressure boundary, boundary ghost/MLS, corrected operator decision, analytical postprocessing, and likely GPU resolution. | No for passive G1; blocks strict Cryer reproduction only |
-| 04 Undrained triaxial | TODO scaffold | No run by design; missing axial control, confinement, stress-path output, and possible MCC. | No for PR core G1; blocks triaxial reproduction only |
-| 05 Retrogressive slope | TODO scaffold | No run by design; requires sensitive clay/softening, large-deformation stability, initial state, and GPU. | No for PR core G1; post-GPU/material-model target |
-| 06 Sainte-Monique | TODO scaffold | No run by design; requires field geometry, zoning, calibration, restart workflow, and GPU. | No for PR core G1; final application target |
+| 03 Cryer | Reduced PR smoke plus TODO scaffold | GenCase code=0, Dual code=0, excluded=0, fields written. Strict Cryer still needs geometry refinement, drained pressure boundary, boundary ghost/MLS decision, and analytical postprocessing. | No for passive G1; blocks strict Cryer reproduction only |
+| 04 Undrained triaxial | Reduced DP/u-pw AccInput smoke plus TODO scaffold | GenCase code=0, Dual code=0, excluded=0, fields written. Strict triaxial still needs axial control, confinement, stress-path validation, and possible MCC. | No for PR core G1; blocks strict triaxial reproduction only |
+| 05 Retrogressive slope | Reduced 3D wedge PR smoke plus TODO scaffold | GenCase code=0, Dual code=0, excluded=0, fields written. Strict retrogression still requires sensitive clay/softening, initial state, coupled feedback scaling, and GPU. | No for PR core G1; post-GPU/material-model target |
+| 06 Sainte-Monique | Reduced synthetic field placeholder plus data README | GenCase code=0, Dual code=0, excluded=0, fields written. Field reproduction remains data-blocked by missing topography, zoning, calibration, and field initial state. | No for passive G1; final application remains data/GPU blocked |
 
 Cleanup decisions now recorded:
 
@@ -299,4 +299,8 @@ Cleanup decisions now recorded:
 - Simple boundary ghost Laplacian remains diagnostic-only and is not promoted to production.
 - Corrected-gradient PR diagnostics remain CPU-only and are not promoted to production.
 
-Readiness judgment: CPU case readiness is sufficient to start **GPU G1 passive `PorePressg` planning/coding only**. This does not authorize the full GPU PR loop, feedback, boundary ghost production, corrected-gradient production, or long GPU reproduction runs.
+Readiness judgment after R1-R4: CPU case readiness is sufficient to start **GPU G1 passive `PorePressg` planning/coding only**, once the final pre-GPU readiness report is committed. This does not authorize the full GPU PR loop, feedback, boundary ghost production, corrected-gradient production, or long GPU reproduction runs.
+
+The reduced smokes for 03-06 are deliberately not strict reproductions. They
+exist to prove that every paper-case directory has a CPU-runnable minimum path
+or an explicit data/feature-block statement before GPU work begins.

@@ -1,81 +1,94 @@
 # Full CPU Case Completion Plan Before GPU
 
-## 1. New GPU-Entry Gate
+## 1. GPU-Entry Gate
 
-GPU coding is blocked until all paper reproduction cases have reached CPU smoke readiness. The earlier gate of "PR core plus 01/02 readiness" is no longer sufficient.
+GPU coding is blocked until all paper reproduction case directories reach CPU
+smoke readiness or are explicitly marked data/feature blocked with a concrete
+path forward. The earlier gate of "PR core plus 01/02 readiness" is not enough.
 
 Before GPU G1 starts:
 
-- 01-06 must each have a case directory with README, notes, and a concrete XML plan.
-- Every case must have a paper-parameter-oriented XML where parameters are known.
-- Unknown paper values must be marked `TODO` rather than invented.
-- Every case must either:
-  - run a short CPU smoke test with GenCase `code=0`, DualSPHysics `code=0`, `excluded=0` or a documented coarse-grid exception, no NaN/crash, key fields written, and qualitatively plausible trend; or
-  - be explicitly marked feature-blocked/data-blocked with the exact missing item and a plan to resolve it before GPU.
-- TODO scaffold alone is not enough to declare GPU readiness.
-- No CUDA, `JSphGpu*`, `JCellDivGpu*`, or `.cu` work should start until this full CPU case gate is revisited and passed.
+- 01-06 must each have a case directory with README, notes, and XML/BAT or an
+  explicit data/feature block.
+- Every case must use paper-oriented parameters where known. Unknown values must
+  be marked `TODO`, not invented.
+- Every case must either run a short CPU smoke or document the exact missing
+  feature/data that blocks it.
+- TODO scaffold alone is not enough.
+- No CUDA, `JSphGpu*`, `JCellDivGpu*`, or `.cu` work should start until this
+  gate is revisited.
 
-## 2. Current Case Status
+## 2. Current Case Status After R1-R4
 
 | Case | Current state | CPU smoke status | Gate status |
 | --- | --- | --- | --- |
-| 01 1D consolidation / pressure-only | Runnable pressure-only baseline; SW3h result archived as diagnostic. | Short pressure-only smoke passed. | Partially complete; remains regression anchor. |
-| 02 Self-weight consolidation | Formal Scenario 1 Stage A/B and Scenario 2 smoke scaffolds. | Short Stage A/B and Scenario 2 smoke passed. | Complete for current smoke scope. |
-| 03 Cryer | TODO scaffold only. | Not runnable yet. | Not complete. |
-| 04 Undrained triaxial | TODO scaffold only. | Not runnable yet. | Not complete. |
-| 05 Retrogressive slope | TODO scaffold only. | Not runnable yet. | Not complete. |
-| 06 Sainte-Monique | TODO scaffold only. | Not runnable yet; likely data-blocked. | Not complete. |
+| 01 1D consolidation / pressure-only | Runnable pressure-only baseline; SW3h result archived as diagnostic. | Short pressure-only smoke passed. | Complete for regression-anchor scope. |
+| 02 Self-weight consolidation | Formal Scenario 1 Stage A/B and Scenario 2 smoke scaffolds. | Short Stage A/B and Scenario 2 smoke passed. | Complete for smoke scope. |
+| 03 Cryer | Reduced PR smoke XML plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for reduced smoke; strict Cryer remains boundary/geometry/postprocessing blocked. |
+| 04 Undrained triaxial | Reduced DP/u-pw AccInput smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written, small positive excess under tiny compression. | Complete for reduced smoke; strict triaxial remains loading/confinement/MCC blocked. |
+| 05 Retrogressive slope | Reduced 3D wedge PR smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for reduced smoke; strict retrogression remains sensitive-clay/GPU blocked. |
+| 06 Sainte-Monique | Reduced synthetic field placeholder smoke plus data README. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for placeholder smoke; field reproduction remains data/material/GPU blocked. |
 
-## 3. Missing Features by Case
+## 3. Missing Strict-Reproduction Features
 
 ### 01 1D Consolidation
 
 - No blocker for pressure-only smoke.
-- Strict external-load Terzaghi still needs a stable loading strategy and may need better traction/loading plate support, but this is not required for the current pressure-only anchor.
+- Strict external-load Terzaghi still needs a stable loading/traction strategy
+  and stronger boundary treatment, but it is not the current GPU-entry gate.
 
 ### 02 Self-Weight Consolidation
 
 - No blocker for short CPU smoke.
-- Long-time tuning and strict curves are deferred.
+- Long-time tuning and strict SI curves are deferred to GPU or explicit manual
+  requests.
 - Boundary ghost and corrected-gradient diagnostics remain non-production.
 
 ### 03 Cryer Problem
 
-- Paper geometry and exact benchmark parameters must be captured.
-- Need a reduced CPU smoke geometry if full 3D sphere is too heavy.
-- Strict drained boundary likely needs pore-pressure boundary ghost/MLS or a documented simplified boundary for smoke.
-- Analytical center-pressure postprocessing needed for later, not for first smoke.
+- Strict spherical/cylindrical benchmark geometry and analytical
+  postprocessing need refinement.
+- Drained boundary treatment likely needs pore-pressure ghost/MLS or a
+  documented simplified boundary for smoke.
+- High-resolution Cryer is a GPU-stage task.
 
 ### 04 Undrained Triaxial
 
-- Need minimal axial loading/control route using native DualSPHysics mechanisms.
-- Need confinement/lateral stress approximation for smoke.
-- Strict matching may need MCC; current DP can only be an approximate smoke.
-- Need stress-path postprocessing from `Sigma_kk`/`Sigma_ij` if no direct `p'`/`q` fields exist.
+- Strict axial strain/stress control is missing.
+- Prescribed confinement/lateral stress boundary is missing.
+- Current DP material is only an approximation; strict matching may require MCC.
+- Stress-path script exists as a scaffold, but `p'`/`q` validation remains.
 
 ### 05 Retrogressive Slope
 
-- Strict reproduction needs sensitive clay / strain-softening and material zoning.
-- Reduced CPU smoke can use DP + u-pw with coarse geometry for no-crash and output verification.
-- Need qualitative slope geometry, initial pore pressure, and boundary assumptions from notes.
+- Strict reproduction needs sensitive clay / strain-softening and material
+  zoning.
+- Initial effective stress and pore-pressure construction for a real slope are
+  not validated.
+- Coupled feedback is off in the reduced smoke and must be revisited after GPU.
 
 ### 06 Sainte-Monique
 
-- Field data/topography/material zoning may be unavailable.
-- If data are missing, create a reduced placeholder smoke and `data/README.md` documenting the data block.
-- Strict reproduction requires calibration and checkpoint/restart workflow.
+- Field topography/material zoning/groundwater data are missing.
+- Sensitive clay calibration and validated field initial state are missing.
+- Full field runs require GPU and checkpoint/restart workflow.
 
-## 4. Recommended Execution Order
+## 4. Recommended Execution Order From Here
 
-1. 03 Cryer: extract known paper parameters, create reduced PR smoke XML, run short smoke or record exact feature block.
-2. 04 Undrained triaxial: create approximate DP u-pw smoke using native loading, add stress-path analysis script, run short smoke or record exact feature block.
-3. 05 Retrogressive slope: create reduced qualitative DP/u-pw smoke, run short geometry/field-output smoke or record feature block.
-4. 06 Sainte-Monique: create reduced field scaffold or data-blocked workflow, run only if reduced geometry is available.
-5. Update global matrix and interface cleanup notes.
-6. Reassess GPU entry.
+1. Update smoke matrices and final readiness report.
+2. Treat 01-06 as CPU-smoke ready in reduced/current scope.
+3. Freeze current CPU production PR path for GPU G1:
+   - uncorrected material-only PR operators;
+   - `PorePressureAccelDiff` as the coupled feedback candidate;
+   - no source-side `TopLoad*`;
+   - no `PorePressureAccelSymCorr`;
+   - simple ghost and corrected-gradient outputs remain diagnostics only.
+4. Start GPU only with passive `PorePressg` if the final readiness check agrees.
 
 ## 5. GPU Block Statement
 
-GPU coding is blocked until all CPU smoke cases are complete or explicitly resolved as data-blocked/feature-blocked with an accepted CPU-side plan. Passing 01/02 alone is not sufficient.
-
-The next GPU step, when eventually allowed, remains limited to passive `PorePressg` only unless a later plan expands the scope.
+GPU coding remains blocked until the final readiness report is committed. Based
+on R1-R4, the case-smoke gate itself is now satisfied for reduced CPU smoke
+scope. Strict reproduction of Cryer, triaxial, retrogressive slope, and
+Sainte-Monique remains blocked by feature/data items listed above, but those do
+not block a narrow passive GPU G1.

@@ -9,6 +9,26 @@ Scope:
 - Current reference inputs: `src/papers/u-p/*.md`, `doc/xml_format`, `doc/guides`, and existing `examples` templates.
 - Note: at the time this file was generated, `src/papers/u-p` contained markdown notes and reviews, not the original PDF files.
 
+## R1-R4 CPU Smoke Update
+
+After the full CPU case-completion pass, every target directory now has either a
+runnable reduced CPU smoke or an explicit data/feature block:
+
+- `01_1D_Consolidation`: pressure-only regression anchor remains runnable.
+- `02_SelfWeight_Consolidation`: Scenario 1 staged restart and Scenario 2
+  short smoke scaffolds are formalized.
+- `03_Cryer_Problem`: reduced PR smoke runs, but strict Cryer remains boundary
+  and analytical-postprocessing blocked.
+- `04_Undrained_Triaxial`: reduced native-AccInput DP/u-pw smoke runs, but
+  strict triaxial remains loading/confinement/MCC blocked.
+- `05_Retrogressive_Slope`: reduced wedge PR smoke runs, but strict
+  retrogression remains sensitive-clay/GPU blocked.
+- `06_Sainte_Monique`: reduced placeholder smoke runs, but field reproduction
+  remains data/material/GPU blocked.
+
+These smokes are not long-time calibrations. They are CPU readiness checks for
+the pre-GPU gate.
+
 ## 1. Target Case List
 
 | Case | Purpose | Paper / SI role | Current priority |
@@ -16,10 +36,10 @@ Scope:
 | 1D consolidation / Terzaghi pressure-only baseline | Verify PR pore-pressure diffusion, drainage, no-flux behavior, and analytical decay without mechanics feedback. | First hydraulic sanity check before coupled reproduction. | Complete baseline exists. Keep as regression test. |
 | Self-weight consolidation Scenario 1 | Generate self-weight undrained pore pressure, then switch body gravity off and dissipate with hydraulic gravity retained. | Supporting Information Scenario 1. | Next major missing verification. |
 | Self-weight consolidation Scenario 2 | Generate self-weight pore pressure and keep body gravity on during drainage; total pressure should trend to hydrostatic. | Supporting Information Scenario 2. | Stable long-run line exists for xi=0.10; needs paper-compatible xi and formal comparison. |
-| Cryer problem | Coupled consolidation under spherical/cylindrical symmetry with pore-pressure Mandel-Cryer-type behavior. | Strong coupled u-pw benchmark. | Not started; requires 3D/axisymmetric setup and stronger boundary treatment. |
-| Undrained triaxial tests | Validate undrained response, effective stress, pore-pressure feedback, and constitutive behavior. | Material-level coupled validation. | Not started; needs controlled strain/stress boundary and postprocessing. |
-| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on idealized retrogressive slope. | Main hydromechanical landslide benchmark before field case. | Not started; likely needs GPU and sensitive/softening material. |
-| Sainte-Monique landslide case | Field-scale reproduction. | Final application case. | Not ready; requires GPU, material model confidence, and large-case workflow. |
+| Cryer problem | Coupled consolidation under spherical/cylindrical symmetry with pore-pressure Mandel-Cryer-type behavior. | Strong coupled u-pw benchmark. | Reduced PR CPU smoke exists; strict Cryer still needs geometry/boundary/postprocessing work. |
+| Undrained triaxial tests | Validate undrained response, effective stress, pore-pressure feedback, and constitutive behavior. | Material-level coupled validation. | Reduced DP/u-pw AccInput CPU smoke exists; strict reproduction still needs loading/confinement/MCC decisions. |
+| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on idealized retrogressive slope. | Main hydromechanical landslide benchmark before field case. | Reduced PR wedge CPU smoke exists; strict retrogression needs sensitive/softening material and GPU. |
+| Sainte-Monique landslide case | Field-scale reproduction. | Final application case. | Reduced placeholder CPU smoke exists; validated field case remains data/material/GPU blocked. |
 
 ## 2. Recommended Directory Layout
 
@@ -29,10 +49,10 @@ Proposed final structure under `examples/u-pw`:
 |---|---|---|
 | `01_1D_Consolidation` | Current pressure-only baseline, self-weight diagnostics, and SW3h Scenario 2 long-run result. | Keep current formal baseline and SW3h result here. Experiments remain under `experiments/`. |
 | `02_SelfWeight_Consolidation` | Formal Supporting Information Scenario 1 / Scenario 2 cases. | Create once Scenario 1 restart/gravity-switch route is defined. Could reuse assets from `01_1D_Consolidation`. |
-| `03_Cryer_Problem` | Cryer benchmark scaffold. | Requires geometry, analytical solution notes, and boundary-pressure strategy. |
-| `04_Undrained_Triaxial` | Undrained triaxial tests. | Needs loading/control boundary design and stress-path postprocessing. |
-| `05_Retrogressive_Slope` | Idealized retrogressive slope / landslide benchmark. | Should wait for GPU port and constitutive-model decisions. |
-| `06_Sainte_Monique` | Sainte-Monique field case. | Final case; should stay scaffold-only until smaller cases pass. |
+| `03_Cryer_Problem` | Cryer benchmark scaffold and reduced PR smoke. | Strict case still requires geometry, analytical solution notes, and boundary-pressure strategy. |
+| `04_Undrained_Triaxial` | Undrained triaxial scaffold and reduced AccInput smoke. | Strict case still needs loading/control boundary design, confinement, and stress-path validation. |
+| `05_Retrogressive_Slope` | Idealized retrogressive slope scaffold and reduced wedge smoke. | Strict case waits for GPU port and sensitive/softening material decisions. |
+| `06_Sainte_Monique` | Sainte-Monique field scaffold and reduced placeholder smoke. | Validated field case remains data/material/GPU blocked. |
 
 `01_1D_Consolidation` can keep both pressure-only and current self-weight material for now because the files share geometry, parameters, scripts, and analysis tooling. A separate `02_SelfWeight_Consolidation` should be created when Scenario 1 and Scenario 2 become formal reproducible cases rather than diagnostics.
 
@@ -44,10 +64,10 @@ Proposed final structure under `examples/u-pw`:
 | Self-weight Scenario 2 | Existing long-run line: `Case1DConsolidation_PR_SelfWeight_Scenario2_T3p6_Xi010_Def.xml`, `SW3h_scenario2_T3p6_xi010/`; stable to 3.6 s, excluded=0, pressure trends toward hydrostatic. | Promising but still needs formal SI-style comparison and paper-compatible damping line. |
 | Self-weight Scenario 1 | Not implemented as a formal restart workflow. | Needs body-gravity switch or restart with gravity off, and likely PorePress restart support. |
 | External-load Terzaghi | Pressure-only baseline works; coupled external-load smoke tests now use native `AccInput`; the earlier source-side `TopLoad` path has been removed after proving unsuitable for formal cases. | Current route is experimental only. Need traction/loading strategy and/or better coupled stabilization. |
-| Cryer problem | No case scaffold. | Requires new geometry and boundary condition design. |
-| Undrained triaxial | No case scaffold. | Requires loading/control boundary design and postprocessing. |
-| Retrogressive slope | No PR case scaffold. Existing GeoDualSPHysics soil examples can provide geometry/style references. | Needs GPU and material-model readiness. |
-| Sainte-Monique | No case scaffold. | Current CPU prototype is not suitable for field-scale run. |
+| Cryer problem | Reduced PR smoke exists in `03_Cryer_Problem`; TODO XML retained. | Strict geometry, drained pressure boundary, and analytical postprocessing still required. |
+| Undrained triaxial | Reduced DP/u-pw AccInput smoke exists in `04_Undrained_Triaxial`; stress-path script scaffold added. | Strict loading/control, confinement, and possible MCC still required. |
+| Retrogressive slope | Reduced wedge PR smoke exists in `05_Retrogressive_Slope`; TODO XML retained. | Strict retrogression needs sensitive/softening material, initial state, and GPU. |
+| Sainte-Monique | Reduced synthetic placeholder smoke exists in `06_Sainte_Monique`; `data/README.md` records missing field data. | Field reproduction remains data/material/GPU blocked. |
 
 ## 4. Missing Function Matrix
 
