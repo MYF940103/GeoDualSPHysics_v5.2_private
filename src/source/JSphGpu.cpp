@@ -43,6 +43,7 @@
 #include "JDsGaugeSystem.h"
 #include "JSphInOut.h"
 #include "JSphShifting.h"
+#include <float.h>
 #include "JDataArrays.h"
 #include "JVtkLib.h"
 
@@ -141,6 +142,7 @@ void JSphGpu::InitVars(){
   FreeCpuMemoryFixed();
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL;//ruofeng
+  PorePressg=NULL;
   BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
@@ -321,6 +323,11 @@ void JSphGpu::FreeGpuMemoryParticles(){
   GpuParticlesSize=0;
   MemGpuParticles=0;
   ArraysGpu->Reset();
+  Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
+  Sigmag=NULL; Kplasticg=NULL; PorePressg=NULL;
+  VelrhopM1g=NULL; SigmaM1g=NULL;
+  PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; SigmaPreg=NULL;
+  SpsTaug=NULL; BoundNormalg=NULL; MotionVelg=NULL;
 }
 
 //==============================================================================
@@ -350,6 +357,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
   if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 2);//-kplastic
+  if(HydromechCoupling || SavePorePressure)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,2);//-porepress + sort buffer
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
@@ -408,6 +416,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //==mdbr
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
+  double* porepress = SaveArrayGpu(Np, PorePressg);
   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -429,6 +438,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //-mdbr
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
+  ArraysGpu->Free(PorePressg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -454,6 +464,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //--mdbr
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
+  if(porepress)  PorePressg = ArraysGpu->ReserveDouble();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
   // 
@@ -475,6 +486,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //---mdbr
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
+  RestoreArrayGpu(Np,porepress,PorePressg);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
@@ -524,6 +536,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
   //mdbr
   Sigmag = ArraysGpu->ReserveSymatrix3f();
   Kplasticg = ArraysGpu->ReserveFloat();
+  if(HydromechCoupling || SavePorePressure)PorePressg=ArraysGpu->ReserveDouble();
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
   SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
   }
@@ -639,8 +652,71 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
   cudaMemcpy(Sigmag, Sigma, sizeof(tsymatrix3f)*n, cudaMemcpyHostToDevice);
   cudaMemcpy(Kplasticg, Kplastic, sizeof(float)*n, cudaMemcpyHostToDevice);
   //====
+  if(PorePressg)InitPorePressureGpu(n);
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
+}
+
+//==============================================================================
+/// Initialises passive pore pressure on GPU for G1 output/parity.
+//==============================================================================
+void JSphGpu::InitPorePressureGpu(unsigned n){
+  if(!PorePressg)return;
+  if(PorePressureInit==2)Run_Exceptioon("PorePressureInit=2 is not implemented for GPU passive pore-pressure G1.");
+  double *porepress=NULL;
+  try{
+    porepress=new double[n];
+  }
+  catch(const std::bad_alloc){
+    Run_Exceptioon("Could not allocate temporary pore-pressure initialisation buffer.");
+  }
+  memset(porepress,0,sizeof(double)*n);
+  if(HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
+    if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU pore pressure initialization.");
+    const double gmag=GetHydraulicGmag();
+    if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU pore pressure initialization.");
+    unsigned npmat=0,npnonzero=0;
+    double zmin=DBL_MAX,zmax=-DBL_MAX;
+    for(unsigned p=0;p<n;p++)if(CODE_IsFluid(Code[p])){
+      npmat++;
+      const tdouble3 ps=TDouble3(Posxy[p].x,Posxy[p].y,Posz[p]);
+      const double z=GetHydraulicElevation(ps);
+      zmin=min(zmin,z);
+      zmax=max(zmax,z);
+    }
+    if(!npmat)Log->PrintWarning("GPU pore pressure initialization found no material particles.");
+    const double zrange=zmax-zmin;
+    if(PorePressureInit==3 && zrange<=0.)Log->PrintWarning("GPU analytical excess pore pressure initialization found zero material elevation range. eta is set to zero.");
+    double pwmax=-DBL_MAX;
+    for(unsigned p=0;p<n;p++)if(CODE_IsFluid(Code[p])){
+      const tdouble3 ps=TDouble3(Posxy[p].x,Posxy[p].y,Posz[p]);
+      const double z=GetHydraulicElevation(ps);
+      const double depth=double(PorePressureWaterLevel)-z;
+      const double hydrostatic=(depth>0.? double(SoilCte.WaterDensity)*gmag*depth: 0.);
+      double excess=0.;
+      if(PorePressureInit==3){
+        double eta=(zrange>0.? (z-zmin)/zrange: 0.);
+        eta=max(0.,min(1.,eta));
+        if(PorePressureAnalyticalProfile==1)excess=double(PorePressureExcessAmp)*sin(PI*eta);
+        else if(PorePressureAnalyticalProfile==2)excess=double(PorePressureExcessAmp)*cos(PIHALF*eta);
+        else if(PorePressureAnalyticalProfile==3)excess=double(PorePressureExcessAmp);
+        else Run_Exceptioon("PorePressureAnalyticalProfile mode is not valid.");
+      }
+      const double pw=hydrostatic+excess;
+      porepress[p]=pw;
+      pwmax=max(pwmax,pw);
+      if(pw)npnonzero++;
+    }
+    if(!npmat){
+      zmin=zmax=0.;
+      pwmax=0.;
+    }
+    Log->Printf("Passive GPU pore pressure initialised: Init=%d, WaterLevel=%g, material elevation range=[%g,%g], nonzero=%u/%u, max(PorePress)=%g Pa."
+      ,PorePressureInit,PorePressureWaterLevel,zmin,zmax,npnonzero,npmat,pwmax);
+  }
+  else Log->Printf("Passive GPU pore pressure initialised: PorePress=0 for %u particles.",n);
+  cudaMemcpy(PorePressg,porepress,sizeof(double)*n,cudaMemcpyHostToDevice);
+  delete[] porepress;
 }
 
 //==============================================================================

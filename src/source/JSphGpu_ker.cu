@@ -3795,6 +3795,30 @@ void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,flo
   }
 }
 
+//------------------------------------------------------------------------------
+/// Duplicates a scalar double particle array for periodic particles.
+//------------------------------------------------------------------------------
+__global__ void KerPeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,double *data)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned pnew=p+pini;
+    const unsigned pcopy=(listp[p]&0x7FFFFFFF);
+    data[pnew]=data[pcopy];
+  }
+}
+
+//==============================================================================
+/// Duplicates a scalar double particle array for periodic particles.
+//==============================================================================
+void PeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,double *data)
+{
+  if(n && data){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerPeriodicDuplicateDouble <<<sgrid,SPHBSIZE>>> (n,pini,listp,data);
+  }
+}
+
 //##############################################################################
 //# Kernels for Damping.
 //##############################################################################

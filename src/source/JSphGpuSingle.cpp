@@ -324,6 +324,7 @@ void JSphGpuSingle::RunPeriodic(){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
               cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg);
             }
+            if(PorePressg)cusph::PeriodicDuplicateDouble(count,Np,listpg,PorePressg);
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg);
 
             //-Frees memory and updates the particle number.
@@ -372,12 +373,15 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     //==== mdbc
     tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
     float* kplasticg = ArraysGpu->ReserveFloat();
+    double* porepressg = (PorePressg? ArraysGpu->ReserveDouble(): NULL);
     CellDivSingle->SortBasicArrays(Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,idpg,codeg,dcellg,posxyg,poszg,velrhopg);
     //==== mdbc
     CellDivSingle->SortDataArrays(Sigmag, sigmag);
     CellDivSingle->SortDataArrays(Kplasticg, kplasticg);
+    if(PorePressg)CellDivSingle->SortDataArrays(PorePressg,porepressg);
     swap(Sigmag, sigmag);   ArraysGpu->Free(sigmag);
     swap(Kplasticg, kplasticg);   ArraysGpu->Free(kplasticg);
+    if(PorePressg){ swap(PorePressg,porepressg); ArraysGpu->Free(porepressg); }
     //====    
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
     swap(Codeg,codeg);         ArraysGpu->Free(codeg);
@@ -987,6 +991,43 @@ void JSphGpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
+  double *porepress=NULL;
+  double *excessporepress=NULL;
+  if(SavePorePressure && PorePressg){
+    double *porepressall=SaveArrayGpu(Np,PorePressg);
+    porepress=JDataArrays::NewArrayDouble(npsave,false);
+    if(PeriActive){
+      typecode *codeall=SaveArrayGpu(Np,Codeg);
+      unsigned q=0;
+      for(unsigned p=0;p<Np;p++)if(CODE_IsNormal(codeall[p])){
+        if(q<npsave)porepress[q]=porepressall[p];
+        q++;
+      }
+      delete[] codeall;
+      if(q!=npsave){
+        delete[] porepressall;
+        delete[] porepress;
+        Run_Exceptioon("The number of normal pore-pressure particles is invalid.");
+      }
+    }
+    else memcpy(porepress,porepressall,sizeof(double)*npsave);
+    delete[] porepressall;
+    excessporepress=JDataArrays::NewArrayDouble(npsave,false);
+    const double gmag=GetHydraulicGmag();
+    if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to output GPU ExcessPorePress.");
+    const double rhog=double(SoilCte.WaterDensity)*gmag;
+    for(unsigned p=0;p<npsave;p++){
+      if(Idp[p]>=CaseNbound){
+        const double z=GetHydraulicElevation(AuxPos[p]);
+        const double depth=double(PorePressureWaterLevel)-z;
+        const double hydro=(depth>0.? rhog*depth: 0.);
+        excessporepress[p]=porepress[p]-hydro;
+      }
+      else excessporepress[p]=0.;
+    }
+    arrays.AddArray("PorePress",npsave,porepress,true);
+    arrays.AddArray("ExcessPorePress",npsave,excessporepress,true);
+  }
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
   //-Save extra data.

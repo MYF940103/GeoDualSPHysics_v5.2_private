@@ -301,6 +301,7 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
   ,tsymatrix3f *sigma, tsymatrix3f *sigmapre);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
+void PeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,double *data);
 
 //-Kernels for Damping.
 void ComputeDampingPlane(double dt,double4 plane,float dist,float over

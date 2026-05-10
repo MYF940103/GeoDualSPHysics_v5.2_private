@@ -1,0 +1,162 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="07-05-2026 23:59:00">
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="Mechanical body gravity disabled for Terzaghi-style pressure-only verification" units_comment="m/s^2" />
+            <rhop0 value="2100" comment="Reference bulk density of the soil skeleton mixture" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="20" auto="false" comment="Explicit non-zero sound speed is required when body Gravity=0 to avoid CteB=0" />
+            <_coefh value="0.975807" comment="Coefficient to calculate the smoothing length" />
+            <hdp value="1.8" comment="Alternative option to calculate the smoothing length (h=hdp*dp)" />
+            <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte sizefx="0.1" _rem="Column width" />
+                <newvarcte sizefz="1.0" _rem="Column height" />
+                <newvarcte sizebx="0.1" _rem="Boundary width" />
+                <newvarcte sizebz="1.2" _rem="Boundary height" />
+                <newvarcte Dp="0.01" _rem="Particle spacing" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-sizefz/2+Dp/2" y="0" z="#-sizefz/2+Dp/2" />
+                <pointmax x="#sizefz*1.5+Dp/2" y="0" z="#sizebz*1.5+Dp/2" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>actual | bound</setshapemode>
+                    <setnormalinvert invert="false" />
+                    <move x="0" y="-0.1" z="0" />
+                    <setmkbound mk="0" />
+                    <drawbeach mask="1|2|6">
+                        <point x="0" y="0.2" z="#sizebz" />
+                        <point x="0" y="0.2" z="0" />
+                        <point x="#sizebx" y="0.2" z="0" />
+                        <point x="#sizebx" y="0.2" z="#sizebz" />
+                    </drawbeach>
+                    <matrixreset />
+                    <shapeout file="hdp" />
+                    <setmkvoid />
+                    <redraw />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <setnormalinvert invert="true" />
+                    <move x="0" y="-0.1" z="0" />
+                    <drawbeach mask="1|2|6">
+                        <point x="#-Dp/2" y="0.2" z="#sizebz+Dp/2" />
+                        <point x="#-Dp/2" y="0.2" z="#-Dp/2" />
+                        <point x="#sizebx+Dp/2" y="0.2" z="#-Dp/2" />
+                        <point x="#sizebx+Dp/2" y="0.2" z="#sizebz+Dp/2" />
+                    </drawbeach>
+                    <shapeout file="Boundary" />
+                    <matrixreset />
+                    <setmkbound mk="1" />
+                    <setboxlimitmode mode="full" />
+                    <fillbox x="#-1.5*Dp" y="0" z="#-1.5*Dp">
+                        <modefill>void</modefill>
+                        <point x="#-Dp*10" y="-1" z="#-Dp*10" />
+                        <size x="#(sizebx+Dp*20)" y="2" z="#(sizebz+Dp*10)" />
+                    </fillbox>
+                    <setboxlimitmode mode="full" />
+                    <setmkbound mk="0" />
+                    <redrawnear times="3" targettp="bound" targetmk="1" bordertp="bound" bordermk="0" />
+                    <setmkvoid />
+                    <redraw mkbound="1" />
+                    <setmkfluid mk="0" />
+                    <fillbox x="#Dp/2" y="0" z="#Dp/2">
+                        <modefill>void</modefill>
+                        <point x="#-Dp/2" y="-1" z="#-Dp/2" />
+                        <size x="#(sizefx)" y="2" z="#(sizefz)" />
+                    </fillbox>
+                    <setmkvoid />
+                    <fillbox x="#-Dp/2" y="0" z="#Dp/2">
+                        <modefill>bound</modefill>
+                        <point x="#-Dp*10.5" y="-1" z="#-Dp*10.5" />
+                        <size x="#Dp*10" y="2" z="#(sizebz+Dp*10.5)" />
+                    </fillbox>
+                    <setmkvoid />
+                    <fillbox x="#sizebx+Dp" y="0" z="#Dp">
+                        <modefill>bound</modefill>
+                        <point x="#sizefx+Dp/2" y="-1" z="#-Dp*10" />
+                        <size x="#(Dp*10)" y="2" z="#(sizebz+Dp*10)" />
+                    </fillbox>
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="2.0" comment="Maximum distance (H*distanceh) to compute normals data" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry" />
+            <svshapes value="1" comment="Save normal shapes" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <soils>
+                <phi value="33" comment="friction angle placeholder for DP model" />
+                <coh value="10e3" comment="cohesion placeholder" />
+                <dlt value="0" comment="dilatancy angle" />
+                <ModulusE value="2e6" comment="Young modulus from u-pw 1D consolidation setup" />
+                <PRvs value="0.3" comment="Poisson ratio" />
+            </soils>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+            <parameter key="DPCtes" value="3" comment="DP constants type 3:2D plane strain" />
+            <parameter key="Boundary" value="2" comment="Boundary method 2:mDBC" />
+            <parameter key="SlipMode" value="1" comment="Slip mode for mDBC" />
+            <parameter key="StepAlgorithm" value="2" comment="2:Symplectic" />
+            <parameter key="VerletSteps" value="40" comment="Verlet only" />
+            <parameter key="Kernel" value="2" comment="2:Wendland" />
+            <parameter key="ViscoTreatment" value="1" comment="1:Artificial" />
+            <parameter key="Visco" value="1.0" comment="Artificial viscosity value" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity factor" />
+            <parameter key="DensityDT" value="0" comment="Stress diffusion/noise-free stress treatment disabled" />
+            <parameter key="DensityDTvalue" value="0.1" comment="DDT value" />
+            <parameter key="Shifting" value="0" comment="Shifting disabled" />
+            <parameter key="ShiftCoef" value="-2" comment="Shifting coefficient" />
+            <parameter key="ShiftTFS" value="1.5" comment="Free-surface threshold" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
+            <parameter key="FtPause" value="0.0" comment="Floating pause" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.01" comment="Minimum dt coefficient" />
+            <parameter key="#DtIni" value="0.000001" comment="Initial time step" units_comment="seconds" />
+            <parameter key="#DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
+            <parameter key="#DtFixed" value="DtFixed.dat" comment="Dt values are loaded from file" />
+            <parameter key="DtAllParticles" value="0" comment="Use only material particles for dt" />
+            <parameter key="TimeMax" value="0.0001" comment="GPU G1 passive pore-pressure one-frame smoke" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.0001" comment="Output interval" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="Allowed fraction out" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="700" comment="Minimum rhop valid" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="2500" comment="Maximum rhop valid" units_comment="kg/m^3" />
+            <parameter key="XPeriodicIncZ" value="0" comment="Increase of Z with periodic BC" />
+            <simulationdomain comment="Defines domain of simulation">
+                <posmin x="default" y="default" z="default" />
+                <posmax x="default" y="default" z="default" />
+            </simulationdomain>
+            <parameter key="HydromechCoupling" value="1" comment="Enable hydromechanical module" />
+            <parameter key="PorePressureModel" value="1" comment="1:PR explicit pore-pressure-rate" />
+            <parameter key="PorePressureInit" value="1" comment="Hydrostatic only for passive GPU parity smoke" />
+            <parameter key="PorePressureWaterLevel" value="1.00" comment="Water level at column top" />
+            <parameter key="PorePressureExcessAmp" value="0" comment="No analytical excess in GPU G1 smoke [Pa]" />
+            <parameter key="PorePressureAnalyticalProfile" value="3" comment="3:uniform excess" />
+            <parameter key="PorePressureTopDrained" value="0" comment="No production pore-pressure boundary update in GPU G1" />
+            <parameter key="PorePressureDrainThickness" value="0" comment="Use KernelH" />
+            <parameter key="PorePressureBottomNoFlux" value="0" comment="No production pore-pressure boundary update in GPU G1" />
+            <parameter key="PorePressureBottomNoFluxThickness" value="0" comment="Use KernelH" />
+            <parameter key="SavePorePressure" value="1" comment="Save pore-pressure diagnostics" />
+            <parameter key="Porosity0" value="0.3" comment="Porosity" />
+            <parameter key="HydraulicConductivity" value="1e-3" comment="Hydraulic conductivity [m/s]" />
+            <parameter key="WaterBulkModulus" value="2e8" comment="Water bulk modulus [Pa]" />
+            <parameter key="WaterDensity" value="1000" comment="Water density [kg/m3]" />
+            <parameter key="PorePressureDtSafety" value="0.1" comment="Pore-pressure timestep safety" />
+            <parameter key="PorePressureFeedback" value="0" comment="Feedback disabled for pressure-only verification" />
+            <parameter key="HydraulicGravityX" value="0" comment="Hydraulic gravity x [m/s2]" />
+            <parameter key="HydraulicGravityY" value="0" comment="Hydraulic gravity y [m/s2]" />
+            <parameter key="HydraulicGravityZ" value="-9.81" comment="Hydraulic gravity z [m/s2]" />
+        </parameters>
+    </execution>
+</case>

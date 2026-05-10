@@ -13,6 +13,29 @@ audit/backlog blockers are implemented or explicitly deferred.
 If GPU work is later allowed, the first permitted scope should remain passive
 `PorePressg`/output parity only, not the full PR loop.
 
+## G1 Passive PorePressg Status, 2026-05-11
+
+The first GPU phase has been implemented in the explicitly limited passive
+scope:
+
+- `PorePressg` is allocated, released, resized, sorted, and duplicated for
+  periodic particles.
+- `PorePressg` is initialized from a CPU temporary buffer for
+  `PorePressureInit=0`, `1`, and `3`.
+- GPU output now writes `PorePress` and `ExcessPorePress`.
+- No GPU PR rate, feedback, Shepard, damping, boundary ghost, or softening
+  kernels were added.
+
+GPU Debug build succeeded. The G1 hydrostatic smoke case in
+`examples/u-pw/01_1D_Consolidation/experiments/GPU_G1_PorePress/` completed
+with `code=0`, `excluded=0`, `PorePress`/`ExcessPorePress` fields present,
+`ExcessPorePress` maxAbs `0`, and hydrostatic maxAbs error about
+`4.9e-4 Pa` from CSV precision.
+
+Next allowed phase is G2 planning/implementation only if explicitly requested.
+G2 must not expand beyond PR diagnostic arrays/kernels unless separately
+approved.
+
 ## Current CPU Hydromechanical State
 
 The CPU prototype currently owns the hydromechanical particle arrays in `JSphCpu`:

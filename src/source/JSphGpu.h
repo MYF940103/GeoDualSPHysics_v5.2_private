@@ -142,6 +142,7 @@ protected:
   //-ruofeng
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng
+  double *PorePressg; ///<Passive total pore-pressure state for GPU output/parity.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -211,6 +212,7 @@ protected:
 
   void ResizeGpuMemoryParticles(unsigned np);
   void ReserveBasicArraysGpu();
+  void InitPorePressureGpu(unsigned n);
 
   bool CheckGpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=GpuParticlesSize); }
 
