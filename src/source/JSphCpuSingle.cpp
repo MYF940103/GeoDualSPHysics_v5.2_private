@@ -237,6 +237,9 @@ void JSphCpuSingle::ConfigDomain(){
   }
   if(LapPorePressGhostc)memset(LapPorePressGhostc,0,sizeof(float)*Np);
   if(LapZGhostc)memset(LapZGhostc,0,sizeof(float)*Np);
+  if(DivVelCorrc)memset(DivVelCorrc,0,sizeof(float)*Np);
+  if(LapPorePressCorrc)memset(LapPorePressCorrc,0,sizeof(float)*Np);
+  if(LapZCorrc)memset(LapZCorrc,0,sizeof(float)*Np);
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback)
     Log->Printf("Pore-pressure feedback to momentum: enabled on CPU. Feedback mode=%s, operator=%s."
       ,(PorePressureFeedbackMode==1? "excess pressure": "total pressure")
@@ -640,7 +643,8 @@ void JSphCpuSingle::RunPeriodic(){
           unsigned count=PeriodicMakeList(num2,pini2,Stable,nmax,perinc,Posc,Codec,listp);
           //-Redimension memory for particles if there is insufficient space and repeat the search process.
           //-Redimensiona memoria para particulas si no hay espacio suficiente y repite el proceso de busqueda.
-          if(count>nmax || !CheckCpuParticlesSize(count+Np)){
+          const bool enoughmemory=(count+Np+PARTICLES_OVERMEMORY_MIN<=CpuParticlesSize);
+          if(count>nmax || !enoughmemory){
             ArraysCpu->Free(listp); listp=NULL;
             Timersc->TmStop(TMC_SuPeriodic);
             ResizeParticlesSize(Np+count,PERIODIC_OVERMEMORYNP,false);
@@ -708,6 +712,9 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(PorePressureBoundaryModec)CellDivSingle->SortArray(PorePressureBoundaryModec);
   if(LapPorePressGhostc)CellDivSingle->SortArray(LapPorePressGhostc);
   if(LapZGhostc)CellDivSingle->SortArray(LapZGhostc);
+  if(DivVelCorrc)CellDivSingle->SortArray(DivVelCorrc);
+  if(LapPorePressCorrc)CellDivSingle->SortArray(LapPorePressCorrc);
+  if(LapZCorrc)CellDivSingle->SortArray(LapZCorrc);
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
@@ -818,6 +825,10 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(HydromechCoupling && DivVelc)ComputeHydroDivVel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,DivVelc);
   if(HydromechCoupling && PorePressc && LapPorePressc)ComputeHydroLapPorePress(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,LapPorePressc);
   if(HydromechCoupling && LapZc)ComputeHydroLapZ(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,LapZc);
+  if(HydromechCoupling && PorePressc && DivVelCorrc && LapPorePressCorrc && LapZCorrc){
+    ComputeHydroCorrectedOperators(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,DivVelCorrc,LapPorePressCorrc,LapZCorrc,!HydroCorrDiagPrint);
+    HydroCorrDiagPrint=true;
+  }
   if(HydromechCoupling && PorePressc && PorePressureAcec)ComputePorePressureAccel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAcec);
   if(HydromechCoupling && PorePressc && PorePressureAceDiffc)ComputePorePressureAccelDiff(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && Acec){
@@ -1496,6 +1507,9 @@ void JSphCpuSingle::SaveData(){
   float *porepressureboundarymode=NULL;
   float *lapporepressghost=NULL;
   float *lapzghost=NULL;
+  float *divvelcorr=NULL;
+  float *lapporepresscorr=NULL;
+  float *lapzcorr=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1513,6 +1527,9 @@ void JSphCpuSingle::SaveData(){
 	if(SavePorePressure && DivVelc)divvel=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && LapPorePressc)lapporepress=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && LapZc)lapz=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && DivVelCorrc)divvelcorr=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && LapPorePressCorrc)lapporepresscorr=ArraysCpu->ReserveFloat();
+	if(SavePorePressure && LapZCorrc)lapzcorr=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && PorePressureAcec)porepressureace=ArraysCpu->ReserveFloat3();
 	if(SavePorePressure && PorePressureAceDiffc)porepressureacediff=ArraysCpu->ReserveFloat3();
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && PorePressGhostc)porepressghost=ArraysCpu->ReserveDouble();
@@ -1527,7 +1544,7 @@ void JSphCpuSingle::SaveData(){
       if(LapZGhostc)ComputeHydroLapZGhost(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressureBoundaryModec,LapZGhostc);
       PorePressureBoundaryGhostPrint=true;
     }
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
       const double gmag=GetHydraulicGmag();
@@ -1572,6 +1589,9 @@ void JSphCpuSingle::SaveData(){
   if(SavePorePressure && divvel)arrays.AddArray("DivVel",npsave,divvel);
   if(SavePorePressure && lapporepress)arrays.AddArray("LapPorePress",npsave,lapporepress);
   if(SavePorePressure && lapz)arrays.AddArray("LapZ",npsave,lapz);
+  if(SavePorePressure && divvelcorr)arrays.AddArray("DivVelCorr",npsave,divvelcorr);
+  if(SavePorePressure && lapporepresscorr)arrays.AddArray("LapPorePressCorr",npsave,lapporepresscorr);
+  if(SavePorePressure && lapzcorr)arrays.AddArray("LapZCorr",npsave,lapzcorr);
   if(SavePorePressure && porepressureace)arrays.AddArray("PorePressureAccel",npsave,porepressureace);
   if(SavePorePressure && porepressureacediff)arrays.AddArray("PorePressureAccelDiff",npsave,porepressureacediff);
   if(SavePorePressure && porepressghost)arrays.AddArray("PorePressGhost",npsave,porepressghost);
@@ -1596,6 +1616,9 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(divvel);
   ArraysCpu->Free(lapporepress);
   ArraysCpu->Free(lapz);
+  ArraysCpu->Free(divvelcorr);
+  ArraysCpu->Free(lapporepresscorr);
+  ArraysCpu->Free(lapzcorr);
   ArraysCpu->Free(porepressureace);
   ArraysCpu->Free(porepressureacediff);
   ArraysCpu->Free(porepressghost);

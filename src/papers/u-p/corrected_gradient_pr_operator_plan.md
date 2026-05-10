@@ -374,6 +374,30 @@ Expected:
 
 ## 10. GPU Implications
 
+### CPU-CG1 result update
+
+CPU-CG1 implemented the diagnostic-only fields `DivVelCorr`,
+`LapPorePressCorr`, and `LapZCorr` using a material-only corrected gradient.
+The output chain works and does not alter the production PR rate, but the first
+short smoke tests did not show an accuracy benefit over the current
+material-only uncorrected production operators:
+
+```text
+Hydrostatic-only short test:
+  max |LapPorePress/(rho_w*g_h) + LapZ|        ~= 4.56e-6
+  max |LapPorePressCorr/(rho_w*g_h) + LapZCorr| ~= 1.19e-5
+
+Self-weight short test:
+  max |DivVel|     ~= 3.76e-7
+  max |DivVelCorr| ~= 7.56e-7
+```
+
+Therefore corrected-gradient material-only PR diagnostics are deferred. They
+should remain CPU diagnostics only for now. Do not promote them to production,
+do not add `PorePressurePROperator`, and do not make them a prerequisite for the
+GPU G1-G4 port. Optional future linear-field or boundary-error tests can revisit
+the idea without blocking the current GPU baseline.
+
 If corrected-gradient PR operators become production, GPU needs:
 
 - a correction matrix build kernel;
@@ -386,9 +410,8 @@ If corrected-gradient PR operators become production, GPU needs:
   - `ComputeHydroLapZGpu`
 - parity tests comparing CPU/GPU corrected diagnostics.
 
-For G1-G4 GPU porting, do not require corrected gradients unless CPU diagnostics
-show a clear benefit and the production switch is already decided. Otherwise,
-port the existing material-only PR baseline first.
+For G1-G4 GPU porting, do not require corrected gradients. Port the existing
+material-only uncorrected PR baseline first.
 
 ## 11. Recommended Implementation Path
 
@@ -412,7 +435,7 @@ port the existing material-only PR baseline first.
 
 ### CPU-CG4: optional production switch design
 
-Only if diagnostics improve:
+Deferred. Only revisit if future diagnostics improve:
 
 ```xml
 <parameter key="PorePressurePROperator" value="0" />
@@ -426,11 +449,12 @@ Possible meanings:
 2: corrected + boundary treatment (future)
 ```
 
-Do not add this switch until diagnostics justify it.
+Do not add this switch until diagnostics justify it. CPU-CG1 does not justify it.
 
 ### CPU-CG5: GPU planning update
 
-If corrected operators become production, update `gpu_port_plan.md` before G1.
+Completed for the current decision: `gpu_port_plan.md` should keep corrected PR
+operators out of G1-G4.
 
 ## 12. Current Recommendation
 
@@ -444,7 +468,8 @@ Do not replace production PR rate yet.
 Do not modify feedback yet.
 Do not combine this with simple boundary ghost operators from CPU-BG3.
 
-The main decision after CPU-CG diagnostics is whether corrected material-only
-operators improve interior consistency enough to justify GPU matrix storage. If
-boundary-layer errors remain dominant, prioritize a proper boundary/MLS pressure
-treatment instead of promoting corrected material-only operators to production.
+CPU-CG1 indicates that corrected material-only operators do not currently
+improve the relevant short smoke metrics. Keep them as optional CPU diagnostics
+and prioritize the current uncorrected production PR path for GPU. If boundary
+errors remain important later, prioritize a proper boundary/MLS pressure
+treatment rather than promoting corrected material-only operators.

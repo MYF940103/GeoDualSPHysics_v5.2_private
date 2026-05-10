@@ -147,6 +147,9 @@ protected:
   float* DivVelc;         ///<Skeleton velocity divergence diagnostic field for CPU hydromechanical prototype.
   float* LapPorePressc;   ///<Pore-pressure Laplacian diagnostic field for CPU hydromechanical prototype.
   float* LapZc;           ///<Elevation-head Laplacian diagnostic field for CPU hydromechanical prototype.
+  float* DivVelCorrc;     ///<Corrected-gradient skeleton velocity divergence diagnostic field.
+  float* LapPorePressCorrc; ///<Corrected-gradient pore-pressure Laplacian diagnostic field.
+  float* LapZCorrc;       ///<Corrected-gradient elevation-head Laplacian diagnostic field.
   tfloat3* PorePressureAcec; ///<Candidate pore-pressure feedback acceleration diagnostic field.
   tfloat3* PorePressureAceDiffc; ///<Difference-gradient pore-pressure acceleration diagnostic field.
   double* PorePressGhostc; ///<Diagnostic pore-pressure ghost value for hydraulic boundary particles/layers.
@@ -189,6 +192,7 @@ protected:
   bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
   bool PorePressureShepardStepPrint; ///<True when pore-pressure Shepard regularization stats have been printed.
   bool PorePressureBoundaryGhostPrint; ///<True when pore-pressure boundary ghost diagnostic stats have been printed.
+  bool HydroCorrDiagPrint;       ///<True when corrected-gradient diagnostic stats have been printed.
   bool TopLoadStepPrint;          ///<True when top load application stats have been printed.
   bool HydromechDampingStepPrint; ///<True when hydromechanical damping activation has been printed.
 
@@ -238,7 +242,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,double *porepressghost=NULL,double *excessporepressghost=NULL,float *porepressureboundarymode=NULL,float *lapporepressghost=NULL,float *lapzghost=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,double *porepressghost=NULL,double *excessporepressghost=NULL,float *porepressureboundarymode=NULL,float *lapporepressghost=NULL,float *lapzghost=NULL,float *divvelcorr=NULL,float *lapporepresscorr=NULL,float *lapzcorr=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -308,6 +312,12 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
   void ComputeHydroLapZ(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
+  template<TpKernel tker> void ComputeHydroCorrectedOperatorsT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const double *porepress,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,bool printlog);
+  void ComputeHydroCorrectedOperators(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const double *porepress,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,bool printlog);
   template<TpKernel tker> void ComputePorePressureAccelT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
   void ComputePorePressureAccel(unsigned n,unsigned pini
