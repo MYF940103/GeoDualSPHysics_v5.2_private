@@ -2,6 +2,17 @@
 
 This document is a read-only planning note for porting the current CPU-side u-pw PR prototype to GPU. It does not describe an immediate CUDA patch. The goal is to separate core production requirements from CPU-only diagnostics and to define a staged CPU/GPU parity path.
 
+## Full CPU Gate Status, 2026-05-11
+
+This document remains a technical reference only. GPU coding is currently
+blocked by the stricter full CPU reproduction gate: reduced smokes for 03-06 are
+not strict paper reproductions. Do not start `JSphGpu*`, `JCellDivGpu*`, `.cu`,
+CUDA memory, sorting, duplicate, output, or kernel work until the full CPU
+audit/backlog blockers are implemented or explicitly deferred.
+
+If GPU work is later allowed, the first permitted scope should remain passive
+`PorePressg`/output parity only, not the full PR loop.
+
 ## Current CPU Hydromechanical State
 
 The CPU prototype currently owns the hydromechanical particle arrays in `JSphCpu`:
@@ -15,7 +26,7 @@ The CPU prototype currently owns the hydromechanical particle arrays in `JSphCpu
 | `LapZc` | `float*` | SPH elevation Laplacian diagnostic/operator | Required |
 | `PorePressureAcec` | `tfloat3*` | Symmetric stress-style pressure acceleration diagnostic | Optional compatibility only |
 | `PorePressureAceDiffc` | `tfloat3*` | Difference-gradient pressure acceleration, current recommended feedback operator | Required |
-| `PorePressureAceSymCorrc` | `tfloat3*` | Corrected-gradient symmetric diagnostic that did not improve boundary behavior | Do not port initially |
+| `PorePressureAceSymCorrc` | removed | Failed corrected-gradient symmetric diagnostic | Removed from CPU; do not port |
 
 The CPU step sequence is:
 

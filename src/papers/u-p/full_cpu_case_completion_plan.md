@@ -18,16 +18,16 @@ Before GPU G1 starts:
 - No CUDA, `JSphGpu*`, `JCellDivGpu*`, or `.cu` work should start until this
   gate is revisited.
 
-## 2. Current Case Status After R1-R4
+## 2. Current Case Status After Strict Re-Audit
 
 | Case | Current state | CPU smoke status | Gate status |
 | --- | --- | --- | --- |
 | 01 1D consolidation / pressure-only | Runnable pressure-only baseline; SW3h result archived as diagnostic. | Short pressure-only smoke passed. | Complete for regression-anchor scope. |
 | 02 Self-weight consolidation | Formal Scenario 1 Stage A/B and Scenario 2 smoke scaffolds. | Short Stage A/B and Scenario 2 smoke passed. | Complete for smoke scope. |
-| 03 Cryer | Reduced PR smoke XML plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for reduced smoke; strict Cryer remains boundary/geometry/postprocessing blocked. |
-| 04 Undrained triaxial | Reduced DP/u-pw AccInput smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written, small positive excess under tiny compression. | Complete for reduced smoke; strict triaxial remains loading/confinement/MCC blocked. |
-| 05 Retrogressive slope | Reduced 3D wedge PR smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for reduced smoke; strict retrogression remains sensitive-clay/GPU blocked. |
-| 06 Sainte-Monique | Reduced synthetic field placeholder smoke plus data README. | GenCase code=0, Dual code=0, excluded=0, fields written. | Complete for placeholder smoke; field reproduction remains data/material/GPU blocked. |
+| 03 Cryer | Reduced PR smoke XML plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Reduced smoke only. Strict Cryer remains boundary/geometry/postprocessing blocked and now blocks the full CPU gate. |
+| 04 Undrained triaxial | Reduced DP/u-pw AccInput smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written, small positive excess under tiny compression. | Reduced smoke only. Strict triaxial remains loading/confinement/stress-path/MCC blocked and now blocks the full CPU gate. |
+| 05 Retrogressive slope | Reduced 3D wedge PR smoke plus TODO scaffold. | GenCase code=0, Dual code=0, excluded=0, fields written. | Reduced smoke only. Strict retrogression remains sensitive-clay/initial-state/boundary/GPU blocked. |
+| 06 Sainte-Monique | Reduced synthetic field placeholder smoke plus data README. | GenCase code=0, Dual code=0, excluded=0, fields written. | Placeholder smoke only. Field reproduction remains data/material/calibration/GPU blocked. |
 
 ## 3. Missing Strict-Reproduction Features
 
@@ -75,20 +75,33 @@ Before GPU G1 starts:
 
 ## 4. Recommended Execution Order From Here
 
-1. Update smoke matrices and final readiness report.
-2. Treat 01-06 as CPU-smoke ready in reduced/current scope.
-3. Freeze current CPU production PR path for GPU G1:
+1. Keep 01/02 as regression anchors.
+2. Complete or explicitly defer strict blockers for 03/04/05/06:
+   - Cryer geometry, boundary, and center-pressure postprocessing;
+   - triaxial loading/confinement, stress path, and material decision;
+   - sensitive clay / initial state for slope and field cases;
+   - Sainte-Monique field data and calibration.
+3. Keep the current CPU production PR path documented:
    - uncorrected material-only PR operators;
    - `PorePressureAccelDiff` as the coupled feedback candidate;
    - no source-side `TopLoad*`;
    - no `PorePressureAccelSymCorr`;
    - simple ghost and corrected-gradient outputs remain diagnostics only.
-4. Start GPU only with passive `PorePressg` if the final readiness check agrees.
+4. Do not start GPU coding until the full CPU gate is revisited.
 
 ## 5. GPU Block Statement
 
-GPU coding remains blocked until the final readiness report is committed. Based
-on R1-R4, the case-smoke gate itself is now satisfied for reduced CPU smoke
-scope. Strict reproduction of Cryer, triaxial, retrogressive slope, and
-Sainte-Monique remains blocked by feature/data items listed above, but those do
-not block a narrow passive GPU G1.
+GPU coding remains blocked under the user's stricter full CPU completion
+standard. Reduced CPU smokes for 03-06 are useful health checks but do not
+authorize GPU G1. A later decision may explicitly defer some strict
+application-level blockers, but that decision has not been made in this plan.
+
+## 6. New Design Documents Added After Re-Audit
+
+- `full_paper_case_audit.md`
+- `full_cpu_implementation_backlog.md`
+- `pore_pressure_boundary_production_design.md`
+- `triaxial_loading_confinement_plan.md`
+- `triaxial_constitutive_gap.md`
+- `sensitive_clay_model_plan.md`
+- `effective_stress_initialization_plan.md`
