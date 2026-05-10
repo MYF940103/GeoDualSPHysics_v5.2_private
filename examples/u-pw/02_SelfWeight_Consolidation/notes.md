@@ -56,3 +56,17 @@ Do not use this directory for long CPU parameter sweeps. The CPU target is smoke
 - qualitative pore-pressure trend correct.
 
 Long-time sensitivity and strict figure reproduction should wait for the GPU port.
+
+## Latest Smoke Notes
+
+- Scenario 1 Stage A completed with `code=0`, `excluded=0`.
+- Scenario 1 Stage B completed with `code=0`, `excluded=0`.
+- Stage B restart log confirmed restored soil stress state and restored
+  `PorePress` for `1040/1040` particles using Idp mapping.
+- Stage B log confirmed XML `PorePressureInit` was skipped after restoring
+  restart pore pressure.
+- Scenario 2 short smoke completed with `code=0`, `excluded=0`.
+- All smoke outputs were removed after status collection.
+
+Keep these runs as readiness checks only. Do not extend them into CPU
+long-time tuning during the pre-GPU pass.

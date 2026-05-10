@@ -53,6 +53,22 @@ Each smoke run should verify:
 - bottom no-flux gradient proxy remains small;
 - Scenario 2 total `PorePress` trends toward hydrostatic in short smoke windows.
 
+## Latest Smoke Status
+
+CPU Release smoke was run for the formal Scenario 1 Stage A/B route and a short
+Scenario 2 copy. Generated outputs were removed after collecting the status.
+
+| Case | Window | Result | Key check |
+| --- | --- | --- | --- |
+| Scenario 1 Stage A | `TimeMax=0.002` | `code=0`, `excluded=0` | positive self-weight excess generated, max about `1.28e4 Pa` |
+| Scenario 1 Stage B | restart from Stage A to `TimeMax=0.01` | `code=0`, `excluded=0` | log reported `PorePress` restored for `1040/1040` particles and XML initialization skipped |
+| Scenario 2 | short copy to `TimeMax=0.002` | `code=0`, `excluded=0` | top-drained/no-flux settings parsed and short run remained stable |
+
+Stage B showed dissipative behavior over the short smoke window: `ExcessPorePress`
+max decreased from about `1.28e4 Pa` at restart to about `8.17e3 Pa` by the last
+output frame. This is a smoke-readiness check only, not a long-time parameter
+calibration.
+
 ## Notes
 
 The stable long-run diagnostic from the earlier 1D consolidation directory remains in `../01_1D_Consolidation/SW3h_scenario2_T3p6_xi010/`. This directory is now for formal smoke scaffolds, not for CPU long-run tuning.
