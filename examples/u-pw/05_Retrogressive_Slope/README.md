@@ -1,36 +1,58 @@
 # 05 Retrogressive Slope
 
-TODO scaffold for the retrogressive slope / landslide benchmark in the u-pw PR formulation.
+This directory tracks the u-pw PR reproduction path for the paper's
+retrogressive slope / landslide benchmark.
 
-This case remains scaffold-only during the CPU pre-GPU pass. It should not be
-used for production runs with the current CPU prototype.
+The current runnable case is a reduced CPU smoke test. It is deliberately small
+and qualitative: a narrow 3D soil wedge with gravity, current Drucker-Prager
+soil, hydrostatic pore pressure, and PR pore-pressure diagnostics. It is not a
+validated retrogression or landslide reproduction.
 
-## Current Status
+## Files
 
-- Status: TODO scaffold only.
-- `CaseRetrogressiveSlope_PR_TODO_Def.xml` is a placeholder.
-- No GenCase or DualSPHysics run should be attempted in the current pass.
-- Meaningful runs require GPU implementation and a material-model decision.
+- `CaseRetrogressiveSlope_PR_ReducedSmoke_Def.xml`  
+  Reduced 3D wedge smoke case. Feedback is off in this first smoke so the case
+  verifies geometry, gravity, stress evolution, PR pressure fields, and output
+  health without attempting production landslide coupling.
+- `xCaseRetrogressiveSlope_PR_ReducedSmoke_win64_CPU_debug.bat`  
+  Debug CPU launcher for the reduced smoke case.
+- `CaseRetrogressiveSlope_PR_TODO_Def.xml`  
+  Historical placeholder kept to document the original feature-blocked state.
 
-## Missing Features
+## Smoke Status
 
-- Sensitive clay / strain-softening material model or calibrated approximation.
-- Large-deformation stability checks.
-- Pore-pressure boundary and initial-condition strategy.
-- Initial stress and pore pressure construction for the slope.
-- GPU implementation for useful run sizes.
-- Postprocessing for retrogression distance, failure mechanism, pore pressure,
-  velocity, and plasticity.
+Latest reduced smoke:
 
-## Minimum Future Smoke Standard
+| Item | Result |
+| --- | --- |
+| GenCase | code=0 |
+| DualSPHysics CPU Debug | code=0 |
+| TimeMax | 0.0002 s |
+| Excluded particles | 0 |
+| Material particles | 602 |
+| Boundary particles | 1173 |
+| Max velocity | `1.98e-3 m/s` |
+| Mean velocity | `1.97e-3 m/s` |
+| PorePress range | `399.02` to `2561.64 Pa` |
+| ExcessPorePress range | `5.64` to `12.09 Pa` |
+| PorePressRate max | `1.66e5 Pa/s` |
+| DivVel range | `-4.41e-4` to `-3.31e-5 1/s` |
 
-A future coarse smoke should verify only basic execution health:
+The smoke confirms that a reduced slope geometry can run with current CPU PR
+fields and write the expected pore-pressure diagnostics.
 
-- `code=0`;
-- `excluded=0` initially;
-- no NaN;
-- pressure, velocity, and plasticity fields written;
-- qualitative deformation direction plausible.
+## Strict Reproduction Gaps
 
-Strict retrogression behavior is deferred until GPU and material-model work are
-available.
+- The paper-scale retrogressive mechanism requires sensitive clay /
+  strain-softening or remolding behavior. The current DP model is only a
+  qualitative placeholder.
+- Initial effective stress and pore-pressure construction for a slope is not
+  yet validated.
+- Production pore-pressure boundary treatment for non-horizontal boundaries is
+  still unresolved.
+- Feedback is disabled in this reduced smoke; a coupled slope smoke should only
+  be attempted after smaller coupled cases and GPU porting are stable.
+- Meaningful run sizes require GPU implementation.
+
+This case now satisfies the CPU pre-GPU requirement for a runnable reduced smoke
+scaffold, but strict landslide reproduction remains feature- and GPU-blocked.
