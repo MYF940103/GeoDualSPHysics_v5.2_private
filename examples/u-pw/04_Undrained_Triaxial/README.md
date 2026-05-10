@@ -1,36 +1,62 @@
 # 04 Undrained Triaxial
 
-TODO scaffold for undrained triaxial tests using the u-pw PR formulation.
+This directory tracks the u-pw PR reproduction path for the paper's undrained
+triaxial tests.
 
-This is not a runnable validated reproduction yet. It is a case-readiness
-placeholder used to track the loading, boundary, constitutive, and postprocessing
-features required before a meaningful smoke test.
+The current runnable case is a reduced CPU smoke test, not a strict triaxial
+reproduction. It uses the current Drucker-Prager soil path, a small 2D column,
+and native DualSPHysics `accinput` on the top `mkfluid=1` material layer to
+apply a tiny axial loading increment.
 
-## Current Status
+## Files
 
-- Status: TODO scaffold only.
-- `CaseUndrainedTriaxial_PR_TODO_Def.xml` is a placeholder.
-- No GenCase or DualSPHysics run is required in the current pre-GPU pass.
-- Current Drucker-Prager soil can support qualitative experiments only after
-  loading/confinement controls are defined; strict paper matching may require
-  Modified Cam Clay or another calibrated constitutive model.
+- `CaseUndrainedTriaxial_PR_Smoke_Def.xml`  
+  Reduced CPU smoke case with u-pw PR enabled, undrained top drainage delayed,
+  pressure feedback set to excess/difference-gradient mode, Shepard smoothing,
+  and Supporting Information style damping.
+- `xCaseUndrainedTriaxial_PR_Smoke_win64_CPU_debug.bat`  
+  Debug CPU launcher for the smoke case.
+- `TriaxialAxialAcc_m1.csv`  
+  Native AccInput history for the top material layer. The final axial
+  acceleration is only `-0.047619 m/s2`.
+- `analyze_triaxial_smoke.py`  
+  Lightweight postprocessing scaffold for approximate `p'` and `q` estimates
+  from `Sigma_kk` / `Sigma_ij` fields.
+- `CaseUndrainedTriaxial_PR_TODO_Def.xml`  
+  Historical TODO scaffold retained as a reminder that strict reproduction is
+  not complete.
 
-## Missing Features
+## Smoke Status
 
-- Axial strain or axial stress control.
-- Confinement / lateral stress boundary.
-- Undrained boundary setup and pore-pressure output strategy.
-- Stress-path postprocessing: `p'`, `q`, pore pressure, axial strain, and
-  volumetric strain.
-- Material-model decision: calibrated DP approximation versus MCC.
+Latest short smoke:
 
-## Minimum Future Smoke Standard
+| Item | Result |
+| --- | --- |
+| GenCase | code=0 |
+| DualSPHysics CPU Debug | code=0 |
+| TimeMax | 0.001 s |
+| Excluded particles | 0 |
+| Fluid/material particles | 1000 |
+| AccInput target layer | `mkfluid=1`, 10 particles |
+| Max velocity | `1.86e-5 m/s` |
+| Mean velocity | `2.47e-6 m/s` |
+| ExcessPorePress range | `0.0903` to `15.48 Pa` |
+| PorePressRate max | `3.74e4 Pa/s` |
+| DivVel range | `-3.15e-4` to `-4.01e-8 1/s` |
+| PorePressureAccelDiff.z range | `-2.21e-2` to `1.67e-6 m/s2` |
 
-A future first smoke should be tiny and short:
+The smoke test confirms code execution, pore-pressure fields, feedback
+diagnostics, damping, and native AccInput loading are wired correctly. The pore
+pressure response is small and positive under the tiny compressive increment.
 
-- `code=0`;
-- `excluded=0`;
-- no NaN;
-- very small axial strain or stress increment;
-- correct qualitative pore-pressure sign;
-- stress-path CSV generated for manual inspection.
+## Strict Reproduction Gaps
+
+- No calibrated Modified Cam Clay model is used. The current DP model can only
+  support qualitative smoke tests unless calibrated against the paper setup.
+- The case does not yet implement true triaxial stress control.
+- Lateral confinement is represented only by fixed side boundaries, not by a
+  prescribed confining stress boundary.
+- Stress-path output is postprocessed approximately from existing stress
+  components; a strict `p'`-`q` workflow still needs validation.
+- This case is not a long CPU parameter-tuning target. Longer and higher
+  resolution reproduction should wait until the GPU path is available.
