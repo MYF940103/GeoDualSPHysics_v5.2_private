@@ -149,7 +149,6 @@ protected:
   float* LapZc;           ///<Elevation-head Laplacian diagnostic field for CPU hydromechanical prototype.
   tfloat3* PorePressureAcec; ///<Candidate pore-pressure feedback acceleration diagnostic field.
   tfloat3* PorePressureAceDiffc; ///<Difference-gradient pore-pressure acceleration diagnostic field.
-  tfloat3* PorePressureAceSymCorrc; ///<Corrected-gradient symmetric pore-pressure acceleration diagnostic field.
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
 
@@ -233,7 +232,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,tfloat3 *porepressureacesymcorr=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -311,10 +310,6 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
   void ComputePorePressureAccelDiff(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
-  template<TpKernel tker> unsigned ComputePorePressureAccelSymCorrT(unsigned n,unsigned pini
-    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacesymcorr)const;
-  unsigned ComputePorePressureAccelSymCorr(unsigned n,unsigned pini
-    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacesymcorr)const;
   void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *ace)const;
   unsigned ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,const char *stage,bool printlog)const;
   unsigned ApplyHydromechDamping(unsigned n,unsigned pini,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,bool printlog)const;

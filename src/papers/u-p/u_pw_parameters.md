@@ -51,6 +51,77 @@ PorePressRate =
 
 where `DivVel` is the mathematical divergence of skeleton velocity. Compression gives `DivVel < 0`; therefore the volumetric pore-pressure contribution is `-DivVel`.
 
+## Default Activation Policy
+
+`HydromechCoupling=1` is an availability switch for the CPU u-pw PR module. It does not automatically enable a coupled consolidation setup. In particular, the following features remain opt-in and must be set explicitly in the XML:
+
+```text
+PorePressureInit
+PorePressureTopDrained
+PorePressureBottomNoFlux
+PorePressureFeedback
+PorePressureShepard
+HydromechDamping
+SavePorePressure
+```
+
+The only automatic or conditional behavior under `HydromechCoupling=1` is:
+
+- `dt_pore` restriction is applied when `PorePressureModel=1` and the soil material `HydraulicConductivity > 0`.
+- `HydraulicGravity` falls back to the body `Gravity` when `HydraulicGravityX/Y/Z` are all zero. If any custom hydraulic gravity component is nonzero, that custom vector is used for hydraulic elevation, hydrostatic pressure, `dt_pore`, `LapZ`, hydraulic boundaries, and excess-pressure diagnostics.
+
+Recommended presets:
+
+### Pressure-Only Diffusion
+
+Use this preset to verify the PR hydraulic subsystem without mechanical feedback:
+
+```xml
+<parameter key="HydromechCoupling" value="1" />
+<parameter key="PorePressureModel" value="1" />
+<parameter key="PorePressureInit" value="3" />
+<parameter key="PorePressureTopDrained" value="1" />
+<parameter key="PorePressureBottomNoFlux" value="1" />
+<parameter key="PorePressureFeedback" value="0" />
+<parameter key="SavePorePressure" value="1" />
+```
+
+### Self-Weight / Terzaghi-Style Coupled Tests
+
+Use excess-pressure feedback with the difference-gradient operator. This avoids applying hydrostatic pore pressure as a mechanical buoyancy-like feedback term and avoids the constant-pressure boundary spuriosity observed with the symmetric material-only feedback operator:
+
+```xml
+<parameter key="HydromechCoupling" value="1" />
+<parameter key="PorePressureModel" value="1" />
+<parameter key="PorePressureInit" value="1" />
+<parameter key="PorePressureFeedback" value="1" />
+<parameter key="PorePressureFeedbackMode" value="1" />
+<parameter key="PorePressureFeedbackOperator" value="1" />
+<parameter key="PorePressureTopDrained" value="1" />
+<parameter key="PorePressureBottomNoFlux" value="1" />
+<parameter key="PorePressureShepard" value="1" />
+<parameter key="PorePressureShepardMode" value="1" />
+<parameter key="HydromechDamping" value="1" />
+<parameter key="HydromechDampingXi" value="..." />
+<parameter key="SavePorePressure" value="1" />
+```
+
+Prefer `HydromechDampingXi` for Supporting-Information-style cases. It is converted internally to `c_d = xi * sqrt(E/(rho*h^2))`. Use `HydromechDampingCoef` only when a direct damping coefficient in `[1/s]` is intentionally required.
+
+### External-Load AccInput Experimental Path
+
+For external-load Terzaghi experiments, prefer native DualSPHysics `accinput` applied to a dedicated top-layer `mkfluid` group. Keep the deprecated source-level top-load path disabled:
+
+```xml
+<parameter key="TopLoadEnabled" value="0" />
+<parameter key="PorePressureFeedback" value="1" />
+<parameter key="PorePressureFeedbackMode" value="1" />
+<parameter key="PorePressureFeedbackOperator" value="1" />
+<parameter key="PorePressureShepardMode" value="1" />
+```
+
+Set `PorePressureTopDrainedStartTime` to the end of the external-load ramp when testing staged undrained loading followed by drainage.
+
 ## 2. Initialization Parameters
 
 | Parameter | Type / values | Default | Purpose | Keep? |
@@ -224,7 +295,6 @@ LapPorePress
 LapZ
 PorePressureAccel
 PorePressureAccelDiff
-PorePressureAccelSymCorr
 ```
 
 Recommended long-term output set:
@@ -239,7 +309,7 @@ LapZ
 PorePressureAccelDiff
 ```
 
-`PorePressureAccel` can remain as a comparison diagnostic. `PorePressureAccelSymCorr` is a failed diagnostic path and should be removed after the current self-weight verification phase.
+`PorePressureAccel` can remain as a comparison diagnostic. `PorePressureAccelDiff` is the recommended production feedback diagnostic for Terzaghi/self-weight cases.
 
 ## 7. Deprecated / Temporary Parameters And Interfaces
 
@@ -276,9 +346,9 @@ Recommended transition:
 3. Use `accinput` with a dedicated top-layer `mkfluid` for external-load experiments.
 4. Remove TopLoad source code in a dedicated cleanup commit after AccInput templates are stable.
 
-### `PorePressureAccelSymCorr`
+### Removed `PorePressureAccelSymCorr`
 
-Temporary diagnostic:
+Removed diagnostic:
 
 ```text
 PorePressureAccelSymCorr
@@ -294,7 +364,7 @@ Reason for removal:
 Recommended action:
 
 ```text
-Remove after SW-2c or after the next stable self-weight verification node.
+Removed in CPU-F1a. Do not port to GPU.
 ```
 
 ### `PorePressureModel=2`
@@ -447,7 +517,7 @@ Recommended cleanup order:
 1. Document parameters in this file.
 2. Convert `PorePressureModel=2` to a hard error.
 3. Continue SW-2c self-weight refinement.
-4. Remove `PorePressureAccelSymCorr` and `PorePressureAceSymCorrc`.
+4. Removed `PorePressureAccelSymCorr` and `PorePressureAceSymCorrc` in CPU-F1a.
 5. Mark source-level `TopLoad*` as deprecated in formal documentation.
 6. Once AccInput templates are stable, remove source-level `TopLoad*` and `ApplyTopLoad()` in a dedicated commit.
 
