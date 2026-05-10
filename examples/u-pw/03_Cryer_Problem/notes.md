@@ -2,25 +2,37 @@
 
 ## Status
 
-This directory is scaffold-only. The placeholder XML is intentionally marked as
-TODO and should not be interpreted as a validated runnable reproduction.
+This directory has a reduced CPU smoke case plus a strict-reproduction TODO
+placeholder. The smoke case is intended only to verify that the current u-pw PR
+fields and mechanics can run in a Cryer-labeled scaffold without crashing.
 
-## Missing Before Strict Reproduction
+## Parameters
 
-- 3D spherical or axisymmetric geometry.
-- Drained pore pressure boundary around the specimen.
-- Pore-pressure ghost / MLS boundary treatment.
-- Corrected-gradient PR operator decision for strict boundary consistency.
-- Analytical solution and center-pressure postprocessing.
-- Likely GPU support for useful resolution.
+Known paper-specific Cryer values were not complete in the current notes. The
+reduced smoke therefore uses the standard 1D consolidation material constants
+already used in the u-pw development cases:
+
+- `E = 2e6 Pa`
+- `nu = 0.3`
+- `Porosity0 = 0.3`
+- `HydraulicConductivity = 1e-3 m/s`
+- `WaterBulkModulus = 2e8 Pa`
+- `WaterDensity = 1000 kg/m3`
+
+Unknown strict Cryer parameters remain TODO:
+
+- specimen radius / exact geometry;
+- drainage boundary definition;
+- analytical center-pressure normalization;
+- strict boundary operator choice.
+
+## Boundary Approximation
+
+The reduced smoke reuses the current layer-style hydraulic boundary tools. This
+is acceptable for smoke only. It is not a strict drained spherical Cryer boundary.
+Boundary ghost and corrected-gradient diagnostics are not promoted to production
+operators.
 
 ## Smoke Readiness
 
-No GenCase or DualSPHysics run was executed during the pre-GPU readiness pass.
-This is intentional: the placeholder XML does not yet define the benchmark
-geometry or boundary conditions.
-
-A future minimal smoke test should use a coarse geometry, verify `code=0`,
-`excluded=0`, no NaN, pressure-output availability, and a qualitatively symmetric
-response. It should not attempt a strict analytical Cryer comparison until the
-boundary treatment is promoted beyond the current layer/diagnostic-only state.
+Latest reduced smoke status is recorded in `smoke_status.md`.

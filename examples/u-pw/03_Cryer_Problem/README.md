@@ -1,31 +1,37 @@
 # 03 Cryer Problem
 
-TODO scaffold for a PR-formulation Cryer consolidation benchmark.
+Reduced CPU smoke scaffold for the PR-formulation Cryer benchmark.
 
-This case is not yet runnable as a strict reproduction. It should remain a
-planning/scaffold directory until the required boundary and operator features
-are available.
+This directory now contains a runnable **reduced smoke** case. It is not a strict
+Cryer reproduction because the exact paper geometry/radius and particle-consistent
+drained boundary treatment are still TODO.
+
+## Files
+
+- `CaseCryer_PR_Smoke_Def.xml`: reduced 2D column-style smoke using u-pw PR settings.
+- `xCaseCryer_PR_Smoke_win64_CPU_debug.bat`: CPU Debug smoke runner.
+- `CaseCryer_PR_TODO_Def.xml`: historical strict-reproduction placeholder.
+- `smoke_status.md`: latest reduced smoke result.
 
 ## Current Status
 
-- Status: TODO scaffold only.
-- `CaseCryer_PR_TODO_Def.xml` is a placeholder, not a validated runnable case.
-- No DualSPHysics smoke test is required at this stage.
-- Do not force a run from this XML until geometry, pressure boundary treatment,
-  and postprocessing are defined.
+- Reduced smoke is CPU runnable.
+- Latest smoke: GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`.
+- Key pore-pressure fields are written.
+- Strict Cryer reproduction is still feature-blocked.
 
-## Missing Before a Meaningful Smoke Test
+## Missing Before Strict Cryer Reproduction
 
-- 3D spherical or axisymmetric geometry.
+- Paper geometry/radius and exact benchmark parameters.
+- 3D spherical or validated axisymmetric geometry.
 - Drained pore-pressure boundary around the specimen.
-- Pore-pressure ghost / MLS boundary treatment.
-- Decision on corrected-gradient PR operators.
+- Pore-pressure ghost / MLS boundary treatment or another strict drained boundary strategy.
 - Analytical center-pressure postprocessing.
-- GPU support for useful resolution.
+- Likely GPU support for useful resolution.
 
-## Minimum Future Smoke Standard
+## Minimum Future Strict Smoke Standard
 
-The first real smoke test should be coarse and short:
+A future strict smoke should be coarse and short:
 
 - `code=0`;
 - `excluded=0`;
