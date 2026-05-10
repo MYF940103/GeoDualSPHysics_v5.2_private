@@ -1,0 +1,29 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO scaffold only. This case is not yet a validated runnable reproduction. -->
+<!-- Scenario 1 requires either PorePress restart or a body-gravity switch after the undrained self-weight stage. -->
+<case app="GenCase v5.0" date="TODO">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="-9.81" comment="Stage A self-weight gravity. Stage B requires gravity off." />
+      <rhop0 value="2100" />
+      <speedsound value="20" auto="false" />
+    </constantsdef>
+    <mkconfig boundcount="0" fluidcount="0" />
+    <geometry>
+      <!-- TODO: reuse the 1D column geometry after staged restart/gravity-switch support is implemented. -->
+    </geometry>
+  </casedef>
+  <execution>
+    <parameters>
+      <parameter key="HydromechCoupling" value="1" />
+      <parameter key="PorePressureModel" value="1" />
+      <parameter key="PorePressureFeedback" value="1" />
+      <parameter key="PorePressureFeedbackMode" value="1" />
+      <parameter key="PorePressureFeedbackOperator" value="1" />
+      <parameter key="PorePressureInit" value="1" />
+      <parameter key="PorePressureTopDrained" value="1" comment="Stage B only; TODO staged activation/restart." />
+      <parameter key="PorePressureBottomNoFlux" value="1" />
+      <parameter key="TopLoadEnabled" value="0" />
+    </parameters>
+  </execution>
+</case>

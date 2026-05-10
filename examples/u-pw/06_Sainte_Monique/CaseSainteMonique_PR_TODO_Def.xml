@@ -1,0 +1,23 @@
+﻿<?xml version="1.0" encoding="utf-8"?>
+<!-- TODO scaffold only. This case is not yet a validated runnable reproduction. -->
+<!-- Sainte-Monique PR scaffold. -->
+<!-- Missing field geometry, zoning, sensitive-clay calibration, initial state, GPU, and checkpoint workflow. -->
+<case app="GenCase v5.0" date="TODO">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="-9.81" />
+      <rhop0 value="2100" />
+      <speedsound value="20" auto="false" />
+    </constantsdef>
+    <geometry>
+      <!-- TODO: define geometry after missing features and benchmark details are confirmed. -->
+    </geometry>
+  </casedef>
+  <execution>
+    <parameters>
+      <parameter key="HydromechCoupling" value="1" />
+      <parameter key="PorePressureModel" value="1" />
+      <parameter key="SavePorePressure" value="1" />
+    </parameters>
+  </execution>
+</case>
