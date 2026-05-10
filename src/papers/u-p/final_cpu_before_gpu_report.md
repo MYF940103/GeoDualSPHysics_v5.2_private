@@ -138,3 +138,20 @@ pre-existing untracked reference/example files outside the current u-pw
 documentation work, including legacy example CSV files, a main paper PDF, and
 reference/source folders. They were intentionally not touched or committed.
 
+## Post-Report Softening Update
+
+After this report, a CPU-only reduced sensitive-clay softening path was added
+for the retrogressive slope smoke workflow:
+
+- `Softening` is now a soil material switch under
+  `<execution><special><soils>`.
+- The CPU Drucker-Prager stress update can use the paper-style exponential
+  peak-to-residual strength law driven by `Kplastic`.
+- Micro tests and the reduced 05 retrogressive slope softening smoke completed
+  with `code=0`, `excluded=0`, and no NaN/Inf.
+
+This removes the immediate reduced-smoke material plumbing gap for case 05. It
+does not complete full strict retrogressive or Sainte-Monique reproduction:
+calibrated initial states, field geometry, production boundary treatment,
+longer GPU-scale runs, and possibly a fuller remolding/destructuration model
+remain open.

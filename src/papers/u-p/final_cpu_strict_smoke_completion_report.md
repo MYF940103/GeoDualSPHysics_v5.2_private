@@ -20,6 +20,7 @@ where possible, with the remaining strict reproduction gaps explicit.
 | `4085086` | Add undrained triaxial CPU smoke workflow and stress-path proxy analysis. |
 | `a3219b8` | Add retrogressive slope CPU smoke workflow and displacement summary. |
 | `696a824` | Add Sainte-Monique reduced CPU smoke scaffold and field-like summary. |
+| `17b4cbb` - `fed3e2b` | Audit, plan, implement, and smoke-test CPU DP-based sensitive-clay softening. |
 
 ## Case Smoke Matrix
 
@@ -29,7 +30,7 @@ where possible, with the remaining strict reproduction gaps explicit.
 | 02 Self-weight consolidation | Scenario 1 staged restart and Scenario 2 short smoke | Previously passed: Stage A/B restart restored `PorePress`, Scenario 2 micro smoke `code=0`, `excluded=0`. No new long run in this pass. | Restarted `PorePress`, top drained, bottom no-flux, PR fields. | Long-time paper curve tuning remains GPU/post-GPU work. | No for passive G1. |
 | 03 Cryer problem | Reduced Cryer-like PR execution smoke | GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`, no NaN/Inf. | Center-pressure proxy, min/max pore pressure, PR field output. | Strict sphere/axisymmetric geometry, drained spherical pressure boundary, center analytical comparison, and boundary MLS remain missing. | No for passive G1; yes for strict Cryer reproduction. |
 | 04 Undrained triaxial | Reduced DP/u-pw AccInput execution smoke | GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`, no NaN/Inf. | Approximate axial strain, mean pore pressure, p'/q proxy from stress fields, loading health. | Strict axial strain/stress control, confinement boundary, MCC calibration, and validated stress path remain missing. | No for passive G1; yes for strict triaxial reproduction. |
-| 05 Retrogressive slope | Reduced 3D wedge/slope execution smoke | GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`, no NaN/Inf. | Displacement, velocity, pore-pressure range, `Kplastic` range. | Sensitive clay/softening, remolding/destructuration, validated initial state, production boundary model, and large-deformation validation remain missing. | No for passive G1; yes for strict slope reproduction. |
+| 05 Retrogressive slope | Reduced 3D wedge/slope execution smoke plus CPU softening smoke | GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`, no NaN/Inf. The softening-on/off reduced smoke pair also passed. | Displacement, velocity, pore-pressure range, `Kplastic` range, reconstructed local cohesion from `Kplastic`. | Full remolding/destructuration, validated initial state, production boundary model, calibrated parameters, and large-deformation validation remain missing. | No for passive G1; yes for strict slope reproduction. |
 | 06 Sainte-Monique | Reduced synthetic field-like execution smoke | GenCase `code=0`, DualSPHysics `code=0`, `excluded=0`, no NaN/Inf. | Displacement, velocity, pore-pressure range, `PorePressRate`, `DivVel`, `Kplastic`. | Field topography, material zoning, calibration, initial stress/pore-pressure state, and full field workflow remain data/material/GPU blocked. | No for passive G1; yes for field reproduction. |
 
 ## Source Features Complete
@@ -42,6 +43,8 @@ where possible, with the remaining strict reproduction gaps explicit.
 - `HydromechDampingXi` paper-style damping input.
 - `BodyGravityStopTime`.
 - CPU `PorePress` restart.
+- CPU Drucker-Prager exponential softening controlled by the soil parameter
+  `Softening`, using `Kplastic` with peak/residual `coh`/`phi` evolution.
 - Boundary ghost and corrected-gradient PR diagnostics, both diagnostic-only.
 - Removed failed `PorePressureAccelSymCorr`.
 - Removed deprecated source-side `TopLoad*`; external loading path is native `AccInput`.
@@ -53,7 +56,9 @@ The following remain deferred and must not be silently treated as completed:
 - Production pore-pressure boundary MLS/mirror/ghost operator.
 - Production corrected-gradient PR operators.
 - Modified Cam Clay for strict triaxial matching.
-- Sensitive clay softening/remolding/destructuration for slope and field cases.
+- Full sensitive-clay remolding/destructuration and calibrated field-scale
+  material workflow for slope and field cases. A reduced CPU DP softening path
+  is implemented and smoke-tested, but full strict reproduction remains open.
 - Strict Cryer geometry and analytical center-pressure reproduction.
 - Strict triaxial confinement/loading/stress-path validation.
 - Sainte-Monique field topography, material zoning, and calibration.

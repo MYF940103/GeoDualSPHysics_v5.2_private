@@ -20,6 +20,8 @@ The following GPU-pre infrastructure items are complete:
 - source-side `TopLoad*` removed;
 - `PorePressureAccelSymCorr` removed;
 - PPE placeholder is a hard error.
+- CPU Drucker-Prager exponential softening for reduced sensitive-clay slope
+  smokes, controlled by the soil parameter `Softening`.
 
 ## Completed But Diagnostic-Only
 
@@ -40,7 +42,7 @@ only reduced execution smokes. The following strict reproduction blockers remain
 |---|---|
 | 03 Cryer | strict sphere/traction geometry, drained curved boundary, pore-pressure ghost/MLS or equivalent, center-pressure analytical postprocessing. |
 | 04 Triaxial | axial loading/control, lateral confinement, validated `p'`-`q` postprocessing, MCC support or documented DP approximation decision. |
-| 05 Retrogressive slope | sensitive clay / strain softening, initial stress and pore-pressure workflow, non-horizontal boundary treatment, production GPU later. |
+| 05 Retrogressive slope | reduced CPU softening smoke now passes, but full remolding/destructuration, calibrated initial stress and pore-pressure workflow, non-horizontal boundary treatment, and production GPU remain open. |
 | 06 Sainte-Monique | field topography, material zoning, calibration, initial state, checkpoint/GPU workflow. |
 
 ## Deferred Items That Do Not Belong In Passive GPU G1
@@ -64,7 +66,7 @@ strict paper reproduction:
 | 02 self-weight | Scenario 1/2 short workflows exist | closest to strict, but boundary/postprocessing still needs finalization. |
 | 03 Cryer | reduced smoke exists | not strict; boundary/geometry/postprocessing blocked. |
 | 04 triaxial | reduced smoke exists | not strict; loading/confinement/MCC blocked. |
-| 05 retrogressive slope | reduced smoke exists | not strict; sensitive clay/initial-state/GPU blocked. |
+| 05 retrogressive slope | reduced smoke exists; reduced CPU softening smoke passes | not strict; full remolding/destructuration, calibration, initial-state, boundary, and GPU workflow remain blocked. |
 | 06 Sainte-Monique | placeholder smoke exists | not strict; data/material/GPU blocked. |
 
 ## Final Build / Smoke Sanity
@@ -98,5 +100,6 @@ Next recommended CPU tasks:
    planar/Cryer boundaries;
 2. define a strict triaxial loading/confinement path;
 3. add Cryer center-pressure and triaxial stress-path postprocessing;
-4. decide which strict slope/field material-model blockers are explicitly
-   deferred.
+4. decide whether the reduced DP softening path is sufficient for near-term
+   slope smokes or whether a fuller remolding/destructuration material branch
+   must be designed before field reproduction.

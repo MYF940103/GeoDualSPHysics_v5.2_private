@@ -52,6 +52,64 @@ PorePressRate =
 
 where `DivVel` is the mathematical divergence of skeleton velocity. Compression gives `DivVel < 0`; therefore the volumetric pore-pressure contribution is `-DivVel`.
 
+## Constitutive Softening Soil Parameters
+
+The CPU branch now supports a reduced Drucker-Prager sensitive-clay softening
+path for retrogressive-slope smoke tests. These parameters are soil material
+constants and must be written under `<execution><special><soils>`.
+
+| Soil parameter | Type / values | Default | Purpose | Keep? |
+|---|---:|---:|---|---|
+| `Softening` | `0/1` | `0` | Enables CPU Drucker-Prager exponential strength softening. | Keep |
+| `coh` | float, `>=0` | existing soil default | Peak cohesion `c_p`. | Keep |
+| `phi` | float [deg] | existing soil default | Peak friction angle `phi_p`. Internally converted to radians. | Keep |
+| `coh_r` | float, `>=0` | existing soil default | Residual cohesion `c_r`. | Keep |
+| `phi_r` | float [deg] | existing soil default | Residual friction angle `phi_r`. Internally converted to radians. | Keep |
+| `n_coh` | float, `>=0` | existing soil default | Exponential softening coefficient for cohesion. | Keep |
+| `n_phi` | float, `>=0` | existing soil default | Exponential softening coefficient for friction angle. | Keep |
+
+The implemented CPU softening law follows the u-pw paper Eq. (48) form using
+the existing accumulated plastic strain state `Kplastic`:
+
+```text
+c(kappa)   = c_r   + (c_p   - c_r)   * exp(-n_coh * kappa)
+phi(kappa) = phi_r + (phi_p - phi_r) * exp(-n_phi * kappa)
+kappa      = Kplastic
+```
+
+When `Softening=0`, the existing Drucker-Prager path is unchanged. When
+`Softening=1`, the CPU stress update uses the softened local `c` and `phi`
+during Drucker-Prager return mapping. `Kplastic` remains the primary output for
+checking whether the softening path has been activated. Local softened cohesion
+or friction angle are not stored as particle arrays in this phase; analysis
+scripts can reconstruct them from `Kplastic`.
+
+Example:
+
+```xml
+<execution>
+  <special>
+    <soils>
+      <coh value="15100" />
+      <phi value="0" />
+      <coh_r value="1500" />
+      <phi_r value="0" />
+      <n_coh value="5" />
+      <n_phi value="5" />
+      <Softening value="1" />
+    </soils>
+  </special>
+</execution>
+```
+
+Current limitations:
+
+- CPU only; no GPU softening path has been implemented.
+- It is a reduced DP-based sensitive-clay approximation, not a full remolding,
+  destructuration, or MCC material branch.
+- Full retrogressive landslide and Sainte-Monique reproduction still require
+  calibration, production-scale runs, and likely GPU/material-model follow-up.
+
 ## Default Activation Policy
 
 `HydromechCoupling=1` is an availability switch for the CPU u-pw PR module. It does not automatically enable a coupled consolidation setup. In particular, the following features remain opt-in and must be set explicitly in the XML:
