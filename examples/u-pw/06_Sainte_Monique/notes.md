@@ -1,22 +1,37 @@
 # Notes: Sainte-Monique
 
-## Status
+## Current Purpose
 
-This directory should remain scaffold-only until the retrogressive slope
-benchmark is stable and the GPU PR path is available.
+`CaseSainteMonique_PR_ReducedSmoke_Def.xml` is a synthetic reduced geometry used
+only to keep the final field-case directory smoke-testable before GPU work.
 
-## Missing Before Reproduction
+It does not contain Sainte-Monique topography, material zoning, or calibrated
+sensitive clay parameters.
 
-- Field geometry / topography preparation.
-- Material zoning.
-- Sensitive clay calibration.
-- Initial stress and pore pressure state construction.
-- GPU implementation and performance workflow.
-- Checkpoint/restart workflow for long runs.
-- Field-scale postprocessing and validation metrics.
+## Current Setup
+
+- Synthetic coarse 3D field-like slope geometry.
+- Body gravity and hydraulic gravity are both `(0,0,-9.81)`.
+- `PorePressureInit=1` with a fully saturated placeholder water level.
+- `PorePressureModel=1` and `SavePorePressure=1`.
+- `PorePressureFeedback=0` in the first reduced smoke.
+- Current material model is Drucker-Prager, not calibrated sensitive clay.
+
+## Data Blockers
+
+See `data/README.md`. A validated reproduction needs:
+
+- field topography / terrain surface;
+- material zoning;
+- sensitive clay parameters and remolding/softening law;
+- groundwater or initial pore-pressure state;
+- field boundary and drainage assumptions;
+- validation data.
 
 ## Readiness Decision
 
-Do not block PR core GPU G1 on this case. It is a final application target for a
-later branch or later project stage. No CPU run was executed in this pre-GPU
-pass.
+The directory is no longer empty TODO-only: it has a reduced CPU smoke that
+verifies geometry, PR pore-pressure fields, and output health.
+
+Strict Sainte-Monique reproduction remains data-blocked and GPU/material-model
+blocked. It should not be treated as a validated application case.

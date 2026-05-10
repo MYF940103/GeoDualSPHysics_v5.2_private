@@ -1,35 +1,55 @@
 # 06 Sainte-Monique
 
-TODO scaffold for the Sainte-Monique landslide case.
+This directory tracks the u-pw PR reproduction path for the Sainte-Monique
+field landslide case.
 
-This is a final-application target. It is not ready for validated runs in the
-current CPU-only PR prototype and should remain scaffold-only during the pre-GPU
-pass.
+No validated field geometry, material zoning, or calibration data are currently
+available in this repository. The runnable XML here is therefore a reduced
+placeholder smoke case only. It is not a Sainte-Monique reproduction.
 
-## Current Status
+## Files
 
-- Status: TODO scaffold only.
-- `CaseSainteMonique_PR_TODO_Def.xml` is a placeholder.
-- No GenCase or DualSPHysics run should be attempted in the current pass.
-- Requires field geometry, material zoning, calibration, restart workflow, and
-  GPU execution before meaningful smoke tests.
+- `data/README.md`  
+  Documents the missing field data required for a validated reproduction.
+- `CaseSainteMonique_PR_ReducedSmoke_Def.xml`  
+  Synthetic reduced field-like geometry for CPU smoke testing of PR pore-pressure
+  fields.
+- `xCaseSainteMonique_PR_ReducedSmoke_win64_CPU_debug.bat`  
+  Debug CPU launcher for the reduced smoke case.
+- `CaseSainteMonique_PR_TODO_Def.xml`  
+  Historical TODO scaffold kept as a reminder that field reproduction remains
+  data- and feature-blocked.
 
-## Missing Features
+## Smoke Status
 
-- Field geometry / topography preparation.
-- Material zoning and sensitive-clay calibration.
-- Initial stress and pore pressure state construction.
-- Boundary and drainage assumptions for field scale.
-- GPU implementation and performance workflow.
-- Checkpoint/restart workflow for long runs.
-- Field-scale postprocessing and validation metrics.
+Latest reduced placeholder smoke:
 
-## Minimum Future Smoke Standard
+| Item | Result |
+| --- | --- |
+| GenCase | code=0 |
+| DualSPHysics CPU Debug | code=0 |
+| TimeMax | 0.0002 s |
+| Excluded particles | 0 |
+| Material particles | 556 |
+| Boundary particles | 1173 |
+| Max velocity | `1.98e-3 m/s` |
+| Mean velocity | `1.97e-3 m/s` |
+| PorePress range | `494.76` to `3196.09 Pa` |
+| ExcessPorePress range | `3.51` to `8.77 Pa` |
+| PorePressRate max | `1.19e5 Pa/s` |
+| DivVel range | `-2.80e-4` to `-2.04e-5 1/s` |
 
-A first future smoke should be a reduced geometry sanity check:
+The reduced smoke verifies that the current CPU PR implementation can generate
+and advance a small field-like geometry while writing the expected pore-pressure
+diagnostics.
 
-- `code=0`;
-- no NaN;
-- checkpoint/restart workflow exercised;
-- pressure, velocity, and plasticity fields written;
-- runtime acceptable on GPU.
+## Strict Reproduction Gaps
+
+- Missing Sainte-Monique field topography.
+- Missing material zoning and sensitive-clay calibration.
+- Missing validated initial stress and pore-pressure state.
+- Missing production boundary assumptions for the field domain.
+- Full-scale runs require GPU implementation and checkpoint/restart workflow.
+
+This case is CPU-smoke runnable in reduced placeholder form, but field
+reproduction remains data- and feature-blocked.
