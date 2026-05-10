@@ -2,15 +2,16 @@
 
 ## Status
 
-This directory has a reduced CPU smoke case plus a strict-reproduction TODO
-placeholder. The smoke case is intended only to verify that the current u-pw PR
-fields and mechanics can run in a Cryer-labeled scaffold without crashing.
+This directory has a Cryer-like strict/minimal CPU smoke case plus a
+strict-reproduction TODO placeholder. The smoke case verifies that the current
+u-pw PR fields, mechanics, and near-center pore-pressure postprocessing can run
+in a Cryer-labeled scaffold without crashing.
 
-Reduced execution smoke is not strict reproduction. The strict Cryer path still
+The current smoke is not strict Cryer analytical reproduction. The strict Cryer path still
 requires paper geometry, a drained curved boundary, pore-pressure ghost / MLS or
 an equivalent boundary treatment, and center-pressure analytical
-postprocessing. These gaps remain GPU-pre blockers under the current full CPU
-completion standard unless explicitly deferred.
+postprocessing. These gaps remain strict-reproduction blockers unless
+explicitly deferred.
 
 ## Parameters
 
@@ -51,4 +52,9 @@ operators.
 
 ## Smoke Readiness
 
-Latest reduced smoke status is recorded in `smoke_status.md`.
+Latest smoke status is recorded in `smoke_status.md`.
+
+The smoke postprocessing helper `analyze_cryer_smoke.py` reads `PartCsv_*.csv`
+files and writes `cryer_smoke_center_pressure.csv`. It reports a nearest-to-
+centroid pore-pressure history as a center-pressure proxy. This is only a smoke
+metric; it is not the analytical Cryer center pressure comparison.

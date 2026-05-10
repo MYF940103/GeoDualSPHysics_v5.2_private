@@ -54,7 +54,7 @@ with missing features documented.
 | Item | Status | GPU-G1 impact | Required action |
 |---|---|---|---|
 | 02 SelfWeight formal smoke | Mostly available | Blocks GPU G1 only as a case-readiness gate | Formalize Scenario 1/2 XML/BAT and record one short smoke result for each. |
-| 03 Cryer scaffold/smoke | Reduced smoke only | Blocks the new full CPU gate | Strict geometry, drained curved boundary, pore-pressure ghost/MLS, and center-pressure postprocessing remain missing. |
+| 03 Cryer scaffold/smoke | Cryer-like strict/minimal smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict geometry, drained curved boundary, pore-pressure ghost/MLS, and analytical center-pressure comparison remain missing. |
 | 04 Undrained triaxial scaffold/smoke | Reduced AccInput smoke only | Blocks the new full CPU gate | Strict axial loading/confinement, stress-path output, and MCC/DP material decision remain missing. |
 | 05 Retrogressive slope scaffold/smoke | Reduced wedge smoke only | Blocks strict reproduction gate | Strict retrogression remains sensitive-clay/softening, initial-state, boundary, and GPU blocked. |
 | 06 Sainte-Monique scaffold/smoke | Reduced placeholder smoke only; field data blocked | Blocks strict field reproduction gate | Full field reproduction is data/material/GPU blocked; placeholder smoke is not a validated field case. |
@@ -92,8 +92,8 @@ with missing features documented.
 | Current state | README, notes, TODO XML, and `CaseCryer_PR_Smoke_Def.xml` reduced smoke exist. |
 | Short runnable? | Yes, reduced smoke passed: GenCase code=0, Dual code=0, excluded=0. |
 | Missing features | Strict 3D/spherical or axisymmetric geometry, drained boundary treatment, pore-pressure ghost/MLS or equivalent boundary strategy, analytical postprocessing, likely GPU for useful resolution. |
-| Minimum smoke test | Current reduced smoke meets CPU case-readiness: coarse geometry, bounded pressure field, no NaN/excluded, required fields written. |
-| Blocks GPU G1? | Yes under the new full CPU case gate. Reduced smoke is not strict Cryer reproduction. |
+| Minimum smoke test | Current Cryer-like strict/minimal smoke meets CPU execution readiness: coarse geometry, bounded near-center pore pressure, no NaN/excluded, required fields written, and `analyze_cryer_smoke.py` produces a center-pressure proxy. |
+| Blocks GPU G1? | Still blocks full strict Cryer reproduction, but not because it is TODO-only. Remaining blockers are strict boundary/geometry/analytical comparison decisions. |
 
 ### 04: `04_Undrained_Triaxial`
 
