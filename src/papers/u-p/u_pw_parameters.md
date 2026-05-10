@@ -10,6 +10,7 @@ This document summarizes the hydromechanical parameters currently introduced for
 | `PorePressureModel` | `0/1/2` | `0` | `0`: disabled, `1`: PR explicit pore-pressure-rate, `2`: PPE placeholder. | Keep `0/1`; make `2` a hard error |
 | `PorePressureDtSafety` | float, `>0` | `0.1` | Safety factor for `dt_pore`. | Keep |
 | `HydraulicGravityX/Y/Z` | float vector | `(0,0,0)` | Optional hydraulic gravity vector. If all components are zero, hydraulic gravity falls back to body `Gravity`. | Keep |
+| `BodyGravityStopTime` | double [s] | `0` | Stops mechanical body gravity at the given physical time while leaving `HydraulicGravity` unchanged. `<=0`: body gravity remains active. | Keep |
 
 The material/phase constants below are now soil material constants and should be written under `<execution><special><soils>` next to `ModulusE`, `PRvs`, `phi`, and `coh`:
 
@@ -69,6 +70,7 @@ The only automatic or conditional behavior under `HydromechCoupling=1` is:
 
 - `dt_pore` restriction is applied when `PorePressureModel=1` and the soil material `HydraulicConductivity > 0`.
 - `HydraulicGravity` falls back to the body `Gravity` when `HydraulicGravityX/Y/Z` are all zero. If any custom hydraulic gravity component is nonzero, that custom vector is used for hydraulic elevation, hydrostatic pressure, `dt_pore`, `LapZ`, hydraulic boundaries, and excess-pressure diagnostics.
+- `BodyGravityStopTime`, when positive, only affects the mechanical body-gravity acceleration used by the CPU time integration. It does not modify the stored body `Gravity` vector and does not alter `HydraulicGravity`.
 
 Recommended presets:
 
@@ -107,6 +109,8 @@ Use excess-pressure feedback with the difference-gradient operator. This avoids 
 ```
 
 Prefer `HydromechDampingXi` for Supporting-Information-style cases. It is converted internally to `c_d = xi * sqrt(E/(rho*h^2))`. Use `HydromechDampingCoef` only when a direct damping coefficient in `[1/s]` is intentionally required.
+
+For Supporting Information self-weight Scenario 1, use `BodyGravityStopTime` to stop mechanical body gravity after the undrained generation stage while keeping `HydraulicGravityX/Y/Z` explicitly set to `(0,0,-9.81)`. This avoids relying on fallback semantics and keeps hydraulic elevation, `dt_pore`, and `LapZ` active after the mechanical body force is stopped.
 
 ### External-Load AccInput Experimental Path
 

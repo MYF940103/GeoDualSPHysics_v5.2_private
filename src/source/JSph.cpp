@@ -213,6 +213,8 @@ void JSph::InitVars(){
   PorePressureShepardMode=0;
   SavePorePressure=false;
   HydraulicGravity=TFloat3(0);
+  BodyGravityStopTime=0.;
+  BodyGravityStoppedLogged=false;
   TopLoadEnabled=false;
   TopLoad=0.f;
   TopLoadThickness=0.f;
@@ -771,6 +773,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   HydraulicGravity.x=eparms.GetValueFloat("HydraulicGravityX",true,0.f);
   HydraulicGravity.y=eparms.GetValueFloat("HydraulicGravityY",true,0.f);
   HydraulicGravity.z=eparms.GetValueFloat("HydraulicGravityZ",true,0.f);
+  BodyGravityStopTime=eparms.GetValueDouble("BodyGravityStopTime",true,0.);
   switch(eparms.GetValueInt("TopLoadEnabled",true,0)){
     case 0:  TopLoadEnabled=false;  break;
     case 1:  TopLoadEnabled=true;   break;
@@ -794,6 +797,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(WaterBulkModulusParamDefined && WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensityParamDefined && WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
+  if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
   if(HydromechDampingXi<0.f)Run_Exceptioon("HydromechDampingXi must be greater than or equal to zero.");
@@ -1752,6 +1756,7 @@ void JSph::VisuConfig(){
     }
     Log->Print(fun::VarStr("  SavePorePressure",SavePorePressure));
     Log->Print(fun::VarStr("  BodyGravity",Gravity));
+    Log->Print(fun::VarStr("  BodyGravityStopTime",BodyGravityStopTime));
     Log->Print(fun::VarStr("  HydraulicGravityMode",UseCustomHydraulicGravity()? "Custom": "BodyGravityFallback"));
     Log->Print(fun::VarStr("  HydraulicGravity",GetHydraulicGravity()));
     Log->Print(fun::VarStr("  HydraulicGmag",GetHydraulicGmag()));
@@ -1778,6 +1783,7 @@ void JSph::VisuConfig(){
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
   ConfigInfo=ConfigInfo+sep+fun::PrintStr("DDT%d",int(TDensity));
   if(TDensity!=DDT_None){
+    if(BodyGravityStopTime>0.)Log->PrintWarning("BodyGravityStopTime is currently validated for DensityDT=0 only; DensityDT stress diffusion still uses the original body Gravity.");
     Log->Print(fun::VarStr("  DensityDiffusionValue",DDTValue));
     //Log->Print(fun::VarStr("DensityDiffusionArray",DDTArray));
     string cinfo=fun::PrintStr("(%g)",DDTValue);
@@ -2859,6 +2865,20 @@ bool JSph::UseCustomHydraulicGravity()const{
 //==============================================================================
 tfloat3 JSph::GetHydraulicGravity()const{
   return(UseCustomHydraulicGravity()? HydraulicGravity: Gravity);
+}
+
+//==============================================================================
+/// Returns true when mechanical body gravity is stopped at the given time.
+//==============================================================================
+bool JSph::IsMechanicalGravityStopped(double timestep)const{
+  return(BodyGravityStopTime>0. && timestep>=BodyGravityStopTime);
+}
+
+//==============================================================================
+/// Returns the effective mechanical body gravity vector.
+//==============================================================================
+tfloat3 JSph::GetMechanicalGravity(double timestep)const{
+  return(IsMechanicalGravityStopped(timestep)? TFloat3(0): Gravity);
 }
 
 //==============================================================================

@@ -224,6 +224,8 @@ protected:
   int PorePressureShepardMode;  ///<Pore-pressure Shepard mode. 0:total pressure, 1:excess pressure.
   bool SavePorePressure;        ///<Save pore pressure field. 0:off, 1:on (default=0).
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
+  double BodyGravityStopTime;   ///<Time to stop mechanical body gravity. <=0: body gravity remains active.
+  bool BodyGravityStoppedLogged; ///<True when mechanical body gravity stop has been reported.
   bool TopLoadEnabled;          ///<Enable top uniform load. 0:off, 1:on (default=0).
   float TopLoad;                ///<Uniform vertical load applied to top material layer [Pa].
   float TopLoadThickness;       ///<Top loaded layer thickness. If <=0, KernelH is used.
@@ -539,6 +541,8 @@ protected:
 
   bool UseCustomHydraulicGravity()const;
   tfloat3 GetHydraulicGravity()const;
+  tfloat3 GetMechanicalGravity(double timestep)const;
+  bool IsMechanicalGravityStopped(double timestep)const;
   double GetHydraulicGmag()const;
   double GetHydraulicElevation(const tdouble3 &pos)const;
 

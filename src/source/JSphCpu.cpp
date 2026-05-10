@@ -640,6 +640,10 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
 
   //-Adds variable acceleration from input configuration.
   if(AccInput)AccInput->RunCpu(TimeStep,Gravity,npf,npb,Codec,Posc,Velrhopc,Acec);
+  if(IsMechanicalGravityStopped(TimeStep) && !BodyGravityStoppedLogged){
+    Log->Print(fun::PrintStr("Mechanical body gravity stopped at TimeStep=%g. Hydraulic gravity remains active.",TimeStep));
+    BodyGravityStoppedLogged=true;
+  }
 
   //-Prepare press values for interaction.
   const int n=int(np);
@@ -3243,7 +3247,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
   ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew)const
 {
   const double dt205=0.5*dt*dt;
-  const tdouble3 gravity=ToTDouble3(Gravity);
+  const tdouble3 gravity=ToTDouble3(GetMechanicalGravity(TimeStep));
   const int pini=int(Npb),pfin=int(Np),npf=int(Np-Npb);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP)
@@ -3384,6 +3388,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
   const bool shift=false; //(ShiftingMode!=SHIFT_None); //-We strongly recommend running the shifting correction only for the corrector. If you want to re-enable shifting in the predictor, change the value here to "true".
   const double dt05=dt*.5;
+  const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
   const int np=int(Np);
   const int npb=int(Npb);
   const int npf=np-npb;
@@ -3434,9 +3439,9 @@ void JSphCpu::ComputeSymplecticPre(double dt){
       bool outrhop=(rhopnew<RhopOutMin || rhopnew>RhopOutMax);
       //-Calculate velocity & density. | Calcula velocidad y densidad.
       tfloat4 rvelrhopnew=TFloat4(
-        float(double(VelrhopPrec[p].x) + (double(Acec[p].x)+Gravity.x) * dt05),
-        float(double(VelrhopPrec[p].y) + (double(Acec[p].y)+Gravity.y) * dt05),
-        float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+Gravity.z) * dt05),
+        float(double(VelrhopPrec[p].x) + (double(Acec[p].x)+mechgravity.x) * dt05),
+        float(double(VelrhopPrec[p].y) + (double(Acec[p].y)+mechgravity.y) * dt05),
+        float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+mechgravity.z) * dt05),
         rhopnew);
       //-Calculate elastic stress
         tsymatrix3f sigma_e={0,0,0,0,0,0};
@@ -3527,6 +3532,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
   const bool shift=(Shifting!=NULL);
   const double dt05=dt*.5;
+  const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
   const int np=int(Np);
   const int npb=int(Npb);
   const int npf=np-npb;
@@ -3556,9 +3562,9 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
       //-Calculate velocity & density. | Calcula velocidad y densidad.
       tfloat4 rvelrhopnew=TFloat4(
-        float(double(VelrhopPrec[p].x) + (double(Acec[p].x)+Gravity.x) * dt), 
-        float(double(VelrhopPrec[p].y) + (double(Acec[p].y)+Gravity.y) * dt), 
-        float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+Gravity.z) * dt),
+        float(double(VelrhopPrec[p].x) + (double(Acec[p].x)+mechgravity.x) * dt), 
+        float(double(VelrhopPrec[p].y) + (double(Acec[p].y)+mechgravity.y) * dt), 
+        float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+mechgravity.z) * dt),
         rhopnew);
       //-Calculate elastic stress
         tsymatrix3f sigma_e={0,0,0,0,0,0};
