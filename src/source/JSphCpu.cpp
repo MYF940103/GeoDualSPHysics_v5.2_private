@@ -93,6 +93,7 @@ void JSphCpu::InitVars(){
   ArtificialStressc=NULL;
   //======
   PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL;
+  PorePressGhostc=NULL; ExcessPorePressGhostc=NULL; PorePressureBoundaryModec=NULL;
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
@@ -106,6 +107,7 @@ void JSphCpu::InitVars(){
   PorePressureTopDrainedStepPrint=false;
   PorePressureBottomNoFluxStepPrint=false;
   PorePressureShepardStepPrint=false;
+  PorePressureBoundaryGhostPrint=false;
   TopLoadStepPrint=false;
   HydromechDampingStepPrint=false;
   RidpMove=NULL; 
@@ -159,6 +161,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   MemCpuParticles=0;
   ArraysCpu->Reset();
   PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL;
+  PorePressGhostc=NULL; ExcessPorePressGhostc=NULL; PorePressureBoundaryModec=NULL;
 }
 
 //==============================================================================
@@ -193,10 +196,18 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-porepressureace,porepressureacediff
   }
+  if(PorePressureBoundaryGhost){
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepressghost,excessporepressghost
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1); //-porepressureboundarymode
+  }
   if(SavePorePressure){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepress,excessporepress output
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4); //-porepressrate,divvel,lapporepress,lapz output
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-porepressureace,porepressureacediff output
+    if(PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput){
+      ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepressghost,excessporepressghost output
+      ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1); //-porepressureboundarymode output
+    }
   }
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
@@ -255,6 +266,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *lapz      =SaveArrayCpu(Np,LapZc);
   tfloat3      *porepressureace=SaveArrayCpu(Np,PorePressureAcec);
   tfloat3      *porepressureacediff=SaveArrayCpu(Np,PorePressureAceDiffc);
+  double       *porepressghost=SaveArrayCpu(Np,PorePressGhostc);
+  double       *excessporepressghost=SaveArrayCpu(Np,ExcessPorePressGhostc);
+  float        *porepressureboundarymode=SaveArrayCpu(Np,PorePressureBoundaryModec);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -280,6 +294,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(LapZc);
   ArraysCpu->Free(PorePressureAcec);
   ArraysCpu->Free(PorePressureAceDiffc);
+  ArraysCpu->Free(PorePressGhostc);
+  ArraysCpu->Free(ExcessPorePressGhostc);
+  ArraysCpu->Free(PorePressureBoundaryModec);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -309,6 +326,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(lapz)          LapZc = ArraysCpu->ReserveFloat();
   if(porepressureace) PorePressureAcec = ArraysCpu->ReserveFloat3();
   if(porepressureacediff) PorePressureAceDiffc = ArraysCpu->ReserveFloat3();
+  if(porepressghost) PorePressGhostc = ArraysCpu->ReserveDouble();
+  if(excessporepressghost) ExcessPorePressGhostc = ArraysCpu->ReserveDouble();
+  if(porepressureboundarymode) PorePressureBoundaryModec = ArraysCpu->ReserveFloat();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -334,6 +354,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,lapz,LapZc);
   RestoreArrayCpu(Np,porepressureace,PorePressureAcec);
   RestoreArrayCpu(Np,porepressureacediff,PorePressureAceDiffc);
+  RestoreArrayCpu(Np,porepressghost,PorePressGhostc);
+  RestoreArrayCpu(Np,excessporepressghost,ExcessPorePressGhostc);
+  RestoreArrayCpu(Np,porepressureboundarymode,PorePressureBoundaryModec);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -388,6 +411,11 @@ void JSphCpu::ReserveBasicArraysCpu(){
     PorePressureAcec=ArraysCpu->ReserveFloat3();
     PorePressureAceDiffc=ArraysCpu->ReserveFloat3();
   }
+  if(PorePressureBoundaryGhost){
+    PorePressGhostc=ArraysCpu->ReserveDouble();
+    ExcessPorePressGhostc=ArraysCpu->ReserveDouble();
+    PorePressureBoundaryModec=ArraysCpu->ReserveFloat();
+  }
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
   SigmaM1c=ArraysCpu->ReserveSymatrix3f();}//mdbr
   if(TVisco==VISCO_LaminarSPS)SpsTauc=ArraysCpu->ReserveSymatrix3f();
@@ -430,7 +458,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -483,6 +511,15 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(porepressureacediff){
       for (unsigned p=0;p<n;p++)porepressureacediff[p]=PorePressureAceDiffc[p+pini];
   }
+  if(porepressghost){
+      for (unsigned p=0;p<n;p++)porepressghost[p]=PorePressGhostc[p+pini];
+  }
+  if(excessporepressghost){
+      for (unsigned p=0;p<n;p++)excessporepressghost[p]=ExcessPorePressGhostc[p+pini];
+  }
+  if(porepressureboundarymode){
+      for (unsigned p=0;p<n;p++)porepressureboundarymode[p]=PorePressureBoundaryModec[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -512,6 +549,9 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(lapz)lapz[pdel]=lapz[p];
         if(porepressureace)porepressureace[pdel]=porepressureace[p];
         if(porepressureacediff)porepressureacediff[pdel]=porepressureacediff[p];
+        if(porepressghost)porepressghost[pdel]=porepressghost[p];
+        if(excessporepressghost)excessporepressghost[pdel]=excessporepressghost[p];
+        if(porepressureboundarymode)porepressureboundarymode[pdel]=porepressureboundarymode[p];
         //====
         code2[pdel]=code2[p];
       }
@@ -631,6 +671,9 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
   if(PorePressureAcec)memset(PorePressureAcec,0,sizeof(tfloat3)*np);  //PorePressureAcec[]=(0,0,0)
   if(PorePressureAceDiffc)memset(PorePressureAceDiffc,0,sizeof(tfloat3)*np); //PorePressureAceDiffc[]=(0,0,0)
+  if(PorePressGhostc)memset(PorePressGhostc,0,sizeof(double)*np); //PorePressGhostc[]=0
+  if(ExcessPorePressGhostc)memset(ExcessPorePressGhostc,0,sizeof(double)*np); //ExcessPorePressGhostc[]=0
+  if(PorePressureBoundaryModec)memset(PorePressureBoundaryModec,0,sizeof(float)*np); //PorePressureBoundaryModec[]=0
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
   memset(Rsigmac,0,sizeof(tsymatrix3f)*np);
@@ -2173,6 +2216,116 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
       ace[p].z+=porepressurefeedbackace[p].z;
     }
   }
+}
+
+//==============================================================================
+/// Computes diagnostic ghost pore pressure for simple geometric hydraulic boundary modes.
+//==============================================================================
+unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code,const double *porepress
+  ,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,double timestep,const char *stage,bool printlog)const
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureBoundaryGhost)return(0);
+  if(!pos || !code || !porepress || !porepressghost || !excessporepressghost || !porepressureboundarymode)
+    Run_Exceptioon("Pointers without data for pore-pressure boundary ghost diagnostics.");
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure boundary ghost diagnostics.");
+  const double rhog=double(SoilCte.WaterDensity)*gmag;
+  const unsigned np=pini+n;
+  memset(porepressghost,0,sizeof(double)*np);
+  memset(excessporepressghost,0,sizeof(double)*np);
+  memset(porepressureboundarymode,0,sizeof(float)*np);
+
+  unsigned npmat=0;
+  double zmin=DBL_MAX,zmax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
+    const double z=GetHydraulicElevation(pos[p]);
+    zmin=min(zmin,z);
+    zmax=max(zmax,z);
+    npmat++;
+  }
+  if(!npmat){
+    if(printlog)Log->PrintWarning("Pore-pressure boundary ghost diagnostics found no material particles.");
+    return(0);
+  }
+
+  const bool topactive=(PorePressureTopDrained && timestep>=PorePressureTopDrainedStartTime);
+  const double topthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+  const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
+  const double topthreshold=zmax-topthick;
+  const double bottomthreshold=zmin+bottomthick;
+  const double zrefmin=bottomthreshold;
+  const double zrefmax=zmin+2.*bottomthick;
+
+  unsigned refcount=0;
+  double refexcesssum=0.;
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
+    const double z=GetHydraulicElevation(pos[p]);
+    if(z>zrefmin && z<=zrefmax){
+      const double depth=double(PorePressureWaterLevel)-z;
+      const double hydro=(depth>0.? rhog*depth: 0.);
+      refexcesssum+=porepress[p]-hydro;
+      refcount++;
+    }
+  }
+  const double nofluxexcess=(refcount? refexcesssum/double(refcount): 0.);
+
+  unsigned countdrained=0,countnoflux=0,countinactive=0;
+  unsigned countdrainedbound=0,countnofluxbound=0,countinactivebound=0;
+  unsigned countdrainedmat=0,countnofluxmat=0,countinactivemat=0;
+  double pwminmode1=DBL_MAX,pwmaxmode1=-DBL_MAX,exminmode1=DBL_MAX,exmaxmode1=-DBL_MAX;
+  double pwminmode2=DBL_MAX,pwmaxmode2=-DBL_MAX,exminmode2=DBL_MAX,exmaxmode2=-DBL_MAX;
+
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsNormal(code[p])){
+    const bool ismat=CODE_IsFluid(code[p]);
+    const double z=GetHydraulicElevation(pos[p]);
+    int mode=0;
+    if(PorePressureBottomNoFlux && z<=bottomthreshold)mode=2;
+    if(topactive && z>=topthreshold)mode=1; //-Drained overrides no-flux if layers touch.
+
+    const double depth=double(PorePressureWaterLevel)-z;
+    const double hydro=(depth>0.? rhog*depth: 0.);
+    double excessghost=0.;
+    if(mode==1)excessghost=0.;
+    else if(mode==2)excessghost=nofluxexcess;
+    else excessghost=0.;
+
+    const double pwghost=(mode? hydro+excessghost: 0.);
+    porepressureboundarymode[p]=float(mode);
+    porepressghost[p]=pwghost;
+    excessporepressghost[p]=excessghost;
+
+    if(mode==1){
+      countdrained++;
+      if(ismat)countdrainedmat++; else countdrainedbound++;
+      pwminmode1=min(pwminmode1,pwghost); pwmaxmode1=max(pwmaxmode1,pwghost);
+      exminmode1=min(exminmode1,excessghost); exmaxmode1=max(exmaxmode1,excessghost);
+    }
+    else if(mode==2){
+      countnoflux++;
+      if(ismat)countnofluxmat++; else countnofluxbound++;
+      pwminmode2=min(pwminmode2,pwghost); pwmaxmode2=max(pwmaxmode2,pwghost);
+      exminmode2=min(exminmode2,excessghost); exmaxmode2=max(exmaxmode2,excessghost);
+    }
+    else{
+      countinactive++;
+      if(ismat)countinactivemat++; else countinactivebound++;
+    }
+  }
+
+  if(!countdrained){ pwminmode1=pwmaxmode1=exminmode1=exmaxmode1=0.; }
+  if(!countnoflux){ pwminmode2=pwmaxmode2=exminmode2=exmaxmode2=0.; }
+  if(printlog){
+    Log->Printf("Pore-pressure boundary ghost diagnostics on CPU (%s): TimeStep=%g, top_active=%s, zmin_material=%g, zmax_material=%g, top_threshold=%g, bottom_threshold=%g, bottom_reference=[%g,%g], reference_count=%u, reference_excess_mean=%g Pa."
+      ,(stage? stage: "unknown"),timestep,(topactive? "True": "False"),zmin,zmax,topthreshold,bottomthreshold,zrefmin,zrefmax,refcount,nofluxexcess);
+    Log->Printf("Pore-pressure boundary ghost modes: drained=%u (boundary=%u, material=%u), noflux=%u (boundary=%u, material=%u), inactive=%u (boundary=%u, material=%u)."
+      ,countdrained,countdrainedbound,countdrainedmat,countnoflux,countnofluxbound,countnofluxmat,countinactive,countinactivebound,countinactivemat);
+    Log->Printf("Pore-pressure ghost values: drained PorePress=[%g,%g] Pa, drained Excess=[%g,%g] Pa; noflux PorePress=[%g,%g] Pa, noflux Excess=[%g,%g] Pa."
+      ,pwminmode1,pwmaxmode1,exminmode1,exmaxmode1,pwminmode2,pwmaxmode2,exminmode2,exmaxmode2);
+    if(PorePressureBottomNoFlux && !refcount)
+      Log->PrintWarning("Pore-pressure boundary ghost no-flux diagnostic used zero excess because the reference material layer was empty.");
+    Log->Print("Pore-pressure boundary ghost diagnostics are output-only and are not used by PR rate, feedback, Shepard, or boundary corrections.");
+  }
+  return(countdrained+countnoflux);
 }
 
 //==============================================================================

@@ -207,6 +207,8 @@ protected:
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
+  bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
+  bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   float Porosity0;              ///<Deprecated execution-parameter fallback for SoilCte.Porosity0.
   float HydraulicConductivity;  ///<Deprecated execution-parameter fallback for SoilCte.HydraulicConductivity.
   float WaterBulkModulus;       ///<Deprecated execution-parameter fallback for SoilCte.WaterBulkModulus.

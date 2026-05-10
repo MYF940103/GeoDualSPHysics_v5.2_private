@@ -196,6 +196,8 @@ void JSph::InitVars(){
   PorePressureDrainThickness=0.f;
   PorePressureBottomNoFlux=false;
   PorePressureBottomNoFluxThickness=0.f;
+  PorePressureBoundaryGhost=false;
+  PorePressureBoundaryGhostOutput=false;
   Porosity0=0.3f;
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
@@ -726,6 +728,16 @@ void JSph::LoadConfigParameters(const JXml *xml){
     default: Run_Exceptioon("PorePressureBottomNoFlux mode is not valid.");
   }
   PorePressureBottomNoFluxThickness=eparms.GetValueFloat("PorePressureBottomNoFluxThickness",true,0.f);
+  switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
+    case 0:  PorePressureBoundaryGhost=false;  break;
+    case 1:  PorePressureBoundaryGhost=true;   break;
+    default: Run_Exceptioon("PorePressureBoundaryGhost mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureBoundaryGhostOutput",true,0)){
+    case 0:  PorePressureBoundaryGhostOutput=false;  break;
+    case 1:  PorePressureBoundaryGhostOutput=true;   break;
+    default: Run_Exceptioon("PorePressureBoundaryGhostOutput mode is not valid.");
+  }
   Porosity0ParamDefined=eparms.Exists("Porosity0");
   HydraulicConductivityParamDefined=eparms.Exists("HydraulicConductivity");
   WaterBulkModulusParamDefined=eparms.Exists("WaterBulkModulus");
@@ -797,6 +809,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(WaterBulkModulusParamDefined && WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensityParamDefined && WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
+  if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
+    Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
@@ -1741,6 +1755,8 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
+    Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
+    Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));
     Log->Print(fun::VarStr("  Soil.Porosity0",SoilCte.Porosity0));
     Log->Print(fun::VarStr("  Soil.HydraulicConductivity",SoilCte.HydraulicConductivity));
     Log->Print(fun::VarStr("  Soil.WaterBulkModulus",SoilCte.WaterBulkModulus));

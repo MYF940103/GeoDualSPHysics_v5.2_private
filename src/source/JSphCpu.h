@@ -149,6 +149,9 @@ protected:
   float* LapZc;           ///<Elevation-head Laplacian diagnostic field for CPU hydromechanical prototype.
   tfloat3* PorePressureAcec; ///<Candidate pore-pressure feedback acceleration diagnostic field.
   tfloat3* PorePressureAceDiffc; ///<Difference-gradient pore-pressure acceleration diagnostic field.
+  double* PorePressGhostc; ///<Diagnostic pore-pressure ghost value for hydraulic boundary particles/layers.
+  double* ExcessPorePressGhostc; ///<Diagnostic excess pore-pressure ghost value.
+  float* PorePressureBoundaryModec; ///<Diagnostic hydraulic boundary mode. 0:inactive, 1:drained, 2:no-flux.
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
 
@@ -183,6 +186,7 @@ protected:
   bool PorePressureTopDrainedStepPrint; ///<True when top drained post-update stats have been printed.
   bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
   bool PorePressureShepardStepPrint; ///<True when pore-pressure Shepard regularization stats have been printed.
+  bool PorePressureBoundaryGhostPrint; ///<True when pore-pressure boundary ghost diagnostic stats have been printed.
   bool TopLoadStepPrint;          ///<True when top load application stats have been printed.
   bool HydromechDampingStepPrint; ///<True when hydromechanical damping activation has been printed.
 
@@ -232,7 +236,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,double *porepressghost=NULL,double *excessporepressghost=NULL,float *porepressureboundarymode=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -311,6 +315,8 @@ protected:
   void ComputePorePressureAccelDiff(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
   void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *ace)const;
+  unsigned ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code,const double *porepress
+    ,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,double timestep,const char *stage,bool printlog)const;
   unsigned ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,const char *stage,bool printlog)const;
   unsigned ApplyHydromechDamping(unsigned n,unsigned pini,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,bool printlog)const;
 
