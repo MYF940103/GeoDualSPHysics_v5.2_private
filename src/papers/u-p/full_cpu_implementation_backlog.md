@@ -239,11 +239,14 @@ or explicitly deferred with a documented reason.
 
 - **Goal:** Extract or manually record Cryer paper parameters from the PDF/SI.
 - **Cases:** 03.
-- **GPU-pre required:** Yes.
+- **GPU-pre required:** Completed for the main-paper parameters available in the
+  extracted PDF text; still needs XML implementation.
 - **Needs design doc:** no, but needs source citation.
 - **Expected files:** `examples/u-pw/03_Cryer_Problem/notes.md`
 - **Smoke test:** no run until parameters are known.
-- **Expected outputs:** complete parameter table or explicit unknown list.
+- **Expected outputs:** sphere radius/normalization choice, Poisson sweep
+  (`0.1`, `0.2`, `0.3`, `0.45`), Terzaghi shared material constants, drained
+  exterior boundary requirements, and center-pressure reference definition.
 - **Commit message:** `Record Cryer paper parameters`
 - **Blocks:** 03 strict smoke.
 
@@ -251,11 +254,14 @@ or explicitly deferred with a documented reason.
 
 - **Goal:** Extract material/loading/confinement table for triaxial tests.
 - **Cases:** 04.
-- **GPU-pre required:** Yes.
+- **GPU-pre required:** Partly complete from main paper extraction; MCC
+  parameters from reference [33] remain missing.
 - **Needs design doc:** no, but may need PDF text extraction/manual review.
 - **Expected files:** `examples/u-pw/04_Undrained_Triaxial/notes.md`
 - **Smoke test:** none until setup is known.
-- **Expected outputs:** parameter table and output targets.
+- **Expected outputs:** cylinder `0.15 m` high / `0.05 m` diameter, `Delta=0.002
+  m`, top velocity `0.01 m/s`, `k=1e-8 m/s`, TU-L/TU-M/TU-N confinement and
+  preconsolidation pressure, plus explicit MCC parameter gap.
 - **Commit message:** `Record undrained triaxial paper parameters`
 - **Blocks:** 04 strict smoke.
 
@@ -267,7 +273,8 @@ or explicitly deferred with a documented reason.
 - **Needs design doc:** no.
 - **Expected files:** case `data/README.md`, notes.
 - **Smoke test:** none.
-- **Expected outputs:** data availability table.
+- **Expected outputs:** slope benchmark dimensions/materials from extracted
+  paper text; Sainte-Monique Table 1 values; explicit field topography/data gap.
 - **Commit message:** `Record landslide case data inventory`
 - **Blocks:** 06 strict reproduction.
 
@@ -341,4 +348,3 @@ GPU coding is still blocked under the full CPU case completion standard. The
 branch has a useful CPU PR core, but strict CPU smokes for Cryer, triaxial, and
 landslide cases require boundary, loading, constitutive, setup, and
 postprocessing decisions that are not yet complete.
-

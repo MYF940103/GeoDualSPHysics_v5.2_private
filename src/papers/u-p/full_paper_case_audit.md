@@ -22,11 +22,10 @@ Files reviewed:
 - `porepress_restart_plan.md`
 - `examples/u-pw/README_reproduction_plan.md`
 
-The main paper PDF is present in `src/papers/u-p`, but the current local
-environment does not provide a working PDF text extraction tool. No separate
-Supporting Information PDF was found in the folder. Therefore, this audit uses
-the existing markdown notes as the authoritative local source and marks missing
-paper values as TODO instead of inventing them.
+The main paper PDF is present in `src/papers/u-p` and has now been converted to
+`converted/u_pw_paper_text.md` using PyMuPDF. No separate Supporting
+Information PDF was found in the folder, so Supporting Information details still
+come from `supporting_information_implementation_notes.md`.
 
 ## Case Inventory
 
@@ -52,17 +51,17 @@ markdown notes. This should be rechecked once the PDF text can be extracted.
 | Item | Value / status |
 |---|---|
 | Target | 1D consolidation / Terzaghi pressure dissipation. |
-| Section / figure | TODO: not identified in local markdown notes. |
+| Section / figure | Main paper Section 4.1, Figures 1-6. |
 | Geometry | Column, height `H=1.0 m`, width `0.1 m`. |
 | Dimension | Treated as 1D behavior using a thin 2D/3D particle column. |
 | Particle spacing | `Delta=0.01 m`. |
 | Elastic material | `E=2e6 Pa`, `nu=0.3`. |
 | Hydraulic material | `Kw=2e8 Pa`, `n=0.3`, `k=1e-3 m/s`, `rho_w=1000 kg/m3`. |
-| Loading | Top load `q0=-10 kPa`. The notes do not prove that this should be implemented as top-particle acceleration; a traction/loading boundary is more faithful. |
+| Loading | Top load `q0=-10 kPa` applied to free-surface particles as an equivalent acceleration. |
 | Hydraulic BC | Top drained, bottom and lateral no-flux. |
 | Initial pressure | Either load-generated excess or uniform initial excess depending on verification route. |
 | Time step | Notes list `dt=1e-6 s`. Current code uses `dt_pore` restriction instead of fixed paper `dt`. |
-| Stabilization | Paper notes mention artificial viscosity, damping, and Shepard in related SI tests. Exact Terzaghi settings TODO. |
+| Stabilization | PR results use artificial viscosity parameter `alpha=0.1`; damping coefficient examples include `xi=4e-5`; paper compares several damping/viscosity combinations. |
 | Reference | Classic Terzaghi series with `Tv=cv*t/H^2`. |
 
 ### Current Code Status
@@ -198,18 +197,17 @@ Remaining strict gaps:
 
 ### Paper Setup Known From Notes
 
-The current markdown notes identify Cryer as a required reproduction case but do
-not provide complete paper parameters.
-
 | Item | Value / status |
 |---|---|
 | Target | Multidimensional consolidation benchmark, likely center pore-pressure response. |
-| Geometry | TODO: strict sphere / axisymmetric geometry not specified in local notes. |
-| Dimension | TODO: likely 3D or axisymmetric. |
-| Material / hydraulic parameters | TODO: not available in local markdown notes. |
-| Boundary | drained pore-pressure boundary on curved surface; details TODO. |
-| Initial condition | TODO. |
-| Reference | Cryer analytical center pressure / dissipation response; exact formula TODO. |
+| Section / figure | Main paper Section 4.2, Figure 7. |
+| Geometry | Poroelastic sphere of radius `R=a`. |
+| Dimension | 3D sphere in the paper; a coarse axisymmetric/reduced smoke would be an approximation only. |
+| Material / hydraulic parameters | Same elastic/material parameters as 1D Terzaghi except Poisson ratio sweep. |
+| Poisson ratios | `nu=0.1`, `0.2`, `0.3`, `0.45`. |
+| Loading | Uniform all-around normal traction `p0` at the surface. |
+| Boundary | Exterior surface drained. |
+| Reference | Center pore pressure `p_w(r=0)/p0` compared to Mandel-Cryer analytical solution. |
 
 ### Current Code Status
 
@@ -238,23 +236,24 @@ Strict smoke requires at least:
 - curved drained pore-pressure boundary;
 - boundary ghost / MLS;
 - center probe/postprocessing;
-- paper parameter extraction.
+- strict spherical geometry and traction/confinement route.
 
 ## 5. Undrained Triaxial Tests
 
 ### Paper Setup Known From Notes
 
-The roadmap identifies undrained triaxial tests, but the local markdown notes do
-not list the full test table.
-
 | Item | Value / status |
 |---|---|
 | Target | Undrained loading and stress path response. |
-| Geometry | Triaxial specimen; strict dimensions TODO. |
-| Material model | Notes mention Drucker-Prager and modified Cam-Clay in the paper. Exact test material TODO. |
+| Section / figure | Main paper Section 4.3, Figures 8-9; Supporting Information Figures S3-S5. |
+| Geometry | Cylinder, height `0.15 m`, diameter `0.05 m`. |
+| Discretization | `53,175` particles, initial spacing `0.002 m`. |
+| Material model | Modified Cam Clay. Exact MCC parameters are taken from reference [33] and are not fully present in the extracted main text. |
 | Hydraulic condition | Undrained / no-flux. |
-| Loading | Axial strain or stress control; exact rate TODO. |
-| Confinement | Lateral confining stress boundary; exact value TODO. |
+| Loading | Top boundary particles move at constant vertical velocity `0.01 m/s`; bottom fixed; top/bottom free-slip. |
+| Confinement | Flexible confined boundary conditions on lateral free surface. |
+| Permeability | `k=1e-8 m/s` to achieve undrained response. |
+| Tests | TU-L, TU-M, TU-N. Initial preconsolidation pressure `(pc)_0=200 kPa`; confining pressures `150 kPa`, `30 kPa`, and `200 kPa` respectively. |
 | Output | axial strain, pore pressure, stress path `p' - q`. |
 
 ### Current Code Status
@@ -293,10 +292,15 @@ because it lacks:
 | Item | Value / status |
 |---|---|
 | Target | Retrogressive landslide benchmark / qualitative failure progression. |
-| Geometry | Slope; exact paper geometry TODO from PDF. |
-| Material | Sensitive clay / strain softening likely essential. |
-| Initial state | initial stress and pore pressure construction required. |
-| Boundary | slope domain supports, drainage/no-flux conditions TODO. |
+| Section / figure | Main paper Section 5, Figures 10-22. |
+| Geometry | Two slope models: 5 m high at 45 degrees with base length 25 m/top length 20 m; 8 m high with base length 17 m/top length 16 m. |
+| Discretization | `Delta=0.1 m`; 11,275 particles for 5 m slope and 8,470 particles for 8 m slope. |
+| Material | Sensitive clay with Drucker-Prager yield and isotropic exponential strain softening. |
+| Parameters | `E=25 MPa`, `nu=0.3`, mixture density `2150 kg/m3`, water density `1000 kg/m3`, porosity `0.4`, `Kw=0.2 GPa`, `k=1e-8 m/s`. |
+| Strength | peak cohesion `15.1 kPa`, residual cohesion `1.5 kPa`, friction `0 deg`, dilatancy `0 deg`, softening coefficient `5`. |
+| Initial state | `K0=0.5`, gravity loading using peak strength and `eta=0`; resulting effective stresses and pore pressures used for failure simulation. |
+| Trigger | set softening coefficient and apply strength reduction factor `1.65` to cohesion. |
+| Boundary | base no-slip, left side wall free-slip. |
 | Reference | retrogression, displacement, failure pattern. |
 
 ### Current Code Status
@@ -331,11 +335,15 @@ Current CPU smoke is only a reduced execution smoke.
 | Item | Value / status |
 |---|---|
 | Target | Field-scale Sainte-Monique landslide application. |
-| Geometry | field topography; data not present in local scaffold. |
-| Material | material zoning and sensitive clay calibration required. |
-| Initial state | initial stress and pore-pressure state required. |
-| Workflow | checkpoint/restart and GPU production workflow likely required. |
-| Reference | displacement, velocity, retrogression/failure extent. |
+| Section / figure | Main paper Section 6, Figures 23-26, Table 1. |
+| Geometry | Sainte-Monique cross-section; left slope about 24 degrees and right slope about 26 degrees. Field topography data are not present in the repo. |
+| Discretization | `Delta=0.6 m`, 7,723 domain particles, smoothing length factor `1.5`. |
+| Material | sensitive clay with Drucker-Prager plus softening law. |
+| Parameters | density `1700 kg/m3`, porosity `0.2`, `E=13 MPa`, `nu=0.33`, `Kw=200 MPa`, `k=1e-8 m/s`. |
+| Strength | peak/residual friction `10/0 deg`; peak/residual cohesion `45/1 kPa`; softening coefficients `2`, `5`, `10`. |
+| Initial state | `K0=0.5`, gravity loading with peak properties and `eta=0`, then softening activated. |
+| Workflow | simulation ends after 55 s or after sliding ceases; production run requires GPU/checkpoint workflow. |
+| Reference | runout about 52 m vs field 50 m; retrogression about 116 m vs field 100 m for one chosen softening line. |
 
 ### Current Code Status
 
@@ -391,4 +399,3 @@ branch has a useful PR core and several reduced smokes, but 03-06 are not strict
 paper reproductions. The next step is a full CPU implementation backlog that
 separates PR-core blockers from boundary, loading, constitutive, setup, and
 postprocessing blockers.
-
