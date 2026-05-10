@@ -755,7 +755,7 @@ unsigned JXml::ReadMatrixDouble(const TiXmlNode* node,const std::string& name
 //==============================================================================
 std::string JXml::ToStr(double v,const char* fmt){
   char cad[256];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(cad);
 }
 
@@ -938,7 +938,7 @@ void JXml::LoadFile(const std::string& fname){
     std::string tex="Cannot load the xml file: ";
     tex=tex+Doc->ErrorDesc();
     char cad[256];
-    sprintf(cad," (row:%d col:%d)",Doc->ErrorRow(),Doc->ErrorCol());
+    snprintf(cad,sizeof(cad)," (row:%d col:%d)",Doc->ErrorRow(),Doc->ErrorCol());
     Run_ExceptioonFile(tex+cad,FileReading);
   }
 }

@@ -177,14 +177,20 @@ std::string JSaveCsv2::ToStr(const char *format,...)const{
   char buffer[SIZE+1];
   va_list args;
   va_start(args, format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)ret=buffer;
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)ret=buff2;
       delete[] buff2;
     }

@@ -235,7 +235,7 @@ std::string GetHoursOfSeconds(double s){
   const int mins=int(s/60);
   s-=double(mins*60);
   char cad[64];
-  sprintf(cad,"%dh %dm %.1fs",hours,mins,s);
+  snprintf(cad,sizeof(cad),"%dh %dm %.1fs",hours,mins,s);
   return(cad);
 }
 
@@ -265,14 +265,20 @@ std::string PrintStr(const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args, format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)ret=buffer;
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)ret=buff2;
       delete[] buff2;
     }
@@ -294,14 +300,20 @@ std::string PrintStrCsv(bool csvsepcoma,const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,formatok,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,formatok,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)ret=buffer;
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,formatok,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,formatok,argswrite);
+      va_end(argswrite);
       if(rsize>=0)ret=buff2;
       delete[] buff2;
     }
@@ -394,7 +406,7 @@ std::string UintStrFill(unsigned v,unsigned vmax,const char fillchar){
 //==============================================================================
 std::string LongStr(llong v){
   char cad[128];
-  sprintf(cad,"%lld",v);
+  snprintf(cad,sizeof(cad),"%lld",v);
   return(std::string(cad));
 }
 
@@ -403,7 +415,7 @@ std::string LongStr(llong v){
 //==============================================================================
 std::string UlongStr(ullong v){
   char cad[128];
-  sprintf(cad,"%llu",v);
+  snprintf(cad,sizeof(cad),"%llu",v);
   return(std::string(cad));
 }
 
@@ -412,7 +424,7 @@ std::string UlongStr(ullong v){
 //==============================================================================
 std::string UintStr(unsigned v,const char* fmt){
   char cad[128];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(std::string(cad));
 }
 
@@ -421,7 +433,7 @@ std::string UintStr(unsigned v,const char* fmt){
 //==============================================================================
 std::string IntStr(int v){
   char cad[128];
-  sprintf(cad,"%d",v);
+  snprintf(cad,sizeof(cad),"%d",v);
   return(std::string(cad));
 }
 
@@ -430,7 +442,7 @@ std::string IntStr(int v){
 //==============================================================================
 std::string Int3Str(const tint3 &v){
   char cad[128];
-  sprintf(cad,"%d,%d,%d",v.x,v.y,v.z);
+  snprintf(cad,sizeof(cad),"%d,%d,%d",v.x,v.y,v.z);
   return(std::string(cad));
 }
 
@@ -439,7 +451,7 @@ std::string Int3Str(const tint3 &v){
 //==============================================================================
 std::string Uint3Str(const tuint3 &v){
   char cad[128];
-  sprintf(cad,"%u,%u,%u",v.x,v.y,v.z);
+  snprintf(cad,sizeof(cad),"%u,%u,%u",v.x,v.y,v.z);
   return(std::string(cad));
 }
 
@@ -448,7 +460,7 @@ std::string Uint3Str(const tuint3 &v){
 //==============================================================================
 std::string FloatStr(float v,const char* fmt){
   char cad[128];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(std::string(cad));
 }
 
@@ -457,7 +469,7 @@ std::string FloatStr(float v,const char* fmt){
 //==============================================================================
 std::string FloatxStr(float v,const char* fmt){
   char cad[128];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(v==-FLT_MAX? std::string("MIN"): (v==FLT_MAX? std::string("MAX"): std::string(cad)));
 }
 
@@ -466,7 +478,7 @@ std::string FloatxStr(float v,const char* fmt){
 //==============================================================================
 std::string Float3Str(const tfloat3 &v,const char* fmt){
   char cad[1024];
-  sprintf(cad,fmt,v.x,v.y,v.z);
+  snprintf(cad,sizeof(cad),fmt,v.x,v.y,v.z);
   return(std::string(cad));
 }
 
@@ -475,7 +487,7 @@ std::string Float3Str(const tfloat3 &v,const char* fmt){
 //==============================================================================
 std::string DoubleStr(double v,const char* fmt){
   char cad[512];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(std::string(cad));
 }
 
@@ -484,7 +496,7 @@ std::string DoubleStr(double v,const char* fmt){
 //==============================================================================
 std::string DoublexStr(double v,const char* fmt){
   char cad[512];
-  sprintf(cad,fmt,v);
+  snprintf(cad,sizeof(cad),fmt,v);
   return(v==-DBL_MAX? std::string("MIN"): (v==DBL_MAX? std::string("MAX"): std::string(cad)));
 }
 
@@ -493,7 +505,7 @@ std::string DoublexStr(double v,const char* fmt){
 //==============================================================================
 std::string Double3Str(const tdouble3 &v,const char* fmt){
   char cad[2048];
-  sprintf(cad,fmt,v.x,v.y,v.z);
+  snprintf(cad,sizeof(cad),fmt,v.x,v.y,v.z);
   return(std::string(cad));
 }
 
@@ -502,7 +514,7 @@ std::string Double3Str(const tdouble3 &v,const char* fmt){
 //==============================================================================
 std::string Double4Str(const tdouble4 &v,const char* fmt){
   char cad[2048];
-  sprintf(cad,fmt,v.x,v.y,v.z,v.w);
+  snprintf(cad,sizeof(cad),fmt,v.x,v.y,v.z,v.w);
   return(std::string(cad));
 }
 
@@ -1305,12 +1317,12 @@ std::string VarStr(const std::string &name,bool value){
 }
 std::string VarStr(const std::string &name,int value){
   char cad[30];
-  sprintf(cad,"=%d",value);
+  snprintf(cad,sizeof(cad),"=%d",value);
   return(name+cad);
 }
 std::string VarStr(const std::string &name,unsigned value){
   char cad[30];
-  sprintf(cad,"=%u",value);
+  snprintf(cad,sizeof(cad),"=%u",value);
   return(name+cad);
 }
 std::string VarStr(const std::string &name,unsigned n,const int *values,std::string size){
@@ -1649,7 +1661,7 @@ std::string FileNameSec(std::string fname,unsigned fnumber){
   if(!fext.empty())fname=fname.substr(0,fname.size()-fext.size()-1);
   if(fnumber!=UINT_MAX){
     char cad[64];
-    sprintf(cad,"_%04d.",fnumber);
+    snprintf(cad,sizeof(cad),"_%04d.",fnumber);
     fname=fname+cad;
   }
   else fname=fname+"_????.";

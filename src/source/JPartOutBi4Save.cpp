@@ -103,10 +103,10 @@ std::string JPartOutBi4Save::GetFileNamePart(unsigned block,unsigned piece,unsig
   string fname="PartOut";
   char cad[32];
   if(npiece>1){
-    sprintf(cad,"_p%02d",piece);
+    snprintf(cad,sizeof(cad),"_p%02d",piece);
     fname=fname+cad;
   }
-  sprintf(cad,"_%03u.obi4",block);
+  snprintf(cad,sizeof(cad),"_%03u.obi4",block);
   return(fname+cad);
 }
 
@@ -173,7 +173,7 @@ void JPartOutBi4Save::SaveInitial(){
 //==============================================================================
 std::string JPartOutBi4Save::GetNamePart(unsigned cpart){
   char cad[64];
-  sprintf(cad,"PART_%04u",cpart);
+  snprintf(cad,sizeof(cad),"PART_%04u",cpart);
   return(cad);
 }
 

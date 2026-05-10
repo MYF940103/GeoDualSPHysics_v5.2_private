@@ -138,14 +138,20 @@ void JLog2::Printf(const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)Print(buffer);
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)Print(buff2);
       delete[] buff2;
     }
@@ -162,14 +168,20 @@ void JLog2::PrintfDbg(const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)Print(buffer,Out_Default,true);
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)Print(buff2,Out_Default,true);
       delete[] buff2;
     }
@@ -194,14 +206,20 @@ void JLog2::Printfp(const std::string &prefix,const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)Printp(prefix,buffer);
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)Printp(prefix,buff2);
       delete[] buff2;
     }
@@ -218,14 +236,20 @@ void JLog2::PrintfpDbg(const std::string &prefix,const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)Printp(prefix,buffer,JLog2::Out_Default,true);
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)Printp(prefix,buff2,JLog2::Out_Default,true);
       delete[] buff2;
     }
@@ -258,14 +282,20 @@ void JLog2::PrintfWarning(const char *format,...){
   char buffer[SIZE+1];
   va_list args;
   va_start(args,format);
-  int size=vsnprintf(buffer,SIZE,format,args);
+  va_list argscopy;
+  va_copy(argscopy,args);
+  int size=vsnprintf(buffer,SIZE,format,argscopy);
+  va_end(argscopy);
   if(size>=0 && size<SIZE)PrintWarning(buffer);
   else{
     int rsize=-1;
     int size2=SIZE+SIZE*2;
     for(int c=0;c<10 && rsize<0;c++,size2+=SIZE*2){
       char *buff2=new char[size2+1];
-      rsize=vsnprintf(buff2,size2,format,args);
+      va_list argswrite;
+      va_copy(argswrite,args);
+      rsize=vsnprintf(buff2,size2,format,argswrite);
+      va_end(argswrite);
       if(rsize>=0)PrintWarning(buff2);
       delete[] buff2;
     }
