@@ -4,7 +4,7 @@ Date: 2026-05-11
 
 ## Current Commit
 
-`95b4a84` - `Add final CPU before GPU report`
+`0d9e726` - `Update pre-GPU readiness gate`
 
 ## Working Tree Summary
 
@@ -81,3 +81,28 @@ Conclusion:
 - The CPU production interface cleanup is complete.
 - GPU planning must not include source-side `TopLoad*` or
   `PorePressureAccelSymCorr`.
+
+## Phase 6 Build / Smoke Sanity
+
+CPU Debug rebuild:
+
+- Command: `msbuild .\src\VS\DualSPHysics5ReCpu_vs2022.sln /m /t:Build /p:Configuration=DebugCPU /p:Platform=x64 /v:minimal`
+- Result: success.
+- Executable refreshed: `bin/windows/DualSPHysics5.2CPU_win64_debug.exe`.
+
+Short smoke attempt:
+
+- Attempted the requested final sanity set: 01 pressure-only micro smoke, 02
+  Scenario 1 Stage A/B restart smoke, and 02 Scenario 2 micro smoke.
+- The run exceeded the allowed short-smoke budget and timed out after about
+  30 minutes (`1804 s` command timeout).
+- The running CPU Debug process was stopped and the `_autopregpu_smoke`
+  generated output folders were removed.
+
+Conclusion:
+
+- The build sanity is valid.
+- The smoke sanity is recorded as deferred due to runtime, not accepted as a
+  completed short smoke result.
+- This reinforces the current conservative gate: do not enter GPU coding from
+  this automation run.

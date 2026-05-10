@@ -67,6 +67,21 @@ strict paper reproduction:
 | 05 retrogressive slope | reduced smoke exists | not strict; sensitive clay/initial-state/GPU blocked. |
 | 06 Sainte-Monique | placeholder smoke exists | not strict; data/material/GPU blocked. |
 
+## Final Build / Smoke Sanity
+
+CPU Debug rebuild was executed on 2026-05-11 and completed successfully.
+
+The final short smoke sanity set was attempted, but it exceeded the allowed
+automation runtime budget and was stopped after about 30 minutes. The generated
+temporary `_autopregpu_smoke` output folders were removed. Because the smoke
+run did not finish within the short-test budget, no new smoke result is accepted
+from this phase.
+
+This is not treated as a physics regression by itself; it is treated as a
+pre-GPU automation blocker for declaring the current branch ready. Future smoke
+checks should use intentionally smaller restart/micro templates before any GPU
+work is started.
+
 ## Final Readiness Judgment
 
 GPU G1 passive `PorePressg` is technically well scoped in `gpu_port_plan.md`, but
@@ -80,4 +95,3 @@ Next recommended CPU tasks:
 3. add Cryer center-pressure and triaxial stress-path postprocessing;
 4. decide which strict slope/field material-model blockers are explicitly
    deferred.
-
