@@ -45,7 +45,7 @@ with missing features documented.
 | 04 Undrained triaxial scaffold/smoke | Scaffold exists, smoke not done | Does not block PR core G1 | Define loading/confinement gaps; do not force runnable XML before boundary/control design. |
 | 05 Retrogressive slope scaffold/smoke | Scaffold exists, TODO only | Does not block PR core G1 | Keep scaffold-only; GPU and material-model decisions are needed before meaningful runs. |
 | 06 Sainte-Monique scaffold/smoke | Scaffold exists, TODO only | Does not block PR core G1 | Keep scaffold-only; full field case is post-GPU and post-material-model. |
-| `TopLoad*` cleanup/deprecation | Source-side path should be removed or verified removed | Should be resolved before GPU G1 | Formal external-load path is native `AccInput`; verify no formal XML depends on source `TopLoad*`, then commit cleanup. |
+| `TopLoad*` cleanup/deprecation | Source-side path removed in CPU-F6a | Complete before GPU G1 | Formal external-load path is native `AccInput`; formal XML no longer depends on source `TopLoad*`. Archived experiments are historical only. |
 | Boundary ghost production decision | Diagnostic result is negative for simple ghost Laplacian | Must be documented before GPU boundary kernels | Keep current layer corrections as production baseline for G1-G4; defer proper MLS/mirror design. |
 | Corrected-gradient production decision | Diagnostic result is negative/neutral | Must be documented before GPU PR kernels | Keep current uncorrected PR operators for G1-G4; corrected diagnostics remain CPU-only. |
 | Case smoke matrix | Not complete | Case-readiness gate before GPU coding | Fill the matrix below with short CPU smoke results or explicit TODO status. |
@@ -123,7 +123,7 @@ starting CUDA implementation.
 | Scenario 1 route | Complete at smoke level through staged restart and/or `BodyGravityStopTime`; formalize the XML/BAT and record status. |
 | Case scaffold/smoke matrix | Not complete. 01 and 02 are runnable; 03-06 are TODO scaffolds and need status recorded. |
 | Failed diagnostic cleanup | `PorePressureAccelSymCorr` removed; keep `PorePressureAccel` only as optional symmetric compatibility diagnostic. |
-| Deprecated source loading cleanup | Source-side `TopLoad*` should be removed/verified removed; formal external-load path is `AccInput`. |
+| Deprecated source loading cleanup | Complete: source-side `TopLoad*` and `ApplyTopLoad()` removed; formal external-load path is `AccInput`. |
 | Boundary ghost production decision | Simple ghost Laplacian remains diagnostic-only; production stays material-only + layer correction for G1-G4. |
 | Corrected-gradient production decision | Corrected diagnostics remain CPU-only; G1-G4 ports current uncorrected PR operators. |
 | Common utility stability | Common formatting fix should be committed separately from hydromech physics changes. |
@@ -158,7 +158,7 @@ Before new feature work:
    - boundary ghost diagnostics;
    - corrected-gradient PR diagnostics;
    - common formatting / `snprintf` fix;
-   - `TopLoad*` cleanup if already performed.
+   - `TopLoad*` cleanup.
 2. Check `git status --short`.
 3. Keep source cleanup commits separate from case scaffold commits where possible.
 
@@ -226,15 +226,16 @@ Scaffold-only status is explicit.
 No accidental long CPU runs.
 ```
 
-### F. Finish `TopLoad*` cleanup verification
+### F. Verify `TopLoad*` cleanup
 
 Actions:
 
-1. Verify no formal XML under `examples/u-pw` depends on source-side
+1. Confirm no formal XML under `examples/u-pw` depends on source-side
    `TopLoad*`.
 2. Keep archived experiments as history, or update only the specific AccInput
    smoke template if it must remain runnable.
-3. Document that formal external loading uses native `AccInput`.
+3. Keep the documented result: formal external loading uses native `AccInput`
+   or a future traction/loading-plate design.
 
 Exit standard:
 
@@ -269,7 +270,7 @@ The next productive work is a case-readiness pass:
 1. Commit/organize the current CPU functionality and utility fixes.
 2. Formalize `02_SelfWeight_Consolidation` smoke templates and notes.
 3. Confirm `03-06` are clean TODO scaffolds with missing-feature lists.
-4. Finish `TopLoad*` cleanup verification.
+4. Keep `TopLoad*` cleanup marked complete; do not port it to GPU.
 5. Update the smoke matrix status.
 
 After that, GPU G1 can start from a cleaner target: the current uncorrected

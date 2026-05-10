@@ -217,11 +217,6 @@ void JSph::InitVars(){
   HydraulicGravity=TFloat3(0);
   BodyGravityStopTime=0.;
   BodyGravityStoppedLogged=false;
-  TopLoadEnabled=false;
-  TopLoad=0.f;
-  TopLoadThickness=0.f;
-  TopLoadRampStart=0.;
-  TopLoadRampEnd=0.;
   PorePressureTopDrainedStartTime=0.;
   HydromechDamping=false;
   HydromechDampingXi=0.f;
@@ -786,15 +781,6 @@ void JSph::LoadConfigParameters(const JXml *xml){
   HydraulicGravity.y=eparms.GetValueFloat("HydraulicGravityY",true,0.f);
   HydraulicGravity.z=eparms.GetValueFloat("HydraulicGravityZ",true,0.f);
   BodyGravityStopTime=eparms.GetValueDouble("BodyGravityStopTime",true,0.);
-  switch(eparms.GetValueInt("TopLoadEnabled",true,0)){
-    case 0:  TopLoadEnabled=false;  break;
-    case 1:  TopLoadEnabled=true;   break;
-    default: Run_Exceptioon("TopLoadEnabled mode is not valid.");
-  }
-  TopLoad=eparms.GetValueFloat("TopLoad",true,0.f);
-  TopLoadThickness=eparms.GetValueFloat("TopLoadThickness",true,0.f);
-  TopLoadRampStart=eparms.GetValueDouble("TopLoadRampStart",true,0.);
-  TopLoadRampEnd=eparms.GetValueDouble("TopLoadRampEnd",true,0.);
   switch(eparms.GetValueInt("HydromechDamping",true,0)){
     case 0:  HydromechDamping=false;  break;
     case 1:  HydromechDamping=true;   break;
@@ -813,7 +799,6 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
-  if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
   if(HydromechDampingXi<0.f)Run_Exceptioon("HydromechDampingXi must be greater than or equal to zero.");
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
   if(HydromechDampingXi>0.f && HydromechDampingCoef>0.f)Run_Exceptioon("Use either HydromechDampingXi or HydromechDampingCoef, not both.");
@@ -821,7 +806,6 @@ void JSph::LoadConfigParameters(const JXml *xml){
     const bool needsg=((HydraulicConductivityParamDefined && HydraulicConductivity>0.f) || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
     if(needsg && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for the enabled hydromechanical features. Set body Gravity or HydraulicGravityX/Y/Z.");
   }
-  if(TopLoadEnabled && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for TopLoad. Set body Gravity or HydraulicGravityX/Y/Z.");
   //-Boundary configuration.
   switch(eparms.GetValueInt("Boundary",true,1)){
     case 1:  TBoundary=BC_DBC;      break;
@@ -1785,15 +1769,6 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  HydromechDampingEndTime",HydromechDampingEndTime));
     }
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("Hydromech(PP%d)",PorePressureModel);
-  }
-  Log->Print(fun::VarStr("TopLoadEnabled",TopLoadEnabled));
-  if(TopLoadEnabled){
-    Log->Print(fun::VarStr("  TopLoad",TopLoad));
-    Log->Print(fun::VarStr("  TopLoadThickness",TopLoadThickness));
-    Log->Print(fun::VarStr("  TopLoadRampStart",TopLoadRampStart));
-    Log->Print(fun::VarStr("  TopLoadRampEnd",TopLoadRampEnd));
-    Log->Print(fun::VarStr("  TopLoadDirection","positive along -HydraulicGravityUnit"));
-    ConfigInfo=ConfigInfo+sep+"TopLoad";
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));

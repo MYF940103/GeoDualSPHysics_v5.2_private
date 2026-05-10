@@ -228,11 +228,6 @@ protected:
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
   double BodyGravityStopTime;   ///<Time to stop mechanical body gravity. <=0: body gravity remains active.
   bool BodyGravityStoppedLogged; ///<True when mechanical body gravity stop has been reported.
-  bool TopLoadEnabled;          ///<Enable top uniform load. 0:off, 1:on (default=0).
-  float TopLoad;                ///<Uniform vertical load applied to top material layer [Pa].
-  float TopLoadThickness;       ///<Top loaded layer thickness. If <=0, KernelH is used.
-  double TopLoadRampStart;      ///<Start time of top load ramp [s].
-  double TopLoadRampEnd;        ///<End time of top load ramp [s]. If <= start, load is applied immediately.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.
   float HydromechDampingXi;     ///<Dimensionless damping coefficient xi. If >0, c_d=xi*sqrt(E/(rho0*h^2)).

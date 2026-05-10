@@ -193,7 +193,6 @@ protected:
   bool PorePressureShepardStepPrint; ///<True when pore-pressure Shepard regularization stats have been printed.
   bool PorePressureBoundaryGhostPrint; ///<True when pore-pressure boundary ghost diagnostic stats have been printed.
   bool HydroCorrDiagPrint;       ///<True when corrected-gradient diagnostic stats have been printed.
-  bool TopLoadStepPrint;          ///<True when top load application stats have been printed.
   bool HydromechDampingStepPrint; ///<True when hydromechanical damping activation has been printed.
 
   //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
@@ -341,7 +340,6 @@ protected:
   void ComputeHydroLapZGhost(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
     ,const float *porepressureboundarymode,float *lapzghost)const;
-  unsigned ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,const char *stage,bool printlog)const;
   unsigned ApplyHydromechDamping(unsigned n,unsigned pini,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,bool printlog)const;
 
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2

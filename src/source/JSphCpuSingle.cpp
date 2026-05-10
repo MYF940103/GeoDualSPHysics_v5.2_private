@@ -835,10 +835,6 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
     if(PorePressureFeedbackOperator==0 && PorePressureAcec)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,PorePressureAcec,PorePressureAceDiffc,Acec);
     else if(PorePressureFeedbackOperator==1 && PorePressureAceDiffc)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,PorePressureAcec,PorePressureAceDiffc,Acec);
   }
-  if(TopLoadEnabled && Acec){
-    ApplyTopLoad(Np-Npb,Npb,Posc,Velrhopc,Codec,Acec,"interaction",!TopLoadStepPrint);
-    TopLoadStepPrint=true;
-  }
   if(HydromechDamping && Acec){
     if(ApplyHydromechDamping(Np-Npb,Npb,Velrhopc,Codec,Acec,!HydromechDampingStepPrint))
       HydromechDampingStepPrint=true;

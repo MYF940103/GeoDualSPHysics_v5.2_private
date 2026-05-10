@@ -114,10 +114,9 @@ For Supporting Information self-weight Scenario 1, use `BodyGravityStopTime` to 
 
 ### External-Load AccInput Experimental Path
 
-For external-load Terzaghi experiments, prefer native DualSPHysics `accinput` applied to a dedicated top-layer `mkfluid` group. Keep the deprecated source-level top-load path disabled:
+For external-load Terzaghi experiments, use native DualSPHysics `accinput` applied to a dedicated top-layer `mkfluid` group. The former source-level `TopLoad*` path has been removed, so external loading should be defined entirely through XML `accinput` histories and `mkfluid` selection:
 
 ```xml
-<parameter key="TopLoadEnabled" value="0" />
 <parameter key="PorePressureFeedback" value="1" />
 <parameter key="PorePressureFeedbackMode" value="1" />
 <parameter key="PorePressureFeedbackOperator" value="1" />
@@ -315,11 +314,11 @@ PorePressureAccelDiff
 
 `PorePressureAccel` can remain as a comparison diagnostic. `PorePressureAccelDiff` is the recommended production feedback diagnostic for Terzaghi/self-weight cases.
 
-## 7. Deprecated / Temporary Parameters And Interfaces
+## 7. Removed / Temporary Parameters And Interfaces
 
-### TopLoad Parameters
+### Removed Source-Side TopLoad Parameters
 
-Deprecated:
+Removed in CPU-F6a:
 
 ```text
 TopLoadEnabled
@@ -329,7 +328,7 @@ TopLoadRampStart
 TopLoadRampEnd
 ```
 
-Current behavior:
+Historical behavior:
 
 ```text
 a_load = TopLoad / (rho * top_load_thickness)
@@ -337,18 +336,17 @@ a_load = TopLoad / (rho * top_load_thickness)
 
 applied as a body-acceleration equivalent to the top material layer.
 
-Reason for deprecation:
+Reason for removal:
 
 - It duplicates functionality available through native DualSPHysics `accinput`.
 - It is sensitive to layer selection and can inject strong local momentum.
 - It is not the preferred route for reproducing external-load Terzaghi tests.
 
-Recommended transition:
+Current external-load path:
 
-1. Keep source code temporarily for historical comparison.
-2. Set `TopLoadEnabled=0` in all formal cases.
-3. Use `accinput` with a dedicated top-layer `mkfluid` for external-load experiments.
-4. Remove TopLoad source code in a dedicated cleanup commit after AccInput templates are stable.
+```text
+Use native DualSPHysics accinput with a dedicated top-layer mkfluid group.
+```
 
 ### Removed `PorePressureAccelSymCorr`
 
@@ -522,7 +520,6 @@ Recommended cleanup order:
 2. Convert `PorePressureModel=2` to a hard error.
 3. Continue SW-2c self-weight refinement.
 4. Removed `PorePressureAccelSymCorr` and `PorePressureAceSymCorrc` in CPU-F1a.
-5. Mark source-level `TopLoad*` as deprecated in formal documentation.
-6. Once AccInput templates are stable, remove source-level `TopLoad*` and `ApplyTopLoad()` in a dedicated commit.
+5. Removed source-level `TopLoad*` and `ApplyTopLoad()` in CPU-F6a.
 
 Do not combine cleanup of TopLoad, SymCorr, and PPE placeholder into one patch.

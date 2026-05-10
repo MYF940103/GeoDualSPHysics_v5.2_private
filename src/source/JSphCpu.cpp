@@ -109,7 +109,6 @@ void JSphCpu::InitVars(){
   PorePressureShepardStepPrint=false;
   PorePressureBoundaryGhostPrint=false;
   HydroCorrDiagPrint=false;
-  TopLoadStepPrint=false;
   HydromechDampingStepPrint=false;
   RidpMove=NULL; 
   FtRidp=NULL;
@@ -2677,77 +2676,6 @@ unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,cons
     Log->Print("Pore-pressure boundary ghost diagnostics are output-only and are not used by PR rate, feedback, Shepard, or boundary corrections.");
   }
   return(countdrained+countnoflux);
-}
-
-//==============================================================================
-/// Applies a layer-equivalent uniform load to the top material layer.
-//==============================================================================
-unsigned JSphCpu::ApplyTopLoad(unsigned n,unsigned pini,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,tfloat3 *ace,const char *stage,bool printlog)const
-{
-  if(!TopLoadEnabled || !ace)return(0);
-  if(!pos || !velrhop || !code)Run_Exceptioon("Pointers without data for top load.");
-  double rampfactor=1.;
-  if(TopLoadRampEnd>TopLoadRampStart){
-    if(TimeStep<TopLoadRampStart)rampfactor=0.;
-    else if(TimeStep>=TopLoadRampEnd)rampfactor=1.;
-    else rampfactor=(TimeStep-TopLoadRampStart)/(TopLoadRampEnd-TopLoadRampStart);
-  }
-  const double topload=double(TopLoad)*rampfactor;
-  const double gmag=GetHydraulicGmag();
-  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for TopLoad.");
-  const double loadthick=(TopLoadThickness>0.f? double(TopLoadThickness): double(KernelH));
-  if(loadthick<=0.)Run_Exceptioon("TopLoad thickness must be greater than zero.");
-  const tfloat3 hg=GetHydraulicGravity();
-  const double upx=-double(hg.x)/gmag;
-  const double upy=-double(hg.y)/gmag;
-  const double upz=-double(hg.z)/gmag;
-  unsigned npmat=0;
-  double zmax=-DBL_MAX;
-  for(unsigned cp=0;cp<n;cp++){
-    const unsigned p=pini+cp;
-    if(CODE_IsFluid(code[p])){
-      npmat++;
-      const double z=GetHydraulicElevation(pos[p]);
-      zmax=max(zmax,z);
-    }
-  }
-  if(!npmat){
-    if(printlog)Log->PrintWarning("TopLoad found no material particles.");
-    return(0);
-  }
-  const double zthreshold=zmax-loadthick;
-  unsigned affected=0;
-  double amin=DBL_MAX,amax=0.;
-  for(int cp=0;cp<int(n);cp++){
-    const unsigned p=pini+unsigned(cp);
-    if(CODE_IsFluid(code[p])){
-      const double z=GetHydraulicElevation(pos[p]);
-      if(z>=zthreshold){
-        const double rho=double(velrhop[p].w);
-        if(rho>0.){
-          const double aload=topload/(rho*loadthick);
-          const double ax=aload*upx;
-          const double ay=aload*upy;
-          const double az=aload*upz;
-          ace[p].x+=float(ax);
-          ace[p].y+=float(ay);
-          ace[p].z+=float(az);
-          const double amag=sqrt(ax*ax+ay*ay+az*az);
-          amin=min(amin,amag);
-          amax=max(amax,amag);
-          affected++;
-        }
-      }
-    }
-  }
-  if(affected==0)amin=0.;
-  if(printlog){
-    const double sign=(topload>=0.? 1.: -1.);
-    const double dirx=sign*upx,diry=sign*upy,dirz=sign*upz;
-    Log->Printf("TopLoad applied on CPU (%s): TimeStep=%g, TopLoad=%g Pa, TopLoadEffective=%g Pa, ramp_factor=%g, ramp=[%g,%g] s, thickness=%g, zmax=%g, z_threshold=%g, affected=%u/%u, acceleration magnitude range=[%g,%g] m/s2, direction=(%g,%g,%g)."
-      ,(stage? stage: "unknown"),TimeStep,TopLoad,topload,rampfactor,TopLoadRampStart,TopLoadRampEnd,loadthick,zmax,zthreshold,affected,npmat,amin,amax,dirx,diry,dirz);
-  }
-  return(affected);
 }
 
 //==============================================================================
