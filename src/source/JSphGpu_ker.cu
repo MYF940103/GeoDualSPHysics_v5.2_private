@@ -3674,6 +3674,136 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
 }
 
 //------------------------------------------------------------------------------
+/// Computes difference-gradient pore-pressure feedback acceleration.
+//------------------------------------------------------------------------------
+template<TpKernel tker,bool symm>
+  __global__ void KerComputePorePressureAccelDiff(unsigned n,unsigned pinit
+  ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,double waterlevel,float waterdensity,unsigned feedbackmode,float3 *porepressureacediff)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pinit;
+    porepressureacediff[p1]=make_float3(0.f,0.f,0.f);
+    if(!CODE_IsFluid(code[p1]))return;
+
+    const bool excessmode=(feedbackmode==1);
+    const float4 pscellp1=poscell[p1];
+    const float4 velrhop1=velrhop[p1];
+    const double rhop1=double(velrhop1.w);
+    if(rhop1<=0.)return;
+    const double z1=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+    const double depth1=waterlevel-z1;
+    const double hydro1=(excessmode && depth1>0.? double(waterdensity)*hydraulicg.w*depth1: 0.);
+    const double pwp1=porepress[p1]-hydro1;
+    const bool rsymp1=(symm && PSCEL_GetPartY(__float_as_uint(pscellp1.w))==0); //<vs_syymmetry>
+
+    float3 acep1=make_float3(0.f,0.f,0.f);
+    int ini1,fin1,ini2,fin2,ini3,fin3;
+    cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+    ini3+=cellfluid; fin3+=cellfluid;
+    for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+      unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pini;p2<pfin;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float4 pscellp2=poscell[p2];
+        float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+        float dry=pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w));
+        float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+        if(rsym)dry=pscellp1.y+pscellp2.y + CTE.poscellsize*PSCEL_GetfY(pscellp2.w); //<vs_syymmetry>
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
+          const float fac=cufsph::GetKernel_Fac<tker>(rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const double rhop2=double(velrhop[p2].w);
+          if(rhop2>0.){
+            const double z2=-(posxy[p2].x*hydraulicg.x+posxy[p2].y*hydraulicg.y+posz[p2]*hydraulicg.z)/hydraulicg.w;
+            const double depth2=waterlevel-z2;
+            const double hydro2=(excessmode && depth2>0.? double(waterdensity)*hydraulicg.w*depth2: 0.);
+            const double pwp2=porepress[p2]-hydro2;
+            const double coef=-double(CTE.massf)*(pwp2-pwp1)/(rhop2*rhop1);
+            acep1.x+=float(coef*double(frx));
+            acep1.y+=float(coef*double(fry));
+            acep1.z+=float(coef*double(frz));
+          }
+          rsym=(rsymp1 && !rsym && float(pscellp1.y-dry)<=CTE.kernelsize); //<vs_syymmetry>
+          if(rsym)p2--;                                                     //<vs_syymmetry>
+        }
+        else rsym=false;                                                    //<vs_syymmetry>
+      }
+    }
+    porepressureacediff[p1]=acep1;
+  }
+}
+
+//==============================================================================
+/// Computes difference-gradient pore-pressure feedback acceleration.
+//==============================================================================
+template<TpKernel tker,bool symm> void ComputePorePressureAccelDiffT(unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,double waterlevel,float waterdensity,unsigned feedbackmode,float3 *porepressureacediff)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,bsfluid);
+    KerComputePorePressureAccelDiff<tker,symm> <<<sgrid,bsfluid>>> (n,pini,divdata.scelldiv,divdata.nc,divdata.cellzero
+      ,divdata.beginendcell,divdata.cellfluid,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,feedbackmode,porepressureacediff);
+  }
+}
+
+//==============================================================================
+/// Computes difference-gradient pore-pressure feedback acceleration.
+//==============================================================================
+void ComputePorePressureAccelDiff(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity,unsigned feedbackmode
+  ,float3 *porepressureacediff)
+{
+  const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+  if(tkernel==KERNEL_Wendland){
+    if(symmetry)ComputePorePressureAccelDiffT<KERNEL_Wendland,true >(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,feedbackmode,porepressureacediff);
+    else        ComputePorePressureAccelDiffT<KERNEL_Wendland,false>(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,feedbackmode,porepressureacediff);
+  }
+  else if(tkernel==KERNEL_Cubic){
+    if(symmetry)ComputePorePressureAccelDiffT<KERNEL_Cubic,true >(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,feedbackmode,porepressureacediff);
+    else        ComputePorePressureAccelDiffT<KERNEL_Cubic,false>(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,feedbackmode,porepressureacediff);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Adds difference-gradient pore-pressure feedback acceleration to material particles.
+//------------------------------------------------------------------------------
+__global__ void KerApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code
+  ,const float3 *porepressureacediff,float3 *ace)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    if(CODE_IsFluid(code[p1])){
+      const float3 apw=porepressureacediff[p1];
+      ace[p1].x+=apw.x;
+      ace[p1].y+=apw.y;
+      ace[p1].z+=apw.z;
+    }
+  }
+}
+
+//==============================================================================
+/// Adds difference-gradient pore-pressure feedback acceleration to material particles.
+//==============================================================================
+void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code
+  ,const float3 *porepressureacediff,float3 *ace)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerApplyPorePressureFeedback <<<sgrid,SPHBSIZE>>> (n,pini,code,porepressureacediff,ace);
+  }
+}
+
+//------------------------------------------------------------------------------
 /// Explicitly updates material-particle pore pressure from the diagnostic rate.
 //------------------------------------------------------------------------------
 __global__ void KerUpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
@@ -4179,6 +4309,30 @@ void PeriodicDuplicateFloat(unsigned n,unsigned pini,const unsigned *listp,float
   if(n && data){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
     KerPeriodicDuplicateFloat <<<sgrid,SPHBSIZE>>> (n,pini,listp,data);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Duplicates a float3 particle array for periodic particles.
+//------------------------------------------------------------------------------
+__global__ void KerPeriodicDuplicateFloat3(unsigned n,unsigned pini,const unsigned *listp,float3 *data)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned pnew=p+pini;
+    const unsigned pcopy=(listp[p]&0x7FFFFFFF);
+    data[pnew]=data[pcopy];
+  }
+}
+
+//==============================================================================
+/// Duplicates a float3 particle array for periodic particles.
+//==============================================================================
+void PeriodicDuplicateFloat3(unsigned n,unsigned pini,const unsigned *listp,float3 *data)
+{
+  if(n && data){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerPeriodicDuplicateFloat3 <<<sgrid,SPHBSIZE>>> (n,pini,listp,data);
   }
 }
 

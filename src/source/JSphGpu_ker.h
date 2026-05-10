@@ -305,6 +305,7 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
 void PeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,double *data);
 void PeriodicDuplicateFloat(unsigned n,unsigned pini,const unsigned *listp,float *data);
+void PeriodicDuplicateFloat3(unsigned n,unsigned pini,const unsigned *listp,float3 *data);
 
 //-GPU pore-pressure diagnostics.
 void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
@@ -315,6 +316,13 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
   ,float *divvel,float *lapporepress,float *lapz,float *porepressrate);
 void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
   ,double *porepress,const float *porepressrate);
+void ComputePorePressureAccelDiff(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity,unsigned feedbackmode
+  ,float3 *porepressureacediff);
+void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code
+  ,const float3 *porepressureacediff,float3 *ace);
 void PreparePorePressureBoundaryElevations(unsigned n,unsigned pini,const typecode *code
   ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
   ,float *zmax,float *negzmin);

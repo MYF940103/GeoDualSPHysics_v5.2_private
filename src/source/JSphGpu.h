@@ -147,6 +147,7 @@ protected:
   float *DivVelg;        ///<GPU skeleton velocity divergence diagnostic.
   float *LapPorePressg;  ///<GPU pore-pressure Laplacian diagnostic.
   float *LapZg;          ///<GPU hydraulic elevation Laplacian diagnostic.
+  float3 *PorePressureAceDiffg; ///<GPU difference-gradient pore-pressure feedback acceleration.
   double PorePressureDt;        ///<Pore-pressure stability timestep for GPU PR prototype.
   bool PorePressureDtActive;    ///<True when pore-pressure timestep restriction is active.
   bool PorePressureDtConfigPrint; ///<True when pore-pressure timestep configuration has been printed.
@@ -227,6 +228,8 @@ protected:
   void InitPorePressureGpu(unsigned n);
   void InitPorePressureDiagnosticsGpu(unsigned n);
   void ComputeHydroPrDiagnosticsGpu();
+  void ComputePorePressureAccelDiffGpu();
+  void ApplyPorePressureFeedbackGpu();
   void UpdatePorePressureGpu(double dt);
   unsigned ApplyPorePressureTopDrainedGpu(double timestep,const char *stage,bool printlog);
   unsigned ApplyPorePressureBottomNoFluxGpu(const char *stage,bool printlog);
@@ -246,6 +249,7 @@ protected:
   tsymatrix3f* SaveArrayGpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayGpu<tsymatrix3f>(np,datasrc)); }
   double* SaveNormalArrayGpu(unsigned npsave,const double *datasrc)const;
   float*  SaveNormalArrayGpu(unsigned npsave,const float  *datasrc)const;
+  tfloat3* SaveNormalArrayGpu(unsigned npsave,const float3 *datasrc)const;
   template<class T> void TRestoreArrayGpu(unsigned np,T *data,T *datanew)const;
   void RestoreArrayGpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayGpu<word>       (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,unsigned    *data,unsigned    *datanew)const{ TRestoreArrayGpu<unsigned>   (np,data,datanew); }

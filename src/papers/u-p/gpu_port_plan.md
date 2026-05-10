@@ -471,3 +471,40 @@ hydromechanical damping, boundary ghost production operators, softening, or
 long-time reproduction runs.
 
 G5 may start only as a separately scoped feedback phase.
+
+## G5 Difference-Gradient Feedback Status, 2026-05-11
+
+Implemented in G5:
+
+- GPU array `PorePressureAceDiffg` with allocation, release, resize, sorting,
+  and periodic duplicate handling.
+- GPU material-material difference-gradient feedback diagnostic:
+  `a_pw = -grad(p_feedback)/rho`, where `p_feedback` is total pressure for
+  mode `0` and excess pressure for mode `1`.
+- GPU feedback application for `PorePressureFeedback=1` and
+  `PorePressureFeedbackOperator=1` only.
+- GPU output field `PorePressureAccelDiff`.
+- Smoke templates and summary script in
+  `examples/u-pw/01_1D_Consolidation/experiments/GPU_G5_Feedback/`.
+
+Validation summary:
+
+- GPU Debug build passed. A Debug hydro smoke wrote `code=0` but the executable
+  did not exit cleanly, matching the earlier Debug-run behavior observed in G2.
+  GPU Release was used for the final smoke validation.
+- GPU Release hydrostatic, uniform-excess, and nonuniform-excess smokes all
+  completed with `code=0`, `excluded=0`, `steps=21`.
+- Hydrostatic and uniform-excess smokes gave
+  `PorePressureAccelDiff` max magnitude about `4.01e-7 m/s2`.
+- The nonuniform-excess smoke gave a nonzero feedback acceleration with max
+  magnitude about `1.41 m/s2`.
+- CPU/GPU final-frame `PorePressureAccelDiff` max-magnitude difference was
+  about `4.86e-7 m/s2` for hydrostatic/uniform excess and `1.70e-2 m/s2` for
+  the nonuniform excess smoke.
+
+G5 does not include GPU Shepard regularization, hydromechanical damping,
+boundary ghost production operators, corrected-gradient feedback, symmetric
+operator `0`, softening, or long coupled runs.
+
+G6 may start only as a separately scoped Shepard/damping phase if explicitly
+requested.

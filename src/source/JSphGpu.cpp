@@ -144,6 +144,7 @@ void JSphGpu::InitVars(){
   Sigmag=NULL; Kplasticg=NULL;//ruofeng
   PorePressg=NULL;
   PorePressRateg=NULL; DivVelg=NULL; LapPorePressg=NULL; LapZg=NULL;
+  PorePressureAceDiffg=NULL;
   PorePressureDt=DBL_MAX;
   PorePressureDtActive=false;
   PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
@@ -333,6 +334,7 @@ void JSphGpu::FreeGpuMemoryParticles(){
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL; PorePressg=NULL;
   PorePressRateg=NULL; DivVelg=NULL; LapPorePressg=NULL; LapZg=NULL;
+  PorePressureAceDiffg=NULL;
   VelrhopM1g=NULL; SigmaM1g=NULL;
   PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; SigmaPreg=NULL;
   SpsTaug=NULL; BoundNormalg=NULL; MotionVelg=NULL;
@@ -368,6 +370,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   if(HydromechCoupling || SavePorePressure){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,2);//-porepress + sort buffer
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,8);//-PR diagnostic arrays + sort buffers
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-PorePressureAceDiff + sort buffer
   }
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
@@ -432,6 +435,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   float* divvel = SaveArrayGpu(Np, DivVelg);
   float* lapporepress = SaveArrayGpu(Np, LapPorePressg);
   float* lapz = SaveArrayGpu(Np, LapZg);
+  float3* porepressureacediff = SaveArrayGpu(Np, PorePressureAceDiffg);
   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -458,6 +462,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(DivVelg);
   ArraysGpu->Free(LapPorePressg);
   ArraysGpu->Free(LapZg);
+  ArraysGpu->Free(PorePressureAceDiffg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -488,6 +493,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(divvel)        DivVelg = ArraysGpu->ReserveFloat();
   if(lapporepress)  LapPorePressg = ArraysGpu->ReserveFloat();
   if(lapz)          LapZg = ArraysGpu->ReserveFloat();
+  if(porepressureacediff) PorePressureAceDiffg = ArraysGpu->ReserveFloat3();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
   // 
@@ -514,6 +520,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,divvel,DivVelg);
   RestoreArrayGpu(Np,lapporepress,LapPorePressg);
   RestoreArrayGpu(Np,lapz,LapZg);
+  RestoreArrayGpu(Np,porepressureacediff,PorePressureAceDiffg);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
@@ -605,6 +612,34 @@ float* JSphGpu::SaveNormalArrayGpu(unsigned npsave,const float *datasrc)const{
 }
 
 //==============================================================================
+/// Saves a GPU float3 array in CPU memory, removing periodic particles when needed.
+//==============================================================================
+tfloat3* JSphGpu::SaveNormalArrayGpu(unsigned npsave,const float3 *datasrc)const{
+  tfloat3 *out=NULL;
+  if(datasrc){
+    float3 *all=SaveArrayGpu(Np,datasrc);
+    out=new tfloat3[npsave];
+    if(PeriActive){
+      typecode *codeall=SaveArrayGpu(Np,Codeg);
+      unsigned q=0;
+      for(unsigned p=0;p<Np;p++)if(CODE_IsNormal(codeall[p])){
+        if(q<npsave)out[q]=TFloat3(all[p].x,all[p].y,all[p].z);
+        q++;
+      }
+      delete[] codeall;
+      if(q!=npsave){
+        delete[] all;
+        delete[] out;
+        Run_Exceptioon("The number of normal float3 particles is invalid.");
+      }
+    }
+    else for(unsigned p=0;p<npsave;p++)out[p]=TFloat3(all[p].x,all[p].y,all[p].z);
+    delete[] all;
+  }
+  return(out);
+}
+
+//==============================================================================
 /// Arrays for basic particle data.
 /// Arrays para datos basicos de las particulas. 
 //==============================================================================
@@ -625,6 +660,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
     DivVelg=ArraysGpu->ReserveFloat();
     LapPorePressg=ArraysGpu->ReserveFloat();
     LapZg=ArraysGpu->ReserveFloat();
+    PorePressureAceDiffg=ArraysGpu->ReserveFloat3();
   }
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
   SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
@@ -748,7 +784,7 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
       if(PorePressureBottomNoFlux)ApplyPorePressureBottomNoFluxGpu("initialization",true);
     }
   }
-  if(PorePressRateg || DivVelg || LapPorePressg || LapZg)InitPorePressureDiagnosticsGpu(n);
+  if(PorePressRateg || DivVelg || LapPorePressg || LapZg || PorePressureAceDiffg)InitPorePressureDiagnosticsGpu(n);
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
 }
@@ -823,6 +859,7 @@ void JSphGpu::InitPorePressureDiagnosticsGpu(unsigned n){
   if(DivVelg)cudaMemset(DivVelg,0,sizeof(float)*n);
   if(LapPorePressg)cudaMemset(LapPorePressg,0,sizeof(float)*n);
   if(LapZg)cudaMemset(LapZg,0,sizeof(float)*n);
+  if(PorePressureAceDiffg)cudaMemset(PorePressureAceDiffg,0,sizeof(float3)*n);
 }
 
 //==============================================================================
@@ -848,6 +885,39 @@ void JSphGpu::ComputeHydroPrDiagnosticsGpu(){
     ,hg.x,hg.y,hg.z,gmag,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity
     ,DivVelg,LapPorePressg,LapZg,PorePressRateg);
   Check_CudaErroor("Failed computing GPU PR pore-pressure diagnostics.");
+}
+
+//==============================================================================
+/// Computes GPU difference-gradient pore-pressure feedback acceleration.
+//==============================================================================
+void JSphGpu::ComputePorePressureAccelDiffGpu(){
+  if(!HydromechCoupling || PorePressureModel!=1)return;
+  if(!PorePressg || !PorePressureAceDiffg)return;
+  if(!Np || !DivData.beginendcell)return;
+  if(PorePressureFeedbackMode!=0 && PorePressureFeedbackMode!=1)
+    Run_Exceptioon("PorePressureFeedbackMode is not valid for GPU pore-pressure feedback.");
+  const float waterdensity=SoilCte.WaterDensity;
+  if(waterdensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU pore-pressure feedback.");
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU pore-pressure feedback.");
+  const tfloat3 hg=GetHydraulicGravity();
+  const unsigned bsfluid=(BlockSizes.forcesfluid? BlockSizes.forcesfluid: SPHBSIZE);
+  cusph::ComputePorePressureAccelDiff(TKernel,Symmetry,bsfluid
+    ,Np-Npb,Npb,DivData,Dcellg,Posxyg,Poszg,PosCellg,Velrhopg,Codeg,PorePressg
+    ,hg.x,hg.y,hg.z,gmag,PorePressureWaterLevel,waterdensity,unsigned(PorePressureFeedbackMode),PorePressureAceDiffg);
+  Check_CudaErroor("Failed computing GPU difference-gradient pore-pressure feedback acceleration.");
+}
+
+//==============================================================================
+/// Adds GPU difference-gradient pore-pressure feedback acceleration to Aceg.
+//==============================================================================
+void JSphGpu::ApplyPorePressureFeedbackGpu(){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureFeedback)return;
+  if(PorePressureFeedbackOperator!=1)
+    Run_Exceptioon("GPU pore-pressure feedback currently supports PorePressureFeedbackOperator=1 only.");
+  if(!PorePressureAceDiffg)Run_Exceptioon("GPU pore-pressure feedback acceleration array is not allocated.");
+  cusph::ApplyPorePressureFeedback(Np-Npb,Npb,Codeg,PorePressureAceDiffg,Aceg);
+  Check_CudaErroor("Failed applying GPU difference-gradient pore-pressure feedback acceleration.");
 }
 
 //==============================================================================
