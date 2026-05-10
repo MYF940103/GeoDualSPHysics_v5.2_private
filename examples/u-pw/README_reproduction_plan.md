@@ -44,8 +44,8 @@ runnable or explicitly deferred with a documented reason in the CPU backlog.
 | Self-weight consolidation Scenario 2 | Generate self-weight pore pressure and keep body gravity on during drainage; total pressure should trend to hydrostatic. | Supporting Information Scenario 2. | Stable long-run line exists for xi=0.10; needs paper-compatible xi and formal comparison. |
 | Cryer problem | Coupled consolidation in a drained poroelastic sphere under uniform surface traction. | Strong coupled u-pw benchmark; Mandel-Cryer center pressure. | Reduced PR CPU smoke exists only. Strict Cryer still needs sphere/traction setup, drained curved boundary, boundary ghost/MLS, and center-pressure postprocessing. |
 | Undrained triaxial tests | Validate undrained MCC response, pore pressure, and stress path in TU-L/TU-M/TU-N tests. | Material-level coupled validation. | Reduced DP/u-pw AccInput CPU smoke exists only. Strict reproduction needs top velocity loading, lateral confinement, stress-path output, and MCC parameter/model support. |
-| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on 5 m and 8 m sensitive-clay slopes with softening. | Main hydromechanical landslide benchmark before field case. | Reduced PR wedge CPU smoke exists only. Strict retrogression needs sensitive/softening material, initial-state workflow, boundary treatment, and GPU-scale execution. |
-| Sainte-Monique landslide case | Field-scale 1994 Sainte-Monique cross-section with sensitive-clay softening. | Final application case. | Reduced placeholder CPU smoke exists only. Validated field case remains topography/material/calibration/GPU blocked. |
+| Retrogressive slope / landslide benchmark | Demonstrate PR formulation on 5 m and 8 m sensitive-clay slopes with softening. | Main hydromechanical landslide benchmark before field case. | Reduced PR wedge CPU smoke and reduced DP-based `Softening=1` CPU smoke exist. Strict retrogression still needs calibrated initial-state workflow, production boundary treatment, full remolding/destructuration decisions, and GPU-scale execution. |
+| Sainte-Monique landslide case | Field-scale 1994 Sainte-Monique cross-section with sensitive-clay softening. | Final application case. | Reduced placeholder CPU smoke exists and the CPU DP-based softening path is available, but validated field case remains topography/material-zoning/calibration/GPU blocked. |
 
 ## 2. Recommended Directory Layout
 
@@ -57,8 +57,8 @@ Proposed final structure under `examples/u-pw`:
 | `02_SelfWeight_Consolidation` | Formal Supporting Information Scenario 1 / Scenario 2 cases. | Create once Scenario 1 restart/gravity-switch route is defined. Could reuse assets from `01_1D_Consolidation`. |
 | `03_Cryer_Problem` | Cryer benchmark scaffold and reduced PR smoke. | Strict case still requires geometry, analytical solution notes, and boundary-pressure strategy. |
 | `04_Undrained_Triaxial` | Undrained triaxial scaffold and reduced AccInput smoke. | Strict case still needs loading/control boundary design, confinement, and stress-path validation. |
-| `05_Retrogressive_Slope` | Idealized retrogressive slope scaffold and reduced wedge smoke. | Strict case waits for GPU port and sensitive/softening material decisions. |
-| `06_Sainte_Monique` | Sainte-Monique field scaffold and reduced placeholder smoke. | Validated field case remains data/material/GPU blocked. |
+| `05_Retrogressive_Slope` | Idealized retrogressive slope scaffold, reduced wedge smoke, and reduced CPU DP-based softening smoke. | Strict case waits for calibrated initial state, production boundary treatment, full remolding/destructuration decisions, and GPU-scale execution. |
+| `06_Sainte_Monique` | Sainte-Monique field scaffold and reduced placeholder smoke. | CPU softening path is available, but validated field case remains topography/material-zoning/calibration/GPU blocked. |
 
 `01_1D_Consolidation` can keep both pressure-only and current self-weight material for now because the files share geometry, parameters, scripts, and analysis tooling. A separate `02_SelfWeight_Consolidation` should be created when Scenario 1 and Scenario 2 become formal reproducible cases rather than diagnostics.
 
@@ -72,8 +72,8 @@ Proposed final structure under `examples/u-pw`:
 | External-load Terzaghi | Pressure-only baseline works; coupled external-load smoke tests now use native `AccInput`; the earlier source-side `TopLoad` path has been removed after proving unsuitable for formal cases. | Current route is experimental only. Need traction/loading strategy and/or better coupled stabilization. |
 | Cryer problem | Reduced PR smoke exists in `03_Cryer_Problem`; TODO XML retained. Main paper confirms drained sphere, surface traction `p0`, Poisson sweep `0.1/0.2/0.3/0.45`, material constants shared with 1D Terzaghi. | Strict sphere/traction geometry, drained curved boundary, and center-pressure postprocessing still required. |
 | Undrained triaxial | Reduced DP/u-pw AccInput smoke exists in `04_Undrained_Triaxial`; stress-path script scaffold added. Main paper confirms cylinder `0.15 m x 0.05 m`, `Delta=0.002 m`, top velocity `0.01 m/s`, lateral flexible confinement, `k=1e-8 m/s`, MCC. | Strict loading/control, confinement, validated `p'-q`, and MCC support/parameters still required. |
-| Retrogressive slope | Reduced wedge PR smoke exists in `05_Retrogressive_Slope`; TODO XML retained. Main paper confirms 5 m and 8 m sensitive-clay slopes, `Delta=0.1 m`, DP plus exponential softening, `k=1e-8 m/s`. | Strict retrogression needs sensitive/softening material, initial state, boundary treatment, and GPU. |
-| Sainte-Monique | Reduced synthetic placeholder smoke exists in `06_Sainte_Monique`; `data/README.md` records missing field data. Main paper Table 1 parameters are now available from converted text, but field topography is still missing. | Field reproduction remains data/material/calibration/GPU blocked. |
+| Retrogressive slope | Reduced wedge PR smoke and reduced DP-based `Softening=1` CPU smoke exist in `05_Retrogressive_Slope`; TODO XML retained. Main paper confirms 5 m and 8 m sensitive-clay slopes, `Delta=0.1 m`, DP plus exponential softening, `k=1e-8 m/s`. | Strict retrogression still needs calibrated initial state, production boundary treatment, GPU-scale runtime, and a decision on whether `Kplastic`-driven DP softening is enough or fuller remolding/destructuration is required. |
+| Sainte-Monique | Reduced synthetic placeholder smoke exists in `06_Sainte_Monique`; `data/README.md` records missing field data. Main paper Table 1 parameters are now available from converted text, and the CPU DP-based softening path is available, but field topography is still missing. | Field reproduction remains geometry/material-zoning/calibration/initial-state/GPU blocked. |
 
 ## 4. Missing Function Matrix
 
@@ -87,7 +87,7 @@ Proposed final structure under `examples/u-pw`:
 | AccInput-based loading | Required external-load path for targeted acceleration on a top mkfluid layer. | External-load Terzaghi, triaxial loading experiments. | XML mechanism exists and was tested, but coupled response remains stiff. |
 | Proper traction / loading plate | More physical than top-layer body acceleration for q0. | External-load Terzaghi, triaxial. | Missing. Native motion/floating/Chrono patterns may help but not designed yet. |
 | Modified Cam Clay | Needed if reproducing cases that use MCC rather than Drucker-Prager. | Triaxial and some literature comparisons if MCC is specified. | Missing. Current soil model is DP-style effective stress. |
-| Sensitive clay / strain softening | Needed for retrogressive landslide and Sainte-Monique-style remolding behavior. | Retrogressive slope, Sainte-Monique. | Existing GeoDualSPHysics may have some soil plasticity, but PR-specific sensitive clay calibration is not ready. |
+| Sensitive clay / strain softening | Needed for retrogressive landslide and Sainte-Monique-style remolding behavior. | Retrogressive slope, Sainte-Monique. | CPU reduced DP-based exponential softening is implemented and smoke-tested. It is an approximation, not full remolding/destructuration or field calibration. |
 | GPU kernels | Required for long 3D/field runs. | Cryer 3D, slopes, Sainte-Monique. | Missing for u-pw arrays/operators. CPU-only prototype. |
 | Output postprocessing | Needed for paper-style plots and metrics. | All cases. | Good start for SW3h; needs general scripts per case. |
 | Cleanup of debug interfaces | Keeps production XML/API clean. | All formal cases. | `PorePressureAccelSymCorr` and source `TopLoad*` have been removed; continue avoiding debug-only interfaces in formal cases. |
@@ -273,13 +273,15 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/05_Retrogressive_Slope`
 
-Status: reduced wedge CPU smoke exists, but strict retrogressive slope
-reproduction is not complete.
+Status: reduced wedge CPU smoke and reduced `Softening=1` CPU smoke exist, but
+strict retrogressive slope reproduction is not complete.
 
 Likely needed:
 
 - Larger geometry and long runtime; GPU required.
-- Sensitive clay / strain-softening or remolding behavior if matching the paper.
+- Full sensitive-clay remolding/destructuration if the reduced DP-based
+  `Kplastic` softening approximation is not sufficient for matching the paper.
+- Calibrated peak/residual strength and initial-state workflow.
 - Robust pore-pressure boundaries and seepage/drainage setup.
 - Postfailure visualization and run monitoring.
 
@@ -293,14 +295,15 @@ Smoke test:
 
 Suggested directory: `examples/u-pw/06_Sainte_Monique`
 
-Status: reduced synthetic placeholder smoke exists, but validated field
-reproduction is not ready.
+Status: reduced synthetic placeholder smoke exists and the CPU DP-based
+softening path is available, but validated field reproduction is not ready.
 
 Likely needed:
 
 - Field geometry preparation and material zoning.
 - GPU u-pw implementation.
-- Sensitive clay calibration.
+- Sensitive clay calibration and material zoning; the current `Softening=1`
+  path is only a reduced DP-based approximation.
 - Initial stress and pore-pressure state construction.
 - Long-run monitoring and checkpoint/restart.
 

@@ -43,6 +43,8 @@ All commits above were pushed to `origin/u-p`.
 - Source-side `TopLoad*` and `ApplyTopLoad()` removed.
 - Failed `PorePressureAccelSymCorr` diagnostic removed.
 - Boundary ghost and corrected-gradient PR paths retained as diagnostics only.
+- CPU reduced DP-based sensitive-clay softening implemented for 05 reduced
+  slope smokes through the soil parameter `Softening`.
 
 ## Build And Smoke Status
 
@@ -76,8 +78,8 @@ complete the strict 03-06 paper-case reproduction gate.
 | 02 self-weight consolidation | Scenario 1/2 CPU workflows and restart route exist | closest case to strict reproduction; still needs stricter boundary/postprocessing validation | not the main blocker |
 | 03 Cryer problem | reduced/scaffold smoke only | missing strict sphere/traction geometry, drained curved boundary, center-pressure postprocessing | blocks full-paper gate |
 | 04 undrained triaxial | reduced/scaffold smoke only | missing axial loading/control, lateral confinement, `p'`-`q` postprocessing, MCC/material calibration | blocks full-paper gate |
-| 05 retrogressive slope | reduced/scaffold smoke only | missing sensitive clay / strain softening, initial state, validated large deformation workflow | blocks full-paper gate |
-| 06 Sainte-Monique | placeholder/reduced scaffold only | missing field topography, material zoning, calibration, initial state, production workflow | blocks full-paper gate |
+| 05 retrogressive slope | reduced/scaffold smoke plus reduced `Softening=1` CPU smoke | missing calibrated initial state, production boundary treatment, full remolding/destructuration decision, and validated large deformation workflow | blocks full-paper gate |
+| 06 Sainte-Monique | placeholder/reduced scaffold only; CPU softening path available | missing field topography, material zoning, calibration, initial state, production workflow | blocks full-paper gate |
 
 ## Deferred Items
 
@@ -90,7 +92,9 @@ paper reproduction:
 - Cryer strict geometry, boundary, and analytical postprocessing;
 - triaxial axial/confinement loading and stress-path postprocessing;
 - Modified Cam Clay if strict triaxial reproduction requires it;
-- sensitive clay / strain-softening model for slope and field cases;
+- GPU softening and any fuller remolding/destructuration material model for
+  slope and field cases. CPU reduced DP-based softening is available, but it is
+  not part of passive GPU G1;
 - Sainte-Monique field data, zoning, calibration, and restart workflow;
 - long-time parameter sensitivity and high-resolution production runs.
 
@@ -119,6 +123,9 @@ first GPU scope should be:
 - sorting and periodic duplicate handling for `PorePressg`;
 - output of `PorePress` / `ExcessPorePress`;
 - one-frame hydrostatic parity check.
+
+CPU softening does not change the passive G1 scope. GPU softening is explicitly
+not included in G1.
 
 Explicitly forbidden next GPU scope:
 

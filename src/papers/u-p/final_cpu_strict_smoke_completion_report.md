@@ -49,6 +49,39 @@ where possible, with the remaining strict reproduction gaps explicit.
 - Removed failed `PorePressureAccelSymCorr`.
 - Removed deprecated source-side `TopLoad*`; external loading path is native `AccInput`.
 
+## Sensitive-Clay Softening Smoke Summary
+
+The CPU-only softening pass added and verified a reduced DP-based exponential
+softening path. This is a material smoke capability, not full field-scale
+retrogressive reproduction.
+
+Micro tests under
+`examples/u-pw/05_Retrogressive_Slope/experiments/SofteningMicro/` completed
+with `code=0`, `excluded=0`, and no NaN/Inf. The deliberately weak trigger case
+generated plastic strain and degraded reconstructed cohesion:
+
+```text
+Kplastic_max = 8.5393706e-4
+cohesion peak/residual = 1 / 0.1 Pa
+estimated cohesion minimum = 0.8587 Pa
+```
+
+The reduced retrogressive slope softening smoke also passed:
+
+```text
+CaseRetrogressiveSlope_PR_SofteningSmoke_Off: code=0, excluded=0, no NaN/Inf
+CaseRetrogressiveSlope_PR_SofteningSmoke:     code=0, excluded=0, no NaN/Inf
+Kplastic_max = 6.5801572e-4
+Softening=0 estimated cohesion minimum = 151.0 Pa
+Softening=1 estimated cohesion minimum = 150.553 Pa
+```
+
+This confirms that `Softening=1` runs inside the reduced u-pw slope workflow and
+that `Kplastic` can be postprocessed into local degraded cohesion. Full strict
+paper reproduction still requires calibrated initial state, field/large-slope
+runtime, production boundary treatment, and possibly a fuller
+remolding/destructuration material branch.
+
 ## Deferred Features
 
 The following remain deferred and must not be silently treated as completed:

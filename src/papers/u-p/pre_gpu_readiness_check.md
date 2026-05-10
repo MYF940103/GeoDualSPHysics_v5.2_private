@@ -53,7 +53,9 @@ strict paper reproduction:
 - production boundary MLS/mirror operator;
 - production corrected-gradient PR operators;
 - MCC implementation;
-- sensitive clay / strain-softening implementation;
+- GPU softening support and any fuller remolding/destructuration material
+  branch. CPU reduced DP-based softening is implemented and smoke-tested, but
+  it is not part of passive GPU G1;
 - high-resolution Cryer;
 - field Sainte-Monique;
 - long-time parameter sensitivity.
