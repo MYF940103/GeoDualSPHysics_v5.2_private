@@ -36,6 +36,41 @@ Next allowed phase is G2 planning/implementation only if explicitly requested.
 G2 must not expand beyond PR diagnostic arrays/kernels unless separately
 approved.
 
+## G2 PR Diagnostics Status, 2026-05-11
+
+G2 has been implemented in the explicitly limited diagnostic-only scope:
+
+- GPU arrays `PorePressRateg`, `DivVelg`, `LapPorePressg`, and `LapZg`
+  are allocated, released, resized, sorted, and duplicated for periodic
+  particles.
+- A material-material GPU diagnostic kernel computes the current uncorrected
+  production PR operators `DivVel`, `LapPorePress`, and `LapZ`.
+- The diagnostic `PorePressRate` uses the CPU SW-2a sign convention:
+  `Kw/n * (-DivVel + k/(rho_w*g_h)*LapPorePress + k*LapZ)`.
+- GPU output now writes `PorePressRate`, `DivVel`, `LapPorePress`, and `LapZ`
+  in addition to the G1 `PorePress` and `ExcessPorePress` fields.
+
+This phase remains passive with respect to pore pressure and dynamics. It does
+not update `PorePressg`, does not apply feedback, does not apply Shepard
+regularization or hydromechanical damping, and does not port top drained,
+bottom no-flux, boundary ghost, or softening logic.
+
+GPU Debug build succeeded. A Debug smoke run showed a CRT dialog/hang for the
+analytical-excess case after output, so the final smoke validation was run with
+GPU Release. The hydrostatic and analytical-excess GPU Release smoke cases in
+`examples/u-pw/01_1D_Consolidation/experiments/GPU_G2_PRDiagnostics/`
+completed with `code=0`, `excluded=0`, and all G2 output fields present. The
+hydrostatic case had `ExcessPorePress=0`, `DivVel=0`, head residual maxAbs
+about `2.62e-5`, and diagnostic `PorePressRate` maxAbs about `17.5 Pa/s`.
+The analytical-excess case produced nonzero `LapPorePress` and
+`PorePressRate` with the expected diagnostic-only behavior: `PorePressg` was
+not advanced.
+
+Next allowed phase is G3 only if explicitly requested. G3 should be limited to
+`PorePressg` update and `dt_pore` parity. It must still exclude feedback,
+Shepard, damping, boundary ghost, softening, and long GPU runs unless those
+scopes are separately authorized.
+
 ## Current CPU Hydromechanical State
 
 The CPU prototype currently owns the hydromechanical particle arrays in `JSphCpu`:

@@ -302,6 +302,15 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tsymatrix3f *sigma, tsymatrix3f *sigmapre);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
 void PeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,double *data);
+void PeriodicDuplicateFloat(unsigned n,unsigned pini,const unsigned *listp,float *data);
+
+//-GPU pore-pressure diagnostics.
+void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag
+  ,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate);
 
 //-Kernels for Damping.
 void ComputeDampingPlane(double dt,double4 plane,float dist,float over

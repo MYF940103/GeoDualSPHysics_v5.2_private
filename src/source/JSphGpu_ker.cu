@@ -3506,6 +3506,115 @@ void FtGetPosRef(unsigned np,const unsigned *idpref,const unsigned *ftridp
 
 
 //##############################################################################
+//# Kernels for passive pore-pressure diagnostics.
+//##############################################################################
+//------------------------------------------------------------------------------
+/// Computes material-material PR diagnostic operators for one fluid particle set.
+//------------------------------------------------------------------------------
+template<TpKernel tker,bool symm>
+  __global__ void KerComputeHydroPrDiagnostics(unsigned n,unsigned pinit
+  ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
+  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pinit;
+    divvel[p1]=0.f;
+    lapporepress[p1]=0.f;
+    lapz[p1]=0.f;
+    porepressrate[p1]=0.f;
+    if(!CODE_IsFluid(code[p1]))return;
+
+    const float4 pscellp1=poscell[p1];
+    const float4 velrhop1=velrhop[p1];
+    const double pwp1=porepress[p1];
+    const bool rsymp1=(symm && PSCEL_GetPartY(__float_as_uint(pscellp1.w))==0); //<vs_syymmetry>
+
+    float divp1=0.f;
+    double lappw1=0.;
+    float lapz1=0.f;
+
+    int ini1,fin1,ini2,fin2,ini3,fin3;
+    cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+    ini3+=cellfluid; fin3+=cellfluid;
+    for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+      unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pini;p2<pfin;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float4 pscellp2=poscell[p2];
+        float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+        float dry=pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w));
+        float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+        if(rsym)dry=pscellp1.y+pscellp2.y + CTE.poscellsize*PSCEL_GetfY(pscellp2.w); //<vs_syymmetry>
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
+          const float fac=cufsph::GetKernel_Fac<tker>(rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const float dotrgrad=drx*frx+dry*fry+drz*frz;
+          float4 velrhop2=velrhop[p2];
+          if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
+          const float volp2=CTE.massf/velrhop2.w;
+          divp1+=volp2*((velrhop2.x-velrhop1.x)*frx+(velrhop2.y-velrhop1.y)*fry+(velrhop2.z-velrhop1.z)*frz);
+          lappw1+=2.*double(volp2)*(pwp1-porepress[p2])*double(dotrgrad)/(double(rr2)+ALMOSTZERO);
+          const double dzhead=-(double(drx)*hydraulicg.x+double(dry)*hydraulicg.y+double(drz)*hydraulicg.z)/hydraulicg.w;
+          lapz1+=2.f*volp2*float(dzhead)*dotrgrad/(rr2+ALMOSTZERO);
+          rsym=(rsymp1 && !rsym && float(pscellp1.y-dry)<=CTE.kernelsize); //<vs_syymmetry>
+          if(rsym)p2--;                                                     //<vs_syymmetry>
+        }
+        else rsym=false;                                                    //<vs_syymmetry>
+      }
+    }
+    divvel[p1]=divp1;
+    lapporepress[p1]=float(lappw1);
+    lapz[p1]=lapz1;
+    const float factor=waterbulkmodulus/porosity0;
+    const float difcoef=(hydraulicconductivity>0.f? float(double(hydraulicconductivity)/(double(waterdensity)*hydraulicg.w)): 0.f);
+    porepressrate[p1]=factor*(-divp1+difcoef*float(lappw1)+hydraulicconductivity*lapz1);
+  }
+}
+
+//==============================================================================
+/// Computes passive GPU PR diagnostics. It does not update PorePress.
+//==============================================================================
+template<TpKernel tker,bool symm> void ComputeHydroPrDiagnosticsT(unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,bsfluid);
+    KerComputeHydroPrDiagnostics<tker,symm> <<<sgrid,bsfluid>>> (n,pini,divdata.scelldiv,divdata.nc,divdata.cellzero
+      ,divdata.beginendcell,divdata.cellfluid,dcell,poscell,velrhop,code,porepress,hydraulicg
+      ,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity,divvel,lapporepress,lapz,porepressrate);
+  }
+}
+
+//==============================================================================
+/// Computes passive GPU PR diagnostics. It does not update PorePress.
+//==============================================================================
+void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag
+  ,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate)
+{
+  const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+  if(tkernel==KERNEL_Wendland){
+    if(symmetry)ComputeHydroPrDiagnosticsT<KERNEL_Wendland,true >(bsfluid,n,pini,divdata,dcell,poscell,velrhop,code,porepress,hydraulicg,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity,divvel,lapporepress,lapz,porepressrate);
+    else        ComputeHydroPrDiagnosticsT<KERNEL_Wendland,false>(bsfluid,n,pini,divdata,dcell,poscell,velrhop,code,porepress,hydraulicg,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity,divvel,lapporepress,lapz,porepressrate);
+  }
+  else if(tkernel==KERNEL_Cubic){
+    if(symmetry)ComputeHydroPrDiagnosticsT<KERNEL_Cubic,true >(bsfluid,n,pini,divdata,dcell,poscell,velrhop,code,porepress,hydraulicg,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity,divvel,lapporepress,lapz,porepressrate);
+    else        ComputeHydroPrDiagnosticsT<KERNEL_Cubic,false>(bsfluid,n,pini,divdata,dcell,poscell,velrhop,code,porepress,hydraulicg,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity,divvel,lapporepress,lapz,porepressrate);
+  }
+}
+
+//##############################################################################
 //# Kernels for Periodic conditions
 //# Kernels para Periodic conditions
 //##############################################################################
@@ -3816,6 +3925,30 @@ void PeriodicDuplicateDouble(unsigned n,unsigned pini,const unsigned *listp,doub
   if(n && data){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
     KerPeriodicDuplicateDouble <<<sgrid,SPHBSIZE>>> (n,pini,listp,data);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Duplicates a scalar float particle array for periodic particles.
+//------------------------------------------------------------------------------
+__global__ void KerPeriodicDuplicateFloat(unsigned n,unsigned pini,const unsigned *listp,float *data)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned pnew=p+pini;
+    const unsigned pcopy=(listp[p]&0x7FFFFFFF);
+    data[pnew]=data[pcopy];
+  }
+}
+
+//==============================================================================
+/// Duplicates a scalar float particle array for periodic particles.
+//==============================================================================
+void PeriodicDuplicateFloat(unsigned n,unsigned pini,const unsigned *listp,float *data)
+{
+  if(n && data){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerPeriodicDuplicateFloat <<<sgrid,SPHBSIZE>>> (n,pini,listp,data);
   }
 }
 
