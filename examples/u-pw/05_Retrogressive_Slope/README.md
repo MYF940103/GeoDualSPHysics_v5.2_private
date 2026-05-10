@@ -21,6 +21,15 @@ validated retrogression or landslide reproduction.
   pressure, and `Kplastic` ranges.
 - `slope_smoke_summary.csv`  
   Latest reduced smoke postprocessing summary.
+- `CaseRetrogressiveSlope_PR_SofteningSmoke_Def.xml`  
+  Reduced CPU smoke with DP exponential softening enabled.
+- `CaseRetrogressiveSlope_PR_SofteningSmoke_Off_Def.xml`  
+  Same reduced softening-smoke setup with softening disabled for comparison.
+- `analyze_retro_softening_smoke.py`  
+  Computes displacement, velocity, `Kplastic`, and estimated local cohesion from
+  the softening law.
+- `experiments/SofteningMicro/`  
+  Unit-style micro checks for the CPU softening switch.
 - `CaseRetrogressiveSlope_PR_TODO_Def.xml`  
   Historical placeholder kept to document the original feature-blocked state.
 
@@ -71,3 +80,19 @@ This case now satisfies a runnable reduced smoke scaffold, but strict landslide
 reproduction remains feature- and GPU-blocked. Under the full CPU completion
 gate, this must be recorded as incomplete strict reproduction unless the
 sensitive-clay and field-scale requirements are explicitly deferred.
+
+## Softening CPU Smoke
+
+The reduced softening smoke now runs with `Softening=1`:
+
+- GenCase code=0;
+- DualSPHysics CPU Release code=0;
+- excluded=0;
+- no NaN/Inf;
+- `Kplastic_max = 6.5801572e-4`;
+- estimated cohesion decreases from `151 Pa` to `150.553 Pa` in the short
+  window.
+
+This verifies the CPU material path and output/postprocessing chain. It is not
+a full retrogressive landslide reproduction; the response is intentionally short
+and the cohesion is scaled down for smoke-test plasticity.

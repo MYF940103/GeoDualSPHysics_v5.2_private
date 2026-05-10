@@ -198,3 +198,22 @@ and produced visible plastic strain:
 
 This validates the CPU code path before moving to the reduced retrogressive
 slope softening smoke.
+
+## 10. Reduced Slope Softening Smoke Result
+
+`examples/u-pw/05_Retrogressive_Slope/CaseRetrogressiveSlope_PR_SofteningSmoke_Def.xml`
+now runs a reduced wedge with `Softening=1`, u-pw PR enabled, and a matching
+`Softening=0` comparison case.
+
+The cohesion values are scaled down from the paper value while preserving the
+rough peak/residual ratio so that plasticity appears in a short CPU smoke. Both
+cases completed with `code=0`, `excluded=0`, and no NaN/Inf. The softening-on
+case reached:
+
+- `Kplastic_max = 6.5801572e-4`;
+- estimated local cohesion minimum `150.553 Pa` from peak `151 Pa`;
+- finite pore-pressure diagnostics and `PorePressureAccelDiff.*` output.
+
+The physical displacement response is almost identical to the off case in this
+short window. This is expected and acceptable for CPU smoke; full retrogression
+requires longer GPU-scale runs and calibrated initial conditions.

@@ -86,3 +86,19 @@ The `CaseRetrogressiveSlope_PR_SofteningMicro_Trigger` run completed with
 This confirms that the CPU softening code path can be activated and bounded by
 the residual-strength formula. The full retrogressive slope still requires a
 larger reduced softening smoke and eventually paper-scale calibration.
+
+## Reduced Softening Slope Smoke
+
+`CaseRetrogressiveSlope_PR_SofteningSmoke_Def.xml` and the `_Off` comparison
+case now exercise the reduced wedge with paper-style sensitive-clay ratios:
+
+- `phi = phi_r = 0 deg`;
+- `coh/coh_r = 151/15 Pa` for short-window plasticity;
+- `n_coh = n_phi = 5`;
+- u-pw PR feedback enabled with difference-gradient feedback.
+
+The softening-on smoke completed with `code=0`, `excluded=0`, no NaN/Inf, and
+finite pore-pressure fields. The maximum accumulated plastic strain was
+`6.5801572e-4`, giving an estimated local cohesion of `150.553 Pa` from the
+exponential law. This is a code-path and workflow validation only; the short
+window is too small to produce meaningful retrogression.
