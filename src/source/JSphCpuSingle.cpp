@@ -165,9 +165,42 @@ void JSphCpuSingle::ConfigDomain(){
   if((HydromechCoupling || SavePorePressure) && (!PorePressc || !PorePressRatec || !DivVelc || !LapPorePressc || !LapZc || !PorePressureAcec || !PorePressureAceDiffc)){
     Run_Exceptioon("Hydromechanical CPU arrays were not fully allocated.");
   }
+  bool restartporepressrestored=false;
   if(PorePressc){
     memset(PorePressc,0,sizeof(double)*Np);
-    if(!(HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3))){
+    if(PartBegin && PartsLoaded->GetRestartPorePress()){
+      const unsigned *ridp=PartsLoaded->GetIdp();
+      const double *rporepress=PartsLoaded->GetPorePress();
+      unsigned maxid=0;
+      for(unsigned p=0;p<Np;p++){
+        if(Idpc[p]>maxid)maxid=Idpc[p];
+        if(ridp[p]>maxid)maxid=ridp[p];
+      }
+      int *idmap=new int[maxid+1];
+      for(unsigned p=0;p<=maxid;p++)idmap[p]=-1;
+      for(unsigned p=0;p<Np;p++)idmap[ridp[p]]=int(p);
+      unsigned nrestored=0,nmissing=0;
+      for(unsigned p=0;p<Np;p++){
+        const unsigned id=Idpc[p];
+        const int pr=(id<=maxid? idmap[id]: -1);
+        if(pr>=0){
+          PorePressc[p]=rporepress[pr];
+          nrestored++;
+        }
+        else nmissing++;
+      }
+      delete[] idmap; idmap=NULL;
+      restartporepressrestored=true;
+      Log->Printf("Restart pore-pressure state restored from PART_%04u: PorePress restored for %u/%u particles using Idp mapping.",PartBegin,nrestored,Np);
+      if(nmissing)Log->PrintWarning(fun::PrintStr("Restart PorePress was not restored for %u particles because their Idp was not found in the restart PART.",nmissing));
+      if(HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3))
+        Log->Print("Restart PorePress field restored from PART; XML PorePressureInit is skipped.");
+    }
+    else{
+      if(PartBegin && HydromechCoupling)
+        Log->PrintWarning("Restart PorePress field not found; PorePressc will be initialized from XML PorePressureInit. This restart is not pore-pressure-consistent for staged u-pw simulations.");
+    }
+    if(!restartporepressrestored && !(HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3))){
       if(HydromechCoupling && PorePressureInit==2)Log->PrintWarning("PorePressureInit=FromFile is not implemented in Phase 3g. Phase 3g uses zero pore pressure.");
       Log->Printf("Passive pore pressure field initialised on CPU: PorePress=0 for %u material particles.",Np-Npb);
     }
@@ -214,7 +247,7 @@ void JSphCpuSingle::ConfigDomain(){
   //-Load particle code. | Carga code de particulas.
   LoadCodeParticles(Np,Idpc,Codec);
 
-  if(PorePressc && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
+  if(PorePressc && !restartporepressrestored && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
     if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for pore pressure initialization.");
     const double gmag=GetHydraulicGmag();
     if(gmag<=0)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore pressure initialization.");

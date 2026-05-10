@@ -95,6 +95,8 @@ protected:
   tfloat3 *SigmaKk;
   tfloat3 *SigmaIj;
   float *Kplastic;
+  bool RestartPorePress;
+  double *PorePress;
 
   void AllocMemory(unsigned count);
   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
@@ -124,6 +126,7 @@ public:
   double GetPartBeginTimeStep()const{ return(PartBeginTimeStep); }
   ullong GetPartBeginTotalNp()const{ return(PartBeginTotalNp); }
   bool GetRestartSoilFields()const{ return(RestartSoilFields); }
+  bool GetRestartPorePress()const{ return(RestartPorePress); }
 
   const unsigned* GetIdp(){ return(Idp); }
   const tdouble3* GetPos(){ return(Pos); }
@@ -131,6 +134,7 @@ public:
   const tfloat3* GetSigmaKk(){ return(SigmaKk); }
   const tfloat3* GetSigmaIj(){ return(SigmaIj); }
   const float* GetKplastic(){ return(Kplastic); }
+  const double* GetPorePress(){ return(PorePress); }
 
   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
   tdouble3 GetCasePosMax()const{ return(CasePosMax); }

@@ -38,6 +38,8 @@ JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
   Idp=NULL; Pos=NULL; VelRhop=NULL;
   RestartSoilFields=false;
   SigmaKk=NULL; SigmaIj=NULL; Kplastic=NULL;
+  RestartPorePress=false;
+  PorePress=NULL;
   Reset();
 }
 
@@ -82,7 +84,9 @@ void JPartsLoad4::AllocMemory(unsigned count){
   delete[] SigmaKk;  SigmaKk=NULL;
   delete[] SigmaIj;  SigmaIj=NULL;
   delete[] Kplastic; Kplastic=NULL;
+  delete[] PorePress; PorePress=NULL;
   RestartSoilFields=false;
+  RestartPorePress=false;
   if(Count){
     try{
       Idp=new unsigned[Count];
@@ -108,6 +112,7 @@ llong JPartsLoad4::GetAllocMemory()const{
   if(SigmaKk)s+=sizeof(tfloat3)*Count;
   if(SigmaIj)s+=sizeof(tfloat3)*Count;
   if(Kplastic)s+=sizeof(float)*Count;
+  if(PorePress)s+=sizeof(double)*Count;
   return(s);
 }
 
@@ -150,6 +155,10 @@ void JPartsLoad4::SortParticles(){
     rs.Sort(true,Count,Idp);
     rs.SortData(Count,Pos,Pos);
     rs.SortData(Count,VelRhop,VelRhop);
+    if(SigmaKk)rs.SortData(Count,SigmaKk,SigmaKk);
+    if(SigmaIj)rs.SortData(Count,SigmaIj,SigmaIj);
+    if(Kplastic)rs.SortData(Count,Kplastic,Kplastic);
+    if(PorePress)rs.SortData(Count,PorePress,PorePress);
   }
 }
 
@@ -207,6 +216,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
     pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3);
     pd.GetArray("Kplastic",JBinaryDataDef::DatFloat);
   }
+  const bool loadporepress=(PartBegin && pd.ArrayExists("PorePress"));
+  if(loadporepress)pd.GetArray("PorePress",JBinaryDataDef::DatDouble);
   //-Loads data for restarting.
   if(PartBegin){
     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
@@ -231,6 +242,15 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
     }
     catch(const std::bad_alloc){
       Run_Exceptioon("Could not allocate the requested restart soil-state memory.");
+    }
+  }
+  if(loadporepress){
+    try{
+      PorePress=new double[Count];
+      RestartPorePress=true;
+    }
+    catch(const std::bad_alloc){
+      Run_Exceptioon("Could not allocate the requested restart pore-pressure memory.");
     }
   }
   //-Loads particles.
@@ -273,6 +293,11 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
           pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxsigma);
           memcpy(SigmaIj+ntot,auxsigma,sizeof(tfloat3)*npok);
           pd.GetArray("Kplastic",JBinaryDataDef::DatFloat)->GetDataCopy(npok,Kplastic+ntot);
+        }
+        if(RestartPorePress){
+          if(!pd.ArrayExists("PorePress"))
+            Run_Exceptioon("Restart PorePress array is not available in all PART pieces.");
+          pd.GetArray("PorePress",JBinaryDataDef::DatDouble)->GetDataCopy(npok,PorePress+ntot);
         }
       }
       ntot+=npok;
