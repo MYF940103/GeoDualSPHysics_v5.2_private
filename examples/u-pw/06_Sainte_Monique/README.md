@@ -19,6 +19,11 @@ placeholder smoke case only. It is not a Sainte-Monique reproduction.
 - `CaseSainteMonique_PR_TODO_Def.xml`  
   Historical TODO scaffold kept as a reminder that field reproduction remains
   data- and feature-blocked.
+- `analyze_sainte_smoke.py`  
+  Small postprocessor for the reduced smoke summary.
+- `sainte_smoke_summary.csv`  
+  Curated output from the latest reduced smoke; full generated solver outputs
+  are not retained.
 
 ## Smoke Status
 
@@ -27,17 +32,18 @@ Latest reduced placeholder smoke:
 | Item | Result |
 | --- | --- |
 | GenCase | code=0 |
-| DualSPHysics CPU Debug | code=0 |
+| DualSPHysics CPU Release | code=0 |
 | TimeMax | 0.0002 s |
 | Excluded particles | 0 |
 | Material particles | 556 |
 | Boundary particles | 1173 |
-| Max velocity | `1.98e-3 m/s` |
-| Mean velocity | `1.97e-3 m/s` |
-| PorePress range | `494.76` to `3196.09 Pa` |
-| ExcessPorePress range | `3.51` to `8.77 Pa` |
+| Max velocity | `1.9849e-3 m/s` |
+| Mean velocity | `6.3462e-4 m/s` |
+| Max displacement | `2.1000e-7 m` |
+| PorePress range | `0` to `3196.09 Pa` |
+| ExcessPorePress range | `0` to `8.77 Pa` |
 | PorePressRate max | `1.19e5 Pa/s` |
-| DivVel range | `-2.80e-4` to `-2.04e-5 1/s` |
+| DivVel range | `-2.80e-4` to `0 1/s` |
 
 The reduced smoke verifies that the current CPU PR implementation can generate
 and advance a small field-like geometry while writing the expected pore-pressure
@@ -60,5 +66,6 @@ workflow, and GPU-scale runtime.
 - Full-scale runs require GPU implementation and checkpoint/restart workflow.
 
 This case is CPU-smoke runnable in reduced placeholder form only. Under the full
-CPU completion gate, it remains data- and feature-blocked unless the field
-application is explicitly deferred.
+CPU completion gate, it is acceptable as a minimum field-application health
+check only if the actual Sainte-Monique field reproduction is explicitly
+deferred to the material-model/GPU phase.

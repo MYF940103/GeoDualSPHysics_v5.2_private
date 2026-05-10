@@ -119,11 +119,11 @@ with missing features documented.
 
 | Field | Status |
 |---|---|
-| Current state | README, notes, TODO XML, `data/README.md`, and reduced synthetic field placeholder smoke XML/BAT exist. |
-| Short runnable? | Yes for the reduced placeholder smoke; field reproduction remains data-blocked. |
+| Current state | README, notes, TODO XML, `data/README.md`, reduced synthetic field placeholder smoke XML/BAT, and `analyze_sainte_smoke.py` exist. |
+| Short runnable? | Yes for the reduced placeholder smoke; latest rerun: GenCase code=0, Dual code=0, excluded=0, no NaN/Inf. Field reproduction remains data-blocked. |
 | Missing features | Field geometry/topography, material zoning, sensitive clay calibration, initial stress and pore-pressure state, GPU implementation, checkpoint/restart workflow. |
-| Minimum smoke test | Current reduced placeholder smoke meets CPU case-readiness: GenCase code=0, Dual code=0, excluded=0, required fields written. |
-| Blocks GPU G1? | Yes under the strict full-paper gate unless the field case is explicitly data-blocked and deferred. |
+| Minimum smoke test | Current reduced placeholder smoke meets CPU execution readiness: GenCase code=0, Dual code=0, excluded=0, required fields written, and `sainte_smoke_summary.csv` records displacement, velocity, pore-pressure, rate, divergence, and plasticity ranges. |
+| Blocks GPU G1? | Blocks strict field reproduction, but not passive PR-core GPU G1 if the real field case is explicitly deferred as data/material/GPU blocked. |
 
 ## 4. Required Before GPU G1
 

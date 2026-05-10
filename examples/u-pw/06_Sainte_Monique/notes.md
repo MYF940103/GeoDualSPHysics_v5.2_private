@@ -62,3 +62,9 @@ verifies geometry, PR pore-pressure fields, and output health.
 
 Strict Sainte-Monique reproduction remains data-blocked and GPU/material-model
 blocked. It should not be treated as a validated application case.
+
+The latest reduced smoke was rerun on CPU Release on 2026-05-11 and summarized
+with `analyze_sainte_smoke.py`. It completed with `code=0`, `excluded=0`,
+finite fields, and a bounded hydrostatic pore-pressure range. The result is a
+field-like execution smoke only; it does not validate runout, retrogression
+distance, or field pore-pressure evolution.

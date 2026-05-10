@@ -1,14 +1,15 @@
 # Smoke Status: Sainte-Monique Reduced Placeholder PR Case
 
-Date: 2026-05-10
+Date: 2026-05-11
 
 ## Case
 
 - XML: `CaseSainteMonique_PR_ReducedSmoke_Def.xml`
 - Launcher: `xCaseSainteMonique_PR_ReducedSmoke_win64_CPU_debug.bat`
-- Solver path tested: CPU Debug
+- Solver path tested: CPU Release
 - TimeMax: `0.0002 s`
 - TimeOut: `0.0002 s`
+- Analysis: `analyze_sainte_smoke.py`
 
 ## Execution
 
@@ -18,7 +19,7 @@ Date: 2026-05-10
 | DualSPHysics | code=0 |
 | Excluded particles | 0 |
 | Steps | 34 |
-| Runtime | 1.83 s |
+| Runtime | 0.61 s solver / 1.36 s end-to-end |
 | Material particles | 556 |
 | Boundary particles | 1173 |
 
@@ -42,13 +43,15 @@ Date: 2026-05-10
 
 | Metric | Value |
 | --- | --- |
-| Max velocity | `1.98e-3 m/s` |
-| Mean velocity | `1.97e-3 m/s` |
-| PorePress min/max/mean | `494.76 / 3196.09 / 2121.37 Pa` |
-| ExcessPorePress min/max/mean | `3.51 / 8.77 / 5.42 Pa` |
+| Max velocity | `1.9849e-3 m/s` |
+| Mean velocity | `6.3462e-4 m/s` |
+| Max displacement | `2.1000e-7 m` |
+| Mean displacement | `6.4404e-8 m` |
+| PorePress min/max | `0 / 3196.09 Pa` |
+| ExcessPorePress min/max | `0 / 8.77 Pa` |
 | PorePressRate max | `1.19e5 Pa/s` |
-| DivVel min/max/mean | `-2.80e-4 / -2.04e-5 / -1.17e-4 1/s` |
-| PorePressureAccelDiff.z min/max/mean | `-6.17e-3 / 6.88e-3 / 5.91e-4 m/s2` |
+| DivVel min/max | `-2.80e-4 / 0 1/s` |
+| Kplastic min/max | `0 / 0` |
 
 ## Interpretation
 
