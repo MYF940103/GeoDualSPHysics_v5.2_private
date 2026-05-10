@@ -4,7 +4,7 @@ Date: 2026-05-11
 
 ## Current Commit
 
-`a907f6f` - `Update final CPU smoke readiness with extended timeout`
+`696a824` - `Add Sainte-Monique reduced CPU smoke scaffold`
 
 ## Goal
 
@@ -45,3 +45,14 @@ These smokes are stricter than empty TODO scaffolds because they exercise
 geometry, GenCase, DualSPHysics, hydromechanical fields, and postprocessing
 paths. They are still not full paper reproduction curves. Any remaining strict
 reproduction gaps must stay explicit in README, notes, and the final report.
+
+## Completed Automatic Steps
+
+| Case | Result |
+|---|---|
+| 03 Cryer | Re-ran reduced Cryer-like PR smoke, added `analyze_cryer_smoke.py`, recorded center-pressure proxy summary, cleaned generated output, committed `2cc452a`. |
+| 04 Undrained triaxial | Re-ran reduced AccInput triaxial smoke, upgraded stress-path proxy script, recorded `triaxial_smoke_summary.csv`, cleaned generated output, committed `4085086`. |
+| 05 Retrogressive slope | Re-ran reduced wedge/slope smoke, added `analyze_slope_smoke.py`, recorded displacement/velocity/pore-pressure summary, cleaned generated output, committed `a3219b8`. |
+| 06 Sainte-Monique | Re-ran reduced field-like smoke, added `analyze_sainte_smoke.py`, recorded `sainte_smoke_summary.csv`, cleaned generated output, committed `696a824`. |
+
+No GPU source files, CUDA kernels, GPU builds, or GPU runs were touched.
