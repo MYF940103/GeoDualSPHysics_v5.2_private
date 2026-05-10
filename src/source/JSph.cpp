@@ -3581,6 +3581,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.phi_r=float(TORAD*sxml->ReadElementFloat(solidNode,"phi_r","value",true));
   SoilCte.n_coh=sxml->ReadElementFloat(solidNode,"n_coh","value",true);
   SoilCte.n_phi=sxml->ReadElementFloat(solidNode,"n_phi","value",true);
+  SoilCte.Softening=unsigned(sxml->ReadElementInt(solidNode,"Softening","value",true,0));
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
   //-u-pw hydromechanical material constants.  The <parameters> keys are kept
@@ -3653,6 +3654,14 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("Soil HydraulicConductivity must be greater than or equal to zero.");
   if(SoilCte.WaterBulkModulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero.");
   if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero.");
+  if(SoilCte.Softening>1)Run_Exceptioon("Soil Softening must be 0 or 1.");
+  if(SoilCte.coh<0.f)Run_Exceptioon("Soil cohesion must be greater than or equal to zero.");
+  if(SoilCte.coh_r<0.f)Run_Exceptioon("Soil residual cohesion coh_r must be greater than or equal to zero.");
+  if(SoilCte.n_coh<0.f || SoilCte.n_phi<0.f)Run_Exceptioon("Soil softening coefficients n_coh and n_phi must be greater than or equal to zero.");
+  if(SoilCte.Softening){
+    if(!SoilCte.coh_r)Log->PrintWarning("Soil Softening=1 but coh_r is zero. This is allowed, but residual cohesion is normally positive for sensitive clay.");
+    if(!SoilCte.n_coh && !SoilCte.n_phi)Log->PrintWarning("Soil Softening=1 but n_coh and n_phi are both zero; material response will remain at peak strength.");
+  }
   if(HydromechCoupling && SoilCte.HydraulicConductivity>0.f && GetHydraulicGmag()<=0.)
     Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero when soil HydraulicConductivity is enabled. Set body Gravity or HydraulicGravityX/Y/Z.");
   //Calculate bulk and shear modulus
@@ -3662,6 +3671,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   const StSoilCte &ct=SoilCte;
    Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
    Log->Printf("  Cohesion: %f",ct.coh);
+   Log->Printf("  Strength Softening: %s",ct.Softening? "enabled": "disabled");
    if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}
    Log->Printf("  Frictional Angle: %f",ct.phi);
    if(ct.n_phi){Log->Printf("  Residual Friction: %f",ct.phi_r);Log->Printf("  Friction Softening Coefficient: %f",ct.n_phi);}

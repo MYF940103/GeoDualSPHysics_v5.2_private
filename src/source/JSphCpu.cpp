@@ -3735,7 +3735,10 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      if(SoilCte.Softening)
+        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
+      else
+        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(Codec[p])){
@@ -3903,7 +3906,10 @@ void JSphCpu::ComputeSymplecticPre(double dt){
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);      
+      if(SoilCte.Softening)
+        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
+      else
+        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);      
       kplasnew=kplasticold;
       // 
       //-Restore data of inout particles.
@@ -4026,7 +4032,10 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      if(SoilCte.Softening)
+        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
+      else
+        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 
