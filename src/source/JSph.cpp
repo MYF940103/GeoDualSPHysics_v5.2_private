@@ -200,6 +200,10 @@ void JSph::InitVars(){
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
   WaterDensity=1000.f;
+  Porosity0ParamDefined=false;
+  HydraulicConductivityParamDefined=false;
+  WaterBulkModulusParamDefined=false;
+  WaterDensityParamDefined=false;
   PorePressureDtSafety=0.1f;
   PorePressureFeedback=false;
   PorePressureFeedbackMode=0;
@@ -720,6 +724,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
     default: Run_Exceptioon("PorePressureBottomNoFlux mode is not valid.");
   }
   PorePressureBottomNoFluxThickness=eparms.GetValueFloat("PorePressureBottomNoFluxThickness",true,0.f);
+  Porosity0ParamDefined=eparms.Exists("Porosity0");
+  HydraulicConductivityParamDefined=eparms.Exists("HydraulicConductivity");
+  WaterBulkModulusParamDefined=eparms.Exists("WaterBulkModulus");
+  WaterDensityParamDefined=eparms.Exists("WaterDensity");
   Porosity0=eparms.GetValueFloat("Porosity0",true,0.3f);
   HydraulicConductivity=eparms.GetValueFloat("HydraulicConductivity",true,0.f);
   WaterBulkModulus=eparms.GetValueFloat("WaterBulkModulus",true,2e8f);
@@ -781,10 +789,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
   HydromechDampingCoef=eparms.GetValueFloat("HydromechDampingCoef",true,0.f);
   HydromechDampingStartTime=eparms.GetValueDouble("HydromechDampingStartTime",true,0.);
   HydromechDampingEndTime=eparms.GetValueDouble("HydromechDampingEndTime",true,0.);
-  if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1.");
-  if(HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be greater than or equal to zero.");
-  if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
-  if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
+  if(Porosity0ParamDefined && (Porosity0<=0.f || Porosity0>=1.f))Run_Exceptioon("Porosity0 must be between 0 and 1.");
+  if(HydraulicConductivityParamDefined && HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be greater than or equal to zero.");
+  if(WaterBulkModulusParamDefined && WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
+  if(WaterDensityParamDefined && WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(TopLoadThickness<0.f)Run_Exceptioon("TopLoadThickness must be greater than or equal to zero.");
@@ -792,7 +800,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
   if(HydromechDampingXi>0.f && HydromechDampingCoef>0.f)Run_Exceptioon("Use either HydromechDampingXi or HydromechDampingCoef, not both.");
   if(HydromechCoupling){
-    const bool needsg=(HydraulicConductivity>0.f || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
+    const bool needsg=((HydraulicConductivityParamDefined && HydraulicConductivity>0.f) || PorePressureInit==1 || PorePressureInit==3 || PorePressureTopDrained || PorePressureBottomNoFlux || SavePorePressure);
     if(needsg && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for the enabled hydromechanical features. Set body Gravity or HydraulicGravityX/Y/Z.");
   }
   if(TopLoadEnabled && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for TopLoad. Set body Gravity or HydraulicGravityX/Y/Z.");
@@ -1729,10 +1737,10 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
-    Log->Print(fun::VarStr("  Porosity0",Porosity0));
-    Log->Print(fun::VarStr("  HydraulicConductivity",HydraulicConductivity));
-    Log->Print(fun::VarStr("  WaterBulkModulus",WaterBulkModulus));
-    Log->Print(fun::VarStr("  WaterDensity",WaterDensity));
+    Log->Print(fun::VarStr("  Soil.Porosity0",SoilCte.Porosity0));
+    Log->Print(fun::VarStr("  Soil.HydraulicConductivity",SoilCte.HydraulicConductivity));
+    Log->Print(fun::VarStr("  Soil.WaterBulkModulus",SoilCte.WaterBulkModulus));
+    Log->Print(fun::VarStr("  Soil.WaterDensity",SoilCte.WaterDensity));
     Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
@@ -3564,6 +3572,78 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.n_phi=sxml->ReadElementFloat(solidNode,"n_phi","value",true);
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
+  //-u-pw hydromechanical material constants.  The <parameters> keys are kept
+  //-only as deprecated fallbacks for older XML cases.
+  SoilCte.Porosity0=0.3f;
+  SoilCte.HydraulicConductivity=0.f;
+  SoilCte.WaterBulkModulus=2e8f;
+  SoilCte.WaterDensity=1000.f;
+  {
+    const TiXmlElement* ele=solidNode->FirstChildElement("Porosity0");
+    const bool insoil=(ele!=NULL);
+    if(insoil)SoilCte.Porosity0=sxml->ReadElementFloat(solidNode,"Porosity0","value",false);
+    if(Porosity0ParamDefined){
+      if(insoil){
+        if(fabs(double(SoilCte.Porosity0)-double(Porosity0))>1e-12)
+          Log->PrintWarning("<special><soils> Porosity0 overrides deprecated <parameters> Porosity0 value.");
+      }
+      else{
+        SoilCte.Porosity0=Porosity0;
+        Log->PrintWarning("Deprecated hydromech material parameter Porosity0 in <parameters>; please move it to <special><soils>.");
+      }
+    }
+  }
+  {
+    const TiXmlElement* ele=solidNode->FirstChildElement("HydraulicConductivity");
+    const bool insoil=(ele!=NULL);
+    if(insoil)SoilCte.HydraulicConductivity=sxml->ReadElementFloat(solidNode,"HydraulicConductivity","value",false);
+    if(HydraulicConductivityParamDefined){
+      if(insoil){
+        if(fabs(double(SoilCte.HydraulicConductivity)-double(HydraulicConductivity))>1e-12)
+          Log->PrintWarning("<special><soils> HydraulicConductivity overrides deprecated <parameters> HydraulicConductivity value.");
+      }
+      else{
+        SoilCte.HydraulicConductivity=HydraulicConductivity;
+        Log->PrintWarning("Deprecated hydromech material parameter HydraulicConductivity in <parameters>; please move it to <special><soils>.");
+      }
+    }
+  }
+  {
+    const TiXmlElement* ele=solidNode->FirstChildElement("WaterBulkModulus");
+    const bool insoil=(ele!=NULL);
+    if(insoil)SoilCte.WaterBulkModulus=sxml->ReadElementFloat(solidNode,"WaterBulkModulus","value",false);
+    if(WaterBulkModulusParamDefined){
+      if(insoil){
+        if(fabs(double(SoilCte.WaterBulkModulus)-double(WaterBulkModulus))>1e-6)
+          Log->PrintWarning("<special><soils> WaterBulkModulus overrides deprecated <parameters> WaterBulkModulus value.");
+      }
+      else{
+        SoilCte.WaterBulkModulus=WaterBulkModulus;
+        Log->PrintWarning("Deprecated hydromech material parameter WaterBulkModulus in <parameters>; please move it to <special><soils>.");
+      }
+    }
+  }
+  {
+    const TiXmlElement* ele=solidNode->FirstChildElement("WaterDensity");
+    const bool insoil=(ele!=NULL);
+    if(insoil)SoilCte.WaterDensity=sxml->ReadElementFloat(solidNode,"WaterDensity","value",false);
+    if(WaterDensityParamDefined){
+      if(insoil){
+        if(fabs(double(SoilCte.WaterDensity)-double(WaterDensity))>1e-9)
+          Log->PrintWarning("<special><soils> WaterDensity overrides deprecated <parameters> WaterDensity value.");
+      }
+      else{
+        SoilCte.WaterDensity=WaterDensity;
+        Log->PrintWarning("Deprecated hydromech material parameter WaterDensity in <parameters>; please move it to <special><soils>.");
+      }
+    }
+  }
+  if(SoilCte.Porosity0<=0.f || SoilCte.Porosity0>=1.f)Run_Exceptioon("Soil Porosity0 must be between 0 and 1.");
+  if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("Soil HydraulicConductivity must be greater than or equal to zero.");
+  if(SoilCte.WaterBulkModulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero.");
+  if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero.");
+  if(HydromechCoupling && SoilCte.HydraulicConductivity>0.f && GetHydraulicGmag()<=0.)
+    Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero when soil HydraulicConductivity is enabled. Set body Gravity or HydraulicGravityX/Y/Z.");
   //Calculate bulk and shear modulus
   SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
@@ -3576,6 +3656,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
    if(ct.n_phi){Log->Printf("  Residual Friction: %f",ct.phi_r);Log->Printf("  Friction Softening Coefficient: %f",ct.n_phi);}
    Log->Printf("  Bulk Modulus: %f",ct.ModulusK);
    Log->Printf("  Shear Modulus: %f",ct.ModulusG);
+   Log->Print("  u-pw material constants:");
+   Log->Printf("    Porosity0: %g",ct.Porosity0);
+   Log->Printf("    HydraulicConductivity: %g m/s",ct.HydraulicConductivity);
+   Log->Printf("    WaterBulkModulus: %g Pa",ct.WaterBulkModulus);
+   Log->Printf("    WaterDensity: %g kg/m3",ct.WaterDensity);
    Log->Print("");
 }
 

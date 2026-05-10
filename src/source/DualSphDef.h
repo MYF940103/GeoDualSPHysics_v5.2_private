@@ -307,6 +307,10 @@ typedef struct{
   float PRvs;         ///<Elastic model
   float ModulusG;     ///<Elastic model - To be calculated
   float ModulusK;     ///<Elastic model - To be calculated
+  float Porosity0;              ///<u-pw material porosity n.
+  float HydraulicConductivity;  ///<u-pw hydraulic conductivity k [m/s].
+  float WaterBulkModulus;       ///<u-pw water bulk modulus Kw [Pa].
+  float WaterDensity;           ///<u-pw water density rho_w [kg/m3].
 }StSoilCte;
 
 ///Controls the output of information on the screen and/or log.

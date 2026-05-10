@@ -207,10 +207,14 @@ protected:
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
-  float Porosity0;              ///<Initial porosity for hydromechanical model.
-  float HydraulicConductivity;  ///<Hydraulic conductivity k [m/s].
-  float WaterBulkModulus;       ///<Water bulk modulus Kw [Pa].
-  float WaterDensity;           ///<Water density rho_w [kg/m3].
+  float Porosity0;              ///<Deprecated execution-parameter fallback for SoilCte.Porosity0.
+  float HydraulicConductivity;  ///<Deprecated execution-parameter fallback for SoilCte.HydraulicConductivity.
+  float WaterBulkModulus;       ///<Deprecated execution-parameter fallback for SoilCte.WaterBulkModulus.
+  float WaterDensity;           ///<Deprecated execution-parameter fallback for SoilCte.WaterDensity.
+  bool Porosity0ParamDefined;             ///<True when deprecated Porosity0 execution parameter exists.
+  bool HydraulicConductivityParamDefined; ///<True when deprecated HydraulicConductivity execution parameter exists.
+  bool WaterBulkModulusParamDefined;      ///<True when deprecated WaterBulkModulus execution parameter exists.
+  bool WaterDensityParamDefined;          ///<True when deprecated WaterDensity execution parameter exists.
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.

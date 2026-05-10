@@ -220,7 +220,7 @@ void JSphCpuSingle::ConfigDomain(){
   LoadCodeParticles(Np,Idpc,Codec);
 
   if(PorePressc && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
-    if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for pore pressure initialization.");
+    if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for pore pressure initialization.");
     const double gmag=GetHydraulicGmag();
     if(gmag<=0)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore pressure initialization.");
     const double waterlevel=PorePressureWaterLevel;
@@ -246,7 +246,7 @@ void JSphCpuSingle::ConfigDomain(){
         const tdouble3 ps=Posc[p];
         const double z=GetHydraulicElevation(ps);
         const double depth=waterlevel-z;
-        const double hydrostatic=(depth>0? double(WaterDensity)*gmag*depth: 0.);
+        const double hydrostatic=(depth>0? double(SoilCte.WaterDensity)*gmag*depth: 0.);
         double excess=0.;
         if(PorePressureInit==3){
           double eta=(zrange>0.? (z-zmin)/zrange: 0.);
@@ -1477,7 +1477,7 @@ void JSphCpuSingle::SaveData(){
     if(excessporepress){
       const double gmag=GetHydraulicGmag();
       if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to output ExcessPorePress.");
-      const double rhog=double(WaterDensity)*gmag;
+      const double rhog=double(SoilCte.WaterDensity)*gmag;
       for(unsigned p=0;p<npsave;p++){
         if(idp[p]>=CaseNbound){
           const tdouble3 ps=pos[p];

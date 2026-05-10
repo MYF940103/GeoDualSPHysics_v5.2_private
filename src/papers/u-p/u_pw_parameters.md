@@ -8,12 +8,35 @@ This document summarizes the hydromechanical parameters currently introduced for
 |---|---:|---:|---|---|
 | `HydromechCoupling` | `0/1` | `0` | Master switch for the hydromechanical CPU prototype. | Keep |
 | `PorePressureModel` | `0/1/2` | `0` | `0`: disabled, `1`: PR explicit pore-pressure-rate, `2`: PPE placeholder. | Keep `0/1`; make `2` a hard error |
+| `PorePressureDtSafety` | float, `>0` | `0.1` | Safety factor for `dt_pore`. | Keep |
+| `HydraulicGravityX/Y/Z` | float vector | `(0,0,0)` | Optional hydraulic gravity vector. If all components are zero, hydraulic gravity falls back to body `Gravity`. | Keep |
+
+The material/phase constants below are now soil material constants and should be written under `<execution><special><soils>` next to `ModulusE`, `PRvs`, `phi`, and `coh`:
+
+| Soil parameter | Type / values | Default | Purpose | Keep? |
+|---|---:|---:|---|---|
 | `Porosity0` | float, `(0,1)` | `0.3` | Constant porosity `n` used in PR rate and pore timestep. | Keep |
 | `HydraulicConductivity` | float, `>=0` | `0` | Hydraulic conductivity `k` [m/s]. If zero, diffusion and pore timestep restriction are disabled. | Keep |
 | `WaterBulkModulus` | float, `>0` | `2e8` | Water bulk modulus `Kw` [Pa]. | Keep |
 | `WaterDensity` | float, `>0` | `1000` | Water density `rho_w` [kg/m3]. | Keep |
-| `PorePressureDtSafety` | float, `>0` | `0.1` | Safety factor for `dt_pore`. | Keep |
-| `HydraulicGravityX/Y/Z` | float vector | `(0,0,0)` | Optional hydraulic gravity vector. If all components are zero, hydraulic gravity falls back to body `Gravity`. | Keep |
+
+Recommended XML location:
+
+```xml
+<execution>
+  <special>
+    <soils>
+      ...
+      <Porosity0 value="0.3" />
+      <HydraulicConductivity value="1e-3" />
+      <WaterBulkModulus value="2e8" />
+      <WaterDensity value="1000" />
+    </soils>
+  </special>
+</execution>
+```
+
+The old `<execution><parameters>` keys with the same names are temporarily still accepted as deprecated fallbacks for old cases. If both locations are present, `<special><soils>` overrides `<parameters>` and a warning is printed. `PorePressureDtSafety` remains a numerical timestep-control parameter under `<execution><parameters>`.
 
 Current PR rate:
 

@@ -594,11 +594,15 @@ double JSphCpu::LimitInitialDtByPorePressure(double dt){
   if(!HydromechCoupling || PorePressureModel!=1)return(dt);
   double dtpore=DBL_MAX;
   bool dtporeactive=false;
-  if(HydraulicConductivity>0.f && WaterBulkModulus>0.f && WaterDensity>0.f && Porosity0>0.f && Porosity0<1.f && PorePressureDtSafety>0.f){
+  const float porosity0=SoilCte.Porosity0;
+  const float hydraulicconductivity=SoilCte.HydraulicConductivity;
+  const float waterbulkmodulus=SoilCte.WaterBulkModulus;
+  const float waterdensity=SoilCte.WaterDensity;
+  if(hydraulicconductivity>0.f && waterbulkmodulus>0.f && waterdensity>0.f && porosity0>0.f && porosity0<1.f && PorePressureDtSafety>0.f){
     const double gmag=GetHydraulicGmag();
     if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure timestep restriction.");
-    const double cw=double(WaterDensity)*gmag*double(Porosity0)/double(WaterBulkModulus);
-    dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(HydraulicConductivity);
+    const double cw=double(waterdensity)*gmag*double(porosity0)/double(waterbulkmodulus);
+    dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(hydraulicconductivity);
     if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
     dtporeactive=true;
     if(!PorePressureDtConfigPrint){
@@ -608,13 +612,13 @@ double JSphCpu::LimitInitialDtByPorePressure(double dt){
       PorePressureDtFixedPrint=(FixedDt!=NULL);
     }
   }
-  else if(HydraulicConductivity==0.f){
+  else if(hydraulicconductivity==0.f){
     if(!PorePressureDtConfigPrint){
       Log->Print("Pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
       PorePressureDtConfigPrint=true;
     }
   }
-  else if(HydraulicConductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
+  else if(hydraulicconductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
   PorePressureDt=dtpore;
   PorePressureDtActive=dtporeactive;
   if(dtporeactive && dt>dtpore){
@@ -1565,15 +1569,19 @@ void JSphCpu::ComputeHydroDivVel(unsigned n,unsigned pini
 void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
   ,const typecode *code,const float *divvel,const float *lapporepress,const float *lapz,float *porepressrate)const
 {
-  if(Porosity0<=0.f || Porosity0>=1.f)Run_Exceptioon("Porosity0 must be between 0 and 1 for PR pore-pressure-rate update.");
-  if(WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero for PR pore-pressure-rate update.");
-  if(WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero for PR pore-pressure-rate update.");
+  const float porosity0=SoilCte.Porosity0;
+  const float hydraulicconductivity=SoilCte.HydraulicConductivity;
+  const float waterbulkmodulus=SoilCte.WaterBulkModulus;
+  const float waterdensity=SoilCte.WaterDensity;
+  if(porosity0<=0.f || porosity0>=1.f)Run_Exceptioon("Soil Porosity0 must be between 0 and 1 for PR pore-pressure-rate update.");
+  if(waterbulkmodulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero for PR pore-pressure-rate update.");
+  if(waterdensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for PR pore-pressure-rate update.");
   const double gmag=GetHydraulicGmag();
-  if(HydraulicConductivity>0.f && gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero when HydraulicConductivity is enabled.");
+  if(hydraulicconductivity>0.f && gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero when soil HydraulicConductivity is enabled.");
   const unsigned np=pini+n;
   memset(porepressrate,0,sizeof(float)*np);
-  const float factor=WaterBulkModulus/Porosity0;
-  const float difcoef=(HydraulicConductivity>0.f? float(double(HydraulicConductivity)/(double(WaterDensity)*gmag)): 0.f);
+  const float factor=waterbulkmodulus/porosity0;
+  const float difcoef=(hydraulicconductivity>0.f? float(double(hydraulicconductivity)/(double(waterdensity)*gmag)): 0.f);
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -1583,7 +1591,7 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
     // DivVelc stores the mathematical divergence of the skeleton velocity.
     // Compression gives DivVelc < 0, while pore-pressure generation is
     // compression-positive, so the volumetric PR contribution is -DivVelc.
-    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(-divvel[p1]+difcoef*lapporepress[p1]+HydraulicConductivity*lapz[p1]);
+    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(-divvel[p1]+difcoef*lapporepress[p1]+hydraulicconductivity*lapz[p1]);
   }
 }
 
@@ -1626,7 +1634,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
   unsigned npmat=0;
   double pwbeforemin=DBL_MAX,pwbeforemax=-DBL_MAX;
   double excessbeforemin=DBL_MAX,excessbeforemax=-DBL_MAX;
-  const double rhog=double(WaterDensity)*GetHydraulicGmag();
+  const double rhog=double(SoilCte.WaterDensity)*GetHydraulicGmag();
   const bool excessmode=(PorePressureShepardMode==1);
   for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
     npmat++;
@@ -1752,7 +1760,7 @@ unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdo
   if(!pos || !code)Run_Exceptioon("Pointers without data for top drained pore-pressure boundary.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for top drained pore-pressure boundary.");
-  const double rhog=double(WaterDensity)*gmag;
+  const double rhog=double(SoilCte.WaterDensity)*gmag;
   const double drainthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
   if(drainthick<=0.)Run_Exceptioon("Top drained pore-pressure boundary requires a positive drain thickness or KernelH.");
 
@@ -1809,7 +1817,7 @@ unsigned JSphCpu::ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const t
   if(!pos || !code)Run_Exceptioon("Pointers without data for bottom no-flux pore-pressure boundary.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for bottom no-flux pore-pressure boundary.");
-  const double rhog=double(WaterDensity)*gmag;
+  const double rhog=double(SoilCte.WaterDensity)*gmag;
   const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
   if(bottomthick<=0.)Run_Exceptioon("Bottom no-flux pore-pressure boundary requires a positive thickness or KernelH.");
 
@@ -2021,7 +2029,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const
 {
   const bool excessmode=(PorePressureFeedbackMode==1);
-  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  const double rhog=(excessmode? double(SoilCte.WaterDensity)*GetHydraulicGmag(): 0.);
   if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback mode.");
   const int nint=int(n);
   #ifdef OMP_USE
@@ -2090,7 +2098,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,u
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const
 {
   const bool excessmode=(PorePressureFeedbackMode==1);
-  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  const double rhog=(excessmode? double(SoilCte.WaterDensity)*GetHydraulicGmag(): 0.);
   if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback difference diagnostic.");
   const int nint=int(n);
   #ifdef OMP_USE
@@ -2159,7 +2167,7 @@ template<TpKernel tker> unsigned JSphCpu::ComputePorePressureAccelSymCorrT(unsig
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacesymcorr)const
 {
   const bool excessmode=(PorePressureFeedbackMode==1);
-  const double rhog=(excessmode? double(WaterDensity)*GetHydraulicGmag(): 0.);
+  const double rhog=(excessmode? double(SoilCte.WaterDensity)*GetHydraulicGmag(): 0.);
   if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for corrected-gradient pore-pressure feedback diagnostic.");
   const double determlimit=1e-6;
   int fallbackcount=0;
@@ -3798,11 +3806,15 @@ double JSphCpu::DtVariable(bool final){
   double dtpore=DBL_MAX;
   bool dtporeactive=false;
   if(HydromechCoupling && PorePressureModel==1){
-    if(HydraulicConductivity>0.f && WaterBulkModulus>0.f && WaterDensity>0.f && Porosity0>0.f && Porosity0<1.f && PorePressureDtSafety>0.f){
+    const float porosity0=SoilCte.Porosity0;
+    const float hydraulicconductivity=SoilCte.HydraulicConductivity;
+    const float waterbulkmodulus=SoilCte.WaterBulkModulus;
+    const float waterdensity=SoilCte.WaterDensity;
+    if(hydraulicconductivity>0.f && waterbulkmodulus>0.f && waterdensity>0.f && porosity0>0.f && porosity0<1.f && PorePressureDtSafety>0.f){
       const double gmag=GetHydraulicGmag();
       if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure timestep restriction.");
-      const double cw=double(WaterDensity)*gmag*double(Porosity0)/double(WaterBulkModulus);
-      dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(HydraulicConductivity);
+      const double cw=double(waterdensity)*gmag*double(porosity0)/double(waterbulkmodulus);
+      dtpore=double(PorePressureDtSafety)*cw*double(KernelH)*double(KernelH)/double(hydraulicconductivity);
       if(dtpore<=0. || fun::IsNAN(dtpore) || fun::IsInfinity(dtpore))Run_Exceptioon(fun::PrintStr("The computed pore-pressure timestep is invalid (dt_pore=%g).",dtpore));
       dtporeactive=true;
       if(!PorePressureDtConfigPrint){
@@ -3812,13 +3824,13 @@ double JSphCpu::DtVariable(bool final){
         PorePressureDtFixedPrint=(FixedDt!=NULL);
       }
     }
-    else if(HydraulicConductivity==0.f){
+    else if(hydraulicconductivity==0.f){
       if(!PorePressureDtConfigPrint){
         Log->Print("Pore-pressure timestep restriction: active=False, disabled because HydraulicConductivity=0.");
         PorePressureDtConfigPrint=true;
       }
     }
-    else if(HydraulicConductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
+    else if(hydraulicconductivity>0.f)Run_Exceptioon("Invalid hydromechanical parameters for pore-pressure timestep restriction.");
   }
   PorePressureDt=dtpore;
   PorePressureDtActive=dtporeactive;
