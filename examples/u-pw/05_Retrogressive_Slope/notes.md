@@ -64,3 +64,8 @@ PR field plumbing. It does not satisfy the full CPU strict reproduction gate.
 Strict retrogressive behavior remains deferred until the material model,
 boundary treatment, initial-state workflow, and GPU path are ready or formally
 deferred.
+
+`analyze_slope_smoke.py` provides the current reduced-smoke postprocessing
+path. It reports displacement and velocity magnitudes, pore-pressure ranges,
+and `Kplastic` ranges. This is a smoke-health metric only; it is not a
+retrogression-distance or failure-surface analysis.

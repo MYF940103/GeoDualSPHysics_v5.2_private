@@ -56,7 +56,7 @@ with missing features documented.
 | 02 SelfWeight formal smoke | Mostly available | Blocks GPU G1 only as a case-readiness gate | Formalize Scenario 1/2 XML/BAT and record one short smoke result for each. |
 | 03 Cryer scaffold/smoke | Cryer-like strict/minimal smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict geometry, drained curved boundary, pore-pressure ghost/MLS, and analytical center-pressure comparison remain missing. |
 | 04 Undrained triaxial scaffold/smoke | Strict/minimal AccInput smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict axial loading/confinement and MCC/DP material decision remain missing; framewise `p'`/`q` proxy output exists. |
-| 05 Retrogressive slope scaffold/smoke | Reduced wedge smoke only | Blocks strict reproduction gate | Strict retrogression remains sensitive-clay/softening, initial-state, boundary, and GPU blocked. |
+| 05 Retrogressive slope scaffold/smoke | Strict/minimal reduced wedge smoke now runs | Blocks full strict reproduction, but no longer empty TODO | Strict retrogression remains sensitive-clay/softening, initial-state, boundary, and GPU blocked. |
 | 06 Sainte-Monique scaffold/smoke | Reduced placeholder smoke only; field data blocked | Blocks strict field reproduction gate | Full field reproduction is data/material/GPU blocked; placeholder smoke is not a validated field case. |
 | `TopLoad*` cleanup/deprecation | Source-side path removed in CPU-F6a | Complete before GPU G1 | Formal external-load path is native `AccInput`; formal XML no longer depends on source `TopLoad*`. Archived experiments are historical only. |
 | Boundary ghost production decision | Diagnostic result is negative for simple ghost Laplacian | Must be documented before GPU boundary kernels | Keep current layer corrections as production baseline for G1-G4; defer proper MLS/mirror design. |
@@ -110,10 +110,10 @@ with missing features documented.
 | Field | Status |
 |---|---|
 | Current state | README, notes, TODO XML, and reduced 3D wedge PR smoke XML/BAT exist. |
-| Short runnable? | Yes, reduced smoke passed: GenCase code=0, Dual code=0, excluded=0. |
+| Short runnable? | Yes, reduced smoke passed again: GenCase code=0, Dual code=0, excluded=0. |
 | Missing features | Sensitive clay / strain-softening model, robust large-deformation settings, pore-pressure initial/boundary strategy, coupled feedback at slope scale, GPU kernels, and postfailure monitoring. |
-| Minimum smoke test | Current reduced smoke meets CPU case-readiness: `code=0`, `excluded=0` for a tiny time window, key fields written, no immediate numerical blow-up. |
-| Blocks GPU G1? | Yes under the strict full-paper gate unless sensitive-clay and production slope reproduction are explicitly deferred. |
+| Minimum smoke test | Current strict/minimal reduced smoke meets CPU execution readiness: `code=0`, `excluded=0`, no NaN/Inf, key fields written, and `analyze_slope_smoke.py` records displacement, velocity, pore-pressure, and `Kplastic` ranges. |
+| Blocks GPU G1? | Still blocks full strict slope reproduction, but not because it is TODO-only. Remaining blockers are sensitive-clay/softening, initial-state, and production-scale boundary/runtime decisions. |
 
 ### 06: `06_Sainte_Monique`
 

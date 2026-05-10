@@ -16,6 +16,11 @@ validated retrogression or landslide reproduction.
   health without attempting production landslide coupling.
 - `xCaseRetrogressiveSlope_PR_ReducedSmoke_win64_CPU_debug.bat`  
   Debug CPU launcher for the reduced smoke case.
+- `analyze_slope_smoke.py`  
+  Lightweight summary of displacement, velocity, pore pressure, excess pore
+  pressure, and `Kplastic` ranges.
+- `slope_smoke_summary.csv`  
+  Latest reduced smoke postprocessing summary.
 - `CaseRetrogressiveSlope_PR_TODO_Def.xml`  
   Historical placeholder kept to document the original feature-blocked state.
 
@@ -26,17 +31,17 @@ Latest reduced smoke:
 | Item | Result |
 | --- | --- |
 | GenCase | code=0 |
-| DualSPHysics CPU Debug | code=0 |
+| DualSPHysics CPU Release | code=0 |
 | TimeMax | 0.0002 s |
 | Excluded particles | 0 |
-| Material particles | 602 |
-| Boundary particles | 1173 |
+| Particle rows in CSV | 1775 |
+| NaN/Inf scan | not detected |
+| Max displacement | `2.10e-7 m` |
 | Max velocity | `1.98e-3 m/s` |
-| Mean velocity | `1.97e-3 m/s` |
-| PorePress range | `399.02` to `2561.64 Pa` |
-| ExcessPorePress range | `5.64` to `12.09 Pa` |
-| PorePressRate max | `1.66e5 Pa/s` |
-| DivVel range | `-4.41e-4` to `-3.31e-5 1/s` |
+| Mean velocity | `6.67e-4 m/s` |
+| PorePress range | `0` to `2561.64 Pa` |
+| ExcessPorePress range | `0` to `12.09 Pa` |
+| Kplastic range | `0` to `0` |
 
 The smoke confirms that a reduced slope geometry can run with current CPU PR
 fields and write the expected pore-pressure diagnostics.

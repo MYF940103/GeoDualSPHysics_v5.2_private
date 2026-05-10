@@ -1,12 +1,12 @@
 # Smoke Status: Retrogressive Slope Reduced PR Case
 
-Date: 2026-05-10
+Date: 2026-05-11
 
 ## Case
 
 - XML: `CaseRetrogressiveSlope_PR_ReducedSmoke_Def.xml`
 - Launcher: `xCaseRetrogressiveSlope_PR_ReducedSmoke_win64_CPU_debug.bat`
-- Solver path tested: CPU Debug
+- Solver path tested: CPU Release
 - TimeMax: `0.0002 s`
 - TimeOut: `0.0002 s`
 
@@ -18,9 +18,9 @@ Date: 2026-05-10
 | DualSPHysics | code=0 |
 | Excluded particles | 0 |
 | Steps | 53 |
-| Runtime | 3.14 s |
-| Material particles | 602 |
-| Boundary particles | 1173 |
+| Runtime | 0.77 s |
+| Particle rows in CSV | 1775 |
+| NaN/Inf scan | not detected |
 
 ## Field Output
 
@@ -42,13 +42,13 @@ Date: 2026-05-10
 
 | Metric | Value |
 | --- | --- |
+| Max displacement | `2.10e-7 m` |
+| Mean displacement | `6.75e-8 m` |
 | Max velocity | `1.98e-3 m/s` |
-| Mean velocity | `1.97e-3 m/s` |
-| PorePress min/max/mean | `399.02 / 2561.64 / 1627.12 Pa` |
-| ExcessPorePress min/max/mean | `5.64 / 12.09 / 7.97 Pa` |
-| PorePressRate max | `1.66e5 Pa/s` |
-| DivVel min/max/mean | `-4.41e-4 / -3.31e-5 / -1.73e-4 1/s` |
-| PorePressureAccelDiff.z min/max/mean | `-7.63e-3 / 1.09e-2 / 1.52e-3 m/s2` |
+| Mean velocity | `6.67e-4 m/s` |
+| PorePress min/max | `0 / 2561.64 Pa` |
+| ExcessPorePress min/max | `0 / 12.09 Pa` |
+| Kplastic min/max | `0 / 0` |
 
 ## Interpretation
 
@@ -57,4 +57,6 @@ It does not validate retrogression. Strict reproduction remains blocked by
 sensitive clay / strain-softening, production boundary treatment, and GPU-scale
 runtime needs.
 
-Generated output was removed after recording these metrics.
+`analyze_slope_smoke.py` writes `slope_smoke_summary.csv` with displacement,
+velocity, pore-pressure, excess-pressure, and `Kplastic` ranges. Generated
+output was removed after recording these metrics.
