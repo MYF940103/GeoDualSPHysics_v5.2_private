@@ -62,7 +62,10 @@ Temporary GPU buffers are also needed for:
 - Bottom no-flux reference-layer reductions: count, sum of excess pressure, and possibly min/max diagnostics.
 - Top/bottom material elevation range reductions if computed on GPU.
 
-The symmetric diagnostic `PorePressureAceg` may be ported later only if strict backward compatibility with `PorePressureFeedbackOperator=0` is required on GPU. The corrected symmetric diagnostic `PorePressureAceSymCorrc` should remain CPU-only or be removed later, because it increased the uniform-pressure boundary spike in CPU tests.
+The symmetric diagnostic `PorePressureAceg` may be ported later only if strict
+backward compatibility with `PorePressureFeedbackOperator=0` is required on
+GPU. The corrected symmetric diagnostic `PorePressureAceSymCorrc` has been
+removed from CPU and must not be ported.
 
 Corrected-gradient PR diagnostics (`DivVelCorr`, `LapPorePressCorr`, `LapZCorr`)
 are also deferred. CPU-CG1 showed that the material-only corrected-gradient

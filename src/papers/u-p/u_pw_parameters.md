@@ -348,6 +348,11 @@ Current external-load path:
 Use native DualSPHysics accinput with a dedicated top-layer mkfluid group.
 ```
 
+Archived XML files under `examples/u-pw/**/experiments/` may still contain
+historical `TopLoad*` keys. They document failed/deprecated experiments and are
+not guaranteed to parse after CPU-F6a. Formal case XML should not contain
+`TopLoad*`.
+
 ### Removed `PorePressureAccelSymCorr`
 
 Removed diagnostic:

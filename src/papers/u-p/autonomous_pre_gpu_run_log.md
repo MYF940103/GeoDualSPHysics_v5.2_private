@@ -59,3 +59,25 @@ This run also does not start CPU long-time parameter studies.
    expected to remain short.
 8. Final pre-GPU readiness report.
 
+## Phase 4 Cleanup / Freeze Check
+
+Active source search:
+
+- `TopLoadEnabled`, `TopLoad`, `TopLoadThickness`, `TopLoadRampStart`,
+  `TopLoadRampEnd`, and `ApplyTopLoad`: no active `src/source` matches.
+- `PorePressureAccelSymCorr` and `PorePressureAceSymCorrc`: no active
+  `src/source` matches.
+
+Formal XML search:
+
+- No formal `examples/u-pw` XML outside archived `experiments/` and historical
+  result folders depends on `TopLoad*`.
+- Many archived experiment XML files still contain historical `TopLoad*` keys.
+  These are retained as historical records and are not guaranteed to run after
+  CPU-F6a.
+
+Conclusion:
+
+- The CPU production interface cleanup is complete.
+- GPU planning must not include source-side `TopLoad*` or
+  `PorePressureAccelSymCorr`.
