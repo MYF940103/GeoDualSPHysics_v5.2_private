@@ -102,6 +102,10 @@
         <dlt value="0" comment="dilatancy angle" />
         <ModulusE value="2e6" comment="Young modulus from u-pw 1D consolidation setup" />
         <PRvs value="0.3" comment="Poisson ratio" />
+        <Porosity0 value="0.3" comment="Porosity for u-pw PR material" />
+        <HydraulicConductivity value="1e-3" comment="Hydraulic conductivity [m/s]" />
+        <WaterBulkModulus value="2e8" comment="Water bulk modulus [Pa]" />
+        <WaterDensity value="1000" comment="Water density [kg/m3]" />
       </soils>
     </special>
     <parameters>
@@ -127,8 +131,8 @@
       <parameter key="#DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
       <parameter key="#DtFixed" value="DtFixed.dat" comment="Dt values are loaded from file" />
       <parameter key="DtAllParticles" value="0" comment="Use only material particles for dt" />
-      <parameter key="TimeMax" value="3.6" comment="SW-3h Scenario 2 gravity-on dissipation long run" units_comment="seconds" />
-      <parameter key="TimeOut" value="0.1" comment="Output interval" units_comment="seconds" />
+      <parameter key="TimeMax" value="0.002" comment="Scenario 1 staged smoke test" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.002" comment="Output interval" units_comment="seconds" />
       <parameter key="PartsOutMax" value="1" comment="Allowed fraction out" units_comment="decimal" />
       <parameter key="RhopOutMin" value="700" comment="Minimum rhop valid" units_comment="kg/m^3" />
       <parameter key="RhopOutMax" value="2500" comment="Maximum rhop valid" units_comment="kg/m^3" />
@@ -143,16 +147,14 @@
       <parameter key="PorePressureWaterLevel" value="1.00" comment="Water level at column top" />
       <parameter key="PorePressureExcessAmp" value="0" comment="No analytical excess for self-weight initialization [Pa]" />
       <parameter key="PorePressureAnalyticalProfile" value="3" comment="3:uniform excess (unused when PorePressureInit=1)" />
-      <parameter key="PorePressureTopDrained" value="1" comment="" />
-      <parameter key="PorePressureTopDrainedStartTime" value="0.002" comment="" />
+      <parameter key="PorePressureTopDrained" value="0" comment="" />
+      <parameter key="PorePressureTopDrainedStartTime" value="999" comment="" />
       <parameter key="PorePressureDrainThickness" value="0" comment="Use KernelH" />
       <parameter key="PorePressureBottomNoFlux" value="1" comment="" />
       <parameter key="PorePressureBottomNoFluxThickness" value="0" comment="Use KernelH" />
       <parameter key="SavePorePressure" value="1" comment="" />
-      <parameter key="Porosity0" value="0.3" comment="Porosity" />
-      <parameter key="HydraulicConductivity" value="1e-3" comment="Hydraulic conductivity [m/s]" />
-      <parameter key="WaterBulkModulus" value="2e8" comment="Water bulk modulus [Pa]" />
-      <parameter key="WaterDensity" value="1000" comment="Water density [kg/m3]" />
+      
+      <parameter key="SaveExtraParts" value="1" comment="Save mDBC extra restart data for staged Scenario 1" />
       <parameter key="PorePressureDtSafety" value="0.20" comment="Pore-pressure timestep safety" />
       <parameter key="PorePressureFeedback" value="1" comment="" />
       <parameter key="PorePressureFeedbackMode" value="1" comment="" />
@@ -170,3 +172,5 @@
     </parameters>
   </execution>
 </case>
+
+

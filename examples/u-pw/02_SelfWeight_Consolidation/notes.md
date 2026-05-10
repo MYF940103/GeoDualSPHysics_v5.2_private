@@ -1,30 +1,58 @@
-﻿# Notes: Self-Weight Consolidation
+# Notes: Self-Weight Consolidation
 
-## Scenario 2: gravity maintained
+## Current implementation status
 
-Current runnable draft settings:
+The CPU PR prototype now has the pieces needed for short self-weight smoke tests:
 
-- body Gravity = `(0,0,-9.81)`
-- HydraulicGravity = `(0,0,-9.81)`
-- `PorePressureInit=1`
-- `PorePressureFeedback=1`
-- `PorePressureFeedbackMode=1`
-- `PorePressureFeedbackOperator=1`
-- `PorePressureTopDrained=1`
-- `PorePressureTopDrainedStartTime=0.002`
-- `PorePressureBottomNoFlux=1`
-- `HydromechDampingXi=0.10`
-- `PorePressureShepard=1`
-- `PorePressureShepardInterval=10`
-- `PorePressureDtSafety=0.20`
+- `PorePress` restart is implemented and should be used for Scenario 1 Stage B.
+- `BodyGravityStopTime` is available as an alternative in-run route, but the formal Scenario 1 scaffold uses restart because it mirrors the Supporting Information staged workflow more explicitly.
+- `HydraulicGravity` is independent of body gravity and remains active when Stage B sets body Gravity to zero.
+- `PorePressureFeedbackMode=1` and `PorePressureFeedbackOperator=1` are the recommended coupled settings for self-weight/Terzaghi-style tests.
+- `PorePressureShepardMode=1` and `HydromechDampingXi` are the recommended stabilization controls for smoke tests.
 
-Expected qualitative trend: excess pore pressure decays and total pore pressure tends toward hydrostatic.
+## Scenario 1 workflow
 
-## Scenario 1: gravity switched off
+Stage A:
 
-Required missing feature:
+- body Gravity = `(0,0,-9.81)`;
+- HydraulicGravity = `(0,0,-9.81)`;
+- hydrostatic initialization with `PorePressureInit=1`;
+- top drainage inactive during the undrained generation window;
+- bottom no-flux active;
+- `SavePorePressure=1` so Stage B can restore `PorePress` from PART output.
 
-- `PorePress` restart, or
-- runtime body gravity switch such as `BodyGravityStopTime`.
+Stage B:
 
-After undrained self-weight generation, the second stage should run with body Gravity = `(0,0,0)` while `HydraulicGravity=(0,0,-9.81)` remains active and top drained is enabled.
+- restart from the Stage A final PART file;
+- body Gravity = `(0,0,0)`;
+- HydraulicGravity = `(0,0,-9.81)`;
+- top drained active from the start of Stage B;
+- bottom no-flux active;
+- restart `PorePress` wins over XML initialization.
+
+Expected short-window trend: the Stage A self-weight excess pressure is positive; Stage B begins dissipating excess pressure while avoiding a restart discontinuity.
+
+## Scenario 2 workflow
+
+Scenario 2 keeps body gravity on after the undrained stage. Top drainage activates after the prescribed undrained time, and total pore pressure should trend toward the hydrostatic profile.
+
+## Diagnostic boundaries and operators
+
+Boundary ghost diagnostics and corrected-gradient diagnostics are intentionally not used by the production PR operator:
+
+- CPU-BG3 showed the simple ghost Laplacian did not improve bottom hydrostatic consistency.
+- CPU-CG1 showed material-only corrected-gradient diagnostics did not outperform the current production operator in the tested smoke cases.
+
+They remain diagnostics/research paths only. Production smoke tests should continue using the current material-only PR path plus layer top-drained/bottom-no-flux corrections.
+
+## CPU/GPU policy
+
+Do not use this directory for long CPU parameter sweeps. The CPU target is smoke readiness only:
+
+- `code=0`;
+- `excluded=0`;
+- no NaN;
+- key hydromech fields written;
+- qualitative pore-pressure trend correct.
+
+Long-time sensitivity and strict figure reproduction should wait for the GPU port.
