@@ -1,0 +1,105 @@
+<?xml version="1.0" encoding="utf-8"?>
+<case app="GenCase v5.0" date="Softening micro smoke CaseRetrogressiveSlope_PR_SofteningMicro_On">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="-9.81" comment="Mechanical gravity for reduced slope smoke" units_comment="m/s^2" />
+      <rhop0 value="2100" comment="Reference bulk density of soil mixture" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" />
+      <gamma value="7" />
+      <speedsystem value="0" auto="true" />
+      <coefsound value="20" />
+      <speedsound value="20" auto="false" comment="Explicit non-zero sound speed for robust smoke testing" />
+      <hdp value="1.8" />
+      <cflnumber value="0.2" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <definition dp="0.02" units_comment="metres (m)">
+        <pointmin x="-0.08" y="-0.04" z="-0.06" />
+        <pointmax x="0.68" y="0.08" z="0.32" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setdrawmode mode="full" />
+          <setmkbound mk="0" name="ReducedContainer" />
+          <drawbox>
+            <boxfill>all^top</boxfill>
+            <point x="-0.02" y="-0.02" z="-0.02" />
+            <size x="0.64" y="0.08" z="0.28" />
+          </drawbox>
+          <setmkfluid mk="0" name="ReducedSlopeSoil" />
+          <drawprism mask="0">
+            <point x="0.00" y="0.00" z="0.00" />
+            <point x="0.56" y="0.00" z="0.00" />
+            <point x="0.26" y="0.00" z="0.22" />
+            <point x="0.00" y="0.00" z="0.22" />
+            <point x="0.00" y="0.04" z="0.00" />
+            <point x="0.56" y="0.04" z="0.00" />
+            <point x="0.26" y="0.04" z="0.22" />
+            <point x="0.00" y="0.04" z="0.22" />
+          </drawprism>
+          <shapeout file="" />
+        </mainlist>
+      </commands>
+    </geometry>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <phi value="0" comment="Micro-test peak friction angle [deg]" />
+        <phi_r value="0" comment="Micro-test residual friction angle [deg]" />
+        <coh value="50" comment="Micro-test peak cohesion [Pa]" />
+        <coh_r value="5" comment="Micro-test residual cohesion [Pa]" />
+        <dlt value="0" comment="Dilatancy angle" />
+        <n_coh value="80" comment="Cohesion softening coefficient" />
+        <n_phi value="80" comment="Friction softening coefficient" />
+        <Softening value="1" comment="CPU DP exponential softening switch" />
+        <ModulusE value="2e6" comment="Elastic modulus placeholder" />
+        <PRvs value="0.3" comment="Poisson ratio" />
+        <Porosity0 value="0.3" comment="Porosity" />
+        <HydraulicConductivity value="1e-3" comment="Hydraulic conductivity [m/s]" />
+        <WaterBulkModulus value="2e8" comment="Water bulk modulus [Pa]" />
+        <WaterDensity value="1000" comment="Water density [kg/m3]" />
+      </soils>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="0" />
+      <parameter key="Boundary" value="1" comment="cDBC for small geometry smoke" />
+      <parameter key="StepAlgorithm" value="2" />
+      <parameter key="Kernel" value="2" />
+      <parameter key="ViscoTreatment" value="1" />
+      <parameter key="Visco" value="0.5" />
+      <parameter key="DensityDT" value="0" />
+      <parameter key="Shifting" value="0" />
+      <parameter key="RigidAlgorithm" value="1" />
+      <parameter key="CoefDtMin" value="0.01" />
+      <parameter key="DtAllParticles" value="0" />
+      <parameter key="TimeMax" value="0.0005" comment="Very short reduced slope smoke" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.0005" units_comment="seconds" />
+      <parameter key="PartsOutMax" value="2" />
+      <parameter key="RhopOutMin" value="700" />
+      <parameter key="RhopOutMax" value="3000" />
+      <simulationdomain>
+        <posmin x="default" y="default" z="default" />
+        <posmax x="default" y="default" z="default" />
+      </simulationdomain>
+
+      <parameter key="HydromechCoupling" value="1" />
+      <parameter key="PorePressureModel" value="1" />
+      <parameter key="PorePressureInit" value="1" comment="Hydrostatic baseline" />
+      <parameter key="PorePressureWaterLevel" value="0.26" comment="Reduced saturated slope water level" />
+      <parameter key="PorePressureTopDrained" value="0" comment="No production drained boundary in this reduced smoke" />
+      <parameter key="PorePressureBottomNoFlux" value="0" comment="Boundary treatment deferred for strict reproduction" />
+      <parameter key="SavePorePressure" value="1" />
+      <parameter key="PorePressureDtSafety" value="0.20" />
+      <parameter key="HydraulicGravityX" value="0" />
+      <parameter key="HydraulicGravityY" value="0" />
+      <parameter key="HydraulicGravityZ" value="-9.81" />
+      <parameter key="PorePressureFeedback" value="0" comment="Feedback off for first reduced geometry/field smoke" />
+      <parameter key="PorePressureFeedbackMode" value="1" />
+      <parameter key="PorePressureFeedbackOperator" value="1" />
+      <parameter key="PorePressureShepard" value="0" />
+      <parameter key="HydromechDamping" value="0" />
+    </parameters>
+  </execution>
+</case>

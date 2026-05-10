@@ -181,3 +181,20 @@ Check:
 
 This is a CPU reduced-smoke material feature, not a complete paper
 reproduction.
+
+## 9. Micro-Test Result
+
+CPU micro tests were added under
+`examples/u-pw/05_Retrogressive_Slope/experiments/SofteningMicro/`.
+
+The baseline/off, on, and extreme-residual cases all completed with `code=0`,
+`excluded=0`, and no NaN/Inf. The deliberately weak trigger case also completed
+and produced visible plastic strain:
+
+- `Kplastic_max = 8.5393706e-4`;
+- estimated local cohesion minimum `0.8587 Pa` from a peak value of `1 Pa` and
+  residual value of `0.1 Pa`;
+- no negative strength, NaN, or excluded particles.
+
+This validates the CPU code path before moving to the reduced retrogressive
+slope softening smoke.

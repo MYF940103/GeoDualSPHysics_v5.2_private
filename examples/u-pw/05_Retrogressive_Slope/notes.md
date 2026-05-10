@@ -69,3 +69,20 @@ deferred.
 path. It reports displacement and velocity magnitudes, pore-pressure ranges,
 and `Kplastic` ranges. This is a smoke-health metric only; it is not a
 retrogression-distance or failure-surface analysis.
+
+## Softening Micro Tests
+
+`experiments/SofteningMicro/` contains CPU-only micro tests for the
+Drucker-Prager exponential softening switch. These tests are deliberately tiny
+and are not paper-scale slope reproductions.
+
+The `CaseRetrogressiveSlope_PR_SofteningMicro_Trigger` run completed with
+`code=0`, `excluded=0`, no NaN/Inf, and visible plasticity:
+
+- `Kplastic_max = 8.5393706e-4`;
+- estimated cohesion reduced from `1 Pa` to about `0.8587 Pa`;
+- generated output was removed after summary extraction.
+
+This confirms that the CPU softening code path can be activated and bounded by
+the residual-strength formula. The full retrogressive slope still requires a
+larger reduced softening smoke and eventually paper-scale calibration.
