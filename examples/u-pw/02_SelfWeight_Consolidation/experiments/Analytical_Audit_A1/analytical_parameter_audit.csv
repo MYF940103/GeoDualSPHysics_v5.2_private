@@ -1,0 +1,18 @@
+parameter,value_used_in_code,value_used_in_analytical,source,consistency_status,notes
+H / material height,0.9900000001,0.9900000001,frame metrics zmax-zmin,"consistent with comparison, nominal SI H=1.0 differs by one particle spacing","The code material centers span 0.005..0.995 m, so H=0.99 m was used."
+Drainage path Hdr,0.9900000001,0.9900000001,top drained + bottom no-flux,consistent,Single drainage to top.
+Coordinate,hydraulic elevation from bottom upward,z measured bottom upward,code helper / SI notes,consistent,"Plots use z/H=0 bottom, 1 top."
+dp,0.01,not in continuum analytical,XML,not applicable,Particle spacing affects SPH operator but not analytical curve.
+KernelH,0.018,not in continuum analytical,GenCase H,not applicable,Boundary layer corrections use KernelH.
+Porosity0 n,0.3,0.3,XML/material and analytical notes,consistent,
+HydraulicConductivity k,0.001,0.001,XML/material and analytical notes,consistent,
+WaterBulkModulus Kw,200000000,200000000,XML/material and analytical notes,consistent for p0; not used in simplified cv,"Analytical cv used M*k/(rho_w*g), relying on Kw/n >> M."
+WaterDensity rho_w,1000,1000,XML/material and analytical notes,consistent,
+Gravity magnitude,9.81,9.81,XML,consistent,
+M constrained modulus,2692307.69231,2692307.69231,"E, nu",consistent,
+cv analytical,,0.274445228574,analytical reconstruction,assumption,Uses k*M/(rho_w*g).
+cv finite-Kw storage,,0.273341350045,derived check,near-consistent,Using M*Kw/n/(M+Kw/n) changes cv by less than 0.5%.
+Direct PR hydraulic diffusivity,67.957866123,not used,code hydraulic term before mechanical storage elimination,not the analytical equation,Direct pressure-only PR hydraulic coefficient is much larger; coupled mechanics supplies effective storage.
+Top drained start,0.002,0.002,XML and comparison script,consistent in current reconstruction,A1 also tests no-shift and best-fit offsets.
+Initial excess profile,"generated dynamically during first 0.002 s, not saved",linear self-weight p0(y)=P0*(H-y),SI Eq. 4,partly inconsistent / unobserved,"Saved Part_0000 is hydrostatic excess=0, not the analytical post-undrained initial state."
+Bottom extraction,mean of bottom KernelH layer,point y=0 bottom value,analysis scripts,approximation,Layer averaging can contribute small systematic bias.
