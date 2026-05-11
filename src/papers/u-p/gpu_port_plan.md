@@ -659,3 +659,49 @@ SVG figures.
 G9 does not include parameter sensitivity, Scenario 1 GPU restart workflow,
 GPU softening, boundary ghost production operators, corrected-gradient
 production operators, or additional source-code changes.
+
+## G9b Self-Weight xi=0.05 GPU Status, 2026-05-11
+
+Implemented in G9b:
+
+- No source-code changes.
+- Added a GPU Release 3.6 s self-weight Scenario 2 `xi=0.05` comparison line in
+  `examples/u-pw/02_SelfWeight_Consolidation/experiments/GPU_G9b_SelfWeightLong_Xi005/`.
+- The case keeps the validated G1-G6 coupled PR GPU path and differs from G9
+  only in `HydromechDampingXi=0.05`.
+
+Validation summary:
+
+- `code=0`, `excluded=0`.
+- `steps=3,775,438`, runtime `12,888.19 s`, frames `37`.
+- Final max excess pressure: `1110.17 Pa`.
+- Final mean excess pressure: `695.39 Pa`.
+- Final bottom mean excess pressure: `1110.00 Pa`.
+- Final top drained excess maxAbs: `9.46e-7 Pa`.
+- Final bottom no-flux proxy: `8.72e-3 Pa`.
+- Saved-frame excess envelope decayed from peak maxAbs `15892.95 Pa` to
+  `1110.17 Pa`, final/peak ratio `0.06985`.
+
+Comparison:
+
+- Relative to GPU G9 `xi=0.10`, the `xi=0.05` line ended with about `50 Pa`
+  lower final max/bottom excess and about `30.6 Pa` lower mean excess.
+- Runtime was about `1941.67 s` longer than GPU G9 `xi=0.10`.
+- Relative to the committed CPU SW3h `xi=0.10` reference, the cross-damping
+  speedup is `5.32x`.
+
+Generated outputs:
+
+- `gpu_g9b_frame_metrics.csv`;
+- `gpu_g9b_case_summary.csv`;
+- SVG and PNG comparison figures for profiles, bottom pressure, bottom excess,
+  excess envelope decay, and CPU/GPU/hydrostatic reference comparison.
+
+Generated particle/log outputs were cleaned after extracting summary CSVs and
+figures.
+
+G9b does not include Scenario 1 GPU workflow, GPU softening, boundary ghost
+production operators, corrected-gradient production operators, parameter
+sensitivity, or additional source-code changes. The `xi=0.05` line is suitable
+as the paper-compatible Scenario 2 damping line; `xi=0.10` remains a useful
+stability-diagnostic line.
