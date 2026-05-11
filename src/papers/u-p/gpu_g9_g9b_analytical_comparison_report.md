@@ -124,6 +124,13 @@ The profile figures use Supporting-Materials-style axes:
 - normalization pressure: reconstructed analytical initial bottom excess,
   `u(0,0)=20299.23 Pa`.
 
+The profile figures are arranged as two side-by-side panels, matching the
+intended comparison: `xi=0.10` on the left and `xi=0.05` on the right.  Each
+panel overlays all target `Tv` profiles.  Color identifies the profile time,
+solid lines are GPU results, and dashed lines are the reconstructed analytical
+solution.  The total pore-pressure profile figure also includes the hydrostatic
+end-state as a dotted line.
+
 The time-history figures use normalized consolidation time
 `Tv=cv(t-0.002)/H^2` on the horizontal axis.  The legends distinguish GPU
 `xi=0.10`, GPU `xi=0.05`, analytical reconstruction, and hydrostatic

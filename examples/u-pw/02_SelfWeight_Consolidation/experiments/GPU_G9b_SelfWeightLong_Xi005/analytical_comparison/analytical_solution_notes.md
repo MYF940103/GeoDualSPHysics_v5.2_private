@@ -47,6 +47,10 @@ Plot coordinate convention:
 - Profile figures now follow the Supporting-Materials style more closely:
   horizontal axis is normalized pore pressure and vertical axis is normalized
   column elevation `z/H`.
+- The profile figures use two side-by-side panels: `xi=0.10` on the left and
+  `xi=0.05` on the right.  All target `Tv` profiles are overlaid in each panel.
+- In profile figures, color identifies the profile time / `Tv`; solid lines are
+  GPU results and dashed lines are the reconstructed analytical solution.
 - `z/H=0` denotes the bottom no-flux side and `z/H=1` denotes the top drained
   side.
 - Pressure and excess pressure are normalized by the reconstructed analytical

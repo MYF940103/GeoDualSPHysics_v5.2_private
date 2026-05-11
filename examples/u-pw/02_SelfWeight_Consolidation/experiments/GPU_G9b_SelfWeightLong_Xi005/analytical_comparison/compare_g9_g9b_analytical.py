@@ -11,6 +11,7 @@ from pathlib import Path
 import matplotlib
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 
 plt.rcParams["svg.fonttype"] = "none"
 plt.rcParams["font.family"] = "Arial"
@@ -52,6 +53,7 @@ RGB = {
     "#777777": (119, 119, 119),
     "#bbbbbb": (187, 187, 187),
 }
+TIME_COLORS = ["#1b9e77", "#d95f02", "#7570b3", "#e7298a", "#66a61e", "#e6ab02"]
 
 
 def read_rows(path: Path) -> list[dict[str, str]]:
@@ -479,33 +481,58 @@ def normalized_profile_series(kind: str):
 
 
 def save_mpl_profile_grid(stem: str, kind: str, xlabel: str, title: str) -> None:
-    data = normalized_profile_series(kind)
-    times = [t for t in TARGET_TIMES if t > 0.0 and t in data]
-    ncols = 3
-    nrows = math.ceil(len(times) / ncols)
-    fig, axes = plt.subplots(nrows, ncols, figsize=(12.2, 7.4), sharex=True, sharey=True)
-    axes_list = list(axes.flat if hasattr(axes, "flat") else [axes])
-    handles = {}
-    for ax, t in zip(axes_list, times):
-        for label, pts, color, style in data[t]:
-            xs = [x for x, _ in pts]
-            ys = [y for _, y in pts]
-            line, = ax.plot(xs, ys, style, color=color, linewidth=2.0, label=label)
-            handles.setdefault(label, line)
-        ax.set_title(f"t={t:g} s, Tv={tv(t):.3g}", fontsize=10)
+    g9_prof = extract_svg_profiles(G9 / "figures" / f"gpu_g9_{kind}_profiles.svg")
+    g9b_prof = extract_svg_profiles(G9B / "figures" / f"gpu_g9b_{kind}_profiles.svg")
+    p0b = excess_analytical_y(0.0, 0.0)
+    times = [t for t in TARGET_TIMES if t > 0.0 and (t in g9_prof or t in g9b_prof)]
+    fig, axes = plt.subplots(1, 2, figsize=(12.2, 5.8), sharex=True, sharey=True)
+    line_sets = [
+        ("GPU xi=0.10", g9_prof),
+        ("GPU xi=0.05", g9b_prof),
+    ]
+    xmax = 0.0
+    for ax, (subtitle, profs) in zip(axes, line_sets):
+        for i, t in enumerate(times):
+            color = TIME_COLORS[i % len(TIME_COLORS)]
+            if t in profs:
+                sim_pts = [(v / p0b, y_from_z(z) / H) for z, v in profs[t]]
+                ax.plot([x for x, _ in sim_pts], [y for _, y in sim_pts], "-", color=color, linewidth=2.0)
+                xmax = max(xmax, *(x for x, _ in sim_pts))
+            aprof = analytical_profile(t)
+            if kind == "excess":
+                ana_pts = [(ex / p0b, zn) for _, zn, ex, _ in aprof]
+            else:
+                ana_pts = [(pp / p0b, zn) for _, zn, _, pp in aprof]
+            ax.plot([x for x, _ in ana_pts], [y for _, y in ana_pts], "--", color=color, linewidth=2.0)
+            xmax = max(xmax, *(x for x, _ in ana_pts))
+        if kind != "excess":
+            hydro_pts = [(hydrostatic_y(zn * H) / p0b, zn) for _, zn, _, _ in analytical_profile(times[-1])]
+            ax.plot([x for x, _ in hydro_pts], [y for _, y in hydro_pts], ":", color=COLORS["hydro"], linewidth=2.2)
+            xmax = max(xmax, *(x for x, _ in hydro_pts))
+        ax.set_title(subtitle, fontsize=12)
         ax.grid(True, color="#e6e6e6", linewidth=0.8)
         ax.set_ylim(0.0, 1.0)
         ax.set_xlim(left=0.0)
-        ax.set_box_aspect(1.15)
-    for ax in axes_list[len(times):]:
-        ax.axis("off")
-    for ax in axes_list[::ncols]:
-        ax.set_ylabel("z/H (0 bottom, 1 drained top)")
-    for ax in axes_list[-ncols:]:
+        ax.set_box_aspect(1.2)
         ax.set_xlabel(xlabel)
+    axes[0].set_ylabel("z/H (0 bottom, 1 drained top)")
+    for ax in axes:
+        ax.set_xlim(0.0, xmax * 1.05 if xmax > 0 else 1.0)
     fig.suptitle(title, fontsize=15)
-    fig.legend(handles.values(), handles.keys(), loc="upper center", bbox_to_anchor=(0.5, 0.955), ncol=min(4, len(handles)), frameon=False)
-    fig.tight_layout(rect=(0.02, 0.02, 0.98, 0.90))
+    time_handles = [
+        Line2D([0], [0], color=TIME_COLORS[i % len(TIME_COLORS)], linewidth=2.4, label=f"Tv={tv(t):.3g} (t={t:g}s)")
+        for i, t in enumerate(times)
+    ]
+    style_handles = [
+        Line2D([0], [0], color="#222222", linewidth=2.4, linestyle="-", label="GPU"),
+        Line2D([0], [0], color="#222222", linewidth=2.4, linestyle="--", label="analytical"),
+    ]
+    if kind != "excess":
+        style_handles.append(Line2D([0], [0], color=COLORS["hydro"], linewidth=2.4, linestyle=":", label="hydrostatic end-state"))
+    leg1 = fig.legend(handles=time_handles, loc="upper center", bbox_to_anchor=(0.5, 0.925), ncol=min(5, len(time_handles)), frameon=False, title="Profile time")
+    fig.add_artist(leg1)
+    fig.legend(handles=style_handles, loc="upper center", bbox_to_anchor=(0.5, 0.85), ncol=len(style_handles), frameon=False, title="Line meaning")
+    fig.tight_layout(rect=(0.02, 0.02, 0.98, 0.79))
     fig.savefig(FIGDIR / f"{stem}.svg")
     fig.savefig(FIGDIR / f"{stem}.png", dpi=220)
     plt.close(fig)
@@ -653,6 +680,10 @@ Plot coordinate convention:
 - Profile figures now follow the Supporting-Materials style more closely:
   horizontal axis is normalized pore pressure and vertical axis is normalized
   column elevation `z/H`.
+- The profile figures use two side-by-side panels: `xi=0.10` on the left and
+  `xi=0.05` on the right.  All target `Tv` profiles are overlaid in each panel.
+- In profile figures, color identifies the profile time / `Tv`; solid lines are
+  GPU results and dashed lines are the reconstructed analytical solution.
 - `z/H=0` denotes the bottom no-flux side and `z/H=1` denotes the top drained
   side.
 - Pressure and excess pressure are normalized by the reconstructed analytical
