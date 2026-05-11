@@ -730,8 +730,6 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 2:  Run_Exceptioon("PorePressureBoundaryOperator=2 is reserved and not implemented."); break;
     default: Run_Exceptioon("PorePressureBoundaryOperator mode is not valid.");
   }
-  if(PorePressureBoundaryOperator==1 && !Cpu)
-    Run_Exceptioon("PorePressureBoundaryOperator=1 is currently CPU-only. GPU hydraulic boundary operators are not implemented in this branch.");
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
     case 1:  PorePressureBoundaryGhost=true;   break;
@@ -1748,7 +1746,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
-    Log->Print(fun::VarStr("  PorePressureBoundaryOperator",(PorePressureBoundaryOperator==1? "CPU boundary-consistent PR operator": "Legacy layer correction")));
+    Log->Print(fun::VarStr("  PorePressureBoundaryOperator",(PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
     if(PorePressureBoundaryOperator==1)
       Log->Print("  PorePressureBoundaryOperator convention: top drained uses excess Dirichlet p'=0; bottom no-flux uses hydraulic-head/excess Neumann mirror contribution. Legacy layer projection remains as a safety correction.");
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));

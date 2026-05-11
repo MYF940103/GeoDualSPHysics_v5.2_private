@@ -158,6 +158,7 @@ protected:
   bool PorePressureTopDrainedStepPrint; ///<True when GPU top drained post-update stats have been printed.
   bool PorePressureBottomNoFluxStepPrint; ///<True when GPU bottom no-flux post-update stats have been printed.
   bool PorePressureShepardStepPrint; ///<True when GPU pore-pressure Shepard stats have been printed.
+  bool PorePressureBoundaryOperatorPrint; ///<True when GPU pore-pressure boundary operator stats have been printed.
   bool HydromechDampingStepPrint; ///<True when GPU hydromechanical damping activation has been printed.
     
   //-Variables for compute step: VERLET.
@@ -231,6 +232,7 @@ protected:
   void InitPorePressureGpu(unsigned n);
   void InitPorePressureDiagnosticsGpu(unsigned n);
   void ComputeHydroPrDiagnosticsGpu();
+  unsigned ApplyPorePressureBoundaryOperatorGpu(bool printlog);
   void ComputePorePressureAccelDiffGpu();
   void ApplyPorePressureFeedbackGpu();
   unsigned ApplyHydromechDampingGpu(bool printlog);

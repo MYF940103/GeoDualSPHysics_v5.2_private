@@ -3674,6 +3674,100 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
 }
 
 //------------------------------------------------------------------------------
+/// Adds virtual hydraulic boundary contributions to PR LapPorePress/LapZ.
+//------------------------------------------------------------------------------
+template<TpKernel tker>
+  __global__ void KerApplyPorePressureBoundaryOperator(unsigned n,unsigned pini
+  ,const typecode *code,const double2 *posxy,const double *posz,const float4 *velrhop,const double *porepress
+  ,double4 hydraulicg,double waterlevel,float waterdensity,float porosity0,float hydraulicconductivity,float waterbulkmodulus
+  ,double zmin,double zmax,double gap,double topthick,double bottomthick,bool topactive,bool bottomactive
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate,float *topaffected,float *bottomaffected)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    if(topaffected)topaffected[p1]=0.f;
+    if(bottomaffected)bottomaffected[p1]=0.f;
+    if(!CODE_IsFluid(code[p1]))return;
+    const float rhop=velrhop[p1].w;
+    if(rhop<=0.f)return;
+
+    const double z=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+    const double rhog=double(waterdensity)*hydraulicg.w;
+    const double elevux=-hydraulicg.x/hydraulicg.w;
+    const double elevuy=-hydraulicg.y/hydraulicg.w;
+    const double elevuz=-hydraulicg.z/hydraulicg.w;
+    const double voli=double(CTE.massf)/double(rhop);
+    double lapp=double(lapporepress[p1]);
+    double lz=double(lapz[p1]);
+
+    if(topactive && z>=zmax-topthick){
+      const double zg=2.*(zmax+gap)-z;
+      const double delta=zg-z;
+      const double drx=-delta*elevux;
+      const double dry=-delta*elevuy;
+      const double drz=-delta*elevuz;
+      const double rr2=drx*drx+dry*dry+drz*drz;
+      if(rr2<=double(CTE.kernelsize2) && rr2>=ALMOSTZERO){
+        const float fac=cufsph::GetKernel_Fac<tker>(float(rr2));
+        const double dotrgrad=rr2*double(fac);
+        // Virtual states use a linear hydrostatic reference so hydrostatic
+        // pressure keeps LapP/(rho*g)+LapZ=0 across the boundary stencil.
+        const double pwg=rhog*(waterlevel-zg);
+        lapp+=2.*voli*(porepress[p1]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+        lz+=2.*voli*(z-zg)*dotrgrad/(rr2+ALMOSTZERO);
+        if(topaffected)topaffected[p1]=1.f;
+      }
+    }
+
+    if(bottomactive && z<=zmin+bottomthick){
+      const double zg=2.*(zmin-gap)-z;
+      const double delta=zg-z;
+      const double drx=-delta*elevux;
+      const double dry=-delta*elevuy;
+      const double drz=-delta*elevuz;
+      const double rr2=drx*drx+dry*dry+drz*drz;
+      if(rr2<=double(CTE.kernelsize2) && rr2>=ALMOSTZERO){
+        const float fac=cufsph::GetKernel_Fac<tker>(float(rr2));
+        const double dotrgrad=rr2*double(fac);
+        const double depth=waterlevel-z;
+        const double hydro=(depth>0.? rhog*depth: 0.);
+        const double excess=porepress[p1]-hydro;
+        const double hydrog=rhog*(waterlevel-zg);
+        const double pwg=hydrog+excess; // excess/head Neumann mirror; not zero total pressure gradient.
+        lapp+=2.*voli*(porepress[p1]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+        lz+=2.*voli*(z-zg)*dotrgrad/(rr2+ALMOSTZERO);
+        if(bottomaffected)bottomaffected[p1]=1.f;
+      }
+    }
+
+    lapporepress[p1]=float(lapp);
+    lapz[p1]=float(lz);
+    const float factor=waterbulkmodulus/porosity0;
+    const float difcoef=(hydraulicconductivity>0.f? float(double(hydraulicconductivity)/(double(waterdensity)*hydraulicg.w)): 0.f);
+    porepressrate[p1]=factor*(-divvel[p1]+difcoef*float(lapp)+hydraulicconductivity*float(lz));
+  }
+}
+
+//==============================================================================
+/// Adds virtual hydraulic boundary contributions to PR LapPorePress/LapZ.
+//==============================================================================
+void ApplyPorePressureBoundaryOperator(TpKernel tkernel
+  ,unsigned n,unsigned pini,const typecode *code,const double2 *posxy,const double *posz,const float4 *velrhop,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity
+  ,float porosity0,float hydraulicconductivity,float waterbulkmodulus
+  ,double zmin,double zmax,double gap,double topthick,double bottomthick,bool topactive,bool bottomactive
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate,float *topaffected,float *bottomaffected)
+{
+  if(n){
+    const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    if(tkernel==KERNEL_Wendland)KerApplyPorePressureBoundaryOperator<KERNEL_Wendland> <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,velrhop,porepress,hydraulicg,waterlevel,waterdensity,porosity0,hydraulicconductivity,waterbulkmodulus,zmin,zmax,gap,topthick,bottomthick,topactive,bottomactive,divvel,lapporepress,lapz,porepressrate,topaffected,bottomaffected);
+    else if(tkernel==KERNEL_Cubic)KerApplyPorePressureBoundaryOperator<KERNEL_Cubic> <<<sgrid,SPHBSIZE>>> (n,pini,code,posxy,posz,velrhop,porepress,hydraulicg,waterlevel,waterdensity,porosity0,hydraulicconductivity,waterbulkmodulus,zmin,zmax,gap,topthick,bottomthick,topactive,bottomactive,divvel,lapporepress,lapz,porepressrate,topaffected,bottomaffected);
+  }
+}
+
+//------------------------------------------------------------------------------
 /// Computes difference-gradient pore-pressure feedback acceleration.
 //------------------------------------------------------------------------------
 template<TpKernel tker,bool symm>

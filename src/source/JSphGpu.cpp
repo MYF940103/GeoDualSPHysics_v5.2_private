@@ -153,6 +153,7 @@ void JSphGpu::InitVars(){
   PorePressureTopDrainedStepPrint=false;
   PorePressureBottomNoFluxStepPrint=false;
   PorePressureShepardStepPrint=false;
+  PorePressureBoundaryOperatorPrint=false;
   HydromechDampingStepPrint=false;
   BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
@@ -896,6 +897,86 @@ void JSphGpu::ComputeHydroPrDiagnosticsGpu(){
     ,hg.x,hg.y,hg.z,gmag,porosity0,hydraulicconductivity,waterbulkmodulus,waterdensity
     ,DivVelg,LapPorePressg,LapZg,PorePressRateg);
   Check_CudaErroor("Failed computing GPU PR pore-pressure diagnostics.");
+  if(PorePressureBoundaryOperator==1){
+    if(ApplyPorePressureBoundaryOperatorGpu(!PorePressureBoundaryOperatorPrint))
+      PorePressureBoundaryOperatorPrint=true;
+  }
+}
+
+//==============================================================================
+/// Adds GPU hydraulic boundary contributions to PR LapPorePress/LapZ operators.
+//==============================================================================
+unsigned JSphGpu::ApplyPorePressureBoundaryOperatorGpu(bool printlog){
+  if(!HydromechCoupling || PorePressureModel!=1 || PorePressureBoundaryOperator!=1)return(0);
+  if(!PorePressg || !PorePressRateg || !DivVelg || !LapPorePressg || !LapZg)return(0);
+  if(!PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
+  const unsigned nfluid=(Np>Npb? Np-Npb: 0);
+  if(!nfluid)return(0);
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU pore-pressure boundary operator.");
+  if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU pore-pressure boundary operator.");
+  if(SoilCte.Porosity0<=0.f || SoilCte.Porosity0>=1.f)Run_Exceptioon("Soil Porosity0 must be between 0 and 1 for GPU pore-pressure boundary operator.");
+  if(SoilCte.WaterBulkModulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero for GPU pore-pressure boundary operator.");
+  const double topthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+  const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
+  if((PorePressureTopDrained && topthick<=0.) || (PorePressureBottomNoFlux && bottomthick<=0.))
+    Run_Exceptioon("GPU pore-pressure boundary operator requires positive boundary thickness or KernelH.");
+  const tfloat3 hg=GetHydraulicGravity();
+
+  float *zmaxg=ArraysGpu->ReserveFloat();
+  float *negzming=ArraysGpu->ReserveFloat();
+  float *auxmem=NULL;
+  const unsigned auxsize=max(cusph::ReduMaxFloatSize(nfluid),cusph::ReduSumFloatSize(nfluid));
+  cudaMalloc((void**)&auxmem,sizeof(float)*auxsize);
+  Check_CudaErroor("Failed allocating GPU pore-pressure boundary operator reduction memory.");
+  cusph::PreparePorePressureBoundaryElevations(nfluid,Npb,Codeg,Posxyg,Poszg,hg.x,hg.y,hg.z,gmag,zmaxg,negzming);
+  Check_CudaErroor("Failed preparing GPU pore-pressure boundary operator elevations.");
+  const float zmaxf=cusph::ReduMaxFloat(nfluid,Npb,zmaxg,auxmem);
+  const float negzminf=cusph::ReduMaxFloat(nfluid,Npb,negzming,auxmem);
+  ArraysGpu->Free(zmaxg);
+  ArraysGpu->Free(negzming);
+  if(zmaxf<=-FLT_MAX/4.f || negzminf<=-FLT_MAX/4.f){
+    cudaFree(auxmem);
+    if(printlog)Log->PrintWarning("GPU pore-pressure boundary operator found no material particles.");
+    return(0);
+  }
+
+  float *topaffectedg=(printlog? ArraysGpu->ReserveFloat(): NULL);
+  float *bottomaffectedg=(printlog? ArraysGpu->ReserveFloat(): NULL);
+  const double zmin=-double(negzminf);
+  const double zmax=double(zmaxf);
+  const double gap=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelSize));
+  const bool topactive=(PorePressureTopDrained && TimeStep>=PorePressureTopDrainedStartTime);
+  const bool bottomactive=PorePressureBottomNoFlux;
+  cusph::ApplyPorePressureBoundaryOperator(TKernel
+    ,nfluid,Npb,Codeg,Posxyg,Poszg,Velrhopg,PorePressg
+    ,hg.x,hg.y,hg.z,gmag,PorePressureWaterLevel,SoilCte.WaterDensity
+    ,SoilCte.Porosity0,SoilCte.HydraulicConductivity,SoilCte.WaterBulkModulus
+    ,zmin,zmax,gap,topthick,bottomthick,topactive,bottomactive
+    ,DivVelg,LapPorePressg,LapZg,PorePressRateg,topaffectedg,bottomaffectedg);
+  Check_CudaErroor("Failed applying GPU pore-pressure boundary operator.");
+
+  unsigned topaffected=0,bottomaffected=0;
+  if(printlog){
+    if(topaffectedg){
+      const float v=cusph::ReduSumFloat(nfluid,Npb,topaffectedg,auxmem);
+      topaffected=unsigned(v+0.5f);
+      ArraysGpu->Free(topaffectedg);
+    }
+    if(bottomaffectedg){
+      const float v=cusph::ReduSumFloat(nfluid,Npb,bottomaffectedg,auxmem);
+      bottomaffected=unsigned(v+0.5f);
+      ArraysGpu->Free(bottomaffectedg);
+    }
+  }
+  cudaFree(auxmem);
+
+  if(printlog){
+    Log->Printf("GPU pore-pressure boundary operator: TimeStep=%g, top_active=%s, bottom_active=%s, zmin=%g, zmax=%g, gap=%g, top_thickness=%g, bottom_thickness=%g, top_contrib=%u, bottom_contrib=%u."
+      ,TimeStep,(topactive? "True": "False"),(bottomactive? "True": "False"),zmin,zmax,gap,topthick,bottomthick,topaffected,bottomaffected);
+    Log->Print("GPU pore-pressure boundary operator convention: top ghost enforces excess pressure = 0; bottom ghost mirrors excess pressure for zero normal hydraulic-head gradient. Legacy layer projection remains active after pressure update.");
+  }
+  return(topaffected+bottomaffected);
 }
 
 //==============================================================================

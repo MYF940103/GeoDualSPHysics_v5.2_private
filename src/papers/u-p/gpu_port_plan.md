@@ -705,3 +705,53 @@ production operators, corrected-gradient production operators, parameter
 sensitivity, or additional source-code changes. The `xi=0.05` line is suitable
 as the paper-compatible Scenario 2 damping line; `xi=0.10` remains a useful
 stability-diagnostic line.
+
+## B4/B5 Boundary-Operator GPU Status, 2026-05-11
+
+Implemented after G9b:
+
+- Ported `PorePressureBoundaryOperator=1` from the CPU prototype to the GPU
+  PR diagnostic/update path.
+- `mode=0` remains the default legacy layer-correction path.
+- `mode=1` now adds operator-level top drained excess-Dirichlet and bottom
+  hydraulic-head/excess Neumann mirror ghost contributions to GPU
+  `LapPorePress`, `LapZ`, and the derived `PorePressRate`.
+- The existing post-update top drained and bottom no-flux layer projections
+  remain active as safety corrections, matching the CPU `mode=1` prototype.
+- `mode=2` remains unsupported/reserved.
+
+B4 validation:
+
+- GPU hydrostatic `mode=1`: `code=0`, `excluded=0`, top excess `0 Pa`,
+  bottom proxy about `3.4e-7 Pa`, no NaN.
+- CPU/GPU pressure-only `mode=1` parity over a short window:
+  final `PorePress` maxAbs difference about `4.1e-3 Pa`.
+- CPU/GPU self-weight short `mode=1` parity:
+  final `PorePress` maxAbs difference about `2.2e-3 Pa`.
+- GPU self-weight `mode=1` medium run to `0.05 s`:
+  `code=0`, `excluded=0`, stable top drained and bottom no-flux corrections.
+
+B5 long-run analytical comparison:
+
+- GPU Release self-weight Scenario 2, `xi=0.05`, `TimeMax=3.6 s`,
+  `PorePressureBoundaryOperator=1` finished with `code=0`, `excluded=0`,
+  `steps=3,775,438`, runtime `9,668.14 s`.
+- Final max excess pressure was `1110.26 Pa`; final bottom mean excess was
+  `1110.09 Pa`.
+- Compared with the existing `mode=0`, `xi=0.05` G9b run, the long-run bottom
+  excess RMSE against the analytical reconstruction was effectively unchanged:
+  `550.17 Pa` (`mode=0`) versus `550.18 Pa` (`mode=1`).
+- The retained-profile comparison indicates that the current material-adjacent
+  ghost contribution does not reduce the late-time profile RMSE; for this
+  configuration it is experimental rather than a production improvement.
+
+Recommendation:
+
+- Keep `PorePressureBoundaryOperator=1` as an optional experimental production
+  candidate, not the default.
+- Do not port corrected-gradient PR operators to production based on these
+  results alone.
+- If strict analytical agreement remains the priority, the next boundary work
+  should audit the analytical reconstruction and investigate a more complete
+  boundary quadrature/MLS treatment rather than promoting the current
+  material-layer ghost contribution.

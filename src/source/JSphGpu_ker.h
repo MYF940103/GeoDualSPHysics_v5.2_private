@@ -314,6 +314,12 @@ void ComputeHydroPrDiagnostics(TpKernel tkernel,bool symmetry,unsigned bsfluid
   ,double hgx,double hgy,double hgz,double hmag
   ,float porosity0,float hydraulicconductivity,float waterbulkmodulus,float waterdensity
   ,float *divvel,float *lapporepress,float *lapz,float *porepressrate);
+void ApplyPorePressureBoundaryOperator(TpKernel tkernel
+  ,unsigned n,unsigned pini,const typecode *code,const double2 *posxy,const double *posz,const float4 *velrhop,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity
+  ,float porosity0,float hydraulicconductivity,float waterbulkmodulus
+  ,double zmin,double zmax,double gap,double topthick,double bottomthick,bool topactive,bool bottomactive
+  ,float *divvel,float *lapporepress,float *lapz,float *porepressrate,float *topaffected,float *bottomaffected);
 void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
   ,double *porepress,const float *porepressrate);
 void ComputePorePressureAccelDiff(TpKernel tkernel,bool symmetry,unsigned bsfluid
