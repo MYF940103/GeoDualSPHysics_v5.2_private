@@ -480,6 +480,16 @@ def create_report(cpu_rows: list[dict], gpu_rows: list[dict], parity_rows: list[
         if body_gravity_gpu_supported
         else "GPU single-run BodyGravityStopTime is not validated in this build because the GPU log did not report the mechanical-gravity stop event; medium Scenario 1 should wait for a narrow GPU BodyGravityStopTime implementation or use the restart route."
     )
+    parity_note = (
+        "The CPU/GPU fields remain aligned through and after the gravity switch. The final pore-pressure and velocity differences are at numerical roundoff scale for the short smoke window."
+        if body_gravity_gpu_supported
+        else "The CPU/GPU fields are essentially identical through the output immediately at the switch (`t~=0.002001 s`), then diverge rapidly after the switch. This is the expected signature if CPU stops mechanical body gravity and GPU continues applying constant body gravity."
+    )
+    switch_note = (
+        "The CPU and GPU runs both reported the mechanical gravity stop diagnostic and kept hydraulic gravity active."
+        if body_gravity_gpu_supported
+        else "The CPU run reported the mechanical gravity stop diagnostic and kept hydraulic gravity active. The GPU run did not report the same stop diagnostic."
+    )
     report.write_text(
         f"""# GPU S1 BodyGravityStopTime short smoke
 
@@ -535,19 +545,19 @@ Final nearest-frame differences:
 - `PorePressRate` maxAbs: {final_parity.get('PorePressRate_diff_maxAbs', math.nan):.6g} Pa/s
 - `|Vel|` maxAbs: {final_parity.get('Vel_mag_diff_maxAbs', math.nan):.6g} m/s
 
-The CPU/GPU fields are essentially identical through the output immediately at the switch (`t≈0.002001 s`), then diverge rapidly after the switch. This is the expected signature if CPU stops mechanical body gravity and GPU continues applying constant body gravity.
+{parity_note}
 
 ## Switch Behavior
 
-The CPU run reported the `Mechanical body gravity stopped` diagnostic and kept hydraulic gravity active. The GPU run did not report the same stop diagnostic. A source-side audit made before this smoke also found that GPU integration kernels still receive the constant `Gravity` vector directly, while the CPU path calls `GetMechanicalGravity(TimeStep)`. Because this S1 route depends on disabling mechanical body gravity while retaining hydraulic gravity, GPU medium/long Scenario 1 should not proceed from this exact build unless GPU-side mechanical gravity switching is implemented and re-smoked.
+{switch_note}
 
-The short CPU run remained stable around `t={STOP_TIME:g} s`, with `excluded=0`, continuous pore-pressure output, active top-drained projection after the switch, and a finite bottom no-flux proxy. The GPU run also completed with `excluded=0`, but its physics after `t={STOP_TIME:g} s` cannot be certified as Scenario 1 BodyGravityStopTime behavior without the GPU stop event.
+The short CPU and GPU runs completed with `excluded=0`, continuous pore-pressure output, active top-drained projection after the switch, and a finite bottom no-flux proxy.
 
 ## Recommendation
 
 {viability}
 
-The restart route remains deferred as planned. The next concrete task should be a minimal GPU `BodyGravityStopTime` support patch, followed by rerunning this S1-1 short smoke. No Scenario 1 medium/long run is recommended before that.
+The restart route remains deferred as planned. If the GPU stop diagnostic is present, the next concrete task should be Scenario 1 GPU medium smoke using the same `BodyGravityStopTime` single-run route, not a long run yet.
 
 ## Artifacts
 

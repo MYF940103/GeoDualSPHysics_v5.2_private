@@ -1505,6 +1505,10 @@ void JSphGpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
 
   //-Apply the extra forces to the correct particle sets.
   if(AccInput)AccInput->RunGpu(TimeStep,Gravity,npf,npb,Codeg,Posxyg,Poszg,Velrhopg,Aceg);
+  if(IsMechanicalGravityStopped(TimeStep) && !BodyGravityStoppedLogged){
+    Log->Print(fun::PrintStr("Mechanical body gravity stopped on GPU at TimeStep=%g. Hydraulic gravity remains active.",TimeStep));
+    BodyGravityStoppedLogged=true;
+  }
 }
 
 //==============================================================================
@@ -1564,6 +1568,7 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
   const bool shift=(ShiftingMode!=SHIFT_None);
   const bool inout=(InOut!=NULL);
   const float3 *indirvel=(inout? InOut->GetDirVelg(): NULL);
+  const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
   VerletStep++;
   //-Allocates memory to compute the displacement.
   //-Asigna memoria para calcular el desplazamiento.
@@ -1573,11 +1578,11 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
   //-Calcula desplazamiento, velocidad y densidad.
   if(VerletStep<VerletSteps){
     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
+      ,Aceg,ShiftPosfsg,indirvel,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,mechgravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
   }
   else{
     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
+      ,Aceg,ShiftPosfsg,indirvel,dt,dt,RhopZero,RhopOutMin,RhopOutMax,mechgravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
     VerletStep=0;
   }
   //-The new values are calculated in VelRhopM1g.
@@ -1602,6 +1607,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   Timersg->TmStart(TMG_SuComputeStep,false);
   const bool shift=false; //(ShiftingMode!=SHIFT_None); //-We strongly recommend running the shifting correction only for the corrector. If you want to re-enable shifting in the predictor, change the value here to "true".
   const bool inout=(InOut!=NULL);
+  const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
   //-Allocates memory to PRE variables.
   PosxyPreg=ArraysGpu->ReserveDouble2();
   PoszPreg=ArraysGpu->ReserveDouble();
@@ -1622,7 +1628,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
-    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
+    ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,mechgravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,NULL);
 
   //-Applies displacement to non-periodic fluid particles.
@@ -1647,6 +1653,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   Timersg->TmStart(TMG_SuComputeStep,false);
   const bool shift=(ShiftingMode!=SHIFT_None);
   const bool inout=(InOut!=NULL);
+  const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
   //-Allocates memory to calculate the displacement.
   double2 *movxyg=ArraysGpu->ReserveDouble2();
   double *movzg=ArraysGpu->ReserveDouble();
@@ -1654,7 +1661,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg
-    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
+    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,mechgravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,NULL);
 
   //-Applies displacement to non-periodic fluid particles.
