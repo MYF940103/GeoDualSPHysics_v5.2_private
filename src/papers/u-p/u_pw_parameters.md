@@ -225,6 +225,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `PorePressureTopDrainedStartTime` | double [s] | `0` | Time when top drained boundary becomes active. If `0`, active from the start. | Keep |
 | `PorePressureBottomNoFlux` | `0/1` | `0` | Enables bottom no-flux layer correction for excess pore pressure. | Keep |
 | `PorePressureBottomNoFluxThickness` | float [m] | `0` | Bottom no-flux layer thickness. If `<=0`, uses `KernelH`. | Keep |
+| `PorePressureBoundaryOperator` | `0/1/2` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: CPU boundary-consistent operator prototype; `2`: reserved. | Experimental |
 
 Top drained correction:
 
@@ -246,6 +247,15 @@ bottom excess = mean(reference layer excess)
 ```
 
 This is a minimal layer correction, not a full mirror/ghost pore-pressure boundary treatment.
+
+`PorePressureBoundaryOperator=1` adds CPU-only virtual boundary
+contributions to the production `LapPorePress` and `LapZ` operators before
+`PorePressRate` is computed. Top drained uses an excess-pressure Dirichlet
+ghost (`excess=0`). Bottom no-flux uses a hydraulic-head convention, implemented
+as a mirrored excess pressure (`d excess/dn=0`) rather than a zero total-pressure
+gradient. The legacy layer correction remains active as a safety projection in
+the first prototype. GPU support for `PorePressureBoundaryOperator=1` is not
+implemented; GPU runs should keep the value at `0`.
 
 ## 4. Feedback Parameters
 

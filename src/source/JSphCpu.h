@@ -192,6 +192,7 @@ protected:
   bool PorePressureBottomNoFluxStepPrint; ///<True when bottom no-flux post-update stats have been printed.
   bool PorePressureShepardStepPrint; ///<True when pore-pressure Shepard regularization stats have been printed.
   bool PorePressureBoundaryGhostPrint; ///<True when pore-pressure boundary ghost diagnostic stats have been printed.
+  bool PorePressureBoundaryOperatorPrint; ///<True when production pore-pressure boundary operator stats have been printed.
   bool HydroCorrDiagPrint;       ///<True when corrected-gradient diagnostic stats have been printed.
   bool HydromechDampingStepPrint; ///<True when hydromechanical damping activation has been printed.
 
@@ -311,6 +312,12 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
   void ComputeHydroLapZ(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
+  template<TpKernel tker> unsigned ApplyPorePressureBoundaryOperatorT(unsigned n,unsigned pini
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+    ,float *lapporepress,float *lapz,double timestep,bool printlog);
+  unsigned ApplyPorePressureBoundaryOperator(unsigned n,unsigned pini
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+    ,float *lapporepress,float *lapz,double timestep,bool printlog);
   template<TpKernel tker> void ComputeHydroCorrectedOperatorsT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
     ,const double *porepress,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,bool printlog);

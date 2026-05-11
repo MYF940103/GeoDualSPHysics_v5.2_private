@@ -108,6 +108,7 @@ void JSphCpu::InitVars(){
   PorePressureBottomNoFluxStepPrint=false;
   PorePressureShepardStepPrint=false;
   PorePressureBoundaryGhostPrint=false;
+  PorePressureBoundaryOperatorPrint=false;
   HydroCorrDiagPrint=false;
   HydromechDampingStepPrint=false;
   RidpMove=NULL; 
@@ -2107,6 +2108,136 @@ void JSphCpu::ComputeHydroLapZ(unsigned n,unsigned pini
 {
        if(TKernel==KERNEL_Wendland)ComputeHydroLapZT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,lapz);
   else if(TKernel==KERNEL_Cubic)   ComputeHydroLapZT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,lapz);
+}
+
+//==============================================================================
+/// Adds CPU-only hydraulic boundary contributions to PR LapPorePress/LapZ operators.
+//==============================================================================
+template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(unsigned n,unsigned pini
+  ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+  ,float *lapporepress,float *lapz,double timestep,bool printlog)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || PorePressureBoundaryOperator!=1)return(0);
+  if(!pos || !velrhop || !code || !porepress || !lapporepress || !lapz)
+    Run_Exceptioon("Pointers without data for pore-pressure boundary operator.");
+  if(!PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure boundary operator.");
+  const double rhog=double(SoilCte.WaterDensity)*gmag;
+  const tfloat3 hgrav=GetHydraulicGravity();
+  const double elevux=-double(hgrav.x)/gmag;
+  const double elevuy=-double(hgrav.y)/gmag;
+  const double elevuz=-double(hgrav.z)/gmag;
+  const auto hydrostatic_linear=[&](const double z)->double{
+    return(rhog*(double(PorePressureWaterLevel)-z));
+  };
+
+  unsigned npmat=0;
+  double zmin=DBL_MAX,zmax=-DBL_MAX;
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    const double z=GetHydraulicElevation(pos[p]);
+    zmin=min(zmin,z);
+    zmax=max(zmax,z);
+    npmat++;
+  }
+  if(!npmat){
+    if(printlog)Log->PrintWarning("Pore-pressure boundary operator found no material particles.");
+    return(0);
+  }
+
+  const double gap=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelSize));
+  const double topthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
+  const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
+  if((PorePressureTopDrained && topthick<=0.) || (PorePressureBottomNoFlux && bottomthick<=0.))
+    Run_Exceptioon("Pore-pressure boundary operator requires positive boundary thickness or KernelH.");
+  const bool topactive=(PorePressureTopDrained && timestep>=PorePressureTopDrainedStartTime);
+  const bool bottomactive=PorePressureBottomNoFlux;
+  const double ztopplane=zmax+gap;
+  const double zbottomplane=zmin-gap;
+  const double ztopthreshold=zmax-topthick;
+  const double zbottomthreshold=zmin+bottomthick;
+
+  unsigned topaffected=0,bottomaffected=0,skipped=0;
+  double maxabsdpwtop=0.,maxabsdpwbottom=0.;
+  double maxabslapadd=0.,maxabsheadadd=0.;
+
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    if(velrhop[p].w<=0.f){ skipped++; continue; }
+    const double zi=GetHydraulicElevation(pos[p]);
+    const double depthi=double(PorePressureWaterLevel)-zi;
+    const double hydroi=(depthi>0.? rhog*depthi: 0.);
+    const double voli=double(MassFluid)/double(velrhop[p].w);
+
+    if(topactive && zi>=ztopthreshold){
+      const double zg=2.*ztopplane-zi;
+      const double delta=zg-zi;
+      const double drx=-delta*elevux;
+      const double dry=-delta*elevuy;
+      const double drz=-delta*elevuz;
+      const double rr2=drx*drx+dry*dry+drz*drz;
+      if(rr2<=double(KernelSize2) && rr2>=ALMOSTZERO){
+        const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+        const double dotrgrad=rr2*double(fac);
+        // Virtual points use the linear hydrostatic reference, not the physical
+        // non-negative clamp, so a hydrostatic field keeps LapP/(rho*g)+LapZ=0
+        // across the mirrored boundary stencil.
+        const double pwg=hydrostatic_linear(zg);
+        const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+        const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+        lapporepress[p]+=float(lapadd);
+        lapz[p]+=float(zadd);
+        topaffected++;
+        maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
+        maxabslapadd=max(maxabslapadd,fabs(lapadd));
+        maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+      }
+      else skipped++;
+    }
+
+    if(bottomactive && zi<=zbottomthreshold){
+      const double zg=2.*zbottomplane-zi;
+      const double delta=zg-zi;
+      const double drx=-delta*elevux;
+      const double dry=-delta*elevuy;
+      const double drz=-delta*elevuz;
+      const double rr2=drx*drx+dry*dry+drz*drz;
+      if(rr2<=double(KernelSize2) && rr2>=ALMOSTZERO){
+        const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+        const double dotrgrad=rr2*double(fac);
+        const double excessi=porepress[p]-hydroi;
+        const double hydrog=hydrostatic_linear(zg);
+        const double pwg=hydrog+excessi; // excess/head Neumann mirror; not zero total pressure gradient.
+        const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+        const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+        lapporepress[p]+=float(lapadd);
+        lapz[p]+=float(zadd);
+        bottomaffected++;
+        maxabsdpwbottom=max(maxabsdpwbottom,fabs(porepress[p]-pwg));
+        maxabslapadd=max(maxabslapadd,fabs(lapadd));
+        maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+      }
+      else skipped++;
+    }
+  }
+
+  if(printlog){
+    Log->Printf("CPU pore-pressure boundary operator: TimeStep=%g, top_active=%s, bottom_active=%s, zmin=%g, zmax=%g, gap=%g, top_thickness=%g, bottom_thickness=%g, top_contrib=%u, bottom_contrib=%u, skipped=%u, max|dpw_top|=%g Pa, max|dpw_bottom|=%g Pa, max|LapP add|=%g, max|head add|=%g."
+      ,timestep,(topactive? "True": "False"),(bottomactive? "True": "False"),zmin,zmax,gap,topthick,bottomthick,topaffected,bottomaffected,skipped,maxabsdpwtop,maxabsdpwbottom,maxabslapadd,maxabsheadadd);
+    Log->Print("CPU pore-pressure boundary operator convention: top ghost enforces excess pressure = 0; bottom ghost mirrors excess pressure for zero normal hydraulic-head gradient.");
+  }
+  return(topaffected+bottomaffected);
+}
+
+//==============================================================================
+/// Adds CPU-only hydraulic boundary contributions to PR LapPorePress/LapZ operators.
+//==============================================================================
+unsigned JSphCpu::ApplyPorePressureBoundaryOperator(unsigned n,unsigned pini
+  ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+  ,float *lapporepress,float *lapz,double timestep,bool printlog)
+{
+       if(TKernel==KERNEL_Wendland)return(ApplyPorePressureBoundaryOperatorT<KERNEL_Wendland>(n,pini,pos,velrhop,code,porepress,lapporepress,lapz,timestep,printlog));
+  else if(TKernel==KERNEL_Cubic)   return(ApplyPorePressureBoundaryOperatorT<KERNEL_Cubic   >(n,pini,pos,velrhop,code,porepress,lapporepress,lapz,timestep,printlog));
+  return(0);
 }
 
 //==============================================================================
