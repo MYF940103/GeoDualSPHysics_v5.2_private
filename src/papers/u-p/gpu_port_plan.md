@@ -549,3 +549,40 @@ or long coupled reproduction runs.
 
 G7 may start only as a separately scoped short self-weight/Terzaghi-style GPU
 parity phase if explicitly requested.
+
+## G7 Self-Weight Short Parity Status, 2026-05-11
+
+Implemented in G7:
+
+- No source-code changes.
+- Added a dedicated short self-weight Scenario 2 parity smoke in
+  `examples/u-pw/02_SelfWeight_Consolidation/experiments/GPU_G7_SelfWeightParity/`.
+- The smoke uses the CPU/GPU G1-G6 production GPU path:
+  PR pressure update, dt-pore restriction, top drained, bottom no-flux,
+  difference-gradient feedback operator `1`, hydromechanical damping, and
+  excess-pressure Shepard regularization.
+
+Validation summary:
+
+- CPU Release reference: `code=0`, `excluded=0`, `steps=3147`.
+- GPU Release smoke: `code=0`, `excluded=0`, `steps=3147`.
+- Final-frame GPU minus CPU maxAbs differences:
+  - `PorePress`: `2.60e-3 Pa`;
+  - `ExcessPorePress`: `2.60e-3 Pa`;
+  - `PorePressRate`: `8.77e4 Pa/s` versus a field maxAbs about `2.72e8 Pa/s`;
+  - `PorePressureAccelDiff` magnitude: `1.47e-2 m/s2` versus a field maxAbs
+    about `1.49e1 m/s2`;
+  - velocity magnitude: `4.0e-9 m/s`.
+- GPU top drained layer excess maxAbs was `8.50e-5 Pa`.
+- GPU bottom no-flux proxy maxAbs was `4.71e-1 Pa`, comparable to CPU
+  `4.72e-1 Pa`.
+
+Generated particle/log outputs were cleaned after extracting
+`gpu_g7_selfweight_summary.csv`.
+
+G7 does not include long self-weight runs, Scenario 1 restart workflow on GPU,
+GPU softening, boundary ghost production operators, corrected-gradient
+production operators, or parameter sensitivity.
+
+G8 may start only as a separately scoped long-GPU-release planning/execution
+phase if explicitly requested.
