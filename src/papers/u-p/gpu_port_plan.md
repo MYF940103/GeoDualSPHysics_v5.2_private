@@ -2,16 +2,29 @@
 
 This document is a read-only planning note for porting the current CPU-side u-pw PR prototype to GPU. It does not describe an immediate CUDA patch. The goal is to separate core production requirements from CPU-only diagnostics and to define a staged CPU/GPU parity path.
 
-## Full CPU Gate Status, 2026-05-11
+## Current GPU Port Status, 2026-05-12
 
-This document remains a technical reference only. GPU coding is currently
-blocked by the stricter full CPU reproduction gate: reduced smokes for 03-06 are
-not strict paper reproductions. Do not start `JSphGpu*`, `JCellDivGpu*`, `.cu`,
-CUDA memory, sorting, duplicate, output, or kernel work until the full CPU
-audit/backlog blockers are implemented or explicitly deferred.
+The original passive GPU G1 gate has been completed and expanded through the
+explicitly scoped G1-G9/B5 sequence. This file is now a living status and
+planning note for the u-pw GPU PR path, not a pre-GPU blocking document.
 
-If GPU work is later allowed, the first permitted scope should remain passive
-`PorePressg`/output parity only, not the full PR loop.
+Completed GPU-side production pieces include passive `PorePressg`, PR
+diagnostics, pressure update and `dt_pore`, top drained / bottom no-flux layer
+corrections, feedback operator `1`, hydromechanical damping, Shepard
+regularization, Scenario 2 short/medium/long GPU runs, and the experimental
+mode `1` boundary-operator GPU path.
+
+The active next phase is Scenario 1 staged workflow planning/execution. The
+recommended first route is the `BodyGravityStopTime` single-run workflow, not a
+GPU restart workflow.
+
+Still out of scope unless separately requested:
+
+- GPU `PorePressureBoundaryOperator=2`;
+- corrected-gradient PR production operators;
+- GPU softening;
+- Scenario 1 restart workflow;
+- field-scale landslide reproduction.
 
 ## G1 Passive PorePressg Status, 2026-05-11
 
@@ -755,3 +768,80 @@ Recommendation:
   should audit the analytical reconstruction and investigate a more complete
   boundary quadrature/MLS treatment rather than promoting the current
   material-layer ghost contribution.
+
+## A1/A2/P1 Analytical Audit and Calibrated Reference Status, 2026-05-12
+
+A1 audited the analytical reconstruction used for self-weight Scenario 2. The
+main finding was that the Supporting-Materials-style analytical solution is a
+quasi-static 1D consolidation reference, not the raw dynamic PR equation solved
+inside the fully coupled SPH model.
+
+A2 then performed a targeted initial-state audit. It showed that the actual
+generated excess-pressure profile around the drainage activation time does not
+exactly equal Eq.(4), but using the measured early profile did not improve the
+long-run comparison. The best nominal reference remains Eq.(4) plus nominal
+`cv`.
+
+P1 generated the paper figure set:
+
+`examples/u-pw/02_SelfWeight_Consolidation/experiments/PaperFigures_SelfWeightScenario2/`
+
+Current Scenario 2 validation line:
+
+- main simulation line: GPU `xi=0.05`, `PorePressureBoundaryOperator=0`;
+- nominal analytical bottom excess relative RMSE: about `7.59%`;
+- calibrated effective reference: `cv_eff = 1.1175 * cv`;
+- calibrated bottom excess relative RMSE: about `1.98%`;
+- interpretation: effective time-factor / apparent consolidation-coefficient
+  sensitivity, not material retuning.
+
+Scenario 2 is considered closed for the current paper validation workflow.
+
+## O1/H1 Hydraulic Operator and Boundary Audit Status, 2026-05-12
+
+O1-revised confirmed that existing mDBC/cDBC particles provide mechanical
+boundary support but do not automatically carry production hydraulic state in
+the PR pore-pressure operators. The current production PR loops are effectively
+material-material for `LapPorePress`, `LapZ`, `PorePressureAccelDiff`, and
+Shepard. Standalone 1D diagnostics indicated:
+
+- material-only eigenmode scale `s0` about `0.912`;
+- idealized boundary-particle hydraulic quadrature target `s0` about `0.995`;
+- 1D MLS target `s0` about `1.000`.
+
+H1 implemented `PorePressureBoundaryOperator=2` as a CPU-only hydraulic
+mDBC-style boundary-particle prototype. It uses reconstructed boundary
+hydraulic state at `pos_b + BoundNormal_b` and adds those boundary particles to
+CPU `LapPorePress` / `LapZ` quadrature. H1 short tests completed with
+`code=0` and `excluded=0`, and logs confirmed real bottom boundary
+contributions. However:
+
+- hydrostatic residual was slightly worse than mode `0/1`;
+- pressure-only diffusion short metrics did not improve;
+- self-weight short metrics did not improve;
+- mode `2` does not explain the Scenario 2 time-factor mismatch.
+
+Frozen boundary conclusions:
+
+- `PorePressureBoundaryOperator=0` remains default production.
+- `PorePressureBoundaryOperator=1` remains experimental and GPU-supported.
+- `PorePressureBoundaryOperator=2` remains CPU-only experimental and GPU
+  unsupported.
+- There is no current evidence supporting a GPU port of mode `2`.
+- Corrected-gradient PR production remains deferred.
+
+## Next Active Phase: Scenario 1 Staged Workflow
+
+The next active workflow is Scenario 1. Start with the
+`BodyGravityStopTime` single-run route:
+
+1. body gravity on to generate self-weight excess pressure;
+2. mechanical body gravity stops at the staged time;
+3. hydraulic gravity remains active;
+4. top drained activates at the same staged time;
+5. bottom no-flux remains active.
+
+The first concrete phase should be a CPU/GPU short-smoke experiment to about
+`0.003-0.005 s`, comparing switch-time velocity, excess-pressure, and
+top/bottom boundary consistency. Do not start Scenario 1 restart workflow until
+the single-run path is stable.
