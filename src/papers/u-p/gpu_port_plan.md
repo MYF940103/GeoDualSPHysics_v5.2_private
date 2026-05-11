@@ -586,3 +586,38 @@ production operators, or parameter sensitivity.
 
 G8 may start only as a separately scoped long-GPU-release planning/execution
 phase if explicitly requested.
+
+## G8 Self-Weight Medium GPU Status, 2026-05-11
+
+Implemented in G8:
+
+- No source-code changes.
+- Added medium-duration GPU Release self-weight Scenario 2 smokes in
+  `examples/u-pw/02_SelfWeight_Consolidation/experiments/GPU_G8_SelfWeightMedium/`.
+- The G8 smokes extend the G7 setup to:
+  - `TimeMax=0.05 s`, `TimeOut=0.005 s`;
+  - `TimeMax=0.2 s`, `TimeOut=0.02 s`.
+
+Validation summary:
+
+- `T0p05`: `code=0`, `excluded=0`, `steps=52437`, runtime `126.38 s`.
+- `T0p2`: `code=0`, `excluded=0`, `steps=209747`, runtime `495.20 s`.
+- The excess pressure envelope decreased after the early self-weight peak:
+  - `T0p05`: peak maxAbs `2.77e4 Pa`, final maxAbs `1.67e4 Pa`;
+  - `T0p2`: peak maxAbs `1.80e4 Pa` in the saved frames, final maxAbs
+    `1.41e4 Pa`.
+- Velocity also decreased over the medium run:
+  - `T0p2` final max velocity `2.35e-3 m/s`, mean `1.71e-3 m/s`.
+- Hydraulic boundaries remained stable:
+  - final top drained excess maxAbs about `1.1e-5 Pa`;
+  - final bottom no-flux proxy about `7.1e-3 Pa` for `T0p2`.
+
+Generated particle/log outputs were cleaned after extracting
+`gpu_g8_case_summary.csv` and `gpu_g8_frame_metrics.csv`.
+
+G8 does not include 3.6 s reproduction, Scenario 1 restart workflow on GPU,
+GPU softening, boundary ghost production operators, corrected-gradient
+production operators, or parameter sensitivity.
+
+The medium GPU self-weight path is stable enough to consider a separately
+scoped 3.6 s GPU release run, but that run should remain a new explicit phase.
