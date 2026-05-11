@@ -621,3 +621,41 @@ production operators, or parameter sensitivity.
 
 The medium GPU self-weight path is stable enough to consider a separately
 scoped 3.6 s GPU release run, but that run should remain a new explicit phase.
+
+## G9 Self-Weight Long GPU Status, 2026-05-11
+
+Implemented in G9:
+
+- No source-code changes.
+- Added a GPU Release 3.6 s self-weight Scenario 2 long trend run in
+  `examples/u-pw/02_SelfWeight_Consolidation/experiments/GPU_G9_SelfWeightLong/`.
+- The case uses the validated G1-G6 coupled PR GPU path with body gravity on,
+  hydraulic gravity on, top drained active after `0.002 s`, bottom no-flux,
+  feedback operator `1`, `HydromechDampingXi=0.10`, and excess-pressure
+  Shepard every 10 steps.
+
+Validation summary:
+
+- GPU Release finished with `code=0`, `excluded=0`, `steps=3775438`,
+  runtime `10946.52 s`.
+- Saved-frame excess pressure declined from the early peak:
+  peak maxAbs `1.56e4 Pa`, final maxAbs `1.16e3 Pa`.
+- Total pressure approached hydrostatic:
+  final `PorePress` max `10922.62 Pa` versus final hydrostatic max
+  `9762.26 Pa`.
+- Hydraulic boundaries remained stable:
+  final top drained excess maxAbs `9.83e-7 Pa`;
+  final bottom no-flux proxy `1.90e-4 Pa`.
+- Final GPU versus CPU SW3h (`xi=0.10`) differences:
+  - final `ExcessPorePress` max difference about `1.00 Pa`;
+  - final `ExcessPorePress` mean difference about `0.56 Pa`;
+  - final bottom excess mean difference about `1.00 Pa`;
+  - final `PorePress` max difference about `1.01 Pa`.
+- GPU speedup versus the committed CPU SW3h run was about `6.26x`.
+
+Generated particle/log outputs were cleaned after extracting CSV summaries and
+SVG figures.
+
+G9 does not include parameter sensitivity, Scenario 1 GPU restart workflow,
+GPU softening, boundary ghost production operators, corrected-gradient
+production operators, or additional source-code changes.
