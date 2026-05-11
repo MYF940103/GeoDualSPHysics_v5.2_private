@@ -8,6 +8,7 @@ import matplotlib
 
 matplotlib.use("Agg")
 import matplotlib.pyplot as plt
+from matplotlib.lines import Line2D
 import numpy as np
 
 
@@ -196,28 +197,41 @@ def make_bottom_figure() -> None:
 
 
 def make_profile_figure(quantity: str, name: str, ylabel: str, title: str) -> None:
-    fig, axes = plt.subplots(1, len(TIMES), figsize=(15.5, 3.5), sharey=True)
-    for ax, t in zip(axes, TIMES):
-        z0, v0 = profile("gpu_mode0_xi005_approx", quantity, t)
-        z1, v1 = profile("gpu_mode1_xi005_b5", quantity, t)
-        za, nom = analytical_profile(quantity, t, 1.0)
-        _, eff = analytical_profile(quantity, t, CV_SCALE_EFF)
-        if len(z0):
-            ax.plot(v0 / 1000, z0, "o", ms=3, color="tab:blue", label="GPU mode=0")
-        if len(z1):
-            ax.plot(v1 / 1000, z1, "-", lw=1.0, color="0.55", label="GPU mode=1")
-        ax.plot(nom / 1000, za, "k--", lw=1.6, label="Nominal")
-        ax.plot(eff / 1000, za, color="tab:red", lw=1.8, label=r"$c_v\times1.1175$")
+    fig, axes = plt.subplots(1, 2, figsize=(11.8, 4.8), sharey=True)
+    mode_defs = [
+        ("gpu_mode0_xi005_approx", "Boundary operator mode=0"),
+        ("gpu_mode1_xi005_b5", "Boundary operator mode=1"),
+    ]
+    colors = plt.cm.viridis(np.linspace(0.08, 0.92, len(TIMES)))
+    for ax, (line_name, mode_title) in zip(axes, mode_defs):
+        for color, t in zip(colors, TIMES):
+            zg, vg = profile(line_name, quantity, t)
+            za, nom = analytical_profile(quantity, t, 1.0)
+            _, eff = analytical_profile(quantity, t, CV_SCALE_EFF)
+            if len(zg):
+                ax.plot(vg / 1000, zg, marker="o", ms=3.0, lw=1.0, color=color)
+            ax.plot(nom / 1000, za, "--", lw=1.15, color=color, alpha=0.78)
+            ax.plot(eff / 1000, za, ":", lw=1.45, color=color)
         if quantity == "PorePress":
             y = np.linspace(0.0, H, 200)
-            ax.plot(hydrostatic_y(y) / 1000, y / H, ":", color="tab:green", lw=1.3, label="Hydrostatic")
-        ax.set_title(f"t={t:g}s")
-        ax.grid(True, alpha=0.25)
+            ax.plot(hydrostatic_y(y) / 1000, y / H, "-.", color="0.2", lw=1.0)
+        ax.set_title(mode_title)
         ax.set_xlabel(ylabel)
+        ax.grid(True, alpha=0.25)
     axes[0].set_ylabel("Normalized height z/H")
-    handles, labels = axes[0].get_legend_handles_labels()
-    fig.legend(handles, labels, loc="upper center", ncol=5, fontsize=8, frameon=False)
-    fig.suptitle(title, y=1.08)
+
+    style_handles = [
+        Line2D([0], [0], color="0.2", marker="o", lw=1.0, ms=4, label="GPU"),
+        Line2D([0], [0], color="0.2", ls="--", lw=1.3, label="nominal analytical"),
+        Line2D([0], [0], color="0.2", ls=":", lw=1.7, label=r"effective analytical, $c_v\times1.1175$"),
+    ]
+    if quantity == "PorePress":
+        style_handles.append(Line2D([0], [0], color="0.2", ls="-.", lw=1.0, label="hydrostatic"))
+    time_handles = [Line2D([0], [0], color=color, lw=2.0, label=f"t={t:g}s") for color, t in zip(colors, TIMES)]
+    fig.legend(handles=style_handles, loc="upper center", ncol=len(style_handles), fontsize=8, frameon=False, bbox_to_anchor=(0.5, 1.06))
+    fig.legend(handles=time_handles, loc="lower center", ncol=len(time_handles), fontsize=8, frameon=False, bbox_to_anchor=(0.5, -0.03))
+    fig.suptitle(title, y=1.14)
+    fig.subplots_adjust(top=0.82, bottom=0.18, wspace=0.12)
     savefig(name)
 
 
