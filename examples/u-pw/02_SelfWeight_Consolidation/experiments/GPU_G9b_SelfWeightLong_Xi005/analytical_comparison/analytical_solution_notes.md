@@ -41,3 +41,15 @@ the long runs. Time-series comparisons use retained frame-metrics CSV files.
 Profile comparisons recover approximate profile curves from the retained SVG
 figures; therefore profile error metrics are approximate and are marked as such
 in `analytical_comparison_metrics.csv`.
+
+Plot coordinate convention:
+
+- Profile figures now follow the Supporting-Materials style more closely:
+  horizontal axis is normalized pore pressure and vertical axis is normalized
+  column elevation `z/H`.
+- `z/H=0` denotes the bottom no-flux side and `z/H=1` denotes the top drained
+  side.
+- Pressure and excess pressure are normalized by the reconstructed analytical
+  initial bottom excess pressure `u(0,0)=20299.236034 Pa`.
+- Time-history figures use normalized consolidation time
+  `Tv=cv(t-0.002)/H^2` on the horizontal axis.

@@ -116,6 +116,19 @@ Figures, SVG and PNG:
 - `gpu_g9_g9b_vs_analytical_excess_envelope`
 - `gpu_g9_g9b_vs_analytical_normalized_comparison`
 
+The profile figures use Supporting-Materials-style axes:
+
+- horizontal axis: normalized pore pressure or normalized excess pore pressure;
+- vertical axis: normalized elevation `z/H`, with `0` at the bottom no-flux
+  side and `1` at the top drained side;
+- normalization pressure: reconstructed analytical initial bottom excess,
+  `u(0,0)=20299.23 Pa`.
+
+The time-history figures use normalized consolidation time
+`Tv=cv(t-0.002)/H^2` on the horizontal axis.  The legends distinguish GPU
+`xi=0.10`, GPU `xi=0.05`, analytical reconstruction, and hydrostatic
+end-state where applicable.
+
 ## Error Metrics
 
 Time-series metrics use retained frame metrics and omit `t=0`.

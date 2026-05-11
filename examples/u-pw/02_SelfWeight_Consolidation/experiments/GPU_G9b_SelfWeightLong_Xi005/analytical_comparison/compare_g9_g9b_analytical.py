@@ -8,6 +8,13 @@ import struct
 import zlib
 from pathlib import Path
 
+import matplotlib
+matplotlib.use("Agg")
+import matplotlib.pyplot as plt
+
+plt.rcParams["svg.fonttype"] = "none"
+plt.rcParams["font.family"] = "Arial"
+
 
 ROOT = Path(__file__).resolve().parent
 G9B = ROOT.parent
@@ -441,73 +448,153 @@ def profile_series(kind: str):
     return series
 
 
+def normalized_profile_series(kind: str):
+    """Return profile data in Supporting-Materials-style axes.
+
+    The paper figures plot pressure-profile shape rather than physical z on
+    the x-axis.  Here x is pressure normalized by the reconstructed initial
+    analytical bottom excess pressure and y is z/H, with 0 at the bottom and 1
+    at the drained top.
+    """
+    g9_prof = extract_svg_profiles(G9 / "figures" / f"gpu_g9_{kind}_profiles.svg")
+    g9b_prof = extract_svg_profiles(G9B / "figures" / f"gpu_g9b_{kind}_profiles.svg")
+    p0b = excess_analytical_y(0.0, 0.0)
+    out = {}
+    for t in TARGET_TIMES:
+        if t <= 0.0:
+            continue
+        curves = []
+        if t in g9_prof:
+            curves.append(("GPU xi=0.10", [(v / p0b, y_from_z(z) / H) for z, v in g9_prof[t]], COLORS["xi010"], "-"))
+        if t in g9b_prof:
+            curves.append(("GPU xi=0.05", [(v / p0b, y_from_z(z) / H) for z, v in g9b_prof[t]], COLORS["xi005"], "-"))
+        aprof = analytical_profile(t)
+        if kind == "excess":
+            curves.append(("analytical", [(ex / p0b, zn) for _, zn, ex, _ in aprof], COLORS["analytical"], "--"))
+        else:
+            curves.append(("analytical", [(pp / p0b, zn) for _, zn, _, pp in aprof], COLORS["analytical"], "--"))
+            curves.append(("hydrostatic end-state", [(hydrostatic_y(zn * H) / p0b, zn) for _, zn, _, _ in aprof], COLORS["hydro"], ":"))
+        out[t] = curves
+    return out
+
+
+def save_mpl_profile_grid(stem: str, kind: str, xlabel: str, title: str) -> None:
+    data = normalized_profile_series(kind)
+    times = [t for t in TARGET_TIMES if t > 0.0 and t in data]
+    ncols = 3
+    nrows = math.ceil(len(times) / ncols)
+    fig, axes = plt.subplots(nrows, ncols, figsize=(12.2, 7.4), sharex=True, sharey=True)
+    axes_list = list(axes.flat if hasattr(axes, "flat") else [axes])
+    handles = {}
+    for ax, t in zip(axes_list, times):
+        for label, pts, color, style in data[t]:
+            xs = [x for x, _ in pts]
+            ys = [y for _, y in pts]
+            line, = ax.plot(xs, ys, style, color=color, linewidth=2.0, label=label)
+            handles.setdefault(label, line)
+        ax.set_title(f"t={t:g} s, Tv={tv(t):.3g}", fontsize=10)
+        ax.grid(True, color="#e6e6e6", linewidth=0.8)
+        ax.set_ylim(0.0, 1.0)
+        ax.set_xlim(left=0.0)
+        ax.set_box_aspect(1.15)
+    for ax in axes_list[len(times):]:
+        ax.axis("off")
+    for ax in axes_list[::ncols]:
+        ax.set_ylabel("z/H (0 bottom, 1 drained top)")
+    for ax in axes_list[-ncols:]:
+        ax.set_xlabel(xlabel)
+    fig.suptitle(title, fontsize=15)
+    fig.legend(handles.values(), handles.keys(), loc="upper center", bbox_to_anchor=(0.5, 0.955), ncol=min(4, len(handles)), frameon=False)
+    fig.tight_layout(rect=(0.02, 0.02, 0.98, 0.90))
+    fig.savefig(FIGDIR / f"{stem}.svg")
+    fig.savefig(FIGDIR / f"{stem}.png", dpi=220)
+    plt.close(fig)
+
+
+def save_mpl_time_plot(stem: str, series, xlabel: str, ylabel: str, title: str) -> None:
+    fig, ax = plt.subplots(figsize=(8.8, 5.4))
+    for label, data, color, style in series:
+        pts = clean_points(data)
+        ax.plot([x for x, _ in pts], [y for _, y in pts], style, color=color, linewidth=2.2, label=label)
+    ax.set_xlabel(xlabel)
+    ax.set_ylabel(ylabel)
+    ax.set_title(title)
+    ax.grid(True, color="#e6e6e6", linewidth=0.8)
+    ax.legend(loc="best", frameon=True)
+    fig.tight_layout()
+    fig.savefig(FIGDIR / f"{stem}.svg")
+    fig.savefig(FIGDIR / f"{stem}.png", dpi=220)
+    plt.close(fig)
+
+
 def series_from_rows(rows: list[dict[str, str]], xkey: str, ykey: str, label: str, color: str):
     return (label, [(f(r, xkey), f(r, ykey)) for r in rows], color)
 
 
 def make_plots() -> None:
-    save_plot(
+    p0b = excess_analytical_y(0.0, 0.0)
+    save_mpl_profile_grid(
         "gpu_g9_g9b_vs_analytical_porepress_profiles",
-        profile_series("porepress"),
-        "z (m)",
-        "Pore pressure (Pa)",
+        "porepress",
+        "pore pressure / analytical initial bottom excess",
         "GPU G9/G9b vs Analytical Pore Pressure Profiles",
     )
-    save_plot(
+    save_mpl_profile_grid(
         "gpu_g9_g9b_vs_analytical_excess_profiles",
-        profile_series("excess"),
-        "z (m)",
-        "Excess pore pressure (Pa)",
+        "excess",
+        "excess pore pressure / analytical initial bottom excess",
         "GPU G9/G9b vs Analytical Excess Profiles",
     )
     bottom_rows = read_rows(ROOT / "analytical_bottom_timeseries.csv")
-    save_plot(
+    g9_plot_rows = [r for r in G9_ROWS if f(r, "time") > DRAIN_START]
+    g9b_plot_rows = [r for r in G9B_ROWS if f(r, "time") > DRAIN_START]
+    bottom_plot_rows = [r for r in bottom_rows if f(r, "time") > DRAIN_START]
+    save_mpl_time_plot(
         "gpu_g9_g9b_vs_analytical_bottom_porepress_time",
         [
-            series_from_rows(G9_ROWS, "time", "bottom_PorePress_mean", "GPU xi=0.10", COLORS["xi010"]),
-            series_from_rows(G9B_ROWS, "time", "bottom_PorePress_mean", "GPU xi=0.05", COLORS["xi005"]),
-            series_from_rows(bottom_rows, "time", "analytical_bottom_porepress", "analytical", COLORS["analytical"]),
-            series_from_rows(bottom_rows, "time", "analytical_bottom_hydrostatic", "hydrostatic end-state", COLORS["hydro"]),
+            ("GPU xi=0.10", [(tv(f(r, "time")), f(r, "bottom_PorePress_mean") / p0b) for r in g9_plot_rows], COLORS["xi010"], "-"),
+            ("GPU xi=0.05", [(tv(f(r, "time")), f(r, "bottom_PorePress_mean") / p0b) for r in g9b_plot_rows], COLORS["xi005"], "-"),
+            ("analytical", [(tv(f(r, "time")), f(r, "analytical_bottom_porepress") / p0b) for r in bottom_plot_rows], COLORS["analytical"], "--"),
+            ("hydrostatic end-state", [(tv(f(r, "time")), f(r, "analytical_bottom_hydrostatic") / p0b) for r in bottom_plot_rows], COLORS["hydro"], ":"),
         ],
-        "time (s)",
-        "bottom pore pressure (Pa)",
+        "Tv = cv(t-0.002)/H^2",
+        "bottom pore pressure / analytical initial bottom excess",
         "Bottom Pore Pressure vs Analytical",
     )
-    save_plot(
+    save_mpl_time_plot(
         "gpu_g9_g9b_vs_analytical_bottom_excess_time",
         [
-            series_from_rows(G9_ROWS, "time", "bottom_Excess_mean", "GPU xi=0.10", COLORS["xi010"]),
-            series_from_rows(G9B_ROWS, "time", "bottom_Excess_mean", "GPU xi=0.05", COLORS["xi005"]),
-            series_from_rows(bottom_rows, "time", "analytical_bottom_excess", "analytical", COLORS["analytical"]),
+            ("GPU xi=0.10", [(tv(f(r, "time")), f(r, "bottom_Excess_mean") / p0b) for r in g9_plot_rows], COLORS["xi010"], "-"),
+            ("GPU xi=0.05", [(tv(f(r, "time")), f(r, "bottom_Excess_mean") / p0b) for r in g9b_plot_rows], COLORS["xi005"], "-"),
+            ("analytical", [(tv(f(r, "time")), f(r, "analytical_bottom_excess") / p0b) for r in bottom_plot_rows], COLORS["analytical"], "--"),
         ],
-        "time (s)",
-        "bottom excess pore pressure (Pa)",
+        "Tv = cv(t-0.002)/H^2",
+        "bottom excess pore pressure / analytical initial bottom excess",
         "Bottom Excess vs Analytical",
     )
-    save_plot(
+    save_mpl_time_plot(
         "gpu_g9_g9b_vs_analytical_excess_envelope",
         [
-            series_from_rows(G9_ROWS, "time", "Excess_maxAbs", "GPU xi=0.10", COLORS["xi010"]),
-            series_from_rows(G9B_ROWS, "time", "Excess_maxAbs", "GPU xi=0.05", COLORS["xi005"]),
-            series_from_rows(bottom_rows, "time", "analytical_bottom_excess", "analytical envelope", COLORS["analytical"]),
+            ("GPU xi=0.10", [(tv(f(r, "time")), f(r, "Excess_maxAbs") / p0b) for r in g9_plot_rows], COLORS["xi010"], "-"),
+            ("GPU xi=0.05", [(tv(f(r, "time")), f(r, "Excess_maxAbs") / p0b) for r in g9b_plot_rows], COLORS["xi005"], "-"),
+            ("analytical envelope", [(tv(f(r, "time")), f(r, "analytical_bottom_excess") / p0b) for r in bottom_plot_rows], COLORS["analytical"], "--"),
         ],
-        "time (s)",
-        "excess envelope (Pa)",
+        "Tv = cv(t-0.002)/H^2",
+        "excess envelope / analytical initial bottom excess",
         "Excess Envelope vs Analytical",
     )
     norm = []
-    p0b = excess_analytical_y(0.0, 0.0)
     for r in G9_ROWS:
         norm.append(("g9", tv(f(r, "time")), f(r, "bottom_Excess_mean") / p0b))
     for r in G9B_ROWS:
         norm.append(("g9b", tv(f(r, "time")), f(r, "bottom_Excess_mean") / p0b))
     analytical_norm = [(tv(f(r, "time")), f(r, "analytical_bottom_excess") / p0b) for r in bottom_rows]
-    save_plot(
+    save_mpl_time_plot(
         "gpu_g9_g9b_vs_analytical_normalized_comparison",
         [
-            ("GPU xi=0.10", [(x, y) for tag, x, y in norm if tag == "g9"], COLORS["xi010"]),
-            ("GPU xi=0.05", [(x, y) for tag, x, y in norm if tag == "g9b"], COLORS["xi005"]),
-            ("analytical", analytical_norm, COLORS["analytical"]),
+            ("GPU xi=0.10", [(x, y) for tag, x, y in norm if tag == "g9" and x > 0.0], COLORS["xi010"], "-"),
+            ("GPU xi=0.05", [(x, y) for tag, x, y in norm if tag == "g9b" and x > 0.0], COLORS["xi005"], "-"),
+            ("analytical", [(x, y) for x, y in analytical_norm if x > 0.0], COLORS["analytical"], "--"),
         ],
         "Tv = cv(t-0.002)/H^2",
         "bottom excess / initial analytical bottom excess",
@@ -560,18 +647,36 @@ the long runs. Time-series comparisons use retained frame-metrics CSV files.
 Profile comparisons recover approximate profile curves from the retained SVG
 figures; therefore profile error metrics are approximate and are marked as such
 in `analytical_comparison_metrics.csv`.
+
+Plot coordinate convention:
+
+- Profile figures now follow the Supporting-Materials style more closely:
+  horizontal axis is normalized pore pressure and vertical axis is normalized
+  column elevation `z/H`.
+- `z/H=0` denotes the bottom no-flux side and `z/H=1` denotes the top drained
+  side.
+- Pressure and excess pressure are normalized by the reconstructed analytical
+  initial bottom excess pressure `u(0,0)={p0b:.12g} Pa`.
+- Time-history figures use normalized consolidation time
+  `Tv=cv(t-0.002)/H^2` on the horizontal axis.
 """
     (ROOT / "analytical_solution_notes.md").write_text(note, encoding="utf-8")
 
 
 def main() -> None:
-    write_analytical_csvs()
+    try:
+        write_analytical_csvs()
+    except PermissionError as err:
+        print(f"warning: analytical CSV is locked; keeping existing CSV files: {err}")
     rows = metrics()
-    with (ROOT / "analytical_comparison_metrics.csv").open("w", newline="") as fp:
-        fields = ["quantity", "line", "n", "rmse", "mean_abs_error", "max_abs_error", "relative_rmse", "note"]
-        writer = csv.DictWriter(fp, fieldnames=fields)
-        writer.writeheader()
-        writer.writerows(rows)
+    try:
+        with (ROOT / "analytical_comparison_metrics.csv").open("w", newline="") as fp:
+            fields = ["quantity", "line", "n", "rmse", "mean_abs_error", "max_abs_error", "relative_rmse", "note"]
+            writer = csv.DictWriter(fp, fieldnames=fields)
+            writer.writeheader()
+            writer.writerows(rows)
+    except PermissionError as err:
+        print(f"warning: metrics CSV is locked; keeping existing metrics CSV: {err}")
     write_notes()
     make_plots()
 
