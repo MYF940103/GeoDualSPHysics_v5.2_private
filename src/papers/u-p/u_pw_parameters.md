@@ -225,7 +225,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `PorePressureTopDrainedStartTime` | double [s] | `0` | Time when top drained boundary becomes active. If `0`, active from the start. | Keep |
 | `PorePressureBottomNoFlux` | `0/1` | `0` | Enables bottom no-flux layer correction for excess pore pressure. | Keep |
 | `PorePressureBottomNoFluxThickness` | float [m] | `0` | Bottom no-flux layer thickness. If `<=0`, uses `KernelH`. | Keep |
-| `PorePressureBoundaryOperator` | `0/1/2` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: CPU boundary-consistent operator prototype; `2`: reserved. | Experimental |
+| `PorePressureBoundaryOperator` | `0/1/2` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype. | Experimental |
 
 Top drained correction:
 
@@ -248,14 +248,22 @@ bottom excess = mean(reference layer excess)
 
 This is a minimal layer correction, not a full mirror/ghost pore-pressure boundary treatment.
 
-`PorePressureBoundaryOperator=1` adds CPU-only virtual boundary
-contributions to the production `LapPorePress` and `LapZ` operators before
-`PorePressRate` is computed. Top drained uses an excess-pressure Dirichlet
-ghost (`excess=0`). Bottom no-flux uses a hydraulic-head convention, implemented
-as a mirrored excess pressure (`d excess/dn=0`) rather than a zero total-pressure
-gradient. The legacy layer correction remains active as a safety projection in
-the first prototype. GPU support for `PorePressureBoundaryOperator=1` is not
-implemented; GPU runs should keep the value at `0`.
+`PorePressureBoundaryOperator=1` adds virtual boundary contributions to the
+production `LapPorePress` and `LapZ` operators before `PorePressRate` is
+computed. Top drained uses an excess-pressure Dirichlet ghost (`excess=0`).
+Bottom no-flux uses a hydraulic-head convention, implemented as a mirrored
+excess pressure (`d excess/dn=0`) rather than a zero total-pressure gradient.
+The legacy layer correction remains active as a safety projection. This mode is
+available on CPU and GPU, but remains experimental and is not the default.
+
+`PorePressureBoundaryOperator=2` is an H1 CPU-only experimental prototype for
+hydraulic mDBC-style boundary-particle reconstruction. Boundary particles do not
+store an advected pore-pressure degree of freedom; instead, their hydraulic
+state is reconstructed on the fly and contributes to `LapPorePress`/`LapZ`
+quadrature. Top boundary particles use `excess=0`; bottom boundary particles
+reconstruct excess pressure from neighbouring material particles to represent
+head/excess Neumann consistency. GPU runs with mode `2` are unsupported and
+should fail rather than silently falling back to mode `0`.
 
 ## 4. Feedback Parameters
 

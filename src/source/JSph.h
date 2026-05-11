@@ -207,7 +207,7 @@ protected:
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
-  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:CPU boundary operator.
+  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:virtual ghost, 2:CPU hydraulic boundary-particle prototype.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   float Porosity0;              ///<Deprecated execution-parameter fallback for SoilCte.Porosity0.

@@ -727,7 +727,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
   switch(eparms.GetValueInt("PorePressureBoundaryOperator",true,0)){
     case 0:  PorePressureBoundaryOperator=0;  break;
     case 1:  PorePressureBoundaryOperator=1;  break;
-    case 2:  Run_Exceptioon("PorePressureBoundaryOperator=2 is reserved and not implemented."); break;
+    case 2:
+      if(!Cpu)Run_Exceptioon("PorePressureBoundaryOperator=2 is CPU-only in this branch. GPU support is not implemented.");
+      PorePressureBoundaryOperator=2;
+    break;
     default: Run_Exceptioon("PorePressureBoundaryOperator mode is not valid.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
@@ -1746,9 +1749,12 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
-    Log->Print(fun::VarStr("  PorePressureBoundaryOperator",(PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
+    const string ppbop=(PorePressureBoundaryOperator==2? "CPU hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction"));
+    Log->Print(fun::VarStr("  PorePressureBoundaryOperator",ppbop));
     if(PorePressureBoundaryOperator==1)
       Log->Print("  PorePressureBoundaryOperator convention: top drained uses excess Dirichlet p'=0; bottom no-flux uses hydraulic-head/excess Neumann mirror contribution. Legacy layer projection remains as a safety correction.");
+    if(PorePressureBoundaryOperator==2)
+      Log->Print("  PorePressureBoundaryOperator convention: CPU-only hydraulic boundary-particle prototype. Top boundary particles use excess Dirichlet p'=0; bottom boundary particles reconstruct excess pressure from material neighbours for hydraulic-head/excess Neumann consistency.");
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
     Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));
     Log->Print(fun::VarStr("  Soil.Porosity0",SoilCte.Porosity0));

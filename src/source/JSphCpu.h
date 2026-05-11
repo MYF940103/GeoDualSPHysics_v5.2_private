@@ -313,10 +313,10 @@ protected:
   void ComputeHydroLapZ(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,float *lapz)const;
   template<TpKernel tker> unsigned ApplyPorePressureBoundaryOperatorT(unsigned n,unsigned pini
-    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const tfloat3 *boundnormal,const double *porepress
     ,float *lapporepress,float *lapz,double timestep,bool printlog);
   unsigned ApplyPorePressureBoundaryOperator(unsigned n,unsigned pini
-    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const tfloat3 *boundnormal,const double *porepress
     ,float *lapporepress,float *lapz,double timestep,bool printlog);
   template<TpKernel tker> void ComputeHydroCorrectedOperatorsT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
