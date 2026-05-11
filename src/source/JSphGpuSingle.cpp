@@ -533,6 +533,8 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ComputeHydroPrDiagnosticsGpu();
     ComputePorePressureAccelDiffGpu();
     if(PorePressureFeedback)ApplyPorePressureFeedbackGpu();
+    if(HydromechDamping && ApplyHydromechDampingGpu(!HydromechDampingStepPrint))
+      HydromechDampingStepPrint=true;
   }
 
   //-For 2D simulations always overrides the 2nd component (Y axis).
@@ -635,6 +637,13 @@ double JSphGpuSingle::ComputeStep_Ver(){
   const double dt=DtVariable(true);        //-Calculate new dt.
   UpdatePorePressureGpu(dt);               //-Explicit pore-pressure update for material particles.
   if(HydromechCoupling && PorePressureModel==1 && PorePressg){
+    if(PorePressureShepard && PorePressureShepardInterval){
+      const unsigned shepardstep=Nstep+1;
+      if((shepardstep%PorePressureShepardInterval)==0){
+        if(ApplyPorePressureShepardGpu(shepardstep,!PorePressureShepardStepPrint))
+          PorePressureShepardStepPrint=true;
+      }
+    }
     const double tpost=TimeStep+dt;
     if(PorePressureTopDrained){
       const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
@@ -684,6 +693,13 @@ double JSphGpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   UpdatePorePressureGpu(dt);                   //-Explicit pore-pressure update for material particles.
   if(HydromechCoupling && PorePressureModel==1 && PorePressg){
+    if(PorePressureShepard && PorePressureShepardInterval){
+      const unsigned shepardstep=Nstep+1;
+      if((shepardstep%PorePressureShepardInterval)==0){
+        if(ApplyPorePressureShepardGpu(shepardstep,!PorePressureShepardStepPrint))
+          PorePressureShepardStepPrint=true;
+      }
+    }
     const double tpost=TimeStep+dt;
     if(PorePressureTopDrained){
       const bool topactive=(tpost>=PorePressureTopDrainedStartTime);

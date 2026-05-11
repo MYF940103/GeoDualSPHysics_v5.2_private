@@ -323,9 +323,16 @@ void ComputePorePressureAccelDiff(TpKernel tkernel,bool symmetry,unsigned bsflui
   ,float3 *porepressureacediff);
 void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code
   ,const float3 *porepressureacediff,float3 *ace);
+void ApplyHydromechDamping(unsigned n,unsigned pini,double coef,const typecode *code
+  ,const float4 *velrhop,float3 *ace,float *dampmag);
 void PreparePorePressureBoundaryElevations(unsigned n,unsigned pini,const typecode *code
   ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
   ,float *zmax,float *negzmin);
+void ApplyPorePressureShepard(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity,unsigned shepardmode,double *porepressout);
+void CopyPorePressureShepard(unsigned n,unsigned pini,const typecode *code,const double *porepressin,double *porepressout);
 void ApplyPorePressureTopDrained(unsigned n,unsigned pini,const typecode *code
   ,const double2 *posxy,const double *posz,double hgx,double hgy,double hgz,double hmag
   ,double waterlevel,double waterdensity,double zthreshold,double *porepress,float *affected);

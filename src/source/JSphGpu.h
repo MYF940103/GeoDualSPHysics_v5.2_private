@@ -148,6 +148,7 @@ protected:
   float *LapPorePressg;  ///<GPU pore-pressure Laplacian diagnostic.
   float *LapZg;          ///<GPU hydraulic elevation Laplacian diagnostic.
   float3 *PorePressureAceDiffg; ///<GPU difference-gradient pore-pressure feedback acceleration.
+  double *PorePressShepardTmpg; ///<Temporary GPU buffer for pore-pressure Shepard regularization.
   double PorePressureDt;        ///<Pore-pressure stability timestep for GPU PR prototype.
   bool PorePressureDtActive;    ///<True when pore-pressure timestep restriction is active.
   bool PorePressureDtConfigPrint; ///<True when pore-pressure timestep configuration has been printed.
@@ -156,6 +157,8 @@ protected:
   bool PorePressureUpdateDtPrint; ///<True when pore-pressure update timestep warning has been printed.
   bool PorePressureTopDrainedStepPrint; ///<True when GPU top drained post-update stats have been printed.
   bool PorePressureBottomNoFluxStepPrint; ///<True when GPU bottom no-flux post-update stats have been printed.
+  bool PorePressureShepardStepPrint; ///<True when GPU pore-pressure Shepard stats have been printed.
+  bool HydromechDampingStepPrint; ///<True when GPU hydromechanical damping activation has been printed.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -230,7 +233,9 @@ protected:
   void ComputeHydroPrDiagnosticsGpu();
   void ComputePorePressureAccelDiffGpu();
   void ApplyPorePressureFeedbackGpu();
+  unsigned ApplyHydromechDampingGpu(bool printlog);
   void UpdatePorePressureGpu(double dt);
+  unsigned ApplyPorePressureShepardGpu(unsigned step,bool printlog);
   unsigned ApplyPorePressureTopDrainedGpu(double timestep,const char *stage,bool printlog);
   unsigned ApplyPorePressureBottomNoFluxGpu(const char *stage,bool printlog);
   double LimitInitialDtByPorePressure(double dt);

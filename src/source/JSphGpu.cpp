@@ -145,12 +145,15 @@ void JSphGpu::InitVars(){
   PorePressg=NULL;
   PorePressRateg=NULL; DivVelg=NULL; LapPorePressg=NULL; LapZg=NULL;
   PorePressureAceDiffg=NULL;
+  PorePressShepardTmpg=NULL;
   PorePressureDt=DBL_MAX;
   PorePressureDtActive=false;
   PorePressureDtConfigPrint=PorePressureDtLimitPrint=PorePressureDtFixedPrint=false;
   PorePressureUpdateDtPrint=false;
   PorePressureTopDrainedStepPrint=false;
   PorePressureBottomNoFluxStepPrint=false;
+  PorePressureShepardStepPrint=false;
+  HydromechDampingStepPrint=false;
   BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
@@ -335,6 +338,7 @@ void JSphGpu::FreeGpuMemoryParticles(){
   Sigmag=NULL; Kplasticg=NULL; PorePressg=NULL;
   PorePressRateg=NULL; DivVelg=NULL; LapPorePressg=NULL; LapZg=NULL;
   PorePressureAceDiffg=NULL;
+  PorePressShepardTmpg=NULL;
   VelrhopM1g=NULL; SigmaM1g=NULL;
   PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; SigmaPreg=NULL;
   SpsTaug=NULL; BoundNormalg=NULL; MotionVelg=NULL;
@@ -372,6 +376,8 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,8);//-PR diagnostic arrays + sort buffers
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-PorePressureAceDiff + sort buffer
   }
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureShepard)
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,1);//-temporary pore-pressure Shepard buffer
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
@@ -436,6 +442,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   float* lapporepress = SaveArrayGpu(Np, LapPorePressg);
   float* lapz = SaveArrayGpu(Np, LapZg);
   float3* porepressureacediff = SaveArrayGpu(Np, PorePressureAceDiffg);
+  const bool porepressshepardtmp = (PorePressShepardTmpg!=NULL);
   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -463,6 +470,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(LapPorePressg);
   ArraysGpu->Free(LapZg);
   ArraysGpu->Free(PorePressureAceDiffg);
+  ArraysGpu->Free(PorePressShepardTmpg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -494,6 +502,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(lapporepress)  LapPorePressg = ArraysGpu->ReserveFloat();
   if(lapz)          LapZg = ArraysGpu->ReserveFloat();
   if(porepressureacediff) PorePressureAceDiffg = ArraysGpu->ReserveFloat3();
+  if(porepressshepardtmp) PorePressShepardTmpg = ArraysGpu->ReserveDouble();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
   // 
@@ -662,6 +671,8 @@ void JSphGpu::ReserveBasicArraysGpu(){
     LapZg=ArraysGpu->ReserveFloat();
     PorePressureAceDiffg=ArraysGpu->ReserveFloat3();
   }
+  if(HydromechCoupling && PorePressureModel==1 && PorePressureShepard)
+    PorePressShepardTmpg=ArraysGpu->ReserveDouble();
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
   SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
   }
@@ -921,6 +932,32 @@ void JSphGpu::ApplyPorePressureFeedbackGpu(){
 }
 
 //==============================================================================
+/// Applies GPU hydromechanical kinematic damping to material particles.
+//==============================================================================
+unsigned JSphGpu::ApplyHydromechDampingGpu(bool printlog){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureFeedback || !HydromechDamping || HydromechDampingCoef<=0.f || !Aceg)return(0);
+  if(TimeStep<HydromechDampingStartTime)return(0);
+  if(HydromechDampingEndTime>HydromechDampingStartTime && TimeStep>HydromechDampingEndTime)return(0);
+  const unsigned nfluid=(Np>Npb? Np-Npb: 0);
+  if(!nfluid)return(0);
+
+  float *dampmag=ArraysGpu->ReserveFloat();
+  float *auxmem=NULL;
+  cudaMalloc((void**)&auxmem,sizeof(float)*cusph::ReduMaxFloatSize(nfluid));
+  Check_CudaErroor("Failed allocating GPU hydromechanical damping reduction memory.");
+  cusph::ApplyHydromechDamping(nfluid,Npb,double(HydromechDampingCoef),Codeg,Velrhopg,Aceg,dampmag);
+  Check_CudaErroor("Failed applying GPU hydromechanical damping.");
+  const float amax=cusph::ReduMaxFloat(nfluid,Npb,dampmag,auxmem);
+  ArraysGpu->Free(dampmag);
+  cudaFree(auxmem);
+  if(printlog && amax>0.f){
+    Log->Printf("Hydromechanical damping activated on GPU at TimeStep=%g: coef=%g 1/s, start=%g, end=%g, max acceleration magnitude=%g m/s2."
+      ,TimeStep,HydromechDampingCoef,HydromechDampingStartTime,HydromechDampingEndTime,double(amax));
+  }
+  return(amax>0.f? 1u: 0u);
+}
+
+//==============================================================================
 /// Updates passive GPU pore pressure explicitly for material particles.
 //==============================================================================
 void JSphGpu::UpdatePorePressureGpu(double dt){
@@ -931,6 +968,32 @@ void JSphGpu::UpdatePorePressureGpu(double dt){
   }
   cusph::UpdatePorePressure(Np-Npb,Npb,Codeg,dt,PorePressg,PorePressRateg);
   Check_CudaErroor("Failed updating GPU pore pressure.");
+}
+
+//==============================================================================
+/// Applies optional GPU Shepard regularization to pore pressure on material particles.
+//==============================================================================
+unsigned JSphGpu::ApplyPorePressureShepardGpu(unsigned step,bool printlog){
+  if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureShepard || !PorePressureShepardInterval || !PorePressg)return(0);
+  if(!PorePressShepardTmpg)Run_Exceptioon("GPU pore-pressure Shepard temporary array is not allocated.");
+  if(PorePressureShepardMode==1 && GetHydraulicGmag()<=0.)
+    Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for GPU excess pore-pressure Shepard regularization.");
+  if(!Np || !DivData.beginendcell)return(0);
+  const float waterdensity=SoilCte.WaterDensity;
+  if(waterdensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for GPU pore-pressure Shepard regularization.");
+  const double gmag=GetHydraulicGmag();
+  const tfloat3 hg=GetHydraulicGravity();
+  const unsigned bsfluid=(BlockSizes.forcesfluid? BlockSizes.forcesfluid: SPHBSIZE);
+  cusph::ApplyPorePressureShepard(TKernel,Symmetry,bsfluid
+    ,Np-Npb,Npb,DivData,Dcellg,Posxyg,Poszg,PosCellg,Velrhopg,Codeg,PorePressg
+    ,hg.x,hg.y,hg.z,gmag,PorePressureWaterLevel,waterdensity,unsigned(PorePressureShepardMode),PorePressShepardTmpg);
+  cusph::CopyPorePressureShepard(Np-Npb,Npb,Codeg,PorePressShepardTmpg,PorePressg);
+  Check_CudaErroor("Failed applying GPU pore-pressure Shepard regularization.");
+  if(printlog){
+    Log->Printf("Pore-pressure Shepard regularization applied on GPU: step=%u, TimeStep=%g, mode=%s, interval=%u."
+      ,step,TimeStep,(PorePressureShepardMode==1? "ExcessPressure": "TotalPressure"),PorePressureShepardInterval);
+  }
+  return(1);
 }
 
 //==============================================================================

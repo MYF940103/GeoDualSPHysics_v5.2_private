@@ -508,3 +508,44 @@ operator `0`, softening, or long coupled runs.
 
 G6 may start only as a separately scoped Shepard/damping phase if explicitly
 requested.
+
+## G6 Stabilization Status, 2026-05-11
+
+Implemented in G6:
+
+- GPU hydromechanical damping for the PR coupled path:
+  `a_damp = -c_d v`, applied to `Aceg` after pore-pressure feedback and
+  before acceleration reduction / timestep selection.
+- GPU pore-pressure Shepard regularization using a temporary
+  `PorePressShepardTmpg` buffer, material-material neighbors only.
+- Shepard mode `0` regularizes total `PorePress`; mode `1` regularizes
+  excess pressure and reconstructs total pressure from the hydrostatic state.
+- GPU ordering now follows the CPU stabilization ordering for this stage:
+  pressure update, optional Shepard, top drained correction, bottom no-flux
+  correction.
+- Smoke templates and summary script in
+  `examples/u-pw/01_1D_Consolidation/experiments/GPU_G6_Stabilization/`.
+
+Validation summary:
+
+- GPU Debug and GPU Release builds passed.
+- GPU Release smokes for damping off/on, Shepard hydrostatic, Shepard
+  analytical excess, and coupled short all finished with `code=0`,
+  `excluded=0`, and valid pore-pressure output fields.
+- Shepard hydrostatic kept `ExcessPorePress` near zero:
+  maxAbs about `2.87e-5 Pa`.
+- Shepard analytical excess produced finite smoothing with final-initial
+  `PorePress` maxAbs about `57.0 Pa`.
+- Coupled short smoke with feedback, damping, Shepard, top drained, and
+  bottom no-flux finished with `steps=21`; GPU/CPU final `PorePress` maxAbs
+  difference was about `2.30e-5 Pa`, and `PorePressureAccelDiff` max-magnitude
+  difference was about `1.32e-5 m/s2`.
+- Generated particle/log outputs were cleaned after extracting
+  `gpu_g6_smoke_summary.csv`.
+
+G6 does not include GPU softening, boundary ghost production operators,
+corrected-gradient PR production operators, symmetric feedback operator `0`,
+or long coupled reproduction runs.
+
+G7 may start only as a separately scoped short self-weight/Terzaghi-style GPU
+parity phase if explicitly requested.

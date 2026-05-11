@@ -3804,6 +3804,40 @@ void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code
 }
 
 //------------------------------------------------------------------------------
+/// Adds hydromechanical damping acceleration to material particles.
+//------------------------------------------------------------------------------
+__global__ void KerApplyHydromechDamping(unsigned n,unsigned pini,double coef,const typecode *code
+  ,const float4 *velrhop,float3 *ace,float *dampmag)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    dampmag[p1]=0.f;
+    if(CODE_IsFluid(code[p1])){
+      const double ax=-coef*double(velrhop[p1].x);
+      const double ay=-coef*double(velrhop[p1].y);
+      const double az=-coef*double(velrhop[p1].z);
+      ace[p1].x+=float(ax);
+      ace[p1].y+=float(ay);
+      ace[p1].z+=float(az);
+      dampmag[p1]=float(sqrt(ax*ax+ay*ay+az*az));
+    }
+  }
+}
+
+//==============================================================================
+/// Adds hydromechanical damping acceleration to material particles.
+//==============================================================================
+void ApplyHydromechDamping(unsigned n,unsigned pini,double coef,const typecode *code
+  ,const float4 *velrhop,float3 *ace,float *dampmag)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerApplyHydromechDamping <<<sgrid,SPHBSIZE>>> (n,pini,coef,code,velrhop,ace,dampmag);
+  }
+}
+
+//------------------------------------------------------------------------------
 /// Explicitly updates material-particle pore pressure from the diagnostic rate.
 //------------------------------------------------------------------------------
 __global__ void KerUpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
@@ -3825,6 +3859,135 @@ void UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,double dt
   if(n){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
     KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (n,pini,code,dt,porepress,porepressrate);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Applies material-material Shepard regularization to pore pressure.
+//------------------------------------------------------------------------------
+template<TpKernel tker,bool symm>
+  __global__ void KerApplyPorePressureShepard(unsigned n,unsigned pinit
+  ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,double waterlevel,float waterdensity,unsigned shepardmode,double *porepressout)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pinit;
+    porepressout[p1]=porepress[p1];
+    if(!CODE_IsFluid(code[p1]))return;
+
+    const bool excessmode=(shepardmode==1);
+    const float4 pscellp1=poscell[p1];
+    const float4 velrhop1=velrhop[p1];
+    if(velrhop1.w<=0.f)return;
+    const double z1=-(posxy[p1].x*hydraulicg.x+posxy[p1].y*hydraulicg.y+posz[p1]*hydraulicg.z)/hydraulicg.w;
+    const double depth1=waterlevel-z1;
+    const double hydro1=(depth1>0.? double(waterdensity)*hydraulicg.w*depth1: 0.);
+    const double pvalue1=(excessmode? porepress[p1]-hydro1: porepress[p1]);
+    const double volp1=double(CTE.massf)/double(velrhop1.w);
+    const double w0=double(cufsph::GetKernel_Wab<tker>(0.f));
+    double psum=volp1*pvalue1*w0;
+    double wsum=volp1*w0;
+    const bool rsymp1=(symm && PSCEL_GetPartY(__float_as_uint(pscellp1.w))==0); //<vs_syymmetry>
+
+    int ini1,fin1,ini2,fin2,ini3,fin3;
+    cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+    ini3+=cellfluid; fin3+=cellfluid;
+    for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+      unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pini;p2<pfin;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float4 pscellp2=poscell[p2];
+        float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+        float dry=pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w));
+        float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+        if(rsym)dry=pscellp1.y+pscellp2.y + CTE.poscellsize*PSCEL_GetfY(pscellp2.w); //<vs_syymmetry>
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
+          const float rhop2=velrhop[p2].w;
+          if(rhop2>0.f){
+            const float wab=cufsph::GetKernel_Wab<tker>(rr2);
+            const double volp2=double(CTE.massf)/double(rhop2);
+            double pvalue=porepress[p2];
+            if(excessmode){
+              const double z2=-(posxy[p2].x*hydraulicg.x+posxy[p2].y*hydraulicg.y+posz[p2]*hydraulicg.z)/hydraulicg.w;
+              const double depth2=waterlevel-z2;
+              const double hydro2=(depth2>0.? double(waterdensity)*hydraulicg.w*depth2: 0.);
+              pvalue-=hydro2;
+            }
+            psum+=volp2*pvalue*double(wab);
+            wsum+=volp2*double(wab);
+          }
+          rsym=(rsymp1 && !rsym && float(pscellp1.y-dry)<=CTE.kernelsize); //<vs_syymmetry>
+          if(rsym)p2--;                                                     //<vs_syymmetry>
+        }
+        else rsym=false;                                                    //<vs_syymmetry>
+      }
+    }
+    if(wsum>ALMOSTZERO){
+      const double preg=psum/wsum;
+      porepressout[p1]=(excessmode? hydro1+preg: preg);
+    }
+  }
+}
+
+//==============================================================================
+/// Applies material-material Shepard regularization to pore pressure.
+//==============================================================================
+template<TpKernel tker,bool symm> void ApplyPorePressureShepardT(unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double4 hydraulicg,double waterlevel,float waterdensity,unsigned shepardmode,double *porepressout)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,bsfluid);
+    KerApplyPorePressureShepard<tker,symm> <<<sgrid,bsfluid>>> (n,pini,divdata.scelldiv,divdata.nc,divdata.cellzero
+      ,divdata.beginendcell,divdata.cellfluid,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,shepardmode,porepressout);
+  }
+}
+
+//==============================================================================
+/// Applies material-material Shepard regularization to pore pressure.
+//==============================================================================
+void ApplyPorePressureShepard(TpKernel tkernel,bool symmetry,unsigned bsfluid
+  ,unsigned n,unsigned pini,StDivDataGpu divdata,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const float4 *velrhop,const typecode *code,const double *porepress
+  ,double hgx,double hgy,double hgz,double hmag,double waterlevel,float waterdensity,unsigned shepardmode,double *porepressout)
+{
+  const double4 hydraulicg=make_double4(hgx,hgy,hgz,hmag);
+  if(tkernel==KERNEL_Wendland){
+    if(symmetry)ApplyPorePressureShepardT<KERNEL_Wendland,true >(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,shepardmode,porepressout);
+    else        ApplyPorePressureShepardT<KERNEL_Wendland,false>(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,shepardmode,porepressout);
+  }
+  else if(tkernel==KERNEL_Cubic){
+    if(symmetry)ApplyPorePressureShepardT<KERNEL_Cubic,true >(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,shepardmode,porepressout);
+    else        ApplyPorePressureShepardT<KERNEL_Cubic,false>(bsfluid,n,pini,divdata,dcell,posxy,posz,poscell,velrhop,code,porepress,hydraulicg,waterlevel,waterdensity,shepardmode,porepressout);
+  }
+}
+
+//------------------------------------------------------------------------------
+/// Copies the Shepard temporary pressure state back to material particles.
+//------------------------------------------------------------------------------
+__global__ void KerCopyPorePressureShepard(unsigned n,unsigned pini,const typecode *code
+  ,const double *porepressin,double *porepressout)
+{
+  const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+  if(p<n){
+    const unsigned p1=p+pini;
+    if(CODE_IsFluid(code[p1]))porepressout[p1]=porepressin[p1];
+  }
+}
+
+//==============================================================================
+/// Copies the Shepard temporary pressure state back to material particles.
+//==============================================================================
+void CopyPorePressureShepard(unsigned n,unsigned pini,const typecode *code,const double *porepressin,double *porepressout)
+{
+  if(n){
+    dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+    KerCopyPorePressureShepard <<<sgrid,SPHBSIZE>>> (n,pini,code,porepressin,porepressout);
   }
 }
 
