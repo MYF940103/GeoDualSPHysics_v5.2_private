@@ -282,3 +282,43 @@ C4-B3 implementation with diagnostics:
 
 The drained curved pore-pressure boundary remains separate, and strict Cryer
 simulation is still paused.
+
+## C4-C Drained Curved Boundary Notes
+
+C4-C adds a CPU-only experimental drained curved hydraulic boundary:
+
+```xml
+<parameter key="PorePressureBoundaryOperator" value="3" />
+<parameter key="PorePressureCurvedDrained" value="1" />
+<parameter key="CurvedDrainedBoundaryCenterX" value="0" />
+<parameter key="CurvedDrainedBoundaryCenterY" value="0" />
+<parameter key="CurvedDrainedBoundaryCenterZ" value="0" />
+<parameter key="CurvedDrainedBoundaryRadius" value="0.05" />
+<parameter key="CurvedDrainedBoundaryTargetMk" value="0" />
+<parameter key="CurvedDrainedBoundaryValue" value="0" />
+<parameter key="CurvedDrainedBoundaryUseExcess" value="1" />
+<parameter key="CurvedDrainedBoundaryThickness" value="0.018" />
+<parameter key="CurvedDrainedBoundaryMode" value="0" />
+```
+
+Mode `3` is a spherical Dirichlet ghost prototype. It contributes to
+`LapPorePress` and `LapZ` before the PR pressure rate is computed. It does not
+overwrite `PorePress` after the update.
+
+Smoke folder:
+
+`strict_reproduction_plan/drained_curved_boundary_C4C/`
+
+Results:
+
+- zero/no-source smoke: `code=0`, `excluded=0`;
+- pressure-only diffusion smoke: `code=0`, `excluded=0`;
+- compression plus drained boundary smoke: `code=0`, `excluded=0`;
+- diffusion surface excess decreased during the short run;
+- compression produced early positive center excess and `Kplastic=0`.
+
+GPU remains unsupported for mode `3` and hard-errors if requested. The
+prototype is sufficient for a future coarse CPU strict-Cryer smoke, but not for
+claiming strict Figure 7 reproduction. The current PR implementation still
+requires positive `HydraulicGravity` for hydraulic diffusivity scaling, so the
+gravity-free Cryer representation remains an explicit limitation.

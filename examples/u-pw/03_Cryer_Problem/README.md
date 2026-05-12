@@ -298,3 +298,40 @@ Status:
 
 Next recommended task: C4-B4 traction-only free-sphere smoke, then C4-C
 drained curved pore-pressure boundary audit/development.
+
+## C4-C Drained Curved Pore-Pressure Boundary
+
+C4-C adds a CPU-only curved drained hydraulic boundary prototype:
+
+`PorePressureBoundaryOperator=3`
+
+with:
+
+`PorePressureCurvedDrained=1`
+
+The prototype selects material particles near a prescribed spherical exterior,
+adds an outward drained Dirichlet ghost state, and contributes it to
+`LapPorePress` and `LapZ` before `PorePressRate` is computed. It is not a
+post-update clamp. GPU is unsupported for this mode and hard-errors if it is
+requested.
+
+The smoke package is:
+
+`strict_reproduction_plan/drained_curved_boundary_C4C/`
+
+Retained cases:
+
+- no-source/zero-pressure stability smoke;
+- pressure-only uniform-excess diffusion smoke;
+- flexible confining stress plus drained curved boundary smoke.
+
+All CPU Release smokes completed with `code=0` and `excluded=0`. The diffusion
+case showed surface excess dissipation, and the compression smoke generated
+early positive center excess with `Kplastic=0`.
+
+This resolves a first CPU prototype for the drained curved boundary, but it is
+still not strict Cryer reproduction. The current PR path still requires
+positive `HydraulicGravity` for hydraulic scaling, so a gravity-free Cryer
+hydraulic representation remains an explicit limitation. Strict Cryer
+simulation should still be treated as a coarse future smoke, not as validated
+Figure 7 reproduction.

@@ -197,6 +197,14 @@ void JSph::InitVars(){
   PorePressureBottomNoFlux=false;
   PorePressureBottomNoFluxThickness=0.f;
   PorePressureBoundaryOperator=0;
+  PorePressureCurvedDrained=false;
+  CurvedDrainedBoundaryCenter=TDouble3(0);
+  CurvedDrainedBoundaryRadius=0.;
+  CurvedDrainedBoundaryTargetMk=-1;
+  CurvedDrainedBoundaryValue=0.;
+  CurvedDrainedBoundaryUseExcess=true;
+  CurvedDrainedBoundaryThickness=0.;
+  CurvedDrainedBoundaryMode=0;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   Porosity0=0.3f;
@@ -745,7 +753,32 @@ void JSph::LoadConfigParameters(const JXml *xml){
       if(!Cpu)Run_Exceptioon("PorePressureBoundaryOperator=2 is CPU-only in this branch. GPU support is not implemented.");
       PorePressureBoundaryOperator=2;
     break;
+    case 3:
+      if(!Cpu)Run_Exceptioon("PorePressureBoundaryOperator=3 is CPU-only in this branch. GPU support is not implemented.");
+      PorePressureBoundaryOperator=3;
+    break;
     default: Run_Exceptioon("PorePressureBoundaryOperator mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureCurvedDrained",true,0)){
+    case 0:  PorePressureCurvedDrained=false;  break;
+    case 1:  PorePressureCurvedDrained=true;   break;
+    default: Run_Exceptioon("PorePressureCurvedDrained mode is not valid.");
+  }
+  CurvedDrainedBoundaryCenter.x=eparms.GetValueDouble("CurvedDrainedBoundaryCenterX",true,0.);
+  CurvedDrainedBoundaryCenter.y=eparms.GetValueDouble("CurvedDrainedBoundaryCenterY",true,0.);
+  CurvedDrainedBoundaryCenter.z=eparms.GetValueDouble("CurvedDrainedBoundaryCenterZ",true,0.);
+  CurvedDrainedBoundaryRadius=eparms.GetValueDouble("CurvedDrainedBoundaryRadius",true,0.);
+  CurvedDrainedBoundaryTargetMk=eparms.GetValueInt("CurvedDrainedBoundaryTargetMk",true,-1);
+  CurvedDrainedBoundaryValue=eparms.GetValueDouble("CurvedDrainedBoundaryValue",true,0.);
+  switch(eparms.GetValueInt("CurvedDrainedBoundaryUseExcess",true,1)){
+    case 0:  CurvedDrainedBoundaryUseExcess=false;  break;
+    case 1:  CurvedDrainedBoundaryUseExcess=true;   break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryUseExcess mode is not valid.");
+  }
+  CurvedDrainedBoundaryThickness=eparms.GetValueDouble("CurvedDrainedBoundaryThickness",true,0.);
+  switch(eparms.GetValueInt("CurvedDrainedBoundaryMode",true,0)){
+    case 0:  CurvedDrainedBoundaryMode=0;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Only mode 0 is implemented.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
@@ -834,6 +867,17 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
+  if(PorePressureCurvedDrained && PorePressureBoundaryOperator!=3)
+    Run_Exceptioon("PorePressureCurvedDrained=1 requires PorePressureBoundaryOperator=3.");
+  if(PorePressureBoundaryOperator==3 && !PorePressureCurvedDrained)
+    Run_Exceptioon("PorePressureBoundaryOperator=3 requires PorePressureCurvedDrained=1.");
+  if(PorePressureCurvedDrained && !Cpu)Run_Exceptioon("PorePressureCurvedDrained=1 is CPU-only in this branch. GPU support is not implemented.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryRadius<=0.)
+    Run_Exceptioon("CurvedDrainedBoundaryRadius must be greater than zero when PorePressureCurvedDrained=1.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryTargetMk<-1)
+    Run_Exceptioon("CurvedDrainedBoundaryTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryThickness<0.)
+    Run_Exceptioon("CurvedDrainedBoundaryThickness must be greater than or equal to zero.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
@@ -1783,12 +1827,23 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
-    const string ppbop=(PorePressureBoundaryOperator==2? "CPU hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction"));
+    const string ppbop=(PorePressureBoundaryOperator==3? "CPU curved drained boundary prototype": (PorePressureBoundaryOperator==2? "CPU hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
     Log->Print(fun::VarStr("  PorePressureBoundaryOperator",ppbop));
     if(PorePressureBoundaryOperator==1)
       Log->Print("  PorePressureBoundaryOperator convention: top drained uses excess Dirichlet p'=0; bottom no-flux uses hydraulic-head/excess Neumann mirror contribution. Legacy layer projection remains as a safety correction.");
     if(PorePressureBoundaryOperator==2)
       Log->Print("  PorePressureBoundaryOperator convention: CPU-only hydraulic boundary-particle prototype. Top boundary particles use excess Dirichlet p'=0; bottom boundary particles reconstruct excess pressure from material neighbours for hydraulic-head/excess Neumann consistency.");
+    if(PorePressureBoundaryOperator==3){
+      Log->Print("  PorePressureBoundaryOperator convention: CPU-only curved drained boundary prototype. A spherical Dirichlet ghost is added to LapPorePress/LapZ for near-surface material particles; it is not a post-update clamp.");
+      Log->Print(fun::VarStr("  PorePressureCurvedDrained",PorePressureCurvedDrained));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryCenter",CurvedDrainedBoundaryCenter));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryRadius",CurvedDrainedBoundaryRadius));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryTargetMk",CurvedDrainedBoundaryTargetMk));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryValue",CurvedDrainedBoundaryValue));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryUseExcess",CurvedDrainedBoundaryUseExcess));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryThickness",CurvedDrainedBoundaryThickness));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryMode",CurvedDrainedBoundaryMode));
+    }
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
     Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));
     Log->Print(fun::VarStr("  Soil.Porosity0",SoilCte.Porosity0));

@@ -238,7 +238,15 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `PorePressureTopDrainedStartTime` | double [s] | `0` | Time when top drained boundary becomes active. If `0`, active from the start. | Keep |
 | `PorePressureBottomNoFlux` | `0/1` | `0` | Enables bottom no-flux layer correction for excess pore pressure. | Keep |
 | `PorePressureBottomNoFluxThickness` | float [m] | `0` | Bottom no-flux layer thickness. If `<=0`, uses `KernelH`. | Keep |
-| `PorePressureBoundaryOperator` | `0/1/2` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype. | Experimental |
+| `PorePressureBoundaryOperator` | `0/1/2/3` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype; `3`: CPU-only drained curved Dirichlet ghost prototype. | Experimental |
+| `PorePressureCurvedDrained` | `0/1` | `0` | Enables mode `3` curved drained boundary. Requires `PorePressureBoundaryOperator=3`. | Experimental |
+| `CurvedDrainedBoundaryCenterX/Y/Z` | double [m] | `0` | Sphere center for mode `3`. | Experimental |
+| `CurvedDrainedBoundaryRadius` | double [m], `>0` | `0` | Sphere radius for mode `3`. | Experimental |
+| `CurvedDrainedBoundaryTargetMk` | int | `-1` | Target mkfluid for mode `3`; `-1` means all material particles. | Experimental |
+| `CurvedDrainedBoundaryValue` | double [Pa] | `0` | Prescribed drained boundary value. | Experimental |
+| `CurvedDrainedBoundaryUseExcess` | `0/1` | `1` | `1`: value is excess pressure; `0`: value is total pressure. | Experimental |
+| `CurvedDrainedBoundaryThickness` | double [m] | `0` | Interior shell thickness for ghost placement; if `<=0`, uses `KernelH`. | Experimental |
+| `CurvedDrainedBoundaryMode` | `0` | `0` | Mode `3` subtype. `0`: spherical Dirichlet ghost; other values reserved. | Experimental |
 
 Top drained correction:
 
@@ -277,6 +285,16 @@ quadrature. Top boundary particles use `excess=0`; bottom boundary particles
 reconstruct excess pressure from neighbouring material particles to represent
 head/excess Neumann consistency. GPU runs with mode `2` are unsupported and
 should fail rather than silently falling back to mode `0`.
+
+`PorePressureBoundaryOperator=3` is a C4-C CPU-only experimental prototype for
+a drained curved boundary, currently designed for spherical Cryer smokes. It
+selects material particles near a prescribed spherical exterior and adds an
+outward Dirichlet ghost state to `LapPorePress` and `LapZ` before
+`PorePressRate` is computed. The default convention is
+`CurvedDrainedBoundaryUseExcess=1` with `CurvedDrainedBoundaryValue=0`, i.e.
+drained excess pore pressure. It does not clamp material pore pressure after
+the update. GPU runs with mode `3` or `PorePressureCurvedDrained=1` are
+unsupported and should fail rather than silently falling back to mode `0`.
 
 ## 4. Feedback Parameters
 

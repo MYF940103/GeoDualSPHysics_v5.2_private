@@ -207,7 +207,15 @@ protected:
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
-  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:virtual ghost, 2:CPU hydraulic boundary-particle prototype.
+  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:virtual ghost, 2:CPU hydraulic boundary-particle prototype, 3:CPU curved drained prototype.
+  bool PorePressureCurvedDrained; ///<CPU curved drained pore-pressure boundary switch for operator mode 3.
+  tdouble3 CurvedDrainedBoundaryCenter; ///<Sphere center for curved drained pore-pressure boundary.
+  double CurvedDrainedBoundaryRadius; ///<Sphere radius for curved drained pore-pressure boundary.
+  int CurvedDrainedBoundaryTargetMk; ///<Target mkfluid for curved drained boundary. -1:all material particles.
+  double CurvedDrainedBoundaryValue; ///<Prescribed curved drained boundary pressure/excess value [Pa].
+  bool CurvedDrainedBoundaryUseExcess; ///<True: value is excess pressure; false: value is total pressure.
+  double CurvedDrainedBoundaryThickness; ///<Interior shell thickness for curved drained boundary. If <=0, KernelH is used.
+  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:reserved.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   float Porosity0;              ///<Deprecated execution-parameter fallback for SoilCte.Porosity0.

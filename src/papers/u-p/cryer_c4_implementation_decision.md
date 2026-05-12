@@ -138,6 +138,40 @@ blocker.
 Recommended next task: C4-C drained curved pore-pressure boundary
 audit/development. Strict Cryer simulation remains paused.
 
+### C4-C: CPU Drained Curved Pore-Pressure Boundary
+
+Status: completed as a CPU-only operator-level prototype and short smoke.
+
+C4-C adds `PorePressureBoundaryOperator=3` with
+`PorePressureCurvedDrained=1`. The mode selects material particles in a
+prescribed spherical near-surface shell, builds an outward drained Dirichlet
+ghost state, and adds that contribution to CPU `LapPorePress` and `LapZ`
+before `PorePressRate` is computed. It is not a post-update clamp.
+
+GPU support is intentionally unsupported. A GPU run with mode `3` or
+`PorePressureCurvedDrained=1` hard-errors during XML loading.
+
+The smoke package is:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/drained_curved_boundary_C4C/`
+
+Results:
+
+- zero/no-source stability smoke: `code=0`, `excluded=0`;
+- pressure-only uniform-excess diffusion smoke: `code=0`, `excluded=0`;
+- flexible confining stress plus drained curved boundary smoke:
+  `code=0`, `excluded=0`;
+- surface excess in the diffusion smoke decayed from `1000 Pa` to about
+  `963 Pa` over the short run;
+- compression smoke generated early positive center excess while keeping
+  `Kplastic=0`.
+
+Limitations remain important: the prototype is first-order/spherical, not MLS
+or general boundary quadrature, and the current PR formulation still requires a
+positive hydraulic gravity magnitude for hydraulic scaling. Strict Cryer
+simulation should still be treated as paused until the no-elevation-source
+representation and center-pressure comparison plan are explicitly accepted.
+
 ### C4-D: Reduced Fallback
 
 If strict loading or boundary support is blocked, keep the reduced baseline as

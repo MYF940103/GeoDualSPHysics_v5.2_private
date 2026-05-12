@@ -2165,12 +2165,15 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const tfloat3 *boundnormal,const double *porepress
   ,float *lapporepress,float *lapz,double timestep,bool printlog)
 {
-  if(!HydromechCoupling || PorePressureModel!=1 || (PorePressureBoundaryOperator!=1 && PorePressureBoundaryOperator!=2))return(0);
+  if(!HydromechCoupling || PorePressureModel!=1 || (PorePressureBoundaryOperator!=1 && PorePressureBoundaryOperator!=2 && PorePressureBoundaryOperator!=3))return(0);
   if(!pos || !velrhop || !code || !porepress || !lapporepress || !lapz)
     Run_Exceptioon("Pointers without data for pore-pressure boundary operator.");
   if(PorePressureBoundaryOperator==2 && !dcell)
     Run_Exceptioon("PorePressureBoundaryOperator=2 requires cell data for boundary-particle hydraulic reconstruction.");
-  if(!PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
+  if(PorePressureBoundaryOperator==3){
+    if(!PorePressureCurvedDrained)return(0);
+  }
+  else if(!PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure boundary operator.");
   const double rhog=double(SoilCte.WaterDensity)*gmag;
@@ -2274,6 +2277,8 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
 
   unsigned bndtop=0,bndbottom=0,bndinactive=0,bndnormals=0,bndmlssamples=0,bndmlsfallback=0;
   double bndexmin=DBL_MAX,bndexmax=-DBL_MAX;
+  unsigned curvedaffected=0,curvedskipped=0;
+  double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
     const auto boundary_hydraulic_pos=[&](unsigned pb)->tdouble3{
@@ -2371,6 +2376,54 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     if(bndexmin==DBL_MAX)bndexmin=bndexmax=0.;
   }
 
+  if(PorePressureBoundaryOperator==3){
+    if(CurvedDrainedBoundaryRadius<=0.)
+      Run_Exceptioon("CurvedDrainedBoundaryRadius must be greater than zero for PorePressureBoundaryOperator=3.");
+    const double shellthick=(CurvedDrainedBoundaryThickness>0.? CurvedDrainedBoundaryThickness: double(KernelH));
+    if(shellthick<=0.)Run_Exceptioon("PorePressureBoundaryOperator=3 requires positive CurvedDrainedBoundaryThickness or KernelH.");
+    const double mindist=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelSize));
+    const double rtarget=CurvedDrainedBoundaryRadius;
+    const double rmin=max(0.,rtarget-shellthick);
+    for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+      if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
+      if(velrhop[p].w<=0.f){ skipped++; continue; }
+      const tdouble3 rel=pos[p]-CurvedDrainedBoundaryCenter;
+      const double r=sqrt(rel.x*rel.x+rel.y*rel.y+rel.z*rel.z);
+      if(r<rmin || r<=ALMOSTZERO)continue;
+      curvedrmin=min(curvedrmin,r);
+      curvedrmax=max(curvedrmax,r);
+      double ghostdist=rtarget-r;
+      if(ghostdist<mindist)ghostdist=mindist;
+      const tdouble3 normal=rel*(1./r);
+      const tdouble3 posg=pos[p]+normal*(2.*ghostdist);
+      const double drx=pos[p].x-posg.x;
+      const double dry=pos[p].y-posg.y;
+      const double drz=pos[p].z-posg.z;
+      const double rr2=drx*drx+dry*dry+drz*drz;
+      if(rr2>double(KernelSize2) || rr2<ALMOSTZERO){ curvedskipped++; continue; }
+
+      const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+      const double dotrgrad=rr2*double(fac);
+      const double voli=double(MassFluid)/double(velrhop[p].w);
+      const double zi=GetHydraulicElevation(pos[p]);
+      const double zg=GetHydraulicElevation(posg);
+      const double hydrog=hydrostatic_linear(zg);
+      const double pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+      const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+      const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+      lapporepress[p]+=float(lapadd);
+      lapz[p]+=float(zadd);
+      curvedaffected++;
+      const double hydroi=hydrostatic_linear(zi);
+      const double pval=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydroi: porepress[p]);
+      curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
+      maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
+      maxabslapadd=max(maxabslapadd,fabs(lapadd));
+      maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+    }
+    topaffected=curvedaffected;
+  }
+
   if(printlog){
     Log->Printf("CPU pore-pressure boundary operator: mode=%d, TimeStep=%g, top_active=%s, bottom_active=%s, zmin=%g, zmax=%g, gap=%g, top_thickness=%g, bottom_thickness=%g, top_contrib=%u, bottom_contrib=%u, skipped=%u, max|dpw_top|=%g Pa, max|dpw_bottom|=%g Pa, max|LapP add|=%g, max|head add|=%g."
       ,PorePressureBoundaryOperator,timestep,(topactive? "True": "False"),(bottomactive? "True": "False"),zmin,zmax,gap,topthick,bottomthick,topaffected,bottomaffected,skipped,maxabsdpwtop,maxabsdpwbottom,maxabslapadd,maxabsheadadd);
@@ -2380,6 +2433,14 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       Log->Printf("CPU hydraulic boundary-particle operator: inactive_boundary_neighbours=%u, normals_used=%u, MLS_samples=%u, MLS_fallback=%u, reconstructed_excess=[%g,%g] Pa."
         ,bndinactive,bndnormals,bndmlssamples,bndmlsfallback,bndexmin,bndexmax);
       Log->Print("CPU hydraulic boundary-particle convention: top boundary particles use excess pressure = 0; bottom no-flux boundary particles use reconstructed excess/head state, not zero total pressure gradient.");
+    }
+    if(PorePressureBoundaryOperator==3){
+      Log->Printf("CPU curved drained pore-pressure boundary: active=%s, center=(%g,%g,%g), radius=%g, shell_thickness=%g, target_mk=%d, value=%g Pa, value_type=%s, affected=%u, skipped=%u, radius_range=[%g,%g], boundary_residual_max=%g Pa."
+        ,(PorePressureCurvedDrained? "True": "False"),CurvedDrainedBoundaryCenter.x,CurvedDrainedBoundaryCenter.y,CurvedDrainedBoundaryCenter.z
+        ,CurvedDrainedBoundaryRadius,(CurvedDrainedBoundaryThickness>0.? CurvedDrainedBoundaryThickness: double(KernelH))
+        ,CurvedDrainedBoundaryTargetMk,CurvedDrainedBoundaryValue,(CurvedDrainedBoundaryUseExcess? "excess": "total")
+        ,curvedaffected,curvedskipped,(curvedrmin==DBL_MAX? 0.: curvedrmin),curvedrmax,curvedresidualmax);
+      Log->Print("CPU curved drained convention: spherical exterior Dirichlet ghost contributes to LapPorePress/LapZ before PR rate; no post-update clamp is applied.");
     }
   }
   return(topaffected+bottomaffected);
