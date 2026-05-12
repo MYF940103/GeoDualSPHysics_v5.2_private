@@ -446,3 +446,26 @@ Cryer compression response: final `r>0.85R` surface p95 excess decreases from
 
 This is not enough for Figure 7B quantitative comparison. Strict Cryer remains
 blocked by drained curved material-surface coupling; GPU remains deferred.
+
+## LIT-B Boundary Literature Audit
+
+LIT-B pauses source changes after C5d and audits the available paper/supporting
+documents before another Cryer boundary patch.
+
+New reports are in `src/papers/u-p/`:
+
+- `litb_original_upw_boundary_audit.md`
+- `litb_supporting_materials_boundary_audit.md`
+- `litb_drained_undrained_sph_boundary_audit.md`
+- `litb_boundary_method_comparison.md`
+- `litb_recommendation_before_next_boundary_change.md`
+
+Conclusion: the original u-pw paper points toward free-surface identification,
+boundary/dummy particle pore-pressure states, and MLS pressure extrapolation for
+pore-pressure boundary treatment. Current mode `3` ghost/quadrature experiments
+are useful diagnostics, but they are not a faithful implementation of that
+boundary-particle/MLS route.
+
+Next recommended step: design a CPU boundary-particle hydraulic state and
+MLS/Adami-style extrapolation path for the spherical drained Cryer boundary
+before any C5e source changes. C6 and GPU remain deferred.

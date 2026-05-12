@@ -352,3 +352,33 @@ C6 quantitative Figure 7B comparison is still premature. The next useful step
 is either a more complete MLS/boundary-particle-aware surface quadrature or
 carefully scoped geometry/dp refinement after the boundary rule is improved.
 GPU remains deferred.
+
+## LIT-B: Boundary Literature Audit Pause
+
+LIT-B is complete as a documentation-only literature and implementation audit.
+No source code was changed and no simulation was run.
+
+The audit reviewed:
+
+- the converted original u-pw paper text;
+- the local Supporting Materials implementation notes;
+- the converted drained/undrained SPH framework paper;
+- the current H1/O1/C4-C/C5c/C5d implementation reports.
+
+The main conclusion is that the original u-pw paper does not describe the
+Cryer drained boundary as a material-side spherical ghost/quadrature rule.
+Instead, the paper's boundary section points toward free-surface identification,
+boundary/dummy particle pore-pressure states, and MLS extrapolation for
+pore-pressure Neumann boundaries. The drained/undrained SPH paper independently
+supports the idea that dummy boundary particles should carry pore pressure
+through normalized-kernel extrapolation, although that paper uses a penalty
+undrained formulation rather than transient PR diffusion.
+
+Decision after LIT-B:
+
+- pause further mode-3 quadrature source changes;
+- do not start C6 quantitative comparison;
+- defer dp refinement until boundary-state coupling is more faithful;
+- next source-facing step should be a design task for a CPU
+  boundary-particle hydraulic state with MLS/Adami-style extrapolation for the
+  spherical drained Cryer boundary.

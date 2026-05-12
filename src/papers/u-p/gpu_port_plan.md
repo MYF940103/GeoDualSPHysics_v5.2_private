@@ -1175,3 +1175,20 @@ operator-quality improvement over the strengthened ghost.
 Decision: C6 quantitative Cryer comparison is not ready. GPU remains deferred
 for `FlexibleConfiningStress`, `PorePressureBoundaryOperator=3`, and
 `HydraulicElevationSource=0`.
+
+## Cryer LIT-B Boundary Literature Audit
+
+LIT-B is complete as a documentation-only pause after C5d. It did not change
+source or run simulations.
+
+The literature audit indicates that the original u-pw boundary treatment is
+closer to boundary-particle hydraulic state plus MLS/free-surface pressure
+treatment than to the current material-side spherical ghost/quadrature mode.
+The drained/undrained SPH paper also supports boundary-particle pressure
+extrapolation through normalized kernels, but it is not itself a transient PR
+diffusion boundary formulation.
+
+GPU work remains paused. The next CPU task should design a paper-faithful
+boundary-particle hydraulic state / MLS or Adami extrapolation route for the
+spherical drained Cryer boundary. GPU should not be revisited until that CPU
+route produces credible pressure-only diffusion and coarse Cryer behavior.

@@ -452,3 +452,25 @@ Decision: C5d is stable but insufficient. C6 quantitative comparison remains
 premature. The next step should be a stronger, more physically normalized
 boundary quadrature/MLS treatment or a narrowly scoped geometry refinement
 after the boundary rule is improved. GPU remains deferred.
+
+## LIT-B Boundary Literature Notes
+
+LIT-B reviewed the original u-pw paper, Supporting Materials, and the
+drained/undrained SPH framework before further Cryer source changes.
+
+Key points:
+
+- Original u-pw paper: pore-pressure Dirichlet boundaries are applied by
+  free-surface zero pressure or prescribed dummy/boundary pressure; Neumann
+  pore-pressure boundaries use MLS extrapolation to boundary particles.
+- Supporting Materials: useful for 1D top-drained/bottom-no-flux self-weight
+  references, but they do not provide a Cryer curved-boundary operator.
+- Drained/undrained SPH paper: dummy boundary particles carry pore pressure
+  extrapolated from soil particles with an Adami-style normalized kernel and
+  hydrostatic smoothing term, but that paper is a penalty drained/undrained
+  framework rather than transient PR diffusion.
+
+Decision: do not keep tuning current spherical mode-3 ghost/quadrature as the
+main path. The next step should design a boundary-particle hydraulic state with
+paper-style MLS/Adami extrapolation for the spherical drained Cryer surface.
+Only after that should pressure-only spherical diffusion and C5/C6 be revisited.
