@@ -48,3 +48,14 @@ The script writes:
 
 Digitized Figure 7B data is optional and not currently available. See
 `fig7b_digitization_README.md`.
+
+## C4-B Loading Status
+
+The strict sphere XML remains a draft. C4-B found no existing native XML route
+for strict all-around spherical traction. In particular, `AccInput` and
+prescribed motion should not be used as a strict substitute for `p0`.
+
+The XML now contains a comment-only placeholder describing the future
+`SphericalTraction` concept. It is intentionally not an active parameter block.
+Strict simulation should not begin until the traction route and drained curved
+hydraulic boundary are implemented or otherwise justified.

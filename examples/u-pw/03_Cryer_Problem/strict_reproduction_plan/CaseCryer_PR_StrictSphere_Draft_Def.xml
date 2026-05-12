@@ -98,7 +98,24 @@
       <parameter key="HydraulicGravityZ" value="0" comment="Cryer reference uses no gravity source term" />
       <parameter key="HydromechDamping" value="1" />
       <parameter key="HydromechDampingXi" value="4e-5" comment="Paper Fig. 7 caption xi=4e-5" />
-      <!-- TODO: all-around traction p0=10000 Pa route is not yet represented. -->
+      <!--
+        C4-B traction audit result:
+          No existing native XML route was found for strict all-around
+          spherical traction. AccInput/top-load/gravity/motion routes are not
+          equivalent to p0 acting along the local inward radial normal.
+
+        Future source-design placeholder, intentionally comment-only:
+          SphericalTraction active=0
+            target="surface marker or radius-selected shell"
+            center="0 0 0"
+            radius="#SphereRadius"
+            p0="10000 Pa"
+            direction="inward radial"
+            area_weighting="sum Ai = 4*pi*a^2"
+
+        Do not run this draft as strict Cryer until a real traction route and
+        drained curved pore-pressure boundary are implemented/verified.
+      -->
     </parameters>
   </execution>
 </case>

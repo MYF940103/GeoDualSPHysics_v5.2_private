@@ -928,3 +928,28 @@ CPU and GPU step paths both support model `0`, and the strict Cryer draft now
 uses it. This does not change PR pore-pressure operators or hydraulic boundary
 modes. The next Cryer task remains C4-B spherical traction support audit before
 any strict sphere run.
+
+## Cryer C4-B Spherical Traction Audit
+
+C4-B is complete as a documentation/source audit. No strict Cryer simulation
+was run and no source was modified.
+
+Result:
+
+- no existing native XML route was found for uniform all-around spherical
+  traction `p0`;
+- `AccInput` is not strict because it applies marker-wise acceleration rather
+  than `F_i=-p0 A_i n_i`;
+- floating-body force routes are total rigid-body force inputs, not deformable
+  poroelastic surface traction;
+- prescribed motion is a displacement-control surrogate, not traction control.
+
+Recommended next strict path:
+
+1. CPU-first generic radial/spherical traction source design with diagnostics;
+2. drained curved hydraulic boundary audit/development;
+3. coarse CPU strict sphere smoke;
+4. GPU support only after CPU strict behavior is credible.
+
+Strict Cryer simulation remains paused. Corrected-gradient production remains
+deferred.

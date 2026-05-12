@@ -5,7 +5,21 @@ Do not replace it with gravity, flat top compression, or uniform AccInput.
 
 Open loading blocker:
 
-- native XML support for spherical radial traction has not been proven.
+- C4-B found no existing native XML support for spherical radial traction.
+
+C4-B loading audit:
+
+- `AccInput` is marker-wise acceleration, not area-weighted radial surface
+  traction.
+- Floating `linearforce` / `angularforce` are total rigid-body force/torque
+  routes, not deformable material traction.
+- Prescribed motion is displacement control, not the Cryer traction boundary.
+- mDBC/cDBC normals are useful geometry information, but are not currently
+  connected to a `p0 -> F_i=-p0 A_i n_i` loading route.
+
+Future strict work should therefore implement or otherwise supply a CPU-first
+generic radial/spherical traction route before any strict Cryer simulation is
+claimed.
 
 Strict hydraulic boundary is drained excess pore pressure on the curved
 exterior:

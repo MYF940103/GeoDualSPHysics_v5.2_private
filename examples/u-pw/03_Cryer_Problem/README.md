@@ -197,3 +197,25 @@ drained curved hydraulic boundary.
 
 Strict simulation is still not started. The next strict task is C4-B:
 all-around spherical traction support audit.
+
+## C4-B Spherical Traction Audit
+
+C4-B audited existing loading routes for the strict Cryer all-around traction
+`p0`.
+
+Conclusion:
+
+- no native XML route currently applies `F_i = -p0 A_i n_i` on a spherical
+  exterior;
+- `AccInput` is not strict Cryer traction because it applies marker-wise
+  linear/angular acceleration rather than per-particle radial surface force;
+- floating `linearforce` / `angularforce` are rigid-body total force routes and
+  are not suitable for the deformable poroelastic sphere;
+- prescribed motion is displacement control, not traction control;
+- mDBC/cDBC normals may help a future implementation, but are not currently
+  connected to an external spherical traction input.
+
+The recommended path is CPU-first source design for a generic radial/spherical
+traction block, followed by the drained curved boundary audit. The strict XML
+draft now contains only a comment-only placeholder for this future route and
+remains not ready to run.

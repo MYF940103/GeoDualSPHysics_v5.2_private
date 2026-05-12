@@ -171,3 +171,25 @@ Validation limitation:
 - no digitized Figure 7B data is available yet, so the reference remains a
   checked implementation candidate rather than a fully verified paper-plot
   reproduction.
+
+## C4-B Loading Audit Notes
+
+C4-B checked whether existing native mechanisms can impose the strict Cryer
+load: uniform all-around inward normal traction `p0` on a spherical exterior.
+
+Findings:
+
+- `AccInput` works for reduced top-layer / marker acceleration cases, but it is
+  not a pressure traction because it has no per-particle radial normal or
+  surface-area weighting.
+- Floating-body `linearforce` and `angularforce` are total rigid-body inputs,
+  not deformable-material surface traction on the poroelastic sphere.
+- Existing prescribed motion routes can compress a body kinematically, but do
+  not reproduce the traction boundary condition.
+- mDBC/cDBC boundary normals are useful infrastructure, but there is no current
+  XML path that maps `p0` to `F_i=-p0 A_i n_i`.
+
+Strict Cryer simulation remains paused. The next strict source-development
+candidate is a CPU-first generic radial/spherical traction block with force
+symmetry and area-weighting diagnostics. GPU support should wait until the CPU
+route is credible.

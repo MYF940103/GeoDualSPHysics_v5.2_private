@@ -40,12 +40,18 @@ The script now:
 The next action is not another reference-script task unless Figure 7B data is
 provided. It is C4-B traction-route audit.
 
-### C4-B: Strict Geometry XML Prototype
+### C4-B: Spherical Traction Route Audit
 
-After C4-A, audit native spherical traction support before attempting a runnable
-strict sphere. E1 has removed the constitutive-model blocker by adding a linear
-elastic skeleton switch, but the existing strict sphere XML remains a draft
-until loading and boundary are solved.
+Status: completed as a source/XML audit. No simulation was run.
+
+C4-B found no existing native XML route that maps uniform pressure `p0` to
+per-particle inward radial surface forces on a spherical exterior. `AccInput`,
+floating total forces, and prescribed motion are not strict substitutes.
+
+The recommended next loading implementation, if strict Cryer proceeds, is a
+CPU-first generic radial/spherical traction block with explicit area weighting
+and force-symmetry diagnostics. The strict sphere XML remains a draft until
+loading and boundary are solved.
 
 ### C4-C: Boundary / Loading Source Development
 
