@@ -914,3 +914,17 @@ Recommended next benchmark:
    response.
 3. Retrogressive slope, only after benchmark coverage is sufficient, unless
    the manuscript structure needs the application case first.
+
+## E1 Linear Elastic Skeleton Switch
+
+E1 adds `SoilConstitutiveModel` under `<special><soils>`:
+
+- `0`: linear elastic skeleton for strict poroelastic benchmarks;
+- `1`: Drucker-Prager elastoplastic skeleton, default;
+- `2`: Drucker-Prager + exponential softening, including legacy
+  `Softening=1` mapping.
+
+CPU and GPU step paths both support model `0`, and the strict Cryer draft now
+uses it. This does not change PR pore-pressure operators or hydraulic boundary
+modes. The next Cryer task remains C4-B spherical traction support audit before
+any strict sphere run.

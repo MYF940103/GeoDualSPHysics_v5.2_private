@@ -18,6 +18,7 @@ curved drained hydraulic boundary support.
 | Loading | Native spherical traction support not confirmed. | Audit native force/pressure route; likely blocker. |
 | Drained boundary | Mode 0 not strict; mode 1 experimental; mode 2 CPU-only experimental. | CPU boundary decision needed before GPU. |
 | Hydraulic gravity / elevation source | Classical Cryer has no gravity-driven elevation source, but current PR uses `HydraulicGravity` in both diffusion scaling and `LapZ`. | Audit whether a CPU-only no-elevation-source option is required. |
+| Constitutive skeleton | E1 added `SoilConstitutiveModel=0` for linear elasticity. | Strict Cryer XML drafts should use model `0`; DP remains default for existing cases. |
 | Center postprocessing | Design complete; no strict script yet. | Implement after reference CSV schema is fixed. |
 | GPU | Not first priority. | Wait until CPU strict setup is credible. |
 
@@ -42,8 +43,9 @@ provided. It is C4-B traction-route audit.
 ### C4-B: Strict Geometry XML Prototype
 
 After C4-A, audit native spherical traction support before attempting a runnable
-strict sphere. The existing strict sphere XML remains a draft until loading and
-boundary are solved.
+strict sphere. E1 has removed the constitutive-model blocker by adding a linear
+elastic skeleton switch, but the existing strict sphere XML remains a draft
+until loading and boundary are solved.
 
 ### C4-C: Boundary / Loading Source Development
 

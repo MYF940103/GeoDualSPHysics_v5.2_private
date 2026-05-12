@@ -3598,6 +3598,17 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.n_coh=sxml->ReadElementFloat(solidNode,"n_coh","value",true);
   SoilCte.n_phi=sxml->ReadElementFloat(solidNode,"n_phi","value",true);
   SoilCte.Softening=unsigned(sxml->ReadElementInt(solidNode,"Softening","value",true,0));
+  {
+    const TiXmlElement* ele=solidNode->FirstChildElement("SoilConstitutiveModel");
+    const bool defined=(ele!=NULL);
+    const unsigned modeldefault=(SoilCte.Softening? 2u: 1u);
+    SoilCte.SoilConstitutiveModel=unsigned(sxml->ReadElementInt(solidNode,"SoilConstitutiveModel","value",true,int(modeldefault)));
+    if(defined && SoilCte.Softening && SoilCte.SoilConstitutiveModel!=2)
+      Log->PrintWarning("Soil Softening=1 is ignored because SoilConstitutiveModel is not 2.");
+    if(!defined && SoilCte.Softening)
+      Log->PrintWarning("SoilConstitutiveModel was not specified; legacy Softening=1 maps to SoilConstitutiveModel=2.");
+    SoilCte.Softening=(SoilCte.SoilConstitutiveModel==2? 1u: 0u);
+  }
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
   //-u-pw hydromechanical material constants.  The <parameters> keys are kept
@@ -3671,6 +3682,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(SoilCte.WaterBulkModulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero.");
   if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero.");
   if(SoilCte.Softening>1)Run_Exceptioon("Soil Softening must be 0 or 1.");
+  if(SoilCte.SoilConstitutiveModel>2)Run_Exceptioon("SoilConstitutiveModel must be 0 (linear elastic), 1 (Drucker-Prager), or 2 (Drucker-Prager softening).");
   if(SoilCte.coh<0.f)Run_Exceptioon("Soil cohesion must be greater than or equal to zero.");
   if(SoilCte.coh_r<0.f)Run_Exceptioon("Soil residual cohesion coh_r must be greater than or equal to zero.");
   if(SoilCte.n_coh<0.f || SoilCte.n_phi<0.f)Run_Exceptioon("Soil softening coefficients n_coh and n_phi must be greater than or equal to zero.");
@@ -3685,7 +3697,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
-   Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
+   const std::string soilmodel=(ct.SoilConstitutiveModel==0? "Linear elastic skeleton": (ct.SoilConstitutiveModel==2? "Drucker-Prager + exponential softening": "Drucker-Prager elastoplastic"));
+   Log->Print(fun::VarStr("  SoilConstitutiveModel",soilmodel));
+   if(ct.SoilConstitutiveModel==0)
+     Log->Print("  Linear elastic skeleton: DP yield, return mapping, plastic strain, Kplastic accumulation, and softening are bypassed.");
+   else
+     Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
    Log->Printf("  Cohesion: %f",ct.coh);
    Log->Printf("  Strength Softening: %s",ct.Softening? "enabled": "disabled");
    if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}

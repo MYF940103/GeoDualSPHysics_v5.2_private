@@ -16,7 +16,8 @@ Strict target:
 Current files:
 
 - `CaseCryer_PR_StrictSphere_Draft_Def.xml`: non-validated XML skeleton for a
-  future true-sphere setup.
+  future true-sphere setup. It explicitly sets `SoilConstitutiveModel=0`
+  because strict Cryer is linear poroelastic.
 - `strict_geometry_notes.md`: geometry choices and TODOs.
 - `strict_reference_notes.md`: analytical reference formula and validation
   checklist.

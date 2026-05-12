@@ -182,5 +182,18 @@ shows the expected Mandel-Cryer peak ordering. No Figure 7B digitized data is
 currently available, so the curves are analytical reference candidates rather
 than a completed paper-figure validation.
 
+## E1 Linear Elastic Skeleton Switch
+
+E1 added `SoilConstitutiveModel` under `<execution><special><soils>`:
+
+- `0`: linear elastic skeleton;
+- `1`: Drucker-Prager elastoplastic skeleton, default;
+- `2`: Drucker-Prager + exponential softening.
+
+The strict sphere draft now explicitly sets `SoilConstitutiveModel=0`, because
+Cryer is a linear poroelastic benchmark. This only resolves the constitutive
+consistency blocker; it does not resolve all-around spherical traction or the
+drained curved hydraulic boundary.
+
 Strict simulation is still not started. The next strict task is C4-B:
 all-around spherical traction support audit.

@@ -304,6 +304,7 @@ typedef struct{
   float n_phi;        ///<Strength softening
   float n_coh;        ///<Strength softening
   unsigned Softening; ///<Enables Drucker-Prager exponential strength softening.
+  unsigned SoilConstitutiveModel; ///<0:linear elastic, 1:Drucker-Prager, 2:Drucker-Prager softening.
   float ModulusE;     ///<Elastic model
   float PRvs;         ///<Elastic model
   float ModulusG;     ///<Elastic model - To be calculated

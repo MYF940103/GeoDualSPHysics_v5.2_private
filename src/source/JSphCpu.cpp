@@ -3911,6 +3911,44 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 }
 
 //==============================================================================
+/// Applies the selected soil constitutive skeleton to an elastic trial stress.
+//==============================================================================
+static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCtes dpctes
+  ,const tsymatrix3f &sigma_e,const float kplasticold,const bool updateplastic
+  ,tsymatrix3f &signew,float &kplasnew)
+{
+  if(soilcte.SoilConstitutiveModel==0){
+    signew=sigma_e;
+    kplasnew=0.f;
+    return;
+  }
+  if(soilcte.SoilConstitutiveModel==2){
+    ConsRelationEPsft_fast(sigma_e,soilcte.ModulusK,soilcte.ModulusG,soilcte.phi,soilcte.phi_r,soilcte.n_phi
+      ,soilcte.coh,soilcte.coh_r,soilcte.n_coh,soilcte.dlt,kplasticold,signew,kplasnew);
+  }
+  else{
+    const float phi=soilcte.phi;
+    const float coh=soilcte.coh;
+    const float psi=soilcte.dlt;
+    float DP_phi=2.f*sin(phi)/((3.f-sin(phi))*1.732f);
+    float DP_kc=6.f*coh*cos(phi)/((3.f-sin(phi))*1.732f);
+    float DP_psi=2.f*sin(psi)/((3.f-sin(psi))*1.732f);
+    if(dpctes==DP_MC){
+      DP_phi=2.f*sin(phi)/((3.f+sin(phi))*1.732f);
+      DP_kc=6.f*coh*cos(phi)/((3.f+sin(phi))*1.732f);
+      DP_psi=2.f*sin(psi)/((3.f+sin(psi))*1.732f);
+    }
+    if(dpctes==DP_PS){
+      DP_phi=tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
+      DP_kc=3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi));
+      DP_psi=tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
+    }
+    ConsRelationEP_fast(sigma_e,soilcte.ModulusK,soilcte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+  }
+  if(!updateplastic)kplasnew=kplasticold;
+}
+
+//==============================================================================
 /// Calculate new values of position, velocity & density for fluid (using Verlet).
 /// Calcula nuevos valores de posicion, velocidad y densidad para el fluido (usando Verlet).
 //==============================================================================
@@ -3956,29 +3994,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         sigma_e.xy = float(double(sigma2[p].xy) + rsigma[p].xy * dt2);
         sigma_e.yz = float(double(sigma2[p].yz) + rsigma[p].yz * dt2);
         sigma_e.xz = float(double(sigma2[p].xz) + rsigma[p].xz * dt2);
-      //-Update DP constants
-      float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
-      float psi=SoilCte.dlt;
-      //default 3D 
-      float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-      if(DPCtes==DP_MC){
-         DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
-      }
-      if(DPCtes==DP_PS){
-         DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-         DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-         DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
-      }	
-      //-Plastic Corretor
-      if(SoilCte.Softening)
-        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
-      else
-        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,true,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(Codec[p])){
@@ -4127,30 +4143,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt05);
         sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt05);
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt05);
-      //-Update DP constants
-      float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
-      float psi=SoilCte.dlt;
-      //default 3D 
-      float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-      if(DPCtes==DP_MC){
-         DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
-      }
-      if(DPCtes==DP_PS){
-         DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-         DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-         DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
-      }	
-      //-Plastic Corretor
-      if(SoilCte.Softening)
-        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
-      else
-        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);      
-      kplasnew=kplasticold;
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,false,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(rcode)){
@@ -4253,29 +4246,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt);
         sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt);
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt);
-      //-Update DP constants
-      float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
-      float psi=SoilCte.dlt;
-      //default 3D 
-      float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-      if(DPCtes==DP_MC){
-         DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
-	     DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
-      }
-      if(DPCtes==DP_PS){
-         DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-         DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-         DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
-      }	
-      //-Plastic Corretor
-      if(SoilCte.Softening)
-        ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi,SoilCte.coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,kplasticold,signew,kplasnew);
-      else
-        ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,true,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 

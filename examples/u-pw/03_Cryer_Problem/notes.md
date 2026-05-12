@@ -128,6 +128,18 @@ Next recommended step:
 
 - C4-A: implement and validate the independent Cryer reference script.
 
+## E1 Constitutive Note
+
+Strict Cryer must use the new linear elastic skeleton switch:
+
+```xml
+<SoilConstitutiveModel value="0" />
+```
+
+This bypasses Drucker-Prager yield, return mapping, `Kplastic` accumulation,
+and softening. The reduced baseline may remain on the default Drucker-Prager
+path, but any analytical Cryer comparison should explicitly use model `0`.
+
 ## C4-A Reference Script Notes
 
 `strict_reproduction_plan/cryer_reference_solution.py` now implements the
