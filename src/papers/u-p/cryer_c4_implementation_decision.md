@@ -242,3 +242,39 @@ directly to quantitative Figure 7 comparison.
 
 Next recommended step: C5b geometry/time-window refinement before C6. GPU
 remains deferred.
+
+## C5b: Strict-Sphere Geometry and Time-Window Refinement
+
+C5b is complete as a targeted CPU-only refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5b_StrictSphere_Refinement/`
+
+No source code was changed and no GPU run was performed. The retained variants
+were:
+
+- baseline: `p0=50 Pa`, short ramp, `TimeMax=0.006 s`, `code=0`,
+  `excluded=0`;
+- slow ramp: `p0=50 Pa`, ten-times longer ramp, `TimeMax=0.012 s`,
+  `code=0`, `excluded=0`;
+- lower p0: `p0=10 Pa`, short ramp, `TimeMax=0.006 s`, `code=0`,
+  `excluded=0`;
+- long slow ramp: `p0=50 Pa`, slow ramp, `TimeMax=0.05 s`, `code=0` but
+  `excluded=425`, so it is not a passing smoke.
+
+The lower-p0 case scaled almost exactly with load: the normalized peak remained
+about `8.18 p0`, and the final normalized center pressure remained about
+`2.96 p0`. This points away from load-magnitude nonlinearity or plasticity.
+The slow-ramp case reduced the very early pressure rise but reached about
+`7.66 p0` by the end of its shorter run, so the C5 over-peak is not only a
+fast-ramp artifact.
+
+Center averaging changes the baseline peak from about `8.45 p0` for the
+nearest particle to `7.67 p0` for a `0.4R` average. This is meaningful but not
+enough to support quantitative Figure 7 comparison.
+
+The main remaining blocker is the drained material surface: the curved ghost
+boundary diagnostic residual is zero, but near-surface material excess remains
+large (`263 Pa`, or `5.26 p0`, in the baseline final frame). C6 quantitative
+comparison is therefore not recommended yet. The next task should refine the
+drained curved boundary/material-surface coupling, with geometry/resolution
+refinement after that. GPU remains deferred.

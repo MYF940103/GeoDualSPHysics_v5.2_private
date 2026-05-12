@@ -368,3 +368,31 @@ The response is qualitative only. Longer exploratory windows showed coarse
 free-sphere oscillation and out-check risk, so C5 is not sufficient for strict
 Figure 7B validation. Recommended next step: C5b geometry/time-window
 refinement before C6 quantitative comparison.
+
+## C5b Strict-Sphere Refinement Notes
+
+C5b kept the same coarse sphere and tested only targeted changes:
+
+- slower loading ramp;
+- lower `p0` for linearity;
+- a longer slow-ramp window;
+- center averaging radii from `0.1R` to `0.4R`.
+
+Short baseline, slow-ramp, and lower-p0 cases all completed with `code=0`,
+`excluded=0`, and `Kplastic=0`. The long slow-ramp case was not accepted:
+particle exclusion began near `t=0.025 s` and ended at `425` excluded
+particles.
+
+Key conclusions:
+
+- lower `p0` scales almost exactly with the baseline, so the high normalized
+  response is not a load-magnitude nonlinearity;
+- slower ramp lowers the early response near `t=0.002 s`, but the pressure
+  later rises back to about the same normalized level;
+- center averaging reduces the baseline peak from about `8.45 p0` to
+  `7.67 p0`, which is meaningful but not decisive;
+- near-surface material excess remains high even when the curved ghost
+  residual is zero.
+
+The next step should be drained curved boundary/material-surface refinement
+before C6 quantitative comparison. GPU remains deferred.

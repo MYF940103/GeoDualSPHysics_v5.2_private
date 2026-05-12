@@ -361,3 +361,32 @@ pressure under compression. It is not a strict Figure 7B reproduction.
 Exploratory longer windows exposed coarse free-sphere oscillation/out-check
 risk, so the next step should be C5b refinement rather than immediate C6
 quantitative comparison.
+
+## C5b Strict-Sphere Refinement
+
+C5b retained a targeted CPU-only refinement package:
+
+`strict_reproduction_plan/C5b_StrictSphere_Refinement/`
+
+The variants were deliberately narrow:
+
+- baseline `p0=50 Pa`, short ramp, `TimeMax=0.006 s`;
+- slow ramp `p0=50 Pa`, longer ramp, `TimeMax=0.012 s`;
+- lower `p0=10 Pa`, short ramp, `TimeMax=0.006 s`;
+- long slow ramp `p0=50 Pa`, longer ramp, `TimeMax=0.05 s`.
+
+The first three completed with `code=0` and `excluded=0`. The longer slow-ramp
+case was not accepted because it ended with `425` excluded particles after
+out-check warnings beginning near `t=0.025 s`.
+
+C5b shows that the C5 pressure over-peak is not simply a load-magnitude or
+plasticity effect: the `p0=10 Pa` run has essentially the same normalized
+response as the `p0=50 Pa` baseline, and `Kplastic` remains zero. The slower
+ramp delays the peak but does not remove the high normalized response. Center
+averaging has a moderate effect, but the main unresolved issue is the material
+near-surface drained behavior: the curved ghost residual is zero while the
+near-surface material excess remains large.
+
+The Cryer track is therefore still not ready for quantitative Figure 7B
+comparison. Recommended next step: refine the drained curved boundary/material
+surface coupling before C6; GPU remains deferred.

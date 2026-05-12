@@ -1101,3 +1101,30 @@ particle out-check risk, C5 should not go directly to quantitative Figure 7B
 comparison. Next recommended step: C5b geometry/time-window refinement. GPU
 remains deferred for `FlexibleConfiningStress`, mode `3`, and
 `HydraulicElevationSource=0`.
+
+## Cryer C5b Strict-Sphere Refinement
+
+C5b is complete as a targeted CPU-only refinement. No source code was changed
+and no GPU run was performed.
+
+Retained package:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5b_StrictSphere_Refinement/`
+
+Outcome:
+
+- baseline, slow-ramp, and lower-p0 variants completed with `code=0`,
+  `excluded=0`, and `Kplastic=0`;
+- the longer slow-ramp variant is not accepted because it reached
+  `excluded=425` after particle out-check warnings beginning near
+  `t=0.025 s`;
+- lower `p0` scales almost exactly with the baseline, so the current high
+  normalized peak is not a load-magnitude nonlinearity;
+- slower ramp delays the pressure peak but does not remove the high normalized
+  response;
+- center averaging has a moderate effect, while near-surface material excess
+  remains large despite zero curved-ghost residual.
+
+Decision: C6 quantitative Figure 7 comparison is not ready. The recommended
+next task is drained curved boundary/material-surface refinement, followed by a
+cleaner geometry/time-window retry. GPU remains deferred.
