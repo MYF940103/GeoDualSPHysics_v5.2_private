@@ -3,15 +3,21 @@
 ## Status
 
 This directory has a Cryer-like strict/minimal CPU smoke case plus a
-strict-reproduction TODO placeholder. The smoke case verifies that the current
-u-pw PR fields, mechanics, and near-center pore-pressure postprocessing can run
-in a Cryer-labeled scaffold without crashing.
+strict-reproduction TODO placeholder. It now also has an example-style
+baseline launch workflow (`CaseCryer_PR_Baseline_Def.xml` plus CPU/GPU Release
+BATs) for manual reruns. The smoke case verifies that the current u-pw PR
+fields, mechanics, and near-center pore-pressure postprocessing can run in a
+Cryer-labeled scaffold without crashing.
 
 The current smoke is not strict Cryer analytical reproduction. The strict Cryer path still
 requires paper geometry, a drained curved boundary, pore-pressure ghost / MLS or
 an equivalent boundary treatment, and center-pressure analytical
 postprocessing. These gaps remain strict-reproduction blockers unless
 explicitly deferred.
+
+The C1-revised baseline workflow was prepared only; it was not run. It uses
+production `PorePressureBoundaryOperator=0` and should be treated as a reduced
+workflow for future manual CPU/GPU reruns, not as a validation result.
 
 ## Parameters
 
