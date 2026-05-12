@@ -220,6 +220,7 @@ protected:
   bool CurvedDrainedBoundaryUseBoundaryParticles; ///<Enable selected boundary-particle participation for curved drained mode 4.
   double CurvedDrainedBoundarySelectionTolerance; ///<Radius tolerance for selecting curved drained boundary particles. If <=0, KernelH is used.
   bool CurvedDrainedBoundaryAdamiDiagnostic; ///<Compute paper-style normalized-kernel boundary pressure extrapolation diagnostics without using it as Dirichlet value.
+  int CurvedDrainedBoundaryWeighting; ///<Boundary-particle weighting for curved drained mode 4. 0:raw volume, 1:normalized partition, 3:diagnostic capped support.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.

@@ -415,3 +415,53 @@ Decision after C5e:
 - the next source-facing step should be MLS/Adami-normalized
   boundary-particle operator weighting with prescribed drained value retained;
 - GPU remains deferred.
+
+## C5f: Boundary-Particle Weighting Normalization
+
+C5f is complete as a CPU-only mode-4 boundary-particle weighting refinement
+under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5f_BoundaryParticleWeighting/`
+
+It adds `CurvedDrainedBoundaryWeighting` for
+`CurvedDrainedBoundaryMode=4` only:
+
+- `0`: raw boundary-particle volume weighting, preserving C5e behavior;
+- `1`: Adami-style local partition normalization;
+- `3`: diagnostic missing-support capped weighting, not production.
+
+The prescribed drained value remains `p_w=0`. The new weighting changes only
+the effective boundary-particle contribution to `LapPorePress` and `LapZ`; it
+does not clamp material pressure and it does not change the PR governing
+equation.
+
+All six CPU Release C5f smokes completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The raw C5e-style mode over-drains because the local boundary
+kernel partition is much larger than the material partition:
+
+- mean material partition `S_m = 0.760`;
+- mean boundary partition `S_b = 2.700`;
+- mean boundary fraction `S_b/(S_m+S_b) = 0.771`.
+
+The normalized weighting reduces the boundary scale to a mean of `0.297`.
+Pressure-only diffusion no longer crosses strongly negative (`-97.17 Pa` raw
+final center pressure becomes `529.96 Pa`), and the final pressure-rate maxAbs
+is reduced from about `9.38e5 Pa/s` to about `3.33e5 Pa/s`.
+
+For the compression smoke, normalized weighting improves the final
+`r>0.85R` surface p95 residual from `195.08 Pa` to `131.56 Pa`, but the center
+peak remains high at `7.45 p0`. This is better than the old mode-3 peak
+context but worse than raw mode 4, which lowered the peak partly through
+over-drainage.
+
+Decision after C5f:
+
+- C6 quantitative Figure 7B comparison remains premature;
+- normalized boundary weighting is a useful stabilizing step but not the final
+  drained spherical boundary;
+- next source-facing step should be true MLS / partition-of-unity
+  boundary-particle refinement or a narrow pressure-only spherical diffusion
+  calibration;
+- dp/geometry refinement remains deferred until the boundary rule is less
+  sensitive;
+- GPU remains deferred.

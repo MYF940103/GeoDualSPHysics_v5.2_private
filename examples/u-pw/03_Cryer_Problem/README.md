@@ -498,3 +498,35 @@ premature.
 
 Next recommended step: MLS/Adami-style boundary-particle normalization for the
 operator contribution. GPU remains deferred.
+
+## C5f Boundary-Particle Weighting Refinement
+
+C5f adds a CPU-only weighting switch for the C5e boundary-particle drained
+boundary:
+
+```xml
+<CurvedDrainedBoundaryMode value="4" />
+<CurvedDrainedBoundaryWeighting value="1" />
+```
+
+The retained C5f package is:
+
+`strict_reproduction_plan/C5f_BoundaryParticleWeighting/`
+
+It compares raw mode-4 weighting, Adami-style local partition normalization,
+and a diagnostic capped weighting. All six CPU Release smokes completed with
+`code=0`, `excluded=0`, and `Kplastic=0`.
+
+Main result:
+
+- raw mode 4 over-drains because the boundary-particle kernel partition is too
+  large (`mean S_b=2.700` versus `mean S_m=0.760`);
+- normalized weighting removes the strong negative pressure-only over-drainage
+  and reduces pressure-rate artifacts;
+- normalized weighting improves the compression surface residual, but the
+  center peak remains high (`~7.45 p0`).
+
+Strict Cryer Figure 7B comparison is still not ready. The next boundary task
+should be a true MLS / partition-of-unity boundary-particle refinement or a
+narrow pressure-only spherical diffusion calibration. GPU support remains
+deferred.

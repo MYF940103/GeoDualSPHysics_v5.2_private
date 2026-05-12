@@ -257,7 +257,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `PorePressureTopDrainedStartTime` | double [s] | `0` | Time when top drained boundary becomes active. If `0`, active from the start. | Keep |
 | `PorePressureBottomNoFlux` | `0/1` | `0` | Enables bottom no-flux layer correction for excess pore pressure. | Keep |
 | `PorePressureBottomNoFluxThickness` | float [m] | `0` | Bottom no-flux layer thickness. If `<=0`, uses `KernelH`. | Keep |
-| `PorePressureBoundaryOperator` | `0/1/2/3` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype; `3`: CPU-only drained curved Dirichlet ghost prototype. | Experimental |
+| `PorePressureBoundaryOperator` | `0/1/2/3` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype; `3`: CPU-only drained curved Dirichlet prototype. | Experimental |
 | `PorePressureCurvedDrained` | `0/1` | `0` | Enables mode `3` curved drained boundary. Requires `PorePressureBoundaryOperator=3`. | Experimental |
 | `CurvedDrainedBoundaryCenterX/Y/Z` | double [m] | `0` | Sphere center for mode `3`. | Experimental |
 | `CurvedDrainedBoundaryRadius` | double [m], `>0` | `0` | Sphere radius for mode `3`. | Experimental |
@@ -265,7 +265,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `CurvedDrainedBoundaryValue` | double [Pa] | `0` | Prescribed drained boundary value. | Experimental |
 | `CurvedDrainedBoundaryUseExcess` | `0/1` | `1` | `1`: value is excess pressure; `0`: value is total pressure. | Experimental |
 | `CurvedDrainedBoundaryThickness` | double [m] | `0` | Interior shell thickness for ghost placement; if `<=0`, uses `KernelH`. | Experimental |
-| `CurvedDrainedBoundaryMode` | `0/1/2/3` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: multi-sample spherical Dirichlet boundary quadrature, CPU-only experimental. | Experimental |
+| `CurvedDrainedBoundaryMode` | `0/1/2/3/4` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: material-side multi-sample spherical Dirichlet boundary quadrature; `4`: boundary-particle prescribed Dirichlet hydraulic state. | Experimental |
 
 Top drained correction:
 
@@ -338,6 +338,19 @@ Additional mode-4 parameters:
 | `CurvedDrainedBoundaryUseBoundaryParticles` | `0/1` | `1` | Required for mode `4`; enables selected boundary-particle participation. |
 | `CurvedDrainedBoundarySelectionTolerance` | length | `0` | Radius tolerance for selecting boundary particles. If `0`, uses a kernel/dp-based fallback. |
 | `CurvedDrainedBoundaryAdamiDiagnostic` | `0/1` | `0` | Computes normalized-kernel extrapolated boundary pressure as diagnostics only; it is not used as the drained value. |
+| `CurvedDrainedBoundaryWeighting` | `0/1/3` | `0` | Mode-4 boundary-particle effective-volume weighting. `0`: raw boundary-particle volume weighting; `1`: Adami-style local partition normalization; `3`: diagnostic missing-support capped weighting, not production. |
+
+Mode-4 weighting notes:
+
+- `0` preserves the C5e behavior and is the default for backward
+  compatibility inside the experimental mode.
+- `1` computes local material and boundary kernel partitions around each
+  material target and scales boundary effective volume by
+  `min(1, 1/(S_m+S_b))`.
+- `3` scales by the estimated missing support `max(0,1-S_m)/S_b` and is
+  diagnostic only.
+- The drained boundary value remains prescribed; the weighting modes do not
+  use Adami extrapolation to define `p_b`.
 
 ## 4. Feedback Parameters
 

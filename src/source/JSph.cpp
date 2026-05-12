@@ -209,6 +209,7 @@ void JSph::InitVars(){
   CurvedDrainedBoundaryUseBoundaryParticles=true;
   CurvedDrainedBoundarySelectionTolerance=0.;
   CurvedDrainedBoundaryAdamiDiagnostic=false;
+  CurvedDrainedBoundaryWeighting=0;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   HydraulicElevationSource=true;
@@ -801,6 +802,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  CurvedDrainedBoundaryAdamiDiagnostic=true;   break;
     default: Run_Exceptioon("CurvedDrainedBoundaryAdamiDiagnostic mode is not valid.");
   }
+  switch(eparms.GetValueInt("CurvedDrainedBoundaryWeighting",true,0)){
+    case 0:  CurvedDrainedBoundaryWeighting=0;  break;
+    case 1:  CurvedDrainedBoundaryWeighting=1;  break;
+    case 3:  CurvedDrainedBoundaryWeighting=3;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryWeighting is not valid. Valid values are 0 raw, 1 normalized partition, and diagnostic 3 capped support.");
+  }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
     case 1:  PorePressureBoundaryGhost=true;   break;
@@ -912,6 +919,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedBoundarySelectionTolerance must be greater than or equal to zero.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==4 && !CurvedDrainedBoundaryUseBoundaryParticles)
     Run_Exceptioon("CurvedDrainedBoundaryMode=4 requires CurvedDrainedBoundaryUseBoundaryParticles=1.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4)
+    Log->PrintWarning("CurvedDrainedBoundaryWeighting is only used by CurvedDrainedBoundaryMode=4.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
@@ -1881,6 +1890,7 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryUseBoundaryParticles",CurvedDrainedBoundaryUseBoundaryParticles));
       Log->Print(fun::VarStr("  CurvedDrainedBoundarySelectionTolerance",CurvedDrainedBoundarySelectionTolerance));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryAdamiDiagnostic",CurvedDrainedBoundaryAdamiDiagnostic));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryWeighting",CurvedDrainedBoundaryWeighting));
       if(CurvedDrainedBoundaryMode==0)
         Log->Print("  CurvedDrainedBoundaryMode=0: first-order spherical Dirichlet ghost.");
       if(CurvedDrainedBoundaryMode==1)
@@ -1891,6 +1901,12 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=3: multi-sample spherical Dirichlet boundary quadrature; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==4)
         Log->Print("  CurvedDrainedBoundaryMode=4: selected boundary particles carry prescribed drained hydraulic state and participate in LapPorePress/LapZ; CPU-only experimental.");
+      if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==0)
+        Log->Print("  CurvedDrainedBoundaryWeighting=0: raw boundary-particle volume weighting.");
+      if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==1)
+        Log->Print("  CurvedDrainedBoundaryWeighting=1: Adami-style local partition normalization of boundary-particle weights.");
+      if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==3)
+        Log->Print("  CurvedDrainedBoundaryWeighting=3: diagnostic missing-support capped weighting; not production.");
     }
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
     Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));

@@ -35,6 +35,15 @@ strict geometry, and marks all-around spherical traction plus drained curved
 hydraulic boundary as the remaining formulation blockers. The next Cryer phase
 should be C4-A reference-script validation before any source or GPU work.
 
+Cryer C5f has now normalized the CPU-only boundary-particle drained weighting
+for `CurvedDrainedBoundaryMode=4`. The normalized mode reduces raw mode-4
+over-drainage and pressure-rate artifacts, but the compression center peak
+remains too high for quantitative Figure 7B comparison. The strict Cryer path
+therefore remains CPU-first and boundary-method-first. GPU support for
+`FlexibleConfiningStress`, `PorePressureBoundaryOperator=3`,
+`CurvedDrainedBoundaryMode=4`, and `HydraulicElevationSource=0` remains
+deferred/unsupported.
+
 Still out of scope unless separately requested:
 
 - GPU `PorePressureBoundaryOperator=2`;

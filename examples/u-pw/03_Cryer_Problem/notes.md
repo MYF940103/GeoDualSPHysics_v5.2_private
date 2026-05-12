@@ -507,3 +507,33 @@ boundary-particle route conceptually but does not provide a C6-ready boundary.
 
 Next step: MLS/Adami-normalized boundary-particle operator weighting before
 dp refinement or C6. GPU remains deferred.
+
+## C5f Boundary-Particle Weighting Notes
+
+C5f keeps the C5e boundary-particle drained boundary but adds
+`CurvedDrainedBoundaryWeighting` for `CurvedDrainedBoundaryMode=4`.
+
+Values:
+
+- `0`: raw boundary-particle volume weighting, the C5e behavior;
+- `1`: Adami-style local partition normalization;
+- `3`: diagnostic missing-support capped weighting.
+
+All C5f CPU Release tests passed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The raw mode-4 over-drainage is explained by the selected
+boundary shell contributing a large local kernel partition (`mean S_b=2.700`)
+relative to the material support (`mean S_m=0.760`). Normalized weighting uses
+a mean effective boundary scale of `0.297`.
+
+Observed effects:
+
+- pressure-only raw final center pressure `=-97.17 Pa`;
+- pressure-only normalized final center pressure `=529.96 Pa`;
+- final pressure-rate maxAbs drops from about `9.38e5 Pa/s` to about
+  `3.33e5 Pa/s`;
+- compression surface p95 residual improves from `195.08 Pa` to `131.56 Pa`;
+- compression center peak remains high at about `7.45 p0`.
+
+C5f is therefore a useful stabilization/diagnostic step, not a final Cryer
+boundary. C6 remains paused; dp refinement remains deferred; GPU support for
+this strict path remains unsupported.

@@ -2319,6 +2319,10 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   unsigned curvedbndselected=0,curvedbndtargets=0,curvedbndpairs=0;
   unsigned curvedbndadamisamples=0,curvedbndadamifallback=0;
   double curvedbndadamiabsmean=0.,curvedbndadamimaxabs=0.;
+  unsigned curvedbndweighttargets=0;
+  double curvedbndsmmean=0.,curvedbndsmean=0.,curvedbndscalemean=0.,curvedbndfracmean=0.;
+  double curvedbndsmmax=0.,curvedbndsmax=0.,curvedbndscalemax=0.,curvedbndfracmax=0.;
+  double curvedbndscalemin=DBL_MAX;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2512,6 +2516,15 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         // boundary particles carry the prescribed hydraulic state and enter the
         // PR LapPorePress/LapZ quadrature. Material pore pressure is never
         // clamped here; Adami/MLS extrapolation is diagnostic only.
+        struct StCurvedBndPair{
+          const StCurvedBndHyd *b;
+          double rr2;
+          double dotrgrad;
+          double wab;
+          double pwb;
+        };
+        vector<StCurvedBndPair> bpair;
+        double sb=0.;
         unsigned psamples=0;
         for(unsigned ib=0;ib<curvedbndselected;ib++){
           const StCurvedBndHyd &b=curvedbnd[ib];
@@ -2523,12 +2536,51 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
           const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
           const double dotrgrad=rr2*double(fac);
+          const double wab=double(fsph::GetKernel_Wab<tker>(CSP,float(rr2)));
           const double pwb=(CurvedDrainedBoundaryUseExcess? b.hydro+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
-          const double lapadd=2.*b.volume*(porepress[p]-pwb)*dotrgrad/(rr2+ALMOSTZERO);
-          const double zadd=2.*b.volume*(zi-b.z)*dotrgrad/(rr2+ALMOSTZERO);
+          StCurvedBndPair bp;
+          bp.b=&b;
+          bp.rr2=rr2;
+          bp.dotrgrad=dotrgrad;
+          bp.wab=wab;
+          bp.pwb=pwb;
+          bpair.push_back(bp);
+          sb+=b.volume*wab;
+        }
+        double sm=0.;
+        if(CurvedDrainedBoundaryWeighting==1 || CurvedDrainedBoundaryWeighting==3){
+          for(unsigned p3=pini;p3<pini+n;p3++)if(CODE_IsFluid(code[p3]) && velrhop[p3].w>0.f){
+            if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p3]))!=CurvedDrainedBoundaryTargetMk)continue;
+            const double drx=pos[p].x-pos[p3].x;
+            const double dry=pos[p].y-pos[p3].y;
+            const double drz=pos[p].z-pos[p3].z;
+            const double rr2=drx*drx+dry*dry+drz*drz;
+            if(rr2<=double(KernelSize2)){
+              const double wab=double(fsph::GetKernel_Wab<tker>(CSP,float(rr2)));
+              const double vol=double(MassFluid)/double(velrhop[p3].w);
+              sm+=vol*wab;
+            }
+          }
+        }
+        double bscale=1.;
+        if(CurvedDrainedBoundaryWeighting==1){
+          const double stot=sm+sb;
+          bscale=(stot>ALMOSTZERO? min(1.,1./stot): 1.);
+        }
+        else if(CurvedDrainedBoundaryWeighting==3){
+          const double missing=max(0.,1.-sm);
+          bscale=(sb>ALMOSTZERO? min(1.,missing/sb): 0.);
+        }
+        for(unsigned ib=0;ib<unsigned(bpair.size());ib++){
+          const StCurvedBndPair &bp=bpair[ib];
+          const StCurvedBndHyd &b=*bp.b;
+          const double effvol=b.volume*bscale;
+          if(effvol<=0.)continue;
+          const double lapadd=2.*effvol*(porepress[p]-bp.pwb)*bp.dotrgrad/(bp.rr2+ALMOSTZERO);
+          const double zadd=2.*effvol*(zi-b.z)*bp.dotrgrad/(bp.rr2+ALMOSTZERO);
           lapporepress[p]+=float(lapadd);
           lapz[p]+=float(zadd);
-          maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwb));
+          maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-bp.pwb));
           maxabslapadd=max(maxabslapadd,fabs(lapadd));
           maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
           psamples++;
@@ -2537,6 +2589,20 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           curvedaffected++;
           curvedbndtargets++;
           curvedbndpairs+=psamples;
+          if(CurvedDrainedBoundaryWeighting==1 || CurvedDrainedBoundaryWeighting==3){
+            const double stot=sm+sb;
+            const double bfrac=(stot>ALMOSTZERO? sb/stot: 0.);
+            curvedbndweighttargets++;
+            curvedbndsmmean+=sm;
+            curvedbndsmean+=sb;
+            curvedbndscalemean+=bscale;
+            curvedbndfracmean+=bfrac;
+            curvedbndsmmax=max(curvedbndsmmax,sm);
+            curvedbndsmax=max(curvedbndsmax,sb);
+            curvedbndscalemax=max(curvedbndscalemax,bscale);
+            curvedbndscalemin=min(curvedbndscalemin,bscale);
+            curvedbndfracmax=max(curvedbndfracmax,bfrac);
+          }
         }
         else curvedskipped++;
       }
@@ -2660,11 +2726,21 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         Log->Print("CPU curved drained convention: multi-sample spherical Dirichlet boundary quadrature contributes to LapPorePress/LapZ before PR rate; no material clamp is applied.");
       }
       if(CurvedDrainedBoundaryMode==4){
+        if(curvedbndweighttargets){
+          curvedbndsmmean/=double(curvedbndweighttargets);
+          curvedbndsmean/=double(curvedbndweighttargets);
+          curvedbndscalemean/=double(curvedbndweighttargets);
+          curvedbndfracmean/=double(curvedbndweighttargets);
+        }
+        if(curvedbndscalemin==DBL_MAX)curvedbndscalemin=0.;
         Log->Printf("CPU curved drained boundary-particle Dirichlet: selected_boundary_particles=%u, material_targets=%u, material_boundary_pairs=%u, average_pairs=%g, target_mkbound=%d, selection_tolerance=%g, prescribed_value=%g Pa, value_type=%s, AdamiDiagnostic=%s, Adami_samples=%u, Adami_fallback=%u, Adami_mean_abs_excess=%g Pa, Adami_max_abs_excess=%g Pa."
           ,curvedbndselected,curvedbndtargets,curvedbndpairs,(curvedbndtargets? double(curvedbndpairs)/double(curvedbndtargets): 0.)
           ,CurvedDrainedBoundaryTargetMkBound,(CurvedDrainedBoundarySelectionTolerance>0.? CurvedDrainedBoundarySelectionTolerance: max(double(KernelH),double(Dp)))
           ,CurvedDrainedBoundaryValue,(CurvedDrainedBoundaryUseExcess? "excess": "total"),(CurvedDrainedBoundaryAdamiDiagnostic? "True": "False")
           ,curvedbndadamisamples,curvedbndadamifallback,curvedbndadamiabsmean,curvedbndadamimaxabs);
+        Log->Printf("CPU curved drained boundary-particle weighting: mode=%d, weighted_targets=%u, mean_Sm=%g, max_Sm=%g, mean_Sb=%g, max_Sb=%g, mean_boundary_fraction=%g, max_boundary_fraction=%g, mean_scale=%g, min_scale=%g, max_scale=%g."
+          ,CurvedDrainedBoundaryWeighting,curvedbndweighttargets,curvedbndsmmean,curvedbndsmmax,curvedbndsmean,curvedbndsmax
+          ,curvedbndfracmean,curvedbndfracmax,curvedbndscalemean,curvedbndscalemin,curvedbndscalemax);
         Log->Print("CPU curved drained convention: selected boundary particles use prescribed drained hydraulic state and contribute to LapPorePress/LapZ before PR rate; material pore pressure is not clamped and Adami/MLS extrapolation is diagnostic only.");
       }
     }
