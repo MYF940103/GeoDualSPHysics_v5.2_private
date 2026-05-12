@@ -218,6 +218,20 @@ void JSph::InitVars(){
   HydraulicGravity=TFloat3(0);
   BodyGravityStopTime=0.;
   BodyGravityStoppedLogged=false;
+  FlexibleConfiningStress=false;
+  ConfiningStressP0=0.f;
+  ConfiningStressRampStart=0.;
+  ConfiningStressRampEnd=0.;
+  ConfiningStressTargetMk=-1;
+  ConfiningStressMode=0;
+  ConfiningStressDiagP0Eff=0.;
+  ConfiningStressDiagTargetCount=0;
+  ConfiningStressDiagNetForce=TDouble3(0);
+  ConfiningStressDiagTotalAbsForce=0.;
+  ConfiningStressDiagMaxAccel=0.;
+  ConfiningStressDiagComAccel=0.;
+  ConfiningStressDiagSymResidual=0.;
+  ConfiningStressDiagLastPrintStep=-1;
   PorePressureTopDrainedStartTime=0.;
   HydromechDamping=false;
   HydromechDampingXi=0.f;
@@ -791,6 +805,19 @@ void JSph::LoadConfigParameters(const JXml *xml){
   HydraulicGravity.y=eparms.GetValueFloat("HydraulicGravityY",true,0.f);
   HydraulicGravity.z=eparms.GetValueFloat("HydraulicGravityZ",true,0.f);
   BodyGravityStopTime=eparms.GetValueDouble("BodyGravityStopTime",true,0.);
+  switch(eparms.GetValueInt("FlexibleConfiningStress",true,0)){
+    case 0:  FlexibleConfiningStress=false;  break;
+    case 1:  FlexibleConfiningStress=true;   break;
+    default: Run_Exceptioon("FlexibleConfiningStress mode is not valid.");
+  }
+  ConfiningStressP0=eparms.GetValueFloat("ConfiningStressP0",true,0.f);
+  ConfiningStressRampStart=eparms.GetValueDouble("ConfiningStressRampStart",true,0.);
+  ConfiningStressRampEnd=eparms.GetValueDouble("ConfiningStressRampEnd",true,ConfiningStressRampStart);
+  ConfiningStressTargetMk=eparms.GetValueInt("ConfiningStressTargetMk",true,-1);
+  switch(eparms.GetValueInt("ConfiningStressMode",true,0)){
+    case 0:  ConfiningStressMode=0;  break;
+    default: Run_Exceptioon("ConfiningStressMode is not valid. Only mode 0 is implemented.");
+  }
   switch(eparms.GetValueInt("HydromechDamping",true,0)){
     case 0:  HydromechDamping=false;  break;
     case 1:  HydromechDamping=true;   break;
@@ -808,6 +835,13 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
+  if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
+  if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
+  if(ConfiningStressRampEnd<ConfiningStressRampStart)Run_Exceptioon("ConfiningStressRampEnd must be greater than or equal to ConfiningStressRampStart.");
+  if(ConfiningStressTargetMk<-1)Run_Exceptioon("ConfiningStressTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+  if(FlexibleConfiningStress && !Cpu)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
+  if(FlexibleConfiningStress && !ConfiningStressP0)
+    Log->PrintWarning("FlexibleConfiningStress=1 but ConfiningStressP0=0. No confining contribution will be produced.");
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(HydromechDampingXi<0.f)Run_Exceptioon("HydromechDampingXi must be greater than or equal to zero.");
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
@@ -1785,6 +1819,16 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  HydromechDampingEndTime",HydromechDampingEndTime));
     }
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("Hydromech(PP%d)",PorePressureModel);
+  }
+  Log->Print(fun::VarStr("FlexibleConfiningStress",FlexibleConfiningStress? "CPU isotropic stress source": "Disabled"));
+  if(FlexibleConfiningStress){
+    Log->Print(fun::VarStr("  ConfiningStressP0",ConfiningStressP0));
+    Log->Print(fun::VarStr("  ConfiningStressRampStart",ConfiningStressRampStart));
+    Log->Print(fun::VarStr("  ConfiningStressRampEnd",ConfiningStressRampEnd));
+    Log->Print(fun::VarStr("  ConfiningStressTargetMk",ConfiningStressTargetMk));
+    Log->Print(fun::VarStr("  ConfiningStressMode",ConfiningStressMode));
+    Log->Print("  FlexibleConfiningStress convention: positive ConfiningStressP0 is external compression; in the current SPH stress-divergence sign convention it is added as a positive isotropic stress-like pair contribution and is not written to the material stress state.");
+    ConfigInfo=ConfigInfo+sep+"FlexConfStress";
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
@@ -2886,6 +2930,57 @@ bool JSph::IsMechanicalGravityStopped(double timestep)const{
 //==============================================================================
 tfloat3 JSph::GetMechanicalGravity(double timestep)const{
   return(IsMechanicalGravityStopped(timestep)? TFloat3(0): Gravity);
+}
+
+//==============================================================================
+/// Returns current positive compression magnitude for flexible confining stress.
+//==============================================================================
+double JSph::GetFlexibleConfiningStressP0(double timestep)const{
+  if(!FlexibleConfiningStress || ConfiningStressP0<=0.f)return(0.);
+  if(ConfiningStressRampEnd>ConfiningStressRampStart){
+    if(timestep<=ConfiningStressRampStart)return(0.);
+    if(timestep<ConfiningStressRampEnd){
+      const double r=(timestep-ConfiningStressRampStart)/(ConfiningStressRampEnd-ConfiningStressRampStart);
+      return(double(ConfiningStressP0)*r);
+    }
+  }
+  else if(timestep<ConfiningStressRampStart)return(0.);
+  return(double(ConfiningStressP0));
+}
+
+//==============================================================================
+/// Returns whether a particle belongs to the flexible confining stress target set.
+//==============================================================================
+bool JSph::IsFlexibleConfiningStressTarget(typecode code)const{
+  if(!CODE_IsNormal(code) || !CODE_IsFluid(code) || CODE_IsFluidInout(code) || CODE_IsFloating(code))return(false);
+  return(ConfiningStressTargetMk<0 || int(CODE_GetTypeValue(code))==ConfiningStressTargetMk);
+}
+
+//==============================================================================
+/// Resets CPU flexible confining stress diagnostics.
+//==============================================================================
+void JSph::ResetFlexibleConfiningStressDiagnostics()const{
+  ConfiningStressDiagP0Eff=0.;
+  ConfiningStressDiagTargetCount=0;
+  ConfiningStressDiagNetForce=TDouble3(0);
+  ConfiningStressDiagTotalAbsForce=0.;
+  ConfiningStressDiagMaxAccel=0.;
+  ConfiningStressDiagComAccel=0.;
+  ConfiningStressDiagSymResidual=0.;
+}
+
+//==============================================================================
+/// Prints a compact CPU flexible confining stress diagnostics line.
+//==============================================================================
+void JSph::PrintFlexibleConfiningStressDiagnostics()const{
+  if(!FlexibleConfiningStress || ConfiningStressDiagP0Eff<=0. || ConfiningStressDiagLastPrintStep==Nstep)return;
+  if(Nstep<5 || !(Nstep%500)){
+    Log->Printf("FlexibleConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, targets=%u, net_force=(%g,%g,%g) N, total_abs_force=%g N, max_accel=%g m/s2, com_accel=%g m/s2, symmetry_residual=%g."
+      ,Nstep,TimeStep,ConfiningStressDiagP0Eff,ConfiningStressDiagTargetCount
+      ,ConfiningStressDiagNetForce.x,ConfiningStressDiagNetForce.y,ConfiningStressDiagNetForce.z
+      ,ConfiningStressDiagTotalAbsForce,ConfiningStressDiagMaxAccel,ConfiningStressDiagComAccel,ConfiningStressDiagSymResidual);
+    ConfiningStressDiagLastPrintStep=Nstep;
+  }
 }
 
 //==============================================================================

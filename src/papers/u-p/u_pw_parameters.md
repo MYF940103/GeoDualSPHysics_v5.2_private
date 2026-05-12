@@ -20,6 +20,12 @@ The material/phase constants below are now soil material constants and should be
 | `HydraulicConductivity` | float, `>=0` | `0` | Hydraulic conductivity `k` [m/s]. If zero, diffusion and pore timestep restriction are disabled. | Keep |
 | `WaterBulkModulus` | float, `>0` | `2e8` | Water bulk modulus `Kw` [Pa]. | Keep |
 | `WaterDensity` | float, `>0` | `1000` | Water density `rho_w` [kg/m3]. | Keep |
+| `FlexibleConfiningStress` | `0/1` | `0` | CPU-only flexible confining stress source for future strict Cryer loading. GPU hard-errors if enabled. | Experimental |
+| `ConfiningStressP0` | float, `>=0` | `0` | Positive external compression magnitude [Pa]. | Experimental |
+| `ConfiningStressRampStart` | double [s] | `0` | Linear ramp start time. | Experimental |
+| `ConfiningStressRampEnd` | double [s] | `ConfiningStressRampStart` | Linear ramp end time. If equal to start, load is applied without ramp. | Experimental |
+| `ConfiningStressTargetMk` | int | `-1` | `-1`: all normal material particles; otherwise target one `mkfluid` value. | Experimental |
+| `ConfiningStressMode` | int | `0` | `0`: isotropic flexible confining stress. Other modes are reserved. | Experimental |
 
 Recommended XML location:
 
@@ -32,6 +38,7 @@ Recommended XML location:
       <HydraulicConductivity value="1e-3" />
       <WaterBulkModulus value="2e8" />
       <WaterDensity value="1000" />
+      <FlexibleConfiningStress value="0" />
     </soils>
   </special>
 </execution>
@@ -133,7 +140,8 @@ The only automatic or conditional behavior under `HydromechCoupling=1` is:
 
 - `dt_pore` restriction is applied when `PorePressureModel=1` and the soil material `HydraulicConductivity > 0`.
 - `HydraulicGravity` falls back to the body `Gravity` when `HydraulicGravityX/Y/Z` are all zero. If any custom hydraulic gravity component is nonzero, that custom vector is used for hydraulic elevation, hydrostatic pressure, `dt_pore`, `LapZ`, hydraulic boundaries, and excess-pressure diagnostics.
-- `BodyGravityStopTime`, when positive, only affects the mechanical body-gravity acceleration used by the CPU time integration. It does not modify the stored body `Gravity` vector and does not alter `HydraulicGravity`.
+- `BodyGravityStopTime`, when positive, only affects the mechanical body-gravity acceleration used by the CPU/GPU time integration. It does not modify the stored body `Gravity` vector and does not alter `HydraulicGravity`.
+- `FlexibleConfiningStress=1` is CPU-only in C4-B3. It adds a positive-compression isotropic stress-like pair contribution to the mechanical momentum summation, does not write to the material stress tensor, and does not alter `PorePress`, `PorePressRate`, `LapPorePress`, `LapZ`, `AccInput`, or `HydraulicGravity`.
 
 Recommended presets:
 

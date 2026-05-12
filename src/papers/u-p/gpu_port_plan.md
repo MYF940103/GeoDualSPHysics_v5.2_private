@@ -969,3 +969,29 @@ Recommended next strict path:
 
 Strict Cryer simulation remains paused. Corrected-gradient production remains
 deferred.
+
+## Cryer C4-B3 CPU Flexible Confining Stress
+
+C4-B3 is complete as a CPU-only minimal implementation and smoke. The new
+`FlexibleConfiningStress` XML switch defaults to off and adds an isotropic
+stress-like contribution only to the CPU mechanical momentum pair summation.
+It is independent of `AccInput`, body gravity, `HydraulicGravity`, and the PR
+pore-pressure equation. It is not written into the material stress state.
+
+The retained CPU smokes are under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/flexible_confining_stress_C4B3/`
+
+Results:
+
+- no-load, sign, and ramp smokes: `code=0`, `excluded=0`;
+- positive `ConfiningStressP0` produced inward surface radial velocity;
+- net-force/center-of-mass diagnostics remained near zero for the symmetric
+  tiny specimen;
+- GPU support is deliberately unsupported and hard-errors if the switch is
+  enabled.
+
+Next recommended Cryer step: C4-B4 traction-only free-sphere smoke on CPU,
+followed by C4-C drained curved pore-pressure boundary work. Strict Cryer
+simulation remains paused; no GPU port should start before CPU loading and
+boundary behavior are credible.

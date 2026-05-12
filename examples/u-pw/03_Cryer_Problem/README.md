@@ -219,6 +219,34 @@ This C4-B conclusion has been superseded by C4-B2 below. The earlier
 area-weighted radial/spherical traction idea is no longer the recommended
 strict route.
 
+## C4-B3 Flexible Confining Stress CPU Smoke
+
+C4-B3 implemented the selected flexible confining stress route as a CPU-only
+minimal source term. The XML switch is `FlexibleConfiningStress`; it defaults
+to off. Positive `ConfiningStressP0` means external compression. The term is
+added only to the CPU mechanical momentum summation and is not written into the
+material stress state or the pore-pressure equation.
+
+GPU support is intentionally not available yet. A GPU run with
+`FlexibleConfiningStress=1` hard-errors so that no case can silently run without
+the requested traction source.
+
+The smoke cases are in:
+
+`strict_reproduction_plan/flexible_confining_stress_C4B3/`
+
+They are tiny mechanics sanity checks:
+
+- no-load regression;
+- immediate small compressive load;
+- ramped small compressive load.
+
+All three CPU smokes completed with `code=0` and `excluded=0`. The loaded
+smokes showed inward surface radial velocity and near-zero net force/center-of-
+mass acceleration. These tests are not strict Cryer simulations. The next
+loading step is a traction-only free-sphere smoke, while the drained curved
+hydraulic boundary remains a separate blocker.
+
 ## C4-B2 Flexible Confining Stress Route
 
 C4-B2 revises the loading decision. The `AccInput` patchwise surrogate is now
@@ -235,11 +263,13 @@ pressure on the exterior.
 
 Status:
 
-- source implementation is not done;
-- no GenCase, CPU, GPU, or PartVTK run was performed;
-- the strict sphere draft contains only a comment-only TODO block;
+- source implementation was not done in C4-B2 itself, but the follow-up C4-B3
+  CPU implementation and smoke are now recorded above;
+- C4-B2 itself did not run GenCase, CPU, GPU, or PartVTK;
+- the strict sphere draft remains non-runnable and now contains a CPU-only
+  flexible confining stress TODO block;
 - drained curved pore-pressure boundary remains a separate blocker;
 - strict Cryer simulation remains paused.
 
-Next recommended task: C4-B3 CPU-only flexible confining stress implementation
-with sign, symmetry, net-force, and surface-localization diagnostics.
+Next recommended task: C4-B4 traction-only free-sphere smoke, then C4-C
+drained curved pore-pressure boundary audit/development.

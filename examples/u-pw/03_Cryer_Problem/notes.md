@@ -192,6 +192,42 @@ Findings:
 Strict Cryer simulation remains paused. The original C4-B idea of a CPU-first
 area-weighted radial/spherical traction block has been superseded by C4-B2.
 
+## C4-B3 Flexible Confining Stress Implementation Notes
+
+C4-B3 adds a CPU-only implementation of the flexible confining stress route.
+The new parameters live under `<execution><special><soils>`:
+
+```xml
+<FlexibleConfiningStress value="1" />
+<ConfiningStressP0 value="50" />
+<ConfiningStressRampStart value="0" />
+<ConfiningStressRampEnd value="0" />
+<ConfiningStressTargetMk value="0" />
+<ConfiningStressMode value="0" />
+```
+
+Default is `FlexibleConfiningStress=0`, so existing cases are unchanged.
+Positive `ConfiningStressP0` is external compression. In the current SPH
+stress-divergence sign convention, the implementation adds a positive
+isotropic stress-like contribution to the CPU pairwise mechanical momentum
+summation. It is not stored in the material stress tensor and it does not alter
+`PorePress`, `PorePressRate`, `LapPorePress`, `LapZ`, or `HydraulicGravity`.
+
+GPU is unsupported for this feature in C4-B3. A GPU run with the switch enabled
+throws a hard error.
+
+The C4-B3 smoke folder is:
+
+`strict_reproduction_plan/flexible_confining_stress_C4B3/`
+
+The no-load, sign, and ramp smokes all completed with `code=0` and `excluded=0`.
+Loaded runs produced inward surface radial velocity and force symmetry
+residuals of order `1e-08`. These are loading-source sanity checks only, not
+Cryer validation.
+
+Next: C4-B4 traction-only free-sphere smoke, then C4-C drained curved boundary
+audit/development. Strict Cryer simulation remains paused.
+
 ## C4-B2 Revised Loading Route
 
 C4-B2 rejects the `AccInput` patchwise spherical surrogate. `AccInput` remains

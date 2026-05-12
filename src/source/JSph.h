@@ -229,6 +229,20 @@ protected:
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
   double BodyGravityStopTime;   ///<Time to stop mechanical body gravity. <=0: body gravity remains active.
   bool BodyGravityStoppedLogged; ///<True when mechanical body gravity stop has been reported.
+  bool FlexibleConfiningStress; ///<CPU flexible confining stress source. 0:off, 1:on.
+  float ConfiningStressP0;      ///<Positive compression magnitude for flexible confining stress [Pa].
+  double ConfiningStressRampStart; ///<Start time for confining stress ramp [s].
+  double ConfiningStressRampEnd;   ///<End time for confining stress ramp [s].
+  int ConfiningStressTargetMk;  ///<Target mkfluid for confining stress. -1:all material particles.
+  int ConfiningStressMode;      ///<Flexible confining stress mode. 0:isotropic stress source.
+  mutable double ConfiningStressDiagP0Eff; ///<Last effective confining stress after ramp [Pa].
+  mutable unsigned ConfiningStressDiagTargetCount; ///<Last target particle count.
+  mutable tdouble3 ConfiningStressDiagNetForce; ///<Last net confining force estimate [N].
+  mutable double ConfiningStressDiagTotalAbsForce; ///<Last total absolute confining force estimate [N].
+  mutable double ConfiningStressDiagMaxAccel; ///<Last maximum confining acceleration estimate [m/s2].
+  mutable double ConfiningStressDiagComAccel; ///<Last center-of-mass acceleration estimate [m/s2].
+  mutable double ConfiningStressDiagSymResidual; ///<Last force symmetry residual.
+  mutable int ConfiningStressDiagLastPrintStep; ///<Last step printed for confining diagnostics.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.
   float HydromechDampingXi;     ///<Dimensionless damping coefficient xi. If >0, c_d=xi*sqrt(E/(rho0*h^2)).
@@ -541,6 +555,10 @@ protected:
   tfloat3 GetHydraulicGravity()const;
   tfloat3 GetMechanicalGravity(double timestep)const;
   bool IsMechanicalGravityStopped(double timestep)const;
+  double GetFlexibleConfiningStressP0(double timestep)const;
+  bool IsFlexibleConfiningStressTarget(typecode code)const;
+  void ResetFlexibleConfiningStressDiagnostics()const;
+  void PrintFlexibleConfiningStressDiagnostics()const;
   double GetHydraulicGmag()const;
   double GetHydraulicElevation(const tdouble3 &pos)const;
 

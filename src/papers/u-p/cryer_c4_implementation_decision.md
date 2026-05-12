@@ -90,6 +90,30 @@ Only if native routes are insufficient:
 - avoid corrected-gradient production;
 - avoid GPU until CPU behavior is clear.
 
+### C4-B3: CPU Flexible Confining Stress Support
+
+Status: completed as a minimal CPU implementation and tiny mechanics smoke.
+
+C4-B3 added the XML-controlled `FlexibleConfiningStress` source with
+`ConfiningStressP0`, ramp timing, target marker selection, and mode `0`
+isotropic loading. The term is added to the CPU material-material mechanical
+stress-divergence pair summation only. It is not written into the material
+stress tensor and it does not change the PR pore-pressure equation,
+`HydraulicGravity`, `AccInput`, `SoilConstitutiveModel`, or
+`PorePressureBoundaryOperator`.
+
+GPU support is intentionally unsupported in this phase: enabling
+`FlexibleConfiningStress=1` on the GPU path hard-errors instead of silently
+falling back.
+
+The C4-B3 no-load, sign, and ramp smokes all completed with `code=0` and
+`excluded=0`. The sign smoke confirmed inward surface velocity for positive
+`ConfiningStressP0`, with symmetry residuals of order `1e-08`.
+
+The next loading step should be C4-B4: a small traction-only free-sphere smoke.
+Strict Cryer simulation is still paused because the drained curved
+pore-pressure boundary remains unresolved.
+
 ### C4-D: Reduced Fallback
 
 If strict loading or boundary support is blocked, keep the reduced baseline as

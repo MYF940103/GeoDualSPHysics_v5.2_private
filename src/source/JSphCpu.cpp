@@ -1107,6 +1107,15 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const bool useartstress=(ArtificialStress && !boundp2 && artificialstress);
   const float wabdp=(useartstress? fsph::GetKernel_Wab<tker>(CSP,float(Dp*Dp)): 0.f);
   const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
+  const double confp0d=(!boundp2? GetFlexibleConfiningStressP0(TimeStep): 0.);
+  const bool useconf=(confp0d>0.);
+  const float confp0=float(confp0d);
+  double confnetx[OMP_MAXTHREADS*OMP_STRIDE],confnety[OMP_MAXTHREADS*OMP_STRIDE],confnetz[OMP_MAXTHREADS*OMP_STRIDE];
+  double confabs[OMP_MAXTHREADS*OMP_STRIDE],confmax[OMP_MAXTHREADS*OMP_STRIDE],confcount[OMP_MAXTHREADS*OMP_STRIDE];
+  for(int th=0;th<OmpThreads;th++){
+    const int c=th*OMP_STRIDE;
+    confnetx[c]=confnety[c]=confnetz[c]=confabs[c]=confmax[c]=confcount[c]=0.;
+  }
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
   const int pfin=int(pinit+n);
   #ifdef OMP_USE
@@ -1115,6 +1124,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   for(int p1=int(pinit);p1<pfin;p1++){
     float visc=0,arp1=0,deltap1=0;
     tfloat3 acep1=TFloat3(0);
+    tfloat3 confacep1=TFloat3(0);
     tsymatrix3f gradvelp1={0,0,0,0,0,0};
     tsymatrix3f rsigmap1={0,0,0,0,0,0};//-mdbr
     tsymatrix3f dsigmap1={0,0,0,0,0,0};//-diffusion
@@ -1135,6 +1145,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       if(ftp1 && tdensity!=DDT_None){dsigmap1.xx=FLT_MAX;}
       if(ftp1 && shift)shiftposfsp1.x=FLT_MAX;  //-For floating objects do not calculate shifting. | Para floatings no se calcula shifting.
     }
+    const bool conftargetp1=(useconf && !ftp1 && IsFlexibleConfiningStressTarget(code[p1]));
 
     //-Obtain data of particle p1.
     const tdouble3 posp1=pos[p1];
@@ -1206,6 +1217,12 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz + sigmap2.xz) / (rhopp1*velrhop2.w);
 			const float prsyz = massp2*(sigmap1.yz + sigmap2.yz) / (rhopp1*velrhop2.w);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            if(conftargetp1 && !ftp2 && IsFlexibleConfiningStressTarget(code[p2])){
+              const float prsconf=massp2*(confp0+confp0)/(rhopp1*velrhop2.w);
+              const tfloat3 aceconf=TFloat3(prsconf*frx,prsconf*fry,prsconf*frz);
+              acep1.x+=aceconf.x; acep1.y+=aceconf.y; acep1.z+=aceconf.z;
+              confacep1.x+=aceconf.x; confacep1.y+=aceconf.y; confacep1.z+=aceconf.z;
+            }
             if(useartstress && !ftp1 && !ftp2 && invwabdp>0.f){
               const tsymatrix3f artstressp2=artificialstress[p2];
               const float ratio=wab*invwabdp;
@@ -1393,9 +1410,38 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       }
       if(shift)shiftposfs[p1]=shiftposfsp1;
     }
+    if(conftargetp1){
+      const int th=omp_get_thread_num();
+      const int c=th*OMP_STRIDE;
+      const double ax=confacep1.x, ay=confacep1.y, az=confacep1.z;
+      const double amag=sqrt(ax*ax+ay*ay+az*az);
+      confnetx[c]+=double(MassFluid)*ax;
+      confnety[c]+=double(MassFluid)*ay;
+      confnetz[c]+=double(MassFluid)*az;
+      confabs[c]+=double(MassFluid)*amag;
+      if(confmax[c]<amag)confmax[c]=amag;
+      confcount[c]+=1.;
+    }
   }
   //-Keep max value in viscdt. | Guarda en viscdt el valor maximo.
   for(int th=0;th<OmpThreads;th++)if(viscdt<viscth[th*OMP_STRIDE])viscdt=viscth[th*OMP_STRIDE];
+  if(useconf){
+    double netx=0.,nety=0.,netz=0.,absforce=0.,maxaccel=0.,count=0.;
+    for(int th=0;th<OmpThreads;th++){
+      const int c=th*OMP_STRIDE;
+      netx+=confnetx[c]; nety+=confnety[c]; netz+=confnetz[c];
+      absforce+=confabs[c]; count+=confcount[c];
+      if(maxaccel<confmax[c])maxaccel=confmax[c];
+    }
+    const double netmag=sqrt(netx*netx+nety*nety+netz*netz);
+    ConfiningStressDiagP0Eff=confp0d;
+    ConfiningStressDiagTargetCount=unsigned(count);
+    ConfiningStressDiagNetForce=TDouble3(netx,nety,netz);
+    ConfiningStressDiagTotalAbsForce=absforce;
+    ConfiningStressDiagMaxAccel=maxaccel;
+    ConfiningStressDiagComAccel=(count>0.? netmag/(double(MassFluid)*count): 0.);
+    ConfiningStressDiagSymResidual=(absforce>0.? netmag/absforce: 0.);
+  }
 }
 
 //==============================================================================
@@ -1538,6 +1584,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   void JSphCpu::Interaction_ForcesCpuT(const stinterparmsc &t,StInterResultc &res)const
 {
   float viscdt=res.viscdt;
+  if(FlexibleConfiningStress)ResetFlexibleConfiningStressDiagnostics();
   if(t.npf){
     //-Interaction Fluid-Fluid.
     InteractionForcesFluid<tker,ftmode,tvisco,tdensity,shift> (t.npf,t.npb,false,Visco                 
@@ -1555,6 +1602,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     //-Computes tau for Laminar+SPS.
     if(tvisco==VISCO_LaminarSPS)ComputeSpsTau(t.npf,t.npb,t.velrhop,t.spsgradvel,t.spstau);
   }
+  if(FlexibleConfiningStress)PrintFlexibleConfiningStressDiagnostics();
   if(t.npbok){
     //-Interaction Bound-Fluid.
     InteractionForcesBound<tker,ftmode> (t.npbok,0,t.divdata,t.dcell

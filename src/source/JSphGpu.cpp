@@ -1430,6 +1430,7 @@ void JSphGpu::InitFloating(){
 /// Inicializa vectores y variables para la ejecucion.
 //==============================================================================
 void JSphGpu::InitRunGpu(){
+  if(FlexibleConfiningStress)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
   ParticlesDataDown(Np,0,false,false);
   InitRun(Np,Idp,AuxPos);
   if(TStep==STEP_Symplectic)SymplecticDtPre=LimitInitialDtByPorePressure(SymplecticDtPre);

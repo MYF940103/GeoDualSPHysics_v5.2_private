@@ -104,16 +104,22 @@
           The selected strict loading route is a future flexible confining
           stress term added to the mechanical momentum equation.
 
-        Future source-design placeholder, intentionally comment-only:
-          FlexibleConfiningStress active=0
-            mode="0 isotropic free-surface confining stress"
-            p0="10000 Pa positive compression"
-            targetmkfluid="all soil material particles"
-            rampstart="0"
-            rampend="0"
+        C4-B3 implementation note:
+          FlexibleConfiningStress now exists as a CPU-only experimental source.
+          It is still left disabled in this strict draft until a traction-only
+          sphere smoke and the drained curved pore-pressure boundary are solved.
+
+        Future strict-Cryer parameter block, intentionally comment-only:
+          <FlexibleConfiningStress value="1" />
+          <ConfiningStressP0 value="10000" comment="Pa, positive compression" />
+          <ConfiningStressRampStart value="0" />
+          <ConfiningStressRampEnd value="0" />
+          <ConfiningStressTargetMk value="-1" comment="all soil material particles" />
+          <ConfiningStressMode value="0" />
 
         Do not run this draft as strict Cryer until flexible confining stress
-        and drained curved pore-pressure boundary are implemented/verified.
+        sphere-smoke diagnostics and the drained curved pore-pressure boundary
+        are implemented/verified.
       -->
     </parameters>
   </execution>
