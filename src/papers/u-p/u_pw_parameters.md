@@ -315,6 +315,30 @@ drained excess pore pressure. It does not clamp material pore pressure after
 the update. GPU runs with mode `3` or `PorePressureCurvedDrained=1` are
 unsupported and should fail rather than silently falling back to mode `0`.
 
+For `PorePressureBoundaryOperator=3`, `CurvedDrainedBoundaryMode` currently
+selects the CPU-only experimental subroute:
+
+- `0`: first-order spherical Dirichlet ghost;
+- `1`: strengthened image ghost;
+- `2`: diagnostic material surface clamp, not production;
+- `3`: material-side multi-sample spherical Dirichlet quadrature;
+- `4`: boundary-particle prescribed Dirichlet hydraulic state.
+
+Mode `4` is the C5e paper-style boundary-particle prototype. It uses selected
+boundary particles as hydraulic quadrature sites, prescribes the drained value
+(`p_w=0`, or `excess=0` under no-elevation Cryer convention), and contributes
+to `LapPorePress`/`LapZ`. It does not advect boundary pore pressure, does not
+clamp material particles, and remains CPU-only experimental.
+
+Additional mode-4 parameters:
+
+| Parameter | Type / values | Default | Purpose |
+|---|---:|---:|---|
+| `CurvedDrainedBoundaryTargetMkBound` | integer, `-1` or mkbound | `-1` | Select all spherical boundary particles or only a specific `mkbound`. |
+| `CurvedDrainedBoundaryUseBoundaryParticles` | `0/1` | `1` | Required for mode `4`; enables selected boundary-particle participation. |
+| `CurvedDrainedBoundarySelectionTolerance` | length | `0` | Radius tolerance for selecting boundary particles. If `0`, uses a kernel/dp-based fallback. |
+| `CurvedDrainedBoundaryAdamiDiagnostic` | `0/1` | `0` | Computes normalized-kernel extrapolated boundary pressure as diagnostics only; it is not used as the drained value. |
+
 ## 4. Feedback Parameters
 
 | Parameter | Type / values | Default | Purpose | Keep? |

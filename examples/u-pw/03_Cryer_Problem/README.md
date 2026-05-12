@@ -469,3 +469,32 @@ boundary-particle/MLS route.
 Next recommended step: design a CPU boundary-particle hydraulic state and
 MLS/Adami-style extrapolation path for the spherical drained Cryer boundary
 before any C5e source changes. C6 and GPU remain deferred.
+
+## C5e Boundary-Particle Drained Boundary Prototype
+
+C5e adds a CPU-only experimental submode:
+
+```xml
+<parameter key="PorePressureBoundaryOperator" value="3" />
+<parameter key="PorePressureCurvedDrained" value="1" />
+<parameter key="CurvedDrainedBoundaryMode" value="4" />
+```
+
+This mode selects dummy/boundary particles on the spherical exterior and gives
+them a prescribed drained hydraulic state (`p_w=0`, `excess=0` in
+`HydraulicElevationSource=0`). The selected boundary particles contribute to
+`LapPorePress` and `LapZ` before `PorePressRate`. It is not a material-surface
+clamp and it does not change the PR governing equation.
+
+Retained package:
+
+`strict_reproduction_plan/C5e_BoundaryParticleDrained/`
+
+All C5e CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. Mode 4 selected `2418` boundary particles and reduced the
+compression center peak from `7.657 p0` to `6.908 p0`. However, pressure-only
+diffusion over-drained and produced pressure-rate artifacts, so C6 remains
+premature.
+
+Next recommended step: MLS/Adami-style boundary-particle normalization for the
+operator contribution. GPU remains deferred.

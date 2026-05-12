@@ -1192,3 +1192,24 @@ GPU work remains paused. The next CPU task should design a paper-faithful
 boundary-particle hydraulic state / MLS or Adami extrapolation route for the
 spherical drained Cryer boundary. GPU should not be revisited until that CPU
 route produces credible pressure-only diffusion and coarse Cryer behavior.
+
+## Cryer C5e Boundary-Particle Drained Boundary
+
+C5e is complete as a CPU-only source and smoke refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5e_BoundaryParticleDrained/`
+
+It adds `CurvedDrainedBoundaryMode=4` for the existing experimental
+`PorePressureBoundaryOperator=3` curved-drained path. Selected boundary
+particles carry prescribed drained `p_w=0` and contribute to CPU
+`LapPorePress`/`LapZ`. The mode does not clamp material pressure and does not
+change the PR governing equation. GPU remains unsupported for this Cryer
+strict-boundary path.
+
+All C5e CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. Mode 4 reduced the compression center peak from `7.657 p0` to
+`6.908 p0`, but pressure-only diffusion over-drained and introduced large
+pressure-rate artifacts (`PorePressRate` maxAbs about `9.38e5 Pa/s`).
+
+GPU porting is not recommended. The CPU boundary still needs
+MLS/Adami-normalized boundary-particle weighting before C6 or GPU work.

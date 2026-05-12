@@ -474,3 +474,36 @@ Decision: do not keep tuning current spherical mode-3 ghost/quadrature as the
 main path. The next step should design a boundary-particle hydraulic state with
 paper-style MLS/Adami extrapolation for the spherical drained Cryer surface.
 Only after that should pressure-only spherical diffusion and C5/C6 be revisited.
+
+## C5e Boundary-Particle Drained Boundary Notes
+
+C5e implements `CurvedDrainedBoundaryMode=4` for the CPU-only
+`PorePressureBoundaryOperator=3` path. This is the first Cryer boundary attempt
+after the LIT-B recommendation to move from material-side spherical samples
+toward boundary-particle hydraulic state.
+
+Mode 4:
+
+- selects boundary particles using spherical geometry, optional `mkbound`, and
+  `CurvedDrainedBoundarySelectionTolerance`;
+- prescribes drained `p_w=0` (`excess=0` under `HydraulicElevationSource=0`);
+- adds selected boundary-particle contributions to `LapPorePress` and `LapZ`;
+- does not clamp material particles;
+- computes Adami-style boundary pressure only as a diagnostic.
+
+Retained tests are in:
+
+`strict_reproduction_plan/C5e_BoundaryParticleDrained/`
+
+All four CPU Release tests completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. Compression center peak decreased from `7.657 p0` in the mode-3
+control to `6.908 p0` in mode 4, and final `r>0.85R` surface p95 decreased
+from `208.90 Pa` to `195.08 Pa`.
+
+The pressure-only diffusion test shows the current boundary-particle volume is
+too strong: final center pressure overshot to `-97.17 Pa`, and
+`PorePressRate` maxAbs rose to about `9.38e5 Pa/s`. C5e therefore supports the
+boundary-particle route conceptually but does not provide a C6-ready boundary.
+
+Next step: MLS/Adami-normalized boundary-particle operator weighting before
+dp refinement or C6. GPU remains deferred.

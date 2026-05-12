@@ -205,6 +205,10 @@ void JSph::InitVars(){
   CurvedDrainedBoundaryUseExcess=true;
   CurvedDrainedBoundaryThickness=0.;
   CurvedDrainedBoundaryMode=0;
+  CurvedDrainedBoundaryTargetMkBound=-1;
+  CurvedDrainedBoundaryUseBoundaryParticles=true;
+  CurvedDrainedBoundarySelectionTolerance=0.;
+  CurvedDrainedBoundaryAdamiDiagnostic=false;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   HydraulicElevationSource=true;
@@ -782,7 +786,20 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  CurvedDrainedBoundaryMode=1;  break;
     case 2:  CurvedDrainedBoundaryMode=2;  break;
     case 3:  CurvedDrainedBoundaryMode=3;  break;
-    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, and experimental 3.");
+    case 4:  CurvedDrainedBoundaryMode=4;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, and experimental 4.");
+  }
+  CurvedDrainedBoundaryTargetMkBound=eparms.GetValueInt("CurvedDrainedBoundaryTargetMkBound",true,-1);
+  switch(eparms.GetValueInt("CurvedDrainedBoundaryUseBoundaryParticles",true,1)){
+    case 0:  CurvedDrainedBoundaryUseBoundaryParticles=false;  break;
+    case 1:  CurvedDrainedBoundaryUseBoundaryParticles=true;   break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryUseBoundaryParticles mode is not valid.");
+  }
+  CurvedDrainedBoundarySelectionTolerance=eparms.GetValueDouble("CurvedDrainedBoundarySelectionTolerance",true,0.);
+  switch(eparms.GetValueInt("CurvedDrainedBoundaryAdamiDiagnostic",true,0)){
+    case 0:  CurvedDrainedBoundaryAdamiDiagnostic=false;  break;
+    case 1:  CurvedDrainedBoundaryAdamiDiagnostic=true;   break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryAdamiDiagnostic mode is not valid.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
@@ -889,6 +906,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedBoundaryTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryThickness<0.)
     Run_Exceptioon("CurvedDrainedBoundaryThickness must be greater than or equal to zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryTargetMkBound<-1)
+    Run_Exceptioon("CurvedDrainedBoundaryTargetMkBound must be -1 for all selected boundary particles or a non-negative mkbound value.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundarySelectionTolerance<0.)
+    Run_Exceptioon("CurvedDrainedBoundarySelectionTolerance must be greater than or equal to zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==4 && !CurvedDrainedBoundaryUseBoundaryParticles)
+    Run_Exceptioon("CurvedDrainedBoundaryMode=4 requires CurvedDrainedBoundaryUseBoundaryParticles=1.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
@@ -1854,6 +1877,10 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryUseExcess",CurvedDrainedBoundaryUseExcess));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryThickness",CurvedDrainedBoundaryThickness));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryMode",CurvedDrainedBoundaryMode));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryTargetMkBound",CurvedDrainedBoundaryTargetMkBound));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryUseBoundaryParticles",CurvedDrainedBoundaryUseBoundaryParticles));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundarySelectionTolerance",CurvedDrainedBoundarySelectionTolerance));
+      Log->Print(fun::VarStr("  CurvedDrainedBoundaryAdamiDiagnostic",CurvedDrainedBoundaryAdamiDiagnostic));
       if(CurvedDrainedBoundaryMode==0)
         Log->Print("  CurvedDrainedBoundaryMode=0: first-order spherical Dirichlet ghost.");
       if(CurvedDrainedBoundaryMode==1)
@@ -1862,6 +1889,8 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=2: diagnostic surface-material drained clamp after pore-pressure update; not production.");
       if(CurvedDrainedBoundaryMode==3)
         Log->Print("  CurvedDrainedBoundaryMode=3: multi-sample spherical Dirichlet boundary quadrature; CPU-only experimental.");
+      if(CurvedDrainedBoundaryMode==4)
+        Log->Print("  CurvedDrainedBoundaryMode=4: selected boundary particles carry prescribed drained hydraulic state and participate in LapPorePress/LapZ; CPU-only experimental.");
     }
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
     Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));

@@ -382,3 +382,36 @@ Decision after LIT-B:
 - next source-facing step should be a design task for a CPU
   boundary-particle hydraulic state with MLS/Adami-style extrapolation for the
   spherical drained Cryer boundary.
+
+## C5e: Boundary-Particle Drained Boundary Prototype
+
+C5e is complete as a CPU-only source and smoke test under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5e_BoundaryParticleDrained/`
+
+It adds `CurvedDrainedBoundaryMode=4` under the existing
+`PorePressureBoundaryOperator=3` / `PorePressureCurvedDrained=1` interface.
+Mode 4 selects boundary particles on the spherical exterior, prescribes
+`p_w=0` (`excess=0` when `HydraulicElevationSource=0`), and adds their
+hydraulic state to `LapPorePress` and `LapZ` before `PorePressRate`. It is not
+a material clamp and it does not change the PR pressure equation.
+
+All C5e CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The boundary-particle route selected `2418` boundary particles
+and reduced the compression center peak from `7.657 p0` to `6.908 p0`. The
+surface p95 residual improved only moderately (`208.90 Pa` to `195.08 Pa`).
+
+The pressure-only diffusion test is the current blocker: mode 4 drains much
+more strongly than mode 3 but overshoots the center pressure to `-97.17 Pa` and
+raises `PorePressRate` maxAbs to about `9.38e5 Pa/s`. This indicates
+boundary-particle participation is influential, but the effective boundary
+volume / quadrature normalization is too strong.
+
+Decision after C5e:
+
+- C6 quantitative Figure 7B comparison remains premature;
+- continuing material-side mode-3 quadrature tuning is not recommended;
+- dp/geometry refinement should still wait;
+- the next source-facing step should be MLS/Adami-normalized
+  boundary-particle operator weighting with prescribed drained value retained;
+- GPU remains deferred.

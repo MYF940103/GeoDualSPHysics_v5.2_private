@@ -2316,6 +2316,9 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   double bndexmin=DBL_MAX,bndexmax=-DBL_MAX;
   unsigned curvedaffected=0,curvedskipped=0;
   unsigned curvedquadparticles=0,curvedquadsamples=0;
+  unsigned curvedbndselected=0,curvedbndtargets=0,curvedbndpairs=0;
+  unsigned curvedbndadamisamples=0,curvedbndadamifallback=0;
+  double curvedbndadamiabsmean=0.,curvedbndadamimaxabs=0.;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2422,6 +2425,72 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     const double mindist=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelSize));
     const double rtarget=CurvedDrainedBoundaryRadius;
     const double rmin=max(0.,rtarget-shellthick);
+    struct StCurvedBndHyd{
+      unsigned p;
+      tdouble3 pos;
+      double z;
+      double hydro;
+      double volume;
+      double adami_excess;
+    };
+    vector<StCurvedBndHyd> curvedbnd;
+    if(CurvedDrainedBoundaryMode==4){
+      const double bndtol=(CurvedDrainedBoundarySelectionTolerance>0.? CurvedDrainedBoundarySelectionTolerance: max(double(KernelH),double(Dp)));
+      const double rbmin=max(0.,rtarget-bndtol);
+      const double rbmax=rtarget+max(bndtol,shellthick);
+      for(unsigned pb=0;pb<pini;pb++){
+        const bool pbbound=(CODE_IsNormal(code[pb]) && !CODE_IsFluid(code[pb]));
+        if(!pbbound)continue;
+        if(CurvedDrainedBoundaryTargetMkBound>=0 && int(CODE_GetTypeValue(code[pb]))!=CurvedDrainedBoundaryTargetMkBound)continue;
+        if(velrhop[pb].w<=0.f){ skipped++; continue; }
+        const tdouble3 brel=pos[pb]-CurvedDrainedBoundaryCenter;
+        const double rb=sqrt(brel.x*brel.x+brel.y*brel.y+brel.z*brel.z);
+        if(rb<rbmin || rb>rbmax)continue;
+        if(rb<=ALMOSTZERO){ skipped++; continue; }
+        const tdouble3 bdir=brel*(1./rb);
+        StCurvedBndHyd b;
+        b.p=pb;
+        // The selected boundary particle provides the angular quadrature site;
+        // the hydraulic Dirichlet state is evaluated on the drained spherical
+        // surface so the dummy shell can remain mechanically separated.
+        b.pos=CurvedDrainedBoundaryCenter + bdir*rtarget;
+        b.z=GetHydraulicElevation(b.pos);
+        b.hydro=hydrostatic_linear(b.z);
+        b.volume=double(MassBound)/double(velrhop[pb].w);
+        b.adami_excess=0.;
+        curvedbnd.push_back(b);
+      }
+      curvedbndselected=unsigned(curvedbnd.size());
+      if(CurvedDrainedBoundaryAdamiDiagnostic && curvedbndselected){
+        for(unsigned ib=0;ib<curvedbndselected;ib++){
+          double wsum=0.,exsum=0.;
+          for(unsigned p3=pini;p3<pini+n;p3++)if(CODE_IsFluid(code[p3]) && velrhop[p3].w>0.f){
+            if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p3]))!=CurvedDrainedBoundaryTargetMk)continue;
+            const double drx=curvedbnd[ib].pos.x-pos[p3].x;
+            const double dry=curvedbnd[ib].pos.y-pos[p3].y;
+            const double drz=curvedbnd[ib].pos.z-pos[p3].z;
+            const double rr2=drx*drx+dry*dry+drz*drz;
+            if(rr2<=double(KernelSize2)){
+              const double wab=double(fsph::GetKernel_Wab<tker>(CSP,float(rr2)));
+              const double vol=double(MassFluid)/double(velrhop[p3].w);
+              const double weight=vol*wab;
+              const double z3=GetHydraulicElevation(pos[p3]);
+              const double excess3=porepress[p3]-hydrostatic_linear(z3);
+              exsum+=weight*excess3;
+              wsum+=weight;
+              curvedbndadamisamples++;
+            }
+          }
+          if(wsum>0.){
+            curvedbnd[ib].adami_excess=exsum/wsum;
+            curvedbndadamiabsmean+=fabs(curvedbnd[ib].adami_excess);
+            curvedbndadamimaxabs=max(curvedbndadamimaxabs,fabs(curvedbnd[ib].adami_excess));
+          }
+          else curvedbndadamifallback++;
+        }
+        if(curvedbndselected)curvedbndadamiabsmean/=double(curvedbndselected);
+      }
+    }
     for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
       if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
       if(velrhop[p].w<=0.f){ skipped++; continue; }
@@ -2438,7 +2507,40 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       const double pval=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
 
-      if(CurvedDrainedBoundaryMode==3){
+      if(CurvedDrainedBoundaryMode==4){
+        // Paper-style boundary-particle drained Dirichlet prototype. Selected
+        // boundary particles carry the prescribed hydraulic state and enter the
+        // PR LapPorePress/LapZ quadrature. Material pore pressure is never
+        // clamped here; Adami/MLS extrapolation is diagnostic only.
+        unsigned psamples=0;
+        for(unsigned ib=0;ib<curvedbndselected;ib++){
+          const StCurvedBndHyd &b=curvedbnd[ib];
+          if(b.volume<=0.)continue;
+          const double drx=pos[p].x-b.pos.x;
+          const double dry=pos[p].y-b.pos.y;
+          const double drz=pos[p].z-b.pos.z;
+          const double rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+          const double dotrgrad=rr2*double(fac);
+          const double pwb=(CurvedDrainedBoundaryUseExcess? b.hydro+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+          const double lapadd=2.*b.volume*(porepress[p]-pwb)*dotrgrad/(rr2+ALMOSTZERO);
+          const double zadd=2.*b.volume*(zi-b.z)*dotrgrad/(rr2+ALMOSTZERO);
+          lapporepress[p]+=float(lapadd);
+          lapz[p]+=float(zadd);
+          maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwb));
+          maxabslapadd=max(maxabslapadd,fabs(lapadd));
+          maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+          psamples++;
+        }
+        if(psamples){
+          curvedaffected++;
+          curvedbndtargets++;
+          curvedbndpairs+=psamples;
+        }
+        else curvedskipped++;
+      }
+      else if(CurvedDrainedBoundaryMode==3){
         // Multi-sample spherical Dirichlet quadrature. The samples sit on a
         // thin exterior shell around the projected spherical boundary point.
         // They enter the same LapPorePress/LapZ operator as material pairs and
@@ -2556,6 +2658,14 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           ,curvedquadparticles,curvedquadsamples,(curvedquadparticles? double(curvedquadsamples)/double(curvedquadparticles): 0.)
           ,(Dp>0.? max(1.,double(KernelH)/double(Dp)): 1.));
         Log->Print("CPU curved drained convention: multi-sample spherical Dirichlet boundary quadrature contributes to LapPorePress/LapZ before PR rate; no material clamp is applied.");
+      }
+      if(CurvedDrainedBoundaryMode==4){
+        Log->Printf("CPU curved drained boundary-particle Dirichlet: selected_boundary_particles=%u, material_targets=%u, material_boundary_pairs=%u, average_pairs=%g, target_mkbound=%d, selection_tolerance=%g, prescribed_value=%g Pa, value_type=%s, AdamiDiagnostic=%s, Adami_samples=%u, Adami_fallback=%u, Adami_mean_abs_excess=%g Pa, Adami_max_abs_excess=%g Pa."
+          ,curvedbndselected,curvedbndtargets,curvedbndpairs,(curvedbndtargets? double(curvedbndpairs)/double(curvedbndtargets): 0.)
+          ,CurvedDrainedBoundaryTargetMkBound,(CurvedDrainedBoundarySelectionTolerance>0.? CurvedDrainedBoundarySelectionTolerance: max(double(KernelH),double(Dp)))
+          ,CurvedDrainedBoundaryValue,(CurvedDrainedBoundaryUseExcess? "excess": "total"),(CurvedDrainedBoundaryAdamiDiagnostic? "True": "False")
+          ,curvedbndadamisamples,curvedbndadamifallback,curvedbndadamiabsmean,curvedbndadamimaxabs);
+        Log->Print("CPU curved drained convention: selected boundary particles use prescribed drained hydraulic state and contribute to LapPorePress/LapZ before PR rate; material pore pressure is not clamped and Adami/MLS extrapolation is diagnostic only.");
       }
     }
   }
