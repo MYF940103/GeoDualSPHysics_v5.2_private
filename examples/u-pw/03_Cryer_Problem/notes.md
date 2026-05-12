@@ -90,3 +90,40 @@ Recommended C3 choices:
   reproduction claim.
 - C3-B: recover the clean analytical reference and build strict sphere/traction
   geometry before deciding on boundary source changes.
+
+## C3-B Strict Route Notes
+
+C3-B has selected the strict route over the reduced manual-run route.
+
+Reference:
+
+- The clean center-pressure formula was recovered from the local PDF image for
+  Equations (46)-(47).
+- It still needs an independent C4 reference script and comparison against
+  Figure 7B or trusted digitized data.
+
+Geometry:
+
+- First strict route should be a true 3D sphere.
+- Axisymmetric/2D variants remain reduced surrogates unless a matching
+  analytical reference is supplied.
+
+Loading:
+
+- Cryer requires all-around inward normal traction `p0`.
+- Existing AccInput/top-load style routes are not equivalent to this spherical
+  traction.
+- Native spherical traction support is not yet proven.
+
+Boundary:
+
+- Mode `0` remains production default for reduced workflows but is not strict
+  curved drained boundary treatment.
+- Mode `1` is GPU-supported experimental.
+- Mode `2` is CPU-only experimental and is the closest current boundary-
+  particle-aware candidate, but it should not be ported before a Cryer-specific
+  CPU result justifies it.
+
+Next recommended step:
+
+- C4-A: implement and validate the independent Cryer reference script.

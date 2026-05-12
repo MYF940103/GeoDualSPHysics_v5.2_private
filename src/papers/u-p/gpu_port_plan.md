@@ -29,6 +29,12 @@ reduced manual-run center-pressure extraction or C3-B strict geometry/reference
 setup. No Cryer GPU-specific development should start before the CPU reference
 and geometry are settled.
 
+Cryer C3-B strict preparation has now started the strict track. It records the
+PDF-checked center-pressure formula, recommends a true 3D sphere as the first
+strict geometry, and marks all-around spherical traction plus drained curved
+hydraulic boundary as the remaining formulation blockers. The next Cryer phase
+should be C4-A reference-script validation before any source or GPU work.
+
 Still out of scope unless separately requested:
 
 - GPU `PorePressureBoundaryOperator=2`;

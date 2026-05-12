@@ -130,3 +130,29 @@ curve is still needed before strict comparison.
 
 Current recommendation: use C3-A for quick workflow progress, or C3-B if the
 next milestone must be strict paper reproduction.
+
+## C3-B Strict Route Preparation
+
+C3-B starts the strict reproduction route. It does not run the baseline and it
+does not claim validation. New planning files are under
+`strict_reproduction_plan/`.
+
+C3-B decisions:
+
+- strict geometry should start from a true 3D sphere, not the reduced column;
+- the analytical center-pressure formula has been transcribed from the local
+  PDF, but still needs a C4 reference script and Figure 7B check;
+- all-around traction `p0` must not be faked as gravity or top compression;
+- drained curved pore-pressure boundary remains a strict blocker;
+- GPU should wait until CPU reference, geometry, loading, and boundary are
+  credible.
+
+Draft files:
+
+- `strict_reproduction_plan/CaseCryer_PR_StrictSphere_Draft_Def.xml`
+- `strict_reproduction_plan/strict_reference_notes.md`
+- `strict_reproduction_plan/strict_geometry_notes.md`
+- `strict_reproduction_plan/strict_loading_boundary_notes.md`
+
+The draft XML is intentionally marked as not validated and not ready to run.
+It does not replace `CaseCryer_PR_Baseline_Def.xml`.
