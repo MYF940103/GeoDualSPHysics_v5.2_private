@@ -18,6 +18,17 @@ The active next phase is Scenario 1 staged workflow planning/execution. The
 recommended first route is the `BodyGravityStopTime` single-run workflow, not a
 GPU restart workflow.
 
+Cryer C1 baseline launch workflow is complete: the reduced Cryer XML and
+example-style CPU/GPU Release BATs are available under
+`examples/u-pw/03_Cryer_Problem/`. Cryer C2 reference/geometry/boundary audit is
+now documented. Strict Cryer remains unvalidated because the current XML is a
+reduced workflow, the analytical reference is not yet implementation-ready, the
+geometry is not a strict sphere, and the drained curved boundary/all-around
+traction route is not locked. The next Cryer step should be either C3-A
+reduced manual-run center-pressure extraction or C3-B strict geometry/reference
+setup. No Cryer GPU-specific development should start before the CPU reference
+and geometry are settled.
+
 Still out of scope unless separately requested:
 
 - GPU `PorePressureBoundaryOperator=2`;

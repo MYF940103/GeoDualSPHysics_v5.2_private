@@ -99,3 +99,34 @@ A future strict smoke should be coarse and short:
 - pressure fields written;
 - symmetric qualitative pressure response;
 - center pore-pressure history available for later comparison.
+
+## C2 Strict-Reference Audit
+
+C2 added a documentation-only audit of the strict Cryer requirements. No
+GenCase, CPU, GPU, or PartVTK run was performed.
+
+The audit confirms that strict Cryer requires:
+
+- a 3D sphere of radius `R=a` or a validated axisymmetric equivalent;
+- all-around normal traction `p0`;
+- a drained curved exterior pore-pressure boundary;
+- center pressure output normalized as `p_w(r=0,t)/p0`;
+- a verified Mandel-Cryer analytical reference and dimensionless time mapping;
+- the Poisson-ratio sweep `0.1`, `0.2`, `0.3`, `0.45`.
+
+The converted paper text contains the Cryer center-pressure analytical form and
+root equation, but the extraction is not clean enough to use directly as a
+trusted implementation. A clean PDF/manual formula check or digitized reference
+curve is still needed before strict comparison.
+
+## Next Step Options
+
+- **C3-A reduced manual-run path:** keep the current baseline XML/BAT, prepare a
+  center-pressure extraction script, and let users run the reduced workflow
+  manually for qualitative response and visualization.
+- **C3-B strict setup path:** recover the analytical reference, lock the sphere
+  geometry and normalization, then decide whether CPU boundary/loading source
+  work is needed before any GPU route.
+
+Current recommendation: use C3-A for quick workflow progress, or C3-B if the
+next milestone must be strict paper reproduction.

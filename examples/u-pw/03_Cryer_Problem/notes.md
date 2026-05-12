@@ -64,3 +64,29 @@ The smoke postprocessing helper `analyze_cryer_smoke.py` reads `PartCsv_*.csv`
 files and writes `cryer_smoke_center_pressure.csv`. It reports a nearest-to-
 centroid pore-pressure history as a center-pressure proxy. This is only a smoke
 metric; it is not the analytical Cryer center pressure comparison.
+
+## C2 Audit Summary
+
+C2 was a reference, geometry, boundary, and postprocessing audit only. It did
+not run GenCase, DualSPHysics, GPU, CPU, or PartVTK.
+
+Findings:
+
+- The strict paper benchmark is a poroelastic sphere with a drained exterior
+  surface and uniform all-around traction `p0`.
+- The paper compares normalized center pressure `p_w(r=0,t)/p0` against a
+  Mandel-Cryer analytical solution for `nu=0.1`, `0.2`, `0.3`, and `0.45`.
+- Current Cryer XMLs are reduced rectangular/column-style workflows, not strict
+  spheres.
+- Current baseline and smoke XMLs do not apply all-around traction.
+- Current hydraulic boundary controls are reduced top/bottom layer controls,
+  not a strict drained curved exterior boundary.
+- `analyze_cryer_smoke.py` remains a smoke helper, not a strict center-pressure
+  comparison.
+
+Recommended C3 choices:
+
+- C3-A: prepare reduced-workflow center-pressure extraction, still no strict
+  reproduction claim.
+- C3-B: recover the clean analytical reference and build strict sphere/traction
+  geometry before deciding on boundary source changes.
