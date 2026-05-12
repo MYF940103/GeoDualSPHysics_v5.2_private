@@ -845,3 +845,18 @@ The first concrete phase should be a CPU/GPU short-smoke experiment to about
 `0.003-0.005 s`, comparing switch-time velocity, excess-pressure, and
 top/bottom boundary consistency. Do not start Scenario 1 restart workflow until
 the single-run path is stable.
+
+## Scenario 1 BodyGravityStopTime Status
+
+The Scenario 1 `BodyGravityStopTime` single-run workflow is complete through
+S1-4:
+
+- S1-1b: GPU mechanical body gravity stop support and short CPU/GPU parity.
+- S1-2: GPU medium smoke to `0.05 s` and `0.2 s`.
+- S1-3: GPU long run to `3.6 s` with `code=0`, `excluded=0`.
+- S1-4: paper-figure and reference-context note generated.
+
+`HydraulicGravity` remains active after the mechanical body force stops.
+`PorePressureBoundaryOperator=0` remains the production path. The restart route,
+corrected-gradient production operators, and GPU `PorePressureBoundaryOperator=2`
+remain deferred.

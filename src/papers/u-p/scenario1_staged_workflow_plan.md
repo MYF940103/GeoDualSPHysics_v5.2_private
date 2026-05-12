@@ -152,3 +152,18 @@ The next Codex task should be S1-0/S1-1:
 Create a GPU Scenario 1 `BodyGravityStopTime` single-run short-smoke experiment,
 run CPU/GPU Release to `0.003-0.005 s`, compare switch-time pore-pressure and
 velocity response, clean heavy outputs, and write `gpu_s1_bodygravity_stop_short_report.md`.
+
+## S1-4 Completion Status
+
+S1-1b, S1-2, S1-3, and S1-4 are complete for the
+`BodyGravityStopTime` single-run route:
+
+- S1-1b short CPU/GPU parity passed after the GPU body-gravity stop patch.
+- S1-2 GPU medium windows to `0.05 s` and `0.2 s` passed.
+- S1-3 GPU long run to `3.6 s` passed with `code=0`, `excluded=0`.
+- S1-4 generated paper-figure metrics and the technical note
+  `paper_scenario1_bodygravity_stop_note.md`.
+
+The restart route remains deferred. The validated production path for the
+current paper workflow is the single-run `BodyGravityStopTime` route with
+`PorePressureBoundaryOperator=0`.
