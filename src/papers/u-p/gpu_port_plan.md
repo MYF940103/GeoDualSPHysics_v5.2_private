@@ -1083,3 +1083,21 @@ execution hard-errors if `HydraulicElevationSource=0` is requested.
 
 Next recommended task: C5 coarse CPU strict-sphere smoke. Do not start GPU or
 strict Figure 7 comparison until the combined CPU route is stable.
+
+## Cryer C5 Coarse CPU Strict-Sphere Smoke
+
+C5 is complete as a CPU-only short smoke, not a final validation. The retained
+package is:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5_StrictSphere_CoarseSmoke/`
+
+The smoke combines linear elasticity, CPU flexible confining stress, CPU curved
+drained pore-pressure boundary, and no-elevation hydraulics. It completed with
+`code=0`, `excluded=0`, and `Kplastic=0`; center pore pressure rose under
+compression and `LapZ` was excluded from the used pressure-rate terms.
+
+Because longer exploratory windows entered coarse free-sphere oscillation and
+particle out-check risk, C5 should not go directly to quantitative Figure 7B
+comparison. Next recommended step: C5b geometry/time-window refinement. GPU
+remains deferred for `FlexibleConfiningStress`, mode `3`, and
+`HydraulicElevationSource=0`.

@@ -345,3 +345,26 @@ GPU remains unsupported for `HydraulicElevationSource=0` and hard-errors during
 XML loading. The next step can be C5 coarse CPU strict-sphere smoke combining
 linear elasticity, flexible confining stress, curved drained boundary, and
 no-elevation hydraulics.
+
+## C5 Coarse CPU Strict-Sphere Notes
+
+C5 retained a short coarse sphere run:
+
+`strict_reproduction_plan/C5_StrictSphere_CoarseSmoke/`
+
+Result:
+
+- `code=0`, `excluded=0`;
+- particles: `739`;
+- `SoilConstitutiveModel=0`, `Kplastic=0`;
+- `FlexibleConfiningStress=1`, `p0=50 Pa`;
+- `PorePressureBoundaryOperator=3`, curved drained ghost active;
+- `HydraulicElevationSource=0`, so `LapZ` is not used in `PorePressRate`;
+- averaged center pressure peak: `383.6 Pa` (`7.67 p0`) at `t=0.002011 s`;
+- final retained averaged center pressure: `146.2 Pa` (`2.92 p0`) at
+  `t=0.006032 s`.
+
+The response is qualitative only. Longer exploratory windows showed coarse
+free-sphere oscillation and out-check risk, so C5 is not sufficient for strict
+Figure 7B validation. Recommended next step: C5b geometry/time-window
+refinement before C6 quantitative comparison.

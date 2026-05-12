@@ -220,3 +220,25 @@ passed with `code=0`, `excluded=0`:
 GPU support remains deferred and hard-errors if `HydraulicElevationSource=0` is
 requested. The next recommended step is C5 coarse CPU strict-sphere smoke, not
 GPU and not strict Figure 7 comparison yet.
+
+## C5: Coarse CPU Strict-Sphere Smoke
+
+C5 is complete as a CPU-only short integration smoke under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5_StrictSphere_CoarseSmoke/`
+
+The retained passing run combines `SoilConstitutiveModel=0`,
+`FlexibleConfiningStress=1`, `PorePressureBoundaryOperator=3` with
+`PorePressureCurvedDrained=1`, and `HydraulicElevationSource=0` in one coarse
+filled sphere. It completed with `code=0`, `excluded=0`, `Kplastic=0`, and
+showed positive center pore pressure under compression. `LapZ` remained
+diagnostic-only in the pressure-rate terms.
+
+The response is only qualitative: the averaged center pressure peaks at about
+`383.6 Pa` (`7.67 p0`) at `t=0.002011 s` for `p0=50 Pa`, then begins to
+dissipate/rebound in the short window. Exploratory longer windows entered a
+coarse free-sphere oscillatory/out-check regime, so C5 should not proceed
+directly to quantitative Figure 7 comparison.
+
+Next recommended step: C5b geometry/time-window refinement before C6. GPU
+remains deferred.

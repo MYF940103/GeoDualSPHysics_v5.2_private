@@ -341,3 +341,23 @@ All C4-D CPU smokes completed with `code=0`, `excluded=0`. GPU remains
 unsupported for `HydraulicElevationSource=0` and hard-errors if requested.
 Strict Cryer simulation should still be treated as a coarse future smoke, not as
 validated Figure 7 reproduction.
+
+## C5 Coarse Strict-Sphere Smoke
+
+C5 adds a CPU-only coarse integration smoke in:
+
+`strict_reproduction_plan/C5_StrictSphere_CoarseSmoke/`
+
+It combines the current strict-Cryer modules in one filled sphere:
+
+- `SoilConstitutiveModel=0`;
+- `FlexibleConfiningStress=1`;
+- `PorePressureBoundaryOperator=3` and `PorePressureCurvedDrained=1`;
+- `HydraulicElevationSource=0`.
+
+The retained run is intentionally short (`TimeMax=0.006 s`). It completed with
+`code=0`, `excluded=0`, and `Kplastic=0`, and generated positive center pore
+pressure under compression. It is not a strict Figure 7B reproduction.
+Exploratory longer windows exposed coarse free-sphere oscillation/out-check
+risk, so the next step should be C5b refinement rather than immediate C6
+quantitative comparison.
