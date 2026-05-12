@@ -207,6 +207,7 @@ void JSph::InitVars(){
   CurvedDrainedBoundaryMode=0;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
+  HydraulicElevationSource=true;
   Porosity0=0.3f;
   HydraulicConductivity=0.f;
   WaterBulkModulus=2e8f;
@@ -790,6 +791,11 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  PorePressureBoundaryGhostOutput=true;   break;
     default: Run_Exceptioon("PorePressureBoundaryGhostOutput mode is not valid.");
   }
+  switch(eparms.GetValueInt("HydraulicElevationSource",true,1)){
+    case 0:  HydraulicElevationSource=false;  break;
+    case 1:  HydraulicElevationSource=true;   break;
+    default: Run_Exceptioon("HydraulicElevationSource mode is not valid.");
+  }
   Porosity0ParamDefined=eparms.Exists("Porosity0");
   HydraulicConductivityParamDefined=eparms.Exists("HydraulicConductivity");
   WaterBulkModulusParamDefined=eparms.Exists("WaterBulkModulus");
@@ -867,6 +873,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
+  if(!HydraulicElevationSource && !Cpu)
+    Run_Exceptioon("HydraulicElevationSource=0 is CPU-only in this branch. GPU support is not implemented.");
   if(PorePressureCurvedDrained && PorePressureBoundaryOperator!=3)
     Run_Exceptioon("PorePressureCurvedDrained=1 requires PorePressureBoundaryOperator=3.");
   if(PorePressureBoundaryOperator==3 && !PorePressureCurvedDrained)
@@ -1865,6 +1873,11 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  HydraulicGravityMode",UseCustomHydraulicGravity()? "Custom": "BodyGravityFallback"));
     Log->Print(fun::VarStr("  HydraulicGravity",GetHydraulicGravity()));
     Log->Print(fun::VarStr("  HydraulicGmag",GetHydraulicGmag()));
+    Log->Print(fun::VarStr("  HydraulicElevationSource",HydraulicElevationSource));
+    if(HydraulicElevationSource)
+      Log->Print("  Hydraulic convention: hydraulic gravity provides diffusivity scaling, hydrostatic pore-pressure reference, and k*LapZ elevation source.");
+    else
+      Log->Print("  Hydraulic convention: hydraulic gravity magnitude is used only for diffusivity scaling; hydrostatic reference is zero and k*LapZ is omitted from PorePressRate.");
     Log->Print(fun::VarStr("  HydromechDamping",HydromechDamping));
     if(HydromechDamping){
       Log->Print(fun::VarStr("  HydromechDampingXi",HydromechDampingXi));
@@ -3054,6 +3067,18 @@ double JSph::GetHydraulicElevation(const tdouble3 &pos)const{
   const double gmag=sqrt(double(hg.x)*double(hg.x)+double(hg.y)*double(hg.y)+double(hg.z)*double(hg.z));
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to compute hydraulic elevation.");
   return(-(pos.x*double(hg.x)+pos.y*double(hg.y)+pos.z*double(hg.z))/gmag);
+}
+
+//==============================================================================
+/// Returns hydrostatic pore pressure for the configured hydraulic convention.
+//==============================================================================
+double JSph::GetHydrostaticPorePressure(const tdouble3 &pos)const{
+  if(!HydraulicElevationSource)return(0.);
+  const double gmag=GetHydraulicGmag();
+  if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to compute hydrostatic pore pressure.");
+  const double z=GetHydraulicElevation(pos);
+  const double depth=double(PorePressureWaterLevel)-z;
+  return(depth>0.? double(SoilCte.WaterDensity)*gmag*depth: 0.);
 }
 
 //==============================================================================

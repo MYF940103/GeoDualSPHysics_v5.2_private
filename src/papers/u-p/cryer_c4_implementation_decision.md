@@ -198,3 +198,25 @@ Proceed to source changes only after:
 - flexible confining stress CPU diagnostics pass;
 - the `HydraulicGravity` / no-elevation-source representation is resolved;
 - boundary strategy is selected for CPU.
+
+## C4-D: No-Elevation Hydraulic Representation
+
+C4-D is complete. The branch now has `HydraulicElevationSource`:
+
+- `1` default: legacy hydrostatic/elevation convention, including
+  `k*LapZ` in `PorePressRate`;
+- `0`: CPU-only gravity-free Cryer convention. `HydraulicGravity` still
+  supplies a positive magnitude for `k/(rho_w*g_h)`, but the hydrostatic
+  reference is zero and `k*LapZ` is omitted from `PorePressRate`.
+
+Short CPU smokes under
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/hydraulic_no_elevation_C4D/`
+passed with `code=0`, `excluded=0`:
+
+- source-on regression;
+- no-elevation pressure diffusion;
+- no-elevation flexible-confining-stress compression plus curved drainage.
+
+GPU support remains deferred and hard-errors if `HydraulicElevationSource=0` is
+requested. The next recommended step is C5 coarse CPU strict-sphere smoke, not
+GPU and not strict Figure 7 comparison yet.

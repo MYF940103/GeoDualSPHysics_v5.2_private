@@ -1718,6 +1718,7 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
   memset(porepressrate,0,sizeof(float)*np);
   const float factor=waterbulkmodulus/porosity0;
   const float difcoef=(hydraulicconductivity>0.f? float(double(hydraulicconductivity)/(double(waterdensity)*gmag)): 0.f);
+  const float elevcoef=(HydraulicElevationSource? hydraulicconductivity: 0.f);
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -1727,7 +1728,7 @@ void JSphCpu::ComputeHydroPorePressRatePR(unsigned n,unsigned pini
     // DivVelc stores the mathematical divergence of the skeleton velocity.
     // Compression gives DivVelc < 0, while pore-pressure generation is
     // compression-positive, so the volumetric PR contribution is -DivVelc.
-    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(-divvel[p1]+difcoef*lapporepress[p1]+hydraulicconductivity*lapz[p1]);
+    if(CODE_IsFluid(code[p1]))porepressrate[p1]=factor*(-divvel[p1]+difcoef*lapporepress[p1]+elevcoef*lapz[p1]);
   }
 }
 
@@ -1761,7 +1762,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
 {
   if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureShepard || !PorePressureShepardInterval || !porepress)return(0);
   if(!pos || !velrhop || !code || !dcell)Run_Exceptioon("Pointers without data for pore-pressure Shepard regularization.");
-  if(PorePressureShepardMode==1 && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure Shepard regularization.");
+  if(PorePressureShepardMode==1 && HydraulicElevationSource && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure Shepard regularization.");
 
   const unsigned np=pini+n;
   std::vector<double> preg(np,0.);
@@ -1770,16 +1771,13 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
   unsigned npmat=0;
   double pwbeforemin=DBL_MAX,pwbeforemax=-DBL_MAX;
   double excessbeforemin=DBL_MAX,excessbeforemax=-DBL_MAX;
-  const double rhog=double(SoilCte.WaterDensity)*GetHydraulicGmag();
   const bool excessmode=(PorePressureShepardMode==1);
   for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
     npmat++;
     pwbeforemin=min(pwbeforemin,porepress[p]);
     pwbeforemax=max(pwbeforemax,porepress[p]);
     if(excessmode){
-      const double z=GetHydraulicElevation(pos[p]);
-      const double depth=double(PorePressureWaterLevel)-z;
-      const double hydro=(depth>0.? rhog*depth: 0.);
+      const double hydro=GetHydrostaticPorePressure(pos[p]);
       const double excess=porepress[p]-hydro;
       excessbeforemin=min(excessbeforemin,excess);
       excessbeforemax=max(excessbeforemax,excess);
@@ -1799,9 +1797,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
     if(!CODE_IsFluid(code[p1]))continue;
     const tdouble3 posp1=pos[p1];
     const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
-    const double z1=GetHydraulicElevation(posp1);
-    const double depth1=double(PorePressureWaterLevel)-z1;
-    const double hydro1=(depth1>0.? rhog*depth1: 0.);
+    const double hydro1=GetHydrostaticPorePressure(posp1);
     const double pvalue1=(excessmode? porepress[p1]-hydro1: porepress[p1]);
     const double volp1=double(MassFluid)/double(velrhop[p1].w);
     double psum=volp1*pvalue1*double(fsph::GetKernel_Wab<tker>(CSP,0.f));
@@ -1823,9 +1819,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
           const double volp2=double(MassFluid)/double(velrhop[p2].w);
           double pvalue=porepress[p2];
           if(excessmode){
-            const double z2=GetHydraulicElevation(pos[p2]);
-            const double depth2=double(PorePressureWaterLevel)-z2;
-            const double hydro2=(depth2>0.? rhog*depth2: 0.);
+            const double hydro2=GetHydrostaticPorePressure(pos[p2]);
             pvalue-=hydro2;
           }
           psum+=volp2*pvalue*double(wab);
@@ -1855,9 +1849,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,u
     pwaftermin=min(pwaftermin,porepress[p]);
     pwaftermax=max(pwaftermax,porepress[p]);
     if(excessmode){
-      const double z=GetHydraulicElevation(pos[p]);
-      const double depth=double(PorePressureWaterLevel)-z;
-      const double hydro=(depth>0.? rhog*depth: 0.);
+      const double hydro=GetHydrostaticPorePressure(pos[p]);
       const double excess=porepress[p]-hydro;
       excessaftermin=min(excessaftermin,excess);
       excessaftermax=max(excessaftermax,excess);
@@ -1896,7 +1888,6 @@ unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdo
   if(!pos || !code)Run_Exceptioon("Pointers without data for top drained pore-pressure boundary.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for top drained pore-pressure boundary.");
-  const double rhog=double(SoilCte.WaterDensity)*gmag;
   const double drainthick=(PorePressureDrainThickness>0.f? double(PorePressureDrainThickness): double(KernelH));
   if(drainthick<=0.)Run_Exceptioon("Top drained pore-pressure boundary requires a positive drain thickness or KernelH.");
 
@@ -1926,8 +1917,7 @@ unsigned JSphCpu::ApplyPorePressureTopDrained(unsigned n,unsigned pini,const tdo
       const tdouble3 ps=pos[p];
       const double z=GetHydraulicElevation(ps);
       if(z>=zthreshold){
-        const double depth=double(PorePressureWaterLevel)-z;
-        porepress[p]=(depth>0.? rhog*depth: 0.);
+        porepress[p]=GetHydrostaticPorePressure(ps);
         affected++;
       }
       pwaftermin=min(pwaftermin,porepress[p]);
@@ -1953,7 +1943,6 @@ unsigned JSphCpu::ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const t
   if(!pos || !code)Run_Exceptioon("Pointers without data for bottom no-flux pore-pressure boundary.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for bottom no-flux pore-pressure boundary.");
-  const double rhog=double(SoilCte.WaterDensity)*gmag;
   const double bottomthick=(PorePressureBottomNoFluxThickness>0.f? double(PorePressureBottomNoFluxThickness): double(KernelH));
   if(bottomthick<=0.)Run_Exceptioon("Bottom no-flux pore-pressure boundary requires a positive thickness or KernelH.");
 
@@ -1983,8 +1972,7 @@ unsigned JSphCpu::ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const t
       const tdouble3 ps=pos[p];
       const double z=GetHydraulicElevation(ps);
       if(z>zrefmin && z<=zrefmax){
-        const double depth=double(PorePressureWaterLevel)-z;
-        const double hydro=(depth>0.? rhog*depth: 0.);
+        const double hydro=GetHydrostaticPorePressure(ps);
         excesssum+=porepress[p]-hydro;
         refcount++;
       }
@@ -2005,8 +1993,7 @@ unsigned JSphCpu::ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const t
       const tdouble3 ps=pos[p];
       const double z=GetHydraulicElevation(ps);
       if(z<=zthreshold){
-        const double depth=double(PorePressureWaterLevel)-z;
-        const double hydro=(depth>0.? rhog*depth: 0.);
+        const double hydro=GetHydrostaticPorePressure(ps);
         const double excessbefore=porepress[p]-hydro;
         excessbeforemin=min(excessbeforemin,excessbefore);
         excessbeforemax=max(excessbeforemax,excessbefore);
@@ -2182,7 +2169,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   const double elevuy=-double(hgrav.y)/gmag;
   const double elevuz=-double(hgrav.z)/gmag;
   const auto hydrostatic_linear=[&](const double z)->double{
-    return(rhog*(double(PorePressureWaterLevel)-z));
+    return(HydraulicElevationSource? rhog*(double(PorePressureWaterLevel)-z): 0.);
   };
 
   unsigned npmat=0;
@@ -2218,8 +2205,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
       if(velrhop[p].w<=0.f){ skipped++; continue; }
       const double zi=GetHydraulicElevation(pos[p]);
-      const double depthi=double(PorePressureWaterLevel)-zi;
-      const double hydroi=(depthi>0.? rhog*depthi: 0.);
+      const double hydroi=GetHydrostaticPorePressure(pos[p]);
       const double voli=double(MassFluid)/double(velrhop[p].w);
 
       if(topactive && zi>=ztopthreshold){
@@ -2765,8 +2751,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const
 {
   const bool excessmode=(PorePressureFeedbackMode==1);
-  const double rhog=(excessmode? double(SoilCte.WaterDensity)*GetHydraulicGmag(): 0.);
-  if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback mode.");
+  if(excessmode && HydraulicElevationSource && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback mode.");
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -2777,7 +2762,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
 
     tfloat3 acep1=TFloat3(0);
     const tdouble3 posp1=pos[p1];
-    const double hydro1=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(posp1),0.): 0.);
+    const double hydro1=(excessmode? GetHydrostaticPorePressure(posp1): 0.);
     const double pwp1=porepress[p1]-hydro1;
     const double rhop1=double(velrhop[p1].w);
     if(rhop1<=0.)continue;
@@ -2799,7 +2784,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelT(unsigned n,unsig
           const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
           const double rhop2=double(velrhop[p2].w);
           if(rhop2>0.){
-            const double hydro2=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(pos[p2]),0.): 0.);
+            const double hydro2=(excessmode? GetHydrostaticPorePressure(pos[p2]): 0.);
             const double pwp2=porepress[p2]-hydro2;
             const double pterm=-double(MassFluid)*(pwp1+pwp2)/(rhop1*rhop2);
             acep1.x+=float(pterm*double(frx));
@@ -2834,8 +2819,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,u
   ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const
 {
   const bool excessmode=(PorePressureFeedbackMode==1);
-  const double rhog=(excessmode? double(SoilCte.WaterDensity)*GetHydraulicGmag(): 0.);
-  if(excessmode && rhog<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback difference diagnostic.");
+  if(excessmode && HydraulicElevationSource && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback difference diagnostic.");
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -2846,7 +2830,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,u
 
     tfloat3 acep1=TFloat3(0);
     const tdouble3 posp1=pos[p1];
-    const double hydro1=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(posp1),0.): 0.);
+    const double hydro1=(excessmode? GetHydrostaticPorePressure(posp1): 0.);
     const double pwp1=porepress[p1]-hydro1;
     const double rhop1=double(velrhop[p1].w);
     if(rhop1<=0.)continue;
@@ -2868,7 +2852,7 @@ template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,u
           const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
           const double rhop2=double(velrhop[p2].w);
           if(rhop2>0.){
-            const double hydro2=(excessmode? rhog*max(double(PorePressureWaterLevel)-GetHydraulicElevation(pos[p2]),0.): 0.);
+            const double hydro2=(excessmode? GetHydrostaticPorePressure(pos[p2]): 0.);
             const double pwp2=porepress[p2]-hydro2;
             const double coef=-double(MassFluid)*(pwp2-pwp1)/(rhop2*rhop1);
             acep1.x+=float(coef*double(frx));
@@ -2928,7 +2912,6 @@ unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,cons
     Run_Exceptioon("Pointers without data for pore-pressure boundary ghost diagnostics.");
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure boundary ghost diagnostics.");
-  const double rhog=double(SoilCte.WaterDensity)*gmag;
   const unsigned np=pini+n;
   memset(porepressghost,0,sizeof(double)*np);
   memset(excessporepressghost,0,sizeof(double)*np);
@@ -2960,8 +2943,7 @@ unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,cons
   for(unsigned p=pini;p<pini+n;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
     const double z=GetHydraulicElevation(pos[p]);
     if(z>zrefmin && z<=zrefmax){
-      const double depth=double(PorePressureWaterLevel)-z;
-      const double hydro=(depth>0.? rhog*depth: 0.);
+      const double hydro=GetHydrostaticPorePressure(pos[p]);
       refexcesssum+=porepress[p]-hydro;
       refcount++;
     }
@@ -2981,8 +2963,7 @@ unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,cons
     if(PorePressureBottomNoFlux && z<=bottomthreshold)mode=2;
     if(topactive && z>=topthreshold)mode=1; //-Drained overrides no-flux if layers touch.
 
-    const double depth=double(PorePressureWaterLevel)-z;
-    const double hydro=(depth>0.? rhog*depth: 0.);
+    const double hydro=GetHydrostaticPorePressure(pos[p]);
     double excessghost=0.;
     if(mode==1)excessghost=0.;
     else if(mode==2)excessghost=nofluxexcess;

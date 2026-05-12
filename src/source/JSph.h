@@ -218,6 +218,7 @@ protected:
   int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:reserved.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
+  bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.
   float Porosity0;              ///<Deprecated execution-parameter fallback for SoilCte.Porosity0.
   float HydraulicConductivity;  ///<Deprecated execution-parameter fallback for SoilCte.HydraulicConductivity.
   float WaterBulkModulus;       ///<Deprecated execution-parameter fallback for SoilCte.WaterBulkModulus.
@@ -569,6 +570,7 @@ protected:
   void PrintFlexibleConfiningStressDiagnostics()const;
   double GetHydraulicGmag()const;
   double GetHydraulicElevation(const tdouble3 &pos)const;
+  double GetHydrostaticPorePressure(const tdouble3 &pos)const;
 
   void CheckTermination();
   void SaveDomainVtk(unsigned ndom,const tdouble3 *vdom)const;

@@ -319,6 +319,29 @@ Results:
 
 GPU remains unsupported for mode `3` and hard-errors if requested. The
 prototype is sufficient for a future coarse CPU strict-Cryer smoke, but not for
-claiming strict Figure 7 reproduction. The current PR implementation still
-requires positive `HydraulicGravity` for hydraulic diffusivity scaling, so the
-gravity-free Cryer representation remains an explicit limitation.
+claiming strict Figure 7 reproduction.
+
+## C4-D Hydraulic No-Elevation Notes
+
+C4-D adds `HydraulicElevationSource`:
+
+- `1` default: legacy hydrostatic/elevation behavior;
+- `0`: CPU-only gravity-free Cryer convention. `HydraulicGravity` remains
+  positive only for `k/(rho_w*g_h)` scaling, while hydrostatic reference is zero
+  and `k*LapZ` is omitted from `PorePressRate`.
+
+The retained smoke package is:
+
+`strict_reproduction_plan/hydraulic_no_elevation_C4D/`
+
+Results:
+
+- source-on regression: `code=0`, `excluded=0`;
+- no-elevation pressure diffusion: `code=0`, `excluded=0`;
+- no-elevation compression plus curved drainage: `code=0`, `excluded=0`,
+  `Kplastic=0`.
+
+GPU remains unsupported for `HydraulicElevationSource=0` and hard-errors during
+XML loading. The next step can be C5 coarse CPU strict-sphere smoke combining
+linear elasticity, flexible confining stress, curved drained boundary, and
+no-elevation hydraulics.

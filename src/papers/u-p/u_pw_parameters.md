@@ -10,6 +10,7 @@ This document summarizes the hydromechanical parameters currently introduced for
 | `PorePressureModel` | `0/1/2` | `0` | `0`: disabled, `1`: PR explicit pore-pressure-rate, `2`: PPE placeholder. | Keep `0/1`; make `2` a hard error |
 | `PorePressureDtSafety` | float, `>0` | `0.1` | Safety factor for `dt_pore`. | Keep |
 | `HydraulicGravityX/Y/Z` | float vector | `(0,0,0)` | Optional hydraulic gravity vector. If all components are zero, hydraulic gravity falls back to body `Gravity`. | Keep |
+| `HydraulicElevationSource` | `0/1` | `1` | `1`: legacy hydrostatic/elevation convention with `k*LapZ`; `0`: CPU-only gravity-free mode using `HydraulicGravity` only for hydraulic scaling. | Experimental |
 | `BodyGravityStopTime` | double [s] | `0` | Stops mechanical body gravity at the given physical time while leaving `HydraulicGravity` unchanged. `<=0`: body gravity remains active. | Keep |
 
 The material/phase constants below are now soil material constants and should be written under `<execution><special><soils>` next to `ModulusE`, `PRvs`, `phi`, and `coh`:
@@ -58,6 +59,23 @@ PorePressRate =
 ```
 
 where `DivVel` is the mathematical divergence of skeleton velocity. Compression gives `DivVel < 0`; therefore the volumetric pore-pressure contribution is `-DivVel`.
+
+When `HydraulicElevationSource=0`, the CPU PR rate omits the elevation term and
+uses:
+
+```text
+PorePressRate =
+  Kw/n * [
+    -DivVel
+    + k/(rho_w*g_h) * LapPorePress
+  ]
+```
+
+`HydraulicGravity` must still provide a positive magnitude `g_h` when
+`HydraulicConductivity>0`; it is used only for hydraulic scaling in this mode.
+The hydrostatic reference is zero, so `ExcessPorePress` equals `PorePress`.
+GPU execution with `HydraulicElevationSource=0` is unsupported in C4-D and
+hard-errors during XML loading.
 
 ## Constitutive Skeleton Soil Parameters
 
@@ -139,7 +157,8 @@ SavePorePressure
 The only automatic or conditional behavior under `HydromechCoupling=1` is:
 
 - `dt_pore` restriction is applied when `PorePressureModel=1` and the soil material `HydraulicConductivity > 0`.
-- `HydraulicGravity` falls back to the body `Gravity` when `HydraulicGravityX/Y/Z` are all zero. If any custom hydraulic gravity component is nonzero, that custom vector is used for hydraulic elevation, hydrostatic pressure, `dt_pore`, `LapZ`, hydraulic boundaries, and excess-pressure diagnostics.
+- `HydraulicGravity` falls back to the body `Gravity` when `HydraulicGravityX/Y/Z` are all zero. If any custom hydraulic gravity component is nonzero, that custom vector is used for hydraulic scaling and, when `HydraulicElevationSource=1`, for hydraulic elevation, hydrostatic pressure, `LapZ`, hydraulic boundaries, and excess-pressure diagnostics.
+- `HydraulicElevationSource=0` is the C4-D CPU-only gravity-free Cryer convention: positive `HydraulicGravity` magnitude remains required for hydraulic conductivity scaling, but the hydrostatic reference is zero and `k*LapZ` is omitted from `PorePressRate`.
 - `BodyGravityStopTime`, when positive, only affects the mechanical body-gravity acceleration used by the CPU/GPU time integration. It does not modify the stored body `Gravity` vector and does not alter `HydraulicGravity`.
 - `FlexibleConfiningStress=1` is CPU-only in C4-B3. It adds a positive-compression isotropic stress-like pair contribution to the mechanical momentum summation, does not write to the material stress tensor, and does not alter `PorePress`, `PorePressRate`, `LapPorePress`, `LapZ`, `AccInput`, or `HydraulicGravity`.
 

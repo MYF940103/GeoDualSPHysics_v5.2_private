@@ -330,8 +330,14 @@ case showed surface excess dissipation, and the compression smoke generated
 early positive center excess with `Kplastic=0`.
 
 This resolves a first CPU prototype for the drained curved boundary, but it is
-still not strict Cryer reproduction. The current PR path still requires
-positive `HydraulicGravity` for hydraulic scaling, so a gravity-free Cryer
-hydraulic representation remains an explicit limitation. Strict Cryer
-simulation should still be treated as a coarse future smoke, not as validated
-Figure 7 reproduction.
+still not strict Cryer reproduction. C4-D then added the CPU-only
+`HydraulicElevationSource=0` mode for gravity-free Cryer: `HydraulicGravity`
+keeps a positive magnitude for hydraulic scaling, while hydrostatic reference
+and the `k*LapZ` elevation source are disabled. The C4-D short smokes are under:
+
+`strict_reproduction_plan/hydraulic_no_elevation_C4D/`
+
+All C4-D CPU smokes completed with `code=0`, `excluded=0`. GPU remains
+unsupported for `HydraulicElevationSource=0` and hard-errors if requested.
+Strict Cryer simulation should still be treated as a coarse future smoke, not as
+validated Figure 7 reproduction.

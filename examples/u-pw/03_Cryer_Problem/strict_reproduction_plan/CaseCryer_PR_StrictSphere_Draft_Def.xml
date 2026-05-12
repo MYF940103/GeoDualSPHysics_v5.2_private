@@ -10,7 +10,7 @@
 
   Current blockers:
     - spherical traction route is not yet implemented/verified;
-    - drained curved hydraulic boundary route is not yet locked;
+    - drained curved hydraulic boundary route is CPU-only experimental;
     - analytical reference script is not yet validated against Figure 7B.
 -->
 <case app="GenCase v5.0.197 (18-07-2020)" date="Strict Cryer sphere draft skeleton">
@@ -92,10 +92,21 @@
       <parameter key="PorePressureShepard" value="1" />
       <parameter key="PorePressureShepardInterval" value="10" />
       <parameter key="PorePressureShepardMode" value="1" />
-      <parameter key="PorePressureBoundaryOperator" value="2" comment="DRAFT CPU-only strict-boundary candidate; not GPU/default" />
+      <parameter key="PorePressureBoundaryOperator" value="3" comment="DRAFT CPU-only curved drained boundary candidate; not GPU/default" />
+      <parameter key="PorePressureCurvedDrained" value="1" comment="DRAFT Cryer exterior drained surface" />
+      <parameter key="CurvedDrainedBoundaryCenterX" value="0" />
+      <parameter key="CurvedDrainedBoundaryCenterY" value="0" />
+      <parameter key="CurvedDrainedBoundaryCenterZ" value="0" />
+      <parameter key="CurvedDrainedBoundaryRadius" value="0.05" comment="Must match SphereRadius/a" />
+      <parameter key="CurvedDrainedBoundaryTargetMk" value="0" />
+      <parameter key="CurvedDrainedBoundaryValue" value="0" comment="Drained p_w/excess value" />
+      <parameter key="CurvedDrainedBoundaryUseExcess" value="1" comment="With HydraulicElevationSource=0, excess equals total pore pressure" />
+      <parameter key="CurvedDrainedBoundaryThickness" value="0.009" comment="Draft near-surface shell thickness" />
+      <parameter key="CurvedDrainedBoundaryMode" value="0" />
+      <parameter key="HydraulicElevationSource" value="0" comment="Gravity-free Cryer: use g only for k/(rho_w*g) scaling, omit k*LapZ" />
       <parameter key="HydraulicGravityX" value="0" />
       <parameter key="HydraulicGravityY" value="0" />
-      <parameter key="HydraulicGravityZ" value="0" comment="Cryer reference uses no gravity source term" />
+      <parameter key="HydraulicGravityZ" value="-9.81" comment="Positive magnitude retained only for hydraulic conductivity scaling" />
       <parameter key="HydromechDamping" value="1" />
       <parameter key="HydromechDampingXi" value="4e-5" comment="Paper Fig. 7 caption xi=4e-5" />
       <!--
@@ -107,7 +118,7 @@
         C4-B3 implementation note:
           FlexibleConfiningStress now exists as a CPU-only experimental source.
           It is still left disabled in this strict draft until a traction-only
-          sphere smoke and the drained curved pore-pressure boundary are solved.
+          sphere smoke and the no-elevation hydraulic representation are solved.
 
         Future strict-Cryer parameter block, intentionally comment-only:
           <FlexibleConfiningStress value="1" />
@@ -117,9 +128,9 @@
           <ConfiningStressTargetMk value="-1" comment="all soil material particles" />
           <ConfiningStressMode value="0" />
 
-        Do not run this draft as strict Cryer until flexible confining stress
-        sphere-smoke diagnostics and the drained curved pore-pressure boundary
-        are implemented/verified.
+        Do not run this draft as strict Cryer until flexible confining stress,
+        drained curved pore-pressure boundary, and no-elevation hydraulic
+        smokes are all verified together in a coarse C5 setup.
       -->
     </parameters>
   </execution>

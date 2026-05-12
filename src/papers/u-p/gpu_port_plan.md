@@ -1063,3 +1063,23 @@ Remaining strict-Cryer blockers:
 Next recommended Cryer step: C5 coarse CPU strict-sphere smoke only if the
 no-elevation-source limitation is explicitly accepted or resolved. Strict
 Figure 7 reproduction remains unclaimed.
+
+## Cryer C4-D Hydraulic No-Elevation Mode
+
+C4-D is complete as a CPU-only hydraulic representation needed before a coarse
+strict-Cryer smoke. The new `HydraulicElevationSource` parameter keeps legacy
+behavior by default:
+
+- `HydraulicElevationSource=1`: old self-weight/Terzaghi behavior,
+  `PorePressRate = Kw/n*(-DivVel + k/(rho_w*g_h)*LapPorePress + k*LapZ)`;
+- `HydraulicElevationSource=0`: gravity-free Cryer behavior,
+  `PorePressRate = Kw/n*(-DivVel + k/(rho_w*g_h)*LapPorePress)`, with zero
+  hydrostatic reference and `ExcessPorePress == PorePress`.
+
+The C4-D CPU smokes under
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/hydraulic_no_elevation_C4D/`
+passed with `code=0`, `excluded=0`. GPU support is intentionally deferred; GPU
+execution hard-errors if `HydraulicElevationSource=0` is requested.
+
+Next recommended task: C5 coarse CPU strict-sphere smoke. Do not start GPU or
+strict Figure 7 comparison until the combined CPU route is stable.

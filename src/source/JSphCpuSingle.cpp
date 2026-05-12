@@ -285,7 +285,7 @@ void JSphCpuSingle::ConfigDomain(){
         const tdouble3 ps=Posc[p];
         const double z=GetHydraulicElevation(ps);
         const double depth=waterlevel-z;
-        const double hydrostatic=(depth>0? double(SoilCte.WaterDensity)*gmag*depth: 0.);
+        const double hydrostatic=(HydraulicElevationSource && depth>0? double(SoilCte.WaterDensity)*gmag*depth: 0.);
         double excess=0.;
         if(PorePressureInit==3){
           double eta=(zrange>0.? (z-zmin)/zrange: 0.);
@@ -1549,15 +1549,10 @@ void JSphCpuSingle::SaveData(){
     unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
-      const double gmag=GetHydraulicGmag();
-      if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero to output ExcessPorePress.");
-      const double rhog=double(SoilCte.WaterDensity)*gmag;
       for(unsigned p=0;p<npsave;p++){
         if(idp[p]>=CaseNbound){
           const tdouble3 ps=pos[p];
-          const double z=GetHydraulicElevation(ps);
-          const double depth=double(PorePressureWaterLevel)-z;
-          const double hydro=(depth>0.? rhog*depth: 0.);
+          const double hydro=GetHydrostaticPorePressure(ps);
           excessporepress[p]=porepress[p]-hydro;
         }
         else excessporepress[p]=0.;
