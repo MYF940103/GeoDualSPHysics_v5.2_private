@@ -537,3 +537,36 @@ Observed effects:
 C5f is therefore a useful stabilization/diagnostic step, not a final Cryer
 boundary. C6 remains paused; dp refinement remains deferred; GPU support for
 this strict path remains unsupported.
+
+## C5g Geometry / dp Diagnostic Notes
+
+C5g tests whether the C5f center peak is mainly a coarse-sphere artifact. It
+does not change source and does not run GPU.
+
+Retained package:
+
+`strict_reproduction_plan/C5g_GeometryDpDiagnostic/`
+
+Cases:
+
+- coarse compression, `dp=0.010`;
+- finer compression, `dp=0.008`;
+- coarse pressure-only diffusion, `dp=0.010`;
+- finer pressure-only diffusion, `dp=0.008`.
+
+All four CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The finer sphere increased material particles from `739` to
+`1213` and reduced the surface roughness std from `0.00358` to `0.00303`.
+
+Main observations:
+
+- center peak decreased from `7.448 p0` to `7.058 p0`;
+- center averaging sensitivity at the peak frame decreased substantially;
+- pressure-only diffusion improved, with final center pressure decreasing from
+  `529.96 Pa` to `468.25 Pa`;
+- compression surface p95 residual did not materially improve (`131.56 Pa` to
+  `131.42 Pa`).
+
+Decision: geometry resolution matters, but it is not the main blocker. Do not
+move to C6 yet. The next Cryer step should return to MLS / flux-consistent
+drained-boundary coupling before a broader dp study.

@@ -530,3 +530,28 @@ Strict Cryer Figure 7B comparison is still not ready. The next boundary task
 should be a true MLS / partition-of-unity boundary-particle refinement or a
 narrow pressure-only spherical diffusion calibration. GPU support remains
 deferred.
+
+## C5g Sphere Geometry / dp Diagnostic
+
+C5g is a no-source-change CPU diagnostic retained under:
+
+`strict_reproduction_plan/C5g_GeometryDpDiagnostic/`
+
+It repeats the C5f normalized boundary-particle drained setup and compares the
+coarse sphere (`dp=0.010`, `739` material particles) with one modestly finer
+sphere (`dp=0.008`, `1213` material particles). The physical settings were
+kept fixed: `SoilConstitutiveModel=0`, `FlexibleConfiningStress=1`,
+`HydraulicElevationSource=0`, `PorePressureBoundaryOperator=3`,
+`CurvedDrainedBoundaryMode=4`, and `CurvedDrainedBoundaryWeighting=1`.
+
+All four CPU Release runs completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The finer sphere reduced the compression center peak from
+`7.448 p0` to `7.058 p0` and improved pressure-only drainage, but the
+compression surface p95 residual was essentially unchanged (`131.56 Pa` to
+`131.42 Pa`). Center averaging sensitivity improved, but the center response is
+still far too high for Figure 7B comparison.
+
+Decision: coarse sphere geometry is a contributor but not the main blocker.
+C6 remains paused. The next strict-boundary task should focus on MLS or
+flux-consistent radial diffusion at the drained spherical surface. GPU remains
+deferred.

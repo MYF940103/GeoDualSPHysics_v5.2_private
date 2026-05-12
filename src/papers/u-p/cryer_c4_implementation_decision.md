@@ -465,3 +465,44 @@ Decision after C5f:
 - dp/geometry refinement remains deferred until the boundary rule is less
   sensitive;
 - GPU remains deferred.
+
+## C5g: Modest Sphere Geometry / dp Diagnostic
+
+C5g is complete as a no-source-change CPU diagnostic under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5g_GeometryDpDiagnostic/`
+
+It repeats the C5f normalized boundary-particle drained setup and adds one
+modestly finer sphere:
+
+- coarse `dp=0.010`, `739` material particles;
+- finer `dp=0.008`, `1213` material particles;
+- same radius, material parameters, `p0=50 Pa`, ramp, mode `4`, and
+  `CurvedDrainedBoundaryWeighting=1`.
+
+Both compression cases and both pressure-only diffusion cases completed with
+`code=0`, `excluded=0`, and `Kplastic=0`.
+
+The finer sphere improved geometry quality and center averaging:
+
+- surface roughness std decreased from `0.00358` to `0.00303`;
+- center averaging count at `0.4R` increased from `33` to `81`;
+- peak-frame nearest-to-`0.4R` spread decreased from about `0.79 p0` to
+  about `0.08 p0`.
+
+The center peak decreased only modestly, from `7.448 p0` to `7.058 p0`.
+Pressure-only diffusion improved, with final center pressure decreasing from
+`529.96 Pa` to `468.25 Pa` and final surface p95 decreasing from `527.39 Pa`
+to `350.91 Pa`. However, the compression surface p95 residual was essentially
+unchanged (`131.56 Pa` to `131.42 Pa`), and the peak remains far above the
+Cryer `nu=0.3` reference scale.
+
+Decision after C5g:
+
+- coarse geometry contributes to center extraction noise and diffusion quality;
+- coarse geometry is not the main blocker for the excessive center peak;
+- broad dp refinement should still wait;
+- the next useful step is MLS / flux-consistent drained spherical boundary
+  refinement, then a repeat of the modest geometry diagnostic;
+- C6 quantitative Figure 7B comparison remains premature;
+- GPU remains deferred.

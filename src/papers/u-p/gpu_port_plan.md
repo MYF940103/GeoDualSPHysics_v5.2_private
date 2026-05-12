@@ -44,6 +44,14 @@ therefore remains CPU-first and boundary-method-first. GPU support for
 `CurvedDrainedBoundaryMode=4`, and `HydraulicElevationSource=0` remains
 deferred/unsupported.
 
+Cryer C5g has completed one modest CPU-only dp / sphere-geometry diagnostic.
+The finer sphere (`dp=0.008` versus `0.010`) reduced center averaging noise and
+lowered the compression center peak from `7.448 p0` to `7.058 p0`, but it did
+not materially reduce the compression surface residual. Geometry is therefore
+a contributor, not the main blocker. C6 remains premature; the next Cryer work
+should focus on MLS / flux-consistent drained spherical boundary coupling
+before any broader resolution study or GPU work.
+
 Still out of scope unless separately requested:
 
 - GPU `PorePressureBoundaryOperator=2`;
@@ -1222,3 +1230,29 @@ pressure-rate artifacts (`PorePressRate` maxAbs about `9.38e5 Pa/s`).
 
 GPU porting is not recommended. The CPU boundary still needs
 MLS/Adami-normalized boundary-particle weighting before C6 or GPU work.
+
+## Cryer C5f-C5g Boundary Weighting and Geometry Diagnostics
+
+C5f is complete as a CPU-only boundary-particle weighting refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5f_BoundaryParticleWeighting/`
+
+It adds `CurvedDrainedBoundaryWeighting` for `CurvedDrainedBoundaryMode=4`.
+The normalized mode reduces raw mode-4 over-drainage and pressure-rate
+artifacts, and improves the compression surface residual, but the center peak
+remains high at about `7.45 p0`.
+
+C5g is complete as a no-source-change CPU geometry diagnostic under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5g_GeometryDpDiagnostic/`
+
+It compares the C5f normalized coarse sphere (`dp=0.010`) with one modestly
+finer sphere (`dp=0.008`). All C5g CPU Release cases completed with `code=0`,
+`excluded=0`, and `Kplastic=0`. The finer sphere reduced center averaging
+noise and lowered the center peak from `7.448 p0` to `7.058 p0`, but did not
+materially improve the compression surface p95 residual.
+
+Decision: geometry quality contributes to the error budget, but it is not the
+main strict-Cryer blocker. C6 remains premature. The next CPU work should focus
+on MLS / flux-consistent drained spherical boundary coupling before broader
+resolution studies or GPU porting.
