@@ -114,6 +114,30 @@ The next loading step should be C4-B4: a small traction-only free-sphere smoke.
 Strict Cryer simulation is still paused because the drained curved
 pore-pressure boundary remains unresolved.
 
+### C4-B4: Free-Sphere Flexible Confining Stress Smoke
+
+Status: completed as a CPU-only traction-source smoke.
+
+C4-B4 moved the C4-B3 loading source from a tiny mechanics sanity check to a
+small free 3D sphere (`R=0.05 m`, `dp=0.01 m`, `739` material particles). The
+no-load free-sphere regression and the ramped `FlexibleConfiningStress` sphere
+smoke both completed with `code=0` and `excluded=0`.
+
+For the ramped case (`ConfiningStressP0=50 Pa`), the sphere moved inward:
+surface radial velocity mean was `-6.28e-04 m/s` and surface radial displacement
+mean was `-1.09e-06 m`. The symmetric load diagnostics remained near zero:
+net/absolute force was `1.94e-08` and the center-of-mass acceleration estimate
+was `2.08e-08 m/s2`. Center and mean excess pore pressure increased relative to
+the no-load baseline, and `Kplastic` stayed zero with `SoilConstitutiveModel=0`.
+
+This makes `FlexibleConfiningStress` the current CPU traction candidate for
+strict Cryer. It does not validate strict Cryer by itself. GPU support remains
+unsupported and the drained curved pore-pressure boundary remains the next
+blocker.
+
+Recommended next task: C4-C drained curved pore-pressure boundary
+audit/development. Strict Cryer simulation remains paused.
+
 ### C4-D: Reduced Fallback
 
 If strict loading or boundary support is blocked, keep the reduced baseline as

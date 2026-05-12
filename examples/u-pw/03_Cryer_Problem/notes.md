@@ -225,8 +225,35 @@ Loaded runs produced inward surface radial velocity and force symmetry
 residuals of order `1e-08`. These are loading-source sanity checks only, not
 Cryer validation.
 
-Next: C4-B4 traction-only free-sphere smoke, then C4-C drained curved boundary
-audit/development. Strict Cryer simulation remains paused.
+## C4-B4 Free-Sphere Flexible Confining Stress Smoke
+
+C4-B4 retained a small CPU-only free-sphere smoke under:
+
+`strict_reproduction_plan/flexible_confining_stress_C4B4_FreeSphere/`
+
+Geometry and run scope:
+
+- free 3D sphere, `R=0.05 m`, `dp=0.01 m`, `739` material particles;
+- `SoilConstitutiveModel=0`;
+- no-load regression plus ramped `FlexibleConfiningStress` with `p0=50 Pa`;
+- CPU Release only;
+- no GPU and no strict Cryer comparison.
+
+Results:
+
+- no-load: `code=0`, `excluded=0`;
+- ramp: `code=0`, `excluded=0`;
+- final surface radial velocity mean `=-6.28e-04 m/s`;
+- final surface radial displacement mean `=-1.09e-06 m`;
+- final net/absolute force `=1.94e-08`;
+- final COM acceleration estimate `=2.08e-08 m/s2`;
+- compression increased center and mean excess pore pressure relative to the
+  no-load baseline;
+- `Kplastic=0`.
+
+This supports the flexible confining stress source as the CPU traction
+candidate. The drained curved pore-pressure boundary remains the next blocker,
+GPU support remains unsupported, and strict Cryer simulation remains paused.
 
 ## C4-B2 Revised Loading Route
 

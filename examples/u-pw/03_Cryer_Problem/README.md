@@ -247,6 +247,31 @@ mass acceleration. These tests are not strict Cryer simulations. The next
 loading step is a traction-only free-sphere smoke, while the drained curved
 hydraulic boundary remains a separate blocker.
 
+## C4-B4 Free-Sphere Flexible Confining Stress Smoke
+
+C4-B4 checks the CPU-only loading source on a small free 3D sphere:
+
+`strict_reproduction_plan/flexible_confining_stress_C4B4_FreeSphere/`
+
+Retained cases:
+
+- free-sphere no-load regression;
+- free-sphere ramped `FlexibleConfiningStress` with `ConfiningStressP0=50 Pa`;
+- optional stronger-load draft, not run by default.
+
+The no-load and ramped CPU Release smokes both completed with `code=0` and
+`excluded=0`. The ramped sphere showed inward radial compression, near-zero net
+force / center-of-mass acceleration, positive pore-pressure response under
+compression, and zero `Kplastic` with `SoilConstitutiveModel=0`.
+
+This supports `FlexibleConfiningStress` as the current CPU traction candidate
+for strict Cryer. It is still not a strict Cryer reproduction. GPU support is
+unsupported, and the drained curved pore-pressure boundary remains a separate
+blocker.
+
+Next: C4-C drained curved pore-pressure boundary audit/development. Strict
+Cryer simulation remains paused.
+
 ## C4-B2 Flexible Confining Stress Route
 
 C4-B2 revises the loading decision. The `AccInput` patchwise surrogate is now

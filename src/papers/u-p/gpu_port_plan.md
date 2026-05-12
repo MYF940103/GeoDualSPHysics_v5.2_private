@@ -995,3 +995,32 @@ Next recommended Cryer step: C4-B4 traction-only free-sphere smoke on CPU,
 followed by C4-C drained curved pore-pressure boundary work. Strict Cryer
 simulation remains paused; no GPU port should start before CPU loading and
 boundary behavior are credible.
+
+## Cryer C4-B4 Free-Sphere Flexible Confining Stress
+
+C4-B4 is complete as a CPU-only traction-source smoke. It did not modify
+source, did not run GPU, and did not start strict Cryer.
+
+The retained smoke package is under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/flexible_confining_stress_C4B4_FreeSphere/`
+
+Results:
+
+- no-load free-sphere regression: `code=0`, `excluded=0`;
+- ramped free-sphere `FlexibleConfiningStress` with `p0=50 Pa`: `code=0`,
+  `excluded=0`;
+- target particles: `739`;
+- final max confining acceleration: `1.95492 m/s2`;
+- final surface radial velocity mean: `-6.28e-04 m/s`;
+- final surface radial displacement mean: `-1.09e-06 m`;
+- final net/absolute force: `1.94e-08`;
+- final COM acceleration estimate: `2.08e-08 m/s2`;
+- `Kplastic=0` with `SoilConstitutiveModel=0`.
+
+`FlexibleConfiningStress` is now the current CPU traction candidate for strict
+Cryer. It is not a complete Cryer validation. GPU support remains unsupported,
+and the drained curved pore-pressure boundary remains the next blocker.
+
+Next recommended Cryer step: C4-C drained curved pore-pressure boundary
+audit/development. Strict Cryer simulation remains paused.
