@@ -99,22 +99,21 @@
       <parameter key="HydromechDamping" value="1" />
       <parameter key="HydromechDampingXi" value="4e-5" comment="Paper Fig. 7 caption xi=4e-5" />
       <!--
-        C4-B traction audit result:
-          No existing native XML route was found for strict all-around
-          spherical traction. AccInput/top-load/gravity/motion routes are not
-          equivalent to p0 acting along the local inward radial normal.
+        C4-B2 route decision:
+          AccInput patchwise shell acceleration is rejected for strict Cryer.
+          The selected strict loading route is a future flexible confining
+          stress term added to the mechanical momentum equation.
 
         Future source-design placeholder, intentionally comment-only:
-          SphericalTraction active=0
-            target="surface marker or radius-selected shell"
-            center="0 0 0"
-            radius="#SphereRadius"
-            p0="10000 Pa"
-            direction="inward radial"
-            area_weighting="sum Ai = 4*pi*a^2"
+          FlexibleConfiningStress active=0
+            mode="0 isotropic free-surface confining stress"
+            p0="10000 Pa positive compression"
+            targetmkfluid="all soil material particles"
+            rampstart="0"
+            rampend="0"
 
-        Do not run this draft as strict Cryer until a real traction route and
-        drained curved pore-pressure boundary are implemented/verified.
+        Do not run this draft as strict Cryer until flexible confining stress
+        and drained curved pore-pressure boundary are implemented/verified.
       -->
     </parameters>
   </execution>

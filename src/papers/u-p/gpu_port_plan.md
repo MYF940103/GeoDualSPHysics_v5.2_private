@@ -944,11 +944,27 @@ Result:
   poroelastic surface traction;
 - prescribed motion is a displacement-control surrogate, not traction control.
 
+## Cryer C4-B2 Flexible Confining Stress Route
+
+C4-B2 supersedes the earlier radial-area traction source idea. The `AccInput`
+patchwise surrogate is rejected for strict Cryer because it remains a marker
+acceleration/body-force equivalent, not a continuous pressure traction.
+
+The selected strict loading route is flexible confining stress:
+
+- add an isotropic compressive stress `sigma_conf = -p0 I` to the mechanical
+  momentum summation;
+- rely on SPH kernel symmetry for interior cancellation;
+- rely on free-surface truncation for the effective exterior confining pressure;
+- keep the term independent of `AccInput`, body gravity, `HydraulicGravity`, and
+  the PR pore-pressure equation.
+
 Recommended next strict path:
 
-1. CPU-first generic radial/spherical traction source design with diagnostics;
-2. drained curved hydraulic boundary audit/development;
-3. coarse CPU strict sphere smoke;
+1. C4-B3 CPU-only flexible confining stress implementation with no-load,
+   sign, symmetry, and surface-localization diagnostics;
+2. drained curved hydraulic boundary audit/development as a separate blocker;
+3. coarse CPU strict sphere smoke only after loading diagnostics pass;
 4. GPU support only after CPU strict behavior is credible.
 
 Strict Cryer simulation remains paused. Corrected-gradient production remains

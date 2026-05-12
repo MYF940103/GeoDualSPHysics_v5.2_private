@@ -15,7 +15,7 @@ curved drained hydraulic boundary support.
 |---|---|---|
 | Analytical reference | C4-A script implemented and self-checked; not yet validated against digitized Figure 7B. | Use generated CSVs for future postprocessing, but still collect/check Figure 7B data. |
 | Geometry | True 3D sphere recommended. | Prepare strict sphere XML prototype after reference script. |
-| Loading | Native spherical traction support not confirmed. | Audit native force/pressure route; likely blocker. |
+| Loading | Native spherical traction support not found. C4-B2 rejects `AccInput` patchwise surrogate and selects flexible confining stress as the strict loading route. | Implement CPU-first flexible confining stress before any strict Cryer run. |
 | Drained boundary | Mode 0 not strict; mode 1 experimental; mode 2 CPU-only experimental. | CPU boundary decision needed before GPU. |
 | Hydraulic gravity / elevation source | Classical Cryer has no gravity-driven elevation source, but current PR uses `HydraulicGravity` in both diffusion scaling and `LapZ`. | Audit whether a CPU-only no-elevation-source option is required. |
 | Constitutive skeleton | E1 added `SoilConstitutiveModel=0` for linear elasticity. | Strict Cryer XML drafts should use model `0`; DP remains default for existing cases. |
@@ -53,11 +53,37 @@ CPU-first generic radial/spherical traction block with explicit area weighting
 and force-symmetry diagnostics. The strict sphere XML remains a draft until
 loading and boundary are solved.
 
+### C4-B2: Flexible Confining Stress Route
+
+Status: completed as a design/source audit. No source was changed and no
+simulation was run.
+
+C4-B2 formally rejects the `AccInput` patchwise spherical-loading surrogate.
+Even with many marker patches and external CSV files, it would remain a
+patchwise shell body-force equivalent, not a continuous all-around pressure
+traction.
+
+The selected loading route is the flexible confining stress method described in
+the drained/undrained SPH framework paper's triaxial section. A compressive
+isotropic stress tensor is added to the mechanical momentum summation. Kernel
+symmetry cancels the contribution inside the specimen, while free-surface
+truncation leaves an effective confining pressure on the exterior. This avoids
+explicit surface-particle detection, normal reconstruction, and area weighting
+in the first implementation.
+
+The next loading task should be C4-B3:
+
+- CPU-first implementation;
+- default off XML switch;
+- no-load regression;
+- static sphere sign/symmetry diagnostics;
+- hard error on GPU while unsupported.
+
 ### C4-C: Boundary / Loading Source Development
 
 Only if native routes are insufficient:
 
-- design minimal CPU spherical traction support;
+- implement and validate CPU flexible confining stress support;
 - design CPU curved drained boundary support;
 - if needed, add a CPU-only Cryer/no-elevation hydraulic option that preserves
   the diffusion coefficient but removes the `LapZ` source;
@@ -87,6 +113,6 @@ Proceed to source changes only after:
 - Figure 7B digitization is available or the lack of digitized data is accepted
   as a documented limitation;
 - strict sphere geometry is accepted;
-- native traction route is proven unavailable or insufficient;
+- flexible confining stress CPU diagnostics pass;
 - the `HydraulicGravity` / no-elevation-source representation is resolved;
 - boundary strategy is selected for CPU.

@@ -215,7 +215,31 @@ Conclusion:
 - mDBC/cDBC normals may help a future implementation, but are not currently
   connected to an external spherical traction input.
 
-The recommended path is CPU-first source design for a generic radial/spherical
-traction block, followed by the drained curved boundary audit. The strict XML
-draft now contains only a comment-only placeholder for this future route and
-remains not ready to run.
+This C4-B conclusion has been superseded by C4-B2 below. The earlier
+area-weighted radial/spherical traction idea is no longer the recommended
+strict route.
+
+## C4-B2 Flexible Confining Stress Route
+
+C4-B2 revises the loading decision. The `AccInput` patchwise surrogate is now
+formally rejected for strict Cryer because it remains a marker-wise
+acceleration/body-force equivalent, even if many shell patches and CSV files are
+used.
+
+The selected strict loading route is a future flexible confining stress source
+based on the triaxial loading strategy in the drained/undrained SPH framework
+paper. The intended source adds an isotropic compressive confining stress to the
+mechanical momentum summation. Kernel symmetry cancels the term inside the
+material domain, while free-surface truncation leaves an effective confining
+pressure on the exterior.
+
+Status:
+
+- source implementation is not done;
+- no GenCase, CPU, GPU, or PartVTK run was performed;
+- the strict sphere draft contains only a comment-only TODO block;
+- drained curved pore-pressure boundary remains a separate blocker;
+- strict Cryer simulation remains paused.
+
+Next recommended task: C4-B3 CPU-only flexible confining stress implementation
+with sign, symmetry, net-force, and surface-localization diagnostics.

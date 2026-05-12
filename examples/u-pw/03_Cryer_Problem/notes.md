@@ -189,7 +189,33 @@ Findings:
 - mDBC/cDBC boundary normals are useful infrastructure, but there is no current
   XML path that maps `p0` to `F_i=-p0 A_i n_i`.
 
-Strict Cryer simulation remains paused. The next strict source-development
-candidate is a CPU-first generic radial/spherical traction block with force
-symmetry and area-weighting diagnostics. GPU support should wait until the CPU
-route is credible.
+Strict Cryer simulation remains paused. The original C4-B idea of a CPU-first
+area-weighted radial/spherical traction block has been superseded by C4-B2.
+
+## C4-B2 Revised Loading Route
+
+C4-B2 rejects the `AccInput` patchwise spherical surrogate. `AccInput` remains
+useful for reduced marker-acceleration workflows, but it cannot be promoted to a
+strict Cryer pressure boundary because it does not apply a continuous
+all-around normal traction `p0`.
+
+The strict loading route is now the flexible confining stress method described
+for triaxial simulations in the drained/undrained SPH framework paper. The
+future source term should add an isotropic confining stress
+`sigma_conf = -p0 I` to the conservative mechanical momentum summation. Interior
+contributions should cancel by kernel symmetry; exterior particles should feel
+an inward pressure because their kernel support is truncated at the free
+surface.
+
+This route has not been implemented yet. The next task should be CPU-first
+C4-B3 implementation with diagnostics:
+
+- net confining force vector;
+- center-of-mass acceleration;
+- surface radial acceleration sign;
+- interior cancellation;
+- symmetry residual;
+- compression-induced pore-pressure sign check.
+
+The drained curved pore-pressure boundary remains separate, and strict Cryer
+simulation is still paused.
