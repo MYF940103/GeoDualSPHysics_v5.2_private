@@ -24,3 +24,26 @@ Current files:
 
 The existing `../CaseCryer_PR_Baseline_Def.xml` remains the reduced launch
 workflow. It is not replaced by this strict plan.
+
+## Analytical Reference Script
+
+Run from this directory:
+
+```powershell
+py cryer_reference_solution.py --make-plot
+```
+
+The script writes:
+
+- `cryer_reference_curves.csv`
+- `cryer_reference_roots.csv`
+- `cryer_reference_convergence.csv`
+- `cryer_reference_peak_metrics.csv`
+- `cryer_reference_selfcheck.json`
+- `figures/cryer_reference_center_pressure_curves.*`
+- `figures/cryer_reference_root_convergence.*`
+- `figures/cryer_reference_peak_vs_nu.*`
+- `figures/cryer_reference_long_time_decay.*`
+
+Digitized Figure 7B data is optional and not currently available. See
+`fig7b_digitization_README.md`.

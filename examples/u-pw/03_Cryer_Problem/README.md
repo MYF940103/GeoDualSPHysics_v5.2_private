@@ -156,3 +156,31 @@ Draft files:
 
 The draft XML is intentionally marked as not validated and not ready to run.
 It does not replace `CaseCryer_PR_Baseline_Def.xml`.
+
+## C4-A Analytical Reference Script
+
+C4-A implemented the standalone analytical reference generator:
+
+```powershell
+py strict_reproduction_plan\cryer_reference_solution.py --make-plot
+```
+
+Outputs are written to `strict_reproduction_plan/`:
+
+- `cryer_reference_curves.csv`
+- `cryer_reference_roots.csv`
+- `cryer_reference_convergence.csv`
+- `cryer_reference_peak_metrics.csv`
+- `cryer_reference_selfcheck.json`
+- `figures/cryer_reference_center_pressure_curves.*`
+- `figures/cryer_reference_root_convergence.*`
+- `figures/cryer_reference_peak_vs_nu.*`
+- `figures/cryer_reference_long_time_decay.*`
+
+The script generates curves for `nu=0.1`, `0.2`, `0.3`, and `0.45`, and it
+shows the expected Mandel-Cryer peak ordering. No Figure 7B digitized data is
+currently available, so the curves are analytical reference candidates rather
+than a completed paper-figure validation.
+
+Strict simulation is still not started. The next strict task is C4-B:
+all-around spherical traction support audit.

@@ -127,3 +127,35 @@ Boundary:
 Next recommended step:
 
 - C4-A: implement and validate the independent Cryer reference script.
+
+## C4-A Reference Script Notes
+
+`strict_reproduction_plan/cryer_reference_solution.py` now implements the
+PDF-transcribed Cryer center-pressure series.
+
+Default run:
+
+```powershell
+py strict_reproduction_plan\cryer_reference_solution.py --make-plot
+```
+
+Default outputs:
+
+- reference curves for `nu=0.1`, `0.2`, `0.3`, `0.45`;
+- roots and root residual diagnostics;
+- root-truncation convergence;
+- peak pressure and peak `T_v` metrics;
+- self-check JSON;
+- SVG/PNG/PDF reference plots.
+
+Observed reference behavior:
+
+- all four curves show nonmonotonic Mandel-Cryer peaks;
+- lower Poisson ratio gives stronger overshoot;
+- all curves decay toward zero by long dimensionless time.
+
+Validation limitation:
+
+- no digitized Figure 7B data is available yet, so the reference remains a
+  checked implementation candidate rather than a fully verified paper-plot
+  reproduction.

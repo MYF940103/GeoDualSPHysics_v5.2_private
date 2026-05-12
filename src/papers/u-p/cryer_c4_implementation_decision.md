@@ -13,7 +13,7 @@ curved drained hydraulic boundary support.
 
 | Item | Current status | C4 implication |
 |---|---|---|
-| Analytical reference | Formula recovered; not yet validated against Figure 7B. | Start with C4-A reference script and digitized/check data. |
+| Analytical reference | C4-A script implemented and self-checked; not yet validated against digitized Figure 7B. | Use generated CSVs for future postprocessing, but still collect/check Figure 7B data. |
 | Geometry | True 3D sphere recommended. | Prepare strict sphere XML prototype after reference script. |
 | Loading | Native spherical traction support not confirmed. | Audit native force/pressure route; likely blocker. |
 | Drained boundary | Mode 0 not strict; mode 1 experimental; mode 2 CPU-only experimental. | CPU boundary decision needed before GPU. |
@@ -25,7 +25,10 @@ curved drained hydraulic boundary support.
 
 ### C4-A: Strict Reference Script First
 
-Implement `tools/cryer_reference_solution.py`:
+Status: completed as
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/cryer_reference_solution.py`.
+
+The script now:
 
 - solve roots of `(1 - eta xi^2 / 2) tan(xi) = xi`;
 - generate reference CSV curves for all four Poisson ratios;
@@ -33,12 +36,14 @@ Implement `tools/cryer_reference_solution.py`:
 - generate a Figure 7B-style reference-only plot;
 - compare against digitized or manually extracted Figure 7B points if available.
 
-This is the safest next step.
+The next action is not another reference-script task unless Figure 7B data is
+provided. It is C4-B traction-route audit.
 
 ### C4-B: Strict Geometry XML Prototype
 
-After C4-A, prepare a true 3D sphere GenCase XML and verify geometry only. This
-may still be a draft until loading and boundary are solved.
+After C4-A, audit native spherical traction support before attempting a runnable
+strict sphere. The existing strict sphere XML remains a draft until loading and
+boundary are solved.
 
 ### C4-C: Boundary / Loading Source Development
 
@@ -71,6 +76,8 @@ The next step would be faster with one of:
 Proceed to source changes only after:
 
 - reference curves pass convergence and figure-level checks;
+- Figure 7B digitization is available or the lack of digitized data is accepted
+  as a documented limitation;
 - strict sphere geometry is accepted;
 - native traction route is proven unavailable or insufficient;
 - the `HydraulicGravity` / no-elevation-source representation is resolved;
