@@ -1256,3 +1256,24 @@ Decision: geometry quality contributes to the error budget, but it is not the
 main strict-Cryer blocker. C6 remains premature. The next CPU work should focus
 on MLS / flux-consistent drained spherical boundary coupling before broader
 resolution studies or GPU porting.
+
+## Cryer C5h Higher-Resolution Sphere Diagnostic
+
+C5h is complete as a no-source-change CPU diagnostic under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5h_HigherResolutionSphere/`
+
+It adds one higher-resolution sphere (`dp=0.0065`, `2601` material particles)
+to the C5g coarse/finer comparison. Both C5h CPU Release cases completed with
+`code=0`, `excluded=0`, and `Kplastic=0`.
+
+The center peak continues to decrease (`7.448 p0 -> 7.058 p0 -> 6.731 p0`),
+but the higher-resolution surface and pressure-only diffusion behavior worsen:
+compression surface p95 rises to `244.34 Pa`, pressure-only final center
+pressure rises to `746.40 Pa`, and pressure-only surface p95 rises to
+`1023.40 Pa`.
+
+Decision: sphere resolution is a contributor but not the main blocker. Simple
+dp refinement should pause. The next Cryer work should return to MLS /
+flux-consistent drained spherical boundary calibration before C6 or any GPU
+porting.

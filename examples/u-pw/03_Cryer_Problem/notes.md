@@ -570,3 +570,33 @@ Main observations:
 Decision: geometry resolution matters, but it is not the main blocker. Do not
 move to C6 yet. The next Cryer step should return to MLS / flux-consistent
 drained-boundary coupling before a broader dp study.
+
+## C5h Higher-Resolution Sphere Notes
+
+C5h adds one more CPU-only sphere resolution after C5g:
+
+- `dp=0.010`: `739` material particles;
+- `dp=0.008`: `1213` material particles;
+- `dp=0.0065`: `2601` material particles.
+
+Retained package:
+
+`strict_reproduction_plan/C5h_HigherResolutionSphere/`
+
+Both C5h CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`.
+
+Observations:
+
+- center peak decreases from `7.448 p0` to `7.058 p0` to `6.731 p0`;
+- center particle counts improve, but center averaging does not converge
+  cleanly;
+- the generated `dp=0.0065` surface is not smoother than `dp=0.008`;
+- compression surface p95 worsens to `244.34 Pa`;
+- pressure-only diffusion worsens, with final surface p95 `1023.40 Pa` and
+  pressure-rate maxAbs about `1.55e6 Pa/s`.
+
+Decision: simple dp refinement is not a clean path forward. The next strict
+Cryer task should focus on MLS / flux-consistent drained spherical boundary
+calibration, using pressure-only diffusion as the first acceptance gate. C6 and
+GPU remain deferred.

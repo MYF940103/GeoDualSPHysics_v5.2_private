@@ -555,3 +555,29 @@ Decision: coarse sphere geometry is a contributor but not the main blocker.
 C6 remains paused. The next strict-boundary task should focus on MLS or
 flux-consistent radial diffusion at the drained spherical surface. GPU remains
 deferred.
+
+## C5h Higher-Resolution Sphere Diagnostic
+
+C5h is a no-source-change CPU diagnostic retained under:
+
+`strict_reproduction_plan/C5h_HigherResolutionSphere/`
+
+It extends C5g with one higher-resolution sphere, `dp=0.0065`, while keeping
+the C5g normalized mode-4 physics unchanged. Both C5h CPU Release cases
+completed with `code=0`, `excluded=0`, and `Kplastic=0`.
+
+The center peak continues to decrease:
+
+- `dp=0.010`: `7.448 p0`
+- `dp=0.008`: `7.058 p0`
+- `dp=0.0065`: `6.731 p0`
+
+However, surface and diffusion metrics do not improve. The higher-resolution
+surface roughness std is `0.00365`, worse than the `dp=0.008` sphere
+(`0.00303`). Compression final surface p95 rises to `244.34 Pa`, and the
+pressure-only diffusion final surface p95 rises to `1023.40 Pa`.
+
+Decision: higher resolution confirms that geometry matters, but it does not
+make the current boundary rule C6-ready. The next step should return to MLS or
+flux-consistent drained spherical boundary calibration before further
+resolution work. GPU remains deferred.

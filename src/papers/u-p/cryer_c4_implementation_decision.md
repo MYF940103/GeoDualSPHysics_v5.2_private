@@ -506,3 +506,39 @@ Decision after C5g:
   refinement, then a repeat of the modest geometry diagnostic;
 - C6 quantitative Figure 7B comparison remains premature;
 - GPU remains deferred.
+
+## C5h: Higher-Resolution Sphere Diagnostic
+
+C5h is complete as a no-source-change CPU diagnostic under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5h_HigherResolutionSphere/`
+
+It adds one higher-resolution sphere to the C5g comparison:
+
+- C5g coarse: `dp=0.010`, `739` material particles;
+- C5g finer: `dp=0.008`, `1213` material particles;
+- C5h higher: `dp=0.0065`, `2601` material particles.
+
+Both C5h CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The center peak continues to decrease, from `7.448 p0` to
+`7.058 p0` to `6.731 p0`, so resolution is part of the error budget. However,
+the higher-resolution generated sphere is not geometrically cleaner in the
+surface metrics: surface roughness std is `0.00365`, worse than the C5g finer
+value `0.00303`.
+
+The important negative result is that surface and diffusion behavior worsen at
+`dp=0.0065`:
+
+- compression final `r>0.85R` surface p95 increases to `244.34 Pa`;
+- pressure-only final center pressure rises to `746.40 Pa`;
+- pressure-only final surface p95 rises to `1023.40 Pa`;
+- final pressure-rate maxAbs rises to about `1.55e6 Pa/s`.
+
+Decision after C5h:
+
+- sphere resolution alone is not the main blocker;
+- simple dp refinement is not a reliable path to C6;
+- the next useful step should return to MLS / flux-consistent drained
+  spherical boundary calibration, with pressure-only spherical diffusion as
+  the first gate;
+- GPU remains deferred.
