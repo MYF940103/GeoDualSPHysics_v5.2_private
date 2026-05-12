@@ -424,3 +424,31 @@ is too intrusive and creates pressure-rate artifacts.
 Recommended next step: improve the mode-3 boundary quadrature / multi-sample
 Dirichlet coupling before dp refinement or C6 quantitative comparison. GPU
 remains deferred.
+
+## C5d Boundary Quadrature Notes
+
+C5d adds `CurvedDrainedBoundaryMode=3` for
+`PorePressureBoundaryOperator=3`. It is CPU-only and experimental.
+
+The mode creates five spherical drained Dirichlet samples per near-surface
+material particle and contributes them to the hydraulic operator. It is not a
+material clamp and it does not change the PR pressure equation.
+
+Results from `strict_reproduction_plan/C5d_BoundaryQuadrature/`:
+
+- all old/strong/quadrature/clamp compression tests completed with `code=0`,
+  `excluded=0`, and `Kplastic=0`;
+- all pressure-only diffusion comparison tests completed with `code=0`,
+  `excluded=0`, and `Kplastic=0`;
+- quadrature reduced the final `r>0.85R` surface p95 excess from `218.47 Pa`
+  to `208.90 Pa`;
+- quadrature reduced the center peak only from `7.672 p0` to `7.657 p0`;
+- pressure-only diffusion was more active than old ghost but not better than
+  the strengthened ghost in the short test window;
+- the diagnostic clamp remains the upper-bound proof that surface drainage is
+  important, but it is still not a valid production method.
+
+Decision: C5d is stable but insufficient. C6 quantitative comparison remains
+premature. The next step should be a stronger, more physically normalized
+boundary quadrature/MLS treatment or a narrowly scoped geometry refinement
+after the boundary rule is improved. GPU remains deferred.

@@ -1155,3 +1155,23 @@ multi-sample Dirichlet refinement, then modest dp/geometry refinement.
 
 GPU remains deferred for Cryer strict modes (`FlexibleConfiningStress`, mode
 `3`, and `HydraulicElevationSource=0`).
+
+## Cryer C5d Curved Boundary Quadrature
+
+C5d is complete as a CPU-only refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5d_BoundaryQuadrature/`
+
+It adds `CurvedDrainedBoundaryMode=3` as a multi-sample spherical Dirichlet
+boundary quadrature for `PorePressureBoundaryOperator=3`. The mode contributes
+to the CPU `LapPorePress`/`LapZ` operator and does not clamp material pressure.
+
+All C5d CPU Release cases completed with `code=0`, `excluded=0`, and
+`Kplastic=0`, but the improvement is marginal: compression surface p95 excess
+decreases from `218.47 Pa` to `208.90 Pa`, and the center peak decreases from
+`7.672 p0` to `7.657 p0`. Pressure-only diffusion does not yet show a clean
+operator-quality improvement over the strengthened ghost.
+
+Decision: C6 quantitative Cryer comparison is not ready. GPU remains deferred
+for `FlexibleConfiningStress`, `PorePressureBoundaryOperator=3`, and
+`HydraulicElevationSource=0`.

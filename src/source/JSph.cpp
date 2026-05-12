@@ -781,7 +781,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  CurvedDrainedBoundaryMode=0;  break;
     case 1:  CurvedDrainedBoundaryMode=1;  break;
     case 2:  CurvedDrainedBoundaryMode=2;  break;
-    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, and diagnostic-only 2.");
+    case 3:  CurvedDrainedBoundaryMode=3;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, and experimental 3.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
@@ -1859,6 +1860,8 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=1: strengthened Dirichlet image ghost for material-surface coupling refinement.");
       if(CurvedDrainedBoundaryMode==2)
         Log->Print("  CurvedDrainedBoundaryMode=2: diagnostic surface-material drained clamp after pore-pressure update; not production.");
+      if(CurvedDrainedBoundaryMode==3)
+        Log->Print("  CurvedDrainedBoundaryMode=3: multi-sample spherical Dirichlet boundary quadrature; CPU-only experimental.");
     }
     Log->Print(fun::VarStr("  PorePressureBoundaryGhost",PorePressureBoundaryGhost));
     Log->Print(fun::VarStr("  PorePressureBoundaryGhostOutput",PorePressureBoundaryGhostOutput));

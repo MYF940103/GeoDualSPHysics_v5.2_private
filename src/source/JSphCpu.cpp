@@ -2315,6 +2315,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   unsigned bndtop=0,bndbottom=0,bndinactive=0,bndnormals=0,bndmlssamples=0,bndmlsfallback=0;
   double bndexmin=DBL_MAX,bndexmax=-DBL_MAX;
   unsigned curvedaffected=0,curvedskipped=0;
+  unsigned curvedquadparticles=0,curvedquadsamples=0;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2429,46 +2430,101 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       if(r<rmin || r<=ALMOSTZERO)continue;
       curvedrmin=min(curvedrmin,r);
       curvedrmax=max(curvedrmax,r);
-      double ghostdist=rtarget-r;
-      if(ghostdist<mindist)ghostdist=mindist;
       const tdouble3 normal=rel*(1./r);
-      const tdouble3 posg=pos[p]+normal*(2.*ghostdist);
-      const double drx=pos[p].x-posg.x;
-      const double dry=pos[p].y-posg.y;
-      const double drz=pos[p].z-posg.z;
-      const double rr2=drx*drx+dry*dry+drz*drz;
-      if(rr2>double(KernelSize2) || rr2<ALMOSTZERO){ curvedskipped++; continue; }
-
-      const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
-      const double dotrgrad=rr2*double(fac);
       const double voli=double(MassFluid)/double(velrhop[p].w);
       const double zi=GetHydraulicElevation(pos[p]);
-      const double zg=GetHydraulicElevation(posg);
-      const double hydrog=hydrostatic_linear(zg);
       const double hydroi=hydrostatic_linear(zi);
       const double excessi=porepress[p]-hydroi;
-      double pwg=0.;
-      if(CurvedDrainedBoundaryMode==1){
-        // Image-ghost Dirichlet state: mirror the material-side value around
-        // the prescribed boundary value. This strengthens the operator-level
-        // Dirichlet influence without changing the PR governing equation.
-        if(CurvedDrainedBoundaryUseExcess){
-          const double excessg=2.*CurvedDrainedBoundaryValue-excessi;
-          pwg=hydrog+excessg;
-        }
-        else pwg=2.*CurvedDrainedBoundaryValue-porepress[p];
-      }
-      else pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
-      const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
-      const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
-      lapporepress[p]+=float(lapadd);
-      lapz[p]+=float(zadd);
-      curvedaffected++;
-      const double pval=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydroi: porepress[p]);
+      const double pval=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
-      maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
-      maxabslapadd=max(maxabslapadd,fabs(lapadd));
-      maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+
+      if(CurvedDrainedBoundaryMode==3){
+        // Multi-sample spherical Dirichlet quadrature. The samples sit on a
+        // thin exterior shell around the projected spherical boundary point.
+        // They enter the same LapPorePress/LapZ operator as material pairs and
+        // never overwrite material pressure.
+        const double normaloffset=mindist;
+        const double tanstep=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelH));
+        const double volscale=(Dp>0.? max(1.,double(KernelH)/double(Dp)): 1.);
+        const double volsample=voli*volscale/5.;
+        tdouble3 t1;
+        if(fabs(normal.z)<0.9)t1=TDouble3(-normal.y,normal.x,0.);
+        else t1=TDouble3(0.,-normal.z,normal.y);
+        const double t1m=sqrt(t1.x*t1.x+t1.y*t1.y+t1.z*t1.z);
+        if(t1m<=ALMOSTZERO){ curvedskipped++; continue; }
+        t1=t1*(1./t1m);
+        const tdouble3 t2=TDouble3(
+          normal.y*t1.z-normal.z*t1.y,
+          normal.z*t1.x-normal.x*t1.z,
+          normal.x*t1.y-normal.y*t1.x);
+        const double shifts[5][2]={{0.,0.},{1.,0.},{-1.,0.},{0.,1.},{0.,-1.}};
+        unsigned psamples=0;
+        for(unsigned is=0;is<5;is++){
+          tdouble3 srel=normal*rtarget + t1*(shifts[is][0]*tanstep) + t2*(shifts[is][1]*tanstep);
+          const double srm=sqrt(srel.x*srel.x+srel.y*srel.y+srel.z*srel.z);
+          if(srm<=ALMOSTZERO)continue;
+          const tdouble3 sdir=srel*(1./srm);
+          const tdouble3 posg=CurvedDrainedBoundaryCenter + sdir*(rtarget+normaloffset);
+          const double drx=pos[p].x-posg.x;
+          const double dry=pos[p].y-posg.y;
+          const double drz=pos[p].z-posg.z;
+          const double rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+          const double dotrgrad=rr2*double(fac);
+          const double zg=GetHydraulicElevation(posg);
+          const double hydrog=hydrostatic_linear(zg);
+          const double pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+          const double lapadd=2.*volsample*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+          const double zadd=2.*volsample*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+          lapporepress[p]+=float(lapadd);
+          lapz[p]+=float(zadd);
+          maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
+          maxabslapadd=max(maxabslapadd,fabs(lapadd));
+          maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+          psamples++;
+        }
+        if(psamples){
+          curvedaffected++;
+          curvedquadparticles++;
+          curvedquadsamples+=psamples;
+        }
+        else curvedskipped++;
+      }
+      else{
+        double ghostdist=rtarget-r;
+        if(ghostdist<mindist)ghostdist=mindist;
+        const tdouble3 posg=pos[p]+normal*(2.*ghostdist);
+        const double drx=pos[p].x-posg.x;
+        const double dry=pos[p].y-posg.y;
+        const double drz=pos[p].z-posg.z;
+        const double rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2>double(KernelSize2) || rr2<ALMOSTZERO){ curvedskipped++; continue; }
+        const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+        const double dotrgrad=rr2*double(fac);
+        const double zg=GetHydraulicElevation(posg);
+        const double hydrog=hydrostatic_linear(zg);
+        double pwg=0.;
+        if(CurvedDrainedBoundaryMode==1){
+          // Image-ghost Dirichlet state: mirror the material-side value around
+          // the prescribed boundary value. This strengthens the operator-level
+          // Dirichlet influence without changing the PR governing equation.
+          if(CurvedDrainedBoundaryUseExcess){
+            const double excessg=2.*CurvedDrainedBoundaryValue-excessi;
+            pwg=hydrog+excessg;
+          }
+          else pwg=2.*CurvedDrainedBoundaryValue-porepress[p];
+        }
+        else pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+        const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+        const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+        lapporepress[p]+=float(lapadd);
+        lapz[p]+=float(zadd);
+        curvedaffected++;
+        maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
+        maxabslapadd=max(maxabslapadd,fabs(lapadd));
+        maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+      }
     }
     topaffected=curvedaffected;
   }
@@ -2495,6 +2551,12 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         Log->Print("CPU curved drained convention: strengthened image Dirichlet ghost contributes to LapPorePress/LapZ before PR rate; no post-update clamp is applied.");
       if(CurvedDrainedBoundaryMode==2)
         Log->Print("CPU curved drained convention: first-order ghost contribution plus diagnostic post-update material surface clamp; mode 2 is not production.");
+      if(CurvedDrainedBoundaryMode==3){
+        Log->Printf("CPU curved drained quadrature: material_targets=%u, boundary_samples=%u, average_samples=%g, quadrature_volume_scale=%g."
+          ,curvedquadparticles,curvedquadsamples,(curvedquadparticles? double(curvedquadsamples)/double(curvedquadparticles): 0.)
+          ,(Dp>0.? max(1.,double(KernelH)/double(Dp)): 1.));
+        Log->Print("CPU curved drained convention: multi-sample spherical Dirichlet boundary quadrature contributes to LapPorePress/LapZ before PR rate; no material clamp is applied.");
+      }
     }
   }
   return(topaffected+bottomaffected);

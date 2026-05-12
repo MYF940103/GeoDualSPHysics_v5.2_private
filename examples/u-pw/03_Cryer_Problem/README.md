@@ -419,3 +419,30 @@ pressure-only diffusion.
 Decision: C6 remains premature. The next Cryer work should be a principled
 mode-3 boundary quadrature / multi-sample Dirichlet refinement, then modest
 geometry/dp refinement. GPU remains deferred.
+
+## C5d Boundary Quadrature Refinement
+
+C5d adds a CPU-only experimental submode:
+
+```xml
+<CurvedDrainedBoundaryMode value="3" />
+```
+
+for `PorePressureBoundaryOperator=3`. The new submode builds five drained
+spherical boundary samples near each near-surface material particle and adds
+their Dirichlet contribution to `LapPorePress`/`LapZ` before `PorePressRate`.
+It is an operator-level boundary quadrature, not the diagnostic material
+surface clamp.
+
+Retained package:
+
+`strict_reproduction_plan/C5d_BoundaryQuadrature/`
+
+All C5d CPU Release tests completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The quadrature mode is stable but only marginally improves the
+Cryer compression response: final `r>0.85R` surface p95 excess decreases from
+`218.47 Pa` to `208.90 Pa`, while the center peak decreases from `7.672 p0` to
+`7.657 p0`.
+
+This is not enough for Figure 7B quantitative comparison. Strict Cryer remains
+blocked by drained curved material-surface coupling; GPU remains deferred.

@@ -1,0 +1,121 @@
+<?xml version="1.0" encoding="utf-8"?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="C5d boundary quadrature C5d_DiffusionOld">
+  <!--
+    C5d curved drained boundary coupling test only - not a final Cryer Figure 7B reproduction.
+
+    Purpose:
+      Combine the strict-Cryer modules in one coarse sphere:
+      linear elastic skeleton, flexible confining stress, curved drained
+      pore-pressure boundary, and no-elevation hydraulic pressure evolution.
+  -->
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="0" comment="No mechanical body gravity for Cryer" units_comment="m/s^2" />
+      <rhop0 value="2100" comment="Reference soil density" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" />
+      <gamma value="7" />
+      <speedsystem value="0" auto="true" />
+      <coefsound value="20" />
+      <speedsound value="20" auto="false" />
+      <hdp value="1.8" />
+      <cflnumber value="0.2" />
+    </constantsdef>
+    <mkconfig boundcount="0" fluidcount="1" />
+    <geometry>
+      <predefinition>
+        <newvarcte Dp="0.01" />
+        <newvarcte SphereRadius="0.05" />
+        <newvarcte DomainHalf="0.085" />
+      </predefinition>
+      <definition dp="#Dp" units_comment="metres (m)">
+        <pointref x="0" y="0" z="0" />
+        <pointmin x="#-DomainHalf" y="#-DomainHalf" z="#-DomainHalf" />
+        <pointmax x="#DomainHalf" y="#DomainHalf" z="#DomainHalf" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setshapemode>actual | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkfluid mk="0" name="C5d_DiffusionOld" />
+          <drawsphere radius="#SphereRadius">
+            <point x="0" y="0" z="0" />
+          </drawsphere>
+        </mainlist>
+      </commands>
+    </geometry>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <phi value="33" comment="Ignored by SoilConstitutiveModel=0" />
+        <coh value="10e3" comment="Ignored by SoilConstitutiveModel=0" />
+        <dlt value="0" />
+        <SoilConstitutiveModel value="0" comment="Linear elastic skeleton for poroelastic Cryer smoke" />
+        <ModulusE value="2e6" />
+        <PRvs value="0.3" comment="C5 smoke uses nu=0.3 only" />
+        <Porosity0 value="0.3" />
+        <HydraulicConductivity value="1e-5" comment="Coarse-smoke value, not final Fig. 7B calibration" />
+        <WaterBulkModulus value="2e6" comment="Coarse-smoke value, not final Fig. 7B calibration" />
+        <WaterDensity value="1000" />
+      </soils>
+    </special>
+    <parameters>
+      <parameter key="Boundary" value="1" />
+      <parameter key="StepAlgorithm" value="2" />
+      <parameter key="Kernel" value="2" />
+      <parameter key="ViscoTreatment" value="1" />
+      <parameter key="Visco" value="0.1" />
+      <parameter key="DensityDT" value="0" />
+      <parameter key="CoefDtMin" value="0.01" />
+      <parameter key="TimeMax" value="0.006" comment="C5d targeted short window" />
+      <parameter key="TimeOut" value="0.001" />
+      <parameter key="PartsOutMax" value="1" />
+      <parameter key="RhopOutMin" value="1000" />
+      <parameter key="RhopOutMax" value="3000" />
+
+      <parameter key="HydromechCoupling" value="1" />
+      <parameter key="PorePressureModel" value="1" />
+      <parameter key="PorePressureInit" value="3" />
+      <parameter key="PorePressureExcessAmp" value="1000" />
+      <parameter key="PorePressureAnalyticalProfile" value="3" />
+      <parameter key="SavePorePressure" value="1" />
+      <parameter key="PorePressureDtSafety" value="0.20" />
+      <parameter key="PorePressureFeedback" value="1" />
+      <parameter key="PorePressureFeedbackMode" value="1" />
+      <parameter key="PorePressureFeedbackOperator" value="1" />
+      <parameter key="PorePressureShepard" value="1" />
+      <parameter key="PorePressureShepardInterval" value="10" />
+      <parameter key="PorePressureShepardMode" value="1" />
+
+      <parameter key="PorePressureBoundaryOperator" value="3" />
+      <parameter key="PorePressureCurvedDrained" value="1" />
+      <parameter key="CurvedDrainedBoundaryCenterX" value="0" />
+      <parameter key="CurvedDrainedBoundaryCenterY" value="0" />
+      <parameter key="CurvedDrainedBoundaryCenterZ" value="0" />
+      <parameter key="CurvedDrainedBoundaryRadius" value="0.05" />
+      <parameter key="CurvedDrainedBoundaryTargetMk" value="0" />
+      <parameter key="CurvedDrainedBoundaryValue" value="0" />
+      <parameter key="CurvedDrainedBoundaryUseExcess" value="1" />
+      <parameter key="CurvedDrainedBoundaryThickness" value="0.018" />
+      <parameter key="CurvedDrainedBoundaryMode" value="0" />
+
+      <parameter key="HydraulicElevationSource" value="0" comment="No hydrostatic/elevation source; HydraulicGravity only defines scaling magnitude" />
+      <parameter key="HydraulicGravityX" value="0" />
+      <parameter key="HydraulicGravityY" value="0" />
+      <parameter key="HydraulicGravityZ" value="-9.81" />
+      <parameter key="PorePressureWaterLevel" value="0" />
+
+      <parameter key="HydromechDamping" value="1" />
+      <parameter key="HydromechDampingXi" value="4e-5" />
+
+      <parameter key="FlexibleConfiningStress" value="0" />
+      <parameter key="ConfiningStressP0" value="0" comment="Pa, positive compression; C5d variant" />
+      <parameter key="ConfiningStressRampStart" value="0" />
+      <parameter key="ConfiningStressRampEnd" value="0.0005" />
+      <parameter key="ConfiningStressTargetMk" value="0" />
+      <parameter key="ConfiningStressMode" value="0" />
+    </parameters>
+  </execution>
+</case>
+
+

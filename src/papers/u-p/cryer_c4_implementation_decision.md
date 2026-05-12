@@ -319,3 +319,36 @@ used as a production boundary.
 C6 Figure 7B comparison remains premature. The next strict-Cryer task should be
 a more principled mode-3 boundary quadrature / multi-sample Dirichlet
 refinement, followed by a modest geometry/dp refinement. GPU remains deferred.
+
+## C5d: Curved Drained Boundary Quadrature
+
+C5d is complete as a CPU-only experimental boundary-quadrature refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5d_BoundaryQuadrature/`
+
+The source change remains limited to `PorePressureBoundaryOperator=3`. Existing
+boundary modes `0`, `1`, and `2` are unchanged. The new
+`CurvedDrainedBoundaryMode=3` constructs five virtual drained samples near the
+local spherical projection of each near-surface material particle and adds
+their Dirichlet contribution to `LapPorePress`/`LapZ` before `PorePressRate`.
+It does not clamp material pore pressure.
+
+All C5d CPU Release tests completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. For the compression smoke, mode `3` is stable but only mildly
+improves the surface residual:
+
+- old ghost final `r>0.85R` surface p95 excess: `218.47 Pa`;
+- quadrature final `r>0.85R` surface p95 excess: `208.90 Pa`;
+- old ghost center peak: `7.672 p0`;
+- quadrature center peak: `7.657 p0`.
+
+Pressure-only diffusion also remains incomplete: mode `3` increases the
+boundary contribution but does not outperform the strengthened ghost in the
+short window, and it has a higher pressure-rate/velocity response than modes
+`0` and `1`. It is much better behaved than the diagnostic clamp, but it is not
+yet a sufficient strict drained curved boundary.
+
+C6 quantitative Figure 7B comparison is still premature. The next useful step
+is either a more complete MLS/boundary-particle-aware surface quadrature or
+carefully scoped geometry/dp refinement after the boundary rule is improved.
+GPU remains deferred.
