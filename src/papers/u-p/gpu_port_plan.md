@@ -860,3 +860,40 @@ S1-4:
 `PorePressureBoundaryOperator=0` remains the production path. The restart route,
 corrected-gradient production operators, and GPU `PorePressureBoundaryOperator=2`
 remain deferred.
+
+## Overall Self-Weight Validation Section Status
+
+The self-weight validation section is drafted in
+`validation_section_selfweight_consolidation_draft.md`, with supplementary
+explanations in `validation_supplementary_notes.md`.
+
+Closed validation items:
+
+- Scenario 2 validation is closed for the current paper line:
+  - GPU `xi=0.05`, `PorePressureBoundaryOperator=0` is the production
+    simulation line.
+  - The nominal analytical reference captures the consolidation trend.
+  - The calibrated effective reference `cv_eff=1.1175 cv` reduces bottom
+    excess-pressure relative RMSE from about `7.59%` to about `1.98%`.
+  - This is interpreted as effective time-factor sensitivity, not material
+    retuning.
+- Scenario 1 validation is closed as a gravity-switch
+  drainage-to-equilibrium stability figure:
+  - S1-1b short CPU/GPU parity passed.
+  - S1-2 GPU medium windows passed.
+  - S1-3 GPU long run to `3.6 s` passed with `code=0`, `excluded=0`.
+  - S1-4 paper figures and reference-context notes were generated.
+- Boundary audit conclusions are frozen:
+  - mode `0` remains default production;
+  - mode `1` remains GPU-supported experimental;
+  - mode `2` remains CPU-only experimental and GPU unsupported;
+  - corrected-gradient production remains deferred.
+
+Recommended next benchmark:
+
+1. Cryer problem, if the priority is a pore-pressure boundary /
+   poroelastic-response benchmark.
+2. Undrained triaxial test, if the priority is stress path and constitutive
+   response.
+3. Retrogressive slope, only after benchmark coverage is sufficient, unless
+   the manuscript structure needs the application case first.
