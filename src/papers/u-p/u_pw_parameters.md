@@ -265,7 +265,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `CurvedDrainedBoundaryValue` | double [Pa] | `0` | Prescribed drained boundary value. | Experimental |
 | `CurvedDrainedBoundaryUseExcess` | `0/1` | `1` | `1`: value is excess pressure; `0`: value is total pressure. | Experimental |
 | `CurvedDrainedBoundaryThickness` | double [m] | `0` | Interior shell thickness for ghost placement; if `<=0`, uses `KernelH`. | Experimental |
-| `CurvedDrainedBoundaryMode` | `0` | `0` | Mode `3` subtype. `0`: spherical Dirichlet ghost; other values reserved. | Experimental |
+| `CurvedDrainedBoundaryMode` | `0/1/2` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production. | Experimental |
 
 Top drained correction:
 

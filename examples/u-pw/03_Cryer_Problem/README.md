@@ -390,3 +390,32 @@ near-surface material excess remains large.
 The Cryer track is therefore still not ready for quantitative Figure 7B
 comparison. Recommended next step: refine the drained curved boundary/material
 surface coupling before C6; GPU remains deferred.
+
+## C5c Curved Boundary Coupling Refinement
+
+C5c adds a CPU-only refinement package:
+
+`strict_reproduction_plan/C5c_CurvedBoundaryCoupling/`
+
+It keeps `PorePressureBoundaryOperator=3` experimental and adds
+`CurvedDrainedBoundaryMode` sub-modes:
+
+- `0`: original spherical drained Dirichlet ghost;
+- `1`: strengthened image-style drained ghost;
+- `2`: diagnostic material surface drained clamp, not production.
+
+All C5c CPU Release runs completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The material surface audit confirms that the C5/C5b near-surface
+excess is systematic, not a single-particle outlier: the old ghost has
+`179.37 Pa` mean and `218.47 Pa` p95 absolute excess in the `r>0.85R` material
+shell at the final retained frame.
+
+The strengthened ghost only modestly improves the compression response
+(`2.923 p0` final center pressure becomes `2.819 p0`) and is not sufficient for
+C6 Figure 7 comparison. The diagnostic clamp strongly reduces center pressure,
+but it is not operator-consistent and creates pressure-rate artifacts in
+pressure-only diffusion.
+
+Decision: C6 remains premature. The next Cryer work should be a principled
+mode-3 boundary quadrature / multi-sample Dirichlet refinement, then modest
+geometry/dp refinement. GPU remains deferred.

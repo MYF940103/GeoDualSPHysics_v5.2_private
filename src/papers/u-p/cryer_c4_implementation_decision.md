@@ -278,3 +278,44 @@ large (`263 Pa`, or `5.26 p0`, in the baseline final frame). C6 quantitative
 comparison is therefore not recommended yet. The next task should refine the
 drained curved boundary/material-surface coupling, with geometry/resolution
 refinement after that. GPU remains deferred.
+
+## C5c: Curved Drained Boundary / Material-Surface Coupling
+
+C5c is complete as a CPU-only source and smoke refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5c_CurvedBoundaryCoupling/`
+
+The source change is limited to `PorePressureBoundaryOperator=3`. Existing
+modes `0`, `1`, and `2` keep their previous behavior, and mode `3` remains
+experimental and CPU-only.
+
+`CurvedDrainedBoundaryMode` now supports:
+
+- `0`: previous first-order spherical Dirichlet ghost;
+- `1`: strengthened image-style Dirichlet ghost;
+- `2`: diagnostic material surface drained clamp, not production.
+
+All six short CPU Release C5c runs completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The surface residual audit showed that the C5b near-surface
+excess is systematic rather than an outlier: for the old ghost at the final
+frame, the `r>0.85R` material shell has mean excess `179.37 Pa`, p95 absolute
+excess `218.47 Pa`, and max absolute excess `263.15 Pa`.
+
+The strengthened ghost improves the pressure-only diffusion rate and slightly
+reduces the compression residual, but not enough for quantitative Cryer
+comparison:
+
+- old ghost peak center pressure: `7.672 p0`;
+- strengthened ghost peak center pressure: `7.663 p0`;
+- old ghost final center pressure: `2.923 p0`;
+- strengthened ghost final center pressure: `2.819 p0`.
+
+The diagnostic material clamp reduces the compression peak to `2.218 p0` and
+the final center pressure to `1.571 p0`, confirming that material-surface
+drainage controls much of the response. However, the clamp creates non-operator
+pressure-rate artifacts in the pressure-only diffusion smoke and must not be
+used as a production boundary.
+
+C6 Figure 7B comparison remains premature. The next strict-Cryer task should be
+a more principled mode-3 boundary quadrature / multi-sample Dirichlet
+refinement, followed by a modest geometry/dp refinement. GPU remains deferred.

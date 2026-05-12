@@ -1013,6 +1013,8 @@ double JSphCpuSingle::ComputeStep_Ver(){
     ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
     PorePressureBottomNoFluxStepPrint=true;
   }
+  if(hydropressupdate && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
+    ApplyPorePressureCurvedDrainedClamp(Np-Npb,Npb,Posc,Codec,PorePressc,TimeStep+dt,"post-update",!PorePressureBoundaryOperatorPrint);
   if(CaseNfloat)RunFloating(dt,false);     //-Control of floating bodies.
   PosInteraction_Forces();                 //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
@@ -1066,6 +1068,8 @@ double JSphCpuSingle::ComputeStep_Sym(){
     ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
     PorePressureBottomNoFluxStepPrint=true;
   }
+  if(hydropressupdate && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
+    ApplyPorePressureCurvedDrainedClamp(Np-Npb,Npb,Posc,Codec,PorePressc,TimeStep+dt,"post-update",!PorePressureBoundaryOperatorPrint);
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.

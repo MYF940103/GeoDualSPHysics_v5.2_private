@@ -1128,3 +1128,30 @@ Outcome:
 Decision: C6 quantitative Figure 7 comparison is not ready. The recommended
 next task is drained curved boundary/material-surface refinement, followed by a
 cleaner geometry/time-window retry. GPU remains deferred.
+
+## Cryer C5c Curved Boundary Coupling
+
+C5c is complete as a CPU-only refinement under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5c_CurvedBoundaryCoupling/`
+
+It adds sub-modes for `CurvedDrainedBoundaryMode` while keeping
+`PorePressureBoundaryOperator=3` experimental:
+
+- `0`: previous first-order drained ghost;
+- `1`: strengthened image-style drained ghost;
+- `2`: diagnostic surface material clamp, not production.
+
+All C5c CPU Release runs completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The near-surface residual is systematic rather than an outlier:
+old mode `3` has mean `179.37 Pa`, p95 `218.47 Pa`, and max `263.15 Pa` in
+the `r>0.85R` material shell at the final frame.
+
+The strengthened ghost gives only minor compression improvement, while the
+diagnostic clamp confirms that stronger material-surface drainage can strongly
+reduce the center response but is not a production boundary. C6 remains
+premature. Recommended next step: principled mode-3 boundary quadrature /
+multi-sample Dirichlet refinement, then modest dp/geometry refinement.
+
+GPU remains deferred for Cryer strict modes (`FlexibleConfiningStress`, mode
+`3`, and `HydraulicElevationSource=0`).

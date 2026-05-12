@@ -304,6 +304,8 @@ protected:
     ,double *porepress,double timestep,const char *stage,bool printlog);
   unsigned ApplyPorePressureBottomNoFlux(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
     ,double *porepress,const char *stage,bool printlog);
+  unsigned ApplyPorePressureCurvedDrainedClamp(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+    ,double *porepress,double timestep,const char *stage,bool printlog);
   template<TpKernel tker> void ComputeHydroLapPorePressT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,float *lapporepress)const;
   void ComputeHydroLapPorePress(unsigned n,unsigned pini

@@ -396,3 +396,31 @@ Key conclusions:
 
 The next step should be drained curved boundary/material-surface refinement
 before C6 quantitative comparison. GPU remains deferred.
+
+## C5c Curved Boundary Coupling Notes
+
+C5c refined only the CPU curved drained boundary prototype. It did not run GPU
+and did not attempt Figure 7B comparison.
+
+New `CurvedDrainedBoundaryMode` meanings for
+`PorePressureBoundaryOperator=3`:
+
+- `0`: old first-order spherical drained ghost;
+- `1`: strengthened image-style drained ghost;
+- `2`: diagnostic material surface clamp, not production.
+
+The old ghost surface residual is systematic. At the final retained frame, the
+`r>0.85R` material shell has mean excess `179.37 Pa`, median `178.06 Pa`, p95
+absolute excess `218.47 Pa`, and max absolute excess `263.15 Pa`. The previous
+zero ghost residual only described the prescribed ghost state, not the material
+surface layer.
+
+All C5c CPU Release runs completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The strengthened ghost slightly reduces the compression response
+and improves pressure-only diffusion, but it does not fix the high center
+pressure. The diagnostic clamp proves surface drainage is influential, but it
+is too intrusive and creates pressure-rate artifacts.
+
+Recommended next step: improve the mode-3 boundary quadrature / multi-sample
+Dirichlet coupling before dp refinement or C6 quantitative comparison. GPU
+remains deferred.

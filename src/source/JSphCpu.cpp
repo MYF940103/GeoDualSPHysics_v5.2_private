@@ -1754,6 +1754,57 @@ void JSphCpu::UpdatePorePressure(unsigned n,unsigned pini,const typecode *code,d
 }
 
 //==============================================================================
+/// Applies diagnostic material-surface drained clamp for curved boundary mode 2.
+//==============================================================================
+unsigned JSphCpu::ApplyPorePressureCurvedDrainedClamp(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code
+  ,double *porepress,double timestep,const char *stage,bool printlog)
+{
+  if(!HydromechCoupling || PorePressureModel!=1 || PorePressureBoundaryOperator!=3 || !PorePressureCurvedDrained || CurvedDrainedBoundaryMode!=2 || !porepress)return(0);
+  if(!pos || !code)Run_Exceptioon("Pointers without data for curved drained diagnostic clamp.");
+  if(CurvedDrainedBoundaryRadius<=0.)
+    Run_Exceptioon("CurvedDrainedBoundaryRadius must be greater than zero for CurvedDrainedBoundaryMode=2.");
+  const double shellthick=(CurvedDrainedBoundaryThickness>0.? CurvedDrainedBoundaryThickness: double(KernelH));
+  if(shellthick<=0.)Run_Exceptioon("CurvedDrainedBoundaryMode=2 requires positive CurvedDrainedBoundaryThickness or KernelH.");
+  const double rtarget=CurvedDrainedBoundaryRadius;
+  const double rmin=max(0.,rtarget-shellthick);
+  unsigned affected=0,skipped=0,npmat=0;
+  double beforemin=DBL_MAX,beforemax=-DBL_MAX,aftermin=DBL_MAX,aftermax=-DBL_MAX;
+  double rselmin=DBL_MAX,rselmax=0.;
+  for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    npmat++;
+    if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
+    const tdouble3 rel=pos[p]-CurvedDrainedBoundaryCenter;
+    const double r=sqrt(rel.x*rel.x+rel.y*rel.y+rel.z*rel.z);
+    if(r<rmin || r<=ALMOSTZERO)continue;
+    const double hydro=GetHydrostaticPorePressure(pos[p]);
+    const double before=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydro: porepress[p]);
+    const double target=(CurvedDrainedBoundaryUseExcess? hydro+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+    porepress[p]=target;
+    const double after=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydro: porepress[p]);
+    beforemin=min(beforemin,before);
+    beforemax=max(beforemax,before);
+    aftermin=min(aftermin,after);
+    aftermax=max(aftermax,after);
+    rselmin=min(rselmin,r);
+    rselmax=max(rselmax,r);
+    affected++;
+  }
+  if(!npmat && printlog)Log->PrintWarning("Curved drained diagnostic clamp found no material particles.");
+  if(!affected){
+    skipped=npmat;
+    beforemin=beforemax=aftermin=aftermax=0.;
+    rselmin=0.;
+  }
+  if(printlog){
+    Log->Printf("Curved drained diagnostic clamp: stage=%s, TimeStep=%g, mode=2, affected=%u, skipped=%u, radius_range=[%g,%g], value=%g Pa, value_type=%s, before=[%g,%g] Pa, after=[%g,%g] Pa."
+      ,(stage? stage: "unknown"),timestep,affected,skipped,rselmin,rselmax,CurvedDrainedBoundaryValue
+      ,(CurvedDrainedBoundaryUseExcess? "excess": "total"),beforemin,beforemax,aftermin,aftermax);
+    Log->Print("Curved drained diagnostic clamp is not production: it directly overwrites material surface pressure to test the upper-bound effect of perfect surface drainage.");
+  }
+  return(affected);
+}
+
+//==============================================================================
 /// Applies optional Shepard regularization to pore pressure on material particles.
 //==============================================================================
 template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureShepardT(unsigned n,unsigned pini
@@ -2394,13 +2445,25 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       const double zi=GetHydraulicElevation(pos[p]);
       const double zg=GetHydraulicElevation(posg);
       const double hydrog=hydrostatic_linear(zg);
-      const double pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+      const double hydroi=hydrostatic_linear(zi);
+      const double excessi=porepress[p]-hydroi;
+      double pwg=0.;
+      if(CurvedDrainedBoundaryMode==1){
+        // Image-ghost Dirichlet state: mirror the material-side value around
+        // the prescribed boundary value. This strengthens the operator-level
+        // Dirichlet influence without changing the PR governing equation.
+        if(CurvedDrainedBoundaryUseExcess){
+          const double excessg=2.*CurvedDrainedBoundaryValue-excessi;
+          pwg=hydrog+excessg;
+        }
+        else pwg=2.*CurvedDrainedBoundaryValue-porepress[p];
+      }
+      else pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
       const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
       const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
       lapporepress[p]+=float(lapadd);
       lapz[p]+=float(zadd);
       curvedaffected++;
-      const double hydroi=hydrostatic_linear(zi);
       const double pval=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydroi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
       maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
@@ -2426,7 +2489,12 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         ,CurvedDrainedBoundaryRadius,(CurvedDrainedBoundaryThickness>0.? CurvedDrainedBoundaryThickness: double(KernelH))
         ,CurvedDrainedBoundaryTargetMk,CurvedDrainedBoundaryValue,(CurvedDrainedBoundaryUseExcess? "excess": "total")
         ,curvedaffected,curvedskipped,(curvedrmin==DBL_MAX? 0.: curvedrmin),curvedrmax,curvedresidualmax);
-      Log->Print("CPU curved drained convention: spherical exterior Dirichlet ghost contributes to LapPorePress/LapZ before PR rate; no post-update clamp is applied.");
+      if(CurvedDrainedBoundaryMode==0)
+        Log->Print("CPU curved drained convention: first-order spherical exterior Dirichlet ghost contributes to LapPorePress/LapZ before PR rate; no post-update clamp is applied.");
+      if(CurvedDrainedBoundaryMode==1)
+        Log->Print("CPU curved drained convention: strengthened image Dirichlet ghost contributes to LapPorePress/LapZ before PR rate; no post-update clamp is applied.");
+      if(CurvedDrainedBoundaryMode==2)
+        Log->Print("CPU curved drained convention: first-order ghost contribution plus diagnostic post-update material surface clamp; mode 2 is not production.");
     }
   }
   return(topaffected+bottomaffected);
