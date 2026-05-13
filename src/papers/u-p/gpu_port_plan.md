@@ -1484,3 +1484,25 @@ CPU result:
 GPU was not run because `HydraulicElevationSource=0` is CPU-only in the current
 branch. T2 should refine stress-path postprocessing, DP baseline behavior, and
 loading/confinement before any GPU parity or paper comparison.
+
+## T2 Zhao Flexible Confinement Audit
+
+T2 adds no source and no GPU work. It converts and reviews Zhao et al.'s
+flexible confined boundary method and audits the current CPU
+`FlexibleConfiningStress` path.
+
+GPU-relevant decision:
+
+- `FlexibleConfiningStress=1` remains CPU-only and GPU hard-errors.
+- This is still the correct behavior because strict triaxial lateral
+  confinement first needs CPU diagnostics:
+  - kernel-completeness index `f_i`;
+  - near-boundary selection;
+  - lateral-cylinder selection;
+  - top/bottom cap exclusion;
+  - confinement-only smoke.
+- MCC remains deferred until mechanical confinement and measurement regions are
+  stable.
+
+T3 should be CPU-only. GPU parity should wait until the Zhao-style confinement
+selector has passed a confinement-only smoke and an axial-compression smoke.

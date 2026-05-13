@@ -109,3 +109,30 @@ pressure (`42.12 Pa` at the final frame). The geometric center remains almost
 unloaded over this very short window, so T2 should improve loading duration,
 measurement definitions, and stress-path extraction before any paper-level
 comparison.
+
+## T2 Zhao Flexible Confinement Audit Notes
+
+The Zhao flexible confined boundary paper has been converted and reviewed under
+`src/papers/u-p/`. The method applies an isotropic confining-pressure pair term
+to the SPH momentum equation. The term cancels in the interior when kernel
+support is complete and becomes an inward traction near a truncated free
+surface.
+
+Current branch status:
+
+- CPU `FlexibleConfiningStress` already adds a stress-like pair contribution,
+  so it is the right starting point for triaxial lateral confinement.
+- The current term uses the existing kernel gradient in the CPU force loop; it
+  does not yet use Zhao's renormalized gradient form.
+- It targets all selected material particles by mk and does not yet compute
+  the kernel-completeness index `f_i = sum_j (m_j/rho_j) W_ij`.
+- It cannot yet distinguish the cylindrical lateral membrane from top/bottom
+  caps except by manual mk design.
+
+T3 should therefore be diagnostic-first:
+
+1. add `f_i` summary/histogram output;
+2. classify lateral/cap/edge/interior particles in a cylinder;
+3. report radial confining acceleration and axial leakage;
+4. only then enable optional near-boundary and lateral-only selectors;
+5. keep GPU and MCC deferred.

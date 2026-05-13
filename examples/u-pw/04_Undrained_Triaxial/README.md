@@ -99,3 +99,34 @@ CPU Release smoke result:
 GPU was not run because `HydraulicElevationSource=0` is CPU-only in this
 branch. T1 is sufficient to move to T2 stress-path/loading refinement, but not
 to paper-level triaxial comparison.
+
+## T2 Zhao Flexible Confinement Audit
+
+T2 completes the literature/source audit needed before replacing the reduced
+fixed-side confinement smoke with a Zhao-style flexible lateral confinement
+route.
+
+New notes are in:
+
+- `src/papers/u-p/zhao_flexible_confined_boundary_conditions_sph.md`
+- `src/papers/u-p/zhao_flexible_confined_boundary_conditions_review.md`
+- `src/papers/u-p/t2_zhao_confinement_source_audit.md`
+- `src/papers/u-p/t2_zhao_confinement_requirements.md`
+- `src/papers/u-p/t2_kernel_completeness_fi_diagnostic_design.md`
+- `src/papers/u-p/t2_triaxial_lateral_selection_design.md`
+- `src/papers/u-p/t2_initial_confinement_strategy.md`
+- `src/papers/u-p/t3_flexible_confinement_implementation_plan.md`
+
+Key decision:
+
+- current CPU `FlexibleConfiningStress` is conceptually close to Zhao's
+  isotropic confining-pressure pair term;
+- it is not yet strict triaxial lateral confinement;
+- it lacks the Zhao kernel-completeness index `f_i`, near-boundary selection,
+  lateral-cylinder selection, cap exclusion, and initial hydrostatic stress
+  strategy;
+- MCC remains deferred until confinement and stress-path measurement are
+  stable.
+
+Next step is T3: CPU-only flexible confinement diagnostics and lateral selector
+implementation. Defaults must preserve the current T1 behavior.
