@@ -1148,3 +1148,27 @@ FlexibleConfiningStress and `InitialEffectiveStressIso=50 Pa`:
 The mild case updates `pc`, void ratio, plastic volumetric strain, equivalent
 plastic strain, plastic multiplier, return iterations, and yield residual
 outputs. Full feedback, strict MCC validation, and GPU remain deferred.
+
+## M3d2 MCC Return Robustness Audit
+
+M3d2 is retained under:
+
+`experiments/M3d2_MCCReturnRobustness/`
+
+It reruns the mild-yield MCC feedback-off platen case and adds three diagnostic
+variants: half top-platen velocity, early stop, and tighter return tolerance
+with higher max iterations. No solver source was changed.
+
+All four CPU Release cases finish `code=0`, `excluded=0`, and `DtMin=0`. The
+baseline and tight-return cases retain the same final local return issue:
+
+```text
+MccReturnStatus=-3: 8/407 particles
+```
+
+The final failed particles are localized near the bottom interior/cap
+transition at `z≈0.01-0.02 m`. Half velocity removes final `-3` failures but
+does not remove all intermediate local failures. Higher max iterations and
+tighter tolerance do not change the final failed set. The recommended next
+step is opt-in MCC constitutive substepping/admissibility guards before clean
+M3e consolidation. Full feedback and GPU remain deferred.

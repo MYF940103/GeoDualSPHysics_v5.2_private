@@ -1143,3 +1143,26 @@ This means M3d found the next MCC blocker: local return robustness in the
 extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
+
+## M3d2 MCC Return Robustness Notes
+
+M3d2 audits the `MccReturnStatus=-3` subset from the M3d mild-yield extended
+case without changing source code.
+
+CPU Release diagnostic cases:
+
+- baseline M3d mild-yield rerun;
+- half top-platen velocity;
+- early stop at `0.006 s`;
+- tighter return tolerance (`1e-10`) and higher max iterations (`80`).
+
+All cases finish `code=0`, `excluded=0`, and `DtMin=0`. The persistent final
+line-search failure is local, not global: in the baseline final frame the 8
+failed particles are split between bottom cap-zone particles at `z≈0.00998 m`
+and nearby interior particles at `z≈0.01998 m`. Their final `p'` remains
+positive, so the final issue is not direct tension cutoff.
+
+Half velocity clears final `-3` failures, but some intermediate local failures
+remain. Higher max iterations/tighter tolerance reproduces the baseline. M3d2
+therefore recommends M3d3 opt-in MCC substepping with admissibility guards
+before M3e reporting consolidation. Full feedback and GPU remain deferred.

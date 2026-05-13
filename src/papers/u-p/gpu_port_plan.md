@@ -2100,3 +2100,18 @@ extended case exposes local return failures (`MccReturnStatus=-3` in a small
 particle subset). GPU MCC work should remain deferred until the CPU local
 return behavior is robust over the feedback-off platen baseline. Full
 pore-pressure feedback remains deferred as well.
+
+## M3d2 MCC Return Robustness GPU Status
+
+M3d2 adds CPU-only XML/workflow/postprocessing diagnostics for the MCC local
+return failures found in M3d. No GPU simulation was run and no GPU source was
+changed.
+
+The audit confirms that the remaining mild-yield issue is local MCC return
+robustness: baseline and tight-return cases end with `ReturnStatus=-3` for
+8/407 particles, while half top-platen velocity clears the final failed set but
+not all intermediate local failures.
+
+GPU MCC remains deferred. The next CPU step should be an opt-in MCC
+substepping/admissibility-guard patch, still with the existing GPU hard error
+for `SoilConstitutiveModel=3`. Full pore-pressure feedback remains deferred.
