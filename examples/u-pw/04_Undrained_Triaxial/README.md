@@ -452,3 +452,34 @@ LSQ conditioning is healthy (`407` solves, `0` fallbacks, condition proxy about
 `3-4`), so the failure is not an LSQ matrix problem. The explicit feedback loop
 itself remains the blocker. Axial loading was not restored, and DP/MCC remain
 deferred.
+
+## T4i-B Feedback Fidelity Audit
+
+T4i-B is a documentation/source-audit stage, not a simulation stage. It is
+retained in:
+
+- `src/papers/u-p/t4i_original_upw_feedback_operator_audit.md`;
+- `src/papers/u-p/t4i_current_feedback_source_mapping.md`;
+- `src/papers/u-p/t4i_zhao_confinement_coupling_audit.md`;
+- `src/papers/u-p/t4i_paper_faithful_feedback_route.md`;
+- `src/papers/u-p/t4i_initial_confinement_before_feedback_plan.md`;
+- `src/papers/u-p/t4j_feedback_fidelity_implementation_plan.md`.
+
+The audit changes the direction of the triaxial feedback work. The original
+u-pw implementation notes write the pore-pressure momentum contribution as a
+symmetric stress-like pair term, adjacent to effective-stress divergence:
+
+```text
+sum_j m_j ((p_i+p_j)/(rho_i rho_j)) I . grad W_ij
+```
+
+Current operator `0` is algebraically closest to this paper form, but it is a
+raw-gradient separate feedback pass with no boundary pressure completion.
+Operators `1` and `2` are cleaner pressure-gradient estimators, yet they are
+less faithful to the paper's pairwise stress-like discretization and did not
+stabilize selected confinement.
+
+T4i-B therefore recommends T4j as a CPU-only paper-style pore-pressure momentum
+coupling prototype, with controlled manufactured/closed-support gates before
+returning to selected-confinement axial loading. DP, MCC, GPU parity, and
+full-paper triaxial reproduction remain deferred.

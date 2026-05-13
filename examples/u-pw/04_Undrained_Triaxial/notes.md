@@ -437,3 +437,34 @@ The LSQ systems are well-conditioned in this small test (`407` solved, `0`
 fallbacks, condition proxy about `3-4`). That means LSQ consistency alone does
 not solve the explicit u-pw feedback instability. Axial loading, DP, and MCC
 remain deferred.
+
+## T4i-B Feedback Fidelity Notes
+
+T4i-B pauses limiter/operator tuning and compares the current feedback routes
+against the original u-pw implementation notes and Zhao confinement paper.
+
+Key conclusion:
+
+- the u-pw notes place pore pressure in the momentum equation as an isotropic,
+  symmetric, stress-like pair term;
+- current operator `0` is the closest existing algebraic form;
+- operator `0` is still incomplete because it uses a raw separate feedback
+  pass and lacks boundary/MLS pore-pressure state completion;
+- operators `1` and `2` are gradient estimators, not the paper-style
+  stress-pair form;
+- Zhao compatibility argues for consistent pair-loop and gradient handling
+  across skeleton stress, pore pressure, and confinement.
+
+The selected-confinement failure may also be entangled with missing initial
+hydrostatic confinement. Zhao's paper warns that ramping confinement from an
+unloaded state can launch stress waves; our T4d/T4e failures occur before axial
+loading and are therefore consistent with an unresolved confinement-equilibrium
+problem.
+
+Recommended T4j:
+
+1. add an opt-in CPU-only paper-style pore-pressure momentum coupling prototype
+   rather than another limiter;
+2. gate it with manufactured and closed-support tests;
+3. only then retry selected-confinement full feedback;
+4. keep DP/MCC and GPU deferred.

@@ -1725,3 +1725,20 @@ diagnostic path, not a GPU validation target.
 GPU triaxial validation remains deferred. The default GPU route must continue
 to avoid non-default feedback gating, class filtering, stabilization, and LSQ
 feedback until the CPU feedback formulation is validation-ready.
+
+## T4i-B Feedback Fidelity Audit GPU Status
+
+T4i-B is documentation-only. It does not add source code or run simulations.
+The audit concludes that the original u-pw notes are closer to a symmetric
+stress-like pore-pressure pair term than to the current operator `1/2`
+pressure-gradient feedback routes.
+
+GPU remains deferred for two reasons:
+
+1. current non-default feedback timing, stabilization, class filtering, and LSQ
+   operator paths are CPU-only diagnostics;
+2. the recommended T4j route is a new CPU-first paper-style feedback coupling
+   prototype that must pass controlled gates before any GPU port is meaningful.
+
+No GPU triaxial parity, DP, or MCC work should start until the CPU
+paper-fidelity route is stable without relying on limiter caps.
