@@ -2336,6 +2336,16 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   double curvedshellwidth=0.,curvedshelloutermean=0.,curvedshellouterrmean=0.,curvedshellgrad=0.;
   double curvedshellfluxdensity=0.,curvedshellfluxintegral=0.,curvedshellstoragerate=0.;
   double curvedshellsinkvolume=0.,curvedshelllapcorr=0.,curvedshellresidual=0.;
+  unsigned curvedshell7count=0,curvedshell7corrected=0,curvedshell7fallback=0;
+  unsigned curvedshell7minpop=0,curvedshell7maxpop=0,curvedshell7negative=0;
+  double curvedshell7width=0.,curvedshell7totalstorage=0.,curvedshell7boundaryflux=0.;
+  double curvedshell7targetstorage=0.,curvedshell7currentstorage=0.,curvedshell7correctionstorage=0.,curvedshell7correctedstorage=0.;
+  double curvedshell7conservationresidual=0.,curvedshell7maxabslapcorr=0.,curvedshell7maxabsratecorr=0.;
+  double curvedshell7minpressure=DBL_MAX,curvedshell7maxpressure=-DBL_MAX;
+  vector<int> curvedshell7pbin;
+  vector<unsigned> curvedshell7pop;
+  vector<double> curvedshell7edge,curvedshell7volana,curvedshell7veff,curvedshell7psum,curvedshell7rsum;
+  vector<double> curvedshell7pmean,curvedshell7rmean,curvedshell7flux,curvedshell7targetrate,curvedshell7currentrate,curvedshell7corrrate,curvedshell7lapcorr;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2555,7 +2565,151 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       }
       else curvedshellfallback=1;
     }
-    for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+    if(CurvedDrainedBoundaryMode==7){
+      // Conservative multi-shell radial exchange prototype. The existing
+      // material-material LapPorePress field is first reduced to shell-average
+      // pressure rates, then a conservative FV shell correction is added back.
+      const double basewidth=(CurvedDrainedBoundaryThickness>0.? CurvedDrainedBoundaryThickness: (Dp>0.? double(Dp): double(KernelH)));
+      if(basewidth<=ALMOSTZERO || diffcoef<=ALMOSTZERO)curvedshell7fallback=1;
+      else{
+        const unsigned autocount=unsigned(max(2.,ceil(rtarget/basewidth)));
+        curvedshell7count=(CurvedDrainedShellMode==1 && CurvedDrainedShellCount? CurvedDrainedShellCount: autocount);
+        if(curvedshell7count<2)curvedshell7count=2;
+        curvedshell7width=rtarget/double(curvedshell7count);
+        curvedshell7pbin.assign(n,-1);
+        curvedshell7pop.assign(curvedshell7count,0);
+        curvedshell7edge.assign(curvedshell7count+1,0.);
+        curvedshell7volana.assign(curvedshell7count,0.);
+        curvedshell7veff.assign(curvedshell7count,0.);
+        curvedshell7psum.assign(curvedshell7count,0.);
+        curvedshell7rsum.assign(curvedshell7count,0.);
+        curvedshell7pmean.assign(curvedshell7count,0.);
+        curvedshell7rmean.assign(curvedshell7count,0.);
+        curvedshell7flux.assign(curvedshell7count+1,0.);
+        curvedshell7targetrate.assign(curvedshell7count,0.);
+        curvedshell7currentrate.assign(curvedshell7count,0.);
+        curvedshell7corrrate.assign(curvedshell7count,0.);
+        curvedshell7lapcorr.assign(curvedshell7count,0.);
+        for(unsigned k=0;k<=curvedshell7count;k++)curvedshell7edge[k]=rtarget*double(k)/double(curvedshell7count);
+        for(unsigned k=0;k<curvedshell7count;k++){
+          const double rin=curvedshell7edge[k];
+          const double rout=curvedshell7edge[k+1];
+          curvedshell7volana[k]=(4.*pi/3.)*(rout*rout*rout-rin*rin*rin);
+        }
+        for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p]) && velrhop[p].w>0.f){
+          if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
+          const tdouble3 rel=pos[p]-CurvedDrainedBoundaryCenter;
+          const double r=sqrt(rel.x*rel.x+rel.y*rel.y+rel.z*rel.z);
+          if(r<=ALMOSTZERO)continue;
+          curvedrmin=min(curvedrmin,r);
+          curvedrmax=max(curvedrmax,r);
+          const double reff=min(rtarget*(1.-1.e-12),max(0.,r));
+          unsigned ib=unsigned(floor(reff/rtarget*double(curvedshell7count)));
+          if(ib>=curvedshell7count)ib=curvedshell7count-1;
+          const double vol=double(MassFluid)/double(velrhop[p].w);
+          const double zi=GetHydraulicElevation(pos[p]);
+          const double u=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydrostatic_linear(zi): porepress[p]);
+          curvedshell7pbin[p-pini]=int(ib);
+          curvedshell7pop[ib]++;
+          curvedshell7veff[ib]+=vol;
+          curvedshell7psum[ib]+=vol*u;
+          curvedshell7rsum[ib]+=vol*reff;
+          curvedshell7currentrate[ib]+=vol*diffcoef*double(lapporepress[p]);
+          curvedshell7totalstorage+=vol*u;
+          curvedshell7minpressure=min(curvedshell7minpressure,u);
+          curvedshell7maxpressure=max(curvedshell7maxpressure,u);
+          if(u<0.)curvedshell7negative++;
+          curvedresidualmax=max(curvedresidualmax,fabs(u-CurvedDrainedBoundaryValue));
+        }
+        curvedshell7minpop=UINT_MAX;
+        for(unsigned k=0;k<curvedshell7count;k++){
+          curvedshell7minpop=min(curvedshell7minpop,curvedshell7pop[k]);
+          curvedshell7maxpop=max(curvedshell7maxpop,curvedshell7pop[k]);
+          if(curvedshell7pop[k]<CurvedDrainedShellMinParticles || curvedshell7veff[k]<=ALMOSTZERO)curvedshell7fallback++;
+          if(curvedshell7veff[k]>ALMOSTZERO){
+            curvedshell7pmean[k]=curvedshell7psum[k]/curvedshell7veff[k];
+            curvedshell7rmean[k]=curvedshell7rsum[k]/curvedshell7veff[k];
+            curvedshell7currentrate[k]/=curvedshell7veff[k];
+          }
+          else{
+            curvedshell7pmean[k]=0.;
+            curvedshell7rmean[k]=0.5*(curvedshell7edge[k]+curvedshell7edge[k+1]);
+            curvedshell7currentrate[k]=0.;
+          }
+        }
+        if(curvedshell7minpop==UINT_MAX)curvedshell7minpop=0;
+        int shellfirst=-1,shelllast=-1;
+        for(unsigned k=0;k<curvedshell7count;k++)if(curvedshell7pop[k]>=CurvedDrainedShellMinParticles && curvedshell7veff[k]>ALMOSTZERO){
+          if(shellfirst<0)shellfirst=int(k);
+          shelllast=int(k);
+        }
+        curvedshell7fallback=0;
+        if(shellfirst<0 || shelllast<0)curvedshell7fallback=1;
+        else{
+          for(int k=shellfirst;k<=shelllast;k++){
+            const unsigned ku=unsigned(k);
+            if(curvedshell7pop[ku]<CurvedDrainedShellMinParticles || curvedshell7veff[ku]<=ALMOSTZERO)curvedshell7fallback++;
+          }
+          if(unsigned(shelllast)!=curvedshell7count-1)curvedshell7fallback++;
+        }
+        if(!curvedshell7fallback){
+          curvedshell7flux[unsigned(shellfirst)]=0.;
+          for(unsigned k=unsigned(shellfirst);k<unsigned(shelllast);k++){
+            const double rface=curvedshell7edge[k+1];
+            const double area=4.*pi*rface*rface;
+            const double dr=max(mindist,curvedshell7rmean[k+1]-curvedshell7rmean[k]);
+            curvedshell7flux[k+1]=-diffcoef*area*(curvedshell7pmean[k+1]-curvedshell7pmean[k])/dr;
+          }
+          {
+            const unsigned k=unsigned(shelllast);
+            const double gapr=max(mindist,rtarget-curvedshell7rmean[k]);
+            curvedshell7flux[k+1]=diffcoef*spherearea*(curvedshell7pmean[k]-CurvedDrainedBoundaryValue)/gapr;
+            curvedshell7boundaryflux=curvedshell7flux[k+1];
+          }
+          for(unsigned k=unsigned(shellfirst);k<=unsigned(shelllast);k++){
+            const double storagerate=curvedshell7flux[k]-curvedshell7flux[k+1];
+            const double targetrate=storagerate/curvedshell7veff[k];
+            curvedshell7targetrate[k]=targetrate;
+            curvedshell7corrrate[k]=targetrate-curvedshell7currentrate[k];
+            curvedshell7lapcorr[k]=curvedshell7corrrate[k]/diffcoef;
+            curvedshell7targetstorage+=storagerate;
+            curvedshell7currentstorage+=curvedshell7currentrate[k]*curvedshell7veff[k];
+            curvedshell7correctionstorage+=curvedshell7corrrate[k]*curvedshell7veff[k];
+            curvedshell7maxabsratecorr=max(curvedshell7maxabsratecorr,fabs(curvedshell7corrrate[k]));
+            curvedshell7maxabslapcorr=max(curvedshell7maxabslapcorr,fabs(curvedshell7lapcorr[k]));
+          }
+          for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
+            if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
+            const int ib=curvedshell7pbin[p-pini];
+            if(ib<0){ curvedskipped++; continue; }
+            if(velrhop[p].w<=0.f){ curvedskipped++; continue; }
+            if(CurvedDrainedShellCorrectionMode==0){
+              const double replacement=curvedshell7targetrate[unsigned(ib)]/diffcoef-double(lapporepress[p]);
+              lapporepress[p]+=float(replacement);
+              maxabslapadd=max(maxabslapadd,fabs(replacement));
+              maxabsheadadd=max(maxabsheadadd,fabs(replacement/rhog));
+            }
+            else{
+              const double lapadd=curvedshell7lapcorr[unsigned(ib)];
+              lapporepress[p]+=float(lapadd);
+              maxabslapadd=max(maxabslapadd,fabs(lapadd));
+              maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog));
+            }
+            curvedaffected++;
+            curvedshell7corrected++;
+            const double zi=GetHydraulicElevation(pos[p]);
+            const double u=(CurvedDrainedBoundaryUseExcess? porepress[p]-hydrostatic_linear(zi): porepress[p]);
+            maxabsdpwtop=max(maxabsdpwtop,fabs(u-CurvedDrainedBoundaryValue));
+          }
+          curvedshell7correctedstorage=curvedshell7currentstorage+curvedshell7correctionstorage;
+          curvedshell7conservationresidual=curvedshell7targetstorage+curvedshell7boundaryflux;
+        }
+      }
+      topaffected=curvedaffected;
+      if(curvedshell7minpressure==DBL_MAX)curvedshell7minpressure=0.;
+      if(curvedshell7maxpressure==-DBL_MAX)curvedshell7maxpressure=0.;
+    }
+    if(CurvedDrainedBoundaryMode!=7)for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
       if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
       if(velrhop[p].w<=0.f){ skipped++; continue; }
       const tdouble3 rel=pos[p]-CurvedDrainedBoundaryCenter;
@@ -2971,6 +3125,21 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           ,pmean[0],pmean[1],pmean[2],pmean[3],rmean[0],rmean[1],rmean[2],rmean[3]
           ,curvedshellvol[0],curvedshellvol[1],curvedshellvol[2],curvedshellvol[3]);
         Log->Print("CPU curved drained convention: mode 6 estimates a spherical FV boundary flux from radial shell averages and distributes the integrated flux as a LapPorePress correction; material pore pressure is not clamped and no curve-fit coefficient is calibrated.");
+      }
+      if(CurvedDrainedBoundaryMode==7){
+        Log->Printf("CPU curved drained conservative shell exchange: TimeStep=%g, shells=%u, shell_width=%g, shell_mode=%d, correction_mode=%d, min_particles=%u, corrected_particles=%u, fallback_shells=%u, min_pop=%u, max_pop=%u, total_storage=%g Pa*m3, boundary_flux=%g Pa*m3/s, target_storage_rate=%g Pa*m3/s, current_storage_rate=%g Pa*m3/s, correction_storage_rate=%g Pa*m3/s, corrected_storage_rate=%g Pa*m3/s, conservation_residual=%g Pa*m3/s, max_abs_rate_correction=%g Pa/s, max_abs_lap_correction=%g, min_pressure=%g Pa, max_pressure=%g Pa, negative_count=%u."
+          ,timestep,curvedshell7count,curvedshell7width,CurvedDrainedShellMode,CurvedDrainedShellCorrectionMode,CurvedDrainedShellMinParticles
+          ,curvedshell7corrected,curvedshell7fallback,curvedshell7minpop,curvedshell7maxpop,curvedshell7totalstorage
+          ,curvedshell7boundaryflux,curvedshell7targetstorage,curvedshell7currentstorage,curvedshell7correctionstorage
+          ,curvedshell7correctedstorage,curvedshell7conservationresidual,curvedshell7maxabsratecorr,curvedshell7maxabslapcorr
+          ,curvedshell7minpressure,curvedshell7maxpressure,curvedshell7negative);
+        for(unsigned k=0;k<curvedshell7count;k++){
+          Log->Printf("CPU curved drained conservative shell bin: TimeStep=%g, k=%u, r_inner=%g, r_outer=%g, population=%u, effective_volume=%g m3, analytic_volume=%g m3, pressure_mean=%g Pa, radius_mean=%g m, flux_in=%g Pa*m3/s, flux_out=%g Pa*m3/s, fv_rate=%g Pa/s, current_rate=%g Pa/s, correction_rate=%g Pa/s, lap_correction=%g."
+            ,timestep,k,curvedshell7edge[k],curvedshell7edge[k+1],curvedshell7pop[k],curvedshell7veff[k],curvedshell7volana[k]
+            ,curvedshell7pmean[k],curvedshell7rmean[k],curvedshell7flux[k],curvedshell7flux[k+1]
+            ,curvedshell7targetrate[k],curvedshell7currentrate[k],curvedshell7corrrate[k],curvedshell7lapcorr[k]);
+        }
+        Log->Print("CPU curved drained convention: mode 7 applies a conservative radial FV shell-average correction to LapPorePress; it does not clamp material pressure and it does not volume-count dummy boundary particles.");
       }
     }
   }

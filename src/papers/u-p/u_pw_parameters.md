@@ -265,7 +265,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `CurvedDrainedBoundaryValue` | double [Pa] | `0` | Prescribed drained boundary value. | Experimental |
 | `CurvedDrainedBoundaryUseExcess` | `0/1` | `1` | `1`: value is excess pressure; `0`: value is total pressure. | Experimental |
 | `CurvedDrainedBoundaryThickness` | double [m] | `0` | Interior shell thickness for ghost placement; if `<=0`, uses `KernelH`. | Experimental |
-| `CurvedDrainedBoundaryMode` | `0/1/2/3/4/5/6` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: material-side multi-sample spherical Dirichlet boundary quadrature; `4`: boundary-particle prescribed Dirichlet hydraulic state; `5`: radial MLS / integrated flux correction; `6`: radial-shell / FV flux correction. | Experimental |
+| `CurvedDrainedBoundaryMode` | `0/1/2/3/4/5/6/7` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: material-side multi-sample spherical Dirichlet boundary quadrature; `4`: boundary-particle prescribed Dirichlet hydraulic state; `5`: radial MLS / integrated flux correction; `6`: radial-shell / FV flux correction; `7`: conservative multi-shell radial exchange. | Experimental |
 
 Top drained correction:
 
@@ -324,7 +324,8 @@ selects the CPU-only experimental subroute:
 - `3`: material-side multi-sample spherical Dirichlet quadrature;
 - `4`: boundary-particle prescribed Dirichlet hydraulic state;
 - `5`: radial MLS / integrated flux correction, CPU-only experimental;
-- `6`: radial-shell / FV flux correction, CPU-only experimental.
+- `6`: radial-shell / FV flux correction, CPU-only experimental;
+- `7`: conservative multi-shell radial exchange, CPU-only experimental.
 
 Mode `4` is the C5e paper-style boundary-particle prototype. It uses selected
 boundary particles as hydraulic quadrature sites, prescribes the drained value
@@ -370,7 +371,7 @@ Additional mode-5 parameters:
 |---|---:|---:|---|
 | `CurvedDrainedMLSOrder` | `0/1` | `1` | MLS order for mode `5`. `1`: constrained radial linear fit; `0`: fallback route. |
 | `CurvedDrainedMLSRadiusFactor` | float | `1` | Support radius multiplier on `KernelH`; `0` also uses `KernelH`. |
-| `CurvedDrainedFluxDiagnostics` | `0/1` | `0` | Print per-step mode-5 or mode-6 integrated flux diagnostics. |
+| `CurvedDrainedFluxDiagnostics` | `0/1` | `0` | Print per-step mode-5, mode-6, or mode-7 flux diagnostics. |
 | `CurvedDrainedMLSConditionLimit` | float | `1e8` | Maximum accepted local moment condition number. |
 | `CurvedDrainedMLSFallbackMode` | `3/4` | `3` | Fallback if local MLS support is invalid or ill-conditioned. |
 
@@ -385,6 +386,26 @@ pressure-only testing showed that mode `6` runs with `code=0`, `excluded=0`,
 and `Kplastic=0`, but it does not yet pass the FV radial diffusion gate:
 `dp=0.010` improves median flux ratio while keeping the surface shell too high,
 and `dp=0.008` develops late apparent flux reversal.
+
+Mode `7` is the C5m conservative multi-shell radial exchange prototype. It
+partitions the sphere into radial shells and computes FV interface fluxes
+between shell-average pressures, with spherical symmetry at the center and
+`p_b=0` at the drained outer radius. The default C5m gate uses
+`CurvedDrainedShellCorrectionMode=1`, which adds a shell-average correction to
+the existing `LapPorePress` so each populated shell's volume-integrated storage
+rate matches the FV flux balance. It does not clamp material pressure and does
+not count dummy boundary volume. In this prototype, mode `7` is restricted to
+`HydraulicElevationSource=0`.
+
+Additional mode-7 parameters:
+
+| Parameter | Type / values | Default | Purpose |
+|---|---:|---:|---|
+| `CurvedDrainedShellCount` | unsigned | `0` | Number of radial shells for mode `7`; `0` uses an automatic count from radius and shell thickness/dp. |
+| `CurvedDrainedShellMinParticles` | unsigned | `1` | Minimum particles required in a populated shell before fallback. |
+| `CurvedDrainedShellMode` | `0/1` | `0` | `0`: automatic shell count; `1`: fixed `CurvedDrainedShellCount`. |
+| `CurvedDrainedShellCorrectionMode` | `0/1` | `1` | `0`: replace per-particle diffusion rate by the shell FV rate; `1`: add shell-average correction to the existing SPH diffusion rate. |
+| `CurvedDrainedShellDiagnostics` | `0/1` | `0` | Print per-step shell populations, means, interface fluxes, correction rates, and conservation residuals. |
 
 ## 4. Feedback Parameters
 

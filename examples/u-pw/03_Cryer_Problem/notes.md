@@ -756,3 +756,42 @@ Decision:
 - GPU remains deferred;
 - next source task should be C5m conservative multi-shell radial exchange,
   with pressure-only FV radial diffusion as the acceptance gate.
+
+## C5m Conservative Shell Exchange Notes
+
+C5m adds the conservative multi-shell radial exchange prototype:
+
+`strict_reproduction_plan/C5m_ConservativeShellExchange/`
+
+Source scope:
+
+- added `CurvedDrainedBoundaryMode=7`;
+- kept mode `0` to mode `6` behavior unchanged;
+- kept the PR governing equation, `FlexibleConfiningStress`,
+  `SoilConstitutiveModel`, and `HydraulicElevationSource` unchanged;
+- did not add GPU support.
+
+Mode `7` partitions the sphere into radial shells, computes FV interface
+fluxes, and applies a shell-average correction to `LapPorePress` so shell
+storage changes match `F_in-F_out`. The C5m gate used
+`CurvedDrainedShellCorrectionMode=1`, not a material pressure clamp.
+
+Pressure-only CPU Release results:
+
+- `dp=0.008`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `1.927`, final flux ratio `-19.36`, final shell mean `969.08 Pa`;
+- `dp=0.010`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `1.929`, final flux ratio `2.31`, final shell mean `381.88 Pa`.
+
+The shell storage residual is essentially zero by construction, which confirms
+the conservative correction is active. The pressure-only gate still fails:
+`dp=0.010` improves surface-shell RMSE but damages center/volume behavior, and
+`dp=0.008` develops late flux reversal and a strong pressure-rate artifact.
+
+Decision:
+
+- no Cryer compression smoke was run;
+- C6 remains blocked;
+- GPU remains deferred;
+- next source task should be a corrected near-boundary SPH Laplacian /
+  consistency operator, with C5m shell balance retained as a diagnostic.

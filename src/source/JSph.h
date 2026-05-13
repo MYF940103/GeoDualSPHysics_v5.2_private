@@ -215,7 +215,7 @@ protected:
   double CurvedDrainedBoundaryValue; ///<Prescribed curved drained boundary pressure/excess value [Pa].
   bool CurvedDrainedBoundaryUseExcess; ///<True: value is excess pressure; false: value is total pressure.
   double CurvedDrainedBoundaryThickness; ///<Interior shell thickness for curved drained boundary. If <=0, KernelH is used.
-  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction, 6:radial-shell flux correction.
+  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction, 6:radial-shell flux correction, 7:conservative multi-shell radial exchange.
   int CurvedDrainedBoundaryTargetMkBound; ///<Target mkbound for mode 4 boundary-particle hydraulic state. -1:all boundary particles passing sphere selection.
   bool CurvedDrainedBoundaryUseBoundaryParticles; ///<Enable selected boundary-particle participation for curved drained mode 4.
   double CurvedDrainedBoundarySelectionTolerance; ///<Radius tolerance for selecting curved drained boundary particles. If <=0, KernelH is used.
@@ -226,6 +226,11 @@ protected:
   bool CurvedDrainedFluxDiagnostics; ///<Print per-step mode 5 integrated flux diagnostics.
   double CurvedDrainedMLSConditionLimit; ///<Maximum accepted local MLS condition number for mode 5.
   int CurvedDrainedMLSFallbackMode; ///<Fallback for mode 5 ill-conditioned support. 3:mode-3-like ghost, 4:mode-4-like local gap.
+  unsigned CurvedDrainedShellCount; ///<Shell count for mode 7. 0:auto.
+  unsigned CurvedDrainedShellMinParticles; ///<Minimum particles per mode 7 shell before fallback.
+  int CurvedDrainedShellMode; ///<Mode 7 shell layout. 0:auto count, 1:fixed CurvedDrainedShellCount.
+  int CurvedDrainedShellCorrectionMode; ///<Mode 7 correction. 0:replace diffusion rate, 1:shell-average correction.
+  bool CurvedDrainedShellDiagnostics; ///<Print per-step mode 7 shell diagnostics.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.

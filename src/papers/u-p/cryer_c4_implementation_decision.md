@@ -684,3 +684,40 @@ Decision after C5l:
 - do not continue simple dp refinement;
 - next source task should be C5m, a conservative multi-shell radial exchange
   prototype, tested first on pressure-only FV radial diffusion.
+
+## C5m: Conservative Multi-Shell Radial Exchange Prototype
+
+C5m is complete as a CPU-only source prototype and pressure-only diffusion gate
+under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5m_ConservativeShellExchange/`
+
+It adds `CurvedDrainedBoundaryMode=7` for the existing
+`PorePressureBoundaryOperator=3` curved drained path. Mode `7` computes
+radial FV shell interface fluxes and applies a shell-average correction to the
+existing `LapPorePress` so the populated shells satisfy
+`dS_k/dt = F_{k-1/2} - F_{k+1/2}` in volume-integrated form. It keeps the
+drained value `p_b=0`, does not clamp material pore pressure, does not count
+dummy boundary volume, and remains CPU-only experimental.
+
+Both pressure-only CPU Release cases completed with `code=0`, `excluded=0`,
+and `Kplastic=0`:
+
+- `dp=0.008`, `1213` material particles;
+- `dp=0.010`, `739` material particles.
+
+The shell storage residual was reduced to machine precision in the source
+diagnostics, but the pressure-only gate still failed. The `dp=0.010` case
+improves the surface-shell RMSE relative to modes `4`, `5`, and `6`, but
+worsens center and volume-mean RMSE and has median flux ratio `1.929`. The
+`dp=0.008` case develops late apparent flux reversal (`final flux ratio=-19.36`)
+and a large pressure-rate artifact (`4.48e6 Pa/s`).
+
+Decision after C5m:
+
+- no Cryer compression smoke was run because the pressure-only gate failed;
+- C6 quantitative Figure 7B comparison remains blocked;
+- simple dp refinement remains deferred;
+- the next source task should move toward a true corrected near-boundary SPH
+  Laplacian/consistency operator, using the C5m shell balance as diagnostics;
+- GPU remains deferred.

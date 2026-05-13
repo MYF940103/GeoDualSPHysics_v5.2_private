@@ -1356,3 +1356,22 @@ GPU-ready path.
 GPU porting remains deferred. The next CPU task should be a conservative
 multi-shell radial exchange prototype; GPU work should resume only after that
 pressure-only FV radial diffusion gate passes.
+
+## Cryer C5m Conservative Shell Exchange Prototype
+
+C5m adds `CurvedDrainedBoundaryMode=7` as a CPU-only experimental subroute of
+`PorePressureBoundaryOperator=3`. Mode `7` enforces radial shell storage
+balance through FV interface fluxes and a shell-average `LapPorePress`
+correction. It does not clamp material pore pressure, does not count dummy
+boundary volumes, and does not change the PR pressure update form.
+
+The C5m pressure-only CPU Release gate ran for `dp=0.008` and `dp=0.010`.
+Both cases completed with `code=0`, `excluded=0`, and `Kplastic=0`, and the
+source shell storage residual is essentially machine zero. The pressure-only
+gate still failed: `dp=0.008` has late apparent flux reversal and a large
+pressure-rate artifact, while `dp=0.010` improves the surface shell but worsens
+center/volume decay.
+
+GPU porting remains deferred. Mode `7` is covered by the same curved drained
+GPU hard error as modes `3` to `6`; porting it before the pressure-only FV
+radial diffusion gate passes would only duplicate a failing diagnostic route.

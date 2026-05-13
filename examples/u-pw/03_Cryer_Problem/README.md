@@ -700,3 +700,34 @@ Key result:
 Decision: C6 remains blocked. The next source task should be a conservative
 multi-shell radial exchange prototype, not another dp refinement or local MLS
 only.
+
+## C5m Conservative Shell Exchange Prototype
+
+C5m is retained under:
+
+`strict_reproduction_plan/C5m_ConservativeShellExchange/`
+
+It adds `CurvedDrainedBoundaryMode=7`, a CPU-only conservative multi-shell
+radial exchange prototype for `PorePressureBoundaryOperator=3`. Mode `7`
+computes radial FV shell interface fluxes and applies a shell-average
+`LapPorePress` correction so the populated shells satisfy the finite-volume
+storage balance. It does not clamp material pressure and does not volume-count
+dummy boundary particles.
+
+Pressure-only CPU Release runs completed for `dp=0.008` and `dp=0.010` with
+`code=0`, `excluded=0`, and `Kplastic=0`. No GPU run and no Cryer compression
+smoke were performed.
+
+Gate result:
+
+- shell storage/flux conservation residual is reduced to machine precision in
+  the mode-7 diagnostics;
+- `dp=0.010` improves surface-shell RMSE relative to modes `4`, `5`, and `6`,
+  but center and volume-mean RMSE worsen;
+- `dp=0.008` develops late apparent flux reversal (`final flux ratio=-19.36`)
+  and a large `PorePressRate` artifact (`4.48e6 Pa/s`);
+- neither case passes the pressure-only FV radial diffusion gate.
+
+Decision: C6 remains blocked. The shell-conservative route is useful as a
+diagnostic, but the next source task should move toward a corrected
+near-boundary SPH Laplacian/consistency operator.
