@@ -502,7 +502,10 @@ Status after C5q:
 |---|---:|---:|---|---|
 | `PorePressureFeedback` | `0/1` | `0` | Enables pore-pressure acceleration feedback to `Acec`. | Keep |
 | `PorePressureFeedbackMode` | `0/1` | `0` | `0`: use total `PorePress`; `1`: use excess `PorePress - p_hydro`. | Keep |
-| `PorePressureFeedbackOperator` | `0/1` | `0` | `0`: symmetric stress-style operator; `1`: difference-gradient operator. | Keep |
+| `PorePressureFeedbackOperator` | `0/1/2` | `0` | `0`: symmetric stress-style operator; `1`: difference-gradient operator; `2`: CPU-only LSQ pressure-gradient feedback. | Keep / Experimental |
+| `PorePressureFeedbackLSQRadiusFactor` | float, `>0` | `1` | Support-radius factor for operator `2`, capped by the kernel support. | Experimental |
+| `PorePressureFeedbackLSQConditionLimit` | float, `>=0` | `1e12` | LSQ condition proxy limit for operator `2`; `<=0` disables the condition check. | Experimental |
+| `PorePressureFeedbackLSQFallback` | `0/1` | `0` | Operator `2` fallback: `0` uses operator `1` difference-gradient, `1` applies zero feedback for ill-conditioned particles. | Experimental |
 | `PorePressureFeedbackStartTime` | seconds | `0` | Optional CPU feedback gate. Feedback acceleration is zero before this time when `PorePressureFeedback=1`. | Experimental |
 | `PorePressureFeedbackRampEndTime` | seconds | `0` | Optional CPU feedback ramp end time. If greater than `StartTime`, feedback factor ramps linearly from zero to `Scale`. | Experimental |
 | `PorePressureFeedbackScale` | `0..1` | `1` | Maximum pore-pressure feedback acceleration scale for staged equilibration diagnostics. | Experimental |
@@ -591,9 +594,21 @@ Operator 0: symmetric stress-style diagnostic
 Operator 1: difference-gradient feedback
   gradp_i = sum_j (m_j/rho_j) * (p_j-p_i) * gradW_ij
   a_pw = -gradp_i/rho_i
+
+Operator 2: LSQ pressure-gradient feedback
+  p_j - p_i ~= gradp_i dot (x_j-x_i)
+  A_i gradp_i = b_i
+  a_pw = -gradp_i/rho_i
 ```
 
 `Sigmac` remains the skeleton effective stress. Pore pressure is not subtracted from `Sigmac`; it is fed back as an acceleration term.
+
+T4h adds operator `2` only as a CPU diagnostic route. It passes the static
+manufactured uniform and linear-pressure checks, but it does not pass the
+selected-confinement dynamic gate: unstabilized LSQ reaches about
+`5.04e10 Pa/s` max `PorePressRate`, and stabilized LSQ still reverses. Do not
+use operator `2` as a triaxial validation setting yet. GPU execution
+hard-errors when operator `2` is requested.
 
 ## 5. Stabilization Parameters
 

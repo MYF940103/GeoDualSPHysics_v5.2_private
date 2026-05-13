@@ -250,6 +250,9 @@ void JSph::InitVars(){
   PorePressureFeedbackStartTime=0.;
   PorePressureFeedbackRampEndTime=0.;
   PorePressureFeedbackScale=1.;
+  PorePressureFeedbackLSQRadiusFactor=1.;
+  PorePressureFeedbackLSQConditionLimit=1e12;
+  PorePressureFeedbackLSQFallback=0;
   SavePorePressureFeedbackDiagnostics=false;
   PorePressureFeedbackDiagInterval=1;
   PorePressureFeedbackLimiterMode=0;
@@ -332,6 +335,11 @@ void JSph::InitVars(){
   PorePressureFeedbackDiagClassLateralMax=0.;
   PorePressureFeedbackDiagClassCapMax=0.;
   PorePressureFeedbackDiagClassInteriorMax=0.;
+  PorePressureFeedbackDiagLsqSolvedCount=0;
+  PorePressureFeedbackDiagLsqFallbackCount=0;
+  PorePressureFeedbackDiagLsqCondMin=0.;
+  PorePressureFeedbackDiagLsqCondMax=0.;
+  PorePressureFeedbackDiagLsqCondMean=0.;
   PorePressureFeedbackDiagLastPrintStep=-1;
   PorePressureTopDrainedStartTime=0.;
   HydromechDamping=false;
@@ -1015,11 +1023,19 @@ void JSph::LoadConfigParameters(const JXml *xml){
   switch(eparms.GetValueInt("PorePressureFeedbackOperator",true,0)){
     case 0:  PorePressureFeedbackOperator=0;  break;
     case 1:  PorePressureFeedbackOperator=1;  break;
+    case 2:  PorePressureFeedbackOperator=2;  break;
     default: Run_Exceptioon("PorePressureFeedbackOperator is not valid.");
   }
   PorePressureFeedbackStartTime=eparms.GetValueDouble("PorePressureFeedbackStartTime",true,0.);
   PorePressureFeedbackRampEndTime=eparms.GetValueDouble("PorePressureFeedbackRampEndTime",true,0.);
   PorePressureFeedbackScale=eparms.GetValueDouble("PorePressureFeedbackScale",true,1.);
+  PorePressureFeedbackLSQRadiusFactor=eparms.GetValueDouble("PorePressureFeedbackLSQRadiusFactor",true,1.);
+  PorePressureFeedbackLSQConditionLimit=eparms.GetValueDouble("PorePressureFeedbackLSQConditionLimit",true,1e12);
+  switch(eparms.GetValueInt("PorePressureFeedbackLSQFallback",true,0)){
+    case 0:  PorePressureFeedbackLSQFallback=0;  break;
+    case 1:  PorePressureFeedbackLSQFallback=1;  break;
+    default: Run_Exceptioon("PorePressureFeedbackLSQFallback is not valid. Valid values are 0:difference-gradient and 1:zero feedback.");
+  }
   switch(eparms.GetValueInt("SavePorePressureFeedbackDiagnostics",true,0)){
     case 0:  SavePorePressureFeedbackDiagnostics=false;  break;
     case 1:  SavePorePressureFeedbackDiagnostics=true;   break;
@@ -1156,6 +1172,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
   if(PorePressureFeedbackScale<0. || PorePressureFeedbackScale>1.)
     Run_Exceptioon("PorePressureFeedbackScale must be between 0 and 1.");
+  if(PorePressureFeedbackLSQRadiusFactor<0.)
+    Run_Exceptioon("PorePressureFeedbackLSQRadiusFactor must be greater than or equal to zero.");
+  if(PorePressureFeedbackLSQConditionLimit<0.)
+    Run_Exceptioon("PorePressureFeedbackLSQConditionLimit must be greater than or equal to zero.");
   if(PorePressureFeedbackRampEndTime>0. && PorePressureFeedbackRampEndTime<PorePressureFeedbackStartTime)
     Run_Exceptioon("PorePressureFeedbackRampEndTime must be greater than or equal to PorePressureFeedbackStartTime.");
   if(PorePressureFeedbackDiagInterval<1)
@@ -1178,6 +1198,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Log->PrintWarning("Pore-pressure feedback class filter is enabled but PorePressureFeedback=0. The filter will have no force effect.");
   if(PorePressureFeedbackExcludeConfinementTargets && !ConfiningStressUseLateralSelector)
     Run_Exceptioon("PorePressureFeedbackExcludeConfinementTargets=1 currently requires ConfiningStressUseLateralSelector=1 so selected lateral confinement targets are well-defined.");
+  if(!Cpu && PorePressureFeedbackOperator==2)
+    Run_Exceptioon("PorePressureFeedbackOperator=2 is CPU-only in this branch. GPU support is not implemented.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(!HydraulicElevationSource && !Cpu)
@@ -2265,10 +2287,15 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
-    Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle")));
+    Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==2? "LSQPressureGradient": (PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle"))));
     Log->Print(fun::VarStr("  PorePressureFeedbackStartTime",PorePressureFeedbackStartTime));
     Log->Print(fun::VarStr("  PorePressureFeedbackRampEndTime",PorePressureFeedbackRampEndTime));
     Log->Print(fun::VarStr("  PorePressureFeedbackScale",PorePressureFeedbackScale));
+    if(PorePressureFeedbackOperator==2){
+      Log->Print(fun::VarStr("  PorePressureFeedbackLSQRadiusFactor",PorePressureFeedbackLSQRadiusFactor));
+      Log->Print(fun::VarStr("  PorePressureFeedbackLSQConditionLimit",PorePressureFeedbackLSQConditionLimit));
+      Log->Print(fun::VarStr("  PorePressureFeedbackLSQFallback",(PorePressureFeedbackLSQFallback==0? "DifferenceGradient": "ZeroFeedback")));
+    }
     Log->Print(fun::VarStr("  SavePorePressureFeedbackDiagnostics",SavePorePressureFeedbackDiagnostics));
     Log->Print(fun::VarStr("  PorePressureFeedbackDiagInterval",PorePressureFeedbackDiagInterval));
     Log->Print(fun::VarStr("  PorePressureFeedbackLimiterMode",PorePressureFeedbackLimiterMode));
@@ -3590,6 +3617,11 @@ void JSph::PrintPorePressureFeedbackDiagnostics()const{
       Log->Printf("PorePressureFeedback class diagnostics: step=%d, lateral_used_max=%g, cap_edge_used_max=%g, interior_used_max=%g."
         ,Nstep,PorePressureFeedbackDiagClassLateralMax,PorePressureFeedbackDiagClassCapMax
         ,PorePressureFeedbackDiagClassInteriorMax);
+    }
+    if(PorePressureFeedbackOperator==2){
+      Log->Printf("PorePressureFeedback LSQ diagnostics: step=%d, solved=%u, fallback=%u, cond_min=%g, cond_mean=%g, cond_max=%g."
+        ,Nstep,PorePressureFeedbackDiagLsqSolvedCount,PorePressureFeedbackDiagLsqFallbackCount
+        ,PorePressureFeedbackDiagLsqCondMin,PorePressureFeedbackDiagLsqCondMean,PorePressureFeedbackDiagLsqCondMax);
     }
     PorePressureFeedbackDiagLastPrintStep=Nstep;
   }

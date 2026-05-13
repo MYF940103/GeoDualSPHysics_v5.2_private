@@ -401,3 +401,39 @@ failure is the explicit dynamic feedback formulation near selected confinement,
 especially when class filtering is not applied. Do not restore axial loading or
 enter DP/MCC yet. T4h should focus on a physically consistent feedback
 formulation patch, likely starting from class-filtered operator `1`.
+
+## T4h Corrected Feedback Gradient Notes
+
+T4h implements `PorePressureFeedbackOperator=2`, a CPU-only experimental LSQ
+pressure-gradient feedback operator. The local reconstruction solves
+
+```text
+p_j - p_i ~= grad(p)_i dot (x_j - x_i)
+```
+
+and applies `a_fb=-grad(p)_i/rho_i`. The operator respects
+`PorePressureFeedbackMode`, reuses the T4g class filter, and leaves the PR
+pressure update untouched. The new LSQ controls are:
+
+- `PorePressureFeedbackLSQRadiusFactor`;
+- `PorePressureFeedbackLSQConditionLimit`;
+- `PorePressureFeedbackLSQFallback`.
+
+The manufactured tests pass the intended consistency check. Uniform pressure
+still gives zero acceleration. For the linear `p=1000 x` field, operator `2`
+has machine-precision error while operator `1` has a finite boundary-cloud
+gradient error.
+
+The dynamic selected-confinement gate still fails:
+
+- operator `1` interior-only reaches max `PorePressRate=4.79e10 Pa/s` and
+  reverses at `0.003821 s`;
+- unstabilized operator `2` reaches `5.04e10 Pa/s` and reverses at the same
+  time;
+- operator `2` plus relax+cap lowers max `PorePressRate` to `4.65e8 Pa/s`, but
+  pressure still reverses and local negative pressure remains.
+
+The LSQ systems are well-conditioned in this small test (`407` solved, `0`
+fallbacks, condition proxy about `3-4`). That means LSQ consistency alone does
+not solve the explicit u-pw feedback instability. Axial loading, DP, and MCC
+remain deferred.

@@ -247,7 +247,7 @@ void JSphCpuSingle::ConfigDomain(){
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback)
     Log->Printf("Pore-pressure feedback to momentum: enabled on CPU. Feedback mode=%s, operator=%s."
       ,(PorePressureFeedbackMode==1? "excess pressure": "total pressure")
-      ,(PorePressureFeedbackOperator==1? "difference-gradient": "symmetric stress-style"));
+      ,(PorePressureFeedbackOperator==2? "LSQ pressure-gradient": (PorePressureFeedbackOperator==1? "difference-gradient": "symmetric stress-style")));
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && HydromechDamping)
     Log->Printf("Hydromechanical damping enabled: xi=%g, coef=%g 1/s, start=%g, end=%g."
       ,HydromechDampingXi,HydromechDampingCoef,HydromechDampingStartTime,HydromechDampingEndTime);
@@ -845,10 +845,13 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
     HydroCorrDiagPrint=true;
   }
   if(HydromechCoupling && PorePressc && PorePressureAcec)ComputePorePressureAccel(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAcec);
-  if(HydromechCoupling && PorePressc && PorePressureAceDiffc)ComputePorePressureAccelDiff(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
+  if(HydromechCoupling && PorePressc && PorePressureAceDiffc){
+    if(PorePressureFeedbackOperator==2)ComputePorePressureAccelLsq(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
+    else ComputePorePressureAccelDiff(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
+  }
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && Acec){
     if(PorePressureFeedbackOperator==0 && PorePressureAcec)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,Posc,PorePressureAcec,PorePressureAceDiffc,PorePressureFeedbackUsedAcec,Acec);
-    else if(PorePressureFeedbackOperator==1 && PorePressureAceDiffc)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,Posc,PorePressureAcec,PorePressureAceDiffc,PorePressureFeedbackUsedAcec,Acec);
+    else if((PorePressureFeedbackOperator==1 || PorePressureFeedbackOperator==2) && PorePressureAceDiffc)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,Posc,PorePressureAcec,PorePressureAceDiffc,PorePressureFeedbackUsedAcec,Acec);
     PrintPorePressureFeedbackDiagnostics();
   }
   if(HydromechDamping && Acec){

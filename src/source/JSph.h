@@ -257,10 +257,13 @@ protected:
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
-  int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient.
+  int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient, 2:LSQ pressure gradient.
   double PorePressureFeedbackStartTime; ///<Time when pore-pressure feedback acceleration starts [s].
   double PorePressureFeedbackRampEndTime; ///<Optional time when feedback acceleration reaches full scale [s].
   double PorePressureFeedbackScale; ///<Maximum pore-pressure feedback acceleration scale.
+  double PorePressureFeedbackLSQRadiusFactor; ///<Operator 2 support radius factor relative to kernel size. <=0 uses full support.
+  double PorePressureFeedbackLSQConditionLimit; ///<Operator 2 maximum Frobenius condition proxy. <=0 disables the limit.
+  int PorePressureFeedbackLSQFallback; ///<Operator 2 fallback. 0:difference-gradient, 1:zero feedback.
   bool SavePorePressureFeedbackDiagnostics; ///<Print pore-pressure feedback acceleration diagnostics.
   unsigned PorePressureFeedbackDiagInterval; ///<Step interval for pore-pressure feedback diagnostics.
   int PorePressureFeedbackLimiterMode; ///<Feedback limiter mode. 0:none, 1:absolute cap, 2:ratio cap, 3:absolute+ratio cap.
@@ -343,6 +346,11 @@ protected:
   mutable double PorePressureFeedbackDiagClassLateralMax; ///<Last lateral-class used feedback acceleration max.
   mutable double PorePressureFeedbackDiagClassCapMax; ///<Last cap/edge-class used feedback acceleration max.
   mutable double PorePressureFeedbackDiagClassInteriorMax; ///<Last interior-class used feedback acceleration max.
+  mutable unsigned PorePressureFeedbackDiagLsqSolvedCount; ///<Last LSQ feedback solved count.
+  mutable unsigned PorePressureFeedbackDiagLsqFallbackCount; ///<Last LSQ feedback fallback count.
+  mutable double PorePressureFeedbackDiagLsqCondMin; ///<Last LSQ feedback condition proxy minimum.
+  mutable double PorePressureFeedbackDiagLsqCondMax; ///<Last LSQ feedback condition proxy maximum.
+  mutable double PorePressureFeedbackDiagLsqCondMean; ///<Last LSQ feedback condition proxy mean.
   mutable int PorePressureFeedbackDiagLastPrintStep; ///<Last step printed for feedback diagnostics.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.

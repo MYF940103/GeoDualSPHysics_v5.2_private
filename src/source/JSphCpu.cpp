@@ -4004,11 +4004,194 @@ void JSphCpu::ComputePorePressureAccelDiff(unsigned n,unsigned pini
 }
 
 //==============================================================================
+/// Computes LSQ-corrected pore-pressure feedback acceleration diagnostic for material particles.
+//==============================================================================
+template<TpKernel tker> void JSphCpu::ComputePorePressureAccelLsqT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacelsq)const
+{
+  const bool excessmode=(PorePressureFeedbackMode==1);
+  if(excessmode && HydraulicElevationSource && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for excess pore-pressure feedback LSQ diagnostic.");
+  const double rfac=(PorePressureFeedbackLSQRadiusFactor>0.? PorePressureFeedbackLSQRadiusFactor: 1.);
+  const double rrmax2=min(double(KernelSize2),double(KernelSize2)*rfac*rfac);
+  const double condlimit=PorePressureFeedbackLSQConditionLimit;
+  const bool fallbackdiff=(PorePressureFeedbackLSQFallback==0);
+  const bool sim2d=Simulate2D;
+  const unsigned minneigh=(sim2d? 4u: 6u);
+  const double detlimit=1e-30;
+
+  struct StLsqDiag{
+    unsigned solved,fallback,condcount;
+    double condsum,condmin,condmax;
+    StLsqDiag():solved(0),fallback(0),condcount(0),condsum(0),condmin(DBL_MAX),condmax(0){}
+  };
+  const int nint=int(n);
+  const unsigned nth=
+  #ifdef OMP_USE
+    (nint>OMP_LIMIT_COMPUTELIGHT? unsigned(omp_get_max_threads()): 1u);
+  #else
+    1u;
+  #endif
+  vector<StLsqDiag> diag(nth);
+
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    unsigned th=0;
+    #ifdef OMP_USE
+      if(nint>OMP_LIMIT_COMPUTELIGHT)th=unsigned(omp_get_thread_num());
+    #endif
+    StLsqDiag &dg=diag[th];
+    const unsigned p1=pini+unsigned(cp);
+    if(!CODE_IsFluid(code[p1]))continue;
+
+    const tdouble3 posp1=pos[p1];
+    const double hydro1=(excessmode? GetHydrostaticPorePressure(posp1): 0.);
+    const double pwp1=porepress[p1]-hydro1;
+    const double rhop1=double(velrhop[p1].w);
+    if(rhop1<=0.)continue;
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+
+    tmatrix3d amat=TMatrix3d(0);
+    tdouble3 bvec=TDouble3(0);
+    tfloat3 difface=TFloat3(0);
+    unsigned nneigh=0;
+
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(p2==p1 || !CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const double x2=pos[p2].x;
+        const double y2=(rsym? -pos[p2].y: pos[p2].y);
+        const double z2=pos[p2].z;
+        const float drx=float(posp1.x-x2);
+              float dry=float(posp1.y-y2);
+        const float drz=float(posp1.z-z2);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(double(rr2)<=rrmax2 && rr2>=ALMOSTZERO && velrhop[p2].w>0.f){
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const double rhop2=double(velrhop[p2].w);
+          const tdouble3 posp2h=TDouble3(x2,y2,z2);
+          const double hydro2=(excessmode? GetHydrostaticPorePressure(posp2h): 0.);
+          const double pwp2=porepress[p2]-hydro2;
+          const double coef=-double(MassFluid)*(pwp2-pwp1)/(rhop2*rhop1);
+          difface.x+=float(coef*double(frx));
+          difface.y+=float(coef*double(fry));
+          difface.z+=float(coef*double(frz));
+
+          const double wab=double(fsph::GetKernel_Wab<tker>(CSP,rr2));
+          const double vol2=double(MassFluid)/rhop2;
+          const double w=vol2*wab;
+          if(w>0.){
+            const double dx=x2-posp1.x;
+            const double dy=(sim2d? 0.: y2-posp1.y);
+            const double dz=z2-posp1.z;
+            const double dp=pwp2-pwp1;
+            amat.a11+=w*dx*dx; amat.a12+=w*dx*dy; amat.a13+=w*dx*dz;
+            amat.a21+=w*dy*dx; amat.a22+=w*dy*dy; amat.a23+=w*dy*dz;
+            amat.a31+=w*dz*dx; amat.a32+=w*dz*dy; amat.a33+=w*dz*dz;
+            bvec.x+=w*dp*dx; bvec.y+=w*dp*dy; bvec.z+=w*dp*dz;
+            nneigh++;
+          }
+          rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+          if(rsym)p2--;                                             //<vs_syymmetry>
+        }
+        else rsym=false;                                            //<vs_syymmetry>
+      }
+    }
+
+    bool solved=false;
+    double cond=0.;
+    tdouble3 grad=TDouble3(0);
+    if(nneigh>=minneigh){
+      if(sim2d){
+        const double a=amat.a11,b=amat.a13,c=amat.a31,d=amat.a33;
+        const double det=a*d-b*c;
+        if(fabs(det)>detlimit){
+          const double i11=d/det,i13=-b/det,i31=-c/det,i33=a/det;
+          const double norm=sqrt(a*a+b*b+c*c+d*d);
+          const double invnorm=sqrt(i11*i11+i13*i13+i31*i31+i33*i33);
+          cond=norm*invnorm;
+          if((condlimit<=0. || cond<=condlimit) && cond==cond){
+            grad.x=i11*bvec.x+i13*bvec.z;
+            grad.y=0.;
+            grad.z=i31*bvec.x+i33*bvec.z;
+            solved=(grad.x==grad.x && grad.z==grad.z);
+          }
+        }
+      }
+      else{
+        const double det=fmath::Determinant3x3(amat);
+        if(fabs(det)>detlimit){
+          const tmatrix3d inv=fmath::InverseMatrix3x3(amat,det);
+          const double norm=sqrt(amat.a11*amat.a11+amat.a12*amat.a12+amat.a13*amat.a13
+            +amat.a21*amat.a21+amat.a22*amat.a22+amat.a23*amat.a23
+            +amat.a31*amat.a31+amat.a32*amat.a32+amat.a33*amat.a33);
+          const double invnorm=sqrt(inv.a11*inv.a11+inv.a12*inv.a12+inv.a13*inv.a13
+            +inv.a21*inv.a21+inv.a22*inv.a22+inv.a23*inv.a23
+            +inv.a31*inv.a31+inv.a32*inv.a32+inv.a33*inv.a33);
+          cond=norm*invnorm;
+          if((condlimit<=0. || cond<=condlimit) && cond==cond){
+            grad.x=inv.a11*bvec.x+inv.a12*bvec.y+inv.a13*bvec.z;
+            grad.y=inv.a21*bvec.x+inv.a22*bvec.y+inv.a23*bvec.z;
+            grad.z=inv.a31*bvec.x+inv.a32*bvec.y+inv.a33*bvec.z;
+            solved=(grad.x==grad.x && grad.y==grad.y && grad.z==grad.z);
+          }
+        }
+      }
+    }
+
+    if(solved){
+      porepressureacelsq[p1]=TFloat3(float(-grad.x/rhop1),float(-grad.y/rhop1),float(-grad.z/rhop1));
+      dg.solved++;
+      dg.condcount++;
+      dg.condsum+=cond;
+      dg.condmin=min(dg.condmin,cond);
+      dg.condmax=max(dg.condmax,cond);
+    }
+    else{
+      porepressureacelsq[p1]=(fallbackdiff? difface: TFloat3(0));
+      dg.fallback++;
+    }
+  }
+
+  unsigned solved=0,fallback=0,condcount=0;
+  double condsum=0.,condmin=DBL_MAX,condmax=0.;
+  for(unsigned c=0;c<nth;c++){
+    solved+=diag[c].solved;
+    fallback+=diag[c].fallback;
+    condcount+=diag[c].condcount;
+    condsum+=diag[c].condsum;
+    condmin=min(condmin,diag[c].condmin);
+    condmax=max(condmax,diag[c].condmax);
+  }
+  PorePressureFeedbackDiagLsqSolvedCount=solved;
+  PorePressureFeedbackDiagLsqFallbackCount=fallback;
+  PorePressureFeedbackDiagLsqCondMin=(condmin<DBL_MAX? condmin: 0.);
+  PorePressureFeedbackDiagLsqCondMax=condmax;
+  PorePressureFeedbackDiagLsqCondMean=(condcount? condsum/double(condcount): 0.);
+}
+
+//==============================================================================
+/// Computes LSQ-corrected pore-pressure feedback acceleration diagnostic for material particles.
+//==============================================================================
+void JSphCpu::ComputePorePressureAccelLsq(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacelsq)const
+{
+       if(TKernel==KERNEL_Wendland)ComputePorePressureAccelLsqT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacelsq);
+  else if(TKernel==KERNEL_Cubic)   ComputePorePressureAccelLsqT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureacelsq);
+  else Run_Exceptioon("Kernel unknown.");
+}
+
+//==============================================================================
 /// Adds pore-pressure feedback acceleration to material particles.
 //==============================================================================
 void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *porepressurefeedbackused,tfloat3 *ace)const
 {
-  const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==1? porepressureacediff: porepressureace);
+  const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==0? porepressureace: porepressureacediff);
   if(!porepressurefeedbackace)Run_Exceptioon("Selected pore-pressure feedback operator has no acceleration array.");
   ResetPorePressureFeedbackDiagnostics();
   const double feedbackfactor=GetPorePressureFeedbackFactor(TimeStep);

@@ -1704,3 +1704,24 @@ remain in confinement-only full-feedback tests. GPU parity, T5 DP, and T6 MCC
 remain deferred. The next CPU task should be a narrow feedback formulation
 patch based on class-filtered operator `1`, not a GPU port or constitutive
 model extension.
+
+## T4h Corrected Feedback Gradient GPU Status
+
+T4h adds `PorePressureFeedbackOperator=2`, a CPU-only experimental LSQ
+pressure-gradient feedback operator. It solves a local weighted least-squares
+gradient and applies `a_fb=-grad(p_w)/rho` through the existing feedback
+acceleration path. New LSQ controls are:
+
+- `PorePressureFeedbackLSQRadiusFactor`;
+- `PorePressureFeedbackLSQConditionLimit`;
+- `PorePressureFeedbackLSQFallback`.
+
+The parser accepts these keys on both builds, but GPU execution hard-errors
+when `PorePressureFeedbackOperator=2` is requested. This is intentional. T4h
+shows that LSQ improves manufactured linear-gradient consistency, but it does
+not pass the selected-confinement dynamic gate. Operator `2` remains a CPU
+diagnostic path, not a GPU validation target.
+
+GPU triaxial validation remains deferred. The default GPU route must continue
+to avoid non-default feedback gating, class filtering, stabilization, and LSQ
+feedback until the CPU feedback formulation is validation-ready.

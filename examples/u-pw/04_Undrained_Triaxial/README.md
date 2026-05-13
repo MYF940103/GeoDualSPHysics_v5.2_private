@@ -10,20 +10,20 @@ apply a tiny axial loading increment.
 
 ## Files
 
-- `CaseUndrainedTriaxial_PR_Smoke_Def.xml`  
+- `CaseUndrainedTriaxial_PR_Smoke_Def.xml`
   Reduced CPU smoke case with u-pw PR enabled, undrained top drainage delayed,
   pressure feedback set to excess/difference-gradient mode, Shepard smoothing,
   and Supporting Information style damping.
-- `xCaseUndrainedTriaxial_PR_Smoke_win64_CPU_debug.bat`  
+- `xCaseUndrainedTriaxial_PR_Smoke_win64_CPU_debug.bat`
   Debug CPU launcher for the smoke case.
-- `TriaxialAxialAcc_m1.csv`  
+- `TriaxialAxialAcc_m1.csv`
   Native AccInput history for the top material layer. The final axial
   acceleration is only `-0.047619 m/s2`.
-- `analyze_triaxial_smoke.py`  
+- `analyze_triaxial_smoke.py`
   Lightweight postprocessing scaffold for framewise approximate `p'`, `q`,
   axial-strain proxy, velocity, and pore-pressure summaries from `PartCsv`
   outputs.
-- `CaseUndrainedTriaxial_PR_TODO_Def.xml`  
+- `CaseUndrainedTriaxial_PR_TODO_Def.xml`
   Historical TODO scaffold retained as a reminder that strict reproduction is
   not complete.
 
@@ -417,3 +417,38 @@ pass the confinement-only gate because pressure reversal and large
 `PorePressRate` excursions remain. Axial loading is therefore still not
 restored, and T5 DP / T6 MCC remain deferred. The next step should be a narrow
 T4h feedback formulation patch, not another loading schedule sweep.
+
+## T4h Corrected Feedback Gradient
+
+T4h is retained under:
+
+`experiments/T4h_CorrectedFeedback/`
+
+It adds a CPU-only experimental feedback operator:
+
+```xml
+<parameter key="PorePressureFeedbackOperator" value="2" />
+```
+
+Operator `2` reconstructs a local LSQ pressure gradient and applies
+`a_fb=-grad(p_w)/rho` to the mechanical acceleration. The PR pore-pressure
+update is unchanged. Defaults remain unchanged; operator `2` is opt-in and GPU
+hard-errors.
+
+The manufactured feedback gate improved exactly where intended: uniform
+pressure gives zero acceleration, and a linear `p=1000 x` field gives machine
+precision gradient error for operator `2` versus finite boundary-cloud error
+for operator `1`.
+
+The dynamic selected-confinement gate did not pass:
+
+| Case | Result |
+| --- | --- |
+| operator `1` interior baseline | `code=0`, `excluded=0`, `DtMin=0`, max `PorePressRate=4.79e10 Pa/s`, reversal at `0.003821 s` |
+| operator `2` LSQ interior | `code=0`, `excluded=0`, `DtMin=0`, max `PorePressRate=5.04e10 Pa/s`, reversal at `0.003821 s` |
+| operator `2` LSQ with relax+cap | `code=0`, `excluded=0`, `DtMin=0`, max `PorePressRate=4.65e8 Pa/s`, reversal at `0.004022 s` |
+
+LSQ conditioning is healthy (`407` solves, `0` fallbacks, condition proxy about
+`3-4`), so the failure is not an LSQ matrix problem. The explicit feedback loop
+itself remains the blocker. Axial loading was not restored, and DP/MCC remain
+deferred.
