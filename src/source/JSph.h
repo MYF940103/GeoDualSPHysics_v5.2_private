@@ -258,6 +258,9 @@ protected:
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
   int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient.
+  double PorePressureFeedbackStartTime; ///<Time when pore-pressure feedback acceleration starts [s].
+  double PorePressureFeedbackRampEndTime; ///<Optional time when feedback acceleration reaches full scale [s].
+  double PorePressureFeedbackScale; ///<Maximum pore-pressure feedback acceleration scale.
   bool PorePressureShepard;     ///<Apply Shepard regularization to pore pressure. 0:off, 1:on.
   unsigned PorePressureShepardInterval; ///<Apply Shepard regularization every N steps.
   int PorePressureShepardMode;  ///<Pore-pressure Shepard mode. 0:total pressure, 1:excess pressure.
@@ -577,6 +580,7 @@ protected:
   void VisuConfig();
   void VisuRefs();
   void VisuParticleSummary()const;
+  double GetPorePressureFeedbackFactor(double timestep)const;
   void LoadDcellParticles(unsigned n,const typecode *code,const tdouble3 *pos,unsigned *dcell)const;
   void RunInitialize(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,tfloat4 *velrhop,tfloat3 *boundnormal);

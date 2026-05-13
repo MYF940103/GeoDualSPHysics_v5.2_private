@@ -282,3 +282,38 @@ during confinement equilibration, so T4e should first test staged feedback
 gating/delay: ramp confinement with feedback off or delayed, damp to low
 velocity/DivVel, then re-enable feedback before adding axial loading. DP and
 MCC remain deferred.
+
+## T4e Feedback-Gated Confinement Notes
+
+T4e adds CPU-only feedback timing controls for staged confinement diagnostics:
+
+```xml
+<parameter key="PorePressureFeedbackStartTime" value="0.003" />
+<parameter key="PorePressureFeedbackRampEndTime" value="0.0045" />
+<parameter key="PorePressureFeedbackScale" value="1" />
+```
+
+The default start/ramp/scale reproduces the old behavior, so existing cases are
+unchanged.
+
+The extended feedback-off confinement-only case remains stable to `0.005 s`
+with zero exclusions, zero DtMin adjustments, and no pressure reversal. This is
+the useful positive result: selected confinement itself can be equilibrated when
+the feedback acceleration is disabled.
+
+Re-enabling feedback remains the failure point:
+
+- abrupt full feedback after `0.003 s`: reversal at `0.004001 s`, `391`
+  excluded particles, `469` DtMin adjustments;
+- short feedback ramp to `0.0035 s`: reversal at `0.004253 s`, `365`
+  excluded particles;
+- long feedback ramp to `0.0045 s`: reversal at `0.004503 s`, `164`
+  excluded particles;
+- long ramp with feedback scale `0.25`: no exclusions or DtMin adjustments,
+  but pressure still reverses at `0.005015 s`.
+
+Therefore T4e does not permit axial loading to be restored. The next blocker is
+not the axial schedule and not the lateral/cap selector. It is the feedback
+acceleration/operator coupling during selected-confinement equilibration.
+Potential follow-up should be a narrow feedback relaxation/limiter/operator
+audit before DP, MCC, or strict stress-path validation.

@@ -1625,3 +1625,30 @@ start until a stable feedback-on confinement equilibration stage exists.
 Renormalized confinement remains an amplifier rather than a cure. GPU remains
 deferred; do not proceed to GPU parity, T5 DP, or T6 MCC until the CPU
 linear-elastic selected-confinement response is stable.
+
+## T4e Feedback-Gated Triaxial Confinement
+
+T4e adds CPU-only pore-pressure feedback timing controls for selected
+confinement diagnostics:
+
+- `PorePressureFeedbackStartTime`;
+- `PorePressureFeedbackRampEndTime`;
+- `PorePressureFeedbackScale`.
+
+The defaults preserve the previous behavior. GPU Release builds passed after
+the parser/source change, but non-default feedback gating remains unsupported
+on GPU and hard-errors. No GPU simulation was run.
+
+CPU Release cases under
+`examples/u-pw/04_Undrained_Triaxial/experiments/T4e_FeedbackGatedConfinement/`
+show that feedback-off confinement-only equilibration remains stable to
+`0.005 s` with no reversal, no exclusions, and no DtMin adjustments. However,
+restoring full feedback after equilibration is still unstable: abrupt,
+short-ramp, and long-ramp full feedback all trigger reversal, DtMin bursts,
+and particle exclusion. A diagnostic long-ramp case with
+`PorePressureFeedbackScale=0.25` avoids exclusions in the short run but still
+reverses at the final frame.
+
+GPU remains deferred. T5 DP and T6 MCC remain deferred until the CPU
+linear-elastic selected-confinement feedback loop is stable with full feedback
+enabled.

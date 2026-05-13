@@ -4005,6 +4005,9 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
 {
   const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==1? porepressureacediff: porepressureace);
   if(!porepressurefeedbackace)Run_Exceptioon("Selected pore-pressure feedback operator has no acceleration array.");
+  const double feedbackfactor=GetPorePressureFeedbackFactor(TimeStep);
+  if(feedbackfactor<=0.)return;
+  const float f=float(feedbackfactor);
   const int nint=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
@@ -4012,9 +4015,9 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
   for(int cp=0;cp<nint;cp++){
     const unsigned p=pini+unsigned(cp);
     if(CODE_IsFluid(code[p])){
-      ace[p].x+=porepressurefeedbackace[p].x;
-      ace[p].y+=porepressurefeedbackace[p].y;
-      ace[p].z+=porepressurefeedbackace[p].z;
+      ace[p].x+=porepressurefeedbackace[p].x*f;
+      ace[p].y+=porepressurefeedbackace[p].y*f;
+      ace[p].z+=porepressurefeedbackace[p].z*f;
     }
   }
 }

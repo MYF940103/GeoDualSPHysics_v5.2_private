@@ -247,6 +247,9 @@ void JSph::InitVars(){
   PorePressureFeedback=false;
   PorePressureFeedbackMode=0;
   PorePressureFeedbackOperator=0;
+  PorePressureFeedbackStartTime=0.;
+  PorePressureFeedbackRampEndTime=0.;
+  PorePressureFeedbackScale=1.;
   PorePressureShepard=false;
   PorePressureShepardInterval=20;
   PorePressureShepardMode=0;
@@ -986,6 +989,9 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  PorePressureFeedbackOperator=1;  break;
     default: Run_Exceptioon("PorePressureFeedbackOperator is not valid.");
   }
+  PorePressureFeedbackStartTime=eparms.GetValueDouble("PorePressureFeedbackStartTime",true,0.);
+  PorePressureFeedbackRampEndTime=eparms.GetValueDouble("PorePressureFeedbackRampEndTime",true,0.);
+  PorePressureFeedbackScale=eparms.GetValueDouble("PorePressureFeedbackScale",true,1.);
   switch(eparms.GetValueInt("PorePressureShepard",true,0)){
     case 0:  PorePressureShepard=false;  break;
     case 1:  PorePressureShepard=true;   break;
@@ -1078,6 +1084,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(WaterBulkModulusParamDefined && WaterBulkModulus<=0.f)Run_Exceptioon("WaterBulkModulus must be greater than zero.");
   if(WaterDensityParamDefined && WaterDensity<=0.f)Run_Exceptioon("WaterDensity must be greater than zero.");
   if(PorePressureDtSafety<=0.f)Run_Exceptioon("PorePressureDtSafety must be greater than zero.");
+  if(PorePressureFeedbackScale<0. || PorePressureFeedbackScale>1.)
+    Run_Exceptioon("PorePressureFeedbackScale must be between 0 and 1.");
+  if(PorePressureFeedbackRampEndTime>0. && PorePressureFeedbackRampEndTime<PorePressureFeedbackStartTime)
+    Run_Exceptioon("PorePressureFeedbackRampEndTime must be greater than or equal to PorePressureFeedbackStartTime.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(!HydraulicElevationSource && !Cpu)
@@ -2166,6 +2176,9 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
     Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle")));
+    Log->Print(fun::VarStr("  PorePressureFeedbackStartTime",PorePressureFeedbackStartTime));
+    Log->Print(fun::VarStr("  PorePressureFeedbackRampEndTime",PorePressureFeedbackRampEndTime));
+    Log->Print(fun::VarStr("  PorePressureFeedbackScale",PorePressureFeedbackScale));
     Log->Print(fun::VarStr("  PorePressureShepard",PorePressureShepard));
     if(PorePressureShepard){
       Log->Print(fun::VarStr("  PorePressureShepardInterval",PorePressureShepardInterval));
@@ -3335,6 +3348,23 @@ double JSph::GetFlexibleConfiningStressP0(double timestep)const{
   }
   else if(timestep<ConfiningStressRampStart)return(0.);
   return(double(ConfiningStressP0));
+}
+
+//==============================================================================
+/// Returns the pore-pressure feedback acceleration scale at the given time.
+//==============================================================================
+double JSph::GetPorePressureFeedbackFactor(double timestep)const{
+  if(!PorePressureFeedback)return(0.);
+  const double scale=PorePressureFeedbackScale;
+  if(scale<=0.)return(0.);
+  const double start=(PorePressureFeedbackStartTime>0.? PorePressureFeedbackStartTime: 0.);
+  if(timestep<start)return(0.);
+  const double rampend=(PorePressureFeedbackRampEndTime>0.? PorePressureFeedbackRampEndTime: 0.);
+  if(rampend>start && timestep<rampend){
+    const double r=(timestep-start)/(rampend-start);
+    return(scale*r);
+  }
+  return(scale);
 }
 
 //==============================================================================

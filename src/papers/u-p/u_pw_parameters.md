@@ -503,6 +503,9 @@ Status after C5q:
 | `PorePressureFeedback` | `0/1` | `0` | Enables pore-pressure acceleration feedback to `Acec`. | Keep |
 | `PorePressureFeedbackMode` | `0/1` | `0` | `0`: use total `PorePress`; `1`: use excess `PorePress - p_hydro`. | Keep |
 | `PorePressureFeedbackOperator` | `0/1` | `0` | `0`: symmetric stress-style operator; `1`: difference-gradient operator. | Keep |
+| `PorePressureFeedbackStartTime` | seconds | `0` | Optional CPU feedback gate. Feedback acceleration is zero before this time when `PorePressureFeedback=1`. | Experimental |
+| `PorePressureFeedbackRampEndTime` | seconds | `0` | Optional CPU feedback ramp end time. If greater than `StartTime`, feedback factor ramps linearly from zero to `Scale`. | Experimental |
+| `PorePressureFeedbackScale` | `0..1` | `1` | Maximum pore-pressure feedback acceleration scale for staged equilibration diagnostics. | Experimental |
 
 Recommended for Terzaghi/self-weight tests:
 
@@ -511,6 +514,23 @@ Recommended for Terzaghi/self-weight tests:
 <parameter key="PorePressureFeedbackMode" value="1" />
 <parameter key="PorePressureFeedbackOperator" value="1" />
 ```
+
+For T4e-style triaxial staged confinement diagnostics, feedback acceleration
+can be delayed or ramped without changing the PR pore-pressure update:
+
+```xml
+<parameter key="PorePressureFeedback" value="1" />
+<parameter key="PorePressureFeedbackStartTime" value="0.003" />
+<parameter key="PorePressureFeedbackRampEndTime" value="0.0045" />
+<parameter key="PorePressureFeedbackScale" value="1" />
+```
+
+The defaults preserve old behavior. Non-default feedback gating is currently
+CPU-only; GPU runs hard-error when a non-default start/ramp/scale is requested.
+T4e showed that these controls are diagnostic staging tools only: delaying and
+ramping full feedback did not stabilize the reduced selected-confinement
+triaxial sample, while `PorePressureFeedbackScale=0.25` reduced the artifact
+but still produced pressure reversal.
 
 Rationale:
 

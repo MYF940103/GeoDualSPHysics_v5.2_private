@@ -306,3 +306,35 @@ axial loading or lateral/cap selection. T5 DP and T6 MCC remain deferred. The
 next recommended step is T4e staged confinement equilibration with feedback
 gating/delay before any source-level magnitude normalization or axial loading
 reintroduction.
+
+## T4e Feedback-Gated Confinement
+
+T4e is retained under:
+
+`experiments/T4e_FeedbackGatedConfinement/`
+
+It adds a minimal CPU-only pore-pressure feedback gate:
+
+- `PorePressureFeedbackStartTime`;
+- `PorePressureFeedbackRampEndTime`;
+- `PorePressureFeedbackScale`.
+
+The defaults preserve the previous feedback behavior. Non-default feedback
+gating is a CPU diagnostic path; GPU hard-errors instead of silently ignoring
+the timing controls.
+
+T4e confirms that selected confinement can equilibrate when feedback is kept
+off over a longer confinement-only window:
+
+| Case | Result | Key observation |
+| --- | --- | --- |
+| feedback off extended | `code=0`, `excluded=0`, `Kplastic=0` | no reversal, no DtMin adjustment, max `PorePressRate=2.11e7 Pa/s` |
+| delayed abrupt full feedback | `code=0`, `excluded=391` | reversal after feedback activation, max `PorePressRate=1.55e13 Pa/s` |
+| delayed short-ramp full feedback | `code=0`, `excluded=365` | ramp delays but does not remove instability |
+| delayed long-ramp full feedback | `code=0`, `excluded=164` | still reverses after feedback restoration |
+| delayed long-ramp feedback scale `0.25` | `code=0`, `excluded=0` | no DtMin burst, but still reverses at final frame |
+
+No axial-loading variant was run because no full-feedback confinement-only case
+passed the stability gate. The current blocker is the pore-pressure feedback
+acceleration/operator coupling during selected-confinement equilibration, not
+the lateral selector geometry. T5 DP and T6 MCC remain deferred.
