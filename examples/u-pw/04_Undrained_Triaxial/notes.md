@@ -1121,3 +1121,25 @@ Smoke status:
 
 M3d may refine the MCC feedback-off platen smoke. Full feedback and GPU remain
 deferred.
+
+## M3d MCC Feedback-Off Refinement Notes
+
+M3d extends the MCC CPU branch to the T5c platen time window without changing
+source code.
+
+Results:
+
+- high-pc MCC is stable and elastic-like over `0.018 s`;
+- mild-yield MCC activates plasticity in most particles and evolves `pc`, void
+  ratio, plastic volumetric strain, and equivalent plastic strain;
+- the mild case finishes `code=0`, `excluded=0`, and `DtMin=0`, but the final
+  frame includes `MccReturnStatus=-3` for `8/407` particles;
+- converged plastic residuals remain small (`~6.4e-5` max at the final frame),
+  while failed returns carry large raw residuals and must not be hidden;
+- mild MCC produces stronger negative mean pore pressure than the T5c mild DP
+  feedback-off case.
+
+This means M3d found the next MCC blocker: local return robustness in the
+extended mild-yield path. M3e reporting consolidation should wait for either a
+return-robustness fix or an explicit diagnostic-only limitation statement.
+Full feedback and GPU remain deferred.

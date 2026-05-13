@@ -2085,3 +2085,18 @@ The CPU smokes confirm high-pc elastic-like behavior and mild-yield MCC state
 updates under feedback-off explicit platen loading. GPU work remains deferred
 until the CPU MCC branch has a stable M3d/M3e feedback-off baseline and the
 full pore-pressure feedback question is either fixed or explicitly scoped out.
+
+## M3d MCC Feedback-Off Refinement GPU Status
+
+M3d performs CPU-only MCC refinement cases with no source changes and no GPU
+simulation. The existing policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The high-pc MCC extended case is elastic-like and stable, but the mild-yield
+extended case exposes local return failures (`MccReturnStatus=-3` in a small
+particle subset). GPU MCC work should remain deferred until the CPU local
+return behavior is robust over the feedback-off platen baseline. Full
+pore-pressure feedback remains deferred as well.

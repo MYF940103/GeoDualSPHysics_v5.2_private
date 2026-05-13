@@ -49,6 +49,25 @@ The smoke test confirms code execution, pore-pressure fields, feedback
 diagnostics, damping, and native AccInput loading are wired correctly. The pore
 pressure response is small and positive under the tiny compressive increment.
 
+## M3d MCC Feedback-Off Refinement
+
+`experiments/M3d_MCCFeedbackOffRefinement/` extends the M3c MCC CPU branch to
+the T5c platen time window (`TimeMax=0.018 s`) with `PorePressureFeedback=0`.
+
+Status:
+
+- high-pc MCC (`pc0=100000 Pa`) remains elastic-like:
+  `code=0`, `excluded=0`, `DtMin=0`, `YieldFlag=0/407`, `Kplastic=0`;
+- mild-yield MCC (`pc0=120 Pa`) remains solver-stable:
+  `code=0`, `excluded=0`, `DtMin=0`, but the final frame reports
+  `MccReturnStatus=-3` for `8/407` particles;
+- pairwise platen reaction remains bounded, but it is still a pairwise
+  interaction diagnostic, not a full actuator reaction;
+- full pore-pressure feedback and GPU remain deferred.
+
+Because the mild extended case exposes local MCC return failures, M3d is a
+useful refinement diagnostic but not yet a clean MCC validation package.
+
 ## Strict Reproduction Reclassification
 
 This reduced DP/u-pw AccInput smoke must not be counted as strict triaxial
