@@ -894,3 +894,38 @@ Final pairwise reaction averages:
 
 T5b may now use reaction-based axial stress as the reduced validation metric.
 Full feedback, MCC, and GPU remain deferred.
+
+## T5b DP Feedback-Off Refinement Notes
+
+T5b reruns the explicit-platen DP baseline with T4t pairwise reaction
+diagnostics enabled:
+
+- `CaseT5b_Elastic_ReactionRefinement`;
+- `CaseT5b_DPHighStrength_ReactionRefinement`;
+- `CaseT5b_DPMildYield_ReactionRefinement`.
+
+All three cases are CPU Release, feedback-off, and use selected lateral
+`FlexibleConfiningStress`. All complete with `code=0`, `excluded=0`, and
+`DtMin=0`.
+
+The elastic and high-strength DP cases are identical over this short window:
+
+- final `Kplastic=0`;
+- final specimen-wide `p' approx 145.66 Pa`;
+- final `q approx 332.47 Pa`;
+- pairwise reaction average `0.956997 N`.
+
+The mild-yield DP case remains stable while activating plasticity:
+
+- final `Kplastic_max approx 4.38e-4`;
+- nonzero `Kplastic` count `341/407`;
+- final specimen-wide `p' approx 86.58 Pa`;
+- final `q approx 126.76 Pa`;
+- pairwise reaction average `0.492775 N`;
+- mean pore pressure remains bounded at about `1.49e4 Pa`.
+
+T5b makes the reduced DP feedback-off line easier to read because reaction,
+axial-stress, `p'-q`, pore-pressure, and plasticity curves are all generated
+from the same explicit-platen workflow. It is still not strict paper
+validation: full feedback, MCC, true actuator reaction, and GPU remain
+deferred.

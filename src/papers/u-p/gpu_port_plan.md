@@ -1955,3 +1955,18 @@ reaction for selected fixed/moving `mkbound` platens. This resolves the
 immediate T5 measurement blocker for reduced feedback-off DP refinement, but
 it is not a GPU-ready validation route. Full feedback, MCC, and GPU triaxial
 validation remain deferred until the CPU platen workflow is physically stable.
+
+## T5b DP Feedback-Off Refinement GPU Status
+
+T5b is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU Release elastic, high-strength DP, and mild-yield DP cases all finish
+with `code=0`, `excluded=0`, and `DtMin=0` using the T4t pairwise platen
+reaction diagnostic. The high-strength DP line matches the elastic reference;
+the mild-yield line activates `Kplastic` in `341/407` specimen particles while
+remaining bounded.
+
+This is a CPU reduced feedback-off benchmark. GPU remains deferred until the
+full feedback route, actuator-level reaction decision, and any MCC direction
+are resolved on CPU.

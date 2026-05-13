@@ -932,3 +932,27 @@ and `DtMin=0`:
 
 The reaction diagnostic is usable for T5b reduced DP refinement. Full
 pore-pressure feedback, MCC, and GPU triaxial validation remain deferred.
+
+## T5b DP Feedback-Off Refinement
+
+T5b is retained under:
+
+`experiments/T5b_DPFeedbackOffRefinement/`
+
+It keeps the explicit platen workflow, selected lateral
+`FlexibleConfiningStress`, and T4t pairwise reaction diagnostic. Full
+`PorePressureFeedback` remains off.
+
+Three CPU Release cases completed with `code=0`, `excluded=0`, and `DtMin=0`:
+
+| Case | Setup | Final `Kplastic` max | Final `p'` / `q` proxy | Pairwise reaction avg |
+| --- | --- | ---: | ---: | ---: |
+| elastic | `SoilConstitutiveModel=0` | `0` | `145.66 / 332.47 Pa` | `0.956997 N` |
+| DP high strength | `phi=33 deg`, `coh=10000 Pa`, `dlt=0` | `0` | `145.66 / 332.47 Pa` | `0.956997 N` |
+| DP mild yield | `phi=30 deg`, `coh=50 Pa`, `dlt=0` | `4.38e-4` | `86.58 / 126.76 Pa` | `0.492775 N` |
+
+The high-strength DP line matches the elastic reference, while the mild-yield
+line activates plasticity in `341/407` specimen particles and reduces `q`,
+reaction force, and pore pressure without destabilizing the run. T5c may extend
+this reduced feedback-off DP trend. MCC, full feedback, and GPU remain
+deferred.
