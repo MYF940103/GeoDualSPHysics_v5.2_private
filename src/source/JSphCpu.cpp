@@ -44,6 +44,7 @@
 #include "JSphShifting.h"
 
 #include <climits>
+#include <cfloat>
 #include <cmath>
 #include <vector>
 
@@ -1109,12 +1110,25 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
   const double confp0d=(!boundp2? GetFlexibleConfiningStressP0(TimeStep): 0.);
   const bool useconf=(confp0d>0.);
+  const bool conffi=(useconf && (FlexibleConfiningStressFiDiagnostic || ConfiningStressUseFiSelector || SaveConfiningStressDiagnostics));
+  const bool confgeom=(useconf && (ConfiningStressGeometry==1 || ConfiningStressUseLateralSelector || SaveConfiningStressDiagnostics));
   const float confp0=float(confp0d);
-  double confnetx[OMP_MAXTHREADS*OMP_STRIDE],confnety[OMP_MAXTHREADS*OMP_STRIDE],confnetz[OMP_MAXTHREADS*OMP_STRIDE];
-  double confabs[OMP_MAXTHREADS*OMP_STRIDE],confmax[OMP_MAXTHREADS*OMP_STRIDE],confcount[OMP_MAXTHREADS*OMP_STRIDE];
+  struct StConfDiagThread{
+    double netx,nety,netz,absforce,maxaccel,count;
+    double legacycount,ficount,fiselcount,fisum,fimin,fimax;
+    double classinterior,classlateral,classtop,classbottom,classedge,classoutside;
+    double latfiseld,capfiseld,latrsum,latrmax,latrcount,capasum,capamax,capacount;
+  };
+  vector<StConfDiagThread> confth(OMP_MAXTHREADS);
   for(int th=0;th<OmpThreads;th++){
-    const int c=th*OMP_STRIDE;
-    confnetx[c]=confnety[c]=confnetz[c]=confabs[c]=confmax[c]=confcount[c]=0.;
+    StConfDiagThread &ct=confth[th];
+    ct.netx=ct.nety=ct.netz=ct.absforce=ct.maxaccel=ct.count=0.;
+    ct.legacycount=ct.ficount=ct.fiselcount=ct.fisum=0.;
+    ct.fimin=DBL_MAX; ct.fimax=-DBL_MAX;
+    ct.classinterior=ct.classlateral=ct.classtop=ct.classbottom=ct.classedge=ct.classoutside=0.;
+    ct.latfiseld=ct.capfiseld=0.;
+    ct.latrsum=ct.latrmax=ct.latrcount=0.;
+    ct.capasum=ct.capamax=ct.capacount=0.;
   }
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
   const int pfin=int(pinit+n);
@@ -1155,6 +1169,29 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const tsymatrix3f sigmap1=sigma[p1]; //mdbr
     tsymatrix3f artstressp1={0,0,0,0,0,0};
     if(useartstress && !ftp1 && invwabdp>0.f)artstressp1=artificialstress[p1];
+    double conffip1=0.;
+    int confclassp1=0;
+    if(conftargetp1 && (conffi || ConfiningStressUseFiSelector)){
+      conffip1=double(MassFluid)/double(rhopp1)*double(fsph::GetKernel_Wab<tker>(CSP,0.f));
+      const StNgSearch ngsfi=nsearch::Init(dcell[p1],false,divdata);
+      for(int z=ngsfi.zini;z<ngsfi.zfin;z++)for(int y=ngsfi.yini;y<ngsfi.yfin;y++){
+        const tuint2 pif=nsearch::ParticleRange(y,z,ngsfi,divdata);
+        for(unsigned p2=pif.x;p2<pif.y;p2++)if(p2!=unsigned(p1) && IsFlexibleConfiningStressTarget(code[p2])){
+          const float drx=float(posp1.x-pos[p2].x);
+          const float dry=float(posp1.y-pos[p2].y);
+          const float drz=float(posp1.z-pos[p2].z);
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+            const double wab=double(fsph::GetKernel_Wab<tker>(CSP,rr2));
+            conffip1+=double(MassFluid)/double(velrhop[p2].w)*wab;
+          }
+        }
+      }
+    }
+    if(conftargetp1 && confgeom)confclassp1=GetConfiningStressCylinderClass(posp1);
+    const bool conffiselp1=(!ConfiningStressUseFiSelector || conffip1<=ConfiningStressFiThreshold);
+    const bool conflatselp1=(!ConfiningStressUseLateralSelector || confclassp1==2);
+    const bool confactivep1=(conftargetp1 && conffiselp1 && conflatselp1);
     //-Obtains elastic parameters
     float modulus_K=SoilCte.ModulusK;
     float modulus_G=SoilCte.ModulusG;
@@ -1217,7 +1254,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz + sigmap2.xz) / (rhopp1*velrhop2.w);
 			const float prsyz = massp2*(sigmap1.yz + sigmap2.yz) / (rhopp1*velrhop2.w);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
-            if(conftargetp1 && !ftp2 && IsFlexibleConfiningStressTarget(code[p2])){
+            if(confactivep1 && !ftp2 && IsFlexibleConfiningStressTarget(code[p2])){
               const float prsconf=massp2*(confp0+confp0)/(rhopp1*velrhop2.w);
               const tfloat3 aceconf=TFloat3(prsconf*frx,prsconf*fry,prsconf*frz);
               acep1.x+=aceconf.x; acep1.y+=aceconf.y; acep1.z+=aceconf.z;
@@ -1412,30 +1449,107 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     }
     if(conftargetp1){
       const int th=omp_get_thread_num();
-      const int c=th*OMP_STRIDE;
+      StConfDiagThread &ct=confth[th];
+      ct.legacycount+=1.;
+      if(conffi || ConfiningStressUseFiSelector){
+        ct.ficount+=1.;
+        ct.fisum+=conffip1;
+        if(ct.fimin>conffip1)ct.fimin=conffip1;
+        if(ct.fimax<conffip1)ct.fimax=conffip1;
+        if(conffip1<=ConfiningStressFiThreshold){
+          ct.fiselcount+=1.;
+          ct.latfiseld+=(confclassp1==2? 1.: 0.);
+          ct.capfiseld+=(confclassp1==3 || confclassp1==4 || confclassp1==5? 1.: 0.);
+        }
+      }
+      if(confgeom){
+        switch(confclassp1){
+          case 1: ct.classinterior+=1.; break;
+          case 2: ct.classlateral+=1.; break;
+          case 3: ct.classtop+=1.; break;
+          case 4: ct.classbottom+=1.; break;
+          case 5: ct.classedge+=1.; break;
+          case 6: ct.classoutside+=1.; break;
+        }
+      }
       const double ax=confacep1.x, ay=confacep1.y, az=confacep1.z;
       const double amag=sqrt(ax*ax+ay*ay+az*az);
-      confnetx[c]+=double(MassFluid)*ax;
-      confnety[c]+=double(MassFluid)*ay;
-      confnetz[c]+=double(MassFluid)*az;
-      confabs[c]+=double(MassFluid)*amag;
-      if(confmax[c]<amag)confmax[c]=amag;
-      confcount[c]+=1.;
+      if(confactivep1 && confgeom && (confclassp1==2 || confclassp1==3 || confclassp1==4 || confclassp1==5)){
+        const double dx=posp1.x-ConfiningStressCylinderCenter.x;
+        const double dy=posp1.y-ConfiningStressCylinderCenter.y;
+        const double dz=posp1.z-ConfiningStressCylinderCenter.z;
+        const double s=dx*ConfiningStressCylinderAxis.x+dy*ConfiningStressCylinderAxis.y+dz*ConfiningStressCylinderAxis.z;
+        const double rx=dx-s*ConfiningStressCylinderAxis.x;
+        const double ry=dy-s*ConfiningStressCylinderAxis.y;
+        const double rz=dz-s*ConfiningStressCylinderAxis.z;
+        const double rn=sqrt(rx*rx+ry*ry+rz*rz);
+        if(confclassp1==2 && rn>0.){
+          const double arad=-(ax*rx+ay*ry+az*rz)/rn;
+          ct.latrsum+=arad;
+          if(ct.latrmax<arad)ct.latrmax=arad;
+          ct.latrcount+=1.;
+        }
+        if(confclassp1==3 || confclassp1==4 || confclassp1==5){
+          const double aax=fabs(ax*ConfiningStressCylinderAxis.x+ay*ConfiningStressCylinderAxis.y+az*ConfiningStressCylinderAxis.z);
+          ct.capasum+=aax;
+          if(ct.capamax<aax)ct.capamax=aax;
+          ct.capacount+=1.;
+        }
+      }
+      if(confactivep1){
+        ct.netx+=double(MassFluid)*ax;
+        ct.nety+=double(MassFluid)*ay;
+        ct.netz+=double(MassFluid)*az;
+        ct.absforce+=double(MassFluid)*amag;
+        if(ct.maxaccel<amag)ct.maxaccel=amag;
+        ct.count+=1.;
+      }
     }
   }
   //-Keep max value in viscdt. | Guarda en viscdt el valor maximo.
   for(int th=0;th<OmpThreads;th++)if(viscdt<viscth[th*OMP_STRIDE])viscdt=viscth[th*OMP_STRIDE];
   if(useconf){
-    double netx=0.,nety=0.,netz=0.,absforce=0.,maxaccel=0.,count=0.;
+    double netx=0.,nety=0.,netz=0.,absforce=0.,maxaccel=0.,count=0.,legacycount=0.;
+    double ficount=0.,fiselcount=0.,fisum=0.,fimin=DBL_MAX,fimax=-DBL_MAX;
+    double classinterior=0.,classlateral=0.,classtop=0.,classbottom=0.,classedge=0.,classoutside=0.;
+    double latfiseld=0.,capfiseld=0.,latrsum=0.,latrmax=0.,latrcount=0.,capasum=0.,capamax=0.,capacount=0.;
     for(int th=0;th<OmpThreads;th++){
-      const int c=th*OMP_STRIDE;
-      netx+=confnetx[c]; nety+=confnety[c]; netz+=confnetz[c];
-      absforce+=confabs[c]; count+=confcount[c];
-      if(maxaccel<confmax[c])maxaccel=confmax[c];
+      const StConfDiagThread &ct=confth[th];
+      netx+=ct.netx; nety+=ct.nety; netz+=ct.netz;
+      absforce+=ct.absforce; count+=ct.count;
+      if(maxaccel<ct.maxaccel)maxaccel=ct.maxaccel;
+      legacycount+=ct.legacycount;
+      ficount+=ct.ficount; fiselcount+=ct.fiselcount; fisum+=ct.fisum;
+      if(fimin>ct.fimin)fimin=ct.fimin;
+      if(fimax<ct.fimax)fimax=ct.fimax;
+      classinterior+=ct.classinterior; classlateral+=ct.classlateral; classtop+=ct.classtop;
+      classbottom+=ct.classbottom; classedge+=ct.classedge; classoutside+=ct.classoutside;
+      latfiseld+=ct.latfiseld; capfiseld+=ct.capfiseld;
+      latrsum+=ct.latrsum; latrcount+=ct.latrcount;
+      if(latrmax<ct.latrmax)latrmax=ct.latrmax;
+      capasum+=ct.capasum; capacount+=ct.capacount;
+      if(capamax<ct.capamax)capamax=ct.capamax;
     }
     const double netmag=sqrt(netx*netx+nety*nety+netz*netz);
     ConfiningStressDiagP0Eff=confp0d;
     ConfiningStressDiagTargetCount=unsigned(count);
+    ConfiningStressDiagLegacyTargetCount=unsigned(legacycount);
+    ConfiningStressDiagFiSelectedCount=unsigned(fiselcount);
+    ConfiningStressDiagClassInteriorCount=unsigned(classinterior);
+    ConfiningStressDiagClassLateralCount=unsigned(classlateral);
+    ConfiningStressDiagClassTopCount=unsigned(classtop);
+    ConfiningStressDiagClassBottomCount=unsigned(classbottom);
+    ConfiningStressDiagClassEdgeCount=unsigned(classedge);
+    ConfiningStressDiagClassOutsideCount=unsigned(classoutside);
+    ConfiningStressDiagLateralFiSelectedCount=unsigned(latfiseld);
+    ConfiningStressDiagCapFiSelectedCount=unsigned(capfiseld);
+    ConfiningStressDiagFiMin=(ficount>0.? fimin: 0.);
+    ConfiningStressDiagFiMax=(ficount>0.? fimax: 0.);
+    ConfiningStressDiagFiMean=(ficount>0.? fisum/ficount: 0.);
+    ConfiningStressDiagLateralRadialAccelMean=(latrcount>0.? latrsum/latrcount: 0.);
+    ConfiningStressDiagLateralRadialAccelMax=latrmax;
+    ConfiningStressDiagCapAxialAccelMean=(capacount>0.? capasum/capacount: 0.);
+    ConfiningStressDiagCapAxialAccelMax=capamax;
     ConfiningStressDiagNetForce=TDouble3(netx,nety,netz);
     ConfiningStressDiagTotalAbsForce=absforce;
     ConfiningStressDiagMaxAccel=maxaccel;

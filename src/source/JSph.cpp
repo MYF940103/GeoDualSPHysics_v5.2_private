@@ -260,8 +260,37 @@ void JSph::InitVars(){
   ConfiningStressRampEnd=0.;
   ConfiningStressTargetMk=-1;
   ConfiningStressMode=0;
+  FlexibleConfiningStressFiDiagnostic=false;
+  SaveConfiningStressDiagnostics=false;
+  ConfiningStressFiThreshold=0.70;
+  ConfiningStressGeometry=0;
+  ConfiningStressCylinderCenter=TDouble3(0);
+  ConfiningStressCylinderAxis=TDouble3(0,0,1);
+  ConfiningStressCylinderRadius=0.;
+  ConfiningStressCylinderHeight=0.;
+  ConfiningStressCapExclusionLength=0.;
+  ConfiningStressEdgeExclusionLength=0.;
+  ConfiningStressUseFiSelector=false;
+  ConfiningStressUseLateralSelector=false;
   ConfiningStressDiagP0Eff=0.;
   ConfiningStressDiagTargetCount=0;
+  ConfiningStressDiagLegacyTargetCount=0;
+  ConfiningStressDiagFiSelectedCount=0;
+  ConfiningStressDiagClassInteriorCount=0;
+  ConfiningStressDiagClassLateralCount=0;
+  ConfiningStressDiagClassTopCount=0;
+  ConfiningStressDiagClassBottomCount=0;
+  ConfiningStressDiagClassEdgeCount=0;
+  ConfiningStressDiagClassOutsideCount=0;
+  ConfiningStressDiagLateralFiSelectedCount=0;
+  ConfiningStressDiagCapFiSelectedCount=0;
+  ConfiningStressDiagFiMin=0.;
+  ConfiningStressDiagFiMax=0.;
+  ConfiningStressDiagFiMean=0.;
+  ConfiningStressDiagLateralRadialAccelMean=0.;
+  ConfiningStressDiagLateralRadialAccelMax=0.;
+  ConfiningStressDiagCapAxialAccelMean=0.;
+  ConfiningStressDiagCapAxialAccelMax=0.;
   ConfiningStressDiagNetForce=TDouble3(0);
   ConfiningStressDiagTotalAbsForce=0.;
   ConfiningStressDiagMaxAccel=0.;
@@ -989,6 +1018,42 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  ConfiningStressMode=0;  break;
     default: Run_Exceptioon("ConfiningStressMode is not valid. Only mode 0 is implemented.");
   }
+  switch(eparms.GetValueInt("FlexibleConfiningStressFiDiagnostic",true,0)){
+    case 0:  FlexibleConfiningStressFiDiagnostic=false;  break;
+    case 1:  FlexibleConfiningStressFiDiagnostic=true;   break;
+    default: Run_Exceptioon("FlexibleConfiningStressFiDiagnostic mode is not valid.");
+  }
+  switch(eparms.GetValueInt("SaveConfiningStressDiagnostics",true,0)){
+    case 0:  SaveConfiningStressDiagnostics=false;  break;
+    case 1:  SaveConfiningStressDiagnostics=true;   break;
+    default: Run_Exceptioon("SaveConfiningStressDiagnostics mode is not valid.");
+  }
+  ConfiningStressFiThreshold=eparms.GetValueDouble("ConfiningStressFiThreshold",true,0.70);
+  switch(eparms.GetValueInt("ConfiningStressGeometry",true,0)){
+    case 0:  ConfiningStressGeometry=0;  break;
+    case 1:  ConfiningStressGeometry=1;  break;
+    default: Run_Exceptioon("ConfiningStressGeometry is not valid. Use 0:none or 1:cylinder.");
+  }
+  ConfiningStressCylinderCenter.x=eparms.GetValueDouble("ConfiningStressCylinderCenterX",true,0.);
+  ConfiningStressCylinderCenter.y=eparms.GetValueDouble("ConfiningStressCylinderCenterY",true,0.);
+  ConfiningStressCylinderCenter.z=eparms.GetValueDouble("ConfiningStressCylinderCenterZ",true,0.);
+  ConfiningStressCylinderAxis.x=eparms.GetValueDouble("ConfiningStressCylinderAxisX",true,0.);
+  ConfiningStressCylinderAxis.y=eparms.GetValueDouble("ConfiningStressCylinderAxisY",true,0.);
+  ConfiningStressCylinderAxis.z=eparms.GetValueDouble("ConfiningStressCylinderAxisZ",true,1.);
+  ConfiningStressCylinderRadius=eparms.GetValueDouble("ConfiningStressCylinderRadius",true,0.);
+  ConfiningStressCylinderHeight=eparms.GetValueDouble("ConfiningStressCylinderHeight",true,0.);
+  ConfiningStressCapExclusionLength=eparms.GetValueDouble("ConfiningStressCapExclusionLength",true,0.);
+  ConfiningStressEdgeExclusionLength=eparms.GetValueDouble("ConfiningStressEdgeExclusionLength",true,0.);
+  switch(eparms.GetValueInt("ConfiningStressUseFiSelector",true,0)){
+    case 0:  ConfiningStressUseFiSelector=false;  break;
+    case 1:  ConfiningStressUseFiSelector=true;   break;
+    default: Run_Exceptioon("ConfiningStressUseFiSelector mode is not valid.");
+  }
+  switch(eparms.GetValueInt("ConfiningStressUseLateralSelector",true,0)){
+    case 0:  ConfiningStressUseLateralSelector=false;  break;
+    case 1:  ConfiningStressUseLateralSelector=true;   break;
+    default: Run_Exceptioon("ConfiningStressUseLateralSelector mode is not valid.");
+  }
   switch(eparms.GetValueInt("HydromechDamping",true,0)){
     case 0:  HydromechDamping=false;  break;
     case 1:  HydromechDamping=true;   break;
@@ -1053,6 +1118,20 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
   if(ConfiningStressRampEnd<ConfiningStressRampStart)Run_Exceptioon("ConfiningStressRampEnd must be greater than or equal to ConfiningStressRampStart.");
   if(ConfiningStressTargetMk<-1)Run_Exceptioon("ConfiningStressTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+  if(ConfiningStressFiThreshold<=0.)Run_Exceptioon("ConfiningStressFiThreshold must be greater than zero.");
+  if(ConfiningStressGeometry==1){
+    const double ax=ConfiningStressCylinderAxis.x, ay=ConfiningStressCylinderAxis.y, az=ConfiningStressCylinderAxis.z;
+    const double an=sqrt(ax*ax+ay*ay+az*az);
+    if(an<=0.)Run_Exceptioon("ConfiningStressCylinderAxis must have non-zero magnitude.");
+    ConfiningStressCylinderAxis.x/=an; ConfiningStressCylinderAxis.y/=an; ConfiningStressCylinderAxis.z/=an;
+    if(ConfiningStressCylinderRadius<=0.)Run_Exceptioon("ConfiningStressCylinderRadius must be greater than zero when ConfiningStressGeometry=1.");
+    if(ConfiningStressCylinderHeight<=0.)Run_Exceptioon("ConfiningStressCylinderHeight must be greater than zero when ConfiningStressGeometry=1.");
+    if(ConfiningStressCapExclusionLength<0.)Run_Exceptioon("ConfiningStressCapExclusionLength must be greater than or equal to zero.");
+    if(ConfiningStressEdgeExclusionLength<0.)Run_Exceptioon("ConfiningStressEdgeExclusionLength must be greater than or equal to zero.");
+  }
+  if(ConfiningStressUseLateralSelector && ConfiningStressGeometry!=1)Run_Exceptioon("ConfiningStressUseLateralSelector=1 requires ConfiningStressGeometry=1.");
+  if((ConfiningStressUseFiSelector || ConfiningStressUseLateralSelector) && !FlexibleConfiningStress)
+    Log->PrintWarning("Confining stress selectors are enabled but FlexibleConfiningStress=0. Selectors will have no force effect.");
   if(FlexibleConfiningStress && !Cpu)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
   if(FlexibleConfiningStress && !ConfiningStressP0)
     Log->PrintWarning("FlexibleConfiningStress=1 but ConfiningStressP0=0. No confining contribution will be produced.");
@@ -2108,6 +2187,20 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ConfiningStressRampEnd",ConfiningStressRampEnd));
     Log->Print(fun::VarStr("  ConfiningStressTargetMk",ConfiningStressTargetMk));
     Log->Print(fun::VarStr("  ConfiningStressMode",ConfiningStressMode));
+    Log->Print(fun::VarStr("  FlexibleConfiningStressFiDiagnostic",FlexibleConfiningStressFiDiagnostic));
+    Log->Print(fun::VarStr("  SaveConfiningStressDiagnostics",SaveConfiningStressDiagnostics));
+    Log->Print(fun::VarStr("  ConfiningStressFiThreshold",ConfiningStressFiThreshold));
+    Log->Print(fun::VarStr("  ConfiningStressGeometry",ConfiningStressGeometry));
+    if(ConfiningStressGeometry==1){
+      Log->Print(fun::VarStr("  ConfiningStressCylinderCenter",ConfiningStressCylinderCenter));
+      Log->Print(fun::VarStr("  ConfiningStressCylinderAxis",ConfiningStressCylinderAxis));
+      Log->Print(fun::VarStr("  ConfiningStressCylinderRadius",ConfiningStressCylinderRadius));
+      Log->Print(fun::VarStr("  ConfiningStressCylinderHeight",ConfiningStressCylinderHeight));
+      Log->Print(fun::VarStr("  ConfiningStressCapExclusionLength",ConfiningStressCapExclusionLength));
+      Log->Print(fun::VarStr("  ConfiningStressEdgeExclusionLength",ConfiningStressEdgeExclusionLength));
+    }
+    Log->Print(fun::VarStr("  ConfiningStressUseFiSelector",ConfiningStressUseFiSelector));
+    Log->Print(fun::VarStr("  ConfiningStressUseLateralSelector",ConfiningStressUseLateralSelector));
     Log->Print("  FlexibleConfiningStress convention: positive ConfiningStressP0 is external compression; in the current SPH stress-divergence sign convention it is added as a positive isotropic stress-like pair contribution and is not written to the material stress state.");
     ConfigInfo=ConfigInfo+sep+"FlexConfStress";
   }
@@ -3238,11 +3331,55 @@ bool JSph::IsFlexibleConfiningStressTarget(typecode code)const{
 }
 
 //==============================================================================
+/// Returns cylinder class for triaxial confinement diagnostics.
+/// 0:geometry disabled, 1:interior, 2:lateral, 3:top cap, 4:bottom cap,
+/// 5:edge ring, 6:outside.
+//==============================================================================
+int JSph::GetConfiningStressCylinderClass(const tdouble3 &pos)const{
+  if(ConfiningStressGeometry!=1)return(0);
+  const tdouble3 dp=TDouble3(pos.x-ConfiningStressCylinderCenter.x,pos.y-ConfiningStressCylinderCenter.y,pos.z-ConfiningStressCylinderCenter.z);
+  const double s=dp.x*ConfiningStressCylinderAxis.x+dp.y*ConfiningStressCylinderAxis.y+dp.z*ConfiningStressCylinderAxis.z;
+  const double rx=dp.x-s*ConfiningStressCylinderAxis.x;
+  const double ry=dp.y-s*ConfiningStressCylinderAxis.y;
+  const double rz=dp.z-s*ConfiningStressCylinderAxis.z;
+  const double r=sqrt(rx*rx+ry*ry+rz*rz);
+  const double cap=(ConfiningStressCapExclusionLength>0.? ConfiningStressCapExclusionLength: double(KernelSize));
+  const double edge=(ConfiningStressEdgeExclusionLength>0.? ConfiningStressEdgeExclusionLength: double(KernelSize));
+  const bool inaxis=(s>=-cap && s<=ConfiningStressCylinderHeight+cap);
+  const bool radialnear=(fabs(r-ConfiningStressCylinderRadius)<=edge);
+  const bool top=(s>=ConfiningStressCylinderHeight-cap && s<=ConfiningStressCylinderHeight+cap);
+  const bool bottom=(s>=-cap && s<=cap);
+  if(!inaxis || r>ConfiningStressCylinderRadius+edge)return(6);
+  if(radialnear && (top || bottom))return(5);
+  if(radialnear && s>cap && s<ConfiningStressCylinderHeight-cap)return(2);
+  if(top)return(3);
+  if(bottom)return(4);
+  return(1);
+}
+
+//==============================================================================
 /// Resets CPU flexible confining stress diagnostics.
 //==============================================================================
 void JSph::ResetFlexibleConfiningStressDiagnostics()const{
   ConfiningStressDiagP0Eff=0.;
   ConfiningStressDiagTargetCount=0;
+  ConfiningStressDiagLegacyTargetCount=0;
+  ConfiningStressDiagFiSelectedCount=0;
+  ConfiningStressDiagClassInteriorCount=0;
+  ConfiningStressDiagClassLateralCount=0;
+  ConfiningStressDiagClassTopCount=0;
+  ConfiningStressDiagClassBottomCount=0;
+  ConfiningStressDiagClassEdgeCount=0;
+  ConfiningStressDiagClassOutsideCount=0;
+  ConfiningStressDiagLateralFiSelectedCount=0;
+  ConfiningStressDiagCapFiSelectedCount=0;
+  ConfiningStressDiagFiMin=0.;
+  ConfiningStressDiagFiMax=0.;
+  ConfiningStressDiagFiMean=0.;
+  ConfiningStressDiagLateralRadialAccelMean=0.;
+  ConfiningStressDiagLateralRadialAccelMax=0.;
+  ConfiningStressDiagCapAxialAccelMean=0.;
+  ConfiningStressDiagCapAxialAccelMax=0.;
   ConfiningStressDiagNetForce=TDouble3(0);
   ConfiningStressDiagTotalAbsForce=0.;
   ConfiningStressDiagMaxAccel=0.;
@@ -3255,11 +3392,22 @@ void JSph::ResetFlexibleConfiningStressDiagnostics()const{
 //==============================================================================
 void JSph::PrintFlexibleConfiningStressDiagnostics()const{
   if(!FlexibleConfiningStress || ConfiningStressDiagP0Eff<=0. || ConfiningStressDiagLastPrintStep==Nstep)return;
+  const bool extended=(FlexibleConfiningStressFiDiagnostic || SaveConfiningStressDiagnostics || ConfiningStressGeometry || ConfiningStressUseFiSelector || ConfiningStressUseLateralSelector);
   if(Nstep<5 || !(Nstep%500)){
-    Log->Printf("FlexibleConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, targets=%u, net_force=(%g,%g,%g) N, total_abs_force=%g N, max_accel=%g m/s2, com_accel=%g m/s2, symmetry_residual=%g."
+    Log->Printf("FlexibleConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, targets=%u, legacy_targets=%u, net_force=(%g,%g,%g) N, total_abs_force=%g N, max_accel=%g m/s2, com_accel=%g m/s2, symmetry_residual=%g."
       ,Nstep,TimeStep,ConfiningStressDiagP0Eff,ConfiningStressDiagTargetCount
+      ,ConfiningStressDiagLegacyTargetCount
       ,ConfiningStressDiagNetForce.x,ConfiningStressDiagNetForce.y,ConfiningStressDiagNetForce.z
       ,ConfiningStressDiagTotalAbsForce,ConfiningStressDiagMaxAccel,ConfiningStressDiagComAccel,ConfiningStressDiagSymResidual);
+    if(extended){
+      Log->Printf("FlexibleConfiningStress extended diagnostics: step=%d, fi_min=%g, fi_max=%g, fi_mean=%g, fi_threshold=%g, fi_selected=%u, class_interior=%u, class_lateral=%u, class_top=%u, class_bottom=%u, class_edge=%u, class_outside=%u, lateral_fi_selected=%u, cap_fi_selected=%u, lateral_inward_radial_accel_mean=%g, lateral_inward_radial_accel_max=%g, cap_abs_axial_accel_mean=%g, cap_abs_axial_accel_max=%g."
+        ,Nstep,ConfiningStressDiagFiMin,ConfiningStressDiagFiMax,ConfiningStressDiagFiMean,ConfiningStressFiThreshold
+        ,ConfiningStressDiagFiSelectedCount,ConfiningStressDiagClassInteriorCount,ConfiningStressDiagClassLateralCount
+        ,ConfiningStressDiagClassTopCount,ConfiningStressDiagClassBottomCount,ConfiningStressDiagClassEdgeCount
+        ,ConfiningStressDiagClassOutsideCount,ConfiningStressDiagLateralFiSelectedCount,ConfiningStressDiagCapFiSelectedCount
+        ,ConfiningStressDiagLateralRadialAccelMean,ConfiningStressDiagLateralRadialAccelMax
+        ,ConfiningStressDiagCapAxialAccelMean,ConfiningStressDiagCapAxialAccelMax);
+    }
     ConfiningStressDiagLastPrintStep=Nstep;
   }
 }

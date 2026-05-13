@@ -21,12 +21,29 @@ The material/phase constants below are now soil material constants and should be
 | `HydraulicConductivity` | float, `>=0` | `0` | Hydraulic conductivity `k` [m/s]. If zero, diffusion and pore timestep restriction are disabled. | Keep |
 | `WaterBulkModulus` | float, `>0` | `2e8` | Water bulk modulus `Kw` [Pa]. | Keep |
 | `WaterDensity` | float, `>0` | `1000` | Water density `rho_w` [kg/m3]. | Keep |
-| `FlexibleConfiningStress` | `0/1` | `0` | CPU-only flexible confining stress source for future strict Cryer loading. GPU hard-errors if enabled. | Experimental |
+| `FlexibleConfiningStress` | `0/1` | `0` | CPU-only flexible confining stress source for spherical/triaxial confinement diagnostics. GPU hard-errors if enabled. | Experimental |
 | `ConfiningStressP0` | float, `>=0` | `0` | Positive external compression magnitude [Pa]. | Experimental |
 | `ConfiningStressRampStart` | double [s] | `0` | Linear ramp start time. | Experimental |
 | `ConfiningStressRampEnd` | double [s] | `ConfiningStressRampStart` | Linear ramp end time. If equal to start, load is applied without ramp. | Experimental |
 | `ConfiningStressTargetMk` | int | `-1` | `-1`: all normal material particles; otherwise target one `mkfluid` value. | Experimental |
 | `ConfiningStressMode` | int | `0` | `0`: isotropic flexible confining stress. Other modes are reserved. | Experimental |
+| `FlexibleConfiningStressFiDiagnostic` | `0/1` | `0` | Computes Zhao-style kernel completeness `f_i = sum_j (m_j/rho_j) W_ij` for material targets. Diagnostic only unless selector is enabled. | Experimental |
+| `SaveConfiningStressDiagnostics` | `0/1` | `0` | Prints extended CPU confinement diagnostics: target counts, `f_i` summary, cylinder classes, net force, radial tendency, and cap leakage. | Experimental |
+| `ConfiningStressFiThreshold` | float, `>0` | `0.70` | Candidate near-boundary threshold for `f_i` selector. Zhao suggests `0.70` for 3D diagnostics. | Experimental |
+| `ConfiningStressGeometry` | `0/1` | `0` | `0`: no geometry classification, `1`: cylinder classification for triaxial diagnostics. | Experimental |
+| `ConfiningStressCylinderCenterX/Y/Z` | float vector | `(0,0,0)` | Cylinder base/axis reference point for confinement classification. | Experimental |
+| `ConfiningStressCylinderAxisX/Y/Z` | float vector | `(0,0,1)` | Cylinder axis direction. The parser normalizes it and rejects zero length. | Experimental |
+| `ConfiningStressCylinderRadius` | float, `>0` if geometry enabled | `0` | Cylinder radius for lateral/cap classification. | Experimental |
+| `ConfiningStressCylinderHeight` | float, `>0` if geometry enabled | `0` | Cylinder height along the axis for cap and lateral classification. | Experimental |
+| `ConfiningStressCapExclusionLength` | float, `>=0` | `0` | Cap exclusion length. If zero, defaults to `KernelSize`. | Experimental |
+| `ConfiningStressEdgeExclusionLength` | float, `>=0` | `0` | Radial edge-ring tolerance. If zero, defaults to `KernelSize`. | Experimental |
+| `ConfiningStressUseFiSelector` | `0/1` | `0` | If enabled, applies the confining force only to target particles with `f_i <= ConfiningStressFiThreshold`. | Experimental |
+| `ConfiningStressUseLateralSelector` | `0/1` | `0` | If enabled, applies the confining force only to cylinder lateral particles; requires `ConfiningStressGeometry=1`. | Experimental |
+
+T3 confinement diagnostic/selector keys are currently parsed under
+`<execution><parameters>` together with the original flexible-confinement
+controls. They are opt-in and leave the legacy force target set unchanged when
+both selector flags are zero.
 
 Recommended XML location:
 

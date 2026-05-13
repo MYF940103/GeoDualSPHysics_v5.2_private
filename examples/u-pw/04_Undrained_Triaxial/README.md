@@ -128,5 +128,45 @@ Key decision:
 - MCC remains deferred until confinement and stress-path measurement are
   stable.
 
-Next step is T3: CPU-only flexible confinement diagnostics and lateral selector
-implementation. Defaults must preserve the current T1 behavior.
+## T3 Flexible Confinement Diagnostics
+
+T3 is implemented under:
+
+`experiments/T3_FlexibleConfinementDiagnostics/`
+
+It adds CPU-only Zhao-style diagnostics and opt-in selectors for
+`FlexibleConfiningStress`:
+
+- kernel-completeness diagnostic `f_i = sum_j (m_j/rho_j) W_ij`;
+- cylinder lateral/top/bottom/edge/interior classification;
+- optional `f_i <= 0.70` selector;
+- optional lateral-only selector;
+- confinement force diagnostics for net force, COM acceleration, radial
+  tendency, cap leakage, and symmetry residual.
+
+The default behavior is unchanged when the selectors are off. GPU remains
+deferred because `FlexibleConfiningStress=1` is still CPU-only.
+
+CPU Release T3 smokes:
+
+| Case | Result |
+| --- | --- |
+| confinement-only legacy | `code=0`, `excluded=0`, `Kplastic=0` |
+| confinement-only selected | `code=0`, `excluded=0`, `Kplastic=0` |
+| axial + selected confinement | `code=0`, `excluded=0`, `Kplastic=0` |
+
+The reduced cylinder has `407` material particles. The first diagnostic frame
+reports `f_i` min/mean/max of `0.407175 / 0.745128 / 1.00132`, with
+`208` particles below the `0.70` threshold. Cylinder classification reports
+`196` lateral particles, `112` edge-ring particles, `18` top-cap particles,
+`18` bottom-cap particles, and `63` interior particles.
+
+The combined `f_i` + lateral selector reduces the active confinement targets
+from `407` to `112` and reduces measured active cap axial leakage from about
+`0.93 m/s2` to `0`. Lateral inward radial acceleration remains coherent
+(`~1.87 m/s2`) and net-force symmetry residual remains order `1e-8`.
+
+This is still a smoke/diagnostic stage, not strict triaxial validation. The
+large short-time pore-pressure response indicates that T4 should refine
+measurement, loading duration, stress-path postprocessing, and possibly
+Zhao-style renormalized gradients before MCC or full paper comparison.

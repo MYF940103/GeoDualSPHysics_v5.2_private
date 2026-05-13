@@ -1506,3 +1506,31 @@ GPU-relevant decision:
 
 T3 should be CPU-only. GPU parity should wait until the Zhao-style confinement
 selector has passed a confinement-only smoke and an axial-compression smoke.
+
+## T3 Flexible Confinement Diagnostics
+
+T3 adds CPU source diagnostics and opt-in selectors for the existing
+`FlexibleConfiningStress` path. It does not add GPU support.
+
+Implemented CPU-only controls:
+
+- `FlexibleConfiningStressFiDiagnostic`;
+- `SaveConfiningStressDiagnostics`;
+- `ConfiningStressFiThreshold`;
+- `ConfiningStressGeometry=1` with cylinder center/axis/radius/height;
+- `ConfiningStressUseFiSelector`;
+- `ConfiningStressUseLateralSelector`.
+
+CPU Release smokes under
+`examples/u-pw/04_Undrained_Triaxial/experiments/T3_FlexibleConfinementDiagnostics/`
+completed with `code=0`, `excluded=0`, and `Kplastic=0`:
+
+- confinement-only legacy;
+- confinement-only selected;
+- axial AccInput plus selected flexible confinement.
+
+The selected route reduces the active target set from `407` to `112` particles
+and removes active cap axial leakage in the confinement diagnostics
+(`~0.93 m/s2` to `0`). GPU remains deferred because the CPU path still uses the
+raw kernel gradient and needs T4 measurement/stress-path refinement before any
+porting or parity work.

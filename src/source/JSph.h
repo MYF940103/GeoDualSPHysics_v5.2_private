@@ -271,8 +271,37 @@ protected:
   double ConfiningStressRampEnd;   ///<End time for confining stress ramp [s].
   int ConfiningStressTargetMk;  ///<Target mkfluid for confining stress. -1:all material particles.
   int ConfiningStressMode;      ///<Flexible confining stress mode. 0:isotropic stress source.
+  bool FlexibleConfiningStressFiDiagnostic; ///<Compute Zhao kernel-completeness diagnostic f_i.
+  bool SaveConfiningStressDiagnostics; ///<Print extended CPU confinement diagnostics.
+  double ConfiningStressFiThreshold; ///<Kernel-completeness threshold for near-boundary diagnostics/selectors.
+  int ConfiningStressGeometry; ///<Confining geometry selector. 0:none, 1:cylinder.
+  tdouble3 ConfiningStressCylinderCenter; ///<Cylinder selector center/base point [m].
+  tdouble3 ConfiningStressCylinderAxis; ///<Cylinder selector axis unit vector.
+  double ConfiningStressCylinderRadius; ///<Cylinder selector radius [m].
+  double ConfiningStressCylinderHeight; ///<Cylinder selector height [m].
+  double ConfiningStressCapExclusionLength; ///<Cap exclusion length along cylinder axis [m].
+  double ConfiningStressEdgeExclusionLength; ///<Radial edge/lateral tolerance [m].
+  bool ConfiningStressUseFiSelector; ///<Apply confinement only where f_i is below threshold.
+  bool ConfiningStressUseLateralSelector; ///<Apply confinement only on selected lateral cylinder particles.
   mutable double ConfiningStressDiagP0Eff; ///<Last effective confining stress after ramp [Pa].
   mutable unsigned ConfiningStressDiagTargetCount; ///<Last target particle count.
+  mutable unsigned ConfiningStressDiagLegacyTargetCount; ///<Last legacy target particle count before selectors.
+  mutable unsigned ConfiningStressDiagFiSelectedCount; ///<Last f_i threshold-selected count.
+  mutable unsigned ConfiningStressDiagClassInteriorCount; ///<Last cylinder interior count.
+  mutable unsigned ConfiningStressDiagClassLateralCount; ///<Last cylinder lateral count.
+  mutable unsigned ConfiningStressDiagClassTopCount; ///<Last cylinder top-cap count.
+  mutable unsigned ConfiningStressDiagClassBottomCount; ///<Last cylinder bottom-cap count.
+  mutable unsigned ConfiningStressDiagClassEdgeCount; ///<Last cylinder edge-ring count.
+  mutable unsigned ConfiningStressDiagClassOutsideCount; ///<Last cylinder outside count.
+  mutable unsigned ConfiningStressDiagLateralFiSelectedCount; ///<Last lateral particles below f_i threshold.
+  mutable unsigned ConfiningStressDiagCapFiSelectedCount; ///<Last cap/edge particles below f_i threshold.
+  mutable double ConfiningStressDiagFiMin; ///<Last f_i minimum.
+  mutable double ConfiningStressDiagFiMax; ///<Last f_i maximum.
+  mutable double ConfiningStressDiagFiMean; ///<Last f_i mean over legacy targets.
+  mutable double ConfiningStressDiagLateralRadialAccelMean; ///<Last inward radial acceleration mean on lateral class.
+  mutable double ConfiningStressDiagLateralRadialAccelMax; ///<Last inward radial acceleration max on lateral class.
+  mutable double ConfiningStressDiagCapAxialAccelMean; ///<Last absolute axial acceleration mean on cap classes.
+  mutable double ConfiningStressDiagCapAxialAccelMax; ///<Last absolute axial acceleration max on cap classes.
   mutable tdouble3 ConfiningStressDiagNetForce; ///<Last net confining force estimate [N].
   mutable double ConfiningStressDiagTotalAbsForce; ///<Last total absolute confining force estimate [N].
   mutable double ConfiningStressDiagMaxAccel; ///<Last maximum confining acceleration estimate [m/s2].
@@ -593,6 +622,7 @@ protected:
   bool IsMechanicalGravityStopped(double timestep)const;
   double GetFlexibleConfiningStressP0(double timestep)const;
   bool IsFlexibleConfiningStressTarget(typecode code)const;
+  int GetConfiningStressCylinderClass(const tdouble3 &pos)const;
   void ResetFlexibleConfiningStressDiagnostics()const;
   void PrintFlexibleConfiningStressDiagnostics()const;
   double GetHydraulicGmag()const;

@@ -136,3 +136,43 @@ T3 should therefore be diagnostic-first:
 3. report radial confining acceleration and axial leakage;
 4. only then enable optional near-boundary and lateral-only selectors;
 5. keep GPU and MCC deferred.
+
+## T3 Flexible Confinement Diagnostic Notes
+
+T3 completed the CPU diagnostic-first step. The source now provides optional
+diagnostics and selectors for `FlexibleConfiningStress`, with all new selectors
+off by default:
+
+- `FlexibleConfiningStressFiDiagnostic`;
+- `SaveConfiningStressDiagnostics`;
+- `ConfiningStressFiThreshold`;
+- `ConfiningStressGeometry=1` for cylinder classification;
+- `ConfiningStressUseFiSelector`;
+- `ConfiningStressUseLateralSelector`.
+
+The reduced cylinder smoke has a coherent `f_i` and class split:
+
+- `f_i` min/mean/max: `0.407175 / 0.745128 / 1.00132`;
+- threshold selected count: `208 / 407`;
+- lateral class count: `196`;
+- top/bottom cap count: `18 + 18`;
+- edge-ring count: `112`;
+- selected active lateral targets: `112`.
+
+Three CPU Release smokes ran successfully:
+
+- confinement-only legacy selector off: `code=0`, `excluded=0`;
+- confinement-only `f_i` + lateral selector on: `code=0`, `excluded=0`;
+- axial AccInput plus selected flexible confinement: `code=0`, `excluded=0`.
+
+The selector removes active cap axial leakage in the diagnostic force term:
+legacy cap leakage is about `0.93 m/s2`, while selected cases report `0`.
+The selected lateral acceleration is inward and balanced, with a net-force
+symmetry residual of order `1e-8`.
+
+Interpretation remains cautious. The pore-pressure response in the selected
+cases is large over the very short reduced smoke, so T3 should be treated as
+successful infrastructure/diagnostics, not paper-level triaxial validation.
+T4 should refine measurement regions, axial/staged loading, and stress-path
+postprocessing before MCC. A Zhao renormalized-gradient implementation is a
+candidate T4b item if the selected raw-gradient confinement remains too noisy.
