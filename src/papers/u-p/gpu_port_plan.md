@@ -1770,3 +1770,18 @@ correctly to `Sigmac`, but the reduced free-surface cylinder still lacks a
 balanced cap/axial hydrostatic confinement route. Delayed full feedback again
 produces a large `PorePressRate` excursion in confinement-only tests. No axial
 smoke, GPU run, DP baseline, or MCC work should start from T4k.
+
+## T4l Full Hydrostatic Confinement GPU Status
+
+T4l adds `CapConfiningStress`, a CPU-only cap-normal hydrostatic support route
+for reduced triaxial staging. The parser is shared, so CPU Release, CPU Debug,
+and GPU Release builds were checked, but GPU execution hard-errors when
+`CapConfiningStress=1`.
+
+The CPU results confirm that cap support is useful but not sufficient. With
+feedback off, full cap+lateral support greatly improves the center-core pore
+pressure compared with the T4k lateral-only mismatch. With delayed full
+feedback, however, the confinement-only state still develops order
+`1e12 Pa/s` `PorePressRate` and large negative pressure. No axial smoke or GPU
+simulation was run. GPU parity, T5 DP, and T6 MCC remain deferred until a CPU
+full-feedback hydrostatic equilibrium gate passes.

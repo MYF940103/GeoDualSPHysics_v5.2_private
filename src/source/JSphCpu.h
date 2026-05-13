@@ -344,6 +344,7 @@ protected:
   void ComputePorePressureAccelLsq(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacelsq)const;
   void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *porepressurefeedbackused,tfloat3 *ace)const;
+  void ApplyCapConfiningStress(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat4 *velrhop,tfloat3 *ace)const;
   unsigned ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code,const double *porepress
     ,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,double timestep,const char *stage,bool printlog)const;
   template<TpKernel tker> void ComputeHydroLapPorePressGhostT(unsigned n,unsigned pini

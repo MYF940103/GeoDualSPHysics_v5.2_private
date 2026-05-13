@@ -894,6 +894,10 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
     if(PorePressureFeedbackOperator==2)ComputePorePressureAccelLsq(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
     else ComputePorePressureAccelDiff(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,PorePressureAceDiffc);
   }
+  if(CapConfiningStress && Acec){
+    ApplyCapConfiningStress(Np-Npb,Npb,Codec,Posc,Velrhopc,Acec);
+    PrintCapConfiningStressDiagnostics();
+  }
   if(HydromechCoupling && PorePressureModel==1 && PorePressureFeedback && Acec){
     if((PorePressureFeedbackOperator==0 || PorePressureFeedbackOperator==3) && PorePressureAcec)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,Posc,PorePressureAcec,PorePressureAceDiffc,PorePressureFeedbackUsedAcec,Acec);
     else if((PorePressureFeedbackOperator==1 || PorePressureFeedbackOperator==2) && PorePressureAceDiffc)ApplyPorePressureFeedback(Np-Npb,Npb,Codec,Posc,PorePressureAcec,PorePressureAceDiffc,PorePressureFeedbackUsedAcec,Acec);

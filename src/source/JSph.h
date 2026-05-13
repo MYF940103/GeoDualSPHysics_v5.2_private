@@ -304,6 +304,28 @@ protected:
   double ConfiningStressEdgeExclusionLength; ///<Radial edge/lateral tolerance [m].
   bool ConfiningStressUseFiSelector; ///<Apply confinement only where f_i is below threshold.
   bool ConfiningStressUseLateralSelector; ///<Apply confinement only on selected lateral cylinder particles.
+  bool CapConfiningStress; ///<CPU cap-normal hydrostatic support for triaxial staging. Default off.
+  float CapConfiningStressP0; ///<Positive cap-normal support magnitude [Pa].
+  double CapConfiningStressRampStart; ///<Start time for cap support ramp [s].
+  double CapConfiningStressRampEnd; ///<End time for cap support ramp [s].
+  int CapConfiningStressTopMk; ///<Top cap mkfluid target. -1:all top cap material particles.
+  int CapConfiningStressBottomMk; ///<Bottom cap mkfluid target. -1:all bottom cap material particles.
+  int CapConfiningStressMode; ///<Cap support mode. 0:uniform integrated pressure force over cap area.
+  tdouble3 CapConfiningStressAxis; ///<Cap inward/outward axis direction; top receives -axis, bottom +axis.
+  bool SaveCapConfiningStressDiagnostics; ///<Print CPU cap support diagnostics.
+  mutable double CapConfiningStressDiagP0Eff; ///<Last effective cap support pressure after ramp [Pa].
+  mutable unsigned CapConfiningStressDiagTopCount; ///<Last top cap target count.
+  mutable unsigned CapConfiningStressDiagBottomCount; ///<Last bottom cap target count.
+  mutable unsigned CapConfiningStressDiagEdgeSkippedCount; ///<Last edge-ring particles intentionally skipped by cap support.
+  mutable double CapConfiningStressDiagTopAccelMean; ///<Last mean top cap support acceleration [m/s2].
+  mutable double CapConfiningStressDiagBottomAccelMean; ///<Last mean bottom cap support acceleration [m/s2].
+  mutable double CapConfiningStressDiagTopAccelMax; ///<Last maximum top cap support acceleration [m/s2].
+  mutable double CapConfiningStressDiagBottomAccelMax; ///<Last maximum bottom cap support acceleration [m/s2].
+  mutable tdouble3 CapConfiningStressDiagNetForce; ///<Last net cap support force estimate [N].
+  mutable double CapConfiningStressDiagTotalAbsForce; ///<Last total absolute cap force estimate [N].
+  mutable double CapConfiningStressDiagComAccel; ///<Last cap support center-of-mass acceleration estimate [m/s2].
+  mutable double CapConfiningStressDiagSymResidual; ///<Last cap force symmetry residual.
+  mutable int CapConfiningStressDiagLastPrintStep; ///<Last step printed for cap support diagnostics.
   mutable double ConfiningStressDiagP0Eff; ///<Last effective confining stress after ramp [Pa].
   mutable unsigned ConfiningStressDiagTargetCount; ///<Last target particle count.
   mutable unsigned ConfiningStressDiagLegacyTargetCount; ///<Last legacy target particle count before selectors.
@@ -670,10 +692,13 @@ protected:
   tfloat3 GetMechanicalGravity(double timestep)const;
   bool IsMechanicalGravityStopped(double timestep)const;
   double GetFlexibleConfiningStressP0(double timestep)const;
+  double GetCapConfiningStressP0(double timestep)const;
   bool IsFlexibleConfiningStressTarget(typecode code)const;
   int GetConfiningStressCylinderClass(const tdouble3 &pos)const;
   void ResetFlexibleConfiningStressDiagnostics()const;
   void PrintFlexibleConfiningStressDiagnostics()const;
+  void ResetCapConfiningStressDiagnostics()const;
+  void PrintCapConfiningStressDiagnostics()const;
   void ResetPorePressureFeedbackDiagnostics()const;
   void PrintPorePressureFeedbackDiagnostics()const;
   double GetHydraulicGmag()const;

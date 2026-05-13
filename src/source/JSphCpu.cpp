@@ -4410,6 +4410,84 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
 }
 
 //==============================================================================
+/// Applies opt-in top/bottom cap-normal hydrostatic support for triaxial staging.
+//==============================================================================
+void JSphCpu::ApplyCapConfiningStress(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat4 *velrhop,tfloat3 *ace)const
+{
+  if(!CapConfiningStress || !ace)return;
+  if(!code || !pos || !velrhop)Run_Exceptioon("Pointers without data for cap confining stress.");
+  ResetCapConfiningStressDiagnostics();
+  const double p0=GetCapConfiningStressP0(TimeStep);
+  CapConfiningStressDiagP0Eff=p0;
+  if(p0<=0.)return;
+  if(ConfiningStressGeometry!=1)Run_Exceptioon("CapConfiningStress requires ConfiningStressGeometry=1.");
+
+  unsigned topcount=0,bottomcount=0,edgeskip=0;
+  for(unsigned cp=0;cp<n;cp++){
+    const unsigned p=pini+cp;
+    const typecode c=code[p];
+    if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+      const int mk=int(CODE_GetTypeValue(c));
+      const int cls=GetConfiningStressCylinderClass(pos[p]);
+      if(cls==3 && (CapConfiningStressTopMk<0 || mk==CapConfiningStressTopMk))topcount++;
+      else if(cls==4 && (CapConfiningStressBottomMk<0 || mk==CapConfiningStressBottomMk))bottomcount++;
+      else if(cls==5)edgeskip++;
+    }
+  }
+
+  const double area=PI*ConfiningStressCylinderRadius*ConfiningStressCylinderRadius;
+  const double topforce=(topcount? p0*area: 0.);
+  const double bottomforce=(bottomcount? p0*area: 0.);
+  const double topacc=(topcount && MassFluid>0.? topforce/(double(MassFluid)*double(topcount)): 0.);
+  const double bottomacc=(bottomcount && MassFluid>0.? bottomforce/(double(MassFluid)*double(bottomcount)): 0.);
+  const tdouble3 ax=CapConfiningStressAxis;
+  double netx=0.,nety=0.,netz=0.,absforce=0.;
+  double topasum=0.,bottomasum=0.,topamax=0.,bottomamax=0.;
+
+  for(unsigned cp=0;cp<n;cp++){
+    const unsigned p=pini+cp;
+    const typecode c=code[p];
+    if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+      const int mk=int(CODE_GetTypeValue(c));
+      const int cls=GetConfiningStressCylinderClass(pos[p]);
+      bool istop=false,isbottom=false;
+      if(cls==3 && (CapConfiningStressTopMk<0 || mk==CapConfiningStressTopMk))istop=true;
+      else if(cls==4 && (CapConfiningStressBottomMk<0 || mk==CapConfiningStressBottomMk))isbottom=true;
+      if(istop || isbottom){
+        const double amag=(istop? topacc: bottomacc);
+        const double s=(istop? -1.: 1.);
+        const tfloat3 adda=TFloat3(float(s*amag*ax.x),float(s*amag*ax.y),float(s*amag*ax.z));
+        ace[p].x+=adda.x;
+        ace[p].y+=adda.y;
+        ace[p].z+=adda.z;
+        const double fx=double(MassFluid)*double(adda.x);
+        const double fy=double(MassFluid)*double(adda.y);
+        const double fz=double(MassFluid)*double(adda.z);
+        netx+=fx; nety+=fy; netz+=fz;
+        const double fmag=sqrt(fx*fx+fy*fy+fz*fz);
+        absforce+=fmag;
+        if(istop){ topasum+=amag; topamax=max(topamax,amag); }
+        else{ bottomasum+=amag; bottomamax=max(bottomamax,amag); }
+      }
+    }
+  }
+
+  const double netmag=sqrt(netx*netx+nety*nety+netz*netz);
+  const unsigned count=topcount+bottomcount;
+  CapConfiningStressDiagTopCount=topcount;
+  CapConfiningStressDiagBottomCount=bottomcount;
+  CapConfiningStressDiagEdgeSkippedCount=edgeskip;
+  CapConfiningStressDiagTopAccelMean=(topcount? topasum/double(topcount): 0.);
+  CapConfiningStressDiagBottomAccelMean=(bottomcount? bottomasum/double(bottomcount): 0.);
+  CapConfiningStressDiagTopAccelMax=topamax;
+  CapConfiningStressDiagBottomAccelMax=bottomamax;
+  CapConfiningStressDiagNetForce=TDouble3(netx,nety,netz);
+  CapConfiningStressDiagTotalAbsForce=absforce;
+  CapConfiningStressDiagComAccel=(count? netmag/(double(MassFluid)*double(count)): 0.);
+  CapConfiningStressDiagSymResidual=(absforce>0.? netmag/absforce: 0.);
+}
+
+//==============================================================================
 /// Computes diagnostic ghost pore pressure for simple geometric hydraulic boundary modes.
 //==============================================================================
 unsigned JSphCpu::ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code,const double *porepress

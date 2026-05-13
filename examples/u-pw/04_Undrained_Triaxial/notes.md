@@ -535,3 +535,32 @@ stress and `q=0`. The dynamic result is more instructive:
 Therefore T4k does not unlock axial loading. The next stable-baseline task
 should be a staged hydrostatic equilibrium route with cap/axial support or a
 restart-based equilibrium stage. DP, MCC, and GPU validation remain deferred.
+
+## T4l Full Hydrostatic Confinement Notes
+
+T4l adds `CapConfiningStress`, a CPU-only opt-in cap-normal support for the
+reduced triaxial cylinder. It is meant to complement selected lateral
+`FlexibleConfiningStress` during pre-axial hydrostatic staging, not to replace
+axial loading.
+
+The source route is deliberately narrow:
+
+- `CapConfiningStressP0` is a positive compression magnitude;
+- `CapConfiningStressMode=0` distributes `p0*pi*R^2` over the selected top and
+  bottom cap masses;
+- top receives `-axis`, bottom receives `+axis`;
+- edge-ring particles are skipped to avoid overlap with lateral confinement;
+- GPU hard-errors if cap support is enabled.
+
+The feedback-off T4l case shows the feature is doing useful work: final
+center-core pore pressure improves from about `-1.10e4 Pa` in the lateral-only
+mismatch case to about `-63 Pa` with full cap+lateral support. Cap diagnostics
+are symmetric (`18` top and `18` bottom targets, zero symmetry residual).
+
+The gate still fails once delayed full feedback is enabled. The delayed-feedback
+case remains `code=0`, `excluded=0`, and has no DtMin burst, but it reaches
+`~1.16e12 Pa/s` `PorePressRate`, high velocity, and strong negative pressure.
+Therefore axial loading was skipped again. The next triaxial task should refine
+hydrostatic equilibrium itself, likely through cap/support distribution,
+pressure-boundary completion, or restart-based equilibration. DP and MCC remain
+too early.

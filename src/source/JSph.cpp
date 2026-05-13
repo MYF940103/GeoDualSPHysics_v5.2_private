@@ -293,6 +293,28 @@ void JSph::InitVars(){
   ConfiningStressEdgeExclusionLength=0.;
   ConfiningStressUseFiSelector=false;
   ConfiningStressUseLateralSelector=false;
+  CapConfiningStress=false;
+  CapConfiningStressP0=0.f;
+  CapConfiningStressRampStart=0.;
+  CapConfiningStressRampEnd=0.;
+  CapConfiningStressTopMk=-1;
+  CapConfiningStressBottomMk=-1;
+  CapConfiningStressMode=0;
+  CapConfiningStressAxis=TDouble3(0,0,1);
+  SaveCapConfiningStressDiagnostics=false;
+  CapConfiningStressDiagP0Eff=0.;
+  CapConfiningStressDiagTopCount=0;
+  CapConfiningStressDiagBottomCount=0;
+  CapConfiningStressDiagEdgeSkippedCount=0;
+  CapConfiningStressDiagTopAccelMean=0.;
+  CapConfiningStressDiagBottomAccelMean=0.;
+  CapConfiningStressDiagTopAccelMax=0.;
+  CapConfiningStressDiagBottomAccelMax=0.;
+  CapConfiningStressDiagNetForce=TDouble3(0);
+  CapConfiningStressDiagTotalAbsForce=0.;
+  CapConfiningStressDiagComAccel=0.;
+  CapConfiningStressDiagSymResidual=0.;
+  CapConfiningStressDiagLastPrintStep=-1;
   ConfiningStressDiagP0Eff=0.;
   ConfiningStressDiagTargetCount=0;
   ConfiningStressDiagLegacyTargetCount=0;
@@ -1167,6 +1189,28 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  ConfiningStressUseLateralSelector=true;   break;
     default: Run_Exceptioon("ConfiningStressUseLateralSelector mode is not valid.");
   }
+  switch(eparms.GetValueInt("CapConfiningStress",true,0)){
+    case 0:  CapConfiningStress=false;  break;
+    case 1:  CapConfiningStress=true;   break;
+    default: Run_Exceptioon("CapConfiningStress mode is not valid.");
+  }
+  CapConfiningStressP0=eparms.GetValueFloat("CapConfiningStressP0",true,0.f);
+  CapConfiningStressRampStart=eparms.GetValueDouble("CapConfiningStressRampStart",true,0.);
+  CapConfiningStressRampEnd=eparms.GetValueDouble("CapConfiningStressRampEnd",true,CapConfiningStressRampStart);
+  CapConfiningStressTopMk=eparms.GetValueInt("CapConfiningStressTopMk",true,-1);
+  CapConfiningStressBottomMk=eparms.GetValueInt("CapConfiningStressBottomMk",true,-1);
+  switch(eparms.GetValueInt("CapConfiningStressMode",true,0)){
+    case 0:  CapConfiningStressMode=0;  break;
+    default: Run_Exceptioon("CapConfiningStressMode is not valid. Only mode 0 is implemented.");
+  }
+  CapConfiningStressAxis.x=eparms.GetValueDouble("CapConfiningStressAxisX",true,0.);
+  CapConfiningStressAxis.y=eparms.GetValueDouble("CapConfiningStressAxisY",true,0.);
+  CapConfiningStressAxis.z=eparms.GetValueDouble("CapConfiningStressAxisZ",true,1.);
+  switch(eparms.GetValueInt("SaveCapConfiningStressDiagnostics",true,0)){
+    case 0:  SaveCapConfiningStressDiagnostics=false;  break;
+    case 1:  SaveCapConfiningStressDiagnostics=true;   break;
+    default: Run_Exceptioon("SaveCapConfiningStressDiagnostics mode is not valid.");
+  }
   switch(eparms.GetValueInt("HydromechDamping",true,0)){
     case 0:  HydromechDamping=false;  break;
     case 1:  HydromechDamping=true;   break;
@@ -1288,6 +1332,21 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(FlexibleConfiningStress && !Cpu)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
   if(FlexibleConfiningStress && !ConfiningStressP0)
     Log->PrintWarning("FlexibleConfiningStress=1 but ConfiningStressP0=0. No confining contribution will be produced.");
+  if(CapConfiningStressP0<0.f)Run_Exceptioon("CapConfiningStressP0 must be greater than or equal to zero.");
+  if(CapConfiningStressRampStart<0.)Run_Exceptioon("CapConfiningStressRampStart must be greater than or equal to zero.");
+  if(CapConfiningStressRampEnd<CapConfiningStressRampStart)Run_Exceptioon("CapConfiningStressRampEnd must be greater than or equal to CapConfiningStressRampStart.");
+  if(CapConfiningStressTopMk<-1)Run_Exceptioon("CapConfiningStressTopMk must be -1 for all top-cap material particles or a non-negative mkfluid value.");
+  if(CapConfiningStressBottomMk<-1)Run_Exceptioon("CapConfiningStressBottomMk must be -1 for all bottom-cap material particles or a non-negative mkfluid value.");
+  if(CapConfiningStress){
+    if(!Cpu)Run_Exceptioon("CapConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
+    if(ConfiningStressGeometry!=1)Run_Exceptioon("CapConfiningStress=1 requires ConfiningStressGeometry=1 for top/bottom cap classification.");
+    const double ax=CapConfiningStressAxis.x, ay=CapConfiningStressAxis.y, az=CapConfiningStressAxis.z;
+    const double an=sqrt(ax*ax+ay*ay+az*az);
+    if(an<=0.)Run_Exceptioon("CapConfiningStressAxis must have non-zero magnitude when CapConfiningStress=1.");
+    CapConfiningStressAxis.x/=an; CapConfiningStressAxis.y/=an; CapConfiningStressAxis.z/=an;
+    if(CapConfiningStressP0==0.f)
+      Log->PrintWarning("CapConfiningStress=1 but CapConfiningStressP0=0. No cap-normal support will be produced.");
+  }
   if(PorePressureShepard && !PorePressureShepardInterval)Run_Exceptioon("PorePressureShepardInterval must be greater than zero when PorePressureShepard is enabled.");
   if(HydromechDampingXi<0.f)Run_Exceptioon("HydromechDampingXi must be greater than or equal to zero.");
   if(HydromechDampingCoef<0.f)Run_Exceptioon("HydromechDampingCoef must be greater than or equal to zero.");
@@ -2386,6 +2445,19 @@ void JSph::VisuConfig(){
       Log->Print("  ConfiningStressGradientMode=1: CPU renormalized/corrected kernel gradient is applied only to the flexible confining stress pair term.");
     Log->Print("  FlexibleConfiningStress convention: positive ConfiningStressP0 is external compression; in the current SPH stress-divergence sign convention it is added as a positive isotropic stress-like pair contribution and is not written to the material stress state.");
     ConfigInfo=ConfigInfo+sep+"FlexConfStress";
+  }
+  Log->Print(fun::VarStr("CapConfiningStress",CapConfiningStress? "CPU cap-normal hydrostatic support": "Disabled"));
+  if(CapConfiningStress){
+    Log->Print(fun::VarStr("  CapConfiningStressP0",CapConfiningStressP0));
+    Log->Print(fun::VarStr("  CapConfiningStressRampStart",CapConfiningStressRampStart));
+    Log->Print(fun::VarStr("  CapConfiningStressRampEnd",CapConfiningStressRampEnd));
+    Log->Print(fun::VarStr("  CapConfiningStressTopMk",CapConfiningStressTopMk));
+    Log->Print(fun::VarStr("  CapConfiningStressBottomMk",CapConfiningStressBottomMk));
+    Log->Print(fun::VarStr("  CapConfiningStressMode",CapConfiningStressMode));
+    Log->Print(fun::VarStr("  CapConfiningStressAxis",CapConfiningStressAxis));
+    Log->Print(fun::VarStr("  SaveCapConfiningStressDiagnostics",SaveCapConfiningStressDiagnostics));
+    Log->Print("  CapConfiningStress convention: positive CapConfiningStressP0 is external compression; top cap receives acceleration along -axis and bottom cap along +axis. Edge-ring particles are skipped to avoid double-counting lateral flexible confinement.");
+    ConfigInfo=ConfigInfo+sep+"CapConfStress";
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
@@ -3506,6 +3578,22 @@ double JSph::GetFlexibleConfiningStressP0(double timestep)const{
 }
 
 //==============================================================================
+/// Returns current positive compression magnitude for cap-normal hydrostatic support.
+//==============================================================================
+double JSph::GetCapConfiningStressP0(double timestep)const{
+  if(!CapConfiningStress || CapConfiningStressP0<=0.f)return(0.);
+  if(CapConfiningStressRampEnd>CapConfiningStressRampStart){
+    if(timestep<=CapConfiningStressRampStart)return(0.);
+    if(timestep<CapConfiningStressRampEnd){
+      const double r=(timestep-CapConfiningStressRampStart)/(CapConfiningStressRampEnd-CapConfiningStressRampStart);
+      return(double(CapConfiningStressP0)*r);
+    }
+  }
+  else if(timestep<CapConfiningStressRampStart)return(0.);
+  return(double(CapConfiningStressP0));
+}
+
+//==============================================================================
 /// Returns the pore-pressure feedback acceleration scale at the given time.
 //==============================================================================
 double JSph::GetPorePressureFeedbackFactor(double timestep)const{
@@ -3603,6 +3691,24 @@ void JSph::ResetFlexibleConfiningStressDiagnostics()const{
 }
 
 //==============================================================================
+/// Resets CPU cap-normal confining support diagnostics.
+//==============================================================================
+void JSph::ResetCapConfiningStressDiagnostics()const{
+  CapConfiningStressDiagP0Eff=0.;
+  CapConfiningStressDiagTopCount=0;
+  CapConfiningStressDiagBottomCount=0;
+  CapConfiningStressDiagEdgeSkippedCount=0;
+  CapConfiningStressDiagTopAccelMean=0.;
+  CapConfiningStressDiagBottomAccelMean=0.;
+  CapConfiningStressDiagTopAccelMax=0.;
+  CapConfiningStressDiagBottomAccelMax=0.;
+  CapConfiningStressDiagNetForce=TDouble3(0);
+  CapConfiningStressDiagTotalAbsForce=0.;
+  CapConfiningStressDiagComAccel=0.;
+  CapConfiningStressDiagSymResidual=0.;
+}
+
+//==============================================================================
 /// Resets CPU pore-pressure feedback diagnostics.
 //==============================================================================
 void JSph::ResetPorePressureFeedbackDiagnostics()const{
@@ -3679,6 +3785,23 @@ void JSph::PrintFlexibleConfiningStressDiagnostics()const{
         ,ConfiningStressDiagGradDetMin,ConfiningStressDiagGradDetMax);
     }
     ConfiningStressDiagLastPrintStep=Nstep;
+  }
+}
+
+//==============================================================================
+/// Prints a compact CPU cap-normal support diagnostics line.
+//==============================================================================
+void JSph::PrintCapConfiningStressDiagnostics()const{
+  if(!CapConfiningStress || CapConfiningStressDiagP0Eff<=0. || CapConfiningStressDiagLastPrintStep==Nstep)return;
+  if(Nstep<5 || !(Nstep%500)){
+    Log->Printf("CapConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, top_targets=%u, bottom_targets=%u, edge_skipped=%u, top_accel_mean=%g, top_accel_max=%g, bottom_accel_mean=%g, bottom_accel_max=%g, net_force=(%g,%g,%g) N, total_abs_force=%g N, com_accel=%g m/s2, symmetry_residual=%g."
+      ,Nstep,TimeStep,CapConfiningStressDiagP0Eff
+      ,CapConfiningStressDiagTopCount,CapConfiningStressDiagBottomCount,CapConfiningStressDiagEdgeSkippedCount
+      ,CapConfiningStressDiagTopAccelMean,CapConfiningStressDiagTopAccelMax
+      ,CapConfiningStressDiagBottomAccelMean,CapConfiningStressDiagBottomAccelMax
+      ,CapConfiningStressDiagNetForce.x,CapConfiningStressDiagNetForce.y,CapConfiningStressDiagNetForce.z
+      ,CapConfiningStressDiagTotalAbsForce,CapConfiningStressDiagComAccel,CapConfiningStressDiagSymResidual);
+    CapConfiningStressDiagLastPrintStep=Nstep;
   }
 }
 

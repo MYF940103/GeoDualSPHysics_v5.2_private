@@ -43,11 +43,26 @@ The material/phase constants below are now soil material constants and should be
 | `ConfiningStressEdgeExclusionLength` | float, `>=0` | `0` | Radial edge-ring tolerance. If zero, defaults to `KernelSize`. | Experimental |
 | `ConfiningStressUseFiSelector` | `0/1` | `0` | If enabled, applies the confining force only to target particles with `f_i <= ConfiningStressFiThreshold`. | Experimental |
 | `ConfiningStressUseLateralSelector` | `0/1` | `0` | If enabled, applies the confining force only to cylinder lateral particles; requires `ConfiningStressGeometry=1`. | Experimental |
+| `CapConfiningStress` | `0/1` | `0` | CPU-only top/bottom cap-normal hydrostatic support for triaxial staging. GPU hard-errors if enabled. | Experimental |
+| `CapConfiningStressP0` | float, `>=0` | `0` | Positive external compression magnitude [Pa] for cap-normal support. | Experimental |
+| `CapConfiningStressRampStart` | double [s] | `0` | Linear cap-support ramp start time. | Experimental |
+| `CapConfiningStressRampEnd` | double [s] | `CapConfiningStressRampStart` | Linear cap-support ramp end time. If equal to start, load is applied without ramp. | Experimental |
+| `CapConfiningStressTopMk` | int | `-1` | `-1`: all top-cap material particles; otherwise target one `mkfluid` value. | Experimental |
+| `CapConfiningStressBottomMk` | int | `-1` | `-1`: all bottom-cap material particles; otherwise target one `mkfluid` value. | Experimental |
+| `CapConfiningStressMode` | int | `0` | `0`: uniform integrated pressure force `p0*pi*R^2` distributed over selected top/bottom cap mass. | Experimental |
+| `CapConfiningStressAxisX/Y/Z` | float vector | `(0,0,1)` | Cylinder axial direction for cap support. The parser normalizes it; top receives `-axis`, bottom receives `+axis`. | Experimental |
+| `SaveCapConfiningStressDiagnostics` | `0/1` | `0` | Prints CPU cap-support diagnostics: target counts, edge-ring skipped count, cap acceleration, net force, and symmetry residual. | Experimental |
 
 T3 confinement diagnostic/selector keys are currently parsed under
 `<execution><parameters>` together with the original flexible-confinement
 controls. They are opt-in and leave the legacy force target set unchanged when
 both selector flags are zero.
+
+T4l cap-support keys are also parsed under `<execution><parameters>`. They are
+intended only for reduced triaxial hydrostatic staging diagnostics. The cap
+support is not axial deviatoric loading, is not written into the stress tensor,
+and skips cylinder edge-ring particles to avoid double-counting lateral
+flexible confinement.
 
 Recommended XML location:
 

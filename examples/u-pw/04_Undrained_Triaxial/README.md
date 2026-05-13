@@ -558,3 +558,36 @@ pass. T4k shows that initial effective stress is wired correctly, but the
 reduced cylinder needs a true staged hydrostatic equilibrium route, likely
 including cap/axial confinement or restart-based equilibration, before axial
 loading, DP, or MCC work resumes.
+
+## T4l Full Hydrostatic Confinement Staging
+
+T4l is retained under:
+
+`experiments/T4l_FullHydrostaticConfinement/`
+
+It adds a CPU-only cap-normal hydrostatic support route:
+
+```xml
+<parameter key="CapConfiningStress" value="1" />
+<parameter key="CapConfiningStressP0" value="50" />
+<parameter key="CapConfiningStressTopMk" value="1" />
+<parameter key="CapConfiningStressBottomMk" value="0" />
+```
+
+The cap support balances the axial component of the initial hydrostatic
+effective stress. Positive `CapConfiningStressP0` is external compression; the
+top cap receives acceleration along `-axis`, the bottom cap along `+axis`, and
+edge-ring particles are skipped so lateral flexible confinement is not counted
+twice.
+
+T4l CPU Release results:
+
+| Case | Result | Max `PorePressRate` | Interpretation |
+| --- | --- | ---: | --- |
+| lateral-only initial stress, feedback off | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `4.48e7 Pa/s` | Reproduces the T4k axial-support mismatch. |
+| full cap+lateral support, feedback off | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `4.42e7 Pa/s` | Center-core pressure improves strongly, but the specimen is still not fully hydrostatic. |
+| full cap+lateral support, delayed feedback | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `1.16e12 Pa/s` | Full feedback still destabilizes the confinement-only state. |
+
+No axial smoke was run. T4l confirms that cap/axial support was a real missing
+piece, but it does not yet produce a validation-ready hydrostatic equilibrium.
+DP, MCC, GPU parity, and full paper reproduction remain deferred.
