@@ -900,3 +900,35 @@ in `341/407` specimen particles while keeping pore pressure, velocity, and
 confinement diagnostics bounded. This is a reduced DP feedback-off baseline,
 not strict triaxial validation. True reaction output, full feedback, MCC, and
 GPU remain deferred.
+
+## T4t Platen Reaction Diagnostics
+
+T4t is retained under:
+
+`experiments/T4t_TruePlatenReaction/`
+
+It adds an opt-in CPU diagnostic for top/bottom explicit platen reactions:
+
+- `SavePlatenReactionDiagnostics=1`;
+- top platen `mkbound=1`;
+- bottom platen `mkbound=2`;
+- `PlatenReactionMode=0`;
+- `PlatenReactionArea=pi*R^2`.
+
+Mode `0` is a CPU pairwise fluid-bound interaction accumulator. It sums the
+opposite of the specimen-side SPH pair force contribution for pairs involving
+the selected top or bottom platen. This is a specimen-platen contact reaction
+diagnostic, not the previous specimen-stress proxy and not a full prescribed
+motion actuator reaction.
+
+Three CPU Release feedback-off cases completed with `code=0`, `excluded=0`,
+and `DtMin=0`:
+
+| Case | Final `Kplastic` max | Top/bottom `Fz` reaction | Pairwise reaction vs `Fz_proxy` |
+| --- | ---: | ---: | ---: |
+| elastic | `0` | `1.04649 / -0.867504 N` | `0.956997 N` vs `1.03854 N` |
+| DP high strength | `0` | `1.04649 / -0.867504 N` | `0.956997 N` vs `1.03854 N` |
+| DP mild yield | `4.38e-4` | `0.55936 / -0.426189 N` | `0.492775 N` vs `0.48374 N` |
+
+The reaction diagnostic is usable for T5b reduced DP refinement. Full
+pore-pressure feedback, MCC, and GPU triaxial validation remain deferred.

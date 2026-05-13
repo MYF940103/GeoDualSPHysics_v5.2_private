@@ -40,6 +40,7 @@
 #include "JDsOutputTime.h"
 #include "JDsAccInput.h"
 #include "JDsGaugeSystem.h"
+#include "JSphMk.h"
 #include "JSphInOut.h"
 #include "JSphShifting.h"
 
@@ -1139,6 +1140,34 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     ct.gradcorrected=ct.gradfallback=0.;
     ct.graddetmin=DBL_MAX; ct.graddetmax=-DBL_MAX;
   }
+  const bool useplatenreact=(SavePlatenReactionDiagnostics && boundp2 && PlatenReactionMode==0);
+  struct StPlatenReactionThread{
+    double topx,topy,topz,bottomx,bottomy,bottomz;
+    unsigned long long toppairs,bottompairs;
+  };
+  vector<StPlatenReactionThread> platenreactth(OMP_MAXTHREADS);
+  if(useplatenreact){
+    ResetPlatenReactionDiagnostics();
+    for(unsigned p=0;p<pinit;p++){
+      const typecode c=code[p];
+      if(CODE_IsNormal(c) && !CODE_IsFluid(c)){
+        int mk=int(CODE_GetTypeValue(c));
+        if(MkInfo){
+          const unsigned cmk=MkInfo->GetMkBlockByCode(c);
+          if(cmk<MkInfo->Size())mk=int(MkInfo->Mkblock(cmk)->MkType);
+        }
+        const bool istop=(mk==PlatenTopMkBound);
+        const bool isbottom=(mk==PlatenBottomMkBound);
+        if(istop)PlatenReactionDiagTopCount++;
+        else if(isbottom)PlatenReactionDiagBottomCount++;
+      }
+    }
+    for(int th=0;th<OmpThreads;th++){
+      StPlatenReactionThread &pt=platenreactth[th];
+      pt.topx=pt.topy=pt.topz=pt.bottomx=pt.bottomy=pt.bottomz=0.;
+      pt.toppairs=pt.bottompairs=0;
+    }
+  }
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
   const int pfin=int(pinit+n);
   #ifdef OMP_USE
@@ -1305,6 +1334,17 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             if(ftp2 && shift && shiftmode==SHIFT_NoBound)shiftposfsp1.x=FLT_MAX; //-With floating objects do not use shifting. | Con floatings anula shifting.
             compute=!(USE_FTEXTERNAL && ftp1 && (boundp2 || ftp2)); //-Deactivate when using DEM and if it is of type float-float or float-bound. | Se desactiva cuando se usa DEM y es float-float o float-bound.
           }
+          int platenreactclass=0;
+          if(useplatenreact && !ftp1 && CODE_IsNormal(code[p2]) && !CODE_IsFluid(code[p2])){
+            int mk=int(CODE_GetTypeValue(code[p2]));
+            if(MkInfo){
+              const unsigned cmk=MkInfo->GetMkBlockByCode(code[p2]);
+              if(cmk<MkInfo->Size())mk=int(MkInfo->Mkblock(cmk)->MkType);
+            }
+            if(mk==PlatenTopMkBound)platenreactclass=1;
+            else if(mk==PlatenBottomMkBound)platenreactclass=2;
+          }
+          tfloat3 platenpairace=TFloat3(0);
 
           tfloat4 velrhop2=velrhop[p2];
           if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
@@ -1320,7 +1360,11 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxy = massp2*(sigmap1.xy + sigmap2.xy) / (rhopp1*velrhop2.w);
 			const float prsxz = massp2*(sigmap1.xz + sigmap2.xz) / (rhopp1*velrhop2.w);
 			const float prsyz = massp2*(sigmap1.yz + sigmap2.yz) / (rhopp1*velrhop2.w);
-			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            const tfloat3 acestress=TFloat3(prsxx*frx+prsxy*fry+prsxz*frz,prsyy*fry+prsxy*frx+prsyz*frz,prszz*frz+prsyz*fry+prsxz*frx);
+			acep1.x += acestress.x; acep1.y += acestress.y; acep1.z += acestress.z;//form 1
+            if(platenreactclass){
+              platenpairace.x+=acestress.x; platenpairace.y+=acestress.y; platenpairace.z+=acestress.z;
+            }
             if(confactivep1 && !ftp2 && IsFlexibleConfiningStressTarget(code[p2])){
               const float prsconf=massp2*(confp0+confp0)/(rhopp1*velrhop2.w);
               float frxconf=frx,fryconf=fry,frzconf=frz;
@@ -1450,7 +1494,11 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const float amubar=KernelH*dot_rr2;  //amubar=CTE.h*dot/(rr2+CTE.eta2);
                 const float robar=(rhopp1+velrhop2.w)*0.5f;
                 const float pi_visc=(-visco*cbar*amubar/robar)*massp2;
-                acep1.x-=pi_visc*frx; acep1.y-=pi_visc*fry; acep1.z-=pi_visc*frz;
+                const tfloat3 acevisc=TFloat3(-pi_visc*frx,-pi_visc*fry,-pi_visc*frz);
+                acep1.x+=acevisc.x; acep1.y+=acevisc.y; acep1.z+=acevisc.z;
+                if(platenreactclass){
+                  platenpairace.x+=acevisc.x; platenpairace.y+=acevisc.y; platenpairace.z+=acevisc.z;
+                }
               }
             }
             else if(tvisco==VISCO_LaminarSPS){//-Laminar+SPS viscosity. 
@@ -1458,7 +1506,11 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const float robar2=(rhopp1+velrhop2.w);
                 const float temp=4.f*visco/((rr2+Eta2)*robar2);  //-Simplification of: temp=2.0f*visco/((rr2+CTE.eta2)*robar); robar=(rhopp1+velrhop2.w)*0.5f;
                 const float vtemp=massp2*temp*(drx*frx+dry*fry+drz*frz);  
-                acep1.x+=vtemp*dvx; acep1.y+=vtemp*dvy; acep1.z+=vtemp*dvz;
+                const tfloat3 acevisc=TFloat3(vtemp*dvx,vtemp*dvy,vtemp*dvz);
+                acep1.x+=acevisc.x; acep1.y+=acevisc.y; acep1.z+=acevisc.z;
+                if(platenreactclass){
+                  platenpairace.x+=acevisc.x; platenpairace.y+=acevisc.y; platenpairace.z+=acevisc.z;
+                }
               }
               //-SPS turbulence model.
               /*float tau_xx=taup1.xx,tau_xy=taup1.xy,tau_xz=taup1.xz; //-taup1 is always zero when p1 is not a fluid particle. | taup1 siempre es cero cuando p1 no es fluid.
@@ -1479,6 +1531,18 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 //-To compute tau terms we assume that gradvel.xy=gradvel.dudy+gradvel.dvdx, gradvel.xz=gradvel.dudz+gradvel.dwdx, gradvel.yz=gradvel.dvdz+gradvel.dwdy
                 //-so only 6 elements are needed instead of 3x3.
               }*/
+            }
+            if(platenreactclass && (platenpairace.x || platenpairace.y || platenpairace.z)){
+              StPlatenReactionThread &pt=platenreactth[omp_get_thread_num()];
+              const double fx=-double(MassFluid)*double(platenpairace.x);
+              const double fy=-double(MassFluid)*double(platenpairace.y);
+              const double fz=-double(MassFluid)*double(platenpairace.z);
+              if(platenreactclass==1){
+                pt.topx+=fx; pt.topy+=fy; pt.topz+=fz; pt.toppairs++;
+              }
+              else{
+                pt.bottomx+=fx; pt.bottomy+=fy; pt.bottomz+=fz; pt.bottompairs++;
+              }
             }
           }
           rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
@@ -1650,6 +1714,36 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     ConfiningStressDiagGradDetMin=(graddetmin==DBL_MAX? 0.: graddetmin);
     ConfiningStressDiagGradDetMax=(graddetmax==-DBL_MAX? 0.: graddetmax);
   }
+  if(useplatenreact){
+    double topx=0.,topy=0.,topz=0.,bottomx=0.,bottomy=0.,bottomz=0.;
+    unsigned long long toppairs=0,bottompairs=0;
+    for(int th=0;th<OmpThreads;th++){
+      const StPlatenReactionThread &pt=platenreactth[th];
+      topx+=pt.topx; topy+=pt.topy; topz+=pt.topz;
+      bottomx+=pt.bottomx; bottomy+=pt.bottomy; bottomz+=pt.bottomz;
+      toppairs+=pt.toppairs; bottompairs+=pt.bottompairs;
+    }
+    PlatenReactionDiagTopPairs=toppairs;
+    PlatenReactionDiagBottomPairs=bottompairs;
+    PlatenReactionDiagTopForce=TDouble3(topx,topy,topz);
+    PlatenReactionDiagBottomForce=TDouble3(bottomx,bottomy,bottomz);
+    double ax=ConfiningStressCylinderAxis.x,ay=ConfiningStressCylinderAxis.y,az=ConfiningStressCylinderAxis.z;
+    double an=sqrt(ax*ax+ay*ay+az*az);
+    if(an<=0.){ ax=0.; ay=0.; az=1.; an=1.; }
+    ax/=an; ay/=an; az/=an;
+    const double area=PlatenReactionArea;
+    if(area>0.){
+      const double ftopaxis=topx*ax+topy*ay+topz*az;
+      const double fbottomaxis=bottomx*ax+bottomy*ay+bottomz*az;
+      PlatenReactionDiagTopAxialStress=ftopaxis/area;
+      PlatenReactionDiagBottomAxialStress=-fbottomaxis/area;
+    }
+    const double ftopmag=sqrt(topx*topx+topy*topy+topz*topz);
+    const double fbottommag=sqrt(bottomx*bottomx+bottomy*bottomy+bottomz*bottomz);
+    const double fbalx=topx+bottomx,fbaly=topy+bottomy,fbalz=topz+bottomz;
+    const double fbalsum=ftopmag+fbottommag;
+    PlatenReactionDiagForceBalanceError=(fbalsum>0.? sqrt(fbalx*fbalx+fbaly*fbaly+fbalz*fbalz)/fbalsum: 0.);
+  }
 }
 
 //==============================================================================
@@ -1816,6 +1910,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     InteractionForcesBound<tker,ftmode> (t.npbok,0,t.divdata,t.dcell
       ,t.pos,t.velrhop,t.code,t.idp,viscdt,t.ar);
   }
+  if(SavePlatenReactionDiagnostics)PrintPlatenReactionDiagnostics();
   res.viscdt=viscdt;
 }
 //==============================================================================

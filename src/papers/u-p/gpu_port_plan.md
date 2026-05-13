@@ -1935,3 +1935,23 @@ GPU remains deferred because the active validation blockers are still CPU-side:
 true platen reaction is unavailable, and full pore-pressure feedback remains
 deferred. MCC should not be started on GPU before the CPU DP/platen measurement
 and feedback decisions are settled.
+
+## T4t Platen Reaction Diagnostics GPU Status
+
+T4t adds CPU-only parser keys and a CPU pairwise platen reaction accumulator:
+
+- `SavePlatenReactionDiagnostics`;
+- `PlatenTopMkBound`;
+- `PlatenBottomMkBound`;
+- `PlatenReactionMode`;
+- `PlatenReactionArea`;
+- `PlatenReactionInterval`.
+
+The diagnostic hard-errors on GPU when enabled. GPU Release is still built to
+verify shared parser/source compatibility, but no GPU simulation is run.
+
+The CPU diagnostic accumulates specimen-platen SPH pairwise interaction
+reaction for selected fixed/moving `mkbound` platens. This resolves the
+immediate T5 measurement blocker for reduced feedback-off DP refinement, but
+it is not a GPU-ready validation route. Full feedback, MCC, and GPU triaxial
+validation remain deferred until the CPU platen workflow is physically stable.

@@ -327,6 +327,22 @@ protected:
   mutable double CapConfiningStressDiagComAccel; ///<Last cap support center-of-mass acceleration estimate [m/s2].
   mutable double CapConfiningStressDiagSymResidual; ///<Last cap force symmetry residual.
   mutable int CapConfiningStressDiagLastPrintStep; ///<Last step printed for cap support diagnostics.
+  bool SavePlatenReactionDiagnostics; ///<Print CPU pairwise platen reaction diagnostics.
+  int PlatenTopMkBound;        ///<Top platen mkbound value for reaction diagnostics.
+  int PlatenBottomMkBound;     ///<Bottom platen mkbound value for reaction diagnostics.
+  int PlatenReactionMode;      ///<Reaction diagnostic mode. 0:pairwise fluid-bound force accumulator.
+  double PlatenReactionArea;   ///<Reference platen area for axial stress [m2]. <=0 disables stress conversion.
+  unsigned PlatenReactionInterval; ///<Log interval in steps for platen reaction diagnostics.
+  mutable unsigned PlatenReactionDiagTopCount; ///<Top platen boundary particle count.
+  mutable unsigned PlatenReactionDiagBottomCount; ///<Bottom platen boundary particle count.
+  mutable unsigned long long PlatenReactionDiagTopPairs; ///<Fluid-bound interaction pairs accumulated for top platen.
+  mutable unsigned long long PlatenReactionDiagBottomPairs; ///<Fluid-bound interaction pairs accumulated for bottom platen.
+  mutable tdouble3 PlatenReactionDiagTopForce; ///<Force on top platen from specimen pair interactions [N].
+  mutable tdouble3 PlatenReactionDiagBottomForce; ///<Force on bottom platen from specimen pair interactions [N].
+  mutable double PlatenReactionDiagTopAxialStress; ///<Compression-positive top axial stress from reaction [Pa].
+  mutable double PlatenReactionDiagBottomAxialStress; ///<Compression-positive bottom axial stress from reaction [Pa].
+  mutable double PlatenReactionDiagForceBalanceError; ///<Norm(top+bottom)/(norm(top)+norm(bottom)).
+  mutable int PlatenReactionDiagLastPrintStep; ///<Last step printed for platen reaction diagnostics.
   mutable double ConfiningStressDiagP0Eff; ///<Last effective confining stress after ramp [Pa].
   mutable unsigned ConfiningStressDiagTargetCount; ///<Last target particle count.
   mutable unsigned ConfiningStressDiagLegacyTargetCount; ///<Last legacy target particle count before selectors.
@@ -700,6 +716,8 @@ protected:
   void PrintFlexibleConfiningStressDiagnostics()const;
   void ResetCapConfiningStressDiagnostics()const;
   void PrintCapConfiningStressDiagnostics()const;
+  void ResetPlatenReactionDiagnostics()const;
+  void PrintPlatenReactionDiagnostics()const;
   void ResetPorePressureFeedbackDiagnostics()const;
   void PrintPorePressureFeedbackDiagnostics()const;
   double GetHydraulicGmag()const;

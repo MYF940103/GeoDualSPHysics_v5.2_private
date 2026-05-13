@@ -316,6 +316,22 @@ void JSph::InitVars(){
   CapConfiningStressDiagComAccel=0.;
   CapConfiningStressDiagSymResidual=0.;
   CapConfiningStressDiagLastPrintStep=-1;
+  SavePlatenReactionDiagnostics=false;
+  PlatenTopMkBound=1;
+  PlatenBottomMkBound=2;
+  PlatenReactionMode=0;
+  PlatenReactionArea=0.;
+  PlatenReactionInterval=500;
+  PlatenReactionDiagTopCount=0;
+  PlatenReactionDiagBottomCount=0;
+  PlatenReactionDiagTopPairs=0;
+  PlatenReactionDiagBottomPairs=0;
+  PlatenReactionDiagTopForce=TDouble3(0);
+  PlatenReactionDiagBottomForce=TDouble3(0);
+  PlatenReactionDiagTopAxialStress=0.;
+  PlatenReactionDiagBottomAxialStress=0.;
+  PlatenReactionDiagForceBalanceError=0.;
+  PlatenReactionDiagLastPrintStep=-1;
   ConfiningStressDiagP0Eff=0.;
   ConfiningStressDiagTargetCount=0;
   ConfiningStressDiagLegacyTargetCount=0;
@@ -1213,6 +1229,20 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  SaveCapConfiningStressDiagnostics=true;   break;
     default: Run_Exceptioon("SaveCapConfiningStressDiagnostics mode is not valid.");
   }
+  switch(eparms.GetValueInt("SavePlatenReactionDiagnostics",true,0)){
+    case 0:  SavePlatenReactionDiagnostics=false;  break;
+    case 1:  SavePlatenReactionDiagnostics=true;   break;
+    default: Run_Exceptioon("SavePlatenReactionDiagnostics mode is not valid.");
+  }
+  PlatenTopMkBound=eparms.GetValueInt("PlatenTopMkBound",true,1);
+  PlatenBottomMkBound=eparms.GetValueInt("PlatenBottomMkBound",true,2);
+  switch(eparms.GetValueInt("PlatenReactionMode",true,0)){
+    case 0:  PlatenReactionMode=0;  break;
+    default: Run_Exceptioon("PlatenReactionMode is not valid. Only mode 0:pairwise fluid-bound force accumulator is implemented.");
+  }
+  PlatenReactionArea=eparms.GetValueDouble("PlatenReactionArea",true,0.);
+  const int platenreactioninterval=eparms.GetValueInt("PlatenReactionInterval",true,500);
+  PlatenReactionInterval=(platenreactioninterval>0? unsigned(platenreactioninterval): 0u);
   switch(eparms.GetValueInt("HydromechDamping",true,0)){
     case 0:  HydromechDamping=false;  break;
     case 1:  HydromechDamping=true;   break;
@@ -1257,6 +1287,17 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("PorePressureFeedbackExcludeConfinementTargets=1 currently requires ConfiningStressUseLateralSelector=1 so selected lateral confinement targets are well-defined.");
   if(!Cpu && (PorePressureFeedbackOperator==2 || PorePressureFeedbackOperator==3))
     Run_Exceptioon("PorePressureFeedbackOperator=2/3 is CPU-only in this branch. GPU support is not implemented.");
+  if(SavePlatenReactionDiagnostics){
+    if(!Cpu)Run_Exceptioon("SavePlatenReactionDiagnostics=1 is CPU-only in this branch. GPU support is not implemented.");
+    if(PlatenTopMkBound<0 || PlatenBottomMkBound<0)
+      Run_Exceptioon("PlatenTopMkBound and PlatenBottomMkBound must be non-negative mkbound values.");
+    if(PlatenTopMkBound==PlatenBottomMkBound)
+      Run_Exceptioon("PlatenTopMkBound and PlatenBottomMkBound must be different.");
+    if(PlatenReactionArea<0.)
+      Run_Exceptioon("PlatenReactionArea must be greater than or equal to zero.");
+    if(PlatenReactionInterval<1)
+      Run_Exceptioon("PlatenReactionInterval must be greater than zero.");
+  }
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(!HydraulicElevationSource && !Cpu)
@@ -2469,6 +2510,16 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  SaveCapConfiningStressDiagnostics",SaveCapConfiningStressDiagnostics));
     Log->Print("  CapConfiningStress convention: positive CapConfiningStressP0 is external compression; top cap receives acceleration along -axis and bottom cap along +axis. Edge-ring particles are skipped to avoid double-counting lateral flexible confinement.");
     ConfigInfo=ConfigInfo+sep+"CapConfStress";
+  }
+  Log->Print(fun::VarStr("SavePlatenReactionDiagnostics",SavePlatenReactionDiagnostics));
+  if(SavePlatenReactionDiagnostics){
+    Log->Print(fun::VarStr("  PlatenTopMkBound",PlatenTopMkBound));
+    Log->Print(fun::VarStr("  PlatenBottomMkBound",PlatenBottomMkBound));
+    Log->Print(fun::VarStr("  PlatenReactionMode",PlatenReactionMode));
+    Log->Print(fun::VarStr("  PlatenReactionArea",PlatenReactionArea));
+    Log->Print(fun::VarStr("  PlatenReactionInterval",PlatenReactionInterval));
+    Log->Print("  PlatenReactionMode=0 convention: CPU pairwise accumulator sums the opposite of specimen acceleration contributions from fluid-bound SPH pairs with the selected mkbound platen particles. It excludes prescribed motion constraint forces and is a contact/reaction diagnostic, not a physics term.");
+    ConfigInfo=ConfigInfo+sep+"PlatenReactionDiag";
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));
@@ -3720,6 +3771,21 @@ void JSph::ResetCapConfiningStressDiagnostics()const{
 }
 
 //==============================================================================
+/// Resets CPU platen reaction diagnostics.
+//==============================================================================
+void JSph::ResetPlatenReactionDiagnostics()const{
+  PlatenReactionDiagTopCount=0;
+  PlatenReactionDiagBottomCount=0;
+  PlatenReactionDiagTopPairs=0;
+  PlatenReactionDiagBottomPairs=0;
+  PlatenReactionDiagTopForce=TDouble3(0);
+  PlatenReactionDiagBottomForce=TDouble3(0);
+  PlatenReactionDiagTopAxialStress=0.;
+  PlatenReactionDiagBottomAxialStress=0.;
+  PlatenReactionDiagForceBalanceError=0.;
+}
+
+//==============================================================================
 /// Resets CPU pore-pressure feedback diagnostics.
 //==============================================================================
 void JSph::ResetPorePressureFeedbackDiagnostics()const{
@@ -3816,6 +3882,24 @@ void JSph::PrintCapConfiningStressDiagnostics()const{
       ,CapConfiningStressDiagNetForce.x,CapConfiningStressDiagNetForce.y,CapConfiningStressDiagNetForce.z
       ,CapConfiningStressDiagTotalAbsForce,CapConfiningStressDiagComAccel,CapConfiningStressDiagSymResidual);
     CapConfiningStressDiagLastPrintStep=Nstep;
+  }
+}
+
+//==============================================================================
+/// Prints a compact CPU platen reaction diagnostics line.
+//==============================================================================
+void JSph::PrintPlatenReactionDiagnostics()const{
+  if(!SavePlatenReactionDiagnostics || PlatenReactionDiagLastPrintStep==Nstep)return;
+  if(Nstep<5 || !(Nstep%PlatenReactionInterval)){
+    Log->Printf("PlatenReaction diagnostics: step=%d, TimeStep=%g, mode=%d, top_mkbound=%d, bottom_mkbound=%d, top_count=%u, bottom_count=%u, top_pairs=%llu, bottom_pairs=%llu, top_force=(%g,%g,%g) N, bottom_force=(%g,%g,%g) N, top_axial_stress=%g Pa, bottom_axial_stress=%g Pa, force_balance_error=%g."
+      ,Nstep,TimeStep,PlatenReactionMode,PlatenTopMkBound,PlatenBottomMkBound
+      ,PlatenReactionDiagTopCount,PlatenReactionDiagBottomCount
+      ,PlatenReactionDiagTopPairs,PlatenReactionDiagBottomPairs
+      ,PlatenReactionDiagTopForce.x,PlatenReactionDiagTopForce.y,PlatenReactionDiagTopForce.z
+      ,PlatenReactionDiagBottomForce.x,PlatenReactionDiagBottomForce.y,PlatenReactionDiagBottomForce.z
+      ,PlatenReactionDiagTopAxialStress,PlatenReactionDiagBottomAxialStress
+      ,PlatenReactionDiagForceBalanceError);
+    PlatenReactionDiagLastPrintStep=Nstep;
   }
 }
 

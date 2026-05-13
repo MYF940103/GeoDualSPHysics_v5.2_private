@@ -854,3 +854,43 @@ This confirms that the DP skeleton and `Kplastic` output are usable in the
 feedback-off platen workflow. It does not validate full coupling or reaction
 forces. The true reaction patch remains a T4t/T5b measurement-fidelity item;
 full feedback, MCC, and GPU remain deferred.
+
+## T4t Platen Reaction Diagnostic Notes
+
+T4t implements the first source-level axial reaction diagnostic for the
+explicit platen workflow. It is off by default and CPU-only.
+
+New controls:
+
+- `SavePlatenReactionDiagnostics`;
+- `PlatenTopMkBound`;
+- `PlatenBottomMkBound`;
+- `PlatenReactionMode`;
+- `PlatenReactionArea`;
+- `PlatenReactionInterval`.
+
+`PlatenReactionMode=0` accumulates the opposite of the specimen-side
+fluid-bound SPH pair contribution for interactions with the selected top and
+bottom `mkbound` platens. This is closer to a true platen reaction than the
+old specimen-stress proxy, but it still excludes the prescribed-motion
+constraint force. It should be described as a pairwise interaction reaction.
+
+T4t cases:
+
+- `CaseT4t_Elastic_PlatenReaction`;
+- `CaseT4t_DPHighStrength_PlatenReaction`;
+- `CaseT4t_DPMildYield_PlatenReaction`.
+
+All three CPU Release runs complete with `code=0`, `excluded=0`, and
+`DtMin=0`. The elastic and high-strength DP cases remain identical, with
+`Kplastic=0`. The mild-yield DP case retains the expected plastic response
+(`Kplastic_max approx 4.38e-4`) while staying stable.
+
+Final pairwise reaction averages:
+
+- elastic/high-strength DP: `0.956997 N`, about `92.1%` of the old
+  `Fz_proxy`;
+- mild-yield DP: `0.492775 N`, about `101.9%` of the old `Fz_proxy`.
+
+T5b may now use reaction-based axial stress as the reduced validation metric.
+Full feedback, MCC, and GPU remain deferred.

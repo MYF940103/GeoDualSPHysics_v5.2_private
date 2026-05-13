@@ -992,3 +992,36 @@ This proxy is acceptable for elastic feedback-off workflow diagnostics. It is
 not a strict platen reaction and should not be cited as validation reaction
 force. A future CPU-only opt-in diagnostic should accumulate true platen
 reaction by `mkbound` before strict triaxial stress-path validation.
+
+## 11. Platen Reaction Diagnostics
+
+T4t adds an opt-in CPU diagnostic for explicit triaxial platens:
+
+```xml
+<parameter key="SavePlatenReactionDiagnostics" value="0" />
+<parameter key="PlatenTopMkBound" value="1" />
+<parameter key="PlatenBottomMkBound" value="2" />
+<parameter key="PlatenReactionMode" value="0" />
+<parameter key="PlatenReactionArea" value="0" />
+<parameter key="PlatenReactionInterval" value="500" />
+```
+
+Defaults preserve previous behavior.
+
+- `SavePlatenReactionDiagnostics=1`: enable CPU logging of top/bottom platen
+  reaction diagnostics.
+- `PlatenTopMkBound`, `PlatenBottomMkBound`: user mkbound values for the
+  top and bottom platens. They must be non-negative and distinct.
+- `PlatenReactionMode=0`: pairwise fluid-bound interaction accumulator. The
+  solver sums the opposite of the specimen-side SPH pair contribution for
+  interactions with the selected platen groups.
+- `PlatenReactionArea`: reference area used to convert axial force to axial
+  stress. Use `pi*R^2` for the current reduced cylinder. A value of `0`
+  disables meaningful stress conversion.
+- `PlatenReactionInterval`: log interval in solver steps.
+
+The diagnostic is CPU-only and hard-errors on GPU when enabled. It does not
+change the physics. Mode `0` is closer to a true platen reaction than
+`Fz_proxy=-mean(Sigma_zz)*pi*R^2`, but it does not include prescribed-motion
+constraint forces. It should be cited as a pairwise specimen-platen
+interaction reaction diagnostic.
