@@ -929,3 +929,37 @@ axial-stress, `p'-q`, pore-pressure, and plasticity curves are all generated
 from the same explicit-platen workflow. It is still not strict paper
 validation: full feedback, MCC, true actuator reaction, and GPU remain
 deferred.
+
+## T5c DP Extended Feedback-Off Notes
+
+T5c extends the feedback-off DP platen run to `0.018 s`:
+
+- `CaseT5c_DPHighStrength_ExtendedFeedbackOff`;
+- `CaseT5c_DPMildYield_ExtendedFeedbackOff`.
+
+Both cases keep explicit platens, selected lateral `FlexibleConfiningStress`,
+`SavePlatenReactionDiagnostics=1`, and `PorePressureFeedback=0`. Both complete
+with `code=0`, `excluded=0`, and `DtMin=0`.
+
+The high-strength DP case remains elastic-like:
+
+- final `Kplastic=0`;
+- final pairwise reaction average `3.2740 N`;
+- final `Fz_proxy approx 3.1148 N`;
+- final specimen-wide `p' approx 385.80 Pa`, `q approx 1073.74 Pa`.
+
+The mild-yield DP case gives the main extended response:
+
+- final `Kplastic_max approx 1.462e-3`;
+- final `Kplastic_mean approx 4.529e-4`;
+- plastic count `407/407`;
+- final pairwise reaction average `0.4335 N`;
+- final `Fz_proxy approx 0.4031 N`;
+- final specimen-wide `p' approx 62.23 Pa`, `q approx 120.51 Pa`.
+
+The mild-yield plasticity evolves smoothly at the saved frames and the reaction
+remains bounded. The final pore-pressure mean is negative, so T5c should still
+be presented as a reduced feedback-off diagnostic rather than strict undrained
+validation. T5d can consolidate DP measurement/reporting; MCC should remain
+planning-only until the DP reduced route is documented and full feedback is
+revisited.

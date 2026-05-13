@@ -1970,3 +1970,17 @@ remaining bounded.
 This is a CPU reduced feedback-off benchmark. GPU remains deferred until the
 full feedback route, actuator-level reaction decision, and any MCC direction
 are resolved on CPU.
+
+## T5c DP Feedback-Off Extended Response GPU Status
+
+T5c is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU Release high-strength and mild-yield DP extended cases both finish with
+`code=0`, `excluded=0`, and `DtMin=0` using the T4t pairwise platen reaction
+diagnostic. The mild-yield case reaches `Kplastic_max approx 1.46e-3` with all
+407 specimen particles plastic by the final saved frame while remaining
+bounded in velocity and pore-pressure-rate diagnostics.
+
+This remains a CPU reduced feedback-off route. GPU remains deferred until the
+full feedback route and any MCC direction are settled on CPU.

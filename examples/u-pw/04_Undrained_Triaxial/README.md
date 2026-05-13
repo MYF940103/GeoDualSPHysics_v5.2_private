@@ -956,3 +956,27 @@ line activates plasticity in `341/407` specimen particles and reduces `q`,
 reaction force, and pore pressure without destabilizing the run. T5c may extend
 this reduced feedback-off DP trend. MCC, full feedback, and GPU remain
 deferred.
+
+## T5c DP Feedback-Off Extended Response
+
+T5c is retained under:
+
+`experiments/T5c_DPExtendedFeedbackOff/`
+
+It extends the T5b DP feedback-off platen workflow to `TimeMax=0.018 s` while
+keeping the same explicit platens, selected lateral `FlexibleConfiningStress`,
+and pairwise platen reaction diagnostic. `PorePressureFeedback` remains off.
+
+Two CPU Release cases completed with `code=0`, `excluded=0`, and `DtMin=0`:
+
+| Case | Setup | Final `Kplastic` max | Plastic count | Final `p'` / `q` proxy | Pairwise reaction avg |
+| --- | --- | ---: | ---: | ---: | ---: |
+| DP high strength | `phi=33 deg`, `coh=10000 Pa`, `dlt=0` | `0` | `0/407` | `385.80 / 1073.74 Pa` | `3.2740 N` |
+| DP mild yield | `phi=30 deg`, `coh=50 Pa`, `dlt=0` | `1.462e-3` | `407/407` | `62.23 / 120.51 Pa` | `0.4335 N` |
+
+The mild-yield case shows smooth saved-frame growth of `Kplastic` and remains
+bounded without excluded particles, DtMin bursts, or velocity blow-up. The
+reaction-based axial stress-strain and p'-q curves are more complete than T5b,
+but this remains a reduced feedback-off diagnostic, not strict paper
+validation. T5d may consolidate DP measurement/reporting; MCC planning can
+begin as a design-only activity. Full feedback and GPU remain deferred.
