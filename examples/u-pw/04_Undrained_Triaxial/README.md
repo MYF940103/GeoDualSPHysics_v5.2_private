@@ -524,3 +524,37 @@ Because confinement-only failed, no axial-loading smoke was run. Operator `3`
 is closer to the u-pw notes in algebraic form, but it is not a validated
 triaxial setting. The next step should be T4k initial hydrostatic confinement
 stress/equilibration, not DP/MCC.
+
+## T4k Initial Hydrostatic Confinement
+
+T4k is retained under:
+
+`experiments/T4k_InitialConfinementEquilibrium/`
+
+It adds a CPU-only initial skeleton/effective stress initialization:
+
+```xml
+<parameter key="InitialStressMode" value="1" />
+<parameter key="InitialEffectiveStressIso" value="50" />
+<parameter key="InitialEffectiveStressTargetMk" value="-1" />
+```
+
+The XML value is a positive compression magnitude. The CPU implementation
+writes it as negative diagonal `Sigmac` because the current skeleton/effective
+stress convention stores compression as negative stress. The option does not
+initialize pore pressure, does not alter PR pressure update, and defaults to
+off.
+
+T4k CPU Release cases:
+
+| Case | Result | Max `PorePressRate` | Interpretation |
+| --- | --- | ---: | --- |
+| initial stress only, feedback off | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `4.63e7 Pa/s` | Numerically stable, but unbalanced free-surface initial stress drives negative pore pressure. |
+| initial stress + selected confinement, feedback off | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `4.48e7 Pa/s` | Selected lateral confinement stays clean, but the state is not fully hydrostatic because cap/axial support is missing. |
+| initial stress + selected confinement, delayed feedback | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `1.59e12 Pa/s` | Full feedback still destabilizes the confinement-only state. |
+
+No axial smoke was run because the full-feedback confinement-only gate did not
+pass. T4k shows that initial effective stress is wired correctly, but the
+reduced cylinder needs a true staged hydrostatic equilibrium route, likely
+including cap/axial confinement or restart-based equilibration, before axial
+loading, DP, or MCC work resumes.

@@ -12,6 +12,9 @@ This document summarizes the hydromechanical parameters currently introduced for
 | `HydraulicGravityX/Y/Z` | float vector | `(0,0,0)` | Optional hydraulic gravity vector. If all components are zero, hydraulic gravity falls back to body `Gravity`. | Keep |
 | `HydraulicElevationSource` | `0/1` | `1` | `1`: legacy hydrostatic/elevation convention with `k*LapZ`; `0`: CPU-only gravity-free mode using `HydraulicGravity` only for hydraulic scaling. | Experimental |
 | `BodyGravityStopTime` | double [s] | `0` | Stops mechanical body gravity at the given physical time while leaving `HydraulicGravity` unchanged. `<=0`: body gravity remains active. | Keep |
+| `InitialStressMode` | `0/1` | `0` | CPU-only initial skeleton/effective stress initialization. `0`: none, `1`: uniform isotropic effective compression. GPU hard-errors if enabled. | Experimental |
+| `InitialEffectiveStressIso` | float, `>=0` | `0` | Positive initial effective compression magnitude [Pa]. CPU writes this as negative `Sigmac.xx=Sigmac.yy=Sigmac.zz` because compressive skeleton/effective stress is negative in the current stress convention. | Experimental |
+| `InitialEffectiveStressTargetMk` | int | `-1` | `-1`: all normal material particles; otherwise target one `mkfluid` value for initial effective stress. | Experimental |
 
 The material/phase constants below are now soil material constants and should be written under `<execution><special><soils>` next to `ModulusE`, `PRvs`, `phi`, and `coh`:
 

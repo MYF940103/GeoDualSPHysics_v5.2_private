@@ -282,6 +282,9 @@ protected:
   tfloat3 HydraulicGravity;     ///<Optional hydraulic gravity vector [m/s2]. Zero vector falls back to body Gravity.
   double BodyGravityStopTime;   ///<Time to stop mechanical body gravity. <=0: body gravity remains active.
   bool BodyGravityStoppedLogged; ///<True when mechanical body gravity stop has been reported.
+  int InitialStressMode;        ///<Initial skeleton/effective stress mode. 0:none, 1:uniform isotropic effective compression.
+  float InitialEffectiveStressIso; ///<Initial isotropic effective compression magnitude [Pa]. Positive XML value is written as negative Sigmac diagonal.
+  int InitialEffectiveStressTargetMk; ///<Target mkfluid for initial effective stress. -1:all material particles.
   bool FlexibleConfiningStress; ///<CPU flexible confining stress source. 0:off, 1:on.
   float ConfiningStressP0;      ///<Positive compression magnitude for flexible confining stress [Pa].
   double ConfiningStressRampStart; ///<Start time for confining stress ramp [s].

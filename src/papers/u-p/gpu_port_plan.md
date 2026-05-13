@@ -1757,3 +1757,16 @@ operator-`1` interior baseline in selected confinement. No GPU port should be
 started. The next CPU work should focus on T4k initial hydrostatic confinement
 and pressure-boundary/stress consistency before returning to GPU parity, DP, or
 MCC.
+
+## T4k Initial Hydrostatic Confinement GPU Status
+
+T4k adds `InitialStressMode=1`, a CPU-only initial skeleton/effective stress
+initialization for triaxial confinement staging. The parser is shared, so CPU
+Release, CPU Debug, and GPU Release builds were checked, but GPU execution
+hard-errors when non-default initial stress is requested.
+
+The CPU gate did not unlock triaxial validation. Initial stress is written
+correctly to `Sigmac`, but the reduced free-surface cylinder still lacks a
+balanced cap/axial hydrostatic confinement route. Delayed full feedback again
+produces a large `PorePressRate` excursion in confinement-only tests. No axial
+smoke, GPU run, DP baseline, or MCC work should start from T4k.

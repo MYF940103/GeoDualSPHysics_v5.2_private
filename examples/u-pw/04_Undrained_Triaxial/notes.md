@@ -505,3 +505,33 @@ diagnosis: a raw paper-style pressure pair needs boundary completion and/or an
 initial hydrostatic confinement state. The recommended next stage is T4k
 initial hydrostatic confinement, with total-stress coupling left as a later
 candidate.
+
+## T4k Initial Hydrostatic Confinement Notes
+
+T4k implements a CPU-only opt-in initial skeleton/effective stress field:
+
+- `InitialStressMode=1`;
+- `InitialEffectiveStressIso=50`;
+- `InitialEffectiveStressTargetMk=-1`.
+
+`InitialEffectiveStressIso` is a positive compression magnitude in the XML, but
+the CPU writes `Sigmac.xx=Sigmac.yy=Sigmac.zz=-InitialEffectiveStressIso`.
+This matches the active skeleton/effective stress convention: compressive
+elastic strain generates negative `Sigmac`. Pore pressure is not initialized or
+modified by this option.
+
+The initialization itself is correct: frame 0 has the requested isotropic
+stress and `q=0`. The dynamic result is more instructive:
+
+- initial stress only with feedback off is numerically stable, but all
+  particles develop negative pore pressure because the free-surface stress
+  state is not externally balanced;
+- initial stress plus selected lateral confinement with feedback off remains
+  numerically stable and keeps cap leakage at zero, but it is still not a full
+  hydrostatic equilibrium because there is no cap/axial confinement;
+- delayed full feedback again drives a large `PorePressRate` excursion
+  (`~1.59e12 Pa/s`) and high velocities.
+
+Therefore T4k does not unlock axial loading. The next stable-baseline task
+should be a staged hydrostatic equilibrium route with cap/axial support or a
+restart-based equilibrium stage. DP, MCC, and GPU validation remain deferred.

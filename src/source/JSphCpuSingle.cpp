@@ -262,6 +262,48 @@ void JSphCpuSingle::ConfigDomain(){
   //-Load particle code. | Carga code de particulas.
   LoadCodeParticles(Np,Idpc,Codec);
 
+  if(InitialStressMode==1){
+    if(PartBegin)Log->PrintWarning("InitialStressMode=1 is ignored on restart because restart soil stress fields have priority.");
+    else{
+      const float sigdiag=-InitialEffectiveStressIso;
+      unsigned ntarget=0,nfluid=0;
+      double sx=0.,sy=0.,sz=0.,qsum=0.,devsum=0.;
+      double sxmin=DBL_MAX,symin=DBL_MAX,szmin=DBL_MAX;
+      double sxmax=-DBL_MAX,symax=-DBL_MAX,szmax=-DBL_MAX;
+      for(unsigned p=0;p<Np;p++){
+        const typecode c=Codec[p];
+        if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+          nfluid++;
+          if(InitialEffectiveStressTargetMk<0 || int(CODE_GetTypeValue(c))==InitialEffectiveStressTargetMk){
+            Sigmac[p].xx=sigdiag;
+            Sigmac[p].yy=sigdiag;
+            Sigmac[p].zz=sigdiag;
+            Sigmac[p].xy=0.f;
+            Sigmac[p].yz=0.f;
+            Sigmac[p].xz=0.f;
+            ntarget++;
+            sx+=Sigmac[p].xx; sy+=Sigmac[p].yy; sz+=Sigmac[p].zz;
+            sxmin=min(sxmin,double(Sigmac[p].xx)); symin=min(symin,double(Sigmac[p].yy)); szmin=min(szmin,double(Sigmac[p].zz));
+            sxmax=max(sxmax,double(Sigmac[p].xx)); symax=max(symax,double(Sigmac[p].yy)); szmax=max(szmax,double(Sigmac[p].zz));
+            const double pm=(double(Sigmac[p].xx)+double(Sigmac[p].yy)+double(Sigmac[p].zz))/3.;
+            const double dxx=double(Sigmac[p].xx)-pm, dyy=double(Sigmac[p].yy)-pm, dzz=double(Sigmac[p].zz)-pm;
+            const double j2=0.5*(dxx*dxx+dyy*dyy+dzz*dzz)+double(Sigmac[p].xy)*Sigmac[p].xy+double(Sigmac[p].yz)*Sigmac[p].yz+double(Sigmac[p].xz)*Sigmac[p].xz;
+            const double q=sqrt(max(0.,3.*j2));
+            qsum+=q;
+            devsum+=sqrt(max(0.,dxx*dxx+dyy*dyy+dzz*dzz+2.*(double(Sigmac[p].xy)*Sigmac[p].xy+double(Sigmac[p].yz)*Sigmac[p].yz+double(Sigmac[p].xz)*Sigmac[p].xz)));
+          }
+        }
+      }
+      if(ntarget){
+        sx/=ntarget; sy/=ntarget; sz/=ntarget; qsum/=ntarget; devsum/=ntarget;
+        Log->Printf("Initial effective hydrostatic stress applied on CPU: mode=1, compression_magnitude=%g Pa, code_diagonal=%g Pa, target_mk=%d, target_particles=%u/%u material particles. mean_sigma=(%g,%g,%g) Pa, range_x=[%g,%g], range_y=[%g,%g], range_z=[%g,%g], mean_q_proxy=%g Pa, mean_deviatoric_norm=%g Pa."
+          ,InitialEffectiveStressIso,sigdiag,InitialEffectiveStressTargetMk,ntarget,nfluid,sx,sy,sz,sxmin,sxmax,symin,symax,szmin,szmax,qsum,devsum);
+      }
+      else Log->PrintWarning(fun::PrintStr("InitialStressMode=1 found no target material particles. target_mk=%d, material_particles=%u.",InitialEffectiveStressTargetMk,nfluid));
+      Log->Print("Initial effective stress convention: XML InitialEffectiveStressIso is a positive compression magnitude; CPU Sigmac uses negative diagonal values for compressive skeleton/effective stress. PorePress is unchanged.");
+    }
+  }
+
   if(PorePressc && !restartporepressrestored && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
     if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for pore pressure initialization.");
     const double gmag=GetHydraulicGmag();

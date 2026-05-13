@@ -271,6 +271,9 @@ void JSph::InitVars(){
   HydraulicGravity=TFloat3(0);
   BodyGravityStopTime=0.;
   BodyGravityStoppedLogged=false;
+  InitialStressMode=0;
+  InitialEffectiveStressIso=0.f;
+  InitialEffectiveStressTargetMk=-1;
   FlexibleConfiningStress=false;
   ConfiningStressP0=0.f;
   ConfiningStressRampStart=0.;
@@ -1103,6 +1106,13 @@ void JSph::LoadConfigParameters(const JXml *xml){
   HydraulicGravity.y=eparms.GetValueFloat("HydraulicGravityY",true,0.f);
   HydraulicGravity.z=eparms.GetValueFloat("HydraulicGravityZ",true,0.f);
   BodyGravityStopTime=eparms.GetValueDouble("BodyGravityStopTime",true,0.);
+  switch(eparms.GetValueInt("InitialStressMode",true,0)){
+    case 0:  InitialStressMode=0;  break;
+    case 1:  InitialStressMode=1;  break;
+    default: Run_Exceptioon("InitialStressMode is not valid. Valid values are 0:none and 1:uniform isotropic effective compression.");
+  }
+  InitialEffectiveStressIso=eparms.GetValueFloat("InitialEffectiveStressIso",true,0.f);
+  InitialEffectiveStressTargetMk=eparms.GetValueInt("InitialEffectiveStressTargetMk",true,-1);
   switch(eparms.GetValueInt("FlexibleConfiningStress",true,0)){
     case 0:  FlexibleConfiningStress=false;  break;
     case 1:  FlexibleConfiningStress=true;   break;
@@ -1247,6 +1257,14 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5 && CurvedDrainedBoundaryMode!=6 && CurvedDrainedBoundaryMode!=7 && CurvedDrainedBoundaryMode!=8)
     Log->PrintWarning("CurvedDrainedBoundaryWeighting is only used by CurvedDrainedBoundaryMode=4.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
+  if(InitialStressMode==1 && InitialEffectiveStressIso<0.f)
+    Run_Exceptioon("InitialEffectiveStressIso must be greater than or equal to zero. Positive values are interpreted as compression magnitude and written as negative Sigmac diagonal stress.");
+  if(InitialStressMode==1 && InitialEffectiveStressTargetMk<-1)
+    Run_Exceptioon("InitialEffectiveStressTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+  if(InitialStressMode==1 && !Cpu)
+    Run_Exceptioon("InitialStressMode=1 is CPU-only in this branch. GPU initialization support is not implemented.");
+  if(InitialStressMode==1 && InitialEffectiveStressIso==0.f)
+    Log->PrintWarning("InitialStressMode=1 but InitialEffectiveStressIso=0. The initial effective stress field will remain zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
   if(ConfiningStressRampEnd<ConfiningStressRampStart)Run_Exceptioon("ConfiningStressRampEnd must be greater than or equal to ConfiningStressRampStart.");
@@ -2326,6 +2344,12 @@ void JSph::VisuConfig(){
       Log->Print("  Hydraulic convention: hydraulic gravity provides diffusivity scaling, hydrostatic pore-pressure reference, and k*LapZ elevation source.");
     else
       Log->Print("  Hydraulic convention: hydraulic gravity magnitude is used only for diffusivity scaling; hydrostatic reference is zero and k*LapZ is omitted from PorePressRate.");
+    Log->Print(fun::VarStr("  InitialStressMode",(InitialStressMode==1? "UniformIsotropicEffectiveCompression": "None")));
+    if(InitialStressMode==1){
+      Log->Print(fun::VarStr("  InitialEffectiveStressIso",InitialEffectiveStressIso));
+      Log->Print(fun::VarStr("  InitialEffectiveStressTargetMk",InitialEffectiveStressTargetMk));
+      Log->Print("  Initial effective stress convention: positive XML magnitude is compression; CPU Sigmac stores this as negative xx=yy=zz diagonal stress. Pore pressure is not initialized or modified by this option.");
+    }
     Log->Print(fun::VarStr("  HydromechDamping",HydromechDamping));
     if(HydromechDamping){
       Log->Print(fun::VarStr("  HydromechDampingXi",HydromechDampingXi));
