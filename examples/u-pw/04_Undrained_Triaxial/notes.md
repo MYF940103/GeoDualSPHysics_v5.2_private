@@ -720,3 +720,30 @@ platen should be fixed, the top platen should use prescribed velocity or
 displacement, lateral confinement should remain `FlexibleConfiningStress`, and
 platen particles should be excluded from specimen measurements and p-q proxy
 statistics. Axial loading, DP, MCC, and GPU validation remain deferred.
+
+## T4q Platen Workflow Notes
+
+T4q uses existing DualSPHysics XML mechanisms instead of adding source:
+
+- fixed `mkbound=2` bottom platen;
+- moving `mkbound=1` top platen using `<motion><objreal ref="1">`;
+- `mkfluid=0` specimen;
+- optional lateral `FlexibleConfiningStress`;
+- no `CapConfiningStress`.
+
+The XML-only route is feasible for reduced smokes. Geometry/no-load,
+top-velocity/no-confinement, and top-velocity/lateral-confinement cases all
+completed with `code=0`, `excluded=0`, `DtMin=0`, and `Kplastic=0`.
+
+Important observations:
+
+- the top platen prescribed velocity is respected;
+- the bottom platen remains fixed;
+- specimen/platen/measurement separation is clean;
+- lateral confinement and moving platen motion can coexist;
+- no validated reaction or axial stress output exists yet.
+
+T4q therefore upgrades the triaxial loading route from `AccInput` smoke toward
+explicit platens, but it does not yet unlock strict triaxial validation. T4r
+should keep the elastic CPU-only route and add/verify reaction diagnostics
+before restoring feedback, DP, MCC, or GPU validation.

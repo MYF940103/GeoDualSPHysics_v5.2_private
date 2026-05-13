@@ -1873,3 +1873,19 @@ platen-boundary workflow is defined and validated.
 T4q should be CPU-first. If it needs new platen-boundary controls, the GPU path
 should hard-error for non-default settings until the CPU formulation passes the
 elastic triaxial staging gates. DP and MCC remain deferred.
+
+## T4q Explicit Platen Workflow GPU Status
+
+T4q is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU Release smokes show that an explicit platen route can be built from
+existing fixed/moving `mkbound` mechanics: top prescribed velocity works,
+bottom fixed support works, and lateral `FlexibleConfiningStress` can coexist
+with the moving top platen. This is a CPU workflow milestone, not a GPU-ready
+validation route.
+
+GPU remains deferred because the next blocker is not kernel parity but a
+validated platen reaction / axial stress diagnostic. T4r should stay CPU-only
+until the platen reaction and specimen-only measurement path are clear. DP and
+MCC remain deferred.

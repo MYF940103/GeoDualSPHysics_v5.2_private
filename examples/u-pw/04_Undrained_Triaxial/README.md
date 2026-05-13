@@ -773,3 +773,30 @@ fixed bottom platen, prescribed top platen velocity or displacement, lateral
 `FlexibleConfiningStress`, specimen-only measurements, and reaction-force
 diagnostics. Axial loading validation, DP, MCC, and GPU remain deferred until
 that cap/platen route is stable.
+
+## T4q Explicit Platen Boundary Workflow
+
+T4q is retained under:
+
+`experiments/T4q_PlatenBoundaryWorkflow/`
+
+It confirms that a reduced explicit platen workflow can be built with existing
+XML features:
+
+- specimen soil: `mkfluid=0`, `407` particles;
+- top platen: moving `mkbound=1`, `74` particles;
+- bottom platen: fixed `mkbound=2`, `74` particles;
+- measurement core: `15` specimen particles, with `0` platen contamination;
+- `CapConfiningStress=0`.
+
+All three CPU Release smokes completed with `code=0`, `excluded=0`,
+`DtMin=0`, and `Kplastic=0`. The top platen follows its prescribed
+`v_z=-0.005 m/s` motion and reaches about `-7.5e-6 m` displacement; the bottom
+platen remains fixed. The platen route also coexists with lateral
+`FlexibleConfiningStress` (`112` active lateral targets, cap leakage
+diagnostic `0`).
+
+T4q does not yet validate axial stress because no robust top/bottom reaction
+output is available. `AccInput` remains a smoke-only route. The recommended
+next step is T4r: a platen-based selected-confinement baseline with reaction
+diagnostics planned before DP, MCC, or GPU work.
