@@ -1102,3 +1102,30 @@ OCR=4 -> pc=200 Pa
 MCC stress update remains deliberately disconnected in M3b. M3c may now add
 the CPU stress-update branch. Full pore-pressure feedback and GPU remain
 deferred.
+
+## M3c CPU MCC Stress Update
+
+M3c is retained under:
+
+`experiments/M3c_MCCStressUpdateCpu/`
+
+It connects `SoilConstitutiveModel=3` to a CPU-only Modified Cam Clay stress
+update branch. MCC internals use compression-positive stress and map to the
+current `Sigmac` convention with:
+
+```text
+p' = -trace(Sigmac)/3
+Sigmac_new = -stress_cp_new
+```
+
+Two feedback-off explicit-platen smokes were run with selected lateral
+FlexibleConfiningStress and `InitialEffectiveStressIso=50 Pa`:
+
+| Case | pc0 | Result |
+| --- | ---: | --- |
+| `CaseM3c_MCCHighPc_ElasticLike` | `100000 Pa` | `code=0`, `excluded=0`, `DtMin=0`, no MCC yield |
+| `CaseM3c_MCCMildYield` | `120 Pa` | `code=0`, `excluded=0`, `DtMin=0`, MCC yield active |
+
+The mild case updates `pc`, void ratio, plastic volumetric strain, equivalent
+plastic strain, plastic multiplier, return iterations, and yield residual
+outputs. Full feedback, strict MCC validation, and GPU remain deferred.

@@ -47,6 +47,8 @@
 #include <climits>
 #include <cfloat>
 #include <cmath>
+#include <array>
+#include <algorithm>
 #include <vector>
 
 using namespace std;
@@ -5788,10 +5790,248 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 }
 
 //==============================================================================
+/// Small CPU-only Modified Cam Clay helper for the SPH constitutive branch.
+/// The helper keeps the M2/M3a convention internally: compression is positive.
+/// The production Sigmac tensor uses the opposite sign, so all components are
+/// sign-flipped at the branch boundary only.
+//==============================================================================
+struct StMccCpuTensor{
+  double xx,yy,zz,xy,yz,xz;
+};
+
+static double MccCpuMax(double a,double b){ return(a>b? a: b); }
+static double MccCpuMin(double a,double b){ return(a<b? a: b); }
+
+static StMccCpuTensor MccCpuTensorZero(){
+  StMccCpuTensor v={0.,0.,0.,0.,0.,0.};
+  return(v);
+}
+
+static StMccCpuTensor MccCpuTensorEye(double p){
+  StMccCpuTensor v={p,p,p,0.,0.,0.};
+  return(v);
+}
+
+static StMccCpuTensor MccCpuTensorAdd(const StMccCpuTensor &a,const StMccCpuTensor &b){
+  StMccCpuTensor v={a.xx+b.xx,a.yy+b.yy,a.zz+b.zz,a.xy+b.xy,a.yz+b.yz,a.xz+b.xz};
+  return(v);
+}
+
+static StMccCpuTensor MccCpuTensorScale(const StMccCpuTensor &a,double s){
+  StMccCpuTensor v={a.xx*s,a.yy*s,a.zz*s,a.xy*s,a.yz*s,a.xz*s};
+  return(v);
+}
+
+static double MccCpuTrace(const StMccCpuTensor &a){ return(a.xx+a.yy+a.zz); }
+
+static StMccCpuTensor MccCpuDeviator(const StMccCpuTensor &a){
+  const double p=MccCpuTrace(a)/3.;
+  StMccCpuTensor v={a.xx-p,a.yy-p,a.zz-p,a.xy,a.yz,a.xz};
+  return(v);
+}
+
+static double MccCpuDot(const StMccCpuTensor &a,const StMccCpuTensor &b){
+  return(a.xx*b.xx+a.yy*b.yy+a.zz*b.zz+2.*(a.xy*b.xy+a.yz*b.yz+a.xz*b.xz));
+}
+
+static void MccCpuInvariants(const StMccCpuTensor &s,double &p,double &q){
+  p=MccCpuTrace(s)/3.;
+  const StMccCpuTensor dev=MccCpuDeviator(s);
+  const double j2=0.5*MccCpuDot(dev,dev);
+  q=sqrt(MccCpuMax(0.,3.*j2));
+}
+
+static StMccCpuTensor MccCpuFromSigmac(const tsymatrix3f &sig){
+  StMccCpuTensor v={-double(sig.xx),-double(sig.yy),-double(sig.zz),-double(sig.xy),-double(sig.yz),-double(sig.xz)};
+  return(v);
+}
+
+static tsymatrix3f MccCpuToSigmac(const StMccCpuTensor &s){
+  tsymatrix3f sig;
+  sig.xx=float(-s.xx); sig.yy=float(-s.yy); sig.zz=float(-s.zz);
+  sig.xy=float(-s.xy); sig.yz=float(-s.yz); sig.xz=float(-s.xz);
+  return(sig);
+}
+
+static double MccCpuYield(double p,double q,double pc,double m){
+  return(q*q+m*m*p*(p-pc));
+}
+
+static double MccCpuNorm4(const std::array<double,4> &v){
+  double s=0.;
+  for(unsigned c=0;c<4;c++)s+=v[c]*v[c];
+  return(sqrt(s));
+}
+
+static std::array<double,4> MccCpuResidual4(const std::array<double,4> &x,double ptr,double qtr
+  ,double pcold,double eold,double bulk,double shear,double m,double lambda,double kappa)
+{
+  const double p=x[0],q=x[1],pc=x[2],dl=x[3];
+  const double a=m*m;
+  const double h=(1.+eold)/(lambda-kappa);
+  const double dfdp=a*(2.*p-pc);
+  const double dfdq=2.*q;
+  const double depv=dl*dfdp;
+  const double expo=MccCpuMax(-60.,MccCpuMin(60.,h*depv));
+  const double pchard=pcold*exp(expo);
+  return(std::array<double,4>{{p-ptr+bulk*dl*dfdp,q-qtr+3.*shear*dl*dfdq,pc-pchard,MccCpuYield(p,q,pc,m)}});
+}
+
+static std::array<std::array<double,4>,4> MccCpuNumericJacobian(const std::array<double,4> &x,double ptr,double qtr
+  ,double pcold,double eold,double bulk,double shear,double m,double lambda,double kappa)
+{
+  const std::array<double,4> base=MccCpuResidual4(x,ptr,qtr,pcold,eold,bulk,shear,m,lambda,kappa);
+  std::array<std::array<double,4>,4> jac;
+  for(unsigned r=0;r<4;r++)for(unsigned c=0;c<4;c++)jac[r][c]=0.;
+  for(unsigned c=0;c<4;c++){
+    const double step=1.e-6*MccCpuMax(1.,fabs(x[c]));
+    std::array<double,4> xp=x;
+    xp[c]+=step;
+    const std::array<double,4> rp=MccCpuResidual4(xp,ptr,qtr,pcold,eold,bulk,shear,m,lambda,kappa);
+    for(unsigned r=0;r<4;r++)jac[r][c]=(rp[r]-base[r])/step;
+  }
+  return(jac);
+}
+
+static bool MccCpuSolve4(std::array<std::array<double,4>,4> a,const std::array<double,4> &b,std::array<double,4> &x){
+  std::array<std::array<double,5>,4> m;
+  for(unsigned r=0;r<4;r++){
+    for(unsigned c=0;c<4;c++)m[r][c]=a[r][c];
+    m[r][4]=b[r];
+  }
+  for(unsigned col=0;col<4;col++){
+    unsigned pivot=col;
+    for(unsigned r=col+1;r<4;r++)if(fabs(m[r][col])>fabs(m[pivot][col]))pivot=r;
+    if(fabs(m[pivot][col])<1.e-18)return(false);
+    if(pivot!=col)std::swap(m[pivot],m[col]);
+    const double piv=m[col][col];
+    for(unsigned c=col;c<5;c++)m[col][c]/=piv;
+    for(unsigned r=0;r<4;r++){
+      if(r==col)continue;
+      const double fac=m[r][col];
+      if(fac==0.)continue;
+      for(unsigned c=col;c<5;c++)m[r][c]-=fac*m[col][c];
+    }
+  }
+  for(unsigned r=0;r<4;r++)x[r]=m[r][4];
+  return(true);
+}
+
+static std::array<double,4> MccCpuInitialPlasticGuess(double ptr,double qtr,double pcold,double bulk,double shear,double m,double tensioncutoff){
+  const double ftr=MccCpuYield(ptr,qtr,pcold,m);
+  const double denom=MccCpuMax(bulk*m*m+6.*shear,1.);
+  double dl=MccCpuMax(0.,ftr/(denom*MccCpuMax(fabs(ptr)+fabs(qtr)+fabs(pcold),1.)));
+  dl=MccCpuMin(dl,1.e-2);
+  const double q=MccCpuMax(0.,qtr/(1.+6.*shear*dl));
+  const double p=MccCpuMax(tensioncutoff,MccCpuMin(MccCpuMax(ptr,tensioncutoff),pcold*0.999));
+  const double pc=MccCpuMax(pcold,p+tensioncutoff);
+  return(std::array<double,4>{{p,q,pc,MccCpuMax(dl,1.e-12)}});
+}
+
+static void MccCpuReturnMapping(const StSoilCte &soilcte,const StMccCpuTensor &sigold,const StMccCpuTensor &trial
+  ,double pcold,double eold,double epspvold,double epspeqold,StMccCpuTensor &signew
+  ,double &pcnew,double &enew,double &epspvnew,double &epspeqnew,double &dlnew
+  ,int &yieldflag,int &status,int &iters,double &residual)
+{
+  const double m=double(soilcte.MccM);
+  const double lambda=double(soilcte.MccLambda);
+  const double kappa=double(soilcte.MccKappa);
+  const double bulk=double(soilcte.ModulusK);
+  const double shear=double(soilcte.ModulusG);
+  const double tol=double(soilcte.MccReturnTolerance);
+  const int maxiter=int(soilcte.MccReturnMaxIter);
+  const double tension=double(soilcte.MccTensionCutoff);
+  double ptr=0.,qtr=0.;
+  MccCpuInvariants(trial,ptr,qtr);
+  const double dptrial=(MccCpuTrace(trial)-MccCpuTrace(sigold))/3.;
+  const double epsvtrial=(bulk>0.? dptrial/bulk: 0.);
+
+  signew=trial; pcnew=pcold; enew=eold; epspvnew=epspvold; epspeqnew=epspeqold;
+  dlnew=0.; yieldflag=0; status=0; iters=0; residual=0.;
+
+  if(ptr<=tension){
+    status=-1;
+    residual=ptr-tension;
+    return;
+  }
+  const double ftr=MccCpuYield(ptr,qtr,pcold,m);
+  const double fscale=MccCpuMax(qtr*qtr+m*m*ptr*MccCpuMax(pcold,ptr),1.);
+  if(ftr<=tol*fscale){
+    enew=MccCpuMax(-0.999,eold-(1.+eold)*epsvtrial);
+    residual=ftr;
+    return;
+  }
+
+  std::array<double,4> x=MccCpuInitialPlasticGuess(ptr,qtr,pcold,bulk,shear,m,tension);
+  std::array<double,4> res=MccCpuResidual4(x,ptr,qtr,pcold,eold,bulk,shear,m,lambda,kappa);
+  double bestnorm=MccCpuNorm4(res);
+  status=-4;
+  for(int it=1;it<=maxiter;it++){
+    iters=it;
+    const std::array<std::array<double,4>,4> jac=MccCpuNumericJacobian(x,ptr,qtr,pcold,eold,bulk,shear,m,lambda,kappa);
+    std::array<double,4> rhs;
+    for(unsigned c=0;c<4;c++)rhs[c]=-res[c];
+    std::array<double,4> dx;
+    if(!MccCpuSolve4(jac,rhs,dx)){
+      status=-2;
+      break;
+    }
+    bool accepted=false;
+    for(int ls=0;ls<=12;ls++){
+      const double fac=pow(0.5,ls);
+      std::array<double,4> cand;
+      for(unsigned c=0;c<4;c++)cand[c]=x[c]+fac*dx[c];
+      if(cand[0]<=tension || cand[1]<0. || cand[2]<=tension || cand[3]<0.)continue;
+      bool finite=true;
+      for(unsigned c=0;c<4;c++)if(!std::isfinite(cand[c]))finite=false;
+      if(!finite)continue;
+      const std::array<double,4> rc=MccCpuResidual4(cand,ptr,qtr,pcold,eold,bulk,shear,m,lambda,kappa);
+      const double nc=MccCpuNorm4(rc);
+      if(std::isfinite(nc) && nc<=bestnorm*(1.-1.e-4*fac)+1.e-18){
+        x=cand; res=rc; bestnorm=nc; accepted=true;
+        break;
+      }
+    }
+    if(!accepted){
+      status=-3;
+      break;
+    }
+    const double normscale=MccCpuMax(fabs(x[2])*m*m*MccCpuMax(fabs(x[0]),1.),1.);
+    if(bestnorm<=tol*normscale){
+      status=1;
+      break;
+    }
+  }
+  if(status<0){
+    residual=MccCpuYield(ptr,qtr,pcold,m);
+    return;
+  }
+
+  const double p=x[0],q=x[1],pc=x[2],dl=x[3];
+  const StMccCpuTensor devtr=MccCpuDeviator(trial);
+  StMccCpuTensor devnew=MccCpuTensorZero();
+  if(qtr>1.e-14)devnew=MccCpuTensorScale(devtr,q/qtr);
+  signew=MccCpuTensorAdd(MccCpuTensorEye(p),devnew);
+  const double a=m*m;
+  const double depv=dl*a*(2.*p-pc);
+  const double depeq=fabs(dl)*sqrt(pow(a*(2.*p-pc),2.)+pow(2.*q,2.));
+  pcnew=pc;
+  epspvnew=epspvold+depv;
+  epspeqnew=epspeqold+depeq;
+  dlnew=dl;
+  yieldflag=1;
+  residual=MccCpuYield(p,q,pc,m);
+
+  enew=MccCpuMax(-0.999,eold-(1.+eold)*epsvtrial);
+}
+
+//==============================================================================
 /// Applies the selected soil constitutive skeleton to an elastic trial stress.
 //==============================================================================
 static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCtes dpctes
-  ,const tsymatrix3f &sigma_e,const float kplasticold,const bool updateplastic
+  ,const tsymatrix3f &sigma_old,const tsymatrix3f &sigma_e,const float kplasticold,const bool updateplastic
+  ,float *mccpc,float *mcce,float *mccplasticvol,float *mcceqplastic,float *mccyield
+  ,float *mccdl,float *mccstatus,float *mcciters,float *mccresidual
   ,tsymatrix3f &signew,float &kplasnew)
 {
   if(soilcte.SoilConstitutiveModel==0){
@@ -5800,10 +6040,37 @@ static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCte
     return;
   }
   if(soilcte.SoilConstitutiveModel==3){
-    // M3b only wires MCC parser/state/output. The local MCC return mapping is
-    // intentionally not called from the SPH stress path until M3c.
-    signew=sigma_e;
-    kplasnew=kplasticold;
+    const bool ready=(mccpc && mcce && mccplasticvol && mcceqplastic && mccyield && mccdl && mccstatus && mcciters && mccresidual);
+    if(!ready){
+      signew=sigma_e;
+      kplasnew=kplasticold;
+      return;
+    }
+    StMccCpuTensor sigcp=MccCpuFromSigmac(sigma_old);
+    StMccCpuTensor trialcp=MccCpuFromSigmac(sigma_e);
+    StMccCpuTensor newcp=trialcp;
+    double pcnew=double(*mccpc);
+    double enew=double(*mcce);
+    double epspvnew=double(*mccplasticvol);
+    double epspeqnew=double(*mcceqplastic);
+    double dlnew=0.;
+    int yieldflag=0,status=0,iters=0;
+    double residual=0.;
+    MccCpuReturnMapping(soilcte,sigcp,trialcp,double(*mccpc),double(*mcce),double(*mccplasticvol),double(*mcceqplastic)
+      ,newcp,pcnew,enew,epspvnew,epspeqnew,dlnew,yieldflag,status,iters,residual);
+    signew=MccCpuToSigmac(newcp);
+    kplasnew=(updateplastic? float(epspeqnew): kplasticold);
+    if(updateplastic){
+      *mccpc=float(pcnew);
+      *mcce=float(enew);
+      *mccplasticvol=float(epspvnew);
+      *mcceqplastic=float(epspeqnew);
+      *mccyield=float(yieldflag);
+      *mccdl=float(dlnew);
+      *mccstatus=float(status);
+      *mcciters=float(iters);
+      *mccresidual=float(residual);
+    }
     return;
   }
   if(soilcte.SoilConstitutiveModel==2){
@@ -5840,6 +6107,8 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
   ,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
   ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew)const
 {
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc))
+    Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const double dt205=0.5*dt*dt;
   const tdouble3 gravity=ToTDouble3(GetMechanicalGravity(TimeStep));
   const int pini=int(Npb),pfin=int(Np),npf=int(Np-Npb);
@@ -5878,7 +6147,11 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         sigma_e.xy = float(double(sigma2[p].xy) + rsigma[p].xy * dt2);
         sigma_e.yz = float(double(sigma2[p].yz) + rsigma[p].yz * dt2);
         sigma_e.xz = float(double(sigma2[p].xz) + rsigma[p].xz * dt2);
-      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,true,signew,kplasnew);
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma2[p],sigma_e,kplasticold,true
+        ,(MccPcc? MccPcc+p: NULL),(MccVoidRatioc? MccVoidRatioc+p: NULL),(MccPlasticVolStrainc? MccPlasticVolStrainc+p: NULL)
+        ,(MccEqPlasticStrainc? MccEqPlasticStrainc+p: NULL),(MccYieldFlagc? MccYieldFlagc+p: NULL),(MccPlasticMultiplierc? MccPlasticMultiplierc+p: NULL)
+        ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
+        ,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(Codec[p])){
@@ -5961,6 +6234,8 @@ void JSphCpu::ComputeVerlet(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticPre(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc))
+    Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const bool shift=false; //(ShiftingMode!=SHIFT_None); //-We strongly recommend running the shifting correction only for the corrector. If you want to re-enable shifting in the predictor, change the value here to "true".
   const double dt05=dt*.5;
   const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
@@ -6027,7 +6302,11 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt05);
         sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt05);
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt05);
-      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,false,signew,kplasnew);
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,SigmaPrec[p],sigma_e,kplasticold,false
+        ,(MccPcc? MccPcc+p: NULL),(MccVoidRatioc? MccVoidRatioc+p: NULL),(MccPlasticVolStrainc? MccPlasticVolStrainc+p: NULL)
+        ,(MccEqPlasticStrainc? MccEqPlasticStrainc+p: NULL),(MccYieldFlagc? MccYieldFlagc+p: NULL),(MccPlasticMultiplierc? MccPlasticMultiplierc+p: NULL)
+        ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
+        ,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(rcode)){
@@ -6085,6 +6364,8 @@ void JSphCpu::ComputeSymplecticPre(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorr(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc))
+    Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const bool shift=(Shifting!=NULL);
   const double dt05=dt*.5;
   const tfloat3 mechgravity=GetMechanicalGravity(TimeStep);
@@ -6130,7 +6411,11 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt);
         sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt);
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt);
-      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,sigma_e,kplasticold,true,signew,kplasnew);
+      ApplySoilConstitutiveModelCpu(SoilCte,DPCtes,SigmaPrec[p],sigma_e,kplasticold,true
+        ,(MccPcc? MccPcc+p: NULL),(MccVoidRatioc? MccVoidRatioc+p: NULL),(MccPlasticVolStrainc? MccPlasticVolStrainc+p: NULL)
+        ,(MccEqPlasticStrainc? MccEqPlasticStrainc+p: NULL),(MccYieldFlagc? MccYieldFlagc+p: NULL),(MccPlasticMultiplierc? MccPlasticMultiplierc+p: NULL)
+        ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
+        ,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 

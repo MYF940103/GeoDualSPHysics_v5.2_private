@@ -4691,6 +4691,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
       if(v!=0 && v!=1)Run_Exceptioon("MccStressUpdateEnabled must be 0 or 1.");
       SoilCte.MccStressUpdateEnabled=(v==1);
     }
+    else SoilCte.MccStressUpdateEnabled=true;
   }
   else if(solidNode->FirstChildElement("SaveMccState")){
     const int v=sxml->ReadElementInt(solidNode,"SaveMccState","value",false);
@@ -4783,7 +4784,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.MccTensionCutoff<0.f)Run_Exceptioon("MccTensionCutoff must be greater than or equal to zero.");
     if(SoilCte.MccReturnTolerance<=0.f)Run_Exceptioon("MccReturnTolerance must be greater than zero.");
     if(SoilCte.MccReturnMaxIter<1)Run_Exceptioon("MccReturnMaxIter must be greater than zero.");
-    if(SoilCte.MccStressUpdateEnabled)Run_Exceptioon("MccStressUpdateEnabled=1 is reserved for M3c. M3b only supports parser/state/output initialization.");
+    if(!SoilCte.MccStressUpdateEnabled)Run_Exceptioon("SoilConstitutiveModel=3 requires MccStressUpdateEnabled=1 in M3c. Use SoilConstitutiveModel=0 for elastic pass-through.");
   }
   else if(SoilCte.SaveMccState)
     Log->PrintWarning("SaveMccState=1 is enabled without SoilConstitutiveModel=3. MCC output arrays will contain safe zero/default values only.");
@@ -4801,12 +4802,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
-   const std::string soilmodel=(ct.SoilConstitutiveModel==0? "Linear elastic skeleton": (ct.SoilConstitutiveModel==3? "Modified Cam Clay skeleton (M3b parser/state skeleton)": (ct.SoilConstitutiveModel==2? "Drucker-Prager + exponential softening": "Drucker-Prager elastoplastic")));
+   const std::string soilmodel=(ct.SoilConstitutiveModel==0? "Linear elastic skeleton": (ct.SoilConstitutiveModel==3? "Modified Cam Clay skeleton (CPU stress update)": (ct.SoilConstitutiveModel==2? "Drucker-Prager + exponential softening": "Drucker-Prager elastoplastic")));
    Log->Print(fun::VarStr("  SoilConstitutiveModel",soilmodel));
    if(ct.SoilConstitutiveModel==0)
      Log->Print("  Linear elastic skeleton: DP yield, return mapping, plastic strain, Kplastic accumulation, and softening are bypassed.");
    else if(ct.SoilConstitutiveModel==3){
-     Log->PrintWarning("  MCC stress update is not connected in M3b. CPU stress integration uses elastic-trial pass-through for parse/init smoke only.");
+     Log->Print("  MCC CPU stress update: enabled (experimental, CPU-only).");
      Log->Printf("  MCC lambda: %g",ct.MccLambda);
      Log->Printf("  MCC kappa: %g",ct.MccKappa);
      Log->Printf("  MCC M: %g",ct.MccM);

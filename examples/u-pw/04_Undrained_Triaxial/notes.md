@@ -1092,3 +1092,32 @@ Sigmac=(-50,-50,-50) Pa -> p'=+50 Pa -> pc=OCR*p'=200 Pa
 
 M3c can now implement the CPU MCC stress-update branch from the verified C++
 helper. Full feedback and GPU remain deferred.
+
+## M3c MCC CPU Stress Update Notes
+
+M3c connects `SoilConstitutiveModel=3` to a CPU MCC return-mapping branch while
+leaving the existing elastic/DP/DP-softening branches unchanged.
+
+Implementation notes:
+
+- MCC internals remain compression-positive;
+- current `Sigmac` remains negative-compression, using
+  `p'=-trace(Sigmac)/3`;
+- the return mapping follows M3a: local Newton in `p, q, pc, Delta_gamma`;
+- `Kplastic` is mapped to `MccEqPlasticStrain` only as a compatibility
+  diagnostic;
+- GPU still hard-errors for model `3`.
+
+Smoke status:
+
+- high-pc MCC (`pc0=100000 Pa`) is elastic-like: yield fraction `0`, plastic
+  strain `0`;
+- mild MCC (`pc0=120 Pa`) yields in the short feedback-off platen case:
+  final yield fraction `1.0`, `Kplastic_max=7.07e-4`, max return iterations
+  `24`, max raw plastic yield residual about `1.13e-4`;
+- both cases finish `code=0`, `excluded=0`, `DtMin=0`;
+- pore pressure remains bounded, but the mild case has negative mean pore
+  pressure, so this is still a reduced feedback-off diagnostic route.
+
+M3d may refine the MCC feedback-off platen smoke. Full feedback and GPU remain
+deferred.

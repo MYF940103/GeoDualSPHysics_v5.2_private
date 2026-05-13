@@ -2067,3 +2067,21 @@ GPU validation route.
 
 Full pore-pressure feedback and GPU remain deferred. M3c should be CPU stress
 update only.
+
+## M3c MCC CPU Stress Update GPU Status
+
+M3c connects Modified Cam Clay to the CPU stress-update branch only. The GPU
+policy is unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+GPU Release build passes after the shared parser/source changes, but no GPU
+simulation was run. There is still no GPU MCC return mapping, no GPU MCC state
+array update, and no GPU restart/output parity for MCC.
+
+The CPU smokes confirm high-pc elastic-like behavior and mild-yield MCC state
+updates under feedback-off explicit platen loading. GPU work remains deferred
+until the CPU MCC branch has a stable M3d/M3e feedback-off baseline and the
+full pore-pressure feedback question is either fixed or explicitly scoped out.

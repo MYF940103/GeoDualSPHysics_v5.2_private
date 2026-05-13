@@ -364,7 +364,7 @@ void JSphCpuSingle::ConfigDomain(){
     }
     else Log->PrintWarning("MCC state initialisation found no normal material particles.");
     if(SoilCte.SoilConstitutiveModel==3)
-      Log->PrintWarning("M3b MCC stress update is not connected to the SPH stress branch. SoilConstitutiveModel=3 currently uses elastic-trial stress pass-through only for parser/state/output smoke tests.");
+      Log->Print("MCC CPU state is ready for the SoilConstitutiveModel=3 stress update branch.");
     }
   }
 
