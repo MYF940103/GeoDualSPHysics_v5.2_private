@@ -871,3 +871,32 @@ case keeps `112` active lateral targets and cap leakage diagnostic `0`.
 T4s is a reduced feedback-off platen baseline. It still uses
 `Fz_proxy=-mean(Sigma_zz)*pi*R^2`; no true platen reaction is available yet.
 Full feedback, strict axial-reaction validation, MCC, and GPU remain deferred.
+
+## T5 DP Feedback-Off Platen Baseline
+
+T5 is retained under:
+
+`experiments/T5_DPFeedbackOffBaseline/`
+
+It keeps the T4s explicit-platen/lateral-confinement workflow and switches the
+skeleton to `SoilConstitutiveModel=1` Drucker-Prager:
+
+- top moving platen: `mkbound=1`, prescribed `v_z=-0.005 m/s`;
+- bottom fixed platen: `mkbound=2`;
+- lateral selected `FlexibleConfiningStress`;
+- `PorePressureFeedback=0`;
+- CPU Release only.
+
+Two short DP cases are retained:
+
+| Case | DP parameters | Result | Final `Kplastic` max | Final `p'` / `q` proxy |
+| --- | --- | --- | ---: | ---: |
+| high strength | `phi=33 deg`, `coh=10000 Pa`, `dlt=0` | `code=0`, `excluded=0`, `DtMin=0` | `0` | `145.66 / 332.47 Pa` |
+| mild yield | `phi=30 deg`, `coh=50 Pa`, `dlt=0` | `code=0`, `excluded=0`, `DtMin=0` | `4.38e-4` | `86.58 / 126.76 Pa` |
+
+The high-strength case reproduces the T4s elastic lateral baseline because the
+yield surface is not reached. The mild-yield diagnostic activates plasticity
+in `341/407` specimen particles while keeping pore pressure, velocity, and
+confinement diagnostics bounded. This is a reduced DP feedback-off baseline,
+not strict triaxial validation. True reaction output, full feedback, MCC, and
+GPU remain deferred.

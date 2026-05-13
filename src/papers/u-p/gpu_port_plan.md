@@ -1920,3 +1920,18 @@ measurement fidelity: ordinary fixed/moving `mkbound` platens do not expose a
 true reaction force, so T4s uses a specimen-stress proxy. A future GPU task
 should wait until the CPU reaction diagnostic and full-feedback stability are
 resolved. Full feedback, MCC, and GPU triaxial validation remain deferred.
+
+## T5 DP Feedback-Off Platen Baseline GPU Status
+
+T5 is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU Release DP feedback-off baselines both completed with `code=0`,
+`excluded=0`, and `DtMin=0`. The high-strength DP case remains effectively
+elastic with `Kplastic=0`; the mild-yield case activates `Kplastic` while
+remaining bounded in the reduced platen workflow.
+
+GPU remains deferred because the active validation blockers are still CPU-side:
+true platen reaction is unavailable, and full pore-pressure feedback remains
+deferred. MCC should not be started on GPU before the CPU DP/platen measurement
+and feedback decisions are settled.

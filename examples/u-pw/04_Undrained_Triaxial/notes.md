@@ -822,3 +822,35 @@ not as strict reaction validation. A true per-`mkbound` reaction diagnostic is
 still needed before paper-level axial stress comparison. Full feedback, MCC,
 and GPU remain deferred. A reduced T5 DP feedback-off smoke can be considered
 only with the reaction-proxy caveat kept explicit.
+
+## T5 DP Feedback-Off Platen Baseline Notes
+
+T5 runs the first DP skeleton baseline on the explicit-platen workflow:
+
+- `CaseT5_DPHighStrength_PlatenLateralConfinement`;
+- `CaseT5_DPMildYield_PlatenLateralConfinement`.
+
+Both cases keep `PorePressureFeedback=0`, selected lateral
+`FlexibleConfiningStress`, top prescribed platen velocity, and bottom fixed
+platen. Both complete with `code=0`, `excluded=0`, `DtMin=0`, and no NaN/Inf
+in the retained CSV metrics.
+
+The high-strength case uses `SoilConstitutiveModel=1`, `phi=33 deg`,
+`coh=10000 Pa`, `dlt=0`. It remains elastic in practice:
+
+- final `Kplastic` max `0`;
+- final specimen-wide `p' approx 145.66 Pa`, `q approx 332.47 Pa`;
+- final `Fz_proxy approx 1.0385 N`.
+
+The mild-yield diagnostic uses `phi=30 deg`, `coh=50 Pa`, `dlt=0`. It activates
+the DP return mapping without destabilizing the reduced run:
+
+- final `Kplastic` max `4.38e-4`;
+- nonzero `Kplastic` count `341/407`;
+- final specimen-wide `p' approx 86.58 Pa`, `q approx 126.76 Pa`;
+- final `Fz_proxy approx 0.4837 N`.
+
+This confirms that the DP skeleton and `Kplastic` output are usable in the
+feedback-off platen workflow. It does not validate full coupling or reaction
+forces. The true reaction patch remains a T4t/T5b measurement-fidelity item;
+full feedback, MCC, and GPU remain deferred.
