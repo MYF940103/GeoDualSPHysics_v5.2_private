@@ -44,7 +44,7 @@ The material/phase constants below are now soil material constants and should be
 | `ConfiningStressUseFiSelector` | `0/1` | `0` | If enabled, applies the confining force only to target particles with `f_i <= ConfiningStressFiThreshold`. | Experimental |
 | `ConfiningStressUseLateralSelector` | `0/1` | `0` | If enabled, applies the confining force only to cylinder lateral particles; requires `ConfiningStressGeometry=1`. | Experimental |
 | `ConfiningStressLateralSelectorStartTime` | double [s] | `0` | CPU-only staged selector switch. When `ConfiningStressUseLateralSelector=1` and this value is `>0`, the run starts with the lateral selector disabled and activates it at the given time. Values `<=0` preserve legacy immediate lateral-selector behavior. GPU hard-errors for non-default scheduling. | Experimental |
-| `CapConfiningStress` | `0/1` | `0` | CPU-only top/bottom cap-normal hydrostatic support for triaxial staging. GPU hard-errors if enabled. | Experimental |
+| `CapConfiningStress` | `0/1` | `0` | CPU-only top/bottom cap-normal hydrostatic support diagnostic for reduced triaxial staging. Not a production platen-boundary route. GPU hard-errors if enabled. | Diagnostic |
 | `CapConfiningStressP0` | float, `>=0` | `0` | Positive external compression magnitude [Pa] for cap-normal support. | Experimental |
 | `CapConfiningStressRampStart` | double [s] | `0` | Linear cap-support ramp start time. | Experimental |
 | `CapConfiningStressRampEnd` | double [s] | `CapConfiningStressRampStart` | Linear cap-support ramp end time. If equal to start, load is applied without ramp. | Experimental |
@@ -64,6 +64,14 @@ intended only for reduced triaxial hydrostatic staging diagnostics. The cap
 support is not axial deviatoric loading, is not written into the stress tensor,
 and skips cylinder edge-ring particles to avoid double-counting lateral
 flexible confinement.
+
+T4p reclassifies `CapConfiningStress` as diagnostic-only. T4o showed that this
+explicit acceleration patch does not preserve the all-surface hydrostatic state
+and should not be tuned into a production triaxial cap/platen formulation. A
+strict triaxial workflow should instead use explicit bottom/top platen groups,
+with bottom fixed, top prescribed in velocity or displacement, lateral
+`FlexibleConfiningStress`, specimen-only measurements, and reaction-force
+diagnostics.
 
 T4n adds `ConfiningStressLateralSelectorStartTime` for a single-run
 all-surface-to-lateral confinement switch. It only changes the target selection

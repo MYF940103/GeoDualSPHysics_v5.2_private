@@ -1858,3 +1858,18 @@ ends with higher `q` (`~61.9 Pa`) than the T4n2 lateral-only restart
 (`~37.9 Pa`), and delayed feedback still reaches order `1e12 Pa/s`
 `PorePressRate`. No axial smoke, GPU simulation, DP baseline, or MCC work
 should start from T4o.
+
+## T4p Cap / Platen Boundary Audit GPU Status
+
+T4p is documentation-only. It adds no source code, no parser changes, no build,
+and no CPU/GPU simulations.
+
+The audit concludes that `CapConfiningStress` is not a production triaxial
+platen route. Zhao-style triaxial loading uses explicit top/bottom platens:
+bottom fixed, top prescribed in axial motion, with lateral confinement handled
+separately. The current GPU plan therefore remains deferred until a CPU
+platen-boundary workflow is defined and validated.
+
+T4q should be CPU-first. If it needs new platen-boundary controls, the GPU path
+should hard-error for non-default settings until the CPU formulation passes the
+elastic triaxial staging gates. DP and MCC remain deferred.

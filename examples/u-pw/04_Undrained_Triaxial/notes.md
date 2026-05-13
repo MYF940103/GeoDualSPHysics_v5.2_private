@@ -693,3 +693,30 @@ feedback-off hydrostatic route, but the current explicit cap-support patch is
 not compatible enough with that state to launch axial loading. The next step
 should revisit the cap/loading transition formulation rather than enter DP or
 MCC.
+
+## T4p Cap / Platen Boundary Notes
+
+T4p does not change source or run new simulations. It audits Zhao's triaxial
+cap/platen boundary treatment, the current reduced triaxial XML groups, and
+the source mechanisms available for cap/loading support.
+
+Main findings:
+
+- Zhao uses explicit loading platens, not a separate cap-normal acceleration
+  patch. The bottom platen is fixed and the top platen is prescribed in
+  downward motion.
+- The current reduced cases do not yet have clean platen groups. The specimen
+  is `mkfluid=0`, the top loading layer is `mkfluid=1`, and there is no
+  separate bottom platen mk.
+- `AccInput` is a body acceleration applied to the top material layer. It is
+  acceptable for early smoke tests but is not a strict prescribed-displacement
+  or prescribed-velocity platen.
+- `CapConfiningStress` should remain diagnostic-only. T4o showed that it does
+  not preserve the all-surface hydrostatic state and can increase the `q`
+  imbalance.
+
+Recommended T4q route: build an explicit platen-boundary workflow. The bottom
+platen should be fixed, the top platen should use prescribed velocity or
+displacement, lateral confinement should remain `FlexibleConfiningStress`, and
+platen particles should be excluded from specimen measurements and p-q proxy
+statistics. Axial loading, DP, MCC, and GPU validation remain deferred.

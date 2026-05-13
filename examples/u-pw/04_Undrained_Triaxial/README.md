@@ -745,3 +745,31 @@ The current explicit cap support does not preserve the all-surface hydrostatic
 state; it increases the `q` imbalance beyond the T4n2 lateral-only restart.
 Delayed feedback remains unstable, so axial loading was not restored. DP, MCC,
 and GPU validation remain deferred.
+
+## T4p Cap / Platen Boundary Audit
+
+T4p is documentation-only and is retained in:
+
+- `src/papers/u-p/t4p_zhao_cap_platen_boundary_audit.md`
+- `src/papers/u-p/t4p_current_triaxial_cap_group_audit.md`
+- `src/papers/u-p/t4p_cap_boundary_source_audit.md`
+- `src/papers/u-p/t4p_triaxial_platen_workflow_design.md`
+- `src/papers/u-p/t4q_platen_boundary_implementation_plan.md`
+
+The audit reinterprets the T4o failure as a cap/platen boundary formulation
+problem, not a cap-force tuning problem. Zhao's triaxial examples use explicit
+top/bottom loading platens: the bottom platen is fixed and the top platen has
+prescribed downward motion. This differs from the current reduced triaxial
+smokes, where `mkfluid=1` is a material top loading layer driven by
+`AccInput`.
+
+`AccInput` remains useful for smoke tests, but it is not a strict platen
+boundary condition and it does not provide platen reaction output. The
+`CapConfiningStress` feature is now classified as diagnostic-only; it should
+not be tuned into a production triaxial cap route.
+
+Recommended next step: T4q should prototype an explicit platen workflow with a
+fixed bottom platen, prescribed top platen velocity or displacement, lateral
+`FlexibleConfiningStress`, specimen-only measurements, and reaction-force
+diagnostics. Axial loading validation, DP, MCC, and GPU remain deferred until
+that cap/platen route is stable.
