@@ -265,7 +265,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `CurvedDrainedBoundaryValue` | double [Pa] | `0` | Prescribed drained boundary value. | Experimental |
 | `CurvedDrainedBoundaryUseExcess` | `0/1` | `1` | `1`: value is excess pressure; `0`: value is total pressure. | Experimental |
 | `CurvedDrainedBoundaryThickness` | double [m] | `0` | Interior shell thickness for ghost placement; if `<=0`, uses `KernelH`. | Experimental |
-| `CurvedDrainedBoundaryMode` | `0/1/2/3/4/5/6/7` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: material-side multi-sample spherical Dirichlet boundary quadrature; `4`: boundary-particle prescribed Dirichlet hydraulic state; `5`: radial MLS / integrated flux correction; `6`: radial-shell / FV flux correction; `7`: conservative multi-shell radial exchange. | Experimental |
+| `CurvedDrainedBoundaryMode` | `0/1/2/3/4/5/6/7/8` | `0` | Mode `3` subtype. `0`: first-order spherical Dirichlet ghost; `1`: strengthened image Dirichlet ghost; `2`: diagnostic material surface drained clamp after pressure update, not production; `3`: material-side multi-sample spherical Dirichlet boundary quadrature; `4`: boundary-particle prescribed Dirichlet hydraulic state; `5`: radial MLS / integrated flux correction; `6`: radial-shell / FV flux correction; `7`: conservative multi-shell radial exchange; `8`: boundary-aware corrected quadratic MLS Laplacian. | Experimental |
 
 Top drained correction:
 
@@ -325,7 +325,8 @@ selects the CPU-only experimental subroute:
 - `4`: boundary-particle prescribed Dirichlet hydraulic state;
 - `5`: radial MLS / integrated flux correction, CPU-only experimental;
 - `6`: radial-shell / FV flux correction, CPU-only experimental;
-- `7`: conservative multi-shell radial exchange, CPU-only experimental.
+- `7`: conservative multi-shell radial exchange, CPU-only experimental;
+- `8`: boundary-aware corrected quadratic MLS Laplacian, CPU-only experimental.
 
 Mode `4` is the C5e paper-style boundary-particle prototype. It uses selected
 boundary particles as hydraulic quadrature sites, prescribes the drained value
@@ -371,7 +372,7 @@ Additional mode-5 parameters:
 |---|---:|---:|---|
 | `CurvedDrainedMLSOrder` | `0/1` | `1` | MLS order for mode `5`. `1`: constrained radial linear fit; `0`: fallback route. |
 | `CurvedDrainedMLSRadiusFactor` | float | `1` | Support radius multiplier on `KernelH`; `0` also uses `KernelH`. |
-| `CurvedDrainedFluxDiagnostics` | `0/1` | `0` | Print per-step mode-5, mode-6, or mode-7 flux diagnostics. |
+| `CurvedDrainedFluxDiagnostics` | `0/1` | `0` | Print per-step mode-5, mode-6, or mode-7 flux diagnostics. Mode `8` has its own corrected-Laplacian diagnostics switch. |
 | `CurvedDrainedMLSConditionLimit` | float | `1e8` | Maximum accepted local moment condition number. |
 | `CurvedDrainedMLSFallbackMode` | `3/4` | `3` | Fallback if local MLS support is invalid or ill-conditioned. |
 
@@ -406,6 +407,38 @@ Additional mode-7 parameters:
 | `CurvedDrainedShellMode` | `0/1` | `0` | `0`: automatic shell count; `1`: fixed `CurvedDrainedShellCount`. |
 | `CurvedDrainedShellCorrectionMode` | `0/1` | `1` | `0`: replace per-particle diffusion rate by the shell FV rate; `1`: add shell-average correction to the existing SPH diffusion rate. |
 | `CurvedDrainedShellDiagnostics` | `0/1` | `0` | Print per-step shell populations, means, interface fluxes, correction rates, and conservation residuals. |
+
+Mode `8` is the C5n boundary-aware corrected Laplacian prototype. It applies a
+local quadratic MLS recovery only near the curved drained sphere:
+
+```text
+p(xi) ~= a0 + a1 xi_x + a2 xi_y + a3 xi_z
+       + a4 xi_x^2 + a5 xi_y^2 + a6 xi_z^2
+       + a7 xi_x xi_y + a8 xi_x xi_z + a9 xi_y xi_z
+
+nabla^2 p = 2 (a4 + a5 + a6)
+```
+
+Material neighbors and tangential samples on the physical sphere enter the
+least-squares system. Under the Cryer no-elevation pressure-only convention,
+the boundary samples use the prescribed drained value `p_b=0`. Mode `8`
+replaces near-boundary `LapPorePress`; it does not clamp `PorePress` and does
+not count dummy boundary-particle volume. C5n showed that mode `8` fixes
+manufactured polynomial consistency, but it does not pass the dynamic
+pressure-only FV radial diffusion gate.
+
+Additional mode-8 parameters:
+
+| Parameter | Type / values | Default | Purpose |
+|---|---:|---:|---|
+| `CurvedDrainedCorrectedLapRadiusFactor` | float | `2` | Support radius multiplier on `KernelH`; `0` uses `KernelSize`. |
+| `CurvedDrainedCorrectedLapRMinFactor` | float in `[0,1]` | `0.7` | Minimum normalized radius where the corrected Laplacian replaces `LapPorePress`. |
+| `CurvedDrainedCorrectedLapBoundarySamples` | unsigned | `9` | Number of tangential spherical boundary samples, including the projected point. |
+| `CurvedDrainedCorrectedLapMinSamples` | unsigned | `12` | Minimum total MLS samples before fallback. |
+| `CurvedDrainedCorrectedLapConditionLimit` | float | `1e12` | Maximum accepted local condition estimate. |
+| `CurvedDrainedCorrectedLapBoundaryWeight` | float | `1` | Relative weight for Dirichlet boundary samples. |
+| `CurvedDrainedCorrectedLapFallbackMode` | `0/4` | `0` | `0`: keep existing material `LapPorePress`; `4`: use a local gap fallback. |
+| `CurvedDrainedCorrectedLapDiagnostics` | `0/1` | `0` | Print per-step mode-8 sample, condition, fallback, and replacement diagnostics. |
 
 ## 4. Feedback Parameters
 

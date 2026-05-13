@@ -731,3 +731,32 @@ Gate result:
 Decision: C6 remains blocked. The shell-conservative route is useful as a
 diagnostic, but the next source task should move toward a corrected
 near-boundary SPH Laplacian/consistency operator.
+
+## C5n Corrected Laplacian Prototype
+
+C5n is retained under:
+
+`strict_reproduction_plan/C5n_CorrectedLaplacian/`
+
+It adds `CurvedDrainedBoundaryMode=8`, a CPU-only boundary-aware quadratic MLS
+Laplacian prototype for `PorePressureBoundaryOperator=3`. Mode `8` fits a local
+quadratic pressure polynomial near the drained sphere and replaces
+near-boundary `LapPorePress` by the recovered Laplacian. It keeps the drained
+surface value `p_b=0`, does not clamp material pressure, and does not count
+dummy boundary-particle volume.
+
+Manufactured radial fields improved: for `dp=0.008`, near-boundary `u=r^2`
+p95 error dropped from about `13.81` to roundoff when the manufactured boundary
+value is consistent, and the drained-like `R-r` p95 error dropped from about
+`121.32` to `5.23`.
+
+The pressure-only FV gate still failed. The `dp=0.008` CPU Release case
+completed with `code=0`, `excluded=0`, and `Kplastic=0`, but final center
+pressure was `47.38 Pa` versus FV `999.998 Pa`, final volume mean was
+`232.26 Pa` versus FV `615.76 Pa`, and final surface shell mean was
+`431.67 Pa` versus FV `85.88 Pa`. The run developed negative pressure and
+apparent flux reversal, with final `PorePressRate` maxAbs `9.37e6 Pa/s`.
+
+Decision: no Cryer compression smoke was run. C6 remains blocked. The next
+boundary task should stabilize or limit the boundary-constrained corrected
+Laplacian before any compression, C6, or GPU work.

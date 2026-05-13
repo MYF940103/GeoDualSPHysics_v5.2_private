@@ -220,6 +220,14 @@ void JSph::InitVars(){
   CurvedDrainedShellMode=0;
   CurvedDrainedShellCorrectionMode=1;
   CurvedDrainedShellDiagnostics=false;
+  CurvedDrainedCorrectedLapRadiusFactor=2.;
+  CurvedDrainedCorrectedLapRMinFactor=0.7;
+  CurvedDrainedCorrectedLapBoundarySamples=9;
+  CurvedDrainedCorrectedLapMinSamples=12;
+  CurvedDrainedCorrectedLapConditionLimit=1.e12;
+  CurvedDrainedCorrectedLapBoundaryWeight=1.;
+  CurvedDrainedCorrectedLapFallbackMode=0;
+  CurvedDrainedCorrectedLapDiagnostics=false;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   HydraulicElevationSource=true;
@@ -801,7 +809,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 5:  CurvedDrainedBoundaryMode=5;  break;
     case 6:  CurvedDrainedBoundaryMode=6;  break;
     case 7:  CurvedDrainedBoundaryMode=7;  break;
-    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, experimental 4, experimental 5, experimental 6, and experimental 7.");
+    case 8:  CurvedDrainedBoundaryMode=8;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, experimental 4, experimental 5, experimental 6, experimental 7, and experimental 8.");
   }
   CurvedDrainedBoundaryTargetMkBound=eparms.GetValueInt("CurvedDrainedBoundaryTargetMkBound",true,-1);
   switch(eparms.GetValueInt("CurvedDrainedBoundaryUseBoundaryParticles",true,1)){
@@ -862,6 +871,30 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  CurvedDrainedShellDiagnostics=false;  break;
     case 1:  CurvedDrainedShellDiagnostics=true;   break;
     default: Run_Exceptioon("CurvedDrainedShellDiagnostics mode is not valid.");
+  }
+  CurvedDrainedCorrectedLapRadiusFactor=eparms.GetValueDouble("CurvedDrainedCorrectedLapRadiusFactor",true,2.);
+  CurvedDrainedCorrectedLapRMinFactor=eparms.GetValueDouble("CurvedDrainedCorrectedLapRMinFactor",true,0.7);
+  {
+    const int nsamp=eparms.GetValueInt("CurvedDrainedCorrectedLapBoundarySamples",true,9);
+    if(nsamp<1)Run_Exceptioon("CurvedDrainedCorrectedLapBoundarySamples must be greater than zero.");
+    CurvedDrainedCorrectedLapBoundarySamples=unsigned(nsamp);
+  }
+  {
+    const int nsamp=eparms.GetValueInt("CurvedDrainedCorrectedLapMinSamples",true,12);
+    if(nsamp<10)Run_Exceptioon("CurvedDrainedCorrectedLapMinSamples must be at least 10.");
+    CurvedDrainedCorrectedLapMinSamples=unsigned(nsamp);
+  }
+  CurvedDrainedCorrectedLapConditionLimit=eparms.GetValueDouble("CurvedDrainedCorrectedLapConditionLimit",true,1.e12);
+  CurvedDrainedCorrectedLapBoundaryWeight=eparms.GetValueDouble("CurvedDrainedCorrectedLapBoundaryWeight",true,1.);
+  switch(eparms.GetValueInt("CurvedDrainedCorrectedLapFallbackMode",true,0)){
+    case 0:  CurvedDrainedCorrectedLapFallbackMode=0;  break;
+    case 4:  CurvedDrainedCorrectedLapFallbackMode=4;  break;
+    default: Run_Exceptioon("CurvedDrainedCorrectedLapFallbackMode is not valid. Valid values are 0 keep material operator and 4 local gap fallback.");
+  }
+  switch(eparms.GetValueInt("CurvedDrainedCorrectedLapDiagnostics",true,0)){
+    case 0:  CurvedDrainedCorrectedLapDiagnostics=false;  break;
+    case 1:  CurvedDrainedCorrectedLapDiagnostics=true;   break;
+    default: Run_Exceptioon("CurvedDrainedCorrectedLapDiagnostics mode is not valid.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
@@ -982,9 +1015,17 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedBoundaryMode=7 is a gravity-free spherical diffusion prototype and requires HydraulicElevationSource=0.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==7 && CurvedDrainedShellMode==1 && CurvedDrainedShellCount<2)
     Run_Exceptioon("CurvedDrainedShellCount must be at least 2 when CurvedDrainedShellMode=1.");
-  if(PorePressureCurvedDrained && (CurvedDrainedBoundaryMode==5 || CurvedDrainedBoundaryMode==6 || CurvedDrainedBoundaryMode==7) && CurvedDrainedBoundaryWeighting)
-    Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5/6/7.");
-  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5 && CurvedDrainedBoundaryMode!=6 && CurvedDrainedBoundaryMode!=7)
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && CurvedDrainedCorrectedLapRadiusFactor<0.)
+    Run_Exceptioon("CurvedDrainedCorrectedLapRadiusFactor must be greater than or equal to zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && (CurvedDrainedCorrectedLapRMinFactor<0. || CurvedDrainedCorrectedLapRMinFactor>1.))
+    Run_Exceptioon("CurvedDrainedCorrectedLapRMinFactor must be between 0 and 1.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && CurvedDrainedCorrectedLapConditionLimit<=0.)
+    Run_Exceptioon("CurvedDrainedCorrectedLapConditionLimit must be greater than zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && CurvedDrainedCorrectedLapBoundaryWeight<=0.)
+    Run_Exceptioon("CurvedDrainedCorrectedLapBoundaryWeight must be greater than zero.");
+  if(PorePressureCurvedDrained && (CurvedDrainedBoundaryMode==5 || CurvedDrainedBoundaryMode==6 || CurvedDrainedBoundaryMode==7 || CurvedDrainedBoundaryMode==8) && CurvedDrainedBoundaryWeighting)
+    Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5/6/7/8.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5 && CurvedDrainedBoundaryMode!=6 && CurvedDrainedBoundaryMode!=7 && CurvedDrainedBoundaryMode!=8)
     Log->PrintWarning("CurvedDrainedBoundaryWeighting is only used by CurvedDrainedBoundaryMode=4.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
@@ -1966,6 +2007,14 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  CurvedDrainedShellMode",CurvedDrainedShellMode));
       Log->Print(fun::VarStr("  CurvedDrainedShellCorrectionMode",CurvedDrainedShellCorrectionMode));
       Log->Print(fun::VarStr("  CurvedDrainedShellDiagnostics",CurvedDrainedShellDiagnostics));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapRadiusFactor",CurvedDrainedCorrectedLapRadiusFactor));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapRMinFactor",CurvedDrainedCorrectedLapRMinFactor));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapBoundarySamples",CurvedDrainedCorrectedLapBoundarySamples));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapMinSamples",CurvedDrainedCorrectedLapMinSamples));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapConditionLimit",CurvedDrainedCorrectedLapConditionLimit));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapBoundaryWeight",CurvedDrainedCorrectedLapBoundaryWeight));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapFallbackMode",CurvedDrainedCorrectedLapFallbackMode));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapDiagnostics",CurvedDrainedCorrectedLapDiagnostics));
       if(CurvedDrainedBoundaryMode==0)
         Log->Print("  CurvedDrainedBoundaryMode=0: first-order spherical Dirichlet ghost.");
       if(CurvedDrainedBoundaryMode==1)
@@ -1982,6 +2031,8 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=6: radial-shell FV-consistent Dirichlet flux correction; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==7)
         Log->Print("  CurvedDrainedBoundaryMode=7: conservative multi-shell radial exchange; CPU-only experimental.");
+      if(CurvedDrainedBoundaryMode==8)
+        Log->Print("  CurvedDrainedBoundaryMode=8: boundary-aware corrected quadratic MLS Laplacian; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==0)
         Log->Print("  CurvedDrainedBoundaryWeighting=0: raw boundary-particle volume weighting.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==1)

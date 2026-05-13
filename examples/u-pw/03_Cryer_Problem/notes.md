@@ -795,3 +795,50 @@ Decision:
 - GPU remains deferred;
 - next source task should be a corrected near-boundary SPH Laplacian /
   consistency operator, with C5m shell balance retained as a diagnostic.
+
+## C5n Corrected Laplacian Notes
+
+C5n adds the corrected near-boundary Laplacian prototype:
+
+`strict_reproduction_plan/C5n_CorrectedLaplacian/`
+
+Source scope:
+
+- added `CurvedDrainedBoundaryMode=8`;
+- kept mode `0` to mode `7` behavior unchanged;
+- kept the PR governing equation, `FlexibleConfiningStress`,
+  `SoilConstitutiveModel`, and `HydraulicElevationSource` unchanged;
+- did not add GPU support.
+
+Mode `8` uses a local quadratic MLS fit near the spherical drained boundary:
+
+`nabla^2 p = 2(a_xx+a_yy+a_zz)`
+
+The fit includes material samples and spherical Dirichlet samples. For the
+pressure-only Cryer gate, `p_b=0`. It replaces near-boundary `LapPorePress`,
+not material `PorePress`.
+
+Static manufactured audit:
+
+- constant field remains zero-residual;
+- `u=r^2` near-boundary p95 error at `dp=0.008` drops from `13.81` to roundoff
+  when exact manufactured boundary values are supplied;
+- drained-like `R-r` p95 error drops from `121.32` to `5.23`;
+- fallback count is zero for the dp=0.008 reconstructed cloud.
+
+Pressure-only CPU Release result:
+
+- `dp=0.008`: `code=0`, `excluded=0`, `Kplastic=0`;
+- final center pressure `47.38 Pa`, FV `999.998 Pa`;
+- final volume mean `232.26 Pa`, FV `615.76 Pa`;
+- final surface shell mean `431.67 Pa`, FV `85.88 Pa`;
+- negative pressure and apparent flux reversal occurred;
+- final `PorePressRate` maxAbs was `9.37e6 Pa/s`.
+
+Decision:
+
+- no Cryer compression smoke was run;
+- C6 remains blocked;
+- GPU remains deferred;
+- next work should be a stabilization/limiting gate for the corrected
+  Laplacian rather than another shell bookkeeping or scalar flux correction.

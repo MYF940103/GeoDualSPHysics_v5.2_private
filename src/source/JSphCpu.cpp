@@ -2346,6 +2346,10 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   vector<unsigned> curvedshell7pop;
   vector<double> curvedshell7edge,curvedshell7volana,curvedshell7veff,curvedshell7psum,curvedshell7rsum;
   vector<double> curvedshell7pmean,curvedshell7rmean,curvedshell7flux,curvedshell7targetrate,curvedshell7currentrate,curvedshell7corrrate,curvedshell7lapcorr;
+  unsigned curvedlap8targets=0,curvedlap8corrected=0,curvedlap8fallback=0,curvedlap8materials=0,curvedlap8boundaries=0,curvedlap8condcount=0;
+  double curvedlap8condmean=0.,curvedlap8condmin=DBL_MAX,curvedlap8condmax=0.;
+  double curvedlap8lapmean=0.,curvedlap8lapmax=0.,curvedlap8replacedmean=0.,curvedlap8replacedmax=0.;
+  double curvedlap8support=0.,curvedlap8rthreshold=0.;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2473,6 +2477,36 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     vector<StCurvedBndHyd> curvedbnd;
     vector<StCurvedMlsFluxCorrection> curvedmlscorrections;
     double curvedmlsareaweight=0.;
+    const auto solve_mls10=[&](double a[10][10],double b[10],double x[10],double &cond)->bool{
+      double m[10][11];
+      for(unsigned i=0;i<10;i++){
+        for(unsigned j=0;j<10;j++)m[i][j]=a[i][j];
+        m[i][10]=b[i];
+        x[i]=0.;
+      }
+      double minpivot=DBL_MAX,maxpivot=0.;
+      for(unsigned k=0;k<10;k++){
+        unsigned ip=k;
+        double ap=fabs(m[k][k]);
+        for(unsigned i=k+1;i<10;i++){
+          const double ai=fabs(m[i][k]);
+          if(ai>ap){ ap=ai; ip=i; }
+        }
+        if(ap<=ALMOSTZERO)return(false);
+        if(ip!=k)for(unsigned j=k;j<11;j++)swap(m[k][j],m[ip][j]);
+        maxpivot=max(maxpivot,ap);
+        minpivot=min(minpivot,ap);
+        const double piv=m[k][k];
+        for(unsigned j=k;j<11;j++)m[k][j]/=piv;
+        for(unsigned i=0;i<10;i++)if(i!=k){
+          const double f=m[i][k];
+          if(f!=0.)for(unsigned j=k;j<11;j++)m[i][j]-=f*m[k][j];
+        }
+      }
+      cond=(minpivot>ALMOSTZERO? maxpivot/minpivot: DBL_MAX);
+      for(unsigned i=0;i<10;i++)x[i]=m[i][10];
+      return(true);
+    };
     if(CurvedDrainedBoundaryMode==4){
       const double bndtol=(CurvedDrainedBoundarySelectionTolerance>0.? CurvedDrainedBoundarySelectionTolerance: max(double(KernelH),double(Dp)));
       const double rbmin=max(0.,rtarget-bndtol);
@@ -2725,7 +2759,124 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       const double pval=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
 
-      if(CurvedDrainedBoundaryMode==6){
+      if(CurvedDrainedBoundaryMode==8){
+        // Boundary-aware corrected Laplacian prototype. Near the drained
+        // spherical surface, replace the material SPH LapPorePress with a
+        // local quadratic MLS recovery that includes Dirichlet samples on the
+        // physical sphere. Material pore pressure is never clamped.
+        curvedlap8targets++;
+        curvedlap8support=max(mindist,(CurvedDrainedCorrectedLapRadiusFactor>0.? CurvedDrainedCorrectedLapRadiusFactor*double(KernelH): double(KernelSize)));
+        curvedlap8rthreshold=CurvedDrainedCorrectedLapRMinFactor*rtarget;
+        if(r<curvedlap8rthreshold)continue;
+        if(curvedlap8support<=ALMOSTZERO){ curvedlap8fallback++; continue; }
+        const double support=curvedlap8support;
+        const double support2=support*support;
+        const double invsupport=1./support;
+        double ata[10][10];
+        double atb[10];
+        for(unsigned ia=0;ia<10;ia++){
+          atb[ia]=0.;
+          for(unsigned ib=0;ib<10;ib++)ata[ia][ib]=0.;
+        }
+        unsigned materials=0,boundaries=0;
+        const auto add_mls_sample=[&](const tdouble3 &ps,const double u,const double weight)->void{
+          if(weight<=0.)return;
+          const double sx=(ps.x-pos[p].x)*invsupport;
+          const double sy=(ps.y-pos[p].y)*invsupport;
+          const double sz=(ps.z-pos[p].z)*invsupport;
+          const double phi[10]={1.,sx,sy,sz,sx*sx,sy*sy,sz*sz,sx*sy,sx*sz,sy*sz};
+          for(unsigned ia=0;ia<10;ia++){
+            atb[ia]+=weight*phi[ia]*u;
+            for(unsigned ib=0;ib<10;ib++)ata[ia][ib]+=weight*phi[ia]*phi[ib];
+          }
+        };
+        for(unsigned p3=pini;p3<pini+n;p3++)if(CODE_IsFluid(code[p3]) && velrhop[p3].w>0.f){
+          if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p3]))!=CurvedDrainedBoundaryTargetMk)continue;
+          const double dx=pos[p3].x-pos[p].x;
+          const double dy=pos[p3].y-pos[p].y;
+          const double dz=pos[p3].z-pos[p].z;
+          const double rr2=dx*dx+dy*dy+dz*dz;
+          if(rr2>support2)continue;
+          const double q=max(0.,1.-sqrt(rr2)*invsupport);
+          if(q<=0.)continue;
+          const double z3=GetHydraulicElevation(pos[p3]);
+          const double u3=(CurvedDrainedBoundaryUseExcess? porepress[p3]-hydrostatic_linear(z3): porepress[p3]);
+          add_mls_sample(pos[p3],u3,q*q*q*q);
+          materials++;
+        }
+        tdouble3 t1;
+        if(fabs(normal.z)<0.9)t1=TDouble3(-normal.y,normal.x,0.);
+        else t1=TDouble3(0.,-normal.z,normal.y);
+        const double t1m=sqrt(t1.x*t1.x+t1.y*t1.y+t1.z*t1.z);
+        if(t1m>ALMOSTZERO){
+          t1=t1*(1./t1m);
+          const tdouble3 t2=TDouble3(
+            normal.y*t1.z-normal.z*t1.y,
+            normal.z*t1.x-normal.x*t1.z,
+            normal.x*t1.y-normal.y*t1.x);
+          const double tanstep=min(0.5*support,max(mindist,(Dp>0.? double(Dp): 0.5*double(KernelH))));
+          const unsigned nsurf=max(1u,CurvedDrainedCorrectedLapBoundarySamples);
+          for(unsigned is=0;is<nsurf;is++){
+            tdouble3 srel=normal*rtarget;
+            if(is>0){
+              const double ang=2.*pi*double(is-1)/double(max(1u,nsurf-1));
+              srel=srel + t1*(tanstep*cos(ang)) + t2*(tanstep*sin(ang));
+            }
+            const double srm=sqrt(srel.x*srel.x+srel.y*srel.y+srel.z*srel.z);
+            if(srm<=ALMOSTZERO)continue;
+            const tdouble3 sdir=srel*(1./srm);
+            const tdouble3 posb=CurvedDrainedBoundaryCenter + sdir*rtarget;
+            const double dx=posb.x-pos[p].x;
+            const double dy=posb.y-pos[p].y;
+            const double dz=posb.z-pos[p].z;
+            const double rr2=dx*dx+dy*dy+dz*dz;
+            if(rr2>support2)continue;
+            const double q=max(0.,1.-sqrt(rr2)*invsupport);
+            if(q<=0.)continue;
+            add_mls_sample(posb,CurvedDrainedBoundaryValue,CurvedDrainedCorrectedLapBoundaryWeight*q*q*q*q);
+            boundaries++;
+          }
+        }
+        curvedlap8materials+=materials;
+        curvedlap8boundaries+=boundaries;
+        const unsigned samples=materials+boundaries;
+        bool fallback=(samples<CurvedDrainedCorrectedLapMinSamples || samples<10);
+        double coeff[10],cond=DBL_MAX;
+        if(!fallback){
+          fallback=!solve_mls10(ata,atb,coeff,cond);
+          if(!fallback && cond>CurvedDrainedCorrectedLapConditionLimit)fallback=true;
+        }
+        if(fallback){
+          curvedlap8fallback++;
+          if(CurvedDrainedCorrectedLapFallbackMode==4){
+            const double gapr=max(mindist,rtarget-r);
+            const double lapgap=-shellareafactor*(pval-CurvedDrainedBoundaryValue)/gapr;
+            const double oldlap=double(lapporepress[p]);
+            lapporepress[p]=float(lapgap);
+            curvedaffected++;
+            maxabslapadd=max(maxabslapadd,fabs(lapgap-oldlap));
+            maxabsheadadd=max(maxabsheadadd,fabs(lapgap-oldlap)/rhog);
+          }
+          continue;
+        }
+        const double lap=2.*(coeff[4]+coeff[5]+coeff[6])/(support*support);
+        const double oldlap=double(lapporepress[p]);
+        lapporepress[p]=float(lap);
+        curvedaffected++;
+        curvedlap8corrected++;
+        curvedlap8condcount++;
+        curvedlap8condmean+=cond;
+        curvedlap8condmin=min(curvedlap8condmin,cond);
+        curvedlap8condmax=max(curvedlap8condmax,cond);
+        curvedlap8lapmean+=lap;
+        curvedlap8lapmax=max(curvedlap8lapmax,fabs(lap));
+        curvedlap8replacedmean+=fabs(lap-oldlap);
+        curvedlap8replacedmax=max(curvedlap8replacedmax,fabs(lap-oldlap));
+        maxabsdpwtop=max(maxabsdpwtop,fabs(pval-CurvedDrainedBoundaryValue));
+        maxabslapadd=max(maxabslapadd,fabs(lap-oldlap));
+        maxabsheadadd=max(maxabsheadadd,fabs(lap-oldlap)/rhog);
+      }
+      else if(CurvedDrainedBoundaryMode==6){
         // Radial-shell / FV-consistent drained prototype. The outer material
         // shell supplies a volume-averaged pressure and radius. The prescribed
         // spherical Dirichlet value defines du/dr at R, and the integrated
@@ -3140,6 +3291,20 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
             ,curvedshell7targetrate[k],curvedshell7currentrate[k],curvedshell7corrrate[k],curvedshell7lapcorr[k]);
         }
         Log->Print("CPU curved drained convention: mode 7 applies a conservative radial FV shell-average correction to LapPorePress; it does not clamp material pressure and it does not volume-count dummy boundary particles.");
+      }
+      if(CurvedDrainedBoundaryMode==8){
+        if(curvedlap8corrected)curvedlap8lapmean/=double(curvedlap8corrected);
+        if(curvedlap8corrected)curvedlap8replacedmean/=double(curvedlap8corrected);
+        if(curvedlap8condcount)curvedlap8condmean/=double(curvedlap8condcount);
+        if(curvedlap8condmin==DBL_MAX)curvedlap8condmin=0.;
+        Log->Printf("CPU curved drained corrected Laplacian: TimeStep=%g, targets=%u, corrected=%u, fallback=%u, material_samples=%u, boundary_samples=%u, average_material_samples=%g, average_boundary_samples=%g, support_radius=%g, r_min_factor=%g, r_threshold=%g, boundary_weight=%g, condition_limit=%g, cond_min=%g, cond_mean=%g, cond_max=%g, mean_laplacian=%g, max_abs_laplacian=%g, mean_abs_replaced_lap=%g, max_abs_replaced_lap=%g."
+          ,timestep,curvedlap8targets,curvedlap8corrected,curvedlap8fallback,curvedlap8materials,curvedlap8boundaries
+          ,(curvedlap8targets? double(curvedlap8materials)/double(curvedlap8targets): 0.)
+          ,(curvedlap8targets? double(curvedlap8boundaries)/double(curvedlap8targets): 0.)
+          ,curvedlap8support,CurvedDrainedCorrectedLapRMinFactor,curvedlap8rthreshold,CurvedDrainedCorrectedLapBoundaryWeight
+          ,CurvedDrainedCorrectedLapConditionLimit,curvedlap8condmin,curvedlap8condmean,curvedlap8condmax
+          ,curvedlap8lapmean,curvedlap8lapmax,curvedlap8replacedmean,curvedlap8replacedmax);
+        Log->Print("CPU curved drained convention: mode 8 replaces near-boundary material LapPorePress by a local quadratic MLS Laplacian with spherical Dirichlet samples; it does not clamp material pressure and it does not volume-count dummy boundary particles.");
       }
     }
   }

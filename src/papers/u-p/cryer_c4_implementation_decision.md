@@ -721,3 +721,40 @@ Decision after C5m:
 - the next source task should move toward a true corrected near-boundary SPH
   Laplacian/consistency operator, using the C5m shell balance as diagnostics;
 - GPU remains deferred.
+
+## C5n: Boundary-Aware Corrected Laplacian Prototype
+
+C5n is complete as a CPU-only source prototype and pressure-only diffusion gate
+under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5n_CorrectedLaplacian/`
+
+It adds `CurvedDrainedBoundaryMode=8` for the existing
+`PorePressureBoundaryOperator=3` curved drained path. Mode `8` uses a local
+quadratic MLS recovery near the spherical boundary and replaces the local
+`LapPorePress` by `2(a_xx+a_yy+a_zz)`. The fit includes material neighbors and
+spherical Dirichlet samples; for the pressure-only Cryer gate the boundary
+samples use `p_b=0`. It does not clamp material pressure, does not count dummy
+boundary volume, and remains CPU-only experimental.
+
+The manufactured static gate improved strongly. At `dp=0.008`, the near-boundary
+`u=r^2` p95 error dropped from about `13.81` for the material-only operator to
+roundoff with exact manufactured boundary values, and the drained-like `R-r`
+p95 error dropped from about `121.32` to `5.23`.
+
+The pressure-only dynamic FV gate failed. The `dp=0.008` CPU Release case
+completed with `code=0`, `excluded=0`, and `Kplastic=0`, but final center
+pressure was only `47.38 Pa` versus the FV reference `999.998 Pa`, final volume
+mean was `232.26 Pa` versus `615.76 Pa`, and final surface shell mean was
+`431.67 Pa` versus `85.88 Pa`. It developed negative pressure, apparent flux
+reversal, and a final `PorePressRate` maxAbs of `9.37e6 Pa/s`.
+
+Decision after C5n:
+
+- no Cryer compression smoke was run because the pressure-only FV gate failed;
+- C6 quantitative Figure 7B comparison remains blocked;
+- modes `6` and `7` remain diagnostic only and should not be extended as the
+  main route;
+- the next source task should stabilize the boundary-constrained corrected
+  Laplacian rather than add another global shell or flux correction;
+- GPU remains deferred.

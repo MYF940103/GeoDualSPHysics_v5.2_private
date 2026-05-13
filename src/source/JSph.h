@@ -215,7 +215,7 @@ protected:
   double CurvedDrainedBoundaryValue; ///<Prescribed curved drained boundary pressure/excess value [Pa].
   bool CurvedDrainedBoundaryUseExcess; ///<True: value is excess pressure; false: value is total pressure.
   double CurvedDrainedBoundaryThickness; ///<Interior shell thickness for curved drained boundary. If <=0, KernelH is used.
-  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction, 6:radial-shell flux correction, 7:conservative multi-shell radial exchange.
+  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction, 6:radial-shell flux correction, 7:conservative multi-shell radial exchange, 8:corrected MLS Laplacian.
   int CurvedDrainedBoundaryTargetMkBound; ///<Target mkbound for mode 4 boundary-particle hydraulic state. -1:all boundary particles passing sphere selection.
   bool CurvedDrainedBoundaryUseBoundaryParticles; ///<Enable selected boundary-particle participation for curved drained mode 4.
   double CurvedDrainedBoundarySelectionTolerance; ///<Radius tolerance for selecting curved drained boundary particles. If <=0, KernelH is used.
@@ -231,6 +231,14 @@ protected:
   int CurvedDrainedShellMode; ///<Mode 7 shell layout. 0:auto count, 1:fixed CurvedDrainedShellCount.
   int CurvedDrainedShellCorrectionMode; ///<Mode 7 correction. 0:replace diffusion rate, 1:shell-average correction.
   bool CurvedDrainedShellDiagnostics; ///<Print per-step mode 7 shell diagnostics.
+  double CurvedDrainedCorrectedLapRadiusFactor; ///<Support radius multiplier for mode 8 quadratic MLS Laplacian. If <=0, KernelSize is used.
+  double CurvedDrainedCorrectedLapRMinFactor; ///<Minimum normalized radius where mode 8 replaces LapPorePress.
+  unsigned CurvedDrainedCorrectedLapBoundarySamples; ///<Number of tangential boundary samples for mode 8, including the projected point.
+  unsigned CurvedDrainedCorrectedLapMinSamples; ///<Minimum MLS samples for mode 8 before fallback.
+  double CurvedDrainedCorrectedLapConditionLimit; ///<Maximum accepted local condition estimate for mode 8.
+  double CurvedDrainedCorrectedLapBoundaryWeight; ///<Relative weight for mode 8 Dirichlet boundary samples.
+  int CurvedDrainedCorrectedLapFallbackMode; ///<Fallback for mode 8. 0:keep existing material LapPorePress, 4:mode-4-like local gap.
+  bool CurvedDrainedCorrectedLapDiagnostics; ///<Print per-step mode 8 corrected Laplacian diagnostics.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.

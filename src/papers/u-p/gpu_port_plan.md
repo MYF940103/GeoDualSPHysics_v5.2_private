@@ -1375,3 +1375,26 @@ center/volume decay.
 GPU porting remains deferred. Mode `7` is covered by the same curved drained
 GPU hard error as modes `3` to `6`; porting it before the pressure-only FV
 radial diffusion gate passes would only duplicate a failing diagnostic route.
+
+## Cryer C5n Corrected Laplacian Prototype
+
+C5n adds `CurvedDrainedBoundaryMode=8` as a CPU-only experimental subroute of
+`PorePressureBoundaryOperator=3`. Mode `8` is a boundary-aware corrected
+quadratic MLS Laplacian near the drained sphere. It replaces near-boundary
+`LapPorePress`, keeps the prescribed drained value `p_b=0` in the pressure-only
+Cryer gate, does not clamp material pore pressure, and does not count dummy
+boundary volumes.
+
+The static manufactured audit improved the near-boundary operator strongly:
+for `dp=0.008`, `u=r^2` p95 error dropped from about `13.81` to roundoff when
+the manufactured boundary value was consistent, and the drained-like `R-r`
+field p95 error dropped from about `121.32` to `5.23`. The dynamic
+pressure-only gate still failed: the `dp=0.008` CPU Release case completed
+with `code=0`, `excluded=0`, and `Kplastic=0`, but it produced negative
+pressure, flux reversal, and a final `PorePressRate` maxAbs of `9.37e6 Pa/s`.
+No Cryer compression smoke was run.
+
+GPU porting remains deferred. Mode `8` is protected by the same
+`PorePressureBoundaryOperator=3` GPU hard error. A GPU port should not start
+until a CPU corrected-boundary route passes the pressure-only FV radial
+diffusion gate without flux reversal or over-drain.
