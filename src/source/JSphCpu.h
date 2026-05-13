@@ -154,6 +154,7 @@ protected:
   float* MccSubstepFailureCountc;
   float* MccAdmissibilityFailureCountc;
   float* MccFallbackUsedc;
+  float* MccSubstepTriggerReasonc;
   //===============  
   double* PorePressc;     ///<Passive pore pressure field for CPU hydromechanical prototype.
   float* PorePressRatec;  ///<Passive pore pressure rate field for CPU hydromechanical prototype.
@@ -256,7 +257,7 @@ protected:
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,double *porepressghost=NULL,double *excessporepressghost=NULL,float *porepressureboundarymode=NULL,float *lapporepressghost=NULL,float *lapzghost=NULL,float *divvelcorr=NULL,float *lapporepresscorr=NULL,float *lapzcorr=NULL,float *mccpc=NULL,float *mccvoidratio=NULL,float *mccplasticvolstrain=NULL,float *mcceqplasticstrain=NULL,float *mccyieldflag=NULL,float *mccplasticmultiplier=NULL,float *mccreturnstatus=NULL,float *mccreturniterations=NULL,float *mccyieldresidual=NULL,float *mccsubstepcount=NULL,float *mccsubstepfailurecount=NULL,float *mccadmissibilityfailurecount=NULL,float *mccfallbackused=NULL);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress=NULL,float *porepressrate=NULL,float *divvel=NULL,float *lapporepress=NULL,float *lapz=NULL,tfloat3 *porepressureace=NULL,tfloat3 *porepressureacediff=NULL,double *porepressghost=NULL,double *excessporepressghost=NULL,float *porepressureboundarymode=NULL,float *lapporepressghost=NULL,float *lapzghost=NULL,float *divvelcorr=NULL,float *lapporepresscorr=NULL,float *lapzcorr=NULL,float *mccpc=NULL,float *mccvoidratio=NULL,float *mccplasticvolstrain=NULL,float *mcceqplasticstrain=NULL,float *mccyieldflag=NULL,float *mccplasticmultiplier=NULL,float *mccreturnstatus=NULL,float *mccreturniterations=NULL,float *mccyieldresidual=NULL,float *mccsubstepcount=NULL,float *mccsubstepfailurecount=NULL,float *mccadmissibilityfailurecount=NULL,float *mccfallbackused=NULL,float *mccsubsteptriggerreason=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);

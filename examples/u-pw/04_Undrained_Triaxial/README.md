@@ -1235,3 +1235,39 @@ diagnostics. The main conclusion is:
 M3f is recommended before clean MCC validation. M4 can proceed only as planning
 unless the reduced-route limitations are explicitly accepted. Full feedback and
 GPU remain deferred.
+
+## M3f MCC Return/Staging Refinement
+
+M3f is retained under:
+
+`experiments/M3f_MCCReturnStagingRefinement/`
+
+It adds an opt-in improved MCC adaptive substepping diagnostic:
+
+- `MccMinSubsteps`;
+- `MccSubstepYieldDistanceThreshold`;
+- `MccSubstepTriggerReason` output;
+- `MccSubstepMode=2` can now trigger from minimum substeps, strain-increment
+  threshold, and normalized trial yield-distance threshold.
+
+Defaults remain unchanged. Full pore-pressure feedback stays off in all M3f
+cases, and GPU MCC remains unsupported.
+
+Seven CPU Release diagnostic cases were run. All finish `code=0`,
+`excluded=0`, and `DtMin=0`, but none satisfies the strict clean gate because
+every candidate still has at least one saved frame with negative MCC return
+status.
+
+Main M3f outcomes:
+
+- transient failures remain local to edge/platen-adjacent regions;
+- smoother platen ramping does not clean the route;
+- improved adaptive substepping is implemented but does not improve the tested
+  thresholds;
+- quarter-speed adaptive has the fewest transient failures, but still has
+  saved-frame `ReturnStatus=-3` episodes;
+- reaction, p'-q, MCC state histories, and pore pressure remain bounded;
+- M3g should not be claimed as clean validation unless a later return/staging
+  refinement removes all transient negative statuses.
+
+Full pore-pressure feedback and GPU remain deferred.

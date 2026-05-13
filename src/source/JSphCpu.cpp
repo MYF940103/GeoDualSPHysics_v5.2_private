@@ -94,7 +94,7 @@ void JSphCpu::InitVars(){
   //====== mdbr
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
-  MccPcc=NULL; MccVoidRatioc=NULL; MccPlasticVolStrainc=NULL; MccEqPlasticStrainc=NULL; MccYieldFlagc=NULL; MccPlasticMultiplierc=NULL; MccReturnStatusc=NULL; MccReturnIterationsc=NULL; MccYieldResidualc=NULL; MccSubstepCountc=NULL; MccSubstepFailureCountc=NULL; MccAdmissibilityFailureCountc=NULL; MccFallbackUsedc=NULL;
+  MccPcc=NULL; MccVoidRatioc=NULL; MccPlasticVolStrainc=NULL; MccEqPlasticStrainc=NULL; MccYieldFlagc=NULL; MccPlasticMultiplierc=NULL; MccReturnStatusc=NULL; MccReturnIterationsc=NULL; MccYieldResidualc=NULL; MccSubstepCountc=NULL; MccSubstepFailureCountc=NULL; MccAdmissibilityFailureCountc=NULL; MccFallbackUsedc=NULL; MccSubstepTriggerReasonc=NULL;
   ArtificialStressc=NULL;
   //======
   PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureFeedbackUsedAcec=NULL;
@@ -176,6 +176,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   delete[] MccSubstepFailureCountc; MccSubstepFailureCountc=NULL;
   delete[] MccAdmissibilityFailureCountc; MccAdmissibilityFailureCountc=NULL;
   delete[] MccFallbackUsedc; MccFallbackUsedc=NULL;
+  delete[] MccSubstepTriggerReasonc; MccSubstepTriggerReasonc=NULL;
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
@@ -291,6 +292,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *mccsubstepfailurecount=SaveArrayCpu(Np,MccSubstepFailureCountc);
   float        *mccadmissibilityfailurecount=SaveArrayCpu(Np,MccAdmissibilityFailureCountc);
   float        *mccfallbackused=SaveArrayCpu(Np,MccFallbackUsedc);
+  float        *mccsubsteptriggerreason=SaveArrayCpu(Np,MccSubstepTriggerReasonc);
   double       *porepress =SaveArrayCpu(Np,PorePressc);
   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
   float        *divvel    =SaveArrayCpu(Np,DivVelc);
@@ -338,6 +340,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   delete[] MccSubstepFailureCountc; MccSubstepFailureCountc=NULL;
   delete[] MccAdmissibilityFailureCountc; MccAdmissibilityFailureCountc=NULL;
   delete[] MccFallbackUsedc; MccFallbackUsedc=NULL;
+  delete[] MccSubstepTriggerReasonc; MccSubstepTriggerReasonc=NULL;
   ArraysCpu->Free(PorePressc);
   ArraysCpu->Free(PorePressRatec);
   ArraysCpu->Free(DivVelc);
@@ -390,6 +393,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
     if(mccsubstepfailurecount)MccSubstepFailureCountc = new float[npnew];
     if(mccadmissibilityfailurecount)MccAdmissibilityFailureCountc = new float[npnew];
     if(mccfallbackused)MccFallbackUsedc = new float[npnew];
+    if(mccsubsteptriggerreason)MccSubstepTriggerReasonc = new float[npnew];
   }
   catch(const std::bad_alloc){
     Run_Exceptioon("Could not allocate the requested MCC state memory.");
@@ -441,6 +445,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,mccsubstepfailurecount,MccSubstepFailureCountc);
   RestoreArrayCpu(Np,mccadmissibilityfailurecount,MccAdmissibilityFailureCountc);
   RestoreArrayCpu(Np,mccfallbackused,MccFallbackUsedc);
+  RestoreArrayCpu(Np,mccsubsteptriggerreason,MccSubstepTriggerReasonc);
   RestoreArrayCpu(Np,porepress,PorePressc);
   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
   RestoreArrayCpu(Np,divvel,DivVelc);
@@ -461,7 +466,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   //-Updates values.
   CpuParticlesSize=npnew;
   MemCpuParticles=ArraysCpu->GetAllocMemoryCpu();
-  if(MccPcc)MemCpuParticles+=sizeof(float)*13*CpuParticlesSize;
+  if(MccPcc)MemCpuParticles+=sizeof(float)*14*CpuParticlesSize;
 }
 
 //==============================================================================
@@ -517,7 +522,8 @@ void JSphCpu::ReserveBasicArraysCpu(){
       MccSubstepFailureCountc=new float[CpuParticlesSize];
       MccAdmissibilityFailureCountc=new float[CpuParticlesSize];
       MccFallbackUsedc=new float[CpuParticlesSize];
-      MemCpuParticles+=sizeof(float)*13*CpuParticlesSize;
+      MccSubstepTriggerReasonc=new float[CpuParticlesSize];
+      MemCpuParticles+=sizeof(float)*14*CpuParticlesSize;
     }
     catch(const std::bad_alloc){
       Run_Exceptioon("Could not allocate the requested MCC state memory.");
@@ -586,7 +592,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,float *mccpc,float *mccvoidratio,float *mccplasticvolstrain,float *mcceqplasticstrain,float *mccyieldflag,float *mccplasticmultiplier,float *mccreturnstatus,float *mccreturniterations,float *mccyieldresidual,float *mccsubstepcount,float *mccsubstepfailurecount,float *mccadmissibilityfailurecount,float *mccfallbackused)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,float *mccpc,float *mccvoidratio,float *mccplasticvolstrain,float *mcceqplasticstrain,float *mccyieldflag,float *mccplasticmultiplier,float *mccreturnstatus,float *mccreturniterations,float *mccyieldresidual,float *mccsubstepcount,float *mccsubstepfailurecount,float *mccadmissibilityfailurecount,float *mccfallbackused,float *mccsubsteptriggerreason)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -702,6 +708,9 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(mccfallbackused){
       for (unsigned p=0;p<n;p++)mccfallbackused[p]=MccFallbackUsedc[p+pini];
   }
+  if(mccsubsteptriggerreason){
+      for (unsigned p=0;p<n;p++)mccsubsteptriggerreason[p]=MccSubstepTriggerReasonc[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -752,6 +761,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(mccsubstepfailurecount)mccsubstepfailurecount[pdel]=mccsubstepfailurecount[p];
         if(mccadmissibilityfailurecount)mccadmissibilityfailurecount[pdel]=mccadmissibilityfailurecount[p];
         if(mccfallbackused)mccfallbackused[pdel]=mccfallbackused[p];
+        if(mccsubsteptriggerreason)mccsubsteptriggerreason[pdel]=mccsubsteptriggerreason[p];
         //====
         code2[pdel]=code2[p];
       }
@@ -6073,7 +6083,7 @@ struct StMccCpuState{
 struct StMccCpuUpdateDiag{
   int yieldflag,status,iters;
   double residual,dl;
-  unsigned substeps,failures,admissfails,fallback;
+  unsigned substeps,failures,admissfails,fallback,trigger;
 };
 
 static bool MccCpuFiniteTensor(const StMccCpuTensor &s){
@@ -6106,6 +6116,15 @@ static double MccCpuApproxStrainIncrement(const StSoilCte &soilcte,const StMccCp
   const double ev=(soilcte.ModulusK>0.f? fabs(dp)/double(soilcte.ModulusK): 0.);
   const double es=(soilcte.ModulusG>0.f? fabs(dq)/(3.*double(soilcte.ModulusG)): 0.);
   return(sqrt(ev*ev+es*es));
+}
+
+static double MccCpuNormalizedYieldDistance(const StSoilCte &soilcte,const StMccCpuTensor &trial,double pcold){
+  double ptr=0.,qtr=0.;
+  MccCpuInvariants(trial,ptr,qtr);
+  const double m=double(soilcte.MccM);
+  const double ftr=MccCpuYield(ptr,qtr,pcold,m);
+  const double fscale=MccCpuMax(qtr*qtr+m*m*ptr*MccCpuMax(pcold,ptr),1.);
+  return(MccCpuMax(0.,ftr/fscale));
 }
 
 static bool MccCpuRunSubsteps(const StSoilCte &soilcte,const StMccCpuState &initial,const StMccCpuTensor &fulltrial
@@ -6152,12 +6171,12 @@ static void MccCpuReturnMappingRobust(const StSoilCte &soilcte,const StMccCpuTen
   ,double pcold,double eold,double epspvold,double epspeqold,StMccCpuTensor &signew
   ,double &pcnew,double &enew,double &epspvnew,double &epspeqnew,double &dlnew
   ,int &yieldflag,int &status,int &iters,double &residual
-  ,unsigned &substeps,unsigned &substepfails,unsigned &admissfails,unsigned &fallbackused)
+  ,unsigned &substeps,unsigned &substepfails,unsigned &admissfails,unsigned &fallbackused,unsigned &triggerreason)
 {
   StMccCpuState initial={sigold,pcold,eold,epspvold,epspeqold};
   StMccCpuState result=initial;
-  StMccCpuUpdateDiag diag={0,0,0,0.,0.,1,0,0,0};
-  substeps=1; substepfails=0; admissfails=0; fallbackused=0;
+  StMccCpuUpdateDiag diag={0,0,0,0.,0.,1,0,0,0,0};
+  substeps=1; substepfails=0; admissfails=0; fallbackused=0; triggerreason=0;
   if(!soilcte.MccSubstepping){
     const bool ok=MccCpuRunSubsteps(soilcte,initial,trial,1,result,diag);
     if(!ok && soilcte.MccAdmissibilityGuard)MccCpuAdmissibleState(soilcte,result,diag.dl,diag.admissfails);
@@ -6165,19 +6184,31 @@ static void MccCpuReturnMappingRobust(const StSoilCte &soilcte,const StMccCpuTen
   else{
     const unsigned maxsub=(soilcte.MccMaxSubsteps<1? 1u: soilcte.MccMaxSubsteps);
     unsigned firstsub=1;
-    if(soilcte.MccSubstepMode==0)firstsub=maxsub;
-    else if(soilcte.MccSubstepMode==2 && soilcte.MccSubstepStrainThreshold>0.f){
-      const double inc=MccCpuApproxStrainIncrement(soilcte,sigold,trial);
-      firstsub=(unsigned)ceil(inc/double(soilcte.MccSubstepStrainThreshold));
+    unsigned trigger=0;
+    if(soilcte.MccSubstepMode==0){ firstsub=maxsub; trigger=1; }
+    else if(soilcte.MccSubstepMode==2){
+      const unsigned minsub=(soilcte.MccMinSubsteps<1? 1u: soilcte.MccMinSubsteps);
+      if(minsub>firstsub){ firstsub=minsub; trigger=4; }
+      if(soilcte.MccSubstepStrainThreshold>0.f){
+        const double inc=MccCpuApproxStrainIncrement(soilcte,sigold,trial);
+        const unsigned nstrain=(unsigned)ceil(inc/double(soilcte.MccSubstepStrainThreshold));
+        if(nstrain>firstsub){ firstsub=nstrain; trigger=2; }
+      }
+      if(soilcte.MccSubstepYieldDistanceThreshold>0.f){
+        const double ydist=MccCpuNormalizedYieldDistance(soilcte,trial,pcold);
+        const unsigned nyield=(unsigned)ceil(ydist/double(soilcte.MccSubstepYieldDistanceThreshold));
+        if(nyield>firstsub){ firstsub=nyield; trigger=3; }
+      }
       if(firstsub<1)firstsub=1;
       if(firstsub>maxsub)firstsub=maxsub;
     }
+    diag.trigger=trigger;
     bool done=false;
     unsigned nsub=firstsub;
     StMccCpuState lastgood=initial;
     StMccCpuUpdateDiag lastdiag=diag;
     while(!done){
-      StMccCpuUpdateDiag attempt={0,0,0,0.,0.,nsub,0,0,0};
+      StMccCpuUpdateDiag attempt={0,0,0,0.,0.,nsub,0,0,0,diag.trigger};
       StMccCpuState attemptout=initial;
       const bool ok=MccCpuRunSubsteps(soilcte,initial,trial,nsub,attemptout,attempt);
       diag.failures+=attempt.failures;
@@ -6200,6 +6231,7 @@ static void MccCpuReturnMappingRobust(const StSoilCte &soilcte,const StMccCpuTen
         if(soilcte.MccSubstepMode==0 || nsub>=maxsub)break;
         const unsigned nextsub=nsub*2u;
         nsub=(nextsub>maxsub? maxsub: nextsub);
+        diag.trigger=5;
       }
     }
     if(!done && soilcte.MccFailureFallback==2 && diag.substeps>1){
@@ -6224,6 +6256,7 @@ static void MccCpuReturnMappingRobust(const StSoilCte &soilcte,const StMccCpuTen
   substepfails=diag.failures;
   admissfails=diag.admissfails;
   fallbackused=diag.fallback;
+  triggerreason=diag.trigger;
 }
 
 //==============================================================================
@@ -6234,6 +6267,7 @@ static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCte
   ,float *mccpc,float *mcce,float *mccplasticvol,float *mcceqplastic,float *mccyield
   ,float *mccdl,float *mccstatus,float *mcciters,float *mccresidual
   ,float *mccsubstepcount,float *mccsubstepfailurecount,float *mccadmissibilityfailurecount,float *mccfallbackused
+  ,float *mccsubsteptriggerreason
   ,tsymatrix3f &signew,float &kplasnew)
 {
   if(soilcte.SoilConstitutiveModel==0){
@@ -6258,10 +6292,10 @@ static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCte
     double dlnew=0.;
     int yieldflag=0,status=0,iters=0;
     double residual=0.;
-    unsigned substeps=1,substepfails=0,admissfails=0,fallbackused=0;
+    unsigned substeps=1,substepfails=0,admissfails=0,fallbackused=0,triggerreason=0;
     MccCpuReturnMappingRobust(soilcte,sigcp,trialcp,double(*mccpc),double(*mcce),double(*mccplasticvol),double(*mcceqplastic)
       ,newcp,pcnew,enew,epspvnew,epspeqnew,dlnew,yieldflag,status,iters,residual
-      ,substeps,substepfails,admissfails,fallbackused);
+      ,substeps,substepfails,admissfails,fallbackused,triggerreason);
     signew=MccCpuToSigmac(newcp);
     kplasnew=(updateplastic? float(epspeqnew): kplasticold);
     if(updateplastic){
@@ -6278,6 +6312,7 @@ static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCte
       if(mccsubstepfailurecount)*mccsubstepfailurecount=float(substepfails);
       if(mccadmissibilityfailurecount)*mccadmissibilityfailurecount=float(admissfails);
       if(mccfallbackused)*mccfallbackused=float(fallbackused);
+      if(mccsubsteptriggerreason)*mccsubsteptriggerreason=float(triggerreason);
     }
     return;
   }
@@ -6315,7 +6350,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
   ,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
   ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew)const
 {
-  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc))
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc && MccSubstepTriggerReasonc))
     Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const double dt205=0.5*dt*dt;
   const tdouble3 gravity=ToTDouble3(GetMechanicalGravity(TimeStep));
@@ -6361,6 +6396,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
         ,(MccSubstepCountc? MccSubstepCountc+p: NULL),(MccSubstepFailureCountc? MccSubstepFailureCountc+p: NULL)
         ,(MccAdmissibilityFailureCountc? MccAdmissibilityFailureCountc+p: NULL),(MccFallbackUsedc? MccFallbackUsedc+p: NULL)
+        ,(MccSubstepTriggerReasonc? MccSubstepTriggerReasonc+p: NULL)
         ,signew,kplasnew);
       // 
       //-Restore data of inout particles.
@@ -6444,7 +6480,7 @@ void JSphCpu::ComputeVerlet(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticPre(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
-  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc))
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc && MccSubstepTriggerReasonc))
     Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const bool shift=false; //(ShiftingMode!=SHIFT_None); //-We strongly recommend running the shifting correction only for the corrector. If you want to re-enable shifting in the predictor, change the value here to "true".
   const double dt05=dt*.5;
@@ -6518,6 +6554,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
         ,(MccSubstepCountc? MccSubstepCountc+p: NULL),(MccSubstepFailureCountc? MccSubstepFailureCountc+p: NULL)
         ,(MccAdmissibilityFailureCountc? MccAdmissibilityFailureCountc+p: NULL),(MccFallbackUsedc? MccFallbackUsedc+p: NULL)
+        ,(MccSubstepTriggerReasonc? MccSubstepTriggerReasonc+p: NULL)
         ,signew,kplasnew);
       // 
       //-Restore data of inout particles.
@@ -6576,7 +6613,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorr(double dt){
   Timersc->TmStart(TMC_SuComputeStep);
-  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc))
+  if(SoilCte.SoilConstitutiveModel==3 && !(MccPcc && MccVoidRatioc && MccPlasticVolStrainc && MccEqPlasticStrainc && MccYieldFlagc && MccPlasticMultiplierc && MccReturnStatusc && MccReturnIterationsc && MccYieldResidualc && MccSubstepCountc && MccSubstepFailureCountc && MccAdmissibilityFailureCountc && MccFallbackUsedc && MccSubstepTriggerReasonc))
     Run_Exceptioon("MCC CPU stress update requires allocated MCC state arrays.");
   const bool shift=(Shifting!=NULL);
   const double dt05=dt*.5;
@@ -6629,6 +6666,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         ,(MccReturnStatusc? MccReturnStatusc+p: NULL),(MccReturnIterationsc? MccReturnIterationsc+p: NULL),(MccYieldResidualc? MccYieldResidualc+p: NULL)
         ,(MccSubstepCountc? MccSubstepCountc+p: NULL),(MccSubstepFailureCountc? MccSubstepFailureCountc+p: NULL)
         ,(MccAdmissibilityFailureCountc? MccAdmissibilityFailureCountc+p: NULL),(MccFallbackUsedc? MccFallbackUsedc+p: NULL)
+        ,(MccSubstepTriggerReasonc? MccSubstepTriggerReasonc+p: NULL)
         ,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.

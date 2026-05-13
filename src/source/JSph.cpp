@@ -4655,6 +4655,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.MccMaxSubsteps=1;
   SoilCte.MccSubstepMode=0;
   SoilCte.MccSubstepStrainThreshold=0.f;
+  SoilCte.MccSubstepYieldDistanceThreshold=0.f;
+  SoilCte.MccMinSubsteps=1;
   SoilCte.MccAdmissibilityGuard=false;
   SoilCte.MccFailureFallback=0;
   SoilCte.SaveMccState=false;
@@ -4694,6 +4696,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(solidNode->FirstChildElement("MccMaxSubsteps"))SoilCte.MccMaxSubsteps=unsigned(sxml->ReadElementInt(solidNode,"MccMaxSubsteps","value",false));
     if(solidNode->FirstChildElement("MccSubstepMode"))SoilCte.MccSubstepMode=unsigned(sxml->ReadElementInt(solidNode,"MccSubstepMode","value",false));
     if(solidNode->FirstChildElement("MccSubstepStrainThreshold"))SoilCte.MccSubstepStrainThreshold=sxml->ReadElementFloat(solidNode,"MccSubstepStrainThreshold","value",false);
+    if(solidNode->FirstChildElement("MccSubstepYieldDistanceThreshold"))SoilCte.MccSubstepYieldDistanceThreshold=sxml->ReadElementFloat(solidNode,"MccSubstepYieldDistanceThreshold","value",false);
+    if(solidNode->FirstChildElement("MccMinSubsteps"))SoilCte.MccMinSubsteps=unsigned(sxml->ReadElementInt(solidNode,"MccMinSubsteps","value",false));
     if(solidNode->FirstChildElement("MccAdmissibilityGuard")){
       const int v=sxml->ReadElementInt(solidNode,"MccAdmissibilityGuard","value",false);
       if(v!=0 && v!=1)Run_Exceptioon("MccAdmissibilityGuard must be 0 or 1.");
@@ -4804,12 +4808,15 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.MccTensionCutoff<0.f)Run_Exceptioon("MccTensionCutoff must be greater than or equal to zero.");
     if(SoilCte.MccReturnTolerance<=0.f)Run_Exceptioon("MccReturnTolerance must be greater than zero.");
     if(SoilCte.MccReturnMaxIter<1)Run_Exceptioon("MccReturnMaxIter must be greater than zero.");
-    if(SoilCte.MccSubstepMode>2)Run_Exceptioon("MccSubstepMode must be 0 (fixed), 1 (adaptive on failed return), or 2 (adaptive by strain-increment proxy).");
+    if(SoilCte.MccSubstepMode>2)Run_Exceptioon("MccSubstepMode must be 0 (fixed), 1 (adaptive on failed return), or 2 (adaptive by strain/yield-distance proxy).");
     if(SoilCte.MccMaxSubsteps<1)Run_Exceptioon("MccMaxSubsteps must be greater than zero.");
     if(SoilCte.MccMaxSubsteps>128)Run_Exceptioon("MccMaxSubsteps is capped at 128 for CPU MCC substepping diagnostics.");
+    if(SoilCte.MccMinSubsteps<1)Run_Exceptioon("MccMinSubsteps must be greater than zero.");
+    if(SoilCte.MccMinSubsteps>SoilCte.MccMaxSubsteps)Run_Exceptioon("MccMinSubsteps must be less than or equal to MccMaxSubsteps.");
     if(SoilCte.MccSubstepStrainThreshold<0.f)Run_Exceptioon("MccSubstepStrainThreshold must be greater than or equal to zero.");
+    if(SoilCte.MccSubstepYieldDistanceThreshold<0.f)Run_Exceptioon("MccSubstepYieldDistanceThreshold must be greater than or equal to zero.");
     if(SoilCte.MccFailureFallback>2)Run_Exceptioon("MccFailureFallback must be 0 (fail status), 1 (retry only), or 2 (keep last converged substep).");
-    if(!SoilCte.MccSubstepping && (SoilCte.MccMaxSubsteps!=1 || SoilCte.MccSubstepMode!=0 || SoilCte.MccSubstepStrainThreshold>0.f))
+    if(!SoilCte.MccSubstepping && (SoilCte.MccMaxSubsteps!=1 || SoilCte.MccMinSubsteps!=1 || SoilCte.MccSubstepMode!=0 || SoilCte.MccSubstepStrainThreshold>0.f || SoilCte.MccSubstepYieldDistanceThreshold>0.f))
       Log->PrintWarning("MCC substepping parameters are set but MccSubstepping=0, so old single-step behavior is retained.");
     if(!SoilCte.MccSubstepping && SoilCte.MccFailureFallback)
       Log->PrintWarning("MccFailureFallback is set but MccSubstepping=0, so fallback is inactive.");
@@ -4854,7 +4861,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
      if(ct.MccSubstepping){
        Log->Printf("  MCC substep mode: %u",ct.MccSubstepMode);
        Log->Printf("  MCC max substeps: %u",ct.MccMaxSubsteps);
+       Log->Printf("  MCC min substeps: %u",ct.MccMinSubsteps);
        Log->Printf("  MCC substep strain threshold: %g",ct.MccSubstepStrainThreshold);
+       Log->Printf("  MCC substep yield-distance threshold: %g",ct.MccSubstepYieldDistanceThreshold);
        Log->Printf("  MCC admissibility guard: %s",ct.MccAdmissibilityGuard? "enabled": "disabled");
        Log->Printf("  MCC failure fallback: %u",ct.MccFailureFallback);
      }

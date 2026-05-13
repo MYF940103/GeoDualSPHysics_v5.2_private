@@ -1230,3 +1230,57 @@ Main interpretation:
 The recommended technical path is M3f return/staging refinement if clean MCC
 validation is the goal. M4 drained/undrained comparison can be planned, but not
 claimed as strict validation yet. Full feedback and GPU remain deferred.
+
+## M3f MCC Return/Staging Refinement Notes
+
+M3f adds a targeted MCC-only return/staging diagnostic on top of M3d3. New
+opt-in controls and outputs are:
+
+- `MccMinSubsteps`;
+- `MccSubstepYieldDistanceThreshold`;
+- `MccSubstepTriggerReason`.
+
+`MccSubstepMode=2` now supports proactive local substep counts from a minimum
+substep count, approximate strain increment, and normalized trial yield
+distance. The new trigger reason is only diagnostic; default behavior remains
+unchanged.
+
+M3f cases:
+
+- original-rate mild baseline;
+- smoother ramp plus current adaptive retry;
+- original-rate improved adaptive mode 2;
+- smoother ramp plus improved mode 2;
+- half-speed adaptive reference;
+- half-speed ramp adaptive reference;
+- quarter-speed adaptive diagnostic.
+
+All CPU Release cases finish `code=0`, `excluded=0`, and `DtMin=0`. However,
+no clean validation candidate was obtained:
+
+```text
+baseline final:                  -3:8
+ramp current adaptive final:      -3:5|-1:4
+improved adaptive final:          -3:28|-1:19
+ramp improved adaptive final:     -3:21|-1:20
+half-speed adaptive final:        0:12|1:395
+half-speed ramp adaptive final:   0:12|1:395
+quarter-speed adaptive final:     0:23|1:384
+```
+
+The final frame can be clean at slower rates, but all cases have transient
+negative-status episodes in saved frames. Quarter-speed adaptive has the fewest
+bad frames, but still does not pass the clean gate.
+
+Failure interpretation:
+
+- failures are local, strongest near edge and bottom/platen-adjacent regions;
+- many early failures are admissibility/tension-style `-1`;
+- persistent original-rate failures include line-search `-3`;
+- smoother ramping does not solve the issue;
+- improved adaptive substepping did not clean the tested case.
+
+The next clean-validation step should improve the local admissible Newton path
+or platen-region staging. M3g can only be a caveated reporting package unless a
+new refinement removes all transient `-3`/`-5` episodes. Full feedback and GPU
+remain deferred.

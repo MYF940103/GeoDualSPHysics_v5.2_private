@@ -330,6 +330,8 @@ typedef struct{
   unsigned MccMaxSubsteps;      ///<Maximum local MCC substeps when substepping is enabled.
   unsigned MccSubstepMode;      ///<0:fixed, 1:adaptive on failed return, 2:adaptive by stress/strain increment proxy.
   float MccSubstepStrainThreshold; ///<Approximate strain-increment threshold for adaptive MCC substepping.
+  float MccSubstepYieldDistanceThreshold; ///<Normalised trial-yield-distance threshold for adaptive MCC substepping.
+  unsigned MccMinSubsteps;      ///<Minimum local MCC substeps when adaptive substepping is enabled.
   bool MccAdmissibilityGuard;   ///<Enables additional MCC admissibility checks on p', pc, e, and plastic multiplier.
   unsigned MccFailureFallback;  ///<0:fail status, 1:retry only, 2:keep last converged substep with explicit status.
   bool SaveMccState;            ///<Save/output MCC state arrays.

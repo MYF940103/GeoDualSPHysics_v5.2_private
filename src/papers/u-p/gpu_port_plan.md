@@ -2147,3 +2147,24 @@ The consolidated MCC route is CPU-only, feedback-off, and reduced. GPU MCC
 should remain deferred until the CPU return/staging issue is clean and a GPU
 MCC state/update/restart design exists. Full pore-pressure feedback also
 remains deferred.
+
+## M3f MCC Return/Staging GPU Status
+
+M3f changes shared CPU/parser/output code for MCC diagnostics but does not add
+GPU MCC support. The GPU policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+New M3f CPU-only MCC diagnostics:
+
+- `MccMinSubsteps`;
+- `MccSubstepYieldDistanceThreshold`;
+- `MccSubstepTriggerReason`.
+
+The M3f CPU cases show that the mild MCC return/staging route is still not
+clean: all tested candidates retain transient negative return-status episodes.
+GPU MCC should remain deferred until the CPU route has a clean no-fallback
+candidate and a device-side MCC state/update/restart design. Full
+pore-pressure feedback remains deferred as well.

@@ -1046,6 +1046,8 @@ the CPU return mapping.
 <MccMaxSubsteps value="1" />
 <MccSubstepMode value="0" />
 <MccSubstepStrainThreshold value="0" />
+<MccSubstepYieldDistanceThreshold value="0" />
+<MccMinSubsteps value="1" />
 <MccAdmissibilityGuard value="0" />
 <MccFailureFallback value="0" />
 <SaveMccState value="1" />
@@ -1077,8 +1079,12 @@ single-step behavior.
 - `MccSubstepMode=1`: adaptive retry on failed return, up to
   `MccMaxSubsteps`.
 - `MccSubstepMode=2`: adaptive count from an approximate trial-increment
+  threshold and, in M3f, an optional normalized trial yield-distance
   threshold.
+- `MccMinSubsteps`: minimum local MCC substeps used by mode `2`; default `1`.
 - `MccSubstepStrainThreshold`: optional threshold for mode `2`.
+- `MccSubstepYieldDistanceThreshold`: optional normalized trial yield-distance
+  threshold for mode `2`; `0` disables this trigger.
 - `MccAdmissibilityGuard=0/1`: check finite stress/state, positive admissible
   `p'`, positive `pc`, admissible void ratio, and non-negative plastic
   multiplier.
@@ -1102,6 +1108,16 @@ single-step behavior.
 - `MccSubstepFailureCount`;
 - `MccAdmissibilityFailureCount`;
 - `MccFallbackUsed`.
+- `MccSubstepTriggerReason`.
+
+`MccSubstepTriggerReason` values:
+
+- `0`: single-step/no proactive trigger;
+- `1`: fixed substepping;
+- `2`: strain-increment threshold;
+- `3`: trial yield-distance threshold;
+- `4`: minimum substep count;
+- `5`: retry after failed return.
 
 Current stress convention remains:
 
@@ -1118,6 +1134,15 @@ M3c status:
 - GPU Release build passes, but model `3` remains GPU-hard-error;
 - feedback-off explicit-platen smokes pass for high-pc elastic-like MCC and
   mild-yield MCC;
+- full pore-pressure feedback and GPU MCC remain deferred.
+
+M3f status:
+
+- improved adaptive substepping diagnostics are implemented;
+- default behavior remains unchanged;
+- M3f CPU cases remain solver-stable (`code=0`, `excluded=0`, `DtMin=0`);
+- no clean mild-MCC candidate was obtained because all routes retain transient
+  negative return-status episodes;
 - full pore-pressure feedback and GPU MCC remain deferred.
 
 Return-status codes in `MccReturnStatus`:
