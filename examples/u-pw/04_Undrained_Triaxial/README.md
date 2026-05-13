@@ -371,3 +371,49 @@ pressure-rate level is far above the feedback-off reference, and a gentle axial
 loading smoke after the stabilized confinement stage reintroduces center-core
 reversal. T5 DP and T6 MCC remain deferred. The next step should audit the
 feedback formulation itself before further triaxial validation.
+
+## T4g Feedback Formulation Audit
+
+T4g is retained under:
+
+`experiments/T4g_FeedbackFormulationAudit/`
+
+It adds CPU-only opt-in class filtering for the pore-pressure feedback
+acceleration:
+
+- `PorePressureFeedbackUseClassFilter`;
+- `PorePressureFeedbackExcludeCaps`;
+- `PorePressureFeedbackExcludeEdges`;
+- `PorePressureFeedbackExcludeConfinementTargets`;
+- `PorePressureFeedbackInteriorOnly`.
+
+The defaults preserve the previous feedback behavior. Non-default class
+filtering is treated as a CPU diagnostic path; GPU hard-errors rather than
+silently ignoring the filter.
+
+The formulation audit finds no obvious direct double counting: the material
+stress tensor is treated as a skeleton/effective-stress quantity, and feedback
+operator `1` supplies the intended `-grad(p_w)/rho` coupling. Static
+manufactured tests show that operator `1` is the better physical candidate:
+uniform pressure gives near-zero acceleration, and a linear pressure field
+produces the expected down-gradient direction. Operator `0` creates a nonzero
+free-surface response even under uniform pressure, so it is not the preferred
+internal pore-pressure feedback operator.
+
+CPU Release confinement-only cases remain diagnostic, not validation-ready:
+
+| Case | Result | Key observation |
+| --- | --- | --- |
+| feedback off | `code=0`, `excluded=0`, `DtMin=0` | stable reference, max `PorePressRate=2.11e7 Pa/s` |
+| operator 1 unfiltered | `code=0`, `excluded=164`, `DtMin=256` | reproduces T4e/T4f full-feedback instability |
+| operator 0 unfiltered | `code=0`, `excluded=0`, `DtMin=43` | avoids exclusion but still reverses |
+| operator 1 interior-only | `code=0`, `excluded=0`, `DtMin=0` | removes the burst but still reverses and reaches `4.79e10 Pa/s` |
+| operator 0 interior-only | `code=0`, `excluded=0`, `DtMin=0` | also reverses, with poorer physical consistency |
+| operator 1 total-pressure interior-only | `code=0`, `excluded=0`, `DtMin=0` | identical to excess mode for `HydraulicElevationSource=0` |
+
+Class filtering proves that cap/edge/lateral confinement feedback is a major
+amplifier: it removes exclusions and DtMin bursts for operator `1`. It does not
+pass the confinement-only gate because pressure reversal and large
+`PorePressRate` excursions remain. Axial loading is therefore still not
+restored, and T5 DP / T6 MCC remain deferred. The next step should be a narrow
+T4h feedback formulation patch, not another loading schedule sweep.

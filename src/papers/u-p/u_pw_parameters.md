@@ -512,6 +512,11 @@ Status after C5q:
 | `PorePressureFeedbackLimiterMode` | `0..3` | `0` | `0`: none, `1`: absolute cap, `2`: ratio cap, `3`: absolute plus ratio cap. | Experimental |
 | `PorePressureFeedbackMaxAccel` | float, `>=0` | `0` | Absolute feedback acceleration cap in `m/s2`; disabled when `<=0`. | Experimental |
 | `PorePressureFeedbackMaxAccelRatio` | float, `>=0` | `0` | Cap relative to the current non-feedback/confining acceleration reference; disabled when `<=0`. | Experimental |
+| `PorePressureFeedbackUseClassFilter` | `0/1` | `0` | CPU-only triaxial diagnostic filter for applying feedback by cylinder class. Requires `ConfiningStressGeometry=1`. | Experimental |
+| `PorePressureFeedbackExcludeCaps` | `0/1` | `0` | With class filter, skip top/bottom cap classes. | Experimental |
+| `PorePressureFeedbackExcludeEdges` | `0/1` | `0` | With class filter, skip cylinder edge-ring class. | Experimental |
+| `PorePressureFeedbackExcludeConfinementTargets` | `0/1` | `0` | With class filter and lateral confinement selector, skip selected lateral confinement targets. | Experimental |
+| `PorePressureFeedbackInteriorOnly` | `0/1` | `0` | With class filter, apply feedback only to cylinder interior class. | Experimental |
 
 Recommended for Terzaghi/self-weight tests:
 
@@ -555,10 +560,27 @@ with full feedback scale `1`, but it does not yet provide validation-quality
 triaxial dynamics: local negative pressure remains and axial loading still
 reintroduces center-core reversal.
 
+For T4g-style formulation diagnostics, feedback can also be restricted by
+cylinder class without changing the PR pressure update:
+
+```xml
+<parameter key="PorePressureFeedbackUseClassFilter" value="1" />
+<parameter key="PorePressureFeedbackInteriorOnly" value="1" />
+```
+
+This is a CPU-only diagnostic path. T4g showed that class filtering removes the
+unfiltered full-feedback exclusions and DtMin burst, but it still does not pass
+the selected-confinement gate: pressure reversal remains and max
+`PorePressRate` is still about `4.79e10 Pa/s` for the best interior-only
+operator-1 case. The filter is not a validation setting.
+
 Rationale:
 
 - `Mode=1` avoids applying mechanical feedback from the hydrostatic baseline.
 - `Operator=1` avoids the large missing-neighbor boundary force observed with material-only symmetric feedback under constant excess pressure.
+- T4g manufactured tests confirm that operator 1 is constant-pressure
+  consistent on the retained triaxial cloud, while operator 0 generates a
+  nonzero surface response under uniform pressure.
 
 Current operators:
 

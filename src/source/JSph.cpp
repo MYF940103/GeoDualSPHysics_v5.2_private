@@ -256,6 +256,11 @@ void JSph::InitVars(){
   PorePressureFeedbackRelaxation=0.;
   PorePressureFeedbackMaxAccel=0.;
   PorePressureFeedbackMaxAccelRatio=0.;
+  PorePressureFeedbackUseClassFilter=false;
+  PorePressureFeedbackExcludeCaps=false;
+  PorePressureFeedbackExcludeEdges=false;
+  PorePressureFeedbackExcludeConfinementTargets=false;
+  PorePressureFeedbackInteriorOnly=false;
   PorePressureShepard=false;
   PorePressureShepardInterval=20;
   PorePressureShepardMode=0;
@@ -313,6 +318,7 @@ void JSph::InitVars(){
   ConfiningStressDiagLastPrintStep=-1;
   PorePressureFeedbackDiagFactor=0.;
   PorePressureFeedbackDiagAppliedCount=0;
+  PorePressureFeedbackDiagSkippedClassCount=0;
   PorePressureFeedbackDiagLimitedCount=0;
   PorePressureFeedbackDiagRelaxedCount=0;
   PorePressureFeedbackDiagRawMax=0.;
@@ -1031,6 +1037,31 @@ void JSph::LoadConfigParameters(const JXml *xml){
   PorePressureFeedbackRelaxation=eparms.GetValueDouble("PorePressureFeedbackRelaxation",true,0.);
   PorePressureFeedbackMaxAccel=eparms.GetValueDouble("PorePressureFeedbackMaxAccel",true,0.);
   PorePressureFeedbackMaxAccelRatio=eparms.GetValueDouble("PorePressureFeedbackMaxAccelRatio",true,0.);
+  switch(eparms.GetValueInt("PorePressureFeedbackUseClassFilter",true,0)){
+    case 0:  PorePressureFeedbackUseClassFilter=false;  break;
+    case 1:  PorePressureFeedbackUseClassFilter=true;   break;
+    default: Run_Exceptioon("PorePressureFeedbackUseClassFilter mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureFeedbackExcludeCaps",true,0)){
+    case 0:  PorePressureFeedbackExcludeCaps=false;  break;
+    case 1:  PorePressureFeedbackExcludeCaps=true;   break;
+    default: Run_Exceptioon("PorePressureFeedbackExcludeCaps mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureFeedbackExcludeEdges",true,0)){
+    case 0:  PorePressureFeedbackExcludeEdges=false;  break;
+    case 1:  PorePressureFeedbackExcludeEdges=true;   break;
+    default: Run_Exceptioon("PorePressureFeedbackExcludeEdges mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureFeedbackExcludeConfinementTargets",true,0)){
+    case 0:  PorePressureFeedbackExcludeConfinementTargets=false;  break;
+    case 1:  PorePressureFeedbackExcludeConfinementTargets=true;   break;
+    default: Run_Exceptioon("PorePressureFeedbackExcludeConfinementTargets mode is not valid.");
+  }
+  switch(eparms.GetValueInt("PorePressureFeedbackInteriorOnly",true,0)){
+    case 0:  PorePressureFeedbackInteriorOnly=false;  break;
+    case 1:  PorePressureFeedbackInteriorOnly=true;   break;
+    default: Run_Exceptioon("PorePressureFeedbackInteriorOnly mode is not valid.");
+  }
   switch(eparms.GetValueInt("PorePressureShepard",true,0)){
     case 0:  PorePressureShepard=false;  break;
     case 1:  PorePressureShepard=true;   break;
@@ -1141,6 +1172,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Log->PrintWarning("PorePressureFeedbackLimiterMode=2 is enabled but PorePressureFeedbackMaxAccelRatio<=0. The ratio cap will have no effect.");
   if(PorePressureFeedbackLimiterMode==3 && PorePressureFeedbackMaxAccel<=0. && PorePressureFeedbackMaxAccelRatio<=0.)
     Log->PrintWarning("PorePressureFeedbackLimiterMode=3 is enabled but both cap values are disabled.");
+  if(PorePressureFeedbackUseClassFilter && ConfiningStressGeometry!=1)
+    Run_Exceptioon("PorePressureFeedbackUseClassFilter=1 requires ConfiningStressGeometry=1.");
+  if(PorePressureFeedbackUseClassFilter && !PorePressureFeedback)
+    Log->PrintWarning("Pore-pressure feedback class filter is enabled but PorePressureFeedback=0. The filter will have no force effect.");
+  if(PorePressureFeedbackExcludeConfinementTargets && !ConfiningStressUseLateralSelector)
+    Run_Exceptioon("PorePressureFeedbackExcludeConfinementTargets=1 currently requires ConfiningStressUseLateralSelector=1 so selected lateral confinement targets are well-defined.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(!HydraulicElevationSource && !Cpu)
@@ -2238,6 +2275,13 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureFeedbackRelaxation",PorePressureFeedbackRelaxation));
     Log->Print(fun::VarStr("  PorePressureFeedbackMaxAccel",PorePressureFeedbackMaxAccel));
     Log->Print(fun::VarStr("  PorePressureFeedbackMaxAccelRatio",PorePressureFeedbackMaxAccelRatio));
+    Log->Print(fun::VarStr("  PorePressureFeedbackUseClassFilter",PorePressureFeedbackUseClassFilter));
+    if(PorePressureFeedbackUseClassFilter){
+      Log->Print(fun::VarStr("  PorePressureFeedbackExcludeCaps",PorePressureFeedbackExcludeCaps));
+      Log->Print(fun::VarStr("  PorePressureFeedbackExcludeEdges",PorePressureFeedbackExcludeEdges));
+      Log->Print(fun::VarStr("  PorePressureFeedbackExcludeConfinementTargets",PorePressureFeedbackExcludeConfinementTargets));
+      Log->Print(fun::VarStr("  PorePressureFeedbackInteriorOnly",PorePressureFeedbackInteriorOnly));
+    }
     Log->Print(fun::VarStr("  PorePressureShepard",PorePressureShepard));
     if(PorePressureShepard){
       Log->Print(fun::VarStr("  PorePressureShepardInterval",PorePressureShepardInterval));
@@ -3432,7 +3476,9 @@ double JSph::GetPorePressureFeedbackFactor(double timestep)const{
 bool JSph::HasNonDefaultPorePressureFeedbackStabilization()const{
   return(PorePressureFeedbackLimiterMode!=0 || PorePressureFeedbackRelaxation>0.
     || PorePressureFeedbackMaxAccel>0. || PorePressureFeedbackMaxAccelRatio>0.
-    || SavePorePressureFeedbackDiagnostics);
+    || PorePressureFeedbackUseClassFilter || PorePressureFeedbackExcludeCaps
+    || PorePressureFeedbackExcludeEdges || PorePressureFeedbackExcludeConfinementTargets
+    || PorePressureFeedbackInteriorOnly || SavePorePressureFeedbackDiagnostics);
 }
 
 //==============================================================================
@@ -3510,6 +3556,7 @@ void JSph::ResetFlexibleConfiningStressDiagnostics()const{
 void JSph::ResetPorePressureFeedbackDiagnostics()const{
   PorePressureFeedbackDiagFactor=0.;
   PorePressureFeedbackDiagAppliedCount=0;
+  PorePressureFeedbackDiagSkippedClassCount=0;
   PorePressureFeedbackDiagLimitedCount=0;
   PorePressureFeedbackDiagRelaxedCount=0;
   PorePressureFeedbackDiagRawMax=0.;
@@ -3531,8 +3578,9 @@ void JSph::ResetPorePressureFeedbackDiagnostics()const{
 void JSph::PrintPorePressureFeedbackDiagnostics()const{
   if(!SavePorePressureFeedbackDiagnostics || PorePressureFeedbackDiagLastPrintStep==Nstep)return;
   if(Nstep<5 || !(Nstep%PorePressureFeedbackDiagInterval)){
-    Log->Printf("PorePressureFeedback diagnostics: step=%d, TimeStep=%g, factor=%g, applied=%u, raw_max=%g, raw_mean=%g, used_max=%g, used_mean=%g, pre_accel_max=%g, used_to_reference_ratio_max=%g, confining_ref=%g, limited=%u, relaxed=%u, cap_min=%g."
+    Log->Printf("PorePressureFeedback diagnostics: step=%d, TimeStep=%g, factor=%g, applied=%u, class_skipped=%u, raw_max=%g, raw_mean=%g, used_max=%g, used_mean=%g, pre_accel_max=%g, used_to_reference_ratio_max=%g, confining_ref=%g, limited=%u, relaxed=%u, cap_min=%g."
       ,Nstep,TimeStep,PorePressureFeedbackDiagFactor,PorePressureFeedbackDiagAppliedCount
+      ,PorePressureFeedbackDiagSkippedClassCount
       ,PorePressureFeedbackDiagRawMax,PorePressureFeedbackDiagRawMean
       ,PorePressureFeedbackDiagUsedMax,PorePressureFeedbackDiagUsedMean
       ,PorePressureFeedbackDiagPreMax,PorePressureFeedbackDiagRatioMax

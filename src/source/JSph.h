@@ -267,6 +267,11 @@ protected:
   double PorePressureFeedbackRelaxation; ///<Optional feedback acceleration relaxation alpha. 0:off, (0,1]: enabled.
   double PorePressureFeedbackMaxAccel; ///<Optional absolute cap for feedback acceleration magnitude [m/s2]. <=0:disabled.
   double PorePressureFeedbackMaxAccelRatio; ///<Optional cap ratio against non-feedback/confining acceleration. <=0:disabled.
+  bool PorePressureFeedbackUseClassFilter; ///<Restrict feedback acceleration using cylinder class filters. Default off.
+  bool PorePressureFeedbackExcludeCaps; ///<Class filter: skip top/bottom cap particles.
+  bool PorePressureFeedbackExcludeEdges; ///<Class filter: skip cylinder edge-ring particles.
+  bool PorePressureFeedbackExcludeConfinementTargets; ///<Class filter: skip selected lateral confinement target particles.
+  bool PorePressureFeedbackInteriorOnly; ///<Class filter: apply feedback only to cylinder interior particles.
   bool PorePressureShepard;     ///<Apply Shepard regularization to pore pressure. 0:off, 1:on.
   unsigned PorePressureShepardInterval; ///<Apply Shepard regularization every N steps.
   int PorePressureShepardMode;  ///<Pore-pressure Shepard mode. 0:total pressure, 1:excess pressure.
@@ -324,6 +329,7 @@ protected:
   mutable int ConfiningStressDiagLastPrintStep; ///<Last step printed for confining diagnostics.
   mutable double PorePressureFeedbackDiagFactor; ///<Last applied feedback gate factor.
   mutable unsigned PorePressureFeedbackDiagAppliedCount; ///<Last feedback-applied particle count.
+  mutable unsigned PorePressureFeedbackDiagSkippedClassCount; ///<Last feedback-skipped count from class filter.
   mutable unsigned PorePressureFeedbackDiagLimitedCount; ///<Last limiter activation count.
   mutable unsigned PorePressureFeedbackDiagRelaxedCount; ///<Last relaxation activation count.
   mutable double PorePressureFeedbackDiagRawMax; ///<Last raw feedback acceleration max magnitude.

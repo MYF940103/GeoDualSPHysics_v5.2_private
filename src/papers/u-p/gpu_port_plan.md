@@ -1675,3 +1675,32 @@ still has local negative pressure and order `1e9 Pa/s` pressure-rate artifacts,
 and the gentle axial smoke reintroduces center-core reversal. GPU parity,
 T5 DP, and T6 MCC remain deferred until the CPU feedback formulation is
 stable without relying on a purely diagnostic limiter.
+
+## T4g Feedback Formulation Audit GPU Status
+
+T4g adds CPU-only feedback formulation diagnostics and opt-in class filtering:
+
+- `PorePressureFeedbackUseClassFilter`;
+- `PorePressureFeedbackExcludeCaps`;
+- `PorePressureFeedbackExcludeEdges`;
+- `PorePressureFeedbackExcludeConfinementTargets`;
+- `PorePressureFeedbackInteriorOnly`.
+
+The defaults preserve existing behavior. GPU Release builds pass, but
+non-default feedback timing, stabilization, diagnostics, or class filtering
+remain GPU-unsupported and hard-error. No GPU simulation was run.
+
+The CPU audit finds operator `1` to be the physically preferred feedback
+candidate: it is constant-pressure consistent and gives the expected
+down-gradient response for a linear pressure field. Operator `0` produces a
+nonzero uniform-pressure surface response and is not recommended for the
+triaxial internal feedback route.
+
+Class filtering is useful but does not complete the CPU gate. It removes the
+operator-`1` unfiltered exclusion and DtMin burst
+(`excluded=164`, `256` DtMin adjustments) and reduces max `PorePressRate` from
+about `1.30e13` to `4.79e10 Pa/s`, but pressure reversal and negative pressure
+remain in confinement-only full-feedback tests. GPU parity, T5 DP, and T6 MCC
+remain deferred. The next CPU task should be a narrow feedback formulation
+patch based on class-filtered operator `1`, not a GPU port or constitutive
+model extension.

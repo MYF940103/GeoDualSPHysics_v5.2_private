@@ -4034,9 +4034,9 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
   const double eps=1e-30;
 
   struct StFbDiag{
-    unsigned applied,limited,relaxed;
+    unsigned applied,skippedclass,limited,relaxed;
     double rawsum,usedsum,rawmax,usedmax,premax,ratiomax,capmin,lateralmax,capmax,interiormax;
-    StFbDiag():applied(0),limited(0),relaxed(0),rawsum(0),usedsum(0),rawmax(0),usedmax(0),premax(0),ratiomax(0),capmin(DBL_MAX),lateralmax(0),capmax(0),interiormax(0){}
+    StFbDiag():applied(0),skippedclass(0),limited(0),relaxed(0),rawsum(0),usedsum(0),rawmax(0),usedmax(0),premax(0),ratiomax(0),capmin(DBL_MAX),lateralmax(0),capmax(0),interiormax(0){}
   };
   const unsigned nth=
   #ifdef OMP_USE
@@ -4056,6 +4056,23 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
     StFbDiag &dg=diag[th];
     const unsigned p=pini+unsigned(cp);
     if(CODE_IsFluid(code[p])){
+      int cls=0;
+      if(PorePressureFeedbackUseClassFilter){
+        cls=(ConfiningStressGeometry==1 && pos? GetConfiningStressCylinderClass(pos[p]): 0);
+        bool allowed=true;
+        if(cls==6)allowed=false;
+        if(PorePressureFeedbackInteriorOnly)allowed=(cls==1);
+        else{
+          if(PorePressureFeedbackExcludeCaps && (cls==3 || cls==4))allowed=false;
+          if(PorePressureFeedbackExcludeEdges && cls==5)allowed=false;
+          if(PorePressureFeedbackExcludeConfinementTargets && FlexibleConfiningStress && ConfiningStressUseLateralSelector && IsFlexibleConfiningStressTarget(code[p]) && cls==2)allowed=false;
+        }
+        if(!allowed){
+          if(porepressurefeedbackused)porepressurefeedbackused[p]=TFloat3(0);
+          dg.skippedclass++;
+          continue;
+        }
+      }
       const tfloat3 raw=TFloat3(float(double(porepressurefeedbackace[p].x)*feedbackfactor)
         ,float(double(porepressurefeedbackace[p].y)*feedbackfactor)
         ,float(double(porepressurefeedbackace[p].z)*feedbackfactor));
@@ -4099,17 +4116,18 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
       const double ratio=usedmag/max(max(premag,confref),eps);
       dg.ratiomax=max(dg.ratiomax,ratio);
       if(ConfiningStressGeometry==1 && pos){
-        const int cls=GetConfiningStressCylinderClass(pos[p]);
+        if(!cls)cls=GetConfiningStressCylinderClass(pos[p]);
         if(cls==2)dg.lateralmax=max(dg.lateralmax,usedmag);
         else if(cls==3 || cls==4 || cls==5)dg.capmax=max(dg.capmax,usedmag);
         else if(cls==1)dg.interiormax=max(dg.interiormax,usedmag);
       }
     }
   }
-  unsigned applied=0,limited=0,relaxed=0;
+  unsigned applied=0,skippedclass=0,limited=0,relaxed=0;
   double rawsum=0.,usedsum=0.,rawmax=0.,usedmax=0.,premax=0.,ratiomax=0.,capmin=DBL_MAX,lateralmax=0.,capmax=0.,interiormax=0.;
   for(unsigned c=0;c<nth;c++){
     applied+=diag[c].applied;
+    skippedclass+=diag[c].skippedclass;
     limited+=diag[c].limited;
     relaxed+=diag[c].relaxed;
     rawsum+=diag[c].rawsum;
@@ -4124,6 +4142,7 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
     interiormax=max(interiormax,diag[c].interiormax);
   }
   PorePressureFeedbackDiagAppliedCount=applied;
+  PorePressureFeedbackDiagSkippedClassCount=skippedclass;
   PorePressureFeedbackDiagLimitedCount=limited;
   PorePressureFeedbackDiagRelaxedCount=relaxed;
   PorePressureFeedbackDiagRawMax=rawmax;

@@ -352,3 +352,52 @@ This means the limiter is a diagnostic safety guard, not a physical closure.
 Do not enter T5 DP or T6 MCC from this state. The next work should audit the
 feedback formulation itself: pressure variable choice, gradient choice,
 filtering, and effective-stress coupling consistency.
+
+## T4g Feedback Formulation Audit Notes
+
+T4g audits the feedback operator rather than adding another loading schedule or
+cap-only variant. It introduces optional class-aware filtering for feedback
+acceleration, with all controls off by default:
+
+- `PorePressureFeedbackUseClassFilter`;
+- `PorePressureFeedbackExcludeCaps`;
+- `PorePressureFeedbackExcludeEdges`;
+- `PorePressureFeedbackExcludeConfinementTargets`;
+- `PorePressureFeedbackInteriorOnly`.
+
+The new controls only affect feedback acceleration. They do not change the PR
+pressure update, the stress update, flexible confinement, or any Cryer boundary
+path. Non-default class filtering is CPU-only; GPU remains deferred and
+hard-errors for this diagnostic path.
+
+Manufactured feedback checks show:
+
+- operator `1` is constant-pressure consistent: a uniform pressure field gives
+  zero feedback acceleration;
+- operator `1` gives the expected down-gradient sign and reasonable magnitude
+  for a linear pressure field;
+- operator `0` produces a nonzero free-surface response under uniform pressure,
+  so it is not the preferred internal pore-pressure feedback operator.
+
+Under `HydraulicElevationSource=0`, total-pressure and excess-pressure mode are
+identical in the T4g reduced cases, as expected.
+
+The CPU Release confinement-only matrix confirms that class filtering is useful
+but insufficient:
+
+- feedback off remains stable, with max `PorePressRate=2.11e7 Pa/s`;
+- operator `1` unfiltered repeats the full-feedback failure
+  (`excluded=164`, `256` DtMin adjustments, max `PorePressRate=1.30e13 Pa/s`);
+- operator `1` interior-only eliminates exclusions and DtMin adjustments and
+  reduces max `PorePressRate` to about `4.79e10 Pa/s`, but pressure reversal
+  and negative pressure remain;
+- operator `0` variants are not preferred because they fail the uniform-field
+  physical consistency check.
+
+The audit finds no clear direct total/effective stress double counting:
+`Sigmac` is still treated as a skeleton/effective stress state, and feedback
+operator `1` provides the expected `-grad(p_w)/rho` coupling. The remaining
+failure is the explicit dynamic feedback formulation near selected confinement,
+especially when class filtering is not applied. Do not restore axial loading or
+enter DP/MCC yet. T4h should focus on a physically consistent feedback
+formulation patch, likely starting from class-filtered operator `1`.
