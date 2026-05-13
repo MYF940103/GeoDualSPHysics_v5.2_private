@@ -624,3 +624,35 @@ T4m CPU Release results:
 The all-surface feedback-off stage is much closer to hydrostatic equilibrium,
 especially at the cap and edge regions. It does not solve the full-feedback
 instability, so axial loading, DP, MCC, and GPU validation remain deferred.
+
+## T4n Staged All-Surface To Lateral Switch
+
+T4n is retained under:
+
+`experiments/T4n_StagedConfinementSwitch/`
+
+It adds the CPU-only opt-in selector scheduling parameter:
+
+```xml
+<parameter key="ConfiningStressUseLateralSelector" value="1" />
+<parameter key="ConfiningStressLateralSelectorStartTime" value="0.003" />
+```
+
+The default remains unchanged. With the start time set, the run begins with
+Zhao all-surface `f_i` confinement and switches to lateral-only selected
+confinement at `0.003 s`.
+
+T4n CPU Release results:
+
+| Case | Result | Active targets | Final `p'` | Final `q` | Max `PorePressRate` |
+| --- | --- | ---: | ---: | ---: | ---: |
+| all-surface reference, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `208` | `46.4 Pa` | `15.6 Pa` | `3.98e7 Pa/s` |
+| staged switch, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `208 -> 112` | `19.1 Pa` | `46.3 Pa` | `5.46e7 Pa/s` |
+| staged switch, delayed feedback | `code=0`, `excluded=0`, `DtMin=0` | `208 -> 112` | failed | failed | `9.15e9 Pa/s` |
+
+The selector switch itself is numerically runnable and the active target count
+changes as expected. It is not hydrostatically neutral: after switching to
+lateral-only confinement, `q` grows and `p'` drifts away from the target. The
+delayed-feedback case is much less violent than T4m delayed feedback but still
+fails the stability gate. Axial loading was not restored. DP, MCC, and GPU
+remain deferred.

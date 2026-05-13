@@ -1433,6 +1433,7 @@ void JSphGpu::InitFloating(){
 //==============================================================================
 void JSphGpu::InitRunGpu(){
   if(ConfiningStressGradientMode==1)Run_Exceptioon("ConfiningStressGradientMode=1 is CPU-only in this branch. GPU support is not implemented.");
+  if(ConfiningStressLateralSelectorStartTime>0.)Run_Exceptioon("ConfiningStressLateralSelectorStartTime is CPU-only in this branch. GPU support is not implemented.");
   if(FlexibleConfiningStress)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
   if(CapConfiningStress)Run_Exceptioon("CapConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
   ParticlesDataDown(Np,0,false,false);

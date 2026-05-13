@@ -43,6 +43,7 @@ The material/phase constants below are now soil material constants and should be
 | `ConfiningStressEdgeExclusionLength` | float, `>=0` | `0` | Radial edge-ring tolerance. If zero, defaults to `KernelSize`. | Experimental |
 | `ConfiningStressUseFiSelector` | `0/1` | `0` | If enabled, applies the confining force only to target particles with `f_i <= ConfiningStressFiThreshold`. | Experimental |
 | `ConfiningStressUseLateralSelector` | `0/1` | `0` | If enabled, applies the confining force only to cylinder lateral particles; requires `ConfiningStressGeometry=1`. | Experimental |
+| `ConfiningStressLateralSelectorStartTime` | double [s] | `0` | CPU-only staged selector switch. When `ConfiningStressUseLateralSelector=1` and this value is `>0`, the run starts with the lateral selector disabled and activates it at the given time. Values `<=0` preserve legacy immediate lateral-selector behavior. GPU hard-errors for non-default scheduling. | Experimental |
 | `CapConfiningStress` | `0/1` | `0` | CPU-only top/bottom cap-normal hydrostatic support for triaxial staging. GPU hard-errors if enabled. | Experimental |
 | `CapConfiningStressP0` | float, `>=0` | `0` | Positive external compression magnitude [Pa] for cap-normal support. | Experimental |
 | `CapConfiningStressRampStart` | double [s] | `0` | Linear cap-support ramp start time. | Experimental |
@@ -63,6 +64,12 @@ intended only for reduced triaxial hydrostatic staging diagnostics. The cap
 support is not axial deviatoric loading, is not written into the stress tensor,
 and skips cylinder edge-ring particles to avoid double-counting lateral
 flexible confinement.
+
+T4n adds `ConfiningStressLateralSelectorStartTime` for a single-run
+all-surface-to-lateral confinement switch. It only changes the target selection
+of `FlexibleConfiningStress`; it does not change the confinement force formula,
+`f_i` diagnostics, PR pressure update, stress update, or axial loading. The
+default keeps the previous static selector behavior.
 
 Recommended XML location:
 

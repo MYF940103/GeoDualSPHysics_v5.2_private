@@ -1798,3 +1798,17 @@ reducing final `q` from about `53.5 Pa` to `15.6 Pa`. Delayed full feedback
 still fails with order `1e12 Pa/s` `PorePressRate`. GPU parity, DP, and MCC
 remain deferred until the CPU all-surface or staged-equilibrium route passes a
 full-feedback confinement-only gate.
+
+## T4n Staged Selector Switch GPU Status
+
+T4n adds `ConfiningStressLateralSelectorStartTime`, a CPU-only selector
+scheduling parameter for `FlexibleConfiningStress`. The shared parser and both
+Release builds were checked, but GPU execution hard-errors if a non-default
+selector schedule is requested. No GPU simulation was run.
+
+The CPU staged-switch tests completed with `code=0`, `excluded=0`, and no
+DtMin burst. The active target count changed from `208` all-surface low-`f_i`
+particles to `112` lateral selected particles at the switch time. The switch
+is not yet a validation route: feedback-off `q` grows and delayed feedback
+still fails the physical stability gate. GPU parity, DP, and MCC remain
+deferred.

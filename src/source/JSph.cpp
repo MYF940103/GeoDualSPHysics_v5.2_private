@@ -293,6 +293,7 @@ void JSph::InitVars(){
   ConfiningStressEdgeExclusionLength=0.;
   ConfiningStressUseFiSelector=false;
   ConfiningStressUseLateralSelector=false;
+  ConfiningStressLateralSelectorStartTime=0.;
   CapConfiningStress=false;
   CapConfiningStressP0=0.f;
   CapConfiningStressRampStart=0.;
@@ -1189,6 +1190,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  ConfiningStressUseLateralSelector=true;   break;
     default: Run_Exceptioon("ConfiningStressUseLateralSelector mode is not valid.");
   }
+  ConfiningStressLateralSelectorStartTime=eparms.GetValueDouble("ConfiningStressLateralSelectorStartTime",true,0.);
   switch(eparms.GetValueInt("CapConfiningStress",true,0)){
     case 0:  CapConfiningStress=false;  break;
     case 1:  CapConfiningStress=true;   break;
@@ -1327,6 +1329,14 @@ void JSph::LoadConfigParameters(const JXml *xml){
     if(ConfiningStressEdgeExclusionLength<0.)Run_Exceptioon("ConfiningStressEdgeExclusionLength must be greater than or equal to zero.");
   }
   if(ConfiningStressUseLateralSelector && ConfiningStressGeometry!=1)Run_Exceptioon("ConfiningStressUseLateralSelector=1 requires ConfiningStressGeometry=1.");
+  if(ConfiningStressLateralSelectorStartTime<0.)
+    Log->PrintWarning("ConfiningStressLateralSelectorStartTime<0 keeps legacy immediate lateral-selector behavior.");
+  if(ConfiningStressLateralSelectorStartTime>0. && !ConfiningStressUseLateralSelector)
+    Log->PrintWarning("ConfiningStressLateralSelectorStartTime is set but ConfiningStressUseLateralSelector=0, so no selector switch will occur.");
+  if(ConfiningStressLateralSelectorStartTime>0. && ConfiningStressGeometry!=1)
+    Run_Exceptioon("ConfiningStressLateralSelectorStartTime requires ConfiningStressGeometry=1.");
+  if(ConfiningStressLateralSelectorStartTime>0. && !Cpu)
+    Run_Exceptioon("ConfiningStressLateralSelectorStartTime is CPU-only in this branch. GPU support is not implemented.");
   if((ConfiningStressUseFiSelector || ConfiningStressUseLateralSelector) && !FlexibleConfiningStress)
     Log->PrintWarning("Confining stress selectors are enabled but FlexibleConfiningStress=0. Selectors will have no force effect.");
   if(FlexibleConfiningStress && !Cpu)Run_Exceptioon("FlexibleConfiningStress=1 is CPU-only in this branch. GPU support is not implemented.");
@@ -2441,6 +2451,7 @@ void JSph::VisuConfig(){
     }
     Log->Print(fun::VarStr("  ConfiningStressUseFiSelector",ConfiningStressUseFiSelector));
     Log->Print(fun::VarStr("  ConfiningStressUseLateralSelector",ConfiningStressUseLateralSelector));
+    Log->Print(fun::VarStr("  ConfiningStressLateralSelectorStartTime",ConfiningStressLateralSelectorStartTime));
     if(ConfiningStressGradientMode==1)
       Log->Print("  ConfiningStressGradientMode=1: CPU renormalized/corrected kernel gradient is applied only to the flexible confining stress pair term.");
     Log->Print("  FlexibleConfiningStress convention: positive ConfiningStressP0 is external compression; in the current SPH stress-divergence sign convention it is added as a positive isotropic stress-like pair contribution and is not written to the material stress state.");
@@ -3764,12 +3775,15 @@ void JSph::PrintPorePressureFeedbackDiagnostics()const{
 void JSph::PrintFlexibleConfiningStressDiagnostics()const{
   if(!FlexibleConfiningStress || ConfiningStressDiagP0Eff<=0. || ConfiningStressDiagLastPrintStep==Nstep)return;
   const bool extended=(FlexibleConfiningStressFiDiagnostic || SaveConfiningStressDiagnostics || ConfiningStressGeometry || ConfiningStressUseFiSelector || ConfiningStressUseLateralSelector);
-  if(Nstep<5 || !(Nstep%500)){
-    Log->Printf("FlexibleConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, targets=%u, legacy_targets=%u, net_force=(%g,%g,%g) N, total_abs_force=%g N, max_accel=%g m/s2, com_accel=%g m/s2, symmetry_residual=%g."
+  const bool lateralactive=(ConfiningStressUseLateralSelector && (ConfiningStressLateralSelectorStartTime<=0. || TimeStep>=ConfiningStressLateralSelectorStartTime));
+  const bool schedulediag=(ConfiningStressLateralSelectorStartTime>0. && !(Nstep%10));
+  if(Nstep<5 || !(Nstep%500) || schedulediag){
+    Log->Printf("FlexibleConfiningStress CPU diagnostics: step=%d, TimeStep=%g, p0_eff=%g Pa, targets=%u, legacy_targets=%u, net_force=(%g,%g,%g) N, total_abs_force=%g N, max_accel=%g m/s2, com_accel=%g m/s2, symmetry_residual=%g, lateral_selector_active=%u."
       ,Nstep,TimeStep,ConfiningStressDiagP0Eff,ConfiningStressDiagTargetCount
       ,ConfiningStressDiagLegacyTargetCount
       ,ConfiningStressDiagNetForce.x,ConfiningStressDiagNetForce.y,ConfiningStressDiagNetForce.z
-      ,ConfiningStressDiagTotalAbsForce,ConfiningStressDiagMaxAccel,ConfiningStressDiagComAccel,ConfiningStressDiagSymResidual);
+      ,ConfiningStressDiagTotalAbsForce,ConfiningStressDiagMaxAccel,ConfiningStressDiagComAccel,ConfiningStressDiagSymResidual
+      ,lateralactive? 1u: 0u);
     if(extended){
       Log->Printf("FlexibleConfiningStress extended diagnostics: step=%d, fi_min=%g, fi_max=%g, fi_mean=%g, fi_threshold=%g, fi_selected=%u, class_interior=%u, class_lateral=%u, class_top=%u, class_bottom=%u, class_edge=%u, class_outside=%u, lateral_fi_selected=%u, cap_fi_selected=%u, lateral_inward_radial_accel_mean=%g, lateral_inward_radial_accel_max=%g, cap_abs_axial_accel_mean=%g, cap_abs_axial_accel_max=%g."
         ,Nstep,ConfiningStressDiagFiMin,ConfiningStressDiagFiMax,ConfiningStressDiagFiMean,ConfiningStressFiThreshold

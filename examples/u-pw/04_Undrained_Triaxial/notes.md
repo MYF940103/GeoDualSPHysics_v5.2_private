@@ -594,3 +594,25 @@ with large negative pressure. No axial smoke was run. The next step should be a
 staged all-surface-to-lateral selector switch or restart equilibrium design,
 but only after treating the full-feedback instability. DP, MCC, and GPU remain
 deferred.
+
+## T4n Staged Selector Switch Notes
+
+T4n adds `ConfiningStressLateralSelectorStartTime`, a CPU-only opt-in schedule
+for the `FlexibleConfiningStress` target selector. When
+`ConfiningStressUseLateralSelector=1` and the start time is positive, the force
+uses all low-`f_i` free-surface particles before the start time and lateral-only
+particles after it. Defaults preserve the old static selector behavior.
+
+The T4n feedback-off switch case runs with `code=0`, `excluded=0`,
+`DtMin=0`, and `Kplastic=0`; active targets switch from `208` to `112`.
+However, the switch is not mechanically neutral. Final `q` rises to about
+`46 Pa`, final `p'` drops to about `19 Pa`, and center pore pressure becomes
+strongly negative again. This means a direct all-surface-to-lateral switch
+reintroduces deviatoric imbalance even before feedback is restored.
+
+Delayed feedback after the switch is improved relative to T4m delayed feedback
+(`~9.15e9 Pa/s` max `PorePressRate` instead of `~1.63e12 Pa/s`, with no
+exclusions or DtMin burst), but it still fails the full-feedback stability
+gate with high velocity, negative pressure, and large `q`. Axial loading should
+remain disabled. The next step should refine the switch/stress transition or
+use a restart/relaxation strategy before considering DP or MCC.

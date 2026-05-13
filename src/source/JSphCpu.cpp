@@ -1115,6 +1115,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
   const double confp0d=(!boundp2? GetFlexibleConfiningStressP0(TimeStep): 0.);
   const bool useconf=(confp0d>0.);
+  const bool conflateralactive=(ConfiningStressUseLateralSelector && (ConfiningStressLateralSelectorStartTime<=0. || TimeStep>=ConfiningStressLateralSelectorStartTime));
   const bool conffi=(useconf && (FlexibleConfiningStressFiDiagnostic || ConfiningStressUseFiSelector || SaveConfiningStressDiagnostics));
   const bool confgeom=(useconf && (ConfiningStressGeometry==1 || ConfiningStressUseLateralSelector || SaveConfiningStressDiagnostics));
   const float confp0=float(confp0d);
@@ -1198,7 +1199,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     }
     if(conftargetp1 && confgeom)confclassp1=GetConfiningStressCylinderClass(posp1);
     const bool conffiselp1=(!ConfiningStressUseFiSelector || conffip1<=ConfiningStressFiThreshold);
-    const bool conflatselp1=(!ConfiningStressUseLateralSelector || confclassp1==2);
+    const bool conflatselp1=(!conflateralactive || confclassp1==2);
     const bool confactivep1=(conftargetp1 && conffiselp1 && conflatselp1);
     const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
     bool confgradcorrp1=false;

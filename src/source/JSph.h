@@ -304,6 +304,7 @@ protected:
   double ConfiningStressEdgeExclusionLength; ///<Radial edge/lateral tolerance [m].
   bool ConfiningStressUseFiSelector; ///<Apply confinement only where f_i is below threshold.
   bool ConfiningStressUseLateralSelector; ///<Apply confinement only on selected lateral cylinder particles.
+  double ConfiningStressLateralSelectorStartTime; ///<Time to activate lateral selector when ConfiningStressUseLateralSelector=1. <=0 keeps legacy behavior.
   bool CapConfiningStress; ///<CPU cap-normal hydrostatic support for triaxial staging. Default off.
   float CapConfiningStressP0; ///<Positive cap-normal support magnitude [Pa].
   double CapConfiningStressRampStart; ///<Start time for cap support ramp [s].
