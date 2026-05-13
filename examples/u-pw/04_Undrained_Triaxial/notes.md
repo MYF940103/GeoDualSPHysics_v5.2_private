@@ -1021,3 +1021,27 @@ Main decisions:
 
 The first future SPH MCC smoke should be CPU-only, feedback-off, and based on
 the explicit-platen T5 route. Full feedback and GPU remain deferred.
+
+## M2 MCC Single-Point Prototype Notes
+
+M2 adds a standalone Python MCC material-point prototype in
+`src/papers/u-p/mcc_single_point/`. It is not connected to the solver and does
+not add `SoilConstitutiveModel=3`.
+
+Results:
+
+- stress sign regression passes for `Sigmac=(-50,-50,-50) Pa`, mapping to
+  internal `p'=+50 Pa`;
+- isotropic compression/swelling reaches final `p' approx 194.48 Pa`,
+  `q approx 0`, and `p_c approx 194.48 Pa`;
+- drained-like path reaches final `p' approx 180.26 Pa`, `q approx 80.55 Pa`,
+  and `p_c approx 205.26 Pa`;
+- undrained-like zero-volume path reaches final `p' approx 86.22 Pa`,
+  `q approx 99.57 Pa`, and `p_c approx 166.07 Pa`;
+- plastic-step normalized yield residuals are below about `3e-9`;
+- Newton return mapping converges in at most 5 iterations in the retained
+  paths.
+
+The elastic predictor is still linear `E,nu`; a `kappa`-based nonlinear elastic
+law can be evaluated later. M3 can start CPU integration planning/implementation
+from this prototype, but full feedback and GPU remain deferred.

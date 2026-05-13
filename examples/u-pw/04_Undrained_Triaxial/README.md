@@ -1027,3 +1027,28 @@ effective-stress update path and defines the next MCC implementation route:
 The first future SPH MCC smoke should reuse the feedback-off explicit-platen
 T5 workflow. Full pore-pressure feedback, MCC implementation, and GPU remain
 deferred until the single-point and state/restart gates are passed.
+
+## M2 MCC Single-Point Prototype
+
+M2 is retained under:
+
+`src/papers/u-p/mcc_single_point/`
+
+It is a standalone Python material-point prototype and does not modify the SPH
+solver. The test runner generates CSV and SVG/PNG figures for:
+
+- stress sign regression;
+- isotropic compression/swelling;
+- drained-like triaxial strain path;
+- undrained-like zero-volumetric-strain path;
+- yield consistency and return-iteration diagnostics.
+
+The prototype uses compression-positive MCC variables internally and maps to
+the current `Sigmac` convention with `p' = -trace(Sigmac)/3`. The retained
+tests complete without failed steps; plastic-step normalized yield residuals
+remain below about `3e-9`.
+
+MCC is still not integrated into GeoDualSPHysics. M3 may now port the verified
+single-point helper into a CPU-only `SoilConstitutiveModel=3` branch, with the
+first SPH smoke still based on the feedback-off explicit-platen T5 workflow.
+Full feedback and GPU remain deferred.

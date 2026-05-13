@@ -2015,3 +2015,21 @@ CPU path, but GPU support should remain hard-deferred until:
 Future GPU work will need mirrored MCC state arrays, device return mapping,
 sorting/restart/output integration, and parity tests. Full feedback and GPU
 triaxial validation remain deferred.
+
+## M2 MCC Single-Point Prototype GPU Status
+
+M2 adds only a standalone Python material-point MCC prototype under
+`src/papers/u-p/mcc_single_point/`. It does not modify C++/CUDA source, parser
+logic, production builds, or GPU kernels.
+
+The prototype confirms a CPU-side return-mapping direction for future M3 work,
+but GPU remains deferred. A future GPU MCC port would need:
+
+- CPU `SoilConstitutiveModel=3` parity first;
+- MCC state arrays on CPU and GPU;
+- restart/output support for MCC fields;
+- device-side local Newton return mapping;
+- single-point and SPH parity tests.
+
+Until those gates pass, future `SoilConstitutiveModel=3` should hard-error on
+GPU. Full pore-pressure feedback also remains deferred.
