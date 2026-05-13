@@ -276,3 +276,33 @@ not primarily AccInput onset. It is the selected-confinement equilibration and
 u-pw feedback stage. T4c does not justify moving to T5 DP or T6 MCC. The next
 physics task should stabilize confinement-stage dynamics before strict output
 enhancement or stress-path validation.
+
+## T4d Confinement Equilibration
+
+T4d is retained under:
+
+`experiments/T4d_ConfinementEquilibration/`
+
+It removes axial AccInput entirely and isolates selected flexible confinement:
+
+- raw-gradient selected confinement, feedback on;
+- raw-gradient selected confinement, feedback off;
+- raw-gradient selected confinement with `p0=12.5 Pa`;
+- raw-gradient selected confinement with longer ramp and stronger damping.
+
+All CPU Release confinement-only cases complete with `code=0`, `excluded=0`,
+and `Kplastic=0`.
+
+The key result is that pressure reversal still occurs in the target-p0
+confinement-only feedback-on case at about `0.001404 s`. The same selected
+confinement with `PorePressureFeedback=0` removes reversal over the retained
+window, removes DtMin adjustments, and reduces max `PorePressRate` from
+`3.12e12 Pa/s` to `2.11e7 Pa/s`. Lower p0 and longer ramp/damping only delay or
+reduce the failure; they do not stabilize the coupled feedback-on route.
+
+Cap leakage remains `0`, and lateral confinement remains geometrically
+coherent. The current blocker is the confinement-stage u-pw feedback loop, not
+axial loading or lateral/cap selection. T5 DP and T6 MCC remain deferred. The
+next recommended step is T4e staged confinement equilibration with feedback
+gating/delay before any source-level magnitude normalization or axial loading
+reintroduction.

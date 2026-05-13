@@ -253,3 +253,32 @@ First stabilize the confinement-only equilibration stage, possibly through
 source-level confinement magnitude normalization, a confinement-stage damping
 protocol, or a diagnostic delay/adjustment of pore-pressure Shepard during
 confinement equilibration.
+
+## T4d Confinement Equilibration Notes
+
+T4d runs four confinement-only CPU Release variants under:
+
+`experiments/T4d_ConfinementEquilibration/`
+
+There is no axial AccInput in these XML files. The target-p0 feedback-on case
+still reverses at about `0.001404 s`, proving that the first instability is
+already present during selected-confinement equilibration.
+
+The feedback-on/off comparison is the decisive diagnostic:
+
+- feedback on: max `PorePressRate=3.12e12 Pa/s`, max velocity `215 m/s`,
+  `85` DtMin adjustments, reversal present;
+- feedback off: max `PorePressRate=2.11e7 Pa/s`, max velocity
+  `7.57e-4 m/s`, zero DtMin adjustments, no reversal.
+
+Lowering p0 to `12.5 Pa` reduces lateral acceleration nearly linearly but still
+produces reversal and order `1e12 Pa/s` pressure-rate artifacts. A longer ramp
+plus `HydromechDampingXi=0.20` delays the all-particle reversal but does not
+stabilize the center core.
+
+Source-level confinement magnitude normalization was designed but not
+implemented in T4d. The immediate blocker is the active u-pw feedback loop
+during confinement equilibration, so T4e should first test staged feedback
+gating/delay: ramp confinement with feedback off or delayed, damp to low
+velocity/DivVel, then re-enable feedback before adding axial loading. DP and
+MCC remain deferred.

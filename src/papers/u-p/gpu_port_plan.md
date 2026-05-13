@@ -1601,6 +1601,27 @@ All retained CPU Release smokes complete with `code=0`, `excluded=0`, and
 T4c shows that pressure reversal begins around `0.0014 s`, before delayed
 axial loading starts. The current blocker is therefore selected-confinement
 equilibration/u-pw feedback stability, not the first axial AccInput impulse.
+
+## T4d Triaxial Confinement Equilibration
+
+T4d adds no source and no GPU work. It isolates the selected flexible
+confinement stage under:
+
+`examples/u-pw/04_Undrained_Triaxial/experiments/T4d_ConfinementEquilibration/`
+
+All retained CPU Release cases complete with `code=0`, `excluded=0`, and
+`Kplastic=0`. The target-p0 confinement-only feedback-on case still reverses at
+about `0.001404 s`, with max `PorePressRate=3.12e12 Pa/s` and `85` DtMin
+adjustments. Disabling `PorePressureFeedback` for the same selected
+confinement removes reversal over the retained window, removes DtMin
+adjustments, and reduces max `PorePressRate` to `2.11e7 Pa/s`.
+
+Lower p0 and longer ramp/damping reduce or delay the artifact but do not
+stabilize the feedback-on route. Cap leakage remains zero, so the active
+blocker is the selected-confinement/u-pw feedback equilibration loop rather
+than the lateral selector. GPU remains deferred, and T5 DP / T6 MCC should not
+start until a stable feedback-on confinement equilibration stage exists.
+
 Renormalized confinement remains an amplifier rather than a cure. GPU remains
 deferred; do not proceed to GPU parity, T5 DP, or T6 MCC until the CPU
 linear-elastic selected-confinement response is stable.
