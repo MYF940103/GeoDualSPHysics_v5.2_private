@@ -170,3 +170,52 @@ This is still a smoke/diagnostic stage, not strict triaxial validation. The
 large short-time pore-pressure response indicates that T4 should refine
 measurement, loading duration, stress-path postprocessing, and possibly
 Zhao-style renormalized gradients before MCC or full paper comparison.
+
+## T4 Stress-Path Postprocessing
+
+T4 is retained under:
+
+`experiments/T4_StressPathPostprocessing/`
+
+It is a slightly longer CPU selected-confinement smoke derived from the T3
+axial + selected confinement case. It keeps the same reduced linear-elastic
+setup:
+
+- `SoilConstitutiveModel=0`;
+- `PorePressureBoundaryOperator=0`;
+- `HydraulicElevationSource=0`;
+- `FlexibleConfiningStress=1`;
+- `ConfiningStressUseFiSelector=1`;
+- `ConfiningStressUseLateralSelector=1`;
+- no Cryer curved drained boundary modes;
+- CPU Release only.
+
+The retained stable window is intentionally short (`TimeMax=0.0015 s`). An
+exploratory `0.004 s` window produced exclusions and is not treated as the T4
+baseline.
+
+CPU Release T4 result:
+
+| Item | Result |
+| --- | --- |
+| GenCase | `code=0` |
+| DualSPHysics CPU Release | `code=0` |
+| PartVTK | `code=0` |
+| Excluded particles | `0` |
+| Steps | `14` |
+| Final `Kplastic` max | `0` |
+| Final top-strain proxy | `0.03326` |
+| Final full-specimen mean pore pressure | `-3.82e6 Pa` |
+
+The postprocessor now writes measurement-region sensitivity and `p'-q` proxy
+curves for center-core and Zhao-style measurement regions. The stress path is
+not strict yet: `Sigma` is treated as a skeleton/effective stress proxy, and
+the output does not yet explicitly write total/effective stress conventions,
+original positions, material `mk`, or per-particle confinement class.
+
+The confinement selector remains healthy: selected targets stay at `112`,
+active cap leakage is `0`, lateral inward acceleration is about `1.87 m/s2`,
+and net-force symmetry residual remains small. The pore-pressure response is
+still too oscillatory for validation, so the recommended next step is T4b:
+Zhao-style renormalized-gradient confinement and loading/stability refinement
+before a T5 DP baseline or any T6 MCC work.

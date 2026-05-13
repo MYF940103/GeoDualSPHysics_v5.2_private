@@ -1534,3 +1534,28 @@ and removes active cap axial leakage in the confinement diagnostics
 (`~0.93 m/s2` to `0`). GPU remains deferred because the CPU path still uses the
 raw kernel gradient and needs T4 measurement/stress-path refinement before any
 porting or parity work.
+
+## T4 Triaxial Stress-Path Postprocessing
+
+T4 adds no source and no GPU work. It refines the CPU selected-confinement
+triaxial postprocessing under:
+
+`examples/u-pw/04_Undrained_Triaxial/experiments/T4_StressPathPostprocessing/`
+
+The retained CPU Release smoke uses `SoilConstitutiveModel=0`,
+`HydraulicElevationSource=0`, `PorePressureBoundaryOperator=0`, and the T3
+`f_i` + lateral flexible-confinement selectors. It completes with `code=0`,
+`excluded=0`, and `Kplastic=0` over a deliberately short `TimeMax=0.0015 s`
+window.
+
+T4 confirms that confinement targeting remains healthy: active cap leakage is
+zero, lateral inward acceleration is coherent, and the net-force symmetry
+residual stays small. However, the pore-pressure and stress-path curves are
+still diagnostic/proxy only. The late short-window pore-pressure response shows
+large pressure-rate excursions and sign reversal, and the output fields do not
+yet provide strict total/effective stress labeling, original position, material
+`mk`, or per-particle confinement class.
+
+GPU remains deferred. The next CPU-first task should be T4b Zhao-style
+renormalized-gradient confinement and loading/stability refinement before any
+T5 DP baseline, GPU parity run, or T6 MCC implementation.

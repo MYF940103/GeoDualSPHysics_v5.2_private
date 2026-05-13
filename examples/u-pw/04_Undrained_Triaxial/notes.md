@@ -176,3 +176,32 @@ successful infrastructure/diagnostics, not paper-level triaxial validation.
 T4 should refine measurement regions, axial/staged loading, and stress-path
 postprocessing before MCC. A Zhao renormalized-gradient implementation is a
 candidate T4b item if the selected raw-gradient confinement remains too noisy.
+
+## T4 Stress-Path Postprocessing Notes
+
+T4 adds a retained selected-confinement CPU short run under:
+
+`experiments/T4_StressPathPostprocessing/`
+
+The case keeps the T3 selected flexible confinement route and extends the
+analysis side:
+
+- five measurement regions;
+- framewise pore-pressure and strain proxies;
+- `p'` and `q` proxy extraction from the written `Sigma` tensor;
+- confinement diagnostics copied from the T3 force log;
+- SVG/PNG figures for pore pressure, strain, proxy stress path, `Kplastic`,
+  and selector behavior.
+
+The retained run completes with `code=0`, `excluded=0`, and `Kplastic=0`, but
+it is not a strict stress-path validation. The current `p'-q` path is a proxy
+because the output does not explicitly distinguish total from effective stress
+and does not write original positions, material `mk`, or confinement class.
+
+The selected confinement diagnostics remain good: active targets are `112`,
+active cap leakage is zero, lateral inward acceleration stays around
+`1.87 m/s2`, and force symmetry residual is small. The pore-pressure response
+is not yet stable enough for validation. Late-frame pressure reversal and a
+large pressure-rate excursion remain in the short dynamic window. T4 therefore
+points to T4b Zhao renormalized-gradient confinement and loading/stability
+refinement before DP or MCC reproduction work.
