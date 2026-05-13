@@ -682,3 +682,38 @@ Main conclusion:
 Recommended next step: prioritize a restart-based all-surface confinement
 equilibrium audit before implementing a ramped selector transition. DP, MCC,
 axial loading, and GPU validation remain deferred.
+
+## T4n2 Restart Equilibrium Audit
+
+T4n2 is retained under:
+
+`experiments/T4n2_RestartEquilibriumAudit/`
+
+It tests the recommended restart route instead of adding selector smoothing:
+
+1. Stage A: all-surface `f_i` confinement, initial hydrostatic effective
+   stress, feedback off;
+2. Stage B: true restart from Stage A `Part_0023`, switched to lateral-only
+   confinement, feedback off;
+3. Stage C: diagnostic delayed interior feedback after restart.
+
+The existing restart path preserves the current elastic u-pw state. Stage B
+restored `Sigma_kk`, `Sigma_ij`, `Kplastic`, and `PorePress` for `407/407`
+particles, and the CSV continuity comparison is exact in saved precision for
+stress, pore pressure, velocity, density, and position.
+
+The restart workflow itself is therefore feasible, but it does not solve the
+mechanical transition:
+
+| Case | Result | Final `p'` | Final `q` | Max `PorePressRate` |
+| --- | --- | ---: | ---: | ---: |
+| Stage A all-surface, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `46.38 Pa` | `15.65 Pa` | `3.98e7 Pa/s` |
+| Stage B restart lateral, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `13.50 Pa` | `37.89 Pa` | `4.02e7 Pa/s` |
+| Fresh lateral-only, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `17.11 Pa` | `51.47 Pa` | `4.48e7 Pa/s` |
+| Stage C restart lateral, delayed feedback | `code=0`, `excluded=0`, `DtMin=0` | failed | failed | `1.84e12 Pa/s` |
+
+Stage B improves `q` relative to a fresh lateral-only run and is slightly
+better than the T4n instant switch, but it still loses hydrostatic balance and
+drives all particles into negative pore pressure. Stage C confirms that
+feedback after restart is still unstable. Axial loading remains disabled. DP,
+MCC, and GPU validation remain deferred.

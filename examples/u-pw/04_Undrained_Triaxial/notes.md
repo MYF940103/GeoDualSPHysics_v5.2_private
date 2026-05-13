@@ -641,3 +641,27 @@ Prefer a restart-based equilibrium audit: Stage A all-surface `f_i`
 confinement with initial stress and damping, then restart into Stage B
 lateral-only confinement without axial loading. If restart fidelity is blocked,
 a ramped selector can be revisited as a clearly labeled diagnostic protocol.
+
+## T4n2 Restart Equilibrium Audit Notes
+
+T4n2 verifies that restart is not the missing link. The current Part restart
+route restores the essential u-pw elastic fields:
+
+- position, velocity, and density through standard Part data;
+- `Sigma_kk`, `Sigma_ij`, and `Kplastic`;
+- `PorePress`, provided `SavePorePressure=1`.
+
+`ExcessPorePress` is not separately restored, but this is acceptable for the
+current `HydraulicElevationSource=0` tests because it equals `PorePress`.
+Diagnostic/rate fields such as `PorePressRate`, `DivVel`, and feedback
+acceleration are reset and recomputed.
+
+The Stage A all-surface state restarts exactly into Stage B in saved precision.
+However, switching the restarted state to lateral-only confinement still drops
+the final `p'` proxy to about `13.5 Pa`, increases `q` to about `37.9 Pa`, and
+makes all particles negative in pore pressure. Delayed interior feedback after
+restart remains unstable (`~1.84e12 Pa/s` max `PorePressRate`).
+
+Conclusion: restart fidelity is adequate, but the all-surface-to-lateral
+mechanical transition remains unresolved. Do not reintroduce axial loading,
+DP, or MCC yet.

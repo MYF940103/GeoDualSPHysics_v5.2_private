@@ -1828,3 +1828,20 @@ Recommended GPU stance remains unchanged: defer GPU triaxial validation until
 the CPU workflow has a reference-supported stable confinement route. The next
 CPU task should audit restart-based all-surface confinement equilibrium before
 any selector-ramp implementation, axial loading, DP, or MCC work.
+
+## T4n2 Restart Equilibrium Audit GPU Status
+
+T4n2 is XML/script/postprocessing only. It uses existing CPU restart support
+and does not add source code or GPU functionality.
+
+The CPU audit confirms that restart can preserve the current elastic u-pw
+state needed for staged confinement: velocity, density, stress tensor,
+`Kplastic`, and `PorePress` are restored from Stage A `Part_0023`. The restart
+is exact in saved CSV precision. This removes restart fidelity as the immediate
+blocker.
+
+The physics gate still fails. Restarting into lateral-only confinement lowers
+`q` relative to a fresh lateral-only run, but hydrostatic balance is still lost
+and delayed feedback after restart reaches order `1e12 Pa/s` `PorePressRate`.
+No axial loading, GPU simulation, DP baseline, or MCC work should start from
+T4n2.
