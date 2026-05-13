@@ -219,3 +219,31 @@ and net-force symmetry residual remains small. The pore-pressure response is
 still too oscillatory for validation, so the recommended next step is T4b:
 Zhao-style renormalized-gradient confinement and loading/stability refinement
 before a T5 DP baseline or any T6 MCC work.
+
+## T4b Renormalized Confinement
+
+T4b is retained under:
+
+`experiments/T4b_RenormalizedConfinement/`
+
+It adds the opt-in parameter:
+
+`ConfiningStressGradientMode=1`
+
+which applies a local first-order renormalized/corrected kernel gradient only
+to the CPU `FlexibleConfiningStress` pair term. The default remains
+`ConfiningStressGradientMode=0`, so old raw-gradient behavior is unchanged.
+
+CPU Release T4b smokes:
+
+| Case | Result | Key observation |
+| --- | --- | --- |
+| renormalized, T4 loading | `code=0`, `excluded=0`, `Kplastic=0` | gradient correction succeeded with `112/0` corrected/fallback targets, but pressure-rate artifacts worsened. |
+| renormalized, gentle loading | `code=0`, `excluded=0`, `Kplastic=0` | gentler loading gave only a small improvement over the renormalized T4-loading case. |
+
+The selector remains correct: cap leakage is still `0` and active targets stay
+at `112`. However, the renormalized gradient roughly doubles the lateral
+inward acceleration (`~1.87 -> ~3.76 m/s2`) on this reduced coarse cylinder and
+does not remove pressure reversal. T4b therefore does not justify moving to T5
+DP or T6 MCC yet. The next step should stabilize confinement/loading and then
+add minimal output fields for strict stress-path validation.

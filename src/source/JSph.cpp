@@ -260,6 +260,7 @@ void JSph::InitVars(){
   ConfiningStressRampEnd=0.;
   ConfiningStressTargetMk=-1;
   ConfiningStressMode=0;
+  ConfiningStressGradientMode=0;
   FlexibleConfiningStressFiDiagnostic=false;
   SaveConfiningStressDiagnostics=false;
   ConfiningStressFiThreshold=0.70;
@@ -296,6 +297,10 @@ void JSph::InitVars(){
   ConfiningStressDiagMaxAccel=0.;
   ConfiningStressDiagComAccel=0.;
   ConfiningStressDiagSymResidual=0.;
+  ConfiningStressDiagGradCorrectedCount=0;
+  ConfiningStressDiagGradFallbackCount=0;
+  ConfiningStressDiagGradDetMin=0.;
+  ConfiningStressDiagGradDetMax=0.;
   ConfiningStressDiagLastPrintStep=-1;
   PorePressureTopDrainedStartTime=0.;
   HydromechDamping=false;
@@ -1018,6 +1023,11 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  ConfiningStressMode=0;  break;
     default: Run_Exceptioon("ConfiningStressMode is not valid. Only mode 0 is implemented.");
   }
+  switch(eparms.GetValueInt("ConfiningStressGradientMode",true,0)){
+    case 0:  ConfiningStressGradientMode=0;  break;
+    case 1:  ConfiningStressGradientMode=1;  break;
+    default: Run_Exceptioon("ConfiningStressGradientMode is not valid. Valid values are 0 raw and 1 renormalized.");
+  }
   switch(eparms.GetValueInt("FlexibleConfiningStressFiDiagnostic",true,0)){
     case 0:  FlexibleConfiningStressFiDiagnostic=false;  break;
     case 1:  FlexibleConfiningStressFiDiagnostic=true;   break;
@@ -1118,6 +1128,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
   if(ConfiningStressRampEnd<ConfiningStressRampStart)Run_Exceptioon("ConfiningStressRampEnd must be greater than or equal to ConfiningStressRampStart.");
   if(ConfiningStressTargetMk<-1)Run_Exceptioon("ConfiningStressTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+  if(ConfiningStressGradientMode && !FlexibleConfiningStress)
+    Log->PrintWarning("ConfiningStressGradientMode is enabled but FlexibleConfiningStress=0. The gradient mode will have no force effect.");
   if(ConfiningStressFiThreshold<=0.)Run_Exceptioon("ConfiningStressFiThreshold must be greater than zero.");
   if(ConfiningStressGeometry==1){
     const double ax=ConfiningStressCylinderAxis.x, ay=ConfiningStressCylinderAxis.y, az=ConfiningStressCylinderAxis.z;
@@ -2187,6 +2199,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ConfiningStressRampEnd",ConfiningStressRampEnd));
     Log->Print(fun::VarStr("  ConfiningStressTargetMk",ConfiningStressTargetMk));
     Log->Print(fun::VarStr("  ConfiningStressMode",ConfiningStressMode));
+    Log->Print(fun::VarStr("  ConfiningStressGradientMode",ConfiningStressGradientMode));
     Log->Print(fun::VarStr("  FlexibleConfiningStressFiDiagnostic",FlexibleConfiningStressFiDiagnostic));
     Log->Print(fun::VarStr("  SaveConfiningStressDiagnostics",SaveConfiningStressDiagnostics));
     Log->Print(fun::VarStr("  ConfiningStressFiThreshold",ConfiningStressFiThreshold));
@@ -2201,6 +2214,8 @@ void JSph::VisuConfig(){
     }
     Log->Print(fun::VarStr("  ConfiningStressUseFiSelector",ConfiningStressUseFiSelector));
     Log->Print(fun::VarStr("  ConfiningStressUseLateralSelector",ConfiningStressUseLateralSelector));
+    if(ConfiningStressGradientMode==1)
+      Log->Print("  ConfiningStressGradientMode=1: CPU renormalized/corrected kernel gradient is applied only to the flexible confining stress pair term.");
     Log->Print("  FlexibleConfiningStress convention: positive ConfiningStressP0 is external compression; in the current SPH stress-divergence sign convention it is added as a positive isotropic stress-like pair contribution and is not written to the material stress state.");
     ConfigInfo=ConfigInfo+sep+"FlexConfStress";
   }
@@ -3385,6 +3400,10 @@ void JSph::ResetFlexibleConfiningStressDiagnostics()const{
   ConfiningStressDiagMaxAccel=0.;
   ConfiningStressDiagComAccel=0.;
   ConfiningStressDiagSymResidual=0.;
+  ConfiningStressDiagGradCorrectedCount=0;
+  ConfiningStressDiagGradFallbackCount=0;
+  ConfiningStressDiagGradDetMin=0.;
+  ConfiningStressDiagGradDetMax=0.;
 }
 
 //==============================================================================
@@ -3407,6 +3426,11 @@ void JSph::PrintFlexibleConfiningStressDiagnostics()const{
         ,ConfiningStressDiagClassOutsideCount,ConfiningStressDiagLateralFiSelectedCount,ConfiningStressDiagCapFiSelectedCount
         ,ConfiningStressDiagLateralRadialAccelMean,ConfiningStressDiagLateralRadialAccelMax
         ,ConfiningStressDiagCapAxialAccelMean,ConfiningStressDiagCapAxialAccelMax);
+    }
+    if(ConfiningStressGradientMode==1){
+      Log->Printf("FlexibleConfiningStress gradient diagnostics: step=%d, gradient_mode=%d, corrected=%u, fallback=%u, det_min=%g, det_max=%g."
+        ,Nstep,ConfiningStressGradientMode,ConfiningStressDiagGradCorrectedCount,ConfiningStressDiagGradFallbackCount
+        ,ConfiningStressDiagGradDetMin,ConfiningStressDiagGradDetMax);
     }
     ConfiningStressDiagLastPrintStep=Nstep;
   }

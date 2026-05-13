@@ -1118,6 +1118,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     double legacycount,ficount,fiselcount,fisum,fimin,fimax;
     double classinterior,classlateral,classtop,classbottom,classedge,classoutside;
     double latfiseld,capfiseld,latrsum,latrmax,latrcount,capasum,capamax,capacount;
+    double gradcorrected,gradfallback,graddetmin,graddetmax;
   };
   vector<StConfDiagThread> confth(OMP_MAXTHREADS);
   for(int th=0;th<OmpThreads;th++){
@@ -1129,6 +1130,8 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     ct.latfiseld=ct.capfiseld=0.;
     ct.latrsum=ct.latrmax=ct.latrcount=0.;
     ct.capasum=ct.capamax=ct.capacount=0.;
+    ct.gradcorrected=ct.gradfallback=0.;
+    ct.graddetmin=DBL_MAX; ct.graddetmax=-DBL_MAX;
   }
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
   const int pfin=int(pinit+n);
@@ -1192,12 +1195,70 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const bool conffiselp1=(!ConfiningStressUseFiSelector || conffip1<=ConfiningStressFiThreshold);
     const bool conflatselp1=(!ConfiningStressUseLateralSelector || confclassp1==2);
     const bool confactivep1=(conftargetp1 && conffiselp1 && conflatselp1);
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+    bool confgradcorrp1=false;
+    double confgraddetp1=0.;
+    tmatrix3d confgradinvp1=TMatrix3d(0);
+    if(confactivep1 && ConfiningStressGradientMode==1){
+      const bool sim2d=Simulate2D;
+      const unsigned minneigh=(sim2d? 6u: 12u);
+      const double detlimit=(sim2d? 1e-6: 1e-8);
+      tmatrix3d lcorr=TMatrix3d(0);
+      unsigned nneigh=0;
+      const StNgSearch ngscg=nsearch::Init(dcell[p1],false,divdata);
+      for(int z=ngscg.zini;z<ngscg.zfin;z++)for(int y=ngscg.yini;y<ngscg.yfin;y++){
+        const tuint2 pif=nsearch::ParticleRange(y,z,ngscg,divdata);
+        bool rsym=false; //<vs_syymmetry>
+        for(unsigned p2=pif.x;p2<pif.y;p2++){
+          if(p2==unsigned(p1) || !IsFlexibleConfiningStressTarget(code[p2])){ rsym=false; continue; }
+          const float drx=float(posp1.x-pos[p2].x);
+                float dry=float(posp1.y-pos[p2].y);
+          if(rsym)dry=float(posp1.y+pos[p2].y); //<vs_syymmetry>
+          const float drz=float(posp1.z-pos[p2].z);
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=KernelSize2 && rr2>=ALMOSTZERO && velrhop[p2].w>0.f){
+            const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+            const double frx=double(fac*drx);
+            const double fry=double(fac*dry);
+            const double frz=double(fac*drz);
+            const double vol2=double(MassFluid)/double(velrhop[p2].w);
+            lcorr.a11+=-double(drx)*frx*vol2; lcorr.a12+=-double(drx)*fry*vol2; lcorr.a13+=-double(drx)*frz*vol2;
+            lcorr.a21+=-double(dry)*frx*vol2; lcorr.a22+=-double(dry)*fry*vol2; lcorr.a23+=-double(dry)*frz*vol2;
+            lcorr.a31+=-double(drz)*frx*vol2; lcorr.a32+=-double(drz)*fry*vol2; lcorr.a33+=-double(drz)*frz*vol2;
+            nneigh++;
+            rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+            if(rsym)p2--;                                             //<vs_syymmetry>
+          }
+          else rsym=false;                                            //<vs_syymmetry>
+        }
+      }
+      if(nneigh>=minneigh){
+        if(sim2d){
+          const double a=lcorr.a11,b=lcorr.a13,c=lcorr.a31,d=lcorr.a33;
+          confgraddetp1=a*d-b*c;
+          if(fabs(confgraddetp1)>=detlimit){
+            confgradinvp1.a11= d/confgraddetp1; confgradinvp1.a13=-b/confgraddetp1;
+            confgradinvp1.a31=-c/confgraddetp1; confgradinvp1.a33= a/confgraddetp1;
+            confgradcorrp1=(confgradinvp1.a11==confgradinvp1.a11 && confgradinvp1.a13==confgradinvp1.a13
+              && confgradinvp1.a31==confgradinvp1.a31 && confgradinvp1.a33==confgradinvp1.a33);
+          }
+        }
+        else{
+          confgraddetp1=fmath::Determinant3x3(lcorr);
+          if(fabs(confgraddetp1)>=detlimit){
+            confgradinvp1=fmath::InverseMatrix3x3(lcorr,confgraddetp1);
+            confgradcorrp1=(confgradinvp1.a11==confgradinvp1.a11 && confgradinvp1.a12==confgradinvp1.a12 && confgradinvp1.a13==confgradinvp1.a13
+              && confgradinvp1.a21==confgradinvp1.a21 && confgradinvp1.a22==confgradinvp1.a22 && confgradinvp1.a23==confgradinvp1.a23
+              && confgradinvp1.a31==confgradinvp1.a31 && confgradinvp1.a32==confgradinvp1.a32 && confgradinvp1.a33==confgradinvp1.a33);
+          }
+        }
+      }
+    }
     //-Obtains elastic parameters
     float modulus_K=SoilCte.ModulusK;
     float modulus_G=SoilCte.ModulusG;
     float phi=SoilCte.phi;
     const tsymatrix3f taup1=(tvisco==VISCO_Artificial? gradvelp1: tau[p1]);
-    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
 
     //-Search for neighbours in adjacent cells.
     const StNgSearch ngs=nsearch::Init(dcell[p1],boundp2,divdata);
@@ -1256,7 +1317,20 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
             if(confactivep1 && !ftp2 && IsFlexibleConfiningStressTarget(code[p2])){
               const float prsconf=massp2*(confp0+confp0)/(rhopp1*velrhop2.w);
-              const tfloat3 aceconf=TFloat3(prsconf*frx,prsconf*fry,prsconf*frz);
+              float frxconf=frx,fryconf=fry,frzconf=frz;
+              if(ConfiningStressGradientMode==1 && confgradcorrp1){
+                if(Simulate2D){
+                  frxconf=float(confgradinvp1.a11*double(frx)+confgradinvp1.a13*double(frz));
+                  fryconf=0.f;
+                  frzconf=float(confgradinvp1.a31*double(frx)+confgradinvp1.a33*double(frz));
+                }
+                else{
+                  frxconf=float(confgradinvp1.a11*double(frx)+confgradinvp1.a12*double(fry)+confgradinvp1.a13*double(frz));
+                  fryconf=float(confgradinvp1.a21*double(frx)+confgradinvp1.a22*double(fry)+confgradinvp1.a23*double(frz));
+                  frzconf=float(confgradinvp1.a31*double(frx)+confgradinvp1.a32*double(fry)+confgradinvp1.a33*double(frz));
+                }
+              }
+              const tfloat3 aceconf=TFloat3(prsconf*frxconf,prsconf*fryconf,prsconf*frzconf);
               acep1.x+=aceconf.x; acep1.y+=aceconf.y; acep1.z+=aceconf.z;
               confacep1.x+=aceconf.x; confacep1.y+=aceconf.y; confacep1.z+=aceconf.z;
             }
@@ -1497,6 +1571,12 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
         }
       }
       if(confactivep1){
+        if(ConfiningStressGradientMode==1){
+          if(confgradcorrp1)ct.gradcorrected+=1.;
+          else ct.gradfallback+=1.;
+          if(ct.graddetmin>confgraddetp1)ct.graddetmin=confgraddetp1;
+          if(ct.graddetmax<confgraddetp1)ct.graddetmax=confgraddetp1;
+        }
         ct.netx+=double(MassFluid)*ax;
         ct.nety+=double(MassFluid)*ay;
         ct.netz+=double(MassFluid)*az;
@@ -1513,6 +1593,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     double ficount=0.,fiselcount=0.,fisum=0.,fimin=DBL_MAX,fimax=-DBL_MAX;
     double classinterior=0.,classlateral=0.,classtop=0.,classbottom=0.,classedge=0.,classoutside=0.;
     double latfiseld=0.,capfiseld=0.,latrsum=0.,latrmax=0.,latrcount=0.,capasum=0.,capamax=0.,capacount=0.;
+    double gradcorrected=0.,gradfallback=0.,graddetmin=DBL_MAX,graddetmax=-DBL_MAX;
     for(int th=0;th<OmpThreads;th++){
       const StConfDiagThread &ct=confth[th];
       netx+=ct.netx; nety+=ct.nety; netz+=ct.netz;
@@ -1529,6 +1610,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       if(latrmax<ct.latrmax)latrmax=ct.latrmax;
       capasum+=ct.capasum; capacount+=ct.capacount;
       if(capamax<ct.capamax)capamax=ct.capamax;
+      gradcorrected+=ct.gradcorrected; gradfallback+=ct.gradfallback;
+      if(graddetmin>ct.graddetmin)graddetmin=ct.graddetmin;
+      if(graddetmax<ct.graddetmax)graddetmax=ct.graddetmax;
     }
     const double netmag=sqrt(netx*netx+nety*nety+netz*netz);
     ConfiningStressDiagP0Eff=confp0d;
@@ -1555,6 +1639,10 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     ConfiningStressDiagMaxAccel=maxaccel;
     ConfiningStressDiagComAccel=(count>0.? netmag/(double(MassFluid)*count): 0.);
     ConfiningStressDiagSymResidual=(absforce>0.? netmag/absforce: 0.);
+    ConfiningStressDiagGradCorrectedCount=unsigned(gradcorrected);
+    ConfiningStressDiagGradFallbackCount=unsigned(gradfallback);
+    ConfiningStressDiagGradDetMin=(graddetmin==DBL_MAX? 0.: graddetmin);
+    ConfiningStressDiagGradDetMax=(graddetmax==-DBL_MAX? 0.: graddetmax);
   }
 }
 

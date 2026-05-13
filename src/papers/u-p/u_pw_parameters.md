@@ -27,6 +27,7 @@ The material/phase constants below are now soil material constants and should be
 | `ConfiningStressRampEnd` | double [s] | `ConfiningStressRampStart` | Linear ramp end time. If equal to start, load is applied without ramp. | Experimental |
 | `ConfiningStressTargetMk` | int | `-1` | `-1`: all normal material particles; otherwise target one `mkfluid` value. | Experimental |
 | `ConfiningStressMode` | int | `0` | `0`: isotropic flexible confining stress. Other modes are reserved. | Experimental |
+| `ConfiningStressGradientMode` | `0/1` | `0` | `0`: raw kernel gradient, legacy behavior. `1`: CPU renormalized/corrected kernel gradient for the flexible confining stress pair term only. GPU hard-errors when this mode is enabled. | Experimental |
 | `FlexibleConfiningStressFiDiagnostic` | `0/1` | `0` | Computes Zhao-style kernel completeness `f_i = sum_j (m_j/rho_j) W_ij` for material targets. Diagnostic only unless selector is enabled. | Experimental |
 | `SaveConfiningStressDiagnostics` | `0/1` | `0` | Prints extended CPU confinement diagnostics: target counts, `f_i` summary, cylinder classes, net force, radial tendency, and cap leakage. | Experimental |
 | `ConfiningStressFiThreshold` | float, `>0` | `0.70` | Candidate near-boundary threshold for `f_i` selector. Zhao suggests `0.70` for 3D diagnostics. | Experimental |
@@ -178,6 +179,7 @@ The only automatic or conditional behavior under `HydromechCoupling=1` is:
 - `HydraulicElevationSource=0` is the C4-D CPU-only gravity-free Cryer convention: positive `HydraulicGravity` magnitude remains required for hydraulic conductivity scaling, but the hydrostatic reference is zero and `k*LapZ` is omitted from `PorePressRate`.
 - `BodyGravityStopTime`, when positive, only affects the mechanical body-gravity acceleration used by the CPU/GPU time integration. It does not modify the stored body `Gravity` vector and does not alter `HydraulicGravity`.
 - `FlexibleConfiningStress=1` is CPU-only in C4-B3. It adds a positive-compression isotropic stress-like pair contribution to the mechanical momentum summation, does not write to the material stress tensor, and does not alter `PorePress`, `PorePressRate`, `LapPorePress`, `LapZ`, `AccInput`, or `HydraulicGravity`.
+- `ConfiningStressGradientMode=1` is a T4b opt-in Zhao-style diagnostic path. It computes a local first-order correction matrix from target material neighbours and applies the corrected gradient only to the flexible confinement pair term. The default `0` keeps the previous raw-gradient behavior. GPU execution hard-errors when mode `1` is requested.
 
 Recommended presets:
 

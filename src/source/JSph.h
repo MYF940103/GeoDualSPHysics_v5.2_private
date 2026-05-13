@@ -271,6 +271,7 @@ protected:
   double ConfiningStressRampEnd;   ///<End time for confining stress ramp [s].
   int ConfiningStressTargetMk;  ///<Target mkfluid for confining stress. -1:all material particles.
   int ConfiningStressMode;      ///<Flexible confining stress mode. 0:isotropic stress source.
+  int ConfiningStressGradientMode; ///<Gradient mode for flexible confinement. 0:raw kernel gradient, 1:renormalized/corrected gradient.
   bool FlexibleConfiningStressFiDiagnostic; ///<Compute Zhao kernel-completeness diagnostic f_i.
   bool SaveConfiningStressDiagnostics; ///<Print extended CPU confinement diagnostics.
   double ConfiningStressFiThreshold; ///<Kernel-completeness threshold for near-boundary diagnostics/selectors.
@@ -307,6 +308,10 @@ protected:
   mutable double ConfiningStressDiagMaxAccel; ///<Last maximum confining acceleration estimate [m/s2].
   mutable double ConfiningStressDiagComAccel; ///<Last center-of-mass acceleration estimate [m/s2].
   mutable double ConfiningStressDiagSymResidual; ///<Last force symmetry residual.
+  mutable unsigned ConfiningStressDiagGradCorrectedCount; ///<Last renormalized-gradient corrected target count.
+  mutable unsigned ConfiningStressDiagGradFallbackCount; ///<Last renormalized-gradient fallback target count.
+  mutable double ConfiningStressDiagGradDetMin; ///<Last renormalized-gradient determinant minimum.
+  mutable double ConfiningStressDiagGradDetMax; ///<Last renormalized-gradient determinant maximum.
   mutable int ConfiningStressDiagLastPrintStep; ///<Last step printed for confining diagnostics.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.

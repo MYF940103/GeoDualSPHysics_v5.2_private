@@ -1559,3 +1559,29 @@ yet provide strict total/effective stress labeling, original position, material
 GPU remains deferred. The next CPU-first task should be T4b Zhao-style
 renormalized-gradient confinement and loading/stability refinement before any
 T5 DP baseline, GPU parity run, or T6 MCC implementation.
+
+## T4b Zhao Renormalized Confinement
+
+T4b adds CPU-only `ConfiningStressGradientMode` for the flexible confinement
+term:
+
+- `0`: raw kernel gradient, default and legacy behavior;
+- `1`: local first-order renormalized/corrected gradient for
+  `FlexibleConfiningStress` only.
+
+CPU Release and GPU Release builds passed. No GPU simulation was run.
+`ConfiningStressGradientMode=1` and `FlexibleConfiningStress=1` remain
+GPU-unsupported and hard-error on GPU.
+
+Two CPU Release smokes under
+`examples/u-pw/04_Undrained_Triaxial/experiments/T4b_RenormalizedConfinement/`
+completed with `code=0`, `excluded=0`, and `Kplastic=0`. The gradient
+diagnostic corrected all selected lateral targets with zero fallbacks. The
+selector still eliminates cap leakage.
+
+The renormalized gradient is not yet a validation path. It roughly doubles the
+lateral confinement acceleration in the reduced cylinder and worsens the
+short-window pressure-rate/pressure-reversal artifact. Gentler axial loading
+helps only marginally. GPU work remains deferred; the next CPU task should
+stabilize the selected-confinement loading response before T5 DP, T6 MCC, or
+GPU parity.

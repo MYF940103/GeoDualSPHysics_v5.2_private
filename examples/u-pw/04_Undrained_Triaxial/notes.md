@@ -205,3 +205,28 @@ is not yet stable enough for validation. Late-frame pressure reversal and a
 large pressure-rate excursion remain in the short dynamic window. T4 therefore
 points to T4b Zhao renormalized-gradient confinement and loading/stability
 refinement before DP or MCC reproduction work.
+
+## T4b Renormalized Confinement Notes
+
+T4b implemented `ConfiningStressGradientMode`:
+
+- `0`: raw kernel gradient, legacy/default behavior;
+- `1`: CPU renormalized/corrected gradient for the flexible confinement pair
+  term only.
+
+The implementation is opt-in and leaves the default confinement path unchanged.
+Both T4b CPU Release smokes completed with `code=0`, `excluded=0`, and
+`Kplastic=0`. The gradient matrix diagnostic reports all `112` active lateral
+targets corrected with zero fallbacks.
+
+The numerical result is not validation-ready. In this reduced cylinder the
+renormalized gradient increases lateral inward acceleration from about
+`1.87 m/s2` to about `3.76 m/s2`, keeps cap leakage at `0`, but worsens
+velocity, pressure reversal, and `PorePressRate` excursions. Gentler axial
+loading helps only marginally.
+
+T4b therefore redirects the next step away from DP/MCC: first stabilize the
+linear-elastic selected-confinement response, likely with a confinement
+magnitude limiter, staged equilibration, or smoother loading strategy. Minimal
+output enhancement for strict `p'-q` should follow once the reduced response is
+smooth enough to measure.
