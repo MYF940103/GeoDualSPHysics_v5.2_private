@@ -468,3 +468,40 @@ Recommended T4j:
 2. gate it with manufactured and closed-support tests;
 3. only then retry selected-confinement full feedback;
 4. keep DP/MCC and GPU deferred.
+
+## T4j Paper-Style Feedback Notes
+
+T4j implements `PorePressureFeedbackOperator=3`, a CPU-only experimental
+paper-style pressure stress-pair route:
+
+```text
+a_i^pw = sum_j m_j (p_i+p_j)/(rho_i rho_j) grad W_ij
+```
+
+The operator follows the stress-divergence sign convention used by the
+paper-style u-pw notes and by the flexible confinement pair term. It still runs
+as a separate feedback pass rather than being merged into the skeleton stress
+loop, so it is a prototype, not the final total-stress implementation.
+
+Manufactured behavior:
+
+- operators `1/2` remain the clean internal gradient routes for uniform and
+  linear pressure fields;
+- operator `3` behaves like a stress-pair term and therefore produces a
+  free-surface response for uniform pressure on the truncated cylinder cloud;
+- this response is expected without boundary pressure completion.
+
+Dynamic selected-confinement results:
+
+- operator `1` interior-only baseline: `code=0`, `excluded=0`, no DtMin burst,
+  but reversal remains and max `PorePressRate=4.79e10 Pa/s`;
+- operator `3` unfiltered: all particles were excluded and max
+  `PorePressRate=1.86e12 Pa/s`;
+- operator `3` interior-only: `excluded=55`, `243` DtMin adjustments, max
+  `PorePressRate=2.27e12 Pa/s`.
+
+T4j therefore does not unlock axial loading, DP, or MCC. It does strengthen the
+diagnosis: a raw paper-style pressure pair needs boundary completion and/or an
+initial hydrostatic confinement state. The recommended next stage is T4k
+initial hydrostatic confinement, with total-stress coupling left as a later
+candidate.

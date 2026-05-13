@@ -331,6 +331,10 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
   void ComputePorePressureAccel(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
+  template<TpKernel tker> void ComputePorePressureAccelPaperT(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
+  void ComputePorePressureAccelPaper(unsigned n,unsigned pini
+    ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const;
   template<TpKernel tker> void ComputePorePressureAccelDiffT(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
   void ComputePorePressureAccelDiff(unsigned n,unsigned pini

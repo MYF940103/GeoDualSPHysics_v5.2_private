@@ -502,7 +502,7 @@ Status after C5q:
 |---|---:|---:|---|---|
 | `PorePressureFeedback` | `0/1` | `0` | Enables pore-pressure acceleration feedback to `Acec`. | Keep |
 | `PorePressureFeedbackMode` | `0/1` | `0` | `0`: use total `PorePress`; `1`: use excess `PorePress - p_hydro`. | Keep |
-| `PorePressureFeedbackOperator` | `0/1/2` | `0` | `0`: symmetric stress-style operator; `1`: difference-gradient operator; `2`: CPU-only LSQ pressure-gradient feedback. | Keep / Experimental |
+| `PorePressureFeedbackOperator` | `0/1/2/3` | `0` | `0`: legacy symmetric stress-style operator; `1`: difference-gradient operator; `2`: CPU-only LSQ pressure-gradient feedback; `3`: CPU-only paper-style stress-pair pressure momentum prototype. | Keep / Experimental |
 | `PorePressureFeedbackLSQRadiusFactor` | float, `>0` | `1` | Support-radius factor for operator `2`, capped by the kernel support. | Experimental |
 | `PorePressureFeedbackLSQConditionLimit` | float, `>=0` | `1e12` | LSQ condition proxy limit for operator `2`; `<=0` disables the condition check. | Experimental |
 | `PorePressureFeedbackLSQFallback` | `0/1` | `0` | Operator `2` fallback: `0` uses operator `1` difference-gradient, `1` applies zero feedback for ill-conditioned particles. | Experimental |
@@ -599,6 +599,9 @@ Operator 2: LSQ pressure-gradient feedback
   p_j - p_i ~= gradp_i dot (x_j-x_i)
   A_i gradp_i = b_i
   a_pw = -gradp_i/rho_i
+
+Operator 3: paper-style stress-pair pressure momentum prototype
+  a_pw = sum_j m_j * (p_i+p_j)/(rho_i*rho_j) * gradW_ij
 ```
 
 `Sigmac` remains the skeleton effective stress. Pore pressure is not subtracted from `Sigmac`; it is fed back as an acceleration term.
@@ -609,6 +612,15 @@ selected-confinement dynamic gate: unstabilized LSQ reaches about
 `5.04e10 Pa/s` max `PorePressRate`, and stabilized LSQ still reverses. Do not
 use operator `2` as a triaxial validation setting yet. GPU execution
 hard-errors when operator `2` is requested.
+
+T4j adds operator `3` as a CPU diagnostic route that is closer to the original
+u-pw notes in algebraic stress-pair form. It is not validation-ready: uniform
+pressure on the free-surface triaxial cloud produces the expected missing-
+support surface response, and the selected-confinement dynamic gate is worse
+than operator `1` (`excluded=407` unfiltered, `excluded=55` interior-only).
+GPU execution hard-errors when operator `3` is requested. Do not use operator
+`3` for new validation cases without a new boundary-completion or initial-
+confinement plan.
 
 ## 5. Stabilization Parameters
 

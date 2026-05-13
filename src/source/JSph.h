@@ -257,7 +257,7 @@ protected:
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
-  int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient, 2:LSQ pressure gradient.
+  int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient, 2:LSQ pressure gradient, 3:paper-style stress pair.
   double PorePressureFeedbackStartTime; ///<Time when pore-pressure feedback acceleration starts [s].
   double PorePressureFeedbackRampEndTime; ///<Optional time when feedback acceleration reaches full scale [s].
   double PorePressureFeedbackScale; ///<Maximum pore-pressure feedback acceleration scale.

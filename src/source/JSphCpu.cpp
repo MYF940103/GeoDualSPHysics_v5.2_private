@@ -3936,6 +3936,74 @@ void JSphCpu::ComputePorePressureAccel(unsigned n,unsigned pini
 }
 
 //==============================================================================
+/// Computes paper-style stress-pair pore-pressure momentum acceleration.
+//==============================================================================
+template<TpKernel tker> void JSphCpu::ComputePorePressureAccelPaperT(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const
+{
+  const bool excessmode=(PorePressureFeedbackMode==1);
+  if(excessmode && HydraulicElevationSource && GetHydraulicGmag()<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for paper-style pore-pressure feedback mode.");
+  const int nint=int(n);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (guided) if(nint>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int cp=0;cp<nint;cp++){
+    const unsigned p1=pini+unsigned(cp);
+    if(!CODE_IsFluid(code[p1]))continue;
+
+    tfloat3 acep1=TFloat3(0);
+    const tdouble3 posp1=pos[p1];
+    const double hydro1=(excessmode? GetHydrostaticPorePressure(posp1): 0.);
+    const double pwp1=porepress[p1]-hydro1;
+    const double rhop1=double(velrhop[p1].w);
+    if(rhop1<=0.)continue;
+    const bool rsymp1=(Symmetry && posp1.y<=KernelSize); //<vs_syymmetry>
+
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      bool rsym=false; //<vs_syymmetry>
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(!CODE_IsFluid(code[p2])){ rsym=false; continue; }
+        const float drx=float(posp1.x-pos[p2].x);
+              float dry=float(posp1.y-pos[p2].y);
+        if(rsym)dry=float(posp1.y+pos[p2].y); //<vs_syymmetry>
+        const float drz=float(posp1.z-pos[p2].z);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+          const float fac=fsph::GetKernel_Fac<tker>(CSP,rr2);
+          const float frx=fac*drx,fry=fac*dry,frz=fac*drz;
+          const double rhop2=double(velrhop[p2].w);
+          if(rhop2>0.){
+            const double hydro2=(excessmode? GetHydrostaticPorePressure(pos[p2]): 0.);
+            const double pwp2=porepress[p2]-hydro2;
+            const double pterm=double(MassFluid)*(pwp1+pwp2)/(rhop1*rhop2);
+            acep1.x+=float(pterm*double(frx));
+            acep1.y+=float(pterm*double(fry));
+            acep1.z+=float(pterm*double(frz));
+          }
+          rsym=(rsymp1 && !rsym && float(posp1.y-dry)<=KernelSize); //<vs_syymmetry>
+          if(rsym)p2--;                                             //<vs_syymmetry>
+        }
+        else rsym=false;                                            //<vs_syymmetry>
+      }
+    }
+    porepressureace[p1]=acep1;
+  }
+}
+
+//==============================================================================
+/// Computes paper-style stress-pair pore-pressure momentum acceleration.
+//==============================================================================
+void JSphCpu::ComputePorePressureAccelPaper(unsigned n,unsigned pini
+  ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureace)const
+{
+       if(TKernel==KERNEL_Wendland)ComputePorePressureAccelPaperT<KERNEL_Wendland>(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureace);
+  else if(TKernel==KERNEL_Cubic)   ComputePorePressureAccelPaperT<KERNEL_Cubic   >(n,pini,divdata,dcell,pos,velrhop,code,porepress,porepressureace);
+  else Run_Exceptioon("Kernel unknown.");
+}
+
+//==============================================================================
 /// Computes difference-gradient pore-pressure feedback acceleration diagnostic for material particles.
 //==============================================================================
 template<TpKernel tker> void JSphCpu::ComputePorePressureAccelDiffT(unsigned n,unsigned pini
@@ -4191,7 +4259,7 @@ void JSphCpu::ComputePorePressureAccelLsq(unsigned n,unsigned pini
 //==============================================================================
 void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *porepressurefeedbackused,tfloat3 *ace)const
 {
-  const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==0? porepressureace: porepressureacediff);
+  const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==0 || PorePressureFeedbackOperator==3? porepressureace: porepressureacediff);
   if(!porepressurefeedbackace)Run_Exceptioon("Selected pore-pressure feedback operator has no acceleration array.");
   ResetPorePressureFeedbackDiagnostics();
   const double feedbackfactor=GetPorePressureFeedbackFactor(TimeStep);

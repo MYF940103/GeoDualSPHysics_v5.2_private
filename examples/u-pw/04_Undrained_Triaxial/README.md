@@ -483,3 +483,44 @@ T4i-B therefore recommends T4j as a CPU-only paper-style pore-pressure momentum
 coupling prototype, with controlled manufactured/closed-support gates before
 returning to selected-confinement axial loading. DP, MCC, GPU parity, and
 full-paper triaxial reproduction remain deferred.
+
+## T4j Paper-Style Feedback Prototype
+
+T4j is retained under:
+
+`experiments/T4j_PaperStyleFeedback/`
+
+It adds a CPU-only experimental feedback operator:
+
+```xml
+<parameter key="PorePressureFeedbackOperator" value="3" />
+```
+
+Operator `3` computes the paper-style symmetric pressure stress-pair term
+
+```text
+a_i^pw = sum_j m_j (p_i+p_j)/(rho_i rho_j) grad W_ij
+```
+
+through the existing feedback acceleration path. Defaults remain unchanged and
+GPU hard-errors when operator `3` is requested.
+
+The manufactured checks behave as expected for a stress-pair term: operators
+`1/2` give zero acceleration for uniform pressure, while operators `0/3`
+produce a free-surface response under uniform pressure because the material
+support is truncated and no dummy/boundary pressure completion exists. This is
+not a sign/unit failure; it is the central limitation of the raw paper-style
+prototype.
+
+The selected-confinement gate did not pass:
+
+| Case | Result | Max `PorePressRate` |
+| --- | --- | ---: |
+| operator `1`, interior-only | `code=0`, `excluded=0`, `DtMin=0` | `4.79e10 Pa/s` |
+| operator `3`, unfiltered | `code=0`, `excluded=407`, `DtMin=82` | `1.86e12 Pa/s` |
+| operator `3`, interior-only | `code=0`, `excluded=55`, `DtMin=243` | `2.27e12 Pa/s` |
+
+Because confinement-only failed, no axial-loading smoke was run. Operator `3`
+is closer to the u-pw notes in algebraic form, but it is not a validated
+triaxial setting. The next step should be T4k initial hydrostatic confinement
+stress/equilibration, not DP/MCC.

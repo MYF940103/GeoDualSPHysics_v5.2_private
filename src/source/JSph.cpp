@@ -1024,6 +1024,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 0:  PorePressureFeedbackOperator=0;  break;
     case 1:  PorePressureFeedbackOperator=1;  break;
     case 2:  PorePressureFeedbackOperator=2;  break;
+    case 3:  PorePressureFeedbackOperator=3;  break;
     default: Run_Exceptioon("PorePressureFeedbackOperator is not valid.");
   }
   PorePressureFeedbackStartTime=eparms.GetValueDouble("PorePressureFeedbackStartTime",true,0.);
@@ -1198,8 +1199,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Log->PrintWarning("Pore-pressure feedback class filter is enabled but PorePressureFeedback=0. The filter will have no force effect.");
   if(PorePressureFeedbackExcludeConfinementTargets && !ConfiningStressUseLateralSelector)
     Run_Exceptioon("PorePressureFeedbackExcludeConfinementTargets=1 currently requires ConfiningStressUseLateralSelector=1 so selected lateral confinement targets are well-defined.");
-  if(!Cpu && PorePressureFeedbackOperator==2)
-    Run_Exceptioon("PorePressureFeedbackOperator=2 is CPU-only in this branch. GPU support is not implemented.");
+  if(!Cpu && (PorePressureFeedbackOperator==2 || PorePressureFeedbackOperator==3))
+    Run_Exceptioon("PorePressureFeedbackOperator=2/3 is CPU-only in this branch. GPU support is not implemented.");
   if(PorePressureBoundaryGhostOutput && !PorePressureBoundaryGhost)
     Log->PrintWarning("PorePressureBoundaryGhostOutput=1 has no effect because PorePressureBoundaryGhost=0.");
   if(!HydraulicElevationSource && !Cpu)
@@ -2287,7 +2288,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDtSafety",PorePressureDtSafety));
     Log->Print(fun::VarStr("  PorePressureFeedback",PorePressureFeedback));
     Log->Print(fun::VarStr("  PorePressureFeedbackMode",(PorePressureFeedbackMode==1? "ExcessPressure": "TotalPressure")));
-    Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==2? "LSQPressureGradient": (PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle"))));
+    Log->Print(fun::VarStr("  PorePressureFeedbackOperator",(PorePressureFeedbackOperator==3? "PaperStyleStressPair": (PorePressureFeedbackOperator==2? "LSQPressureGradient": (PorePressureFeedbackOperator==1? "DifferenceGradient": "SymmetricStressStyle")))));
     Log->Print(fun::VarStr("  PorePressureFeedbackStartTime",PorePressureFeedbackStartTime));
     Log->Print(fun::VarStr("  PorePressureFeedbackRampEndTime",PorePressureFeedbackRampEndTime));
     Log->Print(fun::VarStr("  PorePressureFeedbackScale",PorePressureFeedbackScale));

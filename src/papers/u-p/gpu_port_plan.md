@@ -1742,3 +1742,18 @@ GPU remains deferred for two reasons:
 
 No GPU triaxial parity, DP, or MCC work should start until the CPU
 paper-fidelity route is stable without relying on limiter caps.
+
+## T4j Paper-Style Feedback GPU Status
+
+T4j adds `PorePressureFeedbackOperator=3`, a CPU-only experimental
+paper-style pressure stress-pair feedback operator. GPU execution hard-errors
+when operator `3` is requested, matching the existing CPU-only status of
+operator `2` and other non-default triaxial feedback diagnostics.
+
+The CPU gate did not pass. Operator `3` is closer to the u-pw notes in pair
+form, but the raw material-only stress-pair route produces the expected
+free-surface uniform-pressure response and is dynamically worse than the
+operator-`1` interior baseline in selected confinement. No GPU port should be
+started. The next CPU work should focus on T4k initial hydrostatic confinement
+and pressure-boundary/stress consistency before returning to GPU parity, DP, or
+MCC.
