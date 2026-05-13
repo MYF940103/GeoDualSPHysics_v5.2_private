@@ -1845,3 +1845,16 @@ The physics gate still fails. Restarting into lateral-only confinement lowers
 and delayed feedback after restart reaches order `1e12 Pa/s` `PorePressRate`.
 No axial loading, GPU simulation, DP baseline, or MCC work should start from
 T4n2.
+
+## T4o Cap-Support-Preserving Staging GPU Status
+
+T4o is XML/script/postprocessing only and adds no new GPU functionality. It
+uses existing CPU-only staged triaxial features: `InitialStressMode=1`,
+`FlexibleConfiningStress`, restart, and `CapConfiningStress`.
+
+The CPU audit confirms that keeping explicit cap support after the all-surface
+restart does not solve the hydrostatic transition. Stage B runs cleanly but
+ends with higher `q` (`~61.9 Pa`) than the T4n2 lateral-only restart
+(`~37.9 Pa`), and delayed feedback still reaches order `1e12 Pa/s`
+`PorePressRate`. No axial smoke, GPU simulation, DP baseline, or MCC work
+should start from T4o.

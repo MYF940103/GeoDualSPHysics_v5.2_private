@@ -665,3 +665,31 @@ restart remains unstable (`~1.84e12 Pa/s` max `PorePressRate`).
 Conclusion: restart fidelity is adequate, but the all-surface-to-lateral
 mechanical transition remains unresolved. Do not reintroduce axial loading,
 DP, or MCC yet.
+
+## T4o Cap-Support-Preserving Staging Notes
+
+T4o tests a more mechanically plausible Stage B than the T4n2 lateral-only
+restart: after all-surface isotropic confinement, the restart keeps lateral
+selected confinement and adds `CapConfiningStress=1` so the top/bottom caps are
+not left unsupported.
+
+The hypothesis did not pass. Stage B is numerically clean (`code=0`,
+`excluded=0`, `DtMin=0`, `Kplastic=0`) and cap support is symmetric, but the
+hydrostatic state is not preserved:
+
+- Stage A final `p' approx 46.38 Pa`, `q approx 15.65 Pa`;
+- Stage B final `p' approx 23.87 Pa`, `q approx 61.92 Pa`;
+- the Stage B `q` is worse than the T4n2 lateral-only restart (`q approx
+  37.89 Pa`);
+- all particles are negative in pore pressure by the final Stage B frame.
+
+Delayed feedback after this lateral+cap restart reduces the peak
+`PorePressRate` relative to T4n2 Stage C (`9.32e11 Pa/s` vs `1.84e12 Pa/s`),
+but it still fails with high velocity, large negative pressure, and very large
+`q`. Axial smoke remains disabled.
+
+Conclusion: the all-surface Zhao confinement stage remains the best
+feedback-off hydrostatic route, but the current explicit cap-support patch is
+not compatible enough with that state to launch axial loading. The next step
+should revisit the cap/loading transition formulation rather than enter DP or
+MCC.

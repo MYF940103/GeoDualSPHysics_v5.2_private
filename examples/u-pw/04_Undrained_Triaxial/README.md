@@ -717,3 +717,31 @@ better than the T4n instant switch, but it still loses hydrostatic balance and
 drives all particles into negative pore pressure. Stage C confirms that
 feedback after restart is still unstable. Axial loading remains disabled. DP,
 MCC, and GPU validation remain deferred.
+
+## T4o Cap-Support-Preserving Restart
+
+T4o is retained under:
+
+`experiments/T4o_CapSupportStagedLoading/`
+
+It tests whether the T4n2 Stage B failure was caused by removing the cap/axial
+hydrostatic support after all-surface confinement:
+
+1. Stage A: all-surface `f_i` confinement, feedback off;
+2. Stage B: restart with lateral selected confinement plus
+   `CapConfiningStress=1`, feedback off;
+3. Stage C: same lateral+cap support with delayed feedback.
+
+The restart remains exact, and all runs completed with `code=0`, `excluded=0`,
+`DtMin=0`, and `Kplastic=0`. The mechanical gate did not pass:
+
+| Case | Final `p'` | Final `q` | Max `PorePressRate` |
+| --- | ---: | ---: | ---: |
+| Stage A all-surface, feedback off | `46.38 Pa` | `15.65 Pa` | `3.98e7 Pa/s` |
+| Stage B restart lateral+cap, feedback off | `23.87 Pa` | `61.92 Pa` | `5.06e7 Pa/s` |
+| Stage C restart lateral+cap, delayed feedback | failed | failed | `9.32e11 Pa/s` |
+
+The current explicit cap support does not preserve the all-surface hydrostatic
+state; it increases the `q` imbalance beyond the T4n2 lateral-only restart.
+Delayed feedback remains unstable, so axial loading was not restored. DP, MCC,
+and GPU validation remain deferred.
