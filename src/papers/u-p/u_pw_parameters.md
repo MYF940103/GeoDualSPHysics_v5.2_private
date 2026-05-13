@@ -506,6 +506,12 @@ Status after C5q:
 | `PorePressureFeedbackStartTime` | seconds | `0` | Optional CPU feedback gate. Feedback acceleration is zero before this time when `PorePressureFeedback=1`. | Experimental |
 | `PorePressureFeedbackRampEndTime` | seconds | `0` | Optional CPU feedback ramp end time. If greater than `StartTime`, feedback factor ramps linearly from zero to `Scale`. | Experimental |
 | `PorePressureFeedbackScale` | `0..1` | `1` | Maximum pore-pressure feedback acceleration scale for staged equilibration diagnostics. | Experimental |
+| `SavePorePressureFeedbackDiagnostics` | `0/1` | `0` | Prints CPU feedback acceleration diagnostics: factor, raw/used acceleration, limiter activation, and class-wise maxima. | Experimental |
+| `PorePressureFeedbackDiagInterval` | integer, `>0` | `1` | Step interval for feedback diagnostics when enabled. | Experimental |
+| `PorePressureFeedbackRelaxation` | `0..1` | `0` | Optional first-order feedback acceleration relaxation. `0` disables it; `(0,1)` uses `a_old + alpha(a_raw-a_old)`. | Experimental |
+| `PorePressureFeedbackLimiterMode` | `0..3` | `0` | `0`: none, `1`: absolute cap, `2`: ratio cap, `3`: absolute plus ratio cap. | Experimental |
+| `PorePressureFeedbackMaxAccel` | float, `>=0` | `0` | Absolute feedback acceleration cap in `m/s2`; disabled when `<=0`. | Experimental |
+| `PorePressureFeedbackMaxAccelRatio` | float, `>=0` | `0` | Cap relative to the current non-feedback/confining acceleration reference; disabled when `<=0`. | Experimental |
 
 Recommended for Terzaghi/self-weight tests:
 
@@ -531,6 +537,23 @@ T4e showed that these controls are diagnostic staging tools only: delaying and
 ramping full feedback did not stabilize the reduced selected-confinement
 triaxial sample, while `PorePressureFeedbackScale=0.25` reduced the artifact
 but still produced pressure reversal.
+
+For T4f-style triaxial feedback stabilization diagnostics, the acceleration
+itself can be relaxed or capped without modifying the PR pressure update:
+
+```xml
+<parameter key="SavePorePressureFeedbackDiagnostics" value="1" />
+<parameter key="PorePressureFeedbackRelaxation" value="0.2" />
+<parameter key="PorePressureFeedbackLimiterMode" value="3" />
+<parameter key="PorePressureFeedbackMaxAccel" value="50" />
+<parameter key="PorePressureFeedbackMaxAccelRatio" value="25" />
+```
+
+These controls are experimental CPU-only safety guards. T4f showed that
+relaxation plus cap can remove selected-confinement exclusions and DtMin bursts
+with full feedback scale `1`, but it does not yet provide validation-quality
+triaxial dynamics: local negative pressure remains and axial loading still
+reintroduces center-core reversal.
 
 Rationale:
 

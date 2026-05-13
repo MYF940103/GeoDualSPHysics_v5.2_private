@@ -1652,3 +1652,26 @@ reverses at the final frame.
 GPU remains deferred. T5 DP and T6 MCC remain deferred until the CPU
 linear-elastic selected-confinement feedback loop is stable with full feedback
 enabled.
+
+## T4f Feedback Stabilization GPU Status
+
+T4f adds CPU-only pore-pressure feedback diagnostics and acceleration
+stabilization:
+
+- `SavePorePressureFeedbackDiagnostics`;
+- `PorePressureFeedbackRelaxation`;
+- `PorePressureFeedbackLimiterMode`;
+- `PorePressureFeedbackMaxAccel`;
+- `PorePressureFeedbackMaxAccelRatio`.
+
+CPU Release and GPU Release builds pass. GPU simulation was not run. The GPU
+feedback path still supports only default feedback timing/stabilization and
+`PorePressureFeedbackOperator=1`; any non-default T4e/T4f feedback timing or
+stabilization parameter hard-errors on GPU.
+
+T4f does not unlock GPU validation. The best CPU confinement-only diagnostic
+case removes exclusions and DtMin bursts with full feedback scale `1`, but it
+still has local negative pressure and order `1e9 Pa/s` pressure-rate artifacts,
+and the gentle axial smoke reintroduces center-core reversal. GPU parity,
+T5 DP, and T6 MCC remain deferred until the CPU feedback formulation is
+stable without relying on a purely diagnostic limiter.

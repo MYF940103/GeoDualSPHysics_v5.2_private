@@ -338,3 +338,36 @@ No axial-loading variant was run because no full-feedback confinement-only case
 passed the stability gate. The current blocker is the pore-pressure feedback
 acceleration/operator coupling during selected-confinement equilibration, not
 the lateral selector geometry. T5 DP and T6 MCC remain deferred.
+
+## T4f Feedback Stabilization
+
+T4f is retained under:
+
+`experiments/T4f_FeedbackStabilization/`
+
+It adds CPU-only opt-in diagnostics and stabilization for the
+`PorePressureFeedback` acceleration:
+
+- `SavePorePressureFeedbackDiagnostics`;
+- `PorePressureFeedbackRelaxation`;
+- `PorePressureFeedbackLimiterMode`;
+- `PorePressureFeedbackMaxAccel`;
+- `PorePressureFeedbackMaxAccelRatio`.
+
+Defaults preserve the previous behavior. GPU builds pass, but non-default
+feedback timing/stabilization remains GPU-unsupported and hard-errors.
+
+The T4f confinement-only gate confirms the operator-level blocker. Full
+feedback without stabilization reproduces the T4e failure
+(`excluded=164`, `256` DtMin adjustments, max `PorePressRate=1.30e13 Pa/s`).
+Relaxation alone is insufficient. Acceleration caps remove exclusions and
+DtMin bursts. The best confinement-only diagnostic case, relaxation `0.2` plus
+cap `50 m/s2` / ratio `25`, runs with `code=0`, `excluded=0`, `Kplastic=0`,
+no DtMin adjustments, and no center-core pressure reversal, reducing max
+`PorePressRate` to about `1.03e9 Pa/s`.
+
+This is still not validation-ready. Local negative pressures remain, the
+pressure-rate level is far above the feedback-off reference, and a gentle axial
+loading smoke after the stabilized confinement stage reintroduces center-core
+reversal. T5 DP and T6 MCC remain deferred. The next step should audit the
+feedback formulation itself before further triaxial validation.

@@ -1005,8 +1005,8 @@ void JSphGpu::ComputePorePressureAccelDiffGpu(){
 //==============================================================================
 void JSphGpu::ApplyPorePressureFeedbackGpu(){
   if(!HydromechCoupling || PorePressureModel!=1 || !PorePressureFeedback)return;
-  if(PorePressureFeedbackStartTime>0. || PorePressureFeedbackRampEndTime>0. || PorePressureFeedbackScale!=1.)
-    Run_Exceptioon("GPU pore-pressure feedback gating/scale is not supported. Use default feedback timing/scale or run CPU.");
+  if(PorePressureFeedbackStartTime>0. || PorePressureFeedbackRampEndTime>0. || PorePressureFeedbackScale!=1. || HasNonDefaultPorePressureFeedbackStabilization())
+    Run_Exceptioon("GPU pore-pressure feedback gating/stabilization diagnostics are not supported. Use default feedback timing/stabilization or run CPU.");
   if(PorePressureFeedbackOperator!=1)
     Run_Exceptioon("GPU pore-pressure feedback currently supports PorePressureFeedbackOperator=1 only.");
   if(!PorePressureAceDiffg)Run_Exceptioon("GPU pore-pressure feedback acceleration array is not allocated.");

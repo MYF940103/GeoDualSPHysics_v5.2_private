@@ -317,3 +317,38 @@ not the axial schedule and not the lateral/cap selector. It is the feedback
 acceleration/operator coupling during selected-confinement equilibration.
 Potential follow-up should be a narrow feedback relaxation/limiter/operator
 audit before DP, MCC, or strict stress-path validation.
+
+## T4f Feedback Stabilization Notes
+
+T4f adds a narrow CPU-only stabilization layer to the feedback acceleration,
+not to the PR pressure-rate equation:
+
+```xml
+<parameter key="SavePorePressureFeedbackDiagnostics" value="1" />
+<parameter key="PorePressureFeedbackRelaxation" value="0.2" />
+<parameter key="PorePressureFeedbackLimiterMode" value="3" />
+<parameter key="PorePressureFeedbackMaxAccel" value="50" />
+<parameter key="PorePressureFeedbackMaxAccelRatio" value="25" />
+```
+
+The default values keep legacy behavior. Non-default controls are CPU-only.
+
+The result is useful but not sufficient for validation:
+
+- full feedback without stabilization reproduces T4e instability
+  (`excluded=164`, `256` DtMin adjustments, max
+  `PorePressRate=1.30e13 Pa/s`);
+- relaxation alone still reverses and reaches `3.17e12 Pa/s`;
+- cap-only removes DtMin/exclusion but still reverses the center core;
+- relaxation plus cap `50 m/s2` / ratio `25` removes DtMin/exclusion and center
+  reversal in confinement-only full-feedback scale `1`, reducing max
+  `PorePressRate` to about `1.03e9 Pa/s`;
+- a stricter cap `10 m/s2` reduces rate and velocity further but reintroduces a
+  weak final center reversal;
+- gentle axial loading after the best confinement gate still reverses after
+  axial onset.
+
+This means the limiter is a diagnostic safety guard, not a physical closure.
+Do not enter T5 DP or T6 MCC from this state. The next work should audit the
+feedback formulation itself: pressure variable choice, gradient choice,
+filtering, and effective-stress coupling consistency.

@@ -93,7 +93,7 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   //======
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureFeedbackUsedAcec=NULL;
   PorePressGhostc=NULL; ExcessPorePressGhostc=NULL; PorePressureBoundaryModec=NULL; LapPorePressGhostc=NULL; LapZGhostc=NULL;
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
@@ -162,7 +162,7 @@ void JSphCpu::FreeCpuMemoryParticles(){
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
-  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL;
+  PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureFeedbackUsedAcec=NULL;
   PorePressGhostc=NULL; ExcessPorePressGhostc=NULL; PorePressureBoundaryModec=NULL; LapPorePressGhostc=NULL; LapZGhostc=NULL;
 }
 
@@ -196,7 +196,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(HydromechCoupling || SavePorePressure){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,1); //-porepress
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,7); //-porepressrate,divvel,lapporepress,lapz,divvelcorr,lapporepresscorr,lapzcorr
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-porepressureace,porepressureacediff
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,3); //-porepressureace,porepressureacediff,porepressurefeedbackused
   }
   if(PorePressureBoundaryGhost){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,2); //-porepressghost,excessporepressghost
@@ -271,6 +271,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *lapzcorr=SaveArrayCpu(Np,LapZCorrc);
   tfloat3      *porepressureace=SaveArrayCpu(Np,PorePressureAcec);
   tfloat3      *porepressureacediff=SaveArrayCpu(Np,PorePressureAceDiffc);
+  tfloat3      *porepressurefeedbackused=SaveArrayCpu(Np,PorePressureFeedbackUsedAcec);
   double       *porepressghost=SaveArrayCpu(Np,PorePressGhostc);
   double       *excessporepressghost=SaveArrayCpu(Np,ExcessPorePressGhostc);
   float        *porepressureboundarymode=SaveArrayCpu(Np,PorePressureBoundaryModec);
@@ -304,6 +305,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(LapZCorrc);
   ArraysCpu->Free(PorePressureAcec);
   ArraysCpu->Free(PorePressureAceDiffc);
+  ArraysCpu->Free(PorePressureFeedbackUsedAcec);
   ArraysCpu->Free(PorePressGhostc);
   ArraysCpu->Free(ExcessPorePressGhostc);
   ArraysCpu->Free(PorePressureBoundaryModec);
@@ -341,6 +343,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(lapzcorr)      LapZCorrc = ArraysCpu->ReserveFloat();
   if(porepressureace) PorePressureAcec = ArraysCpu->ReserveFloat3();
   if(porepressureacediff) PorePressureAceDiffc = ArraysCpu->ReserveFloat3();
+  if(porepressurefeedbackused) PorePressureFeedbackUsedAcec = ArraysCpu->ReserveFloat3();
   if(porepressghost) PorePressGhostc = ArraysCpu->ReserveDouble();
   if(excessporepressghost) ExcessPorePressGhostc = ArraysCpu->ReserveDouble();
   if(porepressureboundarymode) PorePressureBoundaryModec = ArraysCpu->ReserveFloat();
@@ -374,6 +377,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,lapzcorr,LapZCorrc);
   RestoreArrayCpu(Np,porepressureace,PorePressureAcec);
   RestoreArrayCpu(Np,porepressureacediff,PorePressureAceDiffc);
+  RestoreArrayCpu(Np,porepressurefeedbackused,PorePressureFeedbackUsedAcec);
   RestoreArrayCpu(Np,porepressghost,PorePressGhostc);
   RestoreArrayCpu(Np,excessporepressghost,ExcessPorePressGhostc);
   RestoreArrayCpu(Np,porepressureboundarymode,PorePressureBoundaryModec);
@@ -435,6 +439,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
     LapZCorrc=ArraysCpu->ReserveFloat();
     PorePressureAcec=ArraysCpu->ReserveFloat3();
     PorePressureAceDiffc=ArraysCpu->ReserveFloat3();
+    PorePressureFeedbackUsedAcec=ArraysCpu->ReserveFloat3();
   }
   if(PorePressureBoundaryGhost){
     PorePressGhostc=ArraysCpu->ReserveDouble();
@@ -4001,25 +4006,137 @@ void JSphCpu::ComputePorePressureAccelDiff(unsigned n,unsigned pini
 //==============================================================================
 /// Adds pore-pressure feedback acceleration to material particles.
 //==============================================================================
-void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *ace)const
+void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *porepressurefeedbackused,tfloat3 *ace)const
 {
   const tfloat3 *porepressurefeedbackace=(PorePressureFeedbackOperator==1? porepressureacediff: porepressureace);
   if(!porepressurefeedbackace)Run_Exceptioon("Selected pore-pressure feedback operator has no acceleration array.");
+  ResetPorePressureFeedbackDiagnostics();
   const double feedbackfactor=GetPorePressureFeedbackFactor(TimeStep);
-  if(feedbackfactor<=0.)return;
-  const float f=float(feedbackfactor);
+  PorePressureFeedbackDiagFactor=feedbackfactor;
   const int nint=int(n);
+  if(feedbackfactor<=0.){
+    if(porepressurefeedbackused){
+      #ifdef OMP_USE
+        #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
+      #endif
+      for(int cp=0;cp<nint;cp++){
+        const unsigned p=pini+unsigned(cp);
+        if(CODE_IsFluid(code[p]))porepressurefeedbackused[p]=TFloat3(0);
+      }
+    }
+    return;
+  }
+  const bool userelax=(PorePressureFeedbackRelaxation>0. && PorePressureFeedbackRelaxation<1. && porepressurefeedbackused);
+  const bool useabscap=((PorePressureFeedbackLimiterMode==1 || PorePressureFeedbackLimiterMode==3) && PorePressureFeedbackMaxAccel>0.);
+  const bool useratiocap=((PorePressureFeedbackLimiterMode==2 || PorePressureFeedbackLimiterMode==3) && PorePressureFeedbackMaxAccelRatio>0.);
+  const double confref=max(ConfiningStressDiagMaxAccel,0.);
+  const double alpha=PorePressureFeedbackRelaxation;
+  const double eps=1e-30;
+
+  struct StFbDiag{
+    unsigned applied,limited,relaxed;
+    double rawsum,usedsum,rawmax,usedmax,premax,ratiomax,capmin,lateralmax,capmax,interiormax;
+    StFbDiag():applied(0),limited(0),relaxed(0),rawsum(0),usedsum(0),rawmax(0),usedmax(0),premax(0),ratiomax(0),capmin(DBL_MAX),lateralmax(0),capmax(0),interiormax(0){}
+  };
+  const unsigned nth=
+  #ifdef OMP_USE
+    (nint>OMP_LIMIT_COMPUTELIGHT? unsigned(omp_get_max_threads()): 1u);
+  #else
+    1u;
+  #endif
+  vector<StFbDiag> diag(nth);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(nint>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int cp=0;cp<nint;cp++){
+    unsigned th=0;
+    #ifdef OMP_USE
+      if(nint>OMP_LIMIT_COMPUTELIGHT)th=unsigned(omp_get_thread_num());
+    #endif
+    StFbDiag &dg=diag[th];
     const unsigned p=pini+unsigned(cp);
     if(CODE_IsFluid(code[p])){
-      ace[p].x+=porepressurefeedbackace[p].x*f;
-      ace[p].y+=porepressurefeedbackace[p].y*f;
-      ace[p].z+=porepressurefeedbackace[p].z*f;
+      const tfloat3 raw=TFloat3(float(double(porepressurefeedbackace[p].x)*feedbackfactor)
+        ,float(double(porepressurefeedbackace[p].y)*feedbackfactor)
+        ,float(double(porepressurefeedbackace[p].z)*feedbackfactor));
+      const double rawmag=sqrt(double(raw.x)*double(raw.x)+double(raw.y)*double(raw.y)+double(raw.z)*double(raw.z));
+      tfloat3 used=raw;
+      if(userelax){
+        const tfloat3 old=porepressurefeedbackused[p];
+        used.x=float(double(old.x)+alpha*(double(raw.x)-double(old.x)));
+        used.y=float(double(old.y)+alpha*(double(raw.y)-double(old.y)));
+        used.z=float(double(old.z)+alpha*(double(raw.z)-double(old.z)));
+        dg.relaxed++;
+      }
+      double usedmag=sqrt(double(used.x)*double(used.x)+double(used.y)*double(used.y)+double(used.z)*double(used.z));
+      const double premag=sqrt(double(ace[p].x)*double(ace[p].x)+double(ace[p].y)*double(ace[p].y)+double(ace[p].z)*double(ace[p].z));
+      double cap=DBL_MAX;
+      if(useabscap)cap=min(cap,PorePressureFeedbackMaxAccel);
+      if(useratiocap){
+        const double ref=max(max(premag,confref),eps);
+        cap=min(cap,PorePressureFeedbackMaxAccelRatio*ref);
+      }
+      if(cap<DBL_MAX)dg.capmin=min(dg.capmin,cap);
+      if(usedmag>cap && cap>=0.){
+        const double s=(usedmag>eps? cap/usedmag: 0.);
+        used.x=float(double(used.x)*s);
+        used.y=float(double(used.y)*s);
+        used.z=float(double(used.z)*s);
+        usedmag=cap;
+        dg.limited++;
+      }
+      if(porepressurefeedbackused)porepressurefeedbackused[p]=used;
+      ace[p].x+=used.x;
+      ace[p].y+=used.y;
+      ace[p].z+=used.z;
+
+      dg.applied++;
+      dg.rawsum+=rawmag;
+      dg.usedsum+=usedmag;
+      dg.rawmax=max(dg.rawmax,rawmag);
+      dg.usedmax=max(dg.usedmax,usedmag);
+      dg.premax=max(dg.premax,premag);
+      const double ratio=usedmag/max(max(premag,confref),eps);
+      dg.ratiomax=max(dg.ratiomax,ratio);
+      if(ConfiningStressGeometry==1 && pos){
+        const int cls=GetConfiningStressCylinderClass(pos[p]);
+        if(cls==2)dg.lateralmax=max(dg.lateralmax,usedmag);
+        else if(cls==3 || cls==4 || cls==5)dg.capmax=max(dg.capmax,usedmag);
+        else if(cls==1)dg.interiormax=max(dg.interiormax,usedmag);
+      }
     }
   }
+  unsigned applied=0,limited=0,relaxed=0;
+  double rawsum=0.,usedsum=0.,rawmax=0.,usedmax=0.,premax=0.,ratiomax=0.,capmin=DBL_MAX,lateralmax=0.,capmax=0.,interiormax=0.;
+  for(unsigned c=0;c<nth;c++){
+    applied+=diag[c].applied;
+    limited+=diag[c].limited;
+    relaxed+=diag[c].relaxed;
+    rawsum+=diag[c].rawsum;
+    usedsum+=diag[c].usedsum;
+    rawmax=max(rawmax,diag[c].rawmax);
+    usedmax=max(usedmax,diag[c].usedmax);
+    premax=max(premax,diag[c].premax);
+    ratiomax=max(ratiomax,diag[c].ratiomax);
+    capmin=min(capmin,diag[c].capmin);
+    lateralmax=max(lateralmax,diag[c].lateralmax);
+    capmax=max(capmax,diag[c].capmax);
+    interiormax=max(interiormax,diag[c].interiormax);
+  }
+  PorePressureFeedbackDiagAppliedCount=applied;
+  PorePressureFeedbackDiagLimitedCount=limited;
+  PorePressureFeedbackDiagRelaxedCount=relaxed;
+  PorePressureFeedbackDiagRawMax=rawmax;
+  PorePressureFeedbackDiagRawMean=(applied? rawsum/double(applied): 0.);
+  PorePressureFeedbackDiagUsedMax=usedmax;
+  PorePressureFeedbackDiagUsedMean=(applied? usedsum/double(applied): 0.);
+  PorePressureFeedbackDiagPreMax=premax;
+  PorePressureFeedbackDiagRatioMax=ratiomax;
+  PorePressureFeedbackDiagCapValueMin=(capmin<DBL_MAX? capmin: 0.);
+  PorePressureFeedbackDiagConfiningRef=confref;
+  PorePressureFeedbackDiagClassLateralMax=lateralmax;
+  PorePressureFeedbackDiagClassCapMax=capmax;
+  PorePressureFeedbackDiagClassInteriorMax=interiormax;
 }
 
 //==============================================================================

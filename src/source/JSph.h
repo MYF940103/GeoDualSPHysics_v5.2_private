@@ -261,6 +261,12 @@ protected:
   double PorePressureFeedbackStartTime; ///<Time when pore-pressure feedback acceleration starts [s].
   double PorePressureFeedbackRampEndTime; ///<Optional time when feedback acceleration reaches full scale [s].
   double PorePressureFeedbackScale; ///<Maximum pore-pressure feedback acceleration scale.
+  bool SavePorePressureFeedbackDiagnostics; ///<Print pore-pressure feedback acceleration diagnostics.
+  unsigned PorePressureFeedbackDiagInterval; ///<Step interval for pore-pressure feedback diagnostics.
+  int PorePressureFeedbackLimiterMode; ///<Feedback limiter mode. 0:none, 1:absolute cap, 2:ratio cap, 3:absolute+ratio cap.
+  double PorePressureFeedbackRelaxation; ///<Optional feedback acceleration relaxation alpha. 0:off, (0,1]: enabled.
+  double PorePressureFeedbackMaxAccel; ///<Optional absolute cap for feedback acceleration magnitude [m/s2]. <=0:disabled.
+  double PorePressureFeedbackMaxAccelRatio; ///<Optional cap ratio against non-feedback/confining acceleration. <=0:disabled.
   bool PorePressureShepard;     ///<Apply Shepard regularization to pore pressure. 0:off, 1:on.
   unsigned PorePressureShepardInterval; ///<Apply Shepard regularization every N steps.
   int PorePressureShepardMode;  ///<Pore-pressure Shepard mode. 0:total pressure, 1:excess pressure.
@@ -316,6 +322,22 @@ protected:
   mutable double ConfiningStressDiagGradDetMin; ///<Last renormalized-gradient determinant minimum.
   mutable double ConfiningStressDiagGradDetMax; ///<Last renormalized-gradient determinant maximum.
   mutable int ConfiningStressDiagLastPrintStep; ///<Last step printed for confining diagnostics.
+  mutable double PorePressureFeedbackDiagFactor; ///<Last applied feedback gate factor.
+  mutable unsigned PorePressureFeedbackDiagAppliedCount; ///<Last feedback-applied particle count.
+  mutable unsigned PorePressureFeedbackDiagLimitedCount; ///<Last limiter activation count.
+  mutable unsigned PorePressureFeedbackDiagRelaxedCount; ///<Last relaxation activation count.
+  mutable double PorePressureFeedbackDiagRawMax; ///<Last raw feedback acceleration max magnitude.
+  mutable double PorePressureFeedbackDiagRawMean; ///<Last raw feedback acceleration mean magnitude.
+  mutable double PorePressureFeedbackDiagUsedMax; ///<Last used feedback acceleration max magnitude.
+  mutable double PorePressureFeedbackDiagUsedMean; ///<Last used feedback acceleration mean magnitude.
+  mutable double PorePressureFeedbackDiagPreMax; ///<Last non-feedback acceleration max magnitude.
+  mutable double PorePressureFeedbackDiagRatioMax; ///<Last used/non-feedback acceleration ratio max.
+  mutable double PorePressureFeedbackDiagCapValueMin; ///<Last minimum active feedback acceleration cap.
+  mutable double PorePressureFeedbackDiagConfiningRef; ///<Last confining acceleration reference.
+  mutable double PorePressureFeedbackDiagClassLateralMax; ///<Last lateral-class used feedback acceleration max.
+  mutable double PorePressureFeedbackDiagClassCapMax; ///<Last cap/edge-class used feedback acceleration max.
+  mutable double PorePressureFeedbackDiagClassInteriorMax; ///<Last interior-class used feedback acceleration max.
+  mutable int PorePressureFeedbackDiagLastPrintStep; ///<Last step printed for feedback diagnostics.
   double PorePressureTopDrainedStartTime; ///<Time when top drained boundary becomes active [s].
   bool HydromechDamping;        ///<Hydromechanical kinematic damping. 0:off, 1:on.
   float HydromechDampingXi;     ///<Dimensionless damping coefficient xi. If >0, c_d=xi*sqrt(E/(rho0*h^2)).
@@ -581,6 +603,7 @@ protected:
   void VisuRefs();
   void VisuParticleSummary()const;
   double GetPorePressureFeedbackFactor(double timestep)const;
+  bool HasNonDefaultPorePressureFeedbackStabilization()const;
   void LoadDcellParticles(unsigned n,const typecode *code,const tdouble3 *pos,unsigned *dcell)const;
   void RunInitialize(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,tfloat4 *velrhop,tfloat3 *boundnormal);
@@ -634,6 +657,8 @@ protected:
   int GetConfiningStressCylinderClass(const tdouble3 &pos)const;
   void ResetFlexibleConfiningStressDiagnostics()const;
   void PrintFlexibleConfiningStressDiagnostics()const;
+  void ResetPorePressureFeedbackDiagnostics()const;
+  void PrintPorePressureFeedbackDiagnostics()const;
   double GetHydraulicGmag()const;
   double GetHydraulicElevation(const tdouble3 &pos)const;
   double GetHydrostaticPorePressure(const tdouble3 &pos)const;

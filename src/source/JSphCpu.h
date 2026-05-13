@@ -152,6 +152,7 @@ protected:
   float* LapZCorrc;       ///<Corrected-gradient elevation-head Laplacian diagnostic field.
   tfloat3* PorePressureAcec; ///<Candidate pore-pressure feedback acceleration diagnostic field.
   tfloat3* PorePressureAceDiffc; ///<Difference-gradient pore-pressure acceleration diagnostic field.
+  tfloat3* PorePressureFeedbackUsedAcec; ///<Relaxed/limited pore-pressure feedback acceleration used in previous CPU step.
   double* PorePressGhostc; ///<Diagnostic pore-pressure ghost value for hydraulic boundary particles/layers.
   double* ExcessPorePressGhostc; ///<Diagnostic excess pore-pressure ghost value.
   float* PorePressureBoundaryModec; ///<Diagnostic hydraulic boundary mode. 0:inactive, 1:drained, 2:no-flux.
@@ -334,7 +335,7 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
   void ComputePorePressureAccelDiff(unsigned n,unsigned pini
     ,StDivDataCpu divdata,const unsigned *dcell,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const double *porepress,tfloat3 *porepressureacediff)const;
-  void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *ace)const;
+  void ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat3 *porepressureace,const tfloat3 *porepressureacediff,tfloat3 *porepressurefeedbackused,tfloat3 *ace)const;
   unsigned ComputePorePressureBoundaryGhost(unsigned n,unsigned pini,const tdouble3 *pos,const typecode *code,const double *porepress
     ,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,double timestep,const char *stage,bool printlog)const;
   template<TpKernel tker> void ComputeHydroLapPorePressGhostT(unsigned n,unsigned pini
