@@ -1903,3 +1903,20 @@ T4r therefore reports only a specimen-stress reaction proxy.
 GPU remains deferred. The next GPU-relevant source task, if pursued, would be a
 diagnostic reaction accumulator for top/bottom platen `mkbound` groups after
 the CPU design is validated. Full feedback, DP, and MCC remain deferred.
+
+## T4s Platen Axial Baseline GPU Status
+
+T4s is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU Release feedback-off platen baselines both completed with `code=0`,
+`excluded=0`, `DtMin=0`, and `Kplastic=0`. The explicit moving top platen and
+fixed bottom platen remain kinematically correct over a longer `0.006 s`
+window, and selected lateral `FlexibleConfiningStress` remains compatible with
+the platen workflow.
+
+GPU remains deferred. The active blocker for strict validation is still CPU
+measurement fidelity: ordinary fixed/moving `mkbound` platens do not expose a
+true reaction force, so T4s uses a specimen-stress proxy. A future GPU task
+should wait until the CPU reaction diagnostic and full-feedback stability are
+resolved. Full feedback, MCC, and GPU triaxial validation remain deferred.

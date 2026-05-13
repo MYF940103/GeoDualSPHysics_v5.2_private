@@ -839,3 +839,35 @@ diagnostics (`112` active lateral targets, cap leakage `0`). T4s may proceed as
 a feedback-off platen-based axial baseline using these specimen-only proxies,
 but strict validation still needs a source-level true reaction diagnostic.
 Full feedback, DP, MCC, and GPU remain deferred.
+
+## T4s Feedback-Off Platen Axial Baseline
+
+T4s is retained under:
+
+`experiments/T4s_PlatenAxialBaseline/`
+
+It extends the explicit platen workflow to a longer feedback-off elastic axial
+baseline:
+
+- top moving platen: `mkbound=1`, prescribed `v_z=-0.005 m/s`;
+- bottom fixed platen: `mkbound=2`;
+- specimen: `mkfluid=0`, `407` particles;
+- `PorePressureFeedback=0`;
+- `SoilConstitutiveModel=0`;
+- CPU Release only.
+
+Two cases are retained:
+
+| Case | Result | Final `p'` proxy | Final `q` proxy | Final `Fz_proxy` |
+| --- | --- | ---: | ---: | ---: |
+| no lateral confinement | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `117.91 Pa` | `346.17 Pa` | `0.9859 N` |
+| lateral flexible confinement | `code=0`, `excluded=0`, `DtMin=0`, `Kplastic=0` | `145.66 Pa` | `332.47 Pa` | `1.0385 N` |
+
+The top platen reaches the expected `-3.00e-5 m` displacement over the
+`0.006 s` window, while the bottom platen remains fixed. Measurement regions
+remain specimen-only with zero platen contamination. The lateral-confinement
+case keeps `112` active lateral targets and cap leakage diagnostic `0`.
+
+T4s is a reduced feedback-off platen baseline. It still uses
+`Fz_proxy=-mean(Sigma_zz)*pi*R^2`; no true platen reaction is available yet.
+Full feedback, strict axial-reaction validation, MCC, and GPU remain deferred.

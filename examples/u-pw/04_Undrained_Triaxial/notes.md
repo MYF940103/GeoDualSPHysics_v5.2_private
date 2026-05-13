@@ -784,3 +784,41 @@ Interpretation: T4r is good enough to enter a feedback-off platen-based axial
 baseline, but not a strict axial-reaction validation. A future opt-in CPU
 diagnostic should accumulate true specimen-platen reaction by `mkbound` before
 full feedback, DP, MCC, or GPU validation.
+
+## T4s Feedback-Off Platen Axial Baseline Notes
+
+T4s runs the first reduced feedback-off axial baseline using the explicit
+platen route:
+
+- `CaseT4s_PlatenAxial_NoConfinement`;
+- `CaseT4s_PlatenAxial_LateralConfinement`.
+
+Both CPU Release cases complete with `code=0`, `excluded=0`, `DtMin=0`, and
+`Kplastic=0`. The top moving platen reaches `-3.00e-5 m` displacement over the
+`0.006 s` window, matching the prescribed `v_z=-0.005 m/s`; the bottom platen
+stays fixed.
+
+The specimen/platen/measurement split remains clean:
+
+- specimen particles: `407`;
+- top/bottom platen particles: `74 + 74`;
+- center measurement core: `15` specimen particles;
+- platen contamination: `0`.
+
+The lateral-confinement case remains compatible with the platen route:
+`112` active lateral targets, coherent inward lateral acceleration, and cap
+leakage diagnostic `0`.
+
+T4s still uses the specimen-stress reaction proxy
+`Fz_proxy=-mean(Sigma_zz)*pi*R^2`. Final specimen-wide proxies are:
+
+- no confinement: `p' approx 117.91 Pa`, `q approx 346.17 Pa`,
+  `Fz_proxy approx 0.9859 N`;
+- lateral confinement: `p' approx 145.66 Pa`, `q approx 332.47 Pa`,
+  `Fz_proxy approx 1.0385 N`.
+
+This is clean enough to serve as a reduced feedback-off platen baseline, but
+not as strict reaction validation. A true per-`mkbound` reaction diagnostic is
+still needed before paper-level axial stress comparison. Full feedback, MCC,
+and GPU remain deferred. A reduced T5 DP feedback-off smoke can be considered
+only with the reaction-proxy caveat kept explicit.
