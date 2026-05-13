@@ -1304,3 +1304,22 @@ Decision: C6 remains blocked, simple dp refinement should stay paused, and GPU
 porting remains deferred. The next CPU task should be a narrow MLS /
 flux-consistent spherical drained boundary prototype with pressure-only radial
 diffusion as the first acceptance gate.
+
+## Cryer C5j MLS Boundary Flux Prototype
+
+C5j adds `CurvedDrainedBoundaryMode=5` as a CPU-only experimental subroute of
+`PorePressureBoundaryOperator=3`. The mode uses a constrained radial MLS
+gradient against the prescribed spherical drained value and applies a
+shell-average integrated `LapPorePress` flux correction. It does not clamp
+material pressure and does not count dummy boundary-particle volumes.
+
+The C5j pressure-only CPU Release gate ran for `dp=0.008` and `dp=0.010`.
+Both cases completed with `code=0`, `excluded=0`, and `Kplastic=0`, with zero
+MLS fallback. However, the gate did not pass: surface shell pressure remains
+far above the FV radial reference and final SPH/FV flux ratio remains about
+`4`. No Cryer compression smoke was run.
+
+GPU porting remains deferred. Mode `5` is still protected by the existing GPU
+hard error for `PorePressureBoundaryOperator=3` /
+`PorePressureCurvedDrained=1`. The next CPU task should address radial
+shell/FV flux matching before any GPU implementation is considered.

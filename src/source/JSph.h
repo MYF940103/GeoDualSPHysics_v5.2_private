@@ -215,12 +215,17 @@ protected:
   double CurvedDrainedBoundaryValue; ///<Prescribed curved drained boundary pressure/excess value [Pa].
   bool CurvedDrainedBoundaryUseExcess; ///<True: value is excess pressure; false: value is total pressure.
   double CurvedDrainedBoundaryThickness; ///<Interior shell thickness for curved drained boundary. If <=0, KernelH is used.
-  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state.
+  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction.
   int CurvedDrainedBoundaryTargetMkBound; ///<Target mkbound for mode 4 boundary-particle hydraulic state. -1:all boundary particles passing sphere selection.
   bool CurvedDrainedBoundaryUseBoundaryParticles; ///<Enable selected boundary-particle participation for curved drained mode 4.
   double CurvedDrainedBoundarySelectionTolerance; ///<Radius tolerance for selecting curved drained boundary particles. If <=0, KernelH is used.
   bool CurvedDrainedBoundaryAdamiDiagnostic; ///<Compute paper-style normalized-kernel boundary pressure extrapolation diagnostics without using it as Dirichlet value.
   int CurvedDrainedBoundaryWeighting; ///<Boundary-particle weighting for curved drained mode 4. 0:raw volume, 1:normalized partition, 3:diagnostic capped support.
+  int CurvedDrainedMLSOrder; ///<MLS order for curved drained mode 5. 0:local gap fallback, 1:radial linear MLS.
+  double CurvedDrainedMLSRadiusFactor; ///<Support radius multiplier for mode 5 radial MLS. If <=0, KernelH is used.
+  bool CurvedDrainedFluxDiagnostics; ///<Print per-step mode 5 integrated flux diagnostics.
+  double CurvedDrainedMLSConditionLimit; ///<Maximum accepted local MLS condition number for mode 5.
+  int CurvedDrainedMLSFallbackMode; ///<Fallback for mode 5 ill-conditioned support. 3:mode-3-like ghost, 4:mode-4-like local gap.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.

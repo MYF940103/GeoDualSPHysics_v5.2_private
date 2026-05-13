@@ -210,6 +210,11 @@ void JSph::InitVars(){
   CurvedDrainedBoundarySelectionTolerance=0.;
   CurvedDrainedBoundaryAdamiDiagnostic=false;
   CurvedDrainedBoundaryWeighting=0;
+  CurvedDrainedMLSOrder=1;
+  CurvedDrainedMLSRadiusFactor=1.;
+  CurvedDrainedFluxDiagnostics=false;
+  CurvedDrainedMLSConditionLimit=1.e8;
+  CurvedDrainedMLSFallbackMode=3;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   HydraulicElevationSource=true;
@@ -788,7 +793,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 2:  CurvedDrainedBoundaryMode=2;  break;
     case 3:  CurvedDrainedBoundaryMode=3;  break;
     case 4:  CurvedDrainedBoundaryMode=4;  break;
-    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, and experimental 4.");
+    case 5:  CurvedDrainedBoundaryMode=5;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, experimental 4, and experimental 5.");
   }
   CurvedDrainedBoundaryTargetMkBound=eparms.GetValueInt("CurvedDrainedBoundaryTargetMkBound",true,-1);
   switch(eparms.GetValueInt("CurvedDrainedBoundaryUseBoundaryParticles",true,1)){
@@ -807,6 +813,23 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  CurvedDrainedBoundaryWeighting=1;  break;
     case 3:  CurvedDrainedBoundaryWeighting=3;  break;
     default: Run_Exceptioon("CurvedDrainedBoundaryWeighting is not valid. Valid values are 0 raw, 1 normalized partition, and diagnostic 3 capped support.");
+  }
+  switch(eparms.GetValueInt("CurvedDrainedMLSOrder",true,1)){
+    case 0:  CurvedDrainedMLSOrder=0;  break;
+    case 1:  CurvedDrainedMLSOrder=1;  break;
+    default: Run_Exceptioon("CurvedDrainedMLSOrder is not valid. Valid values are 0 and 1.");
+  }
+  CurvedDrainedMLSRadiusFactor=eparms.GetValueDouble("CurvedDrainedMLSRadiusFactor",true,1.);
+  switch(eparms.GetValueInt("CurvedDrainedFluxDiagnostics",true,0)){
+    case 0:  CurvedDrainedFluxDiagnostics=false;  break;
+    case 1:  CurvedDrainedFluxDiagnostics=true;   break;
+    default: Run_Exceptioon("CurvedDrainedFluxDiagnostics mode is not valid.");
+  }
+  CurvedDrainedMLSConditionLimit=eparms.GetValueDouble("CurvedDrainedMLSConditionLimit",true,1.e8);
+  switch(eparms.GetValueInt("CurvedDrainedMLSFallbackMode",true,3)){
+    case 3:  CurvedDrainedMLSFallbackMode=3;  break;
+    case 4:  CurvedDrainedMLSFallbackMode=4;  break;
+    default: Run_Exceptioon("CurvedDrainedMLSFallbackMode is not valid. Valid values are 3 and 4.");
   }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
@@ -919,7 +942,13 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedBoundarySelectionTolerance must be greater than or equal to zero.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==4 && !CurvedDrainedBoundaryUseBoundaryParticles)
     Run_Exceptioon("CurvedDrainedBoundaryMode=4 requires CurvedDrainedBoundaryUseBoundaryParticles=1.");
-  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4)
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==5 && CurvedDrainedMLSRadiusFactor<0.)
+    Run_Exceptioon("CurvedDrainedMLSRadiusFactor must be greater than or equal to zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==5 && CurvedDrainedMLSConditionLimit<=0.)
+    Run_Exceptioon("CurvedDrainedMLSConditionLimit must be greater than zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==5 && CurvedDrainedBoundaryWeighting)
+    Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5)
     Log->PrintWarning("CurvedDrainedBoundaryWeighting is only used by CurvedDrainedBoundaryMode=4.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
@@ -1877,7 +1906,7 @@ void JSph::VisuConfig(){
     if(PorePressureBoundaryOperator==2)
       Log->Print("  PorePressureBoundaryOperator convention: CPU-only hydraulic boundary-particle prototype. Top boundary particles use excess Dirichlet p'=0; bottom boundary particles reconstruct excess pressure from material neighbours for hydraulic-head/excess Neumann consistency.");
     if(PorePressureBoundaryOperator==3){
-      Log->Print("  PorePressureBoundaryOperator convention: CPU-only curved drained boundary prototype. A spherical Dirichlet ghost is added to LapPorePress/LapZ for near-surface material particles; it is not a post-update clamp.");
+      Log->Print("  PorePressureBoundaryOperator convention: CPU-only curved drained boundary prototype. Drained spherical boundary terms are added before the PR rate update; material pore pressure is not post-update clamped.");
       Log->Print(fun::VarStr("  PorePressureCurvedDrained",PorePressureCurvedDrained));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryCenter",CurvedDrainedBoundaryCenter));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryRadius",CurvedDrainedBoundaryRadius));
@@ -1891,6 +1920,11 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  CurvedDrainedBoundarySelectionTolerance",CurvedDrainedBoundarySelectionTolerance));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryAdamiDiagnostic",CurvedDrainedBoundaryAdamiDiagnostic));
       Log->Print(fun::VarStr("  CurvedDrainedBoundaryWeighting",CurvedDrainedBoundaryWeighting));
+      Log->Print(fun::VarStr("  CurvedDrainedMLSOrder",CurvedDrainedMLSOrder));
+      Log->Print(fun::VarStr("  CurvedDrainedMLSRadiusFactor",CurvedDrainedMLSRadiusFactor));
+      Log->Print(fun::VarStr("  CurvedDrainedFluxDiagnostics",CurvedDrainedFluxDiagnostics));
+      Log->Print(fun::VarStr("  CurvedDrainedMLSConditionLimit",CurvedDrainedMLSConditionLimit));
+      Log->Print(fun::VarStr("  CurvedDrainedMLSFallbackMode",CurvedDrainedMLSFallbackMode));
       if(CurvedDrainedBoundaryMode==0)
         Log->Print("  CurvedDrainedBoundaryMode=0: first-order spherical Dirichlet ghost.");
       if(CurvedDrainedBoundaryMode==1)
@@ -1901,6 +1935,8 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=3: multi-sample spherical Dirichlet boundary quadrature; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==4)
         Log->Print("  CurvedDrainedBoundaryMode=4: selected boundary particles carry prescribed drained hydraulic state and participate in LapPorePress/LapZ; CPU-only experimental.");
+      if(CurvedDrainedBoundaryMode==5)
+        Log->Print("  CurvedDrainedBoundaryMode=5: radial MLS Dirichlet fit plus integrated normal-flux correction; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==0)
         Log->Print("  CurvedDrainedBoundaryWeighting=0: raw boundary-particle volume weighting.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==1)

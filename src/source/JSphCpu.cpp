@@ -2323,6 +2323,10 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   double curvedbndsmmean=0.,curvedbndsmean=0.,curvedbndscalemean=0.,curvedbndfracmean=0.;
   double curvedbndsmmax=0.,curvedbndsmax=0.,curvedbndscalemax=0.,curvedbndfracmax=0.;
   double curvedbndscalemin=DBL_MAX;
+  unsigned curvedmlstargets=0,curvedmlssamples=0,curvedmlsfallback=0,curvedmlscondcount=0;
+  double curvedmlscondmean=0.,curvedmlscondmin=DBL_MAX,curvedmlscondmax=0.;
+  double curvedmlsgradmean=0.,curvedmlsgradmax=0.,curvedmlsfluxintegral=0.,curvedmlsstoragerate=0.;
+  double curvedmlsarea=0.,curvedmlsshellvolume=0.,curvedmlslapcorrmax=0.;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2429,6 +2433,13 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     const double mindist=(Dp>0.? 0.5*double(Dp): 0.25*double(KernelSize));
     const double rtarget=CurvedDrainedBoundaryRadius;
     const double rmin=max(0.,rtarget-shellthick);
+    const double pi=3.1415926535897932384626433832795;
+    const double spherearea=4.*pi*rtarget*rtarget;
+    const double shellvolume=(4.*pi/3.)*(rtarget*rtarget*rtarget-rmin*rmin*rmin);
+    const double shellareafactor=(shellvolume>ALMOSTZERO? spherearea/shellvolume: 0.);
+    const double diffcoef=(double(SoilCte.WaterBulkModulus)/double(SoilCte.Porosity0))*(double(SoilCte.HydraulicConductivity)/(rhog));
+    curvedmlsarea=spherearea;
+    curvedmlsshellvolume=shellvolume;
     struct StCurvedBndHyd{
       unsigned p;
       tdouble3 pos;
@@ -2437,7 +2448,12 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       double volume;
       double adami_excess;
     };
+    struct StCurvedMlsFluxCorrection{
+      unsigned p;
+    };
     vector<StCurvedBndHyd> curvedbnd;
+    vector<StCurvedMlsFluxCorrection> curvedmlscorrections;
+    double curvedmlsareaweight=0.;
     if(CurvedDrainedBoundaryMode==4){
       const double bndtol=(CurvedDrainedBoundarySelectionTolerance>0.? CurvedDrainedBoundarySelectionTolerance: max(double(KernelH),double(Dp)));
       const double rbmin=max(0.,rtarget-bndtol);
@@ -2511,7 +2527,116 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       const double pval=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
 
-      if(CurvedDrainedBoundaryMode==4){
+      if(CurvedDrainedBoundaryMode==5){
+        // Radial MLS / flux-consistent drained prototype. A local radial MLS
+        // fit estimates the normal pressure gradient at the physical sphere
+        // surface with the prescribed drained value as a Dirichlet constraint.
+        // The resulting integrated normal flux is distributed over the
+        // near-surface material shell as a LapPorePress correction. Material
+        // pore pressure is never clamped.
+        const tdouble3 posb=CurvedDrainedBoundaryCenter + normal*rtarget;
+        const double zb=GetHydraulicElevation(posb);
+        const double ub=CurvedDrainedBoundaryValue;
+        const double support=max(mindist,(CurvedDrainedMLSRadiusFactor>0.? CurvedDrainedMLSRadiusFactor*double(KernelH): double(KernelH)));
+        const double invsupport=(support>ALMOSTZERO? 1./support: 0.);
+        double sumw=0.,sumws=0.,sumws2=0.,sumwsu=0.;
+        unsigned samples=0;
+        for(unsigned p3=pini;p3<pini+n;p3++)if(CODE_IsFluid(code[p3]) && velrhop[p3].w>0.f){
+          if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p3]))!=CurvedDrainedBoundaryTargetMk)continue;
+          const tdouble3 rel3=pos[p3]-CurvedDrainedBoundaryCenter;
+          const double r3=sqrt(rel3.x*rel3.x+rel3.y*rel3.y+rel3.z*rel3.z);
+          if(r3<=ALMOSTZERO)continue;
+          const double s=max(0.,rtarget-r3);
+          if(s>support)continue;
+          const double drx=pos[p3].x-posb.x;
+          const double dry=pos[p3].y-posb.y;
+          const double drz=pos[p3].z-posb.z;
+          const double rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2>support*support)continue;
+          const double q=1.-sqrt(rr2)*invsupport;
+          if(q<=0.)continue;
+          const double wab=q*q*q*q; // compact, smooth local MLS weight.
+          const double vol=double(MassFluid)/double(velrhop[p3].w);
+          const double weight=vol*wab;
+          const double z3=GetHydraulicElevation(pos[p3]);
+          const double u3=(CurvedDrainedBoundaryUseExcess? porepress[p3]-hydrostatic_linear(z3): porepress[p3]);
+          sumw+=weight;
+          sumws+=weight*s;
+          sumws2+=weight*s*s;
+          sumwsu+=weight*s*(u3-ub);
+          samples++;
+        }
+        const double wb=max(sumw,ALMOSTZERO);
+        const double m00=sumw+wb;
+        const double m01=sumws*invsupport;
+        const double m11=sumws2*invsupport*invsupport;
+        const double tr=m00+m11;
+        const double det=m00*m11-m01*m01;
+        double cond=DBL_MAX;
+        if(det>ALMOSTZERO && tr>0.){
+          const double disc=max(0.,tr*tr-4.*det);
+          const double lmax=0.5*(tr+sqrt(disc));
+          const double lmin=0.5*(tr-sqrt(disc));
+          if(lmin>ALMOSTZERO)cond=lmax/lmin;
+        }
+        bool fallback=(CurvedDrainedMLSOrder==0 || samples<3 || sumws2<=ALMOSTZERO || cond>CurvedDrainedMLSConditionLimit);
+        double grad=0.;
+        if(!fallback)grad=sumwsu/sumws2;
+        else{
+          curvedmlsfallback++;
+          if(CurvedDrainedMLSFallbackMode==3){
+            double ghostdist=rtarget-r;
+            if(ghostdist<mindist)ghostdist=mindist;
+            const tdouble3 posg=pos[p]+normal*(2.*ghostdist);
+            const double drx=pos[p].x-posg.x;
+            const double dry=pos[p].y-posg.y;
+            const double drz=pos[p].z-posg.z;
+            const double rr2=drx*drx+dry*dry+drz*drz;
+            if(rr2<=double(KernelSize2) && rr2>=ALMOSTZERO){
+              const float fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
+              const double dotrgrad=rr2*double(fac);
+              const double zg=GetHydraulicElevation(posg);
+              const double hydrog=hydrostatic_linear(zg);
+              const double pwg=(CurvedDrainedBoundaryUseExcess? hydrog+CurvedDrainedBoundaryValue: CurvedDrainedBoundaryValue);
+              const double lapadd=2.*voli*(porepress[p]-pwg)*dotrgrad/(rr2+ALMOSTZERO);
+              const double zadd=2.*voli*(zi-zg)*dotrgrad/(rr2+ALMOSTZERO);
+              lapporepress[p]+=float(lapadd);
+              lapz[p]+=float(zadd);
+              curvedaffected++;
+              curvedmlstargets++;
+              curvedmlssamples+=samples;
+              maxabsdpwtop=max(maxabsdpwtop,fabs(porepress[p]-pwg));
+              maxabslapadd=max(maxabslapadd,fabs(lapadd));
+              maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+            }
+            else curvedskipped++;
+            continue;
+          }
+          const double gap=max(mindist,rtarget-r);
+          const double ui=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
+          grad=(ui-ub)/gap;
+        }
+        const double area_i=voli*shellareafactor;
+        StCurvedMlsFluxCorrection corr;
+        corr.p=p;
+        curvedmlscorrections.push_back(corr);
+        curvedaffected++;
+        curvedmlstargets++;
+        curvedmlssamples+=samples;
+        if(cond<DBL_MAX){
+          curvedmlscondcount++;
+          curvedmlscondmean+=cond;
+          curvedmlscondmin=min(curvedmlscondmin,cond);
+          curvedmlscondmax=max(curvedmlscondmax,cond);
+        }
+        curvedmlsgradmean+=grad;
+        curvedmlsgradmax=max(curvedmlsgradmax,fabs(grad));
+        curvedmlsfluxintegral+=diffcoef*grad*area_i;
+        curvedmlsstoragerate-=diffcoef*grad*area_i;
+        curvedmlsareaweight+=area_i;
+        maxabsdpwtop=max(maxabsdpwtop,fabs((CurvedDrainedBoundaryUseExcess? excessi: porepress[p])-ub));
+      }
+      else if(CurvedDrainedBoundaryMode==4){
         // Paper-style boundary-particle drained Dirichlet prototype. Selected
         // boundary particles carry the prescribed hydraulic state and enter the
         // PR LapPorePress/LapZ quadrature. Material pore pressure is never
@@ -2694,6 +2819,15 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
       }
     }
+    if(CurvedDrainedBoundaryMode==5 && !curvedmlscorrections.empty()){
+      const double gradavg=(curvedmlsareaweight>ALMOSTZERO? curvedmlsfluxintegral/(diffcoef*curvedmlsareaweight): 0.);
+      const double lapcorr=-gradavg*shellareafactor;
+      for(unsigned ic=0;ic<unsigned(curvedmlscorrections.size());ic++)
+        lapporepress[curvedmlscorrections[ic].p]+=float(lapcorr);
+      curvedmlslapcorrmax=fabs(lapcorr);
+      maxabslapadd=max(maxabslapadd,curvedmlslapcorrmax);
+      maxabsheadadd=max(maxabsheadadd,curvedmlslapcorrmax/rhog);
+    }
     topaffected=curvedaffected;
   }
 
@@ -2742,6 +2876,18 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           ,CurvedDrainedBoundaryWeighting,curvedbndweighttargets,curvedbndsmmean,curvedbndsmmax,curvedbndsmean,curvedbndsmax
           ,curvedbndfracmean,curvedbndfracmax,curvedbndscalemean,curvedbndscalemin,curvedbndscalemax);
         Log->Print("CPU curved drained convention: selected boundary particles use prescribed drained hydraulic state and contribute to LapPorePress/LapZ before PR rate; material pore pressure is not clamped and Adami/MLS extrapolation is diagnostic only.");
+      }
+      if(CurvedDrainedBoundaryMode==5){
+        if(curvedmlstargets)curvedmlsgradmean/=double(curvedmlstargets);
+        if(curvedmlscondcount)curvedmlscondmean/=double(curvedmlscondcount);
+        if(curvedmlscondmin==DBL_MAX)curvedmlscondmin=0.;
+        Log->Printf("CPU curved drained MLS flux correction: order=%d, targets=%u, samples=%u, average_samples=%g, fallback=%u, fallback_mode=%d, support_radius=%g, condition_limit=%g, cond_min=%g, cond_mean=%g, cond_max=%g."
+          ,CurvedDrainedMLSOrder,curvedmlstargets,curvedmlssamples,(curvedmlstargets? double(curvedmlssamples)/double(curvedmlstargets): 0.)
+          ,curvedmlsfallback,CurvedDrainedMLSFallbackMode,(CurvedDrainedMLSRadiusFactor>0.? CurvedDrainedMLSRadiusFactor*double(KernelH): double(KernelH))
+          ,CurvedDrainedMLSConditionLimit,curvedmlscondmin,curvedmlscondmean,curvedmlscondmax);
+        Log->Printf("CPU curved drained MLS flux diagnostics: TimeStep=%g, boundary_area=%g, shell_volume=%g, mean_normal_gradient=%g Pa/m, max_abs_normal_gradient=%g Pa/m, max_abs_lap_correction=%g, boundary_flux_integral=%g Pa*m3/s, storage_rate_correction=%g Pa*m3/s."
+          ,timestep,curvedmlsarea,curvedmlsshellvolume,curvedmlsgradmean,curvedmlsgradmax,curvedmlslapcorrmax,curvedmlsfluxintegral,curvedmlsstoragerate);
+        Log->Print("CPU curved drained convention: mode 5 uses a radial MLS Dirichlet fit to estimate the spherical normal gradient and adds only an integrated LapPorePress flux correction; material pore pressure is not clamped and selected dummy particles are not volume-counted.");
       }
     }
   }

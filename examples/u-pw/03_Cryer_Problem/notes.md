@@ -638,3 +638,48 @@ Decision:
 - next source task should be a CPU-only MLS / flux-consistent drained
   spherical boundary prototype with integrated flux diagnostics;
 - GPU remains deferred.
+
+## C5j MLS Boundary Flux Notes
+
+C5j adds the first CPU-only source prototype for the C5i recommendation:
+
+`strict_reproduction_plan/C5j_MLSBoundaryFlux/`
+
+Source scope:
+
+- added `CurvedDrainedBoundaryMode=5`;
+- added MLS/flux diagnostics parameters;
+- kept mode `0` to mode `4` behavior unchanged;
+- kept the PR governing equation, `FlexibleConfiningStress`,
+  `SoilConstitutiveModel`, and `HydraulicElevationSource` unchanged;
+- did not add GPU support.
+
+Mode `5` is a shell-averaged radial MLS flux correction. It fits a constrained
+radial linear profile to nearby material samples using the physical spherical
+surface value `p_b=0`, then converts the integrated normal flux to a
+`LapPorePress` correction over the near-surface shell. It does not clamp
+material pressure and does not volume-count selected dummy boundary particles.
+
+Pressure-only CPU Release results:
+
+- `dp=0.008`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `2.220`, final flux ratio `4.101`;
+- `dp=0.010`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `1.494`, final flux ratio `4.029`;
+- MLS fallback count was zero in both runs.
+
+The shell-average correction removes the tested mode-5 flux reversal and
+negative-pressure overdrain. It improves center/volume RMSE compared with the
+retained mode-4 normalized rows. However, it does not pass the pressure-only
+gate because the `0.95R-1.0R` surface shell remains far too pressurized and
+late-time flux remains too strong.
+
+Decision:
+
+- no Cryer compression smoke was run;
+- C6 remains blocked;
+- further dp refinement remains deferred;
+- the next source task should add radial shell/FV flux matching or a transfer
+  law that constrains volume decay, surface-shell pressure, and center pressure
+  together;
+- GPU remains deferred.

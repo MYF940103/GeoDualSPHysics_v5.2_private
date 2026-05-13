@@ -826,9 +826,10 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(HydromechCoupling && PorePressc && LapPorePressc)ComputeHydroLapPorePress(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,LapPorePressc);
   if(HydromechCoupling && LapZc)ComputeHydroLapZ(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,LapZc);
   if(HydromechCoupling && PorePressureModel==1 && (PorePressureBoundaryOperator==1 || PorePressureBoundaryOperator==2 || PorePressureBoundaryOperator==3) && PorePressc && LapPorePressc && LapZc){
-    const bool printop=!PorePressureBoundaryOperatorPrint;
+    const bool fluxdiag=(PorePressureBoundaryOperator==3 && CurvedDrainedBoundaryMode==5 && CurvedDrainedFluxDiagnostics);
+    const bool printop=(!PorePressureBoundaryOperatorPrint || fluxdiag);
     ApplyPorePressureBoundaryOperator(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,BoundNormalc,PorePressc,LapPorePressc,LapZc,TimeStep,printop);
-    if(printop)
+    if(!PorePressureBoundaryOperatorPrint)
       PorePressureBoundaryOperatorPrint=true;
   }
   if(HydromechCoupling && PorePressc && DivVelCorrc && LapPorePressCorrc && LapZCorrc){

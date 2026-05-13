@@ -322,7 +322,8 @@ selects the CPU-only experimental subroute:
 - `1`: strengthened image ghost;
 - `2`: diagnostic material surface clamp, not production;
 - `3`: material-side multi-sample spherical Dirichlet quadrature;
-- `4`: boundary-particle prescribed Dirichlet hydraulic state.
+- `4`: boundary-particle prescribed Dirichlet hydraulic state;
+- `5`: radial MLS / integrated flux correction, CPU-only experimental.
 
 Mode `4` is the C5e paper-style boundary-particle prototype. It uses selected
 boundary particles as hydraulic quadrature sites, prescribes the drained value
@@ -351,6 +352,26 @@ Mode-4 weighting notes:
   diagnostic only.
 - The drained boundary value remains prescribed; the weighting modes do not
   use Adami extrapolation to define `p_b`.
+
+Mode `5` is the C5j MLS / flux-consistent prototype. It estimates the
+spherical normal gradient with a constrained radial linear MLS fit against the
+physical drained surface value (`p_b=0` for Cryer no-elevation pressure-only
+diffusion), then applies a shell-average integrated `LapPorePress` correction.
+It does not clamp material pressure, does not count dummy boundary-particle
+volumes, and does not change the PR governing equation. C5j pressure-only
+testing showed that this prototype runs with `code=0`, `excluded=0`, and
+`Kplastic=0`, but it does not yet pass the FV radial diffusion gate because the
+surface shell remains too pressurized and late-time flux remains too strong.
+
+Additional mode-5 parameters:
+
+| Parameter | Type / values | Default | Purpose |
+|---|---:|---:|---|
+| `CurvedDrainedMLSOrder` | `0/1` | `1` | MLS order for mode `5`. `1`: constrained radial linear fit; `0`: fallback route. |
+| `CurvedDrainedMLSRadiusFactor` | float | `1` | Support radius multiplier on `KernelH`; `0` also uses `KernelH`. |
+| `CurvedDrainedFluxDiagnostics` | `0/1` | `0` | Print per-step mode-5 integrated flux diagnostics. |
+| `CurvedDrainedMLSConditionLimit` | float | `1e8` | Maximum accepted local moment condition number. |
+| `CurvedDrainedMLSFallbackMode` | `3/4` | `3` | Fallback if local MLS support is invalid or ill-conditioned. |
 
 ## 4. Feedback Parameters
 
