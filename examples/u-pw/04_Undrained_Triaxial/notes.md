@@ -616,3 +616,28 @@ exclusions or DtMin burst), but it still fails the full-feedback stability
 gate with high velocity, negative pressure, and large `q`. Axial loading should
 remain disabled. The next step should refine the switch/stress transition or
 use a restart/relaxation strategy before considering DP or MCC.
+
+## T4n1 Literature Audit Notes
+
+T4n1 does not run simulations or change source. It audits Zhao, the u-pw
+implementation notes, the drained/undrained SPH framework, and the T4k-T4n
+results before deciding whether to implement a ramped selector transition.
+
+Classification:
+
+- Reference-supported: initial hydrostatic effective stress, damping during
+  confinement equilibration, `f_i` boundary selection, all-surface Zhao
+  confinement for isotropic staging, smooth/fan-shaped particle layouts,
+  corrected gradients, and Zhao `l0/ln` confinement rescaling.
+- Engineering workflow: restart-based equilibrium, delayed feedback activation,
+  and staged all-surface-to-lateral confinement. These can organize a stable
+  simulation but must be documented as workflow choices.
+- Diagnostic only: arbitrary feedback caps, reduced feedback scale without
+  physical basis, and selector smoothing used as a final validation device.
+
+Decision: do not make ramped selector transition the next primary source task.
+It has no direct Zhao/u-pw basis and mainly smooths a target-set discontinuity.
+Prefer a restart-based equilibrium audit: Stage A all-surface `f_i`
+confinement with initial stress and damping, then restart into Stage B
+lateral-only confinement without axial loading. If restart fidelity is blocked,
+a ramped selector can be revisited as a clearly labeled diagnostic protocol.

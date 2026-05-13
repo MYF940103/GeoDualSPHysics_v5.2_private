@@ -656,3 +656,29 @@ lateral-only confinement, `q` grows and `p'` drifts away from the target. The
 delayed-feedback case is much less violent than T4m delayed feedback but still
 fails the stability gate. Axial loading was not restored. DP, MCC, and GPU
 remain deferred.
+
+## T4n1 Literature Audit For Staging Treatments
+
+T4n1 is documentation-only. It is retained in:
+
+- `src/papers/u-p/t4n1_zhao_confinement_staging_audit.md`
+- `src/papers/u-p/t4n1_upw_stabilization_audit.md`
+- `src/papers/u-p/t4n1_staging_treatment_classification.md`
+- `src/papers/u-p/t4n1_ramped_selector_transition_decision.md`
+- `src/papers/u-p/t4n1_next_step_recommendation.md`
+
+Main conclusion:
+
+- Zhao supports initial hydrostatic stress, damping during confinement
+  equilibration, `f_i` free-boundary selection, smooth/fan-shaped specimen
+  layouts, and large-deformation confinement rescaling.
+- The u-pw notes support corrected gradients, artificial viscosity/kinematic
+  damping, stress initialization, and careful pressure/time-step stability.
+- Zhao does not directly support a time-ramped all-surface-to-lateral selector
+  transition.
+- A ramped selector may be useful as an engineering staging protocol, but it
+  should not be presented as a paper-faithful boundary law.
+
+Recommended next step: prioritize a restart-based all-surface confinement
+equilibrium audit before implementing a ramped selector transition. DP, MCC,
+axial loading, and GPU validation remain deferred.

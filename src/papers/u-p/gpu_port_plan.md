@@ -1812,3 +1812,19 @@ particles to `112` lateral selected particles at the switch time. The switch
 is not yet a validation route: feedback-off `q` grows and delayed feedback
 still fails the physical stability gate. GPU parity, DP, and MCC remain
 deferred.
+
+## T4n1 Literature Audit GPU Status
+
+T4n1 is documentation-only. It does not add source code, build, or run CPU/GPU
+simulations.
+
+The audit concludes that Zhao and the u-pw notes support initial stress,
+damping, `f_i` selection, smooth particle layouts, corrected gradients, and
+careful staged equilibration. They do not directly support a ramped
+all-surface-to-lateral selector transition. Therefore no new GPU porting work
+should begin from a ramped selector idea.
+
+Recommended GPU stance remains unchanged: defer GPU triaxial validation until
+the CPU workflow has a reference-supported stable confinement route. The next
+CPU task should audit restart-based all-surface confinement equilibrium before
+any selector-ramp implementation, axial loading, DP, or MCC work.
