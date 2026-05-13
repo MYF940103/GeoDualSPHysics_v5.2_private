@@ -230,3 +230,26 @@ linear-elastic selected-confinement response, likely with a confinement
 magnitude limiter, staged equilibration, or smoother loading strategy. Minimal
 output enhancement for strict `p'-q` should follow once the reduced response is
 smooth enough to measure.
+
+## T4c Loading Stabilization Notes
+
+T4c added three staged-loading CPU Release cases under:
+
+`experiments/T4c_LoadingStabilization/`
+
+The retained gate delays axial loading to `0.0015 s` and lengthens the
+confinement ramp to `0.0010 s`. All retained cases complete with `code=0`,
+`excluded=0`, and `Kplastic=0`.
+
+The result is diagnostic rather than validating. Cap leakage remains `0`, and
+selected lateral confinement remains symmetric, but the pressure reversal still
+appears near `0.0014 s`, before axial AccInput starts. Raw staged and raw
+staged gentle are nearly identical over the retained window, confirming that
+gentler axial loading is not acting on the first instability trigger.
+
+Renormalized staged confinement remains less stable than raw because it
+amplifies lateral acceleration. The next step should not be T5 DP or T6 MCC.
+First stabilize the confinement-only equilibration stage, possibly through
+source-level confinement magnitude normalization, a confinement-stage damping
+protocol, or a diagnostic delay/adjustment of pore-pressure Shepard during
+confinement equilibration.

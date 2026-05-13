@@ -247,3 +247,32 @@ inward acceleration (`~1.87 -> ~3.76 m/s2`) on this reduced coarse cylinder and
 does not remove pressure reversal. T4b therefore does not justify moving to T5
 DP or T6 MCC yet. The next step should stabilize confinement/loading and then
 add minimal output fields for strict stress-path validation.
+
+## T4c Loading Stabilization
+
+T4c is retained under:
+
+`experiments/T4c_LoadingStabilization/`
+
+It tests XML-level staging before any new source patch:
+
+- `ConfiningStressRampEnd=0.001`;
+- axial AccInput delayed to `0.0015 s`;
+- retained short gate `TimeMax=0.0018 s`;
+- selected `f_i` + lateral confinement remains active;
+- CPU Release only.
+
+Retained CPU Release T4c smokes:
+
+| Case | Result | Key observation |
+| --- | --- | --- |
+| raw staged | `code=0`, `excluded=0`, `Kplastic=0` | cap leakage remains `0`, but pressure reversal still appears. |
+| renormalized staged | `code=0`, `excluded=0`, `Kplastic=0` | still more violent than raw because confinement acceleration is amplified. |
+| raw staged gentle | `code=0`, `excluded=0`, `Kplastic=0` | nearly identical to raw staged because reversal begins before axial loading matters. |
+
+The important T4c result is that pressure reversal appears around `0.0014 s`,
+before the delayed axial loading starts at `0.0015 s`. The blocker is therefore
+not primarily AccInput onset. It is the selected-confinement equilibration and
+u-pw feedback stage. T4c does not justify moving to T5 DP or T6 MCC. The next
+physics task should stabilize confinement-stage dynamics before strict output
+enhancement or stress-path validation.

@@ -1585,3 +1585,22 @@ short-window pressure-rate/pressure-reversal artifact. Gentler axial loading
 helps only marginally. GPU work remains deferred; the next CPU task should
 stabilize the selected-confinement loading response before T5 DP, T6 MCC, or
 GPU parity.
+
+## T4c Triaxial Loading Stabilization
+
+T4c adds no GPU work and no source change. It tests staged selected
+confinement and gentler axial loading under:
+
+`examples/u-pw/04_Undrained_Triaxial/experiments/T4c_LoadingStabilization/`
+
+All retained CPU Release smokes complete with `code=0`, `excluded=0`, and
+`Kplastic=0`, with cap leakage still zero. The retained short gate uses
+`ConfiningStressRampEnd=0.001`, axial loading start at `0.0015 s`, and
+`TimeMax=0.0018 s`.
+
+T4c shows that pressure reversal begins around `0.0014 s`, before delayed
+axial loading starts. The current blocker is therefore selected-confinement
+equilibration/u-pw feedback stability, not the first axial AccInput impulse.
+Renormalized confinement remains an amplifier rather than a cure. GPU remains
+deferred; do not proceed to GPU parity, T5 DP, or T6 MCC until the CPU
+linear-elastic selected-confinement response is stable.
