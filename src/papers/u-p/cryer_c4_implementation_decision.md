@@ -794,3 +794,25 @@ Decision after C5o:
 - the strict Cryer route should either be paused in this SPH boundary-operator
   family or redesigned as a true dynamic drained-boundary value problem;
 - GPU remains deferred.
+
+## C5q: Interface Cleanup Audit
+
+C5q is documentation-only. It audits the Cryer strict-route interfaces before
+moving to the next benchmark and does not modify source or run simulations.
+
+Cleanup decision:
+
+- keep `SoilConstitutiveModel`, `HydraulicElevationSource`, and
+  `FlexibleConfiningStress` as reusable infrastructure;
+- keep `PorePressureBoundaryOperator=0` as the production default;
+- keep `PorePressureBoundaryOperator=1/2/3` as experimental interfaces;
+- keep `CurvedDrainedBoundaryMode=4` as an experimental boundary-particle
+  route, but not a validated strict Cryer boundary;
+- deprecate/archive `CurvedDrainedBoundaryMode=5/6/7/8`, the mode-5 MLS
+  controls, the mode-7 shell controls, the mode-8 corrected-Laplacian controls,
+  and the C5o limiter controls;
+- delete no source interfaces in C5q.
+
+Recommended execution plan: conservative documentation deprecation before T1.
+Any source cleanup should be a later dedicated branch with build and smoke
+regression.

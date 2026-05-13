@@ -918,3 +918,26 @@ Decision:
 Next benchmark recommendation: start T1 undrained triaxial baseline first.
 Use L2 external-load 1D full reproduction only if the immediate goal shifts
 back to consolidation parameter validation.
+
+## C5q Interface Cleanup Notes
+
+C5q audits the interface surface left by the Cryer strict-route work. It does
+not delete source or experiment directories and does not run GenCase, CPU/GPU,
+or PartVTK.
+
+Classification:
+
+- keep stable: `SoilConstitutiveModel`, `HydraulicElevationSource`,
+  `HydraulicGravityX/Y/Z`, `FlexibleConfiningStress`, and `ConfiningStress*`;
+- keep experimental: `PorePressureBoundaryOperator=1/2/3`,
+  `PorePressureCurvedDrained`, common curved geometry/value parameters,
+  `CurvedDrainedBoundaryMode=0/1/4`, and
+  `CurvedDrainedBoundaryWeighting=0/1`;
+- deprecate/archive: diagnostic clamp mode `2`, quadrature mode `3`, modes
+  `5/6/7/8`, mode-5 MLS parameters, mode-7 shell parameters, mode-8 corrected
+  Laplacian parameters, and C5o limiter parameters;
+- delete now: none.
+
+The selected cleanup strategy is conservative: document deprecation and keep
+source unchanged before T1. The failed modes remain readable for archived C5
+evidence, but they are not recommended for new cases.

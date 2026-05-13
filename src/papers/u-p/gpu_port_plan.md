@@ -1440,3 +1440,22 @@ Next benchmark recommendation:
    parameter validation.
 3. Defer retrogressive slope strict work until mechanical and constitutive
    baselines are stronger.
+
+## Cryer C5q Interface Cleanup Audit
+
+C5q audited the parameter/interface surface left by the strict Cryer route. It
+does not add GPU work and does not run GPU.
+
+GPU-relevant decision:
+
+- `SoilConstitutiveModel` remains CPU/GPU-supported infrastructure.
+- `PorePressureBoundaryOperator=1` remains experimental and GPU-supported.
+- `PorePressureBoundaryOperator=2`, `PorePressureBoundaryOperator=3`,
+  `PorePressureCurvedDrained=1`, `HydraulicElevationSource=0`, and
+  `FlexibleConfiningStress=1` remain CPU-only or GPU hard-error paths.
+- `CurvedDrainedBoundaryMode=5/6/7/8` and their limiter/shell/MLS parameters
+  are deprecated archived Cryer experiments, not GPU port targets.
+
+No source cleanup is recommended before T1. GPU work should not port the failed
+strict Cryer boundary modes unless a new CPU drained-boundary formulation first
+passes the pressure-only spherical FV diffusion gate.

@@ -815,3 +815,25 @@ Decision:
 Recommended next benchmark: begin an undrained triaxial baseline to validate
 stress path, pore-pressure response, and constitutive behavior without the
 curved drained spherical boundary blocker.
+
+## C5q Interface Cleanup Audit
+
+C5q is an audit/cleanup-plan step before T1. No source, GenCase, CPU/GPU, or
+PartVTK run was performed, and no C5 experiment directory was deleted.
+
+Interface decision:
+
+- keep `SoilConstitutiveModel`, `HydraulicElevationSource`, and
+  `FlexibleConfiningStress` as reusable infrastructure;
+- keep `PorePressureBoundaryOperator=0` as the production default;
+- keep `PorePressureBoundaryOperator=1/2/3` as experimental interfaces;
+- keep `CurvedDrainedBoundaryMode=4` as an experimental boundary-particle
+  route, but not as a validated strict Cryer boundary;
+- mark `CurvedDrainedBoundaryMode=5/6/7/8` and their MLS/shell/corrected
+  Laplacian/limiter parameters as deprecated archived failed paths;
+- do not start C6 without a new drained-boundary formulation and a passing
+  pressure-only spherical FV diffusion gate.
+
+Recommended cleanup strategy: conservative documentation deprecation now, no
+source deletion before T1. Source cleanup can be revisited on a separate branch
+after the undrained triaxial baseline.

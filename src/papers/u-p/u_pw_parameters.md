@@ -450,6 +450,33 @@ surface shell remained far from the FV reference and apparent flux reversal
 persisted. These limiter controls therefore remain diagnostic and should not be
 used as a production strict-Cryer boundary.
 
+### C5q Cryer Interface Cleanup Status
+
+C5p froze the strict Cryer route after the pressure-only spherical FV diffusion
+gate failed. C5q keeps production defaults unchanged and marks the Cryer
+experimental boundary corrections as archived diagnostics.
+
+Status after C5q:
+
+- `PorePressureBoundaryOperator=0` remains the production default.
+- `PorePressureBoundaryOperator=1` remains experimental and GPU-supported.
+- `PorePressureBoundaryOperator=2` remains CPU-only experimental.
+- `PorePressureBoundaryOperator=3` remains CPU-only experimental for archived
+  curved-drained research. It is not a validated strict Cryer boundary.
+- `CurvedDrainedBoundaryMode=0/1` are retained as simple experimental ghost
+  baselines.
+- `CurvedDrainedBoundaryMode=4` is retained as an experimental
+  boundary-particle prescribed drained route, but it did not pass the
+  pressure-only FV gate and is not validated for new production cases.
+- `CurvedDrainedBoundaryMode=5/6/7/8`, `CurvedDrainedMLS*`,
+  `CurvedDrainedShell*`, `CurvedDrainedCorrectedLap*`, and
+  `CurvedDrainedLimiter*` are deprecated archived Cryer experiments. They
+  should not be used for new cases unless a new boundary formulation review is
+  opened.
+- `CurvedDrainedBoundaryWeighting=3` is diagnostic capped weighting only.
+- No C6 Figure 7B comparison should start without a new drained-boundary
+  formulation and a passing pressure-only spherical FV diffusion gate.
+
 ## 4. Feedback Parameters
 
 | Parameter | Type / values | Default | Purpose | Keep? |
