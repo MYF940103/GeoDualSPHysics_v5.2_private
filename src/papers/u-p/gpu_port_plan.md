@@ -1785,3 +1785,16 @@ feedback, however, the confinement-only state still develops order
 `1e12 Pa/s` `PorePressRate` and large negative pressure. No axial smoke or GPU
 simulation was run. GPU parity, T5 DP, and T6 MCC remain deferred until a CPU
 full-feedback hydrostatic equilibrium gate passes.
+
+## T4m All-Surface Confinement GPU Status
+
+T4m is XML/workflow-only and adds no new GPU code. It uses existing CPU-only
+features: `FlexibleConfiningStress`, `InitialStressMode=1`, and non-default
+feedback timing/classification diagnostics. GPU simulation was not run.
+
+The CPU result improves the feedback-off hydrostatic state when
+`ConfiningStressUseFiSelector=1` and `ConfiningStressUseLateralSelector=0`,
+reducing final `q` from about `53.5 Pa` to `15.6 Pa`. Delayed full feedback
+still fails with order `1e12 Pa/s` `PorePressRate`. GPU parity, DP, and MCC
+remain deferred until the CPU all-surface or staged-equilibrium route passes a
+full-feedback confinement-only gate.

@@ -591,3 +591,36 @@ T4l CPU Release results:
 No axial smoke was run. T4l confirms that cap/axial support was a real missing
 piece, but it does not yet produce a validation-ready hydrostatic equilibrium.
 DP, MCC, GPU parity, and full paper reproduction remain deferred.
+
+## T4m Zhao All-Surface Isotropic Confinement
+
+T4m is retained under:
+
+`experiments/T4m_AllSurfaceIsotropicConfinement/`
+
+It tests Zhao-style all-surface isotropic confinement:
+
+```xml
+<parameter key="InitialStressMode" value="1" />
+<parameter key="InitialEffectiveStressIso" value="50" />
+<parameter key="FlexibleConfiningStress" value="1" />
+<parameter key="ConfiningStressUseFiSelector" value="1" />
+<parameter key="ConfiningStressUseLateralSelector" value="0" />
+<parameter key="CapConfiningStress" value="0" />
+```
+
+This route uses one pairwise kernel-truncation confinement mechanism across
+lateral, cap, and edge free surfaces instead of mixing lateral confinement with
+explicit cap support.
+
+T4m CPU Release results:
+
+| Case | Result | Final `p'` | Final `q` | Max `PorePressRate` |
+| --- | --- | ---: | ---: | ---: |
+| T4l lateral+cap reference, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `38.9 Pa` | `53.5 Pa` | `4.42e7 Pa/s` |
+| all-surface `f_i`, feedback off | `code=0`, `excluded=0`, `DtMin=0` | `46.4 Pa` | `15.6 Pa` | `3.98e7 Pa/s` |
+| all-surface `f_i`, delayed feedback | `code=0`, `excluded=0`, `DtMin=0` | failed | failed | `1.63e12 Pa/s` |
+
+The all-surface feedback-off stage is much closer to hydrostatic equilibrium,
+especially at the cap and edge regions. It does not solve the full-feedback
+instability, so axial loading, DP, MCC, and GPU validation remain deferred.

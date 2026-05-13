@@ -564,3 +564,33 @@ Therefore axial loading was skipped again. The next triaxial task should refine
 hydrostatic equilibrium itself, likely through cap/support distribution,
 pressure-boundary completion, or restart-based equilibration. DP and MCC remain
 too early.
+
+## T4m All-Surface Confinement Notes
+
+T4m tests the hypothesis that isotropic confinement should first use Zhao's
+original all-surface kernel-truncation idea:
+
+- `ConfiningStressUseFiSelector=1`;
+- `ConfiningStressUseLateralSelector=0`;
+- `CapConfiningStress=0`.
+
+This selects `208` low-`f_i` particles instead of the `112` lateral-only
+targets. The active set includes lateral, cap, and edge free-surface regions
+through the same pairwise `FlexibleConfiningStress` route.
+
+The result is better than T4l for feedback-off hydrostatic equilibrium:
+
+- final `p'` proxy improves from `38.9 Pa` to `46.4 Pa`;
+- final `q` proxy drops from `53.5 Pa` to `15.6 Pa`;
+- cap and edge `q` drop sharply;
+- max velocity and max `PorePressRate` are slightly lower.
+
+This is strong evidence that the explicit T4l cap force created a cap/edge
+transition mismatch. `CapConfiningStress` remains useful as a diagnostic tool,
+but all-surface `f_i` confinement is the better isotropic pre-equilibrium route.
+
+Delayed full feedback still fails: max `PorePressRate` reaches `~1.63e12 Pa/s`
+with large negative pressure. No axial smoke was run. The next step should be a
+staged all-surface-to-lateral selector switch or restart equilibrium design,
+but only after treating the full-feedback instability. DP, MCC, and GPU remain
+deferred.
