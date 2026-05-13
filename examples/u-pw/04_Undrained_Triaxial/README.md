@@ -1052,3 +1052,53 @@ MCC is still not integrated into GeoDualSPHysics. M3 may now port the verified
 single-point helper into a CPU-only `SoilConstitutiveModel=3` branch, with the
 first SPH smoke still based on the feedback-off explicit-platen T5 workflow.
 Full feedback and GPU remain deferred.
+
+## M3a C++ MCC Helper Parity
+
+M3a is retained under:
+
+`src/papers/u-p/mcc_single_point/cpp/`
+
+It ports the standalone Python MCC single-point prototype to a C++ helper
+without connecting it to the SPH solver. Python-vs-C++ parity is exact in the
+retained CSV outputs for isotropic, drained-like, and undrained-like paths:
+
+- max `p'` diff: `0`;
+- max `q` diff: `0`;
+- max `p_c` diff: `0`.
+
+The helper uses the same sign convention as M2: MCC internals are
+compression-positive and future SPH mapping uses `p'=-trace(Sigmac)/3`.
+
+## M3b MCC Parser / State Init Skeleton
+
+M3b is retained under:
+
+`experiments/M3b_MCCParserStateInit/`
+
+It adds CPU parser/state/output infrastructure for
+`SoilConstitutiveModel=3`, but still does not connect MCC return mapping to the
+SPH stress update.
+
+Two CPU Release smoke cases were run:
+
+| Case | Key init route | Result |
+| --- | --- | --- |
+| `CaseM3b_MccPc0_Init` | direct `pc0=200 Pa`, no initial stress | `code=0`, `excluded=0`, `DtMin=0` |
+| `CaseM3b_MccOCR_InitialStress` | `OCR=4`, `InitialEffectiveStressIso=50 Pa` | `code=0`, `excluded=0`, `DtMin=0` |
+
+`SaveMccState=1` outputs `MccPc`, `MccVoidRatio`,
+`MccPlasticVolStrain`, `MccEqPlasticStrain`, `MccYieldFlag`,
+`MccPlasticMultiplier`, `MccReturnStatus`, `MccReturnIterations`, and
+`MccYieldResidual`.
+
+The OCR smoke confirms:
+
+```text
+InitialEffectiveStressIso=50 Pa -> Sigmac diagonal=-50 Pa -> p'=+50 Pa
+OCR=4 -> pc=200 Pa
+```
+
+MCC stress update remains deliberately disconnected in M3b. M3c may now add
+the CPU stress-update branch. Full pore-pressure feedback and GPU remain
+deferred.

@@ -92,6 +92,7 @@ void JSphCpu::InitVars(){
   //====== mdbr
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
+  MccPcc=NULL; MccVoidRatioc=NULL; MccPlasticVolStrainc=NULL; MccEqPlasticStrainc=NULL; MccYieldFlagc=NULL; MccPlasticMultiplierc=NULL; MccReturnStatusc=NULL; MccReturnIterationsc=NULL; MccYieldResidualc=NULL;
   ArtificialStressc=NULL;
   //======
   PorePressc=NULL; PorePressRatec=NULL; DivVelc=NULL; LapPorePressc=NULL; LapZc=NULL; DivVelCorrc=NULL; LapPorePressCorrc=NULL; LapZCorrc=NULL; PorePressureAcec=NULL; PorePressureAceDiffc=NULL; PorePressureFeedbackUsedAcec=NULL;
@@ -160,6 +161,15 @@ void JSphCpu::AllocCpuMemoryFixed(){
 /// Libera memoria en cpu para particulas.
 //==============================================================================
 void JSphCpu::FreeCpuMemoryParticles(){
+  delete[] MccPcc; MccPcc=NULL;
+  delete[] MccVoidRatioc; MccVoidRatioc=NULL;
+  delete[] MccPlasticVolStrainc; MccPlasticVolStrainc=NULL;
+  delete[] MccEqPlasticStrainc; MccEqPlasticStrainc=NULL;
+  delete[] MccYieldFlagc; MccYieldFlagc=NULL;
+  delete[] MccPlasticMultiplierc; MccPlasticMultiplierc=NULL;
+  delete[] MccReturnStatusc; MccReturnStatusc=NULL;
+  delete[] MccReturnIterationsc; MccReturnIterationsc=NULL;
+  delete[] MccYieldResidualc; MccYieldResidualc=NULL;
   CpuParticlesSize=0;
   MemCpuParticles=0;
   ArraysCpu->Reset();
@@ -262,6 +272,15 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
   tsymatrix3f  *sigmam1   =SaveArrayCpu(Np,SigmaM1c);
   float        *kplastic  =SaveArrayCpu(Np,Kplasticc);
+  float        *mccpc     =SaveArrayCpu(Np,MccPcc);
+  float        *mccvoidratio=SaveArrayCpu(Np,MccVoidRatioc);
+  float        *mccplasticvolstrain=SaveArrayCpu(Np,MccPlasticVolStrainc);
+  float        *mcceqplasticstrain=SaveArrayCpu(Np,MccEqPlasticStrainc);
+  float        *mccyieldflag=SaveArrayCpu(Np,MccYieldFlagc);
+  float        *mccplasticmultiplier=SaveArrayCpu(Np,MccPlasticMultiplierc);
+  float        *mccreturnstatus=SaveArrayCpu(Np,MccReturnStatusc);
+  float        *mccreturniterations=SaveArrayCpu(Np,MccReturnIterationsc);
+  float        *mccyieldresidual=SaveArrayCpu(Np,MccYieldResidualc);
   double       *porepress =SaveArrayCpu(Np,PorePressc);
   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
   float        *divvel    =SaveArrayCpu(Np,DivVelc);
@@ -296,6 +315,15 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(SigmaPrec);
   ArraysCpu->Free(SigmaM1c);
   ArraysCpu->Free(Kplasticc);
+  delete[] MccPcc; MccPcc=NULL;
+  delete[] MccVoidRatioc; MccVoidRatioc=NULL;
+  delete[] MccPlasticVolStrainc; MccPlasticVolStrainc=NULL;
+  delete[] MccEqPlasticStrainc; MccEqPlasticStrainc=NULL;
+  delete[] MccYieldFlagc; MccYieldFlagc=NULL;
+  delete[] MccPlasticMultiplierc; MccPlasticMultiplierc=NULL;
+  delete[] MccReturnStatusc; MccReturnStatusc=NULL;
+  delete[] MccReturnIterationsc; MccReturnIterationsc=NULL;
+  delete[] MccYieldResidualc; MccYieldResidualc=NULL;
   ArraysCpu->Free(PorePressc);
   ArraysCpu->Free(PorePressRatec);
   ArraysCpu->Free(DivVelc);
@@ -334,6 +362,20 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
   if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticc = ArraysCpu->ReserveFloat();
+  try{
+    if(mccpc)       MccPcc = new float[npnew];
+    if(mccvoidratio)MccVoidRatioc = new float[npnew];
+    if(mccplasticvolstrain)MccPlasticVolStrainc = new float[npnew];
+    if(mcceqplasticstrain)MccEqPlasticStrainc = new float[npnew];
+    if(mccyieldflag)MccYieldFlagc = new float[npnew];
+    if(mccplasticmultiplier)MccPlasticMultiplierc = new float[npnew];
+    if(mccreturnstatus)MccReturnStatusc = new float[npnew];
+    if(mccreturniterations)MccReturnIterationsc = new float[npnew];
+    if(mccyieldresidual)MccYieldResidualc = new float[npnew];
+  }
+  catch(const std::bad_alloc){
+    Run_Exceptioon("Could not allocate the requested MCC state memory.");
+  }
   if(porepress)     PorePressc = ArraysCpu->ReserveDouble();
   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
   if(divvel)        DivVelc = ArraysCpu->ReserveFloat();
@@ -368,6 +410,15 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,sigmapre,SigmaPrec);
   RestoreArrayCpu(Np,sigmam1,SigmaM1c);
   RestoreArrayCpu(Np,kplastic,Kplasticc);
+  RestoreArrayCpu(Np,mccpc,MccPcc);
+  RestoreArrayCpu(Np,mccvoidratio,MccVoidRatioc);
+  RestoreArrayCpu(Np,mccplasticvolstrain,MccPlasticVolStrainc);
+  RestoreArrayCpu(Np,mcceqplasticstrain,MccEqPlasticStrainc);
+  RestoreArrayCpu(Np,mccyieldflag,MccYieldFlagc);
+  RestoreArrayCpu(Np,mccplasticmultiplier,MccPlasticMultiplierc);
+  RestoreArrayCpu(Np,mccreturnstatus,MccReturnStatusc);
+  RestoreArrayCpu(Np,mccreturniterations,MccReturnIterationsc);
+  RestoreArrayCpu(Np,mccyieldresidual,MccYieldResidualc);
   RestoreArrayCpu(Np,porepress,PorePressc);
   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
   RestoreArrayCpu(Np,divvel,DivVelc);
@@ -388,6 +439,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   //-Updates values.
   CpuParticlesSize=npnew;
   MemCpuParticles=ArraysCpu->GetAllocMemoryCpu();
+  if(MccPcc)MemCpuParticles+=sizeof(float)*9*CpuParticlesSize;
 }
 
 //==============================================================================
@@ -428,6 +480,23 @@ void JSphCpu::ReserveBasicArraysCpu(){
   //-mdbr
   Sigmac=ArraysCpu->ReserveSymatrix3f();
   Kplasticc=ArraysCpu->ReserveFloat();
+  if(SoilCte.SoilConstitutiveModel==3 || SoilCte.SaveMccState){
+    try{
+      MccPcc=new float[CpuParticlesSize];
+      MccVoidRatioc=new float[CpuParticlesSize];
+      MccPlasticVolStrainc=new float[CpuParticlesSize];
+      MccEqPlasticStrainc=new float[CpuParticlesSize];
+      MccYieldFlagc=new float[CpuParticlesSize];
+      MccPlasticMultiplierc=new float[CpuParticlesSize];
+      MccReturnStatusc=new float[CpuParticlesSize];
+      MccReturnIterationsc=new float[CpuParticlesSize];
+      MccYieldResidualc=new float[CpuParticlesSize];
+      MemCpuParticles+=sizeof(float)*9*CpuParticlesSize;
+    }
+    catch(const std::bad_alloc){
+      Run_Exceptioon("Could not allocate the requested MCC state memory.");
+    }
+  }
   //=====
   if(HydromechCoupling || SavePorePressure){
     PorePressc=ArraysCpu->ReserveDouble();
@@ -491,7 +560,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,float *divvelcorr,float *lapporepresscorr,float *lapzcorr)
+  ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code,double *porepress,float *porepressrate,float *divvel,float *lapporepress,float *lapz,tfloat3 *porepressureace,tfloat3 *porepressureacediff,double *porepressghost,double *excessporepressghost,float *porepressureboundarymode,float *lapporepressghost,float *lapzghost,float *divvelcorr,float *lapporepresscorr,float *lapzcorr,float *mccpc,float *mccvoidratio,float *mccplasticvolstrain,float *mcceqplasticstrain,float *mccyieldflag,float *mccplasticmultiplier,float *mccreturnstatus,float *mccreturniterations,float *mccyieldresidual)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -568,6 +637,33 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(lapzcorr){
       for (unsigned p=0;p<n;p++)lapzcorr[p]=LapZCorrc[p+pini];
   }
+  if(mccpc){
+      for (unsigned p=0;p<n;p++)mccpc[p]=MccPcc[p+pini];
+  }
+  if(mccvoidratio){
+      for (unsigned p=0;p<n;p++)mccvoidratio[p]=MccVoidRatioc[p+pini];
+  }
+  if(mccplasticvolstrain){
+      for (unsigned p=0;p<n;p++)mccplasticvolstrain[p]=MccPlasticVolStrainc[p+pini];
+  }
+  if(mcceqplasticstrain){
+      for (unsigned p=0;p<n;p++)mcceqplasticstrain[p]=MccEqPlasticStrainc[p+pini];
+  }
+  if(mccyieldflag){
+      for (unsigned p=0;p<n;p++)mccyieldflag[p]=MccYieldFlagc[p+pini];
+  }
+  if(mccplasticmultiplier){
+      for (unsigned p=0;p<n;p++)mccplasticmultiplier[p]=MccPlasticMultiplierc[p+pini];
+  }
+  if(mccreturnstatus){
+      for (unsigned p=0;p<n;p++)mccreturnstatus[p]=MccReturnStatusc[p+pini];
+  }
+  if(mccreturniterations){
+      for (unsigned p=0;p<n;p++)mccreturniterations[p]=MccReturnIterationsc[p+pini];
+  }
+  if(mccyieldresidual){
+      for (unsigned p=0;p<n;p++)mccyieldresidual[p]=MccYieldResidualc[p+pini];
+  }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
   if(onlynormal){
@@ -605,6 +701,15 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(divvelcorr)divvelcorr[pdel]=divvelcorr[p];
         if(lapporepresscorr)lapporepresscorr[pdel]=lapporepresscorr[p];
         if(lapzcorr)lapzcorr[pdel]=lapzcorr[p];
+        if(mccpc)mccpc[pdel]=mccpc[p];
+        if(mccvoidratio)mccvoidratio[pdel]=mccvoidratio[p];
+        if(mccplasticvolstrain)mccplasticvolstrain[pdel]=mccplasticvolstrain[p];
+        if(mcceqplasticstrain)mcceqplasticstrain[pdel]=mcceqplasticstrain[p];
+        if(mccyieldflag)mccyieldflag[pdel]=mccyieldflag[p];
+        if(mccplasticmultiplier)mccplasticmultiplier[pdel]=mccplasticmultiplier[p];
+        if(mccreturnstatus)mccreturnstatus[pdel]=mccreturnstatus[p];
+        if(mccreturniterations)mccreturniterations[pdel]=mccreturniterations[p];
+        if(mccyieldresidual)mccyieldresidual[pdel]=mccyieldresidual[p];
         //====
         code2[pdel]=code2[p];
       }
@@ -5692,6 +5797,13 @@ static void ApplySoilConstitutiveModelCpu(const StSoilCte &soilcte,const TpDPCte
   if(soilcte.SoilConstitutiveModel==0){
     signew=sigma_e;
     kplasnew=0.f;
+    return;
+  }
+  if(soilcte.SoilConstitutiveModel==3){
+    // M3b only wires MCC parser/state/output. The local MCC return mapping is
+    // intentionally not called from the SPH stress path until M3c.
+    signew=sigma_e;
+    kplasnew=kplasticold;
     return;
   }
   if(soilcte.SoilConstitutiveModel==2){

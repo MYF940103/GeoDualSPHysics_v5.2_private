@@ -1045,3 +1045,50 @@ Results:
 The elastic predictor is still linear `E,nu`; a `kappa`-based nonlinear elastic
 law can be evaluated later. M3 can start CPU integration planning/implementation
 from this prototype, but full feedback and GPU remain deferred.
+
+## M3a MCC C++ Helper Notes
+
+M3a ports the M2 material-point MCC model to standalone C++ under
+`src/papers/u-p/mcc_single_point/cpp/`.
+
+Important parity checks:
+
+- C++ and Python use the same compression-positive MCC internal convention;
+- future SPH mapping remains `p'=-trace(Sigmac)/3` because current `Sigmac`
+  uses negative compression;
+- isotropic, drained-like, and undrained-like paths have zero retained CSV
+  difference in `p'`, `q`, and `p_c`;
+- normalized yield residuals and `p_c` hardening match the Python prototype.
+
+M3a still does not touch the SPH solver.
+
+## M3b MCC Parser / State Init Notes
+
+M3b adds only the first production-code infrastructure for MCC:
+
+- `SoilConstitutiveModel=3` parser recognition;
+- MCC XML parameter validation;
+- CPU MCC state arrays;
+- MCC initialization from direct `pc0` or `OCR`;
+- `SaveMccState` output fields;
+- GPU hard error for model `3`.
+
+It does not connect the MCC return mapping to the stress update. The CPU model
+`3` branch logs this explicitly and uses elastic-trial pass-through only for
+short parse/init/output smoke tests.
+
+Smoke status:
+
+- direct `pc0=200 Pa`: `code=0`, `excluded=0`, `DtMin=0`;
+- `OCR=4` with `InitialEffectiveStressIso=50 Pa`: `code=0`, `excluded=0`,
+  `DtMin=0`;
+- missing required `MccM` gives a clear parser error.
+
+The initial-stress smoke confirms the sign convention:
+
+```text
+Sigmac=(-50,-50,-50) Pa -> p'=+50 Pa -> pc=OCR*p'=200 Pa
+```
+
+M3c can now implement the CPU MCC stress-update branch from the verified C++
+helper. Full feedback and GPU remain deferred.

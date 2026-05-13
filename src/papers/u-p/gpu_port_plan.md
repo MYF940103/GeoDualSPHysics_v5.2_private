@@ -2033,3 +2033,37 @@ but GPU remains deferred. A future GPU MCC port would need:
 
 Until those gates pass, future `SoilConstitutiveModel=3` should hard-error on
 GPU. Full pore-pressure feedback also remains deferred.
+
+## M3a MCC C++ Helper GPU Status
+
+M3a adds a standalone C++ MCC material-point helper under
+`src/papers/u-p/mcc_single_point/cpp/`. It is not linked into the production
+SPH solver and adds no CUDA path.
+
+The helper passes Python parity for isotropic, drained-like, and undrained-like
+single-point paths. This is a CPU-side numerical reference only. GPU MCC
+remains deferred until after CPU parser/state/output and CPU SPH stress-update
+smokes pass.
+
+## M3b MCC Parser / State Init GPU Status
+
+M3b adds production parser/state/output infrastructure for
+`SoilConstitutiveModel=3` on CPU:
+
+- MCC XML parameters;
+- CPU state arrays;
+- initialization from `pc0` or `OCR`;
+- `SaveMccState` output fields.
+
+GPU behavior is intentionally conservative:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+GPU Release build passes, but no GPU simulation was run. There are still no
+GPU MCC state arrays, no device return mapping, no GPU restart support, and no
+GPU validation route.
+
+Full pore-pressure feedback and GPU remain deferred. M3c should be CPU stress
+update only.

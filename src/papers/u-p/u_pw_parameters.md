@@ -1025,3 +1025,59 @@ change the physics. Mode `0` is closer to a true platen reaction than
 `Fz_proxy=-mean(Sigma_zz)*pi*R^2`, but it does not include prescribed-motion
 constraint forces. It should be cited as a pairwise specimen-platen
 interaction reaction diagnostic.
+
+## 12. Modified Cam Clay Parser / State Skeleton
+
+M3b reserves `SoilConstitutiveModel=3` for a CPU-only Modified Cam Clay
+parser/state/output skeleton:
+
+```xml
+<parameter key="SoilConstitutiveModel" value="3" />
+<parameter key="MccLambda" value="0.2" />
+<parameter key="MccKappa" value="0.04" />
+<parameter key="MccM" value="1.2" />
+<parameter key="MccInitialVoidRatio" value="0.8" />
+<parameter key="MccInitialPreconsolidationPressure" value="200" />
+<parameter key="MccTensionCutoff" value="1e-6" />
+<parameter key="MccReturnTolerance" value="1e-8" />
+<parameter key="MccReturnMaxIter" value="30" />
+<parameter key="SaveMccState" value="1" />
+```
+
+Alternatives:
+
+- use `MccInitialSpecificVolume` instead of `MccInitialVoidRatio`;
+- use `MccOCR` instead of `MccInitialPreconsolidationPressure`;
+- use `MccReferencePressure` for OCR initialization when initial `p'` is not
+  positive.
+
+Rules:
+
+- `MccInitialVoidRatio` and `MccInitialSpecificVolume` are mutually exclusive;
+- `MccInitialPreconsolidationPressure` and `MccOCR` are mutually exclusive;
+- missing required MCC parameters hard-error;
+- `MccLambda > MccKappa > 0`, `MccM > 0`, and positive `pc0/OCR` are required;
+- `SoilConstitutiveModel=3` hard-errors on GPU;
+- M3b does not connect the MCC stress return mapping.
+
+`SaveMccState=1` outputs:
+
+- `MccPc`;
+- `MccVoidRatio`;
+- `MccPlasticVolStrain`;
+- `MccEqPlasticStrain`;
+- `MccYieldFlag`;
+- `MccPlasticMultiplier`;
+- `MccReturnStatus`;
+- `MccReturnIterations`;
+- `MccYieldResidual`.
+
+Current stress convention remains:
+
+```text
+Sigmac compression is negative.
+MCC initialization uses p' = -trace(Sigmac)/3.
+```
+
+M3b model `3` should only be used for parse/init/output smoke tests. Full MCC
+stress update is M3c work.

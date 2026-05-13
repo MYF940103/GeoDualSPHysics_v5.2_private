@@ -313,6 +313,21 @@ typedef struct{
   float HydraulicConductivity;  ///<u-pw hydraulic conductivity k [m/s].
   float WaterBulkModulus;       ///<u-pw water bulk modulus Kw [Pa].
   float WaterDensity;           ///<u-pw water density rho_w [kg/m3].
+  float MccLambda;              ///<Modified Cam Clay virgin compression slope.
+  float MccKappa;               ///<Modified Cam Clay swelling/recompression slope.
+  float MccM;                   ///<Modified Cam Clay critical-state stress ratio.
+  float MccInitialVoidRatio;    ///<Initial void ratio e0.
+  float MccInitialSpecificVolume; ///<Initial specific volume v0, when used instead of e0.
+  bool MccUseSpecificVolume;    ///<True when v0 was supplied and e0 is derived as v0-1.
+  float MccInitialPreconsolidationPressure; ///<Initial preconsolidation pressure pc0 [Pa].
+  float MccOCR;                 ///<Initial over-consolidation ratio.
+  bool MccUseOCR;               ///<True when pc0 is derived from OCR and initial p'.
+  float MccReferencePressure;   ///<Fallback reference pressure for OCR-derived pc0 [Pa].
+  float MccTensionCutoff;       ///<Minimum valid compression-positive p' [Pa].
+  float MccReturnTolerance;     ///<Reserved local return tolerance for MCC.
+  unsigned MccReturnMaxIter;    ///<Reserved local return maximum iterations for MCC.
+  bool SaveMccState;            ///<Save/output MCC state arrays.
+  bool MccStressUpdateEnabled;  ///<Reserved; false in M3b so model=3 uses explicit skeleton pass-through only.
 }StSoilCte;
 
 ///Controls the output of information on the screen and/or log.

@@ -1,0 +1,118 @@
+<?xml version="1.0" encoding="utf-8"?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="M3b MCC parser/state init smoke">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="0" />
+      <rhop0 value="2100" />
+      <hswl value="0" auto="true" />
+      <gamma value="7" />
+      <speedsystem value="0" auto="true" />
+      <coefsound value="20" />
+      <speedsound value="20" auto="false" />
+      <hdp value="1.8" />
+      <cflnumber value="0.2" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <predefinition>
+        <newvarcte R="0.03" />
+        <newvarcte Hcyl="0.10" />
+        <newvarcte PlateH="0.02" />
+        <newvarcte Dp="0.01" />
+      </predefinition>
+      <definition dp="#Dp" units_comment="metres (m)">
+        <pointmin x="-0.08" y="-0.08" z="-0.04" />
+        <pointmax x="0.08" y="0.08" z="0.14" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setshapemode>real | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkbound mk="2" name="BottomPlaten" />
+          <drawcylinder radius="#R"><point x="0" y="0" z="#-PlateH" /><point x="0" y="0" z="#-Dp/2" /></drawcylinder>
+          <setmkbound mk="1" name="TopPlaten" />
+          <drawcylinder radius="#R"><point x="0" y="0" z="#Hcyl+Dp/2" /><point x="0" y="0" z="#Hcyl+PlateH" /></drawcylinder>
+          <setshapemode>dp | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkfluid mk="0" name="Specimen" />
+          <drawcylinder radius="#R"><point x="0" y="0" z="0" /><point x="0" y="0" z="#Hcyl" /></drawcylinder>
+          <shapeout file="" />
+        </mainlist>
+      </commands>
+    </geometry>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <SoilConstitutiveModel value="3" />
+        <phi value="33" />
+        <coh value="10000" />
+        <dlt value="0" />
+        <ModulusE value="2e6" />
+        <PRvs value="0.3" />
+        <Porosity0 value="0.3" />
+        <HydraulicConductivity value="1e-8" />
+        <WaterBulkModulus value="2e8" />
+        <WaterDensity value="1000" />
+        <MccLambda value="0.2" />
+        <MccKappa value="0.04" />
+        <MccM value="1.2" />
+        <MccInitialVoidRatio value="0.8" />
+        <MccOCR value="4" />
+        <MccReferencePressure value="0" />
+        <MccTensionCutoff value="1e-6" />
+        <MccReturnTolerance value="1e-8" />
+        <MccReturnMaxIter value="30" />
+        <SaveMccState value="1" />
+      </soils>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="0" />
+      <parameter key="DPCtes" value="3" />
+      <parameter key="Boundary" value="1" />
+      <parameter key="SlipMode" value="1" />
+      <parameter key="StepAlgorithm" value="2" />
+      <parameter key="Kernel" value="2" />
+      <parameter key="ViscoTreatment" value="1" />
+      <parameter key="Visco" value="1.0" />
+      <parameter key="ViscoBoundFactor" value="1" />
+      <parameter key="DensityDT" value="0" />
+      <parameter key="Shifting" value="0" />
+      <parameter key="RigidAlgorithm" value="1" />
+      <parameter key="CoefDtMin" value="0.01" />
+      <parameter key="#DtIni" value="0.000001" />
+      <parameter key="#DtMin" value="0.00000001" />
+      <parameter key="DtAllParticles" value="0" />
+      <parameter key="TimeMax" value="0.0005" />
+      <parameter key="TimeOut" value="0.00025" />
+      <parameter key="PartsOutMax" value="1" />
+      <parameter key="RhopOutMin" value="500" />
+      <parameter key="RhopOutMax" value="3000" />
+      <simulationdomain><posmin x="-0.08" y="-0.08" z="-0.04" /><posmax x="0.08" y="0.08" z="0.14" /></simulationdomain>
+      <parameter key="HydromechCoupling" value="1" />
+      <parameter key="PorePressureModel" value="1" />
+      <parameter key="PorePressureBoundaryOperator" value="0" />
+      <parameter key="HydraulicElevationSource" value="0" />
+      <parameter key="PorePressureInit" value="0" />
+      <parameter key="PorePressureTopDrained" value="0" />
+      <parameter key="PorePressureBottomNoFlux" value="0" />
+      <parameter key="SavePorePressure" value="1" />
+      <parameter key="PorePressureDtSafety" value="0.20" />
+      <parameter key="InitialStressMode" value="1" />
+      <parameter key="InitialEffectiveStressIso" value="50" />
+      <parameter key="InitialEffectiveStressTargetMk" value="-1" />
+      <parameter key="PorePressureFeedback" value="0" />
+      <parameter key="HydraulicGravityX" value="0" />
+      <parameter key="HydraulicGravityY" value="0" />
+      <parameter key="HydraulicGravityZ" value="-9.81" />
+      <parameter key="PorePressureFeedbackMode" value="1" />
+      <parameter key="PorePressureFeedbackOperator" value="1" />
+      <parameter key="HydromechDamping" value="0" />
+      <parameter key="PorePressureShepard" value="0" />
+      <parameter key="FlexibleConfiningStress" value="0" />
+      <parameter key="SaveConfiningStressDiagnostics" value="0" />
+      <parameter key="CapConfiningStress" value="0" />
+      <parameter key="SavePlatenReactionDiagnostics" value="0" />
+    </parameters>
+  </execution>
+</case>

@@ -4638,6 +4638,65 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   }
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
+  SoilCte.MccLambda=0.f;
+  SoilCte.MccKappa=0.f;
+  SoilCte.MccM=0.f;
+  SoilCte.MccInitialVoidRatio=0.f;
+  SoilCte.MccInitialSpecificVolume=0.f;
+  SoilCte.MccUseSpecificVolume=false;
+  SoilCte.MccInitialPreconsolidationPressure=0.f;
+  SoilCte.MccOCR=0.f;
+  SoilCte.MccUseOCR=false;
+  SoilCte.MccReferencePressure=0.f;
+  SoilCte.MccTensionCutoff=1.e-6f;
+  SoilCte.MccReturnTolerance=1.e-8f;
+  SoilCte.MccReturnMaxIter=30;
+  SoilCte.SaveMccState=false;
+  SoilCte.MccStressUpdateEnabled=false;
+  if(SoilCte.SoilConstitutiveModel==3){
+    const bool has_e0=(solidNode->FirstChildElement("MccInitialVoidRatio")!=NULL);
+    const bool has_v0=(solidNode->FirstChildElement("MccInitialSpecificVolume")!=NULL);
+    const bool has_pc0=(solidNode->FirstChildElement("MccInitialPreconsolidationPressure")!=NULL);
+    const bool has_ocr=(solidNode->FirstChildElement("MccOCR")!=NULL);
+    if(has_e0 && has_v0)Run_Exceptioon("MCC parameters must define either MccInitialVoidRatio or MccInitialSpecificVolume, not both.");
+    if(!has_e0 && !has_v0)Run_Exceptioon("SoilConstitutiveModel=3 requires MccInitialVoidRatio or MccInitialSpecificVolume.");
+    if(has_pc0 && has_ocr)Run_Exceptioon("MCC parameters must define either MccInitialPreconsolidationPressure or MccOCR, not both.");
+    if(!has_pc0 && !has_ocr)Run_Exceptioon("SoilConstitutiveModel=3 requires MccInitialPreconsolidationPressure or MccOCR.");
+    SoilCte.MccLambda=sxml->ReadElementFloat(solidNode,"MccLambda","value",false);
+    SoilCte.MccKappa=sxml->ReadElementFloat(solidNode,"MccKappa","value",false);
+    SoilCte.MccM=sxml->ReadElementFloat(solidNode,"MccM","value",false);
+    if(has_e0)SoilCte.MccInitialVoidRatio=sxml->ReadElementFloat(solidNode,"MccInitialVoidRatio","value",false);
+    else{
+      SoilCte.MccInitialSpecificVolume=sxml->ReadElementFloat(solidNode,"MccInitialSpecificVolume","value",false);
+      SoilCte.MccInitialVoidRatio=SoilCte.MccInitialSpecificVolume-1.f;
+      SoilCte.MccUseSpecificVolume=true;
+    }
+    if(has_pc0)SoilCte.MccInitialPreconsolidationPressure=sxml->ReadElementFloat(solidNode,"MccInitialPreconsolidationPressure","value",false);
+    else{
+      SoilCte.MccOCR=sxml->ReadElementFloat(solidNode,"MccOCR","value",false);
+      SoilCte.MccUseOCR=true;
+    }
+    if(solidNode->FirstChildElement("MccReferencePressure"))SoilCte.MccReferencePressure=sxml->ReadElementFloat(solidNode,"MccReferencePressure","value",false);
+    if(solidNode->FirstChildElement("MccTensionCutoff"))SoilCte.MccTensionCutoff=sxml->ReadElementFloat(solidNode,"MccTensionCutoff","value",false);
+    if(solidNode->FirstChildElement("MccReturnTolerance"))SoilCte.MccReturnTolerance=sxml->ReadElementFloat(solidNode,"MccReturnTolerance","value",false);
+    if(solidNode->FirstChildElement("MccReturnMaxIter"))SoilCte.MccReturnMaxIter=unsigned(sxml->ReadElementInt(solidNode,"MccReturnMaxIter","value",false));
+    if(solidNode->FirstChildElement("SaveMccState")){
+      const int v=sxml->ReadElementInt(solidNode,"SaveMccState","value",false);
+      if(v!=0 && v!=1)Run_Exceptioon("SaveMccState must be 0 or 1.");
+      SoilCte.SaveMccState=(v==1);
+    }
+    else SoilCte.SaveMccState=true;
+    if(solidNode->FirstChildElement("MccStressUpdateEnabled")){
+      const int v=sxml->ReadElementInt(solidNode,"MccStressUpdateEnabled","value",false);
+      if(v!=0 && v!=1)Run_Exceptioon("MccStressUpdateEnabled must be 0 or 1.");
+      SoilCte.MccStressUpdateEnabled=(v==1);
+    }
+  }
+  else if(solidNode->FirstChildElement("SaveMccState")){
+    const int v=sxml->ReadElementInt(solidNode,"SaveMccState","value",false);
+    if(v!=0 && v!=1)Run_Exceptioon("SaveMccState must be 0 or 1.");
+    SoilCte.SaveMccState=(v==1);
+  }
   //-u-pw hydromechanical material constants.  The <parameters> keys are kept
   //-only as deprecated fallbacks for older XML cases.
   SoilCte.Porosity0=0.3f;
@@ -4709,7 +4768,25 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(SoilCte.WaterBulkModulus<=0.f)Run_Exceptioon("Soil WaterBulkModulus must be greater than zero.");
   if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero.");
   if(SoilCte.Softening>1)Run_Exceptioon("Soil Softening must be 0 or 1.");
-  if(SoilCte.SoilConstitutiveModel>2)Run_Exceptioon("SoilConstitutiveModel must be 0 (linear elastic), 1 (Drucker-Prager), or 2 (Drucker-Prager softening).");
+  if(SoilCte.SoilConstitutiveModel>3)Run_Exceptioon("SoilConstitutiveModel must be 0 (linear elastic), 1 (Drucker-Prager), 2 (Drucker-Prager softening), or 3 (Modified Cam Clay skeleton).");
+  if(SoilCte.SoilConstitutiveModel==3){
+    if(!Cpu)Run_Exceptioon("SoilConstitutiveModel=3 (Modified Cam Clay) is CPU-only in this branch. GPU support is not implemented.");
+    if(SoilCte.MccLambda<=0.f)Run_Exceptioon("MccLambda must be greater than zero.");
+    if(SoilCte.MccKappa<=0.f)Run_Exceptioon("MccKappa must be greater than zero.");
+    if(SoilCte.MccLambda<=SoilCte.MccKappa)Run_Exceptioon("MccLambda must be greater than MccKappa.");
+    if(SoilCte.MccM<=0.f)Run_Exceptioon("MccM must be greater than zero.");
+    if(SoilCte.MccInitialVoidRatio<=0.f)Run_Exceptioon("MCC initial void ratio must be greater than zero.");
+    if(SoilCte.MccInitialSpecificVolume && SoilCte.MccInitialSpecificVolume<=1.f)Run_Exceptioon("MccInitialSpecificVolume must be greater than one.");
+    if(!SoilCte.MccUseOCR && SoilCte.MccInitialPreconsolidationPressure<=0.f)Run_Exceptioon("MccInitialPreconsolidationPressure must be greater than zero.");
+    if(SoilCte.MccUseOCR && SoilCte.MccOCR<=0.f)Run_Exceptioon("MccOCR must be greater than zero.");
+    if(SoilCte.MccReferencePressure<0.f)Run_Exceptioon("MccReferencePressure must be greater than or equal to zero.");
+    if(SoilCte.MccTensionCutoff<0.f)Run_Exceptioon("MccTensionCutoff must be greater than or equal to zero.");
+    if(SoilCte.MccReturnTolerance<=0.f)Run_Exceptioon("MccReturnTolerance must be greater than zero.");
+    if(SoilCte.MccReturnMaxIter<1)Run_Exceptioon("MccReturnMaxIter must be greater than zero.");
+    if(SoilCte.MccStressUpdateEnabled)Run_Exceptioon("MccStressUpdateEnabled=1 is reserved for M3c. M3b only supports parser/state/output initialization.");
+  }
+  else if(SoilCte.SaveMccState)
+    Log->PrintWarning("SaveMccState=1 is enabled without SoilConstitutiveModel=3. MCC output arrays will contain safe zero/default values only.");
   if(SoilCte.coh<0.f)Run_Exceptioon("Soil cohesion must be greater than or equal to zero.");
   if(SoilCte.coh_r<0.f)Run_Exceptioon("Soil residual cohesion coh_r must be greater than or equal to zero.");
   if(SoilCte.n_coh<0.f || SoilCte.n_phi<0.f)Run_Exceptioon("Soil softening coefficients n_coh and n_phi must be greater than or equal to zero.");
@@ -4724,10 +4801,27 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
-   const std::string soilmodel=(ct.SoilConstitutiveModel==0? "Linear elastic skeleton": (ct.SoilConstitutiveModel==2? "Drucker-Prager + exponential softening": "Drucker-Prager elastoplastic"));
+   const std::string soilmodel=(ct.SoilConstitutiveModel==0? "Linear elastic skeleton": (ct.SoilConstitutiveModel==3? "Modified Cam Clay skeleton (M3b parser/state skeleton)": (ct.SoilConstitutiveModel==2? "Drucker-Prager + exponential softening": "Drucker-Prager elastoplastic")));
    Log->Print(fun::VarStr("  SoilConstitutiveModel",soilmodel));
    if(ct.SoilConstitutiveModel==0)
      Log->Print("  Linear elastic skeleton: DP yield, return mapping, plastic strain, Kplastic accumulation, and softening are bypassed.");
+   else if(ct.SoilConstitutiveModel==3){
+     Log->PrintWarning("  MCC stress update is not connected in M3b. CPU stress integration uses elastic-trial pass-through for parse/init smoke only.");
+     Log->Printf("  MCC lambda: %g",ct.MccLambda);
+     Log->Printf("  MCC kappa: %g",ct.MccKappa);
+     Log->Printf("  MCC M: %g",ct.MccM);
+     Log->Printf("  MCC initial void ratio e0: %g",ct.MccInitialVoidRatio);
+     if(ct.MccUseSpecificVolume)Log->Printf("  MCC initial specific volume v0: %g",ct.MccInitialSpecificVolume);
+     if(ct.MccUseOCR){
+       Log->Printf("  MCC OCR: %g",ct.MccOCR);
+       Log->Printf("  MCC reference pressure: %g Pa",ct.MccReferencePressure);
+     }
+     else Log->Printf("  MCC initial preconsolidation pressure pc0: %g Pa",ct.MccInitialPreconsolidationPressure);
+     Log->Printf("  MCC tension cutoff: %g Pa",ct.MccTensionCutoff);
+     Log->Printf("  MCC return tolerance: %g",ct.MccReturnTolerance);
+     Log->Printf("  MCC return max iterations: %u",ct.MccReturnMaxIter);
+     Log->Printf("  SaveMccState: %s",ct.SaveMccState? "enabled": "disabled");
+   }
    else
      Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
    Log->Printf("  Cohesion: %f",ct.coh);

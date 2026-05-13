@@ -304,6 +304,70 @@ void JSphCpuSingle::ConfigDomain(){
     }
   }
 
+  if(SoilCte.SoilConstitutiveModel==3 || SoilCte.SaveMccState){
+    if(!MccPcc || !MccVoidRatioc || !MccPlasticVolStrainc || !MccEqPlasticStrainc || !MccYieldFlagc || !MccPlasticMultiplierc || !MccReturnStatusc || !MccReturnIterationsc || !MccYieldResidualc)
+      Run_Exceptioon("MCC state arrays were not fully allocated on CPU.");
+    memset(MccPcc,0,sizeof(float)*Np);
+    memset(MccVoidRatioc,0,sizeof(float)*Np);
+    memset(MccPlasticVolStrainc,0,sizeof(float)*Np);
+    memset(MccEqPlasticStrainc,0,sizeof(float)*Np);
+    memset(MccYieldFlagc,0,sizeof(float)*Np);
+    memset(MccPlasticMultiplierc,0,sizeof(float)*Np);
+    memset(MccReturnStatusc,0,sizeof(float)*Np);
+    memset(MccReturnIterationsc,0,sizeof(float)*Np);
+    memset(MccYieldResidualc,0,sizeof(float)*Np);
+    if(SoilCte.SoilConstitutiveModel!=3){
+      Log->PrintWarning("SaveMccState=1 without SoilConstitutiveModel=3: MCC state arrays are allocated and output as zero/default diagnostics.");
+    }
+    else{
+    const float e0=(SoilCte.MccUseSpecificVolume? SoilCte.MccInitialSpecificVolume-1.f: SoilCte.MccInitialVoidRatio);
+    unsigned ntarget=0,nmat=0,nref=0;
+    double psum=0.,pmin=DBL_MAX,pmax=-DBL_MAX,pcsum=0.,pcmin=DBL_MAX,pcmax=-DBL_MAX;
+    double esum=0.,emin=DBL_MAX,emax=-DBL_MAX;
+    for(unsigned p=0;p<Np;p++){
+      const typecode c=Codec[p];
+      const bool material=(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c));
+      if(material){
+        nmat++;
+        const double pinit=-(double(Sigmac[p].xx)+double(Sigmac[p].yy)+double(Sigmac[p].zz))/3.;
+        double pc=SoilCte.MccInitialPreconsolidationPressure;
+        if(SoilCte.MccUseOCR){
+          double pref=pinit;
+          if(pref<=double(SoilCte.MccTensionCutoff) && SoilCte.MccReferencePressure>0.f){
+            pref=SoilCte.MccReferencePressure;
+            nref++;
+          }
+          if(pref<=double(SoilCte.MccTensionCutoff))
+            Run_Exceptioon("MCC OCR initialization requires positive initial p' or MccReferencePressure.");
+          pc=double(SoilCte.MccOCR)*pref;
+        }
+        if(pc<=0.)Run_Exceptioon("MCC initialization produced non-positive preconsolidation pressure.");
+        MccPcc[p]=float(pc);
+        MccVoidRatioc[p]=e0;
+        MccPlasticVolStrainc[p]=0.f;
+        MccEqPlasticStrainc[p]=0.f;
+        MccYieldFlagc[p]=0.f;
+        MccPlasticMultiplierc[p]=0.f;
+        MccReturnStatusc[p]=0.f;
+        MccReturnIterationsc[p]=0.f;
+        MccYieldResidualc[p]=0.f;
+        ntarget++;
+        psum+=pinit; pmin=min(pmin,pinit); pmax=max(pmax,pinit);
+        pcsum+=pc; pcmin=min(pcmin,pc); pcmax=max(pcmax,pc);
+        esum+=e0; emin=min(emin,double(e0)); emax=max(emax,double(e0));
+      }
+    }
+    if(ntarget){
+      Log->Printf("MCC CPU state initialised: particles=%u/%u material, pc_mean=%g Pa, pc_range=[%g,%g] Pa, void_ratio_mean=%g, void_ratio_range=[%g,%g], p'_initial_mean=%g Pa, p'_range=[%g,%g] Pa."
+        ,ntarget,nmat,pcsum/double(ntarget),pcmin,pcmax,esum/double(ntarget),emin,emax,psum/double(ntarget),pmin,pmax);
+      if(nref)Log->Printf("MCC OCR initialization used MccReferencePressure for %u particles with non-positive initial p'.",nref);
+    }
+    else Log->PrintWarning("MCC state initialisation found no normal material particles.");
+    if(SoilCte.SoilConstitutiveModel==3)
+      Log->PrintWarning("M3b MCC stress update is not connected to the SPH stress branch. SoilConstitutiveModel=3 currently uses elastic-trial stress pass-through only for parser/state/output smoke tests.");
+    }
+  }
+
   if(PorePressc && !restartporepressrestored && HydromechCoupling && (PorePressureInit==1 || PorePressureInit==3)){
     if(SoilCte.WaterDensity<=0.f)Run_Exceptioon("Soil WaterDensity must be greater than zero for pore pressure initialization.");
     const double gmag=GetHydraulicGmag();
@@ -748,6 +812,15 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   //===mdbr
   CellDivSingle->SortArray(Sigmac);
   CellDivSingle->SortArray(Kplasticc);
+  if(MccPcc)CellDivSingle->SortArray(MccPcc);
+  if(MccVoidRatioc)CellDivSingle->SortArray(MccVoidRatioc);
+  if(MccPlasticVolStrainc)CellDivSingle->SortArray(MccPlasticVolStrainc);
+  if(MccEqPlasticStrainc)CellDivSingle->SortArray(MccEqPlasticStrainc);
+  if(MccYieldFlagc)CellDivSingle->SortArray(MccYieldFlagc);
+  if(MccPlasticMultiplierc)CellDivSingle->SortArray(MccPlasticMultiplierc);
+  if(MccReturnStatusc)CellDivSingle->SortArray(MccReturnStatusc);
+  if(MccReturnIterationsc)CellDivSingle->SortArray(MccReturnIterationsc);
+  if(MccYieldResidualc)CellDivSingle->SortArray(MccYieldResidualc);
   if(PorePressc)CellDivSingle->SortArray(PorePressc);
   if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
   if(DivVelc)CellDivSingle->SortArray(DivVelc);
@@ -1578,6 +1651,15 @@ void JSphCpuSingle::SaveData(){
   float *divvelcorr=NULL;
   float *lapporepresscorr=NULL;
   float *lapzcorr=NULL;
+  float *mccpc=NULL;
+  float *mccvoidratio=NULL;
+  float *mccplasticvolstrain=NULL;
+  float *mcceqplasticstrain=NULL;
+  float *mccyieldflag=NULL;
+  float *mccplasticmultiplier=NULL;
+  float *mccreturnstatus=NULL;
+  float *mccreturniterations=NULL;
+  float *mccyieldresidual=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1605,6 +1687,22 @@ void JSphCpuSingle::SaveData(){
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && PorePressureBoundaryModec)porepressureboundarymode=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && LapPorePressGhostc)lapporepressghost=ArraysCpu->ReserveFloat();
 	if(SavePorePressure && PorePressureBoundaryGhost && PorePressureBoundaryGhostOutput && LapZGhostc)lapzghost=ArraysCpu->ReserveFloat();
+    if(SoilCte.SaveMccState){
+      try{
+        if(MccPcc)mccpc=new float[npsave];
+        if(MccVoidRatioc)mccvoidratio=new float[npsave];
+        if(MccPlasticVolStrainc)mccplasticvolstrain=new float[npsave];
+        if(MccEqPlasticStrainc)mcceqplasticstrain=new float[npsave];
+        if(MccYieldFlagc)mccyieldflag=new float[npsave];
+        if(MccPlasticMultiplierc)mccplasticmultiplier=new float[npsave];
+        if(MccReturnStatusc)mccreturnstatus=new float[npsave];
+        if(MccReturnIterationsc)mccreturniterations=new float[npsave];
+        if(MccYieldResidualc)mccyieldresidual=new float[npsave];
+      }
+      catch(const std::bad_alloc){
+        Run_Exceptioon("Could not allocate the requested MCC output memory.");
+      }
+    }
 	//=========
     if(PorePressureBoundaryGhost && PorePressc && PorePressGhostc && ExcessPorePressGhostc && PorePressureBoundaryModec){
       ComputePorePressureBoundaryGhost(Np,0,Posc,Codec,PorePressc,PorePressGhostc,ExcessPorePressGhostc,PorePressureBoundaryModec,TimeStep,"save",!PorePressureBoundaryGhostPrint);
@@ -1612,7 +1710,7 @@ void JSphCpuSingle::SaveData(){
       if(LapZGhostc)ComputeHydroLapZGhost(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressureBoundaryModec,LapZGhostc);
       PorePressureBoundaryGhostPrint=true;
     }
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr,mccpc,mccvoidratio,mccplasticvolstrain,mcceqplasticstrain,mccyieldflag,mccplasticmultiplier,mccreturnstatus,mccreturniterations,mccyieldresidual);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
       for(unsigned p=0;p<npsave;p++){
@@ -1662,6 +1760,15 @@ void JSphCpuSingle::SaveData(){
   if(SavePorePressure && porepressureboundarymode)arrays.AddArray("PorePressureBoundaryMode",npsave,porepressureboundarymode);
   if(SavePorePressure && lapporepressghost)arrays.AddArray("LapPorePressGhost",npsave,lapporepressghost);
   if(SavePorePressure && lapzghost)arrays.AddArray("LapZGhost",npsave,lapzghost);
+  if(SoilCte.SaveMccState && mccpc)arrays.AddArray("MccPc",npsave,mccpc);
+  if(SoilCte.SaveMccState && mccvoidratio)arrays.AddArray("MccVoidRatio",npsave,mccvoidratio);
+  if(SoilCte.SaveMccState && mccplasticvolstrain)arrays.AddArray("MccPlasticVolStrain",npsave,mccplasticvolstrain);
+  if(SoilCte.SaveMccState && mcceqplasticstrain)arrays.AddArray("MccEqPlasticStrain",npsave,mcceqplasticstrain);
+  if(SoilCte.SaveMccState && mccyieldflag)arrays.AddArray("MccYieldFlag",npsave,mccyieldflag);
+  if(SoilCte.SaveMccState && mccplasticmultiplier)arrays.AddArray("MccPlasticMultiplier",npsave,mccplasticmultiplier);
+  if(SoilCte.SaveMccState && mccreturnstatus)arrays.AddArray("MccReturnStatus",npsave,mccreturnstatus);
+  if(SoilCte.SaveMccState && mccreturniterations)arrays.AddArray("MccReturnIterations",npsave,mccreturniterations);
+  if(SoilCte.SaveMccState && mccyieldresidual)arrays.AddArray("MccYieldResidual",npsave,mccyieldresidual);
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1689,6 +1796,15 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(porepressureboundarymode);
   ArraysCpu->Free(lapporepressghost);
   ArraysCpu->Free(lapzghost);
+  delete[] mccpc;
+  delete[] mccvoidratio;
+  delete[] mccplasticvolstrain;
+  delete[] mcceqplasticstrain;
+  delete[] mccyieldflag;
+  delete[] mccplasticmultiplier;
+  delete[] mccreturnstatus;
+  delete[] mccreturniterations;
+  delete[] mccyieldresidual;
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.
