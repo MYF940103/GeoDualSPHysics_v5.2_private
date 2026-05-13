@@ -2130,3 +2130,20 @@ CPU Release and GPU Release builds pass after the shared parser/source changes,
 but no GPU simulation was run. There is still no GPU MCC return mapping, no GPU
 MCC substepping, and no GPU MCC state-array update. Full pore-pressure feedback
 also remains deferred.
+
+## M3e MCC Reporting Package GPU Status
+
+M3e is a postprocessing and documentation consolidation stage. It adds no GPU
+source, no GPU build requirement beyond the already-passed M3d3 GPU Release
+compile, and no GPU simulation.
+
+The GPU policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The consolidated MCC route is CPU-only, feedback-off, and reduced. GPU MCC
+should remain deferred until the CPU return/staging issue is clean and a GPU
+MCC state/update/restart design exists. Full pore-pressure feedback also
+remains deferred.

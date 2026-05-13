@@ -1209,3 +1209,29 @@ cleanest reduced route is half-speed adaptive, which clears final negative
 return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
+
+## M3e MCC Feedback-Off Reporting Package
+
+M3e is retained under:
+
+`experiments/M3e_MCCFeedbackOffPackage/`
+
+It does not add new simulations. It consolidates M3c, M3d, M3d2, and M3d3
+MCC feedback-off explicit-platen results into a reduced reporting package.
+
+The package includes high-pc MCC smokes, mild-yield MCC smokes, the extended
+M3d cases, M3d2 loading/tolerance diagnostics, and M3d3 substepping/fallback
+diagnostics. The main conclusion is:
+
+- high-pc MCC remains elastic-like;
+- mild MCC yields and evolves `pc`, void ratio, and plastic strains;
+- MCC state output and pairwise reaction diagnostics are usable;
+- original-rate mild MCC is not clean because local return failures remain;
+- adaptive fallback is a safety diagnostic, not a validation setting;
+- half-speed adaptive is the cleanest final-frame reduced route;
+- strong negative mild-MCC pore pressure keeps this as feedback-off diagnostic
+  evidence, not strict undrained validation.
+
+M3f is recommended before clean MCC validation. M4 can proceed only as planning
+unless the reduced-route limitations are explicitly accepted. Full feedback and
+GPU remain deferred.

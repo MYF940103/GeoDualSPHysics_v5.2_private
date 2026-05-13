@@ -1201,3 +1201,32 @@ final ReturnStatus = 0:12 | 1:395
 
 M3e can consolidate a reduced feedback-off MCC reporting package only if it
 keeps this distinction clear. Full feedback and GPU remain deferred.
+
+## M3e MCC Feedback-Off Package Notes
+
+M3e is a consolidation stage only. It collects:
+
+- M3c high-pc and mild MCC smokes;
+- M3d high-pc and mild extended responses;
+- M3d2 half-speed, early-stop, and tight-return diagnostics;
+- M3d3 baseline, fixed substepping, adaptive substepping, adaptive fallback,
+  and half-speed adaptive diagnostics.
+
+All included cases are CPU-only and feedback-off. The consolidated package
+keeps the explicit platen workflow, selected lateral confinement, pairwise
+reaction diagnostic, and `SaveMccState` outputs.
+
+Main interpretation:
+
+- high-pc MCC is an elastic-like reference;
+- mild MCC is a useful yield/state-evolution diagnostic;
+- original-rate mild MCC is not clean due to local `ReturnStatus=-3`;
+- fallback replaces `-3` with explicit `-5` partial-fallback status, so it is
+  not validation;
+- half-speed adaptive is the cleanest final-frame reduced route but still does
+  not prove original-rate robustness;
+- strong negative pore pressure remains a feedback-off limitation.
+
+The recommended technical path is M3f return/staging refinement if clean MCC
+validation is the goal. M4 drained/undrained comparison can be planned, but not
+claimed as strict validation yet. Full feedback and GPU remain deferred.
