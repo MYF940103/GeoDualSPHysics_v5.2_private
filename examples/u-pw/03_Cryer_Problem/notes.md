@@ -600,3 +600,41 @@ Decision: simple dp refinement is not a clean path forward. The next strict
 Cryer task should focus on MLS / flux-consistent drained spherical boundary
 calibration, using pressure-only diffusion as the first acceptance gate. C6 and
 GPU remain deferred.
+
+## C5i Spherical Diffusion Flux Calibration Notes
+
+C5i establishes the pressure-only spherical diffusion gate:
+
+`strict_reproduction_plan/C5i_SphericalDiffusionFluxCalibration/`
+
+It is postprocessing-only. It reads committed pressure-only diffusion CSVs from
+C5e/C5f/C5g/C5h and solves a matching 1D finite-volume radial diffusion
+reference. No source files were changed, no GPU run was performed, and no new
+Cryer compression case was run.
+
+Reference setup:
+
+- `R=0.05 m`;
+- `u0=1000 Pa`;
+- `c_v=0.0067957866 m2/s`;
+- drained boundary `u(R)=0`;
+- symmetry `du/dr=0` at `r=0`.
+
+At `t~0.00603 s`, the FV reference has center pressure `~999.998 Pa`, volume
+mean `~615.7 Pa`, and surface-shell mean `~85.9 Pa`. The normalized mode-4 SPH
+cases drain the center much too early while leaving the near-surface shell too
+pressurized. Their median apparent flux ratios are about `1.63`, `2.26`, and
+`2.18` for `dp=0.010`, `0.008`, and `0.0065`, respectively; the highest
+resolution also shows a late flux reversal.
+
+Decision:
+
+- mode 3 is weak/under-drained;
+- raw mode 4 is over-drained;
+- normalized mode 4 is over-strong and nonuniform, not a true Dirichlet
+  boundary;
+- further dp refinement should pause;
+- C6 remains blocked;
+- next source task should be a CPU-only MLS / flux-consistent drained
+  spherical boundary prototype with integrated flux diagnostics;
+- GPU remains deferred.

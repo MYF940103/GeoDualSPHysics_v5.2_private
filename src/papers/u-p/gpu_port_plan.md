@@ -52,6 +52,14 @@ a contributor, not the main blocker. C6 remains premature; the next Cryer work
 should focus on MLS / flux-consistent drained spherical boundary coupling
 before any broader resolution study or GPU work.
 
+Cryer C5h-C5i are now complete. C5h showed that one higher-resolution sphere
+does not make the boundary behavior monotone or C6-ready. C5i added a
+postprocessing-only 1D finite-volume radial diffusion gate and found that the
+current normalized mode-4 spherical drained boundary behaves like an
+over-strong, nonuniform Robin-like boundary rather than a true drained
+Dirichlet condition. The next Cryer task should be CPU-only MLS /
+flux-consistent drained boundary design and validation; GPU remains deferred.
+
 Still out of scope unless separately requested:
 
 - GPU `PorePressureBoundaryOperator=2`;
@@ -1277,3 +1285,22 @@ Decision: sphere resolution is a contributor but not the main blocker. Simple
 dp refinement should pause. The next Cryer work should return to MLS /
 flux-consistent drained spherical boundary calibration before C6 or any GPU
 porting.
+
+## Cryer C5i Spherical Diffusion Flux Calibration
+
+C5i is complete as a postprocessing-only radial diffusion gate under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5i_SphericalDiffusionFluxCalibration/`
+
+It did not modify source, did not run GPU, and did not run new compression
+cases. The 1D FV reference shows that the current normalized mode-4 boundary is
+not a true drained Dirichlet boundary: apparent storage flux is often too
+strong, but the near-surface pressure shell remains too high. The normalized
+mode-4 median apparent SPH/FV flux ratios are about `1.63`, `2.26`, and `2.18`
+for `dp=0.010`, `0.008`, and `0.0065`; the highest-resolution case also shows
+a late flux reversal.
+
+Decision: C6 remains blocked, simple dp refinement should stay paused, and GPU
+porting remains deferred. The next CPU task should be a narrow MLS /
+flux-consistent spherical drained boundary prototype with pressure-only radial
+diffusion as the first acceptance gate.

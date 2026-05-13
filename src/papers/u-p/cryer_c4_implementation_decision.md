@@ -542,3 +542,42 @@ Decision after C5h:
   spherical boundary calibration, with pressure-only spherical diffusion as
   the first gate;
 - GPU remains deferred.
+
+## C5i: Spherical Diffusion Flux Calibration
+
+C5i is complete as a postprocessing-only pressure-only diffusion gate under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5i_SphericalDiffusionFluxCalibration/`
+
+No source code was changed, no GPU run was performed, and no new Cryer
+compression case was run. The task added a 1D finite-volume radial diffusion
+reference for the same `R=0.05 m`, `u0=1000 Pa`, and derived
+`c_v=0.0067957866 m2/s` used by the pressure-only strict-sphere diagnostics.
+
+At the final retained time near `0.00603 s`, the FV reference keeps the center
+pressure essentially unchanged (`999.998 Pa`) while the volume mean decays to
+about `615.7 Pa` and the `0.95R-1.0R` surface shell mean decays to about
+`85.9 Pa`. The current normalized mode-4 SPH cases do not match that radial
+structure: their centers drain too early, their surface shells remain too
+pressurized, and their apparent volume-storage flux is usually too strong.
+
+Median apparent SPH/FV flux ratios for normalized mode 4 are about:
+
+- `1.63` for `dp=0.010`;
+- `2.26` for `dp=0.008`;
+- `2.18` for `dp=0.0065`, followed by a late flux reversal.
+
+Therefore the current normalized boundary-particle route is best classified as
+an over-strong, nonuniform Robin-like boundary, not a true drained Dirichlet
+boundary. Mode 3 remains weak/under-drained, raw mode 4 remains over-drained,
+and scalar weighting changes are not enough.
+
+Decision after C5i:
+
+- C6 quantitative Figure 7B comparison remains premature;
+- further dp refinement is not recommended until the pressure-only diffusion
+  gate passes;
+- the next source-facing task should be a narrow CPU-only MLS /
+  flux-consistent spherical drained boundary prototype with integrated flux
+  diagnostics;
+- GPU remains deferred.

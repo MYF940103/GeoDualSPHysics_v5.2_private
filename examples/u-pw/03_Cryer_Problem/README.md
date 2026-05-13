@@ -581,3 +581,31 @@ Decision: higher resolution confirms that geometry matters, but it does not
 make the current boundary rule C6-ready. The next step should return to MLS or
 flux-consistent drained spherical boundary calibration before further
 resolution work. GPU remains deferred.
+
+## C5i Spherical Diffusion Flux Calibration
+
+C5i is a postprocessing-only pressure-only diffusion gate retained under:
+
+`strict_reproduction_plan/C5i_SphericalDiffusionFluxCalibration/`
+
+It adds a 1D finite-volume spherical radial diffusion reference and compares
+the existing C5e/C5f/C5g/C5h pressure-only diffusion results. No source code
+was changed, no GPU run was performed, and no new compression case was run.
+
+The FV reference shows that at the retained final time the true drained sphere
+should still have nearly unchanged center pressure (`~1000 Pa`), while the
+volume mean has decayed to about `616 Pa` and the `0.95R-1.0R` surface shell
+mean to about `86 Pa`.
+
+The current normalized mode-4 boundary does not reproduce that structure:
+
+- center pressure decays too early;
+- surface shell pressure remains too high;
+- apparent volume-storage flux is often too strong;
+- `dp=0.0065` shows late flux reversal and a large pressure-rate artifact.
+
+Decision: normalized mode 4 is an over-strong, nonuniform Robin-like boundary,
+not a true drained Dirichlet boundary. C6 remains paused. The next strict
+Cryer source task should be a CPU-only MLS / flux-consistent spherical drained
+boundary prototype, with pressure-only radial diffusion as the first acceptance
+gate. GPU remains deferred.
