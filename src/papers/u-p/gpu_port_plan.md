@@ -2115,3 +2115,18 @@ not all intermediate local failures.
 GPU MCC remains deferred. The next CPU step should be an opt-in MCC
 substepping/admissibility-guard patch, still with the existing GPU hard error
 for `SoilConstitutiveModel=3`. Full pore-pressure feedback remains deferred.
+
+## M3d3 MCC Substepping GPU Status
+
+M3d3 adds CPU-only MCC constitutive substepping, admissibility guards, fallback
+diagnostics, and additional `SaveMccState` output fields. The GPU policy is
+unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+CPU Release and GPU Release builds pass after the shared parser/source changes,
+but no GPU simulation was run. There is still no GPU MCC return mapping, no GPU
+MCC substepping, and no GPU MCC state-array update. Full pore-pressure feedback
+also remains deferred.

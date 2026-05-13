@@ -1042,6 +1042,12 @@ the CPU return mapping.
 <MccTensionCutoff value="1e-6" />
 <MccReturnTolerance value="1e-8" />
 <MccReturnMaxIter value="45" />
+<MccSubstepping value="0" />
+<MccMaxSubsteps value="1" />
+<MccSubstepMode value="0" />
+<MccSubstepStrainThreshold value="0" />
+<MccAdmissibilityGuard value="0" />
+<MccFailureFallback value="0" />
 <SaveMccState value="1" />
 <MccStressUpdateEnabled value="1" />
 ```
@@ -1062,6 +1068,25 @@ Rules:
 - `SoilConstitutiveModel=3` hard-errors on GPU;
 - `MccStressUpdateEnabled=1` is required for model `3` in M3c.
 
+M3d3 adds opt-in local return robustness controls. Defaults preserve M3c/M3d
+single-step behavior.
+
+- `MccSubstepping=0/1`: enable local constitutive substepping.
+- `MccMaxSubsteps`: maximum local substeps; default `1`.
+- `MccSubstepMode=0`: fixed substep count using `MccMaxSubsteps`.
+- `MccSubstepMode=1`: adaptive retry on failed return, up to
+  `MccMaxSubsteps`.
+- `MccSubstepMode=2`: adaptive count from an approximate trial-increment
+  threshold.
+- `MccSubstepStrainThreshold`: optional threshold for mode `2`.
+- `MccAdmissibilityGuard=0/1`: check finite stress/state, positive admissible
+  `p'`, positive `pc`, admissible void ratio, and non-negative plastic
+  multiplier.
+- `MccFailureFallback=0`: fail status only.
+- `MccFailureFallback=1`: retry only.
+- `MccFailureFallback=2`: keep last converged local substep and mark explicit
+  partial fallback.
+
 `SaveMccState=1` outputs:
 
 - `MccPc`;
@@ -1072,7 +1097,11 @@ Rules:
 - `MccPlasticMultiplier`;
 - `MccReturnStatus`;
 - `MccReturnIterations`;
-- `MccYieldResidual`.
+- `MccYieldResidual`;
+- `MccSubstepCount`;
+- `MccSubstepFailureCount`;
+- `MccAdmissibilityFailureCount`;
+- `MccFallbackUsed`.
 
 Current stress convention remains:
 
@@ -1095,7 +1124,10 @@ Return-status codes in `MccReturnStatus`:
 
 - `0`: elastic;
 - `1`: plastic converged;
+- `2`: plastic converged using substepping;
 - `-1`: tension cutoff;
 - `-2`: singular Newton Jacobian;
 - `-3`: line-search failure;
-- `-4`: maximum iteration failure.
+- `-4`: maximum iteration failure;
+- `-5`: explicit partial fallback using last converged substep;
+- `-6`: admissibility guard failure.

@@ -1166,3 +1166,38 @@ Half velocity clears final `-3` failures, but some intermediate local failures
 remain. Higher max iterations/tighter tolerance reproduces the baseline. M3d2
 therefore recommends M3d3 opt-in MCC substepping with admissibility guards
 before M3e reporting consolidation. Full feedback and GPU remain deferred.
+
+## M3d3 MCC Substepping Notes
+
+M3d3 implements opt-in MCC local constitutive substepping and admissibility
+guards for `SoilConstitutiveModel=3` only. Defaults preserve the old M3c/M3d
+single-step return behavior.
+
+New controls:
+
+- `MccSubstepping`
+- `MccMaxSubsteps`
+- `MccSubstepMode`
+- `MccSubstepStrainThreshold`
+- `MccAdmissibilityGuard`
+- `MccFailureFallback`
+
+New `SaveMccState` diagnostics:
+
+- `MccSubstepCount`
+- `MccSubstepFailureCount`
+- `MccAdmissibilityFailureCount`
+- `MccFallbackUsed`
+
+CPU Release diagnostic cases all finish `code=0`, `excluded=0`, `DtMin=0`.
+The original-rate fixed/adaptive substepping cases are not clean: they retain
+or move local failures into `-3` / `-1` statuses. Adaptive fallback removes
+final `-3` but emits explicit `-5` partial-fallback statuses. The half-speed
+adaptive case is the cleanest final-frame reduced route:
+
+```text
+final ReturnStatus = 0:12 | 1:395
+```
+
+M3e can consolidate a reduced feedback-off MCC reporting package only if it
+keeps this distinction clear. Full feedback and GPU remain deferred.

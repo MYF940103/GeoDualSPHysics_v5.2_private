@@ -1172,3 +1172,40 @@ does not remove all intermediate local failures. Higher max iterations and
 tighter tolerance do not change the final failed set. The recommended next
 step is opt-in MCC constitutive substepping/admissibility guards before clean
 M3e consolidation. Full feedback and GPU remain deferred.
+
+## M3d3 MCC Substepping Robustness
+
+M3d3 is retained under:
+
+`experiments/M3d3_MCCSubstepping/`
+
+It adds CPU-only, opt-in MCC local-return robustness controls:
+
+- `MccSubstepping`
+- `MccMaxSubsteps`
+- `MccSubstepMode`
+- `MccSubstepStrainThreshold`
+- `MccAdmissibilityGuard`
+- `MccFailureFallback`
+
+Default behavior remains unchanged (`MccSubstepping=0`, guard off, fallback
+off). GPU still hard-errors for `SoilConstitutiveModel=3`.
+
+All M3d3 CPU Release cases finish `code=0`, `excluded=0`, and `DtMin=0`.
+However, original-rate fixed/adaptive substepping does not fully clean the mild
+MCC return issue. The main final statuses are:
+
+```text
+baseline:             -3:8|0:2|1:397
+fixed_substeps4:      -3:18|-1:8|0:2|2:379
+adaptive_substeps16:  -3:10|-1:8|0:2|1:387
+adaptive_fallback16:  -5:17|0:2|1:387|2:1
+half_speed_adaptive:  0:12|1:395
+```
+
+`adaptive_fallback16` removes final `-3` but leaves explicit `-5` partial
+fallback, so it is a safety diagnostic rather than clean validation. The
+cleanest reduced route is half-speed adaptive, which clears final negative
+return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
+may proceed only as a reduced feedback-off reporting package with this caveat.
+Full pore-pressure feedback and GPU remain deferred.
