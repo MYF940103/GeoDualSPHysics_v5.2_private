@@ -84,3 +84,28 @@ Strict triaxial validation remains feature-blocked by loading/confinement,
 stress-path postprocessing, and material-model choices. It is no longer a pure
 TODO scaffold, but it still blocks strict paper-case completion unless those
 items are implemented or explicitly deferred.
+
+## T1 Baseline Notes
+
+T1 starts the post-Cryer benchmark route:
+
+`experiments/T1_UndrainedTriaxialBaseline/`
+
+Design choices:
+
+- `SoilConstitutiveModel=0` for a linear elastic u-pw smoke;
+- `PorePressureBoundaryOperator=0`;
+- `HydraulicElevationSource=0` with `HydraulicGravity=(0,0,-9.81)` for
+  scaling only;
+- `PorePressureInit=0`;
+- top-layer native `accinput`, final `LinearAccZ=-0.5 m/s2`;
+- no true confining pressure;
+- no GPU run.
+
+T1 CPU Release completed with `code=0`, `excluded=0`, four PART frames, no
+NaN/Inf in the postprocessed fields, and `Kplastic=0`. The upper-middle
+measurement region below the loading layer developed positive excess pore
+pressure (`42.12 Pa` at the final frame). The geometric center remains almost
+unloaded over this very short window, so T2 should improve loading duration,
+measurement definitions, and stress-path extraction before any paper-level
+comparison.

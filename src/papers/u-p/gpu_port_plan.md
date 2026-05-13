@@ -1459,3 +1459,28 @@ GPU-relevant decision:
 No source cleanup is recommended before T1. GPU work should not port the failed
 strict Cryer boundary modes unless a new CPU drained-boundary formulation first
 passes the pressure-only spherical FV diffusion gate.
+
+## T1 Undrained Triaxial Baseline
+
+T1 is complete as a CPU Release reduced smoke under:
+
+`examples/u-pw/04_Undrained_Triaxial/experiments/T1_UndrainedTriaxialBaseline/`
+
+The case uses `SoilConstitutiveModel=0`, native AccInput axial loading on the
+top material layer, `PorePressureBoundaryOperator=0`, and
+`HydraulicElevationSource=0`. It is not a full paper reproduction and does not
+use Cryer curved drained boundary modes.
+
+CPU result:
+
+- GenCase `code=0`;
+- DualSPHysics CPU Release `code=0`;
+- PartVTK `code=0`;
+- `excluded=0`;
+- final upper-middle mean excess pore pressure `42.12 Pa`;
+- final `Kplastic` max `0`;
+- no NaN/Inf in the postprocessed fields.
+
+GPU was not run because `HydraulicElevationSource=0` is CPU-only in the current
+branch. T2 should refine stress-path postprocessing, DP baseline behavior, and
+loading/confinement before any GPU parity or paper comparison.

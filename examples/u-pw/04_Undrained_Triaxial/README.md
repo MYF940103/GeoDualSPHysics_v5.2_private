@@ -69,3 +69,33 @@ smoke is only a qualitative plumbing check.
   components; a strict `p'`-`q` workflow still needs validation.
 - This case is not a long CPU parameter-tuning target. Longer and higher
   resolution reproduction should wait until the GPU path is available.
+
+## T1 Undrained Triaxial Baseline
+
+T1 is retained under:
+
+`experiments/T1_UndrainedTriaxialBaseline/`
+
+It is a reduced CPU Release baseline, not a full paper reproduction. T1 uses
+`SoilConstitutiveModel=0`, `PorePressureBoundaryOperator=0`, and
+`HydraulicElevationSource=0`. Native DualSPHysics `accinput` applies a small
+downward acceleration to the top `mkfluid=1` material layer. No Cryer
+deprecated boundary modes are used.
+
+CPU Release smoke result:
+
+| Item | Result |
+| --- | --- |
+| GenCase | code=0 |
+| DualSPHysics CPU Release | code=0 |
+| PartVTK | code=0 |
+| Excluded particles | 0 |
+| Steps | 6 |
+| Final upper-middle mean excess pore pressure | `42.12 Pa` |
+| Final max velocity | `4.42e-04 m/s` |
+| Final `Kplastic` max | `0` |
+| NaN/Inf scan | not detected |
+
+GPU was not run because `HydraulicElevationSource=0` is CPU-only in this
+branch. T1 is sufficient to move to T2 stress-path/loading refinement, but not
+to paper-level triaxial comparison.
