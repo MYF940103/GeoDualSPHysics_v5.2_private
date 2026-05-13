@@ -788,3 +788,30 @@ Gate result:
 Decision: C6 remains blocked. Local limiter tuning is not enough for strict
 Cryer; the current route should pause or be redesigned as a true dynamic
 drained-boundary value problem. GPU remains deferred.
+
+## C5p Strict Route Freeze
+
+C5p is a documentation-only no-go decision. No source code, GenCase output,
+CPU/GPU run, or PartVTK processing was performed.
+
+The strict Cryer route is frozen after C5o. The pressure-only spherical FV
+diffusion gate failed across the local ghost, boundary-particle, MLS flux,
+radial-shell flux, conservative shell exchange, corrected Laplacian, and
+limiter routes. The best limiter case improved the center pressure but still
+left the volume mean, surface shell, negative-pressure behavior, and apparent
+flux reversal unacceptable.
+
+Decision:
+
+- strict Cryer reproduction is deferred;
+- C6 Figure 7B quantitative comparison is not started;
+- current Cryer outputs must not be cited as validation figures;
+- C1/reduced Cryer workflows and analytical/reference scripts remain useful as
+  infrastructure;
+- future Cryer work should start from a redesigned dynamic drained-boundary
+  value problem, not another local limiter or dp refinement;
+- GPU support for strict Cryer remains deferred.
+
+Recommended next benchmark: begin an undrained triaxial baseline to validate
+stress path, pore-pressure response, and constitutive behavior without the
+curved drained spherical boundary blocker.

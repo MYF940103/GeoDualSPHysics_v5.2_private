@@ -1414,3 +1414,29 @@ reference and apparent flux reversal remained.
 
 GPU porting remains deferred. Porting the curved drained mode-8 limiter path
 would only duplicate a failing CPU diagnostic. C6 also remains blocked.
+
+## Cryer C5p Strict Route Freeze
+
+C5p freezes the strict Cryer route as a documentation-only no-go decision. No
+source, CPU, GPU, GenCase, or PartVTK work was performed.
+
+The CPU strict route now has useful infrastructure, including the linear
+elastic skeleton switch, CPU flexible confining stress, no-elevation hydraulic
+mode, Cryer analytical reference, FV spherical diffusion reference, and
+mode-by-mode drained-boundary diagnostics. However, the required pressure-only
+spherical FV diffusion gate failed after boundary-particle, MLS flux,
+radial-shell flux, conservative shell exchange, corrected Laplacian, and
+limiter attempts.
+
+GPU porting for strict Cryer remains deferred. Porting these curved drained
+boundary modes now would only reproduce a CPU path that is not validation-ready.
+C6 Figure 7B comparison is not started.
+
+Next benchmark recommendation:
+
+1. Start an undrained triaxial baseline if the goal is constitutive and stress
+   path validation.
+2. Use external-load 1D full reproduction if the goal is consolidation
+   parameter validation.
+3. Defer retrogressive slope strict work until mechanical and constitutive
+   baselines are stronger.

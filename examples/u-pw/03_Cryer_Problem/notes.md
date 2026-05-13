@@ -881,3 +881,40 @@ Decision:
 - local limiter/blend tuning should not be promoted as the next strict Cryer
   path. Either pause the strict route in this SPH boundary-operator family or
   redesign the drained sphere as a true dynamic boundary value problem.
+
+## C5p Strict Route Freeze Notes
+
+C5p freezes the current strict Cryer route and synthesizes the no-go decision.
+It is documentation-only: no source, GenCase, CPU/GPU run, or PartVTK step was
+performed.
+
+The evidence chain is now clear:
+
+- geometry refinement lowered the center peak only modestly and did not fix the
+  surface residual;
+- boundary-particle normalization improved raw over-drain but remained
+  nonuniform and too strong;
+- the FV pressure-only reference showed that current mode `4` is not a clean
+  Dirichlet condition;
+- mode `5`, mode `6`, and mode `7` proved that local flux and shell
+  bookkeeping fixes are insufficient;
+- mode `8` proved that static polynomial consistency can be recovered, but the
+  dynamic pressure-only gate over-drains and reverses flux;
+- C5o limiters reduced some artifacts but did not produce the FV radial
+  pressure profile.
+
+Decision:
+
+- strict Cryer reproduction is deferred;
+- C6 remains blocked and should not be started;
+- the current Cryer case should not be cited as a validation figure;
+- useful components are retained: linear elastic skeleton, flexible confining
+  stress, no-elevation pressure mode, analytical reference, FV radial diffusion
+  gate, and boundary diagnostics;
+- do not continue local Cryer boundary patching unless the route is redesigned
+  as a true dynamic drained-boundary value problem;
+- GPU remains deferred.
+
+Next benchmark recommendation: start T1 undrained triaxial baseline first.
+Use L2 external-load 1D full reproduction only if the immediate goal shifts
+back to consolidation parameter validation.
