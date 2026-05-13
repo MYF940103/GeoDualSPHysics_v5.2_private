@@ -2327,6 +2327,15 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   double curvedmlscondmean=0.,curvedmlscondmin=DBL_MAX,curvedmlscondmax=0.;
   double curvedmlsgradmean=0.,curvedmlsgradmax=0.,curvedmlsfluxintegral=0.,curvedmlsstoragerate=0.;
   double curvedmlsarea=0.,curvedmlsshellvolume=0.,curvedmlslapcorrmax=0.;
+  const unsigned curvedshellbinmax=4;
+  unsigned curvedshellpop[4]={0,0,0,0};
+  double curvedshellvol[4]={0.,0.,0.,0.};
+  double curvedshellpsum[4]={0.,0.,0.,0.};
+  double curvedshellrsum[4]={0.,0.,0.,0.};
+  unsigned curvedshelltargets=0,curvedshellfallback=0;
+  double curvedshellwidth=0.,curvedshelloutermean=0.,curvedshellouterrmean=0.,curvedshellgrad=0.;
+  double curvedshellfluxdensity=0.,curvedshellfluxintegral=0.,curvedshellstoragerate=0.;
+  double curvedshellsinkvolume=0.,curvedshelllapcorr=0.,curvedshellresidual=0.;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
@@ -2511,6 +2520,41 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         if(curvedbndselected)curvedbndadamiabsmean/=double(curvedbndselected);
       }
     }
+    if(CurvedDrainedBoundaryMode==6){
+      curvedshellwidth=shellthick;
+      const double shellinner=max(0.,rtarget-curvedshellwidth*double(curvedshellbinmax));
+      for(unsigned p3=pini;p3<pini+n;p3++)if(CODE_IsFluid(code[p3]) && velrhop[p3].w>0.f){
+        if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p3]))!=CurvedDrainedBoundaryTargetMk)continue;
+        const tdouble3 rel3=pos[p3]-CurvedDrainedBoundaryCenter;
+        const double r3=sqrt(rel3.x*rel3.x+rel3.y*rel3.y+rel3.z*rel3.z);
+        if(r3<=ALMOSTZERO)continue;
+        const double reff=min(rtarget,r3);
+        if(reff<shellinner)continue;
+        int ib=int(floor((rtarget-reff)/curvedshellwidth));
+        if(ib<0)ib=0;
+        if(ib>=int(curvedshellbinmax))ib=int(curvedshellbinmax)-1;
+        const double vol=double(MassFluid)/double(velrhop[p3].w);
+        const double z3=GetHydraulicElevation(pos[p3]);
+        const double u3=(CurvedDrainedBoundaryUseExcess? porepress[p3]-hydrostatic_linear(z3): porepress[p3]);
+        curvedshellpop[ib]++;
+        curvedshellvol[ib]+=vol;
+        curvedshellpsum[ib]+=vol*u3;
+        curvedshellrsum[ib]+=vol*reff;
+      }
+      if(curvedshellpop[0]>=3 && curvedshellvol[0]>ALMOSTZERO && diffcoef>ALMOSTZERO){
+        curvedshelloutermean=curvedshellpsum[0]/curvedshellvol[0];
+        curvedshellouterrmean=curvedshellrsum[0]/curvedshellvol[0];
+        const double gap=max(mindist,rtarget-curvedshellouterrmean);
+        curvedshellgrad=(curvedshelloutermean-CurvedDrainedBoundaryValue)/gap;
+        curvedshellfluxdensity=diffcoef*curvedshellgrad;
+        curvedshellfluxintegral=curvedshellfluxdensity*spherearea;
+        curvedshellstoragerate=-curvedshellfluxintegral;
+        curvedshellsinkvolume=curvedshellvol[0];
+        curvedshelllapcorr=-curvedshellfluxintegral/(diffcoef*curvedshellsinkvolume);
+        curvedshellresidual=curvedshellstoragerate+curvedshellfluxintegral;
+      }
+      else curvedshellfallback=1;
+    }
     for(unsigned p=pini;p<pini+n;p++)if(CODE_IsFluid(code[p])){
       if(CurvedDrainedBoundaryTargetMk>=0 && int(CODE_GetTypeValue(code[p]))!=CurvedDrainedBoundaryTargetMk)continue;
       if(velrhop[p].w<=0.f){ skipped++; continue; }
@@ -2527,7 +2571,29 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
       const double pval=(CurvedDrainedBoundaryUseExcess? excessi: porepress[p]);
       curvedresidualmax=max(curvedresidualmax,fabs(pval-CurvedDrainedBoundaryValue));
 
-      if(CurvedDrainedBoundaryMode==5){
+      if(CurvedDrainedBoundaryMode==6){
+        // Radial-shell / FV-consistent drained prototype. The outer material
+        // shell supplies a volume-averaged pressure and radius. The prescribed
+        // spherical Dirichlet value defines du/dr at R, and the integrated
+        // spherical flux is distributed as an explicit LapPorePress correction
+        // over the same outer shell. Material pressure is never clamped.
+        if(curvedshellfallback || curvedshellsinkvolume<=ALMOSTZERO){
+          curvedskipped++;
+          continue;
+        }
+        const double reff=min(rtarget,r);
+        if(reff<rtarget-curvedshellwidth){
+          curvedskipped++;
+          continue;
+        }
+        lapporepress[p]+=float(curvedshelllapcorr);
+        curvedaffected++;
+        curvedshelltargets++;
+        maxabsdpwtop=max(maxabsdpwtop,fabs((CurvedDrainedBoundaryUseExcess? excessi: porepress[p])-CurvedDrainedBoundaryValue));
+        maxabslapadd=max(maxabslapadd,fabs(curvedshelllapcorr));
+        maxabsheadadd=max(maxabsheadadd,fabs(curvedshelllapcorr/rhog));
+      }
+      else if(CurvedDrainedBoundaryMode==5){
         // Radial MLS / flux-consistent drained prototype. A local radial MLS
         // fit estimates the normal pressure gradient at the physical sphere
         // surface with the prescribed drained value as a Dirichlet constraint.
@@ -2888,6 +2954,23 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         Log->Printf("CPU curved drained MLS flux diagnostics: TimeStep=%g, boundary_area=%g, shell_volume=%g, mean_normal_gradient=%g Pa/m, max_abs_normal_gradient=%g Pa/m, max_abs_lap_correction=%g, boundary_flux_integral=%g Pa*m3/s, storage_rate_correction=%g Pa*m3/s."
           ,timestep,curvedmlsarea,curvedmlsshellvolume,curvedmlsgradmean,curvedmlsgradmax,curvedmlslapcorrmax,curvedmlsfluxintegral,curvedmlsstoragerate);
         Log->Print("CPU curved drained convention: mode 5 uses a radial MLS Dirichlet fit to estimate the spherical normal gradient and adds only an integrated LapPorePress flux correction; material pore pressure is not clamped and selected dummy particles are not volume-counted.");
+      }
+      if(CurvedDrainedBoundaryMode==6){
+        double pmean[4]={0.,0.,0.,0.};
+        double rmean[4]={0.,0.,0.,0.};
+        for(unsigned ib=0;ib<curvedshellbinmax;ib++)if(curvedshellvol[ib]>ALMOSTZERO){
+          pmean[ib]=curvedshellpsum[ib]/curvedshellvol[ib];
+          rmean[ib]=curvedshellrsum[ib]/curvedshellvol[ib];
+        }
+        Log->Printf("CPU curved drained radial-shell flux correction: TimeStep=%g, bins=%u, shell_width=%g, target_shell_particles=%u, sink_volume=%g, fallback=%u, outer_population=%u, outer_pressure_mean=%g Pa, outer_radius_mean=%g m, boundary_value=%g Pa, du_dr_R=%g Pa/m, boundary_flux_density=%g Pa*m/s, boundary_flux_integral=%g Pa*m3/s, storage_rate_correction=%g Pa*m3/s, max_abs_lap_correction=%g, flux_storage_residual=%g."
+          ,timestep,curvedshellbinmax,curvedshellwidth,curvedshelltargets,curvedshellsinkvolume,curvedshellfallback,curvedshellpop[0]
+          ,curvedshelloutermean,curvedshellouterrmean,CurvedDrainedBoundaryValue,curvedshellgrad,curvedshellfluxdensity
+          ,curvedshellfluxintegral,curvedshellstoragerate,fabs(curvedshelllapcorr),curvedshellresidual);
+        Log->Printf("CPU curved drained radial-shell bins: populations=[%u,%u,%u,%u], pressure_means=[%g,%g,%g,%g] Pa, radius_means=[%g,%g,%g,%g] m, volumes=[%g,%g,%g,%g] m3."
+          ,curvedshellpop[0],curvedshellpop[1],curvedshellpop[2],curvedshellpop[3]
+          ,pmean[0],pmean[1],pmean[2],pmean[3],rmean[0],rmean[1],rmean[2],rmean[3]
+          ,curvedshellvol[0],curvedshellvol[1],curvedshellvol[2],curvedshellvol[3]);
+        Log->Print("CPU curved drained convention: mode 6 estimates a spherical FV boundary flux from radial shell averages and distributes the integrated flux as a LapPorePress correction; material pore pressure is not clamped and no curve-fit coefficient is calibrated.");
       }
     }
   }

@@ -1323,3 +1323,22 @@ GPU porting remains deferred. Mode `5` is still protected by the existing GPU
 hard error for `PorePressureBoundaryOperator=3` /
 `PorePressureCurvedDrained=1`. The next CPU task should address radial
 shell/FV flux matching before any GPU implementation is considered.
+
+## Cryer C5k Radial-Shell Flux Boundary Prototype
+
+C5k adds `CurvedDrainedBoundaryMode=6` as another CPU-only experimental
+subroute of `PorePressureBoundaryOperator=3`. Mode `6` estimates a drained
+spherical FV flux from radial shell averages and applies it as a shell
+`LapPorePress` correction. It does not clamp material pore pressure and does
+not change the PR governing equation.
+
+The C5k pressure-only CPU Release gate ran for `dp=0.008` and `dp=0.010`.
+Both cases completed with `code=0`, `excluded=0`, and `Kplastic=0`. The gate
+still failed: `dp=0.010` improves median flux ratio but leaves the surface
+shell far too pressurized, while `dp=0.008` shows late apparent flux reversal
+and a large pressure-rate artifact. No Cryer compression smoke was run.
+
+GPU porting remains deferred. Mode `6` is covered by the same GPU hard error
+as the other curved drained experimental modes. The next CPU task should solve
+near-boundary radial redistribution/interior Laplacian consistency before any
+GPU implementation is useful.

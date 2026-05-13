@@ -215,7 +215,7 @@ protected:
   double CurvedDrainedBoundaryValue; ///<Prescribed curved drained boundary pressure/excess value [Pa].
   bool CurvedDrainedBoundaryUseExcess; ///<True: value is excess pressure; false: value is total pressure.
   double CurvedDrainedBoundaryThickness; ///<Interior shell thickness for curved drained boundary. If <=0, KernelH is used.
-  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction.
+  int CurvedDrainedBoundaryMode; ///<Curved drained mode. 0:Dirichlet ghost, 1:strengthened image ghost, 2:diagnostic surface clamp, 3:multi-sample quadrature, 4:boundary-particle Dirichlet state, 5:MLS flux correction, 6:radial-shell flux correction.
   int CurvedDrainedBoundaryTargetMkBound; ///<Target mkbound for mode 4 boundary-particle hydraulic state. -1:all boundary particles passing sphere selection.
   bool CurvedDrainedBoundaryUseBoundaryParticles; ///<Enable selected boundary-particle participation for curved drained mode 4.
   double CurvedDrainedBoundarySelectionTolerance; ///<Radius tolerance for selecting curved drained boundary particles. If <=0, KernelH is used.

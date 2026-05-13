@@ -683,3 +683,43 @@ Decision:
   law that constrains volume decay, surface-shell pressure, and center pressure
   together;
 - GPU remains deferred.
+
+## C5k Radial-Shell Flux Boundary Notes
+
+C5k adds the radial shell/FV flux prototype:
+
+`strict_reproduction_plan/C5k_RadialShellFluxBoundary/`
+
+Source scope:
+
+- added `CurvedDrainedBoundaryMode=6`;
+- kept mode `0` to mode `5` behavior unchanged;
+- kept the PR governing equation, `FlexibleConfiningStress`,
+  `SoilConstitutiveModel`, and `HydraulicElevationSource` unchanged;
+- did not add GPU support.
+
+Mode `6` computes the outer radial shell mean pressure and mean radius,
+estimates the spherical drained flux against `p_b=0`, and applies the
+integrated `4*pi*R^2*q_R` loss as a `LapPorePress` correction over the same
+outer material shell. It does not clamp material pressure and does not
+volume-count dummy boundary particles.
+
+Pressure-only CPU Release results:
+
+- `dp=0.008`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `1.907`, final flux ratio `-14.20`, final shell mean `873.84 Pa`;
+- `dp=0.010`: `code=0`, `excluded=0`, `Kplastic=0`, median flux ratio
+  `1.078`, final flux ratio `0.784`, final shell mean `577.06 Pa`.
+
+The coarse `dp=0.010` case improves center RMSE and median flux ratio, but the
+surface shell remains much too pressurized. The finer `dp=0.008` case develops
+late apparent flux reversal and a large pressure-rate artifact.
+
+Decision:
+
+- no Cryer compression smoke was run;
+- C6 remains blocked;
+- further dp refinement remains deferred;
+- the next source task should couple the boundary flux with near-boundary
+  radial redistribution and interior Laplacian consistency;
+- GPU remains deferred.

@@ -794,7 +794,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 3:  CurvedDrainedBoundaryMode=3;  break;
     case 4:  CurvedDrainedBoundaryMode=4;  break;
     case 5:  CurvedDrainedBoundaryMode=5;  break;
-    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, experimental 4, and experimental 5.");
+    case 6:  CurvedDrainedBoundaryMode=6;  break;
+    default: Run_Exceptioon("CurvedDrainedBoundaryMode is not valid. Valid values are 0, 1, diagnostic-only 2, experimental 3, experimental 4, experimental 5, and experimental 6.");
   }
   CurvedDrainedBoundaryTargetMkBound=eparms.GetValueInt("CurvedDrainedBoundaryTargetMkBound",true,-1);
   switch(eparms.GetValueInt("CurvedDrainedBoundaryUseBoundaryParticles",true,1)){
@@ -946,9 +947,9 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedMLSRadiusFactor must be greater than or equal to zero.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==5 && CurvedDrainedMLSConditionLimit<=0.)
     Run_Exceptioon("CurvedDrainedMLSConditionLimit must be greater than zero.");
-  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==5 && CurvedDrainedBoundaryWeighting)
-    Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5.");
-  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5)
+  if(PorePressureCurvedDrained && (CurvedDrainedBoundaryMode==5 || CurvedDrainedBoundaryMode==6) && CurvedDrainedBoundaryWeighting)
+    Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5/6.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5 && CurvedDrainedBoundaryMode!=6)
     Log->PrintWarning("CurvedDrainedBoundaryWeighting is only used by CurvedDrainedBoundaryMode=4.");
   if(BodyGravityStopTime<0.)Run_Exceptioon("BodyGravityStopTime must be greater than or equal to zero.");
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
@@ -1937,6 +1938,8 @@ void JSph::VisuConfig(){
         Log->Print("  CurvedDrainedBoundaryMode=4: selected boundary particles carry prescribed drained hydraulic state and participate in LapPorePress/LapZ; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==5)
         Log->Print("  CurvedDrainedBoundaryMode=5: radial MLS Dirichlet fit plus integrated normal-flux correction; CPU-only experimental.");
+      if(CurvedDrainedBoundaryMode==6)
+        Log->Print("  CurvedDrainedBoundaryMode=6: radial-shell FV-consistent Dirichlet flux correction; CPU-only experimental.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==0)
         Log->Print("  CurvedDrainedBoundaryWeighting=0: raw boundary-particle volume weighting.");
       if(CurvedDrainedBoundaryMode==4 && CurvedDrainedBoundaryWeighting==1)

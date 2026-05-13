@@ -640,3 +640,35 @@ Decision: mode 5 is implemented but does not pass the pressure-only spherical
 diffusion gate. C6 remains blocked. The next source task should move from
 local-gradient MLS toward radial shell/FV matched boundary flux before any
 compression or GPU work.
+
+## C5k Radial-Shell Flux Boundary Prototype
+
+C5k is retained under:
+
+`strict_reproduction_plan/C5k_RadialShellFluxBoundary/`
+
+It adds `CurvedDrainedBoundaryMode=6`, a CPU-only radial-shell /
+finite-volume drained boundary flux prototype for
+`PorePressureBoundaryOperator=3`. Mode `6` computes an outer spherical shell
+mean pressure, estimates the drained surface flux against `p_b=0`, and applies
+the integrated flux as a `LapPorePress` correction over the same outer shell.
+It does not clamp material pore pressure and does not count dummy boundary
+particle volumes.
+
+Pressure-only CPU Release runs completed for `dp=0.008` and `dp=0.010` with
+`code=0`, `excluded=0`, and `Kplastic=0`. No GPU run and no Cryer compression
+smoke were performed.
+
+Gate result:
+
+- `dp=0.010` improves median flux ratio to `1.078` and lowers
+  `PorePressRate` maxAbs to `1.52e5 Pa/s`;
+- `dp=0.010` still leaves final surface shell mean at `577.06 Pa`, far above
+  the FV reference `85.9 Pa`;
+- `dp=0.008` shows late apparent flux reversal with final flux ratio
+  `-14.20` and a `3.13e6 Pa/s` pressure-rate artifact.
+
+Decision: mode `6` is implemented but does not pass the pressure-only radial
+diffusion gate. C6 remains blocked. The next source task should address
+near-boundary radial redistribution/interior Laplacian consistency rather than
+only adding an integrated outer-shell sink.
