@@ -1984,3 +1984,17 @@ bounded in velocity and pore-pressure-rate diagnostics.
 
 This remains a CPU reduced feedback-off route. GPU remains deferred until the
 full feedback route and any MCC direction are settled on CPU.
+
+## T5d DP Feedback-Off Package GPU Status
+
+T5d is a consolidation-only package. It adds no source code, no parser keys, no
+new simulation, and no GPU functionality.
+
+The package summarizes the CPU feedback-off explicit-platen DP route from T4s,
+T4t, T5, T5b, and T5c. It confirms that the reduced CPU route has stable
+platen grouping, selected lateral confinement, pairwise reaction diagnostics,
+and DP plasticity metrics. It does not validate GPU, full pore-pressure
+feedback, MCC, or actuator-level platen reactions.
+
+GPU remains deferred. MCC may proceed only as planning/audit work until the CPU
+return-mapping and single-point-test path is defined.

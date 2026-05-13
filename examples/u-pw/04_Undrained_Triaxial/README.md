@@ -980,3 +980,29 @@ reaction-based axial stress-strain and p'-q curves are more complete than T5b,
 but this remains a reduced feedback-off diagnostic, not strict paper
 validation. T5d may consolidate DP measurement/reporting; MCC planning can
 begin as a design-only activity. Full feedback and GPU remain deferred.
+
+## T5d DP Feedback-Off Package
+
+T5d is retained under:
+
+`experiments/T5d_DPFeedbackOffPackage/`
+
+It adds no new simulation. It consolidates retained outputs from T4s, T4t, T5,
+T5b, and T5c into one reduced validation package:
+
+- `t5d_case_inventory.csv`;
+- `t5d_summary_metrics.csv`;
+- `t5d_reaction_comparison.csv`;
+- `t5d_stress_path_comparison.csv`;
+- `t5d_plasticity_summary.csv`;
+- `t5d_pore_pressure_summary.csv`;
+- main and supplementary figure candidates.
+
+The package covers the feedback-off explicit-platen DP route only. It validates
+the platen grouping, selected lateral confinement coexistence, pairwise
+reaction diagnostic, high-strength DP elastic-like response, mild DP plastic
+activation, and bounded PR pressure update with feedback off.
+
+It does not validate full pore-pressure feedback, MCC, true actuator reaction,
+strict paper triaxial reproduction, or GPU. MCC may now move into
+planning-only work; implementation remains deferred.

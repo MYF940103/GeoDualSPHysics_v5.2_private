@@ -963,3 +963,40 @@ be presented as a reduced feedback-off diagnostic rather than strict undrained
 validation. T5d can consolidate DP measurement/reporting; MCC should remain
 planning-only until the DP reduced route is documented and full feedback is
 revisited.
+
+## T5d Reduced Validation Package Notes
+
+T5d packages the existing feedback-off DP platen route. It does not run new
+cases. It aggregates:
+
+- T4s elastic platen lateral baseline;
+- T4t elastic pairwise reaction diagnostic;
+- T5 high-strength and mild-yield DP baselines;
+- T5b high-strength and mild-yield reaction refinements;
+- T5c high-strength and mild-yield extended responses.
+
+The package makes five main figure candidates:
+
+- reaction-based axial stress vs axial strain;
+- p'-q path;
+- Kplastic evolution;
+- pore pressure vs axial strain;
+- pairwise reaction vs `Fz_proxy`.
+
+Supplementary figures cover top platen displacement, lateral active targets,
+cap leakage, force-balance error, PorePressRate, DivVel, velocity, and plastic
+fraction.
+
+Interpretation boundaries:
+
+- high-strength DP remains an elastic-like reference;
+- mild DP activates plasticity and reduces reaction, q, and pore-pressure
+  response;
+- pairwise reaction and `Fz_proxy` remain close enough for reduced diagnostics;
+- mild DP final mean pore pressure can become negative, so this is not strict
+  undrained validation;
+- full feedback, MCC implementation, true actuator reaction, and GPU remain
+  deferred.
+
+MCC planning can begin through an M1 design/audit track, but implementation
+should wait for a return-mapping design and single-point tests.
