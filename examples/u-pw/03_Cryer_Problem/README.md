@@ -672,3 +672,31 @@ Decision: mode `6` is implemented but does not pass the pressure-only radial
 diffusion gate. C6 remains blocked. The next source task should address
 near-boundary radial redistribution/interior Laplacian consistency rather than
 only adding an integrated outer-shell sink.
+
+## C5l Radial Operator Audit
+
+C5l is retained under:
+
+`strict_reproduction_plan/C5l_RadialOperatorAudit/`
+
+It is postprocessing-only. No source code was changed, no GPU run was
+performed, and no Cryer compression run was performed.
+
+The audit reconstructs the strict-sphere material clouds and applies the CPU
+material-material `LapPorePress` formula to manufactured radial fields. It also
+uses retained pressure-only diffusion CSVs to check radial shell storage
+balance.
+
+Key result:
+
+- constant pressure gives zero material-only Laplacian residual;
+- quadratic `u=r^2` is close to exact `nabla^2 u=6` in the interior;
+- the curved near-boundary shell has a large negative bias;
+- `dp=0.0065` improves the interior operator but worsens the boundary cloud and
+  shell balance;
+- mode `6` can have a good global flux ratio while the surface shell profile
+  remains wrong.
+
+Decision: C6 remains blocked. The next source task should be a conservative
+multi-shell radial exchange prototype, not another dp refinement or local MLS
+only.

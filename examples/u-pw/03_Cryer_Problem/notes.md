@@ -723,3 +723,36 @@ Decision:
 - the next source task should couple the boundary flux with near-boundary
   radial redistribution and interior Laplacian consistency;
 - GPU remains deferred.
+
+## C5l Radial Operator Audit Notes
+
+C5l is a no-source-change postprocessing audit:
+
+`strict_reproduction_plan/C5l_RadialOperatorAudit/`
+
+It reconstructs the static sphere clouds and applies the CPU material-material
+`LapPorePress` formula to radial manufactured fields. It also checks retained
+C5i/C5j/C5k pressure-only diffusion outputs with radial shell storage balance.
+
+Manufactured-field findings:
+
+- constant field residual is exactly zero;
+- `u=r^2` gives good interior Laplacian behavior;
+- near-boundary quadratic p95 error is large and non-convergent:
+  `12.24`, `14.06`, `17.08` for `dp=0.010`, `0.008`, `0.0065`;
+- the drained-like `R-r` field has the same boundary-shell failure pattern.
+
+Shell-exchange findings:
+
+- normalized shell residual p95 is worst for mode `6` `dp=0.008` and mode `4`
+  `dp=0.0065`;
+- mode `6` `dp=0.010` can get median flux ratio close to `1`, but the surface
+  shell remains far above the FV reference because shell-to-shell exchange is
+  inconsistent.
+
+Decision:
+
+- C6 remains blocked;
+- GPU remains deferred;
+- next source task should be C5m conservative multi-shell radial exchange,
+  with pressure-only FV radial diffusion as the acceptance gate.

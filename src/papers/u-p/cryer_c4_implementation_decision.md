@@ -653,3 +653,34 @@ Decision after C5k:
 - the next source task should address near-boundary radial redistribution and
   interior Laplacian consistency, not only the integrated boundary sink;
 - GPU remains deferred.
+
+## C5l: Radial Laplacian / Shell-Exchange Operator Audit
+
+C5l is complete as a no-source-change postprocessing audit under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5l_RadialOperatorAudit/`
+
+It reconstructs the committed strict-sphere material clouds and evaluates
+manufactured radial fields with the CPU material-material `LapPorePress`
+formula. It also audits retained pressure-only mode `4`, `5`, and `6` outputs
+with a radial shell storage balance.
+
+Findings:
+
+- constant field is preserved exactly by the material-only Laplacian;
+- `u=r^2` is accurate in the interior, especially at `dp=0.0065`;
+- the near-boundary shell has a strong negative Laplacian bias for radial
+  fields, with quadratic near-boundary p95 error rising from `12.24` to
+  `14.06` to `17.08` as `dp` goes from `0.010` to `0.008` to `0.0065`;
+- `dp=0.0065` worsens because the boundary cloud is rougher and pair count
+  rises to `650052`, even though the interior lattice is better;
+- mode `6` can make a global flux ratio look reasonable at `dp=0.010`, but the
+  surface shell remains wrong because shell-to-shell exchange is inconsistent.
+
+Decision after C5l:
+
+- C6 remains blocked;
+- GPU remains deferred;
+- do not continue simple dp refinement;
+- next source task should be C5m, a conservative multi-shell radial exchange
+  prototype, tested first on pressure-only FV radial diffusion.

@@ -1342,3 +1342,17 @@ GPU porting remains deferred. Mode `6` is covered by the same GPU hard error
 as the other curved drained experimental modes. The next CPU task should solve
 near-boundary radial redistribution/interior Laplacian consistency before any
 GPU implementation is useful.
+
+## Cryer C5l Radial Operator Audit
+
+C5l is complete as a no-source-change postprocessing audit. It does not add GPU
+coverage and does not run GPU. The audit shows that the material-only
+`LapPorePress` operator preserves constant fields and is acceptable in the
+interior for `u=r^2`, but its curved near-boundary behavior is not consistent
+enough for strict Cryer radial diffusion. The `dp=0.0065` boundary cloud is
+rougher and has many more material-boundary pairs, so resolution alone is not a
+GPU-ready path.
+
+GPU porting remains deferred. The next CPU task should be a conservative
+multi-shell radial exchange prototype; GPU work should resume only after that
+pressure-only FV radial diffusion gate passes.
