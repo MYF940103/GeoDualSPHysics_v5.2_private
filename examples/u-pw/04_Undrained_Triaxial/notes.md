@@ -747,3 +747,40 @@ T4q therefore upgrades the triaxial loading route from `AccInput` smoke toward
 explicit platens, but it does not yet unlock strict triaxial validation. T4r
 should keep the elastic CPU-only route and add/verify reaction diagnostics
 before restoring feedback, DP, MCC, or GPU validation.
+
+## T4r Platen Diagnostics Notes
+
+T4r keeps the T4q explicit-platen route and confirms that specimen-only
+stress-path postprocessing can be produced without source changes.
+
+Runs:
+
+- `CaseT4r_PlatenAxial_NoConfinement`;
+- `CaseT4r_PlatenAxial_LateralConfinement`.
+
+Both runs complete with `code=0`, `excluded=0`, `DtMin=0`, and `Kplastic=0`.
+The top moving platen reaches the expected `-7.5e-6 m` displacement over the
+short run, while the bottom fixed platen remains at zero displacement.
+
+The current source/output path does not provide true reaction for ordinary
+fixed/moving `mkbound` platens. Existing `SaveFtAce` force output is tied to
+floating bodies, not this platen route. T4r therefore records a
+specimen-stress reaction proxy:
+
+`Fz_proxy = -mean(Sigma_zz) * pi R^2`
+
+Final specimen-wide proxies:
+
+- no lateral confinement: `p' approx 27.94 Pa`, `q approx 43.47 Pa`,
+  `Fz_proxy approx 0.1609 N`;
+- lateral confinement: `p' approx 49.10 Pa`, `q approx 33.28 Pa`,
+  `Fz_proxy approx 0.2015 N`.
+
+The lateral confinement case remains compatible with the moving top platen:
+`112` active lateral targets, coherent inward lateral acceleration, and cap
+leakage diagnostic `0`.
+
+Interpretation: T4r is good enough to enter a feedback-off platen-based axial
+baseline, but not a strict axial-reaction validation. A future opt-in CPU
+diagnostic should accumulate true specimen-platen reaction by `mkbound` before
+full feedback, DP, MCC, or GPU validation.

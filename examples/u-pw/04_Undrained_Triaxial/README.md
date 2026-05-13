@@ -800,3 +800,42 @@ T4q does not yet validate axial stress because no robust top/bottom reaction
 output is available. `AccInput` remains a smoke-only route. The recommended
 next step is T4r: a platen-based selected-confinement baseline with reaction
 diagnostics planned before DP, MCC, or GPU work.
+
+## T4r Platen Reaction Diagnostics
+
+T4r is retained under:
+
+`experiments/T4r_PlatenReactionDiagnostics/`
+
+It keeps the explicit T4q platen geometry and adds specimen-only
+postprocessing:
+
+- top platen: moving `mkbound=1`;
+- bottom platen: fixed `mkbound=2`;
+- specimen: `mkfluid=0`;
+- center measurement core: `15` specimen particles with `0` platen
+  contamination;
+- `PorePressureFeedback=0`;
+- `CapConfiningStress=0`.
+
+Both CPU Release smokes completed with `code=0`, `excluded=0`, `DtMin=0`, and
+`Kplastic=0`. The top platen displacement reaches about `-7.50e-6 m`; the
+bottom platen remains fixed.
+
+The current XML-only workflow still cannot output a true top/bottom platen
+reaction. T4r therefore reports a specimen-stress proxy:
+
+`Fz_proxy = -mean(Sigma_zz) * pi * R^2`
+
+Final proxy values:
+
+| Case | Final `p'` proxy | Final `q` proxy | Final `Fz_proxy` |
+| --- | ---: | ---: | ---: |
+| Platen axial, no confinement | `27.94 Pa` | `43.47 Pa` | `0.1609 N` |
+| Platen axial, lateral confinement | `49.10 Pa` | `33.28 Pa` | `0.2015 N` |
+
+The lateral confinement case remains stable and keeps the known selector
+diagnostics (`112` active lateral targets, cap leakage `0`). T4s may proceed as
+a feedback-off platen-based axial baseline using these specimen-only proxies,
+but strict validation still needs a source-level true reaction diagnostic.
+Full feedback, DP, MCC, and GPU remain deferred.

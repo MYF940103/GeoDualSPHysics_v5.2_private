@@ -960,3 +960,35 @@ Recommended cleanup order:
 5. Removed source-level `TopLoad*` and `ApplyTopLoad()` in CPU-F6a.
 
 Do not combine cleanup of TopLoad, SymCorr, and PPE placeholder into one patch.
+
+## 10. Triaxial Platen Diagnostics Status
+
+T4q and T4r use existing fixed/moving `mkbound` XML mechanics for explicit
+triaxial platens:
+
+- top platen: prescribed motion through `<motion><objreal ref="1">`;
+- bottom platen: fixed `mkbound`;
+- specimen: separate `mkfluid`;
+- lateral confinement: optional `FlexibleConfiningStress`;
+- `CapConfiningStress` is diagnostic-only and not recommended as production
+  platen support.
+
+No new XML parameter was added in T4r.
+
+Current limitation:
+
+```text
+ordinary fixed/moving mkbound platens do not output true top/bottom reaction
+```
+
+T4r postprocessing therefore uses:
+
+```text
+sigma_a_proxy = -mean(Sigma_zz) over specimen-only particles
+Fz_proxy = sigma_a_proxy * pi * R^2
+```
+
+This proxy is acceptable for elastic feedback-off workflow diagnostics. It is
+not a strict platen reaction and should not be cited as validation reaction
+force. A future CPU-only opt-in diagnostic should accumulate true platen
+reaction by `mkbound` before strict triaxial stress-path validation.

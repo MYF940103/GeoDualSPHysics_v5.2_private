@@ -1889,3 +1889,17 @@ GPU remains deferred because the next blocker is not kernel parity but a
 validated platen reaction / axial stress diagnostic. T4r should stay CPU-only
 until the platen reaction and specimen-only measurement path are clear. DP and
 MCC remain deferred.
+
+## T4r Platen Reaction Diagnostics GPU Status
+
+T4r is XML/script/postprocessing only. It adds no source code, no parser keys,
+and no GPU functionality. GPU simulation was not run.
+
+The CPU smokes confirm that explicit platens remain stable with feedback off
+and that specimen-only stress proxies can be extracted. However, ordinary
+fixed/moving `mkbound` platens still do not expose a true reaction-force output.
+T4r therefore reports only a specimen-stress reaction proxy.
+
+GPU remains deferred. The next GPU-relevant source task, if pursued, would be a
+diagnostic reaction accumulator for top/bottom platen `mkbound` groups after
+the CPU design is validated. Full feedback, DP, and MCC remain deferred.
