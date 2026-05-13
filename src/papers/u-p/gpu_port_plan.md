@@ -1998,3 +1998,20 @@ feedback, MCC, or actuator-level platen reactions.
 
 GPU remains deferred. MCC may proceed only as planning/audit work until the CPU
 return-mapping and single-point-test path is defined.
+
+## M1 MCC Design Audit GPU Status
+
+M1 is documentation-only. It adds no source code, no parser keys, no build, no
+simulation, and no GPU functionality.
+
+The audit recommends `SoilConstitutiveModel=3` for a future Modified Cam Clay
+CPU path, but GPU support should remain hard-deferred until:
+
+- CPU single-point MCC return mapping passes;
+- MCC state arrays are restart-safe and output-safe on CPU;
+- a feedback-off CPU SPH platen smoke passes;
+- the full feedback route is either fixed or explicitly scoped out.
+
+Future GPU work will need mirrored MCC state arrays, device return mapping,
+sorting/restart/output integration, and parity tests. Full feedback and GPU
+triaxial validation remain deferred.

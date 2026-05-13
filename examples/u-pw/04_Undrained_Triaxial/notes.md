@@ -1000,3 +1000,24 @@ Interpretation boundaries:
 
 MCC planning can begin through an M1 design/audit track, but implementation
 should wait for a return-mapping design and single-point tests.
+
+## M1 MCC Design Audit Notes
+
+M1 does not modify source and does not run simulations. It documents the MCC
+implementation plan after the T5d reduced DP package.
+
+Main decisions:
+
+- current `Sigmac` is effective/skeleton stress and uses negative compression;
+- MCC should use compression-positive internal invariants with
+  `p' = -trace(Sigmac)/3`;
+- MCC should become `SoilConstitutiveModel=3` only after parser/state/output
+  support is added;
+- `Kplastic` should remain a compatibility diagnostic, while MCC gets
+  explicit state arrays for `p_c`, void ratio or specific volume, plastic
+  volumetric strain, and return/yield diagnostics;
+- the first implementation task should be M2 single-point return mapping, not
+  SPH triaxial.
+
+The first future SPH MCC smoke should be CPU-only, feedback-off, and based on
+the explicit-platen T5 route. Full feedback and GPU remain deferred.

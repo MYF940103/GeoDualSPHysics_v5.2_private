@@ -1006,3 +1006,24 @@ activation, and bounded PR pressure update with feedback off.
 It does not validate full pore-pressure feedback, MCC, true actuator reaction,
 strict paper triaxial reproduction, or GPU. MCC may now move into
 planning-only work; implementation remains deferred.
+
+## M1 Modified Cam Clay Design Audit
+
+M1 is retained as documentation under:
+
+`src/papers/u-p/m1_*.md`
+
+It adds no source code and runs no new cases. The audit maps the current
+effective-stress update path and defines the next MCC implementation route:
+
+- current `Sigmac` stores skeleton/effective stress with compression negative;
+- MCC formulas should use compression-positive `p' = -trace(Sigmac)/3`;
+- `SoilConstitutiveModel=3` is reserved as the proposed MCC selector;
+- MCC needs new restart-safe state, including `p_c`, void ratio/specific
+  volume, plastic volumetric strain, and MCC diagnostics;
+- the recommended next step is an M2 CPU single-point MCC return-mapping
+  prototype before any SPH integration.
+
+The first future SPH MCC smoke should reuse the feedback-off explicit-platen
+T5 workflow. Full pore-pressure feedback, MCC implementation, and GPU remain
+deferred until the single-point and state/restart gates are passed.
