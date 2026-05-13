@@ -239,6 +239,10 @@ protected:
   double CurvedDrainedCorrectedLapBoundaryWeight; ///<Relative weight for mode 8 Dirichlet boundary samples.
   int CurvedDrainedCorrectedLapFallbackMode; ///<Fallback for mode 8. 0:keep existing material LapPorePress, 4:mode-4-like local gap.
   bool CurvedDrainedCorrectedLapDiagnostics; ///<Print per-step mode 8 corrected Laplacian diagnostics.
+  int CurvedDrainedCorrectedLaplacianLimiter; ///<Limiter for mode 8. 0:off, 1:positivity, 3:blend.
+  double CurvedDrainedLimiterCFL; ///<Maximum fraction of local pressure gap removed in one step by the positivity limiter.
+  double CurvedDrainedLimiterBlend; ///<Mode 8 blend factor theta for theta*MLS+(1-theta)*material LapPorePress.
+  bool CurvedDrainedLimiterPreventNegative; ///<Apply positivity cap after the selected mode 8 limiter.
   bool PorePressureBoundaryGhost; ///<Enable pore-pressure boundary ghost diagnostics. 0:off, 1:on.
   bool PorePressureBoundaryGhostOutput; ///<Save pore-pressure ghost diagnostics when SavePorePressure=1.
   bool HydraulicElevationSource; ///<Enable hydrostatic/elevation source convention in PR pressure equation. 0:gravity-free scaling only, 1:legacy source.

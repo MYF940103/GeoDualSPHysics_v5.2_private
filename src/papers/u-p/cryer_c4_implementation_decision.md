@@ -758,3 +758,39 @@ Decision after C5n:
 - the next source task should stabilize the boundary-constrained corrected
   Laplacian rather than add another global shell or flux correction;
 - GPU remains deferred.
+
+## C5o: Corrected Laplacian Stabilization / Limiter
+
+C5o is complete as a CPU-only source prototype and pressure-only limiter gate
+under:
+
+`examples/u-pw/03_Cryer_Problem/strict_reproduction_plan/C5o_CorrectedLaplacianStabilization/`
+
+It keeps `CurvedDrainedBoundaryMode=8` and adds optional mode-8-only limiter
+parameters. The defaults preserve C5n behavior. Implemented limiters are:
+
+- `CurvedDrainedCorrectedLaplacianLimiter=1`: positivity cap on negative
+  diffusion-rate strength;
+- `CurvedDrainedCorrectedLaplacianLimiter=3`: fixed blend
+  `theta*Lap_MLS + (1-theta)*Lap_material`;
+- `CurvedDrainedLimiterPreventNegative=1`: optional positivity cap after a
+  blend.
+
+All four C5o pressure-only CPU Release cases completed with `code=0`,
+`excluded=0`, and `Kplastic=0`. Compression smoke was not run.
+
+The best diagnostic case was blend `0.25`: center RMSE improved to `104.83 Pa`
+and final `PorePressRate` maxAbs dropped from C5n's `9.37e6` to `2.62e6 Pa/s`.
+However, the final surface shell was `1038.91 Pa` versus FV `85.88 Pa`, the
+final flux ratio remained negative (`-7.52`), and a small negative-pressure
+episode still occurred. Positivity alone did not control the failure.
+
+Decision after C5o:
+
+- the pressure-only FV gate is still failed;
+- no Cryer compression smoke should be run from C5o;
+- C6 quantitative Figure 7B comparison remains blocked;
+- tuning local limiters is not a credible strict-Cryer route;
+- the strict Cryer route should either be paused in this SPH boundary-operator
+  family or redesigned as a true dynamic drained-boundary value problem;
+- GPU remains deferred.

@@ -439,6 +439,16 @@ Additional mode-8 parameters:
 | `CurvedDrainedCorrectedLapBoundaryWeight` | float | `1` | Relative weight for Dirichlet boundary samples. |
 | `CurvedDrainedCorrectedLapFallbackMode` | `0/4` | `0` | `0`: keep existing material `LapPorePress`; `4`: use a local gap fallback. |
 | `CurvedDrainedCorrectedLapDiagnostics` | `0/1` | `0` | Print per-step mode-8 sample, condition, fallback, and replacement diagnostics. |
+| `CurvedDrainedCorrectedLaplacianLimiter` | `0/1/3` | `0` | Mode-8-only limiter. `0`: off, old C5n behavior; `1`: positivity cap on negative diffusion-rate strength; `3`: blend corrected MLS and material Laplacian. |
+| `CurvedDrainedLimiterCFL` | float in `[0,1]` | `0.9` | CFL-like pressure-gap fraction used by the positivity limiter with the current/previous time-step estimate. |
+| `CurvedDrainedLimiterBlend` | float in `[0,1]` | `1` | Blend factor `theta` for `theta*Lap_MLS + (1-theta)*Lap_material` when limiter `3` is active. |
+| `CurvedDrainedLimiterPreventNegative` | `0/1` | `0` | Apply the positivity cap after the selected mode-8 limiter. |
+
+C5o tested these mode-8 limiters in the pressure-only spherical FV gate. Blend
+`0.25` improved center pressure and reduced the pressure-rate artifact, but the
+surface shell remained far from the FV reference and apparent flux reversal
+persisted. These limiter controls therefore remain diagnostic and should not be
+used as a production strict-Cryer boundary.
 
 ## 4. Feedback Parameters
 

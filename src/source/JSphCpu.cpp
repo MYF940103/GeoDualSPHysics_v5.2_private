@@ -2349,6 +2349,9 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   unsigned curvedlap8targets=0,curvedlap8corrected=0,curvedlap8fallback=0,curvedlap8materials=0,curvedlap8boundaries=0,curvedlap8condcount=0;
   double curvedlap8condmean=0.,curvedlap8condmin=DBL_MAX,curvedlap8condmax=0.;
   double curvedlap8lapmean=0.,curvedlap8lapmax=0.,curvedlap8replacedmean=0.,curvedlap8replacedmax=0.;
+  unsigned curvedlap8limitertargets=0,curvedlap8blendlimited=0,curvedlap8positivitylimited=0;
+  double curvedlap8thetamean=0.,curvedlap8thetamin=DBL_MAX,curvedlap8thetamax=0.;
+  double curvedlap8limitedmean=0.,curvedlap8limitedmax=0.,curvedlap8ratediffmax=0.;
   double curvedlap8support=0.,curvedlap8rthreshold=0.;
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
@@ -2859,8 +2862,34 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           }
           continue;
         }
-        const double lap=2.*(coeff[4]+coeff[5]+coeff[6])/(support*support);
+        const double lapmls=2.*(coeff[4]+coeff[5]+coeff[6])/(support*support);
         const double oldlap=double(lapporepress[p]);
+        double lap=lapmls;
+        double theta=1.;
+        const bool blendlimiter=(CurvedDrainedCorrectedLaplacianLimiter==3);
+        const bool positivitylimiter=(CurvedDrainedCorrectedLaplacianLimiter==1 || CurvedDrainedLimiterPreventNegative);
+        if(blendlimiter){
+          theta=max(0.,min(1.,CurvedDrainedLimiterBlend));
+          lap=theta*lapmls+(1.-theta)*oldlap;
+          curvedlap8blendlimited++;
+        }
+        const double limiterdt=(LastDt>ALMOSTZERO? LastDt: (SymplecticDtPre>ALMOSTZERO? SymplecticDtPre: ((PorePressureDt<DBL_MAX && PorePressureDt>ALMOSTZERO)? PorePressureDt: 0.)));
+        if(positivitylimiter && diffcoef>ALMOSTZERO && limiterdt>ALMOSTZERO){
+          const double gap=max(0.,pval-CurvedDrainedBoundaryValue);
+          const double lapmin=-CurvedDrainedLimiterCFL*gap/(limiterdt*diffcoef);
+          if(lap<lapmin){
+            lap=lapmin;
+            curvedlap8positivitylimited++;
+          }
+        }
+        if(blendlimiter || positivitylimiter){
+          curvedlap8limitertargets++;
+          curvedlap8thetamean+=theta;
+          curvedlap8thetamin=min(curvedlap8thetamin,theta);
+          curvedlap8thetamax=max(curvedlap8thetamax,theta);
+          curvedlap8limitedmean+=fabs(lap-lapmls);
+          curvedlap8limitedmax=max(curvedlap8limitedmax,fabs(lap-lapmls));
+        }
         lapporepress[p]=float(lap);
         curvedaffected++;
         curvedlap8corrected++;
@@ -2872,6 +2901,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         curvedlap8lapmax=max(curvedlap8lapmax,fabs(lap));
         curvedlap8replacedmean+=fabs(lap-oldlap);
         curvedlap8replacedmax=max(curvedlap8replacedmax,fabs(lap-oldlap));
+        curvedlap8ratediffmax=max(curvedlap8ratediffmax,fabs(diffcoef*lap));
         maxabsdpwtop=max(maxabsdpwtop,fabs(pval-CurvedDrainedBoundaryValue));
         maxabslapadd=max(maxabslapadd,fabs(lap-oldlap));
         maxabsheadadd=max(maxabsheadadd,fabs(lap-oldlap)/rhog);
@@ -3296,15 +3326,22 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
         if(curvedlap8corrected)curvedlap8lapmean/=double(curvedlap8corrected);
         if(curvedlap8corrected)curvedlap8replacedmean/=double(curvedlap8corrected);
         if(curvedlap8condcount)curvedlap8condmean/=double(curvedlap8condcount);
+        if(curvedlap8limitertargets)curvedlap8thetamean/=double(curvedlap8limitertargets);
+        if(curvedlap8limitertargets)curvedlap8limitedmean/=double(curvedlap8limitertargets);
+        if(curvedlap8thetamin==DBL_MAX)curvedlap8thetamin=0.;
         if(curvedlap8condmin==DBL_MAX)curvedlap8condmin=0.;
-        Log->Printf("CPU curved drained corrected Laplacian: TimeStep=%g, targets=%u, corrected=%u, fallback=%u, material_samples=%u, boundary_samples=%u, average_material_samples=%g, average_boundary_samples=%g, support_radius=%g, r_min_factor=%g, r_threshold=%g, boundary_weight=%g, condition_limit=%g, cond_min=%g, cond_mean=%g, cond_max=%g, mean_laplacian=%g, max_abs_laplacian=%g, mean_abs_replaced_lap=%g, max_abs_replaced_lap=%g."
+        Log->Printf("CPU curved drained corrected Laplacian: TimeStep=%g, targets=%u, corrected=%u, fallback=%u, material_samples=%u, boundary_samples=%u, average_material_samples=%g, average_boundary_samples=%g, support_radius=%g, r_min_factor=%g, r_threshold=%g, boundary_weight=%g, condition_limit=%g, cond_min=%g, cond_mean=%g, cond_max=%g, mean_laplacian=%g, max_abs_laplacian=%g, mean_abs_replaced_lap=%g, max_abs_replaced_lap=%g, limiter=%d, prevent_negative=%u, limiter_dt=%g, limiter_cfl=%g, blend=%g, limiter_targets=%u, blend_limited=%u, positivity_limited=%u, theta_mean=%g, theta_min=%g, theta_max=%g, mean_abs_limiter_delta=%g, max_abs_limiter_delta=%g, max_abs_diffusion_rate=%g."
           ,timestep,curvedlap8targets,curvedlap8corrected,curvedlap8fallback,curvedlap8materials,curvedlap8boundaries
           ,(curvedlap8targets? double(curvedlap8materials)/double(curvedlap8targets): 0.)
           ,(curvedlap8targets? double(curvedlap8boundaries)/double(curvedlap8targets): 0.)
           ,curvedlap8support,CurvedDrainedCorrectedLapRMinFactor,curvedlap8rthreshold,CurvedDrainedCorrectedLapBoundaryWeight
           ,CurvedDrainedCorrectedLapConditionLimit,curvedlap8condmin,curvedlap8condmean,curvedlap8condmax
-          ,curvedlap8lapmean,curvedlap8lapmax,curvedlap8replacedmean,curvedlap8replacedmax);
-        Log->Print("CPU curved drained convention: mode 8 replaces near-boundary material LapPorePress by a local quadratic MLS Laplacian with spherical Dirichlet samples; it does not clamp material pressure and it does not volume-count dummy boundary particles.");
+          ,curvedlap8lapmean,curvedlap8lapmax,curvedlap8replacedmean,curvedlap8replacedmax
+          ,CurvedDrainedCorrectedLaplacianLimiter,(CurvedDrainedLimiterPreventNegative? 1u: 0u)
+          ,(LastDt>ALMOSTZERO? LastDt: (SymplecticDtPre>ALMOSTZERO? SymplecticDtPre: ((PorePressureDt<DBL_MAX && PorePressureDt>ALMOSTZERO)? PorePressureDt: 0.))),CurvedDrainedLimiterCFL,CurvedDrainedLimiterBlend
+          ,curvedlap8limitertargets,curvedlap8blendlimited,curvedlap8positivitylimited
+          ,curvedlap8thetamean,curvedlap8thetamin,curvedlap8thetamax,curvedlap8limitedmean,curvedlap8limitedmax,curvedlap8ratediffmax);
+        Log->Print("CPU curved drained convention: mode 8 replaces near-boundary material LapPorePress by a local quadratic MLS Laplacian with spherical Dirichlet samples; optional limiters act only on the recovered Laplacian, do not clamp material pressure, and do not volume-count dummy boundary particles.");
       }
     }
   }

@@ -842,3 +842,42 @@ Decision:
 - GPU remains deferred;
 - next work should be a stabilization/limiting gate for the corrected
   Laplacian rather than another shell bookkeeping or scalar flux correction.
+
+## C5o Corrected Laplacian Stabilization Notes
+
+C5o adds limiter controls inside the existing corrected Laplacian mode:
+
+`strict_reproduction_plan/C5o_CorrectedLaplacianStabilization/`
+
+Source scope:
+
+- kept `CurvedDrainedBoundaryMode=8`;
+- added `CurvedDrainedCorrectedLaplacianLimiter`;
+- added `CurvedDrainedLimiterCFL`, `CurvedDrainedLimiterBlend`, and
+  `CurvedDrainedLimiterPreventNegative`;
+- kept mode `0` to mode `7`, the PR governing equation,
+  `FlexibleConfiningStress`, `SoilConstitutiveModel`, and
+  `HydraulicElevationSource` unchanged;
+- did not add GPU support.
+
+Pressure-only CPU Release result:
+
+- limiter cases: positivity, blend `0.25`, blend `0.50`, blend `0.50` plus
+  positivity;
+- all cases: `code=0`, `excluded=0`, `Kplastic=0`;
+- blend `0.25` was best for center pressure (`center RMSE=104.83 Pa`) and
+  reduced final `PorePressRate` maxAbs to `2.62e6 Pa/s`;
+- surface shell remained far too high (`1038.91 Pa` for blend `0.25` versus
+  FV `85.88 Pa`);
+- all limiter cases still had apparent flux reversal;
+- negative pressure was reduced but not eliminated.
+
+Decision:
+
+- pressure-only FV gate still failed;
+- no Cryer compression smoke was run;
+- C6 remains blocked;
+- GPU remains deferred;
+- local limiter/blend tuning should not be promoted as the next strict Cryer
+  path. Either pause the strict route in this SPH boundary-operator family or
+  redesign the drained sphere as a true dynamic boundary value problem.

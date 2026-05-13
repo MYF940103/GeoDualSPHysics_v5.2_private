@@ -228,6 +228,10 @@ void JSph::InitVars(){
   CurvedDrainedCorrectedLapBoundaryWeight=1.;
   CurvedDrainedCorrectedLapFallbackMode=0;
   CurvedDrainedCorrectedLapDiagnostics=false;
+  CurvedDrainedCorrectedLaplacianLimiter=0;
+  CurvedDrainedLimiterCFL=0.9;
+  CurvedDrainedLimiterBlend=1.;
+  CurvedDrainedLimiterPreventNegative=false;
   PorePressureBoundaryGhost=false;
   PorePressureBoundaryGhostOutput=false;
   HydraulicElevationSource=true;
@@ -896,6 +900,19 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  CurvedDrainedCorrectedLapDiagnostics=true;   break;
     default: Run_Exceptioon("CurvedDrainedCorrectedLapDiagnostics mode is not valid.");
   }
+  switch(eparms.GetValueInt("CurvedDrainedCorrectedLaplacianLimiter",true,0)){
+    case 0:  CurvedDrainedCorrectedLaplacianLimiter=0;  break;
+    case 1:  CurvedDrainedCorrectedLaplacianLimiter=1;  break;
+    case 3:  CurvedDrainedCorrectedLaplacianLimiter=3;  break;
+    default: Run_Exceptioon("CurvedDrainedCorrectedLaplacianLimiter is not valid. Valid values are 0 off, 1 positivity, and 3 blend.");
+  }
+  CurvedDrainedLimiterCFL=eparms.GetValueDouble("CurvedDrainedLimiterCFL",true,0.9);
+  CurvedDrainedLimiterBlend=eparms.GetValueDouble("CurvedDrainedLimiterBlend",true,1.);
+  switch(eparms.GetValueInt("CurvedDrainedLimiterPreventNegative",true,0)){
+    case 0:  CurvedDrainedLimiterPreventNegative=false;  break;
+    case 1:  CurvedDrainedLimiterPreventNegative=true;   break;
+    default: Run_Exceptioon("CurvedDrainedLimiterPreventNegative mode is not valid.");
+  }
   switch(eparms.GetValueInt("PorePressureBoundaryGhost",true,0)){
     case 0:  PorePressureBoundaryGhost=false;  break;
     case 1:  PorePressureBoundaryGhost=true;   break;
@@ -1023,6 +1040,10 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("CurvedDrainedCorrectedLapConditionLimit must be greater than zero.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && CurvedDrainedCorrectedLapBoundaryWeight<=0.)
     Run_Exceptioon("CurvedDrainedCorrectedLapBoundaryWeight must be greater than zero.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && (CurvedDrainedLimiterCFL<0. || CurvedDrainedLimiterCFL>1.))
+    Run_Exceptioon("CurvedDrainedLimiterCFL must be between 0 and 1.");
+  if(PorePressureCurvedDrained && CurvedDrainedBoundaryMode==8 && (CurvedDrainedLimiterBlend<0. || CurvedDrainedLimiterBlend>1.))
+    Run_Exceptioon("CurvedDrainedLimiterBlend must be between 0 and 1.");
   if(PorePressureCurvedDrained && (CurvedDrainedBoundaryMode==5 || CurvedDrainedBoundaryMode==6 || CurvedDrainedBoundaryMode==7 || CurvedDrainedBoundaryMode==8) && CurvedDrainedBoundaryWeighting)
     Log->PrintWarning("CurvedDrainedBoundaryWeighting is ignored by CurvedDrainedBoundaryMode=5/6/7/8.");
   if(PorePressureCurvedDrained && CurvedDrainedBoundaryWeighting && CurvedDrainedBoundaryMode!=4 && CurvedDrainedBoundaryMode!=5 && CurvedDrainedBoundaryMode!=6 && CurvedDrainedBoundaryMode!=7 && CurvedDrainedBoundaryMode!=8)
@@ -2015,6 +2036,10 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapBoundaryWeight",CurvedDrainedCorrectedLapBoundaryWeight));
       Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapFallbackMode",CurvedDrainedCorrectedLapFallbackMode));
       Log->Print(fun::VarStr("  CurvedDrainedCorrectedLapDiagnostics",CurvedDrainedCorrectedLapDiagnostics));
+      Log->Print(fun::VarStr("  CurvedDrainedCorrectedLaplacianLimiter",CurvedDrainedCorrectedLaplacianLimiter));
+      Log->Print(fun::VarStr("  CurvedDrainedLimiterCFL",CurvedDrainedLimiterCFL));
+      Log->Print(fun::VarStr("  CurvedDrainedLimiterBlend",CurvedDrainedLimiterBlend));
+      Log->Print(fun::VarStr("  CurvedDrainedLimiterPreventNegative",CurvedDrainedLimiterPreventNegative));
       if(CurvedDrainedBoundaryMode==0)
         Log->Print("  CurvedDrainedBoundaryMode=0: first-order spherical Dirichlet ghost.");
       if(CurvedDrainedBoundaryMode==1)

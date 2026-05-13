@@ -760,3 +760,31 @@ apparent flux reversal, with final `PorePressRate` maxAbs `9.37e6 Pa/s`.
 Decision: no Cryer compression smoke was run. C6 remains blocked. The next
 boundary task should stabilize or limit the boundary-constrained corrected
 Laplacian before any compression, C6, or GPU work.
+
+## C5o Corrected Laplacian Stabilization
+
+C5o is retained under:
+
+`strict_reproduction_plan/C5o_CorrectedLaplacianStabilization/`
+
+It keeps `CurvedDrainedBoundaryMode=8` and adds mode-8-only limiter controls:
+positivity limiting, fixed MLS/material Laplacian blending, and optional
+positivity after blending. Defaults keep the C5n corrected Laplacian behavior.
+
+Pressure-only CPU Release cases ran at `dp=0.008` for positivity, blend `0.25`,
+blend `0.50`, and blend `0.50` plus positivity. All completed with `code=0`,
+`excluded=0`, and `Kplastic=0`.
+
+Gate result:
+
+- blend `0.25` improved center RMSE to `104.83 Pa` and reduced final
+  `PorePressRate` maxAbs from `9.37e6` to `2.62e6 Pa/s`;
+- surface-shell behavior remained wrong: final blend `0.25` surface shell was
+  `1038.91 Pa` versus FV `85.88 Pa`;
+- all limiter cases still had apparent flux reversal;
+- negative pressure was reduced by blend `0.25` but not eliminated;
+- no Cryer compression smoke was run.
+
+Decision: C6 remains blocked. Local limiter tuning is not enough for strict
+Cryer; the current route should pause or be redesigned as a true dynamic
+drained-boundary value problem. GPU remains deferred.

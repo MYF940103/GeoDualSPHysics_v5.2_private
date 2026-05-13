@@ -1398,3 +1398,19 @@ GPU porting remains deferred. Mode `8` is protected by the same
 `PorePressureBoundaryOperator=3` GPU hard error. A GPU port should not start
 until a CPU corrected-boundary route passes the pressure-only FV radial
 diffusion gate without flux reversal or over-drain.
+
+## Cryer C5o Corrected Laplacian Stabilization
+
+C5o adds mode-8-only limiter controls for the CPU corrected Laplacian path:
+positivity limiting, fixed MLS/material Laplacian blending, and optional
+positivity after blending. Defaults preserve the C5n behavior. No GPU support
+was added.
+
+The C5o pressure-only CPU Release gate ran four `dp=0.008` limiter cases. All
+completed with `code=0`, `excluded=0`, and `Kplastic=0`, but none passed the FV
+radial diffusion gate. Blend `0.25` improved the center RMSE and reduced the
+final pressure-rate artifact, but the surface shell stayed far above the FV
+reference and apparent flux reversal remained.
+
+GPU porting remains deferred. Porting the curved drained mode-8 limiter path
+would only duplicate a failing CPU diagnostic. C6 also remains blocked.
