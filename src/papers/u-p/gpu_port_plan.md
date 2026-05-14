@@ -2525,3 +2525,27 @@ The verification is not sufficient for GPU porting:
 Decision: do not port `PorePressureBoundaryOperator=2` to GPU yet, do not make
 it default, and do not base the landslide baseline on it. BND2 should first
 stabilize the CPU route and add broader wall diagnostics.
+
+## TINT1 Pore-Pressure Time-Integration Stage Audit
+
+TINT1 adds no source changes and no new simulations. It audits where the PR
+pore-pressure update is placed inside the existing Verlet/Symplectic stepping
+schemes.
+
+Current CPU and GPU placement is broadly aligned:
+
+- Verlet: interaction computes `PorePressRate` and feedback acceleration, then
+  `PorePress += PorePressRate * dt`, then the mechanical Verlet update runs.
+- Symplectic: predictor interaction and predictor mechanics run first; the
+  corrector interaction computes `PorePressRate` and feedback acceleration,
+  then `PorePress` is updated before the mechanical corrector.
+
+The current route is therefore an explicit operator split. It is not a
+pressure predictor-corrector and is not staged like density or stress. Feedback
+acceleration uses the pressure field available during interaction; the pressure
+just produced by the scalar update is used by the next interaction.
+
+GPU action: no GPU patch is needed for TINT1 because no new mode was added. If
+TINT2 introduces a nondefault `PorePressureTimeIntegrationMode`, it should be
+CPU-first and GPU should hard-error for nonzero modes until parity is
+implemented. Boundary operator mode `2` remains deferred for GPU.

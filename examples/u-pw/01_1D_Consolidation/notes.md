@@ -283,3 +283,34 @@ Decision:
 Do not make mode `2` default. Do not port it to GPU yet. Do not use it for
 landslide baseline until BND2/BND4 resolve the feedback-on instability and
 broader wall diagnostics.
+
+## TINT1 Pore-Pressure Time-Integration Audit
+
+Date: 2026-05-14
+
+TINT1 maps the PR pore-pressure update into the existing Verlet/Symplectic
+time stages. No source changes and no new runs were made.
+
+Key staging:
+
+- CPU/GPU Verlet: `Interaction_Forces` computes `PorePressRate` and feedback
+  acceleration, then `UpdatePorePressure`, then `ComputeVerlet`.
+- CPU/GPU Symplectic: predictor interaction and `ComputeSymplecticPre` run
+  first; corrector interaction computes `PorePressRate` and feedback
+  acceleration, then `UpdatePorePressure`, then `ComputeSymplecticCorr`.
+
+Interpretation:
+
+`PorePress` is currently an explicit operator-split hydraulic scalar. It is not
+integrated like density and not integrated like stress. Feedback acceleration
+uses old/stage pressure, while the updated pressure is committed for the next
+interaction. This may be fine for L3c/L4 feedback-off diffusion gates, but it
+is a staging risk for feedback-on and generalized boundary-particle cases.
+
+Recommended next action:
+
+Design a CPU-only TINT2 opt-in mode, likely an end-of-step or operator-split
+pressure update. Keep the default unchanged and keep GPU nonzero modes
+deferred until CPU validation passes. Landslide baseline should remain
+temporarily deferred unless it uses the existing mode `1` route with explicit
+caveats.

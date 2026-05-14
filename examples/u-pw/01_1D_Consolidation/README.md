@@ -226,3 +226,20 @@ Decision: mode `2` is a useful CPU boundary-method prototype, but it is not
 recommended as default, not ready for GPU, and not ready for a landslide
 baseline. Keep mode `1` as the current feedback-on 1D gate while BND2/BND4 are
 planned.
+
+### TINT1 Pore-Pressure Time-Integration Audit
+
+`experiments/TINT1_PorePressureTimeIntegration/` is an audit-only package. It
+does not add new simulations and does not change source code.
+
+The audit found that the PR pressure rate is computed during the force
+interaction stage. The scalar pressure update then runs before the Verlet
+mechanical update or before the Symplectic corrector. Feedback acceleration
+uses the pressure available during interaction, not the pressure just produced
+by the update.
+
+This is a first-order explicit operator split, not a density-like or
+stress-like predictor/corrector update. It is acceptable for the existing
+L3c/L4 feedback-off diffusion gates, but it is a plausible contributor to the
+BND1 mode `2` feedback-on instability. Do not continue promoting boundary mode
+`2` before a CPU-only TINT2 time-integration experiment is tested.
