@@ -285,6 +285,27 @@ protected:
   int InitialStressMode;        ///<Initial skeleton/effective stress mode. 0:none, 1:uniform isotropic effective compression.
   float InitialEffectiveStressIso; ///<Initial isotropic effective compression magnitude [Pa]. Positive XML value is written as negative Sigmac diagonal.
   int InitialEffectiveStressTargetMk; ///<Target mkfluid for initial effective stress. -1:all material particles.
+  bool MechanicalTopLoad;       ///<CPU opt-in top material surface surcharge. Default off.
+  int MechanicalTopLoadMode;    ///<Mechanical top-load mode. 0:disabled, 1:top material surface traction.
+  double MechanicalTopLoadQ0;   ///<Top surcharge traction [Pa]. Negative z value applies downward force.
+  double MechanicalTopLoadRampStart; ///<Start time for mechanical top-load ramp [s].
+  double MechanicalTopLoadRampEnd; ///<End time for mechanical top-load ramp [s].
+  int MechanicalTopLoadTargetMk; ///<Target mkfluid for mechanical top load. -1:all material particles.
+  double MechanicalTopLoadSurfaceZ; ///<Top surface elevation [m]. Large value enables auto-detect from selected material particles.
+  double MechanicalTopLoadThickness; ///<Selection thickness below the top surface [m]. <=0 uses 0.55*Dp.
+  double MechanicalTopLoadArea; ///<Reference loaded surface area [m2].
+  bool SaveMechanicalTopLoadDiagnostics; ///<Print CPU top-load diagnostics.
+  unsigned MechanicalTopLoadDiagInterval; ///<Step interval for mechanical top-load diagnostics.
+  mutable double MechanicalTopLoadDiagFactor; ///<Last ramp factor.
+  mutable unsigned MechanicalTopLoadDiagTargetCount; ///<Last selected target count.
+  mutable double MechanicalTopLoadDiagTargetMass; ///<Last selected target mass [kg] or 2D equivalent.
+  mutable double MechanicalTopLoadDiagSurfaceZ; ///<Last effective top surface z [m].
+  mutable double MechanicalTopLoadDiagThickness; ///<Last effective target thickness [m].
+  mutable double MechanicalTopLoadDiagTotalForce; ///<Last applied total z force [N] or 2D equivalent.
+  mutable double MechanicalTopLoadDiagAccelZ; ///<Last applied z acceleration [m/s2].
+  mutable double MechanicalTopLoadDiagMeanVelZ; ///<Last target mean z velocity [m/s].
+  mutable double MechanicalTopLoadDiagMeanDispZ; ///<Last target mean displacement from detected surface [m].
+  mutable int MechanicalTopLoadDiagLastPrintStep; ///<Last step printed for mechanical top-load diagnostics.
   bool FlexibleConfiningStress; ///<CPU flexible confining stress source. 0:off, 1:on.
   float ConfiningStressP0;      ///<Positive compression magnitude for flexible confining stress [Pa].
   double ConfiningStressRampStart; ///<Start time for confining stress ramp [s].
@@ -708,10 +729,13 @@ protected:
   tfloat3 GetHydraulicGravity()const;
   tfloat3 GetMechanicalGravity(double timestep)const;
   bool IsMechanicalGravityStopped(double timestep)const;
+  double GetMechanicalTopLoadFactor(double timestep)const;
   double GetFlexibleConfiningStressP0(double timestep)const;
   double GetCapConfiningStressP0(double timestep)const;
   bool IsFlexibleConfiningStressTarget(typecode code)const;
   int GetConfiningStressCylinderClass(const tdouble3 &pos)const;
+  void ResetMechanicalTopLoadDiagnostics()const;
+  void PrintMechanicalTopLoadDiagnostics()const;
   void ResetFlexibleConfiningStressDiagnostics()const;
   void PrintFlexibleConfiningStressDiagnostics()const;
   void ResetCapConfiningStressDiagnostics()const;

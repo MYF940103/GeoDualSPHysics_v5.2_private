@@ -4693,6 +4693,85 @@ void JSphCpu::ApplyPorePressureFeedback(unsigned n,unsigned pini,const typecode 
 }
 
 //==============================================================================
+/// Applies an opt-in CPU top material surface surcharge.
+//==============================================================================
+void JSphCpu::ApplyMechanicalTopLoad(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat4 *velrhop,tfloat3 *ace)const
+{
+  if(!MechanicalTopLoad || MechanicalTopLoadMode==0 || !ace)return;
+  if(MechanicalTopLoadMode!=1)Run_Exceptioon("MechanicalTopLoadMode is not implemented in CPU top-load route.");
+  if(!code || !pos || !velrhop)Run_Exceptioon("Pointers without data for mechanical top load.");
+  ResetMechanicalTopLoadDiagnostics();
+
+  const double factor=GetMechanicalTopLoadFactor(TimeStep);
+  MechanicalTopLoadDiagFactor=factor;
+  const double thickness=(MechanicalTopLoadThickness>0.? MechanicalTopLoadThickness: 0.55*double(Dp));
+  MechanicalTopLoadDiagThickness=thickness;
+
+  const bool autosurface=(MechanicalTopLoadSurfaceZ>1e29 || MechanicalTopLoadSurfaceZ<-1e29);
+  double surfacez=(autosurface? -DBL_MAX: MechanicalTopLoadSurfaceZ);
+  unsigned candidatecount=0;
+  for(unsigned cp=0;cp<n;cp++){
+    const unsigned p=pini+cp;
+    const typecode c=code[p];
+    if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+      const int mk=int(CODE_GetTypeValue(c));
+      if(MechanicalTopLoadTargetMk<0 || mk==MechanicalTopLoadTargetMk){
+        candidatecount++;
+        if(autosurface)surfacez=max(surfacez,double(pos[p].z));
+      }
+    }
+  }
+  if(!candidatecount)Run_Exceptioon("MechanicalTopLoad found no material particles matching MechanicalTopLoadTargetMk.");
+  if(autosurface && surfacez==-DBL_MAX)Run_Exceptioon("MechanicalTopLoad could not auto-detect the top material surface.");
+
+  const double ztol=max(1e-12,0.05*double(Dp));
+  const double zmin=surfacez-thickness-ztol;
+  const double zmax=surfacez+ztol;
+  unsigned targetcount=0;
+  double velzsum=0.,dispzsum=0.;
+  for(unsigned cp=0;cp<n;cp++){
+    const unsigned p=pini+cp;
+    const typecode c=code[p];
+    if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+      const int mk=int(CODE_GetTypeValue(c));
+      if(MechanicalTopLoadTargetMk<0 || mk==MechanicalTopLoadTargetMk){
+        const double z=double(pos[p].z);
+        if(z>=zmin && z<=zmax){
+          targetcount++;
+          velzsum+=double(velrhop[p].z);
+          dispzsum+=(z-surfacez);
+        }
+      }
+    }
+  }
+  if(!targetcount)Run_Exceptioon("MechanicalTopLoad found no top-surface target particles. Check MechanicalTopLoadSurfaceZ and MechanicalTopLoadThickness.");
+  const double targetmass=double(MassFluid)*double(targetcount);
+  if(targetmass<=0.)Run_Exceptioon("MechanicalTopLoad target mass is invalid.");
+  const double forcez=MechanicalTopLoadQ0*MechanicalTopLoadArea*factor;
+  const double accelz=forcez/targetmass;
+
+  for(unsigned cp=0;cp<n;cp++){
+    const unsigned p=pini+cp;
+    const typecode c=code[p];
+    if(CODE_IsNormal(c) && CODE_IsFluid(c) && !CODE_IsFluidInout(c) && !CODE_IsFloating(c)){
+      const int mk=int(CODE_GetTypeValue(c));
+      if(MechanicalTopLoadTargetMk<0 || mk==MechanicalTopLoadTargetMk){
+        const double z=double(pos[p].z);
+        if(z>=zmin && z<=zmax)ace[p].z+=float(accelz);
+      }
+    }
+  }
+
+  MechanicalTopLoadDiagTargetCount=targetcount;
+  MechanicalTopLoadDiagTargetMass=targetmass;
+  MechanicalTopLoadDiagSurfaceZ=surfacez;
+  MechanicalTopLoadDiagTotalForce=forcez;
+  MechanicalTopLoadDiagAccelZ=accelz;
+  MechanicalTopLoadDiagMeanVelZ=(targetcount? velzsum/double(targetcount): 0.);
+  MechanicalTopLoadDiagMeanDispZ=(targetcount? dispzsum/double(targetcount): 0.);
+}
+
+//==============================================================================
 /// Applies opt-in top/bottom cap-normal hydrostatic support for triaxial staging.
 //==============================================================================
 void JSphCpu::ApplyCapConfiningStress(unsigned n,unsigned pini,const typecode *code,const tdouble3 *pos,const tfloat4 *velrhop,tfloat3 *ace)const

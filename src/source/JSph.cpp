@@ -274,6 +274,27 @@ void JSph::InitVars(){
   InitialStressMode=0;
   InitialEffectiveStressIso=0.f;
   InitialEffectiveStressTargetMk=-1;
+  MechanicalTopLoad=false;
+  MechanicalTopLoadMode=0;
+  MechanicalTopLoadQ0=0.;
+  MechanicalTopLoadRampStart=0.;
+  MechanicalTopLoadRampEnd=0.;
+  MechanicalTopLoadTargetMk=-1;
+  MechanicalTopLoadSurfaceZ=1e30;
+  MechanicalTopLoadThickness=0.;
+  MechanicalTopLoadArea=0.;
+  SaveMechanicalTopLoadDiagnostics=false;
+  MechanicalTopLoadDiagInterval=500;
+  MechanicalTopLoadDiagFactor=0.;
+  MechanicalTopLoadDiagTargetCount=0;
+  MechanicalTopLoadDiagTargetMass=0.;
+  MechanicalTopLoadDiagSurfaceZ=0.;
+  MechanicalTopLoadDiagThickness=0.;
+  MechanicalTopLoadDiagTotalForce=0.;
+  MechanicalTopLoadDiagAccelZ=0.;
+  MechanicalTopLoadDiagMeanVelZ=0.;
+  MechanicalTopLoadDiagMeanDispZ=0.;
+  MechanicalTopLoadDiagLastPrintStep=-1;
   FlexibleConfiningStress=false;
   ConfiningStressP0=0.f;
   ConfiningStressRampStart=0.;
@@ -1152,6 +1173,32 @@ void JSph::LoadConfigParameters(const JXml *xml){
   }
   InitialEffectiveStressIso=eparms.GetValueFloat("InitialEffectiveStressIso",true,0.f);
   InitialEffectiveStressTargetMk=eparms.GetValueInt("InitialEffectiveStressTargetMk",true,-1);
+  switch(eparms.GetValueInt("MechanicalTopLoad",true,0)){
+    case 0:  MechanicalTopLoad=false;  break;
+    case 1:  MechanicalTopLoad=true;   break;
+    default: Run_Exceptioon("MechanicalTopLoad mode is not valid.");
+  }
+  switch(eparms.GetValueInt("MechanicalTopLoadMode",true,(MechanicalTopLoad? 1: 0))){
+    case 0:  MechanicalTopLoadMode=0;  break;
+    case 1:  MechanicalTopLoadMode=1;  break;
+    default: Run_Exceptioon("MechanicalTopLoadMode is not valid. Only mode 1:top material surface traction is implemented.");
+  }
+  MechanicalTopLoadQ0=eparms.GetValueDouble("MechanicalTopLoadQ0",true,0.);
+  MechanicalTopLoadRampStart=eparms.GetValueDouble("MechanicalTopLoadRampStart",true,0.);
+  MechanicalTopLoadRampEnd=eparms.GetValueDouble("MechanicalTopLoadRampEnd",true,MechanicalTopLoadRampStart);
+  MechanicalTopLoadTargetMk=eparms.GetValueInt("MechanicalTopLoadTargetMk",true,-1);
+  MechanicalTopLoadSurfaceZ=eparms.GetValueDouble("MechanicalTopLoadSurfaceZ",true,1e30);
+  MechanicalTopLoadThickness=eparms.GetValueDouble("MechanicalTopLoadThickness",true,0.);
+  MechanicalTopLoadArea=eparms.GetValueDouble("MechanicalTopLoadArea",true,0.);
+  switch(eparms.GetValueInt("SaveMechanicalTopLoadDiagnostics",true,0)){
+    case 0:  SaveMechanicalTopLoadDiagnostics=false;  break;
+    case 1:  SaveMechanicalTopLoadDiagnostics=true;   break;
+    default: Run_Exceptioon("SaveMechanicalTopLoadDiagnostics mode is not valid.");
+  }
+  {
+    const int interval=eparms.GetValueInt("MechanicalTopLoadDiagInterval",true,500);
+    MechanicalTopLoadDiagInterval=(interval>0? unsigned(interval): 0u);
+  }
   switch(eparms.GetValueInt("FlexibleConfiningStress",true,0)){
     case 0:  FlexibleConfiningStress=false;  break;
     case 1:  FlexibleConfiningStress=true;   break;
@@ -1352,6 +1399,20 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("InitialStressMode=1 is CPU-only in this branch. GPU initialization support is not implemented.");
   if(InitialStressMode==1 && InitialEffectiveStressIso==0.f)
     Log->PrintWarning("InitialStressMode=1 but InitialEffectiveStressIso=0. The initial effective stress field will remain zero.");
+  if(MechanicalTopLoad){
+    if(!Cpu)Run_Exceptioon("MechanicalTopLoad=1 is CPU-only in this branch. GPU support is not implemented.");
+    if(MechanicalTopLoadMode!=1)Run_Exceptioon("MechanicalTopLoad=1 requires MechanicalTopLoadMode=1.");
+    if(MechanicalTopLoadArea<=0.)Run_Exceptioon("MechanicalTopLoadArea must be greater than zero when MechanicalTopLoad=1.");
+    if(MechanicalTopLoadRampStart<0.)Run_Exceptioon("MechanicalTopLoadRampStart must be greater than or equal to zero.");
+    if(MechanicalTopLoadRampEnd<MechanicalTopLoadRampStart)Run_Exceptioon("MechanicalTopLoadRampEnd must be greater than or equal to MechanicalTopLoadRampStart.");
+    if(MechanicalTopLoadTargetMk<-1)Run_Exceptioon("MechanicalTopLoadTargetMk must be -1 for all material particles or a non-negative mkfluid value.");
+    if(MechanicalTopLoadThickness<0.)Run_Exceptioon("MechanicalTopLoadThickness must be greater than or equal to zero. Use 0 for automatic top-row selection.");
+    if(MechanicalTopLoadDiagInterval<1)Run_Exceptioon("MechanicalTopLoadDiagInterval must be greater than zero.");
+    if(AccInput)Log->PrintWarning("MechanicalTopLoad is enabled while AccInput is also configured. L3b strict routes should normally disable AccInput.");
+  }
+  else if(MechanicalTopLoadMode!=0){
+    Log->PrintWarning("MechanicalTopLoadMode is non-zero but MechanicalTopLoad=0. The top-load route will remain disabled.");
+  }
   if(ConfiningStressP0<0.f)Run_Exceptioon("ConfiningStressP0 must be greater than or equal to zero.");
   if(ConfiningStressRampStart<0.)Run_Exceptioon("ConfiningStressRampStart must be greater than or equal to zero.");
   if(ConfiningStressRampEnd<ConfiningStressRampStart)Run_Exceptioon("ConfiningStressRampEnd must be greater than or equal to ConfiningStressRampStart.");
@@ -2459,6 +2520,19 @@ void JSph::VisuConfig(){
       Log->Print(fun::VarStr("  InitialEffectiveStressIso",InitialEffectiveStressIso));
       Log->Print(fun::VarStr("  InitialEffectiveStressTargetMk",InitialEffectiveStressTargetMk));
       Log->Print("  Initial effective stress convention: positive XML magnitude is compression; CPU Sigmac stores this as negative xx=yy=zz diagonal stress. Pore pressure is not initialized or modified by this option.");
+    }
+    Log->Print(fun::VarStr("  MechanicalTopLoad",MechanicalTopLoad? "CPU top material surface traction": "Disabled"));
+    if(MechanicalTopLoad){
+      Log->Print(fun::VarStr("    MechanicalTopLoadMode",MechanicalTopLoadMode));
+      Log->Print(fun::VarStr("    MechanicalTopLoadQ0",MechanicalTopLoadQ0));
+      Log->Print(fun::VarStr("    MechanicalTopLoadRampStart",MechanicalTopLoadRampStart));
+      Log->Print(fun::VarStr("    MechanicalTopLoadRampEnd",MechanicalTopLoadRampEnd));
+      Log->Print(fun::VarStr("    MechanicalTopLoadTargetMk",MechanicalTopLoadTargetMk));
+      Log->Print(fun::VarStr("    MechanicalTopLoadSurfaceZ",MechanicalTopLoadSurfaceZ));
+      Log->Print(fun::VarStr("    MechanicalTopLoadThickness",MechanicalTopLoadThickness));
+      Log->Print(fun::VarStr("    MechanicalTopLoadArea",MechanicalTopLoadArea));
+      Log->Print(fun::VarStr("    SaveMechanicalTopLoadDiagnostics",SaveMechanicalTopLoadDiagnostics));
+      Log->Print("    MechanicalTopLoad convention: total z-force is q0*area*ramp and is distributed uniformly by mass over the selected top material surface. This is a CPU-only surface-load prototype, not AccInput and not a force-controlled platen actuator.");
     }
     Log->Print(fun::VarStr("  HydromechDamping",HydromechDamping));
     if(HydromechDamping){
@@ -3624,6 +3698,22 @@ tfloat3 JSph::GetMechanicalGravity(double timestep)const{
 }
 
 //==============================================================================
+/// Returns current ramp factor for the opt-in mechanical top load.
+//==============================================================================
+double JSph::GetMechanicalTopLoadFactor(double timestep)const{
+  if(!MechanicalTopLoad || MechanicalTopLoadMode==0 || MechanicalTopLoadQ0==0.)return(0.);
+  if(MechanicalTopLoadRampEnd>MechanicalTopLoadRampStart){
+    if(timestep<=MechanicalTopLoadRampStart)return(0.);
+    if(timestep<MechanicalTopLoadRampEnd){
+      const double r=(timestep-MechanicalTopLoadRampStart)/(MechanicalTopLoadRampEnd-MechanicalTopLoadRampStart);
+      return(r);
+    }
+  }
+  else if(timestep<MechanicalTopLoadRampStart)return(0.);
+  return(1.);
+}
+
+//==============================================================================
 /// Returns current positive compression magnitude for flexible confining stress.
 //==============================================================================
 double JSph::GetFlexibleConfiningStressP0(double timestep)const{
@@ -3783,6 +3873,37 @@ void JSph::ResetPlatenReactionDiagnostics()const{
   PlatenReactionDiagTopAxialStress=0.;
   PlatenReactionDiagBottomAxialStress=0.;
   PlatenReactionDiagForceBalanceError=0.;
+}
+
+//==============================================================================
+/// Resets CPU mechanical top-load diagnostics.
+//==============================================================================
+void JSph::ResetMechanicalTopLoadDiagnostics()const{
+  MechanicalTopLoadDiagFactor=0.;
+  MechanicalTopLoadDiagTargetCount=0;
+  MechanicalTopLoadDiagTargetMass=0.;
+  MechanicalTopLoadDiagSurfaceZ=0.;
+  MechanicalTopLoadDiagThickness=0.;
+  MechanicalTopLoadDiagTotalForce=0.;
+  MechanicalTopLoadDiagAccelZ=0.;
+  MechanicalTopLoadDiagMeanVelZ=0.;
+  MechanicalTopLoadDiagMeanDispZ=0.;
+}
+
+//==============================================================================
+/// Prints a compact CPU mechanical top-load diagnostics line.
+//==============================================================================
+void JSph::PrintMechanicalTopLoadDiagnostics()const{
+  if(!SaveMechanicalTopLoadDiagnostics || MechanicalTopLoadDiagLastPrintStep==Nstep)return;
+  if(Nstep<5 || !(Nstep%MechanicalTopLoadDiagInterval)){
+    Log->Printf("MechanicalTopLoad diagnostics: step=%d, TimeStep=%g, mode=%d, factor=%g, target_mk=%d, targets=%u, target_mass=%g, surface_z=%g, thickness=%g, q0=%g Pa, area=%g m2, total_force_z=%g N, accel_z=%g m/s2, mean_vel_z=%g m/s, mean_disp_z=%g m."
+      ,Nstep,TimeStep,MechanicalTopLoadMode,MechanicalTopLoadDiagFactor,MechanicalTopLoadTargetMk
+      ,MechanicalTopLoadDiagTargetCount,MechanicalTopLoadDiagTargetMass
+      ,MechanicalTopLoadDiagSurfaceZ,MechanicalTopLoadDiagThickness
+      ,MechanicalTopLoadQ0,MechanicalTopLoadArea,MechanicalTopLoadDiagTotalForce
+      ,MechanicalTopLoadDiagAccelZ,MechanicalTopLoadDiagMeanVelZ,MechanicalTopLoadDiagMeanDispZ);
+    MechanicalTopLoadDiagLastPrintStep=Nstep;
+  }
 }
 
 //==============================================================================

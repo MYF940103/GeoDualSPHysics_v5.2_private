@@ -1201,3 +1201,33 @@ M3h status:
   route;
 - slower cases cleared final `-3/-5` but retained transient negative statuses;
 - full pore-pressure feedback and GPU MCC remain deferred.
+
+## L3b Mechanical Top-Load Prototype Parameters
+
+L3b adds an opt-in CPU-only top material surface surcharge prototype for the
+1D consolidation loading-route audit. Defaults preserve previous behavior.
+
+- `MechanicalTopLoad=0/1`: enable the CPU top-load route.
+- `MechanicalTopLoadMode=1`: top material surface traction prototype.
+- `MechanicalTopLoadQ0`: surcharge traction [Pa]. Negative values apply a
+  downward z-force in the current 1D setup.
+- `MechanicalTopLoadRampStart`: start time for the load ramp [s].
+- `MechanicalTopLoadRampEnd`: end time for the load ramp [s].
+- `MechanicalTopLoadTargetMk`: eligible mkfluid value; `-1` selects all
+  material particles before the top-surface selector is applied.
+- `MechanicalTopLoadSurfaceZ`: explicit top surface z [m]. A large value such
+  as `1e30` auto-detects the current top material surface.
+- `MechanicalTopLoadThickness`: target thickness below the top surface [m].
+  `0` uses `0.55*Dp`, i.e. the top particle row.
+- `MechanicalTopLoadArea`: loaded surface area [m2], required when enabled.
+- `SaveMechanicalTopLoadDiagnostics=0/1`: print applied force/count diagnostics.
+- `MechanicalTopLoadDiagInterval`: diagnostic log interval in solver steps.
+
+Current limitations:
+
+- CPU-only; GPU hard-errors when `MechanicalTopLoad=1`.
+- The route applies `Fz=q0*A*ramp` as acceleration on selected top material
+  particles. It is not `AccInput`, but it is also not a true force-controlled
+  loading plate or quasi-static surface traction.
+- L3b showed stable numerics but a large dynamic pore-pressure response, so
+  this route is a diagnostic prototype rather than a strict Terzaghi validation.

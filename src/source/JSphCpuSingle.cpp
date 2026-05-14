@@ -1004,6 +1004,10 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
     if(ApplyHydromechDamping(Np-Npb,Npb,Velrhopc,Codec,Acec,!HydromechDampingStepPrint))
       HydromechDampingStepPrint=true;
   }
+  if(MechanicalTopLoad && Acec){
+    ApplyMechanicalTopLoad(Np-Npb,Npb,Codec,Posc,Velrhopc,Acec);
+    PrintMechanicalTopLoadDiagnostics();
+  }
   if(HydromechCoupling && PorePressureModel==1 && DivVelc && LapPorePressc && LapZc && PorePressRatec)ComputeHydroPorePressRatePR(Np-Npb,Npb,Codec,DivVelc,LapPorePressc,LapZc,PorePressRatec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.

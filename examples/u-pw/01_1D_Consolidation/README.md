@@ -76,6 +76,24 @@ reproduction. Because `PorePressureFeedback=0`, it does not validate the full
 coupled Terzaghi storage response. A future strict route should use a loading
 plate/surface traction or a stress/pore-pressure consistent initialization.
 
+### ExternalLoad L3b Mechanical Top-Load Prototype
+
+`experiments/ExternalLoad_L3b_MechanicalTopLoad/` tests the first CPU-only
+source-backed mechanical surcharge route. It adds `MechanicalTopLoad=1`, removes
+`AccInput`, and applies `Fz=q0*A` to the detected top material surface.
+
+- CPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- `q0=-10 kPa` and `A=0.1 m2` produce the intended `|Fz|=1000 N` load scale.
+- GPU simulation is deferred because this prototype is CPU-only and hard-errors
+  on GPU.
+- Top drained and bottom no-flux checks remain reasonable.
+- The generated excess-pressure peak is still about `5.9e5 Pa`, so the route is
+  not close to the Terzaghi analytical initial-value problem.
+
+L3b is useful because it proves that the load-route blocker is not just the
+native `AccInput` file mechanism. Directly forcing top material particles still
+behaves dynamically. Do not use L3b as a strict paper validation curve.
+
 ## Policy
 
 Do not use this directory for broad damping/viscosity sweeps before the loading

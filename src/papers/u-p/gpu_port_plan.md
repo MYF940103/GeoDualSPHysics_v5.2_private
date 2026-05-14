@@ -2350,3 +2350,19 @@ acceleration produced a large dynamic excess-pressure response rather than the
 quasi-static Terzaghi analytical curve. This is a loading-route limitation, not
 a GPU port blocker. Full GPU MCC and full-feedback triaxial validation remain
 deferred under their previous policies.
+
+## L3b Mechanical Top-Load GPU Status
+
+L3b adds a small CPU-only source path for `MechanicalTopLoad=1`. The parser and
+shared code compile in GPU Release, but GPU simulation intentionally hard-errors
+when the new option is enabled:
+
+```text
+MechanicalTopLoad=1 -> CPU-only in this branch
+```
+
+The CPU L3b case is numerically stable, but its pressure response remains
+dynamic and not Terzaghi-faithful. GPU implementation is therefore deferred
+until a physically acceptable mechanical loading route is established. The L3a
+initial-pressure diffusion gate remains the GPU-supported analytical PR
+boundary check.

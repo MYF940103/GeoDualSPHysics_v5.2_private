@@ -56,3 +56,30 @@ mechanical load reproduction because `PorePressureFeedback=0` bypasses the
 skeleton storage response. Do not start a broad damping/viscosity sweep from
 L2. If strict 1D reproduction remains active, design L3b as a top loading
 plate/surface traction or consistent stress/pore-pressure initialization route.
+
+## L3b Mechanical Top-Load Prototype
+
+Date: 2026-05-14
+
+`ExternalLoad_L3b_MechanicalTopLoad` adds a CPU-only, default-off
+`MechanicalTopLoad` route. It removes `AccInput` and applies the total load
+`Fz=q0*A` to the detected top material surface.
+
+Key result:
+
+- CPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- CPU Release/Debug and GPU Release builds pass.
+- GPU simulation is deferred; `MechanicalTopLoad=1` is CPU-only.
+- Applied load scale is correct: `q0=-10 kPa`, `A=0.1 m2`, `Fz=-1000 N`.
+- The pore-pressure response is still dynamically over-amplified:
+  peak excess is about `5.9e5 Pa`.
+- Analytical comparison is not improved over L2 and is far from L3a.
+
+Interpretation:
+
+L3b confirms that a direct top material-surface force is still too close to an
+acceleration-driven load-generation route. It is not native `AccInput`, but it
+is also not a quasi-static force-controlled platen or a consistent Terzaghi
+initial stress state. The next strict route should be L3c consistent
+stress/pore-pressure initialization or a true force-controlled loading plate.
+Damping/viscosity sweeps remain premature.
