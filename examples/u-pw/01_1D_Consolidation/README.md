@@ -243,3 +243,29 @@ stress-like predictor/corrector update. It is acceptable for the existing
 L3c/L4 feedback-off diffusion gates, but it is a plausible contributor to the
 BND1 mode `2` feedback-on instability. Do not continue promoting boundary mode
 `2` before a CPU-only TINT2 time-integration experiment is tested.
+
+### TINT1b Dependency and Update-Stage Plan
+
+TINT1b extends the TINT1 audit to every pressure-related variable:
+`PorePress`, `PorePressRate`, `DivVel`, `LapPorePress`, `LapZ`, boundary
+operator contributions, feedback acceleration, Shepard, and top/bottom clamps.
+It adds no source changes and no new runs.
+
+Main planning result:
+
+- `PorePressRate` is an interaction-stage value.
+- `PorePress` is updated explicitly and may then be changed by Shepard or
+  top/bottom boundary projections.
+- feedback acceleration should be treated as using previous-step/stage
+  pressure in the first TINT2 experiment.
+- moving only `UpdatePorePressure` is not enough; the TINT2 patch should move
+  the pressure update plus Shepard and clamps as a single end-step pressure
+  commit.
+
+Recommended TINT2 scope:
+
+- add `PorePressureTimeIntegrationMode=1` as CPU-only end-step update;
+- keep mode `0` as default;
+- add optional pressure-stage diagnostics and `DeltaP_rate` versus
+  `DeltaP_actual` bookkeeping;
+- keep GPU nonzero modes deferred.

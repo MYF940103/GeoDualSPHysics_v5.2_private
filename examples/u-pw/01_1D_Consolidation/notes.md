@@ -314,3 +314,40 @@ pressure update. Keep the default unchanged and keep GPU nonzero modes
 deferred until CPU validation passes. Landslide baseline should remain
 temporarily deferred unless it uses the existing mode `1` route with explicit
 caveats.
+
+## TINT1b Pore-Pressure Dependency Plan
+
+Date: 2026-05-14
+
+TINT1b is a no-source-change planning step before TINT2. It audits the full
+dependency chain rather than only the raw pressure update:
+
+- `DivVel`, `LapPorePress`, `LapZ`, boundary operator additions, feedback
+  acceleration, and `PorePressRate` are computed during interaction.
+- `PorePress` is then updated by `PorePressRate * dt`.
+- Shepard/top drained/bottom no-flux corrections can change the actual stored
+  pressure after the raw update.
+- `PorePressRate` is not recomputed after those corrections.
+- output can therefore show a corrected `PorePress` with an interaction-stage
+  `PorePressRate`.
+
+TINT2 should not just move `UpdatePorePressure`. It should define one pressure
+commit block:
+
+```text
+UpdatePorePressure
+ApplyPorePressureShepard
+ApplyPorePressureTopDrained
+ApplyPorePressureBottomNoFlux
+Record DeltaP_rate, DeltaP_actual, and correction amount
+```
+
+The recommended minimal source experiment is CPU-only:
+
+```text
+PorePressureTimeIntegrationMode=1
+SavePorePressureTimeStageDiagnostics=1
+```
+
+Mode `0` remains current behavior and default. GPU should hard-error for
+nonzero time-integration mode until the CPU matrix passes.

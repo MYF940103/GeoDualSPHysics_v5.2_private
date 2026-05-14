@@ -2549,3 +2549,40 @@ GPU action: no GPU patch is needed for TINT1 because no new mode was added. If
 TINT2 introduces a nondefault `PorePressureTimeIntegrationMode`, it should be
 CPU-first and GPU should hard-error for nonzero modes until parity is
 implemented. Boundary operator mode `2` remains deferred for GPU.
+
+## TINT1b Unified Pore-Pressure Staging Plan
+
+TINT1b adds no source changes and no runs. It expands TINT1 from the single
+`UpdatePorePressure` call to the full dependency chain:
+
+- `DivVel`, `LapPorePress`, `LapZ`, boundary-operator contributions,
+  feedback acceleration, and `PorePressRate` are all interaction-stage
+  quantities.
+- `PorePress` is the only persistent hydraulic scalar that is written by the
+  raw explicit update and then possibly overwritten by Shepard or material
+  boundary clamps.
+- `PorePressRate` is not recomputed after Shepard/top/bottom corrections, so
+  output `PorePressRate` and output `PorePress` can represent different
+  corrected states.
+- `dt_pore` is a parameter-based diffusion restriction; it does not use
+  instantaneous `PorePressRate`, boundary contribution size, or feedback
+  acceleration.
+
+TINT2 GPU policy:
+
+- implement any `PorePressureTimeIntegrationMode` change CPU-first;
+- keep mode `0` as the current default;
+- hard-error on GPU for nonzero modes until CPU validation passes;
+- do not port boundary operator mode `2` until the CPU time-stage experiment is
+  understood.
+
+Recommended TINT2 CPU mode:
+
+```text
+PorePressureTimeIntegrationMode=1
+SavePorePressureTimeStageDiagnostics=1
+```
+
+Mode `1` should commit pressure at end-step as one unit:
+raw pressure update, Shepard, top drained clamp, bottom no-flux projection,
+and `DeltaP_rate`/`DeltaP_actual` bookkeeping.
