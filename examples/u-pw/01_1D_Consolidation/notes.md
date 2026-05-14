@@ -117,3 +117,36 @@ is not a vertical surcharge or total-stress initializer. L3c is therefore a
 paper-compatible PR diffusion/boundary and initial-state validation, not a full
 mechanical load-generation reproduction. Damping/viscosity sweeps remain
 premature.
+
+## L3e Validation Package
+
+Date: 2026-05-14
+
+`L3e_ValidationPackage` consolidates the 1D consolidation chain from L1 through
+L3c. It is reporting-only.
+
+Classification:
+
+- L3a/L3c: validation-ready PR diffusion and boundary gates, with L3c preferred
+  for the current paper-compatible figure because it states the zero
+  effective-stress increment explicitly.
+- L1/L2/L3b: stable reduced smoke or loading-route diagnostics.
+- L3d: deferred strict mechanical loading route.
+
+Key evidence:
+
+- L2 and L3b remain stable but produce dynamic peaks of about `6.25e5 Pa` and
+  `5.90e5 Pa`, respectively.
+- L3c keeps the peak at `10 kPa`, with CPU/GPU `code=0`, `excluded=0`, and
+  `DtMin=0`.
+- L3c bottom RMSE is about `7.287e3 Pa`, and final profile RMSE is about
+  `9.129e3 Pa`.
+- L3c top drained residual is `0 Pa`; bottom no-flux proxy is about
+  `2.3e-3 Pa`.
+
+Recommendation:
+
+Use L3c as the current 1D validation figure. Do not use L2/L3b as strict
+validation and do not start a damping/viscosity sweep before a true mechanical
+loading route is redesigned. Move to the next u-p module if this
+diffusion/boundary coverage is sufficient.

@@ -1,0 +1,6 @@
+stage,case,category,role,cpu_support,gpu_support,validation_ready,path
+L1,L1 external-load baseline,B stable reduced smoke,early external-load smoke; not paper-aligned,yes,"smoke reported earlier, not part of L3e strict figure",no,ExternalLoad_L1_Baseline
+L2,L2 paper-aligned AccInput,B stable reduced smoke,paper constants with AccInput body acceleration,yes,yes,no,ExternalLoad_L2_PaperAligned
+L3a,L3a initial-pressure diffusion gate,A validation-ready paper-compatible gate,PR diffusion and boundary gate,yes,yes,"yes, diffusion/boundary gate only",ExternalLoad_L3_InitialPressureGate
+L3b,L3b mechanical top-load material force,B stable reduced smoke,CPU source-backed top material force diagnostic,yes,deferred; MechanicalTopLoad is CPU-only,no,ExternalLoad_L3b_MechanicalTopLoad
+L3c,L3c consistent initial-state gate,A validation-ready paper-compatible gate,Terzaghi p_w0=|q0| gate with zero effective-stress increment,yes,yes,"yes, diffusion/initial-state gate only",ExternalLoad_L3c_ConsistentInitialState

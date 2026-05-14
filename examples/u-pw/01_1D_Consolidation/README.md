@@ -113,6 +113,22 @@ and keeps the pressure scale at `10 kPa`. It should be treated as the current
 PR diffusion/boundary plus initial-state validation gate, not as a full
 mechanical load-generation reproduction.
 
+### L3e Validation Package
+
+`experiments/L3e_ValidationPackage/` consolidates L1, L2, L3a, L3b, and L3c.
+It adds no new simulation and no source changes.
+
+The package classifies:
+
+- L3a/L3c as the current validation-ready PR diffusion and hydraulic-boundary
+  gates;
+- L1/L2/L3b as stable reduced smoke or loading-route diagnostics;
+- L3d mechanical top-load reproduction as deferred.
+
+Use L3c for the current paper-compatible 1D consolidation validation figure.
+Do not use L2/L3b as strict Terzaghi validation curves, and do not start a
+damping/viscosity sweep before the mechanical loading route is redesigned.
+
 ## Policy
 
 Do not use this directory for broad damping/viscosity sweeps before the loading

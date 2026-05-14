@@ -2389,3 +2389,21 @@ represented as `p_w^0=|q0|` with zero effective-stress increment. GPU support
 for L3c is therefore active for the reduced PR diffusion/boundary validation
 gate. Mechanical load generation and full feedback remain separate deferred
 tasks.
+
+## L3e 1D Consolidation Package GPU Status
+
+L3e is reporting-only. It adds no GPU source and runs no new simulation.
+
+The package confirms:
+
+- L2 AccInput: CPU/GPU stable but not strict validation because the loading
+  route generates a dynamic pressure peak;
+- L3a/L3c initial-state gates: CPU/GPU stable and suitable for PR diffusion and
+  hydraulic-boundary validation;
+- L3b MechanicalTopLoad: CPU-only diagnostic, GPU implementation deferred
+  because the route is not physically acceptable yet.
+
+GPU support for the current 1D validation figure is active through L3c.
+Mechanical top-load GPU work should remain deferred until a CPU route is
+paper-faithful. Full-feedback and MCC GPU work remain deferred under their
+existing policies.

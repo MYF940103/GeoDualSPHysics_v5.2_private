@@ -1,0 +1,6 @@
+stage,case,category,uses_AccInput,uses_MechanicalTopLoad,pore_pressure_init,initial_stress,PorePressureFeedback,classification,reason
+L1,L1 external-load baseline,B stable reduced smoke,yes,no,0 or baseline XML route,none,not strict validation route,no,early external-load smoke; not paper-aligned
+L2,L2 paper-aligned AccInput,B stable reduced smoke,yes,no,not load-generated initial-state gate,none,0,no,paper constants with AccInput body acceleration
+L3a,L3a initial-pressure diffusion gate,A validation-ready paper-compatible gate,no,no,"PorePressureInit=3, uniform 10 kPa",none,0,"yes, diffusion/boundary gate only",PR diffusion and boundary gate
+L3b,L3b mechanical top-load material force,B stable reduced smoke,no,yes,not initial-state gate,none,0,no,CPU source-backed top material force diagnostic
+L3c,L3c consistent initial-state gate,A validation-ready paper-compatible gate,no,no,"PorePressureInit=3, uniform 10 kPa",InitialStressMode=0,0,"yes, diffusion/initial-state gate only",Terzaghi p_w0=|q0| gate with zero effective-stress increment
