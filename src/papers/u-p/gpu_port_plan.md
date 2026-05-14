@@ -18,6 +18,16 @@ The active next phase is Scenario 1 staged workflow planning/execution. The
 recommended first route is the `BodyGravityStopTime` single-run workflow, not a
 GPU restart workflow.
 
+L3 1D consolidation loading-route audit is complete. The paper-aligned L2
+external-load setup ran on CPU and GPU, but its top-layer `AccInput` route
+created a strong dynamic excess-pressure peak and is not a strict surface-load
+validation. The L3a initial-pressure gate uses existing CPU/GPU
+`PorePressureInit=3`, top drained, and bottom no-flux support with no
+mechanical `AccInput`; CPU and GPU both completed with `code=0`,
+`excluded=0`, `DtMin=0`. This route is now the recommended PR
+diffusion/boundary gate. A paper-faithful mechanical top-load route remains
+future source/design work; broad damping/viscosity sweeps remain deferred.
+
 Cryer C1 baseline launch workflow is complete: the reduced Cryer XML and
 example-style CPU/GPU Release BATs are available under
 `examples/u-pw/03_Cryer_Problem/`. Cryer C2 reference/geometry/boundary audit is

@@ -56,8 +56,28 @@ excess-pressure response than the Terzaghi analytical curve. Treat L2 as a
 paper-aligned setup and loading-route diagnostic, not as a strict paper
 validation curve.
 
+### ExternalLoad L3 Initial-Pressure Gate
+
+`experiments/ExternalLoad_L3_InitialPressureGate/` is the no-source L3 route
+audit result. It keeps the L2 paper constants but removes mechanical
+`AccInput` and initializes a uniform `10 kPa` excess pore-pressure field with
+`PorePressureInit=3`.
+
+- CPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- GPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- Top drained residual is `0 Pa`; bottom no-flux proxy is about `0.002 Pa`.
+- Velocity remains `0 m/s`, confirming that the L2 dynamic peak came from the
+  loading route.
+- Bottom RMSE versus the `q0=10 kPa` Terzaghi curve improves by about `30x`
+  relative to L2; final profile RMSE improves by about `5.25x`.
+
+L3a is an analytical PR diffusion/boundary gate, not a mechanical surface-load
+reproduction. Because `PorePressureFeedback=0`, it does not validate the full
+coupled Terzaghi storage response. A future strict route should use a loading
+plate/surface traction or a stress/pore-pressure consistent initialization.
+
 ## Policy
 
-Do not use this directory for further CPU long-time parameter tuning during the
-pre-GPU readiness pass. Future strict reproduction curves and sensitivity
-studies should move to the GPU workflow after G1-G4 are in place.
+Do not use this directory for broad damping/viscosity sweeps before the loading
+route is fixed. Future strict reproduction curves should separate the PR
+diffusion gate from the mechanical load-generation route.

@@ -29,3 +29,30 @@ Next step if this module remains active:
 - audit loading/staging or a proper plate/traction route;
 - otherwise move to the next u-p benchmark/module with L2 documented as a
   bounded but non-strict external-load result.
+
+## L3 Loading Route Audit
+
+Date: 2026-05-14
+
+`ExternalLoad_L3_InitialPressureGate` tests the recommended no-source route:
+initialize the analytical load-generated excess pressure directly and remove
+mechanical `AccInput`.
+
+Key result:
+
+- CPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- GPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- Peak excess pressure stays at the prescribed `10 kPa`, rather than the L2
+  dynamic peak of about `6.25e5 Pa`.
+- Bottom RMSE versus the `q0=10 kPa` Terzaghi curve improves by about `30x`;
+  final profile RMSE improves by about `5.25x`.
+- Top drained and bottom no-flux diagnostics remain clean.
+
+Interpretation:
+
+L3a is a PR diffusion and hydraulic boundary gate. It is much closer to the
+analytical initial-value problem than L2, but it is not a strict paper-level
+mechanical load reproduction because `PorePressureFeedback=0` bypasses the
+skeleton storage response. Do not start a broad damping/viscosity sweep from
+L2. If strict 1D reproduction remains active, design L3b as a top loading
+plate/surface traction or consistent stress/pore-pressure initialization route.
