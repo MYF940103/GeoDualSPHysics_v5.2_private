@@ -255,6 +255,7 @@ protected:
   bool WaterBulkModulusParamDefined;      ///<True when deprecated WaterBulkModulus execution parameter exists.
   bool WaterDensityParamDefined;          ///<True when deprecated WaterDensity execution parameter exists.
   float PorePressureDtSafety;   ///<Safety factor for pore-pressure timestep restriction.
+  int PorePressureTimeIntegrationMode; ///<Pore-pressure update staging. 0:current default, 1:CPU end-step pressure commit, 2:reserved unsupported.
   bool PorePressureFeedback;    ///<Pore-pressure feedback to momentum. 0:off, 1:on (default=0).
   int PorePressureFeedbackMode;  ///<Pore-pressure feedback mode. 0:total pressure, 1:excess pressure relative to hydrostatic baseline.
   int PorePressureFeedbackOperator; ///<Pore-pressure feedback operator. 0:symmetric stress-style, 1:difference-gradient, 2:LSQ pressure gradient, 3:paper-style stress pair.

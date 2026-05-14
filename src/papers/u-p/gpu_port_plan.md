@@ -2576,13 +2576,35 @@ TINT2 GPU policy:
 - do not port boundary operator mode `2` until the CPU time-stage experiment is
   understood.
 
-Recommended TINT2 CPU mode:
+Recommended TINT2 CPU mode was intentionally limited to:
 
 ```text
 PorePressureTimeIntegrationMode=1
-SavePorePressureTimeStageDiagnostics=1
 ```
 
-Mode `1` should commit pressure at end-step as one unit:
-raw pressure update, Shepard, top drained clamp, bottom no-flux projection,
-and `DeltaP_rate`/`DeltaP_actual` bookkeeping.
+No persistent `SavePorePressureTimeStageDiagnostics` interface was added; the
+DeltaP check is handled by postprocessing saved pressure and rate fields.
+
+## TINT2 End-Step Pressure Commit GPU Status
+
+TINT2 implemented the CPU-only end-step pressure commit experiment:
+
+- mode `0`: current default, unchanged;
+- mode `1`: CPU end-step pressure commit;
+- mode `2`: reserved, unsupported.
+
+GPU hard-errors for `PorePressureTimeIntegrationMode!=0`. The GPU build passes,
+but no GPU simulation was run.
+
+CPU verification shows mode `1` is neutral:
+
+- L3c feedback-off operator `1`: stable and analytically unchanged;
+- L5 feedback-on operator `1`: stable and unchanged;
+- BND1 operator `2` feedback-off: unchanged;
+- BND1 operator `2` feedback-on: still unstable with `excluded=973` and
+  `DtMin=10252`.
+
+Decision: do not port mode `1` to GPU and do not promote it. Keep it only as an
+active experimental CPU replay path until TINT2-clean decides whether to
+deprecate or delete it. Boundary operator mode `2` still needs CPU-side
+boundary/feedback work before any GPU plan.

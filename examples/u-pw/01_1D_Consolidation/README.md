@@ -266,6 +266,34 @@ Recommended TINT2 scope:
 
 - add `PorePressureTimeIntegrationMode=1` as CPU-only end-step update;
 - keep mode `0` as default;
-- add optional pressure-stage diagnostics and `DeltaP_rate` versus
-  `DeltaP_actual` bookkeeping;
+- avoid adding a permanent diagnostics parameter unless absolutely necessary;
+- use postprocessing for `DeltaP_rate` versus `DeltaP_actual` bookkeeping;
 - keep GPU nonzero modes deferred.
+
+### TINT2 End-Step Pore-Pressure Commit
+
+`experiments/TINT2_PorePressureEndStepUpdate/` implements and tests
+`PorePressureTimeIntegrationMode=1` as a CPU-only end-step pressure commit:
+
+```text
+Interaction_Forces -> ComputeVerlet/ComputeSymplecticCorr -> pressure commit
+```
+
+The pressure commit block contains the raw pressure update, Shepard correction,
+top drained clamp, bottom no-flux projection, and existing hydraulic clamp
+logic where applicable. Mode `0` remains the default and keeps the old ordering.
+GPU nonzero modes hard-error.
+
+Short CPU results:
+
+- L3c feedback-off operator `1`: mode `1` is stable and numerically unchanged
+  from mode `0`;
+- L5 feedback-on operator `1`: mode `1` is stable and numerically unchanged;
+- BND1 generalized operator `2` feedback-off: unchanged;
+- BND1 generalized operator `2` feedback-on: still unstable
+  (`excluded=973`, `DtMin=10252`).
+
+Decision: mode `1` clarified the staging semantics but did not improve the
+BND1 mode `2` instability. Keep it as active experimental CPU-only until
+TINT2-clean decides whether to deprecate/delete it. Do not port it to GPU and
+do not continue adding more time-integration modes before cleanup.

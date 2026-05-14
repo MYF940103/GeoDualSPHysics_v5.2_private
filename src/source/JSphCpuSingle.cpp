@@ -1144,6 +1144,33 @@ void JSphCpuSingle::RunInitialDDTRamp(){
 }//<vs_ddramp_end>
 
 //==============================================================================
+/// Commits the pore-pressure state and all post-update hydraulic projections.
+//==============================================================================
+void JSphCpuSingle::CommitPorePressureStep(double dt,const char *stage){
+  if(!(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec))return;
+  UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  if(PorePressureShepard && PorePressureShepardInterval){
+    const unsigned shepardstep=Nstep+1;
+    if((shepardstep%PorePressureShepardInterval)==0){
+      if(ApplyPorePressureShepard(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,shepardstep,!PorePressureShepardStepPrint))
+        PorePressureShepardStepPrint=true;
+    }
+  }
+  if(PorePressureTopDrained){
+    const double tpost=TimeStep+dt;
+    const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
+    ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,tpost,stage,topactive && !PorePressureTopDrainedStepPrint);
+    if(topactive)PorePressureTopDrainedStepPrint=true;
+  }
+  if(PorePressureBottomNoFlux){
+    ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,stage,!PorePressureBottomNoFluxStepPrint);
+    PorePressureBottomNoFluxStepPrint=true;
+  }
+  if(PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
+    ApplyPorePressureCurvedDrainedClamp(Np-Npb,Npb,Posc,Codec,PorePressc,TimeStep+dt,stage,!PorePressureBoundaryOperatorPrint);
+}
+
+//==============================================================================
 /// Perform interactions and updates of particles according to forces 
 /// calculated in the interaction using Verlet.
 ///
@@ -1154,8 +1181,9 @@ double JSphCpuSingle::ComputeStep_Ver(){
   Interaction_Forces(INTERSTEP_Verlet);    //-Interaction.
   const double dt=DtVariable(true);        //-Calculate new dt.
   const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
-  if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
-  if(hydropressupdate && PorePressureShepard && PorePressureShepardInterval){
+  const bool hydroendstep=(PorePressureTimeIntegrationMode==1);
+  if(hydropressupdate && !hydroendstep)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  if(hydropressupdate && !hydroendstep && PorePressureShepard && PorePressureShepardInterval){
     const unsigned shepardstep=Nstep+1;
     if((shepardstep%PorePressureShepardInterval)==0){
       if(ApplyPorePressureShepard(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,shepardstep,!PorePressureShepardStepPrint))
@@ -1166,17 +1194,18 @@ double JSphCpuSingle::ComputeStep_Ver(){
   DemDtForce=dt;                           //(DEM)
   if(Shifting)RunShifting(dt);             //-Shifting.
   ComputeVerlet(dt);                       //-Update particles using Verlet.
-  if(hydropressupdate && PorePressureTopDrained){
+  if(hydropressupdate && hydroendstep)CommitPorePressureStep(dt,"end-step");
+  if(hydropressupdate && !hydroendstep && PorePressureTopDrained){
     const double tpost=TimeStep+dt;
     const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
     ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,tpost,"post-update",topactive && !PorePressureTopDrainedStepPrint);
     if(topactive)PorePressureTopDrainedStepPrint=true;
   }
-  if(hydropressupdate && PorePressureBottomNoFlux){
+  if(hydropressupdate && !hydroendstep && PorePressureBottomNoFlux){
     ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
     PorePressureBottomNoFluxStepPrint=true;
   }
-  if(hydropressupdate && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
+  if(hydropressupdate && !hydroendstep && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
     ApplyPorePressureCurvedDrainedClamp(Np-Npb,Npb,Posc,Codec,PorePressc,TimeStep+dt,"post-update",!PorePressureBoundaryOperatorPrint);
   if(CaseNfloat)RunFloating(dt,false);     //-Control of floating bodies.
   PosInteraction_Forces();                 //-Free memory used for interaction.
@@ -1211,8 +1240,9 @@ double JSphCpuSingle::ComputeStep_Sym(){
   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   const bool hydropressupdate=(HydromechCoupling && PorePressureModel==1 && PorePressc && PorePressRatec);
-  if(hydropressupdate)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
-  if(hydropressupdate && PorePressureShepard && PorePressureShepardInterval){
+  const bool hydroendstep=(PorePressureTimeIntegrationMode==1);
+  if(hydropressupdate && !hydroendstep)UpdatePorePressure(Np-Npb,Npb,Codec,dt,PorePressc,PorePressRatec);
+  if(hydropressupdate && !hydroendstep && PorePressureShepard && PorePressureShepardInterval){
     const unsigned shepardstep=Nstep+1;
     if((shepardstep%PorePressureShepardInterval)==0){
       if(ApplyPorePressureShepard(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressc,shepardstep,!PorePressureShepardStepPrint))
@@ -1221,17 +1251,18 @@ double JSphCpuSingle::ComputeStep_Sym(){
   }
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
-  if(hydropressupdate && PorePressureTopDrained){
+  if(hydropressupdate && hydroendstep)CommitPorePressureStep(dt,"end-step");
+  if(hydropressupdate && !hydroendstep && PorePressureTopDrained){
     const double tpost=TimeStep+dt;
     const bool topactive=(tpost>=PorePressureTopDrainedStartTime);
     ApplyPorePressureTopDrained(Np-Npb,Npb,Posc,Codec,PorePressc,tpost,"post-update",topactive && !PorePressureTopDrainedStepPrint);
     if(topactive)PorePressureTopDrainedStepPrint=true;
   }
-  if(hydropressupdate && PorePressureBottomNoFlux){
+  if(hydropressupdate && !hydroendstep && PorePressureBottomNoFlux){
     ApplyPorePressureBottomNoFlux(Np-Npb,Npb,Posc,Codec,PorePressc,"post-update",!PorePressureBottomNoFluxStepPrint);
     PorePressureBottomNoFluxStepPrint=true;
   }
-  if(hydropressupdate && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
+  if(hydropressupdate && !hydroendstep && PorePressureBoundaryOperator==3 && PorePressureCurvedDrained && CurvedDrainedBoundaryMode==2)
     ApplyPorePressureCurvedDrainedClamp(Np-Npb,Npb,Posc,Codec,PorePressc,TimeStep+dt,"post-update",!PorePressureBoundaryOperatorPrint);
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.

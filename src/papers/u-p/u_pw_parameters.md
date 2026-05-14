@@ -51,7 +51,7 @@ High-level current status:
 | `SoilConstitutiveModel=3` and core `Mcc*` material parameters | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]` |
 | MCC substepping/fallback/admissible line-search knobs | `[DEPRECATED]` unless explicitly replaying M3d3/M3h |
 | `MechanicalTopLoad*` | `[DEPRECATED] [CPU_ONLY] [GPU_HARD_ERROR]`; stable numerically but failed strict Terzaghi loading scale |
-| Future `PorePressureTimeIntegrationMode` | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]` when introduced; constrained by `tint2_interface_constraint.md` |
+| `PorePressureTimeIntegrationMode` | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]`; mode `1` implemented in TINT2 but neutral, pending TINT2-clean deprecate/delete decision |
 
 New interface rule: if an experimental mode fails, the next action should be
 diagnosis, deprecation, or deletion. Do not add another numbered mode before a
@@ -1301,13 +1301,13 @@ before the Symplectic corrector. TINT2 may test one CPU-only alternative, but
 the interface is intentionally constrained to prevent another large mode
 family.
 
-Allowed future parameter:
+Implemented parameter:
 
 ```text
 PorePressureTimeIntegrationMode
 ```
 
-Status if introduced:
+Current status:
 
 ```text
 [ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]
@@ -1317,7 +1317,19 @@ Allowed values:
 
 - `0`: current behavior and default.
 - `1`: CPU end-step pressure commit experiment.
-- `2`: reserved only. Do not implement additional behavior in TINT2.
+- `2`: reserved only. TINT2 hard-errors rather than silently falling back.
+
+TINT2 result:
+
+- mode `1` ran on CPU in both Verlet and Symplectic paths;
+- L3c feedback-off and L5 feedback-on operator `1` were stable and unchanged;
+- BND1 generalized operator `2` feedback-off was unchanged;
+- BND1 generalized operator `2` feedback-on was not improved
+  (`excluded=973`, `DtMin=10252` in both mode `0` and mode `1`).
+
+Decision after TINT2: keep mode `1` only as active experimental CPU replay
+until TINT2-clean. Do not make it default, do not port it to GPU, and do not
+add additional modes before a cleanup decision.
 
 Avoid unless absolutely necessary:
 

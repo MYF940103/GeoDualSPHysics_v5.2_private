@@ -346,8 +346,43 @@ The recommended minimal source experiment is CPU-only:
 
 ```text
 PorePressureTimeIntegrationMode=1
-SavePorePressureTimeStageDiagnostics=1
 ```
 
 Mode `0` remains current behavior and default. GPU should hard-error for
 nonzero time-integration mode until the CPU matrix passes.
+
+## TINT2 End-Step Pore-Pressure Commit
+
+Date: 2026-05-14
+
+TINT2 implemented `PorePressureTimeIntegrationMode=1` as a CPU-only end-step
+pressure commit. The implementation moves the full pressure commit block after
+the mechanical Verlet/Symplectic corrector:
+
+```text
+UpdatePorePressure
+ApplyPorePressureShepard
+ApplyPorePressureTopDrained
+ApplyPorePressureBottomNoFlux
+existing curved drained clamp, if selected
+```
+
+No new permanent time-stage diagnostic parameter was added. DeltaP checks are
+computed from saved output as a coarse proxy.
+
+Verification:
+
+- all TINT2 CPU cases finished with solver `code=0`;
+- stable L3c/L5 operator `1` cases had `excluded=0`, `DtMin=0`;
+- BND1 operator `2` feedback-on remained unstable in both mode `0` and mode
+  `1` (`excluded=973`, `DtMin=10252`);
+- Verlet and Symplectic CPU paths both execute mode `1`;
+- GPU nonzero modes hard-error and were not run.
+
+Decision:
+
+Mode `1` is neutral. It is useful as a staging experiment but does not explain
+or fix the mode `2` feedback-on instability. Do not add more time-integration
+modes; TINT2-clean should decide whether mode `1` is kept temporarily,
+deprecated, or removed. Landslide remains deferred unless the stable operator
+`1` route is used with explicit caveats.

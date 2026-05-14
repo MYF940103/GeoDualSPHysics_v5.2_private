@@ -244,6 +244,7 @@ void JSph::InitVars(){
   WaterBulkModulusParamDefined=false;
   WaterDensityParamDefined=false;
   PorePressureDtSafety=0.1f;
+  PorePressureTimeIntegrationMode=0;
   PorePressureFeedback=false;
   PorePressureFeedbackMode=0;
   PorePressureFeedbackOperator=0;
@@ -910,6 +911,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
     default: Run_Exceptioon("PorePressureBottomNoFlux mode is not valid.");
   }
   PorePressureBottomNoFluxThickness=eparms.GetValueFloat("PorePressureBottomNoFluxThickness",true,0.f);
+  switch(eparms.GetValueInt("PorePressureTimeIntegrationMode",true,0)){
+    case 0:  PorePressureTimeIntegrationMode=0;  break;
+    case 1:  PorePressureTimeIntegrationMode=1;  break;
+    case 2:  PorePressureTimeIntegrationMode=2;  break;
+    default: Run_Exceptioon("PorePressureTimeIntegrationMode must be 0 (current), 1 (CPU end-step pressure commit), or 2 (reserved unsupported).");
+  }
   switch(eparms.GetValueInt("PorePressureBoundaryOperator",true,0)){
     case 0:  PorePressureBoundaryOperator=0;  break;
     case 1:  PorePressureBoundaryOperator=1;  break;
@@ -1320,6 +1327,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
     Run_Exceptioon("PorePressureFeedbackMaxAccel must be greater than or equal to zero.");
   if(PorePressureFeedbackMaxAccelRatio<0.)
     Run_Exceptioon("PorePressureFeedbackMaxAccelRatio must be greater than or equal to zero.");
+  if(PorePressureTimeIntegrationMode==1 && !Cpu)
+    Run_Exceptioon("PorePressureTimeIntegrationMode=1 is CPU-only in this branch. GPU support is not implemented.");
+  if(PorePressureTimeIntegrationMode==2)
+    Run_Exceptioon("PorePressureTimeIntegrationMode=2 is reserved for future predictor-corrector experiments and is not implemented in TINT2.");
+  if(PorePressureTimeIntegrationMode<0 || PorePressureTimeIntegrationMode>2)
+    Run_Exceptioon("PorePressureTimeIntegrationMode must be 0, 1, or reserved 2.");
   if(PorePressureFeedbackLimiterMode==1 && PorePressureFeedbackMaxAccel<=0.)
     Log->PrintWarning("PorePressureFeedbackLimiterMode=1 is enabled but PorePressureFeedbackMaxAccel<=0. The absolute cap will have no effect.");
   if(PorePressureFeedbackLimiterMode==2 && PorePressureFeedbackMaxAccelRatio<=0.)
@@ -2400,6 +2413,10 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
+    const string pptimemode=(PorePressureTimeIntegrationMode==1? "CPU end-step pressure commit": (PorePressureTimeIntegrationMode==2? "Reserved unsupported": "Current pre-corrector explicit update"));
+    Log->Print(fun::VarStr("  PorePressureTimeIntegrationMode",pptimemode));
+    if(PorePressureTimeIntegrationMode==1)
+      Log->Print("  PorePressureTimeIntegrationMode=1 convention: feedback and PR rate use the interaction-stage pressure; pressure is committed after the Verlet/Symplectic mechanical update with Shepard and hydraulic boundary projections in the same commit block.");
     const string ppbop=(PorePressureBoundaryOperator==3? "CPU curved drained boundary prototype": (PorePressureBoundaryOperator==2? "CPU generalized hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
     Log->Print(fun::VarStr("  PorePressureBoundaryOperator",ppbop));
     if(PorePressureBoundaryOperator==1)
