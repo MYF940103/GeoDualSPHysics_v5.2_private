@@ -1241,6 +1241,52 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3n Smooth Layout Diagnostic
+
+M3n is retained under:
+
+`experiments/M3n_SmoothLayoutDiagnostic/`
+
+It tests whether a minimal smoother-layout route can improve the
+boundary-induced MCC return failures. No solver source was changed. The
+diagnostic keeps MCC return mapping, PR pressure update, and
+FlexibleConfiningStress unchanged.
+
+Two CPU Release very-short dense-output cases were run:
+
+- `CaseM3n_Overhang045Reference`: self-contained `Dp=0.01 m` M3m overhang045
+  reference;
+- `CaseM3n_Dp0075Overhang045`: higher-resolution `Dp=0.0075 m` overhang045
+  candidate.
+
+Both finish `code=0`, `excluded=0`, and `DtMin=0`.
+
+Geometry/support changed as intended:
+
+```text
+specimen particles:        407 -> 1035
+edge support/core ratio:   0.808 -> 0.851
+edge neighbor proxy:       68.1 -> 87.5
+cap support/core ratio:    0.853 -> 0.894
+cap neighbor proxy:        77.2 -> 100.5
+```
+
+Return robustness did not improve:
+
+```text
+overhang045_ref:     max -3=8,  max -1=8,  bad frames=12
+Dp0075 overhang045:  max -3=16, max -1=52, bad frames=17
+```
+
+The high-resolution candidate remains globally bounded, with stable reaction,
+p'-q, pore pressure, velocity, lateral confinement, and zero cap leakage. It
+is not a clean MCC validation candidate because transient negative return
+statuses worsen. The practical conclusion is that plain higher-resolution
+Cartesian/cut-cell geometry is not enough; a true smooth/fan-like or radial
+boundary-shell specimen generator is the next clean-validation route, while a
+caveated reduced MCC package remains acceptable for documentation. Full
+pore-pressure feedback and GPU remain deferred.
+
 ## M3m Refined Platen/Edge Geometry
 
 M3m is retained under:

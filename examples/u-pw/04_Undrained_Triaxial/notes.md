@@ -1144,6 +1144,51 @@ extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
 
+## M3n Smooth Layout Diagnostic Notes
+
+M3n is XML/workflow/postprocessing only. It does not modify MCC return
+mapping, PR pressure update, or lateral confinement physics.
+
+The diagnostic compares the M3m `overhang045` reference at `Dp=0.01 m` with a
+higher-resolution `Dp=0.0075 m` version of the same physical setup. Both are
+CPU Release, feedback-off, mild-MCC, dense-output runs with explicit platens,
+selected lateral confinement, `SaveMccState=1`, and pairwise platen reaction
+diagnostics.
+
+Both cases finish cleanly at the solver level:
+
+```text
+code=0
+excluded=0
+DtMin=0
+```
+
+The higher-resolution candidate changes the realized particle cloud:
+
+```text
+specimen count:            407 -> 1035
+edge/corner count:         112 -> 294
+edge support/core ratio:   0.808 -> 0.851
+edge neighbor proxy:       68.1 -> 87.5
+cap support/core ratio:    0.853 -> 0.894
+cap neighbor proxy:        77.2 -> 100.5
+```
+
+But it does not clean the MCC return path:
+
+```text
+overhang045 reference: max -3=8,  max -1=8,  first failure=0.001106 s
+Dp0075 candidate:      max -3=16, max -1=52, first failure=0.000829 s
+```
+
+Global response remains bounded in the high-resolution case, but the saved
+frame return-status population worsens. This supports the earlier conclusion
+that the failure is boundary/local-path induced, while also showing that
+simple Cartesian refinement is not sufficient. The next clean-validation
+route should be a true smooth/fan-like or radial boundary-shell layout, or else
+the current MCC route should be reported only as caveated feedback-off reduced
+diagnostics. Full feedback and GPU remain deferred.
+
 ## M3l Platen/Specimen Smoothing Notes
 
 M3l tests limited boundary/interface variants around the M3k failure onset.

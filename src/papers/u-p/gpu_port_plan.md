@@ -2265,3 +2265,19 @@ keeps the global response bounded, but transient `ReturnStatus=-3` remains and
 the short extended check is not clean. GPU MCC remains deferred until a cleaner
 CPU boundary geometry or smooth/fan-like layout is established. Full
 pore-pressure feedback also remains deferred.
+
+## M3n Smooth Layout GPU Status
+
+M3n is XML/workflow/postprocessing only. It adds no GPU source changes and
+runs no GPU simulation.
+
+The GPU policy remains unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The M3n higher-resolution cut-cell diagnostic improves edge/cap support
+metrics, but it worsens transient MCC return-status populations. This keeps
+GPU MCC deferred: there is still no clean CPU boundary/layout route to port,
+and full pore-pressure feedback remains deferred.
