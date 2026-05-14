@@ -2315,3 +2315,28 @@ The current MCC route is useful as a CPU reduced prototype, but not as clean
 validation. Local boundary-induced return failures remain, full pore-pressure
 feedback remains deferred, custom smooth/fan-like import is deferred, and GPU
 MCC remains deferred until a clean CPU validation path exists.
+
+## L2 External-Load 1D Consolidation GPU Status
+
+L2 adds no source changes. It is an XML/workflow/postprocessing extension of
+the native `AccInput` one-dimensional external-load route.
+
+GPU Release supports the selected parameters:
+
+```text
+SoilConstitutiveModel=0
+HydraulicElevationSource=1
+PorePressureBoundaryOperator=0
+PorePressureFeedbackOperator=1
+native AccInput on mkfluid=1
+```
+
+The L2 GPU short run completed with `code=0`, `excluded=0`, and no DtMin
+adjustments, matching the CPU run closely. The GPU path is therefore available
+for this reduced external-load workflow.
+
+The physics result is caveated: mapping `q0=-10 kPa` to a top material-layer
+acceleration produced a large dynamic excess-pressure response rather than the
+quasi-static Terzaghi analytical curve. This is a loading-route limitation, not
+a GPU port blocker. Full GPU MCC and full-feedback triaxial validation remain
+deferred under their previous policies.

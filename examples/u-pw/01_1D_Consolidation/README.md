@@ -35,6 +35,27 @@ The temporary smoke output was removed after verification.
 the CPU development phase. These are not formal reproduction cases unless their
 local README or notes say otherwise.
 
+### ExternalLoad L2 Paper-Aligned
+
+`experiments/ExternalLoad_L2_PaperAligned/` is the current paper-aligned
+external-load probe. It uses:
+
+- `H=1.0 m`, `width=0.1 m`, `Dp=0.01 m`;
+- `E=2e6 Pa`, `nu=0.3`, `Kw=2e8 Pa`, `n=0.3`, `k=1e-3 m/s`;
+- `SoilConstitutiveModel=0`;
+- native `AccInput` on the top `mkfluid=1` material layer, mapped to
+  `q0=-10 kPa` as `a_z=-476.190476 m/s2`;
+- `PorePressureBoundaryOperator=0`;
+- top drained and bottom no-flux layer corrections;
+- CPU and GPU Release short runs.
+
+Both CPU and GPU short runs finished with `code=0`, `excluded=0`, and
+`DtMin=0`, and the top/bottom hydraulic boundary diagnostics were clean.
+However, the `q0=-10 kPa` AccInput route generated a much larger dynamic
+excess-pressure response than the Terzaghi analytical curve. Treat L2 as a
+paper-aligned setup and loading-route diagnostic, not as a strict paper
+validation curve.
+
 ## Policy
 
 Do not use this directory for further CPU long-time parameter tuning during the
