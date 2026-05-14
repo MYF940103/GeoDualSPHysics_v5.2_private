@@ -207,7 +207,7 @@ protected:
   float PorePressureDrainThickness; ///<Top drained layer thickness. If <=0, KernelH is used.
   bool PorePressureBottomNoFlux; ///<Bottom no-flux boundary for excess pore pressure. 0:off, 1:on.
   float PorePressureBottomNoFluxThickness; ///<Bottom no-flux layer thickness. If <=0, KernelH is used.
-  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:virtual ghost, 2:CPU hydraulic boundary-particle prototype, 3:CPU curved drained prototype.
+  int PorePressureBoundaryOperator; ///<Hydraulic boundary contribution in PR operator. 0:legacy, 1:virtual ghost, 2:CPU generalized solid-wall boundary-particle prototype, 3:CPU curved drained prototype.
   bool PorePressureCurvedDrained; ///<CPU curved drained pore-pressure boundary switch for operator mode 3.
   tdouble3 CurvedDrainedBoundaryCenter; ///<Sphere center for curved drained pore-pressure boundary.
   double CurvedDrainedBoundaryRadius; ///<Sphere radius for curved drained pore-pressure boundary.

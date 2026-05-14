@@ -309,7 +309,7 @@ eta = (z_h - zmin_material) / (zmax_material - zmin_material)
 | `PorePressureTopDrainedStartTime` | double [s] | `0` | Time when top drained boundary becomes active. If `0`, active from the start. | Keep |
 | `PorePressureBottomNoFlux` | `0/1` | `0` | Enables bottom no-flux layer correction for excess pore pressure. | Keep |
 | `PorePressureBottomNoFluxThickness` | float [m] | `0` | Bottom no-flux layer thickness. If `<=0`, uses `KernelH`. | Keep |
-| `PorePressureBoundaryOperator` | `0/1/2/3` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only hydraulic boundary-particle prototype; `3`: CPU-only drained curved Dirichlet prototype. | Experimental |
+| `PorePressureBoundaryOperator` | `0/1/2/3` | `0` | Optional production PR boundary contribution. `0`: legacy layer correction only; `1`: virtual ghost operator prototype; `2`: CPU-only generalized solid-wall hydraulic boundary-particle prototype; `3`: CPU-only drained curved Dirichlet prototype. | Experimental |
 | `PorePressureCurvedDrained` | `0/1` | `0` | Enables mode `3` curved drained boundary. Requires `PorePressureBoundaryOperator=3`. | Experimental |
 | `CurvedDrainedBoundaryCenterX/Y/Z` | double [m] | `0` | Sphere center for mode `3`. | Experimental |
 | `CurvedDrainedBoundaryRadius` | double [m], `>0` | `0` | Sphere radius for mode `3`. | Experimental |
@@ -348,14 +348,17 @@ excess pressure (`d excess/dn=0`) rather than a zero total-pressure gradient.
 The legacy layer correction remains active as a safety projection. This mode is
 available on CPU and GPU, but remains experimental and is not the default.
 
-`PorePressureBoundaryOperator=2` is an H1 CPU-only experimental prototype for
+`PorePressureBoundaryOperator=2` is a CPU-only experimental prototype for
 hydraulic mDBC-style boundary-particle reconstruction. Boundary particles do not
 store an advected pore-pressure degree of freedom; instead, their hydraulic
 state is reconstructed on the fly and contributes to `LapPorePress`/`LapZ`
-quadrature. Top boundary particles use `excess=0`; bottom boundary particles
-reconstruct excess pressure from neighbouring material particles to represent
-head/excess Neumann consistency. GPU runs with mode `2` are unsupported and
-should fail rather than silently falling back to mode `0`.
+quadrature. After BND1, top/free drained boundary particles use `excess=0`;
+all other ordinary solid boundary particles reconstruct excess/head state from
+neighbouring material particles for no-flux consistency. BND1 confirms the
+ordinary solid-wall route is active, but feedback-off mode `2` is analytically
+worse than mode `1`, and feedback-on mode `2` at `p_w0=10 kPa` is unstable.
+GPU runs with mode `2` are unsupported and should fail rather than silently
+falling back to mode `0`.
 
 `PorePressureBoundaryOperator=3` is a C4-C CPU-only experimental prototype for
 a drained curved boundary, currently designed for spherical Cryer smokes. It
@@ -512,7 +515,10 @@ Status after C5q:
 
 - `PorePressureBoundaryOperator=0` remains the production default.
 - `PorePressureBoundaryOperator=1` remains experimental and GPU-supported.
-- `PorePressureBoundaryOperator=2` remains CPU-only experimental.
+- `PorePressureBoundaryOperator=2` remains CPU-only experimental. BND1
+  generalized it to ordinary solid-wall no-flux samples, but it is not stable
+  enough for feedback-on validation, not recommended as default, and not ready
+  for GPU porting.
 - `PorePressureBoundaryOperator=3` remains CPU-only experimental for archived
   curved-drained research. It is not a validated strict Cryer boundary.
 - `CurvedDrainedBoundaryMode=0/1` are retained as simple experimental ghost

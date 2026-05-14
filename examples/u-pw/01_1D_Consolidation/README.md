@@ -206,3 +206,23 @@ L5b consistent stress initialization remains the recommended 1D path if a
 stricter coupled consolidation validation is needed. Damping and viscosity
 sweeps are still not recommended before the loading/initial-state route is
 settled.
+
+### BND1 Operator 2 Generalized Boundary Audit
+
+`experiments/BND1_Operator2Generalized/` generalizes the CPU-only
+`PorePressureBoundaryOperator=2` prototype so ordinary solid boundary particles
+are treated as hydraulic no-flux boundary samples. The patch does not change the
+default operator, does not change mode `0` or mode `1`, and does not port mode
+`2` to GPU.
+
+Short CPU checks show the generalized operator is active:
+
+- mode `2` reports ordinary solid no-flux boundary contribution pairs;
+- feedback-off mode `2` finishes with `code=0`, `excluded=0`, `DtMin=0`;
+- feedback-on mode `2` is not stable at the L5 target amplitude
+  (`excluded=973`, `DtMin adjustments=10252`).
+
+Decision: mode `2` is a useful CPU boundary-method prototype, but it is not
+recommended as default, not ready for GPU, and not ready for a landslide
+baseline. Keep mode `1` as the current feedback-on 1D gate while BND2/BND4 are
+planned.

@@ -2701,7 +2701,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   if(PorePressureBoundaryOperator==3){
     if(!PorePressureCurvedDrained)return(0);
   }
-  else if(!PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
+  else if(PorePressureBoundaryOperator==1 && !PorePressureTopDrained && !PorePressureBottomNoFlux)return(0);
   const double gmag=GetHydraulicGmag();
   if(gmag<=0.)Run_Exceptioon("Hydraulic gravity magnitude must be greater than zero for pore-pressure boundary operator.");
   const double rhog=double(SoilCte.WaterDensity)*gmag;
@@ -2802,7 +2802,8 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     }
   }
 
-  unsigned bndtop=0,bndbottom=0,bndinactive=0,bndnormals=0,bndmlssamples=0,bndmlsfallback=0;
+  unsigned bndtop=0,bndbottom=0,bndordinary=0,bndnoflux=0,bndpairs=0,bndinactive=0,bndnormals=0,bndmlssamples=0,bndmlsfallback=0;
+  unsigned bndunique_drained=0,bndunique_bottom=0,bndunique_ordinary=0,bndunique_noflux=0;
   double bndexmin=DBL_MAX,bndexmax=-DBL_MAX;
   unsigned curvedaffected=0,curvedskipped=0;
   unsigned curvedquadparticles=0,curvedquadsamples=0;
@@ -2846,6 +2847,7 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
   double curvedresidualmax=0.,curvedrmin=DBL_MAX,curvedrmax=0.;
 
   if(PorePressureBoundaryOperator==2){
+    vector<unsigned char> bndcategory(pini,0);
     const auto boundary_hydraulic_pos=[&](unsigned pb)->tdouble3{
       tdouble3 r=pos[pb];
       if(boundnormal && boundnormal[pb]!=TFloat3(0))r=r+ToTDouble3(boundnormal[pb]);
@@ -2900,7 +2902,8 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
           const tdouble3 posb=boundary_hydraulic_pos(p2);
           const double zb=GetHydraulicElevation(posb);
           int bmode=0;
-          if(bottomactive && zb<=zbottomthreshold)bmode=2;
+          if(zb<=zbottomthreshold)bmode=2;
+          else bmode=3;
           if(topactive && zb>=ztopthreshold)bmode=1; // drained overrides if layers touch.
           if(!bmode){ bndinactive++; continue; }
 
@@ -2917,10 +2920,22 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
             if(bmode==1){
               excessb=0.;
               bndtop++;
+              if(!bndcategory[p2]){
+                bndcategory[p2]=1;
+                bndunique_drained++;
+              }
             }
             else{
               excessb=reconstruct_excess(p2);
-              bndbottom++;
+              bndnoflux++;
+              if(bmode==2)bndbottom++;
+              else bndordinary++;
+              if(!bndcategory[p2]){
+                bndcategory[p2]=(bmode==2? 2: 3);
+                if(bmode==2)bndunique_bottom++;
+                else bndunique_ordinary++;
+                bndunique_noflux++;
+              }
             }
             const double pwb=hydrostatic_linear(zb)+excessb;
             const double lapadd=2.*volp2*(pwp1-pwb)*dotrgrad/(double(rr2)+ALMOSTZERO);
@@ -2933,11 +2948,12 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
             bndexmax=max(bndexmax,excessb);
             maxabslapadd=max(maxabslapadd,fabs(lapadd));
             maxabsheadadd=max(maxabsheadadd,fabs(lapadd/rhog+zadd));
+            bndpairs++;
           }
       }
     }
     topaffected=bndtop;
-    bottomaffected=bndbottom;
+    bottomaffected=bndnoflux;
     if(bndexmin==DBL_MAX)bndexmin=bndexmax=0.;
   }
 
@@ -3728,9 +3744,11 @@ template<TpKernel tker> unsigned JSphCpu::ApplyPorePressureBoundaryOperatorT(uns
     if(PorePressureBoundaryOperator==1)
       Log->Print("CPU pore-pressure boundary operator convention: top ghost enforces excess pressure = 0; bottom ghost mirrors excess pressure for zero normal hydraulic-head gradient.");
     if(PorePressureBoundaryOperator==2){
-      Log->Printf("CPU hydraulic boundary-particle operator: inactive_boundary_neighbours=%u, normals_used=%u, MLS_samples=%u, MLS_fallback=%u, reconstructed_excess=[%g,%g] Pa."
-        ,bndinactive,bndnormals,bndmlssamples,bndmlsfallback,bndexmin,bndexmax);
-      Log->Print("CPU hydraulic boundary-particle convention: top boundary particles use excess pressure = 0; bottom no-flux boundary particles use reconstructed excess/head state, not zero total pressure gradient.");
+      Log->Printf("CPU hydraulic boundary-particle operator: drained_pairs=%u, noflux_pairs=%u, bottom_noflux_pairs=%u, ordinary_solid_noflux_pairs=%u, boundary_pairs=%u, inactive_boundary_neighbours=%u."
+        ,bndtop,bndnoflux,bndbottom,bndordinary,bndpairs,bndinactive);
+      Log->Printf("CPU hydraulic boundary-particle unique targets: drained=%u, noflux=%u, bottom_noflux=%u, ordinary_solid_noflux=%u, normals_used=%u, MLS_samples=%u, MLS_fallback=%u, reconstructed_excess=[%g,%g] Pa."
+        ,bndunique_drained,bndunique_noflux,bndunique_bottom,bndunique_ordinary,bndnormals,bndmlssamples,bndmlsfallback,bndexmin,bndexmax);
+      Log->Print("CPU hydraulic boundary-particle convention: top/free drained boundary particles use excess pressure = 0; all other solid boundary particles use reconstructed excess/head state for no-flux, not zero total pressure gradient.");
     }
     if(PorePressureBoundaryOperator==3){
       Log->Printf("CPU curved drained pore-pressure boundary: active=%s, center=(%g,%g,%g), radius=%g, shell_thickness=%g, target_mk=%d, value=%g Pa, value_type=%s, affected=%u, skipped=%u, radius_range=[%g,%g], boundary_residual_max=%g Pa."

@@ -2499,3 +2499,29 @@ L5 is a feedback-on coupling gate, not strict Terzaghi reproduction. It is
 sufficient to justify a CPU-first reduced landslide baseline with diagnostics.
 Full mechanical loading, consistent stress initialization, and damping/viscosity
 sweeps remain separate deferred tasks.
+
+## BND1 Generalized Operator 2 GPU Status
+
+BND1 changes the CPU-only `PorePressureBoundaryOperator=2` path so ordinary
+solid boundary particles are classified as no-flux hydraulic boundary samples.
+Top/free drained boundary particles still use excess Dirichlet `p'=0`, and
+mode `0` / mode `1` are unchanged.
+
+The source now logs ordinary solid no-flux contributions. The BND1 1D checks
+confirmed the generalized path is active:
+
+```text
+ordinary_solid_noflux_pairs = 690
+unique_ordinary_solid_noflux = 20
+```
+
+The verification is not sufficient for GPU porting:
+
+- feedback-off mode `2` is stable but analytically worse than mode `1`;
+- feedback-on mode `2` at the L5 target amplitude gives `excluded=973` and
+  `DtMin adjustments=10252`;
+- mode `2` remains CPU-only and GPU-hard-error protected.
+
+Decision: do not port `PorePressureBoundaryOperator=2` to GPU yet, do not make
+it default, and do not base the landslide baseline on it. BND2 should first
+stabilize the CPU route and add broader wall diagnostics.

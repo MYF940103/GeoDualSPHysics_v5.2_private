@@ -2400,12 +2400,12 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  PorePressureDrainThickness",PorePressureDrainThickness));
     Log->Print(fun::VarStr("  PorePressureBottomNoFlux",PorePressureBottomNoFlux));
     Log->Print(fun::VarStr("  PorePressureBottomNoFluxThickness",PorePressureBottomNoFluxThickness));
-    const string ppbop=(PorePressureBoundaryOperator==3? "CPU curved drained boundary prototype": (PorePressureBoundaryOperator==2? "CPU hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
+    const string ppbop=(PorePressureBoundaryOperator==3? "CPU curved drained boundary prototype": (PorePressureBoundaryOperator==2? "CPU generalized hydraulic boundary-particle prototype": (PorePressureBoundaryOperator==1? "Boundary-consistent PR operator": "Legacy layer correction")));
     Log->Print(fun::VarStr("  PorePressureBoundaryOperator",ppbop));
     if(PorePressureBoundaryOperator==1)
       Log->Print("  PorePressureBoundaryOperator convention: top drained uses excess Dirichlet p'=0; bottom no-flux uses hydraulic-head/excess Neumann mirror contribution. Legacy layer projection remains as a safety correction.");
     if(PorePressureBoundaryOperator==2)
-      Log->Print("  PorePressureBoundaryOperator convention: CPU-only hydraulic boundary-particle prototype. Top boundary particles use excess Dirichlet p'=0; bottom boundary particles reconstruct excess pressure from material neighbours for hydraulic-head/excess Neumann consistency.");
+      Log->Print("  PorePressureBoundaryOperator convention: CPU-only generalized hydraulic boundary-particle prototype. Top/free drained boundary particles use excess Dirichlet p'=0; all other solid boundary particles reconstruct excess/head state for no-flux consistency.");
     if(PorePressureBoundaryOperator==3){
       Log->Print("  PorePressureBoundaryOperator convention: CPU-only curved drained boundary prototype. Drained spherical boundary terms are added before the PR rate update; material pore pressure is not post-update clamped.");
       Log->Print(fun::VarStr("  PorePressureCurvedDrained",PorePressureCurvedDrained));

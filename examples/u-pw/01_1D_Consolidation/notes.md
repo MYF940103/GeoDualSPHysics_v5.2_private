@@ -244,3 +244,42 @@ diagnostics and caveats. It is not a strict coupled Terzaghi validation.
 L5b consistent stress initialization remains the next 1D improvement if a
 cleaner feedback-on consolidation gate is required. Damping/viscosity sweeps
 remain premature.
+
+## BND1 Generalized Operator 2 Boundary Audit
+
+Date: 2026-05-14
+
+`BND1_Operator2Generalized` checks whether `PorePressureBoundaryOperator=2`
+can be generalized from a top/bottom prototype into an all-solid-wall no-flux
+hydraulic boundary-particle route before landslide work.
+
+Source audit:
+
+- old mode `2` scanned boundary particles but only classified top drained and
+  bottom no-flux bands;
+- lateral/ordinary solid walls were skipped as inactive neighbours;
+- GPU mode `2` was and remains unsupported.
+
+Patch:
+
+- mode `2` only;
+- top/free drained boundary particles keep excess Dirichlet `p'=0`;
+- every other ordinary solid boundary particle gets reconstructed
+  excess/head no-flux state;
+- mode `0`, mode `1`, PR pressure update, feedback, and soil models are
+  unchanged.
+
+Verification:
+
+- feedback-off mode `2`: `code=0`, `excluded=0`, `DtMin=0`, ordinary solid
+  no-flux contributions are present;
+- feedback-on mode `2`: `code=0`, but `excluded=973` and `DtMin=10252`, so it
+  fails the coupling gate;
+- mode `2` feedback-off analytical error is also worse than mode `1` in this
+  short 1D gate.
+
+Decision:
+
+Do not make mode `2` default. Do not port it to GPU yet. Do not use it for
+landslide baseline until BND2/BND4 resolve the feedback-on instability and
+broader wall diagnostics.
