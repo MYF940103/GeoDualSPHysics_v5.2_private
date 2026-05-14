@@ -150,3 +150,29 @@ Use L3c as the current 1D validation figure. Do not use L2/L3b as strict
 validation and do not start a damping/viscosity sweep before a true mechanical
 loading route is redesigned. Move to the next u-p module if this
 diffusion/boundary coverage is sufficient.
+
+## L4-L5 Strict Reproduction Decision Audit
+
+Date: 2026-05-14
+
+The L4-L5 audit separates strict 1D consolidation reproduction into three
+levels:
+
+- Level 1: PR diffusion and hydraulic-boundary validation from a Terzaghi
+  initial excess-pressure state. L3c is the current short/medium gate; L4 is
+  the recommended GPU long-run extension.
+- Level 2: mechanical generation of the initial undrained pressure from the
+  top surcharge `q0`. L2 `AccInput` and L3b direct material-surface force are
+  stable but fail this level because they create dynamic peaks near `6e5 Pa`.
+- Level 3: full coupled effective-stress and pore-pressure feedback response.
+  This remains deferred.
+
+Recommendation:
+
+Run L4 next if the goal is the most stable and useful immediate validation.
+It should reuse L3c, extend the GPU/CPU pressure-diffusion comparison, and
+remain clearly labeled as a Level-1 diffusion/boundary validation.
+
+L5 is still required for the most complete strict reproduction, but it should
+be a separate CPU-first mechanical-loading design/prototype. Full feedback and
+damping/viscosity sweeps should wait until the mechanical load route is fixed.

@@ -134,3 +134,25 @@ damping/viscosity sweep before the mechanical loading route is redesigned.
 Do not use this directory for broad damping/viscosity sweeps before the loading
 route is fixed. Future strict reproduction curves should separate the PR
 diffusion gate from the mechanical load-generation route.
+
+## L4-L5 Decision Roadmap
+
+The L4-L5 decision audit defines strict 1D consolidation reproduction in three
+levels:
+
+- Level 1: PR diffusion and hydraulic-boundary gate. L3c and the proposed L4
+  GPU long-run belong here.
+- Level 2: mechanical top-surcharge generation. L2 and L3b are stable attempts
+  but do not pass this layer because they over-generate dynamic excess pressure.
+- Level 3: fully coupled hydromechanical response with feedback/stress
+  coupling. This remains deferred.
+
+Recommended next step: run L4 first as a low-risk GPU long-run of the L3c
+initial-state route. L4 can strengthen the paper-compatible diffusion and
+boundary figure, but it must not be described as full mechanical reproduction.
+
+L5 remains required for a complete strict reproduction because the top
+surcharge `q0` must eventually be generated through a paper-faithful mechanical
+route, such as a force-controlled plate, true surface traction, or a consistent
+total/effective stress initializer. L5 should be CPU-first and should not block
+L4. Full feedback and damping/viscosity sweeps remain deferred.

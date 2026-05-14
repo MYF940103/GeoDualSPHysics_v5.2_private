@@ -2407,3 +2407,27 @@ GPU support for the current 1D validation figure is active through L3c.
 Mechanical top-load GPU work should remain deferred until a CPU route is
 paper-faithful. Full-feedback and MCC GPU work remain deferred under their
 existing policies.
+
+## L4-L5 1D Consolidation Roadmap GPU Status
+
+The L4-L5 decision audit is documentation-only. It adds no source changes, no
+build requirement, and no new CPU/GPU simulation.
+
+The roadmap separates strict 1D consolidation reproduction into:
+
+- Level 1: PR diffusion and hydraulic-boundary validation from the Terzaghi
+  initial excess-pressure state;
+- Level 2: mechanical generation of that initial state from a top surcharge;
+- Level 3: fully coupled hydromechanical feedback/stress validation.
+
+The recommended next GPU task is L4: reuse the GPU-supported L3c route for a
+longer initial-state diffusion run. L4 can validate long-term GPU PR pressure
+update behavior, top drained and bottom/lateral no-flux boundaries, analytical
+dissipation trend, and CPU/GPU parity. It cannot validate mechanical top-load
+generation or full feedback.
+
+L5 mechanical loading should remain CPU-first. GPU support for any future
+force-controlled plate, true surface traction, or total-stress initializer
+should be deferred until the CPU route is physically acceptable. Damping and
+viscosity sweeps remain deferred because L2/L3b show that load-route fidelity
+is the dominant blocker.
