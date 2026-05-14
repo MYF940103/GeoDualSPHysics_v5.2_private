@@ -1241,6 +1241,40 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3o Smooth / Fan-Like Layout Prototype
+
+M3o is retained under:
+
+`experiments/M3o_SmoothFanLayoutPrototype/`
+
+It is an external geometry/support prototype, not a solver run. No source was
+changed, no GenCase/DualSPHysics case was run, and no GPU simulation was run.
+
+The new `generate_smooth_triaxial_layout.py` script creates a radial-ring /
+fan-like specimen with ring-based top and bottom platen metadata:
+
+- specimen metadata: `mk=0`;
+- top platen metadata: `mk=1`;
+- bottom platen metadata: `mk=2`;
+- region labels for measurement core, interior, lateral surface, cap zones, and
+  edge/corner particles;
+- CSV support/neighbor diagnostics and SVG/PNG preview figures.
+
+The generated prototype has 555 specimen particles, 369 top-platen particles,
+369 bottom-platen particles, 45 measurement-core particles, and zero platen
+contamination in the core. It improves angular regularity and raises the
+edge-neighbor proxy relative to the M3m overhang case (`96.25 -> 113.64`), while
+cap support remains good. However, the lateral edge support/core ratio is still
+below the best Cartesian/overhang diagnostics, so the geometry is not yet a
+clean candidate.
+
+The current GenCase/XML workflow did not expose a low-risk arbitrary
+particle-cloud import path with per-particle `mkfluid` / `mkbound` assignment.
+M3o therefore stops at generator and geometry diagnostics. No ReturnStatus
+improvement is claimed. The next step should be M3p custom particle input or
+smooth-layout solver integration planning, or else caveated MCC reduced
+reporting. Full pore-pressure feedback and GPU remain deferred.
+
 ## M3n Smooth Layout Diagnostic
 
 M3n is retained under:

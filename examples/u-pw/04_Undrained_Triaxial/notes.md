@@ -1502,3 +1502,39 @@ resolution/geometry route that can actually realize rounded edge/cap support.
 M3m therefore reinforces the boundary-induced failure interpretation while
 keeping the current route as a reduced feedback-off diagnostic. Full feedback
 and GPU remain deferred.
+
+## M3o Smooth / Fan-Like Layout Prototype Notes
+
+M3o follows the M3n conclusion that plain Cartesian refinement is not a reliable
+clean-validation route. It adds an isolated radial-ring / fan-like layout
+generator under:
+
+`experiments/M3o_SmoothFanLayoutPrototype/`
+
+The script generates specimen, top platen, and bottom platen coordinates plus
+region labels and support/neighbor diagnostics. It does not feed the generated
+particles into GenCase or DualSPHysics, because the current examples did not
+show a confirmed low-risk arbitrary point-cloud input path with per-particle
+`mk` assignment.
+
+Key geometry-only metrics:
+
+```text
+specimen particles:                 555
+top/bottom platen particles:        369 / 369
+measurement core particles:         45
+edge-neighbor proxy:                113.64
+edge support/core, unweighted:      0.749
+edge support/core, volume-weighted: 0.559
+cap support/core, unweighted:       1.091
+cap support/core, volume-weighted:  0.963
+nearest-neighbor CV:                0.102
+outer-ring angular gap CV:          ~0
+```
+
+The prototype improves angular regularity and edge neighbor count relative to
+M3m, but it does not yet improve the scalar lateral edge support ratio enough
+to justify a solver run. No clean MCC candidate is claimed. The next useful
+step is M3p custom particle import / smooth-layout solver integration, or a
+caveated MCC feedback-off reporting package if clean validation is paused.
+Full feedback and GPU remain deferred.

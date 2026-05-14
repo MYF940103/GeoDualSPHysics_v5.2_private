@@ -2281,3 +2281,20 @@ The M3n higher-resolution cut-cell diagnostic improves edge/cap support
 metrics, but it worsens transient MCC return-status populations. This keeps
 GPU MCC deferred: there is still no clean CPU boundary/layout route to port,
 and full pore-pressure feedback remains deferred.
+
+## M3o Smooth/Fan-Like Layout GPU Status
+
+M3o adds no GPU source and runs no GPU simulation. It is an isolated external
+geometry generator plus support/neighbor diagnostics for a radial-ring
+smooth-edge triaxial specimen prototype.
+
+The GPU policy remains unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The generated fan-like layout is not yet connected to GenCase/DualSPHysics as a
+solver input, and it is not a clean CPU MCC candidate. GPU MCC remains deferred
+until there is a confirmed CPU custom-particle or smooth-layout workflow with
+stable return-status behavior. Full pore-pressure feedback remains deferred.
