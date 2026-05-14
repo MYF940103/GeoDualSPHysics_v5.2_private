@@ -2431,3 +2431,36 @@ force-controlled plate, true surface traction, or total-stress initializer
 should be deferred until the CPU route is physically acceptable. Damping and
 viscosity sweeps remain deferred because L2/L3b show that load-route fidelity
 is the dominant blocker.
+
+## L4 GPU Long-Run 1D Consolidation Status
+
+L4 adds no source changes and runs no new build. It reuses the GPU-supported
+L3c initial-state route:
+
+```text
+PorePressureInit=3
+PorePressureExcessAmp=10000 Pa
+InitialStressMode=0
+PorePressureFeedback=0
+AccInput disabled
+MechanicalTopLoad=0
+```
+
+The GPU Release long-run reaches `TimeMax=0.08 s` and `Tv_final≈2.23e-2` with
+`code=0`, `excluded=0`, and no `DtMin` adjustments. The pressure field remains
+bounded and decays monotonically from the `10 kPa` initial excess scale. Top
+drained residual remains `0 Pa`, and the final bottom no-flux proxy is about
+`-2.4e-7 Pa`.
+
+L4 is now the strongest GPU Level-1 PR diffusion and hydraulic-boundary gate.
+It does not validate mechanical top-load generation, true surface traction,
+loading plates, full feedback, or total/effective stress coupling. A CPU L4
+matching long-run was not run because L3c CPU already took several minutes for
+one quarter of the duration; L3c CPU/GPU parity remains the parity reference
+for this route.
+
+The long-run also makes the current feedback-off caveat clearer: the pressure
+gate dissipates faster than the Terzaghi constrained-storage analytical
+reference. L5 mechanical loading and full-feedback/stress-coupling work remain
+CPU-first deferred tasks. Damping and viscosity sweeps remain deferred until
+the loading route is physically settled.

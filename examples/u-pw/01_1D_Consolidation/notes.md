@@ -176,3 +176,31 @@ remain clearly labeled as a Level-1 diffusion/boundary validation.
 L5 is still required for the most complete strict reproduction, but it should
 be a separate CPU-first mechanical-loading design/prototype. Full feedback and
 damping/viscosity sweeps should wait until the mechanical load route is fixed.
+
+## L4 GPU Long-Run
+
+Date: 2026-05-14
+
+`ExternalLoad_L4_GPU_LongRun` extends the L3c consistent initial-state route to
+`TimeMax=0.08 s` with `TimeOut=0.004 s`.
+
+Key result:
+
+- GPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- Final mapped time factor is `Tv≈2.231e-2`.
+- Peak excess pressure remains `10000 Pa`.
+- Final bottom excess pressure is about `1.95e-2 Pa`.
+- Final top drained residual is `0 Pa`.
+- Final bottom no-flux proxy is about `-2.4e-7 Pa`.
+- Velocity and `DivVel` remain zero.
+- Matching L4 CPU long-run was skipped because L3c CPU runtime indicates it
+  would be expensive; L3c CPU/GPU parity remains the route parity reference.
+
+Interpretation:
+
+L4 strengthens the GPU PR diffusion and hydraulic-boundary evidence and can be
+used as a Level-1 validation figure. It is not strict full 1D consolidation
+reproduction. The long-run confirms bounded monotonic dissipation but also
+shows that the feedback-off pressure gate dissipates faster than the Terzaghi
+constrained-storage analytical reference. Mechanical load generation,
+full-feedback coupling, and damping/viscosity sweeps remain deferred.

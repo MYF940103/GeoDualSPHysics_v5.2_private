@@ -156,3 +156,24 @@ surcharge `q0` must eventually be generated through a paper-faithful mechanical
 route, such as a force-controlled plate, true surface traction, or a consistent
 total/effective stress initializer. L5 should be CPU-first and should not block
 L4. Full feedback and damping/viscosity sweeps remain deferred.
+
+### ExternalLoad L4 GPU Long-Run
+
+`experiments/ExternalLoad_L4_GPU_LongRun/` extends the L3c initial-state gate to
+`TimeMax=0.08 s` on GPU.
+
+- GPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- `Tv_final≈2.23e-2`.
+- Peak excess pressure remains at the intended `10 kPa` scale.
+- Pressure decays monotonically and remains bounded.
+- Final top drained residual is `0 Pa`; final bottom no-flux proxy is about
+  `-2.4e-7 Pa`.
+- A matching L4 CPU long run was not run because L3c CPU already cost several
+  minutes for one quarter of this duration; L3c CPU/GPU parity remains the
+  parity reference for this route.
+
+L4 is a Level-1 PR diffusion and boundary validation figure. It is not a
+mechanical top-load reproduction, and the longer window shows that the current
+feedback-off pressure gate dissipates faster than the Terzaghi
+constrained-storage analytical reference. L5 remains the future route for
+strict mechanical loading.
