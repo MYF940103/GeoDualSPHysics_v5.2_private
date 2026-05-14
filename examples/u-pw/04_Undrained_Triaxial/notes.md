@@ -1144,6 +1144,57 @@ extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
 
+## M3h MCC Admissible Return Notes
+
+M3h adds an opt-in admissible Newton / line-search layer to the CPU MCC return
+mapping.  New parser controls and output diagnostics are:
+
+- `MccAdmissibleLineSearch`;
+- `MccLineSearchMaxBacktrack`;
+- `MccLineSearchMinStep`;
+- `MccLineSearchResidualReduction`;
+- `MccEnforcePositivePlasticMultiplier`;
+- `MccAdmissibleProjection`;
+- `MccLineSearchBacktrackCount`;
+- `MccLineSearchRejectReason`;
+- `MccLineSearchMinAlpha`.
+
+The default path is unchanged.  The new controls only affect
+`SoilConstitutiveModel=3` when explicitly enabled.
+
+M3h cases:
+
+- original-rate mild MCC baseline;
+- original-rate admissible line search;
+- original-rate adaptive substepping plus admissible line search;
+- half-speed adaptive substepping plus admissible line search;
+- quarter-speed adaptive line-search diagnostic.
+
+All CPU Release cases finish `code=0`, `excluded=0`, and `DtMin=0`.  The local
+return problem is still not clean:
+
+```text
+baseline final:                 -3:8
+admissible-line final:          -3:8
+adaptive+line final:            -3:10|-1:8
+half-speed adaptive+line final: 0:407, but transient -3/-1 frames remain
+quarter-speed line final:       0:407, but transient -3/-1 frames remain
+```
+
+The main interpretation is:
+
+- failures remain local to platen/edge strain paths;
+- early `-1` records are admissibility/tension-style states;
+- later `-3` records are local line-search/Newton path failures;
+- increasing backtracking does not clean original-rate loading;
+- substepping plus admissible line search does not clean original-rate loading;
+- slower loading clears the final frame but not every saved transient frame.
+
+M3h is useful as a robustness audit, but it does not produce a clean validation
+candidate.  M3g should not be claimed as clean MCC validation unless a later
+route removes all saved-frame negative return statuses.  Full feedback and GPU
+remain deferred.
+
 ## M3d2 MCC Return Robustness Notes
 
 M3d2 audits the `MccReturnStatus=-3` subset from the M3d mild-yield extended

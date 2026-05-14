@@ -1156,3 +1156,48 @@ Return-status codes in `MccReturnStatus`:
 - `-4`: maximum iteration failure;
 - `-5`: explicit partial fallback using last converged substep;
 - `-6`: admissibility guard failure.
+
+M3h adds opt-in admissible Newton / line-search controls for MCC. Defaults
+preserve the previous path.
+
+- `MccAdmissibleLineSearch=0/1`: enable configurable admissible line-search
+  checks and diagnostics.
+- `MccLineSearchMaxBacktrack`: maximum local backtracking reductions. The M3h
+  parser caps this at `128`.
+- `MccLineSearchMinStep`: minimum accepted line-search alpha in `[0,1]`.
+- `MccLineSearchResidualReduction`: required residual-reduction coefficient in
+  `[0,1)`. A value of `0` allows non-increasing residual acceptance.
+- `MccEnforcePositivePlasticMultiplier=0/1`: reject negative plastic
+  multiplier candidates when enabled.
+- `MccAdmissibleProjection=0`: off.
+- `MccAdmissibleProjection=1`: reject invalid candidates and backtrack.
+- `MccAdmissibleProjection=2`: diagnostic projection/clamping mode; not a clean
+  validation route.
+
+With `SaveMccState=1`, M3h also outputs:
+
+- `MccLineSearchBacktrackCount`;
+- `MccLineSearchRejectReason`;
+- `MccLineSearchMinAlpha`.
+
+`MccLineSearchRejectReason` values:
+
+- `0`: no rejection recorded;
+- `1`: invalid `p'` / tension cutoff;
+- `2`: invalid `q`;
+- `3`: invalid `pc`;
+- `4`: invalid plastic multiplier;
+- `5`: non-finite residual/state;
+- `6`: residual did not satisfy the line-search reduction rule;
+- `7`: line-search alpha below minimum;
+- `8`: no accepted candidate / maximum backtracking exhausted.
+
+M3h status:
+
+- default behavior remains unchanged;
+- original-rate admissible line-search did not improve the mild MCC platen
+  route;
+- adaptive substepping plus admissible line-search did not produce a clean
+  route;
+- slower cases cleared final `-3/-5` but retained transient negative statuses;
+- full pore-pressure feedback and GPU MCC remain deferred.

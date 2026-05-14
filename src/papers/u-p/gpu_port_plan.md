@@ -2101,6 +2101,34 @@ particle subset). GPU MCC work should remain deferred until the CPU local
 return behavior is robust over the feedback-off platen baseline. Full
 pore-pressure feedback remains deferred as well.
 
+## M3h MCC Admissible Return GPU Status
+
+M3h changes shared CPU/parser/output code for MCC admissible line-search
+diagnostics but does not add GPU MCC support. The GPU policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+New M3h CPU-only MCC diagnostics:
+
+- `MccAdmissibleLineSearch`;
+- `MccLineSearchMaxBacktrack`;
+- `MccLineSearchMinStep`;
+- `MccLineSearchResidualReduction`;
+- `MccEnforcePositivePlasticMultiplier`;
+- `MccAdmissibleProjection`;
+- `MccLineSearchBacktrackCount`;
+- `MccLineSearchRejectReason`;
+- `MccLineSearchMinAlpha`.
+
+The M3h CPU cases are solver-stable, but the mild MCC return route is still not
+a clean validation candidate because every tested route retains at least one
+saved-frame negative return status. GPU MCC should remain deferred until the
+CPU return mapping has a clean no-fallback candidate and the device-side MCC
+state/update/restart design is specified. Full pore-pressure feedback remains
+deferred.
+
 ## M3d2 MCC Return Robustness GPU Status
 
 M3d2 adds CPU-only XML/workflow/postprocessing diagnostics for the MCC local

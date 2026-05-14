@@ -334,6 +334,12 @@ typedef struct{
   unsigned MccMinSubsteps;      ///<Minimum local MCC substeps when adaptive substepping is enabled.
   bool MccAdmissibilityGuard;   ///<Enables additional MCC admissibility checks on p', pc, e, and plastic multiplier.
   unsigned MccFailureFallback;  ///<0:fail status, 1:retry only, 2:keep last converged substep with explicit status.
+  bool MccAdmissibleLineSearch; ///<Enables opt-in MCC admissible Newton line-search controls.
+  unsigned MccLineSearchMaxBacktrack; ///<Maximum MCC line-search backtracking reductions.
+  float MccLineSearchMinStep;   ///<Minimum admissible MCC line-search alpha.
+  float MccLineSearchResidualReduction; ///<Required residual-reduction coefficient.
+  bool MccEnforcePositivePlasticMultiplier; ///<Rejects negative MCC plastic multiplier candidates.
+  unsigned MccAdmissibleProjection; ///<0:off, 1:reject invalid state, 2:diagnostic projection.
   bool SaveMccState;            ///<Save/output MCC state arrays.
   bool MccStressUpdateEnabled;  ///<Reserved; false in M3b so model=3 uses explicit skeleton pass-through only.
 }StSoilCte;

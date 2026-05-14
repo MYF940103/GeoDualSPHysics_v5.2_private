@@ -305,7 +305,7 @@ void JSphCpuSingle::ConfigDomain(){
   }
 
   if(SoilCte.SoilConstitutiveModel==3 || SoilCte.SaveMccState){
-    if(!MccPcc || !MccVoidRatioc || !MccPlasticVolStrainc || !MccEqPlasticStrainc || !MccYieldFlagc || !MccPlasticMultiplierc || !MccReturnStatusc || !MccReturnIterationsc || !MccYieldResidualc || !MccSubstepCountc || !MccSubstepFailureCountc || !MccAdmissibilityFailureCountc || !MccFallbackUsedc || !MccSubstepTriggerReasonc)
+    if(!MccPcc || !MccVoidRatioc || !MccPlasticVolStrainc || !MccEqPlasticStrainc || !MccYieldFlagc || !MccPlasticMultiplierc || !MccReturnStatusc || !MccReturnIterationsc || !MccYieldResidualc || !MccSubstepCountc || !MccSubstepFailureCountc || !MccAdmissibilityFailureCountc || !MccFallbackUsedc || !MccSubstepTriggerReasonc || !MccLineSearchBacktrackCountc || !MccLineSearchRejectReasonc || !MccLineSearchMinAlphac)
       Run_Exceptioon("MCC state arrays were not fully allocated on CPU.");
     memset(MccPcc,0,sizeof(float)*Np);
     memset(MccVoidRatioc,0,sizeof(float)*Np);
@@ -321,6 +321,9 @@ void JSphCpuSingle::ConfigDomain(){
     memset(MccAdmissibilityFailureCountc,0,sizeof(float)*Np);
     memset(MccFallbackUsedc,0,sizeof(float)*Np);
     memset(MccSubstepTriggerReasonc,0,sizeof(float)*Np);
+    memset(MccLineSearchBacktrackCountc,0,sizeof(float)*Np);
+    memset(MccLineSearchRejectReasonc,0,sizeof(float)*Np);
+    memset(MccLineSearchMinAlphac,0,sizeof(float)*Np);
     if(SoilCte.SoilConstitutiveModel!=3){
       Log->PrintWarning("SaveMccState=1 without SoilConstitutiveModel=3: MCC state arrays are allocated and output as zero/default diagnostics.");
     }
@@ -361,6 +364,9 @@ void JSphCpuSingle::ConfigDomain(){
         MccAdmissibilityFailureCountc[p]=0.f;
         MccFallbackUsedc[p]=0.f;
         MccSubstepTriggerReasonc[p]=0.f;
+        MccLineSearchBacktrackCountc[p]=0.f;
+        MccLineSearchRejectReasonc[p]=0.f;
+        MccLineSearchMinAlphac[p]=0.f;
         ntarget++;
         psum+=pinit; pmin=min(pmin,pinit); pmax=max(pmax,pinit);
         pcsum+=pc; pcmin=min(pcmin,pc); pcmax=max(pcmax,pc);
@@ -836,6 +842,9 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(MccAdmissibilityFailureCountc)CellDivSingle->SortArray(MccAdmissibilityFailureCountc);
   if(MccFallbackUsedc)CellDivSingle->SortArray(MccFallbackUsedc);
   if(MccSubstepTriggerReasonc)CellDivSingle->SortArray(MccSubstepTriggerReasonc);
+  if(MccLineSearchBacktrackCountc)CellDivSingle->SortArray(MccLineSearchBacktrackCountc);
+  if(MccLineSearchRejectReasonc)CellDivSingle->SortArray(MccLineSearchRejectReasonc);
+  if(MccLineSearchMinAlphac)CellDivSingle->SortArray(MccLineSearchMinAlphac);
   if(PorePressc)CellDivSingle->SortArray(PorePressc);
   if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
   if(DivVelc)CellDivSingle->SortArray(DivVelc);
@@ -1680,6 +1689,9 @@ void JSphCpuSingle::SaveData(){
 	float *mccadmissibilityfailurecount=NULL;
 	float *mccfallbackused=NULL;
 	float *mccsubsteptriggerreason=NULL;
+	float *mcclinesearchbacktrackcount=NULL;
+	float *mcclinesearchrejectreason=NULL;
+	float *mcclinesearchminalpha=NULL;
   //==========
   if(save){
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
@@ -1723,6 +1735,9 @@ void JSphCpuSingle::SaveData(){
         if(MccAdmissibilityFailureCountc)mccadmissibilityfailurecount=new float[npsave];
         if(MccFallbackUsedc)mccfallbackused=new float[npsave];
         if(MccSubstepTriggerReasonc)mccsubsteptriggerreason=new float[npsave];
+        if(MccLineSearchBacktrackCountc)mcclinesearchbacktrackcount=new float[npsave];
+        if(MccLineSearchRejectReasonc)mcclinesearchrejectreason=new float[npsave];
+        if(MccLineSearchMinAlphac)mcclinesearchminalpha=new float[npsave];
       }
       catch(const std::bad_alloc){
         Run_Exceptioon("Could not allocate the requested MCC output memory.");
@@ -1735,7 +1750,7 @@ void JSphCpuSingle::SaveData(){
       if(LapZGhostc)ComputeHydroLapZGhost(Np-Npb,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,PorePressureBoundaryModec,LapZGhostc);
       PorePressureBoundaryGhostPrint=true;
     }
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr,mccpc,mccvoidratio,mccplasticvolstrain,mcceqplasticstrain,mccyieldflag,mccplasticmultiplier,mccreturnstatus,mccreturniterations,mccyieldresidual,mccsubstepcount,mccsubstepfailurecount,mccadmissibilityfailurecount,mccfallbackused,mccsubsteptriggerreason);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,porepress,porepressrate,divvel,lapporepress,lapz,porepressureace,porepressureacediff,porepressghost,excessporepressghost,porepressureboundarymode,lapporepressghost,lapzghost,divvelcorr,lapporepresscorr,lapzcorr,mccpc,mccvoidratio,mccplasticvolstrain,mcceqplasticstrain,mccyieldflag,mccplasticmultiplier,mccreturnstatus,mccreturniterations,mccyieldresidual,mccsubstepcount,mccsubstepfailurecount,mccadmissibilityfailurecount,mccfallbackused,mccsubsteptriggerreason,mcclinesearchbacktrackcount,mcclinesearchrejectreason,mcclinesearchminalpha);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
     if(excessporepress){
       for(unsigned p=0;p<npsave;p++){
@@ -1799,6 +1814,9 @@ void JSphCpuSingle::SaveData(){
   if(SoilCte.SaveMccState && mccadmissibilityfailurecount)arrays.AddArray("MccAdmissibilityFailureCount",npsave,mccadmissibilityfailurecount);
   if(SoilCte.SaveMccState && mccfallbackused)arrays.AddArray("MccFallbackUsed",npsave,mccfallbackused);
   if(SoilCte.SaveMccState && mccsubsteptriggerreason)arrays.AddArray("MccSubstepTriggerReason",npsave,mccsubsteptriggerreason);
+  if(SoilCte.SaveMccState && mcclinesearchbacktrackcount)arrays.AddArray("MccLineSearchBacktrackCount",npsave,mcclinesearchbacktrackcount);
+  if(SoilCte.SaveMccState && mcclinesearchrejectreason)arrays.AddArray("MccLineSearchRejectReason",npsave,mcclinesearchrejectreason);
+  if(SoilCte.SaveMccState && mcclinesearchminalpha)arrays.AddArray("MccLineSearchMinAlpha",npsave,mcclinesearchminalpha);
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1840,6 +1858,9 @@ void JSphCpuSingle::SaveData(){
   delete[] mccadmissibilityfailurecount;
   delete[] mccfallbackused;
   delete[] mccsubsteptriggerreason;
+  delete[] mcclinesearchbacktrackcount;
+  delete[] mcclinesearchrejectreason;
+  delete[] mcclinesearchminalpha;
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.

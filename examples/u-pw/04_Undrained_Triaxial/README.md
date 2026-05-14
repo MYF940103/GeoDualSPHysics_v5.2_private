@@ -1210,6 +1210,48 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3h MCC Admissible Return
+
+M3h is retained under:
+
+`experiments/M3h_MCCAdmissibleReturn/`
+
+It adds an opt-in MCC admissible line-search diagnostic for CPU
+`SoilConstitutiveModel=3`:
+
+- `MccAdmissibleLineSearch`;
+- `MccLineSearchMaxBacktrack`;
+- `MccLineSearchMinStep`;
+- `MccLineSearchResidualReduction`;
+- `MccEnforcePositivePlasticMultiplier`;
+- `MccAdmissibleProjection`;
+- `MccLineSearchBacktrackCount`;
+- `MccLineSearchRejectReason`;
+- `MccLineSearchMinAlpha`.
+
+Defaults preserve the previous MCC return behavior.  Full pore-pressure
+feedback remains off in all M3h cases, and GPU MCC remains unsupported.
+
+Five CPU Release cases were run.  All finish `code=0`, `excluded=0`, and
+`DtMin=0`.  However, no clean reduced MCC validation candidate was obtained:
+
+```text
+baseline final:                 -3:8
+admissible-line final:          -3:8
+adaptive+line final:            -3:10|-1:8
+half-speed adaptive+line final: 0:407 split over elastic/plastic statuses
+quarter-speed line final:       0:407 split over elastic/plastic statuses
+```
+
+Half-speed and quarter-speed clear the final frame, but both still contain
+transient saved-frame negative MCC return statuses.  Original-rate admissible
+line search does not improve the baseline, and adaptive substepping plus line
+search worsens the original-rate result.
+
+M3h therefore does not justify a clean M3g validation package.  The MCC route
+remains a CPU-only, feedback-off reduced diagnostic.  Full feedback and GPU
+remain deferred.
+
 ## M3e MCC Feedback-Off Reporting Package
 
 M3e is retained under:

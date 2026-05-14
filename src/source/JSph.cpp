@@ -4659,6 +4659,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.MccMinSubsteps=1;
   SoilCte.MccAdmissibilityGuard=false;
   SoilCte.MccFailureFallback=0;
+  SoilCte.MccAdmissibleLineSearch=false;
+  SoilCte.MccLineSearchMaxBacktrack=12;
+  SoilCte.MccLineSearchMinStep=0.f;
+  SoilCte.MccLineSearchResidualReduction=1.e-4f;
+  SoilCte.MccEnforcePositivePlasticMultiplier=true;
+  SoilCte.MccAdmissibleProjection=0;
   SoilCte.SaveMccState=false;
   SoilCte.MccStressUpdateEnabled=false;
   if(SoilCte.SoilConstitutiveModel==3){
@@ -4704,6 +4710,20 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
       SoilCte.MccAdmissibilityGuard=(v==1);
     }
     if(solidNode->FirstChildElement("MccFailureFallback"))SoilCte.MccFailureFallback=unsigned(sxml->ReadElementInt(solidNode,"MccFailureFallback","value",false));
+    if(solidNode->FirstChildElement("MccAdmissibleLineSearch")){
+      const int v=sxml->ReadElementInt(solidNode,"MccAdmissibleLineSearch","value",false);
+      if(v!=0 && v!=1)Run_Exceptioon("MccAdmissibleLineSearch must be 0 or 1.");
+      SoilCte.MccAdmissibleLineSearch=(v==1);
+    }
+    if(solidNode->FirstChildElement("MccLineSearchMaxBacktrack"))SoilCte.MccLineSearchMaxBacktrack=unsigned(sxml->ReadElementInt(solidNode,"MccLineSearchMaxBacktrack","value",false));
+    if(solidNode->FirstChildElement("MccLineSearchMinStep"))SoilCte.MccLineSearchMinStep=sxml->ReadElementFloat(solidNode,"MccLineSearchMinStep","value",false);
+    if(solidNode->FirstChildElement("MccLineSearchResidualReduction"))SoilCte.MccLineSearchResidualReduction=sxml->ReadElementFloat(solidNode,"MccLineSearchResidualReduction","value",false);
+    if(solidNode->FirstChildElement("MccEnforcePositivePlasticMultiplier")){
+      const int v=sxml->ReadElementInt(solidNode,"MccEnforcePositivePlasticMultiplier","value",false);
+      if(v!=0 && v!=1)Run_Exceptioon("MccEnforcePositivePlasticMultiplier must be 0 or 1.");
+      SoilCte.MccEnforcePositivePlasticMultiplier=(v==1);
+    }
+    if(solidNode->FirstChildElement("MccAdmissibleProjection"))SoilCte.MccAdmissibleProjection=unsigned(sxml->ReadElementInt(solidNode,"MccAdmissibleProjection","value",false));
     if(solidNode->FirstChildElement("SaveMccState")){
       const int v=sxml->ReadElementInt(solidNode,"SaveMccState","value",false);
       if(v!=0 && v!=1)Run_Exceptioon("SaveMccState must be 0 or 1.");
@@ -4816,10 +4836,17 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.MccSubstepStrainThreshold<0.f)Run_Exceptioon("MccSubstepStrainThreshold must be greater than or equal to zero.");
     if(SoilCte.MccSubstepYieldDistanceThreshold<0.f)Run_Exceptioon("MccSubstepYieldDistanceThreshold must be greater than or equal to zero.");
     if(SoilCte.MccFailureFallback>2)Run_Exceptioon("MccFailureFallback must be 0 (fail status), 1 (retry only), or 2 (keep last converged substep).");
+    if(SoilCte.MccLineSearchMaxBacktrack<1)Run_Exceptioon("MccLineSearchMaxBacktrack must be greater than zero.");
+    if(SoilCte.MccLineSearchMaxBacktrack>128)Run_Exceptioon("MccLineSearchMaxBacktrack is capped at 128 for CPU MCC diagnostics.");
+    if(SoilCte.MccLineSearchMinStep<0.f || SoilCte.MccLineSearchMinStep>1.f)Run_Exceptioon("MccLineSearchMinStep must be in [0,1].");
+    if(SoilCte.MccLineSearchResidualReduction<0.f || SoilCte.MccLineSearchResidualReduction>=1.f)Run_Exceptioon("MccLineSearchResidualReduction must be in [0,1).");
+    if(SoilCte.MccAdmissibleProjection>2)Run_Exceptioon("MccAdmissibleProjection must be 0 (off), 1 (reject invalid state), or 2 (diagnostic projection).");
     if(!SoilCte.MccSubstepping && (SoilCte.MccMaxSubsteps!=1 || SoilCte.MccMinSubsteps!=1 || SoilCte.MccSubstepMode!=0 || SoilCte.MccSubstepStrainThreshold>0.f || SoilCte.MccSubstepYieldDistanceThreshold>0.f))
       Log->PrintWarning("MCC substepping parameters are set but MccSubstepping=0, so old single-step behavior is retained.");
     if(!SoilCte.MccSubstepping && SoilCte.MccFailureFallback)
       Log->PrintWarning("MccFailureFallback is set but MccSubstepping=0, so fallback is inactive.");
+    if(!SoilCte.MccAdmissibleLineSearch && (SoilCte.MccLineSearchMaxBacktrack!=12 || SoilCte.MccLineSearchMinStep>0.f || fabs(double(SoilCte.MccLineSearchResidualReduction)-1.e-4)>1.e-12 || SoilCte.MccAdmissibleProjection!=0))
+      Log->PrintWarning("MCC line-search parameters are set but MccAdmissibleLineSearch=0, so old line-search behavior is retained.");
     if(!SoilCte.MccStressUpdateEnabled)Run_Exceptioon("SoilConstitutiveModel=3 requires MccStressUpdateEnabled=1 in M3c. Use SoilConstitutiveModel=0 for elastic pass-through.");
   }
   else if(SoilCte.SaveMccState)
@@ -4857,6 +4884,14 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
      Log->Printf("  MCC tension cutoff: %g Pa",ct.MccTensionCutoff);
      Log->Printf("  MCC return tolerance: %g",ct.MccReturnTolerance);
      Log->Printf("  MCC return max iterations: %u",ct.MccReturnMaxIter);
+     Log->Printf("  MCC admissible line search: %s",ct.MccAdmissibleLineSearch? "enabled": "disabled");
+     if(ct.MccAdmissibleLineSearch){
+       Log->Printf("  MCC line-search max backtracks: %u",ct.MccLineSearchMaxBacktrack);
+       Log->Printf("  MCC line-search min alpha: %g",ct.MccLineSearchMinStep);
+       Log->Printf("  MCC line-search residual reduction: %g",ct.MccLineSearchResidualReduction);
+       Log->Printf("  MCC enforce positive plastic multiplier: %s",ct.MccEnforcePositivePlasticMultiplier? "enabled": "disabled");
+       Log->Printf("  MCC admissible projection mode: %u",ct.MccAdmissibleProjection);
+     }
      Log->Printf("  MCC substepping: %s",ct.MccSubstepping? "enabled": "disabled");
      if(ct.MccSubstepping){
        Log->Printf("  MCC substep mode: %u",ct.MccSubstepMode);
