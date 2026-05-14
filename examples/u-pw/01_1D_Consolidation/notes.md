@@ -204,3 +204,43 @@ reproduction. The long-run confirms bounded monotonic dissipation but also
 shows that the feedback-off pressure gate dissipates faster than the Terzaghi
 constrained-storage analytical reference. Mechanical load generation,
 full-feedback coupling, and damping/viscosity sweeps remain deferred.
+
+## L5 Feedback-On 1D Gate
+
+Date: 2026-05-14
+
+`ExternalLoad_L5_FeedbackOnGate` is the pre-landslide feedback-on coupling
+gate. It keeps the L3c initial-state route but enables feedback with
+`PorePressureFeedbackMode=1` and `PorePressureFeedbackOperator=1`.
+
+Cases run:
+
+- low-amplitude CPU: `p_w0=1 kPa`;
+- target-amplitude CPU: `p_w0=10 kPa`;
+- target-amplitude GPU after CPU stability was confirmed.
+
+All three runs completed with `code=0`, `excluded=0`, and no DtMin
+adjustments. The target cases keep the peak excess pressure at `10 kPa`, avoid
+the L2/L3b `~6e5 Pa` dynamic peak, and preserve the hydraulic boundary checks
+(`top residual=0` or near zero; bottom no-flux proxy about `-5.1e-2 Pa` at
+target amplitude).
+
+Feedback-on behavior is bounded but not clean Terzaghi decay:
+
+- CPU target velocity max is about `1.12e-2 m/s`;
+- CPU target `DivVel` maxAbs is about `1.04e-1 1/s`;
+- CPU target `PorePressRate` maxAbs is about `1.54e8 Pa/s`;
+- target cases show negative excess-pressure excursions near `-8.2 kPa`;
+- the volume mean excess pressure has non-monotonic episodes.
+
+GPU target pressure and velocity metrics match CPU closely, but GPU diagnostic
+maxima for `PorePressRate` and feedback acceleration are larger. This should be
+tracked before any GPU landslide feedback claim.
+
+Interpretation:
+
+L5 is enough to enter a CPU-first reduced landslide baseline with strong
+diagnostics and caveats. It is not a strict coupled Terzaghi validation.
+L5b consistent stress initialization remains the next 1D improvement if a
+cleaner feedback-on consolidation gate is required. Damping/viscosity sweeps
+remain premature.

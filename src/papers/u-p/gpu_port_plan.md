@@ -2464,3 +2464,38 @@ gate dissipates faster than the Terzaghi constrained-storage analytical
 reference. L5 mechanical loading and full-feedback/stress-coupling work remain
 CPU-first deferred tasks. Damping and viscosity sweeps remain deferred until
 the loading route is physically settled.
+
+## L5 Feedback-On 1D Consolidation GPU Status
+
+L5 adds no source changes and uses the GPU-supported feedback operator:
+
+```text
+PorePressureFeedback=1
+PorePressureFeedbackMode=1
+PorePressureFeedbackOperator=1
+AccInput disabled
+MechanicalTopLoad=0
+InitialStressMode=0
+```
+
+The CPU low-amplitude (`1 kPa`) and target-amplitude (`10 kPa`) cases completed
+with `code=0`, `excluded=0`, and no DtMin adjustments. After CPU stability was
+confirmed, the target-amplitude GPU case also completed with `code=0`,
+`excluded=0`, and no DtMin adjustments.
+
+GPU pressure and velocity metrics match CPU closely for the short gate:
+
+- peak excess remains `10000 Pa`;
+- final top drained residual is about `7.5e-6 Pa`;
+- final bottom no-flux proxy matches CPU to about `2e-5 Pa`;
+- velocity and `DivVel` differ only at small numerical levels.
+
+The caveat is diagnostic parity: GPU `PorePressRate` and feedback-acceleration
+maxima show larger spikes than CPU. These spikes do not produce pressure
+blow-up or particle exclusion in L5, but GPU feedback should remain
+diagnostic-only until a landslide-relevant route confirms the behavior.
+
+L5 is a feedback-on coupling gate, not strict Terzaghi reproduction. It is
+sufficient to justify a CPU-first reduced landslide baseline with diagnostics.
+Full mechanical loading, consistent stress initialization, and damping/viscosity
+sweeps remain separate deferred tasks.

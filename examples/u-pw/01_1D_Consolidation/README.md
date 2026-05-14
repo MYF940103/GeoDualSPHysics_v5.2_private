@@ -177,3 +177,32 @@ mechanical top-load reproduction, and the longer window shows that the current
 feedback-off pressure gate dissipates faster than the Terzaghi
 constrained-storage analytical reference. L5 remains the future route for
 strict mechanical loading.
+
+### ExternalLoad L5 Feedback-On Gate
+
+`experiments/ExternalLoad_L5_FeedbackOnGate/` turns on pore-pressure momentum
+feedback in the L3c initial-state route:
+
+- `PorePressureInit=3`;
+- `PorePressureFeedback=1`;
+- `PorePressureFeedbackMode=1`;
+- `PorePressureFeedbackOperator=1`;
+- no `AccInput`;
+- no `MechanicalTopLoad`;
+- `InitialStressMode=0`.
+
+CPU low-amplitude (`p_w0=1 kPa`), CPU target-amplitude (`p_w0=10 kPa`), and
+GPU target-amplitude runs all finished with `code=0`, `excluded=0`, and
+`DtMin=0`. The target pressure peak stays at the intended `10 kPa` scale, and
+the top drained / bottom no-flux checks remain small.
+
+This is a feedback-on coupling gate, not strict Terzaghi reproduction. Turning
+on feedback introduces finite velocity, `DivVel`, `PorePressRate`, negative
+excess-pressure excursions, and non-monotonic mean-pressure decay. It is useful
+as a minimum coupling check before a CPU-first reduced landslide baseline, but
+L3c/L4 remain the clean Level-1 PR diffusion/boundary validation figures.
+
+L5b consistent stress initialization remains the recommended 1D path if a
+stricter coupled consolidation validation is needed. Damping and viscosity
+sweeps are still not recommended before the loading/initial-state route is
+settled.
