@@ -1072,6 +1072,37 @@ single-point helper into a CPU-only `SoilConstitutiveModel=3` branch, with the
 first SPH smoke still based on the feedback-off explicit-platen T5 workflow.
 Full feedback and GPU remain deferred.
 
+## M3j Boundary-Induced MCC Return Failure Audit
+
+M3j is retained under:
+
+`experiments/M3j_BoundaryFailureAudit/`
+
+It is a postprocessing-only audit using retained M3d2/M3f/M3h failed-return
+CSV outputs. No source was modified, no new solver case was run, no GPU
+simulation was run, and full pore-pressure feedback remained off.
+
+Main finding:
+
+- failed MCC returns are strongly concentrated in cap/platen/edge regions;
+- edge-corner records dominate the aggregate failed set;
+- bottom fixed-platen-adjacent records recur in slower and cleaner final-frame
+  routes;
+- top cap and lateral surface records also appear, especially in ramp/adaptive
+  variants;
+- measurement-core failures are rare.
+
+This supports a boundary-induced local strain/stress-path interpretation rather
+than a global MCC return-mapping collapse or sign-convention error.
+
+M3j recommends a boundary-first next step: a very-short dense-output
+platen/edge diagnostic to capture neighbor count, support/completeness, local
+velocity-gradient, and failed-vs-nearby-nonfailed metrics. More return-mapping
+patches should be secondary until that boundary diagnostic is complete.
+
+The MCC route remains reduced and caveated. Clean MCC validation, full
+pore-pressure feedback, and GPU MCC remain deferred.
+
 ## M3a C++ MCC Helper Parity
 
 M3a is retained under:

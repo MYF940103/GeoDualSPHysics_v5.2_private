@@ -2101,6 +2101,23 @@ particle subset). GPU MCC work should remain deferred until the CPU local
 return behavior is robust over the feedback-off platen baseline. Full
 pore-pressure feedback remains deferred as well.
 
+## M3j Boundary Failure Audit GPU Status
+
+M3j is a postprocessing-only boundary/platen/edge audit using retained M3d2,
+M3f, and M3h CSV outputs. It adds no source changes, no GPU source, no GPU
+build requirement, and no GPU simulation.
+
+The GPU policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+M3j concludes that the remaining mild-MCC return failures are concentrated in
+platen/edge/cap-adjacent regions and recommends a CPU-only dense-output
+boundary diagnostic before any clean MCC validation package. GPU MCC and full
+pore-pressure feedback remain deferred.
+
 ## M3h MCC Admissible Return GPU Status
 
 M3h changes shared CPU/parser/output code for MCC admissible line-search

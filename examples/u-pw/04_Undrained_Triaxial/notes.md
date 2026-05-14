@@ -1195,6 +1195,38 @@ candidate.  M3g should not be claimed as clean MCC validation unless a later
 route removes all saved-frame negative return statuses.  Full feedback and GPU
 remain deferred.
 
+## M3j Boundary-Induced Return Failure Notes
+
+M3j shifts the focus from local MCC return-map patching to the platen/specimen
+boundary and edge geometry. It uses retained M3d2, M3f, and M3h failed-return
+records and adds no new simulation.
+
+Key interpretation:
+
+- failures are dominated by edge-corner, cap-zone, lateral-surface, and
+  platen-adjacent interior-ring records;
+- bottom fixed-platen adjacency remains a recurring trigger;
+- top cap failures are also important in ramp/adaptive variants;
+- measurement-core failures are rare;
+- pairwise reaction remains bounded, so this is not a global platen-force
+  blow-up;
+- `pc`, void ratio, and plastic strain remain bounded, so this is not a global
+  MCC state corruption.
+
+M3j recommends a boundary-first diagnostic before further clean-validation
+claims:
+
+```text
+M3k: very-short dense-output platen/edge diagnostic
+```
+
+The goal of M3k would be to capture full particle clouds around the first
+failure onset and compute neighbor counts, local support/completeness proxies,
+velocity-gradient proxies, and failed-vs-nearby-nonfailed state differences.
+
+Until that is done, the current MCC route remains a CPU-only, feedback-off,
+reduced diagnostic. Full pore-pressure feedback and GPU remain deferred.
+
 ## M3d2 MCC Return Robustness Notes
 
 M3d2 audits the `MccReturnStatus=-3` subset from the M3d mild-yield extended
