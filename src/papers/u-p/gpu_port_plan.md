@@ -2247,3 +2247,21 @@ The M3l cases confirm that boundary/interface geometry changes can strongly
 alter MCC return failures. This reinforces that GPU MCC should remain deferred
 until the CPU reduced route has a clean boundary geometry and a stable
 state/update/restart design. Full pore-pressure feedback remains deferred.
+
+## M3m Refined Geometry GPU Status
+
+M3m is XML/geometry/workflow/postprocessing only. It adds no GPU source and
+runs no GPU simulation.
+
+The GPU policy remains unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+M3m confirms that platen/edge geometry can improve but not clean the CPU MCC
+return route. The larger platen overhang reduces near-tension statuses and
+keeps the global response bounded, but transient `ReturnStatus=-3` remains and
+the short extended check is not clean. GPU MCC remains deferred until a cleaner
+CPU boundary geometry or smooth/fan-like layout is established. Full
+pore-pressure feedback also remains deferred.

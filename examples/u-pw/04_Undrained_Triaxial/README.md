@@ -1241,6 +1241,38 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3m Refined Platen/Edge Geometry
+
+M3m is retained under:
+
+`experiments/M3m_RefinedPlatenEdgeGeometry/`
+
+It is a CPU-only, feedback-off, XML/geometry/postprocessing diagnostic. No MCC
+return mapping, PR pressure update, or FlexibleConfiningStress source was
+changed.
+
+Cases tested:
+
+- M3l overhang reference, platen radius `0.04 m`;
+- larger overhang, platen radius `0.045 m`;
+- intended trimmed cap edge;
+- intended stepped cap transition;
+- a short extended check of the `0.045 m` overhang.
+
+All cases finish `code=0`, `excluded=0`, and `DtMin=0`. The `0.045 m`
+overhang is the only effective primary refinement: it reduces max
+`ReturnStatus=-1` from `20` to `8`, clears the final frame in the short dense
+window, and keeps reaction, p'-q, pore pressure, cap leakage, and lateral
+targets bounded. It does not remove transient `ReturnStatus=-3`, and the short
+extended check reintroduces final `-3`.
+
+The trimmed/stepped cap XML variants did not change the realized specimen
+particle set at the current `Dp=0.01 m` Cartesian geometry, so their results
+match the overhang reference. The route still cannot be called clean MCC
+validation. The next clean-validation route should use a genuinely realized
+smooth/fan-like or higher-resolution edge/cap geometry, or else report the
+current MCC route with caveats. Full feedback and GPU remain deferred.
+
 ## M3l Platen/Specimen Smoothing Diagnostic
 
 M3l is retained under:

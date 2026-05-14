@@ -1427,3 +1427,33 @@ The next clean-validation step should improve the local admissible Newton path
 or platen-region staging. M3g can only be a caveated reporting package unless a
 new refinement removes all transient `-3`/`-5` episodes. Full feedback and GPU
 remain deferred.
+
+## M3m Refined Geometry Notes
+
+M3m follows M3l by testing a few refined platen/specimen and edge-corner
+geometry diagnostics. It does not change MCC return mapping or any
+hydromechanical physics.
+
+Primary outcomes:
+
+```text
+overhang_ref:  max -3=8,  max -1=20, final negative=8
+overhang045:   max -3=8,  max -1=8,  final negative=0
+trimmed_edge:  max -3=8,  max -1=20, final negative=8
+stepped_cap:   max -3=8,  max -1=20, final negative=8
+overhang045 extended: max -3=12, max -1=8, final -3=5
+```
+
+The larger `0.045 m` platen overhang improves the short dense diagnostic by
+delaying the first `-3` episode and reducing the `-1` population, but it is not
+clean across all saved frames and does not survive the short extended check.
+
+The trimmed and stepped cap XML definitions did not alter the realized
+specimen particle set at `Dp=0.01 m`; the current lattice still has 407
+specimen particles and the same cap/edge point set. This suggests that clean
+MCC validation needs either a genuinely smooth/fan-like particle layout or a
+resolution/geometry route that can actually realize rounded edge/cap support.
+
+M3m therefore reinforces the boundary-induced failure interpretation while
+keeping the current route as a reduced feedback-off diagnostic. Full feedback
+and GPU remain deferred.
