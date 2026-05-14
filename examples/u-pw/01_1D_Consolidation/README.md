@@ -94,6 +94,25 @@ L3b is useful because it proves that the load-route blocker is not just the
 native `AccInput` file mechanism. Directly forcing top material particles still
 behaves dynamically. Do not use L3b as a strict paper validation curve.
 
+### ExternalLoad L3c Consistent Initial State
+
+`experiments/ExternalLoad_L3c_ConsistentInitialState/` formalizes the
+paper-compatible Terzaghi initial-value gate:
+
+- `PorePressureInit=3` with uniform `PorePressureExcessAmp=10000 Pa`;
+- `InitialStressMode=0`, because the instantaneous undrained analytical
+  condition carries the surcharge as pore pressure, not effective stress;
+- no `AccInput`;
+- no `MechanicalTopLoad`;
+- `PorePressureFeedback=0`;
+- top drained from initialization and bottom no-flux correction enabled.
+
+Both CPU and GPU Release runs finished with `code=0`, `excluded=0`, and
+`DtMin=0`. L3c matches L3a, avoids the L2/L3b dynamic excess-pressure peak,
+and keeps the pressure scale at `10 kPa`. It should be treated as the current
+PR diffusion/boundary plus initial-state validation gate, not as a full
+mechanical load-generation reproduction.
+
 ## Policy
 
 Do not use this directory for broad damping/viscosity sweeps before the loading

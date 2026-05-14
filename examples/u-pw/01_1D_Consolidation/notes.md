@@ -83,3 +83,37 @@ is also not a quasi-static force-controlled platen or a consistent Terzaghi
 initial stress state. The next strict route should be L3c consistent
 stress/pore-pressure initialization or a true force-controlled loading plate.
 Damping/viscosity sweeps remain premature.
+
+## L3c Consistent Initial State
+
+Date: 2026-05-14
+
+`ExternalLoad_L3c_ConsistentInitialState` uses the Terzaghi analytical initial
+condition directly:
+
+- `p_w^0=|q0|=10 kPa`;
+- zero effective-stress increment (`InitialStressMode=0`);
+- no `AccInput`;
+- no `MechanicalTopLoad`;
+- `PorePressureFeedback=0`;
+- top drained from initialization and bottom no-flux correction enabled.
+
+Key result:
+
+- CPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- GPU Release: `code=0`, `excluded=0`, `DtMin=0`.
+- Peak excess pressure remains `10 kPa`, so the L2/L3b dynamic peak is avoided.
+- CPU bottom RMSE versus Terzaghi q0 is about `7.287e3 Pa`; final profile RMSE
+  is about `9.129e3 Pa`.
+- GPU metrics match CPU to roundoff for this reduced gate.
+- Top drained residual is `0 Pa`; bottom no-flux proxy is about `2.3e-3 Pa`.
+
+Interpretation:
+
+L3c confirms that the consistent feedback-off Terzaghi gate is the uniform
+initial excess-pressure route with no added effective-stress impulse. The
+current `InitialStressMode=1` is CPU-only isotropic effective compression and
+is not a vertical surcharge or total-stress initializer. L3c is therefore a
+paper-compatible PR diffusion/boundary and initial-state validation, not a full
+mechanical load-generation reproduction. Damping/viscosity sweeps remain
+premature.

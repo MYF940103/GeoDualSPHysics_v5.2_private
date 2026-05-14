@@ -2366,3 +2366,26 @@ dynamic and not Terzaghi-faithful. GPU implementation is therefore deferred
 until a physically acceptable mechanical loading route is established. The L3a
 initial-pressure diffusion gate remains the GPU-supported analytical PR
 boundary check.
+
+## L3c Consistent Initial-State GPU Status
+
+L3c adds no source changes. It uses the GPU-supported initial-pressure route:
+
+```text
+PorePressureInit=3
+PorePressureAnalyticalProfile=3
+InitialStressMode=0
+MechanicalTopLoad=0
+PorePressureFeedback=0
+```
+
+Both CPU and GPU Release L3c runs completed with `code=0`, `excluded=0`, and
+`DtMin=0`. The pressure metrics match the L3a diffusion gate and avoid the
+L2/L3b dynamic excess-pressure peak.
+
+The CPU-only `InitialStressMode=1` path remains unavailable on GPU, but L3c
+does not need it: the Terzaghi instantaneous-undrained initial condition is
+represented as `p_w^0=|q0|` with zero effective-stress increment. GPU support
+for L3c is therefore active for the reduced PR diffusion/boundary validation
+gate. Mechanical load generation and full feedback remain separate deferred
+tasks.
