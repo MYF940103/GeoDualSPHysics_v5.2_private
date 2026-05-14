@@ -1275,6 +1275,40 @@ improvement is claimed. The next step should be M3p custom particle input or
 smooth-layout solver integration planning, or else caveated MCC reduced
 reporting. Full pore-pressure feedback and GPU remain deferred.
 
+## M3i-Revised Caveated MCC Reduced Package
+
+M3i-revised is retained under:
+
+`experiments/M3i_MCCCaveatedReducedPackage/`
+
+It is a reporting package only. No source was modified, no GenCase or
+DualSPHysics case was run, no PartVTK was run, and no GPU simulation was run.
+
+The package consolidates the feedback-off explicit-platen path from T4s/T4t,
+T5/T5b/T5c DP, and M3c through M3o MCC/boundary/layout diagnostics. It freezes
+the current status:
+
+- the MCC CPU route works as a reduced prototype;
+- parser/state/output and CPU stress update are available;
+- high-pc MCC is elastic-like;
+- mild MCC yields and evolves `pc`, void ratio, and plastic strains;
+- pairwise reaction and p'-q diagnostics are usable;
+- feedback-off pore pressure remains bounded in the tested route;
+- clean MCC validation is not achieved.
+
+The no-go evidence is explicit: original-rate mild MCC still has local
+`ReturnStatus=-3`; fallback produces `-5` and is not validation; failure is
+boundary-induced near edge/cap/platen regions; M3n Cartesian refinement worsens
+transient statuses; M3o fan-like layout remains geometry-only because custom
+particle import is deferred. Full pore-pressure feedback, GPU MCC, and strict
+paper-level drained/undrained validation remain deferred.
+
+M3i-revised recommends using the current MCC route only as a caveated reduced
+diagnostic package, or shifting effort to the next higher-priority u-p module.
+Do not resume smooth/fan-like solver import unless clean MCC validation becomes
+an explicit priority again. Deprecated Cryer boundary modes remain out of scope
+for new work.
+
 ## M3n Smooth Layout Diagnostic
 
 M3n is retained under:

@@ -1144,6 +1144,38 @@ extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
 
+## M3i-Revised Caveated MCC Package Notes
+
+M3i-revised closes the current MCC triaxial thread as a caveated reduced
+package rather than another validation attempt. It summarizes:
+
+- T4s/T4t explicit-platen baseline and pairwise reaction diagnostics;
+- T5/T5b/T5c DP feedback-off response;
+- M3c/M3d MCC CPU stress-update smoke and extended response;
+- M3d2/M3d3/M3f/M3h return robustness diagnostics;
+- M3j/M3k boundary-induced failure evidence;
+- M3l/M3m interface and edge geometry diagnostics;
+- M3n Cartesian refinement;
+- M3o fan-like generator feasibility.
+
+The route is useful as a CPU feedback-off MCC prototype. It validates parser,
+state arrays, `SaveMccState`, CPU MCC update, high-pc elastic-like behavior,
+mild-yield activation, bounded MCC state histories, pairwise reaction output,
+and reduced p'-q diagnostics.
+
+It does not validate clean MCC triaxial behavior. The reason is not subtle:
+original-rate mild MCC still has local `ReturnStatus=-3`; substepping and
+admissible line search did not clean all transient failures; fallback is a
+safety marker, not validation; the failure evidence points to
+edge/cap/platen-adjacent local support and strain paths; custom smooth/fan-like
+solver import is deferred; full feedback and GPU remain unresolved.
+
+Use M3i as a caveated development/reporting package only. The next recommended
+direction is either reduced-route development diagnostics or a shift to another
+u-p module. Clean MCC validation can be reopened later through a custom smooth
+layout import path. Deprecated Cryer boundary modes should not be used for new
+work.
+
 ## M3n Smooth Layout Diagnostic Notes
 
 M3n is XML/workflow/postprocessing only. It does not modify MCC return

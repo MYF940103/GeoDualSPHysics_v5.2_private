@@ -1,0 +1,20 @@
+stage,case,model,code,excluded,dtmin_adjustments,time,p_proxy,q_proxy,pairwise_reaction_avg,pore_pressure_mean,kplastic_max,return_status_counts,caveat
+T5c,T5c high-strength DP,DP,0,0,0,0.018,385.8049189009095,1073.7439175945835,3.274005,111458.97791005751,0.0,,feedback off
+T5c,T5c mild DP,DP,0,0,0,0.018,62.23262833995903,120.50908894067557,0.4335245,-35251.016202382,0.0014621217,,feedback off
+M3d,M3d high-pc MCC,MCC,0,0,0,0.018097,395.9054204483719,1091.1275113544698,3.33843,95552.39333608451,0.0,0:407,elastic-like reference
+M3d,M3d mild MCC,MCC,0,0,0,0.018096,47.26133310780508,60.577611276883275,0.286149,-225214.38188911168,0.0025562742,-3:8|0:2|1:397,feedback off; mild case not clean
+M3d3,baseline,MCC robustness,0,0,0,,47.26133310780508,64.9466204495404,0.286149,-225214.38188911168,0.0025562742,-3:8|0:2|1:397,substepping/fallback diagnostic
+M3d3,fixed_substeps4,MCC robustness,0,0,0,,46.98428888211302,64.2402972070246,0.28396299999999997,-240501.7072251021,0.0056991098,-3:18|-1:8|0:2|2:379,substepping/fallback diagnostic
+M3d3,adaptive_substeps16,MCC robustness,0,0,0,,47.088003911089295,64.47403484891105,0.2848555,-239475.03886834142,0.0024237814,-3:10|-1:8|0:2|1:387,substepping/fallback diagnostic
+M3d3,adaptive_fallback16,MCC robustness,0,0,0,,47.00899624410315,64.32709270092835,0.2840845,-239488.43393454916,0.011033725,-5:17|0:2|1:387|2:1,substepping/fallback diagnostic
+M3d3,half_speed_adaptive,MCC robustness,0,0,0,,46.25154304635544,62.16441271609576,0.25510299999999997,-282269.0080923411,0.0027752805,0:12|1:395,substepping/fallback diagnostic
+M3m,overhang_ref,geometry diagnostic,0,0,0,0.002513,,,,,,-3:0|-1:8,refined overhang/edge geometry
+M3m,overhang045,geometry diagnostic,0,0,0,0.002513,,,,,,-3:0|-1:0,refined overhang/edge geometry
+M3m,trimmed_edge,geometry diagnostic,0,0,0,0.002513,,,,,,-3:0|-1:8,refined overhang/edge geometry
+M3m,stepped_cap,geometry diagnostic,0,0,0,0.002513,,,,,,-3:0|-1:8,refined overhang/edge geometry
+M3m,overhang045_extended,geometry diagnostic,0,0,0,0.004021,,,,,,-3:5|-1:0,refined overhang/edge geometry
+M3n,overhang045_ref,smooth Cartesian geometry,0,0,0,0.002513,,,,,,max -3:8 max -1:8,higher-resolution cut-cell
+M3n,dp0075_overhang045,smooth Cartesian geometry,0,0,0,0.002564,,,,,,max -3:16 max -1:52,higher-resolution cut-cell
+M3o,M3m_overhang045_cartesian_dp001,fan-like geometry,,,,,,,,,,not run,CPU diagnostic already run
+M3o,M3n_dp0075_cartesian_overhang045,fan-like geometry,,,,,,,,,,not run,CPU diagnostic already run
+M3o,M3o_radial_ring_smooth_edge_prototype,fan-like geometry,,,,,,,,,,not run,not run; no direct point-cloud import path confirmed

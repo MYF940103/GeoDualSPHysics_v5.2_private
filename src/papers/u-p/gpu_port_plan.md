@@ -2298,3 +2298,20 @@ The generated fan-like layout is not yet connected to GenCase/DualSPHysics as a
 solver input, and it is not a clean CPU MCC candidate. GPU MCC remains deferred
 until there is a confirmed CPU custom-particle or smooth-layout workflow with
 stable return-status behavior. Full pore-pressure feedback remains deferred.
+
+## M3i-Revised Caveated MCC Package GPU Status
+
+M3i-revised adds no GPU source changes and runs no GPU simulation. It is a
+reporting-only consolidation of the CPU feedback-off MCC reduced route after
+the decision to defer custom fan-like solver import.
+
+The GPU policy remains unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The current MCC route is useful as a CPU reduced prototype, but not as clean
+validation. Local boundary-induced return failures remain, full pore-pressure
+feedback remains deferred, custom smooth/fan-like import is deferred, and GPU
+MCC remains deferred until a clean CPU validation path exists.
