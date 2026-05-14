@@ -2231,3 +2231,19 @@ than a GPU-portable constitutive-kernel task. GPU MCC should remain deferred
 until the CPU platen/edge issue has a clean no-fallback route and the MCC
 state/update/restart design is stable. Full pore-pressure feedback remains
 deferred.
+
+## M3l Platen/Specimen Smoothing GPU Status
+
+M3l is XML/geometry/workflow/postprocessing only. It adds no GPU source and runs
+no GPU simulation.
+
+The GPU policy remains unchanged:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The M3l cases confirm that boundary/interface geometry changes can strongly
+alter MCC return failures. This reinforces that GPU MCC should remain deferred
+until the CPU reduced route has a clean boundary geometry and a stable
+state/update/restart design. Full pore-pressure feedback remains deferred.

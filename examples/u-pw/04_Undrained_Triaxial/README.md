@@ -1241,6 +1241,41 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3l Platen/Specimen Smoothing Diagnostic
+
+M3l is retained under:
+
+`experiments/M3l_PlatenSpecimenSmoothing/`
+
+It tests four CPU-only, feedback-off, very-short dense-output variants:
+
+- `baseline`: M3k-equivalent reference;
+- `gap_2dp`: generated platen/specimen center gap increased to 2dp;
+- `platen_overhang`: platen radius increased from 0.03 m to 0.04 m;
+- `edge_selector_buffer`: cap/edge lateral confinement exclusion increased to
+  0.025 m.
+
+All cases finish `code=0`, `excluded=0`, and `DtMin=0`.
+
+Main result:
+
+```text
+baseline:          max -3=16, max -1=157, final negative=40
+gap_2dp:           max -3=0,  max -1=258, final negative=89
+platen_overhang:   max -3=8,  max -1=20,  final negative=8
+edge_selector:     max -3=13, max -1=174, final negative=69
+```
+
+`platen_overhang` is the best diagnostic direction. It greatly reduces failed
+records and improves aggregate failed-particle support, while keeping pairwise
+reaction, p'-q, and pore pressure bounded. It is not clean because saved-frame
+`ReturnStatus=-3` remains.
+
+The next step should be M3m refined boundary geometry: keep the overhang insight
+and test a better platen/specimen interface plus real edge/corner smoothing.
+The route still cannot be called clean MCC validation. Full feedback and GPU
+remain deferred.
+
 ## M3k Platen/Edge Dense Diagnostic
 
 M3k is retained under:

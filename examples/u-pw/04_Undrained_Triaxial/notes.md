@@ -1144,6 +1144,35 @@ extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
 
+## M3l Platen/Specimen Smoothing Notes
+
+M3l tests limited boundary/interface variants around the M3k failure onset.
+No source was changed, MCC return mapping was not touched, and all cases remain
+feedback-off.
+
+Variants:
+
+- baseline dense reference;
+- 2dp generated platen/specimen center gap;
+- platen overhang with radius 0.04 m;
+- cap/edge lateral selector buffer at 0.025 m.
+
+Findings:
+
+- increasing the gap eliminates `-3`, but worsens broad near-tension `-1`
+  behavior and weakens platen reaction;
+- platen overhang is best overall: first negative count drops from 96 to 12,
+  max `-1` drops from 157 to 20, max `-3` drops from 16 to 8, and final
+  negative count drops from 40 to 8;
+- the overhang variant also improves aggregate failed-particle support and
+  reduces first-onset `-3` velocity-gradient / residual severity;
+- selector-only edge buffering is not a good route in this form.
+
+M3l strengthens the boundary-induced failure interpretation. The next useful
+step is M3m refined interface plus edge/corner geometry smoothing. Do not claim
+clean MCC validation yet; every M3l variant still has saved-frame negative MCC
+return statuses. Full feedback and GPU remain deferred.
+
 ## M3k Dense Platen/Edge Diagnostic Notes
 
 M3k adds a very-short dense-output diagnostic, not a validation run. It reuses
