@@ -2213,3 +2213,21 @@ clean: all tested candidates retain transient negative return-status episodes.
 GPU MCC should remain deferred until the CPU route has a clean no-fallback
 candidate and a device-side MCC state/update/restart design. Full
 pore-pressure feedback remains deferred as well.
+
+## M3k Platen/Edge Diagnostic GPU Status
+
+M3k adds no GPU source changes and runs no GPU simulation. It is a CPU-only
+dense-output postprocessing diagnostic for MCC return failures near
+platen/edge/cap regions.
+
+The GPU policy remains:
+
+```text
+SoilConstitutiveModel=3 -> hard error when Cpu=false
+```
+
+The M3k evidence points to boundary-induced local strain/support paths rather
+than a GPU-portable constitutive-kernel task. GPU MCC should remain deferred
+until the CPU platen/edge issue has a clean no-fallback route and the MCC
+state/update/restart design is stable. Full pore-pressure feedback remains
+deferred.

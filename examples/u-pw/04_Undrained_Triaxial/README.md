@@ -1241,6 +1241,33 @@ return statuses while keeping reaction, p'-q, and pore pressure bounded. M3e
 may proceed only as a reduced feedback-off reporting package with this caveat.
 Full pore-pressure feedback and GPU remain deferred.
 
+## M3k Platen/Edge Dense Diagnostic
+
+M3k is retained under:
+
+`experiments/M3k_PlatenEdgeDenseDiagnostic/`
+
+It runs a very-short dense-output mild MCC feedback-off platen case to capture
+the first local return-failure onset. The case finishes `code=0`,
+`excluded=0`, and `DtMin=0`, with the first saved-frame failure at
+`t=0.001005 s`:
+
+```text
+ReturnStatus=-1: 92
+ReturnStatus=-3: 4
+```
+
+The hardest `-3` failures are localized at the top edge/corner in the first
+onset frame, with reduced support and elevated local velocity-gradient proxies.
+The broader `-1` failures are near-tension/admissibility states and include
+edge, lateral, bottom-cap, and adjacent interior particles. Pairwise reaction,
+p'-q, pore pressure, `pc`, void ratio, and plastic strains remain bounded.
+
+M3k strengthens the boundary-induced failure interpretation. The next technical
+step should test platen/specimen interface smoothing or edge/corner smoothing,
+not another MCC return-mapping patch. The route still cannot be called clean
+MCC validation. Full pore-pressure feedback and GPU remain deferred.
+
 ## M3h MCC Admissible Return
 
 M3h is retained under:

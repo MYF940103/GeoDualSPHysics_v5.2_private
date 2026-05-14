@@ -1144,6 +1144,37 @@ extended mild-yield path. M3e reporting consolidation should wait for either a
 return-robustness fix or an explicit diagnostic-only limitation statement.
 Full feedback and GPU remain deferred.
 
+## M3k Dense Platen/Edge Diagnostic Notes
+
+M3k adds a very-short dense-output diagnostic, not a validation run. It reuses
+the mild MCC feedback-off explicit-platen route and saves frames densely around
+the first return-failure onset.
+
+Key result:
+
+```text
+first failure time = 0.001005 s
+first failure count = 96
+ReturnStatus=-1 = 92
+ReturnStatus=-3 = 4
+```
+
+Interpretation:
+
+- `ReturnStatus=-3` first appears at four symmetric top edge/corner particles;
+- those particles have lower support (`support/core ~= 0.62`) and larger local
+  velocity-gradient proxy than same-region nonfailed particles;
+- `ReturnStatus=-1` particles are broader and mainly indicate near-tension or
+  inadmissible `p'` states;
+- measurement core is not the main failure source;
+- global solver behavior remains stable (`code=0`, `excluded=0`, `DtMin=0`).
+
+The next recommended diagnostic is M3l boundary smoothing: start with
+platen/specimen interface smoothing, then edge/corner smoothing or a smoother
+fan-like cylinder layout if needed. Do not claim clean MCC validation until
+negative return statuses are removed without fallback. Full feedback and GPU
+remain deferred.
+
 ## M3h MCC Admissible Return Notes
 
 M3h adds an opt-in admissible Newton / line-search layer to the CPU MCC return
