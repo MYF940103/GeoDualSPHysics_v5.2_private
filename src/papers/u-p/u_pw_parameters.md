@@ -2,6 +2,61 @@
 
 This document summarizes the hydromechanical parameters currently introduced for the CPU-side u-pw PR prototype. The implementation is PR-only at this stage; PPE is not implemented in this branch.
 
+## Experimental Interface Status Labels
+
+As of INTF1, every new u-pw interface must carry an explicit lifecycle status.
+The full inventory is maintained in `experimental_interface_registry.md`, and
+the cleanup rules are maintained in `experimental_interface_cleanup_policy.md`.
+
+Use these tags in new notes, README updates, and cleanup decisions:
+
+```text
+[PRODUCTION]
+[ACTIVE_EXPERIMENTAL]
+[DEPRECATED]
+[DELETE_CANDIDATE]
+[CPU_ONLY]
+[GPU_DEFERRED]
+[GPU_HARD_ERROR]
+```
+
+Definitions:
+
+- `[PRODUCTION]`: stable, documented, and allowed for new cases under its
+  stated scope.
+- `[ACTIVE_EXPERIMENTAL]`: current research/prototype interface. Default must
+  remain off, and a cleanup/promote/deprecate decision is required.
+- `[DEPRECATED]`: retained only for old experiment replay. Do not use in new
+  cases.
+- `[DELETE_CANDIDATE]`: failed or temporary interface to remove in a cleanup
+  branch after old XML/reports are archived.
+- `[CPU_ONLY]`: implemented only on CPU.
+- `[GPU_DEFERRED]`: GPU parity is future work.
+- `[GPU_HARD_ERROR]`: GPU must fail during XML loading rather than silently
+  falling back.
+
+High-level current status:
+
+| Interface family | Status |
+|---|---|
+| L3c/L4 `PorePressureInit=3` diffusion/boundary route | `[PRODUCTION]` for Level-1 PR diffusion gates |
+| `PorePressureBoundaryOperator=0` | `[PRODUCTION]` default legacy path |
+| `PorePressureBoundaryOperator=1` | `[ACTIVE_EXPERIMENTAL]`, current feedback-on 1D gate |
+| `PorePressureBoundaryOperator=2` | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]`, not recommended after BND1 until TINT/BND follow-up |
+| `PorePressureBoundaryOperator=3` and most `CurvedDrained*` modes | `[DEPRECATED]` or `[DELETE_CANDIDATE]` after Cryer boundary audits |
+| `PorePressureFeedbackOperator=1` | `[ACTIVE_EXPERIMENTAL]`, recommended feedback operator for current gates |
+| Feedback limiters/class filters and operators `2/3` | `[DEPRECATED]` or `[DELETE_CANDIDATE]` |
+| `FlexibleConfiningStress` reduced triaxial route | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]` |
+| `CapConfiningStress*` | `[DELETE_CANDIDATE]` |
+| `SoilConstitutiveModel=3` and core `Mcc*` material parameters | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]` |
+| MCC substepping/fallback/admissible line-search knobs | `[DEPRECATED]` unless explicitly replaying M3d3/M3h |
+| `MechanicalTopLoad*` | `[DEPRECATED] [CPU_ONLY] [GPU_HARD_ERROR]`; stable numerically but failed strict Terzaghi loading scale |
+| Future `PorePressureTimeIntegrationMode` | `[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]` when introduced; constrained by `tint2_interface_constraint.md` |
+
+New interface rule: if an experimental mode fails, the next action should be
+diagnosis, deprecation, or deletion. Do not add another numbered mode before a
+cleanup decision is written.
+
 ## 1. Core PR Parameters
 
 | Parameter | Type / values | Default | Purpose | Keep? |
@@ -1237,3 +1292,52 @@ Current limitations:
   loading plate or quasi-static surface traction.
 - L3b showed stable numerics but a large dynamic pore-pressure response, so
   this route is a diagnostic prototype rather than a strict Terzaghi validation.
+
+## TINT2 Pore-Pressure Time-Integration Interface Constraint
+
+TINT1/TINT1b found that `PorePressRate` is computed during force interaction,
+while `PorePress` is explicitly updated before the Verlet mechanical update or
+before the Symplectic corrector. TINT2 may test one CPU-only alternative, but
+the interface is intentionally constrained to prevent another large mode
+family.
+
+Allowed future parameter:
+
+```text
+PorePressureTimeIntegrationMode
+```
+
+Status if introduced:
+
+```text
+[ACTIVE_EXPERIMENTAL] [CPU_ONLY] [GPU_HARD_ERROR]
+```
+
+Allowed values:
+
+- `0`: current behavior and default.
+- `1`: CPU end-step pressure commit experiment.
+- `2`: reserved only. Do not implement additional behavior in TINT2.
+
+Avoid unless absolutely necessary:
+
+```text
+SavePorePressureTimeStageDiagnostics
+```
+
+If this diagnostic switch is added, it must be marked:
+
+```text
+[ACTIVE_EXPERIMENTAL] [DELETE_CANDIDATE] [CPU_ONLY] [GPU_HARD_ERROR]
+```
+
+and reviewed immediately after TINT2. Prefer existing output fields, log
+summaries, and postprocessing scripts for stage diagnostics.
+
+TINT2 cleanup decision:
+
+- If mode `1` improves or clearly explains the L3c/L5/BND1 behavior, keep it
+  as active experimental and plan a TINT3 promotion/deprecation decision.
+- If mode `1` is neutral or worse, deprecate or delete it.
+- Do not add mode `3/4` before failed modes are removed or archived.
+- Do not port nonzero modes to GPU until CPU mode `1` has a positive decision.
