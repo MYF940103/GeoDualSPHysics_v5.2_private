@@ -2040,31 +2040,53 @@ void GetDPYieldFunction(float &f, float I1, float J2, const float DP_phi, const 
    f=sqrt(J2)+DP_phi*I1-DP_kc;
 }
 void UpdateDPvars(float &DP_phi, float &DP_kc, float &DP_psi,const float phi_p, const float phi_r, const float n_p
-							,const float coh_p, const float coh_r, const float n_c, const float psi, const float kplastic) {
+							,const float coh_p, const float coh_r, const float n_c, const float psi, const float kplastic, const TpDPCtes dpctes) {
     float phi = phi_r + (phi_p - phi_r)*exp(-n_p*kplastic);
 	float coh = coh_r + (coh_p - coh_r)*exp(-n_c*kplastic);
-	///Plain strain
-	//DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi)); // Make it as a function
-    //DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-    //DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi)); //
-	///3D
-	//DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-	//DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-	//DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-	///Medium set
-	DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
-	DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
-	DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
+	if(dpctes==DP_MC){
+		DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
+		DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
+		DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
+	}
+	else if(dpctes==DP_PS){
+		DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
+		DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
+		DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
+	}
+	else{
+		DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
+		DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
+		DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
+	}
 }
 void Updatedfdk(float &dfdk,const float phi_p,const float phi_r, const float n_p
 						  ,const float coh_p,const float coh_r,const float n_c,const float psi,const float kplastic
-						  ,const float I1)
+						  ,const float I1,const TpDPCtes dpctes)
 {
 	float phi = phi_r + (phi_p - phi_r)*exp(-n_p*kplastic);
 	float coh = coh_r + (coh_p - coh_r)*exp(-n_c*kplastic);
-	float dalphadk = I1*(sqrt(3.f)*(tan(phi)*tan(phi)+1.f))/pow((4.f*tan(phi)*tan(phi)+3.f),1.5f)*-n_p*(phi-phi_r);
-	float dkcdk = (3.f/pow(12.f*tan(phi)*tan(phi)+9.f,0.5f))*-n_c*(coh-coh_r)+-(36.f*coh*tan(phi)*(tan(phi)*tan(phi)+1.f))/pow(12.f*tan(phi)*tan(phi)+9.f, 3.f/2.f)*-n_p*(phi-phi_r);
-	dfdk = dalphadk-dkcdk;
+	const float dphidk=-n_p*(phi-phi_r);
+	const float dcohdk=-n_c*(coh-coh_r);
+	float dalphadphi=0,dkcdphi=0,dkcdcoh=0;
+	if(dpctes==DP_MC){
+		const float sph=sin(phi),cph=cos(phi),den=3.f+sph;
+		dalphadphi=6.f*cph/(1.732f*den*den);
+		dkcdphi=6.f*coh*(-1.f-3.f*sph)/(1.732f*den*den);
+		dkcdcoh=6.f*cph/(1.732f*den);
+	}
+	else if(dpctes==DP_PS){
+		const float tphi=tan(phi),sec2=tphi*tphi+1.f,den=9.f+12.f*tphi*tphi;
+		dalphadphi=9.f*sec2/pow(den,1.5f);
+		dkcdphi=-(36.f*coh*tphi*sec2)/pow(den,1.5f);
+		dkcdcoh=3.f/sqrt(den);
+	}
+	else{
+		const float sph=sin(phi),cph=cos(phi),den=3.f-sph;
+		dalphadphi=6.f*cph/(1.732f*den*den);
+		dkcdphi=6.f*coh*(1.f-3.f*sph)/(1.732f*den*den);
+		dkcdcoh=6.f*cph/(1.732f*den);
+	}
+	dfdk = I1*dalphadphi*dphidk - (dkcdcoh*dcohdk + dkcdphi*dphidk);
 }
 void ConsRelationEP_fast(tsymatrix3f sigma
 		, const float E_ModulusK, const float E_ModulusG, const float dp_phi, const float dp_kc, const float dp_psi
@@ -2190,7 +2212,7 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 void ConsRelationEPsft_fast(tsymatrix3f sigma
 		, const float E_ModulusK, const float E_ModulusG, const float MC_phi, const float MC_phir, const float n_phi
 		, const float MC_c, const float MC_cr, const float n_coh, const float MC_psi
-		, float kplastic
+		, const TpDPCtes dpctes, float kplastic
         , tsymatrix3f &nsigma, float& nkplastic)
 {// simple return mapping Bui et al. 2021; single floating precisions
     float tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, tk;// trial value
@@ -2222,7 +2244,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 	tk = kplastic;
 	//evaluate yeild condition
 	float DP_phi=0, DP_kc=0, DP_psi=0;
-	UpdateDPvars(DP_phi,DP_kc,DP_psi,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk);
+	UpdateDPvars(DP_phi,DP_kc,DP_psi,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,dpctes);
 	float f=0, I1=0, J2=0;
 	float err = 1e-5f;
 	GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
@@ -2242,7 +2264,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 			 , depsp_xx = 0, depsp_yy = 0, depsp_zz = 0, depsp_xy = 0, depsp_yz = 0, depsp_xz = 0, dk = 0;;
 			//kplastic related term
 			float dfdk = 0;
-			Updatedfdk(dfdk,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,I1);
+			Updatedfdk(dfdk,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,I1,dpctes);
 			float extra = dfdk*sqrt((2.f/3.f)*(3.f*DP_psi*DP_psi+0.5f));			
 			//MODIFY PLASTIC MULTIPLFY
 			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
