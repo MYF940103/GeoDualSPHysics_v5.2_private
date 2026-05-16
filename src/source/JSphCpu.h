@@ -258,6 +258,7 @@ protected:
   template<TpKernel tker,TpFtMode ftmode> void Interaction_Forces_ct3(const stinterparmsc &t,StInterResultc &res)const;
   template<TpKernel tker> void Interaction_Forces_ct2(const stinterparmsc &t,StInterResultc &res)const;
   void Interaction_Forces_ct(const stinterparmsc &t,StInterResultc &res)const;
+  void AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,tfloat3 *ace)const;
 
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold

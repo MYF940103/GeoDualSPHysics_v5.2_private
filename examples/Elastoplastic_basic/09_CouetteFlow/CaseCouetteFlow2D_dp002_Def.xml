@@ -1,0 +1,135 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case>
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="Gravity is not considered in Feng et al. (2021) Couette flow" units_comment="m/s^2" />
+            <rhop0 value="2100" comment="Reference density" units_comment="kg/m^3" />
+            <rhopgradient value="1" comment="Initial density gradient 1:Rhop0, 2:Water column, 3:Max. water height (default=2)" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+            <speedsystem value="0.001" auto="false" comment="Top wall speed used as maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="56.614" auto="false" comment="Elastic wave speed from E=5 MPa, nu=0.3 and rho=2100 kg/m^3" />
+            <hdp value="2.2" comment="Feng et al. (2021), Table 1: h/dp for Couette flow" />
+            <cflnumber value="0.2" comment="Feng et al. (2021), Table 1: Courant number" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.02" _rem="Particle spacing for Feng et al. (2021) Couette convergence run." />
+                <newvarcte LengthX="1.0" _rem="Periodic length; Couette solution is independent of x." />
+                <newvarcte HeightZ="1.0" _rem="Distance between walls from z=-0.5 m to z=0.5 m." />
+                <newvarcte WallLayers="4" _rem="Boundary wall thickness in particle layers." />
+                <newvar Hdp="Dp/2" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-Dp" y="0" z="#-HeightZ/2-Dp*WallLayers-Hdp" />
+                <pointmax x="#LengthX+Dp" y="0" z="#HeightZ/2+Dp*(WallLayers+1)" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>real | bound</setshapemode>
+                    <setdrawmode mode="full" />
+
+                    <!-- Top moving wall, vx=0.001 m/s. Four layers centred at z=0.51...0.57. -->
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="#HeightZ/2" />
+                        <size x="#LengthX" y="0" z="#Dp*WallLayers" />
+                    </drawbox>
+
+                    <!-- Bottom fixed wall. Four layers centred at z=-0.57...-0.51. -->
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="#-HeightZ/2-Dp*WallLayers" />
+                        <size x="#LengthX" y="0" z="#Dp*WallLayers" />
+                    </drawbox>
+
+                    <!-- Elastic material between z=-0.5 m and z=0.5 m.
+                         Particle centres are z=-0.49...0.49 for Dp=0.02. -->
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="#-HeightZ/2+Hdp" />
+                        <size x="#LengthX" y="0" z="#HeightZ-Dp" />
+                    </drawbox>
+
+                    <shapeout file="" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <motion>
+            <objreal ref="0">
+                <begin mov="1" start="0" />
+                <mvrect id="1" duration="10.1">
+                    <vel x="0.001" y="0" z="0" units_comment="m/s" />
+                </mvrect>
+            </objreal>
+        </motion>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <boundnormal_plane mkbound="0">
+                    <point auto="true" comment="Automatically computed point for top wall normal initialization." />
+                    <normal x="0" y="0" z="-1" />
+                    <maxdisth v="2.0" comment="Maximum distance to boundary limit. It uses H*maxdisth (default=2)." />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="1">
+                    <point auto="true" comment="Automatically computed point for bottom wall normal initialization." />
+                    <normal x="0" y="0" z="1" />
+                    <maxdisth v="2.0" comment="Maximum distance to boundary limit. It uses H*maxdisth (default=2)." />
+                </boundnormal_plane>
+            </initialize>
+            <soils>
+                <phi value="0" comment="Linear elastic Couette test; yield surface is pushed away in the current DP-only soil parser." />
+                <coh value="1e9" comment="Large numerical cohesion keeps the response elastic in the current DP-only soil parser." />
+                <dlt value="0" comment="Dilatancy angle" />
+                <ModulusE value="5e6" comment="Feng et al. (2021), Table 1: elastic modulus 5 MPa" />
+                <PRvs value="0.3" comment="Feng et al. (2021), Table 1: Poisson ratio" />
+                <phi_r value="0" comment="Residual friction angle" />
+                <n_phi value="0" comment="Friction softening disabled" />
+                <coh_r value="1e9" comment="Residual cohesion" />
+                <n_coh value="0" comment="Cohesion softening disabled" />
+            </soils>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision (default=0)" />
+            <parameter key="DPCtes" value="3" comment="DP constants type 1:3D circumscribed, 2:3D mid circumscribed, 3:2D plane strain" />
+            <parameter key="ArtificialStress" value="0" comment="Bui 2008 artificial stress for tensile instability 0:None, 1:Enable" />
+            <parameter key="Boundary" value="2" comment="Boundary method 1:cDBC, 2:mDBC" />
+            <parameter key="SlipMode" value="2" comment="Slip mode for mDBC 1:vel=0, 2:No-slip, 3:Free-slip" />
+            <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
+            <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
+            <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
+            <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
+            <parameter key="Visco" value="1.0" comment="Feng et al. (2021), Table 1: artificial viscosity coefficient" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
+            <parameter key="DensityDT" value="0" comment="Feng et al. (2021), Table 1: no stress diffusion for Couette flow" />
+            <parameter key="DensityDTvalue" value="0.1" comment="DDT value, unused when DensityDT=0" />
+            <parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full" />
+            <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation" />
+            <parameter key="ShiftTFS" value="1.5" comment="Threshold to detect free surface; unused when shifting is off" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid Algorithm 1:SPH, 2:DEM, 3:Chrono" />
+            <parameter key="FtPause" value="0.0" comment="Time to freeze the floatings at simulation start" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.05" comment="Coefficient to calculate minimum time step dtmin=coefdtmin*h/speedsound" />
+            <parameter key="DtIni" value="0" comment="Initial time step. Use 0 for default" units_comment="seconds" />
+            <parameter key="DtMin" value="0" comment="Minimum time step. Use 0 for default" units_comment="seconds" />
+            <parameter key="DtFixed" value="0" comment="Fixed Dt value. Use 0 to disable" units_comment="seconds" />
+            <parameter key="DtFixedFile" value="NONE" comment="Dt values are loaded from file. Use NONE to disable" units_comment="milliseconds (ms)" />
+            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating" />
+            <parameter key="TimeMax" value="10.0" comment="Extended run for Couette flow internal velocity oscillation check" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.05" comment="Time between output files" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="%/100 of fluid particles allowed out of domain" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="1000" comment="Minimum valid density" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" comment="Maximum valid density" units_comment="kg/m^3" />
+            <parameter key="XPeriodicIncZ" value="0" comment="Periodic boundary condition in x with no z offset" />
+            <simulationdomain comment="Defines domain of simulation">
+                <posmin x="default" y="default" z="default" />
+                <posmax x="default" y="default" z="default" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>

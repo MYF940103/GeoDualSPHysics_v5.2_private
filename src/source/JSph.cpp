@@ -186,6 +186,8 @@ void JSph::InitVars(){
   ArtificialStressCoef=0.5f;
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
+  SoilDamping=false;
+  SoilDampingCoef=0.02f;
   MdbcCorrector=false;
   MdbcFastSingle=true;
   MdbcThreshold=0;
@@ -646,6 +648,13 @@ void JSph::LoadConfigParameters(const JXml *xml){
   ArtificialStressExp=eparms.GetValueFloat("ArtificialStressExp",true,2.55f);
   if(ArtificialStressCoef<0.f || ArtificialStressCoef>1.f)Run_Exceptioon("ArtificialStressCoef must be in [0,1].");
   if(ArtificialStressExp<=0.f)Run_Exceptioon("ArtificialStressExp must be greater than zero.");
+  switch(eparms.GetValueInt("SoilDamping",true,0)){
+    case 0:  SoilDamping=false;  break;
+    case 1:  SoilDamping=true;   break;
+    default: Run_Exceptioon("SoilDamping mode is not valid.");
+  }
+  SoilDampingCoef=eparms.GetValueFloat("SoilDampingCoef",true,0.02f);
+  if(SoilDampingCoef<0.f)Run_Exceptioon("SoilDampingCoef must be greater than or equal to zero.");
   //-Boundary configuration.
   switch(eparms.GetValueInt("Boundary",true,1)){
     case 1:  TBoundary=BC_DBC;      break;
@@ -1561,6 +1570,13 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "AutoSupportRatio": "XML"));
     Log->Print(fun::VarStr("  ArtificialStressBoundary","Excluded"));
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
+  }
+  //-Bui-Fukagawa damping for static stress initialization.
+  Log->Print(fun::VarStr("SoilDamping",SoilDamping? "BuiFukagawa2013": "None"));
+  if(SoilDamping){
+    Log->Print(fun::VarStr("  SoilDampingCoef",SoilDampingCoef));
+    Log->Print(fun::VarStr("  SoilDampingBoundary","Excluded"));
+    ConfigInfo=ConfigInfo+sep+fun::PrintStr("SoilDamping(%g)",SoilDampingCoef);
   }
   //-DensityDiffusion.
   Log->Print(fun::VarStr("DensityDiffusion",GetDDTName(TDensity)));

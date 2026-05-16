@@ -679,6 +679,42 @@ void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,con
     KerComputeArtificialStress <<<sgrid,SPHBSIZE>>> (n,nbound,code,velrhop,(const float2*)sigma,(float2*)artificialstress);
   }
 }
+
+//------------------------------------------------------------------------------
+/// Adds Bui-Fukagawa damping to non-boundary soil particles.
+//------------------------------------------------------------------------------
+__global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,const float4 *velrhop,float3 *ace){
+  unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p<n){
+    p+=pini;
+    const typecode rcode=code[p];
+    if(CTE.soildamping && CTE.soildampingcoef>0.f && CTE.modulus_E>0.f && CTE.kernelh>0.f
+      && CODE_IsNormal(rcode) && CODE_IsFluid(rcode) && !CODE_IsFluidInout(rcode))
+    {
+      const float4 vrhop=velrhop[p];
+      if(vrhop.w>0.f){
+        const float cd=CTE.soildampingcoef*sqrtf(CTE.modulus_E/(vrhop.w*CTE.kernelh*CTE.kernelh));
+        float3 acep=ace[p];
+        acep.x-=cd*vrhop.x;
+        acep.y-=cd*vrhop.y;
+        acep.z-=cd*vrhop.z;
+        ace[p]=acep;
+      }
+    }
+  }
+}
+
+//==============================================================================
+/// Adds Bui-Fukagawa damping on GPU.
+//==============================================================================
+void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace){
+  if(n>nbound){
+    const unsigned npf=n-nbound;
+    dim3 sgrid=GetSimpleGridSize(npf,SPHBSIZE);
+    KerAddSoilDamping <<<sgrid,SPHBSIZE>>> (npf,nbound,code,velrhop,ace);
+  }
+}
+
 //------------------------------------------------------------------------------
 /// Interaction of a particle with a set of particles. (Fluid/Float-Fluid/Float/Bound)
 /// Realiza la interaccion de una particula con un conjunto de ellas. (Fluid/Float-Fluid/Float/Bound)

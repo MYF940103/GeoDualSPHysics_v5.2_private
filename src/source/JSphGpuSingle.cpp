@@ -499,6 +499,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ShiftPosfsg
     ,NULL,NULL);
   cusph::Interaction_Forces(parms);
+  if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg);
 
   //-Interaction DEM Floating-Bound & Floating-Floating. //(DEM)
   if(UseDEM)cusph::Interaction_ForcesDem(BlockSizes.forcesdem,CaseNfloat

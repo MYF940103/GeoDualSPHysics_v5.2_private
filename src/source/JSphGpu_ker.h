@@ -57,6 +57,8 @@ typedef struct{
   unsigned artificialstress; ///<Bui 2008 artificial stress for tensile instability (0:none, 1:enabled). //mdbr
   float artificialstresscoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float artificialstressexp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
+  unsigned soildamping;     ///<Bui-Fukagawa damping for static stress initialization (0:none, 1:enabled). //mdbr
+  float soildampingcoef;    ///<Non-dimensional Bui-Fukagawa damping coefficient xi. //mdbr
   float cteb;               ///<Constant used in the state equation [Pa].
   float gamma;              ///<Politropic constant for water used in the state equation.
   float rhopzero;           ///<Reference density of the fluid [kg/m3].
@@ -77,7 +79,7 @@ typedef struct{
   //-Ctes. of Cubic Spline kernel.
   float cubic_a1,cubic_a2,cubic_aa,cubic_a24,cubic_c1,cubic_d1,cubic_c2,cubic_odwdeltap;
   //-Ctes for elastic stiffness matrix
-  float modulus_K, modulus_G;
+  float modulus_E, modulus_K, modulus_G;
 }StCteInteraction; 
 
 /// Structure to collect kernel information.
@@ -213,6 +215,7 @@ void ComputeAceMod(unsigned n,const typecode *code,const float3 *ace,float *acem
 
 void ComputeVelMod(unsigned n,const float4 *vel,float *velmod);
 void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3f *sigma,tsymatrix3f *artificialstress);
+void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace);
 
 //-Kernels for the force calculation.
 void Interaction_Forces(const StInterParmsg &t);

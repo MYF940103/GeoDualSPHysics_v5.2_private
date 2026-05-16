@@ -603,6 +603,8 @@ void JSphGpu::ConstantDataUp(){
   ctes.artificialstress=(ArtificialStress? 1: 0);
   ctes.artificialstresscoef=ArtificialStressCoef;
   ctes.artificialstressexp=ArtificialStressExp;
+  ctes.soildamping=(SoilDamping? 1: 0);
+  ctes.soildampingcoef=SoilDampingCoef;
   ctes.cteb=CteB; ctes.gamma=Gamma;
   ctes.rhopzero=RhopZero;
   ctes.ovrhopzero=1.f/RhopZero;
@@ -618,7 +620,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.axis=MGDIV_Z;//-Necessary to avoid errors in KerGetInteraction_Cells().
   ctes.cellcode=DomCellCode;
   ctes.domposminx=DomPosMin.x; ctes.domposminy=DomPosMin.y; ctes.domposminz=DomPosMin.z;
-  ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
+  ctes.modulus_E=SoilCte.ModulusE; ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
   cusph::CteInteractionUp(&ctes);
   cusphs::CteInteractionUpTStep(&SoilCte);//mbdr
   Check_CudaErroor("Failed copying constants to GPU.");

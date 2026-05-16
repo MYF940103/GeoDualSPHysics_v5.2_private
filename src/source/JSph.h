@@ -197,6 +197,8 @@ protected:
   float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
+  bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
+  float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).

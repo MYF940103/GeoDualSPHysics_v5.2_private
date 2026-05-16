@@ -1363,6 +1363,31 @@ void JSphCpu::Interaction_Forces_ct(const stinterparmsc &t,StInterResultc &res)c
 }
 
 //==============================================================================
+/// Adds Bui-Fukagawa damping to non-boundary soil particles.
+//==============================================================================
+void JSphCpu::AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,tfloat3 *ace)const{
+  if(!SoilDamping || SoilDampingCoef<=0.f)return;
+  if(SoilCte.ModulusE<=0.f || KernelH<=0.f)return;
+  const int ini=int(npb),fin=int(np),npf=int(np-npb);
+  const float h2=KernelH*KernelH;
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=ini;p<fin;p++){
+    const typecode rcode=code[p];
+    if(CODE_IsNormal(rcode) && CODE_IsFluid(rcode) && !CODE_IsFluidInout(rcode)){
+      const float rhop=velrhop[p].w;
+      if(rhop>0.f){
+        const float cd=SoilDampingCoef*sqrt(SoilCte.ModulusE/(rhop*h2));
+        ace[p].x-=cd*velrhop[p].x;
+        ace[p].y-=cd*velrhop[p].y;
+        ace[p].z-=cd*velrhop[p].z;
+      }
+    }
+  }
+}
+
+//==============================================================================
 /// Perform interaction between ghost nodes of boundaries and fluid.
 //==============================================================================
 template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdbcCorrectionT2
