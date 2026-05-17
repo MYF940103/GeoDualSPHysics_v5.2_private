@@ -139,6 +139,7 @@ protected:
 
   float3 *BoundNormalg;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
   float3 *MotionVelg;    ///<Velocity of a moving boundary particle.
+  float3 *TangenVelg;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   //-ruofeng
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng

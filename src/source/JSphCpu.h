@@ -136,7 +136,7 @@ protected:
 
   tfloat3 *BoundNormalc;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
   tfloat3 *MotionVelc;    ///<Velocity of a moving boundary particle.
-  tfloat3 *TangenVelc;    ///<Tangential no-slip velocity used by mDBC viscous and gradient terms.
+  tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   //=============== mdbr
   tsymatrix3f* Sigmac;
   tsymatrix3f* Rsigmac;

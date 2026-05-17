@@ -723,7 +723,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   __device__ void KerInteractionForcesFluidBox(bool boundp2,unsigned p1
   ,const unsigned &pini,const unsigned &pfin,float visco
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const float3 *tangenvel,const typecode *code,const unsigned *idp
   ,const float2 *sigma
   ,const float2 *artificialstress
   ,float massp2,bool ftp1
@@ -816,8 +816,16 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       }
       
       //-Density derivative (Continuity equation).
-      const float dvx=velrhop1.x-velrhop2.x, dvy=velrhop1.y-velrhop2.y, dvz=velrhop1.z-velrhop2.z;
-      if(compute)arp1+=(USE_FLOATING? ftmassp2: massp2)*(dvx*frx+dvy*fry+dvz*frz)*(velrhop1.w/velrhop2.w);
+      const float dvx_rhop=velrhop1.x-velrhop2.x, dvy_rhop=velrhop1.y-velrhop2.y, dvz_rhop=velrhop1.z-velrhop2.z;
+      float dvx_visc=dvx_rhop, dvy_visc=dvy_rhop, dvz_visc=dvz_rhop;
+      if(boundp2 && CTE.tboundary==BC_MDBC && CTE.slipmode>=SLIP_NoSlip && !ftp2 && tangenvel){
+        float3 tangentvelp2=tangenvel[p2];
+        if(symm)tangentvelp2.y=-tangentvelp2.y; //<vs_syymmetry>
+        dvx_visc=velrhop1.x-tangentvelp2.x;
+        dvy_visc=velrhop1.y-tangentvelp2.y;
+        dvz_visc=velrhop1.z-tangentvelp2.z;
+      }
+      if(compute)arp1+=(USE_FLOATING? ftmassp2: massp2)*(dvx_rhop*frx+dvy_rhop*fry+dvz_rhop*frz)*(velrhop1.w/velrhop2.w);
 
       const float cbar=CTE.cs0;
       const float dot3=(tdensity!=DDT_None || shift? drx*frx+dry*fry+drz*frz: 0);
@@ -886,14 +894,14 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 
       //===== Viscosity ===== 
       if(compute){
-        const float dot=drx*dvx + dry*dvy + drz*dvz;
+        const float dot=drx*dvx_visc + dry*dvy_visc + drz*dvz_visc;
         const float dot_rr2=dot/(rr2+CTE.eta2);
         visc=max(dot_rr2,visc);  //ViscDt=max(dot/(rr2+Eta2),ViscDt);
         ///SPH velocity gradients calculation
         const float volp2=-massp2/velrhop2.w;
-        float dv=dvx*volp2;  gradvp1_xx_xy_xz.x+=dv*frx; gradvp1_xx_xy_xz.y+=dv*fry; gradvp1_xx_xy_xz.z+=dv*frz;
-              dv=dvy*volp2;  gradvp1_yx_yy_yz.x+=dv*frx; gradvp1_yx_yy_yz.y+=dv*fry; gradvp1_yx_yy_yz.z+=dv*frz;
-              dv=dvz*volp2;  gradvp1_zx_zy_zz.x+=dv*frx; gradvp1_zx_zy_zz.y+=dv*fry; gradvp1_zx_zy_zz.z+=dv*frz;
+        float dv=dvx_visc*volp2;  gradvp1_xx_xy_xz.x+=dv*frx; gradvp1_xx_xy_xz.y+=dv*fry; gradvp1_xx_xy_xz.z+=dv*frz;
+              dv=dvy_visc*volp2;  gradvp1_yx_yy_yz.x+=dv*frx; gradvp1_yx_yy_yz.y+=dv*fry; gradvp1_yx_yy_yz.z+=dv*frz;
+              dv=dvz_visc*volp2;  gradvp1_zx_zy_zz.x+=dv*frx; gradvp1_zx_zy_zz.y+=dv*fry; gradvp1_zx_zy_zz.z+=dv*frz;
         if(!lamsps){//-Artificial viscosity.
           if(dot<0){
             const float amubar=CTE.kernelh*dot_rr2;  //amubar=CTE.kernelh*dot/(rr2+CTE.eta2);
@@ -907,7 +915,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
             const float robar2=(velrhop1.w+velrhop2.w);
             const float temp=4.f*visco/((rr2+CTE.eta2)*robar2);  //-Simplication of temp=2.0f*visco/((rr2+CTE.eta2)*robar); robar=(rhopp1+velrhop2.w)*0.5f;
             const float vtemp=(USE_FLOATING? ftmassp2: massp2)*temp*(drx*frx+dry*fry+drz*frz);  
-            acep1.x+=vtemp*dvx; acep1.y+=vtemp*dvy; acep1.z+=vtemp*dvz;
+            acep1.x+=vtemp*dvx_visc; acep1.y+=vtemp*dvy_visc; acep1.z+=vtemp*dvz_visc;
           }
           //-SPS turbulence model. Removed
           /*float2 taup2_xx_xy = taup1_xx_xy; //-taup1 is always zero when p1 is not fluid. | taup1 siempre es cero cuando p1 no es fluid.
@@ -938,7 +946,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   __global__ void KerInteractionForcesFluid(unsigned n,unsigned pinit,float viscob,float viscof
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *begincell,unsigned cellfluid,const unsigned *dcell
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const float3 *tangenvel,const typecode *code,const unsigned *idp
   ,const float2 *sigma,const float2 *artificialstress,float2 *rsigma
   ,float *viscdt,float *ar,float3 *ace,float *delta
   ,TpShifting shiftmode,float4 *shiftposfs)
@@ -1023,8 +1031,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
-        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz); //<vs_syymmetry>
+                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,tangenvel,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,tangenvel,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz); //<vs_syymmetry>
       }
     }
     //-Interaction with boundaries.
@@ -1032,8 +1040,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
-      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,tangenvel,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
+      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,tangenvel,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
       }
     }
     //Calculate strain/spin rate tensor mdbr
@@ -1324,7 +1332,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 {
  #if CUDART_VERSION >= 6050
   {
-    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const typecode*,const unsigned*,const float2*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
+    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const float3*,const typecode*,const unsigned*,const float2*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
     fun_ptr ptr=&KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,symm>;
     int qblocksize=0,mingridsize=0;
     cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)ptr,0,0);
@@ -1388,12 +1396,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     if(t.symmetry) //<vs_syymmetry_ini>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,true> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
     else //<vs_syymmetry_end>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,false> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
   }
   //cudaProfilerStop();//mdbr
@@ -1491,6 +1499,20 @@ __device__ float4 KerComputePosCell(const double3 &ps,const double3 &mapposmin,f
 }
 
 //------------------------------------------------------------------------------
+/// Calculates tangential velocity used by no-slip/free-slip mDBC viscous and gradient terms.
+//------------------------------------------------------------------------------
+__device__ float3 KerMdbc2TangenVel(const float3 boundnormal,const float3 velfinal){
+  const float snormal2=boundnormal.x*boundnormal.x+boundnormal.y*boundnormal.y+boundnormal.z*boundnormal.z;
+  if(snormal2<=ALMOSTZERO)return(make_float3(0,0,0));
+  const float invnormal=rsqrtf(snormal2);
+  const float3 normal=make_float3(boundnormal.x*invnormal,boundnormal.y*invnormal,boundnormal.z*invnormal);
+  const float veldotnorm=velfinal.x*normal.x+velfinal.y*normal.y+velfinal.z*normal.z;
+  return(make_float3(velfinal.x-veldotnorm*normal.x,
+                     velfinal.y-veldotnorm*normal.y,
+                     velfinal.z-veldotnorm*normal.z));
+}
+
+//------------------------------------------------------------------------------
 /// Perform interaction between ghost node of selected bondary and fluid.
 //------------------------------------------------------------------------------
 template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteractionMdbcCorrection_Fast
@@ -1498,11 +1520,13 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
   ,double3 mapposmin,float poscellsize,const float4 *poscell
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid
   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *idp
-  ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma)
+  ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel)
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p1<n){
     const float3 bnormalp1=boundnormal[p1];
+    if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
+    if(tangenvel && tslip==SLIP_FreeSlip)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,motionvel[p1]);
     if(bnormalp1.x!=0 || bnormalp1.y!=0 || bnormalp1.z!=0){
       float rhopfinal=FLT_MAX;
       float3 velrhopfinal=make_float3(0,0,0);
@@ -1747,35 +1771,14 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         }
         if(tslip==SLIP_NoSlip){//-No-Slip
           const float3 v=motionvel[p1];
-          velrhop[p1]=make_float4(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z,rhopfinal);
+          const float3 v2=make_float3(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z);
+          velrhop[p1].w=rhopfinal;
+          if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,v2);
           sigma[p1] = sigmafinal;
         }
-        if(tslip==SLIP_FreeSlip){//-No-Penetration and free slip    SHABA
-          float3 FSVelFinal; // final free slip boundary velocity
-          const float3 v=motionvel[p1];
-          float motion=sqrt(v.x*v.x+v.y*v.y+v.z*v.z); // to check if boundary moving
-          float norm=sqrt(bnormalp1.x*bnormalp1.x+bnormalp1.y*bnormalp1.y+bnormalp1.z*bnormalp1.z);
-          float3 normal; // creating a normailsed boundary normal
-          normal.x=fabs(bnormalp1.x)/norm; normal.y=fabs(bnormalp1.y)/norm; normal.z=fabs(bnormalp1.z)/norm;
-
-          // finding the velocity componants normal and tangential to boundary 
-          float3 normvel=make_float3(velrhopfinal.x*normal.x,velrhopfinal.y*normal.y,velrhopfinal.z*normal.z); // velocity in direction of normal pointin ginto fluid)
-          float3 tangvel=make_float3(velrhopfinal.x-normvel.x,velrhopfinal.y-normvel.y,velrhopfinal.z-normvel.z); // velocity tangential to normal
-
-          if (motion > 0) { // if moving boundary
-              float3 normmot=make_float3(v.x*normal.x,v.y*normal.y,v.z*normal.z); // boundary motion in direction normal to boundary 
-              FSVelFinal=make_float3(normmot.x+normmot.x-normvel.x,normmot.y+normmot.y-normvel.y,normmot.z+normmot.z-normvel.z);
-              // only velocity in normal direction for no-penetration
-              // fluid sees zero velocity in the tangetial direction
-          }
-          else {
-              FSVelFinal=make_float3(tangvel.x-normvel.x,tangvel.y-normvel.y,tangvel.z-normvel.z);
-              // tangential velocity equal to fluid velocity for free slip
-              // normal velocity reversed for no-penetration
-          }
-
-          // Save the velocity and density
-          velrhop[p1]=make_float4(FSVelFinal.x,FSVelFinal.y,FSVelFinal.z,rhopfinal);
+        if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
+          velrhop[p1].w=rhopfinal;
+          if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,velrhopfinal);
           sigma[p1] = sigmafinal;
         }
       }
@@ -1790,11 +1793,13 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
   (unsigned n,unsigned nbound,float determlimit,float mdbcthreshold
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid
   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *idp
-  ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma)
+  ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel)
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p1<n){
     const float3 bnormalp1=boundnormal[p1];
+    if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
+    if(tangenvel && tslip==SLIP_FreeSlip)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,motionvel[p1]);
     if(bnormalp1.x!=0 || bnormalp1.y!=0 || bnormalp1.z!=0){
       float rhopfinal=FLT_MAX;
       float3 velrhopfinal=make_float3(0,0,0);
@@ -2037,35 +2042,14 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         }
         if(tslip==SLIP_NoSlip){//-No-Slip
           const float3 v=motionvel[p1];
-          velrhop[p1]=make_float4(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z,rhopfinal);
+          const float3 v2=make_float3(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z);
+          velrhop[p1].w=rhopfinal;
+          if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,v2);
           sigma[p1]=sigmafinal;//mdbr
         }
-        if(tslip==SLIP_FreeSlip){//-No-Penetration and free slip    SHABA
-          float3 FSVelFinal; // final free slip boundary velocity
-          const float3 v=motionvel[p1];
-          float motion=sqrt(v.x*v.x+v.y*v.y+v.z*v.z); // to check if boundary moving
-          float norm=sqrt(bnormalp1.x*bnormalp1.x+bnormalp1.y*bnormalp1.y+bnormalp1.z*bnormalp1.z);
-          float3 normal; // creating a normailsed boundary normal
-          normal.x=fabs(bnormalp1.x)/norm; normal.y=fabs(bnormalp1.y)/norm; normal.z=fabs(bnormalp1.z)/norm;
-
-          // finding the velocity componants normal and tangential to boundary 
-          float3 normvel=make_float3(velrhopfinal.x*normal.x,velrhopfinal.y*normal.y,velrhopfinal.z*normal.z); // velocity in direction of normal pointin ginto fluid)
-          float3 tangvel=make_float3(velrhopfinal.x-normvel.x,velrhopfinal.y-normvel.y,velrhopfinal.z-normvel.z); // velocity tangential to normal
-
-          if (motion > 0) { // if moving boundary
-              float3 normmot=make_float3(v.x*normal.x,v.y*normal.y,v.z*normal.z); // boundary motion in direction normal to boundary 
-              FSVelFinal=make_float3(normmot.x+normmot.x-normvel.x,normmot.y+normmot.y-normvel.y,normmot.z+normmot.z-normvel.z);
-              // only velocity in normal direction for no-penetration
-              // fluid sees zero velocity in the tangetial direction
-          }
-          else {
-              FSVelFinal=make_float3(tangvel.x-normvel.x,tangvel.y-normvel.y,tangvel.z-normvel.z);
-              // tangential velocity equal to fluid velocity for free slip
-              // normal velocity reversed for no-penetration
-          }
-
-          // Save the velocity and density
-          velrhop[p1]=make_float4(FSVelFinal.x,FSVelFinal.y,FSVelFinal.z,rhopfinal);
+        if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
+          velrhop[p1].w=rhopfinal;
+          if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,velrhopfinal);
           sigma[p1]=sigmafinal;//mdbr
         }
       }
@@ -2082,7 +2066,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void Interaction_MdbcCorrect
   bool fastsingle,unsigned n,unsigned nbound,float mdbcthreshold,const StDivDataGpu &dvd
   ,const tdouble3 &mapposmin,const double2 *posxy,const double *posz,const float4 *poscell
   ,const typecode *code,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel
-  ,float4 *velrhop,tsymatrix3f *sigma)
+  ,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel)
 {
   const int2* beginendcellfluid=dvd.beginendcell+dvd.cellfluid;
   const float determlimit=1e-3f;
@@ -2094,12 +2078,12 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void Interaction_MdbcCorrect
       KerInteractionMdbcCorrection_Fast <tker,sim2d,tslip> <<<sgridb,bsbound>>> (n,nbound
         ,determlimit,mdbcthreshold,Double3(mapposmin),dvd.poscellsize,poscell
         ,dvd.scelldiv,dvd.nc,dvd.cellzero,beginendcellfluid
-        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma);
+        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }
     else{//-mDBC_v0
       KerInteractionMdbcCorrection_Dbl <tker,sim2d,tslip> <<<sgridb,bsbound>>> (n,nbound
         ,determlimit,mdbcthreshold,dvd.scelldiv,dvd.nc,dvd.cellzero,beginendcellfluid
-        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma);
+        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }
   }
 }
@@ -2108,23 +2092,21 @@ template<TpKernel tker> void Interaction_MdbcCorrectionT(bool simulate2d
   ,TpSlipMode slipmode,bool fastsingle,unsigned n,unsigned nbound
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code
-  ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma)
+  ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel)
 {
   switch(slipmode){
     case SLIP_Vel0:{ const TpSlipMode tslip=SLIP_Vel0;
-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
+      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
+      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }break;
     case SLIP_NoSlip:{ const TpSlipMode tslip=SLIP_NoSlip;
-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
+      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
+      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }break;
-#ifndef DISABLE_MDBC_EXTRAMODES
     case SLIP_FreeSlip:{ const TpSlipMode tslip=SLIP_FreeSlip;
-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
+      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
+      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }break;
-#endif
     default: throw "SlipMode unknown at Interaction_MdbcCorrectionT().";
   }
 }
@@ -2136,17 +2118,17 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d,TpSlipMode slip
   ,bool fastsingle,unsigned n,unsigned nbound,float mdbcthreshold
   ,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code
-  ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma)
+  ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel)
 {
   switch(tkernel){
     case KERNEL_Wendland:{ const TpKernel tker=KERNEL_Wendland;
       Interaction_MdbcCorrectionT <tker> (simulate2d,slipmode,fastsingle,n,nbound,mdbcthreshold
-        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
+        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }break;
 #ifndef DISABLE_KERNELS_EXTRA
     case KERNEL_Cubic:{ const TpKernel tker=KERNEL_Cubic;
       Interaction_MdbcCorrectionT <tker> (simulate2d,slipmode,fastsingle,n,nbound,mdbcthreshold
-        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma);
+        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
     }break;
 #endif
     default: throw "Kernel unknown at Interaction_MdbcCorrection().";

@@ -424,6 +424,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
       CellDivSingle->SortDataArrays(MotionVelg,motionvelg);
       swap(MotionVelg,motionvelg); ArraysGpu->Free(motionvelg);
     }
+    if(TangenVelg){
+      float3* tangenvelg=ArraysGpu->ReserveFloat3();
+      CellDivSingle->SortDataArrays(TangenVelg,tangenvelg);
+      swap(TangenVelg,tangenvelg); ArraysGpu->Free(tangenvelg);
+    }
   }
 
   //-Collect divide data. | Recupera datos del divide.
@@ -491,7 +496,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,bsbound,bsfluid,Np,Npb,NpbOk
     ,0,Nstep,DivData,Dcellg
     ,Posxyg,Poszg,PosCellg,Velrhopg,Idpg,Codeg
-    ,FtoMasspg,SpsTaug,dengradcorr
+    ,FtoMasspg,SpsTaug,dengradcorr,TangenVelg
     ,ViscDtg,Arg,Aceg,Deltag
     ,SpsGradvelg
     ,Sigmag,Rsigmag
@@ -536,7 +541,7 @@ void JSphGpuSingle::MdbcBoundCorrection(){
   const unsigned n=(UseNormalsFt? Np: NpbOk);
   cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,MdbcFastSingle
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
-    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag);
+    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,TangenVelg);
   Timersg->TmStop(TMG_CfPreForces,false);
 }
 

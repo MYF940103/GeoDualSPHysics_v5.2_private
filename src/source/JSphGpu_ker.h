@@ -66,6 +66,7 @@ typedef struct{
   float movlimit;
   unsigned symmetry;   //<vs_syymmetry>
   unsigned tboundary;  
+  unsigned slipmode;
   unsigned periactive;
   double xperincx,xperincy,xperincz;
   double yperincx,yperincy,yperincz;
@@ -127,6 +128,7 @@ typedef struct StrInterParmsg{
   const float *ftomassp;
   const tsymatrix3f *tau;
   const float3 *dengradcorr;
+  const float3 *tangenvel;
   //=====mdbr
   const tsymatrix3f* sigma;
   tsymatrix3f* rsigma;
@@ -158,6 +160,7 @@ typedef struct StrInterParmsg{
     ,const float4 *velrhop_,const unsigned *idp_,const typecode *code_
     ,const float *ftomassp_,const tsymatrix3f *spstau_
     ,const float3 *dengradcorr_
+    ,const float3 *tangenvel_
     ,float *viscdt_,float* ar_,float3 *ace_,float *delta_
     ,tsymatrix3f *spsgradvel_
     ,const tsymatrix3f *sigma_, tsymatrix3f* rsigma_
@@ -185,6 +188,7 @@ typedef struct StrInterParmsg{
     velrhop=velrhop_; idp=idp_; code=code_;
     ftomassp=ftomassp_; tau=spstau_;
     dengradcorr=dengradcorr_;
+    tangenvel=tangenvel_;
     //-Output data arrays.
     viscdt=viscdt_; ar=ar_; ace=ace_; delta=delta_;
     gradvel=spsgradvel_;
@@ -226,7 +230,7 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell
   ,const typecode *code,const unsigned *idp,const float3 *boundnormal
-  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma);
+  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,float3 *tangenvel);
 
 //-Kernels for the boundary treatment (cDBC).
 

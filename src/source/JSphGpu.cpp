@@ -141,7 +141,7 @@ void JSphGpu::InitVars(){
   FreeCpuMemoryFixed();
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL;//ruofeng
-  BoundNormalg=NULL; MotionVelg=NULL; //-mDBC
+  BoundNormalg=NULL; MotionVelg=NULL; TangenVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
   PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; //-Symplectic
@@ -373,6 +373,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   if(UseNormals){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-BoundNormal
     if(SlipMode!=SLIP_Vel0)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-MotionVel
+    if(SlipMode>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-TangenVel
   }
   if(InOut){
     //ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1);  //-InOutPartg
@@ -405,6 +406,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   tsymatrix3f *spstau     =SaveArrayGpu(Np,SpsTaug);
   float3      *boundnormal=SaveArrayGpu(Np,BoundNormalg);
   float3      *motionvel  =SaveArrayGpu(Np,MotionVelg);
+  float3      *tangenvel  =SaveArrayGpu(Np,TangenVelg);
   //==mdbr
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
@@ -426,6 +428,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(SpsTaug);
   ArraysGpu->Free(BoundNormalg);
   ArraysGpu->Free(MotionVelg);
+  ArraysGpu->Free(TangenVelg);
   //-mdbr
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
@@ -451,6 +454,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(spstau)     SpsTaug     =ArraysGpu->ReserveSymatrix3f();
   if(boundnormal)BoundNormalg=ArraysGpu->ReserveFloat3();
   if(motionvel)  MotionVelg  =ArraysGpu->ReserveFloat3();
+  if(tangenvel)  TangenVelg  =ArraysGpu->ReserveFloat3();
   //--mdbr
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
@@ -472,6 +476,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,spstau,SpsTaug);
   RestoreArrayGpu(Np,boundnormal,BoundNormalg);
   RestoreArrayGpu(Np,motionvel,MotionVelg);
+  RestoreArrayGpu(Np,tangenvel,TangenVelg);
   //---mdbr
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
@@ -531,6 +536,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
   if(UseNormals){
     BoundNormalg=ArraysGpu->ReserveFloat3();
     if(SlipMode!=SLIP_Vel0)MotionVelg=ArraysGpu->ReserveFloat3();
+    if(SlipMode>=SLIP_NoSlip)TangenVelg=ArraysGpu->ReserveFloat3();
   }
 }
 
@@ -613,6 +619,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.maprealsizex=MapRealSize.x; ctes.maprealsizey=MapRealSize.y; ctes.maprealsizez=MapRealSize.z;
   ctes.symmetry=Symmetry;   //<vs_syymmetry>
   ctes.tboundary=unsigned(TBoundary);
+  ctes.slipmode=unsigned(SlipMode);
   ctes.periactive=PeriActive;
   ctes.xperincx=PeriXinc.x; ctes.xperincy=PeriXinc.y; ctes.xperincz=PeriXinc.z;
   ctes.yperincx=PeriYinc.x; ctes.yperincy=PeriYinc.y; ctes.yperincz=PeriYinc.z;
@@ -736,7 +743,7 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,0,0,0,0,100,0,0
         ,0,0,divdatag,NULL
         ,NULL,NULL,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL
+        ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL
@@ -889,6 +896,7 @@ void JSphGpu::InitRunGpu(){
   if(TVisco==VISCO_LaminarSPS)cudaMemset(SpsTaug,0,sizeof(tsymatrix3f)*Np);
   if(CaseNfloat)InitFloating();
   if(MotionVelg)cudaMemset(MotionVelg,0,sizeof(float3)*Np);
+  if(TangenVelg)cudaMemset(TangenVelg,0,sizeof(float3)*Np);
   Check_CudaErroor("Failed initializing variables for execution.");
 }
 

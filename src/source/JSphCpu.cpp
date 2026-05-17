@@ -194,7 +194,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(UseNormals){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-BoundNormal
     if(SlipMode!=SLIP_Vel0)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-MotionVel
-    if(SlipMode==SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-TangenVel
+    if(SlipMode>=SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-TangenVel
   }
   if(InOut){
     //ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);  //-InOutPart
@@ -340,7 +340,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   if(UseNormals){
     BoundNormalc=ArraysCpu->ReserveFloat3();
     if(SlipMode!=SLIP_Vel0)MotionVelc=ArraysCpu->ReserveFloat3();
-    if(SlipMode==SLIP_NoSlip)TangenVelc=ArraysCpu->ReserveFloat3();
+    if(SlipMode>=SLIP_NoSlip)TangenVelc=ArraysCpu->ReserveFloat3();
   }
 }
 
@@ -1011,7 +1011,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           //-Density derivative (Continuity equation).
           float dvx_rhop=velp1.x-velrhop2.x, dvy_rhop=velp1.y-velrhop2.y, dvz_rhop=velp1.z-velrhop2.z;
           float dvx_visc=dvx_rhop, dvy_visc=dvy_rhop, dvz_visc=dvz_rhop;
-          if(boundp2 && TBoundary==BC_MDBC && SlipMode==SLIP_NoSlip && !ftp2 && TangenVelc){
+          if(boundp2 && TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip && !ftp2 && TangenVelc){
             tfloat3 tangentvelp2=TangenVelc[p2];
             if(rsym)tangentvelp2.y=-tangentvelp2.y; //<vs_syymmetry>
             dvx_visc=velp1.x-tangentvelp2.x;
@@ -1403,7 +1403,7 @@ void JSphCpu::AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,co
 }
 
 //==============================================================================
-/// Calculates tangential velocity used by no-slip mDBC viscous and gradient terms.
+/// Calculates tangential velocity used by no-slip/free-slip mDBC viscous and gradient terms.
 //==============================================================================
 tfloat3 JSphCpu::Mdbc2TangenVel(const tfloat3 &boundnormal,const tfloat3 &velfinal)const{
   const float snormal2=boundnormal.x*boundnormal.x + boundnormal.y*boundnormal.y + boundnormal.z*boundnormal.z;
@@ -1424,13 +1424,13 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
   ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,tfloat3 *tangenvel)
 {
-  if(tslip==SLIP_FreeSlip)Run_Exceptioon("SlipMode=\'Free slip\' is not yet implemented...");
   const int nn=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided)
   #endif
   for(int p1=0;p1<nn;p1++){
     if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
+    if(tangenvel && tslip==SLIP_FreeSlip)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],motionvel[p1]);
     if(boundnormal[p1]!=TFloat3(0)){
     float rhopfinal=FLT_MAX;
     tfloat3 velrhopfinal=TFloat3(0);
@@ -1672,33 +1672,9 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],v2);
         sigma[p1] = sigmafinal;
       }
-      if(tslip==SLIP_FreeSlip){//-No-Penetration and free slip    SHABA
-
-		tfloat3 FSVelFinal; // final free slip boundary velocity
-		const tfloat3 v = motionvel[p1];
-		float motion = sqrt(v.x*v.x + v.y*v.y + v.z*v.z); // to check if boundary moving
-		float norm = sqrt(boundnormal[p1].x*boundnormal[p1].x + boundnormal[p1].y*boundnormal[p1].y + boundnormal[p1].z*boundnormal[p1].z);
-		tfloat3 normal; // creating a normailsed boundary normal
-		normal.x = fabs(boundnormal[p1].x )/ norm; normal.y = fabs(boundnormal[p1].y) / norm; normal.z = fabs(boundnormal[p1].z) / norm;
-		
-		// finding the velocity componants normal and tangential to boundary 
-		tfloat3 normvel = TFloat3(velrhopfinal.x*normal.x, velrhopfinal.y*normal.y, velrhopfinal.z*normal.z); // velocity in direction of normal pointin ginto fluid)
-		tfloat3 tangvel = TFloat3(velrhopfinal.x - normvel.x, velrhopfinal.y - normvel.y, velrhopfinal.z - normvel.z); // velocity tangential to normal
-		
-		if (motion > 0.f) { // if moving boundary
-			tfloat3 normmot = TFloat3(v.x*normal.x, v.y*normal.y, v.z*normal.z); // boundary motion in direction normal to boundary 
-			FSVelFinal = TFloat3(normmot.x+normmot.x-normvel.x, normmot.y + normmot.y -normvel.y, normmot.z + normmot.z -normvel.z);
-			// only velocity in normal direction for no-penetration
-			// fluid sees zero velocity in the tangetial direction
-		}
-		else {
-			FSVelFinal = TFloat3(tangvel.x - normvel.x, tangvel.y - normvel.y, tangvel.z - normvel.z);
-			// tangential velocity equal to fluid velocity for free slip
-			// normal velocity reversed for no-penetration
-		}
-		
-		// Save the velocity and density
-		velrhop[p1]=TFloat4(FSVelFinal.x, FSVelFinal.y, FSVelFinal.z,rhopfinal); 
+      if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
+        velrhop[p1].w=rhopfinal;
+        if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],velrhopfinal);
         sigma[p1] = sigmafinal;
       }
     }
@@ -1752,13 +1728,13 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
   ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,tfloat3 *tangenvel)
 {
-  if(tslip==SLIP_FreeSlip)Run_Exceptioon("SlipMode=\'Free slip\' is not yet implemented...");
   const int nn=int(n);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided)
   #endif
   for(int p1=0;p1<nn;p1++){
-   if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
+    if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
+    if(tangenvel && tslip==SLIP_FreeSlip)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],motionvel[p1]);
    const typecode cod = code[p1];
    if (CODE_IsNotFluid(cod)){
     float rhopfinal=FLT_MAX;
@@ -1974,6 +1950,11 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
         const tfloat3 v2=TFloat3(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z);
         velrhop[p1].w=rhopfinal;
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],v2);
+        sigma[p1] = sigmafinal;
+      }
+      if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
+        velrhop[p1].w=rhopfinal;
+        if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],velrhopfinal);
         sigma[p1] = sigmafinal;
       }
     }
