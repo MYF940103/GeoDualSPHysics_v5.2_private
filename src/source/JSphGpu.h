@@ -139,6 +139,7 @@ protected:
 
   float3 *BoundNormalg;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
   float3 *MotionVelg;    ///<Velocity of a moving boundary particle.
+  byte   *BoundModeg;    ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
   float3 *TangenVelg;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   //-ruofeng
   tsymatrix3f *Sigmag;
@@ -216,6 +217,7 @@ protected:
   bool CheckGpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=GpuParticlesSize); }
 
   template<class T> T* TSaveArrayGpu(unsigned np,const T *datasrc)const;
+  byte*        SaveArrayGpu(unsigned np,const byte        *datasrc)const{ return(TSaveArrayGpu<byte>       (np,datasrc)); }
   word*        SaveArrayGpu(unsigned np,const word        *datasrc)const{ return(TSaveArrayGpu<word>       (np,datasrc)); }
   unsigned*    SaveArrayGpu(unsigned np,const unsigned    *datasrc)const{ return(TSaveArrayGpu<unsigned>   (np,datasrc)); }
   int*         SaveArrayGpu(unsigned np,const int         *datasrc)const{ return(TSaveArrayGpu<int>        (np,datasrc)); }
@@ -226,6 +228,7 @@ protected:
   double2*     SaveArrayGpu(unsigned np,const double2     *datasrc)const{ return(TSaveArrayGpu<double2>    (np,datasrc)); }
   tsymatrix3f* SaveArrayGpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayGpu<tsymatrix3f>(np,datasrc)); }
   template<class T> void TRestoreArrayGpu(unsigned np,T *data,T *datanew)const;
+  void RestoreArrayGpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayGpu<byte>       (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayGpu<word>       (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,unsigned    *data,unsigned    *datanew)const{ TRestoreArrayGpu<unsigned>   (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,int         *data,int         *datanew)const{ TRestoreArrayGpu<int>        (np,data,datanew); }

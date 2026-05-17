@@ -85,7 +85,7 @@ void JSphCpu::InitVars(){
   NpbPer=NpfPer=0;
 
   Idpc=NULL; Codec=NULL; Dcellc=NULL; Posc=NULL; Velrhopc=NULL;
-  BoundNormalc=NULL; MotionVelc=NULL; TangenVelc=NULL; //-mDBC
+  BoundNormalc=NULL; MotionVelc=NULL; BoundModec=NULL; TangenVelc=NULL; //-mDBC
   //====== mdbr
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
@@ -194,6 +194,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(UseNormals){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-BoundNormal
     if(SlipMode!=SLIP_Vel0)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-MotionVel
+    if(SlipMode>=SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_1B,1); //-BoundMode
     if(SlipMode>=SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-TangenVel
   }
   if(InOut){
@@ -222,6 +223,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   tsymatrix3f *spstau     =SaveArrayCpu(Np,SpsTauc);
   tfloat3     *boundnormal=SaveArrayCpu(Np,BoundNormalc);
   tfloat3     *motionvel  =SaveArrayCpu(Np,MotionVelc);
+  byte        *boundmode  =SaveArrayCpu(Np,BoundModec);
   tfloat3     *tangenvel  =SaveArrayCpu(Np,TangenVelc);
   //====mdbr
   tsymatrix3f  *sigma     =SaveArrayCpu(Np,Sigmac);
@@ -241,6 +243,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(SpsTauc);
   ArraysCpu->Free(BoundNormalc);
   ArraysCpu->Free(MotionVelc);
+  ArraysCpu->Free(BoundModec);
   ArraysCpu->Free(TangenVelc);
   //====mdbr
   ArraysCpu->Free(Sigmac);
@@ -264,6 +267,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(spstau)     SpsTauc     =ArraysCpu->ReserveSymatrix3f();
   if(boundnormal)BoundNormalc=ArraysCpu->ReserveFloat3();
   if(motionvel)  MotionVelc  =ArraysCpu->ReserveFloat3();
+  if(boundmode)  BoundModec  =ArraysCpu->ReserveByte();
   if(tangenvel)  TangenVelc  =ArraysCpu->ReserveFloat3();
   //===== mdbr
   if(sigma)      Sigmac = ArraysCpu->ReserveSymatrix3f();
@@ -283,6 +287,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,spstau,SpsTauc);
   RestoreArrayCpu(Np,boundnormal,BoundNormalc);
   RestoreArrayCpu(Np,motionvel,MotionVelc);
+  RestoreArrayCpu(Np,boundmode,BoundModec);
   RestoreArrayCpu(Np,tangenvel,TangenVelc);
   //===== mdbr
   RestoreArrayCpu(Np,sigma,Sigmac);
@@ -340,6 +345,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   if(UseNormals){
     BoundNormalc=ArraysCpu->ReserveFloat3();
     if(SlipMode!=SLIP_Vel0)MotionVelc=ArraysCpu->ReserveFloat3();
+    if(SlipMode>=SLIP_NoSlip)BoundModec=ArraysCpu->ReserveByte();
     if(SlipMode>=SLIP_NoSlip)TangenVelc=ArraysCpu->ReserveFloat3();
   }
 }
@@ -494,6 +500,7 @@ void JSphCpu::InitRunCpu(){
   if(TVisco==VISCO_LaminarSPS)memset(SpsTauc,0,sizeof(tsymatrix3f)*Np);
   if(CaseNfloat)InitFloating();
   if(MotionVelc)memset(MotionVelc,0,sizeof(tfloat3)*Np);
+  if(BoundModec)memset(BoundModec,BMODE_DBC,sizeof(byte)*Np);
   if(TangenVelc)memset(TangenVelc,0,sizeof(tfloat3)*Np);
 }
 
@@ -968,6 +975,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             if(ftp2 && shift && shiftmode==SHIFT_NoBound)shiftposfsp1.x=FLT_MAX; //-With floating objects do not use shifting. | Con floatings anula shifting.
             compute=!(USE_FTEXTERNAL && ftp1 && (boundp2 || ftp2)); //-Deactivate when using DEM and if it is of type float-float or float-bound. | Se desactiva cuando se usa DEM y es float-float o float-bound.
           }
+          if(boundp2 && TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip && BoundModec && !ftp2 && BoundModec[p2]==BMODE_MDBC2OFF){
+            massp2=0;
+          }
 
           tfloat4 velrhop2=velrhop[p2];
           if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
@@ -1422,20 +1432,20 @@ tfloat3 JSphCpu::Mdbc2TangenVel(const tfloat3 &boundnormal,const tfloat3 &velfin
 template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdbcCorrectionT2
   (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,tfloat3 *tangenvel)
 {
   const int nn=int(n);
+  const bool useboundmode=(boundmode && tslip>=SLIP_NoSlip);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (guided)
   #endif
   for(int p1=0;p1<nn;p1++){
-    if(tangenvel && tslip==SLIP_NoSlip)tangenvel[p1]=motionvel[p1];
-    if(tangenvel && tslip==SLIP_FreeSlip)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],motionvel[p1]);
     if(boundnormal[p1]!=TFloat3(0)){
     float rhopfinal=FLT_MAX;
     tfloat3 velrhopfinal=TFloat3(0);
     tsymatrix3f sigmafinal={0,0,0,0,0,0};//mdbr
     float sumwab=0;
+    float submerged=0;
 
     //-Calculates ghost node position.
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
@@ -1478,6 +1488,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
           const tsymatrix3f sigmap2=sigma[p2];//mdbr
           const float massp2=MassFluid;
           const float volp2=massp2/velrhopp2.w;
+          if(useboundmode)submerged-=volp2*(drx*frx + dry*fry + drz*frz);
 
           //===== Density and its gradient =====
           //rhopp1+=massp2*wab;
@@ -1551,7 +1562,9 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 
     //-Store the results.
     //--------------------
-    if(sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)){
+    const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
+    if(activebound){
+      if(useboundmode)boundmode[p1]=BMODE_MDBC2;
       const tfloat3 dpos=(boundnormal[p1]*(-1.f)); //-Boundary particle position - ghost node position.
       if(sim2d){
         const double determ=fmath::Determinant3x3(a_corr2);
@@ -1678,6 +1691,12 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
         sigma[p1] = sigmafinal;
       }
     }
+    else if(useboundmode){
+      boundmode[p1]=BMODE_MDBC2OFF;
+      velrhop[p1].w=RhopZero;
+      sigma[p1]=TSymMatrix3f();
+      if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],motionvel[p1]);
+    }
     }
   }
 }
@@ -1688,19 +1707,19 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 //==============================================================================
  template<TpKernel tker> void JSphCpu::Interaction_MdbcCorrectionT(TpSlipMode slipmode
   ,const StDivDataCpu &divdata,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,tfloat3 *tangenvel)
 {
   const float determlimit=1e-3f;
   //-Interaction GhostBoundaryNodes-Fluid.
   const unsigned n=(UseNormalsFt? Np: NpbOk);
   if(Simulate2D){ const bool sim2d=true;
-    if(slipmode==SLIP_Vel0    )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_Vel0    > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
-    if(slipmode==SLIP_NoSlip  )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_NoSlip  > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
-    if(slipmode==SLIP_FreeSlip)InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_FreeSlip> (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
+    if(slipmode==SLIP_Vel0    )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_Vel0    > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
+    if(slipmode==SLIP_NoSlip  )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_NoSlip  > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
+    if(slipmode==SLIP_FreeSlip)InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_FreeSlip> (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
   }else{          const bool sim2d=false;
-    if(slipmode==SLIP_Vel0    )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_Vel0    > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
-    if(slipmode==SLIP_NoSlip  )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_NoSlip  > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
-    if(slipmode==SLIP_FreeSlip)InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_FreeSlip> (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);
+    if(slipmode==SLIP_Vel0    )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_Vel0    > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
+    if(slipmode==SLIP_NoSlip  )InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_NoSlip  > (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
+    if(slipmode==SLIP_FreeSlip)InteractionMdbcCorrectionT2 <tker,sim2d,SLIP_FreeSlip> (n,divdata,determlimit,MdbcThreshold,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);
   }
 }
 
@@ -1710,11 +1729,11 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 //==============================================================================
 void JSphCpu::Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,tfloat3 *tangenvel)
 {
   switch(TKernel){
-    case KERNEL_Cubic:       Interaction_MdbcCorrectionT <KERNEL_Cubic     > (slipmode,divdata,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);  break;
-    case KERNEL_Wendland:    Interaction_MdbcCorrectionT <KERNEL_Wendland  > (slipmode,divdata,pos,code,idp,boundnormal,motionvel,velrhop,sigma,tangenvel);  break;
+    case KERNEL_Cubic:       Interaction_MdbcCorrectionT <KERNEL_Cubic     > (slipmode,divdata,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);  break;
+    case KERNEL_Wendland:    Interaction_MdbcCorrectionT <KERNEL_Wendland  > (slipmode,divdata,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,tangenvel);  break;
     default: Run_Exceptioon("Kernel unknown.");
   }
 }

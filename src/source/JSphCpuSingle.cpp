@@ -616,7 +616,8 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
 //==============================================================================
 void JSphCpuSingle::MdbcBoundCorrection(){
   Timersc->TmStart(TMC_CfPreForces);
-  Interaction_MdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,TangenVelc);
+  if(BoundModec)memset(BoundModec,BMODE_DBC,sizeof(byte)*Np);
+  Interaction_MdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,TangenVelc);
   Timersc->TmStop(TMC_CfPreForces);
 }
 

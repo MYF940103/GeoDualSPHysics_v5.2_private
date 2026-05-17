@@ -496,7 +496,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,bsbound,bsfluid,Np,Npb,NpbOk
     ,0,Nstep,DivData,Dcellg
     ,Posxyg,Poszg,PosCellg,Velrhopg,Idpg,Codeg
-    ,FtoMasspg,SpsTaug,dengradcorr,TangenVelg
+    ,FtoMasspg,SpsTaug,dengradcorr,BoundModeg,TangenVelg
     ,ViscDtg,Arg,Aceg,Deltag
     ,SpsGradvelg
     ,Sigmag,Rsigmag
@@ -539,9 +539,10 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
 void JSphGpuSingle::MdbcBoundCorrection(){
   Timersg->TmStart(TMG_CfPreForces,false);
   const unsigned n=(UseNormalsFt? Np: NpbOk);
+  if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
   cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,MdbcFastSingle
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
-    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,TangenVelg);
+    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg);
   Timersg->TmStop(TMG_CfPreForces,false);
 }
 

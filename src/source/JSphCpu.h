@@ -136,6 +136,7 @@ protected:
 
   tfloat3 *BoundNormalc;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
   tfloat3 *MotionVelc;    ///<Velocity of a moving boundary particle.
+  byte *BoundModec;        ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
   tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   //=============== mdbr
   tsymatrix3f* Sigmac;
@@ -191,6 +192,7 @@ protected:
   bool CheckCpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=CpuParticlesSize); }
 
   template<class T> T* TSaveArrayCpu(unsigned np,const T *datasrc)const;
+  byte*        SaveArrayCpu(unsigned np,const byte        *datasrc)const{ return(TSaveArrayCpu<byte>       (np,datasrc)); }
   word*        SaveArrayCpu(unsigned np,const word        *datasrc)const{ return(TSaveArrayCpu<word>       (np,datasrc)); }
   unsigned*    SaveArrayCpu(unsigned np,const unsigned    *datasrc)const{ return(TSaveArrayCpu<unsigned>   (np,datasrc)); }
   int*         SaveArrayCpu(unsigned np,const int         *datasrc)const{ return(TSaveArrayCpu<int>        (np,datasrc)); }
@@ -201,6 +203,7 @@ protected:
   tdouble3*    SaveArrayCpu(unsigned np,const tdouble3    *datasrc)const{ return(TSaveArrayCpu<tdouble3>   (np,datasrc)); }
   tsymatrix3f* SaveArrayCpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayCpu<tsymatrix3f>(np,datasrc)); }
   template<class T> void TRestoreArrayCpu(unsigned np,T *data,T *datanew)const;
+  void RestoreArrayCpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayCpu<byte>       (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayCpu<word>       (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,unsigned    *data,unsigned    *datanew)const{ TRestoreArrayCpu<unsigned>   (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,int         *data,int         *datanew)const{ TRestoreArrayCpu<int>        (np,data,datanew); }
@@ -265,20 +268,20 @@ protected:
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);
     template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionCdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
   template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);
   template<TpKernel tker> void Interaction_CdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
   void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);//mdbr
     void Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
