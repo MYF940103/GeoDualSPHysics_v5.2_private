@@ -486,6 +486,9 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
     CellDivSingle->SortArray(SigmaPrec);
   }
   if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
+  if(FSTypec)CellDivSingle->SortArray(FSTypec);
+  if(FSNormalc)CellDivSingle->SortArray(FSNormalc);
+  if(PosDivc)CellDivSingle->SortArray(PosDivc);
   if(UseNormals){
     CellDivSingle->SortArray(BoundNormalc);
     if(MotionVelc)CellDivSingle->SortArray(MotionVelc);
@@ -566,6 +569,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   else { CdbcBoundCorrection(); } //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
+  ComputeFreeSurfaceTracking();
   tfloat3 *dengradcorr=NULL;
 
   Timersc->TmStart(TMC_CfForces);
@@ -1196,8 +1200,10 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmakk=NULL;
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
+  unsigned *fstype=NULL;
   //==========
   if(save){
+    ComputeFreeSurfaceTracking();
     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
     idp=ArraysCpu->ReserveUint();
     pos=ArraysCpu->ReserveDouble3();
@@ -1207,8 +1213,9 @@ void JSphCpuSingle::SaveData(){
 	sigmakk=ArraysCpu->ReserveFloat3();
 	sigmaij=ArraysCpu->ReserveFloat3();
 	kplastic=ArraysCpu->ReserveFloat();
+    fstype=ArraysCpu->ReserveUint();
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1232,6 +1239,9 @@ void JSphCpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
+  if(save){
+    arrays.AddArray("FSType",npsave,fstype);
+  }
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
@@ -1243,6 +1253,7 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(sigmakk);
   ArraysCpu->Free(sigmaij);
   ArraysCpu->Free(kplastic);
+  ArraysCpu->Free(fstype);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.

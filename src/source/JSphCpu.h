@@ -173,6 +173,12 @@ protected:
   //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
   float *Pressc;       ///<Pressure computed starting from density for interaction. Press[]=fsph::ComputePress(Rhop,CSP)
 
+  //-Variables for free-surface tracking.
+  tmatrix3d *CorrMatc;  ///<Kernel-gradient correction matrix.
+  unsigned *FSTypec;    ///<Particle classification: 0 internal, 2 free-surface, 3 isolated, 4 boundary.
+  tfloat3 *FSNormalc;   ///<Free-surface normal vectors used by the umbrella scan.
+  float *PosDivc;       ///<Position divergence threshold used for free-surface detection.
+
   //-Variables for Laminar+SPS viscosity.  
   tsymatrix3f *SpsTauc;       ///<SPS sub-particle stress tensor.
   tsymatrix3f *SpsGradvelc;   ///<Velocity gradients.
@@ -202,6 +208,7 @@ protected:
   double*      SaveArrayCpu(unsigned np,const double      *datasrc)const{ return(TSaveArrayCpu<double>     (np,datasrc)); }
   tdouble3*    SaveArrayCpu(unsigned np,const tdouble3    *datasrc)const{ return(TSaveArrayCpu<tdouble3>   (np,datasrc)); }
   tsymatrix3f* SaveArrayCpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayCpu<tsymatrix3f>(np,datasrc)); }
+  tmatrix3d*   SaveArrayCpu(unsigned np,const tmatrix3d   *datasrc)const{ return(TSaveArrayCpu<tmatrix3d>  (np,datasrc)); }
   template<class T> void TRestoreArrayCpu(unsigned np,T *data,T *datanew)const;
   void RestoreArrayCpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayCpu<byte>       (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayCpu<word>       (np,data,datanew); }
@@ -213,12 +220,14 @@ protected:
   void RestoreArrayCpu(unsigned np,double      *data,double      *datanew)const{ TRestoreArrayCpu<double>     (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,tdouble3    *data,tdouble3    *datanew)const{ TRestoreArrayCpu<tdouble3>   (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,tsymatrix3f *data,tsymatrix3f *datanew)const{ TRestoreArrayCpu<tsymatrix3f>(np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tmatrix3d   *data,tmatrix3d   *datanew)const{ TRestoreArrayCpu<tmatrix3d>  (np,data,datanew); }
 
   llong GetAllocMemoryCpu()const;
   void PrintAllocMemory(llong mcpu)const;
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
-    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code);
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -234,6 +243,23 @@ protected:
   void PreInteractionVars_Forces(unsigned np,unsigned npb);
   void PreInteraction_Forces();
   void PosInteraction_Forces();
+  void ComputeFreeSurfaceTracking();
+  template<TpKernel tker,bool sim2d> void ComputeFSParticlesFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,tmatrix3d *corrmat,unsigned *fstype,tfloat3 *fsnormal,float *posdiv)const;
+  template<bool sim2d> void ScanUmbrellaFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const typecode *code,const tfloat3 *fsnormal,unsigned *fstype)const;
+  template<TpKernel tker,bool sim2d> void ComputeCorrMatrixFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,tmatrix3d *corrmat)const;
+  template<TpKernel tker,bool sim2d> void ComputeNormalsFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const tmatrix3d *corrmat,tfloat3 *fsnormal)const;
+  template<TpKernel tker,bool sim2d> void ClassifyFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const tfloat3 *fsnormal,unsigned *fstype,float *posdiv)const;
 
   template<TpKernel tker,TpFtMode ftmode> void InteractionForcesBound
     (unsigned n,unsigned pini,StDivDataCpu divdata,const unsigned *dcell
