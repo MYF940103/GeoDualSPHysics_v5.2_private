@@ -115,6 +115,7 @@ protected:
   tdouble3 *AuxPos;
   tfloat3 *AuxVel; 
   float *AuxRhop;
+  unsigned *AuxFSType;
 
   unsigned GpuParticlesAllocs;///<Number of allocations.
   unsigned GpuParticlesSize;  ///<Number of particles for which GPU memory was allocated. | Numero de particulas para las cuales se reservo memoria en gpu.
@@ -144,6 +145,12 @@ protected:
   //-ruofeng
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng
+
+  //-Variables for free-surface tracking.
+  tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.
+  unsigned *FSTypeg;    ///<Particle classification: 0 internal, 2 free-surface, 3 isolated, 4 boundary.
+  float3 *FSNormalg;    ///<Free-surface normal vectors used by the umbrella scan.
+  float *PosDivg;       ///<Position divergence threshold used for free-surface detection.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -227,6 +234,7 @@ protected:
   double*      SaveArrayGpu(unsigned np,const double      *datasrc)const{ return(TSaveArrayGpu<double>     (np,datasrc)); }
   double2*     SaveArrayGpu(unsigned np,const double2     *datasrc)const{ return(TSaveArrayGpu<double2>    (np,datasrc)); }
   tsymatrix3f* SaveArrayGpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayGpu<tsymatrix3f>(np,datasrc)); }
+  tmatrix3d*   SaveArrayGpu(unsigned np,const tmatrix3d   *datasrc)const{ return(TSaveArrayGpu<tmatrix3d>  (np,datasrc)); }
   template<class T> void TRestoreArrayGpu(unsigned np,T *data,T *datanew)const;
   void RestoreArrayGpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayGpu<byte>       (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayGpu<word>       (np,data,datanew); }
@@ -238,6 +246,7 @@ protected:
   void RestoreArrayGpu(unsigned np,double      *data,double      *datanew)const{ TRestoreArrayGpu<double>     (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,double2     *data,double2     *datanew)const{ TRestoreArrayGpu<double2>    (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,tsymatrix3f *data,tsymatrix3f *datanew)const{ TRestoreArrayGpu<tsymatrix3f>(np,data,datanew); }
+  void RestoreArrayGpu(unsigned np,tmatrix3d   *data,tmatrix3d   *datanew)const{ TRestoreArrayGpu<tmatrix3d>  (np,data,datanew); }
 
   llong GetAllocMemoryCpu()const;
   llong GetAllocMemoryGpu()const;
@@ -258,6 +267,7 @@ protected:
   void PreInteractionVars_Forces(unsigned np,unsigned npb);
   void PreInteraction_Forces();
   void PosInteraction_Forces();
+  void ComputeFreeSurfaceTracking();
   
   void ComputeVerlet(double dt);
   void ComputeSymplecticPre(double dt);

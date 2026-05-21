@@ -715,6 +715,242 @@ void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4
   }
 }
 
+//==============================================================================
+/// Returns the inverse 3-D correction matrix, using the x-z block in 2-D.
+//==============================================================================
+template<bool sim2d> __device__ tmatrix3d KerFsCorrMatInverse(const tmatrix3d &mat){
+  tmatrix3d inv;
+  cumath::Tmatrix3dReset(inv);
+  if(sim2d){
+    const double det=mat.a11*mat.a33-mat.a13*mat.a31;
+    if(det){
+      inv.a11= mat.a33/det;
+      inv.a13=-mat.a13/det;
+      inv.a31=-mat.a31/det;
+      inv.a33= mat.a11/det;
+    }
+    else{
+      inv.a11=1;
+      inv.a33=1;
+    }
+  }
+  else{
+    const double det=cumath::Determinant3x3(mat);
+    if(det)inv=cumath::InverseMatrix3x3(mat,det);
+  }
+  return(inv);
+}
+
+//==============================================================================
+/// Computes free-surface candidates, local normals and correction matrices.
+//==============================================================================
+template<TpKernel tker,bool sim2d> __global__ void KerComputeFSParticlesFreeSurface
+  (unsigned np,unsigned npb,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell
+  ,unsigned cellfluid,const unsigned *dcell,const float4 *poscell,const float4 *velrhop
+  ,const typecode *code,tmatrix3d *corrmat,unsigned *fstype,float3 *fsnormal,float *posdiv)
+{
+  const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p1<np){
+    tmatrix3d matzero;
+    cumath::Tmatrix3dReset(matzero);
+    if(p1<npb){
+      corrmat[p1]=matzero;
+      fstype[p1]=4;
+      fsnormal[p1]=make_float3(0,0,0);
+      posdiv[p1]=0;
+      return;
+    }
+
+    corrmat[p1]=matzero;
+    fstype[p1]=0;
+    fsnormal[p1]=make_float3(0,0,0);
+    posdiv[p1]=0;
+    if(CODE_IsPeriodic(code[p1]))return;
+
+    const float4 pscellp1=poscell[p1];
+    double fs_treshold=0;
+    double3 gradc=make_double3(0,0,0);
+    tmatrix3d lcorr;
+    cumath::Tmatrix3dReset(lcorr);
+    unsigned neigh=0;
+    const float volb=(sim2d? CTE.dp*CTE.dp: CTE.dp*CTE.dp*CTE.dp);
+
+    for(int b2=0;b2<2;b2++){
+      const bool boundp2=(b2==1);
+      int ini1,fin1,ini2,fin2,ini3,fin3;
+      cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+      if(!boundp2){ ini3+=cellfluid; fin3+=cellfluid; }
+      for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+        unsigned pini,pfin=0;
+        cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+        for(unsigned p2=pini;p2<pfin;p2++){
+          const float4 pscellp2=poscell[p2];
+          const float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+          const float dry=(sim2d? 0: pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w)));
+          const float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
+            const float fac=cufsph::GetKernel_Fac<tker>(rr2);
+            const double frx=double(fac)*double(drx);
+            const double fry=(sim2d? 0: double(fac)*double(dry));
+            const double frz=double(fac)*double(drz);
+            const float rhop2=velrhop[p2].w;
+            const double vol2=(rhop2>0?
+              double((boundp2? CTE.massb: CTE.massf)/rhop2): double(boundp2? volb: 0));
+            if(vol2>0){
+              neigh++;
+              const double ddrx=double(drx);
+              const double ddry=(sim2d? 0: double(dry));
+              const double ddrz=double(drz);
+              const double dot3=ddrx*frx+ddry*fry+ddrz*frz;
+              gradc.x+=vol2*frx;
+              gradc.y+=vol2*fry;
+              gradc.z+=vol2*frz;
+              fs_treshold-=vol2*dot3;
+              lcorr.a11+=-ddrx*frx*vol2; lcorr.a12+=-ddrx*fry*vol2; lcorr.a13+=-ddrx*frz*vol2;
+              lcorr.a21+=-ddry*frx*vol2; lcorr.a22+=-ddry*fry*vol2; lcorr.a23+=-ddry*frz*vol2;
+              lcorr.a31+=-ddrz*frx*vol2; lcorr.a32+=-ddrz*fry*vol2; lcorr.a33+=-ddrz*frz*vol2;
+            }
+          }
+        }
+      }
+    }
+
+    posdiv[p1]=float(fs_treshold);
+    unsigned fstypep1=0;
+    if(neigh){
+      const float nzero=(sim2d?
+        CUDART_PI_F*CTE.kernelsize2/(CTE.dp*CTE.dp):
+        (4.f/3.f)*CUDART_PI_F*CTE.kernelsize2*CTE.kernelsize2/(CTE.dp*CTE.dp*CTE.dp));
+      if(sim2d){
+        if(fs_treshold<1.7)fstypep1=2;
+        if(fs_treshold<1.1 && nzero/float(neigh)<0.4f)fstypep1=3;
+      }
+      else{
+        if(fs_treshold<2.75)fstypep1=2;
+        if(fs_treshold<1.8 && nzero/float(neigh)<0.4f)fstypep1=3;
+      }
+    }
+    else fstypep1=3;
+    fstype[p1]=fstypep1;
+
+    const tmatrix3d lcorr_inv=KerFsCorrMatInverse<sim2d>(lcorr);
+    corrmat[p1]=lcorr_inv;
+    const double3 gradc1=make_double3(
+      gradc.x*lcorr_inv.a11+gradc.y*lcorr_inv.a12+gradc.z*lcorr_inv.a13,
+      gradc.x*lcorr_inv.a21+gradc.y*lcorr_inv.a22+gradc.z*lcorr_inv.a23,
+      gradc.x*lcorr_inv.a31+gradc.y*lcorr_inv.a32+gradc.z*lcorr_inv.a33);
+    const double gradcnorm=sqrt(gradc1.x*gradc1.x+gradc1.y*gradc1.y+gradc1.z*gradc1.z);
+    if(gradcnorm>1e-12){
+      fsnormal[p1]=make_float3(float(-gradc1.x/gradcnorm),float(-gradc1.y/gradcnorm),float(-gradc1.z/gradcnorm));
+    }
+  }
+}
+
+//==============================================================================
+/// Scans the umbrella region and rejects candidates with neighbours in that region.
+//==============================================================================
+template<bool sim2d> __global__ void KerScanUmbrellaFreeSurface
+  (unsigned np,unsigned npb,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell
+  ,unsigned cellfluid,const unsigned *dcell,const float4 *poscell,const typecode *code
+  ,const float3 *fsnormal,unsigned *fstype)
+{
+  const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p1>=npb && p1<np){
+    if(CODE_IsPeriodic(code[p1])){
+      fstype[p1]=0;
+      return;
+    }
+    if(fstype[p1]!=2)return;
+    bool fs_flag=false;
+    const float4 pscellp1=poscell[p1];
+    const float3 normalp1=fsnormal[p1];
+    const float norm2=normalp1.x*normalp1.x+normalp1.y*normalp1.y+normalp1.z*normalp1.z;
+    if(norm2<=1e-12f)return;
+    const float3 posq=make_float3(CTE.kernelh*normalp1.x,CTE.kernelh*normalp1.y,CTE.kernelh*normalp1.z);
+
+    for(int b2=0;b2<2 && !fs_flag;b2++){
+      const bool boundp2=(b2==1);
+      int ini1,fin1,ini2,fin2,ini3,fin3;
+      cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+      if(!boundp2){ ini3+=cellfluid; fin3+=cellfluid; }
+      for(int c3=ini3;c3<fin3 && !fs_flag;c3+=nc.w)for(int c2=ini2;c2<fin2 && !fs_flag;c2+=nc.x){
+        unsigned pini,pfin=0;
+        cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+        for(unsigned p2=pini;p2<pfin;p2++){
+          const float4 pscellp2=poscell[p2];
+          const float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+          const float dry=(sim2d? 0: pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w)));
+          const float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+          const float rr2=drx*drx+dry*dry+drz*drz;
+          if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
+            if(rr2>2.f*CTE.kernelh*CTE.kernelh){
+              const float drxq=-drx-posq.x;
+              const float dryq=(sim2d? 0: -dry-posq.y);
+              const float drzq=-drz-posq.z;
+              const float rrq=sqrtf(drxq*drxq+dryq*dryq+drzq*drzq);
+              if(rrq<CTE.kernelh)fs_flag=true;
+            }
+            else{
+              if(sim2d){
+                const float drxq=-drx-posq.x;
+                const float drzq=-drz-posq.z;
+                const float normalqnorm=sqrtf((drxq*normalp1.x)*(drxq*normalp1.x)+(drzq*normalp1.z)*(drzq*normalp1.z));
+                const float tangqnorm=sqrtf((-drxq*normalp1.z)*(-drxq*normalp1.z)+(drzq*normalp1.x)*(drzq*normalp1.x));
+                if(normalqnorm+tangqnorm<CTE.kernelh)fs_flag=true;
+              }
+              else{
+                const float rrr=rsqrtf(rr2);
+                float cosine=(-drx*normalp1.x-dry*normalp1.y-drz*normalp1.z)*rrr;
+                cosine=max(-1.f,min(1.f,cosine));
+                if(acosf(cosine)<0.785398f)fs_flag=true;
+              }
+            }
+          }
+          if(fs_flag)break;
+        }
+      }
+    }
+    if(fs_flag)fstype[p1]=0;
+  }
+}
+
+//==============================================================================
+/// Computes free-surface classification with the lightweight umbrella algorithm.
+//==============================================================================
+template<TpKernel tker,bool sim2d> void ComputeFreeSurfaceTrackingT(unsigned np,unsigned npb
+  ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell,const float4 *velrhop
+  ,const typecode *code,tmatrix3d *corrmat,unsigned *fstype,float3 *fsnormal,float *posdiv)
+{
+  if(np){
+    dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+    KerComputeFSParticlesFreeSurface<tker,sim2d> <<<sgrid,SPHBSIZE>>>
+      (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    KerScanUmbrellaFreeSurface<sim2d> <<<sgrid,SPHBSIZE>>>
+      (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,poscell,code,fsnormal,fstype);
+  }
+}
+
+//==============================================================================
+/// Computes free-surface classification with the lightweight umbrella algorithm.
+//==============================================================================
+void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
+  ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
+  ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
+  ,unsigned *fstype,float3 *fsnormal,float *posdiv)
+{
+  if(simulate2d){
+    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    else throw "Kernel unknown.";
+  }
+  else{
+    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    else throw "Kernel unknown.";
+  }
+}
+
 //------------------------------------------------------------------------------
 /// Interaction of a particle with a set of particles. (Fluid/Float-Fluid/Float/Bound)
 /// Realiza la interaccion de una particula con un conjunto de ellas. (Fluid/Float-Fluid/Float/Bound)

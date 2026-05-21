@@ -223,6 +223,10 @@ void ComputeAceMod(unsigned n,const typecode *code,const float3 *ace,float *acem
 void ComputeVelMod(unsigned n,const float4 *vel,float *velmod);
 void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3f *sigma,tsymatrix3f *artificialstress);
 void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace);
+void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
+  ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
+  ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
+  ,unsigned *fstype,float3 *fsnormal,float *posdiv);
 
 //-Kernels for the force calculation.
 void Interaction_Forces(const StInterParmsg &t);

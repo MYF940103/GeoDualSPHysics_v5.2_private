@@ -57,7 +57,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   ClassName="JSphGpu";
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;//ruofeng
-  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL;
+  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
   GpuInfo=new JDsGpuInfo;
@@ -141,6 +141,7 @@ void JSphGpu::InitVars(){
   FreeCpuMemoryFixed();
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL;//ruofeng
+  CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
@@ -271,6 +272,7 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] AuxPos;     AuxPos=NULL;
   delete[] AuxVel;     AuxVel=NULL;
   delete[] AuxRhop;    AuxRhop=NULL;
+  delete[] AuxFSType;  AuxFSType=NULL;
   //ruofeng
   delete[] AuxSigma_xx_yy_zz;   AuxSigma_xx_yy_zz = NULL;
   delete[] AuxSigma_xy_yz_xz;   AuxSigma_xy_yz_xz = NULL;
@@ -300,6 +302,7 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
       AuxPos=new tdouble3[np];   MemCpuParticles+=sizeof(tdouble3)*np; 
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
       AuxRhop=new float[np];     MemCpuParticles+=sizeof(float)*np;
+      AuxFSType=new unsigned[np]; MemCpuParticles+=sizeof(unsigned)*np;
       //======mdbr
       AuxSigma_xx_yy_zz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       AuxSigma_xy_yz_xz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
@@ -340,11 +343,12 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   #else
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_2B,2);  //-code,code2
   #endif
-  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,4);  //-idp,ar,viscdt,dcell
+  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,6);  //-idp,ar,viscdt,dcell,FSTypeg,PosDivg
   if(DDTArray)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1);  //-delta
-  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-ace
+  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2); //-ace,FSNormalg
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,5); //-velrhop,posxy,poscell
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,2);  //-posz
+  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_72B,1); //-CorrMatg
   //====== mdbr
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-sigma
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
@@ -409,6 +413,10 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   float3      *motionvel  =SaveArrayGpu(Np,MotionVelg);
   byte        *boundmode  =SaveArrayGpu(Np,BoundModeg);
   float3      *tangenvel  =SaveArrayGpu(Np,TangenVelg);
+  tmatrix3d   *corrmat    =SaveArrayGpu(Np,CorrMatg);
+  unsigned    *fstype     =SaveArrayGpu(Np,FSTypeg);
+  float3      *fsnormal   =SaveArrayGpu(Np,FSNormalg);
+  float       *posdiv     =SaveArrayGpu(Np,PosDivg);
   //==mdbr
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
@@ -432,6 +440,10 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(MotionVelg);
   ArraysGpu->Free(BoundModeg);
   ArraysGpu->Free(TangenVelg);
+  ArraysGpu->Free(CorrMatg);
+  ArraysGpu->Free(FSTypeg);
+  ArraysGpu->Free(FSNormalg);
+  ArraysGpu->Free(PosDivg);
   //-mdbr
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
@@ -459,6 +471,10 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(motionvel)  MotionVelg  =ArraysGpu->ReserveFloat3();
   if(boundmode)  BoundModeg  =ArraysGpu->ReserveByte();
   if(tangenvel)  TangenVelg  =ArraysGpu->ReserveFloat3();
+  if(corrmat)    CorrMatg    =ArraysGpu->ReserveMatrix3d();
+  if(fstype)     FSTypeg     =ArraysGpu->ReserveUint();
+  if(fsnormal)   FSNormalg   =ArraysGpu->ReserveFloat3();
+  if(posdiv)     PosDivg     =ArraysGpu->ReserveFloat();
   //--mdbr
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
@@ -482,6 +498,10 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,motionvel,MotionVelg);
   RestoreArrayGpu(Np,boundmode,BoundModeg);
   RestoreArrayGpu(Np,tangenvel,TangenVelg);
+  RestoreArrayGpu(Np,corrmat,CorrMatg);
+  RestoreArrayGpu(Np,fstype,FSTypeg);
+  RestoreArrayGpu(Np,fsnormal,FSNormalg);
+  RestoreArrayGpu(Np,posdiv,PosDivg);
   //---mdbr
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
@@ -531,6 +551,10 @@ void JSphGpu::ReserveBasicArraysGpu(){
   Poszg=ArraysGpu->ReserveDouble();
   PosCellg=ArraysGpu->ReserveFloat4();
   Velrhopg=ArraysGpu->ReserveFloat4();
+  CorrMatg=ArraysGpu->ReserveMatrix3d();
+  FSTypeg=ArraysGpu->ReserveUint();
+  FSNormalg=ArraysGpu->ReserveFloat3();
+  PosDivg=ArraysGpu->ReserveFloat();
   //mdbr
   Sigmag = ArraysGpu->ReserveSymatrix3f();
   Kplasticg = ArraysGpu->ReserveFloat();
@@ -675,6 +699,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   cudaMemcpy(Posxy  ,Posxyg  +pini,sizeof(double2) *n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Posz   ,Poszg   +pini,sizeof(double)  *n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Velrhop,Velrhopg+pini,sizeof(float4)  *n,cudaMemcpyDeviceToHost);
+  if(AuxFSType && FSTypeg)cudaMemcpy(AuxFSType,FSTypeg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
   if(code || onlynormal)cudaMemcpy(Code,Codeg+pini,sizeof(typecode)*n,cudaMemcpyDeviceToHost);
   //==mdbr
   cudaMemcpy(Sigma,Sigmag+pini,sizeof(tsymatrix3f)*n,cudaMemcpyDeviceToHost);
@@ -692,6 +717,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         Posz[p-ndel]   =Posz[p];
         Velrhop[p-ndel]=Velrhop[p];
         Code[p-ndel]   =Code[p];
+        if(AuxFSType)AuxFSType[p-ndel]=AuxFSType[p];
         //==== mdbr
 		Sigma[p-ndel]  =Sigma[p];
         Kplastic[p-ndel] = Kplastic[p];
@@ -904,7 +930,20 @@ void JSphGpu::InitRunGpu(){
   if(MotionVelg)cudaMemset(MotionVelg,0,sizeof(float3)*Np);
   if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
   if(TangenVelg)cudaMemset(TangenVelg,0,sizeof(float3)*Np);
+  if(CorrMatg)cudaMemset(CorrMatg,0,sizeof(tmatrix3d)*Np);
+  if(FSTypeg)cudaMemset(FSTypeg,0,sizeof(unsigned)*Np);
+  if(FSNormalg)cudaMemset(FSNormalg,0,sizeof(float3)*Np);
+  if(PosDivg)cudaMemset(PosDivg,0,sizeof(float)*Np);
   Check_CudaErroor("Failed initializing variables for execution.");
+}
+
+//==============================================================================
+/// Computes free-surface classification with the lightweight umbrella algorithm.
+//==============================================================================
+void JSphGpu::ComputeFreeSurfaceTracking(){
+  if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
+  cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg);
+  Check_CudaErroor("Failed computing free-surface tracking.");
 }
 
 //==============================================================================

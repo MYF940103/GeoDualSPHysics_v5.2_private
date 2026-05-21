@@ -480,6 +480,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     else { CdbcBoundCorrection(); } //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
+  ComputeFreeSurfaceTracking();
   float3 *dengradcorr=NULL;
 
   Timersg->TmStart(TMG_CfForces,true);
@@ -959,6 +960,7 @@ void JSphGpuSingle::SaveData(){
   const unsigned npsave=Np-NpbPer-NpfPer; //-Subtracts the periodic particles if they exist. | Resta las periodicas si las hubiera.
   //-Retrieves particle data from the GPU. | Recupera datos de particulas en GPU.
   if(save){
+    ComputeFreeSurfaceTracking();
     Timersg->TmStart(TMG_SuDownData,false);
     unsigned npnormal=ParticlesDataDown(Np,0,false,PeriActive!=0);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
@@ -994,6 +996,7 @@ void JSphGpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
+  if(save)arrays.AddArray("FSType",npsave,AuxFSType);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
   //-Save extra data.
