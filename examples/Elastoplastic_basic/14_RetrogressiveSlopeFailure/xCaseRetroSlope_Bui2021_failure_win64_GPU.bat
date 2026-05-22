@@ -4,7 +4,7 @@ rem Don't remove the two jump line after than the next line [set NL=^]
 set NL=^
 
 
-set name=CaseRetroSlope_Bui2021_failure_4s
+set name=CaseRetroSlope_Bui2021_failure
 set dirout=%name%_GPU_out
 set diroutdata=%dirout%\data
 set initname=CaseRetroSlope_Bui2021_init
