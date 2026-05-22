@@ -636,6 +636,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.scell=Scell; 
   ctes.kernelsize=KernelSize;
   ctes.dp=float(Dp);
+  ctes.strainsoftening=(StrainSoftening? 1: 0);
   ctes.artificialstress=(ArtificialStress? 1: 0);
   ctes.artificialstresscoef=ArtificialStressCoef;
   ctes.artificialstressexp=ArtificialStressExp;
@@ -659,7 +660,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.domposminx=DomPosMin.x; ctes.domposminy=DomPosMin.y; ctes.domposminz=DomPosMin.z;
   ctes.modulus_E=SoilCte.ModulusE; ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
   cusph::CteInteractionUp(&ctes);
-  cusphs::CteInteractionUpTStep(&SoilCte);//mbdr
+  cusphs::CteInteractionUpTStep(&SoilCte,(StrainSoftening? 1: 0),(PartBegin? 1: 0));//mbdr
   Check_CudaErroor("Failed copying constants to GPU.");
 }
 

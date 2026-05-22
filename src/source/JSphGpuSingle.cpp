@@ -155,8 +155,14 @@ void JSphGpuSingle::ConfigDomain(){
   memcpy(Idp,PartsLoaded->GetIdp(),sizeof(unsigned)*Np);
   memcpy(Velrhop,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
   //========= mdbr
-  memset(Sigma, 0, sizeof(tsymatrix3f) * Np);
-  memset(Kplastic, 0, sizeof(float) * Np);
+  if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
+    memcpy(Sigma,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
+    memcpy(Kplastic,PartsLoaded->GetKplastic(),sizeof(float)*Np);
+  }
+  else{
+    memset(Sigma,0,sizeof(tsymatrix3f)*Np);
+    memset(Kplastic,0,sizeof(float)*Np);
+  }
   //========= mdbr
 
   //-Computes radius of floating bodies.

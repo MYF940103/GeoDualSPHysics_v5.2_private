@@ -27,6 +27,8 @@
 #include <cfloat>
 
 __constant__ StSoilCte SOILSCTE;
+__constant__ unsigned SOILSTRAINSOFTENING;
+__constant__ unsigned SOILPARTBEGIN;
 #define CTE_AVAILABLE
 //#include <cuda_profiler_api.h> //mdbr
 namespace cusphs{
@@ -508,8 +510,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         sigma_e_yz_zz.x = float(double(sigma2[p*3+2].x) + rsigma[p*3+2].x * dt2);
         sigma_e_xz_yy.x = float(double(sigma2[p*3+1].x) + rsigma[p*3+1].x * dt2);
         //-Update DP constants
+        const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
-        float coh=SOILSCTE.coh;
+        float coh=(SOILPARTBEGIN && usesoftening? SOILSCTE.coh/SOILSCTE.SoilTriggerFos: SOILSCTE.coh);
         float psi=SOILSCTE.dlt;
         //default 3D 
         float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -525,9 +528,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
           DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
         }	
-          //-Plastic corrector
-          //sigmanew=sigma_e;
-          ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        //-Plastic corrector
+        if(usesoftening)ConsRelationEPsft_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,SOILSCTE.phi,SOILSCTE.phi_r,SOILSCTE.n_phi
+          ,coh,SOILSCTE.coh_r,SOILSCTE.n_coh,SOILSCTE.dlt,dpctes,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        else ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
 
         //-Restore data of inout particles.
         if(inout && CODE_IsFluidInout(rcode)){
@@ -697,8 +701,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         sigma_e_yz_zz.x = float(double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dtm);
         sigma_e_xz_yy.x = float(double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dtm);
 		//-Update DP constants
+        const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
-        float coh=SOILSCTE.coh;
+        float coh=(SOILPARTBEGIN && usesoftening? SOILSCTE.coh/SOILSCTE.SoilTriggerFos: SOILSCTE.coh);
         float psi=SOILSCTE.dlt;
         //default 3D 
         float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -715,9 +720,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
 	     }
         //-Plastic corrector
-        ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
-		//ConsRelationEPsft_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,SOILSCTE.phi,SOILSCTE.phi_r,SOILSCTE.n_phi
-		//					  ,SOILSCTE.coh,SOILSCTE.coh_r,SOILSCTE.n_coh, SOILSCTE.dlt,dpctes,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        if(usesoftening)ConsRelationEPsft_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,SOILSCTE.phi,SOILSCTE.phi_r,SOILSCTE.n_phi
+          ,coh,SOILSCTE.coh_r,SOILSCTE.n_coh,SOILSCTE.dlt,dpctes,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        else ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
 		kplasticnew=kplasticold;//Update in the corrector step
         //-Restore data of inout particles.
         if(inout && CODE_IsFluidInout(rcode)){
@@ -892,8 +897,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         sigma_e_yz_zz.x = float(double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dt);
         sigma_e_xz_yy.x = float(double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dt);
         //-Update DP constants
+        const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
-        float coh=SOILSCTE.coh;
+        float coh=(SOILPARTBEGIN && usesoftening? SOILSCTE.coh/SOILSCTE.SoilTriggerFos: SOILSCTE.coh);
         float psi=SOILSCTE.dlt;
         //default 3D 
         float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -910,9 +916,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
 	    }
         //-Plastic corrector
-        ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
-		//ConsRelationEPsft_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,SOILSCTE.phi,SOILSCTE.phi_r,SOILSCTE.n_phi
-		//					  ,SOILSCTE.coh,SOILSCTE.coh_r,SOILSCTE.n_coh, SOILSCTE.dlt,dpctes,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        if(usesoftening)ConsRelationEPsft_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,SOILSCTE.phi,SOILSCTE.phi_r,SOILSCTE.n_phi
+          ,coh,SOILSCTE.coh_r,SOILSCTE.n_coh,SOILSCTE.dlt,dpctes,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+        else ConsRelationEP_fast(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,SOILSCTE.ModulusK,SOILSCTE.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
         //-Restore data of inout particles.
         if(inout && CODE_IsFluidInout(rcode)){
           outrhop=false;
@@ -1017,8 +1023,10 @@ void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpcte
 /// Graba constantes para la interaccion a la GPU.
 //==============================================================================
 
-void CteInteractionUpTStep(const StSoilCte* soilcte){
+void CteInteractionUpTStep(const StSoilCte* soilcte,unsigned strainsoftening,unsigned partbegin){
     cudaMemcpyToSymbol(SOILSCTE,soilcte,sizeof(StSoilCte));
+    cudaMemcpyToSymbol(SOILSTRAINSOFTENING,&strainsoftening,sizeof(unsigned));
+    cudaMemcpyToSymbol(SOILPARTBEGIN,&partbegin,sizeof(unsigned));
   }
 }
 

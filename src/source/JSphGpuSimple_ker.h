@@ -65,7 +65,7 @@ void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpcte
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3f* sigma, float* kplastic 
   ,cudaStream_t stm);
- void CteInteractionUpTStep(const StSoilCte *soilcte);//Constants loaded to time integration
+ void CteInteractionUpTStep(const StSoilCte *soilcte,unsigned strainsoftening,unsigned partbegin);//Constants loaded to time integration
 
 
 }

@@ -54,6 +54,7 @@ typedef struct{
   float scell;              ///<Cell size: KernelSize/ScellDiv (KernelSize or KernelSize/2).
   float kernelsize;         ///<Maximum interaction distance between particles (KernelK*KernelH).
   float dp;                 ///<Initial distance between particles [m].
+  unsigned strainsoftening; ///<Uses strain-softening DP correction when residual strength parameters are defined. //mdbr
   unsigned artificialstress; ///<Bui 2008 artificial stress for tensile instability (0:none, 1:enabled). //mdbr
   float artificialstresscoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float artificialstressexp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr

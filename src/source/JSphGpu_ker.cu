@@ -651,7 +651,7 @@ __device__ void KerComputeBuiArtificialStress(float2 sigma_xx_xy,float2 sigma_xz
   }
 }
 //------------------------------------------------------------------------------
-/// Precomputes Bui 2008 artificial stress tensor for each non-boundary particle.
+/// Precomputes Bui 2008 artificial stress tensor for each non-floating particle.
 //------------------------------------------------------------------------------
 __global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const float2 *sigma,float2 *artificialstress){
   const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
@@ -659,11 +659,9 @@ __global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const type
     float2 rstress_xx_xy=make_float2(0,0);
     float2 rstress_xz_yy=make_float2(0,0);
     float2 rstress_yz_zz=make_float2(0,0);
-    if(p>=nbound){
-      const bool ftp=CODE_IsFloating(code[p]);
-      if(!ftp){
-        KerComputeBuiArtificialStress(sigma[p*3],sigma[p*3+1],sigma[p*3+2],velrhop[p].w,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
-      }
+    const bool ftp=CODE_IsFloating(code[p]);
+    if(!ftp){
+      KerComputeBuiArtificialStress(sigma[p*3],sigma[p*3+1],sigma[p*3+2],velrhop[p].w,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
     }
     artificialstress[p*3]=rstress_xx_xy;
     artificialstress[p*3+1]=rstress_xz_yy;
@@ -971,7 +969,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,const float2 &artstressp1_xx_xy,const float2 &artstressp1_xz_yy,const float2 &artstressp1_yz_zz,const float invwabdp
   ,float2 &dsigmap1_xx_xy,float2 &dsigmap1_xz_yy,float2 &dsigmap1_yz_zz)
 {
-  const bool useartstress=(CTE.artificialstress && !boundp2 && !ftp1 && invwabdp>0.f);
+  const bool useartstress=(CTE.artificialstress && !ftp1 && invwabdp>0.f);
   for(int p2=pini;p2<pfin;p2++){
     const float4 pscellp2=poscell[p2];
     float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
