@@ -48,7 +48,7 @@
 
 using namespace std;
 
-static void ComputeArtificialStressArray(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
+static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
 
 //==============================================================================
 /// Constructor.
@@ -1090,7 +1090,7 @@ void JSphCpu::PreInteraction_Forces(){
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
-  if(ArtificialStressc)ComputeArtificialStressArray(Np,Npb,Codec,Velrhopc,Sigmac,ArtificialStressCoef,ArtificialStressc);
+  if(ArtificialStressc)ComputeArtificialStressArray(Np,Codec,Velrhopc,Sigmac,ArtificialStressCoef,ArtificialStressc);
 
   //-Calculate VelMax: Floating object particles are included and do not affect use of periodic condition.
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
@@ -1392,16 +1392,16 @@ static tsymatrix3f ComputeBuiArtificialStress(const tsymatrix3f &sigma,const flo
 }
 
 //==============================================================================
-/// Precomputes Bui 2008 artificial stress tensor for each non-boundary particle.
+/// Precomputes Bui 2008 artificial stress tensor for particles with stress data.
 //==============================================================================
-static void ComputeArtificialStressArray(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress){
+static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress){
   const int n=int(np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int p=0;p<n;p++){
     tsymatrix3f rstress={0,0,0,0,0,0};
-    if(unsigned(p)>=npb && !CODE_IsFloating(code[p])){
+    if(!CODE_IsFloating(code[p])){
       rstress=ComputeBuiArtificialStress(sigma[p],velrhop[p].w,coef);
     }
     artificialstress[p]=rstress;
@@ -1425,7 +1425,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   //-Initialize viscth to calculate viscdt maximo con OpenMP. | Inicializa viscth para calcular visdt maximo con OpenMP.
   float viscth[OMP_MAXTHREADS*OMP_STRIDE];
   for(int th=0;th<OmpThreads;th++)viscth[th*OMP_STRIDE]=0;
-  const bool useartstress=(ArtificialStress && !boundp2 && artificialstress);
+  const bool useartstress=(ArtificialStress && artificialstress);
   const float wabdp=(useartstress? fsph::GetKernel_Wab<tker>(CSP,float(Dp*Dp)): 0.f);
   const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
@@ -2988,7 +2988,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         sigma_e.xz = float(double(sigma2[p].xz) + rsigma[p].xz * dt2);
       //-Update DP constants
       float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
+      float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
       float psi=SoilCte.dlt;
       //default 3D 
       float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -3005,7 +3005,9 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
+        ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
+      else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       // 
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(Codec[p])){
@@ -3155,7 +3157,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt05);
       //-Update DP constants
       float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
+      float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
       float psi=SoilCte.dlt;
       //default 3D 
       float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -3172,7 +3174,9 @@ void JSphCpu::ComputeSymplecticPre(double dt){
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);      
+      if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
+        ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
+      else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       kplasnew=kplasticold;
       // 
       //-Restore data of inout particles.
@@ -3277,7 +3281,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt);
       //-Update DP constants
       float phi=SoilCte.phi;
-      float coh=SoilCte.coh;
+      float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
       float psi=SoilCte.dlt;
       //default 3D 
       float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
@@ -3294,7 +3298,9 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
          DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
       }	
       //-Plastic Corretor
-      ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
+      if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
+        ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
+      else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 

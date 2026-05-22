@@ -303,6 +303,7 @@ typedef struct{
   float coh_r;        ///<Strength softening
   float n_phi;        ///<Strength softening
   float n_coh;        ///<Strength softening
+  float SoilTriggerFos; ///<Peak strength reduction factor used to trigger restart softening stage.
   float ModulusE;     ///<Elastic model
   float PRvs;         ///<Elastic model
   float ModulusG;     ///<Elastic model - To be calculated

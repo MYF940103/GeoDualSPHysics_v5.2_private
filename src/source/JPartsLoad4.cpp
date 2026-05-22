@@ -35,7 +35,7 @@ using namespace std;
 //==============================================================================
 JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
   ClassName="JPartsLoad4";
-  Idp=NULL; Pos=NULL; VelRhop=NULL;
+  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL;
   Reset();
 }
 
@@ -63,8 +63,10 @@ void JPartsLoad4::Reset(){
   MapPosMin=MapPosMax=TDouble3(0);
   PartBegin=0;
   PartBeginTimeStep=0;
+  PartBeginTotalNp=0;
   SymplecticDtPre=0;
   DemDtForce=0;
+  SoilDataLoaded=false;
   AllocMemory(0);
 }
 
@@ -77,11 +79,15 @@ void JPartsLoad4::AllocMemory(unsigned count){
   delete[] Idp;      Idp=NULL; 
   delete[] Pos;      Pos=NULL; 
   delete[] VelRhop;  VelRhop=NULL; 
+  delete[] Sigma;    Sigma=NULL;
+  delete[] Kplastic; Kplastic=NULL;
   if(Count){
     try{
       Idp=new unsigned[Count];
       Pos=new tdouble3[Count];
       VelRhop=new tfloat4[Count];
+      Sigma=new tsymatrix3f[Count];
+      Kplastic=new float[Count];
     }
     catch(const std::bad_alloc){
       Run_Exceptioon("Could not allocate the requested memory.");
@@ -99,6 +105,8 @@ llong JPartsLoad4::GetAllocMemory()const{
   if(Idp)s+=sizeof(unsigned)*Count;
   if(Pos)s+=sizeof(tdouble3)*Count;
   if(VelRhop)s+=sizeof(tfloat4)*Count;
+  if(Sigma)s+=sizeof(tsymatrix3f)*Count;
+  if(Kplastic)s+=sizeof(float)*Count;
   return(s);
 }
 
@@ -192,6 +200,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   CasePosMin=pd.Get_CasePosMin();
   CasePosMax=pd.Get_CasePosMax();
   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
+  SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
   //-Loads data for restarting.
   if(PartBegin){
     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
@@ -218,6 +227,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         if(!PartBegin)pd.LoadFileCase(dir,casename,piece,Npiece);
         else pd.LoadFilePart(dir,PartBegin,piece,Npiece);
       }
+      if(SoilDataLoaded && (!pd.ArrayExists("Sigma_kk") || !pd.ArrayExists("Sigma_ij") || !pd.ArrayExists("Kplastic")))
+        Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
       const unsigned npok=pd.Get_Npok();
       if(npok){
         if(auxsize<npok){
@@ -236,6 +247,21 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         pd.Get_Vel(npok,auxf3);  
         pd.Get_Rhop(npok,auxf);  
         for(unsigned p=0;p<npok;p++)VelRhop[ntot+p]=TFloat4(auxf3[p].x,auxf3[p].y,auxf3[p].z,auxf[p]);
+        if(SoilDataLoaded){
+          pd.GetArray("Sigma_kk",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxf3);
+          for(unsigned p=0;p<npok;p++){
+            Sigma[ntot+p].xx=auxf3[p].x;
+            Sigma[ntot+p].yy=auxf3[p].y;
+            Sigma[ntot+p].zz=auxf3[p].z;
+          }
+          pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxf3);
+          for(unsigned p=0;p<npok;p++){
+            Sigma[ntot+p].xy=auxf3[p].x;
+            Sigma[ntot+p].yz=auxf3[p].y;
+            Sigma[ntot+p].xz=auxf3[p].z;
+          }
+          pd.GetArray("Kplastic",JBinaryDataDef::DatFloat)->GetDataCopy(npok,Kplastic+ntot);
+        }
       }
       ntot+=npok;
     }

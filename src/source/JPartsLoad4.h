@@ -91,6 +91,9 @@ protected:
   unsigned *Idp;
   tdouble3 *Pos;
   tfloat4 *VelRhop;
+  bool SoilDataLoaded;
+  tsymatrix3f *Sigma;
+  float *Kplastic;
 
   void AllocMemory(unsigned count);
   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
@@ -123,6 +126,9 @@ public:
   const unsigned* GetIdp(){ return(Idp); }
   const tdouble3* GetPos(){ return(Pos); }
   const tfloat4* GetVelRhop(){ return(VelRhop); }
+  bool GetSoilDataLoaded()const{ return(SoilDataLoaded); }
+  const tsymatrix3f* GetSigma(){ return(Sigma); }
+  const float* GetKplastic(){ return(Kplastic); }
 
   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
   tdouble3 GetCasePosMax()const{ return(CasePosMax); }

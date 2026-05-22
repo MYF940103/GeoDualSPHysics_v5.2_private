@@ -120,8 +120,14 @@ void JSphCpuSingle::ConfigDomain(){
   memcpy(Idpc,PartsLoaded->GetIdp(),sizeof(unsigned)*Np);
   memcpy(Velrhopc,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
   //========= mdbr
-  memset(Sigmac, 0, sizeof(tsymatrix3f)*Np); 
-  memset(Kplasticc, 0, sizeof(float)*Np);
+  if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
+    memcpy(Sigmac,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
+    memcpy(Kplasticc,PartsLoaded->GetKplastic(),sizeof(float)*Np);
+  }
+  else{
+    memset(Sigmac, 0, sizeof(tsymatrix3f)*Np);
+    memset(Kplasticc, 0, sizeof(float)*Np);
+  }
   //=========
   //-Computes radius of floating bodies.
   if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);

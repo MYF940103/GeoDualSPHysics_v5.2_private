@@ -193,10 +193,11 @@ protected:
   TpBoundary TBoundary;       ///<Boundary condition: DBC, M-DBC.
   TpSlipMode SlipMode;        ///<Slip mode for mDBC 1:DBC vel=0, 2:No-slip, 3:Free slip (default=1).
   TpDPCtes DPCtes;            ///<DP constants 1:3D Circumscribed DP, 2:3D Mid Circumscribed DP, 3:Plain Strain condition (default=1). //mdbr
+  bool StrainSoftening;       ///<Uses strain-softening DP correction when residual strength parameters are defined. //mdbr
   bool ArtificialStress;      ///<Bui 2008 artificial stress for tensile instability (default=0). //mdbr
   float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
-  bool ArtificialStressExpAuto; ///<Computes ArtificialStressExp from h/dp and kernel support when XML value is not defined. //mdbr
+  bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).

@@ -182,8 +182,9 @@ void JSph::InitVars(){
   TBoundary=BC_DBC;
   SlipMode=SLIP_Vel0;
   DPCtes=DP_C;//mdbr
+  StrainSoftening=false;//mdbr
   ArtificialStress=false;
-  ArtificialStressCoef=0.5f;
+  ArtificialStressCoef=0.2f;
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
   SoilDamping=false;
@@ -643,7 +644,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  ArtificialStress=true;   break;
     default: Run_Exceptioon("ArtificialStress mode is not valid.");
   }
-  ArtificialStressCoef=eparms.GetValueFloat("ArtificialStressCoef",true,0.5f);
+  ArtificialStressCoef=eparms.GetValueFloat("ArtificialStressCoef",true,0.2f);
   ArtificialStressExpAuto=!eparms.Exists("ArtificialStressExp");
   ArtificialStressExp=eparms.GetValueFloat("ArtificialStressExp",true,2.55f);
   if(ArtificialStressCoef<0.f || ArtificialStressCoef>1.f)Run_Exceptioon("ArtificialStressCoef must be in [0,1].");
@@ -1469,13 +1470,9 @@ void JSph::ConfigConstants1(bool simulate2d){
 /// Configures other constants and loads more values in CSP structure.
 //==============================================================================
 void JSph::ConfigConstants2(){
-  //-Constants for Bui 2008 artificial stress.
+  //-Default constants for Bui 2008 artificial stress.
   if(ArtificialStress && ArtificialStressExpAuto){
-    const float expref=2.55f;
-    const float supportref=2.4f; //-Bui 2008 reference: h=1.2*dp with a 2h kernel support.
-    if(Dp<=0)Run_Exceptioon("Dp is invalid for automatic ArtificialStressExp calculation.");
-    ArtificialStressExp=expref*(KernelSize/float(Dp))/supportref;
-    if(ArtificialStressExp<=0.f)Run_Exceptioon("Automatic ArtificialStressExp must be greater than zero.");
+    ArtificialStressExp=2.55f;
   }
   //-Constants for Laminar viscosity + SPS turbulence model.
   if(TVisco==VISCO_LaminarSPS){
@@ -1567,8 +1564,8 @@ void JSph::VisuConfig(){
   if(ArtificialStress){
     Log->Print(fun::VarStr("  ArtificialStressCoef",ArtificialStressCoef));
     Log->Print(fun::VarStr("  ArtificialStressExp",ArtificialStressExp));
-    Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "AutoSupportRatio": "XML"));
-    Log->Print(fun::VarStr("  ArtificialStressBoundary","Excluded"));
+    Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "DefaultFixed": "XML"));
+    Log->Print(fun::VarStr("  ArtificialStressBoundary","StressExtrapolated"));
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
   }
   //-Bui-Fukagawa damping for static stress initialization.
@@ -3337,11 +3334,17 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   TiXmlNode* solidNode = sxml->GetNodeSimple("case.execution.special.soils");
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
-  SoilCte.dlt=sxml->ReadElementFloat(solidNode,"dlt","value",true);
+  SoilCte.dlt=float(TORAD*sxml->ReadElementFloat(solidNode,"dlt","value",true));
   SoilCte.coh_r=sxml->ReadElementFloat(solidNode,"coh_r","value",true);
   SoilCte.phi_r=float(TORAD*sxml->ReadElementFloat(solidNode,"phi_r","value",true));
   SoilCte.n_coh=sxml->ReadElementFloat(solidNode,"n_coh","value",true);
   SoilCte.n_phi=sxml->ReadElementFloat(solidNode,"n_phi","value",true);
+  SoilCte.SoilTriggerFos=sxml->ReadElementFloat(solidNode,"SoilTriggerFos","value",true,1.65f);
+  if(SoilCte.SoilTriggerFos<1.f)Run_Exceptioon("SoilTriggerFos must be equal to or greater than 1.");
+  const TiXmlElement* solidEle=solidNode->ToElement();
+  const bool softphi=(sxml->ExistsElement(solidEle,"phi_r","value") && sxml->ExistsElement(solidEle,"n_phi","value") && SoilCte.n_phi>0.f);
+  const bool softcoh=(sxml->ExistsElement(solidEle,"coh_r","value") && sxml->ExistsElement(solidEle,"n_coh","value") && SoilCte.n_coh>0.f);
+  StrainSoftening=(softphi || softcoh);
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
   //Calculate bulk and shear modulus
@@ -3350,8 +3353,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
    Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
+   Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
    Log->Printf("  Cohesion: %f",ct.coh);
    if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}
+   Log->Printf("  Trigger Strength Reduction Factor: %f",ct.SoilTriggerFos);
    Log->Printf("  Frictional Angle: %f",ct.phi);
    if(ct.n_phi){Log->Printf("  Residual Friction: %f",ct.phi_r);Log->Printf("  Friction Softening Coefficient: %f",ct.n_phi);}
    Log->Printf("  Bulk Modulus: %f",ct.ModulusK);
