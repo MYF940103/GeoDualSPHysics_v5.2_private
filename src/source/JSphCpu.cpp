@@ -1523,12 +1523,14 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             //const float prs=(pressp1+press[p2])/(rhopp1*velrhop2.w) + (tker==KERNEL_Cubic? fsph::GetKernelCubic_Tensil(CSP,rr2,rhopp1,pressp1,velrhop2.w,press[p2]): 0);
             //const float p_vpm=-prs*massp2;
             //acep1.x+=p_vpm*frx; acep1.y+=p_vpm*fry; acep1.z+=p_vpm*frz;
-            const float prsxx = massp2*(sigmap1.xx + sigmap2.xx) / (rhopp1*velrhop2.w);
-			const float prsyy = massp2*(sigmap1.yy + sigmap2.yy) / (rhopp1*velrhop2.w);
-			const float prszz = massp2*(sigmap1.zz + sigmap2.zz) / (rhopp1*velrhop2.w);
-			const float prsxy = massp2*(sigmap1.xy + sigmap2.xy) / (rhopp1*velrhop2.w);
-			const float prsxz = massp2*(sigmap1.xz + sigmap2.xz) / (rhopp1*velrhop2.w);
-			const float prsyz = massp2*(sigmap1.yz + sigmap2.yz) / (rhopp1*velrhop2.w);
+            const float invrhop1_2=1.f/(rhopp1*rhopp1);
+            const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
+            const float prsxx = massp2*(sigmap1.xx*invrhop1_2 + sigmap2.xx*invrhop2_2);
+			const float prsyy = massp2*(sigmap1.yy*invrhop1_2 + sigmap2.yy*invrhop2_2);
+			const float prszz = massp2*(sigmap1.zz*invrhop1_2 + sigmap2.zz*invrhop2_2);
+			const float prsxy = massp2*(sigmap1.xy*invrhop1_2 + sigmap2.xy*invrhop2_2);
+			const float prsxz = massp2*(sigmap1.xz*invrhop1_2 + sigmap2.xz*invrhop2_2);
+			const float prsyz = massp2*(sigmap1.yz*invrhop1_2 + sigmap2.yz*invrhop2_2);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
             if(useartstress && !ftp1 && !ftp2 && invwabdp>0.f){
               const tsymatrix3f artstressp2=artificialstress[p2];
@@ -2785,7 +2787,7 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (-DP_phi * I1 + DP_kc) / sqrt(J2);
+			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;
@@ -2823,15 +2825,6 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 	const float coh_r = MC_cr;
 	const float n_c   = n_coh;
 	const float psi = MC_psi;
-	//Build Elastic stiffness matrix
-	float K4G3 = float(ModulusK + 4.f*ModulusG/3.f);
-	float K2G3 = float(ModulusK- 2.f*ModulusG/3.f);
-	//Build Inversed elastic stiffness matrix
-	float invK4G3 = (K2G3 + K4G3) / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invK2G3 = -K2G3 / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invm_a11 = invK4G3; float invm_a12 = invK2G3; float invm_a13 = invK2G3;
-	float invm_a21 = invK2G3; float invm_a22 = invK4G3; float invm_a23 = invK2G3;
-	float invm_a31 = invK2G3; float invm_a32 = invK2G3; float invm_a33 = invK4G3;
 	//trail stress from elastic update
     tsigma_xx = sigma.xx;
     tsigma_yy = sigma.yy;
@@ -2859,11 +2852,12 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 	}	
 	else {//plastic corrector
 		float dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
-			 , depsp_xx = 0, depsp_yy = 0, depsp_zz = 0, depsp_xy = 0, depsp_yz = 0, depsp_xz = 0, dk = 0;;
+			 , dk = 0;;
 			//kplastic related term
 			float dfdk = 0;
 			Updatedfdk(dfdk,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,I1,dpctes);
-			float extra = dfdk*sqrt((2.f/3.f)*(3.f*DP_psi*DP_psi+0.5f));			
+			const float dkflowcoef = sqrt((2.f/3.f)*(3.f*DP_psi*DP_psi+0.5f));
+			float extra = dfdk*dkflowcoef;			
 			//MODIFY PLASTIC MULTIPLFY
 			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
 			//evaluate De : plastic potential
@@ -2888,24 +2882,8 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 			tsigma_xy = tsigma_xy - dsigmap_xy;
 			tsigma_yz = tsigma_yz - dsigmap_yz;
 			tsigma_xz = tsigma_xz - dsigmap_xz;
-			//Compute plastic strain increment
-			depsp_xx = invm_a11*dsigmap_xx + invm_a12*dsigmap_yy + invm_a13*dsigmap_zz;
-			depsp_yy = invm_a21*dsigmap_xx + invm_a22*dsigmap_yy + invm_a23*dsigmap_zz;
-			depsp_zz = invm_a31*dsigmap_xx + invm_a32*dsigmap_yy + invm_a33*dsigmap_zz;
-			depsp_xy = 0.5f/ModulusG*dsigmap_xy;
-			depsp_yz = 0.5f/ModulusG*dsigmap_yz;
-			depsp_xz = 0.5f/ModulusG*dsigmap_xz; 
-			//bulk plastic strain increment
-			float depsp_b = (depsp_xx + depsp_yy + depsp_zz)/3.f;
-			//deviatoric trail plastic strain
-			float dtepsp_xx = depsp_xx - depsp_b;
-			float dtepsp_yy = depsp_yy - depsp_b;
-			float dtepsp_zz = depsp_zz - depsp_b;
-			float dtepsp_xy = depsp_xy;
-			float dtepsp_yz = depsp_yz;
-			float dtepsp_xz = depsp_xz;
-			//Update internal variable
-			dk = sqrt((2.f/3.f)*(dtepsp_xx*dtepsp_xx+dtepsp_yy*dtepsp_yy+dtepsp_zz*dtepsp_zz+2.f*dtepsp_xy*dtepsp_xy+2.f*dtepsp_yz*dtepsp_yz+2.f*dtepsp_xz*dtepsp_xz));
+			//Update internal variable using the same equivalent plastic-strain norm as the consistency term.
+			dk = dlambda*dkflowcoef;
 			tk = tk + dk;
 			//Update stress invariant
 			GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
@@ -2918,7 +2896,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (-DP_phi * I1 + DP_kc) / sqrt(J2);
+			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;

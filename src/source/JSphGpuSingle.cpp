@@ -157,7 +157,8 @@ void JSphGpuSingle::ConfigDomain(){
   //========= mdbr
   if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
     memcpy(Sigma,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
-    memcpy(Kplastic,PartsLoaded->GetKplastic(),sizeof(float)*Np);
+    memset(Kplastic,0,sizeof(float)*Np);
+    Log->Print("Restart soil data: Sigma inherited, Kplastic reset for restart stage.");
   }
   else{
     memset(Sigma,0,sizeof(tsymatrix3f)*Np);
@@ -378,12 +379,15 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     //==== mdbc
     tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
     float* kplasticg = ArraysGpu->ReserveFloat();
+    float* kplasticdkg = ArraysGpu->ReserveFloat();
     CellDivSingle->SortBasicArrays(Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,idpg,codeg,dcellg,posxyg,poszg,velrhopg);
     //==== mdbc
     CellDivSingle->SortDataArrays(Sigmag, sigmag);
     CellDivSingle->SortDataArrays(Kplasticg, kplasticg);
+    CellDivSingle->SortDataArrays(KplasticDkg, kplasticdkg);
     swap(Sigmag, sigmag);   ArraysGpu->Free(sigmag);
     swap(Kplasticg, kplasticg);   ArraysGpu->Free(kplasticg);
+    swap(KplasticDkg, kplasticdkg); ArraysGpu->Free(kplasticdkg);
     //====    
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
     swap(Codeg,codeg);         ArraysGpu->Free(codeg);
@@ -481,9 +485,10 @@ void JSphGpuSingle::AbortBoundOut(){
 /// Interaccion para el calculo de fuerzas.
 //==============================================================================
 void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
-  //if(TBoundary==BC_MDBC && (MdbcCorrector || interstep!=INTERSTEP_SymCorrector))MdbcBoundCorrection(); //-Boundary correction for mDBC.
-    if (TBoundary == BC_MDBC) { MdbcBoundCorrection(); }
-    else { CdbcBoundCorrection(); } //Corrected dummy boundary condition
+  if(TBoundary==BC_MDBC){
+    if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+  }
+  else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
   ComputeFreeSurfaceTracking();
@@ -503,7 +508,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,bsbound,bsfluid,Np,Npb,NpbOk
     ,0,Nstep,DivData,Dcellg
     ,Posxyg,Poszg,PosCellg,Velrhopg,Idpg,Codeg
-    ,FtoMasspg,SpsTaug,dengradcorr,BoundModeg,TangenVelg
+    ,FtoMasspg,SpsTaug,dengradcorr,CorrMatg,BoundModeg,TangenVelg
     ,ViscDtg,Arg,Aceg,Deltag
     ,SpsGradvelg
     ,Sigmag,Rsigmag
@@ -1002,11 +1007,13 @@ void JSphGpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
+  AddSoilDiagnosticArrays(arrays,npsave,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic,AuxKplasticDk);
   if(save)arrays.AddArray("FSType",npsave,AuxFSType);
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
   //-Save extra data.
   if(SvExtraDataBi4)SaveExtraData();
+  if(KplasticDkg)cudaMemset(KplasticDkg,0,sizeof(float)*Np);
   Timersg->TmStop(TMG_SuSavePart,false);
 }
 

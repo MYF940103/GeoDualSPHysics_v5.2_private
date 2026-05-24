@@ -187,9 +187,10 @@ void JSph::InitVars(){
   ArtificialStressCoef=0.2f;
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
+  SoilStressRateGradCorr=false;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
-  MdbcCorrector=false;
+  MdbcCorrector=true;
   MdbcFastSingle=true;
   MdbcThreshold=0;
   UseNormals=false;
@@ -649,6 +650,11 @@ void JSph::LoadConfigParameters(const JXml *xml){
   ArtificialStressExp=eparms.GetValueFloat("ArtificialStressExp",true,2.55f);
   if(ArtificialStressCoef<0.f || ArtificialStressCoef>1.f)Run_Exceptioon("ArtificialStressCoef must be in [0,1].");
   if(ArtificialStressExp<=0.f)Run_Exceptioon("ArtificialStressExp must be greater than zero.");
+  switch(eparms.GetValueInt("SoilStressRateGradCorr",true,0)){
+    case 0:  SoilStressRateGradCorr=false;  break;
+    case 1:  SoilStressRateGradCorr=true;   break;
+    default: Run_Exceptioon("SoilStressRateGradCorr mode is not valid.");
+  }
   switch(eparms.GetValueInt("SoilDamping",true,0)){
     case 0:  SoilDamping=false;  break;
     case 1:  SoilDamping=true;   break;
@@ -670,7 +676,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
       case 3:  SlipMode=SLIP_FreeSlip;  break;
       default: Run_Exceptioon("Slip mode is not valid.");
     }
-    MdbcCorrector=(eparms.GetValueInt("MDBCCorrector",true,0)!=0);
+    MdbcCorrector=(eparms.GetValueInt("MDBCCorrector",true,1)!=0);
     MdbcFastSingle=(eparms.GetValueInt("MDBCFastSingle",true,1)!=0);
     if(Cpu)MdbcFastSingle=false;
   } 
@@ -1568,6 +1574,8 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ArtificialStressBoundary","StressExtrapolated"));
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
   }
+  Log->Print(fun::VarStr("SoilStressRateGradCorr",SoilStressRateGradCorr? "KernelGradient": "None"));
+  if(SoilStressRateGradCorr)ConfigInfo=ConfigInfo+sep+"SoilGradCorr";
   //-Bui-Fukagawa damping for static stress initialization.
   Log->Print(fun::VarStr("SoilDamping",SoilDamping? "BuiFukagawa2013": "None"));
   if(SoilDamping){
@@ -2620,6 +2628,56 @@ tfloat3* JSph::GetPointerDataFloat3(unsigned n,const tdouble3* v)const{
 }
 
 //==============================================================================
+/// Returns the largest principal stress of a symmetric 3x3 tensor.
+//==============================================================================
+static float SoilDiagMaxPrincipalStress(const float xx,const float yy,const float zz
+  ,const float xy,const float yz,const float xz)
+{
+  double a[3][3]={{xx,xy,xz},{xy,yy,yz},{xz,yz,zz}};
+  for(int it=0;it<24;it++){
+    int p=0,q=1;
+    double amax=fabs(a[0][1]);
+    if(fabs(a[0][2])>amax){ p=0; q=2; amax=fabs(a[0][2]); }
+    if(fabs(a[1][2])>amax){ p=1; q=2; amax=fabs(a[1][2]); }
+    if(amax<1e-9)break;
+    const double app=a[p][p],aqq=a[q][q],apq=a[p][q];
+    const double phi=0.5*atan2(2.0*apq,aqq-app);
+    const double c=cos(phi),s=sin(phi);
+    for(int k=0;k<3;k++){
+      if(k!=p && k!=q){
+        const double aik=a[k][p],akq=a[k][q];
+        a[k][p]=a[p][k]=c*aik-s*akq;
+        a[k][q]=a[q][k]=s*aik+c*akq;
+      }
+    }
+    a[p][p]=c*c*app-2.0*s*c*apq+s*s*aqq;
+    a[q][q]=s*s*app+2.0*s*c*apq+c*c*aqq;
+    a[p][q]=a[q][p]=0.0;
+  }
+  double smax=(a[0][0]>a[1][1]? a[0][0]: a[1][1]);
+  smax=(smax>a[2][2]? smax: a[2][2]);
+  return(float(smax));
+}
+
+//==============================================================================
+/// Computes DP constants for soil diagnostics.
+//==============================================================================
+static void SoilDiagUpdateDP(float &dp_phi,float &dp_kc,const float phi,const float coh,const TpDPCtes dpctes){
+  if(dpctes==DP_MC){
+    dp_phi=2.f*sin(phi)/((3.f+sin(phi))*1.732f);
+    dp_kc=6.f*coh*cos(phi)/((3.f+sin(phi))*1.732f);
+  }
+  else if(dpctes==DP_PS){
+    dp_phi=tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
+    dp_kc=3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi));
+  }
+  else{
+    dp_phi=2.f*sin(phi)/((3.f-sin(phi))*1.732f);
+    dp_kc=6.f*coh*cos(phi)/((3.f-sin(phi))*1.732f);
+  }
+}
+
+//==============================================================================
 /// Adds basic data arrays in object JDataArrays.
 //==============================================================================
 void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
@@ -2634,6 +2692,50 @@ void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
   arrays.AddArray("Sigma_kk",np,sigma_kk);
   arrays.AddArray("Sigma_ij",np,sigma_ij);
   arrays.AddArray("Kplastic",np,kplastic);
+}
+
+//==============================================================================
+/// Adds derived soil diagnostic arrays in object JDataArrays.
+//==============================================================================
+void JSph::AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
+  ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic,const float *kplasticdk)const
+{
+  if(!sigma_kk || !sigma_ab || !kplastic)return;
+  float *soil_i1=new float[np];
+  float *soil_j2=new float[np];
+  float *soil_smax=new float[np];
+  float *soil_yieldf=new float[np];
+  float *soil_coh=new float[np];
+  const float coh_peak=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
+  for(unsigned p=0;p<np;p++){
+    const float xx=sigma_kk[p].x,yy=sigma_kk[p].y,zz=sigma_kk[p].z;
+    const float xy=sigma_ab[p].x,yz=sigma_ab[p].y,xz=sigma_ab[p].z;
+    const float i1=xx+yy+zz;
+    const float j2=((xx-zz)*(xx-zz)+(yy-zz)*(yy-zz)+(yy-xx)*(yy-xx))/6.f+xy*xy+yz*yz+xz*xz;
+    const float kp=kplastic[p];
+    const float phi=(StrainSoftening? SoilCte.phi_r+(SoilCte.phi-SoilCte.phi_r)*exp(-SoilCte.n_phi*kp): SoilCte.phi);
+    const float coh=(StrainSoftening? SoilCte.coh_r+(coh_peak-SoilCte.coh_r)*exp(-SoilCte.n_coh*kp): coh_peak);
+    float dp_phi=0,dp_kc=0;
+    SoilDiagUpdateDP(dp_phi,dp_kc,phi,coh,DPCtes);
+    soil_i1[p]=i1;
+    soil_j2[p]=j2;
+    soil_smax[p]=SoilDiagMaxPrincipalStress(xx,yy,zz,xy,yz,xz);
+    soil_yieldf[p]=sqrt(j2>0.f? j2: 0.f)+dp_phi*i1-dp_kc;
+    soil_coh[p]=coh;
+  }
+  arrays.AddArray("SoilI1",np,soil_i1,true);
+  arrays.AddArray("SoilJ2",np,soil_j2,true);
+  arrays.AddArray("SoilSigmaMax",np,soil_smax,true);
+  arrays.AddArray("SoilYieldF",np,soil_yieldf,true);
+  arrays.AddArray("SoilCoh",np,soil_coh,true);
+  if(kplasticdk)arrays.AddArray("SoilDk",np,kplasticdk,false);
+}
+
+//==============================================================================
+void JSph::AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
+  ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const
+{
+  AddSoilDiagnosticArrays(arrays,np,sigma_kk,sigma_ab,kplastic,NULL);
 }
 
 //==============================================================================

@@ -56,7 +56,7 @@ using namespace std;
 JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   ClassName="JSphGpu";
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
-  Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;//ruofeng
+  Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
   AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
@@ -140,7 +140,7 @@ void JSphGpu::InitVars(){
   FreeCpuMemoryParticles();
   FreeCpuMemoryFixed();
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
-  Sigmag=NULL; Kplasticg=NULL;//ruofeng
+  Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
@@ -268,6 +268,7 @@ void JSphGpu::FreeCpuMemoryParticles(){
   //ruofeng
   delete[] Sigma;      Sigma = NULL;
   delete[] Kplastic;   Kplastic = NULL;
+  delete[] KplasticDk; KplasticDk = NULL;
   //
   delete[] AuxPos;     AuxPos=NULL;
   delete[] AuxVel;     AuxVel=NULL;
@@ -277,6 +278,7 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] AuxSigma_xx_yy_zz;   AuxSigma_xx_yy_zz = NULL;
   delete[] AuxSigma_xy_yz_xz;   AuxSigma_xy_yz_xz = NULL;
   delete[] AuxKplastic; AuxKplastic = NULL;
+  delete[] AuxKplasticDk; AuxKplasticDk = NULL;
 }
 
 //==============================================================================
@@ -298,6 +300,7 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
       //=========mdbr
 	  Sigma=new tsymatrix3f[np]; MemCpuParticles+=sizeof(tsymatrix3f)*np;
       Kplastic = new float[np]; MemCpuParticles += sizeof(float) * np;
+      KplasticDk = new float[np]; MemCpuParticles += sizeof(float) * np;
       //==========
       AuxPos=new tdouble3[np];   MemCpuParticles+=sizeof(tdouble3)*np; 
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
@@ -307,6 +310,7 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
       AuxSigma_xx_yy_zz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       AuxSigma_xy_yz_xz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       AuxKplastic = new float[np];   MemCpuParticles += sizeof(float) *np;
+      AuxKplasticDk = new float[np]; MemCpuParticles += sizeof(float) *np;
       //======
     }
     catch(const std::bad_alloc){
@@ -353,7 +357,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-sigma
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
   if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
-  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 2);//-kplastic
+  ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 4);//-kplastic,kplasticdk and sort buffers
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
@@ -420,6 +424,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //==mdbr
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
+  float* kplasticdk = SaveArrayGpu(Np, KplasticDkg);
   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -447,6 +452,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //-mdbr
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
+  ArraysGpu->Free(KplasticDkg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -478,6 +484,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //--mdbr
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
+  if(kplasticdk) KplasticDkg = ArraysGpu->ReserveFloat();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
   // 
@@ -505,6 +512,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   //---mdbr
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
+  RestoreArrayGpu(Np,kplasticdk,KplasticDkg);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
@@ -558,6 +566,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
   //mdbr
   Sigmag = ArraysGpu->ReserveSymatrix3f();
   Kplasticg = ArraysGpu->ReserveFloat();
+  KplasticDkg = ArraysGpu->ReserveFloat();
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
   SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
   }
@@ -640,6 +649,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.artificialstress=(ArtificialStress? 1: 0);
   ctes.artificialstresscoef=ArtificialStressCoef;
   ctes.artificialstressexp=ArtificialStressExp;
+  ctes.soilstressrategradcorr=(SoilStressRateGradCorr? 1: 0);
   ctes.soildamping=(SoilDamping? 1: 0);
   ctes.soildampingcoef=SoilDampingCoef;
   ctes.cteb=CteB; ctes.gamma=Gamma;
@@ -648,6 +658,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.movlimit=MovLimit;
   ctes.maprealposminx=MapRealPosMin.x; ctes.maprealposminy=MapRealPosMin.y; ctes.maprealposminz=MapRealPosMin.z;
   ctes.maprealsizex=MapRealSize.x; ctes.maprealsizey=MapRealSize.y; ctes.maprealsizez=MapRealSize.z;
+  ctes.simulate2d=(Simulate2D? 1: 0);
   ctes.symmetry=Symmetry;   //<vs_syymmetry>
   ctes.tboundary=unsigned(TBoundary);
   ctes.slipmode=unsigned(SlipMode);
@@ -678,6 +689,7 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
   //===mdbr
   cudaMemcpy(Sigmag, Sigma, sizeof(tsymatrix3f)*n, cudaMemcpyHostToDevice);
   cudaMemcpy(Kplasticg, Kplastic, sizeof(float)*n, cudaMemcpyHostToDevice);
+  cudaMemset(KplasticDkg,0,sizeof(float)*n);
   //====
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
@@ -705,6 +717,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   //==mdbr
   cudaMemcpy(Sigma,Sigmag+pini,sizeof(tsymatrix3f)*n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Kplastic,Kplasticg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+  cudaMemcpy(KplasticDk,KplasticDkg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
   //
   Check_CudaErroor("Failed copying data from GPU.");
   //-Eliminates abnormal particles (periodic and others). | Elimina particulas no normales (periodicas y otras).
@@ -722,6 +735,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         //==== mdbr
 		Sigma[p-ndel]  =Sigma[p];
         Kplastic[p-ndel] = Kplastic[p];
+        KplasticDk[p-ndel] = KplasticDk[p];
       }
       if(!normal)ndel++;
     }
@@ -736,6 +750,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
     AuxSigma_xx_yy_zz[p]=TFloat3(Sigma[p].xx,Sigma[p].yy,Sigma[p].zz);
     AuxSigma_xy_yz_xz[p]=TFloat3(Sigma[p].xy,Sigma[p].yz,Sigma[p].xz);
     AuxKplastic[p]=Kplastic[p];
+    AuxKplasticDk[p]=KplasticDk[p];
   }
   return(num);
 }
@@ -776,7 +791,7 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,0,0,0,0,100,0,0
         ,0,0,divdatag,NULL
         ,NULL,NULL,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL,NULL,NULL
+        ,NULL,NULL,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL
@@ -1035,11 +1050,11 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
   //-Calcula desplazamiento, velocidad y densidad.
   if(VerletStep<VerletSteps){
     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
+      ,Aceg,ShiftPosfsg,indirvel,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
   }
   else{
     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,NULL);
+      ,Aceg,ShiftPosfsg,indirvel,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
     VerletStep=0;
   }
   //-The new values are calculated in VelRhopM1g.
@@ -1085,7 +1100,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,NULL);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
@@ -1117,7 +1132,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,NULL);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.

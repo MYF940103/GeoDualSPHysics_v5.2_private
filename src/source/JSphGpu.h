@@ -110,6 +110,8 @@ protected:
   tfloat3 *AuxSigma_xy_yz_xz;
   float *Kplastic;
   float *AuxKplastic;
+  float *KplasticDk;
+  float *AuxKplasticDk;
   //-Auxiliary variables for the conversion (size=ParticlesSize).
   //-Variables auxiliares para conversion (size=ParticlesSize).
   tdouble3 *AuxPos;
@@ -145,6 +147,7 @@ protected:
   //-ruofeng
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng
+  float *KplasticDkg;//diagnostic accumulated plastic increment
 
   //-Variables for free-surface tracking.
   tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.

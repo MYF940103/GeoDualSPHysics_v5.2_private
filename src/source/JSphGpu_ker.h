@@ -58,6 +58,7 @@ typedef struct{
   unsigned artificialstress; ///<Bui 2008 artificial stress for tensile instability (0:none, 1:enabled). //mdbr
   float artificialstresscoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float artificialstressexp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
+  unsigned soilstressrategradcorr; ///<Applies kernel-gradient correction to stress-rate velocity gradients. //mdbr
   unsigned soildamping;     ///<Bui-Fukagawa damping for static stress initialization (0:none, 1:enabled). //mdbr
   float soildampingcoef;    ///<Non-dimensional Bui-Fukagawa damping coefficient xi. //mdbr
   float cteb;               ///<Constant used in the state equation [Pa].
@@ -65,6 +66,7 @@ typedef struct{
   float rhopzero;           ///<Reference density of the fluid [kg/m3].
   float ovrhopzero;         ///<ovrhopzero=1/RhopZero
   float movlimit;
+  unsigned simulate2d;  ///<Indicates a 2-D simulation for correction-matrix inversion. //mdbr
   unsigned symmetry;   //<vs_syymmetry>
   unsigned tboundary;  
   unsigned slipmode;
@@ -129,6 +131,7 @@ typedef struct StrInterParmsg{
   const float *ftomassp;
   const tsymatrix3f *tau;
   const float3 *dengradcorr;
+  const tmatrix3d *corrmat;
   const byte *boundmode;
   const float3 *tangenvel;
   //=====mdbr
@@ -162,6 +165,7 @@ typedef struct StrInterParmsg{
     ,const float4 *velrhop_,const unsigned *idp_,const typecode *code_
     ,const float *ftomassp_,const tsymatrix3f *spstau_
     ,const float3 *dengradcorr_
+    ,const tmatrix3d *corrmat_
     ,const byte *boundmode_
     ,const float3 *tangenvel_
     ,float *viscdt_,float* ar_,float3 *ace_,float *delta_
@@ -191,6 +195,7 @@ typedef struct StrInterParmsg{
     velrhop=velrhop_; idp=idp_; code=code_;
     ftomassp=ftomassp_; tau=spstau_;
     dengradcorr=dengradcorr_;
+    corrmat=corrmat_;
     boundmode=boundmode_;
     tangenvel=tangenvel_;
     //-Output data arrays.

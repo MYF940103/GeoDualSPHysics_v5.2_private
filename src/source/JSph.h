@@ -198,9 +198,10 @@ protected:
   float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
+  bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
-  bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=0).
+  bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=1).
   bool MdbcFastSingle;        ///<Matrix calculations are done in single precision (default=1).
   float MdbcThreshold;        ///<Kernel support limit to apply mDBC correction (default=0).
   bool UseNormals;            ///<Indicates use of normals for mDBC.
@@ -497,6 +498,10 @@ protected:
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop
     ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const;//ruofeng
+  void AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
+    ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic,const float *kplasticdk)const;//mdbr
+  void AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
+    ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const;//mdbr
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop)const;
   void SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);

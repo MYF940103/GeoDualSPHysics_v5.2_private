@@ -1,4 +1,107 @@
-﻿GeoDualSPHysics local modifications (05-05-2026)
+﻿GeoDualSPHysics u-pw preparation and retrogressive slope updates (22-05-2026)
+============================================================================
+Scope:
+- This section records the current local solver and example updates made after the original feature/bui-fukagawa-damping-gpu work recorded below.
+- The practical reference point for this section is the previous Bui-Fukagawa/mDBC synchronization note, whose latest pushed reference was commit 3f14501.
+- The current branch is feature/bui-fukagawa-damping-gpu. Subsequent saved references include 5d9fd84, 0d70118 and 6ab9651, plus the current local follow-up edits.
+- The purpose of these changes is to prepare the dry elastoplastic framework for retrogressive slope failure reproduction and for later strongly coupled u-pw development.
+
+Solver and constitutive updates:
+- Extended the strain-softening path for the elastoplastic Drucker-Prager soil model.
+- The dilation angle dlt is now handled consistently with phi and phi_r: XML input is in degrees and is converted internally to radians.
+- Strain softening is enabled only when effective softening parameters are provided. A material with no residual friction/cohesion and no softening-rate input keeps the original non-softening path.
+- The plastic corrector switches to the strain-softening update when the softening branch is active.
+- Added SoilTriggerFos as a soil XML parameter for the restart/failure stage. This supports the peak-strength reduction used to trigger retrogressive failure; the retrogressive slope example uses 1.65.
+- Added restart inheritance for the stress tensor Sigma and accumulated plastic strain Kplastic so a failure-stage run can start from the initialized geostatic stress state.
+- The restart inheritance path was synchronized between CPU and GPU. The verified restart frame preserves Sigma and Kplastic exactly between the initial-stage output and the failure-stage first output.
+- The artificial-stress default coefficient was made more conservative: ArtificialStressCoef defaults to 0.2.
+- ArtificialStressExp now uses a fixed default of 2.55 unless an XML value is provided. This keeps the default aligned with the Bui 2008 cohesive-frictional soil recommendation and avoids kernel-support dependent over-scaling.
+- The artificial-stress boundary treatment was made boundary-consistent by using the extrapolated boundary stress where available instead of dropping boundary consistency from the artificial-stress path.
+- CPU and GPU stress divergence in the momentum equation have been updated to the conservative formula-19 form used by the u-pw and Bui 2021 CG references:
+  m_j * (sigma_i/rho_i^2 + sigma_j/rho_j^2) * grad W_ij.
+- The previous stress-divergence form was:
+  m_j * (sigma_i + sigma_j)/(rho_i*rho_j) * grad W_ij.
+- No XML switch was added for the formula-19 stress divergence; it is now the direct CPU/GPU implementation to keep the solver on the u-pw preparation path.
+
+CPU/GPU synchronization notes:
+- The GPU strain-softening branch now follows the CPU softening logic for Kplastic evolution and residual strength updates.
+- GPU constants and kernels were updated for the strain-softening/restart path, artificial stress, and formula-19 stress divergence.
+- CPU/GPU restart comparison over the retrogressive slope 4 s test showed exact Sigma/Kplastic inheritance at the restart frame.
+- CPU/GPU Kplastic softening evolution was checked over the 4 s comparison run and remained consistent, with only expected floating-point divergence after large-deformation evolution.
+- Manual comparison of the formula-19 GPU output against the previous formula-20 GPU output showed small differences for the dry retrogressive slope test, supporting the direct switch to formula 19 for later u-pw work.
+
+Retrogressive slope example:
+- Added examples/Elastoplastic_basic/14_RetrogressiveSlopeFailure for the Bui 2021 style retrogressive slope failure workflow.
+- The example is organized as a two-stage workflow:
+  1. An initial gravity-loading stage with Bui-Fukagawa damping and saved extrapolated mDBC data.
+  2. A restart/failure stage inheriting Sigma and Kplastic from the initialized state.
+- Added CPU and GPU batch files for the initial and failure stages, plus CPU/GPU two-stage convenience batch files.
+- Added a GPU initial-stage batch file so the initial stress generation can also be run on GPU when desired.
+- The default failure XML keeps shifting disabled and artificial stress enabled, using explicit case parameters where currently needed for the retrogressive slope tests.
+- Temporary 4 s and formula-19 comparison cases, output directories and logs were cleaned from the default example folder after validation.
+
+Example and batch-file maintenance:
+- Batch files under examples/Elastoplastic_basic were cleaned to depend only on the current repository bin/windows directory.
+- Removed old dirbinref references to D:\MYF\SPH\GeoDualSPHysics_v5.2\bin\windows from the active Elastoplastic_basic batch files.
+- Removed debug-executable fallbacks from these batch files. CPU runners now use DualSPHysics5.2CPU_win64.exe and GPU runners use DualSPHysics5.2_GEO_win64.exe.
+- Existing DSNNewtonian helper paths that point below the current bin/windows directory were retained because they are not old external-path fallbacks.
+
+Build and validation notes:
+- CPU Debug and CPU Release builds were verified after the formula-19 CPU update.
+- GPU Release was rebuilt after the GPU formula-19 update.
+- Earlier GPU Debug and GPU Release builds were verified during the GPU softening/restart synchronization.
+- Retrogressive slope initial-stage and restart/failure-stage test runs were used to verify Sigma/Kplastic inheritance, Kplastic softening evolution, artificial stress behavior and zero particle exclusion in the short CPU/GPU comparison.
+
+GeoDualSPHysics elastoplastic soil updates after Bui artificial stress (18-05-2026)
+=================================================================================
+Scope:
+- This section records the local solver and example updates made after the Bui et al. (2008) artificial-stress baseline.
+- The reference baseline is the local tag/branch geo-as-bui2008-v1 at commit f66777b.
+
+Solver updates:
+- Added Bui and Fukagawa style soil damping for elastoplastic soil simulations.
+- New execution parameters in <execution><parameters>: SoilDamping and SoilDampingCoef.
+- SoilDamping=0 keeps the damping term disabled; SoilDamping=1 enables the damping contribution.
+- SoilDampingCoef defaults to 0.02 and must be non-negative.
+- The damping force is applied only to soil/fluid particles. Boundary particles are excluded.
+- Added XML selection for Drucker-Prager parameter mapping through DPCtes.
+- DPCtes=1 uses the 3D circumscribed DP constants, DPCtes=2 uses the 3D middle-circumscribed/Mohr-Coulomb mapping, and DPCtes=3 uses the plane-strain DP mapping.
+- Kept the Bui et al. (2008) artificial-stress controls from the previous baseline: ArtificialStress, ArtificialStressCoef and ArtificialStressExp.
+- Completed CPU and GPU synchronization for the Bui-Fukagawa damping and artificial-stress paths.
+- Checked the artificial-stress kernel volume factor and kept the implementation dimension-consistent for 2D and 3D use.
+
+mDBC and boundary-condition updates:
+- Migrated the DualSPHysics v5.4-style mDBC no-slip/free-slip velocity treatment to the local CPU and GPU paths.
+- Added per-boundary-particle storage for the corrected tangential mDBC velocity used by viscous and velocity-gradient terms.
+- The density-continuity contribution keeps the unmodified relative velocity, matching the v5.4 separation between continuity and viscous/gradient terms.
+- Added an internal mDBC2 boundary mode flag to distinguish active mDBC2 boundary particles from non-submerged mDBC2 particles whose mass contribution is disabled.
+- The internal bound-mode test currently uses the default submerged > 0 criterion. Threshold scans above this default were tested and caused loss of boundary support or particle penetration in the wedge case.
+- No XML key is currently exposed for bound-mode thresholds; the behavior is solver-internal.
+
+Stress diffusion and stabilization notes:
+- The existing DensityDT key is reused for soil stress diffusion in elastoplastic cases.
+- Supported soil stress-diffusion modes are DensityDT=0 none, DensityDT=1 Molteni-style stress diffusion, DensityDT=2 Feng/Fourtakas-style stress diffusion with boundary contribution, and DensityDT=3 full/internal fluid-only stress diffusion.
+- Experimental renormalized stress-diffusion modes DensityDT=4 and DensityDT=5 were implemented, tested, and removed because they did not improve accuracy or free-surface consistency in the validation cases.
+- ArtificialStress, SoilDamping, DensityDT, artificial viscosity and shifting remain independent stabilization options. Each should be isolated by comparison runs before combining effects.
+
+XML/configuration updates:
+- Added elastoplastic soil material parameters under <execution><special><soils>: phi, coh, dlt, phi_r, coh_r, n_phi, n_coh, ModulusE and PRvs.
+- Friction and dilation angles are read in degrees in XML and converted to radians internally.
+- Elastic bulk and shear moduli are computed internally from ModulusE and PRvs.
+- Added doc/xml_format/_FmtXML_ElastoplasticSoil.xml as the reference XML-format note for the local elastoplastic soil and stabilization parameters.
+
+Validation/examples:
+- Added and cleaned Feng 2021 elastoplastic validation cases under examples/Elastoplastic_basic, including Couette flow, static dry soil column, static dry soil wedge and 2D granular column collapse.
+- Added CPU/GPU batch files for the active validation cases and generated comparison plots and result summaries where applicable.
+- Static dry soil wedge tests identified DensityDT=3 with dp=0.02 as the best retained production group among the scanned DDT variants.
+- A dp=0.01 static dry soil wedge control run was generated for resolution comparison. Compared with dp=0.02, the normalized vertical-stress L2 error improved from about 0.0222 to about 0.0114 at 10 s.
+
+Build and repository notes:
+- Verified the updated CPU and GPU paths through Visual Studio 2022 builds during development.
+- The current working branch used for synchronization is feature/bui-fukagawa-damping-gpu.
+- Latest pushed reference commit at the time of this note: 3f14501 Sync mDBC boundmode handling to GPU.
+
+GeoDualSPHysics local modifications (05-05-2026)
 ===============================================
 Major GeoDualSPHysics solver modifications:
 - Added Bui et al. (2008) artificial stress treatment for tensile instability in cohesive soil simulations.
@@ -514,4 +617,4 @@ DualSPHysics Package v4.2 (11-05-2018)
   - Developers and companies can integrate LGPL software into their software without being required to release the source code of their own software-parts
   - Libraries linked to DualSPHysics can be closed source
   - LGPL can be used in commercial applications
-  
+

@@ -5,16 +5,16 @@ set NL=^
 
 
 set name=CaseRetroSlope_Bui2021_failure
-set dirout=%name%_CPU_out
+set dirout=%name%_GPU_out
 set diroutdata=%dirout%\data
 set initname=CaseRetroSlope_Bui2021_init
-set initdir=%initname%_CPU_out\data
+set initdir=%initname%_GPU_out\data
 set partbegin=50
 set partbegin4=0050
 
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
-set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
+set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set partvtkout="%dirbin%/PartVTKOut_win64.exe"
 
@@ -29,27 +29,7 @@ if not exist "%initdir%\PartExtra_%partbegin4%.bi4" (
     goto fail
 )
 
-:menu
-if exist %dirout% (
-    if /i "%~1" == "-force" goto run
-    set /p option="The folder "%dirout%" already exists. Choose an option.!NL!  [1]- Delete it and continue.!NL!  [2]- Execute post-processing.!NL!  [3]- Abort and exit.!NL!"
-    if "!option!" == "1" goto run else (
-        if "!option!" == "2" goto postprocessing else (
-            if "!option!" == "3" goto fail else (
-                goto menu
-            )
-        )
-    )
-)
 
-:run
-if exist %dirout% rd /s /q %dirout%
-
-%gencase% %name%_Def %dirout%/%name% -save:all
-if not "%ERRORLEVEL%" == "0" goto fail
-
-%dualsphysicscpu% -cpu -mdbc_noslip %dirout%/%name% %dirout% -dirdataout data -svres -partbegin:%partbegin%:0 %initdir%
-if not "%ERRORLEVEL%" == "0" goto fail
 
 :postprocessing
 set dirout2=%dirout%\particles
@@ -63,7 +43,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
-echo Retrogressive failure stage completed.
+echo Retrogressive failure GPU stage completed.
 goto end
 
 :fail

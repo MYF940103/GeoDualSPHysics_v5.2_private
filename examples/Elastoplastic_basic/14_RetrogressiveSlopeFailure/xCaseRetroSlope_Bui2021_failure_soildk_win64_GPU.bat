@@ -4,17 +4,17 @@ rem Don't remove the two jump line after than the next line [set NL=^]
 set NL=^
 
 
-set name=CaseRetroSlope_Bui2021_failure
-set dirout=%name%_CPU_out
+set name=CaseRetroSlope_Bui2021_failure_soildk
+set dirout=%name%_GPU_out
 set diroutdata=%dirout%\data
 set initname=CaseRetroSlope_Bui2021_init
-set initdir=%initname%_CPU_out\data
+set initdir=%initname%_GPU_out\data
 set partbegin=50
 set partbegin4=0050
 
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
-set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
+set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set partvtkout="%dirbin%/PartVTKOut_win64.exe"
 
@@ -48,12 +48,12 @@ if exist %dirout% rd /s /q %dirout%
 %gencase% %name%_Def %dirout%/%name% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc_noslip %dirout%/%name% %dirout% -dirdataout data -svres -partbegin:%partbegin%:0 %initdir%
+%dualsphysicsgpu% -gpu -mdbc_noslip %dirout%/%name% %dirout% -dirdataout data -svres -partbegin:%partbegin%:0 %initdir%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :postprocessing
 set dirout2=%dirout%\particles
-%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+soili1,+soilj2,+soilsigmamax,+soilyieldf,+soilcoh
+%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+soildk,+soili1,+soilj2,+soilsigmamax,+soilyieldf,+soilcoh
 if not "%ERRORLEVEL%" == "0" goto fail
 
 %partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartBound -onlytype:-all,bound -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij
@@ -63,7 +63,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
-echo Retrogressive failure stage completed.
+echo Retrogressive failure GPU stage completed.
 goto end
 
 :fail

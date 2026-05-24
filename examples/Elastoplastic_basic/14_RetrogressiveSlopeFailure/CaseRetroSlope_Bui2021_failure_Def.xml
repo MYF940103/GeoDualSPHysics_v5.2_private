@@ -9,14 +9,14 @@
             <gamma value="7" comment="Polytropic constant used in the state equation" />
             <speedsystem value="0" auto="true" comment="Maximum system speed" />
             <coefsound value="20" comment="Coefficient to multiply speedsystem when speedsound is automatic" />
-            <speedsound value="446" auto="false" comment="Approximate elastic wave speed from E=25 MPa, nu=0.49 and rho=2150 kg/m^3" />
-            <hdp value="1.44" comment="Medium-resolution h/dp used by Bui and Nguyen (2021)" />
+            <speedsound value="0" auto="true" comment="Approximate elastic wave speed from E=25 MPa, nu=0.49 and rho=2150 kg/m^3" />
+            <hdp value="1.8" comment="Medium-resolution h/dp used by Bui and Nguyen (2021)" />
             <cflnumber value="0.2" comment="Courant number" />
         </constantsdef>
         <mkconfig boundcount="240" fluidcount="9" />
         <geometry>
             <predefinition>
-                <newvarcte Dp="0.10" _rem="Bui and Nguyen (2021): initial interparticle distance 0.1 m" />
+                <newvarcte Dp="0.1" _rem="Bui and Nguyen (2021): initial interparticle distance 0.1 m" />
                 <newvarcte Height="5.0" />
                 <newvarcte SoilTopLength="20.0" />
                 <newvarcte SoilBaseLength="25.0" />
@@ -50,7 +50,7 @@
                         <point x="0" y="0" z="0" />
                         <point x="#DomainLength" y="0" z="0" />
                         <extrude x="0" y="0.1" z="0" />
-                        <layers vdp="0,-0.5,-1,-1.5,-2,-2.5,-3" />
+                        <layers vdp="0,-0.5,-1,-1.5,-2,-2.5,-3,-3.5,-4" />
                     </drawextrude>
                     <setmkfluid mk="0" />
                     <drawprism>
@@ -93,13 +93,15 @@
             <parameter key="DPCtes" value="3" comment="DP constants type 3: 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
             <parameter key="SlipMode" value="2" comment="No-slip mDBC for the bottom and left wall in this first reproducibility case" />
-            <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
+            <parameter key="StepAlgorithm" value="1" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
             <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
             <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
             <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
             <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient" />
             <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
             <parameter key="ArtificialStress" value="1" comment="Bui 2008 tensile instability treatment 0:None, 1:Enable" />
+			<parameter key="ArtificialStressCoef" value="0.2" comment="Bui 2008 artificial stress coefficient epsilon (default=0.2)" />
+            <parameter key="ArtificialStressExp" value="5" comment="Bui 2008 artificial stress kernel-ratio exponent n (default=2.55)" />
             <parameter key="SoilDamping" value="0" comment="Failure stage: no artificial damping after initial stress generation" />
             <parameter key="SoilDampingCoef" value="0.02" comment="Unused when SoilDamping=0" />
             <parameter key="DensityDT" value="3" comment="Stress diffusion 0:None, 1:Molteni, 2:Feng, 3:Feng(full)" />
@@ -115,7 +117,7 @@
             <parameter key="DtFixed" value="0" comment="Fixed Dt value. Use 0 to disable" units_comment="seconds" />
             <parameter key="DtFixedFile" value="NONE" comment="Dt values are loaded from file. Use NONE to disable" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating" />
-            <parameter key="TimeMax" value="15.0" comment="Retrogressive failure duration used in Bui and Nguyen (2021)" units_comment="seconds" />
+            <parameter key="TimeMax" value="5.0" comment="Retrogressive failure duration used in Bui and Nguyen (2021)" units_comment="seconds" />
             <parameter key="TimeOut" value="0.1" comment="Time between output files" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="1000" comment="Minimum valid density" units_comment="kg/m^3" />

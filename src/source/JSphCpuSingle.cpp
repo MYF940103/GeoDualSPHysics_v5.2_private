@@ -122,7 +122,8 @@ void JSphCpuSingle::ConfigDomain(){
   //========= mdbr
   if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
     memcpy(Sigmac,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
-    memcpy(Kplasticc,PartsLoaded->GetKplastic(),sizeof(float)*Np);
+    memset(Kplasticc,0,sizeof(float)*Np);
+    Log->Print("Restart soil data: Sigma inherited, Kplastic reset for restart stage.");
   }
   else{
     memset(Sigmac, 0, sizeof(tsymatrix3f)*Np);
@@ -570,9 +571,10 @@ void JSphCpuSingle::AbortBoundOut(){
 /// Interaccion para el calculo de fuerzas.
 //==============================================================================
 void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
-  //if(TBoundary==BC_MDBC && (MdbcCorrector || interstep!=INTERSTEP_SymCorrector))MdbcBoundCorrection(); //-Boundary correction for mDBC.
-    if (TBoundary == BC_MDBC) { MdbcBoundCorrection(); }
-  else { CdbcBoundCorrection(); } //Corrected dummy boundary condition
+  if(TBoundary==BC_MDBC){
+    if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+  }
+  else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
   ComputeFreeSurfaceTracking();
@@ -1245,6 +1247,7 @@ void JSphCpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
+  AddSoilDiagnosticArrays(arrays,npsave,sigmakk,sigmaij,kplastic);//mdbr
   if(save){
     arrays.AddArray("FSType",npsave,fstype);
   }

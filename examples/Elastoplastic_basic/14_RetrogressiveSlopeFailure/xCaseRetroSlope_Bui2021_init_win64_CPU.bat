@@ -9,15 +9,9 @@ set dirout=%name%_CPU_out
 set diroutdata=%dirout%\data
 
 set dirbin=../../../bin/windows
-set dirbinref=D:\MYF\SPH\GeoDualSPHysics_v5.2\bin\windows
-set PATH=%dirbinref%;%PATH%
 set gencase="%dirbin%/GenCase_win64.exe"
-if not exist %gencase% set gencase="%dirbinref%/GenCase_win64.exe"
 set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
-if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64_debug.exe"
-if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbinref%/DualSPHysics5.2CPU_win64.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
-if not exist %partvtk% set partvtk="%dirbinref%/PartVTK_win64.exe"
 
 :menu
 if exist %dirout% (
@@ -43,7 +37,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 
 :postprocessing
 set dirout2=%dirout%\particles
-%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic
+%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+soili1,+soilj2,+soilsigmamax,+soilyieldf,+soilcoh
 if not "%ERRORLEVEL%" == "0" goto fail
 
 %partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartBound -onlytype:-all,bound -vars:+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij

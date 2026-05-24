@@ -740,6 +740,16 @@ template<bool sim2d> __device__ tmatrix3d KerFsCorrMatInverse(const tmatrix3d &m
 }
 
 //==============================================================================
+/// Applies a kernel-gradient correction matrix to one velocity-gradient row.
+//==============================================================================
+__device__ float3 KerApplyGradCorr(const float3 &grad,const tmatrix3d &corr){
+  return make_float3(
+    float(grad.x*corr.a11 + grad.y*corr.a12 + grad.z*corr.a13),
+    float(grad.x*corr.a21 + grad.y*corr.a22 + grad.z*corr.a23),
+    float(grad.x*corr.a31 + grad.y*corr.a32 + grad.z*corr.a33));
+}
+
+//==============================================================================
 /// Computes free-surface candidates, local normals and correction matrices.
 //==============================================================================
 template<TpKernel tker,bool sim2d> __global__ void KerComputeFSParticlesFreeSurface
@@ -1022,12 +1032,14 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         //  +(tker==KERNEL_Cubic? cufsph::GetKernelCubic_Tensil(rr2,velrhop1.w,pressp1,velrhop2.w,pressp2): 0);
         //const float p_vpm=-prs*(USE_FLOATING? ftmassp2: massp2);
         //acep1.x+=p_vpm*frx; acep1.y+=p_vpm*fry; acep1.z+=p_vpm*frz;
-          const float prsxx = massp2final*(sigmap1_xx_xy.x + sigmap2_xx_xy.x) / (velrhop1.w*velrhop2.w);
-		  const float prsyy = massp2final*(sigmap1_xz_yy.y + sigmap2_xz_yy.y) / (velrhop1.w*velrhop2.w);
-		  const float prszz = massp2final*(sigmap1_yz_zz.y + sigmap2_yz_zz.y) / (velrhop1.w*velrhop2.w);
-		  const float prsxy = massp2final*(sigmap1_xx_xy.y + sigmap2_xx_xy.y) / (velrhop1.w*velrhop2.w);
-		  const float prsxz = massp2final*(sigmap1_xz_yy.x + sigmap2_xz_yy.x) / (velrhop1.w*velrhop2.w);
-		  const float prsyz = massp2final*(sigmap1_yz_zz.x + sigmap2_yz_zz.x) / (velrhop1.w*velrhop2.w);
+          const float invrhop1_2=1.f/(velrhop1.w*velrhop1.w);
+          const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
+          const float prsxx = massp2final*(sigmap1_xx_xy.x*invrhop1_2 + sigmap2_xx_xy.x*invrhop2_2);
+		  const float prsyy = massp2final*(sigmap1_xz_yy.y*invrhop1_2 + sigmap2_xz_yy.y*invrhop2_2);
+		  const float prszz = massp2final*(sigmap1_yz_zz.y*invrhop1_2 + sigmap2_yz_zz.y*invrhop2_2);
+		  const float prsxy = massp2final*(sigmap1_xx_xy.y*invrhop1_2 + sigmap2_xx_xy.y*invrhop2_2);
+		  const float prsxz = massp2final*(sigmap1_xz_yy.x*invrhop1_2 + sigmap2_xz_yy.x*invrhop2_2);
+		  const float prsyz = massp2final*(sigmap1_yz_zz.x*invrhop1_2 + sigmap2_yz_zz.x*invrhop2_2);
 		  acep1.x += (prsxx*frx + prsxy*fry + prsxz*frz); acep1.y += (prsyy*fry + prsxy*frx + prsyz*frz); acep1.z += (prszz*frz + prsyz*fry + prsxz*frx);//form 1
           if(useartstress && !ftp2){
             const float2 artstressp2_xx_xy=artificialstress[p2*3];
@@ -1186,7 +1198,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   __global__ void KerInteractionForcesFluid(unsigned n,unsigned pinit,float viscob,float viscof
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *begincell,unsigned cellfluid,const unsigned *dcell
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const byte *boundmode,const float3 *tangenvel,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const tmatrix3d *corrmat,const byte *boundmode,const float3 *tangenvel,const typecode *code,const unsigned *idp
   ,const float2 *sigma,const float2 *artificialstress,float2 *rsigma
   ,float *viscdt,float *ar,float3 *ace,float *delta
   ,TpShifting shiftmode,float4 *shiftposfs)
@@ -1284,6 +1296,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz);
       }
     }
+    if(CTE.soilstressrategradcorr && !ftp1 && corrmat){
+      const tmatrix3d invcorr=corrmat[p1];
+      gradvp1_xx_xy_xz=KerApplyGradCorr(gradvp1_xx_xy_xz,invcorr);
+      gradvp1_yx_yy_yz=KerApplyGradCorr(gradvp1_yx_yy_yz,invcorr);
+      gradvp1_zx_zy_zz=KerApplyGradCorr(gradvp1_zx_zy_zz,invcorr);
+    }
     //Calculate strain/spin rate tensor mdbr
     GetStrainSpinRateTensor_sym(gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,e_tensorp1_xx_xy,e_tensorp1_xz_yy,e_tensorp1_yz_zz,w_tensorp1_xy_yz_xz);
     //Calculate stress rate tensor mdbr
@@ -1379,12 +1397,15 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 	  float2 sigmap2_yz_zz=sigma[p2*3+2];
       //-Velocity derivative (Momentum equation).
       if(compute){
-          const float prsxx = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_xx_xy.x + sigmap2_xx_xy.x) / (velrhop1.w*velrhop2.w);
-		  const float prsyy = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_xz_yy.y + sigmap2_xz_yy.y) / (velrhop1.w*velrhop2.w);
-		  const float prszz = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_yz_zz.y + sigmap2_yz_zz.y) / (velrhop1.w*velrhop2.w);
-		  const float prsxy = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_xx_xy.y + sigmap2_xx_xy.y) / (velrhop1.w*velrhop2.w);
-		  const float prsxz = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_xz_yy.x + sigmap2_xz_yy.x) / (velrhop1.w*velrhop2.w);
-		  const float prsyz = (USE_FLOATING? ftmassp2: massp2)*(sigmap1_yz_zz.x + sigmap2_yz_zz.x) / (velrhop1.w*velrhop2.w);
+          const float massp2final=(USE_FLOATING? ftmassp2: massp2);
+          const float invrhop1_2=1.f/(velrhop1.w*velrhop1.w);
+          const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
+          const float prsxx = massp2final*(sigmap1_xx_xy.x*invrhop1_2 + sigmap2_xx_xy.x*invrhop2_2);
+		  const float prsyy = massp2final*(sigmap1_xz_yy.y*invrhop1_2 + sigmap2_xz_yy.y*invrhop2_2);
+		  const float prszz = massp2final*(sigmap1_yz_zz.y*invrhop1_2 + sigmap2_yz_zz.y*invrhop2_2);
+		  const float prsxy = massp2final*(sigmap1_xx_xy.y*invrhop1_2 + sigmap2_xx_xy.y*invrhop2_2);
+		  const float prsxz = massp2final*(sigmap1_xz_yy.x*invrhop1_2 + sigmap2_xz_yy.x*invrhop2_2);
+		  const float prsyz = massp2final*(sigmap1_yz_zz.x*invrhop1_2 + sigmap2_yz_zz.x*invrhop2_2);
 		  acep1.x += (prsxx*frx + prsxy*fry + prsxz*frz); acep1.y += (prsyy*fry + prsxy*frx + prsyz*frz); acep1.z += (prszz*frz + prsyz*fry + prsxz*frx);//form 1
       }
 
@@ -1572,7 +1593,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 {
  #if CUDART_VERSION >= 6050
   {
-    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const byte*,const float3*,const typecode*,const unsigned*,const float2*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
+    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const tmatrix3d*,const byte*,const float3*,const typecode*,const unsigned*,const float2*,const float2*,float2*,float*,float*,float3*,float*,TpShifting,float4*);
     fun_ptr ptr=&KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,symm>;
     int qblocksize=0,mingridsize=0;
     cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)ptr,0,0);
@@ -1636,12 +1657,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     if(t.symmetry) //<vs_syymmetry_ini>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,true> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
     else //<vs_syymmetry_end>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,false> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
   }
   //cudaProfilerStop();//mdbr
