@@ -143,6 +143,8 @@ protected:
   tsymatrix3f* Rsigmac;
   tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
+  float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
+  float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   //===============  
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -227,7 +229,7 @@ protected:
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
-    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL);
+    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -244,6 +246,7 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
+  void InitHydroMechPorePressure();
   template<TpKernel tker,bool sim2d> void ComputeFSParticlesFreeSurface
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code

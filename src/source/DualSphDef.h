@@ -310,6 +310,12 @@ typedef struct{
   float ModulusK;     ///<Elastic model - To be calculated
 }StSoilCte;
 
+///Hydromechanical hydrostatic pore-pressure initialization mode.
+typedef enum{
+  WTABLE_FreeSurface=1, ///<Uses tracked soil free-surface particles as local zero pore-pressure level.
+  WTABLE_ConstantZ=2    ///<Uses a constant z-level as zero pore-pressure level.
+}TpWaterTableMode;
+
 ///Controls the output of information on the screen and/or log.
 typedef enum{ 
   MOUT_ScrFile=3,  ///<Output on the screen and log.

@@ -187,6 +187,10 @@ void JSph::InitVars(){
   ArtificialStressCoef=0.2f;
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
+  HydroMech=false;
+  WaterTableMode=WTABLE_FreeSurface;
+  WaterTableZ=0;
+  PoreWaterRho=1000.f;
   SoilStressRateGradCorr=false;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
@@ -3283,6 +3287,16 @@ std::string JSph::GetDPName(TpDPCtes dpctes){
     return(tx);
 }
 //==============================================================================
+/// Returns name of hydromechanical water-table mode in text format.
+//==============================================================================
+std::string JSph::GetWaterTableModeName(TpWaterTableMode wtmode){
+  string tx;
+  if(wtmode==WTABLE_FreeSurface)tx="FreeSurface";
+  else if(wtmode==WTABLE_ConstantZ)tx="ConstantZ";
+  else tx="???";
+  return(tx);
+}
+//==============================================================================
 /// Returns name of Density Diffusion Term in text format.
 /// Devuelve nombre del Density Diffusion Term en texto.
 //==============================================================================
@@ -3449,6 +3463,16 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   StrainSoftening=(softphi || softcoh);
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
+  HydroMech=sxml->ReadElementBool(solidNode,"HydroMech","value",true,false);
+  const string wtmode=fun::StrLower(sxml->ReadElementStr(solidNode,"WaterTableMode","value",true,"FreeSurface"));
+  if(wtmode=="freesurface")WaterTableMode=WTABLE_FreeSurface;
+  else if(wtmode=="constantz")WaterTableMode=WTABLE_ConstantZ;
+  else Run_Exceptioon("WaterTableMode must be FreeSurface or ConstantZ.");
+  WaterTableZ=sxml->ReadElementDouble(solidNode,"WaterTableZ","value",true,0);
+  PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
+  if(HydroMech && WaterTableMode==WTABLE_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value"))
+    Run_Exceptioon("WaterTableZ must be defined when Hydromechanics uses WaterTableMode=ConstantZ.");
+  if(PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
   //Calculate bulk and shear modulus
   SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
@@ -3456,6 +3480,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   const StSoilCte &ct=SoilCte;
    Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
    Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
+   Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
+   if(HydroMech){
+     Log->Print(fun::VarStr("  WaterTableMode", GetWaterTableModeName(WaterTableMode)));
+     if(WaterTableMode==WTABLE_ConstantZ)Log->Printf("  WaterTableZ: %f",WaterTableZ);
+     Log->Printf("  PoreWaterRho: %f",PoreWaterRho);
+   }
    Log->Printf("  Cohesion: %f",ct.coh);
    if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}
    Log->Printf("  Trigger Strength Reduction Factor: %f",ct.SoilTriggerFos);

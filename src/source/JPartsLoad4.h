@@ -94,6 +94,9 @@ protected:
   bool SoilDataLoaded;
   tsymatrix3f *Sigma;
   float *Kplastic;
+  bool PorePressureDataLoaded;
+  float *PorePress;
+  float *PorePress0;
 
   void AllocMemory(unsigned count);
   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
@@ -129,6 +132,9 @@ public:
   bool GetSoilDataLoaded()const{ return(SoilDataLoaded); }
   const tsymatrix3f* GetSigma(){ return(Sigma); }
   const float* GetKplastic(){ return(Kplastic); }
+  bool GetPorePressureDataLoaded()const{ return(PorePressureDataLoaded); }
+  const float* GetPorePress(){ return(PorePress); }
+  const float* GetPorePress0(){ return(PorePress0); }
 
   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
   tdouble3 GetCasePosMax()const{ return(CasePosMax); }

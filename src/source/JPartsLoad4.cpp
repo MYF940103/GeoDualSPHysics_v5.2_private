@@ -35,7 +35,7 @@ using namespace std;
 //==============================================================================
 JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
   ClassName="JPartsLoad4";
-  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL;
+  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL; PorePress=NULL; PorePress0=NULL;
   Reset();
 }
 
@@ -67,6 +67,7 @@ void JPartsLoad4::Reset(){
   SymplecticDtPre=0;
   DemDtForce=0;
   SoilDataLoaded=false;
+  PorePressureDataLoaded=false;
   AllocMemory(0);
 }
 
@@ -81,6 +82,8 @@ void JPartsLoad4::AllocMemory(unsigned count){
   delete[] VelRhop;  VelRhop=NULL; 
   delete[] Sigma;    Sigma=NULL;
   delete[] Kplastic; Kplastic=NULL;
+  delete[] PorePress;  PorePress=NULL;
+  delete[] PorePress0; PorePress0=NULL;
   if(Count){
     try{
       Idp=new unsigned[Count];
@@ -88,6 +91,8 @@ void JPartsLoad4::AllocMemory(unsigned count){
       VelRhop=new tfloat4[Count];
       Sigma=new tsymatrix3f[Count];
       Kplastic=new float[Count];
+      PorePress=new float[Count];
+      PorePress0=new float[Count];
     }
     catch(const std::bad_alloc){
       Run_Exceptioon("Could not allocate the requested memory.");
@@ -107,6 +112,8 @@ llong JPartsLoad4::GetAllocMemory()const{
   if(VelRhop)s+=sizeof(tfloat4)*Count;
   if(Sigma)s+=sizeof(tsymatrix3f)*Count;
   if(Kplastic)s+=sizeof(float)*Count;
+  if(PorePress)s+=sizeof(float)*Count;
+  if(PorePress0)s+=sizeof(float)*Count;
   return(s);
 }
 
@@ -201,6 +208,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   CasePosMax=pd.Get_CasePosMax();
   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
   SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
+  PorePressureDataLoaded=(PartBegin && pd.ArrayExists("PorePress") && pd.ArrayExists("PorePress0"));
   //-Loads data for restarting.
   if(PartBegin){
     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
@@ -229,6 +237,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       }
       if(SoilDataLoaded && (!pd.ArrayExists("Sigma_kk") || !pd.ArrayExists("Sigma_ij") || !pd.ArrayExists("Kplastic")))
         Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
+      if(PorePressureDataLoaded && (!pd.ArrayExists("PorePress") || !pd.ArrayExists("PorePress0")))
+        Run_Exceptioon("Pore-pressure restart arrays are not available in all PART pieces.");
       const unsigned npok=pd.Get_Npok();
       if(npok){
         if(auxsize<npok){
@@ -261,6 +271,10 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
             Sigma[ntot+p].xz=auxf3[p].z;
           }
           pd.GetArray("Kplastic",JBinaryDataDef::DatFloat)->GetDataCopy(npok,Kplastic+ntot);
+        }
+        if(PorePressureDataLoaded){
+          pd.GetArray("PorePress",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress+ntot);
+          pd.GetArray("PorePress0",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress0+ntot);
         }
       }
       ntot+=npok;

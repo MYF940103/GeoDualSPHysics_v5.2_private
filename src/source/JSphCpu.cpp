@@ -90,6 +90,7 @@ void JSphCpu::InitVars(){
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
+  PorePressc=NULL;PorePress0c=NULL;
   //======
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
@@ -179,6 +180,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(ArtificialStress)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-artificialstress
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
+  if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4);//-PorePress,PorePress0 and SaveData temporary arrays
   //======
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
@@ -238,6 +240,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
   tsymatrix3f  *sigmam1   =SaveArrayCpu(Np,SigmaM1c);
   float        *kplastic  =SaveArrayCpu(Np,Kplasticc);
+  float        *porepress =SaveArrayCpu(Np,PorePressc);
+  float        *porepress0=SaveArrayCpu(Np,PorePress0c);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -262,6 +266,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(SigmaPrec);
   ArraysCpu->Free(SigmaM1c);
   ArraysCpu->Free(Kplasticc);
+  ArraysCpu->Free(PorePressc);
+  ArraysCpu->Free(PorePress0c);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -290,6 +296,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
   if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticc = ArraysCpu->ReserveFloat();
+  if(porepress)  PorePressc = ArraysCpu->ReserveFloat();
+  if(porepress0) PorePress0c = ArraysCpu->ReserveFloat();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -314,6 +322,8 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,sigmapre,SigmaPrec);
   RestoreArrayCpu(Np,sigmam1,SigmaM1c);
   RestoreArrayCpu(Np,kplastic,Kplasticc);
+  RestoreArrayCpu(Np,porepress,PorePressc);
+  RestoreArrayCpu(Np,porepress0,PorePress0c);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -362,6 +372,10 @@ void JSphCpu::ReserveBasicArraysCpu(){
   //-mdbr
   Sigmac=ArraysCpu->ReserveSymatrix3f();
   Kplasticc=ArraysCpu->ReserveFloat();
+  if(HydroMech){
+    PorePressc=ArraysCpu->ReserveFloat();
+    PorePress0c=ArraysCpu->ReserveFloat();
+  }
   //=====
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
   SigmaM1c=ArraysCpu->ReserveSymatrix3f();}//mdbr
@@ -408,7 +422,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
-  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv)
+  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -418,6 +432,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(fstype && FSTypec)memcpy(fstype,FSTypec+pini,sizeof(unsigned)*n);
   if(fsnormal && FSNormalc)memcpy(fsnormal,FSNormalc+pini,sizeof(tfloat3)*n);
   if(posdiv && PosDivc)memcpy(posdiv,PosDivc+pini,sizeof(float)*n);
+  if(porepress && PorePressc)memcpy(porepress,PorePressc+pini,sizeof(float)*n);
+  if(porepress0 && PorePress0c)memcpy(porepress0,PorePress0c+pini,sizeof(float)*n);
   if(vel && rhop){
     for(unsigned p=0;p<n;p++){
       tfloat4 vr=Velrhopc[p+pini];
@@ -469,6 +485,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(fstype)fstype[pdel]=fstype[p];
         if(fsnormal)fsnormal[pdel]=fsnormal[p];
         if(posdiv)posdiv[pdel]=posdiv[p];
+        if(porepress)porepress[pdel]=porepress[p];
+        if(porepress0)porepress0[pdel]=porepress0[p];
         code2[pdel]=code2[p];
       }
       if(!normal)ndel++;
@@ -1038,6 +1056,66 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
       default: Run_Exceptioon("Kernel unknown.");
     }
   }
+}
+
+//==============================================================================
+/// Initialises total/gauge pore-water pressure from a hydrostatic water table.
+//==============================================================================
+void JSphCpu::InitHydroMechPorePressure(){
+  if(!HydroMech || !PorePressc || !PorePress0c)return;
+  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+  const double gzabs=fabs(double(Gravity.z));
+  const double gammaw=double(PoreWaterRho)*(gzabs>0? gzabs: gnorm);
+  unsigned nfs=0;
+  unsigned fstarget=2;
+  unsigned *fsp=NULL;
+  if(WaterTableMode==WTABLE_FreeSurface){
+    if(!FSTypec)Run_Exceptioon("Free-surface tracking data is required for WaterTableMode=FreeSurface.");
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && FSTypec[p]==fstarget)nfs++;
+    if(!nfs){
+      fstarget=3;
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && FSTypec[p]==fstarget)nfs++;
+    }
+    if(!nfs)Run_Exceptioon("No free-surface particles were found for hydromechanical pore-pressure initialization.");
+    try{
+      fsp=new unsigned[nfs];
+    }
+    catch(const std::bad_alloc){
+      Run_Exceptioon("Could not allocate the requested memory.");
+    }
+    unsigned c=0;
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && FSTypec[p]==fstarget)fsp[c++]=p;
+  }
+
+  double pmin=DBL_MAX,pmax=-DBL_MAX;
+  for(unsigned p=0;p<Np;p++){
+    double zwt=WaterTableZ;
+    if(WaterTableMode==WTABLE_FreeSurface){
+      const tdouble3 ps=Posc[p];
+      double distmin=DBL_MAX;
+      unsigned pnear=fsp[0];
+      for(unsigned c=0;c<nfs;c++){
+        const tdouble3 pf=Posc[fsp[c]];
+        const double dx=ps.x-pf.x;
+        const double dy=(Simulate2D? 0: ps.y-pf.y);
+        const double dist2=dx*dx+dy*dy;
+        if(dist2<distmin){
+          distmin=dist2;
+          pnear=fsp[c];
+        }
+      }
+      zwt=Posc[pnear].z;
+    }
+    float pw=float(gammaw*max(0.,zwt-Posc[p].z));
+    if(WaterTableMode==WTABLE_FreeSurface && p>=Npb && FSTypec && (FSTypec[p]==2 || FSTypec[p]==3))pw=0.f;
+    PorePressc[p]=pw;
+    PorePress0c[p]=pw;
+    pmin=min(pmin,double(pw));
+    pmax=max(pmax,double(pw));
+  }
+  delete[] fsp; fsp=NULL;
+  Log->Printf("Hydromechanics: initial pore pressure assigned to %u particles (%s, min=%g, max=%g)."
+    ,Np,GetWaterTableModeName(WaterTableMode).c_str(),pmin,pmax);
 }
 
 //==============================================================================

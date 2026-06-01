@@ -46,9 +46,9 @@ protected:
   unsigned PeriodicMakeList(unsigned np,unsigned pini,bool stable,unsigned nmax,tdouble3 perinc,const tdouble3 *pos,const typecode *code,unsigned *listp)const;
   void PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inverse,double dx,double dy,double dz,tuint3 cellmax,tdouble3 *pos,unsigned *dcell)const;
   void PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1)const;
+    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0)const;
   void PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre)const;
+    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0)const;
   void PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
     ,tdouble3 perinc,const unsigned *listp,tfloat3 *motionvel,tfloat3 *normals)const;
   void RunPeriodic();
