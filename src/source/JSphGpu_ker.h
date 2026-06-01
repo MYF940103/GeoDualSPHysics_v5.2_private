@@ -315,11 +315,12 @@ void PeriodicIgnore(unsigned n,typecode *code);
 unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax,tdouble3 mapposmin,tdouble3 mapposmax,tdouble3 perinc,const double2 *posxy,const double *posz,const typecode *code,unsigned *listp);
 void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1);
+  ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1
+  ,float *porepress,float *porepress0);
 void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
-  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre);
+  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
 
 //-Kernels for Damping.

@@ -46,7 +46,9 @@
 #include "JDataArrays.h"
 #include "JVtkLib.h"
 
+#include <cfloat>
 #include <climits>
+#include <cmath>
 
 using namespace std;
 
@@ -57,6 +59,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   ClassName="JSphGpu";
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
+  PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL;
   AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
@@ -141,6 +144,7 @@ void JSphGpu::InitVars(){
   FreeCpuMemoryFixed();
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
+  PorePressg=NULL; PorePress0g=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
@@ -269,6 +273,10 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] Sigma;      Sigma = NULL;
   delete[] Kplastic;   Kplastic = NULL;
   delete[] KplasticDk; KplasticDk = NULL;
+  delete[] PorePress;  PorePress = NULL;
+  delete[] PorePress0; PorePress0 = NULL;
+  delete[] AuxPorePress;  AuxPorePress = NULL;
+  delete[] AuxPorePress0; AuxPorePress0 = NULL;
   //
   delete[] AuxPos;     AuxPos=NULL;
   delete[] AuxVel;     AuxVel=NULL;
@@ -301,6 +309,12 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
 	  Sigma=new tsymatrix3f[np]; MemCpuParticles+=sizeof(tsymatrix3f)*np;
       Kplastic = new float[np]; MemCpuParticles += sizeof(float) * np;
       KplasticDk = new float[np]; MemCpuParticles += sizeof(float) * np;
+      if(HydroMech){
+        PorePress=new float[np];     MemCpuParticles+=sizeof(float)*np;
+        PorePress0=new float[np];    MemCpuParticles+=sizeof(float)*np;
+        AuxPorePress=new float[np];  MemCpuParticles+=sizeof(float)*np;
+        AuxPorePress0=new float[np]; MemCpuParticles+=sizeof(float)*np;
+      }
       //==========
       AuxPos=new tdouble3[np];   MemCpuParticles+=sizeof(tdouble3)*np; 
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
@@ -358,6 +372,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
   if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 4);//-kplastic,kplasticdk and sort buffers
+  if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,4);//-PorePress,PorePress0 and sort buffers
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
@@ -425,6 +440,8 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
   float* kplasticdk = SaveArrayGpu(Np, KplasticDkg);
+  float* porepress = SaveArrayGpu(Np, PorePressg);
+  float* porepress0 = SaveArrayGpu(Np, PorePress0g);
   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -453,6 +470,8 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
   ArraysGpu->Free(KplasticDkg);
+  ArraysGpu->Free(PorePressg);
+  ArraysGpu->Free(PorePress0g);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -485,6 +504,8 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
   if(kplasticdk) KplasticDkg = ArraysGpu->ReserveFloat();
+  if(porepress)  PorePressg = ArraysGpu->ReserveFloat();
+  if(porepress0) PorePress0g = ArraysGpu->ReserveFloat();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
   // 
@@ -513,6 +534,8 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
   RestoreArrayGpu(Np,kplasticdk,KplasticDkg);
+  RestoreArrayGpu(Np,porepress,PorePressg);
+  RestoreArrayGpu(Np,porepress0,PorePress0g);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
@@ -567,6 +590,10 @@ void JSphGpu::ReserveBasicArraysGpu(){
   Sigmag = ArraysGpu->ReserveSymatrix3f();
   Kplasticg = ArraysGpu->ReserveFloat();
   KplasticDkg = ArraysGpu->ReserveFloat();
+  if(HydroMech){
+    PorePressg=ArraysGpu->ReserveFloat();
+    PorePress0g=ArraysGpu->ReserveFloat();
+  }
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
   SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
   }
@@ -690,6 +717,10 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
   cudaMemcpy(Sigmag, Sigma, sizeof(tsymatrix3f)*n, cudaMemcpyHostToDevice);
   cudaMemcpy(Kplasticg, Kplastic, sizeof(float)*n, cudaMemcpyHostToDevice);
   cudaMemset(KplasticDkg,0,sizeof(float)*n);
+  if(HydroMech){
+    cudaMemcpy(PorePressg,PorePress,sizeof(float)*n,cudaMemcpyHostToDevice);
+    cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*n,cudaMemcpyHostToDevice);
+  }
   //====
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
@@ -713,6 +744,10 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   cudaMemcpy(Posz   ,Poszg   +pini,sizeof(double)  *n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Velrhop,Velrhopg+pini,sizeof(float4)  *n,cudaMemcpyDeviceToHost);
   if(AuxFSType && FSTypeg)cudaMemcpy(AuxFSType,FSTypeg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
+  if(HydroMech && PorePressg && PorePress0g){
+    cudaMemcpy(PorePress,PorePressg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+    cudaMemcpy(PorePress0,PorePress0g+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+  }
   if(code || onlynormal)cudaMemcpy(Code,Codeg+pini,sizeof(typecode)*n,cudaMemcpyDeviceToHost);
   //==mdbr
   cudaMemcpy(Sigma,Sigmag+pini,sizeof(tsymatrix3f)*n,cudaMemcpyDeviceToHost);
@@ -732,6 +767,10 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         Velrhop[p-ndel]=Velrhop[p];
         Code[p-ndel]   =Code[p];
         if(AuxFSType)AuxFSType[p-ndel]=AuxFSType[p];
+        if(HydroMech && PorePress && PorePress0){
+          PorePress[p-ndel]=PorePress[p];
+          PorePress0[p-ndel]=PorePress0[p];
+        }
         //==== mdbr
 		Sigma[p-ndel]  =Sigma[p];
         Kplastic[p-ndel] = Kplastic[p];
@@ -751,6 +790,10 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
     AuxSigma_xy_yz_xz[p]=TFloat3(Sigma[p].xy,Sigma[p].yz,Sigma[p].xz);
     AuxKplastic[p]=Kplastic[p];
     AuxKplasticDk[p]=KplasticDk[p];
+    if(HydroMech && AuxPorePress && AuxPorePress0 && PorePress && PorePress0){
+      AuxPorePress[p]=PorePress[p];
+      AuxPorePress0[p]=PorePress0[p];
+    }
   }
   return(num);
 }
@@ -960,6 +1003,75 @@ void JSphGpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
   cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg);
   Check_CudaErroor("Failed computing free-surface tracking.");
+}
+
+//==============================================================================
+/// Initialises total/gauge pore-water pressure from a hydrostatic water table.
+//==============================================================================
+void JSphGpu::InitHydroMechPorePressure(){
+  if(!HydroMech || !PorePressg || !PorePress0g || !PorePress || !PorePress0)return;
+  cudaMemcpy(Posxy,Posxyg,sizeof(double2)*Np,cudaMemcpyDeviceToHost);
+  cudaMemcpy(Posz,Poszg,sizeof(double)*Np,cudaMemcpyDeviceToHost);
+  cudaMemcpy(Code,Codeg,sizeof(typecode)*Np,cudaMemcpyDeviceToHost);
+  cudaMemcpy(AuxFSType,FSTypeg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed copying data for hydromechanical pore-pressure initialization.");
+
+  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+  const double gzabs=fabs(double(Gravity.z));
+  const double gammaw=double(PoreWaterRho)*(gzabs>0? gzabs: gnorm);
+  unsigned nfs=0;
+  unsigned fstarget=2;
+  unsigned *fsp=NULL;
+  if(WaterTableMode==WTABLE_FreeSurface){
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && AuxFSType[p]==fstarget)nfs++;
+    if(!nfs){
+      fstarget=3;
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && AuxFSType[p]==fstarget)nfs++;
+    }
+    if(!nfs)Run_Exceptioon("No free-surface particles were found for hydromechanical pore-pressure initialization.");
+    try{
+      fsp=new unsigned[nfs];
+    }
+    catch(const std::bad_alloc){
+      Run_Exceptioon("Could not allocate the requested memory.");
+    }
+    unsigned c=0;
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && AuxFSType[p]==fstarget)fsp[c++]=p;
+  }
+
+  double pmin=DBL_MAX,pmax=-DBL_MAX;
+  for(unsigned p=0;p<Np;p++){
+    double zwt=WaterTableZ;
+    if(WaterTableMode==WTABLE_FreeSurface){
+      const double psx=Posxy[p].x;
+      const double psy=Posxy[p].y;
+      double distmin=DBL_MAX;
+      unsigned pnear=fsp[0];
+      for(unsigned c=0;c<nfs;c++){
+        const unsigned pfid=fsp[c];
+        const double dx=psx-Posxy[pfid].x;
+        const double dy=(Simulate2D? 0: psy-Posxy[pfid].y);
+        const double dist2=dx*dx+dy*dy;
+        if(dist2<distmin){
+          distmin=dist2;
+          pnear=pfid;
+        }
+      }
+      zwt=Posz[pnear];
+    }
+    float pw=float(gammaw*max(0.,zwt-Posz[p]));
+    if(WaterTableMode==WTABLE_FreeSurface && p>=Npb && (AuxFSType[p]==2 || AuxFSType[p]==3))pw=0.f;
+    PorePress[p]=pw;
+    PorePress0[p]=pw;
+    pmin=min(pmin,double(pw));
+    pmax=max(pmax,double(pw));
+  }
+  delete[] fsp; fsp=NULL;
+  cudaMemcpy(PorePressg,PorePress,sizeof(float)*Np,cudaMemcpyHostToDevice);
+  cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*Np,cudaMemcpyHostToDevice);
+  Check_CudaErroor("Failed uploading hydromechanical pore-pressure data.");
+  Log->Printf("Hydromechanics: initial pore pressure assigned to %u particles (%s, min=%g, max=%g)."
+    ,Np,GetWaterTableModeName(WaterTableMode).c_str(),pmin,pmax);
 }
 
 //==============================================================================

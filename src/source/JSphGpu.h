@@ -112,6 +112,10 @@ protected:
   float *AuxKplastic;
   float *KplasticDk;
   float *AuxKplasticDk;
+  float *PorePress;     ///<Current total/gauge pore-water pressure on CPU.
+  float *PorePress0;    ///<Initial hydrostatic pore-water pressure reference on CPU.
+  float *AuxPorePress;  ///<Auxiliary pore-water pressure array for output.
+  float *AuxPorePress0; ///<Auxiliary initial pore-water pressure array for output.
   //-Auxiliary variables for the conversion (size=ParticlesSize).
   //-Variables auxiliares para conversion (size=ParticlesSize).
   tdouble3 *AuxPos;
@@ -148,6 +152,8 @@ protected:
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng
   float *KplasticDkg;//diagnostic accumulated plastic increment
+  float *PorePressg;   ///<Current total/gauge pore-water pressure on GPU.
+  float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
 
   //-Variables for free-surface tracking.
   tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.
@@ -271,6 +277,7 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
+  void InitHydroMechPorePressure();
   
   void ComputeVerlet(double dt);
   void ComputeSymplecticPre(double dt);

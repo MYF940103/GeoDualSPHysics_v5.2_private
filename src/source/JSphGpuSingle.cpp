@@ -164,6 +164,19 @@ void JSphGpuSingle::ConfigDomain(){
     memset(Sigma,0,sizeof(tsymatrix3f)*Np);
     memset(Kplastic,0,sizeof(float)*Np);
   }
+  if(HydroMech){
+    if(PartBegin){
+      if(!PartsLoaded->GetPorePressureDataLoaded())
+        Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
+      memcpy(PorePress,PartsLoaded->GetPorePress(),sizeof(float)*Np);
+      memcpy(PorePress0,PartsLoaded->GetPorePress0(),sizeof(float)*Np);
+      Log->Print("Restart hydromechanical data: PorePress and PorePress0 inherited.");
+    }
+    else{
+      memset(PorePress,0,sizeof(float)*Np);
+      memset(PorePress0,0,sizeof(float)*Np);
+    }
+  }
   //========= mdbr
 
   //-Computes radius of floating bodies.
@@ -238,6 +251,10 @@ void JSphGpuSingle::ConfigDomain(){
   //-Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
+  if(HydroMech && !PartBegin){
+    ComputeFreeSurfaceTracking();
+    InitHydroMechPorePressure();
+  }
 }
 
 //==============================================================================
@@ -326,10 +343,10 @@ void JSphGpuSingle::RunPeriodic(){
             run=false;
             //-Create new periodic particles duplicating the particles from the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g);
+            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg);
+              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g);
             }
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg);
 
@@ -388,6 +405,14 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     swap(Sigmag, sigmag);   ArraysGpu->Free(sigmag);
     swap(Kplasticg, kplasticg);   ArraysGpu->Free(kplasticg);
     swap(KplasticDkg, kplasticdkg); ArraysGpu->Free(kplasticdkg);
+    if(HydroMech){
+      float* porepressg=ArraysGpu->ReserveFloat();
+      float* porepress0g=ArraysGpu->ReserveFloat();
+      CellDivSingle->SortDataArrays(PorePressg,porepressg);
+      CellDivSingle->SortDataArrays(PorePress0g,porepress0g);
+      swap(PorePressg,porepressg);   ArraysGpu->Free(porepressg);
+      swap(PorePress0g,porepress0g); ArraysGpu->Free(porepress0g);
+    }
     //====    
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
     swap(Codeg,codeg);         ArraysGpu->Free(codeg);
@@ -1009,6 +1034,13 @@ void JSphGpuSingle::SaveData(){
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
   AddSoilDiagnosticArrays(arrays,npsave,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic,AuxKplasticDk);
   if(save)arrays.AddArray("FSType",npsave,AuxFSType);
+  if(save && HydroMech && AuxPorePress && AuxPorePress0){
+    float *poreexcess=new float[npsave];
+    for(unsigned p=0;p<npsave;p++)poreexcess[p]=AuxPorePress[p]-AuxPorePress0[p];
+    arrays.AddArray("PorePress",npsave,AuxPorePress);
+    arrays.AddArray("PorePress0",npsave,AuxPorePress0);
+    arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+  }
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
   //-Save extra data.
