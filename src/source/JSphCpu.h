@@ -38,7 +38,9 @@ typedef struct{
   const unsigned *idp;
   const typecode *code;
   const float *press;
+  const float *porepress;
   const tfloat3 *dengradcorr;
+  const tmatrix3d *corrmat;
   float* ar;
   tfloat3 *ace;
   float *delta;
@@ -58,7 +60,9 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   ,StDivDataCpu divdata,const unsigned *dcell
   ,const tdouble3 *pos,const tfloat4 *velrhop,const unsigned *idp,const typecode *code
   ,const float *press
+  ,const float *porepress
   ,const tfloat3 *dengradcorr
+  ,const tmatrix3d *corrmat
   ,float* ar,tfloat3 *ace,float *delta
   ,TpShifting shiftmode,tfloat4 *shiftposfs
   ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
@@ -69,8 +73,8 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   stinterparmsc d={np,npb,npbok,(np-npb)
     ,divdata,dcell
     ,pos,velrhop,idp,code
-    ,press
-    ,dengradcorr
+    ,press,porepress
+    ,dengradcorr,corrmat
     ,ar,ace,delta
     ,shiftmode,shiftposfs
     ,spstau,spsgradvel
@@ -145,13 +149,16 @@ protected:
   float* Kplasticc;
   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
+  float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
   //===============  
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
+  float* PorePressM1c;  ///<Verlet history of pore-water pressure.
 
   //-Variables for compute step: SYMPLECTIC. | Vars. para compute step: SYMPLECTIC.
   tdouble3 *PosPrec;    ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
   tfloat4 *VelrhopPrec;
+  float* PorePressPrec; ///<Symplectic previous pore-water pressure.
   //======= mdbr
   tsymatrix3f* SigmaPrec;
   tsymatrix3f* SigmaM1c;
@@ -246,7 +253,24 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
-  void InitHydroMechPorePressure();
+  bool IsDrainedFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
+  void InitHydroMechState();
+  void ApplyFreeSurfacePorePressure();
+  void ApplyPorePressureBoundaries();
+  template<TpKernel tker,bool sim2d> void InteractionPorePressureRateT
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const tmatrix3d *corrmat,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress,float *porepressrate)const;
+  void InteractionPorePressureRate();
+  template<TpKernel tker,bool sim2d> void InteractionPorePressureMdbcCorrectionT
+    (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
+  void InteractionPorePressureMdbcCorrection();
+  template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress0,float *porepress)const;
+  void ShepardRegularizePorePressure();
   template<TpKernel tker,bool sim2d> void ComputeFSParticlesFreeSurface
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
@@ -274,7 +298,8 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell
     ,const tsymatrix3f* tau,tsymatrix3f* gradvel
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
-    ,const float *press,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+    ,const float *press,const float *porepress,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+    ,const tmatrix3d *corrmat
     ,const tsymatrix3f *artificialstress
     ,float &viscdt,float *ar,tfloat3 *ace,float *delta
     ,TpShifting shiftmode,tfloat4 *shiftposfs,tsymatrix3f *rsigma)const;
@@ -337,6 +362,9 @@ protected:
 
   void ComputeSymplecticPre(double dt);
   void ComputeSymplecticCorr(double dt);
+  void ComputeVerletPorePressure(double dt);
+  void ComputeSymplecticPrePorePressure(double dt);
+  void ComputeSymplecticCorrPorePressure(double dt);
 
   double DtVariable(bool final);
 

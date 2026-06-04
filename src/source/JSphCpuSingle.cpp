@@ -141,6 +141,8 @@ void JSphCpuSingle::ConfigDomain(){
       memset(PorePressc,0,sizeof(float)*Np);
       memset(PorePress0c,0,sizeof(float)*Np);
     }
+    if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+    if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
   }
   //=========
   //-Computes radius of floating bodies.
@@ -200,9 +202,9 @@ void JSphCpuSingle::ConfigDomain(){
   //-Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
-  if(HydroMech && !PartBegin){
+  if(HydroMech && !PartBegin && HydroMechInitMode!=HMINIT_None){
     ComputeFreeSurfaceTracking();
-    InitHydroMechPorePressure();
+    InitHydroMechState();
   }
 }
 
@@ -307,7 +309,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0)const
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -328,6 +330,8 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
     sigmam1[pnew]=sigmam1[pcopy];//mdbr
     if(porepress)porepress[pnew]=porepress[pcopy];
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
   }
 }
@@ -342,7 +346,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0)const
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -361,6 +365,8 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     sigma[pnew]=sigma[pcopy];//mdbr
     if(porepress)porepress[pnew]=porepress[pcopy];
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+    if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+    if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
     if(pospre)pospre[pnew]=pospre[pcopy];
     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -457,10 +463,10 @@ void JSphCpuSingle::RunPeriodic(){
             run=false;
             //-Create new duplicate periodic particles in the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c);
+            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c);
             if(TStep==STEP_Symplectic){
               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
-              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c);
+              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec);
             }
             if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc);
 
@@ -505,15 +511,18 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   CellDivSingle->SortArray(Kplasticc);
   if(PorePressc)CellDivSingle->SortArray(PorePressc);
   if(PorePress0c)CellDivSingle->SortArray(PorePress0c);
+  if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
+    if(PorePressM1c)CellDivSingle->SortArray(PorePressM1c);
   }
   else if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec)){//-In reality, this is only necessary in divide for corrector, not in predictor??? | En realidad solo es necesario en el divide del corrector, no en el predictor???
     if(!PosPrec || !VelrhopPrec)Run_Exceptioon("Symplectic data is invalid.") ;
     CellDivSingle->SortArray(PosPrec);
     CellDivSingle->SortArray(VelrhopPrec);
     CellDivSingle->SortArray(SigmaPrec);
+    if(PorePressPrec)CellDivSingle->SortArray(PorePressPrec);
   }
   if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
   if(FSTypec)CellDivSingle->SortArray(FSTypec);
@@ -534,6 +543,13 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
 
   //-Collect position of floating particles. | Recupera posiciones de floatings.
   if(CaseNfloat)CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codec,Idpc,FtRidp);
+  if(HydroMech){
+    ApplyPorePressureBoundaries();
+    if(!PorePressPrec && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+      ShepardRegularizePorePressure();
+      ApplyPorePressureBoundaries();
+    }
+  }
   Timersc->TmStop(TMC_NlSortData);
 
   //-Control of excluded particles (only fluid because excluded boundary are checked before).
@@ -607,7 +623,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
     ,DivData,Dcellc
-    ,Posc,Velrhopc,Idpc,Codec,Pressc,dengradcorr
+    ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL),dengradcorr,CorrMatc
     ,Arc,Acec,Deltac
     ,ShiftingMode,ShiftPosfsc
     ,SpsTauc,SpsGradvelc
@@ -617,6 +633,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   StInterResultc res;
   res.viscdt=0;
   JSphCpu::Interaction_Forces_ct(parms,res);
+  if(HydroMech)InteractionPorePressureRate();
   if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.

@@ -199,9 +199,11 @@ protected:
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
-  TpWaterTableMode WaterTableMode; ///<Mode for initial hydrostatic pore-pressure field. //mdbr
-  double WaterTableZ;         ///<Constant water-table elevation for WTABLE_ConstantZ. //mdbr
-  float PoreWaterRho;         ///<Reference pore-water density for hydrostatic pressure. //mdbr
+  TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
+  double WaterTableZ;         ///<Constant water-table elevation for HMINIT_ConstantZ. //mdbr
+  float PoreDtSafety;         ///<Safety coefficient for pore-pressure diffusion time-step limit. //mdbr
+  bool PoreShepardRegularization; ///<Enables optional Shepard regularization for pore pressure. //mdbr
+  unsigned PoreShepardInterval; ///<Step interval for pore-pressure Shepard regularization. //mdbr
   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
@@ -537,7 +539,7 @@ public:
   static std::string GetBoundName(TpBoundary tboundary);
   static std::string GetSlipName(TpSlipMode tslip);
   static std::string GetDPName(TpDPCtes dpctes);
-  static std::string GetWaterTableModeName(TpWaterTableMode wtmode);
+  static std::string GetHydroMechInitModeName(TpHydroMechInitMode initmode);
   std::string GetDDTName(TpDensity tdensity)const;
 
   std::string GetDDTConfig()const;

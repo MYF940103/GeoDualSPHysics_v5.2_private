@@ -308,13 +308,19 @@ typedef struct{
   float PRvs;         ///<Elastic model
   float ModulusG;     ///<Elastic model - To be calculated
   float ModulusK;     ///<Elastic model - To be calculated
+  float PoreWaterRho;         ///<Reference pore-water density for u-pw hydromechanics.
+  float PoreWaterBulkModulus; ///<Pore-water bulk modulus Kw for u-pw hydromechanics.
+  float Porosity;             ///<Soil porosity n for u-pw hydromechanics.
+  float HydraulicConductivity;///<Hydraulic conductivity k [m/s] for u-pw hydromechanics.
 }StSoilCte;
 
-///Hydromechanical hydrostatic pore-pressure initialization mode.
+///Hydromechanical initialization mode for pore pressure and optional prestress.
 typedef enum{
-  WTABLE_FreeSurface=1, ///<Uses tracked soil free-surface particles as local zero pore-pressure level.
-  WTABLE_ConstantZ=2    ///<Uses a constant z-level as zero pore-pressure level.
-}TpWaterTableMode;
+  HMINIT_None=0,                 ///<Does not initialize a hydromechanical state.
+  HMINIT_FreeSurface=1,          ///<Initializes hydrostatic pore pressure from tracked soil free-surface particles.
+  HMINIT_ConstantZ=2,            ///<Initializes hydrostatic pore pressure from a constant z-level.
+  HMINIT_AnalyticalSelfWeight1D=3///<Initializes 1D self-weight consolidation pore pressure and effective stress.
+}TpHydroMechInitMode;
 
 ///Controls the output of information on the screen and/or log.
 typedef enum{ 

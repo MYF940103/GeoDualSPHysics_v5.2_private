@@ -1010,6 +1010,9 @@ void JSphGpu::ComputeFreeSurfaceTracking(){
 //==============================================================================
 void JSphGpu::InitHydroMechPorePressure(){
   if(!HydroMech || !PorePressg || !PorePress0g || !PorePress || !PorePress0)return;
+  if(HydroMechInitMode==HMINIT_None)return;
+  if(HydroMechInitMode==HMINIT_AnalyticalSelfWeight1D)
+    Run_Exceptioon("HydroMechInitMode=AnalyticalSelfWeight1D is currently implemented only in the CPU path.");
   cudaMemcpy(Posxy,Posxyg,sizeof(double2)*Np,cudaMemcpyDeviceToHost);
   cudaMemcpy(Posz,Poszg,sizeof(double)*Np,cudaMemcpyDeviceToHost);
   cudaMemcpy(Code,Codeg,sizeof(typecode)*Np,cudaMemcpyDeviceToHost);
@@ -1018,11 +1021,11 @@ void JSphGpu::InitHydroMechPorePressure(){
 
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
   const double gzabs=fabs(double(Gravity.z));
-  const double gammaw=double(PoreWaterRho)*(gzabs>0? gzabs: gnorm);
+  const double gammaw=double(SoilCte.PoreWaterRho)*(gzabs>0? gzabs: gnorm);
   unsigned nfs=0;
   unsigned fstarget=2;
   unsigned *fsp=NULL;
-  if(WaterTableMode==WTABLE_FreeSurface){
+  if(HydroMechInitMode==HMINIT_FreeSurface){
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && AuxFSType[p]==fstarget)nfs++;
     if(!nfs){
       fstarget=3;
@@ -1042,7 +1045,7 @@ void JSphGpu::InitHydroMechPorePressure(){
   double pmin=DBL_MAX,pmax=-DBL_MAX;
   for(unsigned p=0;p<Np;p++){
     double zwt=WaterTableZ;
-    if(WaterTableMode==WTABLE_FreeSurface){
+    if(HydroMechInitMode==HMINIT_FreeSurface){
       const double psx=Posxy[p].x;
       const double psy=Posxy[p].y;
       double distmin=DBL_MAX;
@@ -1060,7 +1063,7 @@ void JSphGpu::InitHydroMechPorePressure(){
       zwt=Posz[pnear];
     }
     float pw=float(gammaw*max(0.,zwt-Posz[p]));
-    if(WaterTableMode==WTABLE_FreeSurface && p>=Npb && (AuxFSType[p]==2 || AuxFSType[p]==3))pw=0.f;
+    if(HydroMechInitMode==HMINIT_FreeSurface && p>=Npb && (AuxFSType[p]==2 || AuxFSType[p]==3))pw=0.f;
     PorePress[p]=pw;
     PorePress0[p]=pw;
     pmin=min(pmin,double(pw));
@@ -1071,7 +1074,7 @@ void JSphGpu::InitHydroMechPorePressure(){
   cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*Np,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed uploading hydromechanical pore-pressure data.");
   Log->Printf("Hydromechanics: initial pore pressure assigned to %u particles (%s, min=%g, max=%g)."
-    ,Np,GetWaterTableModeName(WaterTableMode).c_str(),pmin,pmax);
+    ,Np,GetHydroMechInitModeName(HydroMechInitMode).c_str(),pmin,pmax);
 }
 
 //==============================================================================

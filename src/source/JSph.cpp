@@ -188,9 +188,11 @@ void JSph::InitVars(){
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
   HydroMech=false;
-  WaterTableMode=WTABLE_FreeSurface;
+  HydroMechInitMode=HMINIT_None;
   WaterTableZ=0;
-  PoreWaterRho=1000.f;
+  PoreDtSafety=0.1f;
+  PoreShepardRegularization=false;
+  PoreShepardInterval=30;
   SoilStressRateGradCorr=false;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
@@ -233,6 +235,7 @@ void JSph::InitVars(){
   DDTkhCte=DDTkh=DDTgz=0;
   memset(&CSP,0,sizeof(StCteSph));
   memset(&SoilCte,0,sizeof(StSoilCte));//-mdbr
+  SoilCte.PoreWaterRho=1000.f;
 
   CasePosMin=CasePosMax=TDouble3(0);
   CaseNp=CaseNbound=CaseNfixed=CaseNmoving=CaseNfloat=CaseNfluid=CaseNpb=0;
@@ -2286,7 +2289,11 @@ void JSph::InitRun(unsigned np,const unsigned *idp,const tdouble3 *pos){
 
   Part=PartIni; Nstep=0; PartNstep=0; PartOut=0;
   TimeStep=TimeStepIni; TimeStepM1=TimeStep;
-  if(FixedDt)DtIni=FixedDt->GetDt(TimeStep,DtIni);
+  if(FixedDt){
+    DtIni=FixedDt->GetDt(TimeStep,DtIni);
+    if(TStep==STEP_Symplectic)SymplecticDtPre=FixedDt->GetDt(TimeStep,SymplecticDtPre);
+    if(UseDEM)DemDtForce=FixedDt->GetDt(TimeStep,DemDtForce); //(DEM)
+  }
   TimePartNext=(SvAllSteps? TimeStep: OutputTime->GetNextTime(TimeStep));
 }
 
@@ -3287,12 +3294,14 @@ std::string JSph::GetDPName(TpDPCtes dpctes){
     return(tx);
 }
 //==============================================================================
-/// Returns name of hydromechanical water-table mode in text format.
+/// Returns name of hydromechanical initialization mode in text format.
 //==============================================================================
-std::string JSph::GetWaterTableModeName(TpWaterTableMode wtmode){
+std::string JSph::GetHydroMechInitModeName(TpHydroMechInitMode initmode){
   string tx;
-  if(wtmode==WTABLE_FreeSurface)tx="FreeSurface";
-  else if(wtmode==WTABLE_ConstantZ)tx="ConstantZ";
+  if(initmode==HMINIT_None)tx="None";
+  else if(initmode==HMINIT_FreeSurface)tx="FreeSurface";
+  else if(initmode==HMINIT_ConstantZ)tx="ConstantZ";
+  else if(initmode==HMINIT_AnalyticalSelfWeight1D)tx="AnalyticalSelfWeight1D";
   else tx="???";
   return(tx);
 }
@@ -3464,15 +3473,31 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
   HydroMech=sxml->ReadElementBool(solidNode,"HydroMech","value",true,false);
-  const string wtmode=fun::StrLower(sxml->ReadElementStr(solidNode,"WaterTableMode","value",true,"FreeSurface"));
-  if(wtmode=="freesurface")WaterTableMode=WTABLE_FreeSurface;
-  else if(wtmode=="constantz")WaterTableMode=WTABLE_ConstantZ;
-  else Run_Exceptioon("WaterTableMode must be FreeSurface or ConstantZ.");
-  WaterTableZ=sxml->ReadElementDouble(solidNode,"WaterTableZ","value",true,0);
-  PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
-  if(HydroMech && WaterTableMode==WTABLE_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value"))
-    Run_Exceptioon("WaterTableZ must be defined when Hydromechanics uses WaterTableMode=ConstantZ.");
-  if(PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
+  const bool hasinitmode=sxml->ExistsElement(solidEle,"HydroMechInitMode","value");
+  const string initmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,(hasinitmode? "HydroMechInitMode": "WaterTableMode"),"value",true,"None"));
+  if(initmodestr=="none" || initmodestr=="0")HydroMechInitMode=HMINIT_None;
+  else if(initmodestr=="freesurface" || initmodestr=="free_surface" || initmodestr=="1")HydroMechInitMode=HMINIT_FreeSurface;
+  else if(initmodestr=="constantz" || initmodestr=="constant_z" || initmodestr=="2")HydroMechInitMode=HMINIT_ConstantZ;
+  else if(initmodestr=="analyticalselfweight1d" || initmodestr=="analytical_self_weight_1d" || initmodestr=="selfweight1d" || initmodestr=="3")HydroMechInitMode=HMINIT_AnalyticalSelfWeight1D;
+  else Run_Exceptioon("HydroMechInitMode must be None, FreeSurface, ConstantZ or AnalyticalSelfWeight1D.");
+  WaterTableZ=sxml->ReadElementDouble(solidNode,(sxml->ExistsElement(solidEle,"HydroMechInitZ","value")? "HydroMechInitZ": "WaterTableZ"),"value",true,0);
+  SoilCte.PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
+  SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(solidNode,"PoreWaterBulkModulus","value",true,0.f);
+  SoilCte.Porosity=sxml->ReadElementFloat(solidNode,"Porosity","value",true,0.f);
+  SoilCte.HydraulicConductivity=sxml->ReadElementFloat(solidNode,"HydraulicConductivity","value",true,0.f);
+  PoreDtSafety=sxml->ReadElementFloat(solidNode,"PoreDtSafety","value",true,0.1f);
+  PoreShepardRegularization=sxml->ReadElementBool(solidNode,"PoreShepardRegularization","value",true,false);
+  PoreShepardInterval=sxml->ReadElementUnsigned(solidNode,"PoreShepardInterval","value",true,30);
+  if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value") && !sxml->ExistsElement(solidEle,"HydroMechInitZ","value"))
+    Run_Exceptioon("WaterTableZ or HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
+  if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
+  if(HydroMech){
+    if(SoilCte.PoreWaterBulkModulus<=0.f)Run_Exceptioon("PoreWaterBulkModulus must be greater than zero when HydroMech is enabled.");
+    if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
+    if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
+    if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
+    if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
+  }
   //Calculate bulk and shear modulus
   SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
 	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
@@ -3482,9 +3507,15 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
    Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
    Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
    if(HydroMech){
-     Log->Print(fun::VarStr("  WaterTableMode", GetWaterTableModeName(WaterTableMode)));
-     if(WaterTableMode==WTABLE_ConstantZ)Log->Printf("  WaterTableZ: %f",WaterTableZ);
-     Log->Printf("  PoreWaterRho: %f",PoreWaterRho);
+     Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
+     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",WaterTableZ);
+     Log->Printf("  PoreWaterRho: %f",ct.PoreWaterRho);
+     Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);
+     Log->Printf("  Porosity: %f",ct.Porosity);
+     Log->Printf("  HydraulicConductivity: %g",ct.HydraulicConductivity);
+     Log->Printf("  PoreDtSafety: %f",PoreDtSafety);
+     Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
+     Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
    }
    Log->Printf("  Cohesion: %f",ct.coh);
    if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}
@@ -3502,8 +3533,8 @@ void JSph::ConfigConstantsSoil(){
         Cs0 = sqrt((modulusK+4.f*modulusG/3.f)/RhopZero);
 		CSP.cs0 = Cs0;
         //-Constants for Dt.
-        DtIni=KernelH/Cs0;
-        DtMin=(KernelH/Cs0)*CoefDtMin;
+        if(!DtIni)DtIni=KernelH/Cs0;
+        if(!DtMin)DtMin=(KernelH/Cs0)*CoefDtMin;
 }
 
 

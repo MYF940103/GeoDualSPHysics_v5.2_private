@@ -107,6 +107,12 @@
                 <HydroMech value="1" comment="Enable first-stage hydromechanical pore-pressure storage and initialization" />
                 <WaterTableMode value="FreeSurface" comment="Use tracked soil free-surface particles as zero pore-pressure level" />
                 <PoreWaterRho value="1000" comment="Reference pore-water density for hydrostatic pore pressure" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw for u-pw PR formulation" units_comment="Pa" />
+                <Porosity value="0.3" comment="Porosity n for u-pw PR formulation" />
+                <HydraulicConductivity value="1e-3" comment="Hydraulic conductivity k for u-pw PR formulation" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Safety coefficient for explicit pore-pressure diffusion time step" />
+                <PoreShepardRegularization value="0" comment="Optional pore-pressure Shepard regularization for low-permeability large-deformation coupled cases" />
+                <PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization" />
 				<phi value="33" comment="friction angle" />
 				<coh value="10e3" comment="cohesion" />
 				<dlt value="0" comment="dilatancy angle" />

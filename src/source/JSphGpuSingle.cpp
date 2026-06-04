@@ -251,7 +251,7 @@ void JSphGpuSingle::ConfigDomain(){
   //-Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
-  if(HydroMech && !PartBegin){
+  if(HydroMech && !PartBegin && HydroMechInitMode!=HMINIT_None){
     ComputeFreeSurfaceTracking();
     InitHydroMechPorePressure();
   }
