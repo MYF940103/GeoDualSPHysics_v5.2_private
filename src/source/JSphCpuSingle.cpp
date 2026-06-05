@@ -617,6 +617,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   InterStep=interstep;
   PreInteraction_Forces();
   ComputeFreeSurfaceTracking();
+  ApplyHydroMechTopLoadAcceleration();
   tfloat3 *dengradcorr=NULL;
 
   Timersc->TmStart(TMC_CfForces);

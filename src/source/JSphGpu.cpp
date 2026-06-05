@@ -1276,9 +1276,19 @@ double JSphGpu::DtVariable(bool final){
   const double dt1=(AceMax? (sqrt(double(KernelH)/AceMax)): DBL_MAX); 
   //-dt2 combines the Courant and the viscous time-step controls.
   const double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
+  //-dtw limits the explicit pore-pressure diffusion update in u-pw PR formulation.
+  double dtw=DBL_MAX;
+  if(HydroMech && SoilCte.HydraulicConductivity>0.f){
+    const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+    const double ghyd=(gnorm>0? gnorm: 9.80665);
+    const double kwn=double(SoilCte.PoreWaterBulkModulus)/double(SoilCte.Porosity);
+    const double cw=double(SoilCte.PoreWaterRho)*ghyd/kwn;
+    dtw=double(PoreDtSafety)*cw*double(KernelH)*double(KernelH)/double(SoilCte.HydraulicConductivity);
+  }
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
   if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
+  dt=min(dt,dtw);
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;
@@ -1292,7 +1302,7 @@ double JSphGpu::DtVariable(bool final){
     if(PartDtMin>dt)PartDtMin=dt;
     if(PartDtMax<dt)PartDtMax=dt;
     //-Saves detailed information about dt in SaveDt object.
-    if(SaveDt)SaveDt->AddValues(TimeStep,dt,dt1*CFLnumber,dt2*CFLnumber,AceMax,ViscDtMax,VelMax);
+    if(SaveDt)SaveDt->AddValues(TimeStep,dt,dt1*CFLnumber,min(dt2*CFLnumber,dtw),AceMax,ViscDtMax,VelMax);
   }
   return(dt);
 }

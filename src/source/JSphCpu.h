@@ -253,7 +253,9 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
+  bool IsHydroMechFreeSurfaceDrainageActive()const;
   bool IsDrainedFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
+  void ApplyHydroMechTopLoadAcceleration();
   void InitHydroMechState();
   void ApplyFreeSurfacePorePressure();
   void ApplyPorePressureBoundaries();

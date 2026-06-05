@@ -1,0 +1,158 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="04-06-2026 00:00:00">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="0" comment="No gravity for external-load Terzaghi consolidation" units_comment="m/s^2" />
+      <rhop0 value="2100" comment="Reference density of the saturated soil mixture" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+      <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+      <speedsystem value="0" auto="true" comment="Maximum system speed" />
+      <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+      <speedsound value="0" auto="true" comment="Hydromechanics recalculates Cs0 from the soil constrained modulus" />
+      <hdp value="1.8" comment="Smoothing length ratio h/dp" />
+      <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <predefinition>
+        <newvarcte sizefx="0.1" _rem="Soil column width" />
+        <newvarcte sizefz="1.0" _rem="Soil column height" />
+        <newvarcte sizebx="0.1" _rem="Boundary width" />
+        <newvarcte sizebz="1.2" _rem="Boundary height" />
+        <newvarcte Dp="0.01" _rem="Particle spacing" />
+      </predefinition>
+      <definition dp="#Dp" units_comment="metres (m)">
+        <pointmin x="#-sizefz/2+Dp/2" y="0" z="#-sizefz/2+Dp/2" />
+        <pointmax x="#sizefz*1.5+Dp/2" y="0" z="#sizebz*1.5+Dp/2" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setshapemode>actual | bound</setshapemode>
+          <setnormalinvert invert="false" />
+          <move x="0" y="-0.1" z="0" />
+          <setmkbound mk="0" />
+          <drawbeach mask="1|2|6">
+            <point x="0" y="0.2" z="#sizebz" />
+            <point x="0" y="0.2" z="0" />
+            <point x="#sizebx" y="0.2" z="0" />
+            <point x="#sizebx" y="0.2" z="#sizebz" />
+          </drawbeach>
+          <matrixreset />
+          <shapeout file="hdp" />
+          <setmkvoid />
+          <redraw />
+          <setshapemode>actual | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkbound mk="0" />
+          <setnormalinvert invert="true" />
+          <move x="0" y="-0.1" z="0" />
+          <drawbeach mask="1|2|6">
+            <point x="#-Dp/2" y="0.2" z="#sizebz+Dp/2" />
+            <point x="#-Dp/2" y="0.2" z="#-Dp/2" />
+            <point x="#sizebx+Dp/2" y="0.2" z="#-Dp/2" />
+            <point x="#sizebx+Dp/2" y="0.2" z="#sizebz+Dp/2" />
+          </drawbeach>
+          <shapeout file="Boundary" />
+          <matrixreset />
+          <setmkbound mk="1" />
+          <setboxlimitmode mode="full" />
+          <fillbox x="#-1.5*Dp" y="0" z="#-1.5*Dp">
+            <modefill>void</modefill>
+            <point x="#-Dp*10" y="-1" z="#-Dp*10" />
+            <size x="#(sizebx+Dp*20)" y="2" z="#(sizebz+Dp*10)" />
+          </fillbox>
+          <setboxlimitmode mode="full" />
+          <setmkbound mk="0" />
+          <redrawnear times="3" targettp="bound" targetmk="1" bordertp="bound" bordermk="0" />
+          <setmkvoid />
+          <redraw mkbound="1" />
+          <setmkfluid mk="0" />
+          <fillbox x="#Dp/2" y="0" z="#Dp/2">
+            <modefill>void</modefill>
+            <point x="#-Dp/2" y="-1" z="#-Dp/2" />
+            <size x="#(sizefx)" y="2" z="#(sizefz)" />
+          </fillbox>
+          <setmkvoid />
+          <fillbox x="#-Dp/2" y="0" z="#Dp/2">
+            <modefill>bound</modefill>
+            <point x="#-Dp*10.5" y="-1" z="#-Dp*10.5" />
+            <size x="#Dp*10" y="2" z="#(sizebz+Dp*10.5)" />
+          </fillbox>
+          <setmkvoid />
+          <fillbox x="#sizebx+Dp" y="0" z="#Dp">
+            <modefill>bound</modefill>
+            <point x="#sizefx+Dp/2" y="-1" z="#-Dp*10" />
+            <size x="#(Dp*10)" y="2" z="#(sizebz+Dp*10)" />
+          </fillbox>
+        </mainlist>
+      </commands>
+    </geometry>
+    <normals>
+      <distanceh value="2.0" comment="Maximum distance (H*distanceh) to compute normals data" />
+      <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry (VTK format)" />
+      <svshapes value="1" comment="Save geometry shapes" />
+    </normals>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+        <HydroMechInitMode value="None" comment="Zero initial pore pressure and zero initial effective stress" />
+        <HydroMechTopLoad value="1" comment="Apply q0 ramp load to upward free-surface particles" />
+        <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
+        <HydroMechTopLoadRampTime value="0.01" comment="Ramp load duration tL" units_comment="seconds" />
+        <HydroMechFreeSurfaceDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
+        <HydroMechFreeSurfaceDrainageStartTime value="0.01" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
+        <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
+        <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
+        <Porosity value="0.3" comment="Porosity n" />
+        <HydraulicConductivity value="1e-2" comment="Full q0 validation hydraulic conductivity" units_comment="m/s" />
+        <PoreDtSafety value="0.5" comment="Full q0 validation pore-pressure time-step safety" />
+        <PoreShepardRegularization value="0" comment="Disabled for the first q0 verification" />
+        <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
+        <phi value="33" comment="Friction angle" />
+        <coh value="100e3" comment="High cohesion to keep the verification elastic" />
+        <dlt value="0" comment="Dilatancy angle" />
+        <ModulusE value="2e6" comment="Young's modulus from the main u-pw 1D consolidation problem" units_comment="Pa" />
+        <PRvs value="0.3" comment="Poisson ratio from the main u-pw 1D consolidation problem" />
+      </soils>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+      <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
+      <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
+      <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition" />
+      <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
+      <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
+      <parameter key="Kernel" value="2" comment="Wendland kernel" />
+      <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+      <parameter key="Visco" value="0.1" comment="Main-paper artificial viscosity coefficient alpha" />
+      <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
+      <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
+      <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for ramp-load stabilization" />
+      <parameter key="SoilDampingCoef" value="0.02" comment="Recommended q0 verification damping coefficient xi after sweep" />
+      <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
+      <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
+      <parameter key="Shifting" value="0" comment="Shifting disabled" />
+      <parameter key="ShiftCoef" value="-2" comment="Unused when shifting is disabled" />
+      <parameter key="ShiftTFS" value="1.5" comment="Free-surface threshold" />
+      <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
+      <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
+      <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
+      <parameter key="DtIni" value="0.000001" comment="Initial time step" units_comment="seconds" />
+      <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
+      <parameter key="DtFixed" value="1e-05" comment="Fixed reference time step" units_comment="seconds" />
+      <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
+      <parameter key="TimeMax" value="0.0282185714285714" comment="Final time, reaching Tv about 1 after tL" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.0025" comment="Output interval resolving the ramp load stage" units_comment="seconds" />
+      <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
+      <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
+      <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />
+      <parameter key="XPeriodicIncZ" value="0" comment="Increase of Z with x-periodic boundary condition" />
+      <simulationdomain comment="Defines domain of simulation">
+        <posmin x="default" y="default" z="default" />
+        <posmax x="default" y="default" z="default" />
+      </simulationdomain>
+    </parameters>
+  </execution>
+</case>

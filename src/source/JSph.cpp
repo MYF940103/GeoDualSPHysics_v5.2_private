@@ -190,6 +190,11 @@ void JSph::InitVars(){
   HydroMech=false;
   HydroMechInitMode=HMINIT_None;
   WaterTableZ=0;
+  HydroMechFreeSurfaceDrainage=true;
+  HydroMechFreeSurfaceDrainageStartTime=0;
+  HydroMechTopLoad=false;
+  HydroMechTopLoadQ0=0;
+  HydroMechTopLoadRampTime=0;
   PoreDtSafety=0.1f;
   PoreShepardRegularization=false;
   PoreShepardInterval=30;
@@ -3481,6 +3486,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   else if(initmodestr=="analyticalselfweight1d" || initmodestr=="analytical_self_weight_1d" || initmodestr=="selfweight1d" || initmodestr=="3")HydroMechInitMode=HMINIT_AnalyticalSelfWeight1D;
   else Run_Exceptioon("HydroMechInitMode must be None, FreeSurface, ConstantZ or AnalyticalSelfWeight1D.");
   WaterTableZ=sxml->ReadElementDouble(solidNode,(sxml->ExistsElement(solidEle,"HydroMechInitZ","value")? "HydroMechInitZ": "WaterTableZ"),"value",true,0);
+  HydroMechFreeSurfaceDrainage=sxml->ReadElementBool(solidNode,"HydroMechFreeSurfaceDrainage","value",true,true);
+  HydroMechFreeSurfaceDrainageStartTime=sxml->ReadElementDouble(solidNode,"HydroMechFreeSurfaceDrainageStartTime","value",true,0);
+  HydroMechTopLoad=sxml->ReadElementBool(solidNode,"HydroMechTopLoad","value",true,false);
+  HydroMechTopLoadQ0=sxml->ReadElementFloat(solidNode,"HydroMechTopLoadQ0","value",true,0.f);
+  HydroMechTopLoadRampTime=sxml->ReadElementDouble(solidNode,"HydroMechTopLoadRampTime","value",true,0);
   SoilCte.PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
   SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(solidNode,"PoreWaterBulkModulus","value",true,0.f);
   SoilCte.Porosity=sxml->ReadElementFloat(solidNode,"Porosity","value",true,0.f);
@@ -3495,6 +3505,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(SoilCte.PoreWaterBulkModulus<=0.f)Run_Exceptioon("PoreWaterBulkModulus must be greater than zero when HydroMech is enabled.");
     if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
     if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
+    if(HydroMechFreeSurfaceDrainageStartTime<0)Run_Exceptioon("HydroMechFreeSurfaceDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
+    if(HydroMechTopLoad && HydroMechTopLoadQ0<=0.f)Run_Exceptioon("HydroMechTopLoadQ0 must be greater than zero when HydroMechTopLoad is enabled.");
+    if(HydroMechTopLoad && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoad is enabled.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
   }
@@ -3513,6 +3526,13 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
      Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);
      Log->Printf("  Porosity: %f",ct.Porosity);
      Log->Printf("  HydraulicConductivity: %g",ct.HydraulicConductivity);
+     Log->Print(fun::VarStr("  HydroMechFreeSurfaceDrainage", (HydroMechFreeSurfaceDrainage? "Enabled": "Disabled")));
+     Log->Printf("  HydroMechFreeSurfaceDrainageStartTime: %g",HydroMechFreeSurfaceDrainageStartTime);
+     Log->Print(fun::VarStr("  HydroMechTopLoad", (HydroMechTopLoad? "Enabled": "Disabled")));
+     if(HydroMechTopLoad){
+       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
+       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);
+     }
      Log->Printf("  PoreDtSafety: %f",PoreDtSafety);
      Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
      Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
@@ -3528,10 +3548,16 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 }
 
 void JSph::ConfigConstantsSoil(){
-        float modulusK=SoilCte.ModulusK;
-        float modulusG=SoilCte.ModulusG;
-        Cs0 = sqrt((modulusK+4.f*modulusG/3.f)/RhopZero);
-		CSP.cs0 = Cs0;
+        const float modulusK=SoilCte.ModulusK;
+        const float modulusG=SoilCte.ModulusG;
+        const double c2=double(modulusK+4.f*modulusG/3.f)/double(RhopZero);
+        if(c2<=0)Run_Exceptioon("Invalid soil constrained modulus for sound speed calculation.");
+        Cs0=sqrt(c2);
+        CteB=float(double(Cs0)*double(Cs0)*double(RhopZero)/double(Gamma));
+        CSP.cteb=CteB;
+        CSP.cs0=Cs0;
+        DDTgz=(CteB? float(double(RhopZero)*double(fabs(Gravity.z))/double(CteB)): 0.f);
+        CSP.ddtgz=DDTgz;
         //-Constants for Dt.
         if(!DtIni)DtIni=KernelH/Cs0;
         if(!DtMin)DtMin=(KernelH/Cs0)*CoefDtMin;

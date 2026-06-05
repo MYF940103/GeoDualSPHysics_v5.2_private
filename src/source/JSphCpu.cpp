@@ -1087,6 +1087,13 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
 }
 
 //==============================================================================
+/// Returns true when drained pore pressure is active on upward free surfaces.
+//==============================================================================
+bool JSphCpu::IsHydroMechFreeSurfaceDrainageActive()const{
+  return(HydroMech && HydroMechFreeSurfaceDrainage && TimeStep>=HydroMechFreeSurfaceDrainageStartTime);
+}
+
+//==============================================================================
 /// Returns true when an FSType free-surface particle represents a drained top surface.
 //==============================================================================
 bool JSphCpu::IsDrainedFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const{
@@ -1100,6 +1107,31 @@ bool JSphCpu::IsDrainedFreeSurface(unsigned p,const typecode *code,const unsigne
   if(gnorm<=1e-12)return(double(n.z)/nlen>0.35);
   const double dotup=-(double(n.x)*Gravity.x+double(n.y)*Gravity.y+double(n.z)*Gravity.z)/(nlen*gnorm);
   return(dotup>0.35);
+}
+
+//==============================================================================
+/// Applies q0 ramp surcharge as a vertical acceleration on upward free-surface soil.
+//==============================================================================
+void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
+  if(!HydroMech || !HydroMechTopLoad || !Acec || !FSTypec || !FSNormalc)return;
+  const double q0=double(HydroMechTopLoadQ0);
+  if(q0<=0)return;
+  const double tramp=HydroMechTopLoadRampTime;
+  const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
+  const double por=double(SoilCte.Porosity);
+  const double rhol=double(SoilCte.PoreWaterRho);
+  const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
+  const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
+  const double denom=rhomix*double(Dp);
+  if(q<=0 || denom<=0)return;
+  const float az=-float(q/denom);
+  const int pini=int(Npb),pfin=int(Np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=pini;p<pfin;p++){
+    if(CODE_IsNormal(Codec[p]) && IsDrainedFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc))Acec[p].z+=az;
+  }
 }
 
 //==============================================================================
@@ -1130,8 +1162,11 @@ void JSphCpu::InitHydroMechState(){
   double pmin=DBL_MAX,pmax=-DBL_MAX;
   double smin=DBL_MAX,smax=-DBL_MAX;
   double topz=-DBL_MAX;
+  bool analyticgravityoff=false;
+  double analyticg=gnorm;
   if(HydroMechInitMode==HMINIT_AnalyticalSelfWeight1D){
-    if(gnorm<=0)Run_Exceptioon("HydroMechInitMode=AnalyticalSelfWeight1D requires non-zero gravity.");
+    analyticgravityoff=(gnorm<=1e-12);
+    if(analyticgravityoff)analyticg=9.80665;
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsFluid(Codec[p]))topz=max(topz,Posc[p].z);
     if(topz==-DBL_MAX)Run_Exceptioon("HydroMechInitMode=AnalyticalSelfWeight1D requires soil particles.");
     topz+=double(Dp)*0.5;
@@ -1162,24 +1197,26 @@ void JSphCpu::InitHydroMechState(){
         if(PeriActive)pposexcess=UpdatePeriodicPos(pposexcess);
       }
       const double depthhydro=max(0.,topz-pposhydro.z);
-      const double depthexcess=max(0.,topz-pposexcess.z);
+      const double depthghost=max(0.,topz-pposexcess.z);
       const double kwn=double(SoilCte.PoreWaterBulkModulus)/double(SoilCte.Porosity);
       const double mcon=double(SoilCte.ModulusK)+4.0*double(SoilCte.ModulusG)/3.0;
       const double undrained_ratio=kwn/(mcon+kwn);
       const double effective_ratio=mcon/(mcon+kwn);
-      const double rhob=max(0.,double(RhopZero)-double(SoilCte.PoreWaterRho));
-      float hydro=float(gammaw*depthhydro);
-      float excess=float(undrained_ratio*rhob*gnorm*depthexcess);
-      float pw=hydro+excess;
+      const double rhosw=double(RhopZero);
+      const double hydroactual=double(SoilCte.PoreWaterRho)*analyticg*depthhydro;
+      const double hydroghost=double(SoilCte.PoreWaterRho)*analyticg*depthghost;
+      const double fullundrained=undrained_ratio*rhosw*analyticg*depthghost;
+      const double excessghost=fullundrained-hydroghost;
+      float hydro=(analyticgravityoff? 0.f: float(hydroactual));
+      float pw=(analyticgravityoff? float(fullundrained): float(hydroactual+excessghost));
       if(p>=Npb && IsDrainedFreeSurface(p,Codec,FSTypec,FSNormalc)){
         hydro=0.f;
-        excess=0.f;
         pw=0.f;
       }
       PorePressc[p]=pw;
       PorePress0c[p]=hydro;
       if(Sigmac){
-        const float szz=float(-effective_ratio*rhob*gnorm*depthexcess);
+        const float szz=float(-effective_ratio*rhosw*analyticg*depthghost);
         const float k0=float(SoilCte.PRvs/(1.f-SoilCte.PRvs));
         tsymatrix3f sig={k0*szz,0.f,0.f,k0*szz,0.f,szz};
         Sigmac[p]=sig;
@@ -1199,8 +1236,11 @@ void JSphCpu::InitHydroMechState(){
   delete[] fsp; fsp=NULL;
   Log->Printf("Hydromechanics: initial pore pressure assigned to %u particles (%s, min=%g, max=%g)."
     ,Np,GetHydroMechInitModeName(HydroMechInitMode).c_str(),pmin,pmax);
-  if(HydroMechInitMode==HMINIT_AnalyticalSelfWeight1D)
+  if(HydroMechInitMode==HMINIT_AnalyticalSelfWeight1D){
+    Log->Printf("Hydromechanics: analytical 1D self-weight mode=%s, reference gravity=%g, hydrostatic baseline=%s."
+      ,(analyticgravityoff? "gravity-off dissipation": "gravity-on self-weight"),analyticg,(analyticgravityoff? "zero": "retained"));
     Log->Printf("Hydromechanics: analytical 1D self-weight effective stress initialized (sigma_zz min=%g, max=%g).",smin,smax);
+  }
 }
 
 //==============================================================================
@@ -1208,6 +1248,7 @@ void JSphCpu::InitHydroMechState(){
 //==============================================================================
 void JSphCpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressc || !FSTypec)return;
+  if(!IsHydroMechFreeSurfaceDrainageActive())return;
   const int pini=int(Npb),pfin=int(Np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
@@ -1231,6 +1272,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
   const double por=double(SoilCte.Porosity);
   const double khyd=double(SoilCte.HydraulicConductivity);
   const double kwn=kw/por;
+  const bool drainfs=IsHydroMechFreeSurfaceDrainageActive();
   const int pini=int(npb),pfin=int(np);
   memset(porepressrate,0,sizeof(float)*np);
   #ifdef OMP_USE
@@ -1238,7 +1280,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
   #endif
   for(int p1=pini;p1<pfin;p1++){
     if(!CODE_IsFluid(code[p1]))continue;
-    if(IsDrainedFreeSurface(unsigned(p1),code,fstype,fsnormal)){
+    if(drainfs && IsDrainedFreeSurface(unsigned(p1),code,fstype,fsnormal)){
       porepressrate[p1]=0;
       continue;
     }
@@ -1404,7 +1446,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
   #endif
   for(int p1=pini;p1<pfin;p1++){
     if(!CODE_IsFluid(code[p1]))continue;
-    if(IsDrainedFreeSurface(unsigned(p1),code,fstype,fsnormal)){
+    if(IsHydroMechFreeSurfaceDrainageActive() && IsDrainedFreeSurface(unsigned(p1),code,fstype,fsnormal)){
       preg[p1]=0;
       continue;
     }
@@ -3869,7 +3911,7 @@ double JSphCpu::DtVariable(bool final){
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
   if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
-  else dt=min(dt,dtw);
+  dt=min(dt,dtw);
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;
@@ -3884,7 +3926,7 @@ double JSphCpu::DtVariable(bool final){
     if(PartDtMin>dt)PartDtMin=dt;
     if(PartDtMax<dt)PartDtMax=dt;
     //-Saves detailed information about dt in SaveDt object.
-    if(SaveDt)SaveDt->AddValues(TimeStep,dt,dt1*CFLnumber,(FixedDt? dt2*CFLnumber: min(dt2*CFLnumber,dtw)),AceMax,ViscDtMax,VelMax);
+    if(SaveDt)SaveDt->AddValues(TimeStep,dt,dt1*CFLnumber,min(dt2*CFLnumber,dtw),AceMax,ViscDtMax,VelMax);
   }
   return(dt);
 }
