@@ -154,6 +154,7 @@ protected:
   float *KplasticDkg;//diagnostic accumulated plastic increment
   float *PorePressg;   ///<Current total/gauge pore-water pressure on GPU.
   float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
+  float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
 
   //-Variables for free-surface tracking.
   tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.
@@ -164,11 +165,13 @@ protected:
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
   tsymatrix3f *SigmaM1g;//ruofeng
+  float *PorePressM1g; ///<Verlet pore pressure history.
   //-Variables for compute step: SYMPLECTIC.
   double2 *PosxyPreg;  ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
   double *PoszPreg;
   float4 *VelrhopPreg;
   tsymatrix3f *SigmaPreg;//ruofeng
+  float *PorePressPreg; ///<Symplectic pore pressure predictor history.
   //-Variables for floating bodies.
   unsigned *FtRidpg;      ///<Identifier to access to the particles of the floating object [CaseNfloat].
   float *FtoMasspg;       ///<Mass of the particle for each floating body [FtCount] in GPU (used in interaction forces).
@@ -277,6 +280,12 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
+  bool IsHydroMechFreeSurfaceDrainageActive()const;
+  void ApplyFreeSurfacePorePressure();
+  void ApplyHydroMechTopLoadAcceleration();
+  void ApplyPorePressureBoundaries();
+  void InteractionPorePressureMdbcCorrection();
+  void ShepardRegularizePorePressure();
   void InitHydroMechPorePressure();
   
   void ComputeVerlet(double dt);

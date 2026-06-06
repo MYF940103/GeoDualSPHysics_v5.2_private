@@ -343,10 +343,10 @@ void JSphGpuSingle::RunPeriodic(){
             run=false;
             //-Create new periodic particles duplicating the particles from the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g);
+            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g);
+              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg);
             }
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg);
 
@@ -408,10 +408,13 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     if(HydroMech){
       float* porepressg=ArraysGpu->ReserveFloat();
       float* porepress0g=ArraysGpu->ReserveFloat();
+      float* porepressrateg=ArraysGpu->ReserveFloat();
       CellDivSingle->SortDataArrays(PorePressg,porepressg);
       CellDivSingle->SortDataArrays(PorePress0g,porepress0g);
+      CellDivSingle->SortDataArrays(PorePressRateg,porepressrateg);
       swap(PorePressg,porepressg);   ArraysGpu->Free(porepressg);
       swap(PorePress0g,porepress0g); ArraysGpu->Free(porepress0g);
+      swap(PorePressRateg,porepressrateg); ArraysGpu->Free(porepressrateg);
     }
     //====    
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
@@ -430,6 +433,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     //
     CellDivSingle->SortDataArrays(VelrhopM1g,velrhopg);
     swap(VelrhopM1g,velrhopg);   ArraysGpu->Free(velrhopg);
+    if(HydroMech && PorePressM1g){
+      float* porepressm1g=ArraysGpu->ReserveFloat();
+      CellDivSingle->SortDataArrays(PorePressM1g,porepressm1g);
+      swap(PorePressM1g,porepressm1g); ArraysGpu->Free(porepressm1g);
+    }
   }
   else if(TStep==STEP_Symplectic && (PosxyPreg || PoszPreg || VelrhopPreg)){ //-In reality, only necessary in the corrector not the predictor step??? | En realidad solo es necesario en el divide del corrector, no en el predictor??? 
     if(!PosxyPreg || !PoszPreg || !VelrhopPreg)Run_Exceptioon("Symplectic data is invalid.") ;
@@ -444,6 +452,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
     CellDivSingle->SortDataArrays(SigmaPreg, sigmag);
     swap(SigmaPreg, sigmag);   ArraysGpu->Free(sigmag);
+    if(HydroMech && PorePressPreg){
+      float* porepresspreg=ArraysGpu->ReserveFloat();
+      CellDivSingle->SortDataArrays(PorePressPreg,porepresspreg);
+      swap(PorePressPreg,porepresspreg); ArraysGpu->Free(porepresspreg);
+    }
   }
   if(TVisco==VISCO_LaminarSPS){
     tsymatrix3f *spstaug=ArraysGpu->ReserveSymatrix3f();
@@ -479,6 +492,14 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
 
   //-Collect position of floating particles. | Recupera posiciones de floatings.
   if(CaseNfloat)cusph::CalcRidp(PeriActive!=0,Np-Npb,Npb,CaseNpb,CaseNpb+CaseNfloat,Codeg,Idpg,FtRidpg);
+  if(HydroMech){
+    ApplyPorePressureBoundaries();
+    if(!PorePressPreg && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+      InteractionPorePressureMdbcCorrection();
+      ShepardRegularizePorePressure();
+      InteractionPorePressureMdbcCorrection();
+    }
+  }
   Timersg->TmStop(TMG_NlSortData,false);
 
   //-Control of excluded particles (only fluid because excluded boundary are checked before).
@@ -512,11 +533,16 @@ void JSphGpuSingle::AbortBoundOut(){
 void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+    else if(HydroMech)InteractionPorePressureMdbcCorrection();
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
   ComputeFreeSurfaceTracking();
+  if(HydroMech){
+    ApplyFreeSurfacePorePressure();
+    ApplyHydroMechTopLoadAcceleration();
+  }
   float3 *dengradcorr=NULL;
 
   Timersg->TmStart(TMG_CfForces,true);
@@ -538,6 +564,9 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,SpsGradvelg
     ,Sigmag,Rsigmag
     ,ArtificialStressg
+    ,PorePressg,PorePressRateg
+    ,FSTypeg,FSNormalg
+    ,IsHydroMechFreeSurfaceDrainageActive()
     ,ShiftPosfsg
     ,NULL,NULL);
   cusph::Interaction_Forces(parms);
@@ -579,7 +608,8 @@ void JSphGpuSingle::MdbcBoundCorrection(){
   if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
   cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,MdbcFastSingle
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
-    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg);
+    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg
+    ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL));
   Timersg->TmStop(TMG_CfPreForces,false);
 }
 

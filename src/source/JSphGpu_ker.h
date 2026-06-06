@@ -84,6 +84,14 @@ typedef struct{
   float cubic_a1,cubic_a2,cubic_aa,cubic_a24,cubic_c1,cubic_d1,cubic_c2,cubic_odwdeltap;
   //-Ctes for elastic stiffness matrix
   float modulus_E, modulus_K, modulus_G;
+  unsigned hydromech;       ///<Hydromechanical u-pw support switch.
+  float porewaterrho;       ///<Pore-water density.
+  float porewaterbulkmodulus; ///<Pore-water bulk modulus.
+  float porosity;           ///<Soil porosity.
+  float hydraulicconductivity; ///<Hydraulic conductivity.
+  float porekwn;            ///<Pore-water bulk modulus divided by porosity.
+  float poreghyd;           ///<Gravity norm used in pore-water diffusion.
+  float gravityx,gravityy,gravityz; ///<Gravity vector.
 }StCteInteraction; 
 
 /// Structure to collect kernel information.
@@ -138,6 +146,11 @@ typedef struct StrInterParmsg{
   const tsymatrix3f* sigma;
   tsymatrix3f* rsigma;
   const tsymatrix3f* artificialstress;
+  const float *porepress;
+  float *porepressrate;
+  const unsigned *fstype;
+  const float3 *fsnormal;
+  bool hydrodrainfs;
 
   //-Output data arrays.
   float *viscdt;
@@ -172,6 +185,9 @@ typedef struct StrInterParmsg{
     ,tsymatrix3f *spsgradvel_
     ,const tsymatrix3f *sigma_, tsymatrix3f* rsigma_
     ,const tsymatrix3f *artificialstress_
+    ,const float *porepress_,float *porepressrate_
+    ,const unsigned *fstype_,const float3 *fsnormal_
+    ,bool hydrodrainfs_
     ,float4 *shiftposfs_
     ,cudaStream_t stm_
     ,StKerInfo *kerinfo_)
@@ -205,6 +221,9 @@ typedef struct StrInterParmsg{
     //mdbr
     sigma=sigma_; rsigma=rsigma_;
     artificialstress=artificialstress_;
+    porepress=porepress_; porepressrate=porepressrate_;
+    fstype=fstype_; fsnormal=fsnormal_;
+    hydrodrainfs=hydrodrainfs_;
     //-Other values and objects.
     stm=stm_;
     kerinfo=kerinfo_;
@@ -233,6 +252,20 @@ void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,uns
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
   ,unsigned *fstype,float3 *fsnormal,float *posdiv);
+void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const typecode *code,const unsigned *fstype,float *porepress);
+void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,float az,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace);
+void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
+void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
+void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
+  ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+  ,const double2 *posxy,const double *posz,const float4 *poscell
+  ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
+  ,const float *porepress0,float *porepress);
+void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
+  ,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
+  ,const unsigned *fstype,const byte *boundmode
+  ,const float *porepress0,const float *porepress,float *porepressnew);
 
 //-Kernels for the force calculation.
 void Interaction_Forces(const StInterParmsg &t);
@@ -243,7 +276,8 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell
   ,const typecode *code,const unsigned *idp,const float3 *boundnormal
-  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,float3 *tangenvel);
+  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,float3 *tangenvel
+  ,const float *porepress0,float *porepress);
 
 //-Kernels for the boundary treatment (cDBC).
 
@@ -316,11 +350,11 @@ unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax,tdo
 void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1
-  ,float *porepress,float *porepress0);
+  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1);
 void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
-  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0);
+  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
 
 //-Kernels for Damping.
