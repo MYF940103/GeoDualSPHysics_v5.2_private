@@ -2,6 +2,7 @@ from pathlib import Path
 import csv
 import importlib.util
 import math
+import xml.etree.ElementTree as ET
 
 import matplotlib.pyplot as plt
 
@@ -27,20 +28,41 @@ def cv_for_k(k_text):
     return float(k_text) * pp.M_CONSTRAINED / (pp.RHO_W * pp.G_REF)
 
 
-def tv_from_time(time, cv):
-    return cv * max(0.0, time - pp.TL) / (pp.H * pp.H)
+def tv_from_time(time, cv, tl):
+    return cv * max(0.0, time - tl) / (pp.H * pp.H)
 
 
-def time_from_tv(tv, cv):
-    return pp.TL + tv * pp.H * pp.H / cv
+def time_from_tv(tv, cv, tl):
+    return tl + tv * pp.H * pp.H / cv
 
 
 def output_interval_for_cv(cv):
     return max(0.0025, (pp.H * pp.H / cv) / 250.0)
 
 
-def load_series(folder, cv):
-    tout = output_interval_for_cv(cv)
+def case_time_out(tag, cv):
+    xml_path = ROOT / f"CaseTerzaghiConsolidation_q0_PR_full_{tag}_Def.xml"
+    if not xml_path.exists():
+        return output_interval_for_cv(cv)
+    tree = ET.parse(xml_path)
+    for param in tree.findall(".//parameter"):
+        if param.attrib.get("key") == "TimeOut":
+            return float(param.attrib["value"])
+    return output_interval_for_cv(cv)
+
+
+def case_ramp_time(tag):
+    xml_path = ROOT / f"CaseTerzaghiConsolidation_q0_PR_full_{tag}_Def.xml"
+    if not xml_path.exists():
+        return pp.TL
+    tree = ET.parse(xml_path)
+    elem = tree.find(".//HydroMechTopLoadRampTime")
+    if elem is None:
+        return pp.TL
+    return float(elem.attrib["value"])
+
+
+def load_series(folder, tout):
     data = []
     for path in sorted(folder.glob("PartFluid_*.vtk")):
         idx = pp.part_index(path)
@@ -121,8 +143,8 @@ def side_center_rms(rows):
     return math.sqrt(sum(diffs) / len(diffs)) / 1000.0 if diffs else 0.0
 
 
-def degree_num(item):
-    if item["time"] < pp.TL:
+def degree_num(item, tl):
+    if item["time"] < tl:
         return 0.0
     return 1.0 - mean(item["rows"], "excess") / pp.Q0
 
@@ -148,6 +170,7 @@ def invalid_summary(k_text, tag, series, reason):
         "max_speed": math.nan,
         "target_rows": [],
         "cv": cv_for_k(k_text),
+        "tl": pp.TL,
     }
 
 
@@ -156,7 +179,9 @@ def summarize_case(k_text, tag):
     if not folder.exists():
         return None
     cv = cv_for_k(k_text)
-    series = load_series(folder, cv)
+    tl = case_ramp_time(tag)
+    tout = case_time_out(tag, cv)
+    series = load_series(folder, tout)
     counts = [len(item["rows"]) for item in series]
     if len(series) < 2:
         return invalid_summary(k_text, tag, series, "less than two saved fluid snapshots")
@@ -166,14 +191,14 @@ def summarize_case(k_text, tag):
         return invalid_summary(k_text, tag, series, "fluid particles were excluded during the run")
     z0_top = pp.top_layer_z(series[0]["rows"])
     final = series[-1]
-    post = [item for item in series if item["time"] >= pp.TL]
-    u_rmse = math.sqrt(sum((degree_num(item) - pp.degree_theory(tv_from_time(item["time"], cv))) ** 2 for item in post) / len(post))
+    post = [item for item in series if item["time"] >= tl]
+    u_rmse = math.sqrt(sum((degree_num(item, tl) - pp.degree_theory(tv_from_time(item["time"], cv, tl))) ** 2 for item in post) / len(post))
     target_rows = []
     for tv in TARGET_TV:
-        item = pp.nearest_snapshot(series, time_from_tv(tv, cv))
+        item = pp.nearest_snapshot(series, time_from_tv(tv, cv, tl))
         prof = pp.layer_average(item["rows"], "excess")
-        actual_tv = tv_from_time(item["time"], cv)
-        rms = math.sqrt(sum((p - terzaghi_excess(z, max(0.0, item["time"] - pp.TL), cv)) ** 2 for z, p in prof) / len(prof)) / 1000.0
+        actual_tv = tv_from_time(item["time"], cv, tl)
+        rms = math.sqrt(sum((p - terzaghi_excess(z, max(0.0, item["time"] - tl), cv)) ** 2 for z, p in prof) / len(prof)) / 1000.0
         bottom_kpa, bottom_grad_kpa_m = bottom_layer_stats(item["rows"])
         target_rows.append({
             "k": k_text,
@@ -181,7 +206,7 @@ def summarize_case(k_text, tag):
             "snapshot": item["name"],
             "time_s": item["time"],
             "actual_tv": actual_tv,
-            "u_num": degree_num(item),
+            "u_num": degree_num(item, tl),
             "u_theory": pp.degree_theory(actual_tv),
             "profile_rms_kpa": rms,
             "top_excess_kpa": mean(top_rows(item["rows"]), "excess") / 1000.0,
@@ -201,15 +226,16 @@ def summarize_case(k_text, tag):
         "n_snapshots": len(series),
         "z0_top": z0_top,
         "final_time": final["time"],
-        "final_tv": tv_from_time(final["time"], cv),
-        "final_u_num": degree_num(final),
-        "final_u_theory": pp.degree_theory(tv_from_time(final["time"], cv)),
+        "final_tv": tv_from_time(final["time"], cv, tl),
+        "final_u_num": degree_num(final, tl),
+        "final_u_theory": pp.degree_theory(tv_from_time(final["time"], cv, tl)),
         "u_rmse": u_rmse,
         "settlement_mm": (z0_top - pp.top_layer_z(final["rows"])) * 1000.0,
-        "settlement_theory_mm": pp.H * pp.Q0 * pp.MV * pp.degree_theory(tv_from_time(final["time"], cv)) * 1000.0,
+        "settlement_theory_mm": pp.H * pp.Q0 * pp.MV * pp.degree_theory(tv_from_time(final["time"], cv, tl)) * 1000.0,
         "max_speed": max(max_value(item["rows"], "speed") for item in series),
         "target_rows": target_rows,
         "cv": cv,
+        "tl": tl,
     }
 
 
@@ -241,8 +267,8 @@ def plot_summary(summaries):
     for row in summaries:
         series = row["series"]
         times = [item["time"] for item in series]
-        tvs = [tv_from_time(t, row["cv"]) for t in times]
-        u_num = [degree_num(item) for item in series]
+        tvs = [tv_from_time(t, row["cv"], row["tl"]) for t in times]
+        u_num = [degree_num(item, row["tl"]) for item in series]
         settlement = [(row["z0_top"] - pp.top_layer_z(item["rows"])) * 1000.0 for item in series]
         mean_excess = [mean(item["rows"], "excess") / 1000.0 for item in series]
         axes[0].plot(tvs, u_num, label=f"k={row['k']}")
@@ -272,10 +298,10 @@ def plot_profiles(summaries):
         fig, ax = plt.subplots(figsize=(6.8, 6.2))
         colors = plt.cm.viridis([i / max(1, len(TARGET_TV) - 1) for i in range(len(TARGET_TV))])
         for color, tv in zip(colors, TARGET_TV):
-            item = pp.nearest_snapshot(row["series"], time_from_tv(tv, row["cv"]))
+            item = pp.nearest_snapshot(row["series"], time_from_tv(tv, row["cv"], row["tl"]))
             prof = pp.layer_average(item["rows"], "excess")
-            t_rel = max(0.0, item["time"] - pp.TL)
-            actual_tv = tv_from_time(item["time"], row["cv"])
+            t_rel = max(0.0, item["time"] - row["tl"])
+            actual_tv = tv_from_time(item["time"], row["cv"], row["tl"])
             label = f"Tv={actual_tv:.3g}"
             ax.plot([terzaghi_excess(z, t_rel, row["cv"]) / pp.Q0 for z in zgrid], [z / pp.H for z in zgrid], color=color, lw=1.4, label=f"{label} analytical")
             ax.plot([p / pp.Q0 for _, p in prof], [z / pp.H for z, _ in prof], "o", color=color, ms=3.0, mfc="none", label=f"{label} SPH")

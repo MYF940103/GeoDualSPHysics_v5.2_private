@@ -546,8 +546,9 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(HydroMech){
     ApplyPorePressureBoundaries();
     if(!PorePressPrec && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+      InteractionPorePressureMdbcCorrection();
       ShepardRegularizePorePressure();
-      ApplyPorePressureBoundaries();
+      InteractionPorePressureMdbcCorrection();
     }
   }
   Timersc->TmStop(TMC_NlSortData);
@@ -612,6 +613,7 @@ void JSphCpuSingle::AbortBoundOut(){
 void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+    else if(HydroMech)InteractionPorePressureMdbcCorrection();
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
@@ -622,9 +624,12 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
 
   Timersc->TmStart(TMC_CfForces);
   //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
+  if(HydroMech)ApplyFreeSurfacePorePressure();
   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
     ,DivData,Dcellc
-    ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL),dengradcorr,CorrMatc
+    ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL)
+    ,(HydroMech? PorePressRatec: NULL),(HydroMech? FSTypec: NULL),(HydroMech? FSNormalc: NULL)
+    ,dengradcorr,CorrMatc
     ,Arc,Acec,Deltac
     ,ShiftingMode,ShiftPosfsc
     ,SpsTauc,SpsGradvelc
@@ -634,7 +639,6 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   StInterResultc res;
   res.viscdt=0;
   JSphCpu::Interaction_Forces_ct(parms,res);
-  if(HydroMech)InteractionPorePressureRate();
   if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
 
   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
@@ -670,7 +674,8 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
 void JSphCpuSingle::MdbcBoundCorrection(){
   Timersc->TmStart(TMC_CfPreForces);
   if(BoundModec)memset(BoundModec,BMODE_DBC,sizeof(byte)*Np);
-  Interaction_MdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,TangenVelc);
+  Interaction_MdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,TangenVelc
+    ,(HydroMech? PorePress0c: NULL),(HydroMech? PorePressc: NULL));
   Timersc->TmStop(TMC_CfPreForces);
 }
 

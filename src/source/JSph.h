@@ -201,7 +201,7 @@ protected:
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
   double WaterTableZ;         ///<Constant water-table elevation for HMINIT_ConstantZ. //mdbr
-  bool HydroMechFreeSurfaceDrainage; ///<Enforces drained pore pressure on upward free-surface particles (default=1). //mdbr
+  bool HydroMechFreeSurfaceDrainage; ///<Enforces drained pore pressure on free-surface particles (default=1). //mdbr
   double HydroMechFreeSurfaceDrainageStartTime; ///<Time when drained free-surface pore pressure starts (default=0). //mdbr
   bool HydroMechTopLoad;      ///<Applies a q0 ramp load to upward free-surface soil particles (default=0). //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr

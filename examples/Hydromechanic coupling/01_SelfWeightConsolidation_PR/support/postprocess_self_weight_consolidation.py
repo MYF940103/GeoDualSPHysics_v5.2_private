@@ -224,7 +224,7 @@ def load_series(folder, stage):
 def layer_average(rows, value_key):
     bins = {}
     for row in rows:
-        key = round(row["z"] / DP) * DP
+        key = int(math.floor(row["z"] / DP + 0.5 + 1e-6))
         bins.setdefault(key, []).append(row)
     prof = []
     for _, items in sorted(bins.items()):

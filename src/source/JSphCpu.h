@@ -39,6 +39,9 @@ typedef struct{
   const typecode *code;
   const float *press;
   const float *porepress;
+  float *porepressrate;
+  const unsigned *fstype;
+  const tfloat3 *fsnormal;
   const tfloat3 *dengradcorr;
   const tmatrix3d *corrmat;
   float* ar;
@@ -61,6 +64,9 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   ,const tdouble3 *pos,const tfloat4 *velrhop,const unsigned *idp,const typecode *code
   ,const float *press
   ,const float *porepress
+  ,float *porepressrate
+  ,const unsigned *fstype
+  ,const tfloat3 *fsnormal
   ,const tfloat3 *dengradcorr
   ,const tmatrix3d *corrmat
   ,float* ar,tfloat3 *ace,float *delta
@@ -73,7 +79,7 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   stinterparmsc d={np,npb,npbok,(np-npb)
     ,divdata,dcell
     ,pos,velrhop,idp,code
-    ,press,porepress
+    ,press,porepress,porepressrate,fstype,fsnormal
     ,dengradcorr,corrmat
     ,ar,ace,delta
     ,shiftmode,shiftposfs
@@ -254,7 +260,8 @@ protected:
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
   bool IsHydroMechFreeSurfaceDrainageActive()const;
-  bool IsDrainedFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
+  bool IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const;
+  bool IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
   void ApplyHydroMechTopLoadAcceleration();
   void InitHydroMechState();
   void ApplyFreeSurfacePorePressure();
@@ -301,7 +308,7 @@ protected:
     ,const tsymatrix3f* tau,tsymatrix3f* gradvel
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
     ,const float *press,const float *porepress,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
-    ,const tmatrix3d *corrmat
+    ,float *porepressrate,const unsigned *fstype,const tfloat3 *fsnormal,const tmatrix3d *corrmat
     ,const tsymatrix3f *artificialstress
     ,float &viscdt,float *ar,tfloat3 *ace,float *delta
     ,TpShifting shiftmode,tfloat4 *shiftposfs,tsymatrix3f *rsigma)const;
@@ -324,20 +331,23 @@ protected:
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);
     template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionCdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
   template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);
   template<TpKernel tker> void Interaction_CdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
   void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);//mdbr
     void Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
     ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr

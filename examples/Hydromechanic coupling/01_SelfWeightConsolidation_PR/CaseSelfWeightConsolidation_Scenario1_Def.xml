@@ -100,7 +100,7 @@
         <special>
             <soils>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
-                <HydroMechInitMode value="None" comment="Restart keeps inherited pore pressure; no hydromechanical reinitialisation is needed" />
+                <HydroMechInitMode value="AnalyticalSelfWeight1D" comment="Direct analytical undrained self-weight state; gravity is off so only excess pore pressure is initialized" />
                 <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
                 <Porosity value="0.3" comment="Porosity n" />
@@ -141,7 +141,7 @@
             <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
             <parameter key="DtFixed" value="0.000001" comment="Supporting-material fixed time step" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="0.60" comment="Scenario 1 early-trend run: final absolute time after restart, reaching Tv about 0.1" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.40" comment="Scenario 1 short validation run, reaching Tv about 0.1" units_comment="seconds" />
             <parameter key="TimeOut" value="0.02" comment="Output interval" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />

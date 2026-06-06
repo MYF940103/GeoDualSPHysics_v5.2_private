@@ -21,9 +21,9 @@ from postprocess_self_weight_consolidation import (
 
 SCENARIO1 = ROOT / "CaseSelfWeightConsolidation_Scenario1_out" / "particles"
 SCENARIO1_TOUT = 0.02
-SCENARIO1_RESTART_INDEX = 40
-SCENARIO1_RESTART_TIME = 0.20
-SCENARIO1_TIME_MAX = 0.60
+SCENARIO1_INITIAL_INDEX = 0
+SCENARIO1_INITIAL_TIME = 0.0
+SCENARIO1_TIME_MAX = 0.40
 SCENARIO1_TARGET_TV = [0.005, 0.05, 0.1]
 
 
@@ -31,7 +31,7 @@ def load_series(folder):
     data = []
     for path in sorted(folder.glob("PartFluid_*.vtk")):
         idx = part_index(path)
-        time = min(SCENARIO1_TIME_MAX, SCENARIO1_RESTART_TIME + (idx - SCENARIO1_RESTART_INDEX) * SCENARIO1_TOUT)
+        time = min(SCENARIO1_TIME_MAX, SCENARIO1_INITIAL_TIME + (idx - SCENARIO1_INITIAL_INDEX) * SCENARIO1_TOUT)
         data.append({"name": path.name, "index": idx, "time": time, "rows": read_part_vtk(path)})
     if not data:
         raise RuntimeError(f"No PartFluid VTK files found in {folder}")
@@ -67,7 +67,7 @@ def nearest_targets(series):
     for target_tv in SCENARIO1_TARGET_TV:
         data = min(
             series,
-            key=lambda item: abs(CV_TERZAGHI * max(0.0, item["time"] - SCENARIO1_RESTART_TIME) / (H * H) - target_tv),
+            key=lambda item: abs(CV_TERZAGHI * max(0.0, item["time"] - SCENARIO1_INITIAL_TIME) / (H * H) - target_tv),
         )
         if data["index"] not in used:
             selected.append((target_tv, data))
@@ -78,11 +78,11 @@ def nearest_targets(series):
 def main():
     FIGDIR.mkdir(exist_ok=True)
     series = load_series(SCENARIO1)
-    restart = next((item for item in series if item["index"] == SCENARIO1_RESTART_INDEX), series[0])
-    t0 = restart["time"]
+    initial = next((item for item in series if item["index"] == SCENARIO1_INITIAL_INDEX), series[0])
+    t0 = initial["time"]
 
-    initial_total_profile = layer_average(restart["rows"], "pore")
-    initial_excess_profile = layer_average(restart["rows"], "excess")
+    initial_total_profile = layer_average(initial["rows"], "pore")
+    initial_excess_profile = layer_average(initial["rows"], "excess")
     analytic_total = build_cosine_solution(initial_total_profile)
     initial_total_integral = profile_integral(initial_total_profile)
 
@@ -140,7 +140,7 @@ def main():
     ax_total.set_title("Scenario 1 total pore pressure")
     ax_excess.set_xlabel("Excess pore pressure [kPa]")
     ax_excess.set_title("Scenario 1 excess pore pressure")
-    fig.suptitle("Self-weight consolidation Scenario 1: gravity off after undrained restart")
+    fig.suptitle("Self-weight consolidation Scenario 1: gravity-off analytical initialization")
     profile_path = FIGDIR / "self_weight_scenario1_profiles.png"
     fig.savefig(profile_path, dpi=220)
 
@@ -213,7 +213,7 @@ def main():
     print(f"Saved Scenario 1 degree plot: {degree_path}")
     print(f"Saved Scenario 1 target summary: {target_summary}")
     print(f"Saved Scenario 1 degree summary: {degree_summary}")
-    print(f"cv_terzaghi={CV_TERZAGHI:.6g} m^2/s, restart={restart['name']} t={t0:.6g}s")
+    print(f"cv_terzaghi={CV_TERZAGHI:.6g} m^2/s, initial={initial['name']} t={t0:.6g}s")
     if target_rows:
         print("Scenario 1 target Tv comparisons:")
         for row in target_rows:
