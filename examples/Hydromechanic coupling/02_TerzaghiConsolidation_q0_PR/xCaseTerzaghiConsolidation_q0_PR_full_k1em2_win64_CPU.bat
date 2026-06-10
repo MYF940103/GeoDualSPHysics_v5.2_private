@@ -5,7 +5,7 @@ pushd "%~dp0"
 set case=CaseTerzaghiConsolidation_q0_PR_full_k1em2
 set dirout=%case%_out
 set diroutdata=%dirout%\data
-set tmax=0.365371428571429
+set tmax=0.364471428571429
 set tout=0.00182185714285714
 
 set dirbin=../../../bin/windows
@@ -31,7 +31,7 @@ rem q0 Terzaghi consolidation full validation, k=1e-2 m/s.
 %gencase% %case%_Def %dirout%/%case% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
+%dualsphysicscpu% -cpu -ompthreads:4 -mdbc %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 set vtkdir=%dirout%\particles

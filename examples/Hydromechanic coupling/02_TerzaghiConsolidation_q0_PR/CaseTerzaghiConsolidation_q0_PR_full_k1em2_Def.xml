@@ -100,9 +100,9 @@
         <HydroMechInitMode value="None" comment="Zero initial pore pressure and zero initial effective stress" />
         <HydroMechTopLoad value="1" comment="Apply q0 ramp load to upward free-surface particles" />
         <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
-        <HydroMechTopLoadRampTime value="0.001" comment="Ramp load duration tL" units_comment="seconds" />
+        <HydroMechTopLoadRampTime value="0.0001" comment="Ramp load duration tL, scaled to match k=1e-4 TvL" units_comment="seconds" />
         <HydroMechFreeSurfaceDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
-        <HydroMechFreeSurfaceDrainageStartTime value="0.001" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
+        <HydroMechFreeSurfaceDrainageStartTime value="0.0001" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
         <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
         <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
         <Porosity value="0.3" comment="Porosity n" />
@@ -143,7 +143,7 @@
       <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
       <parameter key="DtFixed" value="1e-7" comment="Stable fixed time step for k=1e-2 validation" units_comment="seconds" />
       <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-      <parameter key="TimeMax" value="0.365371428571429" comment="Final time, reaching Tv about 1 after tL" units_comment="seconds" />
+      <parameter key="TimeMax" value="0.364471428571429" comment="Final time, reaching Tv about 1 after tL" units_comment="seconds" />
       <parameter key="TimeOut" value="0.00182185714285714" comment="Output interval corresponding to Delta Tv=0.005" units_comment="seconds" />
       <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
       <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />

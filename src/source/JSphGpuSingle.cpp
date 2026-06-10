@@ -165,7 +165,8 @@ void JSphGpuSingle::ConfigDomain(){
     memset(Kplastic,0,sizeof(float)*Np);
   }
   if(HydroMech){
-    if(PartBegin){
+    const bool initpore=(HydroMechInitMode!=HMINIT_None);
+    if(PartBegin && !initpore){
       if(!PartsLoaded->GetPorePressureDataLoaded())
         Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
       memcpy(PorePress,PartsLoaded->GetPorePress(),sizeof(float)*Np);
@@ -175,6 +176,8 @@ void JSphGpuSingle::ConfigDomain(){
     else{
       memset(PorePress,0,sizeof(float)*Np);
       memset(PorePress0,0,sizeof(float)*Np);
+      if(PartBegin && initpore)
+        Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
     }
   }
   //========= mdbr
@@ -251,7 +254,7 @@ void JSphGpuSingle::ConfigDomain(){
   //-Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
-  if(HydroMech && !PartBegin && HydroMechInitMode!=HMINIT_None){
+  if(HydroMech && HydroMechInitMode!=HMINIT_None){
     ComputeFreeSurfaceTracking();
     InitHydroMechPorePressure();
   }
@@ -606,7 +609,7 @@ void JSphGpuSingle::MdbcBoundCorrection(){
   Timersg->TmStart(TMG_CfPreForces,false);
   const unsigned n=(UseNormalsFt? Np: NpbOk);
   if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
-  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,MdbcFastSingle
+  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,(MdbcFastSingle && !HydroMech)
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
     ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg
     ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL));

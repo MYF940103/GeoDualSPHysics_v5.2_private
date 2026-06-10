@@ -1,0 +1,76 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- *** GeoDualSPHysics local elastoplastic soil XML notes (18-05-2026) *** -->
+<!-- This file documents local XML additions for elastoplastic soil cases and -->
+<!-- stabilization options introduced on top of the native DualSPHysics v5.2 format. -->
+<!-- Copy the relevant blocks into the real case XML under <case>. -->
+
+<case>
+
+	<!-- Section: Elastoplastic soil material parameters. -->
+	<!-- Location in real cases: <case><execution><special><soils>...</soils>. -->
+	<!-- Angles are given in degrees in XML and converted to radians internally. -->
+	<!-- ModulusK and ModulusG are computed internally from ModulusE and PRvs. -->
+	<execution>
+		<special>
+			<soils>
+				<phi value="30" comment="Peak friction angle" units_comment="degrees" />
+				<coh value="0" comment="Peak cohesion" units_comment="Pa" />
+				<dlt value="0" comment="Dilation angle" units_comment="degrees" />
+
+				<phi_r value="30" comment="Residual friction angle for softening" units_comment="degrees" />
+				<coh_r value="0" comment="Residual cohesion for softening" units_comment="Pa" />
+				<n_phi value="0" comment="Friction softening coefficient; use 0 for no friction softening" />
+				<n_coh value="0" comment="Cohesion softening coefficient; use 0 for no cohesion softening" />
+
+				<ModulusE value="1.0e6" comment="Young modulus of the soil skeleton" units_comment="Pa" />
+				<PRvs value="0.3" comment="Poisson ratio of the soil skeleton" />
+			</soils>
+		</special>
+	</execution>
+
+	<!-- Section: Local elastoplastic solver and stabilization parameters. -->
+	<!-- Location in real cases: <case><execution><parameters>...</parameters>. -->
+	<execution>
+		<parameters>
+			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->
+			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain" />
+
+			<!-- Bui et al. (2008) artificial stress for tensile-instability control. -->
+			<parameter key="ArtificialStress" value="0" comment="Bui 2008 artificial stress 0:Off, 1:On (default=0)" />
+			<parameter key="ArtificialStressCoef" value="0.5" comment="Artificial stress coefficient in [0,1] (default=0.5)" />
+			<!-- Optional. If omitted, the solver computes the exponent from the kernel support ratio. -->
+			<!-- <parameter key="ArtificialStressExp" value="2.55" comment="Artificial stress exponent; omit for automatic support-ratio value" /> -->
+
+			<!-- Bui-Fukagawa style soil damping for static/relaxation soil cases. -->
+			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0:Off, 1:On (default=0)" />
+			<parameter key="SoilDampingCoef" value="0.02" comment="Non-negative damping coefficient (default=0.02)" />
+
+			<!-- Soil stress diffusion. The key name is inherited from DualSPHysics density diffusion. -->
+			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0:None, 1:Molteni-style, 2:Feng/Fourtakas with boundary contribution, 3:full/internal fluid-only (default=0)" />
+			<parameter key="DensityDTvalue" value="0.1" comment="Stress diffusion coefficient (default=0.1)" />
+			<!-- DensityDT=4 and DensityDT=5 are not supported in the current code; they were tested and removed. -->
+
+			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
+			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
+			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
+			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
+
+			<!-- Native DualSPHysics stabilization options remain available and independent. -->
+			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
+			<parameter key="Visco" value="0.01" comment="Viscosity value" />
+			<parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full" />
+			<parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
+			<parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface; typically 1.5 for 2D and 2.75 for 3D when shifting is active" />
+		</parameters>
+	</execution>
+
+	<!-- Section: Notes for current local implementation. -->
+	<notes>
+		<note value="ArtificialStress and SoilDamping are applied to soil/fluid particles only; boundary particles are excluded." />
+		<note value="DPCtes, ArtificialStress, SoilDamping and DensityDT are reported in the solver log; use the log to verify active options." />
+		<note value="The mDBC no-slip/free-slip implementation stores a corrected tangential boundary velocity for viscous and velocity-gradient terms." />
+		<note value="The mDBC bound-mode switch for non-submerged boundary particles is internal and currently has no XML key." />
+		<note value="For soil sound speed, verify the solver log. The local soil path can compute Cs0 from ModulusE, PRvs and RhopZero." />
+	</notes>
+
+</case>

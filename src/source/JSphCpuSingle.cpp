@@ -130,7 +130,8 @@ void JSphCpuSingle::ConfigDomain(){
     memset(Kplasticc, 0, sizeof(float)*Np);
   }
   if(HydroMech){
-    if(PartBegin){
+    const bool initpore=(HydroMechInitMode!=HMINIT_None);
+    if(PartBegin && !initpore){
       if(!PartsLoaded->GetPorePressureDataLoaded())
         Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
       memcpy(PorePressc,PartsLoaded->GetPorePress(),sizeof(float)*Np);
@@ -140,6 +141,8 @@ void JSphCpuSingle::ConfigDomain(){
     else{
       memset(PorePressc,0,sizeof(float)*Np);
       memset(PorePress0c,0,sizeof(float)*Np);
+      if(PartBegin && initpore)
+        Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
     }
     if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
     if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
@@ -202,7 +205,7 @@ void JSphCpuSingle::ConfigDomain(){
   //-Reordena particulas por celda.
   BoundChanged=true;
   RunCellDivide(true);
-  if(HydroMech && !PartBegin && HydroMechInitMode!=HMINIT_None){
+  if(HydroMech && HydroMechInitMode!=HMINIT_None){
     ComputeFreeSurfaceTracking();
     InitHydroMechState();
   }

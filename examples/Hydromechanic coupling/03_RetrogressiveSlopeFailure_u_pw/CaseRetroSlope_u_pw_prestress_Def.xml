@@ -3,20 +3,20 @@
     <casedef>
         <constantsdef>
             <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
-            <rhop0 value="2150" comment="Bui and Nguyen (2021) / Qiao et al. (2024): sensitive clay density" units_comment="kg/m^3" />
+            <rhop0 value="2150" comment="Mixture density for sensitive clay" units_comment="kg/m^3" />
             <rhopgradient value="2" comment="Initial density gradient 1:Rhop0, 2:Water column, 3:Max. water height" />
             <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
             <gamma value="7" comment="Polytropic constant used in the state equation" />
             <speedsystem value="0" auto="true" comment="Maximum system speed" />
             <coefsound value="20" comment="Coefficient to multiply speedsystem when speedsound is automatic" />
-            <speedsound value="0" auto="true" comment="Hydromechanics recalculates Cs0 from the soil constrained modulus" />
-            <hdp value="1.5" comment="Wendland smoothing length factor used by the u-pw retrogressive slope reference" />
+            <speedsound value="0" auto="true" comment="Soil sound speed is computed from the constrained modulus" />
+            <hdp value="1.5" comment="Wendland smoothing length factor from the u-pw retrogressive slope reference" />
             <cflnumber value="0.2" comment="Courant number" />
         </constantsdef>
         <mkconfig boundcount="240" fluidcount="9" />
         <geometry>
             <predefinition>
-                <newvarcte Dp="0.10" _rem="Bui and Nguyen (2021): initial interparticle distance 0.1 m" />
+                <newvarcte Dp="0.10" />
                 <newvarcte Height="5.0" />
                 <newvarcte SoilTopLength="20.0" />
                 <newvarcte SoilBaseLength="25.0" />
@@ -76,64 +76,59 @@
     <execution>
         <special>
             <soils>
-                <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+                <HydroMech value="1" comment="Enable u-pw coupling during prestress so stress and pore pressure equilibrate together" />
                 <HydroMechInitMode value="FreeSurface" comment="Initialize hydrostatic pore pressure from tracked slope free surfaces" />
-                <HydroMechFreeSurfaceDrainage value="1" comment="Keep FSType 2/3 free-surface particles drained during the run" />
+                <HydroMechFreeSurfaceDrainage value="1" comment="Keep FSType 2/3 particles drained during prestress" />
                 <HydroMechFreeSurfaceDrainageStartTime value="0" units_comment="seconds" />
-                <PoreWaterRho value="1000" comment="Pore-water density from the u-pw retrogressive slope reference" units_comment="kg/m^3" />
+                <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
-                <Porosity value="0.4" comment="Porosity n for the sensitive clay" />
-                <HydraulicConductivity value="1e-8" comment="Very low permeability for quasi-undrained u-pw slope response" units_comment="m/s" />
+                <Porosity value="0.4" comment="Porosity n" />
+                <HydraulicConductivity value="1e-8" comment="Very low permeability for quasi-undrained slope response" units_comment="m/s" />
                 <PoreDtSafety value="0.1" comment="Pore-pressure diffusion time-step safety factor" />
-                <PoreShepardRegularization value="0" comment="Disabled for the initial free-surface drainage comparison" />
-                <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
-                <phi value="0" comment="Undrained sensitive clay: phi = phi_r = 0" />
-                <coh value="15100" comment="Peak cohesion cp = 15.1 kPa" units_comment="Pa" />
+                <PoreShepardRegularization value="1" comment="Regularize pore pressure during coupled prestress" />
+                <PoreShepardInterval value="40" comment="Regularize pore pressure every 40 steps" />
+                <phi value="0" comment="Sensitive clay: phi = phi_r = 0" />
+                <coh value="25000" comment="Peak cohesion cp = 25 kPa" units_comment="Pa" />
                 <dlt value="0" comment="Dilatancy angle" />
                 <ModulusE value="25e6" comment="Young's modulus E = 25 MPa" units_comment="Pa" />
                 <PRvs value="0.3" comment="Poisson ratio from the u-pw reference" />
-                <phi_r value="0" comment="Residual friction angle" />
-                <n_phi value="0" comment="Friction softening disabled during gravity loading" />
-                <coh_r value="1500" comment="Residual cohesion cr = 1.5 kPa" units_comment="Pa" />
-                <n_coh value="0" comment="Cohesion softening disabled during hydrostatic initialization" />
-                <SoilTriggerFos value="1.65" comment="Strength reduction factor reserved for later failure-stage restart" />
             </soils>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
-            <parameter key="SaveExtraParts" value="1" comment="Save mDBC restart normals for every PART during the initial stress run" />
+            <parameter key="SaveExtraParts" value="1" comment="Save mDBC restart normals for every PART during the coupled prestress stage" />
             <parameter key="DPCtes" value="3" comment="DP constants type 3: 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
-            <parameter key="SlipMode" value="2" comment="No-slip mDBC for the bottom and left wall in this first reproducibility case" />
+            <parameter key="SlipMode" value="2" comment="No-slip mDBC for the bottom and left wall" />
             <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
             <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
             <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
             <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
             <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient" />
             <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
-            <parameter key="ArtificialStress" value="1" comment="Bui 2008 tensile instability treatment 0:None, 1:Enable" />
-			<parameter key="ArtificialStressCoef" value="0.2" comment="Bui 2008 artificial stress coefficient epsilon (default=0.2)" />
-            <parameter key="ArtificialStressExp" value="4" comment="Bui 2008 artificial stress kernel-ratio exponent n (default=2.55)" />
-            <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for initial stress relaxation" />
-            <parameter key="SoilDampingCoef" value="1e-5" comment="Damping coefficient xi from the u-pw retrogressive slope reference" />
+            <parameter key="ArtificialStress" value="1" comment="Bui 2008 tensile instability treatment" />
+            <parameter key="ArtificialStressCoef" value="0.2" comment="Bui 2008 artificial stress coefficient" />
+            <parameter key="ArtificialStressExp" value="4" comment="Bui 2008 artificial stress kernel-ratio exponent" />
+            <parameter key="SoilDamping" value="1" comment="Damping for dry gravity relaxation" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient from the u-pw reference" />
             <parameter key="DensityDT" value="3" comment="Stress diffusion 0:None, 1:Molteni, 2:Feng, 3:Feng(full)" />
             <parameter key="DensityDTvalue" value="0.1" comment="Stress diffusion coefficient" />
-            <parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full" />
+            <parameter key="Shifting" value="0" comment="Shifting mode" />
             <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation" />
             <parameter key="ShiftTFS" value="1.5" comment="Threshold to detect free surface" />
             <parameter key="RigidAlgorithm" value="1" comment="Rigid Algorithm 1:SPH, 2:DEM, 3:Chrono" />
-            <parameter key="FtPause" value="0.0" comment="Time to freeze floatings at simulation start" units_comment="seconds" />
+            <parameter key="FtPause" value="0.0" units_comment="seconds" />
             <parameter key="CoefDtMin" value="0.01" comment="Coefficient to calculate minimum time step" />
-            <parameter key="DtIni" value="0" comment="Initial time step. Use 0 for default" units_comment="seconds" />
-            <parameter key="DtMin" value="0" comment="Minimum time step. Use 0 for default" units_comment="seconds" />
-            <parameter key="DtFixed" value="0" comment="Fixed Dt value. Use 0 to disable" units_comment="seconds" />
-            <parameter key="DtFixedFile" value="NONE" comment="Dt values are loaded from file. Use NONE to disable" />
-            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating" />
-            <parameter key="TimeMax" value="0.2" comment="Short hydrostatic-initialization diagnostic run" units_comment="seconds" />
-            <parameter key="TimeOut" value="0.02" comment="Time between output files" units_comment="seconds" />
+            <parameter key="DtIni" value="0" units_comment="seconds" />
+            <parameter key="DtMin" value="1e-7" comment="Keep below DtFixed so the reference fixed time step is not raised" units_comment="seconds" />
+            <parameter key="DtFixed" value="1e-6" comment="Reference time step" units_comment="seconds" />
+            <parameter key="DtFixedFile" value="NONE" />
+            <parameter key="DtAllParticles" value="0" comment="1:All, 0:Only fluid/floating" />
+            <parameter key="TimeMax" value="5.0" comment="Coupled u-pw gravity relaxation duration; extend if kinetic energy has not settled" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.1" comment="Time between output files" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of domain" units_comment="decimal" />
-            <parameter key="RhopOutMin" value="1000" comment="Minimum valid density" units_comment="kg/m^3" />
-            <parameter key="RhopOutMax" value="3000" comment="Maximum valid density" units_comment="kg/m^3" />
+            <parameter key="RhopOutMin" value="1000" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" units_comment="kg/m^3" />
             <simulationdomain comment="Defines domain of simulation">
                 <posmin x="default - 1" y="default" z="default - 1" />
                 <posmax x="default + 1" y="default" z="default + 5" />

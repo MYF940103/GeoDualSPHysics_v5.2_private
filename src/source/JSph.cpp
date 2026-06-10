@@ -690,7 +690,7 @@ void JSph::LoadConfigParameters(const JXml *xml){
     }
     MdbcCorrector=(eparms.GetValueInt("MDBCCorrector",true,1)!=0);
     MdbcFastSingle=(eparms.GetValueInt("MDBCFastSingle",true,1)!=0);
-    if(Cpu)MdbcFastSingle=false;
+    if(Cpu || HydroMech)MdbcFastSingle=false;
   } 
 
   //-Density Diffusion Term configuration.
@@ -818,7 +818,7 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
   if(cfg->TBoundary){
     TBoundary=BC_DBC;
     SlipMode=SLIP_Vel0;
-    MdbcFastSingle=true;
+    MdbcFastSingle=!HydroMech;
     MdbcThreshold=0;
     switch(cfg->TBoundary){
       case 1:  TBoundary=BC_DBC;   break;
@@ -1519,6 +1519,7 @@ void JSph::ConfigConstants2(){
 //==============================================================================
 void JSph::VisuConfig(){
   const string sep=" - ";
+  if(HydroMech)MdbcFastSingle=false;
   Log->Print(Simulate2D? "**2D-Simulation parameters:": "**3D-Simulation parameters:");
   Log->Print(fun::VarStr("CaseName",CaseName));
   ConfigInfo=CaseName;
@@ -3461,22 +3462,38 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   Log->Print("");
   Log->Print("[Soil modelling configuration]\n");
+
+  //-XML node for soil parameters.
   TiXmlNode* solidNode = sxml->GetNodeSimple("case.execution.special.soils");
+  const TiXmlElement* solidEle=solidNode->ToElement();
+
+  //-Soil strength parameters.
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
   SoilCte.dlt=float(TORAD*sxml->ReadElementFloat(solidNode,"dlt","value",true));
-  SoilCte.coh_r=sxml->ReadElementFloat(solidNode,"coh_r","value",true);
-  SoilCte.phi_r=float(TORAD*sxml->ReadElementFloat(solidNode,"phi_r","value",true));
-  SoilCte.n_coh=sxml->ReadElementFloat(solidNode,"n_coh","value",true);
-  SoilCte.n_phi=sxml->ReadElementFloat(solidNode,"n_phi","value",true);
+
+  //-Strain-softening parameters and activation switch.
+  const bool hascohr=sxml->ExistsElement(solidEle,"coh_r","value");
+  const bool hasphir=sxml->ExistsElement(solidEle,"phi_r","value");
+  const bool hasncoh=sxml->ExistsElement(solidEle,"n_coh","value");
+  const bool hasnphi=sxml->ExistsElement(solidEle,"n_phi","value");
+  SoilCte.coh_r=(hascohr? sxml->ReadElementFloat(solidNode,"coh_r","value",true): SoilCte.coh);
+  SoilCte.phi_r=(hasphir? float(TORAD*sxml->ReadElementFloat(solidNode,"phi_r","value",true)): SoilCte.phi);
+  SoilCte.n_coh=(hasncoh? sxml->ReadElementFloat(solidNode,"n_coh","value",true): 0.f);
+  SoilCte.n_phi=(hasnphi? sxml->ReadElementFloat(solidNode,"n_phi","value",true): 0.f);
   SoilCte.SoilTriggerFos=sxml->ReadElementFloat(solidNode,"SoilTriggerFos","value",true,1.65f);
   if(SoilCte.SoilTriggerFos<1.f)Run_Exceptioon("SoilTriggerFos must be equal to or greater than 1.");
-  const TiXmlElement* solidEle=solidNode->ToElement();
-  const bool softphi=(sxml->ExistsElement(solidEle,"phi_r","value") && sxml->ExistsElement(solidEle,"n_phi","value") && SoilCte.n_phi>0.f);
-  const bool softcoh=(sxml->ExistsElement(solidEle,"coh_r","value") && sxml->ExistsElement(solidEle,"n_coh","value") && SoilCte.n_coh>0.f);
+  if(SoilCte.n_coh>0.f && !hascohr)Run_Exceptioon("coh_r must be defined when n_coh is greater than zero.");
+  if(SoilCte.n_phi>0.f && !hasphir)Run_Exceptioon("phi_r must be defined when n_phi is greater than zero.");
+  const bool softphi=(hasphir && hasnphi && SoilCte.n_phi>0.f);
+  const bool softcoh=(hascohr && hasncoh && SoilCte.n_coh>0.f);
   StrainSoftening=(softphi || softcoh);
+
+  //-Soil elastic parameters.
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
+
+  //-Hydromechanical switches and pore-pressure initialization options.
   HydroMech=sxml->ReadElementBool(solidNode,"HydroMech","value",true,false);
   const bool hasinitmode=sxml->ExistsElement(solidEle,"HydroMechInitMode","value");
   const string initmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,(hasinitmode? "HydroMechInitMode": "WaterTableMode"),"value",true,"None"));
@@ -3491,6 +3508,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   HydroMechTopLoad=sxml->ReadElementBool(solidNode,"HydroMechTopLoad","value",true,false);
   HydroMechTopLoadQ0=sxml->ReadElementFloat(solidNode,"HydroMechTopLoadQ0","value",true,0.f);
   HydroMechTopLoadRampTime=sxml->ReadElementDouble(solidNode,"HydroMechTopLoadRampTime","value",true,0);
+
+  //-Pore-water material properties and pore-pressure numerical controls.
   SoilCte.PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
   SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(solidNode,"PoreWaterBulkModulus","value",true,0.f);
   SoilCte.Porosity=sxml->ReadElementFloat(solidNode,"Porosity","value",true,0.f);
@@ -3498,6 +3517,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   PoreDtSafety=sxml->ReadElementFloat(solidNode,"PoreDtSafety","value",true,0.1f);
   PoreShepardRegularization=sxml->ReadElementBool(solidNode,"PoreShepardRegularization","value",true,false);
   PoreShepardInterval=sxml->ReadElementUnsigned(solidNode,"PoreShepardInterval","value",true,30);
+
+  //-Input validation.
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value") && !sxml->ExistsElement(solidEle,"HydroMechInitZ","value"))
     Run_Exceptioon("WaterTableZ or HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
   if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
@@ -3511,40 +3532,52 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
   }
-  //Calculate bulk and shear modulus
+
+  //-Derived soil elastic constants.
   SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
-	SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
+  SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
+
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
-   Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
-   Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
-   Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
-   if(HydroMech){
-     Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
-     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",WaterTableZ);
-     Log->Printf("  PoreWaterRho: %f",ct.PoreWaterRho);
-     Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);
-     Log->Printf("  Porosity: %f",ct.Porosity);
-     Log->Printf("  HydraulicConductivity: %g",ct.HydraulicConductivity);
-     Log->Print(fun::VarStr("  HydroMechFreeSurfaceDrainage", (HydroMechFreeSurfaceDrainage? "Enabled": "Disabled")));
-     Log->Printf("  HydroMechFreeSurfaceDrainageStartTime: %g",HydroMechFreeSurfaceDrainageStartTime);
-     Log->Print(fun::VarStr("  HydroMechTopLoad", (HydroMechTopLoad? "Enabled": "Disabled")));
-     if(HydroMechTopLoad){
-       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
-       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);
-     }
-     Log->Printf("  PoreDtSafety: %f",PoreDtSafety);
-     Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
-     Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
-   }
-   Log->Printf("  Cohesion: %f",ct.coh);
-   if(ct.n_coh){Log->Printf("  Residual Cohesion: %f",ct.coh_r);Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);}
-   Log->Printf("  Trigger Strength Reduction Factor: %f",ct.SoilTriggerFos);
-   Log->Printf("  Frictional Angle: %f",ct.phi);
-   if(ct.n_phi){Log->Printf("  Residual Friction: %f",ct.phi_r);Log->Printf("  Friction Softening Coefficient: %f",ct.n_phi);}
-   Log->Printf("  Bulk Modulus: %f",ct.ModulusK);
-   Log->Printf("  Shear Modulus: %f",ct.ModulusG);
-   Log->Print("");
+  Log->Print(fun::VarStr("  DP Constants", GetDPName(DPCtes)));
+
+  //-Log soil strength, softening and elastic parameters.
+  Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
+  Log->Printf("  Cohesion: %f",ct.coh);
+  if(ct.n_coh){
+    Log->Printf("  Residual Cohesion: %f",ct.coh_r);
+    Log->Printf("  Cohesion Softening Coefficient: %f",ct.n_coh);
+  }
+  Log->Printf("  Trigger Strength Reduction Factor: %f",ct.SoilTriggerFos);
+  Log->Printf("  Frictional Angle: %f",ct.phi);
+  if(ct.n_phi){
+    Log->Printf("  Residual Friction: %f",ct.phi_r);
+    Log->Printf("  Friction Softening Coefficient: %f",ct.n_phi);
+  }
+  Log->Printf("  Bulk Modulus: %f",ct.ModulusK);
+  Log->Printf("  Shear Modulus: %f",ct.ModulusG);
+
+  //-Log hydromechanical switches, pore-water parameters and PR controls.
+    Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
+  if(HydroMech){
+    Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
+    if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",WaterTableZ);
+    Log->Print(fun::VarStr("  HydroMechFreeSurfaceDrainage", (HydroMechFreeSurfaceDrainage? "Enabled": "Disabled")));
+    Log->Printf("  HydroMechFreeSurfaceDrainageStartTime: %g",HydroMechFreeSurfaceDrainageStartTime);
+    Log->Print(fun::VarStr("  HydroMechTopLoad", (HydroMechTopLoad? "Enabled": "Disabled")));
+    if(HydroMechTopLoad){
+      Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
+      Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);
+    }
+    Log->Printf("  PoreWaterRho: %f",ct.PoreWaterRho);
+    Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);
+    Log->Printf("  Porosity: %f",ct.Porosity);
+    Log->Printf("  HydraulicConductivity: %g",ct.HydraulicConductivity);
+    Log->Printf("  PoreDtSafety: %f",PoreDtSafety);
+    Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
+    Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
+  }
+  Log->Print("");
 }
 
 void JSph::ConfigConstantsSoil(){
