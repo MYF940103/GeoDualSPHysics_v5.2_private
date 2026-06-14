@@ -146,7 +146,7 @@ void JSphGpu::InitVars(){
   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
   PorePressg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
-  BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; //-mDBC
+  BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
   PorePressM1g=NULL;
@@ -402,6 +402,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
     if(SlipMode!=SLIP_Vel0)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-MotionVel
     if(SlipMode>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_1B,1); //-BoundMode
     if(SlipMode>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-TangenVel
+    if(TMdbc2==MDBC2_NoPen)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-NoPenShift
   }
   if(InOut){
     //ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1);  //-InOutPartg
@@ -862,10 +863,12 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,Symmetry  //<vs_syymmetry>
         ,TKernel,FtMode
         ,lamsps,TDensity,ShiftingMode
+        ,TMdbc2
         ,0,0,0,0,100,0,0
         ,0,0,divdatag,NULL
         ,NULL,NULL,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL,NULL,NULL
+        ,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
@@ -1250,6 +1253,7 @@ void JSphGpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   cudaMemset(Arg,0,sizeof(float)*np);                                    //Arg[]=0
   if(Deltag)cudaMemset(Deltag,0,sizeof(float)*np);                       //Deltag[]=0
   cudaMemset(Aceg,0,sizeof(tfloat3)*np);                                 //Aceg[]=(0,0,0)
+  if(NoPenShiftg)cudaMemset(NoPenShiftg,0,sizeof(float4)*np);             //NoPenShiftg[]=(0,0,0,0)
   if(SpsGradvelg)cudaMemset(SpsGradvelg+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
   //====mdbr
   cudaMemset(Rsigmag,0,sizeof(tsymatrix3f)*np);
@@ -1277,6 +1281,7 @@ void JSphGpu::PreInteraction_Forces(){
   if(DDTArray)Deltag=ArraysGpu->ReserveFloat();
   if(Shifting)ShiftPosfsg=ArraysGpu->ReserveFloat4();
   if(TVisco==VISCO_LaminarSPS)SpsGradvelg=ArraysGpu->ReserveSymatrix3f();
+  if(TMdbc2==MDBC2_NoPen)NoPenShiftg=ArraysGpu->ReserveFloat4();
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
@@ -1306,6 +1311,7 @@ void JSphGpu::PosInteraction_Forces(){
   ArraysGpu->Free(Deltag);       Deltag=NULL;
   ArraysGpu->Free(ShiftPosfsg);  ShiftPosfsg=NULL;
   ArraysGpu->Free(SpsGradvelg);  SpsGradvelg=NULL;
+  ArraysGpu->Free(NoPenShiftg);  NoPenShiftg=NULL;
   ArraysGpu->Free(Rsigmag);      Rsigmag=NULL;//ruofeng
   ArraysGpu->Free(ArtificialStressg); ArtificialStressg=NULL;//mdbr
 }
@@ -1327,14 +1333,14 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
   //-Computes displacement, velocity and density.
   //-Calcula desplazamiento, velocidad y densidad.
   if(VerletStep<VerletSteps){
-    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
+    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
+      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
     if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
       cusph::UpdatePorePressureVerlet(Np,Npb,dt+dt,Codeg,PorePressM1g,PorePressRateg,PorePressM1g);
   }
   else{
-    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
+    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
+      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
     if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
       cusph::UpdatePorePressureVerlet(Np,Npb,dt,Codeg,PorePressg,PorePressRateg,PorePressM1g);
     VerletStep=0;
@@ -1421,8 +1427,8 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   //-Computes displacement, velocity and density.
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
-  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg
-    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
+  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
+    ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);

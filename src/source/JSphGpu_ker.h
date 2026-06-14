@@ -117,6 +117,7 @@ typedef struct StrInterParmsg{
   bool lamsps;
   TpDensity tdensity;
   TpShifting shiftmode;
+  TpMdbc2Mode mdbc2;
   //-Execution values.
   float viscob,viscof;
   unsigned bsbound,bsfluid;
@@ -142,6 +143,9 @@ typedef struct StrInterParmsg{
   const tmatrix3d *corrmat;
   const byte *boundmode;
   const float3 *tangenvel;
+  const float3 *motionvel;
+  const float3 *boundnormal;
+  float4 *nopenshift;
   //=====mdbr
   const tsymatrix3f* sigma;
   tsymatrix3f* rsigma;
@@ -169,6 +173,7 @@ typedef struct StrInterParmsg{
     ,bool symmetry_ //<vs_syymmetry>
     ,TpKernel tkernel_,TpFtMode ftmode_
     ,bool lamsps_,TpDensity tdensity_,TpShifting shiftmode_
+    ,TpMdbc2Mode mdbc2_
     ,float viscob_,float viscof_
     ,unsigned bsbound_,unsigned bsfluid_
     ,unsigned np_,unsigned npb_,unsigned npbok_
@@ -181,6 +186,8 @@ typedef struct StrInterParmsg{
     ,const tmatrix3d *corrmat_
     ,const byte *boundmode_
     ,const float3 *tangenvel_
+    ,const float3 *motionvel_
+    ,const float3 *boundnormal_,float4 *nopenshift_
     ,float *viscdt_,float* ar_,float3 *ace_,float *delta_
     ,tsymatrix3f *spsgradvel_
     ,const tsymatrix3f *sigma_, tsymatrix3f* rsigma_
@@ -196,7 +203,7 @@ typedef struct StrInterParmsg{
     simulate2d=simulate2d_;
     symmetry=symmetry_; //<vs_syymmetry>
     tkernel=tkernel_; ftmode=ftmode_;
-    lamsps=lamsps_; tdensity=tdensity_; shiftmode=shiftmode_;
+    lamsps=lamsps_; tdensity=tdensity_; shiftmode=shiftmode_; mdbc2=mdbc2_;
     //-Execution values.
     viscob=viscob_; viscof=viscof_;
     bsbound=bsbound_; bsfluid=bsfluid_;
@@ -214,6 +221,9 @@ typedef struct StrInterParmsg{
     corrmat=corrmat_;
     boundmode=boundmode_;
     tangenvel=tangenvel_;
+    motionvel=motionvel_;
+    boundnormal=boundnormal_;
+    nopenshift=nopenshift_;
     //-Output data arrays.
     viscdt=viscdt_; ar=ar_; ace=ace_; delta=delta_;
     gradvel=spsgradvel_;

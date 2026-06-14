@@ -1212,13 +1212,24 @@ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,
 /// Interaction of a particle with a set of particles. (Fluid/Float-Fluid/Float/Bound)
 /// Realiza la interaccion de una particula con un conjunto de ellas. (Fluid/Float-Fluid/Float/Bound)
 //------------------------------------------------------------------------------
+__device__ void ComputeNoPenVel(const float dv,const float norm,const float dr,float &nopencount,float &nopenshift){
+  const float vfc=dv*norm;
+  if(vfc<0.f){
+    const float ratio=max(fabsf(dr/norm),0.25f);
+    const float factor=-4.f*ratio+3.f;
+    nopencount+=1.f;
+    nopenshift-=factor*dv*norm*norm;
+  }
+}
+
 template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift,bool symm>
   __device__ void KerInteractionForcesFluidBox(bool boundp2,unsigned p1
   ,const unsigned &pini,const unsigned &pfin,float visco
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const byte *boundmode,const float3 *tangenvel,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const byte *boundmode,const float3 *tangenvel,const float3 *motionvel,const float3 *boundnormal,const typecode *code,const unsigned *idp
   ,const float2 *sigma
   ,const float2 *artificialstress
+  ,TpMdbc2Mode mdbc2
   ,float massp2,bool ftp1
   ,const float4 &pscellp1,const float4 &velrhop1,float pressp1
   ,float3 &gradvp1_xx_xy_xz,float3 &gradvp1_yx_yy_yz,float3 &gradvp1_zx_zy_zz
@@ -1227,6 +1238,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,float2 &sigmap1_xx_xy,float2 &sigmap1_xz_yy,float2 &sigmap1_yz_zz
   ,const float2 &artstressp1_xx_xy,const float2 &artstressp1_xz_yy,const float2 &artstressp1_yz_zz,const float invwabdp
   ,float2 &dsigmap1_xx_xy,float2 &dsigmap1_xz_yy,float2 &dsigmap1_yz_zz
+  ,float3 &nopencountp1,float3 &nopenshiftp1
   ,const float *porepress,const tmatrix3d &porecorr,bool poreratep1,const float pwp1,double &pore_ratep1)
 {
   const bool useartstress=(CTE.artificialstress && !ftp1 && invwabdp>0.f);
@@ -1432,6 +1444,33 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         shiftposfsp1.w-=massrhop*dot3;
       }
 
+      if(boundp2 && mdbc2==MDBC2_NoPen && !ftp2 && boundnormal && motionvel){
+        const float rrmag=sqrtf(rr2);
+        if(rrmag<1.25f*CTE.dp){
+          float3 normp2=boundnormal[p2];
+          float3 movvelp2=motionvel[p2];
+          if(symm){
+            normp2.y=-normp2.y;
+            movvelp2.y=-movvelp2.y;
+          }
+          const float norm=sqrtf(normp2.x*normp2.x+normp2.y*normp2.y+normp2.z*normp2.z);
+          if(norm>0.f){
+            const float normx=normp2.x/norm;
+            const float normy=normp2.y/norm;
+            const float normz=normp2.z/norm;
+            const float normdist=(normx*drx+normy*dry+normz*drz);
+            if(normdist<0.75f*norm && norm<1.75f*CTE.dp){
+              const float absx=fabsf(normx);
+              const float absy=fabsf(normy);
+              const float absz=fabsf(normz);
+              if(drx*normx<0.75f && absx>0.001f*CTE.dp)ComputeNoPenVel(velrhop1.x-movvelp2.x,normx,drx,nopencountp1.x,nopenshiftp1.x);
+              if(dry*normy<0.75f && absy>0.001f*CTE.dp)ComputeNoPenVel(velrhop1.y-movvelp2.y,normy,dry,nopencountp1.y,nopenshiftp1.y);
+              if(drz*normz<0.75f && absz>0.001f*CTE.dp)ComputeNoPenVel(velrhop1.z-movvelp2.z,normz,drz,nopencountp1.z,nopenshiftp1.z);
+            }
+          }
+        }
+      }
+
       //===== Viscosity ===== 
       if(compute){
         const float dot=drx*dvx_visc + dry*dvy_visc + drz*dvz_visc;
@@ -1486,8 +1525,10 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   __global__ void KerInteractionForcesFluid(unsigned n,unsigned pinit,float viscob,float viscof
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *begincell,unsigned cellfluid,const unsigned *dcell
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const tmatrix3d *corrmat,const byte *boundmode,const float3 *tangenvel,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const tmatrix3d *corrmat,const byte *boundmode,const float3 *tangenvel
+  ,const float3 *motionvel,const float3 *boundnormal,float4 *nopenshift,const typecode *code,const unsigned *idp
   ,const float2 *sigma,const float2 *artificialstress,float2 *rsigma
+  ,TpMdbc2Mode mdbc2
   ,const float *porepress,float *porepressrate,const unsigned *fstype,const float3 *fsnormal,unsigned hydrodrainfs
   ,float *viscdt,float *ar,float3 *ace,float *delta
   ,TpShifting shiftmode,float4 *shiftposfs)
@@ -1511,6 +1552,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 
     float3 w_tensorp1_xy_yz_xz=make_float3(0,0,0);//spin rate tensor
     double pore_ratep1=0;
+    float3 nopencountp1=make_float3(0,0,0);
+    float3 nopenshiftp1=make_float3(0,0,0);
 
     //-Variables for Shifting.
     float4 shiftposfsp1;
@@ -1580,8 +1623,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
-        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,code,idp,sigma,artificialstress,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,porepress,porecorr,poreratep1,pwp1,pore_ratep1); //<vs_syymmetry>
+                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1); //<vs_syymmetry>
       }
     }
     //-Interaction with boundaries.
@@ -1589,8 +1632,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
-      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,code,idp,sigma,artificialstress,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
       }
     }
     if(CTE.soilstressrategradcorr && !ftp1 && corrmat){
@@ -1603,6 +1646,13 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     GetStrainSpinRateTensor_sym(gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,e_tensorp1_xx_xy,e_tensorp1_xz_yy,e_tensorp1_yz_zz,w_tensorp1_xy_yz_xz);
     //Calculate stress rate tensor mdbr
     GetStressRateTensor_Elastic(e_tensorp1_xx_xy,e_tensorp1_xz_yy,e_tensorp1_yz_zz,w_tensorp1_xy_yz_xz,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,modulus_K,modulus_G,rsigmap1_xx_xy,rsigmap1_xz_yy,rsigmap1_yz_zz);
+    if(mdbc2==MDBC2_NoPen && nopenshift && (nopencountp1.x>0.f || nopencountp1.y>0.f || nopencountp1.z>0.f)){
+      float4 ns=make_float4(0,0,0,10.f);
+      if(nopencountp1.x>0.f)ns.x=nopenshiftp1.x/nopencountp1.x;
+      if(nopencountp1.y>0.f)ns.y=nopenshiftp1.y/nopencountp1.y;
+      if(nopencountp1.z>0.f)ns.z=nopenshiftp1.z/nopencountp1.z;
+      nopenshift[p1]=ns;
+    }
     //-Stores results.
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
     if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
@@ -1891,7 +1941,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 {
  #if CUDART_VERSION >= 6050
   {
-    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const tmatrix3d*,const byte*,const float3*,const typecode*,const unsigned*,const float2*,const float2*,float2*,const float*,float*,const unsigned*,const float3*,unsigned,float*,float*,float3*,float*,TpShifting,float4*);
+    typedef void (*fun_ptr)(unsigned,unsigned,float,float,int,int4,int3,const int2*,unsigned,const unsigned*,const float*,const float4*,const float4*,const tmatrix3d*,const byte*,const float3*,const float3*,const float3*,float4*,const typecode*,const unsigned*,const float2*,const float2*,float2*,TpMdbc2Mode,const float*,float*,const unsigned*,const float3*,unsigned,float*,float*,float3*,float*,TpShifting,float4*);
     fun_ptr ptr=&KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,symm>;
     int qblocksize=0,mingridsize=0;
     cudaOccupancyMaxPotentialBlockSize(&mingridsize,&qblocksize,(void*)ptr,0,0);
@@ -1955,13 +2005,13 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     if(t.symmetry) //<vs_syymmetry_ini>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,true> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.motionvel,t.boundnormal,t.nopenshift,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma,t.mdbc2
       ,t.porepress,t.porepressrate,t.fstype,t.fsnormal,(t.hydrodrainfs? 1u: 0u)
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
     else //<vs_syymmetry_end>
       KerInteractionForcesFluid<tker,ftmode,lamsps,tdensity,shift,false> <<<sgridf,t.bsfluid,0,t.stm>>> 
       (t.fluidnum,t.fluidini,t.viscob,t.viscof,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,t.dcell
-      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma
+      ,t.ftomassp,t.poscell,t.velrhop,t.corrmat,t.boundmode,t.tangenvel,t.motionvel,t.boundnormal,t.nopenshift,t.code,t.idp,(const float2*)t.sigma,(const float2*)t.artificialstress,(float2*)t.rsigma,t.mdbc2
       ,t.porepress,t.porepressrate,t.fstype,t.fsnormal,(t.hydrodrainfs? 1u: 0u)
       ,t.viscdt,t.ar,t.ace,t.delta,t.shiftmode,t.shiftposfs);
   }

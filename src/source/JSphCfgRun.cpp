@@ -24,6 +24,11 @@
 
 using namespace std;
 
+static bool CfgOptIsEnabled(const std::string &opt){
+  const std::string tx=fun::StrUpper(opt);
+  return(tx.empty() || (tx!="0" && tx!="FALSE" && tx!="OFF" && tx!="NO"));
+}
+
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -46,7 +51,7 @@ void JSphCfgRun::Reset(){
   SvTimers=true;
   CellDomFixed=false;
   CellMode=CELLMODE_Full;
-  TBoundary=0; SlipMode=0; MdbcFastSingle=-1; MdbcThreshold=-1;
+  TBoundary=0; SlipMode=0; NoPenetration=false; MdbcFastSingle=-1; MdbcThreshold=-1;
   DomainMode=0;
   DomainFixedMin=DomainFixedMax=TDouble3(0);
   TStep=STEP_None; VerletSteps=-1;
@@ -117,8 +122,8 @@ void JSphCfgRun::VisuInfo()const{
   printf("  Formulation options:\n");
   printf("    -dbc           Dynamic Boundary Condition DBC (by default)\n");
   printf("    -mdbc          Modified Dynamic Boundary Condition mDBC (mode: vel=0)\n");
-  printf("    -mdbc_noslip   Modified Dynamic Boundary Condition mDBC (mode: no-slip)\n");
-  printf("    -mdbc_freeslip Modified Dynamic Boundary Condition mDBC (mode: free-slip)\n");
+  printf("    -mdbc_noslip[:nopen]   Modified Dynamic Boundary Condition mDBC (mode: no-slip)\n");
+  printf("    -mdbc_freeslip[:nopen] Modified Dynamic Boundary Condition mDBC (mode: free-slip)\n");
 /////////|---------1---------2---------3---------4---------5---------6---------7--------X8
   printf("    -mdbc_fast:<0/1>        Fast single precision calculation on GPU (default=1)\n");
   printf("    -mdbc_threshold:<float> Kernel support limit to apply mDBC correction [0-1]\n");
@@ -304,8 +309,14 @@ void JSphCfgRun::LoadOpts(string *optlis,int optn,int lv,const std::string &file
       else if(txword=="CELLFIXED")CellDomFixed=(txoptfull!=""? atoi(txoptfull.c_str()): 1)!=0;
       else if(txword=="DBC")          { TBoundary=1; SlipMode=0; }
       else if(txword=="MDBC")         { TBoundary=2; SlipMode=1; }
-      else if(txword=="MDBC_NOSLIP")  { TBoundary=2; SlipMode=2; }
-      else if(txword=="MDBC_FREESLIP"){ TBoundary=2; SlipMode=3; }
+      else if(txword=="MDBC_NOSLIP"){
+        TBoundary=2; SlipMode=2;
+        if(txoptfull!="")NoPenetration=CfgOptIsEnabled(txoptfull);
+      }
+      else if(txword=="MDBC_FREESLIP"){
+        TBoundary=2; SlipMode=3;
+        if(txoptfull!="")NoPenetration=CfgOptIsEnabled(txoptfull);
+      }
       else if(txword=="MDBC_FAST")MdbcFastSingle=(txoptfull!=""? atoi(txoptfull.c_str()): 1);
       else if(txword=="MDBC_THRESHOLD"){ 
         MdbcThreshold=float(atof(txoptfull.c_str())); 

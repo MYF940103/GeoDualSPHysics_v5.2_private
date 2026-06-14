@@ -148,6 +148,7 @@ protected:
   float3 *MotionVelg;    ///<Velocity of a moving boundary particle.
   byte   *BoundModeg;    ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
   float3 *TangenVelg;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
+  float4 *NoPenShiftg;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //-ruofeng
   tsymatrix3f *Sigmag;
   float *Kplasticg;//ruofeng

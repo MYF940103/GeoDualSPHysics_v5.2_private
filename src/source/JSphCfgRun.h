@@ -49,6 +49,7 @@ public:
   TpCellMode CellMode;  ///<Cell division mode.
   int TBoundary;        ///<Boundary method: 0:None, 1:DBC (by default), 2:mDBC (SlipMode: 1:DBC vel=0)
   int SlipMode;         ///<Slip mode for mDBC: 0:None, 1:DBC vel=0, 2:No-slip, 3:Free slip (default=1).
+  bool NoPenetration;   ///<NoPenetration for no-slip/free-slip mDBC.
   int MdbcFastSingle;   ///<Matrix calculations are done in single precision (default=1). 
   float MdbcThreshold;  ///<Kernel support limit to apply mDBC correction (default=0).
   std::vector<std::string> InitParms;

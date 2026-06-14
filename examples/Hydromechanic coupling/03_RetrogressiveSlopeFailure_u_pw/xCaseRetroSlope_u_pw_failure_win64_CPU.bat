@@ -60,7 +60,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 %gencase% %name%_Def "%dirout%/%name%" -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc_noslip "%dirout%/%name%" "%dirout%" -dirdataout data -svres -partbegin:%partbegin%:0 "%initdir%" %runextra%
+%dualsphysicscpu% -cpu -mdbc_noslip:nopen "%dirout%/%name%" "%dirout%" -dirdataout data -svres -partbegin:%partbegin%:0 "%initdir%" %runextra%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :postprocessing

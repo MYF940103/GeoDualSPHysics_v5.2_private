@@ -69,6 +69,20 @@
 using namespace std;
 
 //==============================================================================
+static bool ReadEParmsBool(JCaseEParms &eparms,const string &key,const bool valdef){
+  bool ret=valdef;
+  if(eparms.Exists(key)){
+    string tx=fun::StrUpper(eparms.GetValueStr(key,true,(valdef? "1": "0")));
+    tx=fun::StrWithoutChar(tx,' ');
+    tx=fun::StrWithoutChar(tx,'\t');
+    if(tx=="1" || tx=="TRUE" || tx=="ON" || tx=="YES")ret=true;
+    else if(tx=="0" || tx=="FALSE" || tx=="OFF" || tx=="NO")ret=false;
+    else if(fun::StrIsIntegerNumber(tx))ret=(atoi(tx.c_str())!=0);
+  }
+  return(ret);
+}
+
+//==============================================================================
 /// Constructor.
 //==============================================================================
 JSph::JSph(bool cpu,bool mgpu,bool withmpi):Cpu(cpu),Mgpu(mgpu),WithMpi(withmpi)
@@ -181,6 +195,8 @@ void JSph::InitVars(){
   Visco=0; ViscoBoundFactor=1;
   TBoundary=BC_DBC;
   SlipMode=SLIP_Vel0;
+  NoPenetration=false;
+  TMdbc2=MDBC2_None;
   DPCtes=DP_C;//mdbr
   StrainSoftening=false;//mdbr
   ArtificialStress=false;
@@ -688,6 +704,8 @@ void JSph::LoadConfigParameters(const JXml *xml){
       case 3:  SlipMode=SLIP_FreeSlip;  break;
       default: Run_Exceptioon("Slip mode is not valid.");
     }
+    if(SlipMode>=SLIP_NoSlip)NoPenetration=ReadEParmsBool(eparms,"NoPenetration",false);
+    if(SlipMode>=SLIP_NoSlip)TMdbc2=(NoPenetration? MDBC2_NoPen: MDBC2_Std);
     MdbcCorrector=(eparms.GetValueInt("MDBCCorrector",true,1)!=0);
     MdbcFastSingle=(eparms.GetValueInt("MDBCFastSingle",true,1)!=0);
     if(Cpu || HydroMech)MdbcFastSingle=false;
@@ -818,6 +836,8 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
   if(cfg->TBoundary){
     TBoundary=BC_DBC;
     SlipMode=SLIP_Vel0;
+    NoPenetration=false;
+    TMdbc2=MDBC2_None;
     MdbcFastSingle=!HydroMech;
     MdbcThreshold=0;
     switch(cfg->TBoundary){
@@ -831,6 +851,8 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
       case 3:  SlipMode=SLIP_FreeSlip;  break;
       default: Run_Exceptioon("Slip mode for mDBC is not valid.");
     }
+    if(TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip)NoPenetration=cfg->NoPenetration;
+    if(TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip)TMdbc2=(NoPenetration? MDBC2_NoPen: MDBC2_Std);
     UseNormals=(TBoundary==BC_MDBC);
     if(TBoundary!=BC_MDBC)MdbcCorrector=false;
   }
@@ -1552,10 +1574,12 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  mDBC-Corrector",MdbcCorrector));
     Log->Print(fun::VarStr("  mDBC-FastSingle",MdbcFastSingle));
     Log->Print(fun::VarStr("  mDBC-Threshold",MdbcThreshold));
+    Log->Print(fun::VarStr("  No Penetration",NoPenetration));
     ConfigInfo=ConfigInfo+"("+GetSlipName(SlipMode);
     if(MdbcCorrector)ConfigInfo=ConfigInfo+" - Corrector";
     if(MdbcFastSingle)ConfigInfo=ConfigInfo+" - FastSingle";
     if(MdbcThreshold>0)ConfigInfo=ConfigInfo+fun::PrintStr(" - Threshold=%g",MdbcThreshold);
+    if(NoPenetration)ConfigInfo=ConfigInfo+" - NoPenetration";
     ConfigInfo=ConfigInfo+")";
   }
   //-StepAlgorithm. 

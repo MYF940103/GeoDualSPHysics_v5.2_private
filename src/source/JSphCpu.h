@@ -148,6 +148,7 @@ protected:
   tfloat3 *MotionVelc;    ///<Velocity of a moving boundary particle.
   byte *BoundModec;        ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
   tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
+  tfloat4 *NoPenShiftc;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //=============== mdbr
   tsymatrix3f* Sigmac;
   tsymatrix3f* Rsigmac;
@@ -366,7 +367,7 @@ protected:
   void ComputeSpsTau(unsigned n,unsigned pini,const tfloat4 *velrhop,const tsymatrix3f *gradvel,tsymatrix3f *tau)const;
 
   void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
-      ,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew)const;
+      ,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const;
   void ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3f *sigma,double armul,tfloat4* velrhopnew,tsymatrix3f *sigmanew)const;
   //void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew)const;
   //void ComputeVelrhopBound(const tfloat4* velrhopold,double armul,tfloat4* velrhopnew)const;

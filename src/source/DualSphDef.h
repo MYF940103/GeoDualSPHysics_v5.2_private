@@ -373,6 +373,13 @@ typedef enum{
   SLIP_Vel0=1       ///<DBC vel=0
 }TpSlipMode;
 
+///mDBC2 modes used by NoPenetration.
+typedef enum{
+  MDBC2_None=0,   ///<Original mDBC.
+  MDBC2_Std=1,    ///<mDBC2 without NoPenetration.
+  MDBC2_NoPen=2   ///<mDBC2 with NoPenetration.
+}TpMdbc2Mode;
+
 #define BMODE_DBC 0       ///<Boundary particle uses original mDBC/DBC contribution.
 #define BMODE_MDBC2 1     ///<Boundary particle uses active mDBC2 contribution.
 #define BMODE_MDBC2OFF 2  ///<Boundary particle uses mDBC2 correction but mass contribution is disabled.

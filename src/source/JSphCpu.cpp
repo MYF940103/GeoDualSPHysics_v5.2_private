@@ -85,7 +85,7 @@ void JSphCpu::InitVars(){
   NpbPer=NpfPer=0;
 
   Idpc=NULL; Codec=NULL; Dcellc=NULL; Posc=NULL; Velrhopc=NULL;
-  BoundNormalc=NULL; MotionVelc=NULL; BoundModec=NULL; TangenVelc=NULL; //-mDBC
+  BoundNormalc=NULL; MotionVelc=NULL; BoundModec=NULL; TangenVelc=NULL; NoPenShiftc=NULL; //-mDBC
   //====== mdbr
   Sigmac=NULL;SigmaPrec=NULL;SigmaM1c=NULL;
   Rsigmac=NULL;Kplasticc=NULL;
@@ -204,6 +204,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
     if(SlipMode!=SLIP_Vel0)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-MotionVel
     if(SlipMode>=SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_1B,1); //-BoundMode
     if(SlipMode>=SLIP_NoSlip)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1); //-TangenVel
+    if(TMdbc2==MDBC2_NoPen)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-NoPenShift
   }
   if(InOut){
     //ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);  //-InOutPart
@@ -1524,6 +1525,7 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   memset(Arc,0,sizeof(float)*np);                                    //Arc[]=0
   if(Deltac)memset(Deltac,0,sizeof(float)*np);                       //Deltac[]=0
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
+  if(NoPenShiftc)memset(NoPenShiftc,0,sizeof(tfloat4)*np);           //NoPenShiftc[]=(0,0,0,0)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
   memset(Rsigmac,0,sizeof(tsymatrix3f)*np);
@@ -1561,6 +1563,7 @@ void JSphCpu::PreInteraction_Forces(){
   if(Shifting)ShiftPosfsc=ArraysCpu->ReserveFloat4();
   Pressc=ArraysCpu->ReserveFloat();
   if(TVisco==VISCO_LaminarSPS)SpsGradvelc=ArraysCpu->ReserveSymatrix3f();
+  if(TMdbc2==MDBC2_NoPen)NoPenShiftc=ArraysCpu->ReserveFloat4();
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
@@ -1635,6 +1638,7 @@ void JSphCpu::PosInteraction_Forces(){
   ArraysCpu->Free(ShiftPosfsc);  ShiftPosfsc=NULL;
   ArraysCpu->Free(Pressc);       Pressc=NULL;
   ArraysCpu->Free(SpsGradvelc);  SpsGradvelc=NULL;
+  ArraysCpu->Free(NoPenShiftc);  NoPenShiftc=NULL;
    //-mdbr
   ArraysCpu->Free(Rsigmac);      Rsigmac=NULL;
   ArraysCpu->Free(ArtificialStressc); ArtificialStressc=NULL;
@@ -1883,6 +1887,19 @@ static void ComputeArtificialStressArray(unsigned np,const typecode *code,const 
 }
 
 //==============================================================================
+/// Accumulates v5.4 NoPenetration velocity correction for one normal component.
+//==============================================================================
+static void ComputeNoPenVel(const float dv,const float norm,const float dr,unsigned &nopencount,float &nopenshift){
+  const float vfc=dv*norm;
+  if(vfc<0.f){
+    const float ratio=max(fabsf(dr/norm),0.25f);
+    const float factor=-4.f*ratio+3.f;
+    nopencount++;
+    nopenshift-=factor*dv*norm*norm;
+  }
+}
+
+//==============================================================================
 /// Perform interaction between particles: Fluid/Float-Fluid/Float or Fluid/Float-Bound
 /// Realiza interaccion entre particulas: Fluid/Float-Fluid/Float or Fluid/Float-Bound
 //==============================================================================
@@ -1929,6 +1946,8 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     tfloat3 gradvp1_zx_zy_zz=TFloat3(0);
     tfloat3 w_tensorp1_xy_yz_xz=TFloat3(0);
     double pore_ratep1=0;
+    unsigned nopenauxx=0,nopenauxy=0,nopenauxz=0;
+    tfloat3 nopenshiftp1=TFloat3(0);
     //-Variables for Shifting.
     tfloat4 shiftposfsp1;
     if(shift)shiftposfsp1=shiftposfs[p1];
@@ -2158,6 +2177,33 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             shiftposfsp1.w-=massrhop*(drx*frx+dry*fry+drz*frz);
           }
 
+          if(boundp2 && TMdbc2==MDBC2_NoPen && !ftp2 && BoundNormalc && MotionVelc && NoPenShiftc){
+            const float rrmag=sqrt(rr2);
+            if(rrmag<1.25f*float(Dp)){
+              tfloat3 normp2=BoundNormalc[p2];
+              tfloat3 movvelp2=MotionVelc[p2];
+              if(rsym){
+                normp2.y=-normp2.y;
+                movvelp2.y=-movvelp2.y;
+              }
+              const float norm=sqrt(normp2.x*normp2.x+normp2.y*normp2.y+normp2.z*normp2.z);
+              if(norm>0.f){
+                const float normx=normp2.x/norm;
+                const float normy=normp2.y/norm;
+                const float normz=normp2.z/norm;
+                const float normdist=(normx*drx+normy*dry+normz*drz);
+                if(normdist<0.75f*norm && norm<1.75f*float(Dp)){
+                  const float absx=fabsf(normx);
+                  const float absy=fabsf(normy);
+                  const float absz=fabsf(normz);
+                  if(drx*normx<0.75f && absx>0.001f*float(Dp))ComputeNoPenVel(velp1.x-movvelp2.x,normx,drx,nopenauxx,nopenshiftp1.x);
+                  if(dry*normy<0.75f && absy>0.001f*float(Dp))ComputeNoPenVel(velp1.y-movvelp2.y,normy,dry,nopenauxy,nopenshiftp1.y);
+                  if(drz*normz<0.75f && absz>0.001f*float(Dp))ComputeNoPenVel(velp1.z-movvelp2.z,normz,drz,nopenauxz,nopenshiftp1.z);
+                }
+              }
+            }
+          }
+
           //===== Viscosity ===== 
           if(compute){
             const float dot=drx*dvx_visc + dry*dvy_visc + drz*dvz_visc;
@@ -2220,6 +2266,16 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     GetStrainSpinRateTensor_sym(gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,e_tensorp1,w_tensorp1_xy_yz_xz);
     //Calculate stress rate tensor mdbr
     GetStressRateTensor_Elastic(e_tensorp1,w_tensorp1_xy_yz_xz,sigmap1,modulus_K,modulus_G,rsigmap1);
+    if(TMdbc2==MDBC2_NoPen && NoPenShiftc){
+      tfloat4 nopenshift=TFloat4(0);
+      if(nopenauxx || nopenauxy || nopenauxz){
+        if(nopenauxx)nopenshift.x=nopenshiftp1.x/float(nopenauxx);
+        if(nopenauxy)nopenshift.y=nopenshiftp1.y/float(nopenauxy);
+        if(nopenauxz)nopenshift.z=nopenshiftp1.z/float(nopenauxz);
+        nopenshift.w=10.f;
+      }
+      NoPenShiftc[p1]=nopenshift;
+    }
     //-Sum results together. | Almacena resultados.
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
     if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
@@ -3463,7 +3519,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 //==============================================================================
 void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
   ,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
-  ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew)const
+  ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const
 {
   const double dt205=0.5*dt*dt;
   const tdouble3 gravity=ToTDouble3(Gravity);
@@ -3494,6 +3550,20 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         float(double(velrhop2[p].y) + acegr.y*dt2),
         float(double(velrhop2[p].z) + acegr.z*dt2),
         rhopnew);
+      if(TMdbc2==MDBC2_NoPen && nopenshift && nopenshift[p].w>5.f){
+        if(nopenshift[p].x!=0.f){
+          rvelrhopnew.x=velrhop1[p].x+nopenshift[p].x;
+          dx=double(rvelrhopnew.x)*dt;
+        }
+        if(nopenshift[p].y!=0.f){
+          rvelrhopnew.y=velrhop1[p].y+nopenshift[p].y;
+          dy=double(rvelrhopnew.y)*dt;
+        }
+        if(nopenshift[p].z!=0.f){
+          rvelrhopnew.z=velrhop1[p].z+nopenshift[p].z;
+          dz=double(rvelrhopnew.z)*dt;
+        }
+      }
       //-Calculate elastic stress
         tsymatrix3f sigma_e={0,0,0,0,0,0};
         float kplasticold = kplastic[p];
@@ -3635,12 +3705,12 @@ void JSphCpu::ComputeVerlet(double dt){
   VerletStep++;
   if(VerletStep<VerletSteps){
     const double twodt=dt+dt;
-    ComputeVerletVarsFluid(shift,indirvel,Velrhopc,VelrhopM1c,SigmaM1c,Kplasticc,Rsigmac,dt,twodt,Posc,Dcellc,Codec,VelrhopM1c,SigmaM1c,Kplasticc);
+    ComputeVerletVarsFluid(shift,indirvel,Velrhopc,VelrhopM1c,SigmaM1c,Kplasticc,Rsigmac,dt,twodt,Posc,Dcellc,Codec,VelrhopM1c,SigmaM1c,Kplasticc,NoPenShiftc);
     ComputeVelrhopBound(VelrhopM1c,SigmaM1c,twodt,VelrhopM1c,SigmaM1c);
     ComputeVerletPorePressure(twodt);
   }
   else{
-    ComputeVerletVarsFluid(shift,indirvel,Velrhopc,Velrhopc,Sigmac,Kplasticc,Rsigmac,dt,dt,Posc,Dcellc,Codec,VelrhopM1c,SigmaM1c,Kplasticc);
+    ComputeVerletVarsFluid(shift,indirvel,Velrhopc,Velrhopc,Sigmac,Kplasticc,Rsigmac,dt,dt,Posc,Dcellc,Codec,VelrhopM1c,SigmaM1c,Kplasticc,NoPenShiftc);
     ComputeVelrhopBound(Velrhopc,Sigmac,dt,VelrhopM1c,SigmaM1c);
     ComputeVerletPorePressure(dt);
     VerletStep=0;
@@ -3881,6 +3951,20 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 
       double dy=(double(VelrhopPrec[p].y)+double(rvelrhopnew.y)) * dt05; 
       double dz=(double(VelrhopPrec[p].z)+double(rvelrhopnew.z)) * dt05;
+      if(TMdbc2==MDBC2_NoPen && NoPenShiftc && NoPenShiftc[p].w>5.f){
+        if(NoPenShiftc[p].x!=0.f){
+          rvelrhopnew.x=VelrhopPrec[p].x+NoPenShiftc[p].x;
+          dx=double(rvelrhopnew.x)*dt;
+        }
+        if(NoPenShiftc[p].y!=0.f){
+          rvelrhopnew.y=VelrhopPrec[p].y+NoPenShiftc[p].y;
+          dy=double(rvelrhopnew.y)*dt;
+        }
+        if(NoPenShiftc[p].z!=0.f){
+          rvelrhopnew.z=VelrhopPrec[p].z+NoPenShiftc[p].z;
+          dz=double(rvelrhopnew.z)*dt;
+        }
+      }
       if(shift){
         dx+=double(ShiftPosfsc[p].x);
         dy+=double(ShiftPosfsc[p].y);

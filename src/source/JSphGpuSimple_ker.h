@@ -43,10 +43,10 @@ void Resety(unsigned n,unsigned ini,float3 *v,cudaStream_t stm);
 
 //-Kernels for ComputeStep (vel & rhop).
 //----------------------------------------
-void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,unsigned np,unsigned npb
+void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhop1,const float4 *velrhop2
   ,const tsymatrix3f* sigma1,const float* kplastic1,const tsymatrix3f* rsigma
-  ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel
+  ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel,const float4 *nopenshift
   ,double dt,double dt2,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhopnew
   ,tsymatrix3f* sigma,float* kplastic,float* kplasticdk
@@ -58,10 +58,10 @@ void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpcte
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3f* sigma,float* kplastic,float* kplasticdk
   ,cudaStream_t stm);
-void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpctes,unsigned np,unsigned npb
+void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
   ,const tsymatrix3f* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
-  ,const float3 *indirvel,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
+  ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3f* sigma, float* kplastic, float* kplasticdk 
   ,cudaStream_t stm);
