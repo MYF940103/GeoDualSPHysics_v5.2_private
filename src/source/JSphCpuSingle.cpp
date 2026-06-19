@@ -531,6 +531,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(FSTypec)CellDivSingle->SortArray(FSTypec);
   if(FSNormalc)CellDivSingle->SortArray(FSNormalc);
   if(PosDivc)CellDivSingle->SortArray(PosDivc);
+  if(HydroMechLoadAcec)CellDivSingle->SortArray(HydroMechLoadAcec);
   if(UseNormals){
     CellDivSingle->SortArray(BoundNormalc);
     if(MotionVelc)CellDivSingle->SortArray(MotionVelc);
@@ -687,6 +688,7 @@ void JSphCpuSingle::MdbcBoundCorrection(){
 /// Calcula datos extrapolados en el contorno para mDBC.
 //==============================================================================
 void JSphCpuSingle::CdbcBoundCorrection(){
+  if(!NpbOk || !BoundNormalc)return;
   Timersc->TmStart(TMC_CfPreForces);
   Interaction_CdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,TangenVelc);
   Timersc->TmStop(TMC_CfPreForces);
@@ -1258,8 +1260,10 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *sigmaij=NULL;
   float *kplastic=NULL;
   unsigned *fstype=NULL;
+  tfloat3 *fsnormal=NULL;
   float *porepress=NULL;
   float *porepress0=NULL;
+  tfloat3 *hydromechloadace=NULL;
   //==========
   if(save){
     ComputeFreeSurfaceTracking();
@@ -1270,15 +1274,17 @@ void JSphCpuSingle::SaveData(){
     rhop=ArraysCpu->ReserveFloat();
     //========= mdbr
 	sigmakk=ArraysCpu->ReserveFloat3();
-	sigmaij=ArraysCpu->ReserveFloat3();
-	kplastic=ArraysCpu->ReserveFloat();
+    sigmaij=ArraysCpu->ReserveFloat3();
+    kplastic=ArraysCpu->ReserveFloat();
     fstype=ArraysCpu->ReserveUint();
+    fsnormal=ArraysCpu->ReserveFloat3();
     if(HydroMech){
       porepress=ArraysCpu->ReserveFloat();
       porepress0=ArraysCpu->ReserveFloat();
+      hydromechloadace=ArraysCpu->ReserveFloat3();
     }
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,NULL,NULL,porepress,porepress0);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,hydromechloadace);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1302,15 +1308,16 @@ void JSphCpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
-  AddSoilDiagnosticArrays(arrays,npsave,sigmakk,sigmaij,kplastic);//mdbr
   if(save){
     arrays.AddArray("FSType",npsave,fstype);
+    arrays.AddArray("FSNormal",npsave,fsnormal);
     if(HydroMech && porepress && porepress0){
       float *poreexcess=new float[npsave];
       for(unsigned p=0;p<npsave;p++)poreexcess[p]=porepress[p]-porepress0[p];
       arrays.AddArray("PorePress",npsave,porepress);
       arrays.AddArray("PorePress0",npsave,porepress0);
       arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+      if(hydromechloadace)arrays.AddArray("HydroMechLoadAce",npsave,hydromechloadace);
     }
   }
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
@@ -1325,8 +1332,10 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(sigmaij);
   ArraysCpu->Free(kplastic);
   ArraysCpu->Free(fstype);
+  ArraysCpu->Free(fsnormal);
   ArraysCpu->Free(porepress);
   ArraysCpu->Free(porepress0);
+  ArraysCpu->Free(hydromechloadace);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.

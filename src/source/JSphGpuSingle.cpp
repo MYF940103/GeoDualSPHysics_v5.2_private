@@ -412,12 +412,15 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
       float* porepressg=ArraysGpu->ReserveFloat();
       float* porepress0g=ArraysGpu->ReserveFloat();
       float* porepressrateg=ArraysGpu->ReserveFloat();
+      float3* hydromechloadaceg=ArraysGpu->ReserveFloat3();
       CellDivSingle->SortDataArrays(PorePressg,porepressg);
       CellDivSingle->SortDataArrays(PorePress0g,porepress0g);
       CellDivSingle->SortDataArrays(PorePressRateg,porepressrateg);
+      CellDivSingle->SortDataArrays(HydroMechLoadAceg,hydromechloadaceg);
       swap(PorePressg,porepressg);   ArraysGpu->Free(porepressg);
       swap(PorePress0g,porepress0g); ArraysGpu->Free(porepress0g);
       swap(PorePressRateg,porepressrateg); ArraysGpu->Free(porepressrateg);
+      swap(HydroMechLoadAceg,hydromechloadaceg); ArraysGpu->Free(hydromechloadaceg);
     }
     //====    
     swap(Idpg,idpg);           ArraysGpu->Free(idpg);
@@ -571,7 +574,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ArtificialStressg
     ,PorePressg,PorePressRateg
     ,FSTypeg,FSNormalg
-    ,IsHydroMechFreeSurfaceDrainageActive()
+    ,IsHydroMechDrainageActive()
     ,ShiftPosfsg
     ,NULL,NULL);
   cusph::Interaction_Forces(parms);
@@ -1067,14 +1070,17 @@ void JSphGpuSingle::SaveData(){
   //-Stores particle data. | Graba datos de particulas.
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
-  AddSoilDiagnosticArrays(arrays,npsave,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic,AuxKplasticDk);
-  if(save)arrays.AddArray("FSType",npsave,AuxFSType);
+  if(save){
+    arrays.AddArray("FSType",npsave,AuxFSType);
+    arrays.AddArray("FSNormal",npsave,AuxFSNormal);
+  }
   if(save && HydroMech && AuxPorePress && AuxPorePress0){
     float *poreexcess=new float[npsave];
     for(unsigned p=0;p<npsave;p++)poreexcess[p]=AuxPorePress[p]-AuxPorePress0[p];
     arrays.AddArray("PorePress",npsave,AuxPorePress);
     arrays.AddArray("PorePress0",npsave,AuxPorePress0);
     arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+    if(AuxHydroMechLoadAce)arrays.AddArray("HydroMechLoadAce",npsave,AuxHydroMechLoadAce);
   }
   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);

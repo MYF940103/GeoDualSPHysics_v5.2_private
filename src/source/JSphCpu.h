@@ -177,6 +177,7 @@ protected:
 
   //-Variables for computation of forces | Vars. para computo de fuerzas.
   tfloat3 *Acec;         ///<Sum of interaction forces | Acumula fuerzas de interaccion
+  tfloat3 *HydroMechLoadAcec; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
   float *Arc; 
   float *Deltac;         ///<Adjusted sum with Delta-SPH with DELTA_DynamicExt | Acumula ajuste de Delta-SPH con DELTA_DynamicExt
 
@@ -243,7 +244,8 @@ protected:
 
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
-    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL);
+    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
+    ,tfloat3 *hydromechloadace=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -260,8 +262,9 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
-  bool IsHydroMechFreeSurfaceDrainageActive()const;
+  bool IsHydroMechDrainageActive()const;
   bool IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const;
+  bool IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const;
   bool IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
   void ApplyHydroMechTopLoadAcceleration();
   void InitHydroMechState();

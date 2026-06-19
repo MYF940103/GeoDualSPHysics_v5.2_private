@@ -116,12 +116,14 @@ protected:
   float *PorePress0;    ///<Initial hydrostatic pore-water pressure reference on CPU.
   float *AuxPorePress;  ///<Auxiliary pore-water pressure array for output.
   float *AuxPorePress0; ///<Auxiliary initial pore-water pressure array for output.
+  tfloat3 *AuxHydroMechLoadAce; ///<Auxiliary hydromechanical external load acceleration for output. //mdbr
   //-Auxiliary variables for the conversion (size=ParticlesSize).
   //-Variables auxiliares para conversion (size=ParticlesSize).
   tdouble3 *AuxPos;
   tfloat3 *AuxVel; 
   float *AuxRhop;
   unsigned *AuxFSType;
+  tfloat3 *AuxFSNormal;
 
   unsigned GpuParticlesAllocs;///<Number of allocations.
   unsigned GpuParticlesSize;  ///<Number of particles for which GPU memory was allocated. | Numero de particulas para las cuales se reservo memoria en gpu.
@@ -203,6 +205,7 @@ protected:
   //-Variables for computing forces
   float *ViscDtg;
   float3 *Aceg;      ///<Accumulates acceleration of the particles. | Acumula fuerzas de interaccion.
+  float3 *HydroMechLoadAceg; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
   float *Arg; 
   float *Deltag;     ///<Accumulates adjustment of Delta-SPH with DELTA_DynamicExt. | Acumula ajuste de Delta-SPH con DELTA_DynamicExt.
   tsymatrix3f *Rsigmag; //Stress rate tensor ruofeng
@@ -281,7 +284,7 @@ protected:
   void PreInteraction_Forces();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
-  bool IsHydroMechFreeSurfaceDrainageActive()const;
+  bool IsHydroMechDrainageActive()const;
   void ApplyFreeSurfacePorePressure();
   void ApplyHydroMechTopLoadAcceleration();
   void ApplyPorePressureBoundaries();

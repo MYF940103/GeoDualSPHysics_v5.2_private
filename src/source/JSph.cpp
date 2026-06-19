@@ -206,11 +206,23 @@ void JSph::InitVars(){
   HydroMech=false;
   HydroMechInitMode=HMINIT_None;
   WaterTableZ=0;
-  HydroMechFreeSurfaceDrainage=true;
-  HydroMechFreeSurfaceDrainageStartTime=0;
+  HydroMechDrainage=true;
+  HydroMechDrainageStartTime=0;
+  HydroMechSphereCenter=TDouble3(0);
+  HydroMechDrainageMode=HMDRN_FreeSurface;
+  HydroMechDrainageCenter=TDouble3(0);
+  HydroMechDrainageRadius=0;
+  HydroMechDrainageThickness=0;
   HydroMechTopLoad=false;
+  HydroMechTopLoadMode=HMLOAD_TopVertical;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
+  HydroMechTopLoadCenter=TDouble3(0);
+  HydroMechSphereLoadAreaReady=false;
+  HydroMechSphereLoadSurfaceCount=0;
+  HydroMechSphereLoadRadius=0;
+  HydroMechSphereLoadArea=0;
+  HydroMechSphereLoadParticleArea=0;
   PoreDtSafety=0.1f;
   PoreShepardRegularization=false;
   PoreShepardInterval=30;
@@ -2669,56 +2681,6 @@ tfloat3* JSph::GetPointerDataFloat3(unsigned n,const tdouble3* v)const{
 }
 
 //==============================================================================
-/// Returns the largest principal stress of a symmetric 3x3 tensor.
-//==============================================================================
-static float SoilDiagMaxPrincipalStress(const float xx,const float yy,const float zz
-  ,const float xy,const float yz,const float xz)
-{
-  double a[3][3]={{xx,xy,xz},{xy,yy,yz},{xz,yz,zz}};
-  for(int it=0;it<24;it++){
-    int p=0,q=1;
-    double amax=fabs(a[0][1]);
-    if(fabs(a[0][2])>amax){ p=0; q=2; amax=fabs(a[0][2]); }
-    if(fabs(a[1][2])>amax){ p=1; q=2; amax=fabs(a[1][2]); }
-    if(amax<1e-9)break;
-    const double app=a[p][p],aqq=a[q][q],apq=a[p][q];
-    const double phi=0.5*atan2(2.0*apq,aqq-app);
-    const double c=cos(phi),s=sin(phi);
-    for(int k=0;k<3;k++){
-      if(k!=p && k!=q){
-        const double aik=a[k][p],akq=a[k][q];
-        a[k][p]=a[p][k]=c*aik-s*akq;
-        a[k][q]=a[q][k]=s*aik+c*akq;
-      }
-    }
-    a[p][p]=c*c*app-2.0*s*c*apq+s*s*aqq;
-    a[q][q]=s*s*app+2.0*s*c*apq+c*c*aqq;
-    a[p][q]=a[q][p]=0.0;
-  }
-  double smax=(a[0][0]>a[1][1]? a[0][0]: a[1][1]);
-  smax=(smax>a[2][2]? smax: a[2][2]);
-  return(float(smax));
-}
-
-//==============================================================================
-/// Computes DP constants for soil diagnostics.
-//==============================================================================
-static void SoilDiagUpdateDP(float &dp_phi,float &dp_kc,const float phi,const float coh,const TpDPCtes dpctes){
-  if(dpctes==DP_MC){
-    dp_phi=2.f*sin(phi)/((3.f+sin(phi))*1.732f);
-    dp_kc=6.f*coh*cos(phi)/((3.f+sin(phi))*1.732f);
-  }
-  else if(dpctes==DP_PS){
-    dp_phi=tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-    dp_kc=3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi));
-  }
-  else{
-    dp_phi=2.f*sin(phi)/((3.f-sin(phi))*1.732f);
-    dp_kc=6.f*coh*cos(phi)/((3.f-sin(phi))*1.732f);
-  }
-}
-
-//==============================================================================
 /// Adds basic data arrays in object JDataArrays.
 //==============================================================================
 void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
@@ -2733,50 +2695,6 @@ void JSph::AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
   arrays.AddArray("Sigma_kk",np,sigma_kk);
   arrays.AddArray("Sigma_ij",np,sigma_ij);
   arrays.AddArray("Kplastic",np,kplastic);
-}
-
-//==============================================================================
-/// Adds derived soil diagnostic arrays in object JDataArrays.
-//==============================================================================
-void JSph::AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
-  ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic,const float *kplasticdk)const
-{
-  if(!sigma_kk || !sigma_ab || !kplastic)return;
-  float *soil_i1=new float[np];
-  float *soil_j2=new float[np];
-  float *soil_smax=new float[np];
-  float *soil_yieldf=new float[np];
-  float *soil_coh=new float[np];
-  const float coh_peak=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
-  for(unsigned p=0;p<np;p++){
-    const float xx=sigma_kk[p].x,yy=sigma_kk[p].y,zz=sigma_kk[p].z;
-    const float xy=sigma_ab[p].x,yz=sigma_ab[p].y,xz=sigma_ab[p].z;
-    const float i1=xx+yy+zz;
-    const float j2=((xx-zz)*(xx-zz)+(yy-zz)*(yy-zz)+(yy-xx)*(yy-xx))/6.f+xy*xy+yz*yz+xz*xz;
-    const float kp=kplastic[p];
-    const float phi=(StrainSoftening? SoilCte.phi_r+(SoilCte.phi-SoilCte.phi_r)*exp(-SoilCte.n_phi*kp): SoilCte.phi);
-    const float coh=(StrainSoftening? SoilCte.coh_r+(coh_peak-SoilCte.coh_r)*exp(-SoilCte.n_coh*kp): coh_peak);
-    float dp_phi=0,dp_kc=0;
-    SoilDiagUpdateDP(dp_phi,dp_kc,phi,coh,DPCtes);
-    soil_i1[p]=i1;
-    soil_j2[p]=j2;
-    soil_smax[p]=SoilDiagMaxPrincipalStress(xx,yy,zz,xy,yz,xz);
-    soil_yieldf[p]=sqrt(j2>0.f? j2: 0.f)+dp_phi*i1-dp_kc;
-    soil_coh[p]=coh;
-  }
-  arrays.AddArray("SoilI1",np,soil_i1,true);
-  arrays.AddArray("SoilJ2",np,soil_j2,true);
-  arrays.AddArray("SoilSigmaMax",np,soil_smax,true);
-  arrays.AddArray("SoilYieldF",np,soil_yieldf,true);
-  arrays.AddArray("SoilCoh",np,soil_coh,true);
-  if(kplasticdk)arrays.AddArray("SoilDk",np,kplasticdk,false);
-}
-
-//==============================================================================
-void JSph::AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
-  ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const
-{
-  AddSoilDiagnosticArrays(arrays,np,sigma_kk,sigma_ab,kplastic,NULL);
 }
 
 //==============================================================================
@@ -3335,6 +3253,30 @@ std::string JSph::GetHydroMechInitModeName(TpHydroMechInitMode initmode){
   else tx="???";
   return(tx);
 }
+
+//==============================================================================
+/// Returns name of hydromechanical top-load mode in text format.
+//==============================================================================
+std::string JSph::GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode){
+  string tx;
+  if(loadmode==HMLOAD_TopVertical)tx="TopVertical";
+  else if(loadmode==HMLOAD_FreeSurfaceNormal)tx="FreeSurfaceNormal";
+  else if(loadmode==HMLOAD_SphereNormal)tx="SphereNormal";
+  else tx="???";
+  return(tx);
+}
+
+//==============================================================================
+/// Returns name of hydromechanical drainage mode in text format.
+//==============================================================================
+std::string JSph::GetHydroMechDrainageModeName(TpHydroMechDrainageMode drainmode){
+  string tx;
+  if(drainmode==HMDRN_FreeSurface)tx="FreeSurface";
+  else if(drainmode==HMDRN_SphereSurface)tx="SphereSurface";
+  else tx="???";
+  return(tx);
+}
+
 //==============================================================================
 /// Returns name of Density Diffusion Term in text format.
 /// Devuelve nombre del Density Diffusion Term en texto.
@@ -3527,11 +3469,27 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   else if(initmodestr=="analyticalselfweight1d" || initmodestr=="analytical_self_weight_1d" || initmodestr=="selfweight1d" || initmodestr=="3")HydroMechInitMode=HMINIT_AnalyticalSelfWeight1D;
   else Run_Exceptioon("HydroMechInitMode must be None, FreeSurface, ConstantZ or AnalyticalSelfWeight1D.");
   WaterTableZ=sxml->ReadElementDouble(solidNode,(sxml->ExistsElement(solidEle,"HydroMechInitZ","value")? "HydroMechInitZ": "WaterTableZ"),"value",true,0);
-  HydroMechFreeSurfaceDrainage=sxml->ReadElementBool(solidNode,"HydroMechFreeSurfaceDrainage","value",true,true);
-  HydroMechFreeSurfaceDrainageStartTime=sxml->ReadElementDouble(solidNode,"HydroMechFreeSurfaceDrainageStartTime","value",true,0);
+  const bool hasdrainage=sxml->ExistsElement(solidEle,"HydroMechDrainage","value");
+  HydroMechDrainage=sxml->ReadElementBool(solidNode,(hasdrainage? "HydroMechDrainage": "HydroMechFreeSurfaceDrainage"),"value",true,true);
+  const bool hasdrainagestart=sxml->ExistsElement(solidEle,"HydroMechDrainageStartTime","value");
+  HydroMechDrainageStartTime=sxml->ReadElementDouble(solidNode,(hasdrainagestart? "HydroMechDrainageStartTime": "HydroMechFreeSurfaceDrainageStartTime"),"value",true,0);
+  HydroMechSphereCenter=sxml->ReadElementDouble3(solidNode,"HydroMechSphereCenter",true,TDouble3(0));
+  const string drainmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,"HydroMechDrainageMode","value",true,"FreeSurface"));
+  if(drainmodestr=="freesurface" || drainmodestr=="free_surface" || drainmodestr=="0")HydroMechDrainageMode=HMDRN_FreeSurface;
+  else if(drainmodestr=="spheresurface" || drainmodestr=="sphere_surface" || drainmodestr=="sphere" || drainmodestr=="1")HydroMechDrainageMode=HMDRN_SphereSurface;
+  else Run_Exceptioon("HydroMechDrainageMode must be FreeSurface or SphereSurface.");
+  HydroMechDrainageCenter=sxml->ReadElementDouble3(solidNode,"HydroMechDrainageCenter",true,HydroMechSphereCenter);
+  HydroMechDrainageRadius=sxml->ReadElementDouble(solidNode,"HydroMechDrainageRadius","value",true,0);
+  HydroMechDrainageThickness=sxml->ReadElementDouble(solidNode,"HydroMechDrainageThickness","value",true,double(Dp));
   HydroMechTopLoad=sxml->ReadElementBool(solidNode,"HydroMechTopLoad","value",true,false);
+  const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,"HydroMechTopLoadMode","value",true,"TopVertical"));
+  if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_TopVertical;
+  else if(toploadmodestr=="freesurfacenormal" || toploadmodestr=="free_surface_normal" || toploadmodestr=="normal" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_FreeSurfaceNormal;
+  else if(toploadmodestr=="spherenormal" || toploadmodestr=="sphere_normal" || toploadmodestr=="radial" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_SphereNormal;
+  else Run_Exceptioon("HydroMechTopLoadMode must be TopVertical, FreeSurfaceNormal or SphereNormal.");
   HydroMechTopLoadQ0=sxml->ReadElementFloat(solidNode,"HydroMechTopLoadQ0","value",true,0.f);
   HydroMechTopLoadRampTime=sxml->ReadElementDouble(solidNode,"HydroMechTopLoadRampTime","value",true,0);
+  HydroMechTopLoadCenter=sxml->ReadElementDouble3(solidNode,"HydroMechTopLoadCenter",true,HydroMechSphereCenter);
 
   //-Pore-water material properties and pore-pressure numerical controls.
   SoilCte.PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
@@ -3545,12 +3503,16 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Input validation.
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value") && !sxml->ExistsElement(solidEle,"HydroMechInitZ","value"))
     Run_Exceptioon("WaterTableZ or HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
+  if(HydroMech && HydroMechDrainageMode==HMDRN_SphereSurface && HydroMechDrainageRadius<=0)
+    Run_Exceptioon("HydroMechDrainageRadius must be greater than zero when HydroMechDrainageMode=SphereSurface.");
+  if(HydroMech && HydroMechDrainageMode==HMDRN_SphereSurface && HydroMechDrainageThickness<=0)
+    Run_Exceptioon("HydroMechDrainageThickness must be greater than zero when HydroMechDrainageMode=SphereSurface.");
   if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
   if(HydroMech){
     if(SoilCte.PoreWaterBulkModulus<=0.f)Run_Exceptioon("PoreWaterBulkModulus must be greater than zero when HydroMech is enabled.");
     if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
     if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
-    if(HydroMechFreeSurfaceDrainageStartTime<0)Run_Exceptioon("HydroMechFreeSurfaceDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
+    if(HydroMechDrainageStartTime<0)Run_Exceptioon("HydroMechDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
     if(HydroMechTopLoad && HydroMechTopLoadQ0<=0.f)Run_Exceptioon("HydroMechTopLoadQ0 must be greater than zero when HydroMechTopLoad is enabled.");
     if(HydroMechTopLoad && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoad is enabled.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
@@ -3586,12 +3548,23 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(HydroMech){
     Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",WaterTableZ);
-    Log->Print(fun::VarStr("  HydroMechFreeSurfaceDrainage", (HydroMechFreeSurfaceDrainage? "Enabled": "Disabled")));
-    Log->Printf("  HydroMechFreeSurfaceDrainageStartTime: %g",HydroMechFreeSurfaceDrainageStartTime);
+    Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
+    Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
+    if(HydroMechDrainageMode==HMDRN_SphereSurface || HydroMechTopLoadMode==HMLOAD_SphereNormal)
+      Log->Printf("  HydroMechSphereCenter: (%g,%g,%g)",HydroMechSphereCenter.x,HydroMechSphereCenter.y,HydroMechSphereCenter.z);
+    Log->Print(fun::VarStr("  HydroMechDrainageMode", GetHydroMechDrainageModeName(HydroMechDrainageMode)));
+    if(HydroMechDrainageMode==HMDRN_SphereSurface){
+      Log->Printf("  HydroMechDrainageCenter: (%g,%g,%g)",HydroMechDrainageCenter.x,HydroMechDrainageCenter.y,HydroMechDrainageCenter.z);
+      Log->Printf("  HydroMechDrainageRadius: %g",HydroMechDrainageRadius);
+      Log->Printf("  HydroMechDrainageThickness: %g",HydroMechDrainageThickness);
+    }
     Log->Print(fun::VarStr("  HydroMechTopLoad", (HydroMechTopLoad? "Enabled": "Disabled")));
     if(HydroMechTopLoad){
+      Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);
+      if(HydroMechTopLoadMode==HMLOAD_SphereNormal)
+        Log->Printf("  HydroMechTopLoadCenter: (%g,%g,%g)",HydroMechTopLoadCenter.x,HydroMechTopLoadCenter.y,HydroMechTopLoadCenter.z);
     }
     Log->Printf("  PoreWaterRho: %f",ct.PoreWaterRho);
     Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);

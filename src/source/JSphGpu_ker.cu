@@ -968,54 +968,105 @@ __device__ bool KerHydroMechIsFreeSurface(unsigned p,const typecode *code,const 
   return(code && fstype && CODE_IsFluid(code[p]) && (fstype[p]==2 || fstype[p]==3));
 }
 
+__device__ bool KerHydroMechIsDrained(unsigned p,unsigned drainmode,double3 center,double radius,double thickness,unsigned simulate2d
+  ,const typecode *code,const unsigned *fstype,const double2 *posxy,const double *posz)
+{
+  if(!code || !CODE_IsFluid(code[p]))return(false);
+  if(drainmode==HMDRN_SphereSurface){
+    if(!posxy || !posz)return(false);
+    const double dx=posxy[p].x-center.x;
+    const double dy=(simulate2d? 0.: posxy[p].y-center.y);
+    const double dz=posz[p]-center.z;
+    const double r=sqrt(dx*dx+dy*dy+dz*dz);
+    return(r>=radius-thickness && r<=radius+thickness);
+  }
+  return(KerHydroMechIsFreeSurface(p,code,fstype));
+}
+
 //==============================================================================
 /// Enforces drained pore pressure on free-surface particles.
 //==============================================================================
-__global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs,const typecode *code,const unsigned *fstype,float *porepress)
+__global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs,unsigned drainmode,double3 center,double radius,double thickness,unsigned simulate2d
+  ,const typecode *code,const unsigned *fstype,const double2 *posxy,const double *posz,float *porepress)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
-  if(drainfs && p<np && KerHydroMechIsFreeSurface(p,code,fstype))porepress[p]=0.f;
+  if(drainfs && p<np && KerHydroMechIsDrained(p,drainmode,center,radius,thickness,simulate2d,code,fstype,posxy,posz))porepress[p]=0.f;
 }
 
-void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const typecode *code,const unsigned *fstype,float *porepress)
+void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechDrainageMode drainmode,tdouble3 center,double radius,double thickness,bool simulate2d
+  ,const typecode *code,const unsigned *fstype,const double2 *posxy,const double *posz,float *porepress)
 {
-  if(np>npb && porepress && fstype){
+  if(np>npb && porepress){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),code,fstype,porepress);
+    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(drainmode),Double3(center),radius,thickness,(simulate2d? 1u: 0u),code,fstype,posxy,posz,porepress);
   }
 }
 
 //==============================================================================
-/// Applies q0 top load to upward free-surface particles.
+/// Applies q0 top load to selected free-surface particles.
 //==============================================================================
-__global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,float az,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace)
+__global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,unsigned loadmode,float accmag,double3 center
+  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,const double2 *posxy,const double *posz,float3 *ace,float3 *loadace)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
-  if(p<np && CODE_IsNormal(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)){
-    const float3 n=fsnormal[p];
-    const double nlen=sqrt(double(n.x)*n.x+double(n.y)*n.y+double(n.z)*n.z);
-    bool upward=false;
-    if(nlen>1e-12){
-      const double gx=double(CTE.gravityx);
-      const double gy=double(CTE.gravityy);
-      const double gz=double(CTE.gravityz);
-      const double gnorm=sqrt(gx*gx+gy*gy+gz*gz);
-      if(gnorm<=1e-12)upward=(double(n.z)/nlen>0.35);
-      else upward=(-(double(n.x)*gx+double(n.y)*gy+double(n.z)*gz)/(nlen*gnorm)>0.35);
+  if(p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)){
+    const bool freesurf=KerHydroMechIsFreeSurface(p,code,fstype);
+    float3 a=ace[p];
+    float3 aload=make_float3(0.f,0.f,0.f);
+    if(loadmode==HMLOAD_TopVertical){
+      if(freesurf){
+        const float3 n=fsnormal[p];
+        const double nlen=sqrt(double(n.x)*n.x+double(n.y)*n.y+double(n.z)*n.z);
+        bool upward=false;
+        if(nlen>1e-12){
+          const double gx=double(CTE.gravityx);
+          const double gy=double(CTE.gravityy);
+          const double gz=double(CTE.gravityz);
+          const double gnorm=sqrt(gx*gx+gy*gy+gz*gz);
+          if(gnorm<=1e-12)upward=(double(n.z)/nlen>0.35);
+          else upward=(-(double(n.x)*gx+double(n.y)*gy+double(n.z)*gz)/(nlen*gnorm)>0.35);
+        }
+        if(upward)aload.z-=accmag;
+      }
     }
-    if(upward){
-      float3 a=ace[p];
-      a.z+=az;
-      ace[p]=a;
+    else if(loadmode==HMLOAD_FreeSurfaceNormal){
+      if(freesurf){
+        const float3 n=fsnormal[p];
+        const double nlen=sqrt(double(n.x)*n.x+double(n.y)*n.y+double(n.z)*n.z);
+        if(nlen>1e-12){
+          const float scale=-accmag/float(nlen);
+          aload.x=scale*n.x;
+          aload.y=scale*n.y;
+          aload.z=scale*n.z;
+        }
+      }
     }
+    else if(loadmode==HMLOAD_SphereNormal){
+      const double dx=posxy[p].x-center.x;
+      const double dy=(CTE.simulate2d? 0.: posxy[p].y-center.y);
+      const double dz=posz[p]-center.z;
+      const double r=sqrt(dx*dx+dy*dy+dz*dz);
+      if(r>1e-12){
+        const float scale=-accmag/float(r);
+        aload.x=scale*float(dx);
+        aload.y=scale*float(dy);
+        aload.z=scale*float(dz);
+      }
+    }
+    a.x+=aload.x;
+    a.y+=aload.y;
+    a.z+=aload.z;
+    ace[p]=a;
+    if(loadace)loadace[p]=aload;
   }
 }
 
-void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,float az,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace)
+void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag,tdouble3 center
+  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,const double2 *posxy,const double *posz,float3 *ace,float3 *loadace)
 {
-  if(np>npb && az && code && fstype && fsnormal && ace){
+  if(np>npb && accmag && code && fstype && fsnormal && posxy && posz && ace){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,az,code,fstype,fsnormal,ace);
+    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,unsigned(loadmode),accmag,Double3(center),code,fstype,fsnormal,posxy,posz,ace,loadace);
   }
 }
 
@@ -1130,14 +1181,14 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
 //==============================================================================
 /// Shepard regularization of excess pore pressure.
 //==============================================================================
-template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs
+template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs,unsigned drainmode,double3 center,double radius,double thickness
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode,const float *porepress0,const float *porepress,float *porepressnew)
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(p1<np && CODE_IsFluid(code[p1])){
-    if(drainfs && KerHydroMechIsFreeSurface(p1,code,fstype)){
+    if(drainfs && KerHydroMechIsDrained(p1,drainmode,center,radius,thickness,(sim2d? 1u: 0u),code,fstype,posxy,posz)){
       porepressnew[p1]=0.f;
       return;
     }
@@ -1180,30 +1231,30 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
   }
 }
 
-template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,TpHydroMechDrainageMode drainmode,tdouble3 center,double radius,double thickness,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,const byte *boundmode
   ,const float *porepress0,const float *porepress,float *porepressnew)
 {
   if(np>npb && porepress0 && porepress && porepressnew){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(drainmode),Double3(center),radius,thickness,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
   }
 }
 
 void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
-  ,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+  ,bool drainfs,TpHydroMechDrainageMode drainmode,tdouble3 center,double radius,double thickness,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode
   ,const float *porepress0,const float *porepress,float *porepressnew)
 {
   if(simulate2d){
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,drainmode,center,radius,thickness,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,drainmode,center,radius,thickness,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
     else throw "Kernel unknown.";
   }
   else{
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,drainmode,center,radius,thickness,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,drainmode,center,radius,thickness,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
     else throw "Kernel unknown.";
   }
 }

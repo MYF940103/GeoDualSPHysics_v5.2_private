@@ -95,7 +95,7 @@ void JSphCpu::InitVars(){
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
-  Arc=NULL; Acec=NULL; Deltac=NULL;
+  Arc=NULL; Acec=NULL; HydroMechLoadAcec=NULL; Deltac=NULL;
   ShiftPosfsc=NULL;               //-Shifting.
   Pressc=NULL;
   CorrMatc=NULL; FSTypec=NULL; FSNormalc=NULL; PosDivc=NULL; //-Free-surface tracking.
@@ -180,7 +180,10 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   if(ArtificialStress)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-artificialstress
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
-  if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
+  if(HydroMech){
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1);//-HydroMechLoadAce
+  }
   //======
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
@@ -238,6 +241,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   unsigned    *fstype     =SaveArrayCpu(Np,FSTypec);
   tfloat3     *fsnormal   =SaveArrayCpu(Np,FSNormalc);
   float       *posdiv     =SaveArrayCpu(Np,PosDivc);
+  tfloat3     *hydromechloadace=SaveArrayCpu(Np,HydroMechLoadAcec);
   //====mdbr
   tsymatrix3f  *sigma     =SaveArrayCpu(Np,Sigmac);
   tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
@@ -267,6 +271,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(FSTypec);
   ArraysCpu->Free(FSNormalc);
   ArraysCpu->Free(PosDivc);
+  ArraysCpu->Free(HydroMechLoadAcec);
   //====mdbr
   ArraysCpu->Free(Sigmac);
   ArraysCpu->Free(SigmaPrec);
@@ -300,6 +305,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(fstype)     FSTypec     =ArraysCpu->ReserveUint();
   if(fsnormal)   FSNormalc   =ArraysCpu->ReserveFloat3();
   if(posdiv)     PosDivc     =ArraysCpu->ReserveFloat();
+  if(hydromechloadace)HydroMechLoadAcec=ArraysCpu->ReserveFloat3();
   //===== mdbr
   if(sigma)      Sigmac = ArraysCpu->ReserveSymatrix3f();
   if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
@@ -329,6 +335,7 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,fstype,FSTypec);
   RestoreArrayCpu(Np,fsnormal,FSNormalc);
   RestoreArrayCpu(Np,posdiv,PosDivc);
+  RestoreArrayCpu(Np,hydromechloadace,HydroMechLoadAcec);
   //===== mdbr
   RestoreArrayCpu(Np,sigma,Sigmac);
   RestoreArrayCpu(Np,sigmapre,SigmaPrec);
@@ -391,6 +398,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
     PorePressc=ArraysCpu->ReserveFloat();
     PorePress0c=ArraysCpu->ReserveFloat();
     PorePressRatec=ArraysCpu->ReserveFloat();
+    HydroMechLoadAcec=ArraysCpu->ReserveFloat3();
   }
   //=====
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
@@ -439,7 +447,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
-  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0)
+  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -451,6 +459,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(posdiv && PosDivc)memcpy(posdiv,PosDivc+pini,sizeof(float)*n);
   if(porepress && PorePressc)memcpy(porepress,PorePressc+pini,sizeof(float)*n);
   if(porepress0 && PorePress0c)memcpy(porepress0,PorePress0c+pini,sizeof(float)*n);
+  if(hydromechloadace && HydroMechLoadAcec)memcpy(hydromechloadace,HydroMechLoadAcec+pini,sizeof(tfloat3)*n);
   if(vel && rhop){
     for(unsigned p=0;p<n;p++){
       tfloat4 vr=Velrhopc[p+pini];
@@ -504,6 +513,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(posdiv)posdiv[pdel]=posdiv[p];
         if(porepress)porepress[pdel]=porepress[p];
         if(porepress0)porepress0[pdel]=porepress0[p];
+        if(hydromechloadace)hydromechloadace[pdel]=hydromechloadace[p];
         code2[pdel]=code2[p];
       }
       if(!normal)ndel++;
@@ -1088,10 +1098,10 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
 }
 
 //==============================================================================
-/// Returns true when drained pore pressure is active on free surfaces.
+/// Returns true when the drained pore-pressure boundary is active.
 //==============================================================================
-bool JSphCpu::IsHydroMechFreeSurfaceDrainageActive()const{
-  return(HydroMech && HydroMechFreeSurfaceDrainage && TimeStep>=HydroMechFreeSurfaceDrainageStartTime);
+bool JSphCpu::IsHydroMechDrainageActive()const{
+  return(HydroMech && HydroMechDrainage && TimeStep>=HydroMechDrainageStartTime);
 }
 
 //==============================================================================
@@ -1100,6 +1110,22 @@ bool JSphCpu::IsHydroMechFreeSurfaceDrainageActive()const{
 bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const{
   if(!code || !fstype || !CODE_IsFluid(code[p]))return(false);
   return(fstype[p]==2 || fstype[p]==3);
+}
+
+//==============================================================================
+/// Returns true when a particle belongs to the active drained pore-pressure boundary.
+//==============================================================================
+bool JSphCpu::IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const{
+  if(!code || !CODE_IsFluid(code[p]))return(false);
+  if(HydroMechDrainageMode==HMDRN_SphereSurface){
+    if(!pos)return(false);
+    const double dx=pos[p].x-HydroMechDrainageCenter.x;
+    const double dy=(Simulate2D? 0: pos[p].y-HydroMechDrainageCenter.y);
+    const double dz=pos[p].z-HydroMechDrainageCenter.z;
+    const double r=sqrt(dx*dx+dy*dy+dz*dz);
+    return(r>=HydroMechDrainageRadius-HydroMechDrainageThickness && r<=HydroMechDrainageRadius+HydroMechDrainageThickness);
+  }
+  return(IsFreeSurfaceParticle(p,code,fstype));
 }
 
 //==============================================================================
@@ -1118,7 +1144,7 @@ bool JSphCpu::IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned
 }
 
 //==============================================================================
-/// Applies q0 ramp surcharge as a vertical acceleration on upward free-surface soil.
+/// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || !HydroMechTopLoad || !Acec || !FSTypec || !FSNormalc)return;
@@ -1126,19 +1152,98 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
   const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
-  const double por=double(SoilCte.Porosity);
-  const double rhol=double(SoilCte.PoreWaterRho);
-  const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
-  const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
-  const double denom=rhomix*double(Dp);
-  if(q<=0 || denom<=0)return;
-  const float az=-float(q/denom);
+  if(q<=0)return;
+  float accmag=0;
+  if(HydroMechTopLoadMode==HMLOAD_SphereNormal && !Simulate2D){
+    if(MassFluid<=0)return;
+    if(!HydroMechSphereLoadAreaReady){
+      const double pi=3.14159265358979323846;
+      unsigned nfs=0;
+      double sumr=0,sumnx=0,sumny=0,sumnz=0;
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && IsFreeSurfaceParticle(p,Codec,FSTypec)){
+        const double dx=Posc[p].x-HydroMechTopLoadCenter.x;
+        const double dy=Posc[p].y-HydroMechTopLoadCenter.y;
+        const double dz=Posc[p].z-HydroMechTopLoadCenter.z;
+        const double r=sqrt(dx*dx+dy*dy+dz*dz);
+        if(r>1e-12){
+          nfs++;
+          sumr+=r;
+          sumnx+=dx/r;
+          sumny+=dy/r;
+          sumnz+=dz/r;
+        }
+      }
+      if(!nfs)return;
+      HydroMechSphereLoadAreaReady=true;
+      HydroMechSphereLoadSurfaceCount=nfs;
+      HydroMechSphereLoadRadius=sumr/double(nfs);
+      HydroMechSphereLoadArea=4.0*pi*HydroMechSphereLoadRadius*HydroMechSphereLoadRadius;
+      HydroMechSphereLoadParticleArea=HydroMechSphereLoadArea/double(nfs);
+      const double sumainx=HydroMechSphereLoadParticleArea*sumnx;
+      const double sumainy=HydroMechSphereLoadParticleArea*sumny;
+      const double sumainz=HydroMechSphereLoadParticleArea*sumnz;
+      const double residual=sqrt(sumainx*sumainx+sumainy*sumainy+sumainz*sumainz)/HydroMechSphereLoadArea;
+      const double sumfx=-q0*sumainx;
+      const double sumfy=-q0*sumainy;
+      const double sumfz=-q0*sumainz;
+      const double sumfmag=sqrt(sumfx*sumfx+sumfy*sumfy+sumfz*sumfz);
+      const double totalscalar=q0*HydroMechSphereLoadArea;
+      const double accfull=q0*HydroMechSphereLoadParticleArea/double(MassFluid);
+      Log->Printf("Hydromechanics: SphereNormal area load uses %u surface particles, R_eff=%g, A_sum=%g, 4*pi*R_eff^2=%g, A_i=%g."
+        ,HydroMechSphereLoadSurfaceCount,HydroMechSphereLoadRadius,HydroMechSphereLoadArea,HydroMechSphereLoadArea,HydroMechSphereLoadParticleArea);
+      Log->Printf("Hydromechanics: SphereNormal area load diagnostics at q0=%g: scalar_force=%g, vector_sum_F=(%g,%g,%g), |sumF|=%g, residual=|sum(A_i*n_i)|/sum(A_i)=%g, acc_range=[%g,%g]."
+        ,q0,totalscalar,sumfx,sumfy,sumfz,sumfmag,residual,accfull,accfull);
+    }
+    accmag=float(q*HydroMechSphereLoadParticleArea/double(MassFluid));
+  }
+  else{
+    const double por=double(SoilCte.Porosity);
+    const double rhol=double(SoilCte.PoreWaterRho);
+    const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
+    const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
+    const double denom=rhomix*double(Dp);
+    if(denom<=0)return;
+    accmag=float(q/denom);
+  }
   const int pini=int(Npb),pfin=int(Np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int p=pini;p<pfin;p++){
-    if(CODE_IsNormal(Codec[p]) && IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc))Acec[p].z+=az;
+    if(!CODE_IsNormal(Codec[p]))continue;
+    if(HydroMechTopLoadMode==HMLOAD_TopVertical){
+      if(IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc)){
+        const tfloat3 load=TFloat3(0,0,-accmag);
+        Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
+        if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
+      }
+    }
+    else if(HydroMechTopLoadMode==HMLOAD_FreeSurfaceNormal){
+      if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec)){
+        const tfloat3 n=FSNormalc[p];
+        const double nlen=sqrt(double(n.x)*double(n.x)+double(n.y)*double(n.y)+double(n.z)*double(n.z));
+        if(nlen>1e-12){
+          const float scale=-accmag/float(nlen);
+          const tfloat3 load=TFloat3(scale*n.x,scale*n.y,scale*n.z);
+          Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
+          if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
+        }
+      }
+    }
+    else if(HydroMechTopLoadMode==HMLOAD_SphereNormal){
+      if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec)){
+        const double dx=Posc[p].x-HydroMechTopLoadCenter.x;
+        const double dy=(Simulate2D? 0: Posc[p].y-HydroMechTopLoadCenter.y);
+        const double dz=Posc[p].z-HydroMechTopLoadCenter.z;
+        const double r=sqrt(dx*dx+dy*dy+dz*dz);
+        if(r>1e-12){
+          const float scale=-accmag/float(r);
+          const tfloat3 load=TFloat3(scale*float(dx),scale*float(dy),scale*float(dz));
+          Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
+          if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
+        }
+      }
+    }
   }
 }
 
@@ -1256,13 +1361,13 @@ void JSphCpu::InitHydroMechState(){
 //==============================================================================
 void JSphCpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressc || !FSTypec)return;
-  if(!IsHydroMechFreeSurfaceDrainageActive())return;
+  if(!IsHydroMechDrainageActive())return;
   const int pini=int(Npb),pfin=int(Np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int p=pini;p<pfin;p++){
-    if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec))PorePressc[p]=0;
+    if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec))PorePressc[p]=0;
   }
 }
 
@@ -1280,7 +1385,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
   const double por=double(SoilCte.Porosity);
   const double khyd=double(SoilCte.HydraulicConductivity);
   const double kwn=kw/por;
-  const bool drainfs=IsHydroMechFreeSurfaceDrainageActive();
+  const bool drainfs=IsHydroMechDrainageActive();
   const int pini=int(npb),pfin=int(np);
   memset(porepressrate,0,sizeof(float)*np);
   #ifdef OMP_USE
@@ -1288,7 +1393,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
   #endif
   for(int p1=pini;p1<pfin;p1++){
     if(!CODE_IsFluid(code[p1]))continue;
-    if(drainfs && IsFreeSurfaceParticle(unsigned(p1),code,fstype)){
+    if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)){
       porepressrate[p1]=0;
       continue;
     }
@@ -1453,7 +1558,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
   #endif
   for(int p1=pini;p1<pfin;p1++){
     if(!CODE_IsFluid(code[p1]))continue;
-    if(IsHydroMechFreeSurfaceDrainageActive() && IsFreeSurfaceParticle(unsigned(p1),code,fstype)){
+    if(IsHydroMechDrainageActive() && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)){
       preg[p1]=0;
       continue;
     }
@@ -1525,6 +1630,7 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   memset(Arc,0,sizeof(float)*np);                                    //Arc[]=0
   if(Deltac)memset(Deltac,0,sizeof(float)*np);                       //Deltac[]=0
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
+  if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*np);//HydroMechLoadAcec[]=(0,0,0)
   if(NoPenShiftc)memset(NoPenShiftc,0,sizeof(tfloat4)*np);           //NoPenShiftc[]=(0,0,0,0)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
@@ -1920,7 +2026,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const bool useartstress=(ArtificialStress && artificialstress);
   const bool useporefeedback=(HydroMech && porepress);
   const bool useporerate=(HydroMech && porepress && porepressrate);
-  const bool drainfs=(useporerate && IsHydroMechFreeSurfaceDrainageActive());
+  const bool drainfs=(useporerate && IsHydroMechDrainageActive());
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
   const double ghyd=(gnorm>0? gnorm: 9.80665);
   const double kw=double(SoilCte.PoreWaterBulkModulus);
@@ -1966,7 +2072,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const tfloat3 velp1=TFloat3(velrhop[p1].x,velrhop[p1].y,velrhop[p1].z);
     const float rhopp1=velrhop[p1].w;
     const float pressp1=press[p1];
-    const bool poreratep1=(useporerate && CODE_IsFluid(code[p1]) && !(drainfs && IsFreeSurfaceParticle(unsigned(p1),code,fstype)));
+    const bool poreratep1=(useporerate && CODE_IsFluid(code[p1]) && !(drainfs && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)));
     const float pwp1=(poreratep1? porepress[p1]: 0);
     const tmatrix3d porecorr=(poreratep1 && corrmat? corrmat[p1]: TMatrix3d());
     const tsymatrix3f sigmap1=sigma[p1]; //mdbr

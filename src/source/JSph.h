@@ -203,11 +203,23 @@ protected:
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
   double WaterTableZ;         ///<Constant water-table elevation for HMINIT_ConstantZ. //mdbr
-  bool HydroMechFreeSurfaceDrainage; ///<Enforces drained pore pressure on free-surface particles (default=1). //mdbr
-  double HydroMechFreeSurfaceDrainageStartTime; ///<Time when drained free-surface pore pressure starts (default=0). //mdbr
+  bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
+  double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
+  tdouble3 HydroMechSphereCenter; ///<Default sphere center for spherical hydromechanical operations. //mdbr
+  TpHydroMechDrainageMode HydroMechDrainageMode; ///<Mode used to select drained pore-pressure particles. //mdbr
+  tdouble3 HydroMechDrainageCenter; ///<Center override used by HMDRN_SphereSurface. //mdbr
+  double HydroMechDrainageRadius; ///<Radius used by HMDRN_SphereSurface [m]. //mdbr
+  double HydroMechDrainageThickness; ///<Inward shell thickness used by HMDRN_SphereSurface [m]. //mdbr
   bool HydroMechTopLoad;      ///<Applies a q0 ramp load to upward free-surface soil particles (default=0). //mdbr
+  TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute HydroMechTopLoad. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for HydroMechTopLoad [s]. //mdbr
+  tdouble3 HydroMechTopLoadCenter; ///<Center override used by HMLOAD_SphereNormal. //mdbr
+  bool HydroMechSphereLoadAreaReady; ///<Cached area-normalized spherical top-load data is ready. //mdbr
+  unsigned HydroMechSphereLoadSurfaceCount; ///<Number of surface particles used for area-normalized spherical load. //mdbr
+  double HydroMechSphereLoadRadius; ///<Effective radius from loaded surface particles [m]. //mdbr
+  double HydroMechSphereLoadArea; ///<Total spherical area represented by loaded particles [m^2]. //mdbr
+  double HydroMechSphereLoadParticleArea; ///<Area assigned to each loaded spherical surface particle [m^2]. //mdbr
   float PoreDtSafety;         ///<Safety coefficient for pore-pressure diffusion time-step limit. //mdbr
   bool PoreShepardRegularization; ///<Enables optional Shepard regularization for pore pressure. //mdbr
   unsigned PoreShepardInterval; ///<Step interval for pore-pressure Shepard regularization. //mdbr
@@ -511,10 +523,6 @@ protected:
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop
     ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const;//ruofeng
-  void AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
-    ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic,const float *kplasticdk)const;//mdbr
-  void AddSoilDiagnosticArrays(JDataArrays &arrays,unsigned np
-    ,const tfloat3 *sigma_kk,const tfloat3 *sigma_ab,const float *kplastic)const;//mdbr
   void AddBasicArrays(JDataArrays &arrays,unsigned np,const tdouble3 *pos
     ,const unsigned *idp,const tfloat3 *vel,const float *rhop)const;
   void SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays,unsigned ndom,const tdouble3 *vdom,const StInfoPartPlus *infoplus);
@@ -547,6 +555,8 @@ public:
   static std::string GetSlipName(TpSlipMode tslip);
   static std::string GetDPName(TpDPCtes dpctes);
   static std::string GetHydroMechInitModeName(TpHydroMechInitMode initmode);
+  static std::string GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode);
+  static std::string GetHydroMechDrainageModeName(TpHydroMechDrainageMode drainmode);
   std::string GetDDTName(TpDensity tdensity)const;
 
   std::string GetDDTConfig()const;

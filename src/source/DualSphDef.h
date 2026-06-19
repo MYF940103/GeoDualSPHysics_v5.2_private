@@ -319,8 +319,21 @@ typedef enum{
   HMINIT_None=0,                 ///<Does not initialize a hydromechanical state.
   HMINIT_FreeSurface=1,          ///<Initializes hydrostatic pore pressure from tracked soil free-surface particles.
   HMINIT_ConstantZ=2,            ///<Initializes hydrostatic pore pressure from a constant z-level.
-  HMINIT_AnalyticalSelfWeight1D=3///<Initializes 1D self-weight consolidation pore pressure and effective stress.
+  HMINIT_AnalyticalSelfWeight1D=3 ///<Initializes 1D self-weight consolidation pore pressure and effective stress.
 }TpHydroMechInitMode;
+
+///Hydromechanical external load mode.
+typedef enum{
+  HMLOAD_TopVertical=0,       ///<Applies q0 vertically to upward free-surface particles.
+  HMLOAD_FreeSurfaceNormal=1, ///<Applies q0 along the tracked free-surface inward normal.
+  HMLOAD_SphereNormal=2       ///<Applies q0 radially inward from a configured sphere center.
+}TpHydroMechLoadMode;
+
+///Hydromechanical drained pore-pressure boundary mode.
+typedef enum{
+  HMDRN_FreeSurface=0,     ///<Drains particles detected by the free-surface tracker.
+  HMDRN_SphereSurface=1    ///<Drains particles in a configured spherical surface shell.
+}TpHydroMechDrainageMode;
 
 ///Controls the output of information on the screen and/or log.
 typedef enum{ 

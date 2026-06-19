@@ -59,8 +59,8 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   ClassName="JSphGpu";
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
-  PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL;
-  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL;
+  PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL; AuxHydroMechLoadAce=NULL;
+  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
   GpuInfo=new JDsGpuInfo;
@@ -155,7 +155,7 @@ void JSphGpu::InitVars(){
   PorePressPreg=NULL;
   SpsTaug=NULL; SpsGradvelg=NULL;                  //-Laminar+SPS. 
   ViscDtg=NULL; 
-  Arg=NULL; Aceg=NULL; Deltag=NULL;
+  Arg=NULL; Aceg=NULL; HydroMechLoadAceg=NULL; Deltag=NULL;
   Rsigmag=NULL;//ruofeng
   ArtificialStressg=NULL;//mdbr
   ShiftPosfsg=NULL;                                //-Shifting.
@@ -279,11 +279,13 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] PorePress0; PorePress0 = NULL;
   delete[] AuxPorePress;  AuxPorePress = NULL;
   delete[] AuxPorePress0; AuxPorePress0 = NULL;
+  delete[] AuxHydroMechLoadAce; AuxHydroMechLoadAce=NULL;
   //
   delete[] AuxPos;     AuxPos=NULL;
   delete[] AuxVel;     AuxVel=NULL;
   delete[] AuxRhop;    AuxRhop=NULL;
   delete[] AuxFSType;  AuxFSType=NULL;
+  delete[] AuxFSNormal; AuxFSNormal=NULL;
   //ruofeng
   delete[] AuxSigma_xx_yy_zz;   AuxSigma_xx_yy_zz = NULL;
   delete[] AuxSigma_xy_yz_xz;   AuxSigma_xy_yz_xz = NULL;
@@ -316,12 +318,14 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
         PorePress0=new float[np];    MemCpuParticles+=sizeof(float)*np;
         AuxPorePress=new float[np];  MemCpuParticles+=sizeof(float)*np;
         AuxPorePress0=new float[np]; MemCpuParticles+=sizeof(float)*np;
+        AuxHydroMechLoadAce=new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       }
       //==========
       AuxPos=new tdouble3[np];   MemCpuParticles+=sizeof(tdouble3)*np; 
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
       AuxRhop=new float[np];     MemCpuParticles+=sizeof(float)*np;
       AuxFSType=new unsigned[np]; MemCpuParticles+=sizeof(unsigned)*np;
+      AuxFSNormal=new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       //======mdbr
       AuxSigma_xx_yy_zz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       AuxSigma_xy_yz_xz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
@@ -374,7 +378,10 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-rsigma
   if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 4);//-kplastic,kplasticdk and sort buffers
-  if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,6);//-PorePress,PorePress0,PorePressRate and sort buffers
+  if(HydroMech){
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,6);//-PorePress,PorePress0,PorePressRate and sort buffers
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-HydroMechLoadAce and sort buffer
+  }
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
@@ -441,6 +448,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   unsigned    *fstype     =SaveArrayGpu(Np,FSTypeg);
   float3      *fsnormal   =SaveArrayGpu(Np,FSNormalg);
   float       *posdiv     =SaveArrayGpu(Np,PosDivg);
+  float3      *hydromechloadace=SaveArrayGpu(Np,HydroMechLoadAceg);
   //==mdbr
   tsymatrix3f* sigma = SaveArrayGpu(Np, Sigmag);
   float* kplastic = SaveArrayGpu(Np, Kplasticg);
@@ -474,6 +482,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(FSTypeg);
   ArraysGpu->Free(FSNormalg);
   ArraysGpu->Free(PosDivg);
+  ArraysGpu->Free(HydroMechLoadAceg);
   //-mdbr
   ArraysGpu->Free(Sigmag);
   ArraysGpu->Free(Kplasticg);
@@ -511,6 +520,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(fstype)     FSTypeg     =ArraysGpu->ReserveUint();
   if(fsnormal)   FSNormalg   =ArraysGpu->ReserveFloat3();
   if(posdiv)     PosDivg     =ArraysGpu->ReserveFloat();
+  if(hydromechloadace)HydroMechLoadAceg=ArraysGpu->ReserveFloat3();
   //--mdbr
   if(sigma)      Sigmag = ArraysGpu->ReserveSymatrix3f();
   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
@@ -544,6 +554,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,fstype,FSTypeg);
   RestoreArrayGpu(Np,fsnormal,FSNormalg);
   RestoreArrayGpu(Np,posdiv,PosDivg);
+  RestoreArrayGpu(Np,hydromechloadace,HydroMechLoadAceg);
   //---mdbr
   RestoreArrayGpu(Np,sigma,Sigmag);
   RestoreArrayGpu(Np,kplastic,Kplasticg);
@@ -611,6 +622,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
     PorePressg=ArraysGpu->ReserveFloat();
     PorePress0g=ArraysGpu->ReserveFloat();
     PorePressRateg=ArraysGpu->ReserveFloat();
+    HydroMechLoadAceg=ArraysGpu->ReserveFloat3();
   }
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
     SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
@@ -776,6 +788,8 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   cudaMemcpy(Posz   ,Poszg   +pini,sizeof(double)  *n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Velrhop,Velrhopg+pini,sizeof(float4)  *n,cudaMemcpyDeviceToHost);
   if(AuxFSType && FSTypeg)cudaMemcpy(AuxFSType,FSTypeg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
+  if(AuxFSNormal && FSNormalg)cudaMemcpy(AuxFSNormal,FSNormalg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
+  if(AuxHydroMechLoadAce && HydroMechLoadAceg)cudaMemcpy(AuxHydroMechLoadAce,HydroMechLoadAceg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
   if(HydroMech && PorePressg && PorePress0g){
     cudaMemcpy(PorePress,PorePressg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
     cudaMemcpy(PorePress0,PorePress0g+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
@@ -799,6 +813,8 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         Velrhop[p-ndel]=Velrhop[p];
         Code[p-ndel]   =Code[p];
         if(AuxFSType)AuxFSType[p-ndel]=AuxFSType[p];
+        if(AuxFSNormal)AuxFSNormal[p-ndel]=AuxFSNormal[p];
+        if(AuxHydroMechLoadAce)AuxHydroMechLoadAce[p-ndel]=AuxHydroMechLoadAce[p];
         if(HydroMech && PorePress && PorePress0){
           PorePress[p-ndel]=PorePress[p];
           PorePress0[p-ndel]=PorePress0[p];
@@ -1044,37 +1060,93 @@ void JSphGpu::ComputeFreeSurfaceTracking(){
 }
 
 //==============================================================================
-/// Returns true when drained pore pressure is active on free surfaces.
+/// Returns true when the drained pore-pressure boundary is active.
 //==============================================================================
-bool JSphGpu::IsHydroMechFreeSurfaceDrainageActive()const{
-  return(HydroMech && HydroMechFreeSurfaceDrainage && TimeStep>=HydroMechFreeSurfaceDrainageStartTime);
+bool JSphGpu::IsHydroMechDrainageActive()const{
+  return(HydroMech && HydroMechDrainage && TimeStep>=HydroMechDrainageStartTime);
 }
 
 //==============================================================================
-/// Enforces drained pore pressure on tracked free-surface particles.
+/// Enforces drained pore pressure on selected boundary particles.
 //==============================================================================
 void JSphGpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressg || !FSTypeg)return;
-  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechFreeSurfaceDrainageActive(),Codeg,FSTypeg,PorePressg);
+  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechDrainageMode
+    ,HydroMechDrainageCenter,HydroMechDrainageRadius,HydroMechDrainageThickness,Simulate2D
+    ,Codeg,FSTypeg,Posxyg,Poszg,PorePressg);
   Check_CudaErroor("Failed applying free-surface pore pressure.");
 }
 
 //==============================================================================
-/// Applies q0 ramp surcharge as a vertical acceleration on upward free-surface soil.
+/// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || !HydroMechTopLoad || !Aceg || !FSTypeg || !FSNormalg)return;
+  if(!HydroMech || !HydroMechTopLoad || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
   const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
-  const double por=double(SoilCte.Porosity);
-  const double rhol=double(SoilCte.PoreWaterRho);
-  const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
-  const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
-  const double denom=rhomix*double(Dp);
-  if(q<=0 || denom<=0)return;
-  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,-float(q/denom),Codeg,FSTypeg,FSNormalg,Aceg);
+  if(q<=0)return;
+  float accmag=0;
+  if(HydroMechTopLoadMode==HMLOAD_SphereNormal && !Simulate2D){
+    if(MassFluid<=0)return;
+    if(!HydroMechSphereLoadAreaReady){
+      cudaMemcpy(Posxy,Posxyg,sizeof(double2)*Np,cudaMemcpyDeviceToHost);
+      cudaMemcpy(Posz,Poszg,sizeof(double)*Np,cudaMemcpyDeviceToHost);
+      cudaMemcpy(Code,Codeg,sizeof(typecode)*Np,cudaMemcpyDeviceToHost);
+      cudaMemcpy(AuxFSType,FSTypeg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
+      Check_CudaErroor("Failed copying data for hydromechanical spherical top-load diagnostics.");
+
+      const double pi=3.14159265358979323846;
+      unsigned nfs=0;
+      double sumr=0,sumnx=0,sumny=0,sumnz=0;
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3)){
+        const double dx=Posxy[p].x-HydroMechTopLoadCenter.x;
+        const double dy=Posxy[p].y-HydroMechTopLoadCenter.y;
+        const double dz=Posz[p]-HydroMechTopLoadCenter.z;
+        const double r=sqrt(dx*dx+dy*dy+dz*dz);
+        if(r>1e-12){
+          nfs++;
+          sumr+=r;
+          sumnx+=dx/r;
+          sumny+=dy/r;
+          sumnz+=dz/r;
+        }
+      }
+      if(!nfs)return;
+      HydroMechSphereLoadAreaReady=true;
+      HydroMechSphereLoadSurfaceCount=nfs;
+      HydroMechSphereLoadRadius=sumr/double(nfs);
+      HydroMechSphereLoadArea=4.0*pi*HydroMechSphereLoadRadius*HydroMechSphereLoadRadius;
+      HydroMechSphereLoadParticleArea=HydroMechSphereLoadArea/double(nfs);
+      const double sumainx=HydroMechSphereLoadParticleArea*sumnx;
+      const double sumainy=HydroMechSphereLoadParticleArea*sumny;
+      const double sumainz=HydroMechSphereLoadParticleArea*sumnz;
+      const double residual=sqrt(sumainx*sumainx+sumainy*sumainy+sumainz*sumainz)/HydroMechSphereLoadArea;
+      const double sumfx=-q0*sumainx;
+      const double sumfy=-q0*sumainy;
+      const double sumfz=-q0*sumainz;
+      const double sumfmag=sqrt(sumfx*sumfx+sumfy*sumfy+sumfz*sumfz);
+      const double totalscalar=q0*HydroMechSphereLoadArea;
+      const double accfull=q0*HydroMechSphereLoadParticleArea/double(MassFluid);
+      Log->Printf("Hydromechanics: SphereNormal area load uses %u surface particles, R_eff=%g, A_sum=%g, 4*pi*R_eff^2=%g, A_i=%g."
+        ,HydroMechSphereLoadSurfaceCount,HydroMechSphereLoadRadius,HydroMechSphereLoadArea,HydroMechSphereLoadArea,HydroMechSphereLoadParticleArea);
+      Log->Printf("Hydromechanics: SphereNormal area load diagnostics at q0=%g: scalar_force=%g, vector_sum_F=(%g,%g,%g), |sumF|=%g, residual=|sum(A_i*n_i)|/sum(A_i)=%g, acc_range=[%g,%g]."
+        ,q0,totalscalar,sumfx,sumfy,sumfz,sumfmag,residual,accfull,accfull);
+    }
+    accmag=float(q*HydroMechSphereLoadParticleArea/double(MassFluid));
+  }
+  else{
+    const double por=double(SoilCte.Porosity);
+    const double rhol=double(SoilCte.PoreWaterRho);
+    const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
+    const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
+    const double denom=rhomix*double(Dp);
+    if(denom<=0)return;
+    accmag=float(q/denom);
+  }
+  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag,HydroMechTopLoadCenter
+    ,Codeg,FSTypeg,FSNormalg,Posxyg,Poszg,Aceg,HydroMechLoadAceg);
   Check_CudaErroor("Failed applying hydromechanical top load.");
 }
 
@@ -1105,7 +1177,8 @@ void JSphGpu::ShepardRegularizePorePressure(){
   if(!HydroMech || !PoreShepardRegularization || !PorePressg || !PorePress0g || !PoreShepardInterval || !DivData.beginendcell)return;
   float *porepressnew=ArraysGpu->ReserveFloat();
   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
-  cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechFreeSurfaceDrainageActive()
+  cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
+    ,HydroMechDrainageMode,HydroMechDrainageCenter,HydroMechDrainageRadius,HydroMechDrainageThickness
     ,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,PorePress0g,PorePressg,porepressnew);
   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
   ArraysGpu->Free(porepressnew); porepressnew=NULL;
@@ -1253,6 +1326,7 @@ void JSphGpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   cudaMemset(Arg,0,sizeof(float)*np);                                    //Arg[]=0
   if(Deltag)cudaMemset(Deltag,0,sizeof(float)*np);                       //Deltag[]=0
   cudaMemset(Aceg,0,sizeof(tfloat3)*np);                                 //Aceg[]=(0,0,0)
+  if(HydroMechLoadAceg)cudaMemset(HydroMechLoadAceg,0,sizeof(float3)*np); //HydroMechLoadAceg[]=(0,0,0)
   if(NoPenShiftg)cudaMemset(NoPenShiftg,0,sizeof(float4)*np);             //NoPenShiftg[]=(0,0,0,0)
   if(SpsGradvelg)cudaMemset(SpsGradvelg+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelg[]=(0,0,0,0,0,0).
   //====mdbr
