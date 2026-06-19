@@ -5,7 +5,7 @@ Case: `CaseSelfWeightConsolidation_Scenario2_Def.xml`
 Run mode:
 
 - CPU release solver
-- `HydroMechInitMode=AnalyticalSelfWeight1D`
+- `HydroMechInitMode=3` (`AnalyticalSelfWeight1D`)
 - `Gravity=(0, 0, -9.81)`
 - `TimeMax=3.85 s`
 - `TimeOut=0.02 s`

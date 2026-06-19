@@ -6,7 +6,7 @@
 
 <case>
 
-	<!-- Section: Elastoplastic soil material parameters. -->
+	<!-- Section: Elastoplastic soil material and pore-water parameters. -->
 	<!-- Location in real cases: <case><execution><special><soils>...</soils>. -->
 	<!-- Angles are given in degrees in XML and converted to radians internally. -->
 	<!-- ModulusK and ModulusG are computed internally from ModulusE and PRvs. -->
@@ -25,6 +25,29 @@
 				<ModulusE value="1.0e6" comment="Young modulus of the soil skeleton" units_comment="Pa" />
 				<PRvs value="0.3" comment="Poisson ratio of the soil skeleton" />
 			</soils>
+
+			<!-- Hydromechanical water phase, pore-pressure numerics, initialization, external loading and drainage control. -->
+			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
+			<hydromechanics>
+				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+				<PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
+				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw" units_comment="Pa" />
+				<Porosity value="0.3" comment="Porosity used by u-pw" />
+				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity" units_comment="m/s" />
+				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step" />
+				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure" />
+				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization" />
+				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D" />
+				<!-- Required only when HydroMechInitMode=2. -->
+				<!-- <HydroMechInitZ value="1.0" comment="Constant water-table/init elevation" units_comment="m" /> -->
+				<!-- Required only for spherical loading. -->
+				<!-- <HydroMechSphereCenter x="0" y="0" z="0" comment="Sphere center for SphereNormal load" units_comment="m" /> -->
+				<HydroMechTopLoadMode value="None" comment="None, TopVertical or SphereNormal" />
+				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
+				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time" units_comment="s" />
+				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure" />
+				<HydroMechDrainageStartTime value="0" comment="Drainage start time" units_comment="s" />
+			</hydromechanics>
 		</special>
 	</execution>
 
@@ -53,7 +76,11 @@
 			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
 			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
 			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
+			<parameter key="MDBCCorrector" value="1" comment="mDBC correction in Symplectic corrector 0:predictor only, 1:predictor and corrector (default=1)" />
 			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
+			<parameter key="MDBCThreshold" value="0" comment="Kernel support limit for mDBC correction; 0 applies the default full support, valid range [0,1]" />
+			<!-- Optional for SlipMode=2 or 3. -->
+			<!-- <parameter key="NoPenetration" value="1" comment="Enable mDBC2 no-penetration correction for no-slip/free-slip mDBC" /> -->
 
 			<!-- Native DualSPHysics stabilization options remain available and independent. -->
 			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />

@@ -99,8 +99,14 @@
     <execution>
         <special>
             <soils>
+                <phi value="33" comment="Friction angle" />
+                <coh value="100e3" comment="High cohesion to keep the verification elastic" />
+                <dlt value="0" comment="Dilatancy angle" />
+                <ModulusE value="2e6" comment="Young's modulus" units_comment="Pa" />
+                <PRvs value="0.3" comment="Poisson ratio" />
+            </soils>
+            <hydromechanics>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
-                <HydroMechInitMode value="None" comment="Scenario 1 Stage 1: do not initialise pore pressure; self-weight generates the undrained response" />
                 <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
                 <Porosity value="0.3" comment="Porosity n" />
@@ -108,12 +114,8 @@
                 <PoreDtSafety value="0.1" comment="Allows the fixed supporting-material time step when seepage is enabled" />
                 <PoreShepardRegularization value="1" comment="Enabled to suppress odd-even pore-pressure oscillation during Stage 1" />
                 <PoreShepardInterval value="40" comment="Apply Shepard pore-pressure regularisation every 40 steps" />
-                <phi value="33" comment="Friction angle" />
-                <coh value="100e3" comment="High cohesion to keep the verification elastic" />
-                <dlt value="0" comment="Dilatancy angle" />
-                <ModulusE value="2e6" comment="Young's modulus" units_comment="Pa" />
-                <PRvs value="0.3" comment="Poisson ratio" />
-            </soils>
+                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
+            </hydromechanics>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

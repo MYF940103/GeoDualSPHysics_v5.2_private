@@ -202,19 +202,13 @@ protected:
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
-  double WaterTableZ;         ///<Constant water-table elevation for HMINIT_ConstantZ. //mdbr
+  double HydroMechInitZ;      ///<Constant initialization elevation for HMINIT_ConstantZ. //mdbr
   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
   tdouble3 HydroMechSphereCenter; ///<Default sphere center for spherical hydromechanical operations. //mdbr
-  TpHydroMechDrainageMode HydroMechDrainageMode; ///<Mode used to select drained pore-pressure particles. //mdbr
-  tdouble3 HydroMechDrainageCenter; ///<Center override used by HMDRN_SphereSurface. //mdbr
-  double HydroMechDrainageRadius; ///<Radius used by HMDRN_SphereSurface [m]. //mdbr
-  double HydroMechDrainageThickness; ///<Inward shell thickness used by HMDRN_SphereSurface [m]. //mdbr
-  bool HydroMechTopLoad;      ///<Applies a q0 ramp load to upward free-surface soil particles (default=0). //mdbr
-  TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute HydroMechTopLoad. //mdbr
+  TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
-  double HydroMechTopLoadRampTime; ///<Ramp time for HydroMechTopLoad [s]. //mdbr
-  tdouble3 HydroMechTopLoadCenter; ///<Center override used by HMLOAD_SphereNormal. //mdbr
+  double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
   bool HydroMechSphereLoadAreaReady; ///<Cached area-normalized spherical top-load data is ready. //mdbr
   unsigned HydroMechSphereLoadSurfaceCount; ///<Number of surface particles used for area-normalized spherical load. //mdbr
   double HydroMechSphereLoadRadius; ///<Effective radius from loaded surface particles [m]. //mdbr
@@ -556,7 +550,6 @@ public:
   static std::string GetDPName(TpDPCtes dpctes);
   static std::string GetHydroMechInitModeName(TpHydroMechInitMode initmode);
   static std::string GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode);
-  static std::string GetHydroMechDrainageModeName(TpHydroMechDrainageMode drainmode);
   std::string GetDDTName(TpDensity tdensity)const;
 
   std::string GetDDTConfig()const;

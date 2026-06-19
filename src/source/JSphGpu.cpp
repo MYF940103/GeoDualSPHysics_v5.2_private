@@ -1071,9 +1071,7 @@ bool JSphGpu::IsHydroMechDrainageActive()const{
 //==============================================================================
 void JSphGpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressg || !FSTypeg)return;
-  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechDrainageMode
-    ,HydroMechDrainageCenter,HydroMechDrainageRadius,HydroMechDrainageThickness,Simulate2D
-    ,Codeg,FSTypeg,Posxyg,Poszg,PorePressg);
+  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),Codeg,FSTypeg,PorePressg);
   Check_CudaErroor("Failed applying free-surface pore pressure.");
 }
 
@@ -1081,7 +1079,7 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
 /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || !HydroMechTopLoad || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
+  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1101,9 +1099,9 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
       unsigned nfs=0;
       double sumr=0,sumnx=0,sumny=0,sumnz=0;
       for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3)){
-        const double dx=Posxy[p].x-HydroMechTopLoadCenter.x;
-        const double dy=Posxy[p].y-HydroMechTopLoadCenter.y;
-        const double dz=Posz[p]-HydroMechTopLoadCenter.z;
+        const double dx=Posxy[p].x-HydroMechSphereCenter.x;
+        const double dy=Posxy[p].y-HydroMechSphereCenter.y;
+        const double dz=Posz[p]-HydroMechSphereCenter.z;
         const double r=sqrt(dx*dx+dy*dy+dz*dz);
         if(r>1e-12){
           nfs++;
@@ -1145,7 +1143,7 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
     if(denom<=0)return;
     accmag=float(q/denom);
   }
-  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag,HydroMechTopLoadCenter
+  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag,HydroMechSphereCenter
     ,Codeg,FSTypeg,FSNormalg,Posxyg,Poszg,Aceg,HydroMechLoadAceg);
   Check_CudaErroor("Failed applying hydromechanical top load.");
 }
@@ -1178,7 +1176,6 @@ void JSphGpu::ShepardRegularizePorePressure(){
   float *porepressnew=ArraysGpu->ReserveFloat();
   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
-    ,HydroMechDrainageMode,HydroMechDrainageCenter,HydroMechDrainageRadius,HydroMechDrainageThickness
     ,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,PorePress0g,PorePressg,porepressnew);
   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
   ArraysGpu->Free(porepressnew); porepressnew=NULL;
@@ -1235,7 +1232,7 @@ void JSphGpu::InitHydroMechPorePressure(){
     topz+=double(Dp)*0.5;
   }
   for(unsigned p=0;p<Np;p++){
-    double zwt=WaterTableZ;
+    double zwt=HydroMechInitZ;
     if(HydroMechInitMode==HMINIT_FreeSurface){
       const double psx=Posxy[p].x;
       const double psy=Posxy[p].y;

@@ -17,9 +17,9 @@
         <geometry>
             <predefinition>
                 <newvarcte Dp="0.10" />
-                <newvarcte Height="5.0" />
-                <newvarcte SoilTopLength="20.0" />
-                <newvarcte SoilBaseLength="25.0" />
+                <newvarcte Height="8.0" />
+                <newvarcte SoilTopLength="16.0" />
+                <newvarcte SoilBaseLength="17.0" />
                 <newvarcte DomainLength="50.0" />
                 <newvar Hdp="Dp/2" />
             </predefinition>
@@ -77,7 +77,7 @@
         <special>
             <soils>
                 <phi value="0" comment="Sensitive clay: phi = phi_r = 0" />
-                <coh value="25000" comment="Peak cohesion cp = 25 kPa" units_comment="Pa" />
+                <coh value="25000" comment="Peak cohesion cp = 25 kPa, calibrated with SoilTriggerFos in failure" units_comment="Pa" />
                 <dlt value="0" comment="Dilatancy angle" />
                 <ModulusE value="25e6" comment="Young's modulus E = 25 MPa" units_comment="Pa" />
                 <PRvs value="0.3" comment="Poisson ratio from the u-pw reference" />
@@ -89,6 +89,9 @@
             </soils>
             <hydromechanics>
                 <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation in the failure stage" />
+                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
+                <HydroMechDrainage value="1" comment="Keep FSType 2/3 particles drained during failure" />
+                <HydroMechDrainageStartTime value="0" units_comment="seconds" />
                 <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
                 <Porosity value="0.4" comment="Porosity n" />
@@ -96,9 +99,6 @@
                 <PoreDtSafety value="0.1" comment="Pore-pressure diffusion time-step safety factor" />
                 <PoreShepardRegularization value="1" comment="Enable pore-pressure Shepard regularization during failure" />
                 <PoreShepardInterval value="40" comment="Regularize pore pressure every 40 steps" />
-                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
-                <HydroMechDrainage value="1" comment="Keep FSType 2/3 particles drained during failure" />
-                <HydroMechDrainageStartTime value="0" units_comment="seconds" />
             </hydromechanics>
         </special>
         <parameters>

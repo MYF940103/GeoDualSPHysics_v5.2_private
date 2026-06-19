@@ -11,13 +11,12 @@ if /i "%~1" == "-force" (
 set tmax=%~1
 set tout=%~2
 
-set name=CaseRetroSlope_u_pw_prestress
+set name=CaseRetroSlope8m_u_pw_prestress
 set dirout=%name%_out
 set diroutdata=%dirout%\data
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
-set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
-if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64_debug.exe"
+set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress
 set runextra=
@@ -40,7 +39,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 %gencase% %name%_Def "%dirout%/%name%" -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc_noslip:nopen "%dirout%/%name%" "%dirout%" -dirdataout data -svres -svextraparts:1 %runextra%
+%dualsphysicsgpu% -gpu -mdbc_noslip:nopen "%dirout%/%name%" "%dirout%" -dirdataout data -svres -svextraparts:1 %runextra%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :postprocessing
@@ -51,7 +50,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
-echo u-pw coupled prestress CPU stage completed.
+echo u-pw 8m coupled prestress GPU stage completed.
 echo Default restart PART for failure stage: %diroutdata%\Part_0050.bi4
 popd
 if "%force%" == "1" exit /b 0
@@ -59,7 +58,7 @@ pause
 exit /b 0
 
 :fail
-echo u-pw coupled prestress CPU stage aborted.
+echo u-pw 8m coupled prestress GPU stage aborted.
 popd
 if "%force%" == "1" exit /b 1
 pause

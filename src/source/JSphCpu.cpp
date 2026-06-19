@@ -182,7 +182,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   if(HydroMech){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1);//-HydroMechLoadAce
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-HydroMechLoadAce and SaveData temporary array
   }
   //======
   if(TStep==STEP_Verlet){
@@ -1116,15 +1116,7 @@ bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsign
 /// Returns true when a particle belongs to the active drained pore-pressure boundary.
 //==============================================================================
 bool JSphCpu::IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const{
-  if(!code || !CODE_IsFluid(code[p]))return(false);
-  if(HydroMechDrainageMode==HMDRN_SphereSurface){
-    if(!pos)return(false);
-    const double dx=pos[p].x-HydroMechDrainageCenter.x;
-    const double dy=(Simulate2D? 0: pos[p].y-HydroMechDrainageCenter.y);
-    const double dz=pos[p].z-HydroMechDrainageCenter.z;
-    const double r=sqrt(dx*dx+dy*dy+dz*dz);
-    return(r>=HydroMechDrainageRadius-HydroMechDrainageThickness && r<=HydroMechDrainageRadius+HydroMechDrainageThickness);
-  }
+  (void)pos;
   return(IsFreeSurfaceParticle(p,code,fstype));
 }
 
@@ -1147,7 +1139,7 @@ bool JSphCpu::IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned
 /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || !HydroMechTopLoad || !Acec || !FSTypec || !FSNormalc)return;
+  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || !Acec || !FSTypec || !FSNormalc)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1161,9 +1153,9 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
       unsigned nfs=0;
       double sumr=0,sumnx=0,sumny=0,sumnz=0;
       for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && IsFreeSurfaceParticle(p,Codec,FSTypec)){
-        const double dx=Posc[p].x-HydroMechTopLoadCenter.x;
-        const double dy=Posc[p].y-HydroMechTopLoadCenter.y;
-        const double dz=Posc[p].z-HydroMechTopLoadCenter.z;
+        const double dx=Posc[p].x-HydroMechSphereCenter.x;
+        const double dy=Posc[p].y-HydroMechSphereCenter.y;
+        const double dz=Posc[p].z-HydroMechSphereCenter.z;
         const double r=sqrt(dx*dx+dy*dy+dz*dz);
         if(r>1e-12){
           nfs++;
@@ -1218,23 +1210,11 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
         if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
       }
     }
-    else if(HydroMechTopLoadMode==HMLOAD_FreeSurfaceNormal){
-      if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec)){
-        const tfloat3 n=FSNormalc[p];
-        const double nlen=sqrt(double(n.x)*double(n.x)+double(n.y)*double(n.y)+double(n.z)*double(n.z));
-        if(nlen>1e-12){
-          const float scale=-accmag/float(nlen);
-          const tfloat3 load=TFloat3(scale*n.x,scale*n.y,scale*n.z);
-          Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
-          if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
-        }
-      }
-    }
     else if(HydroMechTopLoadMode==HMLOAD_SphereNormal){
       if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec)){
-        const double dx=Posc[p].x-HydroMechTopLoadCenter.x;
-        const double dy=(Simulate2D? 0: Posc[p].y-HydroMechTopLoadCenter.y);
-        const double dz=Posc[p].z-HydroMechTopLoadCenter.z;
+        const double dx=Posc[p].x-HydroMechSphereCenter.x;
+        const double dy=(Simulate2D? 0: Posc[p].y-HydroMechSphereCenter.y);
+        const double dz=Posc[p].z-HydroMechSphereCenter.z;
         const double r=sqrt(dx*dx+dy*dy+dz*dz);
         if(r>1e-12){
           const float scale=-accmag/float(r);
@@ -1285,7 +1265,7 @@ void JSphCpu::InitHydroMechState(){
     topz+=double(Dp)*0.5;
   }
   for(unsigned p=0;p<Np;p++){
-    double zwt=WaterTableZ;
+    double zwt=HydroMechInitZ;
     if(HydroMechInitMode==HMINIT_FreeSurface){
       const tdouble3 ps=Posc[p];
       double distmin=DBL_MAX;

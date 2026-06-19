@@ -146,6 +146,7 @@ void JSphCpuSingle::ConfigDomain(){
     }
     if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
     if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
+    if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*Np);
   }
   //=========
   //-Computes radius of floating bodies.

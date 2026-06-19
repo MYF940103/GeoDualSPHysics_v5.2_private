@@ -27,7 +27,7 @@ set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set partvtkout="%dirbin%/PartVTKOut_win64.exe"
-set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+soili1,+soilj2,+soilsigmamax,+soilyieldf,+soilcoh,+fstype,+porepress,+porepress0,+excessporepress
+set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress
 set runextra=
 if not "%tmax%" == "" set runextra=%runextra% -tmax:%tmax%
 if not "%tout%" == "" set runextra=%runextra% -tout:%tout%

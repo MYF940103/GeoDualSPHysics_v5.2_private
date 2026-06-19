@@ -205,19 +205,13 @@ void JSph::InitVars(){
   ArtificialStressExpAuto=true;
   HydroMech=false;
   HydroMechInitMode=HMINIT_None;
-  WaterTableZ=0;
+  HydroMechInitZ=0;
   HydroMechDrainage=true;
   HydroMechDrainageStartTime=0;
   HydroMechSphereCenter=TDouble3(0);
-  HydroMechDrainageMode=HMDRN_FreeSurface;
-  HydroMechDrainageCenter=TDouble3(0);
-  HydroMechDrainageRadius=0;
-  HydroMechDrainageThickness=0;
-  HydroMechTopLoad=false;
-  HydroMechTopLoadMode=HMLOAD_TopVertical;
+  HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
-  HydroMechTopLoadCenter=TDouble3(0);
   HydroMechSphereLoadAreaReady=false;
   HydroMechSphereLoadSurfaceCount=0;
   HydroMechSphereLoadRadius=0;
@@ -3259,20 +3253,9 @@ std::string JSph::GetHydroMechInitModeName(TpHydroMechInitMode initmode){
 //==============================================================================
 std::string JSph::GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode){
   string tx;
-  if(loadmode==HMLOAD_TopVertical)tx="TopVertical";
-  else if(loadmode==HMLOAD_FreeSurfaceNormal)tx="FreeSurfaceNormal";
+  if(loadmode==HMLOAD_None)tx="None";
+  else if(loadmode==HMLOAD_TopVertical)tx="TopVertical";
   else if(loadmode==HMLOAD_SphereNormal)tx="SphereNormal";
-  else tx="???";
-  return(tx);
-}
-
-//==============================================================================
-/// Returns name of hydromechanical drainage mode in text format.
-//==============================================================================
-std::string JSph::GetHydroMechDrainageModeName(TpHydroMechDrainageMode drainmode){
-  string tx;
-  if(drainmode==HMDRN_FreeSurface)tx="FreeSurface";
-  else if(drainmode==HMDRN_SphereSurface)tx="SphereSurface";
   else tx="???";
   return(tx);
 }
@@ -3432,6 +3415,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-XML node for soil parameters.
   TiXmlNode* solidNode = sxml->GetNodeSimple("case.execution.special.soils");
   const TiXmlElement* solidEle=solidNode->ToElement();
+  //-Hydromechanical initialization/loading options live in their own block.
+  TiXmlNode* hydroNode=sxml->GetNodeSimple("case.execution.special.hydromechanics",true);
+  TiXmlNode* hydroReadNode=(hydroNode? hydroNode: solidNode);
+  const TiXmlElement* hydroEle=(hydroNode? hydroNode->ToElement(): solidEle);
 
   //-Soil strength parameters.
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
@@ -3459,62 +3446,59 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
   SoilCte.PRvs=sxml->ReadElementFloat(solidNode,"PRvs","value",true);
 
-  //-Hydromechanical switches and pore-pressure initialization options.
-  HydroMech=sxml->ReadElementBool(solidNode,"HydroMech","value",true,false);
-  const bool hasinitmode=sxml->ExistsElement(solidEle,"HydroMechInitMode","value");
-  const string initmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,(hasinitmode? "HydroMechInitMode": "WaterTableMode"),"value",true,"None"));
+  //-Hydromechanical switches, pore-pressure initialization, loading and drainage options.
+  HydroMech=sxml->ReadElementBool(hydroReadNode,"HydroMech","value",true,false);
+  const string initmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechInitMode","value",true,"None"));
   if(initmodestr=="none" || initmodestr=="0")HydroMechInitMode=HMINIT_None;
   else if(initmodestr=="freesurface" || initmodestr=="free_surface" || initmodestr=="1")HydroMechInitMode=HMINIT_FreeSurface;
   else if(initmodestr=="constantz" || initmodestr=="constant_z" || initmodestr=="2")HydroMechInitMode=HMINIT_ConstantZ;
   else if(initmodestr=="analyticalselfweight1d" || initmodestr=="analytical_self_weight_1d" || initmodestr=="selfweight1d" || initmodestr=="3")HydroMechInitMode=HMINIT_AnalyticalSelfWeight1D;
   else Run_Exceptioon("HydroMechInitMode must be None, FreeSurface, ConstantZ or AnalyticalSelfWeight1D.");
-  WaterTableZ=sxml->ReadElementDouble(solidNode,(sxml->ExistsElement(solidEle,"HydroMechInitZ","value")? "HydroMechInitZ": "WaterTableZ"),"value",true,0);
-  const bool hasdrainage=sxml->ExistsElement(solidEle,"HydroMechDrainage","value");
-  HydroMechDrainage=sxml->ReadElementBool(solidNode,(hasdrainage? "HydroMechDrainage": "HydroMechFreeSurfaceDrainage"),"value",true,true);
-  const bool hasdrainagestart=sxml->ExistsElement(solidEle,"HydroMechDrainageStartTime","value");
-  HydroMechDrainageStartTime=sxml->ReadElementDouble(solidNode,(hasdrainagestart? "HydroMechDrainageStartTime": "HydroMechFreeSurfaceDrainageStartTime"),"value",true,0);
-  HydroMechSphereCenter=sxml->ReadElementDouble3(solidNode,"HydroMechSphereCenter",true,TDouble3(0));
-  const string drainmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,"HydroMechDrainageMode","value",true,"FreeSurface"));
-  if(drainmodestr=="freesurface" || drainmodestr=="free_surface" || drainmodestr=="0")HydroMechDrainageMode=HMDRN_FreeSurface;
-  else if(drainmodestr=="spheresurface" || drainmodestr=="sphere_surface" || drainmodestr=="sphere" || drainmodestr=="1")HydroMechDrainageMode=HMDRN_SphereSurface;
-  else Run_Exceptioon("HydroMechDrainageMode must be FreeSurface or SphereSurface.");
-  HydroMechDrainageCenter=sxml->ReadElementDouble3(solidNode,"HydroMechDrainageCenter",true,HydroMechSphereCenter);
-  HydroMechDrainageRadius=sxml->ReadElementDouble(solidNode,"HydroMechDrainageRadius","value",true,0);
-  HydroMechDrainageThickness=sxml->ReadElementDouble(solidNode,"HydroMechDrainageThickness","value",true,double(Dp));
-  HydroMechTopLoad=sxml->ReadElementBool(solidNode,"HydroMechTopLoad","value",true,false);
-  const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(solidNode,"HydroMechTopLoadMode","value",true,"TopVertical"));
-  if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_TopVertical;
-  else if(toploadmodestr=="freesurfacenormal" || toploadmodestr=="free_surface_normal" || toploadmodestr=="normal" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_FreeSurfaceNormal;
+  HydroMechInitZ=sxml->ReadElementDouble(hydroReadNode,"HydroMechInitZ","value",true,0);
+  HydroMechDrainage=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainage","value",true,true);
+  HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
+  HydroMechSphereCenter=sxml->ReadElementDouble3(hydroReadNode,"HydroMechSphereCenter",true,TDouble3(0));
+  const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechTopLoadMode","value",true,"None"));
+  if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
+  else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
   else if(toploadmodestr=="spherenormal" || toploadmodestr=="sphere_normal" || toploadmodestr=="radial" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_SphereNormal;
-  else Run_Exceptioon("HydroMechTopLoadMode must be TopVertical, FreeSurfaceNormal or SphereNormal.");
-  HydroMechTopLoadQ0=sxml->ReadElementFloat(solidNode,"HydroMechTopLoadQ0","value",true,0.f);
-  HydroMechTopLoadRampTime=sxml->ReadElementDouble(solidNode,"HydroMechTopLoadRampTime","value",true,0);
-  HydroMechTopLoadCenter=sxml->ReadElementDouble3(solidNode,"HydroMechTopLoadCenter",true,HydroMechSphereCenter);
+  else Run_Exceptioon("HydroMechTopLoadMode must be None, TopVertical or SphereNormal.");
+  HydroMechTopLoadQ0=sxml->ReadElementFloat(hydroReadNode,"HydroMechTopLoadQ0","value",true,0.f);
+  HydroMechTopLoadRampTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechTopLoadRampTime","value",true,0);
 
   //-Pore-water material properties and pore-pressure numerical controls.
-  SoilCte.PoreWaterRho=sxml->ReadElementFloat(solidNode,"PoreWaterRho","value",true,1000.f);
-  SoilCte.PoreWaterBulkModulus=sxml->ReadElementFloat(solidNode,"PoreWaterBulkModulus","value",true,0.f);
-  SoilCte.Porosity=sxml->ReadElementFloat(solidNode,"Porosity","value",true,0.f);
-  SoilCte.HydraulicConductivity=sxml->ReadElementFloat(solidNode,"HydraulicConductivity","value",true,0.f);
-  PoreDtSafety=sxml->ReadElementFloat(solidNode,"PoreDtSafety","value",true,0.1f);
-  PoreShepardRegularization=sxml->ReadElementBool(solidNode,"PoreShepardRegularization","value",true,false);
-  PoreShepardInterval=sxml->ReadElementUnsigned(solidNode,"PoreShepardInterval","value",true,30);
+  const auto ReadHydroFloat=[&](const std::string &name,float valdef)->float{
+    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+    return(sxml->ReadElementFloat(node,name,"value",true,valdef));
+  };
+  const auto ReadHydroBool=[&](const std::string &name,bool valdef)->bool{
+    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+    return(sxml->ReadElementBool(node,name,"value",true,valdef));
+  };
+  const auto ReadHydroUnsigned=[&](const std::string &name,unsigned valdef)->unsigned{
+    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+    return(sxml->ReadElementUnsigned(node,name,"value",true,valdef));
+  };
+  SoilCte.PoreWaterRho=ReadHydroFloat("PoreWaterRho",1000.f);
+  SoilCte.PoreWaterBulkModulus=ReadHydroFloat("PoreWaterBulkModulus",0.f);
+  SoilCte.Porosity=ReadHydroFloat("Porosity",0.f);
+  SoilCte.HydraulicConductivity=ReadHydroFloat("HydraulicConductivity",0.f);
+  PoreDtSafety=ReadHydroFloat("PoreDtSafety",0.1f);
+  PoreShepardRegularization=ReadHydroBool("PoreShepardRegularization",false);
+  PoreShepardInterval=ReadHydroUnsigned("PoreShepardInterval",30);
 
   //-Input validation.
-  if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(solidEle,"WaterTableZ","value") && !sxml->ExistsElement(solidEle,"HydroMechInitZ","value"))
-    Run_Exceptioon("WaterTableZ or HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
-  if(HydroMech && HydroMechDrainageMode==HMDRN_SphereSurface && HydroMechDrainageRadius<=0)
-    Run_Exceptioon("HydroMechDrainageRadius must be greater than zero when HydroMechDrainageMode=SphereSurface.");
-  if(HydroMech && HydroMechDrainageMode==HMDRN_SphereSurface && HydroMechDrainageThickness<=0)
-    Run_Exceptioon("HydroMechDrainageThickness must be greater than zero when HydroMechDrainageMode=SphereSurface.");
+  if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
+    Run_Exceptioon("HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
   if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
   if(HydroMech){
+    if(!hydroNode)Log->PrintWarning("Hydromechanics options are still defined inside <soils>; move them to <special><hydromechanics>.");
     if(SoilCte.PoreWaterBulkModulus<=0.f)Run_Exceptioon("PoreWaterBulkModulus must be greater than zero when HydroMech is enabled.");
     if(SoilCte.Porosity<=0.f || SoilCte.Porosity>=1.f)Run_Exceptioon("Porosity must be greater than zero and lower than one when HydroMech is enabled.");
     if(SoilCte.HydraulicConductivity<0.f)Run_Exceptioon("HydraulicConductivity must be equal to or greater than zero when HydroMech is enabled.");
     if(HydroMechDrainageStartTime<0)Run_Exceptioon("HydroMechDrainageStartTime must be equal to or greater than zero when HydroMech is enabled.");
-    if(HydroMechTopLoad && HydroMechTopLoadQ0<=0.f)Run_Exceptioon("HydroMechTopLoadQ0 must be greater than zero when HydroMechTopLoad is enabled.");
-    if(HydroMechTopLoad && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoad is enabled.");
+    if(HydroMechTopLoadMode!=HMLOAD_None && HydroMechTopLoadQ0<=0.f)Run_Exceptioon("HydroMechTopLoadQ0 must be greater than zero when HydroMechTopLoadMode is not None.");
+    if(HydroMechTopLoadMode!=HMLOAD_None && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoadMode is not None.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
   }
@@ -3547,24 +3531,16 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
   if(HydroMech){
     Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
-    if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",WaterTableZ);
+    if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",HydroMechInitZ);
     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
-    if(HydroMechDrainageMode==HMDRN_SphereSurface || HydroMechTopLoadMode==HMLOAD_SphereNormal)
+    if(HydroMechTopLoadMode==HMLOAD_SphereNormal)
       Log->Printf("  HydroMechSphereCenter: (%g,%g,%g)",HydroMechSphereCenter.x,HydroMechSphereCenter.y,HydroMechSphereCenter.z);
-    Log->Print(fun::VarStr("  HydroMechDrainageMode", GetHydroMechDrainageModeName(HydroMechDrainageMode)));
-    if(HydroMechDrainageMode==HMDRN_SphereSurface){
-      Log->Printf("  HydroMechDrainageCenter: (%g,%g,%g)",HydroMechDrainageCenter.x,HydroMechDrainageCenter.y,HydroMechDrainageCenter.z);
-      Log->Printf("  HydroMechDrainageRadius: %g",HydroMechDrainageRadius);
-      Log->Printf("  HydroMechDrainageThickness: %g",HydroMechDrainageThickness);
-    }
-    Log->Print(fun::VarStr("  HydroMechTopLoad", (HydroMechTopLoad? "Enabled": "Disabled")));
-    if(HydroMechTopLoad){
-      Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
+    Log->Print("  HydroMechDrainageBoundary: FreeSurface");
+    Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
+    if(HydroMechTopLoadMode!=HMLOAD_None){
       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);
-      if(HydroMechTopLoadMode==HMLOAD_SphereNormal)
-        Log->Printf("  HydroMechTopLoadCenter: (%g,%g,%g)",HydroMechTopLoadCenter.x,HydroMechTopLoadCenter.y,HydroMechTopLoadCenter.z);
     }
     Log->Printf("  PoreWaterRho: %f",ct.PoreWaterRho);
     Log->Printf("  PoreWaterBulkModulus: %g",ct.PoreWaterBulkModulus);

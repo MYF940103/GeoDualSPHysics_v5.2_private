@@ -18,10 +18,10 @@ The strict reference uses a K0 stress initialization followed by gravity loading
 ## Files
 
 - `CaseRetroSlope_u_pw_prestress_Def.xml`
-  Coupled u-pw gravity relaxation. `HydroMechInitMode=FreeSurface` initializes hydrostatic pore pressure, fixed `dt = 1e-6 s` is used, peak strength is used, softening parameters are omitted, and mDBC extra data is saved for restart.
+  Coupled u-pw gravity relaxation. `HydroMechInitMode=1` (`FreeSurface`) initializes hydrostatic pore pressure, fixed `dt = 1e-6 s` is used, peak strength is used, softening parameters are omitted, and mDBC extra data is saved for restart.
 
 - `CaseRetroSlope_u_pw_failure_Def.xml`
-  u-pw failure stage. Restarts from the coupled prestress PART with `HydroMechInitMode=None`, directly inherits `Sigma`, `PorePress` and `PorePress0`, drains `FSType=2/3` free-surface particles, enables pore-pressure Shepard regularization every 40 steps, and enables cohesion softening.
+  u-pw failure stage. Restarts from the coupled prestress PART with `HydroMechInitMode=0` (`None`), directly inherits `Sigma`, `PorePress` and `PorePress0`, drains `FSType=2/3` free-surface particles, enables pore-pressure Shepard regularization every 40 steps, and enables cohesion softening.
 
 ## Run
 

@@ -11,7 +11,7 @@ if /i "%~1" == "-force" (
 set tmax=%~1
 set tout=%~2
 
-set name=CaseRetroSlope_u_pw_prestress
+set name=CaseRetroSlope8m_u_pw_prestress
 set dirout=%name%_out
 set diroutdata=%dirout%\data
 set dirbin=../../../bin/windows
@@ -51,7 +51,7 @@ if not "%ERRORLEVEL%" == "0" goto fail
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
-echo u-pw coupled prestress CPU stage completed.
+echo u-pw 8m coupled prestress CPU stage completed.
 echo Default restart PART for failure stage: %diroutdata%\Part_0050.bi4
 popd
 if "%force%" == "1" exit /b 0
@@ -59,7 +59,7 @@ pause
 exit /b 0
 
 :fail
-echo u-pw coupled prestress CPU stage aborted.
+echo u-pw 8m coupled prestress CPU stage aborted.
 popd
 if "%force%" == "1" exit /b 1
 pause

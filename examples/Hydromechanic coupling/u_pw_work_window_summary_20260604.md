@@ -29,16 +29,20 @@ Important source areas:
 - `source/JSph.h`
   - Hydromechanical controls include:
     - `HydroMech`
-    - `HydroMechInitMode`
-    - `WaterTableZ` / `HydroMechInitZ`
+    - `PoreWaterRho` / `PoreWaterBulkModulus` / `Porosity` / `HydraulicConductivity`
     - `PoreDtSafety`
     - `PoreShepardRegularization`
     - `PoreShepardInterval`
+    - `HydroMechInitMode`
+    - `HydroMechInitZ`
+    - `HydroMechDrainage` / `HydroMechDrainageStartTime`
+    - `HydroMechSphereCenter`
+    - `HydroMechTopLoadMode` / `HydroMechTopLoadQ0` / `HydroMechTopLoadRampTime`
     - `SoilStressRateGradCorr`
 
 - `source/JSph.cpp`
-  - XML parsing reads `HydroMechInitMode`.
-  - Backward-compatible fallback: if `HydroMechInitMode` is absent, it still reads old `WaterTableMode`.
+  - XML parsing reads hydromechanical water-phase/numerical/initialization/loading controls from `<special><hydromechanics>` when present, with legacy `<soils>` fallback during migration.
+  - Old `WaterTableMode`, `WaterTableZ`, `HydroMechDrainageMode`, spherical drainage shell, and independent load/drainage center override interfaces were removed during the Cryer interface cleanup.
   - Supported modes:
     - `None` / `0`
     - `FreeSurface` / `1`
@@ -133,7 +137,7 @@ Scenario 2 is the stronger current verification result.
 
 Setup:
 
-- `HydroMechInitMode=AnalyticalSelfWeight1D`
+- `HydroMechInitMode=3` (`AnalyticalSelfWeight1D`)
 - gravity on: `z=-9.81`
 - retained hydrostatic baseline: `PorePress0` is hydrostatic pressure
 - `PorePress = PorePress0 + excess`

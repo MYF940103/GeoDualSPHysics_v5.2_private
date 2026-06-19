@@ -6,15 +6,15 @@ Date: 2026-06-09
 
 - `k=1e-2`: `CaseTerzaghiConsolidation_q0_PR_full_k1em2_Def.xml`
   - `tL = 0.0001 s`
-  - `HydroMechFreeSurfaceDrainageStartTime = 0.0001 s`
+  - `HydroMechDrainageStartTime = 0.0001 s`
   - `DtFixed = 1e-7 s`
 - `k=1e-3`: `CaseTerzaghiConsolidation_q0_PR_full_k1em3_Def.xml`
   - `tL = 0.01 s`
-  - `HydroMechFreeSurfaceDrainageStartTime = 0.01 s`
+  - `HydroMechDrainageStartTime = 0.01 s`
   - `DtFixed = 1e-6 s`
 - `k=1e-4`: `CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def.xml`
   - `tL = 0.01 s`
-  - `HydroMechFreeSurfaceDrainageStartTime = 0.01 s`
+  - `HydroMechDrainageStartTime = 0.01 s`
   - `DtFixed = 1e-5 s`
 
 ## Latest full-validation metrics

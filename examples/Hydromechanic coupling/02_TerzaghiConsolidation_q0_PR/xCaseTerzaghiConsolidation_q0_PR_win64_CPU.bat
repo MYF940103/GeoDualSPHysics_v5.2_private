@@ -13,7 +13,7 @@ set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
 if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64_debug.exe"
 set partvtk="%dirbin%/PartVTK_win64.exe"
-set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+porepress,+porepress0,+excessporepress
+set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress
 
 if exist %dirout% rd /s /q %dirout%
 if not "%ERRORLEVEL%" == "0" goto fail

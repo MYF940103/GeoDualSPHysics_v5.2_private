@@ -324,16 +324,10 @@ typedef enum{
 
 ///Hydromechanical external load mode.
 typedef enum{
-  HMLOAD_TopVertical=0,       ///<Applies q0 vertically to upward free-surface particles.
-  HMLOAD_FreeSurfaceNormal=1, ///<Applies q0 along the tracked free-surface inward normal.
+  HMLOAD_None=0,              ///<No hydromechanical external load is applied.
+  HMLOAD_TopVertical=1,       ///<Applies q0 vertically to upward free-surface particles.
   HMLOAD_SphereNormal=2       ///<Applies q0 radially inward from a configured sphere center.
 }TpHydroMechLoadMode;
-
-///Hydromechanical drained pore-pressure boundary mode.
-typedef enum{
-  HMDRN_FreeSurface=0,     ///<Drains particles detected by the free-surface tracker.
-  HMDRN_SphereSurface=1    ///<Drains particles in a configured spherical surface shell.
-}TpHydroMechDrainageMode;
 
 ///Controls the output of information on the screen and/or log.
 typedef enum{ 

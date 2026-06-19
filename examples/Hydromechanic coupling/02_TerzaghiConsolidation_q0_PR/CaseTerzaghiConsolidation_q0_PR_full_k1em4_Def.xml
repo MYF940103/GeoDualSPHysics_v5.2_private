@@ -1,4 +1,4 @@
-﻿<?xml version="1.0" encoding="UTF-8"?>
+<?xml version="1.0" encoding="UTF-8"?>
 <case app="GenCase v5.0.197 (18-07-2020)" date="04-06-2026 00:00:00">
   <casedef>
     <constantsdef>
@@ -96,13 +96,14 @@
   <execution>
     <special>
       <soils>
+        <phi value="33" comment="Friction angle" />
+        <coh value="100e3" comment="High cohesion to keep the verification elastic" />
+        <dlt value="0" comment="Dilatancy angle" />
+        <ModulusE value="2e6" comment="Young's modulus from the main u-pw 1D consolidation problem" units_comment="Pa" />
+        <PRvs value="0.3" comment="Poisson ratio from the main u-pw 1D consolidation problem" />
+      </soils>
+      <hydromechanics>
         <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
-        <HydroMechInitMode value="None" comment="Zero initial pore pressure and zero initial effective stress" />
-        <HydroMechTopLoad value="1" comment="Apply q0 ramp load to upward free-surface particles" />
-        <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
-        <HydroMechTopLoadRampTime value="0.01" comment="Ramp load duration tL" units_comment="seconds" />
-        <HydroMechFreeSurfaceDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
-        <HydroMechFreeSurfaceDrainageStartTime value="0.01" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
         <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
         <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
         <Porosity value="0.3" comment="Porosity n" />
@@ -110,12 +111,13 @@
         <PoreDtSafety value="1" comment="Full q0 validation pore-pressure time-step safety" />
         <PoreShepardRegularization value="0" comment="Disabled for the first q0 verification" />
         <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
-        <phi value="33" comment="Friction angle" />
-        <coh value="100e3" comment="High cohesion to keep the verification elastic" />
-        <dlt value="0" comment="Dilatancy angle" />
-        <ModulusE value="2e6" comment="Young's modulus from the main u-pw 1D consolidation problem" units_comment="Pa" />
-        <PRvs value="0.3" comment="Poisson ratio from the main u-pw 1D consolidation problem" />
-      </soils>
+        <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
+        <HydroMechTopLoadMode value="TopVertical" comment="Apply q0 vertically to upward free-surface particles" />
+        <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
+        <HydroMechTopLoadRampTime value="0.01" comment="Ramp load duration tL" units_comment="seconds" />
+        <HydroMechDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
+        <HydroMechDrainageStartTime value="0.01" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
+      </hydromechanics>
     </special>
     <parameters>
       <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

@@ -179,6 +179,8 @@ void JSphGpuSingle::ConfigDomain(){
       if(PartBegin && initpore)
         Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
     }
+    if(AuxHydroMechLoadAce)memset(AuxHydroMechLoadAce,0,sizeof(tfloat3)*Np);
+    if(HydroMechLoadAceg)cudaMemset(HydroMechLoadAceg,0,sizeof(float3)*Np);
   }
   //========= mdbr
 

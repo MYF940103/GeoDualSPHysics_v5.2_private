@@ -76,10 +76,14 @@
     <execution>
         <special>
             <soils>
+                <phi value="0" comment="Sensitive clay: phi = phi_r = 0" />
+                <coh value="25000" comment="Peak cohesion cp = 25 kPa" units_comment="Pa" />
+                <dlt value="0" comment="Dilatancy angle" />
+                <ModulusE value="25e6" comment="Young's modulus E = 25 MPa" units_comment="Pa" />
+                <PRvs value="0.3" comment="Poisson ratio from the u-pw reference" />
+            </soils>
+            <hydromechanics>
                 <HydroMech value="1" comment="Enable u-pw coupling during prestress so stress and pore pressure equilibrate together" />
-                <HydroMechInitMode value="FreeSurface" comment="Initialize hydrostatic pore pressure from tracked slope free surfaces" />
-                <HydroMechFreeSurfaceDrainage value="1" comment="Keep FSType 2/3 particles drained during prestress" />
-                <HydroMechFreeSurfaceDrainageStartTime value="0" units_comment="seconds" />
                 <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
                 <Porosity value="0.4" comment="Porosity n" />
@@ -87,12 +91,10 @@
                 <PoreDtSafety value="0.1" comment="Pore-pressure diffusion time-step safety factor" />
                 <PoreShepardRegularization value="1" comment="Regularize pore pressure during coupled prestress" />
                 <PoreShepardInterval value="40" comment="Regularize pore pressure every 40 steps" />
-                <phi value="0" comment="Sensitive clay: phi = phi_r = 0" />
-                <coh value="25000" comment="Peak cohesion cp = 25 kPa" units_comment="Pa" />
-                <dlt value="0" comment="Dilatancy angle" />
-                <ModulusE value="25e6" comment="Young's modulus E = 25 MPa" units_comment="Pa" />
-                <PRvs value="0.3" comment="Poisson ratio from the u-pw reference" />
-            </soils>
+                <HydroMechInitMode value="1" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 1=FreeSurface" />
+                <HydroMechDrainage value="1" comment="Keep FSType 2/3 particles drained during prestress" />
+                <HydroMechDrainageStartTime value="0" units_comment="seconds" />
+            </hydromechanics>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />

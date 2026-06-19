@@ -15,7 +15,7 @@ $dirbin = Resolve-Path (Join-Path $root "..\..\..\bin\windows")
 $gencase = Join-Path $dirbin "GenCase_win64.exe"
 $solver = Join-Path $dirbin "DualSPHysics5.2CPU_win64.exe"
 $partvtk = Join-Path $dirbin "PartVTK_win64.exe"
-$vars = "+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+porepress,+porepress0,+excessporepress"
+$vars = "+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress"
 $work = Join-Path $PSScriptRoot "full_validation"
 $summary = Join-Path $work "run_status.csv"
 

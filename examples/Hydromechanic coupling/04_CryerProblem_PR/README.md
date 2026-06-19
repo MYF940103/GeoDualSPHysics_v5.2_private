@@ -2,7 +2,7 @@
 
 This case validates the u-pw pore-pressure-rate formulation on Cryer's problem: a saturated poroelastic sphere with a drained exterior surface and a uniform inward normal pressure.
 
-The active verification path uses `HydroMechInitMode=0` (`None`), `HydroMechTopLoadMode=SphereNormal` for the sustained radial pressure, and `HydroMechDrainageMode=FreeSurface` to drain the tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
+The active verification path uses `HydroMechInitMode=0` (`None`), `HydroMechTopLoadMode=SphereNormal` for the sustained radial pressure, and `HydroMechDrainage=1` to drain tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
 
 The formal case is now a two-stage restart:
 
