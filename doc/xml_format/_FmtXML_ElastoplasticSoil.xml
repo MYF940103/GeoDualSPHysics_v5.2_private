@@ -17,10 +17,11 @@
 				<coh value="0" comment="Peak cohesion" units_comment="Pa" />
 				<dlt value="0" comment="Dilation angle" units_comment="degrees" />
 
-				<phi_r value="30" comment="Residual friction angle for softening" units_comment="degrees" />
-				<coh_r value="0" comment="Residual cohesion for softening" units_comment="Pa" />
-				<n_phi value="0" comment="Friction softening coefficient; use 0 for no friction softening" />
-				<n_coh value="0" comment="Cohesion softening coefficient; use 0 for no cohesion softening" />
+				<phi_r value="30" comment="Residual friction angle for softening; default=phi when omitted" units_comment="degrees" />
+				<coh_r value="0" comment="Residual cohesion for softening; default=coh when omitted" units_comment="Pa" />
+				<n_phi value="0" comment="Friction softening coefficient; default=0; use 0 for no friction softening" />
+				<n_coh value="0" comment="Cohesion softening coefficient; default=0; use 0 for no cohesion softening" />
+				<SoilTriggerFos value="1.65" comment="Peak strength reduction factor for restart-triggered softening; default=1.65, valid range >=1; active when restarting with strain softening" />
 
 				<ModulusE value="1.0e6" comment="Young modulus of the soil skeleton" units_comment="Pa" />
 				<PRvs value="0.3" comment="Poisson ratio of the soil skeleton" />
@@ -29,24 +30,24 @@
 			<!-- Hydromechanical water phase, pore-pressure numerics, initialization, external loading and drainage control. -->
 			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
 			<hydromechanics>
-				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
-				<PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
-				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw" units_comment="Pa" />
-				<Porosity value="0.3" comment="Porosity used by u-pw" />
-				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity" units_comment="m/s" />
-				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step" />
-				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure" />
-				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization" />
-				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D" />
-				<!-- Required only when HydroMechInitMode=2. -->
-				<!-- <HydroMechInitZ value="1.0" comment="Constant water-table/init elevation" units_comment="m" /> -->
-				<!-- Required only for spherical loading. -->
-				<!-- <HydroMechSphereCenter x="0" y="0" z="0" comment="Sphere center for SphereNormal load" units_comment="m" /> -->
-				<HydroMechTopLoadMode value="None" comment="None, TopVertical or SphereNormal" />
-				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
-				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time" units_comment="s" />
-				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure" />
-				<HydroMechDrainageStartTime value="0" comment="Drainage start time" units_comment="s" />
+				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation; default=0" />
+				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
+				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
+				<Porosity value="0.3" comment="Porosity used by u-pw; default=0, must be in (0,1) when HydroMech=1" />
+				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity; default=0, valid range >=0" units_comment="m/s" />
+				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
+				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
+				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
+				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
+				<!-- Required only when HydroMechInitMode=2; default=0. -->
+				<!-- <HydroMechInitZ value="1.0" comment="Constant water-table/init elevation; default=0" units_comment="m" /> -->
+				<!-- Required only for spherical loading; default=(0,0,0). -->
+				<!-- <HydroMechSphereCenter x="0" y="0" z="0" comment="Sphere center for SphereNormal load; default=(0,0,0)" units_comment="m" /> -->
+				<HydroMechTopLoadMode value="0" comment="HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=SphereNormal, 3=FlexibleConfinement; default=0" />
+				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; default=0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
+				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time; default=0" units_comment="s" />
+				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure; default=1" />
+				<HydroMechDrainageStartTime value="0" comment="Drainage start time; default=0" units_comment="s" />
 			</hydromechanics>
 		</special>
 	</execution>
@@ -56,13 +57,14 @@
 	<execution>
 		<parameters>
 			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->
-			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain" />
+			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain (default=1)" />
 
 			<!-- Bui et al. (2008) artificial stress for tensile-instability control. -->
 			<parameter key="ArtificialStress" value="0" comment="Bui 2008 artificial stress 0:Off, 1:On (default=0)" />
-			<parameter key="ArtificialStressCoef" value="0.5" comment="Artificial stress coefficient in [0,1] (default=0.5)" />
-			<!-- Optional. If omitted, the solver computes the exponent from the kernel support ratio. -->
-			<!-- <parameter key="ArtificialStressExp" value="2.55" comment="Artificial stress exponent; omit for automatic support-ratio value" /> -->
+			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial stress coefficient in [0,1] (default=0.2)" />
+			<!-- Optional. If omitted, the solver uses the fixed default exponent. -->
+			<!-- <parameter key="ArtificialStressExp" value="2.55" comment="Artificial stress exponent; default=2.55" /> -->
+			<parameter key="SoilStressRateGradCorr" value="0" comment="Soil stress-rate velocity-gradient correction 0:Off, 1:On (default=0)" />
 
 			<!-- Bui-Fukagawa style soil damping for static/relaxation soil cases. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0:Off, 1:On (default=0)" />
@@ -74,20 +76,19 @@
 			<!-- DensityDT=4 and DensityDT=5 are not supported in the current code; they were tested and removed. -->
 
 			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
-			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
+			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
 			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
 			<parameter key="MDBCCorrector" value="1" comment="mDBC correction in Symplectic corrector 0:predictor only, 1:predictor and corrector (default=1)" />
 			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
-			<parameter key="MDBCThreshold" value="0" comment="Kernel support limit for mDBC correction; 0 applies the default full support, valid range [0,1]" />
 			<!-- Optional for SlipMode=2 or 3. -->
-			<!-- <parameter key="NoPenetration" value="1" comment="Enable mDBC2 no-penetration correction for no-slip/free-slip mDBC" /> -->
+			<!-- <parameter key="NoPenetration" value="1" comment="Enable mDBC2 no-penetration correction for no-slip/free-slip mDBC (default=0)" /> -->
 
 			<!-- Native DualSPHysics stabilization options remain available and independent. -->
-			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
+			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS (default=1)" />
 			<parameter key="Visco" value="0.01" comment="Viscosity value" />
-			<parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full" />
+			<parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full (default=0)" />
 			<parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
-			<parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface; typically 1.5 for 2D and 2.75 for 3D when shifting is active" />
+			<parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface; default=0; typically 1.5 for 2D and 2.75 for 3D when shifting is active" />
 		</parameters>
 	</execution>
 
@@ -97,6 +98,7 @@
 		<note value="DPCtes, ArtificialStress, SoilDamping and DensityDT are reported in the solver log; use the log to verify active options." />
 		<note value="The mDBC no-slip/free-slip implementation stores a corrected tangential boundary velocity for viscous and velocity-gradient terms." />
 		<note value="The mDBC bound-mode switch for non-submerged boundary particles is internal and currently has no XML key." />
+		<note value="MDBCThreshold is a runtime configuration option with default=0; it is not read from the XML parameters block in the current code." />
 		<note value="For soil sound speed, verify the solver log. The local soil path can compute Cs0 from ModulusE, PRvs and RhopZero." />
 	</notes>
 

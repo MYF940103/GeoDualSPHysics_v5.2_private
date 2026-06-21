@@ -582,7 +582,7 @@ void JSphCpu::InitRunCpu(){
   if(TangenVelc)memset(TangenVelc,0,sizeof(tfloat3)*Np);
   if(CorrMatc)memset(CorrMatc,0,sizeof(tmatrix3d)*Np);
   if(FSTypec){
-    for(unsigned p=0;p<Np;p++)FSTypec[p]=(p<Npb? 4: 0);
+    for(unsigned p=0;p<Np;p++)FSTypec[p]=(p<Npb? FST_Boundary: FST_Inner);
   }
   if(FSNormalc)memset(FSNormalc,0,sizeof(tfloat3)*Np);
   if(PosDivc)memset(PosDivc,0,sizeof(float)*Np);
@@ -641,7 +641,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ComputeFSParticlesFreeSurface
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=0;p1<int(npb);p1++){
-    fstype[p1]=4;
+    fstype[p1]=FST_Boundary;
     fsnormal[p1]=TFloat3(0);
     posdiv[p1]=0;
     if(corrmat)corrmat[p1]=TMatrix3d(0);
@@ -651,7 +651,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ComputeFSParticlesFreeSurface
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=int(npb);p1<n;p1++){
-    fstype[p1]=0;
+    fstype[p1]=FST_Inner;
     fsnormal[p1]=TFloat3(0);
     posdiv[p1]=0;
     if(corrmat)corrmat[p1]=TMatrix3d(0);
@@ -697,18 +697,18 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ComputeFSParticlesFreeSurface
     }
 
     posdiv[p1]=float(fs_treshold);
-    unsigned fstypep1=0;
+    unsigned fstypep1=FST_Inner;
     if(neigh){
       if(sim2d){
-        if(fs_treshold<1.7)fstypep1=2;
-        if(fs_treshold<1.1 && nzero/float(neigh)<0.4f)fstypep1=3;
+        if(fs_treshold<1.7)fstypep1=FST_FreeSurface;
+        if(fs_treshold<1.1 && nzero/float(neigh)<0.4f)fstypep1=FST_Isolated;
       }
       else{
-        if(fs_treshold<2.75)fstypep1=2;
-        if(fs_treshold<1.8 && nzero/float(neigh)<0.4f)fstypep1=3;
+        if(fs_treshold<2.75)fstypep1=FST_FreeSurface;
+        if(fs_treshold<1.8 && nzero/float(neigh)<0.4f)fstypep1=FST_Isolated;
       }
     }
-    else fstypep1=3;
+    else fstypep1=FST_Isolated;
     fstype[p1]=fstypep1;
 
     const tmatrix3d lcorr_inv=FsCorrMatInverse(lcorr,sim2d);
@@ -737,10 +737,10 @@ template<bool sim2d> void JSphCpu::ScanUmbrellaFreeSurface
   #endif
   for(int p1=int(npb);p1<n;p1++){
     if(CODE_IsPeriodic(code[p1])){
-      fstype[p1]=0;
+      fstype[p1]=FST_Inner;
       continue;
     }
-    if(fstype[p1]!=2)continue;
+    if(fstype[p1]!=FST_FreeSurface)continue;
     bool fs_flag=false;
     const tdouble3 posp1=pos[p1];
     const tfloat3 normalp1=fsnormal[p1];
@@ -789,7 +789,7 @@ template<bool sim2d> void JSphCpu::ScanUmbrellaFreeSurface
         }
       }
     }
-    if(fs_flag)fstype[p1]=0;
+    if(fs_flag)fstype[p1]=FST_Inner;
   }
 }
 
@@ -931,7 +931,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=0;p1<int(npb);p1++){
-    fstype[p1]=4;
+    fstype[p1]=FST_Boundary;
     posdiv[p1]=0;
   }
 
@@ -975,21 +975,21 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=int(npb);p1<n;p1++){
-    if     (posdiv[p1]<lowerlimit && float(ni[p1])<0.4f*float(n0))fstype[p1]=0;
-    else if(posdiv[p1]>=lowerlimit && posdiv[p1]<upperlimit)      fstype[p1]=1;
-    else                                                          fstype[p1]=3;
+    if     (posdiv[p1]<lowerlimit && float(ni[p1])<0.4f*float(n0))fstype[p1]=FST_Isolated;
+    else if(posdiv[p1]>=lowerlimit && posdiv[p1]<upperlimit)      fstype[p1]=FST_FreeSurface;
+    else                                                          fstype[p1]=FST_Inner;
   }
 
   #ifdef OMP_USE
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=int(npb);p1<n;p1++){
-    if(fstype[p1]==1){
+    if(fstype[p1]==FST_FreeSurface){
       const tdouble3 posp1=pos[p1];
-      for(int b2=0;b2<2 && fstype[p1]==1;b2++){
+      for(int b2=0;b2<2 && fstype[p1]==FST_FreeSurface;b2++){
         const bool boundp2=(b2==1);
         const StNgSearch ngs=nsearch::Init(dcell[p1],boundp2,divdata);
-        for(int z=ngs.zini;z<ngs.zfin && fstype[p1]==1;z++)for(int y=ngs.yini;y<ngs.yfin && fstype[p1]==1;y++){
+        for(int z=ngs.zini;z<ngs.zfin && fstype[p1]==FST_FreeSurface;z++)for(int y=ngs.yini;y<ngs.yfin && fstype[p1]==FST_FreeSurface;y++){
           const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
           for(unsigned p2=pif.x;p2<pif.y;p2++){
             const float drx=float(posp1.x-pos[p2].x);
@@ -1006,7 +1006,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
               const float dist2=(drx+rtx)*(drx+rtx)+(dry+rty)*(dry+rty)+(drz+rtz)*(drz+rtz);
               const bool insidecap=(rr2>=2.f*KernelH*KernelH && dist2<KernelH*KernelH);
               if(insidecone || insidecap){
-                fstype[p1]=3;
+                fstype[p1]=FST_Inner;
                 break;
               }
             }
@@ -1020,29 +1020,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
     #pragma omp parallel for schedule(guided)
   #endif
   for(int p1=int(npb);p1<n;p1++){
-    if(fstype[p1]==3){
-      const tdouble3 posp1=pos[p1];
-      float rmin=FLT_MAX;
-      const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
-      for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
-        const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
-        for(unsigned p2=pif.x;p2<pif.y;p2++)if(fstype[p2]==1){
-          const float drx=float(posp1.x-pos[p2].x);
-          const float dry=(sim2d? 0: float(posp1.y-pos[p2].y));
-          const float drz=float(posp1.z-pos[p2].z);
-          const float rr=sqrt(drx*drx+dry*dry+drz*drz);
-          rmin=min(rmin,rr);
-        }
-      }
-      if(rmin<2.f*KernelH-0.5f*float(Dp))fstype[p1]=2;
-    }
-  }
-
-  #ifdef OMP_USE
-    #pragma omp parallel for schedule(guided)
-  #endif
-  for(int p1=int(npb);p1<n;p1++){
-    if(fstype[p1]==1 || fstype[p1]==2){
+    if(fstype[p1]==FST_FreeSurface){
       const tdouble3 posp1=pos[p1];
       float rmin=FLT_MAX;
       const StNgSearch ngs=nsearch::Init(dcell[p1],true,divdata);
@@ -1056,7 +1034,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
           rmin=min(rmin,rr);
         }
       }
-      if(rmin<1.8f*float(Dp))fstype[p1]=4;
+      if(rmin<1.8f*float(Dp))fstype[p1]=FST_Boundary;
     }
   }
 
@@ -1109,7 +1087,7 @@ bool JSphCpu::IsHydroMechDrainageActive()const{
 //==============================================================================
 bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const{
   if(!code || !fstype || !CODE_IsFluid(code[p]))return(false);
-  return(fstype[p]==2 || fstype[p]==3);
+  return(fstype[p]==FST_FreeSurface || fstype[p]==FST_Isolated);
 }
 
 //==============================================================================
@@ -1139,7 +1117,9 @@ bool JSphCpu::IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned
 /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || !Acec || !FSTypec || !FSNormalc)return;
+  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None)return;
+  if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
+  if(!Acec || !FSTypec || !FSNormalc)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -2006,6 +1986,13 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const bool useartstress=(ArtificialStress && artificialstress);
   const bool useporefeedback=(HydroMech && porepress);
   const bool useporerate=(HydroMech && porepress && porepressrate);
+  float flexconfpressure=0;
+  if(HydroMech && !boundp2 && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
+    const double q0=double(HydroMechTopLoadQ0);
+    const double tramp=HydroMechTopLoadRampTime;
+    const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
+    flexconfpressure=float(max(0.0,q));
+  }
   const bool drainfs=(useporerate && IsHydroMechDrainageActive());
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
   const double ghyd=(gnorm>0? gnorm: 9.80665);
@@ -2030,6 +2017,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     tfloat3 gradvp1_xx_xy_xz=TFloat3(0);
     tfloat3 gradvp1_yx_yy_yz=TFloat3(0);
     tfloat3 gradvp1_zx_zy_zz=TFloat3(0);
+    tfloat3 hydromechloadacep1=TFloat3(0);
     tfloat3 w_tensorp1_xy_yz_xz=TFloat3(0);
     double pore_ratep1=0;
     unsigned nopenauxx=0,nopenauxy=0,nopenauxz=0;
@@ -2046,6 +2034,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       if(ftp1 && tdensity!=DDT_None){dsigmap1.xx=FLT_MAX;}
       if(ftp1 && shift)shiftposfsp1.x=FLT_MAX;  //-For floating objects do not calculate shifting. | Para floatings no se calcula shifting.
     }
+    const bool useflexconf=(flexconfpressure>0.f && !ftp1);
 
     //-Obtain data of particle p1.
     const tdouble3 posp1=pos[p1];
@@ -2155,6 +2144,12 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz*invrhop1_2 + sigmap2.xz*invrhop2_2);
 			const float prsyz = massp2*(sigmap1.yz*invrhop1_2 + sigmap2.yz*invrhop2_2);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            if(useflexconf && !ftp2){
+              const float prsconf=flexconfpressure*massp2*(invrhop1_2+invrhop2_2);
+              const float ax=prsconf*frx, ay=prsconf*fry, az=prsconf*frz;
+              acep1.x+=ax; acep1.y+=ay; acep1.z+=az;
+              hydromechloadacep1.x+=ax; hydromechloadacep1.y+=ay; hydromechloadacep1.z+=az;
+            }
             //-u-pw Eq. (30): separate pore-pressure discretization mapped to tensile-positive stress in this code.
             if(useporefeedback && !ftp1 && !ftp2){
               const float prspw=-massp2*(porepress[p1]+porepress[p2])/(rhopp1*velrhop2.w);
@@ -2379,6 +2374,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       }
       ar[p1]+=arp1;
       ace[p1]=ace[p1]+acep1;
+      if(HydroMechLoadAcec)HydroMechLoadAcec[p1]=HydroMechLoadAcec[p1]+hydromechloadacep1;
       //-mdbr
       rsigma[p1].xx+=rsigmap1.xx;
       rsigma[p1].xy+=rsigmap1.xy;

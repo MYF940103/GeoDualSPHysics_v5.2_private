@@ -85,6 +85,8 @@ typedef struct{
   //-Ctes for elastic stiffness matrix
   float modulus_E, modulus_K, modulus_G;
   unsigned hydromech;       ///<Hydromechanical u-pw support switch.
+  unsigned hydrotoploadmode; ///<Hydromechanical top-load mode.
+  float hydrotoploadpressure; ///<Current ramped q0 for hydromechanical top load [Pa].
   float porewaterrho;       ///<Pore-water density.
   float porewaterbulkmodulus; ///<Pore-water bulk modulus.
   float porosity;           ///<Soil porosity.
@@ -155,6 +157,7 @@ typedef struct StrInterParmsg{
   const unsigned *fstype;
   const float3 *fsnormal;
   bool hydrodrainfs;
+  float3 *hydromechloadace;
 
   //-Output data arrays.
   float *viscdt;
@@ -195,6 +198,7 @@ typedef struct StrInterParmsg{
     ,const float *porepress_,float *porepressrate_
     ,const unsigned *fstype_,const float3 *fsnormal_
     ,bool hydrodrainfs_
+    ,float3 *hydromechloadace_
     ,float4 *shiftposfs_
     ,cudaStream_t stm_
     ,StKerInfo *kerinfo_)
@@ -234,6 +238,7 @@ typedef struct StrInterParmsg{
     porepress=porepress_; porepressrate=porepressrate_;
     fstype=fstype_; fsnormal=fsnormal_;
     hydrodrainfs=hydrodrainfs_;
+    hydromechloadace=hydromechloadace_;
     //-Other values and objects.
     stm=stm_;
     kerinfo=kerinfo_;

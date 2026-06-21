@@ -173,6 +173,7 @@ def read_part_vtk(path):
 
     rows = []
     vel = arrays.get("Vel")
+    loadace = arrays.get("HydroMechLoadAce")
     for i, (pos, pore, excess, fstype) in enumerate(zip(points, arrays["PorePress"], arrays["ExcessPorePress"], arrays["FSType"])):
         row = {
             "x": float(pos[0]),
@@ -186,6 +187,12 @@ def read_part_vtk(path):
         if vel is not None:
             vx, vy, vz = vel[i]
             row["speed"] = math.sqrt(float(vx) ** 2 + float(vy) ** 2 + float(vz) ** 2)
+        if loadace is not None:
+            ax, ay, az = loadace[i]
+            row["loadace_x"] = float(ax)
+            row["loadace_y"] = float(ay)
+            row["loadace_z"] = float(az)
+            row["loadace_mag"] = math.sqrt(float(ax) ** 2 + float(ay) ** 2 + float(az) ** 2)
         rows.append(row)
     return rows
 
@@ -228,7 +235,8 @@ def tv_from_time(time):
 
 
 def cryer_root_function(z):
-    return (1.0 - ETA * z * z) * math.sin(z) - z * math.cos(z)
+    # Paper Eq. (47): (1 - eta*xi^2/2) tan(xi) = xi.
+    return (1.0 - 0.5 * ETA * z * z) * math.sin(z) - z * math.cos(z)
 
 
 def bisection_root(a, b):
@@ -280,8 +288,10 @@ def cryer_center_pressure(tv):
         return 1.0
     value = 0.0
     for z in CRYER_ROOTS:
-        den = ETA * z * math.cos(z) + (2.0 * ETA - 1.0) * math.sin(z)
-        coef = 2.0 * ETA * (math.sin(z) - z) / den
+        # Paper Eq. (46): eta * sum[(sin(xi)-xi) /
+        # (eta*xi*cos(xi)/2 + (eta-1)*sin(xi))] * exp(-xi^2*Tv).
+        den = 0.5 * ETA * z * math.cos(z) + (ETA - 1.0) * math.sin(z)
+        coef = ETA * (math.sin(z) - z) / den
         value += coef * math.exp(-z * z * tv)
     return value
 
@@ -344,16 +354,19 @@ def plot_history(series):
     pc_num = [stat["pore"] / Q0 for stat in stats]
     load = [load_q(t) / Q0 for t in times]
 
-    tvmax = max(tvs)
-    tv_grid = [0.0] + [tvmax * i / 500.0 for i in range(1, 501)]
+    fig, axes = plt.subplots(2, 1, figsize=(9, 7), sharex=False)
+    plot_tvs = [max(tv, 1.0e-4) for tv in tvs]
+    tv_grid = [10.0 ** (-4.0 + 5.0 * i / 600.0) for i in range(601)]
     theory = [cryer_center_pressure(tv) for tv in tv_grid]
 
-    fig, axes = plt.subplots(2, 1, figsize=(9, 7), sharex=False)
-    axes[0].plot(tvs, pc_num, "o", ms=3, label="SPH center sample")
+    axes[0].plot(plot_tvs, pc_num, "o", ms=3, label="SPH center sample")
     axes[0].plot(tv_grid, theory, "k-", lw=1.3, label="Cryer analytical")
     axes[0].axhline(1.0, color="0.45", lw=1, ls=":")
-    axes[0].set_xlabel("Tv = cv (t - tL) / R^2")
-    axes[0].set_ylabel("p_center / q0")
+    axes[0].set_xscale("log")
+    axes[0].set_xlim(1.0e-4, 1.0e1)
+    axes[0].set_ylim(0.0, 1.5)
+    axes[0].set_xlabel(r"$T_v$")
+    axes[0].set_ylabel(r"Normalized pore pressure, $p^w/p_0$")
     axes[0].grid(True, alpha=0.3)
     axes[0].legend(loc="best")
 

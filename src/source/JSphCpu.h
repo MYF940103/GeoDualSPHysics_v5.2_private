@@ -192,7 +192,7 @@ protected:
 
   //-Variables for free-surface tracking.
   tmatrix3d *CorrMatc;  ///<Kernel-gradient correction matrix.
-  unsigned *FSTypec;    ///<Particle classification: 0 internal, 2 free-surface, 3 isolated, 4 boundary.
+  unsigned *FSTypec;    ///<Particle classification: FST_Inner, FST_FreeSurface, FST_Isolated, FST_Boundary.
   tfloat3 *FSNormalc;   ///<Free-surface normal vectors used by the umbrella scan.
   float *PosDivc;       ///<Position divergence threshold used for free-surface detection.
 

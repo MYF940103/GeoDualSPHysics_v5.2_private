@@ -89,7 +89,7 @@ def write_stage_xml(dst, cfg, stage):
     )
     ensure_soil_double3(root, "HydroMechSphereCenter", (0, 0, 0), "Shared sphere center for radial load and spherical drainage")
     ensure_soil_value(root, "HydroMechTopLoad", 1, "Apply sustained spherical normal pressure p0")
-    ensure_soil_value(root, "HydroMechTopLoadMode", "SphereNormal", "Radially inward load from HydroMechSphereCenter")
+    ensure_soil_value(root, "HydroMechTopLoadMode", 3, "HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=SphereNormal, 3=FlexibleConfinement; Cryer uses 3=FlexibleConfinement")
     ensure_soil_value(root, "HydroMechTopLoadQ0", cfg["q0"], "Compressive spherical surface pressure p0")
     set_value(root, ".//HydroMechTopLoadRampTime", cfg["load_ramp"])
     set_comment(root, ".//HydroMechTopLoadRampTime", "Ramp duration for the undrained loading stage")

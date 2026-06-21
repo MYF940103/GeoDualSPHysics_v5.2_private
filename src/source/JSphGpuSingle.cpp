@@ -545,11 +545,12 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
+  if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)ConstantDataUp();
   PreInteraction_Forces();
   ComputeFreeSurfaceTracking();
   if(HydroMech){
     ApplyFreeSurfacePorePressure();
-    ApplyHydroMechTopLoadAcceleration();
+    if(HydroMechTopLoadMode!=HMLOAD_FlexibleConfinement)ApplyHydroMechTopLoadAcceleration();
   }
   float3 *dengradcorr=NULL;
 
@@ -577,6 +578,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,PorePressg,PorePressRateg
     ,FSTypeg,FSNormalg
     ,IsHydroMechDrainageActive()
+    ,HydroMechLoadAceg
     ,ShiftPosfsg
     ,NULL,NULL);
   cusph::Interaction_Forces(parms);

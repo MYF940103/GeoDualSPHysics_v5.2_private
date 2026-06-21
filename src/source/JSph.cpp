@@ -3256,6 +3256,7 @@ std::string JSph::GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode){
   if(loadmode==HMLOAD_None)tx="None";
   else if(loadmode==HMLOAD_TopVertical)tx="TopVertical";
   else if(loadmode==HMLOAD_SphereNormal)tx="SphereNormal";
+  else if(loadmode==HMLOAD_FlexibleConfinement)tx="FlexibleConfinement";
   else tx="???";
   return(tx);
 }
@@ -3462,7 +3463,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
   else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
   else if(toploadmodestr=="spherenormal" || toploadmodestr=="sphere_normal" || toploadmodestr=="radial" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_SphereNormal;
-  else Run_Exceptioon("HydroMechTopLoadMode must be None, TopVertical or SphereNormal.");
+  else if(toploadmodestr=="flexibleconfinement" || toploadmodestr=="flexible_confinement" || toploadmodestr=="confinement" || toploadmodestr=="zhaoconfinement" || toploadmodestr=="3")HydroMechTopLoadMode=HMLOAD_FlexibleConfinement;
+  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical, 2=SphereNormal or 3=FlexibleConfinement.");
   HydroMechTopLoadQ0=sxml->ReadElementFloat(hydroReadNode,"HydroMechTopLoadQ0","value",true,0.f);
   HydroMechTopLoadRampTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechTopLoadRampTime","value",true,0);
 
@@ -3538,6 +3540,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
       Log->Printf("  HydroMechSphereCenter: (%g,%g,%g)",HydroMechSphereCenter.x,HydroMechSphereCenter.y,HydroMechSphereCenter.z);
     Log->Print("  HydroMechDrainageBoundary: FreeSurface");
     Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
+    if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)
+      Log->Print("  HydroMechTopLoadDiscretization: Zhao-style kernel-truncation confinement (GPU validation branch)");
     if(HydroMechTopLoadMode!=HMLOAD_None){
       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);

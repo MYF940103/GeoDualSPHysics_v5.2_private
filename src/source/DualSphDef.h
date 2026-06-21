@@ -326,8 +326,17 @@ typedef enum{
 typedef enum{
   HMLOAD_None=0,              ///<No hydromechanical external load is applied.
   HMLOAD_TopVertical=1,       ///<Applies q0 vertically to upward free-surface particles.
-  HMLOAD_SphereNormal=2       ///<Applies q0 radially inward from a configured sphere center.
+  HMLOAD_SphereNormal=2,      ///<Applies q0 radially inward from a configured sphere center.
+  HMLOAD_FlexibleConfinement=3 ///<Applies q0 as a Zhao-style kernel-truncation confining stress.
 }TpHydroMechLoadMode;
+
+///Particle classification from the free-surface tracker.
+typedef enum{
+  FST_Inner=0,           ///<Interior particle with complete support.
+  FST_FreeSurface=2,     ///<Free-surface particle.
+  FST_Isolated=3,        ///<Isolated or splash-like free particle.
+  FST_Boundary=4         ///<Boundary or wall-vicinity particle.
+}TpFreeSurfaceType;
 
 ///Controls the output of information on the screen and/or log.
 typedef enum{ 

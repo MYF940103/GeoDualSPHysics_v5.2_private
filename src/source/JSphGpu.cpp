@@ -52,6 +52,12 @@
 
 using namespace std;
 
+namespace{
+  inline bool IsHydroMechTrackedFreeSurface(unsigned fstype){
+    return(fstype==FST_FreeSurface || fstype==FST_Isolated);
+  }
+}
+
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -729,6 +735,13 @@ void JSphGpu::ConstantDataUp(){
   ctes.domposminx=DomPosMin.x; ctes.domposminy=DomPosMin.y; ctes.domposminz=DomPosMin.z;
   ctes.modulus_E=SoilCte.ModulusE; ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
   ctes.hydromech=(HydroMech? 1: 0);
+  ctes.hydrotoploadmode=unsigned(HydroMechTopLoadMode);
+  ctes.hydrotoploadpressure=0.f;
+  if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
+    const double tramp=HydroMechTopLoadRampTime;
+    const double q=(tramp>0 && TimeStep<tramp? double(HydroMechTopLoadQ0)*max(0.0,TimeStep)/tramp: double(HydroMechTopLoadQ0));
+    ctes.hydrotoploadpressure=float(max(0.0,q));
+  }
   ctes.porewaterrho=SoilCte.PoreWaterRho;
   ctes.porewaterbulkmodulus=SoilCte.PoreWaterBulkModulus;
   ctes.porosity=SoilCte.Porosity;
@@ -889,6 +902,7 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
         ,false
+        ,NULL
         ,NULL
         ,NULL,&kerinfo);
       cusph::Interaction_Forces(parms);
@@ -1079,7 +1093,7 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
 /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
+  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1098,7 +1112,7 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
       const double pi=3.14159265358979323846;
       unsigned nfs=0;
       double sumr=0,sumnx=0,sumny=0,sumnz=0;
-      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3)){
+      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p])){
         const double dx=Posxy[p].x-HydroMechSphereCenter.x;
         const double dy=Posxy[p].y-HydroMechSphereCenter.y;
         const double dz=Posz[p]-HydroMechSphereCenter.z;
@@ -1207,7 +1221,7 @@ void JSphGpu::InitHydroMechPorePressure(){
   unsigned nfs=0;
   unsigned *fsp=NULL;
   if(HydroMechInitMode==HMINIT_FreeSurface){
-    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3))nfs++;
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p]))nfs++;
     if(!nfs)Run_Exceptioon("No free-surface particles were found for hydromechanical pore-pressure initialization.");
     try{
       fsp=new unsigned[nfs];
@@ -1216,7 +1230,7 @@ void JSphGpu::InitHydroMechPorePressure(){
       Run_Exceptioon("Could not allocate the requested memory.");
     }
     unsigned c=0;
-    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3))fsp[c++]=p;
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p]))fsp[c++]=p;
   }
 
   double pmin=DBL_MAX,pmax=-DBL_MAX;
@@ -1271,7 +1285,7 @@ void JSphGpu::InitHydroMechPorePressure(){
       const double excessghost=fullundrained-hydroghost;
       float hydro=(analyticgravityoff? 0.f: float(hydroactual));
       float pw=(analyticgravityoff? float(fullundrained): float(hydroactual+excessghost));
-      if(p>=Npb && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3)){
+      if(p>=Npb && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p])){
         hydro=0.f;
         pw=0.f;
       }
@@ -1288,7 +1302,7 @@ void JSphGpu::InitHydroMechPorePressure(){
     }
     else{
       float pw=float(gammaw*max(0.,zwt-Posz[p]));
-      if(HydroMechInitMode==HMINIT_FreeSurface && p>=Npb && CODE_IsFluid(Code[p]) && (AuxFSType[p]==2 || AuxFSType[p]==3))pw=0.f;
+      if(HydroMechInitMode==HMINIT_FreeSurface && p>=Npb && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p]))pw=0.f;
       PorePress[p]=pw;
       PorePress0[p]=pw;
     }
