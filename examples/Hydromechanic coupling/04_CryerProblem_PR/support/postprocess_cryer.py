@@ -41,6 +41,7 @@ K_HYD = env_float("CRYER_K_HYD", 1.0e-3)
 TOUT = env_float("CRYER_TOUT", 0.0001)
 TIME_MAX = env_float("CRYER_TIME_MAX", 0.005)
 CENTER_SAMPLE_RADIUS = env_float("CRYER_CENTER_SAMPLE_RADIUS", 2.0 * DP)
+TV_MIN = env_float("CRYER_TV_MIN", 0.0)
 NROOTS = 360
 
 K_BULK = E / (3.0 * (1.0 - 2.0 * NU))
@@ -214,6 +215,12 @@ def load_series(folder):
     if not data:
         raise RuntimeError(f"No PartFluid VTK files found in {folder}")
     return data
+
+
+def filter_series(series):
+    if TV_MIN <= 0.0:
+        return series
+    return [item for item in series if tv_from_time(item["time"]) + 1.0e-12 >= TV_MIN]
 
 
 def mean(values):
@@ -411,6 +418,7 @@ def history_metrics(series):
     final = valid[-1]
     return {
         "snapshots": len(series),
+        "tv_min": TV_MIN,
         "cv": CV,
         "eta": ETA,
         "load_end_time": after_load["time"],
@@ -440,7 +448,10 @@ def history_metrics(series):
 
 def main():
     FIGDIR.mkdir(parents=True, exist_ok=True)
-    series = load_series(PARTICLES)
+    loaded_series = load_series(PARTICLES)
+    series = filter_series(loaded_series)
+    if not series:
+        raise RuntimeError(f"No snapshots remain after applying CRYER_TV_MIN={TV_MIN}")
     history_csv = write_history_csv(series)
     history_png = plot_history(series)
 
@@ -453,7 +464,9 @@ def main():
     final_num, final_time, final_tv = values[-1]
     final_theory = cryer_center_pressure(final_tv)
 
-    print(f"Loaded {len(series)} snapshots from {PARTICLES}")
+    print(f"Loaded {len(loaded_series)} snapshots from {PARTICLES}")
+    if len(series) != len(loaded_series):
+        print(f"Using {len(series)} snapshots after CRYER_TV_MIN={TV_MIN}")
     print(f"cv = {CV:.6g} m2/s, eta = {ETA:.6g}, final Tv = {final_tv:.6g}")
     print(f"Peak SPH p/q0 = {peak_num:.6g} at t = {peak_time:.6g}s, Tv = {peak_tv:.6g}")
     print(f"Theory p/q0 at peak SPH Tv = {peak_theory:.6g}")

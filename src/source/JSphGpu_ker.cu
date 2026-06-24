@@ -926,11 +926,49 @@ template<bool sim2d> __global__ void KerScanUmbrellaFreeSurface
 }
 
 //==============================================================================
+/// Marks inner particles close to tracked free surface as near-free-surface.
+//==============================================================================
+template<bool sim2d> __global__ void KerMarkNearFreeSurfaceParticles
+  (unsigned np,unsigned npb,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell
+  ,unsigned cellfluid,const unsigned *dcell,const float4 *poscell,const typecode *code,unsigned *fstype)
+{
+  const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p1>=npb && p1<np){
+    if(!CODE_IsFluid(code[p1]) || CODE_IsPeriodic(code[p1]) || fstype[p1]!=FST_Inner)return;
+    bool nearfs=false;
+    const float limit=max(0.f,2.f*CTE.kernelh-0.5f*CTE.dp);
+    const float limit2=limit*limit;
+    const float4 pscellp1=poscell[p1];
+    int ini1,fin1,ini2,fin2,ini3,fin3;
+    cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+    ini3+=cellfluid; fin3+=cellfluid;
+    for(int c3=ini3;c3<fin3 && !nearfs;c3+=nc.w)for(int c2=ini2;c2<fin2 && !nearfs;c2+=nc.x){
+      unsigned pini,pfin=0;
+      cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcell,pini,pfin);
+      for(unsigned p2=pini;p2<pfin;p2++){
+        if(p2==p1 || !CODE_IsFluid(code[p2]))continue;
+        if(fstype[p2]!=FST_FreeSurface && fstype[p2]!=FST_Isolated)continue;
+        const float4 pscellp2=poscell[p2];
+        const float drx=pscellp1.x-pscellp2.x + CTE.poscellsize*(PSCEL_GetfX(pscellp1.w)-PSCEL_GetfX(pscellp2.w));
+        const float dry=(sim2d? 0: pscellp1.y-pscellp2.y + CTE.poscellsize*(PSCEL_GetfY(pscellp1.w)-PSCEL_GetfY(pscellp2.w)));
+        const float drz=pscellp1.z-pscellp2.z + CTE.poscellsize*(PSCEL_GetfZ(pscellp1.w)-PSCEL_GetfZ(pscellp2.w));
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=limit2){
+          nearfs=true;
+          break;
+        }
+      }
+    }
+    if(nearfs)fstype[p1]=FST_NearFreeSurface;
+  }
+}
+
+//==============================================================================
 /// Computes free-surface classification with the lightweight umbrella algorithm.
 //==============================================================================
 template<TpKernel tker,bool sim2d> void ComputeFreeSurfaceTrackingT(unsigned np,unsigned npb
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell,const float4 *velrhop
-  ,const typecode *code,tmatrix3d *corrmat,unsigned *fstype,float3 *fsnormal,float *posdiv)
+  ,const typecode *code,tmatrix3d *corrmat,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
@@ -938,6 +976,9 @@ template<TpKernel tker,bool sim2d> void ComputeFreeSurfaceTrackingT(unsigned np,
       (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
     KerScanUmbrellaFreeSurface<sim2d> <<<sgrid,SPHBSIZE>>>
       (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,poscell,code,fsnormal,fstype);
+    if(marknearfs)
+      KerMarkNearFreeSurfaceParticles<sim2d> <<<sgrid,SPHBSIZE>>>
+        (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,poscell,code,fstype);
   }
 }
 
@@ -947,16 +988,16 @@ template<TpKernel tker,bool sim2d> void ComputeFreeSurfaceTrackingT(unsigned np,
 void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
-  ,unsigned *fstype,float3 *fsnormal,float *posdiv)
+  ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs)
 {
   if(simulate2d){
-    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
-    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv,marknearfs);
+    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,true >(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv,marknearfs);
     else throw "Kernel unknown.";
   }
   else{
-    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
-    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv);
+    if(tkernel==KERNEL_Wendland)ComputeFreeSurfaceTrackingT<KERNEL_Wendland,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv,marknearfs);
+    else if(tkernel==KERNEL_Cubic)ComputeFreeSurfaceTrackingT<KERNEL_Cubic,false>(np,npb,dvd,dcell,poscell,velrhop,code,corrmat,fstype,fsnormal,posdiv,marknearfs);
     else throw "Kernel unknown.";
   }
 }
@@ -989,8 +1030,8 @@ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const ty
 //==============================================================================
 /// Applies q0 top load to selected free-surface particles.
 //==============================================================================
-__global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,unsigned loadmode,float accmag,double3 center
-  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,const double2 *posxy,const double *posz,float3 *ace,float3 *loadace)
+__global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,unsigned loadmode,float accmag
+  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)){
@@ -1013,18 +1054,6 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
         if(upward)aload.z-=accmag;
       }
     }
-    else if(loadmode==HMLOAD_SphereNormal){
-      const double dx=posxy[p].x-center.x;
-      const double dy=(CTE.simulate2d? 0.: posxy[p].y-center.y);
-      const double dz=posz[p]-center.z;
-      const double r=sqrt(dx*dx+dy*dy+dz*dz);
-      if(r>1e-12){
-        const float scale=-accmag/float(r);
-        aload.x=scale*float(dx);
-        aload.y=scale*float(dy);
-        aload.z=scale*float(dz);
-      }
-    }
     a.x+=aload.x;
     a.y+=aload.y;
     a.z+=aload.z;
@@ -1033,12 +1062,12 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
   }
 }
 
-void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag,tdouble3 center
-  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,const double2 *posxy,const double *posz,float3 *ace,float3 *loadace)
+void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
+  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
 {
-  if(np>npb && accmag && code && fstype && fsnormal && posxy && posz && ace){
+  if(np>npb && accmag && code && fstype && fsnormal && ace){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,unsigned(loadmode),accmag,Double3(center),code,fstype,fsnormal,posxy,posz,ace,loadace);
+    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,unsigned(loadmode),accmag,code,fstype,fsnormal,ace,loadace);
   }
 }
 
@@ -1249,7 +1278,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   __device__ void KerInteractionForcesFluidBox(bool boundp2,unsigned p1
   ,const unsigned &pini,const unsigned &pfin,float visco
   ,const float *ftomassp
-  ,const float4 *poscell,const float4 *velrhop,const byte *boundmode,const float3 *tangenvel,const float3 *motionvel,const float3 *boundnormal,const typecode *code,const unsigned *idp
+  ,const float4 *poscell,const float4 *velrhop,const byte *boundmode,const float3 *tangenvel,const float3 *motionvel,const float3 *boundnormal,const typecode *code,const unsigned *fstype,const unsigned *idp
   ,const float2 *sigma
   ,const float2 *artificialstress
   ,TpMdbc2Mode mdbc2
@@ -1265,6 +1294,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,const float *porepress,const tmatrix3d &porecorr,bool poreratep1,const float pwp1,double &pore_ratep1)
 {
   const bool useartstress=(CTE.artificialstress && !ftp1 && invwabdp>0.f);
+  //-Hydromechanical switches used inside the pair loop.
   const bool useporefeedback=(CTE.hydromech && porepress);
   const bool useflexconf=(CTE.hydromech && CTE.hydrotoploadmode==HMLOAD_FlexibleConfinement && CTE.hydrotoploadpressure>0.f && !ftp1);
   for(int p2=pini;p2<pfin;p2++){
@@ -1308,6 +1338,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 
       float4 velrhop2=velrhop[p2];
       if(symm)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
+      //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
       if(poreratep1 && !symm && velrhop[p2].w>0.f){
         const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
         const bool inactiveporebound=(boundp2 && CTE.tboundary==BC_MDBC && CTE.slipmode>=SLIP_NoSlip && boundmode && boundmode[p2]==BMODE_MDBC2OFF);
@@ -1352,6 +1383,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         //  +(tker==KERNEL_Cubic? cufsph::GetKernelCubic_Tensil(rr2,velrhop1.w,pressp1,velrhop2.w,pressp2): 0);
         //const float p_vpm=-prs*(USE_FLOATING? ftmassp2: massp2);
         //acep1.x+=p_vpm*frx; acep1.y+=p_vpm*fry; acep1.z+=p_vpm*frz;
+          //-Elastoplastic soil momentum from the total-stress tensor.
           const float invrhop1_2=1.f/(velrhop1.w*velrhop1.w);
           const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
           const float prsxx = massp2final*(sigmap1_xx_xy.x*invrhop1_2 + sigmap2_xx_xy.x*invrhop2_2);
@@ -1361,6 +1393,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 		  const float prsxz = massp2final*(sigmap1_xz_yy.x*invrhop1_2 + sigmap2_xz_yy.x*invrhop2_2);
 		  const float prsyz = massp2final*(sigmap1_yz_zz.x*invrhop1_2 + sigmap2_yz_zz.x*invrhop2_2);
 		  acep1.x += (prsxx*frx + prsxy*fry + prsxz*frz); acep1.y += (prsyy*fry + prsxy*frx + prsyz*frz); acep1.z += (prszz*frz + prsyz*fry + prsxz*frx);//form 1
+          //-Flexible confinement pressure for Cryer-type external loading.
           if(useflexconf && !boundp2 && !ftp2){
             const float prsconf=CTE.hydrotoploadpressure*massp2final*(invrhop1_2+invrhop2_2);
             const float ax=prsconf*frx, ay=prsconf*fry, az=prsconf*frz;
@@ -1411,15 +1444,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 
       const float cbar=CTE.cs0;
       const float dot3=(tdensity!=DDT_None || shift? drx*frx+dry*fry+drz*frz: 0);
-      //-Density Diffusion Term (Molteni and Colagrossi 2009).
-//      if(tdensity==DDT_DDT && deltap1!=FLT_MAX){
-//        const float rhop1over2=velrhop1.w/velrhop2.w;
-//        const float visc_densi=CTE.ddtkh*cbar*(rhop1over2-1.f)/(rr2+CTE.eta2);
-//        const float delta=visc_densi*dot3*(USE_FLOATING? ftmassp2: massp2);
-        //deltap1=(boundp2? FLT_MAX: deltap1+delta);
-//        deltap1=(boundp2 && CTE.tboundary==BC_DBC? FLT_MAX: deltap1+delta);
-//      }
-      //-Stress Diffusion Term (Form 1)
+      //-Soil stress diffusion term (Form 1; reuses DensityDT=1 selector).
       if(tdensity==DDT_DDT && dsigmap1_xx_xy.x!=FLT_MAX){
         const float massrhop = massp2final/velrhop2.w;
         const float visc_stress=CTE.ddtkh*cbar*massrhop/(rr2+CTE.eta2);
@@ -1436,15 +1461,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         dsigmap1_xz_yy.x+=visc_stress*dot3*dsigmaxz;
         dsigmap1_yz_zz.x+=visc_stress*dot3*dsigmayz;
       }
-      //-Density Diffusion Term (Fourtakas et al 2019).
-//      if((tdensity==DDT_DDT2 || (tdensity==DDT_DDT2Full && !boundp2)) && deltap1!=FLT_MAX && !ftp2){
-//        const float rh=1.f+CTE.ddtgz*drz;
-//        const float drhop=CTE.rhopzero*pow(rh,1.f/CTE.gamma)-CTE.rhopzero;  
-//        const float visc_densi=CTE.ddtkh*cbar*((velrhop2.w-velrhop1.w)-drhop)/(rr2+CTE.eta2);
-//        const float delta=visc_densi*dot3*massp2/velrhop2.w;
-//        deltap1=(boundp2? FLT_MAX: deltap1-delta); //-blocks it makes it boil - bloody DBC
-//      }
-      //-Stress Diffusion Term (Form 2)
+      //-Soil stress diffusion term (Form 2; reuses DensityDT=2/3 selectors).
       if((tdensity==DDT_DDT2 || (tdensity==DDT_DDT2Full && !boundp2)) && dsigmap1_xx_xy.x!=FLT_MAX && !ftp2){
         const float massrhop = massp2final/velrhop2.w;
         const float visc_stress=CTE.ddtkh*cbar*massrhop/(rr2+CTE.eta2);
@@ -1654,8 +1671,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
-        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1); //<vs_syymmetry>
+                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1); //<vs_syymmetry>
       }
     }
     //-Interaction with boundaries.
@@ -1663,10 +1680,11 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
-      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
+      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1);
       }
     }
+    //-Optional correction matrix for soil stress-rate velocity gradients.
     if(CTE.soilstressrategradcorr && !ftp1 && corrmat){
       const tmatrix3d invcorr=corrmat[p1];
       gradvp1_xx_xy_xz=KerApplyGradCorr(gradvp1_xx_xy_xz,invcorr);

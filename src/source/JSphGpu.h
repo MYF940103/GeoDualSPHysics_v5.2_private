@@ -124,6 +124,7 @@ protected:
   float *AuxRhop;
   unsigned *AuxFSType;
   tfloat3 *AuxFSNormal;
+  float *AuxPosDiv;
 
   unsigned GpuParticlesAllocs;///<Number of allocations.
   unsigned GpuParticlesSize;  ///<Number of particles for which GPU memory was allocated. | Numero de particulas para las cuales se reservo memoria en gpu.
@@ -163,7 +164,7 @@ protected:
   tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.
   unsigned *FSTypeg;    ///<Particle classification: FST_Inner, FST_FreeSurface, FST_Isolated, FST_Boundary.
   float3 *FSNormalg;    ///<Free-surface normal vectors used by the umbrella scan.
-  float *PosDivg;       ///<Position divergence threshold used for free-surface detection.
+  float *PosDivg;       ///<Position-divergence free-surface diagnostic value.
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.

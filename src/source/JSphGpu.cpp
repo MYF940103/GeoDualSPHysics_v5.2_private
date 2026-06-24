@@ -66,7 +66,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
   PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL; AuxHydroMechLoadAce=NULL;
-  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL;
+  AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL; AuxPosDiv=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
   GpuInfo=new JDsGpuInfo;
@@ -292,6 +292,7 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] AuxRhop;    AuxRhop=NULL;
   delete[] AuxFSType;  AuxFSType=NULL;
   delete[] AuxFSNormal; AuxFSNormal=NULL;
+  delete[] AuxPosDiv; AuxPosDiv=NULL;
   //ruofeng
   delete[] AuxSigma_xx_yy_zz;   AuxSigma_xx_yy_zz = NULL;
   delete[] AuxSigma_xy_yz_xz;   AuxSigma_xy_yz_xz = NULL;
@@ -332,6 +333,7 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
       AuxRhop=new float[np];     MemCpuParticles+=sizeof(float)*np;
       AuxFSType=new unsigned[np]; MemCpuParticles+=sizeof(unsigned)*np;
       AuxFSNormal=new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
+      AuxPosDiv=new float[np]; MemCpuParticles+=sizeof(float)*np;
       //======mdbr
       AuxSigma_xx_yy_zz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       AuxSigma_xy_yz_xz = new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
@@ -739,7 +741,8 @@ void JSphGpu::ConstantDataUp(){
   ctes.hydrotoploadpressure=0.f;
   if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
     const double tramp=HydroMechTopLoadRampTime;
-    const double q=(tramp>0 && TimeStep<tramp? double(HydroMechTopLoadQ0)*max(0.0,TimeStep)/tramp: double(HydroMechTopLoadQ0));
+    const double q0=double(HydroMechTopLoadQ0);
+    const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
     ctes.hydrotoploadpressure=float(max(0.0,q));
   }
   ctes.porewaterrho=SoilCte.PoreWaterRho;
@@ -802,6 +805,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   cudaMemcpy(Velrhop,Velrhopg+pini,sizeof(float4)  *n,cudaMemcpyDeviceToHost);
   if(AuxFSType && FSTypeg)cudaMemcpy(AuxFSType,FSTypeg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
   if(AuxFSNormal && FSNormalg)cudaMemcpy(AuxFSNormal,FSNormalg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
+  if(AuxPosDiv && PosDivg)cudaMemcpy(AuxPosDiv,PosDivg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
   if(AuxHydroMechLoadAce && HydroMechLoadAceg)cudaMemcpy(AuxHydroMechLoadAce,HydroMechLoadAceg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
   if(HydroMech && PorePressg && PorePress0g){
     cudaMemcpy(PorePress,PorePressg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
@@ -827,6 +831,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         Code[p-ndel]   =Code[p];
         if(AuxFSType)AuxFSType[p-ndel]=AuxFSType[p];
         if(AuxFSNormal)AuxFSNormal[p-ndel]=AuxFSNormal[p];
+        if(AuxPosDiv)AuxPosDiv[p-ndel]=AuxPosDiv[p];
         if(AuxHydroMechLoadAce)AuxHydroMechLoadAce[p-ndel]=AuxHydroMechLoadAce[p];
         if(HydroMech && PorePress && PorePress0){
           PorePress[p-ndel]=PorePress[p];
@@ -1069,7 +1074,8 @@ void JSphGpu::InitRunGpu(){
 //==============================================================================
 void JSphGpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
-  cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg);
+  const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
+  cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg,marknearfs);
   Check_CudaErroor("Failed computing free-surface tracking.");
 }
 
@@ -1093,72 +1099,22 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
 /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
-  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || !Aceg || !FSTypeg || !FSNormalg || !Posxyg || !Poszg)return;
+  if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || !Aceg || !FSTypeg || !FSNormalg)return;
+  if(HydroMechTopLoadMode!=HMLOAD_TopVertical)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
   const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
   if(q<=0)return;
-  float accmag=0;
-  if(HydroMechTopLoadMode==HMLOAD_SphereNormal && !Simulate2D){
-    if(MassFluid<=0)return;
-    if(!HydroMechSphereLoadAreaReady){
-      cudaMemcpy(Posxy,Posxyg,sizeof(double2)*Np,cudaMemcpyDeviceToHost);
-      cudaMemcpy(Posz,Poszg,sizeof(double)*Np,cudaMemcpyDeviceToHost);
-      cudaMemcpy(Code,Codeg,sizeof(typecode)*Np,cudaMemcpyDeviceToHost);
-      cudaMemcpy(AuxFSType,FSTypeg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
-      Check_CudaErroor("Failed copying data for hydromechanical spherical top-load diagnostics.");
-
-      const double pi=3.14159265358979323846;
-      unsigned nfs=0;
-      double sumr=0,sumnx=0,sumny=0,sumnz=0;
-      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Code[p]) && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p])){
-        const double dx=Posxy[p].x-HydroMechSphereCenter.x;
-        const double dy=Posxy[p].y-HydroMechSphereCenter.y;
-        const double dz=Posz[p]-HydroMechSphereCenter.z;
-        const double r=sqrt(dx*dx+dy*dy+dz*dz);
-        if(r>1e-12){
-          nfs++;
-          sumr+=r;
-          sumnx+=dx/r;
-          sumny+=dy/r;
-          sumnz+=dz/r;
-        }
-      }
-      if(!nfs)return;
-      HydroMechSphereLoadAreaReady=true;
-      HydroMechSphereLoadSurfaceCount=nfs;
-      HydroMechSphereLoadRadius=sumr/double(nfs);
-      HydroMechSphereLoadArea=4.0*pi*HydroMechSphereLoadRadius*HydroMechSphereLoadRadius;
-      HydroMechSphereLoadParticleArea=HydroMechSphereLoadArea/double(nfs);
-      const double sumainx=HydroMechSphereLoadParticleArea*sumnx;
-      const double sumainy=HydroMechSphereLoadParticleArea*sumny;
-      const double sumainz=HydroMechSphereLoadParticleArea*sumnz;
-      const double residual=sqrt(sumainx*sumainx+sumainy*sumainy+sumainz*sumainz)/HydroMechSphereLoadArea;
-      const double sumfx=-q0*sumainx;
-      const double sumfy=-q0*sumainy;
-      const double sumfz=-q0*sumainz;
-      const double sumfmag=sqrt(sumfx*sumfx+sumfy*sumfy+sumfz*sumfz);
-      const double totalscalar=q0*HydroMechSphereLoadArea;
-      const double accfull=q0*HydroMechSphereLoadParticleArea/double(MassFluid);
-      Log->Printf("Hydromechanics: SphereNormal area load uses %u surface particles, R_eff=%g, A_sum=%g, 4*pi*R_eff^2=%g, A_i=%g."
-        ,HydroMechSphereLoadSurfaceCount,HydroMechSphereLoadRadius,HydroMechSphereLoadArea,HydroMechSphereLoadArea,HydroMechSphereLoadParticleArea);
-      Log->Printf("Hydromechanics: SphereNormal area load diagnostics at q0=%g: scalar_force=%g, vector_sum_F=(%g,%g,%g), |sumF|=%g, residual=|sum(A_i*n_i)|/sum(A_i)=%g, acc_range=[%g,%g]."
-        ,q0,totalscalar,sumfx,sumfy,sumfz,sumfmag,residual,accfull,accfull);
-    }
-    accmag=float(q*HydroMechSphereLoadParticleArea/double(MassFluid));
-  }
-  else{
-    const double por=double(SoilCte.Porosity);
-    const double rhol=double(SoilCte.PoreWaterRho);
-    const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
-    const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
-    const double denom=rhomix*double(Dp);
-    if(denom<=0)return;
-    accmag=float(q/denom);
-  }
-  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag,HydroMechSphereCenter
-    ,Codeg,FSTypeg,FSNormalg,Posxyg,Poszg,Aceg,HydroMechLoadAceg);
+  const double por=double(SoilCte.Porosity);
+  const double rhol=double(SoilCte.PoreWaterRho);
+  const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
+  const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
+  const double denom=rhomix*double(Dp);
+  if(denom<=0)return;
+  const float accmag=float(q/denom);
+  cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag
+    ,Codeg,FSTypeg,FSNormalg,Aceg,HydroMechLoadAceg);
   Check_CudaErroor("Failed applying hydromechanical top load.");
 }
 

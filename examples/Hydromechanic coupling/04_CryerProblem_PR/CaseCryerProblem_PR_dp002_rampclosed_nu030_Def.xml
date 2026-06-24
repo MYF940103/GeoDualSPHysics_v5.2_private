@@ -16,7 +16,7 @@
         <geometry>
             <predefinition>
                 <newvarcte radius="0.05" _rem="Poroelastic sphere radius" />
-                <newvarcte Dp="0.003" _rem="Particle spacing" />
+                <newvarcte Dp="0.002" _rem="Particle spacing for the high-resolution closed-ramp k=1e-5 release candidate" />
                 <newvarcte dummyb="0.09" _rem="Remote dummy boundary coordinate, outside kernel support" />
             </predefinition>
             <definition dp="#Dp" units_comment="metres (m)">
@@ -58,17 +58,16 @@
                 <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
                 <Porosity value="0.3" comment="Porosity n" />
-                <HydraulicConductivity value="0.0001" comment="Stage 2 restores hydraulic conductivity for Cryer drainage" units_comment="m/s" />
+                <HydraulicConductivity value="1e-5" comment="Hydraulic conductivity for the formal one-stage drained Cryer run" units_comment="m/s" />
                 <PoreDtSafety value="0.1" comment="Stable pore-pressure explicit step safety factor" />
                 <PoreShepardRegularization value="0" comment="Disabled for the first Cryer verification" />
                 <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
-                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; Cryer two-stage verification uses 0=None" />
-                <HydroMechSphereCenter x="0" y="0" z="0" comment="Sphere center for radial SphereNormal load" units_comment="metres (m)" />
-                <HydroMechTopLoadMode value="3" comment="HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=SphereNormal, 3=FlexibleConfinement; Cryer uses 3=FlexibleConfinement" />
+                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; Cryer uses 0=None" />
+                <HydroMechTopLoadMode value="2" comment="HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=FlexibleConfinement; Cryer uses 2=FlexibleConfinement" />
                 <HydroMechTopLoadQ0 value="10000.0" comment="Compressive spherical surface pressure p0" units_comment="Pa" />
-                <HydroMechTopLoadRampTime value="0.005" comment="Ramp duration for the undrained loading stage" units_comment="seconds" />
-                <HydroMechDrainage value="1" comment="Stage 2 opens the spherical drained boundary" />
-                <HydroMechDrainageStartTime value="0.082001" comment="Drainage starts at the restart time; this is the analytical time origin" units_comment="seconds" />
+                <HydroMechTopLoadRampTime value="0.0025" comment="Closed-ramp high-resolution run: load reaches p0 before drainage opens" units_comment="seconds" />
+                <HydroMechDrainage value="1" comment="Drain tracked exterior free-surface particles after the closed load ramp" />
+                <HydroMechDrainageStartTime value="0.0025" comment="Drainage starts when the load ramp reaches p0" units_comment="seconds" />
             </hydromechanics>
         </special>
         <parameters>
@@ -82,8 +81,8 @@
             <parameter key="Visco" value="0.1" comment="Main-paper artificial viscosity coefficient alpha" />
             <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
             <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
-            <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for ramp-load stabilization" />
-            <parameter key="SoilDampingCoef" value="0.2" comment="Damping coefficient used in the Cryer PR verification" />
+            <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for early coupled-load stabilization" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient used in the k=1e-5 Cryer refinement tests" />
             <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
             <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
             <parameter key="Shifting" value="0" comment="Shifting disabled" />
@@ -92,12 +91,12 @@
             <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
             <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
             <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
-            <parameter key="DtIni" value="1e-06" comment="Initial time step" units_comment="seconds" />
+            <parameter key="DtIni" value="5e-06" comment="Initial time step" units_comment="seconds" />
             <parameter key="DtMin" value="1e-08" comment="Minimum time step" units_comment="seconds" />
-            <parameter key="DtFixed" value="1e-06" comment="Fixed reference time step" units_comment="seconds" />
+            <parameter key="DtFixed" value="5e-06" comment="Fixed reference time step used in the k=1e-5 refinement tests" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="0.173101" comment="Stage 2 absolute final time after restart" units_comment="seconds" />
-            <parameter key="TimeOut" value="0.0025" comment="Stage 2 output interval" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.913428571429" comment="Closed-ramp high-resolution run: ramp time 0.0025 s plus Tv=1 for k=1e-5 and nu030" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.000910928571429" comment="Output interval for nu030, corresponding to Delta Tv=0.001 after ramp-end time alignment" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
             <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />

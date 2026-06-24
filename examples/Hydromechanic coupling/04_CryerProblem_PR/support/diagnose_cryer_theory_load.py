@@ -47,7 +47,30 @@ def read_part_times(runout):
     return times
 
 
+def case_runout_path(case_dir):
+    direct = case_dir / "Run.out"
+    if direct.exists():
+        return direct
+    return case_dir / "out" / "Run.out"
+
+
+def case_vtk_path(case_dir, part):
+    direct = case_dir / "particles" / f"PartFluid_{part:04d}.vtk"
+    if direct.exists():
+        return direct
+    return case_dir / "out" / "particles" / f"PartFluid_{part:04d}.vtk"
+
+
+def case_label(case_dir):
+    if case_dir.name in ("stage1", "stage2") and case_dir.parent.name:
+        return f"{case_dir.parent.name}_{case_dir.name}"
+    return case_dir.name
+
+
 def find_xml(case_dir):
+    direct_out_xml = case_dir / f"{case_dir.name}.xml"
+    if direct_out_xml.exists():
+        return direct_out_xml
     out_xml = case_dir / "out" / f"{case_dir.name}.xml"
     if out_xml.exists():
         return out_xml
@@ -55,6 +78,9 @@ def find_xml(case_dir):
     if direct_xml.exists():
         return direct_xml
     matches = sorted(case_dir.glob("*_Def.xml"))
+    if matches:
+        return matches[0]
+    matches = sorted(case_dir.glob("*.xml"))
     return matches[0] if matches else None
 
 
@@ -90,7 +116,7 @@ def read_case_parameters(case_dir):
         values["khyd"] = xml_float(root, "HydraulicConductivity", values["khyd"])
         values["q0"] = xml_float(root, "HydroMechTopLoadQ0", values["q0"])
         values["rhop0"] = xml_float(root, "rhop0", values["rhop0"])
-    runout = case_dir / "out" / "Run.out"
+    runout = case_runout_path(case_dir)
     values["dp"] = read_run_scalar(runout, "Dp", 0.003)
     values["radius"] = 0.05
     values["mass_fluid"] = read_run_scalar(runout, "MassFluid", values["rhop0"] * values["dp"] ** 3)
@@ -151,7 +177,7 @@ def closest_part(times, target_time):
 
 
 def selected_parts(case_dir):
-    times = read_part_times(case_dir / "out" / "Run.out")
+    times = read_part_times(case_runout_path(case_dir))
     summary = load_summary(case_dir)
     parts = {1}
     if summary.get("peak_num_time") is not None:
@@ -308,24 +334,25 @@ def main():
     profiles = []
     for case_dir in cases:
         case_dir = case_dir.resolve()
+        label_name = case_label(case_dir)
         params = read_case_parameters(case_dir)
         tmetrics = theory_metrics(params)
-        theory_rows.append({"case": case_dir.name, **tmetrics})
+        theory_rows.append({"case": label_name, **tmetrics})
 
         parts, times = selected_parts(case_dir)
         details = {"parameters": params, "theory": tmetrics, "parts": {}}
         for part in parts:
-            vtk = case_dir / "out" / "particles" / f"PartFluid_{part:04d}.vtk"
+            vtk = case_vtk_path(case_dir, part)
             if not vtk.exists():
                 continue
             rows = cryer.read_part_vtk(vtk)
             stats, bins = radial_stats(rows, params)
             time = times.get(part, 0.0)
             tv = tmetrics["cv_using_M"] * time / (params["radius"] ** 2) if params["radius"] else 0.0
-            label = f"{case_dir.name} Part_{part:04d} Tv={tv:.4g}"
+            label = f"{label_name} Part_{part:04d} Tv={tv:.4g}"
             profiles.append((label, bins))
             part_summary = {
-                "case": case_dir.name,
+                "case": label_name,
                 "part": part,
                 "time": time,
                 "tv_using_M": tv,
@@ -356,8 +383,8 @@ def main():
                     "r_mid_over_R": b["r_mid"] / params["radius"],
                     **b,
                 })
-            write_csv(args.figdir / f"{args.outtag}_{case_dir.name}_part{part:04d}_radial_bins.csv", bin_rows)
-        all_details[case_dir.name] = details
+            write_csv(args.figdir / f"{args.outtag}_{label_name}_part{part:04d}_radial_bins.csv", bin_rows)
+        all_details[label_name] = details
 
     write_csv(args.figdir / f"{args.outtag}_theory_parameters.csv", theory_rows)
     write_csv(args.figdir / f"{args.outtag}_load_summary.csv", summary_rows)

@@ -794,6 +794,43 @@ template<bool sim2d> void JSphCpu::ScanUmbrellaFreeSurface
 }
 
 //==============================================================================
+/// Marks inner particles close to tracked free surface as near-free-surface.
+//==============================================================================
+template<bool sim2d> void JSphCpu::MarkNearFreeSurfaceParticles
+  (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+  ,const tdouble3 *pos,const typecode *code,unsigned *fstype)const
+{
+  const int n=int(np);
+  const float limit=float(max(0.0,2.0*KernelH-0.5*Dp));
+  const float limit2=limit*limit;
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule(guided)
+  #endif
+  for(int p1=int(npb);p1<n;p1++){
+    if(!CODE_IsFluid(code[p1]) || CODE_IsPeriodic(code[p1]) || fstype[p1]!=FST_Inner)continue;
+    bool nearfs=false;
+    const tdouble3 posp1=pos[p1];
+    const StNgSearch ngs=nsearch::Init(dcell[p1],false,divdata);
+    for(int z=ngs.zini;z<ngs.zfin && !nearfs;z++)for(int y=ngs.yini;y<ngs.yfin && !nearfs;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(p2==unsigned(p1) || !CODE_IsFluid(code[p2]))continue;
+        if(fstype[p2]!=FST_FreeSurface && fstype[p2]!=FST_Isolated)continue;
+        const float drx=float(posp1.x-pos[p2].x);
+        const float dry=(sim2d? 0: float(posp1.y-pos[p2].y));
+        const float drz=float(posp1.z-pos[p2].z);
+        const float rr2=drx*drx+dry*dry+drz*drz;
+        if(rr2<=limit2){
+          nearfs=true;
+          break;
+        }
+      }
+    }
+    if(nearfs)fstype[p1]=FST_NearFreeSurface;
+  }
+}
+
+//==============================================================================
 /// Computes kernel-gradient correction matrix for free-surface tracking.
 //==============================================================================
 template<TpKernel tker,bool sim2d> void JSphCpu::ComputeCorrMatrixFreeSurface
@@ -1046,16 +1083,19 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
 //==============================================================================
 void JSphCpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.begincell || !CorrMatc || !FSTypec || !FSNormalc || !PosDivc)return;
+  const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
 
   if(Simulate2D){
     switch(TKernel){
       case KERNEL_Wendland:
         ComputeFSParticlesFreeSurface<KERNEL_Wendland,true>(Np,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,CorrMatc,FSTypec,FSNormalc,PosDivc);
         ScanUmbrellaFreeSurface<true>(Np,Npb,DivData,Dcellc,Posc,Codec,FSNormalc,FSTypec);
+        if(marknearfs)MarkNearFreeSurfaceParticles<true>(Np,Npb,DivData,Dcellc,Posc,Codec,FSTypec);
       break;
       case KERNEL_Cubic:
         ComputeFSParticlesFreeSurface<KERNEL_Cubic,true>(Np,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,CorrMatc,FSTypec,FSNormalc,PosDivc);
         ScanUmbrellaFreeSurface<true>(Np,Npb,DivData,Dcellc,Posc,Codec,FSNormalc,FSTypec);
+        if(marknearfs)MarkNearFreeSurfaceParticles<true>(Np,Npb,DivData,Dcellc,Posc,Codec,FSTypec);
       break;
       default: Run_Exceptioon("Kernel unknown.");
     }
@@ -1065,10 +1105,12 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
       case KERNEL_Wendland:
         ComputeFSParticlesFreeSurface<KERNEL_Wendland,false>(Np,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,CorrMatc,FSTypec,FSNormalc,PosDivc);
         ScanUmbrellaFreeSurface<false>(Np,Npb,DivData,Dcellc,Posc,Codec,FSNormalc,FSTypec);
+        if(marknearfs)MarkNearFreeSurfaceParticles<false>(Np,Npb,DivData,Dcellc,Posc,Codec,FSTypec);
       break;
       case KERNEL_Cubic:
         ComputeFSParticlesFreeSurface<KERNEL_Cubic,false>(Np,Npb,DivData,Dcellc,Posc,Velrhopc,Codec,CorrMatc,FSTypec,FSNormalc,PosDivc);
         ScanUmbrellaFreeSurface<false>(Np,Npb,DivData,Dcellc,Posc,Codec,FSNormalc,FSTypec);
+        if(marknearfs)MarkNearFreeSurfaceParticles<false>(Np,Npb,DivData,Dcellc,Posc,Codec,FSTypec);
       break;
       default: Run_Exceptioon("Kernel unknown.");
     }
@@ -1120,89 +1162,29 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None)return;
   if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
   if(!Acec || !FSTypec || !FSNormalc)return;
+  if(HydroMechTopLoadMode!=HMLOAD_TopVertical)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
   const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
   if(q<=0)return;
-  float accmag=0;
-  if(HydroMechTopLoadMode==HMLOAD_SphereNormal && !Simulate2D){
-    if(MassFluid<=0)return;
-    if(!HydroMechSphereLoadAreaReady){
-      const double pi=3.14159265358979323846;
-      unsigned nfs=0;
-      double sumr=0,sumnx=0,sumny=0,sumnz=0;
-      for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && IsFreeSurfaceParticle(p,Codec,FSTypec)){
-        const double dx=Posc[p].x-HydroMechSphereCenter.x;
-        const double dy=Posc[p].y-HydroMechSphereCenter.y;
-        const double dz=Posc[p].z-HydroMechSphereCenter.z;
-        const double r=sqrt(dx*dx+dy*dy+dz*dz);
-        if(r>1e-12){
-          nfs++;
-          sumr+=r;
-          sumnx+=dx/r;
-          sumny+=dy/r;
-          sumnz+=dz/r;
-        }
-      }
-      if(!nfs)return;
-      HydroMechSphereLoadAreaReady=true;
-      HydroMechSphereLoadSurfaceCount=nfs;
-      HydroMechSphereLoadRadius=sumr/double(nfs);
-      HydroMechSphereLoadArea=4.0*pi*HydroMechSphereLoadRadius*HydroMechSphereLoadRadius;
-      HydroMechSphereLoadParticleArea=HydroMechSphereLoadArea/double(nfs);
-      const double sumainx=HydroMechSphereLoadParticleArea*sumnx;
-      const double sumainy=HydroMechSphereLoadParticleArea*sumny;
-      const double sumainz=HydroMechSphereLoadParticleArea*sumnz;
-      const double residual=sqrt(sumainx*sumainx+sumainy*sumainy+sumainz*sumainz)/HydroMechSphereLoadArea;
-      const double sumfx=-q0*sumainx;
-      const double sumfy=-q0*sumainy;
-      const double sumfz=-q0*sumainz;
-      const double sumfmag=sqrt(sumfx*sumfx+sumfy*sumfy+sumfz*sumfz);
-      const double totalscalar=q0*HydroMechSphereLoadArea;
-      const double accfull=q0*HydroMechSphereLoadParticleArea/double(MassFluid);
-      Log->Printf("Hydromechanics: SphereNormal area load uses %u surface particles, R_eff=%g, A_sum=%g, 4*pi*R_eff^2=%g, A_i=%g."
-        ,HydroMechSphereLoadSurfaceCount,HydroMechSphereLoadRadius,HydroMechSphereLoadArea,HydroMechSphereLoadArea,HydroMechSphereLoadParticleArea);
-      Log->Printf("Hydromechanics: SphereNormal area load diagnostics at q0=%g: scalar_force=%g, vector_sum_F=(%g,%g,%g), |sumF|=%g, residual=|sum(A_i*n_i)|/sum(A_i)=%g, acc_range=[%g,%g]."
-        ,q0,totalscalar,sumfx,sumfy,sumfz,sumfmag,residual,accfull,accfull);
-    }
-    accmag=float(q*HydroMechSphereLoadParticleArea/double(MassFluid));
-  }
-  else{
-    const double por=double(SoilCte.Porosity);
-    const double rhol=double(SoilCte.PoreWaterRho);
-    const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
-    const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
-    const double denom=rhomix*double(Dp);
-    if(denom<=0)return;
-    accmag=float(q/denom);
-  }
+  const double por=double(SoilCte.Porosity);
+  const double rhol=double(SoilCte.PoreWaterRho);
+  const double rhos=((1.0-por)>0? (double(RhopZero)-por*rhol)/(1.0-por): double(RhopZero));
+  const double rhomix=(rhos>0? (1.0-por)*rhos+por*rhol: double(RhopZero));
+  const double denom=rhomix*double(Dp);
+  if(denom<=0)return;
+  const float accmag=float(q/denom);
   const int pini=int(Npb),pfin=int(Np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int p=pini;p<pfin;p++){
     if(!CODE_IsNormal(Codec[p]))continue;
-    if(HydroMechTopLoadMode==HMLOAD_TopVertical){
-      if(IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc)){
-        const tfloat3 load=TFloat3(0,0,-accmag);
-        Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
-        if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
-      }
-    }
-    else if(HydroMechTopLoadMode==HMLOAD_SphereNormal){
-      if(IsFreeSurfaceParticle(unsigned(p),Codec,FSTypec)){
-        const double dx=Posc[p].x-HydroMechSphereCenter.x;
-        const double dy=(Simulate2D? 0: Posc[p].y-HydroMechSphereCenter.y);
-        const double dz=Posc[p].z-HydroMechSphereCenter.z;
-        const double r=sqrt(dx*dx+dy*dy+dz*dz);
-        if(r>1e-12){
-          const float scale=-accmag/float(r);
-          const tfloat3 load=TFloat3(scale*float(dx),scale*float(dy),scale*float(dz));
-          Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
-          if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
-        }
-      }
+    if(IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc)){
+      const tfloat3 load=TFloat3(0,0,-accmag);
+      Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
+      if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
     }
   }
 }
@@ -1984,6 +1966,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   float viscth[OMP_MAXTHREADS*OMP_STRIDE];
   for(int th=0;th<OmpThreads;th++)viscth[th*OMP_STRIDE]=0;
   const bool useartstress=(ArtificialStress && artificialstress);
+  //-Hydromechanical switches used inside the pair loop.
   const bool useporefeedback=(HydroMech && porepress);
   const bool useporerate=(HydroMech && porepress && porepressrate);
   float flexconfpressure=0;
@@ -2100,6 +2083,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           tfloat4 velrhop2=velrhop[p2];
           if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
 
+          //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
           if(poreratep1 && !rsym && velrhop[p2].w>0){
             const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
             const bool inactiveporebound=(boundp2 && TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
@@ -2137,6 +2121,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             //acep1.x+=p_vpm*frx; acep1.y+=p_vpm*fry; acep1.z+=p_vpm*frz;
             const float invrhop1_2=1.f/(rhopp1*rhopp1);
             const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
+            //-Elastoplastic soil momentum from the total-stress tensor.
             const float prsxx = massp2*(sigmap1.xx*invrhop1_2 + sigmap2.xx*invrhop2_2);
 			const float prsyy = massp2*(sigmap1.yy*invrhop1_2 + sigmap2.yy*invrhop2_2);
 			const float prszz = massp2*(sigmap1.zz*invrhop1_2 + sigmap2.zz*invrhop2_2);
@@ -2144,6 +2129,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz*invrhop1_2 + sigmap2.xz*invrhop2_2);
 			const float prsyz = massp2*(sigmap1.yz*invrhop1_2 + sigmap2.yz*invrhop2_2);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            //-Flexible confinement pressure for Cryer-type external loading.
             if(useflexconf && !ftp2){
               const float prsconf=flexconfpressure*massp2*(invrhop1_2+invrhop2_2);
               const float ax=prsconf*frx, ay=prsconf*fry, az=prsconf*frz;
@@ -2193,16 +2179,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 
           const float cbar=(float)Cs0;
           const float dot3=(drx*frx+dry*fry+drz*frz);
-          //-Density Diffusion Term (Molteni and Colagrossi 2009).
-          /*if(tdensity==DDT_DDT && deltap1!=FLT_MAX){
-            const float rhop1over2=rhopp1/velrhop2.w;
-            const float visc_densi=DDTkh*cbar*(rhop1over2-1.f)/(rr2+Eta2);
-            const float dot3=(drx*frx+dry*fry+drz*frz);
-            const float delta=visc_densi*dot3*massp2;
-            //deltap1=(boundp2? FLT_MAX: deltap1+delta);
-            deltap1=(boundp2 && TBoundary==BC_DBC? FLT_MAX: deltap1+delta);
-          }*/
-          //-Stress Diffusion Term (Form 1)
+          //-Soil stress diffusion term (Form 1; reuses DensityDT=1 selector).
           if (tdensity == DDT_DDT && dsigmap1.xx != FLT_MAX) {
               const float massrhop = massp2 / velrhop2.w;
               const float visc_stress = DDTkh*cbar*massrhop/(rr2+Eta2);
@@ -2219,16 +2196,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
               dsigmap1.xz += visc_stress * dot3 * dsigmaxz;
               dsigmap1.yz += visc_stress * dot3 * dsigmayz;
           }
-          //-Density Diffusion Term (Fourtakas et al 2019).
-          /*if((tdensity==DDT_DDT2 || (tdensity==DDT_DDT2Full && !boundp2)) && deltap1!=FLT_MAX && !ftp2){
-            const float rh=1.f+DDTgz*drz;
-            const float drhop=RhopZero*pow(rh,1.f/Gamma)-RhopZero;    
-            const float visc_densi=DDTkh*cbar*((velrhop2.w-rhopp1)-drhop)/(rr2+Eta2);
-            const float dot3=(drx*frx+dry*fry+drz*frz);
-            const float delta=visc_densi*dot3*massp2/velrhop2.w;
-            deltap1=(boundp2? FLT_MAX: deltap1-delta); //-blocks it makes it boil - bloody DBC
-          }*/
-          //-Stress Diffusion Term (Form 2)
+          //-Soil stress diffusion term (Form 2; reuses DensityDT=2/3 selectors).
           if ((tdensity == DDT_DDT2 || (tdensity == DDT_DDT2Full && !boundp2)) && dsigmap1.xx != FLT_MAX && !ftp2) {
               const float massrhop = massp2 / velrhop2.w;
               const float visc_stress = DDTkh*cbar*massrhop/(rr2+Eta2);
@@ -2337,6 +2305,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
         else rsym=false;                                            //<vs_syymmetry>
       }
     }
+    //-Optional correction matrix for soil stress-rate velocity gradients.
     if(SoilStressRateGradCorr && !ftp1 && corrmat){
       const tmatrix3d invcorr=corrmat[p1];
       gradvp1_xx_xy_xz=ApplyGradCorr(gradvp1_xx_xy_xz,invcorr);

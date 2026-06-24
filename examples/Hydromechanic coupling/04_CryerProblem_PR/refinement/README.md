@@ -10,7 +10,7 @@ Current baseline for further Cryer debugging:
 
 - Use `dp=0.003` as the practical test resolution.
 - Use the formal two-stage path: undrained loading first, then drained restart.
-- Use `HydroMechTopLoadMode=3` (`FlexibleConfinement`) as the current Cryer loading baseline.
+- Use `HydroMechTopLoadMode=2` (`FlexibleConfinement`) as the current Cryer loading baseline.
 - The main unresolved issue is the Stage1 undrained pore-pressure distribution:
   surface pressure remains too high and center pressure too low, even after
   increasing resolution to `dp=0.002`.

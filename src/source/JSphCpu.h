@@ -194,7 +194,7 @@ protected:
   tmatrix3d *CorrMatc;  ///<Kernel-gradient correction matrix.
   unsigned *FSTypec;    ///<Particle classification: FST_Inner, FST_FreeSurface, FST_Isolated, FST_Boundary.
   tfloat3 *FSNormalc;   ///<Free-surface normal vectors used by the umbrella scan.
-  float *PosDivc;       ///<Position divergence threshold used for free-surface detection.
+  float *PosDivc;       ///<Position-divergence free-surface diagnostic value.
 
   //-Variables for Laminar+SPS viscosity.  
   tsymatrix3f *SpsTauc;       ///<SPS sub-particle stress tensor.
@@ -291,6 +291,9 @@ protected:
   template<bool sim2d> void ScanUmbrellaFreeSurface
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
     ,const tdouble3 *pos,const typecode *code,const tfloat3 *fsnormal,unsigned *fstype)const;
+  template<bool sim2d> void MarkNearFreeSurfaceParticles
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const typecode *code,unsigned *fstype)const;
   template<TpKernel tker,bool sim2d> void ComputeCorrMatrixFreeSurface
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat4 *velrhop,tmatrix3d *corrmat)const;

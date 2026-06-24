@@ -205,15 +205,9 @@ protected:
   double HydroMechInitZ;      ///<Constant initialization elevation for HMINIT_ConstantZ. //mdbr
   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
-  tdouble3 HydroMechSphereCenter; ///<Default sphere center for spherical hydromechanical operations. //mdbr
   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
-  bool HydroMechSphereLoadAreaReady; ///<Cached area-normalized spherical top-load data is ready. //mdbr
-  unsigned HydroMechSphereLoadSurfaceCount; ///<Number of surface particles used for area-normalized spherical load. //mdbr
-  double HydroMechSphereLoadRadius; ///<Effective radius from loaded surface particles [m]. //mdbr
-  double HydroMechSphereLoadArea; ///<Total spherical area represented by loaded particles [m^2]. //mdbr
-  double HydroMechSphereLoadParticleArea; ///<Area assigned to each loaded spherical surface particle [m^2]. //mdbr
   float PoreDtSafety;         ///<Safety coefficient for pore-pressure diffusion time-step limit. //mdbr
   bool PoreShepardRegularization; ///<Enables optional Shepard regularization for pore pressure. //mdbr
   unsigned PoreShepardInterval; ///<Step interval for pore-pressure Shepard regularization. //mdbr
