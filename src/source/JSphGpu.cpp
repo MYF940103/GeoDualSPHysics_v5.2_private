@@ -1091,7 +1091,7 @@ bool JSphGpu::IsHydroMechDrainageActive()const{
 //==============================================================================
 void JSphGpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressg || !FSTypeg)return;
-  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),Codeg,FSTypeg,PorePressg);
+  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg);
   Check_CudaErroor("Failed applying free-surface pore pressure.");
 }
 
@@ -1100,7 +1100,7 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || !Aceg || !FSTypeg || !FSNormalg)return;
-  if(HydroMechTopLoadMode!=HMLOAD_TopVertical)return;
+  if(HydroMechTopLoadMode!=HMLOAD_TopVertical && HydroMechTopLoadMode!=HMLOAD_TopStripVertical)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1114,7 +1114,7 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
   if(denom<=0)return;
   const float accmag=float(q/denom);
   cusph::ApplyHydroMechTopLoadAcceleration(Np,Npb,HydroMechTopLoadMode,accmag
-    ,Codeg,FSTypeg,FSNormalg,Aceg,HydroMechLoadAceg);
+    ,Posxyg,Poszg,Codeg,FSTypeg,FSNormalg,Aceg,HydroMechLoadAceg);
   Check_CudaErroor("Failed applying hydromechanical top load.");
 }
 
@@ -1146,7 +1146,7 @@ void JSphGpu::ShepardRegularizePorePressure(){
   float *porepressnew=ArraysGpu->ReserveFloat();
   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
-    ,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,PorePress0g,PorePressg,porepressnew);
+    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,PorePress0g,PorePressg,porepressnew);
   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
   ArraysGpu->Free(porepressnew); porepressnew=NULL;
   ApplyFreeSurfacePorePressure();

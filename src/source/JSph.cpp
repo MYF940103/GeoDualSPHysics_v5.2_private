@@ -3250,6 +3250,7 @@ std::string JSph::GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode){
   if(loadmode==HMLOAD_None)tx="None";
   else if(loadmode==HMLOAD_TopVertical)tx="TopVertical";
   else if(loadmode==HMLOAD_FlexibleConfinement)tx="FlexibleConfinement";
+  else if(loadmode==HMLOAD_TopStripVertical)tx="TopStripVertical";
   else tx="???";
   return(tx);
 }
@@ -3455,7 +3456,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
   else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
   else if(toploadmodestr=="flexibleconfinement" || toploadmodestr=="flexible_confinement" || toploadmodestr=="confinement" || toploadmodestr=="zhaoconfinement" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_FlexibleConfinement;
-  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical or 2=FlexibleConfinement.");
+  else if(toploadmodestr=="topstripvertical" || toploadmodestr=="top_strip_vertical" || toploadmodestr=="stripvertical" || toploadmodestr=="strip_vertical" || toploadmodestr=="3")HydroMechTopLoadMode=HMLOAD_TopStripVertical;
+  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical, 2=FlexibleConfinement or 3=TopStripVertical.");
   HydroMechTopLoadQ0=sxml->ReadElementFloat(hydroReadNode,"HydroMechTopLoadQ0","value",true,0.f);
   HydroMechTopLoadRampTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechTopLoadRampTime","value",true,0);
 
@@ -3527,10 +3529,14 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",HydroMechInitZ);
     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
-    Log->Print("  HydroMechDrainageBoundary: FreeSurface");
+    Log->Print(HydroMechTopLoadMode==HMLOAD_TopStripVertical?
+      "  HydroMechDrainageBoundary: FreeSurface excluding hard-coded Lian strip x=[0,1.25] m":
+      "  HydroMechDrainageBoundary: FreeSurface");
     Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
     if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)
       Log->Print("  HydroMechTopLoadDiscretization: Zhao-style global pair-wise kernel-truncation confinement");
+    if(HydroMechTopLoadMode==HMLOAD_TopStripVertical)
+      Log->Print("  HydroMechTopLoadFootprint: hard-coded Lian 2023 strip x=[0,1.25] m");
     if(HydroMechTopLoadMode!=HMLOAD_None){
       Log->Printf("  HydroMechTopLoadQ0: %g",HydroMechTopLoadQ0);
       Log->Printf("  HydroMechTopLoadRampTime: %g",HydroMechTopLoadRampTime);

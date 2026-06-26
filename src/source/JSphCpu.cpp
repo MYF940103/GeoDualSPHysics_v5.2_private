@@ -50,6 +50,16 @@ using namespace std;
 
 static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
 
+// Hard-coded footprint for the Lian 2023 2D flexible strip-footing verification.
+static inline bool HydroMechInLianTopStrip(const double x){
+  return(x>=0.0 && x<=1.25);
+}
+
+// The left-top corner particle can be classified as interior by the generic free-surface tracker.
+static inline bool HydroMechIsLianTopStripSurface(const tdouble3 &pos,const double dp){
+  return(HydroMechInLianTopStrip(pos.x) && pos.z>=10.0-0.5*dp && pos.z<=10.0+0.5*dp);
+}
+
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -1136,8 +1146,9 @@ bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsign
 /// Returns true when a particle belongs to the active drained pore-pressure boundary.
 //==============================================================================
 bool JSphCpu::IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const{
-  (void)pos;
-  return(IsFreeSurfaceParticle(p,code,fstype));
+  if(!IsFreeSurfaceParticle(p,code,fstype))return(false);
+  if(HydroMechTopLoadMode==HMLOAD_TopStripVertical && pos && HydroMechInLianTopStrip(pos[p].x))return(false);
+  return(true);
 }
 
 //==============================================================================
@@ -1162,7 +1173,9 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None)return;
   if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
   if(!Acec || !FSTypec || !FSNormalc)return;
-  if(HydroMechTopLoadMode!=HMLOAD_TopVertical)return;
+  const bool alltop=(HydroMechTopLoadMode==HMLOAD_TopVertical);
+  const bool striptop=(HydroMechTopLoadMode==HMLOAD_TopStripVertical);
+  if(!alltop && !striptop)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1181,7 +1194,10 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   #endif
   for(int p=pini;p<pfin;p++){
     if(!CODE_IsNormal(Codec[p]))continue;
-    if(IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc)){
+    const bool upwardfs=IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc);
+    const bool stripgeom=(striptop && HydroMechIsLianTopStripSurface(Posc[p],double(Dp)));
+    if(upwardfs || stripgeom){
+      if(striptop && !stripgeom && !HydroMechInLianTopStrip(Posc[p].x))continue;
       const tfloat3 load=TFloat3(0,0,-accmag);
       Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
       if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;

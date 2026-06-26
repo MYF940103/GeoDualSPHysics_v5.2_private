@@ -1010,20 +1010,44 @@ __device__ bool KerHydroMechIsFreeSurface(unsigned p,const typecode *code,const 
 }
 
 //==============================================================================
+/// Returns true inside the hard-coded Lian 2023 strip-footing footprint.
+//==============================================================================
+__device__ bool KerHydroMechInLianTopStrip(const double x){
+  return(x>=0.0 && x<=1.25);
+}
+
+//==============================================================================
+/// Returns true for the hard-coded top surface of the Lian 2023 strip footprint.
+//==============================================================================
+__device__ bool KerHydroMechIsLianTopStripSurface(const double x,const double z,const double dp){
+  return(KerHydroMechInLianTopStrip(x) && z>=10.0-0.5*dp && z<=10.0+0.5*dp);
+}
+
+//==============================================================================
+/// Returns true when the particle belongs to the active drained pore boundary.
+//==============================================================================
+__device__ bool KerHydroMechIsDrainedParticle(unsigned p,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype){
+  if(!KerHydroMechIsFreeSurface(p,code,fstype))return(false);
+  if(loadmode==HMLOAD_TopStripVertical && posxy && KerHydroMechInLianTopStrip(posxy[p].x))return(false);
+  return(true);
+}
+
+//==============================================================================
 /// Enforces drained pore pressure on free-surface particles.
 //==============================================================================
 __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs
-  ,const typecode *code,const unsigned *fstype,float *porepress)
+  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
-  if(drainfs && p<np && KerHydroMechIsFreeSurface(p,code,fstype))porepress[p]=0.f;
+  if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype))porepress[p]=0.f;
 }
 
-void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const typecode *code,const unsigned *fstype,float *porepress)
+void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress)
 {
   if(np>npb && porepress){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),code,fstype,porepress);
+    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress);
   }
 }
 
@@ -1031,14 +1055,17 @@ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const ty
 /// Applies q0 top load to selected free-surface particles.
 //==============================================================================
 __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,unsigned loadmode,float accmag
-  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
+  ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
-  if(p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)){
+  const bool striptop=(p<np && loadmode==HMLOAD_TopStripVertical);
+  const bool stripgeom=(striptop && posxy && posz && KerHydroMechIsLianTopStripSurface(posxy[p].x,posz[p],CTE.dp));
+  if(p<np && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p]) && (KerHydroMechIsFreeSurface(p,code,fstype) || stripgeom)){
     const bool freesurf=KerHydroMechIsFreeSurface(p,code,fstype);
     float3 a=ace[p];
     float3 aload=make_float3(0.f,0.f,0.f);
-    if(loadmode==HMLOAD_TopVertical){
+    const bool alltop=(loadmode==HMLOAD_TopVertical);
+    if(alltop || stripgeom || (striptop && posxy && KerHydroMechInLianTopStrip(posxy[p].x))){
       if(freesurf){
         const float3 n=fsnormal[p];
         const double nlen=sqrt(double(n.x)*n.x+double(n.y)*n.y+double(n.z)*n.z);
@@ -1053,6 +1080,7 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
         }
         if(upward)aload.z-=accmag;
       }
+      else if(stripgeom)aload.z-=accmag;
     }
     a.x+=aload.x;
     a.y+=aload.y;
@@ -1063,11 +1091,11 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
 }
 
 void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
-  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
+  ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace)
 {
   if(np>npb && accmag && code && fstype && fsnormal && ace){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,unsigned(loadmode),accmag,code,fstype,fsnormal,ace,loadace);
+    KerApplyHydroMechTopLoadAcceleration <<<sgrid,SPHBSIZE>>> (np,npb,unsigned(loadmode),accmag,posxy,posz,code,fstype,fsnormal,ace,loadace);
   }
 }
 
@@ -1182,14 +1210,14 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
 //==============================================================================
 /// Shepard regularization of excess pore pressure.
 //==============================================================================
-template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs
+template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs,unsigned loadmode
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode,const float *porepress0,const float *porepress,float *porepressnew)
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(p1<np && CODE_IsFluid(code[p1])){
-    if(drainfs && KerHydroMechIsFreeSurface(p1,code,fstype)){
+    if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){
       porepressnew[p1]=0.f;
       return;
     }
@@ -1232,30 +1260,30 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
   }
 }
 
-template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,const byte *boundmode
   ,const float *porepress0,const float *porepress,float *porepressnew)
 {
   if(np>npb && porepress0 && porepress && porepressnew){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
   }
 }
 
 void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
-  ,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+  ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode
   ,const float *porepress0,const float *porepress,float *porepressnew)
 {
   if(simulate2d){
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
     else throw "Kernel unknown.";
   }
   else{
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,porepress0,porepress,porepressnew);
     else throw "Kernel unknown.";
   }
 }
@@ -1365,8 +1393,9 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
             const double lapz=vol2*pdrz*pdotgrad/double(prr2+CTE.eta2);
             pore_ratep1+=double(CTE.porekwn)*(-divv);
             if(CTE.hydraulicconductivity>0.f){
+              const bool useghead=(CTE.gravityx*CTE.gravityx + CTE.gravityy*CTE.gravityy + CTE.gravityz*CTE.gravityz)>0.f;
               const double seep=2.0*double(CTE.hydraulicconductivity)*lapw/(double(CTE.porewaterrho)*double(CTE.poreghyd))
-                + (double(CTE.poreghyd)>0.? 2.0*double(CTE.hydraulicconductivity)*lapz: 0.0);
+                + (useghead? 2.0*double(CTE.hydraulicconductivity)*lapz: 0.0);
               pore_ratep1+=double(CTE.porekwn)*seep;
             }
           }

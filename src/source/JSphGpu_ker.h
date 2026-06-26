@@ -267,9 +267,10 @@ void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,uns
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
   ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs);
-void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,const typecode *code,const unsigned *fstype,float *porepress);
+void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress);
 void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
-  ,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
+  ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
 void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
 void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
@@ -278,7 +279,7 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
   ,const float *porepress0,float *porepress);
 void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
-  ,bool drainfs,const StDivDataGpu &dvd,const unsigned *dcell
+  ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode
   ,const float *porepress0,const float *porepress,float *porepressnew);

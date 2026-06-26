@@ -1,0 +1,144 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="25-06-2026 00:00:00">
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="No gravity in Lian 2023 flexible strip-footing consolidation" units_comment="m/s^2" />
+            <rhop0 value="1990" comment="Saturated mixture density: (1-n)rho_s+n*rho_l for n=0.4" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="0" auto="true" comment="Hydromechanics recalculates Cs0 from the soil constrained modulus" />
+            <hdp value="1.8" comment="Smoothing length ratio h/dp" />
+            <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte sizefx="20.0" _rem="Soil layer width L=16a=20 m" />
+                <newvarcte sizefz="10.0" _rem="Soil layer depth H=8a=10 m" />
+                <newvarcte sizebx="20.0" _rem="Boundary width matching the soil layer" />
+                <newvarcte sizebz="10.0" _rem="Boundary height matching the soil layer" />
+                <newvarcte Dp="0.1" _rem="Particle spacing used by Lian 2023" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-Dp*12" y="0" z="#-Dp*12" />
+                <pointmax x="#sizefx+Dp*12" y="0" z="#sizefz+Dp*12" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>actual | bound</setshapemode>
+                    <setnormalinvert invert="false" />
+                    <move x="0" y="-0.1" z="0" />
+                    <setmkbound mk="0" />
+                    <drawbeach mask="1|2|6">
+                        <point x="0" y="0.2" z="#sizebz" />
+                        <point x="0" y="0.2" z="0" />
+                        <point x="#sizebx" y="0.2" z="0" />
+                        <point x="#sizebx" y="0.2" z="#sizebz" />
+                    </drawbeach>
+                    <matrixreset />
+                    <shapeout file="hdp" />
+                    <setmkvoid />
+                    <redraw />
+
+                    <setdrawmode mode="full" />
+                    <setboxlimitmode mode="full" />
+                    <setmkfluid mk="0" />
+                    <fillbox x="#Dp/2" y="0" z="#Dp/2">
+                        <modefill>void</modefill>
+                        <point x="#-Dp/2" y="-1" z="#-Dp/2" />
+                        <size x="#(sizefx)" y="2" z="#(sizefz)" />
+                    </fillbox>
+
+                    <setshapemode>actual | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-4*Dp" y="-1" z="#-4*Dp" />
+                        <size x="#sizebx+8*Dp" y="2" z="#4*Dp" />
+                    </drawbox>
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-4*Dp" y="-1" z="0" />
+                        <size x="#4*Dp" y="2" z="#sizebz" />
+                    </drawbox>
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#sizebx+Dp" y="-1" z="0" />
+                        <size x="#4*Dp" y="2" z="#sizebz" />
+                    </drawbox>
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="2.0" comment="Maximum distance (H*distanceh) to compute normals data" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry (VTK format)" />
+            <svshapes value="1" comment="Save geometry shapes" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <soils>
+                <phi value="33" comment="Friction angle; high cohesion keeps this verification elastic" />
+                <coh value="1e9" comment="High cohesion to avoid plastic yielding in the elastic strip-loading benchmark" />
+                <dlt value="0" comment="Dilatancy angle" />
+                <ModulusE value="20e6" comment="Young's modulus used by Lian 2023" units_comment="Pa" />
+                <PRvs value="0.33" comment="Poisson ratio used by Lian 2023" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+                <PoreWaterRho value="1000" comment="Pore-water density rho_l" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="1e9" comment="Pore-water bulk modulus K_l" units_comment="Pa" />
+                <Porosity value="0.4" comment="Porosity n" />
+                <HydraulicConductivity value="1e-3" comment="Saturated hydraulic conductivity k_sat" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Explicit u-pw safety factor; TPI is not enabled in this case" />
+                <PoreShepardRegularization value="0" comment="Lian 2023 strip-footing case did not require pore-pressure regularization" />
+                <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
+                <HydroMechInitMode value="0" comment="No initial hydrostatic pore pressure because gravity is ignored" />
+                <HydroMechTopLoadMode value="3" comment="3=TopStripVertical; hard-coded Lian strip footprint x=[0,1.25] m" />
+                <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0=10 kPa" units_comment="Pa" />
+                <HydroMechTopLoadRampTime value="1.0" comment="Ramp load duration tL=1 s" units_comment="seconds" />
+                <HydroMechDrainage value="1" comment="After tL, drain only the open top free surface outside the strip footprint; strip footing and other boundaries remain impermeable" />
+                <HydroMechDrainageStartTime value="1.0" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
+            </hydromechanics>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+            <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
+            <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
+            <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition; first approximation for all walls" />
+            <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
+            <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
+            <parameter key="Kernel" value="2" comment="Wendland kernel" />
+            <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+            <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient alpha" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
+            <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
+            <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for ramp-load stabilization" />
+            <parameter key="SoilDampingCoef" value="0.04" comment="Global damping coefficient eta_d used by Lian 2023" />
+            <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
+            <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
+            <parameter key="Shifting" value="0" comment="Shifting disabled" />
+            <parameter key="ShiftCoef" value="-2" comment="Unused when shifting is disabled" />
+            <parameter key="ShiftTFS" value="1.5" comment="Free-surface threshold" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
+            <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
+            <parameter key="DtIni" value="0.000001" comment="Initial time step" units_comment="seconds" />
+            <parameter key="DtMin" value="0.000000001" comment="Minimum time step" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.000001" comment="Fixed reference time step for first validation; TPI is not enabled" units_comment="seconds" />
+            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
+            <parameter key="TimeMax" value="3.0" comment="Early-time contour validation target; full paper dissipation reaches 100 s" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.05" comment="Output interval for early-time Fig. 10 style checks" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="500" comment="Minimum valid rhop" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />
+            <simulationdomain comment="Defines domain of simulation">
+                <posmin x="default" y="default" z="default" />
+                <posmax x="default" y="default" z="default" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>
