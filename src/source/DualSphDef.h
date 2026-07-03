@@ -327,7 +327,8 @@ typedef enum{
   HMLOAD_None=0,                ///<No hydromechanical external load is applied.
   HMLOAD_TopVertical=1,         ///<Applies q0 vertically to upward free-surface particles.
   HMLOAD_FlexibleConfinement=2, ///<Applies q0 as a Zhao-style kernel-truncation confining stress.
-  HMLOAD_TopStripVertical=3     ///<Applies q0 vertically to a hard-coded Lian 2023 strip-footing free surface.
+  HMLOAD_TopStripVertical=3,    ///<Applies q0 vertically to the hard-coded Yao 2025 strip-footing free surface.
+  HMLOAD_LianFlexibleStrip=4    ///<Applies q0 vertically to the hard-coded Lian 2023 flexible strip-footing free surface.
 }TpHydroMechLoadMode;
 
 ///Particle classification from the free-surface tracker.

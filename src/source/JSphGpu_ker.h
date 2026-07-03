@@ -271,6 +271,9 @@ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroM
   ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress);
 void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
+void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb,TpHydroMechLoadMode loadmode
+  ,const StDivDataGpu &dvd,const unsigned *dcell,const double2 *posxy,const double *posz
+  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress);
 void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
 void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n

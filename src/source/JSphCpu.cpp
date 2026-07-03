@@ -50,14 +50,24 @@ using namespace std;
 
 static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
 
-// Hard-coded footprint for the Lian 2023 2D flexible strip-footing verification.
-static inline bool HydroMechInLianTopStrip(const double x){
+// Hard-coded footprints for benchmark strip-footing verifications.
+static inline bool HydroMechInYaoTopStrip(const double x){
+  return(x>=-3.0 && x<=3.0);
+}
+
+static inline bool HydroMechInLianFlexibleStrip(const double x){
   return(x>=0.0 && x<=1.25);
 }
 
-// The left-top corner particle can be classified as interior by the generic free-surface tracker.
-static inline bool HydroMechIsLianTopStripSurface(const tdouble3 &pos,const double dp){
-  return(HydroMechInLianTopStrip(pos.x) && pos.z>=10.0-0.5*dp && pos.z<=10.0+0.5*dp);
+static inline bool HydroMechInBenchmarkTopStrip(const TpHydroMechLoadMode loadmode,const double x){
+  if(loadmode==HMLOAD_TopStripVertical)return(HydroMechInYaoTopStrip(x));
+  if(loadmode==HMLOAD_LianFlexibleStrip)return(HydroMechInLianFlexibleStrip(x));
+  return(false);
+}
+
+// Corner strip particles can be classified as interior by the generic free-surface tracker.
+static inline bool HydroMechIsBenchmarkTopStripSurface(const TpHydroMechLoadMode loadmode,const tdouble3 &pos,const double dp){
+  return(HydroMechInBenchmarkTopStrip(loadmode,pos.x) && pos.z>=10.0-0.5*dp && pos.z<=10.0+0.5*dp);
 }
 
 //==============================================================================
@@ -1147,7 +1157,7 @@ bool JSphCpu::IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsign
 //==============================================================================
 bool JSphCpu::IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const{
   if(!IsFreeSurfaceParticle(p,code,fstype))return(false);
-  if(HydroMechTopLoadMode==HMLOAD_TopStripVertical && pos && HydroMechInLianTopStrip(pos[p].x))return(false);
+  if(pos && HydroMechInBenchmarkTopStrip(HydroMechTopLoadMode,pos[p].x))return(false);
   return(true);
 }
 
@@ -1174,7 +1184,7 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
   if(!Acec || !FSTypec || !FSNormalc)return;
   const bool alltop=(HydroMechTopLoadMode==HMLOAD_TopVertical);
-  const bool striptop=(HydroMechTopLoadMode==HMLOAD_TopStripVertical);
+  const bool striptop=(HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip);
   if(!alltop && !striptop)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
@@ -1195,9 +1205,9 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   for(int p=pini;p<pfin;p++){
     if(!CODE_IsNormal(Codec[p]))continue;
     const bool upwardfs=IsUpwardFreeSurface(unsigned(p),Codec,FSTypec,FSNormalc);
-    const bool stripgeom=(striptop && HydroMechIsLianTopStripSurface(Posc[p],double(Dp)));
+    const bool stripgeom=(striptop && HydroMechIsBenchmarkTopStripSurface(HydroMechTopLoadMode,Posc[p],double(Dp)));
     if(upwardfs || stripgeom){
-      if(striptop && !stripgeom && !HydroMechInLianTopStrip(Posc[p].x))continue;
+      if(striptop && !stripgeom && !HydroMechInBenchmarkTopStrip(HydroMechTopLoadMode,Posc[p].x))continue;
       const tfloat3 load=TFloat3(0,0,-accmag);
       Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
       if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
@@ -1273,13 +1283,11 @@ void JSphCpu::InitHydroMechState(){
       const double mcon=double(SoilCte.ModulusK)+4.0*double(SoilCte.ModulusG)/3.0;
       const double undrained_ratio=kwn/(mcon+kwn);
       const double effective_ratio=mcon/(mcon+kwn);
-      const double rhosw=double(RhopZero);
+      const double rhosw=(analyticgravityoff? double(RhopZero): max(0.,double(RhopZero)-double(SoilCte.PoreWaterRho)));
       const double hydroactual=double(SoilCte.PoreWaterRho)*analyticg*depthhydro;
-      const double hydroghost=double(SoilCte.PoreWaterRho)*analyticg*depthghost;
-      const double fullundrained=undrained_ratio*rhosw*analyticg*depthghost;
-      const double excessghost=fullundrained-hydroghost;
+      const double excessghost=undrained_ratio*rhosw*analyticg*depthghost;
       float hydro=(analyticgravityoff? 0.f: float(hydroactual));
-      float pw=(analyticgravityoff? float(fullundrained): float(hydroactual+excessghost));
+      float pw=(analyticgravityoff? float(excessghost): float(hydroactual+excessghost));
       if(p>=Npb && IsFreeSurfaceParticle(p,Codec,FSTypec)){
         hydro=0.f;
         pw=0.f;
@@ -1319,13 +1327,74 @@ void JSphCpu::InitHydroMechState(){
 //==============================================================================
 void JSphCpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressc || !FSTypec)return;
-  if(!IsHydroMechDrainageActive())return;
+  if(!IsHydroMechDrainageActive()){
+    ApplyYaoTopStripPorePressureExtrapolation();
+    return;
+  }
   const int pini=int(Npb),pfin=int(Np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
   #endif
   for(int p=pini;p<pfin;p++){
     if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec))PorePressc[p]=0;
+  }
+  ApplyYaoTopStripPorePressureExtrapolation();
+}
+
+//==============================================================================
+/// Extrapolates pore pressure to the impermeable Yao strip contact surface.
+//==============================================================================
+template<TpKernel tker,bool sim2d> void JSphCpu::ApplyYaoTopStripPorePressureExtrapolationT(){
+  if((HydroMechTopLoadMode!=HMLOAD_TopStripVertical && HydroMechTopLoadMode!=HMLOAD_LianFlexibleStrip) || !PorePressc || !Posc || !Velrhopc || !Codec || !FSTypec || !DivData.begincell)return;
+  const int pini=int(Npb),pfin=int(Np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule(guided)
+  #endif
+  for(int p1=pini;p1<pfin;p1++){
+    if(!CODE_IsFluid(Codec[p1]) || !IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec) || !HydroMechIsBenchmarkTopStripSurface(HydroMechTopLoadMode,Posc[p1],double(Dp)))continue;
+    const tdouble3 posp1=Posc[p1];
+    double sumwab=0,pwsum=0;
+    const StNgSearch ngs=nsearch::Init(Dcellc[p1],false,DivData);
+    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
+      for(unsigned p2=pif.x;p2<pif.y;p2++){
+        if(p2==unsigned(p1) || !CODE_IsFluid(Codec[p2]) || Velrhopc[p2].w<=0)continue;
+        if(HydroMechIsBenchmarkTopStripSurface(HydroMechTopLoadMode,Posc[p2],double(Dp)))continue;
+        if(Posc[p2].z>posp1.z-0.25*double(Dp))continue;
+        const double drx=posp1.x-Posc[p2].x;
+        const double dry=(sim2d? 0: posp1.y-Posc[p2].y);
+        const double drz=posp1.z-Posc[p2].z;
+        const float rr2=float(drx*drx+dry*dry+drz*drz);
+        if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
+          const double vol2=double(MassFluid/Velrhopc[p2].w);
+          const double wab=double(fsph::GetKernel_Wab<tker>(CSP,rr2))*vol2;
+          sumwab+=wab;
+          pwsum+=wab*double(PorePressc[p2]);
+        }
+      }
+    }
+    if(sumwab>0)PorePressc[p1]=float(pwsum/sumwab);
+  }
+}
+
+//==============================================================================
+/// Selects pore-pressure extrapolation for the impermeable Yao strip surface.
+//==============================================================================
+void JSphCpu::ApplyYaoTopStripPorePressureExtrapolation(){
+  if(HydroMechTopLoadMode!=HMLOAD_TopStripVertical && HydroMechTopLoadMode!=HMLOAD_LianFlexibleStrip)return;
+  if(Simulate2D){
+    switch(TKernel){
+      case KERNEL_Wendland: ApplyYaoTopStripPorePressureExtrapolationT<KERNEL_Wendland,true >(); break;
+      case KERNEL_Cubic:    ApplyYaoTopStripPorePressureExtrapolationT<KERNEL_Cubic   ,true >(); break;
+      default: Run_Exceptioon("Kernel unknown.");
+    }
+  }
+  else{
+    switch(TKernel){
+      case KERNEL_Wendland: ApplyYaoTopStripPorePressureExtrapolationT<KERNEL_Wendland,false>(); break;
+      case KERNEL_Cubic:    ApplyYaoTopStripPorePressureExtrapolationT<KERNEL_Cubic   ,false>(); break;
+      default: Run_Exceptioon("Kernel unknown.");
+    }
   }
 }
 
@@ -1388,8 +1457,10 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
             const double dvz=double(vrp2.z)-double(vrp1.z);
             const double dotgrad=drx*cfrx+dry*cfry+drz*cfrz;
             divv+=vol2*(dvx*cfrx+dvy*cfry+dvz*cfrz);
-            lapw+=vol2*double(pwp1-porepress[p2])*dotgrad/double(rr2+Eta2);
-            lapz+=vol2*(posp1.z-pos[p2].z)*dotgrad/double(rr2+Eta2);
+            if(khyd>0){
+              lapw+=vol2*double(pwp1-porepress[p2])*dotgrad/double(rr2+Eta2);
+              lapz+=vol2*(posp1.z-pos[p2].z)*dotgrad/double(rr2+Eta2);
+            }
           }
         }
       }
@@ -2122,10 +2193,14 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double pdvz=double(velrhop[p2].z)-double(velp1.z);
                 const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
                 const double divv=vol2*(pdvx*pcfrx+pdvy*pcfry+pdvz*pcfrz);
-                const double lapw=vol2*double(pwp1-porepress[p2])*pdotgrad/double(prr2+Eta2);
-                const double lapz=vol2*(double(posp1.z)-double(pos[p2].z))*pdotgrad/double(prr2+Eta2);
-                pore_ratep1+=kwn*(-divv);
-                if(khyd>0)pore_ratep1+=kwn*(2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd) + (gnorm>0? 2.0*khyd*lapz: 0.0));
+                const double comp=kwn*(-divv);
+                pore_ratep1+=comp;
+                if(khyd>0){
+                  const double lapw=vol2*double(pwp1-porepress[p2])*pdotgrad/double(prr2+Eta2);
+                  const double lapz=vol2*(double(posp1.z)-double(pos[p2].z))*pdotgrad/double(prr2+Eta2);
+                  const double seep=kwn*(2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd) + (gnorm>0? 2.0*khyd*lapz: 0.0));
+                  pore_ratep1+=seep;
+                }
               }
             }
           }
@@ -4120,7 +4195,7 @@ double JSphCpu::DtVariable(bool final){
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
   if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
-  dt=min(dt,dtw);
+  else dt=min(dt,dtw);
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;

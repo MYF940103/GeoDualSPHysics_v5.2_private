@@ -288,6 +288,7 @@ protected:
   bool IsHydroMechDrainageActive()const;
   void ApplyFreeSurfacePorePressure();
   void ApplyHydroMechTopLoadAcceleration();
+  void ApplyYaoTopStripPorePressureExtrapolation();
   void ApplyPorePressureBoundaries();
   void InteractionPorePressureMdbcCorrection();
   void ShepardRegularizePorePressure();

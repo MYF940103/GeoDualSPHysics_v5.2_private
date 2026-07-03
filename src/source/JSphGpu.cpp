@@ -1092,7 +1092,18 @@ bool JSphGpu::IsHydroMechDrainageActive()const{
 void JSphGpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressg || !FSTypeg)return;
   cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg);
+  ApplyYaoTopStripPorePressureExtrapolation();
   Check_CudaErroor("Failed applying free-surface pore pressure.");
+}
+
+//==============================================================================
+/// Extrapolates pore pressure to the impermeable Yao strip contact surface.
+//==============================================================================
+void JSphGpu::ApplyYaoTopStripPorePressureExtrapolation(){
+  if((HydroMechTopLoadMode!=HMLOAD_TopStripVertical && HydroMechTopLoadMode!=HMLOAD_LianFlexibleStrip) || !PorePressg || !FSTypeg || !DivData.beginendcell)return;
+  cusph::ExtrapolateYaoTopStripPorePressure(TKernel,Simulate2D,Np,Npb,HydroMechTopLoadMode,DivData,Dcellg
+    ,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,PorePressg);
+  Check_CudaErroor("Failed extrapolating strip contact pore pressure.");
 }
 
 //==============================================================================
@@ -1100,7 +1111,7 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
 //==============================================================================
 void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None || HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || !Aceg || !FSTypeg || !FSNormalg)return;
-  if(HydroMechTopLoadMode!=HMLOAD_TopVertical && HydroMechTopLoadMode!=HMLOAD_TopStripVertical)return;
+  if(HydroMechTopLoadMode!=HMLOAD_TopVertical && HydroMechTopLoadMode!=HMLOAD_TopStripVertical && HydroMechTopLoadMode!=HMLOAD_LianFlexibleStrip)return;
   const double q0=double(HydroMechTopLoadQ0);
   if(q0<=0)return;
   const double tramp=HydroMechTopLoadRampTime;
@@ -1234,13 +1245,11 @@ void JSphGpu::InitHydroMechPorePressure(){
       const double mcon=double(SoilCte.ModulusK)+4.0*double(SoilCte.ModulusG)/3.0;
       const double undrained_ratio=kwn/(mcon+kwn);
       const double effective_ratio=mcon/(mcon+kwn);
-      const double rhosw=double(RhopZero);
+      const double rhosw=(analyticgravityoff? double(RhopZero): max(0.,double(RhopZero)-double(SoilCte.PoreWaterRho)));
       const double hydroactual=double(SoilCte.PoreWaterRho)*analyticg*depthhydro;
-      const double hydroghost=double(SoilCte.PoreWaterRho)*analyticg*depthghost;
-      const double fullundrained=undrained_ratio*rhosw*analyticg*depthghost;
-      const double excessghost=fullundrained-hydroghost;
+      const double excessghost=undrained_ratio*rhosw*analyticg*depthghost;
       float hydro=(analyticgravityoff? 0.f: float(hydroactual));
-      float pw=(analyticgravityoff? float(fullundrained): float(hydroactual+excessghost));
+      float pw=(analyticgravityoff? float(excessghost): float(hydroactual+excessghost));
       if(p>=Npb && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p])){
         hydro=0.f;
         pw=0.f;
@@ -1515,7 +1524,7 @@ double JSphGpu::DtVariable(bool final){
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
   if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
-  dt=min(dt,dtw);
+  else dt=min(dt,dtw);
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;

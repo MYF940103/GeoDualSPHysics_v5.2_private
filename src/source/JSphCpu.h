@@ -269,6 +269,8 @@ protected:
   void ApplyHydroMechTopLoadAcceleration();
   void InitHydroMechState();
   void ApplyFreeSurfacePorePressure();
+  template<TpKernel tker,bool sim2d> void ApplyYaoTopStripPorePressureExtrapolationT();
+  void ApplyYaoTopStripPorePressureExtrapolation();
   void ApplyPorePressureBoundaries();
   template<TpKernel tker,bool sim2d> void InteractionPorePressureRateT
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
