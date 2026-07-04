@@ -110,20 +110,21 @@
                 <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
                 <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
                 <Porosity value="0.3" comment="Porosity n" />
-                <HydraulicConductivity value="1e-3" comment="Scenario 2: drained consolidation hydraulic conductivity under self weight" units_comment="m/s" />
-                <PoreDtSafety value="0.1" comment="Allows the fixed supporting-material time step" />
-                <PoreShepardRegularization value="0" comment="Disabled for this 1D verification" />
-                <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
-                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None inherits restart PorePress/PorePress0/Sigma" />
-                <HydroMechDrainage value="1" comment="Keep FSType 2/3 top free-surface particles drained during consolidation" />
-                <HydroMechDrainageStartTime value="0" units_comment="seconds" />
+                <HydraulicConductivity value="0" comment="Stage 1: undrained self-weight response before restart" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Allows the fixed supporting-material time step when seepage is enabled" />
+                <PoreShepardRegularization value="1" comment="Enabled to suppress odd-even pore-pressure oscillation during Stage 1" />
+                <PoreShepardInterval value="40" comment="Apply Shepard pore-pressure regularisation every 40 steps" />
+                <HydroMechInitMode value="1" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 1=FreeSurface" />
+                <HydroMechDrainage value="1" comment="Stage 1 baseline: drained free-surface enforcement enabled" />
+                <HydroMechDrainageStartTime value="0" comment="Drainage enabled from the start for this baseline" />
             </hydromechanics>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
             <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
-            <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition" />
+            <parameter key="SlipMode" value="2" comment="mDBC no-slip ghost velocity condition for MLS head-Neumann pore-pressure boundary test" />
+            <parameter key="MDBCCorrector" value="1" comment="Apply mDBC correction in predictor and corrector for this MLS head-Neumann boundary test" />
             <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
             <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
             <parameter key="Kernel" value="2" comment="Wendland kernel" />
@@ -132,7 +133,7 @@
             <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
             <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
             <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping" />
-            <parameter key="SoilDampingCoef" value="0.02" comment="Accepted two-stage Scenario 2 damping coefficient for the current GeoDualSPHysics damping formula" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Stage 1 baseline damping coefficient for the current GeoDualSPHysics damping formula" />
             <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
             <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
             <parameter key="Shifting" value="0" comment="Shifting disabled" />
@@ -145,8 +146,8 @@
             <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
             <parameter key="DtFixed" value="0.000001" comment="Supporting-material fixed time step" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="7.2874285714" comment="Scenario 2 final time for Tv=2 using cv=kM/(rho_w g)" units_comment="seconds" />
-            <parameter key="TimeOut" value="0.0182185714" comment="Output interval equivalent to Delta Tv=0.005 using cv=kM/(rho_w g)" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.40" comment="MLS head-Neumann/SlipMode=2 Stage 1 duration; choose the restart PART by postprocessing" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.005" comment="Stage 1 output interval for restart and profile checks" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
             <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />

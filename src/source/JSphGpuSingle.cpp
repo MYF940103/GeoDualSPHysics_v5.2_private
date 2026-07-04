@@ -541,7 +541,6 @@ void JSphGpuSingle::AbortBoundOut(){
 void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
-    else if(HydroMech)InteractionPorePressureMdbcCorrection();
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;

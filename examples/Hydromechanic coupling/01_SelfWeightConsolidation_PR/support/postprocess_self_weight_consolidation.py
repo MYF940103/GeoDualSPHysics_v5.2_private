@@ -3,11 +3,14 @@ import csv
 import math
 import re
 import struct
+import xml.etree.ElementTree as ET
 
 import matplotlib.pyplot as plt
 
 
 ROOT = Path(__file__).resolve().parent.parent
+STAGE1_XML = ROOT / "CaseSelfWeightConsolidation_Stage1_Def.xml"
+SCENARIO2_XML = ROOT / "CaseSelfWeightConsolidation_Scenario2_Def.xml"
 STAGE1 = ROOT / "CaseSelfWeightConsolidation_Stage1_out" / "particles"
 SCENARIO2 = ROOT / "CaseSelfWeightConsolidation_Scenario2_out" / "particles"
 FIGDIR = ROOT / "figures"
@@ -32,12 +35,17 @@ CV_PR_DIFFUSION = (KW / POROSITY) * K_HYD / (RHO_W * G)
 UNDRAINED_RATIO = (KW / POROSITY) / (M_CONSTRAINED + KW / POROSITY)
 EFFECTIVE_RATIO = M_CONSTRAINED / (M_CONSTRAINED + KW / POROSITY)
 
-STAGE1_TOUT = 0.001
-SCENARIO2_TOUT = 0.02
 SCENARIO2_INITIAL_INDEX = 0
 SCENARIO2_INITIAL_TIME = 0.0
-SCENARIO2_TIME_MAX = 3.85
-TARGET_TV = [0.005, 0.05, 0.1, 0.25, 0.4, 0.5, 0.7, 1.0]
+TARGET_TV = [0.005, 0.05, 0.1, 0.25, 0.4, 0.5, 0.7, 1.0, 1.5, 2.0]
+
+
+def xml_parameter(path, key, default):
+    root = ET.parse(path).getroot()
+    for node in root.findall(".//parameter"):
+        if node.attrib.get("key") == key:
+            return float(node.attrib.get("value"))
+    return default
 
 
 def read_line(data, offset):
@@ -207,13 +215,15 @@ def part_index(path):
 
 
 def load_series(folder, stage):
+    stage1_tout = xml_parameter(STAGE1_XML, "TimeOut", 0.005)
+    scenario2_tout = xml_parameter(SCENARIO2_XML, "TimeOut", 0.0182185714)
     data = []
     for path in sorted(folder.glob("PartFluid_*.vtk")):
         idx = part_index(path)
         if stage == 1:
-            time = idx * STAGE1_TOUT
+            time = idx * stage1_tout
         else:
-            time = min(SCENARIO2_TIME_MAX, SCENARIO2_INITIAL_TIME + (idx - SCENARIO2_INITIAL_INDEX) * SCENARIO2_TOUT)
+            time = SCENARIO2_INITIAL_TIME + (idx - SCENARIO2_INITIAL_INDEX) * scenario2_tout
         rows = read_part_vtk(path)
         data.append({"name": path.name, "index": idx, "time": time, "rows": rows})
     if not data:
@@ -350,9 +360,22 @@ def main():
     for data in scenario2:
         t_rel = max(0.0, data["time"] - t0)
         tv = CV_TERZAGHI * t_rel / (H * H)
-        bnum, bz = bottom_average(data["rows"], "excess")
-        btheory = terzaghi_excess(bz, t_rel)
-        bottom_rows.append((data["time"], t_rel, tv, bnum / 1000.0, btheory / 1000.0, bz))
+        bexcess, bz = bottom_average(data["rows"], "excess")
+        bpore, _ = bottom_average(data["rows"], "pore")
+        bexcess_theory = terzaghi_excess(bz, t_rel)
+        bhydro_theory = hydrostatic(bz)
+        btotal_theory = bhydro_theory + bexcess_theory
+        bottom_rows.append((
+            data["time"],
+            t_rel,
+            tv,
+            bexcess / 1000.0,
+            bexcess_theory / 1000.0,
+            bpore / 1000.0,
+            bhydro_theory / 1000.0,
+            btotal_theory / 1000.0,
+            bz,
+        ))
 
     selected = []
     used = set()
@@ -438,6 +461,30 @@ def main():
     figpath = FIGDIR / "self_weight_consolidation_profiles.png"
     fig.savefig(figpath, dpi=220)
 
+    fig_bottom, axes_bottom = plt.subplots(1, 2, figsize=(12.5, 4.8), constrained_layout=True)
+    ax_total_bottom, ax_excess_bottom = axes_bottom
+    ax_total_bottom.plot([r[2] for r in bottom_rows], [r[5] for r in bottom_rows], "o-", linewidth=1.5, markersize=3, label="SPH bottom pore pressure")
+    ax_total_bottom.plot([r[2] for r in bottom_rows], [r[7] for r in bottom_rows], "k--", linewidth=1.4, label="Terzaghi total")
+    ax_total_bottom.plot([r[2] for r in bottom_rows], [r[6] for r in bottom_rows], "k:", linewidth=1.5, label="hydrostatic")
+    ax_total_bottom.set_xlabel("Tv")
+    ax_total_bottom.set_ylabel("Bottom pore pressure [kPa]")
+    ax_total_bottom.set_title("Bottom total pore pressure")
+    ax_total_bottom.grid(True, alpha=0.25)
+    ax_total_bottom.legend(fontsize=8)
+
+    ax_excess_bottom.plot([r[2] for r in bottom_rows], [r[3] for r in bottom_rows], "o-", linewidth=1.5, markersize=3, label="SPH bottom excess")
+    ax_excess_bottom.plot([r[2] for r in bottom_rows], [r[4] for r in bottom_rows], "k--", linewidth=1.4, label="Terzaghi excess")
+    ax_excess_bottom.axhline(0.0, color="k", linestyle=":", linewidth=1.2)
+    ax_excess_bottom.set_xlabel("Tv")
+    ax_excess_bottom.set_ylabel("Bottom excess pore pressure [kPa]")
+    ax_excess_bottom.set_title("Bottom excess pore pressure")
+    ax_excess_bottom.grid(True, alpha=0.25)
+    ax_excess_bottom.legend(fontsize=8)
+
+    fig_bottom.suptitle("Self-weight consolidation bottom pore-pressure dissipation")
+    bottom_figpath = FIGDIR / "self_weight_bottom_pore_pressure_vs_Tv.png"
+    fig_bottom.savefig(bottom_figpath, dpi=220)
+
     initial_summary = FIGDIR / "self_weight_scenario2_initial_metrics.csv"
     with initial_summary.open("w", newline="") as f:
         fieldnames = sorted(initial_metrics.keys())
@@ -448,7 +495,17 @@ def main():
     scenario2_summary = FIGDIR / "self_weight_consolidation_summary.csv"
     with scenario2_summary.open("w", newline="") as f:
         writer = csv.writer(f)
-        writer.writerow(["time_s", "t_rel_s", "Tv", "bottom_excess_sph_kPa", "bottom_excess_theory_kPa", "bottom_z_m"])
+        writer.writerow([
+            "time_s",
+            "t_rel_s",
+            "Tv",
+            "bottom_excess_sph_kPa",
+            "bottom_excess_theory_kPa",
+            "bottom_pore_sph_kPa",
+            "bottom_hydrostatic_theory_kPa",
+            "bottom_total_theory_kPa",
+            "bottom_z_m",
+        ])
         writer.writerows(bottom_rows)
 
     target_summary = FIGDIR / "self_weight_consolidation_targets.csv"
@@ -468,6 +525,7 @@ def main():
         writer.writerows(target_rows)
 
     print(f"Saved figure: {figpath}")
+    print(f"Saved bottom pressure figure: {bottom_figpath}")
     print(f"Saved Scenario2 initial metrics: {initial_summary}")
     print(f"Saved Scenario2 summary: {scenario2_summary}")
     print(f"Saved Scenario2 target summary: {target_summary}")
@@ -499,7 +557,8 @@ def main():
         print(
             "Scenario2 final bottom comparison: "
             f"t={last[0]:.6g}s, Tv={last[2]:.6g}, "
-            f"SPH={last[3]:.6g} kPa, theory={last[4]:.6g} kPa"
+            f"SPH excess={last[3]:.6g} kPa, theory excess={last[4]:.6g} kPa, "
+            f"SPH total={last[5]:.6g} kPa, theory total={last[7]:.6g} kPa"
         )
     if target_rows:
         print("Scenario2 target Tv comparisons:")

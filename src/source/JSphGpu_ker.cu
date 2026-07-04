@@ -1212,6 +1212,9 @@ template<TpKernel tker,bool sim2d> __global__ void KerPorePressureMdbcCorrection
       gposp1=(CTE.periactive!=0? KerUpdatePeriodicPos(gposp1): gposp1);
       const float4 gpscellp1=KerComputePosCell(gposp1,mapposmin,poscellsize);
       double sumwab=0,pwexcesssum=0,submerged=0;
+      double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
+      tmatrix3d a_corr2; if(sim2d) cumath::Tmatrix3dReset(a_corr2);
+      tmatrix4d a_corr3; if(!sim2d)cumath::Tmatrix4dReset(a_corr3);
       int ini1,fin1,ini2,fin2,ini3,fin3;
       cunsearch::InitCte(gposp1.x,gposp1.y,gposp1.z,scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
       for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
@@ -1236,14 +1239,52 @@ template<TpKernel tker,bool sim2d> __global__ void KerPorePressureMdbcCorrection
             const float wab=cufsph::GetKernel_WabFac<tker>(rr2,fac);
             const float vol2=CTE.massf/velrhop[p2].w;
             const double vwab=double(wab)*double(vol2);
+            const double vfrx=double(fac)*double(drx)*double(vol2);
+            const double vfry=double(fac)*double(dry)*double(vol2);
+            const double vfrz=double(fac)*double(drz)*double(vol2);
+            const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
             sumwab+=vwab;
-            pwexcesssum+=vwab*double(porepress[p2]-porepress0[p2]);
+            pwexcesssum+=vwab*pwexcess;
+            gradpwexcessx+=vfrx*pwexcess;
+            gradpwexcessy+=vfry*pwexcess;
+            gradpwexcessz+=vfrz*pwexcess;
             submerged-=double(vol2)*(double(drx)*fac*drx+double(dry)*fac*dry+double(drz)*fac*drz);
+            if(sim2d){
+              a_corr2.a11+=vwab;  a_corr2.a12+=double(drx)*vwab;  a_corr2.a13+=double(drz)*vwab;
+              a_corr2.a21+=vfrx;  a_corr2.a22+=double(drx)*vfrx;  a_corr2.a23+=double(drz)*vfrx;
+              a_corr2.a31+=vfrz;  a_corr2.a32+=double(drx)*vfrz;  a_corr2.a33+=double(drz)*vfrz;
+            }
+            else{
+              a_corr3.a11+=vwab;  a_corr3.a12+=double(drx)*vwab;  a_corr3.a13+=double(dry)*vwab;  a_corr3.a14+=double(drz)*vwab;
+              a_corr3.a21+=vfrx;  a_corr3.a22+=double(drx)*vfrx;  a_corr3.a23+=double(dry)*vfrx;  a_corr3.a24+=double(drz)*vfrx;
+              a_corr3.a31+=vfry;  a_corr3.a32+=double(drx)*vfry;  a_corr3.a33+=double(dry)*vfry;  a_corr3.a34+=double(drz)*vfry;
+              a_corr3.a41+=vfrz;  a_corr3.a42+=double(drx)*vfrz;  a_corr3.a43+=double(dry)*vfrz;  a_corr3.a44+=double(drz)*vfrz;
+            }
           }
         }
       }
       const bool active=(submerged>0. || sumwab>=double(mdbcthreshold) || (mdbcthreshold>=2.f && sumwab+2.>=double(mdbcthreshold)));
-      if(active && sumwab>0.)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/sumwab);
+      if(active && sumwab>0.){
+        const double determlimit=1e-3;
+        double pwexcessfinal=pwexcesssum/sumwab; //-0th-order fallback.
+        if(sim2d){
+          const double determ=cumath::Determinant3x3(a_corr2);
+          if(fabs(determ)>=determlimit){
+            const tmatrix3d inv=cumath::InverseMatrix3x3(a_corr2,determ);
+            const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        else{
+          const double determ=cumath::Determinant4x4(a_corr3);
+          if(fabs(determ)>=determlimit){
+            const tmatrix4d inv=cumath::InverseMatrix4x4(a_corr3,determ);
+            const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessy + inv.a14*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+      }
     }
   }
 }
@@ -1434,41 +1475,6 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
 
       float4 velrhop2=velrhop[p2];
       if(symm)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
-      //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
-      if(poreratep1 && !symm && velrhop[p2].w>0.f){
-        const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
-        const bool inactiveporebound=(boundp2 && CTE.tboundary==BC_MDBC && CTE.slipmode>=SLIP_NoSlip && boundmode && boundmode[p2]==BMODE_MDBC2OFF);
-        if(validporep2 && !inactiveporebound){
-          const double pdrx=double(drx);
-          const double pdry=(CTE.simulate2d? 0.: double(dry));
-          const double pdrz=double(drz);
-          const double prr2=pdrx*pdrx+pdry*pdry+pdrz*pdrz;
-          if(prr2<=double(CTE.kernelsize2) && prr2>=ALMOSTZERO){
-            const double pfac=double(cufsph::GetKernel_Fac<tker>(float(prr2)));
-            const double pfrx=pfac*pdrx;
-            const double pfry=(CTE.simulate2d? 0.: pfac*pdry);
-            const double pfrz=pfac*pdrz;
-            const double pcfrx=porecorr.a11*pfrx+porecorr.a12*pfry+porecorr.a13*pfrz;
-            const double pcfry=porecorr.a21*pfrx+porecorr.a22*pfry+porecorr.a23*pfrz;
-            const double pcfrz=porecorr.a31*pfrx+porecorr.a32*pfry+porecorr.a33*pfrz;
-            const double vol2=double((boundp2? CTE.massb: CTE.massf)/velrhop[p2].w);
-            const double pdvx=double(velrhop[p2].x)-double(velrhop1.x);
-            const double pdvy=(CTE.simulate2d? 0.: double(velrhop[p2].y)-double(velrhop1.y));
-            const double pdvz=double(velrhop[p2].z)-double(velrhop1.z);
-            const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
-            const double divv=vol2*(pdvx*pcfrx+pdvy*pcfry+pdvz*pcfrz);
-            pore_ratep1+=double(CTE.porekwn)*(-divv);
-            if(CTE.hydraulicconductivity>0.f){
-              const double lapw=vol2*double(pwp1-porepress[p2])*pdotgrad/double(prr2+CTE.eta2);
-              const double lapz=vol2*pdrz*pdotgrad/double(prr2+CTE.eta2);
-              const bool useghead=(CTE.gravityx*CTE.gravityx + CTE.gravityy*CTE.gravityy + CTE.gravityz*CTE.gravityz)>0.f;
-              const double seep=2.0*double(CTE.hydraulicconductivity)*lapw/(double(CTE.porewaterrho)*double(CTE.poreghyd))
-                + (useghead? 2.0*double(CTE.hydraulicconductivity)*lapz: 0.0);
-              pore_ratep1+=double(CTE.porekwn)*seep;
-            }
-          }
-        }
-      }
       //===get stress of p2 ==== mdbr
 	  float2 sigmap2_xx_xy=sigma[p2*3];
 	  float2 sigmap2_xz_yy=sigma[p2*3+1];
@@ -1536,6 +1542,45 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         dvx_visc=velrhop1.x-tangentvelp2.x;
         dvy_visc=velrhop1.y-tangentvelp2.y;
         dvz_visc=velrhop1.z-tangentvelp2.z;
+      }
+      //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
+      // For mDBC boundaries, use the same ghost velocity used by viscous/gradient terms.
+      if(poreratep1 && !symm && velrhop[p2].w>0.f){
+        const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
+        const bool inactiveporebound=(boundp2 && CTE.tboundary==BC_MDBC && CTE.slipmode>=SLIP_NoSlip && boundmode && boundmode[p2]==BMODE_MDBC2OFF);
+        if(validporep2 && !inactiveporebound){
+          const double pdrx=double(drx);
+          const double pdry=(CTE.simulate2d? 0.: double(dry));
+          const double pdrz=double(drz);
+          const double prr2=pdrx*pdrx+pdry*pdry+pdrz*pdrz;
+          if(prr2<=double(CTE.kernelsize2) && prr2>=ALMOSTZERO){
+            const double pfac=double(cufsph::GetKernel_Fac<tker>(float(prr2)));
+            const double pfrx=pfac*pdrx;
+            const double pfry=(CTE.simulate2d? 0.: pfac*pdry);
+            const double pfrz=pfac*pdrz;
+            const double pcfrx=porecorr.a11*pfrx+porecorr.a12*pfry+porecorr.a13*pfrz;
+            const double pcfry=porecorr.a21*pfrx+porecorr.a22*pfry+porecorr.a23*pfrz;
+            const double pcfrz=porecorr.a31*pfrx+porecorr.a32*pfry+porecorr.a33*pfrz;
+            const double vol2=double((boundp2? CTE.massb: CTE.massf)/velrhop[p2].w);
+            const double pdvx=-double(dvx_visc);
+            const double pdvy=(CTE.simulate2d? 0.: -double(dvy_visc));
+            const double pdvz=-double(dvz_visc);
+            const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
+            const double divv=vol2*(pdvx*pcfrx+pdvy*pcfry+pdvz*pcfrz);
+            pore_ratep1+=double(CTE.porekwn)*(-divv);
+            if(CTE.hydraulicconductivity>0.f){
+              const bool useghead=(CTE.gravityx*CTE.gravityx + CTE.gravityy*CTE.gravityy + CTE.gravityz*CTE.gravityz)>0.f;
+              const bool pore_neumann_bound=(boundp2 && CTE.tboundary==BC_MDBC);
+              const double pwp2=double(porepress[p2]);
+              const double pwp2seep=(pore_neumann_bound? double(pwp1)+(useghead? double(CTE.porewaterrho)*double(CTE.poreghyd)*pdrz: 0.0): pwp2);
+              const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+CTE.eta2);
+              const double lapz=vol2*pdrz*pdotgrad/double(prr2+CTE.eta2);
+              const double seep=2.0*double(CTE.hydraulicconductivity)*lapw/(double(CTE.porewaterrho)*double(CTE.poreghyd))
+                + (useghead? 2.0*double(CTE.hydraulicconductivity)*lapz: 0.0);
+              pore_ratep1+=double(CTE.porekwn)*seep;
+            }
+          }
+        }
       }
       if(compute)arp1+=massp2final*(dvx_rhop*frx+dvy_rhop*fry+dvz_rhop*frz)*(velrhop1.w/velrhop2.w);
 
@@ -2296,6 +2341,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
       float sumwab=0;
       float submerged=0;
       double pwexcesssum=0;
+      double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
 
       //-Calculates ghost node position.
       double3 gposp1=make_double3(posxy[p1].x+bnormalp1.x,posxy[p1].y+bnormalp1.y,posz[p1]+bnormalp1.z);
@@ -2354,10 +2400,16 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
             //===== Kernel values multiplied by volume =====
             const float vwab=wab*volp2;
             sumwab+=vwab;
-            if(extrapolatepore)pwexcesssum+=double(vwab)*double(porepress[p2]-porepress0[p2]);
             const float vfrx=frx*volp2;
             const float vfry=fry*volp2;
             const float vfrz=frz*volp2;
+            if(extrapolatepore){
+              const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
+              pwexcesssum+=double(vwab)*pwexcess;
+              gradpwexcessx+=double(vfrx)*pwexcess;
+              gradpwexcessy+=double(vfry)*pwexcess;
+              gradpwexcessz+=double(vfrz)*pwexcess;
+            }
 
             //===== mdbr
 			//===== Stress value =====
@@ -2421,6 +2473,27 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
       //-Store the results.
       //--------------------
       const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
+      const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
+      if(extrapolatepore && activepore && sumwab>0){
+        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+        if(sim2d){
+          const double determ=cumath::Determinant3x3dbl(a_corr2);
+          if(fabs(determ)>=double(determlimit)){
+            const tmatrix3f invacorr2=cumath::InverseMatrix3x3dbl(a_corr2,determ);
+            const double qg = double(invacorr2.a11)*pwexcesssum + double(invacorr2.a12)*gradpwexcessx + double(invacorr2.a13)*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        else{
+          const double determ=cumath::Determinant4x4dbl(a_corr3);
+          if(fabs(determ)>=double(determlimit)){
+            const tmatrix4f invacorr3=cumath::InverseMatrix4x4dbl(a_corr3,determ);
+            const double qg = double(invacorr3.a11)*pwexcesssum + double(invacorr3.a12)*gradpwexcessx + double(invacorr3.a13)*gradpwexcessy + double(invacorr3.a14)*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+      }
       if(activebound){
         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
         const float3 dpos=make_float3(-bnormalp1.x,-bnormalp1.y,-bnormalp1.z); //-Boundary particle position - ghost node position.
@@ -2536,7 +2609,6 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         if(tslip==SLIP_Vel0){//-DBC vel=0
           velrhop[p1].w=rhopfinal;
           sigma[p1] = sigmafinal;
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
         if(tslip==SLIP_NoSlip){//-No-Slip
           const float3 v=motionvel[p1];
@@ -2544,13 +2616,11 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
           velrhop[p1].w=rhopfinal;
           if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,v2);
           sigma[p1] = sigmafinal;
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
         if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
           velrhop[p1].w=rhopfinal;
           if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,velrhopfinal);
           sigma[p1] = sigmafinal;
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
       }
       else if(useboundmode){
@@ -2586,6 +2656,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
       float sumwab=0;
       float submerged=0;
       double pwexcesssum=0;
+      double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
 
       //-Calculates ghost node position.
       double3 gposp1=make_double3(posxy[p1].x+bnormalp1.x,posxy[p1].y+bnormalp1.y,posz[p1]+bnormalp1.z);
@@ -2642,10 +2713,16 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
             //===== Kernel values multiplied by volume =====
             const float vwab=wab*volp2;
             sumwab+=vwab;
-            if(extrapolatepore)pwexcesssum+=double(vwab)*double(porepress[p2]-porepress0[p2]);
             const float vfrx=frx*volp2;
             const float vfry=fry*volp2;
             const float vfrz=frz*volp2;
+            if(extrapolatepore){
+              const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
+              pwexcesssum+=double(vwab)*pwexcess;
+              gradpwexcessx+=double(vfrx)*pwexcess;
+              gradpwexcessy+=double(vfry)*pwexcess;
+              gradpwexcessz+=double(vfrz)*pwexcess;
+            }
 
             //===== mdbr
 			//===== Stress value =====
@@ -2709,6 +2786,27 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
       //-Store the results.
       //--------------------
       const bool activebound=(useboundmode? submerged>0.f: sumwab>=mdbcthreshold);
+      const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
+      if(extrapolatepore && activepore && sumwab>0){
+        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+        if(sim2d){
+          const double determ=cumath::Determinant3x3(a_corr2);
+          if(fabs(determ)>=double(determlimit)){
+            const tmatrix3d invacorr2=cumath::InverseMatrix3x3(a_corr2,determ);
+            const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        else{
+          const double determ=cumath::Determinant4x4(a_corr3);
+          if(fabs(determ)>=double(determlimit)){
+            const tmatrix4d invacorr3=cumath::InverseMatrix4x4(a_corr3,determ);
+            const double qg = invacorr3.a11*pwexcesssum + invacorr3.a12*gradpwexcessx + invacorr3.a13*gradpwexcessy + invacorr3.a14*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+      }
       if(activebound){
         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
         const float3 dpos=make_float3(-bnormalp1.x,-bnormalp1.y,-bnormalp1.z); //-Boundary particle position - ghost node position.
@@ -2824,7 +2922,6 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         if(tslip==SLIP_Vel0){//-DBC vel=0
           velrhop[p1].w=rhopfinal;
           sigma[p1]=sigmafinal;//mdbr
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
         if(tslip==SLIP_NoSlip){//-No-Slip
           const float3 v=motionvel[p1];
@@ -2832,13 +2929,11 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
           velrhop[p1].w=rhopfinal;
           if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,v2);
           sigma[p1]=sigmafinal;//mdbr
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
         if(tslip==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
           velrhop[p1].w=rhopfinal;
           if(tangenvel)tangenvel[p1]=KerMdbc2TangenVel(bnormalp1,velrhopfinal);
           sigma[p1]=sigmafinal;//mdbr
-          if(extrapolatepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
         }
       }
       else if(useboundmode){

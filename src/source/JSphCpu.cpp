@@ -1458,8 +1458,12 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
             const double dotgrad=drx*cfrx+dry*cfry+drz*cfrz;
             divv+=vol2*(dvx*cfrx+dvy*cfry+dvz*cfrz);
             if(khyd>0){
-              lapw+=vol2*double(pwp1-porepress[p2])*dotgrad/double(rr2+Eta2);
-              lapz+=vol2*(posp1.z-pos[p2].z)*dotgrad/double(rr2+Eta2);
+              const double dz=posp1.z-pos[p2].z;
+              const bool pore_neumann_bound=(boundp2 && TBoundary==BC_MDBC);
+              const double pwp2=double(porepress[p2]);
+              const double pwp2seep=(pore_neumann_bound? double(pwp1)+(gnorm>0? double(SoilCte.PoreWaterRho)*ghyd*dz: 0.0): pwp2);
+              lapw+=vol2*(double(pwp1)-pwp2seep)*dotgrad/double(rr2+Eta2);
+              lapz+=vol2*dz*dotgrad/double(rr2+Eta2);
             }
           }
         }
@@ -1511,6 +1515,9 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
     double sumwab=0,pwexcesssum=0,submerged=0;
+    double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
+    tmatrix3d a_corr2=TMatrix3d(0);
+    tmatrix4d a_corr3=TMatrix4d(0);
     const StNgSearch ngs=nsearch::Init(gposp1,false,divdata);
     for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
       const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
@@ -1527,14 +1534,52 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
           const double frz=double(fac)*drz;
           const double vol2=double(MassFluid/velrhop[p2].w);
           const double vwab=wab*vol2;
+          const double vfrx=frx*vol2;
+          const double vfry=fry*vol2;
+          const double vfrz=frz*vol2;
+          const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
           sumwab+=vwab;
-          pwexcesssum+=vwab*(double(porepress[p2])-double(porepress0[p2]));
+          pwexcesssum+=vwab*pwexcess;
+          gradpwexcessx+=vfrx*pwexcess;
+          gradpwexcessy+=vfry*pwexcess;
+          gradpwexcessz+=vfrz*pwexcess;
           submerged-=vol2*(drx*frx+dry*fry+drz*frz);
+          if(sim2d){
+            a_corr2.a11+=vwab;  a_corr2.a12+=drx*vwab;  a_corr2.a13+=drz*vwab;
+            a_corr2.a21+=vfrx;  a_corr2.a22+=drx*vfrx;  a_corr2.a23+=drz*vfrx;
+            a_corr2.a31+=vfrz;  a_corr2.a32+=drx*vfrz;  a_corr2.a33+=drz*vfrz;
+          }
+          else{
+            a_corr3.a11+=vwab;  a_corr3.a12+=drx*vwab;  a_corr3.a13+=dry*vwab;  a_corr3.a14+=drz*vwab;
+            a_corr3.a21+=vfrx;  a_corr3.a22+=drx*vfrx;  a_corr3.a23+=dry*vfrx;  a_corr3.a24+=drz*vfrx;
+            a_corr3.a31+=vfry;  a_corr3.a32+=drx*vfry;  a_corr3.a33+=dry*vfry;  a_corr3.a34+=drz*vfry;
+            a_corr3.a41+=vfrz;  a_corr3.a42+=drx*vfrz;  a_corr3.a43+=dry*vfrz;  a_corr3.a44+=drz*vfrz;
+          }
         }
       }
     }
     const bool active=(submerged>0 || sumwab>=double(MdbcThreshold) || (MdbcThreshold>=2 && sumwab+2>=double(MdbcThreshold)));
-    if(active && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/sumwab);
+    if(active && sumwab>0){
+      const double determlimit=1e-3;
+      double pwexcessfinal=pwexcesssum/sumwab; //-0th-order fallback.
+      if(sim2d){
+        const double determ=fmath::Determinant3x3(a_corr2);
+        if(fabs(determ)>=determlimit){
+          const tmatrix3d inv=fmath::InverseMatrix3x3(a_corr2,determ);
+          const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessz;
+          pwexcessfinal=qg;
+        }
+      }
+      else{
+        const double determ=fmath::Determinant4x4(a_corr3);
+        if(fabs(determ)>=determlimit){
+          const tmatrix4d inv=fmath::InverseMatrix4x4(a_corr3,determ);
+          const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessy + inv.a14*gradpwexcessz;
+          pwexcessfinal=qg;
+        }
+      }
+      porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+    }
   }
 }
 
@@ -2170,41 +2215,6 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           tfloat4 velrhop2=velrhop[p2];
           if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
 
-          //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
-          if(poreratep1 && !rsym && velrhop[p2].w>0){
-            const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
-            const bool inactiveporebound=(boundp2 && TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
-            if(validporep2 && !inactiveporebound){
-              const double pdrx=double(posp1.x)-double(pos[p2].x);
-              const double pdry=(Simulate2D? 0: double(posp1.y)-double(pos[p2].y));
-              const double pdrz=double(posp1.z)-double(pos[p2].z);
-              const float prr2=float(pdrx*pdrx+pdry*pdry+pdrz*pdrz);
-              if(prr2<=KernelSize2 && prr2>=ALMOSTZERO){
-                const double pfac=double(fsph::GetKernel_Fac<tker>(CSP,prr2));
-                const double pfrx=pfac*pdrx;
-                const double pfry=(Simulate2D? 0: pfac*pdry);
-                const double pfrz=pfac*pdrz;
-                const double pcfrx=porecorr.a11*pfrx+porecorr.a12*pfry+porecorr.a13*pfrz;
-                const double pcfry=porecorr.a21*pfrx+porecorr.a22*pfry+porecorr.a23*pfrz;
-                const double pcfrz=porecorr.a31*pfrx+porecorr.a32*pfry+porecorr.a33*pfrz;
-                const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
-                const double pdvx=double(velrhop[p2].x)-double(velp1.x);
-                const double pdvy=(Simulate2D? 0: double(velrhop[p2].y)-double(velp1.y));
-                const double pdvz=double(velrhop[p2].z)-double(velp1.z);
-                const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
-                const double divv=vol2*(pdvx*pcfrx+pdvy*pcfry+pdvz*pcfrz);
-                const double comp=kwn*(-divv);
-                pore_ratep1+=comp;
-                if(khyd>0){
-                  const double lapw=vol2*double(pwp1-porepress[p2])*pdotgrad/double(prr2+Eta2);
-                  const double lapz=vol2*(double(posp1.z)-double(pos[p2].z))*pdotgrad/double(prr2+Eta2);
-                  const double seep=kwn*(2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd) + (gnorm>0? 2.0*khyd*lapz: 0.0));
-                  pore_ratep1+=seep;
-                }
-              }
-            }
-          }
-
           //-Velocity derivative (Momentum equation).
           if(compute){
             //const float prs=(pressp1+press[p2])/(rhopp1*velrhop2.w) + (tker==KERNEL_Cubic? fsph::GetKernelCubic_Tensil(CSP,rr2,rhopp1,pressp1,velrhop2.w,press[p2]): 0);
@@ -2265,6 +2275,44 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             dvx_visc=velp1.x-tangentvelp2.x;
             dvy_visc=velp1.y-tangentvelp2.y;
             dvz_visc=velp1.z-tangentvelp2.z;
+          }
+          //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
+          // For mDBC boundaries, use the same ghost velocity used by viscous/gradient terms.
+          if(poreratep1 && !rsym && velrhop[p2].w>0){
+            const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
+            const bool inactiveporebound=(boundp2 && TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
+            if(validporep2 && !inactiveporebound){
+              const double pdrx=double(drx);
+              const double pdry=(Simulate2D? 0: double(dry));
+              const double pdrz=double(drz);
+              const double prr2=pdrx*pdrx+pdry*pdry+pdrz*pdrz;
+              if(prr2<=double(KernelSize2) && prr2>=ALMOSTZERO){
+                const double pfac=double(fsph::GetKernel_Fac<tker>(CSP,float(prr2)));
+                const double pfrx=pfac*pdrx;
+                const double pfry=(Simulate2D? 0: pfac*pdry);
+                const double pfrz=pfac*pdrz;
+                const double pcfrx=porecorr.a11*pfrx+porecorr.a12*pfry+porecorr.a13*pfrz;
+                const double pcfry=porecorr.a21*pfrx+porecorr.a22*pfry+porecorr.a23*pfrz;
+                const double pcfrz=porecorr.a31*pfrx+porecorr.a32*pfry+porecorr.a33*pfrz;
+                const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
+                const double pdvx=-double(dvx_visc);
+                const double pdvy=(Simulate2D? 0: -double(dvy_visc));
+                const double pdvz=-double(dvz_visc);
+                const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
+                const double divv=vol2*(pdvx*pcfrx+pdvy*pcfry+pdvz*pcfrz);
+                const double comp=kwn*(-divv);
+                pore_ratep1+=comp;
+                if(khyd>0){
+                  const bool pore_neumann_bound=(boundp2 && TBoundary==BC_MDBC);
+                  const double pwp2=double(porepress[p2]);
+                  const double pwp2seep=(pore_neumann_bound? double(pwp1)+(gnorm>0? double(SoilCte.PoreWaterRho)*ghyd*pdrz: 0.0): pwp2);
+                  const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+Eta2);
+                  const double lapz=vol2*pdrz*pdotgrad/double(prr2+Eta2);
+                  const double seep=kwn*(2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd) + (gnorm>0? 2.0*khyd*lapz: 0.0));
+                  pore_ratep1+=seep;
+                }
+              }
+            }
           }
           if(compute)arp1+=massp2*(dvx_rhop*frx+dvy_rhop*fry+dvz_rhop*frz)*(rhopp1/velrhop2.w);
 
@@ -2716,6 +2764,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
     float sumwab=0;
     float submerged=0;
     double pwexcesssum=0;
+    double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
 
     //-Calculates ghost node position.
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
@@ -2769,10 +2818,16 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
           //===== Kernel values multiplied by volume =====
           const float vwab=wab*volp2;
           sumwab+=vwab;
-          if(extrapolatepore)pwexcesssum+=double(vwab)*(double(porepress[p2])-double(porepress0[p2]));
           const float vfrx=frx*volp2;
           const float vfry=fry*volp2;
           const float vfrz=frz*volp2;
+          if(extrapolatepore){
+            const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
+            pwexcesssum+=double(vwab)*pwexcess;
+            gradpwexcessx+=double(vfrx)*pwexcess;
+            gradpwexcessy+=double(vfry)*pwexcess;
+            gradpwexcessz+=double(vfrz)*pwexcess;
+          }
           //===== mdbr
 		  //===== Stress value =====
 		  sigmap1.xx += vwab*sigmap2.xx;
@@ -2835,7 +2890,26 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
     //--------------------
     const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
     const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
-    if(extrapolatepore && activepore && sumwab>0)porepress[p1]=float(double(porepress0[p1])+pwexcesssum/double(sumwab));
+    if(extrapolatepore && activepore && sumwab>0){
+      double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+      if(sim2d){
+        const double determ=fmath::Determinant3x3(a_corr2);
+        if(fabs(determ)>=determlimit){
+          const tmatrix3d invacorr2=fmath::InverseMatrix3x3(a_corr2,determ);
+          const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
+          pwexcessfinal=qg;
+        }
+      }
+      else{
+        const double determ=fmath::Determinant4x4(a_corr3);
+        if(fabs(determ)>=determlimit){
+          const tmatrix4d invacorr3=fmath::InverseMatrix4x4(a_corr3,determ);
+          const double qg = invacorr3.a11*pwexcesssum + invacorr3.a12*gradpwexcessx + invacorr3.a13*gradpwexcessy + invacorr3.a14*gradpwexcessz;
+          pwexcessfinal=qg;
+        }
+      }
+      porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+    }
     if(activebound){
       if(useboundmode)boundmode[p1]=BMODE_MDBC2;
       const tfloat3 dpos=(boundnormal[p1]*(-1.f)); //-Boundary particle position - ghost node position.

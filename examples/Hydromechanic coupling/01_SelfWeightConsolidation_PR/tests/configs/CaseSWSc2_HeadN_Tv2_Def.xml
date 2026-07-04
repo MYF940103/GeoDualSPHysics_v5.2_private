@@ -123,7 +123,8 @@
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
             <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
-            <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition" />
+            <parameter key="SlipMode" value="2" comment="mDBC no-slip ghost velocity condition for MLS head-Neumann pore-pressure boundary test" />
+            <parameter key="MDBCCorrector" value="1" comment="Apply mDBC correction in predictor and corrector for this MLS head-Neumann boundary test" />
             <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
             <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
             <parameter key="Kernel" value="2" comment="Wendland kernel" />
@@ -132,7 +133,7 @@
             <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
             <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
             <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping" />
-            <parameter key="SoilDampingCoef" value="0.02" comment="Accepted two-stage Scenario 2 damping coefficient for the current GeoDualSPHysics damping formula" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Two-stage Scenario 2 damping coefficient selected from Stage 1 diagnostics" />
             <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
             <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
             <parameter key="Shifting" value="0" comment="Shifting disabled" />
@@ -145,7 +146,7 @@
             <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
             <parameter key="DtFixed" value="0.000001" comment="Supporting-material fixed time step" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="7.2874285714" comment="Scenario 2 final time for Tv=2 using cv=kM/(rho_w g)" units_comment="seconds" />
+            <parameter key="TimeMax" value="7.2874285714" comment="MLS head-Neumann/SlipMode=2 Scenario 2 final time for Tv=2 using cv=kM/(rho_w g)" units_comment="seconds" />
             <parameter key="TimeOut" value="0.0182185714" comment="Output interval equivalent to Delta Tv=0.005 using cv=kM/(rho_w g)" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />

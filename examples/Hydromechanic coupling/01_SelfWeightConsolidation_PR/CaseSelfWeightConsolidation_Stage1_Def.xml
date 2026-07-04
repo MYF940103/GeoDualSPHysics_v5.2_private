@@ -114,7 +114,9 @@
                 <PoreDtSafety value="0.1" comment="Allows the fixed supporting-material time step when seepage is enabled" />
                 <PoreShepardRegularization value="1" comment="Enabled to suppress odd-even pore-pressure oscillation during Stage 1" />
                 <PoreShepardInterval value="40" comment="Apply Shepard pore-pressure regularisation every 40 steps" />
-                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
+                <HydroMechInitMode value="1" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 1=FreeSurface" />
+                <HydroMechDrainage value="1" comment="Stage 1 baseline: drained free-surface enforcement enabled" />
+                <HydroMechDrainageStartTime value="0" comment="Drainage enabled from the start for this baseline" />
             </hydromechanics>
         </special>
         <parameters>
@@ -130,7 +132,7 @@
             <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
             <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
             <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping" />
-            <parameter key="SoilDampingCoef" value="0.04" comment="Stage 1 default damping coefficient for the undrained prestress state" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Stage 1 baseline damping coefficient for the current GeoDualSPHysics damping formula" />
             <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
             <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
             <parameter key="Shifting" value="0" comment="Shifting disabled" />
@@ -143,7 +145,7 @@
             <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
             <parameter key="DtFixed" value="0.000001" comment="Supporting-material fixed time step" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="0.20" comment="Extended Stage 1 undrained self-weight duration" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.30" comment="Stage 1 FreeSurface-initialized drained-loading baseline duration; handoff uses Part_0060" units_comment="seconds" />
             <parameter key="TimeOut" value="0.005" comment="Stage 1 output interval for restart and profile checks" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
