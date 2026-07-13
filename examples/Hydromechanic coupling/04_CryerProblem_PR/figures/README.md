@@ -11,6 +11,10 @@ and CSV files with settled conclusions were removed from this folder.
     radius `r <= 1dp`.
   - Combined Poisson-ratio validation for `nu=0.1, 0.2, 0.3, 0.45`, plotted
     in the same normalized center-pore-pressure style as the u-pw reference.
+  - High-resolution closed-ramp Poisson-ratio validation for `dp=0.002`,
+    `k=1e-5`, `HydroMechTopLoadRampTime=0.0025 s`, and
+    `HydroMechDrainageStartTime=0.0025 s`, with time shifted to the drainage
+    start and center pressure sampled over `r <= 1dp`.
 - `parameter_tests/`
   - `k=1e-4` versus `k=1e-5` early-window comparison.
   - `k=1e-5` short-window `dp=0.003, 0.0025, 0.002` convergence.
@@ -36,6 +40,10 @@ and CSV files with settled conclusions were removed from this folder.
 - Resolution refinement from `dp=0.003` to `0.002` monotonically raises the
   peak and reduces RMSE, so the remaining peak deficit is at least partly a
   spatial-resolution/SPH consistency effect.
+- The formal `dp=0.002` closed-ramp Poisson-ratio sweep further reduces the
+  peak deficit: at the theoretical peak time, the normalized deficit is about
+  `-0.041`, `-0.034`, `-0.027`, and `-0.019` for `nu=0.1, 0.2, 0.3, 0.45`,
+  respectively.
 - `SoilDampingCoef=0.1` gave the best short-window RMSE/MAE among the tested
   damping values, while `0.05` remains a conservative lower-damping backup.
   The completed formal server run retained `0.02`.

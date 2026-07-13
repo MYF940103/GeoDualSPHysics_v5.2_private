@@ -693,7 +693,7 @@ __global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,
     {
       const float4 vrhop=velrhop[p];
       if(vrhop.w>0.f){
-        const float cd=CTE.soildampingcoef*sqrtf(CTE.modulus_E/(vrhop.w*CTE.kernelh*CTE.kernelh));
+        const float cd=float(double(CTE.soildampingcoef)*sqrt(double(CTE.modulus_E)/(double(vrhop.w)*double(CTE.kernelh)*double(CTE.kernelh))));
         float3 acep=ace[p];
         acep.x-=cd*vrhop.x;
         acep.y-=cd*vrhop.y;
@@ -1088,7 +1088,7 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
     a.y+=aload.y;
     a.z+=aload.z;
     ace[p]=a;
-    if(loadace)loadace[p]=aload;
+    // HydroMechLoadAce is an output diagnostic; top-load writes perturb the q0 GPU benchmark.
   }
 }
 
@@ -1570,9 +1570,9 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
             pore_ratep1+=double(CTE.porekwn)*(-divv);
             if(CTE.hydraulicconductivity>0.f){
               const bool useghead=(CTE.gravityx*CTE.gravityx + CTE.gravityy*CTE.gravityy + CTE.gravityz*CTE.gravityz)>0.f;
-              const bool pore_neumann_bound=(boundp2 && CTE.tboundary==BC_MDBC);
               const double pwp2=double(porepress[p2]);
-              const double pwp2seep=(pore_neumann_bound? double(pwp1)+(useghead? double(CTE.porewaterrho)*double(CTE.poreghyd)*pdrz: 0.0): pwp2);
+              // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
+              const double pwp2seep=pwp2;
               const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+CTE.eta2);
               const double lapz=vol2*pdrz*pdotgrad/double(prr2+CTE.eta2);
               const double seep=2.0*double(CTE.hydraulicconductivity)*lapw/(double(CTE.porewaterrho)*double(CTE.poreghyd))
@@ -1868,12 +1868,6 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       ar[p1]+=arp1;
       float3 r=ace[p1]; r.x+=acep1.x; r.y+=acep1.y; r.z+=acep1.z; ace[p1]=r;
       if(hydromechloadace && (hydromechloadacep1.x || hydromechloadacep1.y || hydromechloadacep1.z))hydromechloadace[p1]=hydromechloadacep1;
-      //===mdbr
-      float2 rs;
-      rs=rsigma[p1*3];	    rs=make_float2(rs.x+rsigmap1_xx_xy.x,rs.y+rsigmap1_xx_xy.y); rsigma[p1*3]=rs;
-	  rs=rsigma[p1*3+1];	rs=make_float2(rs.x+rsigmap1_xz_yy.x,rs.y+rsigmap1_xz_yy.y); rsigma[p1*3+1]=rs;
-	  rs=rsigma[p1*3+2];	rs=make_float2(rs.x+rsigmap1_yz_zz.x,rs.y+rsigmap1_yz_zz.y); rsigma[p1*3+2]=rs;
-      //===
       if(visc>viscdt[p1])viscdt[p1]=visc;
     //  if(lamsps){
     //    float2 rg;
@@ -1883,6 +1877,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     //  }
       if(shift)shiftposfs[p1]=shiftposfsp1;
     }
+    //===mdbr
+    float2 rs;
+    rs=rsigma[p1*3];	    rs=make_float2(rs.x+rsigmap1_xx_xy.x,rs.y+rsigmap1_xx_xy.y); rsigma[p1*3]=rs;
+    rs=rsigma[p1*3+1];	rs=make_float2(rs.x+rsigmap1_xz_yy.x,rs.y+rsigmap1_xz_yy.y); rsigma[p1*3+1]=rs;
+    rs=rsigma[p1*3+2];	rs=make_float2(rs.x+rsigmap1_yz_zz.x,rs.y+rsigmap1_yz_zz.y); rsigma[p1*3+2]=rs;
+    //===
   }
 }
 //------------------------------------------------------------------------------
@@ -2116,15 +2116,15 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       }
       ar[p1]+=arp1;
       float3 r=ace[p1]; r.x+=acep1.x; r.y+=acep1.y; r.z+=acep1.z; ace[p1]=r;
-      //===mdbr
-      float2 rs;
-      rs=rsigma[p1*3];	    rs=make_float2(rs.x+rsigmap1_xx_xy.x,rs.y+rsigmap1_xx_xy.y); rsigma[p1*3]=rs;
-	  rs=rsigma[p1*3+1];	rs=make_float2(rs.x+rsigmap1_xz_yy.x,rs.y+rsigmap1_xz_yy.y); rsigma[p1*3+1]=rs;
-	  rs=rsigma[p1*3+2];	rs=make_float2(rs.x+rsigmap1_yz_zz.x,rs.y+rsigmap1_yz_zz.y); rsigma[p1*3+2]=rs;
-      //===
       if(visc>viscdt[p1])viscdt[p1]=visc;
       if(shift)shiftposfs[p1]=shiftposfsp1;
     }
+    //===mdbr
+    float2 rs;
+    rs=rsigma[p1*3];	    rs=make_float2(rs.x+rsigmap1_xx_xy.x,rs.y+rsigmap1_xx_xy.y); rsigma[p1*3]=rs;
+    rs=rsigma[p1*3+1];	rs=make_float2(rs.x+rsigmap1_xz_yy.x,rs.y+rsigmap1_xz_yy.y); rsigma[p1*3+1]=rs;
+    rs=rsigma[p1*3+2];	rs=make_float2(rs.x+rsigmap1_yz_zz.x,rs.y+rsigmap1_yz_zz.y); rsigma[p1*3+2]=rs;
+    //===
   }
 }
 #ifndef DISABLE_BSMODES
@@ -2474,20 +2474,37 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
       //--------------------
       const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
       const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
-      if(extrapolatepore && activepore && sumwab>0){
-        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+      const bool poremls=(CTE.poremdbcinterp==1);
+      bool hasinv2=false;
+      bool hasinv3=false;
+      tmatrix3f invacorr2; if(sim2d) cumath::Tmatrix3fReset(invacorr2);
+      tmatrix4f invacorr3; if(!sim2d)cumath::Tmatrix4fReset(invacorr3);
+      if(activebound || (poremls && extrapolatepore && activepore && sumwab>0)){
         if(sim2d){
           const double determ=cumath::Determinant3x3dbl(a_corr2);
           if(fabs(determ)>=double(determlimit)){
-            const tmatrix3f invacorr2=cumath::InverseMatrix3x3dbl(a_corr2,determ);
-            const double qg = double(invacorr2.a11)*pwexcesssum + double(invacorr2.a12)*gradpwexcessx + double(invacorr2.a13)*gradpwexcessz;
-            pwexcessfinal=qg;
+            invacorr2=cumath::InverseMatrix3x3dbl(a_corr2,determ);
+            hasinv2=true;
           }
         }
         else{
           const double determ=cumath::Determinant4x4dbl(a_corr3);
           if(fabs(determ)>=double(determlimit)){
-            const tmatrix4f invacorr3=cumath::InverseMatrix4x4dbl(a_corr3,determ);
+            invacorr3=cumath::InverseMatrix4x4dbl(a_corr3,determ);
+            hasinv3=true;
+          }
+        }
+      }
+      if(extrapolatepore && activepore && sumwab>0){
+        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+        if(poremls && sim2d){
+          if(hasinv2){
+            const double qg = double(invacorr2.a11)*pwexcesssum + double(invacorr2.a12)*gradpwexcessx + double(invacorr2.a13)*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        else if(poremls){
+          if(hasinv3){
             const double qg = double(invacorr3.a11)*pwexcesssum + double(invacorr3.a12)*gradpwexcessx + double(invacorr3.a13)*gradpwexcessy + double(invacorr3.a14)*gradpwexcessz;
             pwexcessfinal=qg;
           }
@@ -2498,9 +2515,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
         const float3 dpos=make_float3(-bnormalp1.x,-bnormalp1.y,-bnormalp1.z); //-Boundary particle position - ghost node position.
         if(sim2d){
-          const double determ=cumath::Determinant3x3dbl(a_corr2);
-          if(fabs(determ)>=determlimit){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
-            const tmatrix3f invacorr2=cumath::InverseMatrix3x3dbl(a_corr2,determ);
+          if(hasinv2){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
             //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
             //const float rhoghost=float(invacorr2.a11*rhopp1 + invacorr2.a12*gradrhopp1.x + invacorr2.a13*gradrhopp1.z);
             //const float grx=    -float(invacorr2.a21*rhopp1 + invacorr2.a22*gradrhopp1.x + invacorr2.a23*gradrhopp1.z);
@@ -2539,9 +2554,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
           }
         }
         else{
-          const double determ=cumath::Determinant4x4dbl(a_corr3);
-          if(fabs(determ)>=determlimit){
-            const tmatrix4f invacorr3=cumath::InverseMatrix4x4dbl(a_corr3,determ);
+          if(hasinv3){
             //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
             //const float rhoghost=float(invacorr3.a11*rhopp1 + invacorr3.a12*gradrhopp1.x + invacorr3.a13*gradrhopp1.y + invacorr3.a14*gradrhopp1.z);
             //const float grx=    -float(invacorr3.a21*rhopp1 + invacorr3.a22*gradrhopp1.x + invacorr3.a23*gradrhopp1.y + invacorr3.a24*gradrhopp1.z);
@@ -2785,22 +2798,39 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
 
       //-Store the results.
       //--------------------
-      const bool activebound=(useboundmode? submerged>0.f: sumwab>=mdbcthreshold);
+      const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
       const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
-      if(extrapolatepore && activepore && sumwab>0){
-        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+      const bool poremls=(CTE.poremdbcinterp==1);
+      bool hasinv2=false;
+      bool hasinv3=false;
+      tmatrix3d invacorr2; if(sim2d) cumath::Tmatrix3dReset(invacorr2);
+      tmatrix4d invacorr3; if(!sim2d)cumath::Tmatrix4dReset(invacorr3);
+      if(activebound || (poremls && extrapolatepore && activepore && sumwab>0)){
         if(sim2d){
           const double determ=cumath::Determinant3x3(a_corr2);
           if(fabs(determ)>=double(determlimit)){
-            const tmatrix3d invacorr2=cumath::InverseMatrix3x3(a_corr2,determ);
-            const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
-            pwexcessfinal=qg;
+            invacorr2=cumath::InverseMatrix3x3(a_corr2,determ);
+            hasinv2=true;
           }
         }
         else{
           const double determ=cumath::Determinant4x4(a_corr3);
           if(fabs(determ)>=double(determlimit)){
-            const tmatrix4d invacorr3=cumath::InverseMatrix4x4(a_corr3,determ);
+            invacorr3=cumath::InverseMatrix4x4(a_corr3,determ);
+            hasinv3=true;
+          }
+        }
+      }
+      if(extrapolatepore && activepore && sumwab>0){
+        double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+        if(poremls && sim2d){
+          if(hasinv2){
+            const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
+            pwexcessfinal=qg;
+          }
+        }
+        else if(poremls){
+          if(hasinv3){
             const double qg = invacorr3.a11*pwexcesssum + invacorr3.a12*gradpwexcessx + invacorr3.a13*gradpwexcessy + invacorr3.a14*gradpwexcessz;
             pwexcessfinal=qg;
           }
@@ -2811,9 +2841,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
         const float3 dpos=make_float3(-bnormalp1.x,-bnormalp1.y,-bnormalp1.z); //-Boundary particle position - ghost node position.
         if(sim2d){
-          const double determ=cumath::Determinant3x3(a_corr2);
-          if(fabs(determ)>=determlimit){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
-            const tmatrix3d invacorr2=cumath::InverseMatrix3x3(a_corr2,determ);
+          if(hasinv2){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
             //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
             const float rhoghost=float(invacorr2.a11*rhopp1 + invacorr2.a12*gradrhopp1.x + invacorr2.a13*gradrhopp1.z);
             const float grx=    -float(invacorr2.a21*rhopp1 + invacorr2.a22*gradrhopp1.x + invacorr2.a23*gradrhopp1.z);
@@ -2852,9 +2880,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
           }
         }
         else{
-          const double determ=cumath::Determinant4x4(a_corr3);
-          if(fabs(determ)>=determlimit){
-            const tmatrix4d invacorr3=cumath::InverseMatrix4x4(a_corr3,determ);
+          if(hasinv3){
             //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
             const float rhoghost=float(invacorr3.a11*rhopp1 + invacorr3.a12*gradrhopp1.x + invacorr3.a13*gradrhopp1.y + invacorr3.a14*gradrhopp1.z);
             const float grx=    -float(invacorr3.a21*rhopp1 + invacorr3.a22*gradrhopp1.x + invacorr3.a23*gradrhopp1.y + invacorr3.a24*gradrhopp1.z);

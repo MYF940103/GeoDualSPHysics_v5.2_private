@@ -211,6 +211,7 @@ protected:
   float PoreDtSafety;         ///<Safety coefficient for pore-pressure diffusion time-step limit. //mdbr
   bool PoreShepardRegularization; ///<Enables optional Shepard regularization for pore pressure. //mdbr
   unsigned PoreShepardInterval; ///<Step interval for pore-pressure Shepard regularization. //mdbr
+  unsigned PoreMdbcInterpolationMode; ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct. //mdbr
   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr

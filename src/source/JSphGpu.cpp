@@ -388,7 +388,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 4);//-kplastic,kplasticdk and sort buffers
   if(HydroMech){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,6);//-PorePress,PorePress0,PorePressRate and sort buffers
-    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-HydroMechLoadAce and sort buffer
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-HydroMechLoadAce and sort buffer; diagnostic layout only.
   }
   if(TStep==STEP_Verlet){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
@@ -737,6 +737,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.domposminx=DomPosMin.x; ctes.domposminy=DomPosMin.y; ctes.domposminz=DomPosMin.z;
   ctes.modulus_E=SoilCte.ModulusE; ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
   ctes.hydromech=(HydroMech? 1: 0);
+  ctes.poremdbcinterp=PoreMdbcInterpolationMode;
   ctes.hydrotoploadmode=unsigned(HydroMechTopLoadMode);
   ctes.hydrotoploadpressure=0.f;
   if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
@@ -1483,7 +1484,6 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
   ApplyFreeSurfacePorePressure();
-
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg

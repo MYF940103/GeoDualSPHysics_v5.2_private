@@ -85,6 +85,7 @@ typedef struct{
   //-Ctes for elastic stiffness matrix
   float modulus_E, modulus_K, modulus_G;
   unsigned hydromech;       ///<Hydromechanical u-pw support switch.
+  unsigned poremdbcinterp;  ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct.
   unsigned hydrotoploadmode; ///<Hydromechanical top-load mode.
   float hydrotoploadpressure; ///<Current ramped q0 for hydromechanical top load [Pa].
   float porewaterrho;       ///<Pore-water density.

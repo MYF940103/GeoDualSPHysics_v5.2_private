@@ -617,7 +617,8 @@ void JSphGpuSingle::MdbcBoundCorrection(){
   Timersg->TmStart(TMG_CfPreForces,false);
   const unsigned n=(UseNormalsFt? Np: NpbOk);
   if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
-  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,(MdbcFastSingle && !HydroMech)
+  const bool fastsingle=(MdbcFastSingle && !HydroMech);
+  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,fastsingle
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
     ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg
     ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL));

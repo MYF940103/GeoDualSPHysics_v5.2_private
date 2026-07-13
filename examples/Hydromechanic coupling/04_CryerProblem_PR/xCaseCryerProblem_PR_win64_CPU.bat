@@ -1,23 +1,16 @@
 @echo off
 setlocal EnableDelayedExpansion
-pushd "%~dp0"
+rem Don't remove the two jump line after than the next line [set NL=^]
+set NL=^
 
-set case=CaseCryerProblem_PR
-set xml=%case%
-set dirout=%case%_out
-set data=%dirout%\data
-set particles=%dirout%\particles
-set figures=%dirout%\figures
 
-rem Formal one-stage Cryer release configuration.
-rem k=1e-5 gives Tv=1 at 0.910928571429 s.
-rem TimeOut is Delta Tv=0.001, so the full run writes 1000 nonzero-time intervals.
-set radius=0.05
-set dp=0.0025
-set q0=10000
-set khyd=1e-5
-set tmax=0.910928571429
-set tout=0.000910928571429
+rem "name" and "dirout" are named according to the testcase
+
+set name=CaseCryerProblem_PR
+set dirout=%name%_out
+set diroutdata=%dirout%\data
+
+rem "executables" are renamed and called from their directory
 
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
@@ -26,46 +19,46 @@ if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_
 set partvtk="%dirbin%/PartVTK_win64.exe"
 set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress,+hydromechloadace
 
-if exist "%dirout%" rd /s /q "%dirout%"
-if not "%ERRORLEVEL%" == "0" goto fail
-mkdir "%dirout%"
-mkdir "%particles%"
-mkdir "%figures%"
+:menu
+if exist %dirout% (
+	set /p option="The folder "%dirout%" already exists. Choose an option.!NL!  [1]- Delete it and continue.!NL!  [2]- Execute post-processing.!NL!  [3]- Abort and exit.!NL!"
+	if "!option!" == "1" goto run else (
+		if "!option!" == "2" goto postprocessing else (
+			if "!option!" == "3" goto fail else (
+				goto menu
+			)
+		)
+	)
+)
 
-%gencase% %xml%_Def "%dirout%/%case%" -save:all
+:run
+rem "dirout" to store results is removed if it already exists
+if exist %dirout% rd /s /q %dirout%
+
+rem CODES are executed according the selected parameters of execution in this testcase
+
+%gencase% %name%_Def %dirout%/%name% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu "%dirout%/%case%" "%dirout%" -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
+%dualsphysicscpu% -cpu %dirout%/%name% %dirout% -dirdataout data -svres -svextraparts:1
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%partvtk% -dirin "%data%" -savevtk "%particles%/PartFluid" -onlytype:-bound -vars:%vars%
+:postprocessing
+rem Executes PartVTK to create VTK files with particles.
+set dirout2=%dirout%\particles
+%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
 
-set CRYER_PARTICLES=%particles%
-set CRYER_FIGDIR=%figures%
-set CRYER_OUTTAG=cryer_center_pressure_dp0025_k1e5
-set CRYER_SUMMARY_JSON=%figures%\cryer_center_pressure_dp0025_k1e5_summary.json
-set CRYER_RADIUS=%radius%
-set CRYER_DP=%dp%
-set CRYER_Q0=%q0%
-set CRYER_TL=0
-set CRYER_LOAD_RAMP=0
-set CRYER_K_HYD=%khyd%
-set CRYER_TOUT=%tout%
-set CRYER_TIME_MAX=%tmax%
-set CRYER_TV_MIN=0.001
-py support\postprocess_cryer.py
+set dirout2=%dirout%\particles
+%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartBound -onlytype:-all,bound -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
-echo Cryer problem one-stage CPU validation done.
-echo Data: %data%
-echo VTK: %particles%
-echo Figures: %figures%
-popd
-exit /b 0
+echo All done
+goto end
 
 :fail
-echo Cryer problem one-stage CPU validation aborted.
-popd
-exit /b 1
+echo Execution aborted.
+
+:end
+pause

@@ -214,6 +214,7 @@ void JSph::InitVars(){
   PoreDtSafety=0.1f;
   PoreShepardRegularization=false;
   PoreShepardInterval=30;
+  PoreMdbcInterpolationMode=0;
   SoilStressRateGradCorr=false;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
@@ -860,7 +861,7 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
     if(cfg->MdbcThreshold >=0)MdbcThreshold=cfg->MdbcThreshold;
     if(cfg->MdbcFastSingle>=0)MdbcFastSingle=(cfg->MdbcFastSingle>0);
     //if(SlipMode!=SLIP_Vel0)Run_Exceptioon("Only the slip mode velocity=0 is allowed with mDBC conditions."); //SHABA
-    if(Cpu)MdbcFastSingle=false;
+    if(Cpu || HydroMech)MdbcFastSingle=false;
   }
     
   if(cfg->TStep)TStep=cfg->TStep;
@@ -1011,6 +1012,17 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
   LoadConfigVars(&xml);
   //-Enables the use of NuxLib in XML configuration.
   xml.SetNuxLib(NuxLib);
+
+  //-Hydromechanics is declared outside <parameters>, but mDBC precision is
+  // configured there and may also be overridden by command line options.
+  // Read the switch early so mDBC fast-single defaults are disabled before
+  // LoadConfigParameters()/LoadConfigCommands() resolve boundary options.
+  if(TiXmlNode* hydroNode=xml.GetNodeSimple("case.execution.special.hydromechanics",true)){
+    HydroMech=xml.ReadElementBool(hydroNode,"HydroMech","value",true,false);
+  }
+  else if(TiXmlNode* solidNode=xml.GetNodeSimple("case.execution.special.soils",true)){
+    HydroMech=xml.ReadElementBool(solidNode,"HydroMech","value",true,false);
+  }
 
   //-Execution parameters from XML.
   LoadConfigParameters(&xml);
@@ -1541,7 +1553,6 @@ void JSph::ConfigConstants2(){
 //==============================================================================
 void JSph::VisuConfig(){
   const string sep=" - ";
-  if(HydroMech)MdbcFastSingle=false;
   Log->Print(Simulate2D? "**2D-Simulation parameters:": "**3D-Simulation parameters:");
   Log->Print(fun::VarStr("CaseName",CaseName));
   ConfigInfo=CaseName;
@@ -3444,6 +3455,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   //-Hydromechanical switches, pore-pressure initialization, loading and drainage options.
   HydroMech=sxml->ReadElementBool(hydroReadNode,"HydroMech","value",true,false);
+  if(HydroMech && TBoundary==BC_MDBC)MdbcFastSingle=false;
   const string initmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechInitMode","value",true,"None"));
   if(initmodestr=="none" || initmodestr=="0")HydroMechInitMode=HMINIT_None;
   else if(initmodestr=="freesurface" || initmodestr=="free_surface" || initmodestr=="1")HydroMechInitMode=HMINIT_FreeSurface;
@@ -3476,6 +3488,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
     return(sxml->ReadElementUnsigned(node,name,"value",true,valdef));
   };
+  const auto ReadHydroStr=[&](const std::string &name,const std::string &valdef)->std::string{
+    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+    return(sxml->ReadElementStr(node,name,"value",true,valdef));
+  };
   SoilCte.PoreWaterRho=ReadHydroFloat("PoreWaterRho",1000.f);
   SoilCte.PoreWaterBulkModulus=ReadHydroFloat("PoreWaterBulkModulus",0.f);
   SoilCte.Porosity=ReadHydroFloat("Porosity",0.f);
@@ -3483,6 +3499,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   PoreDtSafety=ReadHydroFloat("PoreDtSafety",0.1f);
   PoreShepardRegularization=ReadHydroBool("PoreShepardRegularization",false);
   PoreShepardInterval=ReadHydroUnsigned("PoreShepardInterval",30);
+  const string poremdbcstr=fun::StrLower(ReadHydroStr("PoreMdbcInterpolationMode","0"));
+  if(poremdbcstr=="0" || poremdbcstr=="zeroorder" || poremdbcstr=="zero_order" || poremdbcstr=="zerothorder" || poremdbcstr=="zeroth_order")
+    PoreMdbcInterpolationMode=0;
+  else if(poremdbcstr=="1" || poremdbcstr=="mlsdirect" || poremdbcstr=="mls_direct" || poremdbcstr=="mls")
+    PoreMdbcInterpolationMode=1;
+  else Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
 
   //-Input validation.
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
@@ -3498,6 +3520,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(HydroMechTopLoadMode!=HMLOAD_None && HydroMechTopLoadRampTime<0)Run_Exceptioon("HydroMechTopLoadRampTime must be equal to or greater than zero when HydroMechTopLoadMode is not None.");
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
+    if(PoreMdbcInterpolationMode>1)Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
   }
 
   //-Derived soil elastic constants.
@@ -3554,6 +3577,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Printf("  PoreDtSafety: %f",PoreDtSafety);
     Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
     Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
+    Log->Print(fun::VarStr("  PoreMdbcInterpolationMode", (PoreMdbcInterpolationMode==1? "MLSDirect": "ZeroOrder")));
   }
   Log->Print("");
 }

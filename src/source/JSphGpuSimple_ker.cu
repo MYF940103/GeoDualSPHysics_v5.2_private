@@ -441,7 +441,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       float rrhop=rhopzero;
       velrhopnew[p]=make_float4(0,0,0,rrhop);
       //--mdbr--has been swapped return back
-      sigma[p]=sigma2[p];
+      sigma[p*3]=sigma2[p*3];
+      sigma[p*3+1]=sigma2[p*3+1];
+      sigma[p*3+2]=sigma2[p*3+2];
       //kplastic[p]=kplastic2[p];
     }
     else{ //-Particles: Floating & Fluid.
@@ -647,8 +649,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       //rvelrhop.w=(rvelrhop.w<rhopzero? rhopzero: rvelrhop.w); //-To prevent absorption of fluid particles by boundaries. | Evita que las boundary absorvan a las fluidas.
       rvelrhop.w=rhopzero;
       velrhop[p]=rvelrhop;
-      //float2 sigmaold=sigmapre[p];
-	  sigma[p]=sigmapre[p];
+      sigma[p*3]=sigmapre[p*3];
+      sigma[p*3+1]=sigmapre[p*3+1];
+      sigma[p*3+2]=sigmapre[p*3+2];
       //kplastic[p] = kplasticpre[p];
     }
     else{ //-Particles: Floating & Fluid.

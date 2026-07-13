@@ -1459,9 +1459,9 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureRateT
             divv+=vol2*(dvx*cfrx+dvy*cfry+dvz*cfrz);
             if(khyd>0){
               const double dz=posp1.z-pos[p2].z;
-              const bool pore_neumann_bound=(boundp2 && TBoundary==BC_MDBC);
               const double pwp2=double(porepress[p2]);
-              const double pwp2seep=(pore_neumann_bound? double(pwp1)+(gnorm>0? double(SoilCte.PoreWaterRho)*ghyd*dz: 0.0): pwp2);
+              // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
+              const double pwp2seep=pwp2;
               lapw+=vol2*(double(pwp1)-pwp2seep)*dotgrad/double(rr2+Eta2);
               lapz+=vol2*dz*dotgrad/double(rr2+Eta2);
             }
@@ -2303,9 +2303,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double comp=kwn*(-divv);
                 pore_ratep1+=comp;
                 if(khyd>0){
-                  const bool pore_neumann_bound=(boundp2 && TBoundary==BC_MDBC);
                   const double pwp2=double(porepress[p2]);
-                  const double pwp2seep=(pore_neumann_bound? double(pwp1)+(gnorm>0? double(SoilCte.PoreWaterRho)*ghyd*pdrz: 0.0): pwp2);
+                  // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
+                  const double pwp2seep=pwp2;
                   const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+Eta2);
                   const double lapz=vol2*pdrz*pdotgrad/double(prr2+Eta2);
                   const double seep=kwn*(2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd) + (gnorm>0? 2.0*khyd*lapz: 0.0));
@@ -2890,20 +2890,37 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
     //--------------------
     const bool activebound=(useboundmode? submerged>0.f: (sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold)));
     const bool activepore=(submerged>0.f || sumwab>=mdbcthreshold || (mdbcthreshold>=2 && sumwab+2>=mdbcthreshold));
-    if(extrapolatepore && activepore && sumwab>0){
-      double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+    const bool poremls=(PoreMdbcInterpolationMode==1);
+    bool hasinv2=false;
+    bool hasinv3=false;
+    tmatrix3d invacorr2=TMatrix3d(0);
+    tmatrix4d invacorr3=TMatrix4d(0);
+    if(activebound || (poremls && extrapolatepore && activepore && sumwab>0)){
       if(sim2d){
         const double determ=fmath::Determinant3x3(a_corr2);
         if(fabs(determ)>=determlimit){
-          const tmatrix3d invacorr2=fmath::InverseMatrix3x3(a_corr2,determ);
-          const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
-          pwexcessfinal=qg;
+          invacorr2=fmath::InverseMatrix3x3(a_corr2,determ);
+          hasinv2=true;
         }
       }
       else{
         const double determ=fmath::Determinant4x4(a_corr3);
         if(fabs(determ)>=determlimit){
-          const tmatrix4d invacorr3=fmath::InverseMatrix4x4(a_corr3,determ);
+          invacorr3=fmath::InverseMatrix4x4(a_corr3,determ);
+          hasinv3=true;
+        }
+      }
+    }
+    if(extrapolatepore && activepore && sumwab>0){
+      double pwexcessfinal=pwexcesssum/double(sumwab); //-0th-order fallback.
+      if(poremls && sim2d){
+        if(hasinv2){
+          const double qg = invacorr2.a11*pwexcesssum + invacorr2.a12*gradpwexcessx + invacorr2.a13*gradpwexcessz;
+          pwexcessfinal=qg;
+        }
+      }
+      else if(poremls){
+        if(hasinv3){
           const double qg = invacorr3.a11*pwexcesssum + invacorr3.a12*gradpwexcessx + invacorr3.a13*gradpwexcessy + invacorr3.a14*gradpwexcessz;
           pwexcessfinal=qg;
         }
@@ -2914,9 +2931,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
       if(useboundmode)boundmode[p1]=BMODE_MDBC2;
       const tfloat3 dpos=(boundnormal[p1]*(-1.f)); //-Boundary particle position - ghost node position.
       if(sim2d){
-        const double determ=fmath::Determinant3x3(a_corr2);
-        if(fabs(determ)>=determlimit){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
-          const tmatrix3d invacorr2=fmath::InverseMatrix3x3(a_corr2,determ);
+        if(hasinv2){//-Use 1e-3f (first_order) or 1e+3f (zeroth_order).
           //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
           //const float rhoghost=float(invacorr2.a11*rhopp1 + invacorr2.a12*gradrhopp1.x + invacorr2.a13*gradrhopp1.z);
           //const float grx=    -float(invacorr2.a21*rhopp1 + invacorr2.a22*gradrhopp1.x + invacorr2.a23*gradrhopp1.z);
@@ -2955,9 +2970,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
         }
       }
       else{
-        const double determ=fmath::Determinant4x4(a_corr3);
-        if(fabs(determ)>=determlimit){
-          const tmatrix4d invacorr3=fmath::InverseMatrix4x4(a_corr3,determ);
+        if(hasinv3){
           //-GHOST NODE DENSITY IS MIRRORED BACK TO THE BOUNDARY PARTICLES.
           //const float rhoghost=float(invacorr3.a11*rhopp1 + invacorr3.a12*gradrhopp1.x + invacorr3.a13*gradrhopp1.y + invacorr3.a14*gradrhopp1.z);
           //const float grx=    -float(invacorr3.a21*rhopp1 + invacorr3.a22*gradrhopp1.x + invacorr3.a23*gradrhopp1.y + invacorr3.a24*gradrhopp1.z);
