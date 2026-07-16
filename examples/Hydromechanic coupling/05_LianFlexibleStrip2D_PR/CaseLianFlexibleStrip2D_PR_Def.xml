@@ -17,8 +17,6 @@
             <predefinition>
                 <newvarcte sizefx="20.0" _rem="Soil layer width L=16a=20 m" />
                 <newvarcte sizefz="10.0" _rem="Soil layer depth H=8a=10 m" />
-                <newvarcte sizebx="20.0" _rem="Boundary width matching the soil layer" />
-                <newvarcte sizebz="10.0" _rem="Boundary height matching the soil layer" />
                 <newvarcte Dp="0.1" _rem="Particle spacing used by Lian 2023" />
             </predefinition>
             <definition dp="#Dp" units_comment="metres (m)">
@@ -32,10 +30,10 @@
                     <move x="0" y="-0.1" z="0" />
                     <setmkbound mk="0" />
                     <drawbeach mask="1|2|6">
-                        <point x="0" y="0.2" z="#sizebz" />
+                        <point x="0" y="0.2" z="#sizefz" />
                         <point x="0" y="0.2" z="0" />
-                        <point x="#sizebx" y="0.2" z="0" />
-                        <point x="#sizebx" y="0.2" z="#sizebz" />
+                        <point x="#sizefx" y="0.2" z="0" />
+                        <point x="#sizefx" y="0.2" z="#sizefz" />
                     </drawbeach>
                     <matrixreset />
                     <shapeout file="hdp" />
@@ -57,17 +55,17 @@
                     <drawbox>
                         <boxfill>solid</boxfill>
                         <point x="#-4*Dp" y="-1" z="#-4*Dp" />
-                        <size x="#sizebx+8*Dp" y="2" z="#4*Dp" />
+                        <size x="#sizefx+8*Dp" y="2" z="#3*Dp" />
                     </drawbox>
                     <drawbox>
                         <boxfill>solid</boxfill>
                         <point x="#-4*Dp" y="-1" z="0" />
-                        <size x="#4*Dp" y="2" z="#sizebz" />
+                        <size x="#3*Dp" y="2" z="#sizefz" />
                     </drawbox>
                     <drawbox>
                         <boxfill>solid</boxfill>
-                        <point x="#sizebx+Dp" y="-1" z="0" />
-                        <size x="#4*Dp" y="2" z="#sizebz" />
+                        <point x="#sizefx+Dp" y="-1" z="0" />
+                        <size x="#3*Dp" y="2" z="#sizefz" />
                     </drawbox>
                 </mainlist>
             </commands>
@@ -97,7 +95,7 @@
                 <PoreShepardRegularization value="0" comment="Lian 2023 strip-footing case did not require pore-pressure regularization" />
                 <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
                 <HydroMechInitMode value="0" comment="No initial hydrostatic pore pressure because gravity is ignored" />
-                <HydroMechTopLoadMode value="3" comment="3=TopStripVertical; hard-coded Lian strip footprint x=[0,1.25] m" />
+                <HydroMechTopLoadMode value="4" comment="4=LianFlexibleStrip; hard-coded Lian strip footprint x=[0,1.25] m on the top surface" />
                 <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0=10 kPa" units_comment="Pa" />
                 <HydroMechTopLoadRampTime value="1.0" comment="Ramp load duration tL=1 s" units_comment="seconds" />
                 <HydroMechDrainage value="1" comment="After tL, drain only the open top free surface outside the strip footprint; strip footing and other boundaries remain impermeable" />
@@ -108,7 +106,7 @@
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
             <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
-            <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition; first approximation for all walls" />
+            <parameter key="SlipMode" value="3" comment="mDBC free-slip mode, matching the lateral free-slip setting in Lian 2023 and the validated Yao 2-D setup" />
             <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
             <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
             <parameter key="Kernel" value="2" comment="Wendland kernel" />
@@ -126,12 +124,12 @@
             <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
             <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
             <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
-            <parameter key="DtIni" value="0.000001" comment="Initial time step" units_comment="seconds" />
+            <parameter key="DtIni" value="0.00001" comment="Reduced release timestep for the 50 s Lian flexible-strip run without TPI" units_comment="seconds" />
             <parameter key="DtMin" value="0.000000001" comment="Minimum time step" units_comment="seconds" />
-            <parameter key="DtFixed" value="0.000001" comment="Fixed reference time step for first validation; TPI is not enabled" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.00001" comment="Reduced release timestep for the 50 s Lian flexible-strip run; TPI is not enabled" units_comment="seconds" />
             <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-            <parameter key="TimeMax" value="3.0" comment="Early-time contour validation target; full paper dissipation reaches 100 s" units_comment="seconds" />
-            <parameter key="TimeOut" value="0.05" comment="Output interval for early-time Fig. 10 style checks" units_comment="seconds" />
+            <parameter key="TimeMax" value="50.0" comment="Full Fig. 10 dissipation target for the Lian flexible-strip case" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.05" comment="Output interval for Lian Fig. 10 style contour and time-history checks" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="500" comment="Minimum valid rhop" units_comment="kg/m^3" />
             <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />

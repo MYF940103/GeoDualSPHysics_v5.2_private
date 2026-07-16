@@ -12,11 +12,11 @@ if not "%~1" == "" set tmax=%~1
 if not "%~2" == "" set tout=%~2
 if not "%~3" == "" set suffix=%~3
 set case=%basecase%_%suffix%
-set dirout=%case%_out
+set dirout=..\outputs\%case%_out
 set diroutdata=%dirout%\data
 
-set caseroot=..
-set dirbin=../../../../bin/windows
+set caseroot=..\..
+set dirbin=../../../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
 if not exist %dualsphysicsgpu% set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_win64_debug.exe"
@@ -25,25 +25,27 @@ set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnor
 
 if exist %dirout% rd /s /q %dirout%
 if not "%ERRORLEVEL%" == "0" goto fail
+if not exist ..\outputs mkdir ..\outputs
+if not exist ..\configs mkdir ..\configs
 
 rem Build a temporary 3s definition from the base Lian case.
-py support\make_lian_gpu3s_def.py --base "%caseroot%/%basecase%_Def.xml" --out %case%_Def.xml --tmax %tmax% --tout %tout% --dtfixed %dtfixed% --poresafety %poresafety%
+py make_lian_gpu3s_def.py --base "%caseroot%/%basecase%_Def.xml" --out ..\configs\%case%_Def.xml --tmax %tmax% --tout %tout% --dtfixed %dtfixed% --poresafety %poresafety%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 rem Lian 2023 flexible strip loading: q0=10 kPa, tL=1 s, open top drainage outside strip after tL.
-%gencase% %case%_Def %dirout%/%case% -save:all
+%gencase% ..\configs\%case%_Def %dirout%/%case% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicsgpu% -gpu -mdbc %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
+%dualsphysicsgpu% -gpu -mdbc_freeslip %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 set vtkdir=%dirout%\particles
-%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartAll -vars:%vars%
+%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartBound -onlytype:-all,bound -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
-%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartFluid -onlytype:-bound -vars:%vars%
+%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartFluid -onlytype:-all,fluid -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
 
-py support\postprocess_lian_flexible_strip.py --run-dir %dirout% --out-dir figures
+py postprocess_lian_flexible_strip.py --run-dir %dirout% --out-dir %dirout%\figures
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success

@@ -22,6 +22,7 @@ def main():
 
     text = Path(args.base).read_text(encoding="utf-8")
     text = replace_attr(text, r'(<PoreDtSafety value=")[^"]+(")', args.poresafety)
+    text = replace_attr(text, r'(<parameter key="DtIni" value=")[^"]+(")', args.dtfixed)
     text = replace_attr(text, r'(<parameter key="DtFixed" value=")[^"]+(")', args.dtfixed)
     text = replace_attr(text, r'(<parameter key="TimeMax" value=")[^"]+(")', args.tmax)
     text = replace_attr(text, r'(<parameter key="TimeOut" value=")[^"]+(")', args.tout)

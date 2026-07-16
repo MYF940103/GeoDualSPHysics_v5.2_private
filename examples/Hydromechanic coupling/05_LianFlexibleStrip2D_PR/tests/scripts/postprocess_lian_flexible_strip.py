@@ -23,6 +23,21 @@ PROBES = {
     "B": (1.25, 8.75),
 }
 
+STRIP_XMAX = 1.25
+TOP_Z = 10.0
+DP = 0.1
+
+
+def finite_stats(values):
+    vals = [v for v in values if math.isfinite(v)]
+    if not vals:
+        return float("nan"), float("nan"), float("nan"), 0
+    return min(vals), max(vals), sum(vals) / len(vals), len(vals)
+
+
+def masked_values(values, mask):
+    return [v for v, keep in zip(values, mask) if keep]
+
 
 def read_vtk(path):
     data = Path(path).read_bytes()
@@ -157,9 +172,9 @@ def main():
     args = parser.parse_args()
 
     run_dir = Path(args.run_dir).resolve()
-    out_dir = Path(args.out_dir).resolve() if args.out_dir else run_dir.parent / "figures"
+    out_dir = Path(args.out_dir).resolve() if args.out_dir else run_dir / "figures"
     out_dir.mkdir(parents=True, exist_ok=True)
-    support_dir = run_dir.parent / "support"
+    support_dir = out_dir
     support_dir.mkdir(parents=True, exist_ok=True)
     targets = [float(v) for v in args.targets.split(",") if v.strip()]
 
@@ -179,6 +194,23 @@ def main():
         comp, vals = fields[FIELD_NAMES["epwp"]]
         epwp_raw_kpa = [v / 1000.0 for v in vals]
         epwp_lian_kpa = [v / 1000.0 for v in vals]
+        loadz = [0.0] * len(x)
+        if FIELD_NAMES["load"] in fields:
+            lcomp, lvals = fields[FIELD_NAMES["load"]]
+            if lcomp >= 3:
+                loadz = [lvals[i * lcomp + 2] for i in range(len(x))]
+        top = [abs(zi - TOP_Z) <= 0.5 * DP + 1e-9 for zi in z]
+        strip_top = [is_top and xi <= STRIP_XMAX + 1e-9 for xi, is_top in zip(x, top)]
+        open_top = [is_top and xi > STRIP_XMAX + 1e-9 for xi, is_top in zip(x, top)]
+        loaded = [abs(v) > 1e-12 for v in loadz]
+        loaded_outside = [
+            is_loaded and not (xi <= STRIP_XMAX + 1e-9 and abs(zi - TOP_Z) <= 0.5 * DP + 1e-9)
+            for xi, zi, is_loaded in zip(x, z, loaded)
+        ]
+        strip_min, strip_max, strip_mean, strip_count = finite_stats(masked_values(epwp_lian_kpa, strip_top))
+        open_absmax = max([abs(v) for v in masked_values(epwp_lian_kpa, open_top)] or [float("nan")])
+        loaded_x = masked_values(x, loaded)
+        loaded_z = masked_values(z, loaded)
         probe_vals = {}
         for name, target in PROBES.items():
             raw_val, meta = idw_value(x, z, epwp_raw_kpa, target, k=8)
@@ -192,6 +224,17 @@ def main():
             "time_after_ramp_s": time - 1.0,
             "max_epwp_lian_kPa": max(epwp_lian_kpa),
             "min_epwp_lian_kPa": min(epwp_lian_kpa),
+            "strip_top_count": strip_count,
+            "strip_top_min_kPa": strip_min,
+            "strip_top_max_kPa": strip_max,
+            "strip_top_mean_kPa": strip_mean,
+            "open_top_absmax_kPa": open_absmax,
+            "loaded_count": sum(1 for keep in loaded if keep),
+            "loaded_outside_strip_count": sum(1 for keep in loaded_outside if keep),
+            "loaded_x_min": min(loaded_x) if loaded_x else float("nan"),
+            "loaded_x_max": max(loaded_x) if loaded_x else float("nan"),
+            "loaded_z_min": min(loaded_z) if loaded_z else float("nan"),
+            "loaded_z_max": max(loaded_z) if loaded_z else float("nan"),
         }
         row.update(probe_vals)
         rows.append(row)
@@ -213,7 +256,10 @@ def main():
             "part", "time_s", "time_after_ramp_s",
             "A_epwp_raw_kPa", "A_below_epwp_raw_kPa", "B_epwp_raw_kPa",
             "A_epwp_lian_kPa", "A_below_epwp_lian_kPa", "B_epwp_lian_kPa",
-            "max_epwp_lian_kPa", "min_epwp_lian_kPa"
+            "max_epwp_lian_kPa", "min_epwp_lian_kPa",
+            "strip_top_count", "strip_top_min_kPa", "strip_top_max_kPa", "strip_top_mean_kPa",
+            "open_top_absmax_kPa", "loaded_count", "loaded_outside_strip_count",
+            "loaded_x_min", "loaded_x_max", "loaded_z_min", "loaded_z_max"
         ])
         writer.writeheader()
         writer.writerows(rows)

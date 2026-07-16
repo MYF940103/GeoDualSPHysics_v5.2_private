@@ -9,9 +9,10 @@ checkpoint.
 
 - The Lian flexible strip validation path is paused/abandoned for now. The next
   validation target is Yao et al. (2025) 2-D consolidation.
-- The code keeps `HydroMechTopLoadMode=3` (`TopStripVertical`) as an exploratory
-  hard-coded strip-load option for the Lian setup, with the strip footprint
-  fixed at `x=[0,1.25] m`.
+- After this validation path was abandoned, `HydroMechTopLoadMode=3`
+  (`TopStripVertical`) was repurposed for the Yao et al. (2025) 2-D
+  consolidation setup. Do not use the archived Lian XML without restoring the
+  former Lian footprint.
 - In this mode, drainage is applied only to the open top free surface outside
   the strip footprint. The strip footing area remains impermeable for the full
   simulation.

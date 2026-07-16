@@ -3,13 +3,13 @@ setlocal EnableDelayedExpansion
 pushd "%~dp0"
 
 set case=CaseLianFlexibleStrip2D_PR
-set dirout=%case%_short_out
+set dirout=..\outputs\%case%_short_out
 set diroutdata=%dirout%\data
 set tmax=0.0002
 set tout=0.0002
 
-set caseroot=..
-set dirbin=../../../../bin/windows
+set caseroot=..\..
+set dirbin=../../../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"
 if not exist %dualsphysicscpu% set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64_debug.exe"
@@ -18,18 +18,19 @@ set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnor
 
 if exist %dirout% rd /s /q %dirout%
 if not "%ERRORLEVEL%" == "0" goto fail
+if not exist ..\outputs mkdir ..\outputs
 
 rem Lian 2023 flexible strip loading smoke test: local q0 strip x=[0,1.25] m, no TPI.
 %gencase% "%caseroot%/%case%_Def" %dirout%/%case% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
+%dualsphysicscpu% -cpu -mdbc_freeslip %dirout%/%case% %dirout% -dirdataout data -svres -svextraparts:1 -tmax:%tmax% -tout:%tout%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 set vtkdir=%dirout%\particles
-%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartAll -vars:%vars%
+%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartBound -onlytype:-all,bound -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
-%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartFluid -onlytype:-bound -vars:%vars%
+%partvtk% -dirin %diroutdata% -savevtk %vtkdir%/PartFluid -onlytype:-all,fluid -vars:%vars%
 if not "%ERRORLEVEL%" == "0" goto fail
 
 :success
