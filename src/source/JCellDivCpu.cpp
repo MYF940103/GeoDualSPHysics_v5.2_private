@@ -350,6 +350,20 @@ void JCellDivCpu::CalcCellDomainFluid(unsigned n,unsigned pini,unsigned n2,unsig
 }
 
 //==============================================================================
+/// Reorder values of all particles (for type byte).
+/// Reordena datos de todas las particulas (para tipo byte).
+//==============================================================================
+void JCellDivCpu::SortArray(byte *vec){
+  const int n=int(Nptot);
+  const int ini=(DivideFull? 0: int(NpbFinal));
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=ini;p<n;p++)VSort[p]=vec[SortPart[p]];
+  memcpy(vec+ini,VSort+ini,sizeof(byte)*(n-ini));
+}
+
+//==============================================================================
 /// Reorder values of all particles (for type word).
 /// Reordena datos de todas las particulas (para tipo word).
 //==============================================================================

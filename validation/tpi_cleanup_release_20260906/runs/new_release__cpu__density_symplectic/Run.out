@@ -1,0 +1,254 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[Initialising JSphCpuSingle  06-09-2026 22:11:27]
+ProgramFile=".../bin/windows/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/CaseSWSc2_PR_Dens_p300_out/CaseSWSc2_PR_Dens_p300.xml"
+OutputDir=".../tpi_cleanup_release_20260906/runs/new_release__cpu__density_symplectic"
+OutputDataDir=".../runs/new_release__cpu__density_symplectic/data"
+PartBegin=300
+PartBeginDir="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\tests\outputs\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\data"
+PartBeginFirst=0
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseSWSc2_PR_Dens_p300"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[1.16543e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[0.21]  MassBound=[0.21]
+
+*** WARNING: The execution will be cancelled after 2000 simulation steps.
+
+XML-Vars (parameters): TimeMax=[0.002]  TimeOut=[0.0002]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="MLSDirect"
+  PoreCompressionSourceMode="DensityRate"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseSWSc2_PR_Dens_p300"
+RunName="CaseSWSc2_PR_Dens_p300"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.4
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=0.002000000094994903
+TimePart=0.000199999994947575
+Gravity=(0,0,-9.81)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested CPU memory for 1168 particles: 0.5 MB.
+Restart soil data: Sigma inherited, Kplastic reset for restart stage.
+Restart hydromechanical data: PorePress and PorePress0 inherited.
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+**JSphCpu: Requesting cpu memory for 1253 particles: 0.5 MB.
+**JSphCpu: Requesting cpu memory for 2093 particles: 0.9 MB.
+**CellDiv: Requested cpu memory for 2093 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Double - Single core"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 1014664 (0.97 MB)
+Part_0000        1040 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 2000 simulation steps.
+
+[Initialising simulation (i3vdtk2z)  06-09-2026 22:11:27]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphCpu: Requesting cpu memory for 2967 particles: 1.2 MB.
+**CellDiv: Requested cpu memory for 2967 particles: 0.1 MB.
+Part_0001      0.000200           200      200    7422.64  06-09-2026 22:11:41
+Part_0002      0.000400           400      200    7349.28  06-09-2026 22:11:41
+Part_0003      0.000600           600      200    7344.29  06-09-2026 22:11:41
+Part_0004      0.000800           800      200    7642.17  06-09-2026 22:11:41
+Part_0005      0.001000          1000      200    7426.11  06-09-2026 22:11:41
+Part_0006      0.001200          1200      200    7175.16  06-09-2026 22:11:41
+Part_0007      0.001400          1400      200    7473.15  06-09-2026 22:11:41
+Part_0008      0.001600          1600      200    7592.09  06-09-2026 22:11:41
+Part_0009      0.001800          1800      200    7832.91  06-09-2026 22:11:41
+Part_0010      0.002000          2000      200    7820.38  06-09-2026 22:11:42
+
+[Simulation finished  06-09-2026 22:11:42]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 15.065991 sec.
+Simulation Runtime...............: 15.016349 sec.
+Runtime per physical second......: 7508.173828 sec.
+Steps per second.................: 133.188171
+Steps of simulation..............: 2000
+PART files.......................: 11
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 1416704 (1.35 MB)
+ 
+[CPU Timers]
+VA-Init..........................: 0.049594 sec.
+NL-Limits........................: 0.029692 sec.
+NL-MakeSort......................: 0.050596 sec.
+NL-SortData......................: 2.195795 sec.
+NL-OutCheck......................: 0.000156 sec.
+CF-PreForces.....................: 0.284471 sec.
+CF-Forces........................: 9.912879 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 0.298146 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0.076701 sec.
+SU-ResizeNp......................: 0.000801 sec.
+SU-SavePart......................: 0.131830 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000001 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The execution will be cancelled after 2000 simulation steps.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+

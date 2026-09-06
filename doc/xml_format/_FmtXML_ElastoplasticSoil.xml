@@ -38,6 +38,9 @@
 				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
 				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
 				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
+				<!-- mDBC pore-pressure interpolation mode for boundary pore-pressure reconstruction only. -->
+				<!-- 0=zero-order/default stable mode; 1=MLS direct opt-in mode. -->
+				<!-- This does not select mechanical wall slip and does not replace HydroMechDrainage free-surface drainage. -->
 				<PoreMdbcInterpolationMode value="0" comment="mDBC boundary pore-pressure interpolation: 0=zero-order, 1=MLS direct; default=0" />
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
 				<!-- Required only when HydroMechInitMode=2; default=0. -->
@@ -48,6 +51,18 @@
 				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure; default=1" />
 				<HydroMechDrainageStartTime value="0" comment="Drainage start time; default=0" units_comment="s" />
 			</hydromechanics>
+
+			<!-- Optional mDBC mechanical slip overrides by boundary mkbound. -->
+			<!-- Location in real cases: <case><execution><special><mdbcslip>...</mdbcslip>. -->
+			<!-- Requires Boundary=2. SlipMode remains the global default for mkbound values not listed here. -->
+			<!-- Use GenCase mkbound values, not mk values. Split wall geometry with <setmkbound mk="..."/> before draw commands. -->
+			<!-- Each listed mkbound must exist in the generated particles and can appear only once. -->
+			<!-- slipmode accepts 1/Vel0, 2/NoSlip, 3/FreeSlip and aliases such as vel0, no-slip, free-slip. -->
+			<!-- This is a mechanical mDBC wall-slip setting only; hydraulic drainage remains controlled by HydroMechDrainage. -->
+			<mdbcslip>
+				<bound mkbound="0" slipmode="3" comment="Example: lateral walls free-slip" />
+				<bound mkbound="1" slipmode="2" comment="Example: bottom wall no-slip" />
+			</mdbcslip>
 		</special>
 	</execution>
 
@@ -77,6 +92,7 @@
 			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
 			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
 			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
+			<!-- Use <execution><special><mdbcslip> to override SlipMode for selected mkbound values. -->
 			<parameter key="MDBCCorrector" value="1" comment="mDBC correction in Symplectic corrector 0:predictor only, 1:predictor and corrector (default=1)" />
 			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
 			<!-- Optional for SlipMode=2 or 3. -->

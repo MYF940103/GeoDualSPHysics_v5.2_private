@@ -194,6 +194,11 @@ void JSphGpuSingle::ConfigDomain(){
 
   //-Loads Code of the particles.
   LoadCodeParticles(Np,Idp,Code);
+  byte *boundslipmode=NULL;
+  if(MdbcSlipModeByMk){
+    boundslipmode=new byte[Np];
+    InitMdbcSlipModeParticles(Np,Code,boundslipmode);
+  }
 
   //-Load normals for boundary particles (fixed and moving).
   tfloat3 *boundnormal=NULL;
@@ -237,8 +242,9 @@ void JSphGpuSingle::ConfigDomain(){
   //-Uploads particle data on the GPU.
   ReserveBasicArraysGpu();
   for(unsigned p=0;p<Np;p++){ Posxy[p]=TDouble2(AuxPos[p].x,AuxPos[p].y); Posz[p]=AuxPos[p].z; }
-  ParticlesDataUp(Np,boundnormal);
+  ParticlesDataUp(Np,boundnormal,boundslipmode);
   delete[] boundnormal; boundnormal=NULL;
+  delete[] boundslipmode; boundslipmode=NULL;
   //-Uploads constants on the GPU.
   ConstantDataUp();
 
@@ -353,7 +359,7 @@ void JSphGpuSingle::RunPeriodic(){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
               cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg);
             }
-            if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg);
+            if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg,BoundSlipModeg);
 
             //-Frees memory and updates the particle number.
             //-Libera lista y actualiza numero de particulas.
@@ -480,6 +486,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
       CellDivSingle->SortDataArrays(MotionVelg,motionvelg);
       swap(MotionVelg,motionvelg); ArraysGpu->Free(motionvelg);
     }
+    if(BoundSlipModeg){
+      byte* boundslipmodeg=ArraysGpu->ReserveByte();
+      CellDivSingle->SortDataArrays(BoundSlipModeg,boundslipmodeg);
+      swap(BoundSlipModeg,boundslipmodeg); ArraysGpu->Free(boundslipmodeg);
+    }
     if(TangenVelg){
       float3* tangenvelg=ArraysGpu->ReserveFloat3();
       CellDivSingle->SortDataArrays(TangenVelg,tangenvelg);
@@ -568,7 +579,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,bsbound,bsfluid,Np,Npb,NpbOk
     ,0,Nstep,DivData,Dcellg
     ,Posxyg,Poszg,PosCellg,Velrhopg,Idpg,Codeg
-    ,FtoMasspg,SpsTaug,dengradcorr,CorrMatg,BoundModeg,TangenVelg
+    ,FtoMasspg,SpsTaug,dengradcorr,CorrMatg,BoundModeg,BoundSlipModeg,TangenVelg
     ,MotionVelg,BoundNormalg,NoPenShiftg
     ,ViscDtg,Arg,Aceg,Deltag
     ,SpsGradvelg
@@ -618,9 +629,10 @@ void JSphGpuSingle::MdbcBoundCorrection(){
   const unsigned n=(UseNormalsFt? Np: NpbOk);
   if(BoundModeg)cudaMemset(BoundModeg,BMODE_DBC,sizeof(byte)*Np);
   const bool fastsingle=(MdbcFastSingle && !HydroMech);
-  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,SlipMode,fastsingle
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,slipmode,fastsingle
     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
-    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,TangenVelg
+    ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,BoundSlipModeg,TangenVelg
     ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL));
   Timersg->TmStop(TMG_CfPreForces,false);
 }
@@ -634,8 +646,9 @@ void JSphGpuSingle::CdbcBoundCorrection(){
   Timersg->TmStart(TMG_CfPreForces,false);
   //unsigned n=Np;
   const unsigned n=(WithFloating? Np: NpbOk);
-  cusph::Interaction_CdbcCorrection(TKernel,Simulate2D,SlipMode,n,CaseNbound,MdbcThreshold
-    ,DivData,Posxyg,Poszg,Dcellg,PosCellg,Codeg,Idpg,MotionVelg,Velrhopg,Sigmag);
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  cusph::Interaction_CdbcCorrection(TKernel,Simulate2D,slipmode,n,CaseNbound,MdbcThreshold
+    ,DivData,Posxyg,Poszg,Dcellg,PosCellg,Codeg,Idpg,MotionVelg,Velrhopg,Sigmag,BoundSlipModeg);
   Timersg->TmStop(TMG_CfPreForces,false);
 }
 //<vs_cdbc_end>

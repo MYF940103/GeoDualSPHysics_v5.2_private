@@ -50,7 +50,7 @@ protected:
   void PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
     ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const;
   void PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
-    ,tdouble3 perinc,const unsigned *listp,tfloat3 *motionvel,tfloat3 *normals)const;
+    ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel,byte *boundslipmode)const;
   void RunPeriodic();
 
   void RunCellDivide(bool updateperiodic);

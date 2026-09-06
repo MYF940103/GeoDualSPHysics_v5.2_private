@@ -45,6 +45,7 @@
 #include <sstream>
 #include <iostream>
 #include <fstream>
+#include <vector>
 
 class JSphMk;
 class JDsMotion;
@@ -192,6 +193,14 @@ protected:
 
   TpBoundary TBoundary;       ///<Boundary condition: DBC, M-DBC.
   TpSlipMode SlipMode;        ///<Slip mode for mDBC 1:DBC vel=0, 2:No-slip, 3:Free slip (default=1).
+  typedef struct{
+    word MkBound;              ///<Boundary mk value used in XML.
+    typecode Code;             ///<Boundary type/value code for this mkbound.
+    TpSlipMode SlipMode;       ///<Slip mode assigned to this boundary mk.
+  }StMdbcSlipModeMk;
+  bool MdbcSlipModeByMk;       ///<Enables per-mkbound mDBC slip-mode overrides.
+  TpSlipMode MdbcSlipModeMax;  ///<Highest slip-mode required by global/per-mkbound settings.
+  std::vector<StMdbcSlipModeMk> MdbcSlipModeMk; ///<Per-mkbound mDBC slip-mode overrides.
   bool NoPenetration;         ///<NoPenetration correction for mDBC2.
   TpMdbc2Mode TMdbc2;         ///<mDBC2 mode used by NoPenetration.
   TpDPCtes DPCtes;            ///<DP constants 1:3D Circumscribed DP, 2:3D Mid Circumscribed DP, 3:Plain Strain condition (default=1). //mdbr
@@ -212,6 +221,8 @@ protected:
   bool PoreShepardRegularization; ///<Enables optional Shepard regularization for pore pressure. //mdbr
   unsigned PoreShepardInterval; ///<Step interval for pore-pressure Shepard regularization. //mdbr
   unsigned PoreMdbcInterpolationMode; ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct. //mdbr
+  unsigned PoreCompressionSourceMode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate. //mdbr
+  bool PoreCompressionGradCorr; ///<Applies kernel-gradient correction to the pore-pressure compression source. //mdbr
   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
@@ -456,6 +467,11 @@ protected:
   void LoadConfigVarsExec();
   void LoadConfigParameters(const JXml *xml);
   void LoadConfigCommands(const JSphCfgRun *cfg);
+  void LoadMdbcSlipModeByMk(const JXml *xml);
+  void UpdateMdbcSlipModeConfig();
+  TpSlipMode ReadMdbcSlipMode(const std::string &value,const std::string &context)const;
+  TpSlipMode GetMdbcSlipModeByCode(typecode code)const;
+  void InitMdbcSlipModeParticles(unsigned np,const typecode *code,byte *boundslipmode)const;
   void LoadCaseConfig(const JSphCfgRun *cfg);
 
   StDemData LoadDemData(bool checkdata,const JCasePartBlock* block)const;

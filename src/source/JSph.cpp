@@ -33,6 +33,7 @@
 #include "JCaseCtes.h"
 #include "JCaseEParms.h"
 #include "JCaseParts.h"
+#include "JRangeFilter.h"
 #include "JDsDcell.h"
 #include "JDsFixedDt.h"
 #include "JDsSaveDt.h"
@@ -195,6 +196,9 @@ void JSph::InitVars(){
   Visco=0; ViscoBoundFactor=1;
   TBoundary=BC_DBC;
   SlipMode=SLIP_Vel0;
+  MdbcSlipModeByMk=false;
+  MdbcSlipModeMax=SLIP_Vel0;
+  MdbcSlipModeMk.clear();
   NoPenetration=false;
   TMdbc2=MDBC2_None;
   DPCtes=DP_C;//mdbr
@@ -215,6 +219,8 @@ void JSph::InitVars(){
   PoreShepardRegularization=false;
   PoreShepardInterval=30;
   PoreMdbcInterpolationMode=0;
+  PoreCompressionSourceMode=0;
+  PoreCompressionGradCorr=true;
   SoilStressRateGradCorr=false;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
@@ -705,12 +711,12 @@ void JSph::LoadConfigParameters(const JXml *xml){
       case 3:  SlipMode=SLIP_FreeSlip;  break;
       default: Run_Exceptioon("Slip mode is not valid.");
     }
-    if(SlipMode>=SLIP_NoSlip)NoPenetration=ReadEParmsBool(eparms,"NoPenetration",false);
-    if(SlipMode>=SLIP_NoSlip)TMdbc2=(NoPenetration? MDBC2_NoPen: MDBC2_Std);
+    NoPenetration=ReadEParmsBool(eparms,"NoPenetration",false);
     MdbcCorrector=(eparms.GetValueInt("MDBCCorrector",true,1)!=0);
     MdbcFastSingle=(eparms.GetValueInt("MDBCFastSingle",true,1)!=0);
     if(Cpu || HydroMech)MdbcFastSingle=false;
   } 
+  UpdateMdbcSlipModeConfig();
 
   //-Density Diffusion Term configuration.
   if(eparms.Exists("DeltaSPH")){
@@ -852,8 +858,7 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
       case 3:  SlipMode=SLIP_FreeSlip;  break;
       default: Run_Exceptioon("Slip mode for mDBC is not valid.");
     }
-    if(TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip)NoPenetration=cfg->NoPenetration;
-    if(TBoundary==BC_MDBC && SlipMode>=SLIP_NoSlip)TMdbc2=(NoPenetration? MDBC2_NoPen: MDBC2_Std);
+    if(TBoundary==BC_MDBC)NoPenetration=cfg->NoPenetration;
     UseNormals=(TBoundary==BC_MDBC);
     if(TBoundary!=BC_MDBC)MdbcCorrector=false;
   }
@@ -863,6 +868,7 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
     //if(SlipMode!=SLIP_Vel0)Run_Exceptioon("Only the slip mode velocity=0 is allowed with mDBC conditions."); //SHABA
     if(Cpu || HydroMech)MdbcFastSingle=false;
   }
+  UpdateMdbcSlipModeConfig();
     
   if(cfg->TStep)TStep=cfg->TStep;
   if(cfg->VerletSteps>=0)VerletSteps=cfg->VerletSteps;
@@ -938,6 +944,109 @@ void JSph::LoadConfigCommands(const JSphCfgRun *cfg){
   if(!RhopOut){ RhopOutMin=-FLT_MAX; RhopOutMax=FLT_MAX; }
   if(RhopZero<RhopOutMin || RhopZero>RhopOutMax)
     Run_Exceptioon(fun::PrintStr("The reference density value %f is outside the defined limits [%f,%f].",RhopZero,RhopOutMin,RhopOutMax));
+}
+
+//==============================================================================
+/// Updates mDBC slip-mode derived options.
+/// Actualiza opciones derivadas del modo de deslizamiento mDBC.
+//==============================================================================
+void JSph::UpdateMdbcSlipModeConfig(){
+  MdbcSlipModeMax=SlipMode;
+  for(unsigned c=0;c<unsigned(MdbcSlipModeMk.size());c++){
+    if(MdbcSlipModeMk[c].SlipMode>MdbcSlipModeMax)MdbcSlipModeMax=MdbcSlipModeMk[c].SlipMode;
+  }
+  if(TBoundary==BC_MDBC && MdbcSlipModeMax>=SLIP_NoSlip)TMdbc2=(NoPenetration? MDBC2_NoPen: MDBC2_Std);
+  else TMdbc2=MDBC2_None;
+}
+
+//==============================================================================
+/// Reads an mDBC slip mode from XML text.
+/// Lee un modo de deslizamiento mDBC desde texto XML.
+//==============================================================================
+TpSlipMode JSph::ReadMdbcSlipMode(const std::string &value,const std::string &context)const{
+  const string v=fun::StrLower(fun::StrTrim(value));
+  if(v=="1" || v=="vel0" || v=="dbc" || v=="dbcvel0" || v=="dbc_vel0")return(SLIP_Vel0);
+  if(v=="2" || v=="noslip" || v=="no-slip" || v=="no_slip")return(SLIP_NoSlip);
+  if(v=="3" || v=="freeslip" || v=="free-slip" || v=="free_slip")return(SLIP_FreeSlip);
+  Run_Exceptioon(string("Invalid mDBC slip mode '")+value+"' in "+context+".");
+  return(SLIP_Vel0);
+}
+
+//==============================================================================
+/// Loads optional per-mkbound mDBC slip-mode overrides.
+/// Carga modos de deslizamiento mDBC opcionales por mkbound.
+//==============================================================================
+void JSph::LoadMdbcSlipModeByMk(const JXml *xml){
+  MdbcSlipModeMk.clear();
+  MdbcSlipModeByMk=false;
+  TiXmlNode* node=xml->GetNodeSimple("case.execution.special.mdbcslip",true);
+  if(node){
+    if(TBoundary!=BC_MDBC)Run_Exceptioon("The element <mdbcslip> requires Boundary=2 (mDBC).");
+    if(!MkInfo)Run_Exceptioon("The element <mdbcslip> must be loaded after particle mk information.");
+    TiXmlElement* lis=node->ToElement();
+    xml->CheckElementNames(lis,true,"*bound");
+    TiXmlElement* ele=lis->FirstChildElement();
+    while(ele){
+      const string ename=ele->Value();
+      if(ename=="bound"){
+        const string mkfilter=xml->GetAttributeStr(ele,"mkbound");
+        string slipstr=xml->GetAttributeStr(ele,"slipmode",true,"");
+        if(slipstr.empty())slipstr=xml->GetAttributeStr(ele,"mode",true,"");
+        if(slipstr.empty())Run_Exceptioon("Attribute 'slipmode' is missing in <mdbcslip><bound>.");
+        const TpSlipMode slipmode=ReadMdbcSlipMode(slipstr,string("mkbound='")+mkfilter+"'");
+        JRangeFilter rg(mkfilter);
+        std::vector<unsigned> mkbounds;
+        rg.GetValues(mkbounds);
+        if(mkbounds.empty())Run_Exceptioon("The mkbound list in <mdbcslip><bound> is empty.");
+        for(unsigned cmk=0;cmk<unsigned(mkbounds.size());cmk++){
+          const unsigned mkbu=mkbounds[cmk];
+          if(mkbu>0xffff)Run_Exceptioon(fun::PrintStr("mkbound=%u is out of range in <mdbcslip>.",mkbu));
+          const word mkbound=word(mkbu);
+          for(unsigned c=0;c<unsigned(MdbcSlipModeMk.size());c++){
+            if(MdbcSlipModeMk[c].MkBound==mkbound)Run_Exceptioon(fun::PrintStr("mkbound=%u appears more than once in <mdbcslip>.",mkbu));
+          }
+          const unsigned cmkblock=MkInfo->GetMkBlockByMkBound(mkbound);
+          if(cmkblock>=MkInfo->Size())Run_Exceptioon(fun::PrintStr("mkbound=%u from <mdbcslip> does not exist in particles.",mkbu));
+          const JSphMkBlock* mkblock=MkInfo->Mkblock(cmkblock);
+          if(!mkblock->Bound)Run_Exceptioon(fun::PrintStr("mkbound=%u from <mdbcslip> is not a boundary mk.",mkbu));
+          StMdbcSlipModeMk item;
+          item.MkBound=mkbound;
+          item.Code=CODE_GetTypeAndValue(mkblock->Code);
+          item.SlipMode=slipmode;
+          MdbcSlipModeMk.push_back(item);
+        }
+      }
+      ele=ele->NextSiblingElement();
+    }
+  }
+  MdbcSlipModeByMk=!MdbcSlipModeMk.empty();
+  UpdateMdbcSlipModeConfig();
+}
+
+//==============================================================================
+/// Returns per-mkbound slip mode for a particle code.
+/// Devuelve el modo de deslizamiento segun codigo de particula.
+//==============================================================================
+TpSlipMode JSph::GetMdbcSlipModeByCode(typecode code)const{
+  if(MdbcSlipModeByMk){
+    const typecode ctype=CODE_GetTypeAndValue(code);
+    for(unsigned c=0;c<unsigned(MdbcSlipModeMk.size());c++){
+      if(MdbcSlipModeMk[c].Code==ctype)return(MdbcSlipModeMk[c].SlipMode);
+    }
+  }
+  return(SlipMode);
+}
+
+//==============================================================================
+/// Initializes per-particle mDBC slip mode.
+/// Inicializa el modo de deslizamiento mDBC por particula.
+//==============================================================================
+void JSph::InitMdbcSlipModeParticles(unsigned np,const typecode *code,byte *boundslipmode)const{
+  if(boundslipmode){
+    for(unsigned p=0;p<np;p++){
+      boundslipmode[p]=byte(CODE_IsNotFluid(code[p])? GetMdbcSlipModeByCode(code[p]): 0);
+    }
+  }
 }
 
 //==============================================================================
@@ -1051,6 +1160,7 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
   //-Loads and configures MK of particles.
   MkInfo=new JSphMk();
   MkInfo->Config(&parts);
+  LoadMdbcSlipModeByMk(&xml);
 
   //-Configuration of GaugeSystem.
   GaugeSystem=new JGaugeSystem(Cpu);
@@ -1582,11 +1692,18 @@ void JSph::VisuConfig(){
   ConfigInfo=ConfigInfo+sep+GetBoundName(TBoundary);
   if(TBoundary==BC_MDBC){
     Log->Print(fun::VarStr("  SlipMode",GetSlipName(SlipMode)));
+    if(MdbcSlipModeByMk){
+      Log->Print(fun::VarStr("  SlipModeByMkBound","Enabled"));
+      for(unsigned c=0;c<unsigned(MdbcSlipModeMk.size());c++){
+        Log->Printf("    mkbound:%u -> %s",unsigned(MdbcSlipModeMk[c].MkBound),GetSlipName(MdbcSlipModeMk[c].SlipMode).c_str());
+      }
+    }
     Log->Print(fun::VarStr("  mDBC-Corrector",MdbcCorrector));
     Log->Print(fun::VarStr("  mDBC-FastSingle",MdbcFastSingle));
     Log->Print(fun::VarStr("  mDBC-Threshold",MdbcThreshold));
     Log->Print(fun::VarStr("  No Penetration",NoPenetration));
     ConfigInfo=ConfigInfo+"("+GetSlipName(SlipMode);
+    if(MdbcSlipModeByMk)ConfigInfo=ConfigInfo+" - SlipModeByMk";
     if(MdbcCorrector)ConfigInfo=ConfigInfo+" - Corrector";
     if(MdbcFastSingle)ConfigInfo=ConfigInfo+" - FastSingle";
     if(MdbcThreshold>0)ConfigInfo=ConfigInfo+fun::PrintStr(" - Threshold=%g",MdbcThreshold);
@@ -3427,6 +3544,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   TiXmlNode* hydroReadNode=(hydroNode? hydroNode: solidNode);
   const TiXmlElement* hydroEle=(hydroNode? hydroNode->ToElement(): solidEle);
 
+  //-Reject removed experimental controls instead of silently running PR.
+  if(sxml->ExistsElement(hydroEle,"PorePressureIntegrationMode") || sxml->ExistsElement(hydroEle,"PoreTpiAlpha")
+    || sxml->ExistsElement(solidEle,"PorePressureIntegrationMode") || sxml->ExistsElement(solidEle,"PoreTpiAlpha"))
+    Run_Exceptioon("PorePressureIntegrationMode and PoreTpiAlpha are no longer supported: TPI was removed. Remove these options only if a PR run is intended.");
+
   //-Soil strength parameters.
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
@@ -3505,6 +3627,13 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   else if(poremdbcstr=="1" || poremdbcstr=="mlsdirect" || poremdbcstr=="mls_direct" || poremdbcstr=="mls")
     PoreMdbcInterpolationMode=1;
   else Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
+  const string porecompsrcstr=fun::StrLower(ReadHydroStr("PoreCompressionSourceMode","PairDivergence"));
+  if(porecompsrcstr=="0" || porecompsrcstr=="pair" || porecompsrcstr=="pairdivergence" || porecompsrcstr=="pair_divergence" || porecompsrcstr=="divergence")
+    PoreCompressionSourceMode=0;
+  else if(porecompsrcstr=="1" || porecompsrcstr=="densityrate" || porecompsrcstr=="density_rate" || porecompsrcstr=="arc" || porecompsrcstr=="rhoprate")
+    PoreCompressionSourceMode=1;
+  else Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
+  PoreCompressionGradCorr=ReadHydroBool("PoreCompressionGradCorr",true);
 
   //-Input validation.
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
@@ -3521,6 +3650,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(PoreDtSafety<=0.f)Run_Exceptioon("PoreDtSafety must be greater than zero when HydroMech is enabled.");
     if(PoreShepardRegularization && !PoreShepardInterval)Run_Exceptioon("PoreShepardInterval must be greater than zero when PoreShepardRegularization is enabled.");
     if(PoreMdbcInterpolationMode>1)Run_Exceptioon("PoreMdbcInterpolationMode must be 0=ZeroOrder or 1=MLSDirect.");
+    if(PoreCompressionSourceMode>1)Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
   }
 
   //-Derived soil elastic constants.
@@ -3578,6 +3708,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  PoreShepardRegularization", (PoreShepardRegularization? "Enabled": "Disabled")));
     Log->Printf("  PoreShepardInterval: %u",PoreShepardInterval);
     Log->Print(fun::VarStr("  PoreMdbcInterpolationMode", (PoreMdbcInterpolationMode==1? "MLSDirect": "ZeroOrder")));
+    Log->Print(fun::VarStr("  PoreCompressionSourceMode", (PoreCompressionSourceMode==1? "DensityRate": "PairDivergence")));
+    Log->Print(fun::VarStr("  PoreCompressionGradCorr", (PoreCompressionGradCorr? "KernelGradient": "None")));
   }
   Log->Print("");
 }

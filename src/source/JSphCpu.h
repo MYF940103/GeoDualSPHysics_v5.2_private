@@ -147,6 +147,7 @@ protected:
   tfloat3 *BoundNormalc;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
   tfloat3 *MotionVelc;    ///<Velocity of a moving boundary particle.
   byte *BoundModec;        ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
+  byte *BoundSlipModec;    ///<Per-particle mDBC slip mode when per-mkbound overrides are active.
   tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   tfloat4 *NoPenShiftc;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //=============== mdbr
@@ -340,26 +341,26 @@ protected:
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);
     template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionCdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
   template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);
   template<TpKernel tker> void Interaction_CdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
   void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);//mdbr
     void Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
 
   /*template<TpKernel tker, bool sim2d, TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold

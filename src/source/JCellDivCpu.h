@@ -162,6 +162,7 @@ public:
 
   void DefineDomain(unsigned cellcode,tuint3 domcelini,tuint3 domcelfin,tdouble3 domposmin,tdouble3 domposmax);
 
+  void SortArray(byte *vec);
   void SortArray(word *vec);
   void SortArray(unsigned *vec);
   void SortArray(float *vec);

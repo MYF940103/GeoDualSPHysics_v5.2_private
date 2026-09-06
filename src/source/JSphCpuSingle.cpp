@@ -159,6 +159,7 @@ void JSphCpuSingle::ConfigDomain(){
 
   //-Load particle code. | Carga code de particulas.
   LoadCodeParticles(Np,Idpc,Codec);
+  InitMdbcSlipModeParticles(Np,Codec,BoundSlipModec);
 
   //-Load normals for boundary particles (fixed and moving).
   if(UseNormals)LoadBoundNormals(Np,Npb,Idpc,Codec,BoundNormalc);
@@ -388,7 +389,7 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
-  ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel)const
+  ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel,byte *boundslipmode)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -400,6 +401,7 @@ void JSphCpuSingle::PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 ce
     const unsigned pcopy=(rp&0x7FFFFFFF);
     normals[pnew]=normals[pcopy];
     if(motionvel)motionvel[pnew]=motionvel[pcopy];
+    if(boundslipmode)boundslipmode[pnew]=boundslipmode[pcopy];
   }
 }
 
@@ -472,7 +474,7 @@ void JSphCpuSingle::RunPeriodic(){
               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
               PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec);
             }
-            if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc);
+            if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc,BoundSlipModec);
 
             //-Free the list and update the number of particles. | Libera lista y actualiza numero de particulas.
             ArraysCpu->Free(listp); listp=NULL;
@@ -536,6 +538,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(UseNormals){
     CellDivSingle->SortArray(BoundNormalc);
     if(MotionVelc)CellDivSingle->SortArray(MotionVelc);
+    if(BoundSlipModec)CellDivSingle->SortArray(BoundSlipModec);
   }
 
   //-Collect divide data. | Recupera datos del divide.
@@ -678,7 +681,8 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
 void JSphCpuSingle::MdbcBoundCorrection(){
   Timersc->TmStart(TMC_CfPreForces);
   if(BoundModec)memset(BoundModec,BMODE_DBC,sizeof(byte)*Np);
-  Interaction_MdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,TangenVelc
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  Interaction_MdbcCorrection(slipmode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundModec,BoundSlipModec,TangenVelc
     ,(HydroMech? PorePress0c: NULL),(HydroMech? PorePressc: NULL));
   Timersc->TmStop(TMC_CfPreForces);
 }
@@ -690,7 +694,8 @@ void JSphCpuSingle::MdbcBoundCorrection(){
 void JSphCpuSingle::CdbcBoundCorrection(){
   if(!NpbOk || !BoundNormalc)return;
   Timersc->TmStart(TMC_CfPreForces);
-  Interaction_CdbcCorrection(SlipMode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,TangenVelc);
+  const TpSlipMode slipmode=(MdbcSlipModeByMk? MdbcSlipModeMax: SlipMode);
+  Interaction_CdbcCorrection(slipmode,DivData,Posc,Codec,Idpc,BoundNormalc,MotionVelc,Velrhopc,Sigmac,BoundSlipModec,TangenVelc);
   Timersc->TmStop(TMC_CfPreForces);
 }
 

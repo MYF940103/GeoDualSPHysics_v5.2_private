@@ -152,7 +152,7 @@ void JSphGpu::InitVars(){
   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
   PorePressg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
-  BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
+  BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
   PorePressM1g=NULL;
@@ -414,9 +414,10 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   }
   if(UseNormals){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-BoundNormal
-    if(SlipMode!=SLIP_Vel0)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-MotionVel
-    if(SlipMode>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_1B,1); //-BoundMode
-    if(SlipMode>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-TangenVel
+    if(MdbcSlipModeMax!=SLIP_Vel0)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-MotionVel
+    if(MdbcSlipModeMax>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_1B,1); //-BoundMode
+    if(MdbcSlipModeByMk)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_1B,2); //-BoundSlipMode and sort buffer
+    if(MdbcSlipModeMax>=SLIP_NoSlip)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1); //-TangenVel
     if(TMdbc2==MDBC2_NoPen)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-NoPenShift
   }
   if(InOut){
@@ -451,6 +452,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   float3      *boundnormal=SaveArrayGpu(Np,BoundNormalg);
   float3      *motionvel  =SaveArrayGpu(Np,MotionVelg);
   byte        *boundmode  =SaveArrayGpu(Np,BoundModeg);
+  byte        *boundslipmode=SaveArrayGpu(Np,BoundSlipModeg);
   float3      *tangenvel  =SaveArrayGpu(Np,TangenVelg);
   tmatrix3d   *corrmat    =SaveArrayGpu(Np,CorrMatg);
   unsigned    *fstype     =SaveArrayGpu(Np,FSTypeg);
@@ -485,6 +487,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(BoundNormalg);
   ArraysGpu->Free(MotionVelg);
   ArraysGpu->Free(BoundModeg);
+  ArraysGpu->Free(BoundSlipModeg);
   ArraysGpu->Free(TangenVelg);
   ArraysGpu->Free(CorrMatg);
   ArraysGpu->Free(FSTypeg);
@@ -523,6 +526,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(boundnormal)BoundNormalg=ArraysGpu->ReserveFloat3();
   if(motionvel)  MotionVelg  =ArraysGpu->ReserveFloat3();
   if(boundmode)  BoundModeg  =ArraysGpu->ReserveByte();
+  if(boundslipmode)BoundSlipModeg=ArraysGpu->ReserveByte();
   if(tangenvel)  TangenVelg  =ArraysGpu->ReserveFloat3();
   if(corrmat)    CorrMatg    =ArraysGpu->ReserveMatrix3d();
   if(fstype)     FSTypeg     =ArraysGpu->ReserveUint();
@@ -557,6 +561,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,boundnormal,BoundNormalg);
   RestoreArrayGpu(Np,motionvel,MotionVelg);
   RestoreArrayGpu(Np,boundmode,BoundModeg);
+  RestoreArrayGpu(Np,boundslipmode,BoundSlipModeg);
   RestoreArrayGpu(Np,tangenvel,TangenVelg);
   RestoreArrayGpu(Np,corrmat,CorrMatg);
   RestoreArrayGpu(Np,fstype,FSTypeg);
@@ -639,9 +644,10 @@ void JSphGpu::ReserveBasicArraysGpu(){
   if(TVisco==VISCO_LaminarSPS)SpsTaug=ArraysGpu->ReserveSymatrix3f();
   if(UseNormals){
     BoundNormalg=ArraysGpu->ReserveFloat3();
-    if(SlipMode!=SLIP_Vel0)MotionVelg=ArraysGpu->ReserveFloat3();
-    if(SlipMode>=SLIP_NoSlip)BoundModeg=ArraysGpu->ReserveByte();
-    if(SlipMode>=SLIP_NoSlip)TangenVelg=ArraysGpu->ReserveFloat3();
+    if(MdbcSlipModeMax!=SLIP_Vel0)MotionVelg=ArraysGpu->ReserveFloat3();
+    if(MdbcSlipModeMax>=SLIP_NoSlip)BoundModeg=ArraysGpu->ReserveByte();
+    if(MdbcSlipModeByMk)BoundSlipModeg=ArraysGpu->ReserveByte();
+    if(MdbcSlipModeMax>=SLIP_NoSlip)TangenVelg=ArraysGpu->ReserveFloat3();
   }
 }
 
@@ -738,6 +744,8 @@ void JSphGpu::ConstantDataUp(){
   ctes.modulus_E=SoilCte.ModulusE; ctes.modulus_K=SoilCte.ModulusK; ctes.modulus_G=SoilCte.ModulusG;
   ctes.hydromech=(HydroMech? 1: 0);
   ctes.poremdbcinterp=PoreMdbcInterpolationMode;
+  ctes.porecompsourcemode=PoreCompressionSourceMode;
+  ctes.porecompgradcorr=(PoreCompressionGradCorr? 1u: 0u);
   ctes.hydrotoploadmode=unsigned(HydroMechTopLoadMode);
   ctes.hydrotoploadpressure=0.f;
   if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
@@ -765,7 +773,7 @@ void JSphGpu::ConstantDataUp(){
 /// Uploads particle data to the GPU.
 /// Sube datos de particulas a la GPU.
 //==============================================================================
-void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
+void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal,const byte *boundslipmode){
   cudaMemcpy(Idpg    ,Idp    ,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
   cudaMemcpy(Codeg   ,Code   ,sizeof(typecode)*n,cudaMemcpyHostToDevice);
   cudaMemcpy(Dcellg  ,Dcell  ,sizeof(unsigned)*n,cudaMemcpyHostToDevice);
@@ -784,6 +792,7 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal){
   }
   //====
   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
+  if(BoundSlipModeg && boundslipmode)cudaMemcpy(BoundSlipModeg,boundslipmode,sizeof(byte)*n,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed copying data to GPU.");
 }
 
@@ -902,11 +911,14 @@ void JSphGpu::ConfigBlockSizes(bool usezone,bool useperi){
         ,0,0,0,0,100,0,0
         ,0,0,divdatag,NULL
         ,NULL,NULL,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL
+        ,NULL,NULL
+        ,NULL,NULL,NULL,NULL,NULL,NULL,NULL,NULL
         ,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL,NULL
-        ,NULL,NULL,NULL,NULL
+        ,NULL
+        ,NULL,NULL
+        ,NULL
+        ,NULL,NULL
+        ,NULL,NULL
         ,false
         ,NULL
         ,NULL
@@ -1158,7 +1170,7 @@ void JSphGpu::ShepardRegularizePorePressure(){
   float *porepressnew=ArraysGpu->ReserveFloat();
   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
-    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,PorePress0g,PorePressg,porepressnew);
+    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,BoundSlipModeg,PorePress0g,PorePressg,porepressnew);
   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
   ArraysGpu->Free(porepressnew); porepressnew=NULL;
   ApplyFreeSurfacePorePressure();

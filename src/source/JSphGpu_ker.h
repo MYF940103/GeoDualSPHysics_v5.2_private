@@ -86,6 +86,8 @@ typedef struct{
   float modulus_E, modulus_K, modulus_G;
   unsigned hydromech;       ///<Hydromechanical u-pw support switch.
   unsigned poremdbcinterp;  ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct.
+  unsigned porecompsourcemode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate.
+  unsigned porecompgradcorr; ///<Applies kernel-gradient correction to pore-pressure compression source.
   unsigned hydrotoploadmode; ///<Hydromechanical top-load mode.
   float hydrotoploadpressure; ///<Current ramped q0 for hydromechanical top load [Pa].
   float porewaterrho;       ///<Pore-water density.
@@ -145,6 +147,7 @@ typedef struct StrInterParmsg{
   const float3 *dengradcorr;
   const tmatrix3d *corrmat;
   const byte *boundmode;
+  const byte *boundslipmode;
   const float3 *tangenvel;
   const float3 *motionvel;
   const float3 *boundnormal;
@@ -189,6 +192,7 @@ typedef struct StrInterParmsg{
     ,const float3 *dengradcorr_
     ,const tmatrix3d *corrmat_
     ,const byte *boundmode_
+    ,const byte *boundslipmode_
     ,const float3 *tangenvel_
     ,const float3 *motionvel_
     ,const float3 *boundnormal_,float4 *nopenshift_
@@ -225,6 +229,7 @@ typedef struct StrInterParmsg{
     dengradcorr=dengradcorr_;
     corrmat=corrmat_;
     boundmode=boundmode_;
+    boundslipmode=boundslipmode_;
     tangenvel=tangenvel_;
     motionvel=motionvel_;
     boundnormal=boundnormal_;
@@ -285,7 +290,7 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
 void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
-  ,const unsigned *fstype,const byte *boundmode
+  ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
   ,const float *porepress0,const float *porepress,float *porepressnew);
 
 //-Kernels for the force calculation.
@@ -297,7 +302,7 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell
   ,const typecode *code,const unsigned *idp,const float3 *boundnormal
-  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,float3 *tangenvel
+  ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
   ,const float *porepress0,float *porepress);
 
 //-Kernels for the boundary treatment (cDBC).
@@ -306,7 +311,7 @@ void Interaction_CdbcCorrection(TpKernel tkernel,bool simulate2d
     ,TpSlipMode slipmode,unsigned n,unsigned nbound,float mdbcthreshold
     ,const StDivDataGpu &dvd,const double2 *posxy,const double *posz
     ,const unsigned* dcell,const float4 *poscell,const typecode *code,const unsigned *idp
-    ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma);
+    ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode);
 
 //-Kernels for the calculation of the DEM forces.
 void Interaction_ForcesDem(unsigned bsize,unsigned nfloat
@@ -376,7 +381,7 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
   ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre);
-void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel);
+void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel,byte *boundslipmode);
 
 //-Kernels for Damping.
 void ComputeDampingPlane(double dt,double4 plane,float dist,float over
