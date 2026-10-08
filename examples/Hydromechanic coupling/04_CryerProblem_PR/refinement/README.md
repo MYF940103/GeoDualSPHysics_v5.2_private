@@ -1,16 +1,29 @@
 # Cryer refinement notes
 
-This folder keeps only compact conclusions from exploratory Cryer tests.
-Large temporary outputs, generated particles, solver logs, and test-only XML/BAT
-files are removed after their conclusions are recorded.
+This folder contains historical exploratory Cryer tests, not just conclusion
+notes. Retained subdirectories include damping, resolution, corrected-load,
+and ramp/drainage comparisons, with inputs, logs, and native/derived results.
+Do not infer that a dataset was deleted merely because its conclusion was
+recorded.
 
 Retained notes are in `notes/`.
 
-Current baseline for further Cryer debugging:
+## Current entry point versus historical tests
 
-- Use `dp=0.003` as the practical test resolution.
-- Use the formal two-stage path: undrained loading first, then drained restart.
-- Use `HydroMechTopLoadMode=2` (`FlexibleConfinement`) as the current Cryer loading baseline.
-- The main unresolved issue is the Stage1 undrained pore-pressure distribution:
-  surface pressure remains too high and center pressure too low, even after
-  increasing resolution to `dp=0.002`.
+- The current default is the one-stage drained case described in
+  [the case README](../README.md): `dp=0.0025`, `k=1e-5`, and
+  `HydroMechTopLoadMode=2` (`FlexibleConfinement`).
+- The root also retains separate `dp=0.002` closed-ramp Poisson-ratio variants.
+- The earlier `dp=0.003` debugging setup and undrained-then-drained restart
+  route are historical experiments. Their Stage1 pressure-distribution
+  problems must not be read as instructions to replace the current entry point.
+- Original dated notes remain unchanged in `notes/`; read them in their
+  experiment context rather than as the latest configuration specification.
+
+## Retention
+
+Keep the native BI4 results, selected comparisons, inputs, logs, and notes
+until a separate reviewed archive/cleanup decision identifies exact targets.
+The scripts in `../support/` refer to these directory names; do not rename or
+move a study without checking those dependencies. Some legacy scripts target
+experiments whose data are no longer present and are not current launchers.

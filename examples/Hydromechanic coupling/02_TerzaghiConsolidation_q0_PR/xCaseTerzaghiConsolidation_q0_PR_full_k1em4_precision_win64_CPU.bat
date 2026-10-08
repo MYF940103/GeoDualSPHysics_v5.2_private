@@ -13,6 +13,13 @@ for %%A in (%*) do (
   if /i "%%~A"=="-postprocess" set postonly=1
 )
 
+rem Retired precision experiment: the current solver uses uncompensated float.
+if "%postonly%"=="0" (
+  echo New precision runs are disabled. Existing XML and results are preserved.
+  echo Use -postprocess only for historical results. See README.md.
+  goto fail
+)
+
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicscpu="%dirbin%/DualSPHysics5.2CPU_win64.exe"

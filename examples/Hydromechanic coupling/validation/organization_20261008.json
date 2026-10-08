@@ -1,0 +1,702 @@
+{
+  "schema": 1,
+  "created_at": "2026-10-08T15:20:30.8908304+09:00",
+  "scope": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling",
+  "status": "complete",
+  "pre_organization_git": {
+    "branch": "u-pw",
+    "commit": "d2c15a376618d6d732c93f9e38929e5046a897e6",
+    "remote": "origin",
+    "remote_branch": "refs/heads/u-pw",
+    "push_verified": true
+  },
+  "backup": {
+    "root": "D:\\MYF\\SPH\\GeoDualSPHysics_backups\\20261008_before_cleanup",
+    "large_copy_status": "complete",
+    "metadata_before": "metadata_before",
+    "git_bundle": "history_before.bundle",
+    "git_bundle_verified": true,
+    "note": "Completed same-D-disk recovery snapshot; not an offsite backup. Edited text originals are in metadata_before and Git d2c15a3. Newly generated VTK samples are not part of the pre-cleanup dataset.",
+    "git_bundle_bytes": 1392953046,
+    "copy_return_codes": {
+      "hydromechanic": 1,
+      "source": 0,
+      "VS": 1,
+      "bin_windows": 0,
+      "xml_format": 0
+    },
+    "copy_log_failed_files": 0,
+    "hydromechanic_copy_file_count": 61692,
+    "hydromechanic_copy_gib_approx": 135.959,
+    "metadata_verification": {
+      "report": "hydromechanic_verify.json",
+      "checked_files": 61683,
+      "checked_bytes": 145985571465,
+      "excluded_current_files": 53,
+      "differences_count": 0,
+      "passed": true,
+      "method": "Relative path, byte length, LastWriteTimeUtc.Ticks; not complete content rehash. Excluded newly edited/generated files and build caches are listed in the external report."
+    }
+  },
+  "protected_before": {
+    "root": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling",
+    "captured_at": "2026-10-08T15:20:30.8908304+09:00",
+    "formal_inputs": [
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Scenario1_Def.xml",
+        "bytes": 10546,
+        "sha256": "6BB6C700FB52768D6765767EC1EB3767168F9EAA80A2B1DF703FFCEC082F33A8"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Scenario2_Def.xml",
+        "bytes": 10800,
+        "sha256": "B7E05DDC625E96C5CB6F2CEA12A8CC9D465C8D66F467FEBFF8B6A023AE06EAA2"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Stage1_Def.xml",
+        "bytes": 10840,
+        "sha256": "EC1FB133E10E8651D4B9332258471903653BB3DCEECCC867B349692817BEC334"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_Scenario1_win64_CPU.bat",
+        "bytes": 1319,
+        "sha256": "889686729B4733902191B594E8E8D9F952ABE1B87080788D4B34E38A8F81B043"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_Scenario2_win64_CPU.bat",
+        "bytes": 2559,
+        "sha256": "143A3418E2ED00A0F8A935A147CE2FA9BE9E2406541C760638BCC5C06890EB23"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_Scenario2_win64_GPU.bat",
+        "bytes": 2623,
+        "sha256": "F850D60DFDBD736F281CD48C2875DD973848B5C8B228BD10EEFE9C3CA60E551E"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_Stage1_win64_CPU.bat",
+        "bytes": 1464,
+        "sha256": "CC0C78E931BC8EEEFEDC6F433346126BDEF2C3D7D40637C12FCF004050986E52"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_Stage1_win64_GPU.bat",
+        "bytes": 2000,
+        "sha256": "70937F78D8B8551D5EDA69BD6E62BAD9E4916067DD533AF386E6DD176EAB7087"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_win64_CPU.bat",
+        "bytes": 318,
+        "sha256": "F0E3E4AB922E797A96A3C49EFD006BA65006FFFAEC6D6A3455EB9F8B4918575F"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\xCaseSelfWeightConsolidation_win64_GPU.bat",
+        "bytes": 352,
+        "sha256": "C99B69C5242AF6932A8AEC8373BD2E5401818C0DB171DE68F4E64C4FC3E86F15"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em2_Def.xml",
+        "bytes": 9918,
+        "sha256": "BD836CE1711E9FCB11559C09AA7BAB7362E3E34959A36703A7B1513ECD497590"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em3_Def.xml",
+        "bytes": 9928,
+        "sha256": "FE79AB4789026BC3300C1CD78D8370C18A9347E7BBB966A76D1C170BCFCF93B2"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def.xml",
+        "bytes": 9882,
+        "sha256": "2CB628D44B78C0DCBD7B42DBC0521AEB41E914166EDC2B2AE5B7DAB93C07BA0A"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_double_Def.xml",
+        "bytes": 10097,
+        "sha256": "09F3EF9D65B87F706A29D1A6AA67C602199F4B00E53D32E4128DCF16DCC8B0D3"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Def.xml",
+        "bytes": 10073,
+        "sha256": "BCD2DF568733725115A0717FB39FA168767E03BAD40B3EF349C8EA55E4CC920C"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em2_win64_CPU.bat",
+        "bytes": 1649,
+        "sha256": "A04E6914118414200FC8FA5599AC9EDE8EC2A9D2D28AF9F847BD30BC5A8F5A91"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat",
+        "bytes": 1567,
+        "sha256": "4ACE693885AD0951085D6EA3F50EAAD80BE1A2DCE737A340EAC0D721F61197AC"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em4_double_win64_CPU.bat",
+        "bytes": 3006,
+        "sha256": "35948E83605609A2932F55FEE816D32A4D5CBD6632AEE16332DCE69DF87BE5D7"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_win64_CPU.bat",
+        "bytes": 2802,
+        "sha256": "31C06DA87A60CD2E50D8711356B0EF14574DA97B6C6AC405E66A161DC46DA48F"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat",
+        "bytes": 1567,
+        "sha256": "5AEE0CB40CC416069D7CDE3E62620E0501B6B5DE0196F292DF4F0559CE73DD72"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope8m_u_pw_failure_Def.xml",
+        "bytes": 10444,
+        "sha256": "C2FB6F7797A194AF0A672E143411950F7B1B14073E9D79357CB68BEE5E0D5825"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope8m_u_pw_prestress_Def.xml",
+        "bytes": 10164,
+        "sha256": "AB90E5CE8D959C7A7E4F4B6E8675FA77CEB9E2C8D4216EDF0DA40C9D1B796019"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope_u_pw_failure_Def.xml",
+        "bytes": 10340,
+        "sha256": "2149917D9E5C84F1F4376E41E2CD230E983FDA9C2EA99BC615B0C57A3A529A18"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope_u_pw_prestress_Def.xml",
+        "bytes": 9904,
+        "sha256": "D536A0DA8F7025CD16860956A030E3F7E31B9E69E1F33CE24B969E22427C3158"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope8m_u_pw_failure_win64_CPU.bat",
+        "bytes": 2914,
+        "sha256": "7A9CC7E20C71781E8308AA3ADC5A2276FE07591F9C0D06185AE5A519C5551EEA"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope8m_u_pw_failure_win64_GPU.bat",
+        "bytes": 2818,
+        "sha256": "1A69B6344C17751CBB1FE63E191E0E6DD92F89A1A07268FDEF9C45F1F67F0BAC"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope8m_u_pw_prestress_win64_CPU.bat",
+        "bytes": 2054,
+        "sha256": "2CB4DC580192348605AA6059EEA63292D0E30048DA2E897FDB87E1627DA0E322"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope8m_u_pw_prestress_win64_GPU.bat",
+        "bytes": 1958,
+        "sha256": "3E06BB6ED9D072C669B11BA98CA9E0E89CB5BB87B62933C900C057852EEB9099"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope_u_pw_failure_win64_CPU.bat",
+        "bytes": 2905,
+        "sha256": "7592721F6521320958C7DBD798F1967E8328D1541891CE74FBD4C73B0A6A990A"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope_u_pw_failure_win64_GPU.bat",
+        "bytes": 2850,
+        "sha256": "43CE0EAD48BF3E6F04930B0954732FBAB60C7C6BE5B116F67E294FEFC0FC3489"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope_u_pw_prestress_win64_CPU.bat",
+        "bytes": 2046,
+        "sha256": "1793386D5D5281A88FEC1D760442A9816DBD4FC646CF3C380E5891B44B448BD5"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xCaseRetroSlope_u_pw_prestress_win64_GPU.bat",
+        "bytes": 1985,
+        "sha256": "8426C93216223CD9F219BF913F8D2AFE55C9E98435B5E0FFDA2592252E853594"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xRunRetroSlope8m_u_pw_two_stage_win64_CPU.bat",
+        "bytes": 414,
+        "sha256": "8467F9C79974B3E14F4279A2FCB5DEE1A77AEE450DE62FD90235CFE92B8B3B1F"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xRunRetroSlope8m_u_pw_two_stage_win64_GPU.bat",
+        "bytes": 414,
+        "sha256": "8ABEA81BF4CAAF27CB1B9C7199825DB9C9CBED0301824AF61826847A8A10CB7C"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xRunRetroSlope_u_pw_two_stage_win64_CPU.bat",
+        "bytes": 404,
+        "sha256": "28231AD0CCC31B52E6B91E6A41F3FFAD32161CFAB9DC9B896B5BE0452132DDB1"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\xRunRetroSlope_u_pw_two_stage_win64_GPU.bat",
+        "bytes": 404,
+        "sha256": "EA1E25A0D4281CDC76338C7F93D6BC105DE25ADF67D44ACDB97A78F77B5B5216"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_Def.xml",
+        "bytes": 8454,
+        "sha256": "F8757A83A9985AC0C5F05F69A1AD302655AF6413774B1224FE7FD44F0DC6818B"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu010_Def.xml",
+        "bytes": 8568,
+        "sha256": "63094E6B8F48B90059C100CF22B693099B058C89726FD2093B3532F02D0D34D9"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu020_Def.xml",
+        "bytes": 8573,
+        "sha256": "08AE0F6F61AD9F9FC0BBDB50ED2E4619A93B4349FDACB1A99F2F808DAB8447F2"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu030_Def.xml",
+        "bytes": 8583,
+        "sha256": "1CC59D11E9F4E330C5E0BC15FA12A440985D5E1160AAA2FB3CAB12DB8189E05B"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu045_Def.xml",
+        "bytes": 8586,
+        "sha256": "3BF263AA0A82CDEDB0F5D5ABD9840E04B40132568FC3A0E92EB6E156C4692D6B"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu010_Def.xml",
+        "bytes": 8459,
+        "sha256": "769596A5086B41B49DC7E824FA5F055EDEEFF38D1068611501DFABE3CFB60DE7"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu020_Def.xml",
+        "bytes": 8465,
+        "sha256": "50EC44F2D1707D4752F6994C2F095581A692C6F56F4C3FD1866F15399433E93F"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu045_Def.xml",
+        "bytes": 8478,
+        "sha256": "0376190A79B7579EE70BE8DB9C569663AD5D5EC8C33FD88A3D0613B1312EDE30"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_dp002_rampclosed_nu010_win64_GPU.bat",
+        "bytes": 2003,
+        "sha256": "27F51BF46230D90B14D0914574333662977D41E97EE1F5E1742CC1895E6DA612"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_dp002_rampclosed_nu020_win64_GPU.bat",
+        "bytes": 2003,
+        "sha256": "16452B83738CC9AB8D9EB04F57B3FA30D0BA715A4C2811893D6DE999FECF1801"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_dp002_rampclosed_nu030_win64_GPU.bat",
+        "bytes": 2003,
+        "sha256": "C7889243D8DCEB25BE44546C1DEEB96FAF81A80BAAE60AF8C0B61B15E703A2D6"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_dp002_rampclosed_nu045_win64_GPU.bat",
+        "bytes": 2003,
+        "sha256": "99191F07C59740A2149B83FEB386A9A8DDFD0CC22D1DAD03686F6EB9DA17DCE1"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_nu010_win64_GPU.bat",
+        "bytes": 1986,
+        "sha256": "3082EFF0F9EB6029CB2FED614C7FEF6DEA42901B5D2748B66F75DC6BBAF9B6AE"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_nu020_win64_GPU.bat",
+        "bytes": 1986,
+        "sha256": "B10B71CDAD1BC96BF25D1A095ABD5A62A0CBE5102DEFC980C2674DA9933C5BB3"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_nu045_win64_GPU.bat",
+        "bytes": 1986,
+        "sha256": "61E6370832C18FF07831E632CF2B37B26A1C8F7C5E03B9F60C7DEFFCE35A33B8"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_win64_CPU.bat",
+        "bytes": 1982,
+        "sha256": "2B1432C3867D81A82EB1B50E2B8FEE470429ED332875BF29D6CDE6150C462014"
+      },
+      {
+        "path": "04_CryerProblem_PR\\xCaseCryerProblem_PR_win64_GPU.bat",
+        "bytes": 1980,
+        "sha256": "4F6EAAE1C698D19CCD0849344B8DEDC3288DA2D08B282C89CC3F40E707AC5853"
+      },
+      {
+        "path": "05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_Def.xml",
+        "bytes": 10234,
+        "sha256": "AE755184873C72423FB359F43C3BF3AFF8A5C60C2C14B34A3F882116B03B713A"
+      },
+      {
+        "path": "05_LianFlexibleStrip2D_PR\\xCaseLianFlexibleStrip2D_PR_win64_GPU.bat",
+        "bytes": 2156,
+        "sha256": "9C2C62A38D8778D0EF9A8AE2C5569A8130B294725549A8FD75FDAE64FD1A7F6B"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\CaseYao2DConsolidation_PR_damp000_Def.xml",
+        "bytes": 9136,
+        "sha256": "C76E9293B3CCD3D39CDC1D9280E97C1ABF728EF90F5B35560B20D7FCA75E55C1"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\CaseYao2DConsolidation_PR_damp001_Def.xml",
+        "bytes": 9148,
+        "sha256": "AE603659261DEB38DD9F1B67BA60C18777CD9AE6AF250C4B1EED37278CB83E39"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\CaseYao2DConsolidation_PR_damp002_Def.xml",
+        "bytes": 9148,
+        "sha256": "E4B7151179451D1516EDD50A36864666365766BDC504AAFB93523A19943D928D"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\CaseYao2DConsolidation_PR_Def.xml",
+        "bytes": 10041,
+        "sha256": "4189563A18604F11B3B0E89266C863801E90E95F93B117D85A4A7450D916ADA7"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\xCaseYao2DConsolidation_PR_damp000_win64_GPU.bat",
+        "bytes": 2009,
+        "sha256": "8D7F35ADA0CF6EBE2F509F7FB4A7E2506AF08B69B7A437981637939B93B90216"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\xCaseYao2DConsolidation_PR_damp001_win64_GPU.bat",
+        "bytes": 2009,
+        "sha256": "A98222A8FBBF24372156405A7EDD7DB98C3D2C86A80DECD794DF958125CE5528"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\xCaseYao2DConsolidation_PR_damp002_win64_GPU.bat",
+        "bytes": 2009,
+        "sha256": "3E5941965A9A16A6535A82DCCC10CA2503E50DE3BF9CB9082536CAA1BA6DADF5"
+      },
+      {
+        "path": "06_Yao2DConsolidation_PR\\xCaseYao2DConsolidation_PR_win64_GPU.bat",
+        "bytes": 2001,
+        "sha256": "B273A9329958C0D2573D593FAC95F2AF6BA9B5A8E1B9ADC5C0D5D68512D8F57E"
+      }
+    ],
+    "formal_root_outputs": [
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Scenario1_out",
+        "files": 84,
+        "bytes": 4528288,
+        "path_size_mtime_digest": "320DD849A0FE3C3B89FE2F6F7E3AF077C3DC87E97035096676C1ADCA32232655"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Scenario2_out",
+        "files": 32,
+        "bytes": 887676,
+        "path_size_mtime_digest": "9861CEDBB205D8653A79939C86149091A757F17AFFC9098B4AC45C0F1D951C6C"
+      },
+      {
+        "path": "01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Stage1_out",
+        "files": 265,
+        "bytes": 14869932,
+        "path_size_mtime_digest": "F315D06763D07F1FEB97AD5B20269DEFE5192871EB60138264AD2627B7D896A2"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em2_out",
+        "files": 624,
+        "bytes": 41901447,
+        "path_size_mtime_digest": "15F07877E8F0071E5B376BC2BBF59B51BF4DE5FEC0FCB9529418E5A35D23043C"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em3_out",
+        "files": 1224,
+        "bytes": 84843313,
+        "path_size_mtime_digest": "989B23CFBFC25847AFE79785A8466EED5D04E02F80CBF0B70D564EACB02124B1"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_double_out",
+        "files": 190,
+        "bytes": 10378583,
+        "path_size_mtime_digest": "F60A766EECD8985BCD4A9D05F2095045798D7311F2C3C2E07CAA7D1E0CEA3F40"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_dp0005_dt2em6_out",
+        "files": 624,
+        "bytes": 166285488,
+        "path_size_mtime_digest": "F393530A4D95BFA40B058B60A24F3CD1974465708D8EB0B80B9ABB20386185EC"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_out",
+        "files": 1224,
+        "bytes": 84843190,
+        "path_size_mtime_digest": "BC99E4B48A841664B242ACE2293D6DEE0B99F0B09935156B73C740C2A44671F3"
+      },
+      {
+        "path": "02_TerzaghiConsolidation_q0_PR\\CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out",
+        "files": 1227,
+        "bytes": 86750178,
+        "path_size_mtime_digest": "EA9B88F8503E901A478F1141B027950937F15C93217D83EF00A7DE4C9D3A5970"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope_u_pw_failure_GPU_out",
+        "files": 1225,
+        "bytes": 869062097,
+        "path_size_mtime_digest": "69C47EAA82D056A03BDAF533060A546100286A57504E78AD15A831C0C225CD5F"
+      },
+      {
+        "path": "03_RetrogressiveSlopeFailure_u_pw\\CaseRetroSlope_u_pw_prestress_out",
+        "files": 224,
+        "bytes": 159325421,
+        "path_size_mtime_digest": "122D73890E35761DCFFFFB8563D452823CA82A275FDBF0E90564BF4291504575"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_afterfix_short_out",
+        "files": 27,
+        "bytes": 56534483,
+        "path_size_mtime_digest": "E6C31714519D9E0F40426F17E709C688AC1CFEEBBAD7683E2E8FF21E815F7025"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu010_out",
+        "files": 2021,
+        "bytes": 16219671507,
+        "path_size_mtime_digest": "38E1656CD729A841B6064DAC0E3823E7C34505DC503C1DB7DF69D06EE4EE3D9B"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu020_out",
+        "files": 2021,
+        "bytes": 16219671513,
+        "path_size_mtime_digest": "596FBDAA00A6A04D85C220D001C2CC9DAD0A81DE91440B3C66EABCDCD343FE6A"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu030_out",
+        "files": 2021,
+        "bytes": 16219671458,
+        "path_size_mtime_digest": "2419EC6E0610DCB2FC2C983794C694F23C3C66CFA684D4DB1BFA7B1759C7EA93"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_dp002_rampclosed_nu045_out",
+        "files": 2031,
+        "bytes": 16300471748,
+        "path_size_mtime_digest": "A17E7670B0EDF27B5F84ADB2D6315C35F408C91C43A8EB08725CF1D4949E52CD"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu010_out",
+        "files": 2017,
+        "bytes": 8457042175,
+        "path_size_mtime_digest": "83FF176C0E48B8CFEA6EA4F1EC1954D7AB004EA9A4459E42B7D1FAAA3B8A7180"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu020_out",
+        "files": 2017,
+        "bytes": 8457042187,
+        "path_size_mtime_digest": "101E0A0FDDBC803020D4D99E34D4D1B5F4A656DAC6C056520547C268551715E6"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_nu045_out",
+        "files": 2017,
+        "bytes": 8457042193,
+        "path_size_mtime_digest": "77FF4E529D8E097D3C5B1BCDF41E26231941A78E3D0A31D9FD260C8B9595D471"
+      },
+      {
+        "path": "04_CryerProblem_PR\\CaseCryerProblem_PR_out",
+        "files": 2017,
+        "bytes": 8457036008,
+        "path_size_mtime_digest": "67FA8D700F318B72CEFD8BC52C4AD0A21B418B9553AC511D2A105D25588A3985"
+      },
+      {
+        "path": "05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out",
+        "files": 4026,
+        "bytes": 5009129467,
+        "path_size_mtime_digest": "9156E8698F59E2151617ECF47743A139F8C242A341ACAE9C481F67EE0DEBBA39"
+      }
+    ],
+    "note": "Inputs are content-SHA256; output directory digest covers relative paths, sizes and last-write times, not every file content."
+  },
+  "changes": [
+    {
+      "path": "examples/Hydromechanic coupling/AGENTS.md",
+      "purpose": "Persistent case file placement and protection conventions"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/01_SelfWeightConsolidation_PR/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/01_SelfWeightConsolidation_PR/tests/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/xCaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_win64_CPU.bat",
+      "purpose": "Retire new precision runs; retain historical postprocessing"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/03_RetrogressiveSlopeFailure_u_pw/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/refinement/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/figures/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/verify_vtk_reexport.ps1",
+      "purpose": "Re-export sampled or full test VTK from retained BI4 with original field selections"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/05_LianFlexibleStrip2D_PR/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/05_LianFlexibleStrip2D_PR/tests/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/05_LianFlexibleStrip2D_PR/tests/.gitignore",
+      "purpose": "Stop hiding test configs, figures and logs; retain raw-output exclusions"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/06_Yao2DConsolidation_PR/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/06_Yao2DConsolidation_PR/tests/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/validation/README.md",
+      "purpose": "Current/formal/historical case index, dependency and overwrite-risk documentation"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/validation/organization_20261008.json",
+      "purpose": "Organization and protected-file audit"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/validation/organization_cpu_debug_20261008.log",
+      "purpose": "CPU Debug build log"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008.initial.json",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008.json",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_batstyle_smoke.initial.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_batstyle_smoke.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_cpu_peak.initial.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_cpu_peak.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_cpu_peak_dp002.initial.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_cpu_peak_dp002.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_gpu_releasecheck.initial.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_reexport_20261008_gpu_releasecheck.log",
+      "purpose": "PartVTK regeneration evidence, including initial Mk-field omission and corrected byte-identical export"
+    },
+    {
+      "path": "src/AGENTS.md",
+      "purpose": "Persistent case file placement and protection conventions"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/README.md",
+      "purpose": "Index exact VTK regeneration groups, commands, evidence and cleanup boundary"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/vtk_cleanup_20261008.json",
+      "purpose": "Per-file SHA256, native BI4 mapping, backup location and recycling result"
+    }
+  ],
+  "cleanup": [
+    {
+      "case": "04_CryerProblem_PR",
+      "method": "Windows Recycle Bin; not emptied",
+      "files": 1127,
+      "bytes": 4444662908,
+      "backup_sha256_verified_files": 1127,
+      "regeneration_sample_files": 11,
+      "formal_outputs_deleted": 0,
+      "native_bi4_deleted": 0,
+      "remaining_whitelisted_original_vtk": 0,
+      "missing_native_bi4": 0,
+      "missing_backup_vtk": 0,
+      "completed_at": "2026-10-08T16:23:40.1094763+09:00",
+      "manifest": "04_CryerProblem_PR/tests/logs/vtk_cleanup_20261008.json",
+      "manifest_sha256": "C731DDB35A4EE98B3DC8B4DD2369E67A6DCAD3F029462380E6531B43AD6069BD",
+      "recovery": "Recycle Bin; or backup/hydromechanic/04_CryerProblem_PR plus each manifest relative_path; or PartVTK full regeneration from retained BI4",
+      "disk_space_note": "Files were moved out of case directories, not permanently erased; their disk space is still occupied in Recycle Bin and backup."
+    }
+  ],
+  "verification": {
+    "protected": {
+      "checked_at": "2026-10-08T16:24:18.4797669+09:00",
+      "formal_input_count": 63,
+      "unchanged_formal_inputs": 62,
+      "expected_input_changes": [
+        {
+          "path": "02_TerzaghiConsolidation_q0_PR\\xCaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_win64_CPU.bat",
+          "purpose": "Retire new precision simulations; preserve historical -postprocess.",
+          "after_sha256": "FAA8E26E9B18A98B56C2192A50EB33DC9447CB4DE9E53901A11176F87C4E1D84"
+        }
+      ],
+      "formal_output_directories": 21,
+      "unchanged_output_directories": 21,
+      "formal_output_bytes": 105376988352,
+      "method": "All root XML/BAT SHA256 checked against protected_before; all root output relative paths, sizes and LastWriteTimeUtc.Ticks digests checked. Output content was not fully rehashed.",
+      "digest_recipe": "SHA256 UTF8 of sorted relative-path|length|LastWriteTimeUtc.Ticks lines separated and terminated by CRLF.",
+      "external_final_report": "protected_after.json"
+    },
+    "cpu_debug_build": {
+      "exit_code": 0,
+      "log": "validation/organization_cpu_debug_20261008.log",
+      "simulation_run": false
+    },
+    "source_content": {
+      "checked_files": 265,
+      "sha256_mismatches": [],
+      "reference": "backup/source"
+    },
+    "executables_unchanged": {
+      "cpu_release": "1B34475434B4B2D21669027F020B74F959F9C99F097A9B624A8C6E7124865CDC",
+      "cpu_debug": "B658C28D556810002D668B31479DE8BBC598C63E0337EA5A2C3E42B06392F6D5",
+      "gpu_release": "F699E18623D915866F0905C3C0F8F5CD76823981183C488D50768A0C0176DD2A",
+      "gpu_debug": "97D27ACEB60B1FBDC8CBCC5978DC55C26A7DC4999CC183C782137C3C8111ECDA"
+    },
+    "vtk_regeneration": {
+      "report": "04_CryerProblem_PR/tests/logs/vtk_reexport_20261008.json",
+      "groups": 4,
+      "samples": 11,
+      "byte_identical": 11,
+      "tool_sha256": "07760675A7C4CF08126AFEFCC2E570B398677CC783093ECD3965A07071CC41C5",
+      "initial_attempt": "Mk field initially omitted from three groups; initial report/logs preserved; corrected field list produced byte-identical files."
+    },
+    "readme_links": {
+      "checked_count": 43,
+      "markdown_files": 17,
+      "broken_count": 0
+    },
+    "source_diff_against_pre_checkpoint": "No substantive diff in src/source or src/VS; pre-existing line-ending/index status indications were not normalized."
+  },
+  "deferred": [
+    "Keep original-path retired precision/double/TPI records because scripts and cross-case restarts depend on them.",
+    "Protect root formal outputs, Cryer refinement, user PPTX/TIFF, CFC2027 manuscript, ZIP archives and videos.",
+    "03 current 5m prestress hdp=1.5 versus failure hdp=2.16: documented for future physical baseline review; XML not changed."
+  ],
+  "completed_at": "2026-10-08T16:27:17.6009278+09:00",
+  "version_control_note": "The pre-organization checkpoint is explicit above. The final organization node is the Git commit containing this report; its pushed SHA is supplied in the handoff."
+}

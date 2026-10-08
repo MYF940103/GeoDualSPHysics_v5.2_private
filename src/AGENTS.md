@@ -128,3 +128,7 @@ Note: the case name is intentionally spelled `Imapct`, matching the actual file 
 5. Keep patches minimal and reversible.
 6. Report all modified files after making changes.
 7. Build after changes and summarize compiler errors or warnings.
+
+## Hydromechanical case files
+
+Before preparing tests or editing files under `../examples/Hydromechanic coupling/`, read that directory's `AGENTS.md`. Keep formal XML/BAT and outputs at each case root, tests under `tests`, formal figures under `figures`, and supporting files under `support`. Preserve existing XML/BAT style and do not overwrite retained results.

@@ -1,8 +1,15 @@
 # Cryer figures and data
 
-This folder keeps only the current formal Cryer validation plots/data and the
-parameter tests that still inform the release setup. Older exploratory images
-and CSV files with settled conclusions were removed from this folder.
+This folder keeps the retained formal Cryer validation plots/data and the
+parameter tests that still inform the release setup. The historical removal
+list below records an earlier cleanup; it is not a current inventory of
+`refinement/`, `tests/`, or the solver output directories.
+
+Keep the figures together with their CSV/JSON summaries and supporting run
+records. The current root BAT files generate particle VTK, not these
+analytical plots. See [the case README](../README.md) for the separate
+postprocessing step. The conclusions below are retained findings, not a new
+validation performed during file organization.
 
 ## Folder layout
 
@@ -57,7 +64,7 @@ and CSV files with settled conclusions were removed from this folder.
   plausibly tied to spatial distribution of the confinement term, drainage/free
   surface discretization, and resolution.
 
-## Removed from this folder
+## Historical removals from this folder
 
 The following superseded groups were deleted after their conclusions had been
 captured in `refinement/notes/` and in the summary above:

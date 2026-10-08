@@ -5,7 +5,7 @@ This case prepares the 5 m retrogressive slope benchmark from the main u-pw refe
 ## Reference Setup
 
 - Geometry: 5 m high slope, 45 degree inclination, 25 m base length, 20 m top length.
-- Resolution: `dp = 0.1 m`, Wendland kernel, `h/dp = 1.5`.
+- Resolution: `dp = 0.1 m`, Wendland kernel. The current 5 m XML files differ: prestress uses `h/dp = 1.5`, while failure uses `h/dp = 2.16`. This input discrepancy is recorded, not changed or validated by the 2026-10-08 file organization; review it before a new two-stage physics comparison.
 - Mixture density: `rho = 2150 kg/m3`.
 - Elastic parameters: `E = 25 MPa`, `nu = 0.3`.
 - Pore-water parameters: `rho_w = 1000 kg/m3`, `n = 0.4`, `Kw = 0.2 GPa`, `k = 1e-8 m/s`.
@@ -60,14 +60,15 @@ xCaseRetroSlope_u_pw_failure_win64_GPU.bat [-force] [partbegin] [tmax] [tout]
 
 Default restart is `Part_0050.bi4` from `CaseRetroSlope_u_pw_prestress_out\data`.
 
-For quick smoke tests, override `tmax` and `tout`, for example:
-
-```bat
-xCaseRetroSlope_u_pw_prestress_win64_CPU.bat -force 0.02 0.01
-xCaseRetroSlope_u_pw_failure_win64_GPU.bat -force 1 0.02 0.01
-```
+For quick smoke tests, prepare separately labelled inputs and batch files under
+`tests/` and write results to `tests/outputs/`. Do not run shortened tests through
+these root-level batch files: their `-force` option deletes the shared formal
+output/restart folder. Keep the original restart state and document which PART
+the test inherits. Follow the parent [case file conventions](../AGENTS.md).
 
 ## Notes
+
+- Root-level XML/BAT, existing formal outputs, ZIP archives and videos are protected during the 2026-10-08 organization. The 8 m inputs are retained as a separate branch; their presence is not evidence of completed validation. No input or result is moved by this documentation update.
 
 - GPU and CPU failure runs inherit the same shared prestress restart folder.
 - Running a prestress batch with `-force` deletes and recreates the shared prestress folder, so run only the CPU or GPU prestress stage you want to use as the inherited state.
