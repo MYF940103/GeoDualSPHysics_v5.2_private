@@ -1,0 +1,1635 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_dbg-fillbox.vtk  domains:1
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_dbg-fillbox.vtk  domains:2
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_dbg-fillbox.vtk  domains:3
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.019s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.012s]
+
+[SaveCase2D]
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_MkCells.vtk  (time:0.003s, shapes:2, points:8)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision.bi4<double>  (time:0.003s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_All.vtk  (time: 0.004s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Bound.vtk  (time: 0.003s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Fluid.vtk  (time: 0.004s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision.xml  (time:0.007s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Normals.vtk
+  CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Normals.nbi4  (time:0.019s)
+
+Save files time: 0.036s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.037s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.071 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads by host for parallel execution: 4
+
+[Initialising JSphCpuSingle  08-09-2026 17:19:31]
+ProgramFile=".../bin/windows/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR"
+XmlFile=".../02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision.xml"
+OutputDir=".../Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out"
+OutputDataDir=".../02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[72.8843]  TimeOut=[0.182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopVertical"
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision"
+RunName="CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=72.8842857142858
+TimePart=0.182185714285714
+Gravity=(0,0,0)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested CPU memory for 1168 particles: 0.5 MB.
+NormalDataFile="CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_precision_Normals.nbi4"
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+**JSphCpu: Requesting cpu memory for 1253 particles: 0.5 MB.
+**JSphCpu: Requesting cpu memory for 2093 particles: 0.9 MB.
+**CellDiv: Requested cpu memory for 2093 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Double - OpenMP(Threads:4)"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+TimeOut configuration:
+  Time: 0.000000  (tout:0.182186)
+  Time: 72.884286  (tout:0.182186)
+ 
+Allocated memory in CPU: 1039780 (0.99 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (zm8tgxmx)  08-09-2026 17:19:31]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphCpu: Requesting cpu memory for 2967 particles: 1.2 MB.
+**CellDiv: Requested cpu memory for 2967 particles: 0.1 MB.
+  Progress 0.18% in 30.0s. Estimated finish time: 08-09-2026 22:00:06
+Part_0001      0.182190         18219    18219     230.97  08-09-2026 22:00:05
+Part_0002      0.364380         36438    18219     244.06  08-09-2026 22:08:02
+Part_0003      0.546560         54656    18218     243.00  08-09-2026 22:10:16
+Part_0004      0.728750         72875    18219     244.93  08-09-2026 22:11:57
+Part_0005      0.910930         91093    18218     254.03  08-09-2026 22:15:11
+Part_0006      1.093120        109312    18219     254.28  08-09-2026 22:17:23
+Part_0007      1.275310        127531    18219     267.48  08-09-2026 22:21:15
+Part_0008      1.457490        145749    18218     252.10  08-09-2026 22:21:49
+Part_0009      1.639680        163968    18219     246.61  08-09-2026 22:21:31
+Part_0010      1.821860        182186    18218     243.44  08-09-2026 22:20:53
+Part_0011      2.004050        200405    18219     249.12  08-09-2026 22:21:00
+Part_0012      2.186230        218623    18218     247.27  08-09-2026 22:20:54
+Part_0013      2.368420        236842    18219     235.90  08-09-2026 22:19:46
+Part_0014      2.550600        255060    18218     230.13  08-09-2026 22:18:17
+Part_0015      2.732790        273279    18219     225.25  08-09-2026 22:16:37
+Part_0016      2.914980        291498    18219     231.12  08-09-2026 22:15:36
+Part_0017      3.097160        309716    18218     228.79  08-09-2026 22:14:32
+Part_0018      3.279350        327935    18219     230.89  08-09-2026 22:13:43
+Part_0019      3.461530        346153    18218     235.61  08-09-2026 22:13:18
+Part_0020      3.643720        364372    18219     230.14  08-09-2026 22:12:35
+Part_0021      3.825900        382590    18218     228.83  08-09-2026 22:11:52
+Part_0022      4.008090        400809    18219     232.91  08-09-2026 22:11:26
+Part_0023      4.190280        419028    18219     231.22  08-09-2026 22:10:57
+Part_0024      4.372460        437246    18218     232.45  08-09-2026 22:10:35
+Part_0025      4.554650        455465    18219     240.81  08-09-2026 22:10:39
+Part_0026      4.736830        473683    18218     243.22  08-09-2026 22:10:49
+Part_0027      4.919020        491902    18219     228.13  08-09-2026 22:10:18
+Part_0028      5.101210        510121    18219     226.08  08-09-2026 22:09:43
+Part_0029      5.283390        528339    18218     225.45  08-09-2026 22:09:09
+Part_0030      5.465580        546558    18219     225.74  08-09-2026 22:08:38
+Part_0031      5.647760        564776    18218     226.30  08-09-2026 22:08:11
+Part_0032      5.829950        582995    18219     224.20  08-09-2026 22:07:40
+Part_0033      6.012130        601213    18218     223.97  08-09-2026 22:07:11
+Part_0034      6.194320        619432    18219     225.01  08-09-2026 22:06:46
+Part_0035      6.376510        637651    18219     225.26  08-09-2026 22:06:23
+Part_0036      6.558690        655869    18218     224.94  08-09-2026 22:06:00
+Part_0037      6.740880        674088    18219     226.47  08-09-2026 22:05:41
+Part_0038      6.923060        692306    18218     227.52  08-09-2026 22:05:26
+Part_0039      7.105250        710525    18219     228.24  08-09-2026 22:05:12
+Part_0040      7.287430        728743    18218     229.75  08-09-2026 22:05:03
+Part_0041      7.469620        746962    18219     229.96  08-09-2026 22:04:54
+Part_0042      7.651810        765181    18219     232.64  08-09-2026 22:04:49
+Part_0043      7.833990        783399    18218     234.44  08-09-2026 22:04:49
+Part_0044      8.016180        801618    18219     234.30  08-09-2026 22:04:48
+Part_0045      8.198360        819836    18218     236.74  08-09-2026 22:04:51
+Part_0046      8.380550        838055    18219     240.46  08-09-2026 22:05:00
+Part_0047      8.562730        856273    18218     240.81  08-09-2026 22:05:09
+Part_0048      8.744920        874492    18219     245.06  08-09-2026 22:05:24
+Part_0049      8.927110        892711    18219     242.50  08-09-2026 22:05:34
+Part_0050      9.109290        910929    18218     245.21  08-09-2026 22:05:49
+Part_0051      9.291480        929148    18219     250.13  08-09-2026 22:06:10
+Part_0052      9.473660        947366    18218     253.26  08-09-2026 22:06:34
+Part_0053      9.655850        965585    18219     252.53  08-09-2026 22:06:56
+Part_0054      9.838030        983803    18218     248.87  08-09-2026 22:07:12
+Part_0055     10.020220       1002022    18219     253.11  08-09-2026 22:07:34
+Part_0056     10.202410       1020241    18219     245.85  08-09-2026 22:07:45
+Part_0057     10.384590       1038459    18218     245.48  08-09-2026 22:07:56
+Part_0058     10.566780       1056678    18219     246.21  08-09-2026 22:08:07
+Part_0059     10.748960       1074896    18218     247.65  08-09-2026 22:08:20
+Part_0060     10.931150       1093115    18219     252.37  08-09-2026 22:08:38
+Part_0061     11.113330       1111333    18218     251.32  08-09-2026 22:08:53
+Part_0062     11.295520       1129552    18219     252.70  08-09-2026 22:09:11
+Part_0063     11.477710       1147771    18219     249.82  08-09-2026 22:09:23
+Part_0064     11.659890       1165989    18218     248.95  08-09-2026 22:09:35
+Part_0065     11.842080       1184208    18219     251.74  08-09-2026 22:09:49
+Part_0066     12.024260       1202426    18218     249.64  08-09-2026 22:10:02
+Part_0067     12.206450       1220645    18219     256.23  08-09-2026 22:10:20
+Part_0068     12.388630       1238863    18218     258.11  08-09-2026 22:10:41
+Part_0069     12.570820       1257082    18219     245.72  08-09-2026 22:10:46
+Part_0070     12.753010       1275301    18219     237.35  08-09-2026 22:10:45
+Part_0071     12.935190       1293519    18218     239.08  08-09-2026 22:10:43
+Part_0072     13.117380       1311738    18219     237.94  08-09-2026 22:10:41
+Part_0073     13.299560       1329956    18218     237.62  08-09-2026 22:10:40
+Part_0074     13.481750       1348175    18219     239.29  08-09-2026 22:10:39
+Part_0075     13.663930       1366393    18218     239.54  08-09-2026 22:10:39
+Part_0076     13.846120       1384612    18219     250.18  08-09-2026 22:10:50
+Part_0077     14.028310       1402831    18219     248.96  08-09-2026 22:10:58
+Part_0078     14.210490       1421049    18218     240.87  08-09-2026 22:10:59
+Part_0079     14.392680       1439268    18219     240.40  08-09-2026 22:11:00
+Part_0080     14.574860       1457486    18218     239.78  08-09-2026 22:10:59
+Part_0081     14.757050       1475705    18219     238.96  08-09-2026 22:10:59
+Part_0082     14.939230       1493923    18218     239.61  08-09-2026 22:10:59
+Part_0083     15.121420       1512142    18219     239.35  08-09-2026 22:10:58
+Part_0084     15.303610       1530361    18219     240.42  08-09-2026 22:10:58
+Part_0085     15.485790       1548579    18218     240.80  08-09-2026 22:10:59
+Part_0086     15.667980       1566798    18219     241.02  08-09-2026 22:11:00
+Part_0087     15.850160       1585016    18218     241.43  08-09-2026 22:11:01
+Part_0088     16.032350       1603235    18219     243.14  08-09-2026 22:11:04
+Part_0089     16.214530       1621453    18218     242.00  08-09-2026 22:11:05
+Part_0090     16.396720       1639672    18219     242.82  08-09-2026 22:11:07
+Part_0091     16.578910       1657891    18219     241.61  08-09-2026 22:11:09
+Part_0092     16.761090       1676109    18218     245.62  08-09-2026 22:11:13
+Part_0093     16.943280       1694328    18219     245.94  08-09-2026 22:11:18
+Part_0094     17.125460       1712546    18218     254.87  08-09-2026 22:11:29
+Part_0095     17.307650       1730765    18219     256.83  08-09-2026 22:11:42
+Part_0096     17.489830       1748983    18218     252.96  08-09-2026 22:11:51
+Part_0097     17.672020       1767202    18219     253.56  08-09-2026 22:12:02
+Part_0098     17.854210       1785421    18219     250.12  08-09-2026 22:12:08
+Part_0099     18.036390       1803639    18218     249.86  08-09-2026 22:12:15
+Part_0100     18.218580       1821858    18219     250.18  08-09-2026 22:12:21
+Part_0101     18.400760       1840076    18218     252.55  08-09-2026 22:12:30
+Part_0102     18.582950       1858295    18219     250.33  08-09-2026 22:12:37
+Part_0103     18.765130       1876513    18218     250.97  08-09-2026 22:12:44
+Part_0104     18.947320       1894732    18219     253.93  08-09-2026 22:12:52
+Part_0105     19.129510       1912951    18219     250.03  08-09-2026 22:12:58
+Part_0106     19.311690       1931169    18218     250.27  08-09-2026 22:13:04
+Part_0107     19.493880       1949388    18219     253.32  08-09-2026 22:13:12
+Part_0108     19.676060       1967606    18218     254.01  08-09-2026 22:13:20
+Part_0109     19.858250       1985825    18219     256.46  08-09-2026 22:13:30
+Part_0110     20.040430       2004043    18218     260.57  08-09-2026 22:13:43
+Part_0111     20.222620       2022262    18219     253.89  08-09-2026 22:13:50
+Part_0112     20.404810       2040481    18219     239.16  08-09-2026 22:13:48
+Part_0113     20.586990       2058699    18218     238.33  08-09-2026 22:13:46
+Part_0114     20.769180       2076918    18219     239.85  08-09-2026 22:13:44
+Part_0115     20.951360       2095136    18218     242.11  08-09-2026 22:13:44
+Part_0116     21.133550       2113355    18219     241.72  08-09-2026 22:13:44
+Part_0117     21.315730       2131573    18218     241.91  08-09-2026 22:13:44
+Part_0118     21.497920       2149792    18219     240.19  08-09-2026 22:13:43
+Part_0119     21.680110       2168011    18219     239.39  08-09-2026 22:13:40
+Part_0120     21.862290       2186229    18218     242.79  08-09-2026 22:13:41
+Part_0121     22.044480       2204448    18219     485.33  08-09-2026 22:16:08
+Part_0122     22.226660       2222666    18218     289.03  08-09-2026 22:16:35
+Part_0123     22.408850       2240885    18219     417.99  08-09-2026 22:18:17
+Part_0124     22.591030       2259103    18218     731.94  08-09-2026 22:23:03
+Part_0125     22.773220       2277322    18219     940.69  08-09-2026 22:29:45
+Part_0126     22.955410       2295541    18219     823.88  08-09-2026 22:35:15
+Part_0127     23.137590       2313759    18218     797.97  08-09-2026 22:40:23
+Part_0128     23.319780       2331978    18219     506.52  08-09-2026 22:42:41
+Part_0129     23.501960       2350196    18218     572.75  08-09-2026 22:45:35
+Part_0130     23.684150       2368415    18219     893.06  08-09-2026 22:51:25
+Part_0131     23.866330       2386633    18218    1096.93  08-09-2026 22:59:03
+Part_0132     24.048520       2404852    18219     909.38  08-09-2026 23:04:51
+Part_0133     24.230710       2423071    18219     750.19  08-09-2026 23:09:07
+Part_0134     24.412890       2441289    18218     817.95  08-09-2026 23:13:55
+Part_0135     24.595080       2459508    18219     954.59  08-09-2026 23:19:53
+Part_0136     24.777260       2477726    18218     933.18  08-09-2026 23:25:34
+Part_0137     24.959450       2495945    18219     930.53  08-09-2026 23:31:08
+Part_0138     25.141630       2514163    18218     932.08  08-09-2026 23:36:39
+Part_0139     25.323820       2532382    18219     858.00  08-09-2026 23:41:26
+Part_0140     25.506010       2550601    18219     744.63  08-09-2026 23:45:10
+Part_0141     25.688190       2568819    18218     564.54  08-09-2026 23:47:18
+Part_0142     25.870380       2587038    18219     828.91  08-09-2026 23:51:40
+Part_0143     26.052560       2605256    18218     611.48  08-09-2026 23:54:07
+Part_0144     26.234750       2623475    18219     817.97  08-09-2026 23:58:16
+Part_0145     26.416930       2641693    18218     812.85  09-09-2026 00:02:20
+Part_0146     26.599120       2659912    18219     814.00  09-09-2026 00:06:21
+Part_0147     26.781310       2678131    18219     767.81  09-09-2026 00:09:56
+Part_0148     26.963490       2696349    18218     426.50  09-09-2026 00:10:39
+Part_0149     27.145680       2714568    18219     238.91  09-09-2026 00:09:51
+Part_0150     27.327860       2732786    18218     239.03  09-09-2026 00:09:02
+Part_0151     27.510050       2751005    18219     241.78  09-09-2026 00:08:16
+Part_0152     27.692230       2769223    18218     240.51  09-09-2026 00:07:30
+Part_0153     27.874420       2787442    18219     241.04  09-09-2026 00:06:45
+Part_0154     28.056610       2805661    18219     240.78  09-09-2026 00:06:01
+Part_0155     28.238790       2823879    18218     241.26  09-09-2026 00:05:17
+Part_0156     28.420980       2842098    18219     240.99  09-09-2026 00:04:34
+Part_0157     28.603160       2860316    18218     240.59  09-09-2026 00:03:51
+Part_0158     28.785350       2878535    18219     240.54  09-09-2026 00:03:08
+Part_0159     28.967530       2896753    18218     240.39  09-09-2026 00:02:25
+Part_0160     29.149720       2914972    18219     241.02  09-09-2026 00:01:44
+Part_0161     29.331910       2933191    18219     239.49  09-09-2026 00:01:03
+Part_0162     29.514090       2951409    18218     242.44  09-09-2026 00:00:23
+Part_0163     29.696280       2969628    18219     241.90  08-09-2026 23:59:44
+Part_0164     29.878460       2987846    18218     246.35  08-09-2026 23:59:07
+Part_0165     30.060650       3006065    18219     245.64  08-09-2026 23:58:30
+Part_0166     30.242830       3024283    18218     247.63  08-09-2026 23:57:55
+Part_0167     30.425020       3042502    18219     245.66  08-09-2026 23:57:19
+Part_0168     30.607210       3060721    18219     243.09  08-09-2026 23:56:42
+Part_0169     30.789390       3078939    18218     246.01  08-09-2026 23:56:08
+Part_0170     30.971580       3097158    18219     243.21  08-09-2026 23:55:32
+Part_0171     31.153760       3115376    18218     246.59  08-09-2026 23:54:58
+Part_0172     31.335950       3133595    18219     258.27  08-09-2026 23:54:29
+Part_0173     31.518130       3151813    18218     257.07  08-09-2026 23:54:01
+Part_0174     31.700320       3170032    18219     257.42  08-09-2026 23:53:33
+Part_0175     31.882510       3188251    18219     253.68  08-09-2026 23:53:03
+Part_0176     32.064690       3206469    18218     252.38  08-09-2026 23:52:33
+Part_0177     32.246880       3224688    18219     253.76  08-09-2026 23:52:04
+Part_0178     32.429060       3242906    18218     249.46  08-09-2026 23:51:35
+Part_0179     32.611250       3261125    18219     251.77  08-09-2026 23:51:06
+Part_0180     32.793430       3279343    18218     250.63  08-09-2026 23:50:36
+Part_0181     32.975620       3297562    18219     251.07  08-09-2026 23:50:08
+Part_0182     33.157810       3315781    18219     254.58  08-09-2026 23:49:42
+Part_0183     33.339990       3333999    18218     254.80  08-09-2026 23:49:15
+Part_0184     33.522180       3352218    18219     257.83  08-09-2026 23:48:50
+Part_0185     33.704360       3370436    18218     262.62  08-09-2026 23:48:28
+Part_0186     33.886550       3388655    18219     255.63  08-09-2026 23:48:02
+Part_0187     34.068730       3406873    18218     240.09  08-09-2026 23:47:31
+Part_0188     34.250920       3425092    18219     241.33  08-09-2026 23:47:01
+Part_0189     34.433110       3443311    18219     240.33  08-09-2026 23:46:30
+Part_0190     34.615290       3461529    18218     240.83  08-09-2026 23:46:01
+Part_0191     34.797480       3479748    18219     241.54  08-09-2026 23:45:33
+Part_0192     34.979660       3497966    18218     240.04  08-09-2026 23:45:03
+Part_0193     35.161850       3516185    18219     240.44  08-09-2026 23:44:33
+Part_0194     35.344030       3534403    18218     239.74  08-09-2026 23:44:05
+Part_0195     35.526220       3552622    18219     244.05  08-09-2026 23:43:38
+Part_0196     35.708400       3570840    18218     240.82  08-09-2026 23:43:09
+Part_0197     35.890590       3589059    18219     240.19  08-09-2026 23:42:42
+Part_0198     36.072780       3607278    18219     241.54  08-09-2026 23:42:14
+Part_0199     36.254960       3625496    18218     240.47  08-09-2026 23:41:47
+Part_0200     36.437150       3643715    18219     242.48  08-09-2026 23:41:21
+Part_0201     36.619330       3661933    18218     240.56  08-09-2026 23:40:54
+Part_0202     36.801520       3680152    18219     241.30  08-09-2026 23:40:28
+Part_0203     36.983700       3698370    18218     241.30  08-09-2026 23:40:02
+Part_0204     37.165890       3716589    18219     241.80  08-09-2026 23:39:37
+Part_0205     37.348080       3734808    18219     241.26  08-09-2026 23:39:11
+Part_0206     37.530260       3753026    18218     241.76  08-09-2026 23:38:46
+Part_0207     37.712450       3771245    18219     243.88  08-09-2026 23:38:22
+Part_0208     37.894630       3789463    18218     245.15  08-09-2026 23:37:58
+Part_0209     38.076820       3807682    18219     243.18  08-09-2026 23:37:34
+Part_0210     38.259000       3825900    18218     246.37  08-09-2026 23:37:12
+Part_0211     38.441190       3844119    18219     251.32  08-09-2026 23:36:52
+Part_0212     38.623380       3862338    18219     240.79  08-09-2026 23:36:28
+Part_0213     38.805560       3880556    18218     241.70  08-09-2026 23:36:04
+Part_0214     38.987750       3898775    18219     254.06  08-09-2026 23:35:45
+Part_0215     39.169930       3916993    18218     254.27  08-09-2026 23:35:27
+Part_0216     39.352120       3935212    18219     253.68  08-09-2026 23:35:08
+Part_0217     39.534300       3953430    18218     248.54  08-09-2026 23:34:47
+Part_0218     39.716490       3971649    18219     252.39  08-09-2026 23:34:28
+Part_0219     39.898680       3989868    18219     252.07  08-09-2026 23:34:09
+Part_0220     40.080860       4008086    18218     252.26  08-09-2026 23:33:51
+Part_0221     40.263050       4026305    18219     250.54  08-09-2026 23:33:32
+Part_0222     40.445230       4044523    18218     252.22  08-09-2026 23:33:14
+Part_0223     40.627420       4062742    18219     253.78  08-09-2026 23:32:56
+Part_0224     40.809600       4080960    18218     255.62  08-09-2026 23:32:40
+Part_0225     40.991790       4099179    18219     255.42  08-09-2026 23:32:23
+Part_0226     41.173980       4117398    18219     262.33  08-09-2026 23:32:08
+Part_0227     41.356160       4135616    18218     263.24  08-09-2026 23:31:54
+Part_0228     41.538350       4153835    18219     246.03  08-09-2026 23:31:35
+Part_0229     41.720530       4172053    18218     239.66  08-09-2026 23:31:13
+Part_0230     41.902720       4190272    18219     240.60  08-09-2026 23:30:53
+Part_0231     42.084900       4208490    18218     241.93  08-09-2026 23:30:33
+Part_0232     42.267090       4226709    18219     241.07  08-09-2026 23:30:13
+Part_0233     42.449280       4244928    18219     241.48  08-09-2026 23:29:53
+Part_0234     42.631460       4263146    18218     242.09  08-09-2026 23:29:33
+Part_0235     42.813650       4281365    18219     242.07  08-09-2026 23:29:14
+Part_0236     42.995830       4299583    18218     242.17  08-09-2026 23:28:55
+Part_0237     43.178020       4317802    18219     242.44  08-09-2026 23:28:36
+Part_0238     43.360200       4336020    18218     241.84  08-09-2026 23:28:17
+Part_0239     43.542390       4354239    18219     244.75  08-09-2026 23:27:59
+Part_0240     43.724580       4372458    18219     249.29  08-09-2026 23:27:43
+Part_0241     43.906760       4390676    18218     248.11  08-09-2026 23:27:26
+Part_0242     44.088950       4408895    18219     249.27  08-09-2026 23:27:09
+Part_0243     44.271130       4427113    18218     250.03  08-09-2026 23:26:54
+Part_0244     44.453320       4445332    18219     250.20  08-09-2026 23:26:39
+Part_0245     44.635500       4463550    18218     254.92  08-09-2026 23:26:24
+Part_0246     44.817690       4481769    18219     253.03  08-09-2026 23:26:10
+Part_0247     44.999880       4499988    18219     257.30  08-09-2026 23:25:57
+Part_0248     45.182060       4518206    18218     250.52  08-09-2026 23:25:42
+Part_0249     45.364250       4536425    18219     248.66  08-09-2026 23:25:26
+Part_0250     45.546430       4554643    18218     248.02  08-09-2026 23:25:11
+Part_0251     45.728620       4572862    18219     244.10  08-09-2026 23:24:55
+Part_0252     45.910800       4591080    18218     240.77  08-09-2026 23:24:37
+Part_0253     46.092990       4609299    18219     243.26  08-09-2026 23:24:21
+Part_0254     46.275180       4627518    18219     244.00  08-09-2026 23:24:04
+Part_0255     46.457360       4645736    18218     250.69  08-09-2026 23:23:50
+Part_0256     46.639550       4663955    18219     252.15  08-09-2026 23:23:37
+Part_0257     46.821730       4682173    18218     256.62  08-09-2026 23:23:25
+Part_0258     47.003920       4700392    18219     253.79  08-09-2026 23:23:11
+Part_0259     47.186100       4718610    18218     255.47  08-09-2026 23:23:00
+Part_0260     47.368290       4736829    18219     251.83  08-09-2026 23:22:45
+Part_0261     47.550480       4755048    18219     252.37  08-09-2026 23:22:32
+Part_0262     47.732660       4773266    18218     251.75  08-09-2026 23:22:19
+Part_0263     47.914850       4791485    18219     256.21  08-09-2026 23:22:08
+Part_0264     48.097030       4809703    18218     256.78  08-09-2026 23:21:57
+Part_0265     48.279220       4827922    18219     252.89  08-09-2026 23:21:44
+Part_0266     48.461400       4846140    18218     252.89  08-09-2026 23:21:32
+Part_0267     48.643590       4864359    18219     255.13  08-09-2026 23:21:19
+Part_0268     48.825780       4882578    18219     256.54  08-09-2026 23:21:09
+Part_0269     49.007960       4900796    18218     259.91  08-09-2026 23:20:58
+Part_0270     49.190150       4919015    18219     263.67  08-09-2026 23:20:49
+Part_0271     49.372330       4937233    18218     250.20  08-09-2026 23:20:36
+Part_0272     49.554520       4955452    18219     238.39  08-09-2026 23:20:20
+Part_0273     49.736700       4973670    18218     239.25  08-09-2026 23:20:05
+Part_0274     49.918890       4991889    18219     238.21  08-09-2026 23:19:49
+Part_0275     50.101080       5010108    18219     240.41  08-09-2026 23:19:35
+Part_0276     50.283260       5028326    18218     241.89  08-09-2026 23:19:20
+Part_0277     50.465450       5046545    18219     241.20  08-09-2026 23:19:06
+Part_0278     50.647630       5064763    18218     240.75  08-09-2026 23:18:51
+Part_0279     50.829820       5082982    18219     242.03  08-09-2026 23:18:37
+Part_0280     51.012000       5101200    18218     240.20  08-09-2026 23:18:23
+Part_0281     51.194190       5119419    18219     242.61  08-09-2026 23:18:09
+Part_0282     51.376380       5137638    18219     244.71  08-09-2026 23:17:56
+Part_0283     51.558560       5155856    18218     240.32  08-09-2026 23:17:43
+Part_0284     51.740750       5174075    18219     241.66  08-09-2026 23:17:29
+Part_0285     51.922930       5192293    18218     239.94  08-09-2026 23:17:14
+Part_0286     52.105120       5210512    18219     241.33  08-09-2026 23:17:01
+Part_0287     52.287300       5228730    18218     241.07  08-09-2026 23:16:47
+Part_0288     52.469490       5246949    18219     240.28  08-09-2026 23:16:34
+Part_0289     52.651680       5265168    18219     240.27  08-09-2026 23:16:21
+Part_0290     52.833860       5283386    18218     240.96  08-09-2026 23:16:07
+Part_0291     53.016050       5301605    18219     243.34  08-09-2026 23:15:55
+Part_0292     53.198230       5319823    18218     242.37  08-09-2026 23:15:42
+Part_0293     53.380420       5338042    18219     242.07  08-09-2026 23:15:29
+Part_0294     53.562600       5356260    18218     245.12  08-09-2026 23:15:17
+Part_0295     53.744790       5374479    18219     245.89  08-09-2026 23:15:06
+Part_0296     53.926980       5392698    18219     244.99  08-09-2026 23:14:53
+Part_0297     54.109160       5410916    18218     244.77  08-09-2026 23:14:42
+Part_0298     54.291350       5429135    18219     241.17  08-09-2026 23:14:30
+Part_0299     54.473530       5447353    18218     249.71  08-09-2026 23:14:20
+Part_0300     54.655720       5465572    18219     246.49  08-09-2026 23:14:08
+Part_0301     54.837900       5483790    18218     249.31  08-09-2026 23:13:58
+Part_0302     55.020090       5502009    18219     251.77  08-09-2026 23:13:49
+Part_0303     55.202280       5520228    18219     249.43  08-09-2026 23:13:38
+Part_0304     55.384460       5538446    18218     245.84  08-09-2026 23:13:27
+Part_0305     55.566650       5556665    18219     247.27  08-09-2026 23:13:17
+Part_0306     55.748830       5574883    18218     248.46  08-09-2026 23:13:06
+Part_0307     55.931020       5593102    18219     249.18  08-09-2026 23:12:57
+Part_0308     56.113200       5611320    18218     250.01  08-09-2026 23:12:47
+Part_0309     56.295390       5629539    18219     249.10  08-09-2026 23:12:38
+Part_0310     56.477580       5647758    18219     247.68  08-09-2026 23:12:27
+Part_0311     56.659760       5665976    18218     252.49  08-09-2026 23:12:18
+Part_0312     56.841950       5684195    18219     246.84  08-09-2026 23:12:08
+Part_0313     57.024130       5702413    18218     252.56  08-09-2026 23:11:59
+Part_0314     57.206320       5720632    18219     258.32  08-09-2026 23:11:52
+Part_0315     57.388500       5738850    18218     241.84  08-09-2026 23:11:41
+Part_0316     57.570690       5757069    18219     239.89  08-09-2026 23:11:30
+Part_0317     57.752880       5775288    18219     240.14  08-09-2026 23:11:18
+Part_0318     57.935060       5793506    18218     240.59  08-09-2026 23:11:06
+Part_0319     58.117250       5811725    18219     243.16  08-09-2026 23:10:56
+Part_0320     58.299430       5829943    18218     241.78  08-09-2026 23:10:46
+Part_0321     58.481620       5848162    18219     241.28  08-09-2026 23:10:35
+Part_0322     58.663800       5866380    18218     241.05  08-09-2026 23:10:24
+Part_0323     58.845990       5884599    18219     244.78  08-09-2026 23:10:13
+Part_0324     59.028180       5902818    18219     244.71  08-09-2026 23:10:04
+Part_0325     59.210360       5921036    18218     241.81  08-09-2026 23:09:53
+Part_0326     59.392550       5939255    18219     242.86  08-09-2026 23:09:43
+Part_0327     59.574730       5957473    18218     246.56  08-09-2026 23:09:34
+Part_0328     59.756920       5975692    18219     238.42  08-09-2026 23:09:23
+Part_0329     59.939100       5993910    18218     238.74  08-09-2026 23:09:12
+Part_0330     60.121290       6012129    18219     241.66  08-09-2026 23:09:02
+Part_0331     60.303480       6030348    18219     241.58  08-09-2026 23:08:51
+Part_0332     60.485660       6048566    18218     240.38  08-09-2026 23:08:41
+Part_0333     60.667850       6066785    18219     241.77  08-09-2026 23:08:31
+Part_0334     60.850030       6085003    18218     242.03  08-09-2026 23:08:21
+Part_0335     61.032220       6103222    18219     243.20  08-09-2026 23:08:11
+Part_0336     61.214400       6121440    18218     241.08  08-09-2026 23:08:02
+Part_0337     61.396590       6139659    18219     242.85  08-09-2026 23:07:53
+Part_0338     61.578780       6157878    18219     244.34  08-09-2026 23:07:43
+Part_0339     61.760960       6176096    18218     242.89  08-09-2026 23:07:33
+Part_0340     61.943150       6194315    18219     242.11  08-09-2026 23:07:24
+Part_0341     62.125330       6212533    18218     252.59  08-09-2026 23:07:17
+Part_0342     62.307520       6230752    18219     249.85  08-09-2026 23:07:09
+Part_0343     62.489700       6248970    18218     249.00  08-09-2026 23:07:01
+Part_0344     62.671890       6267189    18219     249.47  08-09-2026 23:06:54
+Part_0345     62.854080       6285408    18219     251.33  08-09-2026 23:06:47
+Part_0346     63.036260       6303626    18218     248.90  08-09-2026 23:06:39
+Part_0347     63.218450       6321845    18219     248.19  08-09-2026 23:06:31
+Part_0348     63.400630       6340063    18218     246.68  08-09-2026 23:06:22
+Part_0349     63.582820       6358282    18219     248.50  08-09-2026 23:06:14
+Part_0350     63.765000       6376500    18218     246.13  08-09-2026 23:06:06
+Part_0351     63.947190       6394719    18219     247.58  08-09-2026 23:05:58
+Part_0352     64.129380       6412938    18219     246.63  08-09-2026 23:05:51
+Part_0353     64.311560       6431156    18218     243.20  08-09-2026 23:05:43
+Part_0354     64.493750       6449375    18219     247.61  08-09-2026 23:05:35
+Part_0355     64.675930       6467593    18218     248.78  08-09-2026 23:05:27
+Part_0356     64.858120       6485812    18219     244.43  08-09-2026 23:05:19
+Part_0357     65.040300       6504030    18218     247.97  08-09-2026 23:05:12
+Part_0358     65.222490       6522249    18219     248.81  08-09-2026 23:05:04
+Part_0359     65.404680       6540468    18219     249.76  08-09-2026 23:04:57
+Part_0360     65.586860       6558686    18218     240.74  08-09-2026 23:04:48
+Part_0361     65.769050       6576905    18219     238.54  08-09-2026 23:04:39
+Part_0362     65.951230       6595123    18218     240.58  08-09-2026 23:04:30
+Part_0363     66.133420       6613342    18219     241.83  08-09-2026 23:04:22
+Part_0364     66.315600       6631560    18218     241.99  08-09-2026 23:04:13
+Part_0365     66.497790       6649779    18219     242.42  08-09-2026 23:04:05
+Part_0366     66.679980       6667998    18219     241.28  08-09-2026 23:03:57
+Part_0367     66.862160       6686216    18218     240.52  08-09-2026 23:03:48
+Part_0368     67.044350       6704435    18219     241.73  08-09-2026 23:03:40
+Part_0369     67.226530       6722653    18218     240.79  08-09-2026 23:03:32
+Part_0370     67.408720       6740872    18219     240.88  08-09-2026 23:03:23
+Part_0371     67.590900       6759090    18218     241.99  08-09-2026 23:03:15
+Part_0372     67.773090       6777309    18219     241.83  08-09-2026 23:03:07
+Part_0373     67.955280       6795528    18219     241.09  08-09-2026 23:02:59
+Part_0374     68.137460       6813746    18218     247.22  08-09-2026 23:02:52
+Part_0375     68.319650       6831965    18219     240.74  08-09-2026 23:02:44
+Part_0376     68.501830       6850183    18218     240.28  08-09-2026 23:02:35
+Part_0377     68.684020       6868402    18219     239.70  08-09-2026 23:02:27
+Part_0378     68.866200       6886620    18218     242.66  08-09-2026 23:02:19
+Part_0379     69.048390       6904839    18219     241.82  08-09-2026 23:02:12
+Part_0380     69.230580       6923058    18219     242.31  08-09-2026 23:02:04
+Part_0381     69.412760       6941276    18218     246.60  08-09-2026 23:01:57
+Part_0382     69.594950       6959495    18219     243.92  08-09-2026 23:01:50
+Part_0383     69.777130       6977713    18218     244.18  08-09-2026 23:01:43
+Part_0384     69.959320       6995932    18219     240.18  08-09-2026 23:01:35
+Part_0385     70.141500       7014150    18218     243.48  08-09-2026 23:01:28
+Part_0386     70.323690       7032369    18219     240.20  08-09-2026 23:01:20
+Part_0387     70.505880       7050588    18219     251.98  08-09-2026 23:01:15
+Part_0388     70.688060       7068806    18218     251.12  08-09-2026 23:01:09
+Part_0389     70.870250       7087025    18219     251.84  08-09-2026 23:01:04
+Part_0390     71.052430       7105243    18218     248.16  08-09-2026 23:00:57
+Part_0391     71.234620       7123462    18219     247.11  08-09-2026 23:00:51
+Part_0392     71.416800       7141680    18218     247.82  08-09-2026 23:00:45
+Part_0393     71.598990       7159899    18219     246.86  08-09-2026 23:00:38
+Part_0394     71.781180       7178118    18219     250.45  08-09-2026 23:00:33
+Part_0395     71.963360       7196336    18218     247.23  08-09-2026 23:00:27
+Part_0396     72.145550       7214555    18219     248.04  08-09-2026 23:00:21
+Part_0397     72.327730       7232773    18218     248.32  08-09-2026 23:00:15
+Part_0398     72.509920       7250992    18219     249.68  08-09-2026 23:00:09
+Part_0399     72.692100       7269210    18218     250.79  08-09-2026 23:00:03
+Part_0400     72.874290       7287429    18219     248.09  08-09-2026 22:59:58
+Part_0401     72.884290       7288429     1000     249.73  08-09-2026 22:59:58
+
+[Simulation finished  08-09-2026 22:59:58]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 20426.042969 sec.
+Simulation Runtime...............: 20426.009766 sec.
+Runtime per physical second......: 280.252563 sec.
+Steps per second.................: 356.820984
+Steps of simulation..............: 7288429
+PART files.......................: 402
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 1452308 (1.39 MB)
+ 
+[CPU Timers]
+VA-Init..........................: 0.033257 sec.
+NL-Limits........................: 102.650122 sec.
+NL-MakeSort......................: 175.245749 sec.
+NL-SortData......................: 3488.160397 sec.
+NL-OutCheck......................: 0.336944 sec.
+CF-PreForces.....................: 672.865576 sec.
+CF-Forces........................: 11639.591732 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 1123.354445 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 271.746626 sec.
+SU-ResizeNp......................: 0.000551 sec.
+SU-SavePart......................: 16.398320 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> ...\data/Part_0000.bi4
+LoadData> ...\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:1000
+LoadData> ...\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:1000
+LoadData> ...\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:1000
+LoadData> ...\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:1000
+LoadData> ...\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:1000
+LoadData> ...\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:1000
+LoadData> ...\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:1000
+LoadData> ...\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:1000
+LoadData> ...\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:1000
+LoadData> ...\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:1000
+LoadData> ...\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:1000
+LoadData> ...\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:1000
+LoadData> ...\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:1000
+LoadData> ...\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:1000
+LoadData> ...\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:1000
+LoadData> ...\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:1000
+LoadData> ...\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:1000
+LoadData> ...\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:1000
+LoadData> ...\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:1000
+LoadData> ...\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:1000
+LoadData> ...\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:1000
+LoadData> ...\data/Part_0021.bi4
+SaveVTK> ...\particles/PartFluid_0021.vtk  np:1000
+LoadData> ...\data/Part_0022.bi4
+SaveVTK> ...\particles/PartFluid_0022.vtk  np:1000
+LoadData> ...\data/Part_0023.bi4
+SaveVTK> ...\particles/PartFluid_0023.vtk  np:1000
+LoadData> ...\data/Part_0024.bi4
+SaveVTK> ...\particles/PartFluid_0024.vtk  np:1000
+LoadData> ...\data/Part_0025.bi4
+SaveVTK> ...\particles/PartFluid_0025.vtk  np:1000
+LoadData> ...\data/Part_0026.bi4
+SaveVTK> ...\particles/PartFluid_0026.vtk  np:1000
+LoadData> ...\data/Part_0027.bi4
+SaveVTK> ...\particles/PartFluid_0027.vtk  np:1000
+LoadData> ...\data/Part_0028.bi4
+SaveVTK> ...\particles/PartFluid_0028.vtk  np:1000
+LoadData> ...\data/Part_0029.bi4
+SaveVTK> ...\particles/PartFluid_0029.vtk  np:1000
+LoadData> ...\data/Part_0030.bi4
+SaveVTK> ...\particles/PartFluid_0030.vtk  np:1000
+LoadData> ...\data/Part_0031.bi4
+SaveVTK> ...\particles/PartFluid_0031.vtk  np:1000
+LoadData> ...\data/Part_0032.bi4
+SaveVTK> ...\particles/PartFluid_0032.vtk  np:1000
+LoadData> ...\data/Part_0033.bi4
+SaveVTK> ...\particles/PartFluid_0033.vtk  np:1000
+LoadData> ...\data/Part_0034.bi4
+SaveVTK> ...\particles/PartFluid_0034.vtk  np:1000
+LoadData> ...\data/Part_0035.bi4
+SaveVTK> ...\particles/PartFluid_0035.vtk  np:1000
+LoadData> ...\data/Part_0036.bi4
+SaveVTK> ...\particles/PartFluid_0036.vtk  np:1000
+LoadData> ...\data/Part_0037.bi4
+SaveVTK> ...\particles/PartFluid_0037.vtk  np:1000
+LoadData> ...\data/Part_0038.bi4
+SaveVTK> ...\particles/PartFluid_0038.vtk  np:1000
+LoadData> ...\data/Part_0039.bi4
+SaveVTK> ...\particles/PartFluid_0039.vtk  np:1000
+LoadData> ...\data/Part_0040.bi4
+SaveVTK> ...\particles/PartFluid_0040.vtk  np:1000
+LoadData> ...\data/Part_0041.bi4
+SaveVTK> ...\particles/PartFluid_0041.vtk  np:1000
+LoadData> ...\data/Part_0042.bi4
+SaveVTK> ...\particles/PartFluid_0042.vtk  np:1000
+LoadData> ...\data/Part_0043.bi4
+SaveVTK> ...\particles/PartFluid_0043.vtk  np:1000
+LoadData> ...\data/Part_0044.bi4
+SaveVTK> ...\particles/PartFluid_0044.vtk  np:1000
+LoadData> ...\data/Part_0045.bi4
+SaveVTK> ...\particles/PartFluid_0045.vtk  np:1000
+LoadData> ...\data/Part_0046.bi4
+SaveVTK> ...\particles/PartFluid_0046.vtk  np:1000
+LoadData> ...\data/Part_0047.bi4
+SaveVTK> ...\particles/PartFluid_0047.vtk  np:1000
+LoadData> ...\data/Part_0048.bi4
+SaveVTK> ...\particles/PartFluid_0048.vtk  np:1000
+LoadData> ...\data/Part_0049.bi4
+SaveVTK> ...\particles/PartFluid_0049.vtk  np:1000
+LoadData> ...\data/Part_0050.bi4
+SaveVTK> ...\particles/PartFluid_0050.vtk  np:1000
+LoadData> ...\data/Part_0051.bi4
+SaveVTK> ...\particles/PartFluid_0051.vtk  np:1000
+LoadData> ...\data/Part_0052.bi4
+SaveVTK> ...\particles/PartFluid_0052.vtk  np:1000
+LoadData> ...\data/Part_0053.bi4
+SaveVTK> ...\particles/PartFluid_0053.vtk  np:1000
+LoadData> ...\data/Part_0054.bi4
+SaveVTK> ...\particles/PartFluid_0054.vtk  np:1000
+LoadData> ...\data/Part_0055.bi4
+SaveVTK> ...\particles/PartFluid_0055.vtk  np:1000
+LoadData> ...\data/Part_0056.bi4
+SaveVTK> ...\particles/PartFluid_0056.vtk  np:1000
+LoadData> ...\data/Part_0057.bi4
+SaveVTK> ...\particles/PartFluid_0057.vtk  np:1000
+LoadData> ...\data/Part_0058.bi4
+SaveVTK> ...\particles/PartFluid_0058.vtk  np:1000
+LoadData> ...\data/Part_0059.bi4
+SaveVTK> ...\particles/PartFluid_0059.vtk  np:1000
+LoadData> ...\data/Part_0060.bi4
+SaveVTK> ...\particles/PartFluid_0060.vtk  np:1000
+LoadData> ...\data/Part_0061.bi4
+SaveVTK> ...\particles/PartFluid_0061.vtk  np:1000
+LoadData> ...\data/Part_0062.bi4
+SaveVTK> ...\particles/PartFluid_0062.vtk  np:1000
+LoadData> ...\data/Part_0063.bi4
+SaveVTK> ...\particles/PartFluid_0063.vtk  np:1000
+LoadData> ...\data/Part_0064.bi4
+SaveVTK> ...\particles/PartFluid_0064.vtk  np:1000
+LoadData> ...\data/Part_0065.bi4
+SaveVTK> ...\particles/PartFluid_0065.vtk  np:1000
+LoadData> ...\data/Part_0066.bi4
+SaveVTK> ...\particles/PartFluid_0066.vtk  np:1000
+LoadData> ...\data/Part_0067.bi4
+SaveVTK> ...\particles/PartFluid_0067.vtk  np:1000
+LoadData> ...\data/Part_0068.bi4
+SaveVTK> ...\particles/PartFluid_0068.vtk  np:1000
+LoadData> ...\data/Part_0069.bi4
+SaveVTK> ...\particles/PartFluid_0069.vtk  np:1000
+LoadData> ...\data/Part_0070.bi4
+SaveVTK> ...\particles/PartFluid_0070.vtk  np:1000
+LoadData> ...\data/Part_0071.bi4
+SaveVTK> ...\particles/PartFluid_0071.vtk  np:1000
+LoadData> ...\data/Part_0072.bi4
+SaveVTK> ...\particles/PartFluid_0072.vtk  np:1000
+LoadData> ...\data/Part_0073.bi4
+SaveVTK> ...\particles/PartFluid_0073.vtk  np:1000
+LoadData> ...\data/Part_0074.bi4
+SaveVTK> ...\particles/PartFluid_0074.vtk  np:1000
+LoadData> ...\data/Part_0075.bi4
+SaveVTK> ...\particles/PartFluid_0075.vtk  np:1000
+LoadData> ...\data/Part_0076.bi4
+SaveVTK> ...\particles/PartFluid_0076.vtk  np:1000
+LoadData> ...\data/Part_0077.bi4
+SaveVTK> ...\particles/PartFluid_0077.vtk  np:1000
+LoadData> ...\data/Part_0078.bi4
+SaveVTK> ...\particles/PartFluid_0078.vtk  np:1000
+LoadData> ...\data/Part_0079.bi4
+SaveVTK> ...\particles/PartFluid_0079.vtk  np:1000
+LoadData> ...\data/Part_0080.bi4
+SaveVTK> ...\particles/PartFluid_0080.vtk  np:1000
+LoadData> ...\data/Part_0081.bi4
+SaveVTK> ...\particles/PartFluid_0081.vtk  np:1000
+LoadData> ...\data/Part_0082.bi4
+SaveVTK> ...\particles/PartFluid_0082.vtk  np:1000
+LoadData> ...\data/Part_0083.bi4
+SaveVTK> ...\particles/PartFluid_0083.vtk  np:1000
+LoadData> ...\data/Part_0084.bi4
+SaveVTK> ...\particles/PartFluid_0084.vtk  np:1000
+LoadData> ...\data/Part_0085.bi4
+SaveVTK> ...\particles/PartFluid_0085.vtk  np:1000
+LoadData> ...\data/Part_0086.bi4
+SaveVTK> ...\particles/PartFluid_0086.vtk  np:1000
+LoadData> ...\data/Part_0087.bi4
+SaveVTK> ...\particles/PartFluid_0087.vtk  np:1000
+LoadData> ...\data/Part_0088.bi4
+SaveVTK> ...\particles/PartFluid_0088.vtk  np:1000
+LoadData> ...\data/Part_0089.bi4
+SaveVTK> ...\particles/PartFluid_0089.vtk  np:1000
+LoadData> ...\data/Part_0090.bi4
+SaveVTK> ...\particles/PartFluid_0090.vtk  np:1000
+LoadData> ...\data/Part_0091.bi4
+SaveVTK> ...\particles/PartFluid_0091.vtk  np:1000
+LoadData> ...\data/Part_0092.bi4
+SaveVTK> ...\particles/PartFluid_0092.vtk  np:1000
+LoadData> ...\data/Part_0093.bi4
+SaveVTK> ...\particles/PartFluid_0093.vtk  np:1000
+LoadData> ...\data/Part_0094.bi4
+SaveVTK> ...\particles/PartFluid_0094.vtk  np:1000
+LoadData> ...\data/Part_0095.bi4
+SaveVTK> ...\particles/PartFluid_0095.vtk  np:1000
+LoadData> ...\data/Part_0096.bi4
+SaveVTK> ...\particles/PartFluid_0096.vtk  np:1000
+LoadData> ...\data/Part_0097.bi4
+SaveVTK> ...\particles/PartFluid_0097.vtk  np:1000
+LoadData> ...\data/Part_0098.bi4
+SaveVTK> ...\particles/PartFluid_0098.vtk  np:1000
+LoadData> ...\data/Part_0099.bi4
+SaveVTK> ...\particles/PartFluid_0099.vtk  np:1000
+LoadData> ...\data/Part_0100.bi4
+SaveVTK> ...\particles/PartFluid_0100.vtk  np:1000
+LoadData> ...\data/Part_0101.bi4
+SaveVTK> ...\particles/PartFluid_0101.vtk  np:1000
+LoadData> ...\data/Part_0102.bi4
+SaveVTK> ...\particles/PartFluid_0102.vtk  np:1000
+LoadData> ...\data/Part_0103.bi4
+SaveVTK> ...\particles/PartFluid_0103.vtk  np:1000
+LoadData> ...\data/Part_0104.bi4
+SaveVTK> ...\particles/PartFluid_0104.vtk  np:1000
+LoadData> ...\data/Part_0105.bi4
+SaveVTK> ...\particles/PartFluid_0105.vtk  np:1000
+LoadData> ...\data/Part_0106.bi4
+SaveVTK> ...\particles/PartFluid_0106.vtk  np:1000
+LoadData> ...\data/Part_0107.bi4
+SaveVTK> ...\particles/PartFluid_0107.vtk  np:1000
+LoadData> ...\data/Part_0108.bi4
+SaveVTK> ...\particles/PartFluid_0108.vtk  np:1000
+LoadData> ...\data/Part_0109.bi4
+SaveVTK> ...\particles/PartFluid_0109.vtk  np:1000
+LoadData> ...\data/Part_0110.bi4
+SaveVTK> ...\particles/PartFluid_0110.vtk  np:1000
+LoadData> ...\data/Part_0111.bi4
+SaveVTK> ...\particles/PartFluid_0111.vtk  np:1000
+LoadData> ...\data/Part_0112.bi4
+SaveVTK> ...\particles/PartFluid_0112.vtk  np:1000
+LoadData> ...\data/Part_0113.bi4
+SaveVTK> ...\particles/PartFluid_0113.vtk  np:1000
+LoadData> ...\data/Part_0114.bi4
+SaveVTK> ...\particles/PartFluid_0114.vtk  np:1000
+LoadData> ...\data/Part_0115.bi4
+SaveVTK> ...\particles/PartFluid_0115.vtk  np:1000
+LoadData> ...\data/Part_0116.bi4
+SaveVTK> ...\particles/PartFluid_0116.vtk  np:1000
+LoadData> ...\data/Part_0117.bi4
+SaveVTK> ...\particles/PartFluid_0117.vtk  np:1000
+LoadData> ...\data/Part_0118.bi4
+SaveVTK> ...\particles/PartFluid_0118.vtk  np:1000
+LoadData> ...\data/Part_0119.bi4
+SaveVTK> ...\particles/PartFluid_0119.vtk  np:1000
+LoadData> ...\data/Part_0120.bi4
+SaveVTK> ...\particles/PartFluid_0120.vtk  np:1000
+LoadData> ...\data/Part_0121.bi4
+SaveVTK> ...\particles/PartFluid_0121.vtk  np:1000
+LoadData> ...\data/Part_0122.bi4
+SaveVTK> ...\particles/PartFluid_0122.vtk  np:1000
+LoadData> ...\data/Part_0123.bi4
+SaveVTK> ...\particles/PartFluid_0123.vtk  np:1000
+LoadData> ...\data/Part_0124.bi4
+SaveVTK> ...\particles/PartFluid_0124.vtk  np:1000
+LoadData> ...\data/Part_0125.bi4
+SaveVTK> ...\particles/PartFluid_0125.vtk  np:1000
+LoadData> ...\data/Part_0126.bi4
+SaveVTK> ...\particles/PartFluid_0126.vtk  np:1000
+LoadData> ...\data/Part_0127.bi4
+SaveVTK> ...\particles/PartFluid_0127.vtk  np:1000
+LoadData> ...\data/Part_0128.bi4
+SaveVTK> ...\particles/PartFluid_0128.vtk  np:1000
+LoadData> ...\data/Part_0129.bi4
+SaveVTK> ...\particles/PartFluid_0129.vtk  np:1000
+LoadData> ...\data/Part_0130.bi4
+SaveVTK> ...\particles/PartFluid_0130.vtk  np:1000
+LoadData> ...\data/Part_0131.bi4
+SaveVTK> ...\particles/PartFluid_0131.vtk  np:1000
+LoadData> ...\data/Part_0132.bi4
+SaveVTK> ...\particles/PartFluid_0132.vtk  np:1000
+LoadData> ...\data/Part_0133.bi4
+SaveVTK> ...\particles/PartFluid_0133.vtk  np:1000
+LoadData> ...\data/Part_0134.bi4
+SaveVTK> ...\particles/PartFluid_0134.vtk  np:1000
+LoadData> ...\data/Part_0135.bi4
+SaveVTK> ...\particles/PartFluid_0135.vtk  np:1000
+LoadData> ...\data/Part_0136.bi4
+SaveVTK> ...\particles/PartFluid_0136.vtk  np:1000
+LoadData> ...\data/Part_0137.bi4
+SaveVTK> ...\particles/PartFluid_0137.vtk  np:1000
+LoadData> ...\data/Part_0138.bi4
+SaveVTK> ...\particles/PartFluid_0138.vtk  np:1000
+LoadData> ...\data/Part_0139.bi4
+SaveVTK> ...\particles/PartFluid_0139.vtk  np:1000
+LoadData> ...\data/Part_0140.bi4
+SaveVTK> ...\particles/PartFluid_0140.vtk  np:1000
+LoadData> ...\data/Part_0141.bi4
+SaveVTK> ...\particles/PartFluid_0141.vtk  np:1000
+LoadData> ...\data/Part_0142.bi4
+SaveVTK> ...\particles/PartFluid_0142.vtk  np:1000
+LoadData> ...\data/Part_0143.bi4
+SaveVTK> ...\particles/PartFluid_0143.vtk  np:1000
+LoadData> ...\data/Part_0144.bi4
+SaveVTK> ...\particles/PartFluid_0144.vtk  np:1000
+LoadData> ...\data/Part_0145.bi4
+SaveVTK> ...\particles/PartFluid_0145.vtk  np:1000
+LoadData> ...\data/Part_0146.bi4
+SaveVTK> ...\particles/PartFluid_0146.vtk  np:1000
+LoadData> ...\data/Part_0147.bi4
+SaveVTK> ...\particles/PartFluid_0147.vtk  np:1000
+LoadData> ...\data/Part_0148.bi4
+SaveVTK> ...\particles/PartFluid_0148.vtk  np:1000
+LoadData> ...\data/Part_0149.bi4
+SaveVTK> ...\particles/PartFluid_0149.vtk  np:1000
+LoadData> ...\data/Part_0150.bi4
+SaveVTK> ...\particles/PartFluid_0150.vtk  np:1000
+LoadData> ...\data/Part_0151.bi4
+SaveVTK> ...\particles/PartFluid_0151.vtk  np:1000
+LoadData> ...\data/Part_0152.bi4
+SaveVTK> ...\particles/PartFluid_0152.vtk  np:1000
+LoadData> ...\data/Part_0153.bi4
+SaveVTK> ...\particles/PartFluid_0153.vtk  np:1000
+LoadData> ...\data/Part_0154.bi4
+SaveVTK> ...\particles/PartFluid_0154.vtk  np:1000
+LoadData> ...\data/Part_0155.bi4
+SaveVTK> ...\particles/PartFluid_0155.vtk  np:1000
+LoadData> ...\data/Part_0156.bi4
+SaveVTK> ...\particles/PartFluid_0156.vtk  np:1000
+LoadData> ...\data/Part_0157.bi4
+SaveVTK> ...\particles/PartFluid_0157.vtk  np:1000
+LoadData> ...\data/Part_0158.bi4
+SaveVTK> ...\particles/PartFluid_0158.vtk  np:1000
+LoadData> ...\data/Part_0159.bi4
+SaveVTK> ...\particles/PartFluid_0159.vtk  np:1000
+LoadData> ...\data/Part_0160.bi4
+SaveVTK> ...\particles/PartFluid_0160.vtk  np:1000
+LoadData> ...\data/Part_0161.bi4
+SaveVTK> ...\particles/PartFluid_0161.vtk  np:1000
+LoadData> ...\data/Part_0162.bi4
+SaveVTK> ...\particles/PartFluid_0162.vtk  np:1000
+LoadData> ...\data/Part_0163.bi4
+SaveVTK> ...\particles/PartFluid_0163.vtk  np:1000
+LoadData> ...\data/Part_0164.bi4
+SaveVTK> ...\particles/PartFluid_0164.vtk  np:1000
+LoadData> ...\data/Part_0165.bi4
+SaveVTK> ...\particles/PartFluid_0165.vtk  np:1000
+LoadData> ...\data/Part_0166.bi4
+SaveVTK> ...\particles/PartFluid_0166.vtk  np:1000
+LoadData> ...\data/Part_0167.bi4
+SaveVTK> ...\particles/PartFluid_0167.vtk  np:1000
+LoadData> ...\data/Part_0168.bi4
+SaveVTK> ...\particles/PartFluid_0168.vtk  np:1000
+LoadData> ...\data/Part_0169.bi4
+SaveVTK> ...\particles/PartFluid_0169.vtk  np:1000
+LoadData> ...\data/Part_0170.bi4
+SaveVTK> ...\particles/PartFluid_0170.vtk  np:1000
+LoadData> ...\data/Part_0171.bi4
+SaveVTK> ...\particles/PartFluid_0171.vtk  np:1000
+LoadData> ...\data/Part_0172.bi4
+SaveVTK> ...\particles/PartFluid_0172.vtk  np:1000
+LoadData> ...\data/Part_0173.bi4
+SaveVTK> ...\particles/PartFluid_0173.vtk  np:1000
+LoadData> ...\data/Part_0174.bi4
+SaveVTK> ...\particles/PartFluid_0174.vtk  np:1000
+LoadData> ...\data/Part_0175.bi4
+SaveVTK> ...\particles/PartFluid_0175.vtk  np:1000
+LoadData> ...\data/Part_0176.bi4
+SaveVTK> ...\particles/PartFluid_0176.vtk  np:1000
+LoadData> ...\data/Part_0177.bi4
+SaveVTK> ...\particles/PartFluid_0177.vtk  np:1000
+LoadData> ...\data/Part_0178.bi4
+SaveVTK> ...\particles/PartFluid_0178.vtk  np:1000
+LoadData> ...\data/Part_0179.bi4
+SaveVTK> ...\particles/PartFluid_0179.vtk  np:1000
+LoadData> ...\data/Part_0180.bi4
+SaveVTK> ...\particles/PartFluid_0180.vtk  np:1000
+LoadData> ...\data/Part_0181.bi4
+SaveVTK> ...\particles/PartFluid_0181.vtk  np:1000
+LoadData> ...\data/Part_0182.bi4
+SaveVTK> ...\particles/PartFluid_0182.vtk  np:1000
+LoadData> ...\data/Part_0183.bi4
+SaveVTK> ...\particles/PartFluid_0183.vtk  np:1000
+LoadData> ...\data/Part_0184.bi4
+SaveVTK> ...\particles/PartFluid_0184.vtk  np:1000
+LoadData> ...\data/Part_0185.bi4
+SaveVTK> ...\particles/PartFluid_0185.vtk  np:1000
+LoadData> ...\data/Part_0186.bi4
+SaveVTK> ...\particles/PartFluid_0186.vtk  np:1000
+LoadData> ...\data/Part_0187.bi4
+SaveVTK> ...\particles/PartFluid_0187.vtk  np:1000
+LoadData> ...\data/Part_0188.bi4
+SaveVTK> ...\particles/PartFluid_0188.vtk  np:1000
+LoadData> ...\data/Part_0189.bi4
+SaveVTK> ...\particles/PartFluid_0189.vtk  np:1000
+LoadData> ...\data/Part_0190.bi4
+SaveVTK> ...\particles/PartFluid_0190.vtk  np:1000
+LoadData> ...\data/Part_0191.bi4
+SaveVTK> ...\particles/PartFluid_0191.vtk  np:1000
+LoadData> ...\data/Part_0192.bi4
+SaveVTK> ...\particles/PartFluid_0192.vtk  np:1000
+LoadData> ...\data/Part_0193.bi4
+SaveVTK> ...\particles/PartFluid_0193.vtk  np:1000
+LoadData> ...\data/Part_0194.bi4
+SaveVTK> ...\particles/PartFluid_0194.vtk  np:1000
+LoadData> ...\data/Part_0195.bi4
+SaveVTK> ...\particles/PartFluid_0195.vtk  np:1000
+LoadData> ...\data/Part_0196.bi4
+SaveVTK> ...\particles/PartFluid_0196.vtk  np:1000
+LoadData> ...\data/Part_0197.bi4
+SaveVTK> ...\particles/PartFluid_0197.vtk  np:1000
+LoadData> ...\data/Part_0198.bi4
+SaveVTK> ...\particles/PartFluid_0198.vtk  np:1000
+LoadData> ...\data/Part_0199.bi4
+SaveVTK> ...\particles/PartFluid_0199.vtk  np:1000
+LoadData> ...\data/Part_0200.bi4
+SaveVTK> ...\particles/PartFluid_0200.vtk  np:1000
+LoadData> ...\data/Part_0201.bi4
+SaveVTK> ...\particles/PartFluid_0201.vtk  np:1000
+LoadData> ...\data/Part_0202.bi4
+SaveVTK> ...\particles/PartFluid_0202.vtk  np:1000
+LoadData> ...\data/Part_0203.bi4
+SaveVTK> ...\particles/PartFluid_0203.vtk  np:1000
+LoadData> ...\data/Part_0204.bi4
+SaveVTK> ...\particles/PartFluid_0204.vtk  np:1000
+LoadData> ...\data/Part_0205.bi4
+SaveVTK> ...\particles/PartFluid_0205.vtk  np:1000
+LoadData> ...\data/Part_0206.bi4
+SaveVTK> ...\particles/PartFluid_0206.vtk  np:1000
+LoadData> ...\data/Part_0207.bi4
+SaveVTK> ...\particles/PartFluid_0207.vtk  np:1000
+LoadData> ...\data/Part_0208.bi4
+SaveVTK> ...\particles/PartFluid_0208.vtk  np:1000
+LoadData> ...\data/Part_0209.bi4
+SaveVTK> ...\particles/PartFluid_0209.vtk  np:1000
+LoadData> ...\data/Part_0210.bi4
+SaveVTK> ...\particles/PartFluid_0210.vtk  np:1000
+LoadData> ...\data/Part_0211.bi4
+SaveVTK> ...\particles/PartFluid_0211.vtk  np:1000
+LoadData> ...\data/Part_0212.bi4
+SaveVTK> ...\particles/PartFluid_0212.vtk  np:1000
+LoadData> ...\data/Part_0213.bi4
+SaveVTK> ...\particles/PartFluid_0213.vtk  np:1000
+LoadData> ...\data/Part_0214.bi4
+SaveVTK> ...\particles/PartFluid_0214.vtk  np:1000
+LoadData> ...\data/Part_0215.bi4
+SaveVTK> ...\particles/PartFluid_0215.vtk  np:1000
+LoadData> ...\data/Part_0216.bi4
+SaveVTK> ...\particles/PartFluid_0216.vtk  np:1000
+LoadData> ...\data/Part_0217.bi4
+SaveVTK> ...\particles/PartFluid_0217.vtk  np:1000
+LoadData> ...\data/Part_0218.bi4
+SaveVTK> ...\particles/PartFluid_0218.vtk  np:1000
+LoadData> ...\data/Part_0219.bi4
+SaveVTK> ...\particles/PartFluid_0219.vtk  np:1000
+LoadData> ...\data/Part_0220.bi4
+SaveVTK> ...\particles/PartFluid_0220.vtk  np:1000
+LoadData> ...\data/Part_0221.bi4
+SaveVTK> ...\particles/PartFluid_0221.vtk  np:1000
+LoadData> ...\data/Part_0222.bi4
+SaveVTK> ...\particles/PartFluid_0222.vtk  np:1000
+LoadData> ...\data/Part_0223.bi4
+SaveVTK> ...\particles/PartFluid_0223.vtk  np:1000
+LoadData> ...\data/Part_0224.bi4
+SaveVTK> ...\particles/PartFluid_0224.vtk  np:1000
+LoadData> ...\data/Part_0225.bi4
+SaveVTK> ...\particles/PartFluid_0225.vtk  np:1000
+LoadData> ...\data/Part_0226.bi4
+SaveVTK> ...\particles/PartFluid_0226.vtk  np:1000
+LoadData> ...\data/Part_0227.bi4
+SaveVTK> ...\particles/PartFluid_0227.vtk  np:1000
+LoadData> ...\data/Part_0228.bi4
+SaveVTK> ...\particles/PartFluid_0228.vtk  np:1000
+LoadData> ...\data/Part_0229.bi4
+SaveVTK> ...\particles/PartFluid_0229.vtk  np:1000
+LoadData> ...\data/Part_0230.bi4
+SaveVTK> ...\particles/PartFluid_0230.vtk  np:1000
+LoadData> ...\data/Part_0231.bi4
+SaveVTK> ...\particles/PartFluid_0231.vtk  np:1000
+LoadData> ...\data/Part_0232.bi4
+SaveVTK> ...\particles/PartFluid_0232.vtk  np:1000
+LoadData> ...\data/Part_0233.bi4
+SaveVTK> ...\particles/PartFluid_0233.vtk  np:1000
+LoadData> ...\data/Part_0234.bi4
+SaveVTK> ...\particles/PartFluid_0234.vtk  np:1000
+LoadData> ...\data/Part_0235.bi4
+SaveVTK> ...\particles/PartFluid_0235.vtk  np:1000
+LoadData> ...\data/Part_0236.bi4
+SaveVTK> ...\particles/PartFluid_0236.vtk  np:1000
+LoadData> ...\data/Part_0237.bi4
+SaveVTK> ...\particles/PartFluid_0237.vtk  np:1000
+LoadData> ...\data/Part_0238.bi4
+SaveVTK> ...\particles/PartFluid_0238.vtk  np:1000
+LoadData> ...\data/Part_0239.bi4
+SaveVTK> ...\particles/PartFluid_0239.vtk  np:1000
+LoadData> ...\data/Part_0240.bi4
+SaveVTK> ...\particles/PartFluid_0240.vtk  np:1000
+LoadData> ...\data/Part_0241.bi4
+SaveVTK> ...\particles/PartFluid_0241.vtk  np:1000
+LoadData> ...\data/Part_0242.bi4
+SaveVTK> ...\particles/PartFluid_0242.vtk  np:1000
+LoadData> ...\data/Part_0243.bi4
+SaveVTK> ...\particles/PartFluid_0243.vtk  np:1000
+LoadData> ...\data/Part_0244.bi4
+SaveVTK> ...\particles/PartFluid_0244.vtk  np:1000
+LoadData> ...\data/Part_0245.bi4
+SaveVTK> ...\particles/PartFluid_0245.vtk  np:1000
+LoadData> ...\data/Part_0246.bi4
+SaveVTK> ...\particles/PartFluid_0246.vtk  np:1000
+LoadData> ...\data/Part_0247.bi4
+SaveVTK> ...\particles/PartFluid_0247.vtk  np:1000
+LoadData> ...\data/Part_0248.bi4
+SaveVTK> ...\particles/PartFluid_0248.vtk  np:1000
+LoadData> ...\data/Part_0249.bi4
+SaveVTK> ...\particles/PartFluid_0249.vtk  np:1000
+LoadData> ...\data/Part_0250.bi4
+SaveVTK> ...\particles/PartFluid_0250.vtk  np:1000
+LoadData> ...\data/Part_0251.bi4
+SaveVTK> ...\particles/PartFluid_0251.vtk  np:1000
+LoadData> ...\data/Part_0252.bi4
+SaveVTK> ...\particles/PartFluid_0252.vtk  np:1000
+LoadData> ...\data/Part_0253.bi4
+SaveVTK> ...\particles/PartFluid_0253.vtk  np:1000
+LoadData> ...\data/Part_0254.bi4
+SaveVTK> ...\particles/PartFluid_0254.vtk  np:1000
+LoadData> ...\data/Part_0255.bi4
+SaveVTK> ...\particles/PartFluid_0255.vtk  np:1000
+LoadData> ...\data/Part_0256.bi4
+SaveVTK> ...\particles/PartFluid_0256.vtk  np:1000
+LoadData> ...\data/Part_0257.bi4
+SaveVTK> ...\particles/PartFluid_0257.vtk  np:1000
+LoadData> ...\data/Part_0258.bi4
+SaveVTK> ...\particles/PartFluid_0258.vtk  np:1000
+LoadData> ...\data/Part_0259.bi4
+SaveVTK> ...\particles/PartFluid_0259.vtk  np:1000
+LoadData> ...\data/Part_0260.bi4
+SaveVTK> ...\particles/PartFluid_0260.vtk  np:1000
+LoadData> ...\data/Part_0261.bi4
+SaveVTK> ...\particles/PartFluid_0261.vtk  np:1000
+LoadData> ...\data/Part_0262.bi4
+SaveVTK> ...\particles/PartFluid_0262.vtk  np:1000
+LoadData> ...\data/Part_0263.bi4
+SaveVTK> ...\particles/PartFluid_0263.vtk  np:1000
+LoadData> ...\data/Part_0264.bi4
+SaveVTK> ...\particles/PartFluid_0264.vtk  np:1000
+LoadData> ...\data/Part_0265.bi4
+SaveVTK> ...\particles/PartFluid_0265.vtk  np:1000
+LoadData> ...\data/Part_0266.bi4
+SaveVTK> ...\particles/PartFluid_0266.vtk  np:1000
+LoadData> ...\data/Part_0267.bi4
+SaveVTK> ...\particles/PartFluid_0267.vtk  np:1000
+LoadData> ...\data/Part_0268.bi4
+SaveVTK> ...\particles/PartFluid_0268.vtk  np:1000
+LoadData> ...\data/Part_0269.bi4
+SaveVTK> ...\particles/PartFluid_0269.vtk  np:1000
+LoadData> ...\data/Part_0270.bi4
+SaveVTK> ...\particles/PartFluid_0270.vtk  np:1000
+LoadData> ...\data/Part_0271.bi4
+SaveVTK> ...\particles/PartFluid_0271.vtk  np:1000
+LoadData> ...\data/Part_0272.bi4
+SaveVTK> ...\particles/PartFluid_0272.vtk  np:1000
+LoadData> ...\data/Part_0273.bi4
+SaveVTK> ...\particles/PartFluid_0273.vtk  np:1000
+LoadData> ...\data/Part_0274.bi4
+SaveVTK> ...\particles/PartFluid_0274.vtk  np:1000
+LoadData> ...\data/Part_0275.bi4
+SaveVTK> ...\particles/PartFluid_0275.vtk  np:1000
+LoadData> ...\data/Part_0276.bi4
+SaveVTK> ...\particles/PartFluid_0276.vtk  np:1000
+LoadData> ...\data/Part_0277.bi4
+SaveVTK> ...\particles/PartFluid_0277.vtk  np:1000
+LoadData> ...\data/Part_0278.bi4
+SaveVTK> ...\particles/PartFluid_0278.vtk  np:1000
+LoadData> ...\data/Part_0279.bi4
+SaveVTK> ...\particles/PartFluid_0279.vtk  np:1000
+LoadData> ...\data/Part_0280.bi4
+SaveVTK> ...\particles/PartFluid_0280.vtk  np:1000
+LoadData> ...\data/Part_0281.bi4
+SaveVTK> ...\particles/PartFluid_0281.vtk  np:1000
+LoadData> ...\data/Part_0282.bi4
+SaveVTK> ...\particles/PartFluid_0282.vtk  np:1000
+LoadData> ...\data/Part_0283.bi4
+SaveVTK> ...\particles/PartFluid_0283.vtk  np:1000
+LoadData> ...\data/Part_0284.bi4
+SaveVTK> ...\particles/PartFluid_0284.vtk  np:1000
+LoadData> ...\data/Part_0285.bi4
+SaveVTK> ...\particles/PartFluid_0285.vtk  np:1000
+LoadData> ...\data/Part_0286.bi4
+SaveVTK> ...\particles/PartFluid_0286.vtk  np:1000
+LoadData> ...\data/Part_0287.bi4
+SaveVTK> ...\particles/PartFluid_0287.vtk  np:1000
+LoadData> ...\data/Part_0288.bi4
+SaveVTK> ...\particles/PartFluid_0288.vtk  np:1000
+LoadData> ...\data/Part_0289.bi4
+SaveVTK> ...\particles/PartFluid_0289.vtk  np:1000
+LoadData> ...\data/Part_0290.bi4
+SaveVTK> ...\particles/PartFluid_0290.vtk  np:1000
+LoadData> ...\data/Part_0291.bi4
+SaveVTK> ...\particles/PartFluid_0291.vtk  np:1000
+LoadData> ...\data/Part_0292.bi4
+SaveVTK> ...\particles/PartFluid_0292.vtk  np:1000
+LoadData> ...\data/Part_0293.bi4
+SaveVTK> ...\particles/PartFluid_0293.vtk  np:1000
+LoadData> ...\data/Part_0294.bi4
+SaveVTK> ...\particles/PartFluid_0294.vtk  np:1000
+LoadData> ...\data/Part_0295.bi4
+SaveVTK> ...\particles/PartFluid_0295.vtk  np:1000
+LoadData> ...\data/Part_0296.bi4
+SaveVTK> ...\particles/PartFluid_0296.vtk  np:1000
+LoadData> ...\data/Part_0297.bi4
+SaveVTK> ...\particles/PartFluid_0297.vtk  np:1000
+LoadData> ...\data/Part_0298.bi4
+SaveVTK> ...\particles/PartFluid_0298.vtk  np:1000
+LoadData> ...\data/Part_0299.bi4
+SaveVTK> ...\particles/PartFluid_0299.vtk  np:1000
+LoadData> ...\data/Part_0300.bi4
+SaveVTK> ...\particles/PartFluid_0300.vtk  np:1000
+LoadData> ...\data/Part_0301.bi4
+SaveVTK> ...\particles/PartFluid_0301.vtk  np:1000
+LoadData> ...\data/Part_0302.bi4
+SaveVTK> ...\particles/PartFluid_0302.vtk  np:1000
+LoadData> ...\data/Part_0303.bi4
+SaveVTK> ...\particles/PartFluid_0303.vtk  np:1000
+LoadData> ...\data/Part_0304.bi4
+SaveVTK> ...\particles/PartFluid_0304.vtk  np:1000
+LoadData> ...\data/Part_0305.bi4
+SaveVTK> ...\particles/PartFluid_0305.vtk  np:1000
+LoadData> ...\data/Part_0306.bi4
+SaveVTK> ...\particles/PartFluid_0306.vtk  np:1000
+LoadData> ...\data/Part_0307.bi4
+SaveVTK> ...\particles/PartFluid_0307.vtk  np:1000
+LoadData> ...\data/Part_0308.bi4
+SaveVTK> ...\particles/PartFluid_0308.vtk  np:1000
+LoadData> ...\data/Part_0309.bi4
+SaveVTK> ...\particles/PartFluid_0309.vtk  np:1000
+LoadData> ...\data/Part_0310.bi4
+SaveVTK> ...\particles/PartFluid_0310.vtk  np:1000
+LoadData> ...\data/Part_0311.bi4
+SaveVTK> ...\particles/PartFluid_0311.vtk  np:1000
+LoadData> ...\data/Part_0312.bi4
+SaveVTK> ...\particles/PartFluid_0312.vtk  np:1000
+LoadData> ...\data/Part_0313.bi4
+SaveVTK> ...\particles/PartFluid_0313.vtk  np:1000
+LoadData> ...\data/Part_0314.bi4
+SaveVTK> ...\particles/PartFluid_0314.vtk  np:1000
+LoadData> ...\data/Part_0315.bi4
+SaveVTK> ...\particles/PartFluid_0315.vtk  np:1000
+LoadData> ...\data/Part_0316.bi4
+SaveVTK> ...\particles/PartFluid_0316.vtk  np:1000
+LoadData> ...\data/Part_0317.bi4
+SaveVTK> ...\particles/PartFluid_0317.vtk  np:1000
+LoadData> ...\data/Part_0318.bi4
+SaveVTK> ...\particles/PartFluid_0318.vtk  np:1000
+LoadData> ...\data/Part_0319.bi4
+SaveVTK> ...\particles/PartFluid_0319.vtk  np:1000
+LoadData> ...\data/Part_0320.bi4
+SaveVTK> ...\particles/PartFluid_0320.vtk  np:1000
+LoadData> ...\data/Part_0321.bi4
+SaveVTK> ...\particles/PartFluid_0321.vtk  np:1000
+LoadData> ...\data/Part_0322.bi4
+SaveVTK> ...\particles/PartFluid_0322.vtk  np:1000
+LoadData> ...\data/Part_0323.bi4
+SaveVTK> ...\particles/PartFluid_0323.vtk  np:1000
+LoadData> ...\data/Part_0324.bi4
+SaveVTK> ...\particles/PartFluid_0324.vtk  np:1000
+LoadData> ...\data/Part_0325.bi4
+SaveVTK> ...\particles/PartFluid_0325.vtk  np:1000
+LoadData> ...\data/Part_0326.bi4
+SaveVTK> ...\particles/PartFluid_0326.vtk  np:1000
+LoadData> ...\data/Part_0327.bi4
+SaveVTK> ...\particles/PartFluid_0327.vtk  np:1000
+LoadData> ...\data/Part_0328.bi4
+SaveVTK> ...\particles/PartFluid_0328.vtk  np:1000
+LoadData> ...\data/Part_0329.bi4
+SaveVTK> ...\particles/PartFluid_0329.vtk  np:1000
+LoadData> ...\data/Part_0330.bi4
+SaveVTK> ...\particles/PartFluid_0330.vtk  np:1000
+LoadData> ...\data/Part_0331.bi4
+SaveVTK> ...\particles/PartFluid_0331.vtk  np:1000
+LoadData> ...\data/Part_0332.bi4
+SaveVTK> ...\particles/PartFluid_0332.vtk  np:1000
+LoadData> ...\data/Part_0333.bi4
+SaveVTK> ...\particles/PartFluid_0333.vtk  np:1000
+LoadData> ...\data/Part_0334.bi4
+SaveVTK> ...\particles/PartFluid_0334.vtk  np:1000
+LoadData> ...\data/Part_0335.bi4
+SaveVTK> ...\particles/PartFluid_0335.vtk  np:1000
+LoadData> ...\data/Part_0336.bi4
+SaveVTK> ...\particles/PartFluid_0336.vtk  np:1000
+LoadData> ...\data/Part_0337.bi4
+SaveVTK> ...\particles/PartFluid_0337.vtk  np:1000
+LoadData> ...\data/Part_0338.bi4
+SaveVTK> ...\particles/PartFluid_0338.vtk  np:1000
+LoadData> ...\data/Part_0339.bi4
+SaveVTK> ...\particles/PartFluid_0339.vtk  np:1000
+LoadData> ...\data/Part_0340.bi4
+SaveVTK> ...\particles/PartFluid_0340.vtk  np:1000
+LoadData> ...\data/Part_0341.bi4
+SaveVTK> ...\particles/PartFluid_0341.vtk  np:1000
+LoadData> ...\data/Part_0342.bi4
+SaveVTK> ...\particles/PartFluid_0342.vtk  np:1000
+LoadData> ...\data/Part_0343.bi4
+SaveVTK> ...\particles/PartFluid_0343.vtk  np:1000
+LoadData> ...\data/Part_0344.bi4
+SaveVTK> ...\particles/PartFluid_0344.vtk  np:1000
+LoadData> ...\data/Part_0345.bi4
+SaveVTK> ...\particles/PartFluid_0345.vtk  np:1000
+LoadData> ...\data/Part_0346.bi4
+SaveVTK> ...\particles/PartFluid_0346.vtk  np:1000
+LoadData> ...\data/Part_0347.bi4
+SaveVTK> ...\particles/PartFluid_0347.vtk  np:1000
+LoadData> ...\data/Part_0348.bi4
+SaveVTK> ...\particles/PartFluid_0348.vtk  np:1000
+LoadData> ...\data/Part_0349.bi4
+SaveVTK> ...\particles/PartFluid_0349.vtk  np:1000
+LoadData> ...\data/Part_0350.bi4
+SaveVTK> ...\particles/PartFluid_0350.vtk  np:1000
+LoadData> ...\data/Part_0351.bi4
+SaveVTK> ...\particles/PartFluid_0351.vtk  np:1000
+LoadData> ...\data/Part_0352.bi4
+SaveVTK> ...\particles/PartFluid_0352.vtk  np:1000
+LoadData> ...\data/Part_0353.bi4
+SaveVTK> ...\particles/PartFluid_0353.vtk  np:1000
+LoadData> ...\data/Part_0354.bi4
+SaveVTK> ...\particles/PartFluid_0354.vtk  np:1000
+LoadData> ...\data/Part_0355.bi4
+SaveVTK> ...\particles/PartFluid_0355.vtk  np:1000
+LoadData> ...\data/Part_0356.bi4
+SaveVTK> ...\particles/PartFluid_0356.vtk  np:1000
+LoadData> ...\data/Part_0357.bi4
+SaveVTK> ...\particles/PartFluid_0357.vtk  np:1000
+LoadData> ...\data/Part_0358.bi4
+SaveVTK> ...\particles/PartFluid_0358.vtk  np:1000
+LoadData> ...\data/Part_0359.bi4
+SaveVTK> ...\particles/PartFluid_0359.vtk  np:1000
+LoadData> ...\data/Part_0360.bi4
+SaveVTK> ...\particles/PartFluid_0360.vtk  np:1000
+LoadData> ...\data/Part_0361.bi4
+SaveVTK> ...\particles/PartFluid_0361.vtk  np:1000
+LoadData> ...\data/Part_0362.bi4
+SaveVTK> ...\particles/PartFluid_0362.vtk  np:1000
+LoadData> ...\data/Part_0363.bi4
+SaveVTK> ...\particles/PartFluid_0363.vtk  np:1000
+LoadData> ...\data/Part_0364.bi4
+SaveVTK> ...\particles/PartFluid_0364.vtk  np:1000
+LoadData> ...\data/Part_0365.bi4
+SaveVTK> ...\particles/PartFluid_0365.vtk  np:1000
+LoadData> ...\data/Part_0366.bi4
+SaveVTK> ...\particles/PartFluid_0366.vtk  np:1000
+LoadData> ...\data/Part_0367.bi4
+SaveVTK> ...\particles/PartFluid_0367.vtk  np:1000
+LoadData> ...\data/Part_0368.bi4
+SaveVTK> ...\particles/PartFluid_0368.vtk  np:1000
+LoadData> ...\data/Part_0369.bi4
+SaveVTK> ...\particles/PartFluid_0369.vtk  np:1000
+LoadData> ...\data/Part_0370.bi4
+SaveVTK> ...\particles/PartFluid_0370.vtk  np:1000
+LoadData> ...\data/Part_0371.bi4
+SaveVTK> ...\particles/PartFluid_0371.vtk  np:1000
+LoadData> ...\data/Part_0372.bi4
+SaveVTK> ...\particles/PartFluid_0372.vtk  np:1000
+LoadData> ...\data/Part_0373.bi4
+SaveVTK> ...\particles/PartFluid_0373.vtk  np:1000
+LoadData> ...\data/Part_0374.bi4
+SaveVTK> ...\particles/PartFluid_0374.vtk  np:1000
+LoadData> ...\data/Part_0375.bi4
+SaveVTK> ...\particles/PartFluid_0375.vtk  np:1000
+LoadData> ...\data/Part_0376.bi4
+SaveVTK> ...\particles/PartFluid_0376.vtk  np:1000
+LoadData> ...\data/Part_0377.bi4
+SaveVTK> ...\particles/PartFluid_0377.vtk  np:1000
+LoadData> ...\data/Part_0378.bi4
+SaveVTK> ...\particles/PartFluid_0378.vtk  np:1000
+LoadData> ...\data/Part_0379.bi4
+SaveVTK> ...\particles/PartFluid_0379.vtk  np:1000
+LoadData> ...\data/Part_0380.bi4
+SaveVTK> ...\particles/PartFluid_0380.vtk  np:1000
+LoadData> ...\data/Part_0381.bi4
+SaveVTK> ...\particles/PartFluid_0381.vtk  np:1000
+LoadData> ...\data/Part_0382.bi4
+SaveVTK> ...\particles/PartFluid_0382.vtk  np:1000
+LoadData> ...\data/Part_0383.bi4
+SaveVTK> ...\particles/PartFluid_0383.vtk  np:1000
+LoadData> ...\data/Part_0384.bi4
+SaveVTK> ...\particles/PartFluid_0384.vtk  np:1000
+LoadData> ...\data/Part_0385.bi4
+SaveVTK> ...\particles/PartFluid_0385.vtk  np:1000
+LoadData> ...\data/Part_0386.bi4
+SaveVTK> ...\particles/PartFluid_0386.vtk  np:1000
+LoadData> ...\data/Part_0387.bi4
+SaveVTK> ...\particles/PartFluid_0387.vtk  np:1000
+LoadData> ...\data/Part_0388.bi4
+SaveVTK> ...\particles/PartFluid_0388.vtk  np:1000
+LoadData> ...\data/Part_0389.bi4
+SaveVTK> ...\particles/PartFluid_0389.vtk  np:1000
+LoadData> ...\data/Part_0390.bi4
+SaveVTK> ...\particles/PartFluid_0390.vtk  np:1000
+LoadData> ...\data/Part_0391.bi4
+SaveVTK> ...\particles/PartFluid_0391.vtk  np:1000
+LoadData> ...\data/Part_0392.bi4
+SaveVTK> ...\particles/PartFluid_0392.vtk  np:1000
+LoadData> ...\data/Part_0393.bi4
+SaveVTK> ...\particles/PartFluid_0393.vtk  np:1000
+LoadData> ...\data/Part_0394.bi4
+SaveVTK> ...\particles/PartFluid_0394.vtk  np:1000
+LoadData> ...\data/Part_0395.bi4
+SaveVTK> ...\particles/PartFluid_0395.vtk  np:1000
+LoadData> ...\data/Part_0396.bi4
+SaveVTK> ...\particles/PartFluid_0396.vtk  np:1000
+LoadData> ...\data/Part_0397.bi4
+SaveVTK> ...\particles/PartFluid_0397.vtk  np:1000
+LoadData> ...\data/Part_0398.bi4
+SaveVTK> ...\particles/PartFluid_0398.vtk  np:1000
+LoadData> ...\data/Part_0399.bi4
+SaveVTK> ...\particles/PartFluid_0399.vtk  np:1000
+LoadData> ...\data/Part_0400.bi4
+SaveVTK> ...\particles/PartFluid_0400.vtk  np:1000
+LoadData> ...\data/Part_0401.bi4
+SaveVTK> ...\particles/PartFluid_0401.vtk  np:1000
+
+Time of operation: 48.500 sec. (20 threads)
+Comparison outputs: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\figures\precision_q0_k1em4
+Historical u-pw: snapshots=401, Tv=1.999725672, U=0.9463023976, mean excess=536.9760243 Pa
+Current precision run: snapshots=402, Tv=2.000000118, U=0.9463149603, mean excess=536.8503974 Pa
+q0 Terzaghi consolidation precision validation completed. See figures\precision_q0_k1em4*.

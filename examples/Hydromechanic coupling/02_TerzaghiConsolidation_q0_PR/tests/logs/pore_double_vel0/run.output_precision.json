@@ -1,0 +1,15 @@
+{
+  "scope": "All four q0_vel0 baseline/current dt1em5/dt5em6 runs",
+  "cli_unchanged_after_launch": true,
+  "extra_data_option": "-svextraparts:1",
+  "saveposdouble_override_added": false,
+  "position_storage": {
+    "part_0000": "Pos, float3",
+    "part_greater_than_zero": "Posd, double3"
+  },
+  "source_evidence": [
+    "src/source/JSph.cpp:2887: double position output when SvPosDouble OR SvExtraDataBi4->CheckSave(Part)",
+    "src/source/JDsExtraData.cpp:82: CheckSave requires cpart>0; SvParts=1 selects every positive PART"
+  ],
+  "analysis_caution": "Use native BI4 positions and actual timestamps, not PartVTK float position projections. The shared PART0 float origin quantization cancels in differences between versions/time-step variants."
+}

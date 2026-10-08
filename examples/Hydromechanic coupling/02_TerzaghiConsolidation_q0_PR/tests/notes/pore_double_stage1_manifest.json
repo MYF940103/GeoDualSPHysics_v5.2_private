@@ -1,0 +1,240 @@
+{
+  "date": "2026-09-09",
+  "stage": "1: double pressure state, float spatial-operator inputs and rate",
+  "baseline_git_head": "fe72537f8b61616e98134535bfaf0535a4269855",
+  "baseline_note": "Current dirty working tree high/low patch, not Git HEAD",
+  "archive": "tests/notes/pore_double_stage1_baseline_sources.zip",
+  "archive_sha256": "1C187FB99776E6EBD850322006C9ED016EE631A5AC760D55D3109333168A70B9",
+  "sources": [
+    {
+      "file": "source/FunPorePressure.h",
+      "baseline_sha256": "19CE2B38157DBA147DCD680A4F9BF39A5B9DC849786B695C316861666B03A55E",
+      "current_sha256": null,
+      "change": "removed"
+    },
+    {
+      "file": "source/JSphCpu.h",
+      "baseline_sha256": "C314B3E7356F5577566EDE165B13505DEB62D506976FEE5EBA9F9B335C7F8455",
+      "current_sha256": "248DE0488A8A86E9904A58370006D4D3A98EC93120C4887D92B94CB2ECEB189F",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphCpu.cpp",
+      "baseline_sha256": "99E352FBAEF4E33A3FA54BECCA409DD4C61B5ADD8A7427C58098B06270F6349E",
+      "current_sha256": "E4CD69D3CC16F755C7C1863B085A1B085523AD3EF619374310E1BBA74AC67584",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphCpuSingle.h",
+      "baseline_sha256": "92919BB75DEBED527BCE4C380EE1076CC4C8BD9DA004652F73CCA2611AADD687",
+      "current_sha256": "65667F6E1DA2DB1DEBD6BEE35BCDF3EB69ACB7725571E8E1422A2AFD16D444CE",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphCpuSingle.cpp",
+      "baseline_sha256": "C422A03E17AFC50917E2BFF2395A8C789AB82D478D69483BE5909BA7ED2C62BF",
+      "current_sha256": "42DC02A12D1C77BC2E07F9289BFAF41EBDAE00423A0CF9E8C3663F670088D657",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphGpu.h",
+      "baseline_sha256": "243F8590345B08883E403110BDB48F84F8711D077A9BBBA9E12B7B0A69FEE4D3",
+      "current_sha256": "73E735900CFEB229473A850F2C7A0A83FD2849836F1873751E1ADA43D6EAEDB9",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphGpu.cpp",
+      "baseline_sha256": "0BFDF4C63FD0A567742F54DE7891D24543B46AA84E7F74117DE6B1A260ED7508",
+      "current_sha256": "9ED168AF140721EDC4B54A77A3CF5069FB81F2CAFE1E0DF0129B6068A854F21D",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphGpuSingle.cpp",
+      "baseline_sha256": "3126F6E6A15B30F5B41CB180A4C2799106AEE15844DA98C2CC9E2692E154242B",
+      "current_sha256": "F1BEBE75507024070E13152F0BE99D85AD37533ABC3E2067DF562BAAADCC35C6",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphGpu_ker.h",
+      "baseline_sha256": "AD66A80A409236E2475CFDE23AF94B7B63DDFAA2847F19961D2ED442EE43780D",
+      "current_sha256": "3B8CD2A115369B89E83FC06A091178F65D8D179960C5F572CB30F2583AC28447",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSphGpu_ker.cu",
+      "baseline_sha256": "8B68B73C0A39BE3E66ED1E1910FA76276604C7EFAC51A5037BF2804C9E8A0F6D",
+      "current_sha256": "DB019B6C9025D6885C4E6C0BFE4679BAFBCAA358D31717A1F2B73E24A08FE557",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivCpu.h",
+      "baseline_sha256": "AB6F4D7FD33BBE8B2DCFAD51CAA4D21548C4B23E2FB5FBC41321A223E8D1E995",
+      "current_sha256": "E8846101338F3A0E550496A87A1E414F7C6F76029FD8F16D986751F7E8D286E6",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivCpu.cpp",
+      "baseline_sha256": "066194893368399E54851B4530A6065AD590AD65D2D699824C3939DB8E9343D1",
+      "current_sha256": "9C8F87AF42CEF2477F4C80755614159AB6BD9C1325F70EE1FF5F1A7229474D27",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivGpu.h",
+      "baseline_sha256": "D3955A6B15EFEB6957A9D28F530E03FA8034D04E53C227E46D0EE0D5F95E567A",
+      "current_sha256": "8DEB74D30E716E3789DF845027E0F64C67D2B347DBCE2895E9C86011754DA936",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivGpu.cpp",
+      "baseline_sha256": "50AD4C7A2D0159F447B87DA75BD861CB69AE86F592D97573671BBD5801323090",
+      "current_sha256": "13756C4E5D53CB8F9B68DAF9B8952EF8645D9C3A160AAF281335C14C10CFF3E8",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivGpu_ker.h",
+      "baseline_sha256": "917857542DF860DDB8753F8E1216941EAB7D7B00B757BD2A27EB68BBC12EB4D1",
+      "current_sha256": "29EE32C081BFB87074870748002710B90E2C1D6E4BB76F452A320AABDE24F3C0",
+      "change": "modified"
+    },
+    {
+      "file": "source/JCellDivGpu_ker.cu",
+      "baseline_sha256": "F4A05EB4EFEF1064CF3D73ED45C3DC9549E6AEA92031526A0EA05DD95448376E",
+      "current_sha256": "DE469B21198F76A17384C3D7B7F1AF36A5F292084871C31A6DD7F9AA9A6AF5C5",
+      "change": "modified"
+    },
+    {
+      "file": "source/JPartsLoad4.h",
+      "baseline_sha256": "BD0DADA7C41313873842541A8C698FB6D8F8E54860D373012A5BBF43D919623D",
+      "current_sha256": "C5790B8DE8809A9261B749472C8EF66826D223EC9B17AFDAE1F62F2EB5328D82",
+      "change": "modified"
+    },
+    {
+      "file": "source/JPartsLoad4.cpp",
+      "baseline_sha256": "26703DEE97C25DE61EA1CD11493919F25866A8A946765F9891A23D6D43B04FFD",
+      "current_sha256": "9BCBE1FF58CA0E4A09BDA9B5D38FBEE2DBDFDAAA59C1C8DC63BC86C596CB6AE0",
+      "change": "modified"
+    },
+    {
+      "file": "source/JSph.cpp",
+      "baseline_sha256": "D9534C23769C744FCF01A83954CA11376170DA192D71A558A29BC8F4DAE3B480",
+      "current_sha256": "D9534C23769C744FCF01A83954CA11376170DA192D71A558A29BC8F4DAE3B480",
+      "change": "unchanged"
+    },
+    {
+      "file": "source/JSph.h",
+      "baseline_sha256": "3DE4CA9788857B19AE20745F63AD6755CBC964089D4B919584AA45E0DE7ECFC7",
+      "current_sha256": "3DE4CA9788857B19AE20745F63AD6755CBC964089D4B919584AA45E0DE7ECFC7",
+      "change": "unchanged"
+    },
+    {
+      "file": "source/DualSphDef.h",
+      "baseline_sha256": "C2C2429019D41CA6D49EA9B616FAA0CBD371D12773ED92672A92854E08990996",
+      "current_sha256": "C2C2429019D41CA6D49EA9B616FAA0CBD371D12773ED92672A92854E08990996",
+      "change": "unchanged"
+    },
+    {
+      "file": "VS/DualSPHysics5Re.vcxproj",
+      "baseline_sha256": "C404454ED47C41EBE76CAC09BE66EE57560669A16DA38742CD927A152B1A4972",
+      "current_sha256": "5C487255B194D64CFDBCDE635CF6F54B49CC469ED3738AB94FF30A27AA07F301",
+      "change": "modified"
+    },
+    {
+      "file": "VS/DualSPHysics5ReCpu.vcxproj",
+      "baseline_sha256": "10EC3C2BFB68C2F51BDAB346413819D15D98B47340380DF32628D2730C52116A",
+      "current_sha256": "DD8DBB7384A592EEAA41DB74EA4F4750706D9BC6C8B283EB036B5994CDD80667",
+      "change": "modified"
+    }
+  ],
+  "baseline_binaries": [
+    {
+      "file": "ChronoEngine.dll",
+      "bytes": 6067712,
+      "sha256": "246D6C92824C55E2AB469E6E9567516FE4CECD84B617FC64CF6D2382FD7FBBE5"
+    },
+    {
+      "file": "dsphchrono.dll",
+      "bytes": 772096,
+      "sha256": "C605BEFBC02991DD9D36266F2CE28E1E0BD675C115CAB79E1F10FC873C6FF8FE"
+    },
+    {
+      "file": "DualSPHysics5.2CPU_win64.exe",
+      "bytes": 4764672,
+      "sha256": "A2CD2B1023F6487EAC3F7D7185F02175494FE680B238C558C478B71E29B6EFF6"
+    },
+    {
+      "file": "DualSPHysics5.2_GEO_win64.exe",
+      "bytes": 18460672,
+      "sha256": "544A9ACA379FD0C86AE91B3380EEB49DB3F27CC1175CBBA643F094AD22B47004"
+    },
+    {
+      "file": "vcomp140.dll",
+      "bytes": 185144,
+      "sha256": "1D480D651414304BDDD0928B1C1563B4FB7F89B1C6AC30650C884150DE0EC540"
+    }
+  ],
+  "current_binaries": [
+    {
+      "file": "DualSPHysics5.2CPU_win64_debug.exe",
+      "bytes": 11710976,
+      "sha256": "41EAC47CA6427D27999F0CDA1D4D88E72A9B6251E572A40C7231C662F770E233",
+      "last_write_time": "2026-09-09T12:28:33+09:00"
+    },
+    {
+      "file": "DualSPHysics5.2CPU_win64.exe",
+      "bytes": 4765696,
+      "sha256": "95683EA87702A50CC8246B7C32C7DE9C2B203435985A373378A6FCDDA7347DBD",
+      "last_write_time": "2026-09-09T12:29:38+09:00"
+    },
+    {
+      "file": "DualSPHysics5.2_win64_debug.exe",
+      "bytes": 96641024,
+      "sha256": "AD8E40BA5DF77344F2ACFECDA43A8B53A519EC2B2EED2B95FA367DE89C1A34B6",
+      "last_write_time": "2026-09-09T12:35:42+09:00"
+    },
+    {
+      "file": "DualSPHysics5.2_GEO_win64.exe",
+      "bytes": 18541056,
+      "sha256": "AD6056E835D06B1726791C1512AEC39FF5FAA5FC5C2E11C0CBAFCE60085F4AFF",
+      "last_write_time": "2026-09-09T12:36:30+09:00"
+    }
+  ],
+  "builds": [
+    {
+      "configuration": "DebugCPU",
+      "solution": "VS/DualSPHysics5ReCpu_vs2022.sln",
+      "exit_code": 0,
+      "log": "tests/logs/pore_double_stage1/after_cpu_debug.log"
+    },
+    {
+      "configuration": "ReleaseCPU",
+      "solution": "VS/DualSPHysics5ReCpu_vs2022.sln",
+      "exit_code": 0,
+      "log": "tests/logs/pore_double_stage1/after_cpu_release.log"
+    },
+    {
+      "configuration": "Debug",
+      "solution": "VS/DualSPHysics5Re.sln",
+      "exit_code": 0,
+      "log": "tests/logs/pore_double_stage1/after_gpu_debug_r2.log"
+    },
+    {
+      "configuration": "Release",
+      "solution": "VS/DualSPHysics5Re.sln",
+      "exit_code": 0,
+      "log": "tests/logs/pore_double_stage1/after_gpu_release.log"
+    }
+  ],
+  "build_notes": "Initial GPU Debug failed on the kernel-info function pointer's old float pressure type; corrected in JSphGpu_ker.cu:2157. Debug builds retain compiler/linker warnings D9035/LNK4099 and GPU LNK4098; no compiler/link options changed.",
+  "acceptance": {
+    "status": "Stage 1 implemented; strict q0 pressure gates remain open; Stage 2 not started",
+    "regression_report": "tests/logs/pore_double_stage1/regression_comparison.json",
+    "passed_pairs": 10,
+    "total_pairs": 12,
+    "normal_solver_runs": 24,
+    "cpu_baseline_repeat": "tests/logs/pore_double_stage1/q0_baseline_cpu_repeat.json",
+    "gpu_memory_check": "tests/logs/pore_double_stage1/gpu_state_Debug_r3.memcheck.log",
+    "report": "tests/notes/pore_double_stage1_acceptance.md",
+    "performance": "Not established; builds/tests overlapped",
+    "full_2Tv": "Not rerun in this stage"
+  }
+}

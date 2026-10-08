@@ -1,0 +1,37 @@
+{
+  "command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+    "-cpu",
+    "-mdbc_noslip",
+    "-stable",
+    "-symplectic",
+    "-ompthreads:1",
+    "-partbegin:1:0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_checkpoint_current_cpu\\data",
+    "-tmax:0.00001",
+    "-tout:0.00001",
+    "-nsteps:1",
+    "-nortimes:1",
+    "-sv:binx",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\pore_double_stage1\\q0_current_cpu_dt1e-05_s0\\CaseTerzaghiConsolidation_q0_PR_full_k1em4",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_restart_current_cpu_part0001"
+  ],
+  "executable_sha256": "95683ea87702a50cc8246b7c32c7de9c2b203435985a373378a6fcdda7347dbd",
+  "checkpoint_sha256": "33b0bd24dcfd1a9d3c1df8467d2db1753e8487bd31e370fb5dcc5416b420a88a",
+  "passed": false,
+  "solver_exit_code": 0,
+  "comparison_command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\cpu_state_DebugCPU_r2\\cpu_state_DebugCPU_r2.exe",
+    "--compare-parts",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_checkpoint_current_cpu\\data",
+    "1",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_restart_current_cpu_part0001\\data",
+    "0",
+    "--json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\pore_double_stage1\\q0_restart_current_cpu_part0001.native.json"
+  ],
+  "comparison_exit_code": 2
+}

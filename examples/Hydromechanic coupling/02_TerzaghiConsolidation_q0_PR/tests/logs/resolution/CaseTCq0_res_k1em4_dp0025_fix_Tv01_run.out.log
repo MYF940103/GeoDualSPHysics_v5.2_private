@@ -1,0 +1,485 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.025]  PosMin_x=[-0.4875]  PosMin_y=[0]  PosMin_z=[-0.4875]  PosMax_x=[1.5125]  PosMax_y=[0]  PosMax_z=[1.8125]  CaseName=["CaseTCq0_res_k1em4_dp0025_fix_Tv01"]  Data2D=[1]  Data2DPosy=[0]  H=[0.045]  MassBound=[1.3125]  MassFluid=[1.3125]
+
+Mk size: 1 bytes
+Case limits: (-0.4875,0,-0.4875) - (1.5125,0,1.8125)
+Distance between points (Dp): 0.025
+Case domain: (0,0,0)-(79,0,90)
+Domain points: 80 x 1 x 91 = 7280
+Case parts: 1 x 91z
+Memory: 0.00Gb 0.01Mb (7280)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.005s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.004s)
+FileDbgDomains> outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_dbg-fillbox.vtk  domains:1
+FileDbgDomains> outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_dbg-fillbox.vtk  domains:2
+FileDbgDomains> outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_dbg-fillbox.vtk  domains:3
+FileDbgDomains> outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.040s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.001s)
+BitSizeTot: 10 (1 + 2+1+6)
+Points loaded: 176
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     16  -->      16
+Points -> Fluid particles:
+  block[  1] (mk:  1):    160  -->     160
+
+Particle summary:
+  Fixed....: 16  id:(0-15)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 160  id:(16-175)   MKs:1 (1)
+
+Total particles: 176 (bound=16 (fx=16 mv=0 ft=0) fluid=160)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.023s]
+
+[SaveCase2D]
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_MkCells.vtk  (time:0.004s, shapes:2, points:8)
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01.bi4<double>  (time:0.004s)
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_All.vtk  (time: 0.004s)
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_Bound.vtk  (time: 0.007s)
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_Fluid.vtk  (time: 0.004s)
+outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01.xml  (time:0.008s)
+Computing normals data...
+  Evaluating 16 particles with 3 shapes (distance 2x H = 0.09).
+  Time for computing 16 normals: 0.000s.
+  Non-zero particle normals: 16/16    Normals size range: (0.012500 - 0.087500).
+  Saving results files...
+  outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_Normals.vtk
+  outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_Normals.nbi4  (time:0.035s)
+
+Save files time: 0.058s
+
+Particle limits:
+  X range: 0.0125 to 0.0875 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.0875 to 0.9875 [m]
+
+[SaveCase2D-End  time:0.060s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.126 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads by host for parallel execution: 20
+
+[Initialising JSphCpuSingle  14-07-2026 11:30:45]
+ProgramFile=".../bin/windows/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests"
+XmlFile=".../resolution/CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01.xml"
+OutputDir=".../outputs/resolution/CaseTCq0_res_k1em4_dp0025_fix_Tv01_out"
+OutputDataDir=".../resolution/CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseTCq0_res_k1em4_dp0025_fix_Tv01"]  Data2D=[1]  Data2DPosy=[0]  H=[0.045]  KernelSize=[0.09]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.025]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[1.3125]  MassBound=[1.3125]
+XML-Vars (parameters): TimeMax=[3.65471]  TimeOut=[0.182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopVertical"
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 176
+MapRealPos(border)=(1.04083e-17,-0.00225,-0.08975)-(0.1,0.00225,0.98975)
+MapRealPos(final)=(1.04083e-17,-0.00225,-0.08975)-(0.1,0.00225,0.98975)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseTCq0_res_k1em4_dp0025_fix_Tv01"
+RunName="CaseTCq0_res_k1em4_dp0025_fix_Tv01"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=275.0617
+  Wendland.bwen=-30564.61
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=176
+CaseNbound=16
+CaseNfixed=16
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=160
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1000000000000001,0,0)
+Dp=0.025
+KernelH=0.045000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.09
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=1.3125
+MassBound=1.3125
+TimeMax=3.65471428571429
+TimePart=0.182185714285714
+Gravity=(0,0,0)
+NpMinimum=16
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(4,1,12)
+CellDomFixed=False
+**Requested CPU memory for 304 particles: 0.1 MB.
+NormalDataFile="outputs\resolution\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out/CaseTCq0_res_k1em4_dp0025_fix_Tv01_Normals.nbi4"
+DomCells=(4,1,12)
+DomCellCode="1+11_9_11"
+**JSphCpu: Requesting cpu memory for 346 particles: 0.1 MB.
+**JSphCpu: Requesting cpu memory for 682 particles: 0.3 MB.
+**CellDiv: Requested cpu memory for 682 particles: 0.0 MB.
+**CellDiv: Requested cpu memory for 130 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Double - OpenMP(Threads:20)"
+ 
+Particle summary:
+  Fixed....: 16  id:(0-15)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 160  id:(16-175)   MKs:1 (1)
+
+Total particles: 176 (bound=16 (fx=16 mv=0 ft=0) fluid=160)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 361924 (0.35 MB)
+Part_0000        176 particles successfully stored
+
+[Initialising simulation (q6f1224r)  14-07-2026 11:30:45]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphCpu: Requesting cpu memory for 716 particles: 0.3 MB.
+**JSphCpu: Requesting cpu memory for 1052 particles: 0.4 MB.
+**CellDiv: Requested cpu memory for 1052 particles: 0.0 MB.
+  Progress 0.98% in 30.0s. Estimated finish time: 14-07-2026 12:21:46
+  Progress 2.58% in 60.0s. Estimated finish time: 14-07-2026 12:09:33
+Part_0001      0.182190         18219    18219     673.74  14-07-2026 12:11:47
+Part_0002      0.364380         36438    18219     547.19  14-07-2026 12:07:56
+Part_0003      0.546560         54656    18218     522.58  14-07-2026 12:06:09
+Part_0004      0.728750         72875    18219     638.43  14-07-2026 12:07:01
+Part_0005      0.910930         91093    18218     565.91  14-07-2026 12:06:39
+Part_0006      1.093120        109312    18219     524.54  14-07-2026 12:06:00
+Part_0007      1.275310        127531    18219     476.53  14-07-2026 12:05:07
+Part_0008      1.457490        145749    18218     481.23  14-07-2026 12:04:28
+Part_0009      1.639680        163968    18219     570.12  14-07-2026 12:04:35
+Part_0010      1.821860        182186    18218     415.78  14-07-2026 12:03:44
+Part_0011      2.004050        200405    18219     570.62  14-07-2026 12:03:54
+Part_0012      2.186230        218623    18218     547.94  14-07-2026 12:03:55
+Part_0013      2.368420        236842    18219     599.68  14-07-2026 12:04:10
+Part_0014      2.550600        255060    18218     459.44  14-07-2026 12:03:47
+Part_0015      2.732790        273279    18219     579.61  14-07-2026 12:03:56
+Part_0016      2.914980        291498    18219     910.73  14-07-2026 12:05:20
+Part_0017      3.097160        309716    18218     476.42  14-07-2026 12:05:00
+Part_0018      3.279350        327935    18219     444.97  14-07-2026 12:04:36
+Part_0019      3.461530        346153    18218     473.87  14-07-2026 12:04:20
+Part_0020      3.643720        364372    18219     496.26  14-07-2026 12:04:11
+
+[Simulation finished  14-07-2026 12:04:12]
+Particles of simulation (initial): 176
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 2006.602905 sec.
+Simulation Runtime...............: 2006.522949 sec.
+Runtime per physical second......: 549.022339 sec.
+Steps per second.................: 182.141953
+Steps of simulation..............: 365472
+PART files.......................: 21
+Maximum number of particles......: 528
+Maximum number of cells..........: 48
+CPU Memory.......................: 532124 (0.51 MB)
+ 
+[CPU Timers]
+VA-Init..........................: 0.079920 sec.
+NL-Limits........................: 2.801578 sec.
+NL-MakeSort......................: 4.559454 sec.
+NL-SortData......................: 630.871133 sec.
+NL-OutCheck......................: 0.057734 sec.
+CF-PreForces.....................: 182.625719 sec.
+CF-Forces........................: 634.219962 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 26.912875 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 8.102009 sec.
+SU-ResizeNp......................: 0.000554 sec.
+SU-SavePart......................: 0.306594 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> ...\data/Part_0000.bi4
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:160
+LoadData> ...\CaseTCq0_res_k1em4_dp0025_fix_Tv01_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:160
+
+Time of operation: 0.121 sec. (20 threads)
+corrected q0 Terzaghi dp=0.025 Tv0.1 resolution test done.

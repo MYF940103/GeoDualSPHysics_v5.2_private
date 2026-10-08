@@ -1,0 +1,656 @@
+diff --git a/source/JSphCpu.cpp b/source/JSphCpu.cpp
+--- a/source/JSphCpu.cpp
++++ b/source/JSphCpu.cpp
+@@ -19,6 +19,7 @@
+ /// \file JSphCpu.cpp \brief Implements the class \ref JSphCpu.
+ 
+ #include "JSphCpu.h"
++#include "FunPorePressure.h"
+ #include "JCellSearch_inline.h"
+ #include "JCellDivCpu.h"
+ #include "JPartFloatBi4.h"
+@@ -111,6 +112,7 @@ void JSphCpu::InitVars(){
+   Rsigmac=NULL;Kplasticc=NULL;
+   ArtificialStressc=NULL;
+   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
++  PorePressResc=NULL;PorePressResM1c=NULL;PorePressResPrec=NULL;
+   //======
+   VelrhopM1c=NULL;                //-Verlet
+   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
+@@ -201,20 +203,20 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
+   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
+   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
+   if(HydroMech){
+-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
++    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,7);//-PorePress,PorePressRes,PorePress0,PorePressRate and SaveData temporary arrays
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-HydroMechLoadAce and SaveData temporary array
+   }
+   //======
+   if(TStep==STEP_Verlet){
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
+-    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepressm1
++    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,2);//-porepressm1,porepressresm1
+   }
+   else if(TStep==STEP_Symplectic){
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1); //-pospre
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhoppre
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmapre
+-    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepresspre
++    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,2);//-porepresspre,porepressrespre
+   }
+   if(TVisco==VISCO_LaminarSPS){     
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2); //-SpsTau,SpsGradvel
+@@ -274,6 +276,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
+   float        *porepressm1=SaveArrayCpu(Np,PorePressM1c);
+   float        *porepresspre=SaveArrayCpu(Np,PorePressPrec);
++  float        *porepressres=SaveArrayCpu(Np,PorePressResc);
++  float        *porepressresm1=SaveArrayCpu(Np,PorePressResM1c);
++  float        *porepressrespre=SaveArrayCpu(Np,PorePressResPrec);
+   //==== 
+   //-Frees pointers.
+   ArraysCpu->Free(Idpc);
+@@ -305,6 +310,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   ArraysCpu->Free(PorePressRatec);
+   ArraysCpu->Free(PorePressM1c);
+   ArraysCpu->Free(PorePressPrec);
++  ArraysCpu->Free(PorePressResc);
++  ArraysCpu->Free(PorePressResM1c);
++  ArraysCpu->Free(PorePressResPrec);
+   //====
+   //-Resizes CPU memory allocation.
+   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
+@@ -340,6 +348,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
+   if(porepressm1)   PorePressM1c   = ArraysCpu->ReserveFloat();
+   if(porepresspre)  PorePressPrec  = ArraysCpu->ReserveFloat();
++  if(porepressres)  PorePressResc  = ArraysCpu->ReserveFloat();
++  if(porepressresm1) PorePressResM1c= ArraysCpu->ReserveFloat();
++  if(porepressrespre)PorePressResPrec=ArraysCpu->ReserveFloat();
+   //=====
+   //-Restore data in CPU memory.
+   RestoreArrayCpu(Np,idp,Idpc);
+@@ -371,6 +382,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
+   RestoreArrayCpu(Np,porepressm1,PorePressM1c);
+   RestoreArrayCpu(Np,porepresspre,PorePressPrec);
++  RestoreArrayCpu(Np,porepressres,PorePressResc);
++  RestoreArrayCpu(Np,porepressresm1,PorePressResM1c);
++  RestoreArrayCpu(Np,porepressrespre,PorePressResPrec);
+   //=====
+   //-Updates values.
+   CpuParticlesSize=npnew;
+@@ -421,6 +435,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
+   Kplasticc=ArraysCpu->ReserveFloat();
+   if(HydroMech){
+     PorePressc=ArraysCpu->ReserveFloat();
++    PorePressResc=ArraysCpu->ReserveFloat();
+     PorePress0c=ArraysCpu->ReserveFloat();
+     PorePressRatec=ArraysCpu->ReserveFloat();
+     HydroMechLoadAcec=ArraysCpu->ReserveFloat3();
+@@ -428,7 +443,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
+   //=====
+   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
+   SigmaM1c=ArraysCpu->ReserveSymatrix3f();
+-  if(HydroMech)PorePressM1c=ArraysCpu->ReserveFloat();}//mdbr
++  if(HydroMech){PorePressM1c=ArraysCpu->ReserveFloat();PorePressResM1c=ArraysCpu->ReserveFloat();}}//mdbr
+   if(TVisco==VISCO_LaminarSPS)SpsTauc=ArraysCpu->ReserveSymatrix3f();
+   if(UseNormals){
+     BoundNormalc=ArraysCpu->ReserveFloat3();
+@@ -473,7 +488,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
+ //==============================================================================
+ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+-  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace)
++ ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace,float *porepressres)
+ {
+   unsigned num=n;
+   //-Copy selected values.
+@@ -484,6 +499,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+   if(fsnormal && FSNormalc)memcpy(fsnormal,FSNormalc+pini,sizeof(tfloat3)*n);
+   if(posdiv && PosDivc)memcpy(posdiv,PosDivc+pini,sizeof(float)*n);
+   if(porepress && PorePressc)memcpy(porepress,PorePressc+pini,sizeof(float)*n);
++  if(porepressres && PorePressResc)memcpy(porepressres,PorePressResc+pini,sizeof(float)*n);
+   if(porepress0 && PorePress0c)memcpy(porepress0,PorePress0c+pini,sizeof(float)*n);
+   if(hydromechloadace && HydroMechLoadAcec)memcpy(hydromechloadace,HydroMechLoadAcec+pini,sizeof(tfloat3)*n);
+   if(vel && rhop){
+@@ -538,6 +554,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+         if(fsnormal)fsnormal[pdel]=fsnormal[p];
+         if(posdiv)posdiv[pdel]=posdiv[p];
+         if(porepress)porepress[pdel]=porepress[p];
++        if(porepressres)porepressres[pdel]=porepressres[p];
+         if(porepress0)porepress0[pdel]=porepress0[p];
+         if(hydromechloadace)hydromechloadace[pdel]=hydromechloadace[p];
+         code2[pdel]=code2[p];
+@@ -600,6 +617,7 @@ void JSphCpu::InitRunCpu(){
+ 
+   if(TStep==STEP_Verlet)memcpy(VelrhopM1c,Velrhopc,sizeof(tfloat4)*Np);
+   if(TStep==STEP_Verlet && PorePressM1c && PorePressc)memcpy(PorePressM1c,PorePressc,sizeof(float)*Np);
++  if(TStep==STEP_Verlet && PorePressResM1c && PorePressResc)memcpy(PorePressResM1c,PorePressResc,sizeof(float)*Np);
+   if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+   if(TVisco==VISCO_LaminarSPS)memset(SpsTauc,0,sizeof(tsymatrix3f)*Np);
+   if(CaseNfloat)InitFloating();
+@@ -1228,6 +1246,7 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
+ void JSphCpu::InitHydroMechState(){
+   if(!HydroMech || !PorePressc || !PorePress0c)return;
+   if(HydroMechInitMode==HMINIT_None)return;
++  memset(PorePressResc,0,sizeof(float)*Np);
+   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+   const double gzabs=fabs(double(Gravity.z));
+   const double gammaw=double(SoilCte.PoreWaterRho)*(gzabs>0? gzabs: gnorm);
+@@ -1343,7 +1362,10 @@ void JSphCpu::ApplyFreeSurfacePorePressure(){
+     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
+   #endif
+   for(int p=pini;p<pfin;p++){
+-    if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec))PorePressc[p]=0;
++    if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec)){
++      PorePressc[p]=0;
++      PorePressResc[p]=0;
++    }
+   }
+   ApplyYaoTopStripPorePressureExtrapolation();
+ }
+@@ -1380,7 +1402,10 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ApplyYaoTopStripPorePressureExt
+         }
+       }
+     }
+-    if(sumwab>0)PorePressc[p1]=float(pwsum/sumwab);
++    if(sumwab>0){
++      PorePressc[p1]=float(pwsum/sumwab);
++      PorePressResc[p1]=0;
++    }
+   }
+ }
+ 
+@@ -1590,6 +1615,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
+         }
+       }
+       porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++      if(PorePressResc)PorePressResc[p1]=0; //-Ghost pressure is prescribed, not integrated.
+     }
+   }
+ }
+@@ -1633,10 +1659,13 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+   ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+   ,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress0,float *porepress)const
+ {
++  //-Keep both words until all neighbours have been read (parallel-safe filter).
++  std::vector<float> low(np);
+   float *preg=NULL;
+   try{ preg=new float[np]; }
+   catch(const std::bad_alloc){ Run_Exceptioon("Could not allocate the requested memory."); }
+   memcpy(preg,porepress,sizeof(float)*np);
++  memcpy(low.data(),PorePressResc,sizeof(float)*np);
+   const int pini=int(npb),pfin=int(np);
+   #ifdef OMP_USE
+     #pragma omp parallel for schedule(guided)
+@@ -1645,6 +1674,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+     if(!CODE_IsFluid(code[p1]))continue;
+     if(IsHydroMechDrainageActive() && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)){
+       preg[p1]=0;
++      low[p1]=0;
+       continue;
+     }
+     const tdouble3 posp1=pos[p1];
+@@ -1653,7 +1683,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+       const double vol1=double(MassFluid/velrhop[p1].w);
+       const double wab0=double(fsph::GetKernel_Wab<tker>(CSP,0));
+       sumwab+=wab0*vol1;
+-      pwexcesssum+=wab0*vol1*(double(porepress[p1])-double(porepress0[p1]));
++      pwexcesssum+=wab0*vol1*((double(porepress[p1])-double(porepress0[p1]))+double(PorePressResc[p1]));
+     }
+     for(int b2=0;b2<2;b2++){
+       const bool boundp2=(b2==1);
+@@ -1673,14 +1703,15 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+             const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
+             const double vwab=double(fsph::GetKernel_Wab<tker>(CSP,rr2))*vol2;
+             sumwab+=vwab;
+-            pwexcesssum+=vwab*(double(porepress[p2])-double(porepress0[p2]));
++            pwexcesssum+=vwab*((double(porepress[p2])-double(porepress0[p2]))+double(PorePressResc[p2]));
+           }
+         }
+       }
+     }
+-    if(sumwab>0)preg[p1]=float(double(porepress0[p1])+pwexcesssum/sumwab);
++    if(sumwab>0)porepress::Split(double(porepress0[p1])+pwexcesssum/sumwab,preg[p1],low[p1]);
+   }
+   memcpy(porepress+npb,preg+npb,sizeof(float)*(np-npb));
++  memcpy(PorePressResc+npb,low.data()+npb,sizeof(float)*(np-npb));
+   delete[] preg;
+ }
+ 
+@@ -2950,6 +2981,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
+         }
+       }
+       porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++      if(PorePressResc)PorePressResc[p1]=0;
+     }
+     if(activebound){
+       if(useboundmode)boundmode[p1]=BMODE_MDBC2;
+@@ -3905,13 +3937,17 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3f *s
+ void JSphCpu::ComputeVerletPorePressure(double dt2){
+   if(!HydroMech || !PorePressc || !PorePressRatec || !PorePressM1c)return;
+   const float *poreold=(VerletStep<VerletSteps? PorePressM1c: PorePressc);
++  const float *resold=(VerletStep<VerletSteps? PorePressResM1c: PorePressResc);
+   const int np=int(Np);
+   #ifdef OMP_USE
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressM1c[p]=poreold[p];
+-    else PorePressM1c[p]=float(double(poreold[p])+dt2*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressM1c[p]=poreold[p];
++      PorePressResM1c[p]=resold[p];
++    }
++    else porepress::Update(poreold[p],resold[p],dt2,PorePressRatec[p],PorePressM1c[p],PorePressResM1c[p]);
+   }
+ }
+ 
+@@ -3926,8 +3962,11 @@ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
+-    else PorePressc[p]=float(double(PorePressPrec[p])+dt05*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressc[p]=PorePressPrec[p];
++      PorePressResc[p]=PorePressResPrec[p];
++    }
++    else porepress::Update(PorePressPrec[p],PorePressResPrec[p],dt05,PorePressRatec[p],PorePressc[p],PorePressResc[p]);
+   }
+   ApplyFreeSurfacePorePressure();
+ }
+@@ -3942,8 +3981,11 @@ void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
+-    else PorePressc[p]=float(double(PorePressPrec[p])+dt*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressc[p]=PorePressPrec[p];
++      PorePressResc[p]=PorePressResPrec[p];
++    }
++    else porepress::Update(PorePressPrec[p],PorePressResPrec[p],dt,PorePressRatec[p],PorePressc[p],PorePressResc[p]);
+   }
+   ApplyFreeSurfacePorePressure();
+ }
+@@ -3974,6 +4016,7 @@ void JSphCpu::ComputeVerlet(double dt){
+   swap(Sigmac,SigmaM1c);
+   if(HydroMech && PorePressc && PorePressM1c){
+     swap(PorePressc,PorePressM1c);
++    swap(PorePressResc,PorePressResM1c);
+     ApplyFreeSurfacePorePressure();
+   }
+   Timersc->TmStop(TMC_SuComputeStep);
+@@ -3997,13 +4040,19 @@ void JSphCpu::ComputeSymplecticPre(double dt){
+   VelrhopPrec=ArraysCpu->ReserveFloat4();
+   //====mdbr
+   SigmaPrec=ArraysCpu->ReserveSymatrix3f();
+-  if(HydroMech)PorePressPrec=ArraysCpu->ReserveFloat();
++  if(HydroMech){
++    PorePressPrec=ArraysCpu->ReserveFloat();
++    PorePressResPrec=ArraysCpu->ReserveFloat();
++  }
+   //-Change data to variables Pre to calculate new data. | Cambia datos a variables Pre para calcular nuevos datos.
+   swap(PosPrec,Posc);         //Put value of Pos[] in PosPre[].         | Es decir... PosPre[] <= Pos[].
+   swap(VelrhopPrec,Velrhopc); //Put value of Velrhop[] in VelrhopPre[]. | Es decir... VelrhopPre[] <= Velrhop[].
+   //=====mdbr
+   swap(SigmaPrec, Sigmac);
+-  if(HydroMech)swap(PorePressPrec,PorePressc);
++  if(HydroMech){
++    swap(PorePressPrec,PorePressc);
++    swap(PorePressResPrec,PorePressResc);
++  }
+   ComputeSymplecticPrePorePressure(dt);
+   //-Calculate new density for boundary and copy velocity. | Calcula nueva densidad para el contorno y copia velocidad.
+   #ifdef OMP_USE
+@@ -4281,6 +4330,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
+   ArraysCpu->Free(VelrhopPrec);  VelrhopPrec=NULL;
+   ArraysCpu->Free(SigmaPrec);    SigmaPrec=NULL;//mdbr
+   ArraysCpu->Free(PorePressPrec); PorePressPrec=NULL;
++  ArraysCpu->Free(PorePressResPrec); PorePressResPrec=NULL;
+   Timersc->TmStop(TMC_SuComputeStep);
+ }
+ 
+diff --git a/source/JSphCpu.h b/source/JSphCpu.h
+--- a/source/JSphCpu.h
++++ b/source/JSphCpu.h
+@@ -156,17 +156,20 @@ protected:
+   tsymatrix3f* ArtificialStressc;
+   float* Kplasticc;
+   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
++  float* PorePressResc; ///<Low-order remainder of accumulated pore pressure.
+   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
+   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+   //===============  
+   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
+   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
+   float* PorePressM1c;  ///<Verlet history of pore-water pressure.
++  float* PorePressResM1c; ///<Verlet history of the pressure remainder.
+ 
+   //-Variables for compute step: SYMPLECTIC. | Vars. para compute step: SYMPLECTIC.
+   tdouble3 *PosPrec;    ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
+   tfloat4 *VelrhopPrec;
+   float* PorePressPrec; ///<Symplectic previous pore-water pressure.
++  float* PorePressResPrec; ///<Symplectic previous pressure remainder.
+   //======= mdbr
+   tsymatrix3f* SigmaPrec;
+   tsymatrix3f* SigmaM1c;
+@@ -246,7 +249,7 @@ protected:
+   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+     ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
+-    ,tfloat3 *hydromechloadace=NULL);
++    ,tfloat3 *hydromechloadace=NULL,float *porepressres=NULL);
+   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
+     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
+   void ConfigOmp(const JSphCfgRun *cfg);
+diff --git a/source/JSphCpuSingle.cpp b/source/JSphCpuSingle.cpp
+--- a/source/JSphCpuSingle.cpp
++++ b/source/JSphCpuSingle.cpp
+@@ -135,17 +135,20 @@ void JSphCpuSingle::ConfigDomain(){
+       if(!PartsLoaded->GetPorePressureDataLoaded())
+         Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
+       memcpy(PorePressc,PartsLoaded->GetPorePress(),sizeof(float)*Np);
++      memcpy(PorePressResc,PartsLoaded->GetPorePressRes(),sizeof(float)*Np);
+       memcpy(PorePress0c,PartsLoaded->GetPorePress0(),sizeof(float)*Np);
+       Log->Print("Restart hydromechanical data: PorePress and PorePress0 inherited.");
+     }
+     else{
+       memset(PorePressc,0,sizeof(float)*Np);
++      memset(PorePressResc,0,sizeof(float)*Np);
+       memset(PorePress0c,0,sizeof(float)*Np);
+       if(PartBegin && initpore)
+         Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
+     }
+     if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+     if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
++    if(PorePressResM1c)memset(PorePressResM1c,0,sizeof(float)*Np);
+     if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*Np);
+   }
+   //=========
+@@ -314,7 +317,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
+ //==============================================================================
+ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
+   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
++  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)const
+ {
+   const int n=int(np);
+   #ifdef OMP_USE
+@@ -337,6 +340,8 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
++    if(porepressresm1)porepressresm1[pnew]=porepressresm1[pcopy];
+     if(spstau)spstau[pnew]=spstau[pcopy];
+   }
+ }
+@@ -351,7 +356,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
+ /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
+ //==============================================================================
+ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
++  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)const
+ {
+   const int n=int(np);
+   #ifdef OMP_USE
+@@ -372,6 +377,8 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
++    if(porepressrespre)porepressrespre[pnew]=porepressrespre[pcopy];
+     if(pospre)pospre[pnew]=pospre[pcopy];
+     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
+     if(spstau)spstau[pnew]=spstau[pcopy];
+@@ -469,10 +476,10 @@ void JSphCpuSingle::RunPeriodic(){
+             run=false;
+             //-Create new duplicate periodic particles in the list
+             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
+-            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c);
++            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c,PorePressResc,PorePressResM1c);
+             if(TStep==STEP_Symplectic){
+               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
+-              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec);
++              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec,PorePressResc,PorePressResPrec);
+             }
+             if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc,BoundSlipModec);
+ 
+@@ -516,12 +523,14 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+   CellDivSingle->SortArray(Sigmac);
+   CellDivSingle->SortArray(Kplasticc);
+   if(PorePressc)CellDivSingle->SortArray(PorePressc);
++  if(PorePressResc)CellDivSingle->SortArray(PorePressResc);
+   if(PorePress0c)CellDivSingle->SortArray(PorePress0c);
+   if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
+   if(TStep==STEP_Verlet){
+     CellDivSingle->SortArray(VelrhopM1c);
+     CellDivSingle->SortArray(SigmaM1c);
+     if(PorePressM1c)CellDivSingle->SortArray(PorePressM1c);
++    if(PorePressResM1c)CellDivSingle->SortArray(PorePressResM1c);
+   }
+   else if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec)){//-In reality, this is only necessary in divide for corrector, not in predictor??? | En realidad solo es necesario en el divide del corrector, no en el predictor???
+     if(!PosPrec || !VelrhopPrec)Run_Exceptioon("Symplectic data is invalid.") ;
+@@ -529,6 +538,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+     CellDivSingle->SortArray(VelrhopPrec);
+     CellDivSingle->SortArray(SigmaPrec);
+     if(PorePressPrec)CellDivSingle->SortArray(PorePressPrec);
++    if(PorePressResPrec)CellDivSingle->SortArray(PorePressResPrec);
+   }
+   if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
+   if(FSTypec)CellDivSingle->SortArray(FSTypec);
+@@ -1267,6 +1277,7 @@ void JSphCpuSingle::SaveData(){
+   unsigned *fstype=NULL;
+   tfloat3 *fsnormal=NULL;
+   float *porepress=NULL;
++  float *porepressres=NULL;
+   float *porepress0=NULL;
+   //==========
+   if(save){
+@@ -1284,10 +1295,11 @@ void JSphCpuSingle::SaveData(){
+     fsnormal=ArraysCpu->ReserveFloat3();
+     if(HydroMech){
+       porepress=ArraysCpu->ReserveFloat();
++      porepressres=ArraysCpu->ReserveFloat();
+       porepress0=ArraysCpu->ReserveFloat();
+     }
+ 	//=========
+-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL);
++    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL,porepressres);
+     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
+   }
+   //-Gather additional information. | Reune informacion adicional.
+@@ -1318,6 +1330,7 @@ void JSphCpuSingle::SaveData(){
+       float *poreexcess=new float[npsave];
+       for(unsigned p=0;p<npsave;p++)poreexcess[p]=porepress[p]-porepress0[p];
+       arrays.AddArray("PorePress",npsave,porepress);
++      arrays.AddArray("PorePressRes",npsave,porepressres);
+       arrays.AddArray("PorePress0",npsave,porepress0);
+       arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+     }
+@@ -1336,6 +1349,7 @@ void JSphCpuSingle::SaveData(){
+   ArraysCpu->Free(fstype);
+   ArraysCpu->Free(fsnormal);
+   ArraysCpu->Free(porepress);
++  ArraysCpu->Free(porepressres);
+   ArraysCpu->Free(porepress0);
+   //=====
+   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
+diff --git a/source/JSphCpuSingle.h b/source/JSphCpuSingle.h
+--- a/source/JSphCpuSingle.h
++++ b/source/JSphCpuSingle.h
+@@ -46,9 +46,9 @@ protected:
+   unsigned PeriodicMakeList(unsigned np,unsigned pini,bool stable,unsigned nmax,tdouble3 perinc,const tdouble3 *pos,const typecode *code,unsigned *listp)const;
+   void PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inverse,double dx,double dy,double dz,tuint3 cellmax,tdouble3 *pos,unsigned *dcell)const;
+   void PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const;
++    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)const;
+   void PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const;
++    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)const;
+   void PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
+     ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel,byte *boundslipmode)const;
+   void RunPeriodic();
+diff --git a/source/JPartsLoad4.cpp b/source/JPartsLoad4.cpp
+--- a/source/JPartsLoad4.cpp
++++ b/source/JPartsLoad4.cpp
+@@ -24,6 +24,7 @@
+ #include "JRadixSort.h"
+ #include <climits>
+ #include <cfloat>
++#include <cmath>
+ 
+ using namespace std;
+ 
+@@ -35,7 +36,7 @@ using namespace std;
+ //==============================================================================
+ JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
+   ClassName="JPartsLoad4";
+-  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL; PorePress=NULL; PorePress0=NULL;
++  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL; PorePress=NULL; PorePress0=NULL; PorePressRes=NULL;
+   Reset();
+ }
+ 
+@@ -84,6 +85,7 @@ void JPartsLoad4::AllocMemory(unsigned count){
+   delete[] Kplastic; Kplastic=NULL;
+   delete[] PorePress;  PorePress=NULL;
+   delete[] PorePress0; PorePress0=NULL;
++  delete[] PorePressRes; PorePressRes=NULL;
+   if(Count){
+     try{
+       Idp=new unsigned[Count];
+@@ -93,6 +95,7 @@ void JPartsLoad4::AllocMemory(unsigned count){
+       Kplastic=new float[Count];
+       PorePress=new float[Count];
+       PorePress0=new float[Count];
++      PorePressRes=new float[Count](); //-Old PART files have no residual and start with zero low bits.
+     }
+     catch(const std::bad_alloc){
+       Run_Exceptioon("Could not allocate the requested memory.");
+@@ -114,6 +117,7 @@ llong JPartsLoad4::GetAllocMemory()const{
+   if(Kplastic)s+=sizeof(float)*Count;
+   if(PorePress)s+=sizeof(float)*Count;
+   if(PorePress0)s+=sizeof(float)*Count;
++  if(PorePressRes)s+=sizeof(float)*Count;
+   return(s);
+ }
+ 
+@@ -156,6 +160,11 @@ void JPartsLoad4::SortParticles(){
+     rs.Sort(true,Count,Idp);
+     rs.SortData(Count,Pos,Pos);
+     rs.SortData(Count,VelRhop,VelRhop);
++    if(PorePressureDataLoaded){
++      rs.SortData(Count,PorePress,PorePress);
++      rs.SortData(Count,PorePress0,PorePress0);
++    }
++    rs.SortData(Count,PorePressRes,PorePressRes);
+   }
+ }
+ 
+@@ -209,6 +218,9 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
+   SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
+   PorePressureDataLoaded=(PartBegin && pd.ArrayExists("PorePress") && pd.ArrayExists("PorePress0"));
++  const bool poreresloaded=(PartBegin && pd.ArrayExists("PorePressRes"));
++  if(poreresloaded && !PorePressureDataLoaded)
++    Run_Exceptioon("PorePressRes requires PorePress and PorePress0 arrays in the PART file.");
+   //-Loads data for restarting.
+   if(PartBegin){
+     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
+@@ -220,7 +232,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+     JPartDataBi4 pd2;
+     if(!PartBegin)pd2.LoadFileCase(dir,casename,piece,Npiece);
+     else pd2.LoadFilePart(dir,PartBegin,piece,Npiece);
+-    sizetot+=pd.Get_Npok();
++    sizetot+=pd2.Get_Npok();
+   }
+   //-Allocates memory.
+   AllocMemory(sizetot);
+@@ -239,7 +251,21 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+         Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
+       if(PorePressureDataLoaded && (!pd.ArrayExists("PorePress") || !pd.ArrayExists("PorePress0")))
+         Run_Exceptioon("Pore-pressure restart arrays are not available in all PART pieces.");
++      if(PartBegin && pd.ArrayExists("PorePressRes")!=poreresloaded)
++        Run_Exceptioon("PorePressRes availability is inconsistent across PART pieces.");
+       const unsigned npok=pd.Get_Npok();
++      if(PorePressureDataLoaded){
++        const char* names[]={"PorePress","PorePress0"};
++        for(unsigned c=0;c<2;c++){
++          const JBinaryDataArray* array=pd.GetArray(names[c],JBinaryDataDef::DatFloat);
++          const unsigned count=(array->DataInPointer()? array->GetCount(): array->GetFileDataCount());
++          if(count!=npok)Run_Exceptioon(std::string(names[c])+" array size does not match the particle count in the PART piece.");
++        }
++      }
++      JBinaryDataArray *poreres=(poreresloaded? pd.GetArray("PorePressRes",JBinaryDataDef::DatFloat): NULL);
++      const unsigned rescount=(poreres? (poreres->DataInPointer()? poreres->GetCount(): poreres->GetFileDataCount()): 0);
++      if(poreres && rescount!=npok)
++        Run_Exceptioon("PorePressRes array size does not match the particle count in the PART piece.");
+       if(npok){
+         if(auxsize<npok){
+           auxsize=npok;
+@@ -275,6 +301,13 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+         if(PorePressureDataLoaded){
+           pd.GetArray("PorePress",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress+ntot);
+           pd.GetArray("PorePress0",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress0+ntot);
++          for(unsigned p=0;p<npok;p++)if(!std::isfinite(PorePress[ntot+p]) || !std::isfinite(PorePress0[ntot+p]))
++            Run_Exceptioon("PorePress or PorePress0 contains a non-finite value in the PART piece.");
++        }
++        if(poreres){
++          poreres->GetDataCopy(npok,PorePressRes+ntot);
++          for(unsigned p=0;p<npok;p++)if(!std::isfinite(PorePressRes[ntot+p]))
++            Run_Exceptioon("PorePressRes contains a non-finite value in the PART piece.");
+         }
+       }
+       ntot+=npok;
+@@ -331,15 +364,28 @@ void JPartsLoad4::RemoveBoundary(){
+   unsigned *idp0=Idp;        Idp=NULL;
+   tdouble3 *pos0=Pos;        Pos=NULL;
+   tfloat4 *velrhop0=VelRhop; VelRhop=NULL;
++  float *porepress= PorePress;       PorePress=NULL;
++  float *porepress0=PorePress0;      PorePress0=NULL;
++  float *poreres=   PorePressRes;    PorePressRes=NULL;
+   AllocMemory(count0-nbound);
+   //-Copies data in new pointers.
+   memcpy(Idp,idp0+nbound,sizeof(unsigned)*Count);
+   memcpy(Pos,pos0+nbound,sizeof(tdouble3)*Count);
+   memcpy(VelRhop,velrhop0+nbound,sizeof(tfloat4)*Count);
++  if(Count){
++    if(PorePressureDataLoaded){
++      memcpy(PorePress,porepress+nbound,sizeof(float)*Count);
++      memcpy(PorePress0,porepress0+nbound,sizeof(float)*Count);
++    }
++    memcpy(PorePressRes,poreres+nbound,sizeof(float)*Count);
++  }
+   //-Frees old pointers.
+   delete[] idp0;      idp0=NULL; 
+   delete[] pos0;      pos0=NULL; 
+   delete[] velrhop0;  velrhop0=NULL; 
++  delete[] porepress;  porepress=NULL;
++  delete[] porepress0; porepress0=NULL;
++  delete[] poreres;    poreres=NULL;
+ }
+ 
+ //==============================================================================
+diff --git a/source/JPartsLoad4.h b/source/JPartsLoad4.h
+--- a/source/JPartsLoad4.h
++++ b/source/JPartsLoad4.h
+@@ -97,6 +97,7 @@ protected:
+   bool PorePressureDataLoaded;
+   float *PorePress;
+   float *PorePress0;
++  float *PorePressRes;    ///<Low-order pore-pressure increment retained across restart.
+ 
+   void AllocMemory(unsigned count);
+   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
+@@ -135,6 +136,7 @@ public:
+   bool GetPorePressureDataLoaded()const{ return(PorePressureDataLoaded); }
+   const float* GetPorePress(){ return(PorePress); }
+   const float* GetPorePress0(){ return(PorePress0); }
++  const float* GetPorePressRes(){ return(PorePressRes); }
+ 
+   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
+   tdouble3 GetCasePosMax()const{ return(CasePosMax); }

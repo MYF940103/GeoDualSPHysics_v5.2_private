@@ -1,0 +1,24 @@
+{
+  "passed": true,
+  "tool": "tests/outputs/pore_double_vel0/reader/export_state.exe",
+  "build_provenance": "reader.build.json",
+  "fixture_checks": {
+    "source": "tests/outputs/pore_double_stage1/loader_debug/fixtures (read only)",
+    "formats": ["float_promote", "float_reconstruct", "double_exact", "double_exact_pieces"],
+    "exported_rows": 20,
+    "pressure_roundtrip": "CSV parsed back to double; IEEE-754 bits match independently calculated fixture values",
+    "checks": ["ID ordering", "native positions", "residual values", "stress component mapping", "two-piece merge"]
+  },
+  "mixed_position_check": {
+    "source": "q0_vel0_baseline_dt1em5/data/Part_0000.bi4 and Part_0001.bi4 (copied read-only for QA)",
+    "part0": {"rows": 1040, "time_s": 0, "pos_type": "float3"},
+    "part1": {"rows": 1040, "time_s": 0.001000000000000002, "pos_type": "double3"},
+    "part1_rows_with_position_not_representable_as_float": 1040,
+    "result": "Original per-frame position types retained; later native double positions are not narrowed to VTK float precision"
+  },
+  "overwrite_check": {
+    "exit_code": 1,
+    "existing_csv_sha256_unchanged": true
+  },
+  "scope": "Reader correctness and CSV precision only, not interpretation of solver differences or a physical validation result."
+}

@@ -1,0 +1,57 @@
+{
+  "command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+    "-gpu",
+    "-mdbc_noslip",
+    "-stable",
+    "-symplectic",
+    "-partbegin:1:0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_checkpoint_current_gpu\\data",
+    "-tmax:0.00001",
+    "-tout:0.00001",
+    "-nsteps:1",
+    "-nortimes:1",
+    "-sv:binx",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\pore_double_stage1\\q0_current_gpu_dt1e-05_s0\\CaseTerzaghiConsolidation_q0_PR_full_k1em4",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_restart_current_gpu_part0001"
+  ],
+  "executable_sha256": "ad6056e835d06b1726791c1512aec39ff5faa5fc5c2e11c0cbafce60085f4aff",
+  "checkpoint_sha256": "98a62d60553b2c8687fe3a31cd4b18c007c5cbf3062578ae1cdfa00fb9dd5c7e",
+  "passed": true,
+  "solver_exit_code": 0,
+  "comparison_command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\cpu_state_DebugCPU_r3\\cpu_state_DebugCPU_r3.exe",
+    "--compare-parts",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_checkpoint_current_gpu\\data",
+    "1",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\q0_restart_current_gpu_part0001\\data",
+    "0",
+    "--json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\pore_double_stage1\\q0_restart_current_gpu_part0001.native.json"
+  ],
+  "comparison_exit_code": 0,
+  "comparison": {
+    "scope": "Actual saved double PART -> solver restart -> initial saved PART, aligned by particle ID. Not full restart trajectory equivalence.",
+    "count": 1040,
+    "before_time": 0.00999999999999976,
+    "after_time": 0,
+    "fields": [
+      {
+        "name": "PorePress",
+        "storage": "double",
+        "bit_mismatches": 0,
+        "max_abs_difference": 0
+      },
+      {
+        "name": "PorePress0",
+        "storage": "double",
+        "bit_mismatches": 0,
+        "max_abs_difference": 0
+      }
+    ],
+    "passed": true
+  }
+}

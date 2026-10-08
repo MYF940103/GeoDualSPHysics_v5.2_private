@@ -86,6 +86,14 @@ Date: 2026-06-09
   - `figures/visco_sweep_k1em2/visco_sweep_k1em2_summary.csv`
   - `figures/visco_sweep_k1em2/visco_sweep_k1em2_profiles.png`
 
+## GPU zero-gravity diagnostic check
+
+- Short `k=1e-3` diagnostic runs were generated on 2026-06-25 to isolate a GPU-only response in the zero-gravity q0 Terzaghi case.
+- `diag_noload_0005` kept hydromechanics enabled but set `HydroMechTopLoadMode=None`, with `TimeMax=0.005 s`, `TimeOut=0.001 s`, and `DtFixed=5e-6 s`.
+- `diag_nohydro_0005` used the same short setup but set `HydroMech=0`, providing a no-hydromechanics baseline.
+- CPU and GPU `diag_noload_0005` runs were compared, then the same GPU no-load diagnostic and a short `TopVertical` regression run were repeated after the fix.
+- Conclusion: the diagnostic output supported the 2026-06-26 GPU fix for the zero-gravity hydro-head term. The GPU seepage operator must disable the vertical coordinate-head `lapz` contribution when gravity is zero, matching the CPU-side `gnorm>0` guard. The diagnostic XML, run logs, and short output directories were temporary and can be removed after this note.
+
 ## Files kept after cleanup
 
 - Formal XML/bat files for the three full cases.

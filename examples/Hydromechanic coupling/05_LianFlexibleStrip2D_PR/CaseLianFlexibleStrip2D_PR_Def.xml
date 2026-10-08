@@ -51,12 +51,13 @@
 
                     <setshapemode>actual | bound</setshapemode>
                     <setdrawmode mode="full" />
-                    <setmkbound mk="0" />
+                    <setmkbound mk="1" />
                     <drawbox>
                         <boxfill>solid</boxfill>
                         <point x="#-4*Dp" y="-1" z="#-4*Dp" />
                         <size x="#sizefx+8*Dp" y="2" z="#3*Dp" />
                     </drawbox>
+                    <setmkbound mk="0" />
                     <drawbox>
                         <boxfill>solid</boxfill>
                         <point x="#-4*Dp" y="-1" z="0" />
@@ -101,12 +102,16 @@
                 <HydroMechDrainage value="1" comment="After tL, drain only the open top free surface outside the strip footprint; strip footing and other boundaries remain impermeable" />
                 <HydroMechDrainageStartTime value="1.0" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
             </hydromechanics>
+            <mdbcslip>
+                <bound mkbound="0" slipmode="3" comment="Lateral walls: free-slip" />
+                <bound mkbound="1" slipmode="2" comment="Bottom wall: fixed/no-slip" />
+            </mdbcslip>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
             <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
-            <parameter key="SlipMode" value="3" comment="mDBC free-slip mode, matching the lateral free-slip setting in Lian 2023 and the validated Yao 2-D setup" />
+            <parameter key="SlipMode" value="3" comment="mDBC global default; per-mkbound overrides are defined in special/mdbcslip" />
             <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
             <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
             <parameter key="Kernel" value="2" comment="Wendland kernel" />

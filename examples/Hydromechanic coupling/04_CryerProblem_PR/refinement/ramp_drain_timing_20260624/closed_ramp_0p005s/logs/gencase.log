@@ -1,0 +1,150 @@
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\GenCase_win64.exe CaseCryerProblem_PR_Def out/CaseCryerProblem_PR -save:all
+
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 8
+[LoadXMLInit-End  time:0.000s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  radius=[0.05]  Dp=[0.0025]  dummyb=[0.09]  PosMin_x=[-0.06]  PosMin_y=[-0.06]  PosMin_z=[-0.06]  PosMax_x=[0.095]  PosMax_y=[0.095]  PosMax_z=[0.095]  CaseName=["CaseCryerProblem_PR"]  Data2D=[0]  Data2DPosy=[0]  H=[0.0045]  MassBound=[3.28125e-05]  MassFluid=[3.28125e-05]
+
+Mk size: 1 bytes
+Case limits: (-0.06,-0.06,-0.06) - (0.095,0.095,0.095)
+Distance between points (Dp): 0.0025
+Case domain: (0,0,0)-(61,61,61)
+Domain points: 62 x 62 x 62 = 238328
+Case parts: 1 x 62z
+Memory: 0.00Gb 0.23Mb (238328)
+
+> MAIN
+<MAIN (Operations= 6+2+0 = 8)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.004s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PrepareFreeParticles]
+
+*** WARNING: Free-particles feature is not finished so it can present some problems in combination with other XML operations.
+
+Checking free-particles according grid-points...
+Removing overlaped free-particles...
+Updating grid-points with free-particles...
+Sorting free-particles according to axis orientation...
+ 
+List of Free-Particles:
+  (mk=    1):     37173
+  Total.....:     37173
+ 
+[PrepareFreeParticles-End  time:0.019s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.003s)
+BitSizeTot: 19 (1 + 6+6+6)
+Points loaded: 36942
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):      8  -->       8
+Points -> Fluid particles:
+  block[  1] (mk:  1):  37173  -->   37173
+
+Particle summary:
+  Fixed....: 8  id:(0-7)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 37173  id:(8-37180)   MKs:1 (1)
+
+Total particles: 37181 (bound=8 (fx=8 mv=0 ft=0) fluid=37173)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 100 (fixed)
+
+Coefh:1.039230 (hdp:1.800000)
+
+[PreparePoints-End  time:0.024s]
+
+[SaveCase3D]
+out/CaseCryerProblem_PR_MkCells.vtk  (time:0.004s, shapes:3704, points:14816)
+
+*** WARNING: Free-particles are also included in Vtk-Cells file but it present some issues since this file format was not conceived for Free-particles.
+
+out/CaseCryerProblem_PR_FreePt.vtk  (time:0.006s, points:37173)
+out/CaseCryerProblem_PR.bi4<double>  (time:0.004s)
+out/CaseCryerProblem_PR_All.vtk  (time: 0.006s)
+out/CaseCryerProblem_PR_Bound.vtk  (time: 0.003s)
+out/CaseCryerProblem_PR_Fluid.vtk  (time: 0.006s)
+out/CaseCryerProblem_PR.xml  (time:0.007s)
+
+Save files time: 0.036s
+
+Particle limits:
+  X range: -0.05 to 0.0925 [m]
+  Y range: -0.0499845 to 0.0925 [m]
+  Z range: -0.0499398 to 0.0925 [m]
+
+[SaveCase3D-End  time:0.038s]
+
+[WARNINGS]
+1. Free-particles feature is not finished so it can present some problems in combination with other XML operations.
+2. Automatic maximum depth is zero since gravity is zero.
+3. Free-particles are also included in Vtk-Cells file but it present some issues since this file format was not conceived for Free-particles.
+
+Time of execution: 0.067 sec. (16 threads)
+
+Finished execution (code=0).
+

@@ -1,0 +1,125 @@
+{
+  "name": "selfweight_baseline_cpu_dt2.5e-07_s0_dry",
+  "build": "baseline",
+  "backend": "cpu",
+  "suite": "selfweight",
+  "dt": 2.5e-07,
+  "shepard": 0,
+  "dry": true,
+  "steps_requested": 2000,
+  "command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_baseline\\DualSPHysics5.2CPU_win64.exe",
+    "-cpu",
+    "-mdbc_noslip",
+    "-stable",
+    "-symplectic",
+    "-ompthreads:1",
+    "-partbegin:56:0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data",
+    "-tmax:0.0005",
+    "-tout:5e-05",
+    "-nsteps:2000",
+    "-nortimes:1",
+    "-sv:binx",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\pore_double_stage1\\selfweight_baseline_cpu_dt2.5e-07_s0_dry\\CaseSWSc2_MLSDirect_Tv2",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\selfweight_baseline_cpu_dt2.5e-07_s0_dry"
+  ],
+  "executable_sha256": "a2cd2b1023f6487eac3f7d7185f02175494fe680b238c558c478b71e29b6eff6",
+  "source_input_sha256": {
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2.xml": "5439212857252ccc01e4af12bf774b85dcc56d865f288a84b87b3c4c6fc0ab55",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2.bi4": "5ae98cd0d0512112bcb01246ad7cd3f07603dc48737a9c7d76f6b2324dc3e5f0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2_Normals.nbi4": "9d230acc524e8a431dea2ecc3c0598d310f583569ad546229c588491e99f414c",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\Part_0056.bi4": "576151c750074cca5f78fcee0db652fb0001e308b72430082dd18c482f8e0767",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\PartExtra_0056.bi4": "c02413eef71d9ee875cbaa202a271fc29ca3d6beeaa14b693e6bb342303ffcb0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\Part_Head.ibi4": "1aceabe4c585fbd36448017bcbb3bc4445dcb1902b47d3f522e1db4cf8953a49",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\PartInfo.ibi4": "45f294dda07ab9772f58663d6de33ad394bf4f029a23f91b4bfa77486d61f8db"
+  },
+  "generated_xml_sha256": "c5ab185a9cf86e708c57af7dba5741e143d4a0913054efcd9e0d8014f3d5c03e",
+  "passed": true,
+  "wall_seconds": 26.545156500000076,
+  "exit_code": 0,
+  "steps": 2000,
+  "excluded_particles": 0,
+  "dt_min_adjustments": 0,
+  "inputs_unchanged": true,
+  "conversion_command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+    "-dirin",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\selfweight_baseline_cpu_dt2.5e-07_s0_dry\\data",
+    "-savevtk",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\pore_double_stage1\\selfweight_baseline_cpu_dt2.5e-07_s0_dry\\vtk\\PartAll",
+    "-onlytype:+all",
+    "-vars:-all,+idp,+vel,+rhop,+sigma_kk,+sigma_ij,+fstype"
+  ],
+  "frames": [
+    {
+      "file": "PartAll_0000.vtk",
+      "sha256": "ce62e8a8fd20fc34ea63fac05294bfffef4994e7e54cff11239cca13d0421079",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0001.vtk",
+      "sha256": "1bb80a3e6f894e29b7a85e05fe216e26c12cac4ff7e6a63f5b54c8a422309a84",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0002.vtk",
+      "sha256": "38242360c0f7258138e6019e06980511cc4ddec6ce7aa440b8e6cf8eb60f5610",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0003.vtk",
+      "sha256": "4e2f4ec12948ebf272ea1b0609efa27689c970f707e9c673645a6cdc6e197305",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0004.vtk",
+      "sha256": "7a88875a7f76ffb423cf4c81a607fbf1dd052eb0fb360a28ba5f665a25e81503",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0005.vtk",
+      "sha256": "054e8cb7b455189ea930b34e0fbfe33d9f1a99705ad6b625a8bf08ade6bd6c32",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0006.vtk",
+      "sha256": "330a6575bbbe0dfb091323350fe2ededb0282fdb3e96c89988c59fdf668a6265",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0007.vtk",
+      "sha256": "99c998af793de7c3785ceb170335b914f07e5305920ca63c3cdaf67406df3746",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0008.vtk",
+      "sha256": "fd3d3262b6927dd9c5f00fc5a78647f36da2ce772c53b085f188d63a639eac81",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0009.vtk",
+      "sha256": "60cb5593e9bb4503680394da27128017e0287d85d3f5efeb75447d805d271679",
+      "count": 1040,
+      "title": "vtk output"
+    },
+    {
+      "file": "PartAll_0010.vtk",
+      "sha256": "30734ee9c3fe38529bf8781e93f91c6f210198ee810039f17c63f5df8916fa00",
+      "count": 1040,
+      "title": "vtk output"
+    }
+  ]
+}

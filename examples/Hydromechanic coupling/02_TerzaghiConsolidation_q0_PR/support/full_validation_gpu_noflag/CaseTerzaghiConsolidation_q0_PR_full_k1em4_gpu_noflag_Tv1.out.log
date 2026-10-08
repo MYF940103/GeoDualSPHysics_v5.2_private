@@ -1,0 +1,459 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_dbg-fillbox.vtk  domains:1
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_dbg-fillbox.vtk  domains:2
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_dbg-fillbox.vtk  domains:3
+FileDbgDomains> CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.016s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.009s]
+
+[SaveCase2D]
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_MkCells.vtk  (time:0.002s, shapes:2, points:8)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag.bi4<double>  (time:0.002s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_All.vtk  (time: 0.004s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_Bound.vtk  (time: 0.003s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_Fluid.vtk  (time: 0.003s)
+CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag.xml  (time:0.006s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_Normals.vtk
+  CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_Normals.nbi4  (time:0.015s)
+
+Save files time: 0.029s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.030s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.057 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.1 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  11-07-2026 12:52:09]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR"
+XmlFile=".../02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag.xml"
+OutputDir=".../Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out"
+OutputDataDir=".../02_TerzaghiConsolidation_q0_PR/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[36.4471]  TimeOut=[0.182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopVertical"
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.036000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag"
+RunName="CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=36.4471428571429
+TimePart=0.182185714285714
+Gravity=(0,0,0)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested GPU memory for 1168 particles: 0.4 MB (0 times).
+NormalDataFile="CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_out/CaseTerzaghiConsolidation_q0_PR_full_k1em4_gpu_noflag_Normals.nbi4"
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (39 regs)
+  BsForcesFluid=128 (74 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1253 particles: 0.5 MB.
+**JSphGpu: Requesting gpu memory for 2093 particles: 0.8 MB.
+**CellDiv: Requested gpu memory for 2093 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 443750 (0.42 MB)
+Allocated memory in GPU: 844264 (0.81 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (dnn2ja2n)  11-07-2026 12:52:09]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 2967 particles: 1.1 MB.
+**CellDiv: Requested gpu memory for 2967 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+  Progress 0.28% in 30.0s. Estimated finish time: 11-07-2026 15:50:51
+Part_0001      0.182190         18219    18219     294.17  11-07-2026 15:50:51
+Part_0002      0.364380         36438    18219     294.43  11-07-2026 15:50:55
+Part_0003      0.546560         54656    18218     293.99  11-07-2026 15:50:52
+Part_0004      0.728750         72875    18219     323.85  11-07-2026 15:55:22
+Part_0005      0.910930         91093    18218     303.59  11-07-2026 15:55:36
+Part_0006      1.093120        109312    18219     303.64  11-07-2026 15:55:46
+Part_0007      1.275310        127531    18219     306.42  11-07-2026 15:56:07
+Part_0008      1.457490        145749    18218     304.45  11-07-2026 15:56:15
+Part_0009      1.639680        163968    18219     301.63  11-07-2026 15:56:09
+Part_0010      1.821860        182186    18218     301.32  11-07-2026 15:56:04
+Part_0011      2.004050        200405    18219     301.09  11-07-2026 15:55:57
+Part_0012      2.186230        218623    18218     304.07  11-07-2026 15:56:02
+Part_0013      2.368420        236842    18219     302.86  11-07-2026 15:56:02
+Part_0014      2.550600        255060    18218     303.66  11-07-2026 15:56:05
+Part_0015      2.732790        273279    18219     303.41  11-07-2026 15:56:07
+Part_0016      2.914980        291498    18219     303.09  11-07-2026 15:56:07
+Part_0017      3.097160        309716    18218     304.92  11-07-2026 15:56:11
+Part_0018      3.279350        327935    18219     304.13  11-07-2026 15:56:14
+Part_0019      3.461530        346153    18218     304.80  11-07-2026 15:56:17
+Part_0020      3.643720        364372    18219     306.08  11-07-2026 15:56:22
+Part_0021      3.825900        382590    18218     310.40  11-07-2026 15:56:35
+Part_0022      4.008090        400809    18219     303.41  11-07-2026 15:56:35
+Part_0023      4.190280        419028    18219     299.64  11-07-2026 15:56:29
+Part_0024      4.372460        437246    18218     299.81  11-07-2026 15:56:23
+Part_0025      4.554650        455465    18219     299.67  11-07-2026 15:56:18
+Part_0026      4.736830        473683    18218     300.66  11-07-2026 15:56:15
+Part_0027      4.919020        491902    18219     300.28  11-07-2026 15:56:10
+Part_0028      5.101210        510121    18219     300.57  11-07-2026 15:56:07
+Part_0029      5.283390        528339    18218     299.61  11-07-2026 15:56:04
+Part_0030      5.465580        546558    18219     298.70  11-07-2026 15:55:58
+Part_0031      5.647760        564776    18218     301.79  11-07-2026 15:55:57
+Part_0032      5.829950        582995    18219     303.59  11-07-2026 15:55:58
+Part_0033      6.012130        601213    18218     299.84  11-07-2026 15:55:56
+Part_0034      6.194320        619432    18219     300.01  11-07-2026 15:55:53
+Part_0035      6.376510        637651    18219     300.89  11-07-2026 15:55:51
+Part_0036      6.558690        655869    18218     299.34  11-07-2026 15:55:48
+Part_0037      6.740880        674088    18219     301.19  11-07-2026 15:55:47
+Part_0038      6.923060        692306    18218     312.64  11-07-2026 15:55:57
+Part_0039      7.105250        710525    18219     311.44  11-07-2026 15:56:06
+Part_0040      7.287430        728743    18218     313.28  11-07-2026 15:56:15
+Part_0041      7.469620        746962    18219     315.00  11-07-2026 15:56:25
+Part_0042      7.651810        765181    18219     314.14  11-07-2026 15:56:34
+Part_0043      7.833990        783399    18218     328.54  11-07-2026 15:56:56
+Part_0044      8.016180        801618    18219     314.01  11-07-2026 15:57:04
+Part_0045      8.198360        819836    18218     314.28  11-07-2026 15:57:12
+Part_0046      8.380550        838055    18219     315.52  11-07-2026 15:57:20
+Part_0047      8.562730        856273    18218     312.58  11-07-2026 15:57:26
+Part_0048      8.744920        874492    18219     316.38  11-07-2026 15:57:35
+Part_0049      8.927110        892711    18219     314.54  11-07-2026 15:57:42
+Part_0050      9.109290        910929    18218     312.46  11-07-2026 15:57:47
+Part_0051      9.291480        929148    18219     311.62  11-07-2026 15:57:52
+Part_0052      9.473660        947366    18218     315.66  11-07-2026 15:57:58
+Part_0053      9.655850        965585    18219     311.88  11-07-2026 15:58:02
+Part_0054      9.838030        983803    18218     303.80  11-07-2026 15:58:01
+Part_0055     10.020220       1002022    18219     302.77  11-07-2026 15:57:59
+Part_0056     10.202410       1020241    18219     300.08  11-07-2026 15:57:55
+Part_0057     10.384590       1038459    18218     301.48  11-07-2026 15:57:52
+Part_0058     10.566780       1056678    18219     300.15  11-07-2026 15:57:49
+Part_0059     10.748960       1074896    18218     299.99  11-07-2026 15:57:45
+Part_0060     10.931150       1093115    18219     302.75  11-07-2026 15:57:44
+Part_0061     11.113330       1111333    18218     302.51  11-07-2026 15:57:42
+Part_0062     11.295520       1129552    18219     301.35  11-07-2026 15:57:40
+Part_0063     11.477710       1147771    18219     304.08  11-07-2026 15:57:39
+Part_0064     11.659890       1165989    18218     307.14  11-07-2026 15:57:40
+Part_0065     11.842080       1184208    18219     302.49  11-07-2026 15:57:38
+Part_0066     12.024260       1202426    18218     303.03  11-07-2026 15:57:36
+Part_0067     12.206450       1220645    18219     303.30  11-07-2026 15:57:36
+Part_0068     12.388630       1238863    18218     314.03  11-07-2026 15:57:41
+Part_0069     12.570820       1257082    18219     312.18  11-07-2026 15:57:44
+Part_0070     12.753010       1275301    18219     314.70  11-07-2026 15:57:49
+Part_0071     12.935190       1293519    18218     315.54  11-07-2026 15:57:54
+Part_0072     13.117380       1311738    18219     310.08  11-07-2026 15:57:56
+Part_0073     13.299560       1329956    18218     320.20  11-07-2026 15:58:03
+Part_0074     13.481750       1348175    18219     317.78  11-07-2026 15:58:09
+Part_0075     13.663930       1366393    18218     308.46  11-07-2026 15:58:10
+Part_0076     13.846120       1384612    18219     310.65  11-07-2026 15:58:12
+Part_0077     14.028310       1402831    18219     311.36  11-07-2026 15:58:15
+Part_0078     14.210490       1421049    18218     312.17  11-07-2026 15:58:18
+Part_0079     14.392680       1439268    18219     311.22  11-07-2026 15:58:19
+Part_0080     14.574860       1457486    18218     310.52  11-07-2026 15:58:21
+Part_0081     14.757050       1475705    18219     312.18  11-07-2026 15:58:24
+Part_0082     14.939230       1493923    18218     313.62  11-07-2026 15:58:27
+Part_0083     15.121420       1512142    18219     309.14  11-07-2026 15:58:28
+Part_0084     15.303610       1530361    18219     302.95  11-07-2026 15:58:27
+Part_0085     15.485790       1548579    18218     303.19  11-07-2026 15:58:25
+Part_0086     15.667980       1566798    18219     303.08  11-07-2026 15:58:24
+Part_0087     15.850160       1585016    18218     302.56  11-07-2026 15:58:22
+Part_0088     16.032350       1603235    18219     302.82  11-07-2026 15:58:20
+Part_0089     16.214530       1621453    18218     303.21  11-07-2026 15:58:19
+Part_0090     16.396720       1639672    18219     302.58  11-07-2026 15:58:18
+Part_0091     16.578910       1657891    18219     302.42  11-07-2026 15:58:16
+Part_0092     16.761090       1676109    18218     302.90  11-07-2026 15:58:14
+Part_0093     16.943280       1694328    18219     302.71  11-07-2026 15:58:13
+Part_0094     17.125460       1712546    18218     301.00  11-07-2026 15:58:11
+Part_0095     17.307650       1730765    18219     301.47  11-07-2026 15:58:09
+Part_0096     17.489830       1748983    18218     303.97  11-07-2026 15:58:08
+Part_0097     17.672020       1767202    18219     301.61  11-07-2026 15:58:06
+Part_0098     17.854210       1785421    18219     309.86  11-07-2026 15:58:08
+Part_0099     18.036390       1803639    18218     311.75  11-07-2026 15:58:10
+Part_0100     18.218580       1821858    18219     311.99  11-07-2026 15:58:12
+Part_0101     18.400760       q0 Terzaghi consolidation k=1e-4 GPU no-flag full validation aborted.

@@ -1,0 +1,35 @@
+{
+  "passed": true,
+  "source_checkpoint": "fe72537f8b61616e98134535bfaf0535a4269855",
+  "purpose": "Original-float rollback reproduction only; no physical accuracy or speedup claim.",
+  "tools": {
+    "source_checkpoint": "fe72537f8b61616e98134535bfaf0535a4269855",
+    "tracked_source_project_diff": [
+      "src/source/JPartsLoad4.cpp"
+    ],
+    "exact_source_exemptions": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JPartsLoad4.cpp",
+        "sha256": "2dcf4561bc9df4695a732359a5307305dddfe506c191b16f0966a1a5542b3c20",
+        "purpose": "Authorized float-only restart validation, piece count and pressure mapping safety; not precision accumulation."
+      }
+    ],
+    "release_sha256": {
+      "cpu": "1b34475434b4b2d21669027f020b74f959f9c99f097a9b624a8c6e7124865cdc"
+    },
+    "native_reader_sha256": "925772986fd6c7efa3a360475fa7d648b0072363808af1f43323c55b4d583826",
+    "native_reader_record_sha256": "9e01cd4d5a157848dc6b831db186db229b8b2f0ebee2d964a463ced0a1e39ede"
+  },
+  "runs": [
+    {
+      "name": "r1_cpu_pair_symplectic",
+      "passed": true,
+      "record": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upw_float_restore\\r1_cpu_pair_symplectic.json"
+    },
+    {
+      "name": "r1_cpu_density_symplectic",
+      "passed": true,
+      "record": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upw_float_restore\\r1_cpu_density_symplectic.json"
+    }
+  ]
+}

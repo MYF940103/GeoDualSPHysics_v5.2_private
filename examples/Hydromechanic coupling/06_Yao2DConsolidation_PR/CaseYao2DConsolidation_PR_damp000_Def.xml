@@ -1,0 +1,142 @@
+﻿<?xml version="1.0" encoding="UTF-8"?>
+<case app="GenCase v5.0.197 (18-07-2020)" date="26-06-2026 00:00:00">
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="0" comment="No gravity in Yao 2025 2-D consolidation" units_comment="m/s^2" />
+      <rhop0 value="1700" comment="Saturated mixture density: (1-n)rho_s+n*rho_f for n=0.3" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+      <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+      <speedsystem value="0" auto="true" comment="Maximum system speed" />
+      <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+      <speedsound value="0" auto="true" comment="Hydromechanics recalculates Cs0 from the soil constrained modulus" />
+      <hdp value="1.8" comment="Smoothing length ratio h/dp" />
+      <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <predefinition>
+        <newvarcte xmin="-10.0" _rem="Full-domain left edge" />
+        <newvarcte xmax="10.0" _rem="Full-domain right edge" />
+        <newvarcte sizefx="20.0" _rem="Soil layer width" />
+        <newvarcte sizefz="10.0" _rem="Soil layer height" />
+        <newvarcte Dp="0.1" _rem="Particle spacing for the refined Yao 2025 2-D consolidation validation" />
+      </predefinition>
+      <definition dp="#Dp" units_comment="metres (m)">
+        <pointmin x="#xmin-Dp*12" y="0" z="#-Dp*12" />
+        <pointmax x="#xmax+Dp*12" y="0" z="#sizefz+Dp*12" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setshapemode>actual | bound</setshapemode>
+          <setnormalinvert invert="false" />
+          <move x="0" y="-0.1" z="0" />
+          <setmkbound mk="0" />
+          <drawbeach mask="1|2|6">
+            <point x="#xmin" y="0.2" z="#sizefz" />
+            <point x="#xmin" y="0.2" z="0" />
+            <point x="#xmax" y="0.2" z="0" />
+            <point x="#xmax" y="0.2" z="#sizefz" />
+          </drawbeach>
+          <matrixreset />
+          <shapeout file="hdp" />
+          <setmkvoid />
+          <redraw />
+          <setdrawmode mode="full" />
+          <setboxlimitmode mode="full" />
+          <setmkfluid mk="0" />
+          <fillbox x="#xmin+Dp/2" y="0" z="#Dp/2">
+            <modefill>void</modefill>
+            <point x="#xmin-Dp/2" y="-1" z="#-Dp/2" />
+            <size x="#sizefx" y="2" z="#sizefz" />
+          </fillbox>
+          <setshapemode>actual | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkbound mk="0" />
+          <drawbox>
+            <boxfill>solid</boxfill>
+            <point x="#xmin-4*Dp" y="-1" z="#-4*Dp" />
+            <size x="#sizefx+8*Dp" y="2" z="#3*Dp" />
+          </drawbox>
+          <drawbox>
+            <boxfill>solid</boxfill>
+            <point x="#xmin-4*Dp" y="-1" z="0" />
+            <size x="#3*Dp" y="2" z="#sizefz" />
+          </drawbox>
+          <drawbox>
+            <boxfill>solid</boxfill>
+            <point x="#xmax+Dp" y="-1" z="0" />
+            <size x="#3*Dp" y="2" z="#sizefz" />
+          </drawbox>
+        </mainlist>
+      </commands>
+    </geometry>
+    <normals>
+      <distanceh value="2.0" comment="Maximum distance (H*distanceh) to compute normals data" />
+      <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry (VTK format)" />
+      <svshapes value="1" comment="Save geometry shapes" />
+    </normals>
+  </casedef>
+  <execution>
+    <special>
+      <soils>
+        <phi value="33" comment="Friction angle; high cohesion keeps this poroelastic verification elastic" />
+        <coh value="1e9" comment="High cohesion to avoid plastic yielding" />
+        <dlt value="0" comment="Dilatancy angle" />
+        <ModulusE value="30e6" comment="Young's modulus of the solid skeleton in Table 1 of Yao 2025" units_comment="Pa" />
+        <PRvs value="0.2" comment="Poisson ratio of the solid skeleton in Table 1 of Yao 2025" />
+      </soils>
+      <hydromechanics>
+        <HydroMech value="1" comment="Enable u-p pore-pressure-rate formulation" />
+        <PoreWaterRho value="1000" comment="Density of pore water in Table 1" units_comment="kg/m^3" />
+        <PoreWaterBulkModulus value="100e6" comment="Bulk modulus of pore water in Table 1" units_comment="Pa" />
+        <Porosity value="0.3" comment="Porosity n in Table 1" />
+        <HydraulicConductivity value="1e-3" comment="Hydraulic conductivity k in Table 1" units_comment="m/s" />
+        <PoreDtSafety value="0.1" comment="Explicit u-p safety factor" />
+        <PoreShepardRegularization value="0" comment="Disabled for the first no-diffusion Yao u-p comparison" />
+        <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
+        <HydroMechInitMode value="0" comment="Initial effective stress and EPWP are zero" />
+        <HydroMechTopLoadMode value="3" comment="3=TopStripVertical; hard-coded Yao strip footprint x=[-3,3] m on the top surface" />
+        <HydroMechTopLoadQ0 value="5000" comment="Compressive strip surcharge sigma_c0=5 kPa" units_comment="Pa" />
+        <HydroMechTopLoadRampTime value="0.1" comment="Ramp load duration in Eq. (75)" units_comment="seconds" />
+        <HydroMechDrainage value="1" comment="Drain the open top free surface outside the impermeable foundation strip" />
+        <HydroMechDrainageStartTime value="0.0" comment="Free-surface drainage is active from the start" units_comment="seconds" />
+      </hydromechanics>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+      <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
+      <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
+      <parameter key="SlipMode" value="3" comment="mDBC slip mode for the side and bottom boundaries, matching the Yao 2025 setup" />
+      <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
+      <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
+      <parameter key="Kernel" value="2" comment="Wendland kernel" />
+      <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+      <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient alpha_Pi used by Yao 2025" />
+      <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
+      <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
+      <parameter key="SoilDamping" value="1" comment="Enable Bui-Fukagawa damping for the formal Yao 2-D consolidation damping comparison" />
+      <parameter key="SoilDampingCoef" value="0" comment="Formal no-damping comparison: Bui-Fukagawa damping coefficient 0" />
+      <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled for the no-diffusion baseline" />
+      <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
+      <parameter key="Shifting" value="0" comment="Shifting disabled" />
+      <parameter key="ShiftCoef" value="-2" comment="Unused when shifting is disabled" />
+      <parameter key="ShiftTFS" value="1.5" comment="Free-surface threshold" />
+      <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
+      <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
+      <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
+      <parameter key="DtIni" value="0.00002" comment="Initial time step" units_comment="seconds" />
+      <parameter key="DtMin" value="0.000000001" comment="Minimum time step" units_comment="seconds" />
+      <parameter key="DtFixed" value="0.00002" comment="Fixed reference time step for the first GPU validation" units_comment="seconds" />
+      <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
+      <parameter key="TimeMax" value="10.0" comment="Matches Fig. 29 and the t=10 s contour in Fig. 27" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.05" comment="Output interval for full 10 s no-diffusion validation" units_comment="seconds" />
+      <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
+      <parameter key="RhopOutMin" value="500" comment="Minimum valid rhop" units_comment="kg/m^3" />
+      <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />
+      <simulationdomain comment="Defines domain of simulation">
+        <posmin x="default" y="default" z="default" />
+        <posmax x="default" y="default" z="default" />
+      </simulationdomain>
+    </parameters>
+  </execution>
+</case>

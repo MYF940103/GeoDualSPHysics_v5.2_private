@@ -1,0 +1,2523 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseSWSc2_MLSDirect_Tv2"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.004s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_dbg-fillbox.vtk  domains:1
+FileDbgDomains> outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_dbg-fillbox.vtk  domains:2
+FileDbgDomains> outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_dbg-fillbox.vtk  domains:3
+FileDbgDomains> outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.028s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Z...
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+Maximum depth: 0.99 (automatic)
+Speed of system: 3.11639 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 62.3278 max(62.3278,31.1639)
+Speed of sound: 62.3278 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+[PreparePoints-End  time:0.000s]
+
+[SaveCase2D]
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_MkCells.vtk  (time:0.003s, shapes:2, points:8)
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2.bi4<double>  (time:0.003s)
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_All.vtk  (time: 0.004s)
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_Bound.vtk  (time: 0.004s)
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_Fluid.vtk  (time: 0.004s)
+outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2.xml  (time:0.009s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_Normals.vtk
+  outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2_Normals.nbi4  (time:0.020s)
+
+Save files time: 0.037s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.039s]
+
+
+Time of execution: 0.068 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.1 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  05-07-2026 04:12:28]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../Hydromechanic coupling/01_SelfWeightConsolidation_PR/tests"
+XmlFile=".../outputs/CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/CaseSWSc2_MLSDirect_Tv2.xml"
+OutputDir=".../tests/outputs/CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out"
+OutputDataDir=".../outputs/CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out/data"
+PartBegin=40
+PartBeginDir="outputs\CaseSWSt1_MLSDirect_GPU_out\data"
+PartBeginFirst=0
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseSWSc2_MLSDirect_Tv2"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[1.16543e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[7.28743]  TimeOut=[0.0182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.036000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseSWSc2_MLSDirect_Tv2"
+RunName="CaseSWSc2_MLSDirect_Tv2"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.4
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=7.2874285714
+TimePart=0.0182185714
+Gravity=(0,0,-9.81)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested GPU memory for 1168 particles: 0.5 MB (0 times).
+Restart soil data: Sigma inherited, Kplastic reset for restart stage.
+Restart hydromechanical data: PorePress and PorePress0 inherited.
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (39 regs)
+  BsForcesFluid=128 (74 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1253 particles: 0.5 MB.
+**JSphGpu: Requesting gpu memory for 2093 particles: 0.8 MB.
+**CellDiv: Requested gpu memory for 2093 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 468866 (0.45 MB)
+Allocated memory in GPU: 894496 (0.85 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (mnw1qnek)  05-07-2026 04:12:28]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 2967 particles: 1.2 MB.
+**CellDiv: Requested gpu memory for 2967 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+  Progress 0.11% in 30.0s. Estimated finish time: 05-07-2026 11:52:58
+  Progress 0.22% in 60.0s. Estimated finish time: 05-07-2026 11:53:04
+Part_0001      0.018219         18219    18219    3792.68  05-07-2026 11:53:06
+Part_0002      0.036438         36438    18219    4292.62  05-07-2026 12:23:28
+Part_0003      0.054656         54656    18218    3135.29  05-07-2026 11:46:45
+Part_0004      0.072875         72875    18219    3103.09  05-07-2026 11:27:24
+Part_0005      0.091093         91093    18218    3124.76  05-07-2026 11:16:19
+Part_0006      0.109312        109312    18219    3113.88  05-07-2026 11:08:43
+Part_0007      0.127530        127530    18218    3103.26  05-07-2026 11:03:05
+Part_0008      0.145749        145749    18219    3109.21  05-07-2026 10:58:58
+Part_0009      0.163968        163968    18219    3113.19  05-07-2026 10:55:49
+Part_0010      0.182186        182186    18218    3121.02  05-07-2026 10:53:23
+Part_0011      0.200405        200405    18219    3127.95  05-07-2026 10:51:28
+Part_0012      0.218623        218623    18218    3114.55  05-07-2026 10:49:45
+Part_0013      0.236842        236842    18219    3099.02  05-07-2026 10:48:09
+Part_0014      0.255060        255060    18218    3117.88  05-07-2026 10:46:57
+Part_0015      0.273279        273279    18219    3122.03  05-07-2026 10:45:55
+Part_0016      0.291498        291498    18219    3122.56  05-07-2026 10:45:02
+Part_0017      0.309716        309716    18218    3479.18  05-07-2026 10:46:48
+Part_0018      0.327935        327935    18219    3090.40  05-07-2026 10:45:45
+Part_0019      0.346153        346153    18218    3091.47  05-07-2026 10:44:49
+Part_0020      0.364372        364372    18219    3101.24  05-07-2026 10:44:02
+Part_0021      0.382590        382590    18218    3121.14  05-07-2026 10:43:27
+Part_0022      0.400809        400809    18219    3109.53  05-07-2026 10:42:50
+Part_0023      0.419028        419028    18219    3120.77  05-07-2026 10:42:20
+Part_0024      0.437246        437246    18218    3115.07  05-07-2026 10:41:52
+Part_0025      0.455465        455465    18219    3098.65  05-07-2026 10:41:20
+Part_0026      0.473683        473683    18218    3096.59  05-07-2026 10:40:51
+Part_0027      0.491902        491902    18219    3120.84  05-07-2026 10:40:31
+Part_0028      0.510120        510120    18218    3124.23  05-07-2026 10:40:12
+Part_0029      0.528339        528339    18219    3119.59  05-07-2026 10:39:53
+Part_0030      0.546558        546558    18219    3123.33  05-07-2026 10:39:37
+Part_0031      0.564776        564776    18218    3117.87  05-07-2026 10:39:21
+Part_0032      0.582995        582995    18219    3087.86  05-07-2026 10:38:58
+Part_0033      0.601213        601213    18218    3114.64  05-07-2026 10:38:44
+Part_0034      0.619432        619432    18219    3125.44  05-07-2026 10:38:32
+Part_0035      0.637650        637650    18218    3118.90  05-07-2026 10:38:20
+Part_0036      0.655869        655869    18219    3120.98  05-07-2026 10:38:09
+Part_0037      0.674088        674088    18219    3102.34  05-07-2026 10:37:54
+Part_0038      0.692306        692306    18218    3112.96  05-07-2026 10:37:43
+Part_0039      0.710525        710525    18219    3116.69  05-07-2026 10:37:33
+Part_0040      0.728743        728743    18218    3081.24  05-07-2026 10:37:16
+Part_0041      0.746962        746962    18219    3120.24  05-07-2026 10:37:08
+Part_0042      0.765180        765180    18218    3120.71  05-07-2026 10:37:00
+Part_0043      0.783399        783399    18219    3107.48  05-07-2026 10:36:50
+Part_0044      0.801618        801618    18219    3075.15  05-07-2026 10:36:35
+Part_0045      0.819836        819836    18218    3100.79  05-07-2026 10:36:25
+Part_0046      0.838055        838055    18219    3103.09  05-07-2026 10:36:16
+Part_0047      0.856273        856273    18218    3113.55  05-07-2026 10:36:09
+Part_0048      0.874492        874492    18219    3125.62  05-07-2026 10:36:04
+Part_0049      0.892710        892710    18218    3124.38  05-07-2026 10:35:59
+Part_0050      0.910929        910929    18219    3116.07  05-07-2026 10:35:53
+Part_0051      0.929148        929148    18219    3140.28  05-07-2026 10:35:50
+Part_0052      0.947366        947366    18218    3139.29  05-07-2026 10:35:48
+Part_0053      0.965585        965585    18219    3146.19  05-07-2026 10:35:46
+Part_0054      0.983803        983803    18218    3151.63  05-07-2026 10:35:46
+Part_0055      1.002022       1002022    18219    3107.38  05-07-2026 10:35:40
+Part_0056      1.020240       1020240    18218    3143.29  05-07-2026 10:35:38
+Part_0057      1.038459       1038459    18219    3147.80  05-07-2026 10:35:37
+Part_0058      1.056678       1056678    18219    3126.22  05-07-2026 10:35:34
+Part_0059      1.074896       1074896    18218    3149.42  05-07-2026 10:35:33
+Part_0060      1.093115       1093115    18219    3161.69  05-07-2026 10:35:34
+Part_0061      1.111333       1111333    18218    3157.76  05-07-2026 10:35:35
+Part_0062      1.129552       1129552    18219    3160.08  05-07-2026 10:35:35
+Part_0063      1.147770       1147770    18218    3150.29  05-07-2026 10:35:35
+Part_0064      1.165989       1165989    18219    3138.29  05-07-2026 10:35:33
+Part_0065      1.184208       1184208    18219    3130.41  05-07-2026 10:35:31
+Part_0066      1.202426       1202426    18218    3166.36  05-07-2026 10:35:32
+Part_0067      1.220645       1220645    18219    3166.22  05-07-2026 10:35:33
+Part_0068      1.238863       1238863    18218    3167.53  05-07-2026 10:35:35
+Part_0069      1.257082       1257082    18219    3139.58  05-07-2026 10:35:33
+Part_0070      1.275300       1275300    18218    3139.88  05-07-2026 10:35:31
+Part_0071      1.293519       1293519    18219    3160.15  05-07-2026 10:35:32
+Part_0072      1.311738       1311738    18219    3154.58  05-07-2026 10:35:32
+Part_0073      1.329956       1329956    18218    3166.95  05-07-2026 10:35:34
+Part_0074      1.348175       1348175    18219    3167.70  05-07-2026 10:35:35
+Part_0075      1.366393       1366393    18218    3139.31  05-07-2026 10:35:34
+Part_0076      1.384612       1384612    18219    3137.84  05-07-2026 10:35:32
+Part_0077      1.402830       1402830    18218    3153.62  05-07-2026 10:35:32
+Part_0078      1.421049       1421049    18219    3149.11  05-07-2026 10:35:32
+Part_0079      1.439268       1439268    18219    3163.25  05-07-2026 10:35:33
+Part_0080      1.457486       1457486    18218    3167.16  05-07-2026 10:35:33
+Part_0081      1.475705       1475705    18219    3165.54  05-07-2026 10:35:35
+Part_0082      1.493923       1493923    18218    3149.79  05-07-2026 10:35:34
+Part_0083      1.512142       1512142    18219    3143.16  05-07-2026 10:35:34
+Part_0084      1.530360       1530360    18218    3162.54  05-07-2026 10:35:34
+Part_0085      1.548579       1548579    18219    3160.22  05-07-2026 10:35:35
+Part_0086      1.566798       1566798    18219    3162.10  05-07-2026 10:35:35
+Part_0087      1.585016       1585016    18218    3149.22  05-07-2026 10:35:35
+Part_0088      1.603235       1603235    18219    3158.77  05-07-2026 10:35:35
+Part_0089      1.621453       1621453    18218    3132.25  05-07-2026 10:35:33
+Part_0090      1.639672       1639672    18219    3165.86  05-07-2026 10:35:34
+Part_0091      1.657890       1657890    18218    3169.53  05-07-2026 10:35:36
+Part_0092      1.676109       1676109    18219    3169.14  05-07-2026 10:35:37
+Part_0093      1.694328       1694328    18219    3166.43  05-07-2026 10:35:37
+Part_0094      1.712546       1712546    18218    3159.58  05-07-2026 10:35:38
+Part_0095      1.730765       1730765    18219    3144.60  05-07-2026 10:35:37
+Part_0096      1.748983       1748983    18218    3139.15  05-07-2026 10:35:36
+Part_0097      1.767202       1767202    18219    3155.22  05-07-2026 10:35:36
+Part_0098      1.785420       1785420    18218    3147.99  05-07-2026 10:35:36
+Part_0099      1.803639       1803639    18219    3162.05  05-07-2026 10:35:37
+Part_0100      1.821858       1821858    18219    3163.45  05-07-2026 10:35:37
+Part_0101      1.840076       1840076    18218    3141.40  05-07-2026 10:35:36
+Part_0102      1.858295       1858295    18219    3154.09  05-07-2026 10:35:36
+Part_0103      1.876513       1876513    18218    3166.77  05-07-2026 10:35:37
+Part_0104      1.894732       1894732    18219    3164.12  05-07-2026 10:35:37
+Part_0105      1.912950       1912950    18218    3169.43  05-07-2026 10:35:38
+Part_0106      1.931169       1931169    18219    3166.51  05-07-2026 10:35:39
+Part_0107      1.949388       1949388    18219    3124.89  05-07-2026 10:35:37
+Part_0108      1.967606       1967606    18218    3139.07  05-07-2026 10:35:36
+Part_0109      1.985825       1985825    18219    3118.60  05-07-2026 10:35:34
+Part_0110      2.004043       2004043    18218    3309.10  05-07-2026 10:35:44
+Part_0111      2.022262       2022262    18219    4384.80  05-07-2026 10:37:05
+Part_0112      2.040480       2040480    18218    3798.98  05-07-2026 10:37:46
+Part_0113      2.058699       2058699    18219    3170.15  05-07-2026 10:37:46
+Part_0114      2.076918       2076918    18219    3167.71  05-07-2026 10:37:46
+Part_0115      2.095136       2095136    18218    3199.76  05-07-2026 10:37:47
+Part_0116      2.113355       2113355    18219    3202.23  05-07-2026 10:37:49
+Part_0117      2.131573       2131573    18218    3204.21  05-07-2026 10:37:51
+Part_0118      2.149792       2149792    18219    3201.42  05-07-2026 10:37:53
+Part_0119      2.168010       2168010    18218    3183.43  05-07-2026 10:37:54
+Part_0120      2.186229       2186229    18219    3184.19  05-07-2026 10:37:54
+Part_0121      2.204448       2204448    18219    3199.57  05-07-2026 10:37:55
+Part_0122      2.222666       2222666    18218    3172.78  05-07-2026 10:37:56
+Part_0123      2.240885       2240885    18219    3192.09  05-07-2026 10:37:57
+Part_0124      2.259103       2259103    18218    3200.78  05-07-2026 10:37:59
+Part_0125      2.277322       2277322    18219    3188.04  05-07-2026 10:38:00
+Part_0126      2.295540       2295540    18218    3182.93  05-07-2026 10:38:00
+Part_0127      2.313759       2313759    18219    3193.05  05-07-2026 10:38:01
+Part_0128      2.331978       2331978    18219    3202.05  05-07-2026 10:38:02
+Part_0129      2.350196       2350196    18218    3199.92  05-07-2026 10:38:04
+Part_0130      2.368415       2368415    18219    3199.25  05-07-2026 10:38:05
+Part_0131      2.386633       2386633    18218    3191.74  05-07-2026 10:38:06
+Part_0132      2.404852       2404852    18219    3176.15  05-07-2026 10:38:06
+Part_0133      2.423070       2423070    18218    3197.35  05-07-2026 10:38:07
+Part_0134      2.441289       2441289    18219    3196.12  05-07-2026 10:38:08
+Part_0135      2.459508       2459508    18219    3183.45  05-07-2026 10:38:09
+Part_0136      2.477726       2477726    18218    3201.92  05-07-2026 10:38:11
+Part_0137      2.495945       2495945    18219    3198.89  05-07-2026 10:38:12
+Part_0138      2.514163       2514163    18218    3180.14  05-07-2026 10:38:12
+Part_0139      2.532382       2532382    18219    3167.96  05-07-2026 10:38:12
+Part_0140      2.550600       2550600    18218    3194.74  05-07-2026 10:38:13
+Part_0141      2.568819       2568819    18219    3200.08  05-07-2026 10:38:14
+Part_0142      2.587038       2587038    18219    3201.00  05-07-2026 10:38:15
+Part_0143      2.605256       2605256    18218    3201.03  05-07-2026 10:38:17
+Part_0144      2.623475       2623475    18219    3189.24  05-07-2026 10:38:17
+Part_0145      2.641693       2641693    18218    3161.07  05-07-2026 10:38:16
+Part_0146      2.659912       2659912    18219    3197.66  05-07-2026 10:38:18
+Part_0147      2.678130       2678130    18218    3199.23  05-07-2026 10:38:18
+Part_0148      2.696349       2696349    18219    3200.72  05-07-2026 10:38:19
+Part_0149      2.714568       2714568    18219    3202.91  05-07-2026 10:38:21
+Part_0150      2.732786       2732786    18218    3173.84  05-07-2026 10:38:21
+Part_0151      2.751005       2751005    18219    3192.06  05-07-2026 10:38:22
+Part_0152      2.769223       2769223    18218    3200.23  05-07-2026 10:38:23
+Part_0153      2.787442       2787442    18219    3201.95  05-07-2026 10:38:23
+Part_0154      2.805660       2805660    18218    3205.41  05-07-2026 10:38:25
+Part_0155      2.823879       2823879    18219    3147.55  05-07-2026 10:38:24
+Part_0156      2.842098       2842098    18219    3156.74  05-07-2026 10:38:23
+Part_0157      2.860316       2860316    18218    3182.94  05-07-2026 10:38:23
+Part_0158      2.878535       2878535    18219    3159.35  05-07-2026 10:38:22
+Part_0159      2.896753       2896753    18218    3202.13  05-07-2026 10:38:23
+Part_0160      2.914972       2914972    18219    3196.19  05-07-2026 10:38:24
+Part_0161      2.933190       2933190    18218    3206.75  05-07-2026 10:38:25
+Part_0162      2.951409       2951409    18219    3198.63  05-07-2026 10:38:26
+Part_0163      2.969628       2969628    18219    3185.80  05-07-2026 10:38:26
+Part_0164      2.987846       2987846    18218    3199.43  05-07-2026 10:38:28
+Part_0165      3.006065       3006065    18219    3203.01  05-07-2026 10:38:29
+Part_0166      3.024283       3024283    18218    3205.81  05-07-2026 10:38:31
+Part_0167      3.042502       3042502    18219    3203.13  05-07-2026 10:38:31
+Part_0168      3.060720       3060720    18218    3166.78  05-07-2026 10:38:31
+Part_0169      3.078939       3078939    18219    3171.96  05-07-2026 10:38:30
+Part_0170      3.097158       3097158    18219    3192.65  05-07-2026 10:38:31
+Part_0171      3.115376       3115376    18218    3200.47  05-07-2026 10:38:32
+Part_0172      3.133595       3133595    18219    3202.84  05-07-2026 10:38:33
+Part_0173      3.151813       3151813    18218    3203.86  05-07-2026 10:38:34
+Part_0174      3.170032       3170032    18219    3198.36  05-07-2026 10:38:35
+Part_0175      3.188250       3188250    18218    3174.60  05-07-2026 10:38:35
+Part_0176      3.206469       3206469    18219    3192.57  05-07-2026 10:38:35
+Part_0177      3.224688       3224688    18219    3201.86  05-07-2026 10:38:36
+Part_0178      3.242906       3242906    18218    3208.84  05-07-2026 10:38:38
+Part_0179      3.261125       3261125    18219    3184.50  05-07-2026 10:38:38
+Part_0180      3.279343       3279343    18218    3184.57  05-07-2026 10:38:38
+Part_0181      3.297562       3297562    18219    3163.47  05-07-2026 10:38:37
+Part_0182      3.315780       3315780    18218    3196.53  05-07-2026 10:38:38
+Part_0183      3.333999       3333999    18219    3204.68  05-07-2026 10:38:39
+Part_0184      3.352218       3352218    18219    3189.82  05-07-2026 10:38:39
+Part_0185      3.370436       3370436    18218    3197.03  05-07-2026 10:38:40
+Part_0186      3.388655       3388655    18219    3171.60  05-07-2026 10:38:40
+Part_0187      3.406873       3406873    18218    3171.70  05-07-2026 10:38:40
+Part_0188      3.425092       3425092    18219    3143.43  05-07-2026 10:38:38
+Part_0189      3.443310       3443310    18218    3144.00  05-07-2026 10:38:36
+Part_0190      3.461529       3461529    18219    3199.04  05-07-2026 10:38:38
+Part_0191      3.479748       3479748    18219    3196.51  05-07-2026 10:38:38
+Part_0192      3.497966       3497966    18218    3199.04  05-07-2026 10:38:39
+Part_0193      3.516185       3516185    18219    3179.87  05-07-2026 10:38:39
+Part_0194      3.534403       3534403    18218    3176.09  05-07-2026 10:38:39
+Part_0195      3.552622       3552622    18219    3184.53  05-07-2026 10:38:39
+Part_0196      3.570840       3570840    18218    3203.12  05-07-2026 10:38:39
+Part_0197      3.589059       3589059    18219    3198.43  05-07-2026 10:38:41
+Part_0198      3.607278       3607278    18219    3194.86  05-07-2026 10:38:41
+Part_0199      3.625496       3625496    18218    3153.49  05-07-2026 10:38:40
+Part_0200      3.643715       3643715    18219    3178.42  05-07-2026 10:38:40
+Part_0201      3.661933       3661933    18218    3206.55  05-07-2026 10:38:41
+Part_0202      3.680152       3680152    18219    3191.11  05-07-2026 10:38:42
+Part_0203      3.698370       3698370    18218    3176.70  05-07-2026 10:38:42
+Part_0204      3.716589       3716589    18219    3180.24  05-07-2026 10:38:42
+Part_0205      3.734808       3734808    18219    3198.51  05-07-2026 10:38:42
+Part_0206      3.753026       3753026    18218    3172.93  05-07-2026 10:38:42
+Part_0207      3.771245       3771245    18219    3157.41  05-07-2026 10:38:41
+Part_0208      3.789463       3789463    18218    3200.71  05-07-2026 10:38:42
+Part_0209      3.807682       3807682    18219    3174.26  05-07-2026 10:38:41
+Part_0210      3.825900       3825900    18218    3203.47  05-07-2026 10:38:42
+Part_0211      3.844119       3844119    18219    3183.82  05-07-2026 10:38:43
+Part_0212      3.862338       3862338    18219    3175.80  05-07-2026 10:38:43
+Part_0213      3.880556       3880556    18218    3185.81  05-07-2026 10:38:43
+Part_0214      3.898775       3898775    18219    3201.04  05-07-2026 10:38:43
+Part_0215      3.916993       3916993    18218    3204.68  05-07-2026 10:38:44
+Part_0216      3.935212       3935212    18219    3204.74  05-07-2026 10:38:45
+Part_0217      3.953430       3953430    18218    3200.63  05-07-2026 10:38:45
+Part_0218      3.971649       3971649    18219    3181.50  05-07-2026 10:38:45
+Part_0219      3.989868       3989868    18219    3185.26  05-07-2026 10:38:46
+Part_0220      4.008086       4008086    18218    3196.39  05-07-2026 10:38:46
+Part_0221      4.026305       4026305    18219    3202.02  05-07-2026 10:38:47
+Part_0222      4.044523       4044523    18218    3202.88  05-07-2026 10:38:48
+Part_0223      4.062742       4062742    18219    3201.11  05-07-2026 10:38:48
+Part_0224      4.080960       4080960    18218    3184.13  05-07-2026 10:38:48
+Part_0225      4.099179       4099179    18219    3178.51  05-07-2026 10:38:48
+Part_0226      4.117398       4117398    18219    3182.89  05-07-2026 10:38:48
+Part_0227      4.135616       4135616    18218    3184.93  05-07-2026 10:38:48
+Part_0228      4.153835       4153835    18219    3214.67  05-07-2026 10:38:50
+Part_0229      4.172053       4172053    18218    3212.49  05-07-2026 10:38:50
+Part_0230      4.190272       4190272    18219    3210.08  05-07-2026 10:38:52
+Part_0231      4.208490       4208490    18218    3188.18  05-07-2026 10:38:52
+Part_0232      4.226709       4226709    18219    3186.71  05-07-2026 10:38:52
+Part_0233      4.244928       4244928    18219    3207.12  05-07-2026 10:38:52
+Part_0234      4.263146       4263146    18218    3208.74  05-07-2026 10:38:54
+Part_0235      4.281365       4281365    18219    3208.94  05-07-2026 10:38:54
+Part_0236      4.299583       4299583    18218    3185.23  05-07-2026 10:38:54
+Part_0237      4.317802       4317802    18219    3191.47  05-07-2026 10:38:55
+Part_0238      4.336020       4336020    18218    3199.83  05-07-2026 10:38:56
+Part_0239      4.354239       4354239    18219    3185.77  05-07-2026 10:38:56
+Part_0240      4.372458       4372458    18219    3212.02  05-07-2026 10:38:56
+Part_0241      4.390676       4390676    18218    3209.12  05-07-2026 10:38:57
+Part_0242      4.408895       4408895    18219    3156.96  05-07-2026 10:38:56
+Part_0243      4.427113       4427113    18218    3182.19  05-07-2026 10:38:56
+Part_0244      4.445332       4445332    18219    3188.53  05-07-2026 10:38:57
+Part_0245      4.463550       4463550    18218    3192.47  05-07-2026 10:38:57
+Part_0246      4.481769       4481769    18219    3211.62  05-07-2026 10:38:58
+Part_0247      4.499988       4499988    18219    3209.19  05-07-2026 10:38:59
+Part_0248      4.518206       4518206    18218    3211.93  05-07-2026 10:38:59
+Part_0249      4.536425       4536425    18219    3190.31  05-07-2026 10:39:00
+Part_0250      4.554643       4554643    18218    3194.56  05-07-2026 10:39:01
+Part_0251      4.572862       4572862    18219    3209.16  05-07-2026 10:39:01
+Part_0252      4.591080       4591080    18218    3211.36  05-07-2026 10:39:01
+Part_0253      4.609299       4609299    18219    3201.03  05-07-2026 10:39:03
+Part_0254      4.627518       4627518    18219    3187.08  05-07-2026 10:39:03
+Part_0255      4.645736       4645736    18218    3188.13  05-07-2026 10:39:03
+Part_0256      4.663955       4663955    18219    3195.02  05-07-2026 10:39:03
+Part_0257      4.682173       4682173    18218    3206.14  05-07-2026 10:39:04
+Part_0258      4.700392       4700392    18219    3208.61  05-07-2026 10:39:04
+Part_0259      4.718610       4718610    18218    3207.72  05-07-2026 10:39:05
+Part_0260      4.736829       4736829    18219    3208.07  05-07-2026 10:39:06
+Part_0261      4.755048       4755048    18219    3193.65  05-07-2026 10:39:06
+Part_0262      4.773266       4773266    18218    3185.16  05-07-2026 10:39:06
+Part_0263      4.791485       4791485    18219    3202.51  05-07-2026 10:39:06
+Part_0264      4.809703       4809703    18218    3212.04  05-07-2026 10:39:07
+Part_0265      4.827922       4827922    18219    3213.45  05-07-2026 10:39:09
+Part_0266      4.846140       4846140    18218    3170.81  05-07-2026 10:39:08
+Part_0267      4.864359       4864359    18219    3200.33  05-07-2026 10:39:09
+Part_0268      4.882578       4882578    18219    3196.01  05-07-2026 10:39:09
+Part_0269      4.900796       4900796    18218    3206.54  05-07-2026 10:39:09
+Part_0270      4.919015       4919015    18219    3210.11  05-07-2026 10:39:10
+Part_0271      4.937233       4937233    18218    3204.09  05-07-2026 10:39:10
+Part_0272      4.955452       4955452    18219    3210.50  05-07-2026 10:39:12
+Part_0273      4.973670       4973670    18218    3196.83  05-07-2026 10:39:12
+Part_0274      4.991889       4991889    18219    3179.36  05-07-2026 10:39:12
+Part_0275      5.010108       5010108    18219    3189.41  05-07-2026 10:39:12
+Part_0276      5.028326       5028326    18218    3207.05  05-07-2026 10:39:12
+Part_0277      5.046545       5046545    18219    3212.95  05-07-2026 10:39:13
+Part_0278      5.064763       5064763    18218    3210.40  05-07-2026 10:39:13
+Part_0279      5.082982       5082982    18219    3201.66  05-07-2026 10:39:14
+Part_0280      5.101200       5101200    18218    3189.29  05-07-2026 10:39:15
+Part_0281      5.119419       5119419    18219    3196.30  05-07-2026 10:39:15
+Part_0282      5.137638       5137638    18219    3163.75  05-07-2026 10:39:14
+Part_0283      5.155856       5155856    18218    3156.83  05-07-2026 10:39:13
+Part_0284      5.174075       5174075    18219    3178.68  05-07-2026 10:39:13
+Part_0285      5.192293       5192293    18218    3185.02  05-07-2026 10:39:13
+Part_0286      5.210512       5210512    18219    3181.31  05-07-2026 10:39:13
+Part_0287      5.228730       5228730    18218    3192.89  05-07-2026 10:39:13
+Part_0288      5.246949       5246949    18219    3160.68  05-07-2026 10:39:13
+Part_0289      5.265168       5265168    18219    3186.67  05-07-2026 10:39:13
+Part_0290      5.283386       5283386    18218    3212.38  05-07-2026 10:39:13
+Part_0291      5.301605       5301605    18219    3212.46  05-07-2026 10:39:14
+Part_0292      5.319823       5319823    18218    3191.79  05-07-2026 10:39:14
+Part_0293      5.338042       5338042    18219    3190.93  05-07-2026 10:39:14
+Part_0294      5.356260       5356260    18218    3200.46  05-07-2026 10:39:15
+Part_0295      5.374479       5374479    18219    3169.67  05-07-2026 10:39:14
+Part_0296      5.392698       5392698    18219    3202.99  05-07-2026 10:39:15
+Part_0297      5.410916       5410916    18218    3205.73  05-07-2026 10:39:16
+Part_0298      5.429135       5429135    18219    3206.39  05-07-2026 10:39:17
+Part_0299      5.447353       5447353    18218    3189.03  05-07-2026 10:39:17
+Part_0300      5.465572       5465572    18219    3190.33  05-07-2026 10:39:17
+Part_0301      5.483790       5483790    18218    3200.11  05-07-2026 10:39:17
+Part_0302      5.502009       5502009    18219    3207.58  05-07-2026 10:39:17
+Part_0303      5.520228       5520228    18219    3187.32  05-07-2026 10:39:18
+Part_0304      5.538446       5538446    18218    3162.54  05-07-2026 10:39:17
+Part_0305      5.556665       5556665    18219    3187.20  05-07-2026 10:39:17
+Part_0306      5.574883       5574883    18218    3193.80  05-07-2026 10:39:17
+Part_0307      5.593102       5593102    18219    3202.78  05-07-2026 10:39:18
+Part_0308      5.611320       5611320    18218    3209.18  05-07-2026 10:39:18
+Part_0309      5.629539       5629539    18219    3165.77  05-07-2026 10:39:18
+Part_0310      5.647758       5647758    18219    3164.89  05-07-2026 10:39:18
+Part_0311      5.665976       5665976    18218    3166.26  05-07-2026 10:39:17
+Part_0312      5.684195       5684195    18219    3174.75  05-07-2026 10:39:16
+Part_0313      5.702413       5702413    18218    3207.33  05-07-2026 10:39:18
+Part_0314      5.720632       5720632    18219    3211.90  05-07-2026 10:39:18
+Part_0315      5.738850       5738850    18218    3209.78  05-07-2026 10:39:19
+Part_0316      5.757069       5757069    18219    3201.25  05-07-2026 10:39:19
+Part_0317      5.775288       5775288    18219    3191.95  05-07-2026 10:39:19
+Part_0318      5.793506       5793506    18218    3190.17  05-07-2026 10:39:19
+Part_0319      5.811725       5811725    18219    3206.21  05-07-2026 10:39:20
+Part_0320      5.829943       5829943    18218    3200.50  05-07-2026 10:39:20
+Part_0321      5.848162       5848162    18219    3176.94  05-07-2026 10:39:20
+Part_0322      5.866380       5866380    18218    3192.75  05-07-2026 10:39:20
+Part_0323      5.884599       5884599    18219    3179.66  05-07-2026 10:39:20
+Part_0324      5.902818       5902818    18219    3181.07  05-07-2026 10:39:20
+Part_0325      5.921036       5921036    18218    3196.98  05-07-2026 10:39:20
+Part_0326      5.939255       5939255    18219    3201.69  05-07-2026 10:39:20
+Part_0327      5.957473       5957473    18218    3198.01  05-07-2026 10:39:21
+Part_0328      5.975692       5975692    18219    3202.32  05-07-2026 10:39:21
+Part_0329      5.993910       5993910    18218    3191.53  05-07-2026 10:39:21
+Part_0330      6.012129       6012129    18219    3183.10  05-07-2026 10:39:21
+Part_0331      6.030348       6030348    18219    3191.01  05-07-2026 10:39:21
+Part_0332      6.048566       6048566    18218    3201.53  05-07-2026 10:39:22
+Part_0333      6.066785       6066785    18219    3146.41  05-07-2026 10:39:21
+Part_0334      6.085003       6085003    18218    3145.25  05-07-2026 10:39:20
+Part_0335      6.103222       6103222    18219    3161.95  05-07-2026 10:39:19
+Part_0336      6.121440       6121440    18218    3185.82  05-07-2026 10:39:19
+Part_0337      6.139659       6139659    18219    3186.84  05-07-2026 10:39:19
+Part_0338      6.157878       6157878    18219    3200.82  05-07-2026 10:39:19
+Part_0339      6.176096       6176096    18218    3205.45  05-07-2026 10:39:20
+Part_0340      6.194315       6194315    18219    3200.11  05-07-2026 10:39:20
+Part_0341      6.212533       6212533    18218    3199.81  05-07-2026 10:39:20
+Part_0342      6.230752       6230752    18219    3179.07  05-07-2026 10:39:20
+Part_0343      6.248970       6248970    18218    3182.76  05-07-2026 10:39:20
+Part_0344      6.267189       6267189    18219    3199.95  05-07-2026 10:39:21
+Part_0345      6.285408       6285408    18219    3204.07  05-07-2026 10:39:21
+Part_0346      6.303626       6303626    18218    3195.04  05-07-2026 10:39:21
+Part_0347      6.321845       6321845    18219    3196.75  05-07-2026 10:39:21
+Part_0348      6.340063       6340063    18218    3189.22  05-07-2026 10:39:21
+Part_0349      6.358282       6358282    18219    3182.39  05-07-2026 10:39:21
+Part_0350      6.376500       6376500    18218    3192.14  05-07-2026 10:39:22
+Part_0351      6.394719       6394719    18219    3198.49  05-07-2026 10:39:22
+Part_0352      6.412938       6412938    18219    3199.87  05-07-2026 10:39:22
+Part_0353      6.431156       6431156    18218    3203.76  05-07-2026 10:39:23
+Part_0354      6.449375       6449375    18219    3186.07  05-07-2026 10:39:23
+Part_0355      6.467593       6467593    18218    3183.67  05-07-2026 10:39:23
+Part_0356      6.485812       6485812    18219    3195.24  05-07-2026 10:39:23
+Part_0357      6.504030       6504030    18218    3199.64  05-07-2026 10:39:23
+Part_0358      6.522249       6522249    18219    3198.78  05-07-2026 10:39:23
+Part_0359      6.540468       6540468    18219    3203.73  05-07-2026 10:39:24
+Part_0360      6.558686       6558686    18218    3193.24  05-07-2026 10:39:24
+Part_0361      6.576905       6576905    18219    3186.46  05-07-2026 10:39:24
+Part_0362      6.595123       6595123    18218    3159.67  05-07-2026 10:39:24
+Part_0363      6.613342       6613342    18219    3199.27  05-07-2026 10:39:24
+Part_0364      6.631560       6631560    18218    3197.89  05-07-2026 10:39:24
+Part_0365      6.649779       6649779    18219    3180.31  05-07-2026 10:39:24
+Part_0366      6.667998       6667998    18219    3176.68  05-07-2026 10:39:24
+Part_0367      6.686216       6686216    18218    3151.10  05-07-2026 10:39:23
+Part_0368      6.704435       6704435    18219    3159.88  05-07-2026 10:39:23
+Part_0369      6.722653       6722653    18218    3164.62  05-07-2026 10:39:23
+Part_0370      6.740872       6740872    18219    3172.44  05-07-2026 10:39:22
+Part_0371      6.759090       6759090    18218    3167.91  05-07-2026 10:39:22
+Part_0372      6.777309       6777309    18219    3167.00  05-07-2026 10:39:21
+Part_0373      6.795528       6795528    18219    3153.37  05-07-2026 10:39:20
+Part_0374      6.813746       6813746    18218    3144.07  05-07-2026 10:39:19
+Part_0375      6.831965       6831965    18219    3162.68  05-07-2026 10:39:19
+Part_0376      6.850183       6850183    18218    3180.09  05-07-2026 10:39:19
+Part_0377      6.868402       6868402    18219    3190.18  05-07-2026 10:39:19
+Part_0378      6.886620       6886620    18218    3208.07  05-07-2026 10:39:20
+Part_0379      6.904839       6904839    18219    3172.75  05-07-2026 10:39:19
+Part_0380      6.923058       6923058    18219    3172.29  05-07-2026 10:39:19
+Part_0381      6.941276       6941276    18218    3206.08  05-07-2026 10:39:20
+Part_0382      6.959495       6959495    18219    3211.20  05-07-2026 10:39:20
+Part_0383      6.977713       6977713    18218    3206.64  05-07-2026 10:39:21
+Part_0384      6.995932       6995932    18219    3207.21  05-07-2026 10:39:21
+Part_0385      7.014150       7014150    18218    3196.74  05-07-2026 10:39:21
+Part_0386      7.032369       7032369    18219    3182.37  05-07-2026 10:39:21
+Part_0387      7.050588       7050588    18219    3194.98  05-07-2026 10:39:21
+Part_0388      7.068806       7068806    18218    3181.83  05-07-2026 10:39:21
+Part_0389      7.087025       7087025    18219    3179.37  05-07-2026 10:39:21
+Part_0390      7.105243       7105243    18218    3182.76  05-07-2026 10:39:21
+Part_0391      7.123462       7123462    18219    3178.45  05-07-2026 10:39:21
+Part_0392      7.141680       7141680    18218    3172.35  05-07-2026 10:39:21
+Part_0393      7.159899       7159899    18219    3179.72  05-07-2026 10:39:21
+Part_0394      7.178118       7178118    18219    3184.99  05-07-2026 10:39:21
+Part_0395      7.196336       7196336    18218    3182.72  05-07-2026 10:39:21
+Part_0396      7.214555       7214555    18219    3183.19  05-07-2026 10:39:21
+Part_0397      7.232773       7232773    18218    3181.85  05-07-2026 10:39:21
+Part_0398      7.250992       7250992    18219    3175.07  05-07-2026 10:39:21
+Part_0399      7.269210       7269210    18218    3191.31  05-07-2026 10:39:21
+Part_0400      7.287429       7287429    18219    3197.40  05-07-2026 10:39:21
+
+[Simulation finished  05-07-2026 10:39:21]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 23213.119141 sec.
+Simulation Runtime...............: 23213.076172 sec.
+Runtime per physical second......: 3185.358887 sec.
+Steps per second.................: 313.936371
+Steps of simulation..............: 7287429
+PART files.......................: 401
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 645414 (0.62 MB)
+GPU Memory.......................: 1265144 (1.21 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 0.043569 sec.
+NL-Limits........................: 2556.339068 sec.
+NL-PreSort.......................: 60.261217 sec.
+NL-RadixSort.....................: 785.730570 sec.
+NL-CellBegin.....................: 822.228559 sec.
+NL-SortData......................: 710.421566 sec.
+NL-OutCheck......................: 2860.138462 sec.
+CF-PreForces.....................: 2757.234146 sec.
+CF-Forces........................: 7680.463169 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 281.332174 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 1936.933163 sec.
+SU-ResizeNp......................: 0.004553 sec.
+SU-DownData......................: 0.168430 sec.
+SU-SavePart......................: 3.838148 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000001 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> ...\data/Part_0000.bi4
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartFluid_0021.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartFluid_0022.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartFluid_0023.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartFluid_0024.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartFluid_0025.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartFluid_0026.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartFluid_0027.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartFluid_0028.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartFluid_0029.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartFluid_0030.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartFluid_0031.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartFluid_0032.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartFluid_0033.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartFluid_0034.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartFluid_0035.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartFluid_0036.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartFluid_0037.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartFluid_0038.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartFluid_0039.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartFluid_0040.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartFluid_0041.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartFluid_0042.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartFluid_0043.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartFluid_0044.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartFluid_0045.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartFluid_0046.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartFluid_0047.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartFluid_0048.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartFluid_0049.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartFluid_0050.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0051.bi4
+SaveVTK> ...\particles/PartFluid_0051.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0052.bi4
+SaveVTK> ...\particles/PartFluid_0052.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0053.bi4
+SaveVTK> ...\particles/PartFluid_0053.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0054.bi4
+SaveVTK> ...\particles/PartFluid_0054.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0055.bi4
+SaveVTK> ...\particles/PartFluid_0055.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0056.bi4
+SaveVTK> ...\particles/PartFluid_0056.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0057.bi4
+SaveVTK> ...\particles/PartFluid_0057.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0058.bi4
+SaveVTK> ...\particles/PartFluid_0058.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0059.bi4
+SaveVTK> ...\particles/PartFluid_0059.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0060.bi4
+SaveVTK> ...\particles/PartFluid_0060.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0061.bi4
+SaveVTK> ...\particles/PartFluid_0061.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0062.bi4
+SaveVTK> ...\particles/PartFluid_0062.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0063.bi4
+SaveVTK> ...\particles/PartFluid_0063.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0064.bi4
+SaveVTK> ...\particles/PartFluid_0064.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0065.bi4
+SaveVTK> ...\particles/PartFluid_0065.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0066.bi4
+SaveVTK> ...\particles/PartFluid_0066.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0067.bi4
+SaveVTK> ...\particles/PartFluid_0067.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0068.bi4
+SaveVTK> ...\particles/PartFluid_0068.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0069.bi4
+SaveVTK> ...\particles/PartFluid_0069.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0070.bi4
+SaveVTK> ...\particles/PartFluid_0070.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0071.bi4
+SaveVTK> ...\particles/PartFluid_0071.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0072.bi4
+SaveVTK> ...\particles/PartFluid_0072.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0073.bi4
+SaveVTK> ...\particles/PartFluid_0073.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0074.bi4
+SaveVTK> ...\particles/PartFluid_0074.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0075.bi4
+SaveVTK> ...\particles/PartFluid_0075.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0076.bi4
+SaveVTK> ...\particles/PartFluid_0076.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0077.bi4
+SaveVTK> ...\particles/PartFluid_0077.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0078.bi4
+SaveVTK> ...\particles/PartFluid_0078.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0079.bi4
+SaveVTK> ...\particles/PartFluid_0079.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0080.bi4
+SaveVTK> ...\particles/PartFluid_0080.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0081.bi4
+SaveVTK> ...\particles/PartFluid_0081.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0082.bi4
+SaveVTK> ...\particles/PartFluid_0082.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0083.bi4
+SaveVTK> ...\particles/PartFluid_0083.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0084.bi4
+SaveVTK> ...\particles/PartFluid_0084.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0085.bi4
+SaveVTK> ...\particles/PartFluid_0085.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0086.bi4
+SaveVTK> ...\particles/PartFluid_0086.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0087.bi4
+SaveVTK> ...\particles/PartFluid_0087.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0088.bi4
+SaveVTK> ...\particles/PartFluid_0088.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0089.bi4
+SaveVTK> ...\particles/PartFluid_0089.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0090.bi4
+SaveVTK> ...\particles/PartFluid_0090.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0091.bi4
+SaveVTK> ...\particles/PartFluid_0091.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0092.bi4
+SaveVTK> ...\particles/PartFluid_0092.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0093.bi4
+SaveVTK> ...\particles/PartFluid_0093.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0094.bi4
+SaveVTK> ...\particles/PartFluid_0094.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0095.bi4
+SaveVTK> ...\particles/PartFluid_0095.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0096.bi4
+SaveVTK> ...\particles/PartFluid_0096.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0097.bi4
+SaveVTK> ...\particles/PartFluid_0097.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0098.bi4
+SaveVTK> ...\particles/PartFluid_0098.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0099.bi4
+SaveVTK> ...\particles/PartFluid_0099.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0100.bi4
+SaveVTK> ...\particles/PartFluid_0100.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0101.bi4
+SaveVTK> ...\particles/PartFluid_0101.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0102.bi4
+SaveVTK> ...\particles/PartFluid_0102.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0103.bi4
+SaveVTK> ...\particles/PartFluid_0103.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0104.bi4
+SaveVTK> ...\particles/PartFluid_0104.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0105.bi4
+SaveVTK> ...\particles/PartFluid_0105.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0106.bi4
+SaveVTK> ...\particles/PartFluid_0106.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0107.bi4
+SaveVTK> ...\particles/PartFluid_0107.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0108.bi4
+SaveVTK> ...\particles/PartFluid_0108.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0109.bi4
+SaveVTK> ...\particles/PartFluid_0109.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0110.bi4
+SaveVTK> ...\particles/PartFluid_0110.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0111.bi4
+SaveVTK> ...\particles/PartFluid_0111.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0112.bi4
+SaveVTK> ...\particles/PartFluid_0112.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0113.bi4
+SaveVTK> ...\particles/PartFluid_0113.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0114.bi4
+SaveVTK> ...\particles/PartFluid_0114.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0115.bi4
+SaveVTK> ...\particles/PartFluid_0115.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0116.bi4
+SaveVTK> ...\particles/PartFluid_0116.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0117.bi4
+SaveVTK> ...\particles/PartFluid_0117.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0118.bi4
+SaveVTK> ...\particles/PartFluid_0118.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0119.bi4
+SaveVTK> ...\particles/PartFluid_0119.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0120.bi4
+SaveVTK> ...\particles/PartFluid_0120.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0121.bi4
+SaveVTK> ...\particles/PartFluid_0121.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0122.bi4
+SaveVTK> ...\particles/PartFluid_0122.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0123.bi4
+SaveVTK> ...\particles/PartFluid_0123.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0124.bi4
+SaveVTK> ...\particles/PartFluid_0124.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0125.bi4
+SaveVTK> ...\particles/PartFluid_0125.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0126.bi4
+SaveVTK> ...\particles/PartFluid_0126.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0127.bi4
+SaveVTK> ...\particles/PartFluid_0127.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0128.bi4
+SaveVTK> ...\particles/PartFluid_0128.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0129.bi4
+SaveVTK> ...\particles/PartFluid_0129.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0130.bi4
+SaveVTK> ...\particles/PartFluid_0130.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0131.bi4
+SaveVTK> ...\particles/PartFluid_0131.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0132.bi4
+SaveVTK> ...\particles/PartFluid_0132.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0133.bi4
+SaveVTK> ...\particles/PartFluid_0133.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0134.bi4
+SaveVTK> ...\particles/PartFluid_0134.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0135.bi4
+SaveVTK> ...\particles/PartFluid_0135.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0136.bi4
+SaveVTK> ...\particles/PartFluid_0136.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0137.bi4
+SaveVTK> ...\particles/PartFluid_0137.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0138.bi4
+SaveVTK> ...\particles/PartFluid_0138.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0139.bi4
+SaveVTK> ...\particles/PartFluid_0139.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0140.bi4
+SaveVTK> ...\particles/PartFluid_0140.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0141.bi4
+SaveVTK> ...\particles/PartFluid_0141.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0142.bi4
+SaveVTK> ...\particles/PartFluid_0142.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0143.bi4
+SaveVTK> ...\particles/PartFluid_0143.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0144.bi4
+SaveVTK> ...\particles/PartFluid_0144.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0145.bi4
+SaveVTK> ...\particles/PartFluid_0145.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0146.bi4
+SaveVTK> ...\particles/PartFluid_0146.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0147.bi4
+SaveVTK> ...\particles/PartFluid_0147.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0148.bi4
+SaveVTK> ...\particles/PartFluid_0148.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0149.bi4
+SaveVTK> ...\particles/PartFluid_0149.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0150.bi4
+SaveVTK> ...\particles/PartFluid_0150.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0151.bi4
+SaveVTK> ...\particles/PartFluid_0151.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0152.bi4
+SaveVTK> ...\particles/PartFluid_0152.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0153.bi4
+SaveVTK> ...\particles/PartFluid_0153.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0154.bi4
+SaveVTK> ...\particles/PartFluid_0154.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0155.bi4
+SaveVTK> ...\particles/PartFluid_0155.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0156.bi4
+SaveVTK> ...\particles/PartFluid_0156.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0157.bi4
+SaveVTK> ...\particles/PartFluid_0157.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0158.bi4
+SaveVTK> ...\particles/PartFluid_0158.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0159.bi4
+SaveVTK> ...\particles/PartFluid_0159.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0160.bi4
+SaveVTK> ...\particles/PartFluid_0160.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0161.bi4
+SaveVTK> ...\particles/PartFluid_0161.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0162.bi4
+SaveVTK> ...\particles/PartFluid_0162.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0163.bi4
+SaveVTK> ...\particles/PartFluid_0163.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0164.bi4
+SaveVTK> ...\particles/PartFluid_0164.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0165.bi4
+SaveVTK> ...\particles/PartFluid_0165.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0166.bi4
+SaveVTK> ...\particles/PartFluid_0166.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0167.bi4
+SaveVTK> ...\particles/PartFluid_0167.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0168.bi4
+SaveVTK> ...\particles/PartFluid_0168.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0169.bi4
+SaveVTK> ...\particles/PartFluid_0169.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0170.bi4
+SaveVTK> ...\particles/PartFluid_0170.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0171.bi4
+SaveVTK> ...\particles/PartFluid_0171.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0172.bi4
+SaveVTK> ...\particles/PartFluid_0172.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0173.bi4
+SaveVTK> ...\particles/PartFluid_0173.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0174.bi4
+SaveVTK> ...\particles/PartFluid_0174.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0175.bi4
+SaveVTK> ...\particles/PartFluid_0175.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0176.bi4
+SaveVTK> ...\particles/PartFluid_0176.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0177.bi4
+SaveVTK> ...\particles/PartFluid_0177.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0178.bi4
+SaveVTK> ...\particles/PartFluid_0178.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0179.bi4
+SaveVTK> ...\particles/PartFluid_0179.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0180.bi4
+SaveVTK> ...\particles/PartFluid_0180.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0181.bi4
+SaveVTK> ...\particles/PartFluid_0181.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0182.bi4
+SaveVTK> ...\particles/PartFluid_0182.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0183.bi4
+SaveVTK> ...\particles/PartFluid_0183.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0184.bi4
+SaveVTK> ...\particles/PartFluid_0184.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0185.bi4
+SaveVTK> ...\particles/PartFluid_0185.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0186.bi4
+SaveVTK> ...\particles/PartFluid_0186.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0187.bi4
+SaveVTK> ...\particles/PartFluid_0187.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0188.bi4
+SaveVTK> ...\particles/PartFluid_0188.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0189.bi4
+SaveVTK> ...\particles/PartFluid_0189.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0190.bi4
+SaveVTK> ...\particles/PartFluid_0190.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0191.bi4
+SaveVTK> ...\particles/PartFluid_0191.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0192.bi4
+SaveVTK> ...\particles/PartFluid_0192.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0193.bi4
+SaveVTK> ...\particles/PartFluid_0193.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0194.bi4
+SaveVTK> ...\particles/PartFluid_0194.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0195.bi4
+SaveVTK> ...\particles/PartFluid_0195.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0196.bi4
+SaveVTK> ...\particles/PartFluid_0196.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0197.bi4
+SaveVTK> ...\particles/PartFluid_0197.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0198.bi4
+SaveVTK> ...\particles/PartFluid_0198.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0199.bi4
+SaveVTK> ...\particles/PartFluid_0199.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0200.bi4
+SaveVTK> ...\particles/PartFluid_0200.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0201.bi4
+SaveVTK> ...\particles/PartFluid_0201.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0202.bi4
+SaveVTK> ...\particles/PartFluid_0202.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0203.bi4
+SaveVTK> ...\particles/PartFluid_0203.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0204.bi4
+SaveVTK> ...\particles/PartFluid_0204.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0205.bi4
+SaveVTK> ...\particles/PartFluid_0205.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0206.bi4
+SaveVTK> ...\particles/PartFluid_0206.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0207.bi4
+SaveVTK> ...\particles/PartFluid_0207.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0208.bi4
+SaveVTK> ...\particles/PartFluid_0208.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0209.bi4
+SaveVTK> ...\particles/PartFluid_0209.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0210.bi4
+SaveVTK> ...\particles/PartFluid_0210.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0211.bi4
+SaveVTK> ...\particles/PartFluid_0211.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0212.bi4
+SaveVTK> ...\particles/PartFluid_0212.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0213.bi4
+SaveVTK> ...\particles/PartFluid_0213.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0214.bi4
+SaveVTK> ...\particles/PartFluid_0214.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0215.bi4
+SaveVTK> ...\particles/PartFluid_0215.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0216.bi4
+SaveVTK> ...\particles/PartFluid_0216.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0217.bi4
+SaveVTK> ...\particles/PartFluid_0217.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0218.bi4
+SaveVTK> ...\particles/PartFluid_0218.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0219.bi4
+SaveVTK> ...\particles/PartFluid_0219.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0220.bi4
+SaveVTK> ...\particles/PartFluid_0220.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0221.bi4
+SaveVTK> ...\particles/PartFluid_0221.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0222.bi4
+SaveVTK> ...\particles/PartFluid_0222.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0223.bi4
+SaveVTK> ...\particles/PartFluid_0223.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0224.bi4
+SaveVTK> ...\particles/PartFluid_0224.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0225.bi4
+SaveVTK> ...\particles/PartFluid_0225.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0226.bi4
+SaveVTK> ...\particles/PartFluid_0226.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0227.bi4
+SaveVTK> ...\particles/PartFluid_0227.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0228.bi4
+SaveVTK> ...\particles/PartFluid_0228.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0229.bi4
+SaveVTK> ...\particles/PartFluid_0229.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0230.bi4
+SaveVTK> ...\particles/PartFluid_0230.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0231.bi4
+SaveVTK> ...\particles/PartFluid_0231.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0232.bi4
+SaveVTK> ...\particles/PartFluid_0232.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0233.bi4
+SaveVTK> ...\particles/PartFluid_0233.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0234.bi4
+SaveVTK> ...\particles/PartFluid_0234.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0235.bi4
+SaveVTK> ...\particles/PartFluid_0235.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0236.bi4
+SaveVTK> ...\particles/PartFluid_0236.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0237.bi4
+SaveVTK> ...\particles/PartFluid_0237.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0238.bi4
+SaveVTK> ...\particles/PartFluid_0238.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0239.bi4
+SaveVTK> ...\particles/PartFluid_0239.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0240.bi4
+SaveVTK> ...\particles/PartFluid_0240.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0241.bi4
+SaveVTK> ...\particles/PartFluid_0241.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0242.bi4
+SaveVTK> ...\particles/PartFluid_0242.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0243.bi4
+SaveVTK> ...\particles/PartFluid_0243.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0244.bi4
+SaveVTK> ...\particles/PartFluid_0244.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0245.bi4
+SaveVTK> ...\particles/PartFluid_0245.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0246.bi4
+SaveVTK> ...\particles/PartFluid_0246.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0247.bi4
+SaveVTK> ...\particles/PartFluid_0247.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0248.bi4
+SaveVTK> ...\particles/PartFluid_0248.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0249.bi4
+SaveVTK> ...\particles/PartFluid_0249.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0250.bi4
+SaveVTK> ...\particles/PartFluid_0250.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0251.bi4
+SaveVTK> ...\particles/PartFluid_0251.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0252.bi4
+SaveVTK> ...\particles/PartFluid_0252.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0253.bi4
+SaveVTK> ...\particles/PartFluid_0253.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0254.bi4
+SaveVTK> ...\particles/PartFluid_0254.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0255.bi4
+SaveVTK> ...\particles/PartFluid_0255.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0256.bi4
+SaveVTK> ...\particles/PartFluid_0256.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0257.bi4
+SaveVTK> ...\particles/PartFluid_0257.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0258.bi4
+SaveVTK> ...\particles/PartFluid_0258.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0259.bi4
+SaveVTK> ...\particles/PartFluid_0259.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0260.bi4
+SaveVTK> ...\particles/PartFluid_0260.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0261.bi4
+SaveVTK> ...\particles/PartFluid_0261.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0262.bi4
+SaveVTK> ...\particles/PartFluid_0262.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0263.bi4
+SaveVTK> ...\particles/PartFluid_0263.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0264.bi4
+SaveVTK> ...\particles/PartFluid_0264.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0265.bi4
+SaveVTK> ...\particles/PartFluid_0265.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0266.bi4
+SaveVTK> ...\particles/PartFluid_0266.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0267.bi4
+SaveVTK> ...\particles/PartFluid_0267.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0268.bi4
+SaveVTK> ...\particles/PartFluid_0268.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0269.bi4
+SaveVTK> ...\particles/PartFluid_0269.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0270.bi4
+SaveVTK> ...\particles/PartFluid_0270.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0271.bi4
+SaveVTK> ...\particles/PartFluid_0271.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0272.bi4
+SaveVTK> ...\particles/PartFluid_0272.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0273.bi4
+SaveVTK> ...\particles/PartFluid_0273.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0274.bi4
+SaveVTK> ...\particles/PartFluid_0274.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0275.bi4
+SaveVTK> ...\particles/PartFluid_0275.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0276.bi4
+SaveVTK> ...\particles/PartFluid_0276.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0277.bi4
+SaveVTK> ...\particles/PartFluid_0277.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0278.bi4
+SaveVTK> ...\particles/PartFluid_0278.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0279.bi4
+SaveVTK> ...\particles/PartFluid_0279.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0280.bi4
+SaveVTK> ...\particles/PartFluid_0280.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0281.bi4
+SaveVTK> ...\particles/PartFluid_0281.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0282.bi4
+SaveVTK> ...\particles/PartFluid_0282.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0283.bi4
+SaveVTK> ...\particles/PartFluid_0283.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0284.bi4
+SaveVTK> ...\particles/PartFluid_0284.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0285.bi4
+SaveVTK> ...\particles/PartFluid_0285.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0286.bi4
+SaveVTK> ...\particles/PartFluid_0286.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0287.bi4
+SaveVTK> ...\particles/PartFluid_0287.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0288.bi4
+SaveVTK> ...\particles/PartFluid_0288.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0289.bi4
+SaveVTK> ...\particles/PartFluid_0289.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0290.bi4
+SaveVTK> ...\particles/PartFluid_0290.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0291.bi4
+SaveVTK> ...\particles/PartFluid_0291.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0292.bi4
+SaveVTK> ...\particles/PartFluid_0292.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0293.bi4
+SaveVTK> ...\particles/PartFluid_0293.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0294.bi4
+SaveVTK> ...\particles/PartFluid_0294.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0295.bi4
+SaveVTK> ...\particles/PartFluid_0295.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0296.bi4
+SaveVTK> ...\particles/PartFluid_0296.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0297.bi4
+SaveVTK> ...\particles/PartFluid_0297.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0298.bi4
+SaveVTK> ...\particles/PartFluid_0298.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0299.bi4
+SaveVTK> ...\particles/PartFluid_0299.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0300.bi4
+SaveVTK> ...\particles/PartFluid_0300.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0301.bi4
+SaveVTK> ...\particles/PartFluid_0301.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0302.bi4
+SaveVTK> ...\particles/PartFluid_0302.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0303.bi4
+SaveVTK> ...\particles/PartFluid_0303.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0304.bi4
+SaveVTK> ...\particles/PartFluid_0304.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0305.bi4
+SaveVTK> ...\particles/PartFluid_0305.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0306.bi4
+SaveVTK> ...\particles/PartFluid_0306.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0307.bi4
+SaveVTK> ...\particles/PartFluid_0307.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0308.bi4
+SaveVTK> ...\particles/PartFluid_0308.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0309.bi4
+SaveVTK> ...\particles/PartFluid_0309.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0310.bi4
+SaveVTK> ...\particles/PartFluid_0310.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0311.bi4
+SaveVTK> ...\particles/PartFluid_0311.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0312.bi4
+SaveVTK> ...\particles/PartFluid_0312.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0313.bi4
+SaveVTK> ...\particles/PartFluid_0313.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0314.bi4
+SaveVTK> ...\particles/PartFluid_0314.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0315.bi4
+SaveVTK> ...\particles/PartFluid_0315.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0316.bi4
+SaveVTK> ...\particles/PartFluid_0316.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0317.bi4
+SaveVTK> ...\particles/PartFluid_0317.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0318.bi4
+SaveVTK> ...\particles/PartFluid_0318.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0319.bi4
+SaveVTK> ...\particles/PartFluid_0319.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0320.bi4
+SaveVTK> ...\particles/PartFluid_0320.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0321.bi4
+SaveVTK> ...\particles/PartFluid_0321.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0322.bi4
+SaveVTK> ...\particles/PartFluid_0322.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0323.bi4
+SaveVTK> ...\particles/PartFluid_0323.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0324.bi4
+SaveVTK> ...\particles/PartFluid_0324.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0325.bi4
+SaveVTK> ...\particles/PartFluid_0325.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0326.bi4
+SaveVTK> ...\particles/PartFluid_0326.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0327.bi4
+SaveVTK> ...\particles/PartFluid_0327.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0328.bi4
+SaveVTK> ...\particles/PartFluid_0328.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0329.bi4
+SaveVTK> ...\particles/PartFluid_0329.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0330.bi4
+SaveVTK> ...\particles/PartFluid_0330.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0331.bi4
+SaveVTK> ...\particles/PartFluid_0331.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0332.bi4
+SaveVTK> ...\particles/PartFluid_0332.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0333.bi4
+SaveVTK> ...\particles/PartFluid_0333.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0334.bi4
+SaveVTK> ...\particles/PartFluid_0334.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0335.bi4
+SaveVTK> ...\particles/PartFluid_0335.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0336.bi4
+SaveVTK> ...\particles/PartFluid_0336.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0337.bi4
+SaveVTK> ...\particles/PartFluid_0337.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0338.bi4
+SaveVTK> ...\particles/PartFluid_0338.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0339.bi4
+SaveVTK> ...\particles/PartFluid_0339.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0340.bi4
+SaveVTK> ...\particles/PartFluid_0340.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0341.bi4
+SaveVTK> ...\particles/PartFluid_0341.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0342.bi4
+SaveVTK> ...\particles/PartFluid_0342.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0343.bi4
+SaveVTK> ...\particles/PartFluid_0343.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0344.bi4
+SaveVTK> ...\particles/PartFluid_0344.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0345.bi4
+SaveVTK> ...\particles/PartFluid_0345.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0346.bi4
+SaveVTK> ...\particles/PartFluid_0346.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0347.bi4
+SaveVTK> ...\particles/PartFluid_0347.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0348.bi4
+SaveVTK> ...\particles/PartFluid_0348.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0349.bi4
+SaveVTK> ...\particles/PartFluid_0349.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0350.bi4
+SaveVTK> ...\particles/PartFluid_0350.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0351.bi4
+SaveVTK> ...\particles/PartFluid_0351.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0352.bi4
+SaveVTK> ...\particles/PartFluid_0352.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0353.bi4
+SaveVTK> ...\particles/PartFluid_0353.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0354.bi4
+SaveVTK> ...\particles/PartFluid_0354.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0355.bi4
+SaveVTK> ...\particles/PartFluid_0355.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0356.bi4
+SaveVTK> ...\particles/PartFluid_0356.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0357.bi4
+SaveVTK> ...\particles/PartFluid_0357.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0358.bi4
+SaveVTK> ...\particles/PartFluid_0358.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0359.bi4
+SaveVTK> ...\particles/PartFluid_0359.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0360.bi4
+SaveVTK> ...\particles/PartFluid_0360.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0361.bi4
+SaveVTK> ...\particles/PartFluid_0361.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0362.bi4
+SaveVTK> ...\particles/PartFluid_0362.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0363.bi4
+SaveVTK> ...\particles/PartFluid_0363.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0364.bi4
+SaveVTK> ...\particles/PartFluid_0364.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0365.bi4
+SaveVTK> ...\particles/PartFluid_0365.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0366.bi4
+SaveVTK> ...\particles/PartFluid_0366.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0367.bi4
+SaveVTK> ...\particles/PartFluid_0367.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0368.bi4
+SaveVTK> ...\particles/PartFluid_0368.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0369.bi4
+SaveVTK> ...\particles/PartFluid_0369.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0370.bi4
+SaveVTK> ...\particles/PartFluid_0370.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0371.bi4
+SaveVTK> ...\particles/PartFluid_0371.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0372.bi4
+SaveVTK> ...\particles/PartFluid_0372.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0373.bi4
+SaveVTK> ...\particles/PartFluid_0373.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0374.bi4
+SaveVTK> ...\particles/PartFluid_0374.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0375.bi4
+SaveVTK> ...\particles/PartFluid_0375.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0376.bi4
+SaveVTK> ...\particles/PartFluid_0376.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0377.bi4
+SaveVTK> ...\particles/PartFluid_0377.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0378.bi4
+SaveVTK> ...\particles/PartFluid_0378.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0379.bi4
+SaveVTK> ...\particles/PartFluid_0379.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0380.bi4
+SaveVTK> ...\particles/PartFluid_0380.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0381.bi4
+SaveVTK> ...\particles/PartFluid_0381.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0382.bi4
+SaveVTK> ...\particles/PartFluid_0382.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0383.bi4
+SaveVTK> ...\particles/PartFluid_0383.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0384.bi4
+SaveVTK> ...\particles/PartFluid_0384.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0385.bi4
+SaveVTK> ...\particles/PartFluid_0385.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0386.bi4
+SaveVTK> ...\particles/PartFluid_0386.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0387.bi4
+SaveVTK> ...\particles/PartFluid_0387.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0388.bi4
+SaveVTK> ...\particles/PartFluid_0388.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0389.bi4
+SaveVTK> ...\particles/PartFluid_0389.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0390.bi4
+SaveVTK> ...\particles/PartFluid_0390.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0391.bi4
+SaveVTK> ...\particles/PartFluid_0391.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0392.bi4
+SaveVTK> ...\particles/PartFluid_0392.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0393.bi4
+SaveVTK> ...\particles/PartFluid_0393.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0394.bi4
+SaveVTK> ...\particles/PartFluid_0394.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0395.bi4
+SaveVTK> ...\particles/PartFluid_0395.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0396.bi4
+SaveVTK> ...\particles/PartFluid_0396.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0397.bi4
+SaveVTK> ...\particles/PartFluid_0397.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0398.bi4
+SaveVTK> ...\particles/PartFluid_0398.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0399.bi4
+SaveVTK> ...\particles/PartFluid_0399.vtk  np:1000
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0400.bi4
+SaveVTK> ...\particles/PartFluid_0400.vtk  np:1000
+
+Time of operation: 5.655 sec. (20 threads)
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> ...\data/Part_0000.bi4
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartBound_0000.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartBound_0001.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartBound_0002.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartBound_0003.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartBound_0004.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartBound_0005.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartBound_0006.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartBound_0007.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartBound_0008.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartBound_0009.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartBound_0010.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartBound_0011.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartBound_0012.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartBound_0013.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartBound_0014.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartBound_0015.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartBound_0016.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartBound_0017.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartBound_0018.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartBound_0019.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartBound_0020.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartBound_0021.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartBound_0022.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartBound_0023.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartBound_0024.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartBound_0025.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartBound_0026.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartBound_0027.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartBound_0028.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartBound_0029.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartBound_0030.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartBound_0031.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartBound_0032.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartBound_0033.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartBound_0034.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartBound_0035.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartBound_0036.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartBound_0037.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartBound_0038.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartBound_0039.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartBound_0040.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartBound_0041.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartBound_0042.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartBound_0043.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartBound_0044.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartBound_0045.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartBound_0046.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartBound_0047.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartBound_0048.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartBound_0049.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartBound_0050.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0051.bi4
+SaveVTK> ...\particles/PartBound_0051.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0052.bi4
+SaveVTK> ...\particles/PartBound_0052.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0053.bi4
+SaveVTK> ...\particles/PartBound_0053.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0054.bi4
+SaveVTK> ...\particles/PartBound_0054.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0055.bi4
+SaveVTK> ...\particles/PartBound_0055.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0056.bi4
+SaveVTK> ...\particles/PartBound_0056.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0057.bi4
+SaveVTK> ...\particles/PartBound_0057.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0058.bi4
+SaveVTK> ...\particles/PartBound_0058.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0059.bi4
+SaveVTK> ...\particles/PartBound_0059.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0060.bi4
+SaveVTK> ...\particles/PartBound_0060.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0061.bi4
+SaveVTK> ...\particles/PartBound_0061.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0062.bi4
+SaveVTK> ...\particles/PartBound_0062.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0063.bi4
+SaveVTK> ...\particles/PartBound_0063.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0064.bi4
+SaveVTK> ...\particles/PartBound_0064.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0065.bi4
+SaveVTK> ...\particles/PartBound_0065.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0066.bi4
+SaveVTK> ...\particles/PartBound_0066.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0067.bi4
+SaveVTK> ...\particles/PartBound_0067.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0068.bi4
+SaveVTK> ...\particles/PartBound_0068.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0069.bi4
+SaveVTK> ...\particles/PartBound_0069.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0070.bi4
+SaveVTK> ...\particles/PartBound_0070.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0071.bi4
+SaveVTK> ...\particles/PartBound_0071.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0072.bi4
+SaveVTK> ...\particles/PartBound_0072.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0073.bi4
+SaveVTK> ...\particles/PartBound_0073.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0074.bi4
+SaveVTK> ...\particles/PartBound_0074.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0075.bi4
+SaveVTK> ...\particles/PartBound_0075.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0076.bi4
+SaveVTK> ...\particles/PartBound_0076.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0077.bi4
+SaveVTK> ...\particles/PartBound_0077.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0078.bi4
+SaveVTK> ...\particles/PartBound_0078.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0079.bi4
+SaveVTK> ...\particles/PartBound_0079.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0080.bi4
+SaveVTK> ...\particles/PartBound_0080.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0081.bi4
+SaveVTK> ...\particles/PartBound_0081.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0082.bi4
+SaveVTK> ...\particles/PartBound_0082.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0083.bi4
+SaveVTK> ...\particles/PartBound_0083.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0084.bi4
+SaveVTK> ...\particles/PartBound_0084.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0085.bi4
+SaveVTK> ...\particles/PartBound_0085.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0086.bi4
+SaveVTK> ...\particles/PartBound_0086.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0087.bi4
+SaveVTK> ...\particles/PartBound_0087.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0088.bi4
+SaveVTK> ...\particles/PartBound_0088.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0089.bi4
+SaveVTK> ...\particles/PartBound_0089.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0090.bi4
+SaveVTK> ...\particles/PartBound_0090.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0091.bi4
+SaveVTK> ...\particles/PartBound_0091.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0092.bi4
+SaveVTK> ...\particles/PartBound_0092.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0093.bi4
+SaveVTK> ...\particles/PartBound_0093.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0094.bi4
+SaveVTK> ...\particles/PartBound_0094.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0095.bi4
+SaveVTK> ...\particles/PartBound_0095.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0096.bi4
+SaveVTK> ...\particles/PartBound_0096.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0097.bi4
+SaveVTK> ...\particles/PartBound_0097.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0098.bi4
+SaveVTK> ...\particles/PartBound_0098.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0099.bi4
+SaveVTK> ...\particles/PartBound_0099.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0100.bi4
+SaveVTK> ...\particles/PartBound_0100.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0101.bi4
+SaveVTK> ...\particles/PartBound_0101.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0102.bi4
+SaveVTK> ...\particles/PartBound_0102.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0103.bi4
+SaveVTK> ...\particles/PartBound_0103.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0104.bi4
+SaveVTK> ...\particles/PartBound_0104.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0105.bi4
+SaveVTK> ...\particles/PartBound_0105.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0106.bi4
+SaveVTK> ...\particles/PartBound_0106.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0107.bi4
+SaveVTK> ...\particles/PartBound_0107.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0108.bi4
+SaveVTK> ...\particles/PartBound_0108.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0109.bi4
+SaveVTK> ...\particles/PartBound_0109.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0110.bi4
+SaveVTK> ...\particles/PartBound_0110.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0111.bi4
+SaveVTK> ...\particles/PartBound_0111.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0112.bi4
+SaveVTK> ...\particles/PartBound_0112.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0113.bi4
+SaveVTK> ...\particles/PartBound_0113.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0114.bi4
+SaveVTK> ...\particles/PartBound_0114.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0115.bi4
+SaveVTK> ...\particles/PartBound_0115.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0116.bi4
+SaveVTK> ...\particles/PartBound_0116.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0117.bi4
+SaveVTK> ...\particles/PartBound_0117.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0118.bi4
+SaveVTK> ...\particles/PartBound_0118.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0119.bi4
+SaveVTK> ...\particles/PartBound_0119.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0120.bi4
+SaveVTK> ...\particles/PartBound_0120.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0121.bi4
+SaveVTK> ...\particles/PartBound_0121.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0122.bi4
+SaveVTK> ...\particles/PartBound_0122.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0123.bi4
+SaveVTK> ...\particles/PartBound_0123.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0124.bi4
+SaveVTK> ...\particles/PartBound_0124.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0125.bi4
+SaveVTK> ...\particles/PartBound_0125.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0126.bi4
+SaveVTK> ...\particles/PartBound_0126.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0127.bi4
+SaveVTK> ...\particles/PartBound_0127.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0128.bi4
+SaveVTK> ...\particles/PartBound_0128.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0129.bi4
+SaveVTK> ...\particles/PartBound_0129.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0130.bi4
+SaveVTK> ...\particles/PartBound_0130.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0131.bi4
+SaveVTK> ...\particles/PartBound_0131.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0132.bi4
+SaveVTK> ...\particles/PartBound_0132.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0133.bi4
+SaveVTK> ...\particles/PartBound_0133.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0134.bi4
+SaveVTK> ...\particles/PartBound_0134.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0135.bi4
+SaveVTK> ...\particles/PartBound_0135.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0136.bi4
+SaveVTK> ...\particles/PartBound_0136.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0137.bi4
+SaveVTK> ...\particles/PartBound_0137.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0138.bi4
+SaveVTK> ...\particles/PartBound_0138.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0139.bi4
+SaveVTK> ...\particles/PartBound_0139.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0140.bi4
+SaveVTK> ...\particles/PartBound_0140.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0141.bi4
+SaveVTK> ...\particles/PartBound_0141.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0142.bi4
+SaveVTK> ...\particles/PartBound_0142.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0143.bi4
+SaveVTK> ...\particles/PartBound_0143.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0144.bi4
+SaveVTK> ...\particles/PartBound_0144.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0145.bi4
+SaveVTK> ...\particles/PartBound_0145.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0146.bi4
+SaveVTK> ...\particles/PartBound_0146.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0147.bi4
+SaveVTK> ...\particles/PartBound_0147.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0148.bi4
+SaveVTK> ...\particles/PartBound_0148.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0149.bi4
+SaveVTK> ...\particles/PartBound_0149.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0150.bi4
+SaveVTK> ...\particles/PartBound_0150.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0151.bi4
+SaveVTK> ...\particles/PartBound_0151.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0152.bi4
+SaveVTK> ...\particles/PartBound_0152.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0153.bi4
+SaveVTK> ...\particles/PartBound_0153.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0154.bi4
+SaveVTK> ...\particles/PartBound_0154.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0155.bi4
+SaveVTK> ...\particles/PartBound_0155.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0156.bi4
+SaveVTK> ...\particles/PartBound_0156.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0157.bi4
+SaveVTK> ...\particles/PartBound_0157.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0158.bi4
+SaveVTK> ...\particles/PartBound_0158.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0159.bi4
+SaveVTK> ...\particles/PartBound_0159.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0160.bi4
+SaveVTK> ...\particles/PartBound_0160.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0161.bi4
+SaveVTK> ...\particles/PartBound_0161.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0162.bi4
+SaveVTK> ...\particles/PartBound_0162.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0163.bi4
+SaveVTK> ...\particles/PartBound_0163.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0164.bi4
+SaveVTK> ...\particles/PartBound_0164.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0165.bi4
+SaveVTK> ...\particles/PartBound_0165.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0166.bi4
+SaveVTK> ...\particles/PartBound_0166.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0167.bi4
+SaveVTK> ...\particles/PartBound_0167.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0168.bi4
+SaveVTK> ...\particles/PartBound_0168.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0169.bi4
+SaveVTK> ...\particles/PartBound_0169.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0170.bi4
+SaveVTK> ...\particles/PartBound_0170.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0171.bi4
+SaveVTK> ...\particles/PartBound_0171.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0172.bi4
+SaveVTK> ...\particles/PartBound_0172.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0173.bi4
+SaveVTK> ...\particles/PartBound_0173.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0174.bi4
+SaveVTK> ...\particles/PartBound_0174.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0175.bi4
+SaveVTK> ...\particles/PartBound_0175.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0176.bi4
+SaveVTK> ...\particles/PartBound_0176.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0177.bi4
+SaveVTK> ...\particles/PartBound_0177.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0178.bi4
+SaveVTK> ...\particles/PartBound_0178.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0179.bi4
+SaveVTK> ...\particles/PartBound_0179.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0180.bi4
+SaveVTK> ...\particles/PartBound_0180.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0181.bi4
+SaveVTK> ...\particles/PartBound_0181.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0182.bi4
+SaveVTK> ...\particles/PartBound_0182.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0183.bi4
+SaveVTK> ...\particles/PartBound_0183.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0184.bi4
+SaveVTK> ...\particles/PartBound_0184.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0185.bi4
+SaveVTK> ...\particles/PartBound_0185.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0186.bi4
+SaveVTK> ...\particles/PartBound_0186.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0187.bi4
+SaveVTK> ...\particles/PartBound_0187.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0188.bi4
+SaveVTK> ...\particles/PartBound_0188.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0189.bi4
+SaveVTK> ...\particles/PartBound_0189.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0190.bi4
+SaveVTK> ...\particles/PartBound_0190.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0191.bi4
+SaveVTK> ...\particles/PartBound_0191.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0192.bi4
+SaveVTK> ...\particles/PartBound_0192.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0193.bi4
+SaveVTK> ...\particles/PartBound_0193.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0194.bi4
+SaveVTK> ...\particles/PartBound_0194.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0195.bi4
+SaveVTK> ...\particles/PartBound_0195.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0196.bi4
+SaveVTK> ...\particles/PartBound_0196.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0197.bi4
+SaveVTK> ...\particles/PartBound_0197.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0198.bi4
+SaveVTK> ...\particles/PartBound_0198.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0199.bi4
+SaveVTK> ...\particles/PartBound_0199.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0200.bi4
+SaveVTK> ...\particles/PartBound_0200.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0201.bi4
+SaveVTK> ...\particles/PartBound_0201.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0202.bi4
+SaveVTK> ...\particles/PartBound_0202.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0203.bi4
+SaveVTK> ...\particles/PartBound_0203.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0204.bi4
+SaveVTK> ...\particles/PartBound_0204.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0205.bi4
+SaveVTK> ...\particles/PartBound_0205.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0206.bi4
+SaveVTK> ...\particles/PartBound_0206.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0207.bi4
+SaveVTK> ...\particles/PartBound_0207.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0208.bi4
+SaveVTK> ...\particles/PartBound_0208.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0209.bi4
+SaveVTK> ...\particles/PartBound_0209.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0210.bi4
+SaveVTK> ...\particles/PartBound_0210.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0211.bi4
+SaveVTK> ...\particles/PartBound_0211.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0212.bi4
+SaveVTK> ...\particles/PartBound_0212.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0213.bi4
+SaveVTK> ...\particles/PartBound_0213.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0214.bi4
+SaveVTK> ...\particles/PartBound_0214.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0215.bi4
+SaveVTK> ...\particles/PartBound_0215.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0216.bi4
+SaveVTK> ...\particles/PartBound_0216.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0217.bi4
+SaveVTK> ...\particles/PartBound_0217.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0218.bi4
+SaveVTK> ...\particles/PartBound_0218.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0219.bi4
+SaveVTK> ...\particles/PartBound_0219.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0220.bi4
+SaveVTK> ...\particles/PartBound_0220.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0221.bi4
+SaveVTK> ...\particles/PartBound_0221.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0222.bi4
+SaveVTK> ...\particles/PartBound_0222.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0223.bi4
+SaveVTK> ...\particles/PartBound_0223.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0224.bi4
+SaveVTK> ...\particles/PartBound_0224.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0225.bi4
+SaveVTK> ...\particles/PartBound_0225.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0226.bi4
+SaveVTK> ...\particles/PartBound_0226.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0227.bi4
+SaveVTK> ...\particles/PartBound_0227.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0228.bi4
+SaveVTK> ...\particles/PartBound_0228.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0229.bi4
+SaveVTK> ...\particles/PartBound_0229.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0230.bi4
+SaveVTK> ...\particles/PartBound_0230.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0231.bi4
+SaveVTK> ...\particles/PartBound_0231.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0232.bi4
+SaveVTK> ...\particles/PartBound_0232.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0233.bi4
+SaveVTK> ...\particles/PartBound_0233.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0234.bi4
+SaveVTK> ...\particles/PartBound_0234.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0235.bi4
+SaveVTK> ...\particles/PartBound_0235.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0236.bi4
+SaveVTK> ...\particles/PartBound_0236.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0237.bi4
+SaveVTK> ...\particles/PartBound_0237.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0238.bi4
+SaveVTK> ...\particles/PartBound_0238.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0239.bi4
+SaveVTK> ...\particles/PartBound_0239.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0240.bi4
+SaveVTK> ...\particles/PartBound_0240.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0241.bi4
+SaveVTK> ...\particles/PartBound_0241.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0242.bi4
+SaveVTK> ...\particles/PartBound_0242.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0243.bi4
+SaveVTK> ...\particles/PartBound_0243.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0244.bi4
+SaveVTK> ...\particles/PartBound_0244.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0245.bi4
+SaveVTK> ...\particles/PartBound_0245.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0246.bi4
+SaveVTK> ...\particles/PartBound_0246.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0247.bi4
+SaveVTK> ...\particles/PartBound_0247.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0248.bi4
+SaveVTK> ...\particles/PartBound_0248.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0249.bi4
+SaveVTK> ...\particles/PartBound_0249.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0250.bi4
+SaveVTK> ...\particles/PartBound_0250.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0251.bi4
+SaveVTK> ...\particles/PartBound_0251.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0252.bi4
+SaveVTK> ...\particles/PartBound_0252.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0253.bi4
+SaveVTK> ...\particles/PartBound_0253.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0254.bi4
+SaveVTK> ...\particles/PartBound_0254.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0255.bi4
+SaveVTK> ...\particles/PartBound_0255.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0256.bi4
+SaveVTK> ...\particles/PartBound_0256.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0257.bi4
+SaveVTK> ...\particles/PartBound_0257.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0258.bi4
+SaveVTK> ...\particles/PartBound_0258.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0259.bi4
+SaveVTK> ...\particles/PartBound_0259.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0260.bi4
+SaveVTK> ...\particles/PartBound_0260.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0261.bi4
+SaveVTK> ...\particles/PartBound_0261.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0262.bi4
+SaveVTK> ...\particles/PartBound_0262.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0263.bi4
+SaveVTK> ...\particles/PartBound_0263.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0264.bi4
+SaveVTK> ...\particles/PartBound_0264.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0265.bi4
+SaveVTK> ...\particles/PartBound_0265.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0266.bi4
+SaveVTK> ...\particles/PartBound_0266.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0267.bi4
+SaveVTK> ...\particles/PartBound_0267.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0268.bi4
+SaveVTK> ...\particles/PartBound_0268.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0269.bi4
+SaveVTK> ...\particles/PartBound_0269.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0270.bi4
+SaveVTK> ...\particles/PartBound_0270.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0271.bi4
+SaveVTK> ...\particles/PartBound_0271.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0272.bi4
+SaveVTK> ...\particles/PartBound_0272.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0273.bi4
+SaveVTK> ...\particles/PartBound_0273.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0274.bi4
+SaveVTK> ...\particles/PartBound_0274.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0275.bi4
+SaveVTK> ...\particles/PartBound_0275.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0276.bi4
+SaveVTK> ...\particles/PartBound_0276.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0277.bi4
+SaveVTK> ...\particles/PartBound_0277.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0278.bi4
+SaveVTK> ...\particles/PartBound_0278.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0279.bi4
+SaveVTK> ...\particles/PartBound_0279.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0280.bi4
+SaveVTK> ...\particles/PartBound_0280.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0281.bi4
+SaveVTK> ...\particles/PartBound_0281.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0282.bi4
+SaveVTK> ...\particles/PartBound_0282.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0283.bi4
+SaveVTK> ...\particles/PartBound_0283.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0284.bi4
+SaveVTK> ...\particles/PartBound_0284.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0285.bi4
+SaveVTK> ...\particles/PartBound_0285.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0286.bi4
+SaveVTK> ...\particles/PartBound_0286.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0287.bi4
+SaveVTK> ...\particles/PartBound_0287.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0288.bi4
+SaveVTK> ...\particles/PartBound_0288.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0289.bi4
+SaveVTK> ...\particles/PartBound_0289.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0290.bi4
+SaveVTK> ...\particles/PartBound_0290.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0291.bi4
+SaveVTK> ...\particles/PartBound_0291.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0292.bi4
+SaveVTK> ...\particles/PartBound_0292.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0293.bi4
+SaveVTK> ...\particles/PartBound_0293.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0294.bi4
+SaveVTK> ...\particles/PartBound_0294.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0295.bi4
+SaveVTK> ...\particles/PartBound_0295.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0296.bi4
+SaveVTK> ...\particles/PartBound_0296.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0297.bi4
+SaveVTK> ...\particles/PartBound_0297.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0298.bi4
+SaveVTK> ...\particles/PartBound_0298.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0299.bi4
+SaveVTK> ...\particles/PartBound_0299.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0300.bi4
+SaveVTK> ...\particles/PartBound_0300.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0301.bi4
+SaveVTK> ...\particles/PartBound_0301.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0302.bi4
+SaveVTK> ...\particles/PartBound_0302.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0303.bi4
+SaveVTK> ...\particles/PartBound_0303.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0304.bi4
+SaveVTK> ...\particles/PartBound_0304.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0305.bi4
+SaveVTK> ...\particles/PartBound_0305.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0306.bi4
+SaveVTK> ...\particles/PartBound_0306.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0307.bi4
+SaveVTK> ...\particles/PartBound_0307.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0308.bi4
+SaveVTK> ...\particles/PartBound_0308.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0309.bi4
+SaveVTK> ...\particles/PartBound_0309.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0310.bi4
+SaveVTK> ...\particles/PartBound_0310.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0311.bi4
+SaveVTK> ...\particles/PartBound_0311.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0312.bi4
+SaveVTK> ...\particles/PartBound_0312.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0313.bi4
+SaveVTK> ...\particles/PartBound_0313.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0314.bi4
+SaveVTK> ...\particles/PartBound_0314.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0315.bi4
+SaveVTK> ...\particles/PartBound_0315.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0316.bi4
+SaveVTK> ...\particles/PartBound_0316.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0317.bi4
+SaveVTK> ...\particles/PartBound_0317.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0318.bi4
+SaveVTK> ...\particles/PartBound_0318.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0319.bi4
+SaveVTK> ...\particles/PartBound_0319.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0320.bi4
+SaveVTK> ...\particles/PartBound_0320.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0321.bi4
+SaveVTK> ...\particles/PartBound_0321.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0322.bi4
+SaveVTK> ...\particles/PartBound_0322.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0323.bi4
+SaveVTK> ...\particles/PartBound_0323.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0324.bi4
+SaveVTK> ...\particles/PartBound_0324.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0325.bi4
+SaveVTK> ...\particles/PartBound_0325.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0326.bi4
+SaveVTK> ...\particles/PartBound_0326.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0327.bi4
+SaveVTK> ...\particles/PartBound_0327.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0328.bi4
+SaveVTK> ...\particles/PartBound_0328.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0329.bi4
+SaveVTK> ...\particles/PartBound_0329.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0330.bi4
+SaveVTK> ...\particles/PartBound_0330.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0331.bi4
+SaveVTK> ...\particles/PartBound_0331.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0332.bi4
+SaveVTK> ...\particles/PartBound_0332.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0333.bi4
+SaveVTK> ...\particles/PartBound_0333.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0334.bi4
+SaveVTK> ...\particles/PartBound_0334.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0335.bi4
+SaveVTK> ...\particles/PartBound_0335.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0336.bi4
+SaveVTK> ...\particles/PartBound_0336.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0337.bi4
+SaveVTK> ...\particles/PartBound_0337.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0338.bi4
+SaveVTK> ...\particles/PartBound_0338.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0339.bi4
+SaveVTK> ...\particles/PartBound_0339.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0340.bi4
+SaveVTK> ...\particles/PartBound_0340.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0341.bi4
+SaveVTK> ...\particles/PartBound_0341.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0342.bi4
+SaveVTK> ...\particles/PartBound_0342.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0343.bi4
+SaveVTK> ...\particles/PartBound_0343.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0344.bi4
+SaveVTK> ...\particles/PartBound_0344.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0345.bi4
+SaveVTK> ...\particles/PartBound_0345.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0346.bi4
+SaveVTK> ...\particles/PartBound_0346.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0347.bi4
+SaveVTK> ...\particles/PartBound_0347.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0348.bi4
+SaveVTK> ...\particles/PartBound_0348.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0349.bi4
+SaveVTK> ...\particles/PartBound_0349.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0350.bi4
+SaveVTK> ...\particles/PartBound_0350.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0351.bi4
+SaveVTK> ...\particles/PartBound_0351.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0352.bi4
+SaveVTK> ...\particles/PartBound_0352.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0353.bi4
+SaveVTK> ...\particles/PartBound_0353.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0354.bi4
+SaveVTK> ...\particles/PartBound_0354.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0355.bi4
+SaveVTK> ...\particles/PartBound_0355.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0356.bi4
+SaveVTK> ...\particles/PartBound_0356.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0357.bi4
+SaveVTK> ...\particles/PartBound_0357.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0358.bi4
+SaveVTK> ...\particles/PartBound_0358.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0359.bi4
+SaveVTK> ...\particles/PartBound_0359.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0360.bi4
+SaveVTK> ...\particles/PartBound_0360.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0361.bi4
+SaveVTK> ...\particles/PartBound_0361.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0362.bi4
+SaveVTK> ...\particles/PartBound_0362.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0363.bi4
+SaveVTK> ...\particles/PartBound_0363.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0364.bi4
+SaveVTK> ...\particles/PartBound_0364.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0365.bi4
+SaveVTK> ...\particles/PartBound_0365.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0366.bi4
+SaveVTK> ...\particles/PartBound_0366.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0367.bi4
+SaveVTK> ...\particles/PartBound_0367.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0368.bi4
+SaveVTK> ...\particles/PartBound_0368.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0369.bi4
+SaveVTK> ...\particles/PartBound_0369.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0370.bi4
+SaveVTK> ...\particles/PartBound_0370.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0371.bi4
+SaveVTK> ...\particles/PartBound_0371.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0372.bi4
+SaveVTK> ...\particles/PartBound_0372.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0373.bi4
+SaveVTK> ...\particles/PartBound_0373.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0374.bi4
+SaveVTK> ...\particles/PartBound_0374.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0375.bi4
+SaveVTK> ...\particles/PartBound_0375.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0376.bi4
+SaveVTK> ...\particles/PartBound_0376.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0377.bi4
+SaveVTK> ...\particles/PartBound_0377.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0378.bi4
+SaveVTK> ...\particles/PartBound_0378.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0379.bi4
+SaveVTK> ...\particles/PartBound_0379.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0380.bi4
+SaveVTK> ...\particles/PartBound_0380.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0381.bi4
+SaveVTK> ...\particles/PartBound_0381.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0382.bi4
+SaveVTK> ...\particles/PartBound_0382.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0383.bi4
+SaveVTK> ...\particles/PartBound_0383.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0384.bi4
+SaveVTK> ...\particles/PartBound_0384.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0385.bi4
+SaveVTK> ...\particles/PartBound_0385.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0386.bi4
+SaveVTK> ...\particles/PartBound_0386.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0387.bi4
+SaveVTK> ...\particles/PartBound_0387.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0388.bi4
+SaveVTK> ...\particles/PartBound_0388.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0389.bi4
+SaveVTK> ...\particles/PartBound_0389.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0390.bi4
+SaveVTK> ...\particles/PartBound_0390.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0391.bi4
+SaveVTK> ...\particles/PartBound_0391.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0392.bi4
+SaveVTK> ...\particles/PartBound_0392.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0393.bi4
+SaveVTK> ...\particles/PartBound_0393.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0394.bi4
+SaveVTK> ...\particles/PartBound_0394.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0395.bi4
+SaveVTK> ...\particles/PartBound_0395.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0396.bi4
+SaveVTK> ...\particles/PartBound_0396.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0397.bi4
+SaveVTK> ...\particles/PartBound_0397.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0398.bi4
+SaveVTK> ...\particles/PartBound_0398.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0399.bi4
+SaveVTK> ...\particles/PartBound_0399.vtk  np:40
+LoadData> ...\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out\data/Part_0400.bi4
+SaveVTK> ...\particles/PartBound_0400.vtk  np:40
+
+Time of operation: 1.951 sec. (20 threads)
+Saved figure: figures\CaseSWSc2_MLSDirect_Tv2_from_p0040\scenario2_pore_pressure_profiles.png
+Saved bottom dissipation: figures\CaseSWSc2_MLSDirect_Tv2_from_p0040\scenario2_bottom_dissipation.csv
+Saved target summary: figures\CaseSWSc2_MLSDirect_Tv2_from_p0040\scenario2_target_summary.csv
+Saved profile table: figures\CaseSWSc2_MLSDirect_Tv2_from_p0040\scenario2_profiles_by_tv.csv
+cv=0.274445228574 m^2/s, tout=0.0182185714 s, DeltaTv=0.00499999999216
+Target Tv comparisons:
+  target Tv=0, actual Tv=0, PartFluid_0000.vtk, bottom SPH=10.4035 kPa, theory=10.6964 kPa, RMS=46.1117 Pa, max speed=0.000187028 m/s
+  target Tv=0.005, actual Tv=0.005, PartFluid_0001.vtk, bottom SPH=9.96626 kPa, theory=9.88899 kPa, RMS=96.6852 Pa, max speed=0.00148094 m/s
+  target Tv=0.05, actual Tv=0.05, PartFluid_0010.vtk, bottom SPH=8.09902 kPa, theory=8.0355 kPa, RMS=46.7629 Pa, max speed=0.00111216 m/s
+  target Tv=0.1, actual Tv=0.1, PartFluid_0020.vtk, bottom SPH=6.99223 kPa, theory=6.91237 kPa, RMS=52.9727 Pa, max speed=0.00105093 m/s
+  target Tv=0.25, actual Tv=0.25, PartFluid_0050.vtk, bottom SPH=4.80423 kPa, theory=4.70479 kPa, RMS=66.667 Pa, max speed=0.000761102 m/s
+  target Tv=0.4, actual Tv=0.4, PartFluid_0080.vtk, bottom SPH=3.36166 kPa, theory=3.24695 kPa, RMS=77.4514 Pa, max speed=0.000531391 m/s
+  target Tv=0.5, actual Tv=0.5, PartFluid_0100.vtk, bottom SPH=2.65617 kPa, theory=2.53689 kPa, RMS=81.8003 Pa, max speed=0.000418712 m/s
+  target Tv=0.7, actual Tv=0.7, PartFluid_0140.vtk, bottom SPH=1.7213 kPa, theory=1.54876 kPa, RMS=103.35 Pa, max speed=0.000262877 m/s
+  target Tv=1, actual Tv=1, PartFluid_0200.vtk, bottom SPH=0.865463 kPa, theory=0.738771 kPa, RMS=86.2034 Pa, max speed=0.000131193 m/s
+  target Tv=1.5, actual Tv=1.5, PartFluid_0300.vtk, bottom SPH=0.572908 kPa, theory=0.21514 kPa, RMS=242.647 Pa, max speed=8.14919e-05 m/s
+  target Tv=2, actual Tv=2, PartFluid_0400.vtk, bottom SPH=0.554566 kPa, theory=0.0626515 kPa, RMS=338.073 Pa, max speed=0.000173773 m/s
+CaseSWSc2_MLSDirect_Tv2 GPU done.
+Restart: CaseSWSt1_MLSDirect Part_0040
+Output: outputs\CaseSWSc2_MLSDirect_Tv2_from_p0040_GPU_out
+Figures: figures\CaseSWSc2_MLSDirect_Tv2_from_p0040

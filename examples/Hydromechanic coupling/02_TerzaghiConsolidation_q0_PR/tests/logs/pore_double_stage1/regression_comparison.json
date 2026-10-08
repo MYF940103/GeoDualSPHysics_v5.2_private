@@ -1,0 +1,1177 @@
+{
+  "scope": "Short same-input migration regression; not full consolidation accuracy or performance. Builds and tests overlapped, so walltime is not comparable.",
+  "acceptance_limits": {
+    "soil_pressure_all_frames_rms_pa": 0.01,
+    "soil_pressure_max_pa": 0.1,
+    "position_max_m": 1e-06,
+    "velocity_max_m_s": 1e-05,
+    "stress_max_pa": 1.0,
+    "reference_bit_exact": true,
+    "dry_value_exact": true
+  },
+  "pairs": [
+    {
+      "before": "q0_baseline_cpu_dt1e-05_s0",
+      "after": "q0_current_cpu_dt1e-05_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 1.9242829377276866e-09,
+          "max_abs_difference": 5.960464477539063e-08
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 3.995674170940686e-08,
+          "max_abs_difference": 1.1257361620664597e-06
+        },
+        "Rhop": {
+          "rms_difference": 2.866137245392976e-05,
+          "max_abs_difference": 0.00048828125
+        },
+        "ExcessPorePress": {
+          "rms_difference": 0.025178874049499134,
+          "max_abs_difference": 0.1259272560764657
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 0.025178874049499134,
+          "max_abs_difference": 0.1259272560764657
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 0.0010644990072329334,
+          "max_abs_difference": 0.036016909405589104
+        },
+        "Sigma_kk": {
+          "rms_difference": 0.004583690433612966,
+          "max_abs_difference": 0.2939453125
+        }
+      },
+      "frames": 21,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.025180741421861875,
+        "max_pa": 0.1264082728066569
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 0.024589413963138535,
+        "max_abs_pa": 0.1259272560764657
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": false,
+        "soil_pressure_max": false,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": false
+    },
+    {
+      "before": "q0_baseline_gpu_dt1e-05_s0",
+      "after": "q0_current_gpu_dt1e-05_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 2.7128823205697192e-09,
+          "max_abs_difference": 5.960464477539063e-08
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 4.460615233274287e-08,
+          "max_abs_difference": 1.43126817420125e-06
+        },
+        "Rhop": {
+          "rms_difference": 3.7271135675184794e-05,
+          "max_abs_difference": 0.000732421875
+        },
+        "ExcessPorePress": {
+          "rms_difference": 0.033622923888826,
+          "max_abs_difference": 0.1148581001743878
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 0.033622923888826,
+          "max_abs_difference": 0.1148581001743878
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 0.0013311744663107414,
+          "max_abs_difference": 0.020306649967096746
+        },
+        "Sigma_kk": {
+          "rms_difference": 0.005334847671742154,
+          "max_abs_difference": 0.294921875
+        }
+      },
+      "frames": 21,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.033625253723602457,
+        "max_pa": 0.11503583728153899
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 0.03301681703960935,
+        "max_abs_pa": 0.1148581001743878
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": false,
+        "soil_pressure_max": false,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": false
+    },
+    {
+      "before": "selfweight_baseline_cpu_dt1.25e-07_s0",
+      "after": "selfweight_current_cpu_dt1.25e-07_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 1.0054407573480404e-11,
+          "max_abs_difference": 1.862645149230957e-09
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 4.446368030289086e-11,
+          "max_abs_difference": 6.402842700481415e-10
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 0.00010290242896214285,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 0.00010290242896214285,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 1.2346867183820748e-07,
+          "max_abs_difference": 3.0619557946920395e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 2.392369295503907e-06,
+          "max_abs_difference": 0.00018310546875
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0003089125243092645,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 6.107259951093104e-05,
+        "max_abs_pa": 0.0004232185601722449
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_cpu_dt2.5e-07_s0",
+      "after": "selfweight_current_cpu_dt2.5e-07_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 6.596933046070197e-11,
+          "max_abs_difference": 8.149072527885437e-10
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 0.00014307785537896641,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 0.00014307785537896641,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 2.0060465857070954e-07,
+          "max_abs_difference": 3.628665581345558e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 3.021858053418979e-06,
+          "max_abs_difference": 0.000244140625
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.00032819707975863564,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 0.00012124809713196449,
+        "max_abs_pa": 0.0009631555767555255
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_cpu_dt2.5e-07_s0_dry",
+      "after": "selfweight_current_cpu_dt2.5e-07_s0_dry",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_kk": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "FSType": ">u4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "FSType": ">u4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": true,
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "dry_path_identical": true,
+      "acceptance_checks": {
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true,
+        "dry_value_exact": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_cpu_dt2.5e-07_s40",
+      "after": "selfweight_current_cpu_dt2.5e-07_s40",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 6.218499387037003e-11,
+          "max_abs_difference": 1.0477378964424133e-09
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 7.609568343080146e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 7.609568343080146e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 1.9710232531719126e-07,
+          "max_abs_difference": 4.153698682785034e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 2.769435656434808e-06,
+          "max_abs_difference": 0.0001220703125
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0003000977197465623,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 2.864114611188469e-05,
+        "max_abs_pa": 0.00037707343290094286
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_cpu_dt6.25e-08_s0",
+      "after": "selfweight_current_cpu_dt6.25e-08_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 3.1596569347969354e-11,
+          "max_abs_difference": 1.2223608791828156e-09
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 6.060112897897321e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 6.060112897897321e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 6.631727195447644e-08,
+          "max_abs_difference": 1.96089968085289e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 9.617566848082092e-07,
+          "max_abs_difference": 6.103515625e-05
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0002981691133236553,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 2.642500259725472e-05,
+        "max_abs_pa": 0.00022253750285017304
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_gpu_dt1.25e-07_s0",
+      "after": "selfweight_current_gpu_dt1.25e-07_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 3.482948951454674e-11,
+          "max_abs_difference": 3.725290298461914e-09
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 4.0617209210929255e-11,
+          "max_abs_difference": 9.708031600830225e-10
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 8.810309390157681e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 8.810309390157681e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 8.532189097002157e-08,
+          "max_abs_difference": 1.7388374544680119e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 1.0382969777969011e-06,
+          "max_abs_difference": 6.103515625e-05
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0003070231195696508,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 5.02393351175097e-05,
+        "max_abs_pa": 0.0004075788310728967
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_gpu_dt2.5e-07_s0",
+      "after": "selfweight_current_gpu_dt2.5e-07_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 5.1857121357229264e-11,
+          "max_abs_difference": 7.566995918750763e-10
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 0.000140495420406379,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 0.000140495420406379,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 1.3224956204934095e-07,
+          "max_abs_difference": 2.9641669243574142e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 2.200057248757414e-06,
+          "max_abs_difference": 0.00018310546875
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0003197331787066524,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 0.00010566538623203421,
+        "max_abs_pa": 0.0008042498193390202
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_gpu_dt2.5e-07_s0_dry",
+      "after": "selfweight_current_gpu_dt2.5e-07_s0_dry",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_kk": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "FSType": ">u4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "FSType": ">u4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": true,
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "dry_path_identical": true,
+      "acceptance_checks": {
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true,
+        "dry_value_exact": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_gpu_dt2.5e-07_s40",
+      "after": "selfweight_current_gpu_dt2.5e-07_s40",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 2.7452293564125473e-11,
+          "max_abs_difference": 1.7462298274040222e-10
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 2.7452293564125473e-11,
+          "max_abs_difference": 1.7462298274040222e-10
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_kk": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.00028943301633839685,
+        "max_pa": 0.0009764410424395464
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 2.799595611527068e-11,
+        "max_abs_pa": 1.7462298274040222e-10
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    },
+    {
+      "before": "selfweight_baseline_gpu_dt6.25e-08_s0",
+      "after": "selfweight_current_gpu_dt6.25e-08_s0",
+      "fields": {
+        "Pos": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Idp": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Vel": {
+          "rms_difference": 2.9068520429781764e-11,
+          "max_abs_difference": 4.855310598017581e-10
+        },
+        "Rhop": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "ExcessPorePress": {
+          "rms_difference": 6.393994899141991e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "FSType": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "PorePress": {
+          "rms_difference": 6.393994899141991e-05,
+          "max_abs_difference": 0.001953125
+        },
+        "PorePress0": {
+          "rms_difference": 0.0,
+          "max_abs_difference": 0.0
+        },
+        "Sigma_ij": {
+          "rms_difference": 7.225511739877002e-08,
+          "max_abs_difference": 1.7280690371990204e-06
+        },
+        "Sigma_kk": {
+          "rms_difference": 2.496921601549484e-06,
+          "max_abs_difference": 0.0001220703125
+        }
+      },
+      "frames": 11,
+      "pressure_definition": "Native BI4: baseline double(PorePress high)+double(PorePressRes), current double PorePress. Native reference retained; Excess computed from full states. VTK visible-pressure differences reported separately.",
+      "actual_output_times_match": true,
+      "before_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f4",
+        "FSType": ">u4",
+        "PorePress": ">f4",
+        "PorePress0": ">f4",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "after_vtk_dtypes": {
+        "Pos": ">f4",
+        "Idp": ">u4",
+        "Vel": ">f4",
+        "Rhop": ">f4",
+        "ExcessPorePress": ">f8",
+        "FSType": ">u4",
+        "PorePress": ">f8",
+        "PorePress0": ">f8",
+        "Sigma_ij": ">f4",
+        "Sigma_kk": ">f4"
+      },
+      "bitwise_numeric_equal": false,
+      "vtk_visible_pressure_difference": {
+        "rms_pa": 0.0003033802465615796,
+        "max_pa": 0.001953125
+      },
+      "reference_bit_mismatches": 0,
+      "free_surface_classification_mismatches": 0,
+      "soil_pressure_native": {
+        "all_frames_rms_pa": 2.7998984892184178e-05,
+        "max_abs_pa": 0.0001943199422385078
+      },
+      "dry_path_identical": null,
+      "acceptance_checks": {
+        "soil_pressure_rms": true,
+        "soil_pressure_max": true,
+        "reference_bit_exact": true,
+        "position_max": true,
+        "velocity_max": true,
+        "Sigma_ij_max": true,
+        "Sigma_kk_max": true,
+        "free_surface_classification": true
+      },
+      "passed": true
+    }
+  ],
+  "timestep_pairs": [
+    {
+      "build": "baseline",
+      "backend": "cpu",
+      "dt1": 2.5e-07,
+      "dt2": 1.25e-07,
+      "final_pressure_rms_pa": 0.0004425989747381816,
+      "final_pressure_max_difference_pa": 0.001863672718172893
+    },
+    {
+      "build": "baseline",
+      "backend": "cpu",
+      "dt1": 1.25e-07,
+      "dt2": 6.25e-08,
+      "final_pressure_rms_pa": 0.0007567953339911031,
+      "final_pressure_max_difference_pa": 0.002242556889541447
+    },
+    {
+      "build": "baseline",
+      "backend": "gpu",
+      "dt1": 2.5e-07,
+      "dt2": 1.25e-07,
+      "final_pressure_rms_pa": 0.00040671717265032895,
+      "final_pressure_max_difference_pa": 0.0016669287579134107
+    },
+    {
+      "build": "baseline",
+      "backend": "gpu",
+      "dt1": 1.25e-07,
+      "dt2": 6.25e-08,
+      "final_pressure_rms_pa": 0.0007659826137081057,
+      "final_pressure_max_difference_pa": 0.002085087326122448
+    },
+    {
+      "build": "current",
+      "backend": "cpu",
+      "dt1": 2.5e-07,
+      "dt2": 1.25e-07,
+      "final_pressure_rms_pa": 0.0004282464616845487,
+      "final_pressure_max_difference_pa": 0.0016823046244098805
+    },
+    {
+      "build": "current",
+      "backend": "cpu",
+      "dt1": 1.25e-07,
+      "dt2": 6.25e-08,
+      "final_pressure_rms_pa": 0.0007597741347266969,
+      "final_pressure_max_difference_pa": 0.0021037108163000084
+    },
+    {
+      "build": "current",
+      "backend": "gpu",
+      "dt1": 2.5e-07,
+      "dt2": 1.25e-07,
+      "final_pressure_rms_pa": 0.00041801616157357223,
+      "final_pressure_max_difference_pa": 0.0018848203253583051
+    },
+    {
+      "build": "current",
+      "backend": "gpu",
+      "dt1": 1.25e-07,
+      "dt2": 6.25e-08,
+      "final_pressure_rms_pa": 0.000762886981770202,
+      "final_pressure_max_difference_pa": 0.0021952852548565716
+    }
+  ],
+  "passed": false
+}

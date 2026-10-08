@@ -10,7 +10,7 @@
             <speedsystem value="0" auto="true" comment="Maximum system speed" />
             <coefsound value="20" comment="Coefficient to multiply speedsystem when speedsound is automatic" />
             <speedsound value="0" auto="true" comment="Soil sound speed is computed from the constrained modulus" />
-            <hdp value="1.5" comment="Wendland smoothing length factor from the u-pw retrogressive slope reference" />
+            <hdp value="2.16" comment="Wendland smoothing length factor from the u-pw retrogressive slope reference" />
             <cflnumber value="0.2" comment="Courant number" />
         </constantsdef>
         <mkconfig boundcount="240" fluidcount="9" />
@@ -76,6 +76,17 @@
     <execution>
         <special>
             <soils>
+                <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation in the failure stage" />
+                <HydroMechInitMode value="None" comment="Inherit Sigma, PorePress and PorePress0 from the coupled prestress PART" />
+                <HydroMechFreeSurfaceDrainage value="1" comment="Keep FSType 2/3 particles drained during failure" />
+                <HydroMechFreeSurfaceDrainageStartTime value="0" units_comment="seconds" />
+                <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
+                <Porosity value="0.4" comment="Porosity n" />
+                <HydraulicConductivity value="1e-8" comment="Very low permeability for quasi-undrained slope response" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Pore-pressure diffusion time-step safety factor" />
+                <PoreShepardRegularization value="1" comment="Enable pore-pressure Shepard regularization during failure" />
+                <PoreShepardInterval value="40" comment="Regularize pore pressure every 40 steps" />
                 <phi value="0" comment="Sensitive clay: phi = phi_r = 0" />
                 <coh value="25000" comment="Peak cohesion cp = 25 kPa" units_comment="Pa" />
                 <dlt value="0" comment="Dilatancy angle" />
@@ -87,26 +98,14 @@
                 <n_coh value="5" comment="Exponential cohesion softening coefficient eta = 5" />
                 <SoilTriggerFos value="1.65" comment="Peak strength reduction factor applied on restart" />
             </soils>
-            <hydromechanics>
-                <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation in the failure stage" />
-                <PoreWaterRho value="1000" comment="Pore-water density" units_comment="kg/m^3" />
-                <PoreWaterBulkModulus value="2e8" comment="Bulk modulus of water Kw = 0.2 GPa" units_comment="Pa" />
-                <Porosity value="0.4" comment="Porosity n" />
-                <HydraulicConductivity value="1e-8" comment="Very low permeability for quasi-undrained slope response" units_comment="m/s" />
-                <PoreDtSafety value="0.1" comment="Pore-pressure diffusion time-step safety factor" />
-                <PoreShepardRegularization value="1" comment="Enable pore-pressure Shepard regularization during failure" />
-                <PoreShepardInterval value="40" comment="Regularize pore pressure every 40 steps" />
-                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
-                <HydroMechDrainage value="1" comment="Keep FSType 2/3 particles drained during failure" />
-                <HydroMechDrainageStartTime value="0" units_comment="seconds" />
-            </hydromechanics>
         </special>
         <parameters>
             <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
             <parameter key="DPCtes" value="3" comment="DP constants type 3: 2D plane strain" />
             <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
             <parameter key="SlipMode" value="2" comment="No-slip mDBC for the bottom and left wall" />
-            <parameter key="NoPenetration" value="1" comment="Enable v5.4 mDBC2 no-penetration correction" />
+			<parameter key="MDBCCorrector" value="0" comment="mDBC correction in Symplectic corrector: 0=skip corrector, 1=apply in both predictor and corrector" />
+			<parameter key="NoPenetration" value="1" comment="Enable v5.4 mDBC2 no-penetration correction" />
             <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
             <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
             <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
@@ -114,8 +113,8 @@
             <parameter key="Visco" value="0.1" comment="Artificial viscosity coefficient" />
             <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
             <parameter key="ArtificialStress" value="1" comment="Bui 2008 tensile instability treatment" />
-            <parameter key="ArtificialStressCoef" value="0.2" comment="Bui 2008 artificial stress coefficient" />
-            <parameter key="ArtificialStressExp" value="4" comment="Bui 2008 artificial stress kernel-ratio exponent" />
+            <parameter key="ArtificialStressCoef" value="0.3" comment="Bui 2008 artificial stress coefficient" />
+            <parameter key="ArtificialStressExp" value="5" comment="Bui 2008 artificial stress kernel-ratio exponent" />
             <parameter key="SoilDamping" value="1" comment="Small damping coefficient reported for the u-pw reference" />
             <parameter key="SoilDampingCoef" value="1e-5" comment="Damping coefficient from the u-pw reference" />
             <parameter key="DensityDT" value="3" comment="Stress diffusion 0:None, 1:Molteni, 2:Feng, 3:Feng(full)" />
@@ -131,7 +130,7 @@
             <parameter key="DtFixed" value="1e-6" comment="Reference time step" units_comment="seconds" />
             <parameter key="DtFixedFile" value="NONE" />
             <parameter key="DtAllParticles" value="0" comment="1:All, 0:Only fluid/floating" />
-            <parameter key="TimeMax" value="5.0" comment="Retrogressive failure duration in the u-pw reference" units_comment="seconds" />
+            <parameter key="TimeMax" value="15.0" comment="Retrogressive failure duration in the u-pw reference" units_comment="seconds" />
             <parameter key="TimeOut" value="0.05" comment="Time between output files" units_comment="seconds" />
             <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of domain" units_comment="decimal" />
             <parameter key="RhopOutMin" value="1000" units_comment="kg/m^3" />

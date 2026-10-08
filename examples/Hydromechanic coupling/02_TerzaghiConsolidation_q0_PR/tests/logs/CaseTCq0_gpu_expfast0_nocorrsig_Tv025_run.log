@@ -1,0 +1,619 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseTCq0_gpu_expfast0_nocorrsig_Tv025"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_dbg-fillbox.vtk  domains:1
+FileDbgDomains> outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_dbg-fillbox.vtk  domains:2
+FileDbgDomains> outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_dbg-fillbox.vtk  domains:3
+FileDbgDomains> outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.016s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_MkCells.vtk  (time:0.004s, shapes:2, points:8)
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025.bi4<double>  (time:0.002s)
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_All.vtk  (time: 0.005s)
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_Bound.vtk  (time: 0.003s)
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_Fluid.vtk  (time: 0.003s)
+outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025.xml  (time:0.005s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_Normals.vtk
+  outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_Normals.nbi4  (time:0.014s)
+
+Save files time: 0.031s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.032s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.050 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.1 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  11-07-2026 15:33:37]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests"
+XmlFile=".../gpu_validation/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025.xml"
+OutputDir=".../outputs/gpu_validation/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out"
+OutputDataDir=".../gpu_validation/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseTCq0_gpu_expfast0_nocorrsig_Tv025"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[9.11929]  TimeOut=[0.182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopVertical"
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.036000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseTCq0_gpu_expfast0_nocorrsig_Tv025"
+RunName="CaseTCq0_gpu_expfast0_nocorrsig_Tv025"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=9.1192857142857
+TimePart=0.182185714285714
+Gravity=(0,0,0)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested GPU memory for 1168 particles: 0.4 MB (0 times).
+NormalDataFile="outputs\gpu_validation\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out/CaseTCq0_gpu_expfast0_nocorrsig_Tv025_Normals.nbi4"
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (39 regs)
+  BsForcesFluid=128 (74 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1253 particles: 0.5 MB.
+**JSphGpu: Requesting gpu memory for 2093 particles: 0.8 MB.
+**CellDiv: Requested gpu memory for 2093 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 443750 (0.42 MB)
+Allocated memory in GPU: 844264 (0.81 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (cg9h38a7)  11-07-2026 15:33:37]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 2967 particles: 1.1 MB.
+**CellDiv: Requested gpu memory for 2967 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+  Progress 0.72% in 30.0s. Estimated finish time: 11-07-2026 16:42:46
+  Progress 1.45% in 60.0s. Estimated finish time: 11-07-2026 16:42:46
+Part_0001      0.182190         18219    18219     451.15  11-07-2026 16:42:11
+Part_0002      0.364380         36438    18219     473.64  11-07-2026 16:43:54
+Part_0003      0.546560         54656    18218     501.79  11-07-2026 16:45:53
+Part_0004      0.728750         72875    18219     487.04  11-07-2026 16:46:20
+Part_0005      0.910930         91093    18218     479.57  11-07-2026 16:46:21
+Part_0006      1.093120        109312    18219     474.33  11-07-2026 16:46:15
+Part_0007      1.275310        127531    18219     544.17  11-07-2026 16:47:42
+Part_0008      1.457490        145749    18218     470.81  11-07-2026 16:47:23
+Part_0009      1.639680        163968    18219     475.80  11-07-2026 16:47:13
+Part_0010      1.821860        182186    18218     466.59  11-07-2026 16:46:57
+Part_0011      2.004050        200405    18219     482.52  11-07-2026 16:46:57
+Part_0012      2.186230        218623    18218     463.13  11-07-2026 16:46:43
+Part_0013      2.368420        236842    18219     453.32  11-07-2026 16:46:23
+Part_0014      2.550600        255060    18218     445.85  11-07-2026 16:46:02
+Part_0015      2.732790        273279    18219     408.71  11-07-2026 16:45:20
+Part_0016      2.914980        291498    18219     443.09  11-07-2026 16:45:04
+Part_0017      3.097160        309716    18218     428.48  11-07-2026 16:44:42
+Part_0018      3.279350        327935    18219     424.00  11-07-2026 16:44:19
+Part_0019      3.461530        346153    18218     423.63  11-07-2026 16:43:59
+Part_0020      3.643720        364372    18219     426.16  11-07-2026 16:43:43
+Part_0021      3.825900        382590    18218     424.54  11-07-2026 16:43:27
+Part_0022      4.008090        400809    18219     441.66  11-07-2026 16:43:20
+Part_0023      4.190280        419028    18219     442.10  11-07-2026 16:43:13
+Part_0024      4.372460        437246    18218     481.93  11-07-2026 16:43:22
+Part_0025      4.554650        455465    18219     485.76  11-07-2026 16:43:32
+Part_0026      4.736830        473683    18218     452.33  11-07-2026 16:43:29
+Part_0027      4.919020        491902    18219     435.17  11-07-2026 16:43:21
+Part_0028      5.101210        510121    18219     427.94  11-07-2026 16:43:11
+Part_0029      5.283390        528339    18218     445.33  11-07-2026 16:43:07
+Part_0030      5.465580        546558    18219     305.05  11-07-2026 16:42:21
+Part_0031      5.647760        564776    18218     307.50  11-07-2026 16:41:38
+Part_0032      5.829950        582995    18219     420.04  11-07-2026 16:41:31
+Part_0033      6.012130        601213    18218     464.01  11-07-2026 16:41:35
+Part_0034      6.194320        619432    18219     453.75  11-07-2026 16:41:37
+Part_0035      6.376510        637651    18219     437.35  11-07-2026 16:41:34
+Part_0036      6.558690        655869    18218     437.44  11-07-2026 16:41:32
+Part_0037      6.740880        674088    18219     409.94  11-07-2026 16:41:23
+Part_0038      6.923060        692306    18218     408.95  11-07-2026 16:41:14
+Part_0039      7.105250        710525    18219     422.47  11-07-2026 16:41:08
+Part_0040      7.287430        728743    18218     414.18  11-07-2026 16:41:02
+Part_0041      7.469620        746962    18219     411.66  11-07-2026 16:40:55
+Part_0042      7.651810        765181    18219     413.22  11-07-2026 16:40:48
+Part_0043      7.833990        783399    18218     409.35  11-07-2026 16:40:42
+Part_0044      8.016180        801618    18219     342.48  11-07-2026 16:40:21
+Part_0045      8.198360        819836    18218     314.18  11-07-2026 16:39:55
+Part_0046      8.380550        838055    18219     309.69  11-07-2026 16:39:31
+Part_0047      8.562730        856273    18218     309.73  11-07-2026 16:39:06
+Part_0048      8.744920        874492    18219     320.71  11-07-2026 16:38:46
+Part_0049      8.927110        892711    18219     319.67  11-07-2026 16:38:25
+Part_0050      9.109290        910929    18218     319.26  11-07-2026 16:38:06
+
+[Simulation finished  11-07-2026 16:38:05]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 3867.704590 sec.
+Simulation Runtime...............: 3867.679688 sec.
+Runtime per physical second......: 424.120697 sec.
+Steps per second.................: 235.781937
+Steps of simulation..............: 911929
+PART files.......................: 51
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 609810 (0.58 MB)
+GPU Memory.......................: 1193936 (1.14 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 0.024868 sec.
+NL-Limits........................: 423.410743 sec.
+NL-PreSort.......................: 23.882001 sec.
+NL-RadixSort.....................: 167.413519 sec.
+NL-CellBegin.....................: 147.698982 sec.
+NL-SortData......................: 285.068944 sec.
+NL-OutCheck......................: 335.782029 sec.
+CF-PreForces.....................: 407.616981 sec.
+CF-Forces........................: 1155.672435 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 123.278475 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 378.307613 sec.
+SU-ResizeNp......................: 0.001004 sec.
+SU-DownData......................: 0.026662 sec.
+SU-SavePart......................: 0.524589 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> ...\data/Part_0000.bi4
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartFluid_0021.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartFluid_0022.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartFluid_0023.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartFluid_0024.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartFluid_0025.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartFluid_0026.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartFluid_0027.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartFluid_0028.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartFluid_0029.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartFluid_0030.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartFluid_0031.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartFluid_0032.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartFluid_0033.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartFluid_0034.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartFluid_0035.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartFluid_0036.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartFluid_0037.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartFluid_0038.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartFluid_0039.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartFluid_0040.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartFluid_0041.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartFluid_0042.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartFluid_0043.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartFluid_0044.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartFluid_0045.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartFluid_0046.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartFluid_0047.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartFluid_0048.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartFluid_0049.vtk  np:1000
+LoadData> ...\CaseTCq0_gpu_expfast0_nocorrsig_Tv025_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartFluid_0050.vtk  np:1000
+
+Time of operation: 1.593 sec. (20 threads)
+q0 Terzaghi consolidation k=1e-4 GPU explicit mdbc_fast=0 no-corrector-sigma Tv0.25 validation done.

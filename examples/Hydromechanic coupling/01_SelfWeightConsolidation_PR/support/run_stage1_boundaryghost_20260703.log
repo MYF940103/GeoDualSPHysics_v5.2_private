@@ -1,0 +1,804 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseSelfWeightConsolidation_Stage1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileDbgDomains> CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_dbg-fillbox.vtk  domains:1
+FileDbgDomains> CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_dbg-fillbox.vtk  domains:2
+FileDbgDomains> CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_dbg-fillbox.vtk  domains:3
+FileDbgDomains> CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.032s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Z...
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+Maximum depth: 0.99 (automatic)
+Speed of system: 3.11639 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 62.3278 max(62.3278,31.1639)
+Speed of sound: 62.3278 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+[PreparePoints-End  time:0.013s]
+
+[SaveCase2D]
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_MkCells.vtk  (time:0.005s, shapes:2, points:8)
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1.bi4<double>  (time:0.003s)
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_All.vtk  (time: 0.003s)
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_Bound.vtk  (time: 0.004s)
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_Fluid.vtk  (time: 0.004s)
+CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1.xml  (time:0.005s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_Normals.vtk
+  CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_Normals.nbi4  (time:0.017s)
+
+Save files time: 0.036s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.037s]
+
+
+Time of execution: 0.085 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.1 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  03-07-2026 14:52:02]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/01_SelfWeightConsolidation_PR"
+XmlFile=".../01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1.xml"
+OutputDir=".../Hydromechanic coupling/01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Stage1_out"
+OutputDataDir=".../01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Stage1_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseSelfWeightConsolidation_Stage1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[1.16543e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[0.3]  TimeOut=[0.005]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="FreeSurface"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.036000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseSelfWeightConsolidation_Stage1"
+RunName="CaseSelfWeightConsolidation_Stage1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.4
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=0.3
+TimePart=0.005
+Gravity=(0,0,-9.81)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested GPU memory for 1168 particles: 0.5 MB (0 times).
+NormalDataFile="CaseSelfWeightConsolidation_Stage1_out/CaseSelfWeightConsolidation_Stage1_Normals.nbi4"
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (39 regs)
+  BsForcesFluid=128 (74 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1253 particles: 0.5 MB.
+**JSphGpu: Requesting gpu memory for 2093 particles: 0.8 MB.
+**CellDiv: Requested gpu memory for 2093 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 1872 particles (FreeSurface, min=0, max=10104.3).
+ 
+RunMode="Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 468866 (0.45 MB)
+Allocated memory in GPU: 894496 (0.85 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (7j50doxd)  03-07-2026 14:52:02]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 2967 particles: 1.2 MB.
+**CellDiv: Requested gpu memory for 2967 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+Part_0001      0.005000          5000     5000    2550.58  03-07-2026 15:04:46
+Part_0002      0.010001         10001     5001    2545.55  03-07-2026 15:04:45
+Part_0003      0.015001         15001     5000    2547.67  03-07-2026 15:04:46
+Part_0004      0.020001         20001     5000    2554.81  03-07-2026 15:04:46
+Part_0005      0.025000         25000     4999    2548.91  03-07-2026 15:04:46
+Part_0006      0.030000         30000     5000    2552.45  03-07-2026 15:04:46
+Part_0007      0.035000         35000     5000    2532.81  03-07-2026 15:04:46
+Part_0008      0.040000         40000     5000    2527.98  03-07-2026 15:04:45
+Part_0009      0.045000         45000     5000    2540.71  03-07-2026 15:04:44
+Part_0010      0.050000         50000     5000    2531.98  03-07-2026 15:04:44
+Part_0011      0.055000         55000     5000    2532.20  03-07-2026 15:04:44
+Part_0012      0.060000         60000     5000    2530.94  03-07-2026 15:04:43
+Part_0013      0.065000         65000     5000    2530.22  03-07-2026 15:04:44
+Part_0014      0.070000         70000     5000    2533.18  03-07-2026 15:04:44
+Part_0015      0.075000         75000     5000    2534.26  03-07-2026 15:04:43
+Part_0016      0.080000         80000     5000    2528.46  03-07-2026 15:04:43
+Part_0017      0.085000         85000     5000    2525.18  03-07-2026 15:04:42
+Part_0018      0.090000         90000     5000    2525.59  03-07-2026 15:04:42
+Part_0019      0.095000         95000     5000    2518.93  03-07-2026 15:04:43
+Part_0020      0.100000        100000     5000    2521.71  03-07-2026 15:04:42
+Part_0021      0.105000        105000     5000    2519.53  03-07-2026 15:04:42
+Part_0022      0.110000        110000     5000    2520.75  03-07-2026 15:04:42
+Part_0023      0.115000        115000     5000    2520.74  03-07-2026 15:04:41
+Part_0024      0.120000        120000     5000    2520.07  03-07-2026 15:04:42
+Part_0025      0.125000        125000     5000    2533.87  03-07-2026 15:04:41
+Part_0026      0.130000        130000     5000    2539.63  03-07-2026 15:04:41
+Part_0027      0.135000        135000     5000    2541.97  03-07-2026 15:04:42
+Part_0028      0.140000        140000     5000    2531.07  03-07-2026 15:04:41
+Part_0029      0.145000        145000     5000    2524.42  03-07-2026 15:04:41
+Part_0030      0.150000        150000     5000    2522.20  03-07-2026 15:04:41
+Part_0031      0.155000        155000     5000    2523.93  03-07-2026 15:04:41
+Part_0032      0.160000        160000     5000    2521.59  03-07-2026 15:04:41
+Part_0033      0.165000        165000     5000    2510.36  03-07-2026 15:04:40
+Part_0034      0.170000        170000     5000    2514.70  03-07-2026 15:04:41
+Part_0035      0.175000        175000     5000    2523.22  03-07-2026 15:04:41
+Part_0036      0.180000        180000     5000    2509.60  03-07-2026 15:04:40
+Part_0037      0.185000        185000     5000    2505.93  03-07-2026 15:04:40
+Part_0038      0.190000        190000     5000    2505.62  03-07-2026 15:04:40
+Part_0039      0.195000        195000     5000    2509.01  03-07-2026 15:04:40
+Part_0040      0.200000        200000     5000    2509.71  03-07-2026 15:04:39
+Part_0041      0.205000        205000     5000    2506.94  03-07-2026 15:04:40
+Part_0042      0.210000        210000     5000    2504.38  03-07-2026 15:04:39
+Part_0043      0.215000        215000     5000    2508.87  03-07-2026 15:04:39
+Part_0044      0.220000        220000     5000    2513.51  03-07-2026 15:04:40
+Part_0045      0.225000        225000     5000    2507.45  03-07-2026 15:04:39
+Part_0046      0.230000        230000     5000    2515.31  03-07-2026 15:04:39
+Part_0047      0.235000        235000     5000    2513.48  03-07-2026 15:04:39
+Part_0048      0.240000        240000     5000    2513.55  03-07-2026 15:04:39
+Part_0049      0.245000        245000     5000    2525.06  03-07-2026 15:04:38
+Part_0050      0.250000        250000     5000    2512.97  03-07-2026 15:04:39
+Part_0051      0.255000        255000     5000    2508.72  03-07-2026 15:04:39
+Part_0052      0.260001        260001     5001    2503.33  03-07-2026 15:04:38
+Part_0053      0.265001        265001     5000    2510.18  03-07-2026 15:04:39
+Part_0054      0.270001        270001     5000    2505.28  03-07-2026 15:04:38
+Part_0055      0.275001        275001     5000    2507.69  03-07-2026 15:04:39
+Part_0056      0.280001        280001     5000    2505.06  03-07-2026 15:04:38
+Part_0057      0.285001        285001     5000    2532.61  03-07-2026 15:04:38
+Part_0058      0.290001        290001     5000    2531.59  03-07-2026 15:04:39
+Part_0059      0.295001        295001     5000    2534.91  03-07-2026 15:04:38
+Part_0060      0.300001        300001     5000    2554.88  03-07-2026 15:04:39
+
+[Simulation finished  03-07-2026 15:04:39]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 757.305298 sec.
+Simulation Runtime...............: 757.281372 sec.
+Runtime per physical second......: 2524.262939 sec.
+Steps per second.................: 396.155273
+Steps of simulation..............: 300001
+PART files.......................: 61
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 645414 (0.62 MB)
+GPU Memory.......................: 1265144 (1.21 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 0.023889 sec.
+NL-Limits........................: 95.523606 sec.
+NL-PreSort.......................: 2.442889 sec.
+NL-RadixSort.....................: 29.449263 sec.
+NL-CellBegin.....................: 34.269916 sec.
+NL-SortData......................: 29.159925 sec.
+NL-OutCheck......................: 111.772952 sec.
+CF-PreForces.....................: 95.118470 sec.
+CF-Forces........................: 167.892560 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 11.356008 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 71.959343 sec.
+SU-ResizeNp......................: 0.000966 sec.
+SU-DownData......................: 0.024063 sec.
+SU-SavePart......................: 0.306437 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0000.bi4
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartFluid_0021.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartFluid_0022.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartFluid_0023.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartFluid_0024.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartFluid_0025.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartFluid_0026.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartFluid_0027.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartFluid_0028.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartFluid_0029.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartFluid_0030.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartFluid_0031.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartFluid_0032.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartFluid_0033.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartFluid_0034.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartFluid_0035.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartFluid_0036.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartFluid_0037.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartFluid_0038.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartFluid_0039.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartFluid_0040.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartFluid_0041.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartFluid_0042.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartFluid_0043.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartFluid_0044.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartFluid_0045.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartFluid_0046.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartFluid_0047.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartFluid_0048.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartFluid_0049.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartFluid_0050.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0051.bi4
+SaveVTK> ...\particles/PartFluid_0051.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0052.bi4
+SaveVTK> ...\particles/PartFluid_0052.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0053.bi4
+SaveVTK> ...\particles/PartFluid_0053.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0054.bi4
+SaveVTK> ...\particles/PartFluid_0054.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0055.bi4
+SaveVTK> ...\particles/PartFluid_0055.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0056.bi4
+SaveVTK> ...\particles/PartFluid_0056.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0057.bi4
+SaveVTK> ...\particles/PartFluid_0057.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0058.bi4
+SaveVTK> ...\particles/PartFluid_0058.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0059.bi4
+SaveVTK> ...\particles/PartFluid_0059.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0060.bi4
+SaveVTK> ...\particles/PartFluid_0060.vtk  np:1000
+
+Time of operation: 0.224 sec. (20 threads)
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0000.bi4
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartBound_0000.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartBound_0001.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartBound_0002.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartBound_0003.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartBound_0004.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartBound_0005.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartBound_0006.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartBound_0007.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartBound_0008.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartBound_0009.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartBound_0010.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartBound_0011.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartBound_0012.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartBound_0013.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartBound_0014.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartBound_0015.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartBound_0016.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartBound_0017.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartBound_0018.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartBound_0019.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartBound_0020.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartBound_0021.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartBound_0022.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartBound_0023.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartBound_0024.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartBound_0025.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartBound_0026.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartBound_0027.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartBound_0028.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartBound_0029.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartBound_0030.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartBound_0031.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartBound_0032.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartBound_0033.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartBound_0034.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartBound_0035.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartBound_0036.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartBound_0037.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartBound_0038.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartBound_0039.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartBound_0040.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartBound_0041.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartBound_0042.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartBound_0043.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartBound_0044.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartBound_0045.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartBound_0046.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartBound_0047.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartBound_0048.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartBound_0049.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartBound_0050.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0051.bi4
+SaveVTK> ...\particles/PartBound_0051.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0052.bi4
+SaveVTK> ...\particles/PartBound_0052.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0053.bi4
+SaveVTK> ...\particles/PartBound_0053.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0054.bi4
+SaveVTK> ...\particles/PartBound_0054.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0055.bi4
+SaveVTK> ...\particles/PartBound_0055.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0056.bi4
+SaveVTK> ...\particles/PartBound_0056.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0057.bi4
+SaveVTK> ...\particles/PartBound_0057.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0058.bi4
+SaveVTK> ...\particles/PartBound_0058.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0059.bi4
+SaveVTK> ...\particles/PartBound_0059.vtk  np:40
+LoadData> CaseSelfWeightConsolidation_Stage1_out\data/Part_0060.bi4
+SaveVTK> ...\particles/PartBound_0060.vtk  np:40
+
+Time of operation: 0.196 sec. (20 threads)
+Saved Stage1 history: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_stage1_history.png
+Saved Stage1 profiles: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_stage1_profiles.png
+Saved Stage1 metrics: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_stage1_metrics.csv
+Best Stage1 by excess-profile RMS: PartFluid_0005.vtk t=0.025s, bottom excess=16.6674 kPa (theory 20.4158 kPa), RMS excess=1662.18 Pa, max speed=0.00154391 m/s
+Final Stage1: PartFluid_0060.vtk t=0.3s, bottom excess=10.4017 kPa, RMS excess=5571.97 Pa, max speed=1.46029e-05 m/s
+Stage 1 GPU done

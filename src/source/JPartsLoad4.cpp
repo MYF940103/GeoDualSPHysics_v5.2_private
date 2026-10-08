@@ -24,6 +24,7 @@
 #include "JRadixSort.h"
 #include <climits>
 #include <cfloat>
+#include <cmath>
 
 using namespace std;
 
@@ -156,6 +157,10 @@ void JPartsLoad4::SortParticles(){
     rs.Sort(true,Count,Idp);
     rs.SortData(Count,Pos,Pos);
     rs.SortData(Count,VelRhop,VelRhop);
+    if(PorePressureDataLoaded){
+      rs.SortData(Count,PorePress,PorePress);
+      rs.SortData(Count,PorePress0,PorePress0);
+    }
   }
 }
 
@@ -209,6 +214,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
   SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
   PorePressureDataLoaded=(PartBegin && pd.ArrayExists("PorePress") && pd.ArrayExists("PorePress0"));
+  if(PartBegin && pd.ArrayExists("PorePress")!=pd.ArrayExists("PorePress0"))
+    Run_Exceptioon("PorePress and PorePress0 must both be present in the PART file.");
   //-Loads data for restarting.
   if(PartBegin){
     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
@@ -220,7 +227,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
     JPartDataBi4 pd2;
     if(!PartBegin)pd2.LoadFileCase(dir,casename,piece,Npiece);
     else pd2.LoadFilePart(dir,PartBegin,piece,Npiece);
-    sizetot+=pd.Get_Npok();
+    sizetot+=pd2.Get_Npok();
   }
   //-Allocates memory.
   AllocMemory(sizetot);
@@ -237,9 +244,22 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       }
       if(SoilDataLoaded && (!pd.ArrayExists("Sigma_kk") || !pd.ArrayExists("Sigma_ij") || !pd.ArrayExists("Kplastic")))
         Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
-      if(PorePressureDataLoaded && (!pd.ArrayExists("PorePress") || !pd.ArrayExists("PorePress0")))
-        Run_Exceptioon("Pore-pressure restart arrays are not available in all PART pieces.");
+      if(PartBegin && (pd.ArrayExists("PorePress")!=PorePressureDataLoaded || pd.ArrayExists("PorePress0")!=PorePressureDataLoaded))
+        Run_Exceptioon("Pore-pressure restart array availability is inconsistent across PART pieces.");
+      //-Do not silently discard precision from experimental restart formats.
+      if(PartBegin && pd.ArrayExists("PorePressRes"))
+        Run_Exceptioon("PorePressRes restart files are not supported by the original float u-pw solver. Use an original float checkpoint without residual arrays.");
       const unsigned npok=pd.Get_Npok();
+      if(PorePressureDataLoaded){
+        const char* names[]={"PorePress","PorePress0"};
+        for(unsigned c=0;c<2;c++){
+          const JBinaryDataArray* array=pd.GetArray(names[c]);
+          if(array->GetType()!=JBinaryDataDef::DatFloat)
+            Run_Exceptioon("PorePress and PorePress0 must use float arrays in all PART pieces. Double-state restart files are not supported by the original float u-pw solver.");
+          const unsigned count=(array->DataInPointer()? array->GetCount(): array->GetFileDataCount());
+          if(count!=npok)Run_Exceptioon(std::string(names[c])+" array size does not match the particle count in the PART piece.");
+        }
+      }
       if(npok){
         if(auxsize<npok){
           auxsize=npok;
@@ -275,6 +295,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         if(PorePressureDataLoaded){
           pd.GetArray("PorePress",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress+ntot);
           pd.GetArray("PorePress0",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress0+ntot);
+          for(unsigned p=0;p<npok;p++)if(!std::isfinite(PorePress[ntot+p]) || !std::isfinite(PorePress0[ntot+p]))
+            Run_Exceptioon("PorePress or PorePress0 contains a non-finite value in the PART piece.");
         }
       }
       ntot+=npok;
@@ -331,15 +353,25 @@ void JPartsLoad4::RemoveBoundary(){
   unsigned *idp0=Idp;        Idp=NULL;
   tdouble3 *pos0=Pos;        Pos=NULL;
   tfloat4 *velrhop0=VelRhop; VelRhop=NULL;
+  float *porepress= PorePress;     PorePress=NULL;
+  float *porepress0=PorePress0;    PorePress0=NULL;
   AllocMemory(count0-nbound);
   //-Copies data in new pointers.
   memcpy(Idp,idp0+nbound,sizeof(unsigned)*Count);
   memcpy(Pos,pos0+nbound,sizeof(tdouble3)*Count);
   memcpy(VelRhop,velrhop0+nbound,sizeof(tfloat4)*Count);
+  if(Count){
+    if(PorePressureDataLoaded){
+      memcpy(PorePress,porepress+nbound,sizeof(float)*Count);
+      memcpy(PorePress0,porepress0+nbound,sizeof(float)*Count);
+    }
+  }
   //-Frees old pointers.
   delete[] idp0;      idp0=NULL; 
   delete[] pos0;      pos0=NULL; 
   delete[] velrhop0;  velrhop0=NULL; 
+  delete[] porepress;  porepress=NULL;
+  delete[] porepress0; porepress0=NULL;
 }
 
 //==============================================================================

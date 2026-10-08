@@ -1,0 +1,223 @@
+{
+  "name": "after_gpu_2.5e-07_s0_dry",
+  "build": "after",
+  "backend": "gpu",
+  "dt": 2.5e-07,
+  "shepard": 0,
+  "dry": true,
+  "requested_steps": 2000,
+  "command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+    "-gpu",
+    "-mdbc_noslip",
+    "-stable",
+    "-symplectic",
+    "-partbegin:56:0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data",
+    "-tmax:0.0005",
+    "-tout:0.00005",
+    "-nsteps:2000",
+    "-nortimes:1",
+    "-sv:binx",
+    "-dirdataout",
+    "data",
+    "-svres",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\00_upl_records\\verification_work\\after_gpu_2.5e-07_s0_dry\\input\\CaseSWSc2_MLSDirect_Tv2",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\00_upl_records\\verification_work\\after_gpu_2.5e-07_s0_dry"
+  ],
+  "executable_sha256": "c285de1f8ec79a6cc416c4744be71c80fd80ca292014033387e58ef2d2a1ecf2",
+  "original_input_sha256": {
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2.xml": "5439212857252ccc01e4af12bf774b85dcc56d865f288a84b87b3c4c6fc0ab55",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2.bi4": "5ae98cd0d0512112bcb01246ad7cd3f07603dc48737a9c7d76f6b2324dc3e5f0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out\\CaseSWSc2_MLSDirect_Tv2_Normals.nbi4": "9d230acc524e8a431dea2ecc3c0598d310f583569ad546229c588491e99f414c",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\Part_0056.bi4": "576151c750074cca5f78fcee0db652fb0001e308b72430082dd18c482f8e0767",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\PartExtra_0056.bi4": "c02413eef71d9ee875cbaa202a271fc29ca3d6beeaa14b693e6bb342303ffcb0",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\Part_Head.ibi4": "1aceabe4c585fbd36448017bcbb3bc4445dcb1902b47d3f522e1db4cf8953a49",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\outputs\\CaseSWSt1_MLSDirect_GPU_out\\data\\PartInfo.ibi4": "45f294dda07ab9772f58663d6de33ad394bf4f029a23f91b4bfa77486d61f8db"
+  },
+  "copied_xml_sha256": "6faabcab9405dbed85da2623ecd2e444be556679f0b5d582831fc96fbfa22b53",
+  "passed": true,
+  "solver_wall_seconds": 4.793108500000017,
+  "exit_code": 0,
+  "steps": 2000,
+  "excluded_particles": 0,
+  "dt_min_adjustments": 0,
+  "inputs_unchanged": true,
+  "conversion_command": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+    "-dirin",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\00_upl_records\\verification_work\\after_gpu_2.5e-07_s0_dry\\data",
+    "-savevtk",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\00_upl_records\\verification_work\\after_gpu_2.5e-07_s0_dry\\vtk\\PartAll",
+    "-onlytype:+all",
+    "-vars:-all,+idp,+vel,+rhop,+sigma_kk,+sigma_ij,+fstype"
+  ],
+  "converter_sha256": "07760675a7c4cf08126afefcc2e570b398677cc783093ecd3965a07071cc41c5",
+  "frames": [
+    {
+      "name": "PartAll_0000.vtk",
+      "sha256": "ce62e8a8fd20fc34ea63fac05294bfffef4994e7e54cff11239cca13d0421079",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0001.vtk",
+      "sha256": "ac515f0f8db90587e63159e25f07ba32b668f2f3e2dd818a98154eb2b7fcefc0",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0002.vtk",
+      "sha256": "dfaab79d0b943cf32730404b045b5f0ea866c548f261ef432ce9ac9d36c3914b",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0003.vtk",
+      "sha256": "a9797a8a3b1adbd6ef1876417604b4009628c57691a29e0b6be9edfbda0676ca",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0004.vtk",
+      "sha256": "c7ff7b32631e2e0b3bdcdf2806b89b6609e59d25248ec830a00c9bec79a8d4fc",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0005.vtk",
+      "sha256": "7f3389f29d92d37b7f4a72ebf6280eacb9092c89f46741cf74c1108a986bee80",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0006.vtk",
+      "sha256": "c42fd0d61481be656bc7cd31dbe090415ff04a0634c661a7128d39e73d9e6129",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0007.vtk",
+      "sha256": "85a799c75e153c34639e4ccdae755f5c3cf19d8b92801b4b03c362fc26b19f89",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0008.vtk",
+      "sha256": "7c50d9c460f05963b359ff0ea18fcaf23af52f06a311efef059e0cc899356562",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0009.vtk",
+      "sha256": "bb151e8b3f2dff206f06288bdcb5d57c368880cc9aaf299029e75099d0654c6f",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    },
+    {
+      "name": "PartAll_0010.vtk",
+      "sha256": "414f569e1919f17275e2d08736b8b5c532f3a6f8364da741edcf91d00fe4085b",
+      "count": 1040,
+      "title": "vtk output",
+      "field_names": [
+        "Pos",
+        "Idp",
+        "Vel",
+        "Rhop",
+        "FSType",
+        "Sigma_ij",
+        "Sigma_kk"
+      ]
+    }
+  ]
+}

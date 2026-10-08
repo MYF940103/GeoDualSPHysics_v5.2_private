@@ -1,0 +1,28 @@
+# Late residual pore-rate diagnostic summary, 2026-07-24
+
+Temporary CPU diagnostic; selected row is the last available nstep/interstep from each one-step restart. Rates are averaged over selected p1 particles.
+
+| case | nstep | interstep | n_p1 | mean p Pa | mean vz m/s | comp Pa/s | seep Pa/s | total Pa/s |
+| --- | ---: | ---: | ---: | ---: | ---: | ---: | ---: | ---: |
+| q0_k1em4_Tv1p5 | 0 | 3 | 1800 | 546.260944 | 1.54924E-05 | -1072498.744039 | 3681.780475 | -1068816.963563 |
+| q0_k1em4_Tv1p5:fluid | 0 | 3 | 1800 | 546.260944 | 1.54924E-05 | -1072520.84472 | 3691.622254 | -1068829.22246 |
+| q0_k1em4_Tv1p5:bound_vel0 | 0 | 3 | 1800 | 546.260944 | 1.54924E-05 | 22.100677 | -9.84178 | 12.258898 |
+| q0_k1em3_Tv1p5 | 9 | 3 | 1800 | 316.849107 | -2.80608E-05 | -1992593.256192 | 383148.369779 | -1609444.886411 |
+| q0_k1em3_Tv1p5:fluid | 9 | 3 | 1800 | 316.849107 | -2.80608E-05 | -1991866.30327 | 383090.346637 | -1608775.95663 |
+| q0_k1em3_Tv1p5:bound_vel0 | 9 | 3 | 1800 | 316.849107 | -2.80608E-05 | -726.952925 | 58.023142 | -668.929784 |
+| SelfWeight_Tv1p5 | 9 | 3 | 1790 | 5215.504147 | -5.62718E-05 | 30159.045575 | -28343.689496 | 1815.356079 |
+| SelfWeight_Tv1p5:fluid | 9 | 3 | 1790 | 5215.504147 | -5.62718E-05 | 29547.932308 | -30164.105802 | -616.173493 |
+| SelfWeight_Tv1p5:bound_noslip | 9 | 3 | 1790 | 5215.504147 | -5.62718E-05 | 611.113267 | 1820.416306 | 2431.529572 |
+| Lian_t3_full | 0 | 3 | 20301 | 625.685471 | -8.1395E-06 | -73.172963 | 3358.062674 | 3284.889711 |
+| Lian_t3_full:fluid | 0 | 3 | 20301 | 625.685471 | -8.1395E-06 | -33.938179 | 3493.368539 | 3459.43036 |
+| Lian_t3_full:bound_noslip | 0 | 3 | 20301 | 625.685471 | -8.1395E-06 | 53.870661 | -11.086101 | 42.78456 |
+| Lian_t3_full:bound_freeslip | 0 | 3 | 20301 | 625.685471 | -8.1395E-06 | -93.105445 | -124.219764 | -217.325209 |
+| Lian_t3_strip_x0_1p25_z8_10 | 0 | 3 | 255 | 1006.127625 | -0.0001022379 | -331086.451073 | -58764.957222 | -389851.408295 |
+| Lian_t3_strip_x0_1p25_z8_10:fluid | 0 | 3 | 255 | 1006.127625 | -0.0001022379 | -320916.704412 | -55829.893716 | -376746.598128 |
+| Lian_t3_strip_x0_1p25_z8_10:bound_freeslip | 0 | 3 | 255 | 1006.127625 | -0.0001022379 | -10169.746662 | -2935.063506 | -13104.810168 |
+| Lian_t3_bottomleft_x0_4_z0_2 | 0 | 3 | 799 | 1950.315337 | -8.0589E-06 | 15452.078724 | -15463.142551 | -11.063827 |
+| Lian_t3_bottomleft_x0_4_z0_2:fluid | 0 | 3 | 799 | 1950.315337 | -8.0589E-06 | 15220.267395 | -15062.800129 | 157.467266 |
+| Lian_t3_bottomleft_x0_4_z0_2:bound_noslip | 0 | 3 | 799 | 1950.315337 | -8.0589E-06 | 255.889378 | -73.487424 | 182.401954 |
+| Lian_t3_bottomleft_x0_4_z0_2:bound_freeslip | 0 | 3 | 799 | 1950.315337 | -8.0589E-06 | -24.07805 | -326.854997 | -350.933047 |
+
+Interpretation: positive total raises pore pressure; negative total dissipates/reduces it. For Lian bottom-left at t=3s, comp and seep nearly cancel, making the local residual decay very slowly even though the seepage term itself is not small.

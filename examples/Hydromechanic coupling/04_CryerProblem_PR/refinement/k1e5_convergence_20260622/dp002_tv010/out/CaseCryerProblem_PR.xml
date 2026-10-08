@@ -1,0 +1,139 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.278c (30-10-2023)" date="22-06-2026 02:26:09">
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="No gravity for Cryer&apos;s externally loaded sphere" units_comment="m/s^2" />
+            <rhop0 value="2100" comment="Reference density of the saturated soil mixture" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="100" auto="false" comment="Nonzero initialization sound speed for zero-gravity external-load case" units_comment="m/s" />
+            <hdp value="1.8" comment="Smoothing length ratio h/dp" />
+            <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+        </constantsdef>
+        <mkconfig boundcount="1" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte radius="0.05" _rem="Poroelastic sphere radius" />
+                <newvarcte Dp="0.002" _rem="Particle spacing" />
+                <newvarcte dummyb="0.09" _rem="Remote dummy boundary coordinate, outside kernel support" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-radius-Dp*4" y="#-radius-Dp*4" z="#-radius-Dp*4" />
+                <pointmax x="#dummyb+Dp*2" y="#dummyb+Dp*2" z="#dummyb+Dp*2" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>actual | dp | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>all</boxfill>
+                        <point x="#dummyb" y="#dummyb" z="#dummyb" />
+                        <size x="#Dp" y="#Dp" z="#Dp" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <setfrdrawmode auto="true" />
+                    <drawsphere radius="#radius">
+                        <point x="0" y="0" z="0" />
+                    </drawsphere>
+                    <setfrdrawmode auto="false" />
+                </mainlist>
+            </commands>
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <soils>
+                <phi value="33" comment="Friction angle, unused in elastic response due to high cohesion" />
+                <coh value="1e9" comment="High cohesion to keep the verification elastic" />
+                <dlt value="0" comment="Dilatancy angle" />
+                <ModulusE value="2000000.0" comment="Young&apos;s modulus from the u-pw consolidation verification" units_comment="Pa" />
+                <PRvs value="0.3" comment="Poisson ratio for the first Cryer verification" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+                <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
+                <Porosity value="0.3" comment="Porosity n" />
+                <HydraulicConductivity value="1e-05" comment="One-stage drained convergence test: drainage is active from t=0" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Stable pore-pressure explicit step safety factor" />
+                <PoreShepardRegularization value="0" comment="Disabled for the first Cryer verification" />
+                <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
+                <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; Cryer two-stage verification uses 0=None" />
+                <HydroMechTopLoadMode value="2" comment="HydroMechTopLoadMode values: 0=None, 1=TopVertical, 2=FlexibleConfinement; Cryer uses 2=FlexibleConfinement" />
+                <HydroMechTopLoadQ0 value="10000.0" comment="Compressive spherical surface pressure p0" units_comment="Pa" />
+                <HydroMechTopLoadRampTime value="0.0" comment="No ramp for the k=1e-5 convergence test" units_comment="seconds" />
+                <HydroMechDrainage value="1" comment="Drainage is active from the start of the calculation" />
+                <HydroMechDrainageStartTime value="0.0" comment="Drainage starts at t=0" units_comment="seconds" />
+            </hydromechanics>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+            <parameter key="DPCtes" value="1" comment="Drucker-Prager constants: 3D circumscribed" />
+            <parameter key="Boundary" value="1" comment="Boundary method: DBC; this case has no solid boundary particles" />
+            <parameter key="StepAlgorithm" value="2" comment="Symplectic time integration" />
+            <parameter key="VerletSteps" value="40" comment="Verlet-only parameter" />
+            <parameter key="Kernel" value="2" comment="Wendland kernel" />
+            <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+            <parameter key="Visco" value="0.1" comment="Main-paper artificial viscosity coefficient alpha" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
+            <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
+            <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for ramp-load stabilization" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient used in the Cryer PR verification" />
+            <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
+            <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
+            <parameter key="Shifting" value="0" comment="Shifting disabled" />
+            <parameter key="ShiftCoef" value="-2" comment="Unused when shifting is disabled" />
+            <parameter key="ShiftTFS" value="2.75" comment="3D free-surface threshold" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
+            <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
+            <parameter key="DtIni" value="5e-06" comment="Initial time step" units_comment="seconds" />
+            <parameter key="DtMin" value="1e-08" comment="Minimum time step" units_comment="seconds" />
+            <parameter key="DtFixed" value="5e-06" comment="Fixed reference time step" units_comment="seconds" />
+            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
+            <parameter key="TimeMax" value="0.09109285714285716" comment="Stage 1 undrained loading end time" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.0009109285714285715" comment="Stage 1 output interval" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="default" y="default" z="default" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="default" y="default" z="default" />
+            </simulationdomain>
+        </parameters>
+        <particles np="71178" nb="8" nbf="8" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="-0.05" y="-0.0499901" z="-0.0499615" />
+                    <posmax x="0.092" y="0.092" z="0.092" />
+                </positions>
+                <fixed count="8" id="0-7" mkcount="1" mkvalues="10" />
+                <fluid count="71170" id="8-71177" mkcount="1" mkvalues="1" />
+            </_summary>
+            <fixed mkbound="0" mk="10" begin="0" count="8" />
+            <fluid mkfluid="0" mk="1" begin="8" count="71170" />
+        </particles>
+        <constants>
+            <data2d value="false" />
+            <gravity x="0" y="0" z="0" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="2100" units_comment="kg/m^3" />
+            <dp value="0.002" units_comment="metres (m)" />
+            <h value="0.0036" units_comment="metres (m)" />
+            <b value="3000000" units_comment="Pascal (Pa)" />
+            <massbound value="0.0000168" units_comment="kg" />
+            <massfluid value="0.0000168" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="MResId" value="0" />
+            <varnum name="dummyb" value="0.09" />
+            <varnum name="radius" value="0.05" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1" />
+    </execution>
+</case>

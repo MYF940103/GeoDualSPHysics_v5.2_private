@@ -1,0 +1,2518 @@
+diff --git a/src/VS/DualSPHysics5Re.vcxproj b/src/VS/DualSPHysics5Re.vcxproj
+index 5eed51d..5d8a18d 100644
+--- a/src/VS/DualSPHysics5Re.vcxproj
++++ b/src/VS/DualSPHysics5Re.vcxproj
+@@ -531,6 +531,8 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
+     <ClInclude Include="..\source\FunGeo3d.h" />
+     <ClInclude Include="..\source\FunctionsMath.h" />
+     <ClInclude Include="..\source\FunSphEos.h" />
++    <ClInclude Include="..\source\FunPorePressure.h" />
++    <ClInclude Include="..\source\FunUpl.h" />
+     <ClInclude Include="..\source\FunSphEos_iker.h">
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+@@ -876,6 +878,7 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
+     <ClCompile Include="..\source\JCaseEParms.cpp" />
+     <ClCompile Include="..\source\JSph.cpp" />
+     <ClCompile Include="..\source\JSphCpu.cpp" />
++    <ClCompile Include="..\source\JSphCpuUpl.cpp" />
+     <ClCompile Include="..\source\JSphGpu.cpp">
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+diff --git a/src/VS/DualSPHysics5ReCpu.vcxproj b/src/VS/DualSPHysics5ReCpu.vcxproj
+index 468bda8..6c28ef6 100644
+--- a/src/VS/DualSPHysics5ReCpu.vcxproj
++++ b/src/VS/DualSPHysics5ReCpu.vcxproj
+@@ -316,7 +316,7 @@
+       <RuntimeTypeInfo>
+       </RuntimeTypeInfo>
+       <CompileAs>CompileAsCpp</CompileAs>
+-      <MinimalRebuild>true</MinimalRebuild>
++      <MinimalRebuild>false</MinimalRebuild>
+       <BasicRuntimeChecks>EnableFastChecks</BasicRuntimeChecks>
+     </ClCompile>
+     <Link>
+@@ -528,6 +528,8 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
+     <ClInclude Include="..\source\FunGeo3d.h" />
+     <ClInclude Include="..\source\FunctionsMath.h" />
+     <ClInclude Include="..\source\FunSphEos.h" />
++    <ClInclude Include="..\source\FunPorePressure.h" />
++    <ClInclude Include="..\source\FunUpl.h" />
+     <ClInclude Include="..\source\FunSphEos_iker.h">
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+@@ -873,6 +875,7 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
+     <ClCompile Include="..\source\JCaseEParms.cpp" />
+     <ClCompile Include="..\source\JSph.cpp" />
+     <ClCompile Include="..\source\JSphCpu.cpp" />
++    <ClCompile Include="..\source\JSphCpuUpl.cpp" />
+     <ClCompile Include="..\source\JSphGpu.cpp">
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+diff --git a/src/source/JPartsLoad4.cpp b/src/source/JPartsLoad4.cpp
+index 23470c3..718e011 100644
+--- a/src/source/JPartsLoad4.cpp
++++ b/src/source/JPartsLoad4.cpp
+@@ -24,6 +24,8 @@
+ #include "JRadixSort.h"
+ #include <climits>
+ #include <cfloat>
++#include <cmath>
++#include <vector>
+ 
+ using namespace std;
+ 
+@@ -35,7 +37,8 @@ using namespace std;
+ //==============================================================================
+ JPartsLoad4::JPartsLoad4(bool useomp):UseOmp(useomp){
+   ClassName="JPartsLoad4";
+-  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL; PorePress=NULL; PorePress0=NULL;
++  Idp=NULL; Pos=NULL; VelRhop=NULL; Sigma=NULL; Kplastic=NULL; PorePress=NULL; PorePress0=NULL; PorePressRes=NULL;
++  UplLogJ=NULL; UplPressurePrev=NULL; UplPreviousDt=NULL;
+   Reset();
+ }
+ 
+@@ -68,6 +71,8 @@ void JPartsLoad4::Reset(){
+   DemDtForce=0;
+   SoilDataLoaded=false;
+   PorePressureDataLoaded=false;
++  UplDataLoaded=false;
++  memset(UplConfig,0,sizeof(UplConfig));
+   AllocMemory(0);
+ }
+ 
+@@ -84,6 +89,10 @@ void JPartsLoad4::AllocMemory(unsigned count){
+   delete[] Kplastic; Kplastic=NULL;
+   delete[] PorePress;  PorePress=NULL;
+   delete[] PorePress0; PorePress0=NULL;
++  delete[] PorePressRes; PorePressRes=NULL;
++  delete[] UplLogJ;         UplLogJ=NULL;
++  delete[] UplPressurePrev; UplPressurePrev=NULL;
++  delete[] UplPreviousDt;   UplPreviousDt=NULL;
+   if(Count){
+     try{
+       Idp=new unsigned[Count];
+@@ -93,6 +102,12 @@ void JPartsLoad4::AllocMemory(unsigned count){
+       Kplastic=new float[Count];
+       PorePress=new float[Count];
+       PorePress0=new float[Count];
++      PorePressRes=new float[Count](); //-Old PART files have no residual and start with zero low bits.
++      if(UplDataLoaded){ //-No extra particle arrays for legacy PART files.
++        UplLogJ=new double[Count];
++        UplPressurePrev=new double[Count];
++        UplPreviousDt=new double[Count];
++      }
+     }
+     catch(const std::bad_alloc){
+       Run_Exceptioon("Could not allocate the requested memory.");
+@@ -114,6 +129,10 @@ llong JPartsLoad4::GetAllocMemory()const{
+   if(Kplastic)s+=sizeof(float)*Count;
+   if(PorePress)s+=sizeof(float)*Count;
+   if(PorePress0)s+=sizeof(float)*Count;
++  if(PorePressRes)s+=sizeof(float)*Count;
++  if(UplLogJ)s+=sizeof(double)*Count;
++  if(UplPressurePrev)s+=sizeof(double)*Count;
++  if(UplPreviousDt)s+=sizeof(double)*Count;
+   return(s);
+ }
+ 
+@@ -156,6 +175,16 @@ void JPartsLoad4::SortParticles(){
+     rs.Sort(true,Count,Idp);
+     rs.SortData(Count,Pos,Pos);
+     rs.SortData(Count,VelRhop,VelRhop);
++    if(PorePressureDataLoaded){
++      rs.SortData(Count,PorePress,PorePress);
++      rs.SortData(Count,PorePress0,PorePress0);
++    }
++    rs.SortData(Count,PorePressRes,PorePressRes);
++    if(UplDataLoaded){
++      rs.SortData(Count,UplLogJ,UplLogJ);
++      rs.SortData(Count,UplPressurePrev,UplPressurePrev);
++      rs.SortData(Count,UplPreviousDt,UplPreviousDt);
++    }
+   }
+ }
+ 
+@@ -209,6 +238,21 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
+   SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
+   PorePressureDataLoaded=(PartBegin && pd.ArrayExists("PorePress") && pd.ArrayExists("PorePress0"));
++  const bool poreresloaded=(PartBegin && pd.ArrayExists("PorePressRes"));
++  if(poreresloaded && !PorePressureDataLoaded)
++    Run_Exceptioon("PorePressRes requires PorePress and PorePress0 arrays in the PART file.");
++  const char* uplnames[]={"UplLogJ","UplPressurePrev","UplPreviousDt"};
++  const char* uplconfignames[]={"UplSchema","UplN0","UplK0","UplCk","UplRho0","UplRhoW","UplKw","UplMode","UplAlpha"};
++  if(PartBegin){
++    const bool upllogj=pd.ArrayExists(uplnames[0]);
++    const bool uplprev=pd.ArrayExists(uplnames[1]);
++    const bool upldt=pd.ArrayExists(uplnames[2]);
++    if(upllogj!=uplprev || upllogj!=upldt)
++      Run_Exceptioon("UplLogJ, UplPressurePrev and UplPreviousDt must all be present or all be absent in the PART file.");
++    UplDataLoaded=upllogj;
++    for(unsigned c=0;c<9;c++)if(pd.ArrayExists(uplconfignames[c])!=UplDataLoaded)
++      Run_Exceptioon("u-pl PART files require all three state arrays and all nine checkpoint configuration arrays together.");
++  }
+   //-Loads data for restarting.
+   if(PartBegin){
+     SymplecticDtPre=pd.GetPart()->GetvDouble("SymplecticDtPre",true,0);
+@@ -220,7 +264,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+     JPartDataBi4 pd2;
+     if(!PartBegin)pd2.LoadFileCase(dir,casename,piece,Npiece);
+     else pd2.LoadFilePart(dir,PartBegin,piece,Npiece);
+-    sizetot+=pd.Get_Npok();
++    sizetot+=pd2.Get_Npok();
+   }
+   //-Allocates memory.
+   AllocMemory(sizetot);
+@@ -230,6 +274,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+     unsigned auxsize=0;
+     tfloat3 *auxf3=NULL;
+     float *auxf=NULL;
++    bool uplconfigread=false;
++    vector<double> uplconfigbuffer;
+     for(unsigned piece=0;piece<Npiece;piece++){
+       if(piece){
+         if(!PartBegin)pd.LoadFileCase(dir,casename,piece,Npiece);
+@@ -239,7 +285,55 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+         Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
+       if(PorePressureDataLoaded && (!pd.ArrayExists("PorePress") || !pd.ArrayExists("PorePress0")))
+         Run_Exceptioon("Pore-pressure restart arrays are not available in all PART pieces.");
++      if(PartBegin && pd.ArrayExists("PorePressRes")!=poreresloaded)
++        Run_Exceptioon("PorePressRes availability is inconsistent across PART pieces.");
++      if(PartBegin)for(unsigned c=0;c<3;c++)if(pd.ArrayExists(uplnames[c])!=UplDataLoaded)
++        Run_Exceptioon(std::string(uplnames[c])+" availability is inconsistent across PART pieces.");
++      if(PartBegin)for(unsigned c=0;c<9;c++)if(pd.ArrayExists(uplconfignames[c])!=UplDataLoaded)
++        Run_Exceptioon(std::string(uplconfignames[c])+" availability is inconsistent across PART pieces.");
+       const unsigned npok=pd.Get_Npok();
++      JBinaryDataArray *uplarrays[3]={NULL,NULL,NULL};
++      if(UplDataLoaded)for(unsigned c=0;c<3;c++){
++        uplarrays[c]=pd.GetArray(uplnames[c],JBinaryDataDef::DatDouble);
++        const unsigned count=(uplarrays[c]->DataInPointer()? uplarrays[c]->GetCount(): uplarrays[c]->GetFileDataCount());
++        if(count!=npok)Run_Exceptioon(std::string(uplnames[c])+" array size does not match the particle count in the PART piece.");
++      }
++      if(UplDataLoaded){
++        if(npok)uplconfigbuffer.resize(npok);
++        for(unsigned c=0;c<9;c++){
++          JBinaryDataArray* array=pd.GetArray(uplconfignames[c],JBinaryDataDef::DatDouble);
++          const unsigned count=(array->DataInPointer()? array->GetCount(): array->GetFileDataCount());
++          if(count!=npok)Run_Exceptioon(std::string(uplconfignames[c])+" array size does not match the particle count in the PART piece.");
++          if(npok){
++            array->GetDataCopy(npok,uplconfigbuffer.data());
++            const double value=uplconfigbuffer[0];
++            for(unsigned p=0;p<npok;p++){
++              if(!std::isfinite(uplconfigbuffer[p]))
++                Run_Exceptioon(std::string(uplconfignames[c])+" contains a non-finite value in the PART piece.");
++              if(uplconfigbuffer[p]!=value)
++                Run_Exceptioon(std::string(uplconfignames[c])+" must be identical for every particle in the PART piece.");
++            }
++            if(uplconfigread && value!=UplConfig[c])
++              Run_Exceptioon(std::string(uplconfignames[c])+" is inconsistent across PART pieces.");
++            if(c==0 && value!=1.)Run_Exceptioon("Unsupported u-pl checkpoint schema; UplSchema must equal 1.");
++            if(c==7 && value!=0. && value!=1.)Run_Exceptioon("UplMode must equal 0 (PR) or 1 (TPI) in the PART file.");
++            UplConfig[c]=value;
++          }
++        }
++        if(npok)uplconfigread=true;
++      }
++      if(PorePressureDataLoaded){
++        const char* names[]={"PorePress","PorePress0"};
++        for(unsigned c=0;c<2;c++){
++          const JBinaryDataArray* array=pd.GetArray(names[c],JBinaryDataDef::DatFloat);
++          const unsigned count=(array->DataInPointer()? array->GetCount(): array->GetFileDataCount());
++          if(count!=npok)Run_Exceptioon(std::string(names[c])+" array size does not match the particle count in the PART piece.");
++        }
++      }
++      JBinaryDataArray *poreres=(poreresloaded? pd.GetArray("PorePressRes",JBinaryDataDef::DatFloat): NULL);
++      const unsigned rescount=(poreres? (poreres->DataInPointer()? poreres->GetCount(): poreres->GetFileDataCount()): 0);
++      if(poreres && rescount!=npok)
++        Run_Exceptioon("PorePressRes array size does not match the particle count in the PART piece.");
+       if(npok){
+         if(auxsize<npok){
+           auxsize=npok;
+@@ -275,12 +369,31 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
+         if(PorePressureDataLoaded){
+           pd.GetArray("PorePress",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress+ntot);
+           pd.GetArray("PorePress0",JBinaryDataDef::DatFloat)->GetDataCopy(npok,PorePress0+ntot);
++          for(unsigned p=0;p<npok;p++)if(!std::isfinite(PorePress[ntot+p]) || !std::isfinite(PorePress0[ntot+p]))
++            Run_Exceptioon("PorePress or PorePress0 contains a non-finite value in the PART piece.");
++        }
++        if(poreres){
++          poreres->GetDataCopy(npok,PorePressRes+ntot);
++          for(unsigned p=0;p<npok;p++)if(!std::isfinite(PorePressRes[ntot+p]))
++            Run_Exceptioon("PorePressRes contains a non-finite value in the PART piece.");
++        }
++        if(UplDataLoaded){
++          double* uplvalues[]={UplLogJ,UplPressurePrev,UplPreviousDt};
++          for(unsigned c=0;c<3;c++){
++            uplarrays[c]->GetDataCopy(npok,uplvalues[c]+ntot);
++            for(unsigned p=0;p<npok;p++)if(!std::isfinite(uplvalues[c][ntot+p]))
++              Run_Exceptioon(std::string(uplnames[c])+" contains a non-finite value in the PART piece.");
++          }
++          for(unsigned p=0;p<npok;p++)if(UplPreviousDt[ntot+p]<0)
++            Run_Exceptioon("UplPreviousDt must be non-negative in the PART piece.");
+         }
+       }
+       ntot+=npok;
+     }
+     delete[] auxf3; auxf3=NULL;
+     delete[] auxf;  auxf=NULL;
++    if(UplDataLoaded && !uplconfigread)
++      Run_Exceptioon("An empty u-pl PART cannot provide its checkpoint configuration values.");
+   }
+   //-In simulations 2D, if PosY is invalid then calculates starting from position of particles.
+   if(Simulate2DPosY==DBL_MAX){
+@@ -331,15 +444,39 @@ void JPartsLoad4::RemoveBoundary(){
+   unsigned *idp0=Idp;        Idp=NULL;
+   tdouble3 *pos0=Pos;        Pos=NULL;
+   tfloat4 *velrhop0=VelRhop; VelRhop=NULL;
++  float *porepress= PorePress;       PorePress=NULL;
++  float *porepress0=PorePress0;      PorePress0=NULL;
++  float *poreres=   PorePressRes;    PorePressRes=NULL;
++  double *upllogj=UplLogJ;             UplLogJ=NULL;
++  double *uplprev=UplPressurePrev;     UplPressurePrev=NULL;
++  double *upldt=UplPreviousDt;         UplPreviousDt=NULL;
+   AllocMemory(count0-nbound);
+   //-Copies data in new pointers.
+   memcpy(Idp,idp0+nbound,sizeof(unsigned)*Count);
+   memcpy(Pos,pos0+nbound,sizeof(tdouble3)*Count);
+   memcpy(VelRhop,velrhop0+nbound,sizeof(tfloat4)*Count);
++  if(Count){
++    if(PorePressureDataLoaded){
++      memcpy(PorePress,porepress+nbound,sizeof(float)*Count);
++      memcpy(PorePress0,porepress0+nbound,sizeof(float)*Count);
++    }
++    memcpy(PorePressRes,poreres+nbound,sizeof(float)*Count);
++    if(UplDataLoaded){
++      memcpy(UplLogJ,upllogj+nbound,sizeof(double)*Count);
++      memcpy(UplPressurePrev,uplprev+nbound,sizeof(double)*Count);
++      memcpy(UplPreviousDt,upldt+nbound,sizeof(double)*Count);
++    }
++  }
+   //-Frees old pointers.
+   delete[] idp0;      idp0=NULL; 
+   delete[] pos0;      pos0=NULL; 
+   delete[] velrhop0;  velrhop0=NULL; 
++  delete[] porepress;  porepress=NULL;
++  delete[] porepress0; porepress0=NULL;
++  delete[] poreres;    poreres=NULL;
++  delete[] upllogj;    upllogj=NULL;
++  delete[] uplprev;    uplprev=NULL;
++  delete[] upldt;      upldt=NULL;
+ }
+ 
+ //==============================================================================
+diff --git a/src/source/JPartsLoad4.h b/src/source/JPartsLoad4.h
+index d57dc08..04e15f3 100644
+--- a/src/source/JPartsLoad4.h
++++ b/src/source/JPartsLoad4.h
+@@ -97,6 +97,12 @@ protected:
+   bool PorePressureDataLoaded;
+   float *PorePress;
+   float *PorePress0;
++  float *PorePressRes;    ///<Low-order pore-pressure increment retained across restart.
++  bool UplDataLoaded;
++  double *UplLogJ;          ///<Logarithmic solid-material volume ratio.
++  double *UplPressurePrev;  ///<Pore pressure at the previous accepted full step.
++  double *UplPreviousDt;    ///<Previous accepted full-step interval per particle.
++  double UplConfig[9];      ///<Schema,n0,k0,Ck,rho0,rhow,Kw,pressure mode,alpha; constant across all particles/pieces.
+ 
+   void AllocMemory(unsigned count);
+   template<typename T> T* SortParticles(const unsigned *vsort,unsigned count,T *v)const;
+@@ -135,6 +141,15 @@ public:
+   bool GetPorePressureDataLoaded()const{ return(PorePressureDataLoaded); }
+   const float* GetPorePress(){ return(PorePress); }
+   const float* GetPorePress0(){ return(PorePress0); }
++  const float* GetPorePressRes(){ return(PorePressRes); }
++  bool GetUplDataLoaded()const{ return(UplDataLoaded); }
++  const double* GetUplLogJ(){ return(UplLogJ); }
++  const double* GetUplPressurePrev(){ return(UplPressurePrev); }
++  const double* GetUplPreviousDt(){ return(UplPreviousDt); }
++  double GetUplConfig(unsigned index)const{
++    if(index>=9)Run_Exceptioon("Invalid u-pl checkpoint configuration index.");
++    return(UplConfig[index]);
++  }
+ 
+   tdouble3 GetCasePosMin()const{ return(CasePosMin); }
+   tdouble3 GetCasePosMax()const{ return(CasePosMax); }
+diff --git a/src/source/JSph.cpp b/src/source/JSph.cpp
+index cb0ad9e..1ef480f 100644
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -221,6 +221,13 @@ void JSph::InitVars(){
+   PoreMdbcInterpolationMode=0;
+   PoreCompressionSourceMode=0;
+   PoreCompressionGradCorr=true;
++  PoreDynamicDarcy=false;
++  HydroMechUpl=false;
++  UplCk=0;
++  UplPorosityMin=1.e-4; UplPorosityMax=0.99;
++  UplConductivityMin=0; UplConductivityMax=1.e3;
++  UplPressureMode=0;
++  UplTpiAlpha=0.5; UplTpiRatio=1;
+   SoilStressRateGradCorr=false;
+   SoilDamping=false;
+   SoilDampingCoef=0.02f;
+@@ -3547,7 +3554,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
+   //-Reject removed experimental controls instead of silently running PR.
+   if(sxml->ExistsElement(hydroEle,"PorePressureIntegrationMode") || sxml->ExistsElement(hydroEle,"PoreTpiAlpha")
+     || sxml->ExistsElement(solidEle,"PorePressureIntegrationMode") || sxml->ExistsElement(solidEle,"PoreTpiAlpha"))
+-    Run_Exceptioon("PorePressureIntegrationMode and PoreTpiAlpha are no longer supported: TPI was removed. Remove these options only if a PR run is intended.");
++    Run_Exceptioon("PorePressureIntegrationMode and PoreTpiAlpha are removed experimental controls. Remove them only if PR is intended; the new incompressible-water mode requires HydroMechUpl=1 and UplPressureMode=TPI explicitly.");
+ 
+   //-Soil strength parameters.
+   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
+@@ -3602,6 +3609,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
+     const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+     return(sxml->ReadElementFloat(node,name,"value",true,valdef));
+   };
++  const auto ReadHydroDouble=[&](const std::string &name,double valdef)->double{
++    const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
++    return(sxml->ReadElementDouble(node,name,"value",true,valdef));
++  };
+   const auto ReadHydroBool=[&](const std::string &name,bool valdef)->bool{
+     const TiXmlNode* node=(sxml->ExistsElement(hydroEle,name,"value")? hydroReadNode: solidNode);
+     return(sxml->ReadElementBool(node,name,"value",true,valdef));
+@@ -3634,8 +3645,95 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
+     PoreCompressionSourceMode=1;
+   else Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
+   PoreCompressionGradCorr=ReadHydroBool("PoreCompressionGradCorr",true);
++  PoreDynamicDarcy=ReadHydroBool("PoreDynamicDarcy",false);
++  HydroMechUpl=ReadHydroBool("HydroMechUpl",false);
++  const bool hasupl=sxml->ExistsElement(hydroEle,"HydroMechUpl") || sxml->ExistsElement(solidEle,"HydroMechUpl");
++  const bool hasdynamic=sxml->ExistsElement(hydroEle,"PoreDynamicDarcy") || sxml->ExistsElement(solidEle,"PoreDynamicDarcy");
++  if(hasupl && hasdynamic && HydroMechUpl!=PoreDynamicDarcy)
++    Run_Exceptioon("HydroMechUpl and PoreDynamicDarcy are both defined with different values. Select one consistent model switch.");
++  //-The old switch alone preserves the constant-n/k A/B model. It must not
++  // silently activate particle-state evolution when old case files are reused.
++  if(HydroMechUpl)PoreDynamicDarcy=true;
++  const string uplpressurestr=fun::StrLower(ReadHydroStr("UplPressureMode","PR"));
++  if(uplpressurestr=="pr" || uplpressurestr=="0")UplPressureMode=0;
++  else if(uplpressurestr=="tpi" || uplpressurestr=="1")UplPressureMode=1;
++  else Run_Exceptioon("UplPressureMode must be PR (0) or TPI (1).");
++  if(!HydroMechUpl && UplPressureMode)
++    Run_Exceptioon("UplPressureMode=TPI requires HydroMechUpl=1; the solver will not silently fall back to PR.");
++  if(HydroMechUpl){
++    UplCk=ReadHydroDouble("UplCk",0);
++    UplPorosityMin=ReadHydroDouble("UplPorosityMin",1.e-4);
++    UplPorosityMax=ReadHydroDouble("UplPorosityMax",0.99);
++    UplConductivityMin=ReadHydroDouble("UplConductivityMin",0);
++    UplConductivityMax=ReadHydroDouble("UplConductivityMax",1.e3);
++    UplTpiAlpha=ReadHydroDouble("UplTpiAlpha",0.5);
++    UplTpiRatio=ReadHydroDouble("UplTpiRatio",1);
++  }
+ 
+   //-Input validation.
++  if(HydroMechUpl){
++    if(!std::isfinite(UplCk) || UplCk<0)
++      Run_Exceptioon("UplCk must be finite and nonnegative: 0=constant conductivity, positive=exponential void-ratio law.");
++    if(!std::isfinite(UplPorosityMin) || !std::isfinite(UplPorosityMax)
++      || UplPorosityMin<=0 || UplPorosityMin>=UplPorosityMax || UplPorosityMax>=1)
++      Run_Exceptioon("u-pl porosity limits must satisfy 0 < UplPorosityMin < UplPorosityMax < 1 (finite values).");
++    if(!std::isfinite(UplConductivityMin) || !std::isfinite(UplConductivityMax)
++      || UplConductivityMin<0 || UplConductivityMin>UplConductivityMax)
++      Run_Exceptioon("u-pl conductivity limits must satisfy 0 <= UplConductivityMin <= UplConductivityMax (finite m/s values).");
++    if(double(SoilCte.Porosity)<UplPorosityMin || double(SoilCte.Porosity)>UplPorosityMax)
++      Run_Exceptioon("Initial Porosity is outside the u-pl admissible range; no clipping is applied.");
++    if(double(SoilCte.HydraulicConductivity)<UplConductivityMin || double(SoilCte.HydraulicConductivity)>UplConductivityMax)
++      Run_Exceptioon("Initial HydraulicConductivity is outside the u-pl admissible range; no clipping is applied.");
++    if(!std::isfinite(UplTpiAlpha) || UplTpiAlpha<0 || UplTpiAlpha>1)
++      Run_Exceptioon("UplTpiAlpha must be finite and in [0,1].");
++    if(!std::isfinite(UplTpiRatio) || UplTpiRatio<1)
++      Run_Exceptioon("UplTpiRatio must be finite and greater than or equal to 1.");
++    if(!std::isfinite(double(PoreDtSafety)) || PoreDtSafety<=0)
++      Run_Exceptioon("PoreDtSafety must be finite and positive when HydroMechUpl is enabled.");
++    if(ShiftingMode!=SHIFT_None)
++      Run_Exceptioon("HydroMechUpl does not yet support shifting: particle volume and porosity transport would require a consistent correction.");
++    if(TDensity!=DDT_None)
++      Run_Exceptioon("HydroMechUpl does not yet support density diffusion: density and physical solid-volume evolution must remain consistent.");
++    if(HydroMechTopLoadMode!=HMLOAD_None && (UplPressureMode!=0 || HydroMechTopLoadMode!=HMLOAD_TopVertical))
++      Run_Exceptioon("HydroMechUpl: pressure loading is supported only by PR TopVertical in the validated 2D X-periodic fixed-cross-section column; other loads and TPI remain unsupported.");
++    if(PoreMdbcInterpolationMode!=0)
++      Run_Exceptioon("HydroMechUpl does not use the legacy PoreMdbcInterpolation=MLS option: PR reconstructs an even quadratic wall head and virtual hydraulic neighbours; TPI retains zero-order ghosts.");
++    if(UplPressureMode){
++      if(SoilCte.HydraulicConductivity<=0.f)
++        Run_Exceptioon("UplPressureMode=TPI requires strictly positive HydraulicConductivity.");
++      if(!FixedDt || !std::isfinite(FixedDt->GetFixedValue()) || FixedDt->GetFixedValue()<=0)
++        Run_Exceptioon("UplPressureMode=TPI currently requires a positive constant DtFixed; DtFixedFile and adaptive stepping are not supported.");
++    }
++  }
++  if(PoreDynamicDarcy){
++    if(!HydroMech)Run_Exceptioon("PoreDynamicDarcy requires HydroMech to be enabled.");
++    if(!Cpu || WithMpi)Run_Exceptioon("PoreDynamicDarcy is currently supported only by the single-CPU solver.");
++    if(TStep!=STEP_Symplectic)Run_Exceptioon("PoreDynamicDarcy currently requires Symplectic time integration.");
++    if(CaseNmoving)Run_Exceptioon("PoreDynamicDarcy does not yet support moving boundary particles.");
++    if(CaseNfloat || UseDEM)Run_Exceptioon("PoreDynamicDarcy does not yet support floating objects or DEM coupling.");
++    if(InOut)Run_Exceptioon("PoreDynamicDarcy does not yet support inlet/outlet velocity overrides.");
++    if(Damping)Run_Exceptioon("PoreDynamicDarcy does not yet support post-integration damping zones.");
++    if(RelaxZones)Run_Exceptioon("PoreDynamicDarcy does not yet support relaxation zones.");
++    if(TMdbc2==MDBC2_NoPen)Run_Exceptioon("PoreDynamicDarcy does not yet support mDBC NoPenetration velocity corrections.");
++    if(Symmetry)Run_Exceptioon("PoreDynamicDarcy does not yet support mirrored symmetry interactions.");
++    if(AccInput)Run_Exceptioon("PoreDynamicDarcy does not yet support accinputs body-force or reference-frame conventions.");
++    if(CaseNbound && (TBoundary!=BC_MDBC || !MdbcCorrector))
++      Run_Exceptioon("PoreDynamicDarcy: fixed walls require mDBC and MdbcCorrector=1.");
++    if(HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)
++      Run_Exceptioon("PoreDynamicDarcy does not yet support impermeable benchmark top-strip boundaries.");
++    if(!std::isfinite(double(SoilCte.PoreWaterRho)))
++      Run_Exceptioon("PoreWaterRho must be finite when PoreDynamicDarcy is enabled.");
++    if(fun::IsNAN(SoilCte.PoreWaterBulkModulus) || fun::IsInfinity(SoilCte.PoreWaterBulkModulus))
++      Run_Exceptioon("PoreWaterBulkModulus must be finite when PoreDynamicDarcy is enabled.");
++    if(fun::IsNAN(SoilCte.Porosity) || fun::IsInfinity(SoilCte.Porosity))
++      Run_Exceptioon("Porosity must be finite when PoreDynamicDarcy is enabled.");
++    if(fun::IsNAN(SoilCte.HydraulicConductivity) || fun::IsInfinity(SoilCte.HydraulicConductivity))
++      Run_Exceptioon("HydraulicConductivity must be finite when PoreDynamicDarcy is enabled.");
++    if(fun::IsNAN(Gravity.x) || fun::IsInfinity(Gravity.x)
++      || fun::IsNAN(Gravity.y) || fun::IsInfinity(Gravity.y)
++      || fun::IsNAN(Gravity.z) || fun::IsInfinity(Gravity.z))
++      Run_Exceptioon("Gravity components must be finite when PoreDynamicDarcy is enabled.");
++  }
+   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
+     Run_Exceptioon("HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
+   if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
+@@ -3710,6 +3808,32 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
+     Log->Print(fun::VarStr("  PoreMdbcInterpolationMode", (PoreMdbcInterpolationMode==1? "MLSDirect": "ZeroOrder")));
+     Log->Print(fun::VarStr("  PoreCompressionSourceMode", (PoreCompressionSourceMode==1? "DensityRate": "PairDivergence")));
+     Log->Print(fun::VarStr("  PoreCompressionGradCorr", (PoreCompressionGradCorr? "KernelGradient": "None")));
++    Log->Print(fun::VarStr("  HydroMechUpl", (HydroMechUpl? "Enabled": "Disabled")));
++    Log->Print(fun::VarStr("  PoreDynamicDarcy", (PoreDynamicDarcy? "Enabled": "Disabled")));
++    if(HydroMechUpl){
++      Log->Print("  HydroMechUplSupport: single CPU/Symplectic; evolving particle porosity with dynamic Darcy coupling.");
++      Log->Print(UplPressureMode==0?
++        "  HydroMechUplWalls PR: fixed parallel mDBC Vel0/NoSlip/FreeSlip, even quadratic mechanical head, positive-moment virtual hydraulic neighbours; TopVertical only in a fixed-width 1D column.":
++        "  HydroMechUplWalls TPI: original fixed parallel mDBC NoSlip/FreeSlip zero-order ghosts; other modes remain guarded.");
++      Log->Printf("  UplCk: %g (%s)",UplCk,(UplCk>0? "k=k0*exp((e-e0)/Ck), e=n/(1-n)": "constant reference conductivity; porosity still evolves"));
++      Log->Printf("  UplPorosityRange: [%g,%g] (out-of-range values are errors, not clipped)",UplPorosityMin,UplPorosityMax);
++      Log->Printf("  UplConductivityRange: [%g,%g] m/s (out-of-range values are errors, not clipped)",UplConductivityMin,UplConductivityMax);
++      Log->Print(fun::VarStr("  UplPressureMode", (UplPressureMode? "TPI": "PR")));
++      if(UplPressureMode){
++        Log->PrintWarning("UplPressureMode=TPI neglects water storage (n/Kw -> 0). It is an incompressible-water approximation, not a converged implicit solve or an equivalent acceleration of finite-storage PR.");
++        Log->Printf("  UplTpiAlpha: %g",UplTpiAlpha);
++        Log->Printf("  UplTpiRatio: %g (hydraulic time-step cap multiplier; not a guaranteed stable speedup)",UplTpiRatio);
++        Log->Print("  UplTpiTimeStep: constant DtFixed only; hydraulic and mechanical bounds must both be checked.");
++      }
++      else Log->Print("  UplPressureStorage: finite n/Kw (PR); TPI is disabled.");
++    }
++    else if(PoreDynamicDarcy){
++      Log->PrintWarning("Legacy PoreDynamicDarcy selects only the constant-n/k A/B dynamic correction. Use HydroMechUpl explicitly to enable the new particle-state model.");
++      Log->Print("  PoreDynamicDarcySupport: CPU/Symplectic, constant porosity and conductivity; not the full variable-permeability u-pl formulation.");
++      Log->Print("  PoreDynamicDarcyAcceleration: current-stage forces + SoilDamping + Gravity; corrected difference divergence.");
++      Log->Print("  PoreDynamicDarcyWalls: fixed parallel planar mDBC NoSlip/FreeSlip; hydraulic acceleration ghosts, no change to mechanical ghosts.");
++    }
++    else Log->Print("  HydroMechUplPath: Disabled; the precision-corrected u-pw PR path is unchanged.");
+   }
+   Log->Print("");
+ }
+diff --git a/src/source/JSph.h b/src/source/JSph.h
+index fd905dc..ce468a1 100644
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -223,6 +223,14 @@ protected:
+   unsigned PoreMdbcInterpolationMode; ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct. //mdbr
+   unsigned PoreCompressionSourceMode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate. //mdbr
+   bool PoreCompressionGradCorr; ///<Applies kernel-gradient correction to the pore-pressure compression source. //mdbr
++  bool PoreDynamicDarcy;      ///<Adds solid-skeleton acceleration to the Darcy pore-pressure rate (default=0). //mdbr
++  bool HydroMechUpl;          ///<Enables u-pl particle porosity, conductivity and dynamic Darcy coupling (default=0).
++  double UplCk;              ///<Void-ratio conductivity exponent denominator; 0 keeps reference conductivity.
++  double UplPorosityMin,UplPorosityMax; ///<Admissible particle porosity range; violations are errors, not clipping.
++  double UplConductivityMin,UplConductivityMax; ///<Admissible hydraulic conductivity range [m/s].
++  unsigned UplPressureMode;  ///<0=finite-storage PR; 1=explicitly selected incompressible-water TPI.
++  double UplTpiAlpha;        ///<Pressure-history extrapolation coefficient for TPI [0,1].
++  double UplTpiRatio;        ///<Upper multiplier of the PR hydraulic time-step bound for TPI (>=1).
+   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
+   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
+   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
+diff --git a/src/source/JSphCpu.cpp b/src/source/JSphCpu.cpp
+index c873f2a..72b8da2 100644
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -19,6 +19,7 @@
+ /// \file JSphCpu.cpp \brief Implements the class \ref JSphCpu.
+ 
+ #include "JSphCpu.h"
++#include "FunPorePressure.h"
+ #include "JCellSearch_inline.h"
+ #include "JCellDivCpu.h"
+ #include "JPartFloatBi4.h"
+@@ -111,6 +112,7 @@ void JSphCpu::InitVars(){
+   Rsigmac=NULL;Kplasticc=NULL;
+   ArtificialStressc=NULL;
+   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
++  PorePressResc=NULL;PorePressResM1c=NULL;PorePressResPrec=NULL;
+   //======
+   VelrhopM1c=NULL;                //-Verlet
+   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
+@@ -201,20 +203,20 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
+   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
+   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
+   if(HydroMech){
+-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
++    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,7);//-PorePress,PorePressRes,PorePress0,PorePressRate and SaveData temporary arrays
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-HydroMechLoadAce and SaveData temporary array
+   }
+   //======
+   if(TStep==STEP_Verlet){
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
+-    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepressm1
++    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,2);//-porepressm1,porepressresm1
+   }
+   else if(TStep==STEP_Symplectic){
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1); //-pospre
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhoppre
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmapre
+-    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepresspre
++    if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,2);//-porepresspre,porepressrespre
+   }
+   if(TVisco==VISCO_LaminarSPS){     
+     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2); //-SpsTau,SpsGradvel
+@@ -274,6 +276,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
+   float        *porepressm1=SaveArrayCpu(Np,PorePressM1c);
+   float        *porepresspre=SaveArrayCpu(Np,PorePressPrec);
++  float        *porepressres=SaveArrayCpu(Np,PorePressResc);
++  float        *porepressresm1=SaveArrayCpu(Np,PorePressResM1c);
++  float        *porepressrespre=SaveArrayCpu(Np,PorePressResPrec);
+   //==== 
+   //-Frees pointers.
+   ArraysCpu->Free(Idpc);
+@@ -305,6 +310,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   ArraysCpu->Free(PorePressRatec);
+   ArraysCpu->Free(PorePressM1c);
+   ArraysCpu->Free(PorePressPrec);
++  ArraysCpu->Free(PorePressResc);
++  ArraysCpu->Free(PorePressResM1c);
++  ArraysCpu->Free(PorePressResPrec);
+   //====
+   //-Resizes CPU memory allocation.
+   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
+@@ -340,6 +348,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
+   if(porepressm1)   PorePressM1c   = ArraysCpu->ReserveFloat();
+   if(porepresspre)  PorePressPrec  = ArraysCpu->ReserveFloat();
++  if(porepressres)  PorePressResc  = ArraysCpu->ReserveFloat();
++  if(porepressresm1) PorePressResM1c= ArraysCpu->ReserveFloat();
++  if(porepressrespre)PorePressResPrec=ArraysCpu->ReserveFloat();
+   //=====
+   //-Restore data in CPU memory.
+   RestoreArrayCpu(Np,idp,Idpc);
+@@ -371,6 +382,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
+   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
+   RestoreArrayCpu(Np,porepressm1,PorePressM1c);
+   RestoreArrayCpu(Np,porepresspre,PorePressPrec);
++  RestoreArrayCpu(Np,porepressres,PorePressResc);
++  RestoreArrayCpu(Np,porepressresm1,PorePressResM1c);
++  RestoreArrayCpu(Np,porepressrespre,PorePressResPrec);
+   //=====
+   //-Updates values.
+   CpuParticlesSize=npnew;
+@@ -421,6 +435,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
+   Kplasticc=ArraysCpu->ReserveFloat();
+   if(HydroMech){
+     PorePressc=ArraysCpu->ReserveFloat();
++    PorePressResc=ArraysCpu->ReserveFloat();
+     PorePress0c=ArraysCpu->ReserveFloat();
+     PorePressRatec=ArraysCpu->ReserveFloat();
+     HydroMechLoadAcec=ArraysCpu->ReserveFloat3();
+@@ -428,7 +443,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
+   //=====
+   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
+   SigmaM1c=ArraysCpu->ReserveSymatrix3f();
+-  if(HydroMech)PorePressM1c=ArraysCpu->ReserveFloat();}//mdbr
++  if(HydroMech){PorePressM1c=ArraysCpu->ReserveFloat();PorePressResM1c=ArraysCpu->ReserveFloat();}}//mdbr
+   if(TVisco==VISCO_LaminarSPS)SpsTauc=ArraysCpu->ReserveSymatrix3f();
+   if(UseNormals){
+     BoundNormalc=ArraysCpu->ReserveFloat3();
+@@ -449,6 +464,8 @@ llong JSphCpu::GetAllocMemoryCpu()const{
+   s+=MemCpuParticles;
+   //-Reserved in AllocCpuMemoryFixed().
+   s+=MemCpuFixed;
++  s+=llong(UplStatec.capacity()*sizeof(StUplParticle));
++  s+=llong(UplTopIds.capacity()*sizeof(unsigned)+(UplTopX.capacity()+UplColumnX.capacity())*sizeof(double));
+   //-Reserved in other objects.
+   if(MLPistons)s+=MLPistons->GetAllocMemoryCpu();
+   return(s);
+@@ -473,7 +490,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
+ //==============================================================================
+ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+-  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace)
++ ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace,float *porepressres)
+ {
+   unsigned num=n;
+   //-Copy selected values.
+@@ -484,6 +501,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+   if(fsnormal && FSNormalc)memcpy(fsnormal,FSNormalc+pini,sizeof(tfloat3)*n);
+   if(posdiv && PosDivc)memcpy(posdiv,PosDivc+pini,sizeof(float)*n);
+   if(porepress && PorePressc)memcpy(porepress,PorePressc+pini,sizeof(float)*n);
++  if(porepressres && PorePressResc)memcpy(porepressres,PorePressResc+pini,sizeof(float)*n);
+   if(porepress0 && PorePress0c)memcpy(porepress0,PorePress0c+pini,sizeof(float)*n);
+   if(hydromechloadace && HydroMechLoadAcec)memcpy(hydromechloadace,HydroMechLoadAcec+pini,sizeof(tfloat3)*n);
+   if(vel && rhop){
+@@ -538,6 +556,7 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+         if(fsnormal)fsnormal[pdel]=fsnormal[p];
+         if(posdiv)posdiv[pdel]=posdiv[p];
+         if(porepress)porepress[pdel]=porepress[p];
++        if(porepressres)porepressres[pdel]=porepressres[p];
+         if(porepress0)porepress0[pdel]=porepress0[p];
+         if(hydromechloadace)hydromechloadace[pdel]=hydromechloadace[p];
+         code2[pdel]=code2[p];
+@@ -600,6 +619,7 @@ void JSphCpu::InitRunCpu(){
+ 
+   if(TStep==STEP_Verlet)memcpy(VelrhopM1c,Velrhopc,sizeof(tfloat4)*Np);
+   if(TStep==STEP_Verlet && PorePressM1c && PorePressc)memcpy(PorePressM1c,PorePressc,sizeof(float)*Np);
++  if(TStep==STEP_Verlet && PorePressResM1c && PorePressResc)memcpy(PorePressResM1c,PorePressResc,sizeof(float)*Np);
+   if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+   if(TVisco==VISCO_LaminarSPS)memset(SpsTauc,0,sizeof(tsymatrix3f)*Np);
+   if(CaseNfloat)InitFloating();
+@@ -1148,6 +1168,10 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
+ /// Returns true when the drained pore-pressure boundary is active.
+ //==============================================================================
+ bool JSphCpu::IsHydroMechDrainageActive()const{
++  if(HydroMechUpl && UplPressureMode==0){
++    const double tol=32*DBL_EPSILON*max(1.0,fabs(UplStageTime));
++    return(HydroMech && HydroMechDrainage && UplStageTime+tol>=HydroMechDrainageStartTime);
++  }
+   return(HydroMech && HydroMechDrainage && TimeStep>=HydroMechDrainageStartTime);
+ }
+ 
+@@ -1187,6 +1211,10 @@ bool JSphCpu::IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned
+ /// Applies q0 ramp surcharge as an acceleration on selected free-surface soil.
+ //==============================================================================
+ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
++  if(HydroMechUpl && UplPressureMode==0 && HydroMechTopLoadMode==HMLOAD_TopVertical){
++    ApplyUplTopLoadAcceleration();
++    return;
++  }
+   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None)return;
+   if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
+   if(!Acec || !FSTypec || !FSNormalc)return;
+@@ -1228,6 +1256,7 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
+ void JSphCpu::InitHydroMechState(){
+   if(!HydroMech || !PorePressc || !PorePress0c)return;
+   if(HydroMechInitMode==HMINIT_None)return;
++  memset(PorePressResc,0,sizeof(float)*Np);
+   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+   const double gzabs=fabs(double(Gravity.z));
+   const double gammaw=double(SoilCte.PoreWaterRho)*(gzabs>0? gzabs: gnorm);
+@@ -1343,7 +1372,10 @@ void JSphCpu::ApplyFreeSurfacePorePressure(){
+     #pragma omp parallel for schedule(static) if((pfin-pini)>OMP_LIMIT_COMPUTELIGHT)
+   #endif
+   for(int p=pini;p<pfin;p++){
+-    if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec))PorePressc[p]=0;
++    if(IsHydroMechDrainedParticle(unsigned(p),Posc,Codec,FSTypec)){
++      PorePressc[p]=0;
++      PorePressResc[p]=0;
++    }
+   }
+   ApplyYaoTopStripPorePressureExtrapolation();
+ }
+@@ -1380,7 +1412,10 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ApplyYaoTopStripPorePressureExt
+         }
+       }
+     }
+-    if(sumwab>0)PorePressc[p1]=float(pwsum/sumwab);
++    if(sumwab>0){
++      PorePressc[p1]=float(pwsum/sumwab);
++      PorePressResc[p1]=0;
++    }
+   }
+ }
+ 
+@@ -1510,6 +1545,262 @@ void JSphCpu::InteractionPorePressureRate(){
+   }
+ }
+ 
++//==============================================================================
++/// Builds full solid acceleration without modifying the mechanical force array.
++/// Periodic forces are not reliable: map each image to its normal particle.
++//==============================================================================
++void JSphCpu::PreparePoreDynamicAcceleration(std::vector<tdouble3> &acceleration)const{
++  acceleration.assign(Np,TDouble3(0));
++  vector<unsigned> owner;
++  if(PeriActive)owner.assign(CaseNp,UINT_MAX);
++  for(unsigned p=0;p<Np;p++)if(CODE_IsNormal(Codec[p])){
++    if(PeriActive){
++      if(Idpc[p]>=CaseNp || owner[Idpc[p]]!=UINT_MAX)
++        Run_Exceptioon("PoreDynamicDarcy: invalid or duplicate normal particle ID.");
++      owner[Idpc[p]]=p;
++    }
++    if(CODE_IsFluid(Codec[p])){
++      const tdouble3 a=ToTDouble3(Acec[p])+ToTDouble3(Gravity);
++      if(!std::isfinite(a.x) || !std::isfinite(a.y) || !std::isfinite(a.z)
++        || !std::isfinite(Velrhopc[p].w) || Velrhopc[p].w<=0)
++        Run_Exceptioon("PoreDynamicDarcy: non-finite solid acceleration or invalid particle density.");
++      acceleration[p]=TDouble3(a.x,(Simulate2D? 0: a.y),a.z);
++    }
++  }
++  //-Do this before boundary interpolation, which also reads fluid images.
++  if(PeriActive)for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p])){
++    const unsigned id=Idpc[p];
++    if(id>=CaseNp || owner[id]==UINT_MAX)
++      Run_Exceptioon("PoreDynamicDarcy: periodic particle has no normal owner in this stage.");
++    acceleration[p]=acceleration[owner[id]];
++  }
++  if(NpbOk){
++    if(TBoundary!=BC_MDBC || !MdbcCorrector || !BoundNormalc)
++      Run_Exceptioon("PoreDynamicDarcy: fixed walls require mDBC normals and MdbcCorrector=1.");
++    //-Stage B supports parallel planar walls. Curved walls require the normal
++    // material acceleration (including curvature), not this zero-normal closure.
++    tdouble3 reference=TDouble3(0);
++    bool planeset[2]={false,false};
++    double plane[2]={0,0};
++    const double planetol=max(1e-8,1e-4*Dp);
++    for(unsigned p=0;p<NpbOk;p++){
++      if(BoundModec && BoundModec[p]==BMODE_MDBC2OFF)continue;
++      const TpSlipMode slip=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
++      if(slip!=SLIP_NoSlip && slip!=SLIP_FreeSlip)
++        Run_Exceptioon("PoreDynamicDarcy: fixed walls currently require NoSlip or FreeSlip.");
++      const tdouble3 normal=ToTDouble3(BoundNormalc[p]);
++      const double norm2=normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
++      if(!std::isfinite(norm2) || norm2<=ALMOSTZERO
++        || (Simulate2D && fabs(normal.y)>1e-6*sqrt(norm2)))
++        Run_Exceptioon("PoreDynamicDarcy: active wall has an invalid normal.");
++      const tdouble3 unit=normal/sqrt(norm2);
++      if(reference==TDouble3(0))reference=unit;
++      const double alignment=reference.x*unit.x+reference.y*unit.y+reference.z*unit.z;
++      if(fabs(alignment)<1.0-1e-6)
++        Run_Exceptioon("PoreDynamicDarcy: stage B supports only parallel planar fixed walls; corners/curvature require stage D.");
++      const tdouble3 wallpos=Posc[p]+normal*0.5;
++      const double offset=wallpos.x*reference.x+wallpos.y*reference.y+wallpos.z*reference.z;
++      const unsigned side=(alignment>0? 0: 1);
++      if(planeset[side] && fabs(offset-plane[side])>planetol)
++        Run_Exceptioon("PoreDynamicDarcy: same-facing wall points must lie on one plane.");
++      if(!planeset[side]){ planeset[side]=true; plane[side]=offset; }
++    }
++    if(planeset[0] && planeset[1] && plane[0]>=plane[1]-planetol)
++      Run_Exceptioon("PoreDynamicDarcy: the two fixed wall planes must face each other.");
++    const tdouble3 increments[3]={PeriXinc,PeriYinc,PeriZinc};
++    const bool periodic[3]={PeriX,PeriY,PeriZ};
++    for(unsigned axis=0;axis<3;axis++)if(periodic[axis]){
++      const tdouble3 inc=increments[axis];
++      if(fabs(inc.x*reference.x+inc.y*reference.y+inc.z*reference.z)>planetol)
++        Run_Exceptioon("PoreDynamicDarcy: periodic translations must be tangent to the fixed wall planes.");
++    }
++    if(Simulate2D){
++      switch(TKernel){
++        case KERNEL_Wendland: PoreDynamicAccelerationBoundT<KERNEL_Wendland,true>(acceleration.data()); break;
++        case KERNEL_Cubic:    PoreDynamicAccelerationBoundT<KERNEL_Cubic,true>(acceleration.data()); break;
++        default: Run_Exceptioon("Kernel unknown.");
++      }
++    }
++    else{
++      switch(TKernel){
++        case KERNEL_Wendland: PoreDynamicAccelerationBoundT<KERNEL_Wendland,false>(acceleration.data()); break;
++        case KERNEL_Cubic:    PoreDynamicAccelerationBoundT<KERNEL_Cubic,false>(acceleration.data()); break;
++        default: Run_Exceptioon("Kernel unknown.");
++      }
++    }
++  }
++}
++
++//==============================================================================
++/// Hydraulic acceleration ghosts for stationary planar impermeable walls.
++/// Reflect FULL acceleration about the wall (normal/2), not the gravity-free
++/// Acec value. This makes a_s.normal=0 at the wall, so the existing homogeneous
++/// excess-pressure Neumann condition remains valid. It is not a modification
++/// of the mechanical mDBC velocity ghosts.
++//==============================================================================
++template<TpKernel tker,bool sim2d> void JSphCpu::PoreDynamicAccelerationBoundT(tdouble3 *acceleration)const{
++  //-Like mDBC, process only wall particles that can interact with fluid. Images
++  // use a wrapped ghost position and the already synchronized fluid field; a
++  // wall image's normal owner can be outside NpbOk or have a different OFF flag.
++  for(unsigned p1=0;p1<NpbOk;p1++){
++    if(BoundModec && BoundModec[p1]==BMODE_MDBC2OFF)continue;
++    const tdouble3 normal=ToTDouble3(BoundNormalc[p1]);
++    tdouble3 gpos=Posc[p1]+normal;
++    if(PeriActive)gpos=UpdatePeriodicPos(gpos);
++    tmatrix3d mat2=TMatrix3d(0);
++    tmatrix4d mat3=TMatrix4d(0);
++    double sumw=0;
++    tdouble3 suma=TDouble3(0),sumax=TDouble3(0),sumay=TDouble3(0),sumaz=TDouble3(0);
++    const StNgSearch ngs=nsearch::Init(gpos,false,DivData);
++    for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
++      const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
++      for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(Codec[p2]) && Velrhopc[p2].w>0){
++        const tdouble3 dr=TDouble3(gpos.x-Posc[p2].x,(sim2d? 0: gpos.y-Posc[p2].y),gpos.z-Posc[p2].z);
++        const float rr2=float(dr.x*dr.x+dr.y*dr.y+dr.z*dr.z);
++        if(rr2>KernelSize2)continue;
++        float fac=0;
++        const double wab=double(rr2>0? fsph::GetKernel_WabFac<tker>(CSP,rr2,fac): fsph::GetKernel_Wab<tker>(CSP,0));
++        const double vol=double(MassFluid/Velrhopc[p2].w);
++        const double w=vol*wab,fx=vol*fac*dr.x,fy=vol*fac*dr.y,fz=vol*fac*dr.z;
++        const tdouble3 a=acceleration[p2];
++        sumw+=w; suma=suma+a*w;
++        sumax=sumax+a*fx; sumay=sumay+a*fy; sumaz=sumaz+a*fz;
++        if(sim2d){
++          mat2.a11+=w;  mat2.a12+=dr.x*w;  mat2.a13+=dr.z*w;
++          mat2.a21+=fx; mat2.a22+=dr.x*fx; mat2.a23+=dr.z*fx;
++          mat2.a31+=fz; mat2.a32+=dr.x*fz; mat2.a33+=dr.z*fz;
++        }
++        else{
++          mat3.a11+=w;  mat3.a12+=dr.x*w;  mat3.a13+=dr.y*w;  mat3.a14+=dr.z*w;
++          mat3.a21+=fx; mat3.a22+=dr.x*fx; mat3.a23+=dr.y*fx; mat3.a24+=dr.z*fx;
++          mat3.a31+=fy; mat3.a32+=dr.x*fy; mat3.a33+=dr.y*fy; mat3.a34+=dr.z*fy;
++          mat3.a41+=fz; mat3.a42+=dr.x*fz; mat3.a43+=dr.y*fz; mat3.a44+=dr.z*fz;
++        }
++      }
++    }
++    if(!std::isfinite(sumw) || sumw<=0)
++      Run_Exceptioon("PoreDynamicDarcy: active wall acceleration ghost has no fluid support.");
++    tdouble3 ag=suma/sumw; //-Same zero-order/MLS-intercept selection as pore pressure.
++    if(PoreMdbcInterpolationMode==1){
++      if(sim2d){
++        const double det=fmath::Determinant3x3(mat2);
++        if(fabs(det)>=1e-3){
++          const tmatrix3d inv=fmath::InverseMatrix3x3(mat2,det);
++          ag=suma*inv.a11+sumax*inv.a12+sumaz*inv.a13;
++        }
++      }
++      else{
++        const double det=fmath::Determinant4x4(mat3);
++        if(fabs(det)>=1e-3){
++          const tmatrix4d inv=fmath::InverseMatrix4x4(mat3,det);
++          ag=suma*inv.a11+sumax*inv.a12+sumay*inv.a13+sumaz*inv.a14;
++        }
++      }
++    }
++    const TpSlipMode slip=(BoundSlipModec? TpSlipMode(BoundSlipModec[p1]): SlipMode);
++    if(slip==SLIP_NoSlip)ag=ag*(-1.0);
++    else{
++      const double dot=ag.x*normal.x+ag.y*normal.y+ag.z*normal.z;
++      const double norm2=normal.x*normal.x+normal.y*normal.y+normal.z*normal.z;
++      ag=ag-normal*(2.0*dot/norm2);
++    }
++    if(!std::isfinite(ag.x) || !std::isfinite(ag.y) || !std::isfinite(ag.z))
++      Run_Exceptioon("PoreDynamicDarcy: non-finite wall acceleration ghost.");
++    acceleration[p1]=ag;
++  }
++}
++
++//==============================================================================
++/// Adds +(Kw/n)*(k/gref)*div(a_s) [Pa/s], for constant n and conductivity k [m/s].
++/// The corrected difference gradient annihilates constant acceleration in the
++/// interior. Variable k requires div(k*a_s), and is deliberately not used here.
++//==============================================================================
++template<TpKernel tker,bool sim2d> void JSphCpu::AddPorePressureDynamicDarcyRateT(const tdouble3 *acceleration){
++  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
++  const double gref=(gnorm>0? gnorm: 9.80665); //-Same conductivity convention as PR diffusion.
++  const double coef=double(SoilCte.PoreWaterBulkModulus)/double(SoilCte.Porosity)
++    *double(SoilCte.HydraulicConductivity)/gref;
++  if(!std::isfinite(coef))Run_Exceptioon("PoreDynamicDarcy: non-finite dynamic Darcy coefficient.");
++  const bool drainfs=IsHydroMechDrainageActive();
++  unsigned invalid=0;
++  const int pfin=int(Np);
++  #ifdef OMP_USE
++    #pragma omp parallel for schedule(guided) reduction(+:invalid)
++  #endif
++  for(int p1=int(Npb);p1<pfin;p1++){
++    if(!CODE_IsNormal(Codec[p1]) || !CODE_IsFluid(Codec[p1]))continue;
++    if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec))continue;
++    const tdouble3 a1=acceleration[p1];
++    tmatrix3d moment=TMatrix3d(0),agrad=TMatrix3d(0);
++    for(int b2=0;b2<2;b2++){
++      const bool bound=(b2==1);
++      const StNgSearch ngs=nsearch::Init(Dcellc[p1],bound,DivData);
++      for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
++        const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
++        for(unsigned p2=pif.x;p2<pif.y;p2++){
++          if(!bound && !CODE_IsFluid(Codec[p2]))continue;
++          if(bound && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF)continue;
++          const tdouble3 dr=TDouble3(Posc[p1].x-Posc[p2].x,(sim2d? 0: Posc[p1].y-Posc[p2].y),Posc[p1].z-Posc[p2].z);
++          const double rr2=dr.x*dr.x+dr.y*dr.y+dr.z*dr.z;
++          if(rr2>double(KernelSize2) || rr2<ALMOSTZERO || Velrhopc[p2].w<=0)continue;
++          const double fac=double(fsph::GetKernel_Fac<tker>(CSP,float(rr2)));
++          const tdouble3 grad=dr*fac;
++          const tdouble3 da=acceleration[p2]-a1;
++          const double vol=double((bound? MassBound: MassFluid)/Velrhopc[p2].w);
++          //-Build the correction from this exact stencil. The existing free-
++          // surface CorrMat can include OFF walls that this operator must skip.
++          const tdouble3 vg=grad*vol;
++          moment.a11-=dr.x*vg.x; moment.a12-=dr.x*vg.y; moment.a13-=dr.x*vg.z;
++          moment.a21-=dr.y*vg.x; moment.a22-=dr.y*vg.y; moment.a23-=dr.y*vg.z;
++          moment.a31-=dr.z*vg.x; moment.a32-=dr.z*vg.y; moment.a33-=dr.z*vg.z;
++          agrad.a11+=da.x*vg.x; agrad.a12+=da.x*vg.y; agrad.a13+=da.x*vg.z;
++          agrad.a21+=da.y*vg.x; agrad.a22+=da.y*vg.y; agrad.a23+=da.y*vg.z;
++          agrad.a31+=da.z*vg.x; agrad.a32+=da.z*vg.y; agrad.a33+=da.z*vg.z;
++        }
++      }
++    }
++    const tmatrix3d lmat=FsCorrMatInverse(moment,sim2d);
++    const double diva=agrad.a11*lmat.a11+agrad.a12*lmat.a12+agrad.a13*lmat.a13
++      +agrad.a21*lmat.a21+agrad.a22*lmat.a22+agrad.a23*lmat.a23
++      +agrad.a31*lmat.a31+agrad.a32*lmat.a32+agrad.a33*lmat.a33;
++    const double rate=double(PorePressRatec[p1])+coef*diva;
++    if(!std::isfinite(rate) || fabs(rate)>double(FLT_MAX))invalid++;
++    else PorePressRatec[p1]=float(rate);
++  }
++  if(invalid)Run_Exceptioon("PoreDynamicDarcy: non-finite or overflowing pore-pressure rate (no clipping was applied).");
++}
++
++//==============================================================================
++/// Runs only after all forces, soil damping and 2-D projection are complete.
++//==============================================================================
++void JSphCpu::AddPorePressureDynamicDarcyRate(){
++  //-A disabled option or zero conductivity is an exact no-op, including memory.
++  if(!HydroMech || !PoreDynamicDarcy || SoilCte.HydraulicConductivity==0)return;
++  if(!Np)return;
++  if(!Acec || !PorePressRatec || !DivData.begincell)
++    Run_Exceptioon("PoreDynamicDarcy: missing current-stage interaction arrays.");
++  if(!IsHydroMechDrainageActive()){
++    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && IsFreeSurfaceParticle(p,Codec,FSTypec))
++      Run_Exceptioon("PoreDynamicDarcy: undrained or not-yet-drained free surfaces require a stage-D flux boundary closure.");
++  }
++  vector<tdouble3> acceleration;
++  PreparePoreDynamicAcceleration(acceleration);
++  if(Simulate2D){
++    switch(TKernel){
++      case KERNEL_Wendland: AddPorePressureDynamicDarcyRateT<KERNEL_Wendland,true>(acceleration.data()); break;
++      case KERNEL_Cubic:    AddPorePressureDynamicDarcyRateT<KERNEL_Cubic,true>(acceleration.data()); break;
++      default: Run_Exceptioon("Kernel unknown.");
++    }
++  }
++  else{
++    switch(TKernel){
++      case KERNEL_Wendland: AddPorePressureDynamicDarcyRateT<KERNEL_Wendland,false>(acceleration.data()); break;
++      case KERNEL_Cubic:    AddPorePressureDynamicDarcyRateT<KERNEL_Cubic,false>(acceleration.data()); break;
++      default: Run_Exceptioon("Kernel unknown.");
++    }
++  }
++}
++
+ //==============================================================================
+ /// Extrapolates pore pressure to mDBC boundary particles for undrained walls.
+ //==============================================================================
+@@ -1590,6 +1881,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
+         }
+       }
+       porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++      if(PorePressResc)PorePressResc[p1]=0; //-Ghost pressure is prescribed, not integrated.
+     }
+   }
+ }
+@@ -1633,10 +1925,13 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+   ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+   ,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress0,float *porepress)const
+ {
++  //-Keep both words until all neighbours have been read (parallel-safe filter).
++  std::vector<float> low(np);
+   float *preg=NULL;
+   try{ preg=new float[np]; }
+   catch(const std::bad_alloc){ Run_Exceptioon("Could not allocate the requested memory."); }
+   memcpy(preg,porepress,sizeof(float)*np);
++  memcpy(low.data(),PorePressResc,sizeof(float)*np);
+   const int pini=int(npb),pfin=int(np);
+   #ifdef OMP_USE
+     #pragma omp parallel for schedule(guided)
+@@ -1645,15 +1940,18 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+     if(!CODE_IsFluid(code[p1]))continue;
+     if(IsHydroMechDrainageActive() && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)){
+       preg[p1]=0;
++      low[p1]=0;
+       continue;
+     }
+     const tdouble3 posp1=pos[p1];
+     double sumwab=0,pwexcesssum=0;
++    //-u-pl transports current hydraulic head, not a material initial elevation.
++    const double reference1=(HydroMechUpl? double(SoilCte.PoreWaterRho)*(Gravity.x*posp1.x+Gravity.y*posp1.y+Gravity.z*posp1.z):double(porepress0[p1]));
+     if(velrhop[p1].w>0){
+       const double vol1=double(MassFluid/velrhop[p1].w);
+       const double wab0=double(fsph::GetKernel_Wab<tker>(CSP,0));
+       sumwab+=wab0*vol1;
+-      pwexcesssum+=wab0*vol1*(double(porepress[p1])-double(porepress0[p1]));
++      pwexcesssum+=wab0*vol1*((double(porepress[p1])-reference1)+double(PorePressResc[p1]));
+     }
+     for(int b2=0;b2<2;b2++){
+       const bool boundp2=(b2==1);
+@@ -1673,14 +1971,16 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
+             const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
+             const double vwab=double(fsph::GetKernel_Wab<tker>(CSP,rr2))*vol2;
+             sumwab+=vwab;
+-            pwexcesssum+=vwab*(double(porepress[p2])-double(porepress0[p2]));
++            const double reference2=(HydroMechUpl? double(SoilCte.PoreWaterRho)*(Gravity.x*pos[p2].x+Gravity.y*pos[p2].y+Gravity.z*pos[p2].z):double(porepress0[p2]));
++            pwexcesssum+=vwab*((double(porepress[p2])-reference2)+double(PorePressResc[p2]));
+           }
+         }
+       }
+     }
+-    if(sumwab>0)preg[p1]=float(double(porepress0[p1])+pwexcesssum/sumwab);
++    if(sumwab>0)porepress::Split(reference1+pwexcesssum/sumwab,preg[p1],low[p1]);
+   }
+   memcpy(porepress+npb,preg+npb,sizeof(float)*(np-npb));
++  memcpy(PorePressResc+npb,low.data()+npb,sizeof(float)*(np-npb));
+   delete[] preg;
+ }
+ 
+@@ -2950,6 +3250,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
+         }
+       }
+       porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++      if(PorePressResc)PorePressResc[p1]=0;
+     }
+     if(activebound){
+       if(useboundmode)boundmode[p1]=BMODE_MDBC2;
+@@ -3905,13 +4206,17 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3f *s
+ void JSphCpu::ComputeVerletPorePressure(double dt2){
+   if(!HydroMech || !PorePressc || !PorePressRatec || !PorePressM1c)return;
+   const float *poreold=(VerletStep<VerletSteps? PorePressM1c: PorePressc);
++  const float *resold=(VerletStep<VerletSteps? PorePressResM1c: PorePressResc);
+   const int np=int(Np);
+   #ifdef OMP_USE
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressM1c[p]=poreold[p];
+-    else PorePressM1c[p]=float(double(poreold[p])+dt2*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressM1c[p]=poreold[p];
++      PorePressResM1c[p]=resold[p];
++    }
++    else porepress::Update(poreold[p],resold[p],dt2,PorePressRatec[p],PorePressM1c[p],PorePressResM1c[p]);
+   }
+ }
+ 
+@@ -3919,6 +4224,11 @@ void JSphCpu::ComputeVerletPorePressure(double dt2){
+ /// Updates pore pressure to the Symplectic predictor half step.
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
++  if(HydroMechUpl && UplPressureMode==1){
++    memcpy(PorePressc,PorePressPrec,sizeof(float)*Np);
++    memcpy(PorePressResc,PorePressResPrec,sizeof(float)*Np);
++    return; //-Fluid TPI history is handled separately; walls must remain initialised.
++  }
+   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;
+   const double dt05=dt*.5;
+   const int np=int(Np);
+@@ -3926,8 +4236,11 @@ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
+-    else PorePressc[p]=float(double(PorePressPrec[p])+dt05*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressc[p]=PorePressPrec[p];
++      PorePressResc[p]=PorePressResPrec[p];
++    }
++    else porepress::Update(PorePressPrec[p],PorePressResPrec[p],dt05,PorePressRatec[p],PorePressc[p],PorePressResc[p]);
+   }
+   ApplyFreeSurfacePorePressure();
+ }
+@@ -3936,14 +4249,18 @@ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
+ /// Updates pore pressure to the Symplectic corrector full step.
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){
++  if(HydroMechUpl && UplPressureMode==1)return;
+   if(!HydroMech || !PorePressc || !PorePressPrec || !PorePressRatec)return;
+   const int np=int(Np);
+   #ifdef OMP_USE
+     #pragma omp parallel for schedule(static) if(np>OMP_LIMIT_COMPUTESTEP)
+   #endif
+   for(int p=0;p<np;p++){
+-    if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
+-    else PorePressc[p]=float(double(PorePressPrec[p])+dt*double(PorePressRatec[p]));
++    if(p<int(Npb) || !CODE_IsFluid(Codec[p])){
++      PorePressc[p]=PorePressPrec[p];
++      PorePressResc[p]=PorePressResPrec[p];
++    }
++    else porepress::Update(PorePressPrec[p],PorePressResPrec[p],dt,PorePressRatec[p],PorePressc[p],PorePressResc[p]);
+   }
+   ApplyFreeSurfacePorePressure();
+ }
+@@ -3974,6 +4291,7 @@ void JSphCpu::ComputeVerlet(double dt){
+   swap(Sigmac,SigmaM1c);
+   if(HydroMech && PorePressc && PorePressM1c){
+     swap(PorePressc,PorePressM1c);
++    swap(PorePressResc,PorePressResM1c);
+     ApplyFreeSurfacePorePressure();
+   }
+   Timersc->TmStop(TMC_SuComputeStep);
+@@ -3985,6 +4303,7 @@ void JSphCpu::ComputeVerlet(double dt){
+ /// Actualizacion de particulas segun fuerzas y dt usando Symplectic-Predictor.
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticPre(double dt){
++  if(HydroMechUpl)PrepareUplAdvance(dt,true);
+   Timersc->TmStart(TMC_SuComputeStep);
+   const bool shift=false; //(ShiftingMode!=SHIFT_None); //-We strongly recommend running the shifting correction only for the corrector. If you want to re-enable shifting in the predictor, change the value here to "true".
+   const double dt05=dt*.5;
+@@ -3997,13 +4316,19 @@ void JSphCpu::ComputeSymplecticPre(double dt){
+   VelrhopPrec=ArraysCpu->ReserveFloat4();
+   //====mdbr
+   SigmaPrec=ArraysCpu->ReserveSymatrix3f();
+-  if(HydroMech)PorePressPrec=ArraysCpu->ReserveFloat();
++  if(HydroMech){
++    PorePressPrec=ArraysCpu->ReserveFloat();
++    PorePressResPrec=ArraysCpu->ReserveFloat();
++  }
+   //-Change data to variables Pre to calculate new data. | Cambia datos a variables Pre para calcular nuevos datos.
+   swap(PosPrec,Posc);         //Put value of Pos[] in PosPre[].         | Es decir... PosPre[] <= Pos[].
+   swap(VelrhopPrec,Velrhopc); //Put value of Velrhop[] in VelrhopPre[]. | Es decir... VelrhopPre[] <= Velrhop[].
+   //=====mdbr
+   swap(SigmaPrec, Sigmac);
+-  if(HydroMech)swap(PorePressPrec,PorePressc);
++  if(HydroMech){
++    swap(PorePressPrec,PorePressc);
++    swap(PorePressResPrec,PorePressResc);
++  }
+   ComputeSymplecticPrePorePressure(dt);
+   //-Calculate new density for boundary and copy velocity. | Calcula nueva densidad para el contorno y copia velocidad.
+   #ifdef OMP_USE
+@@ -4025,7 +4350,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
+   for(int p=npb;p<np;p++){
+     const typecode rcode=Codec[p];
+     //-Calculate density.
+-    const float rhopnew=float(double(VelrhopPrec[p].w)+dt05*Arc[p]);
++    const float rhopnew=(HydroMechUpl? float(UplStatec[Idpc[p]].targetrho):float(double(VelrhopPrec[p].w)+dt05*Arc[p]));
+     tsymatrix3f signew=SigmaPrec[p];//mdbr
+     float kplasnew=Kplasticc[p];//
+     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
+@@ -4125,6 +4450,8 @@ void JSphCpu::ComputeSymplecticPre(double dt){
+   //-Copy previous position of boundary. | Copia posicion anterior del contorno.
+   memcpy(Posc,PosPrec,sizeof(tdouble3)*Npb);
+ 
++  if(HydroMechUpl)UpdateUplState(dt,true);
++
+   Timersc->TmStop(TMC_SuComputeStep);
+ }
+ 
+@@ -4133,6 +4460,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
+ /// Actualizacion de particulas segun fuerzas y dt usando Symplectic-Corrector.
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticCorr(double dt){
++  if(HydroMechUpl)PrepareUplAdvance(dt,false);
+   Timersc->TmStart(TMC_SuComputeStep);
+   const bool shift=(Shifting!=NULL);
+   const double dt05=dt*.5;
+@@ -4159,7 +4487,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
+   for(int p=npb;p<np;p++){
+     const typecode rcode=Codec[p];
+     const double epsilon_rdot=(-double(Arc[p])/double(Velrhopc[p].w))*dt;
+-    const float rhopnew=float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
++    const float rhopnew=(HydroMechUpl? float(UplStatec[Idpc[p]].targetrho):float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot)));
+     tsymatrix3f signew=SigmaPrec[p];//mdbr
+     float kplasnew=Kplasticc[p];//
+     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
+@@ -4275,12 +4603,14 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
+   ArraysCpu->Free(movc);   movc=NULL;
+ 
+   ComputeSymplecticCorrPorePressure(dt);
++  if(HydroMechUpl)UpdateUplState(dt,false);
+ 
+   //-Free memory assigned to variables Pre and ComputeSymplecticPre(). | Libera memoria asignada a variables Pre en ComputeSymplecticPre().
+   ArraysCpu->Free(PosPrec);      PosPrec=NULL;
+   ArraysCpu->Free(VelrhopPrec);  VelrhopPrec=NULL;
+   ArraysCpu->Free(SigmaPrec);    SigmaPrec=NULL;//mdbr
+   ArraysCpu->Free(PorePressPrec); PorePressPrec=NULL;
++  ArraysCpu->Free(PorePressResPrec); PorePressResPrec=NULL;
+   Timersc->TmStop(TMC_SuComputeStep);
+ }
+ 
+@@ -4308,6 +4638,7 @@ double JSphCpu::DtVariable(bool final){
+   double dt=CFLnumber*min(dt1,dt2);
+   if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
+   else dt=min(dt,dtw);
++  if(HydroMechUpl)dt=LimitUplDt(dt,FixedDt!=NULL);
+   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
+   if(dt<double(DtMin)){ 
+     dt=double(DtMin); DtModif++;
+@@ -4318,6 +4649,7 @@ double JSphCpu::DtVariable(bool final){
+   }
+ 
+   //-Saves information about dt.
++  if(HydroMechUpl)LimitUplDt(dt,true); //-DtMin must not lift an unsafe step.
+   if(final){
+     if(PartDtMin>dt)PartDtMin=dt;
+     if(PartDtMax<dt)PartDtMax=dt;
+diff --git a/src/source/JSphCpu.h b/src/source/JSphCpu.h
+index d006c79..5f6514f 100644
+--- a/src/source/JSphCpu.h
++++ b/src/source/JSphCpu.h
+@@ -25,6 +25,7 @@
+ #include "JDsTimersCpu.h"
+ #include "JCellDivDataCpu.h"
+ #include "JSph.h"
++#include "FunUpl.h"
+ #include <string>
+ 
+ 
+@@ -156,17 +157,20 @@ protected:
+   tsymatrix3f* ArtificialStressc;
+   float* Kplasticc;
+   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
++  float* PorePressResc; ///<Low-order remainder of accumulated pore pressure.
+   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
+   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+   //===============  
+   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
+   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
+   float* PorePressM1c;  ///<Verlet history of pore-water pressure.
++  float* PorePressResM1c; ///<Verlet history of the pressure remainder.
+ 
+   //-Variables for compute step: SYMPLECTIC. | Vars. para compute step: SYMPLECTIC.
+   tdouble3 *PosPrec;    ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
+   tfloat4 *VelrhopPrec;
+   float* PorePressPrec; ///<Symplectic previous pore-water pressure.
++  float* PorePressResPrec; ///<Symplectic previous pressure remainder.
+   //======= mdbr
+   tsymatrix3f* SigmaPrec;
+   tsymatrix3f* SigmaM1c;
+@@ -179,6 +183,17 @@ protected:
+   //-Variables for computation of forces | Vars. para computo de fuerzas.
+   tfloat3 *Acec;         ///<Sum of interaction forces | Acumula fuerzas de interaccion
+   tfloat3 *HydroMechLoadAcec; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
++  //-Narrow PR-only constant-cross-section TopVertical traction state.
++  double UplStageTime=0; ///<PR boundary/load clock; the legacy global clock is unchanged.
++  std::vector<unsigned> UplTopIds;
++  std::vector<double> UplTopX;
++  std::vector<double> UplColumnX; ///<Initial X by normal soil-owner ID; only allocated for PR TopVertical.
++  double UplTopArea0=0,UplTopLoadForce=0,UplTopLoadPressure=0,UplLoadTime=0;
++  mutable double UplTopFitResidual=0; ///<RMS acceleration residual of the vertical linear extrapolation.
++  mutable double UplTopFitTime=-1; ///<Stage time of that fit; -1 means not yet computed.
++  void InitUplTopLoad();
++  void ApplyUplTopLoadAcceleration();
++  bool GetUplTopPlane(double &ztop,tdouble3 &aface,bool acceleration=true)const;
+   float *Arc; 
+   float *Deltac;         ///<Adjusted sum with Delta-SPH with DELTA_DynamicExt | Acumula ajuste de Delta-SPH con DELTA_DynamicExt
+ 
+@@ -246,7 +261,7 @@ protected:
+   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+     ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
+-    ,tfloat3 *hydromechloadace=NULL);
++    ,tfloat3 *hydromechloadace=NULL,float *porepressres=NULL);
+   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
+     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
+   void ConfigOmp(const JSphCfgRun *cfg);
+@@ -278,6 +293,34 @@ protected:
+     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+     ,const tmatrix3d *corrmat,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress,float *porepressrate)const;
+   void InteractionPorePressureRate();
++  //-u-pl history is indexed by immutable particle ID, never by sorted position.
++  struct StUplParticle{
++    double logj=0,logjold=0,divv=0,pressure=0,previous=0,previousdt=0,target=0,targetrho=0;
++  };
++  std::vector<StUplParticle> UplStatec;
++  double UplDtLimit=DBL_MAX;
++  double UplTopLoadImpulse=0; // accepted midpoint force integral, not restart state.
++  void InitUplState();
++  void BeginUplStep();
++  void ScaleUplInertia();
++  void CorrectUplHydraulicWalls();
++  template<TpKernel tker,bool sim2d> void CorrectUplHydraulicWallsT();
++  void PrepareUplAdvance(double dt,bool predictor);
++  void InteractionUplRate();
++  template<TpKernel tker,bool sim2d> void InteractionUplRateT();
++  //-PR-only hydraulic stencil. TPI and legacy AB retain their own operators.
++  struct StUplPlane{ tdouble3 normal; double offset; TpSlipMode slip; };
++  std::vector<StUplPlane> GetUplFixedPlanes()const;
++  template<TpKernel tker,bool sim2d> void CorrectUplPrWallsT();
++  template<TpKernel tker,bool sim2d> void InteractionUplPrRateT();
++  void UpdateUplState(double dt,bool predictor);
++  double LimitUplDt(double dt,bool checkonly)const;
++  void SaveUplData(unsigned np,const unsigned *idp,JDataArrays &arrays)const;
++  upl::Material GetUplMaterial(unsigned id)const;
++  void PreparePoreDynamicAcceleration(std::vector<tdouble3> &acceleration)const;
++  template<TpKernel tker,bool sim2d> void PoreDynamicAccelerationBoundT(tdouble3 *acceleration)const;
++  template<TpKernel tker,bool sim2d> void AddPorePressureDynamicDarcyRateT(const tdouble3 *acceleration);
++  void AddPorePressureDynamicDarcyRate();
+   template<TpKernel tker,bool sim2d> void InteractionPorePressureMdbcCorrectionT
+     (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
+diff --git a/src/source/JSphCpuSingle.cpp b/src/source/JSphCpuSingle.cpp
+index fc35089..42cb87f 100644
+--- a/src/source/JSphCpuSingle.cpp
++++ b/src/source/JSphCpuSingle.cpp
+@@ -135,17 +135,20 @@ void JSphCpuSingle::ConfigDomain(){
+       if(!PartsLoaded->GetPorePressureDataLoaded())
+         Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
+       memcpy(PorePressc,PartsLoaded->GetPorePress(),sizeof(float)*Np);
++      memcpy(PorePressResc,PartsLoaded->GetPorePressRes(),sizeof(float)*Np);
+       memcpy(PorePress0c,PartsLoaded->GetPorePress0(),sizeof(float)*Np);
+       Log->Print("Restart hydromechanical data: PorePress and PorePress0 inherited.");
+     }
+     else{
+       memset(PorePressc,0,sizeof(float)*Np);
++      memset(PorePressResc,0,sizeof(float)*Np);
+       memset(PorePress0c,0,sizeof(float)*Np);
+       if(PartBegin && initpore)
+         Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
+     }
+     if(PorePressRatec)memset(PorePressRatec,0,sizeof(float)*Np);
+     if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
++    if(PorePressResM1c)memset(PorePressResM1c,0,sizeof(float)*Np);
+     if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*Np);
+   }
+   //=========
+@@ -182,6 +185,7 @@ void JSphCpuSingle::ConfigDomain(){
+ 	//  Sigmac[p].yy = float((1. - sin(Phi))*Sigmac[p].zz);
+   }
+   //-Creates PartsInit object with initial particle data for automatic configurations.
++  if(HydroMechUpl)InitUplState();
+   CreatePartsInit(Np,Posc,Codec);
+ 
+   //-Computes MK domain for boundary and fluid particles.
+@@ -314,7 +318,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
+ //==============================================================================
+ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
+   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
++  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)const
+ {
+   const int n=int(np);
+   #ifdef OMP_USE
+@@ -337,6 +341,8 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
++    if(porepressresm1)porepressresm1[pnew]=porepressresm1[pcopy];
+     if(spstau)spstau[pnew]=spstau[pcopy];
+   }
+ }
+@@ -351,7 +357,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
+ /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
+ //==============================================================================
+ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
++  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)const
+ {
+   const int n=int(np);
+   #ifdef OMP_USE
+@@ -372,6 +378,8 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
++    if(porepressrespre)porepressrespre[pnew]=porepressrespre[pcopy];
+     if(pospre)pospre[pnew]=pospre[pcopy];
+     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
+     if(spstau)spstau[pnew]=spstau[pcopy];
+@@ -469,10 +477,10 @@ void JSphCpuSingle::RunPeriodic(){
+             run=false;
+             //-Create new duplicate periodic particles in the list
+             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
+-            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c);
++            if(TStep==STEP_Verlet)PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,VelrhopM1c,Sigmac,SigmaM1c,PorePressc,PorePress0c,PorePressRatec,PorePressM1c,PorePressResc,PorePressResM1c);
+             if(TStep==STEP_Symplectic){
+               if((PosPrec || VelrhopPrec) && (!PosPrec || !VelrhopPrec))Run_Exceptioon("Symplectic data is invalid.") ;
+-              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec);
++              PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listp,Idpc,Codec,Dcellc,Posc,Velrhopc,SpsTauc,PosPrec,VelrhopPrec,Sigmac,SigmaPrec,PorePressc,PorePress0c,PorePressRatec,PorePressPrec,PorePressResc,PorePressResPrec);
+             }
+             if(UseNormals)PeriodicDuplicateNormals(count,Np,DomCells,perinc,listp,BoundNormalc,MotionVelc,BoundSlipModec);
+ 
+@@ -516,12 +524,14 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+   CellDivSingle->SortArray(Sigmac);
+   CellDivSingle->SortArray(Kplasticc);
+   if(PorePressc)CellDivSingle->SortArray(PorePressc);
++  if(PorePressResc)CellDivSingle->SortArray(PorePressResc);
+   if(PorePress0c)CellDivSingle->SortArray(PorePress0c);
+   if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
+   if(TStep==STEP_Verlet){
+     CellDivSingle->SortArray(VelrhopM1c);
+     CellDivSingle->SortArray(SigmaM1c);
+     if(PorePressM1c)CellDivSingle->SortArray(PorePressM1c);
++    if(PorePressResM1c)CellDivSingle->SortArray(PorePressResM1c);
+   }
+   else if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec)){//-In reality, this is only necessary in divide for corrector, not in predictor??? | En realidad solo es necesario en el divide del corrector, no en el predictor???
+     if(!PosPrec || !VelrhopPrec)Run_Exceptioon("Symplectic data is invalid.") ;
+@@ -529,6 +539,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+     CellDivSingle->SortArray(VelrhopPrec);
+     CellDivSingle->SortArray(SigmaPrec);
+     if(PorePressPrec)CellDivSingle->SortArray(PorePressPrec);
++    if(PorePressResPrec)CellDivSingle->SortArray(PorePressResPrec);
+   }
+   if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
+   if(FSTypec)CellDivSingle->SortArray(FSTypec);
+@@ -555,8 +566,10 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
+     ApplyPorePressureBoundaries();
+     if(!PorePressPrec && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+       InteractionPorePressureMdbcCorrection();
++      if(HydroMechUpl)CorrectUplHydraulicWalls();
+       ShepardRegularizePorePressure();
+       InteractionPorePressureMdbcCorrection();
++      if(HydroMechUpl)CorrectUplHydraulicWalls();
+     }
+   }
+   Timersc->TmStop(TMC_NlSortData);
+@@ -619,6 +632,7 @@ void JSphCpuSingle::AbortBoundOut(){
+ /// Interaccion para el calculo de fuerzas.
+ //==============================================================================
+ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
++  if(HydroMechUpl && interstep==INTERSTEP_SymPredictor)BeginUplStep();
+   if(TBoundary==BC_MDBC){
+     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
+   }
+@@ -632,10 +646,11 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
+   Timersc->TmStart(TMC_CfForces);
+   //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
+   if(HydroMech)ApplyFreeSurfacePorePressure();
++  if(HydroMechUpl)CorrectUplHydraulicWalls();
+   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
+     ,DivData,Dcellc
+     ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL)
+-    ,(HydroMech? PorePressRatec: NULL),(HydroMech? FSTypec: NULL),(HydroMech? FSNormalc: NULL)
++    ,(HydroMech && !HydroMechUpl? PorePressRatec: NULL),(HydroMech? FSTypec: NULL),(HydroMech? FSNormalc: NULL)
+     ,dengradcorr,CorrMatc
+     ,Arc,Acec,Deltac
+     ,ShiftingMode,ShiftPosfsc
+@@ -646,6 +661,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
+   StInterResultc res;
+   res.viscdt=0;
+   JSphCpu::Interaction_Forces_ct(parms,res);
++  if(HydroMechUpl)ScaleUplInertia();
+   if(SoilDamping)AddSoilDampingCpu(Np,Npb,Codec,Velrhopc,Acec);
+ 
+   //-For 2-D simulations zero the 2nd component. | Para simulaciones 2D anula siempre la 2nd componente.
+@@ -657,6 +673,11 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
+     for(int p=ini;p<fin;p++)Acec[p].y=0;
+   }
+ 
++  //-Use the completed acceleration of this predictor/corrector stage. The
++  // dynamic Darcy pass only adds to the PR rate; it never changes Acec.
++  if(HydroMechUpl)InteractionUplRate();
++  else if(HydroMech && PoreDynamicDarcy)AddPorePressureDynamicDarcyRate();
++
+   //-Add Delta-SPH correction to Arg[]. | Anhade correccion de Delta-SPH a Arg[].
+   if(Deltac){
+     const int ini=int(Npb),fin=int(Np),npf=int(Np-Npb);
+@@ -815,14 +836,17 @@ double JSphCpuSingle::ComputeStep_Ver(){
+ /// calculadas en la interaccion usando Symplectic.
+ //==============================================================================
+ double JSphCpuSingle::ComputeStep_Sym(){
+-  const double dt=SymplecticDtPre;
++  double dt=SymplecticDtPre;
++  if(HydroMechUpl && UplPressureMode==0)UplStageTime=TimeStep;
+   if(CaseNmoving)CalcMotion(dt);               //-Calculate motion for moving bodies.
+   //-Predictor
+   //-----------
+   DemDtForce=dt*0.5f;                          //(DEM)
+   Interaction_Forces(INTERSTEP_SymPredictor);  //-Interaction.
++  if(HydroMechUpl)dt=LimitUplDt(dt,FixedDt!=NULL);
+   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
+   if(Shifting)RunShifting(dt*.5);              //-Shifting.
++  if(HydroMechUpl && UplPressureMode==0)UplStageTime=TimeStep+dt*.5;
+   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -831,8 +855,10 @@ double JSphCpuSingle::ComputeStep_Sym(){
+   DemDtForce=dt;                               //(DEM)
+   RunCellDivide(true);
+   Interaction_Forces(INTERSTEP_SymCorrector);  //-Interaction.
++  if(HydroMechUpl)LimitUplDt(dt,true); //-A stricter midpoint bound applies to THIS step.
+   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
+   if(Shifting)RunShifting(dt);                 //-Shifting.
++  if(HydroMechUpl && UplPressureMode==0)UplStageTime=TimeStep+dt;
+   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
+   PosInteraction_Forces();                     //-Free memory used for interaction.
+@@ -1267,10 +1293,12 @@ void JSphCpuSingle::SaveData(){
+   unsigned *fstype=NULL;
+   tfloat3 *fsnormal=NULL;
+   float *porepress=NULL;
++  float *porepressres=NULL;
+   float *porepress0=NULL;
+   //==========
+   if(save){
+     ComputeFreeSurfaceTracking();
++    if(HydroMechUpl)CorrectUplHydraulicWalls();
+     //-Assign memory and collect particle values. | Asigna memoria y recupera datos de las particulas.
+     idp=ArraysCpu->ReserveUint();
+     pos=ArraysCpu->ReserveDouble3();
+@@ -1284,10 +1312,11 @@ void JSphCpuSingle::SaveData(){
+     fsnormal=ArraysCpu->ReserveFloat3();
+     if(HydroMech){
+       porepress=ArraysCpu->ReserveFloat();
++      porepressres=ArraysCpu->ReserveFloat();
+       porepress0=ArraysCpu->ReserveFloat();
+     }
+ 	//=========
+-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL);
++    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL,porepressres);
+     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
+   }
+   //-Gather additional information. | Reune informacion adicional.
+@@ -1318,11 +1347,13 @@ void JSphCpuSingle::SaveData(){
+       float *poreexcess=new float[npsave];
+       for(unsigned p=0;p<npsave;p++)poreexcess[p]=porepress[p]-porepress0[p];
+       arrays.AddArray("PorePress",npsave,porepress);
++      arrays.AddArray("PorePressRes",npsave,porepressres);
+       arrays.AddArray("PorePress0",npsave,porepress0);
+       arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+     }
+   }
+   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
++  if(save && HydroMechUpl)SaveUplData(npsave,idp,arrays);
+   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
+   //-Free auxiliary memory for particle data. | Libera memoria auxiliar para datos de particulas.
+   ArraysCpu->Free(idp);
+@@ -1336,6 +1367,7 @@ void JSphCpuSingle::SaveData(){
+   ArraysCpu->Free(fstype);
+   ArraysCpu->Free(fsnormal);
+   ArraysCpu->Free(porepress);
++  ArraysCpu->Free(porepressres);
+   ArraysCpu->Free(porepress0);
+   //=====
+   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
+diff --git a/src/source/JSphCpuSingle.h b/src/source/JSphCpuSingle.h
+index e0606e7..2d50913 100644
+--- a/src/source/JSphCpuSingle.h
++++ b/src/source/JSphCpuSingle.h
+@@ -46,9 +46,9 @@ protected:
+   unsigned PeriodicMakeList(unsigned np,unsigned pini,bool stable,unsigned nmax,tdouble3 perinc,const tdouble3 *pos,const typecode *code,unsigned *listp)const;
+   void PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inverse,double dx,double dy,double dz,tuint3 cellmax,tdouble3 *pos,unsigned *dcell)const;
+   void PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const;
++    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)const;
+   void PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
+-    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const;
++    ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)const;
+   void PeriodicDuplicateNormals(unsigned np,unsigned pini,tuint3 cellmax
+     ,tdouble3 perinc,const unsigned *listp,tfloat3 *normals,tfloat3 *motionvel,byte *boundslipmode)const;
+   void RunPeriodic();
+diff --git a/src/source/JSphGpu.cpp b/src/source/JSphGpu.cpp
+index 75a6013..a9979cb 100644
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -65,7 +65,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
+   ClassName="JSphGpu";
+   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
+   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
+-  PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL; AuxHydroMechLoadAce=NULL;
++  PorePress=NULL; PorePressRes=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePressRes=NULL; AuxPorePress0=NULL; AuxHydroMechLoadAce=NULL;
+   AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL; AuxPosDiv=NULL;
+   CellDiv=NULL;
+   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
+@@ -150,15 +150,15 @@ void JSphGpu::InitVars(){
+   FreeCpuMemoryFixed();
+   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
+   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
+-  PorePressg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
++  PorePressg=NULL; PorePressResg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
+   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
+   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
+   VelrhopM1g=NULL;                                 //-Verlet
+   SigmaM1g=NULL;//ruofeng
+-  PorePressM1g=NULL;
++  PorePressM1g=NULL; PorePressResM1g=NULL;
+   PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; //-Symplectic
+   SigmaPreg=NULL;//ruofeng
+-  PorePressPreg=NULL;
++  PorePressPreg=NULL; PorePressResPreg=NULL;
+   SpsTaug=NULL; SpsGradvelg=NULL;                  //-Laminar+SPS. 
+   ViscDtg=NULL; 
+   Arg=NULL; Aceg=NULL; HydroMechLoadAceg=NULL; Deltag=NULL;
+@@ -282,8 +282,10 @@ void JSphGpu::FreeCpuMemoryParticles(){
+   delete[] Kplastic;   Kplastic = NULL;
+   delete[] KplasticDk; KplasticDk = NULL;
+   delete[] PorePress;  PorePress = NULL;
++  delete[] PorePressRes; PorePressRes = NULL;
+   delete[] PorePress0; PorePress0 = NULL;
+   delete[] AuxPorePress;  AuxPorePress = NULL;
++  delete[] AuxPorePressRes; AuxPorePressRes = NULL;
+   delete[] AuxPorePress0; AuxPorePress0 = NULL;
+   delete[] AuxHydroMechLoadAce; AuxHydroMechLoadAce=NULL;
+   //
+@@ -322,8 +324,10 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
+       KplasticDk = new float[np]; MemCpuParticles += sizeof(float) * np;
+       if(HydroMech){
+         PorePress=new float[np];     MemCpuParticles+=sizeof(float)*np;
++        PorePressRes=new float[np];  MemCpuParticles+=sizeof(float)*np;
+         PorePress0=new float[np];    MemCpuParticles+=sizeof(float)*np;
+         AuxPorePress=new float[np];  MemCpuParticles+=sizeof(float)*np;
++        AuxPorePressRes=new float[np]; MemCpuParticles+=sizeof(float)*np;
+         AuxPorePress0=new float[np]; MemCpuParticles+=sizeof(float)*np;
+         AuxHydroMechLoadAce=new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
+       }
+@@ -387,21 +391,21 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
+   if(ArtificialStress)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,1);//-artificialstress
+   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B, 4);//-kplastic,kplasticdk and sort buffers
+   if(HydroMech){
+-    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,6);//-PorePress,PorePress0,PorePressRate and sort buffers
++    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,8);//-PorePress,PorePressRes,PorePress0,PorePressRate and sort buffers (also Shepard high/low scratch).
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2);//-HydroMechLoadAce and sort buffer; diagnostic layout only.
+   }
+   if(TStep==STEP_Verlet){
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
+     //====mdbr
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-sigmam1
+-    if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,2);//-PorePressM1 and sort buffer
++    if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,4);//-PorePressM1,PorePressResM1 and sort buffers
+   }
+   else if(TStep==STEP_Symplectic){
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,1);  //-poszpre
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,2); //-posxypre,velrhoppre
+     //====mdbr
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B, 1);//-sigmapre
+-    if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,2);//-PorePressPre and sort buffer
++    if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,4);//-PorePressPre,PorePressResPre and sort buffers
+   }
+   if(TVisco==VISCO_LaminarSPS){     
+     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_24B,2); //-SpsTau,SpsGradvel
+@@ -464,10 +468,13 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
+   float* kplastic = SaveArrayGpu(Np, Kplasticg);
+   float* kplasticdk = SaveArrayGpu(Np, KplasticDkg);
+   float* porepress = SaveArrayGpu(Np, PorePressg);
++  float* porepressres = SaveArrayGpu(Np, PorePressResg);
+   float* porepress0 = SaveArrayGpu(Np, PorePress0g);
+   float* porepressrate = SaveArrayGpu(Np, PorePressRateg);
+   float* porepressm1 = SaveArrayGpu(Np, PorePressM1g);
++  float* porepressresm1 = SaveArrayGpu(Np, PorePressResM1g);
+   float* porepresspre = SaveArrayGpu(Np, PorePressPreg);
++  float* porepressrespre = SaveArrayGpu(Np, PorePressResPreg);
+   tsymatrix3f* sigmapre = SaveArrayGpu(Np, SigmaPreg);
+   tsymatrix3f* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
+   // 
+@@ -499,10 +506,13 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
+   ArraysGpu->Free(Kplasticg);
+   ArraysGpu->Free(KplasticDkg);
+   ArraysGpu->Free(PorePressg);
++  ArraysGpu->Free(PorePressResg);
+   ArraysGpu->Free(PorePress0g);
+   ArraysGpu->Free(PorePressRateg);
+   ArraysGpu->Free(PorePressM1g);
++  ArraysGpu->Free(PorePressResM1g);
+   ArraysGpu->Free(PorePressPreg);
++  ArraysGpu->Free(PorePressResPreg);
+   ArraysGpu->Free(SigmaPreg);
+   ArraysGpu->Free(SigmaM1g);
+   // 
+@@ -538,10 +548,13 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
+   if(kplastic)   Kplasticg = ArraysGpu->ReserveFloat();
+   if(kplasticdk) KplasticDkg = ArraysGpu->ReserveFloat();
+   if(porepress)  PorePressg = ArraysGpu->ReserveFloat();
++  if(porepressres) PorePressResg = ArraysGpu->ReserveFloat();
+   if(porepress0) PorePress0g = ArraysGpu->ReserveFloat();
+   if(porepressrate) PorePressRateg = ArraysGpu->ReserveFloat();
+   if(porepressm1) PorePressM1g = ArraysGpu->ReserveFloat();
++  if(porepressresm1) PorePressResM1g = ArraysGpu->ReserveFloat();
+   if(porepresspre) PorePressPreg = ArraysGpu->ReserveFloat();
++  if(porepressrespre) PorePressResPreg = ArraysGpu->ReserveFloat();
+   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3f();
+   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3f();
+   // 
+@@ -573,10 +586,13 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
+   RestoreArrayGpu(Np,kplastic,Kplasticg);
+   RestoreArrayGpu(Np,kplasticdk,KplasticDkg);
+   RestoreArrayGpu(Np,porepress,PorePressg);
++  RestoreArrayGpu(Np,porepressres,PorePressResg);
+   RestoreArrayGpu(Np,porepress0,PorePress0g);
+   RestoreArrayGpu(Np,porepressrate,PorePressRateg);
+   RestoreArrayGpu(Np,porepressm1,PorePressM1g);
++  RestoreArrayGpu(Np,porepressresm1,PorePressResM1g);
+   RestoreArrayGpu(Np,porepresspre,PorePressPreg);
++  RestoreArrayGpu(Np,porepressrespre,PorePressResPreg);
+   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
+   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
+   //
+@@ -633,13 +649,14 @@ void JSphGpu::ReserveBasicArraysGpu(){
+   KplasticDkg = ArraysGpu->ReserveFloat();
+   if(HydroMech){
+     PorePressg=ArraysGpu->ReserveFloat();
++    PorePressResg=ArraysGpu->ReserveFloat();
+     PorePress0g=ArraysGpu->ReserveFloat();
+     PorePressRateg=ArraysGpu->ReserveFloat();
+     HydroMechLoadAceg=ArraysGpu->ReserveFloat3();
+   }
+   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
+     SigmaM1g = ArraysGpu->ReserveSymatrix3f();//mdbr
+-    if(HydroMech)PorePressM1g=ArraysGpu->ReserveFloat();
++    if(HydroMech){ PorePressM1g=ArraysGpu->ReserveFloat(); PorePressResM1g=ArraysGpu->ReserveFloat(); }
+   }
+   if(TVisco==VISCO_LaminarSPS)SpsTaug=ArraysGpu->ReserveSymatrix3f();
+   if(UseNormals){
+@@ -786,9 +803,11 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal,const byte *
+   cudaMemset(KplasticDkg,0,sizeof(float)*n);
+   if(HydroMech){
+     cudaMemcpy(PorePressg,PorePress,sizeof(float)*n,cudaMemcpyHostToDevice);
++    cudaMemcpy(PorePressResg,PorePressRes,sizeof(float)*n,cudaMemcpyHostToDevice);
+     cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*n,cudaMemcpyHostToDevice);
+     cudaMemset(PorePressRateg,0,sizeof(float)*n);
+     if(PorePressM1g)cudaMemcpy(PorePressM1g,PorePress,sizeof(float)*n,cudaMemcpyHostToDevice);
++    if(PorePressResM1g)cudaMemcpy(PorePressResM1g,PorePressRes,sizeof(float)*n,cudaMemcpyHostToDevice);
+   }
+   //====
+   if(UseNormals)cudaMemcpy(BoundNormalg,boundnormal,sizeof(float3)*n,cudaMemcpyHostToDevice);
+@@ -819,6 +838,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
+   if(AuxHydroMechLoadAce && HydroMechLoadAceg)cudaMemcpy(AuxHydroMechLoadAce,HydroMechLoadAceg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
+   if(HydroMech && PorePressg && PorePress0g){
+     cudaMemcpy(PorePress,PorePressg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
++    cudaMemcpy(PorePressRes,PorePressResg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+     cudaMemcpy(PorePress0,PorePress0g+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+   }
+   if(code || onlynormal)cudaMemcpy(Code,Codeg+pini,sizeof(typecode)*n,cudaMemcpyDeviceToHost);
+@@ -845,6 +865,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
+         if(AuxHydroMechLoadAce)AuxHydroMechLoadAce[p-ndel]=AuxHydroMechLoadAce[p];
+         if(HydroMech && PorePress && PorePress0){
+           PorePress[p-ndel]=PorePress[p];
++          PorePressRes[p-ndel]=PorePressRes[p];
+           PorePress0[p-ndel]=PorePress0[p];
+         }
+         //==== mdbr
+@@ -868,6 +889,7 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
+     AuxKplasticDk[p]=KplasticDk[p];
+     if(HydroMech && AuxPorePress && AuxPorePress0 && PorePress && PorePress0){
+       AuxPorePress[p]=PorePress[p];
++      AuxPorePressRes[p]=PorePressRes[p];
+       AuxPorePress0[p]=PorePress0[p];
+     }
+   }
+@@ -1068,6 +1090,7 @@ void JSphGpu::InitRunGpu(){
+   //======mdbr
+   cudaMemcpy(SigmaM1g,Sigmag,sizeof(tsymatrix3f)*Np,cudaMemcpyDeviceToDevice);
+   if(HydroMech && PorePressM1g)cudaMemcpy(PorePressM1g,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
++  if(HydroMech && PorePressResM1g)cudaMemcpy(PorePressResM1g,PorePressResg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
+   }
+   if(HydroMech && PorePressRateg)cudaMemset(PorePressRateg,0,sizeof(float)*Np);
+   if(TVisco==VISCO_LaminarSPS)cudaMemset(SpsTaug,0,sizeof(tsymatrix3f)*Np);
+@@ -1104,7 +1127,7 @@ bool JSphGpu::IsHydroMechDrainageActive()const{
+ //==============================================================================
+ void JSphGpu::ApplyFreeSurfacePorePressure(){
+   if(!HydroMech || !PorePressg || !FSTypeg)return;
+-  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg);
++  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,PorePressResg);
+   ApplyYaoTopStripPorePressureExtrapolation();
+   Check_CudaErroor("Failed applying free-surface pore pressure.");
+ }
+@@ -1115,7 +1138,7 @@ void JSphGpu::ApplyFreeSurfacePorePressure(){
+ void JSphGpu::ApplyYaoTopStripPorePressureExtrapolation(){
+   if((HydroMechTopLoadMode!=HMLOAD_TopStripVertical && HydroMechTopLoadMode!=HMLOAD_LianFlexibleStrip) || !PorePressg || !FSTypeg || !DivData.beginendcell)return;
+   cusph::ExtrapolateYaoTopStripPorePressure(TKernel,Simulate2D,Np,Npb,HydroMechTopLoadMode,DivData,Dcellg
+-    ,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,PorePressg);
++    ,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,PorePressg,PorePressResg);
+   Check_CudaErroor("Failed extrapolating strip contact pore pressure.");
+ }
+ 
+@@ -1158,7 +1181,7 @@ void JSphGpu::InteractionPorePressureMdbcCorrection(){
+   if(!HydroMech || !PorePressg || !PorePress0g || !UseNormals || !BoundNormalg || !DivData.beginendcell)return;
+   const unsigned n=(UseNormalsFt? Np: NpbOk);
+   cusph::PorePressureMdbcCorrection(TKernel,Simulate2D,n,MdbcThreshold,DivData,Map_PosMin
+-    ,Posxyg,Poszg,PosCellg,Codeg,Velrhopg,BoundNormalg,PorePress0g,PorePressg);
++    ,Posxyg,Poszg,PosCellg,Codeg,Velrhopg,BoundNormalg,PorePress0g,PorePressg,PorePressResg);
+   Check_CudaErroor("Failed in pore-pressure mDBC correction.");
+ }
+ 
+@@ -1168,11 +1191,15 @@ void JSphGpu::InteractionPorePressureMdbcCorrection(){
+ void JSphGpu::ShepardRegularizePorePressure(){
+   if(!HydroMech || !PoreShepardRegularization || !PorePressg || !PorePress0g || !PoreShepardInterval || !DivData.beginendcell)return;
+   float *porepressnew=ArraysGpu->ReserveFloat();
++  float *porepressresnew=ArraysGpu->ReserveFloat();
+   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
++  cudaMemcpy(porepressresnew,PorePressResg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
+   cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
+-    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,BoundSlipModeg,PorePress0g,PorePressg,porepressnew);
++    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,BoundSlipModeg,PorePress0g,PorePressg,PorePressResg,porepressnew,porepressresnew);
+   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
++  cudaMemcpy(PorePressResg+Npb,porepressresnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
+   ArraysGpu->Free(porepressnew); porepressnew=NULL;
++  ArraysGpu->Free(porepressresnew); porepressresnew=NULL;
+   ApplyFreeSurfacePorePressure();
+   Check_CudaErroor("Failed applying pore-pressure Shepard regularization.");
+ }
+@@ -1289,10 +1316,13 @@ void JSphGpu::InitHydroMechPorePressure(){
+   }
+   delete[] fsp; fsp=NULL;
+   delete[] bnormal; bnormal=NULL;
++  memset(PorePressRes,0,sizeof(float)*Np);
+   cudaMemcpy(PorePressg,PorePress,sizeof(float)*Np,cudaMemcpyHostToDevice);
++  cudaMemcpy(PorePressResg,PorePressRes,sizeof(float)*Np,cudaMemcpyHostToDevice);
+   cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*Np,cudaMemcpyHostToDevice);
+   if(PorePressRateg)cudaMemset(PorePressRateg,0,sizeof(float)*Np);
+   if(PorePressM1g)cudaMemcpy(PorePressM1g,PorePress,sizeof(float)*Np,cudaMemcpyHostToDevice);
++  if(PorePressResM1g)cudaMemcpy(PorePressResM1g,PorePressRes,sizeof(float)*Np,cudaMemcpyHostToDevice);
+   if(HydroMechInitMode==HMINIT_AnalyticalSelfWeight1D && Sigma)cudaMemcpy(Sigmag,Sigma,sizeof(tsymatrix3f)*Np,cudaMemcpyHostToDevice);
+   Check_CudaErroor("Failed uploading hydromechanical pore-pressure data.");
+   Log->Printf("Hydromechanics: initial pore pressure assigned to %u particles (%s, min=%g, max=%g)."
+@@ -1399,13 +1429,13 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
+     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
+       ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
+     if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
+-      cusph::UpdatePorePressureVerlet(Np,Npb,dt+dt,Codeg,PorePressM1g,PorePressRateg,PorePressM1g);
++      cusph::UpdatePorePressureVerlet(Np,Npb,dt+dt,Codeg,PorePressM1g,PorePressResM1g,PorePressRateg,PorePressM1g,PorePressResM1g);
+   }
+   else{
+     cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
+       ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
+     if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
+-      cusph::UpdatePorePressureVerlet(Np,Npb,dt,Codeg,PorePressg,PorePressRateg,PorePressM1g);
++      cusph::UpdatePorePressureVerlet(Np,Npb,dt,Codeg,PorePressg,PorePressResg,PorePressRateg,PorePressM1g,PorePressResM1g);
+     VerletStep=0;
+   }
+   //-The new values are calculated in VelRhopM1g.
+@@ -1415,6 +1445,7 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
+   swap(Sigmag,SigmaM1g);
+   if(HydroMech && PorePressg && PorePressM1g){
+     swap(PorePressg,PorePressM1g);
++    swap(PorePressResg,PorePressResM1g);
+     ApplyFreeSurfacePorePressure();
+   }
+   //-Applies displacement to non-periodic fluid particles.
+@@ -1441,7 +1472,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
+   VelrhopPreg=ArraysGpu->ReserveFloat4();
+   //==== mdbr
+   SigmaPreg=ArraysGpu->ReserveSymatrix3f();
+-  if(HydroMech)PorePressPreg=ArraysGpu->ReserveFloat();
++  if(HydroMech){ PorePressPreg=ArraysGpu->ReserveFloat(); PorePressResPreg=ArraysGpu->ReserveFloat(); }
+   //-Changes data of PRE variables for calculating the new data.
+   //-Cambia datos a variables PRE para calcular nuevos datos.
+   swap(PosxyPreg,Posxyg);      //-PosxyPre[] <= Posxy[]
+@@ -1449,9 +1480,9 @@ void JSphGpu::ComputeSymplecticPre(double dt){
+   swap(VelrhopPreg,Velrhopg);  //-VelrhopPre[] <= Velrhop[]
+   //==== mdbr
+   swap(SigmaPreg,Sigmag);
+-  if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);
++  if(HydroMech && PorePressPreg){ swap(PorePressPreg,PorePressg); swap(PorePressResPreg,PorePressResg); }
+   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
+-    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg);
++    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressResPreg,PorePressRateg,PorePressg,PorePressResg);
+   ApplyFreeSurfacePorePressure();
+   //-Allocate memory to compute the diplacement.
+   double2 *movxyg=ArraysGpu->ReserveDouble2();
+@@ -1494,7 +1525,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
+     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
+     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
+   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
+-    cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
++    cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressResPreg,PorePressRateg,PorePressg,PorePressResg);
+   ApplyFreeSurfacePorePressure();
+   //-Applies displacement to non-periodic fluid particles.
+   //-Aplica desplazamiento a las particulas fluid no periodicas.
+@@ -1510,6 +1541,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
+   //==== mdbr
+   ArraysGpu->Free(SigmaPreg);	SigmaPreg = NULL;
+   ArraysGpu->Free(PorePressPreg); PorePressPreg=NULL;
++  ArraysGpu->Free(PorePressResPreg); PorePressResPreg=NULL;
+   //====
+   Timersg->TmStop(TMG_SuComputeStep,false);
+ }
+diff --git a/src/source/JSphGpu.h b/src/source/JSphGpu.h
+index 4292070..20296d8 100644
+--- a/src/source/JSphGpu.h
++++ b/src/source/JSphGpu.h
+@@ -113,8 +113,10 @@ protected:
+   float *KplasticDk;
+   float *AuxKplasticDk;
+   float *PorePress;     ///<Current total/gauge pore-water pressure on CPU.
++  float *PorePressRes;  ///<Low part of compensated pore pressure on CPU.
+   float *PorePress0;    ///<Initial hydrostatic pore-water pressure reference on CPU.
+   float *AuxPorePress;  ///<Auxiliary pore-water pressure array for output.
++  float *AuxPorePressRes; ///<Auxiliary compensated low part for restart/output.
+   float *AuxPorePress0; ///<Auxiliary initial pore-water pressure array for output.
+   tfloat3 *AuxHydroMechLoadAce; ///<Auxiliary hydromechanical external load acceleration for output. //mdbr
+   //-Auxiliary variables for the conversion (size=ParticlesSize).
+@@ -158,6 +160,7 @@ protected:
+   float *Kplasticg;//ruofeng
+   float *KplasticDkg;//diagnostic accumulated plastic increment
+   float *PorePressg;   ///<Current total/gauge pore-water pressure on GPU.
++  float *PorePressResg; ///<Low part of compensated current pore pressure.
+   float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
+   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
+ 
+@@ -171,12 +174,14 @@ protected:
+   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
+   tsymatrix3f *SigmaM1g;//ruofeng
+   float *PorePressM1g; ///<Verlet pore pressure history.
++  float *PorePressResM1g; ///<Low part of Verlet pore pressure history.
+   //-Variables for compute step: SYMPLECTIC.
+   double2 *PosxyPreg;  ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
+   double *PoszPreg;
+   float4 *VelrhopPreg;
+   tsymatrix3f *SigmaPreg;//ruofeng
+   float *PorePressPreg; ///<Symplectic pore pressure predictor history.
++  float *PorePressResPreg; ///<Low part of Symplectic pore pressure history.
+   //-Variables for floating bodies.
+   unsigned *FtRidpg;      ///<Identifier to access to the particles of the floating object [CaseNfloat].
+   float *FtoMasspg;       ///<Mass of the particle for each floating body [FtCount] in GPU (used in interaction forces).
+diff --git a/src/source/JSphGpuSingle.cpp b/src/source/JSphGpuSingle.cpp
+index 2e29631..7ae42f6 100644
+--- a/src/source/JSphGpuSingle.cpp
++++ b/src/source/JSphGpuSingle.cpp
+@@ -170,11 +170,13 @@ void JSphGpuSingle::ConfigDomain(){
+       if(!PartsLoaded->GetPorePressureDataLoaded())
+         Run_Exceptioon("Hydromechanical restart requires PorePress and PorePress0 arrays in the PART file.");
+       memcpy(PorePress,PartsLoaded->GetPorePress(),sizeof(float)*Np);
++      memcpy(PorePressRes,PartsLoaded->GetPorePressRes(),sizeof(float)*Np);
+       memcpy(PorePress0,PartsLoaded->GetPorePress0(),sizeof(float)*Np);
+       Log->Print("Restart hydromechanical data: PorePress and PorePress0 inherited.");
+     }
+     else{
+       memset(PorePress,0,sizeof(float)*Np);
++      memset(PorePressRes,0,sizeof(float)*Np);
+       memset(PorePress0,0,sizeof(float)*Np);
+       if(PartBegin && initpore)
+         Log->Print("Restart hydromechanical data: PorePress and PorePress0 will be initialized from HydroMechInitMode.");
+@@ -354,10 +356,10 @@ void JSphGpuSingle::RunPeriodic(){
+             run=false;
+             //-Create new periodic particles duplicating the particles from the list
+             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
+-            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g);
++            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g,PorePressResg,PorePressResM1g);
+             if(TStep==STEP_Symplectic){
+               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
+-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg);
++              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PorePressResg,PorePressResPreg);
+             }
+             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg,BoundSlipModeg);
+ 
+@@ -418,14 +420,17 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
+     swap(KplasticDkg, kplasticdkg); ArraysGpu->Free(kplasticdkg);
+     if(HydroMech){
+       float* porepressg=ArraysGpu->ReserveFloat();
++      float* porepressresg=ArraysGpu->ReserveFloat();
+       float* porepress0g=ArraysGpu->ReserveFloat();
+       float* porepressrateg=ArraysGpu->ReserveFloat();
+       float3* hydromechloadaceg=ArraysGpu->ReserveFloat3();
+       CellDivSingle->SortDataArrays(PorePressg,porepressg);
++      CellDivSingle->SortDataArrays(PorePressResg,porepressresg);
+       CellDivSingle->SortDataArrays(PorePress0g,porepress0g);
+       CellDivSingle->SortDataArrays(PorePressRateg,porepressrateg);
+       CellDivSingle->SortDataArrays(HydroMechLoadAceg,hydromechloadaceg);
+       swap(PorePressg,porepressg);   ArraysGpu->Free(porepressg);
++      swap(PorePressResg,porepressresg); ArraysGpu->Free(porepressresg);
+       swap(PorePress0g,porepress0g); ArraysGpu->Free(porepress0g);
+       swap(PorePressRateg,porepressrateg); ArraysGpu->Free(porepressrateg);
+       swap(HydroMechLoadAceg,hydromechloadaceg); ArraysGpu->Free(hydromechloadaceg);
+@@ -449,8 +454,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
+     swap(VelrhopM1g,velrhopg);   ArraysGpu->Free(velrhopg);
+     if(HydroMech && PorePressM1g){
+       float* porepressm1g=ArraysGpu->ReserveFloat();
++      float* porepressresm1g=ArraysGpu->ReserveFloat();
+       CellDivSingle->SortDataArrays(PorePressM1g,porepressm1g);
++      CellDivSingle->SortDataArrays(PorePressResM1g,porepressresm1g);
+       swap(PorePressM1g,porepressm1g); ArraysGpu->Free(porepressm1g);
++      swap(PorePressResM1g,porepressresm1g); ArraysGpu->Free(porepressresm1g);
+     }
+   }
+   else if(TStep==STEP_Symplectic && (PosxyPreg || PoszPreg || VelrhopPreg)){ //-In reality, only necessary in the corrector not the predictor step??? | En realidad solo es necesario en el divide del corrector, no en el predictor??? 
+@@ -468,8 +476,11 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
+     swap(SigmaPreg, sigmag);   ArraysGpu->Free(sigmag);
+     if(HydroMech && PorePressPreg){
+       float* porepresspreg=ArraysGpu->ReserveFloat();
++      float* porepressrespreg=ArraysGpu->ReserveFloat();
+       CellDivSingle->SortDataArrays(PorePressPreg,porepresspreg);
++      CellDivSingle->SortDataArrays(PorePressResPreg,porepressrespreg);
+       swap(PorePressPreg,porepresspreg); ArraysGpu->Free(porepresspreg);
++      swap(PorePressResPreg,porepressrespreg); ArraysGpu->Free(porepressrespreg);
+     }
+   }
+   if(TVisco==VISCO_LaminarSPS){
+@@ -633,7 +644,7 @@ void JSphGpuSingle::MdbcBoundCorrection(){
+   cusph::Interaction_MdbcCorrection(TKernel,Simulate2D,slipmode,fastsingle
+     ,n,CaseNbound,MdbcThreshold,DivData,Map_PosMin,Posxyg,Poszg,PosCellg,Codeg
+     ,Idpg,BoundNormalg,MotionVelg,Velrhopg,Sigmag,BoundModeg,BoundSlipModeg,TangenVelg
+-    ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL));
++    ,(HydroMech? PorePress0g: NULL),(HydroMech? PorePressg: NULL),(HydroMech? PorePressResg: NULL));
+   Timersg->TmStop(TMG_CfPreForces,false);
+ }
+ 
+@@ -1095,6 +1106,7 @@ void JSphGpuSingle::SaveData(){
+     float *poreexcess=new float[npsave];
+     for(unsigned p=0;p<npsave;p++)poreexcess[p]=AuxPorePress[p]-AuxPorePress0[p];
+     arrays.AddArray("PorePress",npsave,AuxPorePress);
++    arrays.AddArray("PorePressRes",npsave,AuxPorePressRes);
+     arrays.AddArray("PorePress0",npsave,AuxPorePress0);
+     arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+     if(AuxHydroMechLoadAce)arrays.AddArray("HydroMechLoadAce",npsave,AuxHydroMechLoadAce);
+diff --git a/src/source/JSphGpu_ker.cu b/src/source/JSphGpu_ker.cu
+index b658ba8..0bf7e74 100644
+--- a/src/source/JSphGpu_ker.cu
++++ b/src/source/JSphGpu_ker.cu
+@@ -21,6 +21,7 @@
+ #include "JSphGpu_ker.h"
+ #include "Functions.h"
+ #include "FunctionsCuda.h"
++#include "FunPorePressure.h"
+ #include "JLog2.h"
+ #include <cfloat>
+ #include <math_constants.h>
+@@ -1038,18 +1039,21 @@ __device__ bool KerHydroMechIsDrainedParticle(unsigned p,unsigned loadmode,const
+ /// Enforces drained pore pressure on free-surface particles.
+ //==============================================================================
+ __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs
+-  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress)
++  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
+-  if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype))porepress[p]=0.f;
++  if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype)){
++    porepress[p]=0.f;
++    if(porepressres)porepressres[p]=0.f;
++  }
+ }
+ 
+ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress)
++  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres)
+ {
+   if(np>npb && porepress){
+     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
+-    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress);
++    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress,porepressres);
+   }
+ }
+ 
+@@ -1106,7 +1110,7 @@ void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadM
+ //==============================================================================
+ template<TpKernel tker,bool sim2d> __global__ void KerExtrapolateYaoTopStripPorePressure(unsigned np,unsigned npb,unsigned loadmode
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
+-  ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress)
++  ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
+   if(p1<np && CODE_IsFluid(code[p1]) && KerHydroMechIsFreeSurface(p1,code,fstype)
+@@ -1137,32 +1141,35 @@ template<TpKernel tker,bool sim2d> __global__ void KerExtrapolateYaoTopStripPore
+         }
+       }
+     }
+-    if(sumwab>0.)porepress[p1]=float(pwsum/sumwab);
++    if(sumwab>0.){
++      porepress[p1]=float(pwsum/sumwab);
++      if(porepressres)porepressres[p1]=0.f;
++    }
+   }
+ }
+ 
+ template<TpKernel tker,bool sim2d> void ExtrapolateYaoTopStripPorePressureT(unsigned np,unsigned npb,unsigned loadmode
+   ,const StDivDataGpu &dvd,const unsigned *dcell,const double2 *posxy,const double *posz
+-  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress)
++  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres)
+ {
+   if(np>npb && dcell && posxy && posz && velrhop && code && fstype && porepress){
+     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
+-    KerExtrapolateYaoTopStripPorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,loadmode,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,porepress);
++    KerExtrapolateYaoTopStripPorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,loadmode,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,porepress,porepressres);
+   }
+ }
+ 
+ void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb,TpHydroMechLoadMode loadmode
+   ,const StDivDataGpu &dvd,const unsigned *dcell,const double2 *posxy,const double *posz
+-  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress)
++  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres)
+ {
+   if(simulate2d){
+-    if(tkernel==KERNEL_Wendland)ExtrapolateYaoTopStripPorePressureT<KERNEL_Wendland,true >(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress);
+-    else if(tkernel==KERNEL_Cubic)ExtrapolateYaoTopStripPorePressureT<KERNEL_Cubic,true >(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress);
++    if(tkernel==KERNEL_Wendland)ExtrapolateYaoTopStripPorePressureT<KERNEL_Wendland,true >(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress,porepressres);
++    else if(tkernel==KERNEL_Cubic)ExtrapolateYaoTopStripPorePressureT<KERNEL_Cubic,true >(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress,porepressres);
+     else throw "Kernel unknown.";
+   }
+   else{
+-    if(tkernel==KERNEL_Wendland)ExtrapolateYaoTopStripPorePressureT<KERNEL_Wendland,false>(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress);
+-    else if(tkernel==KERNEL_Cubic)ExtrapolateYaoTopStripPorePressureT<KERNEL_Cubic,false>(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress);
++    if(tkernel==KERNEL_Wendland)ExtrapolateYaoTopStripPorePressureT<KERNEL_Wendland,false>(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress,porepressres);
++    else if(tkernel==KERNEL_Cubic)ExtrapolateYaoTopStripPorePressureT<KERNEL_Cubic,false>(np,npb,unsigned(loadmode),dvd,dcell,posxy,posz,velrhop,code,fstype,porepress,porepressres);
+     else throw "Kernel unknown.";
+   }
+ }
+@@ -1170,28 +1177,35 @@ void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigne
+ //==============================================================================
+ /// Updates pore pressure with an explicit Euler/Verlet-history step.
+ //==============================================================================
+-__global__ void KerUpdatePorePressure(unsigned np,unsigned npb,double dt,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew)
++__global__ void KerUpdatePorePressure(unsigned np,unsigned npb,double dt,const typecode *code
++  ,const float *poreold,const float *poreresold,const float *porepressrate,float *porepressnew,float *poreresnew)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x;
+   if(p<np){
+-    if(p<npb || !CODE_IsFluid(code[p]))porepressnew[p]=poreold[p];
+-    else porepressnew[p]=float(double(poreold[p])+dt*double(porepressrate[p]));
++    const float high=poreold[p],low=poreresold[p]; //-Verlet can update its history in place.
++    if(p<npb || !CODE_IsFluid(code[p])){
++      porepressnew[p]=high;
++      poreresnew[p]=low;
++    }
++    else ::porepress::Update(high,low,dt,porepressrate[p],porepressnew[p],poreresnew[p]);
+   }
+ }
+ 
+-void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew)
++void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code
++  ,const float *poreold,const float *poreresold,const float *porepressrate,float *porepressnew,float *poreresnew)
+ {
+-  if(np && poreold && porepressrate && porepressnew){
++  if(np && poreold && poreresold && porepressrate && porepressnew && poreresnew){
+     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+-    KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,dt2,code,poreold,porepressrate,porepressnew);
++    KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,dt2,code,poreold,poreresold,porepressrate,porepressnew,poreresnew);
+   }
+ }
+ 
+-void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress)
++void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code
++  ,const float *porepresspre,const float *porerespre,const float *porepressrate,float *porepress,float *poreres)
+ {
+-  if(np && porepresspre && porepressrate && porepress){
++  if(np && porepresspre && porerespre && porepressrate && porepress && poreres){
+     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+-    KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,dt,code,porepresspre,porepressrate,porepress);
++    KerUpdatePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,dt,code,porepresspre,porerespre,porepressrate,porepress,poreres);
+   }
+ }
+ 
+@@ -1202,7 +1216,7 @@ template<TpKernel tker,bool sim2d> __global__ void KerPorePressureMdbcCorrection
+   (unsigned n,float mdbcthreshold,double3 mapposmin,float poscellsize
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid
+   ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code,const float4 *velrhop
+-  ,const float3 *boundnormal,const float *porepress0,float *porepress)
++  ,const float3 *boundnormal,const float *porepress0,float *porepress,float *porepressres)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x;
+   if(p1<n){
+@@ -1284,17 +1298,18 @@ template<TpKernel tker,bool sim2d> __global__ void KerPorePressureMdbcCorrection
+           }
+         }
+         porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++        if(porepressres)porepressres[p1]=0.f;
+       }
+     }
+   }
+ }
+ 
+ template<TpKernel tker,bool sim2d> void PorePressureMdbcCorrectionT(unsigned n,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+-  ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code,const float4 *velrhop,const float3 *boundnormal,const float *porepress0,float *porepress)
++  ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code,const float4 *velrhop,const float3 *boundnormal,const float *porepress0,float *porepress,float *porepressres)
+ {
+   if(n && porepress0 && porepress && boundnormal){
+     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+-    KerPorePressureMdbcCorrection<tker,sim2d> <<<sgrid,SPHBSIZE>>> (n,mdbcthreshold,Double3(mapposmin),CTE.poscellsize,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
++    KerPorePressureMdbcCorrection<tker,sim2d> <<<sgrid,SPHBSIZE>>> (n,mdbcthreshold,Double3(mapposmin),CTE.poscellsize,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress,porepressres);
+   }
+ }
+ 
+@@ -1302,16 +1317,16 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
+   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+   ,const double2 *posxy,const double *posz,const float4 *poscell
+   ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   if(simulate2d){
+-    if(tkernel==KERNEL_Wendland)PorePressureMdbcCorrectionT<KERNEL_Wendland,true >(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
+-    else if(tkernel==KERNEL_Cubic)PorePressureMdbcCorrectionT<KERNEL_Cubic,true >(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
++    if(tkernel==KERNEL_Wendland)PorePressureMdbcCorrectionT<KERNEL_Wendland,true >(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress,porepressres);
++    else if(tkernel==KERNEL_Cubic)PorePressureMdbcCorrectionT<KERNEL_Cubic,true >(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress,porepressres);
+     else throw "Kernel unknown.";
+   }
+   else{
+-    if(tkernel==KERNEL_Wendland)PorePressureMdbcCorrectionT<KERNEL_Wendland,false>(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
+-    else if(tkernel==KERNEL_Cubic)PorePressureMdbcCorrectionT<KERNEL_Cubic,false>(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
++    if(tkernel==KERNEL_Wendland)PorePressureMdbcCorrectionT<KERNEL_Wendland,false>(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress,porepressres);
++    else if(tkernel==KERNEL_Cubic)PorePressureMdbcCorrectionT<KERNEL_Cubic,false>(n,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress,porepressres);
+     else throw "Kernel unknown.";
+   }
+ }
+@@ -1322,12 +1337,13 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
+ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs,unsigned loadmode
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
+-  ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode,const float *porepress0,const float *porepress,float *porepressnew)
++  ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode,const float *porepress0,const float *porepress,const float *porepressres,float *porepressnew,float *porepressresnew)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
+   if(p1<np && CODE_IsFluid(code[p1])){
+     if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){
+       porepressnew[p1]=0.f;
++      porepressresnew[p1]=0.f;
+       return;
+     }
+     const double2 posp1xy=posxy[p1];
+@@ -1337,7 +1353,7 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
+       const double vol1=double(CTE.massf)/double(velrhop[p1].w);
+       const double wab0=double(cufsph::GetKernel_Wab<tker>(0.f));
+       sumwab+=wab0*vol1;
+-      pwexcesssum+=wab0*vol1*double(porepress[p1]-porepress0[p1]);
++      pwexcesssum+=wab0*vol1*((double(porepress[p1])+double(porepressres[p1]))-double(porepress0[p1]));
+     }
+     int ini1,fin1,ini2,fin2,ini3,fin3;
+     cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+@@ -1361,22 +1377,22 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
+             const double vol2=double(boundp2? CTE.massb: CTE.massf)/double(velrhop[p2].w);
+             const double vwab=double(cufsph::GetKernel_Wab<tker>(rr2))*vol2;
+             sumwab+=vwab;
+-            pwexcesssum+=vwab*double(porepress[p2]-porepress0[p2]);
++            pwexcesssum+=vwab*((double(porepress[p2])+double(porepressres[p2]))-double(porepress0[p2]));
+           }
+         }
+       }
+     }
+-    if(sumwab>0.)porepressnew[p1]=float(double(porepress0[p1])+pwexcesssum/sumwab);
++    if(sumwab>0.)::porepress::Split(double(porepress0[p1])+pwexcesssum/sumwab,porepressnew[p1],porepressresnew[p1]);
+   }
+ }
+ 
+ template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
+-  ,const float *porepress0,const float *porepress,float *porepressnew)
++  ,const float *porepress0,const float *porepress,const float *porepressres,float *porepressnew,float *porepressresnew)
+ {
+-  if(np>npb && porepress0 && porepress && porepressnew){
++  if(np>npb && porepress0 && porepress && porepressres && porepressnew && porepressresnew){
+     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
+-    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
++    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressres,porepressnew,porepressresnew);
+   }
+ }
+ 
+@@ -1384,16 +1400,16 @@ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,
+   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
+   ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
+-  ,const float *porepress0,const float *porepress,float *porepressnew)
++  ,const float *porepress0,const float *porepress,const float *porepressres,float *porepressnew,float *porepressresnew)
+ {
+   if(simulate2d){
+-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
+-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
++    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressres,porepressnew,porepressresnew);
++    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressres,porepressnew,porepressresnew);
+     else throw "Kernel unknown.";
+   }
+   else{
+-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
+-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
++    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressres,porepressnew,porepressresnew);
++    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressres,porepressnew,porepressresnew);
+     else throw "Kernel unknown.";
+   }
+ }
+@@ -2335,7 +2351,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid
+   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *idp
+   ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
+   if(p1<n){
+@@ -2519,6 +2535,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
+           }
+         }
+         porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++        if(porepressres)porepressres[p1]=0.f;
+       }
+       if(activebound){
+         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
+@@ -2664,7 +2681,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid
+   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *idp
+   ,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
+   if(p1<n){
+@@ -2846,6 +2863,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> __global__ void KerInteracti
+           }
+         }
+         porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
++        if(porepressres)porepressres[p1]=0.f;
+       }
+       if(activebound){
+         if(useboundmode)boundmode[p1]=BMODE_MDBC2;
+@@ -2993,7 +3011,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void Interaction_MdbcCorrect
+   ,const tdouble3 &mapposmin,const double2 *posxy,const double *posz,const float4 *poscell
+   ,const typecode *code,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel
+   ,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   const int2* beginendcellfluid=dvd.beginendcell+dvd.cellfluid;
+   const float determlimit=1e-3f;
+@@ -3005,12 +3023,12 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void Interaction_MdbcCorrect
+       KerInteractionMdbcCorrection_Fast <tker,sim2d,tslip> <<<sgridb,bsbound>>> (n,nbound
+         ,determlimit,mdbcthreshold,Double3(mapposmin),dvd.poscellsize,poscell
+         ,dvd.scelldiv,dvd.nc,dvd.cellzero,beginendcellfluid
+-        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }
+     else{//-mDBC_v0
+       KerInteractionMdbcCorrection_Dbl <tker,sim2d,tslip> <<<sgridb,bsbound>>> (n,nbound
+         ,determlimit,mdbcthreshold,dvd.scelldiv,dvd.nc,dvd.cellzero,beginendcellfluid
+-        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++        ,posxy,posz,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }
+   }
+ }
+@@ -3020,20 +3038,20 @@ template<TpKernel tker> void Interaction_MdbcCorrectionT(bool simulate2d
+   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+   ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code
+   ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   switch(slipmode){
+     case SLIP_Vel0:{ const TpSlipMode tslip=SLIP_Vel0;
+-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
+-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
++      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }break;
+     case SLIP_NoSlip:{ const TpSlipMode tslip=SLIP_NoSlip;
+-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
+-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
++      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }break;
+     case SLIP_FreeSlip:{ const TpSlipMode tslip=SLIP_FreeSlip;
+-      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
+-      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++      if(simulate2d)Interaction_MdbcCorrectionT2 <tker,true ,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
++      else          Interaction_MdbcCorrectionT2 <tker,false,tslip> (fastsingle,n,nbound,mdbcthreshold,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }break;
+     default: throw "SlipMode unknown at Interaction_MdbcCorrectionT().";
+   }
+@@ -3047,17 +3065,17 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d,TpSlipMode slip
+   ,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+   ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code
+   ,const unsigned *idp,const float3 *boundnormal,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress)
++  ,const float *porepress0,float *porepress,float *porepressres)
+ {
+   switch(tkernel){
+     case KERNEL_Wendland:{ const TpKernel tker=KERNEL_Wendland;
+       Interaction_MdbcCorrectionT <tker> (simulate2d,slipmode,fastsingle,n,nbound,mdbcthreshold
+-        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }break;
+ #ifndef DISABLE_KERNELS_EXTRA
+     case KERNEL_Cubic:{ const TpKernel tker=KERNEL_Cubic;
+       Interaction_MdbcCorrectionT <tker> (simulate2d,slipmode,fastsingle,n,nbound,mdbcthreshold
+-        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress);
++        ,dvd,mapposmin,posxy,posz,poscell,code,idp,boundnormal,motionvel,velrhop,sigma,boundmode,boundslipmode,tangenvel,porepress0,porepress,porepressres);
+     }break;
+ #endif
+     default: throw "Kernel unknown at Interaction_MdbcCorrection().";
+@@ -4620,7 +4638,7 @@ __device__ void KerPeriodicDuplicatePos(unsigned pnew,unsigned pcopy
+ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellmax,double3 perinc
+   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1
+-  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)
++  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
+   if(p<n){
+@@ -4639,9 +4657,11 @@ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellma
+     sigma[pnew]=sigma[pcopy];
+     sigmam1[pnew]=sigmam1[pcopy];
+     if(porepress)porepress[pnew]=porepress[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
++    if(porepressresm1)porepressresm1[pnew]=porepressresm1[pcopy];
+     if(spstau)spstau[pnew]=spstau[pcopy];
+   }
+ }
+@@ -4653,12 +4673,12 @@ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellma
+ void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
+   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1
+-  ,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)
++  ,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1)
+ {
+   if(n){
+     uint3 cellmax=make_uint3(domcells.x-1,domcells.y-1,domcells.z-1);
+     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+-    KerPeriodicDuplicateVerlet <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,velrhopm1,sigma,sigmam1,porepress,porepress0,porepressrate,porepressm1);
++    KerPeriodicDuplicateVerlet <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,velrhopm1,sigma,sigmam1,porepress,porepress0,porepressrate,porepressm1,porepressres,porepressresm1);
+   }
+ }
+ 
+@@ -4674,7 +4694,7 @@ void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 p
+ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n,unsigned pini
+   ,uint3 cellmax,double3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
+-  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)
++  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
+   if(p<n){
+@@ -4691,6 +4711,7 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
+     velrhop[pnew]=velrhop[pcopy];
+     sigma[pnew]=sigma[pcopy];//mdbr
+     if(porepress)porepress[pnew]=porepress[pcopy];
++    if(porepressres)porepressres[pnew]=porepressres[pcopy];
+     if(porepress0)porepress0[pnew]=porepress0[pcopy];
+     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
+     if(varspre){
+@@ -4699,6 +4720,7 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
+       velrhoppre[pnew]=velrhoppre[pcopy];
+       sigmapre[pnew]=sigmapre[pcopy];//mdbr
+       if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
++      if(porepressrespre)porepressrespre[pnew]=porepressrespre[pcopy];
+     }
+     if(spstau)spstau[pnew]=spstau[pcopy];
+   }
+@@ -4711,13 +4733,13 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
+ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
+   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
+-  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)
++  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre)
+ {
+   if(n){
+     uint3 cellmax=make_uint3(domcells.x-1,domcells.y-1,domcells.z-1);
+     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
+-    if(posxypre!=NULL)KerPeriodicDuplicateSymplectic<true>  <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre);
+-    else              KerPeriodicDuplicateSymplectic<false> <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre);
++    if(posxypre!=NULL)KerPeriodicDuplicateSymplectic<true>  <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,porepressres,porepressrespre);
++    else              KerPeriodicDuplicateSymplectic<false> <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,porepressres,porepressrespre);
+   }
+ }
+ 
+diff --git a/src/source/JSphGpu_ker.h b/src/source/JSphGpu_ker.h
+index b9a53d6..93dd860 100644
+--- a/src/source/JSphGpu_ker.h
++++ b/src/source/JSphGpu_ker.h
+@@ -274,24 +274,26 @@ void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,uns
+   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
+   ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs);
+ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress);
++  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres);
+ void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
+   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
+ void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb,TpHydroMechLoadMode loadmode
+   ,const StDivDataGpu &dvd,const unsigned *dcell,const double2 *posxy,const double *posz
+-  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress);
+-void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
+-void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
++  ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress,float *porepressres);
++void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code
++  ,const float *poreold,const float *poreresold,const float *porepressrate,float *porepressnew,float *poreresnew);
++void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code
++  ,const float *porepresspre,const float *porerespre,const float *porepressrate,float *porepress,float *poreres);
+ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
+   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+   ,const double2 *posxy,const double *posz,const float4 *poscell
+   ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
+-  ,const float *porepress0,float *porepress);
++  ,const float *porepress0,float *porepress,float *porepressres);
+ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
+   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
+   ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
+-  ,const float *porepress0,const float *porepress,float *porepressnew);
++  ,const float *porepress0,const float *porepress,const float *porepressres,float *porepressnew,float *porepressresnew);
+ 
+ //-Kernels for the force calculation.
+ void Interaction_Forces(const StInterParmsg &t);
+@@ -303,7 +305,7 @@ void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d
+   ,const double2 *posxy,const double *posz,const float4 *poscell
+   ,const typecode *code,const unsigned *idp,const float3 *boundnormal
+   ,const float3 *motionvel,float4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,float3 *tangenvel
+-  ,const float *porepress0,float *porepress);
++  ,const float *porepress0,float *porepress,float *porepressres);
+ 
+ //-Kernels for the boundary treatment (cDBC).
+ 
+@@ -376,11 +378,11 @@ unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax,tdo
+ void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
+   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1
+-  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1);
++  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *porepressres,float *porepressresm1);
+ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
+   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
+   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
+-  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre);
++  ,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre,float *porepressres,float *porepressrespre);
+ void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel,byte *boundslipmode);
+ 
+ //-Kernels for Damping.

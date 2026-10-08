@@ -5,8 +5,6 @@ pushd "%~dp0"
 set case2=CaseSelfWeightConsolidation_Scenario1
 set dirout2=%case2%_out
 set diroutdata2=%dirout2%\data
-set tmax2=0.40
-set tout2=0.02
 
 set dirbin=../../../bin/windows
 set gencase="%dirbin%/GenCase_win64.exe"
@@ -22,7 +20,7 @@ rem Scenario 1: direct analytical undrained self-weight initialization, gravity 
 %gencase% %case2%_Def %dirout2%/%case2% -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-%dualsphysicscpu% -cpu -mdbc %dirout2%/%case2% %dirout2% -dirdataout data -svres -svextraparts:1 -tmax:%tmax2% -tout:%tout2%
+%dualsphysicscpu% -cpu -mdbc %dirout2%/%case2% %dirout2% -dirdataout data -svres -svextraparts:1
 if not "%ERRORLEVEL%" == "0" goto fail
 
 set vtkdir=%dirout2%\particles

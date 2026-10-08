@@ -1,0 +1,309 @@
+COMMAND: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_GEO_win64.exe -gpu D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\04_CryerProblem_PR\refinement\ramp_refine_20260620\r0115_drain0_full\out\r0115_drain0_full D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\04_CryerProblem_PR\refinement\ramp_refine_20260620\r0115_drain0_full\out -dirdataout data -svres -svextraparts:1 -tmax:0.1015 -tout:0.0025
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.1 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  20-06-2026 19:05:20]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../refinement/ramp_refine_20260620/r0115_drain0_full"
+XmlFile=".../r0115_drain0_full/out/r0115_drain0_full.xml"
+OutputDir=".../ramp_refine_20260620/r0115_drain0_full/out"
+OutputDataDir=".../r0115_drain0_full/out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  dummyb=[0.09]  radius=[0.05]  CaseName=["r0115_drain0_full"]  Data2D=[0]  Data2DPosy=[0]  H=[0.0054]  KernelSize=[0.0108]  B=[3e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.003]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[5.67e-05]  MassBound=[5.67e-05]
+XML-Vars (parameters): TimeMax=[0.1015]  TimeOut=[0.0025]
+
+[Soil modelling configuration]
+
+  DP Constants="3D DP Circumscribed"
+  Strain Softening="Disabled"
+  Cohesion: 1000000000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="FlexibleConfinement"
+  HydroMechTopLoadDiscretization: Zhao-style kernel-truncation confinement (GPU validation branch)
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.0115
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 22484
+MapRealPos(border)=(-0.0502476,-0.0502644,-0.0501854)-(0.09127,0.09127,0.09127)
+MapRealPos(final)=(-0.0502476,-0.0502644,-0.0501854)-(0.09127,0.09127,0.09127)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.010800  (1 x KernelSize)
+**3D-Simulation parameters:
+CaseName="r0115_drain0_full"
+RunName="r0115_drain0_full"
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="DBC"
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=2653178
+  Wendland.bwen=-2.456658e+09
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=22484
+CaseNbound=1
+CaseNfixed=1
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=22483
+PeriodicActive="None"
+Dp=0.003
+KernelH=0.005400  (CoefficientH=1.03923; H/Dp=1.8)
+KernelSize=0.0108
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000001
+MassFluid=0.0000567
+MassBound=0.0000567
+TimeMax=0.1014999970793724
+TimePart=0.002499999944120646
+Gravity=(0,0,0)
+NpMinimum=1
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(14,14,14)
+CellDomFixed=False
+**Requested GPU memory for 22612 particles: 8.7 MB (0 times).
+DomCells=(14,14,14)
+DomCellCode="1+11_10_10"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (39 regs)
+  BsForcesFluid=128 (74 regs)
+ 
+**CellDiv: Requested gpu memory for 23736 particles: 0.2 MB.
+**CellDiv: Requested gpu memory for 1728 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 1  id:(0-0)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 22483  id:(1-22483)   MKs:1 (1)
+
+Total particles: 22484 (bound=1 (fx=1 mv=0 ft=0) fluid=22483)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 4523256 (4.31 MB)
+Allocated memory in GPU: 9356104 (8.92 MB)
+Part_0000        22484 particles successfully stored
+
+[Initialising simulation (swb941yw)  20-06-2026 19:05:20]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+  Progress 0.18% in 30.0s. Estimated finish time: 20-06-2026 23:47:52
+  Progress 0.36% in 60.0s. Estimated finish time: 20-06-2026 23:46:27
+  Progress 1.78% in 300.1s. Estimated finish time: 20-06-2026 23:45:48
+Part_0001      0.002500          5827     5827  165926.64  20-06-2026 23:46:00
+Part_0002      0.005000         11656     5829  163549.29  20-06-2026 23:44:00
+Part_0003      0.007500         17484     5828  163300.72  20-06-2026 23:43:12
+Part_0004      0.010000         23312     5828  158981.62  20-06-2026 23:40:57
+Part_0005      0.012500         29141     5829  160102.70  20-06-2026 23:40:00
+Part_0006      0.015000         34969     5828  160224.93  20-06-2026 23:39:24
+Part_0007      0.017500         40797     5828  157669.81  20-06-2026 23:38:21
+Part_0008      0.020000         46625     5828  158966.99  20-06-2026 23:37:49
+Part_0009      0.022500         52454     5829  159660.81  20-06-2026 23:37:34
+Part_0010      0.025000         58282     5828  159310.60  20-06-2026 23:37:17
+Part_0011      0.027500         64110     5828  158844.37  20-06-2026 23:36:59
+Part_0012      0.030000         69939     5829  159181.13  20-06-2026 23:36:48
+Part_0013      0.032500         75767     5828  159486.44  20-06-2026 23:36:40
+Part_0014      0.035000         81595     5828  157407.65  20-06-2026 23:36:18
+Part_0015      0.037500         87423     5828  157337.47  20-06-2026 23:35:58
+Part_0016      0.040000         93252     5829  157386.27  20-06-2026 23:35:42
+Part_0017      0.042500         99080     5828  157153.52  20-06-2026 23:35:26
+Part_0018      0.045000        104908     5828  157452.39  20-06-2026 23:35:13
+Part_0019      0.047500        110737     5829  157905.05  20-06-2026 23:35:05
+Part_0020      0.050000        116565     5828  158512.14  20-06-2026 23:34:59
+Part_0021      0.052500        122393     5828  158007.79  20-06-2026 23:34:53
+Part_0022      0.055000        128221     5828  157926.99  20-06-2026 23:34:46
+Part_0023      0.057500        134050     5829  158285.02  20-06-2026 23:34:42
+Part_0024      0.060000        139878     5828  157904.57  20-06-2026 23:34:37
+Part_0025      0.062500        145706     5828  157812.57  20-06-2026 23:34:31
+Part_0026      0.065000        151534     5828  157422.03  20-06-2026 23:34:24
+Part_0027      0.067500        157363     5829  157397.35  20-06-2026 23:34:18
+Part_0028      0.070000        163191     5828  157376.12  20-06-2026 23:34:12
+Part_0029      0.072500        169019     5828  157339.98  20-06-2026 23:34:06
+Part_0030      0.075000        174848     5829  157416.36  20-06-2026 23:34:02
+Part_0031      0.077500        180676     5828  157942.02  20-06-2026 23:33:59
+Part_0032      0.080000        186504     5828  157379.17  20-06-2026 23:33:54
+Part_0033      0.082500        192332     5828  157528.16  20-06-2026 23:33:50
+Part_0034      0.085000        198161     5829  157885.75  20-06-2026 23:33:48
+Part_0035      0.087500        203989     5828  157950.34  20-06-2026 23:33:45
+Part_0036      0.090000        209817     5828  157959.72  20-06-2026 23:33:43
+Part_0037      0.092500        215646     5829  159182.63  20-06-2026 23:33:45
+Part_0038      0.095000        221474     5828  158021.00  20-06-2026 23:33:43
+Part_0039      0.097500        227302     5828  156776.40  20-06-2026 23:33:38
+Part_0040      0.100000        233130     5828  156377.48  20-06-2026 23:33:32
+
+[Simulation finished  20-06-2026 23:33:30]
+Particles of simulation (initial): 22484
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 16090.657227 sec.
+Simulation Runtime...............: 16090.619141 sec.
+Runtime per physical second......: 158528.187500 sec.
+Steps per second.................: 14.705897
+Steps of simulation..............: 236627
+PART files.......................: 41
+Maximum number of particles......: 22484
+Maximum number of cells..........: 1331
+CPU Memory.......................: 4523256 (4.31 MB)
+GPU Memory.......................: 9356104 (8.92 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 0.039432 sec.
+NL-Limits........................: 46.882134 sec.
+NL-PreSort.......................: 5.959279 sec.
+NL-RadixSort.....................: 77.813271 sec.
+NL-CellBegin.....................: 36.692327 sec.
+NL-SortData......................: 47.272998 sec.
+NL-OutCheck......................: 3912.949156 sec.
+CF-PreForces.....................: 78.414579 sec.
+CF-Forces........................: 7901.917678 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 24.740409 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0 sec.
+SU-ResizeNp......................: 0 sec.
+SU-DownData......................: 0.369858 sec.
+SU-SavePart......................: 0.214407 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk...: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk.: Saves the cell division of the simulation domain.
+- Run.csv..............: One line CSV file with execution parameters and other simulation data.
+- Run.out..............: Log file of the simulation.
+- data/PartInfo.ibi4...: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4...: Binary file with particle data in different instants.
+- data/Part_Head.ibi4..: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Dynamic boundary conditions (Crespo et al., 2007  https://doi.org/10.3970/cmc.2007.005.173)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+
+Finished execution (code=0).
+

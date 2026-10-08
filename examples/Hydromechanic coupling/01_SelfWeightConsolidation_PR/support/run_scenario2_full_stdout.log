@@ -1,0 +1,1003 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.01]  PosMin_x=[-0.495]  PosMin_y=[0]  PosMin_z=[-0.495]  PosMax_x=[1.505]  PosMax_y=[0]  PosMax_z=[1.805]  CaseName=["CaseSelfWeightConsolidation_Scenario2"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  MassBound=[0.21]  MassFluid=[0.21]
+
+Mk size: 1 bytes
+Case limits: (-0.495,0,-0.495) - (1.505,0,1.805)
+Distance between points (Dp): 0.01
+Case domain: (0,0,0)-(199,0,228)
+Domain points: 200 x 1 x 229 = 45800
+Case parts: 1 x 229z
+Memory: 0.00Gb 0.04Mb (45800)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_dbg-fillbox.vtk  domains:1
+FileDbgDomains> CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_dbg-fillbox.vtk  domains:2
+FileDbgDomains> CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_dbg-fillbox.vtk  domains:3
+FileDbgDomains> CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.020s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 13 (1 + 4+1+7)
+Points loaded: 1040
+Sorting points by Z...
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):     40  -->      40
+Points -> Fluid particles:
+  block[  1] (mk:  1):   1000  -->    1000
+
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+Maximum depth: 0.99 (automatic)
+Speed of system: 3.11639 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 62.3278 max(62.3278,31.1639)
+Speed of sound: 62.3278 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_MkCells.vtk  (time:0.002s, shapes:2, points:8)
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2.bi4<double>  (time:0.003s)
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_All.vtk  (time: 0.003s)
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_Bound.vtk  (time: 0.003s)
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_Fluid.vtk  (time: 0.004s)
+CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2.xml  (time:0.007s)
+Computing normals data...
+  Evaluating 40 particles with 3 shapes (distance 2x H = 0.036).
+  Time for computing 40 normals: 0.000s.
+  Non-zero particle normals: 40/40    Normals size range: (0.005000 - 0.035000).
+  Saving results files...
+  CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_Normals.vtk
+  CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_Normals.nbi4  (time:0.017s)
+
+Save files time: 0.033s
+
+Particle limits:
+  X range: 0.005 to 0.095 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.035 to 0.995 [m]
+
+[SaveCase2D-End  time:0.034s]
+
+
+Time of execution: 0.056 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads by host for parallel execution: 20
+
+[Initialising JSphCpuSingle  03-06-2026 21:10:30]
+ProgramFile=".../bin/windows/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/01_SelfWeightConsolidation_PR"
+XmlFile=".../01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2.xml"
+OutputDir=".../Hydromechanic coupling/01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_out"
+OutputDataDir=".../01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["CaseSelfWeightConsolidation_Scenario2"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[1.16543e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[3.85]  TimeOut=[0.02]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Hydromechanics="Enabled"
+  HydroMechInitMode="AnalyticalSelfWeight1D"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseSelfWeightConsolidation_Scenario2"
+RunName="CaseSelfWeightConsolidation_Scenario2"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.4
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.00004
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=1165428
+Gamma=7
+RhopZero=2100
+Cs0=35.80574417114258
+CFLnumber=0.2
+DtIni=0.000001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=3.849999904632568
+TimePart=0.01999999955296516
+Gravity=(0,0,-9.81)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested CPU memory for 1168 particles: 0.5 MB.
+NormalDataFile="CaseSelfWeightConsolidation_Scenario2_out/CaseSelfWeightConsolidation_Scenario2_Normals.nbi4"
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+**JSphCpu: Requesting cpu memory for 1253 particles: 0.5 MB.
+**JSphCpu: Requesting cpu memory for 2093 particles: 0.8 MB.
+**CellDiv: Requested cpu memory for 2093 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 360 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 1872 particles (AnalyticalSelfWeight1D, min=0, max=20454.8).
+Hydromechanics: analytical 1D self-weight effective stress initialized (sigma_zz min=-43.1867, max=-0.217019).
+ 
+RunMode="Pos-Double - OpenMP(Threads:20)"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 964432 (0.92 MB)
+Part_0000        1040 particles successfully stored
+
+[Initialising simulation (6okrni7q)  03-06-2026 21:10:30]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphCpu: Requesting cpu memory for 2967 particles: 1.1 MB.
+**CellDiv: Requested cpu memory for 2967 particles: 0.1 MB.
+  Progress 0.21% in 30.0s. Estimated finish time: 04-06-2026 01:03:20
+  Progress 0.39% in 60.0s. Estimated finish time: 04-06-2026 01:26:20
+Part_0001      0.020000         41949    41949    3986.31  04-06-2026 01:26:17
+Part_0002      0.040000         83898    41949    4510.32  04-06-2026 01:43:06
+Part_0003      0.060000        125847    41949    4134.47  04-06-2026 01:40:40
+Part_0004      0.080000        167797    41950    4035.60  04-06-2026 01:37:52
+Part_0005      0.100000        209746    41949    4059.32  04-06-2026 01:36:29
+Part_0006      0.120000        251695    41949    4036.78  04-06-2026 01:35:20
+Part_0007      0.140000        293645    41950    3994.15  04-06-2026 01:34:07
+Part_0008      0.160000        335594    41949    4009.65  04-06-2026 01:33:20
+Part_0009      0.180000        377543    41949    3994.04  04-06-2026 01:32:36
+Part_0010      0.200000        419492    41949    3994.32  04-06-2026 01:32:01
+Part_0011      0.220000        461442    41950    4005.31  04-06-2026 01:31:37
+Part_0012      0.240000        503391    41949    3992.43  04-06-2026 01:31:12
+Part_0013      0.260000        545340    41949    4010.08  04-06-2026 01:30:57
+Part_0014      0.280000        587290    41950    3988.29  04-06-2026 01:30:37
+Part_0015      0.300000        629239    41949    4057.52  04-06-2026 01:30:38
+Part_0016      0.320000        671188    41949    4025.32  04-06-2026 01:30:31
+Part_0017      0.340000        713138    41950    4113.02  04-06-2026 01:30:44
+Part_0018      0.360000        755087    41949    4000.97  04-06-2026 01:30:33
+Part_0019      0.380000        797036    41949    4024.88  04-06-2026 01:30:28
+Part_0020      0.400000        838985    41949    4038.94  04-06-2026 01:30:25
+Part_0021      0.420000        880935    41950    3993.95  04-06-2026 01:30:15
+Part_0022      0.440000        922884    41949    4011.26  04-06-2026 01:30:09
+Part_0023      0.460000        964833    41949    3986.69  04-06-2026 01:29:59
+Part_0024      0.480000       1006783    41950    3991.36  04-06-2026 01:29:50
+Part_0025      0.500000       1048732    41949    3998.02  04-06-2026 01:29:43
+Part_0026      0.520000       1090681    41949    4143.76  04-06-2026 01:29:59
+Part_0027      0.540000       1132631    41950    7916.51  04-06-2026 01:39:11
+Part_0028      0.560000       1174580    41949    4050.30  04-06-2026 01:38:53
+Part_0029      0.580000       1216529    41949    4084.03  04-06-2026 01:38:39
+Part_0030      0.600000       1258478    41949    4033.53  04-06-2026 01:38:21
+Part_0031      0.620000       1300428    41950    4251.50  04-06-2026 01:38:30
+Part_0032      0.640000       1342377    41949    4055.16  04-06-2026 01:38:15
+Part_0033      0.660000       1384326    41949    4035.55  04-06-2026 01:38:00
+Part_0034      0.680000       1426276    41950    4105.83  04-06-2026 01:37:52
+Part_0035      0.700000       1468225    41949    4549.41  04-06-2026 01:38:35
+Part_0036      0.720000       1510174    41949    4321.35  04-06-2026 01:38:50
+Part_0037      0.740000       1552124    41950    4024.69  04-06-2026 01:38:34
+Part_0038      0.760000       1594073    41949    4073.97  04-06-2026 01:38:23
+Part_0039      0.780000       1636022    41949    4078.14  04-06-2026 01:38:14
+Part_0040      0.800000       1677971    41949    4100.10  04-06-2026 01:38:07
+Part_0041      0.820000       1719921    41950    4095.18  04-06-2026 01:38:00
+Part_0042      0.840000       1761870    41949    4148.61  04-06-2026 01:37:58
+Part_0043      0.860000       1803819    41949    4103.40  04-06-2026 01:37:52
+Part_0044      0.880000       1845769    41950    4101.67  04-06-2026 01:37:46
+Part_0045      0.900000       1887718    41949    4072.05  04-06-2026 01:37:38
+Part_0046      0.920000       1929667    41949    4359.78  04-06-2026 01:37:55
+Part_0047      0.940000       1971617    41950    4072.76  04-06-2026 01:37:47
+Part_0048      0.960000       2013566    41949    4257.79  04-06-2026 01:37:54
+Part_0049      0.980000       2055515    41949    4547.70  04-06-2026 01:38:24
+Part_0050      1.000000       2097464    41949    4077.20  04-06-2026 01:38:17
+Part_0051      1.020000       2139414    41950    4040.60  04-06-2026 01:38:07
+Part_0052      1.040000       2181363    41949    4036.14  04-06-2026 01:37:57
+Part_0053      1.060000       2223312    41949    4071.55  04-06-2026 01:37:50
+Part_0054      1.080000       2265262    41950    4080.22  04-06-2026 01:37:43
+Part_0055      1.100000       2307211    41949    4113.04  04-06-2026 01:37:41
+Part_0056      1.120000       2349160    41949    4051.81  04-06-2026 01:37:33
+Part_0057      1.140000       2391110    41950    4080.87  04-06-2026 01:37:27
+Part_0058      1.160000       2433059    41949    4219.24  04-06-2026 01:37:31
+Part_0059      1.180000       2475008    41949    4071.56  04-06-2026 01:37:25
+Part_0060      1.200000       2516957    41949    4073.83  04-06-2026 01:37:19
+Part_0061      1.220000       2558907    41950    4167.86  04-06-2026 01:37:20
+Part_0062      1.240000       2600856    41949    4070.77  04-06-2026 01:37:14
+Part_0063      1.260000       2642805    41949    4114.51  04-06-2026 01:37:13
+Part_0064      1.280000       2684755    41950    4070.52  04-06-2026 01:37:07
+Part_0065      1.300000       2726704    41949    4073.27  04-06-2026 01:37:02
+Part_0066      1.320000       2768653    41949    4051.12  04-06-2026 01:36:56
+Part_0067      1.340000       2810603    41950    4056.98  04-06-2026 01:36:51
+Part_0068      1.360000       2852552    41949    4190.31  04-06-2026 01:36:53
+Part_0069      1.380000       2894501    41949    4706.04  04-06-2026 01:37:24
+Part_0070      1.400000       2936450    41949    4257.31  04-06-2026 01:37:30
+Part_0071      1.420000       2978400    41950    4205.14  04-06-2026 01:37:32
+Part_0072      1.440000       3020349    41949    4185.49  04-06-2026 01:37:33
+Part_0073      1.460000       3062298    41949    4177.26  04-06-2026 01:37:34
+Part_0074      1.480000       3104248    41950    4172.87  04-06-2026 01:37:35
+Part_0075      1.500000       3146197    41949    3923.62  04-06-2026 01:37:22
+Part_0076      1.520000       3188146    41949    3896.09  04-06-2026 01:37:09
+Part_0077      1.540000       3230096    41950    3897.23  04-06-2026 01:36:56
+Part_0078      1.560000       3272045    41949    3954.78  04-06-2026 01:36:46
+Part_0079      1.580000       3313994    41949    4062.64  04-06-2026 01:36:42
+Part_0080      1.600000       3355943    41949    4139.46  04-06-2026 01:36:42
+Part_0081      1.620000       3397893    41950    4083.84  04-06-2026 01:36:39
+Part_0082      1.640000       3439842    41949    4079.49  04-06-2026 01:36:35
+Part_0083      1.660000       3481791    41949    4077.67  04-06-2026 01:36:32
+Part_0084      1.680000       3523741    41950    4097.33  04-06-2026 01:36:30
+Part_0085      1.700000       3565690    41949    4069.38  04-06-2026 01:36:26
+Part_0086      1.720000       3607639    41949    4137.63  04-06-2026 01:36:26
+Part_0087      1.740000       3649589    41950    4105.01  04-06-2026 01:36:24
+Part_0088      1.760000       3691538    41949    4098.35  04-06-2026 01:36:22
+Part_0089      1.780000       3733487    41949    4072.08  04-06-2026 01:36:19
+Part_0090      1.800000       3775436    41949    4078.92  04-06-2026 01:36:17
+Part_0091      1.820000       3817386    41950    4080.41  04-06-2026 01:36:14
+Part_0092      1.840000       3859335    41949    4179.70  04-06-2026 01:36:15
+Part_0093      1.860000       3901284    41949    4416.29  04-06-2026 01:36:27
+Part_0094      1.880000       3943234    41950    4109.29  04-06-2026 01:36:26
+Part_0095      1.900000       3985183    41949    4275.26  04-06-2026 01:36:31
+Part_0096      1.920000       4027132    41949    4578.05  04-06-2026 01:36:48
+Part_0097      1.940000       4069082    41950    4122.56  04-06-2026 01:36:47
+Part_0098      1.960000       4111031    41949    4083.46  04-06-2026 01:36:45
+Part_0099      1.980000       4152980    41949    4116.88  04-06-2026 01:36:43
+Part_0100      2.000000       4194929    41949    4275.81  04-06-2026 01:36:48
+Part_0101      2.020000       4236879    41950    4131.99  04-06-2026 01:36:47
+Part_0102      2.040000       4278828    41949    4121.58  04-06-2026 01:36:46
+Part_0103      2.060000       4320777    41949    4158.50  04-06-2026 01:36:47
+Part_0104      2.080000       4362727    41950    4085.63  04-06-2026 01:36:45
+Part_0105      2.100000       4404676    41949    4157.32  04-06-2026 01:36:45
+Part_0106      2.120000       4446625    41949    4223.02  04-06-2026 01:36:47
+Part_0107      2.140000       4488575    41950    4144.02  04-06-2026 01:36:47
+Part_0108      2.160000       4530524    41949    4101.84  04-06-2026 01:36:45
+Part_0109      2.180000       4572473    41949    4132.89  04-06-2026 01:36:45
+Part_0110      2.200000       4614422    41949    4235.25  04-06-2026 01:36:48
+Part_0111      2.220000       4656372    41950    4104.51  04-06-2026 01:36:46
+Part_0112      2.240000       4698321    41949    4108.07  04-06-2026 01:36:45
+Part_0113      2.260000       4740270    41949    4122.70  04-06-2026 01:36:44
+Part_0114      2.280000       4782220    41950    4161.24  04-06-2026 01:36:45
+Part_0115      2.300000       4824169    41949    4111.38  04-06-2026 01:36:43
+Part_0116      2.320000       4866118    41949    4105.57  04-06-2026 01:36:42
+Part_0117      2.340000       4908068    41950    4116.88  04-06-2026 01:36:40
+Part_0118      2.360000       4950017    41949    4296.62  04-06-2026 01:36:45
+Part_0119      2.380000       4991966    41949    4117.07  04-06-2026 01:36:45
+Part_0120      2.400000       5033915    41949    4224.33  04-06-2026 01:36:47
+Part_0121      2.420000       5075865    41950    4202.22  04-06-2026 01:36:48
+Part_0122      2.440000       5117814    41949    4163.56  04-06-2026 01:36:49
+Part_0123      2.460000       5159763    41949    4170.76  04-06-2026 01:36:50
+Part_0124      2.480000       5201713    41950    4200.85  04-06-2026 01:36:51
+Part_0125      2.500000       5243662    41949    5104.52  04-06-2026 01:37:21
+Part_0126      2.520000       5285611    41949    4900.67  04-06-2026 01:37:43
+Part_0127      2.540000       5327561    41950    4890.43  04-06-2026 01:38:05
+Part_0128      2.560000       5369510    41949    5015.60  04-06-2026 01:38:31
+Part_0129      2.580000       5411459    41949    5042.23  04-06-2026 01:38:57
+Part_0130      2.600000       5453408    41949    4900.01  04-06-2026 01:39:18
+Part_0131      2.620000       5495358    41950    4779.33  04-06-2026 01:39:36
+Part_0132      2.640000       5537307    41949    4699.63  04-06-2026 01:39:50
+Part_0133      2.660000       5579256    41949    4689.09  04-06-2026 01:40:04
+Part_0134      2.680000       5621206    41950    4755.89  04-06-2026 01:40:20
+Part_0135      2.700000       5663155    41949    4618.04  04-06-2026 01:40:32
+Part_0136      2.720000       5705104    41949    4603.99  04-06-2026 01:40:43
+Part_0137      2.740000       5747054    41950    4565.08  04-06-2026 01:40:53
+Part_0138      2.760000       5789003    41949    4314.64  04-06-2026 01:40:55
+Part_0139      2.780000       5830952    41949    4422.97  04-06-2026 01:41:02
+Part_0140      2.800000       5872901    41949    4294.21  04-06-2026 01:41:04
+Part_0141      2.820000       5914851    41950    5846.22  04-06-2026 01:41:48
+Part_0142      2.840000       5956800    41949    4406.36  04-06-2026 01:41:53
+Part_0143      2.860000       5998749    41949    4394.94  04-06-2026 01:41:58
+Part_0144      2.880000       6040699    41950    4412.36  04-06-2026 01:42:02
+Part_0145      2.900000       6082648    41949    4388.73  04-06-2026 01:42:07
+Part_0146      2.920000       6124597    41949    5480.36  04-06-2026 01:42:39
+Part_0147      2.940000       6166547    41950    4283.36  04-06-2026 01:42:40
+Part_0148      2.960000       6208496    41949    4227.75  04-06-2026 01:42:41
+Part_0149      2.980000       6250445    41949    4261.88  04-06-2026 01:42:41
+Part_0150      3.000000       6292395    41950    4282.02  04-06-2026 01:42:42
+Part_0151      3.020000       6334344    41949    4231.45  04-06-2026 01:42:41
+Part_0152      3.040000       6376293    41949    4277.37  04-06-2026 01:42:43
+Part_0153      3.060000       6418242    41949    4388.20  04-06-2026 01:42:46
+Part_0154      3.080000       6460192    41950    4318.06  04-06-2026 01:42:48
+Part_0155      3.100000       6502141    41949    4225.43  04-06-2026 01:42:47
+Part_0156      3.120000       6544090    41949    4230.08  04-06-2026 01:42:47
+Part_0157      3.140000       6586040    41950    4271.24  04-06-2026 01:42:47
+Part_0158      3.160000       6627989    41949    4228.63  04-06-2026 01:42:48
+Part_0159      3.180000       6669938    41949    4217.45  04-06-2026 01:42:47
+Part_0160      3.200000       6711888    41950    4292.67  04-06-2026 01:42:48
+Part_0161      3.220000       6753837    41949    4265.35  04-06-2026 01:42:48
+Part_0162      3.240000       6795786    41949    4369.37  04-06-2026 01:42:52
+Part_0163      3.260000       6837735    41949    4265.95  04-06-2026 01:42:52
+Part_0164      3.280000       6879685    41950    4286.95  04-06-2026 01:42:53
+Part_0165      3.300000       6921634    41949    4252.80  04-06-2026 01:42:53
+Part_0166      3.320000       6963583    41949    4242.22  04-06-2026 01:42:53
+Part_0167      3.340000       7005533    41950    4261.71  04-06-2026 01:42:53
+Part_0168      3.360000       7047482    41949    4455.37  04-06-2026 01:42:58
+Part_0169      3.380000       7089431    41949    4283.63  04-06-2026 01:42:59
+Part_0170      3.400000       7131381    41950    4244.41  04-06-2026 01:42:59
+Part_0171      3.420000       7173330    41949    4233.21  04-06-2026 01:42:58
+Part_0172      3.440000       7215279    41949    4223.68  04-06-2026 01:42:58
+Part_0173      3.460000       7257228    41949    4245.59  04-06-2026 01:42:59
+Part_0174      3.480000       7299178    41950    4242.00  04-06-2026 01:42:59
+Part_0175      3.500000       7341127    41949    4275.89  04-06-2026 01:42:59
+Part_0176      3.520000       7383076    41949    4292.96  04-06-2026 01:43:00
+Part_0177      3.540000       7425026    41950    4198.52  04-06-2026 01:42:59
+Part_0178      3.560000       7466975    41949    4223.26  04-06-2026 01:42:58
+Part_0179      3.580000       7508924    41949    4240.58  04-06-2026 01:42:58
+Part_0180      3.600000       7550874    41950    4217.17  04-06-2026 01:42:58
+Part_0181      3.620000       7592823    41949    4205.11  04-06-2026 01:42:57
+Part_0182      3.640000       7634772    41949    4016.08  04-06-2026 01:42:52
+Part_0183      3.660000       7676721    41949    4019.37  04-06-2026 01:42:47
+Part_0184      3.680000       7718671    41950    4000.12  04-06-2026 01:42:42
+Part_0185      3.700000       7760620    41949    3989.92  04-06-2026 01:42:38
+Part_0186      3.720000       7802569    41949    4559.48  04-06-2026 01:42:44
+Part_0187      3.740000       7844519    41950    3999.41  04-06-2026 01:42:39
+Part_0188      3.760000       7886468    41949    3977.93  04-06-2026 01:42:34
+Part_0189      3.780000       7928417    41949    5374.30  04-06-2026 01:42:58
+Part_0190      3.800000       7970367    41950    4017.10  04-06-2026 01:42:53
+Part_0191      3.820000       8012316    41949    3984.95  04-06-2026 01:42:48
+Part_0192      3.840000       8054265    41949    3979.80  04-06-2026 01:42:42
+
+[Simulation finished  04-06-2026 01:42:40]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 16328.430664 sec.
+Simulation Runtime...............: 16328.404297 sec.
+Runtime per physical second......: 4241.144043 sec.
+Steps per second.................: 494.551697
+Steps of simulation..............: 8075240
+PART files.......................: 193
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 1345496 (1.28 MB)
+ 
+[CPU Timers]
+VA-Init..........................: 0.025905 sec.
+NL-Limits........................: 150.308759 sec.
+NL-MakeSort......................: 280.682140 sec.
+NL-SortData......................: 3430.142965 sec.
+NL-OutCheck......................: 0.808159 sec.
+CF-PreForces.....................: 972.575122 sec.
+CF-Forces........................: 6800.311077 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 2108.357357 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 418.091041 sec.
+SU-ResizeNp......................: 0.000629 sec.
+SU-SavePart......................: 2.071105 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0000.bi4
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0000.bi4
+SaveVTK> ...\particles/PartFluid_0000.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0001.bi4
+SaveVTK> ...\particles/PartFluid_0001.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0002.bi4
+SaveVTK> ...\particles/PartFluid_0002.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0003.bi4
+SaveVTK> ...\particles/PartFluid_0003.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0004.bi4
+SaveVTK> ...\particles/PartFluid_0004.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0005.bi4
+SaveVTK> ...\particles/PartFluid_0005.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0006.bi4
+SaveVTK> ...\particles/PartFluid_0006.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0007.bi4
+SaveVTK> ...\particles/PartFluid_0007.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0008.bi4
+SaveVTK> ...\particles/PartFluid_0008.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0009.bi4
+SaveVTK> ...\particles/PartFluid_0009.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0010.bi4
+SaveVTK> ...\particles/PartFluid_0010.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0011.bi4
+SaveVTK> ...\particles/PartFluid_0011.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0012.bi4
+SaveVTK> ...\particles/PartFluid_0012.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0013.bi4
+SaveVTK> ...\particles/PartFluid_0013.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0014.bi4
+SaveVTK> ...\particles/PartFluid_0014.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0015.bi4
+SaveVTK> ...\particles/PartFluid_0015.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0016.bi4
+SaveVTK> ...\particles/PartFluid_0016.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0017.bi4
+SaveVTK> ...\particles/PartFluid_0017.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0018.bi4
+SaveVTK> ...\particles/PartFluid_0018.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0019.bi4
+SaveVTK> ...\particles/PartFluid_0019.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0020.bi4
+SaveVTK> ...\particles/PartFluid_0020.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0021.bi4
+SaveVTK> ...\particles/PartFluid_0021.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0022.bi4
+SaveVTK> ...\particles/PartFluid_0022.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0023.bi4
+SaveVTK> ...\particles/PartFluid_0023.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0024.bi4
+SaveVTK> ...\particles/PartFluid_0024.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0025.bi4
+SaveVTK> ...\particles/PartFluid_0025.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0026.bi4
+SaveVTK> ...\particles/PartFluid_0026.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0027.bi4
+SaveVTK> ...\particles/PartFluid_0027.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0028.bi4
+SaveVTK> ...\particles/PartFluid_0028.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0029.bi4
+SaveVTK> ...\particles/PartFluid_0029.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0030.bi4
+SaveVTK> ...\particles/PartFluid_0030.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0031.bi4
+SaveVTK> ...\particles/PartFluid_0031.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0032.bi4
+SaveVTK> ...\particles/PartFluid_0032.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0033.bi4
+SaveVTK> ...\particles/PartFluid_0033.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0034.bi4
+SaveVTK> ...\particles/PartFluid_0034.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0035.bi4
+SaveVTK> ...\particles/PartFluid_0035.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0036.bi4
+SaveVTK> ...\particles/PartFluid_0036.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0037.bi4
+SaveVTK> ...\particles/PartFluid_0037.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0038.bi4
+SaveVTK> ...\particles/PartFluid_0038.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0039.bi4
+SaveVTK> ...\particles/PartFluid_0039.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0040.bi4
+SaveVTK> ...\particles/PartFluid_0040.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0041.bi4
+SaveVTK> ...\particles/PartFluid_0041.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0042.bi4
+SaveVTK> ...\particles/PartFluid_0042.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0043.bi4
+SaveVTK> ...\particles/PartFluid_0043.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0044.bi4
+SaveVTK> ...\particles/PartFluid_0044.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0045.bi4
+SaveVTK> ...\particles/PartFluid_0045.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0046.bi4
+SaveVTK> ...\particles/PartFluid_0046.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0047.bi4
+SaveVTK> ...\particles/PartFluid_0047.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0048.bi4
+SaveVTK> ...\particles/PartFluid_0048.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0049.bi4
+SaveVTK> ...\particles/PartFluid_0049.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0050.bi4
+SaveVTK> ...\particles/PartFluid_0050.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0051.bi4
+SaveVTK> ...\particles/PartFluid_0051.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0052.bi4
+SaveVTK> ...\particles/PartFluid_0052.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0053.bi4
+SaveVTK> ...\particles/PartFluid_0053.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0054.bi4
+SaveVTK> ...\particles/PartFluid_0054.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0055.bi4
+SaveVTK> ...\particles/PartFluid_0055.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0056.bi4
+SaveVTK> ...\particles/PartFluid_0056.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0057.bi4
+SaveVTK> ...\particles/PartFluid_0057.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0058.bi4
+SaveVTK> ...\particles/PartFluid_0058.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0059.bi4
+SaveVTK> ...\particles/PartFluid_0059.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0060.bi4
+SaveVTK> ...\particles/PartFluid_0060.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0061.bi4
+SaveVTK> ...\particles/PartFluid_0061.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0062.bi4
+SaveVTK> ...\particles/PartFluid_0062.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0063.bi4
+SaveVTK> ...\particles/PartFluid_0063.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0064.bi4
+SaveVTK> ...\particles/PartFluid_0064.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0065.bi4
+SaveVTK> ...\particles/PartFluid_0065.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0066.bi4
+SaveVTK> ...\particles/PartFluid_0066.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0067.bi4
+SaveVTK> ...\particles/PartFluid_0067.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0068.bi4
+SaveVTK> ...\particles/PartFluid_0068.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0069.bi4
+SaveVTK> ...\particles/PartFluid_0069.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0070.bi4
+SaveVTK> ...\particles/PartFluid_0070.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0071.bi4
+SaveVTK> ...\particles/PartFluid_0071.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0072.bi4
+SaveVTK> ...\particles/PartFluid_0072.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0073.bi4
+SaveVTK> ...\particles/PartFluid_0073.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0074.bi4
+SaveVTK> ...\particles/PartFluid_0074.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0075.bi4
+SaveVTK> ...\particles/PartFluid_0075.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0076.bi4
+SaveVTK> ...\particles/PartFluid_0076.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0077.bi4
+SaveVTK> ...\particles/PartFluid_0077.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0078.bi4
+SaveVTK> ...\particles/PartFluid_0078.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0079.bi4
+SaveVTK> ...\particles/PartFluid_0079.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0080.bi4
+SaveVTK> ...\particles/PartFluid_0080.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0081.bi4
+SaveVTK> ...\particles/PartFluid_0081.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0082.bi4
+SaveVTK> ...\particles/PartFluid_0082.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0083.bi4
+SaveVTK> ...\particles/PartFluid_0083.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0084.bi4
+SaveVTK> ...\particles/PartFluid_0084.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0085.bi4
+SaveVTK> ...\particles/PartFluid_0085.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0086.bi4
+SaveVTK> ...\particles/PartFluid_0086.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0087.bi4
+SaveVTK> ...\particles/PartFluid_0087.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0088.bi4
+SaveVTK> ...\particles/PartFluid_0088.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0089.bi4
+SaveVTK> ...\particles/PartFluid_0089.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0090.bi4
+SaveVTK> ...\particles/PartFluid_0090.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0091.bi4
+SaveVTK> ...\particles/PartFluid_0091.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0092.bi4
+SaveVTK> ...\particles/PartFluid_0092.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0093.bi4
+SaveVTK> ...\particles/PartFluid_0093.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0094.bi4
+SaveVTK> ...\particles/PartFluid_0094.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0095.bi4
+SaveVTK> ...\particles/PartFluid_0095.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0096.bi4
+SaveVTK> ...\particles/PartFluid_0096.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0097.bi4
+SaveVTK> ...\particles/PartFluid_0097.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0098.bi4
+SaveVTK> ...\particles/PartFluid_0098.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0099.bi4
+SaveVTK> ...\particles/PartFluid_0099.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0100.bi4
+SaveVTK> ...\particles/PartFluid_0100.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0101.bi4
+SaveVTK> ...\particles/PartFluid_0101.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0102.bi4
+SaveVTK> ...\particles/PartFluid_0102.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0103.bi4
+SaveVTK> ...\particles/PartFluid_0103.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0104.bi4
+SaveVTK> ...\particles/PartFluid_0104.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0105.bi4
+SaveVTK> ...\particles/PartFluid_0105.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0106.bi4
+SaveVTK> ...\particles/PartFluid_0106.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0107.bi4
+SaveVTK> ...\particles/PartFluid_0107.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0108.bi4
+SaveVTK> ...\particles/PartFluid_0108.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0109.bi4
+SaveVTK> ...\particles/PartFluid_0109.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0110.bi4
+SaveVTK> ...\particles/PartFluid_0110.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0111.bi4
+SaveVTK> ...\particles/PartFluid_0111.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0112.bi4
+SaveVTK> ...\particles/PartFluid_0112.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0113.bi4
+SaveVTK> ...\particles/PartFluid_0113.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0114.bi4
+SaveVTK> ...\particles/PartFluid_0114.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0115.bi4
+SaveVTK> ...\particles/PartFluid_0115.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0116.bi4
+SaveVTK> ...\particles/PartFluid_0116.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0117.bi4
+SaveVTK> ...\particles/PartFluid_0117.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0118.bi4
+SaveVTK> ...\particles/PartFluid_0118.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0119.bi4
+SaveVTK> ...\particles/PartFluid_0119.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0120.bi4
+SaveVTK> ...\particles/PartFluid_0120.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0121.bi4
+SaveVTK> ...\particles/PartFluid_0121.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0122.bi4
+SaveVTK> ...\particles/PartFluid_0122.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0123.bi4
+SaveVTK> ...\particles/PartFluid_0123.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0124.bi4
+SaveVTK> ...\particles/PartFluid_0124.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0125.bi4
+SaveVTK> ...\particles/PartFluid_0125.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0126.bi4
+SaveVTK> ...\particles/PartFluid_0126.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0127.bi4
+SaveVTK> ...\particles/PartFluid_0127.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0128.bi4
+SaveVTK> ...\particles/PartFluid_0128.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0129.bi4
+SaveVTK> ...\particles/PartFluid_0129.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0130.bi4
+SaveVTK> ...\particles/PartFluid_0130.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0131.bi4
+SaveVTK> ...\particles/PartFluid_0131.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0132.bi4
+SaveVTK> ...\particles/PartFluid_0132.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0133.bi4
+SaveVTK> ...\particles/PartFluid_0133.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0134.bi4
+SaveVTK> ...\particles/PartFluid_0134.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0135.bi4
+SaveVTK> ...\particles/PartFluid_0135.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0136.bi4
+SaveVTK> ...\particles/PartFluid_0136.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0137.bi4
+SaveVTK> ...\particles/PartFluid_0137.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0138.bi4
+SaveVTK> ...\particles/PartFluid_0138.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0139.bi4
+SaveVTK> ...\particles/PartFluid_0139.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0140.bi4
+SaveVTK> ...\particles/PartFluid_0140.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0141.bi4
+SaveVTK> ...\particles/PartFluid_0141.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0142.bi4
+SaveVTK> ...\particles/PartFluid_0142.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0143.bi4
+SaveVTK> ...\particles/PartFluid_0143.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0144.bi4
+SaveVTK> ...\particles/PartFluid_0144.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0145.bi4
+SaveVTK> ...\particles/PartFluid_0145.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0146.bi4
+SaveVTK> ...\particles/PartFluid_0146.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0147.bi4
+SaveVTK> ...\particles/PartFluid_0147.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0148.bi4
+SaveVTK> ...\particles/PartFluid_0148.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0149.bi4
+SaveVTK> ...\particles/PartFluid_0149.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0150.bi4
+SaveVTK> ...\particles/PartFluid_0150.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0151.bi4
+SaveVTK> ...\particles/PartFluid_0151.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0152.bi4
+SaveVTK> ...\particles/PartFluid_0152.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0153.bi4
+SaveVTK> ...\particles/PartFluid_0153.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0154.bi4
+SaveVTK> ...\particles/PartFluid_0154.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0155.bi4
+SaveVTK> ...\particles/PartFluid_0155.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0156.bi4
+SaveVTK> ...\particles/PartFluid_0156.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0157.bi4
+SaveVTK> ...\particles/PartFluid_0157.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0158.bi4
+SaveVTK> ...\particles/PartFluid_0158.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0159.bi4
+SaveVTK> ...\particles/PartFluid_0159.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0160.bi4
+SaveVTK> ...\particles/PartFluid_0160.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0161.bi4
+SaveVTK> ...\particles/PartFluid_0161.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0162.bi4
+SaveVTK> ...\particles/PartFluid_0162.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0163.bi4
+SaveVTK> ...\particles/PartFluid_0163.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0164.bi4
+SaveVTK> ...\particles/PartFluid_0164.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0165.bi4
+SaveVTK> ...\particles/PartFluid_0165.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0166.bi4
+SaveVTK> ...\particles/PartFluid_0166.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0167.bi4
+SaveVTK> ...\particles/PartFluid_0167.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0168.bi4
+SaveVTK> ...\particles/PartFluid_0168.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0169.bi4
+SaveVTK> ...\particles/PartFluid_0169.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0170.bi4
+SaveVTK> ...\particles/PartFluid_0170.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0171.bi4
+SaveVTK> ...\particles/PartFluid_0171.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0172.bi4
+SaveVTK> ...\particles/PartFluid_0172.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0173.bi4
+SaveVTK> ...\particles/PartFluid_0173.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0174.bi4
+SaveVTK> ...\particles/PartFluid_0174.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0175.bi4
+SaveVTK> ...\particles/PartFluid_0175.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0176.bi4
+SaveVTK> ...\particles/PartFluid_0176.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0177.bi4
+SaveVTK> ...\particles/PartFluid_0177.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0178.bi4
+SaveVTK> ...\particles/PartFluid_0178.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0179.bi4
+SaveVTK> ...\particles/PartFluid_0179.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0180.bi4
+SaveVTK> ...\particles/PartFluid_0180.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0181.bi4
+SaveVTK> ...\particles/PartFluid_0181.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0182.bi4
+SaveVTK> ...\particles/PartFluid_0182.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0183.bi4
+SaveVTK> ...\particles/PartFluid_0183.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0184.bi4
+SaveVTK> ...\particles/PartFluid_0184.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0185.bi4
+SaveVTK> ...\particles/PartFluid_0185.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0186.bi4
+SaveVTK> ...\particles/PartFluid_0186.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0187.bi4
+SaveVTK> ...\particles/PartFluid_0187.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0188.bi4
+SaveVTK> ...\particles/PartFluid_0188.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0189.bi4
+SaveVTK> ...\particles/PartFluid_0189.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0190.bi4
+SaveVTK> ...\particles/PartFluid_0190.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0191.bi4
+SaveVTK> ...\particles/PartFluid_0191.vtk  np:1000
+LoadData> CaseSelfWeightConsolidation_Scenario2_out\data/Part_0192.bi4
+SaveVTK> ...\particles/PartFluid_0192.vtk  np:1000
+
+Time of operation: 0.945 sec. (20 threads)
+Saved figure: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_consolidation_profiles.png
+Saved Scenario2 initial metrics: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_scenario2_initial_metrics.csv
+Saved Scenario2 summary: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_consolidation_summary.csv
+Saved Scenario2 target summary: D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\figures\self_weight_consolidation_targets.csv
+cv_terzaghi=0.274445 m^2/s, cv_pr_diffusion=67.9579 m^2/s, undrained_ratio=0.995978, effective_ratio=0.00402222
+Scenario2 analytical initial state: PartFluid_0000.vtk t=0s, bottom excess=10.6939 kPa (theory 10.6939 kPa), bottom total=20.4548 kPa (theory 20.4548 kPa), RMS excess=5.37379 Pa, RMS total=10.2788 Pa, max speed=0 m/s, max Kplastic=0
+Scenario2 analytical effective stress: bottom sigma_zz=-43.1867 Pa (theory -43.1867 Pa), RMS sigma_zz=3.47838e-06 Pa
+Scenario2 final bottom comparison: t=3.84s, Tv=1.05387, SPH=-5.90094 kPa, theory=0.646822 kPa
+Scenario2 target Tv comparisons:
+  target Tv=0.005, actual Tv=0.0054889, PartFluid_0001.vtk, bottom SPH=10.3823 kPa, theory=9.8481 kPa, RMS=753.348 Pa, max speed=0.00179657 m/s
+  target Tv=0.05, actual Tv=0.0494001, PartFluid_0009.vtk, bottom SPH=6.26443 kPa, theory=8.05181 kPa, RMS=585.788 Pa, max speed=0.00189952 m/s
+  target Tv=0.1, actual Tv=0.0988003, PartFluid_0018.vtk, bottom SPH=4.37665 kPa, theory=6.93544 kPa, RMS=1003.85 Pa, max speed=0.00179632 m/s
+  target Tv=0.25, actual Tv=0.25249, PartFluid_0046.vtk, bottom SPH=0.543158 kPa, theory=4.6758 kPa, RMS=2015.66 Pa, max speed=0.00128346 m/s
+  target Tv=0.4, actual Tv=0.40069, PartFluid_0073.vtk, bottom SPH=-1.79812 kPa, theory=3.24142 kPa, RMS=2666.43 Pa, max speed=0.000907649 m/s
+  target Tv=0.5, actual Tv=0.49949, PartFluid_0091.vtk, bottom SPH=-2.96993 kPa, theory=2.54008 kPa, RMS=2988.48 Pa, max speed=0.000710694 m/s
+  target Tv=0.7, actual Tv=0.70258, PartFluid_0128.vtk, bottom SPH=-4.51804 kPa, theory=1.53893 kPa, RMS=3402.53 Pa, max speed=0.000461668 m/s
+  target Tv=1, actual Tv=0.998981, PartFluid_0182.vtk, bottom SPH=-5.89662 kPa, theory=0.740632 kPa, RMS=3770.95 Pa, max speed=0.000252411 m/s
+Scenario 2 done
