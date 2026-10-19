@@ -77,6 +77,7 @@
 	<execution>
 		<parameters>
 			<!-- Stress state/history: CPU and GPU double. G1 storage/PART checks and case-02 k=1e-4 same-physics CPU/GPU 2Tv passed; this is not general plastic-flow validation. -->
+			<!-- CPU/GPU save the native terminal step when TimeMax or NstepsBreak is reached, even between TimeOut events; this output-only condition does not change dt or integration. -->
 			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
 			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
 			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->

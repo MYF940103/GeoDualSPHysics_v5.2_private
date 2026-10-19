@@ -1302,7 +1302,8 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
     TimeStep+=stepdt;
     LastDt=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
-    if(TimeStep>=TimePartNext || partoutstop){
+    //-Retain the final native state even when TimeMax is between output events.
+    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)){
       if(partoutstop){
         Log->PrintWarning("Particles OUT limit reached...");
         TimeMax=TimeStep;

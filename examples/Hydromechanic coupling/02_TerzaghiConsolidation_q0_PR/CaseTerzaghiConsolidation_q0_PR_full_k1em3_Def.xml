@@ -112,15 +112,16 @@
         <PoreShepardRegularization value="0" comment="Disabled for the first q0 verification" />
         <PoreShepardInterval value="30" comment="Unused when regularization is disabled" />
         <HydroMechInitMode value="0" comment="HydroMechInitMode values: 0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; current 0=None" />
-        <HydroMechTopLoadMode value="TopVertical" comment="Apply q0 vertically to upward free-surface particles" />
+        <HydroMechTopLoadMode value="TopKernelBand" comment="Normalized kernel-support top load; same total q0 as TopVertical" />
         <HydroMechTopLoadQ0 value="10000" comment="Compressive surcharge q0" units_comment="Pa" />
-        <HydroMechTopLoadRampTime value="0.01" comment="Recommended ramp load duration tL from the q0 physical-time sweep" units_comment="seconds" />
+        <HydroMechTopLoadRampTime value="0.01" comment="Ramp load duration tL" units_comment="seconds" />
         <HydroMechDrainage value="1" comment="Enable drained top free-surface pore pressure after the loading stage" />
         <HydroMechDrainageStartTime value="0.01" comment="Drainage starts when q0 reaches its target value" units_comment="seconds" />
+        <HydroMechDrainageFixedGrid value="1" comment="Align the fixed-grid drainage event within accumulated-time roundoff only" />
       </hydromechanics>
     </special>
     <parameters>
-      <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+      <parameter key="SavePosDouble" value="1" comment="Saves particle position using double precision" />
       <parameter key="DPCtes" value="3" comment="Drucker-Prager constants for 2D plane strain" />
       <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
       <parameter key="SlipMode" value="1" comment="mDBC DBC velocity condition" />
@@ -131,8 +132,11 @@
       <parameter key="Visco" value="0.1" comment="Main-paper artificial viscosity coefficient alpha" />
       <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
       <parameter key="ArtificialStress" value="0" comment="Disabled for this verification" />
+      <parameter key="SoilStressRateGradCorr" value="1" comment="Correct soil stress-rate velocity gradients" />
+      <parameter key="SoilHourglassXi" value="0.1" comment="Validated elastic small-rotation HG strength; fresh starts only" />
+      <parameter key="SoilBoundaryDerivativeSPR" value="1" comment="Fixed-plane mDBC mirrored velocity for S/P/R derivatives" />
       <parameter key="SoilDamping" value="1" comment="Bui-Fukagawa damping for ramp-load stabilization" />
-      <parameter key="SoilDampingCoef" value="0.02" comment="Recommended q0 verification damping coefficient xi after sweep" />
+      <parameter key="SoilDampingCoef" value="0.04" comment="Accepted case-02 soil damping coefficient" />
       <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
       <parameter key="DensityDTvalue" value="0.1" comment="Unused when DensityDT=0" />
       <parameter key="Shifting" value="0" comment="Shifting disabled" />
@@ -141,12 +145,12 @@
       <parameter key="RigidAlgorithm" value="1" comment="Rigid algorithm" />
       <parameter key="FtPause" value="0.0" comment="No floating warmup" units_comment="seconds" />
       <parameter key="CoefDtMin" value="0.001" comment="Default minimum time-step coefficient" />
-      <parameter key="DtIni" value="0.000001" comment="Initial time step" units_comment="seconds" />
+      <parameter key="DtIni" value="0.000001" comment="Initial step equals the validated fixed step" units_comment="seconds" />
       <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
-      <parameter key="DtFixed" value="0.000001" comment="Formal fixed time step for k=1e-3 validation" units_comment="seconds" />
+      <parameter key="DtFixed" value="0.000001" comment="Formal fixed step; conductivity-specific stability limit" units_comment="seconds" />
       <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
-      <parameter key="TimeMax" value="7.29742857142858" comment="Formal final time, reaching Tv=2 after tL" units_comment="seconds" />
-      <parameter key="TimeOut" value="0.0182185714285714" comment="Output interval corresponding to Delta Tv=0.005" units_comment="seconds" />
+      <parameter key="TimeMax" value="7.297429" comment="Formal 2Tv endpoint rounded up to the fixed-step grid" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.001" comment="Native particle output interval; references use actual saved times" units_comment="seconds" />
       <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
       <parameter key="RhopOutMin" value="700" comment="Minimum valid rhop" units_comment="kg/m^3" />
       <parameter key="RhopOutMax" value="3000" comment="Maximum valid rhop" units_comment="kg/m^3" />

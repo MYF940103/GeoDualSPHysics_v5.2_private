@@ -1,0 +1,93 @@
+{
+  "status": "passed",
+  "stage": "cpu_smoke",
+  "children": [
+    {
+      "stage": "gpu_gencase",
+      "pid": 53444,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\formal_program_gpu_r1_Def",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_gpu_r1\\formal_program_gpu_r1",
+        "-save:all"
+      ],
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\formal_release_k3_r1_gpu_gencase.log",
+        "sha256": "3317708BC96D0838A588954416F80C57E5AC3D7F4D4958893EBC7F53882A011A"
+      }
+    },
+    {
+      "stage": "gpu_smoke",
+      "pid": 55668,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_gpu_r1\\formal_program_gpu_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_gpu_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-svextraparts:1",
+        "-nsteps:15000"
+      ],
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\formal_release_k3_r1_gpu_smoke.log",
+        "sha256": "57BD1D9A6F1DA0A473A71C486CF8F4336BD2DA9B45122DC212657E0B2CD17C3F"
+      }
+    },
+    {
+      "stage": "cpu_gencase",
+      "pid": 16128,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\formal_program_cpu_r1_Def",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_cpu_r1\\formal_program_cpu_r1",
+        "-save:all"
+      ],
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\formal_release_k3_r1_cpu_gencase.log",
+        "sha256": "873D33CA2BC0B9CFB72AC4A1F14E5837CFE133A1E1AE5A2C860EB59A0A34A16D"
+      }
+    },
+    {
+      "stage": "cpu_smoke",
+      "pid": 46512,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_cpu_r1\\formal_program_cpu_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\formal_program_cpu_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-svextraparts:1",
+        "-nsteps:15000"
+      ],
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\formal_release_k3_r1_cpu_smoke.log",
+        "sha256": "CF709575DF23CEA0460C9A06738A5D8982ED61704EC2A450CA1B0FA1A12324C8"
+      }
+    }
+  ],
+  "started_utc": "2026-10-19T22:23:16.063815+00:00",
+  "updated_utc": "2026-10-19T22:26:47.277971+00:00",
+  "last_checked_time_s": 0.0,
+  "last_checked_tv": 0.0,
+  "checked_frames": 1,
+  "nondivisible_final_output_passed": true,
+  "finished_utc": "2026-10-19T22:27:02.578329+00:00"
+}

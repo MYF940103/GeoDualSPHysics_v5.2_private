@@ -1,18 +1,28 @@
 # 02 外载 1D 固结：入口与文件索引
 
-整理日期：2026-10-08。当前求解器采用无孔压精度补偿的 float u-pw PR。高低位补偿和 double 孔压状态已于 2026-09-09 回退；此次不修改物理配置，也不恢复旧精度模型。
+更新日期：2026-10-20。孔压/孔压率仍为原生 float u-pw PR，无高低位补偿、无 double 孔压状态或KEEP密度补偿；持久应力及其历史为double。当前一维正式配置采用应力率梯度修正、归一化核支持带加载、xi=0.1弹性HG、固定平面SPR和固定格点排水事件，阻尼0.04。k=1e-4 CPU/GPU完整2Tv已按约定的一维范围验收，不能推广为塑性、复杂边界或大旋转验收。
 
 ## 当前正式入口
 
-| 渗透系数 | 根目录 XML | 根目录 CPU BAT |
-|---|---|---|
-| k=1e-4 m/s | `CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def.xml` | `xCaseTerzaghiConsolidation_q0_PR_full_k1em4_win64_CPU.bat` |
-| k=1e-3 m/s | `CaseTerzaghiConsolidation_q0_PR_full_k1em3_Def.xml` | `xCaseTerzaghiConsolidation_q0_PR_full_k1em3_win64_CPU.bat` |
-| k=1e-2 m/s | `CaseTerzaghiConsolidation_q0_PR_full_k1em2_Def.xml` | `xCaseTerzaghiConsolidation_q0_PR_full_k1em2_win64_CPU.bat` |
+| 渗透系数 | XML文件末段 | CPU/GPU BAT文件末段 | 固定dt (s) | 2Tv终时 (s) |
+|---|---|---|---:|---:|
+| k=1e-3 m/s | `full_k1em3_Def.xml` | `full_k1em3_win64_CPU.bat` / `full_k1em3_win64_GPU.bat` | 0.000001 | 7.297429 |
+| k=1e-4 m/s | `full_k1em4_Def.xml` | `full_k1em4_win64_CPU.bat` / `full_k1em4_win64_GPU.bat` | 0.00001 | 72.88429 |
+| k=1e-5 m/s | `full_k1em5_Def.xml` | `full_k1em5_win64_CPU.bat` / `full_k1em5_win64_GPU.bat` | 0.00001 | 728.75286 |
 
-根目录所有既有 XML/BAT 和 `_out` 保持原位，包括网格细化、precision 和 double 历史输出。历史结果以各自 `Run.out`、生成 XML 和版本记录确定来源；当前程序不能自动代表旧计算版本。
+XML完整前缀为`CaseTerzaghiConsolidation_q0_PR_`，BAT前缀为`xCaseTerzaghiConsolidation_q0_PR_`，均在本目录。CPU使用单线程，保持与验收配置一致。三组终时按各自Cv计算，再向上取整到固定步长；不复制k=1e-4终时到其他k，也不重复添加`special/timeout`。
 
-**重跑前注意：既有 float BAT 的覆盖确认或 `-force` 可以删除同名输出。不要用正式入口试跑，也不要覆盖已保留的正式结果。新验证使用 `tests` 下独立输入和输出。**
+正式CPU/GPU主循环已补末步保存条件：TimeMax或nsteps结束时，即使不整除TimeOut也保存原生末帧。这只是输出策略修复，不改步长或物理积分。
+
+双击对应BAT：GenCase → 正式CPU/GPU Release求解器 → PartVTK生成`particles` → `support/release_case.py`读取原生double应力/位置和float孔压，正式图/CSV/检查结果保存在`figures/full_validation_release_k1em*_CPU|GPU*`。需要带numpy/pandas/matplotlib的Python，当前优先使用`D:\Anaconda3\python.exe`；只读PART工具为`bin/windows/ReadHydroMechPart_win64.exe`，其源码和构建脚本在本case的`support`。
+
+新输出使用`CaseTerzaghiConsolidation_q0_PR_full_k1em*_release_CPU_out`或`_release_GPU_out`，不会覆盖旧`*_out`。已有新输出也不自动删除、不接受`-force`清除；可用同一BAT的`-postprocess`只做后处理，需新计算时明确选择另一个输出名。HG只支持新鲜启动，没有精确历史重启；长算中途关机不能拿普通PART精确续接本HG。
+
+k=1e-4将发布本轮已验完整数据，前提是正式CPU/GPU程序短窗与伴随程序初末态逐位一致；`release_provenance.json`明确记录来源，不谎称又通过BAT重算过一轮。k=1e-3/1e-5须各自完成新计算及审图后才标为验收，不由k=1e-4代替。旧k=1e-2输入/入口仍保留历史配置，本轮不修改、不代表新组合已验收。
+
+根目录所有既有输入位置和历史`*_out`保持原位，包括网格细化、precision和double历史输出。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
+
+**本次更新的三组CPU/GPU BAT没有删除路径。旧k=1e-2等未更新历史BAT可能仍含覆盖确认或`-force`，不要用它们试跑或覆盖保留结果。临时验证仍放在`tests`分类目录。**
 
 ## 原位退役的精度试验
 
