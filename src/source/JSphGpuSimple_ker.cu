@@ -121,13 +121,13 @@ void Resety(unsigned n,unsigned ini,float3 *v,cudaStream_t stm){
 
 //==========Include DP without softening for testing===
 //==============================================================================
-__device__ void GetStressInvariant(float sigmaxx, float sigmayy, float sigmazz, float sigmaxy, float sigmayz, float sigmaxz,float &I1,float &J2)
+__device__ void GetStressInvariant(double sigmaxx, double sigmayy, double sigmazz, double sigmaxy, double sigmayz, double sigmaxz,double &I1,double &J2)
 {
   I1= sigmaxx + sigmayy + sigmazz;
   J2=((sigmaxx-sigmazz)*(sigmaxx-sigmazz)+(sigmayy-sigmazz)*(sigmayy-sigmazz)+(sigmayy-sigmaxx)*(sigmayy-sigmaxx))/6.f+sigmaxy*sigmaxy+sigmayz*sigmayz+sigmaxz*sigmaxz;
 }
 
-__device__ void GetDPYieldFunction(float &f, float I1, float J2, const float DP_phi, const float DP_kc)
+__device__ void GetDPYieldFunction(double &f, double I1, double J2, const float DP_phi, const float DP_kc)
 {
    f=sqrt(J2)+DP_phi*I1-DP_kc;
 }
@@ -151,9 +151,9 @@ __device__ void UpdateDPvars(float &DP_phi, float &DP_kc, float &DP_psi,const fl
 		DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
 	}
 }
-__device__ void Updatedfdk(float &dfdk,const float phi_p,const float phi_r, const float n_p
+__device__ void Updatedfdk(double &dfdk,const float phi_p,const float phi_r, const float n_p
 						  ,const float coh_p,const float coh_r,const float n_c,const float psi,const float kplastic
-						  ,const float I1,const TpDPCtes dpctes)
+						  ,const double I1,const TpDPCtes dpctes)
 {
 	float phi = phi_r + (phi_p - phi_r)*exp(-n_p*kplastic);
 	float coh = coh_r + (coh_p - coh_r)*exp(-n_c*kplastic);
@@ -181,26 +181,27 @@ __device__ void Updatedfdk(float &dfdk,const float phi_p,const float phi_r, cons
 	dfdk = I1*dalphadphi*dphidk - (dkcdcoh*dcohdk + dkcdphi*dphidk);
 }
 
-__device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2 sigma_yz_zz
+__device__ void ConsRelationEP_fast(double2 sigma_xx_xy,double2 sigma_xz_yy,double2 sigma_yz_zz
 		, const float E_ModulusK, const float E_ModulusG, const float dp_phi, const float dp_kc, const float dp_psi
 		, float kplastic
-        , float2 &nsigma_xx_xy,float2 &nsigma_xz_yy,float2 &nsigma_yz_zz, float& nkplastic)
-{// simple return mapping Bui et al. 2021; single floating precisions
-    float tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, tk;// trial value
-	float ModulusK = E_ModulusK;
-	float ModulusG = E_ModulusG;
+        , double2 &nsigma_xx_xy,double2 &nsigma_xz_yy,double2 &nsigma_yz_zz, float& nkplastic)
+{// simple return mapping Bui et al. 2021; double stress, float material/history parameters
+    double tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz;// trial value
+    float tk;
+	double ModulusK = E_ModulusK;
+	double ModulusG = E_ModulusG;
     float DP_phi= dp_phi;
     float DP_kc = dp_kc;
     float DP_psi= dp_psi;
 	//Build Elastic stiffness matrix
-	float K4G3 = float(ModulusK + 4.f*ModulusG/3.f);
-	float K2G3 = float(ModulusK- 2.f*ModulusG/3.f);
+	double K4G3 = ModulusK + 4.f*ModulusG/3.f;
+	double K2G3 = ModulusK- 2.f*ModulusG/3.f;
 	//Build Inversed elastic stiffness matrix
-	float invK4G3 = (K2G3 + K4G3) / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invK2G3 = -K2G3 / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invm_a11 = invK4G3; float invm_a12 = invK2G3; float invm_a13 = invK2G3;
-	float invm_a21 = invK2G3; float invm_a22 = invK4G3; float invm_a23 = invK2G3;
-	float invm_a31 = invK2G3; float invm_a32 = invK2G3; float invm_a33 = invK4G3;
+	double invK4G3 = (K2G3 + K4G3) / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
+	double invK2G3 = -K2G3 / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
+	double invm_a11 = invK4G3; double invm_a12 = invK2G3; double invm_a13 = invK2G3;
+	double invm_a21 = invK2G3; double invm_a22 = invK4G3; double invm_a23 = invK2G3;
+	double invm_a31 = invK2G3; double invm_a32 = invK2G3; double invm_a33 = invK4G3;
 	//trail stress from elastic update
     tsigma_xx = sigma_xx_xy.x;
     tsigma_yy = sigma_xz_yy.y;
@@ -209,7 +210,7 @@ __device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2
     tsigma_yz = sigma_yz_zz.x;
     tsigma_xz = sigma_xz_yy.x;
 	tk = kplastic;
-	float f=0, I1=0, J2=0;
+	double f=0, I1=0, J2=0;
 	float err = 1e-5f;
 	GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 	GetDPYieldFunction(f,I1,J2,DP_phi,DP_kc);
@@ -224,18 +225,18 @@ __device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2
 		nsigma_xz_yy.x = tsigma_xz;
 	}	
 	else {//plastic corrector
-		float dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
+		double dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
 			 , depsp_xx = 0, depsp_yy = 0, depsp_zz = 0, depsp_xy = 0, depsp_yz = 0, depsp_xz = 0, dk = 0;
 			//MODIFY PLASTIC MULTIPLFY
-			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG);
-			float GJ2=ModulusG/sqrt(J2);
+			double dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG);
+			double GJ2=ModulusG/sqrt(J2);
 			//evaluate De : plastic potential
-			float Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
-			float Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
-			float Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
-			float Deppxy = GJ2*tsigma_xy;
-			float Deppyz = GJ2*tsigma_yz;
-			float Deppxz = GJ2*tsigma_xz;
+			double Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
+			double Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
+			double Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
+			double Deppxy = GJ2*tsigma_xy;
+			double Deppyz = GJ2*tsigma_yz;
+			double Deppxz = GJ2*tsigma_xz;
 			//Compute plastic stress increment
 			dsigmap_xx = dlambda*Deppxx;
 			dsigmap_yy = dlambda*Deppyy;
@@ -258,21 +259,21 @@ __device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2
 			depsp_yz = 0.5f/ModulusG*dsigmap_yz;
 			depsp_xz = 0.5f/ModulusG*dsigmap_xz; 
 			//bulk plastic strain increment
-			float depsp_b = (depsp_xx + depsp_yy + depsp_zz)/3.f;
+			double depsp_b = (depsp_xx + depsp_yy + depsp_zz)/3.f;
 			//deviatoric trail plastic strain
-			float dtepsp_xx = depsp_xx - depsp_b;
-			float dtepsp_yy = depsp_yy - depsp_b;
-			float dtepsp_zz = depsp_zz - depsp_b;
-			float dtepsp_xy = depsp_xy;
-			float dtepsp_yz = depsp_yz;
-			float dtepsp_xz = depsp_xz;
+			double dtepsp_xx = depsp_xx - depsp_b;
+			double dtepsp_yy = depsp_yy - depsp_b;
+			double dtepsp_zz = depsp_zz - depsp_b;
+			double dtepsp_xy = depsp_xy;
+			double dtepsp_yz = depsp_yz;
+			double dtepsp_xz = depsp_xz;
 			//Update internal variable
 			dk = sqrt((2.f/3.f)*(dtepsp_xx*dtepsp_xx+dtepsp_yy*dtepsp_yy+dtepsp_zz*dtepsp_zz+2.f*dtepsp_xy*dtepsp_xy+2.f*dtepsp_yz*dtepsp_yz+2.f*dtepsp_xz*dtepsp_xz));
-			tk = tk + dk;
+			tk = float(double(tk) + dk);
 			//Update stress invariant
 			GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 
-			float kalpha = DP_kc / DP_phi;
+			double kalpha = DP_kc / DP_phi;
 			
 			if (I1 > kalpha)// I1 > kalpha check tensile cracking & perform stress scaling
 			{
@@ -281,7 +282,7 @@ __device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
+			double fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;
@@ -303,15 +304,16 @@ __device__ void ConsRelationEP_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2
 	}
 }
 
-__device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,float2 sigma_yz_zz
+__device__ void ConsRelationEPsft_fast(double2 sigma_xx_xy,double2 sigma_xz_yy,double2 sigma_yz_zz
 		, const float E_ModulusK, const float E_ModulusG, const float MC_phi, const float MC_phir, const float n_phi
 		, const float MC_c, const float MC_cr, const float n_coh, const float MC_psi
 		, const TpDPCtes dpctes, float kplastic
-        , float2 &nsigma_xx_xy,float2 &nsigma_xz_yy,float2 &nsigma_yz_zz, float& nkplastic)
-{// simple return mapping Bui et al. 2021; single floating precisions
-    float tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, tk;// trial value
-	float ModulusK = E_ModulusK;
-	float ModulusG = E_ModulusG;
+        , double2 &nsigma_xx_xy,double2 &nsigma_xz_yy,double2 &nsigma_yz_zz, float& nkplastic)
+{// simple return mapping Bui et al. 2021; double stress, float material/history parameters
+    double tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz;// trial value
+    float tk;
+	double ModulusK = E_ModulusK;
+	double ModulusG = E_ModulusG;
 	const float phi_p = MC_phi;
 	const float phi_r = MC_phir;
 	const float n_p   = n_phi;
@@ -330,7 +332,7 @@ __device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,flo
 	//evaluate yeild condition
 	float DP_phi=0, DP_kc=0, DP_psi=0;
 	UpdateDPvars(DP_phi,DP_kc,DP_psi,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,dpctes);
-	float f=0, I1=0, J2=0;
+	double f=0, I1=0, J2=0;
 	float err = 1e-5f;
 	GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 	GetDPYieldFunction(f,I1,J2,DP_phi,DP_kc);
@@ -345,23 +347,23 @@ __device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,flo
 		nsigma_xz_yy.x = tsigma_xz;
 	}	
 	else {//plastic corrector
-		float dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
+		double dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
 			 , dk = 0;;
 			//kplastic related term
-			float dfdk = 0;
+			double dfdk = 0;
 			Updatedfdk(dfdk,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,I1,dpctes);
 			const float dkflowcoef = sqrt((2.f/3.f)*(3.f*DP_psi*DP_psi+0.5f));
-			float extra = dfdk*dkflowcoef;			
+			double extra = dfdk*dkflowcoef;			
 			//MODIFY PLASTIC MULTIPLFY
-			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
+			double dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
 			//evaluate De : plastic potential
-			float GJ2 = ModulusG / sqrt(J2);
-			float Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
-			float Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
-			float Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
-			float Deppxy = GJ2*tsigma_xy;
-			float Deppyz = GJ2*tsigma_yz;
-			float Deppxz = GJ2*tsigma_xz;
+			double GJ2 = ModulusG / sqrt(J2);
+			double Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
+			double Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
+			double Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
+			double Deppxy = GJ2*tsigma_xy;
+			double Deppyz = GJ2*tsigma_yz;
+			double Deppxz = GJ2*tsigma_xz;
 			//Compute plastic stress increment
 			dsigmap_xx = dlambda*Deppxx;
 			dsigmap_yy = dlambda*Deppyy;
@@ -378,10 +380,10 @@ __device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,flo
 			tsigma_xz = tsigma_xz - dsigmap_xz;
 			//Update internal variable using the same equivalent plastic-strain norm as the consistency term.
 			dk = dlambda*dkflowcoef;
-			tk = tk + dk;
+			tk = float(double(tk) + dk);
 			//Update stress invariant
 			GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
-			float kalpha = DP_kc / DP_phi;
+			double kalpha = DP_kc / DP_phi;
 			
 			if (I1 > kalpha)// I1 > kalpha check tensile cracking & perform stress scaling
 			{
@@ -390,7 +392,7 @@ __device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,flo
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
+			double fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;
@@ -426,12 +428,12 @@ __device__ void ConsRelationEPsft_fast(float2 sigma_xx_xy,float2 sigma_xz_yy,flo
 template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepVerlet
   (unsigned n,unsigned npb,float rhopzero,float rhopoutmin,float rhopoutmax
   ,const float4 *velrhop1,const float4 *velrhop2
-  ,const float2 *sigma2,const float *kplastic2,const float2 *rsigma
+  ,const double2 *sigma2,const float *kplastic2,const float2 *rsigma
   ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel,const float4 *nopenshift
   ,TpMdbc2Mode mdbc2
   ,double dt,double dt205,double dt2,float3 gravity
   ,double2 *movxy,double *movz,typecode *code,float4 *velrhopnew
-  ,float2 *sigma,float *kplastic,float *kplasticdk)
+  ,double2 *sigma,float *kplastic,float *kplasticdk)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -453,9 +455,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       const float rhopnew=float(double(velrhop2[p].w)+dt2*ar[p]);
       float4 rvel1=velrhop1[p];
       //==== mdbr ===
-      float2 sigmanew_xx_xy=sigma2[p*3];
-      float2 sigmanew_xz_yy=sigma2[p*3+1]; 
-      float2 sigmanew_yz_zz=sigma2[p*3+2];
+      double2 sigmanew_xx_xy=sigma2[p*3];
+      double2 sigmanew_xz_yy=sigma2[p*3+1]; 
+      double2 sigmanew_yz_zz=sigma2[p*3+2];
       float kplasticnew=0;
       if(!floating || CODE_IsFluid(rcode)){ //-Particles: Fluid.
         //-Calculate displacement. | Calcula desplazamiento.
@@ -494,14 +496,14 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           }
         }
         //-Calculate elastic stress
-        float2 sigma_e_xx_xy=make_float2(0,0);float2 sigma_e_xz_yy=make_float2(0,0);float2 sigma_e_yz_zz=make_float2(0,0);
+        double2 sigma_e_xx_xy=make_double2(0,0);double2 sigma_e_xz_yy=make_double2(0,0);double2 sigma_e_yz_zz=make_double2(0,0);
         float kplasticold = kplastic2[p];
-        sigma_e_xx_xy.x = float(double(sigma2[p*3].x)   + rsigma[p*3].x   * dt2);
-        sigma_e_xz_yy.y = float(double(sigma2[p*3+1].y) + rsigma[p*3+1].y * dt2);
-        sigma_e_yz_zz.y = float(double(sigma2[p*3+2].y) + rsigma[p*3+2].y * dt2);
-        sigma_e_xx_xy.y = float(double(sigma2[p*3].y)   + rsigma[p*3].y   * dt2);
-        sigma_e_yz_zz.x = float(double(sigma2[p*3+2].x) + rsigma[p*3+2].x * dt2);
-        sigma_e_xz_yy.x = float(double(sigma2[p*3+1].x) + rsigma[p*3+1].x * dt2);
+        sigma_e_xx_xy.x = double(sigma2[p*3].x)   + rsigma[p*3].x   * dt2;
+        sigma_e_xz_yy.y = double(sigma2[p*3+1].y) + rsigma[p*3+1].y * dt2;
+        sigma_e_yz_zz.y = double(sigma2[p*3+2].y) + rsigma[p*3+2].y * dt2;
+        sigma_e_xx_xy.y = double(sigma2[p*3].y)   + rsigma[p*3].y   * dt2;
+        sigma_e_yz_zz.x = double(sigma2[p*3+2].x) + rsigma[p*3+2].x * dt2;
+        sigma_e_xz_yy.x = double(sigma2[p*3+1].x) + rsigma[p*3+1].x * dt2;
         //-Update DP constants
         const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
@@ -566,11 +568,11 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
 }
 template<TpDPCtes dpctes> void ComputeStepVerletT(bool floating,bool shift,bool inout,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhop1,const float4 *velrhop2
-  ,const tsymatrix3f *sigma2,const float*kplastic2,const tsymatrix3f *rsigma
+  ,const tsymatrix3d *sigma2,const float*kplastic2,const tsymatrix3f *rsigma
   ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel,const float4 *nopenshift
   ,double dt,double dt2,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhopnew
-  ,tsymatrix3f *sigmanew,float *kplasticnew,float *kplasticdk
+  ,tsymatrix3d *sigmanew,float *kplasticnew,float *kplasticdk
   ,cudaStream_t stm)
   {
     double dt205=(0.5*dt*dt);
@@ -578,20 +580,20 @@ template<TpDPCtes dpctes> void ComputeStepVerletT(bool floating,bool shift,bool 
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     if(inout){      const bool tinout=true;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
-        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
+        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
+        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
-        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
+        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
+        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
       }
     }
     else{           const bool tinout=false;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
-        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
+        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
+        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
-        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const float2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(float2*)sigmanew,kplasticnew,kplasticdk);
+        if(floating)KerComputeStepVerlet<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
+        else        KerComputeStepVerlet<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,rhopzero,rhopoutmin,rhopoutmax,velrhop1,velrhop2,(const double2*)sigma2,kplastic2,(const float2*)rsigma,ar,ace,shiftposfs,indirvel,nopenshift,mdbc2,dt,dt205,dt2,Float3(gravity),movxy,movz,code,velrhopnew,(double2*)sigmanew,kplasticnew,kplasticdk);
       }
     }
   }  
@@ -602,11 +604,11 @@ template<TpDPCtes dpctes> void ComputeStepVerletT(bool floating,bool shift,bool 
 //==============================================================================
 void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhop1,const float4 *velrhop2
-  ,const tsymatrix3f *sigma2,const float*kplastic2,const tsymatrix3f *rsigma
+  ,const tsymatrix3d *sigma2,const float*kplastic2,const tsymatrix3f *rsigma
   ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel,const float4 *nopenshift
   ,double dt,double dt2,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhopnew
-  ,tsymatrix3f *sigmanew,float *kplasticnew,float *kplasticdk
+  ,tsymatrix3d *sigmanew,float *kplasticnew,float *kplasticdk
   ,cudaStream_t stm)
 {
   //cudaProfilerStart();//mdbr
@@ -635,10 +637,10 @@ void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdb
 template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepSymplecticPre
   (unsigned n,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const float2 *sigmapre,const float *kplasticpre,const float2 *rsigma
+  ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,float2 *sigma,float *kplastic,float *kplasticdk)
+  ,double2 *sigma,float *kplastic,float *kplasticdk)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -661,10 +663,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       float4 rvelrhopnew=rvelrhoppre;
       rvelrhopnew.w=float(double(rvelrhoppre.w)+dtm*ar[p]);
       //==== mdbr ==
-      float2 sigmapre_xx_xy=sigmapre[p*3];
-	  float2 sigmapre_xz_yy=sigmapre[p*3+1];
-	  float2 sigmapre_yz_zz=sigmapre[p*3+2];
-      float2 sigmanew_xx_xy=sigmapre_xx_xy;float2 sigmanew_xz_yy=sigmapre_xz_yy; float2 sigmanew_yz_zz=sigmapre_yz_zz;      
+      double2 sigmapre_xx_xy=sigmapre[p*3];
+	  double2 sigmapre_xz_yy=sigmapre[p*3+1];
+	  double2 sigmapre_yz_zz=sigmapre[p*3+2];
+      double2 sigmanew_xx_xy=sigmapre_xx_xy;double2 sigmanew_xz_yy=sigmapre_xz_yy; double2 sigmanew_yz_zz=sigmapre_yz_zz;      
       float kplasticnew=0;
       if(!floating || CODE_IsFluid(rcode)){ //-Particles: Fluid.
         //-Calculate displacement. | Calcula desplazamiento.
@@ -687,14 +689,14 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         float2 rsigma_xx_xy=rsigma[p*3];
 	    float2 rsigma_xz_yy=rsigma[p*3+1];
         float2 rsigma_yz_zz=rsigma[p*3+2];
-        float2 sigma_e_xx_xy=make_float2(0,0);   float2 sigma_e_xz_yy=make_float2(0,0);   float2 sigma_e_yz_zz=make_float2(0,0);
+        double2 sigma_e_xx_xy=make_double2(0,0);   double2 sigma_e_xz_yy=make_double2(0,0);   double2 sigma_e_yz_zz=make_double2(0,0);
         float kplasticold = kplasticpre[p];
-        sigma_e_xx_xy.x = float(double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dtm);
-        sigma_e_xz_yy.y = float(double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dtm);
-        sigma_e_yz_zz.y = float(double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dtm);
-        sigma_e_xx_xy.y = float(double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dtm);
-        sigma_e_yz_zz.x = float(double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dtm);
-        sigma_e_xz_yy.x = float(double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dtm);
+        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dtm;
+        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dtm;
+        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dtm;
+        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dtm;
+        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dtm;
+        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dtm;
 		//-Update DP constants
         const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
@@ -754,30 +756,30 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
 //==============================================================================
 template<TpDPCtes dpctes> void ComputeStepSymplecticPreT(bool floating,bool shift,bool inout,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const tsymatrix3f *sigmapre,const float *kplasticpre,const tsymatrix3f *rsigma
+  ,const tsymatrix3d *sigmapre,const float *kplasticpre,const tsymatrix3f *rsigma
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,tsymatrix3f *sigma,float *kplastic,float *kplasticdk
+  ,tsymatrix3d *sigma,float *kplastic,float *kplasticdk
   ,cudaStream_t stm)
 {
 	if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     if(inout){      const bool tinout=true;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }
     }
     else{           const bool tinout=false;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }
     }
   }
@@ -788,10 +790,10 @@ template<TpDPCtes dpctes> void ComputeStepSymplecticPreT(bool floating,bool shif
 //==============================================================================   
 void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpctes,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const tsymatrix3f *sigmapre,const float *kplasticpre,const tsymatrix3f *rsigma
+  ,const tsymatrix3d *sigmapre,const float *kplasticpre,const tsymatrix3f *rsigma
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,tsymatrix3f *sigma,float *kplastic,float *kplasticdk
+  ,tsymatrix3d *sigma,float *kplastic,float *kplasticdk
   ,cudaStream_t stm)
 {
   //cudaProfilerStart();//mdbr
@@ -823,10 +825,10 @@ void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpcte
 template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepSymplecticCor
   (unsigned n,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const float2 *sigmapre,const float *kplasticpre,const float2 *rsigma
+  ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma
   ,const float3 *indirvel,const float4 *nopenshift,TpMdbc2Mode mdbc2,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,float2 *sigma,float *kplastic,float *kplasticdk)
+  ,double2 *sigma,float *kplastic,float *kplasticdk)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -853,10 +855,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       rvelrhopnew.w=float(double(rvelrhoppre.w)+dt*ar[p]);
       //==== mdbr ==
      //==== mdbr ==
-      float2 sigmapre_xx_xy=sigmapre[p*3];
-      float2 sigmapre_xz_yy=sigmapre[p*3+1];
-	  float2 sigmapre_yz_zz=sigmapre[p*3+2];
-      float2 sigmanew_xx_xy=sigmapre_xx_xy;float2 sigmanew_xz_yy=sigmapre_xz_yy; float2 sigmanew_yz_zz=sigmapre_yz_zz;      
+      double2 sigmapre_xx_xy=sigmapre[p*3];
+      double2 sigmapre_xz_yy=sigmapre[p*3+1];
+	  double2 sigmapre_yz_zz=sigmapre[p*3+2];
+      double2 sigmanew_xx_xy=sigmapre_xx_xy;double2 sigmanew_xz_yy=sigmapre_xz_yy; double2 sigmanew_yz_zz=sigmapre_yz_zz;      
       float kplasticnew=0;
       if(!floating || CODE_IsFluid(rcode)){//-Particles: Fluid.
         //-Calculate velocity. | Calcula velocidad.
@@ -890,20 +892,20 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         }
         bool outrhop=(rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax);
         //-Calculate elastic stress
-        float2 sigmapre_xx_xy=sigmapre[p*3];
-	    float2 sigmapre_xz_yy=sigmapre[p*3+1];
-	    float2 sigmapre_yz_zz=sigmapre[p*3+2];
+        double2 sigmapre_xx_xy=sigmapre[p*3];
+	    double2 sigmapre_xz_yy=sigmapre[p*3+1];
+	    double2 sigmapre_yz_zz=sigmapre[p*3+2];
         float2 rsigma_xx_xy=rsigma[p*3];
 	    float2 rsigma_xz_yy=rsigma[p*3+1];
 	    float2 rsigma_yz_zz=rsigma[p*3+2];
-        float2 sigma_e_xx_xy=make_float2(0,0);float2 sigma_e_xz_yy=make_float2(0,0);float2 sigma_e_yz_zz=make_float2(0,0);
+        double2 sigma_e_xx_xy=make_double2(0,0);double2 sigma_e_xz_yy=make_double2(0,0);double2 sigma_e_yz_zz=make_double2(0,0);
         float kplasticold = kplasticpre[p];
-        sigma_e_xx_xy.x = float(double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dt);
-        sigma_e_xz_yy.y = float(double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dt);
-        sigma_e_yz_zz.y = float(double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dt);
-        sigma_e_xx_xy.y = float(double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dt);
-        sigma_e_yz_zz.x = float(double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dt);
-        sigma_e_xz_yy.x = float(double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dt);
+        sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dt;
+        sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dt;
+        sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dt;
+        sigma_e_xx_xy.y = double(sigmapre_xx_xy.y) + double(rsigma_xx_xy.y) * dt;
+        sigma_e_yz_zz.x = double(sigmapre_yz_zz.x) + double(rsigma_yz_zz.x) * dt;
+        sigma_e_xz_yy.x = double(sigmapre_xz_yy.x) + double(rsigma_xz_yy.x) * dt;
         //-Update DP constants
         const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         float phi=SOILSCTE.phi;
@@ -969,30 +971,30 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
 //==============================================================================  
 template<TpDPCtes dpctes> void ComputeStepSymplecticCorT(bool floating,bool shift,bool inout,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const tsymatrix3f* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
+  ,const tsymatrix3d* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
   ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,tsymatrix3f* sigma,float* kplastic,float* kplasticdk 
+  ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk 
   ,cudaStream_t stm)
 {
 	if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     if(inout){      const bool tinout=true;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }
     }
     else{           const bool tinout=false;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const float2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(float2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
       }
     }
   }
@@ -1003,10 +1005,10 @@ template<TpDPCtes dpctes> void ComputeStepSymplecticCorT(bool floating,bool shif
 //==============================================================================   
 void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
-  ,const tsymatrix3f* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
+  ,const tsymatrix3d* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
   ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,tsymatrix3f* sigma,float* kplastic,float* kplasticdk
+  ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk
   ,cudaStream_t stm)
 {
   //cudaProfilerStart();//mdbr

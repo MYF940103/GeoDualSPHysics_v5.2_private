@@ -1,0 +1,209 @@
+{
+  "passed": true,
+  "completions": {
+    "CPU": {
+      "actual_time_s": 72.88429001193495,
+      "tv": 2.0000001179469327,
+      "completion": {
+        "mode": "production_symplectic",
+        "steps": 7288429,
+        "stride": 1000,
+        "dt": 1e-05,
+        "initial_time": 0,
+        "final_time": 72.88429001193495,
+        "native_step_calls": 7288429,
+        "snapshot_part": 0,
+        "normal_soil": 1000,
+        "xi": 0.1,
+        "stress_grad_corr": true,
+        "top_load_mode": 5,
+        "save_parts": true,
+        "saved_parts": 7290,
+        "sampled_frames": 7290,
+        "elapsed_seconds": 69785.1810867,
+        "max_fixed_dt_minus_mechanical_limit_s": -1.7976931348623157e+308,
+        "pore_dt_limit_s": 4.766031799450808e-05,
+        "sample_stage": "full_step",
+        "boundary_diagnostic_phase": "last_corrector_or_SaveData_classification_not_fresh_force",
+        "single_loaded_column": "material_top_layer_reference_not_actual_mode5_loaded_set",
+        "physical_configuration_overridden": false,
+        "exact_hot_restart": false,
+        "physical_accuracy_accepted": false
+      }
+    },
+    "GPU": {
+      "actual_time_s": 72.88429001193495,
+      "tv": 2.0000001179469327,
+      "completion": {
+        "completed": true,
+        "steps": 7288429,
+        "dt": 1e-05,
+        "stride": 1000,
+        "sampled_frames": 7290,
+        "final_time": 72.88429001193495,
+        "elapsed_seconds": 33148.2857822,
+        "max_fixed_dt_minus_mechanical_limit_s": -1.7976931348623157e+308,
+        "force_calls": 14576858,
+        "rate_calls": 14576858,
+        "rate_calculations": 7288430,
+        "rate_cache_hits": 7288428,
+        "max_dt_over_tau": 0.007979028382650454,
+        "spin_bound": 0.00012109620237625822,
+        "max_net_hg_force": 3.565206345351201e-14,
+        "max_actual_net_hg_force": 1.2554941573287944e-05,
+        "production_step_used": true,
+        "physical_acceptance": false
+      }
+    }
+  },
+  "metrics": {
+    "CPU": {
+      "final": {
+        "time_s": 72.88429001193495,
+        "mean_pressure_pa": 57.49333509469032,
+        "top_settlement_mm": 3.6587539755137515,
+        "bottom_settlement_mm": 0.019328923295954762,
+        "total_stress_Q_pa": 10.11775278729023,
+        "max_layer_total_error_pa": 50.55968038709398,
+        "top_gap_pa": 4.539636521671127,
+        "load_resultant_N_m": -1000.0000333213806,
+        "max_abs_dx_mm": 3.895686044586011e-06,
+        "max_layer_z_span_mm": 1.9900701087038897e-06,
+        "backend": "CPU",
+        "tv": 2.0000001179469327,
+        "classical_top_mm": 3.674062452984072,
+        "finite_kw_top_mm": 3.673717229720707
+      },
+      "profile_rmse_by_tv": {
+        "0.1": 11.190554222583435,
+        "0.2": 8.264784507549832,
+        "0.4": 6.914199461828753,
+        "0.5": 6.745103740980392,
+        "0.7": 6.111044118693231,
+        "1.0": 4.539739951554929,
+        "1.5": 2.1662067792739284,
+        "2.0": 0.8833200345467227
+      },
+      "final_settlement_error_pct": -0.41666350711832
+    },
+    "GPU": {
+      "final": {
+        "time_s": 72.88429001193495,
+        "mean_pressure_pa": 57.49581624603272,
+        "top_settlement_mm": 3.658753661189207,
+        "bottom_settlement_mm": 0.01932796910220705,
+        "total_stress_Q_pa": 10.108109519031537,
+        "max_layer_total_error_pa": 50.53535052874213,
+        "top_gap_pa": 4.53878024819096,
+        "load_resultant_N_m": -1000.0000140248984,
+        "max_abs_dx_mm": 4.040163224805493e-06,
+        "max_layer_z_span_mm": 1.933375570750684e-06,
+        "backend": "GPU",
+        "tv": 2.0000001179469327,
+        "classical_top_mm": 3.674062452984072,
+        "finite_kw_top_mm": 3.673717229720707
+      },
+      "profile_rmse_by_tv": {
+        "0.1": 11.19069540155077,
+        "0.2": 8.265565114942897,
+        "0.4": 6.915411648547738,
+        "0.5": 6.7406339446267936,
+        "0.7": 6.111134564655505,
+        "1.0": 4.539147089934975,
+        "1.5": 2.1665885760659154,
+        "2.0": 0.8810943838866556
+      },
+      "final_settlement_error_pct": -0.4166720623497211
+    }
+  },
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_full_2tv_r1_pair.check.json",
+      "sha256": "8E0130C182934214B3E51EAF3B2F962C753BAEF909B394F48AD0A51DC810EB10"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\gpu_full_review.py",
+      "sha256": "12277C8859379A4EB713644E17B9FA71D1837092870E873827F6583B5C0E0596"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_full_2tv_cpu_r1.run.json",
+      "sha256": "FAEEC0909D7AEB227DB5DD539C1A1AA9ECB3BECB573D9303B453E0E4E54DF430"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1\\complete.json",
+      "sha256": "78F938BD959C100409F37693D7B99BFB63156D6DD41CC7082F728D3C4FC20D2A"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1\\hourglass.csv",
+      "sha256": "80F094A9BEDBCD418D1B703A4920205869280628A2B8041B349E58B8B0BFC537"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1\\hourglass_final.csv",
+      "sha256": "D86D7DE7CFB8A6689BDB7B9C3D1983CB7323B3B8A64163C1A91D1ED8EBC0A984"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1\\state.csv",
+      "sha256": "2DDC35F74B4CFE585B4A6D047E4CC52EA9DF0A52B2D2695BD3ADAC4432C4A87E"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1_input\\CaseTCq0_gpu_full_2tv_cpu_r1.xml",
+      "sha256": "699C4216D27B4C740BF9922DA68963DEB7490FBF75BF2651530F15E7C4281259"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_full_2tv_gpu_r1.run.json",
+      "sha256": "6EF26B3F8DEB87D22BF90683A1E992AA6E79BC335BB47A05D8E388FD70C55117"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1\\complete.json",
+      "sha256": "47E5D572FA1FBF27278DE31FD3900EFD845AE3A921CDD56E98D1532E658245F5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1\\hourglass.csv",
+      "sha256": "A417F426CF6E46461AB1D3B683A871F98556F28AD204322A961686633E957E59"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1\\hourglass_final.csv",
+      "sha256": "E12333A574980EB78ED60A01A0A18BCE2CD07568AB15DADEF0A5A8AD66875CC0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1\\state.csv",
+      "sha256": "CD5836C589DDBDB2D88554F0211C166465D23D72473B0CBE95D4E213A32895DF"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1_input\\CaseTCq0_gpu_full_2tv_gpu_r1.xml",
+      "sha256": "699C4216D27B4C740BF9922DA68963DEB7490FBF75BF2651530F15E7C4281259"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_cpu_r1\\hourglass.csv",
+      "sha256": "80F094A9BEDBCD418D1B703A4920205869280628A2B8041B349E58B8B0BFC537"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_full_2tv_gpu_r1\\hourglass.csv",
+      "sha256": "A417F426CF6E46461AB1D3B683A871F98556F28AD204322A961686633E957E59"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_history.csv",
+      "sha256": "CE3F8E46A36DB75211CA9B293B1A9679D6E54DF365255D75A5AA0AE9FE3FB1BC"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_profiles.csv",
+      "sha256": "04ECB2D925BBA359C8BE278B7EBD4F6FE264019B4F5D06E87BF4A9DB5B3A06A1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_history.png",
+      "sha256": "82F264E9918366C57F8D6DE6326B25B2B1311A8EE871F4BD35B55A10CCAD3499"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_profiles.png",
+      "sha256": "B07094638313D767C9BCED5A2F78EC908D270B771F37730D71375F910422AAFD"
+    }
+  ],
+  "visual_review_pending": true,
+  "physical_acceptance": false,
+  "limitations": [
+    "Elastic, small rotation, fixed plane, xi=.1, eta=.04, fresh HG starts only",
+    "Ideal theory omits dynamic load ramp; material-top settlement differs from H-top settlement",
+    "15-s half validation only; no full-cycle half-step trajectory",
+    "Old late-Q trend disclosed; user provisionally accepted 1D accuracy on Oct16"
+  ]
+}

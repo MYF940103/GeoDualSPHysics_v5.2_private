@@ -1,0 +1,97 @@
+{
+  "settings": {
+    "label": "gpu_spr_15_c_r1",
+    "duration_s": 15.0,
+    "duration_text": "15",
+    "dt": 1e-05,
+    "dt_text": "0.00001",
+    "steps": 1500000,
+    "stride": 100,
+    "output_interval_s": 0.001,
+    "output_interval_text": "0.001",
+    "xi": 0.1,
+    "xi_text": "0.1",
+    "top_load_mode": 5,
+    "grad_corr": 1,
+    "engine": "gpu_production_step",
+    "threads": 1,
+    "save": 0,
+    "spr": 1,
+    "event_grid": 1,
+    "damping_text": "0.04"
+  },
+  "prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_15_c_r1_input\\CaseTCq0_gpu_spr_15_c_r1",
+  "definition": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\CaseTCq0_gpu_spr_15_c_r1_Def.xml",
+  "frozen_source_inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\stress_full_r1_dt1\\CaseTCq0_stress_dt1.xml",
+      "bytes": 13080,
+      "sha256": "058518a68ddcf8ef895df3cab9daf2253e2b23315410edb2f968e29a3307c38d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\stress_full_r1_dt1\\CaseTCq0_stress_dt1.bi4",
+      "bytes": 47179,
+      "sha256": "ffd1005a9b320c73ac409f4ca4212caecd5cf57834affb03c5ccfb3b5b256d01"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\stress_full_r1_dt1\\CaseTCq0_stress_dt1_Normals.nbi4",
+      "bytes": 1474,
+      "sha256": "01af0a205c75d3f03e844f5469417d5788ceb16def21ed1d025ea300211821c9"
+    }
+  ],
+  "template": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\CaseTCq0_hg_merge_Def.xml",
+    "bytes": 9985,
+    "sha256": "19071df5d3f3a7847594ee4b6445d7ef2f5ddbcd47c262eebf2d811c419e74ca"
+  },
+  "snapshot": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\hg_merge_base.json",
+    "bytes": 170038,
+    "sha256": "fad78652111760ce9c98d966a62bbe4b283e793ccd018c764dffeb0e9aded3cf"
+  },
+  "preparation": "Retained GenCase particles/normals copied byte-for-byte after unchanged casedef/physics check",
+  "approved_changes": [
+    "DtFixed",
+    "DtIni",
+    "HydroMechDrainageFixedGrid",
+    "HydroMechTopLoadMode",
+    "SoilBoundaryDerivativeSPR",
+    "SoilDampingCoef",
+    "SoilHourglassXi",
+    "SoilStressRateGradCorr",
+    "TimeMax",
+    "TimeOut"
+  ],
+  "native_id_range": [
+    0,
+    1039
+  ],
+  "soil_id_range": [
+    40,
+    1039
+  ],
+  "physical_accuracy_accepted": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\CaseTCq0_gpu_spr_15_c_r1_Def.xml",
+      "bytes": 10259,
+      "sha256": "c890ce96ac63f5501d4857e53e2f64d9f3cba9cd06a5969e793a56ffe967edb5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_15_c_r1_input\\CaseTCq0_gpu_spr_15_c_r1.bi4",
+      "bytes": 47179,
+      "sha256": "ffd1005a9b320c73ac409f4ca4212caecd5cf57834affb03c5ccfb3b5b256d01"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_15_c_r1_input\\CaseTCq0_gpu_spr_15_c_r1.xml",
+      "bytes": 13431,
+      "sha256": "6d6d9f2e1171646ac6d85f99404c7cb8d9a49bc718c017d860b6bba418cbfa32"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_15_c_r1_input\\CaseTCq0_gpu_spr_15_c_r1_Normals.nbi4",
+      "bytes": 1474,
+      "sha256": "01af0a205c75d3f03e844f5469417d5788ceb16def21ed1d025ea300211821c9"
+    }
+  ],
+  "created_utc": "2026-10-18T09:44:43.216985+00:00"
+}

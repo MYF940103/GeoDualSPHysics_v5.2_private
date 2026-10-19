@@ -456,6 +456,10 @@ rem ***Sentencia de compilacion
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
     </CudaCompile>
+    <CudaCompile Include="..\source\JSphHourglassGpu_ker.cu">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </CudaCompile>
     <CudaCompile Include="..\source\JSphGpu_InOut_ker.cu">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
@@ -713,6 +717,9 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClInclude Include="..\source\JDsPartsInit.h" />
     <ClInclude Include="..\source\JDsViscoInput.h" />
     <ClInclude Include="..\source\JDsPartsOut.h" />
+    <ClInclude Include="..\source\JSphHourglassCpu.h" />
+    <ClInclude Include="..\source\JSphHourglassGpu.h" />
+    <ClInclude Include="..\source\JSphHourglassGpu_ker.h" />
     <ClInclude Include="..\source\JSphCpuSingle.h" />
     <ClInclude Include="..\source\JTimeControl.h" />
     <ClInclude Include="..\source\JDsOutputTime.h" />
@@ -867,6 +874,11 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClCompile Include="..\source\JDsPartsInit.cpp" />
     <ClCompile Include="..\source\JDsViscoInput.cpp" />
     <ClCompile Include="..\source\JDsPartsOut.cpp" />
+    <ClCompile Include="..\source\JSphHourglassCpu.cpp" />
+    <ClCompile Include="..\source\JSphHourglassGpu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+    </ClCompile>
     <ClCompile Include="..\source\JSphCpuSingle.cpp" />
     <ClCompile Include="..\source\JTimeControl.cpp" />
     <ClCompile Include="..\source\JDsOutputTime.cpp" />

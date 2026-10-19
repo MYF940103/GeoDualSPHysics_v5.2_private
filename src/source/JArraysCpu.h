@@ -96,6 +96,7 @@ public:
    ,SIZE_16B=16
    ,SIZE_24B=24
    ,SIZE_32B=32
+   ,SIZE_48B=48
    ,SIZE_72B=72
   }TpArraySize;  //-Tipos de arrays.
 
@@ -108,17 +109,19 @@ protected:
   JArraysCpuSize *Arrays16b;
   JArraysCpuSize *Arrays24b;
   JArraysCpuSize *Arrays32b;
+  JArraysCpuSize *Arrays48b;
   JArraysCpuSize *Arrays72b;
   
   JArraysCpuSize* GetArrays(TpArraySize tsize)const{ 
-    return(tsize==SIZE_32B? Arrays32b: 
+    return(tsize==SIZE_48B? Arrays48b:
+          (tsize==SIZE_32B? Arrays32b:
           (tsize==SIZE_24B? Arrays24b: 
           (tsize==SIZE_16B? Arrays16b: 
           (tsize==SIZE_12B? Arrays12b: 
           (tsize==SIZE_8B?  Arrays8b: 
           (tsize==SIZE_4B?  Arrays4b: 
           (tsize==SIZE_2B?  Arrays2b:
-          (tsize==SIZE_1B?  Arrays1b: Arrays72b)))))))); 
+          (tsize==SIZE_1B?  Arrays1b: Arrays72b)))))))));
   }
 
 public:
@@ -146,6 +149,7 @@ public:
   tdouble2*    ReserveDouble2(){    return((tdouble2*)Arrays16b->Reserve());    }
   tdouble3*    ReserveDouble3(){    return((tdouble3*)Arrays24b->Reserve());    }
   tsymatrix3f* ReserveSymatrix3f(){ return((tsymatrix3f*)Arrays24b->Reserve()); }
+  tsymatrix3d* ReserveSymatrix3d(){ return((tsymatrix3d*)Arrays48b->Reserve()); }
   tmatrix2d*   ReserveMatrix2d(){   return((tmatrix2d*)Arrays32b->Reserve());   }
   tmatrix3d*   ReserveMatrix3d(){   return((tmatrix3d*)Arrays72b->Reserve());   }
 #ifdef CODE_SIZE4
@@ -165,6 +169,7 @@ public:
   void Free(tdouble2    *pointer){ Arrays16b->Free(pointer); }
   void Free(tdouble3    *pointer){ Arrays24b->Free(pointer); }
   void Free(tsymatrix3f *pointer){ Arrays24b->Free(pointer); }
+  void Free(tsymatrix3d *pointer){ Arrays48b->Free(pointer); }
   void Free(tmatrix2d   *pointer){ Arrays32b->Free(pointer); }
   void Free(tmatrix3d   *pointer){ Arrays72b->Free(pointer); }
 };

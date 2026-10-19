@@ -349,6 +349,15 @@ void JCellDivGpu::SortDataArrays(const tsymatrix3f *a,tsymatrix3f *a2){
 }
 
 //==============================================================================
+/// Reorders data arrays according to SortPart (for type tsymatrix3d).
+/// Ordena arrays de datos segun SortPart (para tipo tsymatrix3d).
+//==============================================================================
+void JCellDivGpu::SortDataArrays(const tsymatrix3d *a,tsymatrix3d *a2){
+  const unsigned pini=(DivideFull? 0: NpbFinal);
+  cudiv::SortDataParticles(Nptot,pini,SortPart,a,a2);
+}
+
+//==============================================================================
 /// Reorders data arrays according to SortPart (for type float3).
 /// Ordena arrays de datos segun SortPart (para tipo float3).
 //==============================================================================

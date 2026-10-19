@@ -157,6 +157,7 @@ JArraysGpu::JArraysGpu(){
   Arrays16b=new JArraysGpuSize(16);
   Arrays24b=new JArraysGpuSize(24);
   Arrays32b=new JArraysGpuSize(32);
+  Arrays48b=new JArraysGpuSize(48);
   Arrays72b=new JArraysGpuSize(72);
 }
 
@@ -173,6 +174,7 @@ JArraysGpu::~JArraysGpu(){
   delete Arrays16b;
   delete Arrays24b;
   delete Arrays32b;
+  delete Arrays48b;
   delete Arrays72b;
 }
  
@@ -188,6 +190,7 @@ void JArraysGpu::Reset(){
   Arrays16b->Reset();
   Arrays24b->Reset();
   Arrays32b->Reset();
+  Arrays48b->Reset();
   Arrays72b->Reset();
 }
  
@@ -204,6 +207,7 @@ llong JArraysGpu::GetAllocMemoryGpu()const{
   m+=Arrays16b->GetAllocMemoryGpu();
   m+=Arrays24b->GetAllocMemoryGpu();
   m+=Arrays32b->GetAllocMemoryGpu();
+  m+=Arrays48b->GetAllocMemoryGpu();
   m+=Arrays72b->GetAllocMemoryGpu();
   return(m);
 }
@@ -224,6 +228,7 @@ void JArraysGpu::SetArraySize(unsigned size){
   Arrays16b->SetArraySize(0);
   Arrays24b->SetArraySize(0);
   Arrays32b->SetArraySize(0);
+  Arrays48b->SetArraySize(0);
   Arrays72b->SetArraySize(0);
   //-Allocates memory.
   Arrays1b->SetArraySize(size); 
@@ -234,6 +239,7 @@ void JArraysGpu::SetArraySize(unsigned size){
   Arrays16b->SetArraySize(size);
   Arrays24b->SetArraySize(size);
   Arrays32b->SetArraySize(size);
+  Arrays48b->SetArraySize(size);
   Arrays72b->SetArraySize(size);
 }
 

@@ -90,7 +90,7 @@ void JPartsLoad4::AllocMemory(unsigned count){
       Idp=new unsigned[Count];
       Pos=new tdouble3[Count];
       VelRhop=new tfloat4[Count];
-      Sigma=new tsymatrix3f[Count];
+      Sigma=new tsymatrix3d[Count];
       Kplastic=new float[Count];
       PorePress=new float[Count];
       PorePress0=new float[Count];
@@ -111,7 +111,7 @@ llong JPartsLoad4::GetAllocMemory()const{
   if(Idp)s+=sizeof(unsigned)*Count;
   if(Pos)s+=sizeof(tdouble3)*Count;
   if(VelRhop)s+=sizeof(tfloat4)*Count;
-  if(Sigma)s+=sizeof(tsymatrix3f)*Count;
+  if(Sigma)s+=sizeof(tsymatrix3d)*Count;
   if(Kplastic)s+=sizeof(float)*Count;
   if(PorePress)s+=sizeof(float)*Count;
   if(PorePress0)s+=sizeof(float)*Count;
@@ -212,7 +212,15 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
   CasePosMin=pd.Get_CasePosMin();
   CasePosMax=pd.Get_CasePosMax();
   if(!pd.Get_IdpSimple())Run_Exceptioon("Only Idp (32 bits) is valid at the moment.");
-  SoilDataLoaded=(PartBegin && pd.ArrayExists("Sigma_kk") && pd.ArrayExists("Sigma_ij") && pd.ArrayExists("Kplastic"));
+  //-Prefer the complete double stress state; legacy float output remains readable.
+  const bool sigmadouble=(PartBegin && pd.ArrayExists("SigmaState_kk"));
+  if(PartBegin && sigmadouble!=pd.ArrayExists("SigmaState_ij"))
+    Run_Exceptioon("SigmaState_kk and SigmaState_ij must both be present in the PART file.");
+  if(sigmadouble && !pd.ArrayExists("Kplastic"))
+    Run_Exceptioon("Double stress restart requires Kplastic in the PART file.");
+  const char* sigmakk=(sigmadouble? "SigmaState_kk": "Sigma_kk");
+  const char* sigmaij=(sigmadouble? "SigmaState_ij": "Sigma_ij");
+  SoilDataLoaded=(PartBegin && pd.ArrayExists(sigmakk) && pd.ArrayExists(sigmaij) && pd.ArrayExists("Kplastic"));
   PorePressureDataLoaded=(PartBegin && pd.ArrayExists("PorePress") && pd.ArrayExists("PorePress0"));
   if(PartBegin && pd.ArrayExists("PorePress")!=pd.ArrayExists("PorePress0"))
     Run_Exceptioon("PorePress and PorePress0 must both be present in the PART file.");
@@ -236,13 +244,16 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
     unsigned ntot=0;
     unsigned auxsize=0;
     tfloat3 *auxf3=NULL;
+    tdouble3 *auxd3=NULL;
     float *auxf=NULL;
     for(unsigned piece=0;piece<Npiece;piece++){
       if(piece){
         if(!PartBegin)pd.LoadFileCase(dir,casename,piece,Npiece);
         else pd.LoadFilePart(dir,PartBegin,piece,Npiece);
       }
-      if(SoilDataLoaded && (!pd.ArrayExists("Sigma_kk") || !pd.ArrayExists("Sigma_ij") || !pd.ArrayExists("Kplastic")))
+      if(PartBegin && (pd.ArrayExists("SigmaState_kk")!=sigmadouble || pd.ArrayExists("SigmaState_ij")!=sigmadouble))
+        Run_Exceptioon("Double stress restart array availability is inconsistent across PART pieces.");
+      if(SoilDataLoaded && (!pd.ArrayExists(sigmakk) || !pd.ArrayExists(sigmaij) || !pd.ArrayExists("Kplastic")))
         Run_Exceptioon("Soil restart arrays are not available in all PART pieces.");
       if(PartBegin && (pd.ArrayExists("PorePress")!=PorePressureDataLoaded || pd.ArrayExists("PorePress0")!=PorePressureDataLoaded))
         Run_Exceptioon("Pore-pressure restart array availability is inconsistent across PART pieces.");
@@ -250,6 +261,15 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       if(PartBegin && pd.ArrayExists("PorePressRes"))
         Run_Exceptioon("PorePressRes restart files are not supported by the original float u-pw solver. Use an original float checkpoint without residual arrays.");
       const unsigned npok=pd.Get_Npok();
+      if(SoilDataLoaded){
+        const char* names[]={sigmakk,sigmaij,"Kplastic"};
+        const JBinaryDataDef::TpData sigmatype=(sigmadouble? JBinaryDataDef::DatDouble3: JBinaryDataDef::DatFloat3);
+        for(unsigned c=0;c<3;c++){
+          const JBinaryDataArray* array=pd.GetArray(names[c],c<2? sigmatype: JBinaryDataDef::DatFloat);
+          const unsigned count=(array->DataInPointer()? array->GetCount(): array->GetFileDataCount());
+          if(count!=npok)Run_Exceptioon(std::string(names[c])+" array size does not match the particle count in the PART piece.");
+        }
+      }
       if(PorePressureDataLoaded){
         const char* names[]={"PorePress","PorePress0"};
         for(unsigned c=0;c<2;c++){
@@ -264,8 +284,10 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         if(auxsize<npok){
           auxsize=npok;
           delete[] auxf3; auxf3=NULL;
+          delete[] auxd3; auxd3=NULL;
           delete[] auxf;  auxf=NULL;
           auxf3=new tfloat3[auxsize];
+          if(sigmadouble)auxd3=new tdouble3[auxsize];
           auxf=new float[auxsize];
         }
         if(PosSingle){
@@ -278,17 +300,21 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
         pd.Get_Rhop(npok,auxf);  
         for(unsigned p=0;p<npok;p++)VelRhop[ntot+p]=TFloat4(auxf3[p].x,auxf3[p].y,auxf3[p].z,auxf[p]);
         if(SoilDataLoaded){
-          pd.GetArray("Sigma_kk",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxf3);
+          if(sigmadouble)pd.GetArray(sigmakk)->GetDataCopy(npok,auxd3);
+          else pd.GetArray(sigmakk)->GetDataCopy(npok,auxf3);
           for(unsigned p=0;p<npok;p++){
-            Sigma[ntot+p].xx=auxf3[p].x;
-            Sigma[ntot+p].yy=auxf3[p].y;
-            Sigma[ntot+p].zz=auxf3[p].z;
+            const tdouble3 v=(sigmadouble? auxd3[p]: ToTDouble3(auxf3[p]));
+            Sigma[ntot+p].xx=v.x;
+            Sigma[ntot+p].yy=v.y;
+            Sigma[ntot+p].zz=v.z;
           }
-          pd.GetArray("Sigma_ij",JBinaryDataDef::DatFloat3)->GetDataCopy(npok,auxf3);
+          if(sigmadouble)pd.GetArray(sigmaij)->GetDataCopy(npok,auxd3);
+          else pd.GetArray(sigmaij)->GetDataCopy(npok,auxf3);
           for(unsigned p=0;p<npok;p++){
-            Sigma[ntot+p].xy=auxf3[p].x;
-            Sigma[ntot+p].yz=auxf3[p].y;
-            Sigma[ntot+p].xz=auxf3[p].z;
+            const tdouble3 v=(sigmadouble? auxd3[p]: ToTDouble3(auxf3[p]));
+            Sigma[ntot+p].xy=v.x;
+            Sigma[ntot+p].yz=v.y;
+            Sigma[ntot+p].xz=v.z;
           }
           pd.GetArray("Kplastic",JBinaryDataDef::DatFloat)->GetDataCopy(npok,Kplastic+ntot);
         }
@@ -302,6 +328,7 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       ntot+=npok;
     }
     delete[] auxf3; auxf3=NULL;
+    delete[] auxd3; auxd3=NULL;
     delete[] auxf;  auxf=NULL;
   }
   //-In simulations 2D, if PosY is invalid then calculates starting from position of particles.

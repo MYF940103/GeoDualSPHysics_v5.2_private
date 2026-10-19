@@ -446,7 +446,7 @@ JGaugeItem* JGaugeSystem::GetGauge(unsigned c)const{
 //==============================================================================
 void JGaugeSystem::CalculeCpu(double timestep,const StDivDataCpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma
   ,bool saveinput)
 {
   const unsigned ng=GetCount();
@@ -477,7 +477,7 @@ void JGaugeSystem::CalculeLastInputCpu(std::string gaugename){
 //==============================================================================
 void JGaugeSystem::CalculeGpu(double timestep,const StDivDataGpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma
   ,bool saveinput)
 {
   //-Allocates GPU memory.

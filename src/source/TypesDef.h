@@ -440,6 +440,13 @@ inline tsymatrix3d TSymMatrix3d(){ tsymatrix3d m={0,0,0,0,0,0}; return(m); }
 inline tsymatrix3d TSymMatrix3d(double xx,double xy,double xz,double yy,double yz,double zz){ 
   tsymatrix3d m={xx,xy,xz,yy,yz,zz}; return(m); 
 }
+inline tsymatrix3d ToTSymMatrix3d(const tsymatrix3f& m){
+  return(TSymMatrix3d(m.xx,m.xy,m.xz,m.yy,m.yz,m.zz));
+}
+inline tsymatrix3f ToTSymMatrix3f(const tsymatrix3d& m){
+  const tsymatrix3f r={float(m.xx),float(m.xy),float(m.xz),float(m.yy),float(m.yz),float(m.zz)};
+  return(r);
+}
 inline tsymatrix3d operator +(const tsymatrix3d& a,const tsymatrix3d& b){ 
   return(TSymMatrix3d(a.xx+b.xx, a.xy+b.xy, a.xz+b.xz, a.yy+b.yy, a.yz+b.yz, a.zz+b.zz)); 
 }

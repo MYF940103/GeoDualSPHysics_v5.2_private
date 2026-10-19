@@ -19,6 +19,7 @@
 /// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
 
 #include "JSphGpuSingle.h"
+#include "JSphHourglassGpu.h"
 #include "JCellDivGpuSingle.h"
 #include "JArraysGpu.h"
 #include "JSphMk.h"
@@ -49,6 +50,8 @@
 #include "FunctionsCuda.h"
 
 #include <climits>
+#include <cfloat>
+#include <cmath>
 
 using namespace std;
 //==============================================================================
@@ -57,6 +60,7 @@ using namespace std;
 JSphGpuSingle::JSphGpuSingle():JSphGpu(false){
   ClassName="JSphGpuSingle";
   CellDivSingle=NULL;
+  HourglassGpu=NULL;
 }
 
 //==============================================================================
@@ -65,6 +69,7 @@ JSphGpuSingle::JSphGpuSingle():JSphGpu(false){
 JSphGpuSingle::~JSphGpuSingle(){
   DestructorActive=true;
   delete CellDivSingle; CellDivSingle=NULL;
+  delete HourglassGpu; HourglassGpu=NULL;
 }
 
 //==============================================================================
@@ -86,6 +91,7 @@ llong JSphGpuSingle::GetAllocMemoryGpu()const{
   llong s=JSphGpu::GetAllocMemoryGpu();
   //-Allocated in other objects.
   if(CellDivSingle)s+=CellDivSingle->GetAllocMemoryGpu();
+  if(HourglassGpu)s+=HourglassGpu->GetAllocMemory();
   return(s);
 }
 
@@ -138,6 +144,30 @@ void JSphGpuSingle::LoadConfig(const JSphCfgRun *cfg){
 /// Configuracion del dominio actual.
 //==============================================================================
 void JSphGpuSingle::ConfigDomain(){
+  if(SoilBoundaryDerivativeSPR){
+    if(!HydroMech || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires hydromechanics, Wendland and Symplectic without symmetry.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR supports fresh fixed-wall elastic cases only: no moving/floating bodies, in/out, shifting, relaxation or softening.");
+    const bool slipok=(SlipMode==SLIP_Vel0 && TMdbc2==MDBC2_None)
+      || ((SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && TMdbc2==MDBC2_Std);
+    if(TBoundary!=BC_MDBC || MdbcSlipModeByMk || !slipok || NoPenetration || !UseNormals
+      || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 normals, artificial viscosity, DensityDT=0 and no per-mk slip/NoPen/artificial stress.");
+    if(!SoilStressRateGradCorr || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || (Simulate2D && PeriY))
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires corrected stress/pore gradients, PairDivergence and no y periodicity in 2-D.");
+  }
+  if(SoilHourglassXi>0){
+    if(!Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilHourglassXi currently requires 2-D Wendland with Symplectic integration and no symmetry plane.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilHourglassXi supports a fixed native elastic soil set only: no restart, moving/floating bodies, in/out, shifting, relaxation or softening.");
+    if(!PeriX || PeriY || PeriZ || PeriXinc.y!=0 || PeriXinc.z!=0 || KernelSize>=fabs(PeriXinc.x)*.5)
+      Run_Exceptioon("SoilHourglassXi currently requires axis-aligned x periodicity with kernel support smaller than half the period.");
+    HourglassGpu=new JSphHourglassGpu();
+    HourglassGpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,fabs(PeriXinc.x),
+      CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG);
+  }
   //-Configure cell map division (defines ScellDiv, Scell, Map_Cells). 
   ConfigCellDivision();
   //-Computes the number of particles.
@@ -156,12 +186,12 @@ void JSphGpuSingle::ConfigDomain(){
   memcpy(Velrhop,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
   //========= mdbr
   if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
-    memcpy(Sigma,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
+    for(unsigned p=0;p<Np;p++)Sigma[p]=PartsLoaded->GetSigma()[p];
     memset(Kplastic,0,sizeof(float)*Np);
     Log->Print("Restart soil data: Sigma inherited, Kplastic reset for restart stage.");
   }
   else{
-    memset(Sigma,0,sizeof(tsymatrix3f)*Np);
+    memset(Sigma,0,sizeof(tsymatrix3d)*Np);
     memset(Kplastic,0,sizeof(float)*Np);
   }
   if(HydroMech){
@@ -228,6 +258,46 @@ void JSphGpuSingle::ConfigDomain(){
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,AuxPos,Idp,Code,Velrhop,boundnormal);
   if(UseNormals)ConfigBoundNormals(Np,Npb,AuxPos,Idp,boundnormal);
+
+  if(SoilBoundaryDerivativeSPR){
+    //-Same fixed-plane geometry admitted by the CPU vector reconstruction.
+    if(!Npb)Run_Exceptioon("SoilBoundaryDerivativeSPR requires one fixed boundary plane.");
+    const tdouble3 n0=ToTDouble3(boundnormal[0]);
+    const double len0=sqrt(n0.x*n0.x+n0.y*n0.y+n0.z*n0.z);
+    if(!std::isfinite(len0) || len0<=0)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite nonzero boundary normals.");
+    const tdouble3 unit0=n0/len0,wall0=AuxPos[0]+n0*.5;
+    const bool legacyhorizontal=(n0.z>0 && fabs(n0.x)<=1e-8*Dp && fabs(n0.y)<=1e-8*Dp);
+    const double normaltol=8.*FLT_EPSILON;
+    for(unsigned p=0;p<Npb;p++){
+      const tdouble3 n=ToTDouble3(boundnormal[p]),wall=AuxPos[p]+n*.5;
+      const double len=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+      if(!CODE_IsFixed(Code[p]) || !std::isfinite(len) || len<=0
+        || !std::isfinite(wall.x) || !std::isfinite(wall.y) || !std::isfinite(wall.z)
+        || Velrhop[p].x!=0 || Velrhop[p].y!=0 || Velrhop[p].z!=0)
+        Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite stationary fixed-wall particles and nonzero normals.");
+      if(legacyhorizontal){
+        if(n.z<=0 || fabs(n.x)>1e-8*Dp || fabs(n.y)>1e-8*Dp || fabs(wall.z-wall0.z)>1e-6*Dp)
+          Run_Exceptioon("SoilBoundaryDerivativeSPR requires stationary coplanar horizontal bottom-wall normals.");
+      }
+      else{
+        const tdouble3 unit=n/len,delta=wall-wall0;
+        const double planetol=1e-6*Dp+normaltol*(len0+len+sqrt(delta.x*delta.x+delta.y*delta.y+delta.z*delta.z));
+        if(fabs(unit.x-unit0.x)>normaltol || fabs(unit.y-unit0.y)>normaltol || fabs(unit.z-unit0.z)>normaltol
+          || (Simulate2D && fabs(unit.y)>normaltol)
+          || fabs(delta.x*unit0.x+delta.y*unit0.y+delta.z*unit0.z)>planetol)
+          Run_Exceptioon("SoilBoundaryDerivativeSPR requires one coplanar, consistently oriented fixed wall (x-z plane normals in 2-D).");
+      }
+    }
+    const tdouble3 perinc[3]={PeriXinc,PeriYinc,PeriZinc};
+    const bool peractive[3]={PeriX,PeriY,PeriZ};
+    for(unsigned a=0;a<3;a++)if(peractive[a]){
+      const tdouble3 inc=perinc[a];
+      const double len=sqrt(inc.x*inc.x+inc.y*inc.y+inc.z*inc.z);
+      if(!std::isfinite(len) || len<=0 || fabs(inc.x*unit0.x+inc.y*unit0.y+inc.z*unit0.z)>normaltol*len)
+        Run_Exceptioon("SoilBoundaryDerivativeSPR permits periodic translations tangent to its single boundary plane only.");
+    }
+  }
 
   //-Computes MK domain for boundary and fluid particles.
   MkInfo->ComputeMkDomains(Np,AuxPos,Code);
@@ -405,7 +475,7 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     double*   poszg=ArraysGpu->ReserveDouble();
     float4*   velrhopg=ArraysGpu->ReserveFloat4();
     //==== mdbc
-    tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
+    tsymatrix3d* sigmag = ArraysGpu->ReserveSymatrix3d();
     float* kplasticg = ArraysGpu->ReserveFloat();
     float* kplasticdkg = ArraysGpu->ReserveFloat();
     CellDivSingle->SortBasicArrays(Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,idpg,codeg,dcellg,posxyg,poszg,velrhopg);
@@ -441,7 +511,7 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
   if(TStep==STEP_Verlet){
     float4* velrhopg=ArraysGpu->ReserveFloat4();
     //==== mdbc
-    tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
+    tsymatrix3d* sigmag = ArraysGpu->ReserveSymatrix3d();
     CellDivSingle->SortDataArrays(SigmaM1g, sigmag);
     swap(SigmaM1g, sigmag);   ArraysGpu->Free(sigmag);
     //
@@ -463,7 +533,7 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     swap(PoszPreg,poszg);        ArraysGpu->Free(poszg);
     swap(VelrhopPreg,velrhopg);  ArraysGpu->Free(velrhopg);
     //==== mdbc
-    tsymatrix3f* sigmag = ArraysGpu->ReserveSymatrix3f();
+    tsymatrix3d* sigmag = ArraysGpu->ReserveSymatrix3d();
     CellDivSingle->SortDataArrays(SigmaPreg, sigmag);
     swap(SigmaPreg, sigmag);   ArraysGpu->Free(sigmag);
     if(HydroMech && PorePressPreg){
@@ -555,8 +625,9 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
-  if(HydroMech && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)ConstantDataUp();
+  if(HydroMech && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || HydroMechTopLoadMode==HMLOAD_TopKernelBand))ConstantDataUp();
   PreInteraction_Forces();
+  ComputeBoundaryDerivativeVelocity();
   ComputeFreeSurfaceTracking();
   if(HydroMech){
     ApplyFreeSurfacePorePressure();
@@ -589,10 +660,17 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,FSTypeg,FSNormalg
     ,IsHydroMechDrainageActive()
     ,HydroMechLoadAceg
+    ,HydroMechTopLoadRawg
     ,ShiftPosfsg
-    ,NULL,NULL);
+    ,NULL,NULL,BoundDerivativeVelg);
   cusph::Interaction_Forces(parms);
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg);
+  NormalizeHydroMechTopBandLoad();
+  if(HourglassGpu){
+    if(interstep==INTERSTEP_SymPredictor)
+      HourglassGpu->PredictorForce(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,Aceg,SymplecticDtPre);
+    else HourglassGpu->CorrectorForce(Np,Npb,Idpg,Codeg,Aceg);
+  }
 
   //-Interaction DEM Floating-Bound & Floating-Floating. //(DEM)
   if(UseDEM)cusph::Interaction_ForcesDem(BlockSizes.forcesdem,CaseNfloat
@@ -730,6 +808,7 @@ double JSphGpuSingle::ComputeStep_Sym(){
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+  if(HourglassGpu)HourglassGpu->PredictorUpdate(dt);
   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   //-Corrector
@@ -740,12 +819,14 @@ double JSphGpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+  if(HourglassGpu)HourglassGpu->CorrectorUpdate(Np,Npb,Idpg,Codeg,Posxyg,Poszg,Velrhopg,Kplasticg,dt);
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posxyg,Poszg,Codeg,Velrhopg); //-Aplies Damping.
   if(RelaxZones)RunRelaxZone(dt);              //-Generate waves using RZ.
 
   SymplecticDtPre=min(ddt_p,ddt_c);            //-Calculate dt for next ComputeStep.
+  if(HourglassGpu && !FixedDt)SymplecticDtPre=min(SymplecticDtPre,HourglassGpu->GetDtLimit());
   return(dt);
 }
 
@@ -1088,6 +1169,16 @@ void JSphGpuSingle::SaveData(){
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,AuxPos,Idp,AuxVel,AuxRhop,AuxSigma_xx_yy_zz,AuxSigma_xy_yz_xz,AuxKplastic);
   if(save){
+    //-Preserve double stress state; legacy float arrays remain for display.
+    tdouble3 *sigmastatekk=new tdouble3[npsave];
+    tdouble3 *sigmastateij=new tdouble3[npsave];
+    for(unsigned p=0;p<npsave;p++){
+      const tsymatrix3d s=Sigma[p];
+      sigmastatekk[p]=TDouble3(s.xx,s.yy,s.zz);
+      sigmastateij[p]=TDouble3(s.xy,s.yz,s.xz);
+    }
+    arrays.AddArray("SigmaState_kk",npsave,sigmastatekk,true);
+    arrays.AddArray("SigmaState_ij",npsave,sigmastateij,true);
     arrays.AddArray("FSType",npsave,AuxFSType);
     arrays.AddArray("FSNormal",npsave,AuxFSNormal);
   }
@@ -1148,6 +1239,15 @@ void JSphGpuSingle::SaveExtraData(){
 void JSphGpuSingle::FinishRun(bool stop){
   float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
   JSph::ShowResume(stop,tsim,ttot,true,"");
+  if(HourglassGpu){
+    const auto& hg=HourglassGpu->GetStats();
+    Log->Printf("SoilHourglass: forcecalls=%u predictorupdates=%u correctorupdates=%u ratecalls=%u",
+      hg.forcecalls,hg.predictorupdates,hg.correctorupdates,hg.ratecalls);
+    Log->Printf("SoilHourglass: ratecalculations=%u endpoint_rate_reuses=%u",
+      hg.ratecalculations,hg.ratecachehits);
+    Log->Printf("SoilHourglass: max|sum(m*H)|=%g max|sum(m*deltaAce)|=%g max(dt/tau)=%g spinbound=%g",
+      hg.maxnetforce,hg.maxactualnetforce,hg.maxtauratio,hg.spinbound);
+  }
   Log->Print(" ");
   string hinfo,dinfo;
   if(SvTimers){

@@ -372,7 +372,7 @@ template<TpKernel tker> void JGaugeVelocity::CalculeCpuT(double timestep
 //==============================================================================
 void JGaugeVelocity::CalculeCpu(double timestep,const StDivDataCpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)
 {
   switch(CSP.tkernel){
     case KERNEL_Cubic:       //Kernel Wendland is used since Cubic is not available.
@@ -387,7 +387,7 @@ void JGaugeVelocity::CalculeCpu(double timestep,const StDivDataCpu &dvd
 //==============================================================================
 void JGaugeVelocity::CalculeGpu(double timestep,const StDivDataGpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux)
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux)
 {
   SetTimeStep(timestep);
   //-Start measure.
@@ -603,7 +603,7 @@ template<TpKernel tker> void JGaugeSwl::CalculeCpuT(double timestep
 //==============================================================================
 void JGaugeSwl::CalculeCpu(double timestep,const StDivDataCpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)
 {
   switch(CSP.tkernel){
     case KERNEL_Cubic:       //Kernel Wendland is used since Cubic is not available.
@@ -617,7 +617,7 @@ void JGaugeSwl::CalculeCpu(double timestep,const StDivDataCpu &dvd
 //==============================================================================
 void JGaugeSwl::CalculeGpu(double timestep,const StDivDataGpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux)
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux)
 {
   SetTimeStep(timestep);
   //-Start measure.
@@ -779,7 +779,7 @@ void JGaugeMaxZ::GetInteractionCellsMaxZ(const tdouble3 &pos,const tint4 &nc,con
 //==============================================================================
 void JGaugeMaxZ::CalculeCpu(double timestep,const StDivDataCpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)
 {
   //Log->Printf("JGaugeMaxZ----> timestep:%g  (%d)",timestep,(DG?1:0));
   SetTimeStep(timestep);
@@ -826,7 +826,7 @@ void JGaugeMaxZ::CalculeCpu(double timestep,const StDivDataCpu &dvd
 //==============================================================================
 void JGaugeMaxZ::CalculeGpu(double timestep,const StDivDataGpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux)
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux)
 {
   SetTimeStep(timestep);
   //-Compute auxiliary constants.
@@ -985,7 +985,7 @@ unsigned JGaugeForce::GetPointDef(std::vector<tfloat3> &points)const{
 //==============================================================================
 template<TpKernel tker> void JGaugeForce::CalculeCpuT(double timestep
   ,const StDivDataCpu &dvd,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)
 {
   SetTimeStep(timestep);
   //-Computes acceleration in selected boundary particles.
@@ -998,7 +998,7 @@ template<TpKernel tker> void JGaugeForce::CalculeCpuT(double timestep
     const tdouble3 pos1=pos[p1];
     const tfloat4 velrhop1=velrhop[p1];
     //const float press1=fsph::ComputePress(velrhop1.w,CSP);
-    const tsymatrix3f sigmap1=sigma[p1];
+    const tsymatrix3f sigmap1=ToTSymMatrix3f(sigma[p1]);
     //-Auxiliary variables.
     tfloat3 ace=TFloat3(0);
 
@@ -1019,7 +1019,7 @@ template<TpKernel tker> void JGaugeForce::CalculeCpuT(double timestep
           const tfloat4 velrhop2=velrhop[p2];
           //const float press2=fsph::ComputePress(velrhop2.w,CSP);
           //===get stress of p2 ==== mdbr
-          tsymatrix3f sigmap2 = sigma[p2];
+          tsymatrix3f sigmap2 = ToTSymMatrix3f(sigma[p2]);
           //-Velocity derivative (Momentum equation).
           //const float prs=(press1+press2)/(velrhop1.w*velrhop2.w)
           //  + (tker==KERNEL_Cubic? fsph::GetKernelCubic_Tensil(CSP,dr.w,velrhop1.w,press1,velrhop2.w,press2): 0);
@@ -1055,7 +1055,7 @@ template<TpKernel tker> void JGaugeForce::CalculeCpuT(double timestep
 //==============================================================================
 void JGaugeForce::CalculeCpu(double timestep,const StDivDataCpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)
+  ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)
 {
   switch(CSP.tkernel){
     case KERNEL_Cubic:       //Kernel Wendland is used since Cubic is not available.
@@ -1071,7 +1071,7 @@ void JGaugeForce::CalculeCpu(double timestep,const StDivDataCpu &dvd
 //==============================================================================
 void JGaugeForce::CalculeGpu(double timestep,const StDivDataGpu &dvd
   ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux)
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux)
 {
   SetTimeStep(timestep);
   //-Initializes acceleration array to zero.

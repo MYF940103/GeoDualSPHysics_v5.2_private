@@ -66,6 +66,8 @@
 #include "JNumexLib.h"
 #include "JCaseUserVars.h"
 #include <algorithm>
+#include <cmath>
+#include <limits>
 
 using namespace std;
 
@@ -212,6 +214,7 @@ void JSph::InitVars(){
   HydroMechInitZ=0;
   HydroMechDrainage=true;
   HydroMechDrainageStartTime=0;
+  HydroMechDrainageFixedGrid=false;
   HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
@@ -222,6 +225,8 @@ void JSph::InitVars(){
   PoreCompressionSourceMode=0;
   PoreCompressionGradCorr=true;
   SoilStressRateGradCorr=false;
+  SoilBoundaryDerivativeSPR=false;
+  SoilHourglassXi=0;
   SoilDamping=false;
   SoilDampingCoef=0.02f;
   MdbcCorrector=true;
@@ -587,6 +592,16 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
+  if(HydroMechTopLoadMode==HMLOAD_TopKernelBand && (!HydroMech || !Simulate2D))
+    Run_Exceptioon("TopKernelBand loading requires a 2-D hydromechanical case with a horizontal top surface.");
+  if(HydroMechDrainageFixedGrid){
+    if(!HydroMech || !HydroMechDrainage || PartBegin || !FixedDt || FixedDt->GetFixedValue()<=0)
+      Run_Exceptioon("HydroMechDrainageFixedGrid requires a fresh hydromechanical run with drainage and constant DtFixed.");
+    const double dt=FixedDt->GetFixedValue();
+    const double grid=std::round(HydroMechDrainageStartTime/dt)*dt;
+    if(!std::isfinite(HydroMechDrainageStartTime) || fabs(grid-HydroMechDrainageStartTime)>4*std::numeric_limits<double>::epsilon()*HydroMechDrainageStartTime)
+      Run_Exceptioon("HydroMechDrainageFixedGrid requires DrainageStartTime on the constant-dt grid.");
+  }
 
   //-PIPS configuration.
   if(cfg->PipsMode)DsPips=new JDsPips(Cpu,cfg->PipsSteps,(cfg->PipsMode==2),(TStep==STEP_Symplectic? 2: 1));
@@ -690,6 +705,14 @@ void JSph::LoadConfigParameters(const JXml *xml){
     case 1:  SoilStressRateGradCorr=true;   break;
     default: Run_Exceptioon("SoilStressRateGradCorr mode is not valid.");
   }
+  switch(eparms.GetValueInt("SoilBoundaryDerivativeSPR",true,0)){
+    case 0: SoilBoundaryDerivativeSPR=false; break;
+    case 1: SoilBoundaryDerivativeSPR=true; break;
+    default: Run_Exceptioon("SoilBoundaryDerivativeSPR must be 0 or 1.");
+  }
+  SoilHourglassXi=eparms.GetValueDouble("SoilHourglassXi",true,0);
+  if(fun::IsNAN(SoilHourglassXi) || fun::IsInfinity(SoilHourglassXi) || SoilHourglassXi<0)
+    Run_Exceptioon("SoilHourglassXi must be finite and non-negative (zero disables GNOG).");
   switch(eparms.GetValueInt("SoilDamping",true,0)){
     case 0:  SoilDamping=false;  break;
     case 1:  SoilDamping=true;   break;
@@ -1740,7 +1763,13 @@ void JSph::VisuConfig(){
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
   }
   Log->Print(fun::VarStr("SoilStressRateGradCorr",SoilStressRateGradCorr? "KernelGradient": "None"));
+  Log->Print(fun::VarStr("SoilBoundaryDerivativeSPR",SoilBoundaryDerivativeSPR? "MirroredWallDerivatives": "None"));
   if(SoilStressRateGradCorr)ConfigInfo=ConfigInfo+sep+"SoilGradCorr";
+  if(SoilHourglassXi>0){
+    Log->Printf("SoilHourglassXi: %g (%s elastic GNOG, endpoint-trapezoidal history)",SoilHourglassXi,(Cpu? "CPU": "GPU"));
+    Log->Print("  GNOG scope: 2-D Wendland, x-periodic, small rotation, no restart or plastic flow.");
+    ConfigInfo=ConfigInfo+sep+fun::PrintStr("GNOG(%g)",SoilHourglassXi);
+  }
   //-Bui-Fukagawa damping for static stress initialization.
   Log->Print(fun::VarStr("SoilDamping",SoilDamping? "BuiFukagawa2013": "None"));
   if(SoilDamping){
@@ -3380,6 +3409,7 @@ std::string JSph::GetHydroMechTopLoadModeName(TpHydroMechLoadMode loadmode){
   else if(loadmode==HMLOAD_FlexibleConfinement)tx="FlexibleConfinement";
   else if(loadmode==HMLOAD_TopStripVertical)tx="TopStripVertical";
   else if(loadmode==HMLOAD_LianFlexibleStrip)tx="LianFlexibleStrip";
+  else if(loadmode==HMLOAD_TopKernelBand)tx="TopKernelBand";
   else tx="???";
   return(tx);
 }
@@ -3587,13 +3617,15 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   HydroMechInitZ=sxml->ReadElementDouble(hydroReadNode,"HydroMechInitZ","value",true,0);
   HydroMechDrainage=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainage","value",true,true);
   HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
+  HydroMechDrainageFixedGrid=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainageFixedGrid","value",true,false);
   const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechTopLoadMode","value",true,"None"));
   if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
   else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
   else if(toploadmodestr=="flexibleconfinement" || toploadmodestr=="flexible_confinement" || toploadmodestr=="confinement" || toploadmodestr=="zhaoconfinement" || toploadmodestr=="2")HydroMechTopLoadMode=HMLOAD_FlexibleConfinement;
   else if(toploadmodestr=="topstripvertical" || toploadmodestr=="top_strip_vertical" || toploadmodestr=="stripvertical" || toploadmodestr=="strip_vertical" || toploadmodestr=="3")HydroMechTopLoadMode=HMLOAD_TopStripVertical;
   else if(toploadmodestr=="lianflexiblestrip" || toploadmodestr=="lian_flexible_strip" || toploadmodestr=="lianstripvertical" || toploadmodestr=="lian_strip_vertical" || toploadmodestr=="4")HydroMechTopLoadMode=HMLOAD_LianFlexibleStrip;
-  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical or 4=LianFlexibleStrip.");
+  else if(toploadmodestr=="topkernelband" || toploadmodestr=="5")HydroMechTopLoadMode=HMLOAD_TopKernelBand;
+  else Run_Exceptioon("HydroMechTopLoadMode must be 0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip or 5=TopKernelBand.");
   HydroMechTopLoadQ0=sxml->ReadElementFloat(hydroReadNode,"HydroMechTopLoadQ0","value",true,0.f);
   HydroMechTopLoadRampTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechTopLoadRampTime","value",true,0);
 
@@ -3684,10 +3716,13 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",HydroMechInitZ);
     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
+    Log->Print(fun::VarStr("  HydroMechDrainageFixedGrid",HydroMechDrainageFixedGrid));
     Log->Print((HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)?
       "  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint":
       "  HydroMechDrainageBoundary: FreeSurface");
     Log->Print(fun::VarStr("  HydroMechTopLoadMode", GetHydroMechTopLoadModeName(HydroMechTopLoadMode)));
+    if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)
+      Log->Print("  HydroMechTopLoadDiscretization: top kernel band, normalized to the unchanged TopVertical resultant");
     if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)
       Log->Print("  HydroMechTopLoadDiscretization: Zhao-style global pair-wise kernel-truncation confinement");
     if(HydroMechTopLoadMode==HMLOAD_TopStripVertical)

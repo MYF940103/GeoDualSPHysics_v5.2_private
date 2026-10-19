@@ -92,7 +92,7 @@ protected:
   tdouble3 *Pos;
   tfloat4 *VelRhop;
   bool SoilDataLoaded;
-  tsymatrix3f *Sigma;
+  tsymatrix3d *Sigma;
   float *Kplastic;
   bool PorePressureDataLoaded;
   float *PorePress;
@@ -130,7 +130,7 @@ public:
   const tdouble3* GetPos(){ return(Pos); }
   const tfloat4* GetVelRhop(){ return(VelRhop); }
   bool GetSoilDataLoaded()const{ return(SoilDataLoaded); }
-  const tsymatrix3f* GetSigma(){ return(Sigma); }
+  const tsymatrix3d* GetSigma(){ return(Sigma); }
   const float* GetKplastic(){ return(Kplastic); }
   bool GetPorePressureDataLoaded()const{ return(PorePressureDataLoaded); }
   const float* GetPorePress(){ return(PorePress); }

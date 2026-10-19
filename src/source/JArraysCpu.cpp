@@ -80,6 +80,7 @@ void* JArraysCpuSize::AllocPointer(unsigned size)const{
       case 16:  pointer=new int[size*4];     break;
       case 24:  pointer=new double[size*3];  break;
       case 32:  pointer=new double[size*4];  break;
+      case 48:  pointer=new double[size*6];  break;
       case 72:  pointer=new double[size*9];  break;
     }
   }
@@ -104,6 +105,7 @@ void JArraysCpuSize::FreePointer(void* pointer)const{
     case 16:  delete[] ((int*)pointer);     pointer=NULL;   break;
     case 24:  delete[] ((double*)pointer);  pointer=NULL;   break;
     case 32:  delete[] ((double*)pointer);  pointer=NULL;   break;
+    case 48:  delete[] ((double*)pointer);  pointer=NULL;   break;
     case 72:  delete[] ((double*)pointer);  pointer=NULL;   break;
   }
   if(pointer)Run_Exceptioon("The elementsize value is invalid.");
@@ -201,6 +203,7 @@ JArraysCpu::JArraysCpu(){
   Arrays16b=new JArraysCpuSize(16);
   Arrays24b=new JArraysCpuSize(24);
   Arrays32b=new JArraysCpuSize(32);
+  Arrays48b=new JArraysCpuSize(48);
   Arrays72b=new JArraysCpuSize(72);
 }
 
@@ -217,6 +220,7 @@ JArraysCpu::~JArraysCpu(){
   delete Arrays16b;
   delete Arrays24b;
   delete Arrays32b;
+  delete Arrays48b;
   delete Arrays72b;
 }
  
@@ -232,6 +236,7 @@ void JArraysCpu::Reset(){
   Arrays16b->Reset();
   Arrays24b->Reset();
   Arrays32b->Reset();
+  Arrays48b->Reset();
   Arrays72b->Reset();
 }
  
@@ -248,6 +253,7 @@ llong JArraysCpu::GetAllocMemoryCpu()const{
   m+=Arrays16b->GetAllocMemoryCpu();
   m+=Arrays24b->GetAllocMemoryCpu();
   m+=Arrays32b->GetAllocMemoryCpu();
+  m+=Arrays48b->GetAllocMemoryCpu();
   m+=Arrays72b->GetAllocMemoryCpu();
   return(m);
 }
@@ -268,6 +274,7 @@ void JArraysCpu::SetArraySize(unsigned size){
   Arrays16b->SetArraySize(0);
   Arrays24b->SetArraySize(0);
   Arrays32b->SetArraySize(0);
+  Arrays48b->SetArraySize(0);
   Arrays72b->SetArraySize(0);
   //-Allocates memory.
   Arrays1b->SetArraySize(size); 
@@ -278,6 +285,7 @@ void JArraysCpu::SetArraySize(unsigned size){
   Arrays16b->SetArraySize(size);
   Arrays24b->SetArraySize(size);
   Arrays32b->SetArraySize(size);
+  Arrays48b->SetArraySize(size);
   Arrays72b->SetArraySize(size);
 }
 

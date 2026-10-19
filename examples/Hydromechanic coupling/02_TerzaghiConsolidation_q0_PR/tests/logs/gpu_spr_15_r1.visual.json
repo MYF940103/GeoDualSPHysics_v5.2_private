@@ -1,0 +1,18 @@
+{
+  "passed": true,
+  "reviewed": true,
+  "scope": "15-s GPU coarse/half and matched retained CPU histories; original checks retained; not full-cycle physical acceptance",
+  "inspected": ["gpu_spr_15_c_review_r1.png", "gpu_spr_15_h_review_r1.png", "gpu_spr_15_pair_review_r1.png", "gpu_spr_15_summary_r1.png"],
+  "findings": [
+    "CPU/GPU pressure and material settlement overlay at each dt; all-sample maxima independently hash-audited.",
+    "The post-0.1-s plot reveals retained coarse/half stress-shape differences and Q growth after the early minimum; these are not hidden by the initial transient scale.",
+    "Bottom material settlement bias remains; user Oct16 provisional 1D acceptance is respected without claiming universal boundary or full-cycle acceptance."
+  ],
+  "evidence": [
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_spr_15_summary_r1.check.json", "sha256": "02430413EF6FA806E9E999CFEF211CE399DBFF61B4BD9D48581F16DFE4A6096C"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_spr_15_c_review_r1.check.json", "sha256": "40B8076022F981A15EC0082ECD938CA987AC57BF9BD329EDDFCF553C52226DB0"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_spr_15_h_review_r1.check.json", "sha256": "8F00FBF05E855D42A35C0EFF1496AE761F5F0269CD5CA205697AA78E04D68B08"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_spr_15_pair_review_r1.check.json", "sha256": "6136CBEF387DC890A85422432CCB16B3192E45135E8C8E0B9B314BDAB49C867E"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_spr_15_summary_r1.png", "sha256": "6C553A0BCA8FCAC9B9A399580F3D2C4984456E7CABA0F96D3E079C1CB330A472"}
+  ]
+}

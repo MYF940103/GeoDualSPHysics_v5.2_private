@@ -123,6 +123,7 @@ void JCellDivCpu::SetMemoryVSort(byte *vsort){
   VSortFloat=(float*)VSort;    VSortFloat3=(tfloat3*)VSort;
   VSortFloat4=(tfloat4*)VSort; VSortDouble3=(tdouble3*)VSort;
   VSortSymmatrix3f=(tsymatrix3f*)VSort;
+  VSortSymmatrix3d=(tsymatrix3d*)VSort;
 }
 
 //==============================================================================
@@ -140,7 +141,7 @@ void JCellDivCpu::AllocMemoryNp(ullong np){
   try{
     CellPart=new unsigned[SizeNp];                      MemAllocNp+=sizeof(unsigned)*SizeNp;
     SortPart=new unsigned[SizeNp];                      MemAllocNp+=sizeof(unsigned)*SizeNp;
-    SetMemoryVSort(new byte[sizeof(tdouble3)*SizeNp]);  MemAllocNp+=sizeof(tdouble3)*SizeNp;
+    SetMemoryVSort(new byte[sizeof(tsymatrix3d)*SizeNp]); MemAllocNp+=sizeof(tsymatrix3d)*SizeNp;
   }
   catch(const std::bad_alloc){
     Run_Exceptioon(fun::PrintStr("Failed CPU memory allocation of %.1f MB for %u particles.",double(MemAllocNp)/(1024*1024),SizeNp));
@@ -459,6 +460,19 @@ void JCellDivCpu::SortArray(tsymatrix3f *vec){
   #endif
   for(int p=ini;p<n;p++)VSortSymmatrix3f[p]=vec[SortPart[p]];
   memcpy(vec+ini,VSortSymmatrix3f+ini,sizeof(tsymatrix3f)*(n-ini));
+}
+
+//==============================================================================
+/// Reorder stress values, including excluded particles retained after NpFinal.
+//==============================================================================
+void JCellDivCpu::SortArray(tsymatrix3d *vec){
+  const int n=int(Nptot);
+  const int ini=(DivideFull? 0: int(NpbFinal));
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=ini;p<n;p++)VSortSymmatrix3d[p]=vec[SortPart[p]];
+  memcpy(vec+ini,VSortSymmatrix3d+ini,sizeof(tsymatrix3d)*(n-ini));
 }
 
 //==============================================================================

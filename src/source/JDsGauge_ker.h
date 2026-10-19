@@ -48,7 +48,7 @@ void Interaction_GaugeMaxz(tdouble3 point0,float maxdist2,const StDivDataGpu &dv
 //-Kernel for JGaugeForce.
 void Interaction_GaugeForce(const StCteSph &CSP,const StDivDataGpu &dvd
   ,unsigned n,unsigned idbegin,typecode codesel,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma
   ,float3 *partace);
 
 

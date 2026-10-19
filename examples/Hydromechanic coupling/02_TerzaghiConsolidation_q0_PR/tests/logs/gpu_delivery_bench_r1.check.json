@@ -1,0 +1,900 @@
+{
+  "passed": true,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\gpu_delivery_bench.py",
+      "sha256": "BB59747D985E05C9833CFEDAC8824CC3CE0646216FFAA3DC58D54CFE4458E61B"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+      "sha256": "BA8460154C45D3B4C3C1DB522A2C09377A67658A8141A2368305E6FFC61D3351"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+      "sha256": "689C2CDE9CB3F37DE7CA33E59417EADF3DCDCA682ADB562569B791F9390BE676"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1.xml",
+      "sha256": "980FFEF90CDF56B950FF16683EB7546EB9FEF21AF484DA7BE6F92597EF9EA2ED"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1.bi4",
+      "sha256": "FFD1005A9B320C73AC409F4CA4212CAECD5CF57834AFFB03C5CCFB3B5B256D01"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1_Normals.nbi4",
+      "sha256": "01AF0A205C75D3F03E844F5469417D5788CEB16DEF21ED1D025EA300211821C9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\ChronoEngine.dll",
+      "sha256": "246D6C92824C55E2AB469E6E9567516FE4CECD84B617FC64CF6D2382FD7FBBE5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\dsphchrono.dll",
+      "sha256": "C605BEFBC02991DD9D36266F2CE28E1E0BD675C115CAB79E1F10FC873C6FF8FE"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\vcomp140.dll",
+      "sha256": "1D480D651414304BDDD0928B1C1563B4FB7F89B1C6AC30650C884150DE0EC540"
+    }
+  ],
+  "runs": [
+    {
+      "backend": "cpu",
+      "warmup": true,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 11176,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 24.082556200039107,
+      "loop_seconds": 23.955044,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "wose9ezf-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:40:46",
+        "Np": "1040",
+        "TSimul": "23.955044",
+        "TSeg": "798.501465",
+        "TTotal": "23.968809",
+        "MemCpu": "2619024",
+        "MemGpu": "0",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "CPU",
+        "RunMode": "CellsFull - Stable - Pos-Double - Single core",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.0137711",
+        "NL-Limits": "0.0437405",
+        "NL-MakeSort": "0.0755739",
+        "NL-SortData": "2.99584",
+        "NL-OutCheck": "0.0002199",
+        "CF-PreForces": "0.413951",
+        "CF-Forces": "15.1807",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.410796",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "0.127591",
+        "SU-ResizeNp": "0.0006662",
+        "SU-SavePart": "0.0035912",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "1e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_00_cpu.stdout.log",
+          "sha256": "E730F3D6DBAD2883138EFAC41423806E56F8CE9B58766D080AAA6DBCBFBD663E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_00_cpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\Run.csv",
+          "sha256": "160EEFA713E422630777C5E4C17C963AC6B92437BD094EC03F549C407014EAC7"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_00_cpu\\Run.out",
+          "sha256": "76D49E811081130BC51ACA973DE472ED0930B95B8CD128CA55CDB5AA9F749AE9"
+        }
+      ]
+    },
+    {
+      "backend": "gpu",
+      "warmup": true,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 17184,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 19.542619700019713,
+      "loop_seconds": 18.661112,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "wjv1ta99-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:41:10",
+        "Np": "1040",
+        "TSimul": "18.661112",
+        "TSeg": "622.037048",
+        "TTotal": "18.915745",
+        "MemCpu": "716622",
+        "MemGpu": "1731412",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+        "RunMode": "CellsFull - Stable - Pos-Cell - Single-GPU",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.254591",
+        "NL-Limits": "1.40667",
+        "NL-PreSort": "0.0671969",
+        "NL-RadixSort": "0.55286",
+        "NL-CellBegin": "0.509226",
+        "NL-SortData": "0.783328",
+        "NL-OutCheck": "1.08464",
+        "CF-PreForces": "0.959352",
+        "CF-Forces": "5.22915",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.227288",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "1.73975",
+        "SU-ResizeNp": "0.0017648",
+        "SU-DownData": "0",
+        "SU-SavePart": "0.0039678",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "2e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_01_gpu.stdout.log",
+          "sha256": "DC87F71DF7CB673E33F86E7602625DF644E03EB5F829D15AE764D62534229078"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_01_gpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\Run.csv",
+          "sha256": "4B233537EB1D4D321452162A78BA4F528D40525323ADDC8F341A71AC36A67EE6"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_01_gpu\\Run.out",
+          "sha256": "37A603296BC1EB748A04794F916BD67F341EE64044A5484F08A175E7C3DD0507"
+        }
+      ]
+    },
+    {
+      "backend": "cpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 16904,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 25.709045299969148,
+      "loop_seconds": 25.628939,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "ws8zsk2k-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:41:29",
+        "Np": "1040",
+        "TSimul": "25.628939",
+        "TSeg": "854.297974",
+        "TTotal": "25.644161",
+        "MemCpu": "2619024",
+        "MemGpu": "0",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "CPU",
+        "RunMode": "CellsFull - Stable - Pos-Double - Single core",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.015221",
+        "NL-Limits": "0.0497993",
+        "NL-MakeSort": "0.0766095",
+        "NL-SortData": "3.2019",
+        "NL-OutCheck": "0.0002462",
+        "CF-PreForces": "0.455888",
+        "CF-Forces": "16.2096",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.449903",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "0.14948",
+        "SU-ResizeNp": "0.0006239",
+        "SU-SavePart": "0.0036934",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "3e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_02_cpu.stdout.log",
+          "sha256": "3370828F67F26D5690BCB1B547ABC2285380695CC8BE3EFC733AB9AB020148BB"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_02_cpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\Run.csv",
+          "sha256": "93A5A486D6C01CDC01C5E345FA177E9C9E6452A4C82D704413E74A47A673B01A"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_02_cpu\\Run.out",
+          "sha256": "6E1A8B58FFD914404DF4E9FEA25711DD31AB4B718BF6D2E69352E036DFCCDC83"
+        }
+      ]
+    },
+    {
+      "backend": "gpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 15860,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 19.511626500054263,
+      "loop_seconds": 18.92625,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "wbe3zoj9-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:41:55",
+        "Np": "1040",
+        "TSimul": "18.926250",
+        "TSeg": "630.875000",
+        "TTotal": "19.180443",
+        "MemCpu": "716622",
+        "MemGpu": "1731412",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+        "RunMode": "CellsFull - Stable - Pos-Cell - Single-GPU",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.254163",
+        "NL-Limits": "1.43258",
+        "NL-PreSort": "0.0571282",
+        "NL-RadixSort": "0.572041",
+        "NL-CellBegin": "0.52753",
+        "NL-SortData": "0.789202",
+        "NL-OutCheck": "1.08031",
+        "CF-PreForces": "1.00237",
+        "CF-Forces": "5.26925",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.237222",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "1.78076",
+        "SU-ResizeNp": "0.0018061",
+        "SU-DownData": "0",
+        "SU-SavePart": "0.0039017",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "4e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_03_gpu.stdout.log",
+          "sha256": "E6418775EC9B498D81FC995BCF1DDB9FB78C671C94150525A043BEDD1C21F9A7"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_03_gpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\Run.csv",
+          "sha256": "7CE67F2E9BF0B9B60FDED8C1F4233D011CE5F53692E54B3629CE5AAFD53E2E74"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_03_gpu\\Run.out",
+          "sha256": "7FF865CEB9286E3E32C47DA1E7F410CD55656212C98A065C64D4B0E14E43A397"
+        }
+      ]
+    },
+    {
+      "backend": "gpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 24220,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 19.746596299984958,
+      "loop_seconds": 19.152983,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "wvbr92gg-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:42:15",
+        "Np": "1040",
+        "TSimul": "19.152983",
+        "TSeg": "638.432800",
+        "TTotal": "19.361912",
+        "MemCpu": "716622",
+        "MemGpu": "1731412",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+        "RunMode": "CellsFull - Stable - Pos-Cell - Single-GPU",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.208899",
+        "NL-Limits": "1.47595",
+        "NL-PreSort": "0.0696189",
+        "NL-RadixSort": "0.57252",
+        "NL-CellBegin": "0.531204",
+        "NL-SortData": "0.811495",
+        "NL-OutCheck": "1.06943",
+        "CF-PreForces": "1.0314",
+        "CF-Forces": "5.30002",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.242148",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "1.81417",
+        "SU-ResizeNp": "0.0017474",
+        "SU-DownData": "0",
+        "SU-SavePart": "0.0039568",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "3e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_04_gpu.stdout.log",
+          "sha256": "C99F0A1BDC6374FD0702C5309366ACC16BDCFC096349EF85A2D1B282761DEE8A"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_04_gpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\Run.csv",
+          "sha256": "BF3E19EE741EA46EAAEC2DE3E54674BBF17E216BC1DA7053E15DF05222C9107A"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_04_gpu\\Run.out",
+          "sha256": "22335D6C3F7FFE84100BD096AD836FF45D7AF1C7EE81E7395E5263BB8B1AE6B8"
+        }
+      ]
+    },
+    {
+      "backend": "cpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 51044,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 25.83384480001405,
+      "loop_seconds": 25.597725,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "w3oq9c9r-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:42:34",
+        "Np": "1040",
+        "TSimul": "25.597725",
+        "TSeg": "853.257507",
+        "TTotal": "25.611097",
+        "MemCpu": "2619024",
+        "MemGpu": "0",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "CPU",
+        "RunMode": "CellsFull - Stable - Pos-Double - Single core",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.0133734",
+        "NL-Limits": "0.0467632",
+        "NL-MakeSort": "0.0921957",
+        "NL-SortData": "3.23756",
+        "NL-OutCheck": "0.0003322",
+        "CF-PreForces": "0.448515",
+        "CF-Forces": "16.1138",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.481301",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "0.144339",
+        "SU-ResizeNp": "0.0004921",
+        "SU-SavePart": "0.0039383",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "3e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_05_cpu.stdout.log",
+          "sha256": "875A0DA99A98D198C350E8DFA7490406247024F3E538E080F5B28B0B8F87C379"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_05_cpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\Run.csv",
+          "sha256": "ADFB75C60CF07F2DE6060198D70D0ABA5F7E8E83417104B268814AA6D27C0EA7"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_05_cpu\\Run.out",
+          "sha256": "AAD574AD50CC1A63E6513AA9027C8FFCC7E51F191E98141D37C81835DB1D4301"
+        }
+      ]
+    },
+    {
+      "backend": "cpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 48360,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 24.619962900003884,
+      "loop_seconds": 24.528858,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "wmutfgpg-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:43:00",
+        "Np": "1040",
+        "TSimul": "24.528858",
+        "TSeg": "817.628601",
+        "TTotal": "24.547590",
+        "MemCpu": "2619024",
+        "MemGpu": "0",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "CPU",
+        "RunMode": "CellsFull - Stable - Pos-Double - Single core",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.0187312",
+        "NL-Limits": "0.044091",
+        "NL-MakeSort": "0.0716642",
+        "NL-SortData": "3.0679",
+        "NL-OutCheck": "0.0001748",
+        "CF-PreForces": "0.420757",
+        "CF-Forces": "15.5624",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.416056",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "0.127778",
+        "SU-ResizeNp": "0.0007082",
+        "SU-SavePart": "0.0037715",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "5e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_06_cpu.stdout.log",
+          "sha256": "4006ED3F9146EF22582342D5580F961CB2ECB829C70F82D3715DB4E6D4E6A7DF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_06_cpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\Run.csv",
+          "sha256": "036ABF9ABA33A34F04E5E60F0178E31C29377005B1758EA7144C52CF9FC1812F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_06_cpu\\Run.out",
+          "sha256": "97F9AF256C7585613CFA31E4E5F4948549483594DDE5976FCF3DF3F8A3A29E35"
+        }
+      ]
+    },
+    {
+      "backend": "gpu",
+      "warmup": false,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu:0",
+        "-stable",
+        "-ompthreads:1",
+        "-mdbc",
+        "-nsteps:3000",
+        "-sv:none",
+        "-svres:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_spr_015_c_r1_input\\CaseTCq0_gpu_spr_015_c_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu",
+        "-dirdataout",
+        "data"
+      ],
+      "completed": true,
+      "pid": 54960,
+      "exit_code": 0,
+      "owned_process_exited": true,
+      "wall_seconds": 20.23895160004031,
+      "loop_seconds": 19.709873,
+      "summary": {
+        "#RunName": "CaseTCq0_gpu_spr_015_c_r1",
+        "Rcode-VersionInfo": "xuh6bg37-DualSPHysics5 v5.2.274 (02-02-2024)",
+        "DateTime": "18-10-2026 18:43:25",
+        "Np": "1040",
+        "TSimul": "19.709873",
+        "TSeg": "656.995789",
+        "TTotal": "19.947920",
+        "MemCpu": "716622",
+        "MemGpu": "1731412",
+        "Steps": "3000",
+        "GPIPS": "",
+        "PhysicalTime": "0.030000",
+        "PartFiles": "30",
+        "PartsOut": "0",
+        "MaxParticles": "1872",
+        "MaxCells": "145",
+        "Hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+        "RunMode": "CellsFull - Stable - Pos-Cell - Single-GPU",
+        "Configuration": "CaseTCq0_gpu_spr_015_c_r1 - 2D - mDBC(DBC vel=0 - Corrector) - Symplectic - Wendland - Visco_Artificial(0.1b1) - SoilGradCorr - GNOG(0.1) - SoilDamping(0.04) - DDT0 - Periodic_Axis-X - RhopOut(700-3000)",
+        "Nbound": "40",
+        "Nfixed": "40",
+        "Dp": "0.010000",
+        "H": "0.018000",
+        "PartsOutRhop": "0",
+        "PartsOutVel": "0",
+        "VA-Init": "0.238012",
+        "NL-Limits": "1.53975",
+        "NL-PreSort": "0.0654099",
+        "NL-RadixSort": "0.606698",
+        "NL-CellBegin": "0.546549",
+        "NL-SortData": "0.836072",
+        "NL-OutCheck": "1.07588",
+        "CF-PreForces": "1.05593",
+        "CF-Forces": "5.53069",
+        "SU-Shifting": "0",
+        "SU-ComputeStep": "0.240186",
+        "SU-Floating": "0",
+        "SU-Motion": "0",
+        "SU-Periodic": "1.85953",
+        "SU-ResizeNp": "0.0017869",
+        "SU-DownData": "0",
+        "SU-SavePart": "0.0039383",
+        "SU-Chrono": "0",
+        "SU-Moorings": "0",
+        "SU-InOut": "0",
+        "SU-Gauges": "2e-07"
+      },
+      "outputs": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_07_gpu.stdout.log",
+          "sha256": "2C40B6023F6FB1DD64C1D6A6C375ED230C56682DADD1339C0CEA448601311617"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_delivery_bench_r1_07_gpu.stderr.log",
+          "sha256": "E3B0C44298FC1C149AFBF4C8996FB92427AE41E4649B934CA495991B7852B855"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2D1A0182BEA7F9C42C6003A098D2604383AA5EAD3593EF4EC6D446997E7C4C64"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "284112EFFC3C6366567EC1AF7D58C7D5675C3EA4115EEC3F5DB606399A514DAA"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\CfgInit_Normals.vtk",
+          "sha256": "DBD028F50CE22D86228E25D263A367CAAC77A04FF2C4C5179015E670944D65F3"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "0B7CC525142BC63A1992B0AA0E5C5ACD80445FDB4B2AA00CB8B518062942F5F2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\Run.csv",
+          "sha256": "D22ABF948B82E96F2C1E36941E4E8980ACBDC40D6E809337CAF65B196F007535"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\gpu_delivery_bench_r1_07_gpu\\Run.out",
+          "sha256": "7E1DB2EC418FAA7175BC33C0915B704C0AB3DD21D679722B9947ED5D1B5BD0A9"
+        }
+      ]
+    }
+  ],
+  "pinned_logical_cpu": 0,
+  "physical_steps": 3000,
+  "dt_s": 1e-05,
+  "save_fields": false,
+  "physical_accuracy_test": false,
+  "medians_seconds": {
+    "cpu": 25.597725,
+    "gpu": 19.152983
+  },
+  "cpu_over_gpu_speed_ratio": 1.3364876374609638,
+  "loop_ranges_seconds": {
+    "cpu": [
+      24.528858,
+      25.628939
+    ],
+    "gpu": [
+      18.92625,
+      19.709873
+    ]
+  },
+  "limitations": "Short 1000-soil-particle case only. No field output/CSV sampling. Not a full-run speedup, CPU-thread scaling or large-model benchmark."
+}

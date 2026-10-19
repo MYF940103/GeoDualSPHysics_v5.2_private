@@ -214,6 +214,7 @@ protected:
   double HydroMechInitZ;      ///<Constant initialization elevation for HMINIT_ConstantZ. //mdbr
   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
+  bool HydroMechDrainageFixedGrid; ///<Align a drainage event on a fresh constant-dt grid (default=false).
   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
@@ -224,6 +225,8 @@ protected:
   unsigned PoreCompressionSourceMode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate. //mdbr
   bool PoreCompressionGradCorr; ///<Applies kernel-gradient correction to the pore-pressure compression source. //mdbr
   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
+  bool SoilBoundaryDerivativeSPR; ///<Mirrored wall velocity for stress, pore-pressure and density derivatives only (CPU, default=false).
+  double SoilHourglassXi;      ///<CPU elastic GNOG strength; zero disables allocation and all hourglass operations.
   bool SoilDamping;           ///<Bui-Fukagawa damping for static stress initialization (default=0). //mdbr
   float SoilDampingCoef;      ///<Non-dimensional Bui-Fukagawa damping coefficient xi (default=0.02). //mdbr
   bool MdbcCorrector;         ///<mDBC correction is also applied in corrector of Symplectic (default=1).

@@ -1,0 +1,24 @@
+{
+  "reviewed": true,
+  "passed": true,
+  "scope": "Case-02 k=1e-4 fixed-plane elastic 2Tv CPU/GPU delivery, under the user's Oct16 provisional 1D acceptance",
+  "physical_acceptance_generalized": false,
+  "inspected": ["gpu_full_2tv_r1_profiles.png", "gpu_full_2tv_r1_history.png", "gpu_full_2tv_r1_pair.png", "gpu_release_audit_r1.png"],
+  "findings": [
+    "CPU/GPU full histories and requested profiles overlay; actual times and initial native material coordinates are used.",
+    "Late mean pressure keeps decaying; the log-scale historical comparison exposes the old float plateau without claiming a single-factor comparison.",
+    "Top material settlement error is about -0.417 percent; old HG and new settlement errors are similar in absolute scale, not a new order-of-magnitude gain.",
+    "Local Q still grows to about 10 Pa. Total-stress residual stays below the original 100-Pa guard; this does not prove absence of every mode.",
+    "Bottom material settlement is not bottom-wall drift: independent continuum comparison gives about 0.000927 mm excess for the first material layer.",
+    "15-s half-step evidence only; full-cycle CPU/GPU agreement is not full-cycle time convergence or validation for plasticity, large rotation or complex walls."
+  ],
+  "evidence": [
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_release_audit_r1.check.json", "sha256": "292EE72164FB3EF3E6381952C62263E21CEB79835E79293DCA107A132C9171C0"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_full_2tv_r1.check.json", "sha256": "79929CCB351148348BA72D3F33CD6CAE48D7EBC394CC956CA069FAC49118BA76"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\gpu_full_2tv_r1_pair.check.json", "sha256": "8E0130C182934214B3E51EAF3B2F962C753BAEF909B394F48AD0A51DC810EB10"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_profiles.png", "sha256": "B07094638313D767C9BCED5A2F78EC908D270B771F37730D71375F910422AAFD"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_history.png", "sha256": "82F264E9918366C57F8D6DE6326B25B2B1311A8EE871F4BD35B55A10CCAD3499"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_full_2tv_r1_pair.png", "sha256": "4221743E575D36EDBDFA2434998E1D33163AE894BF3E5ADB150DA785427E5585"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\gpu_release_audit_r1.png", "sha256": "C663B58408E9F72AEBFB8FC8BCA98BDECBDCCD7FDE158A47D1141EA346F7CD4F"}
+  ]
+}

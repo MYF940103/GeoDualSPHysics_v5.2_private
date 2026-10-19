@@ -19,6 +19,7 @@
 /// \file JSphCpuSingle.cpp \brief Implements the class \ref JSphCpuSingle.
 
 #include "JSphCpuSingle.h"
+#include "JSphHourglassCpu.h"
 #include "JCellDivCpuSingle.h"
 #include "JArraysCpu.h"
 #include "JSphMk.h"
@@ -54,6 +55,7 @@ using namespace std;
 JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
   ClassName="JSphCpuSingle";
   CellDivSingle=NULL;
+  HourglassCpu=NULL;
 }
 
 //==============================================================================
@@ -62,6 +64,7 @@ JSphCpuSingle::JSphCpuSingle():JSphCpu(false){
 JSphCpuSingle::~JSphCpuSingle(){
   DestructorActive=true;
   delete CellDivSingle; CellDivSingle=NULL;
+  delete HourglassCpu; HourglassCpu=NULL;
 }
 
 //==============================================================================
@@ -72,6 +75,7 @@ llong JSphCpuSingle::GetAllocMemoryCpu()const{
   llong s=JSphCpu::GetAllocMemoryCpu();
   //-Allocated in other objects.
   if(CellDivSingle)s+=CellDivSingle->GetAllocMemory();
+  if(HourglassCpu)s+=HourglassCpu->GetAllocMemory();
   return(s);
 }
 
@@ -105,6 +109,30 @@ void JSphCpuSingle::LoadConfig(const JSphCfgRun *cfg){
 /// Configuracion del dominio actual.
 //==============================================================================
 void JSphCpuSingle::ConfigDomain(){
+  if(SoilBoundaryDerivativeSPR){
+    if(!HydroMech || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires CPU hydromechanics, Wendland and Symplectic without symmetry.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR supports fresh fixed-wall elastic cases only: no moving/floating bodies, in/out, shifting, relaxation or softening.");
+    const bool slipok=(SlipMode==SLIP_Vel0 && TMdbc2==MDBC2_None)
+      || ((SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && TMdbc2==MDBC2_Std);
+    if(TBoundary!=BC_MDBC || MdbcSlipModeByMk || !slipok || NoPenetration || !UseNormals
+      || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 normals, artificial viscosity, DensityDT=0 and no per-mk slip/NoPen/artificial stress.");
+    if(!SoilStressRateGradCorr || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || (Simulate2D && PeriY))
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires corrected stress/pore gradients, PairDivergence and no y periodicity in 2-D.");
+  }
+  if(SoilHourglassXi>0){
+    if(!Simulate2D || TKernel!=KERNEL_Wendland || TStep!=STEP_Symplectic || Symmetry)
+      Run_Exceptioon("SoilHourglassXi currently requires 2-D Wendland with Symplectic integration and no symmetry plane.");
+    if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
+      Run_Exceptioon("SoilHourglassXi supports a fixed native elastic soil set only: no restart, moving/floating bodies, in/out, shifting, relaxation or softening.");
+    if(!PeriX || PeriY || PeriZ || PeriXinc.y!=0 || PeriXinc.z!=0 || KernelSize>=fabs(PeriXinc.x)*.5)
+      Run_Exceptioon("SoilHourglassXi currently requires axis-aligned x periodicity with kernel support smaller than half the period.");
+    HourglassCpu=new JSphHourglassCpu();
+    HourglassCpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,fabs(PeriXinc.x),
+      CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG);
+  }
   //-Configure cell map division (defines ScellDiv, Scell, Map_Cells). 
   ConfigCellDivision();
   //-Calculate number of particles. | Calcula numero de particulas.
@@ -121,12 +149,12 @@ void JSphCpuSingle::ConfigDomain(){
   memcpy(Velrhopc,PartsLoaded->GetVelRhop(),sizeof(tfloat4)*Np);
   //========= mdbr
   if(PartBegin && PartsLoaded->GetSoilDataLoaded()){
-    memcpy(Sigmac,PartsLoaded->GetSigma(),sizeof(tsymatrix3f)*Np);
+    memcpy(Sigmac,PartsLoaded->GetSigma(),sizeof(tsymatrix3d)*Np);
     memset(Kplasticc,0,sizeof(float)*Np);
     Log->Print("Restart soil data: Sigma inherited, Kplastic reset for restart stage.");
   }
   else{
-    memset(Sigmac, 0, sizeof(tsymatrix3f)*Np);
+    memset(Sigmac, 0, sizeof(tsymatrix3d)*Np);
     memset(Kplasticc, 0, sizeof(float)*Np);
   }
   if(HydroMech){
@@ -167,6 +195,47 @@ void JSphCpuSingle::ConfigDomain(){
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,Posc,Idpc,Codec,Velrhopc,BoundNormalc);
   if(UseNormals)ConfigBoundNormals(Np,Npb,Posc,Idpc,BoundNormalc);
+  if(SoilBoundaryDerivativeSPR){
+    //-Candidate vector-SPR scope: one stationary plane; not corners or curved walls.
+    if(!Npb)Run_Exceptioon("SoilBoundaryDerivativeSPR requires one fixed boundary plane.");
+    const tdouble3 n0=ToTDouble3(BoundNormalc[0]);
+    const double len0=sqrt(n0.x*n0.x+n0.y*n0.y+n0.z*n0.z);
+    if(!std::isfinite(len0) || len0<=0)
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite nonzero boundary normals.");
+    const tdouble3 unit0=n0/len0,wall0=Posc[0]+n0*.5;
+    const bool legacyhorizontal=(n0.z>0 && fabs(n0.x)<=1e-8*Dp && fabs(n0.y)<=1e-8*Dp);
+    const double normaltol=8.*FLT_EPSILON; //-Float-normal direction roundoff, not a fitted geometry tolerance.
+    for(unsigned p=0;p<Npb;p++){
+      const tdouble3 n=ToTDouble3(BoundNormalc[p]),wall=Posc[p]+n*.5;
+      const double len=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
+      if(!CODE_IsFixed(Codec[p]) || !std::isfinite(len) || len<=0
+        || !std::isfinite(wall.x) || !std::isfinite(wall.y) || !std::isfinite(wall.z)
+        || Velrhopc[p].x!=0 || Velrhopc[p].y!=0 || Velrhopc[p].z!=0)
+        Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite stationary fixed-wall particles and nonzero normals.");
+      if(legacyhorizontal){
+        //-Keep the original case-02 direction and coplanarity thresholds unchanged.
+        if(n.z<=0 || fabs(n.x)>1e-8*Dp || fabs(n.y)>1e-8*Dp || fabs(wall.z-wall0.z)>1e-6*Dp)
+          Run_Exceptioon("SoilBoundaryDerivativeSPR requires stationary coplanar horizontal bottom-wall normals.");
+      }
+      else{
+        const tdouble3 unit=n/len,delta=wall-wall0;
+        //-A float normal affects both the wall midpoint and its projection over the plane span.
+        const double planetol=1e-6*Dp+normaltol*(len0+len+sqrt(delta.x*delta.x+delta.y*delta.y+delta.z*delta.z));
+        if(fabs(unit.x-unit0.x)>normaltol || fabs(unit.y-unit0.y)>normaltol || fabs(unit.z-unit0.z)>normaltol
+          || (Simulate2D && fabs(unit.y)>normaltol)
+          || fabs(delta.x*unit0.x+delta.y*unit0.y+delta.z*unit0.z)>planetol)
+          Run_Exceptioon("SoilBoundaryDerivativeSPR requires one coplanar, consistently oriented fixed wall (x-z plane normals in 2-D).");
+      }
+    }
+    const tdouble3 perinc[3]={PeriXinc,PeriYinc,PeriZinc};
+    const bool peractive[3]={PeriX,PeriY,PeriZ};
+    for(unsigned a=0;a<3;a++)if(peractive[a]){
+      const tdouble3 inc=perinc[a];
+      const double len=sqrt(inc.x*inc.x+inc.y*inc.y+inc.z*inc.z);
+      if(!std::isfinite(len) || len<=0 || fabs(inc.x*unit0.x+inc.y*unit0.y+inc.z*unit0.z)>normaltol*len)
+        Run_Exceptioon("SoilBoundaryDerivativeSPR permits periodic translations tangent to its single boundary plane only.");
+    }
+  }
   //-Configure initial profile----mdbr
   for (unsigned p = 0; p < Npb; p++) {
 	  Velrhopc[p].w=RhopZero; 	  
@@ -314,7 +383,7 @@ void JSphCpuSingle::PeriodicDuplicatePos(unsigned pnew,unsigned pcopy,bool inver
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cellmax
   ,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
-  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3f *sigma,tsymatrix3f *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
+  ,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tfloat4 *velrhopm1,tsymatrix3d *sigma,tsymatrix3d *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -351,7 +420,7 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
 /// Este kernel vale para single-cpu y multi-cpu porque usa domposmin. 
 //==============================================================================
 void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3 cellmax,tdouble3 perinc,const unsigned *listp
-  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3f *sigma, tsymatrix3f *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
+  ,unsigned *idp,typecode *code,unsigned *dcell,tdouble3 *pos,tfloat4 *velrhop,tsymatrix3f *spstau,tdouble3 *pospre,tfloat4 *velrhoppre,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre)const
 {
   const int n=int(np);
   #ifdef OMP_USE
@@ -625,6 +694,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   else CdbcBoundCorrection(); //Corrected dummy boundary condition
   InterStep=interstep;
   PreInteraction_Forces();
+  ComputeBoundaryDerivativeVelocity();
   ComputeFreeSurfaceTracking();
   ApplyHydroMechTopLoadAcceleration();
   tfloat3 *dengradcorr=NULL;
@@ -668,6 +738,14 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
 
   //-Calculates maximum value of ViscDt.
   ViscDtMax=res.viscdt;
+  //-Reuse raw loading from the main neighbour pass, then add the GNOG history.
+  //-Both precede the single final acceleration maximum reduction.
+  if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
+  if(HourglassCpu){
+    if(interstep==INTERSTEP_SymPredictor)
+      HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre);
+    else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec);
+  }
   //-Calculates maximum value of Ace (periodic particles are ignored).
   AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
 
@@ -824,6 +902,7 @@ double JSphCpuSingle::ComputeStep_Sym(){
   const double ddt_p=DtVariable(false);        //-Calculate dt of predictor step.
   if(Shifting)RunShifting(dt*.5);              //-Shifting.
   ComputeSymplecticPre(dt);                    //-Apply Symplectic-Predictor to particles (periodic particles become invalid).
+  if(HourglassCpu)HourglassCpu->PredictorUpdate(dt);
   if(CaseNfloat)RunFloating(dt*.5,true);       //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   //-Corrector
@@ -834,11 +913,13 @@ double JSphCpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
+  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt);
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
   if(RelaxZones)RunRelaxZone(dt);              //-Generate waves using RZ.
   SymplecticDtPre=min(ddt_p,ddt_c);            //-Calculate dt for next ComputeStep.
+  if(HourglassCpu && !FixedDt)SymplecticDtPre=min(SymplecticDtPre,HourglassCpu->GetDtLimit());
   return(dt);
 }
 
@@ -1263,6 +1344,8 @@ void JSphCpuSingle::SaveData(){
   //========== mdbr
   tfloat3 *sigmakk=NULL;
   tfloat3 *sigmaij=NULL;
+  tdouble3 *sigmastatekk=NULL;
+  tdouble3 *sigmastateij=NULL;
   float *kplastic=NULL;
   unsigned *fstype=NULL;
   tfloat3 *fsnormal=NULL;
@@ -1279,6 +1362,9 @@ void JSphCpuSingle::SaveData(){
     //========= mdbr
 	sigmakk=ArraysCpu->ReserveFloat3();
     sigmaij=ArraysCpu->ReserveFloat3();
+    //-Keep full stress state for restart; legacy float fields remain for plotting.
+    sigmastatekk=new tdouble3[Np];
+    sigmastateij=new tdouble3[Np];
     kplastic=ArraysCpu->ReserveFloat();
     fstype=ArraysCpu->ReserveUint();
     fsnormal=ArraysCpu->ReserveFloat3();
@@ -1287,7 +1373,7 @@ void JSphCpuSingle::SaveData(){
       porepress0=ArraysCpu->ReserveFloat();
     }
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL,sigmastatekk,sigmastateij);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1312,6 +1398,8 @@ void JSphCpuSingle::SaveData(){
   JDataArrays arrays;
   AddBasicArrays(arrays,npsave,pos,idp,vel,rhop,sigmakk,sigmaij,kplastic);//mdbr
   if(save){
+    arrays.AddArray("SigmaState_kk",npsave,sigmastatekk,true);
+    arrays.AddArray("SigmaState_ij",npsave,sigmastateij,true);
     arrays.AddArray("FSType",npsave,fstype);
     arrays.AddArray("FSNormal",npsave,fsnormal);
     if(HydroMech && porepress && porepress0){
@@ -1368,6 +1456,15 @@ void JSphCpuSingle::SaveExtraData(){
 void JSphCpuSingle::FinishRun(bool stop){
   float tsim=TimerSim.GetElapsedTimeF()/1000.f,ttot=TimerTot.GetElapsedTimeF()/1000.f;
   JSph::ShowResume(stop,tsim,ttot,true,"");
+  if(HourglassCpu){
+    const auto& hg=HourglassCpu->GetStats();
+    Log->Printf("SoilHourglass: forcecalls=%u predictorupdates=%u correctorupdates=%u ratecalls=%u",
+      hg.forcecalls,hg.predictorupdates,hg.correctorupdates,hg.ratecalls);
+    Log->Printf("SoilHourglass: ratecalculations=%u endpoint_rate_reuses=%u",
+      hg.ratecalculations,hg.ratecachehits);
+    Log->Printf("SoilHourglass: max|sum(m*H)|=%g max|sum(m*deltaAce)|=%g max(dt/tau)=%g spinbound=%g",
+      hg.maxnetforce,hg.maxactualnetforce,hg.maxtauratio,hg.spinbound);
+  }
   Log->Print(" ");
   string hinfo,dinfo;
   if(SvTimers){

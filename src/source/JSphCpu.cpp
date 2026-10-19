@@ -48,7 +48,7 @@
 
 using namespace std;
 
-static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress);
+static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3d *sigma,const float coef,tsymatrix3f *artificialstress);
 
 // Hard-coded footprints for benchmark strip-footing verifications.
 static inline bool HydroMechInYaoTopStrip(const double x){
@@ -111,11 +111,13 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
+  BoundDerivativeVelc=NULL;
   //======
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
   SpsTauc=NULL; SpsGradvelc=NULL; //-Laminar+SPS.
   Arc=NULL; Acec=NULL; HydroMechLoadAcec=NULL; Deltac=NULL;
+  HydroMechTopLoadRawc=NULL;
   ShiftPosfsc=NULL;               //-Shifting.
   Pressc=NULL;
   CorrMatc=NULL; FSTypec=NULL; FSNormalc=NULL; PosDivc=NULL; //-Free-surface tracking.
@@ -196,24 +198,27 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-FSNormalc and SaveData temporary arrays
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4);  //-FSTypec,PosDivc and SaveData temporary arrays
   //====== mdbr
-  ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2);//-sigma,rsigma
+  ArraysCpu->AddArrayCount(JArraysCpu::SIZE_48B,1);//-sigma
+  ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-rsigma
   if(ArtificialStress)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-artificialstress
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-sigmakk,sigmaij
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-kplastic
   if(HydroMech){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-HydroMechLoadAce and SaveData temporary array
+    if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-Top-load force-stage scratch
+    if(SoilBoundaryDerivativeSPR)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1);//-Wall derivative velocity scratch
   }
   //======
   if(TStep==STEP_Verlet){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhopm1
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmam1
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_48B,1);//-sigmam1
     if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepressm1
   }
   else if(TStep==STEP_Symplectic){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1); //-pospre
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,1); //-velrhoppre
-    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,1);//-sigmapre
+    ArraysCpu->AddArrayCount(JArraysCpu::SIZE_48B,1);//-sigmapre
     if(HydroMech)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-porepresspre
   }
   if(TVisco==VISCO_LaminarSPS){     
@@ -265,9 +270,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float       *posdiv     =SaveArrayCpu(Np,PosDivc);
   tfloat3     *hydromechloadace=SaveArrayCpu(Np,HydroMechLoadAcec);
   //====mdbr
-  tsymatrix3f  *sigma     =SaveArrayCpu(Np,Sigmac);
-  tsymatrix3f  *sigmapre  =SaveArrayCpu(Np,SigmaPrec);
-  tsymatrix3f  *sigmam1   =SaveArrayCpu(Np,SigmaM1c);
+  tsymatrix3d  * sigma     =SaveArrayCpu(Np,Sigmac);
+  tsymatrix3d  * sigmapre  =SaveArrayCpu(Np,SigmaPrec);
+  tsymatrix3d  * sigmam1   =SaveArrayCpu(Np,SigmaM1c);
   float        *kplastic  =SaveArrayCpu(Np,Kplasticc);
   float        *porepress =SaveArrayCpu(Np,PorePressc);
   float        *porepress0=SaveArrayCpu(Np,PorePress0c);
@@ -331,9 +336,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(posdiv)     PosDivc     =ArraysCpu->ReserveFloat();
   if(hydromechloadace)HydroMechLoadAcec=ArraysCpu->ReserveFloat3();
   //===== mdbr
-  if(sigma)      Sigmac = ArraysCpu->ReserveSymatrix3f();
-  if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3f();
-  if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3f();
+  if(sigma)      Sigmac = ArraysCpu->ReserveSymatrix3d();
+  if(sigmapre)   SigmaPrec = ArraysCpu->ReserveSymatrix3d();
+  if(sigmam1)    SigmaM1c = ArraysCpu->ReserveSymatrix3d();
   if(kplastic)   Kplasticc = ArraysCpu->ReserveFloat();
   if(porepress)  PorePressc = ArraysCpu->ReserveFloat();
   if(porepress0) PorePress0c = ArraysCpu->ReserveFloat();
@@ -417,7 +422,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   FSNormalc=ArraysCpu->ReserveFloat3();
   PosDivc=ArraysCpu->ReserveFloat();
   //-mdbr
-  Sigmac=ArraysCpu->ReserveSymatrix3f();
+  Sigmac=ArraysCpu->ReserveSymatrix3d();
   Kplasticc=ArraysCpu->ReserveFloat();
   if(HydroMech){
     PorePressc=ArraysCpu->ReserveFloat();
@@ -427,7 +432,7 @@ void JSphCpu::ReserveBasicArraysCpu(){
   }
   //=====
   if(TStep==STEP_Verlet){VelrhopM1c=ArraysCpu->ReserveFloat4();
-  SigmaM1c=ArraysCpu->ReserveSymatrix3f();
+  SigmaM1c=ArraysCpu->ReserveSymatrix3d();
   if(HydroMech)PorePressM1c=ArraysCpu->ReserveFloat();}//mdbr
   if(TVisco==VISCO_LaminarSPS)SpsTauc=ArraysCpu->ReserveSymatrix3f();
   if(UseNormals){
@@ -473,7 +478,8 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 //==============================================================================
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
-  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace)
+  ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace
+  ,tdouble3 *sigmastatekk,tdouble3 *sigmastateij)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -500,9 +506,9 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   //========= mdbr
   if(sigmakk){
 	  for (unsigned p=0;p<n;p++) {
-		  tsymatrix3f sig=Sigmac[p+pini];
-		  sigmakk[p]=TFloat3(sig.xx,sig.yy,sig.zz);
-          sigmaij[p]=TFloat3(sig.xy,sig.yz,sig.xz);
+		  const tsymatrix3d sig=Sigmac[p+pini];
+		  sigmakk[p]=TFloat3(float(sig.xx),float(sig.yy),float(sig.zz));
+          sigmaij[p]=TFloat3(float(sig.xy),float(sig.yz),float(sig.xz));
 	  }
   }
   if(kplastic){
@@ -510,6 +516,13 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
           float kplas=Kplasticc[p+pini];
           kplastic[p]=kplas;
       }  
+  }
+  if(sigmastatekk || sigmastateij){
+    for(unsigned p=0;p<n;p++){
+      const tsymatrix3d sig=Sigmac[p+pini];
+      if(sigmastatekk)sigmastatekk[p]=TDouble3(sig.xx,sig.yy,sig.zz);
+      if(sigmastateij)sigmastateij[p]=TDouble3(sig.xy,sig.yz,sig.xz);
+    }
   }
   //=========
   //-Eliminate non-normal particles (periodic & others). | Elimina particulas no normales (periodicas y otras).
@@ -533,6 +546,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(sigmakk)sigmakk[pdel]=sigmakk[p];
         if(sigmaij)sigmaij[pdel]=sigmaij[p];
         if(kplastic)kplastic[pdel]=kplastic[p];
+        if(sigmastatekk)sigmastatekk[pdel]=sigmastatekk[p];
+        if(sigmastateij)sigmastateij[pdel]=sigmastateij[p];
         //====
         if(fstype)fstype[pdel]=fstype[p];
         if(fsnormal)fsnormal[pdel]=fsnormal[p];
@@ -1148,7 +1163,15 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
 /// Returns true when the drained pore-pressure boundary is active.
 //==============================================================================
 bool JSphCpu::IsHydroMechDrainageActive()const{
-  return(HydroMech && HydroMechDrainage && TimeStep>=HydroMechDrainageStartTime);
+  if(!HydroMech || !HydroMechDrainage)return(false);
+  if(TimeStep>=HydroMechDrainageStartTime)return(true);
+  if(!HydroMechDrainageFixedGrid)return(false);
+  //-Only correct accumulated-time roundoff at the nominal event step.
+  //-Nstep is unchanged throughout both stages and the outer cell division.
+  const double event=HydroMechDrainageStartTime;
+  const double eps=std::numeric_limits<double>::epsilon();
+  const double grid=double(Nstep)*FixedDt->GetFixedValue();
+  return(fabs(grid-event)<=4*eps*event && event-TimeStep<=8*eps*double(Nstep)*event);
 }
 
 //==============================================================================
@@ -1190,7 +1213,7 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
   if(!HydroMech || HydroMechTopLoadMode==HMLOAD_None)return;
   if(HydroMechTopLoadMode==HMLOAD_FlexibleConfinement)return;
   if(!Acec || !FSTypec || !FSNormalc)return;
-  const bool alltop=(HydroMechTopLoadMode==HMLOAD_TopVertical);
+  const bool alltop=(HydroMechTopLoadMode==HMLOAD_TopVertical || HydroMechTopLoadMode==HMLOAD_TopKernelBand);
   const bool striptop=(HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip);
   if(!alltop && !striptop)return;
   const double q0=double(HydroMechTopLoadQ0);
@@ -1219,6 +1242,30 @@ void JSphCpu::ApplyHydroMechTopLoadAcceleration(){
       Acec[p].x+=load.x; Acec[p].y+=load.y; Acec[p].z+=load.z;
       if(HydroMechLoadAcec)HydroMechLoadAcec[p]=load;
     }
+  }
+}
+
+//==============================================================================
+/// Redistributes the existing top load over its vertical kernel-support band.
+//==============================================================================
+void JSphCpu::NormalizeHydroMechTopBandLoad(){
+  if(!HydroMech || HydroMechTopLoadMode!=HMLOAD_TopKernelBand)return;
+  double zmax=-DBL_MAX,target=0;
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+    zmax=max(zmax,Posc[p].z);
+    target+=double(MassFluid)*HydroMechLoadAcec[p].z;
+  }
+  if(target==0)return;
+  double raw=0;
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p]) && Posc[p].z>zmax-KernelSize)
+    raw+=double(MassFluid)*HydroMechTopLoadRawc[p];
+  if(!(raw<0))Run_Exceptioon("TopKernelBand requires a negative raw vertical load on the top support band.");
+  const double scale=target/raw;
+  //-Keep the tested float replacement order and serial force normalization.
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+    const float load=(Posc[p].z>zmax-KernelSize? float(HydroMechTopLoadRawc[p]*scale): 0.f);
+    Acec[p].z+=load-HydroMechLoadAcec[p].z;
+    HydroMechLoadAcec[p]=TFloat3(0,0,load);
   }
 }
 
@@ -1305,7 +1352,7 @@ void JSphCpu::InitHydroMechState(){
         const float szz=float(-effective_ratio*rhosw*analyticg*depthghost);
         const float k0=float(SoilCte.PRvs/(1.f-SoilCte.PRvs));
         tsymatrix3f sig={k0*szz,0.f,0.f,k0*szz,0.f,szz};
-        Sigmac[p]=sig;
+        Sigmac[p]=ToTSymMatrix3d(sig);
         smin=min(smin,double(szz));
         smax=max(smax,double(szz));
       }
@@ -1511,11 +1558,11 @@ void JSphCpu::InteractionPorePressureRate(){
 }
 
 //==============================================================================
-/// Extrapolates pore pressure to mDBC boundary particles for undrained walls.
+/// Interpolates one/three field components at boundary ghost points using one MLS matrix.
 //==============================================================================
-template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorrectionT
+template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void JSphCpu::InterpolateBoundaryGhostFieldT
   (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
-  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const
+  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write)const
 {
   const int nn=int(n);
   #ifdef OMP_USE
@@ -1525,8 +1572,9 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
-    double sumwab=0,pwexcesssum=0,submerged=0;
-    double gradpwexcessx=0,gradpwexcessy=0,gradpwexcessz=0;
+    double sumwab=0,submerged=0;
+    double fieldsum[ncomp]={0};
+    double gradfieldx[ncomp]={0},gradfieldy[ncomp]={0},gradfieldz[ncomp]={0};
     tmatrix3d a_corr2=TMatrix3d(0);
     tmatrix4d a_corr3=TMatrix4d(0);
     const StNgSearch ngs=nsearch::Init(gposp1,false,divdata);
@@ -1548,12 +1596,15 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
           const double vfrx=frx*vol2;
           const double vfry=fry*vol2;
           const double vfrz=frz*vol2;
-          const double pwexcess=double(porepress[p2])-double(porepress0[p2]);
+          double field[ncomp];
+          for(unsigned c=0;c<ncomp;c++)field[c]=read(p2,c);
           sumwab+=vwab;
-          pwexcesssum+=vwab*pwexcess;
-          gradpwexcessx+=vfrx*pwexcess;
-          gradpwexcessy+=vfry*pwexcess;
-          gradpwexcessz+=vfrz*pwexcess;
+          for(unsigned c=0;c<ncomp;c++){
+            fieldsum[c]+=vwab*field[c];
+            gradfieldx[c]+=vfrx*field[c];
+            gradfieldy[c]+=vfry*field[c];
+            gradfieldz[c]+=vfrz*field[c];
+          }
           submerged-=vol2*(drx*frx+dry*fry+drz*frz);
           if(sim2d){
             a_corr2.a11+=vwab;  a_corr2.a12+=drx*vwab;  a_corr2.a13+=drz*vwab;
@@ -1572,26 +1623,94 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
     const bool active=(submerged>0 || sumwab>=double(MdbcThreshold) || (MdbcThreshold>=2 && sumwab+2>=double(MdbcThreshold)));
     if(active && sumwab>0){
       const double determlimit=1e-3;
-      double pwexcessfinal=pwexcesssum/sumwab; //-0th-order fallback.
+      double fieldfinal[ncomp];
+      for(unsigned c=0;c<ncomp;c++)fieldfinal[c]=fieldsum[c]/sumwab; //-0th-order fallback.
       if(sim2d){
         const double determ=fmath::Determinant3x3(a_corr2);
         if(fabs(determ)>=determlimit){
           const tmatrix3d inv=fmath::InverseMatrix3x3(a_corr2,determ);
-          const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessz;
-          pwexcessfinal=qg;
+          for(unsigned c=0;c<ncomp;c++){
+            const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldz[c];
+            fieldfinal[c]=qg;
+          }
         }
       }
       else{
         const double determ=fmath::Determinant4x4(a_corr3);
         if(fabs(determ)>=determlimit){
           const tmatrix4d inv=fmath::InverseMatrix4x4(a_corr3,determ);
-          const double qg = inv.a11*pwexcesssum + inv.a12*gradpwexcessx + inv.a13*gradpwexcessy + inv.a14*gradpwexcessz;
-          pwexcessfinal=qg;
+          for(unsigned c=0;c<ncomp;c++){
+            const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldy[c] + inv.a14*gradfieldz[c];
+            fieldfinal[c]=qg;
+          }
         }
       }
-      porepress[p1]=float(double(porepress0[p1])+pwexcessfinal);
+      write(p1,fieldfinal);
     }
   }
+}
+
+//==============================================================================
+/// Extrapolates excess pore pressure to mDBC boundary particles for undrained walls.
+//==============================================================================
+template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorrectionT
+  (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const
+{
+  const auto readpressure=[&](unsigned p,unsigned){return(double(porepress[p])-double(porepress0[p]));};
+  const auto writepressure=[&](unsigned p,const double *excess){porepress[p]=float(double(porepress0[p])+excess[0]);};
+  InterpolateBoundaryGhostFieldT<tker,sim2d,1>(n,divdata,pos,code,velrhop,boundnormal,readpressure,writepressure);
+}
+
+//==============================================================================
+/// Reconstructs derivative-only velocity at a fixed plane using its local slip mode.
+//==============================================================================
+void JSphCpu::ComputeBoundaryDerivativeVelocity(){
+  if(!SoilBoundaryDerivativeSPR)return;
+  for(unsigned p=0;p<Npb;p++){
+    const tfloat4 v=Velrhopc[p];
+    const TpSlipMode mode=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
+    BoundDerivativeVelc[p]=TFloat3(v.x,v.y,v.z);
+    //-Preserve the retained horizontal Vel0 fallback, including signed zero.
+    if(mode==SLIP_Vel0 && BoundNormalc[p].x==0 && BoundNormalc[p].y==0)BoundDerivativeVelc[p].z=-v.z;
+  }
+  const auto readvelocity=[&](unsigned p,unsigned c){
+    const tfloat4 v=Velrhopc[p];
+    return(double(c==0? v.x: (c==1? v.y: v.z)));
+  };
+  const auto writevelocity=[&](unsigned p,const double *velocity){
+    const TpSlipMode mode=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
+    if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return;
+    const tfloat4 v=Velrhopc[p];
+    const tfloat3 bnormal=BoundNormalc[p];
+    if(mode==SLIP_Vel0 && bnormal.x==0 && bnormal.y==0){
+      //-Keep the accepted z-only path bit-compatible; do not replace its projection.
+      BoundDerivativeVelc[p]=TFloat3(v.x,v.y,-float(0.0+velocity[2]));
+    }
+    else if(mode==SLIP_NoSlip){
+      BoundDerivativeVelc[p]=TFloat3(float(2.0*double(v.x)-velocity[0]),
+        float(2.0*double(v.y)-velocity[1]),float(2.0*double(v.z)-velocity[2]));
+    }
+    else{
+      const tdouble3 nraw=ToTDouble3(bnormal);
+      const tdouble3 normal=nraw/sqrt(nraw.x*nraw.x+nraw.y*nraw.y+nraw.z*nraw.z);
+      const double wallnormal=double(v.x)*normal.x+double(v.y)*normal.y+double(v.z)*normal.z;
+      const double ghostnormal=velocity[0]*normal.x+velocity[1]*normal.y+velocity[2]*normal.z;
+      const double reflection=wallnormal-ghostnormal;
+      if(mode==SLIP_FreeSlip){
+        BoundDerivativeVelc[p]=TFloat3(float(velocity[0]+2.0*reflection*normal.x),
+          float(velocity[1]+2.0*reflection*normal.y),float(velocity[2]+2.0*reflection*normal.z));
+      }
+      else{//-Legacy Vel0 keeps wall tangential velocity and mirrors only the normal derivative.
+        BoundDerivativeVelc[p]=TFloat3(float(double(v.x)+reflection*normal.x),
+          float(double(v.y)+reflection*normal.y),float(double(v.z)+reflection*normal.z));
+      }
+    }
+  };
+  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(
+    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity);
+  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,3>(
+    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity);
 }
 
 //==============================================================================
@@ -1717,6 +1836,7 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   if(Deltac)memset(Deltac,0,sizeof(float)*np);                       //Deltac[]=0
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
   if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*np);//HydroMechLoadAcec[]=(0,0,0)
+  if(HydroMechTopLoadRawc)memset(HydroMechTopLoadRawc,0,sizeof(float)*np);
   if(NoPenShiftc)memset(NoPenShiftc,0,sizeof(tfloat4)*np);           //NoPenShiftc[]=(0,0,0,0)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
@@ -1747,6 +1867,8 @@ void JSphCpu::PreInteraction_Forces(){
   //-Assign memory.
   Arc=ArraysCpu->ReserveFloat();
   Acec=ArraysCpu->ReserveFloat3();
+  if(HydroMech && HydroMechTopLoadMode==HMLOAD_TopKernelBand)HydroMechTopLoadRawc=ArraysCpu->ReserveFloat();
+  if(SoilBoundaryDerivativeSPR)BoundDerivativeVelc=ArraysCpu->ReserveFloat3();
   //=========== mdbr
   Rsigmac=ArraysCpu->ReserveSymatrix3f();
   if(ArtificialStress)ArtificialStressc=ArraysCpu->ReserveSymatrix3f();
@@ -1826,6 +1948,8 @@ void JSphCpu::PosInteraction_Forces(){
   //-Free memory assigned in PreInteraction_Forces(). | Libera memoria asignada en PreInteraction_Forces().
   ArraysCpu->Free(Arc);          Arc=NULL;
   ArraysCpu->Free(Acec);         Acec=NULL;
+  ArraysCpu->Free(HydroMechTopLoadRawc); HydroMechTopLoadRawc=NULL;
+  ArraysCpu->Free(BoundDerivativeVelc); BoundDerivativeVelc=NULL;
   ArraysCpu->Free(Deltac);       Deltac=NULL;
   ArraysCpu->Free(ShiftPosfsc);  ShiftPosfsc=NULL;
   ArraysCpu->Free(Pressc);       Pressc=NULL;
@@ -1894,7 +2018,10 @@ template<TpKernel tker,TpFtMode ftmode> void JSphCpu::InteractionForcesBound
             tfloat4 velrhop2=velrhop[p2];
             if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
             const float dvx=velrhop1.x-velrhop2.x, dvy=velrhop1.y-velrhop2.y, dvz=velrhop1.z-velrhop2.z;
-            if(compute)arp1+=massp2*(dvx*frx+dvy*fry+dvz*frz)*(velrhop1.w/velrhop2.w);
+            const float dvxderiv=(BoundDerivativeVelc? BoundDerivativeVelc[p1].x-velrhop2.x: dvx);
+            const float dvyderiv=(BoundDerivativeVelc? BoundDerivativeVelc[p1].y-velrhop2.y: dvy);
+            const float dvzderiv=(BoundDerivativeVelc? BoundDerivativeVelc[p1].z-velrhop2.z: dvz);
+            if(compute)arp1+=massp2*(dvxderiv*frx+dvyderiv*fry+dvzderiv*frz)*(velrhop1.w/velrhop2.w);
 
             {//-Viscosity.
               const float dot=drx*dvx + dry*dvy + drz*dvz;
@@ -1972,13 +2099,13 @@ void GetStressRateTensor_Elastic(tsymatrix3f e_tensor,tfloat3 w_tensor_xy_yz_xz
   float wyz = w_tensor_xy_yz_xz.y;
   float wxz = w_tensor_xy_yz_xz.z;
   
-  //Jaumann stress rate
-  float Jxx = - 2.f*sigmaxy*wxy - 2.f*sigmaxz*wxz;
-  float Jxy = sigmaxx*wxy - sigmayy*wxy - sigmaxz*wyz - sigmayz*wxz;
-  float Jxz = sigmaxx*wxz + sigmaxy*wyz - sigmayz*wxy - sigmazz*wxz;
-  float Jyy = 2.f*sigmaxy*wxy - 2.f*sigmayz*wyz;
-  float Jyz = sigmaxy*wxz + sigmaxz*wxy + sigmayy*wyz - sigmazz*wyz;
-  float Jzz = 2.f*sigmaxz*wxz + 2.f*sigmayz*wyz;
+  //Rigid-body contribution W*sigma-sigma*W, with W=(grad(v)-grad(v)^T)/2.
+  float Jxx = 2.f*sigmaxy*wxy + 2.f*sigmaxz*wxz;
+  float Jxy = -sigmaxx*wxy + sigmayy*wxy + sigmaxz*wyz + sigmayz*wxz;
+  float Jxz = -sigmaxx*wxz - sigmaxy*wyz + sigmayz*wxy + sigmazz*wxz;
+  float Jyy = -2.f*sigmaxy*wxy + 2.f*sigmayz*wyz;
+  float Jyz = -sigmaxy*wxz - sigmaxz*wxy - sigmayy*wyz + sigmazz*wyz;
+  float Jzz = -2.f*sigmaxz*wxz - 2.f*sigmayz*wyz;
  
   //Construct stress rate equation
   rsigma.xx = (m_a11*exx+m_a12*eyy+m_a13*ezz)+Jxx;
@@ -2064,7 +2191,7 @@ static tsymatrix3f ComputeBuiArtificialStress(const tsymatrix3f &sigma,const flo
 //==============================================================================
 /// Precomputes Bui 2008 artificial stress tensor for particles with stress data.
 //==============================================================================
-static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3f *sigma,const float coef,tsymatrix3f *artificialstress){
+static void ComputeArtificialStressArray(unsigned np,const typecode *code,const tfloat4 *velrhop,const tsymatrix3d *sigma,const float coef,tsymatrix3f *artificialstress){
   const int n=int(np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
@@ -2072,7 +2199,7 @@ static void ComputeArtificialStressArray(unsigned np,const typecode *code,const 
   for(int p=0;p<n;p++){
     tsymatrix3f rstress={0,0,0,0,0,0};
     if(!CODE_IsFloating(code[p])){
-      rstress=ComputeBuiArtificialStress(sigma[p],velrhop[p].w,coef);
+      rstress=ComputeBuiArtificialStress(ToTSymMatrix3f(sigma[p]),velrhop[p].w,coef);
     }
     artificialstress[p]=rstress;
   }
@@ -2100,7 +2227,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   ,StDivDataCpu divdata,const unsigned *dcell
   ,const tsymatrix3f* tau,tsymatrix3f* gradvel
   ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
-  ,const float *press,const float *porepress,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+  ,const float *press,const float *porepress,const tsymatrix3d *sigma,const tfloat3 *dengradcorr
   ,float *porepressrate,const unsigned *fstype,const tfloat3 *fsnormal,const tmatrix3d *corrmat
   ,const tsymatrix3f *artificialstress
   ,float &viscdt,float *ar,tfloat3 *ace,float *delta
@@ -2113,8 +2240,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   //-Hydromechanical switches used inside the pair loop.
   const bool useporefeedback=(HydroMech && porepress);
   const bool useporerate=(HydroMech && porepress && porepressrate);
+  const bool topkernelband=(HydroMech && HydroMechTopLoadMode==HMLOAD_TopKernelBand);
   float flexconfpressure=0;
-  if(HydroMech && !boundp2 && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechTopLoadQ0>0.f){
+  if(HydroMech && !boundp2 && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || topkernelband) && HydroMechTopLoadQ0>0.f){
     const double q0=double(HydroMechTopLoadQ0);
     const double tramp=HydroMechTopLoadRampTime;
     const double q=(tramp>0 && TimeStep<tramp? q0*max(0.0,TimeStep)/tramp: q0);
@@ -2171,7 +2299,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const bool poreratep1=(useporerate && CODE_IsFluid(code[p1]) && !(drainfs && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)));
     const float pwp1=(poreratep1? porepress[p1]: 0);
     const tmatrix3d porecorr=(poreratep1 && corrmat? corrmat[p1]: TMatrix3d());
-    const tsymatrix3f sigmap1=sigma[p1]; //mdbr
+    const tsymatrix3f sigmap1=ToTSymMatrix3f(sigma[p1]); //mdbr
     tsymatrix3f artstressp1={0,0,0,0,0,0};
     if(useartstress && !ftp1 && invwabdp>0.f)artstressp1=artificialstress[p1];
     //-Obtains elastic parameters
@@ -2208,7 +2336,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           bool ftp2=false;    //-Indicate if it is floating | Indica si es floating.
           bool compute=true;  //-Deactivate when using DEM and if it is of type float-float or float-bound | Se desactiva cuando se usa DEM y es float-float o float-bound.
           //===== Get stress of particle p2 ====
-		  const tsymatrix3f sigmap2=sigma[p2]; //mdbr
+		  const tsymatrix3f sigmap2=ToTSymMatrix3f(sigma[p2]); //mdbr
           if(USE_FLOATING){
             ftp2=CODE_IsFloating(code[p2]);
             if(ftp2)massp2=FtObjs[CODE_GetTypeValue(code[p2])].massp;
@@ -2248,7 +2376,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             if(useflexconf && !ftp2){
               const float prsconf=flexconfpressure*massp2*(invrhop1_2+invrhop2_2);
               const float ax=prsconf*frx, ay=prsconf*fry, az=prsconf*frz;
-              acep1.x+=ax; acep1.y+=ay; acep1.z+=az;
+              if(!topkernelband){acep1.x+=ax; acep1.y+=ay; acep1.z+=az;}
               hydromechloadacep1.x+=ax; hydromechloadacep1.y+=ay; hydromechloadacep1.z+=az;
             }
             //-u-pw Eq. (30): separate pore-pressure discretization mapped to tensile-positive stress in this code.
@@ -2290,8 +2418,17 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             dvy_visc=velp1.y-tangentvelp2.y;
             dvz_visc=velp1.z-tangentvelp2.z;
           }
+          //-SPR changes derivatives, not physical wall velocities or viscous forces.
+          const bool sprwall=(boundp2 && !ftp2 && BoundDerivativeVelc
+            && !(mdbc2p2 && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF));
+          const float dvx_rhop_deriv=(sprwall? velp1.x-BoundDerivativeVelc[p2].x: dvx_rhop);
+          const float dvy_rhop_deriv=(sprwall? velp1.y-BoundDerivativeVelc[p2].y: dvy_rhop);
+          const float dvz_rhop_deriv=(sprwall? velp1.z-BoundDerivativeVelc[p2].z: dvz_rhop);
+          const float dvx_grad_deriv=(sprwall? dvx_rhop_deriv: dvx_visc);
+          const float dvy_grad_deriv=(sprwall? dvy_rhop_deriv: dvy_visc);
+          const float dvz_grad_deriv=(sprwall? dvz_rhop_deriv: dvz_visc);
           //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
-          // For mDBC boundaries, use the same ghost velocity used by viscous/gradient terms.
+          // SPR changes only the compression derivative; Darcy and viscosity keep their original data.
           if(poreratep1 && !rsym && velrhop[p2].w>0){
             const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
             const bool inactiveporebound=(mdbc2p2 && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
@@ -2312,9 +2449,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double dcfry=(PoreCompressionGradCorr? pcfry: pfry);
                 const double dcfrz=(PoreCompressionGradCorr? pcfrz: pfrz);
                 const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
-                const double pdvx=-double(dvx_visc);
-                const double pdvy=(Simulate2D? 0: -double(dvy_visc));
-                const double pdvz=-double(dvz_visc);
+                const double pdvx=-double(dvx_grad_deriv);
+                const double pdvy=(Simulate2D? 0: -double(dvy_grad_deriv));
+                const double pdvz=-double(dvz_grad_deriv);
                 const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
                 const double divv=vol2*(pdvx*dcfrx+pdvy*dcfry+pdvz*dcfrz);
                 if(PoreCompressionSourceMode==0){
@@ -2335,7 +2472,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
               }
             }
           }
-          if(compute)arp1+=massp2*(dvx_rhop*frx+dvy_rhop*fry+dvz_rhop*frz)*(rhopp1/velrhop2.w);
+          if(compute)arp1+=massp2*(dvx_rhop_deriv*frx+dvy_rhop_deriv*fry+dvz_rhop_deriv*frz)*(rhopp1/velrhop2.w);
 
           const float cbar=(float)Cs0;
           const float dot3=(drx*frx+dry*fry+drz*frz);
@@ -2420,9 +2557,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             visc=max(dot_rr2,visc);
             ///SPH velocity gradients calculation
             const float volp2=-massp2/velrhop2.w;
-            float dv=dvx_visc*volp2;  gradvp1_xx_xy_xz.x+=dv*frx; gradvp1_xx_xy_xz.y+=dv*fry; gradvp1_xx_xy_xz.z+=dv*frz;
-                  dv=dvy_visc*volp2;  gradvp1_yx_yy_yz.x+=dv*frx; gradvp1_yx_yy_yz.y+=dv*fry; gradvp1_yx_yy_yz.z+=dv*frz;
-                  dv=dvz_visc*volp2;  gradvp1_zx_zy_zz.x+=dv*frx; gradvp1_zx_zy_zz.y+=dv*fry; gradvp1_zx_zy_zz.z+=dv*frz;
+            float dv=dvx_grad_deriv*volp2;  gradvp1_xx_xy_xz.x+=dv*frx; gradvp1_xx_xy_xz.y+=dv*fry; gradvp1_xx_xy_xz.z+=dv*frz;
+                  dv=dvy_grad_deriv*volp2;  gradvp1_yx_yy_yz.x+=dv*frx; gradvp1_yx_yy_yz.y+=dv*fry; gradvp1_yx_yy_yz.z+=dv*frz;
+                  dv=dvz_grad_deriv*volp2;  gradvp1_zx_zy_zz.x+=dv*frx; gradvp1_zx_zy_zz.y+=dv*fry; gradvp1_zx_zy_zz.z+=dv*frz;
             if(tvisco==VISCO_Artificial){//-Artificial viscosity.
               if(dot<0){
                 const float amubar=KernelH*dot_rr2;  //amubar=CTE.h*dot/(rr2+CTE.eta2);
@@ -2487,6 +2624,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       NoPenShiftc[p1]=nopenshift;
     }
     //-Sum results together. | Almacena resultados.
+    if(topkernelband && !boundp2)HydroMechTopLoadRawc[p1]=hydromechloadacep1.z;
     if(poreratep1 && PoreCompressionSourceMode==1 && rhopp1>0.f)
       pore_ratep1+=kwn*(double(arp1)/double(rhopp1));
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
@@ -2505,7 +2643,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       }
       ar[p1]+=arp1;
       ace[p1]=ace[p1]+acep1;
-      if(HydroMechLoadAcec)HydroMechLoadAcec[p1]=HydroMechLoadAcec[p1]+hydromechloadacep1;
+      if(HydroMechLoadAcec && !topkernelband)HydroMechLoadAcec[p1]=HydroMechLoadAcec[p1]+hydromechloadacep1;
       //-mdbr
       rsigma[p1].xx+=rsigmap1.xx;
       rsigma[p1].xy+=rsigmap1.xy;
@@ -2770,7 +2908,7 @@ tfloat3 JSphCpu::Mdbc2TangenVel(const tfloat3 &boundnormal,const tfloat3 &velfin
 template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdbcCorrectionT2
   (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
   ,const float *porepress0,float *porepress)
 {
   const int nn=int(n);
@@ -2828,7 +2966,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 
           //===== Get mass and volume of particle p2 =====
           const tfloat4 velrhopp2=velrhop[p2];
-          const tsymatrix3f sigmap2=sigma[p2];//mdbr
+          const tsymatrix3f sigmap2=ToTSymMatrix3f(sigma[p2]);//mdbr
           const float massp2=MassFluid;
           const float volp2=massp2/velrhopp2.w;
           if(useboundmode)submerged-=volp2*(drx*frx + dry*fry + drz*frz);
@@ -3060,25 +3198,25 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
       rhopfinal=RhopZero;//rhopfinal=(rhopfinal!=FLT_MAX? rhopfinal: RhopZero);
       if(slipmodep1==SLIP_Vel0){//-DBC vel=0
         velrhop[p1].w=rhopfinal;
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
       if(slipmodep1==SLIP_NoSlip){//-No-Slip
         const tfloat3 v=motionvel[p1];
         const tfloat3 v2=TFloat3(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z);
         velrhop[p1].w=rhopfinal;
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],v2);
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
       if(slipmodep1==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
         velrhop[p1].w=rhopfinal;
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],velrhopfinal);
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
     }
     else if(useboundmode){
       boundmode[p1]=BMODE_MDBC2OFF;
       velrhop[p1].w=RhopZero;
-      sigma[p1]=TSymMatrix3f();
+      sigma[p1]=TSymMatrix3d();
       if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],motionvel[p1]);
     }
     }
@@ -3091,7 +3229,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 //==============================================================================
  template<TpKernel tker> void JSphCpu::Interaction_MdbcCorrectionT(TpSlipMode slipmode
   ,const StDivDataCpu &divdata,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
   ,const float *porepress0,float *porepress)
 {
   const float determlimit=1e-3f;
@@ -3114,7 +3252,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionMdb
 //==============================================================================
 void JSphCpu::Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
   ,const float *porepress0,float *porepress)
 {
   switch(TKernel){
@@ -3131,7 +3269,7 @@ void JSphCpu::Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu 
 template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdbcCorrectionT2
   (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
 {
   const int nn=int(n);
   #ifdef OMP_USE
@@ -3185,7 +3323,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
 
           //===== Get mass and volume of particle p2 =====
           const tfloat4 velrhopp2=velrhop[p2];
-          const tsymatrix3f sigmap2=sigma[p2];//mdbr
+          const tsymatrix3f sigmap2=ToTSymMatrix3f(sigma[p2]);//mdbr
           const float massp2=MassFluid;
           const float volp2=massp2/velrhopp2.w;
 
@@ -3349,19 +3487,19 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
       rhopfinal=RhopZero;//rhopfinal=(rhopfinal!=FLT_MAX? rhopfinal: RhopZero);
       if(slipmodep1==SLIP_Vel0){//-DBC vel=0
         velrhop[p1].w=rhopfinal;
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
       if(slipmodep1==SLIP_NoSlip){//-No-Slip
         const tfloat3 v=motionvel[p1];
         const tfloat3 v2=TFloat3(v.x+v.x-velrhopfinal.x,v.y+v.y-velrhopfinal.y,v.z+v.z-velrhopfinal.z);
         velrhop[p1].w=rhopfinal;
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],v2);
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
       if(slipmodep1==SLIP_FreeSlip){//-Free-slip keeps boundary velocity and stores extrapolated tangential velocity.
         velrhop[p1].w=rhopfinal;
         if(tangenvel)tangenvel[p1]=Mdbc2TangenVel(boundnormal[p1],velrhopfinal);
-        sigma[p1] = sigmafinal;
+        sigma[p1] = ToTSymMatrix3d(sigmafinal);
       }
     }
   }
@@ -3374,7 +3512,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
 //==============================================================================
  template<TpKernel tker> void JSphCpu::Interaction_CdbcCorrectionT(TpSlipMode slipmode
   ,const StDivDataCpu &divdata,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
 {
   const float determlimit=1e-3f;
   //-Interaction GhostBoundaryNodes-Fluid.
@@ -3397,7 +3535,7 @@ template<TpKernel tker,bool sim2d,TpSlipMode tslip> void JSphCpu::InteractionCdb
 //==============================================================================
 void JSphCpu::Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
   ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
+  ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d* sigma,const byte *boundslipmode,tfloat3 *tangenvel)
 {
   switch(TKernel){
     case KERNEL_Cubic:       Interaction_CdbcCorrectionT <KERNEL_Cubic     > (slipmode,divdata,pos,code,idp,boundnormal,motionvel,velrhop,sigma,boundslipmode,tangenvel);  break;
@@ -3478,13 +3616,13 @@ void JSphCpu::UpdatePos(tdouble3 rpos,double movx,double movy,double movz
 
 //==========Include DP without softening for testing===
 //==============================================================================
-void GetStressInvariant(float sigmaxx, float sigmayy, float sigmazz, float sigmaxy, float sigmayz, float sigmaxz,float &I1,float &J2)
+void GetStressInvariant(double sigmaxx, double sigmayy, double sigmazz, double sigmaxy, double sigmayz, double sigmaxz,double &I1,double &J2)
 {
   I1= sigmaxx + sigmayy + sigmazz;
   J2=((sigmaxx-sigmazz)*(sigmaxx-sigmazz)+(sigmayy-sigmazz)*(sigmayy-sigmazz)+(sigmayy-sigmaxx)*(sigmayy-sigmaxx))/6.f+sigmaxy*sigmaxy+sigmayz*sigmayz+sigmaxz*sigmaxz;
 }
 
-void GetDPYieldFunction(float &f, float I1, float J2, const float DP_phi, const float DP_kc)
+void GetDPYieldFunction(double &f, double I1, double J2, const float DP_phi, const float DP_kc)
 {
    f=sqrt(J2)+DP_phi*I1-DP_kc;
 }
@@ -3508,9 +3646,9 @@ void UpdateDPvars(float &DP_phi, float &DP_kc, float &DP_psi,const float phi_p, 
 		DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
 	}
 }
-void Updatedfdk(float &dfdk,const float phi_p,const float phi_r, const float n_p
+void Updatedfdk(double &dfdk,const float phi_p,const float phi_r, const float n_p
 						  ,const float coh_p,const float coh_r,const float n_c,const float psi,const float kplastic
-						  ,const float I1,const TpDPCtes dpctes)
+						  ,const double I1,const TpDPCtes dpctes)
 {
 	float phi = phi_r + (phi_p - phi_r)*exp(-n_p*kplastic);
 	float coh = coh_r + (coh_p - coh_r)*exp(-n_c*kplastic);
@@ -3537,25 +3675,26 @@ void Updatedfdk(float &dfdk,const float phi_p,const float phi_r, const float n_p
 	}
 	dfdk = I1*dalphadphi*dphidk - (dkcdcoh*dcohdk + dkcdphi*dphidk);
 }
-void ConsRelationEP_fast(tsymatrix3f sigma
+void ConsRelationEP_fast(tsymatrix3d sigma
 		, const float E_ModulusK, const float E_ModulusG, const float dp_phi, const float dp_kc, const float dp_psi
-		, float kplastic, tsymatrix3f &nsigma, float& nkplastic)
-{// simple return mapping Bui et al. 2021; single floating precisions
-    float tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, tk;// trial value
-	float ModulusK = E_ModulusK;
-	float ModulusG = E_ModulusG;
+		, float kplastic, tsymatrix3d &nsigma, float& nkplastic)
+{// simple return mapping Bui et al. 2021; double stress, float material/history parameters
+    double tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz;// trial value
+    float tk;
+	double ModulusK = E_ModulusK;
+	double ModulusG = E_ModulusG;
     float DP_phi= dp_phi;
     float DP_kc = dp_kc;
     float DP_psi= dp_psi;
 	//Build Elastic stiffness matrix
-	float K4G3 = float(ModulusK + 4.f*ModulusG/3.f);
-	float K2G3 = float(ModulusK- 2.f*ModulusG/3.f);
+	double K4G3 = ModulusK + 4.f*ModulusG/3.f;
+	double K2G3 = ModulusK- 2.f*ModulusG/3.f;
 	//Build Inversed elastic stiffness matrix
-	float invK4G3 = (K2G3 + K4G3) / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invK2G3 = -K2G3 / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
-	float invm_a11 = invK4G3; float invm_a12 = invK2G3; float invm_a13 = invK2G3;
-	float invm_a21 = invK2G3; float invm_a22 = invK4G3; float invm_a23 = invK2G3;
-	float invm_a31 = invK2G3; float invm_a32 = invK2G3; float invm_a33 = invK4G3;
+	double invK4G3 = (K2G3 + K4G3) / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
+	double invK2G3 = -K2G3 / (-2.f * K2G3*K2G3 + K2G3*K4G3 + K4G3*K4G3);
+	double invm_a11 = invK4G3; double invm_a12 = invK2G3; double invm_a13 = invK2G3;
+	double invm_a21 = invK2G3; double invm_a22 = invK4G3; double invm_a23 = invK2G3;
+	double invm_a31 = invK2G3; double invm_a32 = invK2G3; double invm_a33 = invK4G3;
 	//trail stress from elastic update
     tsigma_xx = sigma.xx;
     tsigma_yy = sigma.yy;
@@ -3564,7 +3703,7 @@ void ConsRelationEP_fast(tsymatrix3f sigma
     tsigma_yz = sigma.yz;
     tsigma_xz = sigma.xz;
 	tk = kplastic;
-	float f=0, I1=0, J2=0;
+	double f=0, I1=0, J2=0;
 	float err = 1e-5f;
 	GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 	GetDPYieldFunction(f,I1,J2,DP_phi,DP_kc);
@@ -3579,18 +3718,18 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 		nsigma.xz = tsigma_xz;
 	}	
 	else {//plastic corrector
-		float dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
+		double dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
 			 , depsp_xx = 0, depsp_yy = 0, depsp_zz = 0, depsp_xy = 0, depsp_yz = 0, depsp_xz = 0, dk = 0;
 			//MODIFY PLASTIC MULTIPLFY
-			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG);
-			float GJ2=ModulusG/sqrt(J2);
+			double dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG);
+			double GJ2=ModulusG/sqrt(J2);
 			//evaluate De : plastic potential
-			float Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
-			float Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
-			float Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
-			float Deppxy = GJ2*tsigma_xy;
-			float Deppyz = GJ2*tsigma_yz;
-			float Deppxz = GJ2*tsigma_xz;
+			double Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
+			double Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
+			double Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
+			double Deppxy = GJ2*tsigma_xy;
+			double Deppyz = GJ2*tsigma_yz;
+			double Deppxz = GJ2*tsigma_xz;
 			//Compute plastic stress increment
 			dsigmap_xx = dlambda*Deppxx;
 			dsigmap_yy = dlambda*Deppyy;
@@ -3613,21 +3752,21 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 			depsp_yz = 0.5f/ModulusG*dsigmap_yz;
 			depsp_xz = 0.5f/ModulusG*dsigmap_xz; 
 			//bulk plastic strain increment
-			float depsp_b = (depsp_xx + depsp_yy + depsp_zz)/3.f;
+			double depsp_b = (depsp_xx + depsp_yy + depsp_zz)/3.f;
 			//deviatoric trail plastic strain
-			float dtepsp_xx = depsp_xx - depsp_b;
-			float dtepsp_yy = depsp_yy - depsp_b;
-			float dtepsp_zz = depsp_zz - depsp_b;
-			float dtepsp_xy = depsp_xy;
-			float dtepsp_yz = depsp_yz;
-			float dtepsp_xz = depsp_xz;
+			double dtepsp_xx = depsp_xx - depsp_b;
+			double dtepsp_yy = depsp_yy - depsp_b;
+			double dtepsp_zz = depsp_zz - depsp_b;
+			double dtepsp_xy = depsp_xy;
+			double dtepsp_yz = depsp_yz;
+			double dtepsp_xz = depsp_xz;
 			//Update internal variable
 			dk = sqrt((2.f/3.f)*(dtepsp_xx*dtepsp_xx+dtepsp_yy*dtepsp_yy+dtepsp_zz*dtepsp_zz+2.f*dtepsp_xy*dtepsp_xy+2.f*dtepsp_yz*dtepsp_yz+2.f*dtepsp_xz*dtepsp_xz));
-			tk = tk + dk;
+			tk = float(double(tk) + dk);
 			//Update stress invariant
 			GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 
-			float kalpha = DP_kc / DP_phi;
+			double kalpha = DP_kc / DP_phi;
 			
 			if (I1 > kalpha)// I1 > kalpha check tensile cracking & perform stress scaling
 			{
@@ -3636,7 +3775,7 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
+			double fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;
@@ -3658,15 +3797,16 @@ void ConsRelationEP_fast(tsymatrix3f sigma
 	}
 }
 
-void ConsRelationEPsft_fast(tsymatrix3f sigma
+void ConsRelationEPsft_fast(tsymatrix3d sigma
 		, const float E_ModulusK, const float E_ModulusG, const float MC_phi, const float MC_phir, const float n_phi
 		, const float MC_c, const float MC_cr, const float n_coh, const float MC_psi
 		, const TpDPCtes dpctes, float kplastic
-        , tsymatrix3f &nsigma, float& nkplastic)
-{// simple return mapping Bui et al. 2021; single floating precisions
-    float tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, tk;// trial value
-	float ModulusK = E_ModulusK;
-	float ModulusG = E_ModulusG;
+        , tsymatrix3d &nsigma, float& nkplastic)
+{// simple return mapping Bui et al. 2021; double stress, float material/history parameters
+    double tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz;// trial value
+    float tk;
+	double ModulusK = E_ModulusK;
+	double ModulusG = E_ModulusG;
 	const float phi_p = MC_phi;
 	const float phi_r = MC_phir;
 	const float n_p   = n_phi;
@@ -3685,7 +3825,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 	//evaluate yeild condition
 	float DP_phi=0, DP_kc=0, DP_psi=0;
 	UpdateDPvars(DP_phi,DP_kc,DP_psi,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,dpctes);
-	float f=0, I1=0, J2=0;
+	double f=0, I1=0, J2=0;
 	float err = 1e-5f;
 	GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
 	GetDPYieldFunction(f,I1,J2,DP_phi,DP_kc);
@@ -3700,23 +3840,23 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
         nsigma.xz = tsigma_xz;
 	}	
 	else {//plastic corrector
-		float dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
+		double dsigmap_xx = 0, dsigmap_yy = 0, dsigmap_zz = 0, dsigmap_xy = 0, dsigmap_yz = 0, dsigmap_xz = 0
 			 , dk = 0;;
 			//kplastic related term
-			float dfdk = 0;
+			double dfdk = 0;
 			Updatedfdk(dfdk,phi_p,phi_r,n_p,coh_p,coh_r,n_c,psi,tk,I1,dpctes);
 			const float dkflowcoef = sqrt((2.f/3.f)*(3.f*DP_psi*DP_psi+0.5f));
-			float extra = dfdk*dkflowcoef;			
+			double extra = dfdk*dkflowcoef;
 			//MODIFY PLASTIC MULTIPLFY
-			float dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
+			double dlambda = f /(9.f*ModulusK*DP_phi*DP_psi+ModulusG+extra);
 			//evaluate De : plastic potential
-			float GJ2 = ModulusG / sqrt(J2);
-			float Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
-			float Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
-			float Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
-			float Deppxy = GJ2*tsigma_xy;
-			float Deppyz = GJ2*tsigma_yz;
-			float Deppxz = GJ2*tsigma_xz;
+			double GJ2 = ModulusG / sqrt(J2);
+			double Deppxx = 3.f*ModulusK*DP_psi+GJ2*(tsigma_xx-I1/3.f);
+			double Deppyy = 3.f*ModulusK*DP_psi+GJ2*(tsigma_yy-I1/3.f);
+			double Deppzz = 3.f*ModulusK*DP_psi+GJ2*(tsigma_zz-I1/3.f);
+			double Deppxy = GJ2*tsigma_xy;
+			double Deppyz = GJ2*tsigma_yz;
+			double Deppxz = GJ2*tsigma_xz;
 			//Compute plastic stress increment
 			dsigmap_xx = dlambda*Deppxx;
 			dsigmap_yy = dlambda*Deppyy;
@@ -3733,10 +3873,10 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 			tsigma_xz = tsigma_xz - dsigmap_xz;
 			//Update internal variable using the same equivalent plastic-strain norm as the consistency term.
 			dk = dlambda*dkflowcoef;
-			tk = tk + dk;
+			tk = float(double(tk) + dk);
 			//Update stress invariant
 			GetStressInvariant(tsigma_xx,tsigma_yy,tsigma_zz,tsigma_xy,tsigma_yz,tsigma_xz,I1,J2);
-			float kalpha = DP_kc / DP_phi;
+			double kalpha = DP_kc / DP_phi;
 			
 			if (I1 > kalpha)// I1 > kalpha check tensile cracking & perform stress scaling
 			{
@@ -3745,7 +3885,7 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 				tsigma_zz = tsigma_zz - (I1 - kalpha) / 3.f;
 				GetStressInvariant(tsigma_xx, tsigma_yy, tsigma_zz, tsigma_xy, tsigma_yz, tsigma_xz, I1, J2);
 			}
-			float fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
+			double fscale = (J2>0.f? (-DP_phi * I1 + DP_kc) / sqrt(J2): 1.f);
 			if (J2 != 0 && fscale < 1.f)// stress scaling
 			{
 				tsigma_xx = fscale * (tsigma_xx - I1 / 3.f) + I1 / 3.f;
@@ -3772,8 +3912,8 @@ void ConsRelationEPsft_fast(tsymatrix3f sigma
 /// Calcula nuevos valores de posicion, velocidad y densidad para el fluido (usando Verlet).
 //==============================================================================
 void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
-  ,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
-  ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const
+  ,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3d *sigma2,const float *kplastic,const tsymatrix3f *rsigma
+  ,double dt,double dt2,tdouble3 *pos,unsigned *dcell,typecode *code,tfloat4 *velrhopnew, tsymatrix3d *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const
 {
   const double dt205=0.5*dt*dt;
   const tdouble3 gravity=ToTDouble3(Gravity);
@@ -3784,7 +3924,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
   for(int p=pini;p<pfin;p++){
     //-Calculate density. | Calcula densidad.
     const float rhopnew=float(double(velrhop2[p].w)+dt2*Arc[p]);
-    tsymatrix3f signew=sigma2[p];//mdbr
+    tsymatrix3d signew=sigma2[p];//mdbr
     float kplasnew=kplastic[p];
     if(!WithFloating || CODE_IsFluid(code[p])){//-Fluid Particles.
       const tdouble3 acegr=ToTDouble3(Acec[p])+gravity; //-Adds gravity.
@@ -3819,14 +3959,14 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
         }
       }
       //-Calculate elastic stress
-        tsymatrix3f sigma_e={0,0,0,0,0,0};
+        tsymatrix3d sigma_e={0,0,0,0,0,0};
         float kplasticold = kplastic[p];
-        sigma_e.xx = float(double(sigma2[p].xx) + rsigma[p].xx * dt2);
-        sigma_e.yy = float(double(sigma2[p].yy) + rsigma[p].yy * dt2);
-        sigma_e.zz = float(double(sigma2[p].zz) + rsigma[p].zz * dt2);
-        sigma_e.xy = float(double(sigma2[p].xy) + rsigma[p].xy * dt2);
-        sigma_e.yz = float(double(sigma2[p].yz) + rsigma[p].yz * dt2);
-        sigma_e.xz = float(double(sigma2[p].xz) + rsigma[p].xz * dt2);
+        sigma_e.xx = sigma2[p].xx + rsigma[p].xx * dt2;
+        sigma_e.yy = sigma2[p].yy + rsigma[p].yy * dt2;
+        sigma_e.zz = sigma2[p].zz + rsigma[p].zz * dt2;
+        sigma_e.xy = sigma2[p].xy + rsigma[p].xy * dt2;
+        sigma_e.yz = sigma2[p].yz + rsigma[p].yz * dt2;
+        sigma_e.xz = sigma2[p].xz + rsigma[p].xz * dt2;
       //-Update DP constants
       float phi=SoilCte.phi;
       float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
@@ -3887,7 +4027,7 @@ void JSphCpu::ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel
 /// Calcula nuevos valores de densidad y pone velocidad a cero para el contorno 
 /// (fixed+moving, no floating).
 //==============================================================================
-void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3f *sigma,double armul,tfloat4* velrhopnew,tsymatrix3f *sigmanew)const{
+void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *sigma,double armul,tfloat4* velrhopnew,tsymatrix3d *sigmanew)const{
   const int npb=int(Npb);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npb>OMP_LIMIT_COMPUTESTEP)
@@ -3929,7 +4069,7 @@ void JSphCpu::ComputeSymplecticPrePorePressure(double dt){
     if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
     else PorePressc[p]=float(double(PorePressPrec[p])+dt05*double(PorePressRatec[p]));
   }
-  ApplyFreeSurfacePorePressure();
+  //-Boundary conditions follow cell division, with matching geometry and neighbours.
 }
 
 //==============================================================================
@@ -3945,7 +4085,7 @@ void JSphCpu::ComputeSymplecticCorrPorePressure(double dt){
     if(p<int(Npb) || !CODE_IsFluid(Codec[p]))PorePressc[p]=PorePressPrec[p];
     else PorePressc[p]=float(double(PorePressPrec[p])+dt*double(PorePressRatec[p]));
   }
-  ApplyFreeSurfacePorePressure();
+  //-Boundary conditions follow cell division, with matching geometry and neighbours.
 }
 
 //==============================================================================
@@ -3996,7 +4136,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   PosPrec=ArraysCpu->ReserveDouble3();
   VelrhopPrec=ArraysCpu->ReserveFloat4();
   //====mdbr
-  SigmaPrec=ArraysCpu->ReserveSymatrix3f();
+  SigmaPrec=ArraysCpu->ReserveSymatrix3d();
   if(HydroMech)PorePressPrec=ArraysCpu->ReserveFloat();
   //-Change data to variables Pre to calculate new data. | Cambia datos a variables Pre para calcular nuevos datos.
   swap(PosPrec,Posc);         //Put value of Pos[] in PosPre[].         | Es decir... PosPre[] <= Pos[].
@@ -4026,7 +4166,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
     const typecode rcode=Codec[p];
     //-Calculate density.
     const float rhopnew=float(double(VelrhopPrec[p].w)+dt05*Arc[p]);
-    tsymatrix3f signew=SigmaPrec[p];//mdbr
+    tsymatrix3d signew=SigmaPrec[p];//mdbr
     float kplasnew=Kplasticc[p];//
     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
       //-Calculate displacement. | Calcula desplazamiento.
@@ -4046,14 +4186,14 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+Gravity.z) * dt05),
         rhopnew);
       //-Calculate elastic stress
-        tsymatrix3f sigma_e={0,0,0,0,0,0};
+        tsymatrix3d sigma_e={0,0,0,0,0,0};
         float kplasticold = Kplasticc[p];
-        sigma_e.xx = float(double(SigmaPrec[p].xx) + Rsigmac[p].xx * dt05);
-        sigma_e.yy = float(double(SigmaPrec[p].yy) + Rsigmac[p].yy * dt05);
-        sigma_e.zz = float(double(SigmaPrec[p].zz) + Rsigmac[p].zz * dt05);
-        sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt05);
-        sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt05);
-        sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt05);
+        sigma_e.xx = SigmaPrec[p].xx + Rsigmac[p].xx * dt05;
+        sigma_e.yy = SigmaPrec[p].yy + Rsigmac[p].yy * dt05;
+        sigma_e.zz = SigmaPrec[p].zz + Rsigmac[p].zz * dt05;
+        sigma_e.xy = SigmaPrec[p].xy + Rsigmac[p].xy * dt05;
+        sigma_e.yz = SigmaPrec[p].yz + Rsigmac[p].yz * dt05;
+        sigma_e.xz = SigmaPrec[p].xz + Rsigmac[p].xz * dt05;
       //-Update DP constants
       float phi=SoilCte.phi;
       float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
@@ -4160,7 +4300,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
     const typecode rcode=Codec[p];
     const double epsilon_rdot=(-double(Arc[p])/double(Velrhopc[p].w))*dt;
     const float rhopnew=float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
-    tsymatrix3f signew=SigmaPrec[p];//mdbr
+    tsymatrix3d signew=SigmaPrec[p];//mdbr
     float kplasnew=Kplasticc[p];//
     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
       //-Calculate velocity & density. | Calcula velocidad y densidad.
@@ -4170,14 +4310,14 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         float(double(VelrhopPrec[p].z) + (double(Acec[p].z)+Gravity.z) * dt),
         rhopnew);
       //-Calculate elastic stress
-        tsymatrix3f sigma_e={0,0,0,0,0,0};
+        tsymatrix3d sigma_e={0,0,0,0,0,0};
         float kplasticold = Kplasticc[p];
-        sigma_e.xx = float(double(SigmaPrec[p].xx) + Rsigmac[p].xx * dt);
-        sigma_e.yy = float(double(SigmaPrec[p].yy) + Rsigmac[p].yy * dt);
-        sigma_e.zz = float(double(SigmaPrec[p].zz) + Rsigmac[p].zz * dt);
-        sigma_e.xy = float(double(SigmaPrec[p].xy) + Rsigmac[p].xy * dt);
-        sigma_e.yz = float(double(SigmaPrec[p].yz) + Rsigmac[p].yz * dt);
-        sigma_e.xz = float(double(SigmaPrec[p].xz) + Rsigmac[p].xz * dt);
+        sigma_e.xx = SigmaPrec[p].xx + Rsigmac[p].xx * dt;
+        sigma_e.yy = SigmaPrec[p].yy + Rsigmac[p].yy * dt;
+        sigma_e.zz = SigmaPrec[p].zz + Rsigmac[p].zz * dt;
+        sigma_e.xy = SigmaPrec[p].xy + Rsigmac[p].xy * dt;
+        sigma_e.yz = SigmaPrec[p].yz + Rsigmac[p].yz * dt;
+        sigma_e.xz = SigmaPrec[p].xz + Rsigmac[p].xz * dt;
       //-Update DP constants
       float phi=SoilCte.phi;
       float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);

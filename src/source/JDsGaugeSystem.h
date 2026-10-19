@@ -186,7 +186,7 @@ public:
 
   void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma
     ,bool saveinput=false);
 
   void CalculeLastInputCpu(std::string gaugename);
@@ -194,7 +194,7 @@ public:
  #ifdef _WITHGPU
   void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma
     ,bool saveinput=false);
 
   void CalculeLastInputGpu(std::string gaugename);

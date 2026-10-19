@@ -314,7 +314,7 @@ template<TpKernel tker> __global__ void KerInteractionGaugeForce(float bker
   ,unsigned axis,unsigned cellcode,double3 domposmin,float scell,float poscellsize
   ,float kernelsize2,float kernelh,float massf,float cteb,float rhopzero,float gamma,float cs0
   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *idp
-  ,const float4 *velrhop,const float2 *sigma,float3 *partace)
+  ,const float4 *velrhop,const tsymatrix3d *sigma,float3 *partace)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -327,9 +327,11 @@ template<TpKernel tker> __global__ void KerInteractionGaugeForce(float bker
       const float rhop1=velrhop[p].w;
       const float press1=cufsph::ComputePress(rhop1,rhopzero,cteb,gamma,cs0);
       //-Obtains stress tensor == mdbr
-	  float2 sigmap1_xx_xy=sigma[p*3];
- 	  float2 sigmap1_xz_yy=sigma[p*3+1];
-	  float2 sigmap1_yz_zz=sigma[p*3+2];
+      //-Read double state by component; retain the existing local float force arithmetic.
+      const tsymatrix3d sigmap1=sigma[p];
+      const float2 sigmap1_xx_xy=make_float2(float(sigmap1.xx),float(sigmap1.xy));
+      const float2 sigmap1_xz_yy=make_float2(float(sigmap1.xz),float(sigmap1.yy));
+      const float2 sigmap1_yz_zz=make_float2(float(sigmap1.yz),float(sigmap1.zz));
       float3 ace=make_float3(0,0,0);
 
       //-Obtains neighborhood search limits.
@@ -358,9 +360,10 @@ template<TpKernel tker> __global__ void KerInteractionGaugeForce(float bker
             const float press2=cufsph::ComputePress(rhop2,rhopzero,cteb,gamma,cs0);
             //const float prs=(press1+press2)/(rhop1*rhop2);
             //===get stress of p2 ==== mdbr
-            float2 sigmap2_xx_xy=sigma[p2*3];
-            float2 sigmap2_xz_yy=sigma[p2*3+1];
-            float2 sigmap2_yz_zz=sigma[p2*3+2];
+            const tsymatrix3d sigmap2=sigma[p2];
+            const float2 sigmap2_xx_xy=make_float2(float(sigmap2.xx),float(sigmap2.xy));
+            const float2 sigmap2_xz_yy=make_float2(float(sigmap2.xz),float(sigmap2.yy));
+            const float2 sigmap2_yz_zz=make_float2(float(sigmap2.yz),float(sigmap2.zz));
             //const float prs=(press1+press2)/(rhop1*rhop2);
             const float prsxx = mass2*(sigmap1_xx_xy.x + sigmap2_xx_xy.x) / (rhop1*rhop2);
 		    const float prsyy = mass2*(sigmap1_xz_yy.y + sigmap2_xz_yy.y) / (rhop1*rhop2);
@@ -388,7 +391,7 @@ template<TpKernel tker> __global__ void KerInteractionGaugeForce(float bker
 //==============================================================================
 void Interaction_GaugeForce(const StCteSph &CSP,const StDivDataGpu &dvd
   ,unsigned n,unsigned idbegin,typecode codesel,const double2 *posxy,const double *posz
-  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma
+  ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma
   ,float3 *partace)
 {
   //const float ovrhopzero=1.f/rhopzero;
@@ -404,7 +407,7 @@ void Interaction_GaugeForce(const StCteSph &CSP,const StDivDataGpu &dvd
           ,dvd.scelldiv,dvd.nc,dvd.cellzero,beginendcellfluid
           ,dvd.axis,dvd.domcellcode,dvd.domposmin,dvd.scell,dvd.poscellsize
           ,dvd.kernelsize2,CSP.kernelh,CSP.massfluid,CSP.cteb,CSP.rhopzero,CSP.gamma,float(CSP.cs0)
-          ,posxy,posz,code,idp,velrhop,(const float2*)sigma,partace);
+          ,posxy,posz,code,idp,velrhop,sigma,partace);
       }break;
       default: throw "Kernel unknown at Interaction_GaugeForce().";
     }

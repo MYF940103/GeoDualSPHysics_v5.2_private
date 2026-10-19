@@ -26,6 +26,7 @@
 #include <string>
 
 class JCellDivGpuSingle;
+class JSphHourglassGpu;
 
 //##############################################################################
 //# JSphGpuSingle
@@ -36,6 +37,7 @@ class JSphGpuSingle : public JSphGpu
 {
 protected:
   JCellDivGpuSingle* CellDivSingle;
+  JSphHourglassGpu* HourglassGpu; ///<Native-ID elastic HG history; absent when xi=0.
 
   llong GetAllocMemoryCpu()const;  
   llong GetAllocMemoryGpu()const;  

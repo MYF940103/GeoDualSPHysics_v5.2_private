@@ -328,7 +328,8 @@ typedef enum{
   HMLOAD_TopVertical=1,         ///<Applies q0 vertically to upward free-surface particles.
   HMLOAD_FlexibleConfinement=2, ///<Applies q0 as a Zhao-style kernel-truncation confining stress.
   HMLOAD_TopStripVertical=3,    ///<Applies q0 vertically to the hard-coded Yao 2025 strip-footing free surface.
-  HMLOAD_LianFlexibleStrip=4    ///<Applies q0 vertically to the hard-coded Lian 2023 flexible strip-footing free surface.
+  HMLOAD_LianFlexibleStrip=4,   ///<Applies q0 vertically to the hard-coded Lian 2023 flexible strip-footing free surface.
+  HMLOAD_TopKernelBand=5        ///<Spreads the TopVertical resultant over the horizontal top kernel-support band.
 }TpHydroMechLoadMode;
 
 ///Particle classification from the free-surface tracker.

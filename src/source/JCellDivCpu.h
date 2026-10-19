@@ -81,7 +81,7 @@ protected:
   // BeginCell=[BoundOk(nct),BoundIgnore(1),Fluid(nct),BoundOut(1),FluidOut(1),BoundOutIgnore(1),FluidOutIgnore(1),END)]
 
   //-Variables to reorder particles. | Variables para reordenar particulas.
-  byte        *VSort;            ///<Memory to reorder particles. | Memoria para reordenar particulas. [sizeof(tdouble3)*Np]
+  byte        *VSort;            ///<Memory to reorder particles. | Memoria para reordenar particulas. [sizeof(tsymatrix3d)*SizeNp]
   word        *VSortWord;        ///<To order word vectors (write to VSort). | Para ordenar vectores word (apunta a VSort).
   int         *VSortInt;         ///<To order vectors int (write to VSort). | Para ordenar vectores int (apunta a VSort).
   float       *VSortFloat;       ///<To order vectors float (write to VSort). | Para ordenar vectores float (apunta a VSort).
@@ -89,6 +89,7 @@ protected:
   tfloat4     *VSortFloat4;      ///<To order vectors tfloat4 (write to VSort). | Para ordenar vectores tfloat4 (apunta a VSort).
   tdouble3    *VSortDouble3;     ///<To order vectors tdouble3 (write to VSort). | Para ordenar vectores tdouble3 (apunta a VSort).
   tsymatrix3f *VSortSymmatrix3f; ///<To order vectors tsymatrix3f (write to VSort). | Para ordenar vectores tsymatrix3f (apunta a VSort).
+  tsymatrix3d *VSortSymmatrix3d; ///<To order vectors tsymatrix3d (write to VSort).
 
   llong MemAllocNp;  ///<Memory reserved for particles. | Mermoria reservada para particulas.
   llong MemAllocNct; ///<Memory reserved for cells. | Mermoria reservada para celdas.
@@ -170,6 +171,7 @@ public:
   void SortArray(tfloat3 *vec);
   void SortArray(tfloat4 *vec);
   void SortArray(tsymatrix3f *vec);
+  void SortArray(tsymatrix3d *vec);
 
   TpCellMode GetCellMode()const{ return(CellMode); }
   int GetScellDiv()const{ return(ScellDiv); }

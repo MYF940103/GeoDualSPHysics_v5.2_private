@@ -166,12 +166,12 @@ public:
 
   virtual void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma)=0;
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma)=0;
 
  #ifdef _WITHGPU
   virtual void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux)=0;
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux)=0;
  #endif
 };
 
@@ -230,12 +230,12 @@ public:
 
    void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma);
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma);
 
  #ifdef _WITHGPU
   void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux);
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux);
  #endif
 
 };
@@ -307,12 +307,12 @@ public:
 
    void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma);
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma);
 
  #ifdef _WITHGPU
   void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux);
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux);
  #endif
 
 };
@@ -376,12 +376,12 @@ public:
 
    void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma);
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma);
 
  #ifdef _WITHGPU
   void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux);
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux);
  #endif
 };
 
@@ -452,16 +452,16 @@ public:
 
   template<TpKernel tker> void CalculeCpuT(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma);
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma);
 
   void CalculeCpu(double timestep,const StDivDataCpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const tdouble3 *pos
-    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3f *sigma);
+    ,const typecode *code,const unsigned *idp,const tfloat4 *velrhop,const tsymatrix3d *sigma);
 
  #ifdef _WITHGPU
   void CalculeGpu(double timestep,const StDivDataGpu &dvd
     ,unsigned npbok,unsigned npb,unsigned np,const double2 *posxy,const double *posz
-    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3f *sigma,float3 *aux);
+    ,const typecode *code,const unsigned *idp,const float4 *velrhop,const tsymatrix3d *sigma,float3 *aux);
  #endif
 };
 

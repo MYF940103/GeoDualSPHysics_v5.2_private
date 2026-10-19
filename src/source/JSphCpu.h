@@ -52,7 +52,7 @@ typedef struct{
   tsymatrix3f *spstau;
   tsymatrix3f *spsgradvel;
   //=======mdbr
-  tsymatrix3f* sigma;
+  tsymatrix3d* sigma;
   tsymatrix3f* rsigma;
   const tsymatrix3f* artificialstress;
   //=======
@@ -72,7 +72,7 @@ inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
   ,float* ar,tfloat3 *ace,float *delta
   ,TpShifting shiftmode,tfloat4 *shiftposfs
   ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
-  ,tsymatrix3f* sigma, tsymatrix3f *rsigma
+  ,tsymatrix3d* sigma, tsymatrix3f *rsigma
   ,const tsymatrix3f *artificialstress
 )
 {
@@ -151,13 +151,14 @@ protected:
   tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   tfloat4 *NoPenShiftc;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //=============== mdbr
-  tsymatrix3f* Sigmac;
+  tsymatrix3d* Sigmac;
   tsymatrix3f* Rsigmac;
   tsymatrix3f* ArtificialStressc;
   float* Kplasticc;
   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+  tfloat3* BoundDerivativeVelc; ///<Force-stage wall velocity for S/P/R derivatives; never replaces physical velocity.
   //===============  
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -168,8 +169,8 @@ protected:
   tfloat4 *VelrhopPrec;
   float* PorePressPrec; ///<Symplectic previous pore-water pressure.
   //======= mdbr
-  tsymatrix3f* SigmaPrec;
-  tsymatrix3f* SigmaM1c;
+  tsymatrix3d* SigmaPrec;
+  tsymatrix3d* SigmaM1c;
   //=======
   //-Variables for floating bodies.
   unsigned *FtRidp;             ///<Identifier to access to the particles of the floating object [CaseNfloat].
@@ -179,6 +180,7 @@ protected:
   //-Variables for computation of forces | Vars. para computo de fuerzas.
   tfloat3 *Acec;         ///<Sum of interaction forces | Acumula fuerzas de interaccion
   tfloat3 *HydroMechLoadAcec; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
+  float *HydroMechTopLoadRawc; ///<Raw vertical kernel-band load; temporary during one force stage.
   float *Arc; 
   float *Deltac;         ///<Adjusted sum with Delta-SPH with DELTA_DynamicExt | Acumula ajuste de Delta-SPH con DELTA_DynamicExt
 
@@ -226,6 +228,7 @@ protected:
   double*      SaveArrayCpu(unsigned np,const double      *datasrc)const{ return(TSaveArrayCpu<double>     (np,datasrc)); }
   tdouble3*    SaveArrayCpu(unsigned np,const tdouble3    *datasrc)const{ return(TSaveArrayCpu<tdouble3>   (np,datasrc)); }
   tsymatrix3f* SaveArrayCpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayCpu<tsymatrix3f>(np,datasrc)); }
+  tsymatrix3d* SaveArrayCpu(unsigned np,const tsymatrix3d *datasrc)const{ return(TSaveArrayCpu<tsymatrix3d>(np,datasrc)); }
   tmatrix3d*   SaveArrayCpu(unsigned np,const tmatrix3d   *datasrc)const{ return(TSaveArrayCpu<tmatrix3d>  (np,datasrc)); }
   template<class T> void TRestoreArrayCpu(unsigned np,T *data,T *datanew)const;
   void RestoreArrayCpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayCpu<byte>       (np,data,datanew); }
@@ -238,6 +241,7 @@ protected:
   void RestoreArrayCpu(unsigned np,double      *data,double      *datanew)const{ TRestoreArrayCpu<double>     (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,tdouble3    *data,tdouble3    *datanew)const{ TRestoreArrayCpu<tdouble3>   (np,data,datanew); }
   void RestoreArrayCpu(unsigned np,tsymatrix3f *data,tsymatrix3f *datanew)const{ TRestoreArrayCpu<tsymatrix3f>(np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tsymatrix3d *data,tsymatrix3d *datanew)const{ TRestoreArrayCpu<tsymatrix3d>(np,data,datanew); }
   void RestoreArrayCpu(unsigned np,tmatrix3d   *data,tmatrix3d   *datanew)const{ TRestoreArrayCpu<tmatrix3d>  (np,data,datanew); }
 
   llong GetAllocMemoryCpu()const;
@@ -246,7 +250,7 @@ protected:
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
     ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
-    ,tfloat3 *hydromechloadace=NULL);
+    ,tfloat3 *hydromechloadace=NULL,tdouble3 *sigmastatekk=NULL,tdouble3 *sigmastateij=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -268,6 +272,7 @@ protected:
   bool IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const;
   bool IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
   void ApplyHydroMechTopLoadAcceleration();
+  void NormalizeHydroMechTopBandLoad();
   void InitHydroMechState();
   void ApplyFreeSurfacePorePressure();
   template<TpKernel tker,bool sim2d> void ApplyYaoTopStripPorePressureExtrapolationT();
@@ -278,10 +283,14 @@ protected:
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
     ,const tmatrix3d *corrmat,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress,float *porepressrate)const;
   void InteractionPorePressureRate();
+  template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void InterpolateBoundaryGhostFieldT
+    (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write)const;
   template<TpKernel tker,bool sim2d> void InteractionPorePressureMdbcCorrectionT
     (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
   void InteractionPorePressureMdbcCorrection();
+  void ComputeBoundaryDerivativeVelocity();
   template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
@@ -317,7 +326,7 @@ protected:
     ,StDivDataCpu divdata,const unsigned *dcell
     ,const tsymatrix3f* tau,tsymatrix3f* gradvel
     ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
-    ,const float *press,const float *porepress,const tsymatrix3f *sigma,const tfloat3 *dengradcorr
+    ,const float *press,const float *porepress,const tsymatrix3d *sigma,const tfloat3 *dengradcorr
     ,float *porepressrate,const unsigned *fstype,const tfloat3 *fsnormal,const tmatrix3d *corrmat
     ,const tsymatrix3f *artificialstress
     ,float &viscdt,float *ar,tfloat3 *ace,float *delta
@@ -341,26 +350,26 @@ protected:
   template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);
     template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionCdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
   template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);
   template<TpKernel tker> void Interaction_CdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
   void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
     ,const float *porepress0,float *porepress);//mdbr
     void Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
     ,const tdouble3 *pos,const typecode *code,const unsigned *idp
-    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3f *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
 
   /*template<TpKernel tker, bool sim2d, TpSlipMode tslip> void InteractionMdbcCorrectionT2
     (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
@@ -375,9 +384,9 @@ protected:
 
   void ComputeSpsTau(unsigned n,unsigned pini,const tfloat4 *velrhop,const tsymatrix3f *gradvel,tsymatrix3f *tau)const;
 
-  void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3f *sigma2,const float *kplastic,const tsymatrix3f *rsigma
-      ,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew, tsymatrix3f *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const;
-  void ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3f *sigma,double armul,tfloat4* velrhopnew,tsymatrix3f *sigmanew)const;
+  void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3d *sigma2,const float *kplastic,const tsymatrix3f *rsigma
+      ,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew, tsymatrix3d *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const;
+  void ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *sigma,double armul,tfloat4* velrhopnew,tsymatrix3d *sigmanew)const;
   //void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew)const;
   //void ComputeVelrhopBound(const tfloat4* velrhopold,double armul,tfloat4* velrhopnew)const;
   void ComputeVerlet(double dt);

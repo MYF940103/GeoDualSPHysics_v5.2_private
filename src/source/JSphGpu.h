@@ -105,7 +105,7 @@ protected:
   tfloat4 *Velrhop;
 
   //-ruofeng
-  tsymatrix3f *Sigma;
+  tsymatrix3d *Sigma;
   tfloat3 *AuxSigma_xx_yy_zz;
   tfloat3 *AuxSigma_xy_yz_xz;
   float *Kplastic;
@@ -152,9 +152,10 @@ protected:
   byte   *BoundModeg;    ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
   byte   *BoundSlipModeg;///<Per-particle mDBC slip mode when per-mkbound overrides are active.
   float3 *TangenVelg;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
+  float3 *BoundDerivativeVelg; ///<Scratch wall velocity for S/P/R derivatives only.
   float4 *NoPenShiftg;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //-ruofeng
-  tsymatrix3f *Sigmag;
+  tsymatrix3d *Sigmag;
   float *Kplasticg;//ruofeng
   float *KplasticDkg;//diagnostic accumulated plastic increment
   float *PorePressg;   ///<Current total/gauge pore-water pressure on GPU.
@@ -169,13 +170,13 @@ protected:
     
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
-  tsymatrix3f *SigmaM1g;//ruofeng
+  tsymatrix3d *SigmaM1g;//ruofeng
   float *PorePressM1g; ///<Verlet pore pressure history.
   //-Variables for compute step: SYMPLECTIC.
   double2 *PosxyPreg;  ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
   double *PoszPreg;
   float4 *VelrhopPreg;
-  tsymatrix3f *SigmaPreg;//ruofeng
+  tsymatrix3d *SigmaPreg;//ruofeng
   float *PorePressPreg; ///<Symplectic pore pressure predictor history.
   //-Variables for floating bodies.
   unsigned *FtRidpg;      ///<Identifier to access to the particles of the floating object [CaseNfloat].
@@ -208,6 +209,7 @@ protected:
   float *ViscDtg;
   float3 *Aceg;      ///<Accumulates acceleration of the particles. | Acumula fuerzas de interaccion.
   float3 *HydroMechLoadAceg; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
+  float *HydroMechTopLoadRawg; ///<TopKernelBand raw vertical weight, only during force evaluation.
   float *Arg; 
   float *Deltag;     ///<Accumulates adjustment of Delta-SPH with DELTA_DynamicExt. | Acumula ajuste de Delta-SPH con DELTA_DynamicExt.
   tsymatrix3f *Rsigmag; //Stress rate tensor ruofeng
@@ -252,6 +254,7 @@ protected:
   double*      SaveArrayGpu(unsigned np,const double      *datasrc)const{ return(TSaveArrayGpu<double>     (np,datasrc)); }
   double2*     SaveArrayGpu(unsigned np,const double2     *datasrc)const{ return(TSaveArrayGpu<double2>    (np,datasrc)); }
   tsymatrix3f* SaveArrayGpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayGpu<tsymatrix3f>(np,datasrc)); }
+  tsymatrix3d* SaveArrayGpu(unsigned np,const tsymatrix3d *datasrc)const{ return(TSaveArrayGpu<tsymatrix3d>(np,datasrc)); }
   tmatrix3d*   SaveArrayGpu(unsigned np,const tmatrix3d   *datasrc)const{ return(TSaveArrayGpu<tmatrix3d>  (np,datasrc)); }
   template<class T> void TRestoreArrayGpu(unsigned np,T *data,T *datanew)const;
   void RestoreArrayGpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayGpu<byte>       (np,data,datanew); }
@@ -264,6 +267,7 @@ protected:
   void RestoreArrayGpu(unsigned np,double      *data,double      *datanew)const{ TRestoreArrayGpu<double>     (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,double2     *data,double2     *datanew)const{ TRestoreArrayGpu<double2>    (np,data,datanew); }
   void RestoreArrayGpu(unsigned np,tsymatrix3f *data,tsymatrix3f *datanew)const{ TRestoreArrayGpu<tsymatrix3f>(np,data,datanew); }
+  void RestoreArrayGpu(unsigned np,tsymatrix3d *data,tsymatrix3d *datanew)const{ TRestoreArrayGpu<tsymatrix3d>(np,data,datanew); }
   void RestoreArrayGpu(unsigned np,tmatrix3d   *data,tmatrix3d   *datanew)const{ TRestoreArrayGpu<tmatrix3d>  (np,data,datanew); }
 
   llong GetAllocMemoryCpu()const;
@@ -289,9 +293,11 @@ protected:
   bool IsHydroMechDrainageActive()const;
   void ApplyFreeSurfacePorePressure();
   void ApplyHydroMechTopLoadAcceleration();
+  void NormalizeHydroMechTopBandLoad();
   void ApplyYaoTopStripPorePressureExtrapolation();
   void ApplyPorePressureBoundaries();
   void InteractionPorePressureMdbcCorrection();
+  void ComputeBoundaryDerivativeVelocity();
   void ShepardRegularizePorePressure();
   void InitHydroMechPorePressure();
   
