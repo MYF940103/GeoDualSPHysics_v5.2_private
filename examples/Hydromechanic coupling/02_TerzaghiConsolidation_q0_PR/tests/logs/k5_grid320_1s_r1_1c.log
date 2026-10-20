@@ -1,0 +1,1085 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.003125]  PosMin_x=[-0.498437]  PosMin_y=[0]  PosMin_z=[-0.498437]  PosMax_x=[1.50156]  PosMax_y=[0]  PosMax_z=[1.80156]  CaseName=["k5_grid320_1s_r1_1c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.005625]  MassBound=[0.0205078]  MassFluid=[0.0205078]
+
+Mk size: 1 bytes
+Case limits: (-0.498437,0,-0.498437) - (1.50156,0,1.80156)
+Distance between points (Dp): 0.003125
+Case domain: (0,0,0)-(639,0,734)
+Domain points: 640 x 1 x 735 = 470400
+Case parts: 1 x 735z
+Memory: 0.00Gb 0.45Mb (470400)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileDbgDomains> tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_dbg-fillbox.vtk  domains:1
+FileDbgDomains> tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_dbg-fillbox.vtk  domains:2
+FileDbgDomains> tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_dbg-fillbox.vtk  domains:3
+FileDbgDomains> tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.017s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.001s)
+BitSizeTot: 16 (1 + 5+1+9)
+Points loaded: 10368
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    128  -->     128
+Points -> Fluid particles:
+  block[  1] (mk:  1):  10240  -->   10240
+
+Particle summary:
+  Fixed....: 128  id:(0-127)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 10240  id:(128-10367)   MKs:1 (1)
+
+Total particles: 10368 (bound=128 (fx=128 mv=0 ft=0) fluid=10240)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.002s]
+
+[SaveCase2D]
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_MkCells.vtk  (time:0.002s, shapes:2, points:8)
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c.bi4<double>  (time:0.003s)
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_All.vtk  (time: 0.004s)
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_Bound.vtk  (time: 0.002s)
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_Fluid.vtk  (time: 0.004s)
+tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c.xml  (time:0.006s)
+Computing normals data...
+  Evaluating 128 particles with 3 shapes (distance 2x H = 0.01125).
+  Time for computing 128 normals: 0.000s.
+  Non-zero particle normals: 128/128    Normals size range: (0.001562 - 0.010937).
+  Saving results files...
+  tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_Normals.vtk
+  tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_Normals.nbi4  (time:0.015s)
+
+Save files time: 0.031s
+
+Particle limits:
+  X range: 0.0015625 to 0.0984375 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.0109375 to 0.998438 [m]
+
+[SaveCase2D-End  time:0.032s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.053 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  20-10-2026 18:38:24]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR"
+XmlFile=".../outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c.xml"
+OutputDir=".../tests/outputs/k5_grid320_1s_r1_1c"
+OutputDataDir=".../outputs/k5_grid320_1s_r1_1c/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["k5_grid320_1s_r1_1c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.005625]  KernelSize=[0.01125]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.003125]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.0205078]  MassBound=[0.0205078]
+
+*** WARNING: The execution will be cancelled after 200000 simulation steps.
+
+XML-Vars (parameters): TimeMax=[1]  TimeOut=[0.005]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageFixedGrid=True
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopKernelBand"
+  HydroMechTopLoadDiscretization: top kernel band, normalized to the unchanged TopVertical resultant
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 1e-05
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 10368
+MapRealPos(border)=(2.21177e-17,-0.00028125,-0.0112188)-(0.1,0.00028125,0.998719)
+MapRealPos(final)=(2.21177e-17,-0.00028125,-0.0112188)-(0.1,0.00028125,0.998719)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.011250  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="k5_grid320_1s_r1_1c"
+RunName="k5_grid320_1s_r1_1c"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=17603.95
+  Wendland.bwen=-1.564908e+07
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilHourglassXi: 0.1 (GPU elastic GNOG, endpoint-trapezoidal history)
+  GNOG scope: 2-D Wendland, x-periodic, small rotation, no restart or plastic flow.
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.04
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=10368
+CaseNbound=128
+CaseNfixed=128
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=10240
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.003125
+KernelH=0.005625  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.01125
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.000005
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000005
+MassFluid=0.02050781
+MassBound=0.02050781
+TimeMax=1
+TimePart=0.004999999999
+Gravity=(0,0,0)
+NpMinimum=128
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(11,1,90)
+CellDomFixed=False
+**Requested GPU memory for 10496 particles: 5.3 MB (0 times).
+NormalDataFile="tests/outputs/k5_grid320_1s_r1_1c/k5_grid320_1s_r1_1c_Normals.nbi4"
+DomCells=(11,1,90)
+DomCellCode="1+10_8_13"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**JSphGpu: Requesting gpu memory for 11048 particles: 5.6 MB.
+**JSphGpu: Requesting gpu memory for 13736 particles: 6.9 MB.
+**CellDiv: Requested gpu memory for 13736 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 2184 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 128  id:(0-127)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 10240  id:(128-10367)   MKs:1 (1)
+
+Total particles: 10368 (bound=128 (fx=128 mv=0 ft=0) fluid=10240)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 3150416 (3.00 MB)
+Allocated memory in GPU: 8765116 (8.36 MB)
+Part_0000        10368 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 200000 simulation steps.
+
+[Initialising simulation (35yitrta)  20-10-2026 18:38:24]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 16457 particles: 8.3 MB.
+**CellDiv: Requested gpu memory for 16457 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 2184 cells (CellMode=Full): 0.0 MB.
+Part_0001      0.005000          1000     1000    2655.72  20-10-2026 19:22:39
+Part_0002      0.010000          2000     1000    2668.96  20-10-2026 19:22:46
+Part_0003      0.015000          3000     1000    2645.01  20-10-2026 19:22:40
+Part_0004      0.020000          4000     1000    2632.24  20-10-2026 19:22:34
+Part_0005      0.025000          5000     1000    2624.46  20-10-2026 19:22:29
+Part_0006      0.030000          6000     1000    2661.68  20-10-2026 19:22:32
+Part_0007      0.035000          7000     1000    2622.48  20-10-2026 19:22:29
+Part_0008      0.040000          8000     1000    2550.59  20-10-2026 19:22:17
+Part_0009      0.045000          9000     1000    2526.97  20-10-2026 19:22:05
+Part_0010      0.050000         10000     1000    2501.84  20-10-2026 19:21:53
+Part_0011      0.055000         11000     1000    2505.83  20-10-2026 19:21:43
+Part_0012      0.060000         12000     1000    2528.31  20-10-2026 19:21:38
+Part_0013      0.065000         13000     1000    2536.43  20-10-2026 19:21:34
+Part_0014      0.070000         14000     1000    2525.93  20-10-2026 19:21:29
+Part_0015      0.075000         15000     1000    2506.93  20-10-2026 19:21:24
+Part_0016      0.080000         16000     1000    2481.53  20-10-2026 19:21:17
+Part_0017      0.085000         17000     1000    2473.76  20-10-2026 19:21:11
+Part_0018      0.090000         18000     1000    2476.31  20-10-2026 19:21:07
+Part_0019      0.095000         19000     1000    2503.05  20-10-2026 19:21:03
+Part_0020      0.100000         20000     1000    2507.74  20-10-2026 19:21:01
+Part_0021      0.105000         21000     1000    2517.96  20-10-2026 19:20:58
+Part_0022      0.110000         22000     1000    2498.73  20-10-2026 19:20:56
+Part_0023      0.115000         23000     1000    2487.43  20-10-2026 19:20:53
+Part_0024      0.120000         24000     1000    2509.77  20-10-2026 19:20:52
+Part_0025      0.125000         25000     1000    2515.19  20-10-2026 19:20:51
+Part_0026      0.130000         26000     1000    2490.80  20-10-2026 19:20:48
+Part_0027      0.135000         27000     1000    2510.61  20-10-2026 19:20:48
+Part_0028      0.140000         28000     1000    2504.74  20-10-2026 19:20:46
+Part_0029      0.145000         29000     1000    2516.94  20-10-2026 19:20:45
+Part_0030      0.150000         30000     1000    2510.96  20-10-2026 19:20:44
+Part_0031      0.155000         31000     1000    2506.82  20-10-2026 19:20:43
+Part_0032      0.160000         32000     1000    2502.69  20-10-2026 19:20:41
+Part_0033      0.165000         33000     1000    2501.72  20-10-2026 19:20:41
+Part_0034      0.170000         34000     1000    2501.18  20-10-2026 19:20:39
+Part_0035      0.175000         35000     1000    2502.16  20-10-2026 19:20:39
+Part_0036      0.180000         36000     1000    2511.43  20-10-2026 19:20:38
+Part_0037      0.185000         37000     1000    2517.38  20-10-2026 19:20:38
+Part_0038      0.190000         38000     1000    2515.77  20-10-2026 19:20:38
+Part_0039      0.195000         39000     1000    2508.62  20-10-2026 19:20:36
+Part_0040      0.200000         40000     1000    2513.35  20-10-2026 19:20:36
+Part_0041      0.205000         41000     1000    2510.62  20-10-2026 19:20:35
+Part_0042      0.210000         42000     1000    2506.31  20-10-2026 19:20:35
+Part_0043      0.215000         43000     1000    2509.65  20-10-2026 19:20:34
+Part_0044      0.220000         44000     1000    2513.96  20-10-2026 19:20:34
+Part_0045      0.225000         45000     1000    2502.81  20-10-2026 19:20:33
+Part_0046      0.230000         46000     1000    2505.24  20-10-2026 19:20:33
+Part_0047      0.235000         47000     1000    2533.69  20-10-2026 19:20:33
+Part_0048      0.240000         48000     1000    2501.85  20-10-2026 19:20:32
+Part_0049      0.245000         49000     1000    2505.73  20-10-2026 19:20:32
+Part_0050      0.250000         50000     1000    2537.49  20-10-2026 19:20:32
+Part_0051      0.255000         51000     1000    2500.50  20-10-2026 19:20:32
+Part_0052      0.260000         52000     1000    2505.72  20-10-2026 19:20:31
+Part_0053      0.265000         53000     1000    2493.84  20-10-2026 19:20:31
+Part_0054      0.270000         54000     1000    2510.60  20-10-2026 19:20:30
+Part_0055      0.275000         55000     1000    2496.48  20-10-2026 19:20:30
+Part_0056      0.280000         56000     1000    2507.55  20-10-2026 19:20:29
+Part_0057      0.285000         57000     1000    2508.12  20-10-2026 19:20:29
+Part_0058      0.290000         58000     1000    2530.10  20-10-2026 19:20:30
+Part_0059      0.295000         59000     1000    2523.67  20-10-2026 19:20:29
+Part_0060      0.300000         60000     1000    2508.31  20-10-2026 19:20:29
+Part_0061      0.305000         61000     1000    2499.17  20-10-2026 19:20:28
+Part_0062      0.310000         62000     1000    2498.04  20-10-2026 19:20:28
+Part_0063      0.315000         63000     1000    2511.18  20-10-2026 19:20:28
+Part_0064      0.320000         64000     1000    2513.94  20-10-2026 19:20:28
+Part_0065      0.325000         65000     1000    2511.16  20-10-2026 19:20:27
+Part_0066      0.330000         66000     1000    2504.37  20-10-2026 19:20:27
+Part_0067      0.335000         67000     1000    2490.28  20-10-2026 19:20:26
+Part_0068      0.340000         68000     1000    2494.76  20-10-2026 19:20:26
+Part_0069      0.345000         69000     1000    2515.60  20-10-2026 19:20:26
+Part_0070      0.350000         70000     1000    2515.24  20-10-2026 19:20:26
+Part_0071      0.355000         71000     1000    2520.82  20-10-2026 19:20:26
+Part_0072      0.360000         72000     1000    2515.25  20-10-2026 19:20:26
+Part_0073      0.365000         73000     1000    2510.26  20-10-2026 19:20:26
+Part_0074      0.370000         74000     1000    2500.93  20-10-2026 19:20:25
+Part_0075      0.375000         75000     1000    2497.77  20-10-2026 19:20:25
+Part_0076      0.380000         76000     1000    2502.95  20-10-2026 19:20:25
+Part_0077      0.385000         77000     1000    2498.08  20-10-2026 19:20:25
+Part_0078      0.390000         78000     1000    2505.38  20-10-2026 19:20:24
+Part_0079      0.395000         79000     1000    2491.47  20-10-2026 19:20:24
+Part_0080      0.400000         80000     1000    2500.94  20-10-2026 19:20:24
+Part_0081      0.405000         81000     1000    2503.63  20-10-2026 19:20:24
+Part_0082      0.410000         82000     1000    2494.42  20-10-2026 19:20:23
+Part_0083      0.415000         83000     1000    2650.65  20-10-2026 19:20:25
+Part_0084      0.420000         84000     1000    2677.58  20-10-2026 19:20:27
+Part_0085      0.425000         85000     1000    2647.27  20-10-2026 19:20:28
+Part_0086      0.430000         86000     1000    2648.33  20-10-2026 19:20:29
+Part_0087      0.435000         87000     1000    2652.60  20-10-2026 19:20:32
+Part_0088      0.440000         88000     1000    2631.73  20-10-2026 19:20:33
+Part_0089      0.445000         89000     1000    2626.21  20-10-2026 19:20:34
+Part_0090      0.450000         90000     1000    2623.80  20-10-2026 19:20:34
+Part_0091      0.455000         91000     1000    2630.65  20-10-2026 19:20:35
+Part_0092      0.460000         92000     1000    2634.12  20-10-2026 19:20:36
+Part_0093      0.465000         93000     1000    2622.61  20-10-2026 19:20:38
+Part_0094      0.470000         94000     1000    2635.89  20-10-2026 19:20:39
+Part_0095      0.475000         95000     1000    2642.99  20-10-2026 19:20:40
+Part_0096      0.480000         96000     1000    2665.72  20-10-2026 19:20:41
+Part_0097      0.485000         97000     1000    2642.95  20-10-2026 19:20:42
+Part_0098      0.490000         98000     1000    2651.08  20-10-2026 19:20:44
+Part_0099      0.495000         99000     1000    2655.88  20-10-2026 19:20:45
+Part_0100      0.500000        100000     1000    2660.08  20-10-2026 19:20:46
+Part_0101      0.505000        101000     1000    2679.28  20-10-2026 19:20:48
+Part_0102      0.510000        102000     1000    2675.94  20-10-2026 19:20:48
+Part_0103      0.515000        103000     1000    2669.43  20-10-2026 19:20:49
+Part_0104      0.520000        104000     1000    2624.42  20-10-2026 19:20:51
+Part_0105      0.525000        105000     1000    2630.10  20-10-2026 19:20:52
+Part_0106      0.530000        106000     1000    2644.01  20-10-2026 19:20:52
+Part_0107      0.535000        107000     1000    2622.64  20-10-2026 19:20:53
+Part_0108      0.540000        108000     1000    2593.20  20-10-2026 19:20:53
+Part_0109      0.545000        109000     1000    2590.32  20-10-2026 19:20:54
+Part_0110      0.550000        110000     1000    2588.47  20-10-2026 19:20:54
+Part_0111      0.555000        111000     1000    2566.37  20-10-2026 19:20:55
+Part_0112      0.560000        112000     1000    2573.56  20-10-2026 19:20:55
+Part_0113      0.565000        113000     1000    2600.08  20-10-2026 19:20:55
+Part_0114      0.570000        114000     1000    2644.39  20-10-2026 19:20:56
+Part_0115      0.575000        115000     1000    2633.40  20-10-2026 19:20:56
+Part_0116      0.580000        116000     1000    2604.45  20-10-2026 19:20:57
+Part_0117      0.585000        117000     1000    2649.69  20-10-2026 19:20:57
+Part_0118      0.590000        118000     1000    2630.12  20-10-2026 19:20:58
+Part_0119      0.595000        119000     1000    2632.55  20-10-2026 19:20:59
+Part_0120      0.600000        120000     1000    2638.77  20-10-2026 19:21:00
+Part_0121      0.605000        121000     1000    2633.71  20-10-2026 19:21:00
+Part_0122      0.610000        122000     1000    2638.39  20-10-2026 19:21:01
+Part_0123      0.615000        123000     1000    2600.69  20-10-2026 19:21:01
+Part_0124      0.620000        124000     1000    2603.52  20-10-2026 19:21:02
+Part_0125      0.625000        125000     1000    2614.01  20-10-2026 19:21:02
+Part_0126      0.630000        126000     1000    2605.54  20-10-2026 19:21:02
+Part_0127      0.635000        127000     1000    2611.17  20-10-2026 19:21:03
+Part_0128      0.640000        128000     1000    2637.26  20-10-2026 19:21:04
+Part_0129      0.645000        129000     1000    2623.51  20-10-2026 19:21:04
+Part_0130      0.650000        130000     1000    2631.75  20-10-2026 19:21:05
+Part_0131      0.655000        131000     1000    2631.44  20-10-2026 19:21:05
+Part_0132      0.660000        132000     1000    2626.93  20-10-2026 19:21:06
+Part_0133      0.665000        133000     1000    2632.48  20-10-2026 19:21:06
+Part_0134      0.670000        134000     1000    2630.02  20-10-2026 19:21:06
+Part_0135      0.675000        135000     1000    2620.86  20-10-2026 19:21:08
+Part_0136      0.680000        136000     1000    2626.90  20-10-2026 19:21:08
+Part_0137      0.685000        137000     1000    2639.26  20-10-2026 19:21:08
+Part_0138      0.690000        138000     1000    2636.74  20-10-2026 19:21:09
+Part_0139      0.695000        139000     1000    2630.69  20-10-2026 19:21:09
+Part_0140      0.700000        140000     1000    2650.80  20-10-2026 19:21:09
+Part_0141      0.705000        141000     1000    2668.60  20-10-2026 19:21:11
+Part_0142      0.710000        142000     1000    2656.12  20-10-2026 19:21:11
+Part_0143      0.715000        143000     1000    2627.11  20-10-2026 19:21:11
+Part_0144      0.720000        144000     1000    2607.01  20-10-2026 19:21:12
+Part_0145      0.725000        145000     1000    2619.96  20-10-2026 19:21:12
+Part_0146      0.730000        146000     1000    2612.86  20-10-2026 19:21:12
+Part_0147      0.735000        147000     1000    2608.51  20-10-2026 19:21:12
+Part_0148      0.740000        148000     1000    2630.21  20-10-2026 19:21:14
+Part_0149      0.745000        149000     1000    2632.45  20-10-2026 19:21:14
+Part_0150      0.750000        150000     1000    2620.19  20-10-2026 19:21:14
+Part_0151      0.755000        151000     1000    2642.50  20-10-2026 19:21:14
+Part_0152      0.760000        152000     1000    2643.20  20-10-2026 19:21:15
+Part_0153      0.765000        153000     1000    2641.10  20-10-2026 19:21:16
+Part_0154      0.770000        154000     1000    2644.23  20-10-2026 19:21:16
+Part_0155      0.775000        155000     1000    2616.63  20-10-2026 19:21:16
+Part_0156      0.780000        156000     1000    2649.12  20-10-2026 19:21:17
+Part_0157      0.785000        157000     1000    2686.82  20-10-2026 19:21:18
+Part_0158      0.790000        158000     1000    2669.19  20-10-2026 19:21:18
+Part_0159      0.795000        159000     1000    2657.19  20-10-2026 19:21:18
+Part_0160      0.800000        160000     1000    2641.54  20-10-2026 19:21:19
+Part_0161      0.805000        161000     1000    2619.95  20-10-2026 19:21:19
+Part_0162      0.810000        162000     1000    2662.31  20-10-2026 19:21:20
+Part_0163      0.815000        163000     1000    2709.13  20-10-2026 19:21:20
+Part_0164      0.820000        164000     1000    2652.66  20-10-2026 19:21:21
+Part_0165      0.825000        165000     1000    2643.83  20-10-2026 19:21:22
+Part_0166      0.830000        166000     1000    2652.29  20-10-2026 19:21:22
+Part_0167      0.835000        167000     1000    2651.69  20-10-2026 19:21:22
+Part_0168      0.840000        168000     1000    2539.20  20-10-2026 19:21:22
+Part_0169      0.845000        169000     1000    2560.40  20-10-2026 19:21:22
+Part_0170      0.850000        170000     1000    2566.95  20-10-2026 19:21:22
+Part_0171      0.855000        171000     1000    2553.58  20-10-2026 19:21:21
+Part_0172      0.860000        172000     1000    2542.36  20-10-2026 19:21:21
+Part_0173      0.865000        173000     1000    2522.26  20-10-2026 19:21:21
+Part_0174      0.870000        174000     1000    2500.53  20-10-2026 19:21:21
+Part_0175      0.875000        175000     1000    2521.51  20-10-2026 19:21:21
+Part_0176      0.880000        176000     1000    2527.73  20-10-2026 19:21:21
+Part_0177      0.885000        177000     1000    2522.29  20-10-2026 19:21:20
+Part_0178      0.890000        178000     1000    2503.75  20-10-2026 19:21:20
+Part_0179      0.895000        179000     1000    2504.01  20-10-2026 19:21:19
+Part_0180      0.900000        180000     1000    2519.29  20-10-2026 19:21:19
+Part_0181      0.905000        181000     1000    2509.44  20-10-2026 19:21:18
+Part_0182      0.910000        182000     1000    2524.03  20-10-2026 19:21:18
+Part_0183      0.915000        183000     1000    2533.82  20-10-2026 19:21:18
+Part_0184      0.920000        184000     1000    2535.04  20-10-2026 19:21:17
+Part_0185      0.925000        185000     1000    2519.00  20-10-2026 19:21:18
+Part_0186      0.930000        186000     1000    2488.10  20-10-2026 19:21:17
+Part_0187      0.935000        187000     1000    2514.35  20-10-2026 19:21:17
+Part_0188      0.940000        188000     1000    2512.56  20-10-2026 19:21:16
+Part_0189      0.945000        189000     1000    2500.29  20-10-2026 19:21:16
+Part_0190      0.950000        190000     1000    2506.86  20-10-2026 19:21:16
+Part_0191      0.955000        191000     1000    2506.04  20-10-2026 19:21:15
+Part_0192      0.960000        192000     1000    2507.73  20-10-2026 19:21:15
+Part_0193      0.965000        193000     1000    2502.75  20-10-2026 19:21:14
+Part_0194      0.970000        194000     1000    2505.38  20-10-2026 19:21:15
+Part_0195      0.975000        195000     1000    2496.07  20-10-2026 19:21:14
+Part_0196      0.980000        196000     1000    2494.54  20-10-2026 19:21:14
+Part_0197      0.985000        197000     1000    2488.06  20-10-2026 19:21:13
+Part_0198      0.990000        198000     1000    2492.82  20-10-2026 19:21:13
+Part_0199      0.995000        199000     1000    2493.60  20-10-2026 19:21:12
+Part_0200      1.000000        200000     1000    2484.33  20-10-2026 19:21:12
+
+[Simulation finished  20-10-2026 19:21:12]
+Particles of simulation (initial): 10368
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 2568.342773 sec.
+Simulation Runtime...............: 2568.220703 sec.
+Runtime per physical second......: 2568.220703 sec.
+Steps per second.................: 77.874924
+Steps of simulation..............: 200000
+PART files.......................: 201
+Maximum number of particles......: 12960
+Maximum number of cells..........: 990
+CPU Memory.......................: 3765362 (3.59 MB)
+GPU Memory.......................: 10229532 (9.76 MB)
+SoilHourglass: forcecalls=400000 predictorupdates=200000 correctorupdates=200000 ratecalls=400000
+SoilHourglass: ratecalculations=200001 endpoint_rate_reuses=199999
+SoilHourglass: max|sum(m*H)|=2.36612e-14 max|sum(m*deltaAce)|=1.89339e-05 max(dt/tau)=0.0127563 spinbound=1.80983e-05
+ 
+[GPU Timers]
+VA-Init..........................: 0.121607 sec.
+NL-Limits........................: 63.150056 sec.
+NL-PreSort.......................: 1.973402 sec.
+NL-RadixSort.....................: 227.609131 sec.
+NL-CellBegin.....................: 26.968173 sec.
+NL-SortData......................: 36.850749 sec.
+NL-OutCheck......................: 197.571183 sec.
+CF-PreForces.....................: 42.013986 sec.
+CF-Forces........................: 1003.578060 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 7.925935 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 87.001233 sec.
+SU-ResizeNp......................: 0.004426 sec.
+SU-DownData......................: 0.239705 sec.
+SU-SavePart......................: 1.545885 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The execution will be cancelled after 200000 simulation steps.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
+
+
+ <PARTVTK>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ PartVTK is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the PartVTK nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+PartVTK v5.0.206 (12-04-2023)
+==============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+Threads for parallel execution: 20
+LoadConfigData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0000.bi4
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0000.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0000.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0001.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0001.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0002.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0002.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0003.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0003.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0004.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0004.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0005.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0005.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0006.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0006.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0007.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0007.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0008.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0008.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0009.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0009.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0010.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0010.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0011.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0011.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0012.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0012.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0013.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0013.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0014.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0014.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0015.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0015.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0016.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0016.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0017.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0017.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0018.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0018.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0019.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0019.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0020.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0020.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0021.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0021.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0022.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0022.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0023.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0023.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0024.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0024.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0025.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0025.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0026.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0026.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0027.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0027.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0028.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0028.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0029.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0029.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0030.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0030.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0031.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0031.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0032.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0032.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0033.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0033.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0034.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0034.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0035.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0035.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0036.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0036.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0037.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0037.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0038.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0038.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0039.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0039.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0040.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0040.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0041.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0041.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0042.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0042.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0043.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0043.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0044.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0044.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0045.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0045.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0046.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0046.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0047.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0047.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0048.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0048.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0049.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0049.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0050.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0050.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0051.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0051.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0052.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0052.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0053.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0053.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0054.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0054.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0055.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0055.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0056.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0056.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0057.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0057.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0058.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0058.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0059.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0059.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0060.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0060.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0061.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0061.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0062.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0062.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0063.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0063.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0064.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0064.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0065.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0065.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0066.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0066.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0067.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0067.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0068.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0068.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0069.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0069.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0070.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0070.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0071.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0071.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0072.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0072.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0073.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0073.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0074.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0074.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0075.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0075.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0076.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0076.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0077.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0077.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0078.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0078.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0079.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0079.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0080.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0080.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0081.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0081.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0082.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0082.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0083.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0083.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0084.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0084.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0085.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0085.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0086.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0086.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0087.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0087.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0088.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0088.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0089.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0089.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0090.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0090.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0091.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0091.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0092.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0092.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0093.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0093.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0094.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0094.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0095.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0095.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0096.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0096.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0097.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0097.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0098.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0098.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0099.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0099.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0100.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0100.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0101.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0101.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0102.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0102.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0103.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0103.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0104.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0104.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0105.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0105.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0106.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0106.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0107.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0107.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0108.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0108.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0109.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0109.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0110.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0110.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0111.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0111.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0112.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0112.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0113.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0113.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0114.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0114.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0115.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0115.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0116.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0116.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0117.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0117.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0118.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0118.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0119.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0119.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0120.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0120.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0121.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0121.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0122.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0122.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0123.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0123.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0124.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0124.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0125.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0125.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0126.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0126.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0127.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0127.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0128.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0128.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0129.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0129.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0130.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0130.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0131.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0131.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0132.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0132.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0133.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0133.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0134.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0134.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0135.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0135.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0136.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0136.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0137.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0137.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0138.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0138.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0139.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0139.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0140.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0140.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0141.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0141.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0142.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0142.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0143.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0143.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0144.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0144.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0145.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0145.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0146.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0146.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0147.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0147.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0148.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0148.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0149.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0149.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0150.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0150.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0151.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0151.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0152.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0152.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0153.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0153.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0154.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0154.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0155.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0155.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0156.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0156.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0157.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0157.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0158.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0158.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0159.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0159.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0160.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0160.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0161.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0161.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0162.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0162.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0163.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0163.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0164.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0164.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0165.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0165.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0166.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0166.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0167.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0167.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0168.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0168.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0169.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0169.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0170.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0170.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0171.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0171.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0172.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0172.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0173.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0173.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0174.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0174.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0175.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0175.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0176.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0176.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0177.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0177.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0178.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0178.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0179.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0179.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0180.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0180.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0181.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0181.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0182.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0182.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0183.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0183.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0184.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0184.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0185.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0185.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0186.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0186.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0187.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0187.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0188.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0188.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0189.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0189.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0190.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0190.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0191.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0191.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0192.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0192.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0193.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0193.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0194.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0194.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0195.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0195.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0196.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0196.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0197.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0197.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0198.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0198.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0199.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0199.vtk  np:10240
+LoadData> tests/outputs/k5_grid320_1s_r1_1c/data/Part_0200.bi4
+SaveVTK> .../k5_grid320_1s_r1_1c/particles/PartFluid_0200.vtk  np:10240
+
+Time of operation: 15.037 sec. (20 threads)
