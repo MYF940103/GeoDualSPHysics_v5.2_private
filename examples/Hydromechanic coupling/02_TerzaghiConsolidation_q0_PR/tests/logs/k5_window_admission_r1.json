@@ -1,0 +1,20 @@
+{
+  "decision_date_local": "2026-10-20",
+  "family": "5",
+  "admit_15s": true,
+  "admit_2tv": false,
+  "stage": "k5_long5_r1",
+  "decision": "Admit fresh 15-s 5/2.5-us pair only, after native audit and visual review; reject the 8/4-us candidate.",
+  "basis": ["k5_cell_review_r1.check.json", "k5_cell_review_r1.visual.json", "k5_dense5_r1.status.json", "k5_dense5_r1.review.json", "k5_dense5_r1.visual.json"],
+  "dense_half_samples": 151,
+  "dense_max_pressure_rms_pa": 3.7952287508152667,
+  "dense_max_top_settlement_difference_mm": 0.00005325832511116069,
+  "dense_sampling_only_native_0_ulp": true,
+  "limits": {"pressure_rms_pa": 5, "top_settlement_mm": 0.005, "post_point1s_stress_and_top_gap_pa": 100, "equivalent_full_width_force_error_N_m": 0.001},
+  "next_requirements": [
+    "Full 15001-sample 15-s half test and original native safety/HG checks.",
+    "Both 201-sample same-dt physical prefixes against retained 1-s controls.",
+    "Review pressure, native-material settlement, stress/Q, bottom bias, theory and loop cost before another admission decision."
+  ],
+  "limitations": ["Uniform 1D reduced period; no long-wave/general-boundary validation.", "Elastic small rotation and fresh HG starts only; no exact HG restart.", "No production/formal input change or full k1e-5 2Tv acceptance."]
+}
