@@ -1,6 +1,6 @@
 # 02 外载 1D 固结：入口与文件索引
 
-更新日期：2026-10-20。孔压/孔压率仍为原生 float u-pw PR，无高低位补偿、无 double 孔压状态或KEEP密度补偿；持久应力及其历史为double。当前一维正式配置采用应力率梯度修正、归一化核支持带加载、xi=0.1弹性HG、固定平面SPR和固定格点排水事件，阻尼0.04。k=1e-4 CPU/GPU完整2Tv已按约定的一维范围验收，不能推广为塑性、复杂边界或大旋转验收。
+更新日期：2026-10-20。孔压/孔压率仍为原生 float u-pw PR，无高低位补偿、无 double 孔压状态或KEEP密度补偿；持久应力及其历史为double。当前一维正式配置采用应力率梯度修正、归一化核支持带加载、xi=0.1弹性HG、固定平面SPR和固定格点排水事件，阻尼0.04。k=1e-4 CPU/GPU完整2Tv及k=1e-3正式GPU完整2Tv已按约定的一维范围验收，不能推广为塑性、复杂边界或大旋转验收。
 
 ## 当前正式入口
 
@@ -18,7 +18,9 @@ XML完整前缀为`CaseTerzaghiConsolidation_q0_PR_`，BAT前缀为`xCaseTerzagh
 
 新输出使用`CaseTerzaghiConsolidation_q0_PR_full_k1em*_release_CPU_out`或`_release_GPU_out`，不会覆盖旧`*_out`。已有新输出也不自动删除、不接受`-force`清除；可用同一BAT的`-postprocess`只做后处理，需新计算时明确选择另一个输出名。HG只支持新鲜启动，没有精确历史重启；长算中途关机不能拿普通PART精确续接本HG。
 
-k=1e-4将发布本轮已验完整数据，前提是正式CPU/GPU程序短窗与伴随程序初末态逐位一致；`release_provenance.json`明确记录来源，不谎称又通过BAT重算过一轮。k=1e-3/1e-5须各自完成新计算及审图后才标为验收，不由k=1e-4代替。旧k=1e-2输入/入口仍保留历史配置，本轮不修改、不代表新组合已验收。
+k=1e-4已复制发布本轮已验完整数据；正式CPU/GPU程序短窗与伴随程序初末态逐位一致，`release_provenance.json`明确记录来源，不谎称又通过BAT重算过一轮。k=1e-3已由根目录GPU BAT完成新计算：实际7.297429000666115 s、7297429步、7299帧，末期剖面RMSE 2.42883 Pa、顶部材料沉降3.657380 mm（解析误差-0.45405%）。k=1e-4相应为0.88109 Pa、3.658754 mm（-0.41667%）。两组正式`particles`及`figures/full_validation_release_k1em3_GPU*`、`k1em4_GPU*`均已生成并审阅；残余Q约10 Pa并未消失。去重21950文件哈希和原生抽样复核见`tests/logs/formal_release_k34_r1.review.json`。
+
+下一组为k=1e-5的正式GPU 2Tv，不能由前两组代替验收；唯一新阶段的实际进度以`tests/logs/formal_release_k5_r1.status.json`为准。固定dt=1e-5、72875286步，预计约4天，不擅自放大步长或从普通PART精确续接HG。旧k=1e-2输入/入口仍保留历史配置，本轮不修改、不代表新组合已验收。
 
 根目录所有既有输入位置和历史`*_out`保持原位，包括网格细化、precision和double历史输出。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
 
