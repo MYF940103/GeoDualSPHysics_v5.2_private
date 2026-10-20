@@ -22,6 +22,8 @@ k=1e-4已复制发布本轮已验完整数据；正式CPU/GPU程序短窗与伴�
 
 下一组为k=1e-5的正式GPU 2Tv，不能由前两组代替验收；唯一新阶段的实际进度以`tests/logs/formal_release_k5_r1.status.json`为准。固定dt=1e-5、72875286步，预计约4天，不擅自放大步长或从普通PART精确续接HG。旧k=1e-2输入/入口仍保留历史配置，本轮不修改、不代表新组合已验收。
 
+**k=1e-5上述原网格长算已于0.10001 s触发原100 Pa安全门而停止，最后完整保存为0.20000 s，不是2Tv完成，也没有正式完整图。旧worker不重启，根目录部分输出保留。** CPU对照复现了这一早期排水面误差，单独减半dt不能解决；测试中细化到dp=.003125、dt=5e-6后，0.10001 s的应力偏差72.67 Pa/顶部层差85.72 Pa通过原门，但仅为短窗候选。当前只推进`tests/logs/k5_grid320_1s_r1.status.json`对应的.15 s/1 s成对半步检查；尚未推广到正式XML/BAT。原约4天估计不适用于细网格，完整新计算须先复核精度及成本。详情和短窗对比图见`tests/notes/formal_release_r1.md`、`tests/figures/k5_failure_review_r1.png`。
+
 根目录所有既有输入位置和历史`*_out`保持原位，包括网格细化、precision和double历史输出。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
 
 **本次更新的三组CPU/GPU BAT没有删除路径。旧k=1e-2等未更新历史BAT可能仍含覆盖确认或`-force`，不要用它们试跑或覆盖保留结果。临时验证仍放在`tests`分类目录。**

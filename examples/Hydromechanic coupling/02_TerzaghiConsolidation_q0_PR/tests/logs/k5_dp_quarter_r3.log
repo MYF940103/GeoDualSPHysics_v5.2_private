@@ -1,0 +1,378 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 31
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2100]  MResId=[0]  sizefx=[0.1]  sizefz=[1]  sizebx=[0.1]  sizebz=[1.2]  Dp=[0.0025]  PosMin_x=[-0.49875]  PosMin_y=[0]  PosMin_z=[-0.49875]  PosMax_x=[1.50125]  PosMax_y=[0]  PosMax_z=[1.80125]  CaseName=["k5_dp_quarter_r3"]  Data2D=[1]  Data2DPosy=[0]  H=[0.0045]  MassBound=[0.013125]  MassFluid=[0.013125]
+
+Mk size: 1 bytes
+Case limits: (-0.49875,0,-0.49875) - (1.50125,0,1.80125)
+Distance between points (Dp): 0.0025
+Case domain: (0,0,0)-(799,0,918)
+Domain points: 800 x 1 x 919 = 735200
+Case parts: 1 x 919z
+Memory: 0.00Gb 0.70Mb (735200)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileShapes> Boundary_Actual.vtk  shapes:3  points:8   (time:0.002s)
+FileDbgDomains> tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_dbg-fillbox.vtk  domains:1
+FileDbgDomains> tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_dbg-fillbox.vtk  domains:2
+FileDbgDomains> tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_dbg-fillbox.vtk  domains:3
+FileDbgDomains> tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_dbg-fillbox.vtk  domains:4
+<MAIN (Operations= 22+9+2 = 33)
+
+Triangles: 12 (0 ignored)
+[Draw-End  time:0.028s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.002s)
+BitSizeTot: 17 (1 + 6+1+9)
+Points loaded: 16160
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    160  -->     160
+Points -> Fluid particles:
+  block[  1] (mk:  1):  16000  -->   16000
+
+Particle summary:
+  Fixed....: 160  id:(0-159)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 16000  id:(160-16159)   MKs:1 (1)
+
+Total particles: 16160 (bound=160 (fx=160 mv=0 ft=0) fluid=16000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.003s]
+
+[SaveCase2D]
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_MkCells.vtk  (time:0.002s, shapes:2, points:8)
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3.bi4<double>  (time:0.004s)
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_All.vtk  (time: 0.006s)
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_Bound.vtk  (time: 0.003s)
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_Fluid.vtk  (time: 0.005s)
+tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3.xml  (time:0.006s)
+Computing normals data...
+  Evaluating 160 particles with 3 shapes (distance 2x H = 0.009).
+  Time for computing 160 normals: 0.000s.
+  Non-zero particle normals: 160/160    Normals size range: (0.001250 - 0.008750).
+  Saving results files...
+  tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_Normals.vtk
+  tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_Normals.nbi4  (time:0.016s)
+
+Save files time: 0.035s
+
+Particle limits:
+  X range: 0.00125 to 0.09875 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.00875 to 0.99875 [m]
+
+[SaveCase2D-End  time:0.038s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.069 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  20-10-2026 17:56:33]
+ProgramFile=".../bin/windows/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR"
+XmlFile=".../outputs/k5_dp_quarter_r3/k5_dp_quarter_r3.xml"
+OutputDir=".../tests/outputs/k5_dp_quarter_r3"
+OutputDataDir=".../outputs/k5_dp_quarter_r3/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["k5_dp_quarter_r3"]  Data2D=[1]  Data2DPosy=[0]  H=[0.0045]  KernelSize=[0.009]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.0025]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.013125]  MassBound=[0.013125]
+
+*** WARNING: The execution will be cancelled after 10001 simulation steps.
+
+XML-Vars (parameters): TimeMax=[0.10001]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.01
+  HydroMechDrainageFixedGrid=True
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopKernelBand"
+  HydroMechTopLoadDiscretization: top kernel band, normalized to the unchanged TopVertical resultant
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.01
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 1e-05
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 16160
+MapRealPos(border)=(-2.66714e-17,-0.000225,-0.008975)-(0.1,0.000225,0.998975)
+MapRealPos(final)=(-2.66714e-17,-0.000225,-0.008975)-(0.1,0.000225,0.998975)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.009000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="k5_dp_quarter_r3"
+RunName="k5_dp_quarter_r3"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=27506.18
+  Wendland.bwen=-3.056461e+07
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilHourglassXi: 0.1 (GPU elastic GNOG, endpoint-trapezoidal history)
+  GNOG scope: 2-D Wendland, x-periodic, small rotation, no restart or plastic flow.
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.04
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=16160
+CaseNbound=160
+CaseNfixed=160
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=16000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.0025
+KernelH=0.004500  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.009
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.00001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=0.013125
+MassBound=0.013125
+TimeMax=0.10001
+TimePart=0.01
+Gravity=(0,0,0)
+NpMinimum=160
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(14,1,112)
+CellDomFixed=False
+**Requested GPU memory for 16288 particles: 8.2 MB (0 times).
+NormalDataFile="tests/outputs/k5_dp_quarter_r3/k5_dp_quarter_r3_Normals.nbi4"
+DomCells=(14,1,112)
+DomCellCode="1+10_8_13"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**JSphGpu: Requesting gpu memory for 17129 particles: 8.6 MB.
+**JSphGpu: Requesting gpu memory for 20489 particles: 10.3 MB.
+**CellDiv: Requested gpu memory for 20489 particles: 0.2 MB.
+**CellDiv: Requested gpu memory for 3390 cells (CellMode=Full): 0.1 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 160  id:(0-159)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 16000  id:(160-16159)   MKs:1 (1)
+
+Total particles: 16160 (bound=160 (fx=160 mv=0 ft=0) fluid=16000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 4676594 (4.46 MB)
+Allocated memory in GPU: 13172548 (12.56 MB)
+Part_0000        16160 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 10001 simulation steps.
+
+[Initialising simulation (ui1jfubm)  20-10-2026 17:56:34]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 23883 particles: 12.0 MB.
+**CellDiv: Requested gpu memory for 23883 particles: 0.2 MB.
+**CellDiv: Requested gpu memory for 3390 cells (CellMode=Full): 0.1 MB.
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG currently supports elastic states only.
+
+
+Finished execution (code=1).
+
+Diagnostic failed or output already exists; retained files were not deleted.
