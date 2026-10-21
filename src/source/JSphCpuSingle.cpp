@@ -1352,6 +1352,7 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *fsnormal=NULL;
   float *porepress=NULL;
   float *porepress0=NULL;
+  tfloat3 *hydromechloadace=NULL;
   //==========
   if(save){
     ComputeFreeSurfaceTracking();
@@ -1372,9 +1373,10 @@ void JSphCpuSingle::SaveData(){
     if(HydroMech){
       porepress=ArraysCpu->ReserveFloat();
       porepress0=ArraysCpu->ReserveFloat();
+      hydromechloadace=ArraysCpu->ReserveFloat3();
     }
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,NULL,sigmastatekk,sigmastateij);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1409,6 +1411,7 @@ void JSphCpuSingle::SaveData(){
       arrays.AddArray("PorePress",npsave,porepress);
       arrays.AddArray("PorePress0",npsave,porepress0);
       arrays.AddArray("ExcessPorePress",npsave,poreexcess,true);
+      arrays.AddArray("HydroMechLoadAce",npsave,hydromechloadace);
     }
   }
   //AddBasicArrays(arrays,npsave,pos,idp,vel,rhop);
@@ -1426,6 +1429,7 @@ void JSphCpuSingle::SaveData(){
   ArraysCpu->Free(fsnormal);
   ArraysCpu->Free(porepress);
   ArraysCpu->Free(porepress0);
+  ArraysCpu->Free(hydromechloadace);
   //=====
   if(UseNormals && SvNormals)SaveVtkNormals("normals/Normals.vtk",Part,npsave,Npb,Posc,Idpc,BoundNormalc,1.f);
   //-Save extra data.

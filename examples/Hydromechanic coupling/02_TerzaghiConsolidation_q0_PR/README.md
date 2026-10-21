@@ -36,7 +36,13 @@ k=1e-5必须单独完成2Tv，不能由前两组代替验收。原`formal_releas
 
 2026-10-20进一步尝试8/4微秒：5 ms采样的1 s孔压半步最大差4.65046 Pa曾通过，但1 ms加密短窗在约.011 s发现9.66059 Pa差异，超过原5 Pa限值，因此拒绝该候选，不放宽门、不再搜dt。2026-10-21原5/2.5微秒的`k5_long5_r1`已完成15 s并审阅三图：15001对最大孔压半步差3.79523 Pa、沉降差.00023918 mm；两条各201个1 s共同前缀0 ULP，末时剖面RMSE6.760/7.290 Pa，材料沉降解析误差+.909%/+.880%。30448个记录哈希核对一致，底层材料仍有约.000025 mm额外偏差。15 s仅Tv=.041，不是晚期2Tv验收。
 
-据此另准入新鲜`tests/configs/k5_full_r1_Def.xml`及`xk5_full_r1_win64_GPU.bat`完整周期，输出在`tests/outputs/k5_full_r1`；冻结dp=.003125、宽.025、固定5微秒及原参数/安全门，145750572步。前15 s保存1 ms、之后.1 s，仅导出末帧particles，原生BI4均保留。控制与进程见`tests/logs/k5_full_r1.status.json`，单次终态自动回同会话。粗步实测速度外推约9.02天，不是完成承诺；普通PART不能精确续接HG，需机器持续运行。单元缩窄仍只具均匀一维短窗等价证据，不推广为一般滑坡/长横向波长验证。正式XML/BAT保持旧状态，只有完整复核通过后才另行发布新k5，根目录原失败输出不覆盖。详见`tests/notes/formal_release_r1.md`和`logs/k5_full_admission_r1.json`；图在`tests/figures/k5_long5_r1_{history,profiles,half}.png`，旧失败图保留。
+据此曾准入`tests/configs/k5_full_r1_Def.xml`及GPU BAT完整周期，输出在`tests/outputs/k5_full_r1`；dp=.003125、宽.025、固定5微秒、145750572步，原参数/安全门保持。该GPU运行已于2026-10-21为用户授权的加速试验主动结束：最后可读PART6056、实际6.055999999855318 s，不是2Tv，也非物理失败；原始输出全保留，审计为`tests/logs/k5_full_r1_acceleration_stop.json`，旧通知器已退役，不重启。
+
+用户随后明确停止后端/步长比较，指定用CPU从头重跑1e-5。新入口为`tests/configs/k5_cpu_full_r1_Def.xml`和`xk5_cpu_full_r1_win64_CPU.bat`，输出`tests/outputs/k5_cpu_full_r1`，采用8线程、同一细网格/宽度和5微秒，不增大dt。该验证计算沿用前15 s原生1 ms、之后.1 s诊断采样，读取既有GPU15 s数据作5 Pa/.005 mm同物理前缀检查，不启动新GPU对照求解器；根目录发行XML的ΔTv=.005设置不变，正式图仍按实际Tv选帧。仅末帧生成particles；常规PART不能精确续接HG，必须新鲜启动。
+
+CPU仅补齐已有加载加速度的原生输出`HydroMechLoadAce`，不改力/积分；.03 s、31帧旧物理字段逐位一致，总外力诊断误差最大6.12e-5 N/m（等效.1 m宽）。CPU Debug/Release构建通过。新CPU短测主循环37.076771 s/6000步，长程耗时仍为天级外推，不是完成承诺。具体改动、控制与自动终态接续见`tests/notes/k5_cpu_full_r1.md`及`tests/logs/k5_cpu_full_r1.status.json`。未启动的6.25微秒候选已撤出活动目录，归档于`tests/outputs/k5_dt625_notrun_r1`，不是验证通过的配置。
+
+单元缩窄仍只具均匀一维短窗等价证据，不推广为一般滑坡/长横向波长验证。只有完整复核通过后才另行发布新k5，根目录原失败输出不覆盖。原准入证据见`tests/notes/formal_release_r1.md`及`logs/k5_full_admission_r1.json`，原短窗图在`tests/figures/k5_long5_r1_{history,profiles,half}.png`。
 
 根目录历史XML和所有`*_out`保持原位，包括网格细化、precision和double历史输出。用户于2026-10-21授权清理后，仅将旧k1e-2、precision、double三个退役CPU BAT原样移至`tests/outputs/retired_root_inputs_r1`，避免根目录误点；不是删除结果。三个旧XML有历史生成脚本/恢复依赖或配对记录，暂不移动。归档BAT相对路径仍按原case根设计，不应在归档目录双击；用途与恢复说明见该目录README。当前三组正式XML及六份CPU/GPU BAT仍在根目录。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
 
