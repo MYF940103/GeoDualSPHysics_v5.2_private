@@ -1,0 +1,42 @@
+{
+  "inspected": true,
+  "review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\k5_long5_r1.review.json",
+    "sha256": "C49544DE08897AE81EB3648FCECD1BD0A8673221BB54B46F2D77E7250C96303C"
+  },
+  "figures": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\k5_long5_r1_history.png",
+      "sha256": "5ED48AE118A26FF23FEE48C063A8E070F614655AAA5A4DD7775574C1079CFC58"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\k5_long5_r1_profiles.png",
+      "sha256": "1F2A8EA18826BA83D914AF5F769DEF5788FF5EB15254A683E99CF7069FB84363"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\k5_long5_r1_half.png",
+      "sha256": "22AF84A337CB47B031D7D7EBE6475C9CD987363D437C6DD9ED9B4A62B0A2C560"
+    }
+  ],
+  "theory_sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\support\\release_case.py",
+      "sha256": "D6948D4FB2CF2FD665AAE3BDCE1487F125B3899BDCB50BD2426B979E94221716"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\support\\compare_precision_q0.py",
+      "sha256": "C5840F2F8E9CB39ACC8458789B3C2E01B60E48FDFA3C464B647C418E72E3268F"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\support\\postprocess_terzaghi_q0.py",
+      "sha256": "D9AF9028404011A7DAB75D467CE45AD18AE1FF21D0350AE661E3CC27CBDB1B2A"
+    }
+  ],
+  "findings": [
+    "All three PNGs inspected: readable units, actual time and initial-material coordinates, distinct coarse/half/theory styles; no clipped curves or legends.",
+    "Pressure profiles closely follow classical reference; top settlement has about +0.9 percent bias. Bottom material retains an extra about 0.000025 mm, not whole-wall drift.",
+    "Q decreases to about 2.2 Pa through 15 s; upper-layer stress variation is visible and has not been declared eliminated.",
+    "All 15001 half pairs shown; initial .011-s peak remains below 5 Pa. History curves are explicitly subsampled, not a second full native replay."
+  ],
+  "scope": "Uniform elastic periodic cell, Tv about .041; not full-cycle acceptance."
+}
