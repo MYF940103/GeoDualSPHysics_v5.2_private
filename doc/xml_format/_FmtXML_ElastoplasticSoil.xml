@@ -78,6 +78,9 @@
 		<parameters>
 			<!-- Stress state/history: CPU and GPU double. G1 storage/PART checks and case-02 k=1e-4 same-physics CPU/GPU 2Tv passed; this is not general plastic-flow validation. -->
 			<!-- CPU/GPU save the native terminal step when TimeMax or NstepsBreak is reached, even between TimeOut events; this output-only condition does not change dt or integration. -->
+			<!-- Consolidation output: TimeOut (seconds) = DeltaTv*H^2/Cv, Cv=k*M/(rho_w*g), M=E*(1-nu)/((1+nu)*(1-2*nu)); use positive reference g even in a no-gravity surcharge test. -->
+			<!-- Case-02 DeltaTv=.005 gives TimeOut=.0182185714285714/.182185714285714/1.82185714285714 s for k=1e-3/1e-4/1e-5; this changes saving only, not DtFixed. -->
+			<!-- Default saving is anchored at t=0, not drainage tD; compare theory at actual Tv=Cv*(t-tD)/H^2. Retain dense startup diagnostics separately; existing results keep their original cadence. -->
 			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
 			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
 			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->

@@ -6,7 +6,9 @@
 
 前两组完整2Tv的新图与配套数据统一从[figures/README.md](figures/README.md)进入：`full_validation_latest_history.png`、两组`full_validation_latest_profiles_k1em*.png`、新增`full_validation_latest_late_profiles.png`及残差诊断图。历史发布数据每组恢复按目标ΔTv=.005整理401个真实原生帧，保留目标/实际Tv、实际时刻和PART编号，未插值或重算。1.5Tv和2Tv原本已有，新晚期图将Tv=1、1.5、2拆成独立面板，避免全尺度下难以分辨。k=1e-5未完成，不混入正式对比。旧`full_validation_q0_*`与冻结验收图保留；旧`k5em4`是5e-4，不能当作本次1e-5。
 
-XML的TimeOut始终以秒为单位。当前根XML为.001/.01/.1 s，均等价于ΔTv约.000274445，而非.005；本次仅更新图/发布CSV，不改变原生保存频率和运行中的测试。ΔTv=.005对应三组间隔为.0182185714285714/.182185714285714/1.82185714285714 s，积分dt不受该换算影响。旧401帧对应ΔTv≈.005，上一版发布误写为.01现已修正；旧发布已保存快照，完整定义见上述索引。
+XML的TimeOut始终以秒为单位。根目录三份正式XML现已恢复ΔTv=.005，对应k=1e-3/1e-4/1e-5的TimeOut分别为.0182185714285714/.182185714285714/1.82185714285714 s，CPU/GPU BAT均读取同一份XML，无须修改BAT。积分dt、TimeMax及其他物理/数值参数未变。k=1e-3和1e-4已完成，不为改变保存间隔重跑；其保留结果仍分别为.001/.01 s密采样，生成XML和图表来源记录不改写。正在运行的k5使用独立tests配置，本轮不改变其保存频率。旧401帧对应ΔTv≈.005，上一版发布误写为.01现已修正；旧发布已保存快照，完整定义见上述索引。
+
+单设TimeOut恢复的是间隔，并非将每帧锚定于排水后的Tv=0：默认保存网格从物理t=0起算，而Tv=Cv(t-.01)/H²；实际保存还受积分步长落点影响。没有为此新增special/timeout，比较仍用实际时刻计算Tv，不将帧号当精确Tv。加载/排水初期安全门继续以保留的密采样诊断为依据，不用新的稀疏发行输出替代。
 
 “固定格点排水”指固定时间步网格上的排水开启时刻对齐，只在tD恰落于N*dt且存在累计舍入误差时避免晚开一步，不是空间网格，不改变排水位置/p=0或输出频率。
 
@@ -36,20 +38,20 @@ k=1e-5必须单独完成2Tv，不能由前两组代替验收。原`formal_releas
 
 据此另准入新鲜`tests/configs/k5_full_r1_Def.xml`及`xk5_full_r1_win64_GPU.bat`完整周期，输出在`tests/outputs/k5_full_r1`；冻结dp=.003125、宽.025、固定5微秒及原参数/安全门，145750572步。前15 s保存1 ms、之后.1 s，仅导出末帧particles，原生BI4均保留。控制与进程见`tests/logs/k5_full_r1.status.json`，单次终态自动回同会话。粗步实测速度外推约9.02天，不是完成承诺；普通PART不能精确续接HG，需机器持续运行。单元缩窄仍只具均匀一维短窗等价证据，不推广为一般滑坡/长横向波长验证。正式XML/BAT保持旧状态，只有完整复核通过后才另行发布新k5，根目录原失败输出不覆盖。详见`tests/notes/formal_release_r1.md`和`logs/k5_full_admission_r1.json`；图在`tests/figures/k5_long5_r1_{history,profiles,half}.png`，旧失败图保留。
 
-根目录所有既有输入位置和历史`*_out`保持原位，包括网格细化、precision和double历史输出。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
+根目录历史XML和所有`*_out`保持原位，包括网格细化、precision和double历史输出。用户于2026-10-21授权清理后，仅将旧k1e-2、precision、double三个退役CPU BAT原样移至`tests/outputs/retired_root_inputs_r1`，避免根目录误点；不是删除结果。三个旧XML有历史生成脚本/恢复依赖或配对记录，暂不移动。归档BAT相对路径仍按原case根设计，不应在归档目录双击；用途与恢复说明见该目录README。当前三组正式XML及六份CPU/GPU BAT仍在根目录。更新前的两组正式XML/CPU BAT及本索引已另存`tests/outputs/formal_inputs_base_r1`；历史数据以各自`Run.out`、生成XML和版本记录确定来源，不能用当前更新后的根目录XML解释旧结果。
 
-**本次更新的三组CPU/GPU BAT没有删除路径。旧k=1e-2等未更新历史BAT可能仍含覆盖确认或`-force`，不要用它们试跑或覆盖保留结果。临时验证仍放在`tests`分类目录。**
+**当前三组CPU/GPU BAT没有删除路径。含覆盖确认/`-force`的旧k=1e-2 BAT已移出根目录原样归档，不要用它试跑或覆盖保留结果。临时验证仍放在`tests`分类目录。**
 
 ## 原位退役的精度试验
 
 | 分组 | 状态及处理 |
 |---|---|
-| 根目录 `full_k1em4_precision` XML/BAT/out | 高低位孔压累计补偿的历史完整 2Tv 结果；已退役。BAT 禁止新计算，仅保留 `-postprocess` 后处理入口 |
-| 根目录 `full_k1em4_double` XML/BAT/out | double 状态历史部分结果；停止于 Part84、15.303610 s、1,530,361 步，不是完整 2Tv |
+| `full_k1em4_precision` | 高低位孔压累计补偿的历史完整2Tv结果；已退役。XML/out仍在根目录，BAT原样归档至`tests/outputs/retired_root_inputs_r1` |
+| `full_k1em4_double` | double状态历史部分结果；停止于Part84、15.303610 s、1,530,361步，不是完整2Tv。XML/out仍在根目录，BAT同上归档 |
 | `tests` 中 `pore_double_stage1` / `pore_double_vel0` | 历史短程迁移和步长敏感性检查，不能证明完整固结精度提高；严格压力审查曾有未通过项 |
 | `tests` 中 `upw_float_restore` | 当前 float 回退验收证据，保留为基线，不归为 double 退役输出 |
 
-precision 完整结果仍有晚期孔压平台，详见 [对比报告](figures/precision_q0_k1em4_report.md)。double 未完成，不能据此宣称完整过程改善或有效加速。现有 double BAT 自带冻结程序/源码检查；当前 float 程序不满足它的运行条件。本次不修改该 BAT，也不把 double/补偿检查点交给 float 续算。
+precision完整结果仍有晚期孔压平台，详见[对比报告](figures/precision_q0_k1em4_report.md)。double未完成，不能据此宣称完整过程改善或有效加速。归档double BAT自带冻结程序/源码检查；当前float程序不满足它的运行条件。本次仅移动BAT、不改其字节，也不把double/补偿检查点交给float续算。归档BAT不能在新目录直接运行，恢复说明见归档README。
 
 历史 [precision 运行说明](support/precision_q0_k1em4.md) 保留原文，其中“正式入口”等表述对应当时版本；当前状态以本索引为准。回退范围及验收见 [upw_float_restore.md](tests/notes/upw_float_restore.md)。
 
