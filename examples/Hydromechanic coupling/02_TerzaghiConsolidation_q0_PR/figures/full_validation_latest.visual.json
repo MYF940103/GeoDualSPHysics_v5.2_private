@@ -1,14 +1,18 @@
 {
   "inspected": true,
-  "reviewed_utc": "2026-10-21T07:52:22.051402+00:00",
-  "publication": {
+  "generated_utc": "2026-10-21T08:04:38.427372+00:00",
+  "check": {
     "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_latest.check.json",
-    "sha256": "d1e64db6321e3c2678810e2fbe937eb393a5ea69342e0dc902eb5c1b9a3820e3"
+    "sha256": "b6f8923dc5f6f7d75252307ea359ae4d13358152c1aca26105d35e6f47f977a3"
   },
   "figures": [
     {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_latest_late_profiles.png",
+      "sha256": "f826f13abbf92377b795797556844417732c6c4148d15832be0c62a0ff3a2632"
+    },
+    {
       "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_latest_history.png",
-      "sha256": "a2242239d29bd460d8fbb124b7996924894ea50b5d2cd2ff1f387a0d55616dc9"
+      "sha256": "47de3497e13b4cfbda9fe12a7d06be17026bf7ae24d0b0ab1dafc846caf07ad1"
     },
     {
       "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_latest_profiles_k1em3.png",
@@ -20,16 +24,29 @@
     },
     {
       "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_latest_diagnostics.png",
-      "sha256": "b324616e4094422a35ba3d54d43efd2ceb8b0f51eb91734040c4f63dcf46decc"
+      "sha256": "262e29361a699fc656f35d8d115e59fc6642a0d37ec7a5e3b30631d319bb86e9"
     }
   ],
-  "checks": [
-    "All four final PNGs inspected: readable labels/units, actual Tv axes, exact final Tv shown, no clipped curve or legend.",
-    "Profile legend moved outside the data rectangle after initial visual inspection; previous layout snapshot retained.",
-    "Two history tables have 201 distinct real native frames each; target/actual Tv, actual time and PART numbers retained; no SPH interpolation.",
-    "For each k, all 700 overlapping material-layer pressure and theory values are bit-identical to the previous accepted profile CSV.",
-    "Publication source/output hashes verified; full-history numerical acceptance is inherited, not rerun by the plotting script."
+  "numeric_checks": [
+    {
+      "case": "k1em3",
+      "history_rows": 401,
+      "native_saved_fields_exact": true,
+      "old_201_rows_exact_subset": true
+    },
+    {
+      "case": "k1em4",
+      "history_rows": 401,
+      "native_saved_fields_exact": true,
+      "old_201_rows_exact_subset": true
+    }
   ],
-  "xml_bat_solver_source_modified": false,
-  "active_k5_input_modified": false
+  "profile_data_byte_identical_to_prior": true,
+  "late_profiles_exact_subset": true,
+  "late_profile_panels": "2 k rows x 3 Tv columns (1,1.5,2); Pa; common scales within columns, independent across times; legend outside curves",
+  "notes": [
+    "All five PNGs inspected; visible curves, titles, actual times, legends, units and limits.",
+    "Only late PNG changed after initial inspection; final late PNG re-inspected.",
+    "No solver rerun, native output, formal input or production source modification."
+  ]
 }

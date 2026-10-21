@@ -1,4 +1,4 @@
-"""Publish accepted k1e-3/k1e-4 figures and real-frame data at target DeltaTv=.01.
+"""Publish accepted k1e-3/k1e-4 figures and real-frame data at target DeltaTv=.005.
 
 Read-only with respect to solver outputs, frozen release reviews and inputs.
 No interpolation of SPH states; target/actual time and native PART are retained.
@@ -6,6 +6,7 @@ No interpolation of SPH states; target/actual time and native PART are retained.
 import hashlib
 import argparse
 import json
+from io import BytesIO
 from pathlib import Path
 import numpy as np
 import pandas as pd
@@ -18,6 +19,7 @@ from postprocess_terzaghi_q0 import degree_theory
 FIG = CASE/"figures"
 PREFIX = "full_validation_latest"
 TARGETS = (.005, .05, .1, .25, .4, .5, .7, 1., 1.5, 2.)
+HISTORY_TV = np.arange(401)/200
 READER = REPO/"bin/windows/ReadHydroMechPart_win64.exe"
 
 
@@ -59,7 +61,7 @@ def load(key):
             assert np.isclose(r[k],h.iloc[i][k],rtol=1e-12,atol=1e-11),k
         return a
     selected=[]
-    for target in np.arange(201)/100:
+    for target in HISTORY_TV:
         wanted=m["tD"]+target*m["H"]**2/m["cv"]
         i=int(abs(h.time_s-wanted).idxmin())
         r=h.iloc[i].to_dict()
@@ -75,7 +77,7 @@ def load(key):
         r["bottom_theory_error_mm"]=r["bottom_settlement_mm"]-r["classical_bottom_mm"]
         selected.append(r)
     sampled=pd.DataFrame(selected)
-    assert sampled.native_part.is_unique and len(sampled)==201
+    assert sampled.native_part.is_unique and len(sampled)==len(HISTORY_TV)
     assert abs(sampled.actual_tv-sampled.target_tv).max()<=m["cv"]*float(h.time_s.diff().max())/2+1e-6
     frame(int(sampled.iloc[0].native_part));frame(int(sampled.iloc[-1].native_part))
     profiles=[];targets=[];states={}
@@ -90,14 +92,14 @@ def load(key):
         targets.append(dict(case=key,k_m_s=m["k"],target_tv=target,actual_tv=tv,time_s=float(a.time_s.iloc[0]),native_part=i,
             profile_rmse_pa=float(np.sqrt(np.mean((p-truth)**2)))))
     final=sampled.iloc[-1]
-    summary=dict(case=key,k_m_s=m["k"],native_frames=len(h),published_history_rows=201,actual_time_s=float(final.time_s),
+    summary=dict(case=key,k_m_s=m["k"],native_frames=len(h),published_history_rows=len(HISTORY_TV),actual_time_s=float(final.time_s),
         actual_tv=float(final.actual_tv),mean_pressure_pa=float(final.mean_pressure_pa),top_settlement_mm=float(final.top_settlement_mm),
         classical_top_mm=float(final.classical_top_mm),top_settlement_error_pct=float(100*(final.top_settlement_mm/final.classical_top_mm-1)),
         final_profile_rmse_pa=targets[-1]["profile_rmse_pa"],Q_pa=float(final.Q_pa),
         max_abs_target_tv_offset=float(abs(sampled.actual_tv-sampled.target_tv).max()))
     cadence=dict(case=key,k_m_s=m["k"],solver_dt_s=m["dt"],native_interval_s=float(h.time_s.diff().median()),
-        native_delta_tv=float(h.tv.diff().median()),published_target_delta_tv=.01,
-        future_timeout_s_for_delta_tv_point01=.01*m["H"]**2/m["cv"])
+        native_delta_tv=float(h.tv.diff().median()),published_target_delta_tv=.005,
+        timeout_s_for_delta_tv_point005=.005*m["H"]**2/m["cv"])
     return dict(key=key,model=m,history=sampled,profiles=pd.DataFrame(profiles),targets=targets,
         states=states,z0=z0,summary=summary,cadence=cadence,evidence=evidence)
 
@@ -105,16 +107,27 @@ def load(key):
 def main():
     parser=argparse.ArgumentParser(description=__doc__)
     parser.add_argument("--repair-layout",action="store_true")
+    parser.add_argument("--refresh",action="store_true",help="Replace latest publication only after its complete verified snapshot")
+    parser.add_argument("--snapshot",help="Prior publication snapshot name under tests/outputs")
     args=parser.parse_args()
+    replace=args.repair_layout or args.refresh
+    assert not (args.repair_layout and args.refresh)
     check_path=FIG/(PREFIX+".check.json")
     previous=[]
     if check_path.exists():
         prior=json.loads(check_path.read_text(encoding="utf8"))
-        assert args.repair_layout and prior["visual_review_pending"]
-        assert not (FIG/(PREFIX+".visual.json")).exists(),"Preserve visually approved publication"
+        assert replace,"Existing publication requires explicit refresh or layout repair"
         for item in prior["outputs"]:assert bound(item["path"])["sha256"]==item["sha256"]
-        snapshot=CASE/"tests/outputs/latest_figures_layout_r1"
+        snapshot=CASE/"tests/outputs"/(args.snapshot or ("latest_figures_tv01_before_r1" if args.refresh else "latest_figures_layout_r1"))
         assert (snapshot/check_path.name).is_file()
+        assert bound(snapshot/check_path.name)["sha256"]==bound(check_path)["sha256"]
+        if args.refresh:
+            for item in prior["outputs"]:
+                assert bound(snapshot/Path(item["path"]).name)["sha256"]==item["sha256"]
+            visual=FIG/(PREFIX+".visual.json")
+            assert bound(snapshot/visual.name)["sha256"]==bound(visual)["sha256"]
+        else:
+            assert prior["visual_review_pending"] and not (FIG/(PREFIX+".visual.json")).exists()
         previous=[bound(p) for p in snapshot.iterdir() if p.is_file()]
     accepted_path=CASE/"tests/logs/formal_release_k34_r1.review.json"
     accepted=json.loads(accepted_path.read_text(encoding="utf8"));assert accepted["passed"]
@@ -123,8 +136,8 @@ def main():
         Path(__file__).with_name("compare_precision_q0.py"),Path(__file__).with_name("postprocess_terzaghi_q0.py"),accepted_path)]
     outputs=[]
     def csv(name,data):
-        path=FIG/(PREFIX+name+".csv");assert args.repair_layout or not path.exists()
-        pd.DataFrame(data).to_csv(path,index=False,mode="w" if args.repair_layout else "x");outputs.append(path)
+        path=FIG/(PREFIX+name+".csv");assert replace or not path.exists()
+        pd.DataFrame(data).to_csv(path,index=False,mode="w" if replace else "x");outputs.append(path)
     csv("_history_data",pd.concat([r["history"] for r in runs],ignore_index=True))
     csv("_profiles_data",pd.concat([r["profiles"] for r in runs],ignore_index=True))
     csv("_targets",[row for r in runs for row in r["targets"]])
@@ -134,8 +147,10 @@ def main():
     colors=("#256da3","#c47725");styles=("-","--")
     def finish(fig,suffix,note,top=.94):
         fig.text(.5,.012,note,ha="center",fontsize=9)
-        fig.tight_layout(rect=(0,.045,1,top));path=FIG/(PREFIX+suffix+".png");assert args.repair_layout or not path.exists()
-        with path.open("wb" if args.repair_layout else "xb") as stream:fig.savefig(stream,dpi=180)
+        fig.tight_layout(rect=(0,.045,1,top));path=FIG/(PREFIX+suffix+".png");assert replace or not path.exists()
+        buffer=BytesIO();fig.savefig(buffer,dpi=180);rendered=buffer.getvalue()
+        if not path.exists() or path.read_bytes()!=rendered:
+            with path.open("wb" if replace else "xb") as stream:stream.write(rendered)
         plt.close(fig);outputs.append(path)
     fig,axes=plt.subplots(2,2,figsize=(12,8))
     for r,color,style in zip(runs,colors,styles):
@@ -158,7 +173,7 @@ def main():
     axes[1,0].set_ylim(0,1.03);axes[1,1].set_ylim(0,4)
     axes[0,0].legend(fontsize=9);axes[1,1].legend(fontsize=9)
     fig.suptitle("Accepted 2Tv runs: pore-pressure dissipation and material settlement")
-    finish(fig,"_history","Publication target spacing DeltaTv=.01; nearest real native frames, no SPH interpolation. k=1e-5 is not included.")
+    finish(fig,"_history","Publication target spacing DeltaTv=.005; nearest real native frames, no SPH interpolation. k=1e-5 is not included.")
     fig,axes=plt.subplots(2,2,figsize=(12,8))
     for r,color,style in zip(runs,colors,styles):
         h=r["history"];post=h[h.time_s>=.1-1e-7];label=f"k={r['model']['k']:g} m/s"
@@ -191,15 +206,35 @@ def main():
         finish(fig,"_profiles_"+r["key"],"Solid lines: classical theory at actual saved Tv; hollow circles: native SPH. Finite Kw / ramp / moving particles differ from ideal theory.",top=.83)
         csv("_profiles_wide_"+r["key"],wide);csv("_theory_curves_"+r["key"],theory_rows)
         evidence+=r["evidence"]
+    fig,axes=plt.subplots(2,3,figsize=(13,8),sharey=True)
+    for col,target in enumerate((1.,1.5,2.)):
+        maxima=[]
+        for row,(r,color) in enumerate(zip(runs,colors)):
+            ax=axes[row,col];p,truth,tv,t=r["states"][target];m=r["model"];z=np.linspace(0,1,201)
+            analytic=pressure_theory(z*m["H"],tv,m)
+            ax.plot(analytic,z,color=".2",lw=1.5,label="Classical theory")
+            ax.plot(p,r["z0"]/m["H"],"o",color=color,mfc="none",ms=3,label="Native SPH")
+            ax.set(title=f"k={m['k']:g} m/s | target Tv={target:g}",xlabel="Pore pressure (Pa)",ylim=(0,1))
+            if col==0:ax.set_ylabel("Initial material height z0/H")
+            ax.grid(alpha=.22)
+            ax.text(.96,.96,f"Actual Tv={tv:.6f}\nt={t:.6f} s\nRMSE={np.sqrt(np.mean((p-truth)**2)):.3f} Pa",
+                transform=ax.transAxes,ha="right",va="top",fontsize=9)
+            maxima.append(max(float(p.max()),float(analytic.max())))
+        for ax in axes[:,col]:ax.set_xlim(0,max(maxima)*1.08)
+    handles,labels=axes[0,0].get_legend_handles_labels()
+    fig.legend(handles,labels,loc="upper center",bbox_to_anchor=(.5,.945),ncol=2,frameon=False,fontsize=10)
+    fig.suptitle("Late-time pressure profiles: Tv=1, 1.5 and 2 (one time per column)")
+    finish(fig,"_late_profiles","Same pressure scale within each column; different scales across times. Native layers, no SPH interpolation.")
+    csv("_late_profiles_data",pd.concat([r["profiles"][r["profiles"].target_tv>=1] for r in runs],ignore_index=True))
     check=dict(generated_utc=pd.Timestamp.now(tz="UTC").isoformat(),publication_verified=True,visual_review_pending=True,
-        solver_rerun=False,production_or_inputs_modified=False,history_target_delta_tv=.01,
-        history_selection="201 nearest real saved frames per k, Tv=0 chooses tD rather than unloaded t=0; no SPH interpolation",
+        solver_rerun=False,production_or_inputs_modified=False,history_target_delta_tv=.005,
+        history_selection="401 nearest real saved frames per k, Tv=0 chooses tD rather than unloaded t=0; no SPH interpolation",
         accepted_source_review=bound(accepted_path),sources_verified_by_hash=True,native_profile_checks_per_case=10,
         cases=[r["summary"] for r in runs],cadence=[r["cadence"] for r in runs],outputs=[bound(p) for p in outputs],
-        evidence=list({b["path"]:b for b in evidence}.values()),previous_layout_snapshot=previous,
+        evidence=list({b["path"]:b for b in evidence}.values()),previous_publication_snapshot=previous,
         limitations=["No k1e-5 full-cycle result is present.","Elastic fixed-plane fresh HG scope, no full-cycle half-step or exact-HG-restart claim.",
             "Original dense native histories and original frozen figures/checks remain unchanged.","Formal XML TimeOut and the running k5 input have not been changed by this publication."])
-    with check_path.open("w" if args.repair_layout else "x",encoding="utf8") as stream:json.dump(check,stream,indent=2,allow_nan=False)
+    with check_path.open("w" if replace else "x",encoding="utf8") as stream:json.dump(check,stream,indent=2,allow_nan=False)
     print(json.dumps({k:check[k] for k in ("publication_verified","solver_rerun","cases","cadence")},indent=2))
 
 
