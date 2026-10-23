@@ -1,0 +1,110 @@
+{
+  "passed": true,
+  "visual_inspected": true,
+  "utc": "2026-10-23T03:29:57.010657+00:00",
+  "full_admitted": false,
+  "all_301_samples": true,
+  "maxima": {
+    "half_pressure_rms_pa": 4.214917864652555,
+    "half_settlement_mm": 0.00018583172041175544,
+    "cpu_gpu_pressure_rms_pa": 0.013023197595209349,
+    "cpu_gpu_settlement_mm": 2.2588841908088853e-07,
+    "cpu_gpu_stress_pointwise_pa": 0.009075587778013983
+  },
+  "timings": [
+    {
+      "backend": "CPU8",
+      "variant": "c",
+      "steps": 30000,
+      "loop_seconds": 104.404701,
+      "steps_per_second": 287.34338312984585
+    },
+    {
+      "backend": "GPU0",
+      "variant": "c",
+      "steps": 30000,
+      "loop_seconds": 143.920807,
+      "steps_per_second": 208.44796958371697
+    },
+    {
+      "backend": "CPU8",
+      "variant": "h",
+      "steps": 60000,
+      "loop_seconds": 178.883804,
+      "steps_per_second": 335.41326077792934
+    },
+    {
+      "backend": "GPU0",
+      "variant": "h",
+      "steps": 60000,
+      "loop_seconds": 285.097565,
+      "steps_per_second": 210.45427027761534
+    }
+  ],
+  "gpu_seconds_over_cpu_seconds": 1.5144220977127187,
+  "selected_backend": "cpu",
+  "limits": [
+    "Timings are observed same-physics loop times with monitoring, not perfectly isolated benchmarks.",
+    "Only .3-s half-step evidence; longer stability/accuracy remains pending."
+  ],
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\k5em5_hg05_gpu_review.py",
+      "sha256": "A936DACD870AF5E916E6B9D8DDDD6422B9D27E5604326BBCC6AFBD8C12129085"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\k5em5_hg05_gpu_r1.status.json",
+      "sha256": "9D27374BDB067974AB17DB7531FAD6559B3CE83DE9036DCC904432CABED011BD"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\k5em5_hg05_review_r1.check.json",
+      "sha256": "ECEFD26BAF33FB108116CAC14C2C0F710A54719AD1ECD15DE3164132972E72E6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_r1_c\\Run.out",
+      "sha256": "B252544419123BA0AACD310A72871278AA4B76B2C216A42A9989527348E8B22C"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_r1_c\\Run.csv",
+      "sha256": "E78BB5FBB54E3CFD2663259CDAD71B24353118595EB8E5BD203682F2F29AEDAB"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_gpu_r1_c\\Run.out",
+      "sha256": "7A4156DAFC5AE93601DDFFCB424EB33C83DE4BD4B0AAC74BBDCC90C6E27311CD"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_gpu_r1_c\\Run.csv",
+      "sha256": "1A3539024D4AE1BD851FCAADDEFD3D4D66CF3C634A8688AA8CB6B77F97491B0C"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_r1_h\\Run.out",
+      "sha256": "DF6AC001579D0C97EB22CA8955B8D93C4ADDDD57485F738337F2C5274ED7C134"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_r1_h\\Run.csv",
+      "sha256": "03EF19AD8BEAB0DF28FFF79BED87169DCF7F7ED6414E74239EBF83D99ABC281D"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_gpu_r1_h\\Run.out",
+      "sha256": "5A845E01B1EE525562789AB6A1860287613157411BADB4D3F1AE80F2DD33BC8F"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\k5em5_hg05_gpu_r1_h\\Run.csv",
+      "sha256": "35E6B8704155A3164B43F515CDDD14C635D8729F77574F9A4E655DC0B1B690BB"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\k5em5_hg05_gpu_review_r1.png",
+      "sha256": "85F2085C0AFE1AC667AA94B9812B450D48B103B9F2067FC6534DAAF62388E1AC"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\k5em5_hg05_gpu_review_r1.csv",
+      "sha256": "C8AAD4D4CFEC50AB0B85F55CFD9006612DC64F85998AA0A35032EE00C8629C3C"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\k5em5_hg05_gpu_review_r1.numeric.json",
+      "sha256": "EF21D4FED63EDCF6EEA7D16F4A52588C6B6036EFA21383D195EADC1B3AFDB79E"
+    }
+  ],
+  "visual_review_utc": "2026-10-23T03:32:04.040881+00:00",
+  "visual_notes": "CPU/GPU histories and material profiles visually overlap; axes/units/100-Pa lines/short-window limitations legible. CPU HG strength comparison also inspected; no full-cycle acceptance."
+}

@@ -1,4 +1,29 @@
-# 当前正式图与数据（2026-10-21）
+# 当前三组正式图与数据（2026-10-24）
+
+三组均已完成2Tv并按用户暂时接受的一维弹性孔压/材料沉降范围验收。共同dp=.01 m、宽.1 m；k=1e-3/1e-4使用GPU、xi=.1，k=5e-5使用CPU八线程、xi=.05。不是仅改变k的严格控制实验，也不代表复杂边界、塑性、大转动或全周期半步长验收。旧图及原始输出不改写。
+
+- [三组孔压耗散、晚期放大、材料沉降及误差](full_validation_three_history.png)
+- [三组总应力、顶部应力差、Q及底层偏差](full_validation_three_diagnostics.png)
+- [Tv=1、1.5、2三组独立晚期剖面](full_validation_three_late_profiles.png)
+- 各Tv孔压剖面：[k=1e-3](full_validation_three_profiles_k1em3.png)、[k=1e-4](full_validation_three_profiles_k1em4.png)、[k=5e-5](full_validation_three_profiles_k5em5.png)
+- 数据：[历史表](full_validation_three_history_data.csv)、[剖面长表](full_validation_three_profiles_data.csv)、[实际目标/原生PART](full_validation_three_targets.csv)、[终点/耗时汇总](full_validation_three_summary.csv)、[输入/保存频率元数据](full_validation_three_metadata.csv)
+- 自行绘图宽表：[k=1e-3](full_validation_three_profiles_wide_k1em3.csv)、[k=1e-4](full_validation_three_profiles_wide_k1em4.csv)、[k=5e-5](full_validation_three_profiles_wide_k5em5.csv)
+
+每组历史400行，目标Tv=.005,.010,...,2；10组剖面包含Tv=.005、.05、.1、.25、.4、.5、.7、1、1.5、2。均使用最近真实保存帧、实际Tv和初始原生材料坐标，不插值SPH场。第三组没有排水开启瞬间的正式帧；共同图不拿未加载t=0的零孔压作为初始超孔压。原生402帧仍完整保留，其中包含未加载初态和最后非整间隔帧。最大目标/实际Tv偏差约.00013723。
+
+| k(m/s) | 后端/xi | 2Tv压力剖面RMSE(Pa) | 顶部材料沉降(mm) | 沉降相对理论误差 | 记录主循环(h) |
+|---|---|---:|---:|---:|---:|
+| 1e-3 | GPU / .1 | 2.42883 | 3.657380 | -.45405% | 9.6254 |
+| 1e-4 | GPU / .1 | .88109 | 3.658754 | -.41667% | 9.2079 |
+| 5e-5 | CPU8 / .05 | 1.16019 | 3.658263 | -.43001% | 10.9760 |
+
+耗时对应不同k、步数和输出频率，不作受控CPU/GPU速度结论。k=1e-4为已验生产步进伴随数据的明确发布复用，计时来自其`complete.json`，不是新正式BAT重跑。k=5e-5原生间隔约.3643714 s；旧两组原生间隔分别.001/.01 s，汇总选择间隔约.0182/.1822 s。`metadata.csv`将原生间隔与发布选择间隔分开，当前三组根XML的TimeOut均对应DeltaTv=.005。
+
+第三组完整402帧独立复核、1657条哈希/证据核验及全部原安全门通过。Tv≥.1压力RMSE最大11.24 Pa；Tv=1至2的平均压力剩余比例相对理论差-1.03%，无持续伪平台。Q仍12.45 Pa，底层相对理论偏差.00127465 mm，不能称所有交错/空间应力误差已消除。经典理论未包含.01 s斜坡、有限Kw和移动粒子效应，理论g=9.81与Darcy回退9.80665之差亦未通过调参隐藏。
+
+重绘脚本为`../support/publish_three_permeabilities.py`，无求解器调用，默认保护已验证输出；[数据检查](full_validation_three.check.json)及[六张图审阅](full_validation_three.visual.json)独立记录。新汇总草稿中的原生/发布频率标签已在审阅前修正，旧草稿源/CSV/清单保留于`../tests/outputs/three_metadata_draft_r1`，没有改任何原生场或旧验收清单。后处理还显式兼容了旧清单缺少dp/width元数据以及k1e-4采用伴随计时的来源差异。
+
+## 历史两组发布索引（2026-10-21，以下仅描述当时状态）
 
 当前索引仅包含已接受的k=1e-3、1e-4完整2Tv结果。k=1e-5仍在tests计算，不混入正式完整对比。下列`full_validation_latest`是当前展示入口；原`full_validation_release_*`及其验收哈希保持冻结，旧`full_validation_q0_*`是历史版本。历史图中的`k5em4`表示5e-4，不是本次尚未完成的1e-5。
 

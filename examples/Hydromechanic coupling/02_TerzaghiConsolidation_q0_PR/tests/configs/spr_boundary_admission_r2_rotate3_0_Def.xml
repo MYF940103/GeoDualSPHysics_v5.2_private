@@ -1,0 +1,134 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<case>
+  <casedef>
+    <constantsdef>
+      <gravity x="0" y="0" z="0" comment="No gravity in the manufactured-field fixture" units_comment="m/s^2" />
+      <rhop0 value="2100" comment="Reference density of the saturated soil mixture" units_comment="kg/m^3" />
+      <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+      <gamma value="7" comment="Polytropic constant for water used in the state equation" />
+      <speedsystem value="0" auto="true" comment="Maximum system speed" />
+      <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+      <speedsound value="0" auto="true" comment="Hydromechanics recalculates Cs0 from the soil constrained modulus" />
+      <hdp value="1.8" comment="Smoothing length ratio h/dp" />
+      <cflnumber value="0.2" comment="Coefficient to multiply dt" />
+    </constantsdef>
+    <mkconfig boundcount="240" fluidcount="9" />
+    <geometry>
+      <definition dp="0.01" units_comment="metres (m)">
+        <pointmin x="-0.295" y="-0.295" z="-0.295" />
+        <pointmax x="0.295" y="0.295" z="0.295" />
+      </definition>
+      <commands>
+        <mainlist>
+          <setshapemode>real | bound</setshapemode>
+          <setdrawmode mode="full" />
+          <setmkbound mk="0" />
+          <drawbox>
+            <boxfill>solid</boxfill>
+            <point x="-0.075" y="-0.075" z="-0.025" />
+            <size x="0.15" y="0.15" z="0.02" />
+          </drawbox>
+          <setmkfluid mk="0" />
+          <drawbox>
+            <boxfill>solid</boxfill>
+            <point x="-0.075" y="-0.075" z="0.005" />
+            <size x="0.15" y="0.15" z="0.09" />
+          </drawbox>
+          <shapeout file="" />
+        </mainlist>
+      </commands>
+    </geometry>
+    <initials>
+      <rotateaxis mkbound="0" angle="0" anglesunits="degrees">
+        <axisp1 x="0" y="0" z="0" />
+        <axisp2 x="0" y="1" z="0" />
+      </rotateaxis>
+      <rotateaxis mkfluid="0" angle="0" anglesunits="degrees">
+        <axisp1 x="0" y="0" z="0" />
+        <axisp2 x="0" y="1" z="0" />
+      </rotateaxis>
+    </initials>
+    <motion>
+      <objreal ref="0">
+        <begin mov="1" start="0" />
+        <mvrot id="1" duration="1" anglesunits="degrees">
+          <vel ang="1" />
+          <axisp1 x="0" y="0" z="0" />
+          <axisp2 x="0" y="1" z="0" />
+        </mvrot>
+      </objreal>
+    </motion>
+  </casedef>
+  <execution>
+    <special>
+      <initialize>
+        <boundnormal_plane mkbound="0">
+          <point x="0" y="0" z="0" />
+          <normal x="0" y="0" z="1" />
+          <maxdisth v="2" comment="Maximum wall distance is H*maxdisth" />
+          <clear v="true" comment="Use the explicitly defined fixed plane" />
+        </boundnormal_plane>
+      </initialize>
+      <soils>
+        <phi value="33" comment="Friction angle" />
+        <coh value="100e3" comment="High cohesion to keep the fixture elastic" />
+        <dlt value="0" comment="Dilatancy angle" />
+        <ModulusE value="2e6" comment="Young's modulus from the case-02 verification" units_comment="Pa" />
+        <PRvs value="0.3" comment="Poisson ratio from the case-02 verification" />
+      </soils>
+      <hydromechanics>
+        <HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation" />
+        <PoreWaterRho value="1000" comment="Reference pore-water density" units_comment="kg/m^3" />
+        <PoreWaterBulkModulus value="2e8" comment="Pore-water bulk modulus Kw" units_comment="Pa" />
+        <Porosity value="0.3" comment="Constant porosity n" />
+        <HydraulicConductivity value="1e-4" comment="Constant hydraulic conductivity" units_comment="m/s" />
+        <PoreDtSafety value="1" comment="Retained pore-pressure time-step safety" />
+        <PoreShepardRegularization value="0" comment="No Shepard pressure regularization" />
+        <PoreMdbcInterpolationMode value="0" comment="Retained zero-order pore-wall mode; derivative velocity is tested separately" />
+        <PoreCompressionSourceMode value="PairDivergence" comment="Pairwise velocity-divergence compression source" />
+        <PoreCompressionGradCorr value="1" comment="Correct pore-compression gradients" />
+        <HydroMechInitMode value="0" comment="Manufactured fields are assigned by the separate test fixture" />
+        <HydroMechTopLoadMode value="0" comment="No external top load" />
+        <HydroMechTopLoadQ0 value="0" comment="No external traction" units_comment="Pa" />
+        <HydroMechDrainage value="0" comment="No drainage boundary in the operator test" />
+        <HydroMechDrainageFixedGrid value="0" comment="No loading/drainage event" />
+      </hydromechanics>
+    </special>
+    <parameters>
+      <parameter key="SavePosDouble" value="1" comment="Retain double particle positions" />
+      <parameter key="DPCtes" value="1" comment="3 for 2D plane strain; generated 3D variants use 1" />
+      <parameter key="Boundary" value="2" comment="Boundary method: mDBC" />
+      <parameter key="SlipMode" value="2" comment="Generated modes: 1=Vel0, 2=NoSlip, 3=FreeSlip" />
+      <parameter key="NoPenetration" value="0" comment="NoPen is outside this fixed-plane fixture" />
+      <parameter key="StepAlgorithm" value="2" comment="Symplectic allocation path; this preparation does not run the solver" />
+      <parameter key="Kernel" value="2" comment="Wendland kernel" />
+      <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+      <parameter key="Visco" value="0.1" comment="Retained case-02 artificial-viscosity coefficient" />
+      <parameter key="ViscoBoundFactor" value="1" comment="Boundary viscosity multiplier" />
+      <parameter key="ArtificialStress" value="0" comment="No artificial stress" />
+      <parameter key="SoilStressRateGradCorr" value="1" comment="Correct soil stress-rate velocity gradients" />
+      <parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Vector derivative reconstruction candidate; unsupported modes must not be reported as passed" />
+      <parameter key="SoilHourglassXi" value="0" comment="HG disabled; 3D boundary testing is independent of HG support" />
+      <parameter key="SoilDamping" value="0" comment="No soil damping" />
+      <parameter key="SoilDampingCoef" value="0" comment="Unused while soil damping is disabled" />
+      <parameter key="DensityDT" value="0" comment="Density/stress diffusion disabled" />
+      <parameter key="Shifting" value="0" comment="Shifting disabled" />
+      <parameter key="RigidAlgorithm" value="1" comment="No moving or floating bodies" />
+      <parameter key="FtPause" value="0" comment="No floating warmup" units_comment="seconds" />
+      <parameter key="CoefDtMin" value="0.001" comment="Retained minimum time-step coefficient" />
+      <parameter key="DtIni" value="0.00001" comment="Allocation-compatible initial step; no time integration is requested" units_comment="seconds" />
+      <parameter key="DtMin" value="0.00000001" comment="Minimum time step" units_comment="seconds" />
+      <parameter key="DtFixed" value="0.00001" comment="Inactive in a no-step manufactured-field test" units_comment="seconds" />
+      <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT" />
+      <parameter key="TimeMax" value="0.00001" comment="Placeholder only; this BAT never starts a solver" units_comment="seconds" />
+      <parameter key="TimeOut" value="0.00001" comment="Placeholder output interval" units_comment="seconds" />
+      <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of the domain" units_comment="decimal" />
+      <parameter key="RhopOutMin" value="700" comment="Minimum valid mixture density" units_comment="kg/m^3" />
+      <parameter key="RhopOutMax" value="3000" comment="Maximum valid mixture density" units_comment="kg/m^3" />
+      <simulationdomain comment="Includes the rotated fixed-plane patch">
+        <posmin x="default" y="default" z="default" />
+        <posmax x="default" y="default" z="default" />
+      </simulationdomain>
+    </parameters>
+  </execution>
+</case>

@@ -1,0 +1,1049 @@
+{
+  "passed": false,
+  "utc": "2026-10-23T20:14:08.144527+00:00",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\spr_boundary_admission.py",
+      "sha256": "F2B92E1AB94A4C73EF1D2CB694EF7212D13B1E3C66FE34607EE5B3914D146CA8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\mdbc_plane_prepare.py",
+      "sha256": "D93524F24716BC8EA7328B38A83F8B1E3096C89414581F66A0249542010B99A6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\CaseMdbcPlane_Def.xml",
+      "sha256": "46D9E08BC0C92D57A08F7F4ACD05F6E4A32D55A2C25F8259D818DF0C22864FC1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+      "sha256": "982146730567B11AB05040874F910AE8FEEC7718EDBCC2C28F9319C7C96D8339"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "sha256": "A7152583CA853D6C4D095D4BCD86B264B9A857FDF573FE810CAD7BD9357B5BB2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "sha256": "97E8DDD93A4BF39AB480B3F7B85A74F867E99B978BEE8878040EF0BCA34484DC"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "sha256": "F2E3A38EA303C8791833263505F634E40AD38F65479B96FDFE351D35C31A3C69"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+      "sha256": "F2F4CD8ED3E6CEA4A1922D64F916369AADE0A15DF4168344EDFE66C6EFD66C14"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+      "sha256": "71A2505AE9BA7BD7297BF64053E70EFF4471AB943CA0C804800D4DAEEAB592EC"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+      "sha256": "84D1D64EE9B822A9B9A0EA596E1DFFAA42F41187FC4A14B3E13ECFDB7BDDC787"
+    }
+  ],
+  "runs": [
+    {
+      "case": "plane2",
+      "spr": 0,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_0_Def.xml",
+        "sha256": "FB420AF17FA003FF07E7F90F3F1650C850622E7A48D824CB1A5C590963D7F2B1"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_input\\spr_boundary_admission_r1_plane2_0",
+          "-save:all"
+        ],
+        "pid": 24096,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_0.gencase.log",
+          "sha256": "E4B912ADD483A1BCF7480C0E4E0B52D0D3DD1739D8BDED5D7C85E4828F1057CB"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_input\\spr_boundary_admission_r1_plane2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 56760,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_0_cpu.log",
+        "sha256": "8947E8D39301496AE6551C32D7B950DB05E369683C3BDBE083F8458FBA0F0D43"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\CfgInit_Domain.vtk",
+          "sha256": "32C7C8F5348925D1CD82F8D692A9BFED989EC93EFACF199D4A5219AFB3AE83E0"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "290D1E51E7F20C02543BF7129A6FBFDB8F3B563B99C645AB879A1B0C3D977C51"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\CfgInit_Normals.vtk",
+          "sha256": "5EF466BAD361EA9EEB0B54DC10B91FF94C1B2345B80511FCFA48865B35B69043"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C3CDED38F8E04A296FA1B6FF7F1601F6B3829673E9606FD7488687F501635968"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\Run.csv",
+          "sha256": "97A1136703ABB829988F2F6841FEB2B175540A84A5271BDB10BB3AD1C39D815B"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_cpu\\Run.out",
+          "sha256": "5CBC53CC4AAA8FAC9600BF9A931631D1AB384C625E05B34292F4344806035491"
+        }
+      ]
+    },
+    {
+      "case": "plane2",
+      "spr": 0,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_0_Def.xml",
+        "sha256": "FB420AF17FA003FF07E7F90F3F1650C850622E7A48D824CB1A5C590963D7F2B1"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_input\\spr_boundary_admission_r1_plane2_0",
+          "-save:all"
+        ],
+        "pid": 24096,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_0.gencase.log",
+          "sha256": "E4B912ADD483A1BCF7480C0E4E0B52D0D3DD1739D8BDED5D7C85E4828F1057CB"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_input\\spr_boundary_admission_r1_plane2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 22328,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_0_gpu.log",
+        "sha256": "5B6B3C8C888535287B4567C3DF281DD2D1CBFB001092CB92F7495B72BC1B3F2F"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\CfgInit_Domain.vtk",
+          "sha256": "32C7C8F5348925D1CD82F8D692A9BFED989EC93EFACF199D4A5219AFB3AE83E0"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "290D1E51E7F20C02543BF7129A6FBFDB8F3B563B99C645AB879A1B0C3D977C51"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\CfgInit_Normals.vtk",
+          "sha256": "5EF466BAD361EA9EEB0B54DC10B91FF94C1B2345B80511FCFA48865B35B69043"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C3CDED38F8E04A296FA1B6FF7F1601F6B3829673E9606FD7488687F501635968"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\Run.csv",
+          "sha256": "A26A7C6B91F190A268FC5A19FEDDAEF80F749BDBD7CEEFAE10D94F7E71E50ACE"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_0_gpu\\Run.out",
+          "sha256": "AF69F2EFFD81238F27E3B5C1A0D67F0FC83C42743052350C97BA90F3D3FB4362"
+        }
+      ]
+    },
+    {
+      "case": "plane2",
+      "spr": 1,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_1_Def.xml",
+        "sha256": "07ACA6F8B1BD4D7611F32560F0A6AEE1F9D181D43E5E43D4B9EBE54CA62FDFBE"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_input\\spr_boundary_admission_r1_plane2_1",
+          "-save:all"
+        ],
+        "pid": 10876,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_1.gencase.log",
+          "sha256": "8CC32F9B14BB20352FE581573F3EC70D920351965721EBEFF9DA2F5F85D74977"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_input\\spr_boundary_admission_r1_plane2_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 17872,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_1_cpu.log",
+        "sha256": "8FAFC9D7CF843F2E30C9A19175A58B23A86C28CB48F4AD4B4EE96BB623BE2943"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\CfgInit_Domain.vtk",
+          "sha256": "32C7C8F5348925D1CD82F8D692A9BFED989EC93EFACF199D4A5219AFB3AE83E0"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "290D1E51E7F20C02543BF7129A6FBFDB8F3B563B99C645AB879A1B0C3D977C51"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\CfgInit_Normals.vtk",
+          "sha256": "5EF466BAD361EA9EEB0B54DC10B91FF94C1B2345B80511FCFA48865B35B69043"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C3CDED38F8E04A296FA1B6FF7F1601F6B3829673E9606FD7488687F501635968"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\Run.csv",
+          "sha256": "B5553E72228CF1BE718226CDBAF196FB2D9F8B96DDAA799407EF40B9BE8E4990"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_cpu\\Run.out",
+          "sha256": "43BB287B3E5222222F824DD51DBE1466C0EF01389F080DC5D6129EAAB9C87041"
+        }
+      ]
+    },
+    {
+      "case": "plane2",
+      "spr": 1,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_1_Def.xml",
+        "sha256": "07ACA6F8B1BD4D7611F32560F0A6AEE1F9D181D43E5E43D4B9EBE54CA62FDFBE"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_plane2_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_input\\spr_boundary_admission_r1_plane2_1",
+          "-save:all"
+        ],
+        "pid": 10876,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_1.gencase.log",
+          "sha256": "8CC32F9B14BB20352FE581573F3EC70D920351965721EBEFF9DA2F5F85D74977"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_input\\spr_boundary_admission_r1_plane2_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 27068,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_plane2_1_gpu.log",
+        "sha256": "3A9FAD4FF4B5EA3BF2EBAB39C2361F84F055F46D42AC481A6A4830F3A37C688A"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\CfgInit_Domain.vtk",
+          "sha256": "32C7C8F5348925D1CD82F8D692A9BFED989EC93EFACF199D4A5219AFB3AE83E0"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "290D1E51E7F20C02543BF7129A6FBFDB8F3B563B99C645AB879A1B0C3D977C51"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\CfgInit_Normals.vtk",
+          "sha256": "5EF466BAD361EA9EEB0B54DC10B91FF94C1B2345B80511FCFA48865B35B69043"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C3CDED38F8E04A296FA1B6FF7F1601F6B3829673E9606FD7488687F501635968"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\Run.csv",
+          "sha256": "FCB97A408C62139AA4DC6400A280CC04DE7ED94AF5BCCB2316B33EC3ACF0203E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_plane2_1_gpu\\Run.out",
+          "sha256": "6BDF12A0065D9123D824B49D7D5050B89CFB7367E8B0C3BF817C026E77AF3CF2"
+        }
+      ]
+    },
+    {
+      "case": "corner2",
+      "spr": 0,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_0_Def.xml",
+        "sha256": "1F30323D42FB50D1E367C2890F9B47CE3F4C07468F123BEA65E728C0DBCC6787"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_input\\spr_boundary_admission_r1_corner2_0",
+          "-save:all"
+        ],
+        "pid": 58344,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_0.gencase.log",
+          "sha256": "04F9A700A3BF98AC8B7596E1DD021C27FFE25B8C5AC21F30E62C4518083B691E"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_input\\spr_boundary_admission_r1_corner2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 23356,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_0_cpu.log",
+        "sha256": "BA1AABF7302BFA11A0C98E5A1E949AA4FD668B1C15AF01942B5E919ECFCFE48D"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\CfgInit_Domain.vtk",
+          "sha256": "A1F8DDAC50BCFF83B6D072A3806DA808493ADF35688B58DF11EC1A92C54FED45"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "C029B32AA02C9006C0DD04C5596B1796BB4DCB991CB9DF030A78B713BBEEC36E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\CfgInit_Normals.vtk",
+          "sha256": "1FE1F6C52E6571934C1A7EE9D7E11078178BDA03A5F4228640EF8BB3EEB4BFC2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "B259D5C036017E4EF57EA03116605FB8FD783D5738FEC9839199459C129B873F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\Run.csv",
+          "sha256": "859AB4BE590AC3B799D0E6C7010FDD7515BED4D6DDB8A5ED2D0CDC2122964953"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_cpu\\Run.out",
+          "sha256": "67BACFD32F7274A233715F30CC7C316108CD0DCD3A7C9F4EF2732DC5DE8E0F73"
+        }
+      ]
+    },
+    {
+      "case": "corner2",
+      "spr": 0,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_0_Def.xml",
+        "sha256": "1F30323D42FB50D1E367C2890F9B47CE3F4C07468F123BEA65E728C0DBCC6787"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_input\\spr_boundary_admission_r1_corner2_0",
+          "-save:all"
+        ],
+        "pid": 58344,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_0.gencase.log",
+          "sha256": "04F9A700A3BF98AC8B7596E1DD021C27FFE25B8C5AC21F30E62C4518083B691E"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_input\\spr_boundary_admission_r1_corner2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 50668,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_0_gpu.log",
+        "sha256": "6964E3E4EED2717A49B00AECE2F2EC24248B272D1620B2A59AB869AD532BCD12"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\CfgInit_Domain.vtk",
+          "sha256": "A1F8DDAC50BCFF83B6D072A3806DA808493ADF35688B58DF11EC1A92C54FED45"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "C029B32AA02C9006C0DD04C5596B1796BB4DCB991CB9DF030A78B713BBEEC36E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\CfgInit_Normals.vtk",
+          "sha256": "1FE1F6C52E6571934C1A7EE9D7E11078178BDA03A5F4228640EF8BB3EEB4BFC2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "B259D5C036017E4EF57EA03116605FB8FD783D5738FEC9839199459C129B873F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\Run.csv",
+          "sha256": "B66F5D6E02EECA88F801DF252641D23DB326A0ADFCC4AB095B72CE8D56E14842"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_0_gpu\\Run.out",
+          "sha256": "576E13079ABA9AE08E8717EAB6F961B1D3907DA05E84955DCBE0670EEDFD09E5"
+        }
+      ]
+    },
+    {
+      "case": "corner2",
+      "spr": 1,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_1_Def.xml",
+        "sha256": "A643AEFD20C9D11C28CC6E2D6668AC1154FEE8A5857790D92EC42870B3EC6D7F"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_input\\spr_boundary_admission_r1_corner2_1",
+          "-save:all"
+        ],
+        "pid": 24904,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_1.gencase.log",
+          "sha256": "31BAA2069A2E88322EAC2F8F8F40E761CA1517FFB7BC815B700D0B7C5FBA616F"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_input\\spr_boundary_admission_r1_corner2_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 39840,
+      "exit_code": 1,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_1_cpu.log",
+        "sha256": "1DC9ABA79F0F34D7088B4F1E2604A754F2818BEB902E36E74D20FAF93E26F07A"
+      },
+      "passed": true,
+      "expected_rejection": true,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu\\CfgInit_Domain.vtk",
+          "sha256": "A1F8DDAC50BCFF83B6D072A3806DA808493ADF35688B58DF11EC1A92C54FED45"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "C029B32AA02C9006C0DD04C5596B1796BB4DCB991CB9DF030A78B713BBEEC36E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu\\CfgInit_Normals.vtk",
+          "sha256": "1FE1F6C52E6571934C1A7EE9D7E11078178BDA03A5F4228640EF8BB3EEB4BFC2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "B259D5C036017E4EF57EA03116605FB8FD783D5738FEC9839199459C129B873F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_cpu\\Run.out",
+          "sha256": "663651F84FDBE984D98068A92A2814F89DF0B49CCD64A34046A4AEC356FA4593"
+        }
+      ]
+    },
+    {
+      "case": "corner2",
+      "spr": 1,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_1_Def.xml",
+        "sha256": "A643AEFD20C9D11C28CC6E2D6668AC1154FEE8A5857790D92EC42870B3EC6D7F"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_corner2_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_input\\spr_boundary_admission_r1_corner2_1",
+          "-save:all"
+        ],
+        "pid": 24904,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_1.gencase.log",
+          "sha256": "31BAA2069A2E88322EAC2F8F8F40E761CA1517FFB7BC815B700D0B7C5FBA616F"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_input\\spr_boundary_admission_r1_corner2_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 55564,
+      "exit_code": 1,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_corner2_1_gpu.log",
+        "sha256": "E40E4D1AE08CEA1F9432849D8C84357B0A29BF9C41DAB6625659FD9F9BF18677"
+      },
+      "passed": true,
+      "expected_rejection": true,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu\\CfgInit_Domain.vtk",
+          "sha256": "A1F8DDAC50BCFF83B6D072A3806DA808493ADF35688B58DF11EC1A92C54FED45"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "C029B32AA02C9006C0DD04C5596B1796BB4DCB991CB9DF030A78B713BBEEC36E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu\\CfgInit_Normals.vtk",
+          "sha256": "1FE1F6C52E6571934C1A7EE9D7E11078178BDA03A5F4228640EF8BB3EEB4BFC2"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "B259D5C036017E4EF57EA03116605FB8FD783D5738FEC9839199459C129B873F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_corner2_1_gpu\\Run.out",
+          "sha256": "61182CEED37AEBF7A9A6741A8F8DF0D3AD3F1281E9B360D64A1E66C36772CB3C"
+        }
+      ]
+    },
+    {
+      "case": "edge3",
+      "spr": 0,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_0_Def.xml",
+        "sha256": "F3FF05E9BCCA50FD743EA407DBCADE7226A0A06D365DFC341448FEB78529A6F4"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_input\\spr_boundary_admission_r1_edge3_0",
+          "-save:all"
+        ],
+        "pid": 44308,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_0.gencase.log",
+          "sha256": "E6350A920D40A0E1CFE87160A967E6C9CCF6EC94560A42187804E0FC07DFAC76"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_input\\spr_boundary_admission_r1_edge3_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 54904,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_0_cpu.log",
+        "sha256": "5B51576F299179368162069DBBF881D92F2C4C817CA47198C47C4856EE01C4C7"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2F9F12159E6F3F2CF516EED34866E34C10762C546C9DA61801D30DA35DCC6A0C"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "A0B245B9EB4A08742A8325A20DEC46616C9C4A7C808403FD47D74CFA06FE5413"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\CfgInit_Normals.vtk",
+          "sha256": "061DDF7F94A894E87303E79F3BECBC898C926132B821BE5847CF62C9DA552EAF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "D0C8ADFA0023607A8BA55BDF0D491C46412F77C25488D36E133111AFADAD5418"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\Run.csv",
+          "sha256": "EC87FE8D3B8DFE66892080666DA92A2B0B80465B428846B519E802822E098B9F"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_cpu\\Run.out",
+          "sha256": "4757D29F020EE1DC44BF66AF19280DCBE13DBEB7E22FD0FC435AA11573B86F7C"
+        }
+      ]
+    },
+    {
+      "case": "edge3",
+      "spr": 0,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_0_Def.xml",
+        "sha256": "F3FF05E9BCCA50FD743EA407DBCADE7226A0A06D365DFC341448FEB78529A6F4"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_input\\spr_boundary_admission_r1_edge3_0",
+          "-save:all"
+        ],
+        "pid": 44308,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_0.gencase.log",
+          "sha256": "E6350A920D40A0E1CFE87160A967E6C9CCF6EC94560A42187804E0FC07DFAC76"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_input\\spr_boundary_admission_r1_edge3_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 37028,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_0_gpu.log",
+        "sha256": "9A58A0E878BEC2881772A3C439F92C18F1E74719649F5B67D2EB3E2297C1569C"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2F9F12159E6F3F2CF516EED34866E34C10762C546C9DA61801D30DA35DCC6A0C"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "A0B245B9EB4A08742A8325A20DEC46616C9C4A7C808403FD47D74CFA06FE5413"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\CfgInit_Normals.vtk",
+          "sha256": "061DDF7F94A894E87303E79F3BECBC898C926132B821BE5847CF62C9DA552EAF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "D0C8ADFA0023607A8BA55BDF0D491C46412F77C25488D36E133111AFADAD5418"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\Run.csv",
+          "sha256": "099BF4E2B5A0688CE8974E9E6848A51236F9C8DAB7C85EC2CC6F1E1A9089DB16"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_0_gpu\\Run.out",
+          "sha256": "B571A9FC13FB33E8C098A42096A746FD5CA154FB0C22DBEFBAC0DBCBA9F3D7A3"
+        }
+      ]
+    },
+    {
+      "case": "edge3",
+      "spr": 1,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_1_Def.xml",
+        "sha256": "20B953349B9B40F2F88BB056E04BBCF16DE0EB1B0BB9E9CFD85C2010D54EB222"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_input\\spr_boundary_admission_r1_edge3_1",
+          "-save:all"
+        ],
+        "pid": 1828,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_1.gencase.log",
+          "sha256": "D07A5F99424C937C771F67E98C8261F0CA238BCD4DC22A0E7F4221809D2A318E"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_input\\spr_boundary_admission_r1_edge3_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 44412,
+      "exit_code": 1,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_1_cpu.log",
+        "sha256": "CDFBA9E788A3D55229014F0DE03374AC9F17DA85A2E88F3078F00927168A1F7D"
+      },
+      "passed": true,
+      "expected_rejection": true,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu\\CfgInit_Domain.vtk",
+          "sha256": "2F9F12159E6F3F2CF516EED34866E34C10762C546C9DA61801D30DA35DCC6A0C"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "A0B245B9EB4A08742A8325A20DEC46616C9C4A7C808403FD47D74CFA06FE5413"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu\\CfgInit_Normals.vtk",
+          "sha256": "061DDF7F94A894E87303E79F3BECBC898C926132B821BE5847CF62C9DA552EAF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "D0C8ADFA0023607A8BA55BDF0D491C46412F77C25488D36E133111AFADAD5418"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_cpu\\Run.out",
+          "sha256": "35F4BBD8E400768725B9BCE28DABCC5D26481768ED37E36DFB797127C4F51467"
+        }
+      ]
+    },
+    {
+      "case": "edge3",
+      "spr": 1,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_1_Def.xml",
+        "sha256": "20B953349B9B40F2F88BB056E04BBCF16DE0EB1B0BB9E9CFD85C2010D54EB222"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_edge3_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_input\\spr_boundary_admission_r1_edge3_1",
+          "-save:all"
+        ],
+        "pid": 1828,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_1.gencase.log",
+          "sha256": "D07A5F99424C937C771F67E98C8261F0CA238BCD4DC22A0E7F4221809D2A318E"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_input\\spr_boundary_admission_r1_edge3_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 48600,
+      "exit_code": 1,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_edge3_1_gpu.log",
+        "sha256": "B475E8B2E884D4653887500DCD7478BB3DDCBC0612D615BEEA69237797AB0C69"
+      },
+      "passed": true,
+      "expected_rejection": true,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu\\CfgInit_Domain.vtk",
+          "sha256": "2F9F12159E6F3F2CF516EED34866E34C10762C546C9DA61801D30DA35DCC6A0C"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "A0B245B9EB4A08742A8325A20DEC46616C9C4A7C808403FD47D74CFA06FE5413"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu\\CfgInit_Normals.vtk",
+          "sha256": "061DDF7F94A894E87303E79F3BECBC898C926132B821BE5847CF62C9DA552EAF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "D0C8ADFA0023607A8BA55BDF0D491C46412F77C25488D36E133111AFADAD5418"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_edge3_1_gpu\\Run.out",
+          "sha256": "5605BEEC4D451A73B14A16529B23456B1470CFDF5DE8F019FD948E8D21669302"
+        }
+      ]
+    },
+    {
+      "case": "curve2",
+      "spr": 0,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_0_Def.xml",
+        "sha256": "BAE2D4254B1E005AF97836070CB5B84F6163118BCB3BCC98CF52E6C49102178B"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_input\\spr_boundary_admission_r1_curve2_0",
+          "-save:all"
+        ],
+        "pid": 32620,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_0.gencase.log",
+          "sha256": "FDEAC954B31CCC0CBAAED218BE44EADC03F6DCB64EDA605EC3C4A088CCBDBA7A"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_input\\spr_boundary_admission_r1_curve2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 50336,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_0_cpu.log",
+        "sha256": "FF4EE4AE39A69A8D2A57F5771735928087083C8F17CE6D9B06AD387AB867C2E6"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\CfgInit_Domain.vtk",
+          "sha256": "774B8A4DA296F33F15B9C207F1A8DD70B2F6E5C2E86320A3121DC3F923D24460"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\CfgInit_MapCells.vtk",
+          "sha256": "823EC4999E8133D1790042F71D6BA07D6C1602F0CCA71B6F96D11599736AC7CF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\CfgInit_Normals.vtk",
+          "sha256": "2648D35D499BC60ADA5BC92E3B2E99F17BAF92682625532F296A23A9AA7CEE8E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C76F4344F15CE1CA8DB2731C6EFD379E03BA7F2F310697F0A7C3100C5D1FAC70"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\Run.csv",
+          "sha256": "2011F58EA7C811D8C7EE8AA8C7785322004575C0140DFD82F09C54757E2246B8"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_cpu\\Run.out",
+          "sha256": "6231321C02B9197CFFE3E3985F6E5200669EA0424318892A59AE96D9DD48D4DA"
+        }
+      ]
+    },
+    {
+      "case": "curve2",
+      "spr": 0,
+      "backend": "GPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_0_Def.xml",
+        "sha256": "BAE2D4254B1E005AF97836070CB5B84F6163118BCB3BCC98CF52E6C49102178B"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_0_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_input\\spr_boundary_admission_r1_curve2_0",
+          "-save:all"
+        ],
+        "pid": 32620,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_0.gencase.log",
+          "sha256": "FDEAC954B31CCC0CBAAED218BE44EADC03F6DCB64EDA605EC3C4A088CCBDBA7A"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2_GEO_win64.exe",
+        "-gpu",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_input\\spr_boundary_admission_r1_curve2_0",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 26948,
+      "exit_code": 0,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_0_gpu.log",
+        "sha256": "233FB650385B6650B17EF4C65B688B668661F292B5318BE8AEDC3F87D6B9795F"
+      },
+      "passed": true,
+      "expected_rejection": false,
+      "output_hashes": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\CfgInit_Domain.vtk",
+          "sha256": "774B8A4DA296F33F15B9C207F1A8DD70B2F6E5C2E86320A3121DC3F923D24460"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\CfgInit_MapCells.vtk",
+          "sha256": "823EC4999E8133D1790042F71D6BA07D6C1602F0CCA71B6F96D11599736AC7CF"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\CfgInit_Normals.vtk",
+          "sha256": "2648D35D499BC60ADA5BC92E3B2E99F17BAF92682625532F296A23A9AA7CEE8E"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\CfgInit_NormalsGhost.vtk",
+          "sha256": "C76F4344F15CE1CA8DB2731C6EFD379E03BA7F2F310697F0A7C3100C5D1FAC70"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\Run.csv",
+          "sha256": "5CFAFFE08C167D0D57A60CEE04B0C02297596E99504E82DC6BB205ECFD38D651"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_0_gpu\\Run.out",
+          "sha256": "33E8B9663C828E3CB54037E00B9253D44F339D96AA466E3F2B48AEF4E602AEF3"
+        }
+      ]
+    },
+    {
+      "case": "curve2",
+      "spr": 1,
+      "backend": "CPU",
+      "definition": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_1_Def.xml",
+        "sha256": "30C83D67A52342290F63B3C4D6E2880697279B1DE904294E37CF49FEEF921220"
+      },
+      "gencase": {
+        "command": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\GenCase_win64.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\spr_boundary_admission_r1_curve2_1_Def",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_1_input\\spr_boundary_admission_r1_curve2_1",
+          "-save:all"
+        ],
+        "pid": 55244,
+        "exit_code": 0,
+        "owned_exited": true,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_1.gencase.log",
+          "sha256": "BDBDAD617A287ECB0125B94F08170087E93C80F9E68C1A55027407277934E232"
+        }
+      },
+      "command": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_1_input\\spr_boundary_admission_r1_curve2_1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\spr_boundary_admission_r1_curve2_1_cpu",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-sv:none"
+      ],
+      "pid": 16040,
+      "exit_code": 1,
+      "owned_exited": true,
+      "log": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\spr_boundary_admission_r1_curve2_1_cpu.log",
+        "sha256": "616D3A6632DFF0B0B3DBF7FCAC8882D27C3F057D62AC15EE425A6DFACE5E7BE3"
+      }
+    }
+  ],
+  "production_changed": false,
+  "scope": "One-step input controls and expected admission rejections only; not complex-boundary physical acceptance"
+}

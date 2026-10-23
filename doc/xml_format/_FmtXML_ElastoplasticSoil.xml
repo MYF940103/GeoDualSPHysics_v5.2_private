@@ -80,6 +80,8 @@
 			<!-- CPU/GPU save the native terminal step when TimeMax or NstepsBreak is reached, even between TimeOut events; this output-only condition does not change dt or integration. -->
 			<!-- Consolidation output: TimeOut (seconds) = DeltaTv*H^2/Cv, Cv=k*M/(rho_w*g), M=E*(1-nu)/((1+nu)*(1-2*nu)); use positive reference g even in a no-gravity surcharge test. -->
 			<!-- Case-02 DeltaTv=.005 gives TimeOut=.0182185714285714/.182185714285714/1.82185714285714 s for k=1e-3/1e-4/1e-5; this changes saving only, not DtFixed. -->
+			<!-- Case-02 replaced k=1e-5 by k=5e-5 and requires all three groups dp=.01 m, width=.1 m. The refined partial run was preserved. Third-group TimeOut=.36437142857142857 s, TimeMax=145.75858 s, dt=1e-5; CPU8 full 2Tv completed and passed the user's provisional 1D pressure/settlement scope on 2026-10-24. -->
+			<!-- Original Darcy with HG xi=.05 passed CPU/GPU .3-s, CPU 1/15-s dt/half, and CPU2Tv checks. Accepted k=1e-3/1e-4 retain xi=.1, so strengths differ. Final k=5e-5 pressure RMSE1.16Pa, settlement error-.430%, Q12.45Pa and bottom bias.001275mm; residual stress errors remain. No full-cycle half-step or general-boundary claim. Density/Darcy prototypes were rejected, not production features. -->
 			<!-- Default saving is anchored at t=0, not drainage tD; compare theory at actual Tv=Cv*(t-tD)/H^2. Retain dense startup diagnostics separately; existing results keep their original cadence. -->
 			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
 			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
@@ -110,7 +112,7 @@
 			<!-- GNOG is currently limited to 2D CPU/GPU Wendland, x-periodic, small-rotation elastic soil and Symplectic integration. -->
 			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
 			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
-			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=0.1 provisionally accepted for 1D pressure/settlement only; not validated for plasticity or large rotation" />
+			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />
 
 			<!-- Bui-Fukagawa style soil damping for static/relaxation soil cases. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0:Off, 1:On (default=0)" />
