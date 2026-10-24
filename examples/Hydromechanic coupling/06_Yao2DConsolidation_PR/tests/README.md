@@ -48,6 +48,16 @@
   [native fields](figures/spr_yao_cpu_gpu_1s_r1_fields_r1.png) and matching CSVs
   were inspected; audit and visual receipts are in logs. No 1-s SPR-off or
   full 2-D theory acceptance. The one-shot has exited and must not be restarted.
+
+- `spr_yao_axis01_r1`: completed .1-s axis-NoPen + SPR CPU/GPU/half.
+  All 101 pair gates passed. All native fields at all 101 saved states on
+  each backend are 0 ULP versus NoPen off: its proximity guard stayed inactive.
+  This is compatibility, not proof of improved wall response. See
+  [review](notes/spr_yao_axis_review_r1.md),
+  [fields](figures/spr_yao_axis01_r1_fields_r1.png) and matching CSVs.
+- Next bounded longer window: [10-s GPU SPR off/on/half](notes/spr_yao_10s_r1.md).
+  Fresh runs only, .01-s native saves; original force, geometry, drainage and
+  5-Pa/.005-mm half limits. Not independent theory or general NoPen acceptance.
 - Production candidate and evidence through .3 s were selectively committed
   and verified local/remote at `7fda9ff`; raw BI4/executables are not cloud
   backed up by that commit. New 1-s artifacts await their own later backup.

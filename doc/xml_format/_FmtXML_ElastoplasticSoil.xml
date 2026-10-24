@@ -125,7 +125,9 @@
 			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
                  Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
                  pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs
-                 passed independently on each backend; this is not general NoPen/long-cycle acceptance. -->
+                 passed independently on each backend. Yao .1-s CPU/GPU/half compatibility also passed,
+                 but NoPen on/off saved native fields are 0 ULP: its proximity guard was inactive.
+                 This adds no active-NoPen/general-wall/long-cycle acceptance. -->
 			<!-- GPU Debug/Release each passed the same 18 manufactured fields; SPR-off matches retained 20-step GPU output bitwise with HG on/off. Case-02 15-s coarse/half and k=1e-4 same-dt CPU/GPU 2Tv passed (2026-10-20). -->
 			<!-- Each face needs finite, nonzero, consistently oriented and coplanar normals. For multiple CPU/GPU faces
                  normals must point into their convex common interior. Curved and moving walls remain rejected. -->
@@ -135,7 +137,7 @@
 			<!-- Validated: 18 stationary-plane manufactured fields (2D/3D, horizontal/vertical/tilted, SlipMode 1/2/3); case-02 horizontal Vel0 0.15-s coarse/half regression is bitwise unchanged. -->
 			<!-- Manufactured fields do not validate arbitrary 2D/3D coupled time histories, inactive-wall dynamics or complex boundaries; these still need separate validation. -->
 			<!-- Plastic flow and large rotations have not been validated; SPR does not expand the independent 2D-only SoilHourglassXi scope. -->
-			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Mirrored wall S/P/R derivatives 0:Off, 1:On (default=0); CPU/GPU fixed-plane manufactured-field validation only outside case-02" />
+			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Mirrored wall S/P/R derivatives 0:Off, 1:On (default=0); bounded CPU/GPU plane/pulse/Yao checks outside case-02, not general physical release" />
 			<!-- GNOG is currently limited to 2D CPU/GPU Wendland, x-periodic, small-rotation elastic soil and Symplectic integration. -->
 			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
 			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->

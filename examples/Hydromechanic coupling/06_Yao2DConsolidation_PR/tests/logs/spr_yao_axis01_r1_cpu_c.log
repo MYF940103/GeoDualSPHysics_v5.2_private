@@ -1,0 +1,496 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 22
+[LoadXMLInit-End  time:0.002s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[1700]  MResId=[0]  xmin=[-10]  xmax=[10]  sizefx=[20]  sizefz=[10]  Dp=[0.1]  PosMin_x=[-11.2]  PosMin_y=[0]  PosMin_z=[-1.2]  PosMax_x=[11.2]  PosMax_y=[0]  PosMax_z=[11.2]  CaseName=["spr_yao_axis01_r1_cpu_c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  MassBound=[17]  MassFluid=[17]
+
+Mk size: 1 bytes
+Case limits: (-11.2,0,-1.2) - (11.2,0,11.2)
+Distance between points (Dp): 0.1
+Case domain: (0,0,0)-(222,0,122)
+Domain points: 223 x 1 x 123 = 27429
+Case parts: 1 x 123z
+Memory: 0.00Gb 0.03Mb (27429)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_dbg-fillbox.vtk  domains:1
+<MAIN (Operations= 16+6+1 = 23)
+
+Triangles: 54 (0 ignored)
+[Draw-End  time:0.007s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 18 (2 + 8+1+7)
+Points loaded: 21945
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    836  -->     836
+  block[  1] (mk: 11):    404  -->     404
+  block[  2] (mk: 12):    404  -->     404
+Points -> Fluid particles:
+  block[  3] (mk:  1):  20301  -->   20301
+
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_MkCells.vtk  (time:0.003s, shapes:4, points:16)
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c.bi4<double>  (time:0.005s)
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_All.vtk  (time: 0.005s)
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_Bound.vtk  (time: 0.004s)
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_Fluid.vtk  (time: 0.006s)
+tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c.xml  (time:0.007s)
+Computing normals data...
+  Evaluating 1644 particles with 3 shapes (distance 2x H = 0.36).
+  Time for computing 1248 normals: 0.000s.
+  Non-zero particle normals: 1227/1644    Normals size range: (0.100000 - 0.424264).
+  Saving results files...
+  tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_Normals.vtk
+  tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_Normals.nbi4  (time:0.078s)
+
+Save files time: 0.101s
+
+Particle limits:
+  X range: -10.4 to 10.4 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.4 to 10 [m]
+
+[SaveCase2D-End  time:0.103s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.113 sec. (16 threads)
+
+Finished execution (code=0).
+
+Threads by host for parallel execution: 8
+
+[Initialising JSphCpuSingle  24-10-2026 17:10:31]
+ProgramFile=".../outputs/spr_yao_axis_CPU_r1/axis_step.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/06_Yao2DConsolidation_PR"
+XmlFile=".../outputs/spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c.xml"
+OutputDir=".../tests/outputs/spr_yao_axis01_r1_cpu_c"
+OutputDataDir=".../outputs/spr_yao_axis01_r1_cpu_c/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizefx=[20]  sizefz=[10]  xmax=[10]  xmin=[-10]  CaseName=["spr_yao_axis01_r1_cpu_c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  KernelSize=[0.36]  B=[0]  Gamma=[7]  Rhop0=[1700]  Dp=[0.1]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[17]  MassBound=[17]
+XML-Vars (parameters): TimeMax=[0.1]  TimeOut=[0.001]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 1000000000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 16666666.000000
+  Shear Modulus: 12500000.000000
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint
+  HydroMechTopLoadMode="TopStripVertical"
+  HydroMechTopLoadFootprint: hard-coded Yao 2025 strip x=[-3,3] m on z=10 m top surface
+  HydroMechTopLoadQ0: 5000
+  HydroMechTopLoadRampTime: 0.1
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 21945
+MapRealPos(border)=(-10.409,-0.009,-0.409)-(10.409,0.009,10.009)
+MapRealPos(final)=(-10.409,-0.009,-0.409)-(10.409,0.009,10.009)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="spr_yao_axis01_r1_cpu_c"
+RunName="spr_yao_axis01_r1_cpu_c"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=True
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=17.19136
+  Wendland.bwen=-477.572
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.01
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=21945
+CaseNbound=1644
+CaseNfixed=1644
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=20301
+PeriodicActive="None"
+Dp=0.1
+KernelH=0.180000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.36
+CteB=4761904
+Gamma=7
+RhopZero=1700
+Cs0=140.0280056022408
+CFLnumber=0.2
+DtIni=0.00002
+DtMin=0.000000001
+DtAllParticles=False
+FixedDt=0.00002
+MassFluid=17
+MassBound=17
+TimeMax=0.1
+TimePart=0.001
+Gravity=(0,0,0)
+NpMinimum=1644
+RhopOut=True
+RhopOutMin=500
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(58,1,29)
+CellDomFixed=False
+**Requested CPU memory for 22073 particles: 11.1 MB.
+NormalDataFile="tests\outputs\spr_yao_axis01_r1_cpu_c_input/spr_yao_axis01_r1_cpu_c_Normals.nbi4"
+SPR stationary wall planes (one per mk): 3
+DomCells=(58,1,29)
+DomCellCode="1+12_8_11"
+**CellDiv: Requested cpu memory for 23170 particles: 1.2 MB.
+**CellDiv: Requested cpu memory for 3540 cells (CellMode=Full): 0.1 MB.
+ 
+RunMode="Pos-Double - OpenMP(Threads:8)"
+ 
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (836 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (404 particles)
+  Point....: (-10,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (404 particles)
+  Point....: (10,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+Part_0000        21945 particles successfully stored
+Part_0001      0.001000            50       50    2708.96  24-10-2026 17:15:02
+PROGRESS steps=50 time=0.0010000000000000013
+Part_0002      0.002000           100       50    4437.17  24-10-2026 17:16:28
+PROGRESS steps=100 time=0.0020000000000000039
+Part_0003      0.003000           150       50    5752.08  24-10-2026 17:17:41
+PROGRESS steps=150 time=0.0030000000000000066
+Part_0004      0.004000           200       50    5761.57  24-10-2026 17:18:18
+PROGRESS steps=200 time=0.0040000000000000088
+Part_0005      0.005000           250       50    3212.87  24-10-2026 17:17:48
+PROGRESS steps=250 time=0.0050000000000000114
+Part_0006      0.006000           300       50    1505.93  24-10-2026 17:17:01
+PROGRESS steps=300 time=0.006000000000000014
+Part_0007      0.007000           350       50    1057.06  24-10-2026 17:16:20
+PROGRESS steps=350 time=0.0070000000000000166
+Part_0008      0.008000           400       50    1043.11  24-10-2026 17:15:50
+PROGRESS steps=400 time=0.0080000000000000106
+Part_0009      0.009000           450       50    1036.30  24-10-2026 17:15:26
+PROGRESS steps=450 time=0.0089999999999999698
+Part_0010      0.010000           500       50    1071.57  24-10-2026 17:15:07
+PROGRESS steps=500 time=0.0099999999999999291
+Part_0011      0.011000           550       50    1236.27  24-10-2026 17:14:53
+PROGRESS steps=550 time=0.010999999999999888
+Part_0012      0.012000           600       50    1234.90  24-10-2026 17:14:41
+PROGRESS steps=600 time=0.011999999999999848
+Part_0013      0.013000           650       50    1215.31  24-10-2026 17:14:31
+PROGRESS steps=650 time=0.012999999999999807
+Part_0014      0.014000           700       50    1192.01  24-10-2026 17:14:23
+PROGRESS steps=700 time=0.013999999999999766
+Part_0015      0.015000           750       50    1220.05  24-10-2026 17:14:16
+PROGRESS steps=750 time=0.014999999999999725
+Part_0016      0.016000           800       50    1190.59  24-10-2026 17:14:09
+PROGRESS steps=800 time=0.015999999999999685
+Part_0017      0.017000           850       50    1181.85  24-10-2026 17:14:03
+PROGRESS steps=850 time=0.016999999999999644
+Part_0018      0.018000           900       50    1226.52  24-10-2026 17:13:58
+PROGRESS steps=900 time=0.017999999999999603
+Part_0019      0.019000           950       50    1327.31  24-10-2026 17:13:54
+PROGRESS steps=950 time=0.018999999999999562
+Part_0020      0.020000          1000       50    1249.63  24-10-2026 17:13:50
+PROGRESS steps=1000 time=0.019999999999999522
+Part_0021      0.021000          1050       50    1222.74  24-10-2026 17:13:46
+PROGRESS steps=1050 time=0.020999999999999481
+Part_0022      0.022000          1100       50    1249.27  24-10-2026 17:13:44
+PROGRESS steps=1100 time=0.02199999999999944
+Part_0023      0.023000          1150       50    1216.31  24-10-2026 17:13:41
+PROGRESS steps=1150 time=0.022999999999999399
+Part_0024      0.024000          1200       50    1211.65  24-10-2026 17:13:37
+PROGRESS steps=1200 time=0.023999999999999359
+Part_0025      0.025000          1250       50    1227.42  24-10-2026 17:13:35
+PROGRESS steps=1250 time=0.024999999999999318
+Part_0026      0.026000          1300       50    1310.81  24-10-2026 17:13:33
+PROGRESS steps=1300 time=0.025999999999999277
+Part_0027      0.027000          1350       50    1211.22  24-10-2026 17:13:31
+PROGRESS steps=1350 time=0.026999999999999236
+Part_0028      0.028000          1400       50    1177.75  24-10-2026 17:13:28
+PROGRESS steps=1400 time=0.027999999999999196
+Part_0029      0.029000          1450       50    1223.19  24-10-2026 17:13:26
+PROGRESS steps=1450 time=0.028999999999999155
+Part_0030      0.030000          1500       50    1170.24  24-10-2026 17:13:24
+PROGRESS steps=1500 time=0.029999999999999114
+Part_0031      0.031000          1550       50    1153.85  24-10-2026 17:13:22
+PROGRESS steps=1550 time=0.030999999999999073
+Part_0032      0.032000          1600       50    1182.70  24-10-2026 17:13:21
+PROGRESS steps=1600 time=0.031999999999999036
+Part_0033      0.033000          1650       50    1185.33  24-10-2026 17:13:20
+PROGRESS steps=1650 time=0.032999999999998995
+Part_0034      0.034000          1700       50    1214.24  24-10-2026 17:13:18
+PROGRESS steps=1700 time=0.033999999999998955
+Part_0035      0.035000          1750       50    1169.40  24-10-2026 17:13:16
+PROGRESS steps=1750 time=0.034999999999998914
+Part_0036      0.036000          1800       50    1198.80  24-10-2026 17:13:15
+PROGRESS steps=1800 time=0.035999999999998873
+Part_0037      0.037000          1850       50    1220.51  24-10-2026 17:13:15
+PROGRESS steps=1850 time=0.036999999999998832
+Part_0038      0.038000          1900       50    1197.06  24-10-2026 17:13:13
+PROGRESS steps=1900 time=0.037999999999998792
+Part_0039      0.039000          1950       50    1186.03  24-10-2026 17:13:12
+PROGRESS steps=1950 time=0.038999999999998751
+Part_0040      0.040000          2000       50    1207.93  24-10-2026 17:13:11
+PROGRESS steps=2000 time=0.03999999999999871
+Part_0041      0.041000          2050       50    1176.44  24-10-2026 17:13:09
+PROGRESS steps=2050 time=0.040999999999998669
+Part_0042      0.042000          2100       50    1195.72  24-10-2026 17:13:09
+PROGRESS steps=2100 time=0.041999999999998629
+Part_0043      0.043000          2150       50    1223.23  24-10-2026 17:13:08
+PROGRESS steps=2150 time=0.042999999999998588
+Part_0044      0.044000          2200       50    1169.77  24-10-2026 17:13:07
+PROGRESS steps=2200 time=0.043999999999998547
+Part_0045      0.045000          2250       50    1146.21  24-10-2026 17:13:06
+PROGRESS steps=2250 time=0.044999999999998506
+Part_0046      0.046000          2300       50    1215.44  24-10-2026 17:13:05
+PROGRESS steps=2300 time=0.045999999999998466
+Part_0047      0.047000          2350       50    1223.23  24-10-2026 17:13:05
+PROGRESS steps=2350 time=0.046999999999998425
+Part_0048      0.048000          2400       50    1194.49  24-10-2026 17:13:04
+PROGRESS steps=2400 time=0.047999999999998384
+Part_0049      0.049000          2450       50    1204.59  24-10-2026 17:13:03
+PROGRESS steps=2450 time=0.048999999999998343
+Part_0050      0.050000          2500       50    1245.62  24-10-2026 17:13:03
+PROGRESS steps=2500 time=0.049999999999998303
+Part_0051      0.051000          2550       50    1225.40  24-10-2026 17:13:03
+PROGRESS steps=2550 time=0.050999999999998262
+Part_0052      0.052000          2600       50    1205.45  24-10-2026 17:13:02
+PROGRESS steps=2600 time=0.051999999999998221
+Part_0053      0.053000          2650       50    1138.24  24-10-2026 17:13:01
+PROGRESS steps=2650 time=0.052999999999998181
+Part_0054      0.054000          2700       50    1110.96  24-10-2026 17:13:00
+PROGRESS steps=2700 time=0.05399999999999814
+Part_0055      0.055000          2750       50    1127.50  24-10-2026 17:13:00
+PROGRESS steps=2750 time=0.054999999999998099
+Part_0056      0.056000          2800       50    1381.71  24-10-2026 17:12:59
+PROGRESS steps=2800 time=0.055999999999998058
+Part_0057      0.057000          2850       50    1185.70  24-10-2026 17:12:59
+PROGRESS steps=2850 time=0.056999999999998018
+Part_0058      0.058000          2900       50    1180.02  24-10-2026 17:12:59
+PROGRESS steps=2900 time=0.057999999999997977
+Part_0059      0.059000          2950       50    1176.26  24-10-2026 17:12:58
+PROGRESS steps=2950 time=0.058999999999997936
+Part_0060      0.060000          3000       50    1179.87  24-10-2026 17:12:57
+PROGRESS steps=3000 time=0.059999999999997895
+Part_0061      0.061000          3050       50    1175.89  24-10-2026 17:12:57
+PROGRESS steps=3050 time=0.060999999999997855
+Part_0062      0.062000          3100       50    1191.60  24-10-2026 17:12:57
+PROGRESS steps=3100 time=0.061999999999997814
+Part_0063      0.063000          3150       50    1200.67  24-10-2026 17:12:56
+PROGRESS steps=3150 time=0.062999999999997947
+Part_0064      0.064000          3200       50    1184.93  24-10-2026 17:12:56
+PROGRESS steps=3200 time=0.063999999999998253
+Part_0065      0.065000          3250       50    1185.48  24-10-2026 17:12:55
+PROGRESS steps=3250 time=0.064999999999998559
+Part_0066      0.066000          3300       50    1165.76  24-10-2026 17:12:55
+PROGRESS steps=3300 time=0.065999999999998865
+Part_0067      0.067000          3350       50    1243.05  24-10-2026 17:12:55
+PROGRESS steps=3350 time=0.066999999999999171
+Part_0068      0.068000          3400       50    1224.23  24-10-2026 17:12:54
+PROGRESS steps=3400 time=0.067999999999999478
+Part_0069      0.069000          3450       50    1258.52  24-10-2026 17:12:54
+PROGRESS steps=3450 time=0.068999999999999784
+Part_0070      0.070000          3500       50    1254.95  24-10-2026 17:12:53
+PROGRESS steps=3500 time=0.07000000000000009
+Part_0071      0.071000          3550       50    1173.95  24-10-2026 17:12:54
+PROGRESS steps=3550 time=0.071000000000000396
+Part_0072      0.072000          3600       50    1193.59  24-10-2026 17:12:53
+PROGRESS steps=3600 time=0.072000000000000702
+Part_0073      0.073000          3650       50    1191.83  24-10-2026 17:12:53
+PROGRESS steps=3650 time=0.073000000000001009
+Part_0074      0.074000          3700       50    1206.26  24-10-2026 17:12:52
+PROGRESS steps=3700 time=0.074000000000001315
+Part_0075      0.075000          3750       50    1201.20  24-10-2026 17:12:52
+PROGRESS steps=3750 time=0.075000000000001621
+Part_0076      0.076000          3800       50    1196.26  24-10-2026 17:12:52
+PROGRESS steps=3800 time=0.076000000000001927
+Part_0077      0.077000          3850       50    1229.16  24-10-2026 17:12:52
+PROGRESS steps=3850 time=0.077000000000002233
+Part_0078      0.078000          3900       50    1143.21  24-10-2026 17:12:51
+PROGRESS steps=3900 time=0.07800000000000254
+Part_0079      0.079000          3950       50    1214.91  24-10-2026 17:12:51
+PROGRESS steps=3950 time=0.079000000000002846
+Part_0080      0.080000          4000       50    1155.13  24-10-2026 17:12:51
+PROGRESS steps=4000 time=0.080000000000003152
+Part_0081      0.081000          4050       50    1134.97  24-10-2026 17:12:50
+PROGRESS steps=4050 time=0.081000000000003458
+Part_0082      0.082000          4100       50    1239.41  24-10-2026 17:12:51
+PROGRESS steps=4100 time=0.082000000000003764
+Part_0083      0.083000          4150       50    1172.37  24-10-2026 17:12:50
+PROGRESS steps=4150 time=0.083000000000004071
+Part_0084      0.084000          4200       50    1181.45  24-10-2026 17:12:50
+PROGRESS steps=4200 time=0.084000000000004377
+Part_0085      0.085000          4250       50    1198.58  24-10-2026 17:12:49
+PROGRESS steps=4250 time=0.085000000000004683
+Part_0086      0.086000          4300       50    1166.61  24-10-2026 17:12:49
+PROGRESS steps=4300 time=0.086000000000004989
+Part_0087      0.087000          4350       50    1207.34  24-10-2026 17:12:49
+PROGRESS steps=4350 time=0.087000000000005295
+Part_0088      0.088000          4400       50    1176.22  24-10-2026 17:12:49
+PROGRESS steps=4400 time=0.088000000000005602
+Part_0089      0.089000          4450       50    1156.61  24-10-2026 17:12:49
+PROGRESS steps=4450 time=0.089000000000005908
+Part_0090      0.090000          4500       50    1187.81  24-10-2026 17:12:48
+PROGRESS steps=4500 time=0.090000000000006214
+Part_0091      0.091000          4550       50    1199.12  24-10-2026 17:12:48
+PROGRESS steps=4550 time=0.09100000000000652
+Part_0092      0.092000          4600       50    1154.17  24-10-2026 17:12:47
+PROGRESS steps=4600 time=0.092000000000006826
+Part_0093      0.093000          4650       50    1171.99  24-10-2026 17:12:48
+PROGRESS steps=4650 time=0.093000000000007133
+Part_0094      0.094000          4700       50    1183.75  24-10-2026 17:12:48
+PROGRESS steps=4700 time=0.094000000000007439
+Part_0095      0.095000          4750       50    1202.84  24-10-2026 17:12:47
+PROGRESS steps=4750 time=0.095000000000007745
+Part_0096      0.096000          4800       50    1222.47  24-10-2026 17:12:47
+PROGRESS steps=4800 time=0.096000000000008051
+Part_0097      0.097000          4850       50    1259.79  24-10-2026 17:12:48
+PROGRESS steps=4850 time=0.097000000000008357
+Part_0098      0.098000          4900       50    1217.66  24-10-2026 17:12:47
+PROGRESS steps=4900 time=0.098000000000008664
+Part_0099      0.099000          4950       50    1146.51  24-10-2026 17:12:47
+PROGRESS steps=4950 time=0.09900000000000897
+Part_0100      0.100000          5000       50    1159.54  24-10-2026 17:12:47
+PROGRESS steps=5000 time=0.10000000000000928
