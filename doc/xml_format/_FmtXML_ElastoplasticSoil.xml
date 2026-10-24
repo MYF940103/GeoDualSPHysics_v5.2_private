@@ -120,8 +120,14 @@
                  .3-s GPU post-ramp window passed 301 half pairs and all 101 .1-s same-dt prefixes 0 ULP;
                  full-window maxima .277975 Pa / .000287019 mm. The subsequent SPR-on 1-s CPU/GPU
                  window passed all 1001 cross/independent GPU half pairs: .000630828 Pa / .00000196073 mm
-                 cross-backend, .277975 Pa / .000287019 mm half-step; no SPR-off control beyond .3 s.
-                 Not theory or long-cycle acceptance; original strict strip-load quadrature remains unchanged. -->
+                 cross-backend, .277975 Pa / .000287019 mm half-step (that stage had no off control beyond .3 s).
+                 A subsequent GPU off/on/half 10-s window passed all 1001 saved .01-s pairs:
+                 half maxima .139152 Pa / .000136888 mm; shared .3/1-s prefixes remain 0 ULP.
+                 At 10 s the maximum bottom/side normal-displacement residual decreases by 93.9/87.1 percent;
+                 loaded-band alternating stress remains about 13.6 Pa. HG and NoPen were off.
+                 Coarser output sampling does not supersede the retained dense startup half-step maxima.
+                 No 10-s CPU comparison or independent pressure/settlement theory reference;
+                 not general boundary/long-cycle acceptance. Original strict strip-load quadrature is unchanged. -->
 			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
                  Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
                  pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs

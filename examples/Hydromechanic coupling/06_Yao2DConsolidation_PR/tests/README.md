@@ -55,12 +55,26 @@
   This is compatibility, not proof of improved wall response. See
   [review](notes/spr_yao_axis_review_r1.md),
   [fields](figures/spr_yao_axis01_r1_fields_r1.png) and matching CSVs.
-- Next bounded longer window: [10-s GPU SPR off/on/half](notes/spr_yao_10s_r1.md).
-  Fresh runs only, .01-s native saves; original force, geometry, drainage and
-  5-Pa/.005-mm half limits. Not independent theory or general NoPen acceptance.
+- Completed bounded longer window: [10-s GPU SPR review](notes/spr_yao_10s_review_r1.md).
+  Three fresh runs, 1001 native .01-s saves each; all original gates and
+  shared-cadence .3/1-s native prefixes pass. Half maxima are 0.139152 Pa /
+  0.000136888 mm, not a replacement for denser startup evidence.
+  [History](figures/spr_yao_10s_r1_history.png),
+  [fields](figures/spr_yao_10s_r1_fields_r1.png),
+  [profiles](figures/spr_yao_10s_r1_profiles_r1.png),
+  [pressure evolution](figures/spr_yao_10s_r1_evolution_r1.png),
+  [bottom corner](figures/spr_yao_10s_r1_corner_r1.png) and
+  [wall residual](figures/spr_yao_10s_r1_wall_r1.png) were inspected; their
+  numerical CSVs share this prefix. Maximum bottom/side displacement residuals
+  decrease 93.9% / 87.1%, while loaded-band alternating stress remains ~13.6 Pa.
+  Not independent theory, active NoPen, full-cycle or general-wall acceptance.
+  All solvers and the one-shot exited; do not restart them. Offline audit and
+  visual receipts are in logs; the bound execution plan is unchanged.
 - Production candidate and evidence through .3 s were selectively committed
   and verified local/remote at `7fda9ff`; raw BI4/executables are not cloud
-  backed up by that commit. New 1-s artifacts await their own later backup.
+  backed up by that commit. The reviewed 1-s evidence is at `759d34a`, and
+  axis-NoPen compatibility/10-s preparation at `32ec723`; completed 10-s
+  review artifacts have their own manifest/completion receipt in logs.
 
 This directory keeps retained validation and diagnostic assets separate
 from the release XML/BAT files in the case root. See [the case README](../README.md)

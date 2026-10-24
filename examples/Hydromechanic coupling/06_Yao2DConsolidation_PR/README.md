@@ -17,6 +17,16 @@ CPU evidence for that off/on comparison ends at .1 s. The subsequent SPR-on
 0.277974 Pa / 0.000287018 mm half-step. This is not full 2-D theory/long-cycle acceptance.
 Current history/field PNGs AND matching CSVs are indexed in tests/README.md.
 
+The subsequent GPU SPR off/on/half 10-s comparison is now reviewed:
+all 1001 saved pairs pass (0.139152 Pa / 0.000136888 mm half maxima).
+At 10 s, SPR reduces maximum bottom/side normal-displacement residuals
+by 93.9% / 87.1%, but the loaded-band alternating stress remains about 13.6 Pa.
+Pressure continues dissipating through 10 s; on/off pressure/settlement changes
+are not independent theory errors. HG/NoPen are off, and no 10-s CPU control
+exists. See [the bounded review](tests/notes/spr_yao_10s_review_r1.md) and its
+native field/profile/corner PNGs with matching CSVs. Formal root inputs and
+retained case02 results were not changed or rerun.
+
 This case retains the explicit u-pw verification setup and damping/boundary
 comparisons. The historical results are comparison records, not a new
 validation performed during file organization.

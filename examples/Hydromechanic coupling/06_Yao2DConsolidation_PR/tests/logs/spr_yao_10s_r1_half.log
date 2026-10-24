@@ -1,0 +1,2335 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 22
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[1700]  MResId=[0]  xmin=[-10]  xmax=[10]  sizefx=[20]  sizefz=[10]  Dp=[0.1]  PosMin_x=[-11.2]  PosMin_y=[0]  PosMin_z=[-1.2]  PosMax_x=[11.2]  PosMax_y=[0]  PosMax_z=[11.2]  CaseName=["spr_yao_10s_r1_half"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  MassBound=[17]  MassFluid=[17]
+
+Mk size: 1 bytes
+Case limits: (-11.2,0,-1.2) - (11.2,0,11.2)
+Distance between points (Dp): 0.1
+Case domain: (0,0,0)-(222,0,122)
+Domain points: 223 x 1 x 123 = 27429
+Case parts: 1 x 123z
+Memory: 0.00Gb 0.03Mb (27429)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_dbg-fillbox.vtk  domains:1
+<MAIN (Operations= 16+6+1 = 23)
+
+Triangles: 54 (0 ignored)
+[Draw-End  time:0.007s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 18 (2 + 8+1+7)
+Points loaded: 21945
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    836  -->     836
+  block[  1] (mk: 11):    404  -->     404
+  block[  2] (mk: 12):    404  -->     404
+Points -> Fluid particles:
+  block[  3] (mk:  1):  20301  -->   20301
+
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_MkCells.vtk  (time:0.003s, shapes:4, points:16)
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half.bi4<double>  (time:0.007s)
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_All.vtk  (time: 0.006s)
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_Bound.vtk  (time: 0.003s)
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_Fluid.vtk  (time: 0.005s)
+tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half.xml  (time:0.007s)
+Computing normals data...
+  Evaluating 1644 particles with 3 shapes (distance 2x H = 0.36).
+  Time for computing 1248 normals: 0.000s.
+  Non-zero particle normals: 1227/1644    Normals size range: (0.100000 - 0.424264).
+  Saving results files...
+  tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_Normals.vtk
+  tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_Normals.nbi4  (time:0.022s)
+
+Save files time: 0.046s
+
+Particle limits:
+  X range: -10.4 to 10.4 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.4 to 10 [m]
+
+[SaveCase2D-End  time:0.050s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.059 sec. (16 threads)
+
+Finished execution (code=0).
+
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  24-10-2026 20:46:37]
+ProgramFile=".../outputs/spr_yao_gpu_step_Release_op2/spr_yao_gpu_step.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/06_Yao2DConsolidation_PR"
+XmlFile=".../outputs/spr_yao_10s_r1_half_input/spr_yao_10s_r1_half.xml"
+OutputDir=".../tests/outputs/spr_yao_10s_r1_half"
+OutputDataDir=".../outputs/spr_yao_10s_r1_half/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizefx=[20]  sizefz=[10]  xmax=[10]  xmin=[-10]  CaseName=["spr_yao_10s_r1_half"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  KernelSize=[0.36]  B=[0]  Gamma=[7]  Rhop0=[1700]  Dp=[0.1]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[17]  MassBound=[17]
+XML-Vars (parameters): TimeMax=[10]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 1000000000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 16666666.000000
+  Shear Modulus: 12500000.000000
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint
+  HydroMechTopLoadMode="TopStripVertical"
+  HydroMechTopLoadFootprint: hard-coded Yao 2025 strip x=[-3,3] m on z=10 m top surface
+  HydroMechTopLoadQ0: 5000
+  HydroMechTopLoadRampTime: 0.1
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 21945
+MapRealPos(border)=(-10.409,-0.009,-0.409)-(10.409,0.009,10.009)
+MapRealPos(final)=(-10.409,-0.009,-0.409)-(10.409,0.009,10.009)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.360000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="spr_yao_10s_r1_half"
+RunName="spr_yao_10s_r1_half"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=17.19136
+  Wendland.bwen=-477.572
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.01
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=21945
+CaseNbound=1644
+CaseNfixed=1644
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=20301
+PeriodicActive="None"
+Dp=0.1
+KernelH=0.180000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.36
+CteB=4761904
+Gamma=7
+RhopZero=1700
+Cs0=140.0280056022408
+CFLnumber=0.2
+DtIni=0.00001
+DtMin=0.000000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=17
+MassBound=17
+TimeMax=10
+TimePart=0.01
+Gravity=(0,0,0)
+NpMinimum=1644
+RhopOut=True
+RhopOutMin=500
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(58,1,29)
+CellDomFixed=False
+**Requested GPU memory for 22073 particles: 11.6 MB (0 times).
+NormalDataFile="tests\outputs\spr_yao_10s_r1_half_input/spr_yao_10s_r1_half_Normals.nbi4"
+SPR stationary wall planes (one per mk): 3
+DomCells=(58,1,29)
+DomCellCode="1+12_8_11"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**CellDiv: Requested gpu memory for 23170 particles: 0.2 MB.
+**CellDiv: Requested gpu memory for 3540 cells (CellMode=Full): 0.1 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (836 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (404 particles)
+  Point....: (-10,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (404 particles)
+  Point....: (10,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+Part_0000        21945 particles successfully stored
+Part_0001      0.010000          1000     1000    1117.33  24-10-2026 23:52:50
+PROGRESS steps=1000 time=0.0099999999999997608
+Part_0002      0.020000          2000     1000    1086.26  24-10-2026 23:50:16
+PROGRESS steps=2000 time=0.019999999999999355
+Part_0003      0.030000          3000     1000    1097.55  24-10-2026 23:50:02
+PROGRESS steps=3000 time=0.029999999999998948
+Part_0004      0.040000          4000     1000    1097.81  24-10-2026 23:49:55
+PROGRESS steps=4000 time=0.040000000000001576
+Part_0005      0.050000          5000     1000    1096.52  24-10-2026 23:49:49
+PROGRESS steps=5000 time=0.050000000000004638
+Part_0006      0.060000          6000     1000    1084.63  24-10-2026 23:49:25
+PROGRESS steps=6000 time=0.0600000000000077
+Part_0007      0.070000          7000     1000    1084.17  24-10-2026 23:49:07
+PROGRESS steps=7000 time=0.070000000000005558
+Part_0008      0.080000          8000     1000    1085.00  24-10-2026 23:48:54
+PROGRESS steps=8000 time=0.080000000000001681
+Part_0009      0.090000          9000     1000    1066.11  24-10-2026 23:48:24
+PROGRESS steps=9000 time=0.089999999999997804
+Part_0010      0.100000         10000     1000    1070.20  24-10-2026 23:48:04
+PROGRESS steps=10000 time=0.099999999999993927
+Part_0011      0.110000         11000     1000    1071.39  24-10-2026 23:47:49
+PROGRESS steps=11000 time=0.10999999999999005
+Part_0012      0.120000         12000     1000    1076.68  24-10-2026 23:47:39
+PROGRESS steps=12000 time=0.11999999999998617
+Part_0013      0.130000         13000     1000    1076.63  24-10-2026 23:47:32
+PROGRESS steps=13000 time=0.12999999999998924
+Part_0014      0.140000         14000     1000    1068.96  24-10-2026 23:47:21
+PROGRESS steps=14000 time=0.13999999999999924
+Part_0015      0.150000         15000     1000    1065.22  24-10-2026 23:47:08
+PROGRESS steps=15000 time=0.15000000000000924
+Part_0016      0.160000         16000     1000    1065.30  24-10-2026 23:46:57
+PROGRESS steps=16000 time=0.16000000000001924
+Part_0017      0.170000         17000     1000    1063.49  24-10-2026 23:46:47
+PROGRESS steps=17000 time=0.17000000000002924
+Part_0018      0.180000         18000     1000    1063.30  24-10-2026 23:46:36
+PROGRESS steps=18000 time=0.18000000000003924
+Part_0019      0.190000         19000     1000    1064.10  24-10-2026 23:46:28
+PROGRESS steps=19000 time=0.19000000000004924
+Part_0020      0.200000         20000     1000    1062.90  24-10-2026 23:46:21
+PROGRESS steps=20000 time=0.20000000000005924
+Part_0021      0.210000         21000     1000    1063.95  24-10-2026 23:46:13
+PROGRESS steps=21000 time=0.21000000000006924
+Part_0022      0.220000         22000     1000    1063.57  24-10-2026 23:46:07
+PROGRESS steps=22000 time=0.22000000000007924
+Part_0023      0.230000         23000     1000    1065.41  24-10-2026 23:46:03
+PROGRESS steps=23000 time=0.23000000000008924
+Part_0024      0.240000         24000     1000    1067.59  24-10-2026 23:45:58
+PROGRESS steps=24000 time=0.24000000000009925
+Part_0025      0.250000         25000     1000    1071.28  24-10-2026 23:45:57
+PROGRESS steps=25000 time=0.25000000000010925
+Part_0026      0.260000         26000     1000    1068.49  24-10-2026 23:45:54
+PROGRESS steps=26000 time=0.26000000000011925
+Part_0027      0.270000         27000     1000    1084.15  24-10-2026 23:45:57
+PROGRESS steps=27000 time=0.27000000000012925
+Part_0028      0.280000         28000     1000    1074.76  24-10-2026 23:45:56
+PROGRESS steps=28000 time=0.28000000000013925
+Part_0029      0.290000         29000     1000    1070.89  24-10-2026 23:45:55
+PROGRESS steps=29000 time=0.29000000000014925
+Part_0030      0.300000         30000     1000    1068.14  24-10-2026 23:45:53
+PROGRESS steps=30000 time=0.30000000000015925
+Part_0031      0.310000         31000     1000    1070.87  24-10-2026 23:45:51
+PROGRESS steps=31000 time=0.31000000000016925
+Part_0032      0.320000         32000     1000    1069.59  24-10-2026 23:45:49
+PROGRESS steps=32000 time=0.32000000000017925
+Part_0033      0.330000         33000     1000    1069.60  24-10-2026 23:45:48
+PROGRESS steps=33000 time=0.33000000000018925
+Part_0034      0.340000         34000     1000    1067.26  24-10-2026 23:45:45
+PROGRESS steps=34000 time=0.34000000000019925
+Part_0035      0.350000         35000     1000    1067.98  24-10-2026 23:45:43
+PROGRESS steps=35000 time=0.35000000000020925
+Part_0036      0.360000         36000     1000    1072.83  24-10-2026 23:45:43
+PROGRESS steps=36000 time=0.36000000000021926
+Part_0037      0.370000         37000     1000    1102.87  24-10-2026 23:45:51
+PROGRESS steps=37000 time=0.37000000000022926
+Part_0038      0.380000         38000     1000    1097.67  24-10-2026 23:45:57
+PROGRESS steps=38000 time=0.38000000000023926
+Part_0039      0.390000         39000     1000    1099.55  24-10-2026 23:46:03
+PROGRESS steps=39000 time=0.39000000000024926
+Part_0040      0.400000         40000     1000    1086.39  24-10-2026 23:46:05
+PROGRESS steps=40000 time=0.40000000000025926
+Part_0041      0.410000         41000     1000    1088.21  24-10-2026 23:46:08
+PROGRESS steps=41000 time=0.41000000000026926
+Part_0042      0.420000         42000     1000    1076.58  24-10-2026 23:46:08
+PROGRESS steps=42000 time=0.42000000000027926
+Part_0043      0.430000         43000     1000    1067.77  24-10-2026 23:46:06
+PROGRESS steps=43000 time=0.43000000000028926
+Part_0044      0.440000         44000     1000    1067.79  24-10-2026 23:46:04
+PROGRESS steps=44000 time=0.44000000000029926
+Part_0045      0.450000         45000     1000    1077.00  24-10-2026 23:46:03
+PROGRESS steps=45000 time=0.45000000000030926
+Part_0046      0.460000         46000     1000    1077.49  24-10-2026 23:46:04
+PROGRESS steps=46000 time=0.46000000000031926
+Part_0047      0.470000         47000     1000    1077.11  24-10-2026 23:46:04
+PROGRESS steps=47000 time=0.47000000000032927
+Part_0048      0.480000         48000     1000    1070.59  24-10-2026 23:46:03
+PROGRESS steps=48000 time=0.48000000000033927
+Part_0049      0.490000         49000     1000    1069.52  24-10-2026 23:46:01
+PROGRESS steps=49000 time=0.49000000000034927
+Part_0050      0.500000         50000     1000    1068.78  24-10-2026 23:46:00
+PROGRESS steps=50000 time=0.50000000000035927
+Part_0051      0.510000         51000     1000    1073.12  24-10-2026 23:46:00
+PROGRESS steps=51000 time=0.51000000000031376
+Part_0052      0.520000         52000     1000    1070.66  24-10-2026 23:45:59
+PROGRESS steps=52000 time=0.52000000000026825
+Part_0053      0.530000         53000     1000    1071.24  24-10-2026 23:45:57
+PROGRESS steps=53000 time=0.53000000000022274
+Part_0054      0.540000         54000     1000    1070.17  24-10-2026 23:45:56
+PROGRESS steps=54000 time=0.54000000000017723
+Part_0055      0.550000         55000     1000    1068.65  24-10-2026 23:45:55
+PROGRESS steps=55000 time=0.55000000000013172
+Part_0056      0.560000         56000     1000    1063.31  24-10-2026 23:45:53
+PROGRESS steps=56000 time=0.56000000000008621
+Part_0057      0.570000         57000     1000    1063.58  24-10-2026 23:45:51
+PROGRESS steps=57000 time=0.5700000000000407
+Part_0058      0.580000         58000     1000    1063.68  24-10-2026 23:45:49
+PROGRESS steps=58000 time=0.57999999999999519
+Part_0059      0.590000         59000     1000    1062.93  24-10-2026 23:45:47
+PROGRESS steps=59000 time=0.58999999999994968
+Part_0060      0.600000         60000     1000    1073.67  24-10-2026 23:45:47
+PROGRESS steps=60000 time=0.59999999999990417
+Part_0061      0.610000         61000     1000    1082.31  24-10-2026 23:45:48
+PROGRESS steps=61000 time=0.60999999999985866
+Part_0062      0.620000         62000     1000    1066.80  24-10-2026 23:45:46
+PROGRESS steps=62000 time=0.61999999999981315
+Part_0063      0.630000         63000     1000    1068.53  24-10-2026 23:45:45
+PROGRESS steps=63000 time=0.62999999999976763
+Part_0064      0.640000         64000     1000    1070.23  24-10-2026 23:45:45
+PROGRESS steps=64000 time=0.63999999999972212
+Part_0065      0.650000         65000     1000    1068.53  24-10-2026 23:45:43
+PROGRESS steps=65000 time=0.64999999999967661
+Part_0066      0.660000         66000     1000    1069.24  24-10-2026 23:45:43
+PROGRESS steps=66000 time=0.6599999999996311
+Part_0067      0.670000         67000     1000    1068.02  24-10-2026 23:45:42
+PROGRESS steps=67000 time=0.66999999999958559
+Part_0068      0.680000         68000     1000    1068.40  24-10-2026 23:45:42
+PROGRESS steps=68000 time=0.67999999999954008
+Part_0069      0.690000         69000     1000    1067.91  24-10-2026 23:45:40
+PROGRESS steps=69000 time=0.68999999999949457
+Part_0070      0.700000         70000     1000    1089.32  24-10-2026 23:45:42
+PROGRESS steps=70000 time=0.69999999999944906
+Part_0071      0.710000         71000     1000    1103.78  24-10-2026 23:45:46
+PROGRESS steps=71000 time=0.70999999999940355
+Part_0072      0.720000         72000     1000    1105.14  24-10-2026 23:45:51
+PROGRESS steps=72000 time=0.71999999999935804
+Part_0073      0.730000         73000     1000    1095.07  24-10-2026 23:45:53
+PROGRESS steps=73000 time=0.72999999999931253
+Part_0074      0.740000         74000     1000    1089.14  24-10-2026 23:45:55
+PROGRESS steps=74000 time=0.73999999999926702
+Part_0075      0.750000         75000     1000    1085.60  24-10-2026 23:45:57
+PROGRESS steps=75000 time=0.74999999999922151
+Part_0076      0.760000         76000     1000    1068.65  24-10-2026 23:45:56
+PROGRESS steps=76000 time=0.759999999999176
+Part_0077      0.770000         77000     1000    1071.77  24-10-2026 23:45:55
+PROGRESS steps=77000 time=0.76999999999913049
+Part_0078      0.780000         78000     1000    1070.92  24-10-2026 23:45:55
+PROGRESS steps=78000 time=0.77999999999908498
+Part_0079      0.790000         79000     1000    1076.37  24-10-2026 23:45:55
+PROGRESS steps=79000 time=0.78999999999903947
+Part_0080      0.800000         80000     1000    1078.15  24-10-2026 23:45:55
+PROGRESS steps=80000 time=0.79999999999899396
+Part_0081      0.810000         81000     1000    1071.96  24-10-2026 23:45:54
+PROGRESS steps=81000 time=0.80999999999894845
+Part_0082      0.820000         82000     1000    1069.11  24-10-2026 23:45:54
+PROGRESS steps=82000 time=0.81999999999890294
+Part_0083      0.830000         83000     1000    1068.64  24-10-2026 23:45:53
+PROGRESS steps=83000 time=0.82999999999885743
+Part_0084      0.840000         84000     1000    1069.40  24-10-2026 23:45:52
+PROGRESS steps=84000 time=0.83999999999881192
+Part_0085      0.850000         85000     1000    1072.36  24-10-2026 23:45:52
+PROGRESS steps=85000 time=0.84999999999876641
+Part_0086      0.860000         86000     1000    1072.03  24-10-2026 23:45:52
+PROGRESS steps=86000 time=0.8599999999987209
+Part_0087      0.870000         87000     1000    1070.74  24-10-2026 23:45:51
+PROGRESS steps=87000 time=0.86999999999867539
+Part_0088      0.880000         88000     1000    1070.89  24-10-2026 23:45:50
+PROGRESS steps=88000 time=0.87999999999862988
+Part_0089      0.890000         89000     1000    1071.14  24-10-2026 23:45:50
+PROGRESS steps=89000 time=0.88999999999858437
+Part_0090      0.900000         90000     1000    1070.40  24-10-2026 23:45:50
+PROGRESS steps=90000 time=0.89999999999853886
+Part_0091      0.910000         91000     1000    1070.25  24-10-2026 23:45:49
+PROGRESS steps=91000 time=0.90999999999849335
+Part_0092      0.920000         92000     1000    1077.68  24-10-2026 23:45:49
+PROGRESS steps=92000 time=0.91999999999844784
+Part_0093      0.930000         93000     1000    1081.21  24-10-2026 23:45:50
+PROGRESS steps=93000 time=0.92999999999840233
+Part_0094      0.940000         94000     1000    1082.37  24-10-2026 23:45:51
+PROGRESS steps=94000 time=0.93999999999835682
+Part_0095      0.950000         95000     1000    1077.24  24-10-2026 23:45:51
+PROGRESS steps=95000 time=0.94999999999831131
+Part_0096      0.960000         96000     1000    1070.44  24-10-2026 23:45:50
+PROGRESS steps=96000 time=0.9599999999982658
+Part_0097      0.970000         97000     1000    1070.74  24-10-2026 23:45:50
+PROGRESS steps=97000 time=0.96999999999822029
+Part_0098      0.980000         98000     1000    1069.20  24-10-2026 23:45:50
+PROGRESS steps=98000 time=0.97999999999817478
+Part_0099      0.990000         99000     1000    1067.66  24-10-2026 23:45:48
+PROGRESS steps=99000 time=0.98999999999812927
+Part_0100      1.000000        100000     1000    1068.28  24-10-2026 23:45:48
+PROGRESS steps=100000 time=0.99999999999808376
+Part_0101      1.010000        101000     1000    1067.03  24-10-2026 23:45:47
+PROGRESS steps=101000 time=1.0099999999981493
+Part_0102      1.020000        102000     1000    1066.99  24-10-2026 23:45:46
+PROGRESS steps=102000 time=1.0199999999982148
+Part_0103      1.030000        103000     1000    1074.08  24-10-2026 23:45:46
+PROGRESS steps=103000 time=1.0299999999982803
+Part_0104      1.040000        104000     1000    1103.33  24-10-2026 23:45:49
+PROGRESS steps=104000 time=1.0399999999983458
+Part_0105      1.050000        105000     1000    1102.45  24-10-2026 23:45:51
+PROGRESS steps=105000 time=1.0499999999984113
+Part_0106      1.060000        106000     1000    1094.66  24-10-2026 23:45:53
+PROGRESS steps=106000 time=1.0599999999984768
+Part_0107      1.070000        107000     1000    1089.85  24-10-2026 23:45:55
+PROGRESS steps=107000 time=1.0699999999985423
+Part_0108      1.080000        108000     1000    1089.73  24-10-2026 23:45:56
+PROGRESS steps=108000 time=1.0799999999986079
+Part_0109      1.090000        109000     1000    1076.62  24-10-2026 23:45:57
+PROGRESS steps=109000 time=1.0899999999986734
+Part_0110      1.100000        110000     1000    1068.17  24-10-2026 23:45:55
+PROGRESS steps=110000 time=1.0999999999987389
+Part_0111      1.110000        111000     1000    1069.20  24-10-2026 23:45:55
+PROGRESS steps=111000 time=1.1099999999988044
+Part_0112      1.120000        112000     1000    1079.43  24-10-2026 23:45:55
+PROGRESS steps=112000 time=1.1199999999988699
+Part_0113      1.130000        113000     1000    1077.78  24-10-2026 23:45:56
+PROGRESS steps=113000 time=1.1299999999989354
+Part_0114      1.140000        114000     1000    1076.23  24-10-2026 23:45:55
+PROGRESS steps=114000 time=1.1399999999990009
+Part_0115      1.150000        115000     1000    1074.66  24-10-2026 23:45:55
+PROGRESS steps=115000 time=1.1499999999990664
+Part_0116      1.160000        116000     1000    1070.82  24-10-2026 23:45:55
+PROGRESS steps=116000 time=1.1599999999991319
+Part_0117      1.170000        117000     1000    1072.62  24-10-2026 23:45:55
+PROGRESS steps=117000 time=1.1699999999991975
+Part_0118      1.180000        118000     1000    1072.83  24-10-2026 23:45:54
+PROGRESS steps=118000 time=1.179999999999263
+Part_0119      1.190000        119000     1000    1075.87  24-10-2026 23:45:54
+PROGRESS steps=119000 time=1.1899999999993285
+Part_0120      1.200000        120000     1000    1072.77  24-10-2026 23:45:54
+PROGRESS steps=120000 time=1.199999999999394
+Part_0121      1.210000        121000     1000    1072.57  24-10-2026 23:45:54
+PROGRESS steps=121000 time=1.2099999999994595
+Part_0122      1.220000        122000     1000    1072.14  24-10-2026 23:45:53
+PROGRESS steps=122000 time=1.219999999999525
+Part_0123      1.230000        123000     1000    1087.26  24-10-2026 23:45:55
+PROGRESS steps=123000 time=1.2299999999995905
+Part_0124      1.240000        124000     1000    1071.64  24-10-2026 23:45:55
+PROGRESS steps=124000 time=1.239999999999656
+Part_0125      1.250000        125000     1000    1070.55  24-10-2026 23:45:54
+PROGRESS steps=125000 time=1.2499999999997216
+Part_0126      1.260000        126000     1000    1077.33  24-10-2026 23:45:54
+PROGRESS steps=126000 time=1.2599999999997871
+Part_0127      1.270000        127000     1000    1076.34  24-10-2026 23:45:54
+PROGRESS steps=127000 time=1.2699999999998526
+Part_0128      1.280000        128000     1000    1080.44  24-10-2026 23:45:55
+PROGRESS steps=128000 time=1.2799999999999181
+Part_0129      1.290000        129000     1000    1069.88  24-10-2026 23:45:54
+PROGRESS steps=129000 time=1.2899999999999836
+Part_0130      1.300000        130000     1000    1070.56  24-10-2026 23:45:53
+PROGRESS steps=130000 time=1.3000000000000491
+Part_0131      1.310000        131000     1000    1072.06  24-10-2026 23:45:53
+PROGRESS steps=131000 time=1.3100000000001146
+Part_0132      1.320000        132000     1000    1070.92  24-10-2026 23:45:53
+PROGRESS steps=132000 time=1.3200000000001801
+Part_0133      1.330000        133000     1000    1070.20  24-10-2026 23:45:53
+PROGRESS steps=133000 time=1.3300000000002457
+Part_0134      1.340000        134000     1000    1069.77  24-10-2026 23:45:52
+PROGRESS steps=134000 time=1.3400000000003112
+Part_0135      1.350000        135000     1000    1070.04  24-10-2026 23:45:52
+PROGRESS steps=135000 time=1.3500000000003767
+Part_0136      1.360000        136000     1000    1070.42  24-10-2026 23:45:52
+PROGRESS steps=136000 time=1.3600000000004422
+Part_0137      1.370000        137000     1000    1097.77  24-10-2026 23:45:54
+PROGRESS steps=137000 time=1.3700000000005077
+Part_0138      1.380000        138000     1000    1104.80  24-10-2026 23:45:56
+PROGRESS steps=138000 time=1.3800000000005732
+Part_0139      1.390000        139000     1000    1103.90  24-10-2026 23:45:58
+PROGRESS steps=139000 time=1.3900000000006387
+Part_0140      1.400000        140000     1000    1087.85  24-10-2026 23:45:59
+PROGRESS steps=140000 time=1.4000000000007042
+Part_0141      1.410000        141000     1000    1087.56  24-10-2026 23:45:59
+PROGRESS steps=141000 time=1.4100000000007697
+Part_0142      1.420000        142000     1000    1081.57  24-10-2026 23:45:59
+PROGRESS steps=142000 time=1.4200000000008353
+Part_0143      1.430000        143000     1000    1070.46  24-10-2026 23:45:59
+PROGRESS steps=143000 time=1.4300000000009008
+Part_0144      1.440000        144000     1000    1071.15  24-10-2026 23:45:59
+PROGRESS steps=144000 time=1.4400000000009663
+Part_0145      1.450000        145000     1000    1073.80  24-10-2026 23:45:58
+PROGRESS steps=145000 time=1.4500000000010318
+Part_0146      1.460000        146000     1000    1075.13  24-10-2026 23:45:58
+PROGRESS steps=146000 time=1.4600000000010973
+Part_0147      1.470000        147000     1000    1077.03  24-10-2026 23:45:59
+PROGRESS steps=147000 time=1.4700000000011628
+Part_0148      1.480000        148000     1000    1070.49  24-10-2026 23:45:59
+PROGRESS steps=148000 time=1.4800000000012283
+Part_0149      1.490000        149000     1000    1072.52  24-10-2026 23:45:58
+PROGRESS steps=149000 time=1.4900000000012938
+Part_0150      1.500000        150000     1000    1072.77  24-10-2026 23:45:58
+PROGRESS steps=150000 time=1.5000000000013594
+Part_0151      1.510000        151000     1000    1072.66  24-10-2026 23:45:58
+PROGRESS steps=151000 time=1.5100000000014249
+Part_0152      1.520000        152000     1000    1072.38  24-10-2026 23:45:58
+PROGRESS steps=152000 time=1.5200000000014904
+Part_0153      1.530000        153000     1000    1075.97  24-10-2026 23:45:57
+PROGRESS steps=153000 time=1.5300000000015559
+Part_0154      1.540000        154000     1000    1072.79  24-10-2026 23:45:57
+PROGRESS steps=154000 time=1.5400000000016214
+Part_0155      1.550000        155000     1000    1076.93  24-10-2026 23:45:57
+PROGRESS steps=155000 time=1.5500000000016869
+Part_0156      1.560000        156000     1000    1072.99  24-10-2026 23:45:57
+PROGRESS steps=156000 time=1.5600000000017524
+Part_0157      1.570000        157000     1000    1072.28  24-10-2026 23:45:56
+PROGRESS steps=157000 time=1.5700000000018179
+Part_0158      1.580000        158000     1000    1071.23  24-10-2026 23:45:56
+PROGRESS steps=158000 time=1.5800000000018835
+Part_0159      1.590000        159000     1000    1075.90  24-10-2026 23:45:57
+PROGRESS steps=159000 time=1.590000000001949
+Part_0160      1.600000        160000     1000    1082.97  24-10-2026 23:45:57
+PROGRESS steps=160000 time=1.6000000000020145
+Part_0161      1.610000        161000     1000    1077.88  24-10-2026 23:45:57
+PROGRESS steps=161000 time=1.61000000000208
+Part_0162      1.620000        162000     1000    1072.38  24-10-2026 23:45:57
+PROGRESS steps=162000 time=1.6200000000021455
+Part_0163      1.630000        163000     1000    1070.69  24-10-2026 23:45:57
+PROGRESS steps=163000 time=1.630000000002211
+Part_0164      1.640000        164000     1000    1070.62  24-10-2026 23:45:57
+PROGRESS steps=164000 time=1.6400000000022765
+Part_0165      1.650000        165000     1000    1070.40  24-10-2026 23:45:56
+PROGRESS steps=165000 time=1.650000000002342
+Part_0166      1.660000        166000     1000    1070.72  24-10-2026 23:45:56
+PROGRESS steps=166000 time=1.6600000000024075
+Part_0167      1.670000        167000     1000    1071.89  24-10-2026 23:45:56
+PROGRESS steps=167000 time=1.6700000000024731
+Part_0168      1.680000        168000     1000    1070.47  24-10-2026 23:45:55
+PROGRESS steps=168000 time=1.6800000000025386
+Part_0169      1.690000        169000     1000    1072.05  24-10-2026 23:45:55
+PROGRESS steps=169000 time=1.6900000000026041
+Part_0170      1.700000        170000     1000    1080.63  24-10-2026 23:45:55
+PROGRESS steps=170000 time=1.7000000000026696
+Part_0171      1.710000        171000     1000    1104.65  24-10-2026 23:45:57
+PROGRESS steps=171000 time=1.7100000000027351
+Part_0172      1.720000        172000     1000    1107.31  24-10-2026 23:45:59
+PROGRESS steps=172000 time=1.7200000000028006
+Part_0173      1.730000        173000     1000    1092.79  24-10-2026 23:46:00
+PROGRESS steps=173000 time=1.7300000000028661
+Part_0174      1.740000        174000     1000    1088.54  24-10-2026 23:46:00
+PROGRESS steps=174000 time=1.7400000000029316
+Part_0175      1.750000        175000     1000    1091.18  24-10-2026 23:46:01
+PROGRESS steps=175000 time=1.7500000000029972
+Part_0176      1.760000        176000     1000    1075.04  24-10-2026 23:46:01
+PROGRESS steps=176000 time=1.7600000000030627
+Part_0177      1.770000        177000     1000    1072.83  24-10-2026 23:46:01
+PROGRESS steps=177000 time=1.7700000000031282
+Part_0178      1.780000        178000     1000    1070.27  24-10-2026 23:46:01
+PROGRESS steps=178000 time=1.7800000000031937
+Part_0179      1.790000        179000     1000    1076.98  24-10-2026 23:46:01
+PROGRESS steps=179000 time=1.7900000000032592
+Part_0180      1.800000        180000     1000    1077.68  24-10-2026 23:46:00
+PROGRESS steps=180000 time=1.8000000000033247
+Part_0181      1.810000        181000     1000    1077.82  24-10-2026 23:46:01
+PROGRESS steps=181000 time=1.8100000000033902
+Part_0182      1.820000        182000     1000    1073.46  24-10-2026 23:46:01
+PROGRESS steps=182000 time=1.8200000000034557
+Part_0183      1.830000        183000     1000    1075.65  24-10-2026 23:46:01
+PROGRESS steps=183000 time=1.8300000000035213
+Part_0184      1.840000        184000     1000    1074.21  24-10-2026 23:46:01
+PROGRESS steps=184000 time=1.8400000000035868
+Part_0185      1.850000        185000     1000    1074.92  24-10-2026 23:46:00
+PROGRESS steps=185000 time=1.8500000000036523
+Part_0186      1.860000        186000     1000    1075.43  24-10-2026 23:46:00
+PROGRESS steps=186000 time=1.8600000000037178
+Part_0187      1.870000        187000     1000    1073.82  24-10-2026 23:46:01
+PROGRESS steps=187000 time=1.8700000000037833
+Part_0188      1.880000        188000     1000    1073.69  24-10-2026 23:46:00
+PROGRESS steps=188000 time=1.8800000000038488
+Part_0189      1.890000        189000     1000    1073.24  24-10-2026 23:46:00
+PROGRESS steps=189000 time=1.8900000000039143
+Part_0190      1.900000        190000     1000    1071.21  24-10-2026 23:46:00
+PROGRESS steps=190000 time=1.9000000000039798
+Part_0191      1.910000        191000     1000    1075.65  24-10-2026 23:46:00
+PROGRESS steps=191000 time=1.9100000000040454
+Part_0192      1.920000        192000     1000    1075.41  24-10-2026 23:45:59
+PROGRESS steps=192000 time=1.9200000000041109
+Part_0193      1.930000        193000     1000    1084.75  24-10-2026 23:46:00
+PROGRESS steps=193000 time=1.9300000000041764
+Part_0194      1.940000        194000     1000    1085.71  24-10-2026 23:46:00
+PROGRESS steps=194000 time=1.9400000000042419
+Part_0195      1.950000        195000     1000    1079.09  24-10-2026 23:46:01
+PROGRESS steps=195000 time=1.9500000000043074
+Part_0196      1.960000        196000     1000    1070.94  24-10-2026 23:46:01
+PROGRESS steps=196000 time=1.9600000000043729
+Part_0197      1.970000        197000     1000    1073.31  24-10-2026 23:46:00
+PROGRESS steps=197000 time=1.9700000000044384
+Part_0198      1.980000        198000     1000    1072.65  24-10-2026 23:46:00
+PROGRESS steps=198000 time=1.9800000000045039
+Part_0199      1.990000        199000     1000    1072.38  24-10-2026 23:46:00
+PROGRESS steps=199000 time=1.9900000000045694
+Part_0200      2.000000        200000     1000    1069.58  24-10-2026 23:46:00
+PROGRESS steps=200000 time=2.000000000004635
+Part_0201      2.010000        201000     1000    1072.07  24-10-2026 23:45:59
+PROGRESS steps=201000 time=2.0100000000047005
+Part_0202      2.020000        202000     1000    1070.11  24-10-2026 23:45:59
+PROGRESS steps=202000 time=2.020000000004766
+Part_0203      2.030000        203000     1000    1071.11  24-10-2026 23:45:59
+PROGRESS steps=203000 time=2.0300000000048315
+Part_0204      2.040000        204000     1000    1102.89  24-10-2026 23:46:00
+PROGRESS steps=204000 time=2.040000000004897
+Part_0205      2.050000        205000     1000    1104.41  24-10-2026 23:46:02
+PROGRESS steps=205000 time=2.0500000000049625
+Part_0206      2.060000        206000     1000    1100.44  24-10-2026 23:46:03
+PROGRESS steps=206000 time=2.060000000005028
+Part_0207      2.070000        207000     1000    1092.31  24-10-2026 23:46:04
+PROGRESS steps=207000 time=2.0700000000050935
+Part_0208      2.080000        208000     1000    1091.18  24-10-2026 23:46:05
+PROGRESS steps=208000 time=2.0800000000051591
+Part_0209      2.090000        209000     1000    1082.76  24-10-2026 23:46:04
+PROGRESS steps=209000 time=2.0900000000052246
+Part_0210      2.100000        210000     1000    1073.06  24-10-2026 23:46:04
+PROGRESS steps=210000 time=2.1000000000052901
+Part_0211      2.110000        211000     1000    1071.80  24-10-2026 23:46:04
+PROGRESS steps=211000 time=2.1100000000053556
+Part_0212      2.120000        212000     1000    1078.74  24-10-2026 23:46:05
+PROGRESS steps=212000 time=2.1200000000054211
+Part_0213      2.130000        213000     1000    1085.33  24-10-2026 23:46:05
+PROGRESS steps=213000 time=2.1300000000054866
+Part_0214      2.140000        214000     1000    1083.63  24-10-2026 23:46:05
+PROGRESS steps=214000 time=2.1400000000055521
+Part_0215      2.150000        215000     1000    1074.96  24-10-2026 23:46:05
+PROGRESS steps=215000 time=2.1500000000056176
+Part_0216      2.160000        216000     1000    1073.83  24-10-2026 23:46:05
+PROGRESS steps=216000 time=2.1600000000056832
+Part_0217      2.170000        217000     1000    1074.98  24-10-2026 23:46:05
+PROGRESS steps=217000 time=2.1700000000057487
+Part_0218      2.180000        218000     1000    1073.94  24-10-2026 23:46:04
+PROGRESS steps=218000 time=2.1800000000058142
+Part_0219      2.190000        219000     1000    1073.60  24-10-2026 23:46:04
+PROGRESS steps=219000 time=2.1900000000058797
+Part_0220      2.200000        220000     1000    1074.14  24-10-2026 23:46:04
+PROGRESS steps=220000 time=2.2000000000059452
+Part_0221      2.210000        221000     1000    1073.44  24-10-2026 23:46:05
+PROGRESS steps=221000 time=2.2100000000060107
+Part_0222      2.220000        222000     1000    1074.81  24-10-2026 23:46:04
+PROGRESS steps=222000 time=2.2200000000060762
+Part_0223      2.230000        223000     1000    1075.87  24-10-2026 23:46:04
+PROGRESS steps=223000 time=2.2300000000061417
+Part_0224      2.240000        224000     1000    1074.19  24-10-2026 23:46:04
+PROGRESS steps=224000 time=2.2400000000062072
+Part_0225      2.250000        225000     1000    1073.98  24-10-2026 23:46:04
+PROGRESS steps=225000 time=2.2500000000062728
+Part_0226      2.260000        226000     1000    1085.27  24-10-2026 23:46:04
+PROGRESS steps=226000 time=2.2600000000063383
+Part_0227      2.270000        227000     1000    1087.69  24-10-2026 23:46:04
+PROGRESS steps=227000 time=2.2700000000064038
+Part_0228      2.280000        228000     1000    1089.23  24-10-2026 23:46:05
+PROGRESS steps=228000 time=2.2800000000064693
+Part_0229      2.290000        229000     1000    1073.38  24-10-2026 23:46:05
+PROGRESS steps=229000 time=2.2900000000065348
+Part_0230      2.300000        230000     1000    1072.43  24-10-2026 23:46:05
+PROGRESS steps=230000 time=2.3000000000066003
+Part_0231      2.310000        231000     1000    1072.91  24-10-2026 23:46:04
+PROGRESS steps=231000 time=2.3100000000066658
+Part_0232      2.320000        232000     1000    1071.20  24-10-2026 23:46:04
+PROGRESS steps=232000 time=2.3200000000067313
+Part_0233      2.330000        233000     1000    1072.90  24-10-2026 23:46:05
+PROGRESS steps=233000 time=2.3300000000067969
+Part_0234      2.340000        234000     1000    1072.65  24-10-2026 23:46:05
+PROGRESS steps=234000 time=2.3400000000068624
+Part_0235      2.350000        235000     1000    1072.75  24-10-2026 23:46:04
+PROGRESS steps=235000 time=2.3500000000069279
+Part_0236      2.360000        236000     1000    1070.80  24-10-2026 23:46:04
+PROGRESS steps=236000 time=2.3600000000069934
+Part_0237      2.370000        237000     1000    1089.66  24-10-2026 23:46:04
+PROGRESS steps=237000 time=2.3700000000070589
+Part_0238      2.380000        238000     1000    1104.64  24-10-2026 23:46:06
+PROGRESS steps=238000 time=2.3800000000071244
+Part_0239      2.390000        239000     1000    1107.33  24-10-2026 23:46:07
+PROGRESS steps=239000 time=2.3900000000071899
+Part_0240      2.400000        240000     1000    1093.02  24-10-2026 23:46:08
+PROGRESS steps=240000 time=2.4000000000072554
+Part_0241      2.410000        241000     1000    1094.55  24-10-2026 23:46:08
+PROGRESS steps=241000 time=2.410000000007321
+Part_0242      2.420000        242000     1000    1088.46  24-10-2026 23:46:09
+PROGRESS steps=242000 time=2.4200000000073865
+Part_0243      2.430000        243000     1000    1072.72  24-10-2026 23:46:09
+PROGRESS steps=243000 time=2.430000000007452
+Part_0244      2.440000        244000     1000    1077.93  24-10-2026 23:46:08
+PROGRESS steps=244000 time=2.4400000000075175
+Part_0245      2.450000        245000     1000    1075.91  24-10-2026 23:46:08
+PROGRESS steps=245000 time=2.450000000007583
+Part_0246      2.460000        246000     1000    1080.21  24-10-2026 23:46:09
+PROGRESS steps=246000 time=2.4600000000076485
+Part_0247      2.470000        247000     1000    1081.27  24-10-2026 23:46:09
+PROGRESS steps=247000 time=2.470000000007714
+Part_0248      2.480000        248000     1000    1074.85  24-10-2026 23:46:08
+PROGRESS steps=248000 time=2.4800000000077795
+Part_0249      2.490000        249000     1000    1073.55  24-10-2026 23:46:08
+PROGRESS steps=249000 time=2.490000000007845
+Part_0250      2.500000        250000     1000    1074.59  24-10-2026 23:46:09
+PROGRESS steps=250000 time=2.5000000000079106
+Part_0251      2.510000        251000     1000    1075.57  24-10-2026 23:46:09
+PROGRESS steps=251000 time=2.5100000000079761
+Part_0252      2.520000        252000     1000    1074.97  24-10-2026 23:46:08
+PROGRESS steps=252000 time=2.5200000000080416
+Part_0253      2.530000        253000     1000    1073.26  24-10-2026 23:46:08
+PROGRESS steps=253000 time=2.5300000000081071
+Part_0254      2.540000        254000     1000    1075.72  24-10-2026 23:46:08
+PROGRESS steps=254000 time=2.5400000000081726
+Part_0255      2.550000        255000     1000    1075.87  24-10-2026 23:46:08
+PROGRESS steps=255000 time=2.5500000000082381
+Part_0256      2.560000        256000     1000    1074.18  24-10-2026 23:46:08
+PROGRESS steps=256000 time=2.5600000000083036
+Part_0257      2.570000        257000     1000    1072.92  24-10-2026 23:46:08
+PROGRESS steps=257000 time=2.5700000000083691
+Part_0258      2.580000        258000     1000    1073.63  24-10-2026 23:46:08
+PROGRESS steps=258000 time=2.5800000000084347
+Part_0259      2.590000        259000     1000    1085.89  24-10-2026 23:46:08
+PROGRESS steps=259000 time=2.5900000000085002
+Part_0260      2.600000        260000     1000    1086.01  24-10-2026 23:46:09
+PROGRESS steps=260000 time=2.6000000000085657
+Part_0261      2.610000        261000     1000    1087.15  24-10-2026 23:46:09
+PROGRESS steps=261000 time=2.6100000000086312
+Part_0262      2.620000        262000     1000    1076.98  24-10-2026 23:46:09
+PROGRESS steps=262000 time=2.6200000000086967
+Part_0263      2.630000        263000     1000    1072.93  24-10-2026 23:46:09
+PROGRESS steps=263000 time=2.6300000000087622
+Part_0264      2.640000        264000     1000    1072.64  24-10-2026 23:46:09
+PROGRESS steps=264000 time=2.6400000000088277
+Part_0265      2.650000        265000     1000    1071.35  24-10-2026 23:46:08
+PROGRESS steps=265000 time=2.6500000000088932
+Part_0266      2.660000        266000     1000    1074.50  24-10-2026 23:46:08
+PROGRESS steps=266000 time=2.6600000000089588
+Part_0267      2.670000        267000     1000    1073.91  24-10-2026 23:46:08
+PROGRESS steps=267000 time=2.6700000000090243
+Part_0268      2.680000        268000     1000    1071.15  24-10-2026 23:46:08
+PROGRESS steps=268000 time=2.6800000000090898
+Part_0269      2.690000        269000     1000    1070.05  24-10-2026 23:46:07
+PROGRESS steps=269000 time=2.6900000000091553
+Part_0270      2.700000        270000     1000    1078.35  24-10-2026 23:46:08
+PROGRESS steps=270000 time=2.7000000000092208
+Part_0271      2.710000        271000     1000    1098.37  24-10-2026 23:46:08
+PROGRESS steps=271000 time=2.7100000000092863
+Part_0272      2.720000        272000     1000    1107.14  24-10-2026 23:46:09
+PROGRESS steps=272000 time=2.7200000000093518
+Part_0273      2.730000        273000     1000    1098.57  24-10-2026 23:46:10
+PROGRESS steps=273000 time=2.7300000000094173
+Part_0274      2.740000        274000     1000    1095.62  24-10-2026 23:46:11
+PROGRESS steps=274000 time=2.7400000000094829
+Part_0275      2.750000        275000     1000    1093.36  24-10-2026 23:46:12
+PROGRESS steps=275000 time=2.7500000000095484
+Part_0276      2.760000        276000     1000    1074.09  24-10-2026 23:46:12
+PROGRESS steps=276000 time=2.7600000000096139
+Part_0277      2.770000        277000     1000    1071.53  24-10-2026 23:46:12
+PROGRESS steps=277000 time=2.7700000000096794
+Part_0278      2.780000        278000     1000    1072.38  24-10-2026 23:46:11
+PROGRESS steps=278000 time=2.7800000000097449
+Part_0279      2.790000        279000     1000    1082.00  24-10-2026 23:46:11
+PROGRESS steps=279000 time=2.7900000000098104
+Part_0280      2.800000        280000     1000    1081.11  24-10-2026 23:46:12
+PROGRESS steps=280000 time=2.8000000000098759
+Part_0281      2.810000        281000     1000    1081.35  24-10-2026 23:46:12
+PROGRESS steps=281000 time=2.8100000000099414
+Part_0282      2.820000        282000     1000    1075.82  24-10-2026 23:46:12
+PROGRESS steps=282000 time=2.8200000000100069
+Part_0283      2.830000        283000     1000    1077.35  24-10-2026 23:46:11
+PROGRESS steps=283000 time=2.8300000000100725
+Part_0284      2.840000        284000     1000    1075.97  24-10-2026 23:46:11
+PROGRESS steps=284000 time=2.840000000010138
+Part_0285      2.850000        285000     1000    1074.30  24-10-2026 23:46:12
+PROGRESS steps=285000 time=2.8500000000102035
+Part_0286      2.860000        286000     1000    1075.87  24-10-2026 23:46:12
+PROGRESS steps=286000 time=2.860000000010269
+Part_0287      2.870000        287000     1000    1078.41  24-10-2026 23:46:11
+PROGRESS steps=287000 time=2.8700000000103345
+Part_0288      2.880000        288000     1000    1077.98  24-10-2026 23:46:11
+PROGRESS steps=288000 time=2.8800000000104
+Part_0289      2.890000        289000     1000    1076.32  24-10-2026 23:46:12
+PROGRESS steps=289000 time=2.8900000000104655
+Part_0290      2.900000        290000     1000    1073.18  24-10-2026 23:46:12
+PROGRESS steps=290000 time=2.900000000010531
+Part_0291      2.910000        291000     1000    1076.07  24-10-2026 23:46:11
+PROGRESS steps=291000 time=2.9100000000105966
+Part_0292      2.920000        292000     1000    1074.43  24-10-2026 23:46:11
+PROGRESS steps=292000 time=2.9200000000106621
+Part_0293      2.930000        293000     1000    1087.35  24-10-2026 23:46:11
+PROGRESS steps=293000 time=2.9300000000107276
+Part_0294      2.940000        294000     1000    1087.21  24-10-2026 23:46:12
+PROGRESS steps=294000 time=2.9400000000107931
+Part_0295      2.950000        295000     1000    1084.99  24-10-2026 23:46:12
+PROGRESS steps=295000 time=2.9500000000108586
+Part_0296      2.960000        296000     1000    1073.04  24-10-2026 23:46:11
+PROGRESS steps=296000 time=2.9600000000109241
+Part_0297      2.970000        297000     1000    1070.75  24-10-2026 23:46:12
+PROGRESS steps=297000 time=2.9700000000109896
+Part_0298      2.980000        298000     1000    1073.62  24-10-2026 23:46:12
+PROGRESS steps=298000 time=2.9800000000110551
+Part_0299      2.990000        299000     1000    1071.16  24-10-2026 23:46:12
+PROGRESS steps=299000 time=2.9900000000111207
+Part_0300      3.000000        300000     1000    1068.78  24-10-2026 23:46:11
+PROGRESS steps=300000 time=3.0000000000111862
+Part_0301      3.010000        301000     1000    1067.22  24-10-2026 23:46:11
+PROGRESS steps=301000 time=3.0100000000112517
+Part_0302      3.020000        302000     1000    1067.22  24-10-2026 23:46:11
+PROGRESS steps=302000 time=3.0200000000113172
+Part_0303      3.030000        303000     1000    1067.83  24-10-2026 23:46:10
+PROGRESS steps=303000 time=3.0300000000113827
+Part_0304      3.040000        304000     1000    1100.37  24-10-2026 23:46:11
+PROGRESS steps=304000 time=3.0400000000114482
+Part_0305      3.050000        305000     1000    1105.53  24-10-2026 23:46:11
+PROGRESS steps=305000 time=3.0500000000115137
+Part_0306      3.060000        306000     1000    1098.50  24-10-2026 23:46:12
+PROGRESS steps=306000 time=3.0600000000115792
+Part_0307      3.070000        307000     1000    1083.91  24-10-2026 23:46:12
+PROGRESS steps=307000 time=3.0700000000116447
+Part_0308      3.080000        308000     1000    1090.56  24-10-2026 23:46:13
+PROGRESS steps=308000 time=3.0800000000117103
+Part_0309      3.090000        309000     1000    1082.24  24-10-2026 23:46:13
+PROGRESS steps=309000 time=3.0900000000117758
+Part_0310      3.100000        310000     1000    1070.48  24-10-2026 23:46:13
+PROGRESS steps=310000 time=3.1000000000118413
+Part_0311      3.110000        311000     1000    1071.67  24-10-2026 23:46:12
+PROGRESS steps=311000 time=3.1100000000119068
+Part_0312      3.120000        312000     1000    1076.77  24-10-2026 23:46:13
+PROGRESS steps=312000 time=3.1200000000119723
+Part_0313      3.130000        313000     1000    1079.93  24-10-2026 23:46:13
+PROGRESS steps=313000 time=3.1300000000120378
+Part_0314      3.140000        314000     1000    1081.13  24-10-2026 23:46:13
+PROGRESS steps=314000 time=3.1400000000121033
+Part_0315      3.150000        315000     1000    1076.64  24-10-2026 23:46:13
+PROGRESS steps=315000 time=3.1500000000121688
+Part_0316      3.160000        316000     1000    1074.29  24-10-2026 23:46:13
+PROGRESS steps=316000 time=3.1600000000122344
+Part_0317      3.170000        317000     1000    1072.51  24-10-2026 23:46:13
+PROGRESS steps=317000 time=3.1700000000122999
+Part_0318      3.180000        318000     1000    1075.66  24-10-2026 23:46:13
+PROGRESS steps=318000 time=3.1800000000123654
+Part_0319      3.190000        319000     1000    1073.93  24-10-2026 23:46:13
+PROGRESS steps=319000 time=3.1900000000124309
+Part_0320      3.200000        320000     1000    1074.94  24-10-2026 23:46:12
+PROGRESS steps=320000 time=3.2000000000124964
+Part_0321      3.210000        321000     1000    1075.44  24-10-2026 23:46:12
+PROGRESS steps=321000 time=3.2100000000125619
+Part_0322      3.220000        322000     1000    1074.30  24-10-2026 23:46:13
+PROGRESS steps=322000 time=3.2200000000126274
+Part_0323      3.230000        323000     1000    1075.62  24-10-2026 23:46:13
+PROGRESS steps=323000 time=3.2300000000126929
+Part_0324      3.240000        324000     1000    1073.41  24-10-2026 23:46:12
+PROGRESS steps=324000 time=3.2400000000127585
+Part_0325      3.250000        325000     1000    1074.76  24-10-2026 23:46:12
+PROGRESS steps=325000 time=3.250000000012824
+Part_0326      3.260000        326000     1000    1082.59  24-10-2026 23:46:12
+PROGRESS steps=326000 time=3.2600000000128895
+Part_0327      3.270000        327000     1000    1088.20  24-10-2026 23:46:13
+PROGRESS steps=327000 time=3.270000000012955
+Part_0328      3.280000        328000     1000    1089.89  24-10-2026 23:46:13
+PROGRESS steps=328000 time=3.2800000000130205
+Part_0329      3.290000        329000     1000    1073.00  24-10-2026 23:46:12
+PROGRESS steps=329000 time=3.290000000013086
+Part_0330      3.300000        330000     1000    1072.15  24-10-2026 23:46:13
+PROGRESS steps=330000 time=3.3000000000131515
+Part_0331      3.310000        331000     1000    1072.51  24-10-2026 23:46:13
+PROGRESS steps=331000 time=3.310000000013217
+Part_0332      3.320000        332000     1000    1071.09  24-10-2026 23:46:13
+PROGRESS steps=332000 time=3.3200000000132825
+Part_0333      3.330000        333000     1000    1071.63  24-10-2026 23:46:12
+PROGRESS steps=333000 time=3.3300000000133481
+Part_0334      3.340000        334000     1000    1071.47  24-10-2026 23:46:12
+PROGRESS steps=334000 time=3.3400000000134136
+Part_0335      3.350000        335000     1000    1071.12  24-10-2026 23:46:12
+PROGRESS steps=335000 time=3.3500000000134791
+Part_0336      3.360000        336000     1000    1071.88  24-10-2026 23:46:11
+PROGRESS steps=336000 time=3.3600000000135446
+Part_0337      3.370000        337000     1000    1091.79  24-10-2026 23:46:12
+PROGRESS steps=337000 time=3.3700000000136101
+Part_0338      3.380000        338000     1000    1104.54  24-10-2026 23:46:13
+PROGRESS steps=338000 time=3.3800000000136756
+Part_0339      3.390000        339000     1000    1102.32  24-10-2026 23:46:13
+PROGRESS steps=339000 time=3.3900000000137411
+Part_0340      3.400000        340000     1000    1099.84  24-10-2026 23:46:14
+PROGRESS steps=340000 time=3.4000000000138066
+Part_0341      3.410000        341000     1000    1093.89  24-10-2026 23:46:14
+PROGRESS steps=341000 time=3.4100000000138722
+Part_0342      3.420000        342000     1000    1094.87  24-10-2026 23:46:15
+PROGRESS steps=342000 time=3.4200000000139377
+Part_0343      3.430000        343000     1000    1075.74  24-10-2026 23:46:15
+PROGRESS steps=343000 time=3.4300000000140032
+Part_0344      3.440000        344000     1000    1073.56  24-10-2026 23:46:15
+PROGRESS steps=344000 time=3.4400000000140687
+Part_0345      3.450000        345000     1000    1075.69  24-10-2026 23:46:16
+PROGRESS steps=345000 time=3.4500000000141342
+Part_0346      3.460000        346000     1000    1081.57  24-10-2026 23:46:15
+PROGRESS steps=346000 time=3.4600000000141997
+Part_0347      3.470000        347000     1000    1081.55  24-10-2026 23:46:15
+PROGRESS steps=347000 time=3.4700000000142652
+Part_0348      3.480000        348000     1000    1080.33  24-10-2026 23:46:15
+PROGRESS steps=348000 time=3.4800000000143307
+Part_0349      3.490000        349000     1000    1073.07  24-10-2026 23:46:15
+PROGRESS steps=349000 time=3.4900000000143963
+Part_0350      3.500000        350000     1000    1072.49  24-10-2026 23:46:15
+PROGRESS steps=350000 time=3.5000000000144618
+Part_0351      3.510000        351000     1000    1074.36  24-10-2026 23:46:15
+PROGRESS steps=351000 time=3.5100000000145273
+Part_0352      3.520000        352000     1000    1073.64  24-10-2026 23:46:15
+PROGRESS steps=352000 time=3.5200000000145928
+Part_0353      3.530000        353000     1000    1073.97  24-10-2026 23:46:15
+PROGRESS steps=353000 time=3.5300000000146583
+Part_0354      3.540000        354000     1000    1080.27  24-10-2026 23:46:14
+PROGRESS steps=354000 time=3.5400000000147238
+Part_0355      3.550000        355000     1000    1077.12  24-10-2026 23:46:15
+PROGRESS steps=355000 time=3.5500000000147893
+Part_0356      3.560000        356000     1000    1074.58  24-10-2026 23:46:15
+PROGRESS steps=356000 time=3.5600000000148548
+Part_0357      3.570000        357000     1000    1076.90  24-10-2026 23:46:15
+PROGRESS steps=357000 time=3.5700000000149203
+Part_0358      3.580000        358000     1000    1073.58  24-10-2026 23:46:15
+PROGRESS steps=358000 time=3.5800000000149859
+Part_0359      3.590000        359000     1000    1079.68  24-10-2026 23:46:14
+PROGRESS steps=359000 time=3.5900000000150514
+Part_0360      3.600000        360000     1000    1088.59  24-10-2026 23:46:15
+PROGRESS steps=360000 time=3.6000000000151169
+Part_0361      3.610000        361000     1000    1085.72  24-10-2026 23:46:15
+PROGRESS steps=361000 time=3.6100000000151824
+Part_0362      3.620000        362000     1000    1078.53  24-10-2026 23:46:15
+PROGRESS steps=362000 time=3.6200000000152479
+Part_0363      3.630000        363000     1000    1071.92  24-10-2026 23:46:15
+PROGRESS steps=363000 time=3.6300000000153134
+Part_0364      3.640000        364000     1000    1072.88  24-10-2026 23:46:15
+PROGRESS steps=364000 time=3.6400000000153789
+Part_0365      3.650000        365000     1000    1072.08  24-10-2026 23:46:15
+PROGRESS steps=365000 time=3.6500000000154444
+Part_0366      3.660000        366000     1000    1071.83  24-10-2026 23:46:15
+PROGRESS steps=366000 time=3.66000000001551
+Part_0367      3.670000        367000     1000    1073.12  24-10-2026 23:46:14
+PROGRESS steps=367000 time=3.6700000000155755
+Part_0368      3.680000        368000     1000    1073.08  24-10-2026 23:46:14
+PROGRESS steps=368000 time=3.680000000015641
+Part_0369      3.690000        369000     1000    1072.18  24-10-2026 23:46:14
+PROGRESS steps=369000 time=3.6900000000157065
+Part_0370      3.700000        370000     1000    1081.52  24-10-2026 23:46:15
+PROGRESS steps=370000 time=3.700000000015772
+Part_0371      3.710000        371000     1000    1104.37  24-10-2026 23:46:15
+PROGRESS steps=371000 time=3.7100000000158375
+Part_0372      3.720000        372000     1000    1105.23  24-10-2026 23:46:16
+PROGRESS steps=372000 time=3.720000000015903
+Part_0373      3.730000        373000     1000    1104.04  24-10-2026 23:46:17
+PROGRESS steps=373000 time=3.7300000000159685
+Part_0374      3.740000        374000     1000    1089.01  24-10-2026 23:46:17
+PROGRESS steps=374000 time=3.7400000000160341
+Part_0375      3.750000        375000     1000    1093.05  24-10-2026 23:46:17
+PROGRESS steps=375000 time=3.7500000000160996
+Part_0376      3.760000        376000     1000    1077.74  24-10-2026 23:46:17
+PROGRESS steps=376000 time=3.7600000000161651
+Part_0377      3.770000        377000     1000    1071.44  24-10-2026 23:46:17
+PROGRESS steps=377000 time=3.7700000000162306
+Part_0378      3.780000        378000     1000    1072.24  24-10-2026 23:46:17
+PROGRESS steps=378000 time=3.7800000000162961
+Part_0379      3.790000        379000     1000    1071.20  24-10-2026 23:46:17
+PROGRESS steps=379000 time=3.7900000000163616
+Part_0380      3.800000        380000     1000    1069.14  24-10-2026 23:46:16
+PROGRESS steps=380000 time=3.8000000000164271
+Part_0381      3.810000        381000     1000    1072.17  24-10-2026 23:46:16
+PROGRESS steps=381000 time=3.8100000000164926
+Part_0382      3.820000        382000     1000    1070.68  24-10-2026 23:46:16
+PROGRESS steps=382000 time=3.8200000000165582
+Part_0383      3.830000        383000     1000    1070.76  24-10-2026 23:46:15
+PROGRESS steps=383000 time=3.8300000000166237
+Part_0384      3.840000        384000     1000    1074.56  24-10-2026 23:46:16
+PROGRESS steps=384000 time=3.8400000000166892
+Part_0385      3.850000        385000     1000    1075.94  24-10-2026 23:46:16
+PROGRESS steps=385000 time=3.8500000000167547
+Part_0386      3.860000        386000     1000    1073.21  24-10-2026 23:46:16
+PROGRESS steps=386000 time=3.8600000000168202
+Part_0387      3.870000        387000     1000    1075.19  24-10-2026 23:46:15
+PROGRESS steps=387000 time=3.8700000000168857
+Part_0388      3.880000        388000     1000    1074.91  24-10-2026 23:46:15
+PROGRESS steps=388000 time=3.8800000000169512
+Part_0389      3.890000        389000     1000    1076.42  24-10-2026 23:46:16
+PROGRESS steps=389000 time=3.8900000000170167
+Part_0390      3.900000        390000     1000    1072.95  24-10-2026 23:46:16
+PROGRESS steps=390000 time=3.9000000000170822
+Part_0391      3.910000        391000     1000    1074.49  24-10-2026 23:46:15
+PROGRESS steps=391000 time=3.9100000000171478
+Part_0392      3.920000        392000     1000    1075.60  24-10-2026 23:46:15
+PROGRESS steps=392000 time=3.9200000000172133
+Part_0393      3.930000        393000     1000    1086.79  24-10-2026 23:46:15
+PROGRESS steps=393000 time=3.9300000000172788
+Part_0394      3.940000        394000     1000    1088.21  24-10-2026 23:46:16
+PROGRESS steps=394000 time=3.9400000000173443
+Part_0395      3.950000        395000     1000    1083.58  24-10-2026 23:46:16
+PROGRESS steps=395000 time=3.9500000000174098
+Part_0396      3.960000        396000     1000    1073.35  24-10-2026 23:46:16
+PROGRESS steps=396000 time=3.9600000000174753
+Part_0397      3.970000        397000     1000    1073.58  24-10-2026 23:46:15
+PROGRESS steps=397000 time=3.9700000000175408
+Part_0398      3.980000        398000     1000    1071.95  24-10-2026 23:46:16
+PROGRESS steps=398000 time=3.9800000000176063
+Part_0399      3.990000        399000     1000    1072.26  24-10-2026 23:46:16
+PROGRESS steps=399000 time=3.9900000000176719
+Part_0400      4.000000        400000     1000    1072.96  24-10-2026 23:46:15
+PROGRESS steps=400000 time=4.0000000000177369
+Part_0401      4.010000        401000     1000    1073.35  24-10-2026 23:46:15
+PROGRESS steps=401000 time=4.0100000000173583
+Part_0402      4.020000        402000     1000    1074.43  24-10-2026 23:46:15
+PROGRESS steps=402000 time=4.0200000000169798
+Part_0403      4.030000        403000     1000    1073.37  24-10-2026 23:46:15
+PROGRESS steps=403000 time=4.0300000000166012
+Part_0404      4.040000        404000     1000    1105.14  24-10-2026 23:46:16
+PROGRESS steps=404000 time=4.0400000000162226
+Part_0405      4.050000        405000     1000    1106.62  24-10-2026 23:46:17
+PROGRESS steps=405000 time=4.050000000015844
+Part_0406      4.060000        406000     1000    1105.40  24-10-2026 23:46:17
+PROGRESS steps=406000 time=4.0600000000154655
+Part_0407      4.070000        407000     1000    1088.84  24-10-2026 23:46:18
+PROGRESS steps=407000 time=4.0700000000150869
+Part_0408      4.080000        408000     1000    1093.44  24-10-2026 23:46:18
+PROGRESS steps=408000 time=4.0800000000147083
+Part_0409      4.090000        409000     1000    1089.52  24-10-2026 23:46:18
+PROGRESS steps=409000 time=4.0900000000143297
+Part_0410      4.100000        410000     1000    1073.51  24-10-2026 23:46:18
+PROGRESS steps=410000 time=4.1000000000139512
+Part_0411      4.110000        411000     1000    1072.71  24-10-2026 23:46:18
+PROGRESS steps=411000 time=4.1100000000135726
+Part_0412      4.120000        412000     1000    1077.05  24-10-2026 23:46:18
+PROGRESS steps=412000 time=4.120000000013194
+Part_0413      4.130000        413000     1000    1080.77  24-10-2026 23:46:18
+PROGRESS steps=413000 time=4.1300000000128154
+Part_0414      4.140000        414000     1000    1076.48  24-10-2026 23:46:17
+PROGRESS steps=414000 time=4.1400000000124368
+Part_0415      4.150000        415000     1000    1076.44  24-10-2026 23:46:18
+PROGRESS steps=415000 time=4.1500000000120583
+Part_0416      4.160000        416000     1000    1076.14  24-10-2026 23:46:18
+PROGRESS steps=416000 time=4.1600000000116797
+Part_0417      4.170000        417000     1000    1074.33  24-10-2026 23:46:18
+PROGRESS steps=417000 time=4.1700000000113011
+Part_0418      4.180000        418000     1000    1076.63  24-10-2026 23:46:17
+PROGRESS steps=418000 time=4.1800000000109225
+Part_0419      4.190000        419000     1000    1074.48  24-10-2026 23:46:17
+PROGRESS steps=419000 time=4.190000000010544
+Part_0420      4.200000        420000     1000    1075.57  24-10-2026 23:46:18
+PROGRESS steps=420000 time=4.2000000000101654
+Part_0421      4.210000        421000     1000    1078.66  24-10-2026 23:46:18
+PROGRESS steps=421000 time=4.2100000000097868
+Part_0422      4.220000        422000     1000    1074.80  24-10-2026 23:46:18
+PROGRESS steps=422000 time=4.2200000000094082
+Part_0423      4.230000        423000     1000    1077.64  24-10-2026 23:46:17
+PROGRESS steps=423000 time=4.2300000000090296
+Part_0424      4.240000        424000     1000    1075.76  24-10-2026 23:46:17
+PROGRESS steps=424000 time=4.2400000000086511
+Part_0425      4.250000        425000     1000    1075.85  24-10-2026 23:46:18
+PROGRESS steps=425000 time=4.2500000000082725
+Part_0426      4.260000        426000     1000    1081.47  24-10-2026 23:46:18
+PROGRESS steps=426000 time=4.2600000000078939
+Part_0427      4.270000        427000     1000    1091.13  24-10-2026 23:46:18
+PROGRESS steps=427000 time=4.2700000000075153
+Part_0428      4.280000        428000     1000    1087.95  24-10-2026 23:46:18
+PROGRESS steps=428000 time=4.2800000000071368
+Part_0429      4.290000        429000     1000    1073.68  24-10-2026 23:46:18
+PROGRESS steps=429000 time=4.2900000000067582
+Part_0430      4.300000        430000     1000    1073.52  24-10-2026 23:46:18
+PROGRESS steps=430000 time=4.3000000000063796
+Part_0431      4.310000        431000     1000    1073.88  24-10-2026 23:46:18
+PROGRESS steps=431000 time=4.310000000006001
+Part_0432      4.320000        432000     1000    1073.24  24-10-2026 23:46:17
+PROGRESS steps=432000 time=4.3200000000056225
+Part_0433      4.330000        433000     1000    1072.61  24-10-2026 23:46:17
+PROGRESS steps=433000 time=4.3300000000052439
+Part_0434      4.340000        434000     1000    1072.84  24-10-2026 23:46:17
+PROGRESS steps=434000 time=4.3400000000048653
+Part_0435      4.350000        435000     1000    1072.95  24-10-2026 23:46:18
+PROGRESS steps=435000 time=4.3500000000044867
+Part_0436      4.360000        436000     1000    1084.88  24-10-2026 23:46:17
+PROGRESS steps=436000 time=4.3600000000041081
+Part_0437      4.370000        437000     1000    1117.66  24-10-2026 23:46:19
+PROGRESS steps=437000 time=4.3700000000037296
+Part_0438      4.380000        438000     1000    1130.48  24-10-2026 23:46:20
+PROGRESS steps=438000 time=4.380000000003351
+Part_0439      4.390000        439000     1000    1111.00  24-10-2026 23:46:20
+PROGRESS steps=439000 time=4.3900000000029724
+Part_0440      4.400000        440000     1000    1091.76  24-10-2026 23:46:21
+PROGRESS steps=440000 time=4.4000000000025938
+Part_0441      4.410000        441000     1000    1091.91  24-10-2026 23:46:21
+PROGRESS steps=441000 time=4.4100000000022153
+Part_0442      4.420000        442000     1000    1093.91  24-10-2026 23:46:21
+PROGRESS steps=442000 time=4.4200000000018367
+Part_0443      4.430000        443000     1000    1072.99  24-10-2026 23:46:22
+PROGRESS steps=443000 time=4.4300000000014581
+Part_0444      4.440000        444000     1000    1073.53  24-10-2026 23:46:21
+PROGRESS steps=444000 time=4.4400000000010795
+Part_0445      4.450000        445000     1000    1078.37  24-10-2026 23:46:21
+PROGRESS steps=445000 time=4.450000000000701
+Part_0446      4.460000        446000     1000    1086.95  24-10-2026 23:46:21
+PROGRESS steps=446000 time=4.4600000000003224
+Part_0447      4.470000        447000     1000    1080.61  24-10-2026 23:46:21
+PROGRESS steps=447000 time=4.4699999999999438
+Part_0448      4.480000        448000     1000    1080.10  24-10-2026 23:46:22
+PROGRESS steps=448000 time=4.4799999999995652
+Part_0449      4.490000        449000     1000    1074.83  24-10-2026 23:46:21
+PROGRESS steps=449000 time=4.4899999999991866
+Part_0450      4.500000        450000     1000    1074.75  24-10-2026 23:46:21
+PROGRESS steps=450000 time=4.4999999999988081
+Part_0451      4.510000        451000     1000    1075.42  24-10-2026 23:46:21
+PROGRESS steps=451000 time=4.5099999999984295
+Part_0452      4.520000        452000     1000    1075.40  24-10-2026 23:46:21
+PROGRESS steps=452000 time=4.5199999999980509
+Part_0453      4.530000        453000     1000    1076.87  24-10-2026 23:46:21
+PROGRESS steps=453000 time=4.5299999999976723
+Part_0454      4.540000        454000     1000    1076.86  24-10-2026 23:46:21
+PROGRESS steps=454000 time=4.5399999999972938
+Part_0455      4.550000        455000     1000    1075.77  24-10-2026 23:46:21
+PROGRESS steps=455000 time=4.5499999999969152
+Part_0456      4.560000        456000     1000    1075.48  24-10-2026 23:46:21
+PROGRESS steps=456000 time=4.5599999999965366
+Part_0457      4.570000        457000     1000    1075.20  24-10-2026 23:46:20
+PROGRESS steps=457000 time=4.569999999996158
+Part_0458      4.580000        458000     1000    1074.12  24-10-2026 23:46:21
+PROGRESS steps=458000 time=4.5799999999957794
+Part_0459      4.590000        459000     1000    1078.04  24-10-2026 23:46:21
+PROGRESS steps=459000 time=4.5899999999954009
+Part_0460      4.600000        460000     1000    1073.22  24-10-2026 23:46:21
+PROGRESS steps=460000 time=4.5999999999950223
+Part_0461      4.610000        461000     1000    1076.06  24-10-2026 23:46:20
+PROGRESS steps=461000 time=4.6099999999946437
+Part_0462      4.620000        462000     1000    1076.81  24-10-2026 23:46:20
+PROGRESS steps=462000 time=4.6199999999942651
+Part_0463      4.630000        463000     1000    1068.65  24-10-2026 23:46:20
+PROGRESS steps=463000 time=4.6299999999938866
+Part_0464      4.640000        464000     1000    1067.55  24-10-2026 23:46:21
+PROGRESS steps=464000 time=4.639999999993508
+Part_0465      4.650000        465000     1000    1068.22  24-10-2026 23:46:20
+PROGRESS steps=465000 time=4.6499999999931294
+Part_0466      4.660000        466000     1000    1069.66  24-10-2026 23:46:20
+PROGRESS steps=466000 time=4.6599999999927508
+Part_0467      4.670000        467000     1000    1071.20  24-10-2026 23:46:20
+PROGRESS steps=467000 time=4.6699999999923723
+Part_0468      4.680000        468000     1000    1068.97  24-10-2026 23:46:19
+PROGRESS steps=468000 time=4.6799999999919937
+Part_0469      4.690000        469000     1000    1068.06  24-10-2026 23:46:19
+PROGRESS steps=469000 time=4.6899999999916151
+Part_0470      4.700000        470000     1000    1082.00  24-10-2026 23:46:19
+PROGRESS steps=470000 time=4.6999999999912365
+Part_0471      4.710000        471000     1000    1103.78  24-10-2026 23:46:20
+PROGRESS steps=471000 time=4.7099999999908579
+Part_0472      4.720000        472000     1000    1104.94  24-10-2026 23:46:20
+PROGRESS steps=472000 time=4.7199999999904794
+Part_0473      4.730000        473000     1000    1097.58  24-10-2026 23:46:21
+PROGRESS steps=473000 time=4.7299999999901008
+Part_0474      4.740000        474000     1000    1090.79  24-10-2026 23:46:21
+PROGRESS steps=474000 time=4.7399999999897222
+Part_0475      4.750000        475000     1000    1090.26  24-10-2026 23:46:22
+PROGRESS steps=475000 time=4.7499999999893436
+Part_0476      4.760000        476000     1000    1071.03  24-10-2026 23:46:21
+PROGRESS steps=476000 time=4.7599999999889651
+Part_0477      4.770000        477000     1000    1067.46  24-10-2026 23:46:21
+PROGRESS steps=477000 time=4.7699999999885865
+Part_0478      4.780000        478000     1000    1065.90  24-10-2026 23:46:21
+PROGRESS steps=478000 time=4.7799999999882079
+Part_0479      4.790000        479000     1000    1069.15  24-10-2026 23:46:20
+PROGRESS steps=479000 time=4.7899999999878293
+Part_0480      4.800000        480000     1000    1068.03  24-10-2026 23:46:20
+PROGRESS steps=480000 time=4.7999999999874507
+Part_0481      4.810000        481000     1000    1073.62  24-10-2026 23:46:20
+PROGRESS steps=481000 time=4.8099999999870722
+Part_0482      4.820000        482000     1000    1073.21  24-10-2026 23:46:20
+PROGRESS steps=482000 time=4.8199999999866936
+Part_0483      4.830000        483000     1000    1073.48  24-10-2026 23:46:20
+PROGRESS steps=483000 time=4.829999999986315
+Part_0484      4.840000        484000     1000    1073.44  24-10-2026 23:46:20
+PROGRESS steps=484000 time=4.8399999999859364
+Part_0485      4.850000        485000     1000    1075.52  24-10-2026 23:46:20
+PROGRESS steps=485000 time=4.8499999999855579
+Part_0486      4.860000        486000     1000    1073.82  24-10-2026 23:46:20
+PROGRESS steps=486000 time=4.8599999999851793
+Part_0487      4.870000        487000     1000    1079.33  24-10-2026 23:46:19
+PROGRESS steps=487000 time=4.8699999999848007
+Part_0488      4.880000        488000     1000    1073.81  24-10-2026 23:46:19
+PROGRESS steps=488000 time=4.8799999999844221
+Part_0489      4.890000        489000     1000    1078.93  24-10-2026 23:46:20
+PROGRESS steps=489000 time=4.8899999999840436
+Part_0490      4.900000        490000     1000    1071.95  24-10-2026 23:46:20
+PROGRESS steps=490000 time=4.899999999983665
+Part_0491      4.910000        491000     1000    1072.81  24-10-2026 23:46:19
+PROGRESS steps=491000 time=4.9099999999832864
+Part_0492      4.920000        492000     1000    1072.02  24-10-2026 23:46:19
+PROGRESS steps=492000 time=4.9199999999829078
+Part_0493      4.930000        493000     1000    1090.34  24-10-2026 23:46:20
+PROGRESS steps=493000 time=4.9299999999825292
+Part_0494      4.940000        494000     1000    1083.41  24-10-2026 23:46:20
+PROGRESS steps=494000 time=4.9399999999821507
+Part_0495      4.950000        495000     1000    1080.61  24-10-2026 23:46:20
+PROGRESS steps=495000 time=4.9499999999817721
+Part_0496      4.960000        496000     1000    1070.70  24-10-2026 23:46:19
+PROGRESS steps=496000 time=4.9599999999813935
+Part_0497      4.970000        497000     1000    1069.80  24-10-2026 23:46:19
+PROGRESS steps=497000 time=4.9699999999810149
+Part_0498      4.980000        498000     1000    1069.03  24-10-2026 23:46:19
+PROGRESS steps=498000 time=4.9799999999806364
+Part_0499      4.990000        499000     1000    1070.46  24-10-2026 23:46:19
+PROGRESS steps=499000 time=4.9899999999802578
+Part_0500      5.000000        500000     1000    1070.47  24-10-2026 23:46:19
+PROGRESS steps=500000 time=4.9999999999798792
+Part_0501      5.010000        501000     1000    1070.60  24-10-2026 23:46:19
+PROGRESS steps=501000 time=5.0099999999795006
+Part_0502      5.020000        502000     1000    1071.14  24-10-2026 23:46:19
+PROGRESS steps=502000 time=5.0199999999791221
+Part_0503      5.030000        503000     1000    1070.81  24-10-2026 23:46:18
+PROGRESS steps=503000 time=5.0299999999787435
+Part_0504      5.040000        504000     1000    1097.79  24-10-2026 23:46:19
+PROGRESS steps=504000 time=5.0399999999783649
+Part_0505      5.050000        505000     1000    1107.11  24-10-2026 23:46:19
+PROGRESS steps=505000 time=5.0499999999779863
+Part_0506      5.060000        506000     1000    1105.46  24-10-2026 23:46:20
+PROGRESS steps=506000 time=5.0599999999776077
+Part_0507      5.070000        507000     1000    1089.84  24-10-2026 23:46:20
+PROGRESS steps=507000 time=5.0699999999772292
+Part_0508      5.080000        508000     1000    1091.70  24-10-2026 23:46:20
+PROGRESS steps=508000 time=5.0799999999768506
+Part_0509      5.090000        509000     1000    1080.83  24-10-2026 23:46:20
+PROGRESS steps=509000 time=5.089999999976472
+Part_0510      5.100000        510000     1000    1070.51  24-10-2026 23:46:21
+PROGRESS steps=510000 time=5.0999999999760934
+Part_0511      5.110000        511000     1000    1070.71  24-10-2026 23:46:20
+PROGRESS steps=511000 time=5.1099999999757149
+Part_0512      5.120000        512000     1000    1079.52  24-10-2026 23:46:20
+PROGRESS steps=512000 time=5.1199999999753363
+Part_0513      5.130000        513000     1000    1080.05  24-10-2026 23:46:20
+PROGRESS steps=513000 time=5.1299999999749577
+Part_0514      5.140000        514000     1000    1081.60  24-10-2026 23:46:20
+PROGRESS steps=514000 time=5.1399999999745791
+Part_0515      5.150000        515000     1000    1073.51  24-10-2026 23:46:21
+PROGRESS steps=515000 time=5.1499999999742005
+Part_0516      5.160000        516000     1000    1072.76  24-10-2026 23:46:20
+PROGRESS steps=516000 time=5.159999999973822
+Part_0517      5.170000        517000     1000    1073.81  24-10-2026 23:46:20
+PROGRESS steps=517000 time=5.1699999999734434
+Part_0518      5.180000        518000     1000    1074.89  24-10-2026 23:46:20
+PROGRESS steps=518000 time=5.1799999999730648
+Part_0519      5.190000        519000     1000    1075.14  24-10-2026 23:46:20
+PROGRESS steps=519000 time=5.1899999999726862
+Part_0520      5.200000        520000     1000    1075.56  24-10-2026 23:46:20
+PROGRESS steps=520000 time=5.1999999999723077
+Part_0521      5.210000        521000     1000    1076.82  24-10-2026 23:46:20
+PROGRESS steps=521000 time=5.2099999999719291
+Part_0522      5.220000        522000     1000    1077.06  24-10-2026 23:46:20
+PROGRESS steps=522000 time=5.2199999999715505
+Part_0523      5.230000        523000     1000    1073.48  24-10-2026 23:46:20
+PROGRESS steps=523000 time=5.2299999999711719
+Part_0524      5.240000        524000     1000    1075.54  24-10-2026 23:46:19
+PROGRESS steps=524000 time=5.2399999999707934
+Part_0525      5.250000        525000     1000    1073.67  24-10-2026 23:46:20
+PROGRESS steps=525000 time=5.2499999999704148
+Part_0526      5.260000        526000     1000    1081.21  24-10-2026 23:46:20
+PROGRESS steps=526000 time=5.2599999999700362
+Part_0527      5.270000        527000     1000    1092.72  24-10-2026 23:46:20
+PROGRESS steps=527000 time=5.2699999999696576
+Part_0528      5.280000        528000     1000    1086.94  24-10-2026 23:46:20
+PROGRESS steps=528000 time=5.279999999969279
+Part_0529      5.290000        529000     1000    1075.12  24-10-2026 23:46:20
+PROGRESS steps=529000 time=5.2899999999689005
+Part_0530      5.300000        530000     1000    1074.67  24-10-2026 23:46:20
+PROGRESS steps=530000 time=5.2999999999685219
+Part_0531      5.310000        531000     1000    1073.07  24-10-2026 23:46:20
+PROGRESS steps=531000 time=5.3099999999681433
+Part_0532      5.320000        532000     1000    1073.85  24-10-2026 23:46:20
+PROGRESS steps=532000 time=5.3199999999677647
+Part_0533      5.330000        533000     1000    1071.41  24-10-2026 23:46:19
+PROGRESS steps=533000 time=5.3299999999673862
+Part_0534      5.340000        534000     1000    1072.10  24-10-2026 23:46:19
+PROGRESS steps=534000 time=5.3399999999670076
+Part_0535      5.350000        535000     1000    1072.19  24-10-2026 23:46:20
+PROGRESS steps=535000 time=5.349999999966629
+Part_0536      5.360000        536000     1000    1074.57  24-10-2026 23:46:20
+PROGRESS steps=536000 time=5.3599999999662504
+Part_0537      5.370000        537000     1000    1086.59  24-10-2026 23:46:19
+PROGRESS steps=537000 time=5.3699999999658719
+Part_0538      5.380000        538000     1000    1101.77  24-10-2026 23:46:20
+PROGRESS steps=538000 time=5.3799999999654933
+Part_0539      5.390000        539000     1000    1106.61  24-10-2026 23:46:21
+PROGRESS steps=539000 time=5.3899999999651147
+Part_0540      5.400000        540000     1000    1102.77  24-10-2026 23:46:21
+PROGRESS steps=540000 time=5.3999999999647361
+Part_0541      5.410000        541000     1000    1089.98  24-10-2026 23:46:21
+PROGRESS steps=541000 time=5.4099999999643575
+Part_0542      5.420000        542000     1000    1089.72  24-10-2026 23:46:21
+PROGRESS steps=542000 time=5.419999999963979
+Part_0543      5.430000        543000     1000    1074.24  24-10-2026 23:46:21
+PROGRESS steps=543000 time=5.4299999999636004
+Part_0544      5.440000        544000     1000    1073.29  24-10-2026 23:46:21
+PROGRESS steps=544000 time=5.4399999999632218
+Part_0545      5.450000        545000     1000    1075.05  24-10-2026 23:46:22
+PROGRESS steps=545000 time=5.4499999999628432
+Part_0546      5.460000        546000     1000    1081.69  24-10-2026 23:46:21
+PROGRESS steps=546000 time=5.4599999999624647
+Part_0547      5.470000        547000     1000    1080.49  24-10-2026 23:46:21
+PROGRESS steps=547000 time=5.4699999999620861
+Part_0548      5.480000        548000     1000    1077.26  24-10-2026 23:46:21
+PROGRESS steps=548000 time=5.4799999999617075
+Part_0549      5.490000        549000     1000    1076.79  24-10-2026 23:46:21
+PROGRESS steps=549000 time=5.4899999999613289
+Part_0550      5.500000        550000     1000    1074.13  24-10-2026 23:46:22
+PROGRESS steps=550000 time=5.4999999999609503
+Part_0551      5.510000        551000     1000    1077.91  24-10-2026 23:46:21
+PROGRESS steps=551000 time=5.5099999999605718
+Part_0552      5.520000        552000     1000    1074.46  24-10-2026 23:46:21
+PROGRESS steps=552000 time=5.5199999999601932
+Part_0553      5.530000        553000     1000    1074.81  24-10-2026 23:46:21
+PROGRESS steps=553000 time=5.5299999999598146
+Part_0554      5.540000        554000     1000    1072.18  24-10-2026 23:46:21
+PROGRESS steps=554000 time=5.539999999959436
+Part_0555      5.550000        555000     1000    1074.20  24-10-2026 23:46:21
+PROGRESS steps=555000 time=5.5499999999590575
+Part_0556      5.560000        556000     1000    1078.08  24-10-2026 23:46:21
+PROGRESS steps=556000 time=5.5599999999586789
+Part_0557      5.570000        557000     1000    1073.16  24-10-2026 23:46:21
+PROGRESS steps=557000 time=5.5699999999583003
+Part_0558      5.580000        558000     1000    1074.31  24-10-2026 23:46:21
+PROGRESS steps=558000 time=5.5799999999579217
+Part_0559      5.590000        559000     1000    1076.05  24-10-2026 23:46:20
+PROGRESS steps=559000 time=5.5899999999575432
+Part_0560      5.600000        560000     1000    1084.67  24-10-2026 23:46:21
+PROGRESS steps=560000 time=5.5999999999571646
+Part_0561      5.610000        561000     1000    1080.71  24-10-2026 23:46:21
+PROGRESS steps=561000 time=5.609999999956786
+Part_0562      5.620000        562000     1000    1077.40  24-10-2026 23:46:21
+PROGRESS steps=562000 time=5.6199999999564074
+Part_0563      5.630000        563000     1000    1069.08  24-10-2026 23:46:20
+PROGRESS steps=563000 time=5.6299999999560288
+Part_0564      5.640000        564000     1000    1069.75  24-10-2026 23:46:20
+PROGRESS steps=564000 time=5.6399999999556503
+Part_0565      5.650000        565000     1000    1070.53  24-10-2026 23:46:21
+PROGRESS steps=565000 time=5.6499999999552717
+Part_0566      5.660000        566000     1000    1069.90  24-10-2026 23:46:21
+PROGRESS steps=566000 time=5.6599999999548931
+Part_0567      5.670000        567000     1000    1069.46  24-10-2026 23:46:20
+PROGRESS steps=567000 time=5.6699999999545145
+Part_0568      5.680000        568000     1000    1065.44  24-10-2026 23:46:20
+PROGRESS steps=568000 time=5.679999999954136
+Part_0569      5.690000        569000     1000    1065.70  24-10-2026 23:46:20
+PROGRESS steps=569000 time=5.6899999999537574
+Part_0570      5.700000        570000     1000    1065.75  24-10-2026 23:46:19
+PROGRESS steps=570000 time=5.6999999999533788
+Part_0571      5.710000        571000     1000    1096.17  24-10-2026 23:46:20
+PROGRESS steps=571000 time=5.7099999999530002
+Part_0572      5.720000        572000     1000    1102.52  24-10-2026 23:46:20
+PROGRESS steps=572000 time=5.7199999999526216
+Part_0573      5.730000        573000     1000    1092.13  24-10-2026 23:46:20
+PROGRESS steps=573000 time=5.7299999999522431
+Part_0574      5.740000        574000     1000    1079.31  24-10-2026 23:46:20
+PROGRESS steps=574000 time=5.7399999999518645
+Part_0575      5.750000        575000     1000    1082.68  24-10-2026 23:46:21
+PROGRESS steps=575000 time=5.7499999999514859
+Part_0576      5.760000        576000     1000    1068.72  24-10-2026 23:46:20
+PROGRESS steps=576000 time=5.7599999999511073
+Part_0577      5.770000        577000     1000    1066.32  24-10-2026 23:46:20
+PROGRESS steps=577000 time=5.7699999999507288
+Part_0578      5.780000        578000     1000    1066.33  24-10-2026 23:46:20
+PROGRESS steps=578000 time=5.7799999999503502
+Part_0579      5.790000        579000     1000    1073.11  24-10-2026 23:46:19
+PROGRESS steps=579000 time=5.7899999999499716
+Part_0580      5.800000        580000     1000    1073.70  24-10-2026 23:46:19
+PROGRESS steps=580000 time=5.799999999949593
+Part_0581      5.810000        581000     1000    1074.42  24-10-2026 23:46:20
+PROGRESS steps=581000 time=5.8099999999492145
+Part_0582      5.820000        582000     1000    1071.28  24-10-2026 23:46:20
+PROGRESS steps=582000 time=5.8199999999488359
+Part_0583      5.830000        583000     1000    1070.69  24-10-2026 23:46:19
+PROGRESS steps=583000 time=5.8299999999484573
+Part_0584      5.840000        584000     1000    1071.76  24-10-2026 23:46:19
+PROGRESS steps=584000 time=5.8399999999480787
+Part_0585      5.850000        585000     1000    1072.66  24-10-2026 23:46:19
+PROGRESS steps=585000 time=5.8499999999477001
+Part_0586      5.860000        586000     1000    1073.73  24-10-2026 23:46:20
+PROGRESS steps=586000 time=5.8599999999473216
+Part_0587      5.870000        587000     1000    1073.16  24-10-2026 23:46:19
+PROGRESS steps=587000 time=5.869999999946943
+Part_0588      5.880000        588000     1000    1071.11  24-10-2026 23:46:19
+PROGRESS steps=588000 time=5.8799999999465644
+Part_0589      5.890000        589000     1000    1076.46  24-10-2026 23:46:19
+PROGRESS steps=589000 time=5.8899999999461858
+Part_0590      5.900000        590000     1000    1071.02  24-10-2026 23:46:19
+PROGRESS steps=590000 time=5.8999999999458073
+Part_0591      5.910000        591000     1000    1071.43  24-10-2026 23:46:18
+PROGRESS steps=591000 time=5.9099999999454287
+Part_0592      5.920000        592000     1000    1072.18  24-10-2026 23:46:19
+PROGRESS steps=592000 time=5.9199999999450501
+Part_0593      5.930000        593000     1000    1080.76  24-10-2026 23:46:19
+PROGRESS steps=593000 time=5.9299999999446715
+Part_0594      5.940000        594000     1000    1085.41  24-10-2026 23:46:19
+PROGRESS steps=594000 time=5.939999999944293
+Part_0595      5.950000        595000     1000    1085.74  24-10-2026 23:46:18
+PROGRESS steps=595000 time=5.9499999999439144
+Part_0596      5.960000        596000     1000    1069.30  24-10-2026 23:46:19
+PROGRESS steps=596000 time=5.9599999999435358
+Part_0597      5.970000        597000     1000    1067.84  24-10-2026 23:46:19
+PROGRESS steps=597000 time=5.9699999999431572
+Part_0598      5.980000        598000     1000    1070.19  24-10-2026 23:46:19
+PROGRESS steps=598000 time=5.9799999999427786
+Part_0599      5.990000        599000     1000    1068.11  24-10-2026 23:46:18
+PROGRESS steps=599000 time=5.9899999999424001
+Part_0600      6.000000        600000     1000    1067.92  24-10-2026 23:46:18
+PROGRESS steps=600000 time=5.9999999999420215
+Part_0601      6.010000        601000     1000    1068.67  24-10-2026 23:46:18
+PROGRESS steps=601000 time=6.0099999999416429
+Part_0602      6.020000        602000     1000    1068.65  24-10-2026 23:46:17
+PROGRESS steps=602000 time=6.0199999999412643
+Part_0603      6.030000        603000     1000    1067.89  24-10-2026 23:46:18
+PROGRESS steps=603000 time=6.0299999999408858
+Part_0604      6.040000        604000     1000    1091.56  24-10-2026 23:46:18
+PROGRESS steps=604000 time=6.0399999999405072
+Part_0605      6.050000        605000     1000    1103.14  24-10-2026 23:46:18
+PROGRESS steps=605000 time=6.0499999999401286
+Part_0606      6.060000        606000     1000    1101.37  24-10-2026 23:46:19
+PROGRESS steps=606000 time=6.05999999993975
+Part_0607      6.070000        607000     1000    1084.41  24-10-2026 23:46:19
+PROGRESS steps=607000 time=6.0699999999393714
+Part_0608      6.080000        608000     1000    1085.19  24-10-2026 23:46:19
+PROGRESS steps=608000 time=6.0799999999389929
+Part_0609      6.090000        609000     1000    1084.82  24-10-2026 23:46:19
+PROGRESS steps=609000 time=6.0899999999386143
+Part_0610      6.100000        610000     1000    1070.80  24-10-2026 23:46:19
+PROGRESS steps=610000 time=6.0999999999382357
+Part_0611      6.110000        611000     1000    1068.68  24-10-2026 23:46:19
+PROGRESS steps=611000 time=6.1099999999378571
+Part_0612      6.120000        612000     1000    1073.28  24-10-2026 23:46:19
+PROGRESS steps=612000 time=6.1199999999374786
+Part_0613      6.130000        613000     1000    1077.71  24-10-2026 23:46:18
+PROGRESS steps=613000 time=6.1299999999371
+Part_0614      6.140000        614000     1000    1077.54  24-10-2026 23:46:18
+PROGRESS steps=614000 time=6.1399999999367214
+Part_0615      6.150000        615000     1000    1075.33  24-10-2026 23:46:19
+PROGRESS steps=615000 time=6.1499999999363428
+Part_0616      6.160000        616000     1000    1073.14  24-10-2026 23:46:19
+PROGRESS steps=616000 time=6.1599999999359643
+Part_0617      6.170000        617000     1000    1072.55  24-10-2026 23:46:18
+PROGRESS steps=617000 time=6.1699999999355857
+Part_0618      6.180000        618000     1000    1073.43  24-10-2026 23:46:18
+PROGRESS steps=618000 time=6.1799999999352071
+Part_0619      6.190000        619000     1000    1071.92  24-10-2026 23:46:18
+PROGRESS steps=619000 time=6.1899999999348285
+Part_0620      6.200000        620000     1000    1074.78  24-10-2026 23:46:19
+PROGRESS steps=620000 time=6.1999999999344499
+Part_0621      6.210000        621000     1000    1072.08  24-10-2026 23:46:18
+PROGRESS steps=621000 time=6.2099999999340714
+Part_0622      6.220000        622000     1000    1074.59  24-10-2026 23:46:18
+PROGRESS steps=622000 time=6.2199999999336928
+Part_0623      6.230000        623000     1000    1072.64  24-10-2026 23:46:18
+PROGRESS steps=623000 time=6.2299999999333142
+Part_0624      6.240000        624000     1000    1071.91  24-10-2026 23:46:18
+PROGRESS steps=624000 time=6.2399999999329356
+Part_0625      6.250000        625000     1000    1070.44  24-10-2026 23:46:18
+PROGRESS steps=625000 time=6.2499999999325571
+Part_0626      6.260000        626000     1000    1077.41  24-10-2026 23:46:18
+PROGRESS steps=626000 time=6.2599999999321785
+Part_0627      6.270000        627000     1000    1089.75  24-10-2026 23:46:18
+PROGRESS steps=627000 time=6.2699999999317999
+Part_0628      6.280000        628000     1000    1085.09  24-10-2026 23:46:18
+PROGRESS steps=628000 time=6.2799999999314213
+Part_0629      6.290000        629000     1000    1079.20  24-10-2026 23:46:18
+PROGRESS steps=629000 time=6.2899999999310428
+Part_0630      6.300000        630000     1000    1069.25  24-10-2026 23:46:18
+PROGRESS steps=630000 time=6.2999999999306642
+Part_0631      6.310000        631000     1000    1069.09  24-10-2026 23:46:18
+PROGRESS steps=631000 time=6.3099999999302856
+Part_0632      6.320000        632000     1000    1070.22  24-10-2026 23:46:18
+PROGRESS steps=632000 time=6.319999999929907
+Part_0633      6.330000        633000     1000    1068.23  24-10-2026 23:46:17
+PROGRESS steps=633000 time=6.3299999999295284
+Part_0634      6.340000        634000     1000    1069.69  24-10-2026 23:46:17
+PROGRESS steps=634000 time=6.3399999999291499
+Part_0635      6.350000        635000     1000    1068.89  24-10-2026 23:46:18
+PROGRESS steps=635000 time=6.3499999999287713
+Part_0636      6.360000        636000     1000    1070.60  24-10-2026 23:46:17
+PROGRESS steps=636000 time=6.3599999999283927
+Part_0637      6.370000        637000     1000    1077.41  24-10-2026 23:46:17
+PROGRESS steps=637000 time=6.3699999999280141
+Part_0638      6.380000        638000     1000    1106.28  24-10-2026 23:46:17
+PROGRESS steps=638000 time=6.3799999999276356
+Part_0639      6.390000        639000     1000    1104.78  24-10-2026 23:46:18
+PROGRESS steps=639000 time=6.389999999927257
+Part_0640      6.400000        640000     1000    1095.75  24-10-2026 23:46:18
+PROGRESS steps=640000 time=6.3999999999268784
+Part_0641      6.410000        641000     1000    1086.26  24-10-2026 23:46:18
+PROGRESS steps=641000 time=6.4099999999264998
+Part_0642      6.420000        642000     1000    1089.87  24-10-2026 23:46:19
+PROGRESS steps=642000 time=6.4199999999261212
+Part_0643      6.430000        643000     1000    1072.65  24-10-2026 23:46:19
+PROGRESS steps=643000 time=6.4299999999257427
+Part_0644      6.440000        644000     1000    1072.50  24-10-2026 23:46:19
+PROGRESS steps=644000 time=6.4399999999253641
+Part_0645      6.450000        645000     1000    1069.98  24-10-2026 23:46:18
+PROGRESS steps=645000 time=6.4499999999249855
+Part_0646      6.460000        646000     1000    1076.27  24-10-2026 23:46:18
+PROGRESS steps=646000 time=6.4599999999246069
+Part_0647      6.470000        647000     1000    1078.59  24-10-2026 23:46:18
+PROGRESS steps=647000 time=6.4699999999242284
+Part_0648      6.480000        648000     1000    1079.58  24-10-2026 23:46:19
+PROGRESS steps=648000 time=6.4799999999238498
+Part_0649      6.490000        649000     1000    1072.95  24-10-2026 23:46:18
+PROGRESS steps=649000 time=6.4899999999234712
+Part_0650      6.500000        650000     1000    1070.71  24-10-2026 23:46:18
+PROGRESS steps=650000 time=6.4999999999230926
+Part_0651      6.510000        651000     1000    1073.91  24-10-2026 23:46:18
+PROGRESS steps=651000 time=6.5099999999227141
+Part_0652      6.520000        652000     1000    1074.05  24-10-2026 23:46:18
+PROGRESS steps=652000 time=6.5199999999223355
+Part_0653      6.530000        653000     1000    1074.24  24-10-2026 23:46:18
+PROGRESS steps=653000 time=6.5299999999219569
+Part_0654      6.540000        654000     1000    1074.48  24-10-2026 23:46:18
+PROGRESS steps=654000 time=6.5399999999215783
+Part_0655      6.550000        655000     1000    1074.86  24-10-2026 23:46:18
+PROGRESS steps=655000 time=6.5499999999211997
+Part_0656      6.560000        656000     1000    1074.19  24-10-2026 23:46:17
+PROGRESS steps=656000 time=6.5599999999208212
+Part_0657      6.570000        657000     1000    1069.65  24-10-2026 23:46:17
+PROGRESS steps=657000 time=6.5699999999204426
+Part_0658      6.580000        658000     1000    1066.51  24-10-2026 23:46:18
+PROGRESS steps=658000 time=6.579999999920064
+Part_0659      6.590000        659000     1000    1068.16  24-10-2026 23:46:18
+PROGRESS steps=659000 time=6.5899999999196854
+Part_0660      6.600000        660000     1000    1064.93  24-10-2026 23:46:17
+PROGRESS steps=660000 time=6.5999999999193069
+Part_0661      6.610000        661000     1000    1065.68  24-10-2026 23:46:17
+PROGRESS steps=661000 time=6.6099999999189283
+Part_0662      6.620000        662000     1000    1078.16  24-10-2026 23:46:17
+PROGRESS steps=662000 time=6.6199999999185497
+Part_0663      6.630000        663000     1000    1084.10  24-10-2026 23:46:17
+PROGRESS steps=663000 time=6.6299999999181711
+Part_0664      6.640000        664000     1000    1104.43  24-10-2026 23:46:18
+PROGRESS steps=664000 time=6.6399999999177926
+Part_0665      6.650000        665000     1000    1187.45  24-10-2026 23:46:19
+PROGRESS steps=665000 time=6.649999999917414
+Part_0666      6.660000        666000     1000    1196.15  24-10-2026 23:46:21
+PROGRESS steps=666000 time=6.6599999999170354
+Part_0667      6.670000        667000     1000    1184.91  24-10-2026 23:46:22
+PROGRESS steps=667000 time=6.6699999999166568
+Part_0668      6.680000        668000     1000    1192.04  24-10-2026 23:46:24
+PROGRESS steps=668000 time=6.6799999999162782
+Part_0669      6.690000        669000     1000    1198.98  24-10-2026 23:46:26
+PROGRESS steps=669000 time=6.6899999999158997
+Part_0670      6.700000        670000     1000    1204.47  24-10-2026 23:46:28
+PROGRESS steps=670000 time=6.6999999999155211
+Part_0671      6.710000        671000     1000    1161.98  24-10-2026 23:46:29
+PROGRESS steps=671000 time=6.7099999999151425
+Part_0672      6.720000        672000     1000    1150.93  24-10-2026 23:46:30
+PROGRESS steps=672000 time=6.7199999999147639
+Part_0673      6.730000        673000     1000    1150.75  24-10-2026 23:46:31
+PROGRESS steps=673000 time=6.7299999999143854
+Part_0674      6.740000        674000     1000    1156.25  24-10-2026 23:46:32
+PROGRESS steps=674000 time=6.7399999999140068
+Part_0675      6.750000        675000     1000    1141.09  24-10-2026 23:46:33
+PROGRESS steps=675000 time=6.7499999999136282
+Part_0676      6.760000        676000     1000    1132.79  24-10-2026 23:46:34
+PROGRESS steps=676000 time=6.7599999999132496
+Part_0677      6.770000        677000     1000    1144.27  24-10-2026 23:46:35
+PROGRESS steps=677000 time=6.769999999912871
+Part_0678      6.780000        678000     1000    1141.58  24-10-2026 23:46:36
+PROGRESS steps=678000 time=6.7799999999124925
+Part_0679      6.790000        679000     1000    1149.45  24-10-2026 23:46:37
+PROGRESS steps=679000 time=6.7899999999121139
+Part_0680      6.800000        680000     1000    1132.90  24-10-2026 23:46:38
+PROGRESS steps=680000 time=6.7999999999117353
+Part_0681      6.810000        681000     1000    1181.07  24-10-2026 23:46:40
+PROGRESS steps=681000 time=6.8099999999113567
+Part_0682      6.820000        682000     1000    1167.68  24-10-2026 23:46:40
+PROGRESS steps=682000 time=6.8199999999109782
+Part_0683      6.830000        683000     1000    1067.24  24-10-2026 23:46:40
+PROGRESS steps=683000 time=6.8299999999105996
+Part_0684      6.840000        684000     1000    1037.90  24-10-2026 23:46:39
+PROGRESS steps=684000 time=6.839999999910221
+Part_0685      6.850000        685000     1000    1036.47  24-10-2026 23:46:39
+PROGRESS steps=685000 time=6.8499999999098424
+Part_0686      6.860000        686000     1000    1038.51  24-10-2026 23:46:38
+PROGRESS steps=686000 time=6.8599999999094639
+Part_0687      6.870000        687000     1000    1038.07  24-10-2026 23:46:38
+PROGRESS steps=687000 time=6.8699999999090853
+Part_0688      6.880000        688000     1000    1036.30  24-10-2026 23:46:37
+PROGRESS steps=688000 time=6.8799999999087067
+Part_0689      6.890000        689000     1000    1037.36  24-10-2026 23:46:36
+PROGRESS steps=689000 time=6.8899999999083281
+Part_0690      6.900000        690000     1000    1120.61  24-10-2026 23:46:37
+PROGRESS steps=690000 time=6.8999999999079495
+Part_0691      6.910000        691000     1000    1135.09  24-10-2026 23:46:38
+PROGRESS steps=691000 time=6.909999999907571
+Part_0692      6.920000        692000     1000    1061.62  24-10-2026 23:46:37
+PROGRESS steps=692000 time=6.9199999999071924
+Part_0693      6.930000        693000     1000    1057.82  24-10-2026 23:46:37
+PROGRESS steps=693000 time=6.9299999999068138
+Part_0694      6.940000        694000     1000    1055.71  24-10-2026 23:46:38
+PROGRESS steps=694000 time=6.9399999999064352
+Part_0695      6.950000        695000     1000    1039.58  24-10-2026 23:46:37
+PROGRESS steps=695000 time=6.9499999999060567
+Part_0696      6.960000        696000     1000    1040.01  24-10-2026 23:46:36
+PROGRESS steps=696000 time=6.9599999999056781
+Part_0697      6.970000        697000     1000    1040.33  24-10-2026 23:46:36
+PROGRESS steps=697000 time=6.9699999999052995
+Part_0698      6.980000        698000     1000    1039.64  24-10-2026 23:46:35
+PROGRESS steps=698000 time=6.9799999999049209
+Part_0699      6.990000        699000     1000    1041.35  24-10-2026 23:46:35
+PROGRESS steps=699000 time=6.9899999999045423
+Part_0700      7.000000        700000     1000    1040.42  24-10-2026 23:46:34
+PROGRESS steps=700000 time=6.9999999999041638
+Part_0701      7.010000        701000     1000    1038.83  24-10-2026 23:46:33
+PROGRESS steps=701000 time=7.0099999999037852
+Part_0702      7.020000        702000     1000    1039.33  24-10-2026 23:46:33
+PROGRESS steps=702000 time=7.0199999999034066
+Part_0703      7.030000        703000     1000    1048.79  24-10-2026 23:46:32
+PROGRESS steps=703000 time=7.029999999903028
+Part_0704      7.040000        704000     1000    1065.46  24-10-2026 23:46:32
+PROGRESS steps=704000 time=7.0399999999026495
+Part_0705      7.050000        705000     1000    1062.49  24-10-2026 23:46:32
+PROGRESS steps=705000 time=7.0499999999022709
+Part_0706      7.060000        706000     1000    1058.80  24-10-2026 23:46:31
+PROGRESS steps=706000 time=7.0599999999018923
+Part_0707      7.070000        707000     1000    1049.72  24-10-2026 23:46:31
+PROGRESS steps=707000 time=7.0699999999015137
+Part_0708      7.080000        708000     1000    1053.16  24-10-2026 23:46:30
+PROGRESS steps=708000 time=7.0799999999011352
+Part_0709      7.090000        709000     1000    1042.86  24-10-2026 23:46:30
+PROGRESS steps=709000 time=7.0899999999007566
+Part_0710      7.100000        710000     1000    1036.51  24-10-2026 23:46:29
+PROGRESS steps=710000 time=7.099999999900378
+Part_0711      7.110000        711000     1000    1038.13  24-10-2026 23:46:29
+PROGRESS steps=711000 time=7.1099999998999994
+Part_0712      7.120000        712000     1000    1050.16  24-10-2026 23:46:29
+PROGRESS steps=712000 time=7.1199999998996208
+Part_0713      7.130000        713000     1000    1048.65  24-10-2026 23:46:28
+PROGRESS steps=713000 time=7.1299999998992423
+Part_0714      7.140000        714000     1000    1050.25  24-10-2026 23:46:28
+PROGRESS steps=714000 time=7.1399999998988637
+Part_0715      7.150000        715000     1000    1042.95  24-10-2026 23:46:27
+PROGRESS steps=715000 time=7.1499999998984851
+Part_0716      7.160000        716000     1000    1042.92  24-10-2026 23:46:27
+PROGRESS steps=716000 time=7.1599999998981065
+Part_0717      7.170000        717000     1000    1040.64  24-10-2026 23:46:26
+PROGRESS steps=717000 time=7.169999999897728
+Part_0718      7.180000        718000     1000    1043.60  24-10-2026 23:46:26
+PROGRESS steps=718000 time=7.1799999998973494
+Part_0719      7.190000        719000     1000    1040.61  24-10-2026 23:46:25
+PROGRESS steps=719000 time=7.1899999998969708
+Part_0720      7.200000        720000     1000    1042.41  24-10-2026 23:46:24
+PROGRESS steps=720000 time=7.1999999998965922
+Part_0721      7.210000        721000     1000    1045.43  24-10-2026 23:46:24
+PROGRESS steps=721000 time=7.2099999998962137
+Part_0722      7.220000        722000     1000    1041.55  24-10-2026 23:46:23
+PROGRESS steps=722000 time=7.2199999998958351
+Part_0723      7.230000        723000     1000    1039.28  24-10-2026 23:46:23
+PROGRESS steps=723000 time=7.2299999998954565
+Part_0724      7.240000        724000     1000    1042.54  24-10-2026 23:46:22
+PROGRESS steps=724000 time=7.2399999998950779
+Part_0725      7.250000        725000     1000    1040.06  24-10-2026 23:46:23
+PROGRESS steps=725000 time=7.2499999998946993
+Part_0726      7.260000        726000     1000    1049.25  24-10-2026 23:46:22
+PROGRESS steps=726000 time=7.2599999998943208
+Part_0727      7.270000        727000     1000    1053.72  24-10-2026 23:46:22
+PROGRESS steps=727000 time=7.2699999998939422
+Part_0728      7.280000        728000     1000    1059.81  24-10-2026 23:46:21
+PROGRESS steps=728000 time=7.2799999998935636
+Part_0729      7.290000        729000     1000    1047.49  24-10-2026 23:46:21
+PROGRESS steps=729000 time=7.289999999893185
+Part_0730      7.300000        730000     1000    1041.07  24-10-2026 23:46:20
+PROGRESS steps=730000 time=7.2999999998928065
+Part_0731      7.310000        731000     1000    1043.42  24-10-2026 23:46:19
+PROGRESS steps=731000 time=7.3099999998924279
+Part_0732      7.320000        732000     1000    1041.27  24-10-2026 23:46:19
+PROGRESS steps=732000 time=7.3199999998920493
+Part_0733      7.330000        733000     1000    1040.97  24-10-2026 23:46:18
+PROGRESS steps=733000 time=7.3299999998916707
+Part_0734      7.340000        734000     1000    1041.14  24-10-2026 23:46:18
+PROGRESS steps=734000 time=7.3399999998912921
+Part_0735      7.350000        735000     1000    1039.49  24-10-2026 23:46:18
+PROGRESS steps=735000 time=7.3499999998909136
+Part_0736      7.360000        736000     1000    1037.31  24-10-2026 23:46:17
+PROGRESS steps=736000 time=7.359999999890535
+Part_0737      7.370000        737000     1000    1040.90  24-10-2026 23:46:17
+PROGRESS steps=737000 time=7.3699999998901564
+Part_0738      7.380000        738000     1000    1062.16  24-10-2026 23:46:17
+PROGRESS steps=738000 time=7.3799999998897778
+Part_0739      7.390000        739000     1000    1062.84  24-10-2026 23:46:16
+PROGRESS steps=739000 time=7.3899999998893993
+Part_0740      7.400000        740000     1000    1066.01  24-10-2026 23:46:16
+PROGRESS steps=740000 time=7.3999999998890207
+Part_0741      7.410000        741000     1000    1054.64  24-10-2026 23:46:15
+PROGRESS steps=741000 time=7.4099999998886421
+Part_0742      7.420000        742000     1000    1051.43  24-10-2026 23:46:15
+PROGRESS steps=742000 time=7.4199999998882635
+Part_0743      7.430000        743000     1000    1047.87  24-10-2026 23:46:15
+PROGRESS steps=743000 time=7.429999999887885
+Part_0744      7.440000        744000     1000    1037.92  24-10-2026 23:46:15
+PROGRESS steps=744000 time=7.4399999998875064
+Part_0745      7.450000        745000     1000    1038.57  24-10-2026 23:46:14
+PROGRESS steps=745000 time=7.4499999998871278
+Part_0746      7.460000        746000     1000    1041.79  24-10-2026 23:46:14
+PROGRESS steps=746000 time=7.4599999998867492
+Part_0747      7.470000        747000     1000    1046.27  24-10-2026 23:46:13
+PROGRESS steps=747000 time=7.4699999998863706
+Part_0748      7.480000        748000     1000    1045.27  24-10-2026 23:46:12
+PROGRESS steps=748000 time=7.4799999998859921
+Part_0749      7.490000        749000     1000    1042.82  24-10-2026 23:46:12
+PROGRESS steps=749000 time=7.4899999998856135
+Part_0750      7.500000        750000     1000    1041.59  24-10-2026 23:46:11
+PROGRESS steps=750000 time=7.4999999998852349
+Part_0751      7.510000        751000     1000    1039.30  24-10-2026 23:46:11
+PROGRESS steps=751000 time=7.5099999998848563
+Part_0752      7.520000        752000     1000    1038.52  24-10-2026 23:46:10
+PROGRESS steps=752000 time=7.5199999998844778
+Part_0753      7.530000        753000     1000    1040.30  24-10-2026 23:46:10
+PROGRESS steps=753000 time=7.5299999998840992
+Part_0754      7.540000        754000     1000    1042.49  24-10-2026 23:46:10
+PROGRESS steps=754000 time=7.5399999998837206
+Part_0755      7.550000        755000     1000    1040.85  24-10-2026 23:46:09
+PROGRESS steps=755000 time=7.549999999883342
+Part_0756      7.560000        756000     1000    1040.88  24-10-2026 23:46:09
+PROGRESS steps=756000 time=7.5599999998829635
+Part_0757      7.570000        757000     1000    1041.20  24-10-2026 23:46:08
+PROGRESS steps=757000 time=7.5699999998825849
+Part_0758      7.580000        758000     1000    1042.52  24-10-2026 23:46:08
+PROGRESS steps=758000 time=7.5799999998822063
+Part_0759      7.590000        759000     1000    1041.04  24-10-2026 23:46:07
+PROGRESS steps=759000 time=7.5899999998818277
+Part_0760      7.600000        760000     1000    1044.44  24-10-2026 23:46:06
+PROGRESS steps=760000 time=7.5999999998814491
+Part_0761      7.610000        761000     1000    1057.97  24-10-2026 23:46:07
+PROGRESS steps=761000 time=7.6099999998810706
+Part_0762      7.620000        762000     1000    1056.42  24-10-2026 23:46:07
+PROGRESS steps=762000 time=7.619999999880692
+Part_0763      7.630000        763000     1000    1054.54  24-10-2026 23:46:06
+PROGRESS steps=763000 time=7.6299999998803134
+Part_0764      7.640000        764000     1000    1039.29  24-10-2026 23:46:06
+PROGRESS steps=764000 time=7.6399999998799348
+Part_0765      7.650000        765000     1000    1039.62  24-10-2026 23:46:05
+PROGRESS steps=765000 time=7.6499999998795563
+Part_0766      7.660000        766000     1000    1040.21  24-10-2026 23:46:04
+PROGRESS steps=766000 time=7.6599999998791777
+Part_0767      7.670000        767000     1000    1040.92  24-10-2026 23:46:04
+PROGRESS steps=767000 time=7.6699999998787991
+Part_0768      7.680000        768000     1000    1039.92  24-10-2026 23:46:03
+PROGRESS steps=768000 time=7.6799999998784205
+Part_0769      7.690000        769000     1000    1038.59  24-10-2026 23:46:04
+PROGRESS steps=769000 time=7.6899999998780419
+Part_0770      7.700000        770000     1000    1038.09  24-10-2026 23:46:03
+PROGRESS steps=770000 time=7.6999999998776634
+Part_0771      7.710000        771000     1000    1038.77  24-10-2026 23:46:02
+PROGRESS steps=771000 time=7.7099999998772848
+Part_0772      7.720000        772000     1000    1055.14  24-10-2026 23:46:02
+PROGRESS steps=772000 time=7.7199999998769062
+Part_0773      7.730000        773000     1000    1062.17  24-10-2026 23:46:01
+PROGRESS steps=773000 time=7.7299999998765276
+Part_0774      7.740000        774000     1000    1066.93  24-10-2026 23:46:01
+PROGRESS steps=774000 time=7.7399999998761491
+Part_0775      7.750000        775000     1000    1055.08  24-10-2026 23:46:02
+PROGRESS steps=775000 time=7.7499999998757705
+Part_0776      7.760000        776000     1000    1050.25  24-10-2026 23:46:01
+PROGRESS steps=776000 time=7.7599999998753919
+Part_0777      7.770000        777000     1000    1048.41  24-10-2026 23:46:01
+PROGRESS steps=777000 time=7.7699999998750133
+Part_0778      7.780000        778000     1000    1040.21  24-10-2026 23:46:00
+PROGRESS steps=778000 time=7.7799999998746348
+Part_0779      7.790000        779000     1000    1038.45  24-10-2026 23:45:59
+PROGRESS steps=779000 time=7.7899999998742562
+Part_0780      7.800000        780000     1000    1037.39  24-10-2026 23:45:59
+PROGRESS steps=780000 time=7.7999999998738776
+Part_0781      7.810000        781000     1000    1042.55  24-10-2026 23:45:58
+PROGRESS steps=781000 time=7.809999999873499
+Part_0782      7.820000        782000     1000    1045.10  24-10-2026 23:45:59
+PROGRESS steps=782000 time=7.8199999998731204
+Part_0783      7.830000        783000     1000    1043.86  24-10-2026 23:45:58
+PROGRESS steps=783000 time=7.8299999998727419
+Part_0784      7.840000        784000     1000    1039.59  24-10-2026 23:45:58
+PROGRESS steps=784000 time=7.8399999998723633
+Part_0785      7.850000        785000     1000    1039.41  24-10-2026 23:45:57
+PROGRESS steps=785000 time=7.8499999998719847
+Part_0786      7.860000        786000     1000    1040.79  24-10-2026 23:45:56
+PROGRESS steps=786000 time=7.8599999998716061
+Part_0787      7.870000        787000     1000    1043.19  24-10-2026 23:45:56
+PROGRESS steps=787000 time=7.8699999998712276
+Part_0788      7.880000        788000     1000    1042.55  24-10-2026 23:45:55
+PROGRESS steps=788000 time=7.879999999870849
+Part_0789      7.890000        789000     1000    1041.38  24-10-2026 23:45:56
+PROGRESS steps=789000 time=7.8899999998704704
+Part_0790      7.900000        790000     1000    1042.70  24-10-2026 23:45:55
+PROGRESS steps=790000 time=7.8999999998700918
+Part_0791      7.910000        791000     1000    1040.95  24-10-2026 23:45:55
+PROGRESS steps=791000 time=7.9099999998697132
+Part_0792      7.920000        792000     1000    1039.82  24-10-2026 23:45:54
+PROGRESS steps=792000 time=7.9199999998693347
+Part_0793      7.930000        793000     1000    1040.80  24-10-2026 23:45:53
+PROGRESS steps=793000 time=7.9299999998689561
+Part_0794      7.940000        794000     1000    1040.60  24-10-2026 23:45:53
+PROGRESS steps=794000 time=7.9399999998685775
+Part_0795      7.950000        795000     1000    1049.24  24-10-2026 23:45:53
+PROGRESS steps=795000 time=7.9499999998681989
+Part_0796      7.960000        796000     1000    1058.64  24-10-2026 23:45:53
+PROGRESS steps=796000 time=7.9599999998678204
+Part_0797      7.970000        797000     1000    1053.02  24-10-2026 23:45:52
+PROGRESS steps=797000 time=7.9699999998674418
+Part_0798      7.980000        798000     1000    1041.81  24-10-2026 23:45:52
+PROGRESS steps=798000 time=7.9799999998670632
+Part_0799      7.990000        799000     1000    1041.42  24-10-2026 23:45:51
+PROGRESS steps=799000 time=7.9899999998666846
+Part_0800      8.000000        800000     1000    1039.93  24-10-2026 23:45:51
+PROGRESS steps=800000 time=7.9999999998663061
+Part_0801      8.010000        801000     1000    1042.62  24-10-2026 23:45:51
+PROGRESS steps=801000 time=8.0099999998659275
+Part_0802      8.020000        802000     1000    1042.13  24-10-2026 23:45:50
+PROGRESS steps=802000 time=8.0199999998655489
+Part_0803      8.030000        803000     1000    1042.31  24-10-2026 23:45:50
+PROGRESS steps=803000 time=8.0299999998651703
+Part_0804      8.040000        804000     1000    1038.56  24-10-2026 23:45:49
+PROGRESS steps=804000 time=8.0399999998647917
+Part_0805      8.050000        805000     1000    1037.50  24-10-2026 23:45:49
+PROGRESS steps=805000 time=8.0499999998644132
+Part_0806      8.060000        806000     1000    1044.49  24-10-2026 23:45:48
+PROGRESS steps=806000 time=8.0599999998640346
+Part_0807      8.070000        807000     1000    1066.74  24-10-2026 23:45:49
+PROGRESS steps=807000 time=8.069999999863656
+Part_0808      8.080000        808000     1000    1066.99  24-10-2026 23:45:48
+PROGRESS steps=808000 time=8.0799999998632774
+Part_0809      8.090000        809000     1000    1062.87  24-10-2026 23:45:48
+PROGRESS steps=809000 time=8.0899999998628989
+Part_0810      8.100000        810000     1000    1055.10  24-10-2026 23:45:48
+PROGRESS steps=810000 time=8.0999999998625203
+Part_0811      8.110000        811000     1000    1055.13  24-10-2026 23:45:47
+PROGRESS steps=811000 time=8.1099999998621417
+Part_0812      8.120000        812000     1000    1049.67  24-10-2026 23:45:48
+PROGRESS steps=812000 time=8.1199999998617631
+Part_0813      8.130000        813000     1000    1038.42  24-10-2026 23:45:47
+PROGRESS steps=813000 time=8.1299999998613846
+Part_0814      8.140000        814000     1000    1039.22  24-10-2026 23:45:46
+PROGRESS steps=814000 time=8.139999999861006
+Part_0815      8.150000        815000     1000    1047.15  24-10-2026 23:45:46
+PROGRESS steps=815000 time=8.1499999998606274
+Part_0816      8.160000        816000     1000    1053.73  24-10-2026 23:45:45
+PROGRESS steps=816000 time=8.1599999998602488
+Part_0817      8.170000        817000     1000    1048.10  24-10-2026 23:45:46
+PROGRESS steps=817000 time=8.1699999998598702
+Part_0818      8.180000        818000     1000    1044.03  24-10-2026 23:45:45
+PROGRESS steps=818000 time=8.1799999998594917
+Part_0819      8.190000        819000     1000    1041.44  24-10-2026 23:45:45
+PROGRESS steps=819000 time=8.1899999998591131
+Part_0820      8.200000        820000     1000    1040.20  24-10-2026 23:45:44
+PROGRESS steps=820000 time=8.1999999998587345
+Part_0821      8.210000        821000     1000    1050.21  24-10-2026 23:45:44
+PROGRESS steps=821000 time=8.2099999998583559
+Part_0822      8.220000        822000     1000    1044.79  24-10-2026 23:45:44
+PROGRESS steps=822000 time=8.2199999998579774
+Part_0823      8.230000        823000     1000    1043.81  24-10-2026 23:45:44
+PROGRESS steps=823000 time=8.2299999998575988
+Part_0824      8.240000        824000     1000    1065.10  24-10-2026 23:45:43
+PROGRESS steps=824000 time=8.2399999998572202
+Part_0825      8.250000        825000     1000    1086.51  24-10-2026 23:45:43
+PROGRESS steps=825000 time=8.2499999998568416
+Part_0826      8.260000        826000     1000    1233.92  24-10-2026 23:45:45
+PROGRESS steps=826000 time=8.259999999856463
+Part_0827      8.270000        827000     1000    1139.57  24-10-2026 23:45:46
+PROGRESS steps=827000 time=8.2699999998560845
+Part_0828      8.280000        828000     1000    1039.60  24-10-2026 23:45:45
+PROGRESS steps=828000 time=8.2799999998557059
+Part_0829      8.290000        829000     1000    1089.46  24-10-2026 23:45:46
+PROGRESS steps=829000 time=8.2899999998553273
+Part_0830      8.300000        830000     1000    1086.94  24-10-2026 23:45:46
+PROGRESS steps=830000 time=8.2999999998549487
+Part_0831      8.310000        831000     1000    1086.80  24-10-2026 23:45:46
+PROGRESS steps=831000 time=8.3099999998545702
+Part_0832      8.320000        832000     1000    1087.27  24-10-2026 23:45:46
+PROGRESS steps=832000 time=8.3199999998541916
+Part_0833      8.330000        833000     1000    1095.53  24-10-2026 23:45:47
+PROGRESS steps=833000 time=8.329999999853813
+Part_0834      8.340000        834000     1000    1103.08  24-10-2026 23:45:47
+PROGRESS steps=834000 time=8.3399999998534344
+Part_0835      8.350000        835000     1000    1066.72  24-10-2026 23:45:46
+PROGRESS steps=835000 time=8.3499999998530559
+Part_0836      8.360000        836000     1000    1059.23  24-10-2026 23:45:47
+PROGRESS steps=836000 time=8.3599999998526773
+Part_0837      8.370000        837000     1000    1047.20  24-10-2026 23:45:46
+PROGRESS steps=837000 time=8.3699999998522987
+Part_0838      8.380000        838000     1000    1046.80  24-10-2026 23:45:46
+PROGRESS steps=838000 time=8.3799999998519201
+Part_0839      8.390000        839000     1000    1049.76  24-10-2026 23:45:45
+PROGRESS steps=839000 time=8.3899999998515415
+Part_0840      8.400000        840000     1000    1052.36  24-10-2026 23:45:45
+PROGRESS steps=840000 time=8.399999999851163
+Part_0841      8.410000        841000     1000    1069.59  24-10-2026 23:45:46
+PROGRESS steps=841000 time=8.4099999998507844
+Part_0842      8.420000        842000     1000    1064.80  24-10-2026 23:45:45
+PROGRESS steps=842000 time=8.4199999998504058
+Part_0843      8.430000        843000     1000    1057.69  24-10-2026 23:45:45
+PROGRESS steps=843000 time=8.4299999998500272
+Part_0844      8.440000        844000     1000    1055.83  24-10-2026 23:45:44
+PROGRESS steps=844000 time=8.4399999998496487
+Part_0845      8.450000        845000     1000    1050.66  24-10-2026 23:45:44
+PROGRESS steps=845000 time=8.4499999998492701
+Part_0846      8.460000        846000     1000    1045.88  24-10-2026 23:45:44
+PROGRESS steps=846000 time=8.4599999998488915
+Part_0847      8.470000        847000     1000    1045.61  24-10-2026 23:45:44
+PROGRESS steps=847000 time=8.4699999998485129
+Part_0848      8.480000        848000     1000    1044.14  24-10-2026 23:45:43
+PROGRESS steps=848000 time=8.4799999998481344
+Part_0849      8.490000        849000     1000    1052.02  24-10-2026 23:45:43
+PROGRESS steps=849000 time=8.4899999998477558
+Part_0850      8.500000        850000     1000    1050.91  24-10-2026 23:45:42
+PROGRESS steps=850000 time=8.4999999998473772
+Part_0851      8.510000        851000     1000    1053.13  24-10-2026 23:45:43
+PROGRESS steps=851000 time=8.5099999998469986
+Part_0852      8.520000        852000     1000    1046.48  24-10-2026 23:45:42
+PROGRESS steps=852000 time=8.51999999984662
+Part_0853      8.530000        853000     1000    1050.08  24-10-2026 23:45:42
+PROGRESS steps=853000 time=8.5299999998462415
+Part_0854      8.540000        854000     1000    1045.56  24-10-2026 23:45:41
+PROGRESS steps=854000 time=8.5399999998458629
+Part_0855      8.550000        855000     1000    1048.32  24-10-2026 23:45:42
+PROGRESS steps=855000 time=8.5499999998454843
+Part_0856      8.560000        856000     1000    1275.65  24-10-2026 23:45:44
+PROGRESS steps=856000 time=8.5599999998451057
+Part_0857      8.570000        857000     1000    1069.53  24-10-2026 23:45:43
+PROGRESS steps=857000 time=8.5699999998447272
+Part_0858      8.580000        858000     1000    1048.58  24-10-2026 23:45:44
+PROGRESS steps=858000 time=8.5799999998443486
+Part_0859      8.590000        859000     1000    1045.93  24-10-2026 23:45:43
+PROGRESS steps=859000 time=8.58999999984397
+Part_0860      8.600000        860000     1000    1047.08  24-10-2026 23:45:43
+PROGRESS steps=860000 time=8.5999999998435914
+Part_0861      8.610000        861000     1000    1047.17  24-10-2026 23:45:42
+PROGRESS steps=861000 time=8.6099999998432128
+Part_0862      8.620000        862000     1000    1045.66  24-10-2026 23:45:42
+PROGRESS steps=862000 time=8.6199999998428343
+Part_0863      8.630000        863000     1000    1056.82  24-10-2026 23:45:42
+PROGRESS steps=863000 time=8.6299999998424557
+Part_0864      8.640000        864000     1000    1058.86  24-10-2026 23:45:42
+PROGRESS steps=864000 time=8.6399999998420771
+Part_0865      8.650000        865000     1000    1061.01  24-10-2026 23:45:41
+PROGRESS steps=865000 time=8.6499999998416985
+Part_0866      8.660000        866000     1000    1044.56  24-10-2026 23:45:41
+PROGRESS steps=866000 time=8.65999999984132
+Part_0867      8.670000        867000     1000    1046.89  24-10-2026 23:45:41
+PROGRESS steps=867000 time=8.6699999998409414
+Part_0868      8.680000        868000     1000    1044.32  24-10-2026 23:45:41
+PROGRESS steps=868000 time=8.6799999998405628
+Part_0869      8.690000        869000     1000    1043.85  24-10-2026 23:45:40
+PROGRESS steps=869000 time=8.6899999998401842
+Part_0870      8.700000        870000     1000    1043.45  24-10-2026 23:45:40
+PROGRESS steps=870000 time=8.6999999998398057
+Part_0871      8.710000        871000     1000    1043.06  24-10-2026 23:45:39
+PROGRESS steps=871000 time=8.7099999998394271
+Part_0872      8.720000        872000     1000    1043.43  24-10-2026 23:45:40
+PROGRESS steps=872000 time=8.7199999998390485
+Part_0873      8.730000        873000     1000    1043.08  24-10-2026 23:45:39
+PROGRESS steps=873000 time=8.7299999998386699
+Part_0874      8.740000        874000     1000    1054.83  24-10-2026 23:45:38
+PROGRESS steps=874000 time=8.7399999998382913
+Part_0875      8.750000        875000     1000    1075.79  24-10-2026 23:45:38
+PROGRESS steps=875000 time=8.7499999998379128
+Part_0876      8.760000        876000     1000    1075.17  24-10-2026 23:45:39
+PROGRESS steps=876000 time=8.7599999998375342
+Part_0877      8.770000        877000     1000    1070.09  24-10-2026 23:45:39
+PROGRESS steps=877000 time=8.7699999998371556
+Part_0878      8.780000        878000     1000    1070.25  24-10-2026 23:45:38
+PROGRESS steps=878000 time=8.779999999836777
+Part_0879      8.790000        879000     1000    1063.39  24-10-2026 23:45:38
+PROGRESS steps=879000 time=8.7899999998363985
+Part_0880      8.800000        880000     1000    1047.40  24-10-2026 23:45:38
+PROGRESS steps=880000 time=8.7999999998360199
+Part_0881      8.810000        881000     1000    1043.76  24-10-2026 23:45:38
+PROGRESS steps=881000 time=8.8099999998356413
+Part_0882      8.820000        882000     1000    1043.70  24-10-2026 23:45:37
+PROGRESS steps=882000 time=8.8199999998352627
+Part_0883      8.830000        883000     1000    1054.71  24-10-2026 23:45:37
+PROGRESS steps=883000 time=8.8299999998348842
+Part_0884      8.840000        884000     1000    1059.69  24-10-2026 23:45:37
+PROGRESS steps=884000 time=8.8399999998345056
+Part_0885      8.850000        885000     1000    1056.34  24-10-2026 23:45:37
+PROGRESS steps=885000 time=8.849999999834127
+Part_0886      8.860000        886000     1000    1047.24  24-10-2026 23:45:37
+PROGRESS steps=886000 time=8.8599999998337484
+Part_0887      8.870000        887000     1000    1047.76  24-10-2026 23:45:36
+PROGRESS steps=887000 time=8.8699999998333698
+Part_0888      8.880000        888000     1000    1047.57  24-10-2026 23:45:36
+PROGRESS steps=888000 time=8.8799999998329913
+Part_0889      8.890000        889000     1000    1048.35  24-10-2026 23:45:36
+PROGRESS steps=889000 time=8.8899999998326127
+Part_0890      8.900000        890000     1000    1048.02  24-10-2026 23:45:36
+PROGRESS steps=890000 time=8.8999999998322341
+Part_0891      8.910000        891000     1000    1047.46  24-10-2026 23:45:35
+PROGRESS steps=891000 time=8.9099999998318555
+Part_0892      8.920000        892000     1000    1049.39  24-10-2026 23:45:35
+PROGRESS steps=892000 time=8.919999999831477
+Part_0893      8.930000        893000     1000    1047.87  24-10-2026 23:45:34
+PROGRESS steps=893000 time=8.9299999998310984
+Part_0894      8.940000        894000     1000    1046.81  24-10-2026 23:45:34
+PROGRESS steps=894000 time=8.9399999998307198
+Part_0895      8.950000        895000     1000    1045.04  24-10-2026 23:45:34
+PROGRESS steps=895000 time=8.9499999998303412
+Part_0896      8.960000        896000     1000    1044.90  24-10-2026 23:45:33
+PROGRESS steps=896000 time=8.9599999998299626
+Part_0897      8.970000        897000     1000    1053.19  24-10-2026 23:45:33
+PROGRESS steps=897000 time=8.9699999998295841
+Part_0898      8.980000        898000     1000    1060.51  24-10-2026 23:45:33
+PROGRESS steps=898000 time=8.9799999998292055
+Part_0899      8.990000        899000     1000    1061.86  24-10-2026 23:45:33
+PROGRESS steps=899000 time=8.9899999998288269
+Part_0900      9.000000        900000     1000    1051.33  24-10-2026 23:45:33
+PROGRESS steps=900000 time=8.9999999998284483
+Part_0901      9.010000        901000     1000    1043.79  24-10-2026 23:45:32
+PROGRESS steps=901000 time=9.0099999998280698
+Part_0902      9.020000        902000     1000    1044.34  24-10-2026 23:45:33
+PROGRESS steps=902000 time=9.0199999998276912
+Part_0903      9.030000        903000     1000    1043.91  24-10-2026 23:45:32
+PROGRESS steps=903000 time=9.0299999998273126
+Part_0904      9.040000        904000     1000    1044.68  24-10-2026 23:45:31
+PROGRESS steps=904000 time=9.039999999826934
+Part_0905      9.050000        905000     1000    1044.97  24-10-2026 23:45:31
+PROGRESS steps=905000 time=9.0499999998265555
+Part_0906      9.060000        906000     1000    1041.75  24-10-2026 23:45:31
+PROGRESS steps=906000 time=9.0599999998261769
+Part_0907      9.070000        907000     1000    1044.19  24-10-2026 23:45:31
+PROGRESS steps=907000 time=9.0699999998257983
+Part_0908      9.080000        908000     1000    1046.62  24-10-2026 23:45:30
+PROGRESS steps=908000 time=9.0799999998254197
+Part_0909      9.090000        909000     1000    1075.99  24-10-2026 23:45:30
+PROGRESS steps=909000 time=9.0899999998250411
+Part_0910      9.100000        910000     1000    1074.71  24-10-2026 23:45:31
+PROGRESS steps=910000 time=9.0999999998246626
+Part_0911      9.110000        911000     1000    1068.54  24-10-2026 23:45:30
+PROGRESS steps=911000 time=9.109999999824284
+Part_0912      9.120000        912000     1000    1067.41  24-10-2026 23:45:30
+PROGRESS steps=912000 time=9.1199999998239054
+Part_0913      9.130000        913000     1000    1060.58  24-10-2026 23:45:30
+PROGRESS steps=913000 time=9.1299999998235268
+Part_0914      9.140000        914000     1000    1054.13  24-10-2026 23:45:30
+PROGRESS steps=914000 time=9.1399999998231483
+Part_0915      9.150000        915000     1000    1041.91  24-10-2026 23:45:30
+PROGRESS steps=915000 time=9.1499999998227697
+Part_0916      9.160000        916000     1000    1042.98  24-10-2026 23:45:29
+PROGRESS steps=916000 time=9.1599999998223911
+Part_0917      9.170000        917000     1000    1050.77  24-10-2026 23:45:29
+PROGRESS steps=917000 time=9.1699999998220125
+Part_0918      9.180000        918000     1000    1053.65  24-10-2026 23:45:29
+PROGRESS steps=918000 time=9.1799999998216339
+Part_0919      9.190000        919000     1000    1053.27  24-10-2026 23:45:29
+PROGRESS steps=919000 time=9.1899999998212554
+Part_0920      9.200000        920000     1000    1050.50  24-10-2026 23:45:28
+PROGRESS steps=920000 time=9.1999999998208768
+Part_0921      9.210000        921000     1000    1044.23  24-10-2026 23:45:28
+PROGRESS steps=921000 time=9.2099999998204982
+Part_0922      9.220000        922000     1000    1044.97  24-10-2026 23:45:28
+PROGRESS steps=922000 time=9.2199999998201196
+Part_0923      9.230000        923000     1000    1046.07  24-10-2026 23:45:28
+PROGRESS steps=923000 time=9.2299999998197411
+Part_0924      9.240000        924000     1000    1046.71  24-10-2026 23:45:27
+PROGRESS steps=924000 time=9.2399999998193625
+Part_0925      9.250000        925000     1000    1047.04  24-10-2026 23:45:26
+PROGRESS steps=925000 time=9.2499999998189839
+Part_0926      9.260000        926000     1000    1047.09  24-10-2026 23:45:27
+PROGRESS steps=926000 time=9.2599999998186053
+Part_0927      9.270000        927000     1000    1046.51  24-10-2026 23:45:26
+PROGRESS steps=927000 time=9.2699999998182268
+Part_0928      9.280000        928000     1000    1046.88  24-10-2026 23:45:26
+PROGRESS steps=928000 time=9.2799999998178482
+Part_0929      9.290000        929000     1000    1049.70  24-10-2026 23:45:25
+PROGRESS steps=929000 time=9.2899999998174696
+Part_0930      9.300000        930000     1000    1049.15  24-10-2026 23:45:26
+PROGRESS steps=930000 time=9.299999999817091
+Part_0931      9.310000        931000     1000    1050.41  24-10-2026 23:45:25
+PROGRESS steps=931000 time=9.3099999998167124
+Part_0932      9.320000        932000     1000    1063.57  24-10-2026 23:45:25
+PROGRESS steps=932000 time=9.3199999998163339
+Part_0933      9.330000        933000     1000    1067.29  24-10-2026 23:45:25
+PROGRESS steps=933000 time=9.3299999998159553
+Part_0934      9.340000        934000     1000    1055.46  24-10-2026 23:45:25
+PROGRESS steps=934000 time=9.3399999998155767
+Part_0935      9.350000        935000     1000    1046.26  24-10-2026 23:45:25
+PROGRESS steps=935000 time=9.3499999998151981
+Part_0936      9.360000        936000     1000    1044.56  24-10-2026 23:45:24
+PROGRESS steps=936000 time=9.3599999998148196
+Part_0937      9.370000        937000     1000    1044.32  24-10-2026 23:45:24
+PROGRESS steps=937000 time=9.369999999814441
+Part_0938      9.380000        938000     1000    1043.30  24-10-2026 23:45:24
+PROGRESS steps=938000 time=9.3799999998140624
+Part_0939      9.390000        939000     1000    1044.25  24-10-2026 23:45:23
+PROGRESS steps=939000 time=9.3899999998136838
+Part_0940      9.400000        940000     1000    1043.75  24-10-2026 23:45:23
+PROGRESS steps=940000 time=9.3999999998133053
+Part_0941      9.410000        941000     1000    1043.00  24-10-2026 23:45:22
+PROGRESS steps=941000 time=9.4099999998129267
+Part_0942      9.420000        942000     1000    1042.03  24-10-2026 23:45:23
+PROGRESS steps=942000 time=9.4199999998125481
+Part_0943      9.430000        943000     1000    1072.57  24-10-2026 23:45:23
+PROGRESS steps=943000 time=9.4299999998121695
+Part_0944      9.440000        944000     1000    1075.68  24-10-2026 23:45:22
+PROGRESS steps=944000 time=9.4399999998117909
+Part_0945      9.450000        945000     1000    1072.27  24-10-2026 23:45:22
+PROGRESS steps=945000 time=9.4499999998114124
+Part_0946      9.460000        946000     1000    1063.29  24-10-2026 23:45:23
+PROGRESS steps=946000 time=9.4599999998110338
+Part_0947      9.470000        947000     1000    1063.28  24-10-2026 23:45:22
+PROGRESS steps=947000 time=9.4699999998106552
+Part_0948      9.480000        948000     1000    1056.84  24-10-2026 23:45:22
+PROGRESS steps=948000 time=9.4799999998102766
+Part_0949      9.490000        949000     1000    1043.59  24-10-2026 23:45:21
+PROGRESS steps=949000 time=9.4899999998098981
+Part_0950      9.500000        950000     1000    1043.77  24-10-2026 23:45:22
+PROGRESS steps=950000 time=9.4999999998095195
+Part_0951      9.510000        951000     1000    1050.62  24-10-2026 23:45:21
+PROGRESS steps=951000 time=9.5099999998091409
+Part_0952      9.520000        952000     1000    1053.16  24-10-2026 23:45:21
+PROGRESS steps=952000 time=9.5199999998087623
+Part_0953      9.530000        953000     1000    1056.17  24-10-2026 23:45:21
+PROGRESS steps=953000 time=9.5299999998083837
+Part_0954      9.540000        954000     1000    1050.04  24-10-2026 23:45:21
+PROGRESS steps=954000 time=9.5399999998080052
+Part_0955      9.550000        955000     1000    1047.89  24-10-2026 23:45:20
+PROGRESS steps=955000 time=9.5499999998076266
+Part_0956      9.560000        956000     1000    1045.60  24-10-2026 23:45:20
+PROGRESS steps=956000 time=9.559999999807248
+Part_0957      9.570000        957000     1000    1046.99  24-10-2026 23:45:20
+PROGRESS steps=957000 time=9.5699999998068694
+Part_0958      9.580000        958000     1000    1047.58  24-10-2026 23:45:20
+PROGRESS steps=958000 time=9.5799999998064909
+Part_0959      9.590000        959000     1000    1047.97  24-10-2026 23:45:19
+PROGRESS steps=959000 time=9.5899999998061123
+Part_0960      9.600000        960000     1000    1047.36  24-10-2026 23:45:19
+PROGRESS steps=960000 time=9.5999999998057337
+Part_0961      9.610000        961000     1000    1048.94  24-10-2026 23:45:19
+PROGRESS steps=961000 time=9.6099999998053551
+Part_0962      9.620000        962000     1000    1047.23  24-10-2026 23:45:19
+PROGRESS steps=962000 time=9.6199999998049766
+Part_0963      9.630000        963000     1000    1046.25  24-10-2026 23:45:18
+PROGRESS steps=963000 time=9.629999999804598
+Part_0964      9.640000        964000     1000    1046.99  24-10-2026 23:45:18
+PROGRESS steps=964000 time=9.6399999998042194
+Part_0965      9.650000        965000     1000    1047.91  24-10-2026 23:45:18
+PROGRESS steps=965000 time=9.6499999998038408
+Part_0966      9.660000        966000     1000    1060.89  24-10-2026 23:45:18
+PROGRESS steps=966000 time=9.6599999998034622
+Part_0967      9.670000        967000     1000    1066.43  24-10-2026 23:45:17
+PROGRESS steps=967000 time=9.6699999998030837
+Part_0968      9.680000        968000     1000    1060.16  24-10-2026 23:45:18
+PROGRESS steps=968000 time=9.6799999998027051
+Part_0969      9.690000        969000     1000    1047.65  24-10-2026 23:45:17
+PROGRESS steps=969000 time=9.6899999998023265
+Part_0970      9.700000        970000     1000    1048.69  24-10-2026 23:45:17
+PROGRESS steps=970000 time=9.6999999998019479
+Part_0971      9.710000        971000     1000    1048.96  24-10-2026 23:45:16
+PROGRESS steps=971000 time=9.7099999998015694
+Part_0972      9.720000        972000     1000    1050.71  24-10-2026 23:45:17
+PROGRESS steps=972000 time=9.7199999998011908
+Part_0973      9.730000        973000     1000    1046.79  24-10-2026 23:45:16
+PROGRESS steps=973000 time=9.7299999998008122
+Part_0974      9.740000        974000     1000    1045.29  24-10-2026 23:45:16
+PROGRESS steps=974000 time=9.7399999998004336
+Part_0975      9.750000        975000     1000    1044.89  24-10-2026 23:45:15
+PROGRESS steps=975000 time=9.7499999998000551
+Part_0976      9.760000        976000     1000    1045.35  24-10-2026 23:45:16
+PROGRESS steps=976000 time=9.7599999997996765
+Part_0977      9.770000        977000     1000    1065.74  24-10-2026 23:45:15
+PROGRESS steps=977000 time=9.7699999997992979
+Part_0978      9.780000        978000     1000    1075.84  24-10-2026 23:45:15
+PROGRESS steps=978000 time=9.7799999997989193
+Part_0979      9.790000        979000     1000    1076.96  24-10-2026 23:45:16
+PROGRESS steps=979000 time=9.7899999997985407
+Part_0980      9.800000        980000     1000    1062.79  24-10-2026 23:45:16
+PROGRESS steps=980000 time=9.7999999997981622
+Part_0981      9.810000        981000     1000    1063.53  24-10-2026 23:45:15
+PROGRESS steps=981000 time=9.8099999997977836
+Part_0982      9.820000        982000     1000    1063.31  24-10-2026 23:45:15
+PROGRESS steps=982000 time=9.819999999797405
+Part_0983      9.830000        983000     1000    1042.83  24-10-2026 23:45:15
+PROGRESS steps=983000 time=9.8299999997970264
+Part_0984      9.840000        984000     1000    1043.59  24-10-2026 23:45:15
+PROGRESS steps=984000 time=9.8399999997966479
+Part_0985      9.850000        985000     1000    1048.61  24-10-2026 23:45:14
+PROGRESS steps=985000 time=9.8499999997962693
+Part_0986      9.860000        986000     1000    1056.47  24-10-2026 23:45:15
+PROGRESS steps=986000 time=9.8599999997958907
+Part_0987      9.870000        987000     1000    1055.97  24-10-2026 23:45:14
+PROGRESS steps=987000 time=9.8699999997955121
+Part_0988      9.880000        988000     1000    1055.18  24-10-2026 23:45:14
+PROGRESS steps=988000 time=9.8799999997951335
+Part_0989      9.890000        989000     1000    1046.44  24-10-2026 23:45:13
+PROGRESS steps=989000 time=9.889999999794755
+Part_0990      9.900000        990000     1000    1045.11  24-10-2026 23:45:14
+PROGRESS steps=990000 time=9.8999999997943764
+Part_0991      9.910000        991000     1000    1044.93  24-10-2026 23:45:13
+PROGRESS steps=991000 time=9.9099999997939978
+Part_0992      9.920000        992000     1000    1048.72  24-10-2026 23:45:13
+PROGRESS steps=992000 time=9.9199999997936192
+Part_0993      9.930000        993000     1000    1049.35  24-10-2026 23:45:13
+PROGRESS steps=993000 time=9.9299999997932407
+Part_0994      9.940000        994000     1000    1048.80  24-10-2026 23:45:13
+PROGRESS steps=994000 time=9.9399999997928621
+Part_0995      9.950000        995000     1000    1047.10  24-10-2026 23:45:12
+PROGRESS steps=995000 time=9.9499999997924835
+Part_0996      9.960000        996000     1000    1047.38  24-10-2026 23:45:12
+PROGRESS steps=996000 time=9.9599999997921049
+Part_0997      9.970000        997000     1000    1045.43  24-10-2026 23:45:12
+PROGRESS steps=997000 time=9.9699999997917264
+Part_0998      9.980000        998000     1000    1046.10  24-10-2026 23:45:12
+PROGRESS steps=998000 time=9.9799999997913478
+Part_0999      9.990000        999000     1000    1048.08  24-10-2026 23:45:11
+PROGRESS steps=999000 time=9.9899999997909692
+Part_1000     10.000000       1000000     1000    1063.50  24-10-2026 23:45:12
+PROGRESS steps=1000000 time=9.9999999997905906
