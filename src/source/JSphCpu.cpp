@@ -112,6 +112,7 @@ void JSphCpu::InitVars(){
   ArtificialStressc=NULL;
   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
   BoundDerivativeVelc=NULL;
+  BoundDerivativeFitShift.clear();
   //======
   VelrhopM1c=NULL;                //-Verlet
   PosPrec=NULL; VelrhopPrec=NULL; //-Symplectic
@@ -454,6 +455,7 @@ llong JSphCpu::GetAllocMemoryCpu()const{
   s+=MemCpuParticles;
   //-Reserved in AllocCpuMemoryFixed().
   s+=MemCpuFixed;
+  s+=llong(BoundDerivativeFitShift.capacity()*sizeof(tdouble3));
   //-Reserved in other objects.
   if(MLPistons)s+=MLPistons->GetAllocMemoryCpu();
   return(s);
@@ -1562,7 +1564,7 @@ void JSphCpu::InteractionPorePressureRate(){
 //==============================================================================
 template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void JSphCpu::InterpolateBoundaryGhostFieldT
   (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
-  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write)const
+  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write,bool recenter)const
 {
   const int nn=int(n);
   #ifdef OMP_USE
@@ -1571,6 +1573,9 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
   for(int p1=0;p1<nn;p1++){
     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
+    const tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
+    const bool shifted=(fitshift!=TDouble3(0));
+    if(shifted)gposp1=gposp1+fitshift;
     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
     double sumwab=0,submerged=0;
     double fieldsum[ncomp]={0};
@@ -1632,6 +1637,11 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldz[c];
             fieldfinal[c]=qg;
+            if(shifted){
+              const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldz[c];
+              const double qz=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldz[c];
+              fieldfinal[c]+=qx*fitshift.x+qz*fitshift.z;
+            }
           }
         }
       }
@@ -1642,6 +1652,12 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldy[c] + inv.a14*gradfieldz[c];
             fieldfinal[c]=qg;
+            if(shifted){
+              const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldy[c]+inv.a24*gradfieldz[c];
+              const double qy=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldy[c]+inv.a34*gradfieldz[c];
+              const double qz=inv.a41*fieldsum[c]+inv.a42*gradfieldx[c]+inv.a43*gradfieldy[c]+inv.a44*gradfieldz[c];
+              fieldfinal[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
+            }
           }
         }
       }
@@ -1708,9 +1724,9 @@ void JSphCpu::ComputeBoundaryDerivativeVelocity(){
     }
   };
   if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(
-    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity);
+    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity,true);
   else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,3>(
-    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity);
+    NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,readvelocity,writevelocity,true);
 }
 
 //==============================================================================

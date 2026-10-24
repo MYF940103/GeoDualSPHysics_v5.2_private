@@ -86,6 +86,10 @@
 			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
 			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
 			<!-- Hydromechanical CPU/GPU PART also saves HydroMechLoadAce (float3), the existing applied-load acceleration for resultant-force diagnostics, not total acceleration. -->
+			<!-- GPU external-load telemetry repair (2026-10-24, pending output-only regression): record top loads
+                 for all load modes, not only mode5; add neighbor-load diagnostics instead of overwriting them.
+                 No Ace/pressure/stress integration change. Earlier mode3 GPU PART can contain zero telemetry
+                 despite a physically applied load; do not interpret that missing observation as zero force. -->
 			<!-- CPU output-only addition checked against the retained CPU8 .03-s trajectory: old physical fields remain 0 ULP; this diagnostic field is not a new load or XML switch. -->
 			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->
 			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain (default=1)" />
@@ -100,10 +104,31 @@
 			<!-- For a stationary plane with unit normal n and reconstructed ghost velocity vg: Vel0=-dot(vg,n)*n, NoSlip=-vg, FreeSlip=vg-2*dot(vg,n)*n. -->
 			<!-- Vel0 retains its zero tangential closure, not full NoSlip. NoSlip/FreeSlip derivative MLS is a new first-order candidate, not the old zeroth-order tangential extrapolation. -->
 			<!-- Physical wall velocity, momentum/viscosity, Darcy diffusion and loading are unchanged. No density KEEP patch is enabled. -->
-			<!-- Candidate scope under validation: fresh CPU 2D x-z or 3D Wendland/Symplectic elastic soil, one stationary plane. -->
+			<!-- Candidate scope: fresh 2D x-z or 3D Wendland/Symplectic elastic soil.
+                 CPU/GPU multi-plane operator and bounded pulse checks below passed;
+                 NOT general multi-plane physical acceptance. Existing single-plane delivery stands. -->
+			<!-- CPU per-mk multi-plane candidate (2026-10-24): each wall mk must remain one stationary coplanar face;
+                 inward half-spaces must define a convex common interior. Local normals are not averaged at corners.
+                 If a ghost lies outside another face, fit one dp inside all faces and evaluate the same affine MLS
+                 polynomial at the ORIGINAL ghost; one-plane arithmetic and pore-pressure extrapolation are unchanged.
+                 HG is off in independent candidate tests. CPU Debug/Release passed 18 corner/edge/wedge
+                 manufactured cases in total; eight CPU 2-ms pulse half-step pairs passed (two axis-NoPen).
+                 CPU Yao .1-s off/on/half passed 101 matched 5-Pa/.005-mm pairs; not theory or long-cycle acceptance.
+                 GPU Debug/Release passed 18 multi-face and 36 legacy single-plane manufactured cases in total;
+                 eight GPU 2-ms pulse half pairs passed. Four SPR/HG old one-plane paths retain 31-frame 0 ULP.
+                 GPU Yao .02/.1-s startup, independent half steps and CPU comparisons passed (101 samples at .1 s);
+                 .3-s GPU post-ramp window passed 301 half pairs and all 101 .1-s same-dt prefixes 0 ULP;
+                 full-window maxima .277975 Pa / .000287019 mm. CPU comparison exists only through .1 s.
+                 Not theory or long-cycle acceptance; original strict strip-load quadrature remains unchanged. -->
+			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
+                 Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
+                 pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs
+                 passed independently on each backend; this is not general NoPen/long-cycle acceptance. -->
 			<!-- GPU Debug/Release each passed the same 18 manufactured fields; SPR-off matches retained 20-step GPU output bitwise with HG on/off. Case-02 15-s coarse/half and k=1e-4 same-dt CPU/GPU 2Tv passed (2026-10-20). -->
-			<!-- Plane normals must be finite, nonzero, consistently oriented and coplanar; either normal sign is allowed. Corners/curved walls are rejected. -->
-			<!-- Requires one uniform mDBC SlipMode 1/2/3 (no per-mk overrides), NoPen off, corrected stress/pore gradients, PairDivergence, artificial viscosity and DensityDT=0. -->
+			<!-- Each face needs finite, nonzero, consistently oriented and coplanar normals. For multiple CPU/GPU faces
+                 normals must point into their convex common interior. Curved and moving walls remain rejected. -->
+			<!-- Requires one uniform mDBC SlipMode 1/2/3 (no per-mk overrides), corrected stress/pore gradients,
+                 PairDivergence, artificial viscosity and DensityDT=0. NoPen is off except the axis-plane candidate above. -->
 			<!-- No restart, moving/floating bodies, in/out, shifting, relaxation, softening or artificial stress. Periodicity must be tangent to the wall (no y periodicity in 2D). -->
 			<!-- Validated: 18 stationary-plane manufactured fields (2D/3D, horizontal/vertical/tilted, SlipMode 1/2/3); case-02 horizontal Vel0 0.15-s coarse/half regression is bitwise unchanged. -->
 			<!-- Manufactured fields do not validate arbitrary 2D/3D coupled time histories, inactive-wall dynamics or complex boundaries; these still need separate validation. -->

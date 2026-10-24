@@ -1,0 +1,142 @@
+{
+  "passed": true,
+  "frames_per_variant": 301,
+  "actual_final_times_s": {
+    "faces_off": 0.3000000000000185,
+    "faces_on": 0.3000000000000185,
+    "faces_half": 0.30000000000015925
+  },
+  "same_backend_reference": "spr_yao_gpu_load_grid10_r2",
+  "matching_native_samples_0ulp": {
+    "faces_off": 101,
+    "faces_on": 101,
+    "faces_half": 101
+  },
+  "metadata": {
+    "faces_off": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570117958673713,
+      "pore_limit_s": 9.53206462560066e-05
+    },
+    "faces_on": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570130752976194,
+      "pore_limit_s": 9.53206462560066e-05
+    },
+    "faces_half": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570130807605231,
+      "pore_limit_s": 9.53206462560066e-05
+    }
+  },
+  "comparison_maxima": [
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_half",
+      "pressure_rms_pa": 0.0002122258719724908,
+      "max_material_displacement_mm": 1.8505229198486837e-07,
+      "total_stress_rms_pa": 0.00031184389607870214,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_off",
+      "pressure_rms_pa": 0.0013239792529768217,
+      "max_material_displacement_mm": 2.844124694704344e-06,
+      "total_stress_rms_pa": 0.001813377064385889,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_on",
+      "pressure_rms_pa": 0.00023558755572216606,
+      "max_material_displacement_mm": 1.7258782222625687e-07,
+      "total_stress_rms_pa": 0.00033735665644999796,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "GPU_half",
+      "variant": "faces_on_vs_half",
+      "pressure_rms_pa": 0.27797435299418083,
+      "max_material_displacement_mm": 0.00028701810976259755,
+      "total_stress_rms_pa": 0.6472702164566652,
+      "force_difference_N_m": 3.0499534606933594
+    }
+  ],
+  "loop_seconds": {
+    "faces_off": 151.9661074,
+    "faces_on": 160.3553466,
+    "faces_half": 321.31510080000004
+  },
+  "cpu_control": "spr_yao_grid10_r1",
+  "cpu_comparison_window_s": 0.1,
+  "output_only_pre_telemetry_reference": null,
+  "pre_telemetry_nonload_fields_0ulp": {
+    "faces_off": 0,
+    "faces_on": 0,
+    "faces_half": 0
+  },
+  "controlled_speed_benchmark": false,
+  "physical_acceptance": false,
+  "visual_inspected": false,
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\scripts\\spr_yao_gpu_post_review.py",
+      "sha256": "F498A6CF309F1AD4B95804979370ECC2C821DC06A9CE30DCD3EA1E527E6A924D"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\outputs\\read_meta_r1\\ReadPartMetadata.exe",
+      "sha256": "E00CAEC281DD92A67A6D076932E51AF15B840130C1D8FA647B647C926580FB9F"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\logs\\spr_yao_gpu_post03_r1.status.json",
+      "sha256": "A7A7538063000E14E8836425E43CE0D5A2339BEB48E5C80F4DBD4E8189AEBEFB"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\logs\\spr_yao_grid10_r1.status.json",
+      "sha256": "664FFAE53B37A397B6145B06EE14C837053231CC07880AC8A559CF8F649AD15A"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\logs\\spr_yao_gpu_load_grid10_r2.status.json",
+      "sha256": "90B9C13B6AD622961810625D9C9E0626BB70FB42CA9A4A1A0DA450633593E0AC"
+    }
+  ],
+  "outputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_off_metadata.csv",
+      "sha256": "131D8C61F2640014C8D26858A1CC24542388A0604840E146CBB03ADB2CAEB56D"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_on_metadata.csv",
+      "sha256": "2DDC27EB48925D5CBCA8C4C223B166332C11AEFA63378B992BC50AC33DAE5902"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_half_metadata.csv",
+      "sha256": "01994563BA2B04119249563E385CA81F49717C70AB43F5DEC6D1EA0B27E0F372"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_history.csv",
+      "sha256": "3C4CFD7F7E08864E072BE2434CAC44F3CD49F727E2B905F868866A90D676CE4B"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_comparison.csv",
+      "sha256": "003076AA2AD9746FE5A326E7811F258A0DBA727ECEFB54C900508FCC7CC63F88"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_off_final.csv",
+      "sha256": "932A4F00EE7CC7B90E907B7019EB3B909454B4076BFA451293C78221ED360732"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_on_final.csv",
+      "sha256": "CB3D8AE0C66742E637CB4DEDD2C105063DFF879BFCB98D218BC4A95B7F63B546"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_faces_half_final.csv",
+      "sha256": "1778B7E54B363149CB5BA9C0332F9F7350DC3B6E45FC97A33C3A09EC82281D21"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\figures\\spr_yao_gpu_post03_r1_history.png",
+      "sha256": "F13D606EE965767521067D8F2882E40E94EAB18420E66D0C56B2EAED4AEEEA00"
+    }
+  ]
+}

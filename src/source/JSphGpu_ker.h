@@ -300,7 +300,8 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
 void BoundaryDerivativeVelocity(bool simulate2d,unsigned npb,unsigned npbok,float mdbcthreshold
   ,TpSlipMode slipmode,const StDivDataGpu &dvd,const double2 *posxy,const double *posz
   ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
-  ,const byte *boundmode,const byte *boundslipmode,float3 *boundderivativevel);
+  ,const byte *boundmode,const byte *boundslipmode,float3 *boundderivativevel
+  ,const unsigned *idp=NULL,const double3 *fitshift=NULL);
 void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code

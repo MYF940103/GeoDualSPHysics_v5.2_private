@@ -1,0 +1,113 @@
+Reviewed native frame 0 of 300
+Reviewed native frame 10 of 300
+Reviewed native frame 20 of 300
+Reviewed native frame 30 of 300
+Reviewed native frame 40 of 300
+Reviewed native frame 50 of 300
+Reviewed native frame 60 of 300
+Reviewed native frame 70 of 300
+Reviewed native frame 80 of 300
+Reviewed native frame 90 of 300
+Reviewed native frame 100 of 300
+Reviewed native frame 110 of 300
+Reviewed native frame 120 of 300
+Reviewed native frame 130 of 300
+Reviewed native frame 140 of 300
+Reviewed native frame 150 of 300
+Reviewed native frame 160 of 300
+Reviewed native frame 170 of 300
+Reviewed native frame 180 of 300
+Reviewed native frame 190 of 300
+Reviewed native frame 200 of 300
+Reviewed native frame 210 of 300
+Reviewed native frame 220 of 300
+Reviewed native frame 230 of 300
+Reviewed native frame 240 of 300
+Reviewed native frame 250 of 300
+Reviewed native frame 260 of 300
+Reviewed native frame 270 of 300
+Reviewed native frame 280 of 300
+Reviewed native frame 290 of 300
+Reviewed native frame 300 of 300
+{
+  "passed": true,
+  "frames_per_variant": 301,
+  "actual_final_times_s": {
+    "faces_off": 0.3000000000000185,
+    "faces_on": 0.3000000000000185,
+    "faces_half": 0.30000000000015925
+  },
+  "same_backend_reference": "spr_yao_gpu_load_grid10_r2",
+  "matching_native_samples_0ulp": {
+    "faces_off": 101,
+    "faces_on": 101,
+    "faces_half": 101
+  },
+  "metadata": {
+    "faces_off": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570117958673713,
+      "pore_limit_s": 9.53206462560066e-05
+    },
+    "faces_on": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570130752976194,
+      "pore_limit_s": 9.53206462560066e-05
+    },
+    "faces_half": {
+      "frames": 301,
+      "mechanical_min_dt_s": 0.0002570130807605231,
+      "pore_limit_s": 9.53206462560066e-05
+    }
+  },
+  "comparison_maxima": [
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_half",
+      "pressure_rms_pa": 0.0002122258719724908,
+      "max_material_displacement_mm": 1.8505229198486837e-07,
+      "total_stress_rms_pa": 0.00031184389607870214,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_off",
+      "pressure_rms_pa": 0.0013239792529768217,
+      "max_material_displacement_mm": 2.844124694704344e-06,
+      "total_stress_rms_pa": 0.001813377064385889,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "CPU_GPU",
+      "variant": "faces_on",
+      "pressure_rms_pa": 0.00023558755572216606,
+      "max_material_displacement_mm": 1.7258782222625687e-07,
+      "total_stress_rms_pa": 0.00033735665644999796,
+      "force_difference_N_m": 0.0
+    },
+    {
+      "kind": "GPU_half",
+      "variant": "faces_on_vs_half",
+      "pressure_rms_pa": 0.27797435299418083,
+      "max_material_displacement_mm": 0.00028701810976259755,
+      "total_stress_rms_pa": 0.6472702164566652,
+      "force_difference_N_m": 3.0499534606933594
+    }
+  ],
+  "loop_seconds": {
+    "faces_off": 151.9661074,
+    "faces_on": 160.3553466,
+    "faces_half": 321.31510080000004
+  },
+  "cpu_control": "spr_yao_grid10_r1",
+  "cpu_comparison_window_s": 0.1,
+  "output_only_pre_telemetry_reference": null,
+  "pre_telemetry_nonload_fields_0ulp": {
+    "faces_off": 0,
+    "faces_on": 0,
+    "faces_half": 0
+  },
+  "controlled_speed_benchmark": false,
+  "physical_acceptance": false,
+  "visual_inspected": false
+}

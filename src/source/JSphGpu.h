@@ -153,6 +153,7 @@ protected:
   byte   *BoundSlipModeg;///<Per-particle mDBC slip mode when per-mkbound overrides are active.
   float3 *TangenVelg;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
   float3 *BoundDerivativeVelg; ///<Scratch wall velocity for S/P/R derivatives only.
+  double3 *BoundDerivativeFitShiftg; ///<Static MLS-centre offsets by native wall ID; null for one plane.
   float4 *NoPenShiftg;   ///<Velocity correction to prevent mDBC2 boundary penetration.
   //-ruofeng
   tsymatrix3d *Sigmag;

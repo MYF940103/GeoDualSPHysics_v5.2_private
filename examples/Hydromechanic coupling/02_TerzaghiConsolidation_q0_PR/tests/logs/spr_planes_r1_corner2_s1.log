@@ -1,0 +1,141 @@
+
+[Initialising JSphCpuSingle  24-10-2026 12:25:24]
+ProgramFile=".../outputs/spr_planes_r2rel/spr_planes.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/spr_planes_r1_corner2_s1_input/spr_planes_r1_corner2_s1.xml"
+OutputDir=".../tests/outputs/spr_planes_r1_corner2_s1"
+OutputDataDir=".../outputs/spr_planes_r1_corner2_s1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  CaseName=["spr_planes_r1_corner2_s1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+XML-Vars (parameters): TimeMax=[1e-05]  TimeOut=[1e-05]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 169
+MapRealPos(border)=(-0.0259,-0.0009,-0.0259)-(0.0959,0.0009,0.0959)
+MapRealPos(final)=(-0.0259,-0.0009,-0.0259)-(0.0959,0.0009,0.0959)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="spr_planes_r1_corner2_s1"
+RunName="spr_planes_r1_corner2_s1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="DBC vel=0"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilDamping="None"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=169
+CaseNbound=69
+CaseNfixed=69
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=100
+PeriodicActive="None"
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=0.00001
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=0.21
+MassBound=0.21
+TimeMax=0.00001
+TimePart=0.00001
+Gravity=(0,0,0)
+NpMinimum=69
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(4,1,4)
+CellDomFixed=False
+**Requested CPU memory for 297 particles: 0.1 MB.
+SPR stationary wall planes (one per mk): 2
+DomCells=(4,1,4)
+DomCellCode="1+11_10_10"
+**CellDiv: Requested cpu memory for 305 particles: 0.0 MB.
+**CellDiv: Requested cpu memory for 50 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Pos-Double - Single core"
+ 
+Particle summary:
+  Fixed....: 69  id:(0-68)   MKs:2 (10-11)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 100  id:(69-168)   MKs:1 (1)
+
+Total particles: 169 (bound=69 (fx=69 mv=0 ft=0) fluid=100)
+Total MK blocks: 3 (bound=2 (fx=2 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (39 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 2
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (30 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 2
+ 
+DIAGNOSTIC complete, affine bad=4 consumers=0

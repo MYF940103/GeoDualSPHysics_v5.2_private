@@ -1,5 +1,19 @@
 # Yao 2D Consolidation PR
 
+2026-10-24 CPU SPR extension candidate: fresh, independently controlled tests
+are under [tests/notes/spr_yao_r1.md](tests/notes/spr_yao_r1.md).
+They preserve this root's formal XML/BAT and retained GPU data. Both CPU
+integer-save windows (0.02 and 0.1 s) passed their whole-window half-step limits;
+the 0.1-s maximum is 0.277975 Pa / 0.000287004 mm. Neither is a full 2-D
+consolidation acceptance. The original nodal strip loads 59 interior top nodes
+then 61 when its endpoints re-enter (5.9 to 6.1 m versus ideal 6 m); that existing
+quadrature bias is recorded, not silently fixed under SPR. GPU synchronization
+and independent .02/.1-s half checks now pass: .1-s GPU half maxima are
+0.277974 Pa / 0.000287018 mm; CPU/GPU maxima are 0.001324 Pa / 0.000002845 mm.
+The bounded .3-s GPU post-ramp window under tests also passed 301 half pairs;
+CPU evidence still ends at .1 s. It is not full 2-D theory/long-cycle acceptance.
+Current history/field PNGs AND matching CSVs are indexed in tests/README.md.
+
 This case retains the explicit u-pw verification setup and damping/boundary
 comparisons. The historical results are comparison records, not a new
 validation performed during file organization.

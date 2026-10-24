@@ -1,5 +1,13 @@
 # 02 测试文件索引
 
+## 2026-10-24 CPU/GPU多面SPR有界候选（尚非正式通用边界验收）
+
+- [补丁、失败来源与短窗结论](notes/spr_planes_r1.md)，[汇总收据](logs/spr_planes_review_r2.check.json)，[角点图](figures/spr_planes_review_r2_corner.png)、[算子/半步图](figures/spr_planes_review_r2_checks.png)及同前缀CSV。
+- 三个CPU源文件实现每mk静止平面及角点MLS中心内移/原ghost求值；18多面制造场、18既有单面场及八条2-ms脉动半步对通过。既有一维SPR关/开短轨迹0 ULP，未改正式输入/数据。
+- [GPU移植及源码位置](notes/spr_gpu_planes_r1.md)：18多面、36旧单面制造场，八个2-ms半步对和四条31帧旧路径0 ULP通过；当前Debug 3D棱边memcheck为0 errors。GPU脉动[PNG](figures/spr_gpu_delivery_r1_pulse.png)/[CSV](figures/spr_gpu_delivery_r1_pulse.csv)/[收据](logs/spr_gpu_delivery_r1.check.json)。
+- 轴对齐NoPen+NoSlip/FreeSlip在CPU/GPU各两个脉动半步对通过。原NoPen在斜墙纯切向流下不旋转一致，未改其动量公式；斜NoPen、曲面/运动墙及有限墙端仍非已验收能力。当前GPU六个预期拒绝见`spr_gpu_scope_r1.check.json`。
+- 当前八个源码/四个程序的本地快照`outputs/spr_planes_cpu_gpu_short_verified`，不是新云端Git备份。Yao CPU/GPU .1 s均通过数值/半步准入，case06新GPU .3 s检查加载后响应；不把制造场或启动短窗等同于二维理论/长程验收。正式三组数据不动；下方旧保护测试是扩展前基线。
+
 ## 2026-10-24 当前交付（以下旧日期状态仅作历史）
 
 - 三组正式2Tv已按用户一维弹性验收范围通过：k=1e-3、1e-4、5e-5；全部dp=0.01 m、宽0.1 m。前两组GPU、xi=0.1，第三组CPU8、xi=0.05；不是只改变k的严格受控对比。

@@ -1102,8 +1102,8 @@ __global__ void KerApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,un
     a.y+=aload.y;
     a.z+=aload.z;
     ace[p]=a;
-    //-Band normalization needs the old single-layer load; retain legacy output behaviour.
-    if(loadmode==HMLOAD_TopKernelBand && loadace)loadace[p]=aload;
+    //-Observe the already-applied external load for all modes; no new force.
+    if(loadace)loadace[p]=aload;
   }
 }
 
@@ -1443,7 +1443,8 @@ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
 template<bool sim2d> __global__ void KerBoundaryDerivativeVelocity(unsigned npb,unsigned npbok
   ,float threshold,unsigned slipmode,int scelldiv,int4 nc,int3 cellzero,const int2 *fluidcells
   ,const double2 *posxy,const double *posz,const typecode *code,const float4 *velrhop
-  ,const float3 *boundnormal,const byte *boundmode,const byte *boundslipmode,float3 *derivativevel)
+  ,const float3 *boundnormal,const byte *boundmode,const byte *boundslipmode,float3 *derivativevel
+  ,const unsigned *idp,const double3 *fitshifts)
 {
   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
   if(p1>=npb)return;
@@ -1456,6 +1457,9 @@ template<bool sim2d> __global__ void KerBoundaryDerivativeVelocity(unsigned npb,
   if(p1>=npbok || CODE_IsFluid(code[p1]) || (bn.x==0 && bn.y==0 && bn.z==0))return;
   if(mode>=SLIP_NoSlip && boundmode && boundmode[p1]==BMODE_MDBC2OFF)return;
   double3 gp=make_double3(posxy[p1].x+bn.x,posxy[p1].y+bn.y,posz[p1]+bn.z);
+  const double3 fitshift=(fitshifts? fitshifts[idp[p1]]: make_double3(0,0,0));
+  const bool shifted=(fitshift.x!=0 || fitshift.y!=0 || fitshift.z!=0);
+  if(shifted){gp.x+=fitshift.x;gp.y+=fitshift.y;gp.z+=fitshift.z;}
   if(CTE.periactive)gp=KerUpdatePeriodicPos(gp);
   double sumwab=0,submerged=0;
   double sum[3]={0},gx[3]={0},gy[3]={0},gz[3]={0};
@@ -1500,14 +1504,29 @@ template<bool sim2d> __global__ void KerBoundaryDerivativeVelocity(unsigned npb,
     const double det=cumath::Determinant3x3(a2);
     if(fabs(det)>=1e-3){
       const tmatrix3d inv=cumath::InverseMatrix3x3(a2,det);
-      for(unsigned c=0;c<3;c++)ghost[c]=inv.a11*sum[c]+inv.a12*gx[c]+inv.a13*gz[c];
+      for(unsigned c=0;c<3;c++){
+        ghost[c]=inv.a11*sum[c]+inv.a12*gx[c]+inv.a13*gz[c];
+        if(shifted){
+          const double qx=inv.a21*sum[c]+inv.a22*gx[c]+inv.a23*gz[c];
+          const double qz=inv.a31*sum[c]+inv.a32*gx[c]+inv.a33*gz[c];
+          ghost[c]+=qx*fitshift.x+qz*fitshift.z;
+        }
+      }
     }
   }
   else{
     const double det=cumath::Determinant4x4(a3);
     if(fabs(det)>=1e-3){
       const tmatrix4d inv=cumath::InverseMatrix4x4(a3,det);
-      for(unsigned c=0;c<3;c++)ghost[c]=inv.a11*sum[c]+inv.a12*gx[c]+inv.a13*gy[c]+inv.a14*gz[c];
+      for(unsigned c=0;c<3;c++){
+        ghost[c]=inv.a11*sum[c]+inv.a12*gx[c]+inv.a13*gy[c]+inv.a14*gz[c];
+        if(shifted){
+          const double qx=inv.a21*sum[c]+inv.a22*gx[c]+inv.a23*gy[c]+inv.a24*gz[c];
+          const double qy=inv.a31*sum[c]+inv.a32*gx[c]+inv.a33*gy[c]+inv.a34*gz[c];
+          const double qz=inv.a41*sum[c]+inv.a42*gx[c]+inv.a43*gy[c]+inv.a44*gz[c];
+          ghost[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
+        }
+      }
     }
   }
   if(mode==SLIP_Vel0 && bn.x==0 && bn.y==0)
@@ -1527,12 +1546,13 @@ template<bool sim2d> __global__ void KerBoundaryDerivativeVelocity(unsigned npb,
 void BoundaryDerivativeVelocity(bool simulate2d,unsigned npb,unsigned npbok,float mdbcthreshold
   ,TpSlipMode slipmode,const StDivDataGpu &dvd,const double2 *posxy,const double *posz
   ,const typecode *code,const float4 *velrhop,const float3 *boundnormal
-  ,const byte *boundmode,const byte *boundslipmode,float3 *boundderivativevel)
+  ,const byte *boundmode,const byte *boundslipmode,float3 *boundderivativevel
+  ,const unsigned *idp,const double3 *fitshift)
 {
   if(!npb)return;
   const dim3 grid=GetSimpleGridSize(npb,SPHBSIZE);
-  if(simulate2d)KerBoundaryDerivativeVelocity<true><<<grid,SPHBSIZE>>>(npb,npbok,mdbcthreshold,unsigned(slipmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,velrhop,boundnormal,boundmode,boundslipmode,boundderivativevel);
-  else KerBoundaryDerivativeVelocity<false><<<grid,SPHBSIZE>>>(npb,npbok,mdbcthreshold,unsigned(slipmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,velrhop,boundnormal,boundmode,boundslipmode,boundderivativevel);
+  if(simulate2d)KerBoundaryDerivativeVelocity<true><<<grid,SPHBSIZE>>>(npb,npbok,mdbcthreshold,unsigned(slipmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,velrhop,boundnormal,boundmode,boundslipmode,boundderivativevel,idp,fitshift);
+  else KerBoundaryDerivativeVelocity<false><<<grid,SPHBSIZE>>>(npb,npbok,mdbcthreshold,unsigned(slipmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,velrhop,boundnormal,boundmode,boundslipmode,boundderivativevel,idp,fitshift);
 }
 
 //==============================================================================
@@ -2107,7 +2127,12 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       }
       ar[p1]+=arp1;
       float3 r=ace[p1]; r.x+=acep1.x; r.y+=acep1.y; r.z+=acep1.z; ace[p1]=r;
-      if(hydromechloadace && !topkernelband && (hydromechloadacep1.x || hydromechloadacep1.y || hydromechloadacep1.z))hydromechloadace[p1]=hydromechloadacep1;
+      if(hydromechloadace && !topkernelband && (hydromechloadacep1.x || hydromechloadacep1.y || hydromechloadacep1.z)){
+        //-Keep external plus neighbor load diagnostics, as on CPU; Ace is unchanged.
+        hydromechloadace[p1].x+=hydromechloadacep1.x;
+        hydromechloadace[p1].y+=hydromechloadacep1.y;
+        hydromechloadace[p1].z+=hydromechloadacep1.z;
+      }
       if(visc>viscdt[p1])viscdt[p1]=visc;
     //  if(lamsps){
     //    float2 rg;

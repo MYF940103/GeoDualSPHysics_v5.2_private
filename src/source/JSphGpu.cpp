@@ -155,6 +155,7 @@ void JSphGpu::InitVars(){
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
   BoundDerivativeVelg=NULL;
+  BoundDerivativeFitShiftg=NULL;
   VelrhopM1g=NULL;                                 //-Verlet
   SigmaM1g=NULL;//ruofeng
   PorePressM1g=NULL;
@@ -218,6 +219,7 @@ void JSphGpu::AllocCpuMemoryFixed(){
 //==============================================================================
 void JSphGpu::FreeGpuMemoryFixed(){
   MemGpuFixed=0;
+  if(BoundDerivativeFitShiftg)cudaFree(BoundDerivativeFitShiftg); BoundDerivativeFitShiftg=NULL;
   if(RidpMoveg)         cudaFree(RidpMoveg);          RidpMoveg=NULL;
   if(FtRidpg)           cudaFree(FtRidpg);            FtRidpg=NULL;
   if(FtoMasspg)         cudaFree(FtoMasspg);          FtoMasspg=NULL;
@@ -1196,7 +1198,7 @@ void JSphGpu::InteractionPorePressureMdbcCorrection(){
 void JSphGpu::ComputeBoundaryDerivativeVelocity(){
   if(SoilBoundaryDerivativeSPR)cusph::BoundaryDerivativeVelocity(Simulate2D,Npb,NpbOk,
     MdbcThreshold,SlipMode,DivData,Posxyg,Poszg,Codeg,Velrhopg,BoundNormalg,
-    BoundModeg,BoundSlipModeg,BoundDerivativeVelg);
+    BoundModeg,BoundSlipModeg,BoundDerivativeVelg,Idpg,BoundDerivativeFitShiftg);
 }
 
 //==============================================================================

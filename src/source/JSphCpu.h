@@ -159,6 +159,7 @@ protected:
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
   tfloat3* BoundDerivativeVelc; ///<Force-stage wall velocity for S/P/R derivatives; never replaces physical velocity.
+  std::vector<tdouble3> BoundDerivativeFitShift; ///<Static MLS-centre offset by native wall ID; empty for one plane.
   //===============  
   //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
   tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
@@ -285,7 +286,7 @@ protected:
   void InteractionPorePressureRate();
   template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void InterpolateBoundaryGhostFieldT
     (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
-    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write)const;
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write,bool recenter=false)const;
   template<TpKernel tker,bool sim2d> void InteractionPorePressureMdbcCorrectionT
     (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
