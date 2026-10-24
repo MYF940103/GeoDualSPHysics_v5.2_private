@@ -1,0 +1,25 @@
+@echo off
+setlocal EnableDelayedExpansion
+pushd "%~dp0\..\.."
+
+rem Bounded 1-s production-step companion, not formal 2D consolidation acceptance.
+rem Native BI4; single-run and pair reviews are separate. Existing outputs are protected.
+set name=spr_yao_cpu_gpu_1s_r1_cpu_c
+set dirout=tests\outputs\%name%
+set diroutdata=%dirout%\data
+set dirbin=../../../bin/windows
+set gencase="%dirbin%/GenCase_win64.exe"
+set stepcheck="tests/outputs/spr_yao_step_r2rel/spr_yao_step.exe"
+set dirinput=tests\outputs\%name%_input
+if exist %dirout% goto fail
+if exist %dirinput% goto fail
+%gencase% tests/configs/%name%_Def %dirinput%/%name% -save:all
+if not "%ERRORLEVEL%"=="0" goto fail
+%stepcheck% 50000 50 -cpu -ompthreads:8 %dirinput%/%name% %dirout% -dirdataout data -svres -svextraparts:1
+if not "%ERRORLEVEL%"=="0" goto fail
+popd
+exit /b 0
+:fail
+echo Diagnostic refused or failed. Retained outputs were not deleted.
+popd
+exit /b 1

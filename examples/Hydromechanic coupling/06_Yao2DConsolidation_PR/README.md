@@ -11,7 +11,10 @@ quadrature bias is recorded, not silently fixed under SPR. GPU synchronization
 and independent .02/.1-s half checks now pass: .1-s GPU half maxima are
 0.277974 Pa / 0.000287018 mm; CPU/GPU maxima are 0.001324 Pa / 0.000002845 mm.
 The bounded .3-s GPU post-ramp window under tests also passed 301 half pairs;
-CPU evidence still ends at .1 s. It is not full 2-D theory/long-cycle acceptance.
+CPU evidence for that off/on comparison ends at .1 s. The subsequent SPR-on
+1-s CPU/GPU and independent GPU half window passed all 1001 pairs:
+0.000630828 Pa / 0.00000196073 mm cross-backend, and
+0.277974 Pa / 0.000287018 mm half-step. This is not full 2-D theory/long-cycle acceptance.
 Current history/field PNGs AND matching CSVs are indexed in tests/README.md.
 
 This case retains the explicit u-pw verification setup and damping/boundary

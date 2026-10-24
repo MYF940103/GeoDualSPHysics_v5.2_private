@@ -38,6 +38,20 @@
   under `outputs`/`logs`; helpers remain under existing `scripts`, not a second
   `support` directory. HG/NoPen remain off for this independent 2-D test.
 
+- Completed bounded stage: [1-s CPU/GPU review](notes/spr_yao_1s_r1.md),
+  `logs/spr_yao_cpu_gpu_1s_r1.status.json`. Only fresh SPR-on CPU8 coarse,
+  GPU coarse/half, with complete single-run gates between stages and original
+  all-1001-sample 5-Pa/.005-mm pair limits. One new one-shot waits for this
+  sequence, not any old worker. All 1001 cross/half pairs passed:
+  cross 0.000630828 Pa / 0.00000196073 mm; half 0.277974 Pa / 0.000287018 mm.
+  [History](figures/spr_yao_cpu_gpu_1s_r1_history.png),
+  [native fields](figures/spr_yao_cpu_gpu_1s_r1_fields_r1.png) and matching CSVs
+  were inspected; audit and visual receipts are in logs. No 1-s SPR-off or
+  full 2-D theory acceptance. The one-shot has exited and must not be restarted.
+- Production candidate and evidence through .3 s were selectively committed
+  and verified local/remote at `7fda9ff`; raw BI4/executables are not cloud
+  backed up by that commit. New 1-s artifacts await their own later backup.
+
 This directory keeps retained validation and diagnostic assets separate
 from the release XML/BAT files in the case root. See [the case README](../README.md)
 for the current default and the damping-variant entry points.
