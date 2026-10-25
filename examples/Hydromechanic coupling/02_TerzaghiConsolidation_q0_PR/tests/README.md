@@ -1,5 +1,9 @@
 # 02 测试文件索引
 
+## 2026-10-25 根目录旧结果归档
+
+旧k1em2／k1em3／细网格对照／孔压precision／孔压double五个根输出，已完整归档为`outputs/root_legacy_r1.zip`并移出根目录。旧k1em4基线及所有release结果、正式XML/BAT保留。[精确清单和恢复说明](notes/root_retire_r1.md)；旧分析需要这些结果时，先从ZIP恢复对应原目录。下方此前CSV清理的空间数值为该轮完成时统计，不含本轮新增ZIP。
+
 ## 2026-10-25 已结束试验的大型原始CSV归档
 
 按用户要求清理磁盘占用，先同步代码至本地／远端Git，再对已结束试验的大型逐粒子CSV做无损归档。完整范围、恢复和执行结果见[清理记录](notes/cleanup_r1.md)、[精确白名单](logs/cleanup_r1.plan.json)和[实际状态](logs/cleanup_r1.status.json)。旧日期段的“原位保留全部CSV”是当时状态，现以本节为准；没有改写旧运行／验收哈希。
