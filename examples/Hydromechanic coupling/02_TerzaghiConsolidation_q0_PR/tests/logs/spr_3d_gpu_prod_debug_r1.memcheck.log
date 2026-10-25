@@ -1,0 +1,35 @@
+========= COMPUTE-SANITIZER
+========= Program hit cudaErrorInvalidValue (error 1) due to "invalid argument" on CUDA API call to cudaFree.
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:cuProfilerStop [0x7ffa7a4f1092]
+=========                in C:\WINDOWS\system32\DriverStore\FileRepository\nv_dispig.inf_amd64_cc526ccc3287f5cd\nvcuda64.dll
+=========     Host Frame:cudaFree [0x893ccb]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JDsGaugeSystem.cpp:77:JGaugeSystem::Reset [0x380e21]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JDsGaugeSystem.cpp:60:JGaugeSystem::~JGaugeSystem [0x380bcd]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:JGaugeSystem::`scalar deleting destructor' [0x53b5f8]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSph.cpp:153:JSph::~JSph [0x5254d9]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSphGpu.cpp:91:JSphGpu::~JSphGpu [0x856e1b]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSphGpuSingle.cpp:74:JSphGpuSingle::~JSphGpuSingle [0x46553d]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\main.cpp:193:main [0x86ae2c]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:79:invoke_main [0xa98449]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:288:__scrt_common_main_seh [0xa9832e]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:331:__scrt_common_main [0xa981ee]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_main.cpp:17:mainCRTStartup [0xa984de]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\bin\windows\DualSPHysics5.2_win64_debug.exe
+=========     Host Frame:BaseThreadInitThunk [0x7ffbe36fdda7]
+=========                in C:\WINDOWS\System32\KERNEL32.DLL
+=========     Host Frame:RtlUserThreadStart [0x7ffbe54dee4c]
+=========                in C:\WINDOWS\SYSTEM32\ntdll.dll
+========= 
+========= ERROR SUMMARY: 1 error

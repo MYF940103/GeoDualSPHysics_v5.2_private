@@ -128,6 +128,13 @@
                  Coarser output sampling does not supersede the retained dense startup half-step maxima.
                  No 10-s CPU comparison or independent pressure/settlement theory reference;
                  not general boundary/long-cycle acceptance. Original strict strip-load quadrature is unchanged. -->
+			<!-- 3D fixed two-face edges and three-face corners (2026-10-25): NoSlip/FreeSlip, nonzero XYZ startup,
+                 16 production-step companion runs over 2 ms, 201 native samples each. Eight independent CPU/GPU
+                 half pairs and eight same-dt cross-backend pairs passed 0.5 Pa / 1e-5 mm bounds;
+                 maxima .0148596 Pa / 1.170e-9 mm (half), .000064899 Pa / 8.837e-10 mm (cross).
+                 Approximate energy ratio max 1.020237 below 1.1. HG, NoPen, damping, drainage and load off.
+                 NoSlip has a tangential startup transient, not an exact affine solution. These bounded checks
+                 do not validate full 3D consolidation, curved/moving walls, plastic flow or large rotations. -->
 			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
                  Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
                  pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs

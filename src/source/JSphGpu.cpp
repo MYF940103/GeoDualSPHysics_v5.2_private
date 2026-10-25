@@ -81,6 +81,8 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
 //==============================================================================
 JSphGpu::~JSphGpu(){
   DestructorActive=true;
+  //-Release gauge device buffers before destroying the CUDA context.
+  delete GaugeSystem; GaugeSystem=NULL;
   FreeCpuMemoryParticles();
   FreeGpuMemoryParticles();
   FreeGpuMemoryFixed();

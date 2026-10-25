@@ -1,0 +1,37 @@
+========= COMPUTE-SANITIZER
+========= Program hit cudaErrorInvalidValue (error 1) due to "invalid argument" on CUDA API call to cudaFree.
+=========     Saved host backtrace up to driver entry point at error
+=========     Host Frame:cuProfilerStop [0x7ffa7a4f1092]
+=========                in C:\WINDOWS\system32\DriverStore\FileRepository\nv_dispig.inf_amd64_cc526ccc3287f5cd\nvcuda64.dll
+=========     Host Frame:cudaFree [0x9e8c4b]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JDsGaugeSystem.cpp:77:JGaugeSystem::Reset [0x3a6a01]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JDsGaugeSystem.cpp:60:JGaugeSystem::~JGaugeSystem [0x3a67ad]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:JGaugeSystem::`scalar deleting destructor' [0x55e458]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSph.cpp:153:JSph::~JSph [0x548339]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSphGpu.cpp:91:JSphGpu::~JSphGpu [0x879abb]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\src\source\JSphGpuSingle.cpp:74:JSphGpuSingle::~JSphGpuSingle [0x48a02d]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:Spr3dPulse::~Spr3dPulse [0x49ca4]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\support\spr_3d_test.cpp:106:main [0x374f6]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:79:invoke_main [0xab4049]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:288:__scrt_common_main_seh [0xab3f2e]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_common.inl:331:__scrt_common_main [0xab3dee]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:D:\a\_work\1\s\src\vctools\crt\vcstartup\src\startup\exe_main.cpp:17:mainCRTStartup [0xab40de]
+=========                in D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\spr_3d_Debug_r1\spr_3d.exe
+=========     Host Frame:BaseThreadInitThunk [0x7ffbe36fdda7]
+=========                in C:\WINDOWS\System32\KERNEL32.DLL
+=========     Host Frame:RtlUserThreadStart [0x7ffbe54dee4c]
+=========                in C:\WINDOWS\SYSTEM32\ntdll.dll
+========= 
+========= ERROR SUMMARY: 1 error
