@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-25",
+  "stage": "Retained Lian/Cryer audit and current-program Lian short admission",
+  "production_source_modified": false,
+  "formal_inputs_modified": false,
+  "builds": "CPU Debug, CPU Release and GPU Release MSBuild completed successfully; CPU Debug was repeated after new test files",
+  "lian": {
+    "legacy_audit": "tests/logs/lian_legacy_audit_r1.json",
+    "legacy_native_pressure_evidence": {
+      "time_s": 49.9500100046553,
+      "all_soil_mean_pa": 108.19166666539125,
+      "A_nearest_material_pa": 82.1384506225586,
+      "B_nearest_material_pa": 89.46007537841797,
+      "interpretation": "Residual at retained endpoint, not proof of a mathematical nonzero asymptote"
+    },
+    "legacy_contact_events": "Id1744 current x crosses 0; selected strip count drops13 to12 and selected negative pressure extrema reach -3076 to -3993Pa. Correlation and source membership are established, not a complete causal repair.",
+    "legacy_precision_clarification": "Initial PART stores float positions, whereas some later saved PARTs have Posd. Check position_double per frame. Stress state remains legacy float. Old load field is present but zero: never interpret this as physically zero applied traction.",
+    "initial_discretization_check": "Current and old initial native IDs match; coordinates match after rounding current positions to the old float representation, not byte-identical double coordinates.",
+    "paper_endpoint_s": 100,
+    "retained_endpoint_s": 49.95001,
+    "smoke": {
+      "receipt": "tests/logs/lian_release_r1_smoke.review.json",
+      "CPU_Debug_actual_final_s": 0.0020000000000000044,
+      "GPU_coarse_actual_final_s": 0.15000000000000924,
+      "GPU_half_actual_final_s": 0.15000000000007963,
+      "GPU_frames_each": 31,
+      "maximum_pressure_RMS_half_difference_pa": 0.010620582607260669,
+      "maximum_top_material_half_difference_mm": 0.000010073438971858195,
+      "limits_pa_mm": [5, 0.005],
+      "native_soil_particles": 20301,
+      "yielding_or_exclusions": false,
+      "natural_fixed_step_limit": "Checked on all noninitial saved PART intervals",
+      "visual_review": "Four history panels inspected; matching CSV retained",
+      "switches": "Original mode4 loading, mixed mDBC, ramp1s; SPR/HG/stress-rate gradient correction off; pore float, stress double",
+      "observed_coarse_wall_seconds": 155.5890403999947,
+      "observed_half_wall_seconds": 309.3631489999825,
+      "not_accepted_here": "Post1s drainage, late plateau, full-cycle accuracy or equivalence to FEM/u-pl"
+    },
+    "load_quadrature_to_track": "Original13 loaded nodes x0..1.2 each represent dp0.1; nominal nodal width1.3 differs from ideal footing width1.25 (+4%). Current-coordinate endpoint dropout can also change the force. Preserve this baseline before a separate loading change.",
+    "SPR_readiness": "Original two lateral faces share mkbound0. Per-mk static-planar SPR cannot simply be switched on for both opposite faces; any future SPR test needs separately validated face markers/normals and unchanged soil geometry."
+  },
+  "cryer": {
+    "frozen_audit": "../04_CryerProblem_PR/tests/logs/cryer_load_audit_r1.json",
+    "native_soil_particles": 37173,
+    "unique_initial_positions": 37173,
+    "initial_rho_kg_m3": 2100,
+    "native_quadrature_volume_over_ideal_sphere": 1.1092999666129781,
+    "first_saved_affine_work_over_3qV": 1.062728402687889,
+    "frozen_original_vs_saved_load_relative_RMS": 0.000011983972159524848,
+    "load_only_C_correction_uniform_stress_residual_RMS_m_s2": 317.358767875338,
+    "conclusion": "Do not multiply only external load by C. Under manufactured sigma=-qI and p0, original pair forces cancel; correcting only load introduces a large residual. This is not a replacement-operator validation.",
+    "remaining": "Separate particle volume/spherical traction quadrature, startup/drainage timing, current stress-state precision and original coupled discretization effects. The old radial-force/area descriptor alone is not true traction error.",
+    "reproduction_limit": "Offline double arithmetic on saved positions is not a new double coupled solution or a bitwise production clone; consult per-frame storage type.",
+    "visual_review": "Load-radius and force-moment panels inspected; new CSVs retained"
+  },
+  "next": "Fresh3s Lian coarse/half crossing ramp/drainage, with native pressure/material settlement/contact and load histories. Inspect all true drained nodes including FSType3 before physical conclusions. Then late-window diagnosis and formal complete calculation, not automatic full-cycle acceptance.",
+  "delivery_rule": "Each accepted case requires root formal XML/BAT, actual full release execution, figures and corresponding CSV, selective verified local/remote Git. Existing case02 accepted data are protected."
+}
