@@ -39,3 +39,28 @@ The dated notes describe different historical setups. The current mode-4
 configuration above supersedes the earlier abandoned mode-3 Lian setup, but
 does not invalidate or rewrite those experimental records. A successful
 solver exit and a formal launcher are not accuracy acceptance criteria.
+
+## Current mode-4 diagnostic (2026-10-26)
+
+The current double-stress strict-footprint 15 s control completed, but is not
+accepted as a physical release: native node1744 crosses x=0 near12.40 s,
+loses its load and becomes drained, producing a1000 N/m force jump and
+pressure/settlement transients. The legacy float-stress run has the same
+mechanism near14.1 s; this is not evidence that stress double alone repairs it.
+See `tests/figures/lian_late15_review_r1_history.png`, `_contact.png`,
+`_fields.png` and their corresponding CSVs and check receipt.
+
+A CPU/GPU source candidate mirrors the mode-4 footprint across the x=0
+free-slip face (`abs(x)<=1.25`). Domain x>=0, q, the right contact edge,
+original nodal force quadrature and all other modes are unchanged. This
+candidate needs short/half/late-window verification; root formal inputs and
+the retained control GPU program/data are not promoted or overwritten here.
+
+The candidate passed the independent2ms Debug/memcheck and .15s/3s GPU
+coarse/half short review (`tests/logs/lian_mirror_review_r1.check.json`).
+The3s half maxima are0.0112047Pa and0.0000128985mm; candidate loads retain13
+nodes, with all active drainage nodes at0Pa. The figures and matching CSVs
+are `tests/figures/lian_mirror_review_r1_*`. This does not cover the old
+late switching times: fresh15s coarse/half inputs are under
+`tests/configs/xlian_mirror15_r1_{c,h}_win64.bat`. The formal100s root
+calculation and FEM comparison are still pending; old formal data stand.

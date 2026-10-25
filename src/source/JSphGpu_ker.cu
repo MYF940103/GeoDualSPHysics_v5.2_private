@@ -1028,7 +1028,8 @@ __device__ bool KerHydroMechIsFreeSurface(unsigned p,const typecode *code,const 
 //==============================================================================
 __device__ bool KerHydroMechInBenchmarkTopStrip(const unsigned loadmode,const double x){
   if(loadmode==HMLOAD_TopStripVertical)return(x>=-3.0 && x<=3.0);
-  if(loadmode==HMLOAD_LianFlexibleStrip)return(x>=0.0 && x<=1.25);
+  //-Same half-domain mirror as CPU; loading, drainage and pore-rate selection share this predicate.
+  if(loadmode==HMLOAD_LianFlexibleStrip)return(fabs(x)<=1.25);
   return(false);
 }
 

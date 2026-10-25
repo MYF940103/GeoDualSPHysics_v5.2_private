@@ -1,0 +1,19 @@
+{
+  "date": "2026-10-26",
+  "purpose": "Causal candidate for symmetry-edge contact/drainage switching, not a late-platform acceptance",
+  "evidence": "lian_late15_review_r1:301 actual-time/native pairs; current first contact loss12.40001s, legacy14.10001s; current observed force drops13000 to12000N/m, pressure minimum-3211.99Pa",
+  "files_changed": {
+    "src/source/JSphCpu.cpp": "HydroMechInLianFlexibleStrip: x>=0&&x<=1.25 -> fabs(x)<=1.25",
+    "src/source/JSphGpu_ker.cu": "Identical mode4 predicate; shared by loading, drain enforcement and pressure-rate selection",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml": "Document mirror meaning, unchanged q/quadrature and pending validation",
+    "case_README_and_tests_README": "Track original failure, scope and candidate limitations"
+  },
+  "numerical_consequence": "Extend strip contact evenly across the free-slip x=0 plane outside the half-domain, retaining in-domain0..1.25m and excluding abs(x)>1.25. Tiny normal drift no longer turns the left corner into an unloaded drained node. This does not clamp velocity/position or solve general contact.",
+  "unchanged": ["All other load modes", "Original mixed mDBC", "q10kPa/ramp1s/nodal13-node quadrature", "eta.04,dp.1,k1e-3", "Stress double/pore float", "SPR/HG/gradient correction off", "Original1s source-clock drainage event"],
+  "new_runs_in_order": ["CPU Debug.002s", "GPU Debug.002s with memcheck", "GPU Release.15s coarse10us/half5us", "GPU Release3s coarse10us/half5us"],
+  "gates": ["Exact owned exits/build-input-output hashes/native20301IDs", "Original saved natural step, finite/elastic/no-exclusion/geometry", "Every active FSType2/3 node outside mirrored contact exactly0Pa", "Unchanged13-node ramp force,13000N/m after1s", "Original all-sample5Pa/.005mm independent half limits"],
+  "program_preservation": "Canonical control GPU Release remains unchanged; candidate GPU Debug/Release are in tests/outputs/lian_mirror_build_r1. Original canonical CPU Debug is copied/hash verified before default DebugCPU rebuild.",
+  "not_claimed": ["General contact or curved/moving wall support", "15s half or100s/FEM acceptance", "Correction of original+4percent nodal-width bias", "Isolated old/current precision attribution"],
+  "next": "Review short plots/CSVs, then justified fresh15s coarse/half including the retained switching window, then independent formal root100s delivery only on physical acceptance. Each verified stage selectively saved to local and remote Git.",
+  "notification": "One terminal queue by the new short runner. No old worker restart, duplicate solver, notifier rearm or connectivity self-test."
+}

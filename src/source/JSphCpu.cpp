@@ -56,7 +56,8 @@ static inline bool HydroMechInYaoTopStrip(const double x){
 }
 
 static inline bool HydroMechInLianFlexibleStrip(const double x){
-  return(x>=0.0 && x<=1.25);
+  //-Mirror the half-domain strip across its free-slip x=0 wall: no contact toggle from normal drift.
+  return(fabs(x)<=1.25);
 }
 
 static inline bool HydroMechInBenchmarkTopStrip(const TpHydroMechLoadMode loadmode,const double x){

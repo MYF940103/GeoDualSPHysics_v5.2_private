@@ -1,0 +1,44 @@
+{
+  "date": "2026-10-26",
+  "status": "Independent short native/physical/visual review passed; late/full/FEM acceptance pending",
+  "modified_production_locations": [
+    "src/source/JSphCpu.cpp:HydroMechInLianFlexibleStrip, mirrored fabs(x)<=1.25 predicate",
+    "src/source/JSphGpu_ker.cu:KerHydroMechInBenchmarkTopStrip, identical mode4 predicate",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml:mode4 mirror meaning and pending physical scope",
+    "Case05 README and tests/README:scope, old failure and verification/next entries"
+  ],
+  "numerical_scope": "Only Lian mode4 half-domain footprint across x0 free-slip face. In-domain0..1.25m, q,13-node quadrature,mixedmDBC,eta.04,dp.1,k1e-3,stressdouble/porefloat,SPR-HGoff unchanged. No velocity/position clamp or new contact algorithm.",
+  "verification": {
+    "adopted_CPU_Debug_actual_s": 0.0020000000000000044,
+    "GPU_Debug_actual_s": 0.0020000000000000044,
+    "GPU_memcheck_errors": 0,
+    "GPU_Release_smoke_actual_s": [0.15000000000000924,0.15000000000007963],
+    "GPU_Release_drained_actual_s": [3.000000000011186,3.0000049999710106],
+    "native_soil_IDs": 20301,
+    "smoke_independent_pairs": 31,
+    "smoke_half_pressure_RMS_max_Pa": 0.010008050848754594,
+    "smoke_half_top_material_max_mm": 0.000009835023462301251,
+    "drained_independent_pairs": 61,
+    "drained_half_pressure_RMS_max_Pa": 0.011204665327507248,
+    "drained_half_top_material_max_mm": 0.00001289847695318258,
+    "limits_Pa_mm": [5,0.005],
+    "actual_positive_loading_node_counts": [13],
+    "maximum_source_clock_ramp_force_error_N_m": 0.0007044761732686311,
+    "all_active_FSType2_or3_drained_pressure_Pa": 0,
+    "finite_elastic_geometry_no_exclusion_naturalstep": "All native samples rechecked; original bounds unchanged"
+  },
+  "strict_same_dt_comparison": {
+    "smoke_max_pressure_RMS_Pa": 1.0360262728216194,
+    "smoke_max_top_material_mm": 0.002045617856438753,
+    "drained_max_pressure_RMS_Pa": 0.3526723939219816,
+    "drained_max_top_material_mm": 0.0006565083570109209,
+    "interpretation": "Not0ULP and not a theory/half error. Dense startup shows the strict corner momentarily unloaded; the mirror keeps the intended ramp load and smoother corner response.3s bulk histories nearly overlap."
+  },
+  "provenance": "All r2 and adopted CPU exits/input-build-runtime-output/log/history hashes verified. Retained strict smoke/drained GPU c/h run manifests and every frozen output/log hash independently verified. Do not reinterpret the initial r1 GPU DLL-loader failure as a physical failure or overwrite it.",
+  "artifacts": "tests/logs/lian_mirror_review_r1.check.json; tests/figures/lian_mirror_review_r1_{history,pairs,fields}.csv and {history,startup,fields}.png, all three PNGs inspected",
+  "builds": "Default CPU Debug, isolated GPU Release/Debug built successfully. Existing D9035 deprecated option, third-party PDB LNK4099 and Debug CRT LNK4098 warnings retained; GPU Debug memcheck passed. No VS project changes.",
+  "backup_scope": "Commit only two predicate changes/docs/test inputs/scripts/receipts/plots/CSVs; no rawBI4/executable cloud-backup claim. Canonical strictGPU executable is not replaced.",
+  "not_claimed": ["Late12.4/14.1s repair", "100s/FEM accuracy", "General contact/curved or moving wall support", "Correction of the original+4percent nodal-width bias", "Debug/Release bitwise equivalence"],
+  "next": "Fresh15s actualGPURelease coarse10us/half5us at.05s, full301-sample original half/safety and actual3s shared prefix checks. Inspect late physical result before independent formal root100s delivery.",
+  "file_layout": "All test assets remain shallow in configs/scripts/outputs/logs/notes/figures; formal root XML/BAT/output unchanged. r1 failed and unused prepared inputs remain because frozen manifests refer to them; no cleanup until dependencies are reviewed."
+}

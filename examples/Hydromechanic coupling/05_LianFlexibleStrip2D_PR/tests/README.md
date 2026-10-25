@@ -64,3 +64,31 @@ Current retained setup:
 - Formal root inputs and retained output remain unchanged. Formal closure
   still requires an independent actual run through the paper's 100 s endpoint,
   reviewed native comparisons, and corresponding formal PNG/CSV artifacts.
+
+## Lian mode-4 mirror candidate (not yet accepted)
+
+The current strict-footprint control first loses native node1744 near 12.40 s:
+its x coordinate changes from a small positive value to -0.80 micrometres.
+The node then loses its load and becomes drained; the observed total load
+falls from approximately13000 to12000 N/m. A candidate mirrors the strip
+predicate across the free-slip x=0 face (`abs(x)<=1.25`) on CPU and GPU.
+This leaves the physical in-domain strip0..1.25m and its13-node quadrature
+unchanged. It changes neither mDBC velocities nor pore/stress precision,
+and does not normalize the original+4percent nodal-width bias. It is not
+a general large-deformation contact law; short/half/late-window checks are
+required before formal promotion. Prior source/programs and raw runs are
+retained; candidate GPU programs are built in tests, not over the control.
+
+Short review passed (`logs/lian_mirror_review_r1.check.json`): GPU Debug
+memcheck0errors; .15s and3s independent half pairs pass the unchanged
+5Pa/.005mm limits.3s maxima are0.0112047Pa/.0000128985mm. The same-dt
+mirror/strict differences are not0ULP: max pressureRMS0.352672Pa and top
+material displacement0.000656508mm through3s.13-node force and active
+drainage pass. See the inspected history/startup/field PNGs and CSVs under
+`figures/lian_mirror_review_r1_*` and `notes/lian_mirror_review_r1.json`.
+
+The initial r1 GPU Debug loader failure (missing DLL runtime) remains frozen;
+r2 adopted its successful CPU Debug and ran only the five missing GPU jobs.
+No old worker was restarted. The next fresh15s pair is `lian_mirror15_r1`;
+it alone can test the retained late switching window. No formal100s/FEM
+or general-contact acceptance is claimed by this short checkpoint.
