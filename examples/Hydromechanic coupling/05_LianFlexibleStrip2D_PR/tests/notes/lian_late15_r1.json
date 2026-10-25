@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-26",
+  "purpose": "Cover the first retained14.1s strict-footprint/drainage event before a formal long-cycle Lian release run",
+  "admission": "tests/logs/lian_drained_review_r1.check.json:61 native coarse/half pairs, original5Pa/.005mm limits, all active FSType2/3 drainage and inspected PNG/CSV",
+  "actual_hardware_requirement": "Read this run's Run.out; current host RTX3050. Do not reuse historical A6000 hardware claims.",
+  "program": "Actual DualSPHysics5.2_GEO_win64.exe, fixed at the accepted3s executable SHA256",
+  "configuration": {
+    "domain_m": [20,10],
+    "dp_m": 0.1,
+    "native_soil_particles": 20301,
+    "time_max_s": 15,
+    "time_out_s": 0.05,
+    "fixed_dt_s": 0.00001,
+    "eta_damping": 0.04,
+    "mDBC": "Side walls free-slip, bottom no-slip; original two bound markers",
+    "load": "Original mode4 strict current x0..1.25, q10kPa,1s ramp; original nodal force quadrature unchanged",
+    "drainage": "Original open free surface outside strip, starts1s using original source-clock comparison; no fixed-grid option",
+    "state": "Double persistent stress; float pore pressure/rate",
+    "disabled": ["SPR","hourglass","stress-rate gradient correction","density/stress diffusion","pore regularization"]
+  },
+  "files": {
+    "XML": "tests/configs/lian_late15_r1_Def.xml",
+    "BAT": "tests/configs/xlian_late15_r1_win64_GPU.bat",
+    "output": "tests/outputs/lian_late15_r1",
+    "history": "tests/figures/lian_late15_r1_history.csv",
+    "status": "tests/logs/lian_late15_r1.status.json"
+  },
+  "checks": [
+    "No overwrite, no PART restart, no simultaneous duplicate solver",
+    "Frozen source/input/executable/GenCase/reader hashes and owned exact exit",
+    "Actual final15s with301 native frames; exact IDs and saved natural-step/finite/elastic/no-exclusion/geometry checks",
+    "All true FSType2/3 drained nodes, independent of normal orientation; nonempty active mask and exactly zero pore pressure",
+    "Shared same-time/same-step3s native prefix0ULP; unmatched final-only save must be disclosed",
+    "Record node1744 position, pressure, membership, actual force, material settlement and stress; do not infer old load from its zero telemetry",
+    "Generate and inspect new/old late-history and field PNGs AND corresponding CSV after terminal review"
+  ],
+  "limits": [
+    "One15s coarse run is not15s half convergence or full-cycle acceptance",
+    "The previous3s comparison had pressure RMS half max0.0111202714Pa and top-material half max0.000012806975mm",
+    "At3s current/old pressure RMS difference0.587581Pa is small; there is not yet evidence that the late plateau is resolved",
+    "Current versus July legacy is not an isolated stress-precision experiment",
+    "Original13-node width1.3m remains4percent above ideal footing width1.25m; a loading change must be tested separately",
+    "Final formal delivery still needs an independent root XML/BAT actual full run through the paper100s endpoint, inspected plots/CSVs and selective verified local/remote Git"
+  ],
+  "notification": "This new runner queues its own terminal result once to the same authorized thread. No new polling watcher, old watcher restart, retry or connectivity test.",
+  "production_source_changes": false,
+  "formal_input_changes": false
+}

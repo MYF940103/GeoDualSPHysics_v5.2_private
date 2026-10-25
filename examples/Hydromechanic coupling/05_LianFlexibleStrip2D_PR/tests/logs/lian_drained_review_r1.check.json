@@ -1,0 +1,1199 @@
+{
+  "passed": true,
+  "visual_review_passed": true,
+  "visual_review": "Inspected both history and field PNGs against their matching CSVs. Shared pressure limits and native material coordinates retained; difference panel is not theory error.",
+  "source_clock_clarification": "BI4 saved_step is the zero-based Nstep at SaveData. The prior_step_time_estimate_s column uses t/saved_step as an approximation, not an exact dt observation. The exact configured dt is10us/5us; reconstruct the prior source clock as saved_time minus that dt. At all sampled event frames this gives the same inactive/active classification. No physical field, half bound or drain-pressure threshold was changed.",
+  "utc": "2026-10-25T15:38:38.846687+00:00",
+  "scope": "3-s safety/comparison admission, not late-cycle or FEM acceptance",
+  "sample_pairs": 61,
+  "native_soil_count": 20301,
+  "actual_final_times_s": {
+    "coarse": 3.000000000011186,
+    "half": 3.0000049999710106,
+    "old": 3.0000100000111862
+  },
+  "half_max_pressure_rms_pa": 0.011120271401621144,
+  "half_max_top_material_mm": 1.2806975036028234e-05,
+  "new_old_final_pressure_rms_pa": 0.5875812229366244,
+  "new_old_final_top_mean_settlement_mm": -1.4621364126077451e-05,
+  "final_rows": [
+    {
+      "time_s": 3.000000000011186,
+      "step": 299999,
+      "prior_step_time_estimate_s": 2.9999899999778528,
+      "drainage_evaluated_active": true,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 0.0,
+      "pressure_mean_pa": 625.6535807724839,
+      "pressure_max_pa": 2119.509765625,
+      "pressure_min_pa": 0.0,
+      "top_material_mean_settlement_mm": 0.06765756285496315,
+      "vmax_m_s": 0.00015557874191645483,
+      "sigma_zz_rms_pa": 1242.8303278902179,
+      "id1744_x_m": 2.588279117419463e-05,
+      "id1744_pressure_pa": 948.7603759765625,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 50.25125503540039,
+      "saved_nodal_force_N_m": 12999.999428456758,
+      "position_double": true,
+      "stress_double": true,
+      "A_native_id": 1845,
+      "A_pressure_pa": 945.329345703125,
+      "A_settlement_mm": 1.9065964225504217,
+      "B_native_id": 2943,
+      "B_pressure_pa": 1004.96630859375,
+      "B_settlement_mm": 0.9803178785627864,
+      "run": "coarse",
+      "part": 60
+    },
+    {
+      "time_s": 3.0000049999710106,
+      "step": 600000,
+      "prior_step_time_estimate_s": 2.9999999999626774,
+      "drainage_evaluated_active": true,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 0.0,
+      "pressure_mean_pa": 625.6531072711189,
+      "pressure_max_pa": 2119.526123046875,
+      "pressure_min_pa": 0.0,
+      "top_material_mean_settlement_mm": 0.06765796914482836,
+      "vmax_m_s": 0.00015558049611974218,
+      "sigma_zz_rms_pa": 1242.8321423705122,
+      "id1744_x_m": 2.5882500299086255e-05,
+      "id1744_pressure_pa": 948.7512817382812,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 50.25125503540039,
+      "saved_nodal_force_N_m": 12999.999428456758,
+      "position_double": true,
+      "stress_double": true,
+      "A_native_id": 1845,
+      "A_pressure_pa": 945.3203125,
+      "A_settlement_mm": 1.9065997604190699,
+      "B_native_id": 2943,
+      "B_pressure_pa": 1004.9586791992188,
+      "B_settlement_mm": 0.9803204081393346,
+      "run": "half",
+      "part": 60
+    },
+    {
+      "time_s": 3.0000100000111862,
+      "step": 300000,
+      "prior_step_time_estimate_s": 2.999999999977853,
+      "drainage_evaluated_active": true,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 0.0,
+      "pressure_mean_pa": 625.6419388175063,
+      "pressure_max_pa": 2117.93212890625,
+      "pressure_min_pa": 0.0,
+      "top_material_mean_settlement_mm": 0.06767218421908923,
+      "vmax_m_s": 0.0001559816312391932,
+      "sigma_zz_rms_pa": 1242.7034009720112,
+      "id1744_x_m": 2.593869797731559e-05,
+      "id1744_pressure_pa": 951.9716186523438,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 0.0,
+      "saved_nodal_force_N_m": -0.0,
+      "position_double": true,
+      "stress_double": false,
+      "A_native_id": 1845,
+      "A_pressure_pa": 948.5343627929688,
+      "A_settlement_mm": 1.9077830621139213,
+      "B_native_id": 2943,
+      "B_pressure_pa": 1007.06591796875,
+      "B_settlement_mm": 0.9802882381713118,
+      "run": "old",
+      "part": 60
+    }
+  ],
+  "true_drained_node_sample_count": 22560,
+  "true_drained_max_abs_pressure_pa": 0.0,
+  "event_rows": [
+    {
+      "time_s": 1.0000099999980838,
+      "step": 100000,
+      "prior_step_time_estimate_s": 0.9999999998980839,
+      "drainage_evaluated_active": false,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 2984.5087890625,
+      "pressure_mean_pa": 695.1700344729275,
+      "pressure_max_pa": 4140.14111328125,
+      "pressure_min_pa": 117.3912353515625,
+      "top_material_mean_settlement_mm": 0.006606724383935578,
+      "vmax_m_s": 0.001944465228288024,
+      "sigma_zz_rms_pa": 836.9090451163927,
+      "id1744_x_m": 3.2928415125961764e-05,
+      "id1744_pressure_pa": 4130.00439453125,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 50.25125503540039,
+      "saved_nodal_force_N_m": 12999.999428456758,
+      "position_double": true,
+      "stress_double": true,
+      "A_native_id": 1845,
+      "A_pressure_pa": 4123.06591796875,
+      "A_settlement_mm": 1.414024878961584,
+      "B_native_id": 2943,
+      "B_pressure_pa": 2953.612060546875,
+      "B_settlement_mm": 0.6938322351981441,
+      "run": "coarse",
+      "part": 20
+    },
+    {
+      "time_s": 1.0000000000023175,
+      "step": 199999,
+      "prior_step_time_estimate_s": 0.9999949999773173,
+      "drainage_evaluated_active": false,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 2984.489013671875,
+      "pressure_mean_pa": 695.1647079112254,
+      "pressure_max_pa": 4140.1162109375,
+      "pressure_min_pa": 117.38997650146484,
+      "top_material_mean_settlement_mm": 0.006606664422453696,
+      "vmax_m_s": 0.0019444842427284391,
+      "sigma_zz_rms_pa": 836.9013190777061,
+      "id1744_x_m": 3.2928214867401677e-05,
+      "id1744_pressure_pa": 4129.97900390625,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 50.25100326538086,
+      "saved_nodal_force_N_m": 12999.934295553954,
+      "position_double": true,
+      "stress_double": true,
+      "A_native_id": 1845,
+      "A_pressure_pa": 4123.04052734375,
+      "A_settlement_mm": 1.4140123914962999,
+      "B_native_id": 2943,
+      "B_pressure_pa": 2953.59130859375,
+      "B_settlement_mm": 0.6938272637864173,
+      "run": "half",
+      "part": 20
+    },
+    {
+      "time_s": 1.0000099999980838,
+      "step": 100000,
+      "prior_step_time_estimate_s": 0.9999999998980839,
+      "drainage_evaluated_active": false,
+      "all_orientation_drained_nodes": 188,
+      "isolated_drained_nodes": 0,
+      "drained_abs_pressure_max_pa": 2983.751220703125,
+      "pressure_mean_pa": 695.1176132819235,
+      "pressure_max_pa": 4139.068359375,
+      "pressure_min_pa": 117.35124969482422,
+      "top_material_mean_settlement_mm": 0.0066044585574572285,
+      "vmax_m_s": 0.0019437506807187385,
+      "sigma_zz_rms_pa": 836.9941190471092,
+      "id1744_x_m": 3.29195080611414e-05,
+      "id1744_pressure_pa": 4128.962890625,
+      "strip_geometric_nodes": 13,
+      "load_observation_present": true,
+      "load_az_max_abs": 0.0,
+      "saved_nodal_force_N_m": -0.0,
+      "position_double": true,
+      "stress_double": false,
+      "A_native_id": 1845,
+      "A_pressure_pa": 4122.0283203125,
+      "A_settlement_mm": 1.413850883322354,
+      "B_native_id": 2943,
+      "B_pressure_pa": 2953.0595703125,
+      "B_settlement_mm": 0.693505639073777,
+      "run": "old",
+      "part": 20
+    }
+  ],
+  "event_policy": "Source tests TimeStep>=1 at the prior integration-stage time. The near1s saved state can precede the first active boundary evaluation; no fixed-grid event alignment is enabled. All active samples including FSType2/3 and all normals are checked.",
+  "limitations": [
+    "Old initial positions are float; later PARTs may be double. Native IDs and old-representable geometry match.",
+    "Old load telemetry is present but zero; its saved_nodal_force must not be interpreted as physically zero force.",
+    "Old/current production versions differ beyond persistent stress precision; this is not an isolated precision A/B.",
+    "No sampled1744 dropout occurs through3s; the first retained late dropout was near14.1s.",
+    "Force quadrature remains13 nodes *0.1m, not the ideal1.25m strip width.",
+    "A and B are nearest native material nodes, not exact FEM sample locations."
+  ],
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_drained_review_r1.py",
+      "sha256": "a755db72d26649ea5f7c52a07d14921052ca105c33c46d0cfe676b0337cf1231",
+      "bytes": 11192
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\logs\\lian_release_r1_drained.status.json",
+      "sha256": "6d5b0400bae8e06c86e8ab40324662cfc512b8ba60d6a408c87e36803d70e87c",
+      "bytes": 101705
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+      "bytes": 385536
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_release_r1.py",
+      "sha256": "d27b4f2ab9077989c349c6cda5df9aa2c9a3632c6c51928a38b8b327c420a5da",
+      "bytes": 12508
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0000.bi4",
+      "sha256": "acd15001649af73d6e59cf19d59d5268f189c81c16c3313b693f8af8402402ae",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0001.bi4",
+      "sha256": "07dab29f102df5bcddd36e610d9bd271ea2f3044b9099aa928a87215e6d1e9a3",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0002.bi4",
+      "sha256": "5cb9fc46195a49656df3c847f55e04afcfe3cf4dfb69b1c09905bcfa2a9e2281",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0003.bi4",
+      "sha256": "498d699eef9f968d75242d61027e7a9aacdb614729bd40a6a4ac836ebc1f734a",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0004.bi4",
+      "sha256": "c04acfd1bf75010250897475a632dcf0ef1208db00103cfa716b92305ab16209",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0005.bi4",
+      "sha256": "327b46f2679cdda1b5046590f22490e1acdcb65eb3873b595bd3f39144dc50cb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0006.bi4",
+      "sha256": "00297dcaf8f9e46b9b924bcd37bdba29923f07bdd33683d19b3c0140f81a6b30",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0007.bi4",
+      "sha256": "9df010da51fd68fcefbfd3900b10533d546577e9564e87269465fba05f869314",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0008.bi4",
+      "sha256": "4ae896081014bea0abfd0652af80f8efd337070bf54e02f70612444e9fb9fdcb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0009.bi4",
+      "sha256": "0973424881d9b6ff9d219347b9564ab35f0c25bbff33c97938581a9235bb71b3",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0010.bi4",
+      "sha256": "6f00fd3408c765ee1189c02e30545d2d49bf82bae877ec71351202612c353806",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0011.bi4",
+      "sha256": "25cbeec24c98cc4ef076b9aa64f8bffea211665248328b57854e96bd98fcd507",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0012.bi4",
+      "sha256": "64e7820891ad1f85d682a25fd0725e712d90faf5db4ade880715d71e12ad4d71",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0013.bi4",
+      "sha256": "d3dec04db68ffe4c00017813efe0855ae5576db4b6c86a9e03a6524ee4c6180a",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0014.bi4",
+      "sha256": "e5b87e3fd293dd38136c07f33d6f4d7dca76a62dc9764fc28836f8fdeec6d7da",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0015.bi4",
+      "sha256": "ca51d02785e9f6a19d78ad61055743c23c27a3810fd2bb31ed8ba1d6a23e60d7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0016.bi4",
+      "sha256": "6dd6497ba3d775fc5b7fbb84e6bc0b74669436b32c8f428fd4309c9d4224ee42",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0017.bi4",
+      "sha256": "a495fe85aed6b0ec390a83ea577cbe7aaabaae464efb4845fbf335989dc88de0",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0018.bi4",
+      "sha256": "27aaea6ef8023020690872f00756fac1356375a91bc78e31c33e0b6321169be2",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0019.bi4",
+      "sha256": "8683e4959b13d51df75539f72cd0125cc572078f55f07be78ffeec39dd64f42b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0020.bi4",
+      "sha256": "314b7068a24d483c97a137ee44effcbef79c4045435a7159f0db4e3124d99356",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0021.bi4",
+      "sha256": "99fb499a93c1e3174dc81abc06d2444c70bd79ff1ebb6eea0292a33def3bd3f6",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0022.bi4",
+      "sha256": "4e64020ee355b5004d38219a2521b719d52c56853e46c6256bd72f877e7760c9",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0023.bi4",
+      "sha256": "bc25be2c94c7b565401d3c1f8fe931d05f7e90a5f4b9ac2539e25313950c1e9e",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0024.bi4",
+      "sha256": "d94d668ab9565d3e5faea683ea84ecdd66b7b180fa13c04f4444f90a59f76e0d",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0025.bi4",
+      "sha256": "78efa1fa958ebf1e20e8705cf4cf778fd3024dc3bdcd5375d31ec2ce58d3acdc",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0026.bi4",
+      "sha256": "655543bcfb859df8af9028fca6421587478561385491f06d07666463a9d8c44b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0027.bi4",
+      "sha256": "563ad9d1c58dd6605a494bde0cb8bb5b3014165c68f8c45ce88eedcfa2c49bb7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0028.bi4",
+      "sha256": "bdeef336804b2be7ff72f041adebcdef9e0702910f0692684203bb405aba199b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0029.bi4",
+      "sha256": "88ab16e883cc9bf362119f810bd5dfb2e4f4b28ac0a8c2844c74d60ec8445b07",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0030.bi4",
+      "sha256": "e6c4f0def254ac1ef8d552c03dd5039042d4bd2cea257d41984e9ecbfe77ee13",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0031.bi4",
+      "sha256": "8f78ed781526fc8b04602f82a780d781339f67da7470860dce597254a9e056c7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0032.bi4",
+      "sha256": "3374322c1ce79d1ff58297ffe1d754bc48cfcf765de86ce43c4378643808d5a5",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0033.bi4",
+      "sha256": "c8e6088bc71e11340281031c6045a0f0d58c8c38898171870199721aed7c4c72",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0034.bi4",
+      "sha256": "a64797cd24239a3c336e2e3811253c67530f7d63c29d2ed54f228706fd5c8ca6",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0035.bi4",
+      "sha256": "2e375076153196792e19833b62402785e9191ee226f422db2f99d51c9084b90c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0036.bi4",
+      "sha256": "64dfefebec4d906124c0e475630f21afea31d6a668c4a80f1b5f8e7dd644d34e",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0037.bi4",
+      "sha256": "a7b0279382359b1c6635b1a702e87c85528e15386d115942cb00d19d24dda7dd",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0038.bi4",
+      "sha256": "cd55068309b7dd0b605398a2e39b292cc8dcce83677b8eaf724fc066f43b3a2f",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0039.bi4",
+      "sha256": "f37ce26e07089f0c11876d71288ba7fb517eb9de363a93147faf9d6c340fee69",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0040.bi4",
+      "sha256": "7a6fcde67ad9f8c8b89bfff888777c292a5779efee880084cbdd5b73f006e0e0",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0041.bi4",
+      "sha256": "b2b86ff6e6068459fea965b662ca01e1fc470426c2b488a131016ed455dc4562",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0042.bi4",
+      "sha256": "2e2172557437384b932497f9f3db76f7775fd8551b5c1a822686a86fcc56ff4b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0043.bi4",
+      "sha256": "2e58780807a3e328a1ffc9186816a314b2acbd06a86916899cda1534e4c9cb73",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0044.bi4",
+      "sha256": "760a375195a418b9384f624962cba005ebbe89e42b2f4db7dc169acdd53160f7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0045.bi4",
+      "sha256": "6f171cfbe53ab613782526f29839016bf323272bda0737e48ca83acf1ed609b8",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0046.bi4",
+      "sha256": "0eaa4b1a5fcd599dd6fe7a74fa6fcdaf42b4ba223e4d292e379c8dc54870ec83",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0047.bi4",
+      "sha256": "3642ab64ec626bc0db992c501deca59ac93c21e20d4c4031af2d985a769f624a",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0048.bi4",
+      "sha256": "f32d5d1f6c27b5c4d842f4af2dbaf01624367b81e9fea9bd185f0e768e0245b0",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0049.bi4",
+      "sha256": "0fcd871a8dbb6998065105ce9b04c185d24957658f421094aa3073ea9247a70b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0050.bi4",
+      "sha256": "65d39bb62e25023a56539e320bcd4a1db509c7bc818c20ecf1cec35415e36f22",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0051.bi4",
+      "sha256": "386e3f46e1b19ccb839fbcbb49a1b2387bb7a1d59f17695a87ebd56d97133434",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0052.bi4",
+      "sha256": "3cb862c5483067bb15065461b4e2739670b90a2824add24bc6e94df84800eb17",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0053.bi4",
+      "sha256": "a86d1d4a7642f394444df85d129a8808f6476f0880a42a7711c683eef8608512",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0054.bi4",
+      "sha256": "cfcb5fcbfc3261e94aa4e7b5d47da4dee9aab3436e8daf71152ab04bcff93161",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0055.bi4",
+      "sha256": "ad9d6eafbf8268d4732b2fe3f0781710699424095b3adfb76e9c5d71d5d4f503",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0056.bi4",
+      "sha256": "acc1f9efd48d231c2a23a4c5442954d233ba9e828c5239d0745e18e51c65a23c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0057.bi4",
+      "sha256": "717c6a930d62dafa4748122d6868680479deb9a1998313e9537c932367a9f7fb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0058.bi4",
+      "sha256": "9e35fd8dc9baf1ec4480c480f756d8da639efb60f27b9d117b3d462910e5d452",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0059.bi4",
+      "sha256": "501da7a0214a35687d0a3ba3301afe1b6cbd1726c2e79187f90e106cf7f2163f",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\data\\Part_0060.bi4",
+      "sha256": "0accd08786786b92ccd34a7a2c0d5c63055ab0662e673610d6200fadd10d0f03",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_c\\Run.out",
+      "sha256": "8519922f1c6a3d00fc10173dd4ed5ea465b933adf5a1a36cfbbb57296c980ef6",
+      "bytes": 16419
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0000.bi4",
+      "sha256": "ec706dfaf54fce9b9b22caa2492814eff0c8978ea6fc375c86def43f7fadeedb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0001.bi4",
+      "sha256": "4f653f1f95dbeeb493b29c71bb23f3be8eddb5174fb3f83603447fdd90523de4",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0002.bi4",
+      "sha256": "d477f89838d2d4f385f74a3025eaa8a663524a3b231b89eab6d3c11c030f5cb8",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0003.bi4",
+      "sha256": "c67692685cb0bfae5e01dccdba5fcb89f8fd20b32e4a1c374d7c94d3a7b3bdf6",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0004.bi4",
+      "sha256": "6f55d8c0a3c20f3c07a555dcba2e872884ec48afec971150024d4106771ba07d",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0005.bi4",
+      "sha256": "b7a3627e0d5b050d6d2759b6508aafd9e0b96b98d0250415cb9b95faf7d65025",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0006.bi4",
+      "sha256": "71e5b2d52459ceda9b704a27051e87192482d7bef8204c899d2920b5fe7d9604",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0007.bi4",
+      "sha256": "10f23a2ecd8664385ce71e9e80c56f3161a715ed27a39f25552189ebd39ad133",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0008.bi4",
+      "sha256": "cbb50420270a3bf5db83fcee1303153ea774f312e4fc99551b82c953a1f395b1",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0009.bi4",
+      "sha256": "90abffbf62597287f3196eb7877ea2c9d164e3ffd5786cc1af52683b39e40a23",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0010.bi4",
+      "sha256": "a4d7b7b5ebc3c055a677ca5a854a29296c1fb84a2085cce1437f41b48d7bb5b7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0011.bi4",
+      "sha256": "2a53b79174e6dbba42d9a4fb28f8ca4197bc93d9dfaadd4c290e812ac5878230",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0012.bi4",
+      "sha256": "b78df9cf10e8c8b2fbd10c53bf5e4dc25b6063276ed45103641cf0b8a1ed5657",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0013.bi4",
+      "sha256": "159d3390803d052e8ead8f614bd534d836f546fdeb28167c7e62ac2253db97d4",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0014.bi4",
+      "sha256": "8cb3c0dc0be7d53b2465fcef722f23142b6edf5e6ccd1d93bb0dca21750d9e0b",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0015.bi4",
+      "sha256": "a408fb7b1272f7cf014b86f4d55f23baa023359eecde7293b4ffce1cfcbd45f0",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0016.bi4",
+      "sha256": "0206d2d049bf9608ed748361ff72ad29c3f1852da077cdb995dd3ac9db369606",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0017.bi4",
+      "sha256": "a836022b236f013f22fb1e4ffe317e76ba8ca0700c93b823daf3f10d2b7f805f",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0018.bi4",
+      "sha256": "d750ab92b4c01aab33ec61d10c52c2d9137a2e0ba17917c2a84a6f568e79c27e",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0019.bi4",
+      "sha256": "25c5c211de823a64bf8b16326459896a24db69b8d270e170c85436d7dc5fb6e5",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0020.bi4",
+      "sha256": "c6662793e1925b4a0fa3968d26c8b834038d0633aa8654582dc251fc5163d63c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0021.bi4",
+      "sha256": "e550c2010b528aa2f322225c2803301b4a81d3d1f376fc1b4cb3f6ca34c902cb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0022.bi4",
+      "sha256": "1f2d2967844600ca678188842373df9ca8a16ee89fff10ba5a87159fca0d556e",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0023.bi4",
+      "sha256": "f0659f9f510fc69fc085aaf288a82179375dae8e8de7e24ce80b1b86f80d3f01",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0024.bi4",
+      "sha256": "d09f57c64492b5dab29f157b15f2f4d4d9e9d9536dc336fa4018cf446228bf41",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0025.bi4",
+      "sha256": "f241415e1be1357e674e4479becd9e2272d6c102b1e86d3bcc642f5d51b6cf93",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0026.bi4",
+      "sha256": "1fcde103f1729b5a9b0eadd70c2e14ab8e3ca3441976ada2bfd750e8fd8025de",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0027.bi4",
+      "sha256": "d9918042d244a793a205fda03cdbca8b75104498a055dc6f3801f8aea873f553",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0028.bi4",
+      "sha256": "2a0c78f546c19cdc6afd8f23a3e1905305dc98f2fd36f1f75f6cfaf31d68cd98",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0029.bi4",
+      "sha256": "e9c09d3e9b167d2345ce27da5c3837a4fc5c892e83541ae6a7741a8f1c4159bd",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0030.bi4",
+      "sha256": "055b70ab6a71fd60cdf84c26dd32bbaf761e162a17029096003e25902c972ae4",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0031.bi4",
+      "sha256": "63b3d6c92899c8f3960a13d01bc765fe7bf14f71e3d26f766a3361fc25aac17a",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0032.bi4",
+      "sha256": "55784da8934f9a04f182ddb4a3c2453410d09a9204fdc7ccfc81bb59f694f05d",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0033.bi4",
+      "sha256": "1825bb94a7403f7999fcac1e120e2f702c8b2f1882f650f57632362529f42e04",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0034.bi4",
+      "sha256": "2685bd98e4da354b7fb149ac5419fb7c7f47f1ed7fb5240b3e90b6b90a7022a7",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0035.bi4",
+      "sha256": "882bff7b69da07ea551f73a282f449c860e89440d05f5abe00cb888f79ac662c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0036.bi4",
+      "sha256": "193151822fe93bf37115a19e9aedc21f94c89a0b502ff47886b28527b6dbac54",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0037.bi4",
+      "sha256": "ceac09b2b95a554dda3139cba0c803a76d1746c7c83aa30cfaf659da7189ee7d",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0038.bi4",
+      "sha256": "c2806f1951390f0359d1c5e49d157b44db5a3852797686bcec8e433393470c77",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0039.bi4",
+      "sha256": "25dcc0b5958b5ea86dac8904fa1bb92780048f48eaab70ba38c6bf28f6a437ec",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0040.bi4",
+      "sha256": "f24b68ed2ed3eed04144490b534a59d5a648da790a5834ecd4cae1d9b7e661cb",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0041.bi4",
+      "sha256": "4f658d36dc582b3738c3f690ea9bd8137b1e3103b962a1b3cee791ca3a51305d",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0042.bi4",
+      "sha256": "79622b8c1de26dd234724a9a0dbeebb834bcf78adca397e7de5ea00d348389c1",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0043.bi4",
+      "sha256": "60af56b5bc8accf572a41ddd3ca6c64a32e8945b8654a0bae7bad0cd99cfeac9",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0044.bi4",
+      "sha256": "f4d7bb4eba0ce04c66a5f2c4b2ca77e4f5053a2f8573e59b42b7a7871f1ca8bd",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0045.bi4",
+      "sha256": "79dde5bdc80e66e6afb44c0468e68abee19700a534e44be8da4c27a062a18dc5",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0046.bi4",
+      "sha256": "ddf3ce2dace273942358ad10002684a1627d97850ea8a82dacd9c658a0c09df9",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0047.bi4",
+      "sha256": "8b8df75673d51da33d20cb05566332360201036a10dc8e5c59f8c2a80881ad0c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0048.bi4",
+      "sha256": "450848d272b397e8b2d6cf3571e16e4671e30052c1e618beda961e5aed59cc65",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0049.bi4",
+      "sha256": "59dc9dc6da1d7f17bc7882366cec2b6df439fcd01a4e50c21d38f1be2969d9ec",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0050.bi4",
+      "sha256": "2435511064b62d42ea65b7e4a79485bfd4523af6ef424c5103ae24f7c31838e4",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0051.bi4",
+      "sha256": "757f2eaa72bf242a17401d7e10ce4fccfca566c4bea053509f13e65562eeab9c",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0052.bi4",
+      "sha256": "82951dc2ea57a569efb23586149de31dbe791acb37990ebc94349831339bc181",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0053.bi4",
+      "sha256": "a8794dffae43dec2a56d105f531a61ea9e7b2685f4be5155c192dffbb79eab27",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0054.bi4",
+      "sha256": "9589199a44d57d1aac61defee55875ca9a5ebe5ad795a5cf285f05ed70241c04",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0055.bi4",
+      "sha256": "54a4e1a5d44633c302595b0b9c931f8865916c35c185a7c9a9fa8cb1764cd6a2",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0056.bi4",
+      "sha256": "05e5edf35c54f29dcab684c94e4aed076e65bc8c38520306822fdc9773d31f02",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0057.bi4",
+      "sha256": "9583adc19c368fe865f6c8d81ed2a9b5ec1f29deaf43201f33e149be5430b182",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0058.bi4",
+      "sha256": "3c564bdb9a7d832e007fa8dcf14f3aeb6bee3b5995c9acc95135818ff3c2a878",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0059.bi4",
+      "sha256": "31fed69001505c910329ddd8a6cefb2fa333c9b6208ce74aacc5ea823d006e93",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\data\\Part_0060.bi4",
+      "sha256": "e2d8e4a6482d1740671169702928a4beff91285901761296203355a87a85cabd",
+      "bytes": 3513561
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_release_r1_drained_gpu_h\\Run.out",
+      "sha256": "93b008cec607426303d152969c430626411f1ddf4fffb33deb7a893a6545499c",
+      "bytes": 16495
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0000.bi4",
+      "sha256": "c2fe92b496c97d4ecb69e17af52331f99b3d96d1635bcfaaf8812393ed53921c",
+      "bytes": 2196763
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0001.bi4",
+      "sha256": "e47cd4968a38f7efbeeae752c97bb9bcc684dc3dc2432fd46f78e7e33c79c60c",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0002.bi4",
+      "sha256": "b53eae56080ea4fed76295ada123b3af2f647f6a6ad6de0debaeb4949be4f3b5",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0003.bi4",
+      "sha256": "de54999d80c756f4011e1f9ec08df39ad37e3a6c554a48301398c48339193e39",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0004.bi4",
+      "sha256": "a881051693036b7e581c65aa204032622e26441be3ef38a3a1207c6a309f3660",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0005.bi4",
+      "sha256": "b8afd5d56fdb19bd000e1b619543e04bdcfcafb63ffb51459ade4b4ddbd44a98",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0006.bi4",
+      "sha256": "901df4d9a48977cd0b99a022782fb5652c04d55353d5fb91faffb4d430640652",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0007.bi4",
+      "sha256": "69aaba3efce91cafe49feaefa12f21554dc425cc8817f722a107c028c72c11eb",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0008.bi4",
+      "sha256": "ff6d316798ebff6e11e80e6d0b79a7a9721dcc4c2ab04e6dbfc19ccd5c76ce63",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0009.bi4",
+      "sha256": "3bb419a4f4aaaf60ba1e399eb4d6dbe3662b2c24e33eb5375aac8570237cd202",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0010.bi4",
+      "sha256": "2d52da62cd6f8b91844b5df74b5a3ab330332fb27ef7fa12be6d2905199589df",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0011.bi4",
+      "sha256": "790cd9ab822a3a3c81773221269828c7440b850301458cdf9c2e1d0c64547f5d",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0012.bi4",
+      "sha256": "927162ac3941384c2fee1a5c29d178e1826ba3cc5b02e23619974bf3beccf1c5",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0013.bi4",
+      "sha256": "943bf39f83d3d03283c2f7e07f59c6789148bf7c2c01be7c250301526b00b2de",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0014.bi4",
+      "sha256": "d0020800421b3b2642e2bfc393d88cb44234bdb28afa1e42e0fe14bdb93e10c7",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0015.bi4",
+      "sha256": "f7abe7ff2d2d22b9733b4aac440b95ed852236aaca958cf511231225c052d4cb",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0016.bi4",
+      "sha256": "30b51af1d985dde8397b83c65f4982bdbdd017ab4ea34b4e46f2f770c5546728",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0017.bi4",
+      "sha256": "b579d2251fdefb34664bcd16973f9410da199ab0a118030a5c97ab285f9ff5d1",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0018.bi4",
+      "sha256": "68e3c0a7dd22c9f3342a534278d0546a0bb358321275e20879ac66f903b7861e",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0019.bi4",
+      "sha256": "7232b2537458f39d877259276e268f5702824f534f5aff738d672f9fa5fe9dd2",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0020.bi4",
+      "sha256": "2f26868709c095302153c3f650655d34f4475c3b5733b46456d5075bf0027337",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0021.bi4",
+      "sha256": "e7014949d00690fdd71cead2c074e39fce4a71ca513f8c9efb6b61f2a21dca53",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0022.bi4",
+      "sha256": "36bc3893606fef8fd4b029f925928900e76137fa83527a6ec10f19acc70f3cc0",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0023.bi4",
+      "sha256": "415c350c055ac876199672c16e76d3847a1cd48b0d63cfff0d3025433c1ae993",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0024.bi4",
+      "sha256": "fea9415734653a33997703993c0416ca4b16031795152d81c715ad81d029576d",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0025.bi4",
+      "sha256": "8ade1fc114237239a76a8f444624d0d3bf0aa7f42ed079fda4e21955790028c6",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0026.bi4",
+      "sha256": "2d05e100b247ded19ab3a41d0d072a5b9a99ad7e40527184a12f2ca078ff9666",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0027.bi4",
+      "sha256": "031d2d5ac8124c35291f7505714dd0f907d4d19fbd716932f665931e5bb4e774",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0028.bi4",
+      "sha256": "fb359557cb460e5518efde93cc17415bfdd2c37551230866ef7d07f7c2d84ae6",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0029.bi4",
+      "sha256": "2613b450a2a1b9e4a6fa551c21fb9ed44e4a2128c9c34aa59b56c450cf55e8b4",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0030.bi4",
+      "sha256": "f2d689c2bdafa553ff2cb8192c1ae723aa8d910aab7ce4318dbdeeaae0f3b85d",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0031.bi4",
+      "sha256": "361792920b4635056f39e5174c019a038a3cd439f409576e34abfe8b0a25245f",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0032.bi4",
+      "sha256": "c9e4b1b0dcbbbaaa4f06de8bf48335f9e5011c2f4960e5b7c393d60af5cac5ae",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0033.bi4",
+      "sha256": "66a3bc5167e1ec01b2cf7ee3fdb480cad88b18c4bd9e9798012ba342eaa988be",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0034.bi4",
+      "sha256": "85e2271f6792d5913b8847b7cdf1d83bbb5a59f081c36e884eff8a745a114578",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0035.bi4",
+      "sha256": "9566fc014b37cfe934e30783d85460e3a1679a4e903fb7ae8d51f799c975fa8e",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0036.bi4",
+      "sha256": "d647c8996ef915f8ea10fb264f8a1c3970e01e0cbcbc99d3a3c85182da4b9e6c",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0037.bi4",
+      "sha256": "1bee8c55acdc75e7c5ae7d6cc4752cf4601e8b98d931bd4fc65bab3a4d9852e4",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0038.bi4",
+      "sha256": "4206de8e00d1f3495775c639904c2b474f138d6590363d079dfb7dc3c14c0a56",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0039.bi4",
+      "sha256": "a6066bf69ba160dcd6b48a01f9cdb661009b044aab091ec43a5dac7016b91f45",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0040.bi4",
+      "sha256": "bab26c193eb47f5daf0efc1058ca8d79cc88a97560bf3137d205ba705c8c2623",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0041.bi4",
+      "sha256": "afe73cdac560daa5f225f422e956b77f87b63d82ae75be267e854b8c9a3939b3",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0042.bi4",
+      "sha256": "56a2fae7c78195e195f67bb16c1b621a0e02551ffe9c9bd4570dcc585daadeec",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0043.bi4",
+      "sha256": "8e127792bfaf5a3a66ac1226bc5e409b1fa4fdc798ab2e1b0c13634beb0377c0",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0044.bi4",
+      "sha256": "69b79ea38c7cddb29e102644ad72dc5425ff692119a48d0c542a66e00f8a701f",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0045.bi4",
+      "sha256": "2285eaa684acfbfe461c574e3ed2d9c651f646e3e8fa8a0ab4c49f0ee0f351f4",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0046.bi4",
+      "sha256": "343f47f564a8c3d83fc2f01d4868f3ea3cc6be3f9867dca448fe07777118f376",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0047.bi4",
+      "sha256": "564732aa8d735369939ba8c657f38395f7a761ed0d1b718904b783477988acbc",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0048.bi4",
+      "sha256": "7b472e1af22eacbb363558b80f5885f5da50c9de04a80fe7dbdc52ce72b4d2c0",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0049.bi4",
+      "sha256": "f4fa5a4760be515b292a71e7c39e7b4f575db51fbec990eaf04794463e93df94",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0050.bi4",
+      "sha256": "e812f9692c00f2e778e271628321bca62ec575408f3c901c9b9844b4fc7843f2",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0051.bi4",
+      "sha256": "eb6c1269e2a2ad465f6bdf10613b0737dc2d9d03d37f0b743707aaae09cf2271",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0052.bi4",
+      "sha256": "489c7582c60f32c1f6f4fe269bfdcc7e6b56be76514d39d11c20002d43b3b709",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0053.bi4",
+      "sha256": "e8d3cc44daf2bb0b851ccbb1ab3f0b882997503aec01f6781eefa737b9176129",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0054.bi4",
+      "sha256": "829bf271c5488bf20857ec4eba34c763bb828af6625ce75f504e43650e1c08a3",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0055.bi4",
+      "sha256": "952d16ad0c8296b0676618d346e6bfb024457be73a2572d9bddc14e6cae3e270",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0056.bi4",
+      "sha256": "b98c0b6da15edd58abb6a4985f1852799b89abc853cd6185e32268c47da3f66b",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0057.bi4",
+      "sha256": "57e13762c55bef3a0d61c3d709530957014297d05a8ab9de7e63cb313e5dd923",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0058.bi4",
+      "sha256": "10898e09fa8a45aff752d9608a2830553dae30eb3965648982f194e67254d5ee",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0059.bi4",
+      "sha256": "90f1c34b358b56bb36dc994af897065026251ab4926f2dc7d890c402081d42c8",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\data\\Part_0060.bi4",
+      "sha256": "c2cbc963a3b066761925f9a44a9626e1b79423f79345214fdc5610a6957dbe52",
+      "bytes": 2460104
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_out\\Run.out",
+      "sha256": "24a8ff8d1204dfb318d5aed7fc7b7eb66f60ee1d220a893ff5dc3e7621fd7936",
+      "bytes": 91519
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\figures\\lian_drained_review_r1_history.csv",
+      "sha256": "3e685fa98620e9898b09f28b7d9a3dd591ab95908eea888a086c6d3967e024da",
+      "bytes": 63725
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\figures\\lian_drained_review_r1_pairs.csv",
+      "sha256": "8ea5a48f03f5f901e125ec1b919b52be38a358bd41474f5356e2cd34b76e8591",
+      "bytes": 10407
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\figures\\lian_drained_review_r1_history.png",
+      "sha256": "121a6b913dee35ccd808d3cc7b006be924f5a88e2aa80948e5d1d589cce5c17c",
+      "bytes": 219012
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\figures\\lian_drained_review_r1_fields.csv",
+      "sha256": "7f73ebe6e6f43cb63afc71741c853746e0b3ec8d83616686a734e85bdd5fc41e",
+      "bytes": 1887513
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\figures\\lian_drained_review_r1_fields.png",
+      "sha256": "2e3a286e782fd2197fc2b21cdd9d6a1307cdf8c7a4cbb26acf524abdc01597f8",
+      "bytes": 119525
+    }
+  ]
+}

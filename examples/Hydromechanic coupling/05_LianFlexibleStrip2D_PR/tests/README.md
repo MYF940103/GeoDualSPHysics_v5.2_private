@@ -43,3 +43,24 @@ Current retained setup:
 - The late pore-pressure residual remained an open diagnostic issue in the
   retained notes. Finishing the 50 s run does not make this a fully validated
   benchmark, and the current case does not enable TPI.
+
+## Current bounded review (2026-10-26)
+
+- `logs/lian_drained_review_r1.check.json`: independently reviewed 61 native
+  coarse/half pairs through 3 s. Maximum pressure RMS difference is
+  `0.0111203 Pa`; top-material maximum displacement difference is
+  `0.000012807 mm`. All active drained nodes (FSType 2 or 3, outside the
+  current strip, all normal directions) have exactly zero pressure.
+- `figures/lian_drained_review_r1_history.png` and `_fields.png` have matching
+  CSV data. Current versus legacy final pressure RMS difference is
+  `0.587581 Pa`; this is not an isolated stress-precision comparison or
+  evidence that the late plateau is resolved. Legacy load telemetry is zero
+  and must not be interpreted as a physically unloaded calculation.
+- `notes/lian_late15_r1.json` specifies a fresh 15 s original mixed-slip,
+  mode-4 strip diagnostic; its independent entry is
+  `configs/xlian_late15_r1_win64_GPU.bat`. Only duration changes from the
+  3 s coarse control. SPR/HG remain off. Its purpose is to cover the retained
+  first contact/drainage change near 14.1 s, not to claim full-cycle acceptance.
+- Formal root inputs and retained output remain unchanged. Formal closure
+  still requires an independent actual run through the paper's 100 s endpoint,
+  reviewed native comparisons, and corresponding formal PNG/CSV artifacts.
