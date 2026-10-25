@@ -65,6 +65,25 @@ entry never offers deletion and does not fall back to a Debug executable.
 - Density/stress diffusion and pore-pressure regularization are disabled.
   The three damping variants use `0`, `0.01`, and `0.02` respectively.
 
+## Boundary reference check (2026-10-25)
+
+Yao et al. (2025), Section 5.2.3, pages 21-22 and Fig. 26, defines both the
+side walls and the bottom as free-slip and impermeable. At the bottom the
+conditions are `u_z=0`, `sigma'_xz=0`, and zero normal discharge; `u_x=0` is
+not imposed. The current all-free-slip baseline is therefore retained.
+This is different from Lian's strip test and Yao's Section 5.2.4 transient
+wave test, which use a no-slip bottom.
+
+Page 24's absorbing-boundary paragraph calls the original bottom "no-slip",
+contradicting Section 5.2.3's opening, explicit conditions and roller support
+in Fig. 26. This ambiguity is recorded, not silently resolved by changing
+the benchmark. See [the boundary review](tests/notes/yao_boundary_r1.json).
+Future inputs must explicitly identify each face and slip condition. A
+no-slip-bottom sensitivity run, if needed, must have its own label and must
+not be presented as the same physical reference or as an SPR-only change.
+The current CPU/GPU SPR path rejects per-marker mixed slip; supporting that
+combination requires separate implementation and tests, not a removed guard.
+
 ## Retained results
 
 The current reference is under

@@ -1,0 +1,48 @@
+{
+  "date": "2026-10-25",
+  "purpose": "Resolve the user's request to check whether Yao consolidation requires the same mixed side/bottom slip as Lian before future tests and formal delivery",
+  "scope": "Primary-paper and current-configuration/source audit only; no solver started and no physical settings changed",
+  "reference": {
+    "paper": "C. Yao et al., 2-D SPH modelling of poroelasticity: u-w-p and u-p formulations, Computers and Geotechnics179(2025)107016",
+    "PDF": "src/papers/PDF/2D SPH modelling of poroelasticity u-w-p and u-p formulations.pdf",
+    "PDF_sha256": "A729A6056DE142076B003B5BA98E0956CDAA55328F0B7CD66EA0AD0D97945EDD",
+    "MD": "src/papers/u-pw/paper1_yao_2025_sph_poroelasticity_codex.md",
+    "MD_sha256": "F567973982C85D77289288FC8266EDDD7F83106D04BF543EF098A8D65AB5B9C6",
+    "primary_pages_visually_checked": [21, 22, 23, 24],
+    "rendered_local_pages": "tests/outputs/yao_boundary_ref_r1/page_21.png through page_24.png; PyMuPDF rendering used because Poppler is unavailable"
+  },
+  "consolidation_section_5_2_3": {
+    "geometry": "20m x10m plane-strain layer, frictionless6m strip, ramp0.1s to5kPa",
+    "side_Gamma3": {"mechanical": "free-slip: ux=0 and effective shear sigma_xz=0", "hydraulic": "zero normal flow"},
+    "bottom_Gamma4": {"mechanical": "free-slip: uz=0 and effective shear sigma_xz=0; ux is not fixed", "hydraulic": "zero normal flow"},
+    "symmetry_Gamma5": "ux=0, effective shear sigma_xz=0 and zero normal flow; current full-width model has no internal symmetry wall",
+    "evidence": "Opening paragraph on page21, explicit Gamma3/Gamma4 conditions on page22 and roller symbols in Fig26 agree on free-slip bottom",
+    "ambiguity": "Absorbing-boundary discussion on page24 calls the original bottom no-slip. This conflicts with the opening and explicit boundary equations; author intent is not independently resolved here.",
+    "decision": "Retain side/bottom free-slip as the principal rigid-boundary reproduction. Do not claim the isolated contradictory wording proves a no-slip consolidation bottom."
+  },
+  "other_problem": {
+    "section": "5.2.4, 2-D transient wave propagation, Fig30",
+    "differences": "21m width,1m stress pulse footprint, pulse over0.04s and100kPa amplitude",
+    "mechanical": "Side walls free-slip, bottom no-slip",
+    "warning": "Do not transfer this mixed-slip definition to the Section5.2.3 consolidation without changing the problem label. Lian's own mixed-slip definition remains unchanged."
+  },
+  "current_inputs": {
+    "root_default": "CaseYao2DConsolidation_PR_Def.xml: global SlipMode3, no per-mk override",
+    "root_SPR": "CaseYao2DConsolidation_PR_SPR_Def.xml: mk0 bottom, mk1 left, mk2 right, separate planar normals; all use global SlipMode3",
+    "existing_results": "Retained10s SPR off/on/half results are all-free-slip. Do not relabel or overwrite them as mixed-slip validation."
+  },
+  "code_limit": {
+    "CPU": "src/source/JSphCpuSingle.cpp, SoilBoundaryDerivativeSPR initialization checks",
+    "GPU": "src/source/JSphGpuSingle.cpp, SoilBoundaryDerivativeSPR initialization checks",
+    "restriction": "Current SPR explicitly rejects MdbcSlipModeByMk. General mDBC already supports per-mk slip, but that is not proof of mixed-slip SPR support.",
+    "next_if_mixed_slip_needed": "First test mixed mDBC with SPRoff; then implement and validate per-face corner/ghost consistency on CPU/GPU before enabling SPR. Do not bypass the guard."
+  },
+  "future_delivery": [
+    "List each face's mechanical and hydraulic conditions explicitly in new tests/formal input comments",
+    "Keep boundary sensitivity separate from SPR, hourglass, damping or loading changes",
+    "If a bottom-no-slip comparison is justified, use an independent test tag and compare pressure, settlement, horizontal displacement and bottom shear before choosing any formal variant",
+    "Only after necessary acceptance update root formal XML/BAT, execute full real-program runs and publish matching figures/CSVs",
+    "Selectively verify and back up this decision and later validated changes to local/remote Git"
+  ],
+  "Lian_drained_sequence": "Existing fresh3s GPU coarse/half continuation remains untouched; no duplicate solver or watcher was launched"
+}
