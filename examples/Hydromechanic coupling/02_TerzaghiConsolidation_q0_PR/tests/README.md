@@ -1,5 +1,21 @@
 # 02 测试文件索引
 
+## 2026-10-25 已结束试验的大型原始CSV归档
+
+按用户要求清理磁盘占用，先同步代码至本地／远端Git，再对已结束试验的大型逐粒子CSV做无损归档。完整范围、恢复和执行结果见[清理记录](notes/cleanup_r1.md)、[精确白名单](logs/cleanup_r1.plan.json)和[实际状态](logs/cleanup_r1.status.json)。旧日期段的“原位保留全部CSV”是当时状态，现以本节为准；没有改写旧运行／验收哈希。
+
+本轮36个大型CSV从49.93 GiB压缩至13.58 GiB，净释放36.35 GiB；outputs从99.78降至63.43 GiB。全部原生BI4和程序快照的数量／字节数不变。[逐文件清单及空间表](logs/cleanup_r1.summary.csv)可直接查看。
+
+原CSV旁保留同名`.csv.zst`，每份完整解压核对SHA-256后才移除未压缩文件。若要重读旧原生轨迹、重跑历史分析或核验旧清单，必须先恢复相应CSV，不能把缺少未压缩文件当作原物理计算失败。用计划中的index在case02目录执行：
+
+```powershell
+& 'D:\Anaconda3\python.exe' -B tests/support/cleanup_archive_r1.py --restore 0
+```
+
+把0替换为所需index；恢复拒绝覆盖已有文件。实际原路径恢复／SHA检查已验证，见`logs/cleanup_r1.restore_test.json`。需要当前环境的zstandard模块。归档和原生BI4仍只在本地，不声称已云备份。正式根XML/BAT/输出、所有BI4/重启数据、代码/程序/读取器快照、configs/support/notes/logs、figures内PNG及图表CSV均保护。
+
+当前结论入口：[三维棱边／墙角短窗核验](notes/spr_3d_review_r1.md)、[一维三组交付](notes/three_delivery_r1.md)、case06的Yao10 s记录。下方旧“正在运行／下一步”仅作历史，不据此重启旧worker。最新SPR三维输出不在本轮归档白名单。
+
 ## 2026-10-24 CPU/GPU多面SPR有界候选（尚非正式通用边界验收）
 
 - [补丁、失败来源与短窗结论](notes/spr_planes_r1.md)，[汇总收据](logs/spr_planes_review_r2.check.json)，[角点图](figures/spr_planes_review_r2_corner.png)、[算子/半步图](figures/spr_planes_review_r2_checks.png)及同前缀CSV。
