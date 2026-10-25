@@ -1,0 +1,35 @@
+{
+  "date": "2026-10-26",
+  "status": "Completed15s control reviewed; not accepted as a physical formal result",
+  "program_and_run": {
+    "actual_GPU": "NVIDIA GeForce RTX3050",
+    "actual_final_time_s": 15.000009999601302,
+    "frames": 301,
+    "wall_seconds": 14589.330183199956,
+    "exit_code": 0,
+    "native_soil_IDs": 20301,
+    "same_time_step_3s_prefix_all_fields_0ULP_frames": 61
+  },
+  "verification": "All frozen inputs/build/program/output hashes, original native finite/elastic/no-exclusion/geometry/natural-step and all active FSType2/3 drainage checks passed. Three PNGs inspected with matching CSVs.",
+  "physical_finding": {
+    "current_first_sampled_contact_loss_s": 12.400009999699732,
+    "legacy_first_sampled_contact_loss_s": 14.100009999635374,
+    "current_sampled_contact_transitions": 12,
+    "legacy_sampled_contact_transitions": 6,
+    "affected_native_ID": 1744,
+    "current_first_loss_x_m": -0.0000008013923341210704,
+    "observed_current_force_before_after_N_m": [12999.999428456758,11999.999472421623],
+    "force_jump_fraction_of_original13_node_load": 0.07692307692307693,
+    "current_minimum_pressure_Pa": -3211.9873046875,
+    "legacy_minimum_pressure_Pa": -3076.46875,
+    "current_maximum_speed_m_s": 0.07500275147487934,
+    "legacy_maximum_speed_m_s": 0.08228432167122168,
+    "current_legacy_final_pressure_RMS_difference_Pa": 314.2665216089789
+  },
+  "interpretation": "Strict current-coordinate x>=0 contact causes the left-edge node to lose load AND become drained when tiny normal drift changes sign. The same discrete mechanism occurs in both versions; stress double shifts but does not remove it. This accounts for the force/contact jump and associated transients, not yet all late residual pressure.",
+  "frozen_mirror_diagnostic": "Across all301 sampled states, fabs(x)<=1.25 changes the load/drain membership only of native1744 and maintains13 frozen load nodes. This is NOT a coupled repaired trajectory or physical acceptance.",
+  "additional_startup_observation": "The retained .15s strict coarse run at5.01ms has12 loaded nodes and60N/m, with1744 x=-1.96e-8m. Dense early samples also reveal the same sign-sensitive membership; the original3s .05s cadence misses that early event.",
+  "next": "Minimally test mirrored mode4 CPU/GPU predicate, retaining original q/quadrature, mixed slip, damping, timestep and SPR/HGoff. Debug/memcheck, .15s and3s half checks precede late15s coarse/half. No automatic formal100s acceptance.",
+  "limits": ["Old/current is not an isolated stress-precision A/B", "Legacy zero load telemetry is not physically zero load", "Initial legacy positions are float, later PARTs can be double", "Only3s independent half evidence exists for the strict control", "Original13-node width1.3m remains+4percent above ideal1.25m", "Formal root inputs/results remain protected and unchanged"],
+  "artifacts": "tests/figures/lian_late15_review_r1_history,contact,fields PNGs; matching history,fields,pairs,prefix,events CSVs; tests/logs/lian_late15_review_r1.check.json"
+}
