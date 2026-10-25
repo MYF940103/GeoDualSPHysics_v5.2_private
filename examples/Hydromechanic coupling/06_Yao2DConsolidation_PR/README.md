@@ -33,6 +33,15 @@ validation performed during file organization.
 
 ## Current entry points
 
+- Reviewed SPR configuration: `CaseYao2DConsolidation_PR_SPR_Def.xml` and
+  `xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat`. This separate entry uses the
+  verified three-face normals, corrected stress/pore derivatives and SPR;
+  HG/NoPen remain off. It targets its own root `CaseYao2DConsolidation_PR_SPR_out`,
+  refuses overwrite, and runs GenCase, the real GPU Release program and PartVTK.
+  It does not run analytical plotting. The new full 10-s entry has NOT been run;
+  retained 10-s companion data are not relabeled as its output. Real-program
+  off/on/half 0.02-s regression passed all 63 saved native states at 0 ULP.
+  See [release readiness](tests/notes/spr_yao_release_smoke_r1.md).
 - Default input: `CaseYao2DConsolidation_PR_Def.xml`.
 - Default GPU batch: `xCaseYao2DConsolidation_PR_win64_GPU.bat`.
 - Damping variants: the matching `CaseYao2DConsolidation_PR_damp000`,
@@ -42,7 +51,8 @@ validation performed during file organization.
 Each batch targets its own case-named `*_out` directory and runs GenCase,
 the GPU solver, and fluid/boundary PartVTK conversion. It does not run the
 comparison plotting scripts. If an output directory already exists, option
-1 deletes it; do not use that option for retained results.
+1 deletes it; do not use that option for retained results. The separate SPR
+entry never offers deletion and does not fall back to a Debug executable.
 
 ## Current default
 

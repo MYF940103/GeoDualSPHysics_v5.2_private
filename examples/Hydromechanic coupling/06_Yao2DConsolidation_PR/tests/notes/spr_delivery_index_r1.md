@@ -10,6 +10,7 @@
 | spr_yao_axis01_r1 | .1 s NoPen开启相容性通过，但未触发修正，开关0 ULP | spr_yao_axis_review_r1.md |
 | spr_yao_10s_r1 | GPU关/开/半步10 s已完成；1001保存时刻安全/半步、前缀及场图通过，有界数值验证 | spr_yao_10s_review_r1.md |
 | case02 spr_3d_r1 / spr_3d_next_r1 | 三维棱边/墙角、NoSlip/FreeSlip共16次2 ms运行；8半步及8跨后端对比通过，不是完整三维理论验收 | [三维核验](../../../02_TerzaghiConsolidation_q0_PR/tests/notes/spr_3d_review_r1.md) |
+| spr_yao_release_smoke_r1 | 新实际GPU发行程序关/开/半步各21帧对旧发行程序全原生0 ULP；独立根SPR入口已准备，未重跑10 s | spr_yao_release_smoke_r1.md |
 
 各标签对应configs/XML及同名可点击BAT、outputs原生结果、figures/PNG及CSV、logs/运行与检查清单。沿用已有scripts，不新建同义support或把文件再套深层目录。生产多平面候选是八文件7fda9ffe检查点，后续未再改生产方程。三维检查额外修复JSphGpu析构时GaugeSystem晚于cudaDeviceReset释放的问题：仅资源生命周期调整，Debug内存检查由1错降至0错，前后原生字段0 ULP；范围见上述三维核验。
 

@@ -1,0 +1,52 @@
+{
+  "passed": true,
+  "executable_xml_nodes_equal": true,
+  "real_10s_run_started": false,
+  "existing_root_inputs_unchanged": true,
+  "gencase_exit": 0,
+  "gencase_warning": "Zero gravity implies zero automatic depth and constant B; existing warning",
+  "overwrite_refused": true,
+  "release_only": true,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\CaseYao2DConsolidation_PR_SPR_Def.xml",
+      "sha256": "A8E58AC2D96DD7C0C7E8AA3406AF6B66209B42CE9DC7249DD998EBAA9FDF9630"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\tests\\configs\\spr_yao_10s_r1_on_Def.xml",
+      "sha256": "199CF8CAF90C51FF9F846418F5D93FA1CA360179E79E75F16CED4459FA925A6B"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\06_Yao2DConsolidation_PR\\xCaseYao2DConsolidation_PR_SPR_win64_GPU.bat",
+      "sha256": "DC5EDC2CF699694E18DA6A654502C1C9DE42540C83ACE80253D2139683647041"
+    }
+  ],
+  "real_program_smoke": {
+    "passed": true,
+    "runs": 3,
+    "samples_each": 21,
+    "all_native_fields_0ulp": true,
+    "independent_half_gate_recomputed": false,
+    "reference": "spr_yao_gpu_load_raw02_r2"
+  },
+  "native_geometry": {
+    "total": 21945,
+    "soil": 20301,
+    "wall": 1644,
+    "ordered_coordinates_and_vtk_file_hashes_identical_to_reviewed_10s": true
+  },
+  "partvtk_smoke": {
+    "passed": true,
+    "parts": [
+      0,
+      20
+    ],
+    "types": [
+      "fluid",
+      "bound"
+    ],
+    "variables": "same as new root BAT",
+    "not_full_10s_postprocessing": true
+  },
+  "physical_acceptance": false
+}
