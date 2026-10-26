@@ -15,6 +15,17 @@ implementation or a claim that the late pore-pressure residual is resolved.
 
 ## Independent 100-s release entry (2026-10-26)
 
+2026-10-27 user revision: this run was intentionally stopped, NOT completed,
+before the requested controlled 3-s comparisons. Its 219 native frames through
+10.90001 s remain protected in the root output. The integrated worker was
+stopped before its owned solver; neither may be restarted. See
+`tests/logs/lian_formal100_r1.user_stop.json` and
+`tests/logs/lian_formal100_r1.user_stop_native.json`. First supported-option
+tests are in `tests/notes/lian_opt3_r1.json`. Paper SPH/FEM is a numerical
+reference, not an assumed exact truth; if a bounded comparison leaves a
+discrepancy, select a justified stable baseline rather than tune only colors.
+A new formal long run, if admitted later, must use fresh inputs/output names.
+
 - Input: `CaseLianFlexibleStrip2D_PR_release_Def.xml`.
 - GPU batch: `xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat`.
 - New output: `CaseLianFlexibleStrip2D_PR_release_out`; refuses overwrite.
@@ -32,7 +43,7 @@ implementation or a claim that the late pore-pressure residual is resolved.
   Native plots alone are not SPH/FEM acceptance; full reference review remains
   required. The new run is independent, not a relabeling of the 15-s pair.
 - Sequence status: `tests/logs/lian_formal100_r1.status.json`; one integrated
-  terminal notification. Do not restart a completed/interrupted worker or
+  terminal notification, now retired by the explicit user stop. Do not restart a completed/interrupted worker or
   overwrite its output. The runtime/analysis may still be pending.
 
 ## Retained 50-s entry point

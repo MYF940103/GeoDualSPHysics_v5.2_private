@@ -4,7 +4,7 @@
   "reason": "User selects Lian as the sole active 2D case, defers Yao, and schedules 1D self-weight consolidation after Lian and Cryer before deciding between slope validation and u-pl extension",
   "purpose": "Finish current u-pw physical verification before new u-pl/TPI development",
   "order": [
-    "Lian: finish the running mirror-footprint 15-s coarse/half review without changing its frozen inputs; if justified by the review, prepare independent formal root XML/BAT and actually run to the paper's 100-s endpoint",
+    "Lian user revision2026-10-27: stop the formal100s run and preserve partial output. First perform bounded3s option comparisons (SPR/hourglass/stress-rate correction/damping) with side FreeSlip and bottom NoSlip preserved; unsupported mixed-SPR/nonperiodic-HG need independently validated compatibility, not disabled guards. Use numerical consistency and time-step checks as well as paper references. If differences persist after bounded comparisons, choose a justified stable current baseline rather than fit colors, then admit a NEW fresh formal root long run",
     "Lian: compare pore pressure, material-point settlement and horizontal displacement with Section4.3 SPH and ABAQUS FEM results, preserving the paper's observation locations and reporting any digitization uncertainty; these are numerical references, not an analytical solution",
     "Cryer: audit spherical loading/internal-force consistency and precision attribution, then short/half-step and full analytical comparisons; do not correct external loading alone",
     "1D self-weight consolidation (01_SelfWeightConsolidation_PR): audit retained errors and actual reference assumptions; distinguish Scenario1 analytical-initial-field dissipation from Stage1 self-weight initialization and Scenario2 restart transmission; check pore pressure, material settlement, hydrostatic/effective/total-stress balance, then short/half-step and full reference comparisons",
@@ -35,5 +35,5 @@
     "CPU/GPU and half-step agreement alone do not establish physical accuracy",
     "Accepted case02 results remain unchanged; do not reopen KEEP/u-pl/TPI during this verification stage"
   ],
-  "state": "lian_15s_contact_repair_accepted_independent_formal100s_admitted_reference_accuracy_pending"
+  "state": "formal100s_user_stopped_at10p90001s_controlled3s_option_matrix_SPR_HG_compatibility_pending"
 }

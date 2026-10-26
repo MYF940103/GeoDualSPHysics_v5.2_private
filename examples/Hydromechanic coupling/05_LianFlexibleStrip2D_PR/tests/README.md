@@ -122,3 +122,26 @@ peak is 2.11956 kPa and 9.024% of native nodes exceed that paper display
 limit. Shape agreement is qualitative; fieldwise SPH/FEM accuracy is not
 accepted. Contact repair does not remove this shared early-window mismatch.
 No solver, formal inputs or active 100-s sequence were changed for this plot.
+
+## Controlled 3-s option study (2026-10-27 user revision)
+
+The user subsequently stopped the 100-s formal sequence. Its protected root
+output contains 219 complete native frames through10.90001s, not100s;
+`logs/lian_formal100_r1.user_stop.json`, `.user_stop_snapshot.json` and
+`.user_stop_native.json` preserve ownership, the pre-stop status and native
+endpoint evidence. Old worker and completion queue are retired.
+
+`notes/lian_opt3_r1.json` and `scripts/lian_opt3_r1.py` define the first
+supported one-option matrix: stress-rate-gradient correction1, damping off,
+eta.02, eta.08, each .15-s smoke then3s at10us; reuse eta.04/grad0 baseline.
+One CPU Debug2ms grad smoke precedes GPU jobs. Original side-free/bottom-no-slip
+settings are checked in both XML and actual logs. Geometry/material/load/
+permeability remain fixed. Result outputs, logs and CSVs use the same shallow
+`lian_opt3_r1_*` filename tag. No new C++/CUDA change was made for this matrix.
+
+SPR and HG are NOT claimed tested here: current SPR rejects mixed slip and
+needs independently validated per-face normals/control; current HG neighbor
+search is periodic-only. Do not bypass those guards or change boundary slip
+to make them run. Those bounded compatibility tasks remain explicit, followed
+by candidate half checks before any new long-run decision. Neither the paper
+nor the current code is assumed automatically correct from color resemblance.
