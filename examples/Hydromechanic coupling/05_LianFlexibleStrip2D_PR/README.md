@@ -13,7 +13,29 @@ This case uses the explicit u-pw pore-pressure-rate path for the Lian strip
 footing geometry. It is a retained verification/diagnostic case, not a TPI
 implementation or a claim that the late pore-pressure residual is resolved.
 
-## Current entry point
+## Independent 100-s release entry (2026-10-26)
+
+- Input: `CaseLianFlexibleStrip2D_PR_release_Def.xml`.
+- GPU batch: `xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat`.
+- New output: `CaseLianFlexibleStrip2D_PR_release_out`; refuses overwrite.
+- Full duration 100 s, 10 us fixed step, 0.05 s native saves, double positions
+  and stress, float pore pressure/rate. Original mixed mDBC, damping 0.04 and
+  13-node load quadrature are retained; SPR/HG/stress-gradient correction off.
+- BAT runs GenCase, actual GPU Release, PartVTK fluid/boundary, then
+  `support/postprocess_lian_release.py`. Native figures AND matching CSVs go
+  to root `figures/lian_release100_r1_*`. Python is configured as
+  `D:\Anaconda3\python.exe`; retain the native reader at
+  `tests/outputs/hydro_native_r1/ReadHydroNative.exe` and the checked-in
+  `lian_release_r1.py` / `lian_mirror_review_r1.py` helpers during cleanup.
+- Formal paper probes are A(0,10) and B(1.25,8.75), using initial material
+  IDs/bilinear weights, not the historical nearest-node diagnostic probes.
+  Native plots alone are not SPH/FEM acceptance; full reference review remains
+  required. The new run is independent, not a relabeling of the 15-s pair.
+- Sequence status: `tests/logs/lian_formal100_r1.status.json`; one integrated
+  terminal notification. Do not restart a completed/interrupted worker or
+  overwrite its output. The runtime/analysis may still be pending.
+
+## Retained 50-s entry point
 
 - Input: `CaseLianFlexibleStrip2D_PR_Def.xml`.
 - Windows GPU batch: `xCaseLianFlexibleStrip2D_PR_win64_GPU.bat`.
@@ -23,7 +45,7 @@ The batch runs GenCase, the GPU solver, and fluid/boundary PartVTK conversion.
 It does not run the analytical plotting scripts. If the output already
 exists, option 1 deletes it; do not select that option for the retained run.
 
-## Current configuration
+## Retained 50-s configuration
 
 - Domain `20 m x 10 m`, `dp=0.1 m`, zero gravity.
 - `HydroMechTopLoadMode=4`: strip `x=[0,1.25] m` at `z=10 m`.
@@ -62,14 +84,23 @@ See `tests/figures/lian_late15_review_r1_history.png`, `_contact.png`,
 A CPU/GPU source candidate mirrors the mode-4 footprint across the x=0
 free-slip face (`abs(x)<=1.25`). Domain x>=0, q, the right contact edge,
 original nodal force quadrature and all other modes are unchanged. This
-candidate needs short/half/late-window verification; root formal inputs and
-the retained control GPU program/data are not promoted or overwritten here.
+candidate needed short/half/late-window verification; the retained strict
+control program and raw data remain preserved under tests and the old output.
 
 The candidate passed the independent2ms Debug/memcheck and .15s/3s GPU
 coarse/half short review (`tests/logs/lian_mirror_review_r1.check.json`).
 The3s half maxima are0.0112047Pa and0.0000128985mm; candidate loads retain13
 nodes, with all active drainage nodes at0Pa. The figures and matching CSVs
-are `tests/figures/lian_mirror_review_r1_*`. This does not cover the old
-late switching times: fresh15s coarse/half inputs are under
-`tests/configs/xlian_mirror15_r1_{c,h}_win64.bat`. The formal100s root
-calculation and FEM comparison are still pending; old formal data stand.
+are `tests/figures/lian_mirror_review_r1_*`.
+
+The independent 15-s coarse/half review now also passed all 301 native pairs:
+0.0153762 Pa / 0.0000128985 mm maxima. Node1744 contact transitions fall
+from 12 to 0; post-ramp force stays 12999.99943 N/m rather than dropping
+to 11999.99947 N/m. Minimum saved pressure changes from -3211.99 Pa to 0,
+and maximum speed drops from 0.0750028 to 0.00194440 m/s. Both complete
+61-frame 3-s same-dt prefixes are all-native-field 0 ULP. See the inspected
+`tests/figures/lian_mirror15_review_r1_*` PNGs/CSVs and
+`tests/notes/lian_mirror15_review_r1.md`. This accepts the scoped contact
+repair and admits the new 100-s release, NOT full reference accuracy.
+Original +4% load-width quadrature and remaining settlement/reference
+differences must still be assessed; old formal data stand unchanged.

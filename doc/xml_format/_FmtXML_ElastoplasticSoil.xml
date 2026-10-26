@@ -48,9 +48,10 @@
 				<!-- TopKernelBand GPU G2: origin/normalization, legacy modes 0-4, and Debug/Release 20-step mode5 lifecycle/field comparisons checked. -->
 				<!-- CPU/GPU near-zero raw cancellation differs on the existing float neighbor paths; no local 64-eps equivalence is claimed. Case-02 k=1e-4 CPU/GPU 2Tv passed the scoped delivery comparison (2026-10-20). -->
 				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=YaoTopStrip, 4=LianFlexibleStrip, 5=TopKernelBand (CPU/GPU 2D horizontal top, same resultant as 1); default=0" />
-				<!-- Mode4 candidate: half-domain x>=0, strip0..1.25m; CPU/GPU mirror the predicate to |x|<=1.25 across the x=0 free-slip wall. -->
+				<!-- Mode4: half-domain x>=0, strip0..1.25m; CPU/GPU mirror the predicate to |x|<=1.25 across the x=0 free-slip wall. -->
 				<!-- Loading, contact drainage exemption and pore-rate selection use the same footprint; q and nodal quadrature are unchanged. -->
-				<!-- This prevents a normal-drift sign change at x=0 from toggling one node's load and drainage. Validation pending; no general contact/curved-wall extension. -->
+				<!-- Debug/memcheck and actual GPU 15-s coarse/half contact repair passed (2026-10-26); no normal-drift load/drain toggles in that window. -->
+				<!-- Original13-node quadrature remains +4% versus ideal width; 100-s/SPH/FEM accuracy pending, no general contact/curved-wall extension. -->
 				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; default=0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
 				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time; default=0" units_comment="s" />
 				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure; default=1" />

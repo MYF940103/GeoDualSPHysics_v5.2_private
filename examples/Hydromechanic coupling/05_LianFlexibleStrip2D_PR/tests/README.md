@@ -11,7 +11,7 @@ for the current entry point and protected results.
 - `scripts/`: helper run and postprocess scripts.
 - `notes/`: preserved conclusions from previous attempts.
 
-Current formal case root files:
+Retained 50-s formal case root files:
 
 - `../CaseLianFlexibleStrip2D_PR_Def.xml`
 - `../xCaseLianFlexibleStrip2D_PR_win64_GPU.bat`
@@ -65,7 +65,7 @@ Current retained setup:
   still requires an independent actual run through the paper's 100 s endpoint,
   reviewed native comparisons, and corresponding formal PNG/CSV artifacts.
 
-## Lian mode-4 mirror candidate (not yet accepted)
+## Lian mode-4 mirror candidate and accepted 15-s contact repair
 
 The current strict-footprint control first loses native node1744 near 12.40 s:
 its x coordinate changes from a small positive value to -0.80 micrometres.
@@ -92,3 +92,20 @@ r2 adopted its successful CPU Debug and ran only the five missing GPU jobs.
 No old worker was restarted. The next fresh15s pair is `lian_mirror15_r1`;
 it alone can test the retained late switching window. No formal100s/FEM
 or general-contact acceptance is claimed by this short checkpoint.
+
+That fresh 15-s pair has now completed and was independently reviewed:
+`logs/lian_mirror15_review_r1.check.json`,
+`notes/lian_mirror15_review_r1.md`, and inspected
+`figures/lian_mirror15_review_r1_{history,contact,fields}.png` with matching
+history/pairs/prefix/fields CSVs. All 301 half pairs pass the original bounds
+(0.0153762 Pa / 0.0000128985 mm maxima). Both 61-frame shared 3-s prefixes
+are exact, all fields. Contact toggles and erroneous drainage disappear,
+13 nodes retain 13000 N/m, and the old negative-pressure spikes disappear.
+This admits one independent actual 100-s root release, not FEM accuracy.
+
+The new root release XML/BAT are `../CaseLianFlexibleStrip2D_PR_release_Def.xml`
+and `../xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat`.
+`notes/lian_formal100_r1.json` defines the full run; its one-shot status is
+`logs/lian_formal100_r1.status.json`. Retain the native-reader executable and
+helper scripts used by `../support/postprocess_lian_release.py` during any
+cleanup. Formal figures/CSVs go to `../figures`, not this diagnostic folder.
