@@ -1,5 +1,14 @@
 # Lian 2023 Flexible Strip 2D Test Data
 
+## Latest supported-option review (2026-10-27)
+
+`notes/lian_opt3_review_r1.md` records the completed 3-s gradient/damping study.
+`figures/lian_opt3_review_r1_{paper,damping,history,boundary}.png` have matching
+summary/history/native-field CSVs. All nine runs passed their runtime checks;
+this is not new half-step, SPR/HG or paper-accuracy acceptance. The formal100-s
+run remains stopped with its partial output protected. The next mixed-slip SPR
+candidate and its plane-normal OFF control are separate from this review.
+
 This directory keeps validation and historical diagnostic assets separate
 from the release XML/BAT files in the case root. See [the case README](../README.md)
 for the current entry point and protected results.
