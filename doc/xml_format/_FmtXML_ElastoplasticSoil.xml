@@ -111,6 +111,14 @@
 			<!-- Candidate scope: fresh 2D x-z or 3D Wendland/Symplectic elastic soil.
                  CPU/GPU multi-plane operator and bounded pulse checks below passed;
                  NOT general multi-plane physical acceptance. Existing single-plane delivery stands. -->
+			<!-- 2026-10-27 per-mk NoSlip/FreeSlip SPR candidate: initialization now admits these two
+                 local modes with a NoSlip/FreeSlip global default. Existing vector reflection formulas
+                 and one-coplanar-face-per-mk/nonzero-normal/convex-interior checks remain unchanged.
+                 Mixed Vel0 is not admitted. CPU Debug/GPU Debug/Release passed constant/affine fields
+                 on 2D corners and 3D edges with the two local slip assignments exchanged (12 fixtures).
+                 GPU Debug edge memcheck has zero errors. Original Lian SPR-OFF CPU Debug3-frame and
+                 GPURelease31-frame native regressions remain0ULP. Lian plane-normal OFF/ON3s is pending;
+                 these bounded operator/regression checks are not Lian physical release. -->
 			<!-- CPU per-mk multi-plane candidate (2026-10-24): each wall mk must remain one stationary coplanar face;
                  inward half-spaces must define a convex common interior. Local normals are not averaged at corners.
                  If a ghost lies outside another face, fit one dp inside all faces and evaluate the same affine MLS

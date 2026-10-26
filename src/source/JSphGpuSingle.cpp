@@ -150,11 +150,16 @@ void JSphGpuSingle::ConfigDomain(){
       Run_Exceptioon("SoilBoundaryDerivativeSPR requires hydromechanics, Wendland and Symplectic without symmetry.");
     if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
       Run_Exceptioon("SoilBoundaryDerivativeSPR supports fresh fixed-wall elastic cases only: no moving/floating bodies, in/out, shifting, relaxation or softening.");
-    const bool slipok=(SlipMode==SLIP_Vel0 && TMdbc2==MDBC2_None && !NoPenetration)
+    bool slipok=(SlipMode==SLIP_Vel0 && TMdbc2==MDBC2_None && !NoPenetration)
       || ((SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && (TMdbc2==MDBC2_Std || TMdbc2==MDBC2_NoPen));
-    if(TBoundary!=BC_MDBC || MdbcSlipModeByMk || !slipok || !UseNormals
+    if(MdbcSlipModeByMk){
+      //-The derivative kernel already uses BoundSlipModeg; admit NoSlip/FreeSlip faces only.
+      slipok=(SlipMode==SLIP_NoSlip || SlipMode==SLIP_FreeSlip) && (TMdbc2==MDBC2_Std || TMdbc2==MDBC2_NoPen);
+      for(const auto &wall:MdbcSlipModeMk)slipok=slipok && (wall.SlipMode==SLIP_NoSlip || wall.SlipMode==SLIP_FreeSlip);
+    }
+    if(TBoundary!=BC_MDBC || !slipok || !UseNormals
       || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress)
-      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 normals, artificial viscosity, DensityDT=0 and no per-mk slip/artificial stress; NoPen requires NoSlip or FreeSlip.");
+      Run_Exceptioon("SoilBoundaryDerivativeSPR requires uniform mDBC SlipMode 1/2/3 or per-mk NoSlip/FreeSlip faces, normals, artificial viscosity, DensityDT=0 and no artificial stress; NoPen requires NoSlip or FreeSlip.");
     if(!SoilStressRateGradCorr || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || (Simulate2D && PeriY))
       Run_Exceptioon("SoilBoundaryDerivativeSPR requires corrected stress/pore gradients, PairDivergence and no y periodicity in 2-D.");
   }

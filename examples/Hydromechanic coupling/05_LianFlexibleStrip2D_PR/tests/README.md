@@ -9,6 +9,15 @@ this is not new half-step, SPR/HG or paper-accuracy acceptance. The formal100-s
 run remains stopped with its partial output protected. The next mixed-slip SPR
 candidate and its plane-normal OFF control are separate from this review.
 
+`notes/lian_spr_mix_r1.json` defines that separate candidate. Only the CPU/GPU
+startup admission in `ConfigDomain` changes; existing per-particle vector
+reflection and static convex plane checks are preserved. Twelve constant/affine
+fixtures (CPU Debug/GPU Debug/GPU Release), a GPU Debug edge memcheck, and original
+Lian SPR-OFF native regressions (CPU3/GPU31 frames,0ULP) have passed. The explicit
+plane-normal OFF/ON3-s comparison is a new gated sequence, not physical release.
+`logs/lian_spr_mix_r1.inputs_r2.json` corrects draft parameter comments only;
+the original preparation/manufactured-test records remain unchanged.
+
 This directory keeps validation and historical diagnostic assets separate
 from the release XML/BAT files in the case root. See [the case README](../README.md)
 for the current entry point and protected results.
