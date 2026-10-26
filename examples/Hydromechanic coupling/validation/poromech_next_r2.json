@@ -1,20 +1,25 @@
 {
   "authorized_date": "2026-10-26",
   "supersedes": "poromech_next_r1.json",
-  "reason": "User selects Lian as the sole active 2D consolidation verification case and defers Yao",
+  "reason": "User selects Lian as the sole active 2D case, defers Yao, and schedules 1D self-weight consolidation after Lian and Cryer before deciding between slope validation and u-pl extension",
   "purpose": "Finish current u-pw physical verification before new u-pl/TPI development",
   "order": [
     "Lian: finish the running mirror-footprint 15-s coarse/half review without changing its frozen inputs; if justified by the review, prepare independent formal root XML/BAT and actually run to the paper's 100-s endpoint",
     "Lian: compare pore pressure, material-point settlement and horizontal displacement with Section4.3 SPH and ABAQUS FEM results, preserving the paper's observation locations and reporting any digitization uncertainty; these are numerical references, not an analytical solution",
     "Cryer: audit spherical loading/internal-force consistency and precision attribution, then short/half-step and full analytical comparisons; do not correct external loading alone",
-    "Retrogressive slope: review prestress/failure kernel settings, equilibrium, restart transmission and individually supported numerical options",
-    "Freeze accepted u-pw before separately assessing dynamic Darcy, n/k evolution and TPI/projection"
+    "1D self-weight consolidation (01_SelfWeightConsolidation_PR): audit retained errors and actual reference assumptions; distinguish Scenario1 analytical-initial-field dissipation from Stage1 self-weight initialization and Scenario2 restart transmission; check pore pressure, material settlement, hydrostatic/effective/total-stress balance, then short/half-step and full reference comparisons",
+    "After Lian, Cryer and self-weight verification, review the remaining errors, supported numerical scope and cost with the user; decide whether to resume retrogressive-slope validation or first develop u-pl dynamic Darcy with evolving porosity/permeability. Neither branch starts automatically; TPI/projection remains a separate later decision"
   ],
   "deferred": {
     "case": "06_Yao2DConsolidation_PR",
     "status": "Paused from the active physical-verification delivery by user choice; no new formal or diagnostic runs are scheduled",
     "preserve": "Keep all source support, formal XML/BAT, retained outputs, figures/CSVs, boundary qualifications and completed bounded SPR regression evidence unchanged",
     "resume": "Only on a later explicit task-plan revision; do not present retained companion runs as a newly executed formal run"
+  },
+  "deferred_retrogressive": {
+    "status": "Hold slope verification until Lian, Cryer and 1D self-weight consolidation have been reviewed",
+    "preserve": "Keep existing slope inputs, outputs, prestress/failure settings and restart evidence unchanged",
+    "resume": "Reassess slope validation versus u-pl development with the user after those three cases; no current authorization to start u-pl implementation"
   },
   "per_case_delivery": [
     "Preserve retained inputs/results and keep tests shallow under their corresponding case",
