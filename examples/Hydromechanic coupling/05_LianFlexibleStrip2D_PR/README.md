@@ -1,5 +1,14 @@
 # Lian Flexible Strip 2D PR
 
+2026-10-26 task-plan revision: Lian is the sole active 2-D consolidation
+verification case; Yao is deferred with its evidence preserved. Finish the
+running mirror-footprint 15-s coarse/half review first. If that review admits
+the candidate, prepare and execute an independent formal 100-s run, then
+compare pressure, material-point settlement and horizontal displacement with
+the paper's Section4.3 SPH and ABAQUS FEM results. Those are numerical
+references, not an analytical solution. See the
+[current verification plan](../validation/poromech_next_r2.json).
+
 This case uses the explicit u-pw pore-pressure-rate path for the Lian strip
 footing geometry. It is a retained verification/diagnostic case, not a TPI
 implementation or a claim that the late pore-pressure residual is resolved.

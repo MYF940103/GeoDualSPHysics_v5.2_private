@@ -1,0 +1,34 @@
+{
+  "authorized_date": "2026-10-26",
+  "supersedes": "poromech_next_r1.json",
+  "reason": "User selects Lian as the sole active 2D consolidation verification case and defers Yao",
+  "purpose": "Finish current u-pw physical verification before new u-pl/TPI development",
+  "order": [
+    "Lian: finish the running mirror-footprint 15-s coarse/half review without changing its frozen inputs; if justified by the review, prepare independent formal root XML/BAT and actually run to the paper's 100-s endpoint",
+    "Lian: compare pore pressure, material-point settlement and horizontal displacement with Section4.3 SPH and ABAQUS FEM results, preserving the paper's observation locations and reporting any digitization uncertainty; these are numerical references, not an analytical solution",
+    "Cryer: audit spherical loading/internal-force consistency and precision attribution, then short/half-step and full analytical comparisons; do not correct external loading alone",
+    "Retrogressive slope: review prestress/failure kernel settings, equilibrium, restart transmission and individually supported numerical options",
+    "Freeze accepted u-pw before separately assessing dynamic Darcy, n/k evolution and TPI/projection"
+  ],
+  "deferred": {
+    "case": "06_Yao2DConsolidation_PR",
+    "status": "Paused from the active physical-verification delivery by user choice; no new formal or diagnostic runs are scheduled",
+    "preserve": "Keep all source support, formal XML/BAT, retained outputs, figures/CSVs, boundary qualifications and completed bounded SPR regression evidence unchanged",
+    "resume": "Only on a later explicit task-plan revision; do not present retained companion runs as a newly executed formal run"
+  },
+  "per_case_delivery": [
+    "Preserve retained inputs/results and keep tests shallow under their corresponding case",
+    "Explain tested modifications and numerical consequences before production edits",
+    "After necessary acceptance update independent formal root XML/BAT and execute the actual full run",
+    "Inspect comparison PNGs and matching CSVs at actual saved times and native material IDs; separate reference differences from half-step/backend errors",
+    "Selectively commit verified changes and stage evidence, push and verify local/remote Git refs; raw BI4/executables require separate provenance and are not silently cloud-backed"
+  ],
+  "limits": [
+    "The running Lian 15-s pair is not a 100-s or SPH/FEM accuracy acceptance",
+    "Do not enable elastic HG or static-plane SPR outside implemented scope; Lian mixed-slip SPR is not admitted",
+    "Retain Cryer load/volume quadrature and constant-stress balance checks; no load-only matrix correction",
+    "CPU/GPU and half-step agreement alone do not establish physical accuracy",
+    "Accepted case02 results remain unchanged; do not reopen KEEP/u-pl/TPI during this verification stage"
+  ],
+  "state": "lian_mirror15_r1_running_pending_independent_review"
+}

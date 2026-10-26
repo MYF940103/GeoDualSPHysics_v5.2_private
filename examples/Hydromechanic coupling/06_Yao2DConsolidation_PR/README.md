@@ -1,5 +1,11 @@
 # Yao 2D Consolidation PR
 
+2026-10-26 task-plan revision: this case is deferred. Lian is now the sole
+active 2-D consolidation verification case, with paper SPH and ABAQUS FEM
+comparisons. Existing Yao source support, formal inputs, outputs and bounded
+SPR evidence below are retained; no new Yao runs are scheduled. See the
+[current verification plan](../validation/poromech_next_r2.json).
+
 2026-10-24 CPU SPR extension candidate: fresh, independently controlled tests
 are under [tests/notes/spr_yao_r1.md](tests/notes/spr_yao_r1.md).
 They preserve this root's formal XML/BAT and retained GPU data. Both CPU
