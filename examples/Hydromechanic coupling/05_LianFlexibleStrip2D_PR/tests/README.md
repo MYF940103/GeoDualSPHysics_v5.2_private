@@ -109,3 +109,16 @@ and `../xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat`.
 `logs/lian_formal100_r1.status.json`. Retain the native-reader executable and
 helper scripts used by `../support/postprocess_lian_release.py` during any
 cleanup. Formal figures/CSVs go to `../figures`, not this diagnostic folder.
+
+## Paper Fig10 first three times (2026-10-27)
+
+`notes/lian_fig10_first3_r1.md` records the requested 0.5/1/3-s comparison.
+Inspected `figures/lian_fig10_first3_r1_comparison.png` includes original
+paper SPH/FEM crops, the new strict 15-s control and mirror coarse run;
+`_half.png` compares mirror 10/5-us native states. Corresponding `_summary.csv`,
+`_pairs.csv` and nine native-field CSVs share the same shallow filename tag.
+Paper row limits are 0-5, 0-5, 0-1.75 kPa, not auto-scaled. At 3 s the mirror
+peak is 2.11956 kPa and 9.024% of native nodes exceed that paper display
+limit. Shape agreement is qualitative; fieldwise SPH/FEM accuracy is not
+accepted. Contact repair does not remove this shared early-window mismatch.
+No solver, formal inputs or active 100-s sequence were changed for this plot.
