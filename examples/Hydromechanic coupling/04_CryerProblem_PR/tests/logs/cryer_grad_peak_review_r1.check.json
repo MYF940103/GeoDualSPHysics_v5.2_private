@@ -1,0 +1,85 @@
+{
+  "schema": "cryer-independent-peak-window-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T16:05:44.689545+00:00",
+  "status": "completed_numeric_evidence_consistency_confirmed",
+  "evidence_consistency_passed": true,
+  "original_single_run_safety_passed": true,
+  "shared_sample_physical_0ulp_passed": true,
+  "physical_accepted": false,
+  "half_window_accepted": false,
+  "full_cycle_accepted": false,
+  "scope": "Read-only independent numerical audit of the completed 129-frame GPU peak window. This review JSON is the only newly written file; no solver, notifier, Git operation or change to retained evidence was performed.",
+  "source_links": [
+    {"path": "cryer_grad_peak_r1.status.json", "sha256": "e9eb7f78b5661c97c3bd5436eb60783bbca48cc2cfeb75e2a5b520cd6df7f345"},
+    {"path": "cryer_grad_peak_r1.check.json", "sha256": "8d5b2b0b3ffc77a9b5020f473d3318d6c971b2fe35582887754d81c90564cbe9"},
+    {"path": "cryer_grad_peak_r1.run.json", "sha256": "43d13b90ef57df74ccb33ec152a0ed5e609a4f4bbfcbff101ad376644e657c05"},
+    {"path": "cryer_grad_peak_r1.inputs.json", "sha256": "bf0baf3a9208ba9a4953aa3581f2ac9088718a81a02f32fa63e857ef9c288761"},
+    {"path": "cryer_grad_peak_r1.completion.json", "sha256": "205628e59db83db7813c83ba698644a2edb0e4d30e9b783bdd085cda6532e956"},
+    {"path": "../figures/cryer_grad_peak_r1_summary.csv", "sha256": "8765cd533a99019bc5fddfc47e5c01cb7e796edc14a4d96924804516cf4e942e"}
+  ],
+  "provenance_audit": {
+    "unique_hashed_file_count": 605,
+    "sha256_mismatch_count": 0,
+    "scope": "All explicit bound file entries in status/run/check/prepared/completion and the bound Release build record, including native output hashes; unrelated historical JSON trees were not recursively opened.",
+    "gpu_program_sha256": "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+    "terminal_statuses_consistent": true,
+    "solver_finished": true,
+    "exit_code": 0,
+    "owned_exited": true,
+    "actual_gpu": "NVIDIA GeForce RTX 3050",
+    "ownership_check": "No process with recorded sequence/wrapper PIDs 51300 or 33896 and no GPU solver for cryer_grad_peak_r1 was found at review. No process was stopped by the reviewer."
+  },
+  "native_audit": {
+    "peak_native_frames_reread": 129,
+    "shared_fine_control_frames_reread": 2,
+    "soil_ids_per_frame": 37173,
+    "complete_id_range_inclusive": [8, 37180],
+    "ids_complete_unique_unchanged": true,
+    "mass_and_h_unchanged": true,
+    "dt_s": 4.76837158203125e-7,
+    "steps": 131072,
+    "cadence_s": 0.00048828125,
+    "final_saved_time_s": 0.0625,
+    "all_actual_saved_times_equal_part_times_2_power_minus11_exactly": true,
+    "all_nonzero_saved_steps_equal_part_times_1024_minus1": true,
+    "maximum_saved_particle_radius_m": 0.05000000000000002,
+    "original_radius_limit_m": 0.0525,
+    "maximum_nonzero_interval_dterror_s": -2.4556851356459184e-5,
+    "maximum_true_drained_pressure_abs_pa": 0,
+    "original_safety_issues": [],
+    "safety_method": "The retained original inspect() guard was applied to every reread frame, with the original finite, positive-density, no-exclusion, elastic, state-precision, actual-load, drainage, mechanical-step and pore-step checks; the mass/h and radius guards were also explicitly rechecked. The original guard was reused, not presented as a separately redesigned physical safety model."
+  },
+  "summary_recalculation": {
+    "rows": 129,
+    "fields_per_row": 95,
+    "maximum_abs_recomputation_difference": 3.637978807091713e-12,
+    "maximum_difference_field": "interior_total_radial_compression_pa",
+    "material_statistic_disagreements": [],
+    "analysis_bug_found_in_audited_statistics": false,
+    "method": "Original summary quantities were recomputed from native fields. The regional radial stress was independently expanded from diagonal and shear tensor entries; its machine-rounding difference explains the reported maximum discrepancy. This rounding comparison is an analysis consistency test, not a relaxed physical gate.",
+    "region_counts": {"center": 18, "interior": 19527, "outer_shell": 17646},
+    "region_definition": "Fixed initial center ball r0<=dp+1e-12; interior r0<R-2h; outer shell r0>=R-2h. Center is a subset of interior. Only interior plus outer shell form a disjoint whole-domain partition.",
+    "theory_check_scope": "The declared Cv was checked against the explicit material formula and the stored theory values were recomputed at actual saved times using the bound 360-root theory helper. This is not a second independent derivation or validation of the analytical series. The declared theory gravity reference is 9.81 m/s2."
+  },
+  "shared_native_samples": [
+    {"peak_part": 0, "fine_part": 0, "actual_time_s": 0, "physical_identity_columns_compared": 34, "physical_identity_columns0ulp": true, "raw_all_columns0ulp": true, "changed_fields": [], "a_dterror_s": 0, "b_dterror_s": 0},
+    {"peak_part": 1, "fine_part": 4, "actual_time_s": 0.00048828125, "physical_identity_columns_compared": 34, "physical_identity_columns0ulp": true, "raw_all_columns0ulp": false, "changed_fields": ["dterror_s"], "a_dterror_s": -2.4556851356459184e-5, "b_dterror_s": -2.4584055230319064e-5, "dterror_abs_difference_s": 2.7203873859880213e-8}
+  ],
+  "shared_sample_exception": "dterror_s is the sole interval-statistic exclusion because output intervals differ. Both original dterror<=1e-14-s guards were checked independently. Actual times, saved steps and every other native field remain exactly equal; no physical-field or time-alignment exception was applied.",
+  "verified_sampled_outcomes": {
+    "full_history_center_max": {"part": 2, "time_s": 0.0009765625, "tv": 0.0010720516741158943, "center_p_over_q": 1.2295022026909723, "theory_at_same_time": 1.0423681826092746},
+    "mandel_window_rule": "All saved samples Tv>=0.005 through the bounded final time, without smoothing or filtering.",
+    "mandel_window_center_max": {"part": 95, "time_s": 0.04638671875, "tv": 0.05092245452050497, "center_p_over_q": 1.2130750108506945, "theory_at_same_time": 1.246850524041477},
+    "mandel_window_sampled_theory_max": {"part": 87, "time_s": 0.04248046875, "tv": 0.046634247824041394, "theory_center_p_over_q": 1.2490162459841259, "native_center_p_over_q_at_same_time": 1.2115416558159722},
+    "final": {"time_s": 0.0625, "tv": 0.06861130714341723, "center_p_over_q": 1.1891470323350695, "theory_center_p_over_q": 1.2017482261903052, "total_mean_compression_pa": 9896.389618978461, "center_total_mean_compression_pa": 11740.416422287135, "interior_total_mean_compression_pa": 10908.676967959063, "outer_shell_total_mean_compression_pa": 8776.196087099042, "center_radial_settlement_mean_mm": 0.00043653278795837764, "radial_force_over_geometric_area_q": 1.0983357732074746, "affine_work_over_3qV": 1.0643488455652144}
+  },
+  "limitations": [
+    "The retained independent half-step and cross-backend evidence covers only the earlier five-sample startup window, not this entire peak window.",
+    "This is one GPU timestep over 0.0625 s, not a peak-window half-step or full-cycle acceptance. The two shared samples do not constitute an entire dense fine prefix.",
+    "Full-history and Mandel-window maxima above are maxima among saved samples, not guaranteed continuous-time extrema. The earlier startup maximum is distinct from the later declared Mandel-window maximum.",
+    "The native center observable averages 18 fixed material particles, whereas the analytical reference is a point-center solution. Native initial pressure is zero while the quasi-static theoretical t0+ limit is q.",
+    "Different transient regional total stresses are verified observations, not by themselves proof of an incorrect mechanical balance or an accepted physical correction.",
+    "No physical equations, precision state, mass, geometry, damping, traction, formal inputs or thresholds were changed by this audit, and no new run or notifier was started."
+  ]
+}
