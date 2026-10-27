@@ -167,7 +167,8 @@
 			<!-- Nonperiodic bounded-neighbor candidate (2026-10-27): real X distances/no cell wrap, no new XML switch.
                  CPU/GPU 58 operator checks each, frozen-geometry oscillator, Debug memcheck and old-periodic
                  Release 0-ULP checks passed. Actual Lian .15-s half pair passed .009139Pa/.000009084mm;
-                 HG-off CPU/GPU native regressions remain0ULP. NOT drainage-after1s or physical/100-s acceptance. -->
+                 HG-off CPU/GPU native regressions remain0ULP. Lian mixed-slip HGxi=.1 SPRoff/on3s coarse
+                 saved-state safety/drainage passed; HG3s half pending. NOT paper/full-cycle/100-s acceptance. -->
 			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
 			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />

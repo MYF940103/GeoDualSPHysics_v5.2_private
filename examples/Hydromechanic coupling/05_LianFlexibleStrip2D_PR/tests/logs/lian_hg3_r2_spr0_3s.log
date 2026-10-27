@@ -1,0 +1,511 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../outputs/lian_hg_np_build_r1/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 21
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[1990]  MResId=[0]  sizefx=[20]  sizefz=[10]  Dp=[0.1]  PosMin_x=[-1.2]  PosMin_y=[0]  PosMin_z=[-1.2]  PosMax_x=[21.2]  PosMax_y=[0]  PosMax_z=[11.2]  CaseName=["lian_hg3_r2_spr0_3s"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  MassBound=[19.9]  MassFluid=[19.9]
+
+Mk size: 1 bytes
+Case limits: (-1.2,0,-1.2) - (21.2,0,11.2)
+Distance between points (Dp): 0.1
+Case domain: (0,0,0)-(222,0,122)
+Domain points: 223 x 1 x 123 = 27429
+Case parts: 1 x 123z
+Memory: 0.00Gb 0.03Mb (27429)
+
+> MAIN
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.003s)
+FileDbgDomains> tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_dbg-fillbox.vtk  domains:1
+<MAIN (Operations= 15+6+1 = 22)
+
+Triangles: 54 (0 ignored)
+[Draw-End  time:0.011s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 18 (2 + 8+1+7)
+Points loaded: 21945
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    404  -->     404
+  block[  1] (mk: 11):    836  -->     836
+  block[  2] (mk: 12):    404  -->     404
+Points -> Fluid particles:
+  block[  3] (mk:  1):  20301  -->   20301
+
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.008s]
+
+[SaveCase2D]
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_MkCells.vtk  (time:0.002s, shapes:4, points:16)
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s.bi4<double>  (time:0.004s)
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_All.vtk  (time: 0.005s)
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_Bound.vtk  (time: 0.003s)
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_Fluid.vtk  (time: 0.005s)
+tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s.xml  (time:0.006s)
+Computing normals data...
+  Evaluating 1644 particles with 3 shapes (distance 2x H = 0.36).
+  Time for computing 1248 normals: 0.000s.
+  Non-zero particle normals: 1227/1644    Normals size range: (0.100000 - 0.424264).
+  Saving results files...
+  tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_Normals.vtk
+  tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_Normals.nbi4  (time:0.017s)
+
+Save files time: 0.037s
+
+Particle limits:
+  X range: -0.4 to 20.4 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.4 to 10 [m]
+
+[SaveCase2D-End  time:0.045s]
+
+[WARNINGS]
+1. Automatic maximum depth is zero since gravity is zero.
+2. Constant B is zero.
+
+Time of execution: 0.065 sec. (16 threads)
+
+Finished execution (code=0).
+
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../outputs/lian_hg_np_build_r1/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  27-10-2026 14:40:58]
+ProgramFile=".../outputs/lian_hg_np_build_r1/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/05_LianFlexibleStrip2D_PR"
+XmlFile=".../outputs/lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s.xml"
+OutputDir=".../tests/outputs/lian_hg3_r2_spr0_3s"
+OutputDataDir=".../outputs/lian_hg3_r2_spr0_3s/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizefx=[20]  sizefz=[10]  CaseName=["lian_hg3_r2_spr0_3s"]  Data2D=[1]  Data2DPosy=[0]  H=[0.18]  KernelSize=[0.36]  B=[0]  Gamma=[7]  Rhop0=[1990]  Dp=[0.1]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[19.9]  MassBound=[19.9]
+XML-Vars (parameters): TimeMax=[3]  TimeOut=[0.05]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 1000000000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 1
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint
+  HydroMechTopLoadMode="LianFlexibleStrip"
+  HydroMechTopLoadFootprint: hard-coded Lian 2023 flexible strip x=[0,1.25] m on z=10 m top surface
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 1
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.400000
+  HydraulicConductivity: 0.001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 21945
+MapRealPos(border)=(-0.409,-0.009,-0.409)-(20.409,0.009,10.009)
+MapRealPos(final)=(-0.409,-0.009,-0.409)-(20.409,0.009,10.009)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.360000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="lian_hg3_r2_spr0_3s"
+RunName="lian_hg3_r2_spr0_3s"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts="1"
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:2 -> Free slip
+    mkbound:1 -> No-slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=17.19136
+  Wendland.bwen=-477.572
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilHourglassXi: 0.1 (GPU elastic GNOG, endpoint-trapezoidal history)
+  GNOG scope: 2-D Wendland, x-periodic, small rotation, no restart or plastic flow.
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.04
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=21945
+CaseNbound=1644
+CaseNfixed=1644
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=20301
+PeriodicActive="None"
+Dp=0.1
+KernelH=0.180000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.36
+CteB=4233272
+Gamma=7
+RhopZero=1990
+Cs0=122.0283062968934
+CFLnumber=0.2
+DtIni=0.00001
+DtMin=0.000000001
+DtAllParticles=False
+FixedDt=0.00001
+MassFluid=19.9
+MassBound=19.9
+TimeMax=3
+TimePart=0.05
+Gravity=(0,0,0)
+NpMinimum=1644
+RhopOut=True
+RhopOutMin=500
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(58,1,29)
+CellDomFixed=False
+**Requested GPU memory for 22073 particles: 11.3 MB (0 times).
+NormalDataFile="tests\outputs\lian_hg3_r2_spr0_3s/lian_hg3_r2_spr0_3s_Normals.nbi4"
+DomCells=(58,1,29)
+DomCellCode="1+12_8_11"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**CellDiv: Requested gpu memory for 23170 particles: 0.2 MB.
+**CellDiv: Requested gpu memory for 3540 cells (CellMode=Full): 0.1 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 1644  id:(0-1643)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 20301  id:(1644-21944)   MKs:1 (1)
+
+Total particles: 21945 (bound=1644 (fx=1644 mv=0 ft=0) fluid=20301)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (404 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (836 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (404 particles)
+  Point....: (20,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+Allocated memory in CPU: 5034578 (4.80 MB)
+Allocated memory in GPU: 14851795 (14.16 MB)
+Part_0000        21945 particles successfully stored
+
+[Initialising simulation (yx18yd95)  27-10-2026 14:40:58]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+  Progress 0.59% in 30.0s. Estimated finish time: 27-10-2026 16:05:26
+  Progress 1.23% in 60.0s. Estimated finish time: 27-10-2026 16:02:14
+Part_0001      0.050000          5000     5000    1609.80  27-10-2026 16:01:27
+Part_0002      0.100010         10001     5001    1569.87  27-10-2026 16:00:27
+Part_0003      0.150000         15000     4999    1556.87  27-10-2026 15:59:54
+Part_0004      0.200000         20000     5000    1542.57  27-10-2026 15:59:27
+Part_0005      0.250000         25000     5000    1549.26  27-10-2026 15:59:15
+Part_0006      0.300000         30000     5000    1562.45  27-10-2026 15:59:14
+Part_0007      0.350000         35000     5000    1454.79  27-10-2026 15:58:27
+Part_0008      0.400000         40000     5000    1466.23  27-10-2026 15:57:55
+Part_0009      0.450000         45000     5000    1529.98  27-10-2026 15:57:52
+Part_0010      0.500000         50000     5000    1532.58  27-10-2026 15:57:50
+Part_0011      0.550000         55000     5000    1539.92  27-10-2026 15:57:51
+Part_0012      0.600010         60001     5001    1528.19  27-10-2026 15:57:48
+Part_0013      0.650010         65001     5000    1531.19  27-10-2026 15:57:47
+Part_0014      0.700010         70001     5000    1492.15  27-10-2026 15:57:38
+Part_0015      0.750010         75001     5000    1583.83  27-10-2026 15:57:48
+Part_0016      0.800010         80001     5000    1528.74  27-10-2026 15:57:46
+Part_0017      0.850010         85001     5000    1541.23  27-10-2026 15:57:47
+Part_0018      0.900010         90001     5000    1321.28  27-10-2026 15:57:11
+Part_0019      0.950010         95001     5000    1360.38  27-10-2026 15:56:45
+Part_0020      1.000010        100001     5000    1360.70  27-10-2026 15:56:23
+Part_0021      1.050010        105001     5000    1354.74  27-10-2026 15:56:00
+Part_0022      1.100010        110001     5000    1350.42  27-10-2026 15:55:40
+Part_0023      1.150010        115001     5000    1336.84  27-10-2026 15:55:20
+Part_0024      1.200010        120001     5000    1327.74  27-10-2026 15:55:00
+Part_0025      1.250010        125001     5000    1337.87  27-10-2026 15:54:43
+Part_0026      1.300000        130000     4999    1334.45  27-10-2026 15:54:27
+Part_0027      1.350000        135000     5000    1334.61  27-10-2026 15:54:11
+Part_0028      1.400000        140000     5000    1334.88  27-10-2026 15:53:57
+Part_0029      1.450000        145000     5000    1332.44  27-10-2026 15:53:44
+Part_0030      1.500000        150000     5000    1334.39  27-10-2026 15:53:32
+Part_0031      1.550000        155000     5000    1346.31  27-10-2026 15:53:22
+Part_0032      1.600000        160000     5000    1336.69  27-10-2026 15:53:12
+Part_0033      1.650000        165000     5000    1340.33  27-10-2026 15:53:02
+Part_0034      1.700000        170000     5000    1340.79  27-10-2026 15:52:54
+Part_0035      1.750000        175000     5000    1308.40  27-10-2026 15:52:42
+Part_0036      1.800000        180000     5000    1320.49  27-10-2026 15:52:32
+Part_0037      1.850000        185000     5000    1310.73  27-10-2026 15:52:23
+Part_0038      1.900000        190000     5000    1310.58  27-10-2026 15:52:13
+Part_0039      1.950000        195000     5000    1318.99  27-10-2026 15:52:05
+Part_0040      2.000000        200000     5000    1315.55  27-10-2026 15:51:57
+Part_0041      2.050000        205000     5000    1317.94  27-10-2026 15:51:50
+Part_0042      2.100000        210000     5000    1328.24  27-10-2026 15:51:43
+Part_0043      2.150000        215000     5000    1313.20  27-10-2026 15:51:36
+Part_0044      2.200000        220000     5000    1311.97  27-10-2026 15:51:30
+Part_0045      2.250000        225000     5000    1352.80  27-10-2026 15:51:25
+Part_0046      2.300000        230000     5000    1355.21  27-10-2026 15:51:22
+Part_0047      2.350000        235000     5000    1352.00  27-10-2026 15:51:19
+Part_0048      2.400000        240000     5000    1355.22  27-10-2026 15:51:15
+Part_0049      2.450000        245000     5000    1342.52  27-10-2026 15:51:12
+Part_0050      2.500000        250000     5000    1336.20  27-10-2026 15:51:07
+Part_0051      2.550000        255000     5000    1341.42  27-10-2026 15:51:03
+Part_0052      2.600000        260000     5000    1353.54  27-10-2026 15:51:01
+Part_0053      2.650000        265000     5000    1345.55  27-10-2026 15:50:58
+Part_0054      2.700000        270000     5000    1346.42  27-10-2026 15:50:55
+Part_0055      2.750000        275000     5000    1347.74  27-10-2026 15:50:52
+Part_0056      2.800000        280000     5000    1342.35  27-10-2026 15:50:49
+Part_0057      2.850000        285000     5000    1359.89  27-10-2026 15:50:47
+Part_0058      2.900000        290000     5000    1525.25  27-10-2026 15:50:53
+Part_0059      2.950000        295000     5000    1554.24  27-10-2026 15:51:02
+Part_0060      3.000000        300000     5000    1540.62  27-10-2026 15:51:09
+
+[Simulation finished  27-10-2026 15:51:09]
+Particles of simulation (initial): 21945
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 4210.932617 sec.
+Simulation Runtime...............: 4210.900879 sec.
+Runtime per physical second......: 1403.633667 sec.
+Steps per second.................: 71.243660
+Steps of simulation..............: 300000
+PART files.......................: 61
+Maximum number of particles......: 21945
+Maximum number of cells..........: 1682
+CPU Memory.......................: 5034578 (4.80 MB)
+GPU Memory.......................: 14864339 (14.18 MB)
+SoilHourglass: forcecalls=600000 predictorupdates=300000 correctorupdates=300000 ratecalls=600000
+SoilHourglass: ratecalculations=300001 endpoint_rate_reuses=299999
+SoilHourglass: max|sum(m*H)|=7.63873e-12 max|sum(m*deltaAce)|=2.59981e-05 max(dt/tau)=0.00255735 spinbound=0.00108155
+ 
+[GPU Timers]
+VA-Init..........................: 0.031084 sec.
+NL-Limits........................: 29.702662 sec.
+NL-PreSort.......................: 4.767521 sec.
+NL-RadixSort.....................: 79.482104 sec.
+NL-CellBegin.....................: 39.383174 sec.
+NL-SortData......................: 74.726537 sec.
+NL-OutCheck......................: 472.882082 sec.
+CF-PreForces.....................: 184.254213 sec.
+CF-Forces........................: 1727.998157 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 18.972996 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0 sec.
+SU-ResizeNp......................: 0 sec.
+SU-DownData......................: 0.105944 sec.
+SU-SavePart......................: 0.829958 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+
+Finished execution (code=0).
+
