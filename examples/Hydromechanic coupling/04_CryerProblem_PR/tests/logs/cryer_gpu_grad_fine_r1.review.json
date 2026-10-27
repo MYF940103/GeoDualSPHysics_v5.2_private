@@ -1,0 +1,114 @@
+{
+  "schema": "cryer-independent-gpu-fine-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T11:43:19.973240+00:00",
+  "status": "bounded_backend_and_independent_half_screens_pass_confirmed",
+  "evidence_consistency_passed": true,
+  "original_independent_half_screen_passed": true,
+  "original_backend_cross_screen_passed": true,
+  "physical_accepted": false,
+  "peak_window_admitted": false,
+  "long_window_admitted": false,
+  "scope": "Independent offline audit of the completed GPU Release binary-step coarse/half pair and its retained same-dt CPU controls. This review creates only this new JSON and does not run a solver or modify any retained evidence.",
+  "source_links": [
+    {"path": "cryer_gpu_grad_fine_r1.check.json", "sha256": "ec435711daa2088797da60de2848fbabc41965196c9b5e7ed158b587b3f6aa35"},
+    {"path": "cryer_gpu_grad_fine_r1.run.json", "sha256": "8e33adf270e46be0c0f533bb5a57117a834f0302f6540ea217e9a16b0f647d55"},
+    {"path": "cryer_gpu_grad_fine_r1.inputs.json", "sha256": "cfbcf337e91d70c348276724405b00dca635601910f5a3e062e7eff203e7d047"},
+    {"path": "cryer_gpu_grad_fine_r1_c.completion.json", "sha256": "9f648e4b2634083beafa2d04a76c75f566ad793ecf7594f9a7ae296756a8a323"},
+    {"path": "cryer_gpu_grad_fine_r1_h.completion.json", "sha256": "30c5e172e1b38ef832ed6038790fcd0b1ba888f28f66c5d945229d2d5da69994"},
+    {"path": "../figures/cryer_gpu_grad_fine_r1_cross.csv", "sha256": "fccf0e48943e09959133463fe56ddf0e5d354df4929e7eae35aaafd1dad852d1"},
+    {"path": "../figures/cryer_gpu_grad_fine_r1_half.csv", "sha256": "0d635a3ce8a1c8bdd7f3cc8ed16e9844632605784807bdb9fe220edc93cb1cf6"},
+    {"path": "../figures/cryer_gpu_grad_fine_r1_native_differences.csv", "sha256": "8b033614c032eb15b6b19d92a6ec1557fb368cdee5cbc3d56f51d2b977565fd4"},
+    {"path": "../figures/cryer_gpu_grad_fine_r1_summary.csv", "sha256": "1a088537f931d372ecd233cec1eb0f038b7d240b6a4347db6992b0ce18c27178"}
+  ],
+  "provenance_audit": {
+    "unique_hashed_file_count": 558,
+    "sha256_mismatch_count": 0,
+    "scope": "All explicit bound file links recursively recorded in the check, run and prepared records; both sealed completion records and their output bindings; the bound Release build inputs were also opened and hash-checked.",
+    "gpu_program_sha256": "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+    "gpu_xml_equals_same_dt_cpu_xml_byte_for_byte": true,
+    "both_sealed_completions_solver_finished": true,
+    "both_sealed_completions_exit_code": 0,
+    "old_evidence_modified": false,
+    "production_source_modified": false,
+    "solver_or_git_executed_by_reviewer": false
+  },
+  "native_audit": {
+    "gpu_frames_reread": 10,
+    "cpu_control_frames_reread": 10,
+    "soil_ids_per_frame": 37173,
+    "complete_id_range_inclusive": [8, 37180],
+    "ids_complete_unique_unchanged": true,
+    "initial_gpu_cpu_id_xyz_rho_mass_h_equal": true,
+    "original_gpu_single_run_safety_issues": [],
+    "safety_method": "New GPU frames were reread using the retained original inspect() finite/positive-density/no-exclusion/elastic/precision/actual-load/drainage/mechanical-step/pore-step guard. The already audited CPU safety evidence was retained; CPU frames were reread for direct cross-backend numerical differences. The original guard was reused, not replaced with a new safety model.",
+    "summary_rows_recomputed": 10,
+    "summary_max_abs_recomputation_difference": 0,
+    "cross_rows_recomputed": 10,
+    "cross_all_metric_max_abs_recomputation_difference": 0,
+    "independent_half_rows_recomputed": 5,
+    "half_all_metric_max_abs_recomputation_difference": 0,
+    "native_difference_rows_recomputed": 350,
+    "native_difference_max_abs_recomputation_difference": 0
+  },
+  "completed_runs": [
+    {
+      "name": "cryer_gpu_grad_fine_r1_c",
+      "cpu_control": "cryer_grad_fine_r1_c",
+      "dt_s": 4.76837158203125e-7,
+      "steps": 1024,
+      "exit_code": 0,
+      "owned_exited": true,
+      "actual_gpu": "NVIDIA GeForce RTX 3050",
+      "saved_steps_zero_based": [0, 255, 511, 767, 1023]
+    },
+    {
+      "name": "cryer_gpu_grad_fine_r1_h",
+      "cpu_control": "cryer_grad_fine_r1_h",
+      "dt_s": 2.384185791015625e-7,
+      "steps": 2048,
+      "exit_code": 0,
+      "owned_exited": true,
+      "actual_gpu": "NVIDIA GeForce RTX 3050",
+      "saved_steps_zero_based": [0, 511, 1023, 1535, 2047]
+    }
+  ],
+  "actual_time_audit": {
+    "actual_saved_times_s_each_run": [0, 0.0001220703125, 0.000244140625, 0.0003662109375, 0.00048828125],
+    "all_saved_times_equal_part_times_2_power_minus13_exactly": true,
+    "same_dt_cpu_gpu_time_difference_s": 0,
+    "gpu_coarse_half_time_difference_s": 0,
+    "interpolation_or_shifted_time_matching_used": false
+  },
+  "unchanged_original_limits": {"pressure_rms_pa": 5, "material_displacement_max_mm": 0.005},
+  "backend_cross_screen": {
+    "samples": 10,
+    "all_original_samples_passed": true,
+    "maximum_pressure_rms_pa": 0.002470312572719788,
+    "maximum_material_displacement_mm": 8.650196776126728e-9,
+    "coarse_pressure_rms_pa_by_part": [0, 0.0013610085433439138, 0.0016919184099305833, 0.0010101825490876966, 0.002470312572719788],
+    "half_pressure_rms_pa_by_part": [0, 0.0013887695228915204, 0.0017057815028080753, 0.000930088737829381, 0.0023967225926582693],
+    "fstype_mismatches": 0,
+    "drained_mask_mismatches": 0
+  },
+  "independent_gpu_half_screen": {
+    "samples": 5,
+    "all_original_samples_passed": true,
+    "maximum_pressure_rms_pa": 2.139186868022036,
+    "maximum_material_displacement_mm": 2.6949101845757334e-7,
+    "pressure_rms_pa_by_part": [0, 1.7732989104637253, 2.1358779545644637, 1.1430768370169049, 2.139186868022036],
+    "material_displacement_max_mm_by_part": [0, 9.606750209636218e-8, 8.060840675783659e-8, 1.4367703932542215e-7, 2.6949101845757334e-7],
+    "total_stress_six_component_rms_pa_by_part": [0, 1.2574240763030768, 1.5140759922719051, 0.8101446662931325, 1.5164371301171446],
+    "fstype_mismatches": 0,
+    "drained_mask_mismatches": 0
+  },
+  "ownership_audit": "No process with recorded sequence/wrapper PIDs 64756, 37532, 64856 or reported monitor PID 39395 remained at review, and no GPU solver for cryer_gpu_grad_fine_r1 was found. No process was started or stopped by the reviewer.",
+  "limitations": [
+    "Five saved samples over 0.48828125 ms per run do not establish the complete startup waveform, temporal peak, convergence order, analytical Cryer accuracy or full-cycle acceptance.",
+    "The original decimal-step short failures remain failed. Their different time grid is not a directly matched old/new theory-accuracy comparison.",
+    "Small cross-backend differences establish bounded implementation agreement, not truth of the shared formulation. No 0-ULP claim is made.",
+    "This stage ran Release GPU only; no new fine-grid Debug/memcheck result is claimed. The separately adopted prior Debug memory-check evidence remains separate.",
+    "No physical equations, density state precision, confinement operator, damping, material, geometry, formal input or threshold was changed by this stage.",
+    "No peak-window solver, new notifier or Git operation was launched by this review."
+  ]
+}
