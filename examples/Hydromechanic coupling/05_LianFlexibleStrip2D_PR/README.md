@@ -1,5 +1,14 @@
 # Lian Flexible Strip 2D PR
 
+2026-10-27 bounded compatibility update: mixed-slip SPR passed an independent
+3-s saved-output half pair (pressure RMS 0.016484 Pa, top material 0.00001354 mm).
+It has not been shown to resolve the paper-field discrepancy. A separate
+nonperiodic 2D HG candidate now uses real bounded neighbors, not artificial
+periodicity; CPU/GPU operator/old-periodic/Debug-memory and frozen-geometry
+oscillator checks passed, but Lian dynamic/physical checks are still pending.
+See `tests/notes/lian_spr_half_review_r1.md` and `lian_hg_np_r1.md`.
+Formal XML/BAT and the intentionally stopped 100-s dataset are unchanged.
+
 2026-10-26 task-plan revision: Lian is the sole active 2-D consolidation
 verification case; Yao is deferred with its evidence preserved. Finish the
 running mirror-footprint 15-s coarse/half review first. If that review admits

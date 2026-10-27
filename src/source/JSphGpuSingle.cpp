@@ -168,10 +168,10 @@ void JSphGpuSingle::ConfigDomain(){
       Run_Exceptioon("SoilHourglassXi currently requires 2-D Wendland with Symplectic integration and no symmetry plane.");
     if(PartBegin || CaseNmoving || CaseNfloat || InOut || Shifting || Damping || RelaxZones || StrainSoftening || UseDEM)
       Run_Exceptioon("SoilHourglassXi supports a fixed native elastic soil set only: no restart, moving/floating bodies, in/out, shifting, relaxation or softening.");
-    if(!PeriX || PeriY || PeriZ || PeriXinc.y!=0 || PeriXinc.z!=0 || KernelSize>=fabs(PeriXinc.x)*.5)
-      Run_Exceptioon("SoilHourglassXi currently requires axis-aligned x periodicity with kernel support smaller than half the period.");
+    if(PeriY || PeriZ || (PeriX && (PeriXinc.y!=0 || PeriXinc.z!=0 || KernelSize>=fabs(PeriXinc.x)*.5)))
+      Run_Exceptioon("SoilHourglassXi requires a bounded domain or axis-aligned x periodicity with kernel support smaller than half the period.");
     HourglassGpu=new JSphHourglassGpu();
-    HourglassGpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,fabs(PeriXinc.x),
+    HourglassGpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,(PeriX? fabs(PeriXinc.x): 0),
       CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG);
   }
   //-Configure cell map division (defines ScellDiv, Scell, Map_Cells). 

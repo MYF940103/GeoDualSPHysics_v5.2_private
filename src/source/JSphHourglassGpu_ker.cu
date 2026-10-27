@@ -15,10 +15,11 @@ namespace cuhg{
 static const unsigned BLOCK=128;
 
 __device__ StReduce Empty(){
-  StReduce r={};r.zmin=DBL_MAX;r.zmax=-DBL_MAX;return(r);
+  StReduce r={};r.zmin=DBL_MAX;r.zmax=-DBL_MAX;r.xmin=DBL_MAX;r.xmax=-DBL_MAX;return(r);
 }
 __device__ StReduce Join(StReduce a,const StReduce& b){
   a.zmin=fmin(a.zmin,b.zmin);a.zmax=fmax(a.zmax,b.zmax);
+  a.xmin=fmin(a.xmin,b.xmin);a.xmax=fmax(a.xmax,b.xmax);
   a.netx+=b.netx;a.netz+=b.netz;a.actualx+=b.actualx;a.actualz+=b.actualz;
   a.sumforce+=b.sumforce;a.hmax=fmax(a.hmax,b.hmax);
   a.condition=fmax(a.condition,b.condition);a.skew=fmax(a.skew,b.skew);
@@ -81,7 +82,7 @@ __global__ void KerGather(unsigned count,double mass,const unsigned* slots,const
         const double vol=mass/double(v.w);StNode& n=nodes[i];
         r.changed=!(SameDouble(n.x,x) && SameDouble(n.z,z) && SameDouble(n.vx,vx)
           && SameDouble(n.vz,vz) && SameDouble(n.vol,vol));
-        n.x=x;n.z=z;n.vx=vx;n.vz=vz;n.vol=vol;r.zmin=z;r.zmax=z;
+        n.x=x;n.z=z;n.vx=vx;n.vz=vz;n.vol=vol;r.zmin=z;r.zmax=z;r.xmin=x;r.xmax=x;
       }
     }
   }
@@ -95,7 +96,7 @@ void Gather(unsigned count,double mass,const unsigned* slots,const unsigned* err
 }
 
 __device__ int CellX(const StNode& n,const StGrid& g){
-  const double x=n.x-g.period*floor(n.x/g.period);
+  const double x=(g.period>0? n.x-g.period*floor(n.x/g.period): n.x-g.xmin);
   return(min(int(g.nx)-1,int(x/g.cellx)));
 }
 __device__ int CellZ(const StNode& n,const StGrid& g){
@@ -109,10 +110,11 @@ __global__ void KerCellKeys(unsigned count,StGrid grid,const StNode* nodes,unsig
 void CellKeys(unsigned count,StGrid grid,const StNode* nodes,unsigned* keys,unsigned* order){
   KerCellKeys<<<PartialCount(count),BLOCK>>>(count,grid,nodes,keys,order);
 }
-__device__ int Columns(int cx,int nx,int* cols){
+__device__ int Columns(int cx,int nx,bool periodic,int* cols){
   int n=0;
   for(int dx=-1;dx<=1;dx++){
-    const int c=(cx+dx+nx)%nx;bool seen=false;
+    const int c=(periodic? (cx+dx+nx)%nx: cx+dx);bool seen=false;
+    if(c<0 || c>=nx)continue;
     for(int k=0;k<n;k++)seen|=cols[k]==c;
     if(!seen)cols[n++]=c;
   }
@@ -125,7 +127,7 @@ __device__ bool Pair(unsigned i,unsigned j,const StNode* nodes,const StGrid& g,
 {
   if(i==j)return(false);
   const unsigned lo=min(i,j),hi=max(i,j);const StNode& a=nodes[lo];const StNode& b=nodes[hi];
-  dx=a.x-b.x;dx-=g.period*floor(dx/g.period+.5);dz=a.z-b.z;
+  dx=a.x-b.x;if(g.period>0)dx-=g.period*floor(dx/g.period+.5);dz=a.z-b.z;
   const double rr=dx*dx+dz*dz;
   if(rr>=g.support*g.support)return(false);
   if(!(rr>0)){coincident=true;return(false);}
@@ -138,7 +140,7 @@ __global__ void KerMoments(unsigned count,StGrid g,const unsigned* order,const i
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;
   if(i>=count)return;
   StNode& a=nodes[i];const int cx=CellX(a,g),cz=CellZ(a,g);
-  int cols[3];const int ncols=Columns(cx,int(g.nx),cols);bool coincident=false;
+  int cols[3];const int ncols=Columns(cx,int(g.nx),g.period>0,cols);bool coincident=false;
   double mxx=0,mxz=0,mzz=0,nxx=0,nxz=0,nzx=0,nzz=0;
   for(int z=max(0,cz-1);z<=min(int(g.nz)-1,cz+1);z++)for(int c=0;c<ncols;c++){
     const int2 range=ranges[z*g.nx+cols[c]];
@@ -174,7 +176,7 @@ __global__ void KerRates(unsigned count,StGrid g,const unsigned* order,const int
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;StReduce r=Empty();r.errors=*errors;
   if(i<count && !r.errors){
     const StNode& a=nodes[i];const int cx=CellX(a,g),cz=CellZ(a,g);
-    int cols[3];const int ncols=Columns(cx,int(g.nx),cols);bool coincident=false;
+    int cols[3];const int ncols=Columns(cx,int(g.nx),g.period>0,cols);bool coincident=false;
     double rx=0,rz=0,betasum=0;
     for(int z=max(0,cz-1);z<=min(int(g.nz)-1,cz+1);z++)for(int c=0;c<ncols;c++){
       const int2 range=ranges[z*g.nx+cols[c]];

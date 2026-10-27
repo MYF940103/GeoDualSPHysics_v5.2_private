@@ -19,7 +19,7 @@
 //##############################################################################
 /// Soil-only, matched-LS elastic HG term. History is indexed by native ID, not
 /// by sorted particle slot; periodic copies never carry independent history.
-/// The caller restricts use to 2D Wendland, axis-aligned X periodicity, fixed
+/// The caller restricts use to 2D Wendland, bounded or axis-aligned X-periodic, fixed
 /// native particles and fresh runs. Bare vector history is not finite-rotation
 /// objective. The endpoint-trapezoidal update does not prove coupled stability.
 class JSphHourglassCpu : protected JObject{
@@ -53,7 +53,7 @@ private:
     PH_CorrectorForce,PH_CorrectorUpdate};
 
   unsigned FirstId=0,Count=0;
-  double Xi=0,Mass=0,Period=0,KernelH=0,Support=0,Bwen=0,Shear=0;
+  double Xi=0,Mass=0,Period=0,KernelH=0,Support=0,Bwen=0,Shear=0; ///<Period=0 uses real bounded neighbors.
   double StepDt=0,PredictorSkew=0;
   TpPhase Phase=PH_Unconfigured;
   bool EndpointRateReady=false;

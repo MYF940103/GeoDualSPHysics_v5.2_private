@@ -30,15 +30,16 @@ unsigned JSphHourglassCpu::Index(unsigned id)const{
 }
 
 double JSphHourglassCpu::MinImage(double dx)const{
-  return(dx-Period*floor(dx/Period+.5));
+  return(Period>0? dx-Period*floor(dx/Period+.5): dx);
 }
 
 void JSphHourglassCpu::Config(unsigned firstid,unsigned count,double xi,double mass,
   double period,double kernelh,double support,double bwen,double shear)
 {
   Check(count>0 && count<unsigned(INT_MAX) && isfinite(xi) && xi>0 && mass>0
-    && period>0 && kernelh>0 && support>0 && support<period*.5 && bwen<0 && shear>0,
-    "HG invalid particle, elastic, kernel or periodic configuration.");
+    && isfinite(period) && period>=0 && kernelh>0 && support>0
+    && (!period || support<period*.5) && bwen<0 && shear>0,
+    "HG invalid particle, elastic, kernel or neighbor configuration.");
   FirstId=firstid;Count=count;Xi=xi;Mass=mass;Period=period;KernelH=kernelh;
   Support=support;Bwen=bwen;Shear=shear;StepDt=0;PredictorSkew=0;
   Nodes.assign(Count,Node{});History.assign(Count,Vec{});HistoryRate.assign(Count,Vec{});
@@ -55,7 +56,7 @@ void JSphHourglassCpu::Config(unsigned firstid,unsigned count,double xi,double m
 void JSphHourglassCpu::BuildPairs(unsigned np,unsigned npb,const unsigned* idp,
   const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic)
 {
-  double zmin=DBL_MAX,zmax=-DBL_MAX;
+  double xmin=DBL_MAX,xmax=-DBL_MAX,zmin=DBL_MAX,zmax=-DBL_MAX;
   for(auto& n:Nodes)n=Node{};
   unsigned count=0;
   for(unsigned p=npb;p<np;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
@@ -65,27 +66,30 @@ void JSphHourglassCpu::BuildPairs(unsigned np,unsigned npb,const unsigned* idp,
     Check(kplastic[p]==0,"HG currently supports elastic states only.");
     n.x=pos[p].x;n.z=pos[p].z;n.vx=v.x;n.vz=v.z;n.vol=Mass/v.w;
     Check(isfinite(n.x) && isfinite(n.z) && isfinite(n.vx) && isfinite(n.vz),"HG nonfinite particle state.");
+    xmin=(std::min)(xmin,n.x);xmax=(std::max)(xmax,n.x);
     zmin=(std::min)(zmin,n.z);zmax=(std::max)(zmax,n.z);count++;
   }
   Check(count==Count,"HG native soil particle set changed.");
-  const double nxvalue=floor(Period/Support),nzvalue=floor((zmax-zmin)/Support)+1;
+  const double nxvalue=(Period>0? floor(Period/Support): floor((xmax-xmin)/Support)+1);
+  const double nzvalue=floor((zmax-zmin)/Support)+1;
   Check(nxvalue<INT_MAX && nzvalue<INT_MAX && nxvalue*nzvalue<INT_MAX,"HG cell grid is too large.");
   const int nx=(std::max)(1,int(nxvalue)),nz=int(nzvalue);
-  const double cellx=Period/nx;
+  const double cellx=(Period>0? Period/nx: Support);
   Heads.assign(size_t(nx)*nz,-1);
   for(unsigned i=0;i<Count;i++){
-    const auto& n=Nodes[i];const double x=n.x-Period*floor(n.x/Period);
+    const auto& n=Nodes[i];const double x=(Period>0? n.x-Period*floor(n.x/Period): n.x-xmin);
     const int cx=(std::min)(nx-1,int(x/cellx)),cz=int((n.z-zmin)/Support);
     const int cell=cz*nx+cx;Next[i]=Heads[cell];Heads[cell]=int(i);
   }
   Pairs.clear();
   const double h=KernelH,rrmax=Support*Support,bwen=Bwen;
   for(unsigned i=0;i<Count;i++){
-    const auto& a=Nodes[i];const double x=a.x-Period*floor(a.x/Period);
+    const auto& a=Nodes[i];const double x=(Period>0? a.x-Period*floor(a.x/Period): a.x-xmin);
     const int cx=(std::min)(nx-1,int(x/cellx)),cz=int((a.z-zmin)/Support);
     int cols[3],ncols=0;
     for(int dx=-1;dx<=1;dx++){
-      const int c=(cx+dx+nx)%nx;bool seen=false;
+      const int c=(Period>0? (cx+dx+nx)%nx: cx+dx);bool seen=false;
+      if(c<0 || c>=nx)continue;
       for(int k=0;k<ncols;k++)seen|=(cols[k]==c);
       if(!seen)cols[ncols++]=c;
     }

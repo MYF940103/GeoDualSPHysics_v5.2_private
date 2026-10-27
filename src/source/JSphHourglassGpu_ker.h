@@ -20,7 +20,7 @@ struct StNode{
 };
 struct StGrid{
   unsigned nx,nz;
-  double cellx,zmin,period,support,h,bwen,xi,mass,shear;
+  double cellx,zmin,period,support,h,bwen,xi,mass,shear,xmin; ///<period=0: bounded X cells.
 };
 // Small fixed-tree reduction packet. Fields retain CPU sum/square-sum meaning.
 struct StReduce{
@@ -28,6 +28,7 @@ struct StReduce{
   double condition,skew,form,lambda,ratepower,rmax,sumrate;
   double meandxx,rmsdxx,meandiv,rmsdiv;
   unsigned errors,changed,pairs;
+  double xmin,xmax;
 };
 inline unsigned PartialCount(unsigned n){ return(n/128+(n%128!=0)); }
 void MapNative(unsigned np,unsigned npb,unsigned firstid,unsigned count,

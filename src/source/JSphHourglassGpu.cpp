@@ -37,8 +37,9 @@ void JSphHourglassGpu::Config(unsigned firstid,unsigned count,double xi,double m
   double period,double kernelh,double support,double bwen,double shear)
 {
   Check(count>0 && count<unsigned(INT_MAX) && isfinite(xi) && xi>0 && mass>0
-    && period>0 && kernelh>0 && support>0 && support<period*.5 && bwen<0 && shear>0,
-    "HG invalid particle, elastic, kernel or periodic configuration.");
+    && isfinite(period) && period>=0 && kernelh>0 && support>0
+    && (!period || support<period*.5) && bwen<0 && shear>0,
+    "HG invalid particle, elastic, kernel or neighbor configuration.");
   FreeMemory();FirstId=firstid;Count=count;Xi=xi;Mass=mass;Period=period;
   KernelH=kernelh;Support=support;Bwen=bwen;Shear=shear;StepDt=0;PredictorSkew=0;
   PartialCount=cuhg::PartialCount(Count);
@@ -90,14 +91,15 @@ void JSphHourglassGpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
   const cuhg::StReduce state=ReadResult();CheckState(state.errors);
   const bool reuse=RateCacheEnabled && !endpoint && EndpointRateReady && !state.changed;
   if(!reuse){
-    const double nxvalue=floor(Period/Support),nzvalue=floor((state.zmax-state.zmin)/Support)+1;
+    const double nxvalue=(Period>0? floor(Period/Support): floor((state.xmax-state.xmin)/Support)+1);
+    const double nzvalue=floor((state.zmax-state.zmin)/Support)+1;
     Check(nxvalue<INT_MAX && nzvalue<INT_MAX && nxvalue*nzvalue<INT_MAX,"HG cell grid is too large.");
     const unsigned nx=unsigned((std::max)(1,int(nxvalue))),nz=unsigned(nzvalue),ncells=nx*nz;
     if(ncells>CellCapacity){
       CheckCuda(cudaFree(Rangesg));Rangesg=NULL;
       CheckCuda(cudaMalloc(reinterpret_cast<void**>(&Rangesg),sizeof(int2)*ncells));CellCapacity=ncells;
     }
-    const cuhg::StGrid grid={nx,nz,Period/nx,state.zmin,Period,Support,KernelH,Bwen,Xi,Mass,Shear};
+    const cuhg::StGrid grid={nx,nz,(Period>0? Period/nx: Support),state.zmin,Period,Support,KernelH,Bwen,Xi,Mass,Shear,state.xmin};
     cuhg::CellKeys(Count,grid,Nodesg,Keysg,Orderg);CheckCuda(cudaGetLastError());
     cudiv::Sort(Keysg,Orderg,Count,true);
     cudiv::CalcBeginEndCell(true,Count,0,ncells,0,Keysg,Rangesg);
