@@ -1,0 +1,643 @@
+{
+  "schema": "cryer-independent-preload-half-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T23:31:30.018596+00:00",
+  "status": "short_gpu_preload_half_evidence_independently_verified",
+  "evidence_consistency_passed": true,
+  "original_single_run_safety_passed": true,
+  "owned_exits_confirmed": true,
+  "original_independent_half_screen_passed": true,
+  "coarse_declared_initial_equilibrium_diagnostics_passed": true,
+  "half_declared_initial_equilibrium_diagnostics_passed": true,
+  "source_clock_event_observation_passed": true,
+  "physical_accepted": false,
+  "peak_admitted": false,
+  "full_cycle_accepted": false,
+  "automatic_long_run_admitted": false,
+  "scope": "Independent offline reread of every retained coarse and new half native save, all69 same-actual-time pairs, original safety, original5Pa/.005mm half screen and both four-closed-state diagnostics. Only this new review and matching note were written. No solver/worker/queue/Git or retained-source/input/output edit was performed.",
+  "source_links": [
+    {
+      "path": "cryer_preload_half_r1.status.json",
+      "sha256": "6d30a9b090937caa969083bd7e3e7632d6f603e71c8e5aacf029ff506dfa40f9"
+    },
+    {
+      "path": "cryer_preload_half_r1.run.json",
+      "sha256": "2c1b3a0a6e8025753e52c5a36ed4256a57a35ce9b0b13c4cba400ec5db34de98"
+    },
+    {
+      "path": "cryer_preload_half_r1.check.json",
+      "sha256": "bd01c4cac34f4d5a8d7d6ea1437b265940c3379d430c5f83f3e395b59fdbd181"
+    },
+    {
+      "path": "cryer_preload_half_r1.inputs.json",
+      "sha256": "064dda5d6ee2144c8589d5c0767c65861d6a38e282fb633580d699ab2b769858"
+    },
+    {
+      "path": "cryer_preload_half_r1.completion.json",
+      "sha256": "9f6519401f956f88874f97e8dfe92e293a1b90d679b559ccef8ef1a7d770ae29"
+    },
+    {
+      "path": "../support/cryer_preload_half_r1.py",
+      "sha256": "f3e2d608adbf582084d5a657af5d61e002967f782b27253a4ca9facd74cb2013"
+    },
+    {
+      "path": "../notes/cryer_preload_half_r1.md",
+      "sha256": "d3fa56145f0feb929c04e6c7c5876b929f04ea1d93b1e2d0638743e508114f07"
+    },
+    {
+      "path": "../figures/cryer_preload_half_r1_summary.csv",
+      "sha256": "ce9af10fd7307291c5b7150bc07ff133f8ebdc6a803f4a7b1f53ba6cda9dabe3"
+    },
+    {
+      "path": "../figures/cryer_preload_half_r1_half.csv",
+      "sha256": "0c0d5b5f79fd8a8980af9077999d80bbd54ff1a5a352417b9987bf25390f7843"
+    },
+    {
+      "path": "../figures/cryer_preload_offline_r1_summary.csv",
+      "sha256": "168cfcde64dedd990a202c03fd88fbd0d34d12a5752e5fb60e00e8174015cf87"
+    },
+    {
+      "path": "cryer_preload_review_r1.check.json",
+      "sha256": "b4824ae6ab76f50d0dbd038908b82804382397b40f658c906b3f4b3554dc3aec"
+    },
+    {
+      "path": "cryer_preload_offline_r1.check.json",
+      "sha256": "0f5e503925742a0e6435969b11c8086ab4a9aa9b7aae17309966e4aaec9b7e5b"
+    }
+  ],
+  "provenance_audit": {
+    "explicit_hash_entries_verified": 593,
+    "hash_or_available_size_mismatches": [],
+    "hash_comparison": "SHA hexadecimal text was normalized to lowercase; textual case is not a content difference.",
+    "scope": "All explicit bound entries in current status/run/inputs/completion/check and the bound GPU build were verified before and after native calculations, including source/runtime/program and all69 new output frames plus the adopted coarse evidence.",
+    "canonical_gpu_program_sha256": "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+    "actual_gpu": "NVIDIA GeForce RTX 3050",
+    "new_half_exit_code": 0,
+    "new_half_solver_finished": true,
+    "new_half_owned_exited": true,
+    "new_half_wrapper_wall_seconds": 4042.8169068999123,
+    "owned_sequence_pid": 6252,
+    "owned_wrapper_pid": 54396,
+    "parent_identified_solver_pid": 64356,
+    "ownership_observation": "The two manifest-owned PIDs, the parent-identified solver PID and relevant DualSPHysics/Python processes tagged cryer_preload_half_r1 were absent at review. No process was stopped or unrelated process command lines retained.",
+    "xml_elements_each": 95,
+    "full_xml_text_derivative_exact_except_two_dt_values": true,
+    "xml_effective_differences": [
+      {
+        "tag": "parameter",
+        "coarse": {
+          "key": "DtIni",
+          "value": "0.000000476837158203125"
+        },
+        "half": {
+          "key": "DtIni",
+          "value": "0.0000002384185791015625"
+        }
+      },
+      {
+        "tag": "parameter",
+        "coarse": {
+          "key": "DtFixed",
+          "value": "0.000000476837158203125"
+        },
+        "half": {
+          "key": "DtFixed",
+          "value": "0.0000002384185791015625"
+        }
+      }
+    ]
+  },
+  "native_audit": {
+    "coarse_frames_reread": 69,
+    "half_frames_reread": 69,
+    "soil_ids_per_frame": 37173,
+    "id_range_inclusive": [
+      8,
+      37180
+    ],
+    "ids_unique_complete_unchanged": true,
+    "initial_18_named_identity_geometry_material_state_fields_exact": true,
+    "coarse_dt_s": 4.76837158203125e-7,
+    "half_dt_s": 2.384185791015625e-7,
+    "coarse_steps": 17408,
+    "half_steps": 34816,
+    "cadence_s": 0.0001220703125,
+    "actual_final_time_s": 0.00830078125,
+    "actual_times_match_exactly_at_all_69_samples": true,
+    "coarse_nonzero_saved_step": "part*256-1",
+    "half_nonzero_saved_step": "part*512-1",
+    "initial_saved_step": 0,
+    "native_values_or_step_metadata_modified": false,
+    "maximum_saved_radius_m": {
+      "coarse": 0.05000000000000002,
+      "half": 0.05000000000000002
+    },
+    "original_radius_limit_m": 0.0525,
+    "maximum_nonzero_dterror_s": {
+      "coarse": -0.000024556034342398656,
+      "half": -0.00002479445286173873
+    },
+    "original_dterror_upper_limit_s": 1e-14,
+    "active_drainage_parts": [
+      65,
+      66,
+      67,
+      68
+    ],
+    "surface_ids_count_each": 5153,
+    "post_open_surface_pressure_abs_max_pa": 0,
+    "maximum_pair_fstype_mismatches": 0,
+    "maximum_pair_drained_mask_mismatches": 0,
+    "safety_issues": [],
+    "safety_method": "Both runs independently satisfied finite/positive-density/no-exclusion/elastic, fixed IDs/mass/h/dp, double saved position/stress, actual-load flags and inward loading after t0, radius, exact saved time/step, original mechanical dterror and pore-diffusion limits. All actual FSType2/3 nodes were checked after the event, without incorrectly imposing p0 before it. Explicit float64 arithmetic avoided the old all-zero CSV dtype bug."
+  },
+  "csv_recalculation": {
+    "summary_rows_each": 69,
+    "common_fields_each": 37,
+    "common_fields": [
+      "part",
+      "time_s",
+      "saved_step",
+      "drainage_active",
+      "true_surface_count",
+      "changed_fstype_count",
+      "true_surface_pressure_absmax_pa",
+      "pressure_mean_pa",
+      "pressure_min_pa",
+      "pressure_max_pa",
+      "center_pressure_mean_pa",
+      "pressure_target_rms_pa",
+      "total_stress_target_six_rms_pa",
+      "speed_max_m_s",
+      "rho_mean_kg_m3",
+      "rho_min_kg_m3",
+      "rho_max_kg_m3",
+      "native_current_volume_m3",
+      "isotropic_fit_scalar",
+      "isotropic_vector_residual_rms_mm",
+      "full_affine_trace",
+      "full_affine_vector_residual_rms_mm",
+      "shell_inward_mean_mm",
+      "shell_target_mean_mm",
+      "shell_target_error_mean_mm",
+      "shell_target_error_rms_mm",
+      "total_mean_compression_pa",
+      "effective_mean_compression_pa",
+      "fluid_content_from_stress_conditional",
+      "fluid_content_from_isotropic_fit_conditional",
+      "fluid_content_from_full_affine_conditional",
+      "actual_radial_force_N",
+      "net_force_norm_N",
+      "torque_norm_N_m",
+      "load_virial_over_3qVnative",
+      "load_virial_over_3qVgeometric",
+      "dterror_s"
+    ],
+    "pair_rows": 69,
+    "pair_fields": [
+      "pressure_rms_pa",
+      "material_displacement_max_mm",
+      "total_stress_six_component_rms_pa",
+      "velocity_vector_rms_m_s",
+      "density_rms_kg_m3",
+      "load_vector_rms_m_s2",
+      "fstype_mismatches",
+      "drained_mask_mismatches",
+      "part",
+      "time_s",
+      "coarse_time_s",
+      "screen_passed"
+    ],
+    "maximum_abs_recomputation_difference": {
+      "value": 7.275957614183426e-12,
+      "table": "half",
+      "part": 0,
+      "field": "pressure_target_rms_pa"
+    },
+    "material_disagreements": [],
+    "arithmetic_reconciliation_tolerance": "1e-10+1e-12*abs(published_value), solely for independent floating arithmetic, not physical gate relaxation.",
+    "coverage_limit": "Every native frame was re-read and guarded.37 shared fields per summary and all12 pair-CSV fields were recalculated. This is not a claim of independent derivation of every other summary column or visual verification of later figures."
+  },
+  "original_half_screen": {
+    "all_69_samples_passed": true,
+    "pressure_rms_limit_pa": 5,
+    "maximum_material_displacement_difference_limit_mm": 0.005,
+    "definition": "Unweighted all-soil field pressure RMS and maximum Euclidean position difference at the same fixed native IDs and exactly equal actual times; no interpolation, step relabeling, smoothing or selected-time omission.",
+    "maxima": {
+      "pressure_rms_pa": {
+        "part": 65,
+        "time_s": 0.0079345703125,
+        "coarse_time_s": 0.0079345703125,
+        "pressure_rms_pa": 0.5796221972645274,
+        "material_displacement_max_mm": 8.413807398973037e-8,
+        "total_stress_six_component_rms_pa": 0.4107919653613642,
+        "velocity_vector_rms_m_s": 4.960472557924111e-7,
+        "density_rms_kg_m3": 0.01191000888005122,
+        "load_vector_rms_m_s2": 0.010054279078648923,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 4.255859375,
+        "native_id_at_pressure_max_difference": 16397,
+        "screen_passed": true
+      },
+      "material_displacement_max_mm": {
+        "part": 68,
+        "time_s": 0.00830078125,
+        "coarse_time_s": 0.00830078125,
+        "pressure_rms_pa": 0.25294993769546237,
+        "material_displacement_max_mm": 5.054502204656765e-7,
+        "total_stress_six_component_rms_pa": 0.18663798271071308,
+        "velocity_vector_rms_m_s": 4.4589638647405216e-7,
+        "density_rms_kg_m3": 0.0327564483918,
+        "load_vector_rms_m_s2": 0.023686822862884035,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 0.4951171875,
+        "native_id_at_pressure_max_difference": 3329,
+        "screen_passed": true
+      },
+      "total_stress_six_component_rms_pa": {
+        "part": 65,
+        "time_s": 0.0079345703125,
+        "coarse_time_s": 0.0079345703125,
+        "pressure_rms_pa": 0.5796221972645274,
+        "material_displacement_max_mm": 8.413807398973037e-8,
+        "total_stress_six_component_rms_pa": 0.4107919653613642,
+        "velocity_vector_rms_m_s": 4.960472557924111e-7,
+        "density_rms_kg_m3": 0.01191000888005122,
+        "load_vector_rms_m_s2": 0.010054279078648923,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 4.255859375,
+        "native_id_at_pressure_max_difference": 16397,
+        "screen_passed": true
+      },
+      "velocity_vector_rms_m_s": {
+        "part": 66,
+        "time_s": 0.008056640625,
+        "coarse_time_s": 0.008056640625,
+        "pressure_rms_pa": 0.3710626939633557,
+        "material_displacement_max_mm": 2.293909338327773e-7,
+        "total_stress_six_component_rms_pa": 0.2636902550588372,
+        "velocity_vector_rms_m_s": 6.448778302295518e-7,
+        "density_rms_kg_m3": 0.017336722884114152,
+        "load_vector_rms_m_s2": 0.013077833314053692,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 2.2001953125,
+        "native_id_at_pressure_max_difference": 18067,
+        "screen_passed": true
+      },
+      "density_rms_kg_m3": {
+        "part": 68,
+        "time_s": 0.00830078125,
+        "coarse_time_s": 0.00830078125,
+        "pressure_rms_pa": 0.25294993769546237,
+        "material_displacement_max_mm": 5.054502204656765e-7,
+        "total_stress_six_component_rms_pa": 0.18663798271071308,
+        "velocity_vector_rms_m_s": 4.4589638647405216e-7,
+        "density_rms_kg_m3": 0.0327564483918,
+        "load_vector_rms_m_s2": 0.023686822862884035,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 0.4951171875,
+        "native_id_at_pressure_max_difference": 3329,
+        "screen_passed": true
+      },
+      "load_vector_rms_m_s2": {
+        "part": 28,
+        "time_s": 0.00341796875,
+        "coarse_time_s": 0.00341796875,
+        "pressure_rms_pa": 0.3157593421167397,
+        "material_displacement_max_mm": 6.688088116406284e-8,
+        "total_stress_six_component_rms_pa": 0.22383518836023017,
+        "velocity_vector_rms_m_s": 1.0629288781543599e-8,
+        "density_rms_kg_m3": 0,
+        "load_vector_rms_m_s2": 0.035823701168121225,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 0.3515625,
+        "native_id_at_pressure_max_difference": 9478,
+        "screen_passed": true
+      },
+      "pressure_abs_max_difference_pa": {
+        "part": 65,
+        "time_s": 0.0079345703125,
+        "coarse_time_s": 0.0079345703125,
+        "pressure_rms_pa": 0.5796221972645274,
+        "material_displacement_max_mm": 8.413807398973037e-8,
+        "total_stress_six_component_rms_pa": 0.4107919653613642,
+        "velocity_vector_rms_m_s": 4.960472557924111e-7,
+        "density_rms_kg_m3": 0.01191000888005122,
+        "load_vector_rms_m_s2": 0.010054279078648923,
+        "fstype_mismatches": 0,
+        "drained_mask_mismatches": 0,
+        "pressure_abs_max_difference_pa": 4.255859375,
+        "native_id_at_pressure_max_difference": 16397,
+        "screen_passed": true
+      }
+    },
+    "maximum_pointwise_pressure_difference_pa": 4.255859375,
+    "pointwise_note": "The declared pressure gate is RMS, not a per-particle5Pa gate. Pointwise difference is reported additionally, not used to redefine the threshold."
+  },
+  "closed_equilibrium_diagnostics": {
+    "limits": {
+      "pressure_target_rms_pa": 100,
+      "total_stress_target_six_rms_pa": 100,
+      "speed_max_m_s": 0.00001,
+      "isotropic_vector_residual_rms_mm": 0.00001,
+      "shell_target_error_rms_mm": 0.00001
+    },
+    "rule": "Every one of Parts61-64 independently passes all five previously declared diagnostics in each run. Fixed initial-volume weights and initial shell membership/per-r0 targets were retained.",
+    "coarse_samples": [
+      {
+        "part": 61,
+        "time_s": 0.0074462890625,
+        "metrics": {
+          "pressure_target_rms_pa": 0.11865545282431049,
+          "total_stress_target_six_rms_pa": 0.08338380493084693,
+          "speed_max_m_s": 0.000002435140228529208,
+          "isotropic_vector_residual_rms_mm": 3.5314344786149774e-7,
+          "shell_target_error_rms_mm": 2.0858898004432176e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 62,
+        "time_s": 0.007568359375,
+        "metrics": {
+          "pressure_target_rms_pa": 0.5477090395521959,
+          "total_stress_target_six_rms_pa": 0.3875798670091644,
+          "speed_max_m_s": 0.000002176435304276539,
+          "isotropic_vector_residual_rms_mm": 3.6787716504787385e-7,
+          "shell_target_error_rms_mm": 2.2582533153540845e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 63,
+        "time_s": 0.0076904296875,
+        "metrics": {
+          "pressure_target_rms_pa": 0.4348853193056312,
+          "total_stress_target_six_rms_pa": 0.30905486961361756,
+          "speed_max_m_s": 0.0000022448982562792468,
+          "isotropic_vector_residual_rms_mm": 3.8355670215147144e-7,
+          "shell_target_error_rms_mm": 2.429795409613622e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 64,
+        "time_s": 0.0078125,
+        "metrics": {
+          "pressure_target_rms_pa": 0.11776122107620235,
+          "total_stress_target_six_rms_pa": 0.08423146952433513,
+          "speed_max_m_s": 0.0000018277234198052152,
+          "isotropic_vector_residual_rms_mm": 3.978931748791763e-7,
+          "shell_target_error_rms_mm": 2.603349162944921e-7
+        },
+        "all_five_passed": true
+      }
+    ],
+    "half_samples": [
+      {
+        "part": 61,
+        "time_s": 0.0074462890625,
+        "metrics": {
+          "pressure_target_rms_pa": 0.1281998702756971,
+          "total_stress_target_six_rms_pa": 0.09017983322003059,
+          "speed_max_m_s": 0.0000023960580793037294,
+          "isotropic_vector_residual_rms_mm": 3.519418053867092e-7,
+          "shell_target_error_rms_mm": 2.033317537816531e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 62,
+        "time_s": 0.007568359375,
+        "metrics": {
+          "pressure_target_rms_pa": 0.4913364690633578,
+          "total_stress_target_six_rms_pa": 0.3476071918237823,
+          "speed_max_m_s": 0.0000021751324861728977,
+          "isotropic_vector_residual_rms_mm": 3.667732475742669e-7,
+          "shell_target_error_rms_mm": 2.1997630210751804e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 63,
+        "time_s": 0.0076904296875,
+        "metrics": {
+          "pressure_target_rms_pa": 0.3979161069037874,
+          "total_stress_target_six_rms_pa": 0.28283250862439474,
+          "speed_max_m_s": 0.0000022087569462387432,
+          "isotropic_vector_residual_rms_mm": 3.822704932980151e-7,
+          "shell_target_error_rms_mm": 2.396644554603558e-7
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 64,
+        "time_s": 0.0078125,
+        "metrics": {
+          "pressure_target_rms_pa": 0.08427794200781764,
+          "total_stress_target_six_rms_pa": 0.06058462900719153,
+          "speed_max_m_s": 0.0000017823209224398684,
+          "isotropic_vector_residual_rms_mm": 3.9678357743780226e-7,
+          "shell_target_error_rms_mm": 2.565437503267178e-7
+        },
+        "all_five_passed": true
+      }
+    ],
+    "coarse_all_four_passed": true,
+    "half_all_four_passed": true,
+    "qualification_scope": "Declared saved-state initial-equilibrium qualification only, not continuous-time equilibrium or drained-theory/peak/full accuracy."
+  },
+  "last_closed_states": {
+    "coarse": {
+      "part": 64,
+      "time_s": 0.0078125,
+      "saved_step": 16383,
+      "drainage_active": false,
+      "true_surface_count": 5153,
+      "changed_fstype_count": 0,
+      "true_surface_pressure_absmax_pa": 9975.1162109375,
+      "pressure_mean_pa": 9975.159647858492,
+      "pressure_min_pa": 9975.06640625,
+      "pressure_max_pa": 9975.380859375,
+      "center_pressure_mean_pa": 9975.281412760416,
+      "pressure_target_rms_pa": 0.11776122107620235,
+      "total_stress_target_six_rms_pa": 0.08423146952433513,
+      "speed_max_m_s": 0.0000018277234198052152,
+      "rho_mean_kg_m3": 2100.0000000000014,
+      "rho_min_kg_m3": 2100,
+      "rho_max_kg_m3": 2100,
+      "native_current_volume_m3": 0.0005808281042897892,
+      "isotropic_fit_scalar": -0.000004987358939148739,
+      "isotropic_vector_residual_rms_mm": 3.978931748791763e-7,
+      "full_affine_trace": -0.000014962137172692896,
+      "full_affine_vector_residual_rms_mm": 2.7038823560806397e-7,
+      "shell_inward_mean_mm": 0.00023233495950963128,
+      "shell_target_mean_mm": 0.00023235010060703384,
+      "shell_target_error_mean_mm": -1.5141097402627646e-8,
+      "shell_target_error_rms_mm": 2.603349162944921e-7,
+      "total_mean_compression_pa": 10000.09668712225,
+      "effective_mean_compression_pa": 24.9370392637605,
+      "fluid_content_from_stress_conditional": 5.159135314328379e-10,
+      "fluid_content_from_isotropic_fit_conditional": 6.626543415212487e-10,
+      "fluid_content_from_full_affine_conditional": 6.022990948418758e-10,
+      "actual_radial_force_N": 344.4952105290606,
+      "net_force_norm_N": 0.0000012606718974940045,
+      "torque_norm_N_m": 6.160443420070681e-8,
+      "load_virial_over_3qVnative": 0.9585537134531351,
+      "load_virial_over_3qVgeometric": 1.063323602330309,
+      "dterror_s": -0.000024658791228279476,
+      "radius_max_m": 0.04999975140425432
+    },
+    "half": {
+      "part": 64,
+      "time_s": 0.0078125,
+      "saved_step": 32767,
+      "drainage_active": false,
+      "true_surface_count": 5153,
+      "changed_fstype_count": 0,
+      "true_surface_pressure_absmax_pa": 9975.1103515625,
+      "pressure_mean_pa": 9975.132740649506,
+      "pressure_min_pa": 9975.0595703125,
+      "pressure_max_pa": 9975.31640625,
+      "center_pressure_mean_pa": 9975.236762152777,
+      "pressure_target_rms_pa": 0.08427794200781764,
+      "total_stress_target_six_rms_pa": 0.06058462900719153,
+      "speed_max_m_s": 0.0000017823209224398684,
+      "rho_mean_kg_m3": 2100.0000000000014,
+      "rho_min_kg_m3": 2100,
+      "rho_max_kg_m3": 2100,
+      "native_current_volume_m3": 0.0005808281042897892,
+      "isotropic_fit_scalar": -0.0000049877106112955156,
+      "isotropic_vector_residual_rms_mm": 3.9678357743780226e-7,
+      "full_affine_trace": -0.000014963192210118207,
+      "full_affine_vector_residual_rms_mm": 2.6864248928160196e-7,
+      "shell_inward_mean_mm": 0.00023235874371262854,
+      "shell_target_mean_mm": 0.00023235010060703384,
+      "shell_target_error_mean_mm": 8.64310559467051e-9,
+      "shell_target_error_rms_mm": 2.565437503267178e-7,
+      "total_mean_compression_pa": 10000.069653844677,
+      "effective_mean_compression_pa": 24.936913195176118,
+      "fluid_content_from_stress_conditional": 5.511938685850241e-10,
+      "fluid_content_from_isotropic_fit_conditional": -4.327229122899921e-10,
+      "fluid_content_from_full_affine_conditional": -4.930991439514411e-10,
+      "actual_radial_force_N": 344.4952116809884,
+      "net_force_norm_N": 0.0000016418734507157337,
+      "torque_norm_N_m": 7.100743758687004e-8,
+      "load_virial_over_3qVnative": 0.9585537170291047,
+      "load_virial_over_3qVgeometric": 1.063323606297132,
+      "dterror_s": -0.000024897209811838427,
+      "radius_max_m": 0.049999751337740025
+    }
+  },
+  "post_open_observations": {
+    "coarse": [
+      {
+        "part": 65,
+        "time_s": 0.0079345703125,
+        "tau_s": 0.0001220703125,
+        "center_pressure_mean_pa": 11356.207302517361,
+        "pressure_max_pa": 15994.7099609375,
+        "total_mean_compression_pa": 9321.604277075761,
+        "speed_max_m_s": 0.05816561286275183,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 66,
+        "time_s": 0.008056640625,
+        "tau_s": 0.000244140625,
+        "center_pressure_mean_pa": 9169.573676215277,
+        "pressure_max_pa": 13547.3154296875,
+        "total_mean_compression_pa": 9864.720203585699,
+        "speed_max_m_s": 0.05166090652513289,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 67,
+        "time_s": 0.0081787109375,
+        "tau_s": 0.0003662109375,
+        "center_pressure_mean_pa": 11192.086154513889,
+        "pressure_max_pa": 13544.3359375,
+        "total_mean_compression_pa": 11201.445979315851,
+        "speed_max_m_s": 0.01854047287637974,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 68,
+        "time_s": 0.00830078125,
+        "tau_s": 0.00048828125,
+        "center_pressure_mean_pa": 11186.255642361111,
+        "pressure_max_pa": 15108.38671875,
+        "total_mean_compression_pa": 10715.145204865972,
+        "speed_max_m_s": 0.03883921439758692,
+        "true_surface_pressure_abs_max_pa": 0
+      }
+    ],
+    "half": [
+      {
+        "part": 65,
+        "time_s": 0.0079345703125,
+        "tau_s": 0.0001220703125,
+        "center_pressure_mean_pa": 11360.2646484375,
+        "pressure_max_pa": 15994.8232421875,
+        "total_mean_compression_pa": 9321.490940884238,
+        "speed_max_m_s": 0.058165635441954314,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 66,
+        "time_s": 0.008056640625,
+        "tau_s": 0.000244140625,
+        "center_pressure_mean_pa": 9170.692111545139,
+        "pressure_max_pa": 13547.2939453125,
+        "total_mean_compression_pa": 9864.696353037098,
+        "speed_max_m_s": 0.0516614280658292,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 67,
+        "time_s": 0.0081787109375,
+        "tau_s": 0.0003662109375,
+        "center_pressure_mean_pa": 11191.826171875,
+        "pressure_max_pa": 13545.01171875,
+        "total_mean_compression_pa": 11201.85819036875,
+        "speed_max_m_s": 0.01854097936418644,
+        "true_surface_pressure_abs_max_pa": 0
+      },
+      {
+        "part": 68,
+        "time_s": 0.00830078125,
+        "tau_s": 0.00048828125,
+        "center_pressure_mean_pa": 11186.420030381945,
+        "pressure_max_pa": 15108.236328125,
+        "total_mean_compression_pa": 10714.958040435615,
+        "speed_max_m_s": 0.038838832325379276,
+        "true_surface_pressure_abs_max_pa": 0
+      }
+    ],
+    "interpretation": "The strong opening transient is present in both steps with small pair differences at these samples. This is reproducibility of the current discrete response, not its quasi-static theoretical correctness or proof of a root cause."
+  },
+  "load_and_clock_interpretation": {
+    "ramp_s": 0.00390625,
+    "drainage_source_event_s": 0.0078125,
+    "last_preopen_saved_part": 64,
+    "first_postopen_saved_part": 65,
+    "first_postopen_tau_s": 0.0001220703125,
+    "derived_ramp_source_q_reference_half_minus_coarse_pa": 0.6103515625,
+    "derived_q_is_not_native_saved_telemetry": true,
+    "note": "The original source-clock formula evaluates ramp loading at the prior source time. Halving dt changes that reference by0.6103515625Pa during the ramp. Recorded load-vector differences also reflect geometry/density evolution; they are not automatically a backend error or a new force-equivalence gate."
+  },
+  "limitations": [
+    "This validates only the two declared steps at69 saved actual times through0.00830078125s, including0.48828125ms after drainage opening; it is not validation at every intervening integration step or a full peak/full-cycle half test.",
+    "Both Part61-64 closed-state sets pass, but the earlier hold was not continuously motionless and the active drainage response remains strongly dynamic.",
+    "Saved t=tD is pre-opening; the first post-open save is already tau=TimeOut. No automatic time shift, pressure normalization or quasi-static Cryer truth curve was applied.",
+    "Stress, velocity, density, load and masks are separately reported. The5Pa/.005mm hard bounds remain the original pressure-RMS/material-displacement half screen; no new stress/load limit was substituted.",
+    "The conditional fluid-content observations are not exact coupled fluid mass. Float pore/density and double stress remain the same production physics; this review makes no density-precision or operator-causality claim.",
+    "No old failed analysis record was repaired in place, no output overwritten, no native step changed and no production/formal equation/input/Git operation performed. A separately reviewed next-stage plan is still required; no automatic peak or long run is admitted."
+  ]
+}
