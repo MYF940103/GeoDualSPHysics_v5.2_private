@@ -36,6 +36,9 @@
 				<Porosity value="0.3" comment="Porosity used by u-pw; default=0, must be in (0,1) when HydroMech=1" />
 				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity; default=0, valid range >=0" units_comment="m/s" />
 				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
+				<!-- Existing CPU/GPU behavior: DtFixed bypasses automatic min(dt,dtw). Check a fixed
+                     step explicitly against dtw=PoreDtSafety*(rho_w*g/(Kw/n))*h^2/k; a zero
+                     fixed-step mechanical error statistic does not certify the pore-diffusion limit. -->
 				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
 				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
 				<!-- mDBC pore-pressure interpolation mode for boundary pore-pressure reconstruction only. -->
@@ -168,7 +171,9 @@
                  CPU/GPU 58 operator checks each, frozen-geometry oscillator, Debug memcheck and old-periodic
                  Release 0-ULP checks passed. Actual Lian .15-s half pair passed .009139Pa/.000009084mm;
                  HG-off CPU/GPU native regressions remain0ULP. Lian mixed-slip HGxi=.1 SPRoff/on3s coarse
-                 saved-state safety/drainage passed; HG3s half pending. NOT paper/full-cycle/100-s acceptance. -->
+                 saved-state safety/drainage passed. User waived the HG3s half and requested an independent
+                 100-s server run (HG=.1, SPR=1, gradient correction=1); inputs/package are not a completed
+                 paper/full-cycle/100-s validation. No new XML option or equation change in this delivery. -->
 			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
 			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />

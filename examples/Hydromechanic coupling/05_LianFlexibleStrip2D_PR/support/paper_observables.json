@@ -1,0 +1,14 @@
+{
+  "reference": "Lian et al. 2023, CMAME 408, 115967, section 4.3",
+  "reference_type": "SPH and ABAQUS FEM numerical comparisons, not an analytical solution",
+  "time_s": {"end": 100, "fixed_step": 0.00001, "native_save_interval": 0.05, "compare_actual_saved_times": true},
+  "material_points_m": {"A": [0, 0, 10], "B": [1.25, 0, 8.75]},
+  "material_tracking": "Select fixed native IDs and bilinear weights from initial coordinates; reuse those IDs and weights at every saved time. Do not reselect nearest nodes in deformed geometry.",
+  "figure10": {"time_s": [0.5, 1, 3, 50], "pressure_kPa_limits": [[0, 5], [0, 5], [0, 1.75], [0, 0.06]], "palette": "Reuse the inspected original 12-band paper palette from lian_fig10_first3_r1.py", "allow_smoothing_or_silent_clipping": false, "report_native_overrange_fraction": true},
+  "figure11": {"quantity": "excess pore pressure at A and B", "units": "kPa", "horizontal_axis": "elapsed seconds, logarithmic", "paper_time_range_s": [0.01, 100], "saved_early_limit_s": 0.05, "limitation": "The unchanged .05-s save cadence does not resolve the paper .01-.05-s initial interval. Do not invent those samples."},
+  "figure12a": {"quantity": "downward-positive material settlement z0-z at A and B", "units": "m", "paper_axis_scale": 0.0001, "horizontal_axis": "elapsed seconds, logarithmic"},
+  "figure12b": {"time_s": 100, "initial_material_line_x_m": 1.25, "initial_elevation_range_m": [0, 10], "horizontal_quantity": "signed displacement x-x0, not its absolute value", "horizontal_units": "m", "vertical_quantity": "initial elevation z0 from bottom; also retain actual z and depth=10-z0", "paper_line_convention_limit": "Paper does not explicitly define material versus current Eulerian line; this project uses the initial material line consistently with A/B histories."},
+  "native_fields_to_retain": ["id", "mk", "double position", "velocity", "density", "total stress components", "pore pressure", "initial pore pressure", "plastic strain", "free-surface classification", "surface normal", "actual time and step", "load diagnostic", "HG diagnostics"],
+  "reference_curves": "Digitized SPH/FEM curves must have traceable paper/figure provenance; no fabricated reference table is supplied.",
+  "analysis_location": "After full output copy-back, generate formal PNGs AND matching CSVs under case-root figures. The historical postprocess_lian_release.py is not the current HG+SPR release processor."
+}

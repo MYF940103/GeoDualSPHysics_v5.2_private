@@ -2,38 +2,34 @@
 setlocal
 cd /d "%~dp0"
 
-rem Independent formal release; never delete retained outputs.
+rem Portable Windows x64 / RTX A6000 calculation; never delete retained outputs.
 set name=CaseLianFlexibleStrip2D_PR_release
-set dirout=%name%_out
+set dirout=%name%_HGSPR_out
 set diroutdata=%dirout%\data
-set dirbin=../../../bin/windows
+set dirbin=support/bin
 set gencase="%dirbin%/GenCase_win64.exe"
 set dualsphysicsgpu="%dirbin%/DualSPHysics5.2_GEO_win64.exe"
-set partvtk="%dirbin%/PartVTK_win64.exe"
-set python="D:\Anaconda3\python.exe"
-set vars=+idp,+mk,+vel,+rhop,+press,+sigma_kk,+sigma_ij,+kplastic,+fstype,+fsnormal,+porepress,+porepress0,+excessporepress,+hydromechloadace
 
-if exist "%dirout%" goto fail
-%gencase% %name%_Def %dirout%/%name% -save:all
-if not "%ERRORLEVEL%" == "0" goto fail
-
-rem Actual 100 s run: mode4 mirrored contact, original mixed mDBC, no SPR/HG/TPI.
-%dualsphysicsgpu% -gpu -stable -mdbc_freeslip %dirout%/%name% %dirout% -dirdataout data -svres -svextraparts:1
+if exist "%dirout%" goto exists
+if not exist "%dirbin%/GenCase_win64.exe" goto fail
+if not exist "%dirbin%/DualSPHysics5.2_GEO_win64.exe" goto fail
+%gencase% "%name%_Def" "%dirout%/%name%" -save:all
 if not "%ERRORLEVEL%" == "0" goto fail
 
-rem Native data are retained; convert fluid/boundary fields for visualization.
-set dirout2=%dirout%\particles
-%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartFluid -onlytype:-all,fluid -vars:%vars%
-if not "%ERRORLEVEL%" == "0" goto fail
-%partvtk% -dirin %diroutdata% -savevtk %dirout2%/PartBound -onlytype:-all,bound -vars:%vars%
+rem 100 s fresh start: HG=.1, SPR=1, gradient correction=1; mixed mDBC, no TPI.
+%dualsphysicsgpu% -gpu -stable -mdbc_freeslip "%dirout%/%name%" "%dirout%" -dirdataout data -svres -svextraparts:1
 if not "%ERRORLEVEL%" == "0" goto fail
 
-rem Native figures and matching CSVs; reference/visual acceptance remains separate.
-%python% -B support/postprocess_lian_release.py --folder "%dirout%" --tag lian_release100_r1
-if not "%ERRORLEVEL%" == "0" goto fail
-echo All done. Review formal figures and SPH/FEM comparisons before acceptance.
+rem Preserve the COMPLETE output folder. Plotting is deferred until copy-back.
+echo Calculation finished. Copy the complete %dirout% folder back for analysis.
+echo Normal exit is not paper-reference or full-cycle accuracy acceptance.
 if not "%~1" == "--unattended" pause
 exit /b 0
+
+:exists
+echo Output already exists: %dirout%. Nothing was overwritten or restarted.
+if not "%~1" == "--unattended" pause
+exit /b 1
 
 :fail
 echo Execution aborted. Existing and partial outputs are preserved; never rerun blindly.

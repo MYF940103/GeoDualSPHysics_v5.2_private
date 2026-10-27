@@ -1,0 +1,26 @@
+{
+  "authorized_date": "2026-10-27",
+  "supersedes": "poromech_next_r2.json for active scheduling; historical evidence remains unchanged",
+  "user_revision": "Prepare a portable Windows RTX A6000 Lian HG+SPR 100-s run. Cancel its new 3-s half pair. Do not wait for the server solve before proceeding to Cryer.",
+  "lian": {
+    "delivery": "05_LianFlexibleStrip2D_PR/Lian_HGSPR_Windows_RTXA6000.zip",
+    "input": "05_LianFlexibleStrip2D_PR/CaseLianFlexibleStrip2D_PR_release_Def.xml",
+    "settings": "xi=.1, SPR1, stress-rate gradient1, eta=.04, mixed side FreeSlip / bottom NoSlip, explicit plane normals, dt10us, end100s, save.05s",
+    "new_output": "CaseLianFlexibleStrip2D_PR_release_HGSPR_out",
+    "run_owner": "User server. No new local 100-s solver or notifier is admitted by this packaging stage.",
+    "limits": "3-s coarse and .15-s HG half evidence only; new 3-s half intentionally stopped. Server full/reference accuracy remains pending.",
+    "return_analysis": "Fig10 native fields with original row palettes/ranges; Fig11 A/B excess pressure; Fig12a material settlement; Fig12b signed horizontal displacement along initial x=1.25m vertical material line at100s. Formal PNGs AND matching CSVs after copy-back."
+  },
+  "active_next": "04_CryerProblem_PR",
+  "cryer_order": [
+    "Review retained sphere/load/precision evidence. Load-only matrix correction was rejected by constant-stress cancellation; do not merge it.",
+    "Prepare and run a current CPU Debug 200-step (.001s) baseline with unchanged sphere/material/load/drainage/equations, explicit new stabilizers off and double saved positions. Inspect exact IDs, finite/elastic/no-exclusion/natural-step/load/drainage and saved stress precision.",
+    "Audit existing FixedDt bypass first: the root5us exceeds the configured pore-diffusion dtw about2.979us; the mechanical dterror statistic does not test this. Preserve5us as the old diagnostic control, not an automatically admitted long-window step.",
+    "After startup review, justify a fresh CPU Release2.5us/1.25us short pair below the existing pore-diffusion limit through the Cryer peak (aboutTv=.06). Compare center material pressure, radial pressure/displacement/stress and load/internal consistency with theory; do not claim a cross-version run isolates precision or that the conservative dtw bound proves the old5us run unstable.",
+    "Only then select any consistent loading/internal-operator repair. Explain numerical consequences before source changes and retain rejected controls. Complete independent root formal XML/BAT/full analytical comparisons after necessary acceptance."
+  ],
+  "after_cryer": "01_SelfWeightConsolidation_PR: initial equilibrium versus dissipation versus restart assumptions; pressure/settlement/total-effective-hydrostatic stress and full reference validation",
+  "deferred": ["Yao new runs", "retrogressive landslide", "u-pl implementation", "TPI or projection", "case02 revalidation", "KEEP diagnosis"],
+  "backup": "Verified stages are selectively committed and pushed with matching refs. Raw BI4/executables/portable ZIP are separately retained and are not automatically cloud-Git backed.",
+  "safety": "Do not overwrite retained formal outputs, start duplicate solvers, rearm old workers, relax guards, apply static-plane SPR to spherical boundaries, or apply 2D elastic HG to 3D Cryer."
+}

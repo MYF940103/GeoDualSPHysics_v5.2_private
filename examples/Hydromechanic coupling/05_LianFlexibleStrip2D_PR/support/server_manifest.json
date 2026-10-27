@@ -1,0 +1,198 @@
+{
+    "format":  "Lian_HGSPR_server_bundle_v1",
+    "created_utc":  "2026-10-27T08:44:09.5984011Z",
+    "source_head_supplied_by_packager":  "e28650c3c26b53ee20c91bbfa7305909c47f32ac",
+    "source_hashes_at_packaging":  [
+                                       {
+                                           "path":  "src/source/JSphHourglassCpu.h",
+                                           "sha256":  "231898af05940c3c6272eec47ae475d85245aeb9d2b17878842ca266a444d3ee"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphHourglassCpu.cpp",
+                                           "sha256":  "7c243cb4d743c3eae6430c782161dbdac285ebc23d1818819a38c2e961e0ada7"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphHourglassGpu_ker.h",
+                                           "sha256":  "8528ffeb26acb43406a61a21a178c8d0544f563b2e9d320aca2c8555adb36491"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphHourglassGpu.cpp",
+                                           "sha256":  "7f86dd23bc29a58de2c61e5f8f7c5e5d05ea62b6f5cc5c357d5e0029fedefc01"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphHourglassGpu_ker.cu",
+                                           "sha256":  "41cf020fa35317170645147106c1748f68868a4311d72f6df72ef682d4d815c4"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphCpuSingle.cpp",
+                                           "sha256":  "c0b35c844b482c5310ae1fba816bed3eadc941554d4aeda55e83101060cf1bec"
+                                       },
+                                       {
+                                           "path":  "src/source/JSphGpuSingle.cpp",
+                                           "sha256":  "942db3a71c2bf88dc05b049b5fa7ea7ade0688d73b2f4021008af6440c871f7a"
+                                       },
+                                       {
+                                           "path":  "src/VS/DualSPHysics5Re.vcxproj",
+                                           "sha256":  "a719dae2496ede01177d6fa5674daf8319cc49000c729c5804ebe80419cab320"
+                                       }
+                                   ],
+    "target":  "Windows x64, NVIDIA RTX A6000 (compute capability 8.6)",
+    "gpu_binary":  "Validated frozen Release: sm_86 SASS and compute_86 PTX7.7, CUDA11.7 static runtime.",
+    "gpu_driver":  "Install an NVIDIA driver supporting RTX A6000 and CUDA11.7; CUDA11.7 GA Windows toolkit driver baseline is516.01. Confirm actual server driver; no driver/system DLL is bundled.",
+    "nvidia_reference":  "https://docs.nvidia.com/cuda/archive/11.7.0/cuda-toolkit-release-notes/index.html",
+    "runtime":  {
+                    "mode":  "signed_MSVC_14_app_local_from_Visual_Studio_redist",
+                    "minimum_build_tools_version":  "14.36",
+                    "ucrt":  "Windows system prerequisite; system DLLs are not copied.",
+                    "license_and_download":  "https://learn.microsoft.com/en-us/cpp/windows/latest-supported-vc-redist?view=msvc-170",
+                    "files":  [
+                                  {
+                                      "source":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\msvcp140.dll",
+                                      "name":  "msvcp140.dll",
+                                      "version":  "14.36.32532.0",
+                                      "sha256":  "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823",
+                                      "signer":  "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+                                      "signature_status":  "Valid"
+                                  },
+                                  {
+                                      "source":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\vcruntime140.dll",
+                                      "name":  "vcruntime140.dll",
+                                      "version":  "14.36.32532.0",
+                                      "sha256":  "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc",
+                                      "signer":  "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+                                      "signature_status":  "Valid"
+                                  },
+                                  {
+                                      "source":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\vcruntime140_1.dll",
+                                      "name":  "vcruntime140_1.dll",
+                                      "version":  "14.36.32532.0",
+                                      "sha256":  "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47",
+                                      "signer":  "CN=Microsoft Windows Software Compatibility Publisher, O=Microsoft Corporation, L=Redmond, S=Washington, C=US",
+                                      "signature_status":  "Valid"
+                                  }
+                              ]
+                },
+    "project_license":  "LICENSE (project LGPL2.1); preserve existing project notices.",
+    "chrono_project_reference":  "https://projectchrono.org/",
+    "vendor_notice":  "No missing third-party license text is invented; Microsoft CRT source/signatures and official license link are recorded.",
+    "formal_input":  "CaseLianFlexibleStrip2D_PR_release_Def.xml",
+    "formal_bat":  "xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+    "new_output":  "CaseLianFlexibleStrip2D_PR_release_HGSPR_out",
+    "execution":  "Packaging only. Formal100s is for the user server; no solver is launched here. Half3s was cancelled, not accepted.",
+    "files":  [
+                  {
+                      "entry":  "CaseLianFlexibleStrip2D_PR_release_Def.xml",
+                      "bytes":  11855,
+                      "sha256":  "9f323b9159a77ecd97c3852704ed7d5d8f53d26fb8d55cbb39b9d80ca7cfe3a5",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_release_Def.xml",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_release_Def.xml"
+                  },
+                  {
+                      "entry":  "xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+                      "bytes":  1372,
+                      "sha256":  "43a18ee79da8381d3654e02f5ca1aa7efb08153efbbe0e70babea636f24efce8",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat"
+                  },
+                  {
+                      "entry":  "README.md",
+                      "bytes":  9617,
+                      "sha256":  "325b7351a07fd09cd6c7a26bfb2830f097d828ec95aa064c75a994fd59c02d51",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\README.md",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\README.md"
+                  },
+                  {
+                      "entry":  "support/README_server.md",
+                      "bytes":  4228,
+                      "sha256":  "7c68f680d2e677f8c5cdeb1100c8aded8a64aa028b8283f73a607e6cc8be04f2",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\README_server.md",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\README_server.md"
+                  },
+                  {
+                      "entry":  "support/paper_observables.json",
+                      "bytes":  2443,
+                      "sha256":  "bb913b690b8b3e67c2c2280f46e08b7416485f63f7dae60adf434909838a3b90",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\paper_observables.json",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\paper_observables.json"
+                  },
+                  {
+                      "entry":  "support/pack_lian_server.ps1",
+                      "bytes":  10912,
+                      "sha256":  "5d1cb7d88773e3074d40c6b2ca56e0dbc4e490f77a864a261c17db9dfbb7368e",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\pack_lian_server.ps1",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\pack_lian_server.ps1"
+                  },
+                  {
+                      "entry":  "LICENSE",
+                      "bytes":  27030,
+                      "sha256":  "7ffe1954587c77dfba1cf8eb9b2ea743671fa6e63f9e7a2f258119d42e14eefe",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\LICENSE",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\LICENSE"
+                  },
+                  {
+                      "entry":  "support/bin/DualSPHysics5.2_GEO_win64.exe",
+                      "bytes":  20460544,
+                      "sha256":  "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\DualSPHysics5.2_GEO_win64.exe"
+                  },
+                  {
+                      "entry":  "support/bin/GenCase_win64.exe",
+                      "bytes":  2304000,
+                      "sha256":  "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\GenCase_win64.exe",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\GenCase_win64.exe"
+                  },
+                  {
+                      "entry":  "support/bin/dsphchrono.dll",
+                      "bytes":  772096,
+                      "sha256":  "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\dsphchrono.dll",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\dsphchrono.dll"
+                  },
+                  {
+                      "entry":  "support/bin/ChronoEngine.dll",
+                      "bytes":  6067712,
+                      "sha256":  "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\ChronoEngine.dll",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\ChronoEngine.dll"
+                  },
+                  {
+                      "entry":  "support/bin/vcomp140.dll",
+                      "bytes":  185144,
+                      "sha256":  "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\vcomp140.dll",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\vcomp140.dll"
+                  },
+                  {
+                      "entry":  "support/bin/DsphConfig.xml",
+                      "bytes":  300,
+                      "sha256":  "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\DsphConfig.xml",
+                      "origin":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\lian_hg_np_build_r1\\DsphConfig.xml"
+                  },
+                  {
+                      "entry":  "support/bin/msvcp140.dll",
+                      "bytes":  578384,
+                      "sha256":  "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\msvcp140.dll",
+                      "origin":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\msvcp140.dll"
+                  },
+                  {
+                      "entry":  "support/bin/vcruntime140.dll",
+                      "bytes":  109440,
+                      "sha256":  "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\vcruntime140.dll",
+                      "origin":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\vcruntime140.dll"
+                  },
+                  {
+                      "entry":  "support/bin/vcruntime140_1.dll",
+                      "bytes":  49560,
+                      "sha256":  "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47",
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\support\\bin\\vcruntime140_1.dll",
+                      "origin":  "D:\\Program Files\\VS2022\\VC\\Redist\\MSVC\\14.36.32532\\x64\\Microsoft.VC143.CRT\\vcruntime140_1.dll"
+                  }
+              ],
+    "manifest_entry":  "support/server_manifest.json",
+    "manifest_self_hash":  "Intentionally omitted to avoid self-reference; ZIP extraction is checked against this manifest."
+}

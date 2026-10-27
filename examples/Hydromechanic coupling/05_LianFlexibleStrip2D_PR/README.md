@@ -1,5 +1,29 @@
 # Lian Flexible Strip 2D PR
 
+## 当前服务器入口（2026-10-27，替代下面旧入口说明）
+
+用户取消新的HG+SPR 3 s半步，要求将100 s完整计算移交Windows/RTX A6000。
+根目录 `CaseLianFlexibleStrip2D_PR_release_Def.xml` 和
+`xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat` 现采用已完成3 s粗步的
+HG=.1 / SPR=1 / 应力率梯度修正=1方案，保留侧壁FreeSlip、底面NoSlip、
+三个显式平面法向、10 µs时间步和0.05 s原生保存。未改生产源码。
+
+新输出固定为 `CaseLianFlexibleStrip2D_PR_release_HGSPR_out`，旧
+`CaseLianFlexibleStrip2D_PR_release_out` 和旧50 s输出原位保留。BAT使用
+`support/bin`，只负责GenCase/求解/原生保存；绘图在数据回拷后完成，
+不再调用旧Python/VTK后处理。便携包为根目录
+`Lian_HGSPR_Windows_RTXA6000.zip`；详见
+[服务器说明](support/README_server.md) 和
+[论文观测量定义](support/paper_observables.json)。
+
+3 s半步任务已按用户要求停止，最后日志帧约0.15 s，不能视为通过。
+历史status不改写，新停机记录为 `tests/logs/lian_hg3_half_r1.user_stop.json`。
+组合的3 s粗步与HG的0.15 s半步证据不代表100 s/论文精度验收。
+等待服务器结果期间主线先做Cryer，之后1D自重；不本地重启Lian长计算。
+
+以下旧日期段落是历史进展；其中“HG3 s half next”、HG关闭的旧正式入口、
+固定Python路径等已经被本节替代，不应用来启动本次服务器任务。
+
 2026-10-27 bounded compatibility update: mixed-slip SPR passed an independent
 3-s saved-output half pair (pressure RMS 0.016484 Pa, top material 0.00001354 mm).
 It has not been shown to resolve the paper-field discrepancy. A separate
