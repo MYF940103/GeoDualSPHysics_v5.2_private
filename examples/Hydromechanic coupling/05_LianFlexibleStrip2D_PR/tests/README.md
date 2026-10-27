@@ -18,6 +18,15 @@ plane-normal OFF/ON3-s comparison is a new gated sequence, not physical release.
 `logs/lian_spr_mix_r1.inputs_r2.json` corrects draft parameter comments only;
 the original preparation/manufactured-test records remain unchanged.
 
+The mixed-slip OFF/ON3-s sequence completed at06:39 JST on2026-10-27.
+`notes/lian_spr_mix_review_r1.md` separates normal-representation and SPR effects;
+`figures/lian_spr_mix_review_r1_{fields,history,boundary}.png` have matching CSVs.
+All six runtime checks passed, but no clear paper-field improvement is proven.
+The old completion notification failed (a full state dictionary created a159564-
+character command); evidence is preserved and that worker stays retired.
+`notes/lian_spr_half_r1.json` admits only one new3-s GPU5-us independent half run,
+with the original5-Pa/.005-mm limits and a short scalar-only completion message.
+
 This directory keeps validation and historical diagnostic assets separate
 from the release XML/BAT files in the case root. See [the case README](../README.md)
 for the current entry point and protected results.
