@@ -1,5 +1,20 @@
 # CryerProblem_PR
 
+## Active diagnosis (2026-10-27)
+
+Lian100s is delegated to the user server; local verification now proceeds here,
+then to case01 self-weight. Current CPU Debug startup completed200steps/1ms,
+five native frames with37173soil IDs, no exclusions/plasticity and5153real
+drained nodes at0Pa. See `tests/notes/cryer_start_review_r1.md`.
+
+This is not theory/full-cycle acceptance. The root5us fixed step bypasses the
+automatic pore-diffusion control (configured dtw about2.97877us); the mechanical
+`dterror` statistic does not certify that limit. A bounded Release2.5/1.25us
+startup comparison comes next. Root formal XML/BAT and old results are unchanged;
+do not run their existing-output deletion menu for retained data. Load-only
+matrix correction was rejected by the frozen constant-stress balance audit;
+static-plane SPR and 2D HG are not applied to this3D sphere.
+
 This case validates the u-pw pore-pressure-rate formulation on Cryer's problem: a saturated poroelastic sphere with a drained exterior surface and a uniform inward normal pressure.
 
 The active verification path uses `HydroMechInitMode=0` (`None`), `HydroMechTopLoadMode=2` (`FlexibleConfinement`) for the sustained confining pressure, and `HydroMechDrainage=1` to drain tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
