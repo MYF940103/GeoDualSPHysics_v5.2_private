@@ -1,0 +1,92 @@
+{
+  "passed": true,
+  "scope": "Two retained June22 native checkpoints plus Git source history, not a new physical solve",
+  "declared_fixed_dt_s": 5e-06,
+  "configured_dtw_s": 2.9787699190438848e-06,
+  "actual_checkpoint_reconstruction": [
+    {
+      "part": 1,
+      "actual_time_s": 0.0009135248253083916,
+      "zero_based_saved_step": 305,
+      "average_time_per_step_s": 2.985375246105855e-06,
+      "first_5us_then_dtw_reconstruction_s": 0.0009135248253083849,
+      "reconstruction_difference_s": 6.7220534694101275e-18
+    },
+    {
+      "part": 1000,
+      "actual_time_s": 0.9109307138662156,
+      "zero_based_saved_step": 305806,
+      "average_time_per_step_s": 2.978776528549757e-06,
+      "first_5us_then_dtw_reconstruction_s": 0.9109307138631343,
+      "reconstruction_difference_s": 3.0813129825446595e-12
+    }
+  ],
+  "code_history": [
+    {
+      "file": "src/source/JSphCpu.cpp",
+      "changed_commit": "8af9ed55",
+      "before": "FixedDt was followed by unconditional min(dt,dtw)",
+      "after": "Only variable steps are limited by dtw; fixed steps bypass it",
+      "current": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+        "bytes": 233925,
+        "sha256": "56307570e9daa2c1b5cc37eb0c1fb1906aee265d35fafe17054a3b42b9a3a45a"
+      }
+    },
+    {
+      "file": "src/source/JSphGpu.cpp",
+      "changed_commit": "8af9ed55",
+      "before": "FixedDt was followed by unconditional min(dt,dtw)",
+      "after": "Only variable steps are limited by dtw; fixed steps bypass it",
+      "current": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+        "bytes": 98142,
+        "sha256": "6a61bc5b1534680f271ea055d60ff562fe543287329abd828a0821a30643aa4f"
+      }
+    }
+  ],
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_dt_history_r1.py",
+      "bytes": 3808,
+      "sha256": "74dbe18accc035b0c883ca606f89140e587e94c3fe88c377fdc287dba52daf42"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_start_r1.py",
+      "bytes": 14025,
+      "sha256": "9523adf2886d80506315d609a06d3bbfbb7524cab49d6ca0290405238ba32d70"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "bytes": 385536,
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\Run.out",
+      "bytes": 90554,
+      "sha256": "b4010a95b342684ec8415ab4af5c1960d8d23684c94c4088f3f50e553f7a2fd3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\CaseCryerProblem_PR.xml",
+      "bytes": 10104,
+      "sha256": "36813ce1757ee2a4d7c9be417ec9450f4501a297d9f2fffdcc23e9658e359c70"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\data\\Part_0001.bi4",
+      "bytes": 4166529,
+      "sha256": "84c13f7c9ebb262079223738770d2d66277eab507372641832b5085d68b63433"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\data\\Part_1000.bi4",
+      "bytes": 4166529,
+      "sha256": "b8bd0fcb00d87d363327681756da0f45063a5195f58976483bc52c9e8dadb1b2"
+    }
+  ],
+  "conclusion": "The retained run was not a full trajectory of 5us steps; sampled clocks match an initial5us step followed by about2.97877us. A current5us run is not a stress-precision-only A/B control.",
+  "limits": [
+    "Only the two stated native times are reconstructed, not every old saved state.",
+    "The conservative dtw limit alone does not prove physical instability or explain the old peak error.",
+    "Do not replace actual old times with metadata FixedDt*step.",
+    "No source, load, geometry, boundary, material or formal input was changed."
+  ]
+}

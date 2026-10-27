@@ -1,0 +1,23 @@
+{
+  "passed": false,
+  "status": "short_pair_rejected_or_interrupted",
+  "run_manifest": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_dt_short_r1.run.json",
+    "bytes": 33740,
+    "sha256": "f980fe196c28c590978eb6cfcacfc2ffdb239f0f1cbcb212bfe0bcee40a4758a"
+  },
+  "paired_samples": 5,
+  "max_pressure_rms_pa": 56.38073723993549,
+  "max_material_displacement_mm": 3.0321305634837767e-06,
+  "center_material_count": 18,
+  "error": "AssertionError(('Conservative startup implementation screen failed; not a theory error', [{'part': 1, 'time_s': 0.00012500000000000017, 'pressure_rms_pa': 44.356760507848186, 'material_displacement_max_mm': 2.161514293035637e-06}, {'part': 2, 'time_s': 0.0002500000000000005, 'pressure_rms_pa': 56.38073723993549, 'material_displacement_max_mm': 1.8211873103442678e-06}, {'part': 3, 'time_s': 0.0003750000000000008, 'pressure_rms_pa': 49.38628120049303, 'material_displacement_max_mm': 1.4564787092967786e-06}, {'part': 4, 'time_s': 0.0005000000000000011, 'pressure_rms_pa': 49.8781945904556, 'material_displacement_max_mm': 3.0321305634837767e-06}]))",
+  "physical_accepted": false,
+  "peak_window_admitted": false,
+  "limits": [
+    "Only0.5ms startup, not a peak-window/half-cycle/analytical accuracy acceptance.",
+    "Both steps must meet original poreDtSafety separately from mechanical dterror.",
+    "Center mean uses fixed initialr<=dp+1e-12 material IDs; no assumed r=0 node.",
+    "5Pa/.005mm is a conservative implementation screen; initial step-load transients are separately reported.",
+    "No interpolation, threshold relaxation, extra step search, worker, notifier or automatic longer run."
+  ]
+}

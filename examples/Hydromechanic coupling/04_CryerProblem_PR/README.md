@@ -15,6 +15,24 @@ do not run their existing-output deletion menu for retained data. Load-only
 matrix correction was rejected by the frozen constant-stress balance audit;
 static-plane SPR and 2D HG are not applied to this3D sphere.
 
+The June22 retained root run did NOT use5us throughout despite its configuration
+label: two native checkpoints reconstruct an initial5us followed by about2.97877us
+under the old mandatory diffusion clip. July03 commit8af9ed55 changed that behavior.
+Use actual saved times, not FixedDt times step, and do not call an old/current
+comparison a double-stress-only experiment. See `tests/notes/cryer_dt_history_r1.md`.
+
+The two bounded CPU Release startup runs (2.5/1.25us,0.5ms) also completed:
+all per-run safety checks passed, but the predeclared5Pa pressure-RMS screen
+did not (maximum56.380737Pa; maximum displacement difference3.03213e-6mm).
+This is not solver failure or a full analytical comparison. The reviewed
+history/radial PNGs and matching compact CSVs use prefix
+`tests/figures/cryer_dt_short_review_r1_`; their visual receipt is
+`tests/logs/cryer_dt_short_review_r1.visual.json`. No longer run is admitted
+by this short screen. Next diagnose the abrupt inertial startup and temporal
+sensitivity separately from the original pressure/stress-derivative spatial
+consistency; do not silently relax the5Pa screen, change loading, or call
+the old/new comparison a precision-only test.
+
 This case validates the u-pw pore-pressure-rate formulation on Cryer's problem: a saturated poroelastic sphere with a drained exterior surface and a uniform inward normal pressure.
 
 The active verification path uses `HydroMechInitMode=0` (`None`), `HydroMechTopLoadMode=2` (`FlexibleConfinement`) for the sustained confining pressure, and `HydroMechDrainage=1` to drain tracked exterior free-surface particles. The direct uniform pore-pressure initialization path is not used because it was not paired with a consistent 3D effective-stress and displacement initialization.
