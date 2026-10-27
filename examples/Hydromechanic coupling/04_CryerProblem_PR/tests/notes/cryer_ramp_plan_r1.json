@@ -1,0 +1,67 @@
+{
+  "scope": "User-requested Cryer peak-time/loading-history review and follow-up plan, 2026-10-28 JST",
+  "status": "offline_review_completed_physical_ramp_tests_not_started",
+  "production_changed": false,
+  "formal_inputs_changed": false,
+  "active_damping_run_changed_or_restarted": false,
+  "physical_acceptance": false,
+  "source_checkpoint": "4fc841546dbbc4ec200dc3de1f941181c2510a2f",
+  "sources": [
+    {"path": "tests/configs/cryer_grad_peak_r1_Def.xml", "sha256": "2a42cf89ba9c6e06f497053beddfcf7dc288e7d4c0fd32a16b14972e8e6ef4a5"},
+    {"path": "tests/configs/cryer_damp_peak_r1_Def.xml", "sha256": "08eb62fb38750767b0dbb0bcdfc518f2c222d39418accc03010e092aaa6c6a27"},
+    {"path": "support/plot_cryer_poisson_sweep.py", "sha256": "8114a0d39d7d1fb5f3d6a8ff696186218d0564f20f9ad279915f9717751f6d5e"},
+    {"path": "tests/logs/cryer_peak_compare_r1.check.json", "sha256": "bfd47c8f6b5bf69fa665798770e4daff05086673076f5f30ecdf5ac2dc171a08"},
+    {"path": "tests/logs/cryer_radial_review_r1.check.json", "sha256": "efa82460131117a03f2a11f8ab9b2a44eda7ce286c2584fc36c63ee46a0c552a"}
+  ],
+  "current_loading_audit": {
+    "both_peak_runs_ramp_s": 0.0,
+    "source_clock_law": "For Tr>0: q(t_n)=q0*min(max(t_n,0)/Tr,1); for Tr=0: q(t_n)=q0 including the first interaction.",
+    "source_locations": [
+      "src/source/JSphCpu.cpp:2262",
+      "src/source/JSphGpu.cpp:760",
+      "src/source/JSphGpuSingle.cpp:680",
+      "src/source/JSphCpuSingle.cpp:941",
+      "src/source/JSphGpuSingle.cpp:853"
+    ],
+    "predictor_corrector_clock": "Both force stages read outer TimeStep=t_n; the member advances only after the full step. With positive Tr this nonautonomous-load timing warrants a separate order check; with current Tr=0 it does not change q.",
+    "drainage_start_s": 0.0,
+    "initial_load_telemetry": "Part0 is saved before first interaction, so its zero load diagnostic is not an implicit ramp. Sealed Part1/2 have nonzero confinement contributions on all 37173 soil IDs.",
+    "dt_s": 0.000000476837158203125,
+    "current_sampled_peak_time_s": 0.04638671875,
+    "point_center_step_theory_peak_time_s": 0.04225073857945894,
+    "point_center_peak_time_lag_s": 0.00413598017054106,
+    "timing_conclusion": "The lag spans roughly 8674 steps; one-stage clock timing cannot explain it, and there is no explicit nonzero ramp in these runs.",
+    "initial_condition_caveat": "Native pressure initially equals zero; the instantaneous quasi-static step solution has internal p/q -> 1 at t -> 0+. Physical wave/build-up and initial-state compatibility remain separate hypotheses."
+  },
+  "offline_linear_quasistatic_ramp_theory": {
+    "definition": "G_s(t) is the unit-step pressure response at fixed reference radius s=r/a. For Tr>0, p(t)/q0=(1/Tr)*integral_0^min(t,Tr) G_s(t-u) du.",
+    "modal_evaluation": "For G_s=sum a_n exp(-lambda_n*t), use sum a_n exp(-lambda_n*max(0,t-Tr))*(-expm1(-lambda_n*min(t,Tr)))/(lambda_n*Tr). lambda_n=xi_n^2*Cv/a^2. No shifted simulation times or interpolated native states.",
+    "small_ramp_limit": "For a smooth interior peak and Tr much shorter than the response time, the peak delay is approximately Tr/2; this is not a universal exact time correction.",
+    "Cv_m2_s": 0.0027444522857366896,
+    "radius_m": 0.05,
+    "roots": 360,
+    "q_pa": 10000.0,
+    "point_center_results": [
+      {"ramp_s": 0.0, "peak_p_over_q": 1.2490230152022015, "peak_time_s": 0.04225073723443789},
+      {"ramp_s": 0.0009765625, "peak_p_over_q": 1.2490128184027287, "peak_time_s": 0.04273920270030912},
+      {"ramp_s": 0.00390625, "peak_p_over_q": 1.2488599526668276, "peak_time_s": 0.044206747473661795},
+      {"ramp_s": 0.0078125, "peak_p_over_q": 1.248371866372526, "peak_time_s": 0.04616829707084289}
+    ],
+    "r_over_a_005_results": [
+      {"ramp_s": 0.0, "peak_p_over_q": 1.2478532632992805, "peak_time_s": 0.041936907862509705},
+      {"ramp_s": 0.0009765625, "peak_p_over_q": 1.2478430470360102, "peak_time_s": 0.04242538366536767},
+      {"ramp_s": 0.00390625, "peak_p_over_q": 1.2476898888076648, "peak_time_s": 0.04389311524970064},
+      {"ramp_s": 0.0078125, "peak_p_over_q": 1.2472008597857442, "peak_time_s": 0.04585526753382796}
+    ],
+    "limitations": "These are theoretical sensitivity calculations, not new SPH runs or evidence that the existing zero-ramp data experienced an 8-ms ramp. Peak optimizer last digits are not physical precision. The model is linear/quasi-static, not a dynamic numerical surrogate."
+  },
+  "follow_up_order": [
+    "Leave cryer_damp_peak_r1 running unchanged; complete and independently review the damping-only matched-time comparison first.",
+    "For any later finite-ramp experiment, declare the actual q(t), load-start/full-load/drainage event clocks and observation radius before running. Compare with the same-history convolution theory, not the old step curve or an empirically translated time axis.",
+    "Before interpreting finite-ramp Cryer results, check predictor/corrector external-load clock order using a bounded prescribed-force test. Any code correction requires CPU/GPU tests and preservation of existing Tr=0 regressions; no global TimeStep mutation or silent solver change.",
+    "If justified by completed damping and spatial-consistency evidence, select at most one positive binary ramp for an initial bounded coarse/half test; do not automatically launch a multi-case long matrix or choose Tr solely to align the old peak.",
+    "Separate a compatible preload/initial-state comparison from ramp duration: verify total stress, pressure, displacement and drainage compatibility before using a changed initial state. Do not simply assign p=q0 and claim an equivalent solution.",
+    "Report sampled peak time and native output cadence separately. Use matched actual times/material IDs and a distinct, clearly labelled peak-time estimator if needed; never alter retained raw clocks or existing acceptance limits.",
+    "Continue the initial-layout/zero-order force-consistency diagnosis in parallel. A ramp or damping change cannot by itself demonstrate that spatial consistency, peak amplitude and late decay are repaired."
+  ]
+}
