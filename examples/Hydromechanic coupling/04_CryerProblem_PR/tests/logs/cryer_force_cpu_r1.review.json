@@ -1,0 +1,55 @@
+{
+  "scope": "Independent CSV, input-identity and production-function manufactured-field review",
+  "reviewed": true,
+  "diagnostic_verified": true,
+  "physical_accuracy_accepted": false,
+  "time_integrated": false,
+  "build_manifest_sha256": "ffa71c594a347058cb3badb42af02dbcd7f69e641587d083e0c4d06a378aa8c5",
+  "run_manifest_sha256": "7edea688bf33b9ea2cee581a9ddd7f22f685ddb9a9636606ed504f2a43abb2bb",
+  "raw_summary_sha256": "b9f282fca153a862e72f972a5c2c761d4e86c7486a10613c98a5f875668efaaa",
+  "actual_program_sha256": "d149b6b3def0996c3ad5d1e84aa7e696eadbd0195078dfdc7e4c5c50137df2af",
+  "independent_checks": {
+    "sha256_entries_verified": 686,
+    "cases": 6,
+    "native_soil_ids_per_case": 37173,
+    "all_ids_unique_and_equal_initial_geometry": true,
+    "all_numeric_values_finite_and_density_positive": true,
+    "artificial_density_pressure_and_stress_fields_match_definitions": true,
+    "all_summary_force_and_rate_metrics_recomputed_from_csv": true,
+    "largest_reduction_rounding_difference": 2.32e-8,
+    "reduction_rounding_context": "Difference in recomputing an approximately 4.01e5 Pa/s RMS, not physical error",
+    "source_build_objects_and_runtime_hashes_match": true
+  },
+  "static_force_component_rms_m_s2": {
+    "p0_uniform_rho": 0,
+    "p0_smooth_rho": 3.1922553645559672e-5,
+    "p06q_uniform_rho": 1.7480523212550513e-5,
+    "p06q_smooth_rho": 6.2426039379992202e-5
+  },
+  "gradient_observations": {
+    "grad0_stress_rate_rms_pa_s": [352554.08616185648,104139.12449639391,401212.89225994179,18750.943081458219,81247.044145556531,34722.285653783169],
+    "grad1_stress_rate_rms_pa_s": [0.50929098109980253,0.440302565631772,0.5532307813014804,0.093106581615417572,0.11996303258919518,0.073137793382349478],
+    "grad1_max_relative_error_over_nonzero_target_components": 7.67812e-6,
+    "grad1_max_absolute_error_normalized_by_largest_target_component": 1.02367e-6,
+    "grad1_zero_target_xz_max_absolute_error_pa_s": 0.641896,
+    "pore_rate_grad0_grad1_bitwise_equal": true,
+    "density_rate_grad0_grad1_bitwise_equal": true,
+    "pore_rate_relative_rms_to_affine_target": 9.59108e-8,
+    "raw_density_rate_relative_rms_to_affine_target": 0.152427
+  },
+  "load_observation_gap": {
+    "field": "static_p0_uniform",
+    "full_call_load_telemetry_all_zero": true,
+    "independent_real_load_probe_nonzero_count": 37173,
+    "independent_real_load_probe_component_rms_m_s2": 338.308410,
+    "independent_real_load_probe_vector_max_m_s2": 1585.006972,
+    "explanation": "JSphCpu.cpp conditionally writes the load telemetry together with nonzero total force/rate/viscosity results. Exact force cancellation can suppress telemetry; this is not zero applied confinement. Production code was not changed."
+  },
+  "decision": "First test the existing stress-rate gradient switch alone in fresh bounded dynamics, preserving the original load. Do not implement multiple candidate changes together or interpret an instantaneous affine improvement as a Cryer peak-accuracy acceptance.",
+  "limits": [
+    "This companion disables drainage/viscosity/damping only in its frozen manufactured fixture, not in formal input or a time-evolving physical run.",
+    "The current mixed-density nonzero-pore-pressure force formula is not algebraically exact for arbitrary constant total stress; the small measured residual is reported rather than hidden.",
+    "Uncorrected density continuity remains unchanged. This review does not approve a density-integration redesign.",
+    "No new external-load operator, shifting scheme or physical accuracy claim is accepted here."
+  ]
+}
