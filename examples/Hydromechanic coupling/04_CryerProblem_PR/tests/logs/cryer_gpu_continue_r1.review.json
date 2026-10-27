@@ -1,0 +1,83 @@
+{
+  "schema": "cryer-independent-gpu-continuation-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T11:33:28.719809+00:00",
+  "status": "bounded_backend_cross_pass_confirmed",
+  "evidence_consistency_passed": true,
+  "original_backend_cross_screen_passed": true,
+  "physical_accepted": false,
+  "half_step_accepted": false,
+  "long_window_admitted": false,
+  "scope": "Independent offline adoption review of the retained completed GPU Debug run and the newly completed GPU Release versus retained same-dt CPU Release. No solver was run by this review; only this new JSON was written.",
+  "source_links": [
+    {"path": "cryer_gpu_continue_r1.check.json", "sha256": "0db37a6ee501cd9d9c02b24fd0fb93508c281a2e9ab3c51e65e1905bde564aa0"},
+    {"path": "cryer_gpu_continue_r1.run.json", "sha256": "d7fb7d6770cc35bb3ed818db9af7139405f19c28a3769780cea7ec3517b1dff6"},
+    {"path": "cryer_gpu_continue_r1.inputs.json", "sha256": "ce2d3572fb7d3176ad630ae3a7c5c544e8b92daf259e749abc699f5561c7db5e"},
+    {"path": "cryer_gpu_continue_r1.adopt_debug.json", "sha256": "9a0880503eca7ed818218f390b72e1c99a80642374a74e745e39638538320f02"},
+    {"path": "cryer_gpu_continue_r1.completion.json", "sha256": "478901dd982a8d616bbbffa747bcc252f16c1248d812ada61b281b20b2048e32"}
+  ],
+  "provenance_review": {
+    "unique_hashed_file_count": 639,
+    "sha256_mismatch_count": 0,
+    "scope": "Retained and continuation check/run/prepared/adoption/completion records, their explicitly bound input/output files and CPU control records; the bound current GPU Debug and Release build records were also opened and their explicit file hashes checked.",
+    "gpu_debug_build_input_count": 386,
+    "gpu_release_build_input_count": 386,
+    "original_evidence_modified": false,
+    "production_source_modified": false,
+    "solver_or_git_executed_by_reviewer": false
+  },
+  "debug_adoption": {
+    "output_name": "cryer_gpu_base_r1_dbg",
+    "original_exit_code": 0,
+    "original_owned_exited": true,
+    "steps": 200,
+    "native_frames_reread": 5,
+    "original_single_run_safety_issues": [],
+    "memcheck_error_summary_counts": [0],
+    "memcheck_leak_summaries_bytes_and_allocations": [[0, 0]],
+    "strict_memcheck_passed": true,
+    "old_rejection_retained": true,
+    "old_rejection": "AssertionError('Debug memcheck did not pass')",
+    "reason_for_old_false_rejection": "The old runner additionally required the string All heap blocks were freed. The actual compute-sanitizer output reports LEAK SUMMARY: 0 bytes leaked in 0 allocations and ERROR SUMMARY: 0 errors. The continuation required present zero summaries rather than changing the sealed old result.",
+    "debug_solver_rerun": false
+  },
+  "release_cross": {
+    "output_name": "cryer_gpu_base_r1_c",
+    "cpu_control": "cryer_dt_short_r1_c",
+    "actual_gpu": "NVIDIA GeForce RTX 3050",
+    "compute_capability": "8.6",
+    "dt_s": 0.0000025,
+    "steps": 200,
+    "exit_code": 0,
+    "owned_exited": true,
+    "native_frames_reread": 5,
+    "cpu_control_frames_reread": 5,
+    "soil_ids_per_frame": 37173,
+    "native_ids_complete_unique_unchanged": true,
+    "original_single_run_safety_issues": [],
+    "actual_saved_times_s": [0, 0.00012500000000000017, 0.0002500000000000005, 0.0003750000000000008, 0.0005000000000000011],
+    "saved_steps_zero_based": [0, 49, 99, 149, 199],
+    "cpu_gpu_max_actual_time_difference_s": 0,
+    "pressure_rms_limit_pa": 5,
+    "material_displacement_limit_mm": 0.005,
+    "pressure_rms_pa_by_part": [0, 0.0016521283571933867, 0.00197270528465131, 0.0021957454093329133, 0.002544228136798847],
+    "material_displacement_max_mm_by_part": [0, 1.5900540676393877e-9, 5.236798848797209e-9, 8.176120460118543e-9, 1.0246289467446847e-8],
+    "all_five_original_cross_samples_passed": true,
+    "summary_rows_recomputed": 5,
+    "summary_max_abs_recomputation_difference": 0,
+    "native_difference_rows_recomputed": 175,
+    "native_difference_max_abs_recomputation_difference": 0
+  },
+  "review_method_and_ownership": {
+    "native_reader_calls_scope": "Five retained Debug, five new GPU Release and five retained CPU Release unique frames, plus the reused CPU initial reference; no long history or new solve.",
+    "safety_method": "Reread native data using the retained original inspect() finite/positive-density/no-exclusion/elastic/precision/actual-load/drainage/mechanical-step/pore-step guard. The existing guard was reused, not advertised as a separately implemented physical safety model.",
+    "process_check": "After review, no Cryer GPU solver nor process with recorded sequence/wrapper PIDs 65448, 64648 or 78435 was present. The concurrent CPU fine test was neither stopped nor modified."
+  },
+  "limitations": [
+    "This is a same-dt backend comparison over five saved samples and 200 steps, not independent half-step convergence or analytical Cryer acceptance.",
+    "The retained CPU grad0 half-step screen remains failed; a small CPU/GPU difference does not cure it.",
+    "Debug and Release were each safety-checked; no Debug/Release 0-ULP equivalence is claimed.",
+    "Actual hardware was RTX 3050, not the historical A6000. The observed runtime is not an isolated benchmark because a CPU diagnostic was concurrent.",
+    "No old script, receipt, input, native output, production source, notifier or worker was modified or restarted."
+  ]
+}

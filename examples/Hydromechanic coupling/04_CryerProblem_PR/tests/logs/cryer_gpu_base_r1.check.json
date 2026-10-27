@@ -1,0 +1,24 @@
+{
+  "passed": false,
+  "status": "gpu_startup_rejected_or_interrupted",
+  "run_manifest": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_gpu_base_r1.run.json",
+    "bytes": 10078,
+    "sha256": "f39d629462a5ee417b8c014e7254bd5bf3028d776f74a9d5ff8d8ec7f8ed4313"
+  },
+  "paired_samples": 0,
+  "error": "AssertionError('Debug memcheck did not pass')",
+  "max_pressure_rms_pa": null,
+  "max_material_displacement_mm": null,
+  "physical_accepted": false,
+  "half_step_accepted": false,
+  "long_window_admitted": false,
+  "limits": [
+    "Only200steps/5saved frames per GPU run; not a peak/half-step/theory acceptance.",
+    "The retained CPU independent half pair failed5Pa; adopting its passed coarse does not reverse that result.",
+    "Debug and Release are not0ULP controls; the comparison is GPU Release versus same-dt CPU Release.",
+    "Original geometry/load/drainage/damping/operators are unchanged; no load-only correction.",
+    "Observed startup loop cost is not a controlled benchmark or a long-window prediction.",
+    "No GPU half, notifier or automatic longer run is admitted."
+  ]
+}
