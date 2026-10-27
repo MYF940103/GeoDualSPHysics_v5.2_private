@@ -12,6 +12,13 @@ are next. See `tests/notes/lian_spr_half_review_r1.md` and
 `tests/notes/lian_hg_short_review_r1.md`.
 Formal XML/BAT and the intentionally stopped 100-s dataset are unchanged.
 
+The first HG x SPR 3-s worker was stopped by its checker at .10001 s:
+physical/identity fields were exact, but it incorrectly compared `dterror`, a
+since-last-output statistic, across 5-ms/50-ms output intervals. The new r2
+checker preserves exact state equality and the original independent natural-step
+safety limit; see `tests/notes/lian_hg3_r1_audit.md`. No production change or
+completed 3-s result is implied by this checker repair.
+
 2026-10-26 task-plan revision: Lian is the sole active 2-D consolidation
 verification case; Yao is deferred with its evidence preserved. Finish the
 running mirror-footprint 15-s coarse/half review first. If that review admits
