@@ -1,0 +1,42 @@
+{
+  "scope": "Independent review of frozen load algebra and retained native observations; not physical acceptance",
+  "reviewed": true,
+  "physical_accuracy_accepted": false,
+  "original_receipt": {
+    "relative_path": "cryer_load_pair_r1.check.json",
+    "sha256": "77f8b1478da58e6e8c54a86c22c023da958c6bf1a248b3a0219d288bb7a44ed9",
+    "analysis_checks_passed": true,
+    "original_evidence_unchanged": true
+  },
+  "reference_clarification": {
+    "original_receipt_binds": ["Zhao 2019", "An SPH framework for drained and undrained loading over large deformations (2024)"],
+    "not_the_same_paper": "The 2024 framework is not the 2026 A Coupled u-pw SPH Formulation main paper used for Cryer section 4.2 and Figure 7.",
+    "current_main_pdf": {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/papers/PDF/a-coupled-u-p-sph-formulation-for-hydromechanical-modeling-of-retrogressive-landslides-and-comparison-with-a-penalty-based-approach.pdf",
+      "sha256": "e4420043f21903f84d8468f14975e2d6fb3bc3e7993ad1fd8054882b9ead05ef"
+    }
+  },
+  "observer_sensitivity": {
+    "all_37173_ids_match": true,
+    "all_old_float_positions_equal_new_initial_positions_cast_to_float32": true,
+    "old_initial_center_count": 12,
+    "new_initial_center_count": 18,
+    "new_initial_native_part0_sha256": "92f89b8466a329a799572d009203c9fb123bba13f0165073d244501f64ea5bf4",
+    "additional_ids": [17338, 17343, 18412, 18443, 19403, 19460],
+    "definition": "Sensitivity only: reobserve the same old native states using the 18 fixed IDs selected from the new double-saved initial geometry, versus the original sealed 12-ID observer. No physical guard or trajectory is altered.",
+    "rows": [
+      {"part": 50, "actual_time_s": 0.04554741329226484, "pressure_12_pa": 12158.54923502604, "pressure_18_pa": 12158.947320, "pressure_change_pa": 0.398085, "total_compression_12_pa": 11654.743715074323, "total_compression_18_pa": 11654.514868, "total_compression_change_pa": -0.228847},
+      {"part": 1000, "actual_time_s": 0.9109307138662156, "pressure_12_pa": 42.77121289571126, "pressure_18_pa": 42.874089, "pressure_change_pa": 0.102876, "total_compression_12_pa": 10785.474771923487, "total_compression_18_pa": 10780.132860, "total_compression_change_pa": -5.341912}
+    ],
+    "conclusion": "At these two actual saved times the observer change cannot explain a several-hundred-Pa discrepancy. This does not establish the unsampled peak or a coupled double-state improvement."
+  },
+  "decisions": [
+    "Retained states do not show a simple center total-stress deficit. Center and outer-shell total stresses differ; investigate the distribution rather than interpreting pore-pressure/q as a transmitted-load fraction.",
+    "Reject load-only correction as an isolated implementation. Its failure does not reject all mutually consistent corrected formulations.",
+    "A receiver-C extension restores the uniform field but fails general pair linear momentum in the declared nonuniform manufactured field.",
+    "The pair-adjoint D extension passes this offline algebra screen; require real production-function manufactured checks and fresh bounded trajectories before any implementation or accuracy claim.",
+    "D affine load work uses native sum(m/rho), not geometric sphere volume. Do not normalize away the 1.1093 volume ratio by silently changing force or mass.",
+    "Shifting is a later conditional candidate, not a verified remedy. Position rearrangement alone leaves sum(m/rho) unchanged; state remapping and free-surface/drainage/traction treatment must be checked."
+  ],
+  "continuation": "Real CPU force/rate manufactured companion, then isolated candidate dynamics after safety review. Formal inputs and production source remain unchanged."
+}
