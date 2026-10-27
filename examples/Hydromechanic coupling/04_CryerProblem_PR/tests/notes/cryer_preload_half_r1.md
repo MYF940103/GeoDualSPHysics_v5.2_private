@@ -1,0 +1,27 @@
+# Cryer preload: one fresh short GPU half-step
+
+Prepared only for parent review; no prepare, solver, queue or Git is executed by the author. The completed coarse `cryer_preload_probe_r1` is adopted, never rerun. Its original failed analysis receipts remain unchanged: the failure was all-zero CSV sigma columns inferred as int64, not a failed solver. The separate `cryer_preload_offline_r1` analysis and independent `cryer_preload_review_r1` recovered and checked all 69 native frames and all five closed-state diagnostics.
+
+## Only admitted numerical difference
+
+XML is byte-text derived from the coarse probe with only `DtIni` and `DtFixed` changed from 2^-21 to **2^-22 = .0000002384185791015625 s**. BAT changes only the tag/output. Ramp=2^-8 s, drainage start=2^-7 s, FixedGrid=1, end=17*2^-11 s and output=2^-13 s are unchanged: 34816 steps, 69 saves. Native zero-based step must be `part*512-1` for nonzero half saves versus `part*256-1` for the retained coarse. Native values/metadata are never relabeled to fit an old checker.
+
+Same canonical GPU Release, FrDraw R=.05/dp=.0025, original k1e-5/raw confinement/grad1, damping coefficient .00004, HG/SPR/shifting off. Pore pressure/rate and density remain float; stress and saved position are double. No production source, formal inputs, physical equations or particle layout change. There is no new peak/long-run admission, even if this short comparison passes. Expected GPU cost is about 66 minutes, not a timer-based stopping condition.
+
+## Prerequisites and checks
+
+Explicit `--prepare` requires both recovered coarse offline safety and its independent review with evidence/owned exit/equilibrium diagnostics passed. It verifies all bound coarse outputs, old failed run/completion/input receipts, canonical executable/build/source/runtime/readers and new files. Current equal CODEX thread/session identity is obtained at parent preparation. Default invocation only prints help. `--run` refuses existing outputs/checks/logs and active GPU solvers; it starts exactly one fresh half. No old worker is restarted/rearmed and no connection self-test is sent.
+
+All 69 half frames independently retain original finite/elastic/no-excluded/positive-density/37173 native IDs, mass/h/dp, double saved position/stress flags, radius<=.0525 m, actual inward-load telemetry after t=0, original mechanical dterror<=1e-14 and separately the original pore-diffusion step limit. Initial identity/geometry/velocity/density/pressure/mass/dp/h/six stress components are exactly compared against the coarse native initial fields. The actual list has 18 named fields, not an approximate count. Pressure and stress arrays explicitly convert to float64 only for arithmetic; numeric native values and identity fields do not change. This avoids all-zero CSV dtype inference without pretending that persistent pore/density physics became double.
+
+At each actual binary saved time, retain a nonempty FSType2/3 mask. Part64 at tD is the verified pre-opening saved state; Parts65–68 require every true drained native pressure exactly zero. Coarse and half saved times must be exactly equal; no interpolation or nominal-index substitution. The independent all-69-sample half screen uses the unchanged `cryer_grad_short_r1.difference`: field pressure RMS<=5 Pa and maximum material displacement difference<=.005 mm. Stress/velocity/density/load differences and mask changes are recorded separately. Cross-step ramp/source-clock load changes are not automatically backend errors.
+
+The same five new equilibrium diagnostics are computed independently on each of Parts61–64 for both runs: fixed initial V0-weighted pressure target RMS<=100 Pa; total-stress six-component target RMS<=100 Pa; speed maximum<=1e-5 m/s; fixed-origin single-scalar isotropic full-vector fit RMS<=1e-5 mm; fixed outer-shell per-r0 inward target error RMS<=1e-5 mm. They are not substituted for original safety or half-step limits. Half agreement and both qualified initial states are necessary before discussing a longer peak window, not automatic authorization for one.
+
+Finite-Kw uniform references, fixed 18-ID center set, native versus geometric volume/load virial and conditional fluid-content observations have the same definitions as the coarse probe. No drained theoretical curve, smoothing or assigned equilibrium fields are introduced. Existing post-drain strong transients must be reported separately: a well-prepared closed initial state alone does not prove a converged opening response or exact discrete no-flux Darcy boundary.
+
+## Evidence and terminal handling
+
+New output `tests/outputs/cryer_preload_half_r1`; matching inputs/run/status/completion/check/logs in tests/logs; summary and independent half CSVs in tests/figures. Solver completion/output hashes are sealed before offline analysis. On analysis failure, preserve the completed solve and repair only new analysis. On runtime failure stop only the owned wrapper tree, preserve output and exact error/traceback. No threshold change, duplicate solver, automatic smaller-step search, timer kill or retained-output overwrite.
+
+One terminal same-thread queue attempt is exclusively recorded once, with no retries or rearm. The notification requests independent offline review and a separately justified next-step decision; it never declares full physical/peak/full-cycle acceptance. Static parent review must precede `--prepare` and `--run`; terminal figures can be prepared offline afterward.
