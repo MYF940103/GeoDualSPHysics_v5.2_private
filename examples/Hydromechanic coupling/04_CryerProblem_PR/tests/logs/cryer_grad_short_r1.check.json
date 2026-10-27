@@ -1,0 +1,23 @@
+{
+  "passed": false,
+  "status": "grad_short_pair_rejected_or_interrupted",
+  "run_manifest": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_grad_short_r1.run.json",
+    "bytes": 27223,
+    "sha256": "e9d70b2cac5e3c5eed8a4fffacc450b29f238ced3d99c236356e3f45e4c2f51c"
+  },
+  "paired_samples": 5,
+  "error": "AssertionError(('Original5Pa/.005mm independent half screen failed', [{'part': 1, 'coarse_time_s': 0.00012500000000000017, 'half_time_s': 0.00012500000000000025, 'actual_time_difference_s': 8.131516293641283e-20, 'pressure_rms_pa': 44.24967290215218, 'material_displacement_max_mm': 2.1603994727796704e-06, 'total_stress_six_component_rms_pa': 31.375931245945885, 'velocity_vector_rms_m_s': 5.76490112828725e-05, 'density_rms_kg_m3': 0.0009774290502047856, 'load_vector_rms_m_s2': 0.002574097807494953, 'fstype_mismatches': 0, 'drained_mask_mismatches': 0, 'screen_passed': False}, {'part': 2, 'coarse_time_s': 0.0002500000000000005, 'half_time_s': 0.00025000000000000055, 'actual_time_difference_s': 5.421010862427522e-20, 'pressure_rms_pa': 56.26035269640741, 'material_displacement_max_mm': 1.8116515611519845e-06, 'total_stress_six_component_rms_pa': 39.88364518108751, 'velocity_vector_rms_m_s': 3.68514178230704e-05, 'density_rms_kg_m3': 0.0014246204849444346, 'load_vector_rms_m_s2': 0.0025800221946119003, 'fstype_mismatches': 0, 'drained_mask_mismatches': 0, 'screen_passed': False}, {'part': 3, 'coarse_time_s': 0.0003750000000000008, 'half_time_s': 0.0003750000000000009, 'actual_time_difference_s': 5.421010862427522e-20, 'pressure_rms_pa': 49.105898027553394, 'material_displacement_max_mm': 1.8949266853938614e-06, 'total_stress_six_component_rms_pa': 34.80132148914863, 'velocity_vector_rms_m_s': 4.119525369191654e-05, 'density_rms_kg_m3': 0.0018770701776778932, 'load_vector_rms_m_s2': 0.0026636993078358526, 'fstype_mismatches': 0, 'drained_mask_mismatches': 0, 'screen_passed': False}, {'part': 4, 'coarse_time_s': 0.0005000000000000011, 'half_time_s': 0.0005000000000000007, 'actual_time_difference_s': 4.336808689942018e-19, 'pressure_rms_pa': 49.56181233445379, 'material_displacement_max_mm': 3.5974148494047954e-06, 'total_stress_six_component_rms_pa': 35.13606618385094, 'velocity_vector_rms_m_s': 3.400547876398076e-05, 'density_rms_kg_m3': 0.002102475024246967, 'load_vector_rms_m_s2': 0.003698252145994708, 'fstype_mismatches': 0, 'drained_mask_mismatches': 0, 'screen_passed': False}]))",
+  "max_pressure_rms_pa": 56.26035269640741,
+  "max_material_displacement_mm": 3.5974148494047954e-06,
+  "physical_accepted": false,
+  "peak_window_admitted": false,
+  "limits": [
+    "Only200/400steps and5saved frames each; no peak-window/full/analytical acceptance.",
+    "Same-dt grad0/1 differences are not half-step or theory errors; no5Pa threshold is applied to option changes.",
+    "OldCPU half failed56.380737Pa and remains failed; old individual trajectories are adopted only as controls.",
+    "No external-load, density, damping, Darcy, geometry or persistent-precision change; no D clone.",
+    "Existing GPU work is permitted and never stopped; observed timings are not isolated benchmarks.",
+    "No notifier, threshold relaxation or automatic longer run."
+  ]
+}

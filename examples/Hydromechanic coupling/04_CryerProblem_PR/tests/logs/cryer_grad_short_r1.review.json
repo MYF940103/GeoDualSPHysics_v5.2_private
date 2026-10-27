@@ -1,0 +1,131 @@
+{
+  "schema": "cryer-independent-short-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T11:21:45.331950+00:00",
+  "status": "completed_rejection_confirmed",
+  "evidence_consistency_passed": true,
+  "physical_accepted": false,
+  "peak_window_admitted": false,
+  "solver_executed_by_reviewer": false,
+  "existing_evidence_modified": false,
+  "production_source_modified": false,
+  "scope": "Independent offline review of retained CPU Release 0.5-ms grad1 coarse/half runs and same-dt retained grad0 controls; this new JSON is the only reviewer-created artifact.",
+  "key_links_reverified": {
+    "unique_file_count": 20,
+    "sha256_mismatch_count": 0,
+    "scope": "Check-to-run and run-to-prepared/program links; both XML/BAT pairs; both Run.out and initial/final BI4 files; all four CSV artifacts; the three bound Python analysis/runner helpers.",
+    "check": {
+      "path": "cryer_grad_short_r1.check.json",
+      "sha256": "3a4e59ac7aeeafd3cc3db12e2d7d577b6d8015d53e79293ebbf06cd6dbe78f6d"
+    },
+    "run": {
+      "path": "cryer_grad_short_r1.run.json",
+      "sha256": "e9d70b2cac5e3c5eed8a4fffacc450b29f238ced3d99c236356e3f45e4c2f51c"
+    },
+    "prepared_inputs": {
+      "path": "cryer_grad_short_r1.inputs.json",
+      "sha256": "8e9777d928223d3067b37ce0f049890c22abc36c828812160370add51949a475"
+    },
+    "program": {
+      "path": "../../../../../bin/windows/DualSPHysics5.2CPU_win64.exe",
+      "sha256": "dc4e2a1feb2245e5a9c567d1bc1877e774a6b70b1058e805f4c6d61aa063ca9c"
+    },
+    "artifacts": [
+      {"path": "../figures/cryer_grad_short_r1_summary.csv", "sha256": "02b5a4eed4c835e14eb7dd509c27d04b499cacf7a8b1055165e526b465e1850c"},
+      {"path": "../figures/cryer_grad_short_r1_half.csv", "sha256": "05c85a73381ffa38116a0ffbd303841b53f80959153fc6297b86abbfb5e44399"},
+      {"path": "../figures/cryer_grad_short_r1_options.csv", "sha256": "021bc7d829060d969c5ba18168ffe3d443709b6c4a2812bc363a7684388ce4d5"},
+      {"path": "../figures/cryer_grad_short_r1_native_differences.csv", "sha256": "77606896cc184adf09f7170da58aea59440538454a7ffe40b34e306e0de756f5"}
+    ]
+  },
+  "preceding_independent_audit_completed_in_same_conversation": {
+    "method": "Read retained JSON/CSV and reread all ten new native frames plus the ten corresponding retained same-dt grad0 frames in memory; no solver or file writing. SHA checks recursively covered the new check/run/prepared records and the adopted old check/run records.",
+    "unique_hashed_file_count": 128,
+    "sha256_mismatch_count": 0,
+    "new_native_frames": 10,
+    "retained_grad0_native_frames": 10,
+    "soil_ids_per_frame": 37173,
+    "ids_complete_unique_unchanged": true,
+    "summary_rows_recomputed": 10,
+    "summary_max_abs_recomputation_difference": 0,
+    "native_difference_rows_recomputed": 350,
+    "native_difference_max_abs_recomputation_difference": 0,
+    "canonical_source_files_bound_and_unchanged_since_original_manifest": ["JSph.cpp", "JSphCpu.cpp", "JSphCpuSingle.cpp", "JDsFixedDt.cpp", "JSphCpu.h", "DualSphDef.h"],
+    "safety_review_method": "Reread native data through the retained original inspect() guard and recompute the native summary; the original safety function was reused rather than presented as a separately implemented safety model.",
+    "original_single_run_safety_issues": []
+  },
+  "completed_runs": [
+    {
+      "name": "cryer_grad_short_r1_c",
+      "dt_s": 0.0000025,
+      "steps": 200,
+      "exit_code": 0,
+      "owned_exited": true,
+      "original_single_run_safety_passed": true,
+      "saved_steps_zero_based": [0, 49, 99, 149, 199],
+      "actual_saved_times_s": [0, 0.00012500000000000017, 0.0002500000000000005, 0.0003750000000000008, 0.0005000000000000011]
+    },
+    {
+      "name": "cryer_grad_short_r1_h",
+      "dt_s": 0.00000125,
+      "steps": 400,
+      "exit_code": 0,
+      "owned_exited": true,
+      "original_single_run_safety_passed": true,
+      "saved_steps_zero_based": [0, 99, 199, 299, 399],
+      "actual_saved_times_s": [0, 0.00012500000000000025, 0.00025000000000000055, 0.0003750000000000009, 0.0005000000000000007]
+    }
+  ],
+  "independent_half_screen": {
+    "passed": false,
+    "paired_samples": 5,
+    "pressure_rms_limit_pa": 5,
+    "material_displacement_max_limit_mm": 0.005,
+    "pressure_rms_pa_by_part": [0, 44.24967290215218, 56.26035269640741, 49.105898027553394, 49.56181233445379],
+    "pressure_failed_nonzero_sample_count": 4,
+    "maximum_pressure_rms_pa": 56.26035269640741,
+    "maximum_pressure_part": 2,
+    "maximum_material_displacement_difference_mm": 0.0000035974148494047954,
+    "displacement_screen_passed": true,
+    "maximum_actual_time_difference_s": 4.336808689942018e-19,
+    "fstype_mismatches": 0,
+    "drained_mask_mismatches": 0,
+    "rejection_is_solver_crash": false,
+    "rejection_is_single_run_safety_failure": false,
+    "rejection_is_clock_mismatch": false,
+    "old_grad0_maximum_pressure_rms_pa": 56.38073723993549,
+    "reduction_from_old_grad0_pa": 0.12038454352808259,
+    "reduction_from_old_grad0_percent": 0.2135206977088126,
+    "interpretation": "Both grad0 and grad1 remain failed at the same original 5-Pa screen level. The small reduction is not a passing time-convergence result."
+  },
+  "same_dt_grad1_minus_grad0_effects_not_half_or_theory_errors": {
+    "same_dt_maximum_actual_time_difference_s": 0,
+    "coarse": {
+      "pressure_rms_max_pa": 2214.9785127505875,
+      "pressure_pointwise_abs_max_pa": 4701.966796875,
+      "total_stress_six_component_rms_max_pa": 1775.3473428101104,
+      "total_stress_componentwise_abs_max_pa": 4920.233841245117,
+      "pressure_and_stress_maxima_part": 3,
+      "material_displacement_max_mm": 0.013961282916240709,
+      "material_displacement_max_part": 4
+    },
+    "half": {
+      "pressure_rms_max_pa": 2214.9855434236347,
+      "pressure_pointwise_abs_max_pa": 4701.93212890625,
+      "total_stress_six_component_rms_max_pa": 1775.3760663411979,
+      "total_stress_componentwise_abs_max_pa": 4920.102907009428,
+      "pressure_and_stress_maxima_part": 3,
+      "material_displacement_max_mm": 0.01396075297062943,
+      "material_displacement_max_part": 4
+    },
+    "stress_definition": "Effective stress minus pore pressure on each diagonal; RMS is over the six saved symmetric components, not a Frobenius norm with doubled shear weights.",
+    "interpretation": "Enabling the existing stress-rate gradient correction substantially changes the coupled transient. A large option effect and the earlier affine operator improvement do not demonstrate improved theoretical Cryer accuracy."
+  },
+  "limitations": [
+    "Only five saved samples per run over 0.5 ms were audited; connected sample histories cannot establish the complete startup waveform or a temporal peak.",
+    "The half-step screen failed without relaxed thresholds. No peak-window, long-run or analytical acceptance is granted.",
+    "This stage changed only the existing SoilStressRateGradCorr XML option from 0 to 1; it did not implement a replacement force operator or coupled double-precision pressure scheme.",
+    "Normal solver completion and passing per-run finite/elastic/drainage/natural-step guards do not prove temporal accuracy.",
+    "The reference grad0 pair is retained failed-screen evidence, not an accepted physical truth.",
+    "No new solver, notifier, Git operation or change to any previously bound input, script, receipt or production source was performed by this review."
+  ]
+}
