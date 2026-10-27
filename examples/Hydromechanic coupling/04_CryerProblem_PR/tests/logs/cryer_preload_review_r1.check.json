@@ -1,0 +1,397 @@
+{
+  "schema": "cryer-independent-preload-offline-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T22:07:29.305248+00:00",
+  "status": "completed_solver_and_offline_repair_independently_verified",
+  "evidence_consistency_passed": true,
+  "original_single_run_safety_passed": true,
+  "owned_exits_confirmed": true,
+  "declared_initial_equilibrium_diagnostics_passed": true,
+  "review_supports_initial_equilibrium_qualification": true,
+  "physical_accepted": false,
+  "half_accepted": false,
+  "full_cycle_accepted": false,
+  "automatic_long_run_admitted": false,
+  "scope": "Independent offline reread of all69 native saves and recalculation of original safety plus five declared equilibrium diagnostics. Only this new review and its matching note were written. No solver, worker, queue, Git, source/formal edit or retained-evidence modification was performed.",
+  "source_links": [
+    {
+      "path": "cryer_preload_probe_r1.status.json",
+      "sha256": "693c2dff57492265d9d489906f2c1546a8ad4b109e273a22ac2e3f354d55888c"
+    },
+    {
+      "path": "cryer_preload_probe_r1.check.json",
+      "sha256": "4cbe580a8437b26ceb67a0d7359b0c71eca4763ee5690832c65e338b76e4d09f"
+    },
+    {
+      "path": "cryer_preload_probe_r1.run.json",
+      "sha256": "205f9ce5e935afca73fdfae060e699b2b5a4b7f344b4e9e5aea83d8301598e8b"
+    },
+    {
+      "path": "cryer_preload_probe_r1.inputs.json",
+      "sha256": "c3c2d0302dfb267ccdb3b2cdecf4806df1d710cd362d795488441c85876838ba"
+    },
+    {
+      "path": "cryer_preload_probe_r1.completion.json",
+      "sha256": "68f1fcfb22e35dce2bab46f301e1d0a0e6f8f270156b43dedae4a752e7889c7a"
+    },
+    {
+      "path": "cryer_preload_offline_r1.check.json",
+      "sha256": "0f5e503925742a0e6435969b11c8086ab4a9aa9b7aae17309966e4aaec9b7e5b"
+    },
+    {
+      "path": "../support/cryer_preload_offline_r1.py",
+      "sha256": "d185555f9cc3348fc2bf838a0fe081745b27639878975cc2bc58e62500088b02"
+    },
+    {
+      "path": "../notes/cryer_preload_offline_r1.md",
+      "sha256": "e04a08ab05cb89e908ce0a3d55e8097bee4cf466b9b7998a01b57dc4854d7f4a"
+    },
+    {
+      "path": "../figures/cryer_preload_offline_r1_summary.csv",
+      "sha256": "168cfcde64dedd990a202c03fd88fbd0d34d12a5752e5fb60e00e8174015cf87"
+    },
+    {
+      "path": "../figures/cryer_preload_offline_r1_history.png",
+      "sha256": "cc810d22c112686091e57081b448108f71d9d7bcaebf73eec2eba3ccf8498720"
+    },
+    {
+      "path": "../figures/cryer_preload_offline_r1_diagnostics.png",
+      "sha256": "ebafcc8ecd94ff3c8ddfd948df04a52c4f29b08143c79cccae2f48d8ef45bb07"
+    }
+  ],
+  "original_analysis_failure": {
+    "old_terminal_status": "preload_probe_rejected_or_interrupted",
+    "old_checked_frames": 0,
+    "old_error": "UFuncTypeError(<ufunc 'add'>, 'same_kind', dtype('float64'), dtype('int64'), 2)",
+    "initial_pandas_pressure_dtype": "int64",
+    "initial_pandas_sigma_dtype": "int64",
+    "cause": "The all-zero reader CSV columns were inferred as int64; residual[:,:3]+=float Q therefore raised a NumPy casting error before even Part0 was analysed. BI4 floating state was not integer physics.",
+    "classification": "Completed safe solver, failed new offline analysis; not a solver crash or an observed physical rejection.",
+    "repair_scope": "The separate offline tag explicitly promotes sigma/pressure to float64 without changing their numeric values or identity fields, then calls the unchanged frozen inspector. Old failed manifests and scripts remain unchanged."
+  },
+  "provenance_audit": {
+    "original_explicit_build_input_output_hash_entries_verified": 519,
+    "original_sha_or_available_size_mismatches": [],
+    "sha_comparison": "Hexadecimal SHA strings compared case-insensitively; upper/lowercase spelling is not a content change.",
+    "offline_input_and_artifact_entries_verified": 10,
+    "offline_hash_or_size_mismatches": [],
+    "program_sha256": "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+    "reader_sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+    "exit_code": 0,
+    "solver_finished": true,
+    "owned_exited": true,
+    "actual_gpu": "NVIDIA GeForce RTX 3050",
+    "solver_wrapper_wall_seconds": 2023.9805611998308,
+    "owned_sequence_pid": 42112,
+    "owned_wrapper_pid": 30344,
+    "ownership_observation": "No recorded owned PID and no relevant DualSPHysics/Python process tagged cryer_preload_probe_r1 was alive at review; no process was stopped and no unrelated command lines were retained.",
+    "hash_scope": "All explicit entries recursively present in this stage's status/run/inputs/completion/check plus the bound GPU build record were read and checked, including all69 native output hashes. Historical JSON files bound as inputs were hashed, not indiscriminately recursively opened."
+  },
+  "native_audit": {
+    "frames_reread": 69,
+    "soil_ids_per_frame": 37173,
+    "complete_id_range_inclusive": [
+      8,
+      37180
+    ],
+    "ids_unique_complete_unchanged": true,
+    "initial_18_reference_fields_exact_to_retained_weak_peak": true,
+    "dt_s": 4.76837158203125e-7,
+    "steps": 17408,
+    "cadence_s": 0.0001220703125,
+    "ramp_s": 0.00390625,
+    "drainage_source_event_s": 0.0078125,
+    "actual_final_time_s": 0.00830078125,
+    "actual_times_equal_part_times_cadence_exactly": true,
+    "nonzero_saved_steps_equal_part_times_256_minus1": true,
+    "original_pore_diffusion_dt_limit_s": 0.0000029787699190438848,
+    "maximum_nonzero_interval_dterror_s": -0.000024556034342398656,
+    "original_interval_dterror_upper_limit_s": 1e-14,
+    "maximum_observed_particle_radius_m": 0.05000000000000002,
+    "original_radius_limit_m": 0.0525,
+    "true_surface_count_min": 5153,
+    "true_surface_count_max": 5153,
+    "maximum_changed_fstype_count": 0,
+    "active_drainage_parts": [
+      65,
+      66,
+      67,
+      68
+    ],
+    "active_surface_pressure_abs_max_pa": 0,
+    "last_closed_part": 64,
+    "last_closed_surface_pressure_abs_max_pa": 9975.1162109375,
+    "safety_issues": [],
+    "safety_method": "Independently reapplied finite, positive-density, no-exclusion, elastic, double position/stress, actual-load telemetry, initial mass/h/dp, IDs, geometry, exact clock/step, original mechanical/pore dt and genuine nonempty FSType2/3 guards. Before the event no p=0 requirement was imposed; after it all actual surface receivers were checked. Actual inward load was verified at every nonzero save."
+  },
+  "independent_numeric_comparison": {
+    "source": "cryer_preload_offline_r1_summary.csv",
+    "rows_compared": 69,
+    "common_fields_compared": 37,
+    "fields": [
+      "part",
+      "time_s",
+      "saved_step",
+      "drainage_active",
+      "true_surface_count",
+      "changed_fstype_count",
+      "true_surface_pressure_absmax_pa",
+      "pressure_mean_pa",
+      "pressure_min_pa",
+      "pressure_max_pa",
+      "center_pressure_mean_pa",
+      "pressure_target_rms_pa",
+      "total_stress_target_six_rms_pa",
+      "speed_max_m_s",
+      "rho_mean_kg_m3",
+      "rho_min_kg_m3",
+      "rho_max_kg_m3",
+      "native_current_volume_m3",
+      "isotropic_fit_scalar",
+      "isotropic_vector_residual_rms_mm",
+      "full_affine_trace",
+      "full_affine_vector_residual_rms_mm",
+      "shell_inward_mean_mm",
+      "shell_target_mean_mm",
+      "shell_target_error_mean_mm",
+      "shell_target_error_rms_mm",
+      "total_mean_compression_pa",
+      "effective_mean_compression_pa",
+      "fluid_content_from_stress_conditional",
+      "fluid_content_from_isotropic_fit_conditional",
+      "fluid_content_from_full_affine_conditional",
+      "actual_radial_force_N",
+      "net_force_norm_N",
+      "torque_norm_N_m",
+      "load_virial_over_3qVnative",
+      "load_virial_over_3qVgeometric",
+      "dterror_s"
+    ],
+    "maximum_abs_difference": {
+      "gap": 7.275957614183426e-12,
+      "part": 0,
+      "field": "pressure_target_rms_pa",
+      "independent": 9975.062344139656,
+      "published": 9975.06234413965
+    },
+    "material_disagreements": [],
+    "method": "All pressure and stress arrays were explicitly float64 from the reader. Five criteria and other shared statistics were computed directly without calling either the frozen or repaired inspect function. Full-vector isotropic residual used an independent weighted quadratic sum; shell targets used fixed initial per-particle radii.",
+    "comparison_tolerance": "1e-10+1e-12*abs(published value), solely for machine-arithmetic reconciliation, not a changed physical gate.",
+    "coverage_limit": "37 shared CSV fields were recalculated across every save; this is not a claim that every published CSV column or rendered PNG was independently rederived. PNG hashes were verified; visual review belongs to the primary agent."
+  },
+  "equilibrium_reference": {
+    "assumptions": "Alpha=1, isotropic small-strain homogeneous closed full-load reference; reference values were never assigned to native state.",
+    "K_pa": 1666666.6666666665,
+    "fluid_storage_modulus_M_pa": 666666666.6666667,
+    "B": 0.9975062344139651,
+    "p_target_pa": 9975.062344139651,
+    "isotropic_scalar_target": -0.000004987531172069825,
+    "shell_fixed_ids": 17646,
+    "shell_mean_target_inward_mm": 0.00023235010060703384,
+    "target_definition": "Outward u=a*x0; observed shell inward displacement=(r0-r)*1000 and target=-a*r0*1000 for each initial shell ID. Initial V0=m/rho0 defines every weight.",
+    "total_stress_sign": "Stored effective stress is tensile-positive; total=sigma_effective-pI. The six target residuals are [sigma_xx-p+q,sigma_yy-p+q,sigma_zz-p+q,sigma_xy,sigma_yz,sigma_xz]."
+  },
+  "closed_state_qualification": {
+    "rule": "Each of Parts61-64 independently satisfies every unchanged predeclared criterion, including the last pre-open save at t=tD; no averaging over the four saves.",
+    "limits": {
+      "pressure_target_rms_pa": 100,
+      "total_stress_target_six_rms_pa": 100,
+      "speed_max_m_s": 0.00001,
+      "isotropic_vector_residual_rms_mm": 0.00001,
+      "shell_target_error_rms_mm": 0.00001
+    },
+    "samples": [
+      {
+        "part": 61,
+        "time_s": 0.0074462890625,
+        "metrics": {
+          "pressure_target_rms_pa": 0.11865545282431049,
+          "total_stress_target_six_rms_pa": 0.08338380493084693,
+          "speed_max_m_s": 0.000002435140228529208,
+          "isotropic_vector_residual_rms_mm": 3.5314344786149774e-7,
+          "shell_target_error_rms_mm": 2.0858898004432176e-7
+        },
+        "criteria_passed": {
+          "pressure_target_rms_pa": true,
+          "total_stress_target_six_rms_pa": true,
+          "speed_max_m_s": true,
+          "isotropic_vector_residual_rms_mm": true,
+          "shell_target_error_rms_mm": true
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 62,
+        "time_s": 0.007568359375,
+        "metrics": {
+          "pressure_target_rms_pa": 0.5477090395521959,
+          "total_stress_target_six_rms_pa": 0.3875798670091644,
+          "speed_max_m_s": 0.000002176435304276539,
+          "isotropic_vector_residual_rms_mm": 3.6787716504787385e-7,
+          "shell_target_error_rms_mm": 2.2582533153540845e-7
+        },
+        "criteria_passed": {
+          "pressure_target_rms_pa": true,
+          "total_stress_target_six_rms_pa": true,
+          "speed_max_m_s": true,
+          "isotropic_vector_residual_rms_mm": true,
+          "shell_target_error_rms_mm": true
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 63,
+        "time_s": 0.0076904296875,
+        "metrics": {
+          "pressure_target_rms_pa": 0.4348853193056312,
+          "total_stress_target_six_rms_pa": 0.30905486961361756,
+          "speed_max_m_s": 0.0000022448982562792468,
+          "isotropic_vector_residual_rms_mm": 3.8355670215147144e-7,
+          "shell_target_error_rms_mm": 2.429795409613622e-7
+        },
+        "criteria_passed": {
+          "pressure_target_rms_pa": true,
+          "total_stress_target_six_rms_pa": true,
+          "speed_max_m_s": true,
+          "isotropic_vector_residual_rms_mm": true,
+          "shell_target_error_rms_mm": true
+        },
+        "all_five_passed": true
+      },
+      {
+        "part": 64,
+        "time_s": 0.0078125,
+        "metrics": {
+          "pressure_target_rms_pa": 0.11776122107620235,
+          "total_stress_target_six_rms_pa": 0.08423146952433513,
+          "speed_max_m_s": 0.0000018277234198052152,
+          "isotropic_vector_residual_rms_mm": 3.978931748791763e-7,
+          "shell_target_error_rms_mm": 2.603349162944921e-7
+        },
+        "criteria_passed": {
+          "pressure_target_rms_pa": true,
+          "total_stress_target_six_rms_pa": true,
+          "speed_max_m_s": true,
+          "isotropic_vector_residual_rms_mm": true,
+          "shell_target_error_rms_mm": true
+        },
+        "all_five_passed": true
+      }
+    ],
+    "all_four_passed": true,
+    "qualification_scope": "Supports initial-equilibrium qualification only on these declared saved states. It is not proof of continuous-time equilibrium, a drainage-theory time shift, peak-window convergence or physical acceptance."
+  },
+  "holding_history": {
+    "parts": [
+      33,
+      64
+    ],
+    "pressure_mean_min_pa": 9941.775995587774,
+    "pressure_mean_max_pa": 9996.425360550244,
+    "maximum_pressure_target_rms_pa": 44.70576377923496,
+    "maximum_total_stress_target_six_rms_pa": 31.68757674041583,
+    "maximum_speed_m_s": 0.00004330791263709787,
+    "rho_min_kg_m3": 2100,
+    "rho_max_kg_m3": 2100,
+    "qualification_caveat": "Earlier hold saves were not all below the final speed criterion. Sub-Pa late closed-state deviations must not be reported as the entire hold having always been motionless."
+  },
+  "last_closed_state": {
+    "part": 64,
+    "time_s": 0.0078125,
+    "saved_step": 16383,
+    "drainage_active": false,
+    "true_surface_count": 5153,
+    "changed_fstype_count": 0,
+    "true_surface_pressure_absmax_pa": 9975.1162109375,
+    "pressure_mean_pa": 9975.159647858492,
+    "pressure_min_pa": 9975.06640625,
+    "pressure_max_pa": 9975.380859375,
+    "center_pressure_mean_pa": 9975.281412760416,
+    "pressure_target_rms_pa": 0.11776122107620235,
+    "total_stress_target_six_rms_pa": 0.08423146952433513,
+    "speed_max_m_s": 0.0000018277234198052152,
+    "rho_mean_kg_m3": 2100.0000000000014,
+    "rho_min_kg_m3": 2100,
+    "rho_max_kg_m3": 2100,
+    "native_current_volume_m3": 0.0005808281042897892,
+    "isotropic_fit_scalar": -0.000004987358939148739,
+    "isotropic_vector_residual_rms_mm": 3.978931748791763e-7,
+    "full_affine_trace": -0.000014962137172692896,
+    "full_affine_vector_residual_rms_mm": 2.7038823560806397e-7,
+    "shell_inward_mean_mm": 0.00023233495950963128,
+    "shell_target_mean_mm": 0.00023235010060703384,
+    "shell_target_error_mean_mm": -1.5141097402627646e-8,
+    "shell_target_error_rms_mm": 2.603349162944921e-7,
+    "total_mean_compression_pa": 10000.09668712225,
+    "effective_mean_compression_pa": 24.9370392637605,
+    "fluid_content_from_stress_conditional": 5.159135314328379e-10,
+    "fluid_content_from_isotropic_fit_conditional": 6.626543415212487e-10,
+    "fluid_content_from_full_affine_conditional": 6.022990948418758e-10,
+    "actual_radial_force_N": 344.4952105290606,
+    "net_force_norm_N": 0.0000012606718974940045,
+    "torque_norm_N_m": 6.160443420070681e-8,
+    "load_virial_over_3qVnative": 0.9585537134531351,
+    "load_virial_over_3qVgeometric": 1.063323602330309,
+    "dterror_s": -0.000024658791228279476,
+    "radius_max_m": 0.04999975140425432
+  },
+  "post_open_saved_observations": [
+    {
+      "part": 65,
+      "time_s": 0.0079345703125,
+      "tau_from_event_s": 0.0001220703125,
+      "pressure_mean_pa": 8831.195916897952,
+      "center_pressure_mean_pa": 11356.207302517361,
+      "pressure_max_pa": 15994.7099609375,
+      "total_mean_compression_pa": 9321.604277075761,
+      "speed_max_m_s": 0.05816561286275183,
+      "true_surface_pressure_abs_max_pa": 0,
+      "isotropic_vector_residual_rms_mm": 0.0018338070278569691
+    },
+    {
+      "part": 66,
+      "time_s": 0.008056640625,
+      "tau_from_event_s": 0.000244140625,
+      "pressure_mean_pa": 8646.919681602742,
+      "center_pressure_mean_pa": 9169.573676215277,
+      "pressure_max_pa": 13547.3154296875,
+      "total_mean_compression_pa": 9864.720203585699,
+      "speed_max_m_s": 0.05166090652513289,
+      "true_surface_pressure_abs_max_pa": 0,
+      "isotropic_vector_residual_rms_mm": 0.005121045853400329
+    },
+    {
+      "part": 67,
+      "time_s": 0.0081787109375,
+      "tau_from_event_s": 0.0003662109375,
+      "pressure_mean_pa": 9601.953994798178,
+      "center_pressure_mean_pa": 11192.086154513889,
+      "pressure_max_pa": 13544.3359375,
+      "total_mean_compression_pa": 11201.445979315851,
+      "speed_max_m_s": 0.01854047287637974,
+      "true_surface_pressure_abs_max_pa": 0,
+      "isotropic_vector_residual_rms_mm": 0.007105747435684728
+    },
+    {
+      "part": 68,
+      "time_s": 0.00830078125,
+      "tau_from_event_s": 0.00048828125,
+      "pressure_mean_pa": 9244.931070004659,
+      "center_pressure_mean_pa": 11186.255642361111,
+      "pressure_max_pa": 15108.38671875,
+      "total_mean_compression_pa": 10715.145204865972,
+      "speed_max_m_s": 0.03883921439758692,
+      "true_surface_pressure_abs_max_pa": 0,
+      "isotropic_vector_residual_rms_mm": 0.006783815804688797
+    }
+  ],
+  "limitations": [
+    "The original failed postprocessing status remains false and unchanged. This new receipt identifies its dtype defect and independently audits the retained completed solver; no rerun occurred.",
+    "All four final closed saved states pass the declared five diagnostics, but the probe contains only four saved post-open states and no independent half-step window.",
+    "Saved t=tD is pre-open. Part65 is already tau=TimeOut, not a sampled tau=0+ state. No automatic theory time shift or pressure-amplitude renormalization was applied.",
+    "The opening still excites a substantial dynamic response: post-open pressure and velocity changes are verified observations, not a failed closed-state criterion or a proven instability/root cause.",
+    "Native density remains exactly2100 before opening despite a finite-Kw geometric/elastic strain. The conditional storage estimates are not exact fluid mass, and this fact alone establishes neither cause nor permission for a density-precision patch.",
+    "The all-soil closed diagnostic and the actual drained evolution are distinct. No manufactured-field Darcy result, current volume, load virial or initial-state pass is equated with coupled conservation or full Cryer accuracy.",
+    "No production equation, precision state, geometry/mass, traction, formal input or original threshold was changed by this review. No new solver, notifier or Git action was performed."
+  ]
+}
