@@ -5,8 +5,11 @@
 It has not been shown to resolve the paper-field discrepancy. A separate
 nonperiodic 2D HG candidate now uses real bounded neighbors, not artificial
 periodicity; CPU/GPU operator/old-periodic/Debug-memory and frozen-geometry
-oscillator checks passed, but Lian dynamic/physical checks are still pending.
-See `tests/notes/lian_spr_half_review_r1.md` and `lian_hg_np_r1.md`.
+oscillator checks passed. Actual Lian startup through .15 s also passed the
+31-sample independent half pair (.009139 Pa / .000009084 mm); this does not
+validate drainage after 1 s or paper/full-cycle accuracy. HG x SPR 3-s comparisons
+are next. See `tests/notes/lian_spr_half_review_r1.md` and
+`tests/notes/lian_hg_short_review_r1.md`.
 Formal XML/BAT and the intentionally stopped 100-s dataset are unchanged.
 
 2026-10-26 task-plan revision: Lian is the sole active 2-D consolidation

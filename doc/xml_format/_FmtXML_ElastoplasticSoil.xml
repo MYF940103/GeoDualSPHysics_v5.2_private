@@ -117,8 +117,8 @@
                  Mixed Vel0 is not admitted. CPU Debug/GPU Debug/Release passed constant/affine fields
                  on 2D corners and 3D edges with the two local slip assignments exchanged (12 fixtures).
                  GPU Debug edge memcheck has zero errors. Original Lian SPR-OFF CPU Debug3-frame and
-                 GPURelease31-frame native regressions remain0ULP. Lian plane-normal OFF/ON3s is pending;
-                 these bounded operator/regression checks are not Lian physical release. -->
+                 GPURelease31-frame native regressions remain0ULP. Lian mixed-slip SPR3s independent half
+                 passed .016484Pa/.00001354mm; not paper/full-cycle or general-contact acceptance. -->
 			<!-- CPU per-mk multi-plane candidate (2026-10-24): each wall mk must remain one stationary coplanar face;
                  inward half-spaces must define a convex common interior. Local normals are not averaged at corners.
                  If a ghost lies outside another face, fit one dp inside all faces and evaluate the same affine MLS
@@ -166,7 +166,8 @@
 			<!-- GNOG is limited to 2D CPU/GPU Wendland, small-rotation elastic soil and Symplectic integration. -->
 			<!-- Nonperiodic bounded-neighbor candidate (2026-10-27): real X distances/no cell wrap, no new XML switch.
                  CPU/GPU 58 operator checks each, frozen-geometry oscillator, Debug memcheck and old-periodic
-                 Release 0-ULP checks passed. Real Lian short-run checks remain pending; NOT physical/100-s acceptance. -->
+                 Release 0-ULP checks passed. Actual Lian .15-s half pair passed .009139Pa/.000009084mm;
+                 HG-off CPU/GPU native regressions remain0ULP. NOT drainage-after1s or physical/100-s acceptance. -->
 			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
 			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />
