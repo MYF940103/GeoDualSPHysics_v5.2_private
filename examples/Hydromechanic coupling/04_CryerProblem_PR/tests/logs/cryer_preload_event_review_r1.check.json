@@ -1,0 +1,265 @@
+{
+  "schema": "cryer-independent-preload-event-review-v1",
+  "reviewer": "/root/cryer_radial_independent",
+  "reviewed_utc": "2026-10-27T21:19:59Z",
+  "status": "event_smoke_and_corresponding_native_safety_confirmed",
+  "evidence_consistency_passed": true,
+  "original_single_run_safety_passed": true,
+  "source_clock_event_observation_passed": true,
+  "owned_exits_confirmed": true,
+  "physical_accepted": false,
+  "preload_equilibrium_accepted": false,
+  "half_accepted": false,
+  "full_cycle_accepted": false,
+  "actual_q_curve_independently_verified": false,
+  "solver_executed_by_reviewer": false,
+  "production_or_formal_changes": false,
+  "git_operations": false,
+  "source_links": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_event_r1.inputs.json",
+      "bytes": 31001,
+      "sha256": "4a6af8b76a3d586c49c0580ae297f9834af026438076408dd341a48ec011466a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_event_r1.run.json",
+      "bytes": 1802,
+      "sha256": "3300eb7d37c943ac59b23a0168f896c1efe5af40d5f8e636698d9a21a6600782"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_event_r1.completion.json",
+      "bytes": 13226,
+      "sha256": "e03cabce7de1797dc278f10df1f6f64c6689e9f631ae2245d7329a17addb7095"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_event_r1.check.json",
+      "bytes": 1431,
+      "sha256": "16bb985d913209c62cb3db418f7ff593e49808fb9fa6acdcdf21cb7ed86caeb9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_event_r1_summary.csv",
+      "bytes": 9636,
+      "sha256": "acba34db454858db19fb2dc815dec12399c0f1675ecb926ab665010263916d39"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_preload_event_r1.py",
+      "bytes": 15175,
+      "sha256": "3f2a3acdcd5579452a19412f34e9a6a4dcf65d74d9bd8ed7857403cbbe248347"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_preload_event_r1.md",
+      "bytes": 4040,
+      "sha256": "030119ac010903dbe123650949e2c0e6cacea5d41e5636897b497f14d9adfba9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_preload_event_r1\\Run.out",
+      "bytes": 10984,
+      "sha256": "ca3c70d8c8df9fa1ad4c0dce82f7210650688274d18bd6fdbbceae1a3d892033"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_preload_event_review_r1.md",
+      "sha256": "e4cd1193b39aafc649b39957910719d22d97feba6a447effdae73d2110795dd1",
+      "bytes": 4463
+    }
+  ],
+  "provenance_audit": {
+    "unique_bound_files": 271,
+    "json_records_traversed": 17,
+    "sha256_mismatches": 0,
+    "note": "Recursively verified every recorded path/SHA link reachable from this event's input/run/completion/check roots; relative review links were resolved against their containing JSON directory.",
+    "canonical_cpu_program_sha256": "dc4e2a1feb2245e5a9c567d1bc1877e774a6b70b1058e805f4c6d61aa063ca9c",
+    "actual_cpu_threads": 8,
+    "solver_exit_code": 0,
+    "solver_finished": true,
+    "owned_recorded_pids_absent": [
+      51624,
+      18772
+    ],
+    "matching_owned_solver_survivors": [],
+    "observed_solver_wall_seconds": 6.046925699803978,
+    "completion_sealed_before_offline_review": true
+  },
+  "native_recalculation": {
+    "native_frames_reread": 25,
+    "native_soil_count": 37173,
+    "actual_steps": 24,
+    "dt_s": 4.76837158203125e-7,
+    "actual_final_time_s": 0.000011444091796875,
+    "ids_complete_unique_unchanged": true,
+    "all_corresponding_original_safety_passed": true,
+    "checks": [
+      "Finite native values, positive density, no excluded or plastic particles.",
+      "Double position/stress, observed load telemetry, unchanged native IDs/mass/h.",
+      "Exact binary saved times and zero-based steps; radius <= .0525m.",
+      "Original mechanical dterror <= 1e-14 and original explicit pore-step condition.",
+      "Pre-event pressure reported without zero requirement; all eight post-event surface frames exactly zero."
+    ],
+    "summary_validation": "Independently recalculated 13 identity/time/pressure/force/speed/radius metrics from all 25 native frames and compared to CSV (roundoff only).",
+    "active_zero_pressure_samples": 8,
+    "pre_event_surface_nonzero_samples": 15,
+    "source_time_rule": "max(0,saved_t-dt)",
+    "configured_ramp_s": 0.000003814697265625,
+    "configured_drainage_source_event_s": 0.00000762939453125,
+    "q_rule": "q_expected=10000*min(source_time/ramp,1); inferred from frozen source/config, not native q scalar telemetry",
+    "load_zero_native_parts": [
+      0,
+      1
+    ],
+    "source_full_load_first_saved_part": 9,
+    "last_saved_pre_event_part": 16,
+    "first_saved_post_event_part": 17,
+    "first_post_event_elapsed_since_source_event_s": 4.76837158203125e-7,
+    "keyframes": [
+      {
+        "part": 0,
+        "time_s": 0,
+        "source_time_s": 0,
+        "source_q_expected_pa": 0,
+        "surface_count": 5153,
+        "surface_nonzero_count": 0,
+        "surface_pressure_mean_pa": 0,
+        "surface_pressure_abs_max_pa": 0,
+        "radial_force_N": 0,
+        "load_vector_rms_m_s2": 0,
+        "pressure_min_pa": 0,
+        "pressure_max_pa": 0,
+        "speed_max_m_s": 0,
+        "radius_max_m": 0.05000000000000002
+      },
+      {
+        "part": 1,
+        "time_s": 4.76837158203125e-7,
+        "source_time_s": 0,
+        "source_q_expected_pa": 0,
+        "surface_count": 5153,
+        "surface_nonzero_count": 0,
+        "surface_pressure_mean_pa": 0,
+        "surface_pressure_abs_max_pa": 0,
+        "radial_force_N": 0,
+        "load_vector_rms_m_s2": 0,
+        "pressure_min_pa": 0,
+        "pressure_max_pa": 0,
+        "speed_max_m_s": 0,
+        "radius_max_m": 0.05000000000000002
+      },
+      {
+        "part": 8,
+        "time_s": 0.000003814697265625,
+        "source_time_s": 0.000003337860107421875,
+        "source_q_expected_pa": 8750,
+        "surface_count": 5153,
+        "surface_nonzero_count": 5153,
+        "surface_pressure_mean_pa": 474.95207756541436,
+        "surface_pressure_abs_max_pa": 539.9022216796875,
+        "radial_force_N": 301.4273206186978,
+        "load_vector_rms_m_s2": 512.7214904750671,
+        "pressure_min_pa": -35.18708038330078,
+        "pressure_max_pa": 539.9022216796875,
+        "speed_max_m_s": 0.00258365544177128,
+        "radius_max_m": 0.049999997071693184
+      },
+      {
+        "part": 9,
+        "time_s": 0.000004291534423828125,
+        "source_time_s": 0.000003814697265625,
+        "source_q_expected_pa": 10000,
+        "surface_count": 5153,
+        "surface_nonzero_count": 5153,
+        "surface_pressure_mean_pa": 685.1362792092251,
+        "surface_pressure_abs_max_pa": 778.1901245117188,
+        "radial_force_N": 344.4883461488024,
+        "load_vector_rms_m_s2": 585.9674068817689,
+        "pressure_min_pa": -50.227447509765625,
+        "pressure_max_pa": 778.1901245117188,
+        "speed_max_m_s": 0.003299281075240242,
+        "radius_max_m": 0.04999999574838625
+      },
+      {
+        "part": 16,
+        "time_s": 0.00000762939453125,
+        "source_time_s": 0.000007152557373046875,
+        "source_q_expected_pa": 10000,
+        "surface_count": 5153,
+        "surface_nonzero_count": 5153,
+        "surface_pressure_mean_pa": 3346.7516820734736,
+        "surface_pressure_abs_max_pa": 3764.970947265625,
+        "radial_force_N": 344.4881937390061,
+        "load_vector_rms_m_s2": 585.967319978283,
+        "pressure_min_pa": -228.10482788085938,
+        "pressure_max_pa": 3764.970947265625,
+        "speed_max_m_s": 0.007672385664660286,
+        "radius_max_m": 0.04999997802355083
+      },
+      {
+        "part": 17,
+        "time_s": 0.000008106231689453125,
+        "source_time_s": 0.00000762939453125,
+        "source_q_expected_pa": 10000,
+        "surface_count": 5153,
+        "surface_nonzero_count": 0,
+        "surface_pressure_mean_pa": 0,
+        "surface_pressure_abs_max_pa": 0,
+        "radial_force_N": 344.4881615218713,
+        "load_vector_rms_m_s2": 585.9673140247364,
+        "pressure_min_pa": -260.5237731933594,
+        "pressure_max_pa": 3160.717529296875,
+        "speed_max_m_s": 0.008334803733718586,
+        "radius_max_m": 0.049999974379778316
+      },
+      {
+        "part": 24,
+        "time_s": 0.000011444091796875,
+        "source_time_s": 0.000010967254638671875,
+        "source_q_expected_pa": 10000,
+        "surface_count": 5153,
+        "surface_nonzero_count": 0,
+        "surface_pressure_mean_pa": 0,
+        "surface_pressure_abs_max_pa": 0,
+        "radial_force_N": 344.4878709217491,
+        "load_vector_rms_m_s2": 585.9671794606232,
+        "pressure_min_pa": -501.5870666503906,
+        "pressure_max_pa": 5841.080078125,
+        "speed_max_m_s": 0.012633238855294328,
+        "radius_max_m": 0.04999994073803656
+      }
+    ],
+    "load_virtual_work_at_part9": {
+      "part": 9,
+      "work_geometric_pa": 10633.078374421202,
+      "work_native_pa": 9585.396809052625,
+      "radial_force_N": 344.4883461488024,
+      "ideal_q_area_radial_scale_N": 314.1592653589794
+    }
+  },
+  "next_probe_suggestions": {
+    "admitted": false,
+    "implemented": false,
+    "scope": "Declare and observe an independent delayed-drain loading/hold window; do not equate disabled surface Dirichlet with proven globally closed Darcy transport.",
+    "continuum_target": {
+      "B": 0.9975062344139651,
+      "pressure_pa": 9975.062344139651,
+      "effective_normal_stress_pa": -24.937655860348684,
+      "total_normal_stress_pa": -10000,
+      "volumetric_strain": -0.000014962593516209475,
+      "surface_radial_displacement_mm": -0.00024937655860349125
+    },
+    "required_diagnostics": [
+      "Fixed native material histories and whole/interior/surface pressure and stress mean/spatial RMS.",
+      "Shear/anisotropy, radial displacement fit, geometric strain, native density and relative volume.",
+      "Residual velocity/force and state drift; no net-force-only equilibrium claim.",
+      "Small-strain fluid content zeta=epsilon_v+p/(Kw/n) and global integral/drift; compare elastic-trace and geometric strain, not only float density.",
+      "If a discrepancy remains, separate stored-state compression/Darcy quadrature/flux effects; acknowledge absent native rate telemetry."
+    ],
+    "no_forced_initial_fields": true,
+    "no_zero_permeability_repair_assumed": true,
+    "no_new_damping_switch_or_restart_admission": true
+  },
+  "limitations": [
+    "24 steps deliberately do not equilibrate the sphere or verify Cryer peak accuracy.",
+    "Source-clock q is derived; native LoadAce proves observed vectors and onset/sign, not an independently measured q amplitude curve.",
+    "Saved Part16 is the pre-opening state at the source event; Part17 is tau=dt, not a new tau=0.",
+    "Both virtual-work normalizations are retained; no force/volume/mass renormalization.",
+    "The local surface event test does not establish globally conservative no-flow Darcy boundary behavior.",
+    "No old output/receipt/source/parameter or physical gate was changed; no solver/worker/queue/Git operation by this reviewer."
+  ]
+}
