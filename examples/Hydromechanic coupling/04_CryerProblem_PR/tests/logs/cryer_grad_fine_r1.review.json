@@ -1,0 +1,95 @@
+{
+  "schema": "cryer-independent-fine-pair-review-v1",
+  "reviewer": "/root/hg3_r2_review",
+  "reviewed_utc": "2026-10-27T11:38:31.712234+00:00",
+  "status": "bounded_five_sample_half_screen_pass_confirmed",
+  "evidence_consistency_passed": true,
+  "original_independent_half_screen_passed": true,
+  "original_short_window_half_screen_passed": true,
+  "physical_accepted": false,
+  "peak_window_admitted": false,
+  "solver_executed_by_reviewer": false,
+  "scope": "Independent offline audit of both completed CPU Release binary-step fine runs. Only this review JSON was created; no retained result, source, input, worker or Git state was modified.",
+  "source_links": [
+    {"path": "cryer_grad_fine_r1.check.json", "sha256": "4660ebfc2da05b1ba090e3231311cc3f6ee1e1af030832eb03100a7342f26a0e"},
+    {"path": "cryer_grad_fine_r1.run.json", "sha256": "3c125837b175d238a5e3dad35126b2d1de43a30f5f23e9062339ac577565f946"},
+    {"path": "cryer_grad_fine_r1.inputs.json", "sha256": "30d6d79aa78359a59909edebc2a3e8f95b24b8e9d55c400f28e432fd4a0e4c32"},
+    {"path": "../figures/cryer_grad_fine_r1_half.csv", "sha256": "c63c03511aba02f977e07e79a0bfe32dbe08cde53f217df9aea0be66cf53aa43"},
+    {"path": "../figures/cryer_grad_fine_r1_summary.csv", "sha256": "c2b9fe451fb750ce2d3d5c3b57fab5f0a77b995832581778e97161dca18ca0dd"}
+  ],
+  "provenance_audit": {
+    "unique_hashed_file_count": 87,
+    "sha256_mismatch_count": 0,
+    "scope": "All explicit links recursively recorded in the fine check/run/prepared records, plus the retained original CPU-run input bindings for transitive production source evidence. No old short-run native frames were reread for this audit.",
+    "program_sha256": "dc4e2a1feb2245e5a9c567d1bc1877e774a6b70b1058e805f4c6d61aa063ca9c",
+    "production_source_unchanged_against_bound_original_inputs": true,
+    "xml_comparison": "Element-by-element comparison to the corresponding retained grad1 short XML found only four changed value attributes: DtIni, DtFixed, TimeMax and TimeOut. Other tags, text and attributes were identical.",
+    "old_decimal_short_rejection_preserved": true
+  },
+  "native_audit": {
+    "new_frames_reread": 10,
+    "soil_ids_per_frame": 37173,
+    "complete_id_range_inclusive": [8, 37180],
+    "ids_complete_unique_unchanged": true,
+    "coarse_half_initial_id_xyz_rho_mass_h_equal": true,
+    "original_single_run_safety_issues": [],
+    "safety_method": "Reread native frames using the retained original inspect() finite/positive-density/no-exclusion/elastic/precision/actual-load/drainage/mechanical-step/pore-step guard. The original guard was reused, not represented as an independently redesigned physical safety model.",
+    "summary_rows_recomputed": 10,
+    "summary_max_abs_recomputation_difference": 0,
+    "half_rows_recomputed": 5,
+    "half_all_recorded_metric_max_abs_recomputation_difference": 0
+  },
+  "completed_runs": [
+    {
+      "name": "cryer_grad_fine_r1_c",
+      "dt_s": 4.76837158203125e-7,
+      "dt_binary_power": -21,
+      "steps": 1024,
+      "exit_code": 0,
+      "owned_exited": true,
+      "saved_steps_zero_based": [0, 255, 511, 767, 1023]
+    },
+    {
+      "name": "cryer_grad_fine_r1_h",
+      "dt_s": 2.384185791015625e-7,
+      "dt_binary_power": -22,
+      "steps": 2048,
+      "exit_code": 0,
+      "owned_exited": true,
+      "saved_steps_zero_based": [0, 511, 1023, 1535, 2047]
+    }
+  ],
+  "actual_time_audit": {
+    "duration_s": 0.00048828125,
+    "duration_binary_power": -11,
+    "cadence_s": 0.0001220703125,
+    "cadence_binary_power": -13,
+    "actual_times_s_each_run": [0, 0.0001220703125, 0.000244140625, 0.0003662109375, 0.00048828125],
+    "actual_times_equal_declared_binary_grid_exactly": true,
+    "coarse_half_time_difference_s": 0,
+    "interpolation_or_shifted_time_matching_used": false
+  },
+  "independent_half_screen": {
+    "paired_samples": 5,
+    "pressure_rms_limit_pa": 5,
+    "material_displacement_max_limit_mm": 0.005,
+    "pressure_rms_pa_by_part": [0, 1.7733323582592293, 2.135876726319571, 1.143000367593057, 2.139119470832733],
+    "material_displacement_max_mm_by_part": [0, 9.605506059907606e-8, 8.06813219253554e-8, 1.4397361202144397e-7, 2.7010429328010657e-7],
+    "total_stress_six_component_rms_pa_by_part": [0, 1.2574477935475703, 1.5140750335556339, 0.8100906127719004, 1.5163894568876632],
+    "maximum_pressure_rms_pa": 2.139119470832733,
+    "maximum_material_displacement_mm": 2.7010429328010657e-7,
+    "all_five_original_samples_passed": true,
+    "fstype_mismatches": 0,
+    "drained_mask_mismatches": 0,
+    "thresholds_relaxed": false
+  },
+  "ownership_audit": "After completion, no process with recorded sequence/wrapper PIDs 51048, 60812, 49396 or reported monitor PID 96582 remained, and no CPU solver for cryer_grad_fine_r1 was found. No process was terminated by this review.",
+  "limitations": [
+    "Only five saved samples over 0.48828125 ms were checked. This is not a complete startup waveform, peak-window, full-cycle or analytical Cryer acceptance.",
+    "The original decimal-step grad0 and grad1 short screens remain failed; their 0.125-ms output grid differs from the new 2^-13-s grid. No direct shifted-time, interpolated or pointwise old/new accuracy comparison is justified here.",
+    "The fine-pair pass does not by itself prove that the stress-rate correction improves theoretical accuracy, nor establish a temporal convergence order.",
+    "Density, pressure feedback, raw confinement, material, damping and geometry were not changed by this stage; no replacement coupled force operator was implemented.",
+    "Concurrent GPU diagnostics make recorded runtimes unsuitable as isolated performance benchmarks.",
+    "No GPU fine solver or other new run was launched by this audit."
+  ]
+}

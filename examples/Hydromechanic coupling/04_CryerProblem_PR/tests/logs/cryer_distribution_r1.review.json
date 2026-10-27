@@ -1,0 +1,1569 @@
+{
+  "tag": "cryer_distribution_r1",
+  "record_created_utc": "2026-10-27 11:27:22 UTC",
+  "write_authority": "Parent/user explicitly authorized this one new review record after the read-only in-memory audit. No numerical computation or solver was repeated to create it.",
+  "scope": "Read-only saved-native distribution calculation, followed by this sole new JSON record. No solver, production/formal input, source, old evidence, or Git mutation.",
+  "physical_acceptance": false,
+  "source_bindings": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "sha256": "56307570e9daa2c1b5cc37eb0c1fb1906aee265d35fafe17054a3b42b9a3a45a",
+      "bytes": 233925
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSimple_ker.cu",
+      "sha256": "d40a4d61927e55132fa1eb3d34bcd0f77c7f2918c31d37ad2b22ab940aa226b8",
+      "bytes": 58016
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "sha256": "0a2d2cde05f18f6ad7a8e8a929e742a0b07ec31ca3c8cdfebd786d21753764c6",
+      "bytes": 279300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphShifting.cpp",
+      "sha256": "5303c131fcba77504f757589c196cb0089847b0a2a8d8f25e275960ba8addd3c",
+      "bytes": 21845
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphShifting_ker.cu",
+      "sha256": "ea840d3c4c11d06771c50389a0bb837242305f0458259f51b4b563496918d939",
+      "bytes": 8977
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+      "sha256": "c0b35c844b482c5310ae1fba816bed3eadc941554d4aeda55e83101060cf1bec",
+      "bytes": 73979
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "sha256": "942db3a71c2bf88dc05b049b5fa7ea7ade0688d73b2f4021008af6440c871f7a",
+      "bytes": 64425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "sha256": "6a61bc5b1534680f271ea055d60ff562fe543287329abd828a0821a30643aa4f",
+      "bytes": 98142
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "sha256": "4c5144524bff77a69bf7be40f975b9826bf9f4a733bf376aaebf6534a50efe7a",
+      "bytes": 185767
+    }
+  ],
+  "methods": {
+    "native_identity": {
+      "soil_count": 37173,
+      "complete_same_order_ID_equality_checked_across_all_four_frames": true,
+      "finite_all_exported_columns_checked": true,
+      "reader_exports": "ReadHydroNative exports all soil native IDs in ascending ID order; no spatial-bin or row-shift matching."
+    },
+    "actual_frames": [
+      {
+        "label": "old_Part0",
+        "folder": "CaseCryerProblem_PR_out",
+        "part": 0,
+        "role": "Old initial geometry and old Part50 material reference."
+      },
+      {
+        "label": "old_Part50",
+        "folder": "CaseCryerProblem_PR_out",
+        "part": 50,
+        "role": "Old pressure-peak-region snapshot, not a newly run solution."
+      },
+      {
+        "label": "grad1_initial",
+        "folder": "tests/outputs/cryer_grad_short_r1_h",
+        "part": 0,
+        "role": "Own initial geometry for the completed grad1 half trajectory; prevents old float initial storage from being treated as its deformation."
+      },
+      {
+        "label": "grad1_half_Part4",
+        "folder": "tests/outputs/cryer_grad_short_r1_h",
+        "part": 4,
+        "role": "Completed .5ms grad1 half snapshot; did not read an unsealed frame of active fine-step runs."
+      }
+    ],
+    "scalar_statistics": "NumPy percentile with default linear interpolation at [0,1,5,25,50,75,95,99,100]; rms=sqrt(mean(values**2)).",
+    "length_scale": {
+      "dp_m": 0.0025,
+      "R_m": 0.05,
+      "h": "Saved native h. The recorded interior cut is R-2h=.041000000387430194m."
+    },
+    "regions": "Fixed own-initial material-radius classification, r_initial<R-2h versus r_initial>=R-2h. Old initial/Part50 use old Part0; grad1 uses its own Part0. No reclassification by the deformed radius.",
+    "nearest_neighbour": "All37173 soil particles: cKDTree(current XYZ).query(current XYZ,k=2), second distance divided by dp. Region membership remains initial-material membership.",
+    "local_nonaffinity": "For every soil particle take24 fixed nearest neighbours from its own initial geometry. d0=X0_neighbour-X0_i; d=x_neighbour-x_i; A=sum(d0 outer d0), B=sum(d outer d0), F=B inv(A). Report sqrt(mean_neighbours(|d-F d0|^2))/dp. No pressure or time interpolation.",
+    "global_affinity": "Unweighted least-squares x_current=[X0,1] coef over every soil node. Report coef[:3].T, translation, and norm(x_current-fit)/dp statistics by fixed material region.",
+    "local_nonaffinity_limit": "This residual also contains physical radial-strain curvature, elastic waves and boundary response. Different physical times are not an isolated option comparison or a pure numerical disorder growth test.",
+    "moment_sampling": "For each region, available=flatnonzero(region_mask); sample=available[np.linspace(0,len(available)-1,min(512,len(available)),dtype=int)]. Use exactly those initial-ID indices at each snapshot. Regions contain19527 interior/17646 outer native nodes; only512 matrices per region are evaluated, so reported moment maxima are sample maxima, not whole-cloud maxima.",
+    "moment_formula": "For each sampled receiver query all current soil neighbours r<=2h, omit rr<1e-18. d=x_i-x_j; g=(-2.08891/h**5)*(1-.5*r/h)**3*d. M_i=-sum_j(m_j/rho_j)*d outer g. Uses saved current rho, native mass, double offline arithmetic; not production0ULP. Check all sampled eigenvalues positive.",
+    "moment_anisotropy": "Condition=lambda_max/lambda_min for symmetric positive M; deviator_norm_over_trace=||M-(trM/3)I||_F/trM. trace_over3 diagnoses moment scale and is not a disorder metric by itself.",
+    "cartesian_control": "Only an in-memory geometric counterexample: Cartesian nodes ([-20..20]*dp)^3 clipped by sum(x*x)<=R*R+1e-15,33401 nodes, same h/native mass and uniformrho2100. Different N, native volume, and a center node; not GenCase, not a solver input or an admitted replacement distribution."
+  },
+  "conclusions": [
+    "No clear near-neighbour collapse or ill-conditioned moment growth was found at these bounded snapshots. This does not prove all later times remain orderly.",
+    "Native initial layout differs from an exact Cartesian lattice and already has non-unit moment scale. Initial geometric/quadrature bias is distinct from time-varying disorder.",
+    "The perfectly regular Cartesian control has nearest distances essentially dp but nonidentity/anisotropic outer-shell moments. Support truncation must not be relabelled as particle disorder.",
+    "Local residuals remain below.008dp at the two dynamic snapshots and include legitimate non-affine radial physics. Their differing times/options cannot establish which scheme generates more numerical disorder.",
+    "These data support continuing existing gradient/force consistency and time-resolution checks before prioritizing online particle shifting. They do not rule out a later controlled layout or state-consistent shifting study."
+  ],
+  "stock_shifting_source_evidence": [
+    {
+      "file": "JSphCpu.cpp",
+      "lines": [
+        4379,
+        4382,
+        4425
+      ],
+      "finding": "Corrector adds ShiftPosfsc XYZ directly to computed displacement and updates position."
+    },
+    {
+      "file": "JSphGpuSimple_ker.cu",
+      "lines": [
+        887,
+        891
+      ],
+      "finding": "GPU corrector likewise adds shiftposfs XYZ to positional displacement."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "lines": [
+        4146,
+        4193,
+        4294
+      ],
+      "finding": "Symplectic predictor position shift is hardcodedfalse; corrector uses the configured Shifting object."
+    },
+    {
+      "file": "JSphGpu.cpp",
+      "lines": [
+        1482,
+        1531
+      ],
+      "finding": "GPU predictor hardcodes shiftfalse; corrector enables it from ShiftingMode."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "lines": [
+        4318,
+        4328,
+        4330,
+        4359,
+        4411,
+        4412
+      ],
+      "finding": "Density/velocity and stress/plastic history use their existing rate integration, then retain state at the same particle ID; no displacement-gradient transport/remap appears in this active corrector path."
+    },
+    {
+      "file": "JSphGpuSimple_ker.cu",
+      "lines": [
+        855,
+        868,
+        903,
+        931,
+        960,
+        967
+      ],
+      "finding": "GPU density/velocity/stress/plastic state likewise retains its existing rate-integrated update, separate from the extra position displacement."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "lines": [
+        4101,
+        4103
+      ],
+      "finding": "Pore pressure is updated p_pre+dt*p_rate; no shift-state transport term."
+    },
+    {
+      "file": "JSphGpu_ker.cu",
+      "lines": [
+        1295,
+        1300
+      ],
+      "finding": "GPU pore update is also p_old+dt*p_rate without a shifting remap."
+    },
+    {
+      "file": "JSphShifting.cpp",
+      "lines": [
+        391,
+        414
+      ],
+      "finding": "Shift magnitude uses dt*ShiftCoef*h*|v|, scalar ShiftTFS attenuation and per-component0.1dp limits; zero prescribed velocity gives no shifting displacement."
+    },
+    {
+      "file": "JSphShifting_ker.cu",
+      "lines": [
+        136,
+        146
+      ],
+      "finding": "GPU uses the same speed/scalar-threshold/clamping construction."
+    },
+    {
+      "file": "JSphCpu.cpp",
+      "lines": [
+        2536,
+        2540
+      ],
+      "finding": "NoBound/NoFixed refers to actual bound neighbours; the free-surface threshold is accumulated kernel-divergence scalar, not FSType or a normal/tangent position constraint."
+    },
+    {
+      "file": "JSphCpuSingle.cpp",
+      "lines": [
+        116,
+        134
+      ],
+      "finding": "Current SPR/HG compatibility guards reject Shifting; HG also requires2D."
+    },
+    {
+      "file": "JSphGpuSingle.cpp",
+      "lines": [
+        151,
+        169
+      ],
+      "finding": "GPU SPR/HG guards similarly reject Shifting; do not bypass them."
+    },
+    {
+      "file": "JSph.cpp",
+      "lines": [
+        768,
+        784
+      ],
+      "finding": "Generic Shifting parsing supports None/NoBound/NoFixed/Full; no independent Cryer-specific state-transport contract is established here."
+    }
+  ],
+  "stock_shifting_interpretation": [
+    "For the inspected ordinary CPU/GPU Cryer Symplectic paths, evidence supports position relocation without an accompanying rho/pore/stress/velocity transport/remap. This is not a blanket bug claim about all fluid models, in/out extensions or independent regularizers.",
+    "State remains attached to particle ID with physical-rate integration, while position also receives numerical displacement. A material-point settlement or geometry-derived strain diagnostic would need to distinguish accumulated shifting from physical displacement.",
+    "Cryer has only a remote dummy boundary, so NoBound/NoFixed does not constrain the free sphere. ShiftTFS can suppress or taper motion but is not a proven sphere-preserving or drainage-preserving constraint.",
+    "Relocation could change neighbours, correction matrices, FSType drainage membership and the raw confining-load kernel truncation. Those effects require controlled testing; this audit does not establish that a current solver error was caused by shifting, which remains disabled."
+  ],
+  "results": {
+    "scope": "Read-only in-memory distribution diagnostic; no files/solver/source/Git writes.",
+    "physical_acceptance": false,
+    "input_bindings": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\data\\Part_0000.bi4",
+        "sha256": "fc5e27139f6f74cf9bf91db6f42a347dc2b45177213ed526826dac5e201ff626",
+        "bytes": 3720356
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\data\\Part_0050.bi4",
+        "sha256": "6eea506eb93d41431ee367b6005af92a3ff81999bed91e50f88bbdc87cbbeef9",
+        "bytes": 4166529
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_grad_short_r1_h\\data\\Part_0000.bi4",
+        "sha256": "20a662facf0af336774927ea7610591794ac2bc4cad05246db25b31269c45815",
+        "bytes": 5951221
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_grad_short_r1_h\\data\\Part_0004.bi4",
+        "sha256": "c1b881e56f3819b5cf7903c26b9ae173493233a3cb1f42dcd104dfbd1ef60a5c",
+        "bytes": 5951221
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_out\\Run.out",
+        "sha256": "b4010a95b342684ec8415ab4af5c1960d8d23684c94c4088f3f50e553f7a2fd3",
+        "bytes": 90554
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_grad_short_r1_h\\Run.out",
+        "sha256": "64817b7824310005dcc78779d44751e0a4b048cad923f4dc9edcf7c1aeaa9b13",
+        "bytes": 9305
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+        "bytes": 385536
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_release_r1.py",
+        "sha256": "d27b4f2ab9077989c349c6cda5df9aa2c9a3632c6c51928a38b8b327c420a5da",
+        "bytes": 12508
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+        "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4",
+        "bytes": 22425
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\configs\\cryer_grad_short_r1_h_Def.xml",
+        "sha256": "b7b2cee2f12e64fc49abb766c076177a9c744577f8f277b5179e69a263978c63",
+        "bytes": 8683
+      }
+    ],
+    "snapshots": {
+      "old_Part0": {
+        "actual_time_s": 0,
+        "saved_step": 0,
+        "position_double": 0,
+        "h_m": 0.0044999998062849045,
+        "interior_initial_radius_cut_m": 0.041000000387430194,
+        "nearest_neighbour_distance_over_dp": {
+          "interior": {
+            "n": 19527,
+            "percentiles": {
+              "0": 0.7653668435788524,
+              "1": 0.8644732811742487,
+              "5": 0.9420471713736852,
+              "25": 0.9721709464665961,
+              "50": 0.9851354782346017,
+              "75": 0.9913872031123302,
+              "95": 0.9976915715954784,
+              "99": 0.9995613876613666,
+              "100": 0.9997936733779739
+            },
+            "rms": 0.9784626000018901
+          },
+          "outer_shell": {
+            "n": 17646,
+            "percentiles": {
+              "0": 0.8456396870315075,
+              "1": 0.9586238498319452,
+              "5": 0.9748578653122933,
+              "25": 0.9847688093376173,
+              "50": 0.9913156122158635,
+              "75": 0.9949701925136646,
+              "95": 0.9982944285437844,
+              "99": 0.9992223651958115,
+              "100": 0.9996317650558683
+            },
+            "rms": 0.9892054105640117
+          }
+        },
+        "sampled_kernel_moments": {
+          "interior": {
+            "population": 19527,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0007417916072994,
+                "1": 1.000956924447095,
+                "5": 1.0013240357349014,
+                "25": 1.002687706926106,
+                "50": 1.0063229176699569,
+                "75": 1.0104953433018151,
+                "95": 1.0229450451684625,
+                "99": 1.0627325289945366,
+                "100": 1.0795653692314815
+              },
+              "rms": 1.0092811892847124
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.0001829994570036439,
+                "1": 0.0002351016347247435,
+                "5": 0.0003205613437394116,
+                "25": 0.0006519657373710744,
+                "50": 0.0016225404540869052,
+                "75": 0.002630005901466956,
+                "95": 0.0054959933269487365,
+                "99": 0.015413234650869596,
+                "100": 0.018258922149436134
+              },
+              "rms": 0.0036176760118470735
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0201933715145357,
+                "1": 1.0204668621247044,
+                "5": 1.0218313609962566,
+                "25": 1.0235669646295762,
+                "50": 1.0276111119797038,
+                "75": 1.0420969762403653,
+                "95": 1.0740238876539911,
+                "99": 1.1463297596688844,
+                "100": 1.2001219067084339
+              },
+              "rms": 1.036906698159267
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0162042328478178,
+                "1": 1.0165173358952249,
+                "5": 1.017182442825468,
+                "25": 1.0199405789632432,
+                "50": 1.0259350675389265,
+                "75": 1.036117107123692,
+                "95": 1.065010356265863,
+                "99": 1.1191158809743231,
+                "100": 1.172236579498268
+              },
+              "rms": 1.031893214504488
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0209901741165142,
+                "1": 1.0216617528368113,
+                "5": 1.0237408693301413,
+                "25": 1.0269511787710552,
+                "50": 1.0297136483272111,
+                "75": 1.0468923418075835,
+                "95": 1.0886785128268317,
+                "99": 1.1877833074645414,
+                "100": 1.2459085997475094
+              },
+              "rms": 1.0417643667770498
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 193,
+                "1": 195,
+                "5": 197,
+                "25": 200,
+                "50": 203,
+                "75": 205,
+                "95": 212,
+                "99": 221.89,
+                "100": 229
+              },
+              "rms": 203.24706909018394
+            },
+            "all_positive_eigenvalues": true
+          },
+          "outer_shell": {
+            "population": 17646,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.00061553575013,
+                "1": 1.0009023075108758,
+                "5": 1.0013660313394177,
+                "25": 1.0172566406138543,
+                "50": 1.2647485012665385,
+                "75": 1.3571011903822767,
+                "95": 1.3607944475151625,
+                "99": 1.364107835279676,
+                "100": 1.3779935648708797
+              },
+              "rms": 1.1978347591500824
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.00015136516617716956,
+                "1": 0.00023218921965486593,
+                "5": 0.0003294751124029159,
+                "25": 0.004479643498211692,
+                "50": 0.06108925064563764,
+                "75": 0.07833779204340788,
+                "95": 0.07892095831168323,
+                "99": 0.07941485807561947,
+                "100": 0.07977161266156348
+              },
+              "rms": 0.05422026834164452
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.624299049539711,
+                "1": 0.6247071269931438,
+                "5": 0.6249934129684499,
+                "25": 0.6268691501857169,
+                "50": 0.8951305056946478,
+                "75": 1.0160126194745076,
+                "95": 1.0266502830580613,
+                "99": 1.0323116419139577,
+                "100": 1.1201337062172423
+              },
+              "rms": 0.8798792996954354
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.503812616469566,
+                "1": 0.5039622017045784,
+                "5": 0.5042610075358859,
+                "25": 0.5067117673951516,
+                "50": 0.7608203788231692,
+                "75": 1.0038305965511278,
+                "95": 1.0256002715146724,
+                "99": 1.030606211654,
+                "100": 1.092686103326492
+              },
+              "rms": 0.8166250814525695
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.6848712018744987,
+                "1": 0.6852201464135875,
+                "5": 0.6855271895318665,
+                "25": 0.6877102815486302,
+                "50": 0.9632151253271763,
+                "75": 1.022882576359417,
+                "95": 1.0288064866131166,
+                "99": 1.0339196012854739,
+                "100": 1.1460418447457623
+              },
+              "rms": 0.9145760138525666
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 108,
+                "1": 110,
+                "5": 111.55,
+                "25": 116,
+                "50": 155.5,
+                "75": 188,
+                "95": 203,
+                "99": 205,
+                "100": 216
+              },
+              "rms": 161.49705516858504
+            },
+            "all_positive_eigenvalues": true
+          }
+        },
+        "deformation_from_own_initial": {
+          "definition": "24 fixed initial nearest-neighbour bonds; best local3x3 affine map; sqrt(mean|d_current-F d_initial|^2)/dp. Physical strain curvature also contributes; not a pure disorder measure.",
+          "global_best_affine_F": [
+            [
+              0.9999999999999876,
+              -6.923960693825053e-18,
+              -3.554143999301397e-20
+            ],
+            [
+              -3.4733397543609034e-25,
+              0.999999999999999,
+              -9.065750621070924e-19
+            ],
+            [
+              -4.1448977954919313e-19,
+              -2.0147753985239853e-18,
+              0.9999999999999991
+            ]
+          ],
+          "global_translation_m": [
+            -2.2399569565143114e-17,
+            -1.1102230246251565e-16,
+            -7.793199423107095e-20
+          ],
+          "regions": {
+            "interior": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 1.8668472655945485e-35,
+                  "1": 9.350734451382273e-20,
+                  "5": 3.1731716878400684e-18,
+                  "25": 1.169376885620822e-16,
+                  "50": 1.5803020812539075e-16,
+                  "75": 2.0375269779804978e-16,
+                  "95": 2.713215758027911e-16,
+                  "99": 3.461315276066273e-16,
+                  "100": 5.301574449447449e-16
+                },
+                "rms": 1.711920489197122e-16
+              },
+              "global_affine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 2.7758963572886447e-14,
+                  "1": 3.4170530014036114e-14,
+                  "5": 4.154653671074233e-14,
+                  "25": 5.842871406995268e-14,
+                  "50": 8.452928542035976e-14,
+                  "75": 1.2292348914623138e-13,
+                  "95": 1.7283592442845828e-13,
+                  "99": 1.9488975537376307e-13,
+                  "100": 2.13070658628554e-13
+                },
+                "rms": 1.0239866597241452e-13
+              },
+              "local_affine_det": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.9999999999999993,
+                  "1": 0.9999999999999996,
+                  "5": 0.9999999999999997,
+                  "25": 0.9999999999999999,
+                  "50": 1,
+                  "75": 1,
+                  "95": 1.0000000000000002,
+                  "99": 1.0000000000000004,
+                  "100": 1.0000000000000007
+                },
+                "rms": 1
+              }
+            },
+            "outer_shell": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 2.930585969645018e-34,
+                  "1": 8.474837932413612e-19,
+                  "5": 4.530566667930721e-18,
+                  "25": 1.215306402414213e-16,
+                  "50": 1.72293088432763e-16,
+                  "75": 2.1572177389495056e-16,
+                  "95": 2.835977395327969e-16,
+                  "99": 3.5710789712462077e-16,
+                  "100": 5.4527748494027585e-16
+                },
+                "rms": 1.7952973717787085e-16
+              },
+              "global_affine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 2.510319295098892e-14,
+                  "1": 2.9955138479332905e-14,
+                  "5": 4.33136853856533e-14,
+                  "25": 7.55551237560054e-14,
+                  "50": 1.2445234678468467e-13,
+                  "75": 1.7917401107021864e-13,
+                  "95": 2.274510256170883e-13,
+                  "99": 2.4624788701913077e-13,
+                  "100": 2.6191912144207153e-13
+                },
+                "rms": 1.420951265046745e-13
+              },
+              "local_affine_det": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.9999999999999993,
+                  "1": 0.9999999999999996,
+                  "5": 0.9999999999999997,
+                  "25": 0.9999999999999999,
+                  "50": 0.9999999999999999,
+                  "75": 1,
+                  "95": 1.0000000000000002,
+                  "99": 1.0000000000000004,
+                  "100": 1.0000000000000007
+                },
+                "rms": 1
+              }
+            }
+          }
+        }
+      },
+      "old_Part50": {
+        "actual_time_s": 0.04554741329226484,
+        "saved_step": 15289,
+        "position_double": 1,
+        "h_m": 0.0044999998062849045,
+        "interior_initial_radius_cut_m": 0.041000000387430194,
+        "nearest_neighbour_distance_over_dp": {
+          "interior": {
+            "n": 19527,
+            "percentiles": {
+              "0": 0.764171692229307,
+              "1": 0.8644348954275776,
+              "5": 0.9417821668235883,
+              "25": 0.9714971504777046,
+              "50": 0.9844973146842864,
+              "75": 0.9909645319478048,
+              "95": 0.9972082273143492,
+              "99": 0.9990465900611156,
+              "100": 0.9994823543241463
+            },
+            "rms": 0.9780163091256066
+          },
+          "outer_shell": {
+            "n": 17646,
+            "percentiles": {
+              "0": 0.8453363808629646,
+              "1": 0.9579643560475773,
+              "5": 0.9742381876845561,
+              "25": 0.9840396325962604,
+              "50": 0.9906613384260283,
+              "75": 0.9942450694150049,
+              "95": 0.9976002443457037,
+              "99": 0.9985247231800499,
+              "100": 0.99925368065117
+            },
+            "rms": 0.9883657864832812
+          }
+        },
+        "sampled_kernel_moments": {
+          "interior": {
+            "population": 19527,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.000638443822783,
+                "1": 1.0008993932735186,
+                "5": 1.0013590629344604,
+                "25": 1.0026373419153087,
+                "50": 1.006290970689689,
+                "75": 1.0102522814734887,
+                "95": 1.0226179303816185,
+                "99": 1.0629083398017292,
+                "100": 1.078980122693206
+              },
+              "rms": 1.009149919176049
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.00015432623882788782,
+                "1": 0.0002164119664047296,
+                "5": 0.00032939272843034455,
+                "25": 0.000640900917692983,
+                "50": 0.0015951319560309467,
+                "75": 0.0025430782906292852,
+                "95": 0.005415900166584817,
+                "99": 0.015220285006764606,
+                "100": 0.018119773730722426
+              },
+              "rms": 0.003578807885885573
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.020222163541181,
+                "1": 1.0205555562881483,
+                "5": 1.0218577339255863,
+                "25": 1.0235704357400521,
+                "50": 1.0275912829882623,
+                "75": 1.0420644418074845,
+                "95": 1.0742143967461872,
+                "99": 1.146231495404312,
+                "100": 1.2003518977352745
+              },
+              "rms": 1.0368805552165077
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0163255821568327,
+                "1": 1.016611086386411,
+                "5": 1.0172768021657486,
+                "25": 1.0200348097871357,
+                "50": 1.0258958325275978,
+                "75": 1.0362074072608574,
+                "95": 1.0649653712364322,
+                "99": 1.1193150118027593,
+                "100": 1.172333481804115
+              },
+              "rms": 1.0319392423910607
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0211694761210826,
+                "1": 1.0217342358366037,
+                "5": 1.0237403056781436,
+                "25": 1.026894443347016,
+                "50": 1.0296318753475537,
+                "75": 1.046852616114013,
+                "95": 1.0884538516963504,
+                "99": 1.1871247079391343,
+                "100": 1.2463651192815972
+              },
+              "rms": 1.041676066110986
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 194,
+                "1": 195.11,
+                "5": 198,
+                "25": 201,
+                "50": 203,
+                "75": 205,
+                "95": 212,
+                "99": 221.89,
+                "100": 229
+              },
+              "rms": 203.55376861839233
+            },
+            "all_positive_eigenvalues": true
+          },
+          "outer_shell": {
+            "population": 17646,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0006898266494864,
+                "1": 1.0010509539411867,
+                "5": 1.001519348883081,
+                "25": 1.0159768629819301,
+                "50": 1.2700976742658876,
+                "75": 1.3607306239294652,
+                "95": 1.3643778963196722,
+                "99": 1.3677461917810363,
+                "100": 1.381366350540966
+              },
+              "rms": 1.2003852928932106
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.00016784702829998602,
+                "1": 0.0002649714942418686,
+                "5": 0.00037408871275305364,
+                "25": 0.0041476279198422936,
+                "50": 0.06212941090301904,
+                "75": 0.07897382348110674,
+                "95": 0.07956636787922511,
+                "99": 0.08005410940269038,
+                "100": 0.08035037700592562
+              },
+              "rms": 0.054815789666464235
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.6252157808663404,
+                "1": 0.6256233102548773,
+                "5": 0.6259159037518394,
+                "25": 0.6277945882577978,
+                "50": 0.8941677739021744,
+                "75": 1.016314269886416,
+                "95": 1.0263458383748636,
+                "99": 1.0320946965486846,
+                "100": 1.1194207025384788
+              },
+              "rms": 0.8798380918927357
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.5035526018331871,
+                "1": 0.50372386383568,
+                "5": 0.5040129672884066,
+                "25": 0.5064724640417851,
+                "50": 0.7577208647098485,
+                "75": 1.0049614375936597,
+                "95": 1.0251766174294752,
+                "99": 1.0300854965041533,
+                "100": 1.092201256849924
+              },
+              "rms": 0.816042823196294
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.6863749773361746,
+                "1": 0.6867128868193062,
+                "5": 0.6870450549936145,
+                "25": 0.6892036176440866,
+                "50": 0.9633156867059429,
+                "75": 1.0227061900915477,
+                "95": 1.028392670310069,
+                "99": 1.033623155861129,
+                "100": 1.1452125995069815
+              },
+              "rms": 0.9148787987148673
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 108,
+                "1": 110,
+                "5": 112,
+                "25": 116,
+                "50": 156,
+                "75": 189,
+                "95": 204,
+                "99": 205,
+                "100": 217
+              },
+              "rms": 162.00673331878832
+            },
+            "all_positive_eigenvalues": true
+          }
+        },
+        "deformation_from_own_initial": {
+          "definition": "24 fixed initial nearest-neighbour bonds; best local3x3 affine map; sqrt(mean|d_current-F d_initial|^2)/dp. Physical strain curvature also contributes; not a pure disorder measure.",
+          "global_best_affine_F": [
+            [
+              0.9993595335755158,
+              -4.136201849464118e-9,
+              -5.728468203621044e-9
+            ],
+            [
+              4.160707020475071e-9,
+              0.9993595120099897,
+              -4.983730484037325e-9
+            ],
+            [
+              5.674895331322302e-9,
+              5.069194751682216e-9,
+              0.999364923243927
+            ]
+          ],
+          "global_translation_m": [
+            1.1012434660615381e-11,
+            -1.2116974090758958e-12,
+            7.773490225295025e-9
+          ],
+          "regions": {
+            "interior": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.00020442322136653685,
+                  "1": 0.0003940376054008174,
+                  "5": 0.000501355367636078,
+                  "25": 0.0007727231715968939,
+                  "50": 0.0010837798908669726,
+                  "75": 0.0016530539733859138,
+                  "95": 0.0030198498885043337,
+                  "99": 0.004029929840293523,
+                  "100": 0.007969066648410262
+                },
+                "rms": 0.0015669673180141335
+              },
+              "global_affine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.00047553375176971667,
+                  "1": 0.001599890700730045,
+                  "5": 0.0023585044904334477,
+                  "25": 0.0028015057213564825,
+                  "50": 0.004118532304895929,
+                  "75": 0.004689329968669916,
+                  "95": 0.005461229191522463,
+                  "99": 0.006291885604143608,
+                  "100": 0.010728837521084614
+                },
+                "rms": 0.004016858895692723
+              },
+              "local_affine_det": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.9971129784161843,
+                  "1": 0.99729658008864,
+                  "5": 0.997398824550764,
+                  "25": 0.9976535893026274,
+                  "50": 0.9984716279838464,
+                  "75": 0.9991340292998687,
+                  "95": 0.9998897019700611,
+                  "99": 1.0004953647817616,
+                  "100": 1.0019741577647319
+                },
+                "rms": 0.9984662839343479
+              }
+            },
+            "outer_shell": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.00032544295342558133,
+                  "1": 0.0004377134759041526,
+                  "5": 0.000484066831307926,
+                  "25": 0.0008799144565623121,
+                  "50": 0.001463681291619696,
+                  "75": 0.0034911042558847067,
+                  "95": 0.0037088310746694574,
+                  "99": 0.003788673734263357,
+                  "100": 0.007353362621253937
+                },
+                "rms": 0.002166533762629186
+              },
+              "global_affine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.00008876368028155577,
+                  "1": 0.00022013191442577158,
+                  "5": 0.00026462846948426336,
+                  "25": 0.0003490861310373144,
+                  "50": 0.0011730700303597685,
+                  "75": 0.00831002059499691,
+                  "95": 0.00835758420116224,
+                  "99": 0.00836883750727394,
+                  "100": 0.008379517877653246
+                },
+                "rms": 0.004579884824919972
+              },
+              "local_affine_det": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.9896806914480853,
+                  "1": 0.9897496832128924,
+                  "5": 0.9898226765922047,
+                  "25": 0.991004232478479,
+                  "50": 0.994322354561965,
+                  "75": 0.9965342580976383,
+                  "95": 0.9974900627720988,
+                  "99": 0.9976446200571665,
+                  "100": 0.9985518958631634
+                },
+                "rms": 0.9943151294741265
+              }
+            }
+          }
+        }
+      },
+      "grad1_half_Part4": {
+        "actual_time_s": 0.0005000000000000007,
+        "saved_step": 399,
+        "position_double": 1,
+        "h_m": 0.0044999998062849045,
+        "interior_initial_radius_cut_m": 0.041000000387430194,
+        "nearest_neighbour_distance_over_dp": {
+          "interior": {
+            "n": 19527,
+            "percentiles": {
+              "0": 0.7653752772651562,
+              "1": 0.8645133861108814,
+              "5": 0.9420547740766172,
+              "25": 0.9721328335684154,
+              "50": 0.9851225335032194,
+              "75": 0.9913425711805726,
+              "95": 0.9976763838357718,
+              "99": 0.999516695914591,
+              "100": 0.9997495744069742
+            },
+            "rms": 0.978452228892647
+          },
+          "outer_shell": {
+            "n": 17646,
+            "percentiles": {
+              "0": 0.8452982744719275,
+              "1": 0.958363653083911,
+              "5": 0.9746907407064351,
+              "25": 0.9848048070373613,
+              "50": 0.9914757585554765,
+              "75": 0.9950610805407131,
+              "95": 0.9984626930474121,
+              "99": 0.999330613757833,
+              "100": 0.999463494375478
+            },
+            "rms": 0.9891446666813616
+          }
+        },
+        "sampled_kernel_moments": {
+          "interior": {
+            "population": 19527,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0007226085310392,
+                "1": 1.000907467411691,
+                "5": 1.0013651287797567,
+                "25": 1.0026925366559196,
+                "50": 1.0065344909978373,
+                "75": 1.0096917597762072,
+                "95": 1.02297587478088,
+                "99": 1.0627281664239758,
+                "100": 1.0795633550065733
+              },
+              "rms": 1.0091761929170189
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.00017835116061009745,
+                "1": 0.0002191294116604324,
+                "5": 0.0003324206585377043,
+                "25": 0.0006510745384182451,
+                "50": 0.0016967531140201849,
+                "75": 0.002506327483364409,
+                "95": 0.005504014130839377,
+                "99": 0.015414977766979964,
+                "100": 0.018258670388458263
+              },
+              "rms": 0.0035897933386491755
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0202703179557173,
+                "1": 1.0204857141605546,
+                "5": 1.0217322562633102,
+                "25": 1.0236802565210226,
+                "50": 1.0275761268621166,
+                "75": 1.0421003909216124,
+                "95": 1.074028761663604,
+                "99": 1.1463342120884055,
+                "100": 1.2001143622526327
+              },
+              "rms": 1.036928821414738
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0162505677989593,
+                "1": 1.0172800188896665,
+                "5": 1.0180643038864097,
+                "25": 1.020096146470732,
+                "50": 1.0258110953798614,
+                "75": 1.036114763590934,
+                "95": 1.0650663745221818,
+                "99": 1.1191184282899744,
+                "100": 1.172234528669082
+              },
+              "rms": 1.0319883689879366
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.021146353126909,
+                "1": 1.0216784994304366,
+                "5": 1.0237378037121558,
+                "25": 1.0269715237446333,
+                "50": 1.0296831926893182,
+                "75": 1.0469779438762907,
+                "95": 1.088685480034619,
+                "99": 1.1877941417862845,
+                "100": 1.2458989273945535
+              },
+              "rms": 1.0417553828841737
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 194,
+                "1": 195,
+                "5": 197,
+                "25": 200,
+                "50": 203,
+                "75": 205,
+                "95": 212,
+                "99": 221.89,
+                "100": 229
+              },
+              "rms": 203.2488516649602
+            },
+            "all_positive_eigenvalues": true
+          },
+          "outer_shell": {
+            "population": 17646,
+            "sample_size": 512,
+            "condition": {
+              "n": 512,
+              "percentiles": {
+                "0": 1.0003097149349451,
+                "1": 1.0009306514563496,
+                "5": 1.0022672349594506,
+                "25": 1.0154254041707662,
+                "50": 1.268324540732591,
+                "75": 1.3632761023093107,
+                "95": 1.366928610596941,
+                "99": 1.37030884432119,
+                "100": 1.383947100207756
+              },
+              "rms": 1.200810556131655
+            },
+            "deviator_norm_over_trace": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.00008236119234505702,
+                "1": 0.00022830199940641758,
+                "5": 0.0005575695462536436,
+                "25": 0.003995365748121938,
+                "50": 0.06178864705959783,
+                "75": 0.07942884295395461,
+                "95": 0.08001426477936173,
+                "99": 0.08051271773561318,
+                "100": 0.08080903042303383
+              },
+              "rms": 0.05491788731873723
+            },
+            "trace_over3": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.6249040331431123,
+                "1": 0.6253180913819352,
+                "5": 0.6256052831006509,
+                "25": 0.627486594817257,
+                "50": 0.8939099986621425,
+                "75": 1.0163094853023713,
+                "95": 1.02622984191772,
+                "99": 1.0320077673653183,
+                "100": 1.1196542408464234
+              },
+              "rms": 0.8796744934735717
+            },
+            "lambda_min": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.5026258375079917,
+                "1": 0.5027862408576483,
+                "5": 0.5030808469701386,
+                "25": 0.5055248096227848,
+                "50": 0.7582545746306422,
+                "75": 1.0053368570759083,
+                "95": 1.0247032261644016,
+                "99": 1.0294825146598847,
+                "100": 1.0927945793511686
+              },
+              "rms": 0.8159588486304554
+            },
+            "lambda_max": {
+              "n": 512,
+              "percentiles": {
+                "0": 0.6863725076369671,
+                "1": 0.6867197275593713,
+                "5": 0.687040586574192,
+                "25": 0.68922425564436,
+                "50": 0.9626698574234891,
+                "75": 1.022629351038339,
+                "95": 1.0282043087039798,
+                "99": 1.0337330684424206,
+                "100": 1.1450926496898133
+              },
+              "rms": 0.9146748307614134
+            },
+            "neighbour_count": {
+              "n": 512,
+              "percentiles": {
+                "0": 108,
+                "1": 110,
+                "5": 112,
+                "25": 116,
+                "50": 155,
+                "75": 188,
+                "95": 203,
+                "99": 205,
+                "100": 216
+              },
+              "rms": 161.61568877858053
+            },
+            "all_positive_eigenvalues": true
+          }
+        },
+        "deformation_from_own_initial": {
+          "definition": "24 fixed initial nearest-neighbour bonds; best local3x3 affine map; sqrt(mean|d_current-F d_initial|^2)/dp. Physical strain curvature also contributes; not a pure disorder measure.",
+          "global_best_affine_F": [
+            [
+              0.9999578947497351,
+              5.860679274894444e-13,
+              2.745446073790842e-12
+            ],
+            [
+              3.869108544831585e-12,
+              0.9999578975301101,
+              -9.533606543099538e-15
+            ],
+            [
+              6.7660352044265974e-12,
+              4.642428477232008e-12,
+              0.9999582904085633
+            ]
+          ],
+          "global_translation_m": [
+            5.522052519477947e-14,
+            6.350475700855895e-14,
+            5.105812128343781e-10
+          ],
+          "regions": {
+            "interior": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.000009651607965937786,
+                  "1": 0.000025726857200063102,
+                  "5": 0.00003222991538858489,
+                  "25": 0.0000822869573629211,
+                  "50": 0.0003773789848986185,
+                  "75": 0.0006621303760545425,
+                  "95": 0.0012093169228744156,
+                  "99": 0.0012185252653887845,
+                  "100": 0.0012549255717464187
+                },
+                "rms": 0.0006048950467281606
+              },
+              "global_affine_residual_over_dp": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.000025012489299010997,
+                  "1": 0.000028105281632775856,
+                  "5": 0.00003116029102154105,
+                  "25": 0.00003909065771825867,
+                  "50": 0.0003863271017460277,
+                  "75": 0.00044869407051178263,
+                  "95": 0.0010338000372171446,
+                  "99": 0.0010374176893948144,
+                  "100": 0.001039745097997344
+                },
+                "rms": 0.0004909342461348933
+              },
+              "local_affine_det": {
+                "n": 19527,
+                "percentiles": {
+                  "0": 0.9993909798662926,
+                  "1": 0.9993985934897672,
+                  "5": 0.9994029194605594,
+                  "25": 0.9999127811729482,
+                  "50": 1.0000446598526256,
+                  "75": 1.0001671464670814,
+                  "95": 1.0011259805374881,
+                  "99": 1.0011632776493407,
+                  "100": 1.0013862950671557
+                },
+                "rms": 1.0000988737538399
+              }
+            },
+            "outer_shell": {
+              "local_nonaffine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.0005367276353597702,
+                  "1": 0.000563932590308871,
+                  "5": 0.0005781736441876746,
+                  "25": 0.002765454456266095,
+                  "50": 0.003440484521164018,
+                  "75": 0.006287125418739158,
+                  "95": 0.006651246202244238,
+                  "99": 0.006680890671942693,
+                  "100": 0.006891124856400124
+                },
+                "rms": 0.004455978950522236
+              },
+              "global_affine_residual_over_dp": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.0018363855872967144,
+                  "1": 0.0023058790297486643,
+                  "5": 0.002327517323263745,
+                  "25": 0.0024345893786880844,
+                  "50": 0.00457530273482021,
+                  "75": 0.004644025750147263,
+                  "95": 0.004701711068956716,
+                  "99": 0.004728550564464972,
+                  "100": 0.004930449358702
+                },
+                "rms": 0.0037928498785082983
+              },
+              "local_affine_det": {
+                "n": 17646,
+                "percentiles": {
+                  "0": 0.9892154741804475,
+                  "1": 0.9907928108354939,
+                  "5": 0.9908733669423166,
+                  "25": 0.9931101436959306,
+                  "50": 0.9986391152338622,
+                  "75": 0.9994881466793636,
+                  "95": 1.0016445547185553,
+                  "99": 1.001792583421444,
+                  "100": 1.0029749249685906
+                },
+                "rms": 0.9974021294582847
+              }
+            }
+          }
+        }
+      }
+    },
+    "new_initial_vs_old_initial_xyz_rms_m": 5.801873542557781e-10,
+    "new_initial_vs_old_initial_max_vector_m": 2.6142196511175483e-9,
+    "cartesian_clipped_ball_reference": {
+      "scope": "Geometric in-memory reference only, not GenCase or a replacement solver input; has different N and a center node. Demonstrates support truncation with perfectly regular nearest distances.",
+      "count": 33401,
+      "nearest_distance_over_dp": {
+        "n": 33401,
+        "percentiles": {
+          "0": 0.9999999999999981,
+          "1": 0.9999999999999981,
+          "5": 0.9999999999999981,
+          "25": 0.9999999999999981,
+          "50": 0.9999999999999994,
+          "75": 0.9999999999999994,
+          "95": 0.9999999999999998,
+          "99": 1,
+          "100": 1.0000000000000009
+        },
+        "rms": 0.9999999999999991
+      },
+      "sampled_kernel_moments": {
+        "interior": {
+          "population": 18349,
+          "sample_size": 512,
+          "condition": {
+            "n": 512,
+            "percentiles": {
+              "0": 1.0000000000000002,
+              "1": 1.0000000000000002,
+              "5": 1.0000000000000002,
+              "25": 1.0000000000000007,
+              "50": 1.0000000000000009,
+              "75": 1.0000000000000013,
+              "95": 1.0000000000000018,
+              "99": 1.000000000000002,
+              "100": 1.0000000000000022
+            },
+            "rms": 1.0000000000000009
+          },
+          "deviator_norm_over_trace": {
+            "n": 512,
+            "percentiles": {
+              "0": 3.778910756560746e-17,
+              "1": 4.0387775932374014e-17,
+              "5": 4.847504621643747e-17,
+              "25": 9.404610278162636e-17,
+              "50": 1.8934245853814348e-16,
+              "75": 2.7004770477966384e-16,
+              "95": 4.0234652348241227e-16,
+              "99": 4.57603286972371e-16,
+              "100": 4.948145979748845e-16
+            },
+            "rms": 2.242728935975054e-16
+          },
+          "trace_over3": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.997849002102824,
+              "1": 0.997849002102824,
+              "5": 0.9978490021028241,
+              "25": 0.9978490021028245,
+              "50": 0.9978490021028245,
+              "75": 0.9978490021028247,
+              "95": 0.9978490021028249,
+              "99": 0.997849002102825,
+              "100": 0.9978490021028251
+            },
+            "rms": 0.9978490021028245
+          },
+          "lambda_min": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.9978490021028226,
+              "1": 0.9978490021028231,
+              "5": 0.9978490021028233,
+              "25": 0.9978490021028238,
+              "50": 0.997849002102824,
+              "75": 0.9978490021028243,
+              "95": 0.9978490021028247,
+              "99": 0.9978490021028248,
+              "100": 0.9978490021028248
+            },
+            "rms": 0.9978490021028241
+          },
+          "lambda_max": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.9978490021028241,
+              "1": 0.9978490021028243,
+              "5": 0.9978490021028246,
+              "25": 0.9978490021028247,
+              "50": 0.9978490021028249,
+              "75": 0.9978490021028251,
+              "95": 0.9978490021028255,
+              "99": 0.9978490021028258,
+              "100": 0.997849002102826
+            },
+            "rms": 0.997849002102825
+          },
+          "neighbour_count": {
+            "n": 512,
+            "percentiles": {
+              "0": 178,
+              "1": 178,
+              "5": 178,
+              "25": 178,
+              "50": 178,
+              "75": 178,
+              "95": 178,
+              "99": 178,
+              "100": 178
+            },
+            "rms": 178
+          },
+          "all_positive_eigenvalues": true
+        },
+        "outer_shell": {
+          "population": 15052,
+          "sample_size": 512,
+          "condition": {
+            "n": 512,
+            "percentiles": {
+              "0": 1.0000000000000002,
+              "1": 1.0000000000000004,
+              "5": 1.000000000000001,
+              "25": 1.0132036066418588,
+              "50": 1.1089722497680796,
+              "75": 1.300944420864912,
+              "95": 1.4203457823305694,
+              "99": 1.4494967112376298,
+              "100": 1.7112223809053175
+            },
+            "rms": 1.1738514768400559
+          },
+          "deviator_norm_over_trace": {
+            "n": 512,
+            "percentiles": {
+              "0": 1.3579256710577037e-17,
+              "1": 1.4067192344289048e-16,
+              "5": 2.4126252231925095e-16,
+              "25": 0.0032276296920623537,
+              "50": 0.026191986693051804,
+              "75": 0.06475810715008458,
+              "95": 0.08694487268116444,
+              "99": 0.0910114723043793,
+              "100": 0.15647422403903724
+            },
+            "rms": 0.04869429944082458
+          },
+          "trace_over3": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.3606816965745903,
+              "1": 0.48279299910513046,
+              "5": 0.5143441840061289,
+              "25": 0.7047713397677116,
+              "50": 0.928517897545358,
+              "75": 0.9928731686287802,
+              "95": 0.9978490021028246,
+              "99": 0.9978490021028249,
+              "100": 0.997849002102825
+            },
+            "rms": 0.861012512251624
+          },
+          "lambda_min": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.2915602943361794,
+              "1": 0.45861351650645765,
+              "5": 0.49892450105141173,
+              "25": 0.5585137073707114,
+              "50": 0.8431314116477403,
+              "75": 0.9841477337821087,
+              "95": 0.9978490021028242,
+              "99": 0.9978490021028245,
+              "100": 0.9978490021028248
+            },
+            "rms": 0.8064642440347176
+          },
+          "lambda_max": {
+            "n": 512,
+            "percentiles": {
+              "0": 0.49891069244287006,
+              "1": 0.4989232258213138,
+              "5": 0.5451835499155617,
+              "25": 0.7852533292358154,
+              "50": 0.97472878483616,
+              "75": 0.9972358860521168,
+              "95": 0.9978490021028251,
+              "99": 0.9978490021028257,
+              "100": 0.997849002102826
+            },
+            "rms": 0.8953973408893081
+          },
+          "neighbour_count": {
+            "n": 512,
+            "percentiles": {
+              "0": 71,
+              "1": 85,
+              "5": 89,
+              "25": 113,
+              "50": 149,
+              "75": 171,
+              "95": 178,
+              "99": 178,
+              "100": 178
+            },
+            "rms": 145.07385645982188
+          },
+          "all_positive_eigenvalues": true
+        }
+      }
+    },
+    "bindings_unchanged": true,
+    "wall_seconds": 9.898686500033364
+  }
+}
