@@ -1,0 +1,211 @@
+{
+  "analysis_checks_passed": true,
+  "solver_executed": false,
+  "integrated_steps": 0,
+  "production_implemented": false,
+  "physical_acceptance": false,
+  "automatic_dynamic_run_admitted": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_symc_step_screen_r1.py",
+      "sha256": "a748bbaa90a5e37c61115672c7a6c03ee585c6b3b6bc2682ef3a0bff0a37e349",
+      "bytes": 11387
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_cpu_r1.check.json",
+      "sha256": "d3245bdaa500930e7e1084b9c0d2462eb72d0980e35b9a21e1362150d31a3e03",
+      "bytes": 16166
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_cpu_r1.inputs.json",
+      "sha256": "75733df015315914a0f1662f54f50df8ab1d5b11bfb07fa2e1ff9d0f2bf380df",
+      "bytes": 6024
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_cpu_r1.completion.json",
+      "sha256": "f42edaed40e3eedc8ecbd9653b649c3eef158cce2a036b60e81be7e6d58f9033",
+      "bytes": 2496
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_preload_peak_r1\\data\\Part_0000.bi4",
+      "sha256": "ebb4fdd63038303ce2bca35486862f3f0b5190afd74b7fe9fed486df1f9c8e40",
+      "bytes": 5951313
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\configs\\cryer_preload_peak_r1_Def.xml",
+      "sha256": "f2f20163fea45fb8c507478975417d5275fbe2967f5de047a2c9d4a4092ec2a3",
+      "bytes": 8902
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+      "bytes": 385536
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_release_r1.py",
+      "sha256": "d27b4f2ab9077989c349c6cda5df9aa2c9a3632c6c51928a38b8b327c420a5da",
+      "bytes": 12508
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+      "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4",
+      "bytes": 22425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_darcy_closed_r1.py",
+      "sha256": "d54e0eaacc9c4c1c15a599357088fff5fded45947c5fc8653383a2b1c12a1dac",
+      "bytes": 10975
+    }
+  ],
+  "completed_probe_verified_file_count": 30,
+  "completed_probe_and_inputs_reverified": true,
+  "coarse_dt_s": 4.76837158203125e-07,
+  "half_dt_s": 2.384185791015625e-07,
+  "coarse_dt_admitted": true,
+  "half_dt_admitted": true,
+  "dt_admission_scope": "Symmetric-C frozen CPU scalar FE/Heun sufficient bound only; not coupled or dynamic admission.",
+  "native_reader_executed": true,
+  "constants": {
+    "h_m": 0.0044999998062849045,
+    "bwen_float": -5094126592.0,
+    "helper_gradient_scale": 0.9999999645461332,
+    "eta2_float_m2": 2.0249997589871782e-07,
+    "kw_float_pa": 200000000.0,
+    "porosity_float": 0.30000001192092896,
+    "conductivity_float_m_s": 9.999999747378752e-06,
+    "water_rho_float_kg_m3": 1000.0,
+    "backends": {
+      "CPU": {
+        "kwn_pa": 666666640.1757145,
+        "ghyd_m_s2": 9.80665,
+        "diffusion_factor_m2_s": 1.3596215289304678
+      },
+      "GPU": {
+        "kwn_pa": 666666624.0,
+        "ghyd_m_s2": 9.806650161743164,
+        "diffusion_factor_m2_s": 1.3596214735166658
+      }
+    }
+  },
+  "scalar_backend": "CPU_constants_only",
+  "geometry": {
+    "native_soil_count": 37173,
+    "dirichlet_count": 5153,
+    "nondrained_count": 32020,
+    "pair_count": 3392720,
+    "h_m": 0.0044999998062849045,
+    "operator_over_native_volume": 1.000000033131594,
+    "correction_positive_eigenvalue_min": 0.7614268070119363
+  },
+  "correction_affine_selfcheck": {
+    "moment_eigenvalue_min": 0.5037117871886823,
+    "moment_eigenvalue_max": 1.3133238718591609,
+    "moment_condition_max": 1.4141319350551584,
+    "moment_minus_identity_component_rms": 0.08925310754909657,
+    "raw_affine_gradient_component_rms_per_s": 0.07729472920592725,
+    "raw_affine_gradient_max_frobenius_per_s": 0.6556514236477422,
+    "corrected_affine_gradient_component_rms_per_s": 1.8993303329247727e-16,
+    "corrected_affine_gradient_max_frobenius_per_s": 2.8392542979137415e-15,
+    "affine_closure_relative_max": 1.892836198609161e-15,
+    "matrix_symmetry_max": 1.491862189340054e-16
+  },
+  "rows": [
+    {
+      "stencil": "receiver_C",
+      "receiver_count": 32020,
+      "all_neighbours_include_dirichlet": true,
+      "H_min": -817704194791.953,
+      "H_max": -8.289356276908223e-08,
+      "positive_H_active_count": 0,
+      "negative_offdiagonal_count": 0,
+      "minimum_pair_conductance_per_s": 1.7609980041569276e-15,
+      "max_outgoing_conductance_sum_per_s": 235090.449831569,
+      "max_row_native_id": 18592,
+      "max_row_initial_position_m": [
+        3.061616997868383e-19,
+        0.0,
+        0.0025
+      ],
+      "max_internal_offdiagonal_row_sum_per_s": 235090.449831569,
+      "max_reservoir_row_sum_per_s": 71045.37536543462,
+      "row_identity_absmax_per_s": 1.4551915228366852e-10,
+      "row_identity_double_budget_per_s": 6.681672454975825e-09,
+      "weighted_principal_block_pair_asymmetry_relative_operator_volume": 0.011450964602817967,
+      "weighted_principal_block_pair_asymmetry_relative_native_volume": 0.011450964602817961,
+      "sufficient_FE_Heun_dt_s": 4.253681936958527e-06,
+      "gershgorin_spectral_radius_upper_bound_per_s": 470180.899663138,
+      "tighter_gershgorin_abs_upper_bound_per_s": 470180.899663138,
+      "proposed_steps": [
+        {
+          "label": "coarse_2pow_minus21",
+          "dt_s": 4.76837158203125e-07,
+          "dt_times_max_row": 0.1120998620183797,
+          "sufficient_frozen_scalar_screen_passed": true
+        },
+        {
+          "label": "half_2pow_minus22",
+          "dt_s": 2.384185791015625e-07,
+          "dt_times_max_row": 0.05604993100918985,
+          "sufficient_frozen_scalar_screen_passed": true
+        }
+      ]
+    },
+    {
+      "stencil": "symmetric_C",
+      "receiver_count": 32020,
+      "all_neighbours_include_dirichlet": true,
+      "H_min": -681115850216.5741,
+      "H_max": -1.1100022604322839e-07,
+      "positive_H_active_count": 0,
+      "negative_offdiagonal_count": 0,
+      "minimum_pair_conductance_per_s": 2.358098385367026e-15,
+      "max_outgoing_conductance_sum_per_s": 242120.18453050847,
+      "max_row_native_id": 18424,
+      "max_row_initial_position_m": [
+        -0.0005531776784771418,
+        -0.002423629766218693,
+        0.047434902900842256
+      ],
+      "max_internal_offdiagonal_row_sum_per_s": 235358.8398095569,
+      "max_reservoir_row_sum_per_s": 89215.39999060676,
+      "row_identity_absmax_per_s": 1.4551915228366852e-10,
+      "row_identity_double_budget_per_s": 6.881469531961911e-09,
+      "weighted_principal_block_pair_asymmetry_relative_operator_volume": 0.0,
+      "weighted_principal_block_pair_asymmetry_relative_native_volume": 0.0,
+      "sufficient_FE_Heun_dt_s": 4.130180232346529e-06,
+      "gershgorin_spectral_radius_upper_bound_per_s": 484240.36906101694,
+      "tighter_gershgorin_abs_upper_bound_per_s": 470717.6796191138,
+      "proposed_steps": [
+        {
+          "label": "coarse_2pow_minus21",
+          "dt_s": 4.76837158203125e-07,
+          "dt_times_max_row": 0.11545190073514389,
+          "sufficient_frozen_scalar_screen_passed": true
+        },
+        {
+          "label": "half_2pow_minus22",
+          "dt_s": 2.384185791015625e-07,
+          "dt_times_max_row": 0.05772595036757194,
+          "sufficient_frozen_scalar_screen_passed": true
+        }
+      ]
+    }
+  ],
+  "formulas": {
+    "offdiagonal": "kij=-[2Mf*k/(rho_w*g)]*Vop_j*Hij >= 0",
+    "diagonal": "Lii=-ai; ai=sum over ALL neighbours kij, including pressure-zero Dirichlet neighbours",
+    "principal_row": "bi=sum over nondrained neighbours kij; ri=sum over Dirichlet neighbours kij; ai=bi+ri",
+    "sufficient_step": "dt<=1/max(ai): I+dt*L is nonnegative substochastic; Heun=.5I+.5(I+dtL)^2",
+    "gershgorin": "disc(-ai,bi), bi<=ai; rho(L)<=max(ai+bi)<=2max(ai)"
+  },
+  "limitations": [
+    "Frozen original Part0 geometry, uniform density and fixed material coefficients only.",
+    "Float bwen/Eta2/volumes and CPU scalar constants, but double geometry/sums; no kernel bit replay.",
+    "Symmetric-C is weighted selfadjoint on the frozen principal block; receiver-C need not be, but still has the stated sufficient monotone scalar step bound.",
+    "FE/Heun positivity/contraction screen is sufficient, not a measured eigenvalue or necessary limit.",
+    "The production coupled symplectic predictor/corrector is not identified with standalone Heun here.",
+    "No proof for elastic/inertial coupling, moving graph/density/CorrMat, future states, GPU or complete fluid mass.",
+    "No timestep, damping, equations, source, formal inputs or prior thresholds were changed; no dynamic run is automatically admitted."
+  ],
+  "wall_seconds": 4.781459799967706
+}
