@@ -1,0 +1,70 @@
+{
+  "analysis_checks_passed": true,
+  "visual_review_passed": true,
+  "review_date_local": "2026-10-29",
+  "physical_accepted": false,
+  "formal_run_admitted": false,
+  "new_solver_or_symc_candidate_launched": false,
+  "sources": [
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/cryer_preload_peak_half_review_r1.check.json",
+      "bytes": 8946,
+      "sha256": "4b851bc89a0fc4f95da5b0a549aa0abe19d70939035c5b91c267f2fb2c9e9a41"
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/cryer_preload_peak_half_r1.inputs.json",
+      "bytes": 342595,
+      "sha256": "e119a00b3369e5f1c9bec3396f1689962869d158f62f7ec770834be9004b9f4a"
+    }
+  ],
+  "bound_hash_review": {
+    "main_script_path_sha_bytes_links": 1460,
+    "supplemental_sha_only_links": 380,
+    "all_unique_bound_files": 1840,
+    "supplemental_observed_bytes": 124550009,
+    "supplemental_binding_index_sha256": "74739aec6c8c880a7f92b81b6b16d1c96b83f5a4f58c7a4dfd002b60fb8853f4",
+    "all_supplemental_sha_matched": true,
+    "uppercase_hex_supplemental_records": 378,
+    "sha_comparison": "Hex case is normalized only for comparison. No original manifest was edited. Initial case-sensitive JSphCpu.cpp string mismatch was not a content change.",
+    "supplemental_method": "Recursively collect path+sha256 records from half inputs/completion/check/run, deduplicate normalized absolute paths, remove paths having any bytes-bearing entry, stream SHA256 for the remaining380. Binding-index digest is SHA256 of JSON sorted(path.lower(),sha.lower()) with ensure_ascii=False and separators(',',':').",
+    "coverage": "1840 file hashes freshly read across the main1460 and supplemental380 audits, including native outputs, source, objects, executable and runtime. The latter380 have SHA-only historical records, not recorded byte sizes."
+  },
+  "native_review_scope": {
+    "single_run_safety_adopted_frames": 577,
+    "complete_actual_time_coarse_half_pairs": 577,
+    "same_dt_prefix_states": 69,
+    "prefix_columns": 35,
+    "prefix_exclusions": [],
+    "independent_native_spots": "Terminal state, prefix Parts0/68 and both worst pressure/displacement pair frames independently read; no claim that the root reread all577 native states.",
+    "both_closed_parts61_to64_five_equilibrium_checks_passed": true,
+    "part64_at_tD_preopen": true,
+    "drainage_after_tD": "All actual nonempty FSType2/3 nodes have zero pressure strictly after tD; saved tD remains pre-open."
+  },
+  "table_review": {
+    "derived_csv_rows": 577,
+    "artifact_tool_csv_import_inspected": true,
+    "startup_and_preopening_rows_retained": true,
+    "theory_blank_at_nonpositive_tau": true,
+    "theory_units": "Pa at r0=.0025m, finite Kw; normalized plot p/q uses q=10000Pa.",
+    "step_numbers": "Original zero-based saved steps retained: coarse part*256-1, half part*512-1 for noninitial frames.",
+    "no_time_or_pressure_fit": true
+  },
+  "figure_review": {
+    "pressure": "Complete physical-time startup at upper left; upper-right y-range.95-1.28 is a center-peak enlargement, not removal of startup data. Both577-pair histories and original5Pa/.005mm bounds are shown below.",
+    "state": "All native stress, tracked-shell displacement, density and load histories displayed; density difference is explicit. The10kPa ideal global balance line is not a post-opening uniform-stress gate.",
+    "legibility": "Both saved PNGs inspected by root and independent reviewer; no clipped text, blank panel or smoothing found."
+  },
+  "physical_conclusion": {
+    "peak_window_half_gate_passed": true,
+    "half_peak_pressure_pa": 12136.129286024305,
+    "half_peak_tau_s": 0.04638671875,
+    "half_minus_coarse_peak_pa": 2.111545138888687,
+    "sampled_peak_time_change_s": 0.0,
+    "finite_storage_reference_peak_pressure_pa": 12439.175959692184,
+    "finite_storage_reference_peak_tau_s": 0.04205180291164746,
+    "half_peak_amplitude_error_percent": -2.4362278871998377,
+    "half_peak_time_error_percent": 10.308513638429195,
+    "interpretation": "The peak is only weakly sensitive to this dt reduction; a dt-only or arbitrary loading-clock shift does not explain the remaining peak gap. This is not all-state convergence or proof of a particular spatial root cause."
+  },
+  "reviewed_next_decision": "Keep production and formal inputs unchanged. Prioritize a bounded frozen-field mechanical/compression/Darcy spatial-consistency review before any candidate integration. No formal run, symC launch, old-worker restart or rearming is authorized by this receipt."
+}

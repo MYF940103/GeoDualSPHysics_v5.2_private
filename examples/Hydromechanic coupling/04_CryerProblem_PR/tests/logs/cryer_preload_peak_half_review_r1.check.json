@@ -1,0 +1,176 @@
+{
+  "analysis_checks_passed": true,
+  "visual_review_passed": false,
+  "utc": "2026-10-28T16:32:26.296753+00:00",
+  "solver_executed_this_review": false,
+  "source_or_physics_changed": false,
+  "formal_run_admitted": false,
+  "physical_acceptance": false,
+  "peak_window_half_passed": true,
+  "full_cycle_half_tested": false,
+  "actual_end_time_s": 0.0703125,
+  "native_safety_frames_adopted": 577,
+  "native_frames_reread_by_root_review": 0,
+  "independent_native_spot_review": "Independent agent reread end frame, prefix Parts0/68 and both worst pressure/displacement pair frames; no full-frame rerun.",
+  "freshly_rehashed_unique_bound_files": 1460,
+  "freshly_rehashed_bytes": 7764253608,
+  "exact_prefix_samples": 69,
+  "exact_prefix_columns": 35,
+  "prefix_exclusions": [],
+  "all_sample_pairs": 577,
+  "pair_maxima": {
+    "pressure_rms_pa": {
+      "value": 1.5105935187489716,
+      "part": 138,
+      "time_s": 0.016845703125
+    },
+    "material_displacement_max_mm": {
+      "value": 0.0010081671823013354,
+      "part": 564,
+      "time_s": 0.06884765625
+    },
+    "total_stress_six_component_rms_pa": {
+      "value": 2.214978884857612,
+      "part": 238,
+      "time_s": 0.029052734375
+    },
+    "density_rms_kg_m3": {
+      "value": 1.5043295879878449,
+      "part": 228,
+      "time_s": 0.02783203125
+    }
+  },
+  "coarse_peak": {
+    "part": 444,
+    "time_s": 0.05419921875,
+    "tau_s": 0.04638671875,
+    "pressure_pa": 12134.017740885416,
+    "amplitude_error_percent": -2.453202847162872,
+    "peak_time_error_percent": 10.308513638429195
+  },
+  "half_peak": {
+    "part": 444,
+    "time_s": 0.05419921875,
+    "tau_s": 0.04638671875,
+    "pressure_pa": 12136.129286024305,
+    "amplitude_error_percent": -2.4362278871998377,
+    "peak_time_error_percent": 10.308513638429195
+  },
+  "theory_peak": {
+    "tau_s": 0.04205180291164746,
+    "pressure_pa": 12439.175959692184,
+    "initial_radius_m": 0.0025,
+    "sphere_radius_m": 0.05
+  },
+  "half_minus_coarse_peak_pa": 2.111545138888687,
+  "both_preopening_equilibrium_diagnostics_passed": true,
+  "reference_selftest": {
+    "passed": true,
+    "normalized_root_residual_max": 5.251212187111103e-11,
+    "pressure_PDE_residual_absmax_pa_s": 3.749446477741003e-07,
+    "surface_traction_residual_absmax_pa": 1.8189894035458565e-12,
+    "radial_velocity_divergence_fd_error_absmax_s_inv": 2.1455295873273883e-11,
+    "quasistatic_radial_force_fd_error_absmax_pa_m": 0.00022723179426975548,
+    "note": "Arithmetic/continuum self-tests, not physical accuracy acceptance."
+  },
+  "reference_theta": "Cv_eff*(t-tD)/a^2; finite Kw, g=9.80665",
+  "comparison_window": "Legacy Cv=.0027444522857366896*(t-tD)/a^2>=.005; all startup rows remain in CSV/plots.",
+  "reviewed_diagnosis": [
+    "Reducing dt changes peak pressure by only about2 Pa and leaves the sampled peak time unchanged.",
+    "Loading equilibrium is achieved before opening; tD is the time origin for drainage, not ramp end or first open save.",
+    "Pressure/material-displacement bounds pass, but density differs; not all-state temporal convergence or density-cause proof.",
+    "Prior frozen-field evidence prioritizes coupled mechanical/compression/Darcy spatial consistency, not correction of external load alone."
+  ],
+  "next_decision": "Do not launch a formal run or symC from this notification. Next bounded diagnosis: review frozen-field candidate Darcy A/B together with mechanical balance, local moments and dissipation before any dynamic admission.",
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_preload_peak_half_review_r1.py",
+      "bytes": 15323,
+      "sha256": "1fbe0672d5297c25d7e0755e7b71bd1fde8cc115d58663dc5c65a0b44818bb61"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.status.json",
+      "bytes": 522,
+      "sha256": "8950c00c1ca1f5aaf56e515e1702c58ff93329a69ef398f2812fde7d8afb2e7f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.run.json",
+      "bytes": 7266,
+      "sha256": "60672cdf0f13235d8feb8e183f397847f221ac53d437f16d257b042e99a3f1d5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.check.json",
+      "bytes": 5740,
+      "sha256": "1b00c8a813ffb237457e2470eaa4e652be3b1b25f69d2091b2381bedb7488c77"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.completion.json",
+      "bytes": 184043,
+      "sha256": "0e032ebd3f66497565a024087cdc64f46689a19c9475c8e227914c19d6583bb9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.prefix.json",
+      "bytes": 61634,
+      "sha256": "e99d45426a44cd118ff17811e54157fbd8ae1a5255c85585ac860d49ff21cf4d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_half_r1.inputs.json",
+      "bytes": 342595,
+      "sha256": "e119a00b3369e5f1c9bec3396f1689962869d158f62f7ec770834be9004b9f4a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_r1_half.csv",
+      "bytes": 94939,
+      "sha256": "2bf5aa04ea0804227292ae7a65229ed6cb652f5b964c9c022fcc346cd6a5de90"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_r1_summary.csv",
+      "bytes": 621682,
+      "sha256": "ab9bcbeb407be1c3c188446ba470695564e38e6d61838f4f05e3f0763b74c620"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_r1_summary.csv",
+      "bytes": 621635,
+      "sha256": "0305d14859a9b869b7f4062b5d5635f2d0436243481237f8a14c3ff8182acdcb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_consistency_r1.py",
+      "bytes": 19884,
+      "sha256": "c34889f6ce2b909cd4ac88b30f6725d4eba9d8cfc60270e25eb369f06ba0d237"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_finite_storage_r1.md",
+      "bytes": 6405,
+      "sha256": "954953cbbbd2721d10033817a8e9729ab146969508573745fb6a049d3a867c58"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_radial_consistency_r1.json",
+      "bytes": 6330,
+      "sha256": "62cd4249cc5a2c8424a921ded2716652da572394b782e7b9295ec3dea6541414"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_review_r1.csv",
+      "bytes": 389211,
+      "sha256": "2c449fd972b579b00fa5935e3d1bc1feb9f3ea6a37a9ae72cd492acf2209a0e9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_review_r1_pressure.png",
+      "bytes": 304111,
+      "sha256": "0ff7d9104370e419f3eb8af1ed8061a5dcd698bd0140390663ccc21faa4a8f26"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_review_r1_state.png",
+      "bytes": 246793,
+      "sha256": "481bbde68badf2d0cf46e94bb57eb1bcb7ddebe1edff4b3b442af41cb7604536"
+    }
+  ],
+  "limitations": [
+    "Finite-storage reference is quasistatic, small-strain and at initial r/a=.05; not exact dynamic SPH truth.",
+    "No PART restart, peak fitting, effective-radius fitting, time reorigining, source edit or new solver.",
+    "577 native single-run safety and 69 native prefix comparison are adopted from sealed worker evidence, not reread in full here.",
+    "The closed-state uniform target is not a valid post-drain exact stress distribution.",
+    "Tracked shell and native-volume stress averages are diagnostics, not exact continuum surface/volume integrals."
+  ]
+}

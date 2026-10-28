@@ -1,5 +1,39 @@
 # CryerProblem_PR
 
+## Peak-window half review (2026-10-29)
+
+The fresh GPU half step completed294912steps through actual time.0703125s.
+All577 saved native safety checks and577 exact-time coarse/half pairs passed
+the original5Pa pressure-RMS and.005mm maximum material-displacement bounds.
+Their maxima were1.510594Pa and.001008167mm. The69-state same-dt/same-cadence
+prefix retained all35 native columns, including dterror, at0ULP without exclusions.
+Both runs passed the five closed-state equilibrium diagnostics at Parts61-64.
+
+This is not physical/full-cycle acceptance. The half-step Mandel peak is
+12136.129286Pa at tau=.04638671875s, only2.111545Pa above the retained coarse
+peak, with no sampled peak-time change. The finite-storage quasistatic reference
+at the fixed18-ID initial radius r/a=.05 is12439.175960Pa at tau=.04205180203s:
+the remaining peak errors are about-2.4362percent and+10.3085percent.
+Density still differs with dt; passing the pressure/displacement screens does
+not establish convergence of every state variable or identify density as a cause.
+
+Use tau=t-2^-7s from drainage opening. Part64 at tD is pre-open; do not align
+to ramp end or to the first saved already-drained state. Retain startup peaks
+separately from the Mandel peak. Existing preload and temporal tests do not
+support a loading-clock or dt-only explanation for the remaining peak error.
+
+Offline reviewed products (native outputs and old evidence are preserved):
+
+- [Pressure/startup/half comparison](tests/figures/cryer_preload_peak_half_review_r1_pressure.png)
+- [Stress, tracked-shell motion, density and load](tests/figures/cryer_preload_peak_half_review_r1_state.png)
+- [577-row comparison data](tests/figures/cryer_preload_peak_half_review_r1.csv)
+- Review: `tests/logs/cryer_preload_peak_half_review_r1.check.json` and `.visual.json`.
+
+Next remains bounded spatial consistency diagnosis of mechanical force,
+compression source and Darcy diffusion together. No formal long run or symC
+candidate is admitted by this completion notice. No production/formal input,
+canonical executable, source, integration logic or equation changed in this review.
+
 ## Active diagnosis (2026-10-27)
 
 Lian100s is delegated to the user server; local verification now proceeds here,
