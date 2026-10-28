@@ -1,0 +1,48 @@
+{
+  "passed": true,
+  "utc": "2026-10-28T04:55:09.598629+00:00",
+  "fixed_dt_s": 1e-05,
+  "pore_diffusion_limit_s": 1.2709419185159043e-05,
+  "fixed_to_pore_limit_ratio": 0.7868180169615566,
+  "float_constants": {
+    "h": 0.18000000715255737,
+    "n": 0.4000000059604645,
+    "Kw": 1000000000.0,
+    "rho": 1000.0,
+    "k": 0.0010000000474974513,
+    "safety": 0.10000000149011612
+  },
+  "hydraulic_gravity_m_s2": 9.80665,
+  "formula": "PoreDtSafety * (rho_w*g/(Kw/n)) * h^2 / k",
+  "scope": "Independent pore-diffusion check, separate from all-sample mechanical natural-step dterror",
+  "all_saved_h_unchanged": true,
+  "fixed_step_automatic_clipping": false,
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_server_return_r1_poredt.py",
+      "sha256": "9292d1bd656ae3bffda1c03ebdeea683d4fa3f379f174d730d251a5bf381cd0c",
+      "bytes": 2376
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\logs\\lian_hgspr100_r1.check.json",
+      "sha256": "dc07385969fda60d0579a2cc2734b5379946d61719b87fba78cbea71376cc5b9",
+      "bytes": 1289327
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_release_Def.xml",
+      "sha256": "9f323b9159a77ecd97c3852704ed7d5d8f53d26fb8d55cbb39b9d80ca7cfe3a5",
+      "bytes": 11855
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "sha256": "6a61bc5b1534680f271ea055d60ff562fe543287329abd828a0821a30643aa4f",
+      "bytes": 98142
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\CaseLianFlexibleStrip2D_PR_release_HGSPR_out\\data\\Part_0000.bi4",
+      "sha256": "0451a60b87076b38a5a03f19ddfedc97c878d60e6c50c850cdc240661631ab86",
+      "bytes": 3513566
+    }
+  ],
+  "note": "FixedDt bypasses automatic dtw clipping; this receipt checks its bound independently. No stability proof beyond the implemented bound."
+}

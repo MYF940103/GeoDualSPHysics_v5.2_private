@@ -1,0 +1,42 @@
+# Lian 100秒正式结果
+
+数据来源：根目录 `CaseLianFlexibleStrip2D_PR_release_HGSPR_out`，RTX A6000，
+HG=.1、SPR=1、应力率梯度修正=1、dt=10 μs。所有图由原生BI4生成，原始结果未重算或改写。
+
+| 查看内容 | 图片 | 对应数据 |
+| --- | --- | --- |
+| 论文Fig10孔压云图，0.5/1/3/50 s | [对比图](lian_hgspr100_r1_fig10_compare.png) | `lian_hgspr100_r1_field_*.csv`，`lian_hgspr100_r1_fig10_scales.csv` |
+| 论文Fig11，A/B孔压历史 | [对比图](lian_hgspr100_r1_fig11_compare.png) | [全时程](lian_hgspr100_r1_history.csv)，[论文稀疏点对比](lian_hgspr100_r1_paper_points.csv) |
+| 论文Fig12，A/B沉降及100 s水平位移剖面 | [对比图](lian_hgspr100_r1_fig12_compare.png) | [有符号剖面](lian_hgspr100_r1_horizontal_profile.csv)，同上全时程/稀疏点 |
+| 原生历史、载荷与晚期耗散 | [历史图](lian_hgspr100_r1_history.png) | [全时程](lian_hgspr100_r1_history.csv) |
+| 总竖向应力、速度及近墙土层位移 | [应力和边界响应](lian_hgspr100_r1_stress_boundary.png) | 同上全时程 |
+
+## 主要结果
+
+100 s时A/B孔压为0.168874/0.199475 Pa，沉降为1.832605/1.110029 mm；
+全域最大孔压由50 s的27.5700 Pa继续降到100 s的0.749146 Pa，没有出现此前量级的晚期平台。
+全2001帧未见负孔压、塑性或粒子排除；原先角点1744失载/排水切换未复发。
+真实载荷保持原13节点求积，最大结果误差0.000619 N/m。
+
+论文可辨识SPH稀疏点在约50 s给出A/B沉降1.8078/1.1303 mm，
+当前同实际图像时刻的差约+1.04%/−2.31%。100 s剖面在高程2–8 m处与
+论文FEM稀疏点差约1.1–2.4%；顶部负向位移为−0.1961 mm，论文约−0.2091 mm，
+幅值约低6.2%。早期A点孔压在约0.1/0.5 s比论文SPH稀疏点低约11.0%/9.3%，
+B点低约4.9%/5.3%，应保留这些误差，不将结果称为精确复现。
+
+## 比较定义与限制
+
+A=(0,10)，固定native ID1744；B=(1.25,8.75)，由四个初始相邻ID固定双线性权重得到。
+沉降为z0−z，水平位移为x−x0；剖面是初始x0=1.25 m材料线，纵轴为初始高程，非绝对位移。
+`paper_points.csv`的25点来自原论文栅格图，记录像素位置、单位、误差和实际图像时刻。
+它不是论文原始数据，不支持完整曲线或全场RMSE。沉降读图约±0.0195 mm，
+水平位移约±0.00218 mm；时间像素误差也已在来源记录中保留。
+
+输出间隔0.05 s，因此不补造论文0.01–0.05 s数据。图10保持原四行色限
+0–5、0–5、0–1.75、0–0.06 kPa；场数据未平滑、截值或缩放。13节点载荷仍有+4%理想宽度求积差。
+本次没有100 s独立半步，组合方案3 s半步按用户要求取消；全程稳定不等于完整时间收敛或通用边界验收。
+
+`particles/PartFluid.vtk.series`与`PartBound.vtk.series`在正式输出目录内，按
+[ParaView官方序列格式](https://docs.paraview.org/en/latest/UsersGuide/dataIngestion.html)记录实际时间；
+已核对2001项时间/文件映射，未在本次任务中操作ParaView GUI。
+VTK用于显示，原生BI4用于精度分析，二者未混用。

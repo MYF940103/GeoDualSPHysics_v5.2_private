@@ -1,0 +1,64 @@
+{
+  "tag": "cryer_preload_peak_compare_r2",
+  "utc": "2026-10-28T04:46:10.485256+00:00",
+  "passed": true,
+  "visual_only_revision": true,
+  "visual_review_passed": false,
+  "physical_accepted": false,
+  "theory_or_physics_recomputed": false,
+  "new_csv_files_created": false,
+  "change": "Move only middle-panel peak annotation to lower-left white-backed empty region.",
+  "plotted_native_axis_points": {
+    "abrupt": 129,
+    "preload": 513
+  },
+  "full_history_csv_rows": 706,
+  "plotted_shared_tau_pairs": 129,
+  "plotted_theory_points": 1200,
+  "previous_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_compare_r1.check.json",
+    "bytes": 4582,
+    "sha256": "75b6754265c3208a37d687a27db3102af8c6908aa8e93c4c59e5a09fe82ac50e"
+  },
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_preload_peak_compare_r2.py",
+      "bytes": 6167,
+      "sha256": "a02bf7026b4f48b11c94464b1fad1fc090d9bde78705a1bf6757dc23619b63b5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_history.csv",
+      "bytes": 100604,
+      "sha256": "2951ad31958ca87759c9579def7ba720325c179b01323df3c791f36debefdf81"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_theory.csv",
+      "bytes": 119284,
+      "sha256": "6b22c9876a5214d728508b3eea266adfb132d1040322abfb5d48a93e74c8f8c7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_shared.csv",
+      "bytes": 16341,
+      "sha256": "72bdd76f03382bb67798be0f6265ed31421672dfe063570b8e1dff9aabfdea3f"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r2_comparison.png",
+      "bytes": 336144,
+      "sha256": "0b21fca7e67981693b96d0944450bd591f9175058216973fef0e83af80154173"
+    }
+  ],
+  "png_dimensions": [
+    2916,
+    1044
+  ],
+  "limitations": [
+    "CSV-only visualization adopts upstream native safety; no new solver or raw-native reanalysis.",
+    "Fixed18material centre is initially r/R=.05, not mathematical point centre.",
+    "Startup sampling differs; saved maxima are not continuous-time transient maxima.",
+    "Reference ignores inertia, damping and SPH geometry/operator/writeback errors.",
+    "Window zooms do not drop source points; historyCSV preserves all577+129 including negative preload tau.",
+    "Symlog difference panel includes physical initial-history difference at tau0; no half-step threshold is applied."
+  ]
+}

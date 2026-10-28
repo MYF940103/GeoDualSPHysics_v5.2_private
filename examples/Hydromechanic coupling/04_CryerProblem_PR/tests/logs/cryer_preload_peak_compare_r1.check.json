@@ -1,0 +1,91 @@
+{
+  "tag": "cryer_preload_peak_compare_r1",
+  "utc": "2026-10-28T04:43:40.575744+00:00",
+  "passed": true,
+  "numerical_self_checks_passed": true,
+  "visual_review_passed": false,
+  "physical_accepted": false,
+  "peak_half_accepted": false,
+  "full_cycle_accepted": false,
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_preload_peak_compare_r1.py",
+      "bytes": 11698,
+      "sha256": "004f55f6e42aa279d512814583ec1090f535a1035ab3fce7e4314f6d9223f87d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_finite_storage_r1.check.json",
+      "bytes": 12422,
+      "sha256": "76554622082046f7dc2147565710c89fb3b059eb5674ef69bb3a1ca984b1fea3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_preload_peak_review_r1.check.json",
+      "bytes": 16292,
+      "sha256": "9833acdc5118b4e9e85317b47aeb4f2da2d8a869c15d1d0f79541afd8a4ec64b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_r1_summary.csv",
+      "bytes": 621682,
+      "sha256": "ab9bcbeb407be1c3c188446ba470695564e38e6d61838f4f05e3f0763b74c620"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_damp_peak_r1_summary.csv",
+      "bytes": 217290,
+      "sha256": "ecd789aeff9d315d840ebfb5e26ee59c0b34893444bbc8055191e0d5de4842c3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_finite_storage_r1.md",
+      "bytes": 6405,
+      "sha256": "954953cbbbd2721d10033817a8e9729ab146969508573745fb6a049d3a867c58"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_history.csv",
+      "bytes": 100604,
+      "sha256": "2951ad31958ca87759c9579def7ba720325c179b01323df3c791f36debefdf81"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_theory.csv",
+      "bytes": 119284,
+      "sha256": "6b22c9876a5214d728508b3eea266adfb132d1040322abfb5d48a93e74c8f8c7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_shared.csv",
+      "bytes": 16341,
+      "sha256": "72bdd76f03382bb67798be0f6265ed31421672dfe063570b8e1dff9aabfdea3f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_compare_r1_comparison.png",
+      "bytes": 333583,
+      "sha256": "c4b7f96fe334481e8985154bb584ebc0fc527d57dc8b8fc5dd86d60df147c63e"
+    }
+  ],
+  "png_dimensions": [
+    2916,
+    1044
+  ],
+  "native_csv_points_preserved": 706,
+  "shared_tau_pairs": 129,
+  "finite_storage_roots": 360,
+  "scaled_root_residual_max": 5.251212187111103e-11,
+  "B": 0.9975062344139651,
+  "eta_eff": 1.7543749999999996,
+  "Cv_eff_m2_s": 0.00273434724797759,
+  "radius_over_R": 0.05,
+  "initial_theory_pressure_assigned_Bq": true,
+  "minimum_positive_theory_tau_s": 1e-05,
+  "reference_peak_recomputed_pa": 12439.175959692184,
+  "reference_peak_recomputed_tau_s": 0.04205180337356543,
+  "new_saved_Mandel_peak_pa": 12134.017740885416,
+  "old_saved_Mandel_peak_pa": 12134.002604166666,
+  "new_saved_peak_tau_s": 0.04638671875,
+  "limitations": [
+    "CSV-only visualization adopts upstream native safety; no new solver or raw-native reanalysis.",
+    "Fixed18material centre is initially r/R=.05, not mathematical point centre.",
+    "Startup sampling differs; saved maxima are not continuous-time transient maxima.",
+    "Reference ignores inertia, damping and SPH geometry/operator/writeback errors.",
+    "Window zooms do not drop source points; historyCSV preserves all577+129 including negative preload tau.",
+    "Symlog difference panel includes physical initial-history difference at tau0; no half-step threshold is applied."
+  ]
+}

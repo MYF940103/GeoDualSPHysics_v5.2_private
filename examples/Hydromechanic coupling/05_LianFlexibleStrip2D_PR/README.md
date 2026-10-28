@@ -1,5 +1,32 @@
 # Lian Flexible Strip 2D PR
 
+## 服务器100秒结果与分析（2026-10-28）
+
+本次 `CaseLianFlexibleStrip2D_PR_release_HGSPR_out` 已由RTX A6000完成100 s、
+1000万步和2001帧。全帧固定20301个土粒子的有限值、弹性、无排除、几何、
+真实载荷、活跃FSType2/3排水及自然步长检查通过；单独孔压扩散步长检查也通过。
+仍使用交付时的HG=.1、SPR=1、应力率梯度修正=1、侧壁FreeSlip和底面NoSlip，
+正式XML/BAT及原生BI4均未改动。新结果不是下面已停止的旧100 s结果。
+
+正式图与CSV索引见 [figures/README.md](figures/README.md)：论文Fig10全部四时刻，
+Fig11的A/B孔压，Fig12沉降与100 s有符号水平位移剖面，以及晚期孔压、应力和近墙响应。
+A/B使用初始材料坐标(0,10)/(1.25,8.75)的固定ID/双线性权重，不能与旧A=.1 m的
+逐帧插值曲线混为一谈。100 s A/B孔压为0.169/0.199 Pa，沉降为1.833/1.110 mm。
+变形总体接近论文；早期A孔压仍偏低，顶部水平位移亦有可见差异，未宣称精确复现。
+
+可视化数据位于新正式输出的 `particles`，共2001土体帧及2001边界帧。
+打开 `PartFluid.vtk.series` / `PartBound.vtk.series` 可使用实际保存时间映射。
+孔压字段 `PorePress` / `ExcessPorePress` 单位Pa，塑性字段 `Kplastic`；本次保持弹性。
+VTK坐标/显示应力为float兼容输出，精度分析仍以double位置/应力原生BI4为准。
+
+复算分析入口为 `support/postprocess_lian_hgspr_r1.py analyze` 和
+`support/plot_lian_hgspr_r1.py`，均拒绝覆盖已有同标签结果，不启动求解器。
+最终证据为 `tests/logs/lian_server_return_r1.final_review.json`。
+用户取消了组合方案3 s半步；本次没有100 s半步，也不把论文SPH/FEM当作解析真值。
+原13节点载荷求积仍比理想1.25 m基础宽度高4%，未为拟合论文而缩放。
+
+下面的等待服务器/旧入口段落保留作历史记录，以本节及交付配置为当前状态。
+
 ## 当前服务器入口（2026-10-27，替代下面旧入口说明）
 
 用户取消新的HG+SPR 3 s半步，要求将100 s完整计算移交Windows/RTX A6000。
