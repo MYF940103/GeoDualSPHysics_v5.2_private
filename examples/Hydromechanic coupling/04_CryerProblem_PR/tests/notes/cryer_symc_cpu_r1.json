@@ -1,0 +1,30 @@
+{
+  "tag": "cryer_symc_cpu_r1",
+  "scope": "Build-only isolated DebugCPU nonintegrating frozen-field companion; no physical run, GPU edit, formal input edit or Git.",
+  "allowed_new_files": [
+    "support/cryer_symc_cpu_r1.cpp",
+    "support/cryer_symc_cpu_build_r1.ps1",
+    "notes/cryer_symc_cpu_r1.json",
+    "outputs/cryer_symc_cpu_build_r1/JSphCpu.cpp",
+    "outputs/cryer_symc_cpu_build_r1/* build products/runtime",
+    "logs/cryer_symc_cpu_r1.build.log",
+    "logs/cryer_symc_cpu_r1.build.json"
+  ],
+  "darcy_change": "Only fused soil-soil Darcy lapw/lapz contraction uses .5*(d dot Ci*g + d dot Cj*g), with unchanged r2+Eta2 and scalar factors. Compression pcfr/dcfr/divv, effective stress, pore feedback force, confinement, boundary rules, integration, density, viscosity and damping configuration remain unchanged.",
+  "boundaries": "DBC pairs keep receiver-C. Drained soil p=0 neighbours still supply their valid Cj; their own pressure/rate is forced zero as before. No general wall/periodic/gravity/plasticity acceptance.",
+  "source_clone": "Mechanically added through apply_patch from current UTF8 canonical source. Candidate LF normalization is recorded; normalized full text must equal exactly one declared Darcy-block replacement. Canonical original bytes are never written.",
+  "build": "Do not invoke MSBuild/default canonical build. Derive JSphCpu flags from authoritative DebugCPU CL.command.1.tlog. Compile only isolated JSphCpu plus new harness; replace only those two objects in the existing sealed radial companion link recipe. Other project objects/libraries/headers remain read-only.",
+  "protection": "Rehash the sealed prior build inputs/runtime. Bind before/after canonical source/program/DLL/objects and Lian support/bin; fail if any changes. Build logs/manifests are new and refuse overwrite.",
+  "harness": "Same four actual fused calls (full, compression p=0, Darcy v=0, full-no-visc), post-opening drainage, native ID/position preservation, finite outputs, full-vs-no-visc pressure-rate bit identity. No time-step evolution.",
+  "observation_files": "Only a later explicit main-agent probe execution can write radial_rates.csv/radial_summary.json to a new observation folder. This build does not execute the probe or generate CSV.",
+  "limitations": [
+    "The new open Dirichlet frozen screen improved some residuals; the old closed quartic sym-C local error was worse. No physical or coupled-stability acceptance follows.",
+    "Static shared-H pair properties do not imply zero external drainage, exact coupled fluid mass or sufficient long-time accuracy.",
+    "Candidate is not canonical or a new release. No new XML option or production parameter documentation is introduced."
+  ],
+  "build_command": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/cryer_symc_cpu_build_r1.ps1",
+  "probe_executed": false,
+  "solver_executed": false,
+  "physical_acceptance": false,
+  "automatic_formal_run_admitted": false
+}

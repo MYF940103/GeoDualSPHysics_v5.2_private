@@ -1,0 +1,58 @@
+{
+  "date": "2026-10-28",
+  "scope": "Lian early-save delivery completed; Cryer causal diagnosis continues without changing production equations or formal inputs.",
+  "completed_offline_reviews": [
+    "logs/cryer_diagnosis_review_r1.check.json",
+    "logs/cryer_pressure_split_r1.check.json",
+    "logs/cryer_symc_cpu_r1.check.json"
+  ],
+  "actual_cpu_probe": {
+    "integrated_steps": 0,
+    "only_isolated_source_change": "Soil-soil Darcy uses (Ci+Cj)/2; original denominator, compression, forces, stress, boundary and integrator unchanged.",
+    "all37173_compression_and_six_acceleration_outputs_float_bits_0ulp": true,
+    "drained_receivers_all_four_rates_zero": 5153,
+    "manufactured_nondrained_net_residual_rms_original_pa_s": 16928949.741739195,
+    "manufactured_nondrained_net_residual_rms_symmetric_pa_s": 9158207.57865316,
+    "diagnostic_only": "The reduction is about46 percent on a prescribed quasistatic field, not a coupled trajectory accuracy improvement or production acceptance."
+  },
+  "additional_variable_density_split": {
+    "meaning": "Original stress/load and pore-pressure denominators need not cancel locally for uniform total stress with variable pressure and density; this follows the paper's original split.",
+    "actual_peak_center_residual_vector_rms_m_s2": 0.00011695892806476027,
+    "actual_peak_all_soil_residual_vector_rms_m_s2": 0.1078915844252939,
+    "actual_peak_instantaneous_power_difference_W": 0.0000027829186537193146,
+    "fraction_of_mixed_operator_power_defect": 0.0005908209954388055,
+    "limitation": "Secondary clue only. Pair antisymmetry is imposed by the offline summation, not an independent native conservation check. No new force operator is admitted."
+  },
+  "build_wrapper_status": {
+    "retired_do_not_restart": "support/cryer_symc_cpu_build_r1.ps1",
+    "reason": "Compile/link succeeded, but the PowerShell metadata wrapper was stopped after memory expansion. The original prebuild canonical Debug-exe snapshot was not recovered.",
+    "accepted_build_evidence": "logs/cryer_symc_cpu_r1_seal_r2.build.json",
+    "offline_sealing_script": "support/cryer_symc_cpu_seal_r2.py",
+    "probe_result": "New isolated CPU observer exited0 and its frozen-field isolation checks passed. No physical solver or canonical executable was substituted."
+  },
+  "active_new_stage": {
+    "tag": "cryer_preload_peak_half_r1",
+    "worker_pid_at_launch": 41088,
+    "wrapper_pid_observed": 42452,
+    "solver_pid_observed": 59224,
+    "backend": "Canonical GPU Release on local RTX3050",
+    "dt_s": 0.0000002384185791015625,
+    "end_s": 0.0703125,
+    "steps": 294912,
+    "native_frames": 577,
+    "original_independent_half_limits": "All577 actual-matched samples: pressure RMS<=5Pa and maximum material displacement difference<=.005mm; all original safety guards unchanged.",
+    "strict_prefix": "All69 retained same-dt same-cadence short-half states, all35 columns including dterror; no exclusions or interpolation.",
+    "single_completion_policy": "This new worker alone queues one same-thread terminal follow-up; no old worker/notifier is restarted and no connectivity message is sent.",
+    "status_at_this_review": "Running, not completed or physically accepted. See its live status JSON for current state."
+  },
+  "next_order": [
+    "Review full baseline peak-half pressure, displacement, stress, density, peak height and timing before attributing the error solely to space discretization.",
+    "If time-step sensitivity is small, assess a separately gated Darcy candidate dynamic test; otherwise diagnose integration/writeback before changing the spatial scheme.",
+    "Preserve raw load/stress balance; do not correct external force alone, normalize particle mass, fit the radius or blindly enable shifting.",
+    "Only after necessary candidate safety and accuracy review, freeze root formal XML/BAT and matching Windows NVIDIA release/runtime package for the server."
+  ],
+  "production_source_changed": false,
+  "formal_inputs_changed": false,
+  "physical_acceptance": false,
+  "automatic_formal_run_admitted": false
+}
