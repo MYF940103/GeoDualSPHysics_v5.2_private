@@ -1,0 +1,44 @@
+{
+  "tag": "cryer_darcy_open_screen_r1",
+  "state": "prepared_for_read_only_source_review_not_executed",
+  "scope": "Offline mathematical screen on the five sealed finite-Kw quasistatic Cryer fields; no solver, integration, source or formal input edits.",
+  "script": "tests/support/cryer_darcy_open_screen_r1.py",
+  "default": "help only; explicit --run is required after main-agent review",
+  "run_from_case_root": "D:/Anaconda3/python.exe -B tests/support/cryer_darcy_open_screen_r1.py --run",
+  "prerequisites": [
+    "tests/logs/cryer_radial_consistency_r1.check.json",
+    "tests/logs/cryer_radial_force_r2.check.json",
+    "tests/logs/cryer_radial_moments_r1.check.json"
+  ],
+  "identity": "Rehash prerequisite inputs/artifacts and bind their receipts, current source, frozen helpers, native reader, this script and this note. Read only sealed peak Part0. Reject all retained output targets.",
+  "geometry": "Original FrDraw 37173 native soil IDs, dp=.0025, R=.05, initial uniform rho=2100. No volume/force normalization or new layout. Center is the same initial r<=dp+1e-12 fixed18 IDs.",
+  "tau_s": [0.005, 0.02, 0.0420518020252, 0.04638671875, 0.0625],
+  "reference": "Reuse the sealed finite-storage Reference. Native p=0 surface remains a Darcy neighbour; receiver-region statistics exclude all 5153 FSType2/3 nodes.",
+  "compression": "Unchanged corrected receiver-C pair divergence for every variant.",
+  "darcy_stencils": ["receiver_C", "raw_I", "symmetric_C=(Ci+Cj)/2"],
+  "denominators": ["r2+existing float Eta2", "r2"],
+  "only_six_existing_mathematical_combinations": true,
+  "baseline": "receiver-C plus Eta2 must reproduce stored GPU-scalar comp_error/darcy_error/net_error NPZ at all five tau. Verify the identical pressure arrays first. Use gamma_(64*degree+256) times absolute rate-term sum as an explicit float64 operation-grouping budget, never a physical tolerance.",
+  "observations": [
+    "Per-tau/per-region compression, Darcy, net rates and errors, including signed means, RMS and max; scalar-model difference remains explicit.",
+    "Native-volume pressure quadratic functional and comp/Darcy/net changes; Mf-normalized pressure energy is conditional, not total coupled energy.",
+    "Closed raw-graph weighted sum, open nondrained sum and the raw surface reservoir gain removed by p=0 clamping, with separate names.",
+    "Actual constant-field null, pair-weight asymmetry, two deterministic random-field cross-power/selfadjoint and shared-H energy identities.",
+    "H<=0 sign structure on every pair; no complete coupled stability claim.",
+    "Unclamped affine pressure Laplacian mismatch and mixed quadratic patch error on all nondrained regions; no affine-null assertion at truncated boundaries."
+  ],
+  "outputs": [
+    "tests/logs/cryer_darcy_open_screen_r1.check.json",
+    "tests/figures/cryer_darcy_open_screen_r1_regions.csv",
+    "tests/figures/cryer_darcy_open_screen_r1_patches.csv"
+  ],
+  "no_claims": [
+    "Raw/symmetric closed-graph conservation is not zero external drainage or exact fluid mass.",
+    "A smaller instantaneous residual alone does not admit a replacement operator, dynamic run or server formal XML/BAT.",
+    "No change to current mechanical force, loading, compression gradient, damping, pressure precision or any physical safety threshold."
+  ],
+  "solver_executed": false,
+  "production_implemented": false,
+  "physical_acceptance": false,
+  "automatic_formal_run_admitted": false
+}
