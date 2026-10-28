@@ -1,0 +1,100 @@
+{
+  "stage": "Cryer预载峰窗之后的空间离散因果检查",
+  "date": "2026-10-28",
+  "production_source_changed": false,
+  "formal_inputs_changed": false,
+  "new_physical_solver_executed": false,
+  "integrated_steps": 0,
+  "physical_acceptance": false,
+  "peak_half_accepted": false,
+  "automatic_formal_run_admitted": false,
+  "sealed_peak_review": {
+    "native_safety_frames_adopted": 577,
+    "original_prerequisite_and_output_files_freshly_rehashed": 825,
+    "summary_rows_independently_checked": 577,
+    "native_frames_reread_by_offline_audit": 1,
+    "exact_prefix_samples": 69,
+    "exact_prefix_columns": 35,
+    "prefix_exclusions": [],
+    "last_saved_time_s": 0.0703125,
+    "part64_at_drainage_start_is_preopen": true,
+    "center_peak_pa": 12134.017740885416,
+    "peak_tau_from_drainage_s": 0.04638671875,
+    "finite_storage_finite_radius_reference_peak_pa": 12439.175959692,
+    "reference_peak_tau_s": 0.0420518020252,
+    "peak_amplitude_error_percent": -2.45320285,
+    "peak_time_error_percent": 10.30851596,
+    "preload_vs_retained_abrupt_peak_difference_pa": 0.01513671875
+  },
+  "offline_field_audit": {
+    "receipt": "../logs/cryer_radial_consistency_r1.check.json",
+    "receipt_sha256": "ecb01df0613851009866d5b99530c34b274ef290525568168de3cdc8e32c8a7e",
+    "reference": "已独立推导并校核的有限Mf=Kw/n准静态球对称场；连续球积分均值，不用原生粒子均值替代理论均值。",
+    "taus_s": [0.005, 0.02, 0.0420518020252, 0.04638671875, 0.0625],
+    "center_region": "固定原生18个材料ID，而不是径向图第一个分箱；分箱边界的浮点差异可能使首箱仅有1点。",
+    "surface_receivers": "5153个FSType2/3节点保留为邻居；其原始率只作诊断，绝不冒充生产实际率。",
+    "center_theoretical_peak_time": {
+      "exact_net_rate_mean_pa_s": 0.0022612557515344633,
+      "current_compression_mean_pa_s": 8115561.145247772,
+      "current_darcy_mean_pa_s": -7480873.269387856,
+      "compression_error_mean_pa_s": 466675.1243091548,
+      "darcy_error_mean_pa_s": 168012.42990768907,
+      "net_error_mean_pa_s": 634687.8735986607,
+      "input_p_v_quantization_only_change_rms_pa_s": 47.961001228497935
+    },
+    "limits": "离线双精度距离和求和只使用生产标量常数；不是CPU/GPU逐位重放。输入量化对照不能排除长期累计误差。"
+  },
+  "actual_cpu_fused_loop": {
+    "receipt": "../logs/cryer_radial_force_r2.check.json",
+    "receipt_sha256": "f857e48a33f11d35aec628e959444292e99179945d94e1b73b782b5de7c20ca1",
+    "native_configuration_log": "../logs/cryer_radial_force_r2.native_Run.out",
+    "native_configuration_log_sha256": "d132471343313a29df09dc99643d5463efcbaccf0f8a7087cd03e6684067ec9d",
+    "configuration": "CPU Debug，authoritative VS项目objs链接的独立非积分companion",
+    "queries": ["完整p/v", "p=0的压缩项", "v=0的Darcy项", "完整p/v但关闭黏性的独立原始动量探针"],
+    "native_soil_count": 37173,
+    "drained_count": 5153,
+    "original_viscosity_preserved_except_fourth_probe": true,
+    "damping": "未调用位于融合邻居环之后的AddSoilDampingCpu，因此不是完整积分器净加速度。",
+    "pressure_full_vs_novisc_all_native_float_bits_equal": true,
+    "all_drained_pressure_and_four_rates_zero": true,
+    "center_net_rate_mean_pa_s": 634735.7152777778,
+    "center_actual_minus_offline_net_mean_pa_s": 47.947401703956224,
+    "center_raw_force_vector_rms_m_s2": 90.442295269597,
+    "center_viscosity_force_difference_vector_rms_m_s2": 0.0012411560064396192,
+    "retained_cli_failure": "r1仅因-omp:8非法而在解析阶段退出，没有初始化观察或积分；r2仅改为-ompthreads:8，复用原程序/场。r1全部记录保留。"
+  },
+  "darcy_local_moments": {
+    "receipt": "../logs/cryer_radial_moments_r1.check.json",
+    "receipt_sha256": "ef224743d0fdd68854f2f2107902f01c6a4361580747f2cf5f8b358d2628920a",
+    "definition": "d=xi-xj; Hij=(d dot Ci gradWij)/(r²+Eta2); ell=2sum(Vj Hij d); Q=-sum(Vj Hij dd).",
+    "identity": "Lh(p)-lap(p)=ell dot grad(p)+(Q-I):Hessian(p)+higher remainder。所有项乘同一生产Mf*k/(rho_w*g)后单位为Pa/s。",
+    "quadratic_polynomial_identity_absmax_pa_m2": 7.31681382148963e-12,
+    "near_surface_interior_count": 12493,
+    "near_surface_signed_means_pa_s": {
+      "total_darcy_error": 17393863.803737696,
+      "first_moment_contribution": 17736076.534003064,
+      "second_moment_contribution": -170556.1059854109,
+      "higher_remainder": -171656.6242799565
+    },
+    "limits": "贡献的有符号逐点值可以相加，各自RMS不可直接相加。此余项仅对应离线解析double场，不混入实际CPU的输入量化差。"
+  },
+  "conclusions": [
+    "现有原始外载能建立接近均匀的预载总应力，剩余误差不能简单归结为外载无法传到中心，预载后的时间平移没有修复Mandel峰。",
+    "当前receiver-C修正压缩散度和Darcy算子，但动量/孔压反馈/外载仍走原始梯度。均匀应力平衡不等于非均匀场的一致性。",
+    "真实CPU融合路径确认了理论峰处显著的正净孔压率偏差，它与峰值偏迟方向一致，不是离线脚本单独造成。",
+    "当前Darcy stencil在非均匀/截断支持域内不满足一般线性压力场的零Laplacian条件，一阶矩项主导本次近球面内部误差。",
+    "尚不能把全部峰幅低估归给Darcy，也不能仅减去一项后直接修改生产代码；非均匀机械平衡残差及耦合反馈必须一起审查。"
+  ],
+  "visual_and_table_review": {
+    "both_pngs_inspected": true,
+    "matching_region_and_radial_tables_available": true,
+    "offline_tables_imported_and_inspected_with_artifact_tool": true,
+    "independent_math_source_and_actual_cpu_checks_reviewed": true
+  },
+  "build": {
+    "default_cpu_debug_build_exit_code": 0,
+    "new_companion_build_exit_code": 0,
+    "warnings": "Companion仅有已有第三方静态库缺PDB的LNK4099警告；没有编译错误。GPU程序未改。"
+  },
+  "next_stage": "先对候选空间一致性处理做局部多项式、均匀应力/外载成套平衡与离散耗散审查，再决定是否有资格进入新的短窗/半步长。不得仅修正外载、按峰时反拟合半径或自动启动正式长程。"
+}

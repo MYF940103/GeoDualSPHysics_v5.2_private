@@ -1,0 +1,126 @@
+{
+  "analysis_checks_passed": true,
+  "production_implemented": false,
+  "solver_executed": false,
+  "physical_acceptance": false,
+  "tau_s": 0.0420518020252,
+  "polynomial_identity_absmax_pa_m2": 7.316813821489632e-12,
+  "definitions": {
+    "stencil": "Lh p=2 sum Vj Hij (pi-pj)",
+    "Hij": "dij dot Ci gradWij / (rij\u00b2+Eta2)",
+    "ell": "2 sum Vj Hij dij",
+    "moment": "-sum Vj Hij dij tensor dij",
+    "decomposition": "Lh p-lap p = ell dot grad p + (moment:Hessian p-lap p) + remainder"
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_moments_r1.py",
+      "sha256": "ed26e268a60fe0e97f7645d62fbd5cf12dffd457925da77580901b77f9d675f9",
+      "bytes": 7191
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_radial_consistency_r1.check.json",
+      "sha256": "ecb01df0613851009866d5b99530c34b274ef290525568168de3cdc8e32c8a7e",
+      "bytes": 133165
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_radial_force_r2.check.json",
+      "sha256": "f857e48a33f11d35aec628e959444292e99179945d94e1b73b782b5de7c20ca1",
+      "bytes": 8908
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_radial_moments_r1_regions.csv",
+      "sha256": "0b946237d49c7c9dfc2974d1b8c9992e11337e170535ae124cf7f965a7d1bb62",
+      "bytes": 1472
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_radial_moments_r1_radial.csv",
+      "sha256": "b89c80dd8f7d73c02a6aa643ce5f74f7f3a58b1832f261a2e3600986326c7e7a",
+      "bytes": 3766
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_radial_moments_r1.png",
+      "sha256": "e3cac32a460c52cd125c2f571c5511ce73a8e0ed47a8aa951163a4a829ed7d2c",
+      "bytes": 144516
+    }
+  ],
+  "rows": [
+    {
+      "region": "center18",
+      "count": 18,
+      "tau_s": 0.0420518020252,
+      "linear_moment_error_pa_s_mean": 309295.29595226335,
+      "linear_moment_error_pa_s_rms": 314442.97362507373,
+      "quadratic_moment_error_pa_s_mean": 86050.21910166756,
+      "quadratic_moment_error_pa_s_rms": 86070.70796374361,
+      "higher_remainder_pa_s_mean": -227333.08514624185,
+      "higher_remainder_pa_s_rms": 227351.0969466909,
+      "total_darcy_error_pa_s_mean": 168012.42990768907,
+      "total_darcy_error_pa_s_rms": 177726.38670903473,
+      "linear_moment_norm_m_inv_mean": 55.04064334098495,
+      "linear_moment_norm_m_inv_rms": 55.780102469932544,
+      "quadratic_moment_minus_I_norm_mean": 0.029231847993770717,
+      "quadratic_moment_minus_I_norm_rms": 0.02937317485959191
+    },
+    {
+      "region": "full_support_core",
+      "count": 19527,
+      "tau_s": 0.0420518020252,
+      "linear_moment_error_pa_s_mean": 223083.18974272834,
+      "linear_moment_error_pa_s_rms": 915376.9020128439,
+      "quadratic_moment_error_pa_s_mean": 256992.52262392765,
+      "quadratic_moment_error_pa_s_rms": 261047.88656106056,
+      "higher_remainder_pa_s_mean": 129770.60069255458,
+      "higher_remainder_pa_s_rms": 202631.7419870295,
+      "total_darcy_error_pa_s_mean": 609846.3130592105,
+      "total_darcy_error_pa_s_rms": 1052830.4341876816,
+      "linear_moment_norm_m_inv_mean": 5.715337025819347,
+      "linear_moment_norm_m_inv_rms": 9.623034336336367,
+      "quadratic_moment_minus_I_norm_mean": 0.019215126067831496,
+      "quadratic_moment_minus_I_norm_rms": 0.019368051880144073
+    },
+    {
+      "region": "near_surface_interior",
+      "count": 12493,
+      "tau_s": 0.0420518020252,
+      "linear_moment_error_pa_s_mean": 17736076.534003064,
+      "linear_moment_error_pa_s_rms": 27319937.76057155,
+      "quadratic_moment_error_pa_s_mean": -170556.1059854109,
+      "quadratic_moment_error_pa_s_rms": 480564.91883953736,
+      "higher_remainder_pa_s_mean": -171656.6242799565,
+      "higher_remainder_pa_s_rms": 474962.7794535131,
+      "total_darcy_error_pa_s_mean": 17393863.803737696,
+      "total_darcy_error_pa_s_rms": 26422502.077603266,
+      "linear_moment_norm_m_inv_mean": 51.504504816926406,
+      "linear_moment_norm_m_inv_rms": 79.0603070744002,
+      "quadratic_moment_minus_I_norm_mean": 0.054268178871139404,
+      "quadratic_moment_minus_I_norm_rms": 0.07098595570052678
+    },
+    {
+      "region": "nondrained",
+      "count": 32020,
+      "tau_s": 0.0420518020252,
+      "linear_moment_error_pa_s_mean": 7055994.677870284,
+      "linear_moment_error_pa_s_rms": 17079813.012180347,
+      "quadratic_moment_error_pa_s_mean": 90179.12420992184,
+      "quadratic_moment_error_pa_s_rms": 362854.1407283745,
+      "higher_remainder_pa_s_mean": 12165.031623798151,
+      "higher_remainder_pa_s_rms": 336238.45358809084,
+      "total_darcy_error_pa_s_mean": 7158338.833704004,
+      "total_darcy_error_pa_s_rms": 16524748.536871543,
+      "linear_moment_norm_m_inv_mean": 23.580548556559524,
+      "linear_moment_norm_m_inv_rms": 49.95192969877635,
+      "quadratic_moment_minus_I_norm_mean": 0.03289150922435009,
+      "quadratic_moment_minus_I_norm_rms": 0.04684862629770644
+    }
+  ],
+  "limitations": [
+    "Double offline moments with current production scalar constants, not another actual CPU kernel run.",
+    "Signed contributions add pointwise; their separate RMS values do not add algebraically.",
+    "No surface receiver rate is included; actual production forces their pressure/rate to zero.",
+    "The nonzero first moment explains local linear inconsistency, not a complete coupled peak-error attribution.",
+    "No replacement stencil, gradient subtraction, volume renormalization or new physical run."
+  ]
+}
