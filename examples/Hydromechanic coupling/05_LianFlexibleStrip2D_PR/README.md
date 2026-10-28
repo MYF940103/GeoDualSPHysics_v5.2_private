@@ -1,5 +1,20 @@
 # Lian Flexible Strip 2D PR
 
+## 早期加密输出与最新图表（2026-10-28，r2）
+
+另行完成0–1 s补算：仅将测试XML的TimeMax/TimeOut改为1/0.01 s，积分步长仍为10 μs，
+使用相同程序、材料、混合滑移边界及HG/SPR设置。RTX 3050完成101帧，原生安全检查通过；
+与服务器100 s结果共有21个精确实际时间/步号状态，34个物理字段全部0 ULP，
+输出间隔统计量dterror另按原阈值独立核对。补算末帧的源时钟尚未到排水开启时刻，
+因此本轮不另称复测了排水；原100 s全帧检查仍有效。
+
+最新 [图表索引](figures/README.md) 中的r2孔压/沉降历史合并了101个早期样本和
+1980个原晚期样本，共2081行，每行记录来源和原生文件SHA。
+100 s末态、Fig10云图、有符号水平位移剖面、VTK序列及所有r1证据均原样保留。
+这不是新的物理方案或半步验证，也没有重新计算100 s；孔压与论文数值参考的差异未被消除。
+复算绘图入口为 `support/plot_lian_hgspr_r2.py`，最终记录为
+`tests/logs/lian_hgspr_early_r1.final_review.json`。
+
 ## 服务器100秒结果与分析（2026-10-28）
 
 本次 `CaseLianFlexibleStrip2D_PR_release_HGSPR_out` 已由RTX A6000完成100 s、

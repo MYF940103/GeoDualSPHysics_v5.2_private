@@ -1,5 +1,26 @@
 # Lian 100秒正式结果
 
+## 最新r2：0–1 s按0.01 s保存
+
+下表是最新历史图与配套数据。早期101帧来自相同物理/程序的RTX 3050补算，
+1 s之后1980帧仍为原A6000的100 s结果，共2081行；21个共有实际时间/步号状态的
+34个物理字段全部0 ULP。每行保留来源、原生帧号和SHA，未插值制造原生时间点。
+末态和所有晚期数值未变，早期加密不是物理精度改进或新的时间步收敛证据。
+
+| 最新内容 | 图片 | 对应数据 |
+| --- | --- | --- |
+| 完整历史、载荷和晚期耗散 | [r2历史图](lian_hgspr100_r2_history.png) | [2081行历史](lian_hgspr100_r2_history.csv) |
+| 论文Fig11，A/B孔压历史 | [r2对比图](lian_hgspr100_r2_fig11_compare.png) | [历史](lian_hgspr100_r2_history.csv)、[25个论文稀疏点](lian_hgspr100_r2_paper_points.csv) |
+| 论文Fig12，沉降和原100 s剖面 | [r2对比图](lian_hgspr100_r2_fig12_compare.png) | 同上历史/稀疏点；[原剖面](lian_hgspr100_r1_horizontal_profile.csv)未变 |
+
+原生101帧补算位于 `../tests/outputs/lian_hgspr_early_r1`；
+`../tests/logs/lian_hgspr_early_r1.final_review.json`记录核查与视读结果。
+补算末帧的加载源时钟仍小于1 s，因此没有活跃排水帧，不把它称为排水复验。
+Fig10四时刻云图、应力/近墙图及原VTK序列继续使用下列r1文件，不重复生成。
+下面的r1说明与原0.05 s采样限制保留作历史记录；最新早期观察应以r2为准。
+
+## 保留的r1正式分析
+
 数据来源：根目录 `CaseLianFlexibleStrip2D_PR_release_HGSPR_out`，RTX A6000，
 HG=.1、SPR=1、应力率梯度修正=1、dt=10 μs。所有图由原生BI4生成，原始结果未重算或改写。
 
