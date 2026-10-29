@@ -1,0 +1,76 @@
+{
+  "tag": "cryer_symc_gpu_build_r1",
+  "date_local": "2026-10-29",
+  "status": "candidate_source_and_build_proposal_only",
+  "root_review_required_before_prepare_or_build": true,
+  "builder_was_not_executed": true,
+  "no_build_or_solver_or_help_or_notifier_or_git_executed": true,
+  "production_or_formal_inputs_changed": false,
+  "physical_acceptance": false,
+  "files": {
+    "candidate": "tests/outputs/cryer_symc_gpu_build_r1/JSphGpu_ker.cu",
+    "builder": "tests/support/cryer_symc_gpu_build_r1.py",
+    "proposal": "tests/notes/cryer_symc_gpu_r1.json"
+  },
+  "source": {
+    "canonical_sha256": "0a2d2cde05f18f6ad7a8e8a929e742a0b07ec31ca3c8cdfebd786d21753764c6",
+    "canonical_bytes": 279300,
+    "candidate_sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5",
+    "candidate_bytes": 274866,
+    "cpu_symc_candidate_sha256": "99c7c445db16bcd8d25e5599012e9129f2a2523e458c55d4192432649c8c9fb8",
+    "cpu_release_receipt": "tests/logs/cryer_symc_release_r1.build.json",
+    "cpu_release_receipt_sha256": "f8f7b638fa8ce5011a7ba8c3489e34d03fa5df86bf28efd08bd04a4d5d3be081",
+    "copy_method": "Read canonical into memory; apply_patch created new candidate. No shell file write or canonical modification.",
+    "encoding": "Original ASCII-compatible UTF-8 content preserved; candidate LF versus canonical mixed CRLF/LF. Strict full-string comparison after newline normalization passes; no other whitespace/comment/encoding change.",
+    "exact_normalized_candidate_comparison_passed": true,
+    "delta": [
+      "Append const tmatrix3d* corrmat to private KerInteractionForcesFluidBox signature at original line1672",
+      "Append corrmat to all four existing calls at original lines2077/2078/2088/2089",
+      "Only in active Darcy block: initialize lapdotgrad=pdotgrad; soil-soil and nonnull corrmat use 0.5*(dr.C_i.gradW+dr.C_j.gradW)",
+      "Replace pdotgrad by lapdotgrad in the two lapw/lapz contractions only"
+    ],
+    "unchanged": ["compression", "pressure feedback", "effective-stress force", "confinement/load", "boundary logic", "integrator", "public kernel ABI", "main"]
+  },
+  "authority": {
+    "project": "src/VS/DualSPHysics5Re.vcxproj",
+    "project_sha256": "a719dae2496ede01177d6fa5674daf8319cc49000c729c5804ebe80419cab320",
+    "solution": "src/VS/DualSPHysics5Re.sln",
+    "compile_command_sources": [
+      "case05/tests/logs/lian_mirror_build_r1_Debug.log",
+      "case05/tests/logs/lian_mirror_build_r1_Release.log"
+    ],
+    "reason_for_compile_log_reuse": "Current GPU tlogs contain CudaCompile.read/write but no CudaCompile.command. The retained actual same-TU commands match current project sm86 settings; builder binds both logs and current project.",
+    "link_and_dependency_sources": "Current Debug/Release link.command/read and CL.read/CudaCompile.read tlogs; 111 unique original objects per configuration, exactly one actual main and one JSphGpu_ker.cu.obj.",
+    "debug_link_command_tlog_sha256": "e8e7ed9dd84e0b2d08b3f817be535d80868c39313549d57f3647515629e1508f",
+    "release_link_command_tlog_sha256": "be104009ce1567db86f3660db78abf13606271dd706c42be9960e64708a4eb78",
+    "pattern_reviewed": "case05/tests/scripts/lian_spr_mix_gpu_build.ps1; unlike that fixture builder, this proposal retains actual main and adds no harness",
+    "toolchain": "CUDA11.7, MSVC14.36.32532, WindowsSDK10.0.22000.0, compute86+sm86",
+    "current_host_gpu": "RTX3050; not historical A6000",
+    "device_link": "Actual compile is --compile without rDC and current link has no device-link object. Builder fails on detected rDC/dlink instead of silently emitting a canonical device-link output."
+  },
+  "proposed_workflow_not_executed": {
+    "default": "Print help only; no writes or commands",
+    "prepare": "--prepare: refuse retained plan or configuration directories; freeze complete source comparison, proposed commands and protected manifests without invoking native tools",
+    "build_debug": "--build Debug only after parent review: compile isolated CU, then link actual authoritative objects with only this object substituted",
+    "build_release": "--build Release only after parent review: same isolated replacement with original Release flags",
+    "protected": "Canonical sources, current objects/tlogs/link sidecars, all tracked header/library dependencies (missing entries reject, never silently omit), actual main, tool pipeline exe/dll/libdevice, canonical executables/runtime/PDB/import libraries; verify plan before and all protected SHA/byte sizes after each build. Recursive inventories of source/bin and GPU object/tlog directories also reject any newly created or removed canonical file.",
+    "output_isolation": "Separate Debug/Release directories under this tag; explicit nvcc object, keep directory, dependency output, host PDB, TEMP/TMP/CUDA cache, link EXE/PDB/import LIB/ILK/LTCG IOBJ and manifest paths; cwd is isolated configuration directory",
+    "manifests": "New logs/cryer_symc_gpu_build_r1.inputs.json and separate Debug/Release build.json/build.log; record full argv, environment, inputs, actual nvcc dependency file/header hashes, runtime source/target hashes, warnings, tool exits and generated artifacts",
+    "runtime": ["ChronoEngine.dll", "dsphchrono.dll", "vcomp140.dll", "DsphConfig.xml"],
+    "failure_policy": "Fresh labels only; preserve failed outputs and never restart/overwrite. Any protected drift, unbound compiled dependency or native-tool failure rejects built_not_run. No solver invocation exists."
+  },
+  "checks_performed_without_executing_builder": {
+    "python_AST_parse": true,
+    "full_normalized_source_equality": true,
+    "one_signature_four_calls_one_Darcy_block": true,
+    "canonical_source_project_sha_unchanged": true,
+    "debug_release_111_actual_objects_and_main": true
+  },
+  "limitations": [
+    "GPU candidate has not been compiled, memchecked, helped or physically run; no GPU result or CPU/GPU agreement is claimed",
+    "Existing CPU scalar step screen and manufactured-field evidence are not a coupled GPU stability proof",
+    "The full CPU dynamic short sequence is independently owned by the parent and is not touched",
+    "If preparation or native compilation exposes stale/missing dependencies or unsupported nvcc dependency syntax, preserve failure evidence and repair only a new reviewed build plan; do not alter canonical source or objects",
+    "No full peak, formal run or physical acceptance follows automatically from building"
+  ]
+}

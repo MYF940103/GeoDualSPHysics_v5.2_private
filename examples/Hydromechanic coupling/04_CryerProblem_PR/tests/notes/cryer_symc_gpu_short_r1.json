@@ -1,0 +1,104 @@
+{
+  "tag": "cryer_symc_gpu_short_r1",
+  "status": "author_only_root_review_required",
+  "scope": "Three new isolated GPU tests only. No preparation, build, solver, notification or Git has been performed by the author.",
+  "prior_cpu_evidence": "cryer_symc_short_r1 and independent numerical/visual review pass; this is bounded implementation validation, not peak/full-cycle physical acceptance.",
+  "build_prerequisites": {
+    "plan": "tests/logs/cryer_symc_gpu_build_r3.inputs.json",
+    "Debug": "tests/logs/cryer_symc_gpu_build_r3_Debug.build.json",
+    "Release": "tests/logs/cryer_symc_gpu_build_r3_Release.build.json",
+    "required": "Both built_not_run, exit0 compilation/link, bound compiled dependencies, unchanged protected canonical source/programs, original main retained, exactly reviewed Darcy source delta.",
+    "r1_failure_preserved": "The previous r1 Debug wrapper failed before CUDA compilation because nvcc internal absolute TEMP paths contained a space. It is not admitted or retried. r2 private relative output/TEMP fix preserves candidate source bytes.",
+    "r2_failure_preserved": "r2 CUDA compilation succeeded, but link was correctly blocked because 12 actual system headers were missing from the prebound dependency set. No r2 executable or run is admitted. r3 prebinds all CUDA/MSVC includes; candidate CUDA source and physics remain unchanged."
+  },
+  "source_scope": "Only isolated soil-soil Darcy contraction uses (Ci+Cj)/2. Pressure compression divergence, stress, force, load, geometry, boundaries and integration remain canonical. No canonical C++/CUDA or formal XML/BAT is changed.",
+  "physics": {
+    "R_m": 0.05,
+    "dp_m": 0.0025,
+    "k": 0.00001,
+    "q_pa": 10000,
+    "SoilDampingCoef": 0.00004,
+    "SoilStressRateGradCorr": 1,
+    "HydroMechLoadMode": "original raw confinement",
+    "ramp_s": 0.00390625,
+    "drainage_start_s": 0.0078125,
+    "HydroMechDrainageFixedGrid": 1,
+    "original_float_pore_and_density": true,
+    "persistent_stress_double": true,
+    "HG": 0,
+    "SPR": 0,
+    "shifting": 0
+  },
+  "jobs": [
+    {
+      "name": "dbg",
+      "configuration": "Debug",
+      "dt_s": 4.76837158203125e-7,
+      "end_s": 0.0001220703125,
+      "save_s": 0.0001220703125,
+      "steps": 256,
+      "frames": 2,
+      "gates": "compute-sanitizer ERROR SUMMARY: 0 errors plus LEAK SUMMARY: 0 bytes leaked in 0 allocations; all original native safety. No equilibrium gate in pre-drain 2-frame window. Not a Release 0-ULP control or half-step accuracy test."
+    },
+    {
+      "name": "c",
+      "configuration": "Release",
+      "dt_s": 4.76837158203125e-7,
+      "end_s": 0.00830078125,
+      "save_s": 0.0001220703125,
+      "steps": 17408,
+      "frames": 69,
+      "gates": "Only after Debug gates: original native safety, closed Part61-64 equilibrium diagnostics, all69 actual-matched same-dt CPU symC on_c comparisons."
+    },
+    {
+      "name": "h",
+      "configuration": "Release",
+      "dt_s": 2.384185791015625e-7,
+      "end_s": 0.00830078125,
+      "save_s": 0.0001220703125,
+      "steps": 34816,
+      "frames": 69,
+      "gates": "Only after coarse gates: original native safety, Part61-64 diagnostics, all69 CPU symC on_h cross checks plus independent new GPU coarse/half checks."
+    }
+  ],
+  "all_native_safety": "37173 unique soil IDs; finite values, positive rho, elastic/no exclusions, double saved positions/persistent stress, actual load telemetry/inward load, fixed mass/h/dp, radius<=.0525m, configured dt<=original poreDt, original signed mechanical dterror<=1e-14. Actual power-of-two saved time and zero-based step each frame, FSType2/3 surface count5153, fixed classification; after tD (Parts65-68) active surface p exactly0. No uniform-stress gate after opening.",
+  "initial_equilibrium": {
+    "closed_parts": [
+      61,
+      62,
+      63,
+      64
+    ],
+    "part64": "Exactly tD, still pre-open with source-clock policy",
+    "limits": {
+      "pressure_target_rms_pa": 100,
+      "total_stress6_target_rms_pa": 100,
+      "speed_max_m_s": 0.00001,
+      "isotropic_fixed_origin_displacement_residual_rms_mm": 0.00001,
+      "fixed_native_shell_pointwise_target_error_rms_mm": 0.00001
+    },
+    "targets": "Use frozen finite-Kw preload helper definitions, initial volume weights, fixed18 center IDs, fixed initial shell and per-particle radial targets. These are initial equilibrium diagnostics, not global physical acceptance."
+  },
+  "comparison_limits": {
+    "pressure_field_rms_pa": 5,
+    "material_displacement_max_mm": 0.005,
+    "fstype_mismatches": 0,
+    "drained_mask_mismatches": 0
+  },
+  "comparisons": {
+    "CPU_controls": "Retained cryer_symc_short_r1_on_c/on_h. Same-dt cross-backend checks, not theory references.",
+    "raw_GPU": "Retained cryer_preload_peak_r1 / cryer_preload_peak_half_r1 first69 frames. Option differences are recorded without the 5Pa/.005mm bound; not half-step errors or theory errors.",
+    "rows_expected": 345,
+    "summary_rows_expected": 140
+  },
+  "memcheck_parser_fixture": "tests/outputs/cryer_gpu_base_r1_dbg/memcheck.log is bound only as demonstrated CUDA11.7 summary-format provenance. The old base check rejected its zero-error/zero-leak log solely because it expected different wording; this does not promote that old stage to an accepted physical baseline. The pure parser selftest accepts the retained clean text and rejects nonzero errors, nonzero bytes/allocations or missing leak summaries. All reported summaries must be zero; no gate is relaxed.",
+  "lifecycle": "Default help, --selftest no writes, --prepare after root review freezes hashes and current same-thread identity. --run admits one owned sequence only, no duplicate solvers, no output/log/manifest overwrite. Seal actual exits/raw outputs before offline checks. Preserve completed solver on analysis failure and repair offline, never rerun. Stop only own identity-verified live wrapper tree on exception; no external process stop.",
+  "completion": "Exactly one terminal same-thread codex queue attempt, exclusive attempt record, no rearm/retry/connectivity selftest. Terminal message <2000 characters; old workers remain retired.",
+  "outputs": "tests/outputs/cryer_symc_gpu_short_r1_{dbg,c,h}; new tagged logs, two CSV files in tests/figures. Raw BI4/executables are local and not a cloud Git backup.",
+  "limitations": "Scalar step screen is CPU-constant-only and not a coupled GPU stability proof. No automatic peak/long/formal acceptance, no general geometry/plasticity/large-rotation/HG-restart claim. Neither CPU short nor GPU short establishes Mandel peak improvement.",
+  "run_commands_after_root_review": [
+    "D:\\Anaconda3\\python.exe -B tests\\support\\cryer_symc_gpu_short_r1.py --selftest",
+    "D:\\Anaconda3\\python.exe -B tests\\support\\cryer_symc_gpu_short_r1.py --prepare",
+    "D:\\Anaconda3\\python.exe -B tests\\support\\cryer_symc_gpu_short_r1.py --run"
+  ]
+}

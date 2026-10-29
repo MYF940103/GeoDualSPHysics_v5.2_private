@@ -1,0 +1,62 @@
+{
+  "tag": "cryer_symc_gpu_build_r3",
+  "date_local": "2026-10-29",
+  "status": "prepare_only_header_coverage_proposal",
+  "root_review_required_before_prepare_or_build": true,
+  "no_prepare_build_program_help_solver_memcheck_notifier_or_git_executed": true,
+  "production_or_formal_inputs_changed": false,
+  "physical_acceptance": false,
+  "source": {
+    "path": "tests/outputs/cryer_symc_gpu_build_r3/JSphGpu_ker.cu",
+    "bytes": 274866,
+    "sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5",
+    "byte_identical_to_r1_and_r2": true,
+    "canonical_precondition_sha256": "0a2d2cde05f18f6ad7a8e8a929e742a0b07ec31ca3c8cdfebd786d21753764c6",
+    "source_precondition": "Inherited source_comparison checks canonical/project/CPU candidate hashes and strict exact normalized delta before prepare/build. No source/include/flag/numerical change from r2."
+  },
+  "prior_wrappers_preserved": {
+    "r1": "TEMP absolute path containing Hydromechanic coupling was split inside nvcc compiler detection; compile exit2 before candidate CU compilation. Never restarted.",
+    "r2": "Relative private paths fixed TEMP issue. Debug nvcc compile exited0 after90.2711054s with no warnings, but strict dependency prebinding gate rejected12 actual system headers omitted by historical tlogs; link was never attempted and Release never started. Never restarted or adopted.",
+    "r2_note_sha256": "cd62907e2a48d85627960e792cfe6ef4267b9019203a14efedc6575292518ffc",
+    "r2_builder_sha256": "968d3a9c78c88bb6ce58fb2b8e2e323e564c7f155fa72659144e1b0c9a8a4779",
+    "r2_plan_sha256": "0fc9371826b108fd1caa99bad69add3800d959c8df28632d892ecdb610b45445"
+  },
+  "bootstrap_evidence_to_be_bound_before_r3_compile": [
+    {
+      "path": "tests/logs/cryer_symc_gpu_build_r2_Debug.build.json",
+      "bytes": 390704,
+      "sha256": "bc07336b28273b601add0c38b2fa34a06b1d74697df2a1aadb0848e1017613aa"
+    },
+    {
+      "path": "tests/outputs/cryer_symc_gpu_build_r2/Debug/JSphGpu_ker.dependencies.d",
+      "bytes": 82989,
+      "sha256": "92642e48a14f2eb6c8bdd586c7fb1501baf98b73aafc449f12f730d7373ebde0"
+    }
+  ],
+  "only_builder_changes_from_r2": [
+    "TAG, NOTE and executable basename use fresh r3",
+    "During prepare, append r2 failed Debug receipt and actual dependency file to protected inputs",
+    "Before taking the prepare snapshot, append every actual file under CUDA11.7/include and MSVC14.36.32532/include to protected inputs"
+  ],
+  "coverage_reason": "Historical MSBuild tlogs omitted12 real MSVC/CUDA headers from the successful r2 compilation. Freeze complete installed CUDA/host include trees for fresh r3 Debug and Release; keep actual postcompile dependency-subset assertion strict. Do not claim these headers were prebound during r2 or adopt its object.",
+  "unchanged": [
+    "Same candidate CU bytes, canonical source hash precondition, exact1signature/4calls/soil-soil-Darcy-block comparison and CPU algebra",
+    "Authoritative VS project/tlogs/retained actual nvcc commands, original Debug/Release flags, sm86+compute86,111 real objects and actual main",
+    "Relative tmp/cache/keep/object/dependency/host-PDB paths under isolated native cwd; absolute declared manifest and private MSVC link destinations",
+    "Original source/header/library/tool/runtime hashes, strict missing-path refusal and canonical directory inventories",
+    "No relaxation of actual compiled dependency prebinding, protected-input checks, fresh-tag policy or native-tool exit checks",
+    "No physical program/help/solver/memcheck/queue starts; no new buildsystem"
+  ],
+  "checks_already_performed_without_running_builder": {
+    "python_AST_parse": true,
+    "candidate_bytes_equal_r2": true,
+    "wrapper_diff_only_three_label_substitutions_and_six_line_prepare_coverage_block": true,
+    "r1_r2_records_preserved": true
+  },
+  "limitations": [
+    "No r3 prepare/build has run yet",
+    "r2 compilation is not a completed executable build or GPU validation",
+    "New include coverage is a precondition for a fresh build, not posthoc repair of r2 evidence",
+    "No physical, coupled stability, CPU/GPU or peak-window admission follows automatically"
+  ]
+}

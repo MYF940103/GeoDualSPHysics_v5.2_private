@@ -1,0 +1,102 @@
+{
+  "tag": "cryer_symc_gpu_build_r2",
+  "date_local": "2026-10-29",
+  "status": "candidate_and_wrapper_repair_proposal_only",
+  "root_review_required_before_prepare_or_build": true,
+  "no_prepare_build_program_help_solver_memcheck_notifier_or_git_executed": true,
+  "production_or_formal_inputs_changed": false,
+  "physical_acceptance": false,
+  "files": {
+    "candidate": "tests/outputs/cryer_symc_gpu_build_r2/JSphGpu_ker.cu",
+    "builder": "tests/support/cryer_symc_gpu_build_r2.py",
+    "proposal": "tests/notes/cryer_symc_gpu_r2.json"
+  },
+  "source": {
+    "candidate_bytes": 274866,
+    "candidate_sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5",
+    "r1_candidate_byte_identical": true,
+    "canonical_sha256_unchanged": "0a2d2cde05f18f6ad7a8e8a929e742a0b07ec31ca3c8cdfebd786d21753764c6",
+    "cpu_candidate_sha256": "99c7c445db16bcd8d25e5599012e9129f2a2523e458c55d4192432649c8c9fb8",
+    "numerical_delta_from_r1": "None. Same isolated soil-soil symmetric-C Darcy only; all compression, mechanical forces, load, boundaries and integrators unchanged."
+  },
+  "r1_evidence_preserved": [
+    {
+      "path": "tests/notes/cryer_symc_gpu_r1.json",
+      "bytes": 6481,
+      "sha256": "687849b06f1c734b5877aa459a48e6c1a4c6cbf060ae5cc7c86cfcd898a10752"
+    },
+    {
+      "path": "tests/support/cryer_symc_gpu_build_r1.py",
+      "bytes": 21020,
+      "sha256": "c8d660aa9a4468736a08a44679053157054c5a309d20e5e55021169960cf4502"
+    },
+    {
+      "path": "tests/logs/cryer_symc_gpu_build_r1.inputs.json",
+      "bytes": 491038,
+      "sha256": "daf2d7a7e42cba2c8af3f2821c693024397d9ac1413d352f655b25849cd50c7e"
+    },
+    {
+      "path": "tests/logs/cryer_symc_gpu_build_r1_Debug.build.json",
+      "bytes": 391185,
+      "sha256": "ad84c8554e7f346c86ee29e891dbc0c80d67a245550643823931c032a0cd9ec2"
+    },
+    {
+      "path": "tests/logs/cryer_symc_gpu_build_r1_Debug.build.log",
+      "bytes": 14,
+      "sha256": "341f8a50bba209302f5b19cf946b92e10b8c07620e48cd93e6659e37885abb78"
+    },
+    {
+      "path": "tests/outputs/cryer_symc_gpu_build_r1/Debug/tmp/tmpxft_0001042c_00000000-2",
+      "bytes": 672,
+      "sha256": "83a2279ef260c0da5ed99cac6903f99379eb5593257ff4e876211ebffb349385"
+    }
+  ],
+  "r1_failure": {
+    "compile_exit": 2,
+    "compile_seconds": 0.5598169001750648,
+    "failed_before_candidate_CUDA_compilation": true,
+    "exact_cause": "nvcc host-compiler detection split the absolute TEMP/TMP path at the space in Hydromechanic coupling; retained tmpxft output records CL C1083 for truncated paths. No object/dependency file/executable was generated.",
+    "protected_inputs_and_inventories_unchanged": true,
+    "release_not_started": true,
+    "r1_not_restarted_or_overwritten": true,
+    "no_available_no_space_8dot3_alias": true
+  },
+  "only_wrapper_changes_from_r1": [
+    "TAG, NOTE path and generated executable basename use r2",
+    "nvcc --keep-dir keep instead of absolute configuration/keep",
+    "nvcc -o JSphGpu_ker.cu.obj instead of absolute object path",
+    "nvcc --dependency-output JSphGpu_ker.dependencies.d instead of absolute dependency path",
+    "Host option /Fdcuda_host.pdb instead of quoted absolute PDB path",
+    "TEMP=tmp and TMP=tmp instead of absolute tmp directory",
+    "CUDA_CACHE_PATH=cuda_cache instead of absolute cache directory"
+  ],
+  "path_scope": {
+    "native_tool_cwd": "Absolute isolated tests/outputs/cryer_symc_gpu_build_r2/{Debug|Release}",
+    "relative_paths_resolve_only_inside_that_cwd": ["keep", "tmp", "cuda_cache", "JSphGpu_ker.cu.obj", "JSphGpu_ker.dependencies.d", "cuda_host.pdb"],
+    "manifest_destinations_remain_absolute": true,
+    "MSVC_link_output_paths_remain_absolute_and_private": true,
+    "no_global_temp_directory_alias_or_outside_case_write": true
+  },
+  "unchanged_build_policy": [
+    "Retained UTF16/UTF8-BOM detection for authoritative nvcc build logs",
+    "Actual current GPU VS project/tlogs, 111 original objects and actual main; no harness",
+    "Original CUDA/MSVC flags, sm86+compute86 and host toolchain; no rDC/device-link introduced",
+    "Strict exact normalized source comparison and exact CPU Darcy algebra comparison",
+    "Full protected input SHA/byte checks, no missing-path omission, canonical recursive directory inventories",
+    "Actual nvcc dependencies must all have been bound before compilation",
+    "Fresh outputs only; preserve failed configuration, no retry or overwrite",
+    "Runtime copies/hash records and separate Debug/Release native exits/artifact manifests",
+    "No program/help/physical solver/memcheck/queue launch exists"
+  ],
+  "prepare_only_static_checks": {
+    "python_AST_parse": true,
+    "r2_candidate_exact_bytes_equal_r1": true,
+    "wrapper_diff_is_only_nine_explicit_substitutions": true,
+    "r1_receipts_and_source_preserved": true
+  },
+  "limitations": [
+    "r2 prepare and compilation have not run; relative temporary path behavior remains to be tested by an explicitly authorized isolated build",
+    "A successful build would not establish GPU memory safety, CPU/GPU equality, dynamic stability, peak-window accuracy or formal physical acceptance",
+    "Current CPU dynamic worker is independently owned by the parent and remains untouched"
+  ]
+}
