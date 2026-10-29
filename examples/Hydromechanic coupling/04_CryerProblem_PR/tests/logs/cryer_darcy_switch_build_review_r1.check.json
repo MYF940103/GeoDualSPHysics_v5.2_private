@@ -1,0 +1,104 @@
+{
+  "tag": "cryer_darcy_switch_build_review_r1",
+  "scope": "Independent build-only audit; adopt r1 CPU Debug/Release and fresh r2 GPU Debug/Release. No target program/help or solver was run by this audit.",
+  "evidence_consistency_passed": true,
+  "build_acceptance": true,
+  "implementation_regression_passed": false,
+  "physical_acceptance": false,
+  "formal_admitted": false,
+  "hash_audit": {
+    "prepared_record_count": 96,
+    "prepared_unique_file_count": 72,
+    "bound_reference_count": 220,
+    "deduplicated_bound_file_count": 89,
+    "deduplicated_bound_bytes": 805749979,
+    "observed_control_files_additional": 4,
+    "observed_control_bytes_additional": 5483,
+    "total_unique_files_checked": 93,
+    "total_bytes_checked": 805755462,
+    "sha256_or_bytes_mismatch_count": 0,
+    "binding_conflict_count": 0,
+    "archived_base_snapshots": 15,
+    "current_source_document_files": 7,
+    "unchanged_canonical_programs": 4,
+    "built_programs": 4,
+    "runtime_targets": 16,
+    "runtime_source_target_pairs_identical": 16,
+    "scope_limit": "One deduplicated pass over current prepared inputs and selected build/base receipts. Prior physical-review documents were hash-bound but their large historical native-output graph was not re-audited."
+  },
+  "builds": [
+    {
+      "configuration": "DebugCPU",
+      "provenance": "adopted completed r1",
+      "exit_code": 0,
+      "owned_exited": true,
+      "elapsed_seconds": 46.44720660010353,
+      "program_sha256": "eb3a4814249ce50d319b75e7aec3b23399822b8a05a67f0fb6985a9a624136dc",
+      "program_bytes": 12064256,
+      "warning_lines": 53,
+      "warning_codes": {"D9035": 1, "LNK4099": 52}
+    },
+    {
+      "configuration": "ReleaseCPU",
+      "provenance": "adopted completed r1",
+      "exit_code": 0,
+      "owned_exited": true,
+      "elapsed_seconds": 27.01729330001399,
+      "program_sha256": "221e0e9a093a27097f39fd4cbdbf72899c44c2bb8b3bce0735b6989e32b3152e",
+      "program_bytes": 4887040,
+      "warning_lines": 0,
+      "warning_codes": {}
+    },
+    {
+      "configuration": "Debug",
+      "provenance": "fresh r2 GPU",
+      "exit_code": 0,
+      "owned_exited": true,
+      "elapsed_seconds": 191.80527019989677,
+      "program_sha256": "dab815b74d519b8f4aff6d17e876ce25418ceaece938afd0d6fe187d63a384b9",
+      "program_bytes": 102288896,
+      "warning_lines": 55,
+      "warning_codes": {"MSB8029": 1, "D9035": 1, "LNK4099": 52, "LNK4098": 1}
+    },
+    {
+      "configuration": "Release",
+      "provenance": "fresh r2 GPU",
+      "exit_code": 0,
+      "owned_exited": true,
+      "elapsed_seconds": 157.99151819990948,
+      "program_sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096",
+      "program_bytes": 20622336,
+      "warning_lines": 1,
+      "warning_codes": {"MSB8029": 1}
+    }
+  ],
+  "warning_interpretation": "D9035 is a deprecated compiler option; LNK4099 denotes missing static-library PDBs; MSB8029 concerns a temporary intermediate directory; LNK4098 reports a LIBCMT conflict. In particular, build success is not evidence that the runtime-library warning is harmless. Runtime/memory and native OFF/ON regressions remain required.",
+  "process_audit": {
+    "utc": "2026-10-29T21:49:06.1128988Z",
+    "owned_msbuild_pids": [23036, 46352, 46380, 23000],
+    "owned_worker_pids": [70024, 43048],
+    "matching_live_process_count": 0,
+    "inventory": "Read-only Win32_Process inventory for those PIDs and MSBuild/cl/link/nvcc/cicc/ptxas/fatbinary/cudafe++/DualSPHysics*/cryer_* executable names.",
+    "exact_prepared_receipt_process_argv_matches": 4,
+    "owned_exits_confirmed": true
+  },
+  "provenance_limits": [
+    "The four successful stages all used the authoritative VS solutions with project references and PostBuild disabled; this is not an independent rebuild of every third-party dependency or a complete lock of every system header/object.",
+    "Historical pre-edit source identities are checked against their exact archived snapshots, not incorrectly against deliberately edited current source paths. Current seven files and all four canonical programs remain equal to r1/r2 prepared bindings.",
+    "The old r1 GPU failure remains preserved and was not adopted as a successful GPU build. Fresh r2 differs only in private output/intermediate/binlog locations; no source/project/numerical options were changed for this continuation.",
+    "The r2 final check and started/process records were independently observed here. The started/process records were not originally hash-linked by the r2 final check; this new audit binds them without rewriting old evidence.",
+    "No program/help/solver was invoked in this audit. Worker execution flags and current process absence do not substitute for the next numerical/runtime regression stage."
+  ],
+  "source_links": [
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r1_DebugCPU.build.json", "bytes": 20780, "sha256": "eff7082bba0b03fc228ee2fa6b398b4295a39f0dabd8c37e8d81b29003e7ab16"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r1_ReleaseCPU.build.json", "bytes": 4772, "sha256": "b49795669fd6e8b619f8ba43c95ee47b5f2001769c920520116db61d0b25dbd8"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2_Debug.build.json", "bytes": 20548, "sha256": "0515a2f4880782727393a28c721802c88798818e293182a9809697df4d723d4f"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2_Release.build.json", "bytes": 5183, "sha256": "6b722c20dbcbb97a266566d28c878af6cdc5030544ca4ea8aa0e7f453b9ea377"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2.check.json", "bytes": 3129, "sha256": "faa13d15dc3c38a058f39ecb83c107a28aa501278a9e8df2f37058ac1e6d29d1"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2.inputs.json", "bytes": 29534, "sha256": "573351c5b18eaf20ed433b71a50341963d53f61afd8fead7ce167577384d1cfc"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2.started.json", "bytes": 406, "sha256": "d616eeee020baf7aa2c86949f4d200140c8128bb64dbe2a31e685ddf7e0d675d"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2_Debug.process.json", "bytes": 970, "sha256": "059f7a5d92bf3f8fe68dcc7a85729e1d1055d86799a8a8d757eee8a450e8aa85"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2_Release.process.json", "bytes": 978, "sha256": "056b61630fbd7600d600d69041324cedb9e0d4ed5c3c15c38fd956471540e5f0"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_r1.base.json", "bytes": 8855, "sha256": "a5c2004419bcbcce1557b7872a91c94d5674b44fbec86912bccf7d1d2204b262"}
+  ]
+}
