@@ -1,0 +1,28 @@
+{
+  "tag": "cryer_darcy_switch_native_r1",
+  "status_at_authoring": "draft_only_root_review_required",
+  "root_review": "Complete worker and retained templates reviewed. Only operational refinements: sample CIM ownership every30s rather than every1s, immediately persist wrapper/solver PIDs, explicitly check IDs8..37180 and record actual loop time. No source, formulation, parameters, guard, comparison field or job expansion. Root separately authorizes selftest, preparation and one fresh sequence after input verification.",
+  "no_selftest_prepare_program_solver_notifier_or_git_executed_at_authoring": true,
+  "scope": "Implementation bridge from explicit default-OFF XML switch to the already reviewed raw and isolated soil-soil symmetric-C programs; no new physical candidate, parameters, theory tolerance or formal input.",
+  "jobs_in_order": [
+    "cpu_dbg: new r1 DebugCPU, ON, 256 steps/2 frames, not Debug-vs-Release equivalence",
+    "gpu_dbg: new r2 Debug, ON, 256 steps/2 frames under compute-sanitizer memcheck/leak-check full",
+    "cpu_off: new r1 ReleaseCPU, parameter omitted/default OFF, 17408 steps/69 frames vs retained cryer_symc_short_r1_off_c",
+    "cpu_on: same ReleaseCPU, explicit value=1, vs retained cryer_symc_short_r1_on_c",
+    "gpu_off: new r2 Release, parameter omitted/default OFF, vs retained cryer_preload_peak_r1 first69 frames",
+    "gpu_on: same Release, explicit value=1, vs retained cryer_symc_gpu_short_r1_c"
+  ],
+  "configuration": "Retained sphere R=.05, dp=.0025, 37173 soil IDs, k1e-5, Kw2e8, n.3, E2e6, nu.3, eta.00004, Visco.1, raw confinement, grad1, SPR/HG/shifting off. dt2^-21, save2^-13; Release ends.00830078125, Debug ends2^-13. Only new ON parameter and descriptive/Debug-end changes are allowed in cloned XML/BAT.",
+  "runtime_arguments": "CPU -cpu -ompthreads:8 -stable; GPU -gpu -stable; retained -dirdataout data -svres -svextraparts:1. Use four private new build output programs, never replace canonical binaries.",
+  "build_gate": "Require cryer_darcy_switch_build_review_r1.check.json build_acceptance=true, frozen SHA fb22f576826072a01c42406f84dd8bde4190163cb570013a2e0f22ea41408f04; r2 final four-build check and actual adopted CPU r1/fresh GPU r2 receipts. GPU Debug retained LNK4098 warning is not suppressed; new ON memcheck/smoke is mandatory. Release temp-directory warning does not establish physical behavior.",
+  "provenance": "Bind current seven source/document files separately. Verify pre-edit snapshots in cryer_darcy_switch_r1.base.json and original canonical programs, not obsolete original-source hashes. Old accepted check/run/completion/prefix files are frozen history; adopt only selected control Part_0000..0068 BI4 hashes, not the full577 outputs or recursive old source dependencies. Deduplicate records by case-insensitive absolute path and SHA.",
+  "native_checks": "Use unchanged existing inspect, equilibrium and prefix_compare helpers. All Release69 same-backend/operator rows and all35 native columns must remain0ULP including dterror, IDs, clocks, saved steps, density, stress, pressure, load, FS normals/classification, mass/h/dp and precision flags. No interpolation, excluded columns, binary/executable identity claim or tolerance fallback. Debug checks original single-run safety but is not compared against Release bits.",
+  "clock_and_safety": "Part64 tD=.0078125 is pre-opening. True FSType2/3 (5153 native nodes) is exactly drained only at saved_t>tD (Parts65-68); preserve original finite/elastic/no-exclusion/positive-density/radius.0525/double-position-stress/natural-step/pore-dt/actual-load guards. Closed Part61-64 keeps original100Pa pressure/stress,1e-5m/s speed and1e-5mm deformation limits, not a post-opening uniform-stress gate.",
+  "activation": "New ON versus fresh same-backend OFF must have a nonzero native pressure difference in Parts65-68, in addition to Run.out SymmetricSoilPair/Receiver and exact own operator controls. This is a branch-activation observation, not a half-step or theory-accuracy gate.",
+  "lifecycle": "Fresh shallow outputs/logs only. Refuse overwrites or active physical solvers. Seal actual completion/exits/program/input/output hashes before new offline checking; gate each job before the next. On failure stop only wrapper/solver PIDs whose actual command still names this unique new job. Preserve completed and partial data. One integrated same-thread terminal queue attempt; no old worker/rearm/self-test notification. Runtime rows, prefixes, summaries and receipts are JSON only, no new CSV/plots.",
+  "estimates": "Historical four Release solver loops total about3h22m; old GPU Debug2frame memcheck about42min. New timings may differ; not a controlled benchmark or a promised finish time.",
+  "next": "Root reviews all draft files before executing selftest/prepare/run. On exact implementation acceptance, decide verified Git/server-package delivery; no automatic new half/peak/full physical solve or formal long run. All prior accepted case02/Lian outputs remain unchanged.",
+  "physical_acceptance": false,
+  "full_cycle_acceptance": false,
+  "formal_admitted": false
+}
