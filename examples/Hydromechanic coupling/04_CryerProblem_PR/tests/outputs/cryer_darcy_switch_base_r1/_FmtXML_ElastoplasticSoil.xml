@@ -1,0 +1,218 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<!-- *** GeoDualSPHysics local elastoplastic soil XML notes (18-05-2026) *** -->
+<!-- This file documents local XML additions for elastoplastic soil cases and -->
+<!-- stabilization options introduced on top of the native DualSPHysics v5.2 format. -->
+<!-- Copy the relevant blocks into the real case XML under <case>. -->
+
+<case>
+
+	<!-- Section: Elastoplastic soil material and pore-water parameters. -->
+	<!-- Location in real cases: <case><execution><special><soils>...</soils>. -->
+	<!-- Angles are given in degrees in XML and converted to radians internally. -->
+	<!-- ModulusK and ModulusG are computed internally from ModulusE and PRvs. -->
+	<execution>
+		<special>
+			<soils>
+				<phi value="30" comment="Peak friction angle" units_comment="degrees" />
+				<coh value="0" comment="Peak cohesion" units_comment="Pa" />
+				<dlt value="0" comment="Dilation angle" units_comment="degrees" />
+
+				<phi_r value="30" comment="Residual friction angle for softening; default=phi when omitted" units_comment="degrees" />
+				<coh_r value="0" comment="Residual cohesion for softening; default=coh when omitted" units_comment="Pa" />
+				<n_phi value="0" comment="Friction softening coefficient; default=0; use 0 for no friction softening" />
+				<n_coh value="0" comment="Cohesion softening coefficient; default=0; use 0 for no cohesion softening" />
+				<SoilTriggerFos value="1.65" comment="Peak strength reduction factor for restart-triggered softening; default=1.65, valid range >=1; active when restarting with strain softening" />
+
+				<ModulusE value="1.0e6" comment="Young modulus of the soil skeleton" units_comment="Pa" />
+				<PRvs value="0.3" comment="Poisson ratio of the soil skeleton" />
+			</soils>
+
+			<!-- Hydromechanical water phase, pore-pressure numerics, initialization, external loading and drainage control. -->
+			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
+			<hydromechanics>
+				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation; default=0" />
+				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
+				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
+				<Porosity value="0.3" comment="Porosity used by u-pw; default=0, must be in (0,1) when HydroMech=1" />
+				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity; default=0, valid range >=0" units_comment="m/s" />
+				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
+				<!-- Existing CPU/GPU behavior: DtFixed bypasses automatic min(dt,dtw). Check a fixed
+                     step explicitly against dtw=PoreDtSafety*(rho_w*g/(Kw/n))*h^2/k; a zero
+                     fixed-step mechanical error statistic does not certify the pore-diffusion limit. -->
+				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
+				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
+				<!-- mDBC pore-pressure interpolation mode for boundary pore-pressure reconstruction only. -->
+				<!-- 0=zero-order/default stable mode; 1=MLS direct opt-in mode. -->
+				<!-- This does not select mechanical wall slip and does not replace HydroMechDrainage free-surface drainage. -->
+				<PoreMdbcInterpolationMode value="0" comment="mDBC boundary pore-pressure interpolation: 0=zero-order, 1=MLS direct; default=0" />
+				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
+				<!-- Required only when HydroMechInitMode=2; default=0. -->
+				<!-- <HydroMechInitZ value="1.0" comment="Constant water-table/init elevation; default=0" units_comment="m" /> -->
+				<!-- TopKernelBand GPU G2: origin/normalization, legacy modes 0-4, and Debug/Release 20-step mode5 lifecycle/field comparisons checked. -->
+				<!-- CPU/GPU near-zero raw cancellation differs on the existing float neighbor paths; no local 64-eps equivalence is claimed. Case-02 k=1e-4 CPU/GPU 2Tv passed the scoped delivery comparison (2026-10-20). -->
+				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=YaoTopStrip, 4=LianFlexibleStrip, 5=TopKernelBand (CPU/GPU 2D horizontal top, same resultant as 1); default=0" />
+				<!-- Mode4: half-domain x>=0, strip0..1.25m; CPU/GPU mirror the predicate to |x|<=1.25 across the x=0 free-slip wall. -->
+				<!-- Loading, contact drainage exemption and pore-rate selection use the same footprint; q and nodal quadrature are unchanged. -->
+				<!-- Debug/memcheck and actual GPU 15-s coarse/half contact repair passed (2026-10-26); no normal-drift load/drain toggles in that window. -->
+				<!-- Original13-node quadrature remains +4% versus ideal width; 100-s/SPH/FEM accuracy pending, no general contact/curved-wall extension. -->
+				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; default=0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
+				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time; default=0" units_comment="s" />
+				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure; default=1" />
+				<HydroMechDrainageStartTime value="0" comment="Drainage start time; default=0" units_comment="s" />
+				<!-- CPU/GPU fresh constant-DtFixed runs only; start time must be an integer multiple of DtFixed. -->
+				<!-- CPU/GPU event predicates, case-02 15-s coarse/half and same-dt full 2Tv checks passed; full-cycle half-step convergence is not claimed. -->
+				<!-- Corrects accumulated-time roundoff at that event only; TimeStep and the load ramp are unchanged. -->
+				<HydroMechDrainageFixedGrid value="0" comment="Drainage event fixed-grid alignment 0:Off, 1:On (default=0); independent of SPR" />
+			</hydromechanics>
+
+			<!-- Optional mDBC mechanical slip overrides by boundary mkbound. -->
+			<!-- Location in real cases: <case><execution><special><mdbcslip>...</mdbcslip>. -->
+			<!-- Requires Boundary=2. SlipMode remains the global default for mkbound values not listed here. -->
+			<!-- Use GenCase mkbound values, not mk values. Split wall geometry with <setmkbound mk="..."/> before draw commands. -->
+			<!-- Each listed mkbound must exist in the generated particles and can appear only once. -->
+			<!-- slipmode accepts 1/Vel0, 2/NoSlip, 3/FreeSlip and aliases such as vel0, no-slip, free-slip. -->
+			<!-- This is a mechanical mDBC wall-slip setting only; hydraulic drainage remains controlled by HydroMechDrainage. -->
+			<mdbcslip>
+				<bound mkbound="0" slipmode="3" comment="Example: lateral walls free-slip" />
+				<bound mkbound="1" slipmode="2" comment="Example: bottom wall no-slip" />
+			</mdbcslip>
+		</special>
+	</execution>
+
+	<!-- Section: Local elastoplastic solver and stabilization parameters. -->
+	<!-- Location in real cases: <case><execution><parameters>...</parameters>. -->
+	<execution>
+		<parameters>
+			<!-- Stress state/history: CPU and GPU double. G1 storage/PART checks and case-02 k=1e-4 same-physics CPU/GPU 2Tv passed; this is not general plastic-flow validation. -->
+			<!-- CPU/GPU save the native terminal step when TimeMax or NstepsBreak is reached, even between TimeOut events; this output-only condition does not change dt or integration. -->
+			<!-- Consolidation output: TimeOut (seconds) = DeltaTv*H^2/Cv, Cv=k*M/(rho_w*g), M=E*(1-nu)/((1+nu)*(1-2*nu)); use positive reference g even in a no-gravity surcharge test. -->
+			<!-- Case-02 DeltaTv=.005 gives TimeOut=.0182185714285714/.182185714285714/1.82185714285714 s for k=1e-3/1e-4/1e-5; this changes saving only, not DtFixed. -->
+			<!-- Case-02 replaced k=1e-5 by k=5e-5 and requires all three groups dp=.01 m, width=.1 m. The refined partial run was preserved. Third-group TimeOut=.36437142857142857 s, TimeMax=145.75858 s, dt=1e-5; CPU8 full 2Tv completed and passed the user's provisional 1D pressure/settlement scope on 2026-10-24. -->
+			<!-- Original Darcy with HG xi=.05 passed CPU/GPU .3-s, CPU 1/15-s dt/half, and CPU2Tv checks. Accepted k=1e-3/1e-4 retain xi=.1, so strengths differ. Final k=5e-5 pressure RMSE1.16Pa, settlement error-.430%, Q12.45Pa and bottom bias.001275mm; residual stress errors remain. No full-cycle half-step or general-boundary claim. Density/Darcy prototypes were rejected, not production features. -->
+			<!-- Default saving is anchored at t=0, not drainage tD; compare theory at actual Tv=Cv*(t-tD)/H^2. Retain dense startup diagnostics separately; existing results keep their original cadence. -->
+			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
+			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
+			<!-- Hydromechanical CPU/GPU PART also saves HydroMechLoadAce (float3), the existing applied-load acceleration for resultant-force diagnostics, not total acceleration. -->
+			<!-- GPU external-load telemetry repair (2026-10-24, pending output-only regression): record top loads
+                 for all load modes, not only mode5; add neighbor-load diagnostics instead of overwriting them.
+                 No Ace/pressure/stress integration change. Earlier mode3 GPU PART can contain zero telemetry
+                 despite a physically applied load; do not interpret that missing observation as zero force. -->
+			<!-- CPU output-only addition checked against the retained CPU8 .03-s trajectory: old physical fields remain 0 ULP; this diagnostic field is not a new load or XML switch. -->
+			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->
+			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain (default=1)" />
+
+			<!-- Bui et al. (2008) artificial stress for tensile-instability control. -->
+			<parameter key="ArtificialStress" value="0" comment="Bui 2008 artificial stress 0:Off, 1:On (default=0)" />
+			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial stress coefficient in [0,1] (default=0.2)" />
+			<!-- Optional. If omitted, the solver uses the fixed default exponent. -->
+			<!-- <parameter key="ArtificialStressExp" value="2.55" comment="Artificial stress exponent; default=2.55" /> -->
+			<parameter key="SoilStressRateGradCorr" value="0" comment="Soil stress-rate velocity-gradient correction 0:Off, 1:On (default=0)" />
+			<!-- SPR reconstructs wall-ghost velocity vectors for stress, pore-pressure and density derivatives (including wall density). -->
+			<!-- For a stationary plane with unit normal n and reconstructed ghost velocity vg: Vel0=-dot(vg,n)*n, NoSlip=-vg, FreeSlip=vg-2*dot(vg,n)*n. -->
+			<!-- Vel0 retains its zero tangential closure, not full NoSlip. NoSlip/FreeSlip derivative MLS is a new first-order candidate, not the old zeroth-order tangential extrapolation. -->
+			<!-- Physical wall velocity, momentum/viscosity, Darcy diffusion and loading are unchanged. No density KEEP patch is enabled. -->
+			<!-- Candidate scope: fresh 2D x-z or 3D Wendland/Symplectic elastic soil.
+                 CPU/GPU multi-plane operator and bounded pulse checks below passed;
+                 NOT general multi-plane physical acceptance. Existing single-plane delivery stands. -->
+			<!-- 2026-10-27 per-mk NoSlip/FreeSlip SPR candidate: initialization now admits these two
+                 local modes with a NoSlip/FreeSlip global default. Existing vector reflection formulas
+                 and one-coplanar-face-per-mk/nonzero-normal/convex-interior checks remain unchanged.
+                 Mixed Vel0 is not admitted. CPU Debug/GPU Debug/Release passed constant/affine fields
+                 on 2D corners and 3D edges with the two local slip assignments exchanged (12 fixtures).
+                 GPU Debug edge memcheck has zero errors. Original Lian SPR-OFF CPU Debug3-frame and
+                 GPURelease31-frame native regressions remain0ULP. Lian mixed-slip SPR3s independent half
+                 passed .016484Pa/.00001354mm; not paper/full-cycle or general-contact acceptance. -->
+			<!-- CPU per-mk multi-plane candidate (2026-10-24): each wall mk must remain one stationary coplanar face;
+                 inward half-spaces must define a convex common interior. Local normals are not averaged at corners.
+                 If a ghost lies outside another face, fit one dp inside all faces and evaluate the same affine MLS
+                 polynomial at the ORIGINAL ghost; one-plane arithmetic and pore-pressure extrapolation are unchanged.
+                 HG is off in independent candidate tests. CPU Debug/Release passed 18 corner/edge/wedge
+                 manufactured cases in total; eight CPU 2-ms pulse half-step pairs passed (two axis-NoPen).
+                 CPU Yao .1-s off/on/half passed 101 matched 5-Pa/.005-mm pairs; not theory or long-cycle acceptance.
+                 GPU Debug/Release passed 18 multi-face and 36 legacy single-plane manufactured cases in total;
+                 eight GPU 2-ms pulse half pairs passed. Four SPR/HG old one-plane paths retain 31-frame 0 ULP.
+                 GPU Yao .02/.1-s startup, independent half steps and CPU comparisons passed (101 samples at .1 s);
+                 .3-s GPU post-ramp window passed 301 half pairs and all 101 .1-s same-dt prefixes 0 ULP;
+                 full-window maxima .277975 Pa / .000287019 mm. The subsequent SPR-on 1-s CPU/GPU
+                 window passed all 1001 cross/independent GPU half pairs: .000630828 Pa / .00000196073 mm
+                 cross-backend, .277975 Pa / .000287019 mm half-step (that stage had no off control beyond .3 s).
+                 A subsequent GPU off/on/half 10-s window passed all 1001 saved .01-s pairs:
+                 half maxima .139152 Pa / .000136888 mm; shared .3/1-s prefixes remain 0 ULP.
+                 At 10 s the maximum bottom/side normal-displacement residual decreases by 93.9/87.1 percent;
+                 loaded-band alternating stress remains about 13.6 Pa. HG and NoPen were off.
+                 Coarser output sampling does not supersede the retained dense startup half-step maxima.
+                 No 10-s CPU comparison or independent pressure/settlement theory reference;
+                 not general boundary/long-cycle acceptance. Original strict strip-load quadrature is unchanged. -->
+			<!-- 3D fixed two-face edges and three-face corners (2026-10-25): NoSlip/FreeSlip, nonzero XYZ startup,
+                 16 production-step companion runs over 2 ms, 201 native samples each. Eight independent CPU/GPU
+                 half pairs and eight same-dt cross-backend pairs passed 0.5 Pa / 1e-5 mm bounds;
+                 maxima .0148596 Pa / 1.170e-9 mm (half), .000064899 Pa / 8.837e-10 mm (cross).
+                 Approximate energy ratio max 1.020237 below 1.1. HG, NoPen, damping, drainage and load off.
+                 NoSlip has a tangential startup transient, not an exact affine solution. These bounded checks
+                 do not validate full 3D consolidation, curved/moving walls, plastic flow or large rotations. -->
+			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
+                 Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
+                 pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs
+                 passed independently on each backend. Yao .1-s CPU/GPU/half compatibility also passed,
+                 but NoPen on/off saved native fields are 0 ULP: its proximity guard was inactive.
+                 This adds no active-NoPen/general-wall/long-cycle acceptance. -->
+			<!-- GPU Debug/Release each passed the same 18 manufactured fields; SPR-off matches retained 20-step GPU output bitwise with HG on/off. Case-02 15-s coarse/half and k=1e-4 same-dt CPU/GPU 2Tv passed (2026-10-20). -->
+			<!-- Each face needs finite, nonzero, consistently oriented and coplanar normals. For multiple CPU/GPU faces
+                 normals must point into their convex common interior. Curved and moving walls remain rejected. -->
+			<!-- Requires one uniform mDBC SlipMode 1/2/3 (no per-mk overrides), corrected stress/pore gradients,
+                 PairDivergence, artificial viscosity and DensityDT=0. NoPen is off except the axis-plane candidate above. -->
+			<!-- No restart, moving/floating bodies, in/out, shifting, relaxation, softening or artificial stress. Periodicity must be tangent to the wall (no y periodicity in 2D). -->
+			<!-- Validated: 18 stationary-plane manufactured fields (2D/3D, horizontal/vertical/tilted, SlipMode 1/2/3); case-02 horizontal Vel0 0.15-s coarse/half regression is bitwise unchanged. -->
+			<!-- Manufactured fields do not validate arbitrary 2D/3D coupled time histories, inactive-wall dynamics or complex boundaries; these still need separate validation. -->
+			<!-- Plastic flow and large rotations have not been validated; SPR does not expand the independent 2D-only SoilHourglassXi scope. -->
+			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Mirrored wall S/P/R derivatives 0:Off, 1:On (default=0); bounded CPU/GPU plane/pulse/Yao checks outside case-02, not general physical release" />
+			<!-- GNOG is limited to 2D CPU/GPU Wendland, small-rotation elastic soil and Symplectic integration. -->
+			<!-- Nonperiodic bounded-neighbor candidate (2026-10-27): real X distances/no cell wrap, no new XML switch.
+                 CPU/GPU 58 operator checks each, frozen-geometry oscillator, Debug memcheck and old-periodic
+                 Release 0-ULP checks passed. Actual Lian .15-s half pair passed .009139Pa/.000009084mm;
+                 HG-off CPU/GPU native regressions remain0ULP. Lian mixed-slip HGxi=.1 SPRoff/on3s coarse
+                 saved-state safety/drainage passed. User waived the HG3s half and requested an independent
+                 100-s server run (HG=.1, SPR=1, gradient correction=1); inputs/package are not a completed
+                 paper/full-cycle/100-s validation. No new XML option or equation change in this delivery. -->
+			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
+			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
+			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />
+
+			<!-- Bui-Fukagawa style soil damping for static/relaxation soil cases. -->
+			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0:Off, 1:On (default=0)" />
+			<parameter key="SoilDampingCoef" value="0.02" comment="Non-negative damping coefficient (default=0.02)" />
+
+			<!-- Soil stress diffusion. The key name is inherited from DualSPHysics density diffusion. -->
+			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0:None, 1:Molteni-style, 2:Feng/Fourtakas with boundary contribution, 3:full/internal fluid-only (default=0)" />
+			<parameter key="DensityDTvalue" value="0.1" comment="Stress diffusion coefficient (default=0.1)" />
+			<!-- DensityDT=4 and DensityDT=5 are not supported in the current code; they were tested and removed. -->
+
+			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
+			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
+			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
+			<!-- Use <execution><special><mdbcslip> to override SlipMode for selected mkbound values. -->
+			<parameter key="MDBCCorrector" value="1" comment="mDBC correction in Symplectic corrector 0:predictor only, 1:predictor and corrector (default=1)" />
+			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
+			<!-- Optional for SlipMode=2 or 3. -->
+			<!-- <parameter key="NoPenetration" value="1" comment="Enable mDBC2 no-penetration correction for no-slip/free-slip mDBC (default=0)" /> -->
+
+			<!-- Native DualSPHysics stabilization options remain available and independent. -->
+			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS (default=1)" />
+			<parameter key="Visco" value="0.01" comment="Viscosity value" />
+			<parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full (default=0)" />
+			<parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
+			<parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface; default=0; typically 1.5 for 2D and 2.75 for 3D when shifting is active" />
+		</parameters>
+	</execution>
+
+	<!-- Section: Notes for current local implementation. -->
+	<notes>
+		<note value="ArtificialStress and SoilDamping are applied to soil/fluid particles only; boundary particles are excluded." />
+		<note value="DPCtes, ArtificialStress, SoilDamping and DensityDT are reported in the solver log; use the log to verify active options." />
+		<note value="The mDBC no-slip/free-slip implementation stores a corrected tangential boundary velocity for viscous and velocity-gradient terms." />
+		<note value="The mDBC bound-mode switch for non-submerged boundary particles is internal and currently has no XML key." />
+		<note value="MDBCThreshold is a runtime configuration option with default=0; it is not read from the XML parameters block in the current code." />
+		<note value="For soil sound speed, verify the solver log. The local soil path can compute Cs0 from ModulusE, PRvs and RhopZero." />
+	</notes>
+
+</case>

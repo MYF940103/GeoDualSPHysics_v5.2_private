@@ -1,0 +1,49 @@
+{
+  "stage": "cryer_darcy_switch_build_r1",
+  "status_at_authoring": "proposal_only_root_review_required",
+  "allowed_new_files": [
+    "tests/support/cryer_darcy_switch_build_r1.py",
+    "tests/notes/cryer_darcy_switch_r1.json"
+  ],
+  "no_prepare_build_program_help_solver_queue_or_git_authorized_here": true,
+  "source_change_owner": "Root separately implements/reviews six source files plus XML parameter guidance; this helper never edits source/project/formal inputs.",
+  "root_source_review": {
+    "implemented_not_yet_built": true,
+    "delta": "Seven clean-at-start tracked files,42 added/9 removed lines including CUDA call propagation and XML documentation. No new particle array, public interaction signature, force/compression/boundary/integrator/storage change.",
+    "on_equivalence": "After removing only the explicit new bool guard and normalizing the explanatory comment/line endings, the complete current JSphCpu.cpp and JSphGpu_ker.cu each exactly equal their sealed isolated symC candidate source. Runtime equivalence is still required after rebuilding.",
+    "default_and_input": "JSph Reset=false; existing ReadHydroBool reads special/hydromechanics/PoreDarcySymmetricCorr with default=false. Run.out explicitly logs Receiver or SymmetricSoilPair. GPU unsigned constant is assigned from the same bool.",
+    "baseline": "Pre-edit15 source/document/program/runtime snapshots were copied and SHA verified; original receipts are unchanged. Four canonical bin programs remain unchanged. Full half-stage review is backed local/remote atd0b4cfef688c644579ef47c3a6c2d833d09f1a6c.",
+    "admission": "Only the four fresh builds are now admitted. No physical regression, canonical program installation, formal XML/BAT change or long solver run is admitted by build completion."
+  },
+  "option": "PoreDarcySymmetricCorr: explicit XML opt-in; default OFF preserves accepted case02/Lian behavior. ON changes soil-soil Darcy lapw/lapz contractions only; original force, compression, loading, boundary pairs and integration remain unchanged.",
+  "scope": "Ordinary authoritative MSBuild solution builds, not old-object splicing. Full fresh configuration-specific OutDir and IntDir because JSph class and GPU constant layouts change. No physical program, even help, is executed.",
+  "sequence": [
+    "CPU DebugCPU: src/VS/DualSPHysics5ReCpu_vs2022.sln -> DualSPHysics5ReCpu.vcxproj",
+    "CPU ReleaseCPU: same CPU solution/project",
+    "GPU Debug: src/VS/DualSPHysics5Re.sln -> DualSPHysics5Re.vcxproj",
+    "GPU Release: same GPU solution/project"
+  ],
+  "build_arguments": "/m:1 /nr:false /t:Build /p:Platform=x64 /p:PlatformToolset=v143 /p:VCToolsVersion=14.36.32532 /p:BuildProjectReferences=false /p:PostBuildEventUseInBuild=false plus isolated OutDir/IntDir and retained binlog. Only the cg_variables post-build move is disabled; numerical/compiler flags, SDK and CUDA architecture stay authoritative.",
+  "tools": {
+    "MSBuild": "D:/Program Files/VS2022/MSBuild/Current/Bin/amd64/MSBuild.exe",
+    "VCToolsVersion": "14.36.32532",
+    "CPU_SDK_from_project": "8.1",
+    "GPU_SDK_from_project": "10.0",
+    "CUDA": "11.7; GPU Debug/Release project code generation compute_86,sm_86",
+    "TEMP_TMP": "C:/Users/syosh/AppData/Local/Temp/cryer_darcy_switch_build_r1; fresh, no spaces, child environment only"
+  },
+  "prepare_prerequisites": {
+    "root_base": "tests/logs/cryer_darcy_switch_r1.base.json with files:[{original:bound_record,snapshot:bound_record}], canonical_programs:[bound_record]",
+    "history": "Original pre-edit records remain historical. Rehash and verify snapshots plus canonical programs, not legitimately changed original source paths. Each snapshot must match its original SHA; all seven intended files must be represented.",
+    "half_review": "tests/logs/cryer_symc_gpu_peak_half_review_r1.check.json analysis_checks_passed and its new .visual.json analysis_checks_passed/visual_review_passed plus exact bound review_check",
+    "frozen_inputs": "Seven current changed files; two solutions and their two actual projects; four tool binaries; four canonical runtime sources; helper/note/base/review/visual; existing pure identity/CODEX helper and CODEX executable; base snapshots and original canonical programs.",
+    "no_recursive_old_original_rebinding": "The old review is frozen by its own check/visual SHA, not falsely revalidated by recursively following canonical source paths after an intentional new-stage edit. Root owns the historical provenance audit/archive."
+  },
+  "outputs": "Fresh tests/outputs/cryer_darcy_switch_build_r1/{DebugCPU,ReleaseCPU,Debug,Release}/{out,int}; immutable tests/logs matching inputs/started/per-config process/build/log/binlog/check/queue_attempt/notification records.",
+  "runtime": "After each successful actual tool exit, copy and SHA-verify ChronoEngine.dll, dsphchrono.dll, vcomp140.dll and DsphConfig.xml from canonical bin/windows into that configuration's fresh out directory, refusing overwrite. Canonical input/program hashes must stay unchanged.",
+  "lifecycle": "Default help and --selftest are read-only. --prepare is separate from --build. One new --build invocation owns sequential MSBuild children, stops on any failed build/protection gate, seals actual exit/log/program/runtime/binlog hashes, then attempts one same-thread terminal codex queue. Intermediate object/PDB files remain local without an unnecessary complete second hash inventory. Worker stdout/stderr use the parent tag cryer_darcy_switch_r1.worker.*.log so they cannot be mistaken for orphan per-build receipts by the exclusive stage guard. No retries/rearming, no old workers, no connectivity notification. Kill/interruption evidence must be inspected rather than restarting the same tag.",
+  "acceptance_limits": "Build success is not implementation equivalence, physical accuracy, full-cycle decay or formal/server admission. Next gated stage requires OFF-vs-original and ON-vs-isolated CPU/GPU native regressions. Current bounded peak improvement does not make symC a universal closed-boundary correction; preserve the old selectable operator.",
+  "solver_executed": false,
+  "physical_acceptance": false,
+  "automatic_formal_run_admitted": false
+}
