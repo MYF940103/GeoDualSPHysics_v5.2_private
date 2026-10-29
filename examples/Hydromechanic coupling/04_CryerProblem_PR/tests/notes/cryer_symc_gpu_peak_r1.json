@@ -1,0 +1,70 @@
+{
+  "tag": "cryer_symc_gpu_peak_r1",
+  "status": "author_only_bounded_proposal_root_review_required",
+  "no_prepare_build_physical_run_program_help_queue_or_git_by_author": true,
+  "scope": "Only one proposed fresh isolated symC GPU coarse Mandel-peak window; no raw rerun, new half, PART restart or automatic formal execution.",
+  "files": {
+    "xml": "tests/configs/cryer_symc_gpu_peak_r1_Def.xml",
+    "bat": "tests/configs/xcryer_symc_gpu_peak_r1_win64_GPU.bat",
+    "worker": "tests/support/cryer_symc_gpu_peak_r1.py",
+    "proposal": "tests/notes/cryer_symc_gpu_peak_r1.json"
+  },
+  "numerical_scope": "Use already built and short-tested isolated r3 GPU Release. Only soil-soil Darcy contraction is symmetric-C; compression, mechanical forces, raw confinement/load, boundaries and integrator remain canonical. No production or formal source/input change.",
+  "program": {
+    "path": "tests/outputs/cryer_symc_gpu_build_r3/Release/cryer_symc_gpu_r3_Release.exe",
+    "sha256": "32263a1d9ee446433da71181d1a079c634249c942bfed6d6833d6d9bfbac8aad",
+    "candidate_source_sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5",
+    "build_receipt": "tests/logs/cryer_symc_gpu_build_r3_Release.build.json"
+  },
+  "xml_and_bat_delta": "XML strictly clones retained cryer_preload_peak_r1_Def.xml with only the TimeMax explanatory comment changed. BAT strictly clones the retained BAT with new tag and isolated r3 Release selection. All physical/numerical values and native output settings remain unchanged.",
+  "run_settings": {
+    "dt_s": 4.76837158203125e-7,
+    "end_s": 0.0703125,
+    "ramp_s": 0.00390625,
+    "drainage_start_s": 0.0078125,
+    "after_drain_duration_s": 0.0625,
+    "save_s": 0.0001220703125,
+    "steps": 147456,
+    "native_frames": 577,
+    "native_saved_step": "Part0=0; every later saved_step=part*256-1, never rewritten",
+    "R_m": 0.05,
+    "dp_m": 0.0025,
+    "k_m_s": 0.00001,
+    "q_pa": 10000,
+    "damping": 0.00004,
+    "Visco": 0.1,
+    "stress_gradient": 1,
+    "HG_SPR_shifting": "All off",
+    "storage": "Original float pressure/density and double persistent stress",
+    "clock": "Existing fixed-grid drainage; source-clock ramp. Saved t=tD is still pre-open; active drainage requires saved t>tD. Theory uses tau=t-tD, not ramp-end shift."
+  },
+  "prerequisites": {
+    "GPU_short_check": "tests/logs/cryer_symc_gpu_short_r1.check.json: all3 jobs passed, exact exits and no survivors, Debug memcheck clean, closed diagnostics and original independent half/cross gates",
+    "GPU_short_review": "tests/logs/cryer_symc_gpu_short_review_r1.check.json must exist with analysis_checks_passed=true; sources/artifacts are bound",
+    "GPU_short_visual": "tests/logs/cryer_symc_gpu_short_review_r1.visual.json must exist with analysis_checks_passed=true, visual_review_passed=true and exact review_check binding",
+    "already_observed_not_peak_acceptance": "69-frame GPU half max0.6849776668Pa / 3.2345863e-7mm; same-dt CPU/GPU max0.000871753Pa. These cover only the short window, not the new full peak.",
+    "build": "r3 Release built_not_run, exact1signature/4calls/oneDarcy source delta, CPU algebra match, real main retained, original tool exits0, dependencies prebound and canonical protection passed",
+    "control": "Old raw cryer_preload_peak_r1 complete577 native frames and its sealed program/build/input/output receipts. Comparison only, not an exact solution or new half-step control."
+  },
+  "native_safety": "Directly reuse retained cryer_preload_peak_r1.inspect without edits, monkeypatching or altered globals:37173 fixed native soil IDs8..37180, finite fields, positive rho, elastic/no exclusions, double positions/stress, native actual load available, fixed mass/h/dp, radius<=.0525m, original natural-step dterror<=1e-14 and explicit pore-step bound. Additionally retain short-stage5153 true FSType2/3 nodes and fixed classification. Every active drained node must have p exactly0.",
+  "prefix": "Exactly69 same-dt/same-cadence candidate short coarse samples from cryer_symc_gpu_short_r1_c, every one of35 native columns bitwise0ULP including dterror/time/step/identity; no excluded column or nominal-time interpolation. Selftest exercises one-bit changes in every column.",
+  "closed_equilibrium": "Compute original five diagnostics at Parts61-64 separately: pressure/totalstress target RMS<=100Pa, speed<=1e-5m/s, fixed-origin isotropic full-vector residual and per-material-shell target RMS<=1e-5mm. These closed-state targets are not post-opening uniform-stress safety conditions or general physical acceptance.",
+  "option_comparison": "Produce577 actual-matched raw/symC differences for pressure, native material displacement, total stress, velocity, density, load and classification. No5Pa/.005mm limit is applied: these are changes between operators, not independent half-step errors or theory errors.",
+  "evidence_binding": "Prepare freezes all reviewed short check/run/prepared/completion outputs, short review/visual sources/artifacts, isolated build/canonical sources/headers/tools/runtime source-targets, program, new inputs/helpers/reader/GenCase/Codex and every raw577 control output. Case-insensitive dedup rejects conflicting hashes; verify before starting and after analysis.",
+  "lifecycle": "Default help; --selftest reads config and synthetic DataFrames only, no writes/native program/notification; --prepare explicit after root review only. --run requires same thread identity and no active solver. One owned BAT/child tree, no duplicate or overwritten label. Seal solver completion and all raw hashes before offline inspection. Completed-solver analysis failure must be repaired offline, never rerun. On live owned-wrapper failure, verify its command line before stopping only its tree.",
+  "completion": "Exactly one new same-thread terminal codex queue attempt via exclusive queue_attempt record, no retry/rearm/connectivity selftest. Neither old worker nor old notifier is called. Completion message requires later physical/theory review, not automatic peak/full/formal admission.",
+  "new_outputs_if_later_authorized": {
+    "raw": "tests/outputs/cryer_symc_gpu_peak_r1/data",
+    "records": "tests/logs/cryer_symc_gpu_peak_r1.*",
+    "summary": "tests/figures/cryer_symc_gpu_peak_r1_summary.csv",
+    "options": "tests/figures/cryer_symc_gpu_peak_r1_options.csv",
+    "plots": "Later new-tag offline review; this worker does not claim plots or physical acceptance"
+  },
+  "limitations": [
+    "No peak-half or full-cycle convergence is established; short agreement and solver completion are insufficient",
+    "Mandel amplitude/time must later be assessed using finite-Kw, finite fixed18-ID radius theory at actual drainage-relative time, with startup separated",
+    "No tuning to the peak, changed thresholds, damping increase, geometry change or force/compression change",
+    "No formal admission, general boundary/plasticity/large-rotation or exact-HG-restart claim",
+    "Raw BI4 and programs remain local artifacts, not cloud Git backup"
+  ]
+}

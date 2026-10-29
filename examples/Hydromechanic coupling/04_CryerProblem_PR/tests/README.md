@@ -48,3 +48,9 @@ powershell -NoProfile -File tests/support/verify_vtk_reexport.ps1 -Full -Group g
 新入口 `support/cryer_symc_gpu_short_r1.py` 默认仅显示帮助；显式准备后，按 Debug 256 步零内存错误/零泄漏检查、Release 粗步 69 帧、独立半步 69 帧顺序准入。使用保留 CPU 对称候选作同时间步跨端对照，并记录保留 raw GPU 的选项差异；原 `5 Pa / 0.005 mm`、预载平衡、所有真实排水点和自然步长门保持不变。内存日志自检使用实际 CUDA 11.7 零错误/零泄漏摘要，旧日志仅作解析格式证据。每项通过才启动下一项，终止后只尝试一次同会话通知，不启动峰值或正式长算。
 
 另核对初始原生分类：5153 个 FSType2 排水点全部在 `r=0.05 m` 球面；32020 个内部点最大半径 `0.0475 m`，没有被误设为排水的内层。因此目前不移动排水面。该几何检查不证明离散边界算子已具备连续体精度。
+
+`cryer_symc_gpu_short_r1` 已完成并复核：Debug 256 步/2 帧零内存错误及零字节泄漏；Release 粗步 17408 步、半步 34816 步，各 69 帧，均到 `0.00830078125 s`。独立核对 3578 个文件 SHA/大小，重读 416 帧并复算 345 项对比，原安全、全部真实排水点和两组预载五项平衡门通过。GPU 自身半步最大孔压 RMS 差 `0.684978 Pa`、材料位移差 `3.23459e-7 mm`；同时间步 CPU/GPU 最大孔压差 `0.000871753 Pa`。这些均满足原 `5 Pa / 0.005 mm` 门，但仅验证短窗实现，不验收峰值精度。实际硬件为 RTX 3050，粗/半主循环分别 `2164.016846 / 4327.960938 s`，不是受控效率基准。
+
+GPU 全启动与开排水放大图为 `figures/cryer_symc_gpu_short_review_r1_history.png`、`_opening.png`，对应原生汇总和逐项数据为 `cryer_symc_gpu_short_r1_summary.csv`、`_comparisons.csv`；正式结果未改写。复核记录为 `logs/cryer_symc_gpu_short_review_r1.check.json` 和 `.visual.json`。末端半步候选中心孔压比 raw 高 `47.90799 Pa`，平均孔压低 `1.62672 Pa`；不能将两方案差异称为改善量。
+
+据此只准入新的 `cryer_symc_gpu_peak_r1` 候选粗步窗口：`dt=2^-21 s`，到 `t=0.0703125 s`，即排水后 `0.0625 s`，147456 步、577 帧。网格、外载、ramp/hold、阻尼、排水、压缩源、应力率和时间步均不变；使用隔离 r3 Release，复用已完成 raw 粗步峰窗，不重复跑基线。前 69 帧必须与本轮候选粗步全部 35 个原生字段逐位相同，包括 `dterror`，无例外。新入口、说明和输出仍使用 `configs/support/notes/outputs/logs/figures` 浅层分类。完成后须另行对有限 Kw、固定 18-ID 有限半径理论作峰值与峰时比较，未自动准入峰值半步、正式源码合并或发行长算。

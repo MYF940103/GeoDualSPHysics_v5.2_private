@@ -1,0 +1,249 @@
+{
+  "passed": true,
+  "status": "gpu_short_passed_pending_physical_review",
+  "run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_short_r1.run.json",
+    "bytes": 10743,
+    "sha256": "d33fe54c83d456d5e07e4c5e6abc2e81b00764e36bb96eedcd1e5c00dd45aa7e"
+  },
+  "runs": [
+    {
+      "name": "cryer_symc_gpu_short_r1_dbg",
+      "dt_s": 4.76837158203125e-07,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_symc_gpu_build_r3\\Debug\\cryer_symc_gpu_r3_Debug.exe",
+        "bytes": 102164992,
+        "sha256": "592a7b2642d8487a1cdba1edc790e0e3b12e2b0e2a0193d7fbee08194d6cfd6c"
+      },
+      "passed": true,
+      "owned_wrapper_pid": 26712,
+      "exit_code": 0,
+      "owned_exited": true,
+      "observed_surviving_solvers": [],
+      "wall_seconds": 2530.945145400008,
+      "sealed_completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_short_r1_dbg.completion.json",
+        "bytes": 6980,
+        "sha256": "ea90f00a320608babe99970dae615ae62f8045830e79ec1496b149c893a778b7"
+      },
+      "observed_loop_seconds": 2522.134521,
+      "memcheck_zero_errors": true
+    },
+    {
+      "name": "cryer_symc_gpu_short_r1_c",
+      "dt_s": 4.76837158203125e-07,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_symc_gpu_build_r3\\Release\\cryer_symc_gpu_r3_Release.exe",
+        "bytes": 20596224,
+        "sha256": "32263a1d9ee446433da71181d1a079c634249c942bfed6d6833d6d9bfbac8aad"
+      },
+      "passed": true,
+      "owned_wrapper_pid": 69196,
+      "exit_code": 0,
+      "owned_exited": true,
+      "observed_surviving_solvers": [],
+      "wall_seconds": 2166.899707400007,
+      "sealed_completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_short_r1_c.completion.json",
+        "bytes": 27265,
+        "sha256": "a6c8631636f93430f7cbb228b734111636a147b79a21f1036067b9fd0276a219"
+      },
+      "observed_loop_seconds": 2164.016846,
+      "equilibrium": {
+        "rule": "Last four closed saved states Part61-64, including source-clock pre-open saved t=tD.",
+        "limits": {
+          "pressure_target_rms_pa": 100.0,
+          "total_stress_target_six_rms_pa": 100.0,
+          "speed_max_m_s": 1e-05,
+          "isotropic_vector_residual_rms_mm": 1e-05,
+          "shell_target_error_rms_mm": 1e-05
+        },
+        "samples": [
+          {
+            "part": 61,
+            "time_s": 0.0074462890625,
+            "metrics": {
+              "pressure_target_rms_pa": 0.08506626538269274,
+              "total_stress_target_six_rms_pa": 0.059623194962325335,
+              "speed_max_m_s": 2.2297869879619357e-06,
+              "isotropic_vector_residual_rms_mm": 3.497001572070369e-07,
+              "shell_target_error_rms_mm": 2.078488407390418e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 62,
+            "time_s": 0.007568359375,
+            "metrics": {
+              "pressure_target_rms_pa": 0.36420714937646864,
+              "total_stress_target_six_rms_pa": 0.25746321239461545,
+              "speed_max_m_s": 2.1077766933003287e-06,
+              "isotropic_vector_residual_rms_mm": 3.645047070058091e-07,
+              "shell_target_error_rms_mm": 2.2470654602667087e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 63,
+            "time_s": 0.0076904296875,
+            "metrics": {
+              "pressure_target_rms_pa": 0.2885031555164981,
+              "total_stress_target_six_rms_pa": 0.20540611723055027,
+              "speed_max_m_s": 2.180534645112738e-06,
+              "isotropic_vector_residual_rms_mm": 3.801621667482204e-07,
+              "shell_target_error_rms_mm": 2.425600619250106e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 64,
+            "time_s": 0.0078125,
+            "metrics": {
+              "pressure_target_rms_pa": 0.07010797399439933,
+              "total_stress_target_six_rms_pa": 0.05078917565030555,
+              "speed_max_m_s": 1.8575354075459307e-06,
+              "isotropic_vector_residual_rms_mm": 3.946641735265395e-07,
+              "shell_target_error_rms_mm": 2.6004052473081186e-07
+            },
+            "passed": true
+          }
+        ],
+        "equilibrium_diagnostic_passed": true,
+        "preload_equilibrium_accepted": false
+      },
+      "cpu_gpu": {
+        "passed": true,
+        "samples": 69,
+        "meaning": "cryer_symc_gpu_short_r1_c:GPU_vs_CPU_symC",
+        "max_pressure_rms_pa": 0.0007906351703793454,
+        "max_displacement_mm": 1.8770687929733576e-07
+      },
+      "raw_option": {
+        "passed": null,
+        "samples": 69,
+        "meaning": "cryer_symc_gpu_short_r1_c:symC_vs_raw_GPU",
+        "max_pressure_rms_pa": 168.42635300492088,
+        "max_displacement_mm": 0.0006416180008446855
+      }
+    },
+    {
+      "name": "cryer_symc_gpu_short_r1_h",
+      "dt_s": 2.384185791015625e-07,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_symc_gpu_build_r3\\Release\\cryer_symc_gpu_r3_Release.exe",
+        "bytes": 20596224,
+        "sha256": "32263a1d9ee446433da71181d1a079c634249c942bfed6d6833d6d9bfbac8aad"
+      },
+      "passed": true,
+      "owned_wrapper_pid": 22892,
+      "exit_code": 0,
+      "owned_exited": true,
+      "observed_surviving_solvers": [],
+      "wall_seconds": 4330.32190650003,
+      "sealed_completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_short_r1_h.completion.json",
+        "bytes": 27265,
+        "sha256": "f7645de96709a364edcdb97233457793d2a8e2fce498dfd539cabcf6091a454d"
+      },
+      "observed_loop_seconds": 4327.960938,
+      "equilibrium": {
+        "rule": "Last four closed saved states Part61-64, including source-clock pre-open saved t=tD.",
+        "limits": {
+          "pressure_target_rms_pa": 100.0,
+          "total_stress_target_six_rms_pa": 100.0,
+          "speed_max_m_s": 1e-05,
+          "isotropic_vector_residual_rms_mm": 1e-05,
+          "shell_target_error_rms_mm": 1e-05
+        },
+        "samples": [
+          {
+            "part": 61,
+            "time_s": 0.0074462890625,
+            "metrics": {
+              "pressure_target_rms_pa": 0.08760876406150761,
+              "total_stress_target_six_rms_pa": 0.06136199945650205,
+              "speed_max_m_s": 2.1786691458222125e-06,
+              "isotropic_vector_residual_rms_mm": 3.486619732819129e-07,
+              "shell_target_error_rms_mm": 2.0339898614931122e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 62,
+            "time_s": 0.007568359375,
+            "metrics": {
+              "pressure_target_rms_pa": 0.29269538761749814,
+              "total_stress_target_six_rms_pa": 0.20675729392505263,
+              "speed_max_m_s": 2.098121163280787e-06,
+              "isotropic_vector_residual_rms_mm": 3.63546336735087e-07,
+              "shell_target_error_rms_mm": 2.2001075369739764e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 63,
+            "time_s": 0.0076904296875,
+            "metrics": {
+              "pressure_target_rms_pa": 0.23112056114850937,
+              "total_stress_target_six_rms_pa": 0.1647590629338035,
+              "speed_max_m_s": 2.1224036412660198e-06,
+              "isotropic_vector_residual_rms_mm": 3.7908876467698775e-07,
+              "shell_target_error_rms_mm": 2.394576352577387e-07
+            },
+            "passed": true
+          },
+          {
+            "part": 64,
+            "time_s": 0.0078125,
+            "metrics": {
+              "pressure_target_rms_pa": 0.03918269127542768,
+              "total_stress_target_six_rms_pa": 0.029242498777147033,
+              "speed_max_m_s": 1.9103889312704468e-06,
+              "isotropic_vector_residual_rms_mm": 3.937038192671587e-07,
+              "shell_target_error_rms_mm": 2.5664609158850136e-07
+            },
+            "passed": true
+          }
+        ],
+        "equilibrium_diagnostic_passed": true,
+        "preload_equilibrium_accepted": false
+      },
+      "cpu_gpu": {
+        "passed": true,
+        "samples": 69,
+        "meaning": "cryer_symc_gpu_short_r1_h:GPU_vs_CPU_symC",
+        "max_pressure_rms_pa": 0.0008717529512363532,
+        "max_displacement_mm": 1.8127507495109602e-07
+      },
+      "raw_option": {
+        "passed": null,
+        "samples": 69,
+        "meaning": "cryer_symc_gpu_short_r1_h:symC_vs_raw_GPU",
+        "max_pressure_rms_pa": 168.50565070052693,
+        "max_displacement_mm": 0.0006416264536763824
+      },
+      "independent_half": {
+        "passed": true,
+        "samples": 69,
+        "meaning": "cryer_symc_gpu_short_r1_h:GPU_half",
+        "max_pressure_rms_pa": 0.6849776667770666,
+        "max_displacement_mm": 3.2345862605998704e-07
+      }
+    }
+  ],
+  "error": null,
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_gpu_short_r1_summary.csv",
+      "bytes": 159199,
+      "sha256": "65ef89e22fe1901cea1f66781aced64fd5366b0bf9383bf656f3821efa4abfe8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_gpu_short_r1_comparisons.csv",
+      "bytes": 62695,
+      "sha256": "ec700b4eba1e65b4f8d948ee9a3883aeeb7115be0399dbd888411047d4cf2bde"
+    }
+  ],
+  "physical_accepted": false,
+  "peak_or_formal_admitted": false
+}

@@ -1,0 +1,53 @@
+{
+  "date_local": "2026-10-29",
+  "analysis_checks_passed": true,
+  "visual_review_passed": true,
+  "review_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_short_review_r1.check.json",
+    "bytes": 8186,
+    "sha256": "809c2ef5421d8e552f67d894f6758086423cf8af9f7fac278cfbcde67e3f25a8"
+  },
+  "figures_inspected": [
+    "tests/figures/cryer_symc_gpu_short_review_r1_history.png",
+    "tests/figures/cryer_symc_gpu_short_review_r1_opening.png"
+  ],
+  "visual_checks": "Both six-panel PNGs were actually viewed. Units, actual saved times, four option/step labels, startup and opening transients remain visible without smoothing or interpolation. The tau=0 state is marked pre-open. Option differences are not labelled half/theory errors. No clipped labels or missing curves were observed; near-coincident coarse/half curves are expected.",
+  "csv_inspection": "Artifact Tool Workbook.fromCSV and inspect read A1:H5 of both new scientific CSVs without editing/exporting them; complete numeric reconciliation was separately performed with round-trip CSV parsing and native rereads.",
+  "independent_native_review": {
+    "read_only": true,
+    "new_native_frames": 140,
+    "retained_cpu_symC_frames": 138,
+    "retained_raw_gpu_frames": 138,
+    "total_native_frames": 416,
+    "independently_recomputed_comparisons": 345,
+    "all_140_summary_rows_reproduced": true,
+    "independent_formula_max_arithmetic_difference_pressure_pa": 1.421e-14,
+    "independent_formula_max_arithmetic_difference_stress_pa": 2.842e-14,
+    "native_ids": "37173 fixed soil IDs 8..37180, 35 native columns; all original finite/elastic/no-exclusion/positive-density/double-storage/load and mass/h/dp checks passed.",
+    "actual_steps": {"debug": 256, "coarse": 17408, "half": 34816},
+    "actual_release_end_s": 0.00830078125,
+    "native_saved_steps": "Part0=0; later part*256-1 coarse/debug, part*512-1 half, unchanged.",
+    "drainage": "5153 fixed FSType2/3 nodes; Part64 pre-open; all active Parts65..68 surface pressures exactly zero. Both five-metric closed Parts61..64 checks passed.",
+    "gpu_independent_half": {"pressure_rms_max_pa": 0.6849776667770666, "material_displacement_max_mm": 3.2345862605998704e-7},
+    "same_dt_cpu_gpu": {"coarse_pressure_rms_max_pa": 0.0007906351703793454, "half_pressure_rms_max_pa": 0.0008717529512363532},
+    "original_limits_unchanged": {"pressure_rms_pa": 5, "material_displacement_max_mm": 0.005, "mechanical_dterror_s": 1e-14},
+    "actual_gpu": "NVIDIA GeForce RTX 3050",
+    "memcheck": "Actual Debug log has ERROR SUMMARY: 0 errors and LEAK SUMMARY: 0 bytes leaked in 0 allocations.",
+    "owned_processes_exited": true,
+    "observed_surviving_solvers": []
+  },
+  "hash_review": {
+    "unique_active_files": 3578,
+    "total_bytes": 5921836115,
+    "sha256_and_size_mismatches": 0,
+    "new_completion_output_entries": 189,
+    "new_completion_output_bytes": 852324849,
+    "prepared_inputs_sha256": "e434f6a42631793b358b9a053575340238415a50d7f594189adaa2e23fbb7ade",
+    "program_scope": "Only successful isolated build_r3 Debug/Release were used; failed r1/r2 outputs were not physically admitted. All frozen source/build/program/runtime/input/control/output records matched."
+  },
+  "reviewed_next_stage": "One fresh candidate coarse GPU peak window is justified after the reviewed prerequisites are sealed. No raw rerun, peak half, source merge or formal long run is admitted by this short review.",
+  "physical_accepted": false,
+  "peak_accuracy_accepted": false,
+  "formal_admitted": false,
+  "limitations": "Only four post-opening saves. The approximately168.5Pa raw/symC option difference is not an error bound or accuracy gain. Observed short CPU/GPU loop times are not a controlled benchmark."
+}
