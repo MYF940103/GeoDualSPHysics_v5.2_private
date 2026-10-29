@@ -1,0 +1,103 @@
+{
+  "date_local": "2026-10-29",
+  "analysis_checks_passed": true,
+  "visual_review_passed": true,
+  "review_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_peak_review_r1.check.json",
+    "bytes": 13817,
+    "sha256": "3916e47e0a506c383e39b32c815aa3d8a6fe90f6b833c3a68527c92966d90c30"
+  },
+  "figures_inspected": [
+    "tests/figures/cryer_symc_gpu_peak_review_r1_pressure.png",
+    "tests/figures/cryer_symc_gpu_peak_review_r1_state.png",
+    "tests/figures/cryer_symc_gpu_peak_review_r1_profiles.png"
+  ],
+  "visual_checks": "All three PNGs were actually viewed. Complete startup, pre-open t=tD, actual drainage-relative times, finite-Kw reference and retained raw coarse/half labels remain visible. Profiles show every selected fixed-initial-material slice point at four actual saved times, without smoothing or fitted radius, pressure scale or time shift. No clipped labels or missing curves were observed. State reference markers use the same native initial points and weights, not continuum surface/volume averages.",
+  "csv_inspection": {
+    "artifact_tool_read_only": "Workbook.fromCSV and region inspection A1:H5 completed for both new review CSVs, without edits or exports.",
+    "history_rows": 577,
+    "profile_rows": 6836,
+    "profile_points_per_time": 1709,
+    "profile_parts": [105, 228, 408, 576],
+    "blank_theory_before_opening": "Intentional: no drained reference is assigned at tau<=0; native startup samples remain present."
+  },
+  "independent_native_review": {
+    "read_only": true,
+    "coverage": "Candidate and retained raw coarse each Parts0..128 plus the17 listed critical parts; retained candidate short coarse Parts0..68. Unique coverage is361 native states, not a second complete577-frame reread.",
+    "additional_critical_parts": [145, 148, 154, 204, 208, 214, 228, 305, 402, 403, 408, 422, 444, 501, 530, 572, 576],
+    "candidate_unique_frames": 146,
+    "raw_coarse_unique_frames": 146,
+    "own_short_unique_frames": 69,
+    "total_unique_native_frames": 361,
+    "independent_option_pairs": 146,
+    "own_prefix": "All69 same-dt/same-cadence samples, all35 native columns including dterror/time/step/identity, exact0ULP with no exclusion.",
+    "all577_safety_scope": "The unchanged sealed worker inspected all577 native states under every original guard. This review adopts that full-history result, verifies every frozen file, independently rechecks the complete prefix and critical native samples, and reconciles all577 summary/option rows and receipts. The analysis-check phrase full native/hash audit is fulfilled by this explicitly stated scope, not by claiming an independent second full-tail reread.",
+    "all577_csv_receipts_reconciled": true,
+    "native_soil_ids": "37173 IDs8..37180;37181 total including8 dummy boundary particles",
+    "actual_steps": 147456,
+    "actual_end_s": 0.0703125,
+    "actual_gpu": "NVIDIA GeForce RTX3050",
+    "drainage": "5153 unchanged true FSType2/3 nodes; Part64 at tD is pre-open. Every active drained saved pressure is exactly zero.",
+    "closed61_64_original_five_checks_passed": true,
+    "closed_maxima": {
+      "pressure_target_rms_pa": 0.36420714937646864,
+      "total_stress_target_six_rms_pa": 0.25746321239461545,
+      "speed_max_m_s": 2.2297869879619357e-6,
+      "isotropic_vector_residual_rms_mm": 3.946641735265395e-7,
+      "shell_target_error_rms_mm": 2.6004052473081186e-7
+    },
+    "closed_targets_not_post_opening_guards": true,
+    "independent_arithmetic_only_max_difference": {
+      "weighted_shell_mm": 2.7755575616e-17,
+      "option_pressure_norm_pa": 1.59e-12,
+      "option_stress_norm_pa": 8.53e-14
+    },
+    "all577_summary_original_safety": {
+      "dterror_s_max": 0,
+      "rho_min_kg_m3": 2099.5458984375,
+      "fixed_to_pore_dt_ratio": 0.160078546233,
+      "active_surface_pressure_absmax_pa": 0
+    },
+    "owned_processes_exited": true,
+    "observed_surviving_solvers": []
+  },
+  "hash_review": {
+    "unique_active_files": 4904,
+    "total_bytes": 13559539564,
+    "sha256_and_size_mismatches": 0,
+    "new_completion_output_entries": 593,
+    "new_completion_output_bytes": 3440728673,
+    "prepared_inputs_sha256": "a78d70ee56be4720e596169c8ac52dfd022a5cba6b815a919822822b2b4a2976",
+    "candidate_program_sha256": "32263a1d9ee446433da71181d1a079c634249c942bfed6d6833d6d9bfbac8aad",
+    "candidate_cuda_sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5",
+    "scope": "All frozen source/build/program/runtime/input/control/output bindings matched.12 entries lacked a bytes field but their complete SHA was still checked. Canonical source/programs and formal inputs remain unchanged."
+  },
+  "theory_comparison": {
+    "method": "Unchanged finite-Kw quasi-static reference at initial r=.0025m for the fixed18 material IDs, tau=actual saved time minus drainage tD=.0078125s. No ramp-end alignment, native interpolation, effective radius fit or pressure normalization fit.",
+    "theory_peak_pa": 12439.175959692184,
+    "theory_peak_tau_s": 0.04205180291164746,
+    "raw_coarse_peak_pa": 12134.017740885416,
+    "symC_coarse_peak_pa": 12313.564887152777,
+    "raw_coarse_amplitude_error_percent": -2.453202847162872,
+    "symC_coarse_amplitude_error_percent": -1.009802200293941,
+    "raw_coarse_peak_time_error_percent": 10.308513638429195,
+    "symC_coarse_peak_time_error_percent": 3.922231269888554,
+    "raw_coarse_center_mandel_rms_pa": 322.35525897180156,
+    "symC_coarse_center_mandel_rms_pa": 149.95979301055377,
+    "endpoint_shell_error_mm": {"raw_coarse": -0.0030426727243598184, "symC_coarse": 0.0012738123771760326},
+    "endpoint_mean_total_stress_bias_pa": {"raw_coarse": 13.142552035951667, "symC_coarse": 19.7060249641072},
+    "conclusion": "Same-dt isolated Darcy symmetrization improves peak amplitude, timing, center pressure history and shell displacement here. Mean total-stress bias is slightly worse; not every observable improves and no unique root cause or general physical acceptance is established."
+  },
+  "option_difference_not_half_error": {
+    "pressure_rms_max_pa": 544.873033508752,
+    "material_displacement_max_mm": 0.005271085075242962,
+    "stress_rms_max_pa": 136.6452093650802,
+    "interpretation": "These unguarded raw-versus-candidate operator differences are not a failed5Pa/.005mm half gate or theory error."
+  },
+  "reviewed_next_stage": "Admit only one fresh candidate GPU peak HALF dt2^-22,294912steps,577frames,end.0703125s using the unchanged isolated r3 Release. Adopt completed candidate coarse and exact short-half prefix. Preserve every original577 safety and independent5Pa/.005mm half bound. No coarse/raw rerun, old worker restart, source merge or formal long run is admitted.",
+  "physical_accepted": false,
+  "peak_half_tested": false,
+  "full_cycle_accepted": false,
+  "formal_admitted": false,
+  "limitations": "Only a coarse candidate peak window is reviewed. Remaining amplitude/time/stress/density/spatial errors are not solved by agreement in other observables. Finite-Kw reference is small-strain/quasi-static, not exact dynamic SPH truth. Raw BI4/programs remain local, not cloud Git artifacts."
+}

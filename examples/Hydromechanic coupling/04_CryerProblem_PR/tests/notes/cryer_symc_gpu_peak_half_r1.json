@@ -1,0 +1,65 @@
+{
+  "tag": "cryer_symc_gpu_peak_half_r1",
+  "status": "author_only_independent_half_proposal_root_review_required",
+  "no_prepare_build_physical_run_program_help_queue_or_git_by_author": true,
+  "scope": "Only one proposed fresh isolated r3 GPU Release HALF peak window. Adopt completed candidate coarse, do not rerun/adopt a raw solver or restart any old worker.",
+  "files": {
+    "xml": "tests/configs/cryer_symc_gpu_peak_half_r1_Def.xml",
+    "bat": "tests/configs/xcryer_symc_gpu_peak_half_r1_win64_GPU.bat",
+    "worker": "tests/support/cryer_symc_gpu_peak_half_r1.py",
+    "proposal": "tests/notes/cryer_symc_gpu_peak_half_r1.json"
+  },
+  "program": {
+    "path": "tests/outputs/cryer_symc_gpu_build_r3/Release/cryer_symc_gpu_r3_Release.exe",
+    "sha256": "32263a1d9ee446433da71181d1a079c634249c942bfed6d6833d6d9bfbac8aad",
+    "candidate_source_sha256": "3faab72604a3c79e8ee3c97cc07fea743f58054c3cefcb5229db762579ef81b5"
+  },
+  "unchanged_physics": "Identical isolated symmetric-C Darcy candidate, original compression/mechanical force/raw confinement/boundaries/integrator, geometry/material/viscosity/damping/grad1/drainage. Original float pressure/density, double persistent stress. HG/SPR/shifting remain off. No production/formal source or input is changed.",
+  "configuration_delta_from_candidate_coarse": "Only DtIni/DtFixed2^-21 to2^-22 and explanatory TimeMax comment. BAT only changes test tag; same isolated r3 Release is used. TimeMax, TimeOut, ramp, drainage and every physical value are unchanged.",
+  "run": {
+    "dt_s": 2.384185791015625e-7,
+    "end_s": 0.0703125,
+    "save_s": 0.0001220703125,
+    "steps": 294912,
+    "native_frames": 577,
+    "ramp_s": 0.00390625,
+    "drainage_start_s": 0.0078125,
+    "after_drain_duration_s": 0.0625,
+    "half_saved_step": "Part0=0, otherwise part*512-1 for all577 frames",
+    "coarse_saved_step": "Part0=0, otherwise part*256-1; native metadata is checked, never rewritten",
+    "prefix_half": "Retained cryer_symc_gpu_short_r1_h,69 actual same-dt/same-cadence frames, all35 native columns0ULP including dterror, no exception"
+  },
+  "review_prerequisites": {
+    "candidate_coarse": "cryer_symc_gpu_peak_r1 passed577 original safety plus69 all35-prefix, exact owned exit/time, all output hashes and closed equilibrium diagnostics",
+    "new_peak_review": "logs/cryer_symc_gpu_peak_review_r1.check.json analysis_checks_passed=true, sources/artifacts bound",
+    "new_peak_visual": "logs/cryer_symc_gpu_peak_review_r1.visual.json analysis_checks_passed=true and visual_review_passed=true, exact bound review_check",
+    "earlier_evidence": "Retain all original reviewed GPU short/memcheck/independent69-half/CPU-cross and r3 build dependency/source/runtime protection prerequisites; no inference that short agreement is a full-peak half test",
+    "no_early_admission": "Prepare refuses absent or failed peak review. Parent review requires all577 original safety checks from the sealed worker, complete frozen-file hash verification, independent69 all35-prefix plus targeted native checks, and actual PNG/CSV inspection; it must state the independent native coverage explicitly."
+  },
+  "native_safety": "Directly use existing cryer_preload_peak_half_r1.inspect, with unchanged module globals and no monkeypatch. All577 actual time/512-factor saved-step,37173 fixed IDs, finite/positive-density/elastic/no-exclusion/double-position/double-stress/load/natural-step/pore-step/radius checks remain.5153 true FSType2/3 nodes and original classification remain; all active drained p exactly0.",
+  "closed_equilibrium": "Original five diagnostics at Parts61-64, including pre-open saved t=tD, remain separately recorded and required. Uniform undrained targets do not become post-opening stress guards. Theory time remains tau=t-tD, not ramp end or first open frame.",
+  "independent_half_gate": {
+    "comparison": "New half577 versus retained candidate coarse577 at exact actual matched times and identical native material IDs",
+    "pressure_field_RMS_pa": 5,
+    "material_displacement_absmax_mm": 0.005,
+    "samples_required": 577,
+    "helper": "Original half_rules.half_screen; selftest checks equality accepted and nextafter-above rejected",
+    "method": "Record every pair and all failures, then require every original half limit; no interpolation, changed threshold or partial-history inheritance",
+    "raw_old_half": "Not used as half truth and not read by this worker for a new option comparison. Existing raw coarse/half results remain unchanged for later offline plots."
+  },
+  "new_artifacts_if_later_authorized": {
+    "raw": "tests/outputs/cryer_symc_gpu_peak_half_r1/data",
+    "logs": "tests/logs/cryer_symc_gpu_peak_half_r1.*",
+    "summary": "tests/figures/cryer_symc_gpu_peak_half_r1_summary.csv",
+    "half_pairs": "tests/figures/cryer_symc_gpu_peak_half_r1_half.csv"
+  },
+  "lifecycle": "Default help. --selftest reads config/metadata and synthetic DataFrames only, no writes/program/notification. --prepare explicit after root review binds sources/build/program/runtime/inputs/controls/reviews and complete coarse/short outputs. Callers verify the complete deduplicated frozen chain once per prepare, pre-run and post-analysis phase; prerequisite metadata checks do not redundantly rehash that same chain. One fresh owned BAT/solver only, no retained output overwrite. Seal completed solver and all raw output hashes before offline checks; preserve a completed physical run if its new analysis fails. All577 independent pairs and69 exact own prefixes are mandatory.",
+  "notification": "One exclusive same-thread terminal queue attempt for this new half tag, no retries/rearm/connectivity selftest or old worker calls. Failures must report actual cause/time/survivors; no duplicate solver or relaxed gate.",
+  "limitations": [
+    "No execution or physical admission by the author",
+    "Passing a full577 half-step screen is not exact theory agreement, coupled/general physical validation or formal long-run acceptance",
+    "Finite-Kw finite-r18 theory and complete startup/late histories require independent later physical review",
+    "Do not fit effective radius, move time origins or tune damping/thresholds to match the peak",
+    "No automatic formal run or production merge follows from this proposal or normal solver exit"
+  ]
+}
