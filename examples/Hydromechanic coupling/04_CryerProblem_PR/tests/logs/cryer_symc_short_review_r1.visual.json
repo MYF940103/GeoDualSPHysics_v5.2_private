@@ -1,0 +1,35 @@
+{
+  "analysis_checks_passed": true,
+  "visual_review_passed": true,
+  "review_check": {
+    "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/cryer_symc_short_review_r1.check.json",
+    "sha256": "a29d12be738dc816c3bf2761d06708301b4f31740438b845259d15feb9f1de47"
+  },
+  "figures_reviewed": [
+    {"name": "cryer_symc_short_review_r1_history.png", "sha256": "8133a7958eaf4f44835dc6f2e601032d223565f376cde00c15d0fcb957587ae6"},
+    {"name": "cryer_symc_short_review_r1_opening.png", "sha256": "73fc36be7a0a34d83a6006546ff470a5cb7e24a7656a474b01845f35a3920f1b"}
+  ],
+  "visual_checks": "Both rendered PNGs inspected: plotted marks, actual-time axes, units, legends, ramp/drain markers and full startup are present and readable. Opening figure includes pre-open Part64 plus all four post-open saves. No smoothing, interpolation, theory-fit or clipped samples.",
+  "csv_inspection": "Both unchanged scientific CSVs imported with Artifact Tool and representative header/value ranges inspected; Python independently reconciled 276 summary and 414 comparison rows, times/steps/masks and receipt maxima.",
+  "independent_native_audit": {
+    "cpu_frames": 276,
+    "retained_gpu_control_frames": 138,
+    "soil_native_ids": 37173,
+    "fixed_id_range": [8, 37180],
+    "columns": 35,
+    "true_surface_count": 5153,
+    "last_actual_time_s": 0.00830078125,
+    "coarse_last_saved_step": 17407,
+    "half_last_saved_step": 34815,
+    "all_original_single_safety_and_preload_equilibrium_checks_passed": true,
+    "all_414_pair_records_recomputed": true,
+    "all_four_initial_states_35_fields_identical": true,
+    "all_owned_processes_exited": true,
+    "active_bound_files_verified": 1033,
+    "active_bound_bytes_verified": 3020033218,
+    "all_active_bound_hashes_and_sizes_match": true
+  },
+  "decision": "Short implementation/safety/time-step checks pass. Prepare isolated GPU counterpart only; Debug/memcheck and short cross-backend checks must precede any new peak-window decision.",
+  "physical_peak_or_full_acceptance": false,
+  "production_or_formal_change": false
+}

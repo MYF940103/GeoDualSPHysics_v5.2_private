@@ -1,0 +1,118 @@
+{
+  "utc": "2026-10-29T00:05:19.050871+00:00",
+  "analysis_checks_passed": true,
+  "visual_review_passed": false,
+  "sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_symc_short_review_r1.py",
+      "bytes": 8711,
+      "sha256": "0ab4abf4c67df8ee936d82a05087b25e5b9695704d23b4d4fb4e63c7339f3c84"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_short_r1.check.json",
+      "bytes": 16499,
+      "sha256": "134f35817227ef1a9275ed0d5b2dde4ce8351dcc4027a47379551ec515e14dc8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_short_r1.run.json",
+      "bytes": 16841,
+      "sha256": "8cbaeeee0a7549ec90fb7cf3cdf5ec404be01bffc1f5a25dcd9d93d410a18132"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_short_r1_summary.csv",
+      "bytes": 315251,
+      "sha256": "8725b1dd9217b9219e17c578a6c488618397775d88a8480d9fc87c88df349be0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_short_r1_comparisons.csv",
+      "bytes": 76111,
+      "sha256": "e90b3a9e7128a7a34ebcbef1e4afcc04a29f9ad9be0cb3659a7b3dc0de442d98"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_short_review_r1_history.png",
+      "bytes": 335552,
+      "sha256": "8133a7958eaf4f44835dc6f2e601032d223565f376cde00c15d0fcb957587ae6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_short_review_r1_opening.png",
+      "bytes": 376458,
+      "sha256": "73fc36be7a0a34d83a6006546ff470a5cb7e24a7656a474b01845f35a3920f1b"
+    }
+  ],
+  "checked_csv_rows": {
+    "summary": 276,
+    "comparisons": 414
+  },
+  "all_saved_times_s": {
+    "start": 0.0,
+    "end": 0.00830078125,
+    "drainage": 0.0078125,
+    "last_tau": 0.00048828125,
+    "post_opening_saves": 4
+  },
+  "endpoint_same_dt_changes": {
+    "c": {
+      "center_pressure_mean_pa": {
+        "receiver": 11186.255642361111,
+        "symmetric": 11234.032660590277,
+        "difference": 47.77701822916606
+      },
+      "pressure_mean_pa": {
+        "receiver": 9244.930941494727,
+        "symmetric": 9243.279918946597,
+        "difference": -1.6510225481306406
+      },
+      "shell_inward_mean_mm": {
+        "receiver": 0.002448343747870957,
+        "symmetric": 0.0026078331653360655,
+        "difference": 0.00015948941746510856
+      },
+      "total_stress_target_six_rms_pa": {
+        "receiver": 2214.2101732530646,
+        "symmetric": 2215.0422777801473,
+        "difference": 0.8321045270827199
+      },
+      "speed_max_m_s": {
+        "receiver": 0.03883920673852349,
+        "symmetric": 0.040557540324025365,
+        "difference": 0.0017183335855018786
+      }
+    },
+    "h": {
+      "center_pressure_mean_pa": {
+        "receiver": 11186.419650607639,
+        "symmetric": 11234.327853732639,
+        "difference": 47.908203125
+      },
+      "pressure_mean_pa": {
+        "receiver": 9244.720506100959,
+        "symmetric": 9243.093889793212,
+        "difference": -1.6266163077470992
+      },
+      "shell_inward_mean_mm": {
+        "receiver": 0.002448415141101111,
+        "symmetric": 0.002607853309148468,
+        "difference": 0.00015943816804735687
+      },
+      "total_stress_target_six_rms_pa": {
+        "receiver": 2214.132496903552,
+        "symmetric": 2214.9773340217585,
+        "difference": 0.8448371182066694
+      },
+      "speed_max_m_s": {
+        "receiver": 0.03883882098895116,
+        "symmetric": 0.040557349650540774,
+        "difference": 0.0017185286615896134
+      }
+    }
+  },
+  "limits": "Original 5-Pa field RMS / .005-mm material maximum independent half and OFF CPU/GPU checks unchanged.",
+  "conclusion": "Short safety and temporal/backend checks pass; option differences are not accuracy gains. No peak/formal acceptance.",
+  "limitations": [
+    "Four post-opening points only, far short of the reference Mandel peak near tau=.04205s.",
+    "CPU/GPU agreement covers these69 saves, not the full peak trajectory.",
+    "Native particle safety/hash re-audit is separately required; CSV reconciliation alone is not independent physical validation."
+  ]
+}

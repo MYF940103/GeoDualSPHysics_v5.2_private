@@ -1,0 +1,1721 @@
+{
+  "analysis_checks_passed": true,
+  "solver_executed": false,
+  "integrated_steps": 0,
+  "production_implemented": false,
+  "physical_acceptance": false,
+  "automatic_dynamic_run_admitted": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_compression_moments_r1.py",
+      "sha256": "8b1fde6e382e16c3d34d378762b4ead646779a67d6a9d68f92c073c6f4f9c799",
+      "bytes": 19636
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_cpu_r1.check.json",
+      "sha256": "d3245bdaa500930e7e1084b9c0d2462eb72d0980e35b9a21e1362150d31a3e03",
+      "bytes": 16166
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_radial_consistency_r1.check.json",
+      "sha256": "ecb01df0613851009866d5b99530c34b274ef290525568168de3cdc8e32c8a7e",
+      "bytes": 133165
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_preload_peak_r1\\data\\Part_0000.bi4",
+      "sha256": "ebb4fdd63038303ce2bca35486862f3f0b5190afd74b7fe9fed486df1f9c8e40",
+      "bytes": 5951313
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\configs\\cryer_preload_peak_r1_Def.xml",
+      "sha256": "f2f20163fea45fb8c507478975417d5275fbe2967f5de047a2c9d4a4092ec2a3",
+      "bytes": 8902
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+      "bytes": 385536
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_release_r1.py",
+      "sha256": "d27b4f2ab9077989c349c6cda5df9aa2c9a3632c6c51928a38b8b327c420a5da",
+      "bytes": 12508
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "sha256": "56307570e9daa2c1b5cc37eb0c1fb1906aee265d35fafe17054a3b42b9a3a45a",
+      "bytes": 233925
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "sha256": "0a2d2cde05f18f6ad7a8e8a929e742a0b07ec31ca3c8cdfebd786d21753764c6",
+      "bytes": 279300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+      "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4",
+      "bytes": 22425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_darcy_closed_r1.py",
+      "sha256": "d54e0eaacc9c4c1c15a599357088fff5fded45947c5fc8653383a2b1c12a1dac",
+      "bytes": 10975
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_consistency_r1.py",
+      "sha256": "c34889f6ce2b909cd4ac88b30f6725d4eba9d8cfc60270e25eb369f06ba0d237",
+      "bytes": 19884
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_symc_step_screen_r1.py",
+      "sha256": "a748bbaa90a5e37c61115672c7a6c03ee585c6b3b6bc2682ef3a0bff0a37e349",
+      "bytes": 11387
+    }
+  ],
+  "before_after_hashes_verified": true,
+  "verified_previous_links": 27,
+  "geometry": {
+    "native_soil_count": 37173,
+    "surface_dirichlet_count": 5153,
+    "nondrained_count": 32020,
+    "center18_count": 18,
+    "pair_count": 3392720,
+    "h_m": 0.0044999998062849045,
+    "operator_over_native_volume": 1.000000033131594
+  },
+  "constants": {
+    "h_m": 0.0044999998062849045,
+    "bwen_float": -5094126592.0,
+    "helper_gradient_scale": 0.9999999645461332,
+    "eta2_float_m2": 2.0249997589871782e-07,
+    "kw_float_pa": 200000000.0,
+    "porosity_float": 0.30000001192092896,
+    "conductivity_float_m_s": 9.999999747378752e-06,
+    "water_rho_float_kg_m3": 1000.0,
+    "backends": {
+      "CPU": {
+        "kwn_pa": 666666640.1757145,
+        "ghyd_m_s2": 9.80665,
+        "diffusion_factor_m2_s": 1.3596215289304678
+      },
+      "GPU": {
+        "kwn_pa": 666666624.0,
+        "ghyd_m_s2": 9.806650161743164,
+        "diffusion_factor_m2_s": 1.3596214735166658
+      }
+    }
+  },
+  "tau_s": 0.0420518020252,
+  "derivative_selftest": {
+    "finite_divergence_fd_absmax_per_s": 2.5905111389334934e-12,
+    "finite_divergence_radial_derivative_fd_absmax_per_m_s": 1.228062651570383e-10,
+    "finite_radial_lambda": "(div-3f)/r^2, v=f(r)*x",
+    "finite_radial_mu": "[r*d(div)/dr-5*(div-3f)]/r^4; native r>0"
+  },
+  "correction_affine_selftest": {
+    "moment_eigenvalue_min": 0.5037117871886823,
+    "moment_eigenvalue_max": 1.3133238718591609,
+    "moment_condition_max": 1.4141319350551584,
+    "moment_minus_identity_component_rms": 0.08925310754909657,
+    "raw_affine_gradient_component_rms_per_s": 0.07729472920592725,
+    "raw_affine_gradient_max_frobenius_per_s": 0.6556514236477422,
+    "corrected_affine_gradient_component_rms_per_s": 1.8993303329247727e-16,
+    "corrected_affine_gradient_max_frobenius_per_s": 2.8392542979137415e-15,
+    "affine_closure_relative_max": 1.892836198609161e-15,
+    "matrix_symmetry_max": 1.491862189340054e-16
+  },
+  "polynomial_fixture": {
+    "affine_gradient_per_s": [
+      [
+        0.7,
+        -0.3,
+        0.2
+      ],
+      [
+        0.4,
+        -0.5,
+        0.1
+      ],
+      [
+        -0.2,
+        0.6,
+        0.9
+      ]
+    ],
+    "quadratic_velocity_Hessian_per_m_s": [
+      [
+        [
+          4.0,
+          1.0,
+          -0.5
+        ],
+        [
+          1.0,
+          -2.0,
+          0.3
+        ],
+        [
+          -0.5,
+          0.3,
+          1.0
+        ]
+      ],
+      [
+        [
+          -1.0,
+          0.5,
+          0.2
+        ],
+        [
+          0.5,
+          3.0,
+          -0.4
+        ],
+        [
+          0.2,
+          -0.4,
+          -2.0
+        ]
+      ],
+      [
+        [
+          2.0,
+          -0.3,
+          0.7
+        ],
+        [
+          -0.3,
+          -1.0,
+          0.1
+        ],
+        [
+          0.7,
+          0.1,
+          4.0
+        ]
+      ]
+    ],
+    "radial_cubic_coefficient_per_m2_s": 400.0,
+    "compact_support_radius_m": 0.041000000387430194,
+    "compact_velocity": "x*(1-r^2/rc^2)^3 for r<rc, otherwise zero; C2 at rc"
+  },
+  "formulas": {
+    "divergence": "D_C v_i=sum Vop_j (v_j-v_i) dot (Ci*gij)",
+    "Taylor": "dv=grad(v_i)*delta+.5*Hess(v_i):(delta delta)+remainder; delta=xj-xi",
+    "radial_Hessian": "lambda*(delta_ka*x_b+delta_kb*x_a+delta_ab*x_k)+mu*x_k*x_a*x_b",
+    "raw_pair_force": "Fp_i=-Vi*Vj*(pi+pj)*gij; Fp_j=-Fp_i",
+    "corrected_transpose_pair_force": "Fstar_i=-(Vi*Vop_j*pi*Ci+Vj*Vop_i*pj*Cj)*gij; Fstar_j=-Fstar_i",
+    "virtual_identity": "sum v.Fp=sum Vnative*p*D_I_native(v); sum v.Fstar=sum Vnative*p*D_C(v)"
+  },
+  "moment_rows": [
+    {
+      "velocity": "affine",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.292374758874965,
+        "rms": 0.2930249414438893,
+        "absmax": 0.31716464197748717
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": -1.1102230246251565e-16,
+        "rms": 2.6168207644729585e-16,
+        "absmax": 8.881784197001252e-16
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": 7.401486536725725e-08,
+        "rms": 1.744547106993232e-07,
+        "absmax": 5.921189229380581e-07
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": -3.5862611885118273e-09,
+        "rms": 1.3934912657241117e-08,
+        "absmax": 2.576542801910075e-08
+      }
+    },
+    {
+      "velocity": "affine",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.03926867353665441,
+        "rms": 0.047170039973418794,
+        "absmax": 0.3226967797971265
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": -6.592997487352544e-17,
+        "rms": 3.386162352767983e-16,
+        "absmax": 1.5543122344752192e-15
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": 4.395331483580248e-08,
+        "rms": 2.2574414788093236e-07,
+        "absmax": 1.0362081151416017e-06
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 2.439995365018045e-09,
+        "rms": 6.868038371410632e-08,
+        "absmax": 3.385169064511187e-07
+      }
+    },
+    {
+      "velocity": "affine",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.027973656172835728,
+        "rms": 0.08925050421350182,
+        "absmax": 0.2323248070488675
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -6.681066756689285e-17,
+        "rms": 3.687294043035628e-16,
+        "absmax": 1.7763568394002505e-15
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 4.4540443274717044e-08,
+        "rms": 2.458195931010489e-07,
+        "absmax": 1.1842378458761162e-06
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 1.1333779977389196e-09,
+        "rms": 1.0668200737079792e-07,
+        "absmax": 5.420731240049782e-07
+      }
+    },
+    {
+      "velocity": "affine",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.013033244896408929,
+        "rms": 0.06681911759812749,
+        "absmax": 0.3226967797971265
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": -6.627358804711191e-17,
+        "rms": 3.506730347247651e-16,
+        "absmax": 1.7763568394002505e-15
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": 4.4182390275757495e-08,
+        "rms": 2.3378201386018077e-07,
+        "absmax": 1.1842378458761162e-06
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 1.930202399077442e-09,
+        "rms": 8.553980956068211e-08,
+        "absmax": 5.420731240049782e-07
+      }
+    },
+    {
+      "velocity": "affine",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -0.4112594008975823,
+        "rms": 0.41840259742353286,
+        "absmax": 0.5190250571922229
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -6.054195030461266e-17,
+        "rms": 6.827742986030278e-16,
+        "absmax": 2.6645352591003757e-15
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 4.0361298599261194e-08,
+        "rms": 4.551828476480105e-07,
+        "absmax": 1.7763567688141744e-06
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 2.5127310697937263e-09,
+        "rms": 4.001181601667376e-07,
+        "absmax": 1.6242155463568653e-06
+      }
+    },
+    {
+      "velocity": "quadratic",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.29291526326970746,
+        "rms": 0.2935379918859054,
+        "absmax": 0.3192050244856621
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.0002988349646007273,
+        "rms": 0.0008027668465787507,
+        "absmax": 0.0016156377812308609
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": -199223.30181739546,
+        "rms": 535177.876453109,
+        "absmax": 1077091.811354124
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": -199223.3018174371,
+        "rms": 535177.8764531232,
+        "absmax": 1077091.81135435
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 7.788035717901233e-10,
+        "rms": 3.748764029947691e-08,
+        "absmax": 7.547509566581882e-08
+      }
+    },
+    {
+      "velocity": "quadratic",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.03932848565953718,
+        "rms": 0.047625351977587584,
+        "absmax": 0.3282061916093799
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 5.815367524541453e-07,
+        "rms": 0.00013057082191597185,
+        "absmax": 0.0016156377812308609
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": -387.69115289729984,
+        "rms": 87047.2111517025,
+        "absmax": 1077091.811354124
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -387.691152942912,
+        "rms": 87047.2111517035,
+        "absmax": 1077091.81135435
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 3.504445137627501e-10,
+        "rms": 8.649270389011733e-08,
+        "absmax": 4.6218422714165954e-07
+      }
+    },
+    {
+      "velocity": "quadratic",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.027947236468659507,
+        "rms": 0.09144865875758747,
+        "absmax": 0.2788688725228381
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -1.2169426380734139e-07,
+        "rms": 0.001611252724423437,
+        "absmax": 0.0044395239059179525
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 81.12950598112387,
+        "rms": 1074168.4402653389,
+        "absmax": 2959682.4863380864
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 81.12950593522325,
+        "rms": 1074168.440265345,
+        "absmax": 2959682.486338444
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": -3.2620611292453185e-09,
+        "rms": 1.3583686914234534e-07,
+        "absmax": 6.696953189405746e-07
+      }
+    },
+    {
+      "velocity": "quadratic",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.013080028553117401,
+        "rms": 0.06816223516751337,
+        "absmax": 0.3282061916093799
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 3.0716245244929614e-07,
+        "rms": 0.0010115885301247862,
+        "absmax": 0.0044395239059179525
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": -204.77496016253,
+        "rms": 674392.3266185807,
+        "absmax": 2959682.4863380864
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -204.77496020823196,
+        "rms": 674392.3266185846,
+        "absmax": 2959682.486338444
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -1.0590193525114474e-09,
+        "rms": 1.0844966413537917e-07,
+        "absmax": 6.696953189405746e-07
+      }
+    },
+    {
+      "velocity": "quadratic",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -0.4112712088814853,
+        "rms": 0.4280887418211476,
+        "absmax": 0.6467103459529727
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -2.1358788497235033e-06,
+        "rms": 0.007343077746621913,
+        "absmax": 0.013012504052655194
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 1423.9191765679423,
+        "rms": 4895384.969889487,
+        "absmax": 8675002.357056506
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 1423.9191765218761,
+        "rms": 4895384.969889473,
+        "absmax": 8675002.357056221
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": -2.8423344394418735e-09,
+        "rms": 5.04255210175244e-07,
+        "absmax": 2.201708386763027e-06
+      }
+    },
+    {
+      "velocity": "radial_cubic",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.04033847160781939,
+        "rms": 0.04034235959208463,
+        "absmax": 0.04178145238785219
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.02941148932627542,
+        "rms": 0.02941245478612545,
+        "absmax": 0.030079554658209818
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": -19607658.77171192,
+        "rms": 19608302.41158637,
+        "absmax": 20053035.6419705
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 1295783.0047087756,
+        "rms": 1317922.48887671,
+        "absmax": 1548117.5496020848
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": -20903441.776420698,
+        "rms": 20903631.658742785,
+        "absmax": 21014836.914995242
+      }
+    },
+    {
+      "velocity": "radial_cubic",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.09129158090909809,
+        "rms": 0.09514586317813718,
+        "absmax": 0.5275384908227805
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.03160303508911569,
+        "rms": 0.03164935511749368,
+        "absmax": 0.03755722821754337
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": -21068689.22221597,
+        "rms": 21099569.239907566,
+        "absmax": 25038151.150102176
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 530559.1136216684,
+        "rms": 1258926.459607826,
+        "absmax": 4062753.085863357
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -21599248.335837595,
+        "rms": 21599302.52533002,
+        "absmax": 21887986.637560856
+      }
+    },
+    {
+      "velocity": "radial_cubic",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.231067801102727,
+        "rms": 0.4890156768130495,
+        "absmax": 0.8081648203263483
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.021989757861728028,
+        "rms": 0.06699383202437365,
+        "absmax": 0.10670160314683397
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 14659837.99195573,
+        "rms": 44662552.90818536,
+        "absmax": 71134399.27126224
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 35712505.17010319,
+        "rms": 54810966.842538774,
+        "absmax": 91414785.04570457
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": -21052667.17814746,
+        "rms": 21061484.296540212,
+        "absmax": 21697891.92873924
+      }
+    },
+    {
+      "velocity": "radial_cubic",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": -0.03448092875591537,
+        "rms": 0.3143607852418181,
+        "absmax": 0.8081648203263483
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.010693142449050399,
+        "rms": 0.04860020269388107,
+        "absmax": 0.10670160314683397
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": -7128761.34942874,
+        "rms": 32400133.8417884,
+        "absmax": 71134399.27126224
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 14257231.57094908,
+        "rms": 34250676.3014497,
+        "absmax": 91414785.04570457
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -21385992.920377795,
+        "rms": 21391074.80972991,
+        "absmax": 21887986.637560856
+      }
+    },
+    {
+      "velocity": "radial_cubic",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -2.313116538833288,
+        "rms": 2.313166542039368,
+        "absmax": 2.3228877446069327
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -0.3737405228745291,
+        "rms": 0.3737405954207877,
+        "absmax": 0.38022379966517494
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 249160338.68227705,
+        "rms": 249160387.04644755,
+        "absmax": 253482523.03762615
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 269928435.4087297,
+        "rms": 269928490.041996,
+        "absmax": 274198344.9627798
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": -20768096.726452503,
+        "rms": 20768110.69489867,
+        "absmax": 20951726.155329514
+      }
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": -0.0038694282458065624,
+        "rms": 0.003870560162114302,
+        "absmax": 0.004039451771282562
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": -0.0007000127312645469,
+        "rms": 0.000700035707347092,
+        "absmax": 0.0007159118372387484
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": 466675.1356323609,
+        "rms": 466690.45302011556,
+        "absmax": 477274.5391939794
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": -30830.89166074282,
+        "rms": 31357.68896509134,
+        "absmax": 36834.80148134114
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 497506.02729310375,
+        "rms": 497510.5407485776,
+        "absmax": 500155.9583111125
+      }
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": -0.000808865268539134,
+        "rms": 0.001135287619013318,
+        "absmax": 0.005692787238903582
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.00038576386428761014,
+        "rms": 0.0006076381030496814,
+        "absmax": 0.000819770495585799
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": -257175.89930582134,
+        "rms": 405092.0526028757,
+        "absmax": 546513.642007365
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -8307.466427048552,
+        "rms": 17230.517605849225,
+        "absmax": 96536.38442110764
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -248868.4328787741,
+        "rms": 406688.8128767869,
+        "absmax": 526707.5418011271
+      }
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.0005471958419868549,
+        "rms": 0.0008093827496163303,
+        "absmax": 0.0030619219166803727
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.00027530124939401964,
+        "rms": 0.001090288482551762,
+        "absmax": 0.001672811377196052
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 183534.1589696875,
+        "rms": 726858.9594850612,
+        "absmax": 1115207.5404830019
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 548669.7639530905,
+        "rms": 838971.7619539894,
+        "absmax": 1396250.8965651921
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": -365135.60498340323,
+        "rms": 372877.35047021497,
+        "absmax": 465787.4912375182
+      }
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": -0.0007067716974611321,
+        "rms": 0.0010205889533910345,
+        "absmax": 0.005692787238903582
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.00012784111396829095,
+        "rms": 0.0008300385930188237,
+        "absmax": 0.001672811377196052
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": -85227.40592556114,
+        "rms": 553359.0400240364,
+        "absmax": 1115207.5404830019
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 209004.1056884754,
+        "rms": 524219.49021774915,
+        "absmax": 1396250.8965651921
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -294231.5116140374,
+        "rms": 393842.3337902407,
+        "absmax": 526707.5418011271
+      }
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -0.0006286443985714065,
+        "rms": 0.0006323486229148996,
+        "absmax": 0.0015849087745980327
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": -0.00501026152289884,
+        "rms": 0.00501026267246747,
+        "absmax": 0.00513233479959567
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 3340174.2158726277,
+        "rms": 3340174.9822516846,
+        "absmax": 3421556.397103344
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 3490189.4603958162,
+        "rms": 3490190.1386283394,
+        "absmax": 3562926.2198727783
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": -150015.2445231899,
+        "rms": 150016.29388793823,
+        "absmax": 152110.09961064902
+      }
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.6071298078827152,
+        "rms": 0.607438128724981,
+        "absmax": 0.6373298815671835
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": -0.12642315392576198,
+        "rms": 0.12642731324993284,
+        "absmax": 0.12929656334606632
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": 84282099.26810496,
+        "rms": 84284872.15077531,
+        "absmax": 86197705.47218847
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": -5721857.804229424,
+        "rms": 5819508.949923636,
+        "absmax": 6835896.753812382
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 90003957.07233416,
+        "rms": 90004884.49830885,
+        "absmax": 90511459.5643695
+      }
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.011790170819193943,
+        "rms": 0.0466584008360615,
+        "absmax": 0.6373298815671835
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.0021285078544381773,
+        "rms": 0.033753118487450925,
+        "absmax": 0.12929656334606632
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": -1419005.179905918,
+        "rms": 22502078.097481705,
+        "absmax": 86197705.47218847
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -714881.9204563482,
+        "rms": 2326848.3417645213,
+        "absmax": 16373063.115942026
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -704123.259449572,
+        "rms": 23716167.093806908,
+        "absmax": 90511459.5643695
+      }
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.0025230560716721934,
+        "rms": 0.0043711285867619265,
+        "absmax": 0.009612426698330036
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -0.002462536003766309,
+        "rms": 0.0042594208704637496,
+        "absmax": 0.008253245609675164
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 1641690.6039426157,
+        "rms": 2839613.8008063855,
+        "absmax": 5502163.521147108
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 1641690.6039426157,
+        "rms": 2839613.8008063855,
+        "absmax": 5502163.521147108
+      }
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.006205687885165502,
+        "rms": 0.03653867928058903,
+        "absmax": 0.6373298815671835
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.00033725517109811957,
+        "rms": 0.026492453728663733,
+        "absmax": 0.12929656334606632
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": -224836.7717978691,
+        "rms": 17661635.117298827,
+        "absmax": 86197705.47218847
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -435961.87572614336,
+        "rms": 1817084.7238548845,
+        "absmax": 16373063.115942026
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 211125.10392827276,
+        "rms": 18605193.111553207,
+        "absmax": 90511459.5643695
+      }
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_translation",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_translation",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_translation",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_translation",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_translation",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      }
+    },
+    {
+      "velocity": "rigid_rotation",
+      "region": "center18",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 18,
+        "mean": -2.4236442831236765e-19,
+        "rms": 5.453851895168731e-18,
+        "absmax": 1.381496551808431e-17
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 18,
+        "mean": 4.956036280317129e-18,
+        "rms": 1.2470686149957784e-17,
+        "absmax": 2.667137344314341e-17
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 18,
+        "mean": -3.3040240555879653e-09,
+        "rms": 8.313790436278172e-09,
+        "absmax": 1.7780914922212195e-08
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 18,
+        "mean": 3.5299227376625633e-10,
+        "rms": 2.42720690749601e-09,
+        "absmax": 6.346372060175673e-09
+      }
+    },
+    {
+      "velocity": "rigid_rotation",
+      "region": "full_support_core",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 2.4287577385505254e-19,
+        "rms": 2.4412118224899755e-17,
+        "absmax": 1.254218676347317e-16
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 19527,
+        "mean": 2.7289360929400884e-19,
+        "rms": 2.4907528125221333e-17,
+        "absmax": 1.2134932815544008e-16
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 19527,
+        "mean": -1.8192906563346102e-10,
+        "rms": 1.660501809032342e-08,
+        "absmax": 8.089954888896748e-08
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 19527,
+        "mean": -1.4295141548653665e-10,
+        "rms": 1.5789555055456297e-08,
+        "absmax": 8.0568301079919e-08
+      }
+    },
+    {
+      "velocity": "rigid_rotation",
+      "region": "near_surface_interior",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -2.15123539911143e-19,
+        "rms": 3.464011759766798e-17,
+        "absmax": 2.0123941015296812e-16
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 12493,
+        "mean": -1.2532570206997755e-20,
+        "rms": 3.8176870141070555e-17,
+        "absmax": 2.1722329338925983e-16
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 12493,
+        "mean": 8.355046472665331e-12,
+        "rms": 2.5451245749372056e-08,
+        "absmax": 1.4481552317172135e-07
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 12493,
+        "mean": 8.413983076765678e-11,
+        "rms": 2.453014879944063e-08,
+        "absmax": 1.4653435152456463e-07
+      }
+    },
+    {
+      "velocity": "rigid_rotation",
+      "region": "nondrained",
+      "evolved_pressure_receiver": true,
+      "raw_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 6.418166308425074e-20,
+        "rms": 2.883754900744777e-17,
+        "absmax": 2.0123941015296812e-16
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 32020,
+        "mean": 1.615310465049372e-19,
+        "rms": 3.077312784294711e-17,
+        "absmax": 2.1722329338925983e-16
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 32020,
+        "mean": -1.0768736005751359e-10,
+        "rms": 2.051541774675528e-08,
+        "absmax": 1.4481552317172135e-07
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 32020,
+        "mean": -5.4348950169433615e-11,
+        "rms": 1.9667495011449383e-08,
+        "absmax": 1.4653435152456463e-07
+      }
+    },
+    {
+      "velocity": "rigid_rotation",
+      "region": "drained_kinematic_only",
+      "evolved_pressure_receiver": false,
+      "raw_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 1.8828355951498784e-18,
+        "rms": 6.56358173710624e-17,
+        "absmax": 2.7071869539588997e-16
+      },
+      "corrected_divergence_error_per_s": {
+        "count": 5153,
+        "mean": 3.841887478197239e-18,
+        "rms": 1.2487796806309625e-16,
+        "absmax": 5.282232984349378e-16
+      },
+      "compression_error_cpu_pa_s": {
+        "count": 5153,
+        "mean": -2.5612582170229028e-09,
+        "rms": 8.325197540059456e-08,
+        "absmax": 3.521488516301537e-07
+      },
+      "second_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": 0.0,
+        "rms": 0.0,
+        "absmax": 0.0
+      },
+      "higher_Taylor_compression_contribution_pa_s": {
+        "count": 5153,
+        "mean": -2.5412752429823733e-09,
+        "rms": 8.287849032536972e-08,
+        "absmax": 3.474320852384101e-07
+      }
+    }
+  ],
+  "Taylor_identity_checks": [
+    {
+      "velocity": "affine",
+      "decomposition_absmax_per_s": 9.203906439408259e-16,
+      "decomposition_budget_absmax_per_s": 1.1323209037113026e-11,
+      "linear_local_closure_absmax_per_s": 1.7763568394002505e-15
+    },
+    {
+      "velocity": "quadratic",
+      "decomposition_absmax_per_s": 1.7920651155053475e-15,
+      "decomposition_budget_absmax_per_s": 1.1487749418433572e-11,
+      "linear_local_closure_absmax_per_s": 1.7763568394002505e-15
+    },
+    {
+      "velocity": "radial_cubic",
+      "decomposition_absmax_per_s": 5.3013149425851225e-15,
+      "decomposition_budget_absmax_per_s": 2.6697602230188985e-11,
+      "linear_local_closure_absmax_per_s": 5.329070518200751e-15
+    },
+    {
+      "velocity": "finite_storage_radial_peak",
+      "decomposition_absmax_per_s": 4.672911363412524e-17,
+      "decomposition_budget_absmax_per_s": 3.641869190696396e-12,
+      "linear_local_closure_absmax_per_s": 4.163336342344337e-17
+    },
+    {
+      "velocity": "compact_radial_virtual",
+      "decomposition_absmax_per_s": 1.9012569296705806e-15,
+      "decomposition_budget_absmax_per_s": 2.3738246420315617e-11,
+      "linear_local_closure_absmax_per_s": 1.3322676295501878e-15
+    },
+    {
+      "velocity": "rigid_translation",
+      "decomposition_absmax_per_s": 0.0,
+      "decomposition_budget_absmax_per_s": 3.53850282409782e-12,
+      "linear_local_closure_absmax_per_s": 0.0
+    },
+    {
+      "velocity": "rigid_rotation",
+      "decomposition_absmax_per_s": 2.7074635080619408e-17,
+      "decomposition_budget_absmax_per_s": 3.53850282409782e-12,
+      "linear_local_closure_absmax_per_s": 8.263653433412954e-17
+    }
+  ],
+  "tail_selftests": {
+    "cubic_velocity_tail_absmax_m_s": 3.61039323437673e-17
+  },
+  "constant_total_stress_raw_load_patches": [
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "total_stress": "S=(p-q)I, hence T=-qI; uniform rho",
+      "raw_confinement_unchanged": true,
+      "force_residual_absmax_N": 1.0758782408953673e-16,
+      "force_accumulation_budget_absmax_N": 2.2970217510348147e-12,
+      "acceleration_residual_vector_rms_m_s2": 7.276021500498961e-13,
+      "limitation": "Force-equilibrium patch only; the chosen spatial isotropic effective stress need not be compatible with a constitutive displacement."
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "total_stress": "S=(p-q)I, hence T=-qI; uniform rho",
+      "raw_confinement_unchanged": true,
+      "force_residual_absmax_N": 1.0333493309750146e-16,
+      "force_accumulation_budget_absmax_N": 1.8496330474630623e-12,
+      "acceleration_residual_vector_rms_m_s2": 7.125538734039463e-13,
+      "limitation": "Force-equilibrium patch only; the chosen spatial isotropic effective stress need not be compatible with a constitutive displacement."
+    }
+  ],
+  "virtual_work_rows": [
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "affine",
+      "raw_pore_force_power_W": 3.4035646327240663,
+      "raw_divergence_pressure_work_W": 3.403564632724065,
+      "raw_adjoint_residual_W": 1.3322676295501878e-15,
+      "corrected_divergence_pressure_work_W": 3.2957453426318533,
+      "raw_force_vs_corrected_divergence_defect_W": 0.10781929009221303,
+      "diagnostic_transpose_force_power_W": 3.2957453426318537,
+      "diagnostic_transpose_identity_residual_W": 4.440892098500626e-16,
+      "arithmetic_power_budget_W": 7.141368968777557e-11,
+      "raw_load_virtual_power_W": -6.123188033037858,
+      "surface_virtual_speed_max_m_s": 0.059527100087248305
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "quadratic",
+      "raw_pore_force_power_W": 3.403891708021683,
+      "raw_divergence_pressure_work_W": 3.403891708021683,
+      "raw_adjoint_residual_W": 0.0,
+      "corrected_divergence_pressure_work_W": 3.295897844035811,
+      "raw_force_vs_corrected_divergence_defect_W": 0.10799386398587174,
+      "diagnostic_transpose_force_power_W": 3.295897844035811,
+      "diagnostic_transpose_identity_residual_W": 0.0,
+      "arithmetic_power_budget_W": 7.144330503630201e-11,
+      "raw_load_virtual_power_W": -6.1236329808574235,
+      "surface_virtual_speed_max_m_s": 0.060983498719180185
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "radial_cubic",
+      "raw_pore_force_power_W": 6.548768919566338,
+      "raw_divergence_pressure_work_W": 6.548768919566337,
+      "raw_adjoint_residual_W": 8.881784197001252e-16,
+      "corrected_divergence_pressure_work_W": 6.441169658092749,
+      "raw_force_vs_corrected_divergence_defect_W": 0.107599261473589,
+      "diagnostic_transpose_force_power_W": 6.441169658092749,
+      "diagnostic_transpose_identity_residual_W": 0.0,
+      "arithmetic_power_budget_W": 9.193489717397941e-11,
+      "raw_load_virtual_power_W": -16.16250233567721,
+      "surface_virtual_speed_max_m_s": 0.05000000000000005
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "finite_storage_radial_peak",
+      "raw_pore_force_power_W": -0.10437841478514984,
+      "raw_divergence_pressure_work_W": -0.10437841478514982,
+      "raw_adjoint_residual_W": -1.3877787807814457e-17,
+      "corrected_divergence_pressure_work_W": -0.10098466071119538,
+      "raw_force_vs_corrected_divergence_defect_W": -0.0033937540739544525,
+      "diagnostic_transpose_force_power_W": -0.10098466071119538,
+      "diagnostic_transpose_identity_residual_W": 0.0,
+      "arithmetic_power_budget_W": 1.4535457359927787e-12,
+      "raw_load_virtual_power_W": 0.17093230965464146,
+      "surface_virtual_speed_max_m_s": 0.0005019582139948264
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "compact_radial_virtual",
+      "raw_pore_force_power_W": 0.2611586876263424,
+      "raw_divergence_pressure_work_W": 0.2611586876263425,
+      "raw_adjoint_residual_W": -5.551115123125783e-17,
+      "corrected_divergence_pressure_work_W": 0.22052500918609147,
+      "raw_force_vs_corrected_divergence_defect_W": 0.04063367844025095,
+      "diagnostic_transpose_force_power_W": 0.22052500918609147,
+      "diagnostic_transpose_identity_residual_W": 0.0,
+      "arithmetic_power_budget_W": 9.114354643863462e-12,
+      "raw_load_virtual_power_W": -0.05881716549053424,
+      "surface_virtual_speed_max_m_s": 0.0
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "rigid_translation",
+      "raw_pore_force_power_W": 1.3877787807814457e-17,
+      "raw_divergence_pressure_work_W": 0.0,
+      "raw_adjoint_residual_W": 1.3877787807814457e-17,
+      "corrected_divergence_pressure_work_W": 0.0,
+      "raw_force_vs_corrected_divergence_defect_W": 1.3877787807814457e-17,
+      "diagnostic_transpose_force_power_W": 5.551115123125783e-17,
+      "diagnostic_transpose_identity_residual_W": 5.551115123125783e-17,
+      "arithmetic_power_budget_W": 4.9197500491262676e-11,
+      "raw_load_virtual_power_W": 2.220446049250313e-16,
+      "surface_virtual_speed_max_m_s": 0.03741657386773942
+    },
+    {
+      "pressure": "finite_storage_peak_pressure",
+      "virtual_velocity": "rigid_rotation",
+      "raw_pore_force_power_W": -3.020688896498286e-17,
+      "raw_divergence_pressure_work_W": 4.120980650350004e-19,
+      "raw_adjoint_residual_W": -3.061898703001786e-17,
+      "corrected_divergence_pressure_work_W": 5.15419203195559e-19,
+      "raw_force_vs_corrected_divergence_defect_W": -3.072230816817842e-17,
+      "diagnostic_transpose_force_power_W": -5.0245994431125096e-18,
+      "diagnostic_transpose_identity_residual_W": -5.5400186463080684e-18,
+      "arithmetic_power_budget_W": 1.2464835885451528e-11,
+      "raw_load_virtual_power_W": 1.9076876038061352e-17,
+      "surface_virtual_speed_max_m_s": 0.01870828652032434
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "affine",
+      "raw_pore_force_power_W": 2.4640783972466846,
+      "raw_divergence_pressure_work_W": 2.464078397246684,
+      "raw_adjoint_residual_W": 4.440892098500626e-16,
+      "corrected_divergence_pressure_work_W": 2.3856734696230886,
+      "raw_force_vs_corrected_divergence_defect_W": 0.07840492762359608,
+      "diagnostic_transpose_force_power_W": 2.3856734696230895,
+      "diagnostic_transpose_identity_residual_W": 8.881784197001252e-16,
+      "arithmetic_power_budget_W": 5.16943625841546e-11,
+      "raw_load_virtual_power_W": -6.123188033037858,
+      "surface_virtual_speed_max_m_s": 0.059527100087248305
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "quadratic",
+      "raw_pore_force_power_W": 2.4643174673472106,
+      "raw_divergence_pressure_work_W": 2.464317467347211,
+      "raw_adjoint_residual_W": -4.440892098500626e-16,
+      "corrected_divergence_pressure_work_W": 2.3857850318952627,
+      "raw_force_vs_corrected_divergence_defect_W": 0.07853243545194788,
+      "diagnostic_transpose_force_power_W": 2.385785031895263,
+      "diagnostic_transpose_identity_residual_W": 4.440892098500626e-16,
+      "arithmetic_power_budget_W": 5.171567982529969e-11,
+      "raw_load_virtual_power_W": -6.1236329808574235,
+      "surface_virtual_speed_max_m_s": 0.060983498719180185
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "radial_cubic",
+      "raw_pore_force_power_W": 4.722488543215017,
+      "raw_divergence_pressure_work_W": 4.722488543215017,
+      "raw_adjoint_residual_W": 0.0,
+      "corrected_divergence_pressure_work_W": 4.648819795673246,
+      "raw_force_vs_corrected_divergence_defect_W": 0.07366874754177122,
+      "diagnostic_transpose_force_power_W": 4.648819795673247,
+      "diagnostic_transpose_identity_residual_W": 8.881784197001252e-16,
+      "arithmetic_power_budget_W": 6.632384861834925e-11,
+      "raw_load_virtual_power_W": -16.16250233567721,
+      "surface_virtual_speed_max_m_s": 0.05000000000000005
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "finite_storage_radial_peak",
+      "raw_pore_force_power_W": -0.0750500016171591,
+      "raw_divergence_pressure_work_W": -0.0750500016171591,
+      "raw_adjoint_residual_W": 0.0,
+      "corrected_divergence_pressure_work_W": -0.07259488915307838,
+      "raw_force_vs_corrected_divergence_defect_W": -0.0024551124640807276,
+      "diagnostic_transpose_force_power_W": -0.07259488915307838,
+      "diagnostic_transpose_identity_residual_W": 0.0,
+      "arithmetic_power_budget_W": 1.0449974223068231e-12,
+      "raw_load_virtual_power_W": 0.17093230965464146,
+      "surface_virtual_speed_max_m_s": 0.0005019582139948264
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "compact_radial_virtual",
+      "raw_pore_force_power_W": 0.22598361258696975,
+      "raw_divergence_pressure_work_W": 0.22598361258696972,
+      "raw_adjoint_residual_W": 2.7755575615628914e-17,
+      "corrected_divergence_pressure_work_W": 0.1936609139862461,
+      "raw_force_vs_corrected_divergence_defect_W": 0.03232269860072365,
+      "diagnostic_transpose_force_power_W": 0.19366091398624613,
+      "diagnostic_transpose_identity_residual_W": 2.7755575615628914e-17,
+      "arithmetic_power_budget_W": 6.995888101283126e-12,
+      "raw_load_virtual_power_W": -0.05881716549053424,
+      "surface_virtual_speed_max_m_s": 0.0
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "rigid_translation",
+      "raw_pore_force_power_W": -5.551115123125783e-17,
+      "raw_divergence_pressure_work_W": 0.0,
+      "raw_adjoint_residual_W": -5.551115123125783e-17,
+      "corrected_divergence_pressure_work_W": 0.0,
+      "raw_force_vs_corrected_divergence_defect_W": -5.551115123125783e-17,
+      "diagnostic_transpose_force_power_W": 5.551115123125783e-17,
+      "diagnostic_transpose_identity_residual_W": 5.551115123125783e-17,
+      "arithmetic_power_budget_W": 3.6028716931755596e-11,
+      "raw_load_virtual_power_W": 2.220446049250313e-16,
+      "surface_virtual_speed_max_m_s": 0.03741657386773942
+    },
+    {
+      "pressure": "smooth_quadratic_pressure",
+      "virtual_velocity": "rigid_rotation",
+      "raw_pore_force_power_W": -2.5004412602946946e-18,
+      "raw_divergence_pressure_work_W": 2.8261777970428838e-19,
+      "raw_adjoint_residual_W": -2.783059039998983e-18,
+      "corrected_divergence_pressure_work_W": 3.603973113586407e-19,
+      "raw_force_vs_corrected_divergence_defect_W": -2.8608385716533353e-18,
+      "diagnostic_transpose_force_power_W": -3.471141017848123e-18,
+      "diagnostic_transpose_identity_residual_W": -3.8315383292067634e-18,
+      "arithmetic_power_budget_W": 9.021903476053562e-12,
+      "raw_load_virtual_power_W": 1.9076876038061352e-17,
+      "surface_virtual_speed_max_m_s": 0.01870828652032434
+    }
+  ],
+  "frozen_fused_correspondence": {
+    "center_double_surrogate_compression_error_cpu_pa_s": 466675.1356323609,
+    "center_prior_actual_fused_compression_error_pa_s": 466675.15458318696,
+    "surrogate_minus_fused_compression_error_pa_s": -0.018950826080981642,
+    "center_double_surrogate_compression_rate_cpu_pa_s": 8115561.3421602845,
+    "center_prior_actual_fused_compression_rate_pa_s": 8115561.361111112,
+    "scope": "Same declared finite-Kw field and frozen geometry; surrogate is not quantized-input/float-subtraction/float-accumulation kernel replay."
+  },
+  "limitations": [
+    "Only new analysis JSON; no solver, integration, source/formal change, build, prior-output overwrite or Git.",
+    "Double offline distances/sums and manufactured velocities/stresses, with rounded production constants; not fused-program bit identity.",
+    "Original true Dirichlet nodes are retained neighbours. Their kinematic divergence is diagnostic only; actual evolved pressure compression there is clamped/omitted.",
+    "Both virtual pressures are exactly zero on Dirichlet nodes. No actual drainage flux, moving-volume storage derivative, external continuum boundary work or total elastic energy balance is inferred.",
+    "Diagnostic transpose forces are never applied to an integrator or combined with unchanged raw stress/load as a proposed scheme.",
+    "Affine closure constrains first moments, not nonaffine radial consistency. Taylor terms decompose this fixed field and do not assign causal percentages to dynamic peak error.",
+    "Pairwise net-force cancellation is algebraic; constant-total-stress patch tests three independently accumulated raw terms, not a new native trajectory.",
+    "The prior actual fused mismatch and current surrogate error do not by themselves establish the cause of peak amplitude/time error or admit another physical run."
+  ],
+  "wall_seconds": 25.038172400090843
+}
