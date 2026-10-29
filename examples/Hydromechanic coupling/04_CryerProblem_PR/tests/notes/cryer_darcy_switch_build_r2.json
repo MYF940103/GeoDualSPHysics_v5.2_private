@@ -1,0 +1,42 @@
+{
+  "tag": "cryer_darcy_switch_build_r2",
+  "scope": "Authoritative-solution build continuation only; adopt successful frozen r1 CPU builds and freshly build GPU Debug then Release.",
+  "authoring_state": "Prepared code for root review; this note does not attest that --prepare or --build has run.",
+  "prior_evidence": {
+    "retained_tag": "cryer_darcy_switch_build_r1",
+    "retained_failure": "tests/logs/cryer_darcy_switch_build_r1.check.json",
+    "successful_cpu_configurations": ["DebugCPU", "ReleaseCPU"],
+    "cpu_adoption": "Verify each successful receipt, process receipt, executable, four runtime source/target pairs, build log and binlog; do not rebuild or execute them.",
+    "gpu_failure": "Debug nvcc reported 'A single input file is required for a non-link phase when an outputfile is specified'; GPU Release was not admitted.",
+    "diagnosis": "An independent read-only CommandLineToArgvW audit confirmed the -Xcompiler /Fd argument was split by spaces in the original IntDir beneath 'Hydromechanic coupling'. TEMP alone had already been moved but did not relocate IntDir."
+  },
+  "minimal_build_change": {
+    "unchanged": "Authoritative VS GPU solution, configuration order, toolset/CUDA, /t:Build and all numerical/source/project/runtime inputs.",
+    "only_changed_command_arguments": ["/p:OutDir=", "/p:IntDir=", "/bl:"],
+    "intdir": "C:/Users/syosh/AppData/Local/Temp/cryer_darcy_switch_build_r2/{Debug,Release}/int/",
+    "outdir": "tests/outputs/cryer_darcy_switch_build_r2/{Debug,Release}/out/",
+    "outdir_spaces": "Allowed: the confirmed defect is the unquoted PDB argument within -Xcompiler, addressed by no-space IntDir.",
+    "temp_environment": "TEMP and TMP are child-only environment values under the fresh no-space r2 directory."
+  },
+  "binding_policy": {
+    "prepare": "Freeze all r1 prepared inputs, its failed check/started record/three build receipts/process receipts/logs/binlogs, CPU programs/runtime, current seven source/document files, tools, base snapshots, review/visual receipts, and new helper/note.",
+    "historical_sources": "Verify archived pre-edit snapshots and current seven files separately; do not follow historical original source paths as though intentional switch edits had never occurred.",
+    "build": "Verify frozen inputs before/after each configuration and after copying canonical runtime; outputs are isolated and never overwrite retained labels.",
+    "programs": "Do not install or overwrite canonical CPU/GPU or Lian programs; no executable or help command is run in this build stage."
+  },
+  "commands_after_root_review_only": [
+    "python -B tests/support/cryer_darcy_switch_build_r2.py --selftest",
+    "python -B tests/support/cryer_darcy_switch_build_r2.py --prepare",
+    "python -B tests/support/cryer_darcy_switch_build_r2.py --build"
+  ],
+  "launcher_logs": "Use tests/logs/cryer_darcy_switch_r2.worker.*.log, not the reserved cryer_darcy_switch_build_r2* evidence prefix.",
+  "failure_policy": "Retain every new attempt and its exact tool exit; stop before the next configuration on rejection. Never retry/rearm r1 or overwrite r2. A missing binlog must not prevent sealing the failed configuration receipt.",
+  "notification": "Only a terminal r2 build result may queue once to the frozen, matching CODEX thread/session. No connectivity test or rearming; notification failure is retained without retry.",
+  "elapsed_definition": "Per-configuration elapsed_seconds measures the MSBuild child wait, excluding later hash/runtime verification.",
+  "next_required_stage": "Reviewed OFF-versus-original and ON-versus-isolated CPU/GPU native regressions before installation or server packaging.",
+  "programs_executed": false,
+  "solver_executed": false,
+  "implementation_regression_passed": false,
+  "physical_acceptance": false,
+  "formal_admitted": false
+}
