@@ -1,0 +1,22 @@
+{
+  "tag": "cryer_darcy_modes_r1",
+  "status": "author_only_root_review_required_not_executed",
+  "scope": "Three fixed-radius Dirichlet radial mode projections on the retained Part0 Darcy graph. No solver, compiled probe, geometry change, old-probe rerun or theory rescaling.",
+  "files": ["tests/support/cryer_darcy_modes_r1.py", "tests/notes/cryer_darcy_modes_r1.json"],
+  "future_output": "tests/logs/cryer_darcy_modes_r1.check.json only, exclusive creation; no CSV or PNG",
+  "inputs": "Retained 37173 soil IDs and initial geometry from cryer_preload_peak_r1 Part0, checked against the retained radial NPZ; frozen radial/open-Darcy/actual-CPU-probe receipts and their inputs/artifacts are rehashed. Existing batches, correction, constants, statistics and verification helpers are reused.",
+  "correction": "No saved full CorrMat array exists in the retained radial NPZ. Reconstruct its existing mathematical definition with the same helper on the bound native coordinates and same pair graph; include its checksum and affine selfcheck. No new correction formula.",
+  "modes": "phi_n(r)=sin(n*pi*r/R)/(n*pi*r/R), with smooth phi_n(0)=1, n=1,2,3 and actual R=.05m. All 5153 FSType2/3 nodes at R are exactly prescribed phi=0 and retained as neighbours.",
+  "operators": ["receiver_C", "symmetric_C=(Ci+Cj)/2"],
+  "fixed_algebra": "Original Wendland constants, 2h support, actual float Eta2, float-division operator volumes and matching correction matrices. Lh=2 sum Vop_j*(phi_i-phi_j)*Hij.",
+  "reference": "Exact scalar sphere Laplacian pairing L(phi_n)=-(n*pi/R)^2*phi_n. Pressure-only alpha_D=(Kw/n)*k/(rho_w*g), equal to half the existing stored diffusion_factor. CPU/GPU scalar constants are separately labelled; alpha_D is not coupled Cryer cv.",
+  "metrics": "Native-volume weighted projection lambda_hat=-<phi,Lh phi>/<phi,phi>, projected/exact rate ratios, exact RHS error, orthogonal projection residual, weighted angle and 20 radial-shell summaries. All RHS norms/projections exclude Dirichlet rows; global projection coefficients are used in every shell.",
+  "interpretation": "These are projections of known radial functions, not solved eigenvalues or coupled Mandel/Cryer modes. A common factor is only a frozen Darcy-clock clue; mode dependence or shape residual contradicts a single scalar clock. No effective radius is fitted or used to shift theory.",
+  "commands_after_root_review": [
+    "D:/Anaconda3/python.exe -B tests/support/cryer_darcy_modes_r1.py --selftest",
+    "D:/Anaconda3/python.exe -B tests/support/cryer_darcy_modes_r1.py --run"
+  ],
+  "author_validation": "Only pure --selftest is authorized before root reviews the complete script and relevant helpers. Default action prints help; --run alone reads native data and creates the new JSON. Thread counts are fixed to one before NumPy import.",
+  "physical_acceptance": false,
+  "automatic_dynamic_run_admitted": false
+}
