@@ -1,0 +1,24 @@
+{
+  "date": "2026-10-30",
+  "stage": "Fresh gravity-on mode3 startup, not full consolidation acceptance",
+  "window_check": {"relative_path": "tests/logs/sw_mode3_window_r1.check.json", "sha256": "42e7f3aaa123a8b83e77429be835b66bf6f9fb0d30d80f737655e95bcc5a1c4b"},
+  "analysis_check": {"relative_path": "tests/logs/sw_mode3_window_review_r1.check.json", "sha256": "5746629f79a558daf5031e62501c171f10b9fa7b305b0338b4013d322c487e6c"},
+  "native_verification": "Both fresh GPU runs completed at exactly .0234375s:65536/131072 steps,257 native saves each. All original1040ID/38-field safety,p0/excess,geometry,drainage,clock,pore budget and actual HG checks passed. Offline analysis independently redecoded515 states including the old short initial state. All prepared/source/input/program/runtime/output/artifact hashes were checked; no surviving owned solver. Old-program source-at-build attribution remains false.",
+  "independent_half": {"samples": 257, "maximum_pressure_rms_pa": 2.3610819329908734, "maximum_material_displacement_difference_mm": 0.000003565235662301301, "original_pressure_limit_pa": 5, "original_displacement_limit_mm": 0.005, "interpolation": false},
+  "visual_review": [
+    {"relative_path": "tests/figures/sw_mode3_window_review_r1_profiles.png", "sha256": "0d9a5053d30854cc0e4628b733b910b48d957cac041f7fa0b517aaa09260c9fe", "opened_by_root": true},
+    {"relative_path": "tests/figures/sw_mode3_window_review_r1_history.png", "sha256": "b997c3df150060eb9e8bb48326eae169f13c0b9df50c9a067e0198f928b68886", "opened_by_root": true},
+    {"relative_path": "tests/figures/sw_mode3_window_review_r1_envelope.png", "sha256": "f61f0530057287c8e9bc0c02f3941ce960e9b9a20db94d61c4b40c9e7deb61d4", "opened_by_root": true}
+  ],
+  "physical_findings": "The shared coarse/half startup pressure-reference RMS peaks at1140.9115/1140.5926Pa and falls to111.9419/109.9465Pa at the endpoint,with visibly decaying oscillations. Final bottom p19364.4297/19367.2246Pa versus applicable H1 quasi-static19536.9233Pa. This is not exact dynamic theory or a new pressure-accuracy pass.",
+  "motion": "Final top material settlement increments .02825521/.02825831mm versus H1 quasi-static .02557427mm; final bottom increments .002723mm versus .001753mm. Much of the roughly .0012m/s raw speed is physical consolidation:reference maximum about .001091m/s. Remaining signed-vz residual RMS is about4.8e-5/4.7e-5m/s,not raw speed. Initial velocities are not assigned a spurious zero theoretical derivative.",
+  "boundary_reference_caveat": "At z0=.995 the H1 bulk initial p is about102.788Pa but actual top10 soil nodes are drained to p=p0=0. The initial effective stress is about-.217019Pa and is retained. At the short-window endpoint this H1 effective-stress reference is still about-.217Pa,not its future drained value-53.955Pa;actual top stress is about-175.23Pa. Top-plane/initial-state incompatibility is a candidate mechanism,not a proved unique cause. HD is a different-domain sensitivity,not a fit or replacement truth.",
+  "causal_next_step": "Admit one fresh same-old-program/same-clock mode3 k0 mechanical control sw_mode3_mech_r1:only HydraulicConductivity .001 to0. No half/backend/theory gate is applied to option changes;k0 pore-diffusion budget is explicitly not applicable. Compare complete same-time material histories and inspect whether similar mechanical startup remains before deciding the next bounded window. No damping,boundary,source or formal change is admitted here.",
+  "late_scope": "The .0234375s startup does not test the old Tv>1 platform. Preserve the separately declared residual-platform budget<=5Pa after exposing geometric/fixed-p0 baseline terms;this is not the half-step5Pa gate. No H,time-origin or acceptance-budget fit.",
+  "git_scope": "Selective checkpoint af2b5cd0075eaf1301c8c10402cf2598769c7847 verified equal locally and remotely for new builds/four native regressions/2ms review. This window stage has separate subsequent backup. Raw BI4,executables,large regenerable layer tables and local source snapshots are not implied cloud backed.",
+  "production_or_formal_files_changed": false,
+  "physical_acceptance": false,
+  "full_run_admitted": false,
+  "restart_admitted": false,
+  "automatic_continuation": "Continue the authorized selfweight task after the single mechanical control and justified later bounded/full stages;do not restart old workers or disturb Cryer/server/formal retained results."
+}
