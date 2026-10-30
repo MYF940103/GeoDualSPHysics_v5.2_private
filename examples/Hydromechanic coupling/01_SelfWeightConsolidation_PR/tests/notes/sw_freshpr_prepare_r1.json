@@ -1,0 +1,27 @@
+{
+  "tag": "sw_freshpr_prepare_r1",
+  "scope": "Preparation-only authoring. No prepare, root writes, program/help, build, solver, queue or Git execution is authorized by this note.",
+  "future_command": "D:\\Anaconda3\\python.exe -B tests/support/sw_freshpr_prepare_r1.py --prepare",
+  "required_gate": "tests/notes/sw_full_admission_r1.json full_run_admitted=true and long_review exactly bound to sw_mode3_longwin_review_r1.check.json; original completed long-window pair safety, all38 prefixes and independent half gates remain intact.",
+  "new_root_files": [
+    "CaseSelfWeightConsolidation_Scenario2_FreshPR_Def.xml",
+    "xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat",
+    "README_FreshPR_r1.md",
+    "support/selfweight_freshpr_r1.manifest.json",
+    "support/postprocess_selfweight_freshpr_r1.py"
+  ],
+  "portable_program": "support/bin/DualSPHysics5.2_GEO_win64.exe SHA256 11ff6c83083cea75ffda2d8e2fe6d64c25497cdab6c096bd1780674594a6e14c; four SHA-identical runtime files plus GenCase_win64.exe, PartVTK_win64.exe and ReadSelfWeightNative.exe. Existing equal files are reused unchanged; different files are refused. Target Windows needs a compatible NVIDIA driver and Microsoft Visual C++ 2015-2022 x64 Redistributable: Chrono imports MSVCP140/VCRUNTIME140/VCRUNTIME140_1 and UCRT. Python/NumPy/pandas/Matplotlib are external plotting prerequisites,not bundled.",
+  "new_job": "Fresh continuous mode3 gravity-on Scenario2, no PART restart, identical long-window physics; only TimeMax and TimeOut numerical values change.",
+  "physics": "k=.001, dp=.01, H=1, mDBC velocity0, SPR1, gradient1, HG=.1, eta=.02, ShepardOFF, double stress/float pore and density; no source/SDK/canonical executable change.",
+  "clock": "dt=3*2^-23; nominal finite-Kw Tv2 end7.316858571428572; cap20459420 steps; actual dyadic final7.316858768463135. TimeOut=.01821857142857143 retains legacy DeltaTv=.005. Source-bound JDsOutputTime timeout*nt plus ceil target/dt and final cap yields403 native frames; no native time rewriting.",
+  "bat_modes": "Default double-click runs GenCase, fresh solver, PartVTK fluid/bound then native PNG/CSV postprocessor. -solver-only stops after solver. -postprocess (alias -post) never calls GenCase/solver. Refuse retained output/particle overwrite and never delete or Debug-fallback.",
+  "postprocessor": "Standalone support script accepts --config --data-dir --figures-dir --label --reader and optional --legacy-dir; reader CLI is ReadSelfWeightNative.exe DATA_DIR PART_INDEX. Formal figures have matching CSV; raw BI4 retained. Expected check is root figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_nativepr_manifest.json; native/analysis completion is separate from late-floor and physical acceptance.",
+  "historical_comparison": "Optional tests/outputs/CaseSWSc2_MLSDirect_Tv2_from_p0056_GPU_out; old restart/slip/gradient/dt/precision differ, so not isolated double-stress evidence. Missing old data on server does not block fresh plots and is explicitly marked pending.",
+  "reference_and_acceptance": "Fixed p0 excess and current hydrostatic excess remain separate; no fitted height/time. Initial mode3 is not exact paper zero-p loading. Full physical acceptance remains pending late-floor <=5Pa after baseline/geometry separation, settlement/stress/theory/native safety review; 100Pa safety is not pore-accuracy acceptance. Secondary gravity-off Scenario1 remains deferred.",
+  "runtime_estimate": "About25.5h extrapolated from current RTX3050 long coarse loop; not server benchmark or guarantee. At least1GB package/output headroom advised.",
+  "source_proof": "Before-build source/VS captures from sw_release_build_r1 retained; build used original source paths, not snapshots; no hermetic external SDK claim and no retroactive upgrade of historical source-at-build gap.",
+  "selftest": "Pure stdlib source/XML/BAT and403-frame plan plus20,459,420-step dyadic binary64 recurrence; no files or child processes. Does not authorize prepare/full admission.",
+  "physical_acceptance": false,
+  "solver_started": false,
+  "restart_admitted": false
+}
