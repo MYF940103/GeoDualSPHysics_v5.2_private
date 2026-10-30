@@ -1,0 +1,45 @@
+{
+  "reviewed_date": "2026-10-30",
+  "source_checkpoint": "7c0006ea9d90571b72a5d691c652577b025f5b83",
+  "scope": "Current self-weight Stage1 startup and archived-program/Shepard isolation only. No production source or formal case input/output changed; Cryer external computation untouched.",
+  "configuration": "Original Stage1 k=0, gravity, dp=.01, width=.1, eta=.02, mDBC Vel0, FreeSurface; symC/SPR/HG absent or OFF. SavePosDouble=1 is output-only. Fresh duration .002s, 5 native frames every nominal .0005s. Coarse dt=1us; adopted GPU half=.5us retains Shepard physical cadence40us by interval80.",
+  "original_probe": {
+    "tag": "sw_stage1_short_r1",
+    "all_three_individual_runs_safely_completed": true,
+    "global_check_passed": false,
+    "reason": "CPU/GPU coarse pressure RMS exceeds original5Pa screen; this rejection and its original receipts remain unchanged.",
+    "max_cpu_gpu_pressure_rms_pa": 39.12137412849084,
+    "first_failed_part": 1,
+    "first_failed_actual_time_s": 0.0005000000000000056,
+    "max_cpu_gpu_material_displacement_difference_mm": 0.00010170150809240396,
+    "independent_gpu_half_pressure_rms_pa": 4.196854816832503,
+    "independent_gpu_half_material_displacement_difference_mm": 0.000007953039869441961,
+    "half_limitation": "Near-time eligibility<=1.01us only; not exact event-aligned convergence. Original5Pa/.005mm bounds are unchanged. The new isolation CSV records all5 adopted half pairs, not a rewrite of the rejected probe."
+  },
+  "isolation": {
+    "tag": "sw_stage1_isolate_r1",
+    "four_fresh_runs": ["cpu_old_on", "gpu_old_on", "cpu_current_off", "gpu_current_off"],
+    "on_off_here_means": "PoreShepardRegularization, NOT symC. Darcy is bypassed at k=0 in every job.",
+    "all_four_native_safety_passed": true,
+    "all_four_normal_exits_no_survivors": true,
+    "archived_vs_current_each_backend": "All5 frames x1000 native soil IDs x35 fields bitwise identical, including time/step/dterror/FSNormal. No exclusion or interpolation.",
+    "old_and_current_shepard_on_cpu_gpu_max_pressure_rms_pa": 39.12137412849084,
+    "current_shepard_off_cpu_gpu_max_pressure_rms_pa": 0.010008819861043173,
+    "current_shepard_off_cpu_gpu_max_material_displacement_difference_mm": 0.000000016671183819801784,
+    "current_shepard_off_cpu_gpu_stress_absmax_pa_rounded": 0.000381792,
+    "cpu_shepard_off_minus_on_max_pressure_rms_pa": 540.9909933355698,
+    "gpu_shepard_off_minus_on_max_pressure_rms_pa": 577.3401171240566,
+    "independent_audit": "302 unique bindings/83502774bytes matched SHA/size;30 native states re-decoded; exact archived/current pairs and all5 OFF backend pairs independently checked.",
+    "all_original_screens_passed": false
+  },
+  "conclusions": [
+    "The observed cross-backend difference predates symC integration, and k=0 does not execute symC.",
+    "Disabling only Shepard reduces this startup backend discrepancy below the original bounds. This localizes the sensitive path to Shepard and its associated boundary updates, not yet to one specific operator or statement.",
+    "OFF-versus-ON changes the actual solution substantially; it is a parameter effect, not a half-step error or proof that removing regularization fixes accuracy.",
+    "The scalar Shepard and its boundary MLS, boundary density treatment and periodic state handling are not individually isolated by this test. CPU/GPU internal-normal differences were observed but are not consumed by the current loadmodeNone pressure path when FSType remains identical.",
+    "No .30s equilibrium, PorePress0/excess reference, restart handoff or full self-weight consolidation acceptance follows. The generic35-field reader does not observe PorePress0 or boundary states."
+  ],
+  "next_diagnosis": "Observe pressure/p0 and bottom-boundary state around the first Shepard event before attributing the discrepancy to precision or changing any boundary/filter formulation. Keep the original safety and comparison bounds.",
+  "physical_acceptance": false,
+  "automatic_long_run_admitted": false
+}

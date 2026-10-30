@@ -1,0 +1,26 @@
+{
+  "tag": "sw_stage1_short_r1",
+  "scope": "Author-only draft; root explicitly reviews/prepares/runs. Three fresh actual Release startup diagnostics only, no notifier or automatic long calculation.",
+  "base": "Root Stage1: k=0, gravity-9.81, FreeSurface init, drainage from0, Shepard enabled40, eta=.02,Slip1/Vel0,original sphere-free column geometry H1/width.1/dp.01; generated old geometry confirms1040 total/40fixed/1000soil IDs40..1039.",
+  "jobs": [
+    {"suffix":"cpu_c","backend":"CPU1","dt_s":0.000001,"steps":2000,"shepard_interval_steps":40},
+    {"suffix":"gpu_c","backend":"GPU","dt_s":0.000001,"steps":2000,"shepard_interval_steps":40},
+    {"suffix":"gpu_h","backend":"GPU","dt_s":0.0000005,"steps":4000,"shepard_interval_steps":80}
+  ],
+  "duration_s":0.002,
+  "save_interval_s":0.0005,
+  "expected_native_frames":5,
+  "explicit_changes": "TimeMax/TimeOut shorten only. SavePosDouble0->1 is output precision only, explicitly authorized. Half changes DtIni/DtFixed and Shepard40->80 to retain the40us physical cadence; regularization is not silently twice as frequent. Existing integration-stage phase differences are not claimed eliminated.",
+  "off_options": "PoreDarcySymmetricCorr is omitted/defaultOFF. k0 bypasses Darcy, so no pointless ON/OFF clones. HG/SPR/stress-gradient switches remain their original omitted/OFF defaults; shifting remains0. No pressure/stress state precision changes, traction or boundary changes.",
+  "programs": "Reuse case04 private current CPU/GPU Release program/runtime/build identities from the passed six-job case02 symc_1d_short_r1 prepared manifest. Do not replace canonical programs, rebuild or recursively hash the large old physical graph.",
+  "preparation": "--prepare exclusively generates three tests/configs/sw_stage1_short_r1_*_Def.xml and matching x...win64_CPU/GPU.bat; source root XML/BAT and old checkpoints/results remain untouched. New outputs/logs/CSV use this shallow tag.",
+  "native_guards": "Each5frame series: exact1000 IDs40..1039,1040 total,finite/positive rho,elastic/nout0,double saved positions and persistent stress,unchanged mass/dp/h,z>0,lateral periodic drift and per-layer span<.5mm,true FSType2/3 exactly the initial top10 material IDs and pressure0,native mechanical dterror<=1e-14. Side-surface misclassification is not accepted. k0 pore-diffusion bound is not applicable. No fictitious1000N traction or uniform100Pa stress guard.",
+  "comparisons": "CPU/GPU coarse savedtime differences<=1e-12s. GPU half saved-time proximity<=1.01us is only eligibility, not relaxation of pressureRMS5Pa/material displacementMAX.005mm bounds. Record all actual times/steps and deltas, never interpolate or overwrite metadata. Label half a near-time short diagnostic, not exact matched-time half convergence/full admission.",
+  "physical_reference": "CSV reports nominal initial-coordinate hydrostatic pressure, finite-Kw undrained p_h+B*(rho-rho_w)g*(H-z0), and total sigma=-rho*g*(H-z0), alongside actual p/effective/total sigma by fixed material layer. These are diagnostics during2ms inertial startup, not equilibrium acceptance or the exact native FreeSurface reference.",
+  "p0_limit": "Generic35-column reader does not export stored PorePress0. Actual p0 retention/excess-pressure transfer is NOT observed or accepted here; nominal hydrostatic subtraction must not be presented as native p0.",
+  "failure_policy": "Sequential owned fresh jobs only. No overwrite/restart of retained data. A live guard failure stops only its owned tree and seals retained partial output before checking/reporting. A completed solve is never rerun for analysis failure.",
+  "delivery": "Summary/profile/pair CSVs only; no plots or formal root updates before physical-stage review. Successful2ms screening does not admit Stage1.30s, Scenario2 restart,2Tv or theory acceptance.",
+  "programs_started":false,
+  "physical_acceptance":false,
+  "automatic_long_run_admitted":false
+}

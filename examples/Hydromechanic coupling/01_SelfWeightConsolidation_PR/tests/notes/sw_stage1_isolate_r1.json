@@ -1,0 +1,18 @@
+{
+  "tag":"sw_stage1_isolate_r1",
+  "scope":"Author-only bounded isolation draft; root reviews and explicitly prepares/runs. No solver/build/Git executed during authoring; no notifier or long admission.",
+  "question":"Stage1 k0 bypasses Darcy/symC. Determine whether the observed CPU/GPU ShepardON difference is already present in archived pre-switch programs, and whether disabling only Shepard changes it. Do not assume causality from initial FSNormal differences.",
+  "adopted_controls":"All three already completed sw_stage1_short_r1 CPUc/GPUc/GPUh safety-passed jobs, including their15nativeframes and sealed outputs. The old global5Pa cross failure is preserved, not converted to acceptance. No rerun.",
+  "four_fresh_jobs":["cpu_old_on","gpu_old_on","cpu_current_off","gpu_current_off"],
+  "constant_configuration":"Same root Stage1 geometry/material,gravity,FreeSurface,Slip1/Vel0,eta.02,k0,dt1us,end2ms,0.5ms output,5frames,SavePosDouble1 output-only. HG/SPR/shifting remainOFF, symC omitted/defaultOFF. All Shepard intervals remain40; currentOFF changes only PoreShepardRegularization1->0.",
+  "programs":"Archived case04 cryer_darcy_switch_base_r1 CPU/GPU Release+four frozen runtimes for oldON; current private CPU/GPU programs adopted from completed Stage1 coarse manifests. No mutable canonical replacement or harness rebuild.",
+  "files":"New support script/note only during authoring. --prepare exclusively generates four configs/*_Def.xml and four x*CPU/GPU.bat. Results/logs use tests/outputs,logs with matching tag; one comparisonsCSV in tests/figures, no images.",
+  "guards":"Reuse frozen Stage1 measure/model/native functions without monkeypatching or oldworker edits. Exact1000IDs40..1039/total1040,finite/positive rho,elastic/noexclusion,double positions/stress,mass-dp-h unchanged,geometry/wall guards,exact top10 trueFSType2/3 andp0,naturalstep. No external1000N or uniform100Pa stress gate. Old archived programs lack the new switch-log label; that observation alone is skipped, no native safety field is excluded.",
+  "comparison_plan":"Write all40rows before aggregating bound outcomes: currentON-vs-oldON within eachbackend all35columns exact inclnormal/time/step/dterror (10rows); archivedON,currentON,currentOFF CPU/GPU screens (15); two ShepardOFF-vs-ON option differences (10); adoptedGPUhalf/coarse near-time screen (5). Do not treat FSNormal or other fields as exceptions.",
+  "bounds":"CPU/GPU same-dt actualtime proximity1e-12s; adoptedhalf proximity1.01us only eligibility. Original pressureRMS<=5Pa/materialdisplacementMAX<=.005mm screens remain unchanged. ON/OFF option effects have no5Pa gate. Failed cross screens are retained as false flags, not raised mid-loop and not grounds to abort unrelated fresh variants. No interpolation or metadata rewriting.",
+  "outcomes":"Separate diagnostic_completed, fresh_individual_safety_passed, exact_implementation_passed and all_screen_bounds_passed. A complete isolation with a retained failed screen is not physical acceptance. An independently failed native branch remains excluded/skipped, with its own partial output sealed; independent other branches may still finish.",
+  "limits":"2ms startup only; generic35fieldreader stilldoesnotexportPorePress0,so nativep0/excess orStage1handoff remainsunobserved. No equilibrium/half-convergence/Stage1.30s/Scenario2 or2Tv claim; no source,rootformalinput,load,boundary or damping changes.",
+  "programs_started":false,
+  "physical_acceptance":false,
+  "automatic_long_run_admitted":false
+}
