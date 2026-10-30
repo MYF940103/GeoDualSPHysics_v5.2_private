@@ -1,0 +1,28 @@
+{
+  "tag": "sw_stage1_current_r2",
+  "status": "authored_pending_root_full_review_selftest_prepare_and_run",
+  "files_added": ["tests/support/sw_stage1_current_r2.py", "tests/notes/sw_stage1_current_r2.json"],
+  "retained_failure": "r1 remains sealed and is never restarted. Its half run completed safely, but near-time Part3 compared coarse1501us with half1500us and pressure RMS5.10150751Pa exceeded the unchanged5Pa screen; final matched2ms RMS was0.00747447Pa.",
+  "sequence": [
+    "Fresh corrected-GPU coarse2ms: dt1us,Shepard40,TimeOut.0004999,2000steps,5frames",
+    "Fresh corrected-GPU half2ms: dt.5us,Shepard80,TimeOut.0004999,4000steps,5frames; original5Pa/.005mm bounds at actual time difference<=1e-14s, no interpolation",
+    "After both short gates pass, fresh independent Stage1 ON.3s: dt1us,Shepard40,.005s output,300001steps/61frames",
+    "After ON safely completes, fresh independent Stage1 OFF.3s with the same full cadence, never a restart"
+  ],
+  "output_threshold_only": "The short output interval becomes.0004999s, advancing successive thresholds by.1/.2/.3/.4us. Physics,dt,Shepard event intervals and equations remain unchanged. Saved-position double precision remains output-only.",
+  "planned_natural_steps": {"coarse": [0,500,1000,1500,2000], "half": [0,1000,2000,3000,4000]},
+  "plan_selftest": "Independently compare ceil(k*TimeOut/dt) with searchsorted over the sequential binary64 clock table; require exactly five frames and the planned natural steps. Retained same-dt native metadata must match the clock within1e-14s. Selftest does not launch a solver or queue anything.",
+  "same_dt_shared_states": "Each fresh short job shares exactly four natural steps with its old same-dt run. Coarse shared0/500/1000/2000;half shared0/1000/3000/4000. Require all1040x37 fields bit exact: only dterror_s, an output-interval statistic, is excluded from equality. Actual native time,saved_step,IDs,FSNormal,p0 and every other field remain included. Both datasets independently retain original signed dterror<=1e-14 and all native safety checks.",
+  "guards": "Reuse frozen r1 clock/measure/profiles purely without monkeypatch. All1040 IDs/38 native values finite,elastic,rho>0,no exclusion,double position/stress,unchanged mass/dp/h,p0 exact,float32 excess,original geometry and top ten drainage guards; actual sequential binary64 time within1e-14 and strictly increasing frames. Every full61 frame is checked.",
+  "initial_and_full_cadence": "All four new initial frames equal the accepted corrected-GPU coarse initial1040x38 fields. Full.005s output has only the initial frame in common with retained2ms data; no full-prefix comparison is claimed.",
+  "provenance": "Require accepted C01 five-job and C02 two-job regression checks before prepare/run. Inherit frozen r1 build/program/runtime/reader/input proofs; additionally bind failed r1 check/run/half receipt/completion and native outputs. No old source-list recursion or program replacement.",
+  "artifacts": "Exclusive tests/configs XML/BAT; tests/outputs/sw_stage1_current_r2_{coarse,half,on,off}; tests/logs input/status/check/completion/receipt/wrapper logs; tests/figures frame/history/pair and100-layer native p/p0/q/all-six-stress/settlement/rho/velocity CSVs. Preserve failed records before holding later jobs.",
+  "notification": "One terminal same-thread codex queue attempt only after a new job actually launches and the new check is sealed. Thread and exact Codex executable are frozen in prepared bindings. No queue during authoring/selftest/prepare, no connectivity test, retry or rearm; r1 notification is untouched.",
+  "commands": ["python -B tests/support/sw_stage1_current_r2.py --selftest", "python -B tests/support/sw_stage1_current_r2.py --prepare", "python -B tests/support/sw_stage1_current_r2.py --run"],
+  "exact_convergence_claimed": false,
+  "physical_equilibrium_assessed": false,
+  "physical_acceptance": false,
+  "restart_admitted": false,
+  "automatic_full_consolidation_admitted": false,
+  "programs_executed_during_authoring": false
+}

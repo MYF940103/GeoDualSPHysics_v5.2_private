@@ -1,0 +1,28 @@
+{
+  "tag": "sw_stage1_current_r1",
+  "status": "authored_pending_root_review_and_both_regression_prerequisites",
+  "files_added": ["tests/support/sw_stage1_current_r1.py", "tests/notes/sw_stage1_current_r1.json"],
+  "prerequisites": "Before prepare and run require C01 sw_pore_cell_native_r1.check.json passed with five jobs and C02 sw_pore_cell_1d_r1.check.json passed with two jobs; verify their receipt/completion/output bindings.",
+  "program": "Accepted private GPU Release from sw_pore_cell_build_r1, inherited through the accepted C01 native regression; four runtime dependencies and current source/build provenance remain bound. No CPU rerun or rebuild.",
+  "sequence": [
+    "Fresh ShepardON half2ms: dt.5us, interval80, TimeOut.5ms,4000 steps,5 frames; compare accepted new GPU coarse2ms at actual near-time<=1.01us using original5Pa/.005mm bounds",
+    "After half gate passes, fresh ShepardON Stage1: dt1us, interval40, TimeMax.30s, TimeOut.005s,300001 expected steps and61 actual frames",
+    "After ON completes safely, independent fresh ShepardOFF Stage1 with identical duration/cadence; no restart"
+  ],
+  "physical_parameters": "Formal Stage1 code/material/boundary/mDBC velocity0/k0/damping.02 retained. SavePosDouble1 changes output precision only. OFF alone disables PoreShepardRegularization. Source equations, XML defaults and format guide are not changed.",
+  "clock_guard": "Build binary64 times[0]=0; times[i]=times[i-1]+float64(dt). Each native time must agree with its actual saved_step+1 clock entry within1e-14s (Part0 uses natural0). Do not gate against step*dt:300001 repeated1us additions differ from multiplication by more than1e-12s. Selftest invokes only the read-only native reader ten times to verify1us and.5us recurrence tables against both retained2ms datasets and their sealed metadata; no solver is launched.",
+  "every_frame_guards": "All1040 IDs/38 native fields; finite/no excluded/elastic/rho>0; saved double positions/stress; unchanged mass/dp/h; exact native p0; float32 excess; original z>0, periodic dx<.5mm and layer span<.5mm; original ten top IDs alone have FSType2/3 and zero pressure; original signed dterror<=1e-14 after Part0; strictly increasing actual saved step/time.",
+  "streaming": "While solver is alive process only available frame count minus one; after exit drain remaining frames. Publish wrapper PID, solver PIDs, checked frame count, actual native time/step and elapsed time. A failed native guard stops only the owned wrapper process tree and seals partial results.",
+  "initial_comparison": "Each new job initial1040x38 numeric fields must equal the accepted new GPU coarse initial frame bit for bit. The.005s full cadence shares only its initial frame with the retained2ms/.0005s control; no full-prefix claim is made.",
+  "profiles": "All100 soil layers at every frame: observed native p,p0,excess q,all six effective stress components,total sigma_zz=sigma_zz-pressure,settlement,density and velocity. No fitted theory, reconstructed p0, or assumed-zero excess is used.",
+  "output_paths": "Exclusive tests/configs/sw_stage1_current_r1_* XML/BAT; tests/outputs/sw_stage1_current_r1_{half,on,off}; tests/logs status/manifests/wrapper logs; tests/figures per-job frame/history/profile/pair CSV. Existing/frozen/formal files and retained outputs are protected.",
+  "commands": ["python -B tests/support/sw_stage1_current_r1.py --selftest", "python -B tests/support/sw_stage1_current_r1.py --prepare", "python -B tests/support/sw_stage1_current_r1.py --run"],
+  "exact_convergence_claimed": false,
+  "physical_equilibrium_assessed": false,
+  "physical_acceptance": false,
+  "restart_admitted": false,
+  "automatic_full_consolidation_admitted": false,
+  "external_stress_or_load_gates_added": false,
+  "notifier_added": "One integrated terminal codex queue attempt to the frozen current thread only, after the three-job check is sealed. Attempt/reply retained, no retries/rearming/connectivity self-test; notification is not physical acceptance.",
+  "programs_executed_during_authoring": false
+}

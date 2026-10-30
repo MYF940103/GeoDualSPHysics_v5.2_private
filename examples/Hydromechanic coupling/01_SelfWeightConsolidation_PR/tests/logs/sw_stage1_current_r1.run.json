@@ -1,0 +1,53 @@
+{
+  "status": "rejected_or_interrupted_later_jobs_held",
+  "utc": "2026-10-30T09:45:32.450803+00:00",
+  "worker_pid": 22500,
+  "thread": "01a07683-bc64-7463-8db7-9ee6243967d8",
+  "prepared": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\logs\\sw_stage1_current_r1.inputs.json",
+    "bytes": 678686,
+    "sha256": "ba5df113888329754468006da06b8c62eddbe970d1f3d85281f9c8a1032363cd"
+  },
+  "jobs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\logs\\sw_stage1_current_r1_half.receipt.json",
+      "bytes": 8138,
+      "sha256": "aa7c076a712d66256f38c58897c38e8b0a8093c6b1231af020c7d53920d45030"
+    }
+  ],
+  "current_job": "sw_stage1_current_r1_half",
+  "progress": {
+    "utc": "2026-10-30T09:45:51.536094+00:00",
+    "owned_wrapper_pid": 46312,
+    "solver_pids": [],
+    "checked_frames": 5,
+    "latest_native": {
+      "part": 4,
+      "time_s": 0.0020000000000001033,
+      "saved_step": 3999,
+      "natural_step": 4000,
+      "clock_recurrence_error_s": 0.0,
+      "clock_minus_step_times_dt_s": 1.0321604682062002e-16,
+      "rho_min": 2100.0,
+      "rho_max": 2100.0,
+      "pressure_min_pa": 0.0,
+      "pressure_max_pa": 21063.681640625,
+      "excess_min_pa": 0.0,
+      "excess_max_pa": 11258.357421875,
+      "dterror_s": -0.00010003389109434565,
+      "true_drained_count": 10,
+      "periodic_dx_max_mm": 2.3480932476172e-08,
+      "layer_span_max_mm": 9.978240456121057e-09,
+      "settlement_max_mm": 0.010728827612882519,
+      "speed_max_m_s": 0.008982689119875483
+    },
+    "wall_seconds": 15.45135340001434
+  },
+  "error": "AssertionError(('Earlier gate failed; later jobs held', 'sw_stage1_current_r1_half', 'AssertionError()'))",
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\support\\sw_stage1_current_r1.py\", line 232, in run\n    state['jobs'].append(record); publish(); assert result['passed'],('Earlier gate failed; later jobs held',job['name'],result['error'])\n                                             ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nAssertionError: ('Earlier gate failed; later jobs held', 'sw_stage1_current_r1_half', 'AssertionError()')\n",
+  "finished_utc": "2026-10-30T09:45:52.493802+00:00",
+  "held_jobs": [
+    "sw_stage1_current_r1_on",
+    "sw_stage1_current_r1_off"
+  ]
+}
