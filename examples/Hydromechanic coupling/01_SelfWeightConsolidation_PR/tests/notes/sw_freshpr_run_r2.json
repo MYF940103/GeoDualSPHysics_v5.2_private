@@ -1,0 +1,10 @@
+{
+  "date": "2026-10-31",
+  "reason": "R1 host PID53172 exited during monitor_prepare before MONITOR/RUN/solver/output creation. The fresh-prefix assertion saw its own externally redirected sw_freshpr_run_r1.worker stdout/stderr files. Independent read-only check confirmed correct same-thread identity,no solver,only those two matching logs,and no root output/monitor/run. No numerical gate or solver failed and no physical time was simulated.",
+  "retired": "Keep r1 helper,note and both host logs unchanged;do not restart/rearm its process. R1 never sent a queue message because no physical job launched. This is a new explicit attempt,not an automatic old-worker retry.",
+  "minimal_change": "The14-line r2 entry reuses the fully reviewed r1 implementation with a new immutable attempt tag,note and five monitor/run/check/completion/receipt paths. External host logs use sw_freshpr_host_r2.* instead of the internal sw_freshpr_run_r2 prefix. This satisfies the unchanged fresh-evidence guard;no exclusions,physical thresholds,parameters,programs or output clocks changed. The prepared package is still logs/sw_freshpr_prepare_r2.inputs.json.",
+  "reviewed_implementation": "Read tests/notes/sw_freshpr_run_r1.json for the identical403-save all38 native/pore/natural/HG checks,initial-only exact comparison,96h owned-tree management,sealed solver-before-postprocessing and independent late-floor/physical acceptance. Current r2 entry and imported r1 helper are both captured by monitor_prepare. Same fresh root output remains nonexistent before launch.",
+  "notification": "One terminal queue only after genuine r2 physical launch;no rearming/selftests/old watcher or duplicate solver. Completion of the whole run and offline plots does not imply physical acceptance. Repair completed-run analysis offline rather than rerunning the solver.",
+  "physical_acceptance": false,
+  "restart_admitted": false
+}

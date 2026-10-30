@@ -1,0 +1,11 @@
+Traceback (most recent call last):
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\tests\support\sw_freshpr_run_r1.py", line 189, in <module>
+    elif args.run:raise SystemExit(0 if run() else 1)
+                                        ^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\tests\support\sw_freshpr_run_r1.py", line 169, in run
+    monitor=monitor_prepare(); state=dict(status='running',utc=utc(),thread=THREAD,worker_pid=os.getpid(),prepared=bound(PREP),monitor=bound(MONITOR),launched=False)
+            ^^^^^^^^^^^^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\01_SelfWeightConsolidation_PR\tests\support\sw_freshpr_run_r1.py", line 68, in monitor_prepare
+    assert old.identity()==THREAD and not inventory() and not list(LOGS.glob(TAG+'*')) and not list(old.event.FIGURES.glob(TAG+'*')) and not any(p.exists() for p in [CASE/(job['name']+'_out'),POSTCHECK])
+           ^^^^^^^^^^^^^^^^^^^^^^
+AssertionError
