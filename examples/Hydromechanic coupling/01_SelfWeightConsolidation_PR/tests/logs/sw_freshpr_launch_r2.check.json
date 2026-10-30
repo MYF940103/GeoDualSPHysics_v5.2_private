@@ -1,0 +1,135 @@
+{
+  "passed": true,
+  "utc": "2026-10-30T15:46:24.700369+00:00",
+  "scope": "Active-run startup audit only,not completion or physical acceptance",
+  "worker_pid": 71600,
+  "wrapper_pid": 43724,
+  "initial_exact38": {
+    "part": 0,
+    "time_s": 0.0,
+    "reference_time_s": 0.0,
+    "saved_step": 0,
+    "reference_saved_step": 0,
+    "passed": true,
+    "compared_particles": 1040,
+    "compared_fields": 38,
+    "compared_values": 39520,
+    "different_values": 0,
+    "different_particles": 0,
+    "different_field_count": 0,
+    "different_fields": "",
+    "maximum_absolute_difference": 0.0,
+    "dterror_included": true,
+    "excluded_fields": ""
+  },
+  "initial_reference": {
+    "passed": true,
+    "bulk_soil_only": true,
+    "wall_formula_applied": false,
+    "source_height_m": 1.0,
+    "H1_m": 1.0,
+    "initial_soil_rho_matches_rhop0": true,
+    "fields": [
+      {
+        "field": "pressure",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "porepress0",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_zz",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_xx",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_yy",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_xy",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_yz",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      },
+      {
+        "field": "sigma_xz",
+        "different_bits": 0,
+        "max_abs_difference": 0.0
+      }
+    ],
+    "failed_fields": [],
+    "drained_top_sigma_zz_min_pa": -0.21701879799365997,
+    "drained_top_sigma_zz_max_pa": -0.21701879799365997,
+    "drained_top_nonzero_sigma_zz_count": 10,
+    "stress_storage": "float32 assignment then binary64 state; drained-top stress retained"
+  },
+  "initial_native": {
+    "part": 0,
+    "time_s": 0.0,
+    "saved_step": 0,
+    "natural_step": 0,
+    "clock_recurrence_error_s": 0.0,
+    "clock_minus_step_times_dt_s": 0.0,
+    "rho_min": 2100.0,
+    "rho_max": 2100.0,
+    "pressure_min_pa": 0.0,
+    "pressure_max_pa": 20552.908203125,
+    "excess_min_pa": 0.0,
+    "excess_max_pa": 10693.8583984375,
+    "dterror_s": 0.0,
+    "true_drained_count": 10,
+    "periodic_dx_max_mm": 0.0,
+    "layer_span_max_mm": 0.0,
+    "settlement_max_mm": 0.0,
+    "speed_max_m_s": 0.0,
+    "pore_limit_s": 4.7676598275009266e-07,
+    "native_h_m": 0.017999999225139618,
+    "dt_over_pore_limit": 0.7501119660204496,
+    "pore_limit_passed": true
+  },
+  "device_and_configuration": [
+    "Device 0: \"NVIDIA GeForce RTX 3050\"",
+    "Device default: 0 \"NVIDIA GeForce RTX 3050\"",
+    "  HydroMechInitMode=\"AnalyticalSelfWeight1D\"",
+    "  PoreDarcySymmetricCorr=\"Receiver\"",
+    "  SlipMode=\"DBC vel=0\"",
+    "SoilBoundaryDerivativeSPR=\"MirroredWallDerivatives\"",
+    "SoilHourglassXi: 0.1 (GPU elastic GNOG, endpoint-trapezoidal history)"
+  ],
+  "prepared": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\logs\\sw_freshpr_prepare_r2.inputs.json",
+    "bytes": 77822,
+    "sha256": "537f6b0a3b1b435faf31bff7d50724a58e954f014e1e358cd7807ea9b823a12d"
+  },
+  "monitor": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\tests\\logs\\sw_freshpr_run_r2.monitor.inputs.json",
+    "bytes": 89145,
+    "sha256": "6757cd7acda779c6af20dc35112127c28c3358306b16b7d833d3c95080d67f48"
+  },
+  "input_program": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+    "bytes": 20622336,
+    "sha256": "11ff6c83083cea75ffda2d8e2fe6d64c25497cdab6c096bd1780674594a6e14c"
+  },
+  "native_initial": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\CaseSelfWeightConsolidation_Scenario2_FreshPR_out\\data\\Part_0000.bi4",
+    "bytes": 168777,
+    "sha256": "d9ade11d1801af3c7d058f2b1d815e272be088b27fa7348ac6a4bdfed65d8824"
+  },
+  "completion": false,
+  "physical_acceptance": false
+}
