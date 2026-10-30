@@ -1,0 +1,35 @@
+{
+  "authorized_date": "2026-10-31",
+  "supersedes": "poromech_next_r3.json for active scheduling and server-return review;retain all historical plans/evidence",
+  "user_revision": "Cryer server full-run data have returned to case04. First complete current case01 selfweight full calculation,analysis and acceptance;then return to Cryer precision acceptance and continue diagnosis if peak pressure or other errors do not meet the requirements.",
+  "active_first": {
+    "case": "01_SelfWeightConsolidation_PR",
+    "worker": "tests/support/sw_freshpr_run_r2.py",
+    "status_record": "tests/logs/sw_freshpr_run_r2.run.json",
+    "candidate": "CaseSelfWeightConsolidation_Scenario2_FreshPR_out",
+    "delivery": "Review all403 native saves,original safety/HG/clock checks and completed solver/postprocessing separately. Inspect formal PNGs and matching CSVs,initial-state/reference differences,material settlement/stress and full late dissipation against retained old native results. Apply the previously declared5Pa residual-floor budget after explicit baseline/geometry separation;short-half agreement and normal exit are not physical acceptance.",
+    "on_failure": "Continue necessary selfweight diagnosis without relaxing gates,duplicating the solver,overwriting output or reopening retired workers. Repair completed-solver analysis offline,not by rerunning the physical solve. Do not divert into new Cryer computation while selfweight acceptance remains unresolved.",
+    "monitor": "Preserve the single active same-thread completion mechanism and all hash-bound helpers/programs/inputs. This scheduling record does not edit its source,configuration or notification."
+  },
+  "next_after_selfweight_acceptance": {
+    "case": "04_CryerProblem_PR",
+    "returned_candidate": "CaseCryerProblem_PR_symc_nu030_out",
+    "return_inventory": "04_CryerProblem_PR/tests/notes/cryer_server_return_r1.json",
+    "inventory_scope": "Lightweight directory/XML/Run.out review only at scheduling time;no full BI4 decoding or physical acceptance yet. Log indicates normal finish on RTX A6000 and1065 main PARTs0000-1064. Total37181 includes8 dummy boundaries plus37173 soil;do not mistake it for a changed soil set.",
+    "actual_input_caveat": "Returned generated XML and Run.out use DtIni=DtFixed=2^-20(.95367431640625us),while current root Def uses2^-21(.476837158203125us). Server963370 steps are half the old nominal1926740. Verify the actual returned inputs and hashes;do not claim root-XML identity or inherit the old smaller-step peak-half convergence evidence.",
+    "review_order": [
+      "Bind actual generated XML,command/program/build provenance,Run.out,completion time,complete native catalog/IDs and input/output hashes before quantitative claims. Distinguish solver completion,copy completeness,safety,time-step convergence and physical accuracy.",
+      "Re-evaluate actual fixed step against both mechanical and configured pore-diffusion limits. Check full native finite/elastic/no-exclusion/geometry/drainage/load/HG-applicability records using the existing Cryer criteria. If independent time-step evidence is necessary,admit only a justified fresh bounded diagnostic after review;never rerun the full server result merely for analysis.",
+      "Use actual native times and load/ramp/hold/drainage history. Review pre-opening equilibrium separately,keep the opening-state convention explicit,and do not simply shift time to ramp end to hide peak lag. Compare the applicable finite-Kw and finite-radius theoretical reference at the fixed center material IDs rather than substitute an r=0 curve for a finite sampling ball.",
+      "Quantify center pressure peak amplitude and time,full startup and Mandel window,radial pressure and displacement/effective-total stress,load-to-center transmission and late decay. Compare retained raw/symC peak and half controls at their actual matched times;option differences and cross-version changes are not isolated precision A/B or full-cycle convergence.",
+      "Inspect plots and matching CSVs before acceptance. Apply the existing declared case-specific accuracy requirements,report reference/digitization/sampling limitations,and do not invent or relax a tolerance after seeing this returned result.",
+      "If peak pressure,timing or other required accuracy is insufficient,continue evidence-ranked diagnosis of initial-state/loading/internal-force consistency,diffusion and mechanics operators,boundary/discrete spherical geometry,time step and precision accumulation. Particle shifting is only a candidate if a distribution-related cause is demonstrated;explain numerical consequences and validate a local reversible change before adoption. No external-load-only correction that breaks uniform stress balance.",
+      "After verified repair/admission update independent formal root XML/BAT and support with actual runtime and posterior analysis,retain returned raw data and rejected controls,generate formal figures AND CSVs and any required particle visualization. Selectively back up every verified stage locally and remotely with matching refs. RawBI4/programs are not automatically cloud-Git backups."
+    ],
+    "non_claims": "Server completion is not accuracy acceptance. The symC switch is a Darcy-operator option,not a fully double-precision coupled solution. Static-plane SPR and2D elastic HG are not automatically applicable to the spherical3D boundary. No unverified restart or general-boundary claim."
+  },
+  "after_both": "Review remaining validated scope/errors/cost and Lian delivery status with the user before choosing retrogressive-landslide verification versus u-pl dynamic Darcy with variable porosity/permeability. Neither branch starts automatically;TPI/projection remains separately deferred.",
+  "protected": ["Cryer returned server raw output and all prior controls", "current selfweight frozen code/monitor and formal results", "accepted case02 data/figures/CSVs", "Lian retained full output and published analysis", "Yao paused scope"],
+  "no_new_solver_authorized_by_this_record": true,
+  "physical_acceptance": false
+}
