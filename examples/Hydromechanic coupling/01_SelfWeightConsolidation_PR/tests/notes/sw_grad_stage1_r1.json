@@ -1,0 +1,21 @@
+{
+  "tag": "sw_grad_stage1_r1",
+  "status": "authored_pending_root_full_review_selftest_prepare_and_launch",
+  "files_added": ["tests/support/sw_grad_stage1_r1.py", "tests/notes/sw_grad_stage1_r1.json"],
+  "purpose": "One fresh same-GPU Stage1 G1/ShepardOFF run after all three grad1 short checks passed. Retained r2_OFF is G0/ShepardOFF; the stress-rate gradient flag is the isolated option difference.",
+  "job": "Private fixed GPU Release,SoilStressRateGradCorr1,ShepardOFF,dt1us,TimeMax.30s,TimeOut.005s,300001steps,61frames. Retain k0,damping.02,mDBCvel0,FreeSurface,all material/kernel/integration settings and SavePosDouble1 output precision.",
+  "prerequisite": "Require sw_grad_short_r1.check.json passed with exactly three completed jobs; verify their input/program/runtime/native-output/receipt/completion/artifact hashes before prepare and run. Do not rerun CPU or G0.",
+  "native_runner": "Reuse frozen r2.one_job full-run path without monkeypatch: streaming count-minus-one while alive,drain all frames on exit,PID/actualtime status,owned-tree stop on guard failure,61x1040 IDs/all38 native safety,signed dterror,p0/excess,geometry/drainage and binary64 recurrence clock<=1e-14. Only initial38-field comparison is activated against accepted own G1 short GPU initial; no full-prefix claim.",
+  "runtime_confirmation": "New overall check additionally requires actual SoilStressRateGradCorr=KernelGradient,PoreCompressionGradCorr=KernelGradient and ShepardDisabled. The frozen execution receipt remains unchanged; a separate sealed analysis record carries the new runtime confirmation and derived-artifact outcome.",
+  "g1_g0_comparison": "Decode and validate retained G0/ShepardOFF61 frames. Require equal actual saved steps and time difference<=1e-14s at every corresponding frame. Report pressure/material displacement/six stress/R and native-field differences descriptively; no5Pa/.005mm half-step bound is applied to this option comparison.",
+  "R_and_profiles": "Additional6100-row G1_ShepardOFF profiles_r CSV retains all100 layers at all61 frames with observed p,p0,q,six stresses,totalzz,settlement,rho,velocity and R=q_native+Mf*trace(sigma)/(3K). Additional history_r reports direct990-particle non-top R. No fitted theory,assumed-zero excess or physical acceptance threshold.",
+  "labels": "Always label new data G1/ShepardOFF and retained control G0/ShepardOFF. Never label G1 as ShepardON or call the old hardcoded ON/OFF equilibrium-review command. New plots and physical interpretation follow root review offline.",
+  "artifacts": "Exclusive tests/configs XML/BAT; tests/outputs/sw_grad_stage1_r1_g1_off; logs execution/status/check/analysis/queue receipts; figures original native frames/history/profiles/pairs plus explicit _history_r,_profiles_r,_g1_g0_pairs,_g1_g0_differences CSVs.",
+  "terminal_notification": "One same-thread codex queue attempt only after a new job actually launched and the terminal check/analysis are sealed. Exact thread and Codex executable are frozen in inputs. Point root to the new check/analysis/G1 profiles and retained r2_OFF. No authoring/selftest/prepare queue,no connectivity test,retry or rearm.",
+  "short_runtime_interpretation": "CPU8 and GPU short-loop times are not a long-duration benchmark. This stage runs only GPU to preserve the same-backend G1/G0 option comparison; any later CPU formal path needs separate review.",
+  "commands": ["python -B tests/support/sw_grad_stage1_r1.py --selftest", "python -B tests/support/sw_grad_stage1_r1.py --prepare", "python -B tests/support/sw_grad_stage1_r1.py --run"],
+  "physical_acceptance": false,
+  "restart_admitted": false,
+  "automatic_full_consolidation_admitted": false,
+  "programs_executed_during_authoring": false
+}
