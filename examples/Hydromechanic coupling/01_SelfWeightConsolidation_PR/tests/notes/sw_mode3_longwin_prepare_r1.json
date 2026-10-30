@@ -1,0 +1,9 @@
+{
+  "date": "2026-10-30",
+  "status": "Preparation failed before configuration generation or worker launch; repaired before first real run",
+  "failure": "sw_mode3_longwin_r1.py --prepare raised AssertionError Conflicting binding for src/source/JPartDataBi4.cpp when combining frozen reader and new-build input records. No XML/BAT,prepared input,run state,solver or notification had been created.",
+  "diagnosis": "Read-only grouping found161 duplicate source paths differing only in SHA256 hexadecimal letter case. Every path,byte count and normalized digest matched;no source contents changed. Historical reader records use uppercase hex while newer records use lowercase. Strict unique compares complete dictionaries,not just digest bytes.",
+  "original_helper_archive": {"relative_path": "tests/outputs/sw_mode3_longwin_prepare_r1/sw_mode3_longwin_r1.py", "sha256": "f8b3baa31e7006edf272585a28565f77d1617fbaf5323b9051cf6523bd8ddc6d"},
+  "minimal_repair": "Normalize SHA256 spelling to lowercase in the new combined in-memory proof before strict unique and ordinary byte/hash verification,matching the established earlier-window convention. Do not rewrite any old manifest,source,output or hash. Differing contents,byte counts or other record fields still fail. No physics,clock,safety tolerance or native equality exception changed.",
+  "continuation": "Run pure selftest,then first successful prepare and real worker launch under the existing bounded-window decision. This is not restarting/rearming a worker:the failed preparation never launched one. Preserve the failed helper archive and this record."
+}
