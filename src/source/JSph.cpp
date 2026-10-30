@@ -224,6 +224,7 @@ void JSph::InitVars(){
   PoreMdbcInterpolationMode=0;
   PoreCompressionSourceMode=0;
   PoreCompressionGradCorr=true;
+  PoreDarcySymmetricCorr=false;
   SoilStressRateGradCorr=false;
   SoilBoundaryDerivativeSPR=false;
   SoilHourglassXi=0;
@@ -3666,6 +3667,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     PoreCompressionSourceMode=1;
   else Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
   PoreCompressionGradCorr=ReadHydroBool("PoreCompressionGradCorr",true);
+  PoreDarcySymmetricCorr=ReadHydroBool("PoreDarcySymmetricCorr",false);
 
   //-Input validation.
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
@@ -3745,6 +3747,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  PoreMdbcInterpolationMode", (PoreMdbcInterpolationMode==1? "MLSDirect": "ZeroOrder")));
     Log->Print(fun::VarStr("  PoreCompressionSourceMode", (PoreCompressionSourceMode==1? "DensityRate": "PairDivergence")));
     Log->Print(fun::VarStr("  PoreCompressionGradCorr", (PoreCompressionGradCorr? "KernelGradient": "None")));
+    Log->Print(fun::VarStr("  PoreDarcySymmetricCorr", (PoreDarcySymmetricCorr? "SymmetricSoilPair": "Receiver")));
   }
   Log->Print("");
 }

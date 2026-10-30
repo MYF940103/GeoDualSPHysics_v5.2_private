@@ -1669,7 +1669,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
   ,const float2 &artstressp1_xx_xy,const float2 &artstressp1_xz_yy,const float2 &artstressp1_yz_zz,const float invwabdp
   ,float2 &dsigmap1_xx_xy,float2 &dsigmap1_xz_yy,float2 &dsigmap1_yz_zz
   ,float3 &nopencountp1,float3 &nopenshiftp1
-  ,const float *porepress,const tmatrix3d &porecorr,bool poreratep1,const float pwp1,double &pore_ratep1,const float3 *boundderivativevel)
+  ,const float *porepress,const tmatrix3d &porecorr,bool poreratep1,const float pwp1,double &pore_ratep1,const float3 *boundderivativevel,const tmatrix3d* corrmat)
 {
   const bool useartstress=(CTE.artificialstress && !ftp1 && invwabdp>0.f);
   //-Hydromechanical switches used inside the pair loop.
@@ -1829,8 +1829,17 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
               const double pwp2=double(porepress[p2]);
               // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
               const double pwp2seep=pwp2;
-              const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+CTE.eta2);
-              const double lapz=vol2*pdrz*pdotgrad/double(prr2+CTE.eta2);
+              //-Optional symmetric correction changes soil-soil Darcy terms only.
+              double lapdotgrad=pdotgrad;
+              if(CTE.poredarcysymcorr && !boundp2 && corrmat && CODE_IsFluid(code[p2])){
+                const tmatrix3d cj=corrmat[p2];
+                const double jfrx=cj.a11*pfrx+cj.a12*pfry+cj.a13*pfrz;
+                const double jfry=cj.a21*pfrx+cj.a22*pfry+cj.a23*pfrz;
+                const double jfrz=cj.a31*pfrx+cj.a32*pfry+cj.a33*pfrz;
+                lapdotgrad=.5*(pdotgrad+pdrx*jfrx+pdry*jfry+pdrz*jfrz);
+              }
+              const double lapw=vol2*(double(pwp1)-pwp2seep)*lapdotgrad/double(prr2+CTE.eta2);
+              const double lapz=vol2*pdrz*lapdotgrad/double(prr2+CTE.eta2);
               const double seep=2.0*double(CTE.hydraulicconductivity)*lapw/(double(CTE.porewaterrho)*double(CTE.poreghyd))
                 + (useghead? 2.0*double(CTE.hydraulicconductivity)*lapz: 0.0);
               pore_ratep1+=double(CTE.porekwn)*seep;
@@ -2074,8 +2083,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel);
-        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel); //<vs_syymmetry>
+                          KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel,corrmat);
+        if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (false,p1,pini,pfin,viscof,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massf,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel,corrmat); //<vs_syymmetry>
       }
     }
     //-Interaction with boundaries.
@@ -2083,8 +2092,8 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
     for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
       unsigned pini,pfin=0;  cunsearch::ParticleRange(c2,c3,ini1,fin1,begincell,pini,pfin);
       if(pfin){
-                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel);
-      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel);
+                        KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,false> (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel,corrmat);
+      if(symm && rsymp1)KerInteractionForcesFluidBox<tker,ftmode,lamsps,tdensity,shift,true > (true ,p1,pini,pfin,viscob,ftomassp,poscell,velrhop,boundmode,boundslipmode,tangenvel,motionvel,boundnormal,code,fstype,idp,sigma,artificialstress,mdbc2,CTE.massb,ftp1,pscellp1,velrhop1,pressp1,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,acep1,hydromechloadacep1,arp1,visc,deltap1,shiftmode,shiftposfsp1,sigmap1_xx_xy,sigmap1_xz_yy,sigmap1_yz_zz,artstressp1_xx_xy,artstressp1_xz_yy,artstressp1_yz_zz,invwabdp,dsigmap1_xx_xy,dsigmap1_xz_yy,dsigmap1_yz_zz,nopencountp1,nopenshiftp1,porepress,porecorr,poreratep1,pwp1,pore_ratep1,boundderivativevel,corrmat);
       }
     }
     //-Optional correction matrix for soil stress-rate velocity gradients.

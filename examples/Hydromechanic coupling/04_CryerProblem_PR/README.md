@@ -1,5 +1,49 @@
 # CryerProblem_PR
 
+## Current server candidate: symC, nu=0.30 (2026-10-30)
+
+Use the NEW independent entry `xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat`
+and `CaseCryerProblem_PR_symc_nu030_Def.xml`. The self-contained Windows/RTX A6000
+package and copy-back instructions are described in [support/README_server.md](support/README_server.md).
+Old root inputs, outputs and dated descriptions below are historical and are
+preserved, not silently upgraded. Their5us/no-ramp settings and deletion menu
+are NOT this new entry. The new BAT refuses existing output and never deletes it.
+
+The explicit optional `PoreDarcySymmetricCorr` is now implemented on CPU/GPU;
+its default is OFF. ON changes only soil-soil Darcy contractions to use the
+average of the two endpoint correction matrices. Momentum/load, compression,
+boundary pairs, precision and time integration are unchanged. The server input
+opts in; accepted case02/Lian inputs keep their original default behavior.
+
+All four fresh Release implementation paths (CPU/GPU, default OFF/explicit ON)
+reproduced their respective retained controls at69 matched native states and
+all35 columns, including dterror, with0ULP difference. Independent readback
+rechecked all276 pairs/359091180 values. Both new Debug2frame smokes passed;
+GPU memcheck reported0errors/0bytes leaked. This is implementation acceptance,
+not a new full physical or universal-operator claim. See
+`tests/logs/cryer_darcy_switch_native_review_r1.check.json`.
+
+The prior isolated symC peak/half comparison reduced the fixed18-ID center
+peak error from about-2.44% to-0.99%, and sampled peak-time error from+10.31%
+to+3.92%, against the unchanged finite-Kw, finite-radius quasistatic reference.
+Those metrics are from the retained peak window, not a completed server run.
+The new full decay remains pending and must be reviewed after copy-back.
+
+The input retains dp=.0025,k=1e-5,nu=.30,raw confinement,grad1,damping.00004,
+float pore pressure/density and double stress/positions. Ramp ends at2^-8s;
+drainage opens at tD=2^-7s. Use tau=t-tD, not ramp end, for drained theory.
+The full target is legacy Tv=1:1926740 steps of2^-21s, actual endpoint
+0.9187412261962890625s. Output retains the65 closed-history states through tD,
+then nominal Delta legacy Tv=.001 anchored at tD (about1065 frames total).
+Fixed-step quantization requires using actual saved times in comparisons.
+The two special timeout rates are intentionally different, not duplicate settings.
+
+No new local full solver is launched for this handoff. Run the portable smoke
+on the server first, then launch the full BAT independently. Return the whole
+output folder and manifest; plotting/particles conversion is deferred until
+copy-back. Existing legacy postprocessors have different defaults and an
+incompressible/point-center reference; do not apply them blindly to this run.
+
 ## Peak-window half review (2026-10-29)
 
 The fresh GPU half step completed294912steps through actual time.0703125s.

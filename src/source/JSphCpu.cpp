@@ -2479,8 +2479,17 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                   const double pwp2=double(porepress[p2]);
                   // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
                   const double pwp2seep=pwp2;
-                  const double lapw=vol2*(double(pwp1)-pwp2seep)*pdotgrad/double(prr2+Eta2);
-                  const double lapz=vol2*pdrz*pdotgrad/double(prr2+Eta2);
+                  //-Optional symmetric correction changes soil-soil Darcy terms only.
+                  double lapdotgrad=pdotgrad;
+                  if(PoreDarcySymmetricCorr && !boundp2 && corrmat && CODE_IsFluid(code[p2])){
+                    const tmatrix3d cj=corrmat[p2];
+                    const double jfrx=cj.a11*pfrx+cj.a12*pfry+cj.a13*pfrz;
+                    const double jfry=cj.a21*pfrx+cj.a22*pfry+cj.a23*pfrz;
+                    const double jfrz=cj.a31*pfrx+cj.a32*pfry+cj.a33*pfrz;
+                    lapdotgrad=.5*(pdotgrad+pdrx*jfrx+pdry*jfry+pdrz*jfrz);
+                  }
+                  const double lapw=vol2*(double(pwp1)-pwp2seep)*lapdotgrad/double(prr2+Eta2);
+                  const double lapz=vol2*pdrz*lapdotgrad/double(prr2+Eta2);
                   const double lapwrate=kwn*2.0*khyd*lapw/(double(SoilCte.PoreWaterRho)*ghyd);
                   const double lapzrate=kwn*(gnorm>0? 2.0*khyd*lapz: 0.0);
                   const double seep=lapwrate+lapzrate;

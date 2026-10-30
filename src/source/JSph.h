@@ -224,6 +224,7 @@ protected:
   unsigned PoreMdbcInterpolationMode; ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct. //mdbr
   unsigned PoreCompressionSourceMode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate. //mdbr
   bool PoreCompressionGradCorr; ///<Applies kernel-gradient correction to the pore-pressure compression source. //mdbr
+  bool PoreDarcySymmetricCorr; ///<Uses symmetric soil-soil Darcy correction; default=false keeps receiver correction.
   bool SoilStressRateGradCorr; ///<Applies kernel-gradient correction to soil stress-rate velocity gradients (default=0). //mdbr
   bool SoilBoundaryDerivativeSPR; ///<Mirrored wall velocity for stress, pore-pressure and density derivatives only (CPU, default=false).
   double SoilHourglassXi;      ///<CPU elastic GNOG strength; zero disables allocation and all hourglass operations.

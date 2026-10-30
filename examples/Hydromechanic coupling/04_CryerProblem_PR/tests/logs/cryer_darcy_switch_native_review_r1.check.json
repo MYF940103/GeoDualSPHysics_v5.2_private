@@ -1,0 +1,88 @@
+{
+  "status": "native_implementation_bridge_review_passed",
+  "review_date": "2026-10-30",
+  "implementation_regression_passed": true,
+  "formal_inputs_preparation_admitted": true,
+  "physical_acceptance": false,
+  "full_cycle_acceptance": false,
+  "automatic_long_solver_admitted": false,
+  "decision": "The explicit default-OFF CPU/GPU switch reproduces each retained same-backend/operator control exactly. Admit a frozen nu=.30 Windows server candidate and its portable startup check, not a new full-cycle physical claim or a new local long run.",
+  "integrity_audit": {
+    "bound_references": 1239,
+    "unique_files": 803,
+    "bytes": 4187160860,
+    "sha256_or_size_mismatches": 0,
+    "binding_conflicts": 0,
+    "new_completion_output_records": 377,
+    "new_completion_output_bytes": 1704619552,
+    "scope": "One deduplicated pass over the prepared graph and six new completions. No recursive re-audit of unrelated historical full-output trees."
+  },
+  "independent_native_redecode": {
+    "read_only_decoder_processes": 4,
+    "elapsed_seconds": 828.475,
+    "release_pairs": 276,
+    "columns_per_pair": 35,
+    "compared_particle_rows": 10259748,
+    "compared_native_values": 359091180,
+    "all_values_uint64_equal": true,
+    "dterror_included": true,
+    "excluded_columns": [],
+    "interpolation_used": false,
+    "native_metadata_rewritten": false,
+    "first_difference": null,
+    "native_ids": "8..37180, exactly37173 soil IDs in each frame",
+    "release_end_time_s": 0.00830078125,
+    "release_last_saved_step": 17407,
+    "debug_scope": "Two independent new Debug2frame ON runs passed original safety; GPU memcheck had0errors/0bytes leaked. Debug was not treated as Release0ULP truth."
+  },
+  "original_safety": {
+    "sealed_summary_rows_checked": 280,
+    "release_rows_independently_redecoded": 276,
+    "true_surface_count": 5153,
+    "classification_changes": 0,
+    "part64_is_pre_open": true,
+    "parts65_to68_true_surface_pressure_absmax_pa": 0,
+    "dterror_max_s": 0,
+    "fixed_to_pore_step_ratio_max": 0.160078546233,
+    "radius_max_m": 0.05000000000000002,
+    "radius_limit_m": 0.0525,
+    "rho_min_kg_m3": 2099.5114746,
+    "rho_max_kg_m3": 2108.5690918,
+    "excluded_or_plastic_count": 0,
+    "closed_checks": 80,
+    "closed_maxima": {
+      "pressure_target_rms_pa": 0.5478892584,
+      "total_stress_target_six_rms_pa": 0.3877088883,
+      "speed_max_m_s": 0.00000243551621775,
+      "isotropic_vector_residual_rms_mm": 0.000000400117809,
+      "shell_target_error_rms_mm": 0.000000261093829
+    },
+    "closed_original_limits": {
+      "pressure_target_rms_pa": 100,
+      "total_stress_target_six_rms_pa": 100,
+      "speed_max_m_s": 0.00001,
+      "isotropic_vector_residual_rms_mm": 0.00001,
+      "shell_target_error_rms_mm": 0.00001
+    },
+    "post_open_uniform_stress_guard_applied": false
+  },
+  "activation_observation": {
+    "cpu_on_off_pressure_absmax_pa": 609.88671875,
+    "gpu_on_off_pressure_absmax_pa": 609.8876953125,
+    "maximum_at_part": 65,
+    "all_four_post_open_frames_changed": true,
+    "meaning": "Confirms actual operator activation, not a half-step/theory error or proof of accuracy improvement."
+  },
+  "owned_exits": {"six_exit_codes_zero": true, "gpu_memcheck_errors": 0, "gpu_memcheck_leaked_bytes": 0, "observed_matching_live_processes": 0, "inventory_utc": "2026-10-30T02:43:38.0505341Z"},
+  "observed_loop_seconds": {"cpu_debug": 161.135, "gpu_debug_memcheck": 2524.270, "cpu_off": 4553.185, "cpu_on": 4730.879, "gpu_off": 1969.099, "gpu_on": 2159.141},
+  "provenance": "Six compiled source snapshots and the pending-regression guide are separately archived byte-for-byte. Production Git line-ending normalization is not misrepresented as a compiler-input SHA. Historical manifests remain unchanged. Documentation may now be updated independently of compiled source.",
+  "limits": "This is implementation acceptance for the existing scoped Cryer candidate, not a new half-step/peak/full proof. Prior isolated finite-Kw finite-radius peak-half metrics (-0.9924percent amplitude,+3.9222percent sampled timing) remain bounded evidence; full decay/general boundaries/material variation remain unaccepted. Default OFF remains unchanged for accepted case02/Lian inputs.",
+  "source_links": [
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_native_r1.check.json", "bytes": 2353, "sha256": "e16b5c81de4fd86b88b2cafcc2127d0c21a2a892b121d87aded2d3f78657d8b4"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_native_r1.inputs.json", "bytes": 240557, "sha256": "f391199c2a0d395a7c13b45d63e89fd45f73be79810e1731860415a35c03189d"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_native_r1.run.json", "bytes": 2611, "sha256": "838ae0021b7ef6aacd6f79c04f2e429fd8b50acf863a1b6ca07ddaa65c2b3a51"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_switch_build_r2_Release.build.json", "bytes": 5183, "sha256": "6b722c20dbcbb97a266566d28c878af6cdc5030544ca4ea8aa0e7f453b9ea377"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_native_doc_r1.json", "bytes": 1023, "sha256": "1a8da48ef97983028279c71aced1abbbf0f05a9b27daebca696baab9ca60c52f"},
+    {"path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_darcy_native_sources_r1.json", "bytes": 1514, "sha256": "b553c96dd00cdc671ab77429ed6802251efdd39f9ec6f63ba1bc36cd3add33d0"}
+  ]
+}

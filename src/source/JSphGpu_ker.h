@@ -88,6 +88,7 @@ typedef struct{
   unsigned poremdbcinterp;  ///<mDBC boundary pore-pressure interpolation mode: 0=zero-order, 1=MLS direct.
   unsigned porecompsourcemode; ///<Pore-pressure compression source: 0=pair divergence, 1=density rate.
   unsigned porecompgradcorr; ///<Applies kernel-gradient correction to pore-pressure compression source.
+  unsigned poredarcysymcorr; ///<Optional symmetric soil-soil Darcy correction; zero keeps receiver correction.
   unsigned hydrotoploadmode; ///<Hydromechanical top-load mode.
   float hydrotoploadpressure; ///<Current ramped q0 for hydromechanical top load [Pa].
   float porewaterrho;       ///<Pore-water density.

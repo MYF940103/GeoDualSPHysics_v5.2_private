@@ -755,6 +755,7 @@ void JSphGpu::ConstantDataUp(){
   ctes.poremdbcinterp=PoreMdbcInterpolationMode;
   ctes.porecompsourcemode=PoreCompressionSourceMode;
   ctes.porecompgradcorr=(PoreCompressionGradCorr? 1u: 0u);
+  ctes.poredarcysymcorr=(PoreDarcySymmetricCorr? 1u: 0u);
   ctes.hydrotoploadmode=unsigned(HydroMechTopLoadMode);
   ctes.hydrotoploadpressure=0.f;
   if(HydroMech && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || HydroMechTopLoadMode==HMLOAD_TopKernelBand) && HydroMechTopLoadQ0>0.f){
