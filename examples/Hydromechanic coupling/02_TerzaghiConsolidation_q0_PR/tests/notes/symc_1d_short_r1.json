@@ -1,0 +1,31 @@
+{
+  "tag": "symc_1d_short_r1",
+  "scope": "Draft only: six fresh actual Release programs, not new harnesses. Root reviews and explicitly prepares/runs; no notifier or automatic long run.",
+  "purpose": "Separate default-OFF implementation equality from the optional symmetric-Darcy physical effect on accepted one-dimensional consolidation.",
+  "jobs_in_order": ["cpu_old", "cpu_off", "cpu_on", "gpu_old", "gpu_off", "gpu_on"],
+  "base": "Root CaseTerzaghiConsolidation_q0_PR_full_k1em4_Def.xml, dp=.01,width=.1,k=1e-4,1000 soil IDs40..1039,mode5 band,SPR1,grad1,HGxi.1,eta.04,drainage FixedGrid1 at.01s; no root input/output edits.",
+  "changes": "TimeMax=.15,TimeOut=.001; only ON adds PoreDarcySymmetricCorr=1. Both old and current OFF omit the key, testing its default. All programs CPU1/GPU,stable,mDBC,15000steps,151 expected native samples at actual saved times.",
+  "prepare_outputs": "--prepare creates six shallow tests/configs/symc_1d_short_r1_{cpu,gpu}_{old,off,on}_Def.xml plus matching x...win64_CPU/GPU.bat by mechanical replacement of the formal XML; generated inputs are exclusive and hash-bound. No configs are written by authoring/selftest.",
+  "programs": {
+    "old": "case04/tests/outputs/cryer_darcy_switch_base_r1 archived full CPU/GPU Release and four runtime files; not mutable canonical programs",
+    "current_cpu": "case04/tests/outputs/cryer_darcy_switch_build_r1/ReleaseCPU/out/DualSPHysics5.2CPU_win64.exe",
+    "current_gpu": "case04/tests/outputs/cryer_darcy_switch_build_r2/Release/out/DualSPHysics5.2_GEO_win64.exe",
+    "provenance": "Frozen base/build/native review receipts and exact compiled-source snapshots; do not follow deliberately changed historical original source/doc paths. Root source checkpoint7c0006e is represented by program/receipt identity, not an executed Git command."
+  },
+  "reader": "Read-only 35-column Lian ReadHydroNative.exe and read_hydro_native.cpp, both hash-bound. Original release_case.model/inspect reused unchanged; derived drained display flag is used only by its post-.1s guard. No native values, time, step or metadata rewritten.",
+  "gates": {
+    "OFF_vs_same_backend_old": "All151 complete35-column fields must be uint64-equal after little-endian float64 conversion, including actual time, saved step, IDs, flags and dterror. No exclusions or interpolation.",
+    "original_safety": "Every stable PART: finite data,1000 exact native IDs,positive rho,elastic,no exclusions,double position/stress,native load present,unchanged mass/dp/h,geometry/lateral span<.5mm,no wall crossing. At every savedt>tD+1e-7 the true FSType2/3 set is exactly the top10 material IDs with p=0; tD is pre-open. Post.1s original100Pa layer-stress/top-gap and1000N/m resultant within.001 remain. Mechanical dterror<=1e-14 and separate pore step limit.",
+    "HG": "Final force/rate counts2N,predictor/correctorN,calculationsN+1,cacheN-1,dt/tau<=.2,spin<.01. No claim of re-observing per-step HG work history unavailable in ordinary programs.",
+    "CPU_GPU_ON": "Independent original cross-backend delivery comparison at all151 actual matched times: pressureRMS<=5Pa and top material settlement difference<=.005mm; not a half-step or theory gate.",
+    "ON_OFF": "Record pressure,top/bottom material settlement and stress differences. Never apply the5Pa cross/half limit to a deliberately different physical option."
+  },
+  "ownership": "Sequential owned fresh program trees only; reject existing solver/output/receipt. Read only sealed predecessor PARTs during runtime. On guard failure stop only owned wrapper tree, seal all retained partial output before reporting; completed solves are never rerun for an analysis failure.",
+  "outputs": "New tests/outputs/<job> native data; logs/<job> completion+receipt; figures/<job>_history.csv and figures/symc_1d_short_r1_comparisons.csv. Existing accepted1D data/figures untouched.",
+  "historical_cost": "Old .15s CPU1 loop123.714s/GPU191.633s suggests ~15.8min for three of each, plus native monitoring. GPU timing overlapped compilation; this is a budget only, not a controlled benchmark/current performance promise.",
+  "next_only_after_review": "If implementation/short gates pass, choose bounded15s ON independent half then justified late2Tv comparison to accepted retained actual-time/material-ID controls. No automatic long,formal or physical acceptance from this short stage; do not reopen KEEP or change loading/damping to fit curves.",
+  "programs_started": false,
+  "implementation_passed": false,
+  "physical_acceptance": false,
+  "automatic_long_run_admitted": false
+}
