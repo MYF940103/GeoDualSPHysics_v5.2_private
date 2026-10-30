@@ -1,0 +1,16 @@
+{
+  "tag":"sw_pore_cell_build_r1",
+  "scope":"Author-only build helper. Root separately reviews, selftests, prepares and builds. No target program/help, physical solver, notification, CODEX queue or Git operation is performed by authoring or automatically by this helper.",
+  "source_change_owned_by_root":"Exactly one host launch argument in source/JSphGpu_ker.cu, PorePressureMdbcCorrectionT: CTE.poscellsize -> dvd.poscellsize. The archived original bytes are in outputs/sw_pore_cell_base_r1/JSphGpu_ker.cu and logs/sw_pore_cell_base_r1.json. prepare proves the current source equals that snapshot with only the specified unique byte replacement.",
+  "reason_and_limit":"sw_cte_host_r1 CUDA unit observed configured host/device constant/API copy .035999998450279236 but host launch argument0 on RTX3050. This motivates correcting the host argument, not changing an SPH equation or boundary model. Unit evidence does not by itself establish the full solver cause or any physical improvement; fresh native regressions remain mandatory.",
+  "fresh_order":["CPU DebugCPU (default build requirement)","GPU Debug","GPU Release"],
+  "adopted":"Reuse the already verified case04 logs/cryer_darcy_switch_build_r1_ReleaseCPU.build.json program, its four runtime source-target pairs, log and binlog. No CPU Release rebuild or canonical replacement. Its three authoritative CPU compilation inputs JSph.h/JSph.cpp/JSphCpu.cpp must still match their original prepared SHA; the old GPU source hash is not imposed on the patched current path.",
+  "build_recipe":"Reuse only cryer_darcy_switch_build_r1.command generation; replace OutDir, IntDir and binlog paths. Authoritative VS CPU/GPU solutions and projects, Build /m:1 /nr:false, x64 v143/MSVC14.36.32532, CUDA11.7, BuildProjectReferences=false and PostBuildEventUseInBuild=false remain unchanged.",
+  "isolation":"New outputs/sw_pore_cell_build_r1/{DebugCPU,Debug,Release}/out; intermediate outputs under C:/Users/syosh/AppData/Local/Temp/sw_pore_cell_build_r1/{configuration}/int with no spaces. Logs/build receipts/process records/binlogs remain under this case tests/logs. Exclusive prepared/start/output/temp/log paths reject overwrite or old-worker retries.",
+  "frozen_protection":"Bind current six source files and XML task guide, source archive/base receipt, CUDA unit source/recipe/program/log/compiler evidence, prior CPU build receipt/prepared compilation inputs, current canonical four executables, runtime four, compiler/linker/nvcc/MSBuild, VS solutions/projects and helper/note. Verify the deduplicated bound inputs before and after each configuration and after runtime copies. Do not recursively revalidate stale old current-GPU-source paths.",
+  "result":"Each fresh configuration seals exact tool exit, waited owned process, program hash, four runtime source-target hashes, log/binlog and warning lines. An earlier rejected build holds all later configurations; preserve its outputs and label. Build success is only build acceptance: no implementation, physical, formal, long-run or server acceptance is claimed.",
+  "programs_executed":false,
+  "implementation_regression_passed":false,
+  "physical_acceptance":false,
+  "formal_admitted":false
+}

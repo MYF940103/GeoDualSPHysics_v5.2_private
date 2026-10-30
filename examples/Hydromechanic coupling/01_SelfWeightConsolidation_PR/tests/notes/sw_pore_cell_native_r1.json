@@ -1,0 +1,32 @@
+{
+  "tag": "sw_pore_cell_native_r1",
+  "status": "authored_pending_root_review_selftest_prepare_and_run",
+  "purpose": "Bounded implementation regression for the single reviewed GPU host-launch cell-size argument correction; no physical admission.",
+  "files_added": ["tests/support/sw_pore_cell_native_r1.py", "tests/notes/sw_pore_cell_native_r1.json"],
+  "source_change_under_test": "JSphGpu_ker.cu pore-MLS host launch passes dvd.poscellsize instead of host CTE.poscellsize. Kernel equations and the r=0 kernel behavior are outside this worker.",
+  "ordered_gates": [
+    "Private GPU Debug ShepardON80steps/80us,1us save under CUDA11.7 compute-sanitizer memcheck --error-exitcode99: clean summary, original native safety, and retained CPU ON screen",
+    "Private GPU Release ShepardON80steps: original native safety and retained CPU ON screen",
+    "Private GPU Release ShepardOFF80steps: original native safety, all38-field exact equivalence to retained current GPU OFF, and CPU OFF screen",
+    "Private GPU Release ShepardON2000steps/2ms,.5ms save: original native safety and retained CPU ON screen",
+    "Private GPU Release ShepardOFF2000steps/2ms,.5ms save: original native safety, all38-field exact equivalence to retained current GPU OFF, and CPU OFF screen"
+  ],
+  "gate_semantics": "Each job's sealed result and all pair rows/CSV are retained before the next job is admitted. Any failed gate holds all later jobs. Debug versus Release is not used as a truth comparison.",
+  "candidate_build": "Require passed tests/logs/sw_pore_cell_build_r1.check.json and all three successful DebugCPU/Debug/Release stage receipts; execute only private GPU Debug/Release with four copied runtime dependencies.",
+  "provenance": "Bind new candidate build inputs/current fixed sources, projects/tools, pre-fix archive, build receipts and binaries/runtime. Bind explicit retained CPU/GPU control programs/runtime/XML/BAT/manifests/native BI4 outputs. Do not recursively verify historical source-input lists containing the now-patched current GPU source path.",
+  "reader": "Frozen ReadSelfWeightNative.exe and source/build manifest. All1040 IDs,38 fields; native porepress0/excess are observed. Header mass is fluid mass for every row and is not per-ID boundary mass.",
+  "control_sources": ["sw_shepard_event_r1_cpu_on", "sw_shepard_event_r1_cpu_off", "sw_shepard_event_r1_gpu_off", "sw_stage1_short_r1_cpu_c", "sw_stage1_isolate_r1_cpu_current_off", "sw_stage1_isolate_r1_gpu_current_off"],
+  "parameter_differences": "Fresh private XML/BAT retain Stage1 physical settings, dt1us, ShepardInterval40, k0, stable/mdbc/thread1. TimeMax/TimeOut/nsteps select80us/1us/80 or2ms/.5ms/2000. SavePosDouble1 changes saved-position precision. OFF alone switches PoreShepardRegularization0.",
+  "native_safety": "Reuse frozen event.measure without global mutation: exact1040 IDs, finite/no excluded/elastic/rho>0, double positions/stress, unchanged mass/dp/h and native p0, float32 excess, original geometry screens, exact ten true top FSType2/3 with zero pressure, actual natural/saved step and time, original signed dterror<=1e-14 after Part0.",
+  "frame_semantics": "Current retained80us controls have79 actual frames, missing natural6/36;2ms controls have5 frames. Require these counts, but derive comparison time/step from each native frame, never from Part index or nominal cadence.",
+  "comparison_bounds": "Match actual natural/saved steps and times within1e-12s. Screen original soil pressure RMS<=5Pa and material displacement maximum difference<=.005mm. OFF additionally requires all1040x38 numeric fields0ULP against retained current GPU OFF, including native metadata. ON is not required to equal historical GPU ON.",
+  "artifacts": "Exclusive tests/configs XML/BAT; tests/outputs/sw_pore_cell_native_r1_* solver folders; tests/logs inputs/run/check/completion/receipt/wrapper/memcheck logs; tests/figures per-job frames, boundary/bottom-soil histories, pair rows/differences and aggregate pair CSV.",
+  "commands": ["python -B tests/support/sw_pore_cell_native_r1.py --selftest", "python -B tests/support/sw_pore_cell_native_r1.py --prepare", "python -B tests/support/sw_pore_cell_native_r1.py --run"],
+  "case02_regression_included": false,
+  "physical_acceptance": false,
+  "formal_admitted": false,
+  "automatic_long_run_admitted": false,
+  "stress_or_load_physical_gates_added": false,
+  "notifier_added": false,
+  "programs_executed_during_authoring": false
+}

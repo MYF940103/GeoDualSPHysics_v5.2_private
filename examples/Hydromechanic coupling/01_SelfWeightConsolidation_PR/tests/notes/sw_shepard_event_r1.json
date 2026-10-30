@@ -1,0 +1,42 @@
+{
+  "tag": "sw_shepard_event_r1",
+  "purpose": "Observe boundary and bottom-soil state across the first two scheduled Shepard events and isolate CPU/GPU divergence; causal diagnosis only.",
+  "status": "authored_pending_review_selftest_prepare_and_execution",
+  "protected": ["Formal XML/BAT and retained outputs", "Production source and equations", "sw_stage1_short_r1.py", "sw_stage1_isolate_r1.py"],
+  "files_added": ["tests/support/sw_shepard_event_r1.py", "tests/notes/sw_shepard_event_r1.json"],
+  "prepared_files": "Exclusive tests/configs/sw_shepard_event_r1_*_Def.xml and xsw_shepard_event_r1_*_win64_CPU/GPU.bat",
+  "outputs": "Exclusive tests/outputs/sw_shepard_event_r1_{cpu_on,gpu_on,cpu_off,gpu_off}; logs/manifests under tests/logs; CSV histories/comparisons under tests/figures",
+  "jobs": ["cpu_on", "gpu_on", "cpu_off", "gpu_off"],
+  "programs": "Current private CPU/GPU executables and all four runtime dependencies adopted by hash from sw_stage1_short_r1.inputs.json; no rebuild and no bin replacement",
+  "reader": "ReadSelfWeightNative.exe from sw_native_r1.build.json: 38 native fields, all IDs0..1039; appended is_boundary, porepress0, excess_native. Header mass is fluid mass for every row and is not per-ID boundary mass.",
+  "binding": "Prior Stage1 inputs, nested symc inputs and frozen compiled-source snapshots, both frozen helpers, native-reader build inputs/program/log, GenCase, private solver builds/programs/runtime, XML/BAT, worker and this note are reverified before execution and after each job.",
+  "parameter_differences": {
+    "dt_s": 0.000001,
+    "steps": 80,
+    "TimeMax_s": 0.00008,
+    "TimeOut_s": 0.000001,
+    "SavePosDouble": "1, saved-position precision only",
+    "PoreShepardInterval": 40,
+    "PoreShepardRegularization": "1 for ON, 0 for OFF; OFF alone changes this physical switch",
+    "command": "-cpu/-gpu -ompthreads:1 -stable -mdbc -svres -svextraparts:1 -nsteps:80",
+    "all_other_physical_settings": "Inherited unchanged from formal Stage1; HydraulicConductivity=0, so Darcy correction is bypassed"
+  },
+  "individual_safety": [
+    "Each job is independently attempted and its exit/output hashes sealed; live solver or existing outputs are refused",
+    "All 1040 IDs, native finite values, no excluded particles, elastic state, positive density, double saved positions/stress, unchanged mass/dp/h",
+    "Original soil geometry screens: z>0, periodic x displacement<0.5mm, layer span<0.5mm",
+    "Exactly the original ten top soil IDs have FSType2/3 and their pressure is exactly zero",
+    "Natural step is0 for Part0 and otherwise saved_step+1; actual native time agrees within1e-12s. Saved cadence is observed rather than assumed",
+    "After Part0 preserve the original signed dterror_s<=1e-14 test; do not replace it with abs(dterror)",
+    "Native porepress0 remains exactly fixed and excess_native equals float32(pressure)-float32(porepress0)"
+  ],
+  "comparisons": "CPU/GPU ON and OFF separately at equal actual natural/saved step and native time within1e-12s; original soil pressure RMS<=5Pa and material displacement maximum difference<=0.005mm. All comparison rows and focus differences are retained before reporting rejection.",
+  "history": "Every actual native frame; all40 boundary IDs plus bottom three soil layers (IDs40,41,42 +100*k, k0..9); all38 native fields include pressure/reference/excess/density/six stress components. Event brackets report nearest actual saved frames before and at/after natural steps40/80.",
+  "reader_validation": "Independent retained-data audit completed before this preparation:20 sealed native PARTs,700000 original35-column soil bit patterns all exact against old reader;20800 all-ID native excess values equal float32(p-p0), p0 remains fixed and all40 saved boundary densities equal2100. New reader SHA772ab3f1ba09157697bdca8586fbec27110b1cfa934d9b0152d2017d12192a36. This validates export identity, not solver accuracy.",
+  "commands": ["python -B tests/support/sw_shepard_event_r1.py --selftest", "python -B tests/support/sw_shepard_event_r1.py --prepare", "python -B tests/support/sw_shepard_event_r1.py --run"],
+  "physical_acceptance": false,
+  "full_or_half_step_convergence_claimed": false,
+  "automatic_long_run_admitted": false,
+  "stress_or_load_physical_gates_added": false,
+  "notifier_added": false
+}

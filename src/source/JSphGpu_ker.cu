@@ -1416,7 +1416,7 @@ template<TpKernel tker,bool sim2d> void PorePressureMdbcCorrectionT(unsigned n,f
 {
   if(n && porepress0 && porepress && boundnormal){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
-    KerPorePressureMdbcCorrection<tker,sim2d> <<<sgrid,SPHBSIZE>>> (n,mdbcthreshold,Double3(mapposmin),CTE.poscellsize,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
+    KerPorePressureMdbcCorrection<tker,sim2d> <<<sgrid,SPHBSIZE>>> (n,mdbcthreshold,Double3(mapposmin),dvd.poscellsize,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,poscell,code,velrhop,boundnormal,porepress0,porepress);
   }
 }
 
