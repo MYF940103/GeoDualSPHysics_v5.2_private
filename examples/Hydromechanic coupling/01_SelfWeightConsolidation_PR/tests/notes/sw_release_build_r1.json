@@ -1,0 +1,15 @@
+{
+  "tag": "sw_release_build_r1",
+  "purpose": "Close the current HG compile-time source-attribution gap using fresh isolated builds of existing source; no physical equation or source change.",
+  "scope": "Author helper only. Root must read the entire helper before separately invoking prepare/build. No target-program help, solver, queue, canonical installation, Git or physical/formal acceptance in this stage.",
+  "configurations": ["DebugCPU", "ReleaseCPU", "Release"],
+  "authoritative_solutions": ["src/VS/DualSPHysics5ReCpu_vs2022.sln", "src/VS/DualSPHysics5Re.sln"],
+  "flags": "Match the existing C04 and case01 isolated-build recipe: /m:1 /nr:false /t:Build /v:minimal, x64 v143 MSVC14.36.32532, BuildProjectReferences=false, PostBuildEventUseInBuild=false, CUDA11.7; no changed project compiler or numerical flags.",
+  "output": "tests/outputs/sw_release_build_r1/{DebugCPU,ReleaseCPU,Release}/out; no-space TEMP sw_release_build_r1/<configuration>/int; logs/build receipts/binlogs under tests/logs.",
+  "before_build_capture": "One source snapshot and one VS snapshot at outputs/sw_release_build_r1/source and VS. Copy every local src/source C/C++/CUDA/include file and src/VS solution/project/property/target file before any build. Explicitly record the six HG source copies, SHA256, size and capture UTC. Verify original and copied inputs unchanged before/after each build.",
+  "dependency_scope": "Standalone helper; no transitive old proof manifests. Direct MSBuild/cl/link/nvcc tools, project libraries, CUDA static runtime libraries, current optional x64 user property sheet, four copied runtime files and four protected canonical executable hashes are bound. Large libraries/tools are hashed, not copied. External SDK/toolchain headers and complete MSBuild import graph are not a hermetic snapshot.",
+  "source_attribution": "MSBuild compiles ORIGINAL source/project paths, not the snapshot; the capture proves contemporaneous before/after equality, not compilation from an archived tree. Never rewrite old attribution receipts. New output remains a candidate until native implementation regression against retained frozen programs passes.",
+  "failure_policy": "First failed configuration holds later configurations. Preserve all partial logs/programs/snapshots and use a new reviewed tag for any necessary repair; never retry/rearm this helper or overwrite prior output.",
+  "protected": "Do not modify production source, authoritative projects, canonical bin/windows executables, previous results, formal XML/BAT or Cryer server processes.",
+  "next_gate": "After root-reviewed successful builds, separately prepare appropriate Debug and same-physics OFF/ON native implementation regressions; build success alone does not admit long/full/restart/server release."
+}
