@@ -1,0 +1,44 @@
+{
+  "date": "2026-11-01",
+  "timezone": "UTC+09:00",
+  "status": "completed_all_three_moves_hash_verified",
+  "authorization": "User requested Cryer root organization and removal of genuinely useless files; preserve formal inputs/results and unique historical evidence.",
+  "operation": "Recoverable file moves only; no deletion, no solver invocation and no production/formal input change.",
+  "archive_root_relative_to_case": "tests/logs/legacy_afterfix_short_root_r1",
+  "files": [
+    {
+      "original": "run_afterfix_short_gencase.log",
+      "archived": "tests/logs/legacy_afterfix_short_root_r1/run_afterfix_short_gencase.log",
+      "bytes": 12586,
+      "sha256": "4a6b6f035ad2696a13df038f89ab3ce1e94ff792f9c79f4849030004abefa579"
+    },
+    {
+      "original": "run_afterfix_short_partvtk.log",
+      "archived": "tests/logs/legacy_afterfix_short_root_r1/run_afterfix_short_partvtk.log",
+      "bytes": 5428,
+      "sha256": "45670e54e2ba07e29c01c77f8b50833ce0cb5600f0aa267fd393201a63a902ea"
+    },
+    {
+      "original": "run_afterfix_short_solver.log",
+      "archived": "tests/logs/legacy_afterfix_short_root_r1/run_afterfix_short_solver.log",
+      "bytes": 22216,
+      "sha256": "a5561c228e32d217ec40aca41175259cfe255222977db5b7d79e65e2117fa9e6"
+    }
+  ],
+  "file_count": 3,
+  "total_bytes": 40230,
+  "disk_space_reclaimed_bytes": 0,
+  "verification": "All source sizes and SHA256 matched before any move. All three archived files retain the exact original sizes/SHA256 and the loose root paths are absent after moving. No overwrite or deletion occurred.",
+  "dependency_review": "No direct references to the three loose filenames found in case04 text scripts/docs/JSON records. Root afterfix output remains untouched. Historical organization records are not rewritten.",
+  "protected": {
+    "formal_inputs": "Nine root XMLs and ten BATs remain. Both Poisson plotting helpers read root XML and root output paths; moving inputs would break regeneration. Old BATs contain deletion menus and are not invoked.",
+    "outputs": "All ten root *_out directories, BI4/Extra/particles, figures and matching tables, videos, refinement and support are untouched.",
+    "archives": "support.zip is not a duplicate: two of its seven Python files differ from loose support copies. The r1 Windows server ZIP is unique delivery/recovery evidence. Both ZIPs remain at original paths.",
+    "duplicate_check": "Root XML/BAT/log/ZIP SHA256 comparison found no exact duplicate files. No BI4 catalog was rehashed and no large output was recursively deleted."
+  },
+  "restore": "From the case root, verify each archived file SHA and use Move-Item -LiteralPath with the recorded exact source/destination. Refuse an existing original destination; do not overwrite.",
+  "backup_scope": "Selective Git preserves this record, the updated README and the three small archived original logs. Raw outputs/executables/ZIPs are not claimed cloud-backed by this cleanup.",
+  "production_source_changed": false,
+  "formal_xml_bat_changed": false,
+  "solver_started": false
+}

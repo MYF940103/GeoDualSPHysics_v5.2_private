@@ -1,5 +1,38 @@
 # CryerProblem_PR
 
+## Current review and root organization (2026-11-01)
+
+The returned `CaseCryerProblem_PR_symc_nu030_out` full run has been reviewed:
+its actual dt is2^-20s,963370 steps,endpoint0.9187412261962891s (drainage-relative
+legacyTv about1). Its fixed18-material-point peak amplitude error is about-1.034%
+and peak timing about+3.979% against the finite-Kw,finite-radius reference.
+The old r1 package below specifies2^-21s; do not confuse its intended input
+with the actual returned run or infer historical server executable identity.
+
+See [accuracy and cost decision](tests/notes/cryer_accuracy_decision_r1.md)
+and [updated delivery plan](../validation/poromech_next_r7.json).
+After the bounded audit, a new independent formal root XML/BAT and Windows/NVIDIA
+server package will be prepared, either with a verified worthwhile improvement
+or the retained baseline and explicit limitations. That new package is not yet
+prepared. Existing r1 inputs/package/output are retained historical evidence,
+not silently upgraded or a reason to rerun completed results.
+
+Root organization is deliberately conservative:
+
+- Nine XMLs and ten BATs remain; old Poisson plotting scripts still depend on
+  root XML/output paths. Legacy BATs contain existing-output deletion menus:
+  do not invoke them for retained results.
+- All ten root output folders, formal figures/CSVs, refinement, videos and
+  both historical ZIPs remain. `support.zip` contains two script versions that
+  differ from current loose copies; it is not a disposable duplicate.
+- Three loose June short-test logs are archived byte-for-byte under
+  `tests/logs/legacy_afterfix_short_root_r1/`; their paths, hashes and restoration
+  instructions are in [the cleanup record](tests/notes/cryer_root_cleanup_r1.json).
+  This removes root clutter, not large data or disk usage.
+
+The dated sections below describe their original stages. They are not the
+current run's dt/step-count or a full physical-acceptance statement.
+
 ## Current server candidate: symC, nu=0.30 (2026-10-30)
 
 Use the NEW independent entry `xCaseCryerProblem_PR_symc_nu030_win64_GPU.bat`
