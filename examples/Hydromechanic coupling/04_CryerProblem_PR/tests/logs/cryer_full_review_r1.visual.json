@@ -1,0 +1,39 @@
+{
+  "date": "2026-10-31",
+  "reviewer": "main agent, with independent read-only numerical audit",
+  "visual_review_passed": true,
+  "visual_scope": "Inspected all five new saved PNGs, including user-requested log-Tv formal-style curve; checked actual-time/units/legends, retained-control coverage, startup inclusion, finite-Kw versus incompressible reference labeling and unsmoothed local scatter. Added separate focus view because original complete-history peak panel retained a zero-based y range. No retained image or CSV overwritten.",
+  "viewed_png_sha256": {
+    "cryer_full_review_r1_pressure.png": "bfe9f14dc4d49e35c72ca202a7eaaee749f19ca914d15bd67f5f84738812eb17",
+    "cryer_full_review_r1_state.png": "33438c547d3f3525ac9bc9c3020913a440902b12689c16e61f62cba8298821cb",
+    "cryer_full_review_r1_radial.png": "cdf475dc48d3802e6fb32dbb5f4fe46936f534dbf3695c889e0ba5d7063c4d3f",
+    "cryer_full_review_r1_focus.png": "fd9202f4c88473492f9b921335a8b70fa537afec433f5bfd8751409ec4323ecf",
+    "figures/formal_validation/cryer_server_symc_full_r1_log.png": "4df97f25c41d8552024db6daadb1d5a3323e9172b5d7cbf1fcdff41768562ae4"
+  },
+  "independent_key_checks": {
+    "server_peak_part": 112,
+    "peak_pressure_pa": 12310.520779079861,
+    "peak_tau_s": 0.043725013732910156,
+    "peak_amplitude_error_percent": -1.0342741434739344,
+    "peak_time_error_percent": 3.978927668756982,
+    "endpoint_center_error_pa": -0.4046778629390886,
+    "endpoint_shell_error_mm": -0.0000936108832479271,
+    "late_Tv_ge_point5_samples": 501,
+    "late_center_pressure_positive_increments": 0,
+    "plane_displacement_error_max_mm_at_selected_Tv_point06": 0.018423607301099397,
+    "plane_total_sigma_rr_error_max_pa_at_selected_Tv_point06": 1191.5294998282334
+  },
+  "limitations": [
+    "Local plane metrics use 1709 initial material-plane nodes, not whole-sphere RMS.",
+    "Whole-history RMS cannot be compared as an improvement to old peak-only RMS; time coverage and cadence differ.",
+    "Server actual dt2^-20 has no independent same-cadence full half validation.",
+    "Closed five equilibrium diagnostics passed, but theoretical reference remains small-strain quasistatic and conditional.",
+    "Server executable execution SHA is absent from the returned dataset.",
+    "Native safety/analysis/visual checks are not automatic physical or formal acceptance."
+  ],
+  "physical_acceptance": false,
+  "formal_acceptance": false,
+  "solver_started": false,
+  "production_source_changed": false,
+  "case01_solver_interrupted": false
+}

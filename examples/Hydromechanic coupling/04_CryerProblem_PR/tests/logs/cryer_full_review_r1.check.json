@@ -1,0 +1,458 @@
+{
+  "passed": true,
+  "analysis_checks_passed": true,
+  "native_safety_adopted": true,
+  "initial_equilibrium_diagnostics_passed": true,
+  "reference_condition": "Closed61-64 five diagnostics passed; quasi-static reference remains conditional",
+  "reference_selftest": {
+    "passed": true,
+    "normalized_root_residual_max": 5.251212187111103e-11,
+    "pressure_PDE_residual_absmax_pa_s": 3.749446477741003e-07,
+    "surface_traction_residual_absmax_pa": 1.8189894035458565e-12,
+    "radial_velocity_divergence_fd_error_absmax_s_inv": 2.1455295873273883e-11,
+    "quasistatic_radial_force_fd_error_absmax_pa_m": 0.00022723179426975548,
+    "note": "Arithmetic/continuum self-tests, not physical accuracy acceptance."
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_full_review_r1.py",
+      "bytes": 22759,
+      "sha256": "1583c251e738429291ec4089338d91c530014b58801fe780bb69344a0ae2028e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_full_review_r1.json",
+      "bytes": 4456,
+      "sha256": "e8f1304cb70b0657fac110bd3330a955cd19c8435715196b7780d745a580120c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.check.json",
+      "bytes": 3988,
+      "sha256": "b67debe21b06b020852ae381b9cbae418291bc11ce29ef2a913bac2b4743a042"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.inputs.json",
+      "bytes": 330603,
+      "sha256": "58c5f3b0a070896a3b89100cb5562625f67a09d18b32a6723bdfb8e50bba8f7d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_native_r1_summary.csv",
+      "bytes": 1394791,
+      "sha256": "36d25223262da983378c7fba45391d54dc0ddbe3b59b4c6d1508dfcc6497b2ea"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_native_r1_radial.csv",
+      "bytes": 32852402,
+      "sha256": "0a16aead3cf3a99c13d95b88b7fff990ab4b26ed58ad09dacfcd4e87ea519827"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_native_r1_center.csv",
+      "bytes": 11237056,
+      "sha256": "ba4ef8f5248c710fefd39ac2fdbc3f87f812d2307ca420645c0c8ff4ab28a76c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_native_r1_initial_cloud.csv",
+      "bytes": 6782294,
+      "sha256": "84a1241fe41677ad13ebb2f98672277ea75d167c7b8c961368e89a749d508457"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.initial35.json",
+      "bytes": 684,
+      "sha256": "7be7b05ed6809ac62f66892bc21dcdca5373b94fccd00eaa6e6d475b768e4e21"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.equilibrium.json",
+      "bytes": 2006,
+      "sha256": "c1d550b0724cab3cbed602f2fe987ec3a18ef2c099dc13397215483cdda5ebff"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.progress.json",
+      "bytes": 949,
+      "sha256": "90b8712655200a2c0b8f70ab1fe9155a14fd8c4150b6f5d3243029e6239d14a1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0000.bi4",
+      "bytes": 5951322,
+      "sha256": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_symc_gpu_peak_half_review_r1.check.json",
+      "bytes": 16316,
+      "sha256": "dabab139a98e91338d2292a3b7fedc446a665b8ddcc50d27a68608ecaea3ddee"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_r1_summary.csv",
+      "bytes": 621682,
+      "sha256": "ab9bcbeb407be1c3c188446ba470695564e38e6d61838f4f05e3f0763b74c620"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_preload_peak_half_r1_summary.csv",
+      "bytes": 621635,
+      "sha256": "0305d14859a9b869b7f4062b5d5635f2d0436243481237f8a14c3ff8182acdcb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_gpu_peak_r1_summary.csv",
+      "bytes": 619182,
+      "sha256": "490a0eaea85e3805e5ac6b61306d45f9b558a0bc1f5922dd65439288a80d3a4b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_symc_gpu_peak_half_r1_summary.csv",
+      "bytes": 623528,
+      "sha256": "5a9e86dd7f02c4289b43f972a3ffde7dc1a996b40bf52895d048d174217cf72e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "bytes": 385536,
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\read_hydro_native.cpp",
+      "bytes": 3826,
+      "sha256": "2c488ae0901e05aa0d046331bd01c3da5a3ccf20697fe4f93ac8d6c6b3dfce76"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0074.bi4",
+      "bytes": 5951322,
+      "sha256": "e105027540b8ee1a521be62aa2fa5022bc6cf9a49730170cac0b7b100379d728"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0112.bi4",
+      "bytes": 5951322,
+      "sha256": "aaa823412023d735535548819e9907ea7285421edde7bed23a22d549e28e6039"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0124.bi4",
+      "bytes": 5951322,
+      "sha256": "cf9cdb3bf788cc331e73f1a7345baa888b83019f0f9617611e25aa1bb3da5eb8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0264.bi4",
+      "bytes": 5951322,
+      "sha256": "275225c502443c64cd598e99865aae2d6e1ae9da8d410234d8e54d4748736f1f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0564.bi4",
+      "bytes": 5951322,
+      "sha256": "78ea049413484ceb672efe73db86b3ea47d7a021f7f91d235dfb610d33f1334f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_1064.bi4",
+      "bytes": 5951322,
+      "sha256": "884b40ac7c756f467632f46afd5cf6893293a625b6aee5505f0e748c49af1832"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_darcy_closed_r1.py",
+      "bytes": 10975,
+      "sha256": "d54e0eaacc9c4c1c15a599357088fff5fded45947c5fc8653383a2b1c12a1dac"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+      "bytes": 22425,
+      "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_consistency_r1.py",
+      "bytes": 19884,
+      "sha256": "c34889f6ce2b909cd4ac88b30f6725d4eba9d8cfc60270e25eb369f06ba0d237"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\lian_release_r1.py",
+      "bytes": 12508,
+      "sha256": "d27b4f2ab9077989c349c6cda5df9aa2c9a3632c6c51928a38b8b327c420a5da"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_history.csv",
+      "bytes": 4264714,
+      "sha256": "f2bcdce7ab0bf5e6b1f8916d2ca76cfcd31830816b81bda4db9f71a560cfbaa3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_theory.csv",
+      "bytes": 181054,
+      "sha256": "c0cccc1641e62277286db50584989610b160be5ff099ddb5bc9c749e5f2936b6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_peaks.csv",
+      "bytes": 2124,
+      "sha256": "5db5090e19738a08f8fd33e87eb8c581154efd8b2fe178437d5aeb06f5c0a223"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_profiles.csv",
+      "bytes": 4146178,
+      "sha256": "5a30a4de4368f65de6be98e046146c6452d6c00baef35f9140765d624c2774f6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_radial_bins.csv",
+      "bytes": 174437,
+      "sha256": "1e50fa82101118be95d7ab8ad802b969fd6e5b2490403d1ce6b639291f75fe39"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_modal_weights.csv",
+      "bytes": 40762,
+      "sha256": "bc161aaf8c5483bc4ee48216dafa5ac40966780e82f30bb65bce7c72e96a18a8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_spotchecks.csv",
+      "bytes": 1257,
+      "sha256": "478209dd7ea687f2f81a724aaf507ab25beeea3ffd682a150ba8c1bc70387b1f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_pressure.png",
+      "bytes": 380907,
+      "sha256": "bfe9f14dc4d49e35c72ca202a7eaaee749f19ca914d15bd67f5f84738812eb17"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_state.png",
+      "bytes": 307009,
+      "sha256": "33438c547d3f3525ac9bc9c3020913a440902b12689c16e61f62cba8298821cb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_review_r1_radial.png",
+      "bytes": 630841,
+      "sha256": "cdf475dc48d3802e6fb32dbb5f4fe46936f534dbf3695c889e0ba5d7063c4d3f"
+    }
+  ],
+  "native_complete_hashes_adopted_from": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.inputs.json",
+    "bytes": 330603,
+    "sha256": "58c5f3b0a070896a3b89100cb5562625f67a09d18b32a6723bdfb8e50bba8f7d"
+  },
+  "raw_full_catalog_rehashed": false,
+  "reader_commands": [
+    {
+      "part": 0,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "0"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173
+    },
+    {
+      "part": 74,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "74"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    },
+    {
+      "part": 112,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "112"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    },
+    {
+      "part": 124,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "124"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    },
+    {
+      "part": 264,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "264"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    },
+    {
+      "part": 564,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "564"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    },
+    {
+      "part": 1064,
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+        "1064"
+      ],
+      "exit_code": 0,
+      "full_raw_rows_decoded": 37173,
+      "plane_count": 1709
+    }
+  ],
+  "additional_native_frames_decoded": 7,
+  "selected_profile_parts": [
+    74,
+    112,
+    124,
+    264,
+    564,
+    1064
+  ],
+  "plane_points_per_frame": 1709,
+  "initial_native_h_m": 0.0044999998062849045,
+  "peaks": [
+    {
+      "dataset": "server",
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "pressure_pa": 12310.520779079861,
+      "theory_continuous_peak_tau_s": 0.04205180291164746,
+      "theory_continuous_peak_pressure_pa": 12439.175959692184,
+      "amplitude_error_percent": -1.0342741434739344,
+      "time_error_percent": 3.978927668756982,
+      "left_saved_tau_s": 0.04281425476074219,
+      "right_saved_tau_s": 0.044635772705078125,
+      "left_spacing_s": 0.0009107589721679688,
+      "right_spacing_s": 0.0009107589721679688,
+      "theory_at_sampled_peak_pressure_pa": 12435.626162462337,
+      "error_at_sampled_peak_pa": -125.10538338247534,
+      "mandel_rms_error_pa": 50.872672725139445,
+      "endpoint_tau_s": 0.9109287261962891,
+      "endpoint_error_pa": -0.4046778629390886,
+      "startup_inclusive_peak_part": 112,
+      "startup_inclusive_peak_pressure_pa": 12310.520779079861,
+      "theory_percentage_threshold_declared": false,
+      "physical_acceptance": false
+    },
+    {
+      "dataset": "raw_coarse",
+      "part": 444,
+      "time_s": 0.05419921875,
+      "tau_s": 0.04638671875,
+      "pressure_pa": 12134.017740885416,
+      "theory_continuous_peak_tau_s": 0.04205180291164746,
+      "theory_continuous_peak_pressure_pa": 12439.175959692184,
+      "amplitude_error_percent": -2.453202847162872,
+      "time_error_percent": 10.308513638429195,
+      "left_saved_tau_s": 0.0462646484375,
+      "right_saved_tau_s": 0.0465087890625,
+      "left_spacing_s": 0.0001220703125,
+      "right_spacing_s": 0.0001220703125,
+      "theory_at_sampled_peak_pressure_pa": 12415.535467541842,
+      "error_at_sampled_peak_pa": -281.517726656426,
+      "mandel_rms_error_pa": 322.3552589718016,
+      "endpoint_tau_s": 0.0625,
+      "endpoint_error_pa": -67.89876191913208,
+      "startup_inclusive_peak_part": 444,
+      "startup_inclusive_peak_pressure_pa": 12134.017740885416,
+      "theory_percentage_threshold_declared": false,
+      "physical_acceptance": false
+    },
+    {
+      "dataset": "raw_half",
+      "part": 444,
+      "time_s": 0.05419921875,
+      "tau_s": 0.04638671875,
+      "pressure_pa": 12136.129286024305,
+      "theory_continuous_peak_tau_s": 0.04205180291164746,
+      "theory_continuous_peak_pressure_pa": 12439.175959692184,
+      "amplitude_error_percent": -2.4362278871998377,
+      "time_error_percent": 10.308513638429195,
+      "left_saved_tau_s": 0.0462646484375,
+      "right_saved_tau_s": 0.0465087890625,
+      "left_spacing_s": 0.0001220703125,
+      "right_spacing_s": 0.0001220703125,
+      "theory_at_sampled_peak_pressure_pa": 12415.535467541842,
+      "error_at_sampled_peak_pa": -279.40618151753733,
+      "mandel_rms_error_pa": 320.6360363166487,
+      "endpoint_tau_s": 0.0625,
+      "endpoint_error_pa": -66.20648761357734,
+      "startup_inclusive_peak_part": 444,
+      "startup_inclusive_peak_pressure_pa": 12136.129286024305,
+      "theory_percentage_threshold_declared": false,
+      "physical_acceptance": false
+    },
+    {
+      "dataset": "symC_coarse",
+      "part": 422,
+      "time_s": 0.051513671875,
+      "tau_s": 0.043701171875,
+      "pressure_pa": 12313.564887152777,
+      "theory_continuous_peak_tau_s": 0.04205180291164746,
+      "theory_continuous_peak_pressure_pa": 12439.175959692184,
+      "amplitude_error_percent": -1.009802200293941,
+      "time_error_percent": 3.922231269888554,
+      "left_saved_tau_s": 0.0435791015625,
+      "right_saved_tau_s": 0.0438232421875,
+      "left_spacing_s": 0.0001220703125,
+      "right_spacing_s": 0.0001220703125,
+      "theory_at_sampled_peak_pressure_pa": 12435.72641086069,
+      "error_at_sampled_peak_pa": -122.16152370791315,
+      "mandel_rms_error_pa": 149.95979301055385,
+      "endpoint_tau_s": 0.0625,
+      "endpoint_error_pa": -31.66704533927077,
+      "startup_inclusive_peak_part": 422,
+      "startup_inclusive_peak_pressure_pa": 12313.564887152777,
+      "theory_percentage_threshold_declared": false,
+      "physical_acceptance": false
+    },
+    {
+      "dataset": "symC_half",
+      "part": 422,
+      "time_s": 0.051513671875,
+      "tau_s": 0.043701171875,
+      "pressure_pa": 12315.726942274305,
+      "theory_continuous_peak_tau_s": 0.04205180291164746,
+      "theory_continuous_peak_pressure_pa": 12439.175959692184,
+      "amplitude_error_percent": -0.9924211846339515,
+      "time_error_percent": 3.922231269888554,
+      "left_saved_tau_s": 0.0435791015625,
+      "right_saved_tau_s": 0.0438232421875,
+      "left_spacing_s": 0.0001220703125,
+      "right_spacing_s": 0.0001220703125,
+      "theory_at_sampled_peak_pressure_pa": 12435.72641086069,
+      "error_at_sampled_peak_pa": -119.99946858638577,
+      "mandel_rms_error_pa": 148.2880429036001,
+      "endpoint_tau_s": 0.0625,
+      "endpoint_error_pa": -30.042642127466024,
+      "startup_inclusive_peak_part": 422,
+      "startup_inclusive_peak_pressure_pa": 12315.726942274305,
+      "theory_percentage_threshold_declared": false,
+      "physical_acceptance": false
+    }
+  ],
+  "solver_program_attribution_proven": false,
+  "server_dt_s": 9.5367431640625e-07,
+  "retained_dt_s": [
+    4.76837158203125e-07,
+    2.384185791015625e-07
+  ],
+  "no_inherited_half_or_prefix": true,
+  "peak_neighbours": "Adjacent observed save times/sampling resolution, NOT a confidence interval for the unknown continuous native peak.",
+  "reference_scope": "Finite Kw,alpha1,small-strain quasistatic constant-q sphere after equilibrated closed ramp/hold; no fitted R,time,pressure or volume. Native initial geometry weights and shell r0 targets, continuum pbar separately retained.",
+  "limitations": [
+    "Inertia,damping,artificial viscosity,surface layers and particle quadrature are not exact continuum theory.",
+    "Global startup and declared legacyTv>=.005 Mandel peak remain separate; no native interpolation/filtering.",
+    "Paper incompressible point-center curve is separately labeled,not finite-Kw fixed18 truth.",
+    "Server executable SHA remains unproven; current local executable hash cannot repair historical attribution.",
+    "No predeclared physical peak-percentage threshold was found; no automatic physical acceptance."
+  ],
+  "below_normal_priority_set": true,
+  "blas_thread_environment": {
+    "OPENBLAS_NUM_THREADS": "1",
+    "OMP_NUM_THREADS": "1",
+    "MKL_NUM_THREADS": "1"
+  },
+  "physical_acceptance": false,
+  "full_cycle_acceptance": false,
+  "formal_acceptance": false,
+  "solver_started": false
+}
