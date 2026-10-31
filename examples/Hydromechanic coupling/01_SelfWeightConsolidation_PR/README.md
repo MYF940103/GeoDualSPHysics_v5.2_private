@@ -1,5 +1,19 @@
 # 01 自重固结：入口与文件索引
 
+## FreshPR全程和分析已完成：保留误差后转Cryer（2026-11-01）
+
+独立根目录入口`CaseSelfWeightConsolidation_Scenario2_FreshPR_Def.xml`及
+`xCaseSelfWeightConsolidation_Scenario2_FreshPR_win64_GPU.bat`已完成实际GPU全程：
+403帧，20459420步，实际终点7.316858768463135 s（有限Kw Tv约2）。
+对应`CaseSelfWeightConsolidation_Scenario2_FreshPR_out`为受保护完整结果，勿重跑覆盖。
+
+根`figures`已有`CaseSelfWeightConsolidation_Scenario2_FreshPR_nativepr_*`四张正式图和
+配套CSV，根输出`particles`已有403帧可视化数据。见[最终分析与旧结果对照](tests/notes/sw_freshpr_review_r1.md)。
+沉降/晚期孔压/交错指标较旧MLS改善，但5 Pa晚期残差诊断仍不满足；此处是
+“计算与分析完成、剩余精度问题记录后按用户安排暂缓”，不是完整物理/重启/半步验收通过。
+按[最新计划](../validation/poromech_next_r7.json)直接转Cryer，不追加自重精度调参。
+以下较早任务安排和入口说明保留其历史含义。
+
 2026-10-26 任务安排更新：完成 Lian 二维固结和 Cryer 验证后，优先验证本 case；
 retrogressive landslide 验证暂缓。先检查历史误差和参考解适用条件，区分 Scenario1
 解析初始场消散、Stage1 自重初始化及 Scenario2 重启传递的影响，再检查孔压、材料点
