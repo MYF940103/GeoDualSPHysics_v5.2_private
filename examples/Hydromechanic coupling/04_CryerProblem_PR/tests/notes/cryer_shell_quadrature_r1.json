@@ -1,0 +1,24 @@
+{
+  "purpose": "Fixed original FrDraw nodes: distinguish radial-shell volume quadrature sensitivity from moving nodes, changing R, or fitting the observed peak.",
+  "command": "python tests/support/cryer_shell_quadrature_r1.py --run",
+  "scope": "One sealed server initial native state, three exact predeclared finite-Kw theory times .02, .04205180291164746, .0625 seconds after drainage. No solver, compilation, integration, source edit or formal-input mutation.",
+  "quadratures": {
+    "A_native_equal_mass": "Original native mass/rho with rho=2100; unchanged coordinates, h, R, geometry and material fields.",
+    "B_shell_volume": "Identify the original twenty exact-radius shells. Interfaces are adjacent-radius midpoints, innermost edge 0 and outermost edge R=.05. Each node receives exact shell volume divided by that shell's native node count. Recompute hypothetical mass=rho0*volume, correction C, raw momentum/load/pore terms, compression and symC Darcy consistently. No fit to pressure, peak, time or radial second moment."
+  },
+  "numeric_convention": "Reuse cryer_actual_budget_r1 moment/evaluate: double geometry and sums, production float kernel/Eta2/constants, float mass/rho division for C/compression/Darcy, float-projected analytic pressure/velocity/effective stress. Hypothetical B mass is a mathematical per-node coefficient, not a current solver-supported input. Analytic pressure on true surface nodes is exactly zero; surface neighbors remain in every sum.",
+  "checks": [
+    "Hash initial Part0000, actual generated XML, Run.out, reader/source against the existing sealed full-native input manifest; do not rehash all BI4.",
+    "Check original initial IDs/native safety and all initial rho/mass values, reference arithmetic, positive moment eigenvalues and affine closure.",
+    "Reuse pair force cancellation, raw stress/pore work-adjoint identities and symC closed weighted-sum/nonpositive-pressure-work algebra checks.",
+    "Original region weights A remain fixed for direct comparisons. Also report each quadrature's own-weight metrics separately, without silently changing the measurement norm."
+  ],
+  "outputs": "New tests/figures cryer_shell_quadrature_r1 regions/radial/quadrature/powers CSV plus one 3x2 PNG; tests/logs check JSON and log. Refuse every existing target.",
+  "limits": [
+    "B integrates each shell volume exactly but does not force the discrete radial second moment to 3/5 or repair angular quadrature.",
+    "Native surface unclamped pressure RHS is diagnostic only; also report the prescribed drainage-clamped RHS separately.",
+    "The raw zeroth/difference vectors may cancel. Their RMS values are not additive error contributions.",
+    "This is a coefficient/quadrature sensitivity screen, not CUDA/FMA/cell-order replay, a dynamic density repair, a supported nonuniform-mass candidate or physical/full-half acceptance.",
+    "No instantaneous residual is integrated or converted into a contribution to the observed 128-Pa peak deficit or timing shift."
+  ]
+}

@@ -1,0 +1,565 @@
+{
+  "analysis_checks_passed": true,
+  "solver_executed": false,
+  "physical_acceptance": false,
+  "production_implemented": false,
+  "automatic_long_run_admitted": false,
+  "reference_selftest": {
+    "passed": true,
+    "normalized_root_residual_max": 5.251212187111103e-11,
+    "pressure_PDE_residual_absmax_pa_s": 3.749446477741003e-07,
+    "surface_traction_residual_absmax_pa": 1.8189894035458565e-12,
+    "radial_velocity_divergence_fd_error_absmax_s_inv": 2.1455295873273883e-11,
+    "quasistatic_radial_force_fd_error_absmax_pa_m": 0.00022723179426975548,
+    "note": "Arithmetic/continuum self-tests, not physical accuracy acceptance."
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_actual_budget_r1.py",
+      "sha256": "092aa9f1f0ba470d1449135e1cf5378e15178683a3f696482092d8b360bbe912",
+      "bytes": 15657
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_actual_budget_r1.json",
+      "sha256": "6c42355b50491a5d630c209ddb72137a0f6538a35cc7b7299a237e4f166928eb",
+      "bytes": 2341
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.check.json",
+      "sha256": "b67debe21b06b020852ae381b9cbae418291bc11ce29ef2a913bac2b4743a042",
+      "bytes": 3988
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.inputs.json",
+      "sha256": "58c5f3b0a070896a3b89100cb5562625f67a09d18b32a6723bdfb8e50bba8f7d",
+      "bytes": 330603
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_full_native_r1.py",
+      "sha256": "566558294acecd865cd97e5f92123acda12420733e864d418b88c5dd4e47d29c",
+      "bytes": 20385
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+      "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4",
+      "bytes": 22425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_darcy_closed_r1.py",
+      "sha256": "d54e0eaacc9c4c1c15a599357088fff5fded45947c5fc8653383a2b1c12a1dac",
+      "bytes": 10975
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_consistency_r1.py",
+      "sha256": "c34889f6ce2b909cd4ac88b30f6725d4eba9d8cfc60270e25eb369f06ba0d237",
+      "bytes": 19884
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\CaseCryerProblem_PR_symc_nu030.xml",
+      "sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b",
+      "bytes": 11132
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\Run.out",
+      "sha256": "47606d5dc96ec1fb4d161c00314fb7a1879731206793ba1ca0a5a5c4059df4c5",
+      "bytes": 96163
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+      "bytes": 385536
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\read_hydro_native.cpp",
+      "sha256": "2c488ae0901e05aa0d046331bd01c3da5a3ccf20697fe4f93ac8d6c6b3dfce76",
+      "bytes": 3826
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0000.bi4",
+      "sha256": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d",
+      "bytes": 5951322
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0086.bi4",
+      "sha256": "0bf5d7acb6a9ac2bae0e38a4732023b455dcc801602b1a9f64d6e160a2119027",
+      "bytes": 5951322
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0112.bi4",
+      "sha256": "aaa823412023d735535548819e9907ea7285421edde7bed23a22d549e28e6039",
+      "bytes": 5951322
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0133.bi4",
+      "sha256": "3630d967e817f4196afccb95d10b31537d866564c5e5171a407246abd63a2d31",
+      "bytes": 5951322
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_full_native_r1_summary.csv",
+      "sha256": "36d25223262da983378c7fba45391d54dc0ddbe3b59b4c6d1508dfcc6497b2ea",
+      "bytes": 1394791
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_actual_budget_r1_regions.csv",
+      "sha256": "2facbdc7f7bf34907edc52f49bbb838f1a52a92273595142f62711be0d43c6ec",
+      "bytes": 82570
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_actual_budget_r1_centers.csv",
+      "sha256": "aadc074fdd392c1b2688a9ce8b2649a9a49cb0d128029419d51801d23707f49e",
+      "bytes": 109065
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_actual_budget_r1_shells.csv",
+      "sha256": "c2045c87d5414d455aefbd7e1af58cacaf819d6322c2e539bbc4d890377e8a53",
+      "bytes": 163783
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_actual_budget_r1.png",
+      "sha256": "160cc91ca94c37629aecf4b06e1400ddfcd42dd14b1626b39a9f42004afa7dbb",
+      "bytes": 243244
+    }
+  ],
+  "parts": [
+    86,
+    112,
+    133
+  ],
+  "initial_part": 0,
+  "selected_native_safety_frames": 4,
+  "cases": 15,
+  "rows": 75,
+  "constants": {
+    "h_m": 0.0044999998062849045,
+    "bwen_float": -5094126592.0,
+    "helper_gradient_scale": 0.9999999645461332,
+    "eta2_float_m2": 2.0249997589871782e-07,
+    "kw_float_pa": 200000000.0,
+    "porosity_float": 0.30000001192092896,
+    "conductivity_float_m_s": 9.999999747378752e-06,
+    "water_rho_float_kg_m3": 1000.0,
+    "backends": {
+      "CPU": {
+        "kwn_pa": 666666640.1757145,
+        "ghyd_m_s2": 9.80665,
+        "diffusion_factor_m2_s": 1.3596215289304678
+      },
+      "GPU": {
+        "kwn_pa": 666666624.0,
+        "ghyd_m_s2": 9.806650161743164,
+        "diffusion_factor_m2_s": 1.3596214735166658
+      }
+    }
+  },
+  "runs": [
+    {
+      "part": 86,
+      "time_s": 0.027853012084960938,
+      "tau_s": 0.020040512084960938,
+      "field": "native",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5039476149538993,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.1686463440960302,
+      "stress_W": -0.08792115304703882,
+      "pore_W": -0.17236864827261864,
+      "load_W": 0.26029670594123155,
+      "viscosity_W": -1.3696320109067985e-05,
+      "damping_W": -1.212502583516267e-07,
+      "raw_stress_adjoint_residual_W": 9.71445146547012e-17,
+      "raw_pore_adjoint_residual_W": -2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.1686463440960302,
+      "closed_symC_weighted_laplacian_sum": -3.383959779057477e-13,
+      "mixed_work_defect_W": -0.005525199684580151,
+      "pair_net_force_norm_N": [
+        1.791244426700834e-13,
+        6.955229168254026e-13,
+        1.031494911024809e-12,
+        3.267420048237915e-17
+      ]
+    },
+    {
+      "part": 86,
+      "time_s": 0.027853012084960938,
+      "tau_s": 0.020040512084960938,
+      "field": "analytic_current",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5039476149538993,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 25.16779327392578,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.17577409027892876,
+      "stress_W": -0.08644297618567533,
+      "pore_W": -0.16892601003172017,
+      "load_W": 0.25670102763973246,
+      "viscosity_W": -8.729309515418142e-06,
+      "damping_W": -1.1050786528150208e-07,
+      "raw_stress_adjoint_residual_W": -5.551115123125783e-17,
+      "raw_pore_adjoint_residual_W": 2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.17514189255810364,
+      "closed_symC_weighted_laplacian_sum": -5.710987238671805e-13,
+      "mixed_work_defect_W": 0.0011290896965142627,
+      "pair_net_force_norm_N": [
+        1.947430698905451e-13,
+        1.2134780449022298e-13,
+        1.031494911024809e-12,
+        1.7014620104302676e-17
+      ]
+    },
+    {
+      "part": 86,
+      "time_s": 0.027853012084960938,
+      "tau_s": 0.020040512084960938,
+      "field": "native",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5054860031898025,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.1690813135627698,
+      "stress_W": -0.0883596643747282,
+      "pore_W": -0.17289925497699074,
+      "load_W": 0.2613209448515161,
+      "viscosity_W": -1.3719747961322678e-05,
+      "damping_W": -1.2140486804827528e-07,
+      "raw_stress_adjoint_residual_W": 2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": -2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.1690813135627698,
+      "closed_symC_weighted_laplacian_sum": 1.1182166304024577e-12,
+      "mixed_work_defect_W": -0.006005324043474508,
+      "pair_net_force_norm_N": [
+        1.266580580788065e-13,
+        4.3536439389654217e-13,
+        9.862222186664064e-13,
+        4.5482516586417204e-18
+      ]
+    },
+    {
+      "part": 86,
+      "time_s": 0.027853012084960938,
+      "tau_s": 0.020040512084960938,
+      "field": "analytic_current",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5054860031898025,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 25.16779327392578,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.17623436998486175,
+      "stress_W": -0.08687393593568563,
+      "pore_W": -0.16944430988907963,
+      "load_W": 0.25770934581846927,
+      "viscosity_W": -8.74661482358359e-06,
+      "damping_W": -1.1064933022910267e-07,
+      "raw_stress_adjoint_residual_W": -4.163336342344337e-17,
+      "raw_pore_adjoint_residual_W": -2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.17560068380775135,
+      "closed_symC_weighted_laplacian_sum": 5.027089855502709e-13,
+      "mixed_work_defect_W": 0.0006670971975517026,
+      "pair_net_force_norm_N": [
+        1.2020283415530312e-13,
+        2.9952892439935653e-13,
+        9.862222186664064e-13,
+        6.5985333076506956e-18
+      ]
+    },
+    {
+      "part": 86,
+      "time_s": 0.027853012084960938,
+      "tau_s": 0.020040512084960938,
+      "field": "analytic_initial",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5037117860189252,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 7.996834965051658e-12,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.17574611573909318,
+      "stress_W": -0.08654307178671614,
+      "pore_W": -0.16894231982706892,
+      "load_W": 0.25691489818119895,
+      "viscosity_W": -8.718262783408213e-06,
+      "damping_W": -1.1068707568344774e-07,
+      "raw_stress_adjoint_residual_W": -5.551115123125783e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.17574611573909318,
+      "closed_symC_weighted_laplacian_sum": -4.218847493575595e-13,
+      "mixed_work_defect_W": 0.00099280977974614,
+      "pair_net_force_norm_N": [
+        2.4796933564394017e-13,
+        9.963618712749903e-13,
+        1.7386033102211497e-12,
+        6.613271743227961e-18
+      ]
+    },
+    {
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "field": "native",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5042908524853573,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.09711670026410012,
+      "stress_W": -0.0657167922274424,
+      "pore_W": -0.10025827115434296,
+      "load_W": 0.16597763649636277,
+      "viscosity_W": -4.498415670916852e-06,
+      "damping_W": -6.481548192388646e-08,
+      "raw_stress_adjoint_residual_W": -2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": -1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.09711670026410012,
+      "closed_symC_weighted_laplacian_sum": 7.034373084024992e-13,
+      "mixed_work_defect_W": -0.005292710544781948,
+      "pair_net_force_norm_N": [
+        1.0321291249599882e-13,
+        1.198858074800319e-13,
+        4.009226515257063e-13,
+        2.687051778229969e-19
+      ]
+    },
+    {
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "field": "analytic_current",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5042908524853573,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 23.005075454711914,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.10213865631928033,
+      "stress_W": -0.0653210072674533,
+      "pore_W": -0.10145830764131049,
+      "load_W": 0.16709757004972509,
+      "viscosity_W": -3.1847319098031213e-06,
+      "damping_W": -6.278554136333994e-08,
+      "raw_stress_adjoint_residual_W": 5.551115123125783e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.10176340441247754,
+      "closed_symC_weighted_laplacian_sum": 1.3145040611561853e-13,
+      "mixed_work_defect_W": -0.0029409841361699857,
+      "pair_net_force_norm_N": [
+        6.650694962667835e-14,
+        6.000901144506663e-13,
+        4.009226515257063e-13,
+        1.2896485728948794e-18
+      ]
+    },
+    {
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "field": "native",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5058327725407998,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.09735451388800447,
+      "stress_W": -0.06601226098064245,
+      "pore_W": -0.10047974672913518,
+      "load_W": 0.16655346052186487,
+      "viscosity_W": -4.50586612869525e-06,
+      "damping_W": -6.489530631645484e-08,
+      "raw_stress_adjoint_residual_W": -2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.09735451388800447,
+      "closed_symC_weighted_laplacian_sum": -6.155076448521868e-13,
+      "mixed_work_defect_W": -0.005559115284229477,
+      "pair_net_force_norm_N": [
+        2.5193760973027096e-13,
+        2.256741289159265e-14,
+        2.3900654622296946e-13,
+        2.118729520532634e-18
+      ]
+    },
+    {
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "field": "analytic_current",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5058327725407998,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 23.005075454711914,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.10239347549841098,
+      "stress_W": -0.0656179103657802,
+      "pore_W": -0.1016883015167005,
+      "load_W": 0.1676834249076196,
+      "viscosity_W": -3.1899832772118795e-06,
+      "damping_W": -6.286266958237934e-08,
+      "raw_stress_adjoint_residual_W": 5.551115123125783e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.10201735130341276,
+      "closed_symC_weighted_laplacian_sum": 3.588240815588506e-13,
+      "mixed_work_defect_W": -0.0032085351123304906,
+      "pair_net_force_norm_N": [
+        1.0027516565088201e-13,
+        6.283068608442875e-13,
+        2.3900654622296946e-13,
+        1.0949897332416253e-17
+      ]
+    },
+    {
+      "part": 112,
+      "time_s": 0.051537513732910156,
+      "tau_s": 0.043725013732910156,
+      "field": "analytic_initial",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5037117860189252,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 4.815717269401887e-12,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.10205444898901742,
+      "stress_W": -0.06532813710679992,
+      "pore_W": -0.1012977783691152,
+      "load_W": 0.16703243007762336,
+      "viscosity_W": -3.177540699200932e-06,
+      "damping_W": -6.286759870820667e-08,
+      "raw_stress_adjoint_residual_W": -1.3877787807814457e-17,
+      "raw_pore_adjoint_residual_W": 1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.10205444898901742,
+      "closed_symC_weighted_laplacian_sum": 1.48991929904696e-12,
+      "mixed_work_defect_W": -0.0028736000955915525,
+      "pair_net_force_norm_N": [
+        3.8675988067133965e-14,
+        1.3633301048085698e-13,
+        1.7386033102211497e-12,
+        1.0057217363674877e-17
+      ]
+    },
+    {
+      "part": 133,
+      "time_s": 0.07066726684570312,
+      "tau_s": 0.06285476684570312,
+      "field": "native",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5044524690873331,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.0693241286938098,
+      "stress_W": -0.05882671644230614,
+      "pore_W": -0.07193497923519968,
+      "load_W": 0.13076358156788412,
+      "viscosity_W": -2.6744208198389552e-06,
+      "damping_W": -4.5064188602253395e-08,
+      "raw_stress_adjoint_residual_W": 2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": -1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.0693241286938098,
+      "closed_symC_weighted_laplacian_sum": -2.255973186038318e-13,
+      "mixed_work_defect_W": -0.0045972325975006945,
+      "pair_net_force_norm_N": [
+        1.56395368916473e-13,
+        2.057824456631017e-13,
+        4.959797187025407e-13,
+        3.9640935688478976e-18
+      ]
+    },
+    {
+      "part": 133,
+      "time_s": 0.07066726684570312,
+      "tau_s": 0.06285476684570312,
+      "field": "analytic_current",
+      "rho_choice": "saved_rho",
+      "pair_matrix_min_eigenvalue": 0.5044524690873331,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 21.331159591674805,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.0732147493036191,
+      "stress_W": -0.0592943193977458,
+      "pore_W": -0.07378641829439762,
+      "load_W": 0.13311326875379306,
+      "viscosity_W": -2.0726405936288953e-06,
+      "damping_W": -4.472942100364544e-08,
+      "raw_stress_adjoint_residual_W": 2.0816681711721685e-17,
+      "raw_pore_adjoint_residual_W": -1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.07293857734099031,
+      "closed_symC_weighted_laplacian_sum": -2.9753977059954195e-13,
+      "mixed_work_defect_W": -0.003166807302341118,
+      "pair_net_force_norm_N": [
+        1.0579553273534323e-13,
+        6.239601258143225e-15,
+        4.959797187025407e-13,
+        3.180194446845211e-18
+      ]
+    },
+    {
+      "part": 133,
+      "time_s": 0.07066726684570312,
+      "tau_s": 0.06285476684570312,
+      "field": "native",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5059949550828696,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 0.0,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.06948103186809064,
+      "stress_W": -0.05906075529935621,
+      "pore_W": -0.0720601224492331,
+      "load_W": 0.13117194701058482,
+      "viscosity_W": -2.678467900454348e-06,
+      "damping_W": -4.511609314613945e-08,
+      "raw_stress_adjoint_residual_W": 2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": 1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.06948103186809064,
+      "closed_symC_weighted_laplacian_sum": 2.802202914153895e-13,
+      "mixed_work_defect_W": -0.004784626829558242,
+      "pair_net_force_norm_N": [
+        5.761474598085929e-13,
+        6.667389533341691e-15,
+        6.551151849631149e-13,
+        8.316610963704852e-19
+      ]
+    },
+    {
+      "part": 133,
+      "time_s": 0.07066726684570312,
+      "tau_s": 0.06285476684570312,
+      "field": "analytic_current",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5059949550828696,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 21.331159591674805,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.07338536547423377,
+      "stress_W": -0.059534244264642364,
+      "pore_W": -0.07392083155155937,
+      "load_W": 0.13353658723056103,
+      "viscosity_W": -2.075552504398719e-06,
+      "damping_W": -4.478095866315958e-08,
+      "raw_stress_adjoint_residual_W": 4.163336342344337e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.07310855146138012,
+      "closed_symC_weighted_laplacian_sum": 6.776801342311956e-13,
+      "mixed_work_defect_W": -0.003359291719781471,
+      "pair_net_force_norm_N": [
+        8.527219897925285e-14,
+        7.770029699004695e-14,
+        6.551151849631149e-13,
+        1.7696973915842955e-17
+      ]
+    },
+    {
+      "part": 133,
+      "time_s": 0.07066726684570312,
+      "tau_s": 0.06285476684570312,
+      "field": "analytic_initial",
+      "rho_choice": "uniform_rho0",
+      "pair_matrix_min_eigenvalue": 0.5037117860189252,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "analytic_native_surface_pressure_absmax_pa": 3.677375678273753e-12,
+      "active_receiver_darcy_pressure_energy_rate_W": -0.07311851256940495,
+      "stress_W": -0.059247772193574334,
+      "pore_W": -0.07358152216150646,
+      "load_W": 0.1329381891057469,
+      "viscosity_W": -2.066365627501105e-06,
+      "damping_W": -4.4776610060288264e-08,
+      "raw_stress_adjoint_residual_W": 2.0816681711721685e-17,
+      "raw_pore_adjoint_residual_W": 2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.07311851256940495,
+      "closed_symC_weighted_laplacian_sum": 7.056577544517495e-13,
+      "mixed_work_defect_W": -0.003029632463625004,
+      "pair_net_force_norm_N": [
+        3.2809229137617085e-13,
+        1.8102027757741207e-13,
+        1.7386033102211497e-12,
+        7.532004059411233e-20
+      ]
+    }
+  ],
+  "wall_seconds": 69.44000969990157,
+  "note": "Offline mathematical residuals and coefficient sensitivity only; see bound admission for limitations."
+}

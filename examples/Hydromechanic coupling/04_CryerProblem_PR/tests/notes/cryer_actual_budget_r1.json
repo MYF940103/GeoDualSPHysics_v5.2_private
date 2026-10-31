@@ -1,0 +1,26 @@
+{
+  "purpose": "Read-only actual-server state operator and density-coefficient sensitivity audit before deciding any further numerical correction.",
+  "parts": [0, 86, 112, 133],
+  "dynamic_solver_admitted": false,
+  "production_or_formal_input_change_admitted": false,
+  "comparisons": [
+    "Actual native fields on actual geometry with saved rho versus uniform initial rho; consistently rebuild C and all rho coefficients.",
+    "Finite-storage analytic fields on actual geometry with both rho choices, and on initial geometry with uniform rho. Do not change analytic surface values to force agreement.",
+    "Raw density divergence versus receiver-C compression, symC Darcy, momentum components, and conditional saved-state float rounding."
+  ],
+  "checks": [
+    "Rehash selected BI4, actual generated XML, Run.out and native reader against the existing sealed full-run manifest.",
+    "Verify actual selected state clocks, all native IDs and original saved-state safety checks.",
+    "Positive moment eigenvalues, affine gradient closure, pair force cancellation, symC closed weighted sum cancellation and nonpositive Darcy quadratic work.",
+    "Raw force/kinematic adjoint algebra and dissipative artificial viscosity; do not require corrected gradient to be an adjoint of raw force.",
+    "No physical acceptance or half-step criterion is claimed from an offline option comparison."
+  ],
+  "limits": [
+    "Double-distance/sum mathematical reconstruction with float volume divisions and projected stress, not CUDA cell-order/FMA replay.",
+    "Analytic fields evaluated at deformed coordinates have a nominal spherical surface at R=.05 while native surface has moved; record this mismatch rather than clamp or refit it.",
+    "Uniform-rho substitution is a fixed-state coefficient screen, not a coupled density repair or exact material Jacobian.",
+    "Conditional rounding uses the saved-state derivative and is not the unsaved predictor/corrector history.",
+    "Instantaneous residuals cannot be integrated into the observed 128-Pa peak deficit or assigned causal percentages."
+  ],
+  "delivery_rule": "If no additional accepted correction results, preserve nu=.3 r2 and prepare nu=.1/.2/.45. If a new correction is accepted, prepare all four nu values in a new version with individual clocks, stability and reference checks."
+}

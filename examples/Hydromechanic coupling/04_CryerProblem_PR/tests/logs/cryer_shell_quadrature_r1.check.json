@@ -1,0 +1,309 @@
+{
+  "analysis_checks_passed": true,
+  "solver_started": false,
+  "physical_acceptance": false,
+  "full_half_validation": false,
+  "production_implemented": false,
+  "reference_selftest": {
+    "passed": true,
+    "normalized_root_residual_max": 5.251212187111103e-11,
+    "pressure_PDE_residual_absmax_pa_s": 3.749446477741003e-07,
+    "surface_traction_residual_absmax_pa": 1.8189894035458565e-12,
+    "radial_velocity_divergence_fd_error_absmax_s_inv": 2.1455295873273883e-11,
+    "quasistatic_radial_force_fd_error_absmax_pa_m": 0.00022723179426975548,
+    "note": "Arithmetic/continuum self-tests, not physical accuracy acceptance."
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_shell_quadrature_r1.py",
+      "sha256": "33af07bace0e7c1bebd391e8eaa0ca82a501ac8a6c3fad8d9e4c2634b9994b25",
+      "bytes": 13762
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\cryer_shell_quadrature_r1.json",
+      "sha256": "fb75e9e93e44ead990f26ad0baab2005fab82fb88eafb09e6d46fe318b56893a",
+      "bytes": 3022
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.check.json",
+      "sha256": "b67debe21b06b020852ae381b9cbae418291bc11ce29ef2a913bac2b4743a042",
+      "bytes": 3988
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_full_native_r1.inputs.json",
+      "sha256": "58c5f3b0a070896a3b89100cb5562625f67a09d18b32a6723bdfb8e50bba8f7d",
+      "bytes": 330603
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_actual_budget_r1.py",
+      "sha256": "092aa9f1f0ba470d1449135e1cf5378e15178683a3f696482092d8b360bbe912",
+      "bytes": 15657
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_full_native_r1.py",
+      "sha256": "566558294acecd865cd97e5f92123acda12420733e864d418b88c5dd4e47d29c",
+      "bytes": 20385
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_load_pair_r1.py",
+      "sha256": "88abce2dd80f97ec6c6ca0d189de6c30741d767173f918b9d8d3ed12137ac7f4",
+      "bytes": 22425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_darcy_closed_r1.py",
+      "sha256": "d54e0eaacc9c4c1c15a599357088fff5fded45947c5fc8653383a2b1c12a1dac",
+      "bytes": 10975
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_radial_consistency_r1.py",
+      "sha256": "c34889f6ce2b909cd4ac88b30f6725d4eba9d8cfc60270e25eb369f06ba0d237",
+      "bytes": 19884
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\CaseCryerProblem_PR_symc_nu030.xml",
+      "sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b",
+      "bytes": 11132
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\Run.out",
+      "sha256": "47606d5dc96ec1fb4d161c00314fb7a1879731206793ba1ca0a5a5c4059df4c5",
+      "bytes": 96163
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0000.bi4",
+      "sha256": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d",
+      "bytes": 5951322
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+      "bytes": 385536
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\read_hydro_native.cpp",
+      "sha256": "2c488ae0901e05aa0d046331bd01c3da5a3ccf20697fe4f93ac8d6c6b3dfce76",
+      "bytes": 3826
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_shell_quadrature_r1_regions.csv",
+      "sha256": "6a733f0ccf29133c477572a1832381dd41c03c0304bab5020f814808adb1d52e",
+      "bytes": 55370
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_shell_quadrature_r1_radial.csv",
+      "sha256": "d946526c4c9fb31b0d3b463eb850a98ee50ac9ce3731ac257c48cb10382ce618",
+      "bytes": 118670
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_shell_quadrature_r1_quadrature.csv",
+      "sha256": "fa8c7e9cba391c6dfd7d015956f1ef44bc55d4967680a88668c89b5b85e2b0f5",
+      "bytes": 6136
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_shell_quadrature_r1_powers.csv",
+      "sha256": "99fff3022cd423a29a4eb5343ef7333682bdd25b8f99960af464bce46eac9244",
+      "bytes": 2776
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_shell_quadrature_r1.png",
+      "sha256": "8a0b9ba36baaf5922761bffc8d74e62ddb28988691f53c8cfb5d457c9a737d41",
+      "bytes": 453036
+    }
+  ],
+  "quadratures": [
+    {
+      "quadrature": "A_native_equal_mass",
+      "volume_m3": 0.0005808281042897892,
+      "volume_over_sphere": 1.1092999666129781,
+      "weighted_r2_over_R2": 0.6266031124741074,
+      "moment_min_eigenvalue": 0.5037117860189252,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "partition_gradient_center_rms_m_inv": 36.10559818099131
+    },
+    {
+      "quadrature": "B_shell_volume",
+      "volume_m3": 0.0005235987755982989,
+      "volume_over_sphere": 1.0,
+      "weighted_r2_over_R2": 0.6008330078125002,
+      "moment_min_eigenvalue": 0.45757647971855625,
+      "affine_closure_absmax": 4.440892098500626e-16,
+      "partition_gradient_center_rms_m_inv": 18.423546285981253
+    }
+  ],
+  "runs": [
+    {
+      "quadrature": "A_native_equal_mass",
+      "tau_s": 0.02,
+      "stress_W": -0.08661470426974754,
+      "pore_W": -0.1691391692860384,
+      "load_W": 0.2571865269100293,
+      "viscosity_W": -8.742433902256461e-06,
+      "damping_W": -1.1083360052768276e-07,
+      "raw_stress_adjoint_residual_W": -1.3877787807814457e-17,
+      "raw_pore_adjoint_residual_W": -2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.17596500694111317,
+      "closed_symC_weighted_laplacian_sum": -3.3573144264664734e-13,
+      "mixed_work_defect_W": 0.0010128526811506722,
+      "pair_net_force_norm_N": [
+        1.5230266371419748e-13,
+        8.969213695271887e-13,
+        1.7386033102211497e-12,
+        1.3033565811928783e-17
+      ],
+      "raw_mechanical_power_W": 0.0014326533542433628,
+      "active_receiver_symC_work_W": -0.17596500694111317,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 1.9627280711429194
+    },
+    {
+      "quadrature": "A_native_equal_mass",
+      "tau_s": 0.04205180291164746,
+      "stress_W": -0.06610680152448023,
+      "pore_W": -0.10437841389312649,
+      "load_W": 0.1709323073877156,
+      "viscosity_W": -3.3311638333056713e-06,
+      "damping_W": -6.493391085762706e-08,
+      "raw_stress_adjoint_residual_W": -4.163336342344337e-17,
+      "raw_pore_adjoint_residual_W": -1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.10532607028626675,
+      "closed_symC_weighted_laplacian_sum": 7.980283101005625e-13,
+      "mixed_work_defect_W": -0.0028116674773767947,
+      "pair_net_force_norm_N": [
+        1.797670970770597e-13,
+        5.244149362990083e-13,
+        1.7386033102211497e-12,
+        9.048000183864959e-18
+      ],
+      "raw_mechanical_power_W": 0.0004470919701088649,
+      "active_receiver_symC_work_W": -0.10532607028626675,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 1.168277470060275
+    },
+    {
+      "quadrature": "A_native_equal_mass",
+      "tau_s": 0.0625,
+      "stress_W": -0.0593295018241286,
+      "pore_W": -0.07400171478228798,
+      "load_W": 0.13344351862946158,
+      "viscosity_W": -2.0803689117763383e-06,
+      "damping_W": -4.504426649023667e-08,
+      "raw_stress_adjoint_residual_W": -3.469446951953614e-17,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.07355015426615517,
+      "closed_symC_weighted_laplacian_sum": 2.6689761511988763e-13,
+      "mixed_work_defect_W": -0.003032318082590968,
+      "pair_net_force_norm_N": [
+        1.258389721253895e-13,
+        5.388669805148449e-13,
+        1.7386033102211497e-12,
+        4.342818875924924e-18
+      ],
+      "raw_mechanical_power_W": 0.00011230202304499115,
+      "active_receiver_symC_work_W": -0.07355015426615517,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 0.9397162362874951
+    },
+    {
+      "quadrature": "B_shell_volume",
+      "tau_s": 0.02,
+      "stress_W": -0.07424359823005083,
+      "pore_W": -0.15881235133168237,
+      "load_W": 0.22937534222099398,
+      "viscosity_W": -7.980354803813221e-06,
+      "damping_W": -9.471491986039499e-08,
+      "raw_stress_adjoint_residual_W": -2.7755575615628914e-17,
+      "raw_pore_adjoint_residual_W": 2.7755575615628914e-17,
+      "closed_symC_pressure_energy_rate_W": -0.15137093556874978,
+      "closed_symC_weighted_laplacian_sum": 3.1663560662309465e-13,
+      "mixed_work_defect_W": 0.013090243197746237,
+      "pair_net_force_norm_N": [
+        1.5546889613199038e-13,
+        6.619336962419236e-13,
+        1.7763881424434807e-12,
+        3.900510188858155e-18
+      ],
+      "raw_mechanical_power_W": -0.003680607340739217,
+      "active_receiver_symC_work_W": -0.15137093556874978,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 1.9627280711429194
+    },
+    {
+      "quadrature": "B_shell_volume",
+      "tau_s": 0.04205180291164746,
+      "stress_W": -0.057954247982061766,
+      "pore_W": -0.0972247224107755,
+      "load_W": 0.15308290398591962,
+      "viscosity_W": -3.020609794874342e-06,
+      "damping_W": -5.747780967351795e-08,
+      "raw_stress_adjoint_residual_W": 1.3877787807814457e-17,
+      "raw_pore_adjoint_residual_W": 1.3877787807814457e-17,
+      "closed_symC_pressure_energy_rate_W": -0.09394891020762257,
+      "closed_symC_weighted_laplacian_sum": 6.186162693211372e-13,
+      "mixed_work_defect_W": 0.004913056028797297,
+      "pair_net_force_norm_N": [
+        1.064898629385417e-13,
+        1.098747479831659e-13,
+        1.7763881424434807e-12,
+        3.0308824971060985e-17
+      ],
+      "raw_mechanical_power_W": -0.002096066406917646,
+      "active_receiver_symC_work_W": -0.09394891020762257,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 1.168277470060275
+    },
+    {
+      "quadrature": "B_shell_volume",
+      "tau_s": 0.0625,
+      "stress_W": -0.05232701595678533,
+      "pore_W": -0.06843407155812296,
+      "load_W": 0.11935839554977767,
+      "viscosity_W": -1.877606979514744e-06,
+      "damping_W": -4.0362508687438445e-08,
+      "raw_stress_adjoint_residual_W": -6.938893903907228e-18,
+      "raw_pore_adjoint_residual_W": 0.0,
+      "closed_symC_pressure_energy_rate_W": -0.06639540498476143,
+      "closed_symC_weighted_laplacian_sum": -5.027089855502709e-13,
+      "mixed_work_defect_W": 0.0031071771612650317,
+      "pair_net_force_norm_N": [
+        4.920795120057184e-13,
+        2.098773505004166e-14,
+        1.7763881424434807e-12,
+        1.2693355183353678e-17
+      ],
+      "raw_mechanical_power_W": -0.0014026919651306258,
+      "active_receiver_symC_work_W": -0.06639540498476143,
+      "scalar_continuum_rounding_residual_absmax_pa_s": 0.9397162362874951
+    }
+  ],
+  "pair_count": 3392720,
+  "theoretical_times_s": [
+    0.02,
+    0.04205180291164746,
+    0.0625
+  ],
+  "native_states_decoded": 1,
+  "actual_native_clock_s": 0.0,
+  "constants": {
+    "h_m": 0.0044999998062849045,
+    "bwen_float": -5094126592.0,
+    "helper_gradient_scale": 0.9999999645461332,
+    "eta2_float_m2": 2.0249997589871782e-07,
+    "kw_float_pa": 200000000.0,
+    "porosity_float": 0.30000001192092896,
+    "conductivity_float_m_s": 9.999999747378752e-06,
+    "water_rho_float_kg_m3": 1000.0,
+    "backends": {
+      "CPU": {
+        "kwn_pa": 666666640.1757145,
+        "ghyd_m_s2": 9.80665,
+        "diffusion_factor_m2_s": 1.3596215289304678
+      },
+      "GPU": {
+        "kwn_pa": 666666624.0,
+        "ghyd_m_s2": 9.806650161743164,
+        "diffusion_factor_m2_s": 1.3596214735166658
+      }
+    }
+  },
+  "same_native_nodes": true,
+  "baseline_native_fields_unchanged": true,
+  "limits": "B is a hypothetical nonuniform-mass quadrature, not supported by the current uniform-soil-mass solver. Instantaneous errors do not attribute the dynamic peak deficit.",
+  "wall_seconds": 30.744861099869013
+}
