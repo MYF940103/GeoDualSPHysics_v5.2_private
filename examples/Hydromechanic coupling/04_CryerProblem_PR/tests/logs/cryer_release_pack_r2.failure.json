@@ -1,0 +1,11 @@
+{
+  "stage": "ZIP creation, after all original evidence/payload checks and manifest seal",
+  "reason": "Windows PowerShell did not load System.IO.Compression from the FileSystem assembly alone; ZipArchive type was unavailable",
+  "programs_or_solvers_executed": false,
+  "manifest_preserved_sha256": "0863c5e919e505e50dd3a58bdc1ee87cc449b7035909b8b73362d5fa14e229e4",
+  "original_packer_sha256": "40fffcaa579fec134b6a03d8b1edcb520e1bcb0bb1295c4e3aad53a05bab973d",
+  "original_packer_copy": "../outputs/cryer_release_pack_r2_failed.ps1",
+  "zero_byte_zip_recoverably_archived": "../outputs/cryer_release_pack_r2_failed.zip",
+  "fix": "Load System.IO.Compression explicitly; adopt the already sealed manifest only by exact caller-supplied SHA and after rechecking all evidence and every unchanged payload",
+  "existing_manifest_or_old_package_overwritten": false
+}

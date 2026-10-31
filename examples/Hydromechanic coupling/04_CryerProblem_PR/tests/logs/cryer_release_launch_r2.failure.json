@@ -1,0 +1,13 @@
+{
+  "stage": "Portable preflight receipt update before GenCase or solver invocation",
+  "reason": "Windows PowerShell converted the null File.Replace backup-name argument to an invalid empty path",
+  "physical_solver_or_gencase_started": false,
+  "retained_failed_portable_tree": "../outputs/cryer_release_portable_r2",
+  "retained_prelaunch_zip": "../outputs/cryer_release_pack_r2_prelaunch.zip",
+  "prelaunch_zip_sha256": "01266674293cc7d1f0787f44f62ca9bbb2cd351d2162bf252cb26fc77f38bab3",
+  "retained_prelaunch_manifest": "../outputs/cryer_release_pack_r2_prelaunch.manifest.json",
+  "retained_package_check": "cryer_release_pack_r2.prelaunch.check.json",
+  "fix": "Use an explicit receipt.previous backup path for atomic File.Replace; no numerical change",
+  "next": "Regenerate only this unpublished package from changed launcher bytes, then extract into a different fresh smoke tree",
+  "original_formal_inputs_outputs_and_r1_package_modified": false
+}

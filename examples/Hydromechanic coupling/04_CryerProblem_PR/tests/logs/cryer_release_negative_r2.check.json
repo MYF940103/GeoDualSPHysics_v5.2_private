@@ -1,0 +1,33 @@
+{
+    "negative_checks_passed":  true,
+    "existing_directory_exit":  1,
+    "unknown_argument_exit":  1,
+    "changed_payload_exit":  1,
+    "preserved_smoke_files":  21,
+    "all_smoke_hashes_unchanged":  true,
+    "new_output_created":  false,
+    "solver_or_gencase_started":  false,
+    "logs":  [
+                 {
+                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_release_negative_r2.existing.log",
+                     "bytes":  1966,
+                     "sha256":  "01a2fa6ce1aff829022d9d755d19d1e6e55a58c6cc99e22a2ac326b8a9c5b624"
+                 },
+                 {
+                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_release_negative_r2.unknown.log",
+                     "bytes":  74,
+                     "sha256":  "4a077bd751cea20e88da269ba46bdbd2f50c8a49b320c5080cbc7e845d7a399a"
+                 },
+                 {
+                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_release_negative_r2.integrity.log",
+                     "bytes":  1566,
+                     "sha256":  "1963643f126269d86e874b6f99d210f334aa5ba0a198ffa6ff7f2037d58d84c6"
+                 }
+             ],
+    "physical_acceptance":  false,
+    "commands":  [
+                     "xCaseCryerProblem_PR_release_r2_win64_GPU.bat --smoke --unattended",
+                     "xCaseCryerProblem_PR_release_r2_win64_GPU.bat --unattended --invalid-option",
+                     "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/outputs/cryer_release_integrity_r2/support/run_cryer_release_r2.ps1 -Smoke"
+                 ]
+}

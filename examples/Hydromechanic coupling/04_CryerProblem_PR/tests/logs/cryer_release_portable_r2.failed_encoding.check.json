@@ -1,0 +1,34 @@
+{
+  "passed": false,
+  "smoke_native_verified": false,
+  "errors": [
+    "LookupError('unknown encoding: utf8-sig')"
+  ],
+  "safety_errors": [],
+  "comparisons": [],
+  "native_summaries": [],
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_release_portable_review_r2.py",
+      "bytes": 9869,
+      "sha256": "ffe6fb37d21acb2ee825c0f1591468849df6b38e8c55ef9797c3abc40869816d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_release_package_r2.check.json",
+      "bytes": 2089,
+      "sha256": "dc5a35c795aa60b18242ab4c8e3b39104e82a961d836c3b021f4667ca56e85de"
+    }
+  ],
+  "solver_started": false,
+  "programs_built": false,
+  "queue_used": false,
+  "physical_acceptance": false,
+  "full_cycle_acceptance": false,
+  "full_half_validation": false,
+  "server_a6000_smoke": false,
+  "production_source_changed": false,
+  "old_server_executable_attribution_proven": false,
+  "traceback": "Traceback (most recent call last):\n  File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_release_portable_review_r2.py\", line 48, in review\n    verify(digest(Path(__file__))); package=load(PACKAGE); assert package['package_consistency_passed'] and package['verified_zip_entries']==15\n                                            ^^^^^^^^^^^^^\n  File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\cryer_release_portable_review_r2.py\", line 46, in load\n    verify(digest(path)); return json.loads(Path(path).read_text(encoding='utf8-sig'))\n                                            ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Anaconda3\\Lib\\pathlib.py\", line 1058, in read_text\n    with self.open(mode='r', encoding=encoding, errors=errors) as f:\n         ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\n  File \"D:\\Anaconda3\\Lib\\pathlib.py\", line 1044, in open\n    return io.open(self, mode, buffering, encoding, errors, newline)\n           ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^\nLookupError: unknown encoding: utf8-sig\n",
+  "verified_unique_files": 2,
+  "verified_unique_bytes": 11958
+}

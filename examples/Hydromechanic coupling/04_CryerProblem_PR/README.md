@@ -1,5 +1,29 @@
 # CryerProblem_PR
 
+## Selected portable release r2 (2026-11-01)
+
+The bounded audit is complete. The selected scheme retains G1 plus Darcy symC,
+with the recorded approximately1% peak-amplitude limitation, not a new numerical fix.
+Use [the Windows/RTX A6000 package](Cryer_release_r2_Windows_RTXA6000.zip),
+[server instructions](support/README_cryer_release_r2.md), and the independent root entry
+`xCaseCryerProblem_PR_release_r2_win64_GPU.bat` /
+`CaseCryerProblem_PR_release_r2_Def.xml`.
+The external ZIP checksum is `Cryer_release_r2_Windows_RTXA6000.zip.sha256`.
+
+The15 ZIP entries were checked byte-for-byte. A fresh extracted local RTX3050
+smoke actually ran128 steps and saved2 native frames; original safety passed,
+and all35 fields at both frames match the retained server startup exactly.
+Existing-output, unknown-argument and changed-payload launches were rejected.
+This is portable startup validation, not A6000/full-cycle/independent-half acceptance.
+See [delivery review](tests/notes/cryer_release_review_r2.md).
+
+Default dt=2^-20s and963370 steps match the returned full run, unlike the old
+r1 package's intended2^-21s. No new local full run was launched; existing full
+results need not be rerun merely for packaging. If a separate server reproduction
+is desired, smoke and full are independent fresh starts with actual execution
+receipts. The BAT generates and solves only; analysis and particles follow after copy-back.
+Old formal data and r1 payloads remain unchanged.
+
 ## Current review and root organization (2026-11-01)
 
 The returned `CaseCryerProblem_PR_symc_nu030_out` full run has been reviewed:
@@ -18,15 +42,15 @@ continue, but these CSV observations do not prove the cause of the peak deficit.
 No safe, local low-cost correction has been demonstrated. The selected delivery
 baseline therefore retains G1 plus Darcy symC and records the remaining errors;
 it is not a strict1% or full-field accuracy claim and does not change any guard.
-After the bounded audit, a new independent formal root XML/BAT and Windows/NVIDIA
-server package will be prepared, either with a verified worthwhile improvement
-or the retained baseline and explicit limitations. That new package is not yet
-prepared. Existing r1 inputs/package/output are retained historical evidence,
-not silently upgraded or a reason to rerun completed results.
+The independent r2 formal root XML/BAT and Windows/NVIDIA package are now prepared
+with the retained baseline and explicit limitations, as described above.
+Existing r1 inputs/package/output are retained historical evidence, not silently
+upgraded or a reason to rerun completed results.
 
 Root organization is deliberately conservative:
 
-- Nine XMLs and ten BATs remain; old Poisson plotting scripts still depend on
+- All original nine XMLs and ten BATs remain, plus the new r2 XML/BAT pair
+  (now ten XMLs and eleven BATs); old Poisson plotting scripts still depend on
   root XML/output paths. Legacy BATs contain existing-output deletion menus:
   do not invoke them for retained results.
 - All ten root output folders, formal figures/CSVs, refinement, videos and
