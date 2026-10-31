@@ -1,0 +1,266 @@
+{
+  "date": "2026-11-01",
+  "timezone": "Asia/Tokyo",
+  "status": "planning_complete_implementation_not_started",
+  "baseline_git": "87b5c4d64005a44c67a08728a1869968caaee81c",
+  "authorization_scope": "Development planning only; no production/source/formal-input edits, build, solver, branch switch or remote server action in this turn",
+  "share": {
+    "url": "https://chatgpt.com/s/cx_6ae63cd0fe048191957bbb6c99dfffa9",
+    "readable_body_obtained": false,
+    "checks": [
+      "web reader: zero readable lines",
+      "direct public request: HTTP403"
+    ],
+    "basis": "User message summary plus local original papers and source, not an assumed shared transcript"
+  },
+  "first_release": {
+    "continuum": "single-layer saturated low-frequency displacement-pressure; relative water-solid acceleration neglected; skeleton acceleration retained in Darcy",
+    "water_storage": "finite Kw linearized storage and reference water properties",
+    "solid_grain": "intrinsically incompressible",
+    "porosity": "dynamic; independent solid-volume/mass/inertia ledger must be closed before code",
+    "hydraulic_conductivity": "constant isotropic k [m/s]; not intrinsic permeability [m2]. Uniform global value for first tests; later different materials may have distinct time-independent values",
+    "pressure_spatial_operator": "candidate correction admitted only after independent consistency, hydrostatic, flux, stability and cost tests",
+    "time_integration": "retain existing explicit finite-Kw integrator first",
+    "stress_precision": "retain accepted double persistent stress; no global precision redesign",
+    "new_porosity_precision": "evaluate one double n or equivalent J state against per-step ULP loss; avoid redundant drifting states",
+    "legacy_mode": "current UPW_PR remains default and unaffected path"
+  },
+  "decisions": [
+    "u-pl/u-pw names alone do not determine physics, spatial order or accuracy",
+    "Existing Morris is already a second spatial derivative; Lian disorder compensation is a separate numerical choice",
+    "Constant k is a justified first closure, not proof that local permeability evolution is always negligible",
+    "Matched low-frequency small-strain limits should agree; rapid-ramp/Cryer transients may differ",
+    "TPI changes the storage assumption and approximates a pressure constraint; not an unconditional larger-dt finite-Kw PR solver",
+    "Negative-pressure stabilization is plastic-dilatancy-specific and not a cavitation or unsaturated model"
+  ],
+  "phases": [
+    {
+      "id": "P0",
+      "scope": "Equation/sign/unit and particle mass-volume-density-inertia/boundary/stage ledger",
+      "gate": "Document a consistent closure before new persistent arrays or coupled feedback"
+    },
+    {
+      "id": "P1",
+      "scope": "Independent CPU pressure-operator diagnostics; 2D then justified 3D",
+      "gate": "Polynomial/disorder/boundary/hydrostatic/flux/dissipation/convergence and observed cost; no assumed second-order rate"
+    },
+    {
+      "id": "P2",
+      "scope": "Porosity observer then coupled consistent fixed-k storage/volume/inertia state",
+      "gate": "Uniform deformation, shear/rigid nulls, (1-n)J invariant, approximation-aware mass residual; sorting/output/stage identity"
+    },
+    {
+      "id": "P3",
+      "scope": "Finite-Kw explicit skeleton-acceleration Darcy source",
+      "gate": "Current completed stage acceleration, no duplicate old/new PR, accelerated equilibrium, undrained/quasistatic/harmonic and independent half checks"
+    },
+    {
+      "id": "P4",
+      "scope": "GPU synchronization and bounded-to-full physical comparisons",
+      "gate": "Native ID/actual-clock safety, same-model half and backend metrics, theory metrics separately; 1D then Cryer then Lian"
+    },
+    {
+      "id": "P5",
+      "scope": "Conditional TPI cost decision",
+      "gate": "Measured hydraulic vs mechanical limitation and equal-accuracy physical-time throughput; dedicated incompressible-limit reference"
+    },
+    {
+      "id": "P6",
+      "scope": "Plastic mini-tests and target Selborne readiness",
+      "gate": "Decide calibrated negative-pressure treatment and k(n) only with evidence; actual multi-material/regional-pressure implementation before enabling Selborne"
+    }
+  ],
+  "mandatory_derivations": [
+    "Current fixed MassFluid and solid-advected Velrhop.w cannot simply become physical mixture density after adding n",
+    "Continuous (1-ni) div(v) and Lian neighbor (1-nj) weighted Eq24 are not identical for heterogeneous n",
+    "Dimension-dependent 2D/3D Eq23 moments; changing coefficient 4 to5 alone is not complete 3D validation",
+    "Eq25 pressure compensation gamma normalization ambiguity: derive from Eq10+23 and SI dimensions; do not infer author implementation error",
+    "Whole-head compensation vs literal pressure-only compensation must pass hydrostatic balance",
+    "Local consistency correction and pair symC reciprocity differ; global conservation/dissipation not inherited",
+    "Full compressible water mass contains density-gradient transport omitted by the linearized storage approximation",
+    "Stage Ace excludes gravity until integration; damping/HG and post-force NoPen need explicit acceleration semantics",
+    "New spectrum/coupled stability must be checked; fixed dt currently bypasses automatic pore-dt clipping"
+  ],
+  "implementation_notes": {
+    "entry": "Production pressure rate is fused in main force interactions; do not patch only the unused standalone dispatcher",
+    "schedule": "After same-stage completed forces/load normalization/damping/HG, a read-only neighbor pass; disable legacy rate accumulation for the new mode rather than adding a second full PR",
+    "cost": "Fixed-isotropic candidate can accumulate receiver grad p, scalar Laplacian, coordinate defect and div a locally; no global six-Hessian requirement or extra cell build assumed",
+    "state_coverage": [
+      "allocation/resize",
+      "cell reorder/native IDs",
+      "periodic copies",
+      "predictor/corrector",
+      "CPU/GPU transfers",
+      "initialization",
+      "native outputs",
+      "versioned PART load"
+    ],
+    "proposed_interface_not_implemented": "One model enum e.g. HydroMechFormulation=UPW_PR/UPL_PR; test-stage switches remain in harness, TPI separate only when admitted",
+    "old_tpi_keys": "Remain explicitly rejected; archived controls/results do not count as current acceptance"
+  },
+  "validation_policy": {
+    "legacy_default_off_regression": "Complete same-physics native field comparison required; old physical evidence not automatically inherited",
+    "same_model_pressure_rms_pa": 5,
+    "same_model_material_displacement_mm": 0.005,
+    "metric_scope": "Historical elastic-case comparison starting points, not universal gates; P0 must predeclare appropriate dimensional/relative thresholds for manufactured fields, harmonic/plastic problems and the new density-volume closure",
+    "model_switch_scope": "Separate fresh runs only until explicit mass/volume/n/history migration is derived and verified; no direct cross-model PART continuation",
+    "tpi_time_levels": "Paper Leap-Frog staggered histories are not automatically the current Symplectic predictor/corrector arrays; startup, full/half-time history and variable-step extrapolation require derivation",
+    "cross_option_differences_are_half_errors": false,
+    "one_dimensional_100pa_guard_universal": false,
+    "cryer_reference": "Retain actual drainage-relative clock, finite Kw and material observation radius; current three server runs untouched",
+    "selfweight_accuracy_repair": "Still deferred except new-model hydrostatic/short consistency checks",
+    "full_cycle_auto_admission": false,
+    "two_dimensional_reference": "Lian numerical SPH/FEM reference, not exact solution; Yao remains deferred"
+  },
+  "performance_metrics": [
+    "main interaction time",
+    "new neighbor pass time",
+    "whole step time",
+    "sorting and IO time",
+    "peak memory",
+    "natural hydraulic/mechanical dt and limiting fractions",
+    "cost per physical simulated time at matched accuracy"
+  ],
+  "deferred": [
+    "k(n)/anisotropic conductivity",
+    "TPI unless cost gate passes",
+    "negative-pressure clipping/empirical beta by default",
+    "full u-w-p relative inertia/high-frequency",
+    "unsaturated/cavitation",
+    "general moving/curved walls",
+    "exact HG restart"
+  ],
+  "selborne": {
+    "case": "07_Selborne3D_u_pw",
+    "current_blockers": [
+      "one global SoilCte, no per-material selection",
+      "regional basal pore-pressure ramp missing"
+    ],
+    "disabled_bats_unchanged": true
+  },
+  "delivery": {
+    "same_existing_case_layout": true,
+    "formal_xml_doc_sync_when_interface_implemented": true,
+    "selective_local_remote_git": true,
+    "raw_bi4_executables_and_pdfs_not_cloud_backed_by_plan_commit": true
+  },
+  "pdf_review": {
+    "renderer": "PyMuPDF1.22.5; no Poppler executable found",
+    "lian_pages_1based": [
+      3,
+      4,
+      6,
+      8,
+      9,
+      11
+    ],
+    "upw_pages_1based": [
+      6
+    ],
+    "all_seven_rendered_pages_visually_inspected": true,
+    "local_render_manifest": "upl_refs_r1/manifest.json"
+  },
+  "physical_acceptance": false,
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\papers\\PDF\\Lian 2023 u-pl.pdf",
+      "sha256": "c5bb5e8862c87893cd5891758df1d46ea47ddd498e1e61096554e0622756943b",
+      "bytes": 10565300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\papers\\PDF\\a-coupled-u-p-sph-formulation-for-hydromechanical-modeling-of-retrogressive-landslides-and-comparison-with-a-penalty-based-approach.pdf",
+      "sha256": "e4420043f21903f84d8468f14975e2d6fb3bc3e7993ad1fd8054882b9ead05ef",
+      "bytes": 7731361
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\papers\\u-pw\\Lian 2023 u-pl.md",
+      "sha256": "d19fd1c4d5c1a6fe6430ff4d77d127d0077a7fe12f6747a9ca63f5a260c418ab",
+      "bytes": 117957
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\papers\\u-pw\\a-coupled-u-p-sph-formulation-for-hydromechanical-modeling-of-retrogressive-landslides-and-comparison-with-a-penalty-based-approach.md",
+      "sha256": "ac2f6fe474423cfa72813ab7b8ae46fafdf78835a0b6f4cc6f371d4240a12c46",
+      "bytes": 188241
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\DualSphDef.h",
+      "sha256": "028865deccdfd86044e1883ff54dedbb15809dea7eef349285eaf8b3eb005ac7",
+      "bytes": 32528
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.h",
+      "sha256": "7343160f841577aa4dfaa7af5c8bb78f8547d75e76036c29a0295967936cb6b0",
+      "bytes": 39245
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "sha256": "57fb4ddc74932e5cbc72031e4c31cef7c6c42f054d7e4d22c8d24d6530557e33",
+      "bytes": 185990
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.h",
+      "sha256": "d477f146b14df2399434f8479e9dd53767bc933f652fca697c461fafa79d05c0",
+      "bytes": 28383
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "sha256": "0487c6292bd35dac758144ad393a92879cb59eaa89b4095dbc844734406199c9",
+      "bytes": 234588
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+      "sha256": "c0b35c844b482c5310ae1fba816bed3eadc941554d4aeda55e83101060cf1bec",
+      "bytes": 73979
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.h",
+      "sha256": "025e5469bb6408fc7538e9a3b1102cc2b7055a9cc21179e018c00ecdff1a6ec6",
+      "bytes": 21276
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "sha256": "d1f1962d8f37147bf4a2607bd8a1472a69da76a66f046f1f6015701110040256",
+      "bytes": 98201
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "sha256": "942db3a71c2bf88dc05b049b5fa7ea7ade0688d73b2f4021008af6440c871f7a",
+      "bytes": 64425
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.h",
+      "sha256": "4f8f4241406c983c4a35a1a4860145445dc9a8b00a9ca479ad60244b5bc1f0ba",
+      "bytes": 22053
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "sha256": "efc1cc9bc838067a88427f397811eaa80d591d9ac69e00358421a168e62682ea",
+      "bytes": 279934
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JPartsLoad4.cpp",
+      "sha256": "7743a70881d06be06da483be1fccab8f775ae51b968e9ea8856e0fd9572546c7",
+      "bytes": 20212
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\upw_baseline_r1.md",
+      "sha256": "f55191f298109a6b32b4f43c9df7285053ada0d3e9f09893fc5214fdd01400b4",
+      "bytes": 9157
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\upl_development_r1.md",
+      "sha256": "14f6bcb858d6cf0da3365887c43d626933c230a40401096f7eb539879f939c72",
+      "bytes": 16824
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\upl_refs_r1\\manifest.json",
+      "sha256": "fca157ce29e7304ed78276c3e3c46d50b857b0c3f59fc40d8f7eaade787e8614",
+      "bytes": 3508
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\07_Selborne3D_u_pw\\README.md",
+      "sha256": "cdde6454f3aebe8d45cd61f058924f97ec1a0af23b5b5d8c3f7c335dec391eae",
+      "bytes": 7263
+    }
+  ]
+}
