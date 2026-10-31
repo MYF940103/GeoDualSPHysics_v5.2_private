@@ -1,5 +1,20 @@
 # 01 自重固结：入口与文件索引
 
+## 模拟与理论清晰对比图（2026-11-01）
+
+优先查看以下新图；原`nativepr_*`图表及受保护数据不改写：
+
+- [孔压历史及晚期放大](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_pressure_history.png)
+- [沉降历史及晚期放大](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_settlement_history.png)
+- [孔压剖面与逐层误差](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_pressure_profiles.png)
+- [沉降剖面与逐层误差](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_settlement_profiles.png)
+
+虚线为H1有限Kw、H=1 m的准静态参考，实线与空心标记为模拟；误差统一为模拟减参考。
+使用实际保存时刻及有限Kw Tv，不平滑、不插值；该参考不代表惯性启动阶段的精确解。
+孔压历史中的当前静水基准超孔压与固定初始p0的原生excess不是同一个量。
+配套`compare_clear_r1_matching_history.csv`和`matching_profiles.csv`在同一`figures`目录，
+包含实际时间、步数、两种Tv及选图标记；仅改善呈现，不改变误差结论或验收标准。
+
 ## FreshPR全程和分析已完成：保留误差后转Cryer（2026-11-01）
 
 独立根目录入口`CaseSelfWeightConsolidation_Scenario2_FreshPR_Def.xml`及

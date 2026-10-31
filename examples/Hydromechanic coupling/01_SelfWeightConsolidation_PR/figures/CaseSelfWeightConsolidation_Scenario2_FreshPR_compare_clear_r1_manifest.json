@@ -1,0 +1,91 @@
+{
+  "passed": true,
+  "analysis_checks_passed": true,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\support\\plot_selfweight_comparison_clear_r1.py",
+      "bytes": 13037,
+      "sha256": "bbd115a06e91e89f0c06bea9626ec3c62f0b296080d17810a0950b01da316326"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_nativepr_manifest.json",
+      "bytes": 553523,
+      "sha256": "a220f9a020b25a5b9170754f0b62d206ed715bbc478f826e09d94fb0822baeb2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_nativepr_history.csv",
+      "bytes": 1241287,
+      "sha256": "f4d65810b7fd9793e44897c994c94079d46b3665ac468a196769973112a6db8a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_nativepr_selected_profiles.csv",
+      "bytes": 2006762,
+      "sha256": "e13eb499c9624896c6914af5deaa576bdf8a7c3cb90cf1de045742a3826dd45e"
+    }
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_pressure_history.png",
+      "bytes": 414678,
+      "sha256": "ac03ad095e1a2aab37eb9ff49901a5d1e08a5af4059468effe0f4c43de88eb5a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_settlement_history.png",
+      "bytes": 408002,
+      "sha256": "70ef9de7e8dc0b28525e35d0b2a7330f4055b1ee6e1023b45a638f80a1d38993"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_pressure_profiles.png",
+      "bytes": 567392,
+      "sha256": "72626cd6a33cb55de7d9b1a90106aa104677bad69f5adc947ed9eb24c73d9ccc"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_settlement_profiles.png",
+      "bytes": 554454,
+      "sha256": "25618308b1c4e18c69b6cac9294d0cf74c71ff1a17afd77986c15da52ce26bb9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_matching_history.csv",
+      "bytes": 839486,
+      "sha256": "2c483504fabf045ef8e45fc043b9790ae47e641e74b1b3168172f6563e27ef25"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\01_SelfWeightConsolidation_PR\\figures\\CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_matching_profiles.csv",
+      "bytes": 1332704,
+      "sha256": "d8731f72a140979c89bddee13f8643a931bf999986a345892c2f9c432b2e9541"
+    }
+  ],
+  "fresh_history_states": 403,
+  "retained_profile_rows": 1100,
+  "plotted_profile_rows": 1000,
+  "profile_used_parts": [
+    1,
+    10,
+    20,
+    50,
+    80,
+    100,
+    140,
+    200,
+    300,
+    402
+  ],
+  "retained_not_plotted_parts": [
+    400
+  ],
+  "actual_final_finite_Tv": 2.000000167324705,
+  "actual_final_time_s": 7.316858768463135,
+  "definitions": {
+    "total_p_error": "p \u2212 H1_finite_p",
+    "current_q": "p \u2212 rho_w*g*max(current drained-material-plane z \u2212 z,0)",
+    "fixed_p0_excess": "Native float32(p\u2212p0); retained unchanged, not substituted for current q",
+    "settlement": "Fixed-material own-initial increment",
+    "theory": "H1 finite-Kw quasi-static at actual saved times, not exact dynamic startup truth"
+  },
+  "residual_floor_budget_diagnostic_met": false,
+  "physical_acceptance": false,
+  "formal_acceptance": false,
+  "no_physical_acceptance_change": true,
+  "solver_started": false,
+  "native_reader_started": false
+}

@@ -1,0 +1,36 @@
+{
+  "review_date": "2026-11-01",
+  "request": "Make the existing selfweight simulation-versus-reference comparisons legible",
+  "manifest": "../../figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_clear_r1_manifest.json",
+  "visual_review_completed": true,
+  "independent_csv_and_hash_review_passed": true,
+  "original_history_columns_preserved_exactly": 107,
+  "original_profile_columns_preserved_exactly": 67,
+  "history_rows": 403,
+  "profile_rows": 1100,
+  "derived_formula_max_recalculation_difference": 0,
+  "reviewed_pngs": [
+    "pressure_history",
+    "settlement_history",
+    "pressure_profiles",
+    "settlement_profiles"
+  ],
+  "checks": [
+    "All four actual rendered PNGs inspected: no overlapping axes, legends or captions",
+    "Theory is dashed; simulation is solid with sparse open markers; profiles additionally encode actual time by color",
+    "History plots separate full scale, late detail and signed error with explicit units",
+    "Profile plots separate early and late saves, and show simulation-minus-H1 error in the adjacent column",
+    "Reference is H1 finite-Kw, H=1 m, quasi-static; not exact inertial startup truth",
+    "Current moving-hydro excess is explicitly distinguished from native fixed-p0 excess",
+    "Part400 is retained in CSV but omitted from profiles as a near-duplicate; Part402 is actual finite-Kw Tv2",
+    "403 actual history states and 1100 original selected-profile rows retained without interpolation or smoothing"
+  ],
+  "native_results_modified": false,
+  "original_figures_modified": false,
+  "solver_started": false,
+  "native_reader_started": false,
+  "residual_floor_budget_diagnostic_met": false,
+  "physical_acceptance": false,
+  "formal_acceptance": false,
+  "acceptance_criteria_changed": false
+}
