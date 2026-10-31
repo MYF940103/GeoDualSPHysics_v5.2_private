@@ -1,0 +1,26 @@
+{
+  "authorized_date": "2026-10-31",
+  "timezone": "UTC+09:00",
+  "user_revision": "Finish the current 1D selfweight full calculation and all pressure/settlement analysis and figures, record remaining errors, then move directly to Cryer. Temporarily defer further selfweight accuracy repair instead of holding the next case behind its error criteria.",
+  "supersedes": "The case01-to-Cryer transition condition in poromech_next_r4/r5 and earlier delivery plans only. Existing numerical definitions, guards, original thresholds, raw evidence and provenance requirements remain unchanged.",
+  "active_selfweight": {
+    "worker": "01_SelfWeightConsolidation_PR/tests/support/sw_freshpr_run_r2.py",
+    "output": "01_SelfWeightConsolidation_PR/CaseSelfWeightConsolidation_Scenario2_FreshPR_out",
+    "job": "Keep the already-owned fresh GPU run unchanged: dt3*2^-23,20459420steps,403 saves,actualend7.316858768463135s,finite-KwTv2. No new solver,PART restart,input/program/source edit,old-worker restart,notifier rearm or connectivity test.",
+    "completion": "Verify actual final time,all native IDs/38 fields,existing safety/drainage/geometry/p0/excess/natural/pore/HG guards,owned exits and frozen input-build-program-runtime-output hashes. A runtime failure or incomplete output is not a full calculation; diagnose that execution problem explicitly. A completed solver with failed postprocessing must be repaired offline without rerunning it.",
+    "analysis": "Complete actual-time pressure profiles/history,own-initial material top/bottom/relative settlement,total and effective stress,staggering,initial transient,and late bottom/mean/first-mode decay. Keep H1 finite-Kw/legacy and explicitly labelled HD sensitivity distinct,without fitting H or time. Separate fixedp0/nativefloat32 excess,current moving-drained-plane hydro excess,and absolute pressure errors. Report the original <=5Pa numerical-floor diagnostic exactly as obtained,even if false;do not relax it or relabel it as the independent half-step limit.",
+    "delivery": "Inspect all new root figures and matching CSVs,including actual Tv1.5/2 profiles,material histories,and justified visualization data. Compare retained old complete native results using their own initial material baseline and actual times;label the result combined improvements,not isolated double-stress A/B. Retain all old formal XML/BAT/output/figures. Selectively verify local and remote Git backup of scripts,inputs,plots,compact data and conclusions;rawBI4/programs are not cloudGit.",
+    "decision": "After successful full calculation and analysis/plot delivery,write a new independent completion decision: completed_with_limitations,remaining_errors_recorded,further_case01_accuracy_repair_deferred_by_user,next=Cryer. Physical/formal accuracy acceptance remains false/deferred unless separately supported;do not rewrite old checks,pass flags,hashes or numerical thresholds.",
+    "no_additional_accuracy_loop": "Do not start new selfweight parameter sweeps,short/half tests,production fixes or another full run merely to remove the remaining pressure/stress/settlement errors. Document those issues for later and proceed to Cryer after delivery. Retain necessary analysis/integrity repairs,which are different from new physical accuracy experiments."
+  },
+  "cryer_next": {
+    "existing_full_review": "04_CryerProblem_PR/tests/logs/cryer_full_native_r1.check.json,cryer_full_review_r1.check.json and cryer_full_review_r1_log.check.json;new log-Tv image and matching CSVs are under figures/formal_validation/cryer_server_symc_full_r1_log*. Verified checkpoint4e01a45;case01 interim review checkpointf1ca353.",
+    "priority": "Continue from the already-reviewed returned full run rather than redo it: residual peak amplitude/time error,early/mid local displacement and stress scatter,and consistent coupled mechanical/compression/Darcy discretization and boundary/geometry effects. First consolidate existing manufactured-field/operator evidence;admit only justified bounded diagnostics and review their actual evidence before further full runs. No load-only correction,radius/time/permeability fitting,blind damping sweep or automatic shifting to match a curve.",
+    "limits": "Preserve finite-Kw fixed18-r/a=.05 reference,actual drainage-relative clock,the serverdt2^-20 versus retained2^-21/22 distinction,and absent historical server execution-SHA caveat. Normal completion/old short-half checks do not automatically grant physical/full convergence acceptance. No duplicate or overlapping physical solvers;the current selfweight solve must first be safely complete.",
+    "other_work": "Do not reopen accepted case02,Yao,KEEP,u-pl,TPI or slope work as part of this transition. Selfweight accuracy follow-up remains recorded and deferred,not silently deleted or declared solved."
+  },
+  "monitoring": "Reuse the existing same-thread one-shot terminal mechanism. Its frozen pending-physical-review wording remains historical evidence;the latest user revision and this independent plan determine the post-analysis transition. No new watcher or queue is created.",
+  "production_source_changed": false,
+  "new_physical_solver_started": false,
+  "physical_acceptance_granted": false
+}
