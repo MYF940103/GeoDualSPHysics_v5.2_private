@@ -2670,14 +2670,6 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       ar[p1]+=arp1;
       ace[p1]=ace[p1]+acep1;
       if(HydroMechLoadAcec && !topkernelband)HydroMechLoadAcec[p1]=HydroMechLoadAcec[p1]+hydromechloadacep1;
-      //-mdbr
-      rsigma[p1].xx+=rsigmap1.xx;
-      rsigma[p1].xy+=rsigmap1.xy;
-      rsigma[p1].xz+=rsigmap1.xz;
-      rsigma[p1].yy+=rsigmap1.yy;
-      rsigma[p1].yz+=rsigmap1.yz;
-      rsigma[p1].zz+=rsigmap1.zz;
-      //====
       const int th=omp_get_thread_num();
       if(visc>viscth[th*OMP_STRIDE])viscth[th*OMP_STRIDE]=visc;
       if(tvisco==VISCO_LaminarSPS){
@@ -2690,6 +2682,13 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
       }
       if(shift)shiftposfs[p1]=shiftposfsp1;
     }
+    //-Stress rate can be nonzero even when density rate, force and viscosity are zero.
+    rsigma[p1].xx+=rsigmap1.xx;
+    rsigma[p1].xy+=rsigmap1.xy;
+    rsigma[p1].xz+=rsigmap1.xz;
+    rsigma[p1].yy+=rsigmap1.yy;
+    rsigma[p1].yz+=rsigmap1.yz;
+    rsigma[p1].zz+=rsigmap1.zz;
   }
   //-Keep max value in viscdt. | Guarda en viscdt el valor maximo.
   for(int th=0;th<OmpThreads;th++)if(viscdt<viscth[th*OMP_STRIDE])viscdt=viscth[th*OMP_STRIDE];

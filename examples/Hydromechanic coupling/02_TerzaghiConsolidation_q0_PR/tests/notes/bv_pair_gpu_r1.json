@@ -1,0 +1,24 @@
+{
+  "tag": "bv_pair_gpu_r1",
+  "status": "authored_not_built_or_run",
+  "purpose": "Exercise the actual CUDA Interaction_Forces consumer and stress-rate writeback using one fixed wall and one soil particle; no copied CUDA algorithm, MLS, mirror reconstruction or integration.",
+  "new_files": ["support/bv_pair_gpu_r1.cpp", "support/bv_pair_gpu_build_r1.ps1", "notes/bv_pair_gpu_r1.json"],
+  "protected": "Do not alter production source, canonical programs, retained fixture/source/proof files, formal inputs, server bundles or outputs. Root must protect and authorize any fresh GPU Debug project build separately.",
+  "constants": {"h_m": 0.25, "wall_z_m": 0.25, "soil_z_m": 0.375, "mass_wall": 1, "mass_soil": 1, "rho": 2, "G_pa": 8, "K_pa": 16, "Kw_pa": 128, "porosity": 0.5, "Mf_pa": 256, "auxiliary_b_m_s": 0.5, "viscosity": 0.125, "cs0": 4, "physical_soil_viscosity_probe_vz_m_s": [-0.25, 0.25]},
+  "scope": {"dimensions": [2, 3], "slip_modes": [1, 2, 3], "kernel_calls": 72, "particles": 2, "same_cell": true, "coordinate_values_binary_exact": true, "correction_matrix": "identity (injected, not solved from a rank-deficient two-particle cloud)", "G1_and_pair_divergence": true, "conductivity_gravity_load_HG_NoPen_DDT_shift_artificialstress": 0},
+  "trials_each_dimension_slip": ["aux_off", "aux_zero", "aux_shear", "aux_shear_negative", "aux_normal", "aux_normal_shear", "approach_aux0", "approach_aux_shear", "recede_aux0", "recede_aux_shear", "aux_normal_negative", "aux_normal_negative_shear"],
+  "gates": [
+    "True CUDA kernel output is downloaded. Pure auxiliary x shear along a z pair has exact zero density rate, pore rate, Ace and ViscDt but nonzero correctly signed rsigma_xz near G*Lxz.",
+    "All mathematically zero stress components require exact zero; no original nonzero tolerance can conceal a dropped shear writeback.",
+    "Nonzero S/P/R reference bounds retain original Mdbc vector limits: 20/2000/.02 + 2e-5*abs(reference). Trace/pore consistency additionally uses 2e-5*max(1,abs(pore_rate)).",
+    "Both signs of normal auxiliary and the corresponding normal-plus-shear have identical rho/pore/Ace/ViscDt/non-shear stress values. Shear sign reversal and normal density/pore sign reversal are exact.",
+    "Approaching physical-soil probe has nonzero artificial-viscosity Acez; receding probe has nonzero ViscDt. Auxiliary shear perturbation leaves both routes and non-shear quantities exactly unchanged.",
+    "Inputs have zero stress/pore pressure, stationary physical wall and zero TangenVel; unchanged physical velocity/density is checked after every call. No physical-time advance occurs."
+  ],
+  "build_contract": "After root-approved authoritative GPU Debug/Release build, invoke bv_pair_gpu_build_r1.ps1 with -Configuration and -ProductionBuildLog. This new script only compiles the host fixture and links the authoritative project object set, excluding main. It records current source/object/log/library/runtime SHA before/after and archives relevant small source bytes. It cannot independently establish freshness of a caller-supplied production object; root must bind the actual new build receipt. It never builds production or runs a test.",
+  "run_contract": "Root-reviewed fixture: bv_pair_gpu_r1.exe --out NEW_TEST_OUTPUT_DIRECTORY [--device 0]. Default/no arguments only show help. Directory must not exist; preserve failed records under their original label.",
+  "outputs": {"pairs.csv": "72 rows of actual downloaded wall/soil rates, Ace, ViscDt, six stress-rate components and scalar analytic L references", "completion.json": "diagnostic_completed/passed/kernel_calls plus explicit false physical/MLS/integration flags"},
+  "limits": ["An injected auxiliary velocity tests the consumer contract, not reconstruction/mirror correctness or wall boundary compatibility.", "Two particles cannot establish an MLS/correction-matrix rank, a general affine cloud, mixed-slip mapping, rotating-wall support, or physical convergence.", "This is a nonintegrated artificial-viscosity operator diagnostic; no formal/full/restart admission and no notifier."],
+  "physical_acceptance": false,
+  "automatic_solver_run": false
+}

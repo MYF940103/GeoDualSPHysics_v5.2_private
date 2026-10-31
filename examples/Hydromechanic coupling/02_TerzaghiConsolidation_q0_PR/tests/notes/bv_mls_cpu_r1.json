@@ -1,0 +1,37 @@
+{
+  "status": "authored_not_built_or_run",
+  "purpose": "Fill compatible tangential-translation and wall-normal-axis rigid-rotation consumer coverage, and observe force-stage velocity routing without integration.",
+  "new_source": "tests/support/bv_mls_cpu_r1.cpp",
+  "frozen_utility_dependency": "tests/support/mdbc_vector_test.cpp, included with its main renamed; no old file is edited and no MLS/neighbour implementation is copied",
+  "input_prepare_manifest": "tests/logs/mdbc_plane_r2.prepare.json",
+  "ordinary_generated_inputs": [
+    {"dimension": 2, "label": "mdbc_plane_r2_2d_h_s3", "prefix": "tests/outputs/mdbc_plane_r2_2d_h_s3_input/CaseMdbcPlane_mdbc_plane_r2_2d_h_s3", "native_count": 208, "wall_count": 48, "wall_roi": 24, "soil_roi": 12},
+    {"dimension": 3, "label": "mdbc_plane_r2_3d_h_s3", "prefix": "tests/outputs/mdbc_plane_r2_3d_h_s3_input/CaseMdbcPlane_mdbc_plane_r2_3d_h_s3", "native_count": 3328, "wall_count": 768, "wall_roi": 192, "soil_roi": 48}
+  ],
+  "command_contract": "bv_mls_cpu_r1.exe DIM -cpu -stable -ompthreads:1 -mdbc_freeslip GENERATED_PREFIX FRESH_TEST_OUTPUT -dirdataout data -svres -sv:none",
+  "build_contract": "Root reviews and builds a separate companion with authoritative current CPU objects/libraries, replacing only main; bind this source, included utility, all compile/link inputs and generated XML/BI4. No build/solver is authorized by preparing these files.",
+  "future_output_contract": "Fresh shallow tests/outputs/bv_mls_* only: aux_rows.csv, consumer_rows.csv, stage_rows.csv, bv_mls_complete.json and Run.out; execution/build receipts belong in tests/logs. Existing folders are refused.",
+  "fields": [
+    "2D/3D tangential constant translation v=(.5,.25,0), with y=0 in 2D: compatible with fixed horizontal FreeSlip.",
+    "3D rigid rotation about wall normal v=(-.4*y,.4*x,0): compatible with fixed horizontal FreeSlip, zero prestress and zero pressure; corrected elastic strain/compression targets are zero.",
+    "No new NoSlip shear test: the retained affine suite already covers compatible v_t proportional to wall distance."
+  ],
+  "checks": [
+    "Actual production initialization, mDBC BoundMode/TangenVel, derivative-only MLS, FSType/C and fused Interaction_Forces_ct; fixed native IDs/counts and stationary horizontal plane.",
+    "SPR and each actual fused observer call leave all physical positions, velocities/rho, double stresses, p/p0 and native IDs byte unchanged. Legitimate preceding mDBC updates are not mislabelled as forbidden physical changes.",
+    "Analytic mirror ghost versus actual MLS: 32*FLT_EPSILON*max(.125,abs(expected_component)).",
+    "Actual fused MLS-versus-analytic-aux consumers retain S=20 Pa/s, P=2000 Pa/s, R=.02 kg/m3/s plus 2e-5*abs(reference). Corrected S/P are additionally checked against zero rigid-motion truth with those original floors.",
+    "Record div inferred from trace(Rsigma)/(3K) versus -PoreRate/Mf; raw density analytic bias is recorded, not forced equal to corrected divergence.",
+    "Stage observer injects tangential affine fields at amplitudes 1 and 2 without moving particles or advancing the clock. It uses the real production condition: mDBC only at predictor when MDBCCorrector=0, both stages when 1; SPR is rebuilt every stage. BoundMode, TangenVel and auxiliary components are recorded for each ROI wall.",
+    "MDBCCorrector=0 requires exact unchanged tangential ghost and refreshed analytic auxiliary; MDBCCorrector=1 requires twice the predictor tangential ghost within the original velocity tolerance. This verifies implemented routing, not physical accuracy of mixed time levels."
+  ],
+  "limits": [
+    "No physical time integration, new solver trajectory, half-step/full-cycle acceptance, production or formal input edits, canonical binary replacement, build, Git or notifier execution.",
+    "This fixture deliberately excludes moving/curved/mixed-slip walls, NoPen, restart, plasticity, HG, shifting and drainage; those capabilities are not inferred from the two fixed FreeSlip inputs.",
+    "Initial stress is zero, so rigid rotation tests strain/compression nulls and ghost routing, not nonzero-prestress Jaumann objectivity. The separate consumer-only single-pair test addresses the suspected CPU writeback gate.",
+    "The force-stage observer labels are not actual t_n/t_n+dt/2 integrator states: only field amplitudes and InterStep flags are varied, with unchanged TimeStep=0 and Nstep=0."
+  ],
+  "physical_acceptance": false,
+  "time_integrated": false,
+  "solver_started": false
+}
