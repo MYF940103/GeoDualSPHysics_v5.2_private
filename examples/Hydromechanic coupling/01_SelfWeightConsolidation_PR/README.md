@@ -1,5 +1,15 @@
 # 01 自重固结：入口与文件索引
 
+## 正式合并总览图（2026-11-01）
+
+按旧正式图风格，[超孔压、总孔压与沉降合并对比](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_combined_r1.png)
+采用2×3布局：上排三种剖面，下排分别为底部超孔压、底部总孔压和顶部材料沉降历史。
+粗虚线为H1有限Kw准静态参考，实线和空心点为模拟；剖面颜色对应实际有限Kw Tv。
+超孔压沿用老正式图的固定初始p0口径，即原生float32(p-p0)，不是随当前排水面变化的静水基准。
+配套[历史CSV](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_combined_r1_history.csv)
+和[剖面CSV](figures/CaseSelfWeightConsolidation_Scenario2_FreshPR_compare_combined_r1_profiles.csv)
+保留实际时间、步数和两种Tv。详细晚期放大与误差仍见以下清晰分图；原图不覆盖。
+
 ## 模拟与理论清晰对比图（2026-11-01）
 
 优先查看以下新图；原`nativepr_*`图表及受保护数据不改写：
