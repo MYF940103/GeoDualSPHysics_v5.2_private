@@ -1,0 +1,28 @@
+{
+  "scope": "Preparation-only authoring of a read-only CSV state-budget helper; main agent must read it before explicit --run. No solver, BI4 decoder, compiler, subprocess, queue or Git operation.",
+  "command_selftest": "D:\\Anaconda3\\python.exe -B tests/support/cryer_state_budget_r1.py --selftest",
+  "command_after_review": "D:\\Anaconda3\\python.exe -B tests/support/cryer_state_budget_r1.py --run",
+  "inputs": "Existing sealed cryer_full_native_r1 center/radial/summary/initial_cloud CSVs plus server rows of cryer_full_review_r1_history.csv. Validate their SHA256 against the full-review and parent-native receipts. Do not follow the raw BI4 catalog or rerun old analysis helpers.",
+  "finite_reference": "tests/logs/cryer_finite_storage_r1.check.json",
+  "finite_reference_sha256": "76554622082046f7dc2147565710c89fb3b059eb5674ef69bb3a1ca984b1fea3",
+  "outputs": "New tests/figures/cryer_state_budget_r1_history.csv (1065 actual-time states), _center.csv (all 18 fixed IDs per state), _radial_stagnation.csv (20 nonempty material layers), .png (six panels); new tests/logs/cryer_state_budget_r1.check.json. Refuse every existing output. Preserve all source CSVs and formal artifacts.",
+  "definitions": {
+    "sign": "Volumetric expansion positive. Effective stress S, never total stress S-pI, enters the stress-strain diagnostic.",
+    "density_measure": "epsv_rho_log=-ln(rho/rho_initial), per fixed material ID. This is the continuum continuity-based log-volume diagnostic, not an assertion that raw SPH density and corrected strain gradients coincide.",
+    "stress_measure": "epsv_sigma_increment=[tr(S)-tr(S_initial)]/(3K), with K from the independently reviewed finite-Kw reference. Elastic constant-K trace diagnostic, not a direct three-dimensional geometric volume measurement.",
+    "affine": "Weighted least-squares x=F*x0+b over the same18 center material points; weights are fixed initial m/rho. Report F, translation b, tr(F-I), ln(detF), residual RMS and singular-stretch anisotropy ||s-mean(s)||. Positive detF is needed to define log volume. Center-cloud affine volume is a fit, not whole-sphere volume or each particle's kernel divergence.",
+    "rates": "Backward saved-interval secants at exact observed times; record interval start and duration. First rate is missing, not zero. Saves are much coarser than integration steps; these columns are not actual predictor/corrector RHS or exact instantaneous derivatives.",
+    "stagnation": "Report the first state of the final exact-equality suffix and its included state count. Center compares each fixed ID's rho. Radial compares five statistics only; identical statistics do not prove every particle or unsaved timestep is frozen.",
+    "float_budget": "At rho near2100, binary32 ULP is2^-12 kg/m3. Half-ULP divided by serverdt2^-20 is128 kg/m3/s; predictor dt/2 gives256. These are round-to-nearest local writeback scales, not measured historical ar or a reconstructed coupled double trajectory."
+  },
+  "limitations": [
+    "Saved-state consistency differences do not prove the cause of the128Pa peak deficit or assign a percentage to density writeback.",
+    "No full-field neighborhood, velocity divergence, density-rate or pressure-RHS replay is possible from these aggregated CSVs alone.",
+    "Affine log volume is a center18 fit. tr(F-I) is a small-strain measure and is not objective under finite rigid rotation; singular-stretch anisotropy is rotation-invariant.",
+    "Only existing native safety is adopted. No new physical gate, half-step validation, full-cycle acceptance, source attribution or formal release claim.",
+    "All startup states remain. No time/radius/pressure fitting, interpolation, smoothing, HTML/dashboard, KEEP or full-double development."
+  ],
+  "physical_acceptance": false,
+  "full_cycle_acceptance": false,
+  "solver_started": false
+}

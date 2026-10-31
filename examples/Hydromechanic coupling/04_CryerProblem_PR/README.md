@@ -11,6 +11,13 @@ with the actual returned run or infer historical server executable identity.
 
 See [accuracy and cost decision](tests/notes/cryer_accuracy_decision_r1.md)
 and [updated delivery plan](../validation/poromech_next_r7.json).
+The retained-state density/deformation audit is now complete; see
+[state-budget review](tests/notes/cryer_state_budget_review_r1.md).
+Center density stops changing in saved states while stress and deformation
+continue, but these CSV observations do not prove the cause of the peak deficit.
+No safe, local low-cost correction has been demonstrated. The selected delivery
+baseline therefore retains G1 plus Darcy symC and records the remaining errors;
+it is not a strict1% or full-field accuracy claim and does not change any guard.
 After the bounded audit, a new independent formal root XML/BAT and Windows/NVIDIA
 server package will be prepared, either with a verified worthwhile improvement
 or the retained baseline and explicit limitations. That new package is not yet
