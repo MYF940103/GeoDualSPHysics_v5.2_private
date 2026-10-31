@@ -1,5 +1,33 @@
 # CryerProblem_PR
 
+## Three additional Poisson ratios (2026-11-01)
+
+The additional actual-state and shell-quadrature audits found no accepted low-cost
+correction. Keep the nu=.30 r2 release below unchanged. The separate
+[nu=.10/.20/.45 Windows/RTX A6000 ZIP](Cryer_release_nu010_020_045_r1_Windows_RTXA6000.zip)
+contains the three new formal root XML/BAT pairs, common verified executables,
+runtime dependencies and execution receipts. See
+[server instructions](support/README_cryer_nu_release_r1.md).
+
+| nu | Independent root XML | GPU BAT |
+| --- | --- | --- |
+| .10 | `CaseCryerProblem_PR_release_nu010_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu010_r1_win64_GPU.bat` |
+| .20 | `CaseCryerProblem_PR_release_nu020_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu020_r1_win64_GPU.bat` |
+| .45 | `CaseCryerProblem_PR_release_nu045_r1_Def.xml` | `xCaseCryerProblem_PR_release_nu045_r1_win64_GPU.bat` |
+
+Each full run uses its own physical endpoint through legacy Tv approximately1
+and DeltaTv=.001 saves, with the original ramp/hold/drain history. Local RTX3050
+smokes actually completed128 steps/two native frames each; original safety and
+all35 initial fields passed. This is not closed-equilibrium, peak, full-half or
+A6000 physical acceptance. Run the matching `--smoke --unattended` on the target
+server before separately starting its full BAT. No local full run was started.
+
+The three negative-launch guards passed; output data were not overwritten.
+See [new numerical review](tests/notes/cryer_actual_budget_review_r1.md) and
+[release review](tests/notes/cryer_nu_release_review_r1.md).
+If a later numerical correction is accepted, all four nu groups require a new
+version; do not silently replace these inputs or the accepted nu=.30 baseline.
+
 ## Selected portable release r2 (2026-11-01)
 
 The bounded audit is complete. The selected scheme retains G1 plus Darcy symC,
@@ -49,8 +77,8 @@ upgraded or a reason to rerun completed results.
 
 Root organization is deliberately conservative:
 
-- All original nine XMLs and ten BATs remain, plus the new r2 XML/BAT pair
-  (now ten XMLs and eleven BATs); old Poisson plotting scripts still depend on
+- All original nine XMLs and ten BATs remain, plus the r2 pair and three new nu pairs
+  (now thirteen XMLs and fourteen BATs); old Poisson plotting scripts still depend on
   root XML/output paths. Legacy BATs contain existing-output deletion menus:
   do not invoke them for retained results.
 - All ten root output folders, formal figures/CSVs, refinement, videos and
