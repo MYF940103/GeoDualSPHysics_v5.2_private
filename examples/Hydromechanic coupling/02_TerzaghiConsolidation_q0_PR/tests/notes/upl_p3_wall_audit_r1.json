@@ -1,0 +1,24 @@
+{
+  "scope": "Read-only next-stage audit; fixed planes, elastic material, equal dp, constant k only. No implementation or run authorization.",
+  "source_identity": {
+    "git_head": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+    "JSphCpu_cpp_sha256": "ae218cce73d25fcbcf4e8c0c9747cea1bb40bc56835a9850eb95baa0d7cb4d78",
+    "JSphCpuSingle_cpp_sha256": "6265f66fb752bc6c19ed0da0efd9d217bbd47038f04440f1ffc124217c47d322"
+  },
+  "facts": [
+    "JSphCpu.cpp:4125 InitPorosityObserverCpu forbids CaseNpb,AccInput,HydroMechDrainage,non-None top load,SPR,NoPen,HG/damping/viscosity/DDT/artificial stress/Shepard; fresh Symplectic corrected-divergence elastic CPU only. Dynamic permits k>=0/gravity but does not remove these guards.",
+    "4181 dynamic rate searches only fluid cells and CODE_IsFluid neighbors. It has no solid-wall Darcy terms, acceleration ghosts or wall-flux closure. ComputeFSParticlesFreeSurface:719 sets wall C=0, while native C includes wall volumes. Merely admitting wall neighbors would mix incompatible support/C fields.",
+    "1597/1705 and2992/3170 MLS paths interpolate p-p0 at pos+BoundNormal and restore wall p0 (fallback0th order; optional MLS in mDBC). Both use legacy MassFluid/velrhop.w, not V0*J. Existing hydrostatic p0 can support static excess extrapolation; this is not a dynamic Neumann proof.",
+    "1717 SPR mirrors derivative-only velocity: fixed NoSlip=-vMirror; FreeSlip=(I-2nnT)vMirror; legacy Vel0 differs. Fused derivative uses it for theta/stress, not viscosity/Darcy. It reconstructs neither finished acceleration nor flux.",
+    "4413/4537 physical a_s=Ace+Gravity. Dynamic q diagnostic is -k/gamma*(Gp+rho_w*Ace); finished native Ace is available at force tail, not from stationary wall velocity."
+  ],
+  "minimal_proposals": [
+    "First frozen half-lattice tests: unit inward n, affine p=pC+rho_w*(g-a0).x, theta=0, Ace=a0-g. Require both q_n=0 and rate=0 using the SAME corrected gradient/J-volume convention; rate0 alone cannot detect uniform erroneous normal flux. Include a0=0 hydrostatic and nonzero constant tangential a0. Normal a0 is frozen operator-only data, not a kinematically valid permanently stationary-wall trajectory.",
+    "For mirror pair xFluid=xWall+s*n,xGhost=xWall-s*n, required normal condition is n.Gp=-rho_w*n.Ace and pGhost-pFluid=2*s*rho_w*n.Ace for affine data. Verify signs with gravity normal to wall, and add constant tangential flux to ensure no accidental suppression of all seepage.",
+    "Frozen mirror images need scalar J/V/p/theta parity, Cghost=Q*Cmirror*QT and a_s reflection before converting Ace=a_s-g, Q=I-2nnT for FreeSlip. Wall velocity0 is NOT Aceghost0. Reuse MLS geometry/fit machinery only after checking J-derived weights, support/fallback and stage ordering; do not reuse a velocity buffer as acceleration.",
+    "Standing longitudinal mode: slab0<x<Lx/2 with walls at0,Lx/2, z periodic; v_x=V(t)sin(2pi*x/Lx),p/Sxx=cos mode,g=0. This is the restriction of the existing full periodic wave. Mirror normal v/a odd, p/J/normal stress even; q_n=v_n=0 at planes. Compare material coordinates against the retained periodic restriction and own half, not unequal IDs. Pure longitudinal motion does not distinguish NoSlip from FreeSlip.",
+    "Begin offline/companion-only: prescribed virtual fluid mirror images can test helper signs/affine flux/parity and the periodic restriction without changing production guards. Such images are not real CODE-boundary/mDBC acceptance. Actual wall admission later needs consistent boundary pressure/C/J-volume and finished-acceleration closure plus native force/reaction checks; current tests cannot justify simply deleting CaseNpb/SPR guards."
+  ],
+  "exclusions": "No arrays/public switches/solver added. No curves,corners,motion,loading/drainage,plasticity,GPU or general stability/conservation claim. Known Lstar quadratic/finite-neighbor bias remains; do not demand exact quadratic balance or infer flux from rate alone.",
+  "physical_acceptance": false
+}

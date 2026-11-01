@@ -1,0 +1,24 @@
+{
+  "stage": "User-requested priority update and read-only variable-conductivity design; no implementation or execution",
+  "priority": "Complete the currently isolated constant-k fixed-wall CPU validation first,then immediately develop an optional porosity-dependent hydraulic-conductivity law. Do not defer it to a remote final phase or mix it into the current wall attribution tests.",
+  "reference": "src/papers/PDF/Lian 2023 u-pl.pdf,page3 Eq4; local Markdown companion src/papers/u-pw/Lian 2023 u-pl.md. Eq23-26/page6 were also checked; PDF Eq4 and Eq25 were rendered in memory only,without file writes or any project solver/GenCase execution.",
+  "constitutive_law": {
+    "paper_Eq4": "k(e)=k0*exp((e-e0)/Ck); first implementation scalar isotropic,not the different algebraic n^3/(1-n)^2 law.",
+    "derived_from_current_J": "n=1-(1-n0)/J,e=n/(1-n)=J/(1-n0)-1,e-e0=(J-1)/(1-n0),so k(J)=k0*exp((J-1)/((1-n0)*Ck)).",
+    "units_and_domain": "k0 and k are HydraulicConductivity in m/s,not intrinsic permeability in m^2; Ck is dimensionless,finite and strictly positive for this selected law. Ck=2 is a cited paper example,not an implemented default. Require finite k0>=0,valid saturated J/n and representable finite k. For k0=0 return exact0 rather than evaluating0*exp(overflow). No silent clamp or threshold relaxation.",
+    "state": "No new independently integrated physical k state. Derive k from the same force-stage J/n; a temporary derived-k scratch may avoid exp inside every neighbor pair but is not an evolution equation. Mirror/periodic values follow the same reconstructed/copied J and law,not a separately interpolated or stale k field."
+  },
+  "complete_rate_requirement": "q=-k/gamma*(Gp+rho_w*Ace),a_s=Ace+g and p_dot=Kw/n*(-theta-div(q)). For smooth scalar k and constant gamma this requires [k*(Lstar(p)+rho_w*div(Ace))+Gk.(Gp+rho_w*Ace)]/gamma. Multiplying the old entire constant-k operator byki misses the second term. Keep current same-stage volume/storage/mixture inertia and all existing admissibility guards.",
+  "discrete_design_limit": "The product-rule expression can be an initial smooth-k component diagnostic,but is not a proof of a conservative interface flux; the present affine-corrected Lstar itself is not pair-conservative. Paper Eq25 uses arithmetic pair k in pressure/gravity sums and acceleration differences; one must not assume that blindly copying pairk*(aj-ai) represents general div(k*A),which has a nonzero gradient-k term for constantA. Discontinuous scalar interfaces require an independently checked flux-form/transmissibility design (harmonic series resistance in1D),plus consistency/well-balancing rather thanki*Lstar or a nested-first-gradient substitute.",
+  "minimal_gated_tests": [
+    "Default constant-law OFF keeps the entire old u-pw/private constant-k path and retained state/stage fields0ULP. Explicit constant-law controls and J1/uniform-J known-k cases establish correct degeneration; Ck->large is not an exact constant-law test.",
+    "Manufactured smooth positive k with affine p and constant Ace: compare the nonzero analytic source grad(k).(grad(p)+rho_w*Ace). Also test nonuniform k with grad(p)+rho_w*Ace=0 to require well-balanced zero flux/source without tuning acceleration to cancel a discrete error.",
+    "Steady1D two-layer interface: equal normal flux and pressure drop Delta p=q*gamma*(L1/k1+L2/k2),including unequal k and grid alignment. Arithmetic coefficient averaging alone is not interface acceptance.",
+    "Audit native/ghost same-stage J,n,V,rho,k and complete pressure-rate assembly at predictor/corrector; preserve no-double-compression and actual source-clock/identity checks. Do not infer no-flow or mass conservation from rate0 alone.",
+    "Use the actual stage maximum D_i=(Kw/n_i)*k_i/gamma and a justified pair/operator bound in time policy,not initial k0. Retain independent half/safety/domain checks and test highest allowed derived k without changing original thresholds. Variable k may tighten explicit cost; no TPI or pressure cap is silently introduced."
+  ],
+  "public_input_status": "No XML key,constitutive parameter parser,default or GPU capability is implemented by this note. Any future public input and documentation update requires the later verified code stage; existing default u-pw remains unchanged.",
+  "production_modified": false,
+  "solver_or_GenCase_started": false,
+  "physical_acceptance": false
+}

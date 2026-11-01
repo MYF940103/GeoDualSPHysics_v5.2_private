@@ -1,0 +1,486 @@
+//HEAD_DSPH
+/*
+ <DUALSPHYSICS>  Copyright (c) 2020 by Dr Jose M. Dominguez et al. (see http://dual.sphysics.org/index.php/developers/). 
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo, Ourense, Spain.
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester, Manchester, U.K.
+
+ This file is part of DualSPHysics. 
+
+ DualSPHysics is free software: you can redistribute it and/or modify it under the terms of the GNU Lesser General Public License 
+ as published by the Free Software Foundation; either version 2.1 of the License, or (at your option) any later version.
+ 
+ DualSPHysics is distributed in the hope that it will be useful, but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU Lesser General Public License for more details. 
+
+ You should have received a copy of the GNU Lesser General Public License along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>. 
+*/
+
+/// \file JSphCpu.h \brief Declares the class \ref JSphCpu.
+
+#ifndef _JSphCpu_
+#define _JSphCpu_
+
+#include "DualSphDef.h"
+#include "JDsTimersCpu.h"
+#include "JCellDivDataCpu.h"
+#include "JSph.h"
+#include <string>
+
+
+///Structure with the parameters for particle interaction on CPU.
+typedef struct{
+  unsigned np,npb,npbok,npf; // npf=np-npb
+  StDivDataCpu divdata;
+  const unsigned *dcell;
+  const tdouble3 *pos;
+  const tfloat4 *velrhop;
+  const unsigned *idp;
+  const typecode *code;
+  const float *press;
+  const float *porepress;
+  float *porepressrate;
+  const unsigned *fstype;
+  const tfloat3 *fsnormal;
+  const tfloat3 *dengradcorr;
+  const tmatrix3d *corrmat;
+  float* ar;
+  tfloat3 *ace;
+  float *delta;
+  TpShifting shiftmode;
+  tfloat4 *shiftposfs;
+  tsymatrix3f *spstau;
+  tsymatrix3f *spsgradvel;
+  //=======mdbr
+  tsymatrix3d* sigma;
+  tsymatrix3f* rsigma;
+  const tsymatrix3f* artificialstress;
+  //=======
+}stinterparmsc;
+
+///Collects parameters for particle interaction on CPU.
+inline stinterparmsc StInterparmsc(unsigned np,unsigned npb,unsigned npbok
+  ,StDivDataCpu divdata,const unsigned *dcell
+  ,const tdouble3 *pos,const tfloat4 *velrhop,const unsigned *idp,const typecode *code
+  ,const float *press
+  ,const float *porepress
+  ,float *porepressrate
+  ,const unsigned *fstype
+  ,const tfloat3 *fsnormal
+  ,const tfloat3 *dengradcorr
+  ,const tmatrix3d *corrmat
+  ,float* ar,tfloat3 *ace,float *delta
+  ,TpShifting shiftmode,tfloat4 *shiftposfs
+  ,tsymatrix3f *spstau,tsymatrix3f *spsgradvel
+  ,tsymatrix3d* sigma, tsymatrix3f *rsigma
+  ,const tsymatrix3f *artificialstress
+)
+{
+  stinterparmsc d={np,npb,npbok,(np-npb)
+    ,divdata,dcell
+    ,pos,velrhop,idp,code
+    ,press,porepress,porepressrate,fstype,fsnormal
+    ,dengradcorr,corrmat
+    ,ar,ace,delta
+    ,shiftmode,shiftposfs
+    ,spstau,spsgradvel
+    ,sigma,rsigma,artificialstress
+  };
+  return(d);
+}
+
+
+///Structure to collect interaction results.
+typedef struct{
+  float viscdt;
+}StInterResultc;
+
+
+class JDsPartsOut;
+class JArraysCpu;
+class JCellDivCpu;
+
+//##############################################################################
+//# JSphCpu
+//##############################################################################
+/// \brief Defines the attributes and functions to be used only in CPU simulations.
+
+class JSphCpu : public JSph
+{
+private:
+  JCellDivCpu* CellDiv;
+
+protected:
+  int OmpThreads;       ///<Max number of OpenMP threads in execution on CPU host (minimum 1). | Numero maximo de hilos OpenMP en ejecucion por host en CPU (minimo 1).
+
+  StDivDataCpu DivData; ///<Current data of cell division for neighborhood search on CPU.
+
+  //-Number of particles in domain | Numero de particulas del dominio.
+  unsigned Np;        ///<Total number of particles (including periodic duplicates). | Numero total de particulas (incluidas las duplicadas periodicas).
+  unsigned Npb;       ///<Total number of boundary particles (including periodic boundaries). | Numero de particulas contorno (incluidas las contorno periodicas).
+  unsigned NpbOk;     ///<Total number of boundary particles near fluid (including periodic duplicates). | Numero de particulas contorno cerca del fluido (incluidas las contorno periodicas).
+
+  unsigned NpfPer;    ///<Number of periodic floating-fluid particles. | Numero de particulas fluidas-floating periodicas.
+  unsigned NpbPer;    ///<Number of periodic boundary particles. | Numero de particulas contorno periodicas.
+  unsigned NpfPerM1;  ///<Number of periodic floating-fluid particles (previous values). | Numero de particulas fluidas-floating periodicas (valores anteriores).
+  unsigned NpbPerM1;  ///<Number of periodic boundary particles (previous values). | Numero de particulas contorno periodicas (valores anteriores).
+
+  bool BoundChanged;  ///<Indicates if selected boundary has changed since last call of divide. | Indica si el contorno seleccionado a cambiado desde el ultimo divide.
+
+  unsigned CpuParticlesSize;  ///<Number of particles with reserved memory on the CPU. | Numero de particulas para las cuales se reservo memoria en cpu.
+  llong MemCpuParticles;      ///<Memory reserved for particles' vectors. | Mermoria reservada para vectores de datos de particulas.
+  llong MemCpuFixed;          ///<Memory reserved in AllocMemoryFixed. | Mermoria reservada en AllocMemoryFixed.
+
+  //-Particle Position according to id. | Posicion de particula segun id.
+  unsigned *RidpMove; ///<Only for moving boundary particles [CaseNmoving] and when CaseNmoving!=0 | Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 
+
+  //-List of particle arrays on CPU. | Lista de arrays en CPU para particulas.
+  JArraysCpu* ArraysCpu;
+
+  //-Execution Variables for particles (size=ParticlesSize). | Variables con datos de las particulas para ejecucion (size=ParticlesSize).
+  unsigned *Idpc;    ///<Identifier of particle | Identificador de particula.
+  typecode *Codec;   ///<Indicator of group of particles & other special markers. | Indica el grupo de las particulas y otras marcas especiales.
+  unsigned *Dcellc;  ///<Cells inside DomCells coded with DomCellCode. | Celda dentro de DomCells codificada con DomCellCode.
+  tdouble3 *Posc;
+  tfloat4 *Velrhopc;
+
+  tfloat3 *BoundNormalc;  ///<Normal (x,y,z) pointing from boundary particles to ghost nodes.
+  tfloat3 *MotionVelc;    ///<Velocity of a moving boundary particle.
+  byte *BoundModec;        ///<mDBC2 boundary mode: active boundary or non-submerged boundary with disabled mass.
+  byte *BoundSlipModec;    ///<Per-particle mDBC slip mode when per-mkbound overrides are active.
+  tfloat3 *TangenVelc;    ///<Tangential mDBC velocity used by no-slip/free-slip viscous and gradient terms.
+  tfloat4 *NoPenShiftc;   ///<Velocity correction to prevent mDBC2 boundary penetration.
+  //=============== mdbr
+  tsymatrix3d* Sigmac;
+  tsymatrix3f* Rsigmac;
+  tsymatrix3f* ArtificialStressc;
+  float* Kplasticc;
+  float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
+  float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
+  float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+  bool PorosityObserver; ///<Development-only CPU observer; no physical feedback or XML entry.
+  bool PorosityFeedback; ///<Fixture-only J-derived volume/storage/inertia; not the dynamic Darcy model.
+  bool DynamicPorePressure; ///<Private CPU Darcy-acceleration fixture; no XML or GPU entry.
+  bool DynamicPoreWall; ///<Private fixed parallel FreeSlip wall fixture; no XML or GPU entry.
+  double* PoroJc;      ///<Solid volume ratio J; private wall slots are stage-reconstructed quadrature.
+  double* PoroThetac;  ///<Divergence from the last force stage, not necessarily the saved full time.
+  double* PoroJPrec;   ///<Full-step J held during Symplectic prediction/correction.
+  tfloat3* BoundDerivativeVelc; ///<Force-stage wall velocity for S/P/R derivatives; never replaces physical velocity.
+  std::vector<tdouble3> BoundDerivativeFitShift; ///<Static MLS-centre offset by native wall ID; empty for one plane.
+  //===============  
+  //-Variables for compute step: VERLET. | Vars. para compute step: VERLET.
+  tfloat4 *VelrhopM1c;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
+  float* PorePressM1c;  ///<Verlet history of pore-water pressure.
+
+  //-Variables for compute step: SYMPLECTIC. | Vars. para compute step: SYMPLECTIC.
+  tdouble3 *PosPrec;    ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.
+  tfloat4 *VelrhopPrec;
+  float* PorePressPrec; ///<Symplectic previous pore-water pressure.
+  //======= mdbr
+  tsymatrix3d* SigmaPrec;
+  tsymatrix3d* SigmaM1c;
+  //=======
+  //-Variables for floating bodies.
+  unsigned *FtRidp;             ///<Identifier to access to the particles of the floating object [CaseNfloat].
+  StFtoForces *FtoForces;       ///<Stores forces of floatings [FtCount].
+  StFtoForcesRes *FtoForcesRes; ///<Stores data to update floatings [FtCount].
+
+  //-Variables for computation of forces | Vars. para computo de fuerzas.
+  tfloat3 *Acec;         ///<Sum of interaction forces | Acumula fuerzas de interaccion
+  tfloat3 *HydroMechLoadAcec; ///<Hydromechanical external load acceleration for diagnostics. //mdbr
+  float *HydroMechTopLoadRawc; ///<Raw vertical kernel-band load; temporary during one force stage.
+  float *Arc; 
+  float *Deltac;         ///<Adjusted sum with Delta-SPH with DELTA_DynamicExt | Acumula ajuste de Delta-SPH con DELTA_DynamicExt
+
+  tfloat4 *ShiftPosfsc;    ///<Particle displacement and free surface detection for Shifting.
+
+  double VelMax;        ///<Maximum value of Vel[] sqrt(vel.x^2 + vel.y^2 + vel.z^2) computed in PreInteraction_Forces().
+  double AceMax;        ///<Maximum value of Ace[] sqrt(ace.x^2 + ace.y^2 + ace.z^2) computed in Interaction_Forces().
+  float ViscDtMax;      ///<Max value of ViscDt calculated in Interaction_Forces().
+
+  //-Variables for computing forces. | Vars. derivadas para computo de fuerzas.
+  float *Pressc;       ///<Pressure computed starting from density for interaction. Press[]=fsph::ComputePress(Rhop,CSP)
+
+  //-Variables for free-surface tracking.
+  tmatrix3d *CorrMatc;  ///<Kernel-gradient correction matrix.
+  unsigned *FSTypec;    ///<Particle classification: FST_Inner, FST_FreeSurface, FST_Isolated, FST_Boundary.
+  tfloat3 *FSNormalc;   ///<Free-surface normal vectors used by the umbrella scan.
+  float *PosDivc;       ///<Position-divergence free-surface diagnostic value.
+
+  //-Variables for Laminar+SPS viscosity.  
+  tsymatrix3f *SpsTauc;       ///<SPS sub-particle stress tensor.
+  tsymatrix3f *SpsGradvelc;   ///<Velocity gradients.
+
+  JDsTimersCpu *Timersc;  ///<Manages timers for CPU execution.
+
+  void InitVars();
+
+  void FreeCpuMemoryFixed();
+  void AllocCpuMemoryFixed();
+  void FreeCpuMemoryParticles();
+  void AllocCpuMemoryParticles(unsigned np,float over);
+
+  void ResizeCpuMemoryParticles(unsigned np);
+  void ReserveBasicArraysCpu();
+
+  bool CheckCpuParticlesSize(unsigned requirednp){ return(requirednp+PARTICLES_OVERMEMORY_MIN<=CpuParticlesSize); }
+
+  template<class T> T* TSaveArrayCpu(unsigned np,const T *datasrc)const;
+  byte*        SaveArrayCpu(unsigned np,const byte        *datasrc)const{ return(TSaveArrayCpu<byte>       (np,datasrc)); }
+  word*        SaveArrayCpu(unsigned np,const word        *datasrc)const{ return(TSaveArrayCpu<word>       (np,datasrc)); }
+  unsigned*    SaveArrayCpu(unsigned np,const unsigned    *datasrc)const{ return(TSaveArrayCpu<unsigned>   (np,datasrc)); }
+  int*         SaveArrayCpu(unsigned np,const int         *datasrc)const{ return(TSaveArrayCpu<int>        (np,datasrc)); }
+  float*       SaveArrayCpu(unsigned np,const float       *datasrc)const{ return(TSaveArrayCpu<float>      (np,datasrc)); }
+  tfloat3*     SaveArrayCpu(unsigned np,const tfloat3     *datasrc)const{ return(TSaveArrayCpu<tfloat3>    (np,datasrc)); }
+  tfloat4*     SaveArrayCpu(unsigned np,const tfloat4     *datasrc)const{ return(TSaveArrayCpu<tfloat4>    (np,datasrc)); }
+  double*      SaveArrayCpu(unsigned np,const double      *datasrc)const{ return(TSaveArrayCpu<double>     (np,datasrc)); }
+  tdouble3*    SaveArrayCpu(unsigned np,const tdouble3    *datasrc)const{ return(TSaveArrayCpu<tdouble3>   (np,datasrc)); }
+  tsymatrix3f* SaveArrayCpu(unsigned np,const tsymatrix3f *datasrc)const{ return(TSaveArrayCpu<tsymatrix3f>(np,datasrc)); }
+  tsymatrix3d* SaveArrayCpu(unsigned np,const tsymatrix3d *datasrc)const{ return(TSaveArrayCpu<tsymatrix3d>(np,datasrc)); }
+  tmatrix3d*   SaveArrayCpu(unsigned np,const tmatrix3d   *datasrc)const{ return(TSaveArrayCpu<tmatrix3d>  (np,datasrc)); }
+  template<class T> void TRestoreArrayCpu(unsigned np,T *data,T *datanew)const;
+  void RestoreArrayCpu(unsigned np,byte        *data,byte        *datanew)const{ TRestoreArrayCpu<byte>       (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,word        *data,word        *datanew)const{ TRestoreArrayCpu<word>       (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,unsigned    *data,unsigned    *datanew)const{ TRestoreArrayCpu<unsigned>   (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,int         *data,int         *datanew)const{ TRestoreArrayCpu<int>        (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,float       *data,float       *datanew)const{ TRestoreArrayCpu<float>      (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tfloat3     *data,tfloat3     *datanew)const{ TRestoreArrayCpu<tfloat3>    (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tfloat4     *data,tfloat4     *datanew)const{ TRestoreArrayCpu<tfloat4>    (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,double      *data,double      *datanew)const{ TRestoreArrayCpu<double>     (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tdouble3    *data,tdouble3    *datanew)const{ TRestoreArrayCpu<tdouble3>   (np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tsymatrix3f *data,tsymatrix3f *datanew)const{ TRestoreArrayCpu<tsymatrix3f>(np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tsymatrix3d *data,tsymatrix3d *datanew)const{ TRestoreArrayCpu<tsymatrix3d>(np,data,datanew); }
+  void RestoreArrayCpu(unsigned np,tmatrix3d   *data,tmatrix3d   *datanew)const{ TRestoreArrayCpu<tmatrix3d>  (np,data,datanew); }
+
+  llong GetAllocMemoryCpu()const;
+  void PrintAllocMemory(llong mcpu)const;
+
+  unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
+    ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
+    ,tfloat3 *hydromechloadace=NULL,tdouble3 *sigmastatekk=NULL,tdouble3 *sigmastateij=NULL
+    ,double *poroj=NULL,double *porotheta=NULL);
+  /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
+    ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
+  void ConfigOmp(const JSphCfgRun *cfg);
+
+  void ConfigRunMode();
+  void ConfigCellDiv(JCellDivCpu* celldiv){ CellDiv=celldiv; }
+  void InitFloating();
+  void InitRunCpu();
+
+  float CalcVelMaxSeq(unsigned np,const tfloat4* velrhop)const;
+  float CalcVelMaxOmp(unsigned np,const tfloat4* velrhop)const;
+
+  void PreInteractionVars_Forces(unsigned np,unsigned npb);
+  void PreInteraction_Forces();
+  void PosInteraction_Forces();
+  void ComputeFreeSurfaceTracking();
+  bool IsHydroMechDrainageActive()const;
+  bool IsFreeSurfaceParticle(unsigned p,const typecode *code,const unsigned *fstype)const;
+  bool IsHydroMechDrainedParticle(unsigned p,const tdouble3 *pos,const typecode *code,const unsigned *fstype)const;
+  bool IsUpwardFreeSurface(unsigned p,const typecode *code,const unsigned *fstype,const tfloat3 *fsnormal)const;
+  void ApplyHydroMechTopLoadAcceleration();
+  void NormalizeHydroMechTopBandLoad();
+  void InitHydroMechState();
+  void ApplyFreeSurfacePorePressure();
+  template<TpKernel tker,bool sim2d> void ApplyYaoTopStripPorePressureExtrapolationT();
+  void ApplyYaoTopStripPorePressureExtrapolation();
+  void ApplyPorePressureBoundaries();
+  template<TpKernel tker,bool sim2d> void InteractionPorePressureRateT
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const tmatrix3d *corrmat,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress,float *porepressrate)const;
+  void InteractionPorePressureRate();
+  template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void InterpolateBoundaryGhostFieldT
+    (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write,bool recenter=false)const;
+  template<TpKernel tker,bool sim2d> void InteractionPorePressureMdbcCorrectionT
+    (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
+  void InteractionPorePressureMdbcCorrection();
+  void ComputeBoundaryDerivativeVelocity();
+  template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,const unsigned *fstype,const tfloat3 *fsnormal,const float *porepress0,float *porepress)const;
+  void ShepardRegularizePorePressure();
+  template<TpKernel tker,bool sim2d> void ComputeFSParticlesFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code
+    ,tmatrix3d *corrmat,unsigned *fstype,tfloat3 *fsnormal,float *posdiv)const;
+  template<bool sim2d> void ScanUmbrellaFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const typecode *code,const tfloat3 *fsnormal,unsigned *fstype)const;
+  template<bool sim2d> void MarkNearFreeSurfaceParticles
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const typecode *code,unsigned *fstype)const;
+  template<TpKernel tker,bool sim2d> void ComputeCorrMatrixFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,tmatrix3d *corrmat)const;
+  template<TpKernel tker,bool sim2d> void ComputeNormalsFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const tmatrix3d *corrmat,tfloat3 *fsnormal)const;
+  template<TpKernel tker,bool sim2d> void ClassifyFreeSurface
+    (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const tfloat3 *fsnormal,unsigned *fstype,float *posdiv)const;
+
+  template<TpKernel tker,TpFtMode ftmode> void InteractionForcesBound
+    (unsigned n,unsigned pini,StDivDataCpu divdata,const unsigned *dcell
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *id
+    ,float &viscdt,float *ar)const;
+
+  template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool shift> 
+    void InteractionForcesFluid(unsigned n,unsigned pini,bool boundp2,float visco
+    ,StDivDataCpu divdata,const unsigned *dcell
+    ,const tsymatrix3f* tau,tsymatrix3f* gradvel
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
+    ,const float *press,const float *porepress,const tsymatrix3d *sigma,const tfloat3 *dengradcorr
+    ,float *porepressrate,const unsigned *fstype,const tfloat3 *fsnormal,const tmatrix3d *corrmat
+    ,const tsymatrix3f *artificialstress
+    ,float &viscdt,float *ar,tfloat3 *ace,float *delta
+    ,TpShifting shiftmode,tfloat4 *shiftposfs,tsymatrix3f *rsigma)const;
+
+  void InteractionForcesDEM(unsigned nfloat,StDivDataCpu divdata,const unsigned *dcell
+    ,const unsigned *ftridp,const StDemData* demobjs
+    ,const tdouble3 *pos,const tfloat4 *velrhop,const typecode *code,const unsigned *idp
+    ,float &viscdt,tfloat3 *ace)const;
+
+  template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool shift> 
+    void Interaction_ForcesCpuT(const stinterparmsc &t,StInterResultc &res)const;
+  template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity> void Interaction_Forces_ct5(const stinterparmsc &t,StInterResultc &res)const;
+  template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco> void Interaction_Forces_ct4(const stinterparmsc &t,StInterResultc &res)const;
+  template<TpKernel tker,TpFtMode ftmode> void Interaction_Forces_ct3(const stinterparmsc &t,StInterResultc &res)const;
+  template<TpKernel tker> void Interaction_Forces_ct2(const stinterparmsc &t,StInterResultc &res)const;
+  void Interaction_Forces_ct(const stinterparmsc &t,StInterResultc &res)const;
+  void AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,const tfloat4 *velrhop,tfloat3 *ace)const;
+  tfloat3 Mdbc2TangenVel(const tfloat3 &boundnormal,const tfloat3 &velfinal)const;
+
+  template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionMdbcCorrectionT2
+    (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);
+    template<TpKernel tker,bool sim2d,TpSlipMode tslip> void InteractionCdbcCorrectionT2
+    (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+  template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);
+  template<TpKernel tker> void Interaction_CdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+  void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,byte *boundmode,const byte *boundslipmode,tfloat3 *tangenvel
+    ,const float *porepress0,float *porepress);//mdbr
+    void Interaction_CdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop,tsymatrix3d *sigma,const byte *boundslipmode,tfloat3 *tangenvel);//mdbr
+
+  /*template<TpKernel tker, bool sim2d, TpSlipMode tslip> void InteractionMdbcCorrectionT2
+    (unsigned n,StDivDataCpu divdata,float determlimit,float mdbcthreshold
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop);
+  template<TpKernel tker> void Interaction_MdbcCorrectionT(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop);
+  void Interaction_MdbcCorrection(TpSlipMode slipmode,const StDivDataCpu &divdata
+    ,const tdouble3 *pos,const typecode *code,const unsigned *idp
+    ,const tfloat3 *boundnormal,const tfloat3 *motionvel,tfloat4 *velrhop);*/
+
+  void ComputeSpsTau(unsigned n,unsigned pini,const tfloat4 *velrhop,const tsymatrix3f *gradvel,tsymatrix3f *tau)const;
+
+  void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,const tsymatrix3d *sigma2,const float *kplastic,const tsymatrix3f *rsigma
+      ,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew, tsymatrix3d *sigmanew, float *kplasticnew,const tfloat4 *nopenshift)const;
+  void ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *sigma,double armul,tfloat4* velrhopnew,tsymatrix3d *sigmanew)const;
+  //void ComputeVerletVarsFluid(bool shift,const tfloat3 *indirvel,const tfloat4 *velrhop1,const tfloat4 *velrhop2,double dt,double dt2,tdouble3 *pos,unsigned *cell,typecode *code,tfloat4 *velrhopnew)const;
+  //void ComputeVelrhopBound(const tfloat4* velrhopold,double armul,tfloat4* velrhopnew)const;
+  void ComputeVerlet(double dt);
+
+  void ComputeSymplecticPre(double dt);
+  void ComputeSymplecticCorr(double dt);
+  void ComputeVerletPorePressure(double dt);
+  void ComputeSymplecticPrePorePressure(double dt);
+  void ComputeSymplecticCorrPorePressure(double dt);
+  void InitPorosityObserverCpu();
+  void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;
+  unsigned* GetDynamicPeriodicMapCpu();
+  void ComputeDynamicPorePressureRateCpu();
+  void InitDynamicPoreWallCpu();
+  void ComputeDynamicPoreWallStateCpu();
+  void ComputeDynamicPoreWallMatrixCpu();
+  void ComputeDynamicPoreWallAccelerationCpu();
+  void GetDynamicStepScalesCpu(double &wave,double &pore)const;
+  void ComputeSymplecticPrePorosity(double dt);
+  void ComputeSymplecticCorrPorosity(double dt);
+
+  double DtVariable(bool final);
+
+  void RunShifting(double dt);
+
+  void CalcRidp(bool periactive,unsigned np,unsigned pini,unsigned idini,unsigned idfin
+    ,const typecode *code,const unsigned *idp,unsigned *ridp)const;
+  void MoveLinBound(unsigned np,unsigned ini,const tdouble3 &mvpos,const tfloat3 &mvvel
+    ,const unsigned *ridp,tdouble3 *pos,unsigned *dcell,tfloat4 *velrhop,typecode *code)const;
+  void MoveMatBound(unsigned np,unsigned ini,tmatrix4d m,double dt,const unsigned *ridpmv
+    ,tdouble3 *pos,unsigned *dcell,tfloat4 *velrhop,typecode *code,tfloat3 *boundnormal)const;
+  void CopyMotionVel(unsigned nmoving,const unsigned *ridp,const tfloat4 *velrhop,tfloat3 *motionvel)const;
+  void CalcMotion(double stepdt);
+  void RunMotion(double stepdt);
+  void RunRelaxZone(double dt);
+  void RunDamping(double dt,unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code,tfloat4 *velrhop)const;
+
+  void MovePiston1d(unsigned np,unsigned ini,double poszmin,unsigned poszcount
+    ,const byte *pistonid,const double* movx,const double* velx
+    ,const unsigned *ridpmv,tdouble3 *pos,unsigned *dcell,tfloat4 *velrhop,typecode *code)const;
+  void MovePiston2d(unsigned np,unsigned ini
+    ,double posymin,double poszmin,unsigned poszcount,const double* movx,const double* velx
+    ,const unsigned *ridpmv,tdouble3 *pos,unsigned *dcell,tfloat4 *velrhop,typecode *code)const;
+
+public:
+  JSphCpu(bool withmpi);
+  ~JSphCpu();
+
+  void UpdatePos(tdouble3 pos0,double dx,double dy,double dz,bool outrhop,unsigned p,tdouble3 *pos,unsigned *cell,typecode *code)const;
+
+//-Code for InOut in JSphCpu_InOut.cpp
+//--------------------------------------
+protected:
+  tdouble3 Interaction_PosNoPeriodic(tdouble3 posp1)const;
+
+  template<bool sim2d,TpKernel tker> void InteractionInOutExtrap_Double
+    (unsigned inoutcount,const int *inoutpart,const byte *cfgzone
+    ,const tplane3f *planes,const float* width,const tfloat3 *dirdata,float determlimit
+    ,StDivDataCpu dvd,const unsigned *dcell,const tdouble3 *pos,const typecode *code
+    ,const unsigned *idp,tfloat4 *velrhop);
+  
+  template<bool sim2d,TpKernel tker> void InteractionInOutExtrap_Single
+    (unsigned inoutcount,const int *inoutpart,const byte *cfgzone
+    ,const tplane3f *planes,const float* width,const tfloat3 *dirdata,float determlimit
+    ,StDivDataCpu dvd,const unsigned *dcell,const tdouble3 *pos,const typecode *code
+    ,const unsigned *idp,tfloat4 *velrhop);
+  
+  template<TpKernel tker> inline void Interaction_InOutExtrapT
+    (byte doublemode,unsigned inoutcount,const int *inoutpart
+    ,const byte *cfgzone,const tplane3f *planes
+    ,const float* width,const tfloat3 *dirdata,float determlimit
+    ,const unsigned *dcell,const tdouble3 *pos,const typecode *code
+    ,const unsigned *idp,tfloat4 *velrhop);
+
+  void Interaction_InOutExtrap(byte doublemode,unsigned inoutcount,const int *inoutpart
+    ,const byte *cfgzone,const tplane3f *planes
+    ,const float* width,const tfloat3 *dirdata,float determlimit
+    ,const unsigned *dcell,const tdouble3 *pos,const typecode *code
+    ,const unsigned *idp,tfloat4 *velrhop);
+
+  float Interaction_InOutZsurf(unsigned nptz,const tfloat3 *ptzpos,float maxdist,float zbottom
+    ,const StDivDataCpu &divdata,const tdouble3 *pos,const typecode *code);
+
+};
+
+#endif
+
+

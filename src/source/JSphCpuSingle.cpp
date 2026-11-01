@@ -202,6 +202,7 @@ void JSphCpuSingle::ConfigDomain(){
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,Posc,Idpc,Codec,Velrhopc,BoundNormalc);
   if(UseNormals)ConfigBoundNormals(Np,Npb,Posc,Idpc,BoundNormalc);
+  if(DynamicPoreWall)InitDynamicPoreWallCpu();
   if(SoilBoundaryDerivativeSPR){
     //-Each wall mk defines one stationary plane; never average corner normals.
     if(!Npb)Run_Exceptioon("SoilBoundaryDerivativeSPR requires fixed boundary planes.");
@@ -741,7 +742,10 @@ void JSphCpuSingle::AbortBoundOut(){
 /// Interaccion para el calculo de fuerzas.
 //==============================================================================
 void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
-  if(TBoundary==BC_MDBC){
+  if(DynamicPoreWall){
+    //-Its same-stage J/p/stress/velocity closure runs in free-surface tracking below.
+  }
+  else if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition

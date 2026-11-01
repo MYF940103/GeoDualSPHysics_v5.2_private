@@ -115,6 +115,7 @@ void JSphCpu::InitVars(){
   PorosityObserver=false;
   PorosityFeedback=false;
   DynamicPorePressure=false;
+  DynamicPoreWall=false;
   PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
@@ -215,7 +216,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,5);//-PorePress,PorePress0,PorePressRate and SaveData temporary arrays
     ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2);//-HydroMechLoadAce and SaveData temporary array
     if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-Top-load force-stage scratch
-    if(SoilBoundaryDerivativeSPR)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1);//-Wall derivative velocity scratch
+    if(SoilBoundaryDerivativeSPR || DynamicPoreWall)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,1);//-Wall derivative velocity scratch
   }
   //======
   if(TStep==STEP_Verlet){
@@ -1155,6 +1156,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ClassifyFreeSurface
 //==============================================================================
 void JSphCpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.begincell || !CorrMatc || !FSTypec || !FSNormalc || !PosDivc)return;
+  if(DynamicPoreWall)ComputeDynamicPoreWallStateCpu();
   const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
 
   if(Simulate2D){
@@ -1192,6 +1194,7 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))CorrMatc[p]=CorrMatc[ridp[Idpc[p]]];
     ArraysCpu->Free(ridp);
   }
+  if(DynamicPoreWall)ComputeDynamicPoreWallMatrixCpu();
 }
 
 //==============================================================================
@@ -1593,15 +1596,16 @@ void JSphCpu::InteractionPorePressureRate(){
 }
 
 //==============================================================================
-/// Interpolates one/three field components at boundary ghost points using one MLS matrix.
+/// Interpolates field components at boundary ghost points using one MLS matrix.
 //==============================================================================
 template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void JSphCpu::InterpolateBoundaryGhostFieldT
   (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
   ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write,bool recenter)const
 {
   const int nn=int(n);
+  unsigned missing=0;
   #ifdef OMP_USE
-    #pragma omp parallel for schedule(guided)
+    #pragma omp parallel for schedule(guided) reduction(+:missing)
   #endif
   for(int p1=0;p1<nn;p1++){
     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
@@ -1613,6 +1617,8 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
     double sumwab=0,submerged=0;
     double fieldsum[ncomp]={0};
     double gradfieldx[ncomp]={0},gradfieldy[ncomp]={0},gradfieldz[ncomp]={0};
+    double nearest[ncomp]={0},nearest2=DBL_MAX;
+    tdouble3 neardr=TDouble3(0);
     tmatrix3d a_corr2=TMatrix3d(0);
     tmatrix4d a_corr3=TMatrix4d(0);
     const StNgSearch ngs=nsearch::Init(gposp1,false,divdata);
@@ -1625,17 +1631,23 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
         const float rr2=float(drx*drx+dry*dry+drz*drz);
         if(rr2<=KernelSize2){
           float fac;
-          const double wab=double(fsph::GetKernel_WabFac<tker>(CSP,rr2,fac));
+          //-A mirror sample can coincide with a fluid node: W(0) is finite and grad W(0)=0.
+          const double wab=(DynamicPoreWall && rr2==0? (fac=0.f,double(fsph::GetKernel_Wab<tker>(CSP,rr2))): double(fsph::GetKernel_WabFac<tker>(CSP,rr2,fac)));
           const double frx=double(fac)*drx;
           const double fry=(sim2d? 0: double(fac)*dry);
           const double frz=double(fac)*drz;
-          const double vol2=double(MassFluid/velrhop[p2].w);
+          const double vol2=(DynamicPoreWall? double(MassFluid)/double(RhopZero)*PoroJc[p2]: double(MassFluid/velrhop[p2].w));
           const double vwab=wab*vol2;
           const double vfrx=frx*vol2;
           const double vfry=fry*vol2;
           const double vfrz=frz*vol2;
           double field[ncomp];
           for(unsigned c=0;c<ncomp;c++)field[c]=read(p2,c);
+          const double distance2=drx*drx+dry*dry+drz*drz;
+          if(DynamicPoreWall && distance2<nearest2){
+            nearest2=distance2;neardr=TDouble3(drx,dry,drz);
+            for(unsigned c=0;c<ncomp;c++)nearest[c]=field[c];
+          }
           sumwab+=vwab;
           for(unsigned c=0;c<ncomp;c++){
             fieldsum[c]+=vwab*field[c];
@@ -1662,18 +1674,23 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
     if(active && sumwab>0){
       const double determlimit=1e-3;
       double fieldfinal[ncomp];
+      bool firstorder=false;
       for(unsigned c=0;c<ncomp;c++)fieldfinal[c]=fieldsum[c]/sumwab; //-0th-order fallback.
       if(sim2d){
         const double determ=fmath::Determinant3x3(a_corr2);
         if(fabs(determ)>=determlimit){
+          firstorder=true;
           const tmatrix3d inv=fmath::InverseMatrix3x3(a_corr2,determ);
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldz[c];
             fieldfinal[c]=qg;
-            if(shifted){
+            if(shifted || DynamicPoreWall){
               const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldz[c];
               const double qz=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldz[c];
-              fieldfinal[c]+=qx*fitshift.x+qz*fitshift.z;
+              //-The fitted d=target-source coefficients are minus the physical gradient.
+              //-Anchor to a native sample to avoid smoothing a coincident mirror node.
+              if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qz*neardr.z;
+              if(shifted)fieldfinal[c]+=qx*fitshift.x+qz*fitshift.z;
             }
           }
         }
@@ -1681,22 +1698,29 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
       else{
         const double determ=fmath::Determinant4x4(a_corr3);
         if(fabs(determ)>=determlimit){
+          firstorder=true;
           const tmatrix4d inv=fmath::InverseMatrix4x4(a_corr3,determ);
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldy[c] + inv.a14*gradfieldz[c];
             fieldfinal[c]=qg;
-            if(shifted){
+            if(shifted || DynamicPoreWall){
               const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldy[c]+inv.a24*gradfieldz[c];
               const double qy=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldy[c]+inv.a34*gradfieldz[c];
               const double qz=inv.a41*fieldsum[c]+inv.a42*gradfieldx[c]+inv.a43*gradfieldy[c]+inv.a44*gradfieldz[c];
-              fieldfinal[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
+              if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qy*neardr.y-qz*neardr.z;
+              if(shifted)fieldfinal[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
             }
           }
         }
       }
-      write(p1,fieldfinal);
+      bool finite=true;
+      if(DynamicPoreWall)for(unsigned c=0;c<ncomp;c++)finite=finite && std::isfinite(fieldfinal[c]);
+      if(DynamicPoreWall && (!firstorder || !finite))missing++;
+      else write(p1,fieldfinal);
     }
+    else if(DynamicPoreWall)missing++;
   }
+  if(missing)Run_Exceptioon("Dynamic wall requires a finite first-order MLS fit at every active mirror sample.");
 }
 
 //==============================================================================
@@ -1918,7 +1942,7 @@ void JSphCpu::PreInteraction_Forces(){
   Arc=ArraysCpu->ReserveFloat();
   Acec=ArraysCpu->ReserveFloat3();
   if(HydroMech && HydroMechTopLoadMode==HMLOAD_TopKernelBand)HydroMechTopLoadRawc=ArraysCpu->ReserveFloat();
-  if(SoilBoundaryDerivativeSPR)BoundDerivativeVelc=ArraysCpu->ReserveFloat3();
+  if(SoilBoundaryDerivativeSPR || DynamicPoreWall)BoundDerivativeVelc=ArraysCpu->ReserveFloat3();
   //=========== mdbr
   Rsigmac=ArraysCpu->ReserveSymatrix3f();
   if(ArtificialStress)ArtificialStressc=ArraysCpu->ReserveSymatrix3f();
@@ -2408,6 +2432,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           const bool mdbc2p2=(boundp2 && TBoundary==BC_MDBC && slipmodep2>=SLIP_NoSlip && !ftp2);
           if(mdbc2p2 && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF){
             massp2=0;
+            if(PorosityFeedback)continue; //-J quadrature must not bypass an inactive wall.
           }
 
           tfloat4 velrhop2=velrhop[p2];
@@ -4120,9 +4145,133 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *s
 }
 
 //==============================================================================
+/// Axis-parallel reflection signs for the restricted fixed-wall fixture.
+//==============================================================================
+static tdouble3 DynamicPoreWallParity(const tfloat3 &raw){
+  const double r2=double(raw.x)*raw.x+double(raw.y)*raw.y+double(raw.z)*raw.z;
+  return TDouble3(double(raw.x)*raw.x>.5*r2? -1.: 1.,
+    double(raw.y)*raw.y>.5*r2? -1.: 1.,double(raw.z)*raw.z>.5*r2? -1.: 1.);
+}
+
+//==============================================================================
+/// Admits only one/two static parallel axis planes; no public boundary mode.
+//==============================================================================
+void JSphCpu::InitDynamicPoreWallCpu(){
+  if(!DynamicPoreWall)return;
+  if(!DynamicPorePressure || !CaseNpb || TBoundary!=BC_MDBC || !UseNormals || !BoundNormalc || !BoundModec
+    || Gravity.x || Gravity.y || Gravity.z || SoilBoundaryDerivativeSPR
+    || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
+    Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, zero gravity and its own derivative closure.");
+  const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+  int axis=-1;
+  bool seen[2]={false,false};
+  double plane[2]={0,0};
+  for(unsigned p=0;p<Npb;p++){
+    const tdouble3 raw=ToTDouble3(BoundNormalc[p]);
+    const double len=sqrt(raw.x*raw.x+raw.y*raw.y+raw.z*raw.z);
+    if(!CODE_IsFixed(Codec[p]) || !std::isfinite(len) || len<=0
+      || Velrhopc[p].x || Velrhopc[p].y || Velrhopc[p].z
+      || (BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode)!=SLIP_FreeSlip)
+      Run_Exceptioon("Dynamic wall fixture requires finite stationary FreeSlip wall normals.");
+    const tdouble3 n=raw/len,wall=Posc[p]+raw*.5;
+    const int a=(fabs(n.x)>.5? 0: (fabs(n.y)>.5? 1: 2));
+    if(axis<0)axis=a;
+    if(a!=axis || (Simulate2D && a==1))
+      Run_Exceptioon("Dynamic wall fixture permits parallel axis planes only, without corners.");
+    for(int b=0;b<3;b++)if(b!=axis && fabs(component(n,b))>8.*FLT_EPSILON)
+      Run_Exceptioon("Dynamic wall fixture rejects inclined normals.");
+    const unsigned side=(component(n,axis)>0? 0: 1);
+    const double xp=component(wall,axis);
+    if(!std::isfinite(xp) || (seen[side] && fabs(xp-plane[side])>1e-6*Dp))
+      Run_Exceptioon("Dynamic wall fixture requires one coplanar face per inward normal direction.");
+    if(!seen[side])plane[side]=xp;
+    seen[side]=true;
+  }
+  if(seen[0] && seen[1] && plane[1]-plane[0]<=2.*double(KernelSize))
+    Run_Exceptioon("Dynamic wall fixture requires separated opposing mirror supports.");
+  const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};
+  const bool periodic[3]={PeriX,PeriY,PeriZ};
+  for(int a=0;a<3;a++)if(periodic[a] && component(inc[a],axis)!=0)
+    Run_Exceptioon("Dynamic wall fixture permits tangential periodic translations only.");
+  for(unsigned p=0;p<Npb;p++){
+    const double xm=component(Posc[p]+ToTDouble3(BoundNormalc[p]),axis);
+    if((seen[0] && xm<=plane[0]) || (seen[1] && xm>=plane[1]))
+      Run_Exceptioon("Dynamic wall mirror sample must lie strictly inside the fluid slab.");
+  }
+}
+
+//==============================================================================
+/// Reconstructs fixed quadrature samples, not moving native particle owners.
+/// Scalars are even; velocity and effective stress use Q*v and Q*sigma*Q.
+//==============================================================================
+void JSphCpu::ComputeDynamicPoreWallStateCpu(){
+  if(!DynamicPoreWall || !NpbOk)return;
+  const auto read=[&](unsigned p,unsigned c){
+    if(c==0)return PoroJc[p];
+    if(c==1)return double(PorePressc[p]); //-First actual-wall scope has g=0.
+    if(c<5)return double(c==2? Velrhopc[p].x: (c==3? Velrhopc[p].y: Velrhopc[p].z));
+    const tsymatrix3d s=Sigmac[p];
+    const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
+  };
+  const auto write=[&](unsigned p,const double *v){
+    const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+    PoroJc[p]=v[0];PoroThetac[p]=0.;PorePressc[p]=float(v[1]);
+    Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
+    if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
+    if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));
+    Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.
+    BoundModec[p]=BMODE_MDBC2;
+  };
+  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=1.-double(SoilCte.Porosity)
+    || !std::isfinite(PorePressc[p]) || (BoundDerivativeVelc && (!std::isfinite(BoundDerivativeVelc[p].x)
+      || !std::isfinite(BoundDerivativeVelc[p].y) || !std::isfinite(BoundDerivativeVelc[p].z))))
+    Run_Exceptioon("Dynamic wall left the finite saturated state domain.");
+}
+
+//==============================================================================
+/// Extends current fluid C after free-surface tracking has rebuilt it.
+//==============================================================================
+void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
+  if(!DynamicPoreWall || !NpbOk)return;
+  const auto read=[&](unsigned p,unsigned c){const tmatrix3d m=CorrMatc[p];
+    const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];};
+  const auto write=[&](unsigned p,const double *v){
+    const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+    CorrMatc[p]=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);
+  };
+  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  for(unsigned p=0;p<NpbOk;p++){
+    const tmatrix3d m=CorrMatc[p];
+    const double det=(Simulate2D? m.a11*m.a33-m.a13*m.a31: fmath::Determinant3x3(m));
+    if(!std::isfinite(det) || det<=0)Run_Exceptioon("Dynamic wall C reconstruction must remain nonsingular and positive oriented.");
+  }
+}
+
+//==============================================================================
+/// Reads finished native acceleration, never stationary-wall velocity or old Ace.
+//==============================================================================
+void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
+  if(!DynamicPoreWall || !NpbOk)return;
+  const auto read=[&](unsigned p,unsigned c){return(c==0? double(Acec[p].x)+Gravity.x: (c==1? double(Acec[p].y)+Gravity.y: double(Acec[p].z)+Gravity.z));};
+  const auto write=[&](unsigned p,const double *v){
+    const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+    Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));
+  };
+  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(Acec[p].x) || !std::isfinite(Acec[p].y) || !std::isfinite(Acec[p].z))
+    Run_Exceptioon("Dynamic wall acceleration reconstruction must remain finite.");
+}
+
+//==============================================================================
 /// Initializes the development-only volume observer without physical feedback.
 //==============================================================================
 void JSphCpu::InitPorosityObserverCpu(){
+  if(DynamicPoreWall && (!DynamicPorePressure || !CaseNpb))
+    Run_Exceptioon("Dynamic wall fixture requires the private dynamic model and fixed boundary particles.");
   if(DynamicPorePressure && !PorosityFeedback)
     Run_Exceptioon("Dynamic pore-pressure fixture requires J-derived volume/storage/inertia feedback.");
   if(PorosityFeedback && !PorosityObserver)
@@ -4135,7 +4284,7 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
-  if(PorosityFeedback && (CaseNpb || AccInput
+  if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilHourglassXi!=0 || SoilDamping
     || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
@@ -4188,6 +4337,7 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
       Acec[p]=Acec[owner];PoroThetac[p]=PoroThetac[owner];
     }
   }
+  if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationCpu();
   const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
   const double khyd=SoilCte.HydraulicConductivity,vol0=double(MassFluid)/double(RhopZero);
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
@@ -4203,10 +4353,13 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
     tdouble3 lx=TDouble3(0),gp=TDouble3(0);
     if(khyd>0){
       const tmatrix3d ci=CorrMatc[p1];
-      const StNgSearch ngs=nsearch::Init(Dcellc[p1],false,DivData);
+      for(unsigned group=0;group<(DynamicPoreWall? 2u: 1u);group++){
+      const bool boundary=(group==1);
+      const StNgSearch ngs=nsearch::Init(Dcellc[p1],boundary,DivData);
       for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
         const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
-        for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(Codec[p2])){
+        for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(Codec[p2]) || (boundary && CODE_IsFixed(Codec[p2]))){
+          if(boundary && BoundModec[p2]==BMODE_MDBC2OFF){invalid++;continue;}
           const tdouble3 d=TDouble3(Posc[p1].x-Posc[p2].x,(Simulate2D? 0: Posc[p1].y-Posc[p2].y),Posc[p1].z-Posc[p2].z);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
@@ -4221,6 +4374,7 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
           da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x
             +(double(Acec[p2].y)-Acec[p1].y)*gi.y+(double(Acec[p2].z)-Acec[p1].z)*gi.z);
         }
+      }
       }
     }
     const double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));

@@ -1,0 +1,149 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.278c (30-10-2023)" date="01-11-2026 20:26:26">
+    <!-- Private P3 actual fixed-wall standing wave; internal CPU flags only, no public dynamic switch. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="First actual wall candidate is restricted to zero gravity" units_comment="m/s^2" />
+            <rhop0 value="2048" comment="Initial saturated mixture density" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" />
+            <gamma value="7" />
+            <speedsystem value="0" auto="true" />
+            <coefsound value="20" />
+            <speedsound value="0" auto="true" />
+            <hdp value="1.8" comment="Current Wendland smoothing-length ratio" />
+            <cflnumber value="0.2" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <definition dp="0.001953125" units_comment="metres (m)">
+                <pointmin x="-0.0068359375" y="0" z="0.0009765625" />
+                <pointmax x="0.0712890625" y="0" z="0.0634765625" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>real | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="-0.0078125" y="0" z="0" />
+                        <size x="0.0078125" y="0" z="0.0625" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0.0625" y="0" z="0" />
+                        <size x="0.0078125" y="0" z="0.0625" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="0.0615234375" y="0" z="0.0615234375" />
+                    </drawbox>
+                </mainlist>
+            </commands>
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <boundnormal_plane mkbound="0">
+                    <point x="0" y="0" z="0" />
+                    <normal x="1" y="0" z="0" />
+                    <maxdisth v="2" comment="Includes all four fixed sampling layers" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="1">
+                    <point x="0.0625" y="0" z="0" />
+                    <normal x="-1" y="0" z="0" />
+                    <maxdisth v="2" />
+                    <clear v="true" />
+                </boundnormal_plane>
+            </initialize>
+            <soils>
+                <phi value="0" />
+                <coh value="1e12" comment="Keep the manufactured wave elastic" units_comment="Pa" />
+                <dlt value="0" />
+                <ModulusE value="268435456" comment="Manufactured E=2^28; loaded float moduli retained" units_comment="Pa" />
+                <PRvs value="0" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" comment="Legacy parser; feedback is enabled internally by the test harness only" />
+                <PoreWaterRho value="1000" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="67108864" comment="Kw=2^26" units_comment="Pa" />
+                <Porosity value="0.25" />
+                <HydraulicConductivity value="0.0001" units_comment="m/s" />
+                <PoreDtSafety value="0.1" />
+                <PoreShepardRegularization value="0" />
+                <PoreCompressionGradCorr value="1" />
+                <PoreCompressionSourceMode value="0" />
+                <HydroMechInitMode value="0" />
+                <HydroMechTopLoadMode value="0" />
+                <HydroMechDrainage value="0" />
+            </hydromechanics>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" />
+            <parameter key="DPCtes" value="3" />
+            <parameter key="Boundary" value="2" comment="Actual fixed mDBC sampling geometry; private wall closure is enabled only inside the companion" />
+            <parameter key="SlipMode" value="3" comment="Both parallel planes are FreeSlip" />
+            <parameter key="NoPenetration" value="0" />
+            <parameter key="StepAlgorithm" value="2" />
+            <parameter key="Kernel" value="2" />
+            <parameter key="ViscoTreatment" value="1" />
+            <parameter key="Visco" value="0" />
+            <parameter key="ArtificialStress" value="0" />
+            <parameter key="SoilStressRateGradCorr" value="1" />
+            <parameter key="SoilHourglassXi" value="0" />
+            <parameter key="SoilBoundaryDerivativeSPR" value="0" />
+            <parameter key="SoilDamping" value="0" />
+            <parameter key="DensityDT" value="0" />
+            <parameter key="Shifting" value="0" />
+            <parameter key="DtIni" value="0.00000001490116119384765625" comment="Half 2^-26; actual coupled time guard required" units_comment="seconds" />
+            <parameter key="DtMin" value="0.0000000001" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.00000001490116119384765625" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.000030517578125" comment="2^-15; nominal one-eighth acoustic period" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.000030517578125" comment="Harness exports every matched step independently" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="0" comment="No particle loss admitted" />
+            <parameter key="RhopOutMin" value="700" comment="Passive legacy density validity only, not physical mixture-density bounds" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" units_comment="kg/m^3" />
+            <parameter key="ZPeriodic" value="1" comment="Periodicity is tangent to both fixed walls" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="-0.0078125" y="default" z="0" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="0.0703125" y="default" z="0.0625" />
+            </simulationdomain>
+        </parameters>
+        <particles np="1280" nb="256" nbf="256" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="-0.00683594" y="0" z="0.000976563" />
+                    <posmax x="0.0693359" y="0" z="0.0615234" />
+                </positions>
+                <fixed count="256" id="0-255" mkcount="2" mkvalues="10-11" />
+                <fluid count="1024" id="256-1279" mkcount="1" mkvalues="1" />
+            </_summary>
+            <fixed mkbound="0" mk="10" begin="0" count="128" />
+            <fixed mkbound="1" mk="11" begin="128" count="128" />
+            <fluid mkfluid="0" mk="1" begin="256" count="1024" />
+        </particles>
+        <constants>
+            <data2d value="true" />
+            <data2dposy value="0" units_comment="metres (m)" />
+            <gravity x="0" y="0" z="0" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="2048" units_comment="kg/m^3" />
+            <dp value="0.00195313" units_comment="metres (m)" />
+            <h value="0.003515625" units_comment="metres (m)" />
+            <b value="0" units_comment="Pascal (Pa)" />
+            <massbound value="0.0078125" units_comment="kg" />
+            <massfluid value="0.0078125" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="MResId" value="0" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1" />
+    </execution>
+</case>

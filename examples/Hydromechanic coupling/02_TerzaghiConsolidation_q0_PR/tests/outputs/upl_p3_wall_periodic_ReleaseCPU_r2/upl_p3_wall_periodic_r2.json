@@ -1,0 +1,72 @@
+{
+  "status": "declared_not_built_or_run",
+  "scope": "no_wall_default_wall_flag_OFF_implementation_regression",
+  "purpose": "Prove that adding the private fixed-planar DynamicPoreWall branch leaves the already verified no-wall private dynamic CPU trajectory unchanged when its new flag remains false.",
+  "new_files": [
+    "support/upl_p3_wall_periodic_r2.ps1",
+    "notes/upl_p3_wall_periodic_r2.json"
+  ],
+  "unchanged_actual_harness": "support/upl_p3_spatial_wave_harness_r2.cpp",
+  "harness_sha256": "58dd7a9c9b655b07947c1f9ff7e588705f2b77ea1bf961b6bb8ea57068cca146",
+  "source_freeze": "logs/upl_p3_wall_build_r3.json",
+  "authoritative_objects": "src/VS/Intermediate/DualSPHysics_ReleaseCPU_x64/*.obj excluding main.obj, selected by the authoritative CPU vcxproj",
+  "configuration": "ReleaseCPU only; no production build, GPU, GenCase or seed preparation in this wrapper",
+  "geometry": {
+    "dimensions": 2,
+    "nx": 32,
+    "nz": 16,
+    "real_native_soil_ids": "0..511, unchanged fixture validates unique real IDs and initial tensor coordinates",
+    "npb": 0,
+    "dp_m": 0.00390625,
+    "width_x_m": 0.125,
+    "width_z_m": 0.0625,
+    "periodicity": "X and Z",
+    "dynamic_flags": "PorosityObserver, PorosityFeedback and DynamicPorePressure true in unchanged harness; DynamicPoreWall remains its production default false"
+  },
+  "jobs": [
+    {
+      "tag": "c",
+      "steps": 512,
+      "dt_s": 5.960464477539063e-8,
+      "seed": "outputs/upl_p3_spatial_seed_r1_n32_c/CaseUplSpatial_n32_c",
+      "retained": "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_c",
+      "new_output": "outputs/upl_p3_wall_periodic_ReleaseCPU_r2_n32_c"
+    },
+    {
+      "tag": "h",
+      "steps": 1024,
+      "dt_s": 2.9802322387695312e-8,
+      "seed": "outputs/upl_p3_spatial_seed_r1_n32_h/CaseUplSpatial_n32_h",
+      "retained": "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_h",
+      "new_output": "outputs/upl_p3_wall_periodic_ReleaseCPU_r2_n32_h"
+    }
+  ],
+  "common_output": {
+    "end_s": 0.000030517578125,
+    "saved_samples_each": 257,
+    "actual_save_cadence_s": 1.1920928955078125e-7,
+    "physical_columns": 26,
+    "native_field_pairs_both_jobs": 6842368,
+    "binary_schema": "12-byte little-endian uint32 header [512,26,257]; each frame is binary64 actual time followed by 512 rows in real-native-ID order and 26 binary64 values per row"
+  },
+  "predeclared_gates": [
+    "Both authoritative CPU source builds exited zero; reverify current production files and their immutable wall-build snapshots before and after companion execution.",
+    "Link unchanged actual harness to authoritative ReleaseCPU objects and runtime, binding project, all used objects/sources/headers, five project libraries, copied runtime and frozen controls by bytes and SHA256.",
+    "Each new owned call exits zero and completes actual ComputeStep_Sym at the declared exact dyadic final time with 512 unique real native IDs, 257 saves and no particle exclusions; unchanged harness original ledger, natural/pore step, finite/elastic/periodic ownership, energy and discrete-reference checks remain active.",
+    "For each same-dt job separately, physical.bin is byte-identical to its retained r5 control, including the entire header, all 26 physical/identity fields of all 512 real native IDs at all 257 saved times. Also independently read every binary saved clock and check exact header/length, and verify actual step/time CSV identity.",
+    "modes.csv, endpoint_policy.csv and complete.json are each byte-identical to the corresponding retained control; no physical field, dterror or other equality exception.",
+    "A failed coarse job or any failed exact comparison stops the dependent half-labelled run. Preserve every failed artifact without changing the gate or rebaselining."
+  ],
+  "commands_after_root_authorization_only": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_wall_periodic_r2.ps1 -Mode Build -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_wall_periodic_r2.ps1 -Mode Run -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "interpretation": "The c/h labels identify two same-dt implementation controls; their difference is NOT evaluated as a new half-step test. Byte equality establishes 0 ULP for both full same-dt trajectories and actual clocks, not new physical accuracy or wall acceptance. Historical builds' current source paths are not rechecked against old bytes; their immutable archived harness, selected original raw outputs, owned-call receipts and exact-dp seeds are bound instead.",
+  "execution_authorized_by_this_note": false,
+  "physical_acceptance": false,
+  "r2_reason": {
+    "retained_r1_result": "logs/upl_p3_wall_periodic_ReleaseCPU_r1.check.json passed: two 257-frame complete same-dt no-wall trajectories, each 26 native fields and exact clocks, were byte-identical to retained spatial r5 controls. This evidence is preserved and is not relabelled as a build-r2 result.",
+    "source_change": "Root's new private DynamicPoreWall branch includes the rr2==0 finite-weight/zero-gradient fix plus a nearest-fluid-node anchored first-order reconstruction, using the physical gradient with the correct opposite sign of MLS qx. The same anchoring is used for wall J/p/velocity/stress/C/Ace. Default-false legacy interpolation remains unchanged. This wrapper has not yet been built or run, so its required source freeze now points to wall_build_r3 rather than r2.",
+    "new_regression": "Independently link the same unchanged actual spatial harness to authoritative wall_build_r3 objects and run two fresh same-dt controls under the still-unexecuted periodic_r2 labels. Seeds, materials, physics, timings and all original equality/safety gates remain unchanged. The r1 pass is preserved but cannot establish invariance of the later r3 source candidate."
+  }
+}
