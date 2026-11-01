@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-01",
+  "status": "authored_only_pending_root_review_no_build_or_run",
+  "predeclared_before_execution": true,
+  "extends_frozen_declaration": "upl_p3_pair_r1.json",
+  "preserves": "Original upl_p3_pair_r1.cpp/.ps1/declaration, sealed Debug/Release outputs and review remain unchanged. No production source, object or solver is used or replaced.",
+  "new_files": ["tests/support/upl_p3_consist_r1.cpp", "tests/support/upl_p3_consist_r1.ps1", "tests/notes/upl_p3_consist_r1.json"],
+  "new_operator_only": {
+    "name": "symC_Lstar_plus_receiverC_DAce",
+    "Lp": "2 sum_j Vj (pi-pj) beta_sym_ij",
+    "Lx": "2 sum_j Vj dij beta_sym_ij",
+    "Gp": "sum_j Vj(pj-pi) Ci grad_iW, reused from unchanged frozen pair evaluation",
+    "D_Ace": "sum_j Vj(Ace_j-Ace_i) dot(Ci grad_iW)",
+    "Lstar": "Lp-Gp dot Lx",
+    "rate": "pdot_i=Kw/ni * [k/gamma_ref*(Lstar+rho_water*D_Ace)-theta_i]",
+    "gravity": "Ace=a_s-g; do not append the old head gravity term. The physical pointwise q diagnostic remains -k/gamma_ref*(Gp+rho_water*Ace).",
+    "tradeoff": "First-order consistency correction is receiver-dependent and not a reciprocal pair flux. Frozen global storage budget and full-patch pressure-energy sign are diagnostic for this new operator, not assumed identities or fluid-mass conservation."
+  },
+  "unchanged_old_operators": ["raw_pair_R", "symC_pair_R", "legacy_symC_head_plus_receiverC_Das"],
+  "old_control_proof": {
+    "method": "Include immutable old CPP with its main renamed. Execute that unchanged13-field screen inside the fresh standalone process into a NEW sibling *_control directory.",
+    "required_before_later_admission": "All5 files nodes.csv,pair_summary.csv,rates.csv,summary.csv,complete.json must be byte-identical to the already sealed matching Debug/Release pairr1 outputs. This binds every old field,63180 rate rows and156 summary rows, not a sampled prefix.",
+    "source_bound": "Current old CPP hash must match its prior successful build receipt; no rebaseline or retained-output overwrite.",
+    "not_claimed": "No old physical solver or notifier is restarted. This is a fresh standalone deterministic implementation control."
+  },
+  "geometry_and_material": "Exactly the old81/729-node regular/jittered frozen reciprocal patches, dp=1/8,h=dp,eta2=h^2/100,Jheterogeneous,nJ,VJ,rho_water1000,Kw2e8,k2^-10,gamma_ref8000. The independently signed body gravity does not change gamma_ref.",
+  "support_scope": {
+    "core": "Reference indices abs<=1:9/27 receiver full-support nodes. Outer truncated rows are not physical walls.",
+    "central_double_support": "Explicitly verify central IDs40/364 and every retained kernel neighbor's C support. First omitted reference coordinate has magnitude at least5dp-dp/8; require this minus abs(node coordinate) minus2h strictly positive on each active axis. Central displacement is bounded by dp/8. Thus central plus neighbor correction supports cannot reach an omitted node of the same bounded-jitter lattice.",
+    "output": "central_support.csv records4 checks, affected-node counts and minimum positive clearance. Do not generalize this proof to all core nodes, periodic copies or real boundaries."
+  },
+  "fields": {
+    "old13": "Retain every old field, including freefall g-/g+, stationary hydrostatic, accelerated equilibrium, constant flux, quadratic plus affine acceleration and k0 compression/dilation/zero trace.",
+    "new14": "Quadratic pressure with Ace=-grad(reference p)/rho_water, physical q_reference0 and continuum pressure rate0; compare ALL4 operators without assuming Lstar quadratic exactness.",
+    "independent_quadratic_pressure_bases": "2D xx,xz,zz (3);3D xx,xy,xz,yy,yz,zz (6). Diagonal p=2048+512*x_a^2, cross p=2048+1024*x_a*x_b. Ace0,g0; analytic Laplacian1024 for diagonal,0 for cross.",
+    "independent_affine_acceleration_bases": "All active B_ab:2D4 and3D9. Ace_a=x_b/16, other components0,pconstant2048,g0; analytic div Ace=1/16 whena=b,else0. Constant-pressure pointwise Darcy flux is nontrivial; newstar rate is an exact-field hard comparison.",
+    "counts": {"fields_per_2D_patch":21,"fields_per_3D_patch":29,"field_patch_cases":100,"four_operator_summary_rows":400,"core_node_operator_rows":7776},
+    "k0_scope": "Only unchanged old fields7,8,9 use k0. New14 and all independent pressure/acceleration bases retain nonzero k."
+  },
+  "hard_gates": {
+    "old_control_hashes": "All5 complete output files identical to sealed controls, both configurations independently; all old beta, residual, frozen weighted-budget and pure-pressure energy gates remain unmodified in the included source.",
+    "new_star_finite": "All computed rates/scales finite.",
+    "new_star_exact_fields": "For every affine-pressure field (including constant pressure/constant flux, old equilibrium/freefall/static cases, k0 fields and all affine Ace bases), compare all nodes against Kw/ni*(k/gamma_ref*continuum-theta), not just central nodes.",
+    "new_star_roundoff_tolerance_pa_s": "4096*DBL_EPSILON*max(1, gain*(sum_abs_Lp_terms + abs(Gp) dot sum_abs_Lx_terms +rho_water*sum_abs_D_Ace_terms +abs(continuum)) +abs(compression)) +1e-7; gain=Kw/ni*k/gamma_ref, compression=-Kw/ni*theta. No empirical adjustment after running.",
+    "central_support": "Positive omitted-node clearance for central plus every kernel neighbor C support in all4 patches.",
+    "core_pressure_matrix_shape": "Each4-operator/4-patch matrix is an actual frozen rate operator assembled by unit1-Pa pressure basis on every9/27 core node, all outer p0,Ace0,theta0. Require all6480 entries present exactly once, storage weights positive/consistent and all finite.",
+    "core_pressure_energy_matrix": "S=diag(Vi ni/Kw),B=sqrt(S) A invsqrt(S). For each of16 matrices require both lambda_max((B+B^T)/2) and max Re(lambda(B)) <=4096*eps_float64*max(1,norm2(B)). No post-run threshold increase. Export maxima,min symmetric eigenvalue,norm and tolerance.",
+    "tool_provenance": "Capture compiler arguments, frozen source/header/recipe hashes, actual exits, generated file hashes and Python/NumPy versions; no production program/cloud-binary-backup claim."
+  },
+  "diagnostics_not_hard_acceptance": [
+    "Newstar frozen global weighted Darcy/total budget and global pressure-energy derivative are reported, not constrained to the reciprocal identities of the old pair operator.",
+    "All independent quadratic continuum errors, quadratic balanced-q0 residuals and receiver-C pointwise q errors are reported at core/outer/central locations. No quadratic exactness is assumed.",
+    "Pointwise receiver-C q is a SEPARATE diagnostic, not a proved vector flux whose discrete divergence equals Lstar or pairR.",
+    "The frozen core Dirichlet restriction supplies an explicit pressure-energy closure screen; it is not a physical boundary-particle implementation, unconditional coupled stability, or a general periodic/Dirichlet/Neumann closure proof.",
+    "Heterogeneous J is assigned independently from a physical trajectory; regular-versus-jitter comparisons do not isolate volume disorder from positional disorder."
+  ],
+  "outputs_and_order": {
+    "build": "Standalone MSVC Debug first, Release only after review of any earlier rejection. No production objects. Used new/old CPP,PS1,declaration snapshots retained in unique build directory.",
+    "run": "Fresh *_run and sibling *_run_control; preserve prior labels. New C++ stage writes summary.csv,core.csv,dirichlet_matrices.csv,central_support.csv,complete.json. Dedicated quadratic_balance.csv retains6480 all-node/operator rows of the actual14th field, including rate/reference/error and pointwise q/q_reference; not an abstract residual-only assessment. Old5-file hash proof precedes offline NumPy matrix screen. Matrix gate rejection seals its energy.check.json and holds later stages.",
+    "bounded_size": "Compact new summaries/core rows and6480 matrix entries; no full all-node arithmetic dump for the added basis fields. The old63180-row control CSV is retained solely for complete byte-equivalence proof.",
+    "failure_policy": "A completed standalone stage plus analysis failure requires offline repair only, never automatic rerun. Any algebraic or energy rejection retains evidence and holds later configurations/admission without relaxed gates."
+  },
+  "not_implemented_or_tested": ["Production pore-pressure-rate overwrite/reset sentinel", "Production P3 interaction hook", "Nonzero-k coupled trajectory", "Dynamic-water acceleration update", "GPU", "Restart", "Moving/curved/general boundary", "Water-mass conservation", "Physical acceptance"],
+  "candidate_admission": false,
+  "physical_acceptance": false
+}
