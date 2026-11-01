@@ -1,0 +1,10 @@
+{
+  "stage": "r3 static-fixture cell-packing repair; immutable r1/r2 outputs retained",
+  "base_declarations": ["tests/notes/upl_p3_actual_r1.json", "tests/notes/upl_p3_actual_r2.json"],
+  "r2_result": "Debug compile/link passed; old ct sentinel now passed after root's wrapper repair; first 2D regular k0 theta nonempty check failed. No helper fields, P2 control or Release was admitted.",
+  "root_cause": "The fixture used DCEL_GetCode(2,2,2), but production DCEL decode requires sx+sy+sz=31. Packed cell17 expected (1,0,1) decodes (1,4,17), so the fixture cell search is empty. This is not a production numerical defect.",
+  "repair": "Only the fixture coding constant changes to DCEL_GetCode(27,2,2), plus every particle's encoded x/y/z is independently checked by the actual DCEL decode macros before tracking or helper evaluation. 27+2+2=31. Geometry, cell-key order, fields, original numerical gates and actual production source are unchanged.",
+  "recipe": "r3 verifies the full prior r2 source differs only by that packing constant and added round-trip assertion. It binds both failed attempts and all three declarations before compiling; fresh r3 labels only.",
+  "no_production_edit_or_rebuild_needed": true,
+  "physical_acceptance": false
+}

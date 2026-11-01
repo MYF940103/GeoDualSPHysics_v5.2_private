@@ -1,0 +1,43 @@
+{
+  "date": "2026-11-01",
+  "branch": "upl-dev",
+  "stage_base": "338a4a6d71f60cfd8e63e8f900b5a3f0df1ff87b",
+  "status": "P2 restricted CPU feedback and P3 restricted CPU dynamic-pressure implementation verified; public model not released",
+  "user_entry": "The intended single HydroMechDynamicSeepage switch remains unimplemented in XML. Existing hydromechanical runs still default to original u-pw.",
+  "implemented": [
+    "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
+    "Private CPU post-force pressure rate includes corrected pressure diffusion and the same-stage skeleton-acceleration Darcy term.",
+    "Native-ID periodic C/Ace/theta/rate extension; old fused rate sources and wrapper clearing suppressed only in the private new branch."
+  ],
+  "production_changes_in_this_stage": {
+    "src/source/JSphCpu.h": "Private default-false flag plus two small helper declarations.",
+    "src/source/JSphCpu.cpp": "Temporary periodic owner map, periodic C extension, Lstar/divAce complete-rate helper, old-rate suppression and restricted fixture initialization.",
+    "src/source/JSphCpuSingle.cpp": "One post-force call before the final acceleration reduction."
+  },
+  "verification": {
+    "builds": "Authoritative CPU Debug and Release passed; Debug retains existing deprecated Gm/missing third-party PDB warnings.",
+    "default_OFF": "After the final repair: 140 native frame pairs, 1040 IDs, 15 original arrays plus saved clocks/steps/dterror all 0 ULP.",
+    "actual_helper_per_configuration": "40 manufactured cases, 744 rate checks, 144 unchanged old-rate sentinels, 12 nonempty periodic C proofs; Debug and Release outputs byte-identical.",
+    "actual_periodic_integration_per_configuration": "Ten fresh bounded jobs and 18 comparisons, actual ComputeStep_Sym versus audited replay, 257 matched times and 128 native IDs.",
+    "k0": "All 26 recorded state fields equal retained P2 trajectories bitwise; independent half pressure RMS <=0.000442331 Pa.",
+    "nonzero_k": "k=1e-4 m/s: independent half pressure RMS <=0.000314975 Pa and material displacement <=4.75731e-11 mm; old-density poison affects only the passive legacy-density field.",
+    "nonzero_k_discrete_reference": "Full pressure-field RMS <=0.00203961 Pa versus the frozen linearized discrete coupled operator, not versus continuum theory.",
+    "nonzero_k_continuum": "At the endpoint the pressure mode is -677.542919 Pa versus -722.303853 Pa continuum: -6.19697 percent. Spatial-symbol error remains; this is not physical-accuracy acceptance.",
+    "evidence": [
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_off_review_r2.check.json",
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_actual_review_r2.check.json",
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_wave_DebugCPU_r3.check.json",
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_wave_ReleaseCPU_r3.check.json",
+      "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_final_review_r1.json"
+    ]
+  },
+  "next_order": [
+    "First audit the finite-Kw continuous coupled-model domain rho_t*B>rho_w*(M+B), B=Kw/n, M=K+4G/3. A continuous positive-growth mode cannot be repaired merely by reducing dt.",
+    "Define and validate first-step, current-stage coupled-wave/diffusion limits and fixed-step rejection semantics without altering old OFF behavior.",
+    "Bounded higher-frequency and variable-J consistency tests; quantify spatial convergence and actual periodic storage/energy budgets.",
+    "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
+    "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
+  ],
+  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. No automatic timestep, general boundary, plasticity, full-cycle, exact restart, GPU or server-package acceptance follows from these private small-amplitude CPU tests.",
+  "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup."
+}

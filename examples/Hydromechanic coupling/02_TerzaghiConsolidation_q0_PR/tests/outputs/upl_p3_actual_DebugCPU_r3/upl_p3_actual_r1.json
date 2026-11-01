@@ -1,0 +1,32 @@
+{
+  "stage": "private CPU P3 actual-helper component declaration before execution",
+  "production_base": "338a4a6d71f60cfd8e63e8f900b5a3f0df1ff87b",
+  "authoritative_build_receipt": "tests/logs/upl_p3_actual_build_r1.json",
+  "program": "Companion linked to authoritative DebugCPU/ReleaseCPU objects; derived JSphCpuSingle fixture calls actual ComputeFreeSurfaceTracking, Interaction_Forces_ct and ComputeDynamicPorePressureRateCpu.",
+  "no_production_edits": true,
+  "matrix": {
+    "dimensions": [2, 3],
+    "patches": "3x3 / 3x3x3 finite reciprocal clouds; regular and exact-dyadic single-axis +/-dp/8 perturbation; dp=.25, h=.25, support=.5, J=.9375+.03125*(nativeID mod 5)",
+    "cell_table": "Static mult-cell table built by stable cell-key sorting. This tests the production cell-list helper against O(N^2), not RunCellDivide or dynamic sorting.",
+    "nonperiodic_fields": ["k0 compression theta=-1/32", "k0 dilation theta=1/32", "affine p / constant Ace with grad(p)+rho Ace=0", "constant p and nonzero constant Ace", "quadratic p / affine Ace", "constant p / affine Ace divergence", "quadratic p and Ace=-grad(p)/rho diagnostic"],
+    "periodic_fields": ["k0 compression", "affine field with cloned owner pressure", "quadratic field with cloned owner pressure"],
+    "periodic": "Exactly two manually constructed x images with duplicate native IDs and copied J/p. Images are interspersed with natives by the cell table. Actual tracking must repair poisoned C; actual pressure helper must repair NaN Ace/theta and then copy the assigned native rate. At least one image-neighbor contribution is required. No periodic-compatible affine solution or actual RunPeriodic lifecycle is claimed.",
+    "cases": 40,
+    "rate_rows": 744,
+    "ct_sentinel_rows": 8,
+    "ct_native_checks": 144
+  },
+  "predeclared_gates": {
+    "actual_vs_O2_rate_pa_s": "Each finite float actual rate: abs(actual-double_reference) <= 32*FLT_EPSILON*max(1,abs(reference))+1e-6. Reference uses the same stored float p/Ace, double position/J/C/theta and actual Wendland API, but independently searches every particle without cell-list calls.",
+    "k0": "Every result exactly equals float(-Kw/n*theta), with nonzero input p and Ace; sentinel must be overwritten, proving complete compression replacement once.",
+    "affine_null_pa_s": "Only nonperiodic affine-equilibrium and constant-flux cases: abs(rate)<=.001 Pa/s; declared roundoff floor, not a measured-after-run threshold.",
+    "ct_source_suppression": "For regular/jitter 2D/3D, k=0 and positive k, the actual old ct must leave all rate sentinels unchanged while observed abs(theta)>.01 proves a nonempty compression path.",
+    "periodic_repair": "Two nonempty images; owner matches via native ID; all C bytes after actual tracking and Ace/theta/rate bytes after actual helper must equal the native owner. Actual image neighbors required; no NaN may survive into assigned rate.",
+    "default_OFF_control": "Fresh unchanged P2 feedback component on the new binary must exactly match all six retained accepted r2 text results (ledger/momentum/history/halves/guards/complete). Run.out diagnostic source-line offsets are not compared. No old solver/control is rerun or overwritten.",
+    "execution_order": "DebugCPU build+run then ReleaseCPU only if Debug passes. Build/source/runtime inputs are verified immediately before and after each run. Preserve every failed label."
+  },
+  "quadratic": "Per-node actual and discrete-reference rates are retained descriptively. No quadratic balance, global conservation, physical mass, or energy acceptance is inferred from implementation agreement.",
+  "integration": "No pressure/position integration or physical force-tail trajectory in this fixture. Original 5Pa pressure-RMS/.005mm displacement independent half limits remain unchanged for the separately owned real integrator wave stage.",
+  "default_OFF_native": "Root separately checks real production default-OFF serialized 15-array trajectories; this fixture does not replace that native regression.",
+  "scope": "Private no-wall elastic CPU component only; constant k>=0, no load/drainage/HG/damping/viscosity/DDT/SPR/Shepard/AccInput. No public XML switch, GPU, formal case, server, full-cycle or physical acceptance."
+}

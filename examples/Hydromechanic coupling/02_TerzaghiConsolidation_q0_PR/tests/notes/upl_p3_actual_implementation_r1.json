@@ -1,0 +1,33 @@
+{
+  "stage": "private_actual_CPU_P3_candidate_not_public_model",
+  "evidence_base": "338a4a6d71f60cfd8e63e8f900b5a3f0df1ff87b",
+  "production_files": ["src/source/JSphCpu.h", "src/source/JSphCpu.cpp", "src/source/JSphCpuSingle.cpp"],
+  "default": "DynamicPorePressure=false; no XML parser, no GPU or server package change",
+  "rate": "Kw/ni*(-theta_i+k/(rho_w*g_ref)*(Lpair(p)-Gp dot Lpair(x)+rho_w div(Ace)))",
+  "acceleration": "Ace excludes explicit gravity. Since a_s=Ace+g, use grad(p)+rho_w*Ace, with no extra lap(z) term.",
+  "normalization": "k is hydraulic conductivity in m/s; g_ref=norm(Gravity) when nonzero, otherwise 9.80665 m/s^2 as in the existing path.",
+  "storage_and_inertia": "Use the single double J state: n=1-(1-n0)/J, V=(MassFluid/RhopZero)*J, rho_t=rho_w+(RhopZero-rho_w)/J. Legacy Velrhop.w is not the new physical mixture density.",
+  "changed_stage_order": [
+    "Finish native free-surface/correction matrices, then copy C to periodic images by native ID.",
+    "Keep old force/stress/theta evaluation, but suppress all old fused pressure-rate sources in the private new mode.",
+    "After complete force-stage acceleration, copy native Ace and theta to periodic images.",
+    "One new neighbor pass assigns the entire native pressure rate, then copies the rate to periodic images. It never adds a second compression source."
+  ],
+  "periodic_scratch": "One temporary unsigned owner map from the existing array pool; no persistent physical state or new sorting rule.",
+  "scope": "Fresh CPU Symplectic elastic manufactured fields, Wendland kernel, constant finite k>=0; no physical walls/drainage/load/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard/acceleration input/shifting/restart/in-out/moving or floating bodies.",
+  "predeclared_verification": [
+    "Both authoritative CPU builds, then actual helper against an independent full-pair reference in 2D/3D regular and perturbed patches.",
+    "Nonzero sentinels must prove old fused-rate suppression and complete new-rate overwrite, including k=0 compression once.",
+    "Nonempty periodic images must repair poisoned C/Ace/theta/rate using native IDs; real periodic lifecycle is tested separately in ComputeStep_Sym.",
+    "Default OFF original native fields/clocks/steps/dterror must remain 0 ULP against retained controls.",
+    "Actual coupled periodic k=0 and k=1e-4 coarse/half windows at matched native IDs/times; preserve 5 Pa pressure RMS and 0.005 mm material-displacement bounds plus declared ledger/CFL/energy checks."
+  ],
+  "limitations": [
+    "Lstar removes affine bias, but is not generally quadratic-exact or a conservative pair flux; retained quadratic-balance defects remain explicit.",
+    "Prior frozen core Dirichlet energy checks do not establish actual periodic or physical boundary stability.",
+    "Existing automatic natural-step policy is not certified for the new operator; fixture fixed steps need independent coupled and diffusion-step audits.",
+    "No public u-pl, general-boundary, GPU, full-cycle, plasticity, exact restart or server-package acceptance is claimed."
+  ],
+  "retained_outputs": "All previous evidence/formal results preserved. New diagnostics use upl_p3_actual_* and upl_p3_wave_* under the existing shallow tests structure.",
+  "status": "implemented_pending_actual_test_review"
+}

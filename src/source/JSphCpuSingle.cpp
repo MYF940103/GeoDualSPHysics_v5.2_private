@@ -799,6 +799,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
       HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre);
     else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec);
   }
+  if(DynamicPorePressure)ComputeDynamicPorePressureRateCpu();
   //-Calculates maximum value of Ace (periodic particles are ignored).
   AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
 

@@ -1,0 +1,49 @@
+{
+  "audit_utc": "2026-11-01T08:10:07Z",
+  "scope": "Read-only review of the private CPU P3 source candidate and future time-step policy; no public switch, build, solver or physical acceptance is certified by this note.",
+  "git_head_at_audit": "338a4a6d71f60cfd8e63e8f900b5a3f0df1ff87b",
+  "three_production_files_uncommitted": true,
+  "source_identity_only_not_build_time_provenance": true,
+  "candidate_identity": "The three-file review below binds the preserved r1 snapshot audited at the stated UTC, not the subsequently edited working tree. The r2 wrapper-only correction is identified separately below.",
+  "audited_sources": [
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_actual_source_r1/JSphCpu.h", "bytes": 29317, "sha256": "33ec5c5823ae42099b4598e61866f33da9d07eb8f479ca3ea11cedbb790021a6"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_actual_source_r1/JSphCpu.cpp", "bytes": 246443, "sha256": "410115b269225afad69c284df9088123db158094f843cd3e261de58e9d817fb2"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_actual_source_r1/JSphCpuSingle.cpp", "bytes": 74900, "sha256": "6265f66fb752bc6c19ed0da0efd9d217bbd47038f04440f1ffc124217c47d322"},
+    {"path": "src/source/JSph.cpp", "bytes": 185990, "sha256": "57fb4ddc74932e5cbc72031e4c31cef7c6c42f054d7e4d22c8d24d6530557e33"},
+    {"path": "src/source/JSphGpu.cpp", "bytes": 98201, "sha256": "d1f1962d8f37147bf4a2607bd8a1472a69da76a66f046f1f6015701110040256"},
+    {"path": "src/source/JDsFixedDt.cpp", "bytes": 5357, "sha256": "631e6ae6e6f1f896718b35e521632ec8eee92f4daefa9adacad345f84ba09820"}
+  ],
+  "candidate_review": {
+    "locations": "JSphCpu.cpp:205,1190,2292,4125,4164,4181; JSphCpuSingle.cpp:802",
+    "mathematics": "w=Vj*d dot ((Ci+Cj)*gradW)/(r2+Eta2) equals 2*Vj*beta_sym. Gp=-sum(Vj*dp*Ci*gradW). The helper assigns (Kw/ni)*[-theta+k/gamma*(Lpair-Gp dot Lx+rho_w*div_receiverC(Ace))] once.",
+    "stage_order": "Native C computed, then owner-ID C extension before fused force. After all admitted stage forces: extend native Ace/theta, compute normal-fluid rates, extend native rate to periodic clones, release map, then AceMax.",
+    "periodic_and_omp": "One extra 4-byte pool slot is sufficient for the non-overlapping maps. Parallel rate writes are receiver-local; invalid count is reduced and map freed before the final exception. Copied theta prevents incomplete clone neighborhoods corrupting clone J integration.",
+    "restrictions": "Fresh no-wall elastic CPU fixtures only. No general boundary, exclusion, restart or GPU admission. CalcRidp assumes unique normal IDs; fixtures must verify native identity and no exclusion.",
+    "wrapper_zeroing_r1_r2": "The audited r1 snapshot has unconditional if(t.porepressrate) memset at JSphCpu.cpp:2893. Root subsequently changed only that wrapper condition to if(t.porepressrate && !DynamicPorePressure), which preserves OFF clearing and allows ON overwrite-sentinel testing. The corrected r2 source snapshot is separately bound below; this note does not certify its fresh-build regression.",
+    "off_and_k0": "Default flag is false and legacy numeric expressions are unchanged. Runtime OFF equivalence belongs to separately sealed receipts. New k=0 sum(theta)-then-multiply can round differently from old per-neighbor multiplication; test its declared reference rather than promise bitwise identity."
+  },
+  "wrapper_only_r2_source_observation": {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_actual_source_r2/JSphCpu.cpp", "bytes": 246467, "sha256": "e652bcde2672c3823a490591b8054c9e770d2b6785ae37ab3e3a02cd09edbbea", "numeric_algorithm_or_time_step_policy_changed": false},
+  "current_time_step": {
+    "sound_speed": "JSph.cpp:3755 ConfigConstantsSoil sets Cs0=sqrt((K+4G/3)/RhopZero): skeleton constrained longitudinal speed, not undrained coupled speed. Cs0 also enters EOS constants and artificial viscosity, so globally replacing it would alter old behavior beyond time stepping.",
+    "cpu_gpu": "JSphCpu.cpp:4663 and JSphGpu.cpp:1568 use dt1=sqrt(h/AceMax), dt2=h/(max(Cs0,10*VelMax)+h*ViscDtMax), dt_mech=CFL*min(dt1,dt2). Their diffusion estimate is PoreDtSafety*n0*rho_w*g_ref*h^2/(Kw*k), with g_ref=|Gravity| or 9.80665 when physical gravity is zero.",
+    "same_stage_state_required": "New-mode scales should use ni=1-(1-n0)/Ji, Vi=V0*Ji and rho_ti=rho_w+(rho0-rho_w)/Ji: cu_max=max_i sqrt((K+4G/3+Kw/ni)/rho_ti), Dmax=max_i Kw*k/(ni*gamma). Scan native physical particles, not periodic copies or passive Velrhop.w. Current h is fixed.",
+    "first_step": "ConfigConstants2 at JSph.cpp:1673-1674 can fill default DtIni/DtMin before ConfigConstantsSoil; its later !DtIni checks then do not recompute them. InitRun at 2347 assigns SymplecticDtPre=DtIni. ComputeStep_Sym at JSphCpuSingle.cpp:949 locks used dt before both DtVariable calls; those calls choose the NEXT step. Editing DtVariable alone cannot protect an oversized first/current step.",
+    "fixed_step": "FixedDt overrides dt_mech and bypasses dtw in both backends. JDsFixedDt::GetDt at 103 returns the configured value/interpolation and records max(fixed-dtvar); it never clips. Current dterror therefore does not prove even the old hydraulic bound, let alone the new coupled bound.",
+    "minimum_step": "CPU:4682 and GPU:1588 raise a selected dt below DtMin. In new mode an incompatible DtMin must be rejected, not allowed to raise dt above the audited limit.",
+    "operator_limit": "Lstar is receiver-dependent and nonconservative; corrected coefficients and div(Ace) feedback are absent from the old scalar diffusion estimate. Frozen pressure-only Dirichlet spectra do not include acceleration dependence on pressure/stress, changing J/C or coupled time-integration amplification. The old 2D/3D safety value is not a proved new-operator limit."
+  },
+  "bounded_linear_diagnostic_not_a_new_gate": {
+    "assumptions": "Uniform frozen 1D elastic state and continuum spatial derivatives; M=K+4G/3, B=Kw/n, D=B*k/gamma, r=rho_w/rho_t, wave number kappa.",
+    "polynomial": "lambda^3+D*(1-r)*kappa^2*lambda^2+((M+B)/rho_t)*kappa^2*lambda+D*M/rho_t*kappa^4=0",
+    "current_wave_example": "M=B=268435456 Pa, rho_t=2048, rho_w=1000, kappa=2*pi/.125: cd=362.038672 m/s, cu=512 m/s; continuum roots approximately -39.804566 +/-25730.545072i and -3459.469673 per second. This is a derived diagnostic, not a discrete or physical acceptance receipt."
+  },
+  "next_minimal_work_after_current_tests": [
+    "Use the corrected r2 wrapper only with fresh builds/labels for implementation gates after owned jobs seal; preserve rejected r1 and do not modify retained results.",
+    "Before public activation, add a new-mode-only native cu/D reduction and explicit initial/current-step checks. Preserve old OFF equations, Cs0, FixedDt and output-grid behavior.",
+    "For new mode form the complete natural candidate before FixedDt diagnostics. Reject an oversized fixed step or incompatible DtMin clearly; do not silently clip a fixed-grid run or add retry logic without a separate design.",
+    "Use bounded actual coupled periodic modes including a higher wave number and controlled J/n variation to evaluate complete discrete amplification, amplitude/phase and independent half steps. Pressure-only eigenchecks, D*dt/h^2 and short normal exit are not interchangeable proofs.",
+    "Only after those conclusions select/document new safety factors and public input/GPU policy. No TPI, general stability framework or threshold changes are authorized by this audit."
+  ],
+  "physical_acceptance": false,
+  "public_dynamic_switch_implemented": false
+}

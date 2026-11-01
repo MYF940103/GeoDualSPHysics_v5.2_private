@@ -1,0 +1,15 @@
+{
+  "stage": "private_CPU_P3_write_contract_repair",
+  "previous_note": "upl_p3_actual_implementation_r1.json",
+  "retained_failure": "logs/upl_p3_actual_DebugCPU_r1.failure_seal.json",
+  "retained_wave_inputs_and_outputs": "logs/upl_p3_wave_preclear_source_hold_r1.json",
+  "source_change": "JSphCpu::Interaction_ForcesCpuT now skips its outer pressure-rate memset when DynamicPorePressure=true. Inner legacy source accumulation was already suppressed.",
+  "reason": "The unchanged nonzero-sentinel gate caught a remaining legacy write before the new full-rate helper. The gate is retained, not changed to accept zero.",
+  "equations_and_thresholds_changed": false,
+  "old_OFF_memset_and_physics": "Unchanged; must rerun native 0-ULP regression after the fresh build.",
+  "new_branch_trajectory_equivalence": "Expected because the complete helper overwrites all native and periodic rates, but must be verified against sealed same-step pre-repair outputs rather than assumed.",
+  "wrapper_history": "The separate wave comparison log-name collision and accidental fresh-label duplicate jobs remain sealed. No retained solver output is overwritten or counted as additional physical evidence.",
+  "source_scope": "Same three CPU files as r1; no public XML, GPU, formal case or server-package edit.",
+  "status": "repair_implemented_pending_fresh_build_and_tests",
+  "physical_acceptance": false
+}

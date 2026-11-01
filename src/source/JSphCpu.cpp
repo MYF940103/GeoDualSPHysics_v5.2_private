@@ -114,6 +114,7 @@ void JSphCpu::InitVars(){
   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
   PorosityObserver=false;
   PorosityFeedback=false;
+  DynamicPorePressure=false;
   PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
@@ -201,6 +202,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2); //-pos
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_72B,1); //-CorrMatc
   if(PorosityObserver)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,3);//-J, last-stage theta, Jpre.
+  if(DynamicPorePressure && PeriActive)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,1);//-Temporary native-ID map.
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-FSNormalc and SaveData temporary arrays
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4);  //-FSTypec,PosDivc and SaveData temporary arrays
   //====== mdbr
@@ -1184,6 +1186,11 @@ void JSphCpu::ComputeFreeSurfaceTracking(){
       break;
       default: Run_Exceptioon("Kernel unknown.");
     }
+  }
+  if(DynamicPorePressure && PeriActive){
+    unsigned* ridp=GetDynamicPeriodicMapCpu();
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))CorrMatc[p]=CorrMatc[ridp[Idpc[p]]];
+    ArraysCpu->Free(ridp);
   }
 }
 
@@ -2282,7 +2289,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const bool useartstress=(ArtificialStress && artificialstress);
   //-Hydromechanical switches used inside the pair loop.
   const bool useporefeedback=(HydroMech && porepress);
-  const bool useporerate=(HydroMech && porepress && porepressrate);
+  const bool useporerate=(HydroMech && porepress && porepressrate && !DynamicPorePressure);
   const bool topkernelband=(HydroMech && HydroMechTopLoadMode==HMLOAD_TopKernelBand);
   float flexconfpressure=0;
   if(HydroMech && !boundp2 && (HydroMechTopLoadMode==HMLOAD_FlexibleConfinement || topkernelband) && HydroMechTopLoadQ0>0.f){
@@ -2883,7 +2890,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 {
   float viscdt=res.viscdt;
   if(t.npf){
-    if(t.porepressrate)memset(t.porepressrate,0,sizeof(float)*t.np);
+    if(t.porepressrate && !DynamicPorePressure)memset(t.porepressrate,0,sizeof(float)*t.np);
     //-Interaction Fluid-Fluid.
     InteractionForcesFluid<tker,ftmode,tvisco,tdensity,shift> (t.npf,t.npb,false,Visco                 
       ,t.divdata,t.dcell,t.spstau,t.spsgradvel,t.pos,t.velrhop,t.code,t.idp,t.press,t.porepress,t.sigma,t.dengradcorr,t.porepressrate,t.fstype,t.fsnormal,t.corrmat,t.artificialstress
@@ -4116,6 +4123,8 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *s
 /// Initializes the development-only volume observer without physical feedback.
 //==============================================================================
 void JSphCpu::InitPorosityObserverCpu(){
+  if(DynamicPorePressure && !PorosityFeedback)
+    Run_Exceptioon("Dynamic pore-pressure fixture requires J-derived volume/storage/inertia feedback.");
   if(PorosityFeedback && !PorosityObserver)
     Run_Exceptioon("Porosity feedback fixture requires the J observer state.");
   if(!PorosityObserver)return;
@@ -4126,11 +4135,16 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
-  if(PorosityFeedback && (CaseNpb || SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z
+  if(PorosityFeedback && (CaseNpb || AccInput
+    || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilHourglassXi!=0 || SoilDamping
     || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback is restricted to no-wall, k=0 elastic manufactured CPU fixtures without gravity/load/drainage/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard.");
+    Run_Exceptioon("Porosity feedback requires no-wall elastic CPU fixtures without acceleration input/load/drainage/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; k/gravity require the private dynamic-rate fixture.");
+  if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
+    || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
+    || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))
+    Run_Exceptioon("Dynamic pore-pressure fixture requires Wendland, finite k>=0, Kw>0 and water density>0.");
   for(unsigned p=0;p<Np;p++){PoroJc[p]=1.;PoroThetac[p]=0.;}
 }
 
@@ -4142,6 +4156,82 @@ void JSphCpu::GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &vo
   porosity=1.-(1.-double(SoilCte.Porosity))/j;
   volume=(double(MassFluid)/double(RhopZero))*j;
   rhot=double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/j;
+}
+
+//==============================================================================
+/// Returns a temporary native-ID map; the caller releases it through ArraysCpu.
+//==============================================================================
+unsigned* JSphCpu::GetDynamicPeriodicMapCpu(){
+  unsigned* ridp=ArraysCpu->ReserveUint();
+  CalcRidp(true,Np-Npb,Npb,0,CaseNp,Codec,Idpc,ridp);
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p])){
+    if(Idpc[p]>=CaseNp || ridp[Idpc[p]]==UINT_MAX){
+      ArraysCpu->Free(ridp);
+      Run_Exceptioon("Dynamic Darcy periodic copy has no native owner.");
+    }
+  }
+  return(ridp);
+}
+
+//==============================================================================
+/// Private CPU rate: Kw/n*(-theta + k/gamma*(Lstar(p)+rho_w*div(Ace))).
+/// Ace excludes Gravity: grad(p)-rho_w*(g-a_s) = grad(p)+rho_w*Ace.
+/// Lstar cancels affine-pressure bias, but is not a conservative pair flux.
+//==============================================================================
+void JSphCpu::ComputeDynamicPorePressureRateCpu(){
+  if(!DynamicPorePressure)return;
+  unsigned* ridp=NULL;
+  if(PeriActive){
+    ridp=GetDynamicPeriodicMapCpu();
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p])){
+      const unsigned owner=ridp[Idpc[p]];
+      Acec[p]=Acec[owner];PoroThetac[p]=PoroThetac[owner];
+    }
+  }
+  const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
+  const double khyd=SoilCte.HydraulicConductivity,vol0=double(MassFluid)/double(RhopZero);
+  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+  const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
+  unsigned invalid=0;
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule(guided) reduction(+:invalid)
+  #endif
+  for(int p1=int(Npb);p1<int(Np);p1++)if(CODE_IsNormal(Codec[p1]) && CODE_IsFluid(Codec[p1])){
+    double porosity,volume,rhot;
+    GetPorosityFeedbackStateCpu(unsigned(p1),porosity,volume,rhot);
+    double lp=0,da=0;
+    tdouble3 lx=TDouble3(0),gp=TDouble3(0);
+    if(khyd>0){
+      const tmatrix3d ci=CorrMatc[p1];
+      const StNgSearch ngs=nsearch::Init(Dcellc[p1],false,DivData);
+      for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
+        const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
+        for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(Codec[p2])){
+          const tdouble3 d=TDouble3(Posc[p1].x-Posc[p2].x,(Simulate2D? 0: Posc[p1].y-Posc[p2].y),Posc[p1].z-Posc[p2].z);
+          const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
+          if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
+          const double fac=fsph::GetKernel_Fac<KERNEL_Wendland>(CSP,float(rr2));
+          const tdouble3 g=d*fac;
+          const tdouble3 gi=TDouble3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);
+          const tmatrix3d cj=CorrMatc[p2];
+          const tdouble3 gj=TDouble3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);
+          const double vol2=vol0*PoroJc[p2],dp=double(PorePressc[p1])-double(PorePressc[p2]);
+          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));
+          lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);
+          da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x
+            +(double(Acec[p2].y)-Acec[p1].y)*gi.y+(double(Acec[p2].z)-Acec[p1].z)*gi.z);
+        }
+      }
+    }
+    const double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));
+    if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;
+    PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.
+  }
+  if(ridp){
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))PorePressRatec[p]=PorePressRatec[ridp[Idpc[p]]];
+    ArraysCpu->Free(ridp);
+  }
+  if(invalid)Run_Exceptioon("Dynamic Darcy fixture produced a nonfinite pressure rate.");
 }
 
 //==============================================================================
