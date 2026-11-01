@@ -1,0 +1,41 @@
+{
+  "stage": "upl_gpu_public_source_review_r1",
+  "base_checkpoint": "b499bc1fc5d5fb37d590563f8aba189494c0df3c",
+  "status": "root_and_independent_static_review_passed_native_verification_pending",
+  "source": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.h",
+      "sha256": "a6e4d4188888dd1751aaaafce66c41cf90341a7a32fca503d794db426bb7948e",
+      "bytes": 39581
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "sha256": "a2c4342ef140820fa31aa9f48b132bd7d68e8785df596dbe164d6500056ce7cf",
+      "bytes": 188931
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "sha256": "d7757cc9ebed1349c28ab196328fd83aacdca2321ff57b171a5d178c2d680d26",
+      "bytes": 119699
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "sha256": "aeaed0ad29cb31a7d23439739609adebca686e3782945284fee2396fb5670315",
+      "bytes": 67301
+    }
+  ],
+  "root_review": "Complete four-file diff read; checked LoadConfig precedes allocation/ConfigDomain, Init guard consistency, same compacted native ID/J/PosDiv download path, output ownership and source pressure/integrator/kernel unchanged.",
+  "independent_peer": "upl_p2_test_audit read-only full four-file diff and Init/alloc/download/SaveData lifecycle audit found no static blocker. Static review does not establish native bit equality.",
+  "changes": "Shared guard permits limited GPU only for explicit master true; GPU maps existing complete private flags atomically; actual saved public fields and typed metadata augment output, fixed material markers zero only in public mode.",
+  "unchanged": "Default OFF arithmetic, mathematical kernels, CPU equations, density integration, particle sorting, integration, strict physical/material/geometry/necessary-step/restart restrictions, canonical/server GPU binaries and formal inputs/results.",
+  "doc_and_status_candidate_wording_parsed": true,
+  "raw_baseline_before_edit": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_public_r1.baseline.json",
+    "sha256": "d1d7949a36484b8e48ac364382b085e1898e5220a68e0e2032c21a691b411708",
+    "bytes": 220443
+  },
+  "default_CPU_Debug_owned_exit0": true,
+  "native_regression_passed": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

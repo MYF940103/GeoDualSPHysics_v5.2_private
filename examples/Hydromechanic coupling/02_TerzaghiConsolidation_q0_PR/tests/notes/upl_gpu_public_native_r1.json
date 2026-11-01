@@ -1,0 +1,50 @@
+{
+  "stage": "upl_gpu_public_native_r1",
+  "status": "author_only_not_compiled_or_run",
+  "purpose": "Pure offline typed comparison of PUBLIC canonical GPU main output against its sealed same-dt PRIVATE GPU control. This file does not add a solver entry, public switch or physical admission.",
+  "author_files": ["support/upl_gpu_public_native_r1.cpp", "notes/upl_gpu_public_native_r1.json"],
+  "immutable_dependency": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "reuse": "Rename retained main; call only backend-neutral NativeArray<T>, Load, Metadata, Sequence, Energy, Close/Norm2/Need helpers. Never invoke retained Read, Half, Physical or any CPU solver; its AppInfo label is not used as execution-backend evidence."
+  },
+  "cli": "upl_gpu_public_native_r1.exe --compare Periodic|Wall constant|smooth Smoke|Full PRIVATE_DATA PUBLIC_DATA RUNTIME_XML DT NEWREVIEWDIR",
+  "declared_recipes": {
+    "Periodic": {"soil": 512, "fixed": 0, "dp_m": 0.00390625, "coarse_dt_s": 5.960464477539063e-8, "half_dt_s": 2.9802322387695312e-8, "periodic_axes": "XZ rectangular"},
+    "Wall": {"soil": 1024, "fixed": 256, "dp_m": 0.001953125, "coarse_dt_s": 2.9802322387695312e-8, "half_dt_s": 1.4901161193847656e-8, "periodic_axes": "Z tangential; two opposing X FreeSlip mDBC planes"},
+    "Smoke": "Exactly3 frames,2 coarse steps; cadence=dt, end=2dt; half not admitted.",
+    "Full": "Exactly257 frames, cadence2^-23s, end2^-15s; coarse or its independent half step. No arbitrary windows or k0 in this reader.",
+    "model": "constant=public model0/Ck0; smooth=public model1/Ck2^-13; positive base k=float32(1e-4)m/s. Same material, sine initialization, J1/p0 and zero gravity as sealed private controls; no field rewrite."
+  },
+  "common_native_contract": {
+    "ID_alignment": "Each stream contains unique contiguous native IDs0..total-1, one piece, no exclusions; native soil IDs start at fixed count. Storage order may differ, material ID may not.",
+    "bit_exact_all_native": ["Idp", "Posd", "Vel", "Sigma_kk", "Sigma_ij", "FSNormal", "HydroMechLoadAce", "Rhop", "Kplastic", "PorePress", "PorePress0", "ExcessPorePress", "SigmaState_kk", "SigmaState_ij", "FSType", "PoroVolumeRatio", "PoroThetaLastStage"],
+    "bit_exact_soil_only": ["PoroPorosity"],
+    "clock": "All actual times part*cadence and zero-based saved Step=part*cadence/dt-1 (initial0); typed double SymplecticDtPre=dt and actual signed dterror finite<=1e-14. Both streams must have identical bits, including initial; no exception/interpolation.",
+    "private_schema": "Exactly observer J/n/theta dynamic arrays present; three extra derived arrays and PosDiv absent; all four public metadata keys absent. Control model/source/owned-run identity is externally bound, not inferred merely from filenames.",
+    "public_schema": "Native six dynamic double arrays plus actual float PosDiv; bool true master, uint schema1, uint conductivity model and exact double Ck. Backend is explicitly GPU; never relabel GPU as CPU to pass an old reader."
+  },
+  "separate_new_output_checks": {
+    "soil_ledger": "At every native soil/save, n=1-(1-n0)/J; V=(mass/rho0)J; rho=rhow+(rho0-rhow)/J; smooth k=k0 exp((J-1)/((1-n0)Ck)), J1 gives k0. Native saved n/V/rho/k within unchanged relative5e-13 and solid-volume identity absolute5e-13.",
+    "fixed_markers": "Public fixed n/V/rho/k must be0 while J/theta still compare exactly. Private fixed n remains its reconstructed sample 1-(1-n0)/J; its deliberate conversion to a nonphysical public marker is separately written, not a masked soil discrepancy or entire-file equivalence claim.",
+    "PosDiv": "Required actual native float, correct total count, finite and nonempty over the declared window. It is exported ID-aligned, never filled, derived from other fields or compared to nonexistent old PosDiv. This reader cannot independently prove source download/compaction; root source review and current build closure must bind that chain.",
+    "unchanged_saved_safety": "Finite all typed arrays; elastic Kplastic0; passive Rhop700..3000; p0/load0; float excess=p-p0; float display stress rounds from double state; fixed geometry/v/theta; native2D weak |J-1|<=1e-4 and saturated positive k; strict positive-k continuous decay margin; saved wave/diffusion<=.01 and pore necessary dt bound; energy<=1.1. Natural J>0 for Smoke, >1e-8 for Full; smooth Full k span/k0>=.005. These are necessary bounded checks, not sufficient stability."
+  },
+  "outputs": {
+    "common.csv": "One row per3/257 actual save with exact15/J/theta/soil-n/clock assertions.",
+    "public_extra.csv": "Every native ID/save, including fixed sample versus marker n, native J/theta/V/rho/k and actual PosDiv.",
+    "native_ids.csv": "Initial material soil IDs/coordinates and original fixed-material wall band256 when applicable.",
+    "fixed_ids.csv": "Initial real wall IDs/coordinates; header only for no-wall recipe.",
+    "history.csv": "Saved clock, signed dterror, native ledger/energy/domain/necessary-wave/diffusion and nonempty PosDiv telemetry.",
+    "input_files.csv": "Both complete native filename sequences for external SHA binding; not an internal SHA result.",
+    "completion.json": "GPU-public identity and exact counts, original comparisons, new-output checks and explicit limited provenance; produced only after every row passes. No physical.bin/26-column remapping or scientific pair results."
+  },
+  "execution_and_evidence_requirements": [
+    "Author-only. Root must fully read and freeze CPP, this note and immutable dependency; compile against reviewed authoritative objects/libraries. No CUDA/CNG-specific dependency is introduced by this pure reader.",
+    "Root wrapper must bind actual canonical-main GPU executable, current source/build/runtime, CLI/owned exit, original private-control receipts, selected public input and every raw PART SHA before/after reading. This reader intentionally has no independent CNG/SHA, solver-call or full-program-exit proof and says so in completion.",
+    "Outputs must be fresh; original streams are read-only and must differ. On failure retain partial analysis and original results; never rerun an already completed solver to repair offline checks.",
+    "Exact same-GPU common trajectories can support explicit inheritance of already passed original half/cross/reference/endpoint budgets only after wrapper verifies complete control identities, material/geometry/model/Ck/dt and unchanged physical source. This reader does not itself issue inheritance/admission or recompute those scientific/endpoint checks. Any common bit difference is a hard hold, not a5Pa substitute.",
+    "Public rejection/PART tests, default-OFF151-frame regression, Debug memcheck, allstage gradient-cache/sufficient-stability claims, general boundaries/3D/gravity/plasticity/formal/server acceptance remain outside this reader."
+  ]
+}

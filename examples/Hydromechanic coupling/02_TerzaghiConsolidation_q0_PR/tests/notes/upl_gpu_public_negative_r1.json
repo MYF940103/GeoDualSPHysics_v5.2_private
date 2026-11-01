@@ -1,0 +1,37 @@
+{
+  "stage": "upl_gpu_public_negative_r1",
+  "status": "author_only_not_executed",
+  "driver": "support/upl_gpu_public_negative_r1.ps1",
+  "scope": "Exactly six representative actual canonical GPU input/restart rejection paths, not a3D/general-wall matrix or a physical test. Root full read and explicit one-action authorization precede any execution.",
+  "precedent_read": ["support/upl_cpu_public_reject_r1.py", "support/upl_cpu_public_part_run_r1.ps1"],
+  "source_guards": [
+    "src/source/JSph.cpp:InitSoilParameters conductivity-model/master validation",
+    "src/source/JSph.cpp:LoadConfig shared fresh/2D/g0/InitMode/constantDtFixed guard",
+    "src/source/JSphGpu.cpp:InitDynamicPoreWallGpu finite stationary FreeSlip sample guard",
+    "src/source/JPartsLoad4.cpp:LoadParticles dynamic/J-state arrays or metadata presence rejection, including masterOFF"
+  ],
+  "actions": {
+    "Prepare": "Requires both genuine Debug public positive three-frame exact/memcheck checks and current Debug/Release builds. Copy the corresponding already prepared public runtime XML/BI4 under six fresh case seed directories. Change only declared existing attributes; reload/reverse changes and require originalOuterXml. BI4 is byte-exact. No GenCase, helper or program.",
+    "RunCase": "Select exactly one of the six prepared cases, -Configuration Debug|Release (defaultRelease), and -ExecutionAuthorized. Invoke only the matching isolated canonical main with ordinary -gpu:0 -stable arguments. No automatic following case, prior solver, build, helper, timeout, kill, watcher, notifier, retry or Git mutation."
+  },
+  "cases": [
+    {"name":"master_off_law1","source":"PeriodicSmoke smooth","change":"master1->0 only; retain model1 and explicit positive Ck","expected":"Evolving conductivity requires HydroMechDynamicSeepage=1."},
+    {"name":"ON_gravity","source":"PeriodicSmoke smooth","change":"execution/constants/gravity.z0->-9.80665","expected":"Shared fresh CPU/GPU2D zero-gravity InitModeNone positiveconstantDtFixed exception"},
+    {"name":"ON_fixed_zero","source":"PeriodicSmoke smooth","change":"DtFixed->0 only","expected":"Same shared exception, constant-step predicate; not a successful adaptive run"},
+    {"name":"ON_init_free_surface","source":"PeriodicSmoke smooth","change":"HydroMechInitMode0->1 only","expected":"Same shared exception, InitMode predicate"},
+    {"name":"wall_noslip","source":"WallSmoke constant","change":"XMLSlipMode3->2 plus real documented -mdbc_noslip CLI override","expected":"GPU dynamic wall requires finite stationary FreeSlip wall normals."},
+    {"name":"OFF_from_real_ON_PART1","source":"PeriodicSmoke smooth actualPART1","change":"master0/model0/Ck0; ordinary -partbegin:1 followed by actual completed positive data directory","expected":"Dynamic/J-state PART restart is not supported; refusing to discard the porosity state even when the dynamic switch is OFF."}
+  ],
+  "PART_provenance": "Use genuine Part_0001.bi4 from the completed, typed-reviewed public PeriodicSmoke output: its actual six dynamic arrays/metadata were observed by the positive reader. Require this exact file in the sealed owned-run file manifest, verify its bytes/SHA before/after, and pass its existing data directory directly. Do not write/copy/edit/fabricate a PART, add false metadata or relax the dynamic fresh-only guard. PART input and runtime initial seed are distinct explicitly bound files.",
+  "valid_controls_before_each_action": "Both public PeriodicSmoke/WallSmoke checks mustpassed, all15/Jtheta/soiln/actualclock exact, new native output contract passed,3frames and actual Debug memcheck0/0. Rehash their checks/completions/raw files/owned call and program. Negative execution cannot replace the missing valid positive proof.",
+  "closure": "Current public Debug/Release fullRebuild receipts,265current sources/4targets/261unchanged,110non-main objects, canonical six unchanged and raw four-target baseline copies. Historical four original target paths are not compared to old hashes after authorized edits; no recursive old mutable wall source/doc graph. Only isolated candidate GPU programs may execute.",
+  "acceptance": "Owned call actually exited with nonzero exitcode AND exact declared exception text/stage AND no numbered outputPART/no loop-or-native-save markers AND all input/program/build/control hashes unchanged. Keep any header files and partial logs/outputs as evidence. Launch failure, unrelated CUDA error, generic crash, hang/timeout or another rejection message is NOT a pass. Shared fresh-guard cases explicitly share one message; differing declared mutation identifies the predicate, not a fabricated internal branch counter.",
+  "records": "logs/upl_gpu_public_negative_r1.inputs.json; outputs/upl_gpu_public_negative_CASE_r1_seed; each selected run outputs/upl_gpu_public_negative_{Debug|Release}_CASE_r1 and logs with same stem .call/.check.json and .log. Fresh labels only; all failed/partial evidence retained. Completed invocations are not relaunched for analysis repair.",
+  "limitations": "No actual3D or generic inclined/corner/moving wall rejection matrix is claimed from mutating a2D label. No public OFF equivalence, general stability, PART restart support, loads/drainage/gravity physics, full-cycle or formal/server admission. Further negative cases require separate reviewed declarations.",
+  "planned_representative_cases": 6,
+  "new_GenCase_calls": 0,
+  "fabricated_PART_files": 0,
+  "program_executed_by_author": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

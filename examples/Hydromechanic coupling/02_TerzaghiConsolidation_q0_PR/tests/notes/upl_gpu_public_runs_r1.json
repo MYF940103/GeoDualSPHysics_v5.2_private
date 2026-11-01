@@ -1,0 +1,47 @@
+{
+  "stage": "upl_gpu_public_runs_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "b499bc1fc5d5fb37d590563f8aba189494c0df3c",
+  "driver": "support/upl_gpu_public_runs_r1.ps1",
+  "actions": {
+    "Prepare": "One explicit input-only action creates ten runtime XML/byte-exact BI4 copies and logs/upl_gpu_public_r1.inputs.json. Requires current public Debug/Release builds and owned default CPU Debug. No GenCase, solver, helper or physical-field reset.",
+    "RunJob": "One selected isolated canonical GPU main, NOT a private helper solver. Ordinary -gpu:0 -stable, plus -mdbc_freeslip only for walls. The two Debug smokes each use actual memcheck0errors/0leaks. No automatic next job or old-control execution.",
+    "ReviewJob": "One selected fresh offline reader comparison after a sealed owned solve. Explicit -ReaderBuildReceipt must identify the root-reviewed, same-configuration current110objects+one-reader closure. Reader protocol --compare Periodic|Wall constant|smooth Smoke|Full PRIVATE_DATA PUBLIC_DATA RUNTIME_XML DT NEWREVIEWDIR. No program or solver rerun for postprocessing failure."
+  },
+  "authorization": "Each action requires -ExecutionAuthorized after root full review. Authoring does not grant execution permission.",
+  "jobs": [
+    {"job":"PeriodicSmoke","geometry":"Periodic","model":"smooth","configuration":"Debug","dt":"2^-24","steps":2,"samples":3,"control":"upl_gpu_wall_nowall_actual_VariableSmoke_r1"},
+    {"job":"WallSmoke","geometry":"Wall","model":"constant","configuration":"Debug","dt":"2^-25","steps":2,"samples":3,"control":"upl_gpu_wall_actual_Smoke_r1"},
+    {"job":"Periodic_constant_c","geometry":"Periodic","model":"constant","configuration":"Release","dt":"2^-24","steps":512,"samples":257,"control":"upl_gpu_perm_actual_GPU_constant_c_r1"},
+    {"job":"Periodic_constant_h","geometry":"Periodic","model":"constant","configuration":"Release","dt":"2^-25","steps":1024,"samples":257,"control":"upl_gpu_perm_actual_GPU_constant_h_r1"},
+    {"job":"Periodic_smooth_c","geometry":"Periodic","model":"smooth","configuration":"Release","dt":"2^-24","steps":512,"samples":257,"control":"upl_gpu_perm_actual_GPU_variable_c_r1"},
+    {"job":"Periodic_smooth_h","geometry":"Periodic","model":"smooth","configuration":"Release","dt":"2^-25","steps":1024,"samples":257,"control":"upl_gpu_perm_actual_GPU_variable_h_r1"},
+    {"job":"Wall_constant_c","geometry":"Wall","model":"constant","configuration":"Release","dt":"2^-25","steps":1024,"samples":257,"control":"upl_gpu_wall_actual_constant_c_r1"},
+    {"job":"Wall_constant_h","geometry":"Wall","model":"constant","configuration":"Release","dt":"2^-26","steps":2048,"samples":257,"control":"upl_gpu_wall_actual_constant_h_r1"},
+    {"job":"Wall_smooth_c","geometry":"Wall","model":"smooth","configuration":"Release","dt":"2^-25","steps":1024,"samples":257,"control":"upl_gpu_wall_actual_variable_c_r1"},
+    {"job":"Wall_smooth_h","geometry":"Wall","model":"smooth","configuration":"Release","dt":"2^-26","steps":2048,"samples":257,"control":"upl_gpu_wall_actual_variable_h_r1"}
+  ],
+  "geometry_and_clock": "Periodic512 soil/0fixed, wall1024soil/256fixed. Every full end2^-15s and cadence2^-23s. Smokes preserve their OWN sealed two-step dt/end/cadence. No new clock edits: the old selected runtime already has each declared clock. BI4 SHA364c4421...cd5a8fa periodic and76ead355...77a932f wall are copied exactly; original velocities/stresses/pressure/position/J initialization are not rewritten.",
+  "XML_diff": "Only the three already implemented public key names HydroMechDynamicSeepage, HydroMechConductivityModel, HydroMechConductivityCk may change. Periodic old runtimes omit all three: insert them with preserved child/closing whitespace. Wall runtimes already contain them: alter values only. Set master1/model0/Ck0 for constant and master1/model1/Ck2^-13 for smooth. Reverse every insertion/value change on a fresh parsed saved document and require original OuterXml exactly; no other DOM, comments, numeric material or initialization may change.",
+  "control_adoption": "Read sealed owned run/check/native completion and input receipts, verify all original raw PART bindings and their actual argv/program/exit. Old source/build/helper receipts are immutable identities, not permission to revalidate their historical mutable target source paths as current. Periodic full controls additionally bind current-wall no-wall exact33/history/ID bridge checks. Both private wall k0 short controls/admission are prerequisites only; this runner adds no public k0 trajectory.",
+  "current_build_closure": "New upl_gpu_public_{Debug|Release}_r1.build.json:265current source/4allowedtargets/261unchanged,110objects excludingmain, raw baseline target copies, canonicalGPU6 and retained wall controls/runtime. Validate all current source/program/tool/runtime inputs before/after each actual invocation. Default CPU Debug is a separate owned exit0 receipt; no new CPU solve or timing benchmark.",
+  "phase_admissions": {
+    "logs/upl_gpu_public_smoke_r1.admission.check.json": "kind=smoke; root binds exactly both Debug check receipts before any Release solve.",
+    "logs/upl_gpu_public_periodic_constant_r1.admission.check.json": "kind=periodic_constant; exact constant c/h, inherited_private_scientific_gates_passed=true before periodic smooth. Does NOT imply a new1percent continuum/reference/physical-wall endpoint gate.",
+    "logs/upl_gpu_public_wall_constant_r1.admission.check.json": "kind=wall_constant; exact constant c/h, inherited_private_scientific_gates_passed=true and inherited_wall_constant_one_percent_and_endpoint_budgets_passed=true before wall smooth.",
+    "common": "passed/all_original_gates_preserved true; job_checks exactly the two corresponding E entries; public_GPU_dynamic_accepted/physical_acceptance false. Every half job additionally requires its own actual coarse review. No automatic root admission is created."
+  },
+  "reader_contract": "Actual original15 typed arrays and J/theta all saved native particles, soil n and actual time/Step/lockedDt/signeddterror must be EXACT, with no exceptions, interpolation or masks. New six double dynamic arrays, actual float PosDiv, typed model/schema metadata and fixed n/V/rho/k zero markers are audited separately, not used to hide a shared-field mismatch. This does not claim whole raw-private/public equality, a new GPU PosDiv comparison against absent old data or a proof of compaction from this weak trajectory.",
+  "unchanged_single_run_gates": "ledger relative<=5e-13;energy<=1.1;0<max|J-1|<=1e-4;actual native PosDiv nonempty; saved coupledCFL/Ddt-h2<=.01;signed dterror<=1e-14; smooth Full kspan/k0>=.005. Reader checks actual geometry/material/XML/IDs/exclusions and types. These saved-point checks are not independent every-force-stage telemetry or sufficient stability.",
+  "scientific_inheritance": "Bind passed original Darcy constantGPUhalf/cross c/h, periodic smoothGPUhalf/cross/effect c/h and private wall constant admission/stage figures plus endpoint/native audit receipts. Only complete c/h bit-exact shared trajectories with matching inputs and unchanged current kernel closure can inherit those original5Pa/.005mm,normalized1e-4,wall1percent/nearwall/endpoint/flux/reaction budgets; any bit difference holds admission, not a5Pa tolerance fallback. No new half/cross/theory/endpoint audit is claimed by this driver. Periodic32 continuum floor around-1.47percent is not relabelled1percent acceptance. Ck2^-13 remains manufactured, not calibrated soil data or an accuracy gain.",
+  "outputs": "New outputs/upl_gpu_public_seed_r1; each job outputs/upl_gpu_public_JOB_r1 and _review; logs/upl_gpu_public_JOB_r1.call/run/check.json plus _review.call/log. Reader emits common.csv/public_extra.csv/native_ids.csv/fixed_ids.csv/history.csv/input_files.csv/completion.json; no physical.bin fabricated.",
+  "preservation": "Fresh paths only; precreate native-call logs; native stderr uses explicit exit checking. Failed calls/runs/checks and partial raw outputs are sealed. A completed solve is never relaunched to repair analysis. No source/docs/old controls/worker changes, watchers, notifiers, canonical/server install or Git actions.",
+  "held": "True mDBC default-OFF151 regression, negative public inputs and PART rejection remain later separate work. No public physical/general boundary/gravity/load/drainage/plasticity/full-cycle/restart or formal/server admission.",
+  "new_GPU_solver_jobs": 10,
+  "planned_solver_frame_instances": 2062,
+  "new_CPU_solver_jobs": 0,
+  "GenCase_invoked": false,
+  "old_control_solver_invoked": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

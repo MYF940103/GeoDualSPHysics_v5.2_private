@@ -597,10 +597,10 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
   if(HydroMechDynamicSeepage){
-    if(!HydroMech || !Cpu || !Simulate2D || PartBegin || Gravity.x || Gravity.y || Gravity.z
+    if(!HydroMech || !Simulate2D || PartBegin || Gravity.x || Gravity.y || Gravity.z
       || HydroMechInitMode!=HMINIT_None || !FixedDt || !(FixedDt->GetFixedValue()>0)
       || !std::isfinite(FixedDt->GetFixedValue()))
-      Run_Exceptioon("HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.");
+      Run_Exceptioon("HydroMechDynamicSeepage is experimental: fresh CPU/GPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.");
     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
@@ -3748,7 +3748,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(HydroMech){
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
-      Log->Print("  DynamicSeepageScope: experimental CPU 2-D elastic, zero gravity, fresh start; not a general u-pl release");
+      Log->Print("  DynamicSeepageScope: experimental CPU/GPU 2-D elastic, zero gravity, fresh start; not a general u-pl release");
       Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
       if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);
     }

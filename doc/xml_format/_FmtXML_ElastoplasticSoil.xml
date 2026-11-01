@@ -31,7 +31,7 @@
 			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
 			<hydromechanics>
 				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation; default=0" />
-				<HydroMechDynamicSeepage value="0" comment="Experimental CPU dynamic Darcy + J-dependent porosity/volume/inertia; default=0 retains original u-pw" />
+				<HydroMechDynamicSeepage value="0" comment="Experimental dynamic Darcy + J-dependent porosity/volume/inertia; bounded CPU/GPU entry checks passed, not physical release; default=0 retains u-pw" />
 				<HydroMechConductivityModel value="0" comment="Within dynamic seepage: 0=constant initial k0 (default), 1=void-ratio exponential k(J)" />
 				<!-- Model1 requires explicit HydroMechConductivityCk>0 (dimensionless, calibrated material coefficient).
                      Lian2023 Eq4: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0).
@@ -40,7 +40,7 @@
                      No independent k integration, clipping, tensor or discontinuous-interface law.
                      Example coefficient syntax only, NOT a recommended/calibrated value:
                      <HydroMechConductivityCk value="0.01" />
-                     Current experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,
+                     Verified experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,
                      InitMode=None; axis-aligned rectangular XZ periodicity without walls, or two opposing fixed parallel axis
                      FreeSlip mDBC planes with tangential periodicity. Existing strict guards reject loads,
                      drainage, viscosity/damping, HG/SPR, plasticity, shifting, moving walls and other
@@ -63,7 +63,7 @@
                      positive-k GPU half pressure RMS max=.000310364Pa, matched CPU/GPU max=.0000530255Pa.
                      Scope: fresh2D rectangular XZ-periodic zero-gravity elastic fixtures only, constant k;
                      no wall/load/drainage/viscosity/damping/SPR/HG, evolving k or PART restart admission.
-                     This private test entry is NOT enabled by these XML keys. Public GPU remains rejected;
+                     This private test entry is NOT enabled by these XML keys. Public GPU was rejected at that checkpoint;
                      canonical/server executables are not replaced, and no physical/full-cycle release follows. -->
 				<!-- Private GPU smooth-k implementation check (2026-11-02): k(J), both coefficient-gradient
                      pressure/acceleration terms and the same-force-stage gradient step bound passed
@@ -73,7 +73,7 @@
                      matched CPU/GPU maximum=.0000427787Pa. Manufactured Ck=2^-13 produces a resolved
                      model effect, NOT material calibration or a physical accuracy improvement.
                      GPU J/n/theta are native diagnostics; V/rho/k are explicitly derived from saved J.
-                     Periodic-stage scope and public rejection remain: no wall/interface/gravity/load/drainage,
+                     Periodic-stage verified scope remains: no wall/interface/gravity/load/drainage,
                      sufficient stability, exact restart, formal/full-cycle or server-package admission. -->
 				<!-- Private GPU static-wall implementation check (2026-11-02): nearest-node-anchored
                      V0J mirror reconstruction of J/p/stress/derivative velocity, Q*C*Q and finished Q*Ace
@@ -87,9 +87,25 @@
                      not observations of every original predictor/corrector stage or PART restart.
                      Existing no-wall old paths preserve557 legacy and1031 complete-rate frame instances
                      exactly; this is not a default-OFF physical mDBC regression for all formal cases.
-                     These XML keys still do NOT enable public GPU mode. No NoSlip/general wall,
+                     These private tests do NOT verify the public GPU XML entry. No NoSlip/general wall,
                      3D, gravity/load/drainage/HG/SPR/plasticity, full-cycle or server-package admission.
                      GPU native fixed-sample n is not a wall material; CPU fixed markers differ. -->
+				<!-- Limited public GPU wiring review (2026-11-02): explicit master1 maps
+                     the already bounded J/feedback/complete-rate branch atomically; model0/1 selects
+                     constant/smooth k and model1 requires explicit finite positive Ck. Default master0
+                     remains original u-pw. No new mathematical kernel or integrator is introduced.
+                     ON-only output adds actual downloaded/compacted PosDiv, V/rho/k derived from the
+                     same saved J and typed model metadata. Fixed n/V/rho/k are nonphysical zero markers.
+                     Fresh 2D zero-gravity elastic periodic/opposing-axis-FreeSlip restrictions above remain.
+                     Two Debug two-step memchecks and eight Release short trajectories preserve common
+                     original15/J/theta/soil n and actual clock bits exactly; extra outputs are separate.
+                     Explicit master0/model0/Ck0 mDBC:151 frames/1040 IDs/original15 and clocks exact,
+                     proven process exit0. Omitted-key151 data are also exact but its OS exit code was not
+                     captured; that run is retained as qualified data, not retrospectively passed.
+                     Six representative unsupported-input/real-PART guards passed. Scientific half/reference
+                     budgets are inherited through complete exact same-backend trajectories, not recomputed.
+                     See tests/logs/upl_gpu_public_stage_r1.check.json. Canonical/server executables unchanged;
+                     no gravity/load/drainage/general wall, physical/formal/full-cycle GPU release implied. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
 				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />

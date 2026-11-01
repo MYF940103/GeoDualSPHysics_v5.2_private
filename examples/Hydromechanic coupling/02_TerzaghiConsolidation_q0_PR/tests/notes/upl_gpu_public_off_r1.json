@@ -1,0 +1,57 @@
+{
+  "stage": "upl_gpu_public_off_r1",
+  "author_status": "Author-only declaration. No Prepare, solver, reader, compiler or linker was executed while authoring these files.",
+  "purpose": "One bounded actual mDBC/default-omission GPU regression after limited public dynamic wiring. This is not a public-ON, physical-accuracy, restart or formal-case acceptance.",
+  "files": ["support/upl_gpu_public_off_r1.ps1", "support/upl_gpu_public_off_native_r1.cpp", "notes/upl_gpu_public_off_r1.json"],
+  "one_action_modes": {
+    "Prepare": "Root explicitly authorizes one Prepare. Verify old sealed provenance and current authoritative public Release build; copy only retained runtime XML, initial BI4 and Normals.nbi4 into a fresh shallow seed directory, keeping their original basename and every byte. No GenCase, solver or helper is invoked.",
+    "RunJob": "Root explicitly authorizes one new actual isolated public Release program call only. Refuse any active DualSPHysics process, existing output or receipt. Preserve the original command options and15000-step bound. Seal all outputs and owned exit before analysis. Never call the old program.",
+    "ReviewJob": "Root explicitly authorizes only one pure offline native comparison and passes -ReaderBuildReceipt with the actual successful r2 OffReader helper receipt. There is no hardcoded helper path or fallback to failed r1. Check completed new owned solve and original HG telemetry, then compare every one of151 actual native frames. No solver, compiler, restart, retry or interpolation is invoked. Any analysis failure preserves the completed solve and needs a newly labelled analysis repair, not a rerun."
+  },
+  "sole_old_control": {
+    "output": "outputs/symc_1d_short_r1_gpu_old",
+    "receipt": "logs/symc_1d_short_r1_gpu_old.receipt.json",
+    "completion": "logs/symc_1d_short_r1_gpu_old.completion.json",
+    "prepared": "logs/symc_1d_short_r1.inputs.json",
+    "run": "logs/symc_1d_short_r1.run.json",
+    "historical_program_sha256": "260c3d4c845db380f93257f96fba77034b1c6e2047d6780702b2483b974c933c",
+    "historical_program_source": "case04/tests/logs/cryer_darcy_switch_r1.base.json binds immutable source/program/runtime snapshots. Verify its files[].snapshot only, never claim deliberately changed historical original source/canonical paths remain current.",
+    "geometry": "1040 native IDs0..1039:40 fixed IDs0..39 and1000 soil IDs40..1039, X periodic, actual mDBC, dp=.01,h=.018,rho0=2100,E2e6,nu=.3,n0=.3,Kw2e8,k1e-4. Original grad1/SPR1/HGxi.1/artificialvisc.1/damping.04/TopKernelBandq10kPa/ramp.01/drain.01/FixedGrid remain unchanged.",
+    "clock": "DtIni=DtFixed1e-5,TimeMax.15,TimeOut.001,nsteps15000,151 saved native frames. Saved actual times are sequential binary64 accumulated steps, NOT forcibly part*.001. Part0 Step0; later saved Step is completed step count minus1. Final native time.15000000000000924 and Step14999.",
+    "old_normal_exit_is_not_new_truth": "Old receipt151 rows passed its original finite/elastic/no-exclusion/geometry/true drainage/pressure/load/natural-pore-step guards. This new regression inherits those physical/native guards ONLY through identical copied input and complete typed field/clock equality; it does not invent a new theory threshold."
+  },
+  "new_program": {
+    "receipt": "logs/upl_gpu_public_Release_r1.build.json",
+    "status": "full_authoritative_GPU_Rebuild_passed_no_helper_or_program_run",
+    "configuration": "Release",
+    "identity": "Use its isolated_GPU_program and runtime copies only; verify full current265-source/four-target/261-unchanged closure,110 non-main authoritative objects, owned full Rebuild exit0 and protected canonical six. No canonical program is overwritten or copied by this script.",
+    "argv": "-gpu -ompthreads:1 -stable -mdbc NEW_SEED/ORIGINAL_BASENAME NEW_OUTPUT -dirdataout data -svres -svextraparts:1 -nsteps:15000",
+    "default_omission": "The byte-identical old runtime XML contains no HydroMechDynamicSeepage/HydroMechConductivityModel/HydroMechConductivityCk/PoreDarcySymmetricCorr key. This tests actual absent/default-OFF, not an explicit-false rewrite."
+  },
+  "offline_reader": {
+    "cpp": "support/upl_gpu_public_off_native_r1.cpp",
+    "CLI": "--compare OLD_DATA NEW_DATA NEWREVIEWDIR",
+    "build_receipt": "Explicit -ReaderBuildReceipt supplied by root to ReviewJob; planned successful new label logs/upl_gpu_public_off_reader_Release_r2.helper.json. Preserve r1 builder preflight failure (PowerShell R/Invoke-History alias collision, before any compiler or program) without reusing its identity.",
+    "build_scope": "A separately reviewed build-only driver replays the successful current public Release reader compile/link recipe, substituting only new source/output/helper-object identities. Exactly current110 non-main authoritative GPU objects plus one reader object, unchanged non-CNG libraries, four runtime files. The reader contains no JSph class, Run/help/restart/CUDA entry. One global JAppInfo is only the link identity required by those authoritative objects.",
+    "why_new_helper": "Existing built CPU P2 comparator handles1040 and15 fields but permits missing dterror as default0 and does not check output-schema absence. GPU observer comparator requires no fixed particles. Public readers require512/1280 geometry. Existing soil-only CSV inspectors are not a full typed15 comparator. No unsuitable reader is relabelled or silently modified.",
+    "arrays": {"uint": ["Idp", "FSType"], "double3": ["Posd", "SigmaState_kk", "SigmaState_ij"], "float3": ["Vel", "Sigma_kk", "Sigma_ij", "FSNormal", "HydroMechLoadAce"], "float": ["Rhop", "Kplastic", "PorePress", "PorePress0", "ExcessPorePress"]},
+    "exact_gate": "All151x1040 native-ID-aligned original15 array elements have identical native type/count/bytes, including signed-zero bits. No scalar-to-double CSV conversion substitutes for this gate. Every actual saved time, Step and PRESENT DatDouble signed dterror agrees exactly. Signed dterror must be finite and<=1e-14 in each run, NOT abs<=1e-14. SymplecticDtPre must be present DatDouble1e-5. Verify the original sequential double clock, native set/piece counts, finite arrays, positive Rhop, elastic Kplastic0 and no excluded particles.",
+    "absence_gate": "On BOTH old/new PARTs require exactly15 arrays; explicitly reject PoroVolumeRatio/PoroPorosity/PoroThetaLastStage/PoroCurrentVolume/PoroMixtureDensity/PoroHydraulicConductivity/PosDiv. Reject HydroMechDynamicSeepage/DynamicSeepageSchema/HydroMechConductivityModel/HydroMechConductivityCk scalars at both root and PART item. False metadata presence is also forbidden; no missing telemetry becomes0.",
+    "outputs": ["comparison.csv with all151 actual times/steps/signed errors and byte counts", "complete.json only after all151 successful comparisons"],
+    "limitations": "One typed JPartDataBi4 API reader, not a second independent BI4 parser. No unrecorded force work arrays, stage histories or mass conservation are inferred. Native exact equality is implementation regression, not independent physical acceptance."
+  },
+  "original_HG_guard": "Completed steps15000; force/rate calls30000; predictor/corrector15000; rate calculations15001/cache14999; actual max(dt/tau) in[0,.2], spin in[0,.01). This is final emitted telemetry, not re-observation of every internal stage.",
+  "artifacts": {
+    "seed": "outputs/upl_gpu_public_off_r1_seed",
+    "new_solver": "outputs/upl_gpu_public_off_r1",
+    "offline_review": "outputs/upl_gpu_public_off_r1_review",
+    "inputs": "logs/upl_gpu_public_off_r1.inputs.json",
+    "run_and_completion": "logs/upl_gpu_public_off_r1.run.json and .completion.json, sealed before offline review",
+    "final_check": "logs/upl_gpu_public_off_r1.check.json",
+    "all_protected": "Existing accepted case02, formal/root XML/BAT/data, canonical six programs, other workers/server jobs and all retained controls stay untouched. Raw BI4/executables are local hash-bound, not claimed cloud Git backups."
+  },
+  "programs_started_by_author": false,
+  "physical_acceptance": false,
+  "public_dynamic_ON_acceptance": false,
+  "automatic_follow_on": false
+}

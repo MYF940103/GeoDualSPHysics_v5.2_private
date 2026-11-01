@@ -1,0 +1,66 @@
+{
+  "stage": "upl_gpu_public_build_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "b499bc1fc5d5fb37d590563f8aba189494c0df3c",
+  "prerequisite": "logs/upl_gpu_wall_stage_r1.check.json passed within private scope, with explicit false public_GPU_dynamic_accepted and physical_acceptance",
+  "plan": "notes/upl_gpu_public_plan_r1.md",
+  "driver": "support/upl_gpu_public_build_r1.ps1",
+  "actions": {
+    "Baseline": "Explicit first action before ANY of the four target edits. Verify all265 current raw source files against the sealed wall builds; copy exactly four actual target texts and verify bytes/SHA256. Bind canonical six identities and four retained current-wall program/control identities without copying those programs.",
+    "Build": "Exactly one Debug or Release authoritative GPU full Rebuild. Release requires this stage Debug build. Replay immutable wall MSBuild argv unchanged except OutDir, IntDir and binlog. No helper or executable invocation."
+  },
+  "authorization": "Each action requires both -ProductionBuildConfirmed and -ExecutionAuthorized after root full read. This authoring turn grants no execution permission.",
+  "target_source_files": [
+    "src/source/JSph.h",
+    "src/source/JSph.cpp",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpuSingle.cpp"
+  ],
+  "source_closure": {
+    "current_files": 265,
+    "allowed_target_files": 4,
+    "unchanged_files": 261,
+    "source_types": [".h", ".hpp", ".inl", ".cpp", ".cu"],
+    "baseline_source_compare": "Actual raw file hashes against sealed wall raw source; NEVER require raw CRLF bytes to equal a Git-filtered LF blob.",
+    "after_edit": "Verify four immutable raw backup copies and261 unchanged files. Do not revalidate the historical four original source paths as unchanged current files.",
+    "default_CPU_Debug": "Required separately, owned and recorded by root; this GPU-only recipe neither runs it nor infers its pass."
+  },
+  "protected_programs": {
+    "canonical_six_explicit_names": [
+      "DualSPHysics5.2_win64_debug.exe", "DualSPHysics5.2_GEO_win64.exe",
+      "DsphConfig.xml", "ChronoEngine.dll", "dsphchrono.dll", "vcomp140.dll"
+    ],
+    "identity_source": "Sealed wall baseline canonical_GPU entries, rehashed before/after; not old canonical executables treated as new compiled truth.",
+    "retained_current_wall_controls": [
+      "logs/upl_gpu_wall_Debug_r1.build.json -> isolated_GPU_program",
+      "logs/upl_gpu_wall_Release_r1.build.json -> isolated_GPU_program",
+      "logs/upl_gpu_wall_wall_actual_Debug_r2.helper.json -> program",
+      "logs/upl_gpu_wall_wall_actual_Release_r2.helper.json -> program"
+    ],
+    "control_closure": "Explicit SHA256/bytes entries bind each program, its immutable build/helper/source-build receipts and its original/copied runtime. No historical changed-source path is substituted for new source identity.",
+    "program_backup_copies_made": 0,
+    "canonical_or_server_install": false
+  },
+  "new_artifacts": {
+    "baseline": "logs/upl_gpu_public_r1.baseline.json",
+    "four_raw_source_copies": "outputs/upl_gpu_public_source_base_r1/{JSph.h,JSph.cpp,JSphGpu.cpp,JSphGpuSingle.cpp}",
+    "source_freeze": "logs/upl_gpu_public_{Debug|Release}_r1.source.json",
+    "build_receipt": "logs/upl_gpu_public_{Debug|Release}_r1.build.json",
+    "owned_call": "logs/upl_gpu_public_{Debug|Release}_r1_project.call.json plus .log",
+    "isolated_program_and_runtime": "outputs/upl_gpu_public_{Debug|Release}_r1/gpu",
+    "IntDir": "GetTempPath()/upl_gpu_public_r1/{Debug|Release}/int; reject any whitespace",
+    "authoritative_objects_excluding_main": 110,
+    "retention": "Reject any pre-existing baseline/copy/build/output/IntDir/receipt. Preserve failures under their own labels, without overwrite or automatic retry."
+  },
+  "evidence": "Bind author driver/note/plan, verified wall stage, authoritative solution/project/tool identities, all265 current source hashes, build call/exit/log, exact110 object hashes, isolated executable and runtime. Verify source/control/canonical identities after build. Empty logs are precreated before native tools; native stderr warnings do not replace explicit exit checking.",
+  "doc_status_policy": "Public XML documentation and validation status are root-owned later prose/output-contract edits, not MSBuild inputs in this recipe. Their future changes must not be misreported as equality to frozen source build inputs.",
+  "scope": "Build preparation only: no numerical test, helper, program/help/solver/GenCase, source edit, watcher, Git mutation, installation or formal run. Public GPU default/master/model/Ck wiring and output/rejection regressions remain separately gated.",
+  "commands_for_later_root_review": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_public_build_r1.ps1 -Mode Baseline -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_public_build_r1.ps1 -Mode Build -Configuration Debug -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_public_build_r1.ps1 -Mode Build -Configuration Release -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "program_or_component_run": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

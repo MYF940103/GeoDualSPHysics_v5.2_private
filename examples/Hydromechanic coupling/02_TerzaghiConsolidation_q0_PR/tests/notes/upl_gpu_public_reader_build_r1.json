@@ -1,0 +1,46 @@
+{
+  "stage": "upl_gpu_public_reader_build_r1",
+  "status": "author_only_not_executed",
+  "purpose": "One explicitly authorized Debug or Release compile/link of the offline GPU-public native reader; never runs the reader, a GPU program/help/solver, GenCase, a worker or Git.",
+  "author_files": ["support/upl_gpu_public_reader_build_r1.ps1", "notes/upl_gpu_public_reader_build_r1.json"],
+  "root_command_template": "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_public_reader_build_r1.ps1 -Mode BuildReader -Configuration Debug|Release -ProductionBuildConfirmed -ExecutionAuthorized",
+  "prerequisite": {
+    "current_build": "logs/upl_gpu_public_{Debug|Release}_r1.build.json; matching configuration, full authoritative Rebuild exit0, 110 non-main objects and bounded-public-wiring build-only status.",
+    "source": "Build git_base b499bc1fc5d5fb37d590563f8aba189494c0df3c; current265 source inventory, four targets JSph.h/JSph.cpp/JSphGpu.cpp/JSphGpuSingle.cpp and261 unchanged source; six protected canonical GPU artifacts and four sealed raw baseline copies.",
+    "author_inputs": [
+      {"path": "support/upl_gpu_public_native_r1.cpp", "bytes": 17784, "sha256": "f1ffa24f3cb002285698fd85f3082617c10bbb4cb6a8eb3c81a5f0dd6f5145f0"},
+      {"path": "notes/upl_gpu_public_native_r1.json", "bytes": 6960, "sha256": "bbb34b0b36a3f08e1a824501ff14e261ce5670f953a7b93d29e73622a1f639f1"},
+      {"path": "support/upl_cpu_public_native_r1.cpp", "bytes": 22469, "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38"}
+    ],
+    "authorization": "Root must read frozen reader plus builder and authorize each single configuration; authoring this file does not authorize execution."
+  },
+  "recipe": {
+    "retained": "logs/upl_gpu_wall_variable_actual_{Configuration}_r1.helper.json, fixture SmoothActual, successful old compile/link argv and tool/library identities. This is wall_helper_r1's non-CNG recipe, not WallActual bcrypt helper_r2.",
+    "compiler": "Retain original cl.exe C++17/MSVC, runtime, optimization, precise-float, OpenMP, GPU define and include arguments. Replace exactly one source plus /Fo and /Fd only.",
+    "linker": "Retain all original libraries and flags. Replace OUT, Debug PDB when present, one helper object, and all110 GPU objects identified from OLD source_build.no_space_IntDir to the current public build directory by exact flat basename. Reject missing, duplicate, stale or extra objects; exact closure111=110 current non-main GPU objects+new reader object. No bcrypt/new library and no CPU backend substitution.",
+    "current_binding": "Verify current project call, source freeze, all265 source files, four current targets,261 unchanged and protected canonical six before/after link; immutable CPU reader include is additionally bound. Copy current build runtime files to isolated reader folder and check SHA/bytes.",
+    "historical_binding": "Verify retained helper recipe/author/tool/library/call/old source-build receipt identities only. Do not traverse its old GPU source inventory as current; the public four original source paths have deliberately changed. Old raw baseline originals are not revalidated; their sealed copies are.",
+    "no_hidden_execution": "Only VsDevCmd environment setup, one owned compiler call and one owned linker call; no program/help/reader/solver invocation, build-system replacement, install, overwrite, notification, Git or source edits."
+  },
+  "outputs": {
+    "directory": "outputs/upl_gpu_public_reader_{Configuration}_r1",
+    "executable": "outputs/upl_gpu_public_reader_{Configuration}_r1/upl_gpu_public_native_r1.exe",
+    "receipt": "logs/upl_gpu_public_reader_{Configuration}_r1.helper.json",
+    "owned_calls": "logs/upl_gpu_public_reader_{Configuration}_r1_{compile|link}.call.json and matching.log; actual exit/log/arguments/tool sealed even on nonzero compiler/linker exit.",
+    "never_overwrite": "Existing folder, helper receipt or owned call/log is a hard hold. Failed evidence stays retained; author a new reviewed label for a retry."
+  },
+  "receipt_contract_for_ExplicitReaderBuildReceipt": {
+    "status": "actual_authoritative_GPU_objects_helper_linked_not_run",
+    "fixture": "Reader",
+    "configuration": "Debug or Release",
+    "source_build": "Exact current public authoritative build E entry; source_freeze and baseline E entries separately bound.",
+    "program": "Actual isolated reader executable E entry after link; not a canonical solver or a CPU-labelled program.",
+    "author_files": "Builder/note plus exact reader/note and immutable CPU typed-helper include E entries.",
+    "objects": "All110 current authoritative non-main GPU object E entries; helper_object is the111th object; exact_link_closure_verified=true.",
+    "compile_call": "Owned current cl.exe call E entry, exit0 required.",
+    "link_call": "Owned current link.exe call E entry, exit0 required.",
+    "runtime": "Current build runtime copy E entries {original,copy}; all SHA/bytes checked.",
+    "key_counts": "link_object_count111, compiler_source_remaps1, compiler_output_remaps2, GPU_object_substitutions110, GPU_object_directory_changed=true, protected_canonical_GPU_count6.",
+    "scope_flags": "offline_reader_only=true, program_or_component_run=false, public_GPU_dynamic_accepted=false, physical_acceptance=false; no numerical/restart/physical acceptance from linking."
+  }
+}

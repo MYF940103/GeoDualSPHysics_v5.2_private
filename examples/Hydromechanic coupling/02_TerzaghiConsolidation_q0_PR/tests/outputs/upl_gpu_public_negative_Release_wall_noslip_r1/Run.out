@@ -1,0 +1,188 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+[Initialising JSphGpuSingle  02-11-2026 08:00:13]
+ProgramFile=".../upl_gpu_public_Release_r1/gpu/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_gpu_public_negative_wall_noslip_r1_seed/CasePublic_WallSmoke.xml"
+OutputDir=".../tests/outputs/upl_gpu_public_negative_Release_wall_noslip_r1"
+OutputDataDir=".../outputs/upl_gpu_public_negative_Release_wall_noslip_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  CaseName=["CasePublic_WallSmoke"]  Data2D=[1]  Data2DPosy=[0]  H=[0.00351562]  KernelSize=[0.00703125]  B=[0]  Gamma=[7]  Rhop0=[2048]  Dp=[0.00195312]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.0078125]  MassBound=[0.0078125]
+XML-Vars (parameters): TimeMax=[5.96046e-08]  TimeOut=[2.98023e-08]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 999999995904.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.000000
+  Bulk Modulus: 89478488.000000
+  Shear Modulus: 134217728.000000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental CPU/GPU 2-D elastic, zero gravity, fresh start; not a general u-pl release
+  HydroMechConductivityModel="Constant"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 6.71089e+07
+  Porosity: 0.250000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1280
+MapRealPos(border)=(-0.00701172,-0.000175781,0)-(0.0695117,0.000175781,0.0625)
+MapRealPos(final)=(-0.0078125,-0.000175781,0)-(0.0703125,0.000175781,0.0625)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.007031  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CasePublic_WallSmoke"
+RunName="CasePublic_WallSmoke"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="No-slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=45066.12
+  Wendland.bwen=-6.409864e+07
+Viscosity="Artificial"
+  Visco=0
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="None"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1280
+CaseNbound=256
+CaseNfixed=256
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1024
+PeriodicActive="Axis-Z"
+PeriodicZinc=(0,0,-0.0625)
+Dp=0.001953125
+KernelH=0.003516  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.00703125
+CteB=3.834792e+07
+Gamma=7
+RhopZero=2048
+Cs0=362.0386719675124
+CFLnumber=0.2
+DtIni=2.980232238769531e-08
+DtMin=0.0000000001
+DtAllParticles=False
+FixedDt=2.980232238769531e-08
+MassFluid=0.0078125
+MassBound=0.0078125
+TimeMax=5.960464477539062e-08
+TimePart=2.980232238769531e-08
+Gravity=(0,0,0)
+NpMinimum=1280
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(12,1,11)
+CellDomFixed=False
+**Requested GPU memory for 1408 particles: 0.8 MB (0 times).
+
+*** Exception (JSphGpuSingle::InitDynamicPoreWallGpu) at DualSPHysics/source/JSphGpu.cpp:1632
+Text: GPU dynamic wall requires finite stationary FreeSlip wall normals.
+
+
+Finished execution (code=1).
+

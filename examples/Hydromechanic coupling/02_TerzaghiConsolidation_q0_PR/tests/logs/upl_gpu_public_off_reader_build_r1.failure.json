@@ -1,0 +1,37 @@
+{
+  "stage": "upl_gpu_public_off_reader_build_r1_failure",
+  "status": "preflight_rejected_before_compile_link_or_program",
+  "provenance": {
+    "root_reported_command_exit_code": 1,
+    "root_report": "Root's same-thread owned tool transcript: J's (R $p) resolved built-in alias r=Invoke-History, not function R; failure before any compile/link/output.",
+    "independent_read_only_observation": "r alias currently resolves Invoke-History; r1 helper output directory, helper receipt, compile/link call JSONs and logs all absent.",
+    "new_owned_failure_call_receipt_fabricated": false
+  },
+  "cause": {
+    "script": "support/upl_gpu_public_off_reader_build_r1.ps1",
+    "script_bytes": 9448,
+    "script_sha256": "d4a92cd88d5c95043186ff79b462096c38ab82bea90cc4ef48154ade115f2274",
+    "note": "notes/upl_gpu_public_off_reader_build_r1.json",
+    "note_bytes": 4050,
+    "note_sha256": "fe29c83fd25382b56daf5e654e3c6b3ecdd39e8efc9a76dc46cb0b587e71ffb1",
+    "function_name": "R",
+    "conflicting_builtin_alias": "r -> Invoke-History",
+    "failure_phase": "J reading first current public build JSON preflight"
+  },
+  "independently_observed_absent_paths": [
+    "outputs/upl_gpu_public_off_reader_Release_r1",
+    "logs/upl_gpu_public_off_reader_Release_r1.helper.json",
+    "logs/upl_gpu_public_off_reader_Release_r1_compile.call.json",
+    "logs/upl_gpu_public_off_reader_Release_r1_link.call.json",
+    "logs/upl_gpu_public_off_reader_Release_r1_compile.log",
+    "logs/upl_gpu_public_off_reader_Release_r1_link.log"
+  ],
+  "compiler_invoked": false,
+  "linker_invoked": false,
+  "program_or_solver_invoked": false,
+  "compiler_or_numerical_failure": false,
+  "source_or_old_author_files_changed": false,
+  "r1_retired_no_retry": true,
+  "next_author_only": "support/upl_gpu_public_off_reader_build_r2.ps1",
+  "physical_acceptance": false
+}

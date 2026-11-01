@@ -136,6 +136,12 @@ void JSphGpuSingle::UpdateMaxValues(){
 void JSphGpuSingle::LoadConfig(const JSphCfgRun *cfg){
   //-Loads general configuration.
   JSph::LoadConfig(cfg);
+  if(HydroMechDynamicSeepage){
+    PorosityObserver=PorosityFeedback=DynamicPorePressure=true;
+    DynamicPoreWall=(CaseNpb>0);
+    DynamicPoreConductivity=(HydroMechConductivityModel==1);
+    DynamicPoreConductivityCk=HydroMechConductivityCk;
+  }
   //-Checks compatibility of selected options.
   Log->Print("**Special case configuration is loaded");
 }
@@ -1256,10 +1262,29 @@ void JSphGpuSingle::SaveData(){
     arrays.AddArray("FSNormal",npsave,AuxFSNormal);
     if(PorosityObserver){
       double *porosity=new double[npsave];
-      for(unsigned p=0;p<npsave;p++)porosity[p]=1.-(1.-double(SoilCte.Porosity))/PoroJ[p];
+      for(unsigned p=0;p<npsave;p++)
+        porosity[p]=(HydroMechDynamicSeepage && Idp[p]<CaseNpb? 0.: 1.-(1.-double(SoilCte.Porosity))/PoroJ[p]);
       arrays.AddArray("PoroVolumeRatio",npsave,PoroJ);
       arrays.AddArray("PoroPorosity",npsave,porosity,true);
       arrays.AddArray("PoroThetaLastStage",npsave,PoroTheta);
+      if(HydroMechDynamicSeepage){
+        arrays.AddArray("PosDiv",npsave,AuxPosDiv);
+        double *volume=new double[npsave],*density=new double[npsave],*conductivity=new double[npsave];
+        const double k0=SoilCte.HydraulicConductivity;
+        for(unsigned p=0;p<npsave;p++){
+          //-Derive output from the same compacted saved J, not from a working GPU slot.
+          const bool soil=(Idp[p]>=CaseNpb);
+          volume[p]=(soil? double(MassFluid)/double(RhopZero)*PoroJ[p]: 0.);
+          density[p]=(soil? double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/PoroJ[p]: 0.);
+          conductivity[p]=(soil? (DynamicPoreConductivity && k0>0 && PoroJ[p]!=1.?
+            k0*exp((PoroJ[p]-1.)/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)): k0): 0.);
+          if(!std::isfinite(conductivity[p]) || (soil && k0>0 && conductivity[p]<=0))
+            Run_Exceptioon("Saved dynamic conductivity left its finite positive domain.");
+        }
+        arrays.AddArray("PoroCurrentVolume",npsave,volume,true);
+        arrays.AddArray("PoroMixtureDensity",npsave,density,true);
+        arrays.AddArray("PoroHydraulicConductivity",npsave,conductivity,true);
+      }
     }
   }
   if(save && HydroMech && AuxPorePress && AuxPorePress0){

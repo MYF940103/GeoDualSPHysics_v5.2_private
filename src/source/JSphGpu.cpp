@@ -1725,12 +1725,16 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !std::isfinite(KernelH) || !(KernelH>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0)
     || !std::isfinite(DtMin) || DtMin<0))
     Run_Exceptioon("GPU porosity feedback requires finite saturated elastic material and step parameters, with X/Z periodicity and no floating particles.");
+  const bool conductivitymodelok=(HydroMechDynamicSeepage?
+    (HydroMechConductivityModel==unsigned(DynamicPoreConductivity)
+      && (!DynamicPoreConductivity || DynamicPoreConductivityCk==HydroMechConductivityCk)):
+    HydroMechConductivityModel==0);
   if(DynamicPorePressure && (!std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
-    || HydroMechConductivityModel!=0 || !std::isfinite(PoreDtSafety) || !(PoreDtSafety>0)
+    || !conductivitymodelok || !std::isfinite(PoreDtSafety) || !(PoreDtSafety>0)
     || PeriXinc.y!=0 || PeriXinc.z!=0 || PeriZinc.x!=0 || PeriZinc.y!=0
     || ((!DynamicPoreWall || PeriX) && (!std::isfinite(PeriXinc.x) || PeriXinc.x==0))
     || ((!DynamicPoreWall || PeriZ) && (!std::isfinite(PeriZinc.z) || PeriZinc.z==0))))
-    Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, XML conductivity model0 and PoreDtSafety>0, with rectangular X/Z periodicity.");
+    Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, consistent conductivity options and PoreDtSafety>0, with rectangular X/Z periodicity.");
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
   cudaMemset(PoroThetag,0,sizeof(double)*Np);

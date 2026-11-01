@@ -1,0 +1,32 @@
+{
+  "stage": "upl_gpu_public_off_reader_build_r1",
+  "status": "author_only_not_executed",
+  "author_files": ["support/upl_gpu_public_off_reader_build_r1.ps1", "notes/upl_gpu_public_off_reader_build_r1.json"],
+  "purpose": "Release-only build of the separate pure OFF1040/151 native reader. No new production build, reader/helper/program/help/solver run, source change, canonical install, notification or Git action.",
+  "root_command_template": "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_public_off_reader_build_r1.ps1 -Mode BuildReader -Configuration Release -ProductionBuildConfirmed -ExecutionAuthorized",
+  "reader_author_inputs": {
+    "cpp": "support/upl_gpu_public_off_native_r1.cpp",
+    "note": "notes/upl_gpu_public_off_r1.json",
+    "freeze": "Root fully reviews final author files before executing this builder. Their exact current bytes/SHA are sealed before compile and rechecked after link in author_files/inputs; any change during compilation holds the receipt.",
+    "authored_include": "None. Only project/standard headers and one required JAppInfo global link identity; no solver entry or positive512 CPU/GPU reader relabelling."
+  },
+  "prerequisites": {
+    "current_build": "logs/upl_gpu_public_Release_r1.build.json: successful authoritative full Rebuild,265 current source/four changed targets/261 unchanged,110 non-main objects, protected canonical six and four sealed baseline target copies.",
+    "recipe": "Already successful logs/upl_gpu_public_reader_Release_r1.helper.json fixture Reader; same current public source_build and110 object identities; its owned cl/link calls both exit0. No historical production source inventory is used as a new current identity.",
+    "authorization": "Two explicit root confirmation switches; only one Release build per action. Authoring and successful linking do not authorize a reader or solver invocation."
+  },
+  "strict_replay": {
+    "compiler": "Use exact non-CNG positive reader Release cl.exe C++17 argv/tools/includes/libraries. Replace only one source, /Fo and /Fd.",
+    "linker": "Replace only OUT and one reader object. All110 current public GPU object paths already match and stay literally unchanged: GPU_object_substitutions=0, GPU_object_directory_changed=false. Verify unique exact111-object closure,110 current non-main GPU objects plus new OFF reader object; no dropped objects, extra library, hidden shim or bcrypt.",
+    "source_and_runtime": "Validate current source/build/tool/library/object/isolated-main/runtime and protected canonical six before/after; validate old positive reader recipe/author/typed-helper inputs without interpreting it as OFF physics. Copy current build runtime to the fresh OFF reader directory and check byte/SHA identity.",
+    "failure": "Fresh output/receipts/logs only; preserve owned nonzero compiler/linker exits and partial products. No program is launched to test linkage."
+  },
+  "outputs": {
+    "program": "outputs/upl_gpu_public_off_reader_Release_r1/upl_gpu_public_off_native_r1.exe",
+    "receipt": "logs/upl_gpu_public_off_reader_Release_r1.helper.json",
+    "owned_compile_link": "logs/upl_gpu_public_off_reader_Release_r1_{compile|link}.call.json and matching.log",
+    "receipt_schema": "status=actual_authoritative_GPU_objects_helper_linked_not_run, fixture=OffReader, configuration=Release; source_build/source_freeze/baseline E; author_files, inputs, transitive_project_include_files; program/runtime/tools/libraries; objects110/helper_object/link_object_count111/exact_link_closure_verified; compile_call/link_call/replayed_helper E.",
+    "scope_flags": "offline_reader_only=true, reader_is_distinct_from_positive_512_schema=true, program_or_component_run=false, physical_acceptance=false, public_GPU_dynamic_accepted=false."
+  },
+  "held": "The root-owned default-OFF canonical1040-particle151-frame solve, original15/clock/signed-dterror/schema-absence offline comparison and stage admission are separate later actions. Successful linkage is not their numerical or physical PASS."
+}
