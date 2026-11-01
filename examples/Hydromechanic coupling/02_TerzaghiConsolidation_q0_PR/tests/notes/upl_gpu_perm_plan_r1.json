@@ -1,0 +1,22 @@
+{
+  "stage": "upl_gpu_perm_r1",
+  "status": "private_GPU_smooth_conductivity_port_planned_not_verified",
+  "verified_previous_local_and_remote_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "previous_checkpoint_scope": "Five GPU production files plus compact constant-k test evidence; 357 exact committed paths. Raw BI4, physical.bin, executables and per-particle intermediate files remain local, not cloud backed.",
+  "planned_production_files": ["src/source/JSphGpu.h", "src/source/JSphGpu.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu"],
+  "purpose": "Match the already bounded CPU smooth k(J) law and both coefficient-gradient pressure/acceleration terms on the private periodic GPU path, without an independent k history or another neighbour pass.",
+  "law": "s0=1-n0; k_i=k0*exp((J_i-1)/(s0*Ck)); GJ_i=sum_j(V0*J_j*(J_j-J_i)*C_i*grad(W_ij)); Gk_i=k_i*GJ_i/(s0*Ck). Retain exact k0 and J=1 branches and reject nonrepresentable positive-k states instead of clamping.",
+  "rate": "p_dot_i=(Kw/n_i)*[-theta_i+(k_i/gamma)*(Lstar(p)_i+rho_w*div(Ace)_i)+Gk_i.dot(grad(p)_i+rho_w*Ace_i)/gamma]. Constant-law-OFF arithmetic is retained literally.",
+  "step": "Use current k_i in diffusion bounds and the same-force-stage maximum (Kw/n_i)*abs(Gk_i)/gamma in the additional necessary bound PoreDtSafety*h/u_k. These are necessary checks, not a sufficient variable-coefficient stability theorem.",
+  "unchanged": "Public GPU dynamic rejection; default u-pw; CPU equations; float pore state/rate and passive density integrators; wall/load/drainage physics; GpuSingle force ordering; formal case inputs, accepted results and server programs.",
+  "test_locations": "Use shallow tests/support, tests/notes, tests/logs, tests/outputs and tests/figures with the upl_gpu_perm tag. Preserve all old data and labels.",
+  "ordered_gates": [
+    "Root source review, default CPU Debug Build, isolated authoritative GPU Debug/Release full Rebuild to prevent stale host-layout objects.",
+    "Independent discrete component reference for k(J), GJ, both chain terms, same-stage cache/reset and necessary-step guard activation/rejections; Debug memcheck before Release.",
+    "Retained constant-k, k0 and default-OFF regressions without changing their original native checks.",
+    "Only after reviewed component/regression gates: justified fresh periodic GPU smooth-k coarse/half and compatible CPU comparisons, preserving original 5-Pa/.005-mm and applicable normalized half limits. Separate parameter effects from numerical errors."
+  ],
+  "later_not_admitted_here": "Opposing static FreeSlip walls and bounded public GPU wiring come later; no automatic physical, formal, full-cycle, interface-conservation or exact-restart admission.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false
+}

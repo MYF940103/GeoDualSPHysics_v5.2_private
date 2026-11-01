@@ -1,0 +1,199 @@
+{
+  "stage": "upl_gpu_perm_pair_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "tests/support/upl_gpu_perm_pair_r1.py",
+    "tests/notes/upl_gpu_perm_pair_r1.json"
+  ],
+  "purpose": "Six bounded offline pairs of actual smooth-variable-k typed33 exports. One pair per explicit call; never invoke solver/build/GenCase, reparse BI4, import the old analysis script, overwrite retained evidence, interpolate or hide fields.",
+  "derivation": {
+    "path": "tests/support/upl_gpu_darcy_pair_r1.py",
+    "bytes": 25235,
+    "sha256": "dcfcaafc3a5b152e3510ce2540c7a363248de6cb231bff20a8059cb25b2eaf57",
+    "scope": "Read complete old program and reuse its33 schema, pressure/velocity/material-displacement/stress/passive-density metrics, receipt bindings, energy/domain/necessary saved-scale screens and original half/absolute thresholds. New source is independent, not an import or second raw BI4 parser."
+  },
+  "cli": "py tests/support/upl_gpu_perm_pair_r1.py --pair KIND --a REVIEWDIR --b REVIEWDIR --a-check CHECKJSON --b-check CHECKJSON --out tests/figures/upl_gpu_perm_actual_KIND_r1 [--half-check PASSED_GPU_HALF_JSON]",
+  "pairs": {
+    "CPU_half": {
+      "a": "CPU_variable_c",
+      "b": "CPU_variable_h",
+      "models": [
+        "variable",
+        "variable"
+      ],
+      "dt": [
+        "2^-24",
+        "2^-25"
+      ],
+      "gates": "all257 original5Pa/.005mm plus normalizedp/v/u<=1e-4"
+    },
+    "GPU_half": {
+      "a": "GPU_variable_c",
+      "b": "GPU_variable_h",
+      "models": [
+        "variable",
+        "variable"
+      ],
+      "dt": [
+        "2^-24",
+        "2^-25"
+      ],
+      "gates": "all257 original5Pa/.005mm plus normalizedp/v/u<=1e-4"
+    },
+    "cross_c": {
+      "a": "CPU_variable_c",
+      "b": "GPU_variable_c",
+      "models": [
+        "variable",
+        "variable"
+      ],
+      "dt": [
+        "2^-24",
+        "2^-24"
+      ],
+      "gates": "all257 original5Pa/.005mm; normalized metrics descriptive only"
+    },
+    "cross_h": {
+      "a": "CPU_variable_h",
+      "b": "GPU_variable_h",
+      "models": [
+        "variable",
+        "variable"
+      ],
+      "dt": [
+        "2^-25",
+        "2^-25"
+      ],
+      "gates": "all257 original5Pa/.005mm; normalized metrics descriptive only"
+    },
+    "effect_c": {
+      "a": "GPU_constant_c",
+      "b": "GPU_variable_c",
+      "models": [
+        "constant",
+        "variable"
+      ],
+      "dt": [
+        "2^-24",
+        "2^-24"
+      ],
+      "gates": "initial all33 fields bitwise identical; option pressureRMS maximum strictly greater than max(.001Pa,10*own actual GPU_half pressureRMS maximum). No5Pa/.005mm or normalized half gate on an option difference"
+    },
+    "effect_h": {
+      "a": "GPU_constant_h",
+      "b": "GPU_variable_h",
+      "models": [
+        "constant",
+        "variable"
+      ],
+      "dt": [
+        "2^-25",
+        "2^-25"
+      ],
+      "gates": "same resolved-option-effect rule and same own full GPU half; ON B must be that half's actual fine side"
+    }
+  },
+  "own_half_binding": "--half-check is required only for effect_c/h. Require passed pair=GPU_half,variable,512x33x257,original absolute/normalized gates and physical_acceptance=false; bind all half inputs/outputs, its matching variable side folder/reader-check identity, and this exact analysis recipe SHA. Re-read its full257-row CSV, require all original numeric bounds, recompute actual pressureRMS maximum and require exact agreement with its summary. Never use a ULP placeholder or a backend/option comparison as the half. Effects use B=variable and A=constant.",
+  "fixed_input_contract": {
+    "native": 512,
+    "fixed": 0,
+    "columns": 33,
+    "samples": 257,
+    "binary": "Little-endian uint32[512,33,257], then257 records(actual double time+512x33 doubles). Require exact byte count, finite entire binary, no extra/missing native PARTs.",
+    "columns_order": [
+      "x",
+      "y",
+      "z",
+      "vx",
+      "vy",
+      "vz",
+      "p",
+      "p0",
+      "J",
+      "theta",
+      "sxx",
+      "sxy",
+      "sxz",
+      "syy",
+      "syz",
+      "szz",
+      "plastic",
+      "FSType",
+      "nx",
+      "ny",
+      "nz",
+      "load_ax",
+      "load_ay",
+      "load_az",
+      "passive_Rhop",
+      "ux",
+      "uy",
+      "uz",
+      "excess",
+      "n",
+      "V",
+      "mixture_rho",
+      "k"
+    ],
+    "geometry": "32x16 no-wall XZ periodic,dp1/256,Lx1/8,Lz1/16,nativeIDs0..511. Original initialBI4 bytes23948 SHA364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa.",
+    "clocks": "actualt_i=i*2^-23,end2^-15; cdt2^-24,hdt2^-25. Step0 initially, otherwise round(t/dt)-1. No interpolation/native metadata rewrite.",
+    "material": {
+      "n0": 0.25,
+      "rho0": 2048,
+      "rhow": 1000,
+      "Kw": 67108864,
+      "K": 89478488,
+      "G": 134217728,
+      "k0": "double(float(1e-4)) m/s",
+      "h": "double(float(1.8/256))",
+      "V0": "(1/256)^2"
+    },
+    "law": {
+      "Ck": 0.0001220703125,
+      "formula": "k=k0*exp((J-1)/((1-n0)*Ck)); natural base e, exact J1 return k0",
+      "interpretation": "Ck2^-13 is a predeclared manufactured response coefficient, not soil calibration or an accuracy-improvement parameter"
+    },
+    "schemas": "Variable CPU SmoothActual reader checks actual public master/schema1/model1/typedCk metadata,6native double J/n/theta/V/rho/k arrays and actual PosDiv sidecar. PrivateGPU has3native J/n/theta arrays and explicitly derived V/rho/k, no CPU model metadata/PosDiv. Constant OFF uses separately immutable DarcyActual reader with old14-column history/completion, not fabricated variable-only fields."
+  },
+  "receipt_protocol": {
+    "check": "Require passed matching backend/model/native_frames257/common_columns33/actual solver exit wrapper proof and physical_acceptance=false. Hash check itself, typed completion/all exports, prepared manifest, reader-owned exit0, helper and source-build Entry.",
+    "solver": "Require current-stage fresh completed source_run,selected_input backend/model/XML/BI4/exact clock/257samples; owned original exit0, all257 rawPARTs plus output manifest, actual GPU completion or canonical CPU program build. CPU must declare a new canonical run. Do not substitute old mapped-J/p128 CPU controls.",
+    "helper": "Require actual111-object/110GPU-substitution exact-link helper and reader program identity; SmoothActual+new perm_actual CPP for variable, DarcyActual+immutable Darcy_actual CPP for constant. Source/program/input/outputs are bound; this offline analysis does not relink/rebuild independently.",
+    "constant_OFF_control": "Require current same-dt constant check old_complete_rate_typed33_exact=true and exactly3 byte-identical retained/current entries physical.bin/native_ids.csv/history.csv, rehash both sides. This is an actual source-regression gate, not a new bridge plot.",
+    "before_after": "Hash all used raw PARTs, programs/logs, receipts, initial/runtime inputs, helper author files, source-build and typed exports before use and again after analysis. No missing telemetry/metadata defaults to zero."
+  },
+  "unchanged_safety": {
+    "native": "Finite all33/history values, same-ID x(t)-x(0), exactactualtime/zero-basedstep/locked-dt reader gate, signed finite dterror<=1e-14 (negative safe values valid), elasticplastic0/no-load/p0zero/passiveRhop700..3000 and actual float excess.",
+    "ledger": "All131584 rows:J>1-n0,|J-1|<=1e-4,0<n<1,n=1-(1-n0)/J,V=V0J,rho=rhow+(rho0-rhow)/J,positivefinitek(J),relative n/V/rho/k residual<=5e-13 and solidvolume residual<=5e-13. Constant k must be exact k0. J1/theta0/p0/stress0 initial state; material references/initial physical fields must match.",
+    "energy": "Independent all-history kinetic+elastic+conditional pore-energy ratio<=1.1; inherited telemetry sum roundoff comparison64DBL_EPS*N*max(1,maxratio), not exact water mass.",
+    "necessary_scales": "Every saved row current-J cu*dt/h<=.01,current-ki(Kw/n)*ki*dt/(gamma*h²)<=.01,strict positive-k continuous-decay margin>64DBL_EPS*max(rho,rhow). These saved screens do not independently observe every internal force-stage gradient or prove sufficient stability.",
+    "activation": "Full natural max|J-1|>1e-8 and variable max_time[(kmax-kmin)/k0]>=.005. Recompute k ranges from33 values and compare variable history/completion at64DBL_EPS*max(1,|value|) arithmetic bookkeeping tolerance, not a new physical allowance.",
+    "no_default_fallback": true
+  },
+  "pair_metrics": {
+    "absolute": "Non-option pairs: every257 pressureRMS=sqrt(mean((pa-pb)^2))<=5Pa and1000*max(norm(ua-ub))<=.005mm.",
+    "half_only": "CPU_half/GPU_half additionally every257 pRMS/Pstar<=1e-4,vVectorRMS/A<=1e-4,uVectorRMS/Ustar<=1e-4.",
+    "normalizers": "A=2^-9,cu0=sqrt((K+4G/3+Kw/n0)/rho0),Pstar=(Kw/n0)*A/cu0,Ustar=A/(cu0*2pi/Lx); noCLI scaling overrides.",
+    "option_effect": "Effect is model change, not numerical error/theory error. Require all33 initial bit patterns exactly equal and actual option pressureRMS maximum >max(.001Pa,10*own GPUhalf pressureRMS maximum). Store all difference metrics descriptively; do not apply5Pa half bounds or claim a resolved effect is more accurate.",
+    "descriptive": "All33 per-field numeric and bit-pattern mismatch counts including signed zero; stress Frobenius/component changes, material settlement/displacement, passive density and k response. CPU/GPU passive-density paths remain diagnostic; no exactness gate on them."
+  },
+  "outputs": {
+    "fresh": ".json/.csv/.png for one declared pair. Reject an existing output suffix; no old four-bridge plots.",
+    "CSV": "All257 actual times, original pair metrics/both actual pressure-velocity-materialdisplacement histories, kmin/max/spatialspan/change and energy.",
+    "PNG": "Lean2x2 actual pressure/material displacement plus original absolute/normalized bounds for halves/cross. For options show pressure effect with resolved threshold and variable k response; never label option difference as half error. Log display preserves exact zero CSV values without smoothing/clipping.",
+    "JSON": "Full provenance, gates, independent metrics, per33 exactness, native/derived attribution, actual-own-half binding for options and explicit physical/public/fullcycle limits.",
+    "physical_acceptance": false
+  },
+  "held": [
+    "No variable-k analytic/expm/continuum1percent truth",
+    "No new solver/build/GenCase/worker/Git",
+    "No old26 reinterpretation/second BI4 parser",
+    "No source/raw/metadata edits or guard relaxation",
+    "No walls/general interfaces/conservative flux claim/public GPU/restart/full-cycle admission"
+  ],
+  "author_executed_analysis": false,
+  "author_executed_solver": false,
+  "author_changed_production": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

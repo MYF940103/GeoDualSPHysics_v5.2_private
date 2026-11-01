@@ -166,7 +166,10 @@ protected:
   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
   bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
   bool PorosityFeedback; ///<Private J-derived quadrature/storage/inertia; k=0 unless the complete rate is enabled.
-  bool DynamicPorePressure; ///<Private complete constant-k Darcy rate; default OFF and requires J feedback.
+  bool DynamicPorePressure; ///<Private complete Darcy rate; default OFF and requires J feedback.
+  bool DynamicPoreConductivity; ///<Private optional smooth scalar conductivity derived from J.
+  double DynamicPoreConductivityCk; ///<Void-ratio exponential-law coefficient, used only when enabled.
+  double DynamicConductivitySpeedMax; ///<Native coefficient-gradient speed from the last actual force stage.
   double *PoroJg;       ///<Solid volume ratio J; physical feedback is separately gated.
   double *PoroThetag;   ///<Corrected pair divergence from the last force stage.
   double *PoroJPreg;    ///<Full-step J held during Symplectic prediction/correction.

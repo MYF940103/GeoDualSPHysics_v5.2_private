@@ -35,6 +35,8 @@
 				<HydroMechConductivityModel value="0" comment="Within dynamic seepage: 0=constant initial k0 (default), 1=void-ratio exponential k(J)" />
 				<!-- Model1 requires explicit HydroMechConductivityCk>0 (dimensionless, calibrated material coefficient).
                      Lian2023 Eq4: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0).
+                     exp uses the natural base; Ck=delta(e)/delta(ln(k/k0)), not a time-step penalty.
+                     An experimental e-log10(k) index Ck10 converts as Ck=Ck10/ln(10).
                      No independent k integration, clipping, tensor or discontinuous-interface law.
                      Example coefficient syntax only, NOT a recommended/calibrated value:
                      <HydroMechConductivityCk value="0.01" />
@@ -63,6 +65,16 @@
                      no wall/load/drainage/viscosity/damping/SPR/HG, evolving k or PART restart admission.
                      This private test entry is NOT enabled by these XML keys. Public GPU remains rejected;
                      canonical/server executables are not replaced, and no physical/full-cycle release follows. -->
+				<!-- Private GPU smooth-k implementation check (2026-11-02): k(J), both coefficient-gradient
+                     pressure/acceleration terms and the same-force-stage gradient step bound passed
+                     Debug/Release components, Debug memcheck and fresh actual periodic short Runs.
+                     Constant-k/k0 controls preserve1031 typed33/clock/ID frame instances exactly.
+                     Variable-k CPU/GPU independent half pressure RMS maxima=.000284317/.000279258Pa;
+                     matched CPU/GPU maximum=.0000427787Pa. Manufactured Ck=2^-13 produces a resolved
+                     model effect, NOT material calibration or a physical accuracy improvement.
+                     GPU J/n/theta are native diagnostics; V/rho/k are explicitly derived from saved J.
+                     Scope and public rejection above remain: no wall/interface/gravity/load/drainage,
+                     sufficient stability, exact restart, formal/full-cycle or server-package admission. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
 				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />

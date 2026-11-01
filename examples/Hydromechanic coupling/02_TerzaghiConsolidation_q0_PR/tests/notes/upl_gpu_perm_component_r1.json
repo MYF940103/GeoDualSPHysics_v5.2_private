@@ -1,0 +1,114 @@
+{
+  "stage": "upl_gpu_perm_component_r1",
+  "status": "author_only_not_built_or_executed",
+  "files": [
+    "tests/support/upl_gpu_perm_component_r1.cpp",
+    "tests/notes/upl_gpu_perm_component_r1.json"
+  ],
+  "base": {
+    "path": "tests/support/upl_gpu_darcy_component_r3.cpp",
+    "bytes": 27561,
+    "sha256": "63c1469719978470c281d8f980ca6f172a75c89932fd8835981ffb33bb279f8d",
+    "copy": "Independent copy, not a nested include of the Darcy main. Original functions, fields, mathematical gates and old completion/CSV files execute first unchanged."
+  },
+  "transitive_authored_include": {
+    "path": "tests/support/upl_gpu_k0_time_r1.cpp",
+    "sha256": "e886b659688ea369a3a30b8384ffa4c8f6ede4efd1342a288aebf24cdc712f95",
+    "note": "tests/notes/upl_gpu_k0_time_component_r1.json"
+  },
+  "CLI": "--darcy -gpu:0 -stable RETAINED_K0_TIME_PREFIX FRESH_OUTPUT -dirdataout data -svres",
+  "source_and_execution": "Root-owned four-file GPU source patch and authoritative full Debug/Release Rebuild must be frozen and reviewed first. Author does not compile, launch a component/solver or modify production. Public parser/master/model0 remain unchanged.",
+  "actual_APIs": [
+    "Original CalcRidp/ExtendDynamicPorePeriodic/ComputeFreeSurfaceTracking and all old APIs retain their existing tests.",
+    "ComputeDynamicPorePressureRate(...,invalid,conductivity,ck,maxspeed) actual kernel; optional NULL maxspeed still computes the same law/chain/validity.",
+    "ComputePorosityWaveSpeed2(...,khyd,gamma,maxdiffusion,conductivity,ck) actual current-law diffusion reduction.",
+    "Actual host InitPorosityObserverGpu/PrepareDynamicPorePeriodicGpu/ComputeDynamicPorePressureRateGpu/GetDynamicStepScalesGpu/DtVariable."
+  ],
+  "unchanged_constant_suite": {
+    "files": "Original completion.json(stage upl_gpu_darcy_component_r3), prefix.csv,owner_negatives.csv,host_owner_negative.csv,patch_rates.csv,patch_summary.csv,periodic_rates.csv,periodic_summary.csv,scales.csv,requests.csv retain original semantics/counts. That completion describes only the original suite; new perm_completion describes the added law suite.",
+    "exact_comparison": "Configuration-matched original Debug_run_r3/Release_run_r4 original suite files can be byte-compared under new source. Do not compare Debug against Release as if every field were0ULP; previously some reference/frozen-patch roundoff differed.",
+    "original_limits": "All original propagated64FLT_EPS rate budgets, tail/prefix/owner/sentinel/periodic negatives,5 scale cases including strict J1.02 positive-k rejection,12 actual DtVariable requests unchanged. No physical5Pa bound substitutes for an implementation roundoff bound."
+  },
+  "law_patch": {
+    "geometry": "Same existing nine-node regular and dp/8-jitter finite patches; actual FS recomputed using current J, known C tail canaries retained. No new geometry generator.",
+    "eight_fields_each": [
+      "J1 + nonlinear p/affine Ace; ON versus default constant rate bit-exact",
+      "uniform J1.01 + nonlinear p/affine Ace; actual Dmax implies analytic uniform ki",
+      "affine J + affine p only: pressure coefficient-gradient chain nonempty",
+      "affine J + constant Ace only: acceleration coefficient-gradient chain nonempty",
+      "affine J + pgrad=-rho_w Ace,theta0: affine R0 complete rate null within uncancelled budget",
+      "affine J + nonlinear p/affine Ace: all discrete terms compared, both chains nonempty",
+      "affine J + p constant,Ace/theta0: rate exactly0 while speed nonempty",
+      "k0 + nonuniform J/compression: ON/default constant rate bit-exact and speed0"
+    ],
+    "material": "Same frozen rho0=2048,rhow=1000,n0=.25,Kw=67108864,K=89478488,G=134217728; M always derived from those loaded moduli, not assumed equal to E2^28. k0=double(float1e-4); Ck1/8; V0=.0625. J=1+(x-.5)/32+(z-.5)/64 except uniform fields.",
+    "independent_reference": "Independent O(N²) all-particle project Wendland float-fac evaluation, stored double positions/current actual C/current J, same Vj=V0Jj, Lp/Gp/Lx/divAce/GJ. ki=k0 exp((J-1)/(.75 Ck)); rate=B[-theta+ki/gamma*(Lp-Gp dot Lx+rho divAce)+alpha ki GJ dot(Gp+rho Ace)/gamma].",
+    "labels": "All ki/n/V/rho/GJ/chain columns are explicitly independent reference/derived values, NOT observed native GPU fields. Actual quantities are full float rate, reduced double speed, reduced maxcu2/Dmax, flags and copies. Inferred uniform ki is derived from actual Dmax, not a new production getter.",
+    "budget": "B=Kw/n,gamma=rhow*9.80665,alpha=1/(.75Ck). Raw= B[|theta|+ki/gamma*(sum|w dp|+absGp dot absLx+rho sum|V dAce dot CiGrad|)+|alpha ki|/gamma*absGJ dot(absGp+rho|Ace_i|)]. Per-row bound=64FLT_EPS*Raw+256DBL_EPS*max(1,|Btheta|)+1e-6Pa/s. Every rate/error/budget/ratio and each chain printed. This is a discrete implementation bound, not exact quadratic continuum truth.",
+    "speed_budget": "For uk=B/gamma*|alpha ki|*norm(GJ), bound=64FLT_EPS*B/gamma*|alpha ki|*norm(absGJ)+512DBL_EPS*max(1,|uk|)+1e-12m/s. Actual maximum compares against independent native maximum with max node budget. Nonempty chains/speed each exceed10x corresponding maximum budget.",
+    "uniform_scale": "Actual maxcu2 matches independent loaded-material ledger within64DBL_EPS relative; ki inferred from actual Dmax must match known uniform exponential law within5e-13*max(|kref|,DBL_MIN). Scalar and flag tail canaries unchanged."
+  },
+  "guards": {
+    "host": "Six true Init rejections: Ck0,negative,NaN,Inf,denorm-min causing nonrepresentable alpha,lawON without DynamicPorePressure. Each caught before covered native state/clock/PRE change. A separate OFF+unused NaN Ck true Init positive control is accepted.",
+    "device": "Only legal Ck1e-6 with nonunit uniform J1.01/.99 is sent to actual rate/scales for exponent overflow/positive-base underflow0; expected invalid native slot0 plus flag/scalar canary. No demand that the private device helper reject invalid Ck at its J1/k0 short-circuits; parameter validation belongs to actual host Init.",
+    "no_clamp_or_threshold_relaxation": true
+  },
+  "active_cache_and_time": {
+    "geometry": "The already truly initialized512-native/960-slot rectangular X/Z periodic host fixture. No temporary injected host arrays/CSP/division state, no resize, no actual step.",
+    "manufactured_field": "J=1+.001cos(4*kWave*x),kWave=2pi/Lx,Ck2^-14; native-owner keyed periodic copies; p128 constant,Ace/theta0. High smooth coefficient contrast is deliberately manufactured to activate the necessary gradient bound, not a calibrated material or physical trajectory.",
+    "actual_sequence": "Actual FS/current-J C, actual owner map/C extension, actual complete host rate recomputes its cache. Independent O(N²) native max uk. Pressure rate remains exactly zero despite positive cache. No active cache is assigned by the fixture.",
+    "domain_and_scales": "Per-node current exponential ki determines independent Dmax and current J determines cu². Compare actual host pure wave/pore scales within64DBL_EPS. Require new complete=min(old complete,Safety*h/actual speed)>0 and <=.5old before request gates. This is not a sufficient stability theorem.",
+    "eight_requests": [
+      "safe variable current.25bound",
+      "safe fixed.5bound with DtMin.125bound",
+      "fixed exactly actualbound",
+      "locked current midway old/new rejected",
+      "requested fixed midway old/new rejected",
+      "DtMin midway old/new rejected",
+      "DtMin.75new above fixed.5new rejected",
+      "locked current exactly actualbound accepted"
+    ],
+    "unchanged_on_requests": "Covered id/code/pos/J/v/p/p0/plastic/double stress,theta/rate/C/Ace,clock0/PREnull/DtModif0/cache unchanged. FixedDt telemetry may update as intended and receives the full new bound. No actual ComputeStep_Sym called.",
+    "five_cache_states": "Initial actual active; deliberately poison cache DBL_MAX then actual lawOFF/k0/uniformJ calls must clear0; restore original law field and actual cache must recompute bit-exactly. Poison is never used to establish an active accepted bound."
+  },
+  "periodic_law": {
+    "cases": "Two full960-slot host cases with512 normal fluid owners: lawON k0 compression and lawON positive current-J pressure/Ace field. Real C owner repair plus Ace/theta/rate extension, exact copies, clone-of-clone corner evidence and complete sentinel overwrite retained.",
+    "positive_J": "1+.003cos(2pi*x/Lx)+.001sin(2pi*z/Lz),Ck1/8; independent complete-rate/speed reference. Owner fields keyed by native ID.",
+    "max_scope": "Actual double max is over normal native fluid only; independent reference entries for periodic images do not contribute to max. This exercises multiple blocks without an output-only/native ki array."
+  },
+  "added_counts": {
+    "law_patch_cases": 16,
+    "law_patch_rows": 144,
+    "law_periodic_cases": 2,
+    "law_periodic_rows": 1920,
+    "new_direct_rate_kernel_calls": 26,
+    "new_actual_host_rate_calls": 7,
+    "new_rate_calls_total": 33,
+    "uniform_scale_cases": 4,
+    "guard_cases": 11,
+    "cache_cases": 5,
+    "actual_gradient_DtVariable_cases": 8
+  },
+  "new_outputs": [
+    "perm_completion.json",
+    "law_rates.csv",
+    "law_summary.csv",
+    "law_scales.csv",
+    "law_guards.csv",
+    "law_cache.csv",
+    "law_requests.csv",
+    "law_periodic_rates.csv",
+    "law_periodic_summary.csv"
+  ],
+  "admission": "Root fully reads/freeze author files, then Debug component+memcheck0errors/0leaks and all original/new gates; Release only after Debug complete. Fresh per-configuration wrappers should seal logs/upl_gpu_perm_component_{Debug,Release}_r1.check.json with actual owned call/source-build/helper/completion/files hashes. No automatic physical solver or long run.",
+  "limits": [
+    "Only bounded2D/g0/no-wall private smooth same-material scalar k(J)",
+    "No discontinuous/interface flux conservation, exact water mass, continuum quadratic accuracy or general stability proof",
+    "No GPUpublic/XML/restart/full physical release",
+    "No actual coupled step or server run performed here; actual canonical J1/Ck2^-13 half/backend trajectories remain a separate stage"
+  ],
+  "threshold_changes": false,
+  "production_source_changes": false,
+  "author_built_or_ran": false,
+  "physical_acceptance": false
+}

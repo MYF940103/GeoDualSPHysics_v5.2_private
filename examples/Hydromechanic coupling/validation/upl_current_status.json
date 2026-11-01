@@ -2,7 +2,7 @@
   "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry and private GPU constant-k complete-Darcy short Runs reviewed; GPU evolving-k, walls/public entry and physical-model release remain held",
+  "status": "Limited canonical CPU entry and private GPU constant/evolving-k periodic short Runs reviewed; GPU walls/public entry and physical-model release remain held",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -197,9 +197,27 @@
     "physical_acceptance": false,
     "public_GPU_dynamic_accepted": false
   },
+  "private_GPU_smooth_conductivity_review": {
+    "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_perm_stage_r1.check.json",
+    "source": "Four GPU files only: default-false private smooth scalar k(J), both pressure/acceleration coefficient-gradient terms in the existing neighbour pass, current-ki diffusion scales and same-force-stage gradient speed bound. No independent k state, density integration or public-mode change.",
+    "builds": "Default CPU Debug and isolated authoritative GPU Debug/Release Rebuilds passed;110 exact current GPU objects per helper. Canonical/server GPU programs unchanged.",
+    "components_each_configuration": "Original2028 plus2064 new rate rows,26 direct/7 real-host rate calls,4 uniform scale cases,11 guards,5 actual cache cases and8 real gradient-DtVariable requests. Debug memcheck0errors/0leaks; extreme synthetic gradient cases are not physical-case speeds or costs.",
+    "old_regressions": "Seven Dynamic=false old paths preserve557 native15/clock/Step/dterror pairs,537 J/n/theta and517 Feedback33 frames exactly. Five further complete-rate constant/k0 jobs preserve1031 full typed33/clock/ID frame instances byte-exact to accepted controls.",
+    "actual_variable_Runs": "One Debug GPU two-step memcheck plus fresh CPU/GPU coarse/half Runs,512 native IDs,257 exact times per full short window to2^-15s;CPU OMP1. No initial physical-state rewrite or PART restart.",
+    "independent_half_pressure_RMS_max_Pa": [0.00028431672968788803,0.0002792580848442362],
+    "independent_half_material_displacement_max_mm": [4.7836737050991016e-11,4.9710235927591384e-11],
+    "same_dt_CPU_GPU_pressure_RMS_max_Pa": [4.27786982831976e-5,3.626157698016195e-5],
+    "resolved_model_effect": "Manufactured Ck2^-13 gives approximately5.7886percent spatial k span and2.9362percent maximum change. Same-GPU constant/variable pressure RMS effect maxima.0311591/.0310614Pa exceed max(.001Pa,10*own actual GPU half) with all33 initial fields bitwise equal. This is a model effect, not a physical accuracy gain.",
+    "gates": "All257 original5Pa/.005mm half/cross bounds and independent half normalized p/v/u<=1e-4 pass. All single-run finite/ledger/energy/geometry/native-ID/clock/domain/saved necessary-step checks retained; six matching PNG/CSV sets inspected.",
+    "native_attribution": "CPU J/n/theta/V/rho/k and PosDiv are native. GPU only J/n/theta are native; V/rho/k are explicitly derived. Last force-stage cache and saved scales are not all internal force-stage gradient observations.",
+    "limits": "Private rectangular2D periodic zero-gravity weak elastic smooth-k only; necessary bounds/short agreement do not imply sufficient stability, continuum accuracy, conservation, interfaces, walls, public GPU, full-cycle or exact restart acceptance.",
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false
+  },
   "next_order": [
-    "Selectively back up verified private GPU constant-k complete-Darcy code/evidence locally/remotely, retaining prior numerical/setup rejections and historical CPU initial raw26 mismatches.",
-    "Then private GPU smooth k(J), including full coefficient-gradient terms and its necessary gradient-step limit; opposing static FreeSlip walls next, finite public GPU wiring last. Reuse existing operators/tests without adding independent k state or blindly copying ghost C/Ace.",
+    "Selectively back up verified private GPU smooth-k code/evidence locally/remotely, retaining all earlier evidence and CPU initial raw26 differences.",
+    "Then opposing static FreeSlip walls, constant k first and smooth k afterwards; bounded public GPU wiring last. Reuse the already verified nearest-node-anchored CPU wall reconstruction, not bare MLS intercepts or unreflected ghost C/Ace. No independent k history.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],

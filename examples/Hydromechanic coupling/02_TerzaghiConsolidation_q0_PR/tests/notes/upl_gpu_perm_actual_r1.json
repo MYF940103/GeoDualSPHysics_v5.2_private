@@ -1,0 +1,49 @@
+{
+  "stage": "upl_gpu_perm_actual_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "files": ["tests/support/upl_gpu_perm_actual_r1.cpp", "tests/notes/upl_gpu_perm_actual_r1.json"],
+  "source_derivation": "A new minimal revision of the complete immutable upl_gpu_darcy_actual_r1.cpp, SHA049b2578a8ada62ae18b41f345bfc6cbf7800423fd40fb52815af7e467f1a948. Do not edit, include its nested main, overwrite or relabel its old evidence. Existing k0/constant Run/read models remain available, but exact old-branch source regression must still compile/run the separately immutable old DarcyActual CPP, not substitute this revision.",
+  "single_retained_include": {"path":"tests/support/upl_gpu_observer_native_r1.cpp", "sha256":"b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857", "mechanism":"Rename only its main to RetainedPermObserverNativeMain. Reuse NativeArray/Order/NativeSet/Error plus exactly one AppInfo definition. Bind its note and complete project-header/toolchain closure at helper build."},
+  "solver_cli": "--solver-k0|--solver-constant|--solver-variable [--smoke] <ordinary -gpu:0 frozen_prefix NEW_OUTPUT -dirdataout data -svres>",
+  "reader_cli": "--read k0|constant|variable CPU|GPU RAW_DATA_DIR DT EXACT_RUNTIME_XML NEW_REVIEW_DIR [--smoke]",
+  "entry": "Enable exactly the private observer/feedback/complete-rate flags before actual JSphGpuSingle::Run. For variable model only additionally set DynamicPoreConductivity=true and DynamicPoreConductivityCk=2^-13. No initial pressure/J/position/velocity/stress/material/force/clock/integrator state is assigned or rewritten. Canonical CPU Runs are owned separately by root using the existing public CPU model; this CPP never launches CPU solver mode.",
+  "conductivity": {
+    "reference_k0_m_s": "float-promoted1e-4=9.999999747378752e-5; k0 model uses0",
+    "Ck": 0.0001220703125,
+    "law": "k(J)=k0*exp((J-1)/((1-n0)*Ck)), n0=.25. Same double J as n/V/rho. J1 and k0 avoid exp; no independent k history or clipping.",
+    "calibration": "Ck2^-13 is a predeclared manufactured response-amplification coefficient, not a universal soil calibration or accuracy-improvement parameter.",
+    "CPU_runtime": "variable requires actual HydroMechDynamicSeepage=true/model1/typed-doubleCk2^-13. k0 and constant keep CPU public model0/Ck0. Original runtime/material/geometry/initialization and all guards are independently parsed.",
+    "GPU_runtime": "Public master remains false/absent, shared conductivity model0/Ck0. The explicit immutable --solver-variable entry sets the private law/Ck. All CPU-style dynamic BI4 metadata must remain absent on GPU; never fabricate public model1 metadata or native GPU k.",
+    "typed_output": "CPU k is an actual saved double PoroHydraulicConductivity array, checked pointwise against the selected k(J) with the original5e-13 ledger tolerance. GPU k is explicitly derived from its actual saved J plus this immutable model/Ck and bound k0; it is not a new native GPU array. Both require finite k and k>0 for positive k0."
+  },
+  "same_physics_and_clocks": {
+    "soil": "512 IDs0..511, XZ periodic32x16, dp1/256,Lx1/8,Lz1/16, no walls/floating/gravity/load/drainage/HG/SPR/viscosity/DDT/shifting; float-pore, double stored stress, corrected pair/stress gradients.",
+    "material": {"K":89478488,"G":134217728,"Kw":67108864,"n0":0.25,"rho0":2048,"rho_water":1000},
+    "initial": "Actual unmodified original BI4, lattice centers and float vx=(1/512)sin(2pi*x/Lx), all other v/p/p0/sigma/theta0, J1,n.25. Do not reuse old mapped-J/p128 private CPU controls as if same initial condition.",
+    "Debug_smoke": "One successful actual GPU variable-k2step Pre/Corr, dt2^-24,end2^-23,cadence2^-24,3native frames, fresh owned compute-sanitizer0 errors/0 leaks then typed review. Smoke only needs maxJ>0, not the full-span threshold.",
+    "full": "New GPU variable coarse/half and separately owned new canonical CPU public-model1 coarse/half: dt2^-24/2^-25,end2^-15,cadence2^-23,512/1024 completed steps and257actual native frames. No CLI clock/restart override and no automatic run-all."
+  },
+  "native_export": {
+    "binary": "Same little-endian physical.bin header[512,33,3or257], each frame actual double time then ID-sorted512x33 double values. All33 values are finite. No26-to33 remapping or GPU PosDiv placeholder.",
+    "columns": ["x","y","z","vx","vy","vz","p","p0","J","theta_last_stage","sxx","sxy","sxz","syy","syz","szz","plastic","FSType","FSNormal_x","FSNormal_y","FSNormal_z","load_x","load_y","load_z","passive_Rhop","material_ux","material_uy","material_uz","native_excess","native_n","V_native_CPU_or_derived_GPU","rho_t_native_CPU_or_derived_GPU","k_native_CPU_or_derived_GPU"],
+    "CPU_schema": "Require all15 original typed arrays,6native double J/n/theta/V/rho/k arrays, actual floatPosDiv, public typed master/schema1/model/Ck metadata. GPU retains only3native J/n/theta arrays and no CPU-derived/PosDiv/public-model fields.",
+    "history": "Old14 named columns unchanged, followed by min_current_k_m_s,max_current_k_m_s,k_spatial_span_relative_to_k0,max_abs_relative_k_change. Diffusion Ddt/h² now uses each actual CPU native or explicitly derived GPU current ki, not reference k0. These saved screens do not observe all internal force-stage gradients.",
+    "other_files": ["native_ids.csv","history.csv","last_poro.csv","CPU-only cpu_posdiv.csv","completion.json"],
+    "live_final": "Actual GPU live_final.csv remains id,J,n,theta and may byte-match reader last_poro.csv. actual_complete.json separately records immutable private law/Ck, reference-k0 semantics and only the final cached force-stage gradient speed; it does not claim that cache is a saved-final-state gradient or independently observes every force stage."
+  },
+  "unchanged_safety": ["Actual dyadic times/zero-based savedStep/typed signed dterror<=1e-14 and lockeddt", "all512 IDs/no exclusions/finite particles/plastic0/p0zero/loadzero/passiveRhop700..3000", "stored double/display float stress rounding", "weak |J-1|<=1e-4 and original n/solid-volume/V/rho/k ledger5e-13", "energy ratio<=1.1", "current-J cuDt/h<=.01 and current-ki Ddt/h²<=.01 at every native saved row", "strict positive-k continuous-decay margin, not applied to k0", "maxJ>1e-8 full or>0 smoke; original material-point XYZ displacement and33-column meanings"],
+  "predeclared_law_activation": {
+    "full_variable_saved_spatial_span": "max_time[(kmax-kmin)/k0]>=.005; no full-span condition is applied to the2step smoke. This tests a non-vacuous optional law response, not physical accuracy.",
+    "basis_before_any_variable_Run": "Peer read-only substitution of Ck2^-13 into the accepted constant33-bin J, max|J-1|about2.64944e-6, gives counterfactual k/k0 about[.97147574,1.02936180] and final span.057886. This is planning evidence only, not actual variable-k simulation/ki acceptance. Original A/End/initial fields are unchanged.",
+    "initial": "J1 means initial GJ/chain0; no fabricated initial nonempty-chain gate.",
+    "ON_OFF_effect_later": "Independent later pair analysis must demonstrate actual variableON versus matched constantOFF pressure RMS effect>max(.001Pa,10times actual ON independent-half pressure RMS maximum). Do not infer this from k span or tune initial fields to force a pass."
+  },
+  "later_pair_gates_not_run_here": "All257 exact-time/ID independent CPU and GPU halves preserve original5Pa/.005mm plus normalizedp/Pstar,v/A,u/Ustar<=1e-4; matched CPU/GPU variable c/h use original5Pa/.005mm with normalizedcross descriptive. Original constant/k0 new-source OFF regressions use old immutable DarcyActual/Native/Feedback helpers and require exact original identities. New same-initial CPU law1 c/h are needed; old mapped26 controls and wall controls are not substitutes.",
+  "prerequisites": "Root full source/note review, frozen current4-file authoritative GPU Debug/Release Rebuild, default/OFF and old constant-k regression gates, new smooth-k component/cache/time tests, then explicit Debug smoke/native review before admitted full jobs. Each successful solver is sealed before offline analysis; never rerun a completed solver to repair reader/wrapper failure.",
+  "held": ["publicGPU","walls/gravity/loading/drainage","discontinuous-interface or conservative flux claim","3D/plasticity","exactPARTrestart","sufficient stability","fullphysical/formalrelease"],
+  "author_compiled_or_executed": false,
+  "production_or_retained_files_changed_by_this_authoring": false,
+  "original_thresholds_relaxed": false,
+  "physical_acceptance": false
+}

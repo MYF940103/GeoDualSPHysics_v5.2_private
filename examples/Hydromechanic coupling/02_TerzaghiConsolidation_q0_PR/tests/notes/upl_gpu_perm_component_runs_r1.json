@@ -1,0 +1,171 @@
+{
+  "stage": "upl_gpu_perm_component_runs_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "script": {
+    "path": "tests/support/upl_gpu_perm_component_runs_r1.ps1",
+    "bytes": 29455,
+    "sha256": "0eceec686c81fe4c998c708b1ca0677ddf9bccbefbbd3a53115250af04f8dbfa"
+  },
+  "purpose": "Run and independently audit the actual private GPU smooth-k manufactured component, preserving all original Darcy component budgets. This driver never compiles or launches an actual coupled Run/ComputeStep, a physical solver, an old worker, GenCase, a subsequent stage or Git.",
+  "inputs": {
+    "helper": "logs/upl_gpu_perm_component_{Debug|Release}_r1.helper.json",
+    "helper_fixture": "Component",
+    "helper_status": "actual_authoritative_GPU_objects_helper_linked_not_run",
+    "authoritative_build": "logs/upl_gpu_perm_{Debug|Release}_r1.build.json",
+    "current_source_files": 265,
+    "changed_targets": 4,
+    "unchanged_other_source_files": 261,
+    "current_GPU_objects_excluding_main": 110,
+    "fixture_objects": 1,
+    "link_total": 111,
+    "source_and_runtime": "Before and after actual calls/review, rehash current frozen source closure, authoritative objects/tools, helper author/include closure, libraries, runtime original/copy pairs, canonical GPU identities and selected immutable input.",
+    "immutable_seed": "logs/upl_gpu_k0_time_r1.inputs.json",
+    "seed_native_count": 512,
+    "seed_fixed_count": 0,
+    "no_GenCase": true,
+    "no_input_rewrites": true,
+    "frozen_h": "double(float(.00703125))",
+    "frozen_PoreDtSafety": "double(float(.1))",
+    "component_CPP": "tests/support/upl_gpu_perm_component_r1.cpp",
+    "component_CPP_sha256": "b2ed05a6a5cf1e1577e5c564152c1f395b5c83316f563854f1b54babb7df7174",
+    "component_declaration": "tests/notes/upl_gpu_perm_component_r1.json",
+    "component_declaration_sha256": "6853c26ad130f64920b3d4fdacaf4144983d7ad57902375a97bd62adb41c9658"
+  },
+  "actions": {
+    "modes": [
+      "Run",
+      "Review"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "invocation": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_perm_component_runs_r1.ps1 -Mode Run -Configuration Debug -ExecutionAuthorized",
+    "selected_component_arguments": [
+      "--darcy",
+      "-gpu:0",
+      "-stable",
+      "RETAINED_K0_TIME_PREFIX",
+      "NEW_OUTPUT",
+      "-dirdataout",
+      "data",
+      "-svres"
+    ],
+    "Debug": "Exactly one compute-sanitizer memcheck invocation with --leak-check full --error-exitcode99; verify actual ERROR SUMMARY0 and LEAK SUMMARY0bytes/0allocations. The retained original Debug component receipt supplies only the immutable tool identity, not a current pass.",
+    "Release": "One direct selected helper invocation, only after the new Debug check and its owned call/completion/files pass and rehash.",
+    "Review": "No executable/reader invocation. Read only the selected completed run/call/raw component CSVs and produce the final check.",
+    "sequence": [
+      "Run Debug",
+      "Review Debug",
+      "Run Release",
+      "Review Release"
+    ],
+    "automatic_fallthrough_or_next_stage": false,
+    "failure_handling": "Seal actual call and run before checking the program result, then preserve partial files and a failed check on program/memcheck failure. Completed-component analysis failure seals a failed offline check and may only be repaired under a fresh offline label, never by rerunning the completed program. Existing output/log/call/run/check paths are protected.",
+    "readonly_or_compile_author_actions": "PowerShell AST parser and JSON syntax only; no execution by this author."
+  },
+  "labels": {
+    "output": "outputs/upl_gpu_perm_component_{Configuration}_run_r1",
+    "call": "logs/upl_gpu_perm_component_{Configuration}_r1.call.json",
+    "run": "logs/upl_gpu_perm_component_{Configuration}_r1.run.json",
+    "check": "logs/upl_gpu_perm_component_{Configuration}_r1.check.json",
+    "primary_completion": "perm_completion.json",
+    "original_completion": "completion.json",
+    "check_contract": [
+      "passed",
+      "source_build Entry",
+      "helper Entry",
+      "completion Entry bound to perm_completion",
+      "original_completion Entry",
+      "call Entry",
+      "files Entry[]",
+      "inputs Entry[]",
+      "memcheck_zero_errors_and_leaks"
+    ]
+  },
+  "original_suite": {
+    "control_checks": [
+      "logs/upl_gpu_darcy_component_Debug_review_r4.check.json",
+      "logs/upl_gpu_darcy_component_Release_run_r4.check.json"
+    ],
+    "original_stage": "upl_gpu_darcy_component_r3",
+    "prefix_stage_cases": 6,
+    "owner_negative_cases": 4,
+    "finite_patch_cases": 12,
+    "finite_patch_rows": 108,
+    "periodic_cases": 2,
+    "periodic_rows": 1920,
+    "rate_rows_recomputed": 2028,
+    "class_scale_cases": 4,
+    "positive_k_domain_rejections": 1,
+    "actual_DtVariable_cases": 12,
+    "files": [
+      "completion.json",
+      "prefix.csv",
+      "owner_negatives.csv",
+      "host_owner_negative.csv",
+      "patch_rates.csv",
+      "patch_summary.csv",
+      "periodic_rates.csv",
+      "periodic_summary.csv",
+      "scales.csv",
+      "requests.csv"
+    ],
+    "unchanged_gates": "Original prefix/owner/canary/error-pool, original all2028 actual/reference/rate-error/budget/ratio finite and per-row propagated64FLT_EPS bound,12 request expected rejections and covered-state flag, strict J1.02 positive-k domain negative, actual wave/pore64DBL_EPS comparisons and signed fixed-minus-full-bound telemetry remain required.",
+    "NaN_scope": "The sole intentional nonfinite old request is current_nan/current, an explicitly required rejected input. Missing/nonfinite references, actual rates, budgets or other numeric diagnostics are rejected; no default0 substitution.",
+    "old_file_comparison": "Record exact matching-configuration SHA/byte equality for the old completion plus nine CSVs, but do not predeclare equality as an admission gate: independent host reference/compiler last-bit differences can change text without changing the accepted original numerical gate.",
+    "native_regressions": "This descriptive component-text comparison does not relax the separate full actual native OFF/observer/Feedback0ULP gates required by the legacy trajectory driver.",
+    "no_cross_Debug_Release_byte_identity_claim": true
+  },
+  "added_suite": {
+    "counts": {
+      "law_patch_cases": 16,
+      "law_patch_rows": 144,
+      "law_periodic_cases": 2,
+      "law_periodic_rows": 1920,
+      "direct_rate_kernel_calls": 26,
+      "actual_host_rate_calls": 7,
+      "uniform_scale_cases": 4,
+      "guard_cases": 11,
+      "cache_cases": 5,
+      "actual_gradient_DtVariable_cases": 8
+    },
+    "files": [
+      "perm_completion.json",
+      "law_rates.csv",
+      "law_summary.csv",
+      "law_scales.csv",
+      "law_guards.csv",
+      "law_cache.csv",
+      "law_requests.csv",
+      "law_periodic_rates.csv",
+      "law_periodic_summary.csv"
+    ],
+    "rate_rows_recomputed": 2064,
+    "rate_audit": "For every row parse all numeric columns as finite doubles; independently recompute abs(actual-reference), compare printed residual and ratio, enforce the exact printed predeclared propagated64FLT_EPS budget without replacing it by a5Pa physical tolerance. Require nonnegative reference k, valid reference n,V,rho and positive speed budget. Verify complete maxima against every row.",
+    "reference_scope": "ki,n,V,rho,GJ and chain CSV columns are independent derived/reference fields, not invented native GPU output. The all-particle assembly and raw-term budget are implemented and asserted in the frozen companion; this wrapper rechecks the complete printed actual/reference/error/budget evidence, not a second SPH assembly.",
+    "chains_and_nulls": "Recompute source maxima per9-node field, require declared pressure/acceleration chain nonempty10x budget, zero-driving actual rate exactly0 with nonzero measured speed, affine R0 within its unchanged rate budget, nonempty positive periodic/corner/owner-copy evidence.",
+    "speed_audit": "For16 finite patches,2 full periodic fields and1 active zero-driving cache, derive reference maximum and speed budget from all published rate rows where available, recompute actual-reference speed residual and ratio, require original speed budgets and match all19-case completion maxima. Cache active reference is the separately printed frozen-companion independent all-particle result; no native ki/GJ getter is claimed.",
+    "current_D_audit": "Four uniform-J actual maxcu2 values are compared to the independently loaded-material mixture closure at64DBL_EPS; inferred ki and actual Dmax preserve5e-13 relative law/getter budgets. Do not impose0ULP across MSVC/libm and PowerShell analytical exp evaluations.",
+    "guards": "Exactly6 host parameter/init rejects,1 OFF+unused-NaN-Ck accepted control and4 regular/jitter device positive-base overflow/underflow rejects; all covered-state unchanged flags and invalid slot0.",
+    "cache": "Require the actual zero-driving speed genuinely positive, necessary new bound=min(old,loaded floatSafety*floatH/actual speed)>0 and<=.5old. Actual OFF/k0/uniform rate calls must clear a deliberately stale cache to0; restoration must reproduce active cache exactly. No manual active-speed assignment is accepted.",
+    "requests": "Eight named actual DtVariable requests preserve expected accept/reject outcomes, covered-state unchanged flags, no clipping/uplift for accepted requests and exact signed FixedDt error=fixed-full_new_bound. This audits a necessary gradient bound, not a general stability theorem.",
+    "threshold_changes": false
+  },
+  "scope": {
+    "current_private_2D_g0_periodic_smooth_scalar_k_J_only": true,
+    "actual_LoadConfig_ConfigDomain_InitRunGpu": true,
+    "manual_force_statistics_component_scope": true,
+    "actual_ComputeStep_Sym_called": false,
+    "completed_physical_steps": 0,
+    "full_physical_trajectory": false,
+    "interface_flux_conservation_or_exact_water_mass_proven": false,
+    "general_variable_coefficient_stability_proven": false,
+    "public_GPU_dynamic_accepted": false,
+    "walls_or_restart_accepted": false,
+    "physical_acceptance": false,
+    "old_raw_and_programs_restarted": false,
+    "raw_BI4_or_executable_cloud_delivery_claim": false
+  }
+}

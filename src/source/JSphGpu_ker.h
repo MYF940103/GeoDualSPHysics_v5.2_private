@@ -304,16 +304,17 @@ void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,do
 //-Current native J-derived undrained speed squared; caller initializes maxcu2=0 and invalid=np.
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
   ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid
-  ,double khyd=0,double gamma=1,double *maxdiffusion=NULL);
+  ,double khyd=0,double gamma=1,double *maxdiffusion=NULL,bool conductivity=false,double ck=0);
 //-Extend only requested fields from normal-fluid native owners; caller initializes invalid=np.
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp
   ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid);
-//-Complete same-stage constant-k rate; double positions, J volume, symmetric Lstar and div(Ace).
+//-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
 void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
-  ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid);
+  ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+  ,bool conductivity=false,double ck=0,double *maxspeed=NULL);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

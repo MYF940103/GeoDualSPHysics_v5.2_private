@@ -1,0 +1,58 @@
+{
+  "stage": "upl_gpu_perm_publish_inventory_r1",
+  "status": "author_only_inventory_not_executed",
+  "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "source_recipe": "tests/support/upl_gpu_darcy_publish_inventory_r1.ps1 read completely; smooth-k adaptation changes only the scoped file selections, stage prerequisite and baseline.",
+  "script": "tests/support/upl_gpu_perm_publish_inventory_r1.ps1",
+  "action": "After root full review, an explicit -ExecutionAuthorized invocation creates only logs/upl_gpu_perm_publish_r1.json, refusing an existing manifest. It never runs Git, builds, helpers, solvers, GenCase, cleanup, old workers or recursive archive scans.",
+  "prerequisite": "logs/upl_gpu_perm_stage_r1.check.json must exist and explicitly report passed=true,physical_acceptance=false,public_GPU_dynamic_accepted=false. Pending tests are not assumed passed.",
+  "production_and_documentation": [
+    "src/source/JSphGpu.h",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+    "examples/Hydromechanic coupling/validation/upl_current_status.json"
+  ],
+  "current_tag_shallow_allowlist": {
+    "prefix": "upl_gpu_perm_",
+    "support": [
+      ".ps1",
+      ".cpp",
+      ".py"
+    ],
+    "notes": [
+      ".json",
+      ".md"
+    ],
+    "logs": [
+      ".json",
+      ".log"
+    ],
+    "figures": [
+      ".json",
+      ".csv",
+      ".png"
+    ],
+    "recurse": false,
+    "previous_stages_or_unrelated_dirty_files_selected": false
+  },
+  "selected_outputs": {
+    "components": "Two exact Debug/Release component run roots: Run.out, original completion+nine CSVs, new perm_completion+eight law CSVs. No VTK or helper program directories.",
+    "runtime_inputs": "Exactly ten fresh actual runtime XML seeds only; BI4 is excluded.",
+    "legacy": "Seven known run roots: Run.out and actual observer/live completions where the selected job provides them; one review completion and batch_complete. Feedback additionally only new_33 completion/history/native_ids.",
+    "actual": "Ten known actual run roots: each review completion/history/native_ids/last_poro and Run.out. Only the eight GPU jobs provide actual_complete.json/live_final.csv; the two canonical CPU jobs must not be assigned fabricated private GPU completion fields."
+  },
+  "exclusions": [
+    "JSphGpuSingle.cpp is not a changed source target in this stage.",
+    "No raw BI4/IBI4/OBI4, physical.bin, executables, objects, libraries, DLL/runtime, PDB, binlog or VTK.",
+    "No perPART porosity CSV/JSON exports or cpu_posdiv.csv.",
+    "No copies of old archived controls, program trees, author snapshots or unselected output directories.",
+    "Selected individual artifacts over2MiB fail explicitly instead of silently broadening cloud scope."
+  ],
+  "manifest": "Repo-relative paths, current byte lengths and SHA256, exact count/total bytes, bound stage receipt, base8052637 and explicit false physical/public/cloud-raw claims. Manifest excludes its own future identity; root can add that exact file separately after auditing.",
+  "limits": "Receipts preserve local hashes for raw/native/program evidence, but an inventory is not a claim that raw evidence is backed up remotely. Parent alone reviews/stages/commits/pushes and verifies refs.",
+  "author_validation": "Only PowerShell AST/JSON parsing; no inventory, Gate, Git or computational program execution.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false
+}

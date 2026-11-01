@@ -158,6 +158,7 @@ void JSphGpu::InitVars(){
   PorosityObserver=false;
   PorosityFeedback=false;
   DynamicPorePressure=false;
+  DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;DynamicConductivitySpeedMax=0.;
   PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
@@ -1605,6 +1606,8 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 /// Initialises private J state on bounded GPU fixtures; feedback is separately gated.
 //==============================================================================
 void JSphGpu::InitPorosityObserverGpu(){
+  if(DynamicPoreConductivity && (!DynamicPorePressure || !std::isfinite(DynamicPoreConductivityCk) || DynamicPoreConductivityCk<=0))
+    Run_Exceptioon("GPU variable conductivity requires the private dynamic model and finite Ck>0.");
   if(DynamicPorePressure && (!PorosityObserver || !PorosityFeedback))
     Run_Exceptioon("GPU dynamic pore pressure requires the J observer and feedback together.");
   if(PorosityFeedback && !PorosityObserver)
@@ -1619,13 +1622,15 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU porosity observer requires fresh no-wall 2-D elastic Symplectic corrected-pair fixtures without gravity, load, drainage, shifting or damping.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
+  if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
+    Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || Visco!=0
     || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || SoilBoundaryDerivativeSPR || !SoilStressRateGradCorr || PoreShepardRegularization
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires a private complete constant-k Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires a private complete Darcy Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || !PeriX || !PeriZ
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
@@ -1639,7 +1644,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || HydroMechConductivityModel!=0 || !std::isfinite(PoreDtSafety) || !(PoreDtSafety>0)
     || PeriXinc.y!=0 || PeriXinc.z!=0 || PeriZinc.x!=0 || PeriZinc.y!=0
     || !std::isfinite(PeriXinc.x) || PeriXinc.x==0 || !std::isfinite(PeriZinc.z) || PeriZinc.z==0))
-    Run_Exceptioon("GPU dynamic pore pressure requires finite constant k>=0 and PoreDtSafety>0, with rectangular X/Z periodicity.");
+    Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, XML conductivity model0 and PoreDtSafety>0, with rectangular X/Z periodicity.");
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
   cudaMemset(PoroThetag,0,sizeof(double)*Np);
@@ -1717,21 +1722,33 @@ unsigned* JSphGpu::PrepareDynamicPorePeriodicGpu(){
 /// Replaces the complete rate after all force contributions; consumes ridpg.
 //==============================================================================
 void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
+  DynamicConductivitySpeedMax=0.;
   if(!DynamicPorePressure){if(ridpg)ArraysGpu->Free(ridpg);return;}
-  unsigned *invalidg=ArraysGpu->ReserveUint();
+  unsigned *invalidg=NULL;
+  double *maxspeedg=NULL,maxspeed=0.;
   unsigned invalid=Np;
-  cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
-  if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,Aceg,PoroThetag,NULL,invalidg);
-  const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
-  cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
-    ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
-    ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg);
-  if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
-  cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+  try{
+    invalidg=ArraysGpu->ReserveUint();
+    if(DynamicPoreConductivity && SoilCte.HydraulicConductivity>0){maxspeedg=ArraysGpu->ReserveDouble();cudaMemset(maxspeedg,0,sizeof(double));}
+    cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+    if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,Aceg,PoroThetag,NULL,invalidg);
+    const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
+    cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
+      ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
+      ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
+      ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg);
+    if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
+    cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+    if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);
+  }
+  catch(...){if(maxspeedg)ArraysGpu->Free(maxspeedg);if(invalidg)ArraysGpu->Free(invalidg);if(ridpg)ArraysGpu->Free(ridpg);throw;}
+  if(maxspeedg)ArraysGpu->Free(maxspeedg);
   ArraysGpu->Free(invalidg);
   if(ridpg)ArraysGpu->Free(ridpg);
   Check_CudaErroor("Failed computing GPU dynamic pore-pressure rate.");
   if(invalid<Np)Run_Exceptioon("GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
+  if(!std::isfinite(maxspeed) || maxspeed<0)Run_Exceptioon("GPU dynamic conductivity-gradient speed must remain finite and nonnegative.");
+  DynamicConductivitySpeedMax=maxspeed;
 }
 
 //==============================================================================
@@ -1752,7 +1769,7 @@ void JSphGpu::GetDynamicStepScalesGpu(double &wave,double &pore){
   const double gamma=double(SoilCte.PoreWaterRho)*9.80665;
   cusph::ComputePorosityWaveSpeed2(Np,Npb,1.-double(SoilCte.Porosity),double(RhopZero)
     ,double(SoilCte.PoreWaterRho),m,double(SoilCte.PoreWaterBulkModulus),Codeg,PoroJg,maxg,invalidg
-    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1);
+    ,double(SoilCte.HydraulicConductivity),gamma,maxg+1,DynamicPoreConductivity,DynamicPoreConductivityCk);
   cudaMemcpy(values,maxg,sizeof(values),cudaMemcpyDeviceToHost);
   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   ArraysGpu->Free(maxg);ArraysGpu->Free(invalidg);
@@ -1776,7 +1793,12 @@ double JSphGpu::DtVariable(bool final){
   if(PorosityFeedback && !DynamicPorePressure)dt2=GetPorosityStepWaveGpu();
   //-dtw limits the explicit pore-pressure diffusion update in u-pw PR formulation.
   double dtw=DBL_MAX;
-  if(DynamicPorePressure)GetDynamicStepScalesGpu(dt2,dtw);
+  if(DynamicPorePressure){
+    GetDynamicStepScalesGpu(dt2,dtw);
+    //-Additional same-stage necessary scale, not a variable-coefficient stability proof.
+    if(DynamicPoreConductivity && DynamicConductivitySpeedMax>0)
+      dtw=min(dtw,double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax);
+  }
   else if(HydroMech && SoilCte.HydraulicConductivity>0.f){
     const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
     const double ghyd=(gnorm>0? gnorm: 9.80665);

@@ -1,0 +1,109 @@
+{
+  "stage": "upl_gpu_perm_root_review_r1",
+  "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "conclusion": "Private smooth-k GPU implementation passed bounded periodic implementation/actual-integration checks; not a public or physical release.",
+  "production_changes": [
+    {
+      "path": "src/source/JSphGpu.h",
+      "line": 170,
+      "purpose": "Default-false private conductivity switch/Ck and same-force-stage gradient speed cache; no new public switch or independent k state."
+    },
+    {
+      "path": "src/source/JSphGpu.cpp",
+      "line": 1609,
+      "purpose": "Validate private Ck, use current ki in necessary diffusion scales, reset/reduce the actual rate-stage gradient speed and apply Safety*h/maxspeed without clipping an unsafe requested step."
+    },
+    {
+      "path": "src/source/JSphGpu_ker.h",
+      "line": 305,
+      "purpose": "Backward-compatible optional conductivity/Ck/maxspeed parameters; old callers retain the constant-law defaults."
+    },
+    {
+      "path": "src/source/JSphGpu_ker.cu",
+      "line": 1351,
+      "purpose": "Shared current-J k helper and both coefficient-gradient chain terms in the existing neighbour pass; preserve the literal constant-law expression."
+    }
+  ],
+  "law": "k_i=k0*exp((J_i-1)/((1-n0)*Ck)); GJ_i=sum_j V0*J_j*(J_j-J_i)*C_i*gradW_ij; Gk_i=k_i*GJ_i/((1-n0)*Ck). Exact k0/J1 shortcuts; reject unrepresentable positive-k states instead of clamping.",
+  "rate": "p_dot_i=(Kw/n_i)*[-theta_i+(ki/gamma)*(Lp-Gp.dot(Lx)+rho_w*div(Ace))+Gk.dot(Gp+rho_w*Ace_i)/gamma]. Same-stage acceleration is finished before the full assigned rate.",
+  "step": "Current-ki diffusion plus cached max_i[(Kw/n_i)*abs(Gk_i)/gamma] from the real rate kernel. Preserve the original locked/requested/FixedDt/DtMin rejection policy. This is only a necessary local bound.",
+  "unchanged": "CPU equations, pressure/rate float storage, double stress, legacy CPU rational/GPU additive passive-density integration, GPU Single force order, default u-pw, public GPU rejection, canonical/server programs and formal cases/results.",
+  "builds": "Default CPU Debug passed; isolated authoritative GPU Debug/Release full Rebuilds and all five fixture variants per configuration linked with exactly110 current GPU objects plus one fixture object. Existing MSB8029/third-party PDB and runtime-library warnings retained, no compile errors.",
+  "components": {
+    "per_configuration": {
+      "original_rate_rows": 2028,
+      "new_rate_rows": 2064,
+      "patch_cases": 16,
+      "periodic_cases": 2,
+      "direct_rate_calls": 26,
+      "actual_host_rate_calls": 7,
+      "uniform_scales": 4,
+      "guards": 11,
+      "cache_cases": 5,
+      "actual_gradient_DtVariable_requests": 8
+    },
+    "Debug_memcheck": "0 errors/0 bytes leaked",
+    "reference": "Independent all-particle traversal uses actual C and project kernel; it is not an independent matrix-construction or continuum truth.",
+    "budget": "Largest new rate/budget fraction .01609289985; speed/budget .01166195270. These are propagated implementation budgets, not physical accuracy percentages.",
+    "scope": "Strong synthetic gradient activates/rejects the new necessary bound via a real rate call. Extreme synthetic speed/dt are not physical-case performance. Valid maxspeed=NULL equality is tested, not an independent invalid-speed/NULL negative."
+  },
+  "old_paths": {
+    "legacy_jobs": 7,
+    "native15_clock_step_signed_dterror_exact_frame_pairs": 557,
+    "observer_J_n_theta_exact_frames": 537,
+    "Feedback33_exact_frames": 517,
+    "complete_rate_jobs": 5,
+    "complete_rate_constant_k0_typed33_clock_ID_exact_frames": 1031,
+    "control": "Immutable old actual/legacy fixture source and retained controls; no old solver was restarted."
+  },
+  "actual_variable": {
+    "jobs": "Fresh GPU Debug2step smoke, GPU coarse/half and canonical CPU coarse/half (OMP1). GPU actual Run/Pre/Corr and independent saved native readers; no initial-field rewrite or PART restart.",
+    "native_count": 512,
+    "samples_per_full_window": 257,
+    "end_s": 0.000030517578125,
+    "coarse_dt_s": 5.960464477539063e-8,
+    "half_dt_s": 2.9802322387695312e-8,
+    "all10_current_actual_job_frame_instances": 2062,
+    "all10_current_actual_native_records": 1055744,
+    "Debug_memcheck": "0 errors/0 bytes leaked",
+    "Ck": 0.0001220703125,
+    "Ck_is_manufactured_not_calibrated": true
+  },
+  "comparisons": {
+    "CPU_half_pressure_RMS_max_Pa": 0.00028431672968788803,
+    "GPU_half_pressure_RMS_max_Pa": 0.0002792580848442362,
+    "CPU_half_material_u_max_mm": 4.7836737050991016e-11,
+    "GPU_half_material_u_max_mm": 4.9710235927591384e-11,
+    "CPU_GPU_pressure_RMS_max_Pa": [
+      0.0000427786982831976,
+      0.00003626157698016195
+    ],
+    "CPU_GPU_material_u_max_mm": [
+      4.191091917959966e-12,
+      3.760880495917718e-12
+    ],
+    "same_GPU_constant_variable_pressure_RMS_effect_max_Pa": [
+      0.031159144843053193,
+      0.031061407235628533
+    ],
+    "effect_strict_min_Pa": 0.0027925808484423617,
+    "effect_over_own_GPU_half": [
+      111.5783088623309,
+      111.22831861055654
+    ],
+    "initial_all33_bits_equal_for_effects": true,
+    "all_original_half_and_cross_257_sample_5Pa_005mm_gates_passed": true,
+    "both_independent_halves_original_normalized_p_v_u_1e_4_passed": true,
+    "all_six_PNG_and_matching_CSV_inspected": true,
+    "interpretation": "Resolved model response, not an accuracy-gain ratio or variable-k continuum proof. Natural J produces approximately5.7886percent k span and2.9362percent maximum change. Zero differences have no log ordinate; every sample remains in CSV and gates."
+  },
+  "native_attribution": "CPU J/n/theta/V/rho/k and PosDiv are native observations; GPU J/n/theta only are native, V/rho/k explicitly derived. Final force-cache/saved necessary scales are not independently observed gradients at every internal force stage.",
+  "peer_component_legacy_review": "tests/notes/upl_gpu_perm_component_legacy_peer_review_r1.json:9118 bindings/4140 unique files,8184 rate rows and38 speed cases independently rechecked without mismatch; default and legacy dynamic flags false.",
+  "documentation": "Only XML-guide comments changed: natural exponential/log10-index conversion and verified private smooth-k scope. Non-comment XML elements/attributes remain exactly HEAD. Parent validation status updated; no formal XML/BAT changed.",
+  "limits": "Fresh rectangular2D XZ-periodic zero-gravity weak elastic smooth scalar conductivity only. No sufficient stability, exact water mass, conservative interface flux, continuum1percent, general walls/gravity/load/drainage/plasticity, public GPU, full-cycle or exact-HG/PART restart admission.",
+  "backup_scope": "Selective source/recipes/inputs/compact evidence/CSV/PNG. Raw BI4, physical.bin, per-PART porosity, CPU PosDiv sidecars and executable/runtime/object files remain hash-bound locally, not cloud backed.",
+  "next": "Verified local/remote checkpoint; then private opposing static FreeSlip walls using the already verified nearest-node-anchored CPU closure (constant k first, smooth k after), and bounded public GPU wiring last.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false,
+  "thresholds_relaxed": false
+}

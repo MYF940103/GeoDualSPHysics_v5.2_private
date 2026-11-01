@@ -1,0 +1,212 @@
+{
+  "stage": "upl_gpu_perm_legacy_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "8052637f52176814ba529c06160d6f96ac5b149c",
+  "purpose": "Seven fresh unchanged-path GPU jobs linked with the smooth-k candidate objects, compared with the seven sealed Darcy legacy controls. This is implementation regression, not a new Darcy, variable-k or physical-acceptance test.",
+  "author_script": {
+    "path": "support/upl_gpu_perm_legacy_runs_r1.ps1",
+    "bytes": 19584,
+    "sha256": "5f29ed3a2dfb1479eb21d1d1aed13adb875c0592f39653d2a1db7bf25858cf21"
+  },
+  "actions": {
+    "modes": [
+      "RunJob",
+      "ReviewJob"
+    ],
+    "one_selected_action_only": true,
+    "no_automatic_next_job": true,
+    "no_aggregate_mode": true,
+    "required_switches": [
+      "ProductionBuildConfirmed",
+      "ExecutionAuthorized"
+    ],
+    "example": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_perm_legacy_runs_r1.ps1 -Mode RunJob -Job OFF_smoke -ProductionBuildConfirmed -ExecutionAuthorized",
+    "review_same_job": "Use -Mode ReviewJob only after the selected fresh solve has exited and its immutable run receipt exists. Analysis failure never authorizes rerunning a completed solver."
+  },
+  "prerequisites": {
+    "accepted_control_stage": "logs/upl_gpu_darcy_legacy_r1.check.json",
+    "accepted_control_stage_required_exact_jobs": 7,
+    "accepted_control_stage_required_saved_frame_instances": 557,
+    "source_build": "logs/upl_gpu_perm_{Debug|Release}_r1.build.json",
+    "source_closure": {
+      "current_targets": [
+        "JSphGpu.h",
+        "JSphGpu.cpp",
+        "JSphGpu_ker.h",
+        "JSphGpu_ker.cu"
+      ],
+      "current_source_files": 265,
+      "unchanged_other_source_files": 261,
+      "authoritative_objects_excluding_main": 110,
+      "fixture_object": 1,
+      "canonical_GPU_entries_unchanged": 6
+    },
+    "historical_source_paths_revalidated_as_current": false,
+    "same_build_component_checks": [
+      "logs/upl_gpu_perm_component_Debug_r1.check.json",
+      "logs/upl_gpu_perm_component_Release_r1.check.json"
+    ],
+    "component_contract": {
+      "required": [
+        "passed",
+        "source_build",
+        "helper",
+        "completion",
+        "call",
+        "files"
+      ],
+      "owned_component_exit": 0,
+      "Debug_memcheck_zero_errors_and_leaks": true,
+      "Debug_before_any_smoke": true,
+      "both_configurations_before_Release": true
+    },
+    "fresh_smoke_sequence": "OFF_smoke exact review before Observer_smoke; all three Debug smoke exact reviews before any Release job.",
+    "fresh_Release_sequence": "OFF_extended exact review before Observer_extended; Feedback_c exact review before Feedback_h."
+  },
+  "jobs": [
+    {
+      "job": "OFF_smoke",
+      "configuration": "Debug",
+      "steps": 2,
+      "samples": 3,
+      "dt_s": 5.960464477539063e-8,
+      "target": "isolated authoritative GPU main",
+      "observer": false,
+      "feedback": false
+    },
+    {
+      "job": "Observer_smoke",
+      "configuration": "Debug",
+      "steps": 2,
+      "samples": 3,
+      "dt_s": 5.960464477539063e-8,
+      "target": "new Native helper --solver 1",
+      "observer": true,
+      "feedback": false
+    },
+    {
+      "job": "Feedback_smoke",
+      "configuration": "Debug",
+      "steps": 2,
+      "samples": 3,
+      "dt_s": 5.960464477539063e-8,
+      "target": "new Feedback helper --solver-smoke",
+      "observer": true,
+      "feedback": true
+    },
+    {
+      "job": "OFF_extended",
+      "configuration": "Release",
+      "steps": 16,
+      "samples": 17,
+      "dt_s": 5.960464477539063e-8,
+      "target": "isolated authoritative GPU main",
+      "observer": false,
+      "feedback": false
+    },
+    {
+      "job": "Observer_extended",
+      "configuration": "Release",
+      "steps": 16,
+      "samples": 17,
+      "dt_s": 5.960464477539063e-8,
+      "target": "new Native helper --solver 1",
+      "observer": true,
+      "feedback": false
+    },
+    {
+      "job": "Feedback_c",
+      "configuration": "Release",
+      "steps": 512,
+      "samples": 257,
+      "dt_s": 5.960464477539063e-8,
+      "cadence_s": 1.1920928955078125e-7,
+      "target": "new Feedback helper --solver",
+      "observer": true,
+      "feedback": true
+    },
+    {
+      "job": "Feedback_h",
+      "configuration": "Release",
+      "steps": 1024,
+      "samples": 257,
+      "dt_s": 2.9802322387695312e-8,
+      "cadence_s": 1.1920928955078125e-7,
+      "target": "new Feedback helper --solver",
+      "observer": true,
+      "feedback": true
+    }
+  ],
+  "retained_controls": {
+    "selected_run": "logs/upl_gpu_darcy_legacy_{Job}_r1.run.json",
+    "selected_check": "logs/upl_gpu_darcy_legacy_{Job}_r1.check.json",
+    "raw_data": "outputs/upl_gpu_darcy_legacy_{Job}_r1/data",
+    "retained_selected_input_reused_exactly": true,
+    "no_GenCase_or_new_input_preparation": true,
+    "retained_owned_exit0_required": true,
+    "retained_Debug_memcheck_required": true,
+    "no_old_solver_or_worker_restarted": true
+  },
+  "unchanged_helpers": {
+    "Native": {
+      "new_receipt": "logs/upl_gpu_perm_native_{Configuration}_r1.helper.json",
+      "replayed_receipt": "logs/upl_gpu_darcy_legacy_Native_{Configuration}_r1.helper.json",
+      "source": "support/upl_gpu_darcy_legacy_batch_r1.cpp",
+      "include": "support/upl_gpu_observer_native_r1.cpp",
+      "source_remaps": 0,
+      "offline_batch": "One --batch-compare owned call per selected review; immutable Compare and ReadPoro loop internally. No copied decoder or physics."
+    },
+    "Feedback": {
+      "new_receipt": "logs/upl_gpu_perm_feedback_{Configuration}_r1.helper.json",
+      "replayed_receipt": "logs/upl_gpu_darcy_legacy_Feedback_{Configuration}_r1.helper.json",
+      "source": "support/upl_gpu_k0_actual_r2.cpp",
+      "source_remaps": 0,
+      "read": "Each old/new native data directory is read by this same immutable --read or --read-smoke GPU reader. Its common export has 33 columns, not 26."
+    },
+    "Native_final_completion_key": "predictor_history_released",
+    "Feedback_final_completion_key": "predictor_histories_released"
+  },
+  "flag_scope": {
+    "default_constructor_evidence": [
+      "src/source/JSphGpu.cpp:160 DynamicPorePressure=false",
+      "src/source/JSphGpu.cpp:161 DynamicPoreConductivity=false; Ck=0; cached speed=0"
+    ],
+    "immutable_Native_Enable": "Only PorosityObserver is set.",
+    "immutable_Feedback_Enable": "Only PorosityObserver and PorosityFeedback are set.",
+    "DynamicPorePressure_enabled": false,
+    "DynamicPoreConductivity_enabled": false,
+    "flag_claim_basis": "Frozen constructor plus immutable entry code, not invented native BI4 flag telemetry.",
+    "new_complete_Darcy_branch_tested": false,
+    "smooth_conductivity_branch_tested": false
+  },
+  "unchanged_exact_gates": {
+    "original15": "All original typed native arrays ID-aligned, exact bits at every actual saved time; these original15 arrays do not include the three observer J/n/theta arrays.",
+    "metadata": "Exact actual saved clock, native zero-based Step and typed Double signed dterror between selected old/new. Independent signed dterror<=1e-14; do not apply abs(dterror).",
+    "observer": "Each of the three actual Double J/n/theta arrays is independently validated and all per-frame old/new precision17 CSV bytes are exact. Final new live GPU download equals its last saved CSV and old live CSV.",
+    "feedback": "All saved immutable 33-column physical.bin, history.csv and native_ids.csv bytes exact. GPU native three J/n/theta and explicitly derived V/rho/k convention retained; no fabricated GPU PosDiv.",
+    "Native_live_export_final_key_is_singular": true,
+    "finite_elastic_no_exclusion_native_owner_ledger_and_clock_gates_preserved": true,
+    "Debug_actual_memcheck_errors": 0,
+    "Debug_actual_memcheck_leaks_bytes": 0,
+    "no_interpolation_no_threshold_relaxation": true,
+    "cross_option_or_half_error_claim": false
+  },
+  "outputs": {
+    "new_solver": "outputs/upl_gpu_perm_legacy_{Job}_r1",
+    "owned_run_receipt": "logs/upl_gpu_perm_legacy_{Job}_r1.run.json",
+    "new_review": "outputs/upl_gpu_perm_legacy_{Job}_r1_review",
+    "exact_review_check": "logs/upl_gpu_perm_legacy_{Job}_r1.check.json",
+    "rejected_existing_paths": true,
+    "all_native_raw_local_hash_bound": true,
+    "cloud_raw_or_executable_delivery_claim": false
+  },
+  "acceptance_limits": {
+    "implementation_regression_only": true,
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false,
+    "walls_tested": false,
+    "formal_case_run": false,
+    "new_complete_Darcy_actual_constant_regression_in_this_driver": false
+  },
+  "author_validation": "PowerShell parser and JSON syntax only; no compile, help, solver, memcheck, reader, Git mutation or watcher execution by this author."
+}
