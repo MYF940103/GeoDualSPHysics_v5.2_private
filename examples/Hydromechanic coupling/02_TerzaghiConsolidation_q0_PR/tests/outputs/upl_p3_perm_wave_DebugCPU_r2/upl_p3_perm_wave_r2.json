@@ -1,0 +1,43 @@
+{
+  "status": "declared_r2_periodic_fixture_lifecycle_repair_not_executed",
+  "harness_identity": {
+    "path": "support/upl_p3_perm_wave_r2.cpp",
+    "bytes": 23974,
+    "sha256": "149f152121a3c223b0a6fb0cda51d69a7a6992f68e6d4c318e506ba3345ea57c"
+  },
+  "files": [
+    "support/upl_p3_perm_wave_run_r2.ps1",
+    "support/upl_p3_perm_wave_r2.cpp",
+    "notes/upl_p3_perm_wave_r2.json"
+  ],
+  "source_freeze": "logs/upl_p3_perm_build_r2.json; no production/source/build-system edits by this author",
+  "prerequisites": [
+    "logs/upl_p3_perm_off_r2.check.json passed",
+    "logs/upl_p3_perm_actual_DebugCPU_r2.check.json passed",
+    "logs/upl_p3_perm_actual_ReleaseCPU_r2.check.json passed",
+    "logs/upl_p3_perm_review_r1.check.json passed"
+  ],
+  "geometry_seed": "Reuse sealed outputs/upl_p3_spatial_seed_r1_n32_{c,h}/CaseUplSpatial_n32_{c,h} XML/BI4 from logs/upl_p3_spatial_seed_r1.inputs.json: actual32x16 periodic X/Z,dp1/256,512 real nativeIDs,Npb0. No GenCase/new Def; retained inputs unchanged.",
+  "manufactured_initial_state": "Original material X is permanent. Current x=X+delta/kWave*sin(kWaveX),J=1+delta*cos(kWaveX),delta2^-15,kWave2pi/.125. Initial p=128cos(kWaveX),sigma_eff0,vx=A sin(kWaveX),A2^-9,Ck2^-10. Manufactured non-equilibrium perturbation, not physical theory validation or a new continuum1% gate.",
+  "timing": "Coarse dt2^-24,half2^-25,end2^-15. Debug positiveON coarse2 actual steps/3frames. Release positiveON coarse512/half1024,257 exact shared times i*2^-23. Same-initial constantOFF coarse512 effect control. k0 switchOFF/ON each16coarse steps/17frames, exact physical.bin fields/clocks; flags deliberately differ outside raw physical.",
+  "CLI_from_test_agent": {
+    "job": "--job STEPS SMOKE KZERO SWITCHON solverargs",
+    "half": "--half A.bin B.bin PSTAR USTAR NEW.json, unchanged original fullXYZ Half",
+    "effect": "--effect ON.bin OFF.bin HALF_MAX_P_RMS NEW.json; half max from just-passed JSON and round-tripped in argv"
+  },
+  "gates": {
+    "state": "All original finite/elastic/no-exclusion/native/periodic-owner/J-domain checks, |J-1|<=1e-4,solid-volume5e-13,energy<=1.1. Each saved ledger.csv retains native J/n/V/rho/ki/referenceki/GJ/u_k. Initial X/native mapping fixed.",
+    "time": "Independent current-state wave/pore-policy checks at guarded endpoints; original coupledCFL<=.01 and Ddt/h^2<=.01. Production DtVariable real force-stage guards remain active. Additional u_k=(Kw/n)*|alpha*ki*GJ|/gamma and dt*u_k/h<=.01 are independently recorded/screens at saved points, not a new per-force-stage independent probe or a general sufficient stability theorem.",
+    "half": "All257sample pressureRMS<=5Pa,maximum XYZ material displacement<=.005mm; pRMS/Pstar,fullXYZ velocityRMS/A,displacementRMS/Ustar<=1e-4. Exact initial26 same-ID fields/clocks; no interpolation. Pstar=B*A/cu0,Ustar=A/(cu0*kWave) remain nominal scales, not variable-coefficient theory.",
+    "force_and_nonempty": "One initial extra actual force audit and two option-rate helper calls; covered persistent arrays/original26field rollback byteexact. First audit initializes real force statistics; automatic two-stage force counts are not directly instrumented or claimed. Independently reconstruct current Ace/C/p/J pressure and acceleration chains. PositiveON sourceRMS and chainRMS>100 times original32epsF maximum-rate budget; pressure/accel single chains each>10 times budget. OFF/k0 do not inherit source-nonempty requirements.",
+    "conductivity": "Initial ki/k0 min<.97,max>1.03; positiveON final max |ki_final-ki_initial|/k0>1e-4. ON-minus-OFF history pressureRMS>max(.001Pa,10*measured independent-half max pressureRMS); v/u effects descriptive, not theory or half errors.",
+    "zero": "Both k0 physical.bin complete headers/all26fields/all512IDs/all17times byte/SHA identical; metadata flags intentionally differ."
+  },
+  "execution_order": "Same original sequence under entirely fresh r2 labels: prerequisites -> Debug Build -> Debug2step smoke -> Release Build -> ON coarse -> ON half -> independent257-half -> constantOFF coarse -> nonempty effect -> k0OFF -> k0ON -> exact. Stop dependent jobs on failure without relaxed gates. No r1 failed solver adoption/restart; state-agent old constantOFF original spatial pair remains separate.",
+  "artifacts": "New shallow build/job outputs and logs only. modes descriptive; ledger.csv/native_ids.csv/endpoint_policy.csv/initial_source.csv/26field physical.bin and completion identities hash-bound. Raw physical/ledger can be large local evidence, not automatically cloud Git. Formal/retained tests protected.",
+  "not_accepted": "No full/formal case,variablek wall,discontinuous/interface flux,GPU/public XML,unconditional stability or physical theory acceptance. No result-derived constitutive/threshold tuning.",
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false,
+  "r1_retained_failure": "Actual r1 Debug compile/link passed. The smoke failed during setup, before the first ComputeStep_Sym, when explicit LoadDcellParticles(Np,...) after prescribing the material map attempted to load pre-existing periodic images outside the primary domain as if all were native particles. Retain logs/upl_p3_perm_wave_DebugCPU_r1_smoke.run.json/log and its output directory; no physical or smoke pass is adopted or relabelled.",
+  "r2_only_fixture_change": "The new peer-authored r2 CPP loads the remapped real particles individually using their previously validated initial native index list (LoadDcellParticles n=1). The unchanged real RunCellDivide(true) then ignores/regenerates old periodic copies. Production source/freezes, geometry/seed/material/map/step/PDE, CLI/schema and every numerical gate remain unchanged. Await root/state exact source-diff review before execution. r1 source and all failed artifacts remain unchanged."
+}

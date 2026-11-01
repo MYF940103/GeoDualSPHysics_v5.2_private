@@ -1,0 +1,131 @@
+{
+  "passed": true,
+  "decision": "Bounded private CPU smooth-k periodic r2 implementation/integration evidence is internally consistent; no blocking defect found by independent read-only review.",
+  "scope": "Offline native/CSV/hash verification only; no compiler, physical solver, production edit or threshold change by this reviewer.",
+  "git_head_at_review": "1484022007c59f5f958705a826d40b83fbb35dd5",
+  "source_freeze": {
+    "path": "logs/upl_p3_perm_build_r2.json",
+    "sha256": "7b639f4c93ff6cb856f0086ea704a5b2bb04ead6d850f0811d030eaacdb04b2a"
+  },
+  "implementation_identity": {
+    "harness": "support/upl_p3_perm_wave_r2.cpp",
+    "harness_sha256": "149f152121a3c223b0a6fb0cda51d69a7a6992f68e6d4c318e506ba3345ea57c",
+    "runner_sha256": "1a0becaf6d41c7e0c3e3141b62245641026e3ae795d4defa44ca73da8adcabe7",
+    "production_cpp_sha256": "4588938ff4bfd213e411633f44a01b72b350d1bb32bf40a55b273cfa0cd6f2b3",
+    "production_header_sha256": "0f11ab0bf7cc725a502653bc211414c5be94405b7152923a2745193530a9269b"
+  },
+  "final_evidence": [
+    {
+      "path": "logs/upl_p3_perm_wave_DebugCPU_r2.smoke.check.json",
+      "bytes": 8543,
+      "sha256": "402abcdac9b29009e8b41e8ca0e11d475c6f84c40feb589a2efba102831079fb"
+    },
+    {
+      "path": "logs/upl_p3_perm_wave_ReleaseCPU_r2.check.json",
+      "bytes": 32025,
+      "sha256": "40fb94b4589965387e7b31729250981cb9c5fbf91c867bfcc959a0576edbedf3"
+    },
+    {
+      "path": "logs/upl_p3_perm_wave_ReleaseCPU_r2_half.check.json",
+      "bytes": 403,
+      "sha256": "fb03c0a66d4aa18b689831b6e8da9687c17a524e4ae4c0376ad606b1a0f0ae5c"
+    },
+    {
+      "path": "logs/upl_p3_perm_wave_ReleaseCPU_r2_effect.check.json",
+      "bytes": 405,
+      "sha256": "de8548abf9855cfe7bc3558f66a507b48d98756a64c927f1f6c86bc24d0d99fe"
+    },
+    {
+      "path": "logs/upl_p3_perm_wave_ReleaseCPU_r2_k0_exact.check.json",
+      "bytes": 1058,
+      "sha256": "4723f5c7f6a19a8b26f7b5541ed22c6314011b6cc526520789f6b589666bc71e"
+    }
+  ],
+  "integrity": {
+    "unique_byte_SHA256_bindings_verified": 565,
+    "mismatches": 0,
+    "owned_exit_zero_calls": 8,
+    "actual_solver_jobs": 6,
+    "call_scope": "One Debug 2-step smoke; five Release jobs (positive ON coarse/half, same-initial constant OFF, k0 OFF/ON); two other owned calls are offline half/effect comparators.",
+    "native_ids_per_job": 512,
+    "decoded_native_records_26_columns": 413696,
+    "independently_checked_ledger_rows": 413696,
+    "all_raw_values_finite": true,
+    "every_binary_saved_clock_step_exact": true,
+    "every_ledger_native_ID_time_step_matches_raw": true,
+    "historical_binding_policy": "Current source/build/program/runtime, immutable output/recipe/receipt bindings checked. Historical prebuild canonical original paths are intentionally not compared to overwritten prebuild bytes; their archived snapshots are verified.",
+    "no_exclusion_scope": "The unchanged/frozen fixture calls unique normal native-ID and original exclusion checks every actual step; raw inventory and ledger IDs were independently checked. This reviewer did not independently decode PartOut BI4."
+  },
+  "initialization": {
+    "map": "x=X+2^-15/kWave*sin(kWave*X), J=1+2^-15*cos(kWave*X), kWave=2pi/.125, permanent material X retained.",
+    "compatible_map_J_verified": true,
+    "native_32_by_16_reference_tensor_verified": true,
+    "manufactured_nonequilibrium": "p=128*cos(kWave*X), effective sigma=0 and vx=2^-9*sin(kWave*X); not an equilibrium/constant-coefficient analytic solution.",
+    "lifecycle_r2": "Only real native indices refresh Dcell. Standard RunPeriodic retires old periodic images and builds new owners; no manual Np truncation, codec change or native exclusion. Rejected r1 all-Np LoadDcell setup and logs remain retained.",
+    "rollback_scope": "Source audit backs up all listed persistent full-Np arrays and correction matrix; verifies whole 26-column initial snapshot and clocks restored exactly. First actual audit force initializes and retains real force statistics. No complete-object/timer-state rollback or directly counted automatic stage calls claimed."
+  },
+  "positive_on": {
+    "coarse_steps": 512,
+    "half_steps": 1024,
+    "coarse_dt_s": 5.960464477539063e-8,
+    "half_dt_s": 2.9802322387695312e-8,
+    "actual_end_s": 0.000030517578125,
+    "saved_samples_each": 257,
+    "ledger_n_V_rho_max_abs_formula_error": 0,
+    "ledger_k_max_relative_law_error": 0,
+    "initial_k_over_k0_min": 0.9593819247252522,
+    "initial_k_over_k0_max": 1.04233775332632,
+    "coarse_final_max_k_change_over_initial_k0": 0.0038692574106713906,
+    "half_final_max_k_change_over_initial_k0": 0.003869254517417105,
+    "max_saved_gradient_dt_over_h": 0.00005201033533007277,
+    "min_all_step_endpoint_bound_s": 0.000001726518938712989,
+    "max_saved_energy_ratio_recomputed": 1.0040016879183853,
+    "max_energy_ratio_reconstruction_difference": 7.66053886991358e-15,
+    "energy_arithmetic": "Independent reconstruction matches actual C++ 18*SoilCte.ModulusK float multiplication before double promotion (denominator 1610612736), not a changed energy gate."
+  },
+  "initial_source": {
+    "native_rows_each": 512,
+    "source_RMS_Pa_s": 13107.777242523769,
+    "total_chain_RMS_Pa_s": 11217.055791787836,
+    "pressure_chain_RMS_Pa_s": 21823.390521834717,
+    "acceleration_chain_RMS_Pa_s": 10606.334730340805,
+    "maximum_single_rate_roundoff_budget_Pa_s": 100.09295754296875,
+    "maximum_reference_error_Pa_s": 1.1532608922061627,
+    "original_nonempty_gates_passed": true,
+    "offline_scope": "Independently checks saved ON-minus-OFF arithmetic, complete chain sums, RMS, budget and residual limits. Independent all-particle C/Ace product reconstruction is executed inside the frozen actual initial-audit harness; this offline review does not reconstruct unsaved full C/Ace fields from CSV."
+  },
+  "independent_half": {
+    "samples": 257,
+    "max_pressure_RMS_Pa": 0.00022569230859501496,
+    "max_material_displacement_mm": 2.015054789694659e-11,
+    "max_pressure_RMS_over_Pstar": 2.2040264565969515e-7,
+    "max_velocity_XYZ_RMS_over_A": 4.3013943662372614e-7,
+    "max_displacement_XYZ_RMS_over_Ustar": 1.241461423189554e-7,
+    "max_J_difference": 2.0805579481475434e-12,
+    "all_original_absolute_5Pa_point005mm_and_normalized_point0001_gates_passed": true,
+    "initial_all_26_columns_bit_equal": true
+  },
+  "same_initial_option_effect": {
+    "max_pressure_RMS_Pa": 0.20144449765705907,
+    "actual_required_Pa": 0.0022569230859501494,
+    "effect_over_measured_half": 892.5625286528198,
+    "max_material_displacement_mm": 2.8544597242169954e-9,
+    "max_velocity_XYZ_RMS": 1.677215123313377e-7,
+    "interpretation": "Resolved ON-versus-constant-OFF physics change, not a theory error or half-step error."
+  },
+  "k0": {
+    "actual_end_s": 9.5367431640625e-7,
+    "saved_samples_each": 17,
+    "whole_physical_binary_bytes_equal": true,
+    "exact_native_field_pairs": 226304,
+    "actual_k_and_gradient_speed_zero": true
+  },
+  "limitations": [
+    "Current private CPU periodic, small perturbation, smooth scalar conductivity, fixed Ck=2^-10 only; no new public XML/GPU or wall-variable-k acceptance.",
+    "Independent gradient-k necessary speed is a saved-endpoint diagnostic, not a direct probe of every predictor/corrector force stage. Production current-J/k limits still execute at real force stages; neither proves generally sufficient spectral stability.",
+    "The Lstar/product-rule operator is not claimed generally conservative or exact across discontinuous permeability interfaces; conditional finite-Kw storage is not exact water mass.",
+    "Short-window half agreement and resolved option effect do not establish long-cycle, equilibrium, physical-theory, plastic, large-rotation or exact-restart acceptance.",
+    "Default-OFF and retained constant-law same-dt trajectory regressions are separate existing stages, not recomputed physical acceptance here."
+  ],
+  "physical_acceptance": false
+}
