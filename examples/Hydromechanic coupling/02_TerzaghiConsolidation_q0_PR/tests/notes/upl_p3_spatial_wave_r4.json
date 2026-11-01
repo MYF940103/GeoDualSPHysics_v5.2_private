@@ -1,0 +1,16 @@
+{
+  "stage": "Minimal offline wrapper repair, no new physics or harness",
+  "author": "/root",
+  "base": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "inherited_recipe": "logs/upl_p3_spatial_wave_recipe_r3.json",
+  "change": "Rename lowercase $mode CSV history to $modeHistory. PowerShell variables are case-insensitive: the old name collided with the ValidateSet-constrained $Mode parameter. Update only wrapper label/note/recipe paths to r4.",
+  "unchanged": "harness_r2, all production source, generated seeds, material, initial fields, actual step loop, time grids, all safety/half/accuracy thresholds and explicit binary64 metadata comparisons",
+  "retained_attempts": {
+    "r1": "First Debug32 rejected before its first physical frame/step because the fixture read unavailable force statistics.",
+    "r2": "Debug32 completed normally with 3 frames; its wrapper miscompared JSON Decimal and binary64. Retain and adopt this completed physical job.",
+    "r3": "Wrapper stopped while reading adopted Debug32 modes.csv, before any fresh Debug64 or Release invocation. No new physical output."
+  },
+  "execution": "Use the retained r2 Debug build and completed Debug32. Execute only previously unrun Debug64, then new r4 Release build and the four prescribed actual jobs. Do not Prepare or rebuild Debug.",
+  "original_gates": "All original state, geometry, identity, force-stage production limits and per-step endpoint screens remain. Independent half: 5Pa/.005mm and normalized XYZ p/v/u1e-4. Finest half: full-history normalized XYZ errors and endpoint pressure1%; combined error decreases across the three half trajectories.",
+  "physical_acceptance": false
+}

@@ -1,0 +1,20 @@
+{
+  "stage": "Root execution admission for spatial r5",
+  "recipe_sha256": "fed6fff2a78ff5a17ef1786494f05388b600dbe6259e22b27724989e55a34b80",
+  "read_only_review": "Independent state auditor confirmed 25 bindings, dp-only XML semantic correction, identical BI4, unchanged harness and thresholds; root confirmed all 14 direct recipe input bindings and parser zero errors.",
+  "metadata_correction": "Original recipe r5 is retained byte-for-byte. Its advisory command/output text still says r3; those strings are not executed. The actual r5 runner and this explicit command list are authoritative for this execution. No old worker is restarted.",
+  "runner": "support/upl_p3_spatial_wave_run_r5.ps1",
+  "command_arguments_in_order": [
+    "-Mode Smoke -Configuration DebugCPU -Label r5 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "-Mode Build -Configuration ReleaseCPU -Label r5 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "-Mode Run -Configuration ReleaseCPU -Label r5 -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "adoption": "Completed Debug32 r2 only; fresh Debug64 then four Release jobs in gated order. No GenCase or authoritative production rebuild, no change to frozen source.",
+  "fresh_release_outputs": [
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_c",
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_h",
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n64_c",
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n64_h"
+  ],
+  "solver_completion_is_not_physical_acceptance": true
+}

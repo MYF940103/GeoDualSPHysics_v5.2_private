@@ -1,0 +1,20 @@
+{
+  "stage": "Independent pre-execution review of the minimal r2 fixture-lifecycle repair",
+  "decision": "PASS for root's fresh r2 BuildDebug->two Debug2step smokes->BuildRelease->32 coarse/half gate->64 coarse/half gate. Reuse sealed r1 seeds; no new Prepare/GenCase. This is technical admission, not a compile, trajectory, half or continuum-accuracy result.",
+  "reviewer": "/root/upl_p2_state_audit",
+  "new_note_path_prechecked_absent": true,
+  "bindings": [
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_harness_r2.cpp", "bytes": 19995, "sha256": "58dd7a9c9b655b07947c1f9ff7e588705f2b77ea1bf961b6bb8ea57068cca146"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_run_r2.ps1", "bytes": 18318, "sha256": "9cbdefc9154e4cd3e6b164b9c3336a060f4ee6adc2d4409f105d3bc8935cad99"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_wave_r2.json", "bytes": 3982, "sha256": "ac9d233320c55781c1f6223312b2afb3585a8c3f04dd34d583740284a3e97487"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_spatial_wave_recipe_r2.json", "bytes": 7259, "sha256": "ece7f369db5fb3fbf397d5cf7fc21bb2d5d41c3a8cd11c51e9219752c2cfc4bb"}
+  ],
+  "r1_correction_to_prior_review": "The r1 admission review missed an initial diagnostic lifecycle dependency. JSphCpu.h:196-198 declares VelMax/AceMax/ViscDtMax but constructor/InitVars does not assign them. PreInteraction_Forces:1939-1940 first computes VelMax/ViscDtMax; Interaction_Forces tail:804 first computes AceMax. Calling the helper/force/natural-bound block before any force therefore reads unavailable statistics. The retained owned call exited1 with 'Endpoint necessary step bound failed'; physical.bin is only12-byte header and modes/policy only headers. No physical initial frame or ComputeStep was completed; this is not evidence of PDE instability. Original source/build/failure evidence stays retained.",
+  "exact_r2_delta_review": "Compared both complete r1/r2 CPP and runners. StateGuard gains forceStatsAvailable=true; initial call alone passes false. Energy is checked outside that branch. Only helper/force/velocity/viscous-dependent endpoint bounds and their policy row are deferred. Every later actual step uses default true. Other deltas are r2 identities/paths/comments. No production, PDE, material, geometry, step, sampling, reference,26-field schema or numerical threshold changes were found.",
+  "checks_retained": "Initial native/no-exclusion and finite elastic/p0/passive-rho checks, J/n/V/rho/solid-volume, strict positive-k domain, manual current cu/D/CFL/diffusion/PoreDtSafety, periodic owner and energy<=1.1 all remain. Every real step retains the full endpoint guard; unchanged actual ComputeStep_Sym still invokes the production first predictor force then DtVariable before ComputeSymplecticPre, and corrector force then DtVariable before Corr. No fake zero statistics, clipping, retry or threshold relaxation was added.",
+  "telemetry_scope": "Successful endpoint_policy has exactly steps rows and no synthetic t0 row; physical.bin/modes keep initial plus all declared samples. Its endpoint J and last-completed-force statistics do not constitute an independent all-force-stage audit. Complete source force-stage protection remains production DtVariable's responsibility and was not bypassed.",
+  "independent_integrity": {"new_and_retained_recipe_seed_source_binding_records": 55, "hash_or_size_mismatches": 0, "powershell_parser_errors": 0, "production_working_diff": false},
+  "remaining_acceptance": "Require fresh successful builds and owned exits, both short smokes, each single run and original absolute plus normalized all257 half gates. Root then recomputes unified full-XYZ continuum errors from retained16 and fresh32/64 bins before any1percent/refinement claim. No result is inherited from the failed r1 smoke.",
+  "build_or_solver_started_by_reviewer": false,
+  "physical_acceptance": false
+}

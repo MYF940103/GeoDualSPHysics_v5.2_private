@@ -1,0 +1,20 @@
+{
+  "stage": "Prepared metadata-only wrapper repair with one fixed completed-job adoption; no r3 execution by the author",
+  "predeclared_before_r3_execution": true,
+  "inherits_physics_and_thresholds": "notes/upl_p3_spatial_wave_r1.json and notes/upl_p3_spatial_wave_r2.json; harness_r2 remains byte-unchanged",
+  "source_freeze": "logs/upl_p3_time_build_r1.json; local/remote checkpoint 7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "r2_wrapper_failure": "Debug32 actual solver exited0 and complete.passed=true with3 valid frames. PS5 ConvertFrom-Json read cu/Pstar as Decimal; implicit Decimal-versus-Double equality rejected them despite identical binary64 values after explicit conversion. This is not a solver/safety/physical failure. Debug64 and every Release job had not launched.",
+  "minimal_repair": "Explicit [double] casts for actual_end_s,cu,Pstar,Ustar before exact comparison against independently calculated binary64 values. No tolerance added and no numerical formula/threshold/clock changed.",
+  "fixed_adoption": {
+    "only_adopted_job": "outputs/upl_p3_spatial_wave_DebugCPU_r2_n32_smoke",
+    "accepted_work": "Two actual coarse steps,512 native32x16 IDs,3 frames,actual end2^-23 seconds; not a long/half/continuum acceptance.",
+    "verification": "Recipe freezes the original Debug r2 build receipt, completed job run receipt and every current output file. Smoke verifies their hashes, all old build inputs/runtime/source hashes, owned exit0, exact original arguments/program identity and unchanged original completion/mode/symbol checks offline. The completed32 job is never invoked again.",
+    "program_for_smoke": "Retained outputs/upl_p3_spatial_wave_DebugCPU_r2/upl_p3_spatial_wave_harness_r2.exe and its existing Debug r2 build/runtime. No Debug rebuild."
+  },
+  "new_execution_after_root_review": "Smoke(r3): adopt completed32 offline, then only fresh64 Debug2step. Build(ReleaseCPU,r3): new companion from unchanged harness_r2 plus new r3 recipe. Run(ReleaseCPU,r3): fresh32 coarse/half then original half gate, fresh64 coarse/half then original half gate. Root is the sole owner.",
+  "no_prepare": "Runner has no Prepare option; existing sealed seed_r1/Defs are reused and hash-verified. No GenCase or Debug Build command is admitted.",
+  "counts": "Successful Debug smoke receipt records solver_jobs=2 admitted geometries, new_solver_jobs=1 and adopted_solver_jobs=1. Release records4 fresh jobs and0 adopted. Endpoint policy has steps rows, no synthetic initial row; physical/mode initial samples remain.",
+  "new_paths": "Only runner_r3, this note and recipe_r3 are authored now. All r1/r2 recipes/builds/outputs and production source remain unchanged.",
+  "fresh_half_binary_paths": ["outputs/upl_p3_spatial_wave_ReleaseCPU_r3_n32_h/physical.bin", "outputs/upl_p3_spatial_wave_ReleaseCPU_r3_n64_h/physical.bin"],
+  "physical_acceptance": false
+}

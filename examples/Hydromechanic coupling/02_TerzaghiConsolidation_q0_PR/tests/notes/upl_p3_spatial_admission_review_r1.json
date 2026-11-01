@@ -1,0 +1,37 @@
+{
+  "stage": "Independent pre-execution review of the new actual spatial fixture",
+  "reviewer": "/root/upl_p2_state_audit",
+  "git_head_at_review": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "decision": "No remaining blocking fixture defect found. Technically eligible for exactly two real coarse GenCase geometries, two2-step Debug smokes and four Release actual coarse/half jobs in the declared gated order. Root retains execution authority; this review itself starts no job and certifies no result.",
+  "review_note_path_was_absent_before_creation": true,
+  "inputs": [
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_harness_r1.cpp", "bytes": 19737, "sha256": "d487b911bba53823a1718c1d0b5cd18bc639252f22f0430b53e88bf13fdf074d"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_run_r1.ps1", "bytes": 18316, "sha256": "167c7c2d85496245db0ec5a7d6679debd7a7478287d52cd3a3b5b0b3fba033fb"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_wave_r1.json", "bytes": 5749, "sha256": "1b3f4f20652b7b1e0ec794361438f66c5bebccffb4a2174e7605e5a581d303f9"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n32_c_r1_Def.xml", "bytes": 4292, "sha256": "d3c41fa113dd98a6402bcf9ea808e5ed118a11bb9dcb0555b774f4cce0c0ad4a"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n32_h_r1_Def.xml", "bytes": 4294, "sha256": "a029ce709c894157eaa562874eef7ee30a9c68918071fbaf1f3d9c636cc991c6"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n64_c_r1_Def.xml", "bytes": 4299, "sha256": "4e6ff86de5e7eb9f9a93d14be94bfd9af1ec10a59f74c767fa6f25265d418dd3"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n64_h_r1_Def.xml", "bytes": 4301, "sha256": "d6719336f612772d65f160b551b6da28cdb1e00de4b8a9082bd1f52b706f0e9b"}
+  ],
+  "review": {
+    "geometry_and_identity": "Only Nx32/64 are accepted. Native=Nx*Nx/2; vector storage replaces fixed128 arrays. Each normal native ID must be unique in0..Native-1 with no exclusions; every initial x,z must be a unique exact half-dp tensor coordinate inside the same .125x.0625 box. Geometry preparation independently parses actual GenCase binary VTK points and checks no boundaries. The half BI4 is copied byte-identically; only its runtime DtIni/DtFixed values/comments are changed.",
+    "material_points_and_schema": "Initial[id] captures actual native coordinates before velocity assignment. Both modes and material displacements use these original coordinates, not sorted indices or moving spatial probes. Snapshot preserves the retained26-column order. Same-grid half requires its entire initial26-field frame byte-identical, and checks all XYZ velocity/displacement components. Unequal-grid IDs are never directly compared.",
+    "time": "End remains2^-15. Nx32 coarse/half use512/1024 steps at2^-24/2^-25; Nx64 use1024/2048 steps at2^-25/2^-26. The full loop writes257 exact shared times j*2^-23 using stride2/4/4/8. Half verifies every native row and all257 actual clocks with EOF checks; no interpolation or rewritten metadata. Debug smokes use two real coarse steps and three samples only.",
+    "actual_execution_and_cost": "Each new physical step calls the real ComputeStep_Sym, then RunCellDivide, time/update bookkeeping and O(N) native guards. No independent O(N^2) force replay is inserted. Initial moment/symbol assembly uses two O(N) loops at one receiver. Existing private production guards still execute at both force stages; endpoint_policy.csv is explicitly a separate endpoint screen, not an independently observed force-stage rate audit.",
+    "bounds_and_reference": "Current J/n/rho/cu/D, finite elastic/reference/passive density, solid volume, periodic scalar/velocity/stress ownership, no exclusion, energy<=1.1, cu*dt/h<=.01, Ddt/h2<=.01 and natural/pore bounds remain checked. InitRunCpu zeros the initial PorePressRate array, so the initial finite-rate check is defined. Discrete reference follows the same actual-header mixed-gradient convention; dyadic volumes equal their float stress-volume conversion. RK4 pressure reference self-check16/32 subdivisions remains <=1e-8Pa.",
+    "half_and_characteristic_scales": "Original all257 pressureRMS<=5Pa and per-material displacement max<=.005mm are retained; added pressureRMS/Pstar, full XYZ velocityRMS/A and displacementRMS/Ustar must each be<=1e-4. Runner independently verifies complete.json cu/Pstar/Ustar against fixed actual material before passing those scales. No comparison with paper/theory is mislabeled as a half gate.",
+    "gated_runner": "Prepare/Build/Smoke/Run all require the explicit authority/freeze flags. Source snapshots, canonical build identity, retained16 baseline, seeds, object/source/header inputs, runtime copies, job exits and output manifests are bound. Only Debug Smoke and Release Run are allowed; both Debug geometries must pass before Release physical execution. The32 pair must pass before64. Existing outputs/receipts are protected and failed calls stop dependent jobs.",
+    "resolved_before_execution": "The first draft checked only the offline symbol receipt status while reading its symbols.csv as an expected value. The author added Verify $symbol.files before all modes and again at Smoke/Run completion. This closes the observed expected-data binding gap without any numerical or production edit."
+  },
+  "independent_static_checks": {
+    "powershell_parser_errors": 0,
+    "all_four_xmls_parse": true,
+    "production_source_diff_during_review": false,
+    "compile_or_runtime_pass_inferred": false
+  },
+  "required_postrun_review_not_bypassed": "Recompute continuum XYZ-field RMS from the retained16 and new32/64 full26-column physical.bin using their own initial material coordinates and the same finite-Kw continuum reference. Old16 modes.csv lacks the new continuum XYZ columns, so it cannot supply E16 by substituting a modal endpoint or old discrete error. Cross-check new mode columns offline. Only after all single/half gates pass assess the predeclared combined-error decrease and finest1% full-history/endpoint-pressure objective. This continuum analysis is deliberately separate from the runner's half completion flag.",
+  "limitations": "Fixed36-neighbor moment/regularization floors, weak linear reference, finite-time midpoint behavior and nonconservative Lstar limitations remain. No new flow-adjusted-log/full-force replay claim, full Run output scheduling, walls,3D,public dynamic XML,GPU,formal case or universal stability/accuracy acceptance follows.",
+  "production_edits_by_reviewer": false,
+  "build_or_solver_started_by_reviewer": false,
+  "physical_acceptance": false
+}

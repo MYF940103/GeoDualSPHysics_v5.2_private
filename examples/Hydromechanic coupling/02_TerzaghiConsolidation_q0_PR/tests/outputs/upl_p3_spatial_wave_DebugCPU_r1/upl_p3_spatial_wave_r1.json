@@ -1,0 +1,46 @@
+{
+  "stage": "Prepared actual fixed-grid spatial refinement; no execution authorized by this file",
+  "predeclared_before_GenCase_build_or_solver": true,
+  "authoring_scope": "New tests only; production source and all retained recipes/results remain unchanged. File paths were checked absent before creation.",
+  "governing_plan": "notes/upl_p3_spatial_plan_r1.json",
+  "source_freeze": "logs/upl_p3_time_build_r1.json; source already committed local/remote7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "problem": "Same Lx=.125,Lz=.0625,hdp1.8,mode1,vx=2^-9*sin(2pi*x0/Lx),J1,p=p0=0,six effective stresses0,actual float pressure/rate/velocity and double J/stress/position. Actual K89478488,G134217728,Kw67108864,n0.25,rho0=2048,rho_w1000,k=float(.0001). No wall/HG/SPR/viscosity/damping/shifting/DDT/gravity/load/drainage/plasticity change.",
+  "private_flags": "Observer+Feedback+DynamicPorePressure true in companion constructor only. No public XML dynamic switch.",
+  "retained_control": "Adopt upl_p3_time_wave_ReleaseCPU_r1_k1_c_actual and _h_actual,128 native16x8; never rerun16 merely for a new label.",
+  "new_grids": [
+    {"nx":32,"nz":16,"native":512,"dp":"2^-8","coarse_dt":"2^-24","half_dt":"2^-25","steps":[512,1024]},
+    {"nx":64,"nz":32,"native":2048,"dp":"2^-9","coarse_dt":"2^-25","half_dt":"2^-26","steps":[1024,2048]}
+  ],
+  "new_seed_recipe": "Exactly two real GenCase calls,coarse32 then64. Each must yield intended native tensor lattice,no boundaries,correct full box. Verify actual binary VTK coordinates independently. Half companion BI4 is copied byte-identically; generated runtime XML keeps casedef/constants/particles/material/domain and changes only DtIni/DtFixed value/comment according to the authored half Def. Four authored Def XMLs are retained. No invocation until separate root authorization.",
+  "execution_order": "Prepare seeds -> authoritative-object Debug companion build -> two new-geometry2step Debug smokes -> Release companion build ->32 coarse+half ->32 half gate ->64 coarse+half ->64 half gate. Every later dependent stage requires prior receipts passed. No full Debug runs and no O(N^2) force replay are added.",
+  "smoke": "One actual2step coarse-dt run per new grid;3 actual samples,not a half/long acceptance. Same state/safety/reference guards.",
+  "actual_loop": "Actual ComputeStep_Sym,real memory,real periodic RunCellDivide after every step. Vector-owned Native arrays and dynamic binary rows; each native ID0..N-1 and initial tensor coordinate checked. Full end2^-15,257 actual paired times j*2^-23,not interpolated. All26 endpoint columns match the retained schema.",
+  "guard_scope": "Production private DtVariable executes its necessary full bound and RH checks at both actual force stages. New companion adds independent O(N) endpoint current-J/n/rho/cu/D/helper-scale/locked-step screens,finite ledger/elastic/no-exclusion/energy and periodic copied scalar/velocity/stress ownership. endpoint_policy.csv is explicitly endpoint evidence,NOT a new independent all-force-stage-rate audit. The already passed128-node force replay/component implementation evidence is retained,not repeated at2048 nodes.",
+  "unchanged_per_run_limits": {
+    "native_ids_and_no_exclusions": true,
+    "solid_volume_identity_abs":5e-13,
+    "J_minus1_max_abs":0.0001,
+    "finite_elastic_p0_zero": true,
+    "energy_ratio_max":1.1,
+    "cu_dt_over_h_max":0.01,
+    "D_dt_over_h2_max":0.01,
+    "diffusion":"dt<=PoreDtSafety*h^2/D from current n; retain drained natural-step screen too",
+    "discrete_pressure_RMS_Pa_max":1,
+    "discrete_velocity_RMS_over_A_max":0.001,
+    "discrete_displacement_RMS_over_Ustar_max":0.001,
+    "rate_assembly_scope":"No new claim of independently integrated flow-adjusted log residual or full O(N^2) rate assembly for these actual-only fine jobs. Actual production complete-rate replacement is unchanged and covered by earlier component/replay gates."
+  },
+  "half_limits_all257_actual_times": {
+    "initial_same_ID_26_fields_byte_exact":true,
+    "pressure_RMS_Pa_max":5,
+    "material_displacement_vector_max_mm":0.005,
+    "pressure_RMS_over_Pstar_max":0.0001,
+    "velocity_vector_XYZ_RMS_over_A_max":0.0001,
+    "material_displacement_vector_XYZ_RMS_over_Ustar_max":0.0001,
+    "scales":"A=2^-9,cu=sqrt((K+4G/3+Kw/n0)/rho0),Pstar=(Kw/n0)*A/cu,Ustar=A/(cu*2pi/Lx); runner checks saved complete cu/Pstar/Ustar against these actual fixed material values before passing comparator arguments."
+  },
+  "continuum_and_refinement_review": "Root owns separate offline analysis/plots. Recompute full XYZ field RMS for retained16 and new32/64 from complete26-column physical.bin at the same257 actual times and initial material coordinates; never compare equal IDs across different grids. Use one exact finite-Kw coupled continuum eigen reference with loaded constants; new Modes RK4 reference is independently self-checked and should be cross-checked offline. Combined max(pRMS/Pstar,vRMS/A,uRMS/Ustar) must decrease16->32->64 using half trajectories. Finest half all three all-time normalized errors<=.01 and endpoint pressure-mode relative error<=.01. Record any failure without tuning material,relaxing limits or calling continuum accuracy accepted from a half pass.",
+  "cost_and_storage": "Four actual Release fine-grid jobs only,not repeated audits. Binary26-column data approximately274MB; retain locally under outputs and hash-bind,do not automatically cloud-Git raw binaries/executables. Formal case/server results remain protected.",
+  "not_accepted_by_this_preparation": ["new geometry actually generated","companion compile","solver/half/continuum accuracy","general stability","public XML/GPU","physical-case or boundary release"],
+  "physical_acceptance":false
+}

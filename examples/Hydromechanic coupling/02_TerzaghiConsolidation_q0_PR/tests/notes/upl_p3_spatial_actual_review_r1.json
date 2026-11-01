@@ -1,0 +1,419 @@
+{
+  "passed": true,
+  "stage": "Independent read-only review of actual private CPU P3 spatial refinement",
+  "source_checkpoint": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "scope": "Same weak-amplitude 2D x/z-periodic no-wall mode1 problem at16x8,32x16,64x32. Full XYZ material fields are reviewed; this is not public XML/GPU/formal-case or general poromechanical acceptance.",
+  "reviewer_actions": "Read frozen source/recipes/receipts; independently parse GenCase binary VTK XYZ and Idp, all six complete26-column physical.bin trajectories and exact clocks; independently calculate continuum reference and full-field/half errors. No compiler, GenCase, solver, existing-artifact edit or Git operation was performed.",
+  "integrity": {
+    "documents_checked": 23,
+    "hash_binding_records": 1613,
+    "unique_bound_files": 780,
+    "hash_mismatches": 0,
+    "owned_successes": {
+      "fresh_Release_actual_jobs": 4,
+      "independent_half_comparator_calls": 2,
+      "Debug_smokes": 2,
+      "Debug_new": 1,
+      "Debug_adopted_completed_r2_n32": 1,
+      "all_exit_codes": 0,
+      "all_owned_calls_exited": true,
+      "Release_calls_strictly_sequential": true
+    },
+    "no_owned_companion_survivors": {
+      "checked_utc": "2026-11-01T10:17:55.8818297Z",
+      "matching_processes": 0
+    },
+    "physical_bin_schema": "Little-endian uint32[N,26,257], then257 actual binary64 clocks and N ID-ordered26-column rows. Binary has implicit row IDs, not an explicit ID column: production-derived Indices checks each normal native ID0..N-1 before each snapshot; independent initial rows equal actual GenCase Idp-labelled coordinates.",
+    "initial_seed_checks": [
+      {
+        "nx": 32,
+        "native": 512,
+        "native_ids_complete_unique": true,
+        "all_initial_rows_match_GenCase_ID_coordinates_exact": true
+      },
+      {
+        "nx": 64,
+        "native": 2048,
+        "native_ids_complete_unique": true,
+        "all_initial_rows_match_GenCase_ID_coordinates_exact": true
+      }
+    ],
+    "actual_Release_jobs": [
+      {
+        "nx": 32,
+        "native": 512,
+        "coarse_dt": "2^-24",
+        "half_dt": "2^-25",
+        "steps": [
+          512,
+          1024
+        ],
+        "samples_each": 257,
+        "actual_end_s": 0.000030517578125
+      },
+      {
+        "nx": 64,
+        "native": 2048,
+        "coarse_dt": "2^-25",
+        "half_dt": "2^-26",
+        "steps": [
+          1024,
+          2048
+        ],
+        "samples_each": 257,
+        "actual_end_s": 0.000030517578125
+      }
+    ],
+    "saved_clocks": "All six full trajectories have exactly t_j=j*2^-23,j=0..256; no interpolation, native metadata rewrite or cross-grid ID matching.",
+    "Debug_smokes": [
+      {
+        "nx": 32,
+        "native": 512,
+        "steps": 2,
+        "samples": 3,
+        "actual_end_s": 1.1920928955078125e-7
+      },
+      {
+        "nx": 64,
+        "native": 2048,
+        "steps": 2,
+        "samples": 3,
+        "actual_end_s": 5.960464477539063e-8
+      }
+    ],
+    "retained16": "Completed source-time-policy16 coarse/half controls are adopted; neither was rerun or relabelled as a new spatial solve.",
+    "primary_bound_records": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_ReleaseCPU_r5.check.json",
+        "bytes": 20732,
+        "sha256": "50d33b3202081f2106094f87851fd54fbc5dd1c50e14c43e834cc320e42a60ed"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_DebugCPU_r5.smoke.check.json",
+        "bytes": 10910,
+        "sha256": "eaecbcd6fe529b594f2b59973eb94f8fd8904ea1d9871ba55222fe21fb36ddb0"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_r1.check.json",
+        "bytes": 9485,
+        "sha256": "4ef5a61309d1b5ca93f9265e766ceec768eeca57371d54b1675db04dcf2f1927"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_ReleaseCPU_r5.build.json",
+        "bytes": 130803,
+        "sha256": "c22a40f61aff95b4601d46a604b8488da5511416d616e1c7454634c555b1740c"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_DebugCPU_r2.build.json",
+        "bytes": 129877,
+        "sha256": "a0795acb34090be3102d62ca38d2633ed77d12b6bf99ac887aa277bff1f63ca4"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_seed_r1.inputs.json",
+        "bytes": 13213,
+        "sha256": "8f9cfdd67615cf65ca3ab8eba7f7f907d25c9c1e20be0ab20788eec363fdc8af"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_recipe_r5.json",
+        "bytes": 15269,
+        "sha256": "fed6fff2a78ff5a17ef1786494f05388b600dbe6259e22b27724989e55a34b80"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_time_build_r1.json",
+        "bytes": 4796,
+        "sha256": "10ad98a4be2e3d3b9d9d1a72f8fe6d77d1f13b8f01b9a3cd412dbc20776e013c"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_symbol_r2.check.json",
+        "bytes": 61059,
+        "sha256": "3fa3d1c0c58f1d1981c64b4a1f537248c5bf677968a130075673e202d0805547"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_time_wave_ReleaseCPU_r1.check.json",
+        "bytes": 66151,
+        "sha256": "deb0f90398dac20271dd42e7f19b3b3e3d367a37799da81128b1143acfd9cc29"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_seed_r2_n64.inputs.json",
+        "bytes": 6128,
+        "sha256": "14529e1a80a95f7c16bf7b0fb82cc574771ca752dcf62524b79e643245fa0bb2"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_wave_r5.execution.json",
+        "bytes": 1523,
+        "sha256": "52ad4f71e919332eac95a723c78ac16dcd40c2e33c39529d58ffc46867427c72"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_time_wave_ReleaseCPU_r1.build.json",
+        "bytes": 127054,
+        "sha256": "c90f3254358e686c2fab2e5e51017a5ffaeb8de7a27eb1f50a5967821af834d7"
+      }
+    ]
+  },
+  "preserved_setup_failures": {
+    "r1": "Debug32 exited1 before actual stepping: fixture initial StateGuard read force statistics before the first force call. physical.bin has header only, no physical frame. r2 preserves initial ledger/CFL/diffusion/energy/owner checks and defers only force-dependent checks until actual forces exist. Production source, equations and limits unchanged.",
+    "r2": "Debug32 solver completed normally, exit0,2 actual steps/3 frames. PS5 ConvertFrom-Json stored cu/Pstar as Decimal, causing a Decimal-vs-Double exact metadata comparison rejection. Casting parsed scalars to binary64 restores exact equality; completed solver was adopted, not rerun.",
+    "r3": "Wrapper local $mode collided case-insensitively with ValidateSet parameter $Mode while reading adopted32 CSV; stopped before fresh physical jobs. r5 uses $modeHistory.",
+    "r4": "Fresh Debug64 rejected ConfigDomain because generated runtime XML rounded intended dp1/512 to.00195313 although Def/BI4 tensor/H/masses were exact. New runtime copies change only constants/dp to.001953125; old files remain. An unexecuted Release link-list typo user42.lib was restored to user32.lib in r5. No Release solver/build was admitted under the bad list.",
+    "corrected_seed_semantics": "Independently compared old/new64 runtime XML recursively: one semantic attribute change only,dp.00195313->.001953125,for each coarse/half copy. Original/new BI4 byte-identical. No new GenCase calls or native coordinate modification.",
+    "r5_execution_metadata": "Retained recipe still contains advisory r3 command/output strings. They are not executed. logs/upl_p3_spatial_wave_r5.execution.json binds the recipe hash and explicit correct r5 Smoke/ReleaseBuild/Run commands; actual receipts/program paths/outputs agree. New numerical results are four fresh Release r5 jobs only.",
+    "retained_logs": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_driver_r1_Smoke_DebugCPU.log",
+        "bytes": 10714,
+        "sha256": "bfc65ca6b2aa86ee754e762719c3242eec999baf174fc9dcf7dbaefd53fbb71d"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_driver_r2_Smoke_DebugCPU.log",
+        "bytes": 10046,
+        "sha256": "0f31cb03e329e95ac4ff67986f9771f8defb7074d360e285ce808111e251579d"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_driver_r3_Smoke_DebugCPU.log",
+        "bytes": 1848,
+        "sha256": "95c96453c781dbd7a2193392f7a3de323602ee92a04c9370360aaac2a488e29b"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_spatial_driver_r4_Smoke_DebugCPU.log",
+        "bytes": 7622,
+        "sha256": "1561280d054434ebceba85fa8229daacda3ee97cd6137f5763d241d95e23282e"
+      }
+    ]
+  },
+  "independent_reference": {
+    "method": "Independently assembled scaled augmented4x4 matrix exponential scipy.linalg.expm, initial[u/Ustar,v/A,sigma/Sstar,p/Pstar]=[0,1,0,0],Sstar=M*A/cu. Not stored modes.csv RK4 reference and not the parent plot's sigma normalization.",
+    "actual_fixed_material": {
+      "K": 89478488,
+      "G": 134217728,
+      "Kw": 67108864,
+      "n0": 0.25,
+      "rho0": 2048,
+      "rhow": 1000,
+      "hydraulic_conductivity": "float32(.0001)",
+      "Lx": 0.125,
+      "Lz": 0.0625,
+      "mode": 1,
+      "h_over_dp": 1.8
+    },
+    "characteristic_scales": {
+      "A": 0.001953125,
+      "Pstar": 1023.9999974568686,
+      "Ustar": 7.589099058944216e-8,
+      "cu": 512.0000012715657,
+      "q": 50.26548245743669,
+      "D": 2.7372797970637275,
+      "normalized_augmented_matrix": [
+        [
+          0,
+          25735.927082123446,
+          0,
+          0
+        ],
+        [
+          0,
+          0,
+          -12867.96360497759,
+          12867.963477145862
+        ],
+        [
+          0,
+          25735.927082123446,
+          0,
+          0
+        ],
+        [
+          0,
+          -25735.927082123446,
+          -3376.983625061461,
+          -3539.078803906822
+        ]
+      ],
+      "scipy_version": "1.10.1",
+      "numpy_version": "1.25.1",
+      "python_version": "3.11.3 | packaged by Anaconda, Inc. | (main, Apr 19 2023, 23:46:34) [MSC v.1916 64 bit (AMD64)]"
+    },
+    "definitions": "At every actual saved time compute pressure RMS/Pstar, full XYZ velocity-vector RMS/A and full XYZ material-displacement-vector RMS/Ustar directly from native rows and their own initial coordinates. Continuum x fields use sin/cos(k*x0); expected transverse components are zero. Normalizations are fixed characteristic amplitudes, not instantaneous local relative error near zeros.",
+    "maximum_difference_all_parent_history_columns": 1.9206858326015208e-14,
+    "maximum_difference_direct_native_modes_vs_saved_native_units": 1.057287590811029e-11,
+    "no_filtering_smoothing_or_interpolation": true
+  },
+  "independent_full_fields": [
+    {
+      "nx": 16,
+      "native": 128,
+      "samples": 257,
+      "end_s": 0.000030517578125,
+      "full_field_max_RMS_normalized": {
+        "p": 0.030909140409957514,
+        "v_XYZ": 0.026984946576651094,
+        "u_XYZ": 0.00731640175414763
+      },
+      "error_time_indices": [
+        256,
+        256,
+        256
+      ],
+      "combined_max": 0.030909140409957514,
+      "endpoint_p_relative_error": -0.06197006456596044,
+      "endpoint_v_relative_error": 0.0539521538254959,
+      "endpoint_u_relative_error": 0.014631833396713922,
+      "endpoint_sigma_relative_error": -0.05357245177837311,
+      "half_max_pressure_RMS_Pa": 0.00031497467566686,
+      "half_max_u_mm": 4.757305660518796e-11,
+      "half_max_normalized": {
+        "p": 3.0759245746983206e-7,
+        "v_XYZ": 5.000814596530818e-7,
+        "u_XYZ": 4.7495095082915606e-7
+      },
+      "transverse_component_max_normalized": [
+        0.026984946576651073,
+        0,
+        1.0057412751869818e-9,
+        0.007316401754147633,
+        0,
+        0
+      ]
+    },
+    {
+      "nx": 32,
+      "native": 512,
+      "samples": 257,
+      "end_s": 0.000030517578125,
+      "full_field_max_RMS_normalized": {
+        "p": 0.007339931984118514,
+        "v_XYZ": 0.007695995736053829,
+        "u_XYZ": 0.002094039291528161
+      },
+      "error_time_indices": [
+        256,
+        256,
+        256
+      ],
+      "combined_max": 0.007695995736053829,
+      "endpoint_p_relative_error": -0.014715907226649838,
+      "endpoint_v_relative_error": 0.015386932229430883,
+      "endpoint_u_relative_error": 0.0041878008890348095,
+      "endpoint_sigma_relative_error": -0.01309107255594577,
+      "half_max_pressure_RMS_Pa": 0.00031962311482936477,
+      "half_max_u_mm": 4.994619736243222e-11,
+      "half_max_normalized": {
+        "p": 3.1213194885073957e-7,
+        "v_XYZ": 6.341093418890317e-7,
+        "u_XYZ": 2.955733145625161e-7
+      },
+      "transverse_component_max_normalized": [
+        0.007695995736053591,
+        0,
+        1.9403571770118696e-9,
+        0.0020940392915281625,
+        0,
+        2.4197930768790772e-11
+      ]
+    },
+    {
+      "nx": 64,
+      "native": 2048,
+      "samples": 257,
+      "end_s": 0.000030517578125,
+      "full_field_max_RMS_normalized": {
+        "p": 0.001334800916705567,
+        "v_XYZ": 0.002581263824288376,
+        "u_XYZ": 0.0007066777451305306
+      },
+      "error_time_indices": [
+        224,
+        256,
+        256
+      ],
+      "combined_max": 0.002581263824288376,
+      "endpoint_p_relative_error": -0.0025991478403728507,
+      "endpoint_v_relative_error": 0.005160830656013582,
+      "endpoint_u_relative_error": 0.0014132617328106445,
+      "endpoint_sigma_relative_error": -0.0029201484389801413,
+      "half_max_pressure_RMS_Pa": 0.0002906777515798563,
+      "half_max_u_mm": 6.411537967210279e-11,
+      "half_max_normalized": {
+        "p": 2.838649924821897e-7,
+        "v_XYZ": 7.707740392491923e-7,
+        "u_XYZ": 3.4985263351293864e-7
+      },
+      "transverse_component_max_normalized": [
+        0.002581263824286847,
+        0,
+        2.8084273928682233e-9,
+        0.000706677745130526,
+        0,
+        8.496443851893888e-11
+      ]
+    }
+  ],
+  "gates": {
+    "original_half_pressure_RMS_Pa": 5,
+    "original_half_material_vector_max_mm": 0.005,
+    "additional_half_each_full_field_RMS_normalized": 0.0001,
+    "all_three_half_pairs_passed": true,
+    "half_is_not_zero_ULP": "Coarse/half native fields differ. Half results are independent error measures, never byte-equivalence claims.",
+    "finest_all_history_each_field_RMS_normalized_limit": 0.01,
+    "finest_endpoint_pressure_mode_relative_limit": 0.01,
+    "monotone_combined_maximum_decrease": true,
+    "finest_one_percent_objective_passed": true,
+    "combined_maximum_percent": [
+      3.0909140409957514,
+      0.7695995736053829,
+      0.2581263824288376
+    ],
+    "endpoint_pressure_mode_error_percent": [
+      -6.197006456596044,
+      -1.4715907226649838,
+      -0.2599147840372851
+    ]
+  },
+  "independent_safety": {
+    "saved_native_records_reviewed": 1381632,
+    "saved_finite_fields_and_p0_zero_elastic_load_zero": true,
+    "solid_volume_max_absolute_error": 0,
+    "saved_energy_ratio_max": 1.0015667271449422,
+    "saved_energy_vs_saved_modes_max_difference": 1.1102230246251565e-14,
+    "saved_current_coupled_CFL_max": 0.004340283665278962,
+    "saved_current_Ddt_h2_max": 0.006600361697290601,
+    "saved_positive_k_RH_margin_min": 23.994460840625266,
+    "fresh_endpoint_policy_rows": [
+      {
+        "nx": 32,
+        "trajectory": "coarse",
+        "rows": 512
+      },
+      {
+        "nx": 32,
+        "trajectory": "half",
+        "rows": 1024
+      },
+      {
+        "nx": 64,
+        "trajectory": "coarse",
+        "rows": 1024
+      },
+      {
+        "nx": 64,
+        "trajectory": "half",
+        "rows": 2048
+      }
+    ],
+    "policy_review": "All4608 fresh endpoint policy rows have exact integer steps/clocks,declared dt,dt<=complete bound,energy<=1.1 and abs(cumulative fixed error)<=1e-14. At shared saved endpoints independent current-J diffusion bounds match. Recorded wave scale is slightly below h/cu because the existing ViscDtMax velocity-gradient restriction remains even with Visco0; it must not be falsely equated to pure acoustic h/cu. Native snapshots do not store ViscDtMax/AceMax, so exact all-force-stage bound arithmetic remains source/production-guard evidence, not a new independent replay.",
+    "energy_arithmetic": "To compare recorded energy bit-near-exactly, independent summation preserves source float products4G,18K,2Kw in denominators. Source-order versus independent native summation differs by<=1.11e-14. Energy<=1.1 is unchanged.",
+    "endpoint_not_all_force_replay": "New fine-grid runs execute actual ComputeStep_Sym and production guards plus endpoint safeguards. No O(N^2) all-node all-force-stage replay was added; prior component/replay evidence is retained. Retained16 actual controls do not contain the new endpoint_policy.csv."
+  },
+  "figure_review": {
+    "inspected": "figures/upl_p3_spatial_r1.png",
+    "result": "Readable three modal histories and full-field error-vs-grid plot with explicit finite-window/private scope,normalization labels and1%objective. Matching771-row history CSV and3-row summary CSV independently agree with full-native/expm calculations.",
+    "no_new_plot_written_by_reviewer": true
+  },
+  "conclusion": "PASS for the predeclared bounded actual periodic weak-wave spatial objective: combined full-field error decreases and finest half meets all1%targets. This now adds actual integration evidence to the prior frozen predictions. It does not remove the known fixed36-neighbor moment floor or establish asymptotic second-order convergence.",
+  "limitations": [
+    "Only a30.517578125-microsecond weak-amplitude regular2D periodic no-wall window and current tested positive-k material domain.",
+    "The continuum solution is a linear weak-amplitude reference,not an exact nonlinear trajectory.",
+    "No general disordered-particle,physical-wall/drainage/loading,3D long trajectory,plasticity,large rotation,GPU,public-switch,exact-restart or formal-case1%claim.",
+    "Raw physical.bin/BI4/executables/objects/DLLs remain local hash-bound evidence,not cloud-Git backup."
+  ],
+  "full_physical_acceptance": false
+}

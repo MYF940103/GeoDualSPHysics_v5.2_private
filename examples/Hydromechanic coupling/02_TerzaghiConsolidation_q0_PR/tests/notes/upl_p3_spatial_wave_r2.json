@@ -1,0 +1,34 @@
+{
+  "stage": "Prepared minimal fixture-lifecycle repair; no r2 build or solver started by the author",
+  "predeclared_before_r2_build_or_solver": true,
+  "inherits_unchanged_numerical_recipe": "notes/upl_p3_spatial_wave_r1.json",
+  "governing_plan": "notes/upl_p3_spatial_plan_r1.json",
+  "source_freeze": "logs/upl_p3_time_build_r1.json; verified local/remote checkpoint 7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "authoring_scope": "Only new harness_r2, runner_r2, this note and recipe_r2; no production or old artifact writes. New paths were checked absent.",
+  "r1_failure": {
+    "receipt": "logs/upl_p3_spatial_wave_DebugCPU_r1_n32_smoke.run.json",
+    "owned_exit_code": 1,
+    "exact_reason": "Endpoint necessary step bound failed",
+    "stage": "Before the initial frame and before any actual ComputeStep_Sym call; physical.bin has only its 12-byte header, and modes/endpoint_policy contain only headers; no completion receipt.",
+    "cause": "The fixture's initial StateGuard read VelMax, AceMax and ViscDtMax before their first actual force evaluation. These force statistics are not initialized by the CPU constructor. Production DtVariable evaluates its dynamic guards after actual force evaluation and does not have this fixture-lifecycle error.",
+    "interpretation": "Not evidence of PDE instability or a completed physical trajectory. All r1 sources, seeds, builds and failure output remain retained and unchanged. Later r1 dependent jobs were not launched."
+  },
+  "minimal_change": {
+    "signature": "StateGuard(double dt,bool forceStatsAvailable=true)",
+    "initial_call": "StateGuard(dt,false)",
+    "initial_checks_retained": "Native IDs/no exclusions, finite/elastic/reference-p0/passive-rho fields, physical J/n/V/rho ledger and solid-volume identity, strict positive-k domain, independently computed current cu and D, original coupled CFL/diffusion and PoreDtSafety limits, periodic copied ownership, and energy<=1.1.",
+    "deferred_until_real_force_statistics_exist": "GetDynamicStepScalesCpu reference, force/velocity/viscous-dependent complete and drained-natural endpoint bounds, and their endpoint_policy row. No force statistics are assigned fake zero values.",
+    "subsequent_steps": "Every actual step still calls StateGuard(dt) with its original default true and full original checks. Production predictor/corrector DtVariable guards are untouched and run at the actual force stages, including the first step.",
+    "endpoint_policy_rows": "Exactly steps rows per successful run, not steps+1; no initial t=0 force-dependent row. modes.csv/physical.bin still contain the initial sample and all originally declared samples.",
+    "other_differences": "Only r2 application identity and new recipe/build/output labels. No material, geometry, PDE, time integrator, time step, sampling, reference formula or numerical threshold changes."
+  },
+  "seed_adoption": "Reuse sealed logs/upl_p3_spatial_seed_r1.inputs.json and all four existing r1 Def/runtime/BI4 seeds after byte-hash verification. Do not invoke Prepare or rerun GenCase.",
+  "authorized_order_after_independent_root_review": "r2 Debug build -> two new-geometry 2-step Debug smokes -> r2 Release build -> fresh32 coarse/half and original half gate -> fresh64 coarse/half and original half gate. Parent root remains the sole execution owner.",
+  "unchanged_acceptance": "All r1 per-run, original 5Pa/.005mm, added normalized1e-4 and finest continuum1percent/refinement objectives remain unchanged. No O(N^2) replay added. The root's independent offline full-XYZ continuum review remains separate.",
+  "fresh_half_binary_paths": [
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r2_n32_h/physical.bin",
+    "outputs/upl_p3_spatial_wave_ReleaseCPU_r2_n64_h/physical.bin"
+  ],
+  "not_proved_by_this_preparation": ["r2 compilation", "solver completion", "half agreement", "continuum accuracy", "general stability", "public XML/GPU or physical-case acceptance"],
+  "physical_acceptance": false
+}

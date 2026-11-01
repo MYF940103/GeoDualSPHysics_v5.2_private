@@ -1,7 +1,7 @@
 {
   "date": "2026-11-01",
   "branch": "upl-dev",
-  "stage_base": "c501f04e4db17be6532797776d6fcbb6e9b7679f",
+  "stage_base": "7fdaa139c6bc164059736955ee80f2ca899743ef",
   "status": "P2 restricted CPU feedback and P3 restricted CPU dynamic-pressure implementation verified; public model not released",
   "user_entry": "The intended single HydroMechDynamicSeepage switch remains unimplemented in XML. Existing hydromechanical runs still default to original u-pw.",
   "implemented": [
@@ -54,9 +54,23 @@
     "limits": "m4 has only four particles per wavelength and is checked against the discrete operator, not admitted as continuum accuracy. A corrector-time rejection leaves an interrupted half-state, not a completed step. RunInitialize can contribute pre-existing FixedDt error history before the new complete-bound calls. No public input, GPU, wall or physical-case acceptance.",
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_time_stage_r2.check.json"
   },
+  "actual_spatial_refinement": {
+    "scope": "Private CPU periodic weak-wave problem, same fixed physical constants and end2^-15s;16x8/32x16/64x32 at h/dp1.8. No wall or public-model admission.",
+    "execution": "Retained16-grid actual controls adopted; only four fresh Release32/64 coarse/half jobs executed. Completed Debug32 adopted, only Debug64 fresh. No production source edit since7fdaa.",
+    "full_history_normalized_RMS_combined": [0.030909140409957514, 0.007695995736053829, 0.002581263824288376],
+    "endpoint_pressure_relative_errors": [-0.0619700645659611, -0.014715907226650282, -0.002599147840378291],
+    "independent_halves": "All257 actual times per grid satisfy original5Pa/.005mm bounds and predeclared normalized p/v/u<=1e-4; new32/64 pressure RMS maxima0.000319623/0.000290678Pa.",
+    "reference": "Root independent scaled augmented4x4 matrix exponential and complete XYZ material fields; not a modal-only error estimate. Finest full-history and endpoint errors meet the bounded1-percent objective.",
+    "limitations": "Finite short window and weak-amplitude periodic state only. Fixed36-neighbor consistency floor remains; neither strict asymptotic second-order convergence nor general accuracy/stability follows. Raw binaries are hash-bound locally, not cloud backed.",
+    "retained_setup_failures": "r1 initial uninitialized-force-stat fixture check; r2 completedDebug32 wrapper Decimal parsing; r3 Mode variable collision; r4 pre-step64 runtime dp rounding. All retained, no failed physics admitted or completed solver rerun. r5 restores exact intended runtime dp without changing BI4 and explicitly corrects stale advisory command metadata.",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_spatial_r1.check.json",
+    "independent_review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_actual_review_r1.json:1613 frozen bindings across780 files and1381632 saved native records reviewed without mismatch; complete XYZ/expm metrics differ from root CSV by at most1.921e-14.",
+    "physical_acceptance": false
+  },
   "next_order": [
-    "Complete the actual-header spatial-symbol/moment audit, then admit bounded16x8/32x16/64x32 actual periodic convergence tests only under predeclared time/domain/error gates.",
-    "Separate finite-h truncation from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer continuum accuracy from tiny half-step errors.",
+    "Preserve the completed independent spatial review, selective local/remote checkpoint, failed setup attempts and exact input provenance; proceed to bounded wall work.",
+    "Keep finite-h truncation separate from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer general continuum accuracy from tiny half-step errors.",
+    "First frozen planar mirror-operator checks must observe qnormal directly with consistent current-volume C and physical-acceleration reflection; these are companion tests, not actual wall/mDBC acceptance.",
     "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
     "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
   ],

@@ -1,0 +1,28 @@
+{
+  "passed": true,
+  "scope": "Independent pre-execution review only; no program, build or solver was started by this reviewer.",
+  "decision": "PASS for root's Smoke r3 -> new Release Build r3 -> Release Run r3 sequence. Adopt completed Debug r2 grid32 offline, run only fresh Debug64, then four fresh Release32/64 coarse/half jobs in the inherited gated order. No Debug32 rerun, Debug rebuild, Prepare or GenCase.",
+  "bindings": [
+    {"path": "support/upl_p3_spatial_wave_run_r3.ps1", "bytes": 15229, "sha256": "8e1f0b201c92fc3e22f0dffc00f6a86f4ee02bedcfe8e0c3a322fcb7fb770157"},
+    {"path": "notes/upl_p3_spatial_wave_r3.json", "bytes": 2884, "sha256": "f582e2c300cff07c25fc8217e92f357754abf9ed5a2554572a99a0114564a263"},
+    {"path": "logs/upl_p3_spatial_wave_recipe_r3.json", "bytes": 8840, "sha256": "e53beb1bf2f1820ce030dcc487544d9ef1f1e1498c815eb153b516861e750d65"},
+    {"path": "support/upl_p3_spatial_wave_harness_r2.cpp", "bytes": 19995, "sha256": "58dd7a9c9b655b07947c1f9ff7e588705f2b77ea1bf961b6bb8ea57068cca146"}
+  ],
+  "review": {
+    "metadata": "Independently reproduced PS5 cu/Pstar parsing as System.Decimal. Explicit binary64 conversions make actual_end_s,cu,Pstar,Ustar exactly equal to the independent fixed-material values. r3 adds no tolerance and changes no physical value, formula, step, sample or numerical threshold.",
+    "completed_job": "The original Debug32 owned run exited0 with complete.passed,512 native IDs,2 steps and3 frames. Its physical.bin length319524 equals12+3*(8+512*26*8); endpoint_policy has2 rows. Program identity and exact original argument array match the retained Debug r2 build. This is a completed short smoke, not long/half/continuum acceptance.",
+    "adoption": "Smoke selects the exact retained Debug r2 build/executable. The sole grid32 branch verifies original owned exit, exact arguments, program path/hash, build and all9 output bindings, then performs the ordinary unchanged completion/mode/symbol checks without InvokeProgram. Only grid64 follows the fresh invocation branch. Explicit new/adopted counts prevent misreporting two fresh smoke runs.",
+    "preserved_guards": "Full source/seed/build/runtime and offline-symbol file verification remains. Release Run requires both admitted Debug geometries; grid32 half gate precedes grid64. Original absolute5Pa/.005mm and added normalized1e-4 all257 half gates, actual ComputeStep_Sym and harness_r2 lifecycle correction are unchanged. No production working diff was found.",
+    "order_and_limits": "The runner removes Prepare and rejects Debug Build. Root remains sole execution owner. Historical r1/r2 artifacts are preserved; final runner completion still means implementation/single/half evidence only. Unified full-XYZ continuum refinement and1percent objectives require separate post-run root review."
+  },
+  "independent_checks": {
+    "recipe_binding_records": 20,
+    "program_runtime_log_binding_records": 7,
+    "hash_or_size_mismatches": 0,
+    "powershell_parser_errors": 0,
+    "adopted_arguments_exact": true,
+    "binary64_metadata_exact": true,
+    "new_note_path_prechecked_absent": true
+  },
+  "physical_acceptance": false
+}

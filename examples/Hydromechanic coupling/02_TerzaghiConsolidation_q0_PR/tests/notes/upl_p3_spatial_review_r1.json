@@ -1,0 +1,54 @@
+{
+  "stage": "Completed authorized offline actual-header spatial moment/symbol review; actual wave still proposed only",
+  "decision": "The fixed three-grid audit predicts a useful reduction of the existing mode1 continuum error without changing material or the production operator. Recommend root review of the four proposed fresh actual32/64 coarse/half jobs after the current time-policy gates seal. This note is not execution permission or physical/public acceptance.",
+  "bindings": [
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_plan_r1.json", "bytes": 9778, "sha256": "8155471d8a8d0c00b33d932dac460917696adf83b7cb9b610cc8853f787e40f4"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_wrapper_r2.json", "bytes": 1052, "sha256": "b78d7b05682d6096f6e77d78f7a311c876c22933a9e1795d4bdc728e7c2455d9"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_spatial_symbol_r2.check.json", "bytes": 61059, "sha256": "3fa3d1c0c58f1d1981c64b4a1f537248c5bf677968a130075673e202d0805547"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_symbol_r2/symbols.csv", "bytes": 1614, "sha256": "e659bcfce218742c31238af7521f8968fa440694fb1bb21dc356ef11b3d64449"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_symbol_r2/predictions.csv", "bytes": 3036, "sha256": "acfb8cec48a9be138c707f29acf7dd6b19fb7f3ba02b87474703eb7cabdd53a8"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_symbol_r2/predictions.json", "bytes": 11657, "sha256": "340d563535d53403c63bc91e86c8063497a52c86310e3f9b183d18a7a34f132a"}
+  ],
+  "integrity": {
+    "standalone_compile_exit": 0,
+    "standalone_symbol_exit": 0,
+    "offline_python_exit": 0,
+    "source_recipe_output_bindings_independently_rehashed": 179,
+    "hash_or_size_mismatches": 0,
+    "actual16_grid_matches_prior_sealed_symbols": true,
+    "matrix_cubic_max_normalized_error": 1.1188630228279524e-15,
+    "exact_solution_max_normalized_imaginary_remainder": 1.6291414199770676e-16,
+    "supplemental_independent_reference_check": "A separate read-only SciPy4x4 matrix-exponential endpoint calculation and4x4 power of midpoint[v,S,p]+trapezoidal-u matched all6 saved predictions within3.3084646133829665e-14 in characteristic-normalized units. This was an interactive supplemental check, not an additional frozen physical gate."
+  },
+  "fixed_neighbor_moment_result": {
+    "neighbors_every_grid": 36,
+    "raw_momentum_first_xx_zz": 0.9953433939954266,
+    "raw_momentum_first_bias_percent": -0.46566060045734,
+    "double_gradient_first_xx_zz": 0.9953433936461806,
+    "Cxx_Czz": 1.0046783917827204,
+    "corrected_affine_moment_max_error": 0.0,
+    "Lstar_x2_over2_and_z2_over2": 0.9862108002829368,
+    "Lstar_quadratic_bias_percent": -1.37891997170632,
+    "Lstar_xz": 0.0,
+    "constant_gradient_max": 0.0,
+    "Lx_max_over_all_grids": 1.4210854715202004e-14,
+    "interpretation": "Identical dimensionless stencils, moment errors and Eta2/h2 persist when dp halves at fixed h/dp1.8. Corrected first-order divergence/stress-gradient consistency does not correct raw momentum or this regularized quadratic Laplacian moment. Finite-wavelength error decreases; exact asymptotic convergence to the requested continuum PDE is not established."
+  },
+  "half_step_frozen_predictions": [
+    {"nx": 16, "nz": 8, "native": 128, "endpoint_p_error_percent": -6.197038985124153, "endpoint_v_error_percent": 5.395212852154065, "endpoint_u_error_percent": 1.4631733940281465, "combined_full_history_field_RMS_normalized": 0.030909302595159744, "acoustic_frequency_ratio": 0.9298010681878879},
+    {"nx": 32, "nz": 16, "native": 512, "endpoint_p_error_percent": -1.4715916207430853, "endpoint_v_error_percent": 1.538659836603103, "endpoint_u_error_percent": 0.4187592727893343, "combined_full_history_field_RMS_normalized": 0.007695828719232401, "acoustic_frequency_ratio": 0.9803603812140187},
+    {"nx": 64, "nz": 32, "native": 2048, "endpoint_p_error_percent": -0.2598878735143604, "endpoint_v_error_percent": 0.5160720837347509, "endpoint_u_error_percent": 0.14132804958242368, "combined_full_history_field_RMS_normalized": 0.002581208834285364, "acoustic_frequency_ratio": 0.9933788720491928}
+  ],
+  "interpretation": {
+    "time_error": "Frozen coarse-versus-semidscrete normalized p/v/u errors are <=7.11e-7 at16 and <=5.34e-8 at64; half reduces them by approximately4. This isolates the predicted dominant spatial error, not actual float-writeback or nonlinear geometry error.",
+    "dt_scaling": "The requested coarse dt2^-23,2^-24,2^-25 gives coupled CFL=.0043402779035 for all grids; Ddt/h2=.0016500771256,.0033001542512,.0066003085023. The64 coarse value remains below the existing .01 diagnostic guard and current necessary PoreDtSafety bound. Diffusive scaling is dp^2, so this observed compatibility cannot justify indefinitely halving dt with dp.",
+    "finest_accuracy": "At64 half the predicted all-history pressure/velocity/displacement field RMS ratios are approximately.001335,.002581,.000707 respectively; the endpoint pressure error is below1%. Thus the predeclared1% bounded-wave objective is plausible. These are frozen-linear predictions, not actual solver results, not a new universal threshold and not a guarantee for pressure peaks in Cryer or consolidation.",
+    "small_amplitude": "The retained amplitude A=2^-9 and actual finite-Kw material imply Pstar approximately1024Pa and Ustar approximately7.5891e-8m. Original5Pa/.005mm half gates alone are too weak to isolate displacement time error here; retain the additional1e-4 characteristic-normalized all-time half bounds from the predeclared plan.",
+    "remaining_scope": "The standalone audit uses actual kernel headers, mixed float-gradient products and the actual double/float volume convention. It does not execute cell-linked interactions, periodic cloning, moving J/C, float physical updates, GenCase fine seeds or complete ComputeStep_Sym. Actual native checks and independent half trajectories remain necessary."
+  },
+  "production_edits": false,
+  "project_solver_started": false,
+  "actual_wave_or_gencase_run": false,
+  "actual_solver_execution_authorized": false,
+  "physical_acceptance": false
+}

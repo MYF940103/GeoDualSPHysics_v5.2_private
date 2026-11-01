@@ -1,0 +1,52 @@
+{
+  "stage": "Proposed bounded actual spatial refinement plus authorized prior offline symbol/moment audit",
+  "prepared_before_new_offline_or_actual_execution": true,
+  "scope": "Private CPU no-wall 2D periodic weak dynamic-P3 wave only; not public XML, GPU, physical-case or general boundary admission.",
+  "actual_solver_execution_authorized_by_this_note": false,
+  "offline_audit_authorized_by_root": true,
+  "unchanged_physical_problem": {
+    "box_m": [0.125, 0.0625],
+    "mode": 1,
+    "initial_velocity_m_s": "vx=2^-9*sin(2*pi*x/Lx), vy=vz=0",
+    "initial_state": "J=1; p=p0=0; six effective stresses=0; elastic; no HG/SPR/damping/shifting/viscosity/DDT/gravity/load/drainage/wall",
+    "material": "Actual loaded float K=89478488 Pa,G=134217728 Pa,Kw=67108864 Pa,n0=.25,rho0=2048,rho_w=1000,k=float(.0001) m/s; do not substitute E for K+4G/3 or retune material.",
+    "end_s": "2^-15",
+    "reference": "Same finite-Kw coupled continuum mode with actual loaded constants; exact normalized 3x3 eigen solution and integrated velocity for u, independently checked against the characteristic polynomial. Linear weak-amplitude reference is not a nonlinear exact solution."
+  },
+  "three_grids": [
+    {"nx": 16, "nz": 8, "native": 128, "dp_m": "2^-7", "coarse_dt_s": "2^-23", "half_dt_s": "2^-24", "steps": [256, 512], "disposition": "Adopt the current source-time-policy accepted actual coarse/half controls after their final gate, do not rerun merely for the new label."},
+    {"nx": 32, "nz": 16, "native": 512, "dp_m": "2^-8", "coarse_dt_s": "2^-24", "half_dt_s": "2^-25", "steps": [512, 1024]},
+    {"nx": 64, "nz": 32, "native": 2048, "dp_m": "2^-9", "coarse_dt_s": "2^-25", "half_dt_s": "2^-26", "steps": [1024, 2048]}
+  ],
+  "actual_minimum_job_proposal_not_permission": {
+    "preconditions": "Current timeguard component, default-OFF and fundamental/m4 actual-wave gates must first seal and pass. Root reviews the offline audit below before deciding actual execution.",
+    "fresh_release_jobs": "Four actual ComputeStep_Sym jobs only:32 coarse/half then64 coarse/half, with each grid's independent half gate before accepting later dependent results. One CPU thread, stable sorting, unchanged production source.",
+    "debug": "Two tiny new-geometry Debug smokes of two steps each are sufficient as an initial proposal, since the production implementation and replay equivalence are already separately covered. Root decides whether to require complete Debug trajectories; this note does not silently omit required project policy.",
+    "samples": "257 exact common dyadic times j*2^-23, j=0..256. Save coarse32 every2steps, half32 every4; coarse64 every4, half64 every8. All native IDs and26 physical columns at each save, no interpolation/downsampled acceptance or metadata rewrite.",
+    "no_replay_repetition": "Do not repeat the O(N^2) all-node per-stage independent force replay on every fine-grid job. Actual ComputeStep_Sym, current production guards and O(N) native state/periodic checks remain; initial actual-header symbols and independent exact continuum/discrete references are separate."
+  },
+  "proposed_actual_gates_before_root_decision": {
+    "preserve_existing": "All native identity/no-exclusion,finite elastic/J/n/V/rho,p0,solid-volume,periodic-owner,energy<=1.1 and original5Pa/.005mm all257 independent-half guards remain. Positive-k continuous-domain and full current-stage step guards cannot be relaxed.",
+    "time_isolation_additional": "At all257 exact times, coarse/half pressure-field RMS/Pstar, velocity-vector RMS/A and material-displacement RMS/Ustar must each be <=1e-4. This is stronger than the old absolute bounds because the wave displacement is tiny. Pstar=(Kw/n0)*A/cu0; Ustar=A/(cu0*2*pi/Lx).",
+    "continuum_accuracy_objective": "For the finest accepted half trajectory, all-time pressure-field RMS/Pstar, velocity-vector RMS/A and displacement-vector RMS/Ustar each <=.01, and endpoint pressure mode relative error<=.01. Record the separate endpoint v/u/stress, full-history errors and frequency ratio. This is a bounded-wave1% objective, not1% general poromechanical accuracy.",
+    "refinement": "Use half trajectories to compare grids. The combined maximum of the three normalized full-history errors must decrease16->32->64. Record individual errors and observed orders; do not require or claim asymptotic second order when fixed-neighbor consistency floors are present. Failure of the1% objective holds that continuum-accuracy claim, not permission to tune material or relax a gate."
+  },
+  "seed_and_harness_changes_needed": {
+    "seed": "Generate new32 and64 cell-centred GenCase seeds with dp/2 pointmin and pointmax=boxsize+dp/2, exact domain lengths and zero walls. Native sets must equal the intended dyadic tensor lattice. Existing128-node BI4 cannot be reused across different native counts.",
+    "companions": "Within one new geometry, the initial BI4 can be hash-identically copied for its half-step companion; authored runtime XML must preserve GenCase particle/constants/casedef sections and change only declared dt/end/output comments as appropriate. Initial companion XML, source, runtime, binaries and real GenCase commands need bound receipts; no PART restart.",
+    "harness": "Create a small derivative rather than edit retained time-wave files: bounded grid selector16/32/64; vector-owned native arrays/frame rows; dynamic expected IDs/counts,dp/volume/step validation; same26 physical columns and actual-step loop. Use actual initial native positions as material labels and initial sine phases, recompute corrected symbols for each seed, project all modes with native quadrature. Existing fixed128 arrays, completion counts and dt/step whitelist cannot be reused unchanged.",
+    "precision": "Keep J/stress/positions double and pressure/rate/velocity actual float writes. Do not make a double shadow the physical truth or set SavePosDouble=0. Fine write-back accumulation is measured by the independent half, not assumed harmless. Spatial comparisons use errors versus continuum, not identity across different grids."
+  },
+  "fixed_neighbor_caution": "With h/dp=1.8 the uniform receiver has36 neighbors at all grids. Existing raw first moment Mxx=.9953433936461806 is not1 and raw momentum is not receiver-corrected. Eta2=(.1*h)^2 can also leave a scale-invariant quadratic Laplacian moment bias. Refining dp with fixed neighbor count need not converge exactly to the desired PDE, even though finite-wavelength kernel error shrinks.",
+  "authorized_offline_audit_recipe": {
+    "files": "New support/upl_p3_spatial_symbol_r1.cpp, upl_p3_spatial_symbol_r1.py and upl_p3_spatial_symbol_run_r1.ps1; outputs/upl_p3_spatial_symbol_r1 and logs of the same prefix. Retain all prior files unchanged.",
+    "geometry": "Use the retained128-node initial native state to validate its actual cell-centred lattice. New512/2048 coordinates are declared dyadic lattice constructions for this frozen audit only, not claimed GenCase or actual solver output.",
+    "constants": "Use the actual FunSphKernel.h Wendland path with KernelH=float(1.8*dp) promoted to double, actual float kernel constants/gradient products, actual Eta2 ordering, double V=dp^2 and float stress-volume conversion. Fixed actual material and k, no parameter search.",
+    "moments": "For each of three grids compute raw momentum and double-gradient first moment tensors, receiver inverse correction, corrected first moment, constant-gradient/Lx cancellation, Lstar values on p=x^2/2,z^2/2,x*z and exact mode1 Kr/Ks/Ksig/Ka/ell. No project solver or production build.",
+    "predictions": "At257 common times evaluate exact frozen discrete and continuum coupled modes, plus actual frozen midpoint[v,S,p] and trapezoidal-position map for each prescribed coarse/half dt. Report all-time normalized errors, endpoint pressure/velocity/displacement/frequency and necessary cu*dt/h,D*dt/h^2; not a promise for full nonlinear/float integration.",
+    "hard_offline_integrity_checks": "Three unique prescribed grids,36 periodic neighbors and positive inverse moments; corrected affine moment identity and constant cancellation under32768eps scaled roundoff;16-grid mode1 symbols must match the sealed existing spectrum within32768eps scaled roundoff; normalized3x3 eigen roots must match the independent characteristic polynomial under32768eps; imaginary remainders must be roundoff; all intended files/sources/header inputs remain hash-identical. Nonunit raw/quadratic moments and continuum errors are descriptive, not hidden hard-fail exceptions.",
+    "not_authorized": "No actual wave, GenCase run, root XML/BAT change, production C++ edit, general time-policy/GPU/public activation or post-hoc material adjustment is authorized by the offline recipe."
+  },
+  "cost_estimate": "Constant-neighbor actual interaction work scales N*steps: new32c,32h,64c,64h approximately8,16,64,128 times the retained16c core work, aggregate216. The old actual Release16c/half owned calls were.506/.913s; simple scaling gives about110s for the four new runs before startup/output/load effects, not a guaranteed ETA. Debug startup timings were contention-sensitive.26-column257-frame binary storage totals about261MiB (274MB) for the four fine jobs; avoid O(N^2) replay/detail exports. Offline moment/eigen audit is small.",
+  "next_if_fixed_neighbor_floor_blocks": "First use the frozen moment and symbol audit to identify which operator contributes. A separately reviewed small growing-neighbor consistency audit, e.g. h/dp1.8,2.4,3.2 while h decreases, can distinguish quadrature from kernel bias without changing materials or committing an operator repair. It is not part of the current authorized fixed-three-grid audit or automatic actual execution."
+}

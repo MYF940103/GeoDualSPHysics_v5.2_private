@@ -1,0 +1,103 @@
+{
+  "stage": "Authoring-only initial binding for pending actual spatial validation",
+  "prepared_without_GenCase_build_or_solver": true,
+  "git_base": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "new_paths_prechecked_absent": true,
+  "script_parser_errors": 0,
+  "authored_input_count": 7,
+  "total_authored_bytes": 60988,
+  "inputs": [
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_harness_r1.cpp",
+      "bytes": 19737,
+      "sha256": "d487b911bba53823a1718c1d0b5cd18bc639252f22f0430b53e88bf13fdf074d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p3_spatial_wave_run_r1.ps1",
+      "bytes": 18316,
+      "sha256": "167c7c2d85496245db0ec5a7d6679debd7a7478287d52cd3a3b5b0b3fba033fb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_wave_r1.json",
+      "bytes": 5749,
+      "sha256": "1b3f4f20652b7b1e0ec794361438f66c5bebccffb4a2174e7605e5a581d303f9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n32_c_r1_Def.xml",
+      "bytes": 4292,
+      "sha256": "d3c41fa113dd98a6402bcf9ea808e5ed118a11bb9dcb0555b774f4cce0c0ad4a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n32_h_r1_Def.xml",
+      "bytes": 4294,
+      "sha256": "a029ce709c894157eaa562874eef7ee30a9c68918071fbaf1f3d9c636cc991c6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n64_c_r1_Def.xml",
+      "bytes": 4299,
+      "sha256": "4e6ff86de5e7eb9f9a93d14be94bfd9af1ec10a59f74c767fa6f25265d418dd3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/configs/upl_p3_spatial_n64_h_r1_Def.xml",
+      "bytes": 4301,
+      "sha256": "d6719336f612772d65f160b551b6da28cdb1e00de4b8a9082bd1f52b706f0e9b"
+    }
+  ],
+  "declared_configs": [
+    {
+      "nx": 32,
+      "tag": "c",
+      "dp": "0.00390625",
+      "dt": 5.960464477539063e-8,
+      "expected_native": 512,
+      "steps": 512
+    },
+    {
+      "nx": 32,
+      "tag": "h",
+      "dp": "0.00390625",
+      "dt": 2.9802322387695312e-8,
+      "expected_native": 512,
+      "steps": 1024
+    },
+    {
+      "nx": 64,
+      "tag": "c",
+      "dp": "0.001953125",
+      "dt": 2.9802322387695312e-8,
+      "expected_native": 2048,
+      "steps": 1024
+    },
+    {
+      "nx": 64,
+      "tag": "h",
+      "dp": "0.001953125",
+      "dt": 1.4901161193847656e-8,
+      "expected_native": 2048,
+      "steps": 2048
+    }
+  ],
+  "source_freeze": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_time_build_r1.json",
+  "prerequisites": [
+    "logs/upl_p3_time_wave_ReleaseCPU_r1.check.json",
+    "logs/upl_p3_spatial_symbol_r2.check.json",
+    "new independent admission review before execution"
+  ],
+  "commands_after_separate_root_authorization": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_spatial_wave_run_r1.ps1\" -Mode Prepare -Configuration DebugCPU -Label r1 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_spatial_wave_run_r1.ps1\" -Mode Build -Configuration DebugCPU -Label r1 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_spatial_wave_run_r1.ps1\" -Mode Smoke -Configuration DebugCPU -Label r1 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_spatial_wave_run_r1.ps1\" -Mode Build -Configuration ReleaseCPU -Label r1 -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_spatial_wave_run_r1.ps1\" -Mode Run -Configuration ReleaseCPU -Label r1 -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "fresh_Release_half_binary_paths": [
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_wave_ReleaseCPU_r1_n32_h/physical.bin",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_wave_ReleaseCPU_r1_n64_h/physical.bin"
+  ],
+  "retained16_binary_paths": [
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_c_actual/physical.bin",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_h_actual/physical.bin"
+  ],
+  "not_covered": "This initial binding proves authored identities/syntax/declared values only; it does not prove new GenCase geometry,compilation,safety,half errors or continuum accuracy.",
+  "physical_acceptance": false
+}

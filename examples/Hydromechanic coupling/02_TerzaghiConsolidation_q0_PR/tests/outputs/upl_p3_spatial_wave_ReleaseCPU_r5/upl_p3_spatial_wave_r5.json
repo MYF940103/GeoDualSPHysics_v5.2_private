@@ -1,0 +1,12 @@
+{
+  "stage": "Exact intended64-grid runtime dp and minimal wrapper repair",
+  "author": "/root",
+  "base": "7fdaa139c6bc164059736955ee80f2ca899743ef",
+  "input_diagnosis": "GenCase runtime constants/dp=.00195313 is rounded from the exact Def/BI4 lattice spacing .001953125. JPartsLoad4 CalculeLimits uses Dp/2 and consequently gave periodic mapmin=-2.5e-9, rejected by the unchanged fixed-domain check before the first step. H and particle coordinates remain correct.",
+  "new64_runtime": "New r2_n64 coarse/half folders contain byte-identical original BI4 and runtime XML changing only execution/constants/dp to the already declared1/512. Keep old GenCase outputs and failed initialization intact; no new GenCase call, position, material, domain or physical step change.",
+  "wrapper": "Derived from runner_r3 using explicit path/label replacements, not global substring replacement. CSV variable is modeHistory. user32.lib remains exactly user32.lib; the r4 user42.lib typo never reached a build and remains archived. Binary64 metadata comparison and the single adopted Debug32 job are unchanged.",
+  "harness_and_production": "Use existing frozen harness_r2 and Debug r2 program. No harness, production or numerical threshold edit. All prior errors are retained as setup/metadata/wrapper errors, not accepted physical tests.",
+  "execution": "Adopt completed512-node Debug32; fresh2048-node Debug64 with corrected intended dp; then new r5 Release build and exactly four actual refinement jobs with the original sequential half gates. No Prepare or Debug rebuild.",
+  "predeclared_gates": "All single-run safety/identity/energy/necessary step checks; all257-time5Pa/.005mm independent halves plus normalized XYZ p/v/u<=1e-4; root independent continuum matrix exponential, decreasing three-grid combined error, finest full-history errors and endpoint pressure<=1%. No threshold relaxation.",
+  "physical_acceptance": false
+}
