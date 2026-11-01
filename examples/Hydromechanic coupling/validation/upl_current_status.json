@@ -2,7 +2,7 @@
   "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry and private GPU constant/evolving-k periodic short Runs reviewed; GPU walls/public entry and physical-model release remain held",
+  "status": "Limited canonical CPU entry and private GPU constant/evolving-k periodic and opposing static FreeSlip-wall short Runs reviewed; public GPU entry and physical-model release remain held",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -215,9 +215,30 @@
     "physical_acceptance": false,
     "public_GPU_dynamic_accepted": false
   },
+  "private_GPU_opposing_FreeSlip_wall_review": {
+    "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_wall_stage_r1.check.json",
+    "source": "Five GPU files only: default-false private wall closure, nearest-node-anchored V0J first-order mirror state, Q*C*Q and finished Q*Ace, same-stage wall/periodic-owner order and fixed-neighbour complete rate. No new independent n/k state, CPU equation or public master change.",
+    "builds_and_components": "Default CPU Debug plus isolated authoritative full GPU Debug/Release Rebuilds pass. Both real wall components check nonzero Npb, same/off-node affine fields, nearest-node anchor, C/Ace reflection and owner negatives. Debug component and actual two-step Run plus its separate endpoint audit report memcheck0errors/0leaks.",
+    "no_wall_regressions": "Seven old-path jobs preserve557 original15/actual-clock/Step/signed-dterror frame pairs exactly. Five complete-rate constant/smooth jobs preserve1031 typed33 frame instances exactly. No general default-OFF physical mDBC claim from these no-wall controls.",
+    "actual_Runs": "Seven fresh GPU jobs: two-step Smoke, k0 coarse/half17frames and constant/variable coarse/half257frames,1065 total frames.1024 soil IDs256..1279 plus256 fixed IDs. Four retained CPU controls re-read offline only. No physical-field rewrite or PART restart.",
+    "k0_half_pressure_RMS_max_Pa": 0.0000033088128252797947,
+    "constant_half_pressure_RMS_max_Pa": 0.00028485671181211755,
+    "constant_CPU_GPU_pressure_RMS_max_Pa": [0.00005648809890367579, 0.00008189313788823296],
+    "constant_reference": "All257 global/initial-material wall-band256/fullXYZ and endpoint objectives meet the original1percent weak-wave constant-coefficient reference; endpoint pressure mode relative errors coarse/half=-.259892/- .259911percent. Not a full consolidation theory test.",
+    "variable_half_pressure_RMS_max_Pa": 0.00034233244733829194,
+    "variable_CPU_GPU_pressure_RMS_max_Pa": [0.000046823005264960345, 0.000044759238759504365],
+    "resolved_variable_effect": "Manufactured Ck2^-13 gives about5.8695percent k spatial span. Same-GPU constant/variable pressure effects .0232807/.0233363Pa exceed max(.001Pa,10*own actual GPU half), with all33 initial soil fields exact. Not a physical accuracy gain or calibrated k law.",
+    "endpoint_audit": "Every1065 saved state independently replays one finished force/rate for all1024 soil nodes and both physical faces under original rate/normal-velocity/flux/reaction budgets, including nonempty wrong-Ace controls for positive k. Endpoint replay is not original internal-stage observation, exact restart or a second physical trajectory.",
+    "attribution": "CPU native V/rho/k and PosDiv remain distinct from GPU nativeJ/n/theta plus derived V/rho/k. CPU fixed zero markers differ from GPU reconstructed fixed n samples; neither is wall material. Existing passive-density integrators unchanged.",
+    "retained_test_repairs": "Debug component r1 CLI overrode FreeSlip and was rejected before numerics; r2 completed once. Offline r3-r5 repairs addressed PowerShell tuple precedence and derived-summary/JSON decimal conversion, not thresholds or physics. All failures and completed outputs preserved.",
+    "limits": "Fresh2D zero-gravity elastic opposing x-FreeSlip walls with tangential Z periodicity only. No general z/inclined/NoSlip/curved/moving wall, gravity/load/drainage/HG/SPR/plasticity, sufficient stability, exact fluid-mass, public GPU, full-cycle or server-package acceptance.",
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false
+  },
   "next_order": [
-    "Selectively back up verified private GPU smooth-k code/evidence locally/remotely, retaining all earlier evidence and CPU initial raw26 differences.",
-    "Then opposing static FreeSlip walls, constant k first and smooth k afterwards; bounded public GPU wiring last. Reuse the already verified nearest-node-anchored CPU wall reconstruction, not bare MLS intercepts or unreflected ghost C/Ace. No independent k history.",
+    "Selectively back up verified private GPU wall code/evidence locally/remotely; preserve all raw results and failed attempts. Raw programs/BI4 and large pointwise audits are local hash-bound evidence, not cloud Git backup.",
+    "Then bounded public GPU master/model/Ck wiring and output contract, retaining default-OFF u-pw. Add an actual retained mDBC default-OFF native regression, parser/unsupported-input/PART rejection, same-physics CPU/private-GPU and independent half checks before accepting the new entry. No independent k history.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],

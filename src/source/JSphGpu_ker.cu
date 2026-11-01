@@ -1442,6 +1442,117 @@ void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned 
 }
 
 //==============================================================================
+/// Static 2-D mirror samples: the fitted d=target-source coefficients are -grad.
+/// The anchored value avoids smoothing a mirror point coincident with a fluid node.
+//==============================================================================
+template<unsigned stage> __device__ double KerDynamicPoreWallRead(unsigned p,unsigned c
+  ,const float4 *velrhop,const tsymatrix3d *sigma,const float *porepress,const double *j
+  ,const tmatrix3d *corrmat,const float3 *ace)
+{
+  if(stage==0){
+    if(c==0)return j[p];
+    if(c==1)return double(porepress[p]);
+    if(c<5)return(c==2? double(velrhop[p].x): (c==3? double(velrhop[p].y): double(velrhop[p].z)));
+    const tsymatrix3d s=sigma[p];const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
+  }
+  if(stage==1){
+    const tmatrix3d m=corrmat[p];const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];
+  }
+  return(c==0? double(ace[p].x): (c==1? double(ace[p].y): double(ace[p].z)));
+}
+
+template<unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned npbok,float threshold
+  ,int scelldiv,int4 nc,int3 cellzero,const int2 *fluidcells,const double2 *posxy,const double *posz
+  ,const typecode *code,const float3 *boundnormal,byte *boundmode,float3 *tangenvel,float3 *derivativevel
+  ,float4 *velrhop,tsymatrix3d *sigma,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace
+  ,double solid0,unsigned *invalid)
+{
+  const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p1>=npbok || p1>=np)return;
+  const float3 bn=boundnormal[p1];
+  const double r2=double(bn.x)*bn.x+double(bn.y)*bn.y+double(bn.z)*bn.z;
+  if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}
+  const double qx=(double(bn.x)*bn.x>.5*r2? -1.: 1.),qy=(double(bn.y)*bn.y>.5*r2? -1.: 1.),qz=(double(bn.z)*bn.z>.5*r2? -1.: 1.);
+  double3 gp=make_double3(posxy[p1].x+bn.x,posxy[p1].y+bn.y,posz[p1]+bn.z);
+  if(CTE.periactive)gp=KerUpdatePeriodicPos(gp);
+  enum {ncomp=(stage==0? 11: (stage==1? 9: 3))};
+  double sum[ncomp]={0},gx[ncomp]={0},gz[ncomp]={0},nearest[ncomp]={0};
+  double sumwab=0,submerged=0,nearest2=DBL_MAX,nearx=0,nearz=0;
+  tmatrix3d moment;cumath::Tmatrix3dReset(moment);
+  int ini1,fin1,ini2,fin2,ini3,fin3;
+  cunsearch::InitCte(gp.x,gp.y,gp.z,scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+  for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+    unsigned pini,pfin=0;cunsearch::ParticleRange(c2,c3,ini1,fin1,fluidcells,pini,pfin);
+    if(pfin)for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2]) && velrhop[p2].w>0.f){
+      const double dx=gp.x-posxy[p2].x,dz=gp.z-posz[p2];
+      const float rr2=float(dx*dx+dz*dz);
+      if(rr2<=CTE.kernelsize2){
+        float fac;
+        const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<KERNEL_Wendland>(rr2))): double(cufsph::GetKernel_WabFac<KERNEL_Wendland>(rr2,fac)));
+        const double fx=double(fac)*dx,fz=double(fac)*dz;
+        const double vol=double(CTE.massf)/double(CTE.rhopzero)*j[p2],w=wab*vol,vx=fx*vol,vz=fz*vol;
+        const double distance2=dx*dx+dz*dz;const bool nearer=(distance2<nearest2);
+        for(unsigned c=0;c<ncomp;c++){
+          const double field=KerDynamicPoreWallRead<stage>(p2,c,velrhop,sigma,porepress,j,corrmat,ace);
+          sum[c]+=w*field;gx[c]+=vx*field;gz[c]+=vz*field;if(nearer)nearest[c]=field;
+        }
+        if(nearer){nearest2=distance2;nearx=dx;nearz=dz;}
+        sumwab+=w;submerged-=vol*(dx*fx+dz*fz);
+        moment.a11+=w; moment.a12+=dx*w; moment.a13+=dz*w;
+        moment.a21+=vx;moment.a22+=dx*vx;moment.a23+=dz*vx;
+        moment.a31+=vz;moment.a32+=dx*vz;moment.a33+=dz*vz;
+      }
+    }
+  }
+  const bool active=(submerged>0 || sumwab>=double(threshold) || (threshold>=2 && sumwab+2>=double(threshold)));
+  const double det=cumath::Determinant3x3(moment);
+  if(!active || !(sumwab>0) || !isfinite(det) || fabs(det)<1e-3){atomicMin(invalid,p1);return;}
+  const tmatrix3d inv=cumath::InverseMatrix3x3(moment,det);
+  double v[ncomp];
+  for(unsigned c=0;c<ncomp;c++){
+    const double gradx=inv.a21*sum[c]+inv.a22*gx[c]+inv.a23*gz[c];
+    const double gradz=inv.a31*sum[c]+inv.a32*gx[c]+inv.a33*gz[c];
+    v[c]=nearest[c]-gradx*nearx-gradz*nearz;
+    if(!isfinite(v[c])){atomicMin(invalid,p1);return;}
+  }
+  if(stage==0){
+    const float3 dv=make_float3(float(qx*v[2]),float(qy*v[3]),float(qz*v[4]));
+    const float3 tv=make_float3(float(.5*(1.+qx)*v[2]),float(.5*(1.+qy)*v[3]),float(.5*(1.+qz)*v[4]));
+    if(v[0]<=solid0 || fabs(v[1])>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
+      || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}
+    j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(v[1]);
+    tsymatrix3d s;s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];sigma[p1]=s;
+    if(derivativevel)derivativevel[p1]=dv;
+    if(tangenvel)tangenvel[p1]=tv;
+    velrhop[p1]=make_float4(0,0,0,CTE.rhopzero);boundmode[p1]=BMODE_MDBC2;
+  }
+  else if(stage==1){
+    tmatrix3d m;m.a11=v[0];m.a12=qx*qy*v[1];m.a13=qx*qz*v[2];m.a21=qy*qx*v[3];m.a22=v[4];m.a23=qy*qz*v[5];m.a31=qz*qx*v[6];m.a32=qz*qy*v[7];m.a33=v[8];
+    const double determinant=m.a11*m.a33-m.a13*m.a31;
+    if(!isfinite(determinant) || determinant<=0){atomicMin(invalid,p1);return;}
+    corrmat[p1]=m;
+  }
+  else{
+    const float3 a=make_float3(float(qx*v[0]),float(qy*v[1]),float(qz*v[2]));
+    if(!isfinite(a.x) || !isfinite(a.y) || !isfinite(a.z)){atomicMin(invalid,p1);return;}
+    ace[p1]=a; //-First actual-wall scope has g=0; reflect the finished native acceleration.
+  }
+}
+
+void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+  ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+  ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid)
+{
+  if(npbok){
+    dim3 grid=GetSimpleGridSize(npbok,SPHBSIZE);
+    if(stage==0)KerDynamicPoreWall<0><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+    else if(stage==1)KerDynamicPoreWall<1><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+    else if(stage==2)KerDynamicPoreWall<2><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+  }
+}
+
+//==============================================================================
 /// Complete rate with optional smooth div(k*(grad p+rho_w*Ace)) chain.
 /// Lstar cancels affine-pressure bias; it is not a conservative pair flux.
 //==============================================================================
@@ -1450,7 +1561,7 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
-  ,bool conductivity,double ck,double *maxspeed)
+  ,bool conductivity,double ck,double *maxspeed,bool wall,const int2 *beginendcellbound,const byte *boundmode)
 {
   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
@@ -1463,12 +1574,15 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
     if(khyd>0){
       const tmatrix3d ci=corrmat[p1];
       const double2 xy1=posxy[p1];const double z1=posz[p1];
+      for(unsigned group=0;group<(wall? 2u: 1u);group++){
+      const bool boundary=(group==1);
       int ini1,fin1,ini2,fin2,ini3,fin3;
       cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
       for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
         unsigned pini,pfin=0;
-        cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcellfluid,pini,pfin);
-        for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2])){
+        cunsearch::ParticleRange(c2,c3,ini1,fin1,(boundary? beginendcellbound: beginendcellfluid),pini,pfin);
+        if(pfin)for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2]) || (boundary && CODE_IsFixed(code[p2]))){
+          if(boundary && (!boundmode || boundmode[p2]==BMODE_MDBC2OFF)){atomicMin(invalid,p1);continue;}
           const double3 d=make_double3(xy1.x-posxy[p2].x,(CTE.simulate2d? 0.: xy1.y-posxy[p2].y),z1-posz[p2]);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(CTE.kernelsize2) || rr2<ALMOSTZERO)continue;
@@ -1488,6 +1602,7 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
           da+=vol2*((double(ace[p2].x)-ace[p1].x)*gi.x
             +(double(ace[p2].y)-ace[p1].y)*gi.y+(double(ace[p2].z)-ace[p1].z)*gi.z);
         }
+      }
       }
     }
     double value=kw/n*(-theta[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));
@@ -1511,12 +1626,12 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
-  ,bool conductivity,double ck,double *maxspeed)
+  ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
-      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed);
+      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode);
   }
 }
 

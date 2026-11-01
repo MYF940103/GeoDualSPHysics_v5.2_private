@@ -309,12 +309,18 @@ void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp
   ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid);
+//-Private 2-D static FreeSlip mirror closure: stage0=state11,1=C9,2=finished Ace3.
+//-Only npbok active fixed samples are written; caller initializes invalid=np.
+void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+  ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+  ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid);
 //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
 void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
-  ,bool conductivity=false,double ck=0,double *maxspeed=NULL);
+  ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

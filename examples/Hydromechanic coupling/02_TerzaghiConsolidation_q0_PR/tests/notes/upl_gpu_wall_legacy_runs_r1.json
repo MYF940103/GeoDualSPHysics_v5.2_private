@@ -1,0 +1,66 @@
+{
+  "stage": "upl_gpu_wall_legacy_runs_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "files": ["tests/support/upl_gpu_wall_legacy_runs_r1.ps1", "tests/notes/upl_gpu_wall_legacy_runs_r1.json"],
+  "basis": "Minimal new-label adaptation of immutable support/upl_gpu_perm_legacy_runs_r1.ps1. No new C++ fixture, reader, equation, kernel, particle field, project build or old-control solve.",
+  "purpose": "Actual new wall-build programs must preserve the already accepted no-wall OFF/observer/private-feedback paths bit-for-bit. The new DynamicPoreWall branch is not enabled or exercised by these legacy fixtures; private complete-rate DynamicPorePressure and smooth conductivity flags remain false. Default behavior is source/immutable-fixture constrained,not a new runtime flag telemetry claim.",
+  "actions": {
+    "modes": ["RunJob", "ReviewJob"],
+    "single_action": true,
+    "RunJob": "One fresh owned current-build GPU solve only; no fallthrough to review or next job. Require ProductionBuildConfirmed and ExecutionAuthorized. Reject retained solver folder/run/call/log. Record own program/target/argv/exit/time/raw log/current source/helper/runtime/input identities and all native output hashes. On program or post-run failure seal partial .run.json without claiming all frames accepted; preserve the output and never restart it for analysis.",
+    "ReviewJob": "Require a sealed completed new solve,then one actual immutable retained-function batch reader invocation for all15 and optionalJ fields,plus old/new immutable Feedback33 readers where applicable. No solver call. Preserve failed review check/partial files; repair only under a new offline analysis label. No preexisting review/check overwritten.",
+    "notifier_watcher_or_old_worker_action": false,
+    "GenCase_or_formal_case_action": false,
+    "Git_action": false
+  },
+  "prerequisites": {
+    "component_checks": "logs/upl_gpu_wall_component_{Debug|Release}_r5.check.json, matching current wall build/helper. Debug r5 is offline review of the completed r2 component call/output; no Debug component rerun. Root-owned fresh analysis labels preserve earlier failed postchecks and repair PS array-pair parsing,typed JSON numeric conversion and only derived-summary roundoff comparison; original CPP and all physical budgets remain immutable. These check paths are prerequisites,not assumed passed at author time. Release jobs also require fresh passed Release r5 component,plus all three new Debug legacy smoke checks.",
+    "component_scope": "passed,own call exit0,completionpassed,physicalfalse,and Debug actual memcheck0 errors/0 leaked bytes; source_build/helper identities must match wall build_r1/component helper_r1. Component count/physics closure is not substituted by this legacy driver.",
+    "current_build": "logs/upl_gpu_wall_{Debug|Release}_r1.build.json;full authoritative GPU Rebuild exit0,private_static_wall_GPU_candidate_build_only,110 main-excluding objects,5targets includingSingle/260unchanged/265 current source. Six canonicalGPU identities unchanged. Source/build/tools/libs/runtime/project/compile/link receipts rehashed.",
+    "current_helpers": "logs/upl_gpu_wall_native_{Debug|Release}_r1.helper.json and upl_gpu_wall_feedback_{Debug|Release}_r1.helper.json;111 exact link objects,110 authoritative GPU object substitutions,compiler_source_remaps0. These helpers may not exist at author time; they are required when a root-reviewed action is later invoked.",
+    "controls": "logs/upl_gpu_perm_legacy_r1.check.json:7 jobs,557 saved frame instances and all original exact flags. Selected upl_gpu_perm_legacy_JOB_r1.check/run/input/raw control files are immutable and reused,not rerun. No legacy formal or historical worker is invoked."
+  },
+  "helper_ancestry": {
+    "direct_parent": "New wall helper.replayed_helper must equal the selected accepted perm control run.helper. That direct parent is a generic perm helper receipt; do not wrongly require old legacy-only flags on it.",
+    "legacy_ancestor": "Verify direct parent's retained replayed_helper artifact and retained_native_functions_unchanged. Original Native ancestor has Native_batch_entry=true,unchanged_fixture_source=false and1 compiler source remap because its main entry was mechanically adapted to batch;Feedback ancestor has unchanged_fixture_source=true and0 remaps. The actual old functions and current frozen batch source remain identical across new/current,permparent and legacyancestor author bindings. This is immutable recipe lineage,not authorization to compile or run an ancestor program.",
+    "exact_authors": "For new/current,immediate parent,and original legacy ancestor,require unique identical bytes/SHA for observer_native CPP/note and the appropriate batch CPP/note or k0_actual_r2 CPP/note. Hash all current author/transitive include files and current265 project sources separately. Never validate old GPU target path hashes as though they were the current five-source closure.",
+    "native_batch_cpp": "support/upl_gpu_darcy_legacy_batch_r1.cpp;9e27162e65b4c4b3945de62aa85c6c86dd7c5c611436439c7d0c612f689ff835",
+    "typed_native_include": "support/upl_gpu_observer_native_r1.cpp;b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "feedback_cpp": "support/upl_gpu_k0_actual_r2.cpp;7bdf0ffbf04b8cf964682ae3e8636691998231b7e6472f64e9c1a3adc2e15625"
+  },
+  "jobs": [
+    {"job": "OFF_smoke", "configuration": "Debug", "steps": 2, "dt": "2^-24", "samples": 3, "target": "new isolated mainGPU OFF", "memcheck": true},
+    {"job": "Observer_smoke", "configuration": "Debug", "steps": 2, "dt": "2^-24", "samples": 3, "target": "new Native --solver1", "memcheck": true},
+    {"job": "Feedback_smoke", "configuration": "Debug", "steps": 2, "dt": "2^-24", "samples": 3, "target": "new Feedback --solver-smoke", "memcheck": true},
+    {"job": "OFF_extended", "configuration": "Release", "steps": 16, "dt": "2^-24", "samples": 17, "target": "new isolated mainGPU OFF", "memcheck": false},
+    {"job": "Observer_extended", "configuration": "Release", "steps": 16, "dt": "2^-24", "samples": 17, "target": "new Native --solver1", "memcheck": false},
+    {"job": "Feedback_c", "configuration": "Release", "steps": 512, "dt": "2^-24", "samples": 257, "target": "new Feedback --solver", "memcheck": false},
+    {"job": "Feedback_h", "configuration": "Release", "steps": 1024, "dt": "2^-25", "samples": 257, "target": "new Feedback --solver", "memcheck": false}
+  ],
+  "clock_and_geometry": "Every selected old input XML/BI4 is bound unchanged from the accepted control's input manifest. All seven have512 normal fluid IDs0..511,0fixed,XZ periodic,g0. Smoke/extended cadence=dt;Feedback full cadence2^-23,end2^-15. Saved Step remains0 at initial then actual_time/dt−1; never rewrite native metadata or interpolate.557 frame instances overlap in time,not557 distinct times;537 observer-bearing frames and517 Feedback33 frames.",
+  "required_exactness": {
+    "original_fields": "All557 frames:all15 original typed arrays,actual saved time/Step/signed dterror exact,ID-aligned512,no excluded particles. OFF schema must actually lack observer fields; observer-bearing schema must be present. The original15 are not a substitute for J/n/theta checks.",
+    "observer": "Each537 observer-bearing frame:three actual Double J/n/theta arrays finite/domain-valid,derived n(J) exact,old/new perframe sorted CSV byte-identical. Every observer/Feedback final live CSV must equal both its actual last saved CSV and old accepted live export. Native uses predictor_history_released singular;Feedback uses predictor_histories_released plural.",
+    "feedback": "All517 Feedback frames:immutable old reader exports33 columns,not26. Both old/new native raw BI4 are independently reread using the same unchanged reader,new physical.bin/native_ids.csv/history.csv must match retained counterpart whole-file bytes/SHA. Native GPU schema has3 actualJ/n/theta arrays;V/rho/k columns are derived and PosDiv is not a nativeGPU array. Public dynamic metadata must remain absent. No artificial fill/mask or precision relabeling.",
+    "dterror": "Preserve signed <=1e-14 single-run safety and exact old/new signed telemetry. Negative safety margin is not an absolute error;do not change toabs().",
+    "safety": "Every new owned exit0,machine-native frame count/clock/ID/finite ledger guards from immutable readers,and Debug actual memcheck0errors/0leaks. No5Pa half bound is used to forgive unchanged-physics differences:these implementation regressions demand exact bits.",
+    "no_cross_option_claim": "ObserverON/OFF or feedback changes are not compared as errors;each new job is compared only with its same-option,same-step,same-input retained control. No new independent-half,CPU-vsGPU,theory,full-cycle,wall or physical acceptance follows."
+  },
+  "outputs": {
+    "new_solver": "outputs/upl_gpu_wall_legacy_JOB_r1",
+    "new_review": "outputs/upl_gpu_wall_legacy_JOB_r1_review",
+    "call_run_check": "logs/upl_gpu_wall_legacy_JOB_r1.{call,run,check}.json and owned call .log",
+    "batch": "new_review/batch/batch_complete.json + perPART typed/poro JSON/CSV;one external batch process perjob,notthousands of perPART process launches",
+    "feedback_readers": "new_review/old_33 andnew_33 with33 physical.bin/native_ids.csv/history.csv/completion;read-only old raw controls,no old solver",
+    "aggregate": "logs/upl_gpu_wall_legacy_r1.check.json is a later root-owned reviewed aggregate;this driver never automatically creates it or starts anotherjob"
+  },
+  "author_commands_are_plans_only": [
+    "powershell -NoProfile -File tests/support/upl_gpu_wall_legacy_runs_r1.ps1 -Mode RunJob -Job OFF_smoke -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -File tests/support/upl_gpu_wall_legacy_runs_r1.ps1 -Mode ReviewJob -Job OFF_smoke -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "scope": {"DynamicPorePressure_enabled": false, "DynamicPoreConductivity_enabled": false, "new_wall_branch_tested": false, "public_GPU_dynamic_accepted": false, "physical_acceptance": false},
+  "author_executed_programs": false,
+  "production_or_retained_artifact_changes": false,
+  "threshold_changes": false
+}

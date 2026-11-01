@@ -1,0 +1,112 @@
+{
+  "stage": "upl_gpu_wall_component_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "files": [
+    "tests/support/upl_gpu_wall_component_r1.cpp",
+    "tests/notes/upl_gpu_wall_component_r1.json"
+  ],
+  "purpose": "Bounded actual GPU private static opposing-FreeSlip wall closure components only. Use actual ConfigDomain/InitRunGpu, State/Matrix/Acceleration, periodic owner map, complete wall-neighbor rate and one extra Interaction_Forces audit. No actual production Run, ComputeStep_Sym, physical trajectory, serialization, energy or full-cycle acceptance.",
+  "include_closure": "Rename only main around immutable support/upl_gpu_k0_time_r1.cpp (SHAe886 retained in its own sealed build receipt) to reuse Down/Up/Device/Need and one AppInfo. New independent WallFixture never calls its512-specific Initialize, no old Darcy/perm component main included. Add actual project FunSphKernel.h,FunctionsMath.h,JArraysGpu.h and standard/vector_functions headers.",
+  "CPU_basis": [
+    "support/upl_p3_wall_wave_harness_r2.cpp:Component/Audit/FaceAndForce",
+    "support/upl_p3_perm_wall_r1.cpp:full wall-neighbor rate/chain reference and same physical-plane budgets"
+  ],
+  "cli": "upl_gpu_wall_component_r1.exe --wall -gpu:0 -stable [-mdbc] SEALED_OLD_WALL_SEED_PREFIX NEW_OUTPUT_DIR",
+  "seed": "logs/upl_p3_wall_wave_seed_r3.inputs.json → outputs/upl_p3_wall_wave_seed_r3_{c,h}/CaseUplWall_{c,h}. Native initialBI4 57736B SHA76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f. Component-only fields are deliberately manufactured after initialization; this is not an actual-Run initial-state rewrite claim.",
+  "geometry": {
+    "fluid": 1024,
+    "fixed": 256,
+    "total_native": 1280,
+    "fluidIDs": "256..1279",
+    "fixedIDs": "0..255",
+    "dp": "1/512",
+    "width": "1/16",
+    "z_length": "1/16",
+    "walls": "x0/W,128 real fixed samples perface in four outside layers,static FreeSlip",
+    "periodic": "Z only,including actual fluid+wall periodic slots. Npb/NpbOk are measured actual nonzero prefixes, not256 constants. No XZ clone-of-clone claim for this geometry."
+  },
+  "material": {
+    "K": 89478488,
+    "G": 134217728,
+    "Kw": 67108864,
+    "n0": 0.25,
+    "rho0": 2048,
+    "rhow": 1000,
+    "k0": "float1e-4 promoted to double,m/s",
+    "h": "float(1.8/512)",
+    "V0": "(1/512)^2",
+    "smooth_Ck": 0.0001220703125,
+    "Ck_calibration": "Manufactured2^-13,not soil calibration"
+  },
+  "actual_APIs": {
+    "initial": "Private Observer/Feedback/DynamicPressure/DynamicWall=true before actual LoadConfig/LoadCaseParticles/ConfigDomain/InitRunGpu. Public master remains false. InitDynamicPoreWallGpu is reached through its real ConfigDomain hook while original host normals/slip exist.",
+    "closure": "ComputeDynamicPoreWallStateGpu(); ComputeDynamicPoreWallMatrixGpu(); ComputeDynamicPoreWallAccelerationGpu(). No local operator transcription substitutes these actual host/kernel calls.",
+    "rate": "ComputeFreeSurfaceTracking actual wall order; poison output C replicas, actual PrepareDynamicPorePeriodicGpu then Matrix helper; poison ghost Ace/theta and all wall Ace, then actual ComputeDynamicPorePressureRateGpu(consumes map). Actual rate must overwrite every normal fluid sentinel and copy periodic rates while preserving the real fixed prefix.",
+    "counterfactual": "Direct actual cusph::ComputeDynamicPorePressureRate with existing full signature and final wall=true/boundmode, after intentionally replacing only reconstructed fixed C or Ace. These are frozen-state negative controls, not alternate trajectories."
+  },
+  "counts": {
+    "affine_cases": 2,
+    "affine_wall_rows": 512,
+    "coincident_pressure_rows": 256,
+    "complete_rate_cases": 2,
+    "complete_rate_rows": 2048,
+    "wrong_wall_rate_cases": 3,
+    "real_owner_negative_cases": 1,
+    "actual_force_component_audits": 1,
+    "persistent_rollback_checks": 2,
+    "completed_physical_steps": 0
+  },
+  "affine": {
+    "fields": "Original CPU affine J=1+x/1024,p=float(128+256x),v=(.125+.5x,0,-.25+.125x),sigma=[16+x,0,8+32x,32+2x,0,64+4x],C=[1+x,0,.125+.5x;0,0,0;.125+.5x,0,2+x],Ace=(.25+.5x,0,-.125+.25x). All use the actual mirror-target x.",
+    "two_cases": "Same-node and component-only signedDp/8 addition to every actual fixed BoundNormal.x. Each of256 normal fixed samples must have nearest distance exactly0 or Dp/8 respectively. Real coordinates/clock never move; restore all native+periodic normal bytes.",
+    "parity": "EvenJ/p; derivativeQv and QSsigmaQ/QCQ/QAce (Qdiag−1,1,1). Physical fixed velxyz0/rhoprho0 and BoundMode=MDBC2; separate tangent normal0/tangentvelocity retained. Nonzero wrong-copy C and Ace reflection witnesses must exceed original appropriate budgets.",
+    "unchanged_budget": "condition from independent actual-fluid support volume-weighted3x3 dimensionless moment. td=32768DBL_EPS*condition,tf=64FLT_EPS*condition; |Jerror|<=2td,|perror|<=256tf,vectorv/Aceerror<=tf,stressmax<=128td,Cmax<=4td.",
+    "native_identity": "Helper calls may write fixed samples only. All covered26 native fields,identity,code,dcell and positions must be byte-exact before/after helpers. Every tangential wall clone must equal its ID owner for reconstructed J/p/sigma/C/Ace/derivative."
+  },
+  "coincident_anchor_discriminator": {
+    "extra": "After the unchanged same-node affine case, one extra State call changes ONLY fluid pressure to float(128+32768x²); every other field remains original affine. Actual target must have exact zero-distance native-fluid witness. Reconstructed pressure must preserve nearest nativefloat bits exactly, the nearest−gradient*0 contract.",
+    "bare_intercept": "Independently calculate the old unanchored first-order W/grad moment intercept from the same actual positions,J,p and project Wendland float factor. Report its double pressure deviation and ratio to the unchanged original float-pressure budget, plus the actual float(bare) write value/bit mismatch. Require at least one double deviation AND at least one float(bare) bit pattern different from the nearest native float; a double-only difference is not sufficient. Original actual nearest-float exactness, pressure field and budgets are unchanged. Do not call this quadratic continuum exactness or new physical accuracy.",
+    "CSV": "256rows id/target/distance/actual/nearestbits/bareintercept/error/originalbudget/bare_float_write/bare_float_bits_differ. Never replace either original affine case or actual-force negative controls."
+  },
+  "full_rate_components": {
+    "fields": "Two same frozen manufactured fields,constant then smooth: J=1+x/1024+sin(2pi z/Lz)/65536,theta=.03125+x/16,p=float(64cos(2pi x/FullLx)+16cos(2pi z/Lz)),v=A sin x,finished prescribed Ace=(.25+.5x+.125sin z,0,.125cos z+.25x). Tangential clones use wrapped z. Conditional actual nativeC comes from actual FS. These are component fields,not a compatible physical deformation/trajectory claim.",
+    "independent_reference": "O(N²) normal-fluid receivers and all real fluid/fixed neighbors plus their actual periodic replicas; fixed support admitted only activeBoundMode. Vj=V0Jj,g=actual project Wendland factor(floatrr²)*doublepositiondifference. Use actual conditionalC_i/C_j; Lp=ΣVjΔp*d·(Ci+Cj)g/(rr²+eta²),Lx analogous,differenceGp andDA,plus smooth alpha*ki*GJ·(Gp+rhowAce). Complete rate Kw/n[-theta+ki/gamma(Lp−Gp·Lx+rhowDA)+chain/gamma].",
+    "budget": "Unchanged64FLT_EPS times all absolute raw discrete terms (including chain absGJ·[absGp+rhowabsAce]) +256DBL_EPS*max(1,|Kw/n theta|)+1e-6Pa/s. Output actual/reference/error/budget/ratio/pressure/acceleration/chain and actual-neighbor counts,not justPASS. At least one true wall and one periodic-wall neighbor reference must exist.",
+    "owner": "Actual ridp map rangeCaseNpb..CaseNp with measurednonzeroNpb. Require ID-slot maps,all fluid C/Ace/theta/rate owner copies and all wall replicas exact. Record actual owner permutation count honestly. Missing actual ghost ID is rejected through actual Prepare and restored before the successful map; no retained solver retry.",
+    "negative": "Constant field: three direct actual rate calls with zero wallC,zero wallAce,and unreflected wallAce (reverse correct normal component). Each must match its own independent conditional reference within unchanged budget and differ from correct output beyond combined original budgets on at least one native receiver. No5Pa half gate on these option/counterfactual differences."
+  },
+  "extra_force_audit": {
+    "field": "One predeclared manufactured standing-wave component: J=1+cos(2pi x/FullLx)/65536,p=float(64cos),sigma_xx=16cos,otherstress0,vx=A sin,theta0. No field tuning after output. This is not a physical initial-state or energy/theory acceptance.",
+    "actual": "Invoke actual Interaction_Forces(INTERSTEP_SymPredictor) once; actual complete force/FS/wall/rate pipeline and native rates independently checked. No ComputeStep or Run call.",
+    "rollback": "Capture/restore all covered persistent J/theta/vel/p/p0/rate/plastic/sigma/C/FS/PosDiv/load/tangent/mode/normal arrays, exact native26, immutableID/code/dcell/positions,InterStep anddefinedcache; clocks/lockedDt/LastDt/signedFixedError unchanged. ScratchAce/derivative released by realPosInteraction. First oldAceMax is never read; retain first genuinely computed force statistics and explicitly disclose this exception,asCPUaccepted Audit.",
+    "force_budget": "Σfluid rhoiViAce_i + independently assembled wall reaction norm<=128FLT_EPS Σ|pairforce|+4096DBL_EPS max(1,Σ|pairforce|). Use actual float stress/gradient pair arithmetic,not an invented exact force conservation identity.",
+    "face": "Independent3x3 WVi moment fit at each physical plane(x0/W,zLz/2),all actual soil/wall/tangent clone supports. Derive vp,ap,Gp; vn=±vp,qn=−k0/gamma*(Gp+rhowap)*±1,not first-layer velocity or forced mirror average.",
+    "face_budget": "Original bv=4epsF*vmaxΣ|beta|+4096epsD*cond*vmax+1e-4A; bq=k0/gamma[2epsF*pmaxΣ|alpha|+4rhowepsF*amaxΣ|beta|+4096epsD*cond(gscale+rhowamax)]+1e-4Qstar; require |vn|<=bv<.01A,|qn|<=bq<.01Qstar. The1e-4 terms are explicit boundary-truncation budgets,not a pure roundoff proof.",
+    "face_negatives": "Wrong wallAce0 and wrong unreflected(copy)Ace each must violate originalbq on at least one face. Keep these independent from the frozen rate counterfactuals."
+  },
+  "outputs": [
+    "affine.csv",
+    "offgrid_affine.csv",
+    "coincident_pressure_anchor.csv",
+    "rates.csv",
+    "owners.csv",
+    "negative_rates.csv",
+    "face_force.csv",
+    "force_rates.csv",
+    "completion.json",
+    "actual initialization Run.out and geometry diagnostics"
+  ],
+  "excluded": [
+    "No actual physical integration or half/full/theory1percent acceptance",
+    "No nativeBI4 serializer or generic512reader reuse",
+    "No general wall/NoSlip/inclined/corner/moving/gravity/load/drainage/publicGPU acceptance",
+    "No independent reconstruction proof of all fluidC: C is measured conditional input to rate reference",
+    "No all-stage automatic helper-count instrumentation claim",
+    "No source or retained evidence edits/build/Git/solver calls by this author"
+  ],
+  "author_compiled_or_executed": false,
+  "production_or_retained_files_changed": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

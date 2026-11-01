@@ -1,0 +1,42 @@
+{
+  "stage": "upl_gpu_wall_pair_r1",
+  "status": "author_only_not_executed",
+  "files": ["tests/support/upl_gpu_wall_pair_r1.py", "tests/notes/upl_gpu_wall_pair_r1.json"],
+  "scope": "One explicit offline Half/Cross/Effect/Reference of already-completed typed wall33 review folders. Fresh JSON/CSV/PNG only. No solver, source/XML/input edits, native values overwritten, interpolation, smoothing or extra CNG native code.",
+  "immutable_dependencies": {
+    "upl_gpu_perm_pair_r1.py": {"sha256":"4d246d45c054d647a10993474f13595c2720fbdc36d05f4c1e1c21956502b0f5", "use":"Import only generic typed-export table/values/JSON/binding verification helpers; its512-specific loader/main are never called. Original half/effect budgets retained."},
+    "upl_cpu_public_compare_r1.py": {"sha256":"1c6451a327ccce28e7194e296fc952322cf1ed97b06fd946b7899bec9e733dac", "use":"Import original independent scaled4x4 reference(), normalizers and constant_errors(). Main is not run. Reference error fields use only actualXYZ,p,v,J, so calling the field function on strict33 arrays does not reinterpret old26 binaries."}
+  },
+  "CLI": {
+    "Half": "python upl_gpu_wall_pair_r1.py --action Half --a COARSE_REVIEW --b HALF_REVIEW --out NEW_PREFIX [--a-data RAW_A --b-data RAW_B]",
+    "Cross": "Same action Cross, equal model/window/dt, one CPU and one GPU",
+    "Effect": "Same action Effect, A=GPUconstant,B=GPUvariable,same full-window dt, plus --half-check PASSED_OWN_GPU_VARIABLE_HALF.json",
+    "Reference": "--action Reference --a CONSTANT_FULL_REVIEW --out NEW_PREFIX [--a-data RAW_A]; no B or half-check",
+    "raw_proof": "Optional explicit raw DATA directories avoid guessing future driver receipt schema. When supplied every current PART is rehashed against the bound reader before/after hashCSV, extra/missing PARTs rejected. Without it summary explicitly reports typed-export-only proof; neither mode claims owned solver exit or full endpoint audit. Root stage receipts must supply those independently."
+  },
+  "geometry_schema": {
+    "soil":1024,"soil_IDs":"256..1279","fixed":256,"fixed_IDs":"0..255","columns":33,
+    "native_binary":"Little-endian header[1024,33,257] full or[1024,33,17] k0-short, then actualtime+1024 rows per frame. Exact extent/noNaN/no trailing records. Old26 files rejected.",
+    "required_sidecars":["completion.json","native_ids.csv","fixed_ids.csv","fixed_samples.csv","history.csv","native_hashes.csv"],
+    "CPU_only":"cpu_posdiv.csv all samples1024 IDs, actual6J/derived arrays versus GPU3. GPU CPU-PosDiv fabrication rejected.",
+    "fixed_conventions":"Compare fixed IDs/real XYZ/planes exactly, not CPU zero-marker n against GPU reconstructed-sample n. Full fixed_samples checks staticXYZ/Jdomain/theta0 and backend-specific actual marker convention, never wall-material energy.",
+    "material_band":"Fixed at initial material min(x0,.0625-x0)<=2*float(1.8/512),exact256 soil IDs; not moved/reselected at later times.",
+    "initial":"All33 actual initial bit patterns must match for Half/Cross and also Effect. No signed-zero,theta,FSType,FSnormal or other initial diagnostic exception. MaterialXYZ initial tables are bit matched."
+  },
+  "single_run_rechecks": ["Independent all-row J/n/V/rho/k ledger and5e-13 solid-volume identity", "finite/elastic/p0/no-load/passive700..3000,actual float excess", "natural non-smoke max|J-1|>1e-8,weak|J-1|<=1e-4", "full current-k span>=.005k0 for modelvariable", "original energy<=1.1 including18K bulk denominator and full six-stress energy", "saved coupledCFL<=.01 and current-k diffusion<=.01", "positive-k continuous-domain margin,not applied to k0", "all actual dyadic times,zero-based savedStep,finite signed dterror<=1e-14", "all source/export input hashes rechecked before finishing"],
+  "Half": {"identity":"Same backend/model/window,coarse2^-25 then half2^-26; all17 k0-short or257 full exact-time/ID samples", "absolute":"PressureRMS<=5Pa and max fullXYZ material-displacement difference<=.005mm", "normalized":"PressureRMS/Pstar,fullXYZ velocityRMS/A,fullXYZ material-uRMS/Ustar all<=1e-4", "not":"Not0ULP/backend/physical acceptance"},
+  "Cross": {"identity":"CPU versusGPU,same model/window/dt", "hard":"Original pressureRMS<=5Pa and max fullXYZ material-u difference<=.005mm", "normalized":"Descriptive only,never imposed as a half bound", "passive_density":"Report passiveRhop differences; no CPUrational/GPUadditive equality gate"},
+  "Effect": {"identity":"Full GPUconstantA versusGPUvariableB,same dt and initial all33 bits exact", "own_half":"Require a passed own variableGPU Half from this frozen recipe,coarse/half side folder+completion exactly identifies B; verify original full metricCSV and all bound inputs/files", "hard":"max option pressureRMS strictly>max(.001Pa,10*max own GPUhalf pressureRMS)", "not":"Option response is not half,backend,theory error or automatic accuracy improvement; manufacturedCk2^-13 is not calibration"},
+  "Reference": {
+    "allowed":"Positive constant model/full257 only. Variable-k and k0-short receive no fabricated constant-k continuum gate.",
+    "expm":"Original cpu_public_compare reference() scaled augmented[u,v,sigma,p]4x4 matrix exponential with actual float-promotedK/G/Kw/rho/n0/k0,gravity0 and completed-acceleration Darcy term.",
+    "RK4_crosscheck":"Independent physical derivative du=v,dv=kappa(p-sigma)/rho,dsigma=M*kappa*v,dp=-B*kappa*v-D*kappa^2*p+D*rhow*kappa*dv. Increment each actual cadence by16 and32 RK4 pieces. Original absolute pressure self-check<=1e-8Pa; normalizedexpm/RK gap<2e-11.",
+    "scientific_error":"All257 fullXYZ p/v/u normalizedRMS globally and in exact256-particle materialband,plus final pressure-cosine-mode relative error. Exact retained constant_errors() is called and verified, no scalar-only substitution.",
+    "hard":"Original max(global p/v/uRMS)<=.01,max(material-band p/v/uRMS)<=.01,abs(endpointpressuremode relativeerror)<=.01. A failed objective writes passedfalse with scientificCSV/PNG,not a relaxed target.",
+    "not":"No variable-k analytical truth, no generalwall or fullphysical acceptance, no dependence on storedRK/reference columns as truth."
+  },
+  "plotting":"Simple2x2 scientific pressure/velocity/materialu mode versus actualtime and comparison/error histories. Every declared time retained inCSV/curves, no smoothing, clipping, rescaling or missing-field substitution. Modal plots do not replace fullXYZ error tests.",
+  "outputs":"NEW_PREFIX.json/.csv/.png; all must be absent before analysis. Report input bindings, scientific maxes, backend/fixed marker distinctions, optional current raw hash status and precise scope.",
+  "not_proven_here":["Owned solver exit/program/source/runtime provenance,which root receipts must bind", "RawBI4 independent second parsing", "All257 endpoint face/force/rate audits,which remain a separate required gate", "Original integration-stage theta/C/Ace or between-save flux", "Sufficient stability/exactwatermass/generalconservation", "PublicGPU/formal/fullcycle/generalwall/restart acceptance"],
+  "executed_by_author":false,"source_solver_XML_or_retained_data_changed":false,"thresholds_relaxed":false,"physical_acceptance":false
+}

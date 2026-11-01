@@ -1,0 +1,81 @@
+{
+  "stage": "upl_gpu_wall_actual_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "files": ["tests/support/upl_gpu_wall_actual_r1.cpp", "tests/notes/upl_gpu_wall_actual_r1.json"],
+  "purpose": "Keep an actual private JSphGpuSingle::Run and original native BI4 trajectory separate from a read-only, all-saved-endpoint force audit. No production callback/virtual hook or formal XML changes.",
+  "immutable_include": {
+    "path": "tests/support/upl_gpu_observer_native_r1.cpp",
+    "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "reuse": "Rename its main once to reuse typed NativeArray/Order/Error/Fresh and one AppInfo. Its no-wall NativeSet/reader/solver are not called. No nested Darcy/perm or component source inclusion."
+  },
+  "additional_link_dependency": "Windows system bcrypt.lib via #pragma comment(lib). Root plans a new helper_r2 builder that explicitly appends the exact WindowsSDK bcrypt.lib absolute path and unique library hash to the link receipt; existing helper_r1 remains immutable. The one helper plus110 authoritative production objects closure is unchanged. BCrypt SHA256 only; hash-object buffer outlives BCryptDestroyHash. No custom crypto implementation, external hash process or third-party library.",
+  "cli": {
+    "solver": "upl_gpu_wall_actual_r1.exe --solver MODEL WINDOW -gpu:0 -stable -mdbc_freeslip INPUT_PREFIX NEW_OUTPUT -dirdataout data -svres",
+    "reader": "upl_gpu_wall_actual_r1.exe --read MODEL CPU|GPU WINDOW DATA_DIR DT RUNTIME_XML NEW_REVIEW_DIR",
+    "endpoint_audit": "upl_gpu_wall_actual_r1.exe --audit MODEL WINDOW DATA_DIR DT RUNTIME_XML -- -gpu:0 -stable -mdbc_freeslip INPUT_PREFIX NEW_AUDIT_OUTPUT -dirdataout data -svres",
+    "MODEL": "Exactly k0|constant|variable. k0 and constant use private conductivity flag false/Ck0; variable uses true/Ck2^-13. GPU XML public master remains false and model0/Ck0, explicitly distinct from private fixture flags.",
+    "WINDOW": "Exactly smoke|full|k0-short. No arbitrary runtime/dt/end override. Each executable invocation is one owned job; no automatic stage runner.",
+    "mdbc_warning": "Plain -mdbc overrides XML FreeSlip to velocity mode0 and is not equivalent to -mdbc_freeslip. Actual class Init and Finish reject it; do not retry completed programs for offline-check issues."
+  },
+  "windows": {
+    "smoke": {"dt": "2^-25", "steps": 2, "end": "2^-24", "cadence": "2^-25", "samples": 3},
+    "full": {"coarse_dt": "2^-25", "half_dt": "2^-26", "coarse_steps": 1024, "half_steps": 2048, "end": "2^-15", "cadence": "2^-23", "samples": 257},
+    "k0-short": {"model": "k0 only", "coarse_dt": "2^-25", "half_dt": "2^-26", "coarse_steps": 16, "half_steps": 32, "end": "2^-21", "cadence": "2^-25", "samples": 17},
+    "full_sample_times": "All actual dyadic saved times, initial0 and every subsequent cadence. Saved Step is0 initially, then part*cadence/dt-1 because production Run increments Nstep after SaveData. No metadata rewriting or interpolation."
+  },
+  "geometry_material": {
+    "soil": 1024, "fixed": 256, "total_native": 1280,
+    "soilIDs": "256..1279,32x32", "fixedIDs": "0..255,128 per opposing face,four layers each",
+    "dp": "1/512", "width": "1/16", "Zperiod": "1/16", "standing_wave_full_wavelength": "1/8",
+    "boundary": "Only actual static x-axis opposing FreeSlip planes with pure tangential Z periodicity and zero gravity. No NoSlip/inclined/moving/corner wall acceptance.",
+    "K": 89478488, "G": 134217728, "Kw": 67108864, "n0": 0.25, "rho0": 2048, "rhow": 1000,
+    "V0": "(1/512)^2", "h": "float(1.8/512)", "k0": "float1e-4 promoted double,m/s; k0 model literal0", "Ck": "Manufactured2^-13,not calibrated soil coefficient"
+  },
+  "input_ownership": {
+    "actual_Run": "Enable exactly four private flags Observer/Feedback/DynamicPressure/DynamicWall plus optional law/Ck; call actual nonvirtual JSphGpuSingle::Run. No physical fields, geometry, time, material, source rates or integration equations assigned by solver fixture. Finish only reads live state.",
+    "initialization": "Use a root-prepared runtime copy of sealed CPU public wall_constant/evolving input with its32 real fluidvelocity XML columns, public GPU master disabled/model0/Ck0 and declared clock/model. Retain exact BI4 SHA76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f. No GenCase here. Old component wall seed has no sine initialization and cannot silently replace an actual-Run input.",
+    "actual_initial_fields": "Native reader requires untouched vx=float(A sin(2pi*x/.125)),vy/vz/p/p0/effective stress/theta0,J1,n.25 on soil. Fixed geometry/layers and stationary state are independently checked. Lattice/band proof includes256 unique fixed coordinates and256 soil material wall-band points.",
+    "public_CPU": "Read retained successful CPU public wall native BI4 with exact original CPU XML, master true/model0 or1/Ck. Never treat old1024x26 physical.bin as33 native values or rebrand a companion as canonical Run."
+  },
+  "native_reader": {
+    "scope": "Every declared PART contains one1280-native piece,no exclusions and exact fixed/fluid counts. All15 original typed arrays plus J/n/last-stage-theta are read directly, all values finite. Double native positions/stress, float pressure/p0/excess/passive density, six double-to-float stress rounding, plastic0,p0/load0 and passive700..3000 checks unchanged.",
+    "CPU": "Actual six double J/derived arrays plus actual PosDiv and typed public master/schema/model/Ck metadata. On soil, V/rho/k and n agree with actual J under5e-13 relative ledger bounds. Fixed n/V/rho/k0 are actual nonphysical zero markers.",
+    "GPU": "Actual J,n,theta arrays and original15 typed arrays; V/rho/k/PosDiv/public metadata must be absent. Common V/rho/k explicitly derived from actual saved soil J and declared material/private model. GPU fixed n=1-.75/J is a reconstructed sample, not real wall porosity; retain in fixed_samples.csv rather than force CPU zero markers.",
+    "binary": "physical.bin little-endian uint32 header[1024,33,samples], then each binary64 actual time and1024 ID-sorted rows of33 doubles. Soil IDs retain256..1279; no fake PosDiv column.",
+    "columns_zero_based": ["x","y","z","vx","vy","vz","p","p0","J","theta_last_stage","sxx","sxy","sxz","syy","syz","szz","plastic","FSType","FSNormal_x","FSNormal_y","FSNormal_z","load_x","load_y","load_z","passive_Rhop","material_ux","material_uy","material_uz","native_excess","native_n","V_nativeCPU_or_derivedGPU","rho_nativeCPU_or_derivedGPU","k_nativeCPU_or_derivedGPU"],
+    "saved_guards": ["energy<=1.1 from native soil currentV/rho, six stress and finite-Kw storage", "weak|J-1|<=1e-4,n in(0,1),solid-volume identity<=5e-13", "saved coupledCFL<=.01,current-k Ddt/h^2<=.01", "positive-k continuous margin>64DBL_EPS max(rho,rhow),not applied to k0", "signed native dterror finite<=1e-14", "full natural max|J-1|>1e-8,smoke only>0", "full variable-k spatial span>=.005k0"],
+    "hashes": "Windows BCrypt SHA256 before and after every original PART read and before/after runtime. Reader outputs native_hashes.csv. This binds raw bytes but is not proof of the external solver's owned exit, program or source provenance; root driver must supply those receipts.",
+    "outputs": ["physical.bin","native_ids.csv","fixed_ids.csv","fixed_samples.csv","history.csv","last_poro.csv","native_hashes.csv","CPU-only cpu_posdiv.csv","completion.json"],
+    "live_final": "Actual solver live_final.csv contains soil IDs256..1279,J/n/theta and may be byte-compared to GPU reader last_poro.csv. Finish still validates all1280 live native owners."
+  },
+  "endpoint_force_audit": {
+    "independent_object": "One separate object initializes actual GPU wall ConfigDomain/InitRunGpu exactly once from the bound seed. For each completed nativePART, directly read all1280 native values, assign only the independent audit object's state, and do not call JPartsLoad4/PartBegin or a physical integrator. This is an explicit frozen-state import, not production Run/restart.",
+    "cell_periodic_lifecycle": "By actual native ID map build contiguous1280 normal-native host positions/codes, call actual LoadDcellParticles only on those normal entries, scatter native state/Dcell into existing normal slots, then actual RunCellDivide(true) retires old periodic images and creates/sorts fresh real fluid+wall replicas. Never pass stale periodic images to LoadDcell, manually rewrite Np, or silently skip excluded particles. Require1024soil/256fixed owners,nonzero wall/fluid periodic witnesses and zero actual exclusions each frame.",
+    "stage": "Production Run orders ComputeStep->RunCellDivide->TimeStep/LastDt->SaveData->Nstep++. SaveData again callsFS before native compaction. Source last-stage theta is the integrator's corrector-stage diagnostic, not endpoint theta. Audit invokes one actual Interaction_Forces(SymPredictor) at each imported endpoint, then original independent physical-plane/force/rate checks and PosInteraction. The source saved theta and newly computed endpoint theta are separate CSV columns.",
+    "clock": "Audit TimeStep/Nstep are assigned the exact native source metadata solely to label the frozen-state call. LastDt is declared bookkeeping(dt afterinitial0),not a field recovered from BI4. Record source signed dterror separately from unchanged audit-local FixedDt error. No ComputeStep/Run, physical clock advance, or predictor histories.",
+    "ownership_and_rollback": "Before diagnostic rollback, require actual force and cell rebuild to preserve source soil positions,v,p,p0,J,double stress,plastic,passive density and zero load bitwise by ID. Recomputed theta/FSType/FSNormal are diagnostics, intentionally not claimed identical to saved fields. Restore only these saved diagnostic fields in the independent audit object after recording endpoint values, then require all33 saved soil columns byte-exact. Fixed reconstructed state is a closure result,not claimed immutable wall material. Original files are never written.",
+    "full_sample_budget": "All257 full samples,includinginitial,2face rows per sample and1024 independent rate rows. Smoke3 and k0-short17 likewise audit every declared sample. No subsampling or automatic omission after a failure. Source PART SHA before/after each call and final recheck of every earlier source PART; runtime SHA unchanged.",
+    "force_reaction": "Original Σsoil rho_t Vi Ace plus independently reconstructed wall pair reaction. Actual float stress/position-gradient pair arithmetic, V0J quadrature. Norm residual<=128FLT_EPS sum|pairforces|+4096DBL_EPS max(1,sum|pairforces|),unchanged. This is a bounded budget,not an exact global conservation proof.",
+    "physical_faces": "At(x0/W,zLz/2),independent all-support WVi3x3 moment fit estimates normal v,Ace,pressure gradient and faceJ. q0=-k0/gamma(Gp+rhowAce)·n; qphysical uses law(faceJ). No first-layer substitute, prescribed mirror-average zero, or missing acceleration term.",
+    "original_face_bounds": "bv=4epsF vmax sum|beta|+4096epsD condition vmax+1e-4 A; bq=k0/gamma[2epsF pmax sum|alpha|+4rhow epsF amax sum|beta|+4096epsD condition(gscale+rhow amax)]+1e-4 Qstar. Require|vn|<=bv<.01A and both|q0|,|qphysical|<=bq<.01Qstar at every positive-k sample; k0 flux exactly0. The1e-4 characteristic terms remain explicit truncation budgets,not pure roundoff.",
+    "negative_controls": "Record wrong zero-wallAce and wrong unreflected/copy-wallAce physical-face q at every sample. Positive-k full window requires each counterfactual to violate originalbq on at least one postinitial face for both reference-k and physical-k. Do not require nonempty controls at t0 or in k0 and do not tune the field for them.",
+    "discrete_rate": "Independent hostO(N^2) all-fluid+fixed+actualperiodic neighbors,conditional actualC, V0J,Lstar+receiverC divergence of completedAce,localKw/n and optional smooth-k chain. Each native rate compared under original64FLT_EPS all-absolute-raw-term budget+256DBL_EPS max(1,|Btheta|)+1e-6Pa/s. Actual source kernel is called by realInteraction_Forces,not substituted. At least one wall and one periodic-wall receiver every frame. Conditional actualC is not an independent proof of constructingC.",
+    "gradient_and_time": "Read real stage cache after actual force,independently calculate endpoint uk from actualC/J and compare within64FLT_EPS max(1,reference). Call actual necessary acoustic/diffusion-scale helper after true force stats exist and enforce current dt and gradient necessary bound. Never call DtVariable merely to fabricate source dterror. This endpoint audit does not observe all original integrator force-stage scale values or prove sufficient stability.",
+    "outputs": ["endpoint_face_force.csv","endpoint_rates.csv","endpoint_audit.csv","audit_native_hashes.csv","audit_complete.json","independent initialization Run.out/geometry diagnostics"],
+    "full_counts": {"source_samples":257,"actual_extra_endpoint_force_calls":257,"face_rows":514,"native_rate_rows":263168,"soil33_diagnostic_rollback_frames":257,"completed_physical_steps_by_audit":0},
+    "not_observed": "Original predictor/corrector stage call counts,instantaneous between-save wall flux,original saved Ace/rate/C (not serialized),or exact water mass. The audit matches the scope of retained CPU extra-saved-point Audit,not a stronger all-stage claim."
+  },
+  "later_required_root_analysis": [
+    "Each real owned solver exit plus frozen source/build/program/runtime/input/raw evidence and Debug memcheck0errors/0leaks before full-stage admission",
+    "Independent halves: all257 matched times/IDs original5Pa/.005mm and normalizedp/v/u<=1e-4; CPU/GPU cross original5Pa/.005mm,passive CPUrational/GPUadditive density not exact",
+    "Constant-k completeXYZ continuum reference via existing independent matrix exponential,original global/nearwall256-band/endpoint1percent gates; do not use that constant reference as variable-k truth",
+    "Variable-k source/effect/half tests and all-history native ledger,not paper-color tuning",
+    "Both successful realRun native review and separate full-sample endpoint audit; neither normal exit nor compile automatically admits physical/full/public GPU"
+  ],
+  "held": ["public GPU master", "arbitrary/NoSlip/inclined/corner/moving walls", "gravity/load/drainage", "3D/plasticity/HG/SPR/shifting", "PART state restart", "general conservation or sufficient stability", "formal/server/fullphysical acceptance"],
+  "compiled_or_executed_by_author": false,
+  "production_or_retained_files_changed": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

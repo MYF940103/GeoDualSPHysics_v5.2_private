@@ -1,0 +1,137 @@
+{
+  "stage": "upl_gpu_wall_helper_r1",
+  "status": "author_only_not_executed",
+  "script": "tests/support/upl_gpu_wall_helper_r1.ps1",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "purpose": "Compile/link exactly one selected new-wall or unchanged-regression fixture with the authoritative frozen wall GPU objects. Never execute the result or an old solver/control.",
+  "actions": {
+    "mode": "BuildFixture",
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "fixtures": [
+      "Component",
+      "Native",
+      "Feedback",
+      "DarcyActual",
+      "SmoothActual",
+      "WallActual"
+    ],
+    "required_switches": [
+      "ProductionBuildConfirmed",
+      "ExecutionAuthorized"
+    ],
+    "automatic_run": false,
+    "other_fixture_inputs_bound": false
+  },
+  "prerequisites": {
+    "bounded_prior_stage": "logs/upl_gpu_perm_stage_r1.check.json",
+    "prior_scope": "Require passed private periodic smooth-k implementation with original absolute/normalized gates preserved; physical/public GPU/general-boundary acceptance remains false.",
+    "current_build": "logs/upl_gpu_wall_{Configuration}_r1.build.json",
+    "build_status": "full_authoritative_GPU_Rebuild_passed_no_helper_or_program_run",
+    "required_candidate_flag": "private_static_wall_GPU_candidate_build_only=true",
+    "current_source_files": 265,
+    "current_targets": 5,
+    "unchanged_other_source_files": 260,
+    "targets": [
+      "JSphGpu.h",
+      "JSphGpu.cpp",
+      "JSphGpuSingle.cpp",
+      "JSphGpu_ker.h",
+      "JSphGpu_ker.cu"
+    ],
+    "exact_GPU_objects_excluding_main": 110,
+    "fixture_objects": 1,
+    "link_objects": 111,
+    "canonical_GPU_entries_unchanged": 6,
+    "five_target_source_build_input_runtime_hashes_rechecked": true
+  },
+  "mapping": [
+    {
+      "fixture": "Component",
+      "token": "component",
+      "old_recipe": "upl_gpu_perm_component_{Configuration}_r1.helper.json",
+      "old_fixture": "Component",
+      "compiler_old_source": "support/upl_gpu_perm_component_r1.cpp",
+      "compiler_new_source": "support/upl_gpu_wall_component_r1.cpp",
+      "author_note": "notes/upl_gpu_wall_component_r1.json",
+      "source_remaps": 1,
+      "exe": "upl_gpu_wall_component_r1.exe",
+      "authored_include": "support/upl_gpu_k0_time_r1.cpp plus its component note; peer confirmed no old perm/Darcy main include"
+    },
+    {
+      "fixture": "Native",
+      "token": "native",
+      "old_recipe": "upl_gpu_perm_native_{Configuration}_r1.helper.json",
+      "old_fixture": "Native",
+      "unchanged_source": "support/upl_gpu_darcy_legacy_batch_r1.cpp",
+      "source_remaps": 0,
+      "exe": "upl_gpu_observer_native_r1.exe",
+      "authored_include": "support/upl_gpu_observer_native_r1.cpp and its note"
+    },
+    {
+      "fixture": "Feedback",
+      "token": "feedback",
+      "old_recipe": "upl_gpu_perm_feedback_{Configuration}_r1.helper.json",
+      "old_fixture": "Feedback",
+      "unchanged_source": "support/upl_gpu_k0_actual_r2.cpp",
+      "source_remaps": 0,
+      "exe": "upl_gpu_k0_actual_r1.exe",
+      "authored_include": "support/upl_gpu_observer_native_r1.cpp and its note"
+    },
+    {
+      "fixture": "DarcyActual",
+      "token": "actual",
+      "old_recipe": "upl_gpu_perm_actual_{Configuration}_r1.helper.json",
+      "old_fixture": "DarcyActual",
+      "unchanged_source": "support/upl_gpu_darcy_actual_r1.cpp",
+      "source_remaps": 0,
+      "exe": "upl_gpu_darcy_actual_r1.exe",
+      "authored_include": "support/upl_gpu_observer_native_r1.cpp and its note"
+    },
+    {
+      "fixture": "SmoothActual",
+      "token": "variable_actual",
+      "old_recipe": "upl_gpu_perm_variable_actual_{Configuration}_r1.helper.json",
+      "old_fixture": "SmoothActual",
+      "unchanged_source": "support/upl_gpu_perm_actual_r1.cpp",
+      "source_remaps": 0,
+      "exe": "upl_gpu_perm_actual_r1.exe",
+      "authored_include": "support/upl_gpu_observer_native_r1.cpp and its note"
+    },
+    {
+      "fixture": "WallActual",
+      "token": "wall_actual",
+      "old_recipe": "upl_gpu_perm_variable_actual_{Configuration}_r1.helper.json",
+      "old_fixture": "SmoothActual",
+      "compiler_old_source": "support/upl_gpu_perm_actual_r1.cpp",
+      "compiler_new_source": "support/upl_gpu_wall_actual_r1.cpp",
+      "author_note": "notes/upl_gpu_wall_actual_r1.json",
+      "source_remaps": 1,
+      "exe": "upl_gpu_wall_actual_r1.exe",
+      "authored_include": "Reserved contract uses the existing immutable observer Native include and note; future author/root review must confirm this exact closure before choosing BuildFixture WallActual."
+    }
+  ],
+  "reserved_WallActual": "Its CPP/note are not created or assumed present by this author. Only the selected switch branch and subsequent selected author hashing access them. Native/Feedback/other builds do not read, freeze or require any unfinished WallActual author input.",
+  "compiler_replay": "Use the actual selected configuration's successful immutable perm helper compiler/link vectors. Preserve all flags/libraries/tool identities; compiler only substitutes one exact source argument (new source only for Component/WallActual), /Fo and /Fd. An unchanged fixture still checks that exactly one old source token exists, but substitution is the same path and reported source_remaps=0.",
+  "linker_replay": "Replace /OUT,/PDB where present, exactly one helper object and all110 old GPU object paths by current flat no-space authoritative wall objects. Verify exact111 unique object closure and no main. No alternate build system or new mathematical implementation.",
+  "historical_identity": "Validate old helper receipts, actual program/runtime, tools/libraries and immutable author/include inputs, but never revalidate historical GPU target source inventories against now-changed current targets. The new source265/five/260 inventory is independently bound.",
+  "immutable_include_hashes": {
+    "Time": "e886b659688ea369a3a30b8384ffa4c8f6ede4efd1342a288aebf24cdc712f95",
+    "observer_Native": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857"
+  },
+  "paths": {
+    "output": "outputs/upl_gpu_wall_{token}_{Configuration}_r1",
+    "receipt": "logs/upl_gpu_wall_{token}_{Configuration}_r1.helper.json",
+    "WallActual_explicit_output": "outputs/upl_gpu_wall_wall_actual_{Configuration}_r1",
+    "receipt_status": "actual_authoritative_GPU_objects_helper_linked_not_run",
+    "runtime": "Hash-verified current wall build DLL/config original/copy support only; canonical GPU programs are not overwritten.",
+    "source_copies_made": 0
+  },
+  "failure_policy": "Protect all retained folders/receipts/call/log paths and preserve failed evidence. No retry, relabel, worker restart, code repair, cleanup or program launch. A compile/link pass alone does not admit a later component or actual trajectory.",
+  "held": "No public GPU unlock, general-wall acceptance, actual state/pressure/force/rate validation, half/backend/theory acceptance, formal run or remote Git action.",
+  "author_validation": "PowerShell AST/JSON parsing only; no BuildFixture, build, help, program, solver, GenCase or Git command was executed by this author.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false
+}

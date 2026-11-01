@@ -1,0 +1,64 @@
+{
+  "stage": "upl_gpu_wall_nowall_actual_runs_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "files": ["tests/support/upl_gpu_wall_nowall_actual_runs_r1.ps1", "tests/notes/upl_gpu_wall_nowall_actual_runs_r1.json"],
+  "basis": "Minimal GPU-only RunJob/ReviewJob adaptation of immutable upl_gpu_perm_actual_runs_r1.ps1. No Prepare,CurrentCPU,XML/BI4 write,GenCase,old-control solver,source edit,project/helper build,notifier or Git action.",
+  "purpose": "Verify the new wall-source binaries preserve previously accepted no-wall constant/smooth-k actual Run implementations. Five fresh GPU jobs only;original immutable DarcyActual and SmoothActual fixtures/readers linked to current wall objects. No new C++ or equations. DynamicPoreWall remains its private defaultfalse and CaseNpb=0. This flag statement follows the frozen constructor/immutable fixture source plus actual zero-boundary reader checks;not newly instrumented flag telemetry.",
+  "prerequisites": {
+    "wall_components": "Both logs/upl_gpu_wall_component_{Debug|Release}_r5.check.json passed,current source_build/helper identities,completion and owned exit0;Debug actual memcheck0errors/0leakedbytes. Debug component r5 adopts completed r2 data offline rather than rerunning it. Checkpaths are requirements,not author-time pass assumptions.",
+    "legacy": "Root-reviewed logs/upl_gpu_wall_legacy_r1.check.json passed,all7 unique expected job_checks/557frames,all typed15/clock/Step/signeddterror and observer/Feedback33 exact flags,DynamicPorePressurefalse,conductivityfalse,physicalfalse. Each jobcheck source_build must be the corresponding current wall D/R build;its owned solver exit0 and Debug memchecks are verified. No uncreated independent-review file is invented.",
+    "build_helpers": "Current wall build_r1 D/R,5 GPU targets includingSingle/260 unchanged/265 total source,110 authoritative main-excluding objects. Current wall actual and variable_actual helper receipts require111 exact link closure,110 object substitutions,source remaps0 and exact same source-build identity. Six canonicalGPU identities,currenttools/libs/objects/runtime/project/compile/link and all author/include hashes are reverified.",
+    "helper_lineage": "New wall helper.replayed_helper must equal the chosen accepted perm control.helper. New/helperparent actualCPP/note and observer_nativeCPP/note unique SHA/bytes identical. Old genericperm parent source remaps0 for DarcyActual and1 for its original SmoothActual source adaptation;new wall source remaps0 for both. Old GPU source inventories are not treated as current-source hashes.",
+    "job_order": "VariableSmoke Debug RunJob→ReviewJob must pass before any Release job. Each half label additionally requires its own new coarse check. Every invocation performs exactly one selected Run or Review;no automatic next stage or fallback."
+  },
+  "inputs_and_controls": {
+    "manifest": "logs/upl_gpu_perm_actual_r1.inputs.json",
+    "reuse": "Adopt only the selected existing immutable GPU job row/prefix/XML/BI4 unchanged. No newinput directory or manifest,copy,GenCase or initialization-field rewrite. Every initialBI4 SHA364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa;32x16,native512 IDs0..511,no fixed,XZperiodic,g0.",
+    "same_model_controls": "logs/upl_gpu_perm_actual_JOB_r1.check.json and its sealed owned run/completion/typed export. Require the exact same backend/model/clock/reader schema and own old exit0,then verify physical.bin/native_ids.csv/history.csv and old final live CSV bindings. Neither old solver nor old native-reader process is restarted.",
+    "strict_full_export": "All5 jobs,including VariableSmoke and variable c/h,require whole-file bytes/SHA exact for all three exported files,not just constant controls. physical.bin is the complete33-column data and exact saved time;native_ids.csv/history preserve the material identity and clock/signeddterror ledger. No masking,interpolation,initial-only exception or numeric tolerance substitutes bit identity.",
+    "raw_control_scope": "Old sealed receipts/owned log,actual completion and directly reused typed exports/live are rehashed. Unused old rawPART BI4 files are neither decoded nor recopied;their original sealed manifests remain retained local evidence. New raw outputs are individually hashed from the new own solver and reread by the immutable typed reader. No cloud-backup claim."
+  },
+  "jobs": [
+    {"job": "VariableSmoke", "configuration": "Debug", "fixture": "SmoothActual", "model": "variable", "steps": 2, "dt": "2^-24", "cadence": "2^-24", "samples": 3, "actual_memcheck": true},
+    {"job": "GPU_constant_c", "configuration": "Release", "fixture": "DarcyActual", "model": "constant", "steps": 512, "dt": "2^-24", "cadence": "2^-23", "end": "2^-15", "samples": 257},
+    {"job": "GPU_constant_h", "configuration": "Release", "fixture": "DarcyActual", "model": "constant", "steps": 1024, "dt": "2^-25", "cadence": "2^-23", "end": "2^-15", "samples": 257},
+    {"job": "GPU_variable_c", "configuration": "Release", "fixture": "SmoothActual", "model": "variable", "steps": 512, "dt": "2^-24", "cadence": "2^-23", "end": "2^-15", "samples": 257},
+    {"job": "GPU_variable_h", "configuration": "Release", "fixture": "SmoothActual", "model": "variable", "steps": 1024, "dt": "2^-25", "cadence": "2^-23", "end": "2^-15", "samples": 257}
+  ],
+  "totals_if_all_future_checks_pass": {"new_GPU_solvers": 5, "new_CPU_solvers": 0, "old_control_solvers": 0, "native_frame_instances": 1031, "native_33_records": 527872, "new_reader_processes": 5},
+  "cli": {
+    "variable_solver": "--solver-variable [--smoke] -gpu:0 -stable OLD_UNCHANGED_PREFIX NEW_OUTPUT -dirdataout data -svres",
+    "constant_solver": "--solver-constant -gpu:0 -stable OLD_UNCHANGED_PREFIX NEW_OUTPUT -dirdataout data -svres",
+    "reader": "--read constant|variable GPU NEW_OUTPUT/data DT OLD_EXACT_XML NEW_REVIEW [--smoke]",
+    "Debug_memcheck": "One fresh actual compute-sanitizer --tool memcheck --leak-check full --error-exitcode97 targetcall;tool hash from successful componentDebugr2 owncall,while its accepted component proof is r5. Require raw logERROR SUMMARY0errors andLEAK SUMMARY0bytes/0allocations."
+  },
+  "unchanged_single_run_gates": {
+    "own_identity": "New current helper actual_production_Run,private_feedback and private_complete_dynamic_rate;no field rewrite,publicGPUmasterfalse,native512,exactsteps/end/dt,predictor histories released,liveGPUdownload. Variable additionally private_smooth_conductivity+Ck2^-13. Actual source/current111objects/runtime/input and own exits bound before/after action.",
+    "typed_reader": "33columns,512soil,0fixed,actual3DoubleJ/n/theta,native ID aligned,no exclusions,actual saved clock/Step exact,strongruntimeXML/model/material checks,512*samples native ledger rows. GPU V/rho/k derived from J are explicitly not nativearrays;GPU PosDiv remains absent and its established export column semantics unchanged. No CPU6-array/nativePosDiv schema is misassigned toGPU.",
+    "original_guards": "maxenergy<=1.1,maxsavedcoupledCFL<=.01,maxsavedDdt/h²<=.01,maxledgerrelative<=5e-13,finite signedmaxdterror<=1e-14. Preserve nonempty |J−1|>0 forsmoke/>1e-8 full. No absolute-value replacement for signed safety margin. Native reader enforces its original perframe finite/elastic/geometry/source guards.",
+    "variable": "model1,Ckexact2^-13,k is referencek0 and full-window maxspatialkspan/k0>=.005;no span requirement on2step smoke. No variable-k constant-theory truth gate introduced.",
+    "exports": "New actual live_final.csv equals new last_poro.csv and its retained same-model live CSV byteforbyte;all three full33 export files match directly reused oldcontrol bytes/SHA. Export equality covers initial and every saved state. Derived/internal diagnostic differences receive no exception.",
+    "numeric_conversion": "JSON ValueType numeric values cast directly to double;CSV/string values parse invariantly. No JSONdouble→15-significant-digit string roundtrip. This changes no physical/numeric gate."
+  },
+  "output_paths": {
+    "solver": "outputs/upl_gpu_wall_nowall_actual_JOB_r1",
+    "review": "outputs/upl_gpu_wall_nowall_actual_JOB_r1_review",
+    "receipts": "logs/upl_gpu_wall_nowall_actual_JOB_r1.{call,run,check}.json;reader owncall/log adds_review",
+    "retention": "Reject any existing solver output/run/check or ownedcall/log;successful solve sealed before analysis. All failure logs/partial native outputs and failed check preserved. Offline review failure cannot rerun a completed solve or overwrite retained evidence."
+  },
+  "planned_commands_not_executed": [
+    "powershell -NoProfile -File tests/support/upl_gpu_wall_nowall_actual_runs_r1.ps1 -Mode RunJob -Job VariableSmoke -ExecutionAuthorized",
+    "powershell -NoProfile -File tests/support/upl_gpu_wall_nowall_actual_runs_r1.ps1 -Mode ReviewJob -Job VariableSmoke -ExecutionAuthorized"
+  ],
+  "scope_limits": [
+    "Implementation regressions only:new wall code disabled in no-wallgeometry. A pass does not accept the new wall closure or a generalboundary.",
+    "c/h labels identify retained time-step controls;this stage does not run a new half comparator or invent a fresh independent-half proof. It preserves each previously accepted trajectory exactly.",
+    "No newCPU solve/read,backend comparison,continuumtheory,physical1percent,fullcycle/publicGPU or sufficient stability claim.",
+    "Saved-point CFL/diffusion diagnostics and actual production guards are retained;no independent all-force-stage scale/gradient telemetry claim."
+  ],
+  "author_executed_programs": false,
+  "production_or_retained_artifact_changes": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

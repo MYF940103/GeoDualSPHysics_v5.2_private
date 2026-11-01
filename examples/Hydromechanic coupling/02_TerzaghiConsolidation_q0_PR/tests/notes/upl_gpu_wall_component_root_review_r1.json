@@ -1,0 +1,82 @@
+{
+  "stage": "upl_gpu_wall_component_root_review_r1",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "status": "both_configurations_passed_component_only",
+  "checks": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_component_Debug_r5.check.json",
+      "bytes": 15529,
+      "sha256": "8c6af877d869bf613229e26dddb223f4b83cd4020224f196023dd1acb4c11728"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_component_Release_r5.check.json",
+      "bytes": 16397,
+      "sha256": "baa1d77f23f0984935c506dc000d80bf50c9e44d286f0d4f5e7f8407de84308e"
+    }
+  ],
+  "source_files_changed": [
+    "JSphGpu.h",
+    "JSphGpu.cpp",
+    "JSphGpuSingle.cpp",
+    "JSphGpu_ker.h",
+    "JSphGpu_ker.cu"
+  ],
+  "builds": "Default CPU Debug and isolated authoritative GPU Debug/Release Rebuild passed. All component111-object closures match current5/260/265 source snapshots. Canonical programs unchanged.",
+  "root_review": "Full5-file production diff, CPU anchored reconstruction/order, full component345lines and all wrapper/note revisions were read by root. P0 independently reviewed source closure, state agent peer-reviewed component, test agent independently reviewed wrapper. Root identified empty-cell pini issue before first build and added pfin guards; source remained frozen throughout executions.",
+  "actual_scope": "Two static opposing x FreeSlip planes, Z periodic, equal-dp,2D,g0,elastic;1024 true soil+256 true fixed. Zero physical steps. Actual wall State/C/Ace helpers and complete rate kernel, actual periodic owner repair and one extra actual force audit. It is not actual production Run/native serializer/physical trajectory acceptance.",
+  "configuration_metrics": [
+    {
+      "configuration": "Debug",
+      "CSV_rows": 3847,
+      "affine_error_over_budget": 0,
+      "rate_error_over_budget": 0.005586784388050372,
+      "force_rate_error_over_budget": 0.004745718511956829,
+      "face_flux_over_budget": 1.1175507088324219e-13,
+      "reaction_over_budget": 0.00019035478647484418,
+      "bare_float_counterexample_rows": 256,
+      "memcheck_executed": true,
+      "memcheck_zero_errors_and_leaks": true
+    },
+    {
+      "configuration": "Release",
+      "CSV_rows": 3847,
+      "affine_error_over_budget": 0,
+      "rate_error_over_budget": 0.005586784388050372,
+      "force_rate_error_over_budget": 0.004745718511956829,
+      "face_flux_over_budget": 1.1175507088324219e-13,
+      "reaction_over_budget": 0.00019035478647484418,
+      "bare_float_counterexample_rows": 256,
+      "memcheck_executed": false,
+      "memcheck_zero_errors_and_leaks": false
+    }
+  ],
+  "interpretation": "Affine same-node and Dp/8 reconstructions exact in these manufactured cases. Quadratic coincident samples prove nearest-float anchor is not bare-intercept smoothing. C/Ace wrong controls produce effects beyond original budgets. Rate reference is independently all-pairs but conditional on actual C, not an independent proof of all C consistency. Physical face tests are one component state, not every integration stage.",
+  "preserved_failures": [
+    {
+      "record": "logs/upl_gpu_wall_component_Debug_r1.check.json",
+      "class": "setup_rejected_before_component",
+      "cause": "-mdbc overrode XML FreeSlip to vel0; retained owned exit1 and0 memory errors/leaks. Corrected CLI only in fresh r2 invocation."
+    },
+    {
+      "record": "logs/upl_gpu_wall_component_Debug_r2.check.json",
+      "class": "completed_component_offline_analysis_failure",
+      "cause": "PS comma/multiplication precedence emptied budget pair arrays. Completed r2 solve never rerun."
+    },
+    {
+      "record": "logs/upl_gpu_wall_component_Debug_r3.check.json",
+      "class": "offline_summary_comparison_failure",
+      "cause": "Derived printed reaction ratio differed by one binary64 ULP. Physical per-row gates had passed."
+    },
+    {
+      "record": "logs/upl_gpu_wall_component_Debug_r4.check.json",
+      "class": "offline_numeric_conversion_failure",
+      "cause": "PS double→string conversion truncated small exponent values to15digits. r5 directly casts typed JSON numerics and applies predeclared summary-only Close; raw physical budgets unchanged."
+    }
+  ],
+  "all_original_physical_budgets_preserved": true,
+  "raw_completed_Debug_component_r2_never_rerun": true,
+  "public_GPU_dynamic_accepted": false,
+  "general_boundary_accepted": false,
+  "physical_acceptance": false,
+  "next": "Old no-wall exact regressions; then separately gated actual wall constant/smooth trajectories and saved-endpoint face/force audits. No automatic full-cycle or physical admission."
+}

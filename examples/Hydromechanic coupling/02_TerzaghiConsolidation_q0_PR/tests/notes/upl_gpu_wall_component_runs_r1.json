@@ -1,0 +1,70 @@
+{
+  "stage": "upl_gpu_wall_component_runs_r1",
+  "status": "author_only_not_executed",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "files": ["tests/support/upl_gpu_wall_component_runs_r1.ps1", "tests/notes/upl_gpu_wall_component_runs_r1.json"],
+  "purpose": "One explicit owned static GPU wall component Run or a separate offline Review. No build, actual production Run, ComputeStep, GenCase, old control solver, notifier, Git or automatic next action.",
+  "fixture": {
+    "cpp": "support/upl_gpu_wall_component_r1.cpp",
+    "cpp_sha256": "cb8ac53a2e733bad6994e6db29475eef545b92459fc5f0faf28bdff1ee66817b",
+    "note": "notes/upl_gpu_wall_component_r1.json",
+    "note_sha256": "c635e2ab936cbd169c1bf92b8f8b5959da6b152806d6e2bf1d00942791484539",
+    "cli": "--wall -gpu:0 -stable -mdbc SEALED_H_SEED_PREFIX NEW_OUTPUT",
+    "helper_receipt": "logs/upl_gpu_wall_component_{Debug|Release}_r1.helper.json",
+    "build_receipt": "logs/upl_gpu_wall_{Debug|Release}_r1.build.json",
+    "source_object_closure": "Five current GPU targets /260 unchanged/265 total sources;110 authoritative current objects plus one fixture, exact111 linker closure;tools/libs/runtime/current canonical six identities are rehashed from frozen receipts. Old helper current-source paths are not misused as new-source inventories."
+  },
+  "seed": {
+    "receipt": "logs/upl_p3_wall_wave_seed_r3.inputs.json",
+    "prefix": "outputs/upl_p3_wall_wave_seed_r3_h/CaseUplWall_h",
+    "xml_sha256": "1004f6a3dcd31ba8ddd8af1e8c264982c3f43d47defbd45a48985cd7a53b0a58",
+    "bi4_sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f",
+    "bi4_bytes": 57736,
+    "geometry": "1024 true fluid IDs256..1279 plus256 true fixed IDs0..255,128 perface;32x32 cell-centered soil,dp1/512,two static axis-x FreeSlip walls,Z periodic,g0. Actual Npb/NpbOk may include wall replicas and are measured,not hardcoded256.",
+    "scope": "Explicitly the h seed with its real hashes. Used only for component initialization; no integration and no half-step validation. Do not call this c seed or assign its different BI4 hash to76ead. Runtime/geometry and seed-manifest membership are verified without altering inputs."
+  },
+  "actions": {
+    "Run": "Exactly one new owned helper process. Debug uses retained actual compute-sanitizer tool identity with --tool memcheck --leak-check full --error-exitcode99. Before launch reject any existing run directory/call/log/run/check; capture own exit, target argv, program/input/source/runtime bindings, complete raw log and all output hashes, including partial failures. A successful Run does not itself write a passed numerical check.",
+    "Review": "No external program. Require same-helper owned exit0 and immutable output hashes, independently read all eight CSVs and completion, then seal one new check. Completed components cannot be rerun; if analysis alone fails preserve all records and use a fresh offline analysis label.",
+    "Release_order": "Fresh Debug wall check passed, actual Debug memcheck0 errors/0 leaked bytes, all its current bindings reverified, before either Release action. Components are not physical trajectories.",
+    "root_commands": [
+      "powershell -NoProfile -File tests/support/upl_gpu_wall_component_runs_r1.ps1 -Mode Run -Configuration Debug -ExecutionAuthorized",
+      "powershell -NoProfile -File tests/support/upl_gpu_wall_component_runs_r1.ps1 -Mode Review -Configuration Debug -ExecutionAuthorized",
+      "powershell -NoProfile -File tests/support/upl_gpu_wall_component_runs_r1.ps1 -Mode Run -Configuration Release -ExecutionAuthorized",
+      "powershell -NoProfile -File tests/support/upl_gpu_wall_component_runs_r1.ps1 -Mode Review -Configuration Release -ExecutionAuthorized"
+    ],
+    "commands_are_plan_only": true
+  },
+  "outputs": {
+    "directory": "outputs/upl_gpu_wall_component_{Debug|Release}_run_r1",
+    "call": "logs/upl_gpu_wall_component_{Debug|Release}_r1.call.json",
+    "run": "logs/upl_gpu_wall_component_{Debug|Release}_r1.run.json",
+    "check": "logs/upl_gpu_wall_component_{Debug|Release}_r1.check.json",
+    "log": "logs/upl_gpu_wall_component_{Debug|Release}_r1.log",
+    "csv_rows": {"affine.csv": 256, "offgrid_affine.csv": 256, "coincident_pressure_anchor.csv": 256, "rates.csv": 2048, "owners.csv": 2, "negative_rates.csv": 3, "face_force.csv": 2, "force_rates.csv": 1024},
+    "total_csv_rows": 3847,
+    "completion": "completion.json",
+    "raw_Run_out_and_initial_geometry_diagnostics": "Preserved and hashed; no native PART BI4 output admitted."
+  },
+  "unchanged_gates": {
+    "affine": "Each true fixedID exactly once/case, finite numeric values; condition>=1; td=32768epsD*condition,tf=64epsF*condition; Jerror<=2td,perror<=256tf,v/Ace normerror<=tf,sigma maxerror<=128td,C maxerror<=4td. Same-node distance0; offgrid distanceexactDp/8. Wrongcopy C>4td and Ace>tf on each row. No post-result tolerance change.",
+    "anchor": "256 true fixedIDs; actual pressure and nearest native float bits exact,distance0. The original budget must equal the unchanged same-node affine pressure budget for the sameID. Recompute bare-double error and ratio; bare_float_write must be exact float(bare),and flag string0/1 must match actual float bits versus nearest. Require at least one bare-double difference and at least one real float-write bit difference. This is anchor discrimination,not quadratic continuum exactness.",
+    "complete_rate": "2048 actual/reference rows in constant and smooth groups,1024 unique true normal-fluidIDs each; measured slots in actual nonzero-prefix range. All numeric entries finite; no sentinel1234567; actual-reference absolute error<=each original propagated raw-term budget,reported error/ratio recomputed,ratio<=1. Require true wall and periodic-wall support in each group; completion maxima exactly match every row. Conditional C comes from actual measured C,not an independently proved full C consistency claim.",
+    "owners": "Both groups require normal1024/fixed256,positive fluid and wall replicas,actual np/Npb/NpbOk matching completion,all C/Ace/theta/rate owners bitexact. The one missing-owner rejection and pool cleanup are executed/asserted by frozen CPP,not a new wrapper-invented negative run. Permutation count reported honestly,no nonzero permutation requirement invented.",
+    "negative_rate": "All three predeclared zeroC/zeroAce/unreflectedAce conditional reference controls have positive changed native count,nonzero actual effect,and effect/combined original budgets>1. The frozen CPP enforces each counterfactual actual/reference budget; CSV contains aggregate errors,not all counterfactual node rows,so wrapper does not claim a second independent all-node reconstruction here. These option effects are not half errors.",
+    "force_and_face": "1024 unique true-fluid rate rows under unchanged per-row reference budget;two physical faces0/W. Actual force residual is independently recomputed from fluid force plus wall reaction and compared to reported residual and original force bound. Original |vn|<=bv<.01A and |qn|<=bq<.01Qstar,not rate0 as a flux proxy. Both wrong-zero and wrong-copy Ace must exceed original bq on at least one face; ratios and all completion maxima are recomputed. Full raw-term sums establishing the CPP budgets are not exported,so wrapper verifies reported predeclared budgets and CPP identity rather than claiming an independent pairforce/moment reassembly.",
+    "summary_only_roundoff": "64epsD*max(1,abs(a),abs(b)) is used only when recomputing printed ratios/residual summaries. It never enlarges any original error<=budget,ratio<=1,flux/reaction,negative nonempty or native-bit gate."
+  },
+  "counts": {"affine_cases": 2, "affine_wall_rows": 512, "coincident_pressure_rows": 256, "complete_rate_cases": 2, "complete_rate_rows": 2048, "wrong_wall_rate_cases": 3, "real_owner_negative_cases": 1, "actual_force_component_audits": 1, "persistent_rollback_checks": 2, "completed_physical_steps": 0},
+  "scope_limits": [
+    "No actual ComputeStep_Sym/productionRun/physical trajectory/energy/half/full/theory1percent/native serialization acceptance.",
+    "Actual extra force audit is one explicit component call,not a directly observed automatic integrator-stage count. First force statistics are genuinely computed; never read an undefined old force statistic.",
+    "Covered native26/persistent wall state and all real positions/normal bytes are asserted restored by CPP; scratch is released by real PosInteraction. No claim of every unlisted allocation or legacy GPU UB being audited.",
+    "Only bounded two parallel static axis-aligned FreeSlip walls,g0,2D,elastic,same-dp,constant/smooth-k manufactured operators;no generic wall,corner,gravity,moving/NoSlip or publicGPU admission.",
+    "Debug and Release are independently gated; cross-configuration byte identity is not claimed. Normal exit alone is not numerical acceptance."
+  ],
+  "author_executed_programs": false,
+  "production_or_retained_files_changed": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

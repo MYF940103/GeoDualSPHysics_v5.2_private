@@ -1,0 +1,85 @@
+{
+  "stage": "private_GPU_opposing_static_FreeSlip_wall_k0_short_root_review_r1",
+  "kind": "k0_short",
+  "passed": true,
+  "all_original_gates_preserved": true,
+  "no_interpolation": true,
+  "independent_half_passed": true,
+  "initial_soil33_pair_bit_exact": true,
+  "job_checks": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_k0_c_r1.check.json",
+      "sha256": "82ad179188232a4ae5f5cc3a5f0ef4bd99e554166006cea7771327d70a3895d4",
+      "bytes": 7770
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_k0_h_r1.check.json",
+      "sha256": "eedbc9b9f85c7352667ba2ad36deeb4a234a2b2363ad7df9e9abefaaa8ad0e0b",
+      "bytes": 12419
+    }
+  ],
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_r1.inputs.json",
+      "sha256": "3f5f80905e2d00fbed143f236e4378e860da0f39437828647cbeffa1a853fa98",
+      "bytes": 677282
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_Release_r1.build.json",
+      "sha256": "56650c642cc3e041e5936afb7e94ceba5e3c7da515c3e7aa688446909742146c",
+      "bytes": 125982
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_wall_actual_Release_r2.helper.json",
+      "sha256": "9401de90ca1936d53b3ff1a9f0b9bebcdcbf91a8312dae8dbcc131c9696d0249",
+      "bytes": 168879
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_wall_k0_half_r1.json",
+      "sha256": "341b766639768c79ed672bbf2c717eca6e0834ef3d819dbd5961503fd53a4d15",
+      "bytes": 22834
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_wall_k0_half_r1.csv",
+      "sha256": "9854fc34629c0e2d5f35db204b92e0c95f7fa1e6f06350ef5474e7cfb4f92611",
+      "bytes": 7052
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_wall_k0_half_r1.png",
+      "sha256": "1f8f5e26bd5798e75a2c3bf4f928c218fc3a68579281331a45a55c7f06c9f0d0",
+      "bytes": 220111
+    }
+  ],
+  "root_review": {
+    "bound_file_entries_rehashed": 501,
+    "actual_owned_Run_and_endpoint_audit_exit0": true,
+    "native_soil": 1024,
+    "fixed": 256,
+    "samples_each": 17,
+    "actual_end_s": 4.76837158203125e-7,
+    "coarse_dt_s": 2.9802322387695312e-8,
+    "half_dt_s": 1.4901161193847656e-8,
+    "original_pressure_RMS_limit_Pa": 5,
+    "original_max_material_u_limit_mm": 0.005,
+    "original_normalized_half_limit": 0.0001,
+    "max_pressure_RMS_Pa": 0.0000033088128252797947,
+    "max_material_u_difference_mm": 2.2898349882893854e-13,
+    "max_normalized_velocity_RMS": 1.3514129187670046e-7,
+    "all_native_safety_and_separate_endpoint_row_guards_passed": true,
+    "initial_soil33_pair_proof_in_half_native_check": true,
+    "PNG_visually_inspected": true,
+    "reference_and_physical_wall_Darcy_flux_exact_zero": true,
+    "Debug_Smoke_Run_and_audit_memcheck_zero_errors_and_leaks": true,
+    "Release_k0_memcheck_executed": false
+  },
+  "admitted_next": "fresh constant_c/h full short-window actual Run, typed native read and separate all-saved-endpoint audit only",
+  "limitations": [
+    "Private static axis-aligned opposing FreeSlip walls, 2D equal dp, zero gravity and periodic tangent only",
+    "Endpoint replay is not original integrator-stage observation, PART restart, physical advancement or fluid mass proof",
+    "No positive-k, CPU cross, continuum-reference or full-cycle claim from k0"
+  ],
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

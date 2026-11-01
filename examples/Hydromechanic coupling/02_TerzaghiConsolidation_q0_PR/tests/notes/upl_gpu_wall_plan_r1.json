@@ -1,0 +1,52 @@
+{
+  "stage": "upl_gpu_wall_r1",
+  "status": "private_static_opposing_FreeSlip_GPU_port_planned_not_verified",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "planned_production_files": [
+    "src/source/JSphGpu.h",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpuSingle.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "purpose": "Port the already verified CPU fixed parallel FreeSlip J-dependent quadrature closure to the private GPU model, without removing general boundary guards or adding independent n/k state.",
+  "scope": "Initial actual geometry:2D zero gravity elastic equal-dp opposing x-axis walls with Z tangential periodicity,1024 native soil IDs256..1279 and256 fixed IDs0..255; no moving/curved/inclined/NoSlip/general corner admission.",
+  "unchanged": "Default-false private controls, original u-pw, CPU equations, pressure/rate float, double stress, existing density integration, public GPU rejection, formal XML/BAT/data and canonical/server executables.",
+  "numerical_closure": "Use V0J weights and nearest-node-anchored first-order reconstruction at mirror samples (including coincident W0 and Dp/8 noncoincident checks). Reflect J/p evenly, derivative velocity Qv, effective stress Q*sigma*Q, matrix Q*C*Q and finished acceleration Q*Ace for g=0. Physical fixed wall velocity stays zero; tangent velocity is separately projected. Never substitute bare MLS intercept smoothing or blindly copy C/Ace.",
+  "force_order": [
+    "Skip ordinary mDBC only for private wall closure; reconstruct same-stage wall J/p/stress/derivative velocity before FS.",
+    "Build native FS/C with current J volumes; copy native fluid C to periodic owners before wall C reconstruction.",
+    "Run finished native forces; copy native Ace/theta to periodic owners, then reconstruct wall Ace.",
+    "Complete Darcy rate searches both fluid and fixed neighbour groups; current ki and coefficient-gradient terms remain in the same pass; copy rate to fluid periodic owners."
+  ],
+  "reuse": {
+    "CPU_source": [
+      "InitDynamicPoreWallCpu",
+      "InterpolateBoundaryGhostFieldT",
+      "ComputeDynamicPoreWallStateCpu",
+      "ComputeDynamicPoreWallMatrixCpu",
+      "ComputeDynamicPoreWallAccelerationCpu",
+      "ComputeDynamicPorePressureRateCpu"
+    ],
+    "geometry": "tests/logs/upl_p3_wall_wave_seed_r3.inputs.json; BI4 SHA76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f,57736bytes.",
+    "actual_nonempty_initialization": "Use sealed canonical CPU public wall_constant/evolving runtime inputs, which contain sine velocity initialization. Old companion seed XML alone is zero-field; its Reset() is not an actual Run initialization.",
+    "tests": [
+      "upl_p3_wall_wave_harness_r2.cpp",
+      "upl_p3_perm_wall_r1.cpp",
+      "upl_gpu_perm existing owner/rate/scale/OFF fixtures"
+    ]
+  },
+  "ordered_gates": [
+    "Root source review; required CPU Debug Build and isolated authoritative GPU D/R Rebuild before any helper/program.",
+    "Actual wall kernels/host components: same-node and Dp/8 off-node affine ledgers, reflection C/Ace, fixed coordinates/physical velocity, wall+periodic ownership and nonempty incorrect C/Ace controls; Debug memcheck.",
+    "Old no-wall default/observer/feedback/complete constant/smooth path exact native regressions, retaining their existing scopes and clocks.",
+    "Debug actual wall2step; bounded k0 short coarse/half; then constant-k full short coarse/half with physical-face normal velocity/flux and reaction/near-wall/theory gates.",
+    "Only after constant wall acceptance: smooth-k coarse/half, native ledger/chain/activation/resolved-effect checks, honest native-GPU3/derivedVrhoK typed reader and matching CPU controls."
+  ],
+  "gates": "Original all-save5Pa/.005mm pair limits and independent half normalized p/v/u1e-4. Constant-k whole-field/near-wall/endpoint1percent targets and original independent physical-face flux/normal-velocity/conservation budgets; do not relax any original gate. Variable k has no constant-coefficient exact theory. Short pass is not physical/full-cycle acceptance.",
+  "file_layout": "Shallow case02 tests/support,notes,logs,outputs,figures with upl_gpu_wall tag; no old worker restarts/overwrites or duplicate solvers.",
+  "later": "Bounded public GPU master/model/Ck wiring only after this private wall stage; physical gravity/load/drainage and general boundaries remain separate.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false,
+  "wall_implementation_verified": false
+}

@@ -159,6 +159,7 @@ void JSphGpu::InitVars(){
   PorosityFeedback=false;
   DynamicPorePressure=false;
   DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;DynamicConductivitySpeedMax=0.;
+  DynamicPoreWall=false;
   PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
@@ -399,7 +400,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   if(DDTArray)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1);  //-delta
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1); //-raw top-band load
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,2); //-ace,FSNormalg
-  if(SoilBoundaryDerivativeSPR)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1);
+  if(SoilBoundaryDerivativeSPR || DynamicPoreWall)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1);
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,5); //-velrhop,posxy,poscell
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,2);  //-posz
   if(PorosityObserver){
@@ -1136,9 +1137,16 @@ void JSphGpu::InitRunGpu(){
 //==============================================================================
 void JSphGpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
+  if(DynamicPoreWall)ComputeDynamicPoreWallStateGpu();
   const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
   cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg,marknearfs,PorosityFeedback? PoroJg: NULL);
   Check_CudaErroor("Failed computing free-surface tracking.");
+  if(DynamicPoreWall){
+    //-The wall fit reads fluid images: native C must be extended first.
+    unsigned *ridpg=PrepareDynamicPorePeriodicGpu();
+    if(ridpg)ArraysGpu->Free(ridpg);
+    ComputeDynamicPoreWallMatrixGpu();
+  }
 }
 
 //==============================================================================
@@ -1422,7 +1430,7 @@ void JSphGpu::PreInteraction_Forces(){
   Arg=ArraysGpu->ReserveFloat();
   Aceg=ArraysGpu->ReserveFloat3();
   Rsigmag=ArraysGpu->ReserveSymatrix3f();//ruofeng
-  if(SoilBoundaryDerivativeSPR)BoundDerivativeVelg=ArraysGpu->ReserveFloat3();
+  if(SoilBoundaryDerivativeSPR || DynamicPoreWall)BoundDerivativeVelg=ArraysGpu->ReserveFloat3();
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)HydroMechTopLoadRawg=ArraysGpu->ReserveFloat();
   if(ArtificialStress)ArtificialStressg=ArraysGpu->ReserveSymatrix3f();
   if(DDTArray)Deltag=ArraysGpu->ReserveFloat();
@@ -1603,9 +1611,86 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 }
 
 //==============================================================================
+/// Validates the private static wall geometry while host normals/slip still exist.
+//==============================================================================
+void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode){
+  if(!DynamicPoreWall)return;
+  if(!DynamicPorePressure || !PorosityFeedback || !Simulate2D || !CaseNpb
+    || TBoundary!=BC_MDBC || !UseNormals || !boundnormal || Gravity.x || Gravity.y || Gravity.z
+    || SoilBoundaryDerivativeSPR || CaseNmoving || CaseNfloat
+    || !std::isfinite(MassBound) || !(MassBound>0) || !std::isfinite(MassFluid) || !(MassFluid>0)
+    || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
+    Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, zero gravity and its own derivative closure.");
+  const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+  int axis=-1;bool seen[2]={false,false};double plane[2]={0,0};
+  for(unsigned p=0;p<Npb;p++){
+    const tdouble3 raw=ToTDouble3(boundnormal[p]);
+    const double len=sqrt(raw.x*raw.x+raw.y*raw.y+raw.z*raw.z);
+    if(!CODE_IsFixed(Code[p]) || !std::isfinite(len) || len<=0
+      || Velrhop[p].x || Velrhop[p].y || Velrhop[p].z
+      || (boundslipmode? TpSlipMode(boundslipmode[p]): SlipMode)!=SLIP_FreeSlip)
+      Run_Exceptioon("GPU dynamic wall requires finite stationary FreeSlip wall normals.");
+    const tdouble3 n=raw/len,wall=AuxPos[p]+raw*.5;
+    const int a=(fabs(n.x)>.5? 0: (fabs(n.y)>.5? 1: 2));
+    if(axis<0)axis=a;
+    if(a!=axis || a==1)Run_Exceptioon("GPU dynamic wall permits parallel x/z axis planes only, without corners.");
+    for(int b=0;b<3;b++)if(b!=axis && fabs(component(n,b))>8.*FLT_EPSILON)
+      Run_Exceptioon("GPU dynamic wall rejects inclined normals.");
+    const unsigned side=(component(n,axis)>0? 0: 1);
+    const double xp=component(wall,axis);
+    if(!std::isfinite(xp) || (seen[side] && fabs(xp-plane[side])>1e-6*Dp))
+      Run_Exceptioon("GPU dynamic wall requires one coplanar face per inward normal direction.");
+    if(!seen[side])plane[side]=xp;
+    seen[side]=true;
+  }
+  if(!seen[0] || !seen[1] || plane[1]-plane[0]<=2.*double(KernelSize)
+    || PeriY || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ)))
+    Run_Exceptioon("GPU dynamic wall requires separated opposing axis planes and tangential periodicity.");
+  const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};const bool periodic[3]={PeriX,PeriY,PeriZ};
+  for(int a=0;a<3;a++)if(periodic[a]){
+    for(int b=0;b<3;b++)if(!std::isfinite(component(inc[a],b)) || (b!=a && component(inc[a],b)!=0))
+      Run_Exceptioon("GPU dynamic wall permits finite axis-aligned tangential periodic translations only.");
+    if(component(inc[a],a)==0)Run_Exceptioon("GPU dynamic wall periodic length must be nonzero.");
+  }
+  for(unsigned p=0;p<Npb;p++){
+    const double xm=component(AuxPos[p]+ToTDouble3(boundnormal[p]),axis);
+    if(!std::isfinite(xm) || xm<=plane[0] || xm>=plane[1])
+      Run_Exceptioon("GPU dynamic wall mirror sample must lie strictly inside the fluid slab.");
+  }
+}
+
+//==============================================================================
+/// Reconstructs active fixed samples. A borrowed invalid flag is owned by the rate caller.
+//==============================================================================
+void JSphGpu::ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg){
+  if(!DynamicPoreWall || !NpbOk)return;
+  if(stage>2 || !Simulate2D || !BoundNormalg || !BoundModeg || !TangenVelg || (stage==2 && !Aceg))
+    Run_Exceptioon("GPU dynamic wall requires its bounded 2-D mirror state and mDBC arrays.");
+  const bool owned=(invalidg==NULL);unsigned invalid=Np;
+  try{
+    if(owned){invalidg=ArraysGpu->ReserveUint();cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);}
+    cusph::DynamicPoreWall(stage,Np,NpbOk,MdbcThreshold,DivData,Posxyg,Poszg,Codeg,BoundNormalg
+      ,BoundModeg,TangenVelg,BoundDerivativeVelg,Velrhopg,Sigmag,PorePressg,PoroJg,PoroThetag,CorrMatg,Aceg
+      ,1.-double(SoilCte.Porosity),invalidg);
+    if(owned)cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+  }
+  catch(...){if(owned && invalidg)ArraysGpu->Free(invalidg);throw;}
+  if(owned){
+    ArraysGpu->Free(invalidg);
+    Check_CudaErroor("Failed reconstructing GPU dynamic wall samples.");
+    if(invalid<Np)Run_Exceptioon("GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.");
+  }
+}
+void JSphGpu::ComputeDynamicPoreWallStateGpu(){ComputeDynamicPoreWallGpu(0);}
+void JSphGpu::ComputeDynamicPoreWallMatrixGpu(){ComputeDynamicPoreWallGpu(1);}
+void JSphGpu::ComputeDynamicPoreWallAccelerationGpu(unsigned *invalidg){ComputeDynamicPoreWallGpu(2,invalidg);}
+
+//==============================================================================
 /// Initialises private J state on bounded GPU fixtures; feedback is separately gated.
 //==============================================================================
 void JSphGpu::InitPorosityObserverGpu(){
+  if(DynamicPoreWall && (!DynamicPorePressure || !CaseNpb))
+    Run_Exceptioon("GPU dynamic wall requires the private complete model and fixed boundary particles.");
   if(DynamicPoreConductivity && (!DynamicPorePressure || !std::isfinite(DynamicPoreConductivityCk) || DynamicPoreConductivityCk<=0))
     Run_Exceptioon("GPU variable conductivity requires the private dynamic model and finite Ck>0.");
   if(DynamicPorePressure && (!PorosityObserver || !PorosityFeedback))
@@ -1613,7 +1698,7 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(PorosityFeedback && !PorosityObserver)
     Run_Exceptioon("GPU porosity feedback requires the J observer state.");
   if(!PorosityObserver)return;
-  if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || CaseNpb
+  if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones || AccInput || SoilDamping || SoilHourglassXi!=0
     || Gravity.x || Gravity.y || Gravity.z || HydroMechDrainage
@@ -1632,7 +1717,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon(DynamicPorePressure?
       "GPU porosity feedback requires a private complete Darcy Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
-  if(PorosityFeedback && (CaseNfloat || !PeriX || !PeriZ
+  if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
     || !std::isfinite(RhopZero) || !std::isfinite(MassFluid) || !(MassFluid>0)
     || !std::isfinite(SoilCte.ModulusK) || !(SoilCte.ModulusK>0)
@@ -1643,7 +1728,8 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(DynamicPorePressure && (!std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || HydroMechConductivityModel!=0 || !std::isfinite(PoreDtSafety) || !(PoreDtSafety>0)
     || PeriXinc.y!=0 || PeriXinc.z!=0 || PeriZinc.x!=0 || PeriZinc.y!=0
-    || !std::isfinite(PeriXinc.x) || PeriXinc.x==0 || !std::isfinite(PeriZinc.z) || PeriZinc.z==0))
+    || ((!DynamicPoreWall || PeriX) && (!std::isfinite(PeriXinc.x) || PeriXinc.x==0))
+    || ((!DynamicPoreWall || PeriZ) && (!std::isfinite(PeriZinc.z) || PeriZinc.z==0))))
     Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, XML conductivity model0 and PoreDtSafety>0, with rectangular X/Z periodicity.");
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
@@ -1704,17 +1790,19 @@ double JSphGpu::GetPorosityStepWaveGpu(){
 unsigned* JSphGpu::PrepareDynamicPorePeriodicGpu(){
   if(!DynamicPorePressure || !PeriActive)return(NULL);
   if(CaseNp>GpuParticlesSize)Run_Exceptioon("GPU dynamic owner map exceeds its allocated capacity.");
-  unsigned *ridpg=ArraysGpu->ReserveUint(),*invalidg=ArraysGpu->ReserveUint();
+  unsigned *ridpg=NULL,*invalidg=NULL;
   unsigned invalid=Np;
-  cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
-  cusph::CalcRidp(true,Np-Npb,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg);
-  cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,CorrMatg,NULL,NULL,NULL,invalidg);
-  cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+  try{
+    ridpg=ArraysGpu->ReserveUint();invalidg=ArraysGpu->ReserveUint();
+    cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+    cusph::CalcRidp(true,Np-Npb,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg);
+    cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,CorrMatg,NULL,NULL,NULL,invalidg);
+    cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+    Check_CudaErroor("Failed extending GPU dynamic periodic matrices.");
+    if(invalid<Np)Run_Exceptioon("GPU dynamic periodic copy has no valid normal-fluid native owner.");
+  }
+  catch(...){if(invalidg)ArraysGpu->Free(invalidg);if(ridpg)ArraysGpu->Free(ridpg);throw;}
   ArraysGpu->Free(invalidg);
-  if(invalid<Np)ArraysGpu->Free(ridpg);
-  try{Check_CudaErroor("Failed extending GPU dynamic periodic matrices.");}
-  catch(...){if(invalid>=Np)ArraysGpu->Free(ridpg);throw;}
-  if(invalid<Np)Run_Exceptioon("GPU dynamic periodic copy has no valid normal-fluid native owner.");
   return(ridpg);
 }
 
@@ -1732,11 +1820,12 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     if(DynamicPoreConductivity && SoilCte.HydraulicConductivity>0){maxspeedg=ArraysGpu->ReserveDouble();cudaMemset(maxspeedg,0,sizeof(double));}
     cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,Aceg,PoroThetag,NULL,invalidg);
+    if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationGpu(invalidg);
     const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
-      ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg);
+      ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);

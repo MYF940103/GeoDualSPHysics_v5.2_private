@@ -1,0 +1,409 @@
+<?xml version="1.0" encoding="utf-8"?>
+<case app="GenCase v5.0.278c (30-10-2023)" date="01-11-2026 20:30:12">
+    <!--Public CPU input copy only: no GenCase run; exact retained BI4 geometry. Not a formal/server release.-->
+    <!-- Private P3 actual fixed-wall standing wave; internal CPU flags only, no public dynamic switch. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" comment="First actual wall candidate is restricted to zero gravity" units_comment="m/s^2" />
+            <rhop0 value="2048" comment="Initial saturated mixture density" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" />
+            <gamma value="7" />
+            <speedsystem value="0" auto="true" />
+            <coefsound value="20" />
+            <speedsound value="0" auto="true" />
+            <hdp value="1.8" comment="Current Wendland smoothing-length ratio" />
+            <cflnumber value="0.2" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <definition dp="0.001953125" units_comment="metres (m)">
+                <pointmin x="-0.0068359375" y="0" z="0.0009765625" />
+                <pointmax x="0.0712890625" y="0" z="0.0634765625" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>real | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="-0.0078125" y="0" z="0" />
+                        <size x="0.0078125" y="0" z="0.0625" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0.0625" y="0" z="0" />
+                        <size x="0.0078125" y="0" z="0.0625" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="0.0615234375" y="0" z="0.0615234375" />
+                    </drawbox>
+                </mainlist>
+            </commands>
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <boundnormal_plane mkbound="0">
+                    <point x="0" y="0" z="0" />
+                    <normal x="1" y="0" z="0" />
+                    <maxdisth v="2" comment="Includes all four fixed sampling layers" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="1">
+                    <point x="0.0625" y="0" z="0" />
+                    <normal x="-1" y="0" z="0" />
+                    <maxdisth v="2" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.00048828125" />
+                        <posmax x="0.00146484375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="9.5835304819047451e-05" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.00244140625" />
+                        <posmax x="0.00341796875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00028658294468186796" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.00439453125" />
+                        <posmax x="0.00537109375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00047457066830247641" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.00634765625" />
+                        <posmax x="0.00732421875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00065798801369965076" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.00830078125" />
+                        <posmax x="0.00927734375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00083506852388381958" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.01025390625" />
+                        <posmax x="0.01123046875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0010041069472208619" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.01220703125" />
+                        <posmax x="0.01318359375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0011634752154350281" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.01416015625" />
+                        <posmax x="0.01513671875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0013116386253386736" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.01611328125" />
+                        <posmax x="0.01708984375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0014471701579168439" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.01806640625" />
+                        <posmax x="0.01904296875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0015687646809965372" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02001953125" />
+                        <posmax x="0.02099609375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0016752511728554964" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02197265625" />
+                        <posmax x="0.02294921875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.001765604130923748" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02392578125" />
+                        <posmax x="0.02490234375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0018389532342553139" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02587890625" />
+                        <posmax x="0.02685546875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0018945923075079918" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02783203125" />
+                        <posmax x="0.02880859375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0019319853745400906" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.02978515625" />
+                        <posmax x="0.03076171875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0019507723627611995" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.03173828125" />
+                        <posmax x="0.03271484375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0019507723627611995" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.03369140625" />
+                        <posmax x="0.03466796875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0019319853745400906" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.03564453125" />
+                        <posmax x="0.03662109375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0018945923075079918" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.03759765625" />
+                        <posmax x="0.03857421875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0018389532342553139" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.03955078125" />
+                        <posmax x="0.04052734375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.001765604130923748" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.04150390625" />
+                        <posmax x="0.04248046875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0016752511728554964" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.04345703125" />
+                        <posmax x="0.04443359375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0015687646809965372" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.04541015625" />
+                        <posmax x="0.04638671875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0014471701579168439" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.04736328125" />
+                        <posmax x="0.04833984375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0013116386253386736" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.04931640625" />
+                        <posmax x="0.05029296875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0011634752154350281" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.05126953125" />
+                        <posmax x="0.05224609375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.0010041069472208619" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.05322265625" />
+                        <posmax x="0.05419921875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00083506852388381958" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.05517578125" />
+                        <posmax x="0.05615234375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00065798801369965076" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.05712890625" />
+                        <posmax x="0.05810546875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00047457066830247641" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.05908203125" />
+                        <posmax x="0.06005859375" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.00028658294468186796" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0">
+                    <onlypos>
+                        <posmin x="0.06103515625" />
+                        <posmax x="0.06201171875" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="9.5835304819047451e-05" />
+                </fluidvelocity>
+            </initialize>
+            <soils>
+                <phi value="0" />
+                <coh value="1e12" comment="Keep the manufactured wave elastic" units_comment="Pa" />
+                <dlt value="0" />
+                <ModulusE value="268435456" comment="Manufactured E=2^28; loaded float moduli retained" units_comment="Pa" />
+                <PRvs value="0" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" comment="Legacy parser; feedback is enabled internally by the test harness only" />
+                <PoreWaterRho value="1000" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="67108864" comment="Kw=2^26" units_comment="Pa" />
+                <Porosity value="0.25" />
+                <HydraulicConductivity value="0.0001" units_comment="m/s" />
+                <PoreDtSafety value="0.1" />
+                <PoreShepardRegularization value="0" />
+                <PoreCompressionGradCorr value="1" />
+                <PoreCompressionSourceMode value="0" />
+                <HydroMechInitMode value="0" />
+                <HydroMechTopLoadMode value="0" />
+                <HydroMechDrainage value="0" />
+                <HydroMechDynamicSeepage value="0" comment="Limited fresh 2D zero-gravity CPU mode only; no GPU or restart support" />
+                <HydroMechConductivityModel value="0" comment="0 constant initial k; 1 smooth exponential k(J)" />
+                <HydroMechConductivityCk value="0" comment="Manufactured sensitivity only; not calibrated permeability data" />
+            </hydromechanics>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" />
+            <parameter key="DPCtes" value="3" />
+            <parameter key="Boundary" value="2" comment="Actual fixed mDBC sampling geometry; private wall closure is enabled only inside the companion" />
+            <parameter key="SlipMode" value="3" comment="Both parallel planes are FreeSlip" />
+            <parameter key="NoPenetration" value="0" />
+            <parameter key="StepAlgorithm" value="2" />
+            <parameter key="Kernel" value="2" />
+            <parameter key="ViscoTreatment" value="1" />
+            <parameter key="Visco" value="0" />
+            <parameter key="ArtificialStress" value="0" />
+            <parameter key="SoilStressRateGradCorr" value="1" />
+            <parameter key="SoilHourglassXi" value="0" />
+            <parameter key="SoilBoundaryDerivativeSPR" value="0" />
+            <parameter key="SoilDamping" value="0" />
+            <parameter key="DensityDT" value="0" />
+            <parameter key="Shifting" value="0" />
+            <parameter key="DtIni" value="2.9802322387695313E-08" comment="Private bounded GPU variable_c full; declared seconds; not physical acceptance" units_comment="seconds" />
+            <parameter key="DtMin" value="0.0000000001" units_comment="seconds" />
+            <parameter key="DtFixed" value="2.9802322387695313E-08" units_comment="seconds" comment="Private bounded GPU variable_c full; declared seconds; not physical acceptance" />
+            <parameter key="TimeMax" value="3.0517578125E-05" comment="Private bounded GPU variable_c full; declared seconds; not physical acceptance" units_comment="seconds" />
+            <parameter key="TimeOut" value="1.1920928955078125E-07" comment="Private bounded GPU variable_c full; declared seconds; not physical acceptance" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="0" comment="No particle loss admitted" />
+            <parameter key="RhopOutMin" value="700" comment="Passive legacy density validity only, not physical mixture-density bounds" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" units_comment="kg/m^3" />
+            <parameter key="ZPeriodicIncX" value="0" comment="Enable z periodicity with zero x offset; tangent to both fixed walls" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="-0.0078125" y="default" z="0" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="0.0703125" y="default" z="0.0625" />
+            </simulationdomain>
+        </parameters>
+        <particles np="1280" nb="256" nbf="256" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="-0.00683594" y="0" z="0.000976563" />
+                    <posmax x="0.0693359" y="0" z="0.0615234" />
+                </positions>
+                <fixed count="256" id="0-255" mkcount="2" mkvalues="10-11" />
+                <fluid count="1024" id="256-1279" mkcount="1" mkvalues="1" />
+            </_summary>
+            <fixed mkbound="0" mk="10" begin="0" count="128" />
+            <fixed mkbound="1" mk="11" begin="128" count="128" />
+            <fluid mkfluid="0" mk="1" begin="256" count="1024" />
+        </particles>
+        <constants>
+            <data2d value="true" />
+            <data2dposy value="0" units_comment="metres (m)" />
+            <gravity x="0" y="0" z="0" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="2048" units_comment="kg/m^3" />
+            <dp value="0.001953125" units_comment="metres (m)" />
+            <h value="0.003515625" units_comment="metres (m)" />
+            <b value="0" units_comment="Pascal (Pa)" />
+            <massbound value="0.0078125" units_comment="kg" />
+            <massfluid value="0.0078125" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="MResId" value="0" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1" />
+    </execution>
+</case>

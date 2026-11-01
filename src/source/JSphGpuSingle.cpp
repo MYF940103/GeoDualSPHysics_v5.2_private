@@ -264,6 +264,7 @@ void JSphGpuSingle::ConfigDomain(){
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,AuxPos,Idp,Code,Velrhop,boundnormal);
   if(UseNormals)ConfigBoundNormals(Np,Npb,AuxPos,Idp,boundnormal);
+  if(DynamicPoreWall)InitDynamicPoreWallGpu(boundnormal,boundslipmode);
 
   if(SoilBoundaryDerivativeSPR){
     //-Each wall mk defines one stationary plane; never average corner normals.
@@ -686,7 +687,10 @@ void JSphGpuSingle::AbortBoundOut(){
 /// Interaccion para el calculo de fuerzas.
 //==============================================================================
 void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
-  if(TBoundary==BC_MDBC){
+  if(DynamicPoreWall){
+    //-Same-stage state/C closure runs below through free-surface tracking.
+  }
+  else if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
   }
   else CdbcBoundCorrection(); //Corrected dummy boundary condition

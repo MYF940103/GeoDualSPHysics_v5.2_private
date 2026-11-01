@@ -1,0 +1,108 @@
+{
+  "stage": "upl_gpu_wall_constant_peer_review_r1",
+  "passed": true,
+  "passed_scope": "Read-only numerical peer review of sealed private GPU constant-k opposing-FreeSlip-wall coarse/half outputs and retained CPU controls; not a new physical or public-GPU admission.",
+  "tests_root": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests",
+  "source_root": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source",
+  "provenance": {
+    "reviewer": "/root/upl_p2_state_audit",
+    "production_initial_wall_patch_actual_fixture_and_pair_script_authored_by_reviewer": true,
+    "independent_part": "Recalculation from sealed typed binaries, IDs/geometry and endpoint CSVs, immediate artifact SHA checks, separate unscaled physical-matrix-exponential continuum calculation; not an independently authored production implementation or second BI4 parser.",
+    "execution_owner": "root",
+    "reviewer_launched_solver_build_force_audit_official_pair_or_git": false,
+    "root_constant_admission_already_issued": true,
+    "root_reported_five_png_visual_review_and_2954_bindings": "Root evidence, not personally reproduced or claimed by this review."
+  },
+  "binding_coverage": {
+    "eight_combined_native_audit_cpu_check_records_loaded": 8,
+    "unique_immediate_artifact_bindings_rehashed": 608,
+    "hash_mismatches": 0,
+    "owned_native_or_audit_reader_calls_checked_exit_zero": 6,
+    "owned_reader_program_sha256": "901a22e51f02a9062b88d1d5b2699b2e3498a42be8da99eb18a3023d98f9160d",
+    "broader_265_source_110_object_closure_recursively_rehashed_by_reviewer": false,
+    "source_closure": "Final five current production source hashes and helper/build receipts below were checked. Broader source/object/runtime attribution remains the bound authoritative root receipts; historical mutable paths were not indiscriminately revalidated as current identities.",
+    "root_official_pair_reference_jsons_read_and_hashed": 5
+  },
+  "native_review": {
+    "groups": ["GPU_constant_c", "GPU_constant_h", "CPU_constant_c", "CPU_constant_h"],
+    "each_binary_header": [1024, 33, 257],
+    "each_binary_bytes": 69478420,
+    "native_ids": "256..1279, unique and matched by material ID",
+    "fixed_ids": "0..255, geometry sidecar only for cross-backend comparisons",
+    "actual_saved_times": "All 257 exactly part*2^-23 seconds; no interpolation or rewritten native clock.",
+    "all_four_bins_finite": true,
+    "all_initial_33_fields_bit_exact_across_all_four_groups": true,
+    "native_and_fixed_geometry_csvs_byte_exact_across_all_four_groups": true,
+    "material_displacement_xyz_independently_checked": "Actual position minus same-ID initial position, all saved samples.",
+    "ledger_energy_checked": "J-derived n, volume, constituent-mixture density, current constant-k finite-Kw energy and original saved domains; fixed sample n is not treated as a wall material ledger."
+  },
+  "unchanged_thresholds": {
+    "half_pressure_rms_Pa": 5.0,
+    "half_material_displacement_max_mm": 0.005,
+    "half_normalized_p_v_xyz_u_xyz": 0.0001,
+    "cross_pressure_rms_Pa": 5.0,
+    "cross_material_displacement_max_mm": 0.005,
+    "cross_normalized_errors": "Descriptive only, not half-step or additional hard gates.",
+    "constant_reference_global_nearwall256_endpoint_relative": 0.01,
+    "endpoint_face_rate_reaction_budgets": "Original per-row uncancelled-term/physical-face/reaction budgets retained without relaxation."
+  },
+  "independent_pairs": {
+    "GPU_half": {"max_pressure_rms_Pa": 0.00028485671181211755, "max_material_displacement_mm": 6.701583732393601e-11, "max_normalized_p_v_u": [2.7818038331988944e-7, 7.748995517919564e-7, 3.513839815666743e-7]},
+    "CPU_half": {"max_pressure_rms_Pa": 0.0003030612216294729, "max_material_displacement_mm": 6.334863189572104e-11, "max_normalized_p_v_u": [2.9595822498255226e-7, 7.711266343640973e-7, 3.481667716934887e-7]},
+    "cross_c": {"max_pressure_rms_Pa": 5.648809890367579e-5, "max_material_displacement_mm": 6.467049118441537e-12, "max_normalized_p_v_u_descriptive": [5.516415922262255e-8, 7.621535642622877e-8, 2.6747381796830893e-8]},
+    "cross_h": {"max_pressure_rms_Pa": 8.189313788823296e-5, "max_material_displacement_mm": 5.1295773184634186e-12, "max_normalized_p_v_u_descriptive": [7.997376766759448e-8, 8.066085977268095e-8, 2.1496758463605798e-8]},
+    "all_samples_original_gates_satisfied": true,
+    "passive_rhop": "Recorded descriptively, never required CPU/GPU exact: CPU rational versus GPU additive legacy density integration remains intentionally distinct."
+  },
+  "independent_continuum": {
+    "method": "Separate physical unscaled [u,v,sigma,p] 4x4 matrix exponential, not invocation of the official pair script or use of stored reference columns.",
+    "constants": {"A_m_per_s": 0.001953125, "B_Pa": 268435456.0, "rho_kg_per_m3": 2048.0, "rho_water_kg_per_m3": 1000.0, "M_Pa_expression": "89478488 + 4*134217728/3", "wavenumber": "2*pi/.125", "hydraulic_conductivity": "double(float32(.0001)) m/s", "D_expression": "B*k/(rho_water*9.80665)", "Pstar_Pa": 1023.9999974568686, "Ustar_m": 7.589099058944216e-8},
+    "matrix_rows": [["0", "1", "0", "0"], ["0", "0", "-kappa/rho", "kappa/rho"], ["0", "M*kappa", "0", "0"], ["0", "-B*kappa", "-D*rho_water*kappa^2/rho", "-D*kappa^2*(1-rho_water/rho)"]],
+    "initial_vector": "[0,A,0,0]",
+    "near_wall_band": "Fixed initial-material min(x0,.125-x0)<=KernelSize, exactly 256 soil particles; all XYZ components included.",
+    "GPU_c": {"global_normalized_p_v_u_max": [0.001334724397876214, 0.0025811660469133345, 0.000706647015893752], "nearwall_normalized_p_v_u_max": [0.0018407982850120166, 0.0008088603727889318, 0.00022140080219249384], "endpoint_pressure_relative_error": -0.0025989219345197156, "max_energy_ratio": 1.001566678194258, "max_abs_J_minus_1": 2.686469044888007e-6},
+    "GPU_h": {"global_normalized_p_v_u_max": [0.001334795948111681, 0.0025812585404181524, 0.0007066756885185832], "nearwall_normalized_p_v_u_max": [0.001840901066006583, 0.0008090099540719615, 0.0002215019466078276], "endpoint_pressure_relative_error": -0.002599110198884702, "max_energy_ratio": 1.0015667452259396, "max_abs_J_minus_1": 2.686468074775128e-6},
+    "CPU_c": {"global_normalized_p_v_u_max": [0.0013347212095886805, 0.002581168500885414, 0.0007066503002778893], "nearwall_normalized_p_v_u_max": [0.001840787338307868, 0.0008088674230324025, 0.00022140602505323553], "endpoint_pressure_relative_error": -0.0025989061961220195, "max_energy_ratio": 1.0015666796455076},
+    "CPU_h": {"global_normalized_p_v_u_max": [0.001334830522333797, 0.002581264057501549, 0.0007066761719248664], "nearwall_normalized_p_v_u_max": [0.0018409814773690909, 0.0008090227089095249, 0.00022149843606215452], "endpoint_pressure_relative_error": -0.002599219616177484, "max_energy_ratio": 1.0015666882529117},
+    "all_original_one_percent_constant_reference_objectives_satisfied": true
+  },
+  "endpoint_audit_recalculation": {
+    "each_group": {"original_PART_hashes_rechecked_before_and_after": 257, "face_rows": 514, "native_rate_rows": 263168, "rollback_rows": 257, "last_stage_theta_bitwise_matches_original_typed_column9": true, "actual_native_ids_clocks_wall_neighbors_and_rollback_checks_nonempty": true},
+    "GPU_c": {"max_force_residual_over_budget": 0.000873298435616804, "recomputed_force_residual_csv_gap": 0.0, "max_face_vn_over_budget": 2.0056053041516904e-5, "max_physical_qn_over_budget": 0.0004240486800500616, "max_rate_error_Pa_per_s": 1.0348334200680256, "max_rate_error_over_budget": 0.0070074781685068675, "postinitial_wrong_zero_Ace_detected_face_rows": 510, "postinitial_wrong_copy_Ace_detected_face_rows": 512},
+    "GPU_h": {"max_force_residual_over_budget": 0.0008548281135925326, "recomputed_force_residual_csv_gap": 0.0, "max_face_vn_over_budget": 2.005719970635319e-5, "max_physical_qn_over_budget": 0.00042406051421857167, "max_rate_error_Pa_per_s": 1.0450003147125244, "max_rate_error_over_budget": 0.0070074781685068675, "postinitial_wrong_zero_Ace_detected_face_rows": 510, "postinitial_wrong_copy_Ace_detected_face_rows": 512},
+    "theta_distinction": {"max_abs_last_stage_minus_endpoint_theta_per_s_both_groups": 0.09763219384421727, "part": 0, "native_id": 1248, "original_saved_last_stage_theta": 0.0, "recomputed_endpoint_theta": -0.09763219384421727, "interpretation": "Fresh saved theta starts zero; the initial prescribed sine velocity has nonzero divergence. Endpoint recomputation is separate, not original-stage observation, pressure error or proof of lag."},
+    "rate_reference_limit": "Recomputed abs(actual-reference) and all original raw-term budgets from CSV; C itself was not independently reconstructed because the full actual C field is not serialized. Rate differences are Pa/s, not pore-pressure half errors."
+  },
+  "evidence_paths_relative_to_tests_root": [
+    {"path": "logs/upl_gpu_wall_actual_constant_c_r1.check.json", "bytes": 12515, "sha256": "ba1d830c0a4287fa5356b4cbec9ba4bc48186f414af102748c95796ea1d4d94b"},
+    {"path": "logs/upl_gpu_wall_actual_constant_c_r1.native.check.json", "bytes": 15810, "sha256": "37477b9fdc9bb2c00b29faa045bd9747db52ef625add89dfaea23e9e664d2076"},
+    {"path": "logs/upl_gpu_wall_actual_constant_c_r1.audit.check.json", "bytes": 12269, "sha256": "f14410039ff1ad8e0c96ae5542ad1aa4daae0cc1a7a57945a8f4faec4c4e3ae0"},
+    {"path": "logs/upl_gpu_wall_actual_constant_h_r1.check.json", "bytes": 12515, "sha256": "c59754bb7cd0ab132e90e62015532d803201b9a43fa3767915491aa062d9b10a"},
+    {"path": "logs/upl_gpu_wall_actual_constant_h_r1.native.check.json", "bytes": 15810, "sha256": "5f6df89b984a888ffe9ed1301baada3ae08be26ff743214809c46b5a83de0312"},
+    {"path": "logs/upl_gpu_wall_actual_constant_h_r1.audit.check.json", "bytes": 12271, "sha256": "e36b34eb0b68e191641e7ef830cee48c133ebb24eaaef29fbff77130c91d5cf6"},
+    {"path": "logs/upl_gpu_wall_actual_CPU_constant_c_r1.check.json", "bytes": 158446, "sha256": "f16fac10154d4fc1a623fc02e6f03980c3da972be0c1a97903fe3bb5901872c7"},
+    {"path": "logs/upl_gpu_wall_actual_CPU_constant_h_r1.check.json", "bytes": 158446, "sha256": "a6261442f5f3c886f681e03a3a85678794ed0f03a51b3727731b005c7464e625"},
+    {"path": "figures/upl_gpu_wall_constant_half_r1.json", "bytes": 180172, "sha256": "f1c18555b665b79485aee4faffbb95a13f00179bb58c4b8cf7974e4cd917b4d6"},
+    {"path": "figures/upl_gpu_wall_constant_c_cross_r1.json", "bytes": 180504, "sha256": "7626b0c1f40cc9d8ab84ee8b4712e3026a82cccea55521294a6a90689d43e0aa"},
+    {"path": "figures/upl_gpu_wall_constant_h_cross_r1.json", "bytes": 180511, "sha256": "7027bcceb29c3c429f20935b2785ba3542dc8ca9f5a73c2887924cb6c3523c40"},
+    {"path": "figures/upl_gpu_wall_constant_c_reference_r1.json", "bytes": 92782, "sha256": "40d8179702e799c6f3789961e6d6c731e66e8adf6a51a407207a8677d0d648a6"},
+    {"path": "figures/upl_gpu_wall_constant_h_reference_r1.json", "bytes": 92786, "sha256": "a4adfcebbd2ae7fde76059cae6dbacc1083fac430ca8e94408f042c0a78fbe7d"},
+    {"path": "logs/upl_gpu_wall_constant_r1.admission.check.json", "bytes": 8940, "sha256": "54f4ca3aa2137cda8b32c5ac55b6c328c7ba663d432c72726fce16bb9f2f7bce"},
+    {"path": "logs/upl_gpu_wall_wall_actual_Release_r2.helper.json", "bytes": 168879, "sha256": "9401de90ca1936d53b3ff1a9f0b9bebcdcbf91a8312dae8dbcc131c9696d0249"},
+    {"path": "logs/upl_gpu_wall_Release_r1.build.json", "bytes": 125982, "sha256": "56650c642cc3e041e5936afb7e94ceba5e3c7da515c3e7aa688446909742146c"},
+    {"path": "outputs/upl_gpu_wall_wall_actual_Release_r2/upl_gpu_wall_actual_r1.exe", "bytes": 20215296, "sha256": "901a22e51f02a9062b88d1d5b2699b2e3498a42be8da99eb18a3023d98f9160d", "binding_only_not_git_artifact": true}
+  ],
+  "current_source_paths_relative_to_source_root": [
+    {"path": "JSphGpu.h", "bytes": 23003, "sha256": "428940e4a437e1423b684a0dfc9b4c40990bf371136dad79f34cec3a3c1f0831"},
+    {"path": "JSphGpu.cpp", "bytes": 119442, "sha256": "bb4fe6496ccfaa106a68265e108f4ce9efaa7b567686cd8e86ac77c4a604370c"},
+    {"path": "JSphGpuSingle.cpp", "bytes": 65761, "sha256": "9beac5d45a811b42ed6303d29095f41c8bc99c04344d7c1ab0f4a4f195cd341e"},
+    {"path": "JSphGpu_ker.h", "bytes": 24528, "sha256": "f833afd2aec966a431b3bdf65676eca25efc486e0ff24c2c6748d4847719fb38"},
+    {"path": "JSphGpu_ker.cu", "bytes": 301311, "sha256": "dbf79d1438da1c7abd7c87f125360a7fcff46be137084256ce6267a751a9d385"}
+  ],
+  "limitations": [
+    "Bounded 2D gravity-zero elastic constant-k static opposing axis FreeSlip walls with tangential periodicity only; no NoSlip, curved/moving boundaries, load/drainage, 3D or plasticity acceptance.",
+    "Completed real Run outputs plus separately reconstructed saved-endpoint force audits are not observations of every original predictor/corrector stage, nor a PART restart test.",
+    "No sufficient-stability proof, exact-fluid-mass claim, general-wall/full-physics acceptance, formal-server release or public-GPU unlock follows from these results.",
+    "Official pair PNGs were visually reviewed by root, not by this peer review; variable-k results are outside this constant-only note."
+  ]
+}

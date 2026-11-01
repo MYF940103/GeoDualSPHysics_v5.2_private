@@ -1,0 +1,32 @@
+{
+  "stage": "upl_gpu_wall_source_review_r1",
+  "base_checkpoint": "038f569d1d9b4ed6e124e99cf84a3268a30b5bfb",
+  "status": "source_review_passed_tests_pending",
+  "production_files": [
+    "src/source/JSphGpu.h",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpuSingle.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "root_review": "Read complete five-file diff and corresponding CPU ghost interpolation, wall Init/State/Matrix/Acceleration, dynamic rate and force ordering. New wall flag defaults false; public GPU rejection and all nonwall mathematical expressions/neighbor order retained.",
+  "implementation": "Static opposing FreeSlip2D,g=0,equal-dp axis planes with tangential periodicity. Nearest-node anchored V0J first-order MLS reconstructs state11/C9/finished-Ace3; Qv/QsigmaQ/QCQ/QAce, physical fixed velocity0 and separate tangent projection. Full rate adds real fixed neighbors only for private wall flag.",
+  "stage_order": "Wall state ->FS -> native periodic C owner copy -> wall C; finished fluid forces/Resety -> periodic Ace/theta -> wall Ace -> complete assigned Darcy rate -> periodic rate.",
+  "resource_review": "Only derivative Float3 scratch adds the existing SPR||Wall condition. State/Matrix own one invalid flag; force caller map plus invalid flag peak2, WallAce borrows same flag. No independent n/k/history array or persistent owner cache. Existing observer sort/resize/Pre/Corr remains unchanged.",
+  "cost_limit": "Matching CPU FS semantics adds a second O(N) native owner/C copy only to wall paths; no wall efficiency claim.",
+  "root_prebuild_repair": "Added if(pfin) before two neighbor loops (new wall fit and this stage's extended full rate). ParticleRange leaves pini unassigned for empty ranges. This avoids reading an uninitialized loop start without changing any nonempty summation order or mathematical term.",
+  "legacy_limit": "Older pre-existing FS empty-range patterns are outside this bounded repair and remain. Do not claim a whole-GPU undefined-behavior audit or fix.",
+  "independent_source_peer": "upl_p0_prepare read-only final five-source/CPU-closure/resource audit found no static blocker. This is separate from the production author's self-check and does not replace actual tests.",
+  "source_SHA256": {
+    "JSphGpu_h": "428940e4a437e1423b684a0dfc9b4c40990bf371136dad79f34cec3a3c1f0831",
+    "JSphGpu_cpp": "bb4fe6496ccfaa106a68265e108f4ce9efaa7b567686cd8e86ac77c4a604370c",
+    "JSphGpuSingle_cpp": "9beac5d45a811b42ed6303d29095f41c8bc99c04344d7c1ab0f4a4f195cd341e",
+    "JSphGpu_ker_h": "f833afd2aec966a431b3bdf65676eca25efc486e0ff24c2c6748d4847719fb38",
+    "JSphGpu_ker_cu": "dbf79d1438da1c7abd7c87f125360a7fcff46be137084256ce6267a751a9d385"
+  },
+  "required_later_checks": "Debug/Release compilation, real components/memcheck, old default/no-wall exact regressions, wall actual independent halves and physical-face/force/near-wall reference checks. Only x-opposing walls are the first actual test geometry; no general x/z equivalence claim before testing.",
+  "formal_or_server_program_replaced": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false,
+  "wall_implementation_verified": false
+}

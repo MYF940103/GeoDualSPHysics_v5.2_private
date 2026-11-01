@@ -1,0 +1,23 @@
+{
+  "stage": "upl_gpu_wall_helper_r2",
+  "status": "author_only_not_executed",
+  "base": "support/upl_gpu_wall_helper_r1.ps1 remains frozen and used by old10helpers;this standalone newvariant builds WallActual only",
+  "files": [
+    "support/upl_gpu_wall_helper_r2.ps1",
+    "notes/upl_gpu_wall_helper_r2.json"
+  ],
+  "purpose": "Build/link exactly one new isolated WallActual fixture using existing currentGPU110 authoritative objects. No help/component/solver/audit/read program is run here.",
+  "source_and_recipe": "Reuse immutable permSmoothActual compile/link recipe with one exact compiler source substitution+Fo/Fd,one fixture object+all110 current wall authoritative GPU objects. Current5/260/265 hashes/runtime/canonical6 protected. FullGPUsource not rebuilt or altered.",
+  "additional_dependency": "The new fixture uses Windows CNG SHA256 to record read-only native PART/runtime hashes. Explicitly link exactly one absolute WindowsSDK um/x64/bcrypt.lib, independently hash before/after and add to actual libraries receipt. Its path must be the first current VS LIB resolution; no unbound defaultlib-only assumption. No new third-party library.111-object closure unchanged;extra import-library count1.",
+  "artifact_names": "logs/outputs upl_gpu_wall_wall_actual_{Debug|Release}_r2;originalr1 reservedWallActual is not used or overwritten",
+  "CLI": "-Mode BuildFixture -Fixture WallActual -Configuration Debug|Release -ProductionBuildConfirmed -ExecutionAuthorized",
+  "limits": [
+    "This is compile/link-only,not implementation/native/physical acceptance.",
+    "Root must fully review completed newactual CPP/note first,then explicitly invoke oneconfiguration.",
+    "Originalcomponent/legacy/smooth helpers and their author files unchanged.",
+    "Failures retain logs and isolated artifacts;never overwrite/retry under the same label."
+  ],
+  "production_changes": false,
+  "author_executed": false,
+  "physical_acceptance": false
+}

@@ -167,6 +167,7 @@ protected:
   bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
   bool PorosityFeedback; ///<Private J-derived quadrature/storage/inertia; k=0 unless the complete rate is enabled.
   bool DynamicPorePressure; ///<Private complete Darcy rate; default OFF and requires J feedback.
+  bool DynamicPoreWall; ///<Private opposing static axis FreeSlip planes; default OFF.
   bool DynamicPoreConductivity; ///<Private optional smooth scalar conductivity derived from J.
   double DynamicPoreConductivityCk; ///<Void-ratio exponential-law coefficient, used only when enabled.
   double DynamicConductivitySpeedMax; ///<Native coefficient-gradient speed from the last actual force stage.
@@ -317,6 +318,11 @@ protected:
   void ComputeSymplecticPre(double dt);
   void ComputeSymplecticCorr(double dt);
   void InitPorosityObserverGpu();
+  void InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode);
+  void ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg=NULL);
+  void ComputeDynamicPoreWallStateGpu();
+  void ComputeDynamicPoreWallMatrixGpu();
+  void ComputeDynamicPoreWallAccelerationGpu(unsigned *invalidg=NULL);
   double GetPorosityStepWaveGpu();
   unsigned* PrepareDynamicPorePeriodicGpu();
   void ComputeDynamicPorePressureRateGpu(unsigned *ridpg);
