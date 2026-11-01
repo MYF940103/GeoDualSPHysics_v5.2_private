@@ -1,0 +1,57 @@
+{
+  "date": "2026-11-01",
+  "baseline_git": "2b3e40dcecc9ef09dd45d57868a0f53622524b2e",
+  "branch": "upl-dev",
+  "status": "initial_development_review_complete_no_coupled_admission",
+  "visual_studio": {
+    "original_track_changes_enabled": true,
+    "selection_indicator_margins_enabled": true,
+    "cpp_ShowChanges_ShowAnnotations_ShowMarks": true,
+    "action": "VS UI disable/apply then re-enable/apply Track changes",
+    "independent_cpp_probe_unsaved_yellow_observed": true,
+    "independent_cpp_probe_saved_green_observed": true,
+    "production_buffer_saved_or_overwritten": false,
+    "ide_restarted_or_settings_reset": false,
+    "underlying_cache_root_cause_proven": false
+  },
+  "P0": {
+    "receipt": "upl_p0_closure_r1.check.json",
+    "checks_passed": 30,
+    "scope": "algebraic variable closure and reference checks only",
+    "coupled_state_or_physical_acceptance": false
+  },
+  "P1": {
+    "final_run": "upl_p1_scalar_r1c.run.json",
+    "final_check": "upl_p1_scalar_r1c.check.json",
+    "build_exit": 0,
+    "run_exit": 0,
+    "all_predeclared_arithmetic_checks_passed": true,
+    "rechecked_input_output_hash_mismatches": 0,
+    "r1b_r1c_errors_and_arithmetic_csv_byte_identical": true,
+    "linear_gradient_abs_max": 1.4661671005472934e-14,
+    "star_linear_laplacian_abs_max": 9.6065377874765545e-12,
+    "scope": "independent 2D scalar companion with analytic ghosts; no production force-call or physical boundary equivalence",
+    "production_star_operator_admitted": false,
+    "reason": "No asymptotic convergence demonstrated at fixed h/dp+jitter; truncated-patch conservation/energy and physical-boundary closure remain unresolved, not a rejection of the full paper scheme"
+  },
+  "default_cpu_debug_build": {
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "configuration": "DebugCPU|x64",
+    "target": "Build",
+    "exit": 0,
+    "errors": 0,
+    "warnings": 0,
+    "elapsed_s": 26.2,
+    "qualification": "Incremental, compile/link outputs current; not a full rebuild",
+    "log": "upl_p0_cpu_debug_r1.log",
+    "log_sha256": "82be531ea74f0349faf4fcf7dc697e0b56f13403a5a21a9d100e3b56737ffe39",
+    "exe_sha256": "71799ed3b41612c93cc133828aaab54ab9264b6405f28ac4602e67147d8a72a9"
+  },
+  "production_source_project_formal_inputs_changed": false,
+  "server_packages_changed": false,
+  "physical_solver_launched": false,
+  "runtime_dynamic_switch_implemented": false,
+  "next": "P2 J/n observer and state lifecycle, then reviewed storage/volume/inertia coupling and P3 acceleration Darcy; preserve legacy diffusion until a replacement is admitted",
+  "physical_acceptance": false,
+  "cloud_backup_scope": "Selective code, notes, receipts, scalar error tables, matrices/timings and frozen recipes; no large per-node arithmetic/native samples, exe/obj or system headers"
+}

@@ -1,0 +1,79 @@
+param([ValidatePattern('^[A-Za-z0-9_-]+$')][string]$Label='r1')
+# Bounded MSVC standalone scalar companion. No physical solver or project changes.
+$ErrorActionPreference='Stop'
+$tests=Split-Path -Parent $PSScriptRoot
+$repo=(Get-Item -LiteralPath $tests).Parent.Parent.Parent.Parent.FullName
+$source=Join-Path $repo 'src\source'
+$tag="upl_p1_scalar_$Label"
+$output=Join-Path $tests "outputs\$tag"
+$receipt=Join-Path $tests "logs\$tag.run.json"
+$check=Join-Path $tests "logs\$tag.check.json"
+$buildlog=Join-Path $tests "logs\$tag.build.log"
+$runlog=Join-Path $tests "logs\$tag.run.log"
+$harness=Join-Path $PSScriptRoot 'upl_p1_scalar_r1.cpp'
+$purpose=Join-Path $tests 'notes\upl_p1_scalar_r1.json'
+foreach($path in @($output,$receipt,$check,$buildlog,$runlog)){if(Test-Path -LiteralPath $path){throw "Refusing overwrite: $path"}}
+$env:VSCMD_SKIP_SENDTELEMETRY='1'
+$lines=& $env:ComSpec /d /c 'call "D:\Program Files\VS2022\Common7\Tools\VsDevCmd.bat" -arch=x64 -host_arch=x64 >nul && set'
+if($LASTEXITCODE){throw 'VS environment setup failed'}
+foreach($line in $lines){$i=$line.IndexOf('=');if($i -gt 0){[Environment]::SetEnvironmentVariable($line.Substring(0,$i),$line.Substring($i+1),'Process')}}
+$compiler=(Get-Command cl.exe).Source
+function HashFiles($paths){@($paths|Sort-Object -Unique|ForEach-Object{[ordered]@{path=$_;sha256=(Get-FileHash -LiteralPath $_ -Algorithm SHA256).Hash;bytes=(Get-Item -LiteralPath $_).Length}})}
+$inputs=HashFiles @($harness,$PSCommandPath,$purpose,$compiler,(Join-Path $source 'FunSphKernel.h'),(Join-Path $source 'FunSphKernelDef.h'),(Join-Path $source 'DualSphDef.h'),(Join-Path $source 'TypesDef.h'),(Join-Path $source 'JSphCpu.cpp'),(Join-Path $source 'JSph.cpp'))
+New-Item -ItemType Directory -Path $output | Out-Null
+$snapshots=@()
+foreach($path in @($harness,$PSCommandPath,$purpose)){
+  $copy=Join-Path $output ((Split-Path -Leaf $path)+'.frozen')
+  Copy-Item -LiteralPath $path -Destination $copy
+  $snapshots+=$copy
+}
+$started=[DateTime]::UtcNow.ToString('o')
+$exe=Join-Path $output 'upl_p1_scalar_r1.exe'
+$obj=Join-Path $output 'upl_p1_scalar_r1.obj'
+$deps=Join-Path $output 'compile.dependencies.json'
+$compile=@('/nologo','/std:c++17','/EHsc','/O2','/MT','/W4','/fp:precise',"/I$source","/Fo$obj","/Fe$exe",'/sourceDependencies',$deps,$harness)
+& $compiler @compile 2>&1 | Tee-Object -FilePath $buildlog
+$buildExit=$LASTEXITCODE
+if($buildExit){
+  [ordered]@{status='companion_build_failed_not_run';started_utc=$started;finished_utc=[DateTime]::UtcNow.ToString('o');build_exit=$buildExit;inputs=$inputs;compile=$compile;build_log=(HashFiles @($buildlog));production_solver_launched=$false}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $receipt -Encoding UTF8
+  throw "Companion build failed: $buildExit; preserve log and use a new label"
+}
+& $exe $output 2>&1 | Tee-Object -FilePath $runlog
+$runExit=$LASTEXITCODE
+$includes=(Get-Content -LiteralPath $deps -Raw -Encoding UTF8|ConvertFrom-Json).Data.Includes
+$resolved=HashFiles @($includes)
+foreach($entry in $inputs){if((Get-FileHash -LiteralPath $entry.path -Algorithm SHA256).Hash -ne $entry.sha256){throw "Input changed during companion run: $($entry.path)"}}
+[ordered]@{status=if($runExit -eq 0){'companion_completed_pending_diagnostic_review'}else{'companion_failed'};started_utc=$started;finished_utc=[DateTime]::UtcNow.ToString('o');build_exit=$buildExit;run_exit=$runExit;git_head=(& git -C $repo rev-parse HEAD);inputs=$inputs;frozen_companion_sources=(HashFiles $snapshots);resolved_headers=$resolved;compile=$compile;executable=(HashFiles @($exe));artifacts=(HashFiles @(Get-ChildItem -LiteralPath $output -File|ForEach-Object{$_.FullName}));production_solver_launched=$false;production_call_regression=$false;physical_acceptance=$false}|ConvertTo-Json -Depth 8|Set-Content -LiteralPath $receipt -Encoding UTF8
+if($runExit){throw "Companion failed: $runExit"}
+$analysis=@'
+import csv,json,sys,pathlib,numpy as np
+out=pathlib.Path(sys.argv[1]); check=pathlib.Path(sys.argv[2])
+with (out/'arithmetic.csv').open(encoding='utf-8') as f:
+    rows=list(csv.DictReader(f))
+gates={}
+for r in rows:
+    s=gates.setdefault(r['gate'],dict(samples=0,failures=0,max_error=0.0,threshold=float(r['threshold'])))
+    s['samples']+=1;s['failures']+=int(r['pass']!='1');s['max_error']=max(s['max_error'],float(r['error']))
+spectral=[]
+for p in sorted(out.glob('matrix_*_eta*.csv')):
+    a=np.loadtxt(p,delimiter=',');vol=1/64; norm=max(1.0,np.linalg.norm(a,ord=np.inf))
+    eig=np.linalg.eigvals(a);smax=float(np.linalg.eigvalsh((a+a.T)/2)[-1])
+    # Equal V: V^1/2 L V^-1/2=L. All columns count, including edge/corner nodes.
+    spectral.append(dict(file=p.name,nodes=len(a),volume=vol,row_sum_max=float(np.max(np.abs(a.sum(axis=1)))),volume_weighted_column_budget_max=float(np.max(np.abs(vol*a.sum(axis=0)))),column_budget_relative=float(np.max(np.abs(a.sum(axis=0))))/norm,symmetry_relative=float(np.linalg.norm(a-a.T,ord=np.inf))/norm,max_real_eigenvalue=float(eig.real.max()),max_abs_imaginary_eigenvalue=float(np.abs(eig.imag).max()),max_energy_growth_rate=smax,energy_witness_bound_relative=smax/norm,note='closed truncated patch; no physical wall closure or production stability proof'))
+with (out/'errors.csv').open(encoding='utf-8') as f: errors=list(csv.DictReader(f))
+orders=[]
+for geom in ('regular','disorder'):
+  for eta in ('0','1'):
+    for method in ('raw','receiverC','symC','raw_star','receiverC_star','symC_star'):
+      for field in ('linear_mix','quadratic_mix','sine'):
+        e=[r for r in errors if r['geometry']==geom and r['eta']==eta and r['method']==method and r['field']==field and r['region']=='core_interior']
+        e.sort(key=lambda r:int(r['n']))
+        orders.append(dict(geometry=geom,eta=int(eta),method=method,field=field,n=[int(r['n']) for r in e],rms=[float(r['rms_error']) for r in e],observed_order=[float(np.log(float(e[i]['rms_error'])/float(e[i+1]['rms_error']))/np.log(2)) if float(e[i]['rms_error'])*float(e[i+1]['rms_error'])>0 else None for i in range(len(e)-1)],qualification='empirical fixed h/dp, fixed relative jitter; not guaranteed asymptotic continuum convergence'))
+result=dict(status='arithmetic_passed_pending_operator_review' if all(s['failures']==0 for s in gates.values()) else 'arithmetic_rejected',arithmetic=gates,spectral=spectral,convergence=orders,diagnostic_only=True,production_call_regression=False,physical_acceptance=False)
+check.write_text(json.dumps(result,indent=2,allow_nan=False)+'\n',encoding='utf-8')
+print(json.dumps(dict(status=result['status'],arithmetic=gates,max_matrix_energy_growth=max(s['max_energy_growth_rate'] for s in spectral)),ensure_ascii=True))
+sys.exit(0 if all(s['failures']==0 for s in gates.values()) else 1)
+'@
+& 'D:\Anaconda3\python.exe' -B -c $analysis $output $check
+if($LASTEXITCODE){throw 'Companion arithmetic rejected or offline analysis failed; retain evidence'}
+Write-Output "COMPANION REVIEW $check; no physical or production acceptance"

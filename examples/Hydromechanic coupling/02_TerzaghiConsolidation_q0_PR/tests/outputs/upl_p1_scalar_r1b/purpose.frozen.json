@@ -1,0 +1,42 @@
+{
+  "date": "2026-11-01",
+  "purpose": "P1 standalone 2D frozen-particle scalar pressure-operator companion, not a physical solver or a production force-call regression",
+  "production_changes": false,
+  "scope": "Actual FunSphKernel.h Wendland float API; other local moments and manufactured scalars evaluated in binary64. No new framework/XML capability is implied.",
+  "geometry": {
+    "core_grid_sizes": [21, 41, 81],
+    "core_reference_domain": [0, 1, 0, 1],
+    "ghost_layers": 9,
+    "h_over_dp": 1.8,
+    "support_radius_over_h": 2,
+    "volume": "dp^2, uniform including analytic ghost samples",
+    "disorder": "independent deterministic uint32 xorshift32 offsets in [-.15dp,.15dp], seed 20261101; IDs remain row-major reference lattice IDs",
+    "regions": "core_interior excludes four reference layers on all sides; core_outer is the remaining support-complete core. Outer is NOT a physical mDBC wall or corner. Separate 9x9 no-ghost patch tests support truncation, not an implemented boundary condition."
+  },
+  "operators": {
+    "raw": "2 sum Vj(fi-fj) dij dot grad_i W/(rij^2+eta2)",
+    "receiverC": "same with Ci grad_i W",
+    "symC": "same with .5(Ci+Cj) grad_i W, as legacy soil-soil contraction",
+    "star": "Each of the preceding L, minus (Gi f) dot (Li x), with common receiver-C first gradient Gi f=sum Vj(fj-fi)Ci grad_i W",
+    "C": "inverse of -sum Vj dij tensor grad_i W on x-z block; radial kernel makes this moment symmetric",
+    "eta2": ["0: literal denominator", "(.1h)^2: current JSph.cpp denominator regularization"],
+    "qualification": "Companion transcription, not a claim to execute or match all production casts/neighbor order. The source reference hashes are retained in the runner receipt. Lian Eq25 gamma ambiguity and whole-head variant are not silently resolved by this diagnostic."
+  },
+  "predeclared_arithmetic_gates": {
+    "all_finite": true,
+    "constant_laplacian_abs_max": 1e-10,
+    "corrected_gradient_linear_abs_max": 1e-10,
+    "star_linear_laplacian_abs_max": 1e-8,
+    "whole_head_hydrostatic_laplacian_abs_max_pa_per_m2": 1e-6,
+    "matrix_row_sum_relative_max": 1e-12,
+    "matrix_action_relative_max": 1e-12
+  },
+  "diagnostics_not_automatic_acceptance": [
+    "Quadratic/mixed errors and empirical convergence are reported, with no pre-assumed second-order rate or quadratic exactness.",
+    "9x9 closed-patch volume-weighted column budget, symmetric-part largest eigenvalue, full-matrix largest-real eigenvalue and antisymmetry are reported; nonpositive spectrum is not presumed.",
+    "Pressure-only compensation plus raw gravitational-coordinate term is contrasted with whole-head compensation; no production hydrostatic or wall acceptance follows.",
+    "Observed standalone elapsed timing is not production CPU/GPU speed or whole-run overhead."
+  ],
+  "not_admitted": ["3D", "dynamic porosity or acceleration coupling", "TPI", "physical boundary validation", "physical long run", "formal release"],
+  "output": "tests/outputs/upl_p1_scalar_r1; tests/logs/upl_p1_scalar_r1.*; runner refuses existing targets"
+}

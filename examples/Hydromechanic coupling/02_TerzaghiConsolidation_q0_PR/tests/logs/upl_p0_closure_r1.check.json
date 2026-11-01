@@ -1,0 +1,212 @@
+{
+  "stage": "P0_algebra_only",
+  "passed": true,
+  "physical_acceptance": false,
+  "production_changed": false,
+  "switch_implemented": false,
+  "invariants_relative_or_absolute_tolerance": 5e-13,
+  "checks": [
+    {
+      "name": "solid_fraction_J_0.75",
+      "passed": true
+    },
+    {
+      "name": "solid_mass_0.75",
+      "passed": true
+    },
+    {
+      "name": "inertia_positive_0.75",
+      "passed": true
+    },
+    {
+      "name": "undrained_EOS_mass_reference_0.75",
+      "passed": true
+    },
+    {
+      "name": "solid_fraction_J_0.9",
+      "passed": true
+    },
+    {
+      "name": "solid_mass_0.9",
+      "passed": true
+    },
+    {
+      "name": "inertia_positive_0.9",
+      "passed": true
+    },
+    {
+      "name": "undrained_EOS_mass_reference_0.9",
+      "passed": true
+    },
+    {
+      "name": "solid_fraction_J_1.0",
+      "passed": true
+    },
+    {
+      "name": "solid_mass_1.0",
+      "passed": true
+    },
+    {
+      "name": "inertia_positive_1.0",
+      "passed": true
+    },
+    {
+      "name": "undrained_EOS_mass_reference_1.0",
+      "passed": true
+    },
+    {
+      "name": "solid_fraction_J_1.1",
+      "passed": true
+    },
+    {
+      "name": "solid_mass_1.1",
+      "passed": true
+    },
+    {
+      "name": "inertia_positive_1.1",
+      "passed": true
+    },
+    {
+      "name": "undrained_EOS_mass_reference_1.1",
+      "passed": true
+    },
+    {
+      "name": "solid_fraction_J_1.5",
+      "passed": true
+    },
+    {
+      "name": "solid_mass_1.5",
+      "passed": true
+    },
+    {
+      "name": "inertia_positive_1.5",
+      "passed": true
+    },
+    {
+      "name": "undrained_EOS_mass_reference_1.5",
+      "passed": true
+    },
+    {
+      "name": "initial_inertia_identity",
+      "passed": true
+    },
+    {
+      "name": "accelerated_equilibrium_flux_(0, 0, 0)",
+      "passed": true
+    },
+    {
+      "name": "accelerated_equilibrium_flux_(1.2, -0.4, 3.0)",
+      "passed": true
+    },
+    {
+      "name": "zero_theta_null",
+      "passed": true
+    },
+    {
+      "name": "invalid_state_rejected_(0.7,)",
+      "passed": true
+    },
+    {
+      "name": "invalid_state_rejected_(1, 0)",
+      "passed": true
+    },
+    {
+      "name": "invalid_state_rejected_(1, 1)",
+      "passed": true
+    },
+    {
+      "name": "invalid_state_rejected_(1, 0.3, 200)",
+      "passed": true
+    },
+    {
+      "name": "double_microincrement_budget",
+      "passed": true
+    },
+    {
+      "name": "float_microincrement_loss_observed",
+      "passed": true
+    }
+  ],
+  "states": [
+    {
+      "J": 0.75,
+      "n": 0.06666666666666676,
+      "V": 7.500000000000001e-05,
+      "V0": 0.0001,
+      "rho_s": 2428.571428571429,
+      "rho_t": 2333.3333333333335,
+      "solid_mass": 0.16999999999999998
+    },
+    {
+      "J": 0.9,
+      "n": 0.22222222222222232,
+      "V": 9e-05,
+      "V0": 0.0001,
+      "rho_s": 2428.571428571429,
+      "rho_t": 2111.1111111111113,
+      "solid_mass": 0.17
+    },
+    {
+      "J": 1.0,
+      "n": 0.30000000000000004,
+      "V": 0.0001,
+      "V0": 0.0001,
+      "rho_s": 2428.571428571429,
+      "rho_t": 2000.0000000000002,
+      "solid_mass": 0.17000000000000004
+    },
+    {
+      "J": 1.1,
+      "n": 0.36363636363636376,
+      "V": 0.00011000000000000002,
+      "V0": 0.0001,
+      "rho_s": 2428.571428571429,
+      "rho_t": 1909.090909090909,
+      "solid_mass": 0.17
+    },
+    {
+      "J": 1.5,
+      "n": 0.5333333333333334,
+      "V": 0.00015000000000000001,
+      "V0": 0.0001,
+      "rho_s": 2428.571428571429,
+      "rho_t": 1666.6666666666667,
+      "solid_mass": 0.16999999999999998
+    }
+  ],
+  "microincrement": {
+    "count": 10000,
+    "increment": 1e-12,
+    "double_J": 1.000000010000889,
+    "float_J": 1.0,
+    "binary64_absolute_budget": 8.881784197001252e-12
+  },
+  "sources": [
+    {
+      "path": "src/source/JSphCpu.cpp",
+      "bytes": 234588,
+      "sha256": "0487c6292bd35dac758144ad393a92879cb59eaa89b4095dbc844734406199c9"
+    },
+    {
+      "path": "src/source/JSphCpuSingle.cpp",
+      "bytes": 73979,
+      "sha256": "c0b35c844b482c5310ae1fba816bed3eadc941554d4aeda55e83101060cf1bec"
+    },
+    {
+      "path": "src/source/JSphHourglassCpu.cpp",
+      "bytes": 14055,
+      "sha256": "7c243cb4d743c3eae6430c782161dbdac285ebc23d1818819a38c2e961e0ada7"
+    },
+    {
+      "path": "src/source/DualSphDef.h",
+      "bytes": 32528,
+      "sha256": "028865deccdfd86044e1883ff54dedbb15809dea7eef349285eaf8b3eb005ac7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/validation/upl_p0_ledger_r1.md",
+      "bytes": 5711,
+      "sha256": "cf252dc91c255a15752a8cb7310dab7a20dbc2f83bd656e7d23512097e8c5725"
+    }
+  ],
+  "limitations": "Algebra only; no coupled force, state sorting, integrator, wall flux, GPU or physical mass-conservation acceptance"
+}
