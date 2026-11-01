@@ -1,0 +1,9 @@
+{
+  "scope": "Clarification before any fresh time-wave physical run; original frozen recipe/seed/build artifacts retained unchanged",
+  "actual_initialization": "JSph::RunInitialize can call FixedDt->GetDt(TimeStep,dtini) before the first DtVariable. Therefore cumulative dterror may include older initialization history; it is not solely a new complete-bound measurement.",
+  "fixture_implementation": "Execute captures ExpectedFixedError=FixedDt->GetDtError(false) after InitRunCpu and before the first actual step. Each audited DtVariable then checks max(captured_initial_error, all used_dt-complete_bound so far). No reset and no additional GetDt call occurs.",
+  "telemetry_claim": "PolicyGuard proves the new force-stage calls receive the complete bound, while preserving actual accumulated initialization telemetry. This is a private fixture diagnostic, not a repair of historical JSph::RunInitialize behavior or a whole-Run telemetry reinterpretation.",
+  "production_JSph_cpp_modified": false,
+  "physical_gates_changed": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,58 @@
+{
+  "audit_utc": "2026-11-01T09:00:21Z",
+  "reviewer": "/root/upl_p2_state_audit",
+  "git_head_at_audit": "c501f04e4db17be6532797776d6fcbb6e9b7679f",
+  "scope": "Independent read-only source review of the new private CPU step-scale helper and DtVariable branch. Only this new note was authored; no production edit, build or solver was performed by the reviewer.",
+  "decision": "No blocking source defect found within the existing fresh elastic no-wall private CPU restrictions. Eligible for the separately owned fresh-build and runtime rejection/equivalence tests, not physical or public-model acceptance.",
+  "source_identity_only_not_build_provenance": true,
+  "audited_sources": [
+    {"path": "src/source/JSphCpu.h", "bytes": 29382, "sha256": "14722d24898c21f1686e0bb81509ecbc6d120e22fb786f8779ddc76ff81f00f3"},
+    {"path": "src/source/JSphCpu.cpp", "bytes": 249083, "sha256": "ae218cce73d25fcbcf4e8c0c9747cea1bb40bc56835a9850eb95baa0d7cb4d78"},
+    {"path": "src/source/JSphCpuSingle.cpp", "bytes": 74900, "sha256": "6265f66fb752bc6c19ed0da0efd9d217bbd47038f04440f1ffc124217c47d322"},
+    {"path": "src/source/JSph.cpp", "bytes": 185990, "sha256": "57fb4ddc74932e5cbc72031e4c31cef7c6c42f054d7e4d22c8d24d6530557e33"},
+    {"path": "src/source/JDsFixedDt.cpp", "bytes": 5357, "sha256": "631e6ae6e6f1f896718b35e521632ec8eee92f4daefa9adacad345f84ba09820"}
+  ],
+  "source_delta": {
+    "JSphCpu.h": "One protected declaration: GetDynamicStepScalesCpu(double &wave,double &pore) const.",
+    "JSphCpu.cpp": "45 added and 4 removed lines relative to the audit HEAD. Adds the helper and DynamicPorePressure-only guards; no change to the rate operator, integrator update formulas or global Cs0.",
+    "other_production_files_edited_for_this_patch": false
+  },
+  "mathematical_review": {
+    "locations": "JSphCpu.cpp:4663-4685 and 4691-4738; declaration JSphCpu.h:411.",
+    "state": "The helper scans CODE_IsNormal && CODE_IsFluid current-stage particles and reuses GetPorosityFeedbackStateCpu: n=1-(1-n0)/J, rho=rho_w+(rho0-rho_w)/J. Passive legacy density and periodic clones do not set the maxima.",
+    "wave": "M=double(K)+4*double(G)/3; B=Kw/n; cu^2=(M+B)/rho. The helper returns h/(max(cu_max,10*VelMax)+h*ViscDtMax), excluding CFLnumber. This preserves the existing wave/viscous scale and SaveDt placement without changing EOS or artificial-viscosity Cs0.",
+    "diffusion": "Dmax=max(B*k/gamma), gamma=rho_w*(|Gravity| when nonzero, otherwise 9.80665). Pore scale is PoreDtSafety*h^2/Dmax, or DBL_MAX at k=0. Gravity reference and units match ComputeDynamicPorePressureRateCpu: k is hydraulic conductivity in m/s and gamma is N/m^3.",
+    "continuous_domain": "For positive k the frozen uniform continuum cubic requires rho*B>rho_w*(M+B). Implemented margin=rho*B/(M+B)-rho_w is algebraically equivalent for positive M+B. Rejecting margin<=64*epsilon*max(rho,rho_w) also holds the numerically marginal boundary. This is a necessary frozen-state continuum condition, not proof for disordered discrete modes or nonlinear evolving states.",
+    "k0": "The positive-k strict-decay Routh condition is deliberately not applied to k=0. The k=0 continuum has a zero root and acoustic imaginary roots; explicit midpoint has strictly positive log amplification for every nonzero acoustic mode and every nonzero step. Allowing k=0 here is only a finite-window necessary-scale policy, not asymptotic stability acceptance.",
+    "final_bound": "bound=min(CFLnumber*min(force_scale,wave_scale),pore_scale). The full bound is passed into FixedDt->GetDt in the new branch. No scalar h/cu or h^2/D bound certifies the complete Lstar/div(Ace) operator or its corrected-coefficient spectrum."
+  },
+  "execution_and_guards": {
+    "first_step": "JSphCpuSingle::ComputeStep_Sym locks dt=SymplecticDtPre at line950, evaluates predictor forces at955, then calls DtVariable at956 before ComputeSymplecticPre at958. The new check therefore rejects an unsafe initial/current locked step before the first predictor state update. It does not avoid the preceding force evaluation.",
+    "corrector": "The second DtVariable call at967 is after the predictor half-state and fresh cell division/forces, but before ComputeSymplecticCorr at969. Failure there leaves a half-stage interrupted state; it is not a completed step and requires no automatic rollback/retry claim.",
+    "fixed": "Both the already locked current step and the newly requested fixed step must be positive, finite and no larger than the stage bound. The configured fixed value is never silently clipped. A selected value below DtMin is rejected.",
+    "minimum": "DtMin greater than the bound is rejected before the legacy uplift code. Any accepted new-mode dt is at least DtMin, so the unchanged uplift block cannot raise it above the bound.",
+    "finite": "Current-state n/rho/cu positivity and finite cu are checked in the helper. Bound, locked SymplecticDtPre and requested selected dt are explicitly checked for finite positive values. This review assumes the existing validated finite positive material/kernel/time-control configuration and a nonempty native particle set; it does not certify arbitrary corrupted configuration or identity data.",
+    "initialization_order": "No new scan was added to InitPorosityObserverCpu, which precedes LoadCodeParticles in ConfigDomain. Native code arrays are used only at the force-stage DtVariable calls, after normal initialization.",
+    "cost": "One serial O(number of native particles) scan per force stage, no new arrays/cache/pool ownership and one square root after maximizing cu^2. Neighbor-interaction arithmetic is unchanged. No whole-run speed claim was measured."
+  },
+  "default_off_review": {
+    "result": "The former diffusion arithmetic is preserved under else-if and the former FixedDt/variable selection statements are preserved in the OFF else block. Their expression order, legacy DtMin uplift, SaveDt values and global Cs0 are unchanged. dt2 becoming a non-const local does not change its OFF expression.",
+    "runtime_equivalence_status": "Source inspection only in this note. Fresh default-OFF native regression and accepted private-wave 26-field equivalence remain required; no runtime pass is inferred from a source review or compiler exit."
+  },
+  "diagnostic_caveat": {
+    "location": "JSph.cpp RunInitialize:2481-2482; JDsFixedDt.cpp:103-132.",
+    "detail": "Before the first new DtVariable call, existing initialization invokes FixedDt->GetDt using DtIni/SymplecticDtPre as dtvar. GetDt accumulates max(fixed-dtvar). A safe fixed step that exceeds a smaller initial DtIni can therefore leave a positive initialization dterror even though every subsequent complete new bound passes. Conversely, dterror alone is never a substitute for the explicit new rejection guards.",
+    "classification": "Pre-existing diagnostic-history scope, not an unsafe-step bypass and not a blocking production-source defect for this bounded patch. No JSph.cpp change is requested by this review."
+  },
+  "remaining_runtime_checks": [
+    "Fresh Debug/Release source-build identity and owned exits, reported by their build owner.",
+    "Reject oversized first locked step before any predictor state write; reject a newly unsafe half-stage before corrector; distinguish interrupted half-state from completion.",
+    "Reject positive-k J states on both sides of the declared continuous-domain boundary as appropriate, plus the marginal zone; treat k=0 separately.",
+    "Exercise safe and unsafe FixedDt, DtMin above bound and chosen fixed below DtMin, with no silent clipping or uplift.",
+    "Preserve accepted private actual-wave trajectories in all 26 saved fields bitwise when no guard triggers, and preserve the separate default-OFF native baseline."
+  ],
+  "public_dynamic_input_implemented": false,
+  "gpu_policy_implemented": false,
+  "strict_spectral_stability_certified": false,
+  "physical_acceptance": false
+}

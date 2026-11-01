@@ -1,0 +1,40 @@
+{
+  "stage": "Private current-state necessary time bounds: unchanged-wave implementation regression then preselected mode4",
+  "predeclared_before_execution": true,
+  "production_edits_by_fixture": false,
+  "freeze_required": "Root logs/upl_p3_time_build_r1.json must bind both authoritative DebugCPU/ReleaseCPU builds and current source snapshots before any fixture build/run.",
+  "source_change_under_test": "Private DynamicPorePressure branch uses GetDynamicStepScalesCpu from current J/n/rho: coupled cu, current-porosity D, strict continuous decay-domain check for k>0. DtVariable rejects an already locked step or DtMin or a requested fixed step outside the complete necessary bound; no clipping or DtMin uplift. OFF/default remains old path, audited separately by root.",
+  "actual_trajectory": "Existing actual ComputeStep_Sym and independent admitted call-order replay; immutable mechanical derivative of support/upl_p3_wave_harness_r1.cpp adds only read-only policy audit. All26 physical columns remain unchanged, including passive legacy rho. No PART restart or native BI4 trajectory claim.",
+  "fundamental": {
+    "geometry_material_initial_PDE": "Exactly retained P3 r3:128 native,16x8 cell-centred x-z periodic,dp2^-7,Lx.125,Lz.0625,hdp1.8,J1,zero p/stress,initial vx=2^-9*sin(2pi*x/Lx). No physical change.",
+    "time": "dt2^-23/2^-24,end2^-15,256/512steps,257 exact paired samples",
+    "jobs_per_configuration": "10 fresh jobs: k0 audit/actual coarse+half; k1e-4 audit/actual/positive-oldrho twin coarse+half. Debug must pass before Release.",
+    "comparisons_per_configuration": "18: ten entire26-field/257-state exact regressions against retained same-config r3; four actual/audit exact; two rho-twin first25 exact with column25 actually changed on every record; two original independent half gates.",
+    "dterror_scope": "FixedDt now receives full current-state bound rather than old drained bound. GetDtError(false) is intentionally new model telemetry and is not among the26 serialized physical columns. This does not exclude a physical state field. DefaultOFF dterror remains exact and is checked by root."
+  },
+  "mode4": {
+    "admission_prerequisite": "Complete Debug/Release fundamental time-guard regression, source unchanged; root review authorization before execution.",
+    "geometry_material_PDE": "Same128-particle seed and material,kHyd1e-4,initial amplitude2^-9; only initial sine mode4,end2^-17 and output sample count change. Fixed lattice J1.01 spectrum was a coefficient diagnostic, not an initial physical state.",
+    "time": "dt2^-23/2^-24,end2^-17,64/128steps,65 exact paired saves",
+    "jobs_per_configuration": "Four fresh jobs only: coarse audit+actual then half audit+actual. No extra k0/rho jobs; those are covered by fundamental controls.",
+    "comparisons": "Two65-frame full26-field actual/audit exact comparisons and one original5Pa/.005mm independent half comparison per configuration.",
+    "seed_preparation": "Copy the retained P3 c/h initial BI4 byte-identically into fresh shallow seed directories; authored runtime XML changes only TimeMax/TimeOut and explanatory comments. No new geometry or GenCase calculation; proof records retained seed and new XML hashes.",
+    "reference": "Frozen actual-header Kr,Ks,Ksig,Ka,ell at m4 with actual loaded constants; original coupled discrete reference bound1Pa pressureRMS and1e-3 normalized velocity/displacement. Continuous solution columns are diagnostic only because4 particles per wavelength is severely underresolved."
+  },
+  "policy_audit": {
+    "coverage": "Every predictor and corrector of audited replay,128 native current states. Independent n/rho from J,cu/D/RH margin,force/wave/pore full bound; actual helper wave and pore scales exactly equal independently assembled values. Complete actual replay is bound by all26 actual/audit endpoint bits.",
+    "telemetry": "After DtVariable, returned step must equal used locked dyadic step; use GetDtError(false) only, no second GetDt call. Independently accumulate max(used-complete_bound), require exact telemetry match. time_policy.csv records actual source clocks/steps/phase/bounds/rates/margin."
+  },
+  "unchanged_gates": {
+    "pressure_RMS_half_Pa": 5,
+    "material_displacement_half_mm": 0.005,
+    "energy_max_ratio": 1.1,
+    "ledger": "128 exact native IDs,no exclusions,finite elastic/J/n/V/rho,solid-volume identity,|J-1|<=1e-4,p0=0,positive legacy rho remains numerical-only",
+    "manual_stage_bounds": "current cu*dt/h<=.01,D*dt/h^2<=.01,and dt<=PoreDtSafety*h^2/D; preserve original separately audited drained natural bound too",
+    "storage": "k0 local log residual<=.5Pa; k>0 corrector-rate-integrated flow-adjusted log residual<=.5Pa,diagnostic not a conservative flux proof",
+    "full_rate": "Original independent128-node double-position Lstar+rho_w divAce and theta assembly;2 native-float ULP+4096 DBL_EPS sumabs+1e-7Pa/s; no duplicated old rate,periodic C/Ace/theta/rate owner copies exact",
+    "fixed_step": "No changed dyadic step,interpolated time,rewritten metadata,guard relaxation,damping change,or numerical retry after physical failure"
+  },
+  "not_claimed": ["strict asymptotic midpoint stability at k0","complete coupled-spectrum proof","full 3D or boundaries","public XML","GPU","long-cycle or formal physical acceptance"],
+  "physical_acceptance": false
+}

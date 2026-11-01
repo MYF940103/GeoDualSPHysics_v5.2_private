@@ -1,0 +1,203 @@
+{
+  "stage": "Private time-policy actual-step regression and preselected mode4 bounded review",
+  "passed_implementation_and_bounded_wave_gates": true,
+  "production_source_edited_by_this_worker": false,
+  "frozen_cpp_sha256": "ae218cce73d25fcbcf4e8c0c9747cea1bb40bc56835a9850eb95baa0d7cb4d78",
+  "physical_jobs": 28,
+  "comparison_processes": 42,
+  "configs": [
+    "DebugCPU",
+    "ReleaseCPU"
+  ],
+  "failed_or_retried_physical_jobs": 0,
+  "actual_framework": "Actual JSphCpuSingle::ComputeStep_Sym plus independent admitted call-order replay; fresh starts, no PART restart",
+  "sequencing": "Both fundamental configurations passed before M4; each Debug physical sequence passed before corresponding Release",
+  "summary": [
+    {
+      "name": "upl_p3_time_wave_DebugCPU_r1",
+    "metrics_scope": "Scalar half/energy/reference/bound/policy-call metrics are kHyd1e-4 coarse+half only; solver/comparison counts cover the whole named sequence, including fundamental k0.",
+      "passed": true,
+      "solver_jobs": 10,
+      "comparison_jobs": 18,
+      "matched_times": 257,
+      "half_pressure_RMS_Pa": 0.00031497467566686,
+      "half_material_displacement_mm": 4.757305660518796e-11,
+      "energy_max": 1.000141351943368,
+      "pressure_discrete_reference_RMS_max_Pa": 0.0020396001921478327,
+      "velocity_discrete_reference_RMS_max_normalized": 5.48924606262285e-7,
+      "displacement_discrete_reference_RMS_max_normalized": 5.432124498090911e-7,
+      "flow_adjusted_log_error_max_Pa": 0.00029252593473660937,
+      "min_necessary_bound_s": 0.000005493146377603846,
+      "min_RH_margin": 23.994840803632997,
+      "audited_policy_calls": 1536
+    },
+    {
+      "name": "upl_p3_time_wave_ReleaseCPU_r1",
+    "metrics_scope": "Scalar half/energy/reference/bound/policy-call metrics are kHyd1e-4 coarse+half only; solver/comparison counts cover the whole named sequence, including fundamental k0.",
+      "passed": true,
+      "solver_jobs": 10,
+      "comparison_jobs": 18,
+      "matched_times": 257,
+      "half_pressure_RMS_Pa": 0.00031497467566686,
+      "half_material_displacement_mm": 4.757305660518796e-11,
+      "energy_max": 1.000141351943368,
+      "pressure_discrete_reference_RMS_max_Pa": 0.0020396001921478327,
+      "velocity_discrete_reference_RMS_max_normalized": 5.48924606262285e-7,
+      "displacement_discrete_reference_RMS_max_normalized": 5.432124498090911e-7,
+      "flow_adjusted_log_error_max_Pa": 0.00029252593473660937,
+      "min_necessary_bound_s": 0.000005493146377603846,
+      "min_RH_margin": 23.994840803632997,
+      "audited_policy_calls": 1536
+    },
+    {
+      "name": "upl_p3_time_m4_DebugCPU_r1",
+    "metrics_scope": "Scalar half/energy/reference/bound/policy-call metrics are kHyd1e-4 coarse+half only; solver/comparison counts cover the whole named sequence, including fundamental k0.",
+      "passed": true,
+      "solver_jobs": 4,
+      "comparison_jobs": 3,
+      "matched_times": 65,
+      "half_pressure_RMS_Pa": 0.00048828125,
+      "half_material_displacement_mm": 1.1463052729254741e-11,
+      "energy_max": 1.0000036682784244,
+      "pressure_discrete_reference_RMS_max_Pa": 0.0008148877527901068,
+      "velocity_discrete_reference_RMS_max_normalized": 4.249129647859728e-7,
+      "displacement_discrete_reference_RMS_max_normalized": 7.671745134104557e-7,
+      "flow_adjusted_log_error_max_Pa": 0.000027320466060132276,
+      "min_necessary_bound_s": 0.000005493111695934872,
+      "min_RH_margin": 23.998661709924022,
+      "audited_policy_calls": 384
+    },
+    {
+      "name": "upl_p3_time_m4_ReleaseCPU_r1",
+    "metrics_scope": "Scalar half/energy/reference/bound/policy-call metrics are kHyd1e-4 coarse+half only; solver/comparison counts cover the whole named sequence, including fundamental k0.",
+      "passed": true,
+      "solver_jobs": 4,
+      "comparison_jobs": 3,
+      "matched_times": 65,
+      "half_pressure_RMS_Pa": 0.00048828125,
+      "half_material_displacement_mm": 1.1463052729254741e-11,
+      "energy_max": 1.0000036682784244,
+      "pressure_discrete_reference_RMS_max_Pa": 0.0008148877527901068,
+      "velocity_discrete_reference_RMS_max_normalized": 4.249129647859728e-7,
+      "displacement_discrete_reference_RMS_max_normalized": 7.671745134104557e-7,
+      "flow_adjusted_log_error_max_Pa": 0.000027320466060132276,
+      "min_necessary_bound_s": 0.000005493111695934872,
+      "min_RH_margin": 23.998661709924022,
+      "audited_policy_calls": 384
+    }
+  ],
+  "exact_comparisons": {
+    "retained_r3_same_dt_whole26_fields_and257_states": 20,
+    "actual_vs_audited_replay_whole26_fields": 12,
+    "positive_oldrho_twin_first25_exact_and_column25_changed_every_record": 4,
+    "cross_configuration_whole_binary_pairs": 14,
+    "cross_configuration_all_byte_identical": true,
+    "half_array_warning": "Half comparison changed/ULP arrays in the reused comparator are not populated and are NOT interpreted as equality. Half acceptance uses independently computed pressure RMS and displacement maxima under unchanged5Pa/.005mm; all exact claims above use actual byte comparisons.",
+    "cross_configuration_pairs": [
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k0_c_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k0_c_actual/physical.bin",
+        "bytes": 6844436,
+        "sha256": "c50f4c42e1e29b77bae63c525a5c4442a53e4cdf4eb9112c2b52b2d7352fb167"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k0_c_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k0_c_audit/physical.bin",
+        "bytes": 6844436,
+        "sha256": "c50f4c42e1e29b77bae63c525a5c4442a53e4cdf4eb9112c2b52b2d7352fb167"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k0_h_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k0_h_actual/physical.bin",
+        "bytes": 6844436,
+        "sha256": "8158b8d2043e96295d1f1351db73d9e39081fde01857b0c9a03de3037dd7e612"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k0_h_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k0_h_audit/physical.bin",
+        "bytes": 6844436,
+        "sha256": "8158b8d2043e96295d1f1351db73d9e39081fde01857b0c9a03de3037dd7e612"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_c_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_c_actual/physical.bin",
+        "bytes": 6844436,
+        "sha256": "8c7ad7e877a663f0ee07d4ebadec841ec20f605b91f32707801ddba4f2f635df"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_c_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_c_audit/physical.bin",
+        "bytes": 6844436,
+        "sha256": "8c7ad7e877a663f0ee07d4ebadec841ec20f605b91f32707801ddba4f2f635df"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_c_rho/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_c_rho/physical.bin",
+        "bytes": 6844436,
+        "sha256": "96d6e4dfc3acd674791d5472790f65fb24e2e2c1fdca5e0bb4fe4ba9f2f6dfc8"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_h_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_h_actual/physical.bin",
+        "bytes": 6844436,
+        "sha256": "f74166d93d0194ab40ca9fdd0c2ac3279639a2ad036db71565032e0625c4d879"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_h_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_h_audit/physical.bin",
+        "bytes": 6844436,
+        "sha256": "f74166d93d0194ab40ca9fdd0c2ac3279639a2ad036db71565032e0625c4d879"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_DebugCPU_r1_k1_h_rho/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_wave_ReleaseCPU_r1_k1_h_rho/physical.bin",
+        "bytes": 6844436,
+        "sha256": "02a7e2b7f2426c40f10d957ae8efc030bd75898596419b08214898b58c48e3fc"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_DebugCPU_r1_k1_c_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_ReleaseCPU_r1_k1_c_actual/physical.bin",
+        "bytes": 1731092,
+        "sha256": "6eb57ff4d8c9d3033020f078b1fe0241f677ac03db32701d4d0b83ffdc26f0f1"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_DebugCPU_r1_k1_c_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_ReleaseCPU_r1_k1_c_audit/physical.bin",
+        "bytes": 1731092,
+        "sha256": "6eb57ff4d8c9d3033020f078b1fe0241f677ac03db32701d4d0b83ffdc26f0f1"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_DebugCPU_r1_k1_h_actual/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_ReleaseCPU_r1_k1_h_actual/physical.bin",
+        "bytes": 1731092,
+        "sha256": "699f57e2ca85dd9a2e10003abf2ec68d516e066f5d7bef1afecbbc42249905bc"
+      },
+      {
+        "left": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_DebugCPU_r1_k1_h_audit/physical.bin",
+        "right": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_time_m4_ReleaseCPU_r1_k1_h_audit/physical.bin",
+        "bytes": 1731092,
+        "sha256": "699f57e2ca85dd9a2e10003abf2ec68d516e066f5d7bef1afecbbc42249905bc"
+      }
+    ]
+  },
+  "policy_audit": {
+    "independent_audited_force_stages": 6912,
+    "native_states_per_stage": 128,
+    "minimum_complete_necessary_bound_s": 0.000005493111695934872,
+    "used_coarse_dt_s": 1.1920928955078125e-7,
+    "used_half_dt_s": 5.960464477539063e-8,
+    "dt_clipping_or_metadata_rewrite": false,
+    "helper_scales": "At each audited force stage, independent current J/n/rho/cu/D/RH margin and force/wave/pore complete bound agree exactly with helper scales; used and returned locked steps remain identical.",
+    "dterror_scope": "Expected cumulative error is seeded from actual GetDtError(false) after initialization, then accumulates max(used-complete_bound). Initialization yielded0, which masks later negative differences. Thus zero cumulative telemetry is a consistency observation, NOT an independent nonvacuous proof of GetDt's second argument. That argument identity is separately established by frozen source FixedDt->GetDt(TimeStep,bound). No error reset/additional GetDt or JSph.cpp change was made.",
+    "default_OFF": "Root owns separate full old-path/dterror bitwise regressions; this worker does not duplicate or claim them."
+  },
+  "interpretation": {
+    "m4": "Original weak amplitude/material/PDE,128periodic natives; mode4/end2^-17/65 matched times only. All original rate/ledger/finite/natural+diffusion/energy<=1.1/half gates passed.",
+    "accuracy": "M4 spatial wavelength has4particles and strong frozen spatial dispersion. The reference gate is the actual discrete coupled operator, NOT continuum accuracy. No time-step increase is inferred from the large scalar-bound margin.",
+    "stability": "Finite short-window energy/half agreement is not an asymptotic midpoint stability proof, continuous-model global domain proof or general nonuniform/3D/boundary acceptance.",
+    "data": "Raw physical.bin,stage_detail.csv,executables/objects/runtime remain local and hash-bound by final receipts; not automatically cloud-backed.",
+    "next": "Root may review and selectively back up this bounded implementation stage before any subsequent spatial/refinement validation or public switch/GPU work."
+  },
+  "physical_acceptance": false,
+  "public_XML_or_GPU_release": false
+}

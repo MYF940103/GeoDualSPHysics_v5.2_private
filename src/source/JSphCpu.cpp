@@ -4657,6 +4657,34 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
 
 
 //==============================================================================
+/// Necessary current-state step scales; not a complete coupled-spectrum proof.
+/// The wave scale excludes CFLnumber; the pore scale includes PoreDtSafety.
+//==============================================================================
+void JSphCpu::GetDynamicStepScalesCpu(double &wave,double &pore)const{
+  const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
+  const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho,k=SoilCte.HydraulicConductivity;
+  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
+  const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
+  double cu2max=0,dmax=0;
+  for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
+    double n,volume,rho;
+    GetPorosityFeedbackStateCpu(p,n,volume,rho);
+    const double b=kw/n,cu2=(m+b)/rho;
+    if(!(n>0 && n<1 && rho>0 && cu2>0) || !std::isfinite(cu2))
+      Run_Exceptioon("Dynamic step scales require a finite saturated physical state.");
+    if(k>0){
+      //-The finite-Kw low-frequency continuum must be inside its strict decay domain.
+      const double margin=rho*b/(m+b)-rhow;
+      if(margin<=64.*std::numeric_limits<double>::epsilon()*max(rho,rhow))
+        Run_Exceptioon(fun::PrintStr("Dynamic continuous decay domain failed: id=%u J=%g n=%g rho=%g margin=%g; reducing dt does not repair it.",Idpc[p],PoroJc[p],n,rho,margin));
+    }
+    cu2max=max(cu2max,cu2);dmax=max(dmax,b*k/gamma);
+  }
+  wave=double(KernelH)/(max(sqrt(cu2max),VelMax*10.)+double(KernelH)*ViscDtMax);
+  pore=(dmax>0? double(PoreDtSafety)*double(KernelH)*KernelH/dmax: DBL_MAX);
+}
+
+//==============================================================================
 /// Calculate variable Dt.
 /// Calcula un Dt variable.
 //==============================================================================
@@ -4664,10 +4692,11 @@ double JSphCpu::DtVariable(bool final){
   //-dt1 depends on force per unit mass.
   const double dt1=(AceMax? (sqrt(double(KernelH)/AceMax)): DBL_MAX); 
   //-dt2 combines the Courant and the viscous time-step controls.
-  const double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
+  double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
   //-dtw limits the explicit pore-pressure diffusion update in u-pw PR formulation.
   double dtw=DBL_MAX;
-  if(HydroMech && SoilCte.HydraulicConductivity>0.f){
+  if(DynamicPorePressure)GetDynamicStepScalesCpu(dt2,dtw);
+  else if(HydroMech && SoilCte.HydraulicConductivity>0.f){
     const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
     const double ghyd=(gnorm>0? gnorm: 9.80665);
     const double kwn=double(SoilCte.PoreWaterBulkModulus)/double(SoilCte.Porosity);
@@ -4676,8 +4705,20 @@ double JSphCpu::DtVariable(bool final){
   }
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
-  if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
-  else dt=min(dt,dtw);
+  if(DynamicPorePressure){
+    const double bound=min(dt,dtw);
+    //-Both calls precede their state update, including the first predictor step.
+    if(!std::isfinite(bound) || !(bound>0) || !std::isfinite(SymplecticDtPre) || !(SymplecticDtPre>0)
+      || double(DtMin)>bound || SymplecticDtPre>bound)
+      Run_Exceptioon(fun::PrintStr("Dynamic current step or DtMin exceeds its necessary bound: step=%u current=%g bound=%g DtMin=%g.",Nstep,SymplecticDtPre,bound,DtMin));
+    dt=(FixedDt? FixedDt->GetDt(TimeStep,bound): bound);
+    if(!std::isfinite(dt) || !(dt>0) || dt>bound || dt<double(DtMin))
+      Run_Exceptioon(fun::PrintStr("Dynamic requested step=%g is outside bound=%g or DtMin=%g; no fixed-grid clipping or DtMin uplift is allowed.",dt,bound,DtMin));
+  }
+  else{
+    if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
+    else dt=min(dt,dtw);
+  }
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;

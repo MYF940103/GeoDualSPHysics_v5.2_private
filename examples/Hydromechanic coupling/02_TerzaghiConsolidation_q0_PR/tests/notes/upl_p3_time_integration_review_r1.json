@@ -1,0 +1,277 @@
+{
+  "passed": true,
+  "stage": "Independent read-only integration review of private CPU P3 time policy, fundamental waves and mode4",
+  "scope": "Bounded implementation and declared numerical-window gates only; not public/physical/full-cycle acceptance.",
+  "mutation": "No solver, compiler, source edit, old-artifact edit or Git mutation was performed by this review. Only this new note is authored.",
+  "inputs": [
+    {
+      "path": "support/upl_p3_time_wave_harness_r1.cpp",
+      "bytes": 29125,
+      "sha256": "cf45d9861b37093fd2e342e4b0df40eb5ca82252aeca21c4fec4f0d1acd39ae2"
+    },
+    {
+      "path": "support/upl_p3_time_m4_harness_r1.cpp",
+      "bytes": 29095,
+      "sha256": "fcfabc8477804125e732c97901ce5cf54e55dcb846f6df96b2054a98bf685259"
+    },
+    {
+      "path": "support/upl_p3_time_wave_run_r1.ps1",
+      "bytes": 18073,
+      "sha256": "50ef6f881dc9d834ca11514df319e1a6570cc2228409de6f46c17abd6212dbfc"
+    },
+    {
+      "path": "notes/upl_p3_time_wave_r1.json",
+      "bytes": 5360,
+      "sha256": "39180f617af739271beeebcedf39a7de9ac87bfa953f75ed2d03f00355d66b7e"
+    },
+    {
+      "path": "notes/upl_p3_time_wave_init_r1.json",
+      "bytes": 1071,
+      "sha256": "1e70ebd7d8db968d4ef5c1d5f1b63f912a232ee53e455165a288820e2e637b61"
+    },
+    {
+      "path": "notes/upl_p3_time_wave_review_r1.json",
+      "bytes": 13332,
+      "sha256": "02b9e836f110bc46016abf776d4ff0b9e3de8d6a78e1583f425cf9d7727b8697"
+    },
+    {
+      "path": "logs/upl_p3_time_review_collision_r1.json",
+      "bytes": 1167,
+      "sha256": "a76e91f7c608152fc44917663f70397cb8dd95f31a8c5c7e535f77d480bea711"
+    },
+    {
+      "path": "logs/upl_p3_time_build_r1.json",
+      "bytes": 4796,
+      "sha256": "10ad98a4be2e3d3b9d9d1a72f8fe6d77d1f13b8f01b9a3cd412dbc20776e013c"
+    }
+  ],
+  "final_checks": [
+    {
+      "name": "upl_p3_time_wave_DebugCPU_r1",
+      "solver_jobs": 10,
+      "end": 0.000030517578125,
+      "check_sha256": "fb8214541e2e6d32d9b3b42f35ec1c5e8f7f7bb5bb8eafe91413bd6f69efaff6"
+    },
+    {
+      "name": "upl_p3_time_wave_ReleaseCPU_r1",
+      "solver_jobs": 10,
+      "end": 0.000030517578125,
+      "check_sha256": "deb0f90398dac20271dd42e7f19b3b3e3d367a37799da81128b1143acfd9cc29"
+    },
+    {
+      "name": "upl_p3_time_m4_DebugCPU_r1",
+      "solver_jobs": 4,
+      "end": 0.00000762939453125,
+      "check_sha256": "2073cd0c99766c65c23986cf86e4cc08926d4e864ecb93a0a70273de7e228168"
+    },
+    {
+      "name": "upl_p3_time_m4_ReleaseCPU_r1",
+      "solver_jobs": 4,
+      "end": 0.00000762939453125,
+      "check_sha256": "ca5cb5c121bca7135c94cabb8d4b06c13e6c704e1d2403f7cd068cd7147910b5"
+    }
+  ],
+  "independent_reverification": {
+    "hash_binding_records": 2132,
+    "unique_files_hashed": 1024,
+    "owned_solver_receipts_exit0": 28,
+    "owned_comparison_receipts_exit0": 42,
+    "current_matching_wave_or_m4_executable_processes_observed": 0,
+    "algorithm": "Read all four final checks/current build and seed bindings; hash every referenced input/program/runtime/log/output. Independently decode complete little-endian physical.bin headers/times/128x26 binary64 rows, compare full binary hashes for same-dt and cross-build evidence, and recompute pressure RMS/material displacement at exact saved clocks without interpolation."
+  },
+  "actual_windows": {
+    "fundamental": {
+      "native_ids": 128,
+      "dimensions": "2D x-z, no physical walls, static x/z periodic",
+      "coarse_steps": 256,
+      "half_steps": 512,
+      "coarse_dt_s": 1.1920928955078125e-7,
+      "half_dt_s": 5.960464477539063e-8,
+      "actual_end_s": 0.000030517578125,
+      "matched_saved_states": 257,
+      "k_values": [
+        0,
+        0.0001
+      ]
+    },
+    "m4": {
+      "native_ids": 128,
+      "coarse_steps": 64,
+      "half_steps": 128,
+      "coarse_dt_s": 1.1920928955078125e-7,
+      "half_dt_s": 5.960464477539063e-8,
+      "actual_end_s": 0.00000762939453125,
+      "matched_saved_states": 65,
+      "k_value": 0.0001
+    }
+  },
+  "exact_evidence": {
+    "retained_r3_same_dt_complete_physical_binary_pairs": 20,
+    "actual_vs_audit_complete_physical_binary_pairs": 12,
+    "positive_passive_rho_twins_first25_exact": 4,
+    "rho_column25_actually_changed_every_record": true,
+    "Debug_Release_complete_physical_binary_pairs": 14,
+    "Debug_Release_all_byte_identical": true,
+    "identity": "Native IDs are explicitly checked by Indices() and rows are serialized in native-ID order. The binary header records128/26; time/step consistency is separately verified against every modes.csv row. These are companion physical-state snapshots, not an original native BI4 full-Run output claim.",
+    "saved_scope": "All saved states are checked:257 fundamental or65 m4. Half jobs have unsaved intermediate endpoints; no claim of bitwise comparison at unrecorded times."
+  },
+  "independent_halves": [
+    {
+      "window": "fundamental",
+      "physics": "k0",
+      "both_configurations_have_identical_corresponding_physical_bins": true,
+      "samples": 257,
+      "pressure_RMS_max_Pa": 0.0004423301450428209,
+      "material_displacement_max_mm": 6.492723025885994e-11,
+      "J_difference_max": 2.5641710976742615e-12,
+      "actual_pressure_records_changed": 32652,
+      "actual_J_records_changed": 32768,
+      "passed_original_5Pa_0p005mm": true
+    },
+    {
+      "window": "fundamental",
+      "physics": "k1",
+      "both_configurations_have_identical_corresponding_physical_bins": true,
+      "samples": 257,
+      "pressure_RMS_max_Pa": 0.00031497467566686,
+      "material_displacement_max_mm": 4.757305660518796e-11,
+      "J_difference_max": 1.3525847109008282e-12,
+      "actual_pressure_records_changed": 32752,
+      "actual_J_records_changed": 32768,
+      "passed_original_5Pa_0p005mm": true
+    },
+    {
+      "window": "m4",
+      "physics": "k1",
+      "both_configurations_have_identical_corresponding_physical_bins": true,
+      "samples": 65,
+      "pressure_RMS_max_Pa": 0.00048828125,
+      "material_displacement_max_mm": 1.1463052729254741e-11,
+      "J_difference_max": 8.882894420025877e-13,
+      "actual_pressure_records_changed": 8192,
+      "actual_J_records_changed": 8192,
+      "passed_original_5Pa_0p005mm": true
+    }
+  ],
+  "half_warning": "The reused comparator fills ULP/changed arrays only for its p2 descriptive mode. The all-zero arrays in half JSON are uncomputed placeholders, not0ULP evidence. Independent rereading proves many half-state records differ, and acceptance uses only the original5Pa/.005mm measured bounds. Cross-build/same-dt exact claims use whole physical.bin hashes or actual byte comparisons.",
+  "policy": {
+    "audited_force_stage_rows": 6912,
+    "native_states_per_stage": 128,
+    "formula": "wave=h/(max(sqrt(max[(M+Kw/n)/rho]),10VelMax)+hViscDtMax); pore=Safety*h^2/max[(Kw/n)k/gamma]; complete=min(CFL*min(force,wave),pore). Wave excludes CFL, pore already includes Safety. M=K+4G/3, n/rho derive from current J; k>0 strict RH margin applies.",
+    "independent_csv_checks": "All6912 policy rows have exact step/source-clock/predictor-corrector order, complete bound=min(loaded CFL*min(stored force,wave),pore), same used/returned dyadic dt, bounds and DtMin. Actual helper wave/pore columns match audited formulas; pore was independently reconstructed using actual loaded float h/Safety and maxD, not unrounded XML literals. Full current-state maxima and velocity/viscosity denominator loops were reviewed in source; unsaved stage arrays are not independently available in these CSVs.",
+    "telemetry_caveat": "Initialization-captured FixedDt history is0 and can mask later negative used-bound differences. max_fixed_dt_error=0 therefore is not by itself a nonvacuous proof of the complete-bound argument. Frozen production source calls FixedDt->GetDt(TimeStep,bound); per-stage bound/guard evidence is separate. No reset, extra GetDt, clipping, DtMin uplift or JSph.cpp edit is inferred."
+  },
+  "discrete_reference": {
+    "fundamental_actual_mode_maxima": [
+      {
+        "window": "fundamental",
+        "configuration": "DebugCPU",
+        "physics": "k0",
+        "tag": "c",
+        "end": 0.000030517578125,
+        "steps": 256,
+        "pressure_discrete_RMS_max_Pa": 0.002144975321550516,
+        "v_discrete_RMS_normalized": 6.360411155326262e-7,
+        "u_discrete_RMS_normalized": 5.194032117348207e-7,
+        "energy_max_ratio": 1.0020844075394364,
+        "Kr_over_k": 0.9284352557680503,
+        "ell_over_k2": 0.9525534695805568,
+        "max_modal_pressure_vs_continuum_Pa": 38.92241830817068
+      },
+      {
+        "window": "fundamental",
+        "configuration": "DebugCPU",
+        "physics": "k0",
+        "tag": "h",
+        "end": 0.000030517578125,
+        "steps": 512,
+        "pressure_discrete_RMS_max_Pa": 0.0023021829042621945,
+        "v_discrete_RMS_normalized": 4.516893861007405e-7,
+        "u_discrete_RMS_normalized": 2.4694310998122813e-7,
+        "energy_max_ratio": 1.0020850016802914,
+        "Kr_over_k": 0.9284352557680503,
+        "ell_over_k2": 0.9525534695805568,
+        "max_modal_pressure_vs_continuum_Pa": 38.92253273706626
+      },
+      {
+        "window": "fundamental",
+        "configuration": "DebugCPU",
+        "physics": "k1",
+        "tag": "c",
+        "end": 0.000030517578125,
+        "steps": 256,
+        "pressure_discrete_RMS_max_Pa": 0.0020396001921478327,
+        "v_discrete_RMS_normalized": 5.48924606262285e-7,
+        "u_discrete_RMS_normalized": 5.432124498090911e-7,
+        "energy_max_ratio": 1.0001392819748258,
+        "Kr_over_k": 0.9284352557680503,
+        "ell_over_k2": 0.9525534695805568,
+        "max_modal_pressure_vs_continuum_Pa": 44.760933750702065
+      },
+      {
+        "window": "fundamental",
+        "configuration": "DebugCPU",
+        "physics": "k1",
+        "tag": "h",
+        "end": 0.000030517578125,
+        "steps": 512,
+        "pressure_discrete_RMS_max_Pa": 0.00197893177077545,
+        "v_discrete_RMS_normalized": 3.3613975233110983e-7,
+        "u_discrete_RMS_normalized": 1.4004280426539457e-7,
+        "energy_max_ratio": 1.0001400870805492,
+        "Kr_over_k": 0.9284352557680503,
+        "ell_over_k2": 0.9525534695805568,
+        "max_modal_pressure_vs_continuum_Pa": 44.76121638599693
+      }
+    ],
+    "m4_actual_mode_maxima": [
+      {
+        "window": "m4",
+        "configuration": "DebugCPU",
+        "physics": "k1",
+        "tag": "c",
+        "end": 0.00000762939453125,
+        "steps": 64,
+        "pressure_discrete_RMS_max_Pa": 0.0008148877527901068,
+        "v_discrete_RMS_normalized": 4.249129647859728e-7,
+        "u_discrete_RMS_normalized": 7.671745134104557e-7,
+        "energy_max_ratio": 1.0000000536099813,
+        "Kr_over_k": 0.3081060397249716,
+        "ell_over_k2": 0.5854443948045124,
+        "max_modal_pressure_vs_continuum_Pa": 515.5510915781521
+      },
+      {
+        "window": "m4",
+        "configuration": "DebugCPU",
+        "physics": "k1",
+        "tag": "h",
+        "end": 0.00000762939453125,
+        "steps": 128,
+        "pressure_discrete_RMS_max_Pa": 0.0005205745437944962,
+        "v_discrete_RMS_normalized": 1.1731741131337793e-7,
+        "u_discrete_RMS_normalized": 1.6586061811542698e-7,
+        "energy_max_ratio": 1.0000001105964986,
+        "Kr_over_k": 0.3081060397249716,
+        "ell_over_k2": 0.5854443948045124,
+        "max_modal_pressure_vs_continuum_Pa": 515.5504010441861
+      }
+    ],
+    "gates": "Original pressure-discrete RMS<=1Pa and normalized velocity/displacement<=1e-3; independent half<=5Pa/.005mm; finite/elastic/native/solid-volume/call-order/manual-CFL/diffusion/natural-step/energy<=1.1 gates remain unchanged.",
+    "m4_interpretation": "Only4 particles per wavelength, h/dp1.8. Kr/k=.308106 and ell/k^2=.585444 show severe spatial underresolution. Small actual-vs-discrete pressure errors (<=.000814888Pa) do not imply continuum accuracy: modal pressure differs from the continuum reference by up to515.551Pa. This is an explicit spatial defect diagnostic, not a new failure threshold or a reason to claim a larger stable timestep.",
+    "nonconservation": "Receiver-dependent Lstar is not a conservative pair flux. Pointwise q, positive q-power, storage budget and EOS-water-mass columns are diagnostics, not exact mass/energy identities or a demonstrated discrete divergence of that q."
+  },
+  "summary_attribution": "New P0 review02b9e836... explicitly labels fundamental summary scalar metrics as k1-only. This independent note lists k0 separately: its pressure half maximum.000442330145Pa and discrete-reference RMS maximum.002302182904Pa, not the smaller k1-only values. All remain below predeclared gates.",
+  "zero_placeholder_caveat": "Actual-engine completion has no force/policy replay audits: max_rate/force/policy/flow fields can be0 because not computed, not because physical residual is exactly zero. k>0 max_EOS_error=0 similarly is not the k0 logarithmic-storage check. Quote computed audit/replay values only, qualified by full saved26-field actual/audit equivalence.",
+  "history_preservation": {
+    "historical_review": "notes/upl_p3_time_review_r1.json",
+    "restored_byte_exact_to_HEAD": true,
+    "restored_bytes": 7746,
+    "restored_sha256": "034411853a493914c2cc77dbcae722c2566be079940b2b09a31825f40412d6b3",
+    "new_summary": "notes/upl_p3_time_wave_review_r1.json",
+    "collision_record": "logs/upl_p3_time_review_collision_r1.json",
+    "solver_or_build_inputs_affected": false
+  },
+  "conclusion": "No blocking new implementation or declared-window regression found. The evidence supports saving this private CPU stage and deciding the next bounded spatial/heterogeneous-state work. It does not admit asymptotic or complete coupled-spectrum stability, nonlinear/disordered3D/boundaries, public XML, GPU, restart, server/formal or physical release.",
+  "physical_acceptance": false,
+  "public_dynamic_switch_or_GPU_release": false
+}

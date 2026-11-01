@@ -1,7 +1,7 @@
 {
   "date": "2026-11-01",
   "branch": "upl-dev",
-  "stage_base": "338a4a6d71f60cfd8e63e8f900b5a3f0df1ff87b",
+  "stage_base": "c501f04e4db17be6532797776d6fcbb6e9b7679f",
   "status": "P2 restricted CPU feedback and P3 restricted CPU dynamic-pressure implementation verified; public model not released",
   "user_entry": "The intended single HydroMechDynamicSeepage switch remains unimplemented in XML. Existing hydromechanical runs still default to original u-pw.",
   "implemented": [
@@ -10,8 +10,8 @@
     "Native-ID periodic C/Ace/theta/rate extension; old fused rate sources and wrapper clearing suppressed only in the private new branch."
   ],
   "production_changes_in_this_stage": {
-    "src/source/JSphCpu.h": "Private default-false flag plus two small helper declarations.",
-    "src/source/JSphCpu.cpp": "Temporary periodic owner map, periodic C extension, Lstar/divAce complete-rate helper, old-rate suppression and restricted fixture initialization.",
+    "src/source/JSphCpu.h": "Private default-false flag and small rate/time-scale helper declarations; no public XML input.",
+    "src/source/JSphCpu.cpp": "Temporary periodic owner map, periodic C extension, Lstar/divAce complete-rate helper, old-rate suppression, restricted fixture initialization and private necessary-step/domain rejection.",
     "src/source/JSphCpuSingle.cpp": "One post-force call before the final acceleration reduction."
   },
   "verification": {
@@ -39,13 +39,27 @@
     "scope": "Offline coefficient audit of this manufactured material, not a universal1.2-percent strain restriction, a new production gate or a change to material parameters.",
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_domain_r1.check.json"
   },
+  "discrete_spectrum_audit": {
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_spectrum_r1.check.json",
+    "scope": "56 frozen cases: seven modes, J=1 or1.01, k=0 or1e-4, two steps. Actual stored-float h, Eta2 and stress-volume narrowing are retained.",
+    "result": "All sampled positive-k cases decay under the tested midpoint maps. Every nonzero k0 acoustic mode has strictly positive midpoint amplification, sometimes below the precision of a directly rounded spectral radius. This is not a general stability theorem."
+  },
+  "private_necessary_step_guard": {
+    "source_changes_this_checkpoint": ["src/source/JSphCpu.h", "src/source/JSphCpu.cpp"],
+    "policy": "Current native n/rho determine cu^2=(M+Kw/n)/rho and D=(Kw/n)*k/gamma. Keep the existing force/CFL structure, take the diffusion minimum, and reject the locked/current/requested step or DtMin outside the bound; do not silently clip FixedDt or uplift DtMin.",
+    "positive_k_domain": "Reject states outside the strict finite-Kw continuous decay domain rho*(Kw/n)>rho_w*(M+Kw/n), including its numerical margin. k0 is treated separately, not certified asymptotically stable.",
+    "default_OFF": "Fresh 140 native frame pairs, 1040 IDs, all15 original arrays and clock/step/dterror remain0ULP.",
+    "guard_tests": "Debug/Release each:16 scale cases,12 domain cases,20 step requests,4 actual ComputeStep_Sym first-step rejections. Independent scales match exactly;8 real first-step rejections leave144 native physical state pairs unchanged before Pre.",
+    "actual_integration": "28 fresh bounded integration jobs and42 comparison calls. Both configurations preserve all ten retained same-dt fundamental trajectories in26 fields exactly. New m4 coarse/half has65 matched times and128 IDs: pressure RMS maximum0.00048828125Pa, displacement maximum1.1463052729254741e-11mm; actual/audited-replay states match exactly.",
+    "limits": "m4 has only four particles per wavelength and is checked against the discrete operator, not admitted as continuum accuracy. A corrector-time rejection leaves an interrupted half-state, not a completed step. RunInitialize can contribute pre-existing FixedDt error history before the new complete-bound calls. No public input, GPU, wall or physical-case acceptance.",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_time_stage_r2.check.json"
+  },
   "next_order": [
-    "Use the completed continuous-domain audit together with a bounded actual-header discrete-spectrum audit before proposing runtime time-step protection.",
-    "Define and validate first-step, current-stage coupled-wave/diffusion limits and fixed-step rejection semantics without altering old OFF behavior.",
-    "Bounded higher-frequency and variable-J consistency tests; quantify spatial convergence and actual periodic storage/energy budgets.",
+    "Complete the actual-header spatial-symbol/moment audit, then admit bounded16x8/32x16/64x32 actual periodic convergence tests only under predeclared time/domain/error gates.",
+    "Separate finite-h truncation from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer continuum accuracy from tiny half-step errors.",
     "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
     "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
   ],
-  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. No automatic timestep, general boundary, plasticity, full-cycle, exact restart, GPU or server-package acceptance follows from these private small-amplitude CPU tests.",
+  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, GPU or server-package acceptance follows from these private small-amplitude CPU tests.",
   "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup."
 }

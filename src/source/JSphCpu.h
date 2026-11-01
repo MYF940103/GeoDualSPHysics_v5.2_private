@@ -408,6 +408,7 @@ protected:
   void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;
   unsigned* GetDynamicPeriodicMapCpu();
   void ComputeDynamicPorePressureRateCpu();
+  void GetDynamicStepScalesCpu(double &wave,double &pore)const;
   void ComputeSymplecticPrePorosity(double dt);
   void ComputeSymplecticCorrPorosity(double dt);
 
