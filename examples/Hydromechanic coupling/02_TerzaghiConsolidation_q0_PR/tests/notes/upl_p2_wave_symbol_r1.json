@@ -1,0 +1,17 @@
+{
+  "stage": "P2 offline initial-lattice kernel-symbol attribution only",
+  "new_physical_solver": false,
+  "production_edits": false,
+  "inputs": "Retained ReleaseCPU r3 actual coarse/half physical.bin and 257-row modes.csv, matching sealed r2 generated XML and actual Run.out loaded material",
+  "kernel": "Actual source/FunSphKernel.h GetKernelWendland_Ctes(true,h) and GetKernelWendland_Fac with float h/rr2/fac; no kernel transcription",
+  "initial_geometry": "Existing first binary frame, 128 actual native positions; minimum image is unique because 2h is less than half both periodic lengths",
+  "linear_symbol": "M=-sum V0 dr tensor gradW; C=M^-1 in x-z. Kraw=-sum V0 sin(k dx) gradW_x; Kcorr=Cxx*Kraw+Cxz*Kraw_z. omega_d=cu*sqrt(Kraw*Kcorr)",
+  "linear_prediction": "v=A cos(omega_d t); p=-(Kw/n0)*Kcorr*A/omega_d*sin(omega_d t); u=A/omega_d*sin(omega_d t). phaseproxy=atan2(-n0*cu*p/Kw,v). Uses loaded float K/G and exact initial V0=MassFluid/rho0",
+  "no_new_gate": "Only input consistency and artifact completeness checked. Existing wave numerical gates are unchanged. Symbol residuals are reported descriptively, not physical acceptance or a new solver result",
+  "limitations": [
+    "Frozen initial regular lattice and infinitesimal-amplitude semidiscrete model; actual coupled trajectory evolves J, volumes, mixture inertia, positions and correction matrices",
+    "Time integration and float gradient/stress/pressure accumulation are not analytically emulated; a float momentum-product symbol is additionally reported to bound the direct product-rounding difference",
+    "Uniform initial x-z inverse matrix is computed from the same actual header gradient but not copied from a newly instrumented production array; neighbor summation order can differ",
+    "Agreement attributes most observed continuum discrepancy to the declared semidiscrete symbol only for this bounded periodic k0 wave; it establishes no general convergence, dynamic-Darcy correctness or full physical release"
+  ]
+}

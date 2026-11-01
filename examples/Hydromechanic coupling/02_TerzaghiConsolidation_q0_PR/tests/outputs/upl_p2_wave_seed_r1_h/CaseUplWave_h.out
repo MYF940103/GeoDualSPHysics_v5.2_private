@@ -1,0 +1,131 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+OmpThreads: 16
+
+[LoadXMLInit]
+List: MAIN
+
+Total operations: 4
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  Rhop0=[2048]  MResId=[0]  Dp=[0.0078125]  PosMin_x=[0.00390625]  PosMin_y=[0]  PosMin_z=[0.00390625]  PosMax_x=[0.121094]  PosMax_y=[0]  PosMax_z=[0.0585938]  CaseName=["CaseUplWave_h"]  Data2D=[1]  Data2DPosy=[0]  H=[0.0140625]  MassBound=[0.125]  MassFluid=[0.125]
+
+Mk size: 1 bytes
+Case limits: (0.00390625,0,0.00390625) - (0.121094,0,0.0585938)
+Distance between points (Dp): 0.0078125
+Case domain: (0,0,0)-(14,0,6)
+Domain points: 15 x 1 x 7 = 105
+Case parts: 1 x 7z
+Memory: 0.00Gb 0.00Mb (105)
+
+> MAIN
+<MAIN (Operations= 3+1+0 = 4)
+
+Triangles: 8 (0 ignored)
+[Draw-End  time:0.002s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 9 (1 + 4+1+3)
+Points loaded: 105
+Sorting points by Mk...
+
+List of Points:
+Points -> Fluid particles:
+  block[  0] (mk:  1):    105  -->     105
+
+Particle summary:
+  Fixed....: 0
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 105  id:(0-104)   MKs:1 (1)
+
+Total particles: 105 (bound=0 (fx=0 mv=0 ft=0) fluid=105)
+Total MK blocks: 1 (bound=0 (fx=0 mv=0 ft=0) fluid=1)
+
+*** WARNING: No boundary particles were created in the defined domain.
+
+
+*** WARNING: Automatic maximum depth is zero since gravity is zero.
+
+
+Maximum depth: 0 (automatic)
+Speed of system: 0 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 0 max(0,0)
+Speed of sound: 0 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+*** WARNING: Constant B is zero.
+
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_p2_wave_seed_r1_h/CaseUplWave_h_MkCells.vtk  (time:0.003s, shapes:1, points:4)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_p2_wave_seed_r1_h/CaseUplWave_h.bi4<double>  (time:0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_p2_wave_seed_r1_h/CaseUplWave_h_All.vtk  (time: 0.005s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_p2_wave_seed_r1_h/CaseUplWave_h_Fluid.vtk  (time: 0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_p2_wave_seed_r1_h/CaseUplWave_h.xml  (time:0.009s)
+
+Save files time: 0.026s
+
+Particle limits:
+  X range: 0.00390625 to 0.113281 [m]
+  Y range: 0 to 0 [m]
+  Z range: 0.00390625 to 0.0507813 [m]
+
+[SaveCase2D-End  time:0.027s]
+
+[WARNINGS]
+1. No boundary particles were created in the defined domain.
+2. Automatic maximum depth is zero since gravity is zero.
+3. Constant B is zero.
+
+Time of execution: 0.031 sec. (16 threads)
+
+Finished execution (code=0).
+

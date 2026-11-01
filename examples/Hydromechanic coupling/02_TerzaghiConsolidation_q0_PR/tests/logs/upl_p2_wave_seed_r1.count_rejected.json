@@ -1,0 +1,18 @@
+{
+  "status": "seed_geometry_rejected_before_build_or_solver",
+  "date": "2026-11-01",
+  "gencase_process_exits": [0, 0],
+  "expected_native_nodes": 128,
+  "actual_native_nodes": [105, 105],
+  "actual_lattice": [15, 7],
+  "actual_native_position_ranges": {"x": [0.00390625, 0.11328125], "z": [0.00390625, 0.05078125]},
+  "input_receipt": "upl_p2_wave_seed_r1.inputs.json",
+  "input_receipt_sha256": "2fcb5eb0a060dd5d79f7e41fa88598c59b4d9ea7fc7add0c19a15c2792b9f72a",
+  "reason": "GenCase definition pointmax truncates the lattice before the intended last x/z row. The generated input does not satisfy the predeclared16x8 gate despite normal tool exit.",
+  "proposed_fresh_repair_not_executed": "Fresh r2 definitions extend only geometry definition pointmax by one dp to x=.12890625,z=.06640625; preserve drawbox, periodic box0..L,128-node target,material,time steps and every threshold. Verify generated count before Build/Run.",
+  "build_started": false,
+  "physical_solver_started": false,
+  "retained_r1_untouched": true,
+  "automatic_retry": false,
+  "physical_acceptance": false
+}

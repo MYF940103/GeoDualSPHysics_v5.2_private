@@ -1,0 +1,66 @@
+{
+  "date": "2026-11-01",
+  "stage": "P2 bounded CPU coupled k=0 periodic longitudinal wave; not P3 or a public XML model",
+  "predeclared_before_execution": true,
+  "production_edits_by_this_recipe": false,
+  "geometry": {
+    "dimension": 2,
+    "native_soil_nodes": 128,
+    "lattice": [16, 8],
+    "dp": "2^-7 m",
+    "periodic_lengths": [0.125, 0.0625],
+    "h_over_dp": 1.8,
+    "support": "2h < Lz/2; distinct cell-centred native nodes, no physical wall",
+    "porosity": 0.25,
+    "rho_t0": 2048,
+    "Kw": 67108864,
+    "E": 268435456,
+    "nu": 0,
+    "material_note": "Manufactured material, not a new case02 consolidation calibration; loaded float K/G are used without replacement."
+  },
+  "initial_state": "J=1,p=p0=0,sigma_eff=0; vx=2^-9*sin(2*pi*x/Lx),vy=vz=0. All fields follow native IDs including periodic copies.",
+  "disabled": ["Darcy k", "gravity", "drainage", "load", "hourglass", "viscosity", "density diffusion", "SPR", "shifting", "plasticity", "Shepard", "in/out", "moving/floating walls"],
+  "time": {
+    "coarse_dt_s": "2^-23",
+    "half_dt_s": "2^-24",
+    "end_s": "2^-15",
+    "steps": [256, 512],
+    "matched_samples": 257,
+    "period_note": "Nominal cu=512 m/s gives T=2^-12 s; endpoint is T/8 nominal. Actual loaded-float-modulus cu and phase are reported, not rounded to make the theory dyadic.",
+    "stability": "Fixed dt is manually checked against current cu=sqrt((K+4G/3+Kw/n)/rho_t) at every audited force stage; legacy natural dt is not claimed valid for the new model."
+  },
+  "jobs_per_configuration": [
+    "coarse audited stage replay",
+    "coarse actual ComputeStep_Sym",
+    "coarse actual ComputeStep_Sym with positive legacy-rho poison",
+    "half audited stage replay",
+    "half actual ComputeStep_Sym",
+    "half actual ComputeStep_Sym with positive legacy-rho poison"
+  ],
+  "audited_replay": "Same calls/order as the admitted no-wall/no-auxiliary branch of ComputeStep_Sym; guards inspect both actual force stages. Exact all257 endpoint records against actual ComputeStep_Sym are mandatory before those stage diagnostics can be attributed to the real-step trajectory. Real RunCellDivide and periodic copying are used; no prescribed kinematics or rate overwrite after initialization.",
+  "predeclared_gates": {
+    "same_dt_actual_vs_audit": "All26 stored state columns, including passive legacy rho, and exact dyadic clocks bitwise equal for all257 samples/native128 IDs",
+    "positive_oldrho_causal_twin": "Same25 physical columns/clocks bitwise equal; only Rhop/Arc/Press diagnostics are excluded from this causal comparison. Old-rho poison is 1400+100*(nativeID mod7), within configured bounds; zero exclusions required. This is not the ordinary full-field OFF regression.",
+    "half_pressure_rms_pa": 5,
+    "half_material_displacement_max_mm": 0.005,
+    "solid_fraction_J_absolute": 5e-13,
+    "uniform_undrained_log_reference_pressure_max_pa": 0.5,
+    "absolute_J_minus_1_max": 0.0001,
+    "coupled_CFL_cu_dt_over_h_max": 0.01,
+    "instantaneous_force_budget_relative": "256*FLT_EPSILON, normalized by max(1,sum_i m_i*abs(a_i)); actual force-stage geometry/J/inertia",
+    "perturbation_energy_over_initial_max": 1.1,
+    "all_native": "Exactly128 distinct native IDs, finite fields, saturated J>1-n0, positive derived inertia/volume, no physical walls/exclusion/plasticity; positive bounded legacy rho is only a computational-validity check"
+  },
+  "reported_not_automatic_acceptance": [
+    "Sine-mode velocity/pressure/material displacement amplitudes and phase versus the small-amplitude continuum undrained wave at actual times",
+    "Finite-neighbour spatial error, finite amplitude, float pressure/stress-rate rounding and half-step error are distinct",
+    "Pore-pressure log reference is local k=0 storage consistency, not general exact water conservation",
+    "Saved FSType/normal/posdiv/theta belong to the last force stage, not a newly evaluated endpoint geometry"
+  ],
+  "serialization": "ID-ordered in-memory exact binary records,26 double-valued state columns per native particle plus exact time. Original float values convert exactly to binary64, including signed zero. Only the positive-rho causal twin excludes the final rho column; actual versus audited replay includes it. Arc/Press are transient diagnostics, not stored endpoint columns. No claim of native BI4 parser coverage or whole Run output scheduling.",
+  "physical_columns": ["x", "y", "z", "vx", "vy", "vz", "p", "p0", "J", "theta_last_stage", "sigma_xx", "sigma_xy", "sigma_xz", "sigma_yy", "sigma_yz", "sigma_zz", "kplastic", "FSType_last_stage", "normal_x_last_stage", "normal_y_last_stage", "normal_z_last_stage", "posdiv_last_stage", "load_ax", "load_ay", "load_az", "legacy_rho_passive"],
+  "source_and_inputs": "Runner freezes recipe, configs, authoritative source/headers/objects/libraries and program/runtime hashes before each execution; refuses retained targets. Each process owns only its fresh output. Prepare/Run require an explicit root execution authorization flag.",
+  "not_accepted": ["public HydroMechDynamicSeepage switch", "dynamic Darcy", "nonzero k", "wall/NoPen/HG/loading compatibility", "GPU", "PART restart", "full physical release", "3D wave", "long consolidation or Cryer"],
+  "no_automatic_long_run": true,
+  "physical_acceptance": false
+}

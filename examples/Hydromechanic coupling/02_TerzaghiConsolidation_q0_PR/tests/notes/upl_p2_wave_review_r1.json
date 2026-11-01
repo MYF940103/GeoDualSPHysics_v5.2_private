@@ -1,0 +1,62 @@
+{
+  "date": "2026-11-01",
+  "code_checkpoint_local_and_remote": "e739022d60118ebe9e2f672945313eb5cf5a4b2d",
+  "conclusion": "Restricted CPU k=0 volume/storage/inertia feedback passed actual coupled Symplectic-step implementation checks in the declared 2D periodic wave. This is not continuum-theory or formal-model acceptance.",
+  "evidence": [
+    "tests/logs/upl_p2_wave_DebugCPU_r3.check.json",
+    "tests/logs/upl_p2_wave_ReleaseCPU_r3.check.json",
+    "tests/logs/upl_p2_wave_symbol_r2.check.json"
+  ],
+  "test": {
+    "native_ids": 128,
+    "geometry": "16x8, x/z periodic, no physical walls, no Darcy/gravity/load/HG/viscosity",
+    "end_s": 0.000030517578125,
+    "coarse_dt": "2^-23 seconds, 256 steps",
+    "half_dt": "2^-24 seconds, 512 steps",
+    "jobs_each_debug_release": 6,
+    "matched_samples": 257,
+    "actual_vs_force_stage_replay": "All26 stored columns and clocks bitwise identical",
+    "old_density_causal_twin": "All25 physical columns and clocks bitwise identical; Rhop alone deliberately differs in every particle/time record. This exception is only for this causal test, not the normal full-field OFF regression."
+  },
+  "independently_recomputed_maxima": {
+    "half_pressure_RMS_pa": 0.000442330145,
+    "half_material_displacement_mm": 6.492723026e-11,
+    "half_J": 2.564171098e-12,
+    "local_k0_log_storage_error_pa": 0.00079442360,
+    "coupled_CFL": 0.00434028327,
+    "perturbation_energy_ratio": 1.00208500,
+    "instantaneous_internal_force_scaled_residual": 7.37437e-8,
+    "transverse_speed_m_per_s": 1.31438e-11,
+    "transverse_position_drift_m": 7.8063e-17
+  },
+  "continuous_reference_end_errors_percent_coarse": {
+    "velocity_mode": 5.29900684,
+    "pressure_mode": -5.37545038,
+    "material_displacement_mode": 1.44352401,
+    "phase_proxy": -6.79171989
+  },
+  "offline_spatial_symbol_review": {
+    "uses": "Existing initial coordinates/mode histories, actual project Wendland header and loaded float constants; no solver rerun",
+    "discrete_to_continuum_frequency_ratio": 0.93060451343624884,
+    "predicted_end_pressure_pa": -685.15433580578394,
+    "actual_end_pressure_pa": -685.15492524094122,
+    "maximum_pressure_minus_semidiscrete_reference_pa": 0.0006109435993266743,
+    "maximum_phase_minus_semidiscrete_reference_rad": 9.5351729234582905e-7,
+    "interpretation": "The frozen spatial symbol accounts for essentially all of this lattice's continuum-mode discrepancy. It is a linearized mixed-gradient approximation, not a bit-exact reproduction of evolving geometry, finite amplitude, float accumulation or time integration."
+  },
+  "preserved_nonphysical_failures": [
+    "Seed r1 generated105 rather than128 points; no solver admitted. Fresh r2 geometry was checked independently before building.",
+    "Debug wave r2 companion referenced private counters and did not compile. Fresh r3 uses existing public getters; production code and numerical gates unchanged.",
+    "Offline symbol r1 used unrounded input H for kernel constants. Fresh offline r2 reproduces the production float-H promotion; both analyses retained, no wave rerun."
+  ],
+  "limitations": [
+    "Fixed dt was manually checked against current coupled wave speed at both stages. Legacy automatic natural dt is not accepted for the new model.",
+    "Old Rhop remains a bounded passive computational diagnostic, not physical mixture density; public density/exclusion semantics remain pending.",
+    "Exact records are ID-ordered in-memory snapshots, not a full Run output-scheduler or BI4 serialization test.",
+    "No nonzero-k dynamic Darcy trajectory, walls, HG, GPU, restart, long-cycle or public HydroMechDynamicSeepage option.",
+    "Raw binary snapshots are retained and hash-bound locally, not cloud-Git backed. Only scripts, inputs, receipts and necessary text results are selected for Git."
+  ],
+  "next": "Screen pressure-diffusion and acceleration operators together before connecting a complete new pressure-rate pass; do not integrate a failed constant-flux candidate.",
+  "production_source_edits_in_this_wave_stage": false,
+  "physical_acceptance": false
+}

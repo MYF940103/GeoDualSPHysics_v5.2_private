@@ -1,0 +1,70 @@
+{
+  "date": "2026-11-01",
+  "status": "authored_only_pending_root_review_no_build_or_run",
+  "predeclared_before_execution": true,
+  "scope": "Standalone CPU frozen-field algebraic screening with actual project Wendland and matrix-inverse headers. No JSph interaction/outer loop, state evolution, periodic clone, wall, production switch or implementation acceptance.",
+  "files": ["tests/support/upl_p3_pair_r1.cpp", "tests/support/upl_p3_pair_r1.ps1", "tests/notes/upl_p3_pair_r1.json"],
+  "planned_outputs": "tests/outputs/upl_p3_pair_Debug_r1_run and Release_r1_run; nodes.csv, pair_summary.csv, rates.csv, summary.csv, complete.json. Tests/logs contains separate immutable build/run/check receipts. Execution still requires root review.",
+  "geometry": {
+    "dimensions": [2, 3],
+    "nodes_per_active_axis": 9,
+    "total_nodes": [81, 729],
+    "dp_m": "2^-3",
+    "h_m": "dp",
+    "kernel_support_m": "2h",
+    "eta2_m2": "h^2/100",
+    "reference_box_each_active_axis_m": [-0.5, 0.5],
+    "jitter": "Regular and deterministic one-axis dyadic perturbation; each displacement magnitude exactly dp/8 in jittered patch, no periodic ghosts",
+    "J": "Frozen heterogeneous (28+hash%9)/32, range[.875,1.125], not a generated deformation trajectory",
+    "volume": "Vi=dp^dimension*Ji; same frozen Vi used in both directed contributions",
+    "porosity": "ni=1-(1-double(float(.3)))/Ji",
+    "C": "Inverse of sum_j -Vj dij tensor grad_iW; full inverse3D or xz block2D, no singular fallback",
+    "core": "Reference index abs<=1 per active axis,9/27 full-support nodes; support plus two jitter radii stays within retained patch. Truncated outer layers are reported separately."
+  },
+  "material_and_units": {
+    "rho_water_kg_m3": 1000,
+    "Kw_pa": 200000000,
+    "k_m_s": "2^-10 (or0 for compression checks)",
+    "gamma_reference_N_m3": 8000,
+    "gamma_note": "Positive reference specific weight rho_water*8 used for conductivity units. Signed manufactured body gravity varies0/-8/+8 m/s2 independently; it does not reset this denominator or make it zero.",
+    "Ace_m_s2": "Solver-style acceleration excluding explicit body gravity",
+    "physical_acceleration": "a_s=Ace+g",
+    "dimension2_volume": "Area per unit out-of-plane thickness; budget units m^dimension/s"
+  },
+  "operators": [
+    {"name": "raw_pair_R", "R_ij": "pi-pj+rho_water*.5*(Ace_i+Ace_j) dot dij", "beta": "dij dot grad_iW/(r2+eta2)"},
+    {"name": "symC_pair_R", "role": "main candidate", "R_ij": "same raw_pair_R residual", "beta": "dij dot [.5*(Ci+Cj)*grad_iW]/(r2+eta2)"},
+    {"name": "legacy_symC_head_plus_receiverC_Das", "head": "H_ij=pi-pj-rho_water*g dot dij", "frozen_operator": "2 sum_j Vj H_ij beta_sym +rho_water sum_j Vj(a_sj-a_si) dot(Ci grad_iW)", "role": "Mismatched Morris scalar-head Laplacian plus receiver-C acceleration divergence; not labelled as candidate pair formulation"}
+  ],
+  "rate_equation": "pdot_i=Kw/ni * [k/gamma_ref * frozen_operator -theta_i]. Main/raw pair frozen_operator=2 sum_j Vj R_ij beta_ij. g cancels ONCE through a_s=Ace+g; candidate has no additional legacy gravity lapz term.",
+  "pointwise_flux": "Gp_i=sum_j Vj(pj-pi) Ci grad_iW; q_i=-k/gamma_ref[ Gp_i-rho_water(g-a_si) ]=-k/gamma_ref[ Gp_i+rho_water Ace_i ]. Compare actual affine Gp and nonzero physical q, not merely pdot=0.",
+  "fields": [
+    "Affine accelerated-hydrostatic p with grad p=-rho_water Ace; g=0,-8,+8 and reversed Ace",
+    "Free fall with signed g=-8/+8: Ace0, physical a_s=g, pconstant; main pairR0 and physicalq0",
+    "Stationary hydrostatic with g=-8: Ace=-g, physical a_s0, gradp=rho_water*g; main pairR0 and physicalq0",
+    "Constant p plus constant nonzero Ace: physical q is constant nonzero, continuum divergence0; finite-cloud local rate defect is measured, NOT assumed zero",
+    "Quadratic pressure, Ace0,g0: frozen weighted budget and pure-pressure dissipation identity",
+    "Quadratic pressure plus affine all-component acceleration: continuum lap p+rho_water div Ace, core and outer errors separately",
+    "k0 compression,dilation,zero trace: prescribed theta=-1/32,+1/32,0, no claim of an actual velocity-gradient path"
+  ],
+  "field_coverage": {"fields_per_patch": 13, "node_operator_csv_rows": 63180, "k0_only": "Indices7,8,9 (compression,dilation,zero trace); appended freefall/hydrostatic retain nonzero k"},
+  "gates": {
+    "moment_rank": "Positive moment determinant; no clamped/fallback inverse",
+    "beta_sign": "Raw and symmetric beta finite and <=0 for every reciprocal edge",
+    "beta_reciprocity": "Exactly equal under independently reversed edge directions",
+    "R_antisymmetry_pa": "abs(Rij+Rji)<=32*DBL_EPSILON*(abs(dp)+rho*abs(Abar dot dij))+1e-12",
+    "affine_equilibrium_pair_rate_abs_pa_s": 1e-7,
+    "affine_Gp": "Norm(error)<=5e-12*max(1,Norm(reference)) Pa/m",
+    "affine_pointwise_flux_abs_m_s": 1e-12,
+    "gravity_flux_once_identity": "Norm(q_physical-q_reduced)<=5e-13*max(1,Norm(q_reduced))+1e-15 m/s",
+    "frozen_weighted_Darcy_budget": "abs(sum_i Vi ni/Kw DarcyRate_i)<=1024*DBL_EPSILON*sum_i abs(Vi ni/Kw DarcyRate_i)+1e-14 m^dimension/s, main and raw pair only",
+    "compression_budget": "Weighted total budget equals -sum Vi theta within the Darcy budget tolerance plus1e-14 m^dimension/s",
+    "pure_pressure_identity": "sum_i Vi ni/Kw pi pdot_i = 2k/gamma_ref sum_undirected ViVj(pi-pj)^2 beta_ij <=0, tolerance1024*DBL_EPSILON*absolute_energy_scale+1e-10 Pa*m^dimension/s, main/raw pair only",
+    "k0_theta": "abs(pdot+Kw/ni theta)<=5e-13*max(1,abs(Kw/ni theta)) Pa/s",
+    "continuum_accuracy": "Diagnostic only: report core and outer RMS/max; no theory acceptance from this algebraic screen",
+    "constant_flux_defect": "Report symmetric-pair full-support-core max defect, even if nonzero; potential candidate-admission blocker for later review, not a blindly enforced zero gate"
+  },
+  "production_rate_overwrite": "NOT tested or implemented here. Future actual production pass must poison its rate buffer before each stage, reset once and reproduce its independently assembled compression+Darcy rate. Standalone vector initialization is not that proof.",
+  "limitations": ["Frozen weighted pressure/storage and energy identities are NOT exact fluid-water mass conservation", "Kernel and inverse APIs are production headers, but P3 rate assembly itself is standalone candidate algebra, not production ct", "No physical trajectory, GPU, periodic-copy consistency, boundary conditions, nonzero-k state evolution or restart acceptance", "No build/run or Git action before explicit root review"],
+  "physical_acceptance": false
+}

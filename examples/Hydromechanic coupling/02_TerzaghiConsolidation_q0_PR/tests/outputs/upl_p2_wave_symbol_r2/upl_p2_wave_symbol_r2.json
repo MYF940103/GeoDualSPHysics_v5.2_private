@@ -1,0 +1,18 @@
+{
+  "stage": "P2 offline initial-lattice mixed-symbol attribution; production float KernelH recaptured",
+  "new_physical_solver": false,
+  "production_edits": false,
+  "inputs": "Retained ReleaseCPU r3 actual coarse/half physical.bin and 257-row modes.csv, matching sealed r2 generated XML and actual Run.out loaded material",
+  "kernel": "Actual source/FunSphKernel.h. h_kernel=double(float(h_XML)) before GetKernelWendland_Ctes as JSph.cpp:1616; float support=2*h_kernel_float; support2=float(support*support). Same float rr2/fac as initial actual interactions.",
+  "initial_geometry": "Existing first binary frame, 128 actual native positions; minimum image is unique because 2h is less than half both periodic lengths",
+  "linear_symbol": "Initial x-z C from double(fac)*double(dr). Kraw uses that gradient; Kraw_float_force uses float(fac*float(dr)). Storage Kcorr=Cxx*Kraw. Stress-gradient linear approximation Kcorr_sigma=Cxx*Kraw_float_force. omega_mixed^2=Kraw_float_force/rho0*((K+4G/3)*Kcorr_sigma+(Kw/n0)*Kcorr). Also report all-double-gradient and float-force-only frequency bounds.",
+  "linear_prediction": "v=A*cos(omega_mixed*t); p=-(Kw/n0)*Kcorr*A/omega_mixed*sin(omega_mixed*t); u=A/omega_mixed*sin(omega_mixed*t). phaseproxy=atan2(-n0*cu*p/Kw,v). Frozen infinitesimal-amplitude mixed-symbol approximation, NOT an exact emulation of every float accumulation or evolving position/J.",
+  "no_new_gate": "Only input consistency and artifact completeness checked. Existing wave numerical gates are unchanged. Symbol residuals are reported descriptively, not physical acceptance or a new solver result",
+  "limitations": [
+    "Frozen initial regular lattice and infinitesimal-amplitude semidiscrete model; actual coupled trajectory evolves J, volumes, mixture inertia, positions and correction matrices",
+    "Time integration, float velocity differences/accumulation/stress correction/writeback and evolving J are not emulated exactly. Explicit double-gradient, mixed-force/stress and force-only frequency differences quantify direct gradient-product sensitivity, not a rigorous bound on all mixed arithmetic.",
+    "Uniform initial x-z inverse matrix is computed from the same actual header gradient but not copied from a newly instrumented production array; neighbor summation order can differ",
+    "Agreement attributes most observed continuum discrepancy to the declared semidiscrete symbol only for this bounded periodic k0 wave; it establishes no general convergence, dynamic-Darcy correctness or full physical release"
+  ],
+  "prior_approximate_analysis": "upl_p2_wave_symbol_r1 retained unchanged; it constructed Ctes from exact XML double h rather than the production float KernelH promoted to double. Roundoff-level capture gap, not a 5% formulation change."
+}
