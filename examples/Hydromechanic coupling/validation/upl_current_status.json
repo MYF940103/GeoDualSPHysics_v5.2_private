@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-01",
+  "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU XML wiring, native output and rejection review completed; no formal or general physical-model release",
+  "status": "Limited canonical CPU entry and private GPU non-feedback J-observer implementation reviewed; no general GPU dynamic or physical-model release",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -110,9 +110,25 @@
     "public_GPU_accepted": false,
     "coupled_restart_accepted": false
   },
+  "private_GPU_observer_review": {
+    "base_checkpoint": "18235c6d054958c60c1226872216ceb315f1966c",
+    "CPU_public_local_remote_checkpoint": "25f40dc13b8bfacf698aab3e7668ec2afb252788",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_observer_stage_r1.check.json",
+    "source": "Only JSphGpu.h/cpp, JSphGpuSingle.cpp and JSphGpu_ker.h/cu: private default-false J/theta/JPre allocation, resize, periodic copying, sorting, force-stage divergence, midpoint J update and three native diagnostics. No pressure/force/quadrature/inertia/conductivity feedback or new public key.",
+    "builds": "Required default CPU Debug build and isolated authoritative GPU Debug/Release Rebuilds passed. Canonical GPU and server programs remain unchanged; tested programs are source-bound isolated builds on RTX3050.",
+    "native_regression": "Three overlapping windows contain3/9/17 saved-frame instances (29 total,17 distinct times), each512 native IDs.58 old-OFF/new-OFF and new-OFF/observer-ON frame pairs preserve all15 original arrays plus actual time/Step/signed dterror bits exactly, with no interpolation or exclusions. Every saved J/n/theta triple and final live GPU download also passed.",
+    "maximum_observed_J_change": 9.15638553866671e-8,
+    "state_components_each_configuration": "5760 active-slot identity checks and1920 recurrence checks, maximum corrector error0; real cell reorder, periodic live JPre independent of PosPre,384 double-axis image witnesses and live-history resize passed. Three bad-J states and one native plastic state are deliberately rejected. Actual nonzero-prefix cell division is NOT covered in the periodic no-wall fixture.",
+    "theta_components_each_configuration": "10 cases/30 actual force-kernel calls: translation, dilation/compression, shear and rotation with closed/drained center.180 node OFF/ON output pairs are bit-exact. Known center trace, nonempty shear and nonzero drained theta with zero pressure rate pass. Supplied isotropic2D C does not validate the general matrix solver or a physical drained run.",
+    "memcheck": "Debug actual native observer, state component and theta component each report0 errors and0 bytes leaked.",
+    "integration_note": "Pressure and J use staged additive midpoint updates; n is derived from J, not independently integrated. Existing CPU density corrector is rational, while active GPU density corrector is additive (its rational alternative is commented). This pre-existing difference was identified and disclosed, not silently changed.",
+    "public_GPU_dynamic_accepted": false,
+    "feedback_tested": false,
+    "physical_acceptance": false
+  },
   "next_order": [
-    "Selectively back up this bounded CPU wiring stage and its independently reviewed evidence locally/remotely, retaining raw initial mismatch and every failed setup record.",
-    "Private GPU state lifecycle first: allocation/resize/sort/periodic J/theta/Pre state and output. Keep the shared !Cpu public rejection until complete GPU model tests pass; do not add a second public formulation switch.",
+    "Selectively back up the verified GPU observer stage locally/remotely, keeping historical CPU initial raw26 mismatches and every retained failed setup visible.",
+    "Next port private GPU J-derived quadrature/inertia/storage as one consistent bounded k0/g0 component, preserving OFF and observer-only trajectories. Keep the shared !Cpu public rejection until complete GPU model tests pass; do not add a second public formulation switch.",
     "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."

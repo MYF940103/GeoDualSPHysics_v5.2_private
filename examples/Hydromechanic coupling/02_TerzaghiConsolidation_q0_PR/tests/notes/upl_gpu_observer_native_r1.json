@@ -1,0 +1,54 @@
+{
+  "status": "authored_only_not_compiled_or_executed",
+  "scope": "Tiny private default-OFF GPU observer entry plus typed native readers; no feedback, dynamic Darcy, public GPU master unlock, wall, lifecycle manufacture or physical acceptance.",
+  "new_file": "support/upl_gpu_observer_native_r1.cpp",
+  "entry": {
+    "cli": "--solver 0|1 <normal -gpu solver arguments>",
+    "path": "Standard JSphCfgRun/JAppInfo/JLog2 setup; derived class sets protected PorosityObserver, calls actual JSphGpuSingle::Run, then ParticlesDataDown for actual final native state.",
+    "physical_field_writes": false,
+    "public_HydroMechDynamicSeepage": "Must remain absent/false; existing shared GPU rejection remains active.",
+    "outputs": [
+      "observer_final.csv: id,J,n,theta; native-ID sorted, header only when observer OFF",
+      "observer_complete.json: passed, observer, actual_time_s, completed_steps, native_count, fixed_count, n0, actual_production_Run, live_GPU_download, predictor_history_released, public_dynamic_seepage, physical_fields_rewritten_by_fixture, feedback, physical_acceptance"
+    ],
+    "scope_checks": "Fresh no-wall 2-D hydromechanical actual Run; final native soil IDs contiguous0..N-1; JPre null after full step; ON complete device/host state; OFF none allocated. Production initializer additionally enforces its private bounded observer restrictions."
+  },
+  "compare": {
+    "cli": "--compare DATA_A DATA_B PART EXPECTED_NATIVE NEW_JSON",
+    "matching": "One piece, fixed2D without symmetry/dynamicNp/reused IDs, actual native count and header species counts, no exclusions, contiguous unique native IDs, byte-exact actual saved time and Step. Actual signed dterror metadata must exist as Double in both files, match bits and be finite<=1e-14; missing telemetry is never filled with0.",
+    "arrays": {
+      "Uint": ["Idp", "FSType"],
+      "Double3": ["Posd", "SigmaState_kk", "SigmaState_ij"],
+      "Float3": ["Vel", "Sigma_kk", "Sigma_ij", "FSNormal", "HydroMechLoadAce"],
+      "Float": ["Rhop", "Kplastic", "PorePress", "PorePress0", "ExcessPorePress"]
+    },
+    "semantics": "All original15 typed arrays ID-aligned and bit-identical, no masks/exclusions/interpolation. Double shear order remains native(xy,yz,xz). Requires finite values, positive Rhop, Kplastic0. Extra observer triple presence may differ but partial observer schema is rejected; diagnostics are checked separately.",
+    "receipt": "passed, part, native_count, arrays15, actual_time_s, saved_step, dterror_s, observer_schema_a/b, all_original_physical_array_bits_identical, native_ID_aligned, saved_time_step_dterror_exact, no_exclusions, physical_acceptancefalse"
+  },
+  "read_observer": {
+    "cli": "--read-poro DATA PART EXPECTED_NATIVE EXPECTED_FIXED N0 NEW_CSV NEW_JSON",
+    "N0": "Pass actual float-promoted SoilCte.Porosity; first selected fixture is exactly0.25.",
+    "fixed": "Argument retained explicitly, but must be0 in this stage; no wall-marker acceptance is invented.",
+    "arrays": ["PoroVolumeRatio Double", "PoroPorosity Double", "PoroThetaLastStage Double"],
+    "checks": "Exact count/type; finite J/n/theta; J>1-n0;0<n<1; native saved n exactly1-(1-n0)/J using same expression; initial PART0 J1/theta0. Solid-volume floating residual is reported, not a newly invented physical threshold.",
+    "csv": "id,J,n,theta, native-ID sorted; last native CSV must be byte-compared against observer_final.csv by gated driver.",
+    "receipt": "passed, part, native_count, fixed_count0, double_arrays3, actual_time_s, saved_step, n0, min_J/max_J, min_n/max_n, max_abs_theta_s_inv, max_solid_volume_roundoff, derived_n_exact, physical_acceptancefalse"
+  },
+  "first_bounded_recipe": {
+    "seed": "outputs/upl_cpu_public_seed_r1_OFF_default/CaseUplSpatial_n32_c.xml and .bi4",
+    "counts": "512 soil,0 fixed;32x16, no-wall XZ-periodic, original small sine velocity, g0, n0=.25; public dynamic master absent/false.",
+    "dt_s": "2^-24=5.9604644775390625e-8",
+    "nine_frames": "Original8steps,TimeMax8dt,TimeOutdt; compare actual old-sort canonical GPU OFF versus new canonical GPU OFF, then new OFF versus private helper ON, all9 saved native frames.",
+    "seventeen_frames": "New copied XML/BI4 only, no GenCase: change TimeMax to16dt=9.5367431640625e-7; unchanged dt/cadence/material/initial fields.16steps17frames. Never edit retained seed or overwrite outputs.",
+    "baseline_programs": "Read isolated_GPU_program, not component program, from logs/upl_gpu_sort_Debug_r1.build.json and upl_gpu_sort_Release_r1.build.json. Copy and hash bound runtime DLL/config closure beside isolated invocation as needed; do not assume gpu subfolder alone contains runtime.",
+    "gating": "Root-owned explicit source freeze/full GPU authoritative isolated builds, Debug smoke+memcheck before Release, same-backend original15 exact checks and every saved observer triple, actual final native/live CSV equality. Driver is separately authored; no auto restart/rearm/notification."
+  },
+  "held": [
+    "No build or execution has occurred from authoring these two files.",
+    "No CPU/GPU cross-backend byte equivalence or pressure-model acceptance is implied.",
+    "No manufactured theta/recurrence, periodic predictor-history, resize or sorting stress test is provided by this tiny Run entry; those are a following separate component.",
+    "Normal Run completion and finite diagnostics do not prove correctness of J integration; independent recurrence/component tests remain required.",
+    "No source-build identity is asserted for archived old canonical binaries; later driver must bind actual program/runtime and appropriate build receipts.",
+    "Production source, existing helpers, old inputs/outputs, formal cases, server packages and Git were not changed by this author task."
+  ]
+}

@@ -1,0 +1,52 @@
+{
+  "status": "authored_only_not_compiled_or_executed",
+  "file": "support/upl_gpu_observer_theta_r1.cpp",
+  "cli": "--out NEW_DIRECTORY [--device N]",
+  "scope": "Actual cusph::Interaction_Forces component only. Self-contained nine-fluid linked-list fixture, no JSph class, source/PDE edits, integration, public model option, general C-matrix construction or physical drainage acceptance.",
+  "geometry": {
+    "dimension": 2,
+    "native_fluid": 9,
+    "fixed": 0,
+    "center_ID": 4,
+    "positions": "x,z in{.125,.25,.375},y0; ID3*ix+iz; center(.25,0,.25). Dyadic coordinates and velocities.",
+    "kernel": "Actual Wendland headers, h=.125,2h=.25. Center's eight nonself support neighbours retained; omitted second-grid-step axial lattice samples lie exactly at2h with separately checked zero kernel factor.",
+    "cell": "Actual MakeDivDataGpu one-cell layout: empty boundary range and fluid range[0,9). No neighbour-loop replacement.",
+    "material": "massf1,rho2,volume double(float(mass/rho))=.5;K16,G8,Kw128,n.5,Kw/n256;zero stored stress/pressure,gravity/load/diffusion/viscosity/DDT/HG/SPR/shifting off."
+  },
+  "independent_reference": {
+    "moment": "Host double sum M_ab=-sum(volume*dr_a*rawGradW_b) at center; raw fac uses actual host kernel with float h/rr2/fac contract. Check positive/isotropic Mxx,Mzz and cross cancellation at64DBL_EPSILON*max(1,|M|). Supply Cxx=Czz=1/mean(Mxx,Mzz),Cyy1 and zero offdiagonal to actual force kernel.",
+    "limitation": "This intentionally supplies known isotropic C; does not test GPU general matrix inversion/tracking or affine accuracy of incomplete-support outer nodes.",
+    "velocity_trials": [
+      "translation: vx=.25,vz=-.125,trace0",
+      "dilation: vx=.5(x-.25),vz=.5(z-.25),trace1",
+      "compression: vx=-.5(x-.25),vz=-.5(z-.25),trace-1",
+      "simple_shear: vx=.5(z-.25),vz0,trace0 and positive nonempty center xz stress rate",
+      "rigid_rotation: vx=-.5(z-.25),vz=.5(x-.25),trace0"
+    ],
+    "theta_gate": "Each center ON result finite and |theta-trace|<=64FLT_EPSILON*max(1,|trace|), fixed before execution. Both signs of nonzero trace must remain nonempty.",
+    "pore_gate": "Center closed rate matches -(Kw/n)*trace under same64FLT_EPSILON scaled budget; actual drained center FSType2+hydrodrainfs true must have exactly zero pressure rate while nonzero dilation/compression theta persists."
+  },
+  "matrix": {
+    "cases": "Five velocity trials x center closed/drained =10 cases.",
+    "calls_per_case": "Actual force OFF with NULL theta and nonzero diagnostic sentinel, then two ON calls, each with caller-cleared physical outputs and caller-zeroed theta (matches production reset convention).",
+    "actual_kernel_calls": 30,
+    "all_node_outputs": "270 rows=10cases*3stages*9nodes in node_outputs.csv; center known trace only, outer nodes not claimed affine-exact.",
+    "physical_OFF_ON_pairs": "180 native node pairs, all ar/pore-rate/viscdt/ace XYZ/stress-rate six component bytes identical; physical input velocity/density, stored stress/pressure and supplied correction unchanged.",
+    "pointer_null": "90 node diagnostic sentinel checks ensure a NULL observer pointer writes nothing.",
+    "reset": "90 per-node ON1/ON2 theta byte pairs; independent caller reset keeps repeat-stage output identical, no accumulated stale theta.",
+    "nonempty": "8 nonzero-trace ON center checks,4 drained nonzero-theta/zero-rate center checks,4 nonempty shear-stress center checks."
+  },
+  "outputs": [
+    "moment.csv: eight independent center neighbour terms",
+    "node_outputs.csv: every node physical force output and theta for every actual kernel call",
+    "theta_cases.csv: ten center reference/error-budget/physical-exact/reset rows",
+    "completion.json: counts, supplied moment/C and explicit component-only scope"
+  ],
+  "execution": "None by author. Parent must bind final file/source/build/runtime hashes, link authoritative frozen GPU objects excluding main, then explicitly run Debug memcheck and Release only through a separately reviewed bounded driver. Never edit/rearm old helpers or overwrite outputs.",
+  "held": [
+    "GPU private physical initializer still rejects drainage; this force-kernel branch test does not bypass it or admit a drained actual Run.",
+    "No wall/3D/general C-matrix solver/periodic lifecycle/integrator/feedback/dynamic Darcy model acceptance.",
+    "Actual native observer Run, state lifecycle/recurrence and default-OFF native regressions are separate required tests.",
+    "No production source, existing helper, retained input/result or Git changes in this author task."
+  ]
+}

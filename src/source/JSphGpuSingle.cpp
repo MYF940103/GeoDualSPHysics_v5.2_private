@@ -365,6 +365,7 @@ void JSphGpuSingle::ConfigDomain(){
   ReserveBasicArraysGpu();
   for(unsigned p=0;p<Np;p++){ Posxy[p]=TDouble2(AuxPos[p].x,AuxPos[p].y); Posz[p]=AuxPos[p].z; }
   ParticlesDataUp(Np,boundnormal,boundslipmode);
+  InitPorosityObserverGpu();
   delete[] boundnormal; boundnormal=NULL;
   delete[] boundslipmode; boundslipmode=NULL;
   //-Uploads constants on the GPU.
@@ -479,7 +480,7 @@ void JSphGpuSingle::RunPeriodic(){
             if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg);
+              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PoroJg,PoroThetag,PoroJPreg);
             }
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg,BoundSlipModeg);
 
@@ -559,6 +560,19 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     swap(Posxyg,posxyg);       ArraysGpu->Free(posxyg);
     swap(Poszg,poszg);         ArraysGpu->Free(poszg);
     swap(Velrhopg,velrhopg);   ArraysGpu->Free(velrhopg);
+  }
+  if(PoroJg){
+    double *scratch=ArraysGpu->ReserveDouble();
+    CellDivSingle->SortDataArrays(PoroJg,scratch);
+    swap(PoroJg,scratch);ArraysGpu->Free(scratch);
+    scratch=ArraysGpu->ReserveDouble();
+    CellDivSingle->SortDataArrays(PoroThetag,scratch);
+    swap(PoroThetag,scratch);ArraysGpu->Free(scratch);
+    if(PoroJPreg){
+      scratch=ArraysGpu->ReserveDouble();
+      CellDivSingle->SortDataArrays(PoroJPreg,scratch);
+      swap(PoroJPreg,scratch);ArraysGpu->Free(scratch);
+    }
   }
   if(TStep==STEP_Verlet){
     float4* velrhopg=ArraysGpu->ReserveFloat4();
@@ -714,7 +728,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,HydroMechLoadAceg
     ,HydroMechTopLoadRawg
     ,ShiftPosfsg
-    ,NULL,NULL,BoundDerivativeVelg);
+    ,NULL,NULL,BoundDerivativeVelg,PoroThetag);
   cusph::Interaction_Forces(parms);
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg);
   NormalizeHydroMechTopBandLoad();
@@ -1234,6 +1248,13 @@ void JSphGpuSingle::SaveData(){
     arrays.AddArray("SigmaState_ij",npsave,sigmastateij,true);
     arrays.AddArray("FSType",npsave,AuxFSType);
     arrays.AddArray("FSNormal",npsave,AuxFSNormal);
+    if(PorosityObserver){
+      double *porosity=new double[npsave];
+      for(unsigned p=0;p<npsave;p++)porosity[p]=1.-(1.-double(SoilCte.Porosity))/PoroJ[p];
+      arrays.AddArray("PoroVolumeRatio",npsave,PoroJ);
+      arrays.AddArray("PoroPorosity",npsave,porosity,true);
+      arrays.AddArray("PoroThetaLastStage",npsave,PoroTheta);
+    }
   }
   if(save && HydroMech && AuxPorePress && AuxPorePress0){
     float *poreexcess=new float[npsave];

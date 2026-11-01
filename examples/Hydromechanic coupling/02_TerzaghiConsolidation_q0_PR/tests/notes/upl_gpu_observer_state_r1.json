@@ -1,0 +1,58 @@
+{
+  "revision": "upl_gpu_observer_state_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "scope": "Private non-feedback GPU J-observer allocation/identity lifecycle component. Actual LoadConfig/ConfigDomain/InitRunGpu, real periodic duplication, real cell sorting, resize and production host/CUDA J updates. No force call, physical time step or public GPU dynamic model.",
+  "files": [
+    "support/upl_gpu_observer_state_r1.cpp",
+    "notes/upl_gpu_observer_state_r1.json"
+  ],
+  "source_freeze": "Use the root-frozen five-file upl_gpu_observer Debug/Release authoritative build; link all active actual GPU project objects except main. No production-source edits by this fixture.",
+  "cli": "--state followed by normal -gpu/-stable sealed_case_prefix fresh_output arguments; the --state marker is removed before JSphCfgRun::LoadArgv.",
+  "input": "Existing genuine 512-soil, zero-wall, 2-D axis-XZ periodic default-OFF seed; shared HydroMechDynamicSeepage remains false. No GenCase, field interpolation or formal case changes. Root/P0 binds exact seed/program/source/runtime in the optional second-fixture recipe.",
+  "component_changes": {
+    "private_observer": true,
+    "initial_J": "Production initialization must be exactly1 for every native and current periodic slot; theta exactly+0.",
+    "manufactured_tags": "J=1+(id+1)/65536, theta=(id%9-4)/32; all binary-representable. No mechanical equilibrium or physical deformation meaning is claimed.",
+    "dt": "Observer-only full dt=2^-10; predictor host method receives2^-11, corrector2^-10. It is not a physical fixed-step admission.",
+    "position_test": "Exchange only positions and Dcell values of actual normal IDs0 and511 in distinct cells, then real RunCellDivide(true). IDs/J/theta are not manually permuted.",
+    "predictor_lifecycle": "Only actual ComputeSymplecticPorosity is called, so JPre is live while all physical Pos/Vel PRE pointers are NULL. Subsequent actual RunPeriodic must still copy JPre outside varspre.",
+    "resize": "Actual ResizeParticlesSize(old_GPU_capacity+1,0,false) with JPre live; require larger capacity and exact active-slot identity, then normal RunCellDivide(true) regeneration.",
+    "plastic_negative_controls": "Set every current periodic Kplastic to123 with all normal-native Kplastic0: corrector must succeed. Separately set one normal native Kplastic1: actual corrector must throw. Recover only private diagnostic J arrays between independent component guard cases; never retry a solver.",
+    "invalid_J": "Predictor rejects J exactly at solid0=1-double(n0), NaN and +Inf in three independent native-slot guard cases."
+  },
+  "gates": {
+    "identity": "Every current ID is0..511 and fluid; exactly512 unique normal IDs; all other active slots must be periodic; original NpfOut0. Copy/sort/periodic/resize J/theta/live-JPre bit-exact by native ID against the actual pre-sort reference.",
+    "actual_reorder": "Native-ID order must change after exchanging two distinct native cells. An unchanged order fails.",
+    "clone_of_clone": "Nonempty same-ID periodic images offset in BOTH X and Z by the actual PeriXinc.x/PeriZinc.z. Together with frozen RunPeriodic cblock/axis ordering this witnesses clone-of-clone coverage; no fake inserted kernel counter.",
+    "recurrence": "Independently compute predictor Tag+dt/2*Tag*Rate and corrector saved-Jn+dt*actual-Jhalf*new-theta. Error <=16*DBL_EPSILON*max(1,abs(actual),abs(reference)); no CPU/GPU0-ULP arithmetic claim. Corrector releases JPre.",
+    "ledger": "Finite0<n<1 and abs((1-n)*J-(1-n0))<=5e-13; conditional incompressible-solid invariant, not exact fluid mass.",
+    "tail": "Seven bounded persistent J/theta tail slots are unchanged across isolated corrector only; no tail promise across periodic regeneration/resize.",
+    "guards": "Three bad-J cases and native plastic guard must throw the exact existing finite-saturated-elastic exception; periodic-only plastic poison must not throw.",
+    "no_physics": "TimeStep and Nstep remain0, actual force calls0; no ComputeStep/Run trajectory, half-step, physical or public GPU acceptance.",
+    "memcheck": "Root may run Debug under compute-sanitizer with original zero-error/zero-leak gates, then Release only on complete Debug pass. This author does not execute."
+  },
+  "actual_prefix_limit": "With PeriActive, JCellDivGpuSingle::Divide invalidates BoundDivideOk and performs full division; Npb=0 also makes any prefix0. Therefore actual_nonzero_prefix_cell_division=false. The earlier576-case actual copy/sort component covers nonzero API prefixes; no forced count flag or wall admission is fabricated here.",
+  "outputs": [
+    "state.csv",
+    "state_complete.json",
+    "normal initialization Run.out/support files as generated"
+  ],
+  "required_completion": [
+    "passed=true",
+    "native_count=512",
+    "real_cell_reorder=true",
+    "actual_nonzero_prefix_cell_division=false",
+    "periodic_JPre_with_PosPre_NULL=true",
+    "clone_of_clone_checks>0",
+    "live_JPre_resize_preserved=true",
+    "corrector_recurrence_checked=true",
+    "predictor_history_released=true",
+    "invalid_J_rejections=3",
+    "native_plastic_rejected=true",
+    "periodic_plastic_poison_ignored=true",
+    "completed_physics_steps=0",
+    "physical_acceptance=false"
+  ],
+  "ownership": "Only these two new shallow test files. Root reviews before optional linking/execution. No source/build/run/Git by author; preserve failed labels and retained source/data.",
+  "physical_acceptance": false
+}

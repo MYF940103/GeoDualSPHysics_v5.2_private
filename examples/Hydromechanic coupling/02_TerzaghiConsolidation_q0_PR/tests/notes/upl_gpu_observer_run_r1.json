@@ -1,0 +1,23 @@
+{
+  "status": "authored_only_no_Prepare_build_program_or_solver_execution",
+  "driver": "support/upl_gpu_observer_native_r1.ps1",
+  "helper_contract": "support/upl_gpu_observer_native_r1.cpp and notes/upl_gpu_observer_native_r1.json are separately authored, frozen inputs; no helper source is rewritten by the driver.",
+  "scope": "Fresh same-GPU 512-soil/0-wall 2D g0 elastic XZ-periodic observer-only implementation wiring. No physical fields are assigned by the helper. Legacy u-pw pressure, fixed quadrature/inertia, constant k=1e-4, n0=.25, grad1, Shepard0, SPR0, HG0 remain unchanged. Public GPU dynamic master remains absent/OFF.",
+  "actions": {
+    "Prepare": "Explicitly copy the sealed public OFF_default runtime XML and BI4 into three new seed directories; no GenCase. Short XML and every BI4 remain byte-identical. Smoke and Extended XML change only the single TimeMax value.",
+    "Build": "Root must first complete the authoritative observer GPU build. Link the tiny helper using its actual project objects excluding main, matching Debug/Release libraries and CUDA runtime. Copy retained sort actual GPU main and current observer actual GPU main with SHA-bound DLL/config closure beside the helper. No canonical executable is overwritten.",
+    "RunOld_RunNew_RunObserver": "Exactly one root-selected action and window per invocation; old actual sort GPU main OFF precedes current actual GPU main OFF, which precedes private helper observer ON. Completed outputs and call records cannot be overwritten. Debug observer uses compute-sanitizer memcheck with full leak checking and original nonzero error exit.",
+    "Review": "Offline only. For every native PART compare all original15 typed arrays, actual time, zero-based saved Step and finite signed dterror<=1e-14 oldOFF/newOFF then newOFF/observerON. Read all3 actual Double observer arrays in every save and require exact J-derived n, domain/finiteness, initial J1/theta0, and last saved CSV exactly equal to actual final live GPU download. Earlier physical solves are never rerun to repair analysis."
+  },
+  "windows": [
+    {"name":"Smoke","configuration":"Debug","steps":2,"samples":3,"dt":"2^-24","cadence":"1dt","end":"2dt","input_change":"TimeMax only; original material, geometry and initial velocity unchanged","memcheck":"zero errors and0 bytes leaked required"},
+    {"name":"Short","configuration":"Release","steps":8,"samples":9,"dt":"2^-24","cadence":"1dt","end":"8dt","input_change":"none; XML and BI4 byte-identical to retained public OFF_default"},
+    {"name":"Extended","configuration":"Release","steps":16,"samples":17,"dt":"2^-24","cadence":"1dt","end":"16dt=9.5367431640625e-7","input_change":"TimeMax only"}
+  ],
+  "gating": "Prepare is not solver admission. Debug helper build then three Smoke solves and complete native/memcheck review must pass before Release helper build or Release solves. Full Short review must pass before any Extended solve. No automatic batch, later state fixture, retry, restart, worker or notifier exists.",
+  "identity": "Baseline logs/upl_gpu_observer_r1.baseline.json supplies retained sort Debug/Release isolated_GPU_program plus archived runtime, not the sort component program and not old canonical binaries as current-source truth. Current logs/upl_gpu_observer_{Debug,Release}_r1.build.json binds5 source snapshots, full authoritative project objects, unchanged other source and no-space CUDA IntDir. All helper recipes/input copies/programs/native outputs/call exits are hashed. Canonical GPU remains unchanged. CPU default Debug build is a separate root-observed prerequisite, not executed or inferred here.",
+  "original15": ["Idp Uint","Posd Double3","Vel Float3","Rhop Float","Kplastic Float","PorePress Float","PorePress0 Float","ExcessPorePress Float","FSType Uint","FSNormal Float3","HydroMechLoadAce Float3","Sigma_kk Float3","Sigma_ij Float3","SigmaState_kk Double3","SigmaState_ij Double3"],
+  "observer_outputs": ["PoroVolumeRatio Double","PoroPorosity Double","PoroThetaLastStage Double"],
+  "not_claimed": ["Independent manufactured theta or explicit-midpoint J recurrence accuracy","State-only resize/live-predictor/sort/periodic-owner stress validation","CPU/GPU bit equivalence","Dynamic Darcy, variable-k feedback, walls, new time policy or public GPU support","Half-step or theory accuracy, speedup, physical/full-cycle/restart acceptance"],
+  "retention": "All old programs, seeds, partial outputs and immutable receipts remain untouched. Failed runtime and postprocessing records are retained independently. No source, formal case, server package, Git index/commit/remote or connectivity test is modified by authoring this driver."
+}

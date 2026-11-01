@@ -1,0 +1,20 @@
+{
+  "status": "retained_publication_wrapper_failure_not_solver_or_gate_failure",
+  "provenance": "Root actual tool session84944 exit1 after all read-only safety/source/seven-gate verification and aggregate creation; child author did not execute publication.",
+  "failure": "PowerShell5 Measure-Object bytes cannot sum property access on the OrderedDictionary file-entry objects. Manifest was not written; source/native/component evidence was not changed.",
+  "original_publisher": {
+    "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_gpu_observer_publish_failed_r1.ps1",
+    "bytes": 15422,
+    "sha256": "c42e1dd206568bddc749669f254e4349151052633fb73c9490ea8681d06bd43a",
+    "backup": "Exact local pre-repair copy; hash bound here, not added as a redundant cloud recipe copy."
+  },
+  "retained_aggregate": {
+    "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_observer_stage_r1.check.json",
+    "bytes": 10601,
+    "sha256": "381cf6759822d790832e625d1e95483da43c19cd24f2ddbea1a14d85d267cf51"
+  },
+  "minimal_repair": "Explicitly cast each entry.bytes to long before Measure-Object -Sum. New Manifest action revalidates every existing binding/gate, reconstructs expected aggregate text and requires its exact SHA to match the retained aggregate; it never overwrites the aggregate. Only the absent manifest is written.",
+  "no_solver_build_or_safety_program_rerun": true,
+  "physics_or_threshold_changed": false,
+  "physical_acceptance": false
+}

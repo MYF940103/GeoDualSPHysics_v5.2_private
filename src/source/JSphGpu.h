@@ -116,6 +116,8 @@ protected:
   float *PorePress0;    ///<Initial hydrostatic pore-water pressure reference on CPU.
   float *AuxPorePress;  ///<Auxiliary pore-water pressure array for output.
   float *AuxPorePress0; ///<Auxiliary initial pore-water pressure array for output.
+  double *PoroJ;       ///<Private non-feedback volume-ratio output.
+  double *PoroTheta;   ///<Private last-force-stage divergence output.
   tfloat3 *AuxHydroMechLoadAce; ///<Auxiliary hydromechanical external load acceleration for output. //mdbr
   //-Auxiliary variables for the conversion (size=ParticlesSize).
   //-Variables auxiliares para conversion (size=ParticlesSize).
@@ -162,6 +164,10 @@ protected:
   float *PorePressg;   ///<Current total/gauge pore-water pressure on GPU.
   float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
+  bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
+  double *PoroJg;       ///<Solid volume ratio J, never used by physical operators here.
+  double *PoroThetag;   ///<Corrected pair divergence from the last force stage.
+  double *PoroJPreg;    ///<Full-step J held during Symplectic prediction/correction.
 
   //-Variables for free-surface tracking.
   tmatrix3d *CorrMatg;  ///<Kernel-gradient correction matrix.
@@ -305,6 +311,8 @@ protected:
   void ComputeVerlet(double dt);
   void ComputeSymplecticPre(double dt);
   void ComputeSymplecticCorr(double dt);
+  void InitPorosityObserverGpu();
+  void ComputeSymplecticPorosity(bool corrector,double dt);
   double DtVariable(bool final);
 
   void RunShifting(double dt);

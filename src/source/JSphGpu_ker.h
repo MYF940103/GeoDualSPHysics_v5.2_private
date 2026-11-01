@@ -165,6 +165,7 @@ typedef struct StrInterParmsg{
   float3 *hydromechloadace;
   float *hydromechtoploadraw;
   const float3 *boundderivativevel;
+  double *porotheta;
 
   //-Output data arrays.
   float *viscdt;
@@ -210,7 +211,7 @@ typedef struct StrInterParmsg{
     ,float *hydromechtoploadraw_
     ,float4 *shiftposfs_
     ,cudaStream_t stm_
-    ,StKerInfo *kerinfo_,const float3 *boundderivativevel_=NULL)
+    ,StKerInfo *kerinfo_,const float3 *boundderivativevel_=NULL,double *porotheta_=NULL)
   {
     //-Configuration options.
     simulate2d=simulate2d_;
@@ -254,6 +255,7 @@ typedef struct StrInterParmsg{
     stm=stm_;
     kerinfo=kerinfo_;
     boundderivativevel=boundderivativevel_;
+    porotheta=porotheta_;
   }
 
 }StInterParmsg;
@@ -293,6 +295,10 @@ void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigne
   ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress);
 void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
 void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
+//-Non-feedback observer; dt is the already-halved predictor or full corrector step.
+//-Caller initializes invalid=np and checks it before advancing any later state.
+void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,double solid0
+  ,const typecode *code,const float *kplastic,const double *jn,const double *theta,double *j,unsigned *invalid);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell
@@ -396,7 +402,8 @@ void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 p
 void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
-  ,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre);
+  ,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre
+  ,double *poroj=NULL,double *porotheta=NULL,double *porojpre=NULL);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel,byte *boundslipmode);
 
 //-Kernels for Damping.

@@ -67,6 +67,7 @@ JSphGpu::JSphGpu(bool withmpi):JSph(false,false,withmpi),DivAxis(MGDIV_None){
   Idp=NULL; Code=NULL; Dcell=NULL; Posxy=NULL; Posz=NULL; Velrhop=NULL;
   Sigma=NULL; AuxSigma_xx_yy_zz=NULL;AuxSigma_xy_yz_xz=NULL;Kplastic=NULL;AuxKplastic=NULL;KplasticDk=NULL;AuxKplasticDk=NULL;//ruofeng
   PorePress=NULL; PorePress0=NULL; AuxPorePress=NULL; AuxPorePress0=NULL; AuxHydroMechLoadAce=NULL;
+  PoroJ=NULL; PoroTheta=NULL;
   AuxPos=NULL; AuxVel=NULL; AuxRhop=NULL; AuxFSType=NULL; AuxFSNormal=NULL; AuxPosDiv=NULL;
   CellDiv=NULL;
   FtoAuxDouble6=NULL; FtoAuxFloat15=NULL; //-Calculates forces on floating bodies.
@@ -154,6 +155,8 @@ void JSphGpu::InitVars(){
   Idpg=NULL; Codeg=NULL; Dcellg=NULL; Posxyg=NULL; Poszg=NULL; PosCellg=NULL; Velrhopg=NULL;
   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
   PorePressg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
+  PorosityObserver=false;
+  PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
   BoundDerivativeVelg=NULL;
@@ -292,6 +295,8 @@ void JSphGpu::FreeCpuMemoryParticles(){
   delete[] PorePress0; PorePress0 = NULL;
   delete[] AuxPorePress;  AuxPorePress = NULL;
   delete[] AuxPorePress0; AuxPorePress0 = NULL;
+  delete[] PoroJ; PoroJ=NULL;
+  delete[] PoroTheta; PoroTheta=NULL;
   delete[] AuxHydroMechLoadAce; AuxHydroMechLoadAce=NULL;
   //
   delete[] AuxPos;     AuxPos=NULL;
@@ -334,6 +339,10 @@ void JSphGpu::AllocCpuMemoryParticles(unsigned np){
         AuxPorePress0=new float[np]; MemCpuParticles+=sizeof(float)*np;
         AuxHydroMechLoadAce=new tfloat3[np]; MemCpuParticles+=sizeof(tfloat3)*np;
       }
+      if(PorosityObserver){
+        PoroJ=new double[np]; MemCpuParticles+=sizeof(double)*np;
+        PoroTheta=new double[np]; MemCpuParticles+=sizeof(double)*np;
+      }
       //==========
       AuxPos=new tdouble3[np];   MemCpuParticles+=sizeof(tdouble3)*np; 
       AuxVel=new tfloat3[np];    MemCpuParticles+=sizeof(tfloat3)*np;
@@ -363,6 +372,7 @@ void JSphGpu::FreeGpuMemoryParticles(){
   GpuParticlesSize=0;
   MemGpuParticles=0;
   ArraysGpu->Reset();
+  PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
 }
 
 //==============================================================================
@@ -389,6 +399,10 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
   if(SoilBoundaryDerivativeSPR)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_12B,1);
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,5); //-velrhop,posxy,poscell
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,2);  //-posz
+  if(PorosityObserver){
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_8B,4); //-J, theta, Jpre, sequential sort scratch.
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1); //-Observer validity flag.
+  }
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_72B,1); //-CorrMatg
   //====== mdbr
   ArraysGpu->AddArrayCount(JArraysGpu::SIZE_48B, 2);//-sigma and its sort buffer
@@ -477,6 +491,9 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   float* porepressrate = SaveArrayGpu(Np, PorePressRateg);
   float* porepressm1 = SaveArrayGpu(Np, PorePressM1g);
   float* porepresspre = SaveArrayGpu(Np, PorePressPreg);
+  double* poroj=SaveArrayGpu(Np,PoroJg);
+  double* porotheta=SaveArrayGpu(Np,PoroThetag);
+  double* porojpre=SaveArrayGpu(Np,PoroJPreg);
   tsymatrix3d* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3d* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
   // 
@@ -512,6 +529,9 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(PorePressRateg);
   ArraysGpu->Free(PorePressM1g);
   ArraysGpu->Free(PorePressPreg);
+  ArraysGpu->Free(PoroJg);
+  ArraysGpu->Free(PoroThetag);
+  ArraysGpu->Free(PoroJPreg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
   // 
@@ -551,6 +571,9 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(porepressrate) PorePressRateg = ArraysGpu->ReserveFloat();
   if(porepressm1) PorePressM1g = ArraysGpu->ReserveFloat();
   if(porepresspre) PorePressPreg = ArraysGpu->ReserveFloat();
+  if(poroj)PoroJg=ArraysGpu->ReserveDouble();
+  if(porotheta)PoroThetag=ArraysGpu->ReserveDouble();
+  if(porojpre)PoroJPreg=ArraysGpu->ReserveDouble();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3d();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3d();
   // 
@@ -586,6 +609,9 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,porepressrate,PorePressRateg);
   RestoreArrayGpu(Np,porepressm1,PorePressM1g);
   RestoreArrayGpu(Np,porepresspre,PorePressPreg);
+  RestoreArrayGpu(Np,poroj,PoroJg);
+  RestoreArrayGpu(Np,porotheta,PoroThetag);
+  RestoreArrayGpu(Np,porojpre,PoroJPreg);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
@@ -636,6 +662,10 @@ void JSphGpu::ReserveBasicArraysGpu(){
   FSTypeg=ArraysGpu->ReserveUint();
   FSNormalg=ArraysGpu->ReserveFloat3();
   PosDivg=ArraysGpu->ReserveFloat();
+  if(PorosityObserver){
+    PoroJg=ArraysGpu->ReserveDouble();
+    PoroThetag=ArraysGpu->ReserveDouble();
+  }
   //mdbr
   Sigmag = ArraysGpu->ReserveSymatrix3d();
   Kplasticg = ArraysGpu->ReserveFloat();
@@ -826,6 +856,8 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
   if(AuxFSType && FSTypeg)cudaMemcpy(AuxFSType,FSTypeg+pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
   if(AuxFSNormal && FSNormalg)cudaMemcpy(AuxFSNormal,FSNormalg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
   if(AuxPosDiv && PosDivg)cudaMemcpy(AuxPosDiv,PosDivg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
+  if(PoroJ && PoroJg)cudaMemcpy(PoroJ,PoroJg+pini,sizeof(double)*n,cudaMemcpyDeviceToHost);
+  if(PoroTheta && PoroThetag)cudaMemcpy(PoroTheta,PoroThetag+pini,sizeof(double)*n,cudaMemcpyDeviceToHost);
   if(AuxHydroMechLoadAce && HydroMechLoadAceg)cudaMemcpy(AuxHydroMechLoadAce,HydroMechLoadAceg+pini,sizeof(tfloat3)*n,cudaMemcpyDeviceToHost);
   if(HydroMech && PorePressg && PorePress0g){
     cudaMemcpy(PorePress,PorePressg+pini,sizeof(float)*n,cudaMemcpyDeviceToHost);
@@ -852,6 +884,8 @@ unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool only
         if(AuxFSType)AuxFSType[p-ndel]=AuxFSType[p];
         if(AuxFSNormal)AuxFSNormal[p-ndel]=AuxFSNormal[p];
         if(AuxPosDiv)AuxPosDiv[p-ndel]=AuxPosDiv[p];
+        if(PoroJ)PoroJ[p-ndel]=PoroJ[p];
+        if(PoroTheta)PoroTheta[p-ndel]=PoroTheta[p];
         if(AuxHydroMechLoadAce)AuxHydroMechLoadAce[p-ndel]=AuxHydroMechLoadAce[p];
         if(HydroMech && PorePress && PorePress0){
           PorePress[p-ndel]=PorePress[p];
@@ -1364,6 +1398,7 @@ void JSphGpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   //====mdbr
   cudaMemset(Rsigmag,0,sizeof(tsymatrix3f)*np);
   if(HydroMech && PorePressRateg)cudaMemset(PorePressRateg,0,sizeof(float)*np);
+  if(PoroThetag)cudaMemset(PoroThetag,0,sizeof(double)*np);
   //======
   //-Select particles for shifting.
   if(ShiftPosfsg)Shifting->InitGpu(npf,npb,Posxyg,Poszg,ShiftPosfsg);
@@ -1499,6 +1534,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg);
+  ComputeSymplecticPorosity(false,dt05);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Allocate memory to compute the diplacement.
   double2 *movxyg=ArraysGpu->ReserveDouble2();
@@ -1542,6 +1578,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
+  ComputeSymplecticPorosity(true,dt);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
@@ -1559,6 +1596,47 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   ArraysGpu->Free(PorePressPreg); PorePressPreg=NULL;
   //====
   Timersg->TmStop(TMG_SuComputeStep,false);
+}
+
+//==============================================================================
+/// Initialises a private non-feedback observer on bounded periodic GPU fixtures.
+//==============================================================================
+void JSphGpu::InitPorosityObserverGpu(){
+  if(!PorosityObserver)return;
+  if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || CaseNpb
+    || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
+    || Damping || RelaxZones || AccInput || SoilDamping || SoilHourglassXi!=0
+    || Gravity.x || Gravity.y || Gravity.z || HydroMechDrainage
+    || HydroMechInitMode!=HMINIT_None || HydroMechTopLoadMode!=HMLOAD_None
+    || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
+    Run_Exceptioon("GPU porosity observer requires fresh no-wall 2-D elastic Symplectic corrected-pair fixtures without gravity, load, drainage, shifting or damping.");
+  if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
+    Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
+  for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
+  cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
+  cudaMemset(PoroThetag,0,sizeof(double)*Np);
+  Check_CudaErroor("Failed initialising GPU porosity observer.");
+}
+
+//==============================================================================
+/// Advances J without changing any physical field or time-step decision.
+//==============================================================================
+void JSphGpu::ComputeSymplecticPorosity(bool corrector,double dt){
+  if(!PorosityObserver)return;
+  if(!corrector){
+    PoroJPreg=ArraysGpu->ReserveDouble();
+    swap(PoroJPreg,PoroJg);
+  }
+  unsigned invalid=Np;
+  unsigned *invalidg=ArraysGpu->ReserveUint();
+  cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+  cusph::UpdatePorosityObserver(Np,Npb,corrector,dt,1.-double(SoilCte.Porosity)
+    ,Codeg,Kplasticg,PoroJPreg,PoroThetag,PoroJg,invalidg);
+  cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+  ArraysGpu->Free(invalidg);
+  Check_CudaErroor("Failed advancing GPU porosity observer.");
+  if(invalid<Np)Run_Exceptioon("GPU porosity observer requires finite saturated elastic states.");
+  if(corrector){ArraysGpu->Free(PoroJPreg);PoroJPreg=NULL;}
 }
 
 //==============================================================================

@@ -1,0 +1,59 @@
+{
+  "status": "bounded_root_executed_evidence_ready_for_aggregate_review_not_physical_release",
+  "base": "18235c6d054958c60c1226872216ceb315f1966c",
+  "scope": "GPU 私有、默认关闭的非反馈 J/孔隙率观察器。只接入状态生命周期、实际力阶段 theta、独立 J 更新和诊断输出；未把 J/n 接入体积权重、惯性、孔压方程或限步。公开 GPU 动态渗流开关仍明确拒绝。",
+  "five_source_purposes": {
+    "src/source/JSphGpu.h": "私有默认关闭的观察器标志，double J/theta/JPre 设备状态及对应主机诊断指针，局部初始化和更新接口。",
+    "src/source/JSphGpu.cpp": "分配、释放、扩容保留与下载；每力阶段清 theta；有界私有初始化检查；与现有 Pre/Corr 同阶段推进 J，不改旧物理场或步长决策。",
+    "src/source/JSphGpuSingle.cpp": "真实分格排序与周期复制接线；初始 J1/theta0；用同一 native-ID 压缩顺序保存三项实际 Double 诊断。",
+    "src/source/JSphGpu_ker.h": "声明可空 theta 观察指针、J 更新接口及周期复制诊断状态参数。无新公开 XML 参数。",
+    "src/source/JSphGpu_ker.cu": "复用实际修正速度导数配对遍历积累 double theta；压力率关闭不抑制观察 theta；局部 CUDA J 更新和周期 J/theta/活跃 JPre 复制。保留全部原力、应力和孔压表达式与执行顺序。"
+  },
+  "pre_corrector_choices": {
+    "J": "Jdot=J*theta；Jhalf=Jn+(dt/2)*Jn*theta_n；Jnew=Jn+dt*Jhalf*theta_half。保存 Jn 的独立 JPre 在 corrector 后释放。这是显式中点观察量更新，不是使用旧密度方程的有理更新。",
+    "n": "n=1-(1-n0)/J，由同一个 double J 派生；不额外积分 n，条件不压缩固相恒等式不是精确流体质量守恒证明。",
+    "legacy_density": "旧 Rhop 不由 J 反推，仍保持各后端原路径。当前 CPU corrector JSphCpu.cpp:4708-4722 使用 epsilon=-Arc/rho_half*dt 和 rho_new=rho_n*(2-epsilon)/(2+epsilon)；当前 GPU JSphGpuSimple_ker.cu:847-855 的该有理式是注释，实际执行 float(double(rho_n)+dt*ar_half)。本阶段没有改任一旧密度公式，不能把 CPU 的有理形式描述为当前 GPU 活跃形式。",
+    "why_not_unify_now": "先用原15项物理场逐位一致确认接线不反馈，再单独设计完整 GPU 动态分支的质量/体积/惯性与压力闭合。不能为统一表面形式同时改动旧基线。",
+    "baseline": "主程序默认 u-pw、双精度应力写回、旧力/孔压/密度积分和旧输出物理字段保持；无反馈观察器不是新的物理模型验收。"
+  },
+  "observed_native_runs": {
+    "hardware": "NVIDIA GeForce RTX 3050，本地主机；不是历史 A6000，未作 CPU/GPU 性能比较。",
+    "geometry": "512 soil/0 fixed，32x16、2D XZ 周期，g0、弹性、原小振幅正弦速度；k1e-4/n0=.25、grad1、Shepard0、SPR0、HG0。",
+    "windows": "Debug2steps/3frames 和 Release8steps/9frames、16steps/17frames；dt=TimeOut=2^-24s。9帧 XML/BI4 与保留 OFF_default 输入逐字节相同，另两 XML 仅改变 TimeMax，BI4 不变，无 GenCase。",
+    "count_scope": "重叠窗口共29个保存帧实例，覆盖17个不同时钟时刻；每实例旧 GPU main OFF/新 main OFF、以及新 OFF/private observer ON 两次原15项比较，共58帧对、29696个 native-ID 节点对。不是29个独立物理时刻。",
+    "checks": "全部原15项实际类型数组、native IDs、实际时间、零基 saved Step、存在且有限的 signed dterror<=1e-14 均逐位一致；每帧三项实际 Double 观察数组有效且 n 同式派生；最后保存 CSV 与实际 GPU 最终下载逐字节一致。",
+    "max_abs_J_minus_1_by_window": [1.1446567693695897e-8, 4.5785237601236872e-8, 9.1563855386667115e-8],
+    "max_abs_theta_s_inv": 0.09602087806896555,
+    "physical_accuracy_claimed": false
+  },
+  "observed_state_component_each_configuration": "真实 LoadConfig/ConfigDomain/InitRunGpu、分格重排、周期双轴同ID图像、活跃 JPre 扩容和生产 J kernel。5760状态槽逐位检查、384双轴图像见证、1920递推检查，实测最大 corrector 误差0；容量1606→1735。三种坏 J 和 native 塑性拒绝，周期塑性 poison 忽略；七尾槽保护。无力计算、Nstep/物理时间0。周期场实际 full divide，不冒称非零 preserved-prefix 分格。",
+  "observed_theta_component_each_configuration": "实际 cusph::Interaction_Forces，2D九粒子、中心完整支撑、独立实际 Wendland 矩给定各向同性 C。5种速度×closed/drained=10case、30kernel calls、270节点输出；180原力场 OFF/ON 对逐位一致、90 NULL-pointer sentinel、90独立清零重复阶段。8个非零迹、4个 drained θ非零/孔压率0、4个非空剪切对照；不验收通用 C 反演或实际排水 Run。",
+  "independent_peer_observation_relayed_by_root": {
+    "provenance": "主代理转达的独立只读实际工具审计；无另造机器收据或独立报告文件，不能将本段称为额外自动验收门。",
+    "bindings": "1132个唯一当前绑定，0不一致；14848行保存 J/n/theta 的 n(J)同式准确、域内有限、固相恒等残差0。Short→Extended共享9帧观察 CSV 逐字节相同。",
+    "cross_configuration": "State 选定文件 Debug/Release 逐字节一致。Theta 完整 node_outputs.csv 并非跨配置逐字节一致：仅外层节点 rsigma_yy 最大绝对差1.2854222575e-8，所有 theta、其他字段和中心值一致。未预声明完整跨配置逐字节门槛，故不得虚报该门槛通过，也不据此拒绝原已声明的每配置 OFF/ON、中心制造值与清零门槛。"
+  },
+  "execution_evidence": {
+    "authoritative_GPU": "Debug/Release 均由权威 VS solution 全 Rebuild 到独立 OutDir/no-space IntDir；五新源码快照一致，其他源码不变。旧基线是真实已封存 sort full-project GPU 程序及运行库，不把旧 canonical 当当前源码构建真值。",
+    "memcheck": "Debug 原生 observer、State 和 Theta 各自 actual compute-sanitizer 均零错误/零字节泄漏；Release 各自通过前置 Debug 守门。",
+    "CPU_default_Debug": "主代理于2026-11-02实际直接执行默认 CPU Debug Build 并观察 exit0；日志 upl_gpu_observer_CPU_Debug_default_r1.build.log。该次无会话ID，不能误引旧阶段6934，也不由日志文本推断退出码。",
+    "program_or_solver_execution_by_publisher_author": false
+  },
+  "held": [
+    "GPU 完整动态孔压率、J/n反馈体积/惯性、k(J)、同阶段 C/Ace 周期一致性、必要限步和完整模型回归仍待下一阶段。",
+    "公开 GPU 动态模式、墙/非零重力/荷载/实际排水/混合滑移、3D/塑性/大变形、精确 PART restart、长程或物理精度/性能验收均未获得。",
+    "CPU 公开短窗阶段 strict完整257x26 raw等价仍为false，初始 PosDiv/有符号零差异记录必须保留；不能由本阶段改写或掩盖。"
+  ],
+  "backup_policy": "选择性 Git 仅保存五源码、作者 recipes/notes、十五源码文本快照、三个 runtime XML、关键收据、native/组件小型 JSON/CSV/Run.out/Run.csv。原始 BI4、程序、对象、DLL/config runtime、binlog、重复作者快照及逐帧空 stdout/call 收据保持本地哈希绑定，不声称云端已备份原始数据。",
+  "proposed_status_update_for_root_only": {
+    "add_section": "private_GPU_nonfeedback_observer，引用 logs/upl_gpu_observer_stage_r1.check.json，保留所有旧 CPU/raw-initial-mismatch 内容。",
+    "next_order": [
+      "选择性核验保存此有界 GPU 观察器阶段及证据到本地/远端 Git；原始结果和程序继续本地哈希保留。",
+      "下一步私有 GPU 完整动态率与 J/n/体积/惯性同阶段接线，先 k0，再常 k 周期短窗及独立半步/CPU匹配，必要限步一起验证；不得移除公开 GPU 拒绝或仅开放半套物理。",
+      "其后平滑 k(J)，最后对向静态 FreeSlip 墙；非零重力/荷载/实际排水和混合滑移各自重新准入。"
+    ],
+    "status_file_edited_by_this_author": false
+  },
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false
+}
