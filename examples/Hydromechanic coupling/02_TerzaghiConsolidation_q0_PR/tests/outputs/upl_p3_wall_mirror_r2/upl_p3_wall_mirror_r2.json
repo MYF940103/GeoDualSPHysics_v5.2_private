@@ -1,0 +1,35 @@
+{
+  "stage": "Predeclared frozen planar mirror operator companion, namespace-only build repair",
+  "working_git_base": "1145245b084181d75b566aaa1c3b7c4726844c90; production source unchanged since7fdaa139",
+  "scope": "Actual inline Wendland/math headers and a transcription of current C/VJ/Lstar/divAce expressions, NOT a call to production ComputeDynamicPorePressureRateCpu, a JSph object, GenCase or a project/physical solver. No source edit or removal of CaseNpb/SPR guards.",
+  "cases": "48=2D/3D x axis/one fixed rotated plane x regular/fixed-seed disorder x J1/uniform1.005/local symmetric1+0.004*sin(2pi*s/(6dp))*cos(pi*u/(4.5dp))*cos(pi*v/(4.5dp)) x hydrostatic/nonzero-tangential-flux. The final cosine is omitted in2D. Mirror J equals native owner J. Three native normal-depth probes per case and their mirror partners give144 pairs/288 operator evaluations.",
+  "geometry": "Wall through origin. dp=2^-6; six cell-centred normal layers and nine tangential nodes per active tangential direction. Disorder independently offsets each local coordinate by at most0.05dp using fixed unsigned LCG seed; mirror positions are exact reflection Qx,not independently disordered. All native moments use the complete native+mirror cloud; all mirror C use Q*Cowner*Q^T. Probe tangential indices are zero,normal indices0,1,2. No claim for corners/moving images or a physical boundary particle.",
+  "constants": "h=double(float(1.8dp)),KernelSize=float(2*h),KernelSize2=KernelSize*KernelSize,Eta2=float((h*.1)*(h*.1)); actual GetKernelWendland_Ctes and GetKernelWendland_Fac(float rr2). C moments use ComputeFS float-rr2 support cutoff; rate/gradient use the current dynamic helper double-rr2 cutoff. V0=dp^dimension,Vj=V0*Jj; n=1-(1-.25)/J,Kw67108864,rhow1000,rho02048,k=double(float(.0001)). Gravity is(-4,0,-8) in2D and(-4,2,-8) in3D,so its normal component is nonzero in every declared orientation.",
+  "affine_reference": "Hydrostatic:a0=0,beta=0. Nonzero-flux:a0=.25*t,beta=1024Pa/m with t unit tangent. G=rhow*(g-a0)+beta*t,p_true(x)=4096+G.x,Ace_true=a0-g,q_true=-k/gamma*beta*t,theta=0,gamma=rhow*|g|. Both have a0.n=0 and q.n=0; no incompatible constant normal acceleration is accepted as a static-wall trajectory.",
+  "stored_fields": "Native p=float(p_true); native Ace=componentwise float(a0-g). Mirror p=float(double(p_owner)+rhow*g.(xghost-xowner)),equivalent hydrostatic p0 plus even excess. Mirror physical a_s is reconstructed from stored native Ace+g,reflected Q*a_s,then Aceghost=float(Q*(Aceowner+g)-g). Scalars J/theta and V share the same mirror owner. The pressure condition is not implemented by simply copying total p when g.n!=0.",
+  "flux_definitions": "Compute corrected Gp independently at every native and mirror probe using its actual C and all V0J neighbors. Native/ghost q=-k/gamma*(Gp+rhow*Ace) are reported separately. Frozen face q is explicitly arithmetic mean(q_native,q_mirror) at the pair midpoint,not a production wall flux discretization or integral conservation proof. Affine exact data make this face average equal the analytic flux.",
+  "prior_rounding_bounds": {
+    "definitions": "epsF=FLT_EPSILON,epsD=DBL_EPSILON,Pmax=max(1,max absolute true pressure over all native+mirror points),E=2*epsF*Pmax,EA=4*epsF*max(1,|g|,|a0-g|). At each probe Sg=sum Vj*|Ci*gradW|,Wsum=sum|w|,lx=sum w*d,cond=max(1,|Ci|inf*|Mi|inf),Gscale=sum Vj*abs(dp_true)*|Ci*gradW|,LPscale=sum abs(w*dp_true),DAscale=sum Vj*|Ci*gradW|*(|Ai|+|Aj|). w=Vj*d.(gi+gj)/(rr2+Eta2),as production.",
+    "matrix": "Native |C*M-I|max<=32768epsD*cond; mapped-mirror defect and C-versus-direct-inverse comparison <=(64epsF+32768epsD)*cond or corresponding matrix scale,covering float rr2/kernel rotation roundoff. No inverse fallback or singular matrix is silently accepted.",
+    "gradient": "BG=2*E*Sg+(64epsF+32768epsD)*cond*|G|+4096epsD*max(1,Gscale). Independent analytic double-pressure gradient error must satisfy the same bound without2*E*Sg.",
+    "div_acceleration": "BDA=2*EA*Sg+4096epsD*max(1,DAscale).",
+    "Lstar": "BL=2*E*Wsum+BG*|lx|+4096epsD*max(1,LPscale+|G|*|lx|). Independent double-pressure Lstar uses the same formula with E=0 and the double-gradient bound.",
+    "flux_and_rate": "Bq=k/gamma*(BG+rhow*EA); face bound=(Bq_native+Bq_mirror)/2. Brate=(Kw/n)*k/gamma*(BL+rhow*BDA),then add2epsF*max(1,Brate) for the single final float rate store. Require all gradient,Lstar,divAce,q errors and absolute complete float rate<=their bounds,finite fields and positive saturated ledger. This is a priori propagation through geometry/absolute weights,not an observed-error-fitted tolerance.",
+    "nonvacuous_tangential_flux": "For beta1024 case,each q/face bound must be<.01*|q_true| and measured tangential flux magnitude>.5*|q_true|; also require vector flux error<=bound. No new5Pa half-step claim exists."
+  },
+  "negative_diagnostics": "Keep pressure/C/V unchanged. CaseA replaces only mirror Ace by0;CaseB uses incorrect mirror Ace=Q*Aceowner without gravity restoration. Native q uses its own Ace and therefore remains unchanged; output incorrect mirror q and face q separately. Each wrong face normal flux must exceed the original correct face rounding bound,demonstrating discrimination. Report native complete-rate change from wrong mirror acceleration but do not require it to be significant or treat rate0 as proof of no-flow.",
+  "matrix_negative_diagnostic": "Within the same48 cases,report norm(Q*Cowner*Q^T-Cowner) and independent double-affine ghost gradient with the deliberately unreflected Cowner. At least one predeclared disordered/nonuniform case must exceed the original double-gradient geometry bound; do not require a scalar/symmetry-invariant regular C to discriminate reflection. No new case or fitted tolerance.",
+  "outputs": "Shallow outputs/upl_p3_wall_mirror_r2:cases.csv,probes.csv,complete.json,header dependencies and authored snapshots; logs/upl_p3_wall_mirror_r2.check.json plus build/program log. Raw physical trajectories do not exist.",
+  "not_accepted": [
+    "actual mDBC or boundary particles",
+    "NoSlip/shear closure",
+    "dynamic image integration",
+    "pressure boundary force balance",
+    "hydrostatic mechanical well-balancing",
+    "closed-system conservation",
+    "physical theory convergence",
+    "public XML/GPU"
+  ],
+  "physical_acceptance": false,
+  "prior_compile_failure": "r1 compiler exit2: unqualified StKWendlandCte; no program invocation. All r1 source/snapshots/receipt/logs remain unchanged. r2 only qualifies fsph::StKWendlandCte; numerical expressions, constants, case set and bounds unchanged."
+}

@@ -67,10 +67,20 @@
     "independent_review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p3_spatial_actual_review_r1.json:1613 frozen bindings across780 files and1381632 saved native records reviewed without mismatch; complete XYZ/expm metrics differ from root CSV by at most1.921e-14.",
     "physical_acceptance": false
   },
+  "frozen_planar_mirror_screen": {
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_wall_mirror_r2.check.json",
+    "scope": "Standalone transcription with actual Wendland/math headers;48 frozen2D/3D axis/rotated regular/disordered J-volume cases and144 native/mirror probe pairs. Not a call to the production dynamic helper or a JSph/GenCase solver.",
+    "conditions": "Static plane and tangential physical acceleration only. Pressure uses hydrostatic affine offset plus even excess; acceleration is mirrored as Q*(Ace+Gravity)-Gravity; Cghost=Q*Cowner*Q^T and Vghost=V0*Jowner. Nonzero-gravity gamma matches the production rhow*|g| convention.",
+    "direct_flux": "Native,ghost and explicitly arithmetic face-average q are recorded separately. Maximum correct |qface.normal|=2.66805647416497e-11m/s; incorrect zero-ghost-Ace and direct-QAce controls have minimum face normal errors2.18217822110719e-5 and4.36435706834064e-5m/s. Nonzero tangential flux is retained.",
+    "matrix_nonvacuity": "Copying unreflected C is detected at72 probes; maximum independent affine-gradient error divided by its original geometric bound is2234.72. Scalar/symmetric cases are not required to discriminate this negative control.",
+    "rounding_and_limits": "Maximum complete pressure-rate residual6.15128898620605Pa/s satisfies the predeclared float-pressure/acceleration propagation bound, not exact zero. This does not establish hydrostatic mechanical well-balancing or long-time equilibrium. No actual wall/mDBC,NoSlip,standing-wave,conservation,GPU or public-switch acceptance.",
+    "retained_failure": "r1 stopped at compile exit2 because the test kernel constant type lacked fsph:: qualification; no numerical program ran. r2 changes only that type qualification and fresh recipe labels; all numerical bounds/cases unchanged.",
+    "physical_acceptance": false
+  },
   "next_order": [
     "Preserve the completed independent spatial review, selective local/remote checkpoint, failed setup attempts and exact input provenance; proceed to bounded wall work.",
     "Keep finite-h truncation separate from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer general continuum accuracy from tiny half-step errors.",
-    "First frozen planar mirror-operator checks must observe qnormal directly with consistent current-volume C and physical-acceleration reflection; these are companion tests, not actual wall/mDBC acceptance.",
+    "Seal independent frozen planar mirror review, then implement the minimal private actual-wall owner/support/state closure and direct flux diagnostics. Keep CaseNpb rejected until the complete path is tested; existing mDBC or SPR alone does not prove dynamic wall compatibility.",
     "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
     "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
   ],

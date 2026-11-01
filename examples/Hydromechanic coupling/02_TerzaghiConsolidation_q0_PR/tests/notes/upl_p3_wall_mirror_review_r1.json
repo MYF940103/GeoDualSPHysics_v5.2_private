@@ -1,0 +1,50 @@
+{
+  "passed": true,
+  "scope": "Read-only CSV, analytic flux/rounding-input reconstruction and frozen C++ formula review; no independent all-node C/Lstar reassembly.",
+  "input": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_wall_mirror_r2.check.json",
+    "bytes": 57208,
+    "sha256": "50328b4719cd05fc25e7b8f25bfce8219e831b9ab56edd8b2662ef348e24a950"
+  },
+  "review_script": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_wall_mirror_review_r1.py",
+    "bytes": 11775,
+    "sha256": "1d410c48bfae8535203c7c5adb4a69be0905228dbc434f92bd103190c22ab18d"
+  },
+  "hash_binding_records": 186,
+  "unique_bound_files": 179,
+  "hash_mismatches": 0,
+  "cases": 48,
+  "probe_pairs": 144,
+  "native_and_mirror_evaluations": 288,
+  "all_case_keys_and_seeded_probe_geometry_verified": true,
+  "all_E_EA_prior_inputs_independently_recomputed": true,
+  "all_qn_and_face_vectors_independently_recomputed": true,
+  "all_correct_rates_inside_original_exported_bounds": true,
+  "max_correct_face_normal_flux_m_s": 2.6680564741649667e-11,
+  "max_correct_face_qn_over_bound": 0.009179550392421685,
+  "maximum_flux_error_m_s": 5.716351340806486e-11,
+  "maximum_flux_bound_m_s": 3.6884054335436643e-09,
+  "maximum_tangential_case_face_bound_over_qtrue": 0.0003265404968249371,
+  "minimum_wrong_acceleration_face_qn_over_correct_bound": 5981.263240749919,
+  "maximum_correct_abs_rate_Pa_s": 6.151288986206055,
+  "maximum_correct_rate_over_bound": 0.09782849237113425,
+  "wrong_C_detected_probes": 72,
+  "max_wrong_C_error_over_original_bound": 2234.719761267859,
+  "maximum_C_reflection_change": 0.017496051420271563,
+  "wrong_zero_mirror_native_rate_max_abs_change_Pa_s": 628037.1998678595,
+  "wrong_gravity_reflection_native_rate_max_abs_change_Pa_s": 1256074.3248678595,
+  "prior_r1_compile_only_namespace_failure_preserved": true,
+  "arithmetic_source_review": "The weight w=Vj*d.(Ci*g+Cj*g)/(r2+Eta2),Lp-Gp.Lx+rho div(Ace),Kw/n and final float write agree with frozen production expressions. Gamma at JSphCpu.cpp:4193-4194 is rho*(|g|>0? |g|:9.80665); declared nonzero-g fixture uses the same branch. Previous g0 periodic reference fallback is not the nonzero-g formula.",
+  "bounds_scope": "Source and pre-run note were reviewed: E/EA and absolute-weight propagation are prior geometry/input bounds,not observed-error fits. CSV checks verify per-probe face/rate bounds and case aggregate gradient/Lstar/divAce bounds. Per-node Sg/Wsum/C moments are not exported,so their reconstruction/assertions remain frozen-C++ source evidence,not a second independent operator execution.",
+  "not_production_helper_call": true,
+  "not_actual_mdbc_or_wall_integration": true,
+  "no_project_solver_or_GenCase": true,
+  "physical_acceptance": false,
+  "limitations": [
+    "Static single plane only; face flux is the declared arithmetic native/mirror average,not an implemented production face flux.",
+    "Correct complete rate has a nonzero float-rounding residual; passing its prior bound is not exact equilibrium or strict zero rate.",
+    "No NoSlip/shear,moving-wall,corner,mechanical-force-balance,conservation,trajectory,physical-theory or public/GPU acceptance.",
+    "Correct bounded rate does not by itself prove no-flow: vector Darcy flux and nonzero tangential flux plus both acceleration negative controls are separately tested."
+  ]
+}
