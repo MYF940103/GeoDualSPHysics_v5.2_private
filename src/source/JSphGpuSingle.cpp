@@ -728,7 +728,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,HydroMechLoadAceg
     ,HydroMechTopLoadRawg
     ,ShiftPosfsg
-    ,NULL,NULL,BoundDerivativeVelg,PoroThetag);
+    ,NULL,NULL,BoundDerivativeVelg,PoroThetag,PorosityFeedback? PoroJg: NULL);
   cusph::Interaction_Forces(parms);
   if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg);
   NormalizeHydroMechTopBandLoad();

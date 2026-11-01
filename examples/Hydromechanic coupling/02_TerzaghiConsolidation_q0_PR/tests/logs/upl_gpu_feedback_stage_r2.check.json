@@ -1,0 +1,425 @@
+{
+    "passed":  true,
+    "base":  "c91ee27f2d89639db202333e6fc2331f57daa640",
+    "builds":  [
+                   {
+                       "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Debug_r2.build.json",
+                       "bytes":  126586,
+                       "sha256":  "d636f6053c4437c67084ecc357c7896db920528cea07b649fbbb9289cd6bc130"
+                   },
+                   {
+                       "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Release_r2.build.json",
+                       "bytes":  126819,
+                       "sha256":  "bc88277f6fb5b28be25cbc9c572b941c9b17e2dacfe7a36eb9f095e753b52d2a"
+                   }
+               ],
+    "native":  [
+                   {
+                       "metrics":  {
+                                       "passed":  true,
+                                       "observer":  true,
+                                       "actual_time_s":  1.1920928955078125E-07,
+                                       "completed_steps":  2,
+                                       "native_count":  512,
+                                       "fixed_count":  0,
+                                       "n0":  0.25,
+                                       "actual_production_Run":  true,
+                                       "live_GPU_download":  true,
+                                       "predictor_history_released":  true,
+                                       "public_dynamic_seepage":  false,
+                                       "physical_fields_rewritten_by_fixture":  false,
+                                       "feedback":  false,
+                                       "physical_acceptance":  false
+                                   },
+                       "samples":  3,
+                       "native":  512,
+                       "review":  {
+                                      "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Smoke_r2.review.check.json",
+                                      "bytes":  14382,
+                                      "sha256":  "fd1932c6b5d57432580a14b30c0f3a969f15cda7a21906810995ec9c1be3e490"
+                                  }
+                   },
+                   {
+                       "metrics":  {
+                                       "passed":  true,
+                                       "observer":  true,
+                                       "actual_time_s":  9.5367431640625E-07,
+                                       "completed_steps":  16,
+                                       "native_count":  512,
+                                       "fixed_count":  0,
+                                       "n0":  0.25,
+                                       "actual_production_Run":  true,
+                                       "live_GPU_download":  true,
+                                       "predictor_history_released":  true,
+                                       "public_dynamic_seepage":  false,
+                                       "physical_fields_rewritten_by_fixture":  false,
+                                       "feedback":  false,
+                                       "physical_acceptance":  false
+                                   },
+                       "samples":  17,
+                       "native":  512,
+                       "review":  {
+                                      "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Extended_r2.review.check.json",
+                                      "bytes":  54312,
+                                      "sha256":  "4f1ab95f0d60c0ee5e8a3076c6568edf229e57e2ada716394b9d928ce0ba439f"
+                                  }
+                   }
+               ],
+    "components":  [
+                       {
+                           "configuration":  "Debug",
+                           "integrated_component":  false,
+                           "fixture":  "State",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "state_slot_bit_checks":  5760,
+                                           "real_cell_reorder":  true,
+                                           "actual_nonzero_prefix_cell_division":  false,
+                                           "periodic_forces_full_division":  true,
+                                           "component_extra_RunCellDivide_calls":  3,
+                                           "periodic_JPre_with_PosPre_NULL":  true,
+                                           "clone_of_clone_checks":  384,
+                                           "clone_of_clone_scope":  "Same-ID double-axis image witnesses plus frozen RunPeriodic ordering, not an inserted kernel counter",
+                                           "live_JPre_resize_preserved":  true,
+                                           "old_GPU_capacity":  1606,
+                                           "new_GPU_capacity":  1735,
+                                           "predictor_and_corrector_slot_checks":  1920,
+                                           "corrector_recurrence_checked":  true,
+                                           "max_corrector_abs_error":  0,
+                                           "recurrence_tolerance_DBL_EPSILON_multiple":  16,
+                                           "copy_sort_resize_bit_exact":  true,
+                                           "corrector_tail_guard_slots":  7,
+                                           "predictor_history_released":  true,
+                                           "invalid_J_rejections":  3,
+                                           "native_plastic_rejected":  true,
+                                           "periodic_plastic_poison_ignored":  true,
+                                           "periodic_plastic_poison_slots":  448,
+                                           "actual_LoadConfig_ConfigDomain_InitRunGpu":  true,
+                                           "actual_J_host_and_CUDA_helpers":  true,
+                                           "actual_force_calls":  0,
+                                           "completed_physics_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "feedback":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_State_Debug_r2.check.json",
+                                         "bytes":  4358,
+                                         "sha256":  "31865a8cd476550ad29111142b6bbad8d908a690fc87071cfd2ed4272742b3ce"
+                                     }
+                       },
+                       {
+                           "configuration":  "Debug",
+                           "integrated_component":  false,
+                           "fixture":  "Theta",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "cases":  10,
+                                           "actual_kernel_calls":  30,
+                                           "node_output_rows":  270,
+                                           "particles":  9,
+                                           "center_ID":  4,
+                                           "dimensions":  [
+                                                              2
+                                                          ],
+                                           "native_OFF_ON_output_pairs":  180,
+                                           "NULL_theta_sentinel_checks":  90,
+                                           "same_stage_reset_theta_pairs":  90,
+                                           "nonzero_trace_ON_checks":  8,
+                                           "drained_nonzero_theta_zero_pore_rate_checks":  4,
+                                           "nonempty_shear_stress_checks":  4,
+                                           "moment_xx":  31.239255905151367,
+                                           "moment_xz":  0,
+                                           "moment_zz":  31.239255905151367,
+                                           "supplied_isotropic_Cxx_Czz":  0.032011005737018837,
+                                           "correction_supplied_from_independent_center_moment":  true,
+                                           "general_C_matrix_solver_tested":  false,
+                                           "actual_force_kernel_only":  true,
+                                           "physical_drained_run_admitted":  false,
+                                           "time_integrated":  false,
+                                           "feedback_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Theta_Debug_r2.check.json",
+                                         "bytes":  3947,
+                                         "sha256":  "a19febd9c47e097bf42b3169fe259e4a74dbab3a55b5797f18d704367292b100"
+                                     }
+                       },
+                       {
+                           "configuration":  "Debug",
+                           "integrated_component":  false,
+                           "fixture":  "Feedback",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "dimension":  2,
+                                           "pair_arrangements":  2,
+                                           "pair_rows":  4,
+                                           "nonuniform_affine_fields":  3,
+                                           "affine_rows":  27,
+                                           "static_force_calls":  10,
+                                           "static_actual_FS_calls":  6,
+                                           "positive_oldrho_poison_node_pairs":  31,
+                                           "six_stress_components_per_affine_node":  true,
+                                           "mixed_XZ_shear_nonempty":  true,
+                                           "optional_integration_executed":  false,
+                                           "actual_force_calls":  10,
+                                           "actual_FS_calls":  6,
+                                           "independent_half_pairs":  0,
+                                           "max_pressure_log_reference_error_pa":  0,
+                                           "max_half_pressure_difference_pa":  0,
+                                           "max_J_log_error":  0,
+                                           "max_null_pressure_pa":  0,
+                                           "actual_pressure_J_update_kernels":  false,
+                                           "nonuniform_tracefree_null_claimed":  false,
+                                           "CPU_CSV_used_as_truth":  false,
+                                           "actual_JSph_host_guard_tested":  false,
+                                           "physical_outer_loop_used":  false,
+                                           "prescribed_kinematics":  true,
+                                           "dynamic_Darcy_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Feedback_Debug_r2.check.json",
+                                         "bytes":  3562,
+                                         "sha256":  "c28b95004236312a61e3d5fe35f408f0ff4a03a86366581e78cd7ff67203252d"
+                                     }
+                       },
+                       {
+                           "configuration":  "Debug",
+                           "integrated_component":  true,
+                           "fixture":  "Feedback",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "dimension":  2,
+                                           "pair_arrangements":  2,
+                                           "pair_rows":  4,
+                                           "nonuniform_affine_fields":  3,
+                                           "affine_rows":  27,
+                                           "static_force_calls":  10,
+                                           "static_actual_FS_calls":  6,
+                                           "positive_oldrho_poison_node_pairs":  31,
+                                           "six_stress_components_per_affine_node":  true,
+                                           "mixed_XZ_shear_nonempty":  true,
+                                           "optional_integration_executed":  true,
+                                           "actual_force_calls":  1546,
+                                           "actual_FS_calls":  1542,
+                                           "independent_half_pairs":  260,
+                                           "max_pressure_log_reference_error_pa":  0.0063194761642080266,
+                                           "max_half_pressure_difference_pa":  0.0078125,
+                                           "max_J_log_error":  4.73684202213949E-15,
+                                           "max_null_pressure_pa":  1.3642420526593924E-12,
+                                           "actual_pressure_J_update_kernels":  true,
+                                           "nonuniform_tracefree_null_claimed":  false,
+                                           "CPU_CSV_used_as_truth":  false,
+                                           "actual_JSph_host_guard_tested":  false,
+                                           "physical_outer_loop_used":  false,
+                                           "prescribed_kinematics":  true,
+                                           "dynamic_Darcy_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Feedback_Debug_r2_integrated.check.json",
+                                         "bytes":  4870,
+                                         "sha256":  "22f3b1ceb5729427fff8e4c16e46dd81828c0ca5b3d8e36b9d991dda8557ca7b"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "integrated_component":  false,
+                           "fixture":  "State",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "state_slot_bit_checks":  5760,
+                                           "real_cell_reorder":  true,
+                                           "actual_nonzero_prefix_cell_division":  false,
+                                           "periodic_forces_full_division":  true,
+                                           "component_extra_RunCellDivide_calls":  3,
+                                           "periodic_JPre_with_PosPre_NULL":  true,
+                                           "clone_of_clone_checks":  384,
+                                           "clone_of_clone_scope":  "Same-ID double-axis image witnesses plus frozen RunPeriodic ordering, not an inserted kernel counter",
+                                           "live_JPre_resize_preserved":  true,
+                                           "old_GPU_capacity":  1606,
+                                           "new_GPU_capacity":  1735,
+                                           "predictor_and_corrector_slot_checks":  1920,
+                                           "corrector_recurrence_checked":  true,
+                                           "max_corrector_abs_error":  0,
+                                           "recurrence_tolerance_DBL_EPSILON_multiple":  16,
+                                           "copy_sort_resize_bit_exact":  true,
+                                           "corrector_tail_guard_slots":  7,
+                                           "predictor_history_released":  true,
+                                           "invalid_J_rejections":  3,
+                                           "native_plastic_rejected":  true,
+                                           "periodic_plastic_poison_ignored":  true,
+                                           "periodic_plastic_poison_slots":  448,
+                                           "actual_LoadConfig_ConfigDomain_InitRunGpu":  true,
+                                           "actual_J_host_and_CUDA_helpers":  true,
+                                           "actual_force_calls":  0,
+                                           "completed_physics_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "feedback":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_State_Release_r2.check.json",
+                                         "bytes":  4804,
+                                         "sha256":  "18f41c7cbcdcb4206887b2986c0af8ad30eafde5b5cc4c8ae43c8b29957868a9"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "integrated_component":  false,
+                           "fixture":  "Theta",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "cases":  10,
+                                           "actual_kernel_calls":  30,
+                                           "node_output_rows":  270,
+                                           "particles":  9,
+                                           "center_ID":  4,
+                                           "dimensions":  [
+                                                              2
+                                                          ],
+                                           "native_OFF_ON_output_pairs":  180,
+                                           "NULL_theta_sentinel_checks":  90,
+                                           "same_stage_reset_theta_pairs":  90,
+                                           "nonzero_trace_ON_checks":  8,
+                                           "drained_nonzero_theta_zero_pore_rate_checks":  4,
+                                           "nonempty_shear_stress_checks":  4,
+                                           "moment_xx":  31.239255905151367,
+                                           "moment_xz":  0,
+                                           "moment_zz":  31.239255905151367,
+                                           "supplied_isotropic_Cxx_Czz":  0.032011005737018837,
+                                           "correction_supplied_from_independent_center_moment":  true,
+                                           "general_C_matrix_solver_tested":  false,
+                                           "actual_force_kernel_only":  true,
+                                           "physical_drained_run_admitted":  false,
+                                           "time_integrated":  false,
+                                           "feedback_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Theta_Release_r2.check.json",
+                                         "bytes":  4391,
+                                         "sha256":  "36796eeb0c69d30c97f76f4ae1a76187c8c41935f8abdd60818faad1dc289e06"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "integrated_component":  false,
+                           "fixture":  "Feedback",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "dimension":  2,
+                                           "pair_arrangements":  2,
+                                           "pair_rows":  4,
+                                           "nonuniform_affine_fields":  3,
+                                           "affine_rows":  27,
+                                           "static_force_calls":  10,
+                                           "static_actual_FS_calls":  6,
+                                           "positive_oldrho_poison_node_pairs":  31,
+                                           "six_stress_components_per_affine_node":  true,
+                                           "mixed_XZ_shear_nonempty":  true,
+                                           "optional_integration_executed":  false,
+                                           "actual_force_calls":  10,
+                                           "actual_FS_calls":  6,
+                                           "independent_half_pairs":  0,
+                                           "max_pressure_log_reference_error_pa":  0,
+                                           "max_half_pressure_difference_pa":  0,
+                                           "max_J_log_error":  0,
+                                           "max_null_pressure_pa":  0,
+                                           "actual_pressure_J_update_kernels":  false,
+                                           "nonuniform_tracefree_null_claimed":  false,
+                                           "CPU_CSV_used_as_truth":  false,
+                                           "actual_JSph_host_guard_tested":  false,
+                                           "physical_outer_loop_used":  false,
+                                           "prescribed_kinematics":  true,
+                                           "dynamic_Darcy_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Feedback_Release_r2.check.json",
+                                         "bytes":  4445,
+                                         "sha256":  "e9b5683f2f3e0b0bde3b5785e6fe701e18c02f6485bbe8875008eac27e94d5f9"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "integrated_component":  true,
+                           "fixture":  "Feedback",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "dimension":  2,
+                                           "pair_arrangements":  2,
+                                           "pair_rows":  4,
+                                           "nonuniform_affine_fields":  3,
+                                           "affine_rows":  27,
+                                           "static_force_calls":  10,
+                                           "static_actual_FS_calls":  6,
+                                           "positive_oldrho_poison_node_pairs":  31,
+                                           "six_stress_components_per_affine_node":  true,
+                                           "mixed_XZ_shear_nonempty":  true,
+                                           "optional_integration_executed":  true,
+                                           "actual_force_calls":  1546,
+                                           "actual_FS_calls":  1542,
+                                           "independent_half_pairs":  260,
+                                           "max_pressure_log_reference_error_pa":  0.0063194761642080266,
+                                           "max_half_pressure_difference_pa":  0.0078125,
+                                           "max_J_log_error":  4.73684202213949E-15,
+                                           "max_null_pressure_pa":  9.9861069934037427E-13,
+                                           "actual_pressure_J_update_kernels":  true,
+                                           "nonuniform_tracefree_null_claimed":  false,
+                                           "CPU_CSV_used_as_truth":  false,
+                                           "actual_JSph_host_guard_tested":  false,
+                                           "physical_outer_loop_used":  false,
+                                           "prescribed_kinematics":  true,
+                                           "dynamic_Darcy_tested":  false,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Feedback_Release_r2_integrated.check.json",
+                                         "bytes":  5760,
+                                         "sha256":  "656a59c361ccce77622dd9270790f857ef339edf180d44727c0cf481bbe604ad"
+                                     }
+                       }
+                   ],
+    "counts_from_actual_completions":  true,
+    "native_frame_instances":  20,
+    "distinct_times":  17,
+    "frame_pairs":  40,
+    "native_ID_pairs":  20480,
+    "static_suite_repeated_in_integrated_invocation":  true,
+    "cross_Debug_Release_byte_identity_claimed":  false,
+    "retained_r1_failure":  {
+                                "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_Feedback_Debug_r1_integrated_component.call.json",
+                                "bytes":  5445,
+                                "sha256":  "15ba5c4dd316eeda3da71990baa2cc80b53701ecdf9fc735852f1671f1a8f19b"
+                            },
+    "CPU_Debug":  {
+                      "inferred_from_log":  false,
+                      "exit0_root_direct_observed":  true,
+                      "log":  {
+                                  "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_CPU_Debug_default_r2.build.log",
+                                  "bytes":  362,
+                                  "sha256":  "0ef3111ba457ddefaca64b0234c6d6c270b94711ff3e3fe4a52081bed66689cf"
+                              },
+                      "sessionID":  null
+                  },
+    "context":  {
+                    "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_gpu_feedback_review_r2.json",
+                    "bytes":  4075,
+                    "sha256":  "9905642f033c90eaf9d6c7ab2d4fb20b9ed1dfe8e50af8c9aa37a0e02a5e568e"
+                },
+    "physical_acceptance":  false,
+    "public_GPU_dynamic_accepted":  false
+}

@@ -166,6 +166,7 @@ typedef struct StrInterParmsg{
   float *hydromechtoploadraw;
   const float3 *boundderivativevel;
   double *porotheta;
+  const double *poroj;
 
   //-Output data arrays.
   float *viscdt;
@@ -211,7 +212,7 @@ typedef struct StrInterParmsg{
     ,float *hydromechtoploadraw_
     ,float4 *shiftposfs_
     ,cudaStream_t stm_
-    ,StKerInfo *kerinfo_,const float3 *boundderivativevel_=NULL,double *porotheta_=NULL)
+    ,StKerInfo *kerinfo_,const float3 *boundderivativevel_=NULL,double *porotheta_=NULL,const double *poroj_=NULL)
   {
     //-Configuration options.
     simulate2d=simulate2d_;
@@ -256,6 +257,7 @@ typedef struct StrInterParmsg{
     kerinfo=kerinfo_;
     boundderivativevel=boundderivativevel_;
     porotheta=porotheta_;
+    poroj=poroj_;
   }
 
 }StInterParmsg;
@@ -280,7 +282,7 @@ void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4
 void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell
   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
-  ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs);
+  ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs,const double *poroj=NULL);
 void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
   ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress);
 void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag

@@ -1,0 +1,44 @@
+{
+  "status": "independent_read_only_failure_review_new_source_not_yet_admitted",
+  "provenance": "Root proposed and implemented the single feedback-ON factor reuse; kernel peer authored the preceding P2 port. This reviewer read the frozen failure, partial CSV and current source, but did not edit production/helper source, build or execute a program.",
+  "r1_evidence": {
+    "call": "logs/upl_gpu_feedback_Feedback_Debug_r1_integrated_component.call.json",
+    "call_sha256": "15ba5c4dd316eeda3da71990baa2cc80b53701ecdf9fc735852f1671f1a8f19b",
+    "owned_exit": 1,
+    "diagnostic": "Actual p/J kernels failed logarithmic storage/deformation reference",
+    "memcheck": "Raw owned-call log reports0 errors and0 bytes leaked in0 allocations; this does not turn a mathematical rejection into a pass.",
+    "history": "outputs/upl_gpu_feedback_Feedback_Debug_r1_integrated_data/history.csv",
+    "history_bytes": 656715,
+    "history_sha256": "555a6af2357f0a16b81f3c698dbd5c99db85a46bfc03f7882fecaf8e4b609083",
+    "partial_rows": 4447,
+    "coverage": "Compression/dilation64/128 and shear64 histories reached their ends. Shear128 has370 rows:41 complete9-node samples through t=.00030517578125, then only id0 at t=.00031280517578125. The next failing node is not written; rotation was not reached.",
+    "saved_shear128_metrics": {
+      "max_abs_logJ": 1.1146639167237193e-13,
+      "original_zero_trace_Jlog_budget": 1.1368683772161603e-13,
+      "max_pressure_minus_actualJ_log_reference_abs_Pa": 8.6850093339883915e-8,
+      "max_abs_theta_s_inv": 1.7196923598680747e-9
+    }
+  },
+  "causal_assessment": {
+    "observed": "Theory-null shear produces intermittent small nonzero theta and accumulated J drift. Last complete id1/id7 J=.99999999999988853 is just below the original512DBL_EPS log-J budget. Written pressure remains close to the actual-J logarithmic storage reference.",
+    "most_likely_limiter_not_directly_recorded": "The combined pe/je exception most likely came from the next node's J-log budget, not the1Pa pressure-log budget. The failing node values were not saved, so this is an inference, not a direct measurement. It does not establish incorrect pressure storage or an initial physical-reference error.",
+    "source_inconsistency": "FS moment uses fac evaluated from float products/sum rr2. The old theta route re-evaluates fac after computing prr2 from promoted-double displacement products/sum and then casting once tofloat. On shear-deforming float geometry those arguments can differ by rounding, so C and its volume-divergence quadrature need not cancel exactly.",
+    "strength": "Observed drift plus source mismatch supports the rounding-consistency hypothesis; no per-pair factor instrumentation or causal A/B result has yet proved it. Dyadic static passes do not resolve the deformed-geometry question."
+  },
+  "root_r2_change": {
+    "file": "src/source/JSphGpu_ker.cu",
+    "sha256_read_from_disk": "20fff26225cf6d9d349df4a07955adf13e0b21aa54ab9525cfc06ecb5902fba3",
+    "expression": "pfac=(poroj?double(fac):double(old GetKernel_Fac(float(prr2))))",
+    "scope": "Feedback-ON reuses the force pair's actual float factor, then performs the existing double gradient/divergence arithmetic. Null-J/observer-only/default-OFF retains the old factor expression. CPU source and equations were not changed.",
+    "numerical_consequence": "This intentionally changes feedback-ON rounding to align its moment/divergence weighting, not a blanket conversion to double or a relaxed threshold. It does not itself prove FS and force evaluation bit-identical for every geometry; the nested prr2 support guard also remains, so near-cutoff/general-disorder claims are held.",
+    "build_state_provenance": "Root reported the required CPU Debug r2 build exit0 and a fresh GPU Debug r2 build in progress. This note does not claim independently reviewed r2 build/native/test success."
+  },
+  "required_before_admission": [
+    "Fresh authoritative source-bound GPU Debug/Release builds and all original default-OFF/observer controls; no changed old binaries or historical hashes.",
+    "Fresh static pair/actualFS9 and optional64/128 integrations with all unchanged log-J, null, pressure and independent-half thresholds. Failed r1 does not admit Release feedback.",
+    "Keep all r1 source/program/runtime/partial outputs and receipts. Repair analysis offline if needed; never overwrite, restart or rearm the failed sequence.",
+    "Actual host negative-configuration gates and later coupled periodic/time-policy tests remain separate; no public GPU/P3/full physical acceptance."
+  ],
+  "thresholds_relaxed": false,
+  "physical_acceptance": false
+}

@@ -156,6 +156,7 @@ void JSphGpu::InitVars(){
   Sigmag=NULL; Kplasticg=NULL; KplasticDkg=NULL;//ruofeng
   PorePressg=NULL; PorePress0g=NULL; PorePressRateg=NULL;
   PorosityObserver=false;
+  PorosityFeedback=false;
   PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
   CorrMatg=NULL; FSTypeg=NULL; FSNormalg=NULL; PosDivg=NULL; //-Free-surface tracking.
   BoundNormalg=NULL; MotionVelg=NULL; BoundModeg=NULL; BoundSlipModeg=NULL; TangenVelg=NULL; NoPenShiftg=NULL; //-mDBC
@@ -1133,7 +1134,7 @@ void JSphGpu::InitRunGpu(){
 void JSphGpu::ComputeFreeSurfaceTracking(){
   if(!Np || !DivData.beginendcell || !CorrMatg || !FSTypeg || !FSNormalg || !PosDivg)return;
   const bool marknearfs=false; //-Near-free-surface search is retained but disabled for the global pair-wise confinement path.
-  cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg,marknearfs);
+  cusph::ComputeFreeSurfaceTracking(TKernel,Simulate2D,Np,Npb,DivData,Dcellg,PosCellg,Velrhopg,Codeg,CorrMatg,FSTypeg,FSNormalg,PosDivg,marknearfs,PorosityFeedback? PoroJg: NULL);
   Check_CudaErroor("Failed computing free-surface tracking.");
 }
 
@@ -1599,9 +1600,11 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 }
 
 //==============================================================================
-/// Initialises a private non-feedback observer on bounded periodic GPU fixtures.
+/// Initialises private J state on bounded GPU fixtures; feedback is separately gated.
 //==============================================================================
 void JSphGpu::InitPorosityObserverGpu(){
+  if(PorosityFeedback && !PorosityObserver)
+    Run_Exceptioon("GPU porosity feedback requires the J observer state.");
   if(!PorosityObserver)return;
   if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || CaseNpb
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
@@ -1612,6 +1615,12 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU porosity observer requires fresh no-wall 2-D elastic Symplectic corrected-pair fixtures without gravity, load, drainage, shifting or damping.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
+  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || SoilCte.HydraulicConductivity!=0 || Visco!=0
+    || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+    || SoilBoundaryDerivativeSPR || !SoilStressRateGradCorr || PoreShepardRegularization
+    || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
+    || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
+    Run_Exceptioon("GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
   cudaMemset(PoroThetag,0,sizeof(double)*Np);
@@ -1619,7 +1628,7 @@ void JSphGpu::InitPorosityObserverGpu(){
 }
 
 //==============================================================================
-/// Advances J without changing any physical field or time-step decision.
+/// Advances the shared J state; the observer alone does not feed physical operators.
 //==============================================================================
 void JSphGpu::ComputeSymplecticPorosity(bool corrector,double dt){
   if(!PorosityObserver)return;

@@ -2,7 +2,7 @@
   "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry and private GPU non-feedback J-observer implementation reviewed; no general GPU dynamic or physical-model release",
+  "status": "Limited canonical CPU entry, private GPU observer and bounded GPU J-feedback components reviewed; no complete GPU dynamic Run or physical-model release",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -126,9 +126,30 @@
     "feedback_tested": false,
     "physical_acceptance": false
   },
+  "private_GPU_feedback_component_review": {
+    "base_checkpoint": "c91ee27f2d89639db202333e6fc2331f57daa640",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_feedback_stage_r2.check.json",
+    "source": "Five GPU files only. A separate private feedback flag passes nullable J into FS and force kernels. Current V, mixture inertia, theta, local Kw/n storage and stress-rate quadrature derive consistently from J. Observer-only does not enable feedback; old CPU/GPU density integrators and shared public GPU rejection remain unchanged.",
+    "retained_r1_failure": "Debug prescribed shear-half integration exited1 near t=.0003128s at the original zero-trace J-log budget, with memcheck0 errors/0 leaks. Partial outputs and pre-fix source remain. No failed-r1 pass inheritance.",
+    "minimal_r2_repair": "Feedback uses the actual float pair factor shared with its FS moment instead of recomputing a factor after a different squared-distance rounding. NULL-J keeps the old expression. No threshold, type, integrator, material or geometry change.",
+    "builds": "Default CPU Debug and isolated full authoritative GPU Debug/Release Rebuilds passed. Canonical GPU/server executables unchanged.",
+    "native_regression": "Fresh Debug3-frame and Release17-frame windows, each512 native IDs:40 frame pairs/20480 native-ID pairs preserve original15 arrays, actual time/Step/signed dterror exactly. All10240 saved observer CSV rows and final live downloads equal retained observer controls. No feedback enabled in these actual Run regressions.",
+    "components_each_configuration": "State, theta, J-feedback static and prescribed integration all pass independently. Static suite has4 unequal-J pair and27 affine ledger rows; real FS/C used for feedback. Integration has6984 rows and260 exact-time half pairs,1546 force/1542 FS calls including its repeated static suite.",
+    "integration_pressure_log_max_Pa": 0.0063194761642080266,
+    "integration_half_pressure_max_Pa": 0.0078125,
+    "integration_half_J_max": 4.218847493575595e-15,
+    "integration_J_log_max": 4.7368420221394897e-15,
+    "null_J_max": 0,
+    "null_pressure_Debug_Release_max_Pa": [1.3642420526593924e-12, 9.9861069934037427e-13],
+    "independent_review": "690 current artifact bindings matched; both component CSV histories/halves and independent affine/pair references recomputed. Old-density poison equality is checked by the frozen CPP assertions, not an invented full-C poison CSV. Native typed BI4 checks use the frozen reader, not a claimed second decoder. No cross-Debug/Release complete CSV byte-identity claim.",
+    "limits": "Prescribed kinematics only, not a free coupled mechanical trajectory. Conditional pressure-log reference is not general fluid-mass truth. Actual feedback host guards, periodic C/Ace ownership, complete dynamic Darcy rate and necessary coupled timestep checks remain to be admitted before a feedback Run. General cutoff/FMA equivalence is not proved by the bounded factor repair.",
+    "full_feedback_Run_accepted": false,
+    "public_GPU_dynamic_accepted": false,
+    "physical_acceptance": false
+  },
   "next_order": [
-    "Selectively back up the verified GPU observer stage locally/remotely, keeping historical CPU initial raw26 mismatches and every retained failed setup visible.",
-    "Next port private GPU J-derived quadrature/inertia/storage as one consistent bounded k0/g0 component, preserving OFF and observer-only trajectories. Keep the shared !Cpu public rejection until complete GPU model tests pass; do not add a second public formulation switch.",
+    "Selectively back up verified private GPU P2 components locally/remotely, preserving r1 numerical rejection and historical CPU initial raw26 mismatches.",
+    "Next admit private GPU k0/g0 actual coupled integration only after finite/material/first-locked-step and current-J acoustic guards. Keep public !Cpu rejection and old OFF/observer-only exact controls; do not expose partial-model switches.",
     "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."

@@ -1,0 +1,23 @@
+{
+  "status": "author_only_no_build_or_component_execution",
+  "base": "c91ee27f2d89639db202333e6fc2331f57daa640",
+  "driver": "support/upl_gpu_feedback_r2.ps1",
+  "retained_failure": {
+    "call": "logs/upl_gpu_feedback_Feedback_Debug_r1_integrated_component.call.json",
+    "owned_exit": 1,
+    "memcheck": "0 errors/0 bytes leaked, not a CUDA memory failure",
+    "criterion": "Original zero-trace shear J-log budget512*DBL_EPSILON, not the1Pa pressure-log reference gate. Generic program diagnostic names both p/J references; do not infer the pressure gate failed.",
+    "sealed_partial": "field2 shear, half128, last written actual component t=.00031280517578125s. Last written row has p-log discrepancy about8.7e-8Pa; the rejected node is not separately identified because the guard executes before writing that row.",
+    "not_accepted": "No completed integrated check or Release feedback admission; r1 static success does not admit the failed dependent stage. All old files and output history remain untouched."
+  },
+  "reviewed_fix_scope": "Root/independent source review selected one feedback-ON conditional: reuse the already computed force-pair fac for corrected pore/theta derivatives, matching the actual FS moment's operands. NULL-J keeps the old second factor computation. No integrator, precision type, material, geometry, prescribed kinematics, reference or safety budget is changed. This is an operand-consistency repair, not a general precision upgrade.",
+  "replay": {
+    "BuildGpu": "Read immutable r1 authoritative project call argv; preserve tool hash, solution/project, fullRebuild and all compiler properties. Replace ONLY explicit OutDir, IntDir and binlog with fresh r2 paths. Reuse the same110 object leaf closure. Current five hashes and preserved pre-fix r1 snapshots are bound without a new prebuild source/program copy or baseline rearm.",
+    "BuildHelper": "Read chosen immutable r1 compile/link argv and preserve original CPP/note, options and libraries. Only Fo/Fd, OUT/PDB, helper object and authoritative object prefix change to fresh r2 paths. Old author snapshots remain referenced; the new recipe is separately hash-bound. No transient script rewriting, old solver or helper call occurs.",
+    "release_gate": "Fresh Debug r2 feedback static AND integrated checks must pass before Release feedback helper is built. Root owns subsequent explicit calls/native reviews through a separate fresh runner; no failed r1 integration is adopted."
+  },
+  "paths": "New GPU logs upl_gpu_feedback_{Debug,Release}_r2.build.json/.source.json and helper logs upl_gpu_feedback_{Fixture}_{Configuration}_r2.helper.json; baseline remains the preserved upl_gpu_feedback_r1.baseline.json. Status/source_build/inputs/runtime original-copy/snapshots/program/compile_call/link_call fields remain compatible with the small execution runner.",
+  "held": "All r1 outcomes remain frozen. No new run is automatically admitted, no original threshold is relaxed, and no full private feedbackRun/P3/nonzero-k/publicGPU/physical/full-cycle/restart acceptance is claimed.",
+  "program_or_component_run": false,
+  "physical_acceptance": false
+}

@@ -165,7 +165,8 @@ protected:
   float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
   bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
-  double *PoroJg;       ///<Solid volume ratio J, never used by physical operators here.
+  bool PorosityFeedback; ///<Private k=0 J-derived quadrature/storage/inertia fixture.
+  double *PoroJg;       ///<Solid volume ratio J; physical feedback is separately gated.
   double *PoroThetag;   ///<Corrected pair divergence from the last force stage.
   double *PoroJPreg;    ///<Full-step J held during Symplectic prediction/correction.
 

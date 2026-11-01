@@ -1,0 +1,76 @@
+{
+  "status": "author_only_not_compiled_or_executed",
+  "file": "support/upl_gpu_feedback_r1.cpp",
+  "scope": "2-D private P2 feedback components only: actual GPU FS/C, force and optionally pressure/J update kernels. Not JSph::Run, physical free-body/periodic trajectory, dynamic Darcy, host configuration/restart, wall or public GPU acceptance.",
+  "cli": "--out NEW_DIRECTORY [--device N] [--integrate]",
+  "execution_order": "Default invocation runs only the predeclared10-force-call static components. Optional --integrate must be separately reviewed/admitted and adds independent64/128 prescribed-kinematics integrations; never auto-launch from a static pass.",
+  "required_API": {
+    "confirmed_by_root": true,
+    "force": "StInterParmsg final arguments boundderivativevel,porotheta,const double*poroj. Nonnullporoj means feedback; null means old observer-only path.",
+    "FS": "ComputeFreeSurfaceTracking final arguments marknearfs,const double*poroj. Actual C must use neighbourV0J, not old m/rhop.",
+    "update": "Existing UpdatePorePressureSymplectic and UpdatePorosityObserver kernels unchanged; predictor receives already-halveddt,correctorfull dt.",
+    "not_yet_build_evidence": "Authoring against agreed interfaces is not evidence that source implementation or authoritative builds have passed. Root must freeze/review/build actual production source before any component execution."
+  },
+  "common": {
+    "dimension": 2,
+    "material": "Actualfloat K1666666.75,G769230.8125,Kw2e8,n0=float(.3),rho02100,rhow1000;dp.25,h.5,mass131.25,V0=.0625.",
+    "ledger": "n=1-(1-n0)/J,V=V0J,rho_t=rhow+(rho0-rhow)/J; ledger CSV columns are explicitly independent references, not nonexistent GPU-internal diagnostic observations.",
+    "disabled": ["walls", "k", "gravity", "load", "drainage", "viscosity", "DDT", "HG", "SPR", "shifting", "damping", "artificial stress"],
+    "neighbours": "Actual one-cell linked-list MakeDivDataGpu with empty boundary range and2 or9 fluid nodes. No replacement force/neighbour implementation.",
+    "old_density": "Strictly positive Velrhop.w remains a legacy compute proxy, never claimed to be a complete variable-density outer-loop closure. Poison uses1000+37id; normal uses2100."
+  },
+  "static_pair": {
+    "geometry": "Two dyadic nodes centered(.5,0,.5) with relative coordinates(+/- .0625,0,+/- .046875). Supply zero C for a raw-momentum test, not a singular FS matrix test.",
+    "J": "(.9,1.2) and reversed, each independently normal/poison;4actual force calls,4 node reference rows.",
+    "stress_pressure": "Unequal finite normal/XZ effective stresses and pore pressures2000/7000Pa; actual momentum reference uses float-converted stress and actual float raw kernel gradient.",
+    "reference": "a_i=Vj/rho_ti * [sigma_i+sigma_j-(p_i+p_j)I] gradW_ij; reversed receiver force usesVi/rho_tj. Require nonzeroX/Z references and unequalV/rho, original64FLT_EPS*max(1e-6,abs(reference))+1e-9 component budget; rho_t*V weighted net-forceL1<=64FLT_EPS*forceL1+1e-9.",
+    "not_CPU_CSV_truth": "Retained CPU momentum.csv records net force only, not per-node acceleration; no missing CPU fields are invented or filled."
+  },
+  "static_FS9": {
+    "geometry": "3x3 dyadic .25 grid centered(.5,0,.5), full-rank finite patch; all9 actualGPU correction matrices are rebuilt. This is not an infinite-domain or physical free-surface closure claim.",
+    "J": ".95+.025*(id%5), unchanged positions, heterogeneous n/V/rho.",
+    "fields": [
+      "dilation trace+1/32,spin0",
+      "compression trace-1/32,spin0",
+      "dilation trace+1/32 plus symmetricXZshearA_xz=A_zx=1/64,spin0 and nonemptyXZstress"
+    ],
+    "calls": "Each field has actualFS+force normal and positive-rho-poison runs:6FS+6force calls,27 reference rows.",
+    "C_reference": "Independent host2x2 full moment with neighbourV0J and actualfloat h/rr2/fac operands; explicit determinant inverse. Compare actualCxx/Cxz/Czz against inverse with64FLT_EPS*max(1,abs(reference)); no supplied scalar C or GPU matrix-solver bypass.",
+    "theta": "abs(theta-reference)<=64FLT_EPS*abs(nonzero reference), unchanged CPU P2 threshold.",
+    "storage": "abs(pdot+doubleKw/n_i*theta_reference)<=64FLT_EPS*abs(reference); receiverBmax/Bmin>1.1 proves heterogeneous local storage is nonempty.",
+    "stress": "All six components checked against2G D+(K-2G/3)traceI at original64FLT_EPS*max(abs(reference),abs(Gtrace))+1e-6Pa/s. XY/YZ expected0, not an excited3-D shear claim. MixedXZrate must be nonzero and correct sign.",
+    "null_scope": "Static nonuniform-J tests have nonzero trace. They are not called nonuniform trace-free shear/rotation tests."
+  },
+  "poison": {
+    "node_pairs": 31,
+    "0ULP_fields": ["all9 Cmatrix entries", "doubletheta", "floatpressure rate", "accelerationXYZ", "sixfloatstress-rate components"],
+    "excluded_explicitly": "Legacy raw density diagnostic ar may change; it is not a feedback-operator equivalence target. Physical input velocity/density, stored stress/pressure arrays must remain exactly equal to supplied inputs in each individual kernel evaluation."
+  },
+  "optional_integration": {
+    "initial": "IndependentJ1,p0,sigma0,uniformrho2100,9node patch for every run; no PART or component state reuse.",
+    "fields": ["uniform affine compression", "uniform affine dilation", "uniform-J-initial trace-free simple shear", "uniform-J-initial instantaneous rigid rotation on fixed reference patch"],
+    "manufacturing": "Prescribed float PosCell positions; affine velocity computed from actual storedfloat positions with dyadic rate. This avoids mixing ideal double positions and independently rounded velocities. Compression/dilation position stretch remains prescribed, not calculated by a mechanical integrator.",
+    "actual_updates": "Each predictor copies actual deviceJn/pn, calls actualFS/force then existing pressure/J update CUDA kernels withdt/2; actualFS/force rebuilt at prescribed half geometry/currentJ, corrector CUDA kernels use originalJn/pn andfull dt. Host only supplies kinematics/references; never substitutes p/J recurrence outputs.",
+    "timing": "64stepsdt2^-16 and128stepsdt2^-17, commonend2^-10;65/129saved actual component times and all65 exact common pairs perfield, no interpolation.",
+    "gates_unchanged": {
+      "solid_closure_relative": 5e-13,
+      "log_pressure_reference_abs_Pa": 1,
+      "reference": "-Kw*log((actualJ-1+n0)/n0), a conditional storage reference, not exact general fluid mass",
+      "J_log": "abs(log(J)-theta*t)<=64FLT_EPS*abs(theta*t)+512DBL_EPS",
+      "null_pressure_abs_Pa": 0.02,
+      "null_J_abs": 5e-13,
+      "half_pressure_absmax_Pa": 0.5,
+      "half_J_absmax": 5e-11
+    },
+    "counts": "Adds1536force+1536FS calls;total1546force/1542FS;6984history rows and260half-pair rows. No physical outer-loop step is executed."
+  },
+  "outputs": ["momentum.csv4rows", "affine.csv27rows", "completion.json", "optional history.csv6984rows", "optional halves.csv260rows"],
+  "remaining_gates": [
+    "Actual private JSph host initialization negative-configuration guards are NOT exercised by this kernel-only fixture. A separate actual-host smoke/guard fixture remains needed; cannot claim CPU15guard equivalents.",
+    "Fresh actual same-GPU default-OFF/observer-only native and component regressions against the accepted observer source are required after production feedback edits.",
+    "No CPU/GPU bitwise arithmetic equivalence, coupled freeRun, periodic C/feedback lifecycle, current coupled-step policy, P3 acceleration Darcy, nonzero-k, wall or public GPU acceptance from these components.",
+    "RawBI4/executables are not Git backup; parent must bind actual source/program/runtime/inputs/ownedcalls and preserve any failure before admitting dependent stages."
+  ],
+  "author_execution": "No source edits, compile, run, solver, old-worker rearm or Git operation. Only these two new shallow author files.",
+  "physical_acceptance": false
+}
