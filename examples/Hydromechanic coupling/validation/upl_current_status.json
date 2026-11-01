@@ -147,9 +147,27 @@
     "public_GPU_dynamic_accepted": false,
     "physical_acceptance": false
   },
+  "private_GPU_k0_necessary_step_review": {
+    "base_checkpoint": "bf5ef956d4ffaf91b0b52e57a740be03fc64cee4",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_stage_r1.check.json",
+    "source": "Only JSphGpu.h/cpp and JSphGpu_ker.h/cu. Native normal-fluid J gives double cu2=(K+4G/3+Kw/n)/rho_t, with a double block maximum and one positive-bit atomic maximum per block. Pool scratch is released before return/rejection; no full J download or persistent maximum cache. Private feedback initialization rejects nonfinite material/step parameters, floating particles and missing X/Z periodicity.",
+    "policy": "Both real force stages check the already locked step, requested FixedDt and DtMin against the same current-J necessary acoustic/force bound before Pre or Corr. No clipping or DtMin uplift. k0 is not subjected to the positive-k continuous-decay criterion. Old OFF/observer-only time arithmetic remains unchanged.",
+    "builds": "Required default CPU Debug and isolated full authoritative GPU Debug/Release Rebuilds passed; all110 non-main objects are hash-bound. Canonical GPU/server programs unchanged.",
+    "default_regression": "Smoke3 and Extended17 window frames, two fresh variants per window:40 actual saved frames and40 original15-array comparison pairs/20480 native-ID pairs. Actual time/Step/signed dterror and every saved J/n/theta CSV plus final live downloads equal retained P2 controls, with no exclusions. These actual Runs have feedback OFF and do not test the new limit itself.",
+    "components_each_configuration": "12 actual reduction cases,4 protected class scale cases,8 domain rejections,12 strict request cases and18 real initialization-hook negatives. Two separately owned fresh first-ComputeStep_Sym calls reject unsafe current/requested steps after a nonempty actual force but before any PRE allocation; physical arrays/IDs/code and time0/step0 stay exact. These are not completed physical trajectories or fresh XML-parser negatives.",
+    "first_force_bound_s": 2.7465783150591685e-6,
+    "first_force_max_abs_theta_s_inv": 0.096020878068965546,
+    "first_force_assigned_native_rates": 512,
+    "memcheck": "Both new Debug native solves and all three Debug time components exit0 with raw memcheck0 errors/0 bytes leaked; expected negative-control exceptions are not failed solver runs.",
+    "retained_prebuild_wrapper_issue": "The first baseline action incorrectly equated historical mixed-CRLF build bytes with Git LF-normalised blobs, exited1 before any build or baseline receipt. Both identities are now recorded separately; original other261-source, canonical-program and physical checks remain unchanged.",
+    "limits": "Necessary local scales, not spectral stability or physical accuracy. The tested geometry is rectangular 2D X/Z periodic; the private guard does not reject every skew translation. Bad ghost J is ignored only by the native scale test, not accepted as a valid force state. Corrector rejection need not roll back an already completed predictor. Full successful feedback Pre/Corr, independent actual halves, nonzero-k Darcy/periodic C-Ace ownership and public GPU admission remain later gates.",
+    "full_feedback_trajectory_accepted": false,
+    "public_GPU_dynamic_accepted": false,
+    "physical_acceptance": false
+  },
   "next_order": [
-    "Selectively back up verified private GPU P2 components locally/remotely, preserving r1 numerical rejection and historical CPU initial raw26 mismatches.",
-    "Next admit private GPU k0/g0 actual coupled integration only after finite/material/first-locked-step and current-J acoustic guards. Keep public !Cpu rejection and old OFF/observer-only exact controls; do not expose partial-model switches.",
+    "Selectively back up verified private GPU k0 necessary-step components locally/remotely, keeping every prior numerical/setup rejection and historical CPU initial raw26 mismatches visible.",
+    "Next verify a successful actual GPU feedback two-step Debug memcheck, then bounded periodic k0 CPU/GPU actual coarse/half trajectories at matched native IDs/times. Keep public !Cpu rejection and old OFF/observer-only exact controls; do not expose partial-model switches.",
     "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."

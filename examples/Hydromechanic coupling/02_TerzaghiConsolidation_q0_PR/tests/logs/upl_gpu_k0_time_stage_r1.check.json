@@ -1,0 +1,316 @@
+{
+    "passed":  true,
+    "base":  "bf5ef956d4ffaf91b0b52e57a740be03fc64cee4",
+    "builds":  [
+                   {
+                       "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Debug_r1.build.json",
+                       "bytes":  125270,
+                       "sha256":  "00a0ba1922e3d1fc2dd2b14407e71f59739aaf97990038b0d12029c8e12b8ef5"
+                   },
+                   {
+                       "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Release_r1.build.json",
+                       "bytes":  125503,
+                       "sha256":  "745c4c429975be30385537f5ac47774244971cca0f2e1db5ebcc538c6c5536a3"
+                   }
+               ],
+    "native":  [
+                   {
+                       "metrics":  {
+                                       "passed":  true,
+                                       "observer":  true,
+                                       "actual_time_s":  1.1920928955078125E-07,
+                                       "completed_steps":  2,
+                                       "native_count":  512,
+                                       "fixed_count":  0,
+                                       "n0":  0.25,
+                                       "actual_production_Run":  true,
+                                       "live_GPU_download":  true,
+                                       "predictor_history_released":  true,
+                                       "public_dynamic_seepage":  false,
+                                       "physical_fields_rewritten_by_fixture":  false,
+                                       "feedback":  false,
+                                       "physical_acceptance":  false
+                                   },
+                       "samples":  3,
+                       "native":  512,
+                       "review":  {
+                                      "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Smoke_r1.review.check.json",
+                                      "bytes":  18464,
+                                      "sha256":  "d64083b9d6211b333944f4635c43ba9119856c6b070f56f867142012fcd0f996"
+                                  }
+                   },
+                   {
+                       "metrics":  {
+                                       "passed":  true,
+                                       "observer":  true,
+                                       "actual_time_s":  9.5367431640625E-07,
+                                       "completed_steps":  16,
+                                       "native_count":  512,
+                                       "fixed_count":  0,
+                                       "n0":  0.25,
+                                       "actual_production_Run":  true,
+                                       "live_GPU_download":  true,
+                                       "predictor_history_released":  true,
+                                       "public_dynamic_seepage":  false,
+                                       "physical_fields_rewritten_by_fixture":  false,
+                                       "feedback":  false,
+                                       "physical_acceptance":  false
+                                   },
+                       "samples":  17,
+                       "native":  512,
+                       "review":  {
+                                      "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Extended_r1.review.check.json",
+                                      "bytes":  75362,
+                                      "sha256":  "246edf4612beeb36ab6fa62c827f55776f39da974032753f8e40fd0d1994caa2"
+                                  }
+                   }
+               ],
+    "components":  [
+                       {
+                           "configuration":  "Debug",
+                           "case":  "Scale",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "Scale",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  12,
+                                           "class_scale_cases":  4,
+                                           "class_domain_rejections":  8,
+                                           "requested_step_cases":  12,
+                                           "initialization_hook_rejections":  18,
+                                           "actual_first_step_rejections":  0,
+                                           "actual_maxcu2_kernel":  true,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  false,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Debug_Scale_r1.check.json",
+                                         "bytes":  4940,
+                                         "sha256":  "f3f2743b6d0ba4c699c20a4a99ab392ab3e30a0805373a9fc75d87ebf5450533"
+                                     }
+                       },
+                       {
+                           "configuration":  "Debug",
+                           "case":  "FirstCurrent",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "FirstCurrent",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  0,
+                                           "class_scale_cases":  0,
+                                           "class_domain_rejections":  0,
+                                           "requested_step_cases":  0,
+                                           "initialization_hook_rejections":  0,
+                                           "actual_first_step_rejections":  1,
+                                           "actual_maxcu2_kernel":  false,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  true,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Debug_FirstCurrent_r1.check.json",
+                                         "bytes":  3849,
+                                         "sha256":  "48b246319772498f3d9dbbe243d1dea2bfef019fb37bd3100bbc936d37f9fbdd"
+                                     }
+                       },
+                       {
+                           "configuration":  "Debug",
+                           "case":  "FirstRequested",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "FirstRequested",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  0,
+                                           "class_scale_cases":  0,
+                                           "class_domain_rejections":  0,
+                                           "requested_step_cases":  0,
+                                           "initialization_hook_rejections":  0,
+                                           "actual_first_step_rejections":  1,
+                                           "actual_maxcu2_kernel":  false,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  true,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Debug_FirstRequested_r1.check.json",
+                                         "bytes":  4298,
+                                         "sha256":  "bf3593aa3b9a70c31e55b158c0f9c050237397a564fc91a8bf890beb0ac287a8"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "case":  "Scale",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "Scale",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  12,
+                                           "class_scale_cases":  4,
+                                           "class_domain_rejections":  8,
+                                           "requested_step_cases":  12,
+                                           "initialization_hook_rejections":  18,
+                                           "actual_first_step_rejections":  0,
+                                           "actual_maxcu2_kernel":  true,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  false,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Release_Scale_r1.check.json",
+                                         "bytes":  6261,
+                                         "sha256":  "dfb0e2cf36f50d71fddd5e423a2c53d29e948354a1a2556beab6f86671b8786f"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "case":  "FirstCurrent",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "FirstCurrent",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  0,
+                                           "class_scale_cases":  0,
+                                           "class_domain_rejections":  0,
+                                           "requested_step_cases":  0,
+                                           "initialization_hook_rejections":  0,
+                                           "actual_first_step_rejections":  1,
+                                           "actual_maxcu2_kernel":  false,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  true,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Release_FirstCurrent_r1.check.json",
+                                         "bytes":  5167,
+                                         "sha256":  "99b0450a118f461b93ee70360ea4d9c17b9a1454aa458131416cf53504ebf821"
+                                     }
+                       },
+                       {
+                           "configuration":  "Release",
+                           "case":  "FirstRequested",
+                           "metrics":  {
+                                           "passed":  true,
+                                           "mode":  "FirstRequested",
+                                           "native_count":  512,
+                                           "fixed_count":  0,
+                                           "kernel_cases":  0,
+                                           "class_scale_cases":  0,
+                                           "class_domain_rejections":  0,
+                                           "requested_step_cases":  0,
+                                           "initialization_hook_rejections":  0,
+                                           "actual_first_step_rejections":  1,
+                                           "actual_maxcu2_kernel":  false,
+                                           "actual_DtVariable":  true,
+                                           "first_force_precedes_rejection":  true,
+                                           "predictor_histories_absent":  true,
+                                           "completed_physical_steps":  0,
+                                           "actual_time_s":  0,
+                                           "Nstep":  0,
+                                           "device_name":  "NVIDIA GeForce RTX 3050",
+                                           "public_GPU_dynamic_mode":  false,
+                                           "nonzero_k":  false,
+                                           "necessary_scale_not_sufficient_stability":  true,
+                                           "physical_acceptance":  false
+                                       },
+                           "check":  {
+                                         "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_Release_FirstRequested_r1.check.json",
+                                         "bytes":  5618,
+                                         "sha256":  "75b09f5c1f09500ee07fbf9b42266d0bd158425f40c4d05ca66a6ba328a375b2"
+                                     }
+                       }
+                   ],
+    "counts_from_actual_completions":  true,
+    "counts_per_configuration":  {
+                                     "Debug":  {
+                                                   "init_hooks":  18,
+                                                   "kernel":  12,
+                                                   "domain":  8,
+                                                   "class_scale":  4,
+                                                   "requests":  12,
+                                                   "fresh_first_step_rejections":  2
+                                               },
+                                     "Release":  {
+                                                     "init_hooks":  18,
+                                                     "kernel":  12,
+                                                     "domain":  8,
+                                                     "class_scale":  4,
+                                                     "requests":  12,
+                                                     "fresh_first_step_rejections":  2
+                                                 }
+                                 },
+    "native_frame_instances":  20,
+    "distinct_native_times":  17,
+    "native_original15_frame_pairs":  40,
+    "native_ID_pairs":  20480,
+    "CPU_Debug":  {
+                      "inferred_from_log":  false,
+                      "exit0_root_direct_observed":  true,
+                      "log":  {
+                                  "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_CPU_Debug_default_r1.build.log",
+                                  "bytes":  362,
+                                  "sha256":  "0ef3111ba457ddefaca64b0234c6d6c270b94711ff3e3fe4a52081bed66689cf"
+                              },
+                      "sessionID":  null
+                  },
+    "baseline":  {
+                     "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_r1.baseline.json",
+                     "bytes":  202227,
+                     "sha256":  "2d1baf9218ff6c58de54290fcc6b090cf0eb79f0a3cc5e44f4f17079ffaac98f"
+                 },
+    "retained_newline_wrapper_failure":  {
+                                             "path":  "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_k0_time_r1.baseline_attempt1.json",
+                                             "bytes":  687,
+                                             "sha256":  "1fbad67726a231df5897b79c05ef39b14be8603cba533ee9555a69e4bd82f502"
+                                         },
+    "full_feedback_trajectory_tested":  false,
+    "necessary_scale_not_sufficient_stability":  true,
+    "nonzero_k_tested":  false,
+    "public_GPU_dynamic_accepted":  false,
+    "physical_acceptance":  false
+}

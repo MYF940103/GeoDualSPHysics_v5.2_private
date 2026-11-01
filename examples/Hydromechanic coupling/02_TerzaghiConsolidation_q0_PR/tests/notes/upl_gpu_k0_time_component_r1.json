@@ -1,0 +1,56 @@
+{
+    "stage": "upl_gpu_k0_time_component_r1",
+    "status": "author_only_not_built_or_executed",
+    "base_checkpoint": "bf5ef956d4ffaf91b0b52e57a740be03fc64cee4",
+    "files": ["tests/support/upl_gpu_k0_time_r1.cpp", "tests/notes/upl_gpu_k0_time_component_r1.json"],
+    "scope": "Private actual GPU max-cu-squared kernel, actual protected class acoustic helper, actual DtVariable and two separately owned first-step rejection processes. No project source edits or completed physical steps.",
+    "cli": "upl_gpu_k0_time_r1.exe --time Scale|FirstCurrent|FirstRequested <ordinary -gpu args with frozen k0 512-node input and a distinct fresh output>",
+    "input": {
+        "retained_source_prefix": "tests/outputs/upl_gpu_observer_seed_Smoke_r1/CaseUplObserver",
+        "prepared_prefix": "tests/outputs/upl_gpu_k0_time_seed_r1/CaseUplGpuK0Time",
+        "input_preparation": "Root-owned preparer copies retained BI4 byte-exact and changes only runtime XML HydraulicConductivity from 0.0001 to 0. All other XML values and geometry remain unchanged; hash binding is required before any component process.",
+        "native_count": 512,
+        "fixed_count": 0,
+        "geometry": "Retained 32x16 2D axis-XZ periodic lattice, no GenCase or initial physical-field rewrite by this fixture.",
+        "public_master": false,
+        "private_flags": ["PorosityObserver=true", "PorosityFeedback=true"],
+        "conductivity": 0,
+        "source_identity": "The root-owned fresh authoritative GPU source/program/runtime freeze must bind the four time-policy source changes before helper compile/run. This author note does not attribute an executable to a build."
+    },
+    "kernel": {
+        "cases": 12,
+        "np": [0, 1, 127, 128, 129, 257, 513, 257, 129, 513, 129, 129],
+        "checks": ["native normal-fluid and npb selection", "multi-block positive-double maximum", "empty/no-native behavior returns zero with invalid=np", "periodic/excluded/fixed/floating NaN-J ignored", "minimum invalid native slot", "nextafter solid-volume boundary accepted when representable n remains positive", "DBL_MAX J rejected because n rounds to one", "input arrays and output tail unchanged"],
+        "references": {
+            "production_operand_max": "cu2=(K+4G/3+Kw/n)/(rhow+(rho0-rhow)/J), exact bit maximum required with the same promoted float material operands",
+            "independent_inertia": "rhos=(rho0-n0*rhow)/(1-n0), rho=(1-n)*rhos+n*rhow; max cu2 must agree within 64*DBL_EPSILON*max(1,abs(reference))",
+            "standalone_parameter_scope": "Scalar inputs are valid actual material. Parameter-negative tests are real host initialization-hook calls, not claims that the standalone kernel validates all scalar parameters."
+        }
+    },
+    "Scale_mode": {
+        "actual_class_scale_cases": 4,
+        "class_domain_rejections": 8,
+        "requested_step_cases": 12,
+        "initialization_hook_rejections": 18,
+        "outputs": ["kernel.csv", "scales.csv", "scale_nodes.csv", "domain.csv", "requests.csv", "init_negatives.csv", "completion.json"],
+        "legacy_rho_test": "Actual helper bound remains bit-exact after all positive legacy velrhop.w values are changed; no physical force/integrator is invoked on that poisoned state.",
+        "ghost_test": "Periodic J values are poisoned with NaN while all native J remain valid; actual helper bound must remain bit-exact.",
+        "request_contract": "Exactly-at-bound FixedDt/current accepted; nextafter-above current, FixedDt and DtMin rejected. FixedDt receives the full bound, independently checked by its signed error=fixed-bound. No clipping or DtMin uplift, and physical arrays/PRE unchanged.",
+        "init_hook_scope": "The 18 negatives mutate initialized host configuration only, invoke the actual InitPorosityObserverGpu and restore all changed scalars/flags after catch. These are not fresh XML-parser negative tests. Material/step Infinity, NaN, missing periodicity, floating particles and nonzero conductivity are explicitly covered."
+    },
+    "first_step_modes": {
+        "separate_processes": ["FirstCurrent", "FirstRequested"],
+        "FirstCurrent": "locked current=1s, fixed requested=2^-24; actual predictor force must finish then current guard reject before any PRE allocation/update",
+        "FirstRequested": "locked current=2^-24, fixed requested=1s; actual predictor force must finish then requested guard reject before any PRE allocation/update",
+        "outputs_each": ["first_step.csv", "first_step_states.csv", "completion.json"],
+        "unchanged_fields": ["ID", "code", "double position", "velocity and passive density", "J", "p", "p0", "plastic", "six stored double stress components"],
+        "nonempty_force_evidence": "All 512 native pore rates overwrite the sentinel; max absolute native theta>1e-5 and max absolute pore rate>1Pa/s. Actual Arg/Ace/Rsigma allocations and finite stage maxima are required.",
+        "allowed_transient_changes": ["theta diagnostic", "C/FS diagnostics", "force and pressure-rate scratch", "force maxima and timer telemetry"],
+        "all_PRE_null": ["PosxyPreg", "PoszPreg", "VelrhopPreg", "SigmaPreg", "PorePressPreg", "PoroJPreg"],
+        "clock": "actual TimeStep=0 and Nstep=0 before and after rejection; no pressure/J corrector or completed step implied"
+    },
+    "execution_gates": ["Root reads all new author inputs", "Fresh authoritative GPU build plus retained OFF/observer controls are reviewed first", "Compile helper against the exact frozen authoritative objects/runtime", "Run each Debug mode under actual memcheck and require zero errors/leaks", "Run corresponding Release modes only after Debug passed", "Use distinct fresh outputs; never rerun a completed mode or overwrite failed evidence"],
+    "limits": ["Necessary local acoustic/force scales are not sufficient spectral or nonlinear stability proof", "k=0 only: no Darcy, diffusion or gradient-k limit", "2D no-wall axis periodic only; no gravity/load/drainage/moving boundaries", "No public GPU option, formal release, restart or physical accuracy acceptance", "No full physical integration in this component; actual free-run coarse/half remains a later gate", "Existing later 5Pa/.005mm bounds are not changed or replaced by these component checks"],
+    "threshold_changes": false,
+    "project_solver_launched_by_author": false
+}

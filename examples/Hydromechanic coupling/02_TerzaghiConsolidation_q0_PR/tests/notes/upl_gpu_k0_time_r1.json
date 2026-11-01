@@ -1,0 +1,44 @@
+{
+  "stage": "upl_gpu_k0_time_r1",
+  "author_status": "build_recipe_only_not_executed",
+  "verified_local_remote_base_from_root": "bf5ef956d4ffaf91b0b52e57a740be03fc64cee4",
+  "intent": "Prepare a private GPU k=0 current-J acoustic necessary step guard before further actual-feedback integration admission; do not unlock public GPU dynamic seepage.",
+  "production_targets_owned_by_root": ["src/source/JSphGpu.h", "src/source/JSphGpu.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu"],
+  "intended_scale": "Use same-stage J-derived n and total mixture inertia density for cu^2=(K+4G/3+Kw/n)/rho_t. This recipe neither implements nor validates that formula; the separate component and reviewed production diff must do so.",
+  "baseline": {
+    "mode": "FreezeBaseline",
+    "receipt": "logs/upl_gpu_k0_time_r1.baseline.json",
+    "accepted_private_P2_receipt": "logs/upl_gpu_feedback_stage_r2.check.json",
+    "identities": "Bind accepted P2 Debug/Release source/build/program/runtime receipts, all265 historical build-source identities, four LF-normalised Git-base blobs recorded separately, and the other261 current unchanged sources. Git canonical blobs are not falsely required to equal historical mixed-CRLF raw bytes; the initial pre-build wrapper failure is retained in logs/upl_gpu_k0_time_r1.baseline_attempt1.json.",
+    "four_files_already_editable": true,
+    "canonical_GPU_invariants": "Verify the unchanged six canonical GPU executable/runtime entries from the accepted baseline; these old programs are invariants, not current-source truth.",
+    "no_redundant_old_source_or_program_copies": true,
+    "no_unfinished_fixture_inputs_bound": true
+  },
+  "build": {
+    "mode": "BuildGpu",
+    "order": ["Debug", "Release only after fresh Debug full build pass"],
+    "authoritative_recipe": "Replay actual logs/upl_gpu_feedback_{Configuration}_r2.build.json project_call arguments and verified tool, retaining the solution/project and every flag except explicit OutDir, IntDir and binlog paths.",
+    "full_Rebuild": true,
+    "outputs": "outputs/upl_gpu_k0_time_{Debug|Release}_r1/gpu",
+    "IntDir": "No-space TEMP/upl_gpu_k0_time_r1/{Debug|Release}/int",
+    "receipts": ["logs/upl_gpu_k0_time_{Configuration}_r1.source.json", "logs/upl_gpu_k0_time_{Configuration}_r1_project.call.json", "logs/upl_gpu_k0_time_{Configuration}_r1.build.json"],
+    "source_before_after_hashes": true,
+    "unchanged_other_source_count": 261,
+    "authoritative_object_closure_excluding_main": 110,
+    "runtime": "Copy only the accepted exact DLL/config closure beside the new isolated GPU executable and bind original/copy hashes.",
+    "fresh_paths_only": true,
+    "failure": "Preserve every new source identity, owned build receipt/log and partial output. Do not retry a retained label or overwrite old artifacts."
+  },
+  "root_commands_after_full_review_only": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_k0_time_build_r1.ps1 -Mode FreezeBaseline -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_k0_time_build_r1.ps1 -Mode BuildGpu -Configuration Debug -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_k0_time_build_r1.ps1 -Mode BuildGpu -Configuration Release -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "held": ["helper linking and separately authored fixture execution", "actual mechanical outer-loop feedback admission", "nonzero-k dynamic Darcy", "walls and gravity", "public GPU switch", "PART restart", "physical/full/formal acceptance"],
+  "CPU_default_Debug": "Root owns the required default CPU Debug build and its observed exit/log; this script does not run it or infer an exit from log text.",
+  "PDE_or_integrator_change_by_recipe": false,
+  "program_help_solver_or_component_run": false,
+  "Git_mutation": false,
+  "physical_acceptance": false
+}

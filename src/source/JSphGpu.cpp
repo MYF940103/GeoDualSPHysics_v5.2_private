@@ -1621,6 +1621,14 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon("GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
+  if(PorosityFeedback && (CaseNfloat || !PeriX || !PeriZ
+    || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
+    || !std::isfinite(RhopZero) || !std::isfinite(MassFluid) || !(MassFluid>0)
+    || !std::isfinite(SoilCte.ModulusK) || !(SoilCte.ModulusK>0)
+    || !std::isfinite(SoilCte.ModulusG) || SoilCte.ModulusG<0
+    || !std::isfinite(KernelH) || !(KernelH>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0)
+    || !std::isfinite(DtMin) || DtMin<0))
+    Run_Exceptioon("GPU porosity feedback requires finite saturated elastic material and step parameters, with X/Z periodicity and no floating particles.");
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
   cudaMemset(PoroThetag,0,sizeof(double)*Np);
@@ -1649,6 +1657,32 @@ void JSphGpu::ComputeSymplecticPorosity(bool corrector,double dt){
 }
 
 //==============================================================================
+/// Necessary k=0 acoustic scale from the current native J; not a stability proof.
+//==============================================================================
+double JSphGpu::GetPorosityStepWaveGpu(){
+  if(!std::isfinite(AceMax) || AceMax<0 || !std::isfinite(VelMax) || VelMax<0
+    || !std::isfinite(ViscDtMax) || ViscDtMax<0)
+    Run_Exceptioon("GPU porosity step requires finite nonnegative force-stage maxima.");
+  double cu2max=0;
+  unsigned invalid=Np;
+  double *cu2g=ArraysGpu->ReserveDouble();
+  unsigned *invalidg=ArraysGpu->ReserveUint();
+  cudaMemset(cu2g,0,sizeof(double));
+  cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+  const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
+  cusph::ComputePorosityWaveSpeed2(Np,Npb,1.-double(SoilCte.Porosity),double(RhopZero)
+    ,double(SoilCte.PoreWaterRho),m,double(SoilCte.PoreWaterBulkModulus),Codeg,PoroJg,cu2g,invalidg);
+  cudaMemcpy(&cu2max,cu2g,sizeof(double),cudaMemcpyDeviceToHost);
+  cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+  ArraysGpu->Free(cu2g);
+  ArraysGpu->Free(invalidg);
+  Check_CudaErroor("Failed computing GPU porosity acoustic scale.");
+  if(invalid<Np || !std::isfinite(cu2max) || !(cu2max>0))
+    Run_Exceptioon("GPU porosity step requires finite saturated native J, porosity and mixture inertia.");
+  return(double(KernelH)/(max(sqrt(cu2max),VelMax*10.)+double(KernelH)*ViscDtMax));
+}
+
+//==============================================================================
 /// Computes the variable Dt.
 /// Calcula un Dt variable.
 //==============================================================================
@@ -1657,7 +1691,8 @@ double JSphGpu::DtVariable(bool final){
   const double acemax=sqrt(double(AceMax));
   const double dt1=(AceMax? (sqrt(double(KernelH)/AceMax)): DBL_MAX); 
   //-dt2 combines the Courant and the viscous time-step controls.
-  const double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
+  double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
+  if(PorosityFeedback)dt2=GetPorosityStepWaveGpu();
   //-dtw limits the explicit pore-pressure diffusion update in u-pw PR formulation.
   double dtw=DBL_MAX;
   if(HydroMech && SoilCte.HydraulicConductivity>0.f){
@@ -1669,8 +1704,20 @@ double JSphGpu::DtVariable(bool final){
   }
   //-dt new value of time step.
   double dt=CFLnumber*min(dt1,dt2);
-  if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
-  else dt=min(dt,dtw);
+  if(PorosityFeedback){
+    //-Reject the already locked step before either Pre or Corr; never clip it.
+    const double bound=min(dt,dtw);
+    if(!std::isfinite(bound) || !(bound>0) || !std::isfinite(SymplecticDtPre) || !(SymplecticDtPre>0)
+      || double(DtMin)>bound || SymplecticDtPre>bound)
+      Run_Exceptioon(fun::PrintStr("GPU porosity current step or DtMin exceeds its necessary bound: step=%u current=%g bound=%g DtMin=%g.",Nstep,SymplecticDtPre,bound,DtMin));
+    dt=(FixedDt? FixedDt->GetDt(TimeStep,bound): bound);
+    if(!std::isfinite(dt) || !(dt>0) || dt>bound || dt<double(DtMin))
+      Run_Exceptioon(fun::PrintStr("GPU porosity requested step=%g is outside bound=%g or DtMin=%g; no clipping or DtMin uplift is allowed.",dt,bound,DtMin));
+  }
+  else{
+    if(FixedDt)dt=FixedDt->GetDt(TimeStep,dt);
+    else dt=min(dt,dtw);
+  }
   if(fun::IsNAN(dt) || fun::IsInfinity(dt))Run_Exceptioon(fun::PrintStr("The computed Dt=%f (from AceMax=%f, VelMax=%f, ViscDtMax=%f) is NaN or infinity at nstep=%u.",dt,AceMax,VelMax,ViscDtMax,Nstep));
   if(dt<double(DtMin)){ 
     dt=double(DtMin); DtModif++;

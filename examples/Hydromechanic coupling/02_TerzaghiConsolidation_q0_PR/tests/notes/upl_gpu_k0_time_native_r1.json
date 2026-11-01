@@ -1,0 +1,22 @@
+{
+  "stage": "upl_gpu_k0_time_native_r1",
+  "author_status": "run_and_offline_review_recipe_only_not_executed",
+  "recipe": "support/upl_gpu_k0_time_native_r1.ps1",
+  "actions": "One explicitly selected Run or Review; never launches another action automatically.",
+  "windows": [{"name":"Smoke","configuration":"Debug","steps":2,"saved_frames":3,"both_new_solves_memcheck_zero_errors_and_zero_leaks":true},{"name":"Extended","configuration":"Release","steps":16,"saved_frames":17,"prerequisite":"Fresh Smoke native review passed"}],
+  "sequence_per_window": ["Run -Kind newoff using the new isolated authoritative GPU main", "Run -Kind observer using the new Native helper with --solver 1", "Review using the immutable P2 r2 native reader"],
+  "frozen_inputs": "Reuse byte-bound logs/upl_gpu_observer_native_r1.inputs.json Smoke/Extended seeds. No XML edits, GenCase or shifted output time. Native512/fixed0, float-promoted n0=.25, dt=cadence=2^-24.",
+  "new_build_and_helper": ["logs/upl_gpu_k0_time_{Debug|Release}_r1.build.json", "logs/upl_gpu_k0_time_native_{Debug|Release}_r1.helper.json"],
+  "old_controls": "Adopt sealed logs/upl_gpu_feedback_{Smoke|Extended}_r2.review.check.json and both owned solver receipts/raw outputs; do not rerun old main or old observer integration.",
+  "reader": "Use actual immutable upl_gpu_feedback_Native_{Configuration}_r2 helper executable for --compare and --read-poro. Bind its program, compile/link receipts, tools, libraries and runtime without claiming old mutable source paths are current.",
+  "unchanged_gates": ["All original15 typed native arrays ID-aligned bit exact for newOFF vs retainedOFF and newobserver vs retainedobserver at every saved part", "Actual time, native Step and typed signed dterror exact; signed dterror<=1e-14, not absolute margin", "Read both old and new observer PARTs for three actual double J/n/theta arrays; finite/domain/derived n exact and every CSV byte equal old/new/retained", "Final actual live GPU export byte equal last saved native CSV and retained live export", "Nonempty J change and theta", "Every new Debug solve has memcheck0 errors and0 bytes leaked; no relaxations"],
+  "new_paths": "outputs/logs upl_gpu_k0_time_{Smoke|Extended}_r1_*; no old output or receipt overwritten",
+  "final_reviews": ["logs/upl_gpu_k0_time_Smoke_r1.review.check.json", "logs/upl_gpu_k0_time_Extended_r1.review.check.json"],
+  "prerequisite_for_new_time_components": "Both fresh native reviews must pass before the root admits Scale/FirstCurrent/FirstRequested component calls. This script never launches a time component.",
+  "feedback_flag_enabled": false,
+  "public_GPU_dynamic_enabled": false,
+  "current_J_acoustic_guard_tested_by_native_regression": false,
+  "physical_acceptance": false,
+  "build_or_solver_execution_by_author": false,
+  "Git_mutation": false
+}

@@ -313,6 +313,7 @@ protected:
   void ComputeSymplecticPre(double dt);
   void ComputeSymplecticCorr(double dt);
   void InitPorosityObserverGpu();
+  double GetPorosityStepWaveGpu();
   void ComputeSymplecticPorosity(bool corrector,double dt);
   double DtVariable(bool final);
 

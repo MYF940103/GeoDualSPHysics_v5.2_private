@@ -1,0 +1,10 @@
+{
+  "action": "FreezeBaseline",
+  "owned_exit_code_observed_by_root": 1,
+  "exact_reason": "P2 target differs from raw Git base blob",
+  "cause": "The new build-only wrapper incorrectly required raw historical mixed-CRLF build bytes to equal Git LF-normalised blobs. The preceding P2 stage verified canonical staged blobs, not raw-byte equality.",
+  "repair_before_first_source_freeze_or_build": "Record both immutable identities separately with the equality flag; retain historical build hashes and Git base bindings. Other261 source and canonical-program checks unchanged.",
+  "baseline_receipt_written": false,
+  "build_or_program_executed": false,
+  "physical_gate_changed": false
+}

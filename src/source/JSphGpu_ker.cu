@@ -1346,6 +1346,49 @@ void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,do
 }
 
 //==============================================================================
+/// Reduces the current native J-derived undrained speed without float narrowing.
+//==============================================================================
+__global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid)
+{
+  extern __shared__ double speed2[];
+  const unsigned tid=threadIdx.x;
+  const unsigned p=blockIdx.x*blockDim.x+tid;
+  double value=0.;
+  if(p<np && p>=npb && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
+    const double jp=j[p];
+    bool valid=(isfinite(jp) && jp>solid0);
+    if(valid){
+      const double n=1.-solid0/jp;
+      const double rho=rhow+(rho0-rhow)/jp;
+      valid=(isfinite(n) && n>0. && n<1. && isfinite(rho) && rho>0.);
+      if(valid){
+        value=(m+kw/n)/rho;
+        valid=(isfinite(value) && value>0.);
+      }
+    }
+    if(!valid){value=0.;atomicMin(invalid,p);}
+  }
+  speed2[tid]=value;
+  __syncthreads();
+  for(unsigned stride=blockDim.x/2;stride;stride>>=1){
+    if(tid<stride && speed2[tid]<speed2[tid+stride])speed2[tid]=speed2[tid+stride];
+    __syncthreads();
+  }
+  //-Only nonnegative finite doubles reach the reduction, so their unsigned bits are ordered.
+  if(tid==0)atomicMax((unsigned long long*)maxcu2,(unsigned long long)__double_as_longlong(speed2[0]));
+}
+
+void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid)
+{
+  if(np){
+    dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid);
+  }
+}
+
+//==============================================================================
 /// Extrapolates pore pressure to mDBC boundaries without touching other mDBC fields.
 //==============================================================================
 template<TpKernel tker,bool sim2d> __global__ void KerPorePressureMdbcCorrection

@@ -301,6 +301,9 @@ void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typec
 //-Caller initializes invalid=np and checks it before advancing any later state.
 void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,double solid0
   ,const typecode *code,const float *kplastic,const double *jn,const double *theta,double *j,unsigned *invalid);
+//-Current native J-derived undrained speed squared; caller initializes maxcu2=0 and invalid=np.
+void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell
