@@ -1,0 +1,18 @@
+{
+  "stage": "Offline frozen discrete-symbol and actual-integrator algebra audit only",
+  "predeclared_before_execution": true,
+  "project_solver": false,
+  "production_edits": false,
+  "fixed_set": {"modes": [1,2,3,4,5,6,7], "J": [1.0,1.01], "kHyd_input": [0.0,0.0001], "dt": ["2^-23","2^-24"], "cases": 56},
+  "geometry": "Retained actual 128 native initial positions,16x8 cell-centred periodic box Lx=.125,Lz=.0625,dp=2^-7; no geometry/domain/H adaptation. J1.01 is a frozen coefficient scenario, NOT globally compatible uniform deformation inside this fixed periodic box.",
+  "kernel": "Actual FunSphKernel.h. JSph.cpp:636 assigns KernelH=float(ctes.GetH()),then ConfigConstants1:1616 h=KernelH; therefore h=double(float(h_XML)). Ctes built from that h; support=float(2*h),support2=float(support*support),Eta2=float((h*.1)*(h*.1)) per line1633,V=V0*J. Recompute inverse x-z moment for every J. J1/m1 symbols must match retained actual-P3 complete.json within32768eps scaled.",
+  "symbols": "Kr uses V double times actual float momentum gradient; Ks/Ka use V double and double gradient with inverse moment; Ksig uses actual float(V) stress-gradient quadrature and float momentum gradient then receiver C. ell is positive Fourier symbol of negative symC pair Laplacian with actual Eta2; initial Lx/Gconstant defects are separately screened.",
+  "A": "state[V,Sxx,P]. Vdot=Kr(P-S)/rho; Sdot=M*Ksig*V; Pdot=-(Kw/n)*Ks*V-D*ell*P+D*rho_water*Ka*Vdot, D=(Kw/n)*kHyd/(rho_water*9.80665). n=1-(1-n0)/J,rho=rhow+(rho0-rhow)/J. This is a frozen mixed-arithmetic linear approximation, not an exact derivative of quantized floating-point storage.",
+  "actual_integrator_read": "JSphCpuSingle::ComputeStep_Sym predictor forces -> ComputeSymplecticPre -> cell divide -> corrector forces -> ComputeSymplecticCorr. JSphCpu.cpp predictors v_old+dt/2*Ace,S_old+dt/2*Rsig,p_old+dt/2*rate; correctors old+dt*midpoint-rate. Therefore only frozen elastic no-auxiliary [v,S,p] in exact arithmetic uses R=I+dt*A+dt^2*A^2/2. Position corrector is old/new velocity trapezoid; nonlinear J,oldrho,plasticity,walls,sort and quantization are NOT covered by the same R.",
+  "source_map_check": "For each fixed case, independently assemble three columns by the scalar predictor/corrector formulas, normalize S=diag(1,1/(rho*cu),1/(rho*cu)),compare to the matrix midpoint polynomial within32768eps scaled norm.",
+  "mathematical_checks": {"symbols":14,"matrix_cases":56,"receiver_symbol_relative_roundoff": "32768*DBL_EPS*max(1,scale)","constant_gradient_and_Lx": "32768*DBL_EPS*max(1,sumabs)","matrix_vs_cubic_roots": "32768*DBL_EPS*max(1,root norm), normalized by cu*k_cont", "polynomial_eigenvalue_residual": "32768*DBL_EPS scaled coefficient/root norm", "map_eigenvalues_vs_mapped_A": "32768*DBL_EPS scaled norm"},
+  "classification_not_pass_fiction": "Record semidiscrete growth and actual RK2 amplification separately. k0 imaginary roots have |R(iy)|^2=1+y^4/4>1 for any nonzero y; compute logamp using log1p even when rounded radius prints1. No unconditional/asymptotic stability claim.",
+  "finite_windows": {"retained_window":"2^-15 s,256/512steps", "preselected_m4_candidate_window":"2^-17 s,64/128steps,nominal continuum T_m4/8", "energy_initial_state":"v sine only,S=p=0", "existing_candidate_energy_budget":1.1,"note":"Report selected-initial-state maximum energy and energy-weighted all-state operator norm over every step. Operator norm is diagnostic, not a newly imposed physical acceptance gate. No dt/m/J/k search or tuning."},
+  "not_admitted": ["actual m4 solver run","private automatic timepolicy implementation","public XML","GPU","boundary or long-cycle validation","strict general conservation"],
+  "physical_acceptance": false
+}

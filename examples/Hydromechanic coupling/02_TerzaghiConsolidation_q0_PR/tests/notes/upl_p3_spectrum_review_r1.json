@@ -1,0 +1,60 @@
+{
+  "stage": "Post-run interpretation of the predeclared offline spectrum audit",
+  "scope": "Standalone actual-header symbols and 3x3 algebra only. No production edits, MSBuild substitution, project solver, formal-case or GPU execution.",
+  "recipe": "notes/upl_p3_spectrum_r1.json",
+  "receipt": "logs/upl_p3_spectrum_r1.check.json",
+  "results": {
+    "passed_mathematical_checks": true,
+    "actual_header_symbol_rows": 14,
+    "fixed_matrix_cases": 56,
+    "J1_m1_retained_complete_symbol_match": true,
+    "max_source_stage_vs_midpoint_polynomial_error": 1.1102230246251565e-16,
+    "max_normalized_matrix_vs_cubic_root_error": 1.1322097734007351e-15,
+    "max_map_eigenvalue_error": 1.0323080549251641e-15,
+    "all_tested_k1e4_semidiscrete_roots_have_negative_real_part": true,
+    "all_tested_k1e4_midpoint_roots_inside_unit_circle": true,
+    "least_negative_k1e4_growth_per_s": -19.666174252294258,
+    "max_all_initial_state_energy_operator_ratio_retained_window": 1.0511132630526427,
+    "max_all_initial_state_case": "J1.01,m2,k1e-4,dt2^-23; diagnostic nonnormal amplification, not monotone energy conservation"
+  },
+  "source_integrator": {
+    "actual_lines": "JSphCpuSingle.cpp ComputeStep_Sym: predictor Interaction_Forces -> ComputeSymplecticPre -> RunCellDivide -> corrector Interaction_Forces -> ComputeSymplecticCorr. JSphCpu.cpp pressure helpers4289/4306 and velocity/stress updates4355/4504 implement old+dt/2*rate then old+dt*midpoint-rate.",
+    "conclusion": "Only the frozen elastic no-auxiliary [v,Sxx,p] exact-arithmetic subsystem has R=I+dt*A+dt^2*A^2/2. Actual float velocity/pressure/rate writes, moving positions, nonlinear J, plasticity, boundaries and sorting are outside that equality.",
+    "position_not_same_map": "Actual corrector uses dt/2*(v_old+v_new). Do not apply the frozen three-variable polynomial to full particle positions or J."
+  },
+  "k0_not_asymptotically_stable": {
+    "identity": "For acoustic lambda=i*omega, |R|^2=1+(omega*dt)^4/4>1. The third static mode has lambda0=0 and R0=1. Use log1p to retain tiny positive acoustic growth even if direct eigenvalues round to1.",
+    "m4_J1_coarse_log_amplification_per_step": 2.5787225466786524e-11,
+    "m4_J1_half_log_amplification_per_step": 1.6117015917131213e-12,
+    "retained_window_coarse_modal_factor": 1.0000000066015298,
+    "retained_window_half_modal_factor": 1.0000000008251912,
+    "interpretation": "Halving dt reduces per-step log amplification approximately16-fold and fixed-time accumulated log amplification approximately8-fold. Tiny finite-window growth is not strict infinite-time stability. No low-k search was performed."
+  },
+  "preselected_m4_candidate": {
+    "proposal_only_not_run": true,
+    "native_geometry": "Retain actual128 nodes,16x8 periodic,dp2^-7,Lx.125,Lz.0625 and original material. Do not impose uniform J1.01 deformation inside the fixed box.",
+    "initial_state": "Use J1,p0,effective stress0 and the same weak vx amplitude2^-9, but sin(8*pi*x/Lx). No damping,HigherHG,SPR,wall,load or shifting change.",
+    "kHyd": [0.0,0.0001],
+    "dt": ["2^-23","2^-24"],
+    "end": "2^-17 s",
+    "steps": [64,128],
+    "sampling_proposal": "65 exact paired times at coarse dt; half every2steps, plus all actual predictor/corrector stage audits",
+    "coarse_J1_k1e4_roots_real_per_s": [-3677.0737631227526,-3677.0737631227526,-52276.17876808654],
+    "coarse_J1_k1e4_acoustic_abs_imag_per_s": 24753.659422194803,
+    "coarse_J1_k1e4_R_spectral_radius": 0.9995617528212529,
+    "coarse_J1_k1e4_selected_velocity_initial_energy_max": 1.0000000204673445,
+    "coarse_J1_k1e4_all_state_energy_operator_max": 1.0017544760201302,
+    "max_all_state_energy_operator_over_m4_J_k_dt_set": 1.0020666910779943,
+    "keep_original_physical_gates": "Original5Pa pressureRMS/.005mm displacement independent half gate,128native IDs/no exclusion,ledger/saturation/finite elastic bounds,actual current-n cu/CFL and diffusion-step audits,energy<=1.1,all actual postforce-rate/sentinel/periodic-owner assembly checks. No physical gate is replaced by these frozen spectra.",
+    "high_frequency_not_continuum_accuracy": "m4 has4 particles per wavelength; J1 k0 frozen acoustic frequency31791.685/s versus continuum cu*k=102943.708/s. This intentionally underresolved mode probes implementation/time policy, not continuum spatial accuracy or full-spectrum completeness."
+  },
+  "minimum_private_time_policy_followup": {
+    "not_implemented": true,
+    "default_OFF": "Leave existing u-pw path and all old step choices unchanged.",
+    "private_dynamic_ON": "At each native force state derive n,V,rho from J; use cu=sqrt((K+4G/3+Kw/n)/rho) rather than existing drained Cs0 and retain current-porosity diffusion limit D=(Kw/n)*k/gamma. Preserve the existing acceleration/viscosity limits. Reject invalid ledger states rather than silently clamp them.",
+    "limits": "Those scalar CFL/diffusion bounds are necessary controls, not a proof for the full acceleration-coupled operator. A semidiscrete growing root cannot be repaired by smaller dt. A strict absolute-stability promise at k0 is impossible for this midpoint polynomial; any initial private policy must disclose bounded-window accuracy/energy scope and await actual m4 validation.",
+    "not_a_domain_proof": "The fixed-lattice J1.01 coefficient experiment is not globally compatible uniform deformation. Continuous Routh/Jcrit work is separately recorded; neither it nor this14-symbol set proves arbitrary deforming/nonuniform/3D/boundary stability."
+  },
+  "physical_acceptance": false,
+  "public_XML_or_GPU_admission": false
+}
