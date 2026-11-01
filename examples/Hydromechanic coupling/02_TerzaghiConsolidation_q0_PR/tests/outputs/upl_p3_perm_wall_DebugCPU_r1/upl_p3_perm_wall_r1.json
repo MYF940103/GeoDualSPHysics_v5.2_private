@@ -1,0 +1,41 @@
+{
+  "status": "declared_bounded_smooth_variable_k_fixed_wall_recipe_not_executed",
+  "harness_identity": {
+    "path": "support/upl_p3_perm_wall_r1.cpp",
+    "bytes": 47787,
+    "sha256": "588e0538f22d2bdc046c0881b4310cc0f8e0fc6f01848c336b06c5d6d0b513d4"
+  },
+  "files": [
+    "support/upl_p3_perm_wall_run_r1.ps1",
+    "support/upl_p3_perm_wall_r1.cpp",
+    "notes/upl_p3_perm_wall_r1.json"
+  ],
+  "source_freeze": "logs/upl_p3_perm_build_r2.json, unchanged production and authoritative source objects; no edits or execution by this author",
+  "prerequisites": [
+    "perm defaultOFF r2 passed",
+    "perm components both configurations and root offline component review passed",
+    "root logs/upl_p3_perm_wave_review_r1.check.json and independent notes/upl_p3_perm_wave_independent_r1.json passed",
+    "logs/upl_p3_perm_periodic_ReleaseCPU_r1.check.json constantOFF pair passed",
+    "accepted oldwall ReleaseCPU r4 with retained raw/control hashes passed"
+  ],
+  "geometry_seed": "Adopt the complete immutable logs/upl_p3_wall_wave_seed_r3.inputs.json chain. Two unchanged exact-dp runtime seeds: dp1/512,32x32soil1024 +256 real fixed samples in two opposite parallel FreeSlip planes,x[0,.0625],ZPeriodic,g0. All geometry/initialJ1/p0/sigma0/vx=A*sin(2pi*x/.125),A2^-9 remain oldr4; no remap or manufactured porosity offset, no newDef/GenCase.",
+  "law": "Private optional smooth law Ck2^-13; k initially uniform then evolves only via actual same-stage J/n. Constant-law OFF is an implementation control, not a separately tuned scheme. No independent n/k integration, coefficient clipping, interface or discontinuous k model.",
+  "CLI_from_peer": {
+    "job": "--job STEPS SMOKE VARIABLE solverargs",
+    "half": "--half LEFT RIGHT NEWJSON, original wall comparator",
+    "effect": "--effect ON OFF HALF_MAX_P_RMS NEWJSON, measured half from newly passed original half JSON"
+  },
+  "timing_and_order": "Hard prerequisites -> Debug Build/positiveON2steps atdt2^-25 (3saves) -> Release Build -> ONcoarse1024 dt2^-25 and ONhalf2048 dt2^-26 to2^-15,257 exact common samples -> original independent half -> fresh constantOFF coarse1024 -> wholephysical.bin/native_ids/fixed_ids exact acceptedoldr4 -> resolved ON-minus-OFF effect. Stop later dependencies on failure; no old solver adoption/restart or physical/formal full-run launch.",
+  "gates": {
+    "original": "Keep every original finite/elastic/ledger/owner/geometry/currenttime/energy<=1.1 and wall state/C/Ace/face flux/reaction/negative-control gate. Per-run saved-point audits and covered26-field rollback remain exact, first real force statistics initialized rather than read uninitialized. No automatic two-stage helper-call count is claimed.",
+    "half": "Original all257 sample5Pa pressureRMS/.005mm maximum XYZ material displacement plus normalized pRMS/Pstar,fullXYZ velocityRMS/A,displacementRMS/Ustar each1e-4. Initial native state/IDs and common dyadic clocks exact; no interpolation.",
+    "ON_only": "All full-window maximum source/total-chain/pressure-chain/acceleration-chain RMS over original rate-roundoff budget >10. Evolved k span and maximum change normalized by initialk0 each>=.005. Smoke is not subject to whole-window nonempty criteria. Current physical face qn stays within original bound; wrong-Ace-zero/copy diagnostics remain nonempty.",
+    "reference": "Old constant-coefficient expm is diagnostic for variableON, not a hardtruth/theory gate. OFF keeps the original hard reference and must be byte-identical to oldr4 whole raw26/time trajectory plus fixed/native identity CSVs; new complete/modes are not required identical.",
+    "effect": "All257 same-initial ON-minus-constantOFF native pressureRMS max >max(.001Pa,10*just-measured independent-half max pressureRMS). Effect is not a half error or theory error; v/u difference descriptive.",
+    "time": "Original real production stage wave/pore bounds remain, plus saved-point independent currentki/Gk/necessary transport-scale diagnostics. Gradient-k necessary screen and finite window half agreement are not a general sufficient stability theorem."
+  },
+  "artifacts": "New shallow outputs/logs only. conductivity_ledger.csv/source_summary.csv plus existing wall_audit.csv with faceJ/facek/physicalqn/ratio, modes/identity/binary26/completion are hash-bound. Large raw physical/ledger local retention is not cloud Git backup. Accepted formal and old test data remain unchanged.",
+  "limits": "Private CPU,small elastic motion,constant-dp,static two parallel axis FreeSlip walls,g0,no publicXML/GPU/restart; no curves/corners/NoSlip/moving/gravity well-balancing,plasticity,interface flux or full physical acceptance.",
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false
+}

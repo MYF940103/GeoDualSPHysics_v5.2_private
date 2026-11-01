@@ -1,0 +1,198 @@
+{
+  "passed": true,
+  "decision": "Bounded private CPU smooth-k fixed-wall evidence passes independent offline verification; no blocking inconsistency found.",
+  "scope": "Read-only hashes, full native binaries and CSV calculations. No solver, build, production edit or threshold change.",
+  "git_head_at_review": "f8cba1deb45367f43c95ca3702ce39cdb5b70151",
+  "frozen_identity": {
+    "production_build": "logs/upl_p3_perm_build_r2.json",
+    "production_build_sha256": "7b639f4c93ff6cb856f0086ea704a5b2bb04ead6d850f0811d030eaacdb04b2a",
+    "harness_sha256": "588e0538f22d2bdc046c0881b4310cc0f8e0fc6f01848c336b06c5d6d0b513d4",
+    "runner_sha256": "9b69443f6a7d038335dd245956a8c1ec876d3182e120e8a0888a0abf64395332",
+    "recipe_sha256": "d48a25cf8f7f5f2f21f43f50552367f2fef6afc9234c29a69a6f0409f23c4943"
+  },
+  "final_bindings": [
+    {
+      "path": "logs/upl_p3_perm_wall_DebugCPU_r1.smoke.check.json",
+      "bytes": 15186,
+      "sha256": "97c7f680e77a14b32dda8af694029305cdf428d9bc1ff8b9154fd9f2eec91c34"
+    },
+    {
+      "path": "logs/upl_p3_perm_wall_ReleaseCPU_r1.check.json",
+      "bytes": 34716,
+      "sha256": "d79fa0816ab33fa4727164275cd0e27d82b651210262a6aef8bcc1eddab0634e"
+    },
+    {
+      "path": "logs/upl_p3_perm_wall_ReleaseCPU_r1_half.check.json",
+      "bytes": 404,
+      "sha256": "eee4d42d08e9c1046e1996817d001267a03f883bed1dd01e1df4a021a7533f7e"
+    },
+    {
+      "path": "logs/upl_p3_perm_wall_ReleaseCPU_r1_effect.check.json",
+      "bytes": 406,
+      "sha256": "1f440249c1dd7dc681fa414339689677f60d5a4842e70cd57cdb851812e4b34d"
+    },
+    {
+      "path": "logs/upl_p3_perm_wall_ReleaseCPU_r1_constant_exact.check.json",
+      "bytes": 3801,
+      "sha256": "fc911f0caa4dca4948b2bdbb1855cbddfac9d7d6e096c8633ad1170549a89c17"
+    }
+  ],
+  "integrity": {
+    "unique_SHA256_byte_bindings_verified": 602,
+    "mismatches": 0,
+    "owned_exit_zero_calls": [
+      "upl_p3_perm_wall_DebugCPU_r1_smoke.run.json",
+      "upl_p3_perm_wall_ReleaseCPU_r1_on_c.run.json",
+      "upl_p3_perm_wall_ReleaseCPU_r1_on_h.run.json",
+      "upl_p3_perm_wall_ReleaseCPU_r1_half_compare.run.json",
+      "upl_p3_perm_wall_ReleaseCPU_r1_off_c.run.json",
+      "upl_p3_perm_wall_ReleaseCPU_r1_effect_compare.run.json"
+    ],
+    "actual_solver_jobs": 4,
+    "comparison_owned_calls": 2,
+    "native_ids": 1024,
+    "fixed_ids": 256,
+    "material_wall_band": 256,
+    "decoded_26column_native_records": 792576,
+    "native_ledger_rows": 792576,
+    "long_window_rows": 789504,
+    "debug_rows": 3072,
+    "affine_and_offgrid_component_rows": 2048,
+    "all_raw_values_finite": true,
+    "all_saved_clocks_exact": true,
+    "all_native_LEDGER_ID_and_clock_alignments_exact": true,
+    "original_ID_tensor_and_initial_J1_positions_verified": true,
+    "two_static_wall_faces_128_each_verified": true,
+    "constant_OFF_whole_old_r4_files_byte_exact": true,
+    "exact_old_r4_native_field_pairs": 6842368,
+    "exact_old_r4_files": [
+      "physical.bin",
+      "native_ids.csv",
+      "fixed_ids.csv"
+    ],
+    "historical_policy": "Current build/source/program/runtime and immutable outputs/receipts verified. Historical prebuild canonical original paths are excluded from old-byte equality; their archived snapshots are verified instead."
+  },
+  "actual_windows": [
+    {
+      "job": "DebugCPU_r1_smoke",
+      "steps": 2,
+      "saves": 3,
+      "dt_s": 2.9802322387695312e-8,
+      "end_s": 5.960464477539063e-8
+    },
+    {
+      "job": "ReleaseCPU_r1_on_c",
+      "steps": 1024,
+      "saves": 257,
+      "dt_s": 2.9802322387695312e-8,
+      "end_s": 0.000030517578125
+    },
+    {
+      "job": "ReleaseCPU_r1_on_h",
+      "steps": 2048,
+      "saves": 257,
+      "dt_s": 1.4901161193847656e-8,
+      "end_s": 0.000030517578125
+    },
+    {
+      "job": "ReleaseCPU_r1_off_c",
+      "steps": 1024,
+      "saves": 257,
+      "dt_s": 2.9802322387695312e-8,
+      "end_s": 0.000030517578125
+    }
+  ],
+  "native_ledger": {
+    "n_volume_rho_max_abs_independent_formula_error": 0,
+    "k_law_max_relative_error": 0,
+    "all_J_solid_volume_and_saturated_domain_screens_passed": true,
+    "Ck": 0.0001220703125,
+    "law": "k=k0*exp((J-1)/((1-n0)*Ck)); native J starts1 and evolves through real integration.",
+    "coarse_max_k_span_over_k0": 0.05869503327771843,
+    "coarse_max_k_change_over_k0": 0.029778063891431783,
+    "half_max_k_span_over_k0": 0.05869503697031855,
+    "max_saved_force_gradient_necessary_CFL": 0.00003412615938632222,
+    "scope": "Source/rate GJ comes from explicit additional saved-point force audits; these are not automatic predictor/corrector stage counters."
+  },
+  "source_audit": {
+    "every_native_row_saved_ON_minus_OFF_arithmetic_and_reference_budget_verified": true,
+    "coarse_max_RMS_over_original_single_rate_roundoff": {
+      "source_RMS": 34.548940188462446,
+      "chain_RMS": 33.824875187843446,
+      "pressure_chain_RMS": 1256.7153919739237,
+      "acceleration_chain_RMS": 1222.8905529917486
+    },
+    "half_max_RMS_over_original_single_rate_roundoff": {
+      "source_RMS": 34.54933287291636,
+      "chain_RMS": 33.825013470911685,
+      "pressure_chain_RMS": 1256.7180864000763,
+      "acceleration_chain_RMS": 1222.8931092832324
+    },
+    "coarse_max_reference_error_Pa_s": 1.9937672864671185,
+    "max_ratios_each_exceed_original_10_gate": true,
+    "limitation": "Offline review recomputes saved source differences, complete chain sums, per-time RMS and 32epsF budgets. Full all-particle C/Ace product replay executes in the frozen harness; unsaved C/Ace fields are not independently reconstructed here. Constant-OFF audits transiently evaluate ON only to measure same-state differences, then restore covered persistent fields."
+  },
+  "physical_faces_and_reaction": {
+    "rows_each_long_window": 514,
+    "all_face_k_from_reconstructed_J_law_verified": true,
+    "all_physical_q_equals_constant_q_times_kface_over_k0_verified": true,
+    "coarse_max_abs_physical_qn_m_s": 4.538122583970792e-11,
+    "half_max_abs_physical_qn_m_s": 4.5381723077498056e-11,
+    "coarse_max_physical_qn_over_original_absolute_budget": 0.0004338090783382346,
+    "half_max_physical_qn_over_original_absolute_budget": 0.0004338138309823234,
+    "coarse_max_normal_velocity_budget_ratio": 0.00002005743834037953,
+    "coarse_max_reaction_budget_ratio": 0.0006087878153945092,
+    "coarse_physical_wrong_zero_detected": 510,
+    "coarse_physical_wrong_copy_detected": 512,
+    "residual_recomputed": "sqrt((fluid_force_x+wall_reaction_x)^2+(fluid_force_z+wall_reaction_z)^2), every face record.",
+    "all_unchanged_absolute_flux_velocity_reaction_budgets_passed": true,
+    "limitation": "This is a measured MLS reconstructed physical-plane constitutive flux and saved force/reaction budget, not proof of a globally conservative discrete interface flux. The source-defined bounds are not retuned; unsaved pairwise force sums are not independently regenerated."
+  },
+  "original_half_gates": {
+    "samples": 257,
+    "pressure_RMS_limit_Pa": 5,
+    "max_XYZ_material_displacement_limit_mm": 0.005,
+    "each_normalized_p_v_u_RMS_limit": 0.0001,
+    "all_passed_without_interpolation": true
+  },
+  "half": {
+    "max_pressure_RMS_Pa": 0.0003563088490877829,
+    "max_material_displacement_mm": 6.608617909835124e-11,
+    "max_pressure_RMS_over_Pstar": 3.4795786130145063e-7,
+    "max_velocity_vector_RMS_over_A": 7.597172864702011e-7,
+    "max_displacement_vector_RMS_over_Ustar": 3.3452159068194094e-7,
+    "max_J_difference": 8.440914633922603e-12,
+    "max_velocity_RMS": 1.4838228251371116e-9
+  },
+  "effect": {
+    "max_pressure_RMS_Pa": 0.023304724165944694,
+    "max_material_displacement_mm": 8.799384831892354e-11,
+    "max_pressure_RMS_over_Pstar": 0.000022758519749826756,
+    "max_velocity_vector_RMS_over_A": 0.000004452131628563133,
+    "max_displacement_vector_RMS_over_Ustar": 7.381320749205939e-7,
+    "max_J_difference": 9.701128789174618e-12,
+    "max_velocity_RMS": 8.695569587037369e-9,
+    "required_pressure_effect_Pa": 0.0035630884908778287,
+    "effect_over_measured_half": 65.40596514964233,
+    "meaning": "Same-initial variable-ON versus constant-OFF difference, not half error or theory error."
+  },
+  "energy": {
+    "coarse_max_saved_ratio_recomputed": 1.0015665547702313,
+    "half_max_saved_ratio_recomputed": 1.001566697391931,
+    "max_reconstruction_ratio_difference": 5.773159728050814e-15,
+    "original_1p1_budget_passed": true,
+    "arithmetic": "Reconstructed from native J/p/sigma/v using original energy expression, including float 18*K denominator=1610612736 before promotion."
+  },
+  "descriptive_only": {
+    "coarse_max_p_RMS_over_constant_reference_Pstar": 0.0013349658197555532,
+    "coarse_max_band_p_RMS_over_constant_reference_Pstar": 0.0018412310948562219,
+    "interpretation": "Variable-ON constant-coefficient reference comparisons are descriptive, not hard variable-k theory accuracy. Constant-OFF keeps the original hard reference and complete old-r4 exact controls."
+  },
+  "limitations": [
+    "Private CPU small elastic motion, smooth scalar conductivity, equal dp, g0, two static parallel axis FreeSlip walls and tangential periodicity only.",
+    "Gradient-k transport check is at explicit saved-point audits; real stage wave/pore limits remain active but neither proves generally sufficient spectral stability.",
+    "No new public/GPU, NoSlip/corners/curves/moving/gravity balance, discontinuous permeability interface, plasticity, exact restart or long-cycle physical acceptance.",
+    "Successful covered 26-field rollback and whole OFF trajectories are verified; no complete-object/timer rollback or directly observed automatic stage-helper count is claimed."
+  ],
+  "physical_acceptance": false
+}
