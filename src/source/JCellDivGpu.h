@@ -160,6 +160,7 @@ public:
   void SortDataArrays(const tsymatrix3d *a,tsymatrix3d *a2);
   void SortDataArrays(const float3 *a,float3 *a2);
   void SortDataArrays(const float *a,float *a2);
+  void SortDataArrays(const double *a,double *a2);
   void SortDataArrays(const byte *a,byte *a2);
 
   float* GetAuxMem(unsigned size);

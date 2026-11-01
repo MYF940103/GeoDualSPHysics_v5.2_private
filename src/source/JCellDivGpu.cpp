@@ -376,6 +376,14 @@ void JCellDivGpu::SortDataArrays(const float *a, float *a2) {
 }
 
 //==============================================================================
+/// Reorders data arrays according to SortPart (for double values).
+//==============================================================================
+void JCellDivGpu::SortDataArrays(const double *a,double *a2){
+  const unsigned pini=(DivideFull? 0: NpbFinal);
+  cudiv::SortDataParticles(Nptot,pini,SortPart,a,a2);
+}
+
+//==============================================================================
 /// Reorders data arrays according to SortPart (for byte values).
 /// Ordena arrays de datos segun SortPart (para valores byte).
 //==============================================================================

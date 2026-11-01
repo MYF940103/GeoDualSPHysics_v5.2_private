@@ -1,0 +1,38 @@
+{
+  "status": "author_only_no_source_patch_build_or_program_execution",
+  "root_verified_CPU_base_checkpoint": "25f40dc13b8bfacf698aab3e7668ec2afb252788",
+  "scope": "Only the planned single-double GPU sorting overload and existing float/byte/double-sigma copy controls. No J state, PDE, actual neighbor division, solver, GPU public entry or physical/default-OFF solver acceptance.",
+  "author_files": ["support/upl_gpu_sort_r1.cpp", "support/upl_gpu_sort_r1.ps1", "notes/upl_gpu_sort_r1.json"],
+  "production_change_pending_root": ["JCellDivGpu.h", "JCellDivGpu.cpp", "JCellDivGpu_ker.h", "JCellDivGpu_ker.cu"],
+  "contract": "actual a2[p]=a[p<pini?p:sortpart[p]] for p<np; JCellDivGpu effective pini is 0 for DivideFull and NpbFinal otherwise; no writes at p>=np. Input/output aliasing is not admitted or tested.",
+  "actual_calls": ["cudiv::SortDataParticles(unsigned,unsigned,const unsigned*,const double*,double*)", "JCellDivGpu::SortDataArrays(const double*,double*)"],
+  "fixture_access": "A normal derived JCellDivGpu fixture configures protected Nptot/NpbFinal/DivideFull/SortPart only. It owns its uploaded device map, frees and detaches SortPart before the base destructor; no external map owner can double-free it. No private-access macro. It does not call Divide or claim a generated cell permutation; maps are independently constructed native in-range permutations.",
+  "matrix": {
+    "sizes": [0, 1, 127, 128, 129, 257],
+    "prefixes": ["DivideFull=true with deliberately nonzero NpbFinal where possible, effective0", "DivideFull=false/pini0", "DivideFull=false/pini=floor(np/2)", "DivideFull=false/pini=np"],
+    "permutations": ["identity", "prefix and tail independently reversed", "prefix and tail independently one-position rotated"],
+    "types": ["new double", "legacy float", "legacy byte", "legacy six-double sigma"],
+    "APIs": ["actual cudiv CUDA overload", "actual JCellDivGpu wrapper"],
+    "cases": 576,
+    "direct_cases": 288,
+    "wrapper_cases": 288,
+    "zero_size_cases": 96,
+    "guard_slots": 17,
+    "notes": "DIVBSIZE remains256; np257 exercises the next CUDA block. Requested127/128/129 cases are retained. Zero-size calls must leave the entire guard-only destination unchanged. Partial-sort maps independently permute prefix and tail within their own ranges, while expected output for p<pini remains source[p]. The nonidentity prefix makes an incorrectly ignored pini detectable rather than vacuously passing. Every entire map remains an in-range native permutation."
+  },
+  "bit_patterns": "Finite doubles/floats include positive/negative zero, smallest subnormal, minimum normal, adjacent representable values near1 (double differences lost by float conversion), large finite positive/negative values and distinct indexed values. No arithmetic tolerance: complete source and target including guard slots are byte-compared; original map and its poison tail must remain unchanged.",
+  "gates": ["All576 CSV rows", "source/map unchanged", "all first-np destination/prefix bytes exactly expected", "all17 output tail slots unchanged", "Debug compute-sanitizer memcheck error-exit99 and zero-error summary", "Release same exact component matrix after Debug passed"],
+  "sequence_one_explicit_action_at_a_time": [
+    "FreezeBaseline before the root four-file source patch: copy actual old GPU Debug/Release canonical binaries plus all DLL/config and four old source files; seal current all-source identities. These old binaries are not claimed to have been built from the newer CPU/shared-class source.",
+    "Root applies exactly the four overload source edits after CPU checkpoint; no edits are performed by the driver.",
+    "Build Debug: allow those four expected original-source changes, freeze the four NEW source snapshots and all current source identities before a full authoritative GPU Rebuild. Use isolated tests output, no-space Temp IntDir; canonical GPU programs/server packages must remain byte-unchanged. Link fixture against every active authoritative project object except main, not a replacement CUDA implementation.",
+    "Run Debug: actual copy component under compute-sanitizer only, not a solver.",
+    "Build Release only after sealed Debug576/memcheck passed; distinct isolated output/IntDir and full authoritative Rebuild.",
+    "Run Release: direct copy component only. Native GPU default-OFF solver regression is a separate later gate."
+  ],
+  "commands": "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_sort_r1.ps1 -Mode FreezeBaseline|Build|Run -Configuration Debug|Release -ProductionBuildConfirmed -ExecutionAuthorized; select one action/configuration, no automatic sequence",
+  "build_environment": "VS/DualSPHysics5Re.sln + vcxproj authoritative; MSVCv14314.36.32532; CUDA_PATH_V11_7; original project compute86/sm86/use_fast_math preserved; no-space IntDir is required by the known nvcc nested-path quoting failure. OutDir is always under tests/outputs and PostBuildEvent is disabled.",
+  "ownership": "Fresh paths only; no retry, overwrite, cleanup, worker, notifier, solver or Git operation. Preserve failed compiler/memcheck logs and all snapshots. Root selects each later action only after source/recipe review.",
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false
+}
