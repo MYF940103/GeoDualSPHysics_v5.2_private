@@ -1,0 +1,23 @@
+{
+  "stage": "CPU private smooth-k components reviewed; actual variable-k integration remains next",
+  "base_commit": "f2bc2fdaf30c06e1a2ad30b9896d943742738a78",
+  "production_files": ["src/source/JSphCpu.cpp", "src/source/JSphCpu.h"],
+  "implementation": "Default-OFF private scalar k(J)=k0*exp((J-1)/((1-n0)*Ck)), derived from same-stage J without an independently integrated k state. Complete smooth product rule contains both pressure and acceleration gradient-k terms. Current local k, not just initial k0, enters the necessary pore-step scale. No new array or additional neighbor pass; no XML/GPU/public capability.",
+  "builds": "Authoritative CPU Debug and Release full Rebuild passed. Existing deprecated /Gm and third-party missing-PDB warnings remain. Prior mixed-layout incremental-build failure is preserved and diagnosed in upl_p3_perm_abi_r1.json; no physical source change was used to repair it.",
+  "default_OFF": "logs/upl_p3_perm_off_r2.check.json: 140 native frame pairs, 1040 IDs, all15 original arrays, time/step/dterror exact, no exclusions.",
+  "components": "Both configurations: 28 field groups, 40 main ON evaluations, 728 saved rate checks, 10 parameter/representability guards, two current-k time-scale components and 70 actual helper calls including controls. Unchanged retained constant-k component six-file outputs are byte-identical.",
+  "independent_review": {
+    "check": "logs/upl_p3_perm_review_r1.check.json",
+    "unique_artifacts_reverified": 515,
+    "maximum_reference_error_over_original_limit": 0.014790162485985163,
+    "maximum_relative_saved_k_law_error": 0.0,
+    "maximum_affine_source_error_over_original_limit": 0.010035306079687466,
+    "minimum_chain_effect_over_original_roundoff": 261300.2714328999,
+    "maximum_zero_drive_rate_Pa_per_s": 1.6312725909656267e-12
+  },
+  "independent_source_review": "Full helper and component reviewed separately: no missing smooth-k pressure/acceleration chain, no extra kdot term needed; all-particle reference independent of cell-list traversal and additional analytic affine source checks are nonempty. J1 exact degeneration requires the full support J1, not receiver-only J1.",
+  "next": "Recheck actual private constant-k trajectories with the new flag OFF, then bounded real predictor/corrector variable-k coarse/half tests with stage-current J/n/k ledger, measurable feedback and gradient-k/stability observations. Review all results before any public input/GPU/formal decision.",
+  "limitations": "This smooth product-rule discretization is not conservative interface transmissibility or a general wall flux proof. exp overflow/underflow is rejected rather than clipped; an intermediate exponential may reject extreme products otherwise mathematically representable. Dmax is a necessary scale, not sufficient variable-coefficient spectral stability. Existing manufacturing references and scale force-statistics are not physical theory or a coupled trajectory.",
+  "physical_acceptance": false,
+  "formal_cases_or_server_changed": false
+}

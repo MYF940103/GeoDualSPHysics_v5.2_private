@@ -162,6 +162,8 @@ protected:
   bool PorosityFeedback; ///<Fixture-only J-derived volume/storage/inertia; not the dynamic Darcy model.
   bool DynamicPorePressure; ///<Private CPU Darcy-acceleration fixture; no XML or GPU entry.
   bool DynamicPoreWall; ///<Private fixed parallel FreeSlip wall fixture; no XML or GPU entry.
+  bool DynamicPoreConductivity; ///<Private smooth J-dependent scalar conductivity; default OFF, no XML/GPU.
+  double DynamicPoreConductivityCk; ///<Void-ratio exponential-law coefficient, used only when enabled.
   double* PoroJc;      ///<Solid volume ratio J; private wall slots are stage-reconstructed quadrature.
   double* PoroThetac;  ///<Divergence from the last force stage, not necessarily the saved full time.
   double* PoroJPrec;   ///<Full-step J held during Symplectic prediction/correction.
@@ -407,6 +409,7 @@ protected:
   void ComputeSymplecticCorrPorePressure(double dt);
   void InitPorosityObserverCpu();
   void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;
+  double GetDynamicConductivityCpu(unsigned p)const;
   unsigned* GetDynamicPeriodicMapCpu();
   void ComputeDynamicPorePressureRateCpu();
   void InitDynamicPoreWallCpu();

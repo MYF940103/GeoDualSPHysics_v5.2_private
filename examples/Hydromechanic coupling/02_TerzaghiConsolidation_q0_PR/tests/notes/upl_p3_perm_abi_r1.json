@@ -1,0 +1,13 @@
+{
+  "stage": "Incremental CPU Debug ABI failure diagnosed before variable-k admission",
+  "source_base": "f2bc2fdaf30c06e1a2ad30b9896d943742738a78",
+  "failed_job": "logs/upl_p2_DebugCPU_p3_perm_r1_state.run.json",
+  "owned_exit": -1073741819,
+  "exception": "Windows Application Event1000: C0000005 in upl_p2_harness_r1.exe at relative offset0xF139B. The existing local PDB resolves this to JDsTimers::ResetTimer at source/JDsTimers.cpp:61. Run.out and redirected stdout were both empty; buffering alone does not prove where initialization stopped.",
+  "static_evidence": "logs/upl_p3_perm_abi_r1.log binds the actual object hashes and disassembled constructors before Rebuild. New JSphCpu constructor writes Timersc at this+0xCA8; residual JSphCpuSingle constructor clears this+0xCA8 for its old CellDivSingle layout, overwriting that pointer. The matching new companion reads Timersc at0xCA8. This is a cross-translation-unit layout conflict, not a failed Darcy-physics comparison.",
+  "build_limit": "Both prior MSBuild tool exit codes were0 and the log listed JSphCpuSingle.cpp; this did not establish a consistent ABI under deprecated /Gm minimal rebuild. Pair-only checks do not exercise the failing timer configuration.",
+  "action": "Preserve r1 source/program/companion/failed output/receipts. Keep all physical source unchanged and run the same authoritative DebugCPU and ReleaseCPU solutions using fresh perm_build_r2 labels with /t:Rebuild. Then independently rebuild the companion and re-execute all original OFF checks under p3_perm_r2; do not resume, overwrite or relabel the failed job.",
+  "future_workflow": "After changing the layout of CPU particle classes, require a complete authoritative Rebuild before using incremental objects for acceptance. No permanent project configuration or physical equation was changed for this build repair.",
+  "candidate_status": "No k(J) component, trajectory, public XML/GPU or physical acceptance follows from the successful tool builds. All later work remains gated by the repaired OFF regression.",
+  "physical_acceptance": false
+}

@@ -116,6 +116,7 @@ void JSphCpu::InitVars(){
   PorosityFeedback=false;
   DynamicPorePressure=false;
   DynamicPoreWall=false;
+  DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;
   PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
@@ -4270,6 +4271,8 @@ void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
 /// Initializes the development-only volume observer without physical feedback.
 //==============================================================================
 void JSphCpu::InitPorosityObserverCpu(){
+  if(DynamicPoreConductivity && (!DynamicPorePressure || !std::isfinite(DynamicPoreConductivityCk) || DynamicPoreConductivityCk<=0))
+    Run_Exceptioon("Variable conductivity requires the private dynamic model and finite Ck>0.");
   if(DynamicPoreWall && (!DynamicPorePressure || !CaseNpb))
     Run_Exceptioon("Dynamic wall fixture requires the private dynamic model and fixed boundary particles.");
   if(DynamicPorePressure && !PorosityFeedback)
@@ -4284,6 +4287,8 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
+  if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
+    Run_Exceptioon("Variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilHourglassXi!=0 || SoilDamping
@@ -4305,6 +4310,16 @@ void JSphCpu::GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &vo
   porosity=1.-(1.-double(SoilCte.Porosity))/j;
   volume=(double(MassFluid)/double(RhopZero))*j;
   rhot=double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/j;
+}
+
+//==============================================================================
+/// Lian void-ratio law, derived from same-stage J; k remains hydraulic conductivity (m/s).
+/// No independent k history, clamping or pairwise exponent evaluation.
+//==============================================================================
+double JSphCpu::GetDynamicConductivityCpu(unsigned p)const{
+  const double k0=SoilCte.HydraulicConductivity;
+  if(!DynamicPoreConductivity || k0==0 || PoroJc[p]==1.)return(k0);
+  return(k0*exp((PoroJc[p]-1.)/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)));
 }
 
 //==============================================================================
@@ -4349,8 +4364,10 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
   for(int p1=int(Npb);p1<int(Np);p1++)if(CODE_IsNormal(Codec[p1]) && CODE_IsFluid(Codec[p1])){
     double porosity,volume,rhot;
     GetPorosityFeedbackStateCpu(unsigned(p1),porosity,volume,rhot);
+    const double ki=GetDynamicConductivityCpu(unsigned(p1));
+    if(!std::isfinite(ki) || ki<0 || (khyd>0 && ki==0)){invalid++;continue;}
     double lp=0,da=0;
-    tdouble3 lx=TDouble3(0),gp=TDouble3(0);
+    tdouble3 lx=TDouble3(0),gp=TDouble3(0),gjstate=TDouble3(0);
     if(khyd>0){
       const tmatrix3d ci=CorrMatc[p1];
       for(unsigned group=0;group<(DynamicPoreWall? 2u: 1u);group++){
@@ -4371,13 +4388,21 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
           const double vol2=vol0*PoroJc[p2],dp=double(PorePressc[p1])-double(PorePressc[p2]);
           const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(Eta2));
           lp+=w*dp;lx=lx+d*w;gp=gp-gi*(vol2*dp);
+          if(DynamicPoreConductivity)gjstate=gjstate+gi*(vol2*(PoroJc[p2]-PoroJc[p1]));
           da+=vol2*((double(Acec[p2].x)-Acec[p1].x)*gi.x
             +(double(Acec[p2].y)-Acec[p1].y)*gi.y+(double(Acec[p2].z)-Acec[p1].z)*gi.z);
         }
       }
       }
     }
-    const double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));
+    double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));
+    if(DynamicPoreConductivity && khyd>0){
+      //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.
+      const double scale=ki/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk);
+      const double chain=scale*(gjstate.x*(gp.x+rhow*Acec[p1].x)
+        +gjstate.y*(gp.y+rhow*Acec[p1].y)+gjstate.z*(gp.z+rhow*Acec[p1].z));
+      rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da)+chain/gamma);
+    }
     if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;
     PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.
   }
@@ -4816,13 +4841,16 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
 //==============================================================================
 void JSphCpu::GetDynamicStepScalesCpu(double &wave,double &pore)const{
   const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
-  const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho,k=SoilCte.HydraulicConductivity;
+  const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
   const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
   double cu2max=0,dmax=0;
   for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
     double n,volume,rho;
     GetPorosityFeedbackStateCpu(p,n,volume,rho);
+    const double k=GetDynamicConductivityCpu(p);
+    if(!std::isfinite(k) || k<0 || (SoilCte.HydraulicConductivity>0 && k==0))
+      Run_Exceptioon("Dynamic conductivity must remain finite and positive for positive k0; no overflow/underflow clipping.");
     const double b=kw/n,cu2=(m+b)/rho;
     if(!(n>0 && n<1 && rho>0 && cu2>0) || !std::isfinite(cu2))
       Run_Exceptioon("Dynamic step scales require a finite saturated physical state.");

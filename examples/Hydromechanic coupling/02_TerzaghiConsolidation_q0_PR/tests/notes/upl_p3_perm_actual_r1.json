@@ -1,0 +1,32 @@
+{
+  "status": "declared_component_recipe_not_executed",
+  "scope": "Actual private CPU smooth conductivity k(J) helper manufactured components only, no physical trajectory or half integration.",
+  "files": [
+    "support/upl_p3_perm_actual_run_r1.ps1",
+    "support/upl_p3_perm_actual_r1.cpp",
+    "notes/upl_p3_perm_actual_r1.json"
+  ],
+  "source_freeze": "logs/upl_p3_perm_build_r1.json",
+  "retained_control": "Configuration-matched sealed logs/upl_p3_actual_{DebugCPU,ReleaseCPU}_r3_run.check.json and its six exact rates/summary/ct_suppression/ct_values/periodic_c/complete files. Current historical production-source paths are not compared to old build bytes; selected immutable old outputs are verified through their old manifest.",
+  "geometry_and_seed": "Reuse the retained actual_r3 static manufactured multi-cell fixture and upl_p2_feedback_harness_r1.cpp dependency, not GenCase or physical-case XML. No new geometry, particle spacing or physical solver is introduced.",
+  "protocol_from_test_agent": {
+    "CLI_OFF": "--off-control NEW_DIR: unchanged retained actual_r3 logic and old six-file schema",
+    "CLI_ON": "--out NEW_DIR: rates.csv/summary.csv/permeability.csv/guards.csv/periodic.csv/complete.json",
+    "ON_field_cases": 28,
+    "ON_helper_evaluations": 40,
+    "ON_rate_checks": 728,
+    "ON_complete_required": "passed=true, actual_private_helper=true, physical_trajectory=false, physical_acceptance=false",
+    "numerical_gates": "Inherited test-agent declaration: each actual-rate residual <=32*eps_float*max(1,abs(reference))+1e-6 Pa/s; R0 null .001; conductivity getter agreement 5e-13. Ck=1/8 and k0=double(float(1e-5)). The CPP, not this wrapper, defines/evaluates these manufactured formulas and original thresholds."
+  },
+  "execution_order": "Root finishes/freezes authoritative CPU Debug+Release first. Fresh companion Debug Build -> Run OFF exact six-file check -> Run ON and complete coverage gates; only the passed Debug final check permits companion Release Build and the same OFF/ON order. Preserve any failure and stop dependencies without threshold changes.",
+  "binding": "Builds use authoritative vcxproj-selected objects except main, project sources/headers, controls, runner/note/harness/base, five project libraries and copied canonical runtime. Before/after bytes+SHA256 validation; new labels only. Original off and on owned exits, commands, all output hashes and complete are sealed independently.",
+  "not_claimed": "No GenCase, actual ComputeStep_Sym trajectory, physical case, public XML/GPU, discontinuous/interface flux accuracy, wall variable-k acceptance, or generally sufficient gradient-k time stability. Gradient-k time policy remains necessary bounded audit to be tested by a later independently admitted actual half trajectory.",
+  "commands_after_root_authorization": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r1.ps1 -Mode Build -Configuration DebugCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r1.ps1 -Mode Run -Configuration DebugCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r1.ps1 -Mode Build -Configuration ReleaseCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r1.ps1 -Mode Run -Configuration ReleaseCPU -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false
+}

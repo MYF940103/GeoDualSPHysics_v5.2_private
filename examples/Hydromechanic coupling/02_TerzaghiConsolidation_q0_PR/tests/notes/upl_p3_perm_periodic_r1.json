@@ -1,0 +1,81 @@
+{
+  "status": "declared_not_built_or_run",
+  "scope": "no_wall_constant_conductivity_flag_OFF_implementation_regression",
+  "purpose": "After the private CPU smooth-k(J) patch and a full authoritative Rebuild, verify the still-constant-k private dynamic implementation against unchanged complete same-dt spatial r5 trajectories. This is distinct from the public-default-OFF regression.",
+  "new_files": [
+    "support/upl_p3_perm_periodic_r1.ps1",
+    "notes/upl_p3_perm_periodic_r1.json"
+  ],
+  "unchanged_actual_harness": "support/upl_p3_spatial_wave_harness_r2.cpp",
+  "harness_sha256": "58dd7a9c9b655b07947c1f9ff7e588705f2b77ea1bf961b6bb8ea57068cca146",
+  "source_freeze": "logs/upl_p3_perm_build_r2.json",
+  "source_freeze_sha256": "7b639f4c93ff6cb856f0086ea704a5b2bb04ead6d850f0811d030eaacdb04b2a",
+  "prerequisite_checks": [
+    "logs/upl_p3_perm_off_r2.check.json",
+    "logs/upl_p3_perm_actual_DebugCPU_r2.check.json",
+    "logs/upl_p3_perm_actual_ReleaseCPU_r2.check.json"
+  ],
+  "prerequisite_gates": [
+    "Root default-OFF checks must pass both DebugCPU and ReleaseCPU: ten groups, 140 native frame pairs, 1040 IDs, all 15 original arrays and clock/step/dterror exact, zero exclusions. Recheck each bound group and its comparison receipts.",
+    "Both configurations' actual manufactured smooth-k components must pass 28 fields, 40 ON evaluations, 728 rates, ten guards, two scales and 70 total actual helper calls. Check exact source-freeze identity, owned exit-zero calls, outputs and six whole-text constant-law OFF controls per configuration.",
+    "The accepted source is full-Rebuild r2, not the rejected mixed-layout incremental r1. The current source and its frozen snapshots, authoritative programs and build logs must match before companion build/run."
+  ],
+  "authoritative_objects": "src/VS/Intermediate/DualSPHysics_ReleaseCPU_x64 objects excluding main.obj, selected by authoritative CPU vcxproj; no production compilation in this wrapper",
+  "configuration": "ReleaseCPU companion only; no GPU, GenCase, seed preparation, public switch or production editing",
+  "geometry": {
+    "dimensions": 2,
+    "nx": 32,
+    "nz": 16,
+    "native_soil_ids": "0..511, unique IDs and initial tensor coordinates checked by unchanged harness",
+    "npb": 0,
+    "dp_m": 0.00390625,
+    "width_x_m": 0.125,
+    "width_z_m": 0.0625,
+    "periodicity": "X and Z"
+  },
+  "flags": {
+    "PorosityObserver": true,
+    "PorosityFeedback": true,
+    "DynamicPorePressure": true,
+    "DynamicPoreConductivity": false,
+    "DynamicPoreWall": false
+  },
+  "jobs": [
+    {
+      "tag": "c",
+      "steps": 512,
+      "dt_s": 5.960464477539063e-8,
+      "seed": "outputs/upl_p3_spatial_seed_r1_n32_c/CaseUplSpatial_n32_c",
+      "retained": "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_c",
+      "new_output": "outputs/upl_p3_perm_periodic_ReleaseCPU_r1_n32_c"
+    },
+    {
+      "tag": "h",
+      "steps": 1024,
+      "dt_s": 2.9802322387695312e-8,
+      "seed": "outputs/upl_p3_spatial_seed_r1_n32_h/CaseUplSpatial_n32_h",
+      "retained": "outputs/upl_p3_spatial_wave_ReleaseCPU_r5_n32_h",
+      "new_output": "outputs/upl_p3_perm_periodic_ReleaseCPU_r1_n32_h"
+    }
+  ],
+  "common_output": {
+    "end_s": 0.000030517578125,
+    "saved_samples_each": 257,
+    "actual_save_cadence_s": 1.1920928955078125e-7,
+    "physical_columns": 26,
+    "native_field_pairs_both_jobs": 6842368
+  },
+  "equality_gates": [
+    "Owned calls must exit zero and report actual ComputeStep_Sym, exact declared dyadic times/steps, 512 native soil IDs and 257 saves. All unchanged harness ledger/finite/elastic/natural/pore-step/periodic/energy/discrete-reference checks remain active.",
+    "physical.bin, modes.csv, endpoint_policy.csv and complete.json must each be byte-identical to the corresponding retained same-dt r5 file: eight whole-file comparisons, all 26 native fields at every saved time, no equality exclusions or metadata rewriting.",
+    "Independently read binary header [512,26,257], every binary saved clock and length, and every CSV actual step/time. No interpolation.",
+    "Coarse failure or any failed exact comparison stops the dependent half-labelled job. Retained failed and accepted evidence cannot be overwritten."
+  ],
+  "interpretation": "The c/h labels are two separate same-dt implementation controls, NOT a newly computed half-step or physical-accuracy gate. New conductivity flag stays OFF; this does not validate k(J) ON trajectories, variable-k interfaces, walls, GPU, sufficient general time stability or a public hydromechanics model. Original spatial controls and seeds are adopted by immutable hashes, not rerun.",
+  "commands_after_root_authorization_only": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_periodic_r1.ps1 -Mode Build -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_periodic_r1.ps1 -Mode Run -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "execution_authorized_by_this_note": false,
+  "physical_acceptance": false
+}

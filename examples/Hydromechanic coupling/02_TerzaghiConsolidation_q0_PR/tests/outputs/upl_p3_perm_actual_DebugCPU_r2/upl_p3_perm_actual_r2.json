@@ -1,0 +1,38 @@
+{
+  "status": "declared_r2_component_recipe_after_clean_authoritative_rebuild_not_executed",
+  "scope": "Actual private CPU smooth conductivity k(J) helper manufactured components only, no physical trajectory or half integration.",
+  "files": [
+    "support/upl_p3_perm_actual_run_r2.ps1",
+    "support/upl_p3_perm_actual_r1.cpp",
+    "notes/upl_p3_perm_actual_r2.json"
+  ],
+  "source_freeze": "logs/upl_p3_perm_build_r2.json",
+  "retained_control": "Configuration-matched sealed logs/upl_p3_actual_{DebugCPU,ReleaseCPU}_r3_run.check.json and its six exact rates/summary/ct_suppression/ct_values/periodic_c/complete files. Current historical production-source paths are not compared to old build bytes; selected immutable old outputs are verified through their old manifest.",
+  "geometry_and_seed": "Reuse the retained actual_r3 static manufactured multi-cell fixture and upl_p2_feedback_harness_r1.cpp dependency, not GenCase or physical-case XML. No new geometry, particle spacing or physical solver is introduced.",
+  "protocol_from_test_agent": {
+    "CLI_OFF": "--off-control NEW_DIR: unchanged retained actual_r3 logic and old six-file schema",
+    "CLI_ON": "--out NEW_DIR: rates.csv/summary.csv/permeability.csv/guards.csv/periodic.csv/scales.csv/complete.json",
+    "ON_field_cases": 28,
+    "ON_helper_evaluations": 40,
+    "ON_rate_checks": 728,
+    "ON_complete_required": "passed=true, actual_private_helper=true, field_cases28, helper_evaluations40 main ON cases, rate_checks728, guard_checks10, scale_checks2, total_actual_rate_helper_calls70, force_statistics_manually_initialized_for_component=true, physical_trajectory=false, physical_acceptance=false. The 70 actual helper calls include 40 main ON +24 same-field OFF +4 oldrho poison +2 expected rejects; 40 is not claimed to be the total call count.",
+    "numerical_gates": "Test-agent frozen thresholds, not wrapper-selected: actual-rate residual <=32*eps_float*max(1,abs(reference))+1e-6 Pa/s; R0 null .001; conductivity getter error <=5e-13*max(abs(kref),DBL_MIN), a relative scale, NOT absolute5e-13 or max(1,kref). Ck=1/8,k0=double(float(1e-5)). Uniform/nonuniform-J current-ki wave/pore scales are directly compared at relative64*eps_double; require currentkmax>k0 and pore scale difference from old-k0 scale >1e-3.",
+    "ON_guard_checks": 10,
+    "ON_scale_checks": 2,
+    "ON_total_actual_rate_helper_calls": 70,
+    "scale_scope": "Pure component initializes VelMax=ViscDtMax=0 and PoreDtSafety=.1 explicitly before the getter, not a physical-solver state or sufficient general stability proof."
+  },
+  "execution_order": "Root preserves failed incremental r1 outputs, completes authoritative Debug+Release /t:Rebuild and original full defaultOFF p3_perm_r2 checks first. Then fresh r2 companion Debug Build -> OFF six-file exact -> ON component gates; only passed Debug final permits Release Build and same OFF/ON order. No old runner, output or source relabelling.",
+  "binding": "Builds use authoritative vcxproj-selected objects except main, project sources/headers, controls, runner/note/harness/base, five project libraries and copied canonical runtime. Before/after bytes+SHA256 validation; new labels only. Original off and on owned exits, commands, all output hashes and complete are sealed independently.",
+  "not_claimed": "No GenCase, actual ComputeStep_Sym trajectory, physical case, public XML/GPU, discontinuous/interface flux accuracy, wall variable-k acceptance, or generally sufficient gradient-k time stability. Gradient-k time policy remains necessary bounded audit to be tested by a later independently admitted actual half trajectory.",
+  "commands_after_root_authorization": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r2.ps1 -Mode Build -Configuration DebugCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r2.ps1 -Mode Run -Configuration DebugCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r2.ps1 -Mode Build -Configuration ReleaseCPU -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_p3_perm_actual_run_r2.ps1 -Mode Run -Configuration ReleaseCPU -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false,
+  "root_default_OFF_admission": "logs/upl_p3_perm_off_r2.check.json must be passed and hash-bound before any Debug/Release companion Build or Run; its referenced group-check identities are also verified. Root owns the strict original defaultOFF sequence, using Label p3_perm_r2.",
+  "r2_reason": "The first incremental authoritative build passed compilation but original Debug state regression hit an access violation before new component execution. Root symbolized Timersc->Config/JDsTimers::ResetTimer and independently found a stale pre-layout-change Single constructor clearing this+CA8 (now Timersc) instead of CellDiv: a mixed-ABI /Gm object issue, not a changed field equation. Root preserves r1 failed evidence and rebuilds both authoritative configurations with /t:Rebuild under fresh perm_build_r2 labels, without source changes. The uncompiled/unexecuted component CPP remains r1; r1 runner/note are retained unchanged."
+}
