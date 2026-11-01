@@ -1,0 +1,50 @@
+{
+  "status": "declared_necessary_gradient_conductivity_time_component_not_executed",
+  "files": [
+    "support/upl_p3_perm_time_r1.cpp",
+    "support/upl_p3_perm_time_run_r1.ps1",
+    "notes/upl_p3_perm_time_component_r1.json"
+  ],
+  "source_prerequisites": "Root-owned clean authoritative CPU Debug/Release rebuild freeze logs/upl_p3_perm_time_build_r1.json and root default-OFF native regression label p3_perm_time_r1 must pass before companion execution. No production edit or program execution by this author.",
+  "CLI": {
+    "off_control": "--off-control NEW_DIRECTORY invokes retained raw actual helper controls unchanged (six files)",
+    "perm_control": "--perm-control NEW_DIRECTORY invokes retained smooth-k component main unchanged (seven files)",
+    "new_component": "--out NEW_DIRECTORY invokes only the added speed-cache/DtVariable component"
+  },
+  "retained_controls": {
+    "author_source": "support/upl_p3_perm_actual_r1.cpp copied without modification except its own final main renamed RetainedPermMain; included earlier legacy mains remain as written",
+    "raw": "Same-configuration retained upl_p3_actual_${Configuration}_r3_run.check.json sealed controls; rates.csv,summary.csv,ct_suppression.csv,ct_values.csv,periodic_c.csv,complete.json byte-identical",
+    "smooth_k": "Same-configuration retained outputs/upl_p3_perm_actual_${Configuration}_r2_on; rates.csv,permeability.csv,summary.csv,guards.csv,periodic.csv,scales.csv,complete.json byte-identical; original counts28 fields,40 evaluations,728 rates,10 guards,2 scales,70 actual rate calls. Run.out is provenance, not byte-equality gate."
+  },
+  "bounded_component": {
+    "geometry": "Existing actual-helper cell fixture: 2D9 or3D27 normal soil particles, no walls/no actual RunPeriodic. Both regular and original Dp/8-jitter patches, Dp=.25,h=.25, same Wendland API/float Eta2/C matrices.",
+    "fields": "J=1+b dot(x-center),b=(1/32,3D1/128,1/64),center=(1,3D1,1). p=p0=Ace=theta=velocity=effective_stress=plastic_strain=0. k0=float1e-5,Ck=.003,n0=float.3 and original material. J and k are manufactured smooth component inputs, not a physical equilibrium or calibrated law.",
+    "actual_sequence": "Fresh actual PreInteraction_Forces; current-J ComputeFreeSurfaceTracking; actual ComputeDynamicPorePressureRateCpu computes its native max. No active cached value is injected. Component force statistics VelMax/ViscDtMax/AceMax are explicitly initialized0,CFL=.2,PoreDtSafety=float.1,DtMin0,not claimed observed from a solver.",
+    "cache_reference": "Independent O(N^2) all-particle Wendland search, same stored fields and current C, GJ=sum Vj(Jj-Ji)Ci gradW. Per-node ki=k0 exp[(J-1)/((1-n0)Ck)],uk=(Kw/n)|alpha ki GJ|/gamma,gamma=rhow*9.80665. Max over actual normal fluid only; positive max and all native pressure rates exactly0 required.",
+    "gate": "Actual max and independently computed max agree within5e-13*max(abs(reference),DBL_MIN). GetDynamicStepScales remains pure current-J/k wave and diffusion, each matched to same relative ledger bound. New complete bound=min(old complete bound,Safety*h/actual cached max), independently matched; require new<=.5old before request tests. This is a local necessary scale, not sufficient variable-coefficient stability.",
+    "OMP": "For each dimension/jitter use actual OMP1 thenOMP2 with both OmpThreads and omp_set_num_threads set consistently. Require byte-identical actual native rates, maximum cache and selected dt vectors across threads.",
+    "requests": "Each of8 active fixtures calls actual DtVariable(false) in8 cases: variable safe,current .25new; fixed .5new with minimum .125new; fixed at actual new bound; current midway between actual old/new rejected; fixed midway rejected; DtMin midway rejected; DtMin .75new above fixed .5new rejected; current at new bound accepted. At-bound requests use the actual formula bound after independent reference agreement, avoiding an independently rounded boundary request. Require expected exception category,DtModif0 and all covered physical/native arrays/clock byte-unchanged.",
+    "reset_negative_checks": "Only deliberate stale-cache tests assign DBL_MAX: actual rate with k0 must reset0, lawOFF must reset0, uniformJ1 lawON must reset0. Then restore affineJ/lawON and require actual helper freshly reproduces original positive cache byte-exactly. Pressure/Ace/theta stay0. Never use poisoned max for active limit or pretend zero driving means zero coefficient-transport speed."
+  },
+  "output_counts": {
+    "active_fixtures": 8,
+    "cache_cases": 40,
+    "actual_rate_helper_calls": 40,
+    "actual_DtVariable_cases": 64,
+    "thread_pairs_exact": 4,
+    "node_ledger_rows": 720,
+    "artifacts": [
+      "cache.csv (40 rows)",
+      "node_ledger.csv (720 rows)",
+      "requests.csv (64 rows)",
+      "complete.json",
+      "Run.out"
+    ]
+  },
+  "rollback_scope": "DtVariable covered-state bytes bind Np/Npb/Nstep/TimeStep,Ids/code/position/Velrhop,J/theta,p/p0/rate,effective stress,plastic strain,current C. FixedDt telemetry may update by its intended API and is not mislabeled whole-program rollback. No integration step or full-trajectory claim.",
+  "order": "After root prerequisites: Debug companion Build -> rawOFFcontrol six-file exact -> retained smooth-k seven-file exact -> new cache component. Only complete Debug pass permits the same Release sequence. Preserve failed recipes/output; no rebaseline, thresholds changed, prior artifact overwrite or automatic physical long run.",
+  "physical_trajectory": false,
+  "general_variable_coefficient_stability_proven": false,
+  "physical_acceptance": false,
+  "execution_authorized_by_note": false
+}

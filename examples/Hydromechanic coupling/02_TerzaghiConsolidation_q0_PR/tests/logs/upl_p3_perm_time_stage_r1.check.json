@@ -1,0 +1,127 @@
+{
+  "passed": true,
+  "scope": "Private CPU smooth conductivity necessary time guard and exact integration regression",
+  "source_changes": [
+    "src/source/JSphCpu.h",
+    "src/source/JSphCpu.cpp"
+  ],
+  "source_purpose": "Reuse same-pass GJ for a padded thread-local maximum speed; add Safety*h/maxuk to DtVariable. No new neighbor pass or rate arithmetic.",
+  "default_OFF_native_frame_pairs": 140,
+  "default_OFF_all15_arrays_clock_step_dterror_exact": true,
+  "configurations": [
+    "DebugCPU",
+    "ReleaseCPU"
+  ],
+  "cache_cases_per_configuration": 40,
+  "actual_DtVariable_cases_per_configuration": 64,
+  "expected_rejections_per_configuration": 32,
+  "actual_periodic_and_wall_solver_jobs": 4,
+  "native_records_bitwise_exact": 789504,
+  "native26_field_values_bitwise_exact": 20527104,
+  "periodic_half": {
+    "max_pressure_RMS_Pa": 0.00022569230859501496,
+    "max_material_displacement_mm": 2.015054789694659e-11,
+    "max_pressure_RMS_over_Pstar": 2.2040264565969515e-07,
+    "max_velocity_vector_RMS_over_A": 4.3013943662372614e-07,
+    "max_displacement_vector_RMS_over_Ustar": 1.241461423189554e-07,
+    "max_J_difference": 2.0805579481475434e-12
+  },
+  "wall_half": {
+    "passed": true,
+    "samples": 257,
+    "native_ids": 1024,
+    "columns": 26,
+    "max_pressure_RMS_Pa": 0.0003563088490877829,
+    "max_material_displacement_mm": 6.608617909835124e-11,
+    "max_pressure_RMS_over_Pstar": 3.4795786130145063e-07,
+    "max_velocity_vector_RMS_over_A": 7.597172864702018e-07,
+    "max_displacement_vector_RMS_over_Ustar": 3.3452159068194094e-07,
+    "max_J_difference": 8.440914633922603e-12,
+    "physical_acceptance": false
+  },
+  "reviewed_checks": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_off_r1.check.json",
+      "bytes": 7234,
+      "sha256": "3a3f1c7c5d1b0eec6bbc437e1c547d491b22943bdee811625bca6dc14e2cd948"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_DebugCPU_r1.check.json",
+      "bytes": 29909,
+      "sha256": "61000e066251dc1e7bfac41fb6b733c5bc5a92fe45265afeae1d0ef0d642113c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_ReleaseCPU_r1.check.json",
+      "bytes": 30011,
+      "sha256": "06c2f90632373b2b1624acb82826db7b99adb9dd7e9af8ea565fd2e2c1d6242c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_periodic_r1_repair.check.json",
+      "bytes": 13407,
+      "sha256": "9f08f91c64a27341768bd447d2771140664c258bdf37f053f5d029fdd696006f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_wall_ReleaseCPU_r2.check.json",
+      "bytes": 53561,
+      "sha256": "52f820a347a072818da1b00e71e4f1e0159514ccb3ca368949d05900ae87c1f2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_p3_perm_time_independent_r1.json",
+      "bytes": 8423,
+      "sha256": "fc267fa4ab222719fbbb29802bed2b91b35c7d79ef2bda7b9b0fd10df4b83702"
+    }
+  ],
+  "retained_wrapper_failures": [
+    "Initial default-OFF companion invocation omitted its required build-confirmation flag and exited before build/run; corrected explicit invocation used the unused fresh label.",
+    "Periodic r1 completed both actual jobs and the half comparator; empty stdout left no Tee log and prevented only the comparator receipt. Offline NumPy and exact-byte review adopted the completed results without rerunning or fabricating a historical log.",
+    "First Wall r2 precheck saw both Raw and corrected seed pairs. No build/program ran. Original unbuilt wrapper/note archived in outputs/upl_p3_perm_time_wrapper_precheck_r1; recipe now selects exactly the same corrected CaseUplWall runtime seeds as the retained control."
+  ],
+  "figures": "Existing periodic/wall comparison figures remain applicable because complete numerical CSV/physical results are byte-identical; no duplicate plots produced.",
+  "gradient_bound_never_dominant_inferred": false,
+  "necessary_not_sufficient_stability": true,
+  "public_XML_or_GPU_or_formal_release": false,
+  "physical_acceptance": false,
+  "raw_binary_ledger_executable_cloud_backup_claimed": false,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_off_r1.check.json",
+      "bytes": 7234,
+      "sha256": "3a3f1c7c5d1b0eec6bbc437e1c547d491b22943bdee811625bca6dc14e2cd948"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_DebugCPU_r1.check.json",
+      "bytes": 29909,
+      "sha256": "61000e066251dc1e7bfac41fb6b733c5bc5a92fe45265afeae1d0ef0d642113c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_ReleaseCPU_r1.check.json",
+      "bytes": 30011,
+      "sha256": "06c2f90632373b2b1624acb82826db7b99adb9dd7e9af8ea565fd2e2c1d6242c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_periodic_r1_repair.check.json",
+      "bytes": 13407,
+      "sha256": "9f08f91c64a27341768bd447d2771140664c258bdf37f053f5d029fdd696006f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_p3_perm_time_wall_ReleaseCPU_r2.check.json",
+      "bytes": 53561,
+      "sha256": "52f820a347a072818da1b00e71e4f1e0159514ccb3ca368949d05900ae87c1f2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_p3_perm_time_independent_r1.json",
+      "bytes": 8423,
+      "sha256": "fc267fa4ab222719fbbb29802bed2b91b35c7d79ef2bda7b9b0fd10df4b83702"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_perm_time_stage_r1.py",
+      "bytes": 4658,
+      "sha256": "8ac978fef70c3cadf11ba2c42e4c11c1bdfb17e9004856a969f67d8c861be698"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_p3_perm_time_periodic_review_r1.py",
+      "bytes": 6061,
+      "sha256": "ececf6c833949638d296c402b6047e6f538fd698b49767b04449e930775a10ab"
+    }
+  ]
+}

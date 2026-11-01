@@ -1,0 +1,57 @@
+{
+  "status": "declared_time_cache_patch_actual_trajectory_regressions_not_executed",
+  "files": [
+    "support/upl_p3_perm_time_trajectory_r1.ps1",
+    "notes/upl_p3_perm_time_trajectory_r1.json"
+  ],
+  "no_production_or_CPP_edits": true,
+  "source_freeze": "logs/upl_p3_perm_time_build_r1.json; authoritative DebugCPU/ReleaseCPU full Rebuild",
+  "prerequisites": [
+    "logs/upl_p3_perm_time_off_r1.check.json: all140 native frame pairs exact",
+    "logs/upl_p3_perm_time_DebugCPU_r1.check.json passed",
+    "logs/upl_p3_perm_time_ReleaseCPU_r1.check.json passed"
+  ],
+  "unchanged_harnesses": {
+    "periodic": {
+      "path": "support/upl_p3_perm_wave_r2.cpp",
+      "bytes": 23974,
+      "sha256": "149f152121a3c223b0a6fb0cda51d69a7a6992f68e6d4c318e506ba3345ea57c"
+    },
+    "wall": {
+      "path": "support/upl_p3_perm_wall_r1.cpp",
+      "bytes": 47787,
+      "sha256": "588e0538f22d2bdc046c0881b4310cc0f8e0fc6f01848c336b06c5d6d0b513d4"
+    }
+  },
+  "reuse": "Same reviewed fixtures, authoritative vcxproj objects excluding main, compile/link/runtime receipt logic from accepted wave_run_r2 and wall_run_r1. This small two-geometry wrapper omits already-accepted OFF/effect/k0 physical jobs, does not edit fixtures or run GenCase. Root is the only execution owner.",
+  "commands": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r1.ps1 -Mode Build -Geometry Periodic -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r1.ps1 -Mode Run -Geometry Periodic -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r1.ps1 -Mode Build -Geometry Wall -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r1.ps1 -Mode Run -Geometry Wall -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "periodic": {
+    "retained": "logs/upl_p3_perm_wave_ReleaseCPU_r2.check.json: outputs/upl_p3_perm_wave_ReleaseCPU_r2_on_c/on_h",
+    "fresh_labels": "upl_p3_perm_time_periodic_ReleaseCPU_r1_on_c/on_h",
+    "geometry": "unchanged32x16 periodic,512 IDs0..511,dp1/256, mapped compatible J2^-15, Ck2^-10",
+    "timing": "coarse2^-24/512steps,half2^-25/1024steps,end2^-15,257 exact shared native times i2^-23",
+    "compared": "physical.bin,native_ids.csv,ledger.csv,modes.csv,endpoint_policy.csv,initial_source.csv,complete.json whole-file byte exact"
+  },
+  "wall": {
+    "retained": "logs/upl_p3_perm_wall_ReleaseCPU_r1.check.json: outputs/upl_p3_perm_wall_ReleaseCPU_r1_on_c/on_h",
+    "fresh_labels": "upl_p3_perm_time_wall_ReleaseCPU_r1_on_c/on_h",
+    "geometry": "unchanged32x32soil1024 IDs256..1279 plus256 fixed samples; two opposite parallel FreeSlip planes,Zperiodic,g0,Ck2^-13",
+    "timing": "coarse2^-25/1024steps,half2^-26/2048steps,end2^-15,257 exact shared native times i2^-23",
+    "compared": "physical.bin,native_ids.csv,fixed_ids.csv,conductivity_ledger.csv,modes.csv,endpoint_policy.csv,source_summary.csv,wall_audit.csv,component and offgrid CSV/check JSON,complete.json whole-file byte exact"
+  },
+  "gates": "Every original actual fixture numerical/safety/ledger/ownership/energy<=1.1/source-nonempty/flux-reaction-negative gate remains unchanged. Each coarse result must complete and match all retained bytes before half starts. Both jobs then undergo the unchanged original all257-sample pressureRMS<=5Pa/material-displacement-max<=.005mm and normalized p/v/u RMS<=1e-4 half comparator. Entire binary header, length, real native-ID order and all saved clocks are checked explicitly; full SHA equality gives every26 field bit at every native saved sample.",
+  "observation_scope": "New actual DtVariable necessary gradient-k guard must pass in real execution, but this regression does NOT infer that gradient bound never dominated: unchanged harness independent u_k screens are saved-point only, and endpoint_policy complete_bound retains its prior pure wave/pore/force diagnostic definition. No new telemetry is added, and historical cumulative dterror is not misused as an every-stage bound trace.",
+  "diagnostic_exclusions": "Only Run.out, initialization VTK, command/build/provenance files are outside old-vs-new byte comparison. All listed native and existing numerical diagnostics, including interval/error telemetry carried by these files, must remain exact. No numerical exclusions or relaxed thresholds.",
+  "failure": "Seal owned call exit/log/output; stop later dependent jobs. A mismatch is reported exactly; never change gates or overwrite/restart retained runs. Any completed solver is retained and only new analysis repaired offline if appropriate.",
+  "outputs": "All new build snapshots, runtime, binaries and raw outputs stay in shallow tests/outputs/upl_p3_perm_time_{periodic,wall}_ReleaseCPU_r1*; immutable receipts in tests/logs with same label. Raw physical/ledger files are local hash-bound evidence, not automatically cloud-Git artifacts.",
+  "physical_acceptance": false,
+  "public_or_formal_admission": false,
+  "general_sufficient_stability_proven": false,
+  "gradient_bound_never_dominant_inferred": false
+}
+

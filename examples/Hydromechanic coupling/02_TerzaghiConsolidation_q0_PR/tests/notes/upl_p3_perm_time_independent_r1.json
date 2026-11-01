@@ -1,0 +1,164 @@
+{
+  "passed": true,
+  "decision": "Private gradient-conductivity necessary time-scale component passes independent offline review; no blocking implementation inconsistency found.",
+  "scope": "Read-only actual component receipts/CSV/control/hash audit, not a physical trajectory or full stability proof.",
+  "git_base_at_review": "834f39caa1ab8ac226d20407b1dda9a4c500a797",
+  "identities": {
+    "production_header_sha256": "6ec399f32de87f8421bb9d29fb5ca9ed822fcd7453958b8a6913721ff1bdff75",
+    "production_cpp_sha256": "b7a6e6aa0d59817a235647d958d48636b6bc63cb427d529ebc8563af5b3bac64",
+    "component_cpp_sha256": "ba274a28abd7a4a4aeec1d8e540a873ed8278bbc405f07735743de770689cad3",
+    "runner_sha256": "95f8db45164ac9414f5253b0e40d1fdaefa783e52a7963ad8e713a1b97283283",
+    "declaration_sha256": "3c2a04ef09b1a9785307b39cd560dbdc3b907d7305096931ad663249d01e591e"
+  },
+  "evidence": [
+    {
+      "path": "logs/upl_p3_perm_time_DebugCPU_r1.check.json",
+      "bytes": 29909,
+      "sha256": "61000e066251dc1e7bfac41fb6b733c5bc5a92fe45265afeae1d0ef0d642113c"
+    },
+    {
+      "path": "logs/upl_p3_perm_time_ReleaseCPU_r1.check.json",
+      "bytes": 30011,
+      "sha256": "06c2f90632373b2b1624acb82826db7b99adb9dd7e9af8ea565fd2e2c1d6242c"
+    },
+    {
+      "path": "logs/upl_p3_perm_time_build_r1.json",
+      "bytes": 8407,
+      "sha256": "90cf71ff4fcd3f1a48fd7cdc7c71914de6cb5fbd8ddcdb7b87d5f64ac19345c4"
+    },
+    {
+      "path": "logs/upl_p3_perm_time_off_r1.check.json",
+      "bytes": 7234,
+      "sha256": "3a3f1c7c5d1b0eec6bbc437e1c547d491b22943bdee811625bca6dc14e2cd948"
+    }
+  ],
+  "integrity": {
+    "unique_SHA256_byte_bindings_verified": 561,
+    "mismatches": 0,
+    "owned_exit_zero_calls": [
+      "upl_p3_perm_time_DebugCPU_r1_off.run.json",
+      "upl_p3_perm_time_DebugCPU_r1_perm.run.json",
+      "upl_p3_perm_time_DebugCPU_r1_time.run.json",
+      "upl_p3_perm_time_ReleaseCPU_r1_off.run.json",
+      "upl_p3_perm_time_ReleaseCPU_r1_perm.run.json",
+      "upl_p3_perm_time_ReleaseCPU_r1_time.run.json"
+    ],
+    "historical_policy": "Current clean Rebuild/source/runtime and component bindings verified. Prebuild historical canonical original program paths are excluded from old-byte equality; their immutable archived snapshots are verified.",
+    "original_constant_six_files_each_configuration_byte_exact": true,
+    "original_smooth_k_seven_files_each_configuration_byte_exact": true,
+    "default_OFF_scope": "Bound root default-OFF final is passed with 140 native frame pairs, all 15 arrays/clock/step/dterror exact and zero exclusions. This review does not independently re-decode those separate BI4 trajectories."
+  },
+  "configurations": {
+    "DebugCPU": {
+      "cache_rows": 40,
+      "native_rows": 720,
+      "request_rows": 64,
+      "actual_rate_calls": 40,
+      "accepted": 32,
+      "rejected": 32,
+      "configured_OMP1_2_pairs_native_cache_and_requests_exact": 4,
+      "old_constant_complete_files_exact": 6,
+      "old_smooth_k_complete_files_exact": 7
+    },
+    "ReleaseCPU": {
+      "cache_rows": 40,
+      "native_rows": 720,
+      "request_rows": 64,
+      "actual_rate_calls": 40,
+      "accepted": 32,
+      "rejected": 32,
+      "configured_OMP1_2_pairs_native_cache_and_requests_exact": 4,
+      "old_constant_complete_files_exact": 6,
+      "old_smooth_k_complete_files_exact": 7
+    }
+  },
+  "independent_numerics": {
+    "reconstruction": "Recreated 2D9/3D27 native positions by ID, original Dp/8 jitter, manufactured affine J and analytic gradient b. Independently recomputed n/rho/ki, uk and per-case native maxima plus pure wave/pore and combined bounds from saved node fields.",
+    "alpha": "1/((1-double(float(.3)))*.003)",
+    "maximum_J_formula_absolute_error": 0,
+    "maximum_recorded_GJ_error_against_analytic_affine_b": 2.0816681711721685e-17,
+    "maximum_node_speed_relative_error_against_analytic_gradient": 6.174684231982479e-16,
+    "maximum_actual_cache_relative_error_against_independent_node_max": 0,
+    "active_bound_cases": [
+      {
+        "dimension": 2,
+        "jitter": 0,
+        "speed_m_s": 2920.1842989504416,
+        "old_bound_s": 0.000035608649521075036,
+        "new_bound_s": 0.000008561103619903172,
+        "new_over_old": 0.2404220248464146
+      },
+      {
+        "dimension": 2,
+        "jitter": 1,
+        "speed_m_s": 1838.2039724154342,
+        "old_bound_s": 0.00005656816153086418,
+        "new_bound_s": 0.000013600231937089421,
+        "new_over_old": 0.24042202484641456
+      },
+      {
+        "dimension": 3,
+        "jitter": 0,
+        "speed_m_s": 7551.784377655357,
+        "old_bound_s": 0.000014109474303102883,
+        "new_bound_s": 0.0000033104759249350962,
+        "new_over_old": 0.23462787158605006
+      },
+      {
+        "dimension": 3,
+        "jitter": 1,
+        "speed_m_s": 5991.519516676494,
+        "old_bound_s": 0.000017783753741022026,
+        "new_bound_s": 0.000004172564289066452,
+        "new_over_old": 0.23462787158605
+      }
+    ],
+    "fresh_positive_cache_injected_by_fixture": false,
+    "every_actual_native_pressure_rate_exactly_zero": true,
+    "interpretation": "Positive coefficient-transport speed exists even for zero p/Ace/theta driving, so actual finite pressure-rate zero does not vacuously disable the necessary coefficient limit.",
+    "all_three_stale_resets_exact_zero": true,
+    "stale_reset_cases": [
+      "k0_clears_stale",
+      "OFF_clears_stale",
+      "uniform_J_clears_stale"
+    ],
+    "affine_reactivation_cache_exact": true
+  },
+  "requests": {
+    "each_configuration": 64,
+    "accepted": 32,
+    "rejected": 32,
+    "actual_DtVariable_called": true,
+    "checked": "Per configuration, 8 active geometry/thread fixtures x 8 real DtVariable requests. Active new bound is <=.5 old. Recomputed selected values, no clipping/uplift, actual rejection category/flags and covered-state guard; between-old/new locked/fixed and DtMin cases rejected.",
+    "actual_guard_fresh_cache_from_real_rate_pass": true,
+    "at_boundary_requests_use_actual_formula_bound_after_independent_agreement": true,
+    "covered_physical_arrays_clock_unchanged": true,
+    "FixedDt_API_telemetry_not_claimed_rolled_back": true
+  },
+  "OMP": {
+    "configured_1_2_pairs_each_configuration": 4,
+    "all_cache_and_native_LEDGER_and_request_fields_exact_except_thread_label": true,
+    "Debug_Release_observed_whole_files_byte_equal": {
+      "cache.csv": true,
+      "node_ledger.csv": true,
+      "requests.csv": true,
+      "complete.json": true
+    },
+    "limitation": "OMP runtime and OmpThreads are both set and dynamic teams disabled. No separate trace claims both workers received nonempty iteration chunks."
+  },
+  "source_review": {
+    "same_pass": true,
+    "reset": "Dynamic rate resets speed cache each call, including lawOFF and k0. Successful native same-pass GJ forms the speed maximum, with padded per-thread slots and an implicit loop barrier before reduction.",
+    "sequencing": "Real Symplectic predictor/corrector force evaluates rate before AceMax and DtVariable. GetDynamicStepScales keeps its pure current-J/k signature; only DtVariable adds Safety*h/maxuk.",
+    "first_step_and_errors": "Actual production first-step policy remains force-before-update. Component invokes DtVariable with explicit manufactured force statistics, not ComputeStep_Sym. New nonfinite-speed error path releases periodic map before unified throw; older wall-reconstruction throw-before-free path is not represented as fully RAII-safe.",
+    "audit_cache": "Speed cache is not one of saved 26 rollback columns; additional audit does not call DtVariable and next real force recomputes it. Full retained physical trajectory exact regressions remain a separate required stage."
+  },
+  "limitations": [
+    "Local coefficient-gradient scale only: it is not generally sufficient for the coupled spectrum, ill-conditioned correction matrices, discontinuous k interfaces or nonlinear long-window stability.",
+    "No actual ComputeStep trajectory, public XML/GPU, general boundary, first-force physical acceptance or formal-case acceptance from this component.",
+    "Original constant/smooth-k complete text controls are exact, but current source still requires the separately planned full native trajectory regressions before integration checkpoint."
+  ],
+  "physical_trajectory": false,
+  "general_sufficient_stability_proven": false,
+  "physical_acceptance": false
+}

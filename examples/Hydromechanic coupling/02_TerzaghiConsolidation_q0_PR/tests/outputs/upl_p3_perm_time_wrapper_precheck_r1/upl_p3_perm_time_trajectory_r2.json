@@ -1,0 +1,60 @@
+{
+  "status": "declared_r2_owned_empty_log_wrapper_repair_wall_only_not_executed",
+  "files": [
+    "support/upl_p3_perm_time_trajectory_r2.ps1",
+    "notes/upl_p3_perm_time_trajectory_r2.json"
+  ],
+  "no_production_or_CPP_edits": true,
+  "source_freeze": "logs/upl_p3_perm_time_build_r1.json; authoritative DebugCPU/ReleaseCPU full Rebuild",
+  "prerequisites": [
+    "logs/upl_p3_perm_time_off_r1.check.json: all140 native frame pairs exact",
+    "logs/upl_p3_perm_time_DebugCPU_r1.check.json passed",
+    "logs/upl_p3_perm_time_ReleaseCPU_r1.check.json passed"
+  ],
+  "unchanged_harnesses": {
+    "periodic": {
+      "path": "support/upl_p3_perm_wave_r2.cpp",
+      "bytes": 23974,
+      "sha256": "149f152121a3c223b0a6fb0cda51d69a7a6992f68e6d4c318e506ba3345ea57c"
+    },
+    "wall": {
+      "path": "support/upl_p3_perm_wall_r1.cpp",
+      "bytes": 47787,
+      "sha256": "588e0538f22d2bdc046c0881b4310cc0f8e0fc6f01848c336b06c5d6d0b513d4"
+    }
+  },
+  "reuse": "Same reviewed fixtures, authoritative vcxproj objects excluding main, compile/link/runtime receipt logic from accepted wave_run_r2 and wall_run_r1. This small two-geometry wrapper omits already-accepted OFF/effect/k0 physical jobs, does not edit fixtures or run GenCase. Root is the only execution owner.",
+  "commands": [
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r2.ps1 -Mode Build -Geometry Wall -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_p3_perm_time_trajectory_r2.ps1 -Mode Run -Geometry Wall -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "periodic": {
+    "retained": "logs/upl_p3_perm_wave_ReleaseCPU_r2.check.json: outputs/upl_p3_perm_wave_ReleaseCPU_r2_on_c/on_h",
+    "fresh_labels": "NO NEW Periodic r2 run; completed r1 offline adoption by root only",
+    "geometry": "unchanged32x16 periodic,512 IDs0..511,dp1/256, mapped compatible J2^-15, Ck2^-10",
+    "timing": "coarse2^-24/512steps,half2^-25/1024steps,end2^-15,257 exact shared native times i2^-23",
+    "compared": "physical.bin,native_ids.csv,ledger.csv,modes.csv,endpoint_policy.csv,initial_source.csv,complete.json whole-file byte exact"
+  },
+  "wall": {
+    "retained": "logs/upl_p3_perm_wall_ReleaseCPU_r1.check.json: outputs/upl_p3_perm_wall_ReleaseCPU_r1_on_c/on_h",
+    "fresh_labels": "upl_p3_perm_time_wall_ReleaseCPU_r2_on_c/on_h",
+    "geometry": "unchanged32x32soil1024 IDs256..1279 plus256 fixed samples; two opposite parallel FreeSlip planes,Zperiodic,g0,Ck2^-13",
+    "timing": "coarse2^-25/1024steps,half2^-26/2048steps,end2^-15,257 exact shared native times i2^-23",
+    "compared": "physical.bin,native_ids.csv,fixed_ids.csv,conductivity_ledger.csv,modes.csv,endpoint_policy.csv,source_summary.csv,wall_audit.csv,component and offgrid CSV/check JSON,complete.json whole-file byte exact"
+  },
+  "gates": "Every original actual fixture numerical/safety/ledger/ownership/energy<=1.1/source-nonempty/flux-reaction-negative gate remains unchanged. Each coarse result must complete and match all retained bytes before half starts. Both jobs then undergo the unchanged original all257-sample pressureRMS<=5Pa/material-displacement-max<=.005mm and normalized p/v/u RMS<=1e-4 half comparator. Entire binary header, length, real native-ID order and all saved clocks are checked explicitly; full SHA equality gives every26 field bit at every native saved sample.",
+  "observation_scope": "New actual DtVariable necessary gradient-k guard must pass in real execution, but this regression does NOT infer that gradient bound never dominated: unchanged harness independent u_k screens are saved-point only, and endpoint_policy complete_bound retains its prior pure wave/pore/force diagnostic definition. No new telemetry is added, and historical cumulative dterror is not misused as an every-stage bound trace.",
+  "diagnostic_exclusions": "Only Run.out, initialization VTK, command/build/provenance files are outside old-vs-new byte comparison. All listed native and existing numerical diagnostics, including interval/error telemetry carried by these files, must remain exact. No numerical exclusions or relaxed thresholds.",
+  "failure": "Seal owned call exit/log/output; stop later dependent jobs. A mismatch is reported exactly; never change gates or overwrite/restart retained runs. Any completed solver is retained and only new analysis repaired offline if appropriate.",
+  "outputs": "Fresh Wall r2 companion build/raw outputs and immutable receipts only; original periodic r1 outputs retained and adopted offline. No GenCase, new CPP or numerical changes.",
+  "physical_acceptance": false,
+  "public_or_formal_admission": false,
+  "general_sufficient_stability_proven": false,
+  "gradient_bound_never_dominant_inferred": false,
+  "repair": {
+    "retained_r1": "All original r1 script/recipe/build/jobs/results remain immutable. Periodic r1 actual coarse and half completed and native/diagnostic bytes matched before the wrapper failed to seal a zero-stdout comparator receipt because Tee-Object had not created an empty log. This was not a solver or half-gate failure.",
+    "execution_change": "Create an empty owned call log before actual execution; no fixture, source, numerical, clock, seed or gate changes. Fresh Wall r2 labels only; this wrapper rejects Periodic selection.",
+    "periodic_offline_owner": "Root alone adopts completed Periodic r1 c/h and existing half JSON offline under logs/upl_p3_perm_time_periodic_r1_repair.check.json; no solver/comparator re-execution and no fabricated historical missing run receipt."
+  }
+}
+

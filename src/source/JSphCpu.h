@@ -164,6 +164,7 @@ protected:
   bool DynamicPoreWall; ///<Private fixed parallel FreeSlip wall fixture; no XML or GPU entry.
   bool DynamicPoreConductivity; ///<Private smooth J-dependent scalar conductivity; default OFF, no XML/GPU.
   double DynamicPoreConductivityCk; ///<Void-ratio exponential-law coefficient, used only when enabled.
+  double DynamicConductivitySpeedMax; ///<Maximum coefficient-gradient speed from the last actual force stage.
   double* PoroJc;      ///<Solid volume ratio J; private wall slots are stage-reconstructed quadrature.
   double* PoroThetac;  ///<Divergence from the last force stage, not necessarily the saved full time.
   double* PoroJPrec;   ///<Full-step J held during Symplectic prediction/correction.

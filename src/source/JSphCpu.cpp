@@ -116,7 +116,7 @@ void JSphCpu::InitVars(){
   PorosityFeedback=false;
   DynamicPorePressure=false;
   DynamicPoreWall=false;
-  DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;
+  DynamicPoreConductivity=false;DynamicPoreConductivityCk=0.;DynamicConductivitySpeedMax=0.;
   PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
@@ -4268,7 +4268,7 @@ void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
 }
 
 //==============================================================================
-/// Initializes the development-only volume observer without physical feedback.
+/// Initializes J state and validates the private observer/feedback/dynamic modes.
 //==============================================================================
 void JSphCpu::InitPorosityObserverCpu(){
   if(DynamicPoreConductivity && (!DynamicPorePressure || !std::isfinite(DynamicPoreConductivityCk) || DynamicPoreConductivityCk<=0))
@@ -4338,12 +4338,13 @@ unsigned* JSphCpu::GetDynamicPeriodicMapCpu(){
 }
 
 //==============================================================================
-/// Private CPU rate: Kw/n*(-theta + k/gamma*(Lstar(p)+rho_w*div(Ace))).
+/// Private CPU rate: Kw/n*(-theta + div(k*(grad(p)+rho_w*Ace))/gamma).
 /// Ace excludes Gravity: grad(p)-rho_w*(g-a_s) = grad(p)+rho_w*Ace.
 /// Lstar cancels affine-pressure bias, but is not a conservative pair flux.
 //==============================================================================
 void JSphCpu::ComputeDynamicPorePressureRateCpu(){
   if(!DynamicPorePressure)return;
+  DynamicConductivitySpeedMax=0.;
   unsigned* ridp=NULL;
   if(PeriActive){
     ridp=GetDynamicPeriodicMapCpu();
@@ -4357,6 +4358,8 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
   const double khyd=SoilCte.HydraulicConductivity,vol0=double(MassFluid)/double(RhopZero);
   const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
   const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
+  double speedth[OMP_MAXTHREADS*OMP_STRIDE];
+  if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)speedth[th*OMP_STRIDE]=0.;
   unsigned invalid=0;
   #ifdef OMP_USE
     #pragma omp parallel for schedule(guided) reduction(+:invalid)
@@ -4402,6 +4405,10 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
       const double chain=scale*(gjstate.x*(gp.x+rhow*Acec[p1].x)
         +gjstate.y*(gp.y+rhow*Acec[p1].y)+gjstate.z*(gp.z+rhow*Acec[p1].z));
       rate=kw/porosity*(-PoroThetac[p1]+ki/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da)+chain/gamma);
+      const double speed=kw/porosity/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);
+      if(!std::isfinite(speed)){invalid++;continue;}
+      const int th=omp_get_thread_num();
+      if(speedth[th*OMP_STRIDE]<speed)speedth[th*OMP_STRIDE]=speed;
     }
     if(!std::isfinite(rate) || fabs(rate)>FLT_MAX)invalid++;
     PorePressRatec[p1]=float(rate); //-Replace the complete old rate; never add compression twice.
@@ -4410,7 +4417,9 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))PorePressRatec[p]=PorePressRatec[ridp[Idpc[p]]];
     ArraysCpu->Free(ridp);
   }
-  if(invalid)Run_Exceptioon("Dynamic Darcy fixture produced a nonfinite pressure rate.");
+  if(invalid)Run_Exceptioon("Dynamic Darcy fixture produced a nonfinite pressure rate or conductivity-gradient speed.");
+  if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)
+    if(DynamicConductivitySpeedMax<speedth[th*OMP_STRIDE])DynamicConductivitySpeedMax=speedth[th*OMP_STRIDE];
 }
 
 //==============================================================================
@@ -4877,7 +4886,12 @@ double JSphCpu::DtVariable(bool final){
   double dt2=double(KernelH)/(max(Cs0,VelMax*10.)+double(KernelH)*ViscDtMax);
   //-dtw limits the explicit pore-pressure diffusion update in u-pw PR formulation.
   double dtw=DBL_MAX;
-  if(DynamicPorePressure)GetDynamicStepScalesCpu(dt2,dtw);
+  if(DynamicPorePressure){
+    GetDynamicStepScalesCpu(dt2,dtw);
+    //-Additional local necessary scale, not a general variable-coefficient stability proof.
+    if(DynamicPoreConductivity && DynamicConductivitySpeedMax>0)
+      dtw=min(dtw,double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax);
+  }
   else if(HydroMech && SoilCte.HydraulicConductivity>0.f){
     const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
     const double ghyd=(gnorm>0? gnorm: 9.80665);

@@ -77,11 +77,26 @@
     "retained_failure": "r1 stopped at compile exit2 because the test kernel constant type lacked fsph:: qualification; no numerical program ran. r2 changes only that type qualification and fresh recipe labels; all numerical bounds/cases unchanged.",
     "physical_acceptance": false
   },
+  "optional_smooth_conductivity": {
+    "law": "k(J)=k0*exp((J-1)/((1-n0)*Ck)), following the void-ratio law in Lian2023 Eq4; k is hydraulic conductivity m/s and Ck must be supplied/calibrated, not a universal numerical constant.",
+    "state": "No independent k integration or particle array: derive k from the same double J used for n, quadrature volume and mixture inertia. Default lawOFF retains constant k0 exactly.",
+    "scope": "Private CPU smooth scalar k only, initially uniform k0. Periodic and zero-gravity parallel FreeSlip wall actual integrations passed; no discontinuous-interface/conservative-flux/general-boundary claim.",
+    "checkpoints": ["1484022007c59f5f958705a826d40b83fbb35dd5", "f8cba1deb45367f43c95ca3702ce39cdb5b70151", "834f39caa1ab8ac226d20407b1dda9a4c500a797"]
+  },
+  "conductivity_gradient_necessary_step_guard": {
+    "source": "Only JSphCpu.h/cpp: cache max (Kw/n)*|grad(k)|/gamma from the same real force-stage neighbor pass and constrain DtVariable by Safety*h/maxspeed. Reset lawOFF/k0 caches; no added neighbor pass or pressure-rate arithmetic change.",
+    "builds": "Authoritative full CPU Debug/Release Rebuild passed; 140 default-OFF native frame pairs/15 arrays/clock/step/dterror exact.",
+    "components_each_configuration": "40 actual cache cases,720 native ledger rows,64 actual DtVariable requests (32 accepted/32 rejected),4 configured OMP1/2 exact pairs. Independent affine gradients and old6/smooth7 file controls passed. Strong-gradient bounds are23.46-24.04percent of old bounds, not a vacuous test.",
+    "actual_regressions": "Four fresh periodic/wall coarse/half jobs,789504 native records and20527104 field values in26-column physical trajectories byte-exact to accepted prior results; existing numerical CSVs and original half/safety gates unchanged.",
+    "retained_wrapper_repairs": "Periodic r1 completed solves/comparison but zero stdout prevented only a Tee log/receipt; adopted offline without rerun. Wall r2 first prebuild seed filter counted Raw and corrected pairs; archived unbuilt recipe, selected the exact accepted corrected runtime pair before first build. No numerical guard changed.",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_perm_time_stage_r1.check.json",
+    "limitations": "Necessary local scale, not sufficient coupled-spectrum stability. No inference that gradient bound never dominated every internal force stage; saved-point ledger only. No public input/GPU/formal/physical release from this checkpoint."
+  },
   "next_order": [
     "Preserve the completed independent spatial review, selective local/remote checkpoint, failed setup attempts and exact input provenance; proceed to bounded wall work.",
     "Keep finite-h truncation separate from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer general continuum accuracy from tiny half-step errors.",
     "Constant-k two-plane zero-gravity CPU wall review and selective local/remote checkpoint completed at f2bc2fd. Its default-false branch reconstructs same-stage J/p/velocity/stress/C/Ace using nodal-anchored first-order MLS; fixed physical wall velocities remain zero. This is not general-wall acceptance.",
-    "Optional private CPU k(J)=k0*exp((J-1)/((1-n0)*Ck)) components, exact OFF trajectories and bounded periodic/wall integrations passed. Wall max pressure half difference0.000356309Pa, resolved ON-OFF effect0.0233047Pa, physical-plane qn4.53812e-11m/s within unchanged budget; see case02 tests/logs/upl_p3_perm_wall_review_r1.check.json. Finish the necessary per-stage gradient-k step guard before limited public CPU wiring; smooth checks are not interface conservation or sufficient stability.",
+    "Optional private CPU k(J) components, exact OFF trajectories and bounded periodic/wall integrations passed. Necessary per-stage gradient-k guard and complete retained-trajectory regressions now pass; proceed to a single experimental default-OFF CPU XML master switch and optional constant/void-ratio conductivity law, with actual canonical-program output/rejection tests. Smooth checks are not interface conservation or sufficient stability.",
     "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
     "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
   ],

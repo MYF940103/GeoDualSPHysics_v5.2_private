@@ -1,0 +1,136 @@
+[Initialising JSphCpuSingle  01-11-2026 22:34:16]
+ProgramFile=".../outputs/upl_p3_perm_time_wall_ReleaseCPU_r2/upl_p3_perm_time_trajectory_r2.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_p3_wall_wave_seed_r3_h/CaseUplWall_h.xml"
+OutputDir=".../tests/outputs/upl_p3_perm_time_wall_ReleaseCPU_r2_on_h"
+OutputDataDir=".../outputs/upl_p3_perm_time_wall_ReleaseCPU_r2_on_h/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  CaseName=["CaseUplWall_h"]  Data2D=[1]  Data2DPosy=[0]  H=[0.00351562]  KernelSize=[0.00703125]  B=[0]  Gamma=[7]  Rhop0=[2048]  Dp=[0.00195312]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.0078125]  MassBound=[0.0078125]
+XML-Vars (parameters): TimeMax=[3.05176e-05]  TimeOut=[3.05176e-05]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 999999995904.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.000000
+  Bulk Modulus: 89478488.000000
+  Shear Modulus: 134217728.000000
+  Hydromechanics="Enabled"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 6.71089e+07
+  Porosity: 0.250000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Private wall fixture actual k=9.9999997473787516e-05 (K0 CLI=0)
+Loading initial state of particles...
+Loaded particles: 1280
+MapRealPos(border)=(-0.00701172,-0.000175781,0)-(0.0695117,0.000175781,0.0625)
+MapRealPos(final)=(-0.0078125,-0.000175781,0)-(0.0703125,0.000175781,0.0625)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseUplWall_h"
+RunName="CaseUplWall_h"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=45066.12
+  Wendland.bwen=-6.409864e+07
+Viscosity="Artificial"
+  Visco=0
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="None"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1280
+CaseNbound=256
+CaseNfixed=256
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1024
+PeriodicActive="Axis-Z"
+PeriodicZinc=(0,0,-0.0625)
+Dp=0.001953125
+KernelH=0.003516  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.00703125
+CteB=3.834792e+07
+Gamma=7
+RhopZero=2048
+Cs0=362.0386719675124
+CFLnumber=0.2
+DtIni=1.490116119384766e-08
+DtMin=0.0000000001
+DtAllParticles=False
+FixedDt=1.490116119384766e-08
+MassFluid=0.0078125
+MassBound=0.0078125
+TimeMax=0.000030517578125
+TimePart=0.000030517578125
+Gravity=(0,0,0)
+NpMinimum=1280
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(12,1,11)
+CellDomFixed=False
+**Requested CPU memory for 1408 particles: 0.7 MB.
+DomCells=(12,1,11)
+DomCellCode="1+11_9_11"
+**JSphCpu: Requesting cpu memory for 1539 particles: 0.8 MB.
+**JSphCpu: Requesting cpu memory for 1808 particles: 0.9 MB.
+**CellDiv: Requested cpu memory for 1808 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 288 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Double - Single core"
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (128 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 2
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (128 particles)
+  Point....: (0.0625,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 2
+ 
+**JSphCpu: Requesting cpu memory for 2144 particles: 1.1 MB.
+**CellDiv: Requested cpu memory for 2144 particles: 0.1 MB.
