@@ -1,0 +1,90 @@
+{
+  "revision": "upl_cpu_public_part_r1",
+  "status": "predeclared_author_only_not_built_or_run",
+  "scope": "Exactly three genuine PART1 guard paths using the canonical CPU Release program, plus a native loader-only real OFF positive control. No coupled restart acceptance, no source change, no new simulation.",
+  "files_to_add": [
+    "support/upl_cpu_public_part_tag_r1.cpp",
+    "support/upl_cpu_public_part_run_r1.ps1",
+    "notes/upl_cpu_public_part_r1.json"
+  ],
+  "source_freeze": "logs/upl_cpu_public_build_r3.json",
+  "canonical_program_build": "logs/upl_cpu_public_reader_ReleaseCPU_r2.build.json",
+  "input_plan": "logs/upl_cpu_public_r1.inputs.json",
+  "actual_source_PARTs": [
+    "outputs/upl_cpu_public_r1_OFF_default/data/Part_0001.bi4",
+    "outputs/upl_cpu_public_r1_periodic_constant_c/data/Part_0001.bi4"
+  ],
+  "writer": {
+    "cli": "--write-false OFF_DATA_DIR CASE_DIR CASE_NAME NEW_SCRATCH_DIR NEW_CHECK_JSON",
+    "native_API": [
+      "JPartDataBi4",
+      "JBinaryData",
+      "JPartsLoad4::LoadParticles"
+    ],
+    "positive_control": "Load the genuine OFF PART1 through the actual native JPartsLoad4 loader. Verify 512 IDs and ID-aligned positions, velocity/density, six double stresses, plastic state and p/p0. This is loader-only, not a coupled restart.",
+    "scratch": "outputs/upl_cpu_public_part_false_r1",
+    "change": "Copy genuine OFF Part_0001.bi4; materialize lazy arrays through native API, close its file structure, add only DatBool HydroMechDynamicSeepage=false under its native PART item, save/reload using JBinaryData SaveFile.",
+    "preservation": "Recursively capture item topology/hide flags, every scalar name/type/typed value bits and all 15 array name/type/count/hide/raw bytes. After reload remove only the new scalar from the comparison and require complete equality; re-read and hash-check original PART unchanged. Scalar ordering/file serialization need not be byte-identical, but all existing values and all array bits must be.",
+    "not_allowed": [
+      "Removing real ON metadata",
+      "Inventing PART pieces",
+      "Creating J arrays",
+      "Changing retained source PART",
+      "Calling a solver or force/integrator from the writer"
+    ]
+  },
+  "cases": [
+    {
+      "label": "ON_from_OFF",
+      "input": "periodic_constant_c",
+      "PART": "real OFF PART1",
+      "expected_stage": "JSph::LoadConfig early fresh-only guard",
+      "expected_exception": "HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only."
+    },
+    {
+      "label": "OFF_from_ON",
+      "input": "OFF_default",
+      "PART": "real ON PART1",
+      "expected_stage": "JPartsLoad4::LoadParticles dynamic/J-state presence guard",
+      "expected_exception": "Dynamic/J-state PART restart is not supported; refusing to discard the porosity state even when the dynamic switch is OFF."
+    },
+    {
+      "label": "OFF_from_FALSE",
+      "input": "OFF_default",
+      "PART": "real OFF PART1 scratch with sole new false scalar",
+      "expected_stage": "JPartsLoad4::LoadParticles metadata presence, not truthiness",
+      "expected_exception": "Dynamic/J-state PART restart is not supported; refusing to discard the porosity state even when the dynamic switch is OFF."
+    }
+  ],
+  "canonical_cli": "-cpu -ompthreads:1 -stable SEALED_PREFIX UNIQUE_OUTPUT -dirdataout data -svres -partbegin:1 REAL_OR_SCRATCH_DATA_DIR",
+  "gates": {
+    "prior": "CPU full Rebuild r3/default OFF140 and all three canonical half reviews passed and all bound source/build/runtime/input hashes unchanged.",
+    "writer": "Native loader positive control succeeds, exact preservation check succeeds and only false metadata scalar is added; no solver or integration called.",
+    "each_negative": "Canonical owned call exits nonzero with the exact intended guard message. New output contains zero numbered Part_####.bi4 frames, no Initialising simulation loop marker/native-save marker. Part_Head, if created, is recorded separately and never mistaken for a physical save.",
+    "no_step_claim": "Early source guard and absence of loop/native save evidence; no fabricated runtime step counter or claim that arbitrary absence proves all code paths.",
+    "preserve": "Each action refuses existing output/log/receipt. Failed compile/writer/rejection labels remain evidence, never rerun or rearm.",
+    "physics": "No tolerance, physics, production file, accepted formal data or retained native output changes."
+  },
+  "execution": {
+    "owner": "Root reviews all three new files before any compile/call. This author performs no execution.",
+    "actions": [
+      "Build helper only using sealed authoritative CPU objects/libraries",
+      "Prepare native false-only scratch and loader-positive check",
+      "Run -Case ON_from_OFF",
+      "Run -Case OFF_from_ON",
+      "Run -Case OFF_from_FALSE",
+      "Review"
+    ],
+    "aggregate": "logs/upl_cpu_public_part_r1.check.json",
+    "aggregate_required": [
+      "passed=true",
+      "canonical_rejections=3",
+      "false_scalar_copy_verified=true",
+      "real_OFF_loader_positive_control_passed=true",
+      "physical_acceptance=false"
+    ],
+    "binary_cloud_backup": false
+  },
+  "physical_acceptance": false,
+  "coupled_restart_acceptance": false
+}

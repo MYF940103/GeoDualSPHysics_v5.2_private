@@ -158,11 +158,11 @@ protected:
   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
-  bool PorosityObserver; ///<Development-only CPU observer; no physical feedback or XML entry.
-  bool PorosityFeedback; ///<Fixture-only J-derived volume/storage/inertia; not the dynamic Darcy model.
-  bool DynamicPorePressure; ///<Private CPU Darcy-acceleration fixture; no XML or GPU entry.
-  bool DynamicPoreWall; ///<Private fixed parallel FreeSlip wall fixture; no XML or GPU entry.
-  bool DynamicPoreConductivity; ///<Private smooth J-dependent scalar conductivity; default OFF, no XML/GPU.
+  bool PorosityObserver; ///<Internal CPU J state; public master enables observer, feedback and dynamic rate together.
+  bool PorosityFeedback; ///<J-derived volume/storage/inertia; no independent public partial-model switch.
+  bool DynamicPorePressure; ///<CPU dynamic Darcy-acceleration rate; public master default=false.
+  bool DynamicPoreWall; ///<Fixed parallel FreeSlip quadrature derived from the enabled model and CaseNpb.
+  bool DynamicPoreConductivity; ///<Smooth J-dependent scalar conductivity; optional within the dynamic model.
   double DynamicPoreConductivityCk; ///<Void-ratio exponential-law coefficient, used only when enabled.
   double DynamicConductivitySpeedMax; ///<Maximum coefficient-gradient speed from the last actual force stage.
   double* PoroJc;      ///<Solid volume ratio J; private wall slots are stage-reconstructed quadrature.

@@ -1,0 +1,44 @@
+{
+  "status": "declared_offline_public_CPU_native_reader_not_compiled_or_executed",
+  "files": [
+    "support/upl_cpu_public_native_r1.cpp",
+    "notes/upl_cpu_public_native_r1.json"
+  ],
+  "source": "Uses the existing JPartDataBi4/JBinaryData native array API. It does not parse BI4 bytes independently,load a solver class or invoke a compiler/solver/process. Root-owned wrapper must bind program/source/runtime hashes and actual owned exit before accepting its offline result.",
+  "CLI": {
+    "read": "--read DATA_DIR SOIL FIXED SAMPLES DT CADENCE MODEL NEWREVIEWDIR, argc10;DATA_DIR is canonical joboutput/data containing Part_NNNN.bi4. MODEL=-1OFF,0constant,1smooth.",
+    "half": "--half LEFT_PHYSICAL_BIN RIGHT_PHYSICAL_BIN NEWJSON,argc5. Caller must bind the same model/coarse-half pair; comparator independently checks identical initial26fields/IDs and exact common clocks. No option difference is treated as a half."
+  },
+  "scope": "Prepared public nine-input matrix only:2D512soil/0fixed periodic or1024soil/256real fixed parallelFreeSlip slab. Weak amplitude2^-9,zero gravity,freshJ1,original scalarfloatk0=.0001,initialp/p0/stress0,constant dyadic dt. No new theory solver,reference tuning,general walls,gravity,GPU or exact restart claim.",
+  "native_contract": {
+    "frames": "ExactlySAMPLES one-piece PART files,all existing contiguous IDs,counts and no exclusions. Actual time=part*CADENCE;Step0 initially otherwisecompletedsteps-1;SymplecticDtPre exactDT;emitted dterror finite and signed<=1e-14 perframe;raw signed telemetry andmin/max retained,not an absoluteclockresidual.",
+    "original15": "Typed native read,finite/full-count,ID-aligned binary:Idp(uint),Posd(double3),Vel(float3),Sigma_kk(float3),Sigma_ij(float3),FSNormal(float3),HydroMechLoadAce(float3),Rhop(float),Kplastic(float),PorePress(float),PorePress0(float),ExcessPorePress(float),SigmaState_kk(double3),SigmaState_ij(double3),FSType(uint). SigmaState_ij order isxy,yz,xz;reader maps it correctly into private rowxy,xz,yz.",
+    "ON": "Strict4native model scalar types/values:boolmastertrue,uintschema1,uintmodel0/1,doubleCk0/2^-13. Six actualdoubleJ/n/theta/currentV/mixturerho/currentk arrays plus realfloatPosDiv required. No mask,manufactured PosDiv or fabricated J.",
+    "OFF": "Allsix dynamic arrays,PosDiv andfour ON-only model scalars absent. Only original15/raw identity/history are emitted byreader;nofake26fileornewJledger/energy claim.",
+    "soil": "Allnative finite/elastic;p0=0,noexternalHydroMechLoadAce,passive legacyrho700..3000,legacySigmafloatdisplay isexactroundingofdoubleSigmaState,ExcessPorePress isactualfloatp-p0.",
+    "initial": "Allsoil actualcell-centered coordinates and floatvx=A*sin(2pi*x/.125),vy/vz0,p0/stress0 verified. ON J1,n0=.25,theta0. Fixed coordinate/physicalvelocity byte-unchanged for fullhistory.",
+    "derived": "For every soil/allframes J>1-n0,absJ-1<=1e-4,nin(0,1),V=Dp²J,rho=1000+(2048-1000)/J,k=double(float.0001)orpositiveexponentiallaw. Each savedderived quantity relativeledgererror<=5e-13;solidvolumeidentityabs<=5e-13. Fixedn,V,rho,k,theta are0markers;fixedJ isnotrequired1 becauseitmaybehydraulicmirrorstate.",
+    "natural_saved_scales": "EachONsoil/allframes currentcu andD givecu*DT/h<=.01,D*DT/h²<=.01,DT<=float(.1)*h²/D,positivefinite saturatedcontinuumRHmargin>64epsDmax(rho,rhow). Actual completeforce/gradient timestepguard remains a production/runtime prerequisite;native reader does not claim unrecorded Ace/cache/stage verification.",
+    "energy": "Nativeweak-field energy fromfullXYZvelocity,doubleeffective stress,pressure,savedcurrentV/rho/n. AllONframes ratio<=1.1;initialenergy>0. OFFhistory uses0asnot-evaluated marker andcomplete.new_model_energy_evaluated=false.",
+    "nonempty": "Onlyfull257frameONruns requiremax|J-1|>1e-8;fullmodel1 also maximum sameframe spatialkspan/k0 and maximum |k/k0-1| each>=.005. Debug2step isnotgivenfullwindow nonemptygate."
+  },
+  "outputs": {
+    "common": [
+      "original15.bin",
+      "native_ids.csv",
+      "fixed_ids.csv",
+      "history.csv",
+      "complete.json"
+    ],
+    "original15_binary": "Little-endianhostheader3uint(totalnativeparticles,15,samples),thenfor eachframeactualtimedouble andthe15typed arraysin listedorder,each sortedby nativeID. This isanalysis evidence,notrestartinput. Entirebinaryis suitablefor absent-vs-explicitOFFexact comparison.",
+    "ON_physical": "physical.bin exactoldprivate3uint(soil,26,samples)headerandtime+26double rowlayout;soilordered nativeID,actualPosDiv21 included. Neverserialize anOFF26rowwithinventedJ/theta.",
+    "identity": "native_ids/fixed_ids useoriginalwallcontrolCSVformat;periodic wall_band0 andfixedCSVheaderonly. Modelnotwritten intohistory soabsent/explicitOFF deterministic historiescanbecomparedbyteexact.",
+    "history": "One small saved-frame summary perPART;nohuge extra nodeCSV. Every node/array is still read andchecked;rawnativeBI4 remains the reproducible source. Whole15exact/native26exact andselectiveGitbindingare wrapper/root stages,not silently asserted byreader."
+  },
+  "half_gates": "All257actualcommonclocks;pressureRMS<=5Pa,maxXYZmaterialdisplacement<=.005mm;pressureRMS/Pstar,fullXYZvelocityRMS/A,fullXYZdisplacementRMS/Ustar each<=1e-4. Cu/Pstar/Ustar useactualfloat inputmoduli notrounded512. HalfJSON reportsactualscalarmaxima;noULPclaimforhalves.",
+  "theory_and_wall_limits": "No theory gate is invented by thisreader. Existing periodic32 endpoint-1.47159percent remains descriptive,not newly forcedto1percent. Originalconstantwall1percent/reference andphysicalface/force/negative diagnostics requirelaterrootreview/inheritance onlythrough verifiedsamephysicsall26trajectory/source equivalence. No wallfluxacceptance followsfromhalfagreementalone.",
+  "sequence": "Author/readreview -> rootnewONPosDivoutput-onlysource/fullRebuildr3+defaultOFF -> readercompile -> gatedcanonicalDebugsmoke+offlineRead -> gatedReleasepairs+offlineRead/Half. Neverrerunacompletedsolverforanalysisfailure;newanalysislabelonly.",
+  "no_solver_call_or_execution_by_author": true,
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false
+}

@@ -1,18 +1,22 @@
 {
   "date": "2026-11-01",
   "branch": "upl-dev",
-  "stage_base": "7fdaa139c6bc164059736955ee80f2ca899743ef",
-  "status": "P2 restricted CPU feedback and P3 restricted CPU dynamic-pressure implementation verified; public model not released",
-  "user_entry": "The intended single HydroMechDynamicSeepage switch remains unimplemented in XML. Existing hydromechanical runs still default to original u-pw.",
+  "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
+  "status": "Limited canonical CPU XML wiring, native output and rejection review completed; no formal or general physical-model release",
+  "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
-    "Private CPU post-force pressure rate includes corrected pressure diffusion and the same-stage skeleton-acceleration Darcy term.",
+    "CPU post-force pressure rate includes corrected pressure diffusion and the same-stage skeleton-acceleration Darcy term; the experimental public master enables the complete branch, not separately exposed partial flags.",
     "Native-ID periodic C/Ace/theta/rate extension; old fused rate sources and wrapper clearing suppressed only in the private new branch."
   ],
   "production_changes_in_this_stage": {
-    "src/source/JSphCpu.h": "Private default-false flag and small rate/time-scale helper declarations; no public XML input.",
-    "src/source/JSphCpu.cpp": "Temporary periodic owner map, periodic C extension, Lstar/divAce complete-rate helper, old-rate suppression, restricted fixture initialization and private necessary-step/domain rejection.",
-    "src/source/JSphCpuSingle.cpp": "One post-force call before the final acceleration reduction."
+    "src/source/JSph.h": "Three shared controls: default-false dynamic master, conductivity model0/1 and explicit calibrated Ck.",
+    "src/source/JSph.cpp": "Read/validate/log the controls, reject unsupported public scope, add typed ON-only BI4 model metadata.",
+    "src/source/JSphCpu.h": "Clarify internal flag roles; no independent partial-model public switches.",
+    "src/source/JSphCpu.cpp": "Public walls require both opposing fixed axis planes plus tangential periodicity; existing rate equations unchanged in this wiring patch.",
+    "src/source/JSphCpuSingle.cpp": "Map public controls before allocation; save actual PosDiv and derive current V/rho/k from compacted saved double J.",
+    "src/source/JPartsLoad4.cpp": "Reject dynamic arrays or even false/zero-valued model metadata in every PART piece to prevent silent state loss with master OFF.",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml": "Document defaults, law/units/calibration, saved fields and bounded CPU/restart/GPU limitations; post-test prose update is recorded separately from the build snapshot."
   },
   "verification": {
     "builds": "Authoritative CPU Debug and Release passed; Debug retains existing deprecated Gm/missing third-party PDB warnings.",
@@ -92,13 +96,26 @@
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p3_perm_time_stage_r1.check.json",
     "limitations": "Necessary local scale, not sufficient coupled-spectrum stability. No inference that gradient bound never dominated every internal force stage; saved-point ledger only. No public input/GPU/formal/physical release from this checkpoint."
   },
+  "limited_canonical_CPU_entry_review": {
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_cpu_public_stage_r1.check.json",
+    "scope": "Actual canonical CPU executables, not a new private solver: one Debug two-step smoke, six Release periodic/wall constant/evolving short jobs, and two absent/explicit-OFF jobs. Full windows end at2^-15s, not full physical consolidation.",
+    "builds_and_default": "Authoritative full CPU Debug/Release Rebuild r3; latest140 default-OFF native pairs all15 original arrays/clock/step/dterror exact, plus absent/explicitOFF9-frame typed output/history byte exact.",
+    "independent_review": "2462 unique input identities matched;9 jobs/1563 frames/1318912 dynamic soil records. Original15 analysis layout independently decoded; J-ledger summaries, energy and all three half pairs independently recalculated. Direct native BI4 types/derived arrays remain checked by the separately frozen native reader, not a second Python BI4 parser.",
+    "half_pressure_RMS_Pa": [0.00031962311482936477, 0.0003030612216294729, 0.0003563088490877829],
+    "rejections": "11 invalid XML target guards plus3 genuine canonical PART guards passed, each with nonzero owned exit, exact diagnostic and zero native saved PART frames. A real OFF loader-only positive control and scratch sole-false scalar prove metadata presence checking without altering retained arrays; no coupled restart acceptance.",
+    "private_raw_comparison": "Strict full257x26 raw equivalence is FALSE in all6 comparisons. Initial PosDiv is refreshed by canonical SaveData, unlike the private direct snapshot; periodic transverse signed-zero bits also differ numerically by0. Samples1..256 all26 bits match. Do not hide initial differences or inherit complete private wall-flux/negative-control gates from this partial equality.",
+    "constant_reference": "Independent constant-wall endpoint pressure error-0.25992196percent, original full/near-wall/endpoint1percent objectives pass. Periodic32 retains-1.47159072percent endpoint error; no new1percent gate. No invented variable-k analytic truth.",
+    "evolving_conductivity": "Manufactured Ck2^-13, not material calibration. Maximum k change2.977806percent and spatial span5.869504percent; same-initial wall model difference.0233047242Pa exceeds own half.000356309Pa and predeclared resolved-effect threshold. This is not an accuracy-gain ratio.",
+    "physical_acceptance": false,
+    "public_GPU_accepted": false,
+    "coupled_restart_accepted": false
+  },
   "next_order": [
-    "Preserve the completed independent spatial review, selective local/remote checkpoint, failed setup attempts and exact input provenance; proceed to bounded wall work.",
-    "Keep finite-h truncation separate from the consistency floor of fixed h/dp and the uncorrected momentum gradient; do not infer general continuum accuracy from tiny half-step errors.",
-    "Constant-k two-plane zero-gravity CPU wall review and selective local/remote checkpoint completed at f2bc2fd. Its default-false branch reconstructs same-stage J/p/velocity/stress/C/Ace using nodal-anchored first-order MLS; fixed physical wall velocities remain zero. This is not general-wall acceptance.",
-    "Optional private CPU k(J) components, exact OFF trajectories and bounded periodic/wall integrations passed. Necessary per-stage gradient-k guard and complete retained-trajectory regressions now pass; proceed to a single experimental default-OFF CPU XML master switch and optional constant/void-ratio conductivity law, with actual canonical-program output/rejection tests. Smooth checks are not interface conservation or sufficient stability.",
-    "Validate actual wall acceleration and pressure-flux conditions before admitting wall-bounded consolidation/Cryer/Lian.",
-    "Only after complete CPU wiring/gates add the single public default-OFF switch and synchronize GPU/state/output support, then formal case admission."
+    "Selectively back up this bounded CPU wiring stage and its independently reviewed evidence locally/remotely, retaining raw initial mismatch and every failed setup record.",
+    "Private GPU state lifecycle first: allocation/resize/sort/periodic J/theta/Pre state and output. Keep the shared !Cpu public rejection until complete GPU model tests pass; do not add a second public formulation switch.",
+    "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
+    "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
+    "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],
   "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, GPU or server-package acceptance follows from these private small-amplitude CPU tests.",
   "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup."

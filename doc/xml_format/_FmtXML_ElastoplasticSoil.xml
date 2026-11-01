@@ -31,14 +31,40 @@
 			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
 			<hydromechanics>
 				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation; default=0" />
+				<HydroMechDynamicSeepage value="0" comment="Experimental CPU dynamic Darcy + J-dependent porosity/volume/inertia; default=0 retains original u-pw" />
+				<HydroMechConductivityModel value="0" comment="Within dynamic seepage: 0=constant initial k0 (default), 1=void-ratio exponential k(J)" />
+				<!-- Model1 requires explicit HydroMechConductivityCk>0 (dimensionless, calibrated material coefficient).
+                     Lian2023 Eq4: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0).
+                     No independent k integration, clipping, tensor or discontinuous-interface law.
+                     Example coefficient syntax only, NOT a recommended/calibrated value:
+                     <HydroMechConductivityCk value="0.01" />
+                     Current experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,
+                     InitMode=None; axis-aligned rectangular XZ periodicity without walls, or two opposing fixed parallel axis
+                     FreeSlip mDBC planes with tangential periodicity. Existing strict guards reject loads,
+                     drainage, viscosity/damping, HG/SPR, plasticity, shifting, moving walls and other
+                     unsupported features. No general consolidation/Cryer/Lian or GPU release is implied.
+                     Old GPU executables IGNORE the new XML keys: do not use them for this model.
+                     Dynamic/J-state PART restart is rejected, including loading with the master OFF.
+                     CPU BI4 saves double J/n/last-stage theta and derived current volume/mixture density/k;
+                     legacy Rhop remains a passive float diagnostic, not the dynamic mixture density;
+                     ON-only float PosDiv exposes the existing support diagnostic without new particle state;
+                     fixed-wall n/volume/density/k=0 are nonphysical markers, not soil values.
+                     Limited canonical CPU wiring/output, default-OFF, short independent half-step and
+                     invalid-input/PART-rejection checks are verified; see tests/notes/upl_cpu_public_stage_r1.md
+                     in case02. Initial PosDiv/signed-zero differences prevent a blanket full-trajectory
+                     private-fixture raw-bit equivalence claim. This is not a formal physical release. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
-				<Porosity value="0.3" comment="Porosity used by u-pw; default=0, must be in (0,1) when HydroMech=1" />
-				<HydraulicConductivity value="1.0e-4" comment="Hydraulic conductivity; default=0, valid range >=0" units_comment="m/s" />
+				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />
+				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; constant by default, optional J-law only within dynamic seepage; valid >=0" units_comment="m/s" />
 				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
-				<!-- Existing CPU/GPU behavior: DtFixed bypasses automatic min(dt,dtw). Check a fixed
+				<!-- Original u-pw CPU/GPU behavior: DtFixed bypasses automatic min(dt,dtw). Check a fixed
                      step explicitly against dtw=PoreDtSafety*(rho_w*g/(Kw/n))*h^2/k; a zero
-                     fixed-step mechanical error statistic does not certify the pore-diffusion limit. -->
+                     fixed-step mechanical error statistic does not certify the pore-diffusion limit.
+                     Experimental dynamic CPU instead rejects unsafe current/requested fixed steps or
+                     DtMin above its necessary coupled-wave/diffusion/coefficient-gradient bound;
+                     PoreDtSafety and CFLnumber must be finite and positive;
+                     this is not sufficient spectral stability or TPI, and does not remove Kw stiffness. -->
 				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
 				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
 				<!-- mDBC pore-pressure interpolation mode for boundary pore-pressure reconstruction only. -->

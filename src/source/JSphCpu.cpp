@@ -4190,6 +4190,9 @@ void JSphCpu::InitDynamicPoreWallCpu(){
   }
   if(seen[0] && seen[1] && plane[1]-plane[0]<=2.*double(KernelSize))
     Run_Exceptioon("Dynamic wall fixture requires separated opposing mirror supports.");
+  if(HydroMechDynamicSeepage && (!seen[0] || !seen[1] || PeriY
+    || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ))))
+    Run_Exceptioon("Experimental dynamic seepage walls require two opposing axis planes and tangential periodicity.");
   const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};
   const bool periodic[3]={PeriX,PeriY,PeriZ};
   for(int a=0;a<3;a++)if(periodic[a] && component(inc[a],axis)!=0)

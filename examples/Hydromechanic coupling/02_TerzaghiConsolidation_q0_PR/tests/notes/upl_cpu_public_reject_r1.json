@@ -1,0 +1,40 @@
+{
+  "status": "authored_only_not_prepared_or_executed",
+  "scope": "Eleven single-fault invalid public XML inputs; one explicitly selected canonical CPU Release owned call at a time. Not physical validation or public model acceptance.",
+  "author_inputs": ["support/upl_cpu_public_reject_r1.py", "notes/upl_cpu_public_reject_r1.json"],
+  "prepared_valid_controls": "logs/upl_cpu_public_r1.inputs.json: periodic_constant_c and wall_evolving_c; original XML/BI4 never modified",
+  "prepare": "py -3 support/upl_cpu_public_reject_r1.py --prepare",
+  "execute_one_only": "py -3 support/upl_cpu_public_reject_r1.py --run-one LABEL --execution-authorized",
+  "execution_prerequisites": [
+    "logs/upl_cpu_public_build_r3.json: seven frozen source files, full DebugCPU/ReleaseCPU Rebuild exit 0; current source/program/input/log identities plus sealed prebuild program snapshots. Historical prebuild original paths were intentionally replaced by the Rebuild and are not reinterpreted as current binary identities.",
+    "logs/upl_cpu_public_off_r2.check.json: 140 native frame pairs, all original bits/time/step/dterror exact, zero exclusions and passed group receipts",
+    "logs/upl_cpu_public_debug_wall_evolving_smoke_r1.review.check.json: actual successful three-frame Debug canonical native review",
+    "logs/upl_cpu_public_reader_ReleaseCPU_r2.build.json: already isolated canonical Release CPU executable under outputs/upl_cpu_public_program_ReleaseCPU_r2, source/runtime/object/library and reader bindings; actual solver/review job names remain r1"
+  ],
+  "prepared_artifacts": "Fresh outputs/upl_cpu_public_reject_r1_LABEL_seed plus logs/upl_cpu_public_reject_r1.inputs.json. Eleven seeds only, no GenCase or solver.",
+  "executed_artifacts": "Fresh outputs/upl_cpu_public_reject_r1_LABEL_out and shallow logs/upl_cpu_public_reject_r1_LABEL.log/.started.json/.run.json. No retry, overwrite, batch loop or process termination.",
+  "cases": [
+    {"label": "hydro_off", "change": "HydroMech=0, master remains 1", "expected": "experimental fresh CPU 2-D guard"},
+    {"label": "model_invalid", "change": "HydroMechConductivityModel=2", "expected": "model enum guard"},
+    {"label": "model_missing_ck", "change": "delete explicit HydroMechConductivityCk from valid model 1", "expected": "explicit finite Ck guard"},
+    {"label": "model_master_off", "change": "master=0 in valid model 1", "expected": "evolving conductivity master guard"},
+    {"label": "gravity", "change": "execution/constants/gravity.z=-9.80665; casedef unchanged", "expected": "experimental zero-gravity guard"},
+    {"label": "fixed_zero", "change": "execution/parameters DtFixed=0; no DtFixedFile", "expected": "experimental positive constant DtFixed guard"},
+    {"label": "pore_safety_overflow", "change": "PoreDtSafety=1e100", "expected": "finite positive PoreDtSafety/CFL guard", "caveat": "JXml ReadElementDouble uses atof after real-number syntax validation, then ReadElementFloat casts to float. If an earlier XML real-number parser rejection occurs, record it separately, fail the targeted finite-guard test and do not claim that guard was exercised."},
+    {"label": "periodic_crossinc", "change": "remove XZPeriodic, add XPeriodicIncZ=.001 and ZPeriodicIncX=0", "expected": "axis-aligned rectangular periodicity guard", "reason": "XZPeriodic would otherwise reset all cross increments and make the mutation vacuous"},
+    {"label": "wall_noslip", "change": "SlipMode=2 instead of 3", "expected": "finite stationary FreeSlip normals guard"},
+    {"label": "drainage", "change": "HydroMechDrainage=1", "expected": "protected feedback incompatibility guard"},
+    {"label": "spr_conflict", "change": "SoilBoundaryDerivativeSPR=1", "expected": "protected feedback incompatibility guard"}
+  ],
+  "exact_messages": "Bound as complete diagnostic strings in the Python CASES map; surrounding exception filename/line context is not matched. Nonzero exit alone never passes.",
+  "mandatory_per_call": ["expected exact diagnostic text", "nonzero owned exit", "zero native Part_<integer>.bi4 anywhere in the fresh output", "all bound identities unchanged after exit"],
+  "not_native_frames": "Part_Head.ibi4 and normal setup metadata are not counted as native particle frames.",
+  "pending_not_authored_or_fabricated": [
+    "master ON with genuine OFF PART input: fresh-only guard",
+    "master OFF with genuine ON J-state PART: refuse silent state loss",
+    "master OFF with copied genuine PART containing a false-valued dynamic metadata marker: ExistsValue rather than truth-value guard"
+  ],
+  "limitations": ["No 3-D geometry fabrication", "No GPU tests or old GPU executable acceptance", "No restart coverage from these eleven inputs", "No PDE, numerical threshold, source, canonical geometry or valid retained state changes"],
+  "solver_executed": false,
+  "physical_acceptance": false
+}

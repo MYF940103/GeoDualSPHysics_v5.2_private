@@ -210,6 +210,9 @@ void JSph::InitVars(){
   ArtificialStressExp=2.55f;
   ArtificialStressExpAuto=true;
   HydroMech=false;
+  HydroMechDynamicSeepage=false;
+  HydroMechConductivityModel=0;
+  HydroMechConductivityCk=0;
   HydroMechInitMode=HMINIT_None;
   HydroMechInitZ=0;
   HydroMechDrainage=true;
@@ -593,6 +596,20 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
+  if(HydroMechDynamicSeepage){
+    if(!HydroMech || !Cpu || !Simulate2D || PartBegin || Gravity.x || Gravity.y || Gravity.z
+      || HydroMechInitMode!=HMINIT_None || !FixedDt || !(FixedDt->GetFixedValue()>0)
+      || !std::isfinite(FixedDt->GetFixedValue()))
+      Run_Exceptioon("HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.");
+    if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
+      Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
+    if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
+      Run_Exceptioon("Experimental dynamic seepage requires axis-aligned rectangular periodic translations in the 2-D plane.");
+    if(!CaseNpb && (!PeriX || !PeriZ || PeriY))
+      Run_Exceptioon("Dynamic seepage without walls currently requires XZ periodicity.");
+    if(PoreDarcySymmetricCorr || PoreMdbcInterpolationMode)
+      Run_Exceptioon("Dynamic seepage has its own Darcy/wall operator; legacy PoreDarcySymmetricCorr and PoreMdbcInterpolationMode must remain zero.");
+  }
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand && (!HydroMech || !Simulate2D))
     Run_Exceptioon("TopKernelBand loading requires a 2-D hydromechanical case with a horizontal top surface.");
   if(HydroMechDrainageFixedGrid){
@@ -2874,6 +2891,12 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       domainmax=MaxValues(domainmax,vdom[c*2+1]);
     }
     JBinaryData* bdpart=DataBi4->AddPartInfo(Part,TimeStep,npok,nout,Nstep,TimerPart.GetElapsedTimeD()/1000.,domainmin,domainmax,TotalNp);
+    if(HydroMechDynamicSeepage){
+      bdpart->SetvBool("HydroMechDynamicSeepage",true);
+      bdpart->SetvUint("DynamicSeepageSchema",1);
+      bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
+      bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
+    }
     if(TStep==STEP_Symplectic)bdpart->SetvDouble("SymplecticDtPre",SymplecticDtPre);
     if(UseDEM)bdpart->SetvDouble("DemDtForce",DemDtForce); //(DEM)
     if(infoplus && SvData&SDAT_Info){
@@ -3608,6 +3631,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   //-Hydromechanical switches, pore-pressure initialization, loading and drainage options.
   HydroMech=sxml->ReadElementBool(hydroReadNode,"HydroMech","value",true,false);
+  HydroMechDynamicSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechDynamicSeepage","value",true,false);
+  HydroMechConductivityModel=sxml->ReadElementUnsigned(hydroReadNode,"HydroMechConductivityModel","value",true,0);
+  HydroMechConductivityCk=sxml->ReadElementDouble(hydroReadNode,"HydroMechConductivityCk","value",true,0.);
   if(HydroMech && TBoundary==BC_MDBC)MdbcFastSingle=false;
   const string initmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechInitMode","value",true,"None"));
   if(initmodestr=="none" || initmodestr=="0")HydroMechInitMode=HMINIT_None;
@@ -3670,6 +3696,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   PoreDarcySymmetricCorr=ReadHydroBool("PoreDarcySymmetricCorr",false);
 
   //-Input validation.
+  if(HydroMechConductivityModel>1)
+    Run_Exceptioon("HydroMechConductivityModel must be 0=constant or 1=void-ratio exponential.");
+  if(HydroMechConductivityModel && !HydroMechDynamicSeepage)
+    Run_Exceptioon("Evolving conductivity requires HydroMechDynamicSeepage=1.");
+  if(HydroMechConductivityModel && (!std::isfinite(HydroMechConductivityCk) || HydroMechConductivityCk<=0))
+    Run_Exceptioon("Void-ratio exponential conductivity requires explicit finite HydroMechConductivityCk>0.");
   if(HydroMech && HydroMechInitMode==HMINIT_ConstantZ && !sxml->ExistsElement(hydroEle,"HydroMechInitZ","value"))
     Run_Exceptioon("HydroMechInitZ must be defined when Hydromechanics uses HydroMechInitMode=ConstantZ.");
   if(SoilCte.PoreWaterRho<=0.f)Run_Exceptioon("PoreWaterRho must be greater than zero.");
@@ -3714,6 +3746,12 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Log hydromechanical switches, pore-water parameters and PR controls.
     Log->Print(fun::VarStr("  Hydromechanics", (HydroMech? "Enabled": "Disabled")));
   if(HydroMech){
+    Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
+    if(HydroMechDynamicSeepage){
+      Log->Print("  DynamicSeepageScope: experimental CPU 2-D elastic, zero gravity, fresh start; not a general u-pl release");
+      Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
+      if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);
+    }
     Log->Print(fun::VarStr("  HydroMechInitMode", GetHydroMechInitModeName(HydroMechInitMode)));
     if(HydroMechInitMode==HMINIT_ConstantZ)Log->Printf("  HydroMechInitZ: %f",HydroMechInitZ);
     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));

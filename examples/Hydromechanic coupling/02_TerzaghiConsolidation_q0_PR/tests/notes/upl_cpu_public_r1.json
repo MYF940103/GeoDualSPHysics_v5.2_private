@@ -1,0 +1,57 @@
+{
+  "status": "declared_limited_public_CPU_input_preparation_not_executed",
+  "files": [
+    "support/upl_cpu_public_inputs_r1.py",
+    "notes/upl_cpu_public_r1.json"
+  ],
+  "purpose": "Prepare fresh copies of existing canonical-program inputs only. The script does not execute GenCase, compiler, solver, reader or a companion harness. A later root-owned canonical runner/reader must verify the declared physical/native/output gates before admission.",
+  "public_keys": {
+    "HydroMechDynamicSeepage": "bool,defaultfalse; atomic J observer+J-derived volume/storage/inertia+complete dynamic pore rate, not independently selectable partial paths",
+    "HydroMechConductivityModel": "unsigned0/1,default0;0 uses unchanged initial scalar k,1 uses the explicitly positive finite Ck smooth law",
+    "HydroMechConductivityCk": "double,explicit finitepositive only for model1; manufactured value2^-13 here, not material calibration"
+  },
+  "geometry_and_provenance": {
+    "periodic": "logs/upl_p3_spatial_seed_r1.inputs.json, retained n32 coarse/half runtime and BI4; native512,zero fixed,dp1/256,xperiod.125,zperiod.0625",
+    "wall": "logs/upl_p3_wall_wave_seed_r3.inputs.json, retained corrected CaseUplWall_c/h runtime and byte-identical BI4; native1024,fixed256,dp1/512,two unchanged parallel FreeSlip xplanes0/.0625,zperiod.0625",
+    "initial_velocity": "Read only the initial J1/p0/stress0 weak-sine native frame from the sealed old constant-k spatialr5/wallr4 controls. Existing fluidvelocity/onlypos XML operations select32 nonoverlapping xcolumn slabs and assign each exact stored float vx. Native source coordinates,counts and A2^-9*sin(2pi*x/.125) are checked; this is ordinary canonical XML initialization, not a harness injection or new production initializer.",
+    "initial_state": "J starts1,soiln0=.25,rho0=2048,p=p0=effective stress=plastic strain0. No mapped-J/privatep128 state or incompatible old initial state is used.",
+    "changed_runtime_only": "Public keys,32 fluidvelocity initializers and exactdyadic duration/output values. Geometry/casedef semantic signature unchanged and copied BI4 SHA/bytes exact; sealed sourcefiles/output never edited. No special restart seed or prescribed porosity field.",
+    "new_locations": "outputs/upl_cpu_public_seed_r1_LABEL same original case basename XML/BI4; logs/upl_cpu_public_r1.inputs.json. New destinations and planned solver output paths must not already exist; no overwrite/rearm behavior."
+  },
+  "sequence": [
+    "Root complete clean shared-class CPU Debug/Release Rebuild, source/program/runtime snapshot and defaultOFF regression before any program execution",
+    "Debug canonical CPU wall-evolving2steps,dt2^-25,3native saves; normal smoke is not a half/physical acceptance",
+    "Release periodicconstant coarse512dt2^-24 andhalf1024dt2^-25 to2^-15",
+    "Release wallconstant coarse1024dt2^-25 andhalf2048dt2^-26 to2^-15",
+    "Release wallevolving coarse1024dt2^-25 andhalf2048dt2^-26 to2^-15",
+    "Prepared extra default-absent/explicitOFF periodic8step inputs have9native saves; root may reuse its independently controlled defaultOFF regression rather than duplicate covered runs"
+  ],
+  "cadence": "Every full run TimeOut2^-23 and TimeMax2^-15,257actual dyadic saves including initial/final. Debug uses eachdt,OFF inputs eachdt. All histories matched at actual saved clocks/native material IDs, no interpolation. Canonical BI4 Step is zero-based before the loop increment (saved positive sample has completed_steps-1); it is not relabelled to the companion step counter. Interval telemetry is checked under its own guard, not declared physically different.",
+  "gates": {
+    "per_run": "Native soil/fixed count and IDs unchanged; no exclusion; all native finite,elastic;J>1-n0,n in(0,1),passive float density validity; current physical V/rho derived from J;actual fixed grid and all existing natural/pore/gradient necessary restrictions with no clipping/uplift. Energy ratio<=1.1 using native full XYZ velocity,stress,p,J,n,V/rho.",
+    "independent_half": "All257actual matched samples: pressureRMS<=5Pa,maximum XYZ material displacement<=.005mm; normalized pressureRMS/Pstar,fullXYZ velocityRMS/A anddisplacementRMS/Ustar each<=1e-4. Pstar=(Kw/n0)*A/cu0,Ustar=A/(cu0*2pi/.125),cu0 from actual float input moduli and initialmixturedensity,not rounded512. Initial native/material state exact.",
+    "model_nonempty": "For each full ON run max_native_time |J-1|>1e-8. For full model1 run both maximum native k span/k0 and maximum |k/k0-1| >=.005. Same-initial model1 minus model0 wall maximum pressureRMS >max(.001Pa,10*new measured model1 half pressureRMS). These are nonempty/resolution tests, not cross-option half/theory errors.",
+    "constant_reference": "Only model0 may use the retained constant-coefficient discrete/continuum reference. Periodic32 is an implementation control: its retained endpoint continuum pressure error is about-1.47159percent, so no new1percent accuracy claim/gate is imposed on it. The unchanged wall32 model0 retains its original1percent full-field/near-wall/endpoint objective. Model1 constant reference is diagnostic only. No independent variable-k exact continuum solution is invented.",
+    "implementation_equivalence": "If comparing canonical trajectories to retained same-initial private trajectories, require exact actual clocks and all26 common native physical/identity fields (read double SigmaState,not rounded legacy Sigma). Additional derived fields are checked against their own definitions. Do not compare mapped-J/privatep128 periodic tests or demand equality of run telemetry/zero-based metadata.",
+    "wall_scope": "Only actual static parallel axis FreeSlip planes; fixed physical position/velocity unchanged. The accepted private wall force/physical-face/no-flow/negative/source gates remain prerequisites and are inherited only through verified same-physics trajectory/source equivalence, not inferred from a half pass or first-layer velocity. No new general boundary or gravity balance claim."
+  },
+  "saved_output_contract": {
+    "ON_metadata": "HydroMechDynamicSeepage=true;DynamicSeepageSchema=1;HydroMechConductivityModel unsigned0/1;HydroMechConductivityCk double(0 for constant,2^-13 for exponential) in actual BI4. Read metadata, not just Run.out text.",
+    "arrays": "PoroVolumeRatio,PoroPorosity,PoroThetaLastStage,PoroCurrentVolume,PoroMixtureDensity,PoroHydraulicConductivity all double with full actual saved particle count. Soil n=1-(1-n0)/J,V=(MassFluid/RhopZero)*J,rho=rhow+(rho0-rhow)/J,k=double(floatk0)*exp[(J-1)/((1-n0)Ck)] or k0. Relative ledger error<=5e-13;solid-volume identity separately<=5e-13. Pressure remains original float and stress double.",
+    "fixed_markers": "Fixed PoroPorosity and the three new derived V/rho/k outputs are zero markers,not physical fixed-wall material values. Fixed PoroVolumeRatio may be the hydraulic mirror-stage reconstruction; never demand fixedJ1 or treat it as integrated fixed material porosity.",
+    "OFF": "New dynamic arrays and ON-only model metadata absent; omitted master and explicitfalse preserve the original u-pw path. Scalar/model parsing must not silently enable a partial observer or feedback branch."
+  },
+  "rejection_tasks_for_later_root_runner": "Keep source/runtime checks for CPU2Dg0fresh constantdt,HydroMech1,model0/1 and model1finitepositiveCk. Rejectunsupported load/drain/HG/SPR/viscosity/shifting/damping/NoPen/corners/NoSlip/motion/plasticity combinations. ON rejects anyPartBegin; JPartsLoad4 must reject J/model-tagged PART in everypiece evenOFF/GPU or init-reset modes to prevent silentJ discard. This input-only script does not fabricate rejected PARTs or claim those tests ran.",
+  "GPU_caveat": "This is a CPU-only canonical preparation. Old GPU programs do not understand new XML and can silently ignore it. Without a fresh GPU build/runtime rejection test, only source-reviewed GPU rejection can be claimed. Later BAT must pin the verified CPU executable; GPU selection/release waits for its own stage.",
+  "prepared_counts": {
+    "runtime_inputs": 9,
+    "planned_Debug_program_runs": 1,
+    "planned_full_Release_program_runs": 6,
+    "optional_short_OFF_program_runs": 2,
+    "new_GenCase_calls": 0,
+    "new_solver_calls": 0
+  },
+  "source_or_program_build_done_by_this_script": false,
+  "execution_authorized_by_note": false,
+  "physical_acceptance": false
+}

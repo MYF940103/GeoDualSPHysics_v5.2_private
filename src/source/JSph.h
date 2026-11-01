@@ -210,6 +210,9 @@ protected:
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
+  bool HydroMechDynamicSeepage; ///<Experimental CPU coupled J/n/dynamic-Darcy model; default=false keeps u-pw.
+  unsigned HydroMechConductivityModel; ///<0=constant k0, 1=void-ratio exponential law; requires dynamic seepage.
+  double HydroMechConductivityCk; ///<Dimensionless void-ratio law coefficient; no calibrated default.
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
   double HydroMechInitZ;      ///<Constant initialization elevation for HMINIT_ConstantZ. //mdbr
   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr

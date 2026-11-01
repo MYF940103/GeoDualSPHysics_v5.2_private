@@ -258,6 +258,12 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       if(PartBegin && (pd.ArrayExists("PorePress")!=PorePressureDataLoaded || pd.ArrayExists("PorePress0")!=PorePressureDataLoaded))
         Run_Exceptioon("Pore-pressure restart array availability is inconsistent across PART pieces.");
       //-Do not silently discard precision from experimental restart formats.
+      if(PartBegin && (pd.ArrayExists("PoroVolumeRatio") || pd.ArrayExists("PoroPorosity")
+        || pd.ArrayExists("PoroThetaLastStage") || pd.ArrayExists("PoroCurrentVolume")
+        || pd.ArrayExists("PoroMixtureDensity") || pd.ArrayExists("PoroHydraulicConductivity")
+        || pd.GetPart()->ExistsValue("HydroMechDynamicSeepage") || pd.GetPart()->ExistsValue("DynamicSeepageSchema")
+        || pd.GetPart()->ExistsValue("HydroMechConductivityModel") || pd.GetPart()->ExistsValue("HydroMechConductivityCk")))
+        Run_Exceptioon("Dynamic/J-state PART restart is not supported; refusing to discard the porosity state even when the dynamic switch is OFF.");
       if(PartBegin && pd.ArrayExists("PorePressRes"))
         Run_Exceptioon("PorePressRes restart files are not supported by the original float u-pw solver. Use an original float checkpoint without residual arrays.");
       const unsigned npok=pd.Get_Npok();

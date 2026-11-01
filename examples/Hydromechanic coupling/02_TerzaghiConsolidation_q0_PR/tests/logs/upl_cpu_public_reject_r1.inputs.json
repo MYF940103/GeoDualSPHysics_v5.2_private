@@ -1,0 +1,560 @@
+{
+  "status": "eleven_rejection_inputs_prepared_not_executed",
+  "cases": [
+    {
+      "label": "hydro_off",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_hydro_off_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17902,
+        "sha256": "8bd7461699e267be6ce02d6970e376341fe7e413d04c3057eec8b07d9a791f5d"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_hydro_off_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/HydroMech",
+          "before": [
+            {
+              "comment": "Legacy parser; feedback is enabled internally by the test harness only",
+              "value": "1"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "comment": "Legacy parser; feedback is enabled internally by the test harness only",
+              "value": "0"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_hydro_off_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_hydro_off_out"
+    },
+    {
+      "label": "model_invalid",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_invalid_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17902,
+        "sha256": "4f9859e291a0ec1d79960add627a83b0ccfd7ef23abee7eb74b09be166562393"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_invalid_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/HydroMechConductivityModel",
+          "before": [
+            {
+              "comment": "0 constant initial k; 1 smooth exponential k(J)",
+              "value": "0"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "comment": "0 constant initial k; 1 smooth exponential k(J)",
+              "value": "2"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "HydroMechConductivityModel must be 0=constant or 1=void-ratio exponential.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_invalid_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_invalid_out"
+    },
+    {
+      "label": "model_missing_ck",
+      "base": "wall_evolving_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+        "bytes": 20031,
+        "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_missing_ck_seed\\CaseUplWall_c.xml",
+        "bytes": 19667,
+        "sha256": "6e18046171db92e6bdf2fc371f95368c755a9a472d8c7b6140a0928c58634e44"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_missing_ck_seed\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/HydroMechConductivityCk",
+          "before": [
+            {
+              "comment": "Manufactured sensitivity only; not calibrated permeability data",
+              "value": "0.0001220703125"
+            },
+            ""
+          ],
+          "after": null
+        }
+      ],
+      "expected_exact_message": "Void-ratio exponential conductivity requires explicit finite HydroMechConductivityCk>0.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_missing_ck_seed\\CaseUplWall_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_missing_ck_out"
+    },
+    {
+      "label": "model_master_off",
+      "base": "wall_evolving_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+        "bytes": 20031,
+        "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_master_off_seed\\CaseUplWall_c.xml",
+        "bytes": 19809,
+        "sha256": "25f861cb089636c803f1afbb0163dcb3b9341e1cce3ad2ca70bac8e3c92a5f16"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_master_off_seed\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/HydroMechDynamicSeepage",
+          "before": [
+            {
+              "comment": "Limited fresh 2D zero-gravity CPU mode only; no GPU or restart support",
+              "value": "1"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "comment": "Limited fresh 2D zero-gravity CPU mode only; no GPU or restart support",
+              "value": "0"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Evolving conductivity requires HydroMechDynamicSeepage=1.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_master_off_seed\\CaseUplWall_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_model_master_off_out"
+    },
+    {
+      "label": "gravity",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_gravity_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17909,
+        "sha256": "1e68c23a7f5c2c77a03beb9e1c05cee65e796cd7cdf805f154f888b9e474c3a6"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_gravity_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/constants/gravity",
+          "before": [
+            {
+              "units_comment": "m/s^2",
+              "x": "0",
+              "y": "0",
+              "z": "0"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "units_comment": "m/s^2",
+              "x": "0",
+              "y": "0",
+              "z": "-9.80665"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_gravity_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_gravity_out"
+    },
+    {
+      "label": "fixed_zero",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_fixed_zero_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17881,
+        "sha256": "d9336f9743284c6580a7a3ed60cfbb1e60944a000e6581eaad95f6cc41d6f0c6"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_fixed_zero_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/parameters/parameter[@key='DtFixed']",
+          "before": [
+            {
+              "key": "DtFixed",
+              "units_comment": "seconds",
+              "value": "5.9604644775390625e-08"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "key": "DtFixed",
+              "units_comment": "seconds",
+              "value": "0"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_fixed_zero_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_fixed_zero_out"
+    },
+    {
+      "label": "pore_safety_overflow",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_pore_safety_overflow_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17904,
+        "sha256": "9ae02139ffec927033f8ef49bf9b1225ce58e88490a899bea2f24e17dd537162"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_pore_safety_overflow_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/PoreDtSafety",
+          "before": [
+            {
+              "value": "0.1"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "value": "1e100"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_pore_safety_overflow_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_pore_safety_overflow_out"
+    },
+    {
+      "label": "periodic_crossinc",
+      "base": "periodic_constant_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+        "bytes": 18106,
+        "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_periodic_crossinc_seed\\CaseUplSpatial_n32_c.xml",
+        "bytes": 17965,
+        "sha256": "d7ef8c57f5da0db62733832f1e5fd381efc2c55f15c40f6d0af0a5d9d0622067"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_periodic_crossinc_seed\\CaseUplSpatial_n32_c.bi4",
+        "bytes": 23948,
+        "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/parameters/parameter[@key='XPeriodicIncZ']",
+          "before": null,
+          "after": [
+            {
+              "key": "XPeriodicIncZ",
+              "value": "0.001"
+            },
+            ""
+          ]
+        },
+        {
+          "path": "/case/execution/parameters/parameter[@key='XZPeriodic']",
+          "before": [
+            {
+              "key": "XZPeriodic",
+              "value": "1"
+            },
+            ""
+          ],
+          "after": null
+        },
+        {
+          "path": "/case/execution/parameters/parameter[@key='ZPeriodicIncX']",
+          "before": null,
+          "after": [
+            {
+              "key": "ZPeriodicIncX",
+              "value": "0"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Experimental dynamic seepage requires axis-aligned rectangular periodic translations in the 2-D plane.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_periodic_crossinc_seed\\CaseUplSpatial_n32_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_periodic_crossinc_out"
+    },
+    {
+      "label": "wall_noslip",
+      "base": "wall_evolving_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+        "bytes": 20031,
+        "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_wall_noslip_seed\\CaseUplWall_c.xml",
+        "bytes": 19809,
+        "sha256": "7d16f686ead0abd9c824549b94a6b2439132eb7f048b7c57a804d2b3859b0053"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_wall_noslip_seed\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/parameters/parameter[@key='SlipMode']",
+          "before": [
+            {
+              "comment": "Both parallel planes are FreeSlip",
+              "key": "SlipMode",
+              "value": "3"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "comment": "Both parallel planes are FreeSlip",
+              "key": "SlipMode",
+              "value": "2"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Dynamic wall fixture requires finite stationary FreeSlip wall normals.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_wall_noslip_seed\\CaseUplWall_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_wall_noslip_out"
+    },
+    {
+      "label": "drainage",
+      "base": "wall_evolving_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+        "bytes": 20031,
+        "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_drainage_seed\\CaseUplWall_c.xml",
+        "bytes": 19809,
+        "sha256": "c0e6a1078b805c53ed3b7a099782aea8356ec5dc52c60edc016938ed5a9f42d0"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_drainage_seed\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/special/hydromechanics/HydroMechDrainage",
+          "before": [
+            {
+              "value": "0"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "value": "1"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Porosity feedback requires no-wall elastic CPU fixtures without acceleration input/load/drainage/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; k/gravity require the private dynamic-rate fixture.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_drainage_seed\\CaseUplWall_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_drainage_out"
+    },
+    {
+      "label": "spr_conflict",
+      "base": "wall_evolving_c",
+      "source_xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+        "bytes": 20031,
+        "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+      },
+      "source_bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_spr_conflict_seed\\CaseUplWall_c.xml",
+        "bytes": 19809,
+        "sha256": "59abad1b4a8131f120c7ed1f385623697d93326bc76fcac314f551792736450b"
+      },
+      "bi4": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_spr_conflict_seed\\CaseUplWall_c.bi4",
+        "bytes": 57736,
+        "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+      },
+      "xml_semantic_delta": [
+        {
+          "path": "/case/execution/parameters/parameter[@key='SoilBoundaryDerivativeSPR']",
+          "before": [
+            {
+              "key": "SoilBoundaryDerivativeSPR",
+              "value": "0"
+            },
+            ""
+          ],
+          "after": [
+            {
+              "key": "SoilBoundaryDerivativeSPR",
+              "value": "1"
+            },
+            ""
+          ]
+        }
+      ],
+      "expected_exact_message": "Porosity feedback requires no-wall elastic CPU fixtures without acceleration input/load/drainage/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; k/gravity require the private dynamic-rate fixture.",
+      "input_prefix": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_spr_conflict_seed\\CaseUplWall_c",
+      "output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_reject_r1_spr_conflict_out"
+    }
+  ],
+  "bindings": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_build_r3.json",
+      "bytes": 12094,
+      "sha256": "c044f5984ff478da279da42bed0367194c6017771ab5db00651f2f55d5cbd187"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_off_r2.check.json",
+      "bytes": 11741,
+      "sha256": "92738b701432a0c3dad529cec0908d0d2901752dd800b533dcce331c2ba8e899"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_r1.inputs.json",
+      "bytes": 33867,
+      "sha256": "54d746812c58d162f1111c75e105d981ecce164be10fffbd9582865a3ffaf10b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_cpu_public_reject_r1.py",
+      "bytes": 15865,
+      "sha256": "504b0d905839b28fe0a12958b8ce9afaf6181ed4452663dbb43e7130666e8096"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_cpu_public_reject_r1.json",
+      "bytes": 4869,
+      "sha256": "72b2dce53cecf3c24974cff32e07acd221283f2ff8aefaa5c57270d7ec6c5cd9"
+    }
+  ],
+  "BI4_byte_identical": true,
+  "solver_executed": false,
+  "pending_PART_cases": [
+    "ON_old_OFF_PART",
+    "OFF_ON_J_PART",
+    "OFF_false_metadata_PART"
+  ],
+  "physical_acceptance": false
+}

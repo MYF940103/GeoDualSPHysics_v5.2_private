@@ -1,0 +1,85 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[Initialising JSphCpuSingle  01-11-2026 23:43:38]
+ProgramFile=".../outputs/upl_cpu_public_program_ReleaseCPU_r2/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_cpu_public_seed_r1_periodic_constant_c/CaseUplSpatial_n32_c.xml"
+OutputDir=".../tests/outputs/upl_cpu_public_part_ON_from_OFF_r1"
+OutputDataDir=".../outputs/upl_cpu_public_part_ON_from_OFF_r1/data"
+PartBegin=1
+PartBeginDir="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_cpu_public_r1_OFF_default\data"
+PartBeginFirst=1
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  CaseName=["CaseUplSpatial_n32_c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.00703125]  KernelSize=[0.0140625]  B=[0]  Gamma=[7]  Rhop0=[2048]  Dp=[0.00390625]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.03125]  MassBound=[0.03125]
+XML-Vars (parameters): TimeMax=[3.05176e-05]  TimeOut=[1.19209e-07]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 999999995904.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.000000
+  Bulk Modulus: 89478488.000000
+  Shear Modulus: 134217728.000000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental CPU 2-D elastic, zero gravity, fresh start; not a general u-pl release
+  HydroMechConductivityModel="Constant"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 6.71089e+07
+  Porosity: 0.250000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+
+*** Exception (JSphCpuSingle::LoadConfig) at DualSPHysics/source/JSph.cpp:603
+Text: HydroMechDynamicSeepage is experimental: fresh CPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.
+
+
+Finished execution (code=1).
+

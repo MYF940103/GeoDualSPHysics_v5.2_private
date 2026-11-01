@@ -101,6 +101,12 @@ void JSphCpuSingle::LoadConfig(const JSphCfgRun *cfg){
   ConfigOmp(cfg);
   //-Load basic general configuraction. | Carga configuracion basica general.
   JSph::LoadConfig(cfg);
+  if(HydroMechDynamicSeepage){
+    PorosityObserver=PorosityFeedback=DynamicPorePressure=true;
+    DynamicPoreWall=(CaseNpb>0);
+    DynamicPoreConductivity=(HydroMechConductivityModel==1);
+    DynamicPoreConductivityCk=HydroMechConductivityCk;
+  }
   //-Checks compatibility of selected options.
   Log->Print("**Special case configuration is loaded");
 }
@@ -1410,6 +1416,7 @@ void JSphCpuSingle::SaveData(){
   tfloat3 *fsnormal=NULL;
   float *porepress=NULL;
   float *porepress0=NULL;
+  float *posdiv=NULL;
   tfloat3 *hydromechloadace=NULL;
   double *poroj=NULL,*porotheta=NULL;
   //==========
@@ -1435,8 +1442,9 @@ void JSphCpuSingle::SaveData(){
       hydromechloadace=ArraysCpu->ReserveFloat3();
     }
     if(PorosityObserver){poroj=new double[Np];porotheta=new double[Np];}
+    if(HydroMechDynamicSeepage)posdiv=new float[Np];
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij,poroj,porotheta);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,posdiv,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij,poroj,porotheta);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1472,6 +1480,24 @@ void JSphCpuSingle::SaveData(){
       arrays.AddArray("PoroVolumeRatio",npsave,poroj,true);
       arrays.AddArray("PoroPorosity",npsave,porosity,true);
       arrays.AddArray("PoroThetaLastStage",npsave,porotheta,true);
+      if(HydroMechDynamicSeepage){
+        arrays.AddArray("PosDiv",npsave,posdiv,true);
+        double *volume=new double[npsave],*density=new double[npsave],*conductivity=new double[npsave];
+        const double k0=SoilCte.HydraulicConductivity;
+        for(unsigned p=0;p<npsave;p++){
+          //-Use compacted saved J, not a compacted index into the working particle arrays.
+          const bool soil=(idp[p]>=CaseNpb);
+          volume[p]=(soil? double(MassFluid)/double(RhopZero)*poroj[p]: 0.);
+          density[p]=(soil? double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/poroj[p]: 0.);
+          conductivity[p]=(soil? (DynamicPoreConductivity && k0>0 && poroj[p]!=1.?
+            k0*exp((poroj[p]-1.)/((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)): k0): 0.);
+          if(!std::isfinite(conductivity[p]) || (soil && k0>0 && conductivity[p]<=0))
+            Run_Exceptioon("Saved dynamic conductivity left its finite positive domain.");
+        }
+        arrays.AddArray("PoroCurrentVolume",npsave,volume,true);
+        arrays.AddArray("PoroMixtureDensity",npsave,density,true);
+        arrays.AddArray("PoroHydraulicConductivity",npsave,conductivity,true);
+      }
     }
     if(HydroMech && porepress && porepress0){
       float *poreexcess=new float[npsave];

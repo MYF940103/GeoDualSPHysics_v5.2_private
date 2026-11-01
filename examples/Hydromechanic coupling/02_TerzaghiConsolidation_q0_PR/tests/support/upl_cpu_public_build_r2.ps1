@@ -1,0 +1,48 @@
+# Authoritative CPU builds only. Root must finish/freeze all seven inputs before execution.
+# No GPU build, help/program invocation, GenCase, or solver is performed here.
+$ErrorActionPreference='Stop'
+$tests=Split-Path -Parent $PSScriptRoot
+$repo=(Get-Item -LiteralPath $tests).Parent.Parent.Parent.Parent.FullName
+$receipt=Join-Path $tests 'logs\upl_cpu_public_build_r2.json'
+$snapshot=Join-Path $tests 'outputs\upl_cpu_public_source_r2'
+$prior=Join-Path $tests 'outputs\upl_cpu_public_prebuild_r2'
+foreach($p in @($receipt,$snapshot,$prior)){if(Test-Path -LiteralPath $p){throw 'Fresh build artifacts required'}}
+function Entry([string]$path){$f=Get-Item -LiteralPath $path;[ordered]@{path=$f.FullName;bytes=$f.Length;sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()}}
+New-Item -ItemType Directory -Path $snapshot,$prior|Out-Null
+$sources=@()
+foreach($relative in @('src\source\JSph.h','src\source\JSph.cpp','src\source\JSphCpu.h','src\source\JSphCpu.cpp','src\source\JSphCpuSingle.cpp','src\source\JPartsLoad4.cpp','doc\xml_format\_FmtXML_ElastoplasticSoil.xml')){
+  $path=Join-Path $repo $relative;$before=Entry $path;$dest=Join-Path $snapshot ([IO.Path]::GetFileName($path))
+  Copy-Item -LiteralPath $path -Destination $dest;$copy=Entry $dest
+  if($copy.bytes -ne $before.bytes -or $copy.sha256 -ne $before.sha256){throw 'Source/document snapshot mismatch'}
+  $sources+=@{original=$before;snapshot=$copy}
+}
+$programNames=@('DualSPHysics5.2CPU_win64_debug.exe','DualSPHysics5.2CPU_win64.exe')
+$oldPrograms=@(foreach($name in $programNames){
+  $p=Join-Path $repo "bin\windows\$name";$before=Entry $p;$dest=Join-Path $prior $name
+  Copy-Item -LiteralPath $p -Destination $dest;$copy=Entry $dest
+  if($copy.bytes -ne $before.bytes -or $copy.sha256 -ne $before.sha256){throw 'Prior program copy mismatch'}
+  @{original=$before;snapshot=$copy}
+})
+$msbuild='D:\Program Files\VS2022\MSBuild\Current\Bin\amd64\MSBuild.exe'
+$solution=Join-Path $repo 'src\VS\DualSPHysics5ReCpu_vs2022.sln'
+$project=Join-Path $repo 'src\VS\DualSPHysics5ReCpu.vcxproj'
+$inputs=@(Entry $PSCommandPath;Entry $msbuild;Entry $solution;Entry $project)
+$codes=@{};$buildLogs=@();$start=[DateTime]::UtcNow.ToString('o')
+foreach($config in @('DebugCPU','ReleaseCPU')){
+  $log=Join-Path $tests "logs\upl_cpu_public_$($config)_build_r2.log"
+  if(Test-Path -LiteralPath $log){throw 'Build log retained'}
+  $old=$ErrorActionPreference;$ErrorActionPreference='Continue'
+  & $msbuild $solution /m /t:Rebuild "/p:Configuration=$config" /p:Platform=x64 /v:minimal *> $log
+  $codes[$config]=$LASTEXITCODE;$ErrorActionPreference=$old;$buildLogs+=Entry $log
+  Write-Output "MSBUILD $config exit=$($codes[$config])"
+  if($codes[$config]){Get-Content -LiteralPath $log -Tail 30;break}
+}
+foreach($s in $sources){$after=Entry $s.original.path;if($after.bytes -ne $s.snapshot.bytes -or $after.sha256 -ne $s.snapshot.sha256){throw 'Source/document changed during build'}}
+$passed=$codes.DebugCPU -eq 0 -and $codes.ContainsKey('ReleaseCPU') -and $codes.ReleaseCPU -eq 0
+$result=[ordered]@{status=if($passed){'DebugCPU_ReleaseCPU_passed_prebuild_source_snapshot_held_for_tests'}else{'build_failed_retained'};started_utc=$start;utc=[DateTime]::UtcNow.ToString('o');git_base=(& git -C $repo rev-parse HEAD);source=$sources;inputs=$inputs;prior_programs=$oldPrograms;logs=$buildLogs;programs=@($programNames|ForEach-Object {Entry (Join-Path $repo "bin\windows\$_")});msbuild_exit_codes=$codes;scope='Limited CPU public-control wiring compile-only; seven input files frozen, old canonical CPU programs archived; full DebugCPU/ReleaseCPU Rebuild, no GPU/help/solver/native-regression/public-physical acceptance';solver_started=$false;physical_acceptance=$false}
+[IO.File]::WriteAllText($receipt,($result|ConvertTo-Json -Depth 10)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))
+if(!$passed){throw 'Authoritative build failed; retain snapshot and logs'}
+Write-Output "SEALED $receipt"
+
+
+
