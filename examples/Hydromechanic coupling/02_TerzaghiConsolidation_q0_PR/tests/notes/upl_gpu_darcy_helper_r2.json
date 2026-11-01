@@ -1,0 +1,59 @@
+{
+  "stage": "upl_gpu_darcy_helper_r2",
+  "status": "author_only_not_executed",
+  "files": [
+    "tests/support/upl_gpu_darcy_helper_r2.ps1",
+    "tests/notes/upl_gpu_darcy_helper_r2.json"
+  ],
+  "purpose": "Build/link one private constant-k Darcy component with the newly rebuilt authoritative GPU objects. The driver never invokes the resulting program, help command, solver, worker, notification or Git.",
+  "cli": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_darcy_helper_r2.ps1 -Mode BuildComponent -Configuration Debug|Release -ProductionBuildConfirmed -ExecutionAuthorized",
+  "prerequisites": {
+    "accepted_actual_stage": "tests/logs/upl_gpu_k0_actual_stage_r2.check.json",
+    "stage_binding": "Require its passed bounded k0 actual/smoke result and bind the aggregate file hash. Do not recursively traverse historical publication/status records: the old mutable validation status is not an immutable current-source predicate.",
+    "current_authoritative_GPU_build": "tests/logs/upl_gpu_darcy_{Debug,Release}_r2.build.json",
+    "current_source": "Require the successful owned /t:Rebuild call, all 265 current frozen project-source files, five_targets, immutable baseline's other 260 files, 110 unique authoritative objects excluding main, tools/runtime/canonical-program identities. A later selective checkpoint is allowed only while these exact current source/build bindings remain unchanged.",
+    "retained_argument_recipe": "tests/logs/upl_gpu_k0_time_component_{Debug,Release}_r1.helper.json",
+    "historical_identity": "Verify old helper/compile/link receipts, authors, input receipt files, tools and libraries by hash. Read oldh.source_build.no_space_IntDir and its recorded object inventory to identify the OLD link prefix; do not compare that historical source inventory's five edited paths against current files."
+  },
+  "author_inputs_frozen_at_BuildComponent": [
+    "tests/support/upl_gpu_darcy_helper_r2.ps1",
+    "tests/notes/upl_gpu_darcy_helper_r2.json",
+    "tests/support/upl_gpu_darcy_component_r2.cpp",
+    "tests/notes/upl_gpu_darcy_component_r2.json",
+    "tests/support/upl_gpu_k0_time_r1.cpp",
+    "tests/notes/upl_gpu_k0_time_component_r1.json"
+  ],
+  "transitive_includes": "The component renames and includes the retained Time main, preserving one AppInfo definition. The retained Time CPP is explicitly hash-locked to e886b659688ea369a3a30b8384ffa4c8f6ede4efd1342a288aebf24cdc712f95; its project-header closure is covered by the complete current 265-file source freeze. Toolchain/CUDA/system headers follow the unchanged authoritative toolchain recipe, not a new independent external-header audit.",
+  "exact_remaps": {
+    "compiler": "Exactly one old Time CPP source argument becomes the new component CPP, plus exactly /Fo helper.obj and /Fd compile.pdb; every other compile argument is unchanged.",
+    "linker": "Exactly /OUT, one helper.obj and Debug-only /PDB change. Exactly 110 object arguments identified under OLD h.source_build.no_space_IntDir map by unique exact basename to NEW g.no_space_IntDir objects. Reject duplicate, missing or foreign objects. Verify the entire final object-argument set is precisely one helper.obj plus all 110 current source-build objects.",
+    "expected_receipt": "GPU_object_substitutions=110, GPU_object_directory_changed=true, link_object_count=111, exact_link_closure_verified=true. This is argument/object identity, not solver or physical validation."
+  },
+  "new_outputs": {
+    "directory": "tests/outputs/upl_gpu_darcy_component_{Debug,Release}_r2",
+    "program": "upl_gpu_darcy_component_r2.exe",
+    "receipt": "tests/logs/upl_gpu_darcy_component_{Debug,Release}_r2.helper.json",
+    "compile_and_link": "Separate owned *_compile.call.json/*_link.call.json and logs; nonzero exit preserves evidence and stops before success receipt.",
+    "runtime": "Copy only the exact runtime support files from the newly isolated Darcy GPU build, including Chrono DLLs/configuration; hash each copy against its new-build source. Do not overwrite canonical executables/server packages or retained outputs."
+  },
+  "scope": [
+    "BuildComponent only; no automatic Run and no helper execution",
+    "Root must finish reading and freeze the final component CPP/note before authorized build",
+    "No production source or equation change and no new public GPU option",
+    "No numeric thresholds are changed or interpreted by this compile/link wrapper",
+    "Component memcheck/Debug/Release/native regressions/actual integration and physical acceptance remain later separate gates",
+    "No source/executable backup copies and no recursive old mutable-status hash verification"
+  ],
+  "author_compiled_or_executed": false,
+  "author_changed_production": false,
+  "threshold_changes": false,
+  "retained_r1_compile_failure": {
+    "reported_by": "root",
+    "owned_compile_call": "tests/logs/upl_gpu_darcy_component_Debug_r1_compile.call.json",
+    "exit_code": 2,
+    "reason": "C3861: make_float3/int2/double2/float4 declarations unavailable. Root reports no link or component run.",
+    "new_component_change": "Peer authors component_r2 with vector_functions.h declaration include and stage label only; numerical formulas, budgets and tests unchanged. New author identities bind at BuildComponent.",
+    "production_rebuild_required": false,
+    "r1_evidence_overwritten": false
+  }
+}

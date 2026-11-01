@@ -1,0 +1,39 @@
+{
+  "stage": "upl_gpu_darcy_root_review_r1",
+  "base_checkpoint": "7387fb0e435928c2a742281cc0406153e4605fc0",
+  "conclusion": "Bounded private constant-k GPU implementation verified; not public or physical release.",
+  "production_changes": [
+    {"path":"src/source/JSphGpu.h","line":169,"purpose":"Default-false private complete-rate control and three protected host helpers; no public XML key or independent k state."},
+    {"path":"src/source/JSphGpu.cpp","line":1699,"purpose":"Force-stage native-owner map, periodic C/Ace/theta/rate extension, complete-rate dispatch, same-current-J acoustic/diffusion bounds and strict positive-k continuous-domain guard."},
+    {"path":"src/source/JSphGpuSingle.cpp","line":698,"purpose":"Extend current C before forces; suppress the old fused pressure-rate source only in the new branch; replace the full rate after completed acceleration contributions."},
+    {"path":"src/source/JSphGpu_ker.h","purpose":"Declare owner/rate APIs and backward-compatible optional diffusion-reduction parameters."},
+    {"path":"src/source/JSphGpu_ker.cu","line":1351,"purpose":"Native-only double maxima, validated native-to-periodic copies, and constant-k complete Darcy rate using current J volumes, corrected pressure operator and same-stage acceleration."}
+  ],
+  "equation": "p_dot=(Kw/n)*[-theta+(k/gamma)*(Lstar(p)+rho_w*div(Ace))], Lstar=Lp-Gp.dot(Lx). Pressure rate is assigned once, not added to the old compression source.",
+  "unchanged": "CPU equations, old CPU/GPU density integration, pressure/rate float storage, double stress state, kernel selection, boundary/load/drainage physics, public GPU rejection, canonical GPU programs and formal/server packages.",
+  "builds": "Default CPU Debug Build passed twice; isolated authoritative GPU Debug/Release Rebuilds and all exact110-object helper links passed. Debug retains third-party missing-PDB/runtime-library warnings; no compile errors.",
+  "components": "Debug and Release each:2028 rate rows,6 prefix copies,4 owner negatives,12 patch fields,4 scale passes/1 domain rejection and12 strict step requests. Debug memcheck0errors/0leaks. Reference independently traverses all particles but deliberately reuses actual C and the project kernel; this is not a second independent C solver or continuum proof. Debug/Release complete CSV bit equality is NOT claimed.",
+  "legacy_regression": "Seven fresh old-path jobs:557 original15-array/clock/Step/signed-dterror frame pairs0ULP;537 observer J/n/theta pairs exact;517 Feedback33 exports byte exact. Independent audit:4732 unique files and274944 independently parsed J/n/theta rows.",
+  "actual_integration": "Five fresh GPU jobs only:constant-k Debug2step smoke and k0/constant Release coarse/half512/1024steps. Each full short window ends2^-15s with257 exact saves and512 native IDs. Four retained CPU/old-GPU controls re-read; optional extra CPU-k0 re-reads were not required or run.",
+  "comparison": {
+    "k0_bridge_coarse_and_half": "Both complete257x512x33 trajectories bit exact to old fused-k0, observed rather than imposed.",
+    "k0_half_pressure_RMS_max_Pa": 0.0007010120896876695,
+    "positive_k_half_pressure_RMS_max_Pa": 0.00031036376059348356,
+    "positive_k_half_material_displacement_max_mm": 4.860001290296623e-11,
+    "positive_k_CPU_GPU_pressure_RMS_max_Pa": [5.302549264769737e-5,4.327018061479862e-5],
+    "positive_k_CPU_GPU_material_displacement_max_mm": [3.858378926142159e-12,3.5388358909926865e-12],
+    "gates": "All257 actual matched samples in six pairs:5Pa/.005mm; both independent halves also normalized p/v/u<=1e-4. All nine native readers preserve original finite/ledger/energy/geometry/no-loss/necessary-scale/domain gates.",
+    "maximum_new_GPU_saved_energy_ratio": 1.0022677516802097,
+    "all_six_PNGs_and_matching_CSVs_inspected": true,
+    "zero_log_plot_note": "The two exactly zero bridge errors have no log-axis ordinate; no zero samples were dropped from CSV or acceptance. Their upper actual histories coincide."
+  },
+  "native_attribution": "GPU J/n/theta are native; GPU V/rho/k are explicitly derived and PosDiv is absent. CPU V/rho/k and PosDiv are native observations. Retained positive-k CPU ran OMP1, not a new CPU timing control; CPU rational and GPU additive passive density remain unchanged.",
+  "independent_actual_audit": {"path":"tests/notes/upl_gpu_darcy_actual_audit_r1.json","sha256":"60a4d33ba2347ce17242d9f50d057ef7e1511caf423b3ebb3461de311b5a5ed0","result":"7425 bindings/2849 unique files without mismatch;2059 saved frames/1054208 native records and every257x22 pair CSV/33-column mismatch statistic independently recomputed."},
+  "retained_repairs": "Precompiler PowerShell provider-metadata expansion; missing CUDA vector-constructor header; synthetic floating/fluid ID alias; reserved PowerShell Error postcheck variable. Only test machinery changed for these failures. Completed Debug component was recovered offline, not rerun. No mathematical guard was relaxed.",
+  "documentation": "XML guide adds comments only; parser check confirms all non-comment elements/attributes equal HEAD. Parent validation status records this private scope. No formal XML/BAT is changed.",
+  "limits": "Fresh2D rectangular XZ-periodic weak elastic constant-k fixtures only. Necessary scales/short halves are not sufficient stability, continuum1percent, general conservation, wall/gravity/load/drainage/evolving-k/plasticity/full-cycle/exact-restart or public GPU acceptance.",
+  "backup_scope": "Selectively commit source, inputs, recipes, compact evidence/CSVs/PNGs. Raw BI4, physical.bin, executables, objects, runtime DLLs and per-PART porosity sidecars remain protected/hash-bound locally, not cloud backed.",
+  "next": "After verified local/remote checkpoint, port smooth k(J) and its coefficient-gradient chain terms/necessary step limit; then opposing static FreeSlip walls and only later bounded public GPU wiring.",
+  "physical_acceptance": false,
+  "public_GPU_dynamic_accepted": false
+}

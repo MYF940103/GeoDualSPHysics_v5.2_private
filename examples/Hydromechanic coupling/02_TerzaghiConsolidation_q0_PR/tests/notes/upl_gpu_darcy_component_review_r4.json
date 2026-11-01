@@ -1,0 +1,65 @@
+{
+  "stage": "upl_gpu_darcy_component_review_r4",
+  "status": "author_only_not_executed",
+  "files": [
+    "tests/support/upl_gpu_darcy_component_review_r4.ps1",
+    "tests/notes/upl_gpu_darcy_component_review_r4.json"
+  ],
+  "purpose": "Recover only the failed new postcheck of a completed Debug component, then permit one separate fresh Release invocation. Never rerun completed Debug.",
+  "retained_program_success_and_wrapper_failure": {
+    "failed_check": "tests/logs/upl_gpu_darcy_component_Debug_run_r3.check.json",
+    "owned_call": "tests/logs/upl_gpu_darcy_component_Debug_run_r3.call.json",
+    "actual_output": "tests/outputs/upl_gpu_darcy_component_Debug_run_r3",
+    "observed": "Owned Debug component exited0, completion stage component_r3 passed all declared counts, memcheck0 errors/0 leaked bytes; wrapper failed at local $error assignment because PowerShell Error is read-only. Original failed check remains unchanged.",
+    "new_local_name": "$rateResidual replaces only the conflicting local $error in the identical 2028-row postcheck."
+  },
+  "cli": {
+    "offline": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_darcy_component_review_r4.ps1 -Mode ReviewDebug -ExecutionAuthorized",
+    "fresh_Release": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_darcy_component_review_r4.ps1 -Mode RunRelease -ExecutionAuthorized"
+  },
+  "actions": {
+    "ReviewDebug": {
+      "launches": 0,
+      "configuration": "Debug",
+      "requires": "Require exact retained wrapper-only error, full failed-check bindings, owned original target exit0, exact original helper/target/seed/build/arguments, actual sanitizer log0errors/0leaks, unchanged source/objects/runtime/canonical controls and all output hashes.",
+      "analysis": "Recompute all6prefix/4owner/12patch108rate/2periodic1920rate/4scale+1domain/12request gates and every raw-term error/budget ratio and extrema from immutable output. No formula, count, budget or threshold change.",
+      "output": "tests/logs/upl_gpu_darcy_component_Debug_review_r4.check.json",
+      "original_outputs_overwritten": false
+    },
+    "RunRelease": {
+      "launches": 1,
+      "configuration": "Release",
+      "prerequisite": "The new Debug_review_r4 passed with its complete original owned call/completion/output/source/runtime bindings; never adopt failed Debug_run_r3 check as success.",
+      "helper": "tests/logs/upl_gpu_darcy_component_Release_r3.helper.json",
+      "production": "tests/logs/upl_gpu_darcy_Release_r2.build.json",
+      "output": "tests/outputs/upl_gpu_darcy_component_Release_run_r4",
+      "check": "tests/logs/upl_gpu_darcy_component_Release_run_r4.check.json",
+      "completion_stage": "upl_gpu_darcy_component_r3",
+      "gates": "The same postcheck as ReviewDebug and original runs_r3 with corrected local variable only. Owned exit0 and every threshold remain required."
+    }
+  },
+  "exact_retained_components": "Component_r3 CPP/note and both Debug/Release helper identities are unchanged. Retained Time_r1, production_r2 build/source closure and raw Debug_run_r3 are not rewritten. Build/link is not performed by this script.",
+  "inherited_declaration": "tests/notes/upl_gpu_darcy_component_r3.json plus its hash-bound r1/r2 declarations; tests/notes/upl_gpu_darcy_component_runs_r3.json describes unchanged numerical gates.",
+  "counts": {
+    "prefix_stage_cases": 6,
+    "owner_negative_cases": 4,
+    "finite_patch_cases": 12,
+    "finite_patch_rate_rows": 108,
+    "actual_host_periodic_cases": 2,
+    "actual_host_periodic_rate_rows": 1920,
+    "class_scale_cases": 4,
+    "positive_k_domain_rejections": 1,
+    "actual_DtVariable_cases": 12,
+    "CSV_rate_rows_recomputed": 2028
+  },
+  "restrictions": [
+    "No completed Debug invocation or physical solver is rerun",
+    "No source edit, old evidence overwrite, program build, worker, notifier, connectivity test or Git",
+    "Component agreement is not actual coupled integration, public GPU support or physical acceptance",
+    "All predeclared mathematical and safety gates unchanged"
+  ],
+  "author_executed_script_or_component": false,
+  "author_changed_production": false,
+  "threshold_changes": false,
+  "physical_acceptance": false
+}

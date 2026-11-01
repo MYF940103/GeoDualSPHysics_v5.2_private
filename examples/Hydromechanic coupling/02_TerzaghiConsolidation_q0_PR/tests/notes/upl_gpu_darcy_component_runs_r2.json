@@ -1,0 +1,53 @@
+{
+  "stage": "upl_gpu_darcy_component_runs_r2",
+  "status": "author_only_not_executed",
+  "files": [
+    "tests/support/upl_gpu_darcy_component_runs_r2.ps1",
+    "tests/notes/upl_gpu_darcy_component_runs_r2.json"
+  ],
+  "purpose": "Explicitly run exactly one already-built private constant-k component per invocation. No compilation, physical solver/ComputeStep, notifier, old worker, recursive rearm or Git operation.",
+  "cli": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_darcy_component_runs_r2.ps1 -Mode RunComponent -Configuration Debug|Release -ExecutionAuthorized",
+  "required_frozen_inputs": [
+    "tests/logs/upl_gpu_darcy_component_{Debug,Release}_r2.helper.json with exact111-object link closure and 110 authoritative GPU substitutions",
+    "tests/logs/upl_gpu_darcy_{Debug,Release}_r2.build.json and current five-target/265-file source freeze plus baseline260-other-source/canonical-program identities",
+    "helper authors including component CPP/note and retained Time CPP/note; current project-header closure/tools/libraries and target/runtime hashes",
+    "tests/logs/upl_gpu_k0_time_r1.inputs.json and its exact unchanged periodic512 XML/BI4; no Prepare/GenCase/input mutation",
+    "the named passed prior k0 actual aggregate by its receipt hash, without recursive old mutable validation-status traversal"
+  ],
+  "single_owned_call": {
+    "target_arguments": "--darcy -gpu:0 -stable RETAINED_PREFIX FRESH_OUTPUT -dirdataout data -svres",
+    "Debug": "Derive exact compute-sanitizer.exe identity from retained logs/upl_gpu_feedback_Feedback_Debug_r2_component.call.json; require the old tool call passed, verify its tool SHA, then use --tool memcheck --leak-check full --error-exitcode 97. Require owned target exit0 and both ERROR SUMMARY:0 errors and LEAK SUMMARY:0 bytes leaked in0 allocations.",
+    "Release": "Direct component executable only after the new Debug run/check/completion/output bindings verify passed with zero memcheck errors/leaks.",
+    "failure": "Always seal owned exit/launch-error/log call evidence; a failed target, memcheck or offline postcheck also writes a failed check with all available partial-file hashes. Preserve all output, never rerun/overwrite this label. Root reviews a failure before any later action."
+  },
+  "outputs": {
+    "directory": "tests/outputs/upl_gpu_darcy_component_{Debug,Release}_run_r2",
+    "call_and_log": "tests/logs/upl_gpu_darcy_component_{Debug,Release}_run_r2.call.json and .log",
+    "check": "tests/logs/upl_gpu_darcy_component_{Debug,Release}_run_r2.check.json",
+    "hashes": "Bind recipe/helper/build/prepared seed/tool and all actual output files, completion, call, current source/runtime before/after. Do not reinterpret compile-only success as component success."
+  },
+  "unchanged_component_gates": {
+    "counts": "6 prefix-stage,4 owner-negative,12 finite-patch cases/108 rates,2 actual-host periodic cases/1920 rates,4 scale passes,1 positive-k-domain rejection,12 actual DtVariable request cases",
+    "scope_flags": "actual private rate/owner helpers and fresh LoadConfig/ConfigDomain/InitRunGpu true; actual ComputeStep_Sym false, completed_physical_steps0, public GPU false, variable-k false, physical acceptance false",
+    "rate": "Recheck all2028 CSV rate rows against the original per-row propagated raw-term budget; actual/reference/error/budget/ratio/source contributions finite, budgetpositive, ratio<=1. Recompute max error/ratio and require exact completion-summary agreement. No physical5Pa budget is substituted here.",
+    "owner": "Verify nonempty prefix/periodic/corner/native-C evidence, expected missing/wrong-owner minimumslot and true host pool release. C++ provides the full bit-exact immutability and tail checks; CSV summaries are not independent observations of every matrix element.",
+    "scale_requests": "Require exactly five scale rows with one domain rejection and twelve request rows with caught==expected, unchanged physical-state flag. Numeric telemetry is finite except the single predeclared current_nan/current negative input, which must be NaN and rejected. Never treat that deliberate rejected scalar as a nonfinite physical particle field.",
+    "physical_output": "No BI4/PART output is permitted; this component does not advance a physical time step."
+  },
+  "limits": [
+    "Implementation component only, not actual coupled Run, first/corrector integration or native weak-wave acceptance",
+    "Constant-k/private2D rectangular-periodic scope only; no public GPU unlock, walls, variable k, gravity, load, drainage or restart admission",
+    "Necessary wave/pore/RH conditions do not establish sufficient nonlinear or discrete stability",
+    "No existing numerical threshold is relaxed; all later physical half/backend and native safety gates remain separate"
+  ],
+  "author_compiled_or_executed": false,
+  "author_changed_production": false,
+  "threshold_changes": false,
+  "retained_r1_evidence": {
+    "compile_call": "tests/logs/upl_gpu_darcy_component_Debug_r1_compile.call.json",
+    "root_reported_exit_code": 2,
+    "reason": "C3861 missing CUDA vector-constructor declarations; no link or component run occurred.",
+    "r1_run_driver": "Preserved author-only, never executed; no r1 runtime result is adopted.",
+    "r2_change": "New helper/component label; peer adds vector_functions.h plus stage label only. Production r2 GPU objects and all numerical gates remain unchanged."
+  }
+}

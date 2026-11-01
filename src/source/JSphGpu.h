@@ -165,7 +165,8 @@ protected:
   float *PorePress0g;  ///<Initial hydrostatic pore-water pressure reference on GPU.
   float *PorePressRateg; ///<Explicit pore-water pressure rate on GPU.
   bool PorosityObserver; ///<Private default-OFF observer; does not enable dynamic seepage.
-  bool PorosityFeedback; ///<Private k=0 J-derived quadrature/storage/inertia fixture.
+  bool PorosityFeedback; ///<Private J-derived quadrature/storage/inertia; k=0 unless the complete rate is enabled.
+  bool DynamicPorePressure; ///<Private complete constant-k Darcy rate; default OFF and requires J feedback.
   double *PoroJg;       ///<Solid volume ratio J; physical feedback is separately gated.
   double *PoroThetag;   ///<Corrected pair divergence from the last force stage.
   double *PoroJPreg;    ///<Full-step J held during Symplectic prediction/correction.
@@ -314,6 +315,9 @@ protected:
   void ComputeSymplecticCorr(double dt);
   void InitPorosityObserverGpu();
   double GetPorosityStepWaveGpu();
+  unsigned* PrepareDynamicPorePeriodicGpu();
+  void ComputeDynamicPorePressureRateGpu(unsigned *ridpg);
+  void GetDynamicStepScalesGpu(double &wave,double &pore);
   void ComputeSymplecticPorosity(bool corrector,double dt);
   double DtVariable(bool final);
 

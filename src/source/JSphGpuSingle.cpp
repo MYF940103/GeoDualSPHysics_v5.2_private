@@ -695,6 +695,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   PreInteraction_Forces();
   ComputeBoundaryDerivativeVelocity();
   ComputeFreeSurfaceTracking();
+  unsigned *dynamicridpg=(DynamicPorePressure? PrepareDynamicPorePeriodicGpu(): NULL);
   if(HydroMech){
     ApplyFreeSurfacePorePressure();
     if(HydroMechTopLoadMode!=HMLOAD_FlexibleConfinement)ApplyHydroMechTopLoadAcceleration();
@@ -722,7 +723,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,SpsGradvelg
     ,Sigmag,Rsigmag
     ,ArtificialStressg
-    ,PorePressg,PorePressRateg
+    ,PorePressg,(DynamicPorePressure? NULL: PorePressRateg)
     ,FSTypeg,FSNormalg
     ,IsHydroMechDrainageActive()
     ,HydroMechLoadAceg
@@ -746,6 +747,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   //-For 2D simulations always overrides the 2nd component (Y axis).
   //-Para simulaciones 2D anula siempre la 2nd componente.
   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
+  if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
 
   //-Computes Tau for Laminar+SPS.
   if(lamsps)cusph::ComputeSpsTau(Np,Npb,SpsSmag,SpsBlin,Velrhopg,SpsGradvelg,SpsTaug);

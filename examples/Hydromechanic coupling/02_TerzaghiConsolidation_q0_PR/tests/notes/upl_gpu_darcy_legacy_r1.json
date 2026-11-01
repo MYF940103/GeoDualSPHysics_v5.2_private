@@ -1,0 +1,46 @@
+{
+  "stage": "upl_gpu_darcy_legacy_r1",
+  "author_only_until_root_review_and_explicit_execution": true,
+  "purpose": "Relink unchanged old fixtures with the new constant-k Darcy GPU objects and verify unchanged DynamicPorePressure=false paths, not the new complete Darcy branch.",
+  "source_checkpoint_before_new_production_patch": "7387fb0e435928c2a742281cc0406153e4605fc0",
+  "source_build": "logs/upl_gpu_darcy_{Debug|Release}_r2.build.json",
+  "new_files": ["support/upl_gpu_darcy_legacy_build_r1.ps1", "support/upl_gpu_darcy_legacy_runs_r1.ps1", "notes/upl_gpu_darcy_legacy_r1.json", "support/upl_gpu_darcy_legacy_batch_r1.cpp", "notes/upl_gpu_darcy_legacy_batch_r1.json"],
+  "new_CPP": "Entry-only batch wrapper includes the immutable Native CPP; Compare/ReadPoro and every non-batch CLI are reused unchanged. Native builder remaps exactly one compiler source to this wrapper. Feedback compiler source remains unchanged.",
+  "production_edits": false,
+  "immutable_fixtures": {
+    "Native": {"source": "support/upl_gpu_observer_native_r1.cpp", "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857", "recipe": "logs/upl_gpu_k0_time_native_{Debug|Release}_r1.helper.json"},
+    "Feedback": {"source": "support/upl_gpu_k0_actual_r2.cpp", "sha256": "7bdf0ffbf04b8cf964682ae3e8636691998231b7e6472f64e9c1a3adc2e15625", "recipe": "logs/upl_gpu_k0_actual_{Debug|Release}_r2.helper.json", "include": "support/upl_gpu_observer_native_r1.cpp"}
+  },
+  "private_flags": {
+    "OFF": "New isolated canonical main, public master remains absent/false; no private flag enabled.",
+    "Observer": "Immutable Native --solver 1 enables only PorosityObserver.",
+    "Feedback": "Immutable Actual Enable sets PorosityObserver=PorosityFeedback=true only.",
+    "DynamicPorePressure": "Never assigned by either unchanged fixture; current protected constructor default false. This is a static recipe scope restriction, not a newly exported runtime flag."
+  },
+  "author_review_repairs_before_any_execution": ["Native final completion uses singular predictor_history_released; Feedback uses plural predictor_histories_released. Check the actual per-fixture key without fallback.", "Batch only external offline entry calls: one batch per job replaces per-frame process launches, with every original per-frame JSON/CSV check retained in PowerShell. Feedback additionally needs two unchanged whole-history 33-column reader calls."],
+  "jobs": [
+    {"job": "OFF_smoke", "configuration": "Debug", "steps": 2, "samples": 3, "retained": "outputs/upl_gpu_k0_time_Smoke_r1_newoff/data"},
+    {"job": "Observer_smoke", "configuration": "Debug", "steps": 2, "samples": 3, "retained": "outputs/upl_gpu_k0_time_Smoke_r1_observer/data"},
+    {"job": "Feedback_smoke", "configuration": "Debug", "steps": 2, "samples": 3, "retained": "outputs/upl_gpu_k0_actual_Smoke_r2/data"},
+    {"job": "OFF_extended", "configuration": "Release", "steps": 16, "samples": 17, "retained": "outputs/upl_gpu_k0_time_Extended_r1_newoff/data"},
+    {"job": "Observer_extended", "configuration": "Release", "steps": 16, "samples": 17, "retained": "outputs/upl_gpu_k0_time_Extended_r1_observer/data"},
+    {"job": "Feedback_c", "configuration": "Release", "steps": 512, "samples": 257, "retained": "outputs/upl_gpu_k0_actual_GPU_c_r3/data"},
+    {"job": "Feedback_h", "configuration": "Release", "steps": 1024, "samples": 257, "retained": "outputs/upl_gpu_k0_actual_GPU_h_r3/data"}
+  ],
+  "clock_and_geometry": {"native": 512, "fixed": 0, "dimension": 2, "periodic": "rectangular XZ", "dt_coarse_s": 5.9604644775390625e-8, "dt_half_s": 2.98023223876953125e-8, "full_end_s": 3.0517578125e-5, "full_cadence_s": 1.1920928955078125e-7, "input_changes": "None: adopt sealed native and k0 actual seed XML/BI4 with their existing manifests."},
+  "gates": {
+    "all_jobs": "Owned exit0, exact native save count and no exclusions; every saved typed original15 array aligned by nativeID bit-identical to retained same-physics raw BI4, plus exact actual saved time, zero-based Step and present typed Double signed dterror. Preserve signed finite dterror<=1e-14, not abs(dterror).",
+    "original15": ["Idp", "Posd", "Vel", "Sigma_kk", "Sigma_ij", "FSNormal", "HydroMechLoadAce", "Rhop", "Kplastic", "PorePress", "PorePress0", "ExcessPorePress", "SigmaState_kk", "SigmaState_ij", "FSType"],
+    "original15_excludes_J": true,
+    "OFF": "Both old/new ObserverSchema false (all three observer arrays absent); no fabricated J columns.",
+    "Observer_and_Feedback": "Both old/new ObserverSchema true; read all three actual Double J/n/theta arrays, strict derived n(J), finite domain, exact every old/new CSV and final live native CSV. No claim that original15 itself includes these arrays or all arbitrary metadata.",
+    "Feedback_additional": "Use the same immutable old Actual reader on both new and retained raw BI4, then require whole-byte physical.bin, native_ids.csv and history.csv equality. Its real schema is 33, not 26; directly confirmed by source Columns=33 and retained Smoke_r2/GPU_c_r3/GPU_h_r3 completion plus physical.bin headers. GPU current V/rho/k0 in those 33 are explicitly derived, not extra native BI4 arrays; PosDiv is absent and not fabricated.",
+    "Debug": "All three actual GPU runs under memcheck must show ERROR SUMMARY 0 errors and LEAK SUMMARY 0 bytes leaked in 0 allocations.",
+    "Release": "All three Debug exact reviews first; Observer after matching OFF exact review; Feedback half after coarse exact review.",
+    "safety": "Immutable Actual reader retains its full finite/elastic/ledger/current-J-CFL<=.01/energy<=1.1/all-sample guards; no new bounds or tolerance relaxation. Same-physics exact comparisons are not half errors or theory truth."
+  },
+  "execution_contract": "Build one chosen fixture/config, Run exactly one chosen job, Review only an already sealed completed solve, Aggregate only after seven exact checks. Existing paths are protected; no auto-launch sequence, old solver rerun, GenCase, helper-help, watcher, retry, Git or formal case modification.",
+  "aggregate": {"path": "logs/upl_gpu_darcy_legacy_r1.check.json", "required_true": ["passed", "all_native_typed15_clock_step_dterror_exact", "all_observer_J_n_theta_exact", "all_feedback_immutable_33_export_exact"], "required_false": ["DynamicPorePressure_enabled", "physical_acceptance", "public_GPU_dynamic_accepted"], "job_checks": "Exactly seven Entry bindings; inputs bind current source build and frozen recipes, without asserting historical production source originals match current source."},
+  "physical_or_P3_acceptance": false,
+  "raw_binary_or_executable_cloud_backup_claim": false
+}

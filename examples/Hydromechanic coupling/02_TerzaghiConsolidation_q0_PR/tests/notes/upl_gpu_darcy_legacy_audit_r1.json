@@ -1,0 +1,65 @@
+{
+  "stage": "upl_gpu_darcy_legacy_audit_r1",
+  "passed": true,
+  "scope": "Separate read-only receipt/raw-hash and exported-byte audit of the already completed DynamicPorePressure=false regressions. No solver, helper, BI4-reader program, build or Git command was run by this audit.",
+  "aggregate": {"path": "tests/logs/upl_gpu_darcy_legacy_r1.check.json", "bytes": 12582, "sha256": "29b5381a2d11751b97badf393ea55122f20697c96f1696d9fe0d2cd15f21622f"},
+  "verification": {
+    "bindings_checked": 7160,
+    "unique_files_hashed_with_cache": 4732,
+    "hash_or_size_mismatches": 0,
+    "seven_owned_solver_exits_zero": true,
+    "Debug_actual_memchecks_zero_errors_zero_bytes_leaked": 3,
+    "Release_memcheck_claim": false,
+    "all_current_GPU_runtime_and_program_bindings_checked": true,
+    "actual_helper_link_closure": "One helper object plus all110 current authoritative GPU objects, no main object; exact link vector checked against each new build inventory.",
+    "native_raw_files_and_retained_control_raw_files_rehashed": true,
+    "all_557_saved_original15_comparison_JSONs_checked": true,
+    "original15_clock_Step_signed_dterror_bits_exact": true,
+    "original15_contains_J": false,
+    "signed_dterror_guard": "Finite and <=1e-14; safe negative values were not treated as absolute errors.",
+    "observer_schema": "OFF old/new all three arrays absent; Observer/Feedback old/new all three present. Every retained typed comparison JSON and strict Double ReadPoro completion checked.",
+    "observer_new_CSV_rows_independently_parsed": 274944,
+    "observer_CSV_independent_checks": "For every537 saved frame and512 native IDs, exact ID order, finite theta, J>.75,0<n<1, n=1-.75/J, and initial J=1/theta=0. Each full old/new CSV hash/length and saved/new-live/retained-live hash identity checked separately.",
+    "Feedback_whole_exports": "For smoke/coarse/half independently verify old/new physical.bin, native_ids.csv and history.csv whole-byte identity; physical.bin header(512,33,samples) and exact byte length; both immutable33-reader completions preserve original native/safety/ledger/energy/clock gates.",
+    "not_a_second_BI4_decoder": true,
+    "native_typed_bit_proof_basis": "Immutable reader source/function hashes plus owned successful reader calls and all per-frame outputs, bound to rehashed raw BI4. This audit did not re-run that program or create a second parser."
+  },
+  "counts": {
+    "jobs": 7,
+    "saved_frame_instances_not_unique_times": 557,
+    "typed_original15_frame_pairs": 557,
+    "typed_original15_native_node_pairs": 285184,
+    "observer_frame_pairs": 537,
+    "observer_native_node_pairs": 274944,
+    "Feedback33_frame_pairs": 517,
+    "Feedback33_native_node_pairs": 264704
+  },
+  "jobs": [
+    {"job": "OFF_smoke", "steps": 2, "frames": 3, "original15_clock_exact": true, "observer_arrays": false},
+    {"job": "Observer_smoke", "steps": 2, "frames": 3, "original15_clock_exact": true, "observer3_and_live_exact": true},
+    {"job": "Feedback_smoke", "steps": 2, "frames": 3, "original15_clock_exact": true, "observer3_and_live_exact": true, "whole33_export_exact": true},
+    {"job": "OFF_extended", "steps": 16, "frames": 17, "original15_clock_exact": true, "observer_arrays": false},
+    {"job": "Observer_extended", "steps": 16, "frames": 17, "original15_clock_exact": true, "observer3_and_live_exact": true},
+    {"job": "Feedback_c", "steps": 512, "frames": 257, "original15_clock_exact": true, "observer3_and_live_exact": true, "whole33_export_exact": true},
+    {"job": "Feedback_h", "steps": 1024, "frames": 257, "original15_clock_exact": true, "observer3_and_live_exact": true, "whole33_export_exact": true}
+  ],
+  "source_and_component_coherence": {
+    "Debug_build_sha256": "dbbfba20464aaa6530b434f0f1d0d8f1d0c477636861058a32cc306de958e0dc",
+    "Release_build_sha256": "93cc604fd737a1c3610f0e06f751591bdbdd1114afb154534bd6788954e66de0",
+    "both_current_265_source_inventories_and_5_targets_rehashed": true,
+    "canonical_GPU_six_unchanged_baseline_bindings_rehashed": true,
+    "component_checks_same_current_builds": ["tests/logs/upl_gpu_darcy_component_Debug_review_r4.check.json", "tests/logs/upl_gpu_darcy_component_Release_run_r4.check.json"],
+    "component_helper_input_object_runtime_closures_rehashed": true,
+    "private_flag_basis": "Current JSphGpu constructor initializes DynamicPorePressure=false. Unchanged Native Enable only sets observer; unchanged Actual Enable only sets observer+feedback. Batch wrapper delegates old solver entry unchanged. No new runtime dynamic-flag diagnostic is fabricated."
+  },
+  "limitations": [
+    "All results concern unchanged old paths only; the new complete DynamicPorePressure=true Darcy trajectory is not admitted here.",
+    "Feedback33 has native Double J/n/theta but derived GPU V/rho/k0; PosDiv is absent, not invented.",
+    "No CPU/GPU theory, half-step physical acceptance, public GPU unlock, wall, variable-k, restart or full-cycle acceptance follows.",
+    "Raw BI4, programs and physical.bin remain protected local data with sealed hashes; this note does not claim cloud backup of those binaries."
+  ],
+  "author_changed_source_or_frozen_artifacts": false,
+  "new_complete_Darcy_branch_accepted": false,
+  "public_GPU_dynamic_accepted": false,
+  "physical_acceptance": false
+}

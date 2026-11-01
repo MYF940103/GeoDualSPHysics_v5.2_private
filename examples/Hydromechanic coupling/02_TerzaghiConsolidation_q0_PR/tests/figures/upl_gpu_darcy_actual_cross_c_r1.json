@@ -1,0 +1,561 @@
+{
+  "passed": true,
+  "pair": "cross_c",
+  "model": "constant",
+  "native_count": 512,
+  "samples": 257,
+  "common_columns": 33,
+  "all_actual_times_and_native_IDs_matched": true,
+  "pressure_RMS_limit_Pa": 5.0,
+  "max_material_displacement_limit_mm": 0.005,
+  "absolute_gates_passed": true,
+  "normalized_half_gates_applied": false,
+  "normalized_half_limit": null,
+  "normalized_nonhalf_metrics_descriptive_only": true,
+  "normalized_metrics_within_half_limits_descriptive_if_nonhalf": true,
+  "maxima": {
+    "pressure_RMS_Pa": 5.302549264769737e-05,
+    "pressure_RMS_over_Pstar": 5.17827077923707e-08,
+    "velocity_vector_RMS_m_s": 1.1152976429396853e-10,
+    "velocity_RMS_over_A": 5.710323931851189e-08,
+    "material_u_vector_RMS_m": 1.342343580934781e-15,
+    "material_u_RMS_over_Ustar": 1.7687785737264125e-08,
+    "max_material_u_difference_mm": 3.858378926142159e-12,
+    "max_abs_J_difference": 3.177458296477198e-13,
+    "stress_Frobenius_RMS_Pa": 3.183629943123905e-05,
+    "max_stress_component_difference_Pa": 8.410215377807617e-05,
+    "passive_Rhop_RMS_kg_m3": 0.0,
+    "max_passive_Rhop_difference_kg_m3": 0.0,
+    "energy_ratio_a": 1.000884840888079,
+    "energy_ratio_b": 1.000884917274415,
+    "actual_pressure_RMS_Pa_a": 503.22991987141796,
+    "actual_velocity_vector_RMS_m_s_a": 0.0013810679357524004,
+    "actual_material_u_vector_RMS_m_a": 3.810691684967751e-08,
+    "actual_pressure_RMS_Pa_b": 503.2299432178931,
+    "actual_velocity_vector_RMS_m_s_b": 0.0013810679357524004,
+    "actual_material_u_vector_RMS_m_b": 3.810691713517181e-08
+  },
+  "normalizers": {
+    "Pstar_Pa": 1023.9999974568686,
+    "Ustar_m": 7.589099058944216e-08,
+    "A_m_s": 0.001953125,
+    "cu0_m_s": 512.0000012715657
+  },
+  "a": {
+    "folder": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review",
+    "backend": "CPU",
+    "dt": 5.960464477539063e-08,
+    "model": "constant",
+    "retained_native_re_read": true,
+    "metrics": {
+      "max_energy_ratio": 1.000884840888079,
+      "max_energy_ratio_telemetry_gap": 4.884981308350689e-15,
+      "max_ledger_relative_error": 0.0,
+      "max_abs_J_minus_1": 2.649444363456155e-06,
+      "max_saved_coupled_CFL": 0.004340283585887058,
+      "max_saved_Ddt_h2": 0.003300180482155596,
+      "min_positive_k_continuous_margin": 23.99453709450563,
+      "min_signed_dterror_s": -1.746512269527656e-06,
+      "max_signed_dterror_s": 0.0
+    }
+  },
+  "b": {
+    "folder": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review",
+    "backend": "GPU",
+    "dt": 5.960464477539063e-08,
+    "model": "constant",
+    "retained_native_re_read": false,
+    "metrics": {
+      "max_energy_ratio": 1.000884917274415,
+      "max_energy_ratio_telemetry_gap": 6.217248937900877e-15,
+      "max_ledger_relative_error": 0.0,
+      "max_abs_J_minus_1": 2.6494444547164875e-06,
+      "max_saved_coupled_CFL": 0.0043402835858870545,
+      "max_saved_Ddt_h2": 0.00330018048215558,
+      "min_positive_k_continuous_margin": 23.994537094317593,
+      "min_signed_dterror_s": -1.746512269527656e-06,
+      "max_signed_dterror_s": 0.0
+    }
+  },
+  "all_33_values_bitwise_equal_descriptive": false,
+  "all_33_values_numerically_equal_descriptive": false,
+  "per_column_exactness_descriptive_not_half_gate": [
+    {
+      "column": 0,
+      "name": "x",
+      "different_bit_patterns": 46122,
+      "different_numeric_values": 46122,
+      "maximum_abs_numeric_difference": 3.858025010572419e-15,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 1,
+      "name": "y",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 2,
+      "name": "z",
+      "different_bit_patterns": 3409,
+      "different_numeric_values": 3409,
+      "maximum_abs_numeric_difference": 1.932048271369169e-16,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 3,
+      "name": "vx",
+      "different_bit_patterns": 43696,
+      "different_numeric_values": 43696,
+      "maximum_abs_numeric_difference": 3.4924596548080444e-10,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 4,
+      "name": "vy",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 5,
+      "name": "vz",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 2.3296064730060628e-11,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 6,
+      "name": "p",
+      "different_bit_patterns": 76570,
+      "different_numeric_values": 76570,
+      "maximum_abs_numeric_difference": 0.0001220703125,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 7,
+      "name": "p0",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 8,
+      "name": "J",
+      "different_bit_patterns": 130106,
+      "different_numeric_values": 130106,
+      "maximum_abs_numeric_difference": 3.177458296477198e-13,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 9,
+      "name": "theta",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 3.06262563920523e-08,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 10,
+      "name": "sxx",
+      "different_bit_patterns": 130370,
+      "different_numeric_values": 130370,
+      "maximum_abs_numeric_difference": 8.410215377807617e-05,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 11,
+      "name": "sxy",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 12,
+      "name": "sxz",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 1.3541344966698488e-05,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 13,
+      "name": "syy",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 7.065189931765303e-06,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 14,
+      "name": "syz",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 15,
+      "name": "szz",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 1.2307229322775114e-05,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 16,
+      "name": "plastic",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 17,
+      "name": "FSType",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 18,
+      "name": "nx",
+      "different_bit_patterns": 63713,
+      "different_numeric_values": 63713,
+      "maximum_abs_numeric_difference": 2.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 19,
+      "name": "ny",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 20,
+      "name": "nz",
+      "different_bit_patterns": 131072,
+      "different_numeric_values": 131072,
+      "maximum_abs_numeric_difference": 0.0009679920722547308,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 21,
+      "name": "load_ax",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 22,
+      "name": "load_ay",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 23,
+      "name": "load_az",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 24,
+      "name": "passive_Rhop",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 25,
+      "name": "ux",
+      "different_bit_patterns": 46122,
+      "different_numeric_values": 46122,
+      "maximum_abs_numeric_difference": 3.858025010572419e-15,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 26,
+      "name": "uy",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 27,
+      "name": "uz",
+      "different_bit_patterns": 3409,
+      "different_numeric_values": 3409,
+      "maximum_abs_numeric_difference": 1.932048271369169e-16,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 28,
+      "name": "excess",
+      "different_bit_patterns": 76570,
+      "different_numeric_values": 76570,
+      "maximum_abs_numeric_difference": 0.0001220703125,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 29,
+      "name": "n",
+      "different_bit_patterns": 130005,
+      "different_numeric_values": 130005,
+      "maximum_abs_numeric_difference": 2.382538610845586e-13,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 30,
+      "name": "V",
+      "different_bit_patterns": 130106,
+      "different_numeric_values": 130106,
+      "maximum_abs_numeric_difference": 4.848416590083615e-18,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 31,
+      "name": "mixture_rho",
+      "different_bit_patterns": 129293,
+      "different_numeric_values": 129293,
+      "maximum_abs_numeric_difference": 3.3310243452433497e-10,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    },
+    {
+      "column": 32,
+      "name": "k",
+      "different_bit_patterns": 0,
+      "different_numeric_values": 0,
+      "maximum_abs_numeric_difference": 0.0,
+      "initial_different_bit_patterns": 0,
+      "initial_different_numeric_values": 0
+    }
+  ],
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gpu_darcy_pair_r1.py",
+      "bytes": 25235,
+      "sha256": "dcfcaafc3a5b152e3510ce2540c7a363248de6cb231bff20a8059cb25b2eaf57"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gpu_darcy_pair_r1.json",
+      "bytes": 9345,
+      "sha256": "29eedd68a57f327de26feaf03cff380e15cbd812b3f8e7ddb22de60a5938aba6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\completion.json",
+      "bytes": 1133,
+      "sha256": "3701eb16edcfe82a17e1dcbe43aa58e030be861c6b5fe38ce0648ffb05f44ad2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\physical.bin",
+      "bytes": 34740244,
+      "sha256": "05f56e985eb53ac75a427a03f7eaab1020a3f691d6ab09c449d2734ee0647484"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\native_ids.csv",
+      "bytes": 17717,
+      "sha256": "9cc0a2e35dc0f16627f6d975db39ab4cddd675cd66c0a8431272cd67dfe80343"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\history.csv",
+      "bytes": 67850,
+      "sha256": "9cef8cb661691dd1552b2baa2d1533cbfa7575a9048e53089d3d99563d3ddd9a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\cpu_posdiv.csv",
+      "bytes": 3599792,
+      "sha256": "b4b56ef783147437c40df24242f165462f9587963c06c67606cd10ee23f7d44a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1.check.json",
+      "bytes": 6391,
+      "sha256": "f2221c35b11cfef23757e5feb18e169f9511a205d78fc21a9f0e2cd3ed6f155b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review\\completion.json",
+      "bytes": 1133,
+      "sha256": "3701eb16edcfe82a17e1dcbe43aa58e030be861c6b5fe38ce0648ffb05f44ad2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1_review.call.json",
+      "bytes": 4605,
+      "sha256": "2b2eaefcff48aa1052c6bee5b7b37ada40a0ac743d3546f205083467e42f97cd"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_retained_CPU_constant_c_r1.run.json",
+      "bytes": 260779,
+      "sha256": "c9eeeee85a2299ad4ff9416a00557a023c4491c85d1b527dbdb401e5a96867a9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_periodic_constant_c_r1_solver.run.json",
+      "bytes": 2016,
+      "sha256": "449d52212860e86322db8336ea3f95780b3f963c6eac64bbb2fdeb36b56ea04a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.xml",
+      "bytes": 18106,
+      "sha256": "4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_periodic_constant_c\\CaseUplSpatial_n32_c.bi4",
+      "bytes": 23948,
+      "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_Release_r1.helper.json",
+      "bytes": 166921,
+      "sha256": "ddbcafe32e3f493087e84f9ce5e34c39f92018f6edca2a280eb2d3ff96b1aba6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_Release_r2.build.json",
+      "bytes": 125361,
+      "sha256": "93cc604fd737a1c3610f0e06f751591bdbdd1114afb154534bd6788954e66de0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review\\completion.json",
+      "bytes": 1135,
+      "sha256": "b85a3efff09f1d1cb7b61ca3ab288964f261105f9e4e90bfd101b4c893a53b49"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review\\physical.bin",
+      "bytes": 34740244,
+      "sha256": "44f74b6156a983ef48bf7b8f9cb69fb6d60272a7e99e3748c02dc45d20ba08ed"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review\\native_ids.csv",
+      "bytes": 17717,
+      "sha256": "9cc0a2e35dc0f16627f6d975db39ab4cddd675cd66c0a8431272cd67dfe80343"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review\\history.csv",
+      "bytes": 67859,
+      "sha256": "b5c0ed6a45d88b36c3affa61ca07507c18ba7e059bb1bdca26b8f0f5310c728d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_GPU_constant_c_r1.check.json",
+      "bytes": 5896,
+      "sha256": "be0df26b7159939abec0fcddd2a6be5891a874932215dd5cb0c6157ddad8d04b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review\\completion.json",
+      "bytes": 1135,
+      "sha256": "b85a3efff09f1d1cb7b61ca3ab288964f261105f9e4e90bfd101b4c893a53b49"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_GPU_constant_c_r1_review.call.json",
+      "bytes": 4560,
+      "sha256": "73d1da01aa6f179bce99e4e9a241a02571093ba6b9f100656ceea5f4a0a54977"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_GPU_constant_c_r1.run.json",
+      "bytes": 116780,
+      "sha256": "c939a6157e9cc8c022893a56f0a6811a7a2d79f6eaea693681182933c3adb4d4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_GPU_constant_c_r1.call.json",
+      "bytes": 4269,
+      "sha256": "9eca81191a2120bb7dc02498b2644ed3fe647d753222261c90c7d2a9c4f2d4ee"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_seed_r1\\CaseDarcy_GPU_constant_c.xml",
+      "bytes": 17856,
+      "sha256": "76be995bf0da29ba63da915c3a8146b901052fd530724dfe92fd10db0553eff5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_actual_seed_r1\\CaseDarcy_GPU_constant_c.bi4",
+      "bytes": 23948,
+      "sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_actual_Release_r1.helper.json",
+      "bytes": 166921,
+      "sha256": "ddbcafe32e3f493087e84f9ce5e34c39f92018f6edca2a280eb2d3ff96b1aba6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_Release_r2.build.json",
+      "bytes": 125361,
+      "sha256": "93cc604fd737a1c3610f0e06f751591bdbdd1114afb154534bd6788954e66de0"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_darcy_actual_cross_c_r1.csv",
+      "bytes": 106832,
+      "sha256": "6a6c7dba960b94214792ae73619bea8f8655a88dc2e36e15863f88c08c44f44d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_darcy_actual_cross_c_r1.png",
+      "bytes": 196930,
+      "sha256": "70a37bccecd948fe49482f62b17807737b36d0124baed1f5f2a09aa8176cb48b"
+    }
+  ],
+  "verified_unique_artifact_bindings": 571,
+  "original_raw_native_parts_verified_per_side": 257,
+  "raw_BI4_reparsed": false,
+  "owned_solver_exit_verified_via_bound_receipts": true,
+  "new_solver_invoked": false,
+  "passive_density_exactness_required": false,
+  "continuum_or_discrete_theory_reference_used": false,
+  "runtime_versions": {
+    "python": "3.11.3 | packaged by Anaconda, Inc. | (main, Apr 19 2023, 23:46:34) [MSC v.1916 64 bit (AMD64)]",
+    "numpy": "1.25.1",
+    "matplotlib": "3.7.2"
+  },
+  "limitations": [
+    "New typed-reader33 exports only; no second raw BI4 parser or old26 reinterpretation",
+    "CPU native6 J-derived arrays plus PosDiv versus GPU native3 arrays with derived V/rho/k",
+    "Bit-pattern/numeric differences are descriptive and cannot turn half agreement into 0ULP",
+    "Last-stage theta is not endpoint divergence; necessary scales and energy are not sufficient stability",
+    "No continuum1%, general conservation, public GPU, walls, variable-k, restart or full-cycle admission"
+  ],
+  "physical_acceptance": false,
+  "full_cycle_accepted": false
+}

@@ -1349,12 +1349,12 @@ void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,do
 /// Reduces the current native J-derived undrained speed without float narrowing.
 //==============================================================================
 __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion)
 {
   extern __shared__ double speed2[];
   const unsigned tid=threadIdx.x;
   const unsigned p=blockIdx.x*blockDim.x+tid;
-  double value=0.;
+  double value=0.,diffusion=0.;
   if(p<np && p>=npb && CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
     const double jp=j[p];
     bool valid=(isfinite(jp) && jp>solid0);
@@ -1365,26 +1365,130 @@ __global__ void KerComputePorosityWaveSpeed2(unsigned np,unsigned npb,double sol
       if(valid){
         value=(m+kw/n)/rho;
         valid=(isfinite(value) && value>0.);
+        if(valid && (khyd!=0 || maxdiffusion)){
+          valid=(isfinite(khyd) && khyd>=0 && isfinite(gamma) && gamma>0);
+          if(valid && khyd>0){
+            const double b=kw/n;
+            const double margin=rho*b/(m+b)-rhow;
+            diffusion=b*khyd/gamma;
+            valid=(margin>64.*DBL_EPSILON*fmax(rho,rhow) && isfinite(diffusion) && diffusion>0.);
+          }
+        }
       }
     }
-    if(!valid){value=0.;atomicMin(invalid,p);}
+    if(!valid){value=0.;diffusion=0.;atomicMin(invalid,p);}
   }
   speed2[tid]=value;
+  if(maxdiffusion)speed2[blockDim.x+tid]=diffusion;
   __syncthreads();
   for(unsigned stride=blockDim.x/2;stride;stride>>=1){
     if(tid<stride && speed2[tid]<speed2[tid+stride])speed2[tid]=speed2[tid+stride];
+    if(maxdiffusion && tid<stride && speed2[blockDim.x+tid]<speed2[blockDim.x+tid+stride])speed2[blockDim.x+tid]=speed2[blockDim.x+tid+stride];
     __syncthreads();
   }
   //-Only nonnegative finite doubles reach the reduction, so their unsigned bits are ordered.
   if(tid==0)atomicMax((unsigned long long*)maxcu2,(unsigned long long)__double_as_longlong(speed2[0]));
+  if(maxdiffusion && tid==0)atomicMax((unsigned long long*)maxdiffusion,(unsigned long long)__double_as_longlong(speed2[blockDim.x]));
 }
 
 void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho0,double rhow,double m,double kw
-  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid)
+  ,const typecode *code,const double *j,double *maxcu2,unsigned *invalid,double khyd,double gamma,double *maxdiffusion)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
-    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid);
+    KerComputePorosityWaveSpeed2 <<<sgrid,SPHBSIZE,SPHBSIZE*sizeof(double)*(maxdiffusion? 2: 1)>>> (np,npb,solid0,rho0,rhow,m,kw,code,j,maxcu2,invalid,khyd,gamma,maxdiffusion);
+  }
+}
+
+//==============================================================================
+/// Copy requested same-stage fields from normal-fluid native owners, never ghosts.
+//==============================================================================
+__global__ void KerExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
+  ,const typecode *code,const unsigned *idp,const unsigned *ridp
+  ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid)
+{
+  const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p>=npb && p<np && CODE_IsPeriodic(code[p]) && CODE_IsFluid(code[p])){
+    const unsigned id=idp[p];
+    if(id<idini || id>=idfin){atomicMin(invalid,p);return;}
+    const unsigned owner=ridp[id-idini];
+    if(owner<npb || owner>=np || !CODE_IsNormal(code[owner]) || !CODE_IsFluid(code[owner]) || idp[owner]!=id){
+      atomicMin(invalid,p);return;
+    }
+    if(corrmat)corrmat[p]=corrmat[owner];
+    if(ace)ace[p]=ace[owner];
+    if(theta)theta[p]=theta[owner];
+    if(rate)rate[p]=rate[owner];
+  }
+}
+
+void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
+  ,const typecode *code,const unsigned *idp,const unsigned *ridp
+  ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid)
+{
+  if(np){
+    dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+    KerExtendDynamicPorePeriodic <<<sgrid,SPHBSIZE>>> (np,npb,idini,idfin,code,idp,ridp,corrmat,ace,theta,rate,invalid);
+  }
+}
+
+//==============================================================================
+/// Complete constant-k rate: Kw/n*(-theta+k/gamma*(Lstar(p)+rho_w*div(Ace))).
+/// Lstar cancels affine-pressure bias; it is not a conservative pair flux.
+//==============================================================================
+__global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
+  ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
+  ,const double *j,const double *theta,const float *porepress,float *rate
+  ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid)
+{
+  const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+  if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
+    const double jp=j[p1],n=1.-solid0/jp;
+    if(!isfinite(jp) || jp<=solid0 || !isfinite(n) || !(n>0 && n<1)){atomicMin(invalid,p1);return;}
+    double lp=0.,da=0.;
+    double3 lx=make_double3(0,0,0),gp=make_double3(0,0,0);
+    if(khyd>0){
+      const tmatrix3d ci=corrmat[p1];
+      const double2 xy1=posxy[p1];const double z1=posz[p1];
+      int ini1,fin1,ini2,fin2,ini3,fin3;
+      cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
+      for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
+        unsigned pini,pfin=0;
+        cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcellfluid,pini,pfin);
+        for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2])){
+          const double3 d=make_double3(xy1.x-posxy[p2].x,(CTE.simulate2d? 0.: xy1.y-posxy[p2].y),z1-posz[p2]);
+          const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
+          if(rr2>double(CTE.kernelsize2) || rr2<ALMOSTZERO)continue;
+          const double fac=cufsph::GetKernel_Fac<KERNEL_Wendland>(float(rr2));
+          const double3 g=make_double3(fac*d.x,fac*d.y,fac*d.z);
+          const double3 gi=make_double3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);
+          const tmatrix3d cj=corrmat[p2];
+          const double3 gj=make_double3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);
+          const double vol2=vol0*j[p2],dp=double(porepress[p1])-double(porepress[p2]);
+          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(CTE.eta2));
+          lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;
+          gp.x-=gi.x*(vol2*dp);gp.y-=gi.y*(vol2*dp);gp.z-=gi.z*(vol2*dp);
+          da+=vol2*((double(ace[p2].x)-ace[p1].x)*gi.x
+            +(double(ace[p2].y)-ace[p1].y)*gi.y+(double(ace[p2].z)-ace[p1].z)*gi.z);
+        }
+      }
+    }
+    const double value=kw/n*(-theta[p1]+khyd/gamma*(lp-gp.x*lx.x-gp.y*lx.y-gp.z*lx.z+rhow*da));
+    if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}
+    rate[p1]=float(value); //-One complete overwrite, never add the compression source twice.
+  }
+}
+
+void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
+  ,const double *j,const double *theta,const float *porepress,float *rate
+  ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid)
+{
+  if(np){
+    dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+    KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
+      ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid);
   }
 }
 

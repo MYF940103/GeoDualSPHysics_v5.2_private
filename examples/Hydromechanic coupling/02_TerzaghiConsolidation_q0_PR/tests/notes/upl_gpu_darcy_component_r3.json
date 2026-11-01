@@ -1,0 +1,81 @@
+{
+  "stage": "upl_gpu_darcy_component_r3",
+  "status": "author_only_synthetic_ID_invariant_repair_not_built_or_executed",
+  "inherits_all_mathematical_declarations": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gpu_darcy_component_r1.json",
+    "bytes": 11599,
+    "sha256": "42ce2958a3406e86d2452a4f4083e1f699b63c3205bde13fcc1b7a2e8384d112"
+  },
+  "retained_r2_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gpu_darcy_component_r2.cpp",
+    "bytes": 27462,
+    "sha256": "2d754deeac40700c48936c8752001b8739309de2a0a765584366a68150ea89c5"
+  },
+  "retained_r2_addendum": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gpu_darcy_component_r2.json",
+    "bytes": 3836,
+    "sha256": "a492f79135925d7a02ac1c284efb7112c03773022833d1b5837f82ef6dd7a59b"
+  },
+  "fresh_source": "tests/support/upl_gpu_darcy_component_r3.cpp",
+  "retained_failure": {
+    "check": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_run_r2.check.json",
+      "bytes": 6755,
+      "sha256": "230ad7920119be7914796e5f94ffee2b3d9fcede8d979efdbcf6a759d77e4da5"
+    },
+    "owned_call": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_run_r2.call.json",
+      "bytes": 8173,
+      "sha256": "0634ae929e46f173dcda84bf5f3a9f9a36fc45bf3961cc12b4a04e5541cf4ca5"
+    },
+    "log": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_run_r2.log",
+      "bytes": 23038,
+      "sha256": "fb49186871ff8c795bef13cacfc2a983355d8d4500bcfdcc8cdac03dd43ad201"
+    },
+    "prefix_CSV": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_component_Debug_run_r2\\prefix.csv",
+      "bytes": 135,
+      "sha256": "4bebaa390ce1536f9d4adf6a2b2a3c7b0e689111308af53dd0e3af3a8d962365"
+    },
+    "owned_target_exit_code": 1,
+    "memcheck_error_count": 0,
+    "memcheck_leaked_bytes": 0,
+    "memcheck_leaked_allocations": 0,
+    "completed_physical_steps": 0,
+    "completion_absent": true,
+    "observed": "prefix.csv contains permutation0 stages0/1/2 passed. The second permutation stops at 'Actual CalcRidp prefix/ID permutation/tail failed'; no actual ridp values were exported, so the winning conflicting store is not claimed.",
+    "inference": "baseid[8]=102 is NORMAL FLUID; baseid[9]=102 is NORMAL FLOATING. Both satisfy generic KerCalcRidp's NORMAL and [100,104) ID tests and can write ridp[2]. The expected fixture owner filters FLUID, so the synthetic alias violates the intended unique fluid ID-range invariant. This static conflict explains why permutation dependence is possible; it is not a measured production native failure."
+  },
+  "read_only_source_evidence": {
+    "generic_map": "source/JSphGpu_ker.cu:4194-4203 selects idini<=id<idfin and CODE_IsNormal only; 4225-4234 sets UINT_MAX and launches the generic map.",
+    "type_macros": "source/DualSphDef.h:206 and215 show NORMAL and FLUID are separate predicates; a default FLOATING code is NORMAL.",
+    "actual_map": "source/JSphGpu.cpp:1705 uses CaseNpb..CaseNp for the admitted dynamic native set.",
+    "admitted_scope": "source/JSphGpu.cpp:1630-1637 rejects CaseNfloat before an actual private feedback Run. This fixture does not admit floating physics."
+  },
+  "only_cpp_changes": [
+    "PrefixOwners baseid slot9 (NORMAL FLOATING) changes 102 to99 outside selected fluid IDs[100,104). All codes, four native-fluid owners, four periodic images, both permutations, nonzero prefix, tails, and all existing negative-owner roles stay unchanged.",
+    "Add one source comment stating the generic NORMAL-ID mapping invariant.",
+    "Change completion.stage r2 to r3."
+  ],
+  "counts": {
+    "synthetic_prefix_stage_cases": 6,
+    "direct_owner_negative_cases": 3,
+    "actual_host_missing_owner_negative_cases": 1,
+    "finite_patch_cases": 12,
+    "finite_patch_rate_rows": 108,
+    "actual_host_periodic_cases": 2,
+    "actual_host_periodic_rate_rows": 1920,
+    "class_scale_pass_cases": 4,
+    "positive_k_J1p02_domain_rejections": 1,
+    "actual_DtVariable_cases": 12
+  },
+  "additional_floating_owner_negative": false,
+  "reason_no_extra_case": "The offending synthetic floating slot remains present but is excluded by the selected ID range. No additional non-admitted floating-physics case or new counter is needed for this mechanical invariant repair; existing missing/wrong-ID/periodic-owner and host missing-owner negatives are unchanged.",
+  "unchanged": "Actual APIs, rate/reference assembly and raw-term propagated budget, affine cancellation, source nonempty checks, ID/prefix/tail/ghost/corner checks, scale/RH/locked/current/request/DtMin guards and all physical limitations remain unchanged. No threshold is relaxed. All r1/r2 source, author recipes, compile/run receipts and partial output stay retained.",
+  "execution": "Root must review all fresh r3 author files before owning fresh compile/link/Debug memcheck/Release admission. Reuse authoritative r2 production builds and unchanged retained Time include. The author does not compile or run any program.",
+  "production_source_changes": false,
+  "threshold_changes": false,
+  "author_built_or_ran_program": false,
+  "physical_acceptance": false
+}

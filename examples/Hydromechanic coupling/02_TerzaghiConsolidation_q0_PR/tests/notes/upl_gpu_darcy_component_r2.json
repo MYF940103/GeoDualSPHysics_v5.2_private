@@ -1,0 +1,66 @@
+{
+  "stage": "upl_gpu_darcy_component_r2",
+  "status": "author_only_compile_header_repair_not_built_or_executed",
+  "inherits_all_mathematical_declarations": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gpu_darcy_component_r1.json",
+    "bytes": 11599,
+    "sha256": "42ce2958a3406e86d2452a4f4083e1f699b63c3205bde13fcc1b7a2e8384d112"
+  },
+  "retained_r1_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gpu_darcy_component_r1.cpp",
+    "bytes": 27433,
+    "sha256": "a21e7a63322ff7079e280af304cae61b05523c2e28767c0b77b60bb5eda69bef"
+  },
+  "fresh_source": "tests/support/upl_gpu_darcy_component_r2.cpp",
+  "retained_failure": {
+    "compile_call": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_r1_compile.call.json",
+      "bytes": 2305,
+      "sha256": "ca068fd1c01bf18b43f582b2c2d4020f2cc3727bdf8002b9142e72b267415222"
+    },
+    "compile_log": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_r1_compile.log",
+      "bytes": 6318,
+      "sha256": "259f809de47dc4bc710b8fed4349f52bb4d51dd0538ac9d7790cc3d8ebb1a955"
+    },
+    "actual_cl_exit_code": 2,
+    "owned_compile_exited": true,
+    "reason": "MSVC C3861: make_float3/make_int2/make_double2/make_float4 were undeclared. The reused k0 helper includes cuda_runtime_api.h, which does not itself provide the vector constructor helpers.",
+    "link_attempted": false,
+    "helper_or_solver_executed": false
+  },
+  "only_cpp_changes": [
+    "Add #include <vector_functions.h> after <array>.",
+    "Change completion.stage label from upl_gpu_darcy_component_r1 to upl_gpu_darcy_component_r2."
+  ],
+  "cuda_header_read_only_confirmation": {
+    "header": "C:/Program Files/NVIDIA GPU Computing Toolkit/CUDA/v11.7/include/vector_functions.h",
+    "declarations": {
+      "make_int2": 109,
+      "make_float3": 141,
+      "make_float4": 143,
+      "make_double2": 163
+    },
+    "host_api": "__VECTOR_FUNCTIONS_DECL__ expands static __inline__ __host__ __device__; the header includes vector_functions.hpp for non-RTC compilation. Its corresponding inline host definitions are present at hpp lines163/243/248/298. This was inspected, not compiled by the author."
+  },
+  "counts": {
+    "synthetic_prefix_stage_cases": 6,
+    "direct_owner_negative_cases": 3,
+    "actual_host_missing_owner_negative_cases": 1,
+    "finite_patch_geometries": 2,
+    "finite_patch_fields_each": 6,
+    "finite_patch_cases": 12,
+    "finite_patch_rate_rows": 108,
+    "actual_host_periodic_cases": 2,
+    "actual_host_periodic_rate_rows": 1920,
+    "class_scale_pass_cases": 4,
+    "positive_k_J1p02_domain_rejections": 1,
+    "actual_DtVariable_cases": 12
+  },
+  "unchanged": "All original actual APIs, field values, independent assembly, affine cancellation condition, raw-term budget, nonempty/owner/prefix/canary checks, acoustic/diffusion/RH/current/request/DtMin gates and physical limitations remain byte-for-byte unchanged in the C++ body. All immutable r1 files and failed receipts stay retained.",
+  "execution": "Root must read the tiny source diff and new addendum, bind this file plus inherited r1 declaration and actual transitive time include in a fresh r2 helper recipe, then own Debug compilation/memcheck and Release admission. No inference of compile/run success is made here.",
+  "threshold_changes": false,
+  "production_source_changes": false,
+  "author_built_or_ran_program": false,
+  "physical_acceptance": false
+}

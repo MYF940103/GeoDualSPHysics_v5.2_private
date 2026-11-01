@@ -1,0 +1,16 @@
+{
+  "stage": "upl_gpu_darcy_legacy_batch_r1",
+  "author_only_until_root_review": true,
+  "source": "support/upl_gpu_darcy_legacy_batch_r1.cpp",
+  "immutable_include": {"path": "support/upl_gpu_observer_native_r1.cpp", "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857"},
+  "purpose": "Avoid per-frame process launches. One batch invokes the exact included Compare once per saved frame and, when observer state is expected, the exact included ReadPoro twice per saved frame. No copied physical equations or duplicated typed-array reader implementation.",
+  "CLI": "--batch-compare OLD_DATA NEW_DATA SAMPLES OBSERVER NEW_DIRECTORY",
+  "samples": [3, 17, 257],
+  "observer": "0 or 1; PS still checks every per-frame original schema against the expected value.",
+  "other_CLI": "Every non-batch invocation immediately delegates unchanged argc/argv to RetainedObserverNativeMain, including --solver 0|1, --compare and --read-poro.",
+  "outputs": "typed_0000.json etc; observer adds poro_old/new_0000.csv/json etc; batch_complete.json reports actual retained function call counts. All paths must be fresh.",
+  "unchanged_gates": "Parent runner still checks every PART JSON, actual clock/Step, typed signed dterror, strict observer presence/absence, derived n(J), every old/new CSV and final live equality. Batch completion alone does not replace those checks.",
+  "source_or_old_data_modified": false,
+  "physical_program_executed_in_batch": false,
+  "physical_acceptance": false
+}

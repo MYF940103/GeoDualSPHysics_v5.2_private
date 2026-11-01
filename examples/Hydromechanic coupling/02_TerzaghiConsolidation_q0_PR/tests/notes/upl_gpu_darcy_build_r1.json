@@ -1,0 +1,48 @@
+{
+    "stage": "upl_gpu_darcy_build_r1",
+    "status": "author_only_not_executed",
+    "script": "tests/support/upl_gpu_darcy_build_r1.ps1",
+    "stage_base": "7387fb0e435928c2a742281cc0406153e4605fc0",
+    "prerequisite": "tests/logs/upl_gpu_k0_actual_stage_r2.check.json",
+    "modes": {
+        "FreezeBaseline": "Record verified fixed Git HEAD, immutable accepted actual-k0 predicates/control receipts, old265 time-stage source identities, five old raw target metadata separately from Git LF blobs,260 unchanged current sources and retained canonical/isolated program/runtime identities. No source or executable backup copies, build, help, solver, notification or Git mutation.",
+        "BuildGpu": "Freeze current265 source files and five target files before one authoritative Debug/Release full Rebuild; capture matching API text lines as diagnostics only. Debug build receipt must exist/passtest identity before Release. Build does not run the compiled program."
+    },
+    "targets": [
+        "src/source/JSphGpu.h",
+        "src/source/JSphGpu.cpp",
+        "src/source/JSphGpuSingle.cpp",
+        "src/source/JSphGpu_ker.h",
+        "src/source/JSphGpu_ker.cu"
+    ],
+    "inventory": {
+        "source": "Retained logs/upl_gpu_k0_time_{Debug,Release}_r1.build.json -> source_freeze.source; both265-entry inventories must agree byte/SHA.",
+        "unchanged_260": "Current260 non-target source files must match retained time source identities before/after each build.",
+        "five_old_raw_vs_git": "Old raw build identities remain metadata of the historical source snapshot. New7387 Git blobs are separately hashed as bytes using readonly git cat-file. Normalized LF blobs are not equated to historical mixed-CRLF build bytes; the five working targets may already be edited.",
+        "current_freeze": "New logs/upl_gpu_darcy_{Debug,Release}_r1.source.json records current full265 inputs, five_targets and API line captures; these inputs must remain exact through the build.",
+        "API_scope": "Text capture of DynamicPorePressure/ComputePorosityWaveSpeed2/ExtendDynamicPorePeriodic/PrepareDynamicPorePeriodicGpu/GetDynamicStepScalesGpu/Darcy lines is not a mathematical, lifecycle or implementation acceptance proof."
+    },
+    "controls": {
+        "accepted_predicates": "passed actual stage, two helpers,five single runs,two independent halves,two same-dt crosses,successful Debug Pre/Corr smoke; no nonzero-k/publicGPU/physical release accepted at base.",
+        "bound_receipts": "Named accepted helper/prior-time/prepared-input/single check+run+reader completion/pair records are immutable input bindings.",
+        "mutable_status": "Do not recursively verify the old publication manifest against mutable parent validation/upl_current_status.json. Mutable status is deliberately not an input of this build driver; its old hash is not a current-file contract.",
+        "canonical_program_runtime": "Inherited from the retained time baseline canonical_GPU and old time isolated runtime entries. Canonical programs/runtime must remain unchanged; no canonical executable is overwritten."
+    },
+    "build": {
+        "configurations": [
+            "Debug",
+            "Release"
+        ],
+        "authoritative_project": "src/VS/DualSPHysics5Re.sln and its unchanged authoritative vcxproj; exact identities inherited from time baseline",
+        "vector": "Replay actual successful corresponding time-stage MSBuild arguments/program. Require /t:Rebuild and change exactly OutDir,IntDir,/bl paths; all other tokens unchanged.",
+        "outputs": "tests/outputs/upl_gpu_darcy_{Debug,Release}_r1/gpu",
+        "intdir": "Temp/upl_gpu_darcy_r1/{Debug,Release}/int; reject whitespace",
+        "objects": "Exactly110 authoritative object files excluding main, using exact basename closure inherited from time build; current bytes/SHA recorded after Rebuild.",
+        "receipts": "logs/upl_gpu_darcy_{Debug,Release}_r1.build.json; status full_authoritative_GPU_Rebuild_passed_no_helper_or_program_run; compatible fields source_freeze,inputs,tools,objects,objects_exclude_main,project_call,isolated_GPU_program,runtime,replayed_build.",
+        "runtime": "Copy only hash-verified existing runtime support into new isolated GPU OutDir. This is normal execution support, not an old source/executable backup."
+    },
+    "authority": "Both modes require explicit ProductionBuildConfirmed and ExecutionAuthorized supplied by root. Author has not executed a mode, compiler, helper, help, solver or Git command. Root owns separate default CPU Debug build and all further numerical gates.",
+    "limitations": "Build-only private constant-conductivity complete-Darcy candidate. No public GPU unlock, solver/default-OFF regression, dynamic-rate correctness, half-step, nonzero-k physical, boundary, restart or formal acceptance follows from compiler exit0.",
+    "production_edits_by_author": false,
+    "physical_acceptance": false
+}

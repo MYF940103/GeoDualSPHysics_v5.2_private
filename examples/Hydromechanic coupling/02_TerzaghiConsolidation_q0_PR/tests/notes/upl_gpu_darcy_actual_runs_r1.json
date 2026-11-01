@@ -1,0 +1,39 @@
+{
+  "stage":"upl_gpu_darcy_actual_runs_r1",
+  "status":"author_only_not_executed",
+  "files":["tests/support/upl_gpu_darcy_actual_runs_r1.ps1","tests/notes/upl_gpu_darcy_actual_runs_r1.json"],
+  "actions":"One explicit Prepare, one fresh GPU RunJob, one offline ReviewJob, or one offline ReviewRetained per invocation; no RunAll/automatic loop, project build, production edit, CPU rerun, notifier or Git.",
+  "cli":"powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_darcy_actual_runs_r1.ps1 -Mode Prepare|RunJob|ReviewJob|ReviewRetained -Job LABEL -ExecutionAuthorized",
+  "all_actual_execution_prerequisites":[
+    "Current exact source/build/runtime-bound actual helpers Debug/Release, fixtureDarcyActual, 110 authoritative Darcy r2 objects + helper object",
+    "logs/upl_gpu_darcy_component_Debug_review_r4.check.json: new offline review of the already completed r3 Debug program, not a rerun of its failed wrapper",
+    "logs/upl_gpu_darcy_component_Release_run_r4.check.json: new Release wrapper check; C++ component stage remainsr3",
+    "logs/upl_gpu_darcy_legacy_r1.check.json passed with original15/time/clock/step/dterror, observerJ/n/theta and immutable33-export exact booleans true, DynamicPorePressure_enabledfalse and seven hash-bound job_checks"
+  ],
+  "Prepare":"Requires built current helpers but no actual physical run. Clone retained k0 actual runtime XML/BI4 under outputs/upl_gpu_darcy_actual_seed_r1. Existing time/geometry/physics remains byte-identical except explicit HydraulicConductivity0→0.0001 in constant cases; k0 retains0. Keep source runtime/BI4 hashes, do not call GenCase or write initial particle fields. Record six old raw-solver lineages separately. No claimed component pass is generated during preparation.",
+  "new_jobs":[
+    {"label":"Smoke","model":"constant","configuration":"Debug","dt":"2^-24","end":"2^-23","cadence":"2^-24","steps":2,"native_frames":3,"gate":"Actual successful Pre/Corr under compute-sanitizer exact tool from completed Debug component call; error-exit97, zero errors/leaks, actual finish+native review before any full job"},
+    {"label":"GPU_k0_c","model":"k0","configuration":"Release","dt":"2^-24","end":"2^-15","cadence":"2^-23","steps":512,"native_frames":257},
+    {"label":"GPU_k0_h","model":"k0","configuration":"Release","dt":"2^-25","end":"2^-15","cadence":"2^-23","steps":1024,"native_frames":257,"gate":"Fresh k0 coarse native review and same-dt coarse bridge to retained GPU k0 first"},
+    {"label":"GPU_constant_c","model":"constant","configuration":"Release","dt":"2^-24","end":"2^-15","cadence":"2^-23","steps":512,"native_frames":257,"gate":"Both k0 bridges and independent new complete-k0 half first"},
+    {"label":"GPU_constant_h","model":"constant","configuration":"Release","dt":"2^-25","end":"2^-15","cadence":"2^-23","steps":1024,"native_frames":257,"gate":"Constant coarse native review and same-dt positive CPU/GPU coarse comparison first"}
+  ],
+  "retained_native_re_reads":{
+    "CPU_constant_c_h":"Adopt exact owned canonical CPU periodic_constant_c/h solver receipts and raw BI4 from the public CPU stage. Original threadcount1 is historical, not a new CPU call or timing benchmark.",
+    "CPU_k0_c_h":"Adopt exact old k0 CPU r3 owned solver receipts/raw native data; passive-density rational CPU behavior is not forced equal to GPU.",
+    "GPU_legacy_k0_c_h":"Adopt exact old fused-k0 GPU r3 owned solver receipts/raw native data; compare later with new complete-ratek0, never presume0ULP.",
+    "schema":"New actual helper reader directly reads original BI4 to33 common columns, validates actual CPU6nativeJ-derived arrays+PosDiv/metadata versus GPU3nativeJ arrays and explicit V/rho/k derivation. No old26-to33 zero filling, no old export files are treated as native observations.",
+    "ownership":"Write a new offline adoption .run.json referencing the OLD actual owned solver call and raw-file hashes, marked retained_run_reused=true/new_solver_run=false. Its check.call is a NEW owned offline reader only. Old sources/binaries are not asserted identical to current five modified GPU files."
+  },
+  "artifacts":{
+    "manifest":"logs/upl_gpu_darcy_actual_r1.inputs.json",
+    "fresh":"outputs/upl_gpu_darcy_actual_{Job}_r1 and separate _review; logs same stem .run.json/.check.json/.call.json",
+    "retained":"outputs/upl_gpu_darcy_actual_retained_{Job}_r1_review and logs same retained stem; never copy or alter original solver output",
+    "pair_gates":"figures/upl_gpu_darcy_actual_k0_bridge_c_r1.json, k0_bridge_h_r1.json, k0_half_r1.json and cross_c_r1.json are separately authored/executed offline pair results. This driver does not create their passed values or run the pair Python. Final positive GPU_half and cross_h remain separate completion gates."
+  },
+  "per_job_verification":"Seal owned call/log even on failure; no overwrite/rerun. Require actual finish steps/end/dt/private complete-rate/no-rewrite/PRE-release, all native frames, then independent typed reader. Check512IDs/33columns/actual dyadic clocks/zero-basedsteps/ledger/energy<=1.1/savedcuDt/h<=.01/savedDdt/h²<=.01/signeddterror<=1e-14/original5e-13ledger/nonemptyJ and schema. Fresh GPU actual live final J/n/theta CSV must byte-match saved final reader CSV. The saved screens are not independent force-stage trace or sufficient stability.",
+  "later_pair_thresholds":"Original all257sample pressureRMS<=5Pa/materialXYZ displacementmax<=.005mm; new completek0 and positive GPU independent halves also normalizedp/Pstar,v/A,u/Ustar<=1e-4. Same-dt bridges and backend cross use absolute gates only; normalizedcross and all33 field differences are descriptive. No automatic physical/full/public acceptance.",
+  "failure_policy":"A solver finishing with offline reader/postcheck failure is preserved. Use a newly reviewed analysis label for repair, never relaunch the completed solver or change thresholds. Failed r1 compile, r2 synthetic owner input, r3 wrapper reserved-variable evidence remain protected.",
+  "held":["publicGPU","walls/gravity/load/drainage","variablek","3D/plasticity","exactPARTrestart","strictmassconservation","fullphysical/formalrelease"],
+  "author_executed":false,"production_source_changed":false,"physical_acceptance":false,"threshold_changes":false
+}

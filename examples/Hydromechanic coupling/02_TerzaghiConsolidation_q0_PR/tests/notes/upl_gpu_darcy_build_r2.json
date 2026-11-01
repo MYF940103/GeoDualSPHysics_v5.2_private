@@ -1,0 +1,63 @@
+{
+    "stage": "upl_gpu_darcy_build_r2",
+    "status": "author_only_not_executed",
+    "script": "tests/support/upl_gpu_darcy_build_r2.ps1",
+    "stage_base": "7387fb0e435928c2a742281cc0406153e4605fc0",
+    "prerequisite": "tests/logs/upl_gpu_k0_actual_stage_r2.check.json",
+    "modes": {
+        "BuildGpu": "Only supported action. Reuse the existing immutable r1 baseline without modifying it. Bind new r2 author inputs plus inherited r1baseline.inputs and unchanged260 sources; freeze current five/full265 with plain-string API inventory, then one authoritative Debug/Release full Rebuild. Debug r2 must pass before Release r2. No program is run."
+    },
+    "targets": [
+        "src/source/JSphGpu.h",
+        "src/source/JSphGpu.cpp",
+        "src/source/JSphGpuSingle.cpp",
+        "src/source/JSphGpu_ker.h",
+        "src/source/JSphGpu_ker.cu"
+    ],
+    "inventory": {
+        "source": "Retained logs/upl_gpu_k0_time_{Debug,Release}_r1.build.json -> source_freeze.source; both265-entry inventories must agree byte/SHA.",
+        "unchanged_260": "Current260 non-target source files must match retained time source identities before/after each build.",
+        "five_old_raw_vs_git": "Old raw build identities remain metadata of the historical source snapshot. New7387 Git blobs are separately hashed as bytes using readonly git cat-file. Normalized LF blobs are not equated to historical mixed-CRLF build bytes; the five working targets may already be edited.",
+        "current_freeze": "New logs/upl_gpu_darcy_{Debug,Release}_r2.source.json records current full265 inputs,five_targets and plain-string API line captures; unchanged260 source and all frozen inputs must remain exact through build.",
+        "API_scope": "Text capture of DynamicPorePressure/ComputePorosityWaveSpeed2/ExtendDynamicPorePeriodic/PrepareDynamicPorePeriodicGpu/GetDynamicStepScalesGpu/Darcy lines is not a mathematical, lifecycle or implementation acceptance proof."
+    },
+    "controls": {
+        "accepted_predicates": "passed actual stage, two helpers,five single runs,two independent halves,two same-dt crosses,successful Debug Pre/Corr smoke; no nonzero-k/publicGPU/physical release accepted at base.",
+        "bound_receipts": "Named accepted helper/prior-time/prepared-input/single check+run+reader completion/pair records are immutable input bindings.",
+        "mutable_status": "Do not recursively verify the old publication manifest against mutable parent validation/upl_current_status.json. Mutable status is deliberately not an input of this build driver; its old hash is not a current-file contract.",
+        "canonical_program_runtime": "Inherited from the retained time baseline canonical_GPU and old time isolated runtime entries. Canonical programs/runtime must remain unchanged; no canonical executable is overwritten."
+    },
+    "build": {
+        "configurations": [
+            "Debug",
+            "Release"
+        ],
+        "authoritative_project": "src/VS/DualSPHysics5Re.sln and its unchanged authoritative vcxproj; exact identities inherited from time baseline",
+        "vector": "Replay actual successful corresponding time-stage MSBuild arguments/program. Require /t:Rebuild and change exactly OutDir,IntDir,/bl paths; all other tokens unchanged.",
+        "outputs": "tests/outputs/upl_gpu_darcy_{Debug,Release}_r2/gpu",
+        "intdir": "Temp/upl_gpu_darcy_r2/{Debug,Release}/int; reject whitespace",
+        "objects": "Exactly110 authoritative object files excluding main, using exact basename closure inherited from time build; current bytes/SHA recorded after Rebuild.",
+        "receipts": "logs/upl_gpu_darcy_{Debug,Release}_r2.build.json; same authoritative status/schema as r1. Original successful time-stage command vector still changes exactly3 paths and produces110 objects excluding main.",
+        "runtime": "Copy only hash-verified existing runtime support into new isolated GPU OutDir. This is normal execution support, not an old source/executable backup."
+    },
+    "authority": "Only root may later execute -Mode BuildGpu after full review with ProductionBuildConfirmed and ExecutionAuthorized. Author has not executed r2, compiler, helper, help, solver or Git. Root's prior default CPU Debug exit0 and source freeze remain separate evidence.",
+    "limitations": "Build-only private constant-conductivity complete-Darcy candidate. No public GPU unlock, solver/default-OFF regression, dynamic-rate correctness, half-step, nonzero-k physical, boundary, restart or formal acceptance follows from compiler exit0.",
+    "production_edits_by_author": false,
+    "physical_acceptance": false,
+    "baseline_preserved": "logs/upl_gpu_darcy_r1.baseline.json was actually frozen successfully. No FreezeBaseline mode or old baseline rewrite exists in r2. Its original r1 author hashes/controls remain immutable and are verified as historical/current-input bindings; new r2 author files are separately bound before compile.",
+    "retained_r1_prebuild_interruption": {
+        "provenance": "Root directly checked exact command-line/process ownership, stopped PID63984, and observed parent64008/session6807 terminal exit-1. Author did not stop or execute the wrapper.",
+        "child_mode": "BuildGpu Debug",
+        "root_observed_exit": -1,
+        "CPU_seconds_before_stop": 172.109,
+        "WorkingSet_bytes_before_stop": 2153091072,
+        "compiler_or_solver_children": 0,
+        "source_json_created": false,
+        "output_or_IntDir_created": false,
+        "classification": "Wrapper interruption before compiler, not compiler failure, runtime failure or a physical/numerical rejection.",
+        "cause": "Windows PowerShell5 Get-Content strings carry PSPath/PSDrive/PSProvider ETS properties. The new API inventory stored these decorated strings, and ConvertTo-Json Depth20 traversed their provider graph before writing source.json.",
+        "bounded_proof": "Root and author independently inspected a single Get-Content line: even Depth1 serializes metadata including PSProvider. ReadAllLines yields a plain System.String with only Length.",
+        "repair": "Only new r2 driver API text input uses [IO.File]::ReadAllLines; preserve r1 driver/note/baseline and all source bytes/guards. Fresh r2 source/build/output/temp labels prevent overwrite or rearming."
+    },
+    "production_source_unchanged_by_wrapper_repair": true
+}

@@ -2,7 +2,7 @@
   "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry and private GPU k0 feedback actual coarse/half Runs reviewed; nonzero-k GPU dynamic Darcy and physical-model release remain held",
+  "status": "Limited canonical CPU entry and private GPU constant-k complete-Darcy short Runs reviewed; GPU evolving-k, walls/public entry and physical-model release remain held",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -178,12 +178,31 @@
     "physical_acceptance": false,
     "public_GPU_dynamic_accepted": false
   },
+  "private_GPU_constant_k_complete_Darcy_review": {
+    "base_checkpoint": "7387fb0e435928c2a742281cc0406153e4605fc0",
+    "evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_darcy_stage_r1.check.json",
+    "source": "Five GPU files only: private default-false complete-rate branch, same-force-stage native-owner periodic matrix/acceleration/theta/rate extension, current-J diffusion/acoustic limits and positive-k continuous-domain rejection. Default u-pw and the shared public GPU rejection are unchanged.",
+    "builds": "Required default CPU Debug and isolated authoritative GPU Debug/Release Rebuilds passed. Canonical/server GPU programs remain unchanged.",
+    "components_each_configuration": "Six prefix-stage copies, four owner negatives,12 regular/disordered patch fields,2028 independently assembled rate rows, four scale passes/one positive-k domain rejection and12 actual step requests. Debug memcheck0errors/0leaks; maximum rate error uses only0.789289percent of its original propagated raw-term budget, not a physical accuracy percentage.",
+    "default_old_paths": "Seven fresh regressions,557 saved frame pairs: original15 native arrays plus actual clock/Step/signed dterror remain0ULP. Observer J/n/theta and final live downloads exact;517 Feedback frames have byte-exact33-column exports. Separate peer audit rehashed4732 unique files and independently parsed274944 J/n/theta records without mismatch.",
+    "actual_Runs": "One Debug constant-k two-step memcheck and four Release k0/constant-k coarse/half fresh Runs,512 native IDs,257 exact saved times per full short window ending2^-15s. No fixture physical-field rewrite or PART restart. Four retained CPU/old-GPU controls re-read from raw BI4; no new CPU solve or timing benchmark.",
+    "k0_bridges": "Both same-dt257-frame33-column complete-rate versus old fused-k0 trajectories are bitwise identical; independent new k0 half pressure RMS max=.0007010120896876695Pa.",
+    "positive_k_GPU_half_max_pressure_RMS_Pa": 0.00031036376059348356,
+    "positive_k_GPU_half_max_material_displacement_mm": 4.860001290296623e-11,
+    "positive_k_CPU_GPU_coarse_half_max_pressure_RMS_Pa": [5.302549264769737e-5,4.327018061479862e-5],
+    "original_gates": "All257 actual matched samples in each of six comparisons satisfy5Pa/.005mm; independent k0 and positive-k halves also satisfy original normalized p/v/u<=1e-4. Single-run ledger/energy/finite/natural/diffusion/domain guards remain unchanged. Six PNGs and matching CSVs inspected.",
+    "native_attribution": "CPU observes native J/n/theta/V/rho/k and PosDiv; GPU observes only J/n/theta, with V/rho/k explicitly derived. Existing CPU rational and GPU additive passive-density integration is unchanged.",
+    "retained_test_repairs": "r1 precompiler PowerShell metadata expansion, helper CUDA constructor-header omission, r2 synthetic floating/fluid duplicate ID and r3 reserved-variable postcheck failure retained. Completed Debug component was adopted offline, never rerun; no production formula or threshold changed for these test-harness repairs.",
+    "limits": "Private constant-k rectangular2D periodic weak elastic window only. No continuum1percent, sufficient stability, general conservation, GPU evolving-k/wall/gravity/load/drainage/plasticity, public entry, exact restart, formal/full-cycle or server-package acceptance.",
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false
+  },
   "next_order": [
-    "Selectively back up verified private GPU k0 actual short-window evidence locally/remotely, keeping every prior numerical/setup rejection and historical CPU initial raw26 mismatches visible.",
-    "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
+    "Selectively back up verified private GPU constant-k complete-Darcy code/evidence locally/remotely, retaining prior numerical/setup rejections and historical CPU initial raw26 mismatches.",
+    "Then private GPU smooth k(J), including full coefficient-gradient terms and its necessary gradient-step limit; opposing static FreeSlip walls next, finite public GPU wiring last. Reuse existing operators/tests without adding independent k state or blindly copying ghost C/Ace.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],
-  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, GPU or server-package acceptance follows from these private small-amplitude CPU tests.",
+  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, public GPU or server-package acceptance follows from the bounded CPU/private-GPU tests.",
   "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup."
 }
