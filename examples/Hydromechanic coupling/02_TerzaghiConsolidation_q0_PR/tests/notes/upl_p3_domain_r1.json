@@ -1,0 +1,26 @@
+{
+  "stage": "Prospectively declared offline finite-Kw continuous-domain audit, not a production gate or solver run",
+  "input": "Load the accepted P3 nonzero-k coarse wave GenCase XML and completed Run.out. Preserve its loaded float E/nu/K/G/Kw/n0/rho0/rho_water/k, source-clock inputs and physical gravity0; do not retune material.",
+  "units": "k is HydraulicConductivity in m/s, gamma=rho_water*9.80665 in N/m^3 with physical gravity disabled. D=(Kw/n)*k/gamma has units m^2/s. kappa=2*pi/Lx from the original periodic width0.125m.",
+  "closure": "n=1-(1-n0)/J; rho=rho_water+(rho0-rho_water)/J; B=Kw/n; M=loaded float K+4*loaded float G/3 evaluated in double.",
+  "matrix": "For velocity sine and stress/pressure cosine amplitudes: A=[[0,-kappa/rho,kappa/rho],[M*kappa,0,0],[-B*kappa,-D*r*kappa^2,-D*(1-r)*kappa^2]], r=rho_water/rho.",
+  "cubic": "lambda^3+D*(1-r)*kappa^2*lambda^2+((M+B)/rho)*kappa^2*lambda+D*M/rho*kappa^4=0",
+  "strict_Routh_Hurwitz": "For k>0, kappa>0 and positive M/B/rho: rho*B>rho_water*(M+B). Equality is marginal, not strict decay. k=0 instead has lambda=0,+/-i*cu*kappa; do not apply the strict k>0 criterion.",
+  "closed_J_boundary": "Jcrit=1-n0+(rho0-rho_water)*Kw/(rho_water*M); within J>1-n0, the strict condition is J<Jcrit.",
+  "samples_locked_before_execution": {
+    "positive_k": ["J=1 stable", "J=1.01 stable", "J=Jcrit-1e-6 stable", "J=Jcrit marginal", "J=Jcrit+1e-6 unstable", "J=1.02 unstable"],
+    "k0": ["J=1 neutral", "J=1.02 neutral"]
+  },
+  "normalization": "Z=rho*cu, cu=sqrt((M+B)/rho), omega=cu*kappa. H=diag(1,1/Z,1/Z)*A*diag(1,Z,Z)/omega; its independent cubic is z^3+[D*(1-r)*kappa^2/omega]*z^2+z+D*M*kappa^4/(rho*omega^3). No mixed-unit matrix norm is used as a tolerance scale.",
+  "predeclared_checks": [
+    "Loaded float K/G recomputation agrees exactly with the completed Run.out. Input XML, completed run/completion and source recipe hashes are verified before and after execution.",
+    "Compare the normalized3x3 eigenvalues against separately formed cubic roots by all six matchings; also compare physical3x3 eigenvalues/omega. Match tolerance=32768*binary64_eps*max(1,norm2(H),sumabs(cubic coefficients)).",
+    "Every normalized eigenvalue has polynomial residual <=32768*eps*max(1,sumabs(polynomial terms)). The independent closed-J/continuous-Routh identity has the same32768eps term-scale bound. Solid-volume closure error<=5e-13.",
+    "Declared stable samples have maxRe(z)<-tolerance, unstable samples have maxRe(z)>tolerance. At Jcrit maxRe(z) is within tolerance and the nonzero imaginary pair remains present. k0 matches0,+/-i within tolerance and is explicitly non-asymptotic.",
+    "For unstable samples expm1(maxRe(lambda)*dt)>0 at both the original fixed coarse step and half step; this checks exact continuous modal growth, not a discrete time-integrator stability rule."
+  ],
+  "recipe": "support/upl_p3_domain_r1.py plus support/upl_p3_domain_r1.ps1. Runner freezes input/script/note hashes before one offline Python invocation and retains new log/check only. No project executable, new XML/BAT, source edit or physical output is produced.",
+  "next_policy_scope": "Treat model-domain review as the first independent check before proposing private time-step restrictions. Smaller dt cannot cure a continuous positive-real-part pole. Do not implement this inequality as an unreviewed production guard, change material to pass it, or infer general coupled/physical stability from this audit.",
+  "physical_acceptance": false,
+  "production_guard_implemented": false
+}
