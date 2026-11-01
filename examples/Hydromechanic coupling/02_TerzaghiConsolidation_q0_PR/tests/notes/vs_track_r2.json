@@ -1,0 +1,37 @@
+{
+  "date": "2026-11-01",
+  "purpose": "Verify change indicators in actual tracked production source, not only the scratch editor probe",
+  "prior_record_preserved": "vs_track_r1.md",
+  "source": "src/source/JSphCpu.cpp",
+  "line_observed": 202,
+  "head_before_and_after_ui_actions": "43d7d3696708c5b28707987d6ec89c66f060ca13",
+  "settings_observed": {
+    "source_control_provider": "Git",
+    "track_changes": true,
+    "difference_overview_margin": true,
+    "cpp_show_changes": true,
+    "cpp_show_marks": true
+  },
+  "actions": [
+    "Verified all eight open text buffers matched their disk files before closing Visual Studio",
+    "Restarted Visual Studio and reopened the same GPU solution",
+    "Reopened JSphCpu.cpp from its actual absolute path",
+    "Inspected the new PorosityObserver allocation at line 202",
+    "Inserted one temporary trailing space without saving, observed a hollow green Git bar, and undid the space",
+    "Rechecked JSphCpu.cpp editor buffer equals disk",
+    "Clicked the real green bar and opened Peek Difference: 21 changes, +83/-5 in this source revision"
+  ],
+  "verified_result": {
+    "actual_source_saved_addition_solid_green": true,
+    "actual_source_unsaved_addition_hollow_green": true,
+    "peek_difference_opens": true,
+    "temporary_space_reverted": true,
+    "source_history_rewritten": false,
+    "git_index_rebuilt": false,
+    "server_programs_or_jobs_touched": false
+  },
+  "interpretation": "The active Git line-staging margin uses solid/hollow source-control colors; absence of the old yellow file-session bar alone does not imply tracking failed. Existing committed changes must be viewed against the relevant commit.",
+  "diagnostic_correction": "The roughly fourteen-thousand A entries initially suspected to be stale were predominantly genuinely untracked historical files; full command-line status agreed. This was not evidence of index corruption.",
+  "root_cause_limit": "Reloading the session and source view restored the observed indicators; the internal VS cause is not proven. A desktop automation modal/focus problem also occurred and the user dismissed the modal manually.",
+  "documentation": "https://learn.microsoft.com/en-us/visualstudio/version-control/git-line-staging?view=vs-2022"
+}

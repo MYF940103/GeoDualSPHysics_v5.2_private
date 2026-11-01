@@ -182,6 +182,7 @@ void JSphCpuSingle::ConfigDomain(){
     if(PorePressM1c)memset(PorePressM1c,0,sizeof(float)*Np);
     if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*Np);
   }
+  InitPorosityObserverCpu();
   //=========
   //-Computes radius of floating bodies.
   if(CaseNfloat && PeriActive!=0 && !PartBegin)CalcFloatingRadius(Np,Posc,Idpc);
@@ -487,6 +488,9 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
     if(porepresspre)porepresspre[pnew]=porepresspre[pcopy];
+    if(PoroJc)PoroJc[pnew]=PoroJc[pcopy];
+    if(PoroThetac)PoroThetac[pnew]=PoroThetac[pcopy];
+    if(PoroJPrec)PoroJPrec[pnew]=PoroJPrec[pcopy];
     if(pospre)pospre[pnew]=pospre[pcopy];
     if(velrhoppre)velrhoppre[pnew]=velrhoppre[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
@@ -633,6 +637,8 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(PorePressc)CellDivSingle->SortArray(PorePressc);
   if(PorePress0c)CellDivSingle->SortArray(PorePress0c);
   if(PorePressRatec)CellDivSingle->SortArray(PorePressRatec);
+  if(PoroJc)CellDivSingle->SortArray(PoroJc);
+  if(PoroThetac)CellDivSingle->SortArray(PoroThetac);
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
@@ -644,6 +650,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
     CellDivSingle->SortArray(VelrhopPrec);
     CellDivSingle->SortArray(SigmaPrec);
     if(PorePressPrec)CellDivSingle->SortArray(PorePressPrec);
+    if(PoroJPrec)CellDivSingle->SortArray(PoroJPrec);
   }
   if(TVisco==VISCO_LaminarSPS)CellDivSingle->SortArray(SpsTauc);
   if(FSTypec)CellDivSingle->SortArray(FSTypec);
@@ -1399,6 +1406,7 @@ void JSphCpuSingle::SaveData(){
   float *porepress=NULL;
   float *porepress0=NULL;
   tfloat3 *hydromechloadace=NULL;
+  double *poroj=NULL,*porotheta=NULL;
   //==========
   if(save){
     ComputeFreeSurfaceTracking();
@@ -1421,8 +1429,9 @@ void JSphCpuSingle::SaveData(){
       porepress0=ArraysCpu->ReserveFloat();
       hydromechloadace=ArraysCpu->ReserveFloat3();
     }
+    if(PorosityObserver){poroj=new double[Np];porotheta=new double[Np];}
 	//=========
-    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij);
+    unsigned npnormal=GetParticlesData(Np,0,PeriActive!=0,idp,pos,vel,rhop,sigmakk,sigmaij,kplastic,NULL,fstype,fsnormal,NULL,porepress,porepress0,hydromechloadace,sigmastatekk,sigmastateij,poroj,porotheta);
     if(npnormal!=npsave)Run_Exceptioon("The number of particles is invalid.");
   }
   //-Gather additional information. | Reune informacion adicional.
@@ -1451,6 +1460,14 @@ void JSphCpuSingle::SaveData(){
     arrays.AddArray("SigmaState_ij",npsave,sigmastateij,true);
     arrays.AddArray("FSType",npsave,fstype);
     arrays.AddArray("FSNormal",npsave,fsnormal);
+    if(PorosityObserver){
+      double *porosity=new double[npsave];
+      for(unsigned p=0;p<npsave;p++)
+        porosity[p]=(idp[p]<CaseNpb? 0.: 1.-(1.-double(SoilCte.Porosity))/poroj[p]);
+      arrays.AddArray("PoroVolumeRatio",npsave,poroj,true);
+      arrays.AddArray("PoroPorosity",npsave,porosity,true);
+      arrays.AddArray("PoroThetaLastStage",npsave,porotheta,true);
+    }
     if(HydroMech && porepress && porepress0){
       float *poreexcess=new float[npsave];
       for(unsigned p=0;p<npsave;p++)poreexcess[p]=porepress[p]-porepress0[p];

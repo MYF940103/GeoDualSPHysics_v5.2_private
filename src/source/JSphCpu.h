@@ -158,6 +158,10 @@ protected:
   float* PorePressc;   ///<Current total/gauge pore-water pressure for u-pw hydromechanics.
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
+  bool PorosityObserver; ///<Development-only CPU observer; no physical feedback or XML entry.
+  double* PoroJc;      ///<Observed solid volume ratio J; native walls remain 1.
+  double* PoroThetac;  ///<Divergence from the last force stage, not necessarily the saved full time.
+  double* PoroJPrec;   ///<Full-step J held during Symplectic prediction/correction.
   tfloat3* BoundDerivativeVelc; ///<Force-stage wall velocity for S/P/R derivatives; never replaces physical velocity.
   std::vector<tdouble3> BoundDerivativeFitShift; ///<Static MLS-centre offset by native wall ID; empty for one plane.
   //===============  
@@ -251,7 +255,8 @@ protected:
   unsigned GetParticlesData(unsigned n,unsigned pini,bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
     ,unsigned *fstype=NULL,tfloat3 *fsnormal=NULL,float *posdiv=NULL,float *porepress=NULL,float *porepress0=NULL
-    ,tfloat3 *hydromechloadace=NULL,tdouble3 *sigmastatekk=NULL,tdouble3 *sigmastateij=NULL);
+    ,tfloat3 *hydromechloadace=NULL,tdouble3 *sigmastatekk=NULL,tdouble3 *sigmastateij=NULL
+    ,double *poroj=NULL,double *porotheta=NULL);
   /*unsigned GetParticlesData(unsigned n, unsigned pini, bool onlynormal
     ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,typecode *code);*/
   void ConfigOmp(const JSphCfgRun *cfg);
@@ -397,6 +402,9 @@ protected:
   void ComputeVerletPorePressure(double dt);
   void ComputeSymplecticPrePorePressure(double dt);
   void ComputeSymplecticCorrPorePressure(double dt);
+  void InitPorosityObserverCpu();
+  void ComputeSymplecticPrePorosity(double dt);
+  void ComputeSymplecticCorrPorosity(double dt);
 
   double DtVariable(bool final);
 

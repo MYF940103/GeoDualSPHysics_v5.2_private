@@ -1,0 +1,22 @@
+{
+  "date": "2026-11-01",
+  "stage": "P2 CPU observer only; no dynamic seepage/porosity feedback or new XML switch",
+  "predeclared_before_execution": true,
+  "source_baseline": "43d7d3696708c5b28707987d6ec89c66f060ca13",
+  "fixture": "Actual authoritative project objects, actual ct, actual J predictor/corrector, actual cell sort/periodic/resize and actual production Run outer loop",
+  "jobs": ["CPU Debug pair", "CPU Release pair", "CPU Debug state lifecycle", "CPU Release state lifecycle", "8/128-step own-build OFF and observer ON; same-build0ULP", "128-step frozen pre-edit program versus new OFF native fields"],
+  "thresholds": {
+    "ct_theta_reference": "64*FLT_EPSILON*max(1,abs(reference)); shear/zero exact null",
+    "J_initialization": "Exactly1; theta exactly0",
+    "J_update": "Exact comparison against separately evaluated explicit-midpoint recurrence using saved native-stage theta",
+    "solid_volume_invariant_absolute": 5e-13,
+    "sort_periodic_resize": "Exact ID-tagged J/theta/JPrec; actual order change and capacity growth required",
+    "default_OFF_and_observer_ON_physics": "All original35 exported native columns0ULP; same-build, same-clock, no interpolation or exclusions",
+    "native_observer_serialization": "Three double arrays exist; ID-sorted final native CSV exactly equals in-memory final export",
+    "safety": "Finite, positive density, zero plasticity/no exclusion, original fixed natural-step guard and original force/drainage settings retained",
+    "physical_accuracy": "No physical accuracy, dynamic model, full-cycle, restart or GPU acceptance from these tests"
+  },
+  "bounds": {"maximum_steps_per_job": 128, "no_long_run": true, "no_retry_or_retained_overwrite": true},
+  "baseline_freeze": "tests/logs/upl_p2_base_r1.snapshot.json",
+  "source_and_server_protection": "No formal XML/BAT/server package changes; old controls stay retained"
+}

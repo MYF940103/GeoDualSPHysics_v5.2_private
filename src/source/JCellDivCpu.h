@@ -167,6 +167,7 @@ public:
   void SortArray(word *vec);
   void SortArray(unsigned *vec);
   void SortArray(float *vec);
+  void SortArray(double *vec);
   void SortArray(tdouble3 *vec);
   void SortArray(tfloat3 *vec);
   void SortArray(tfloat4 *vec);

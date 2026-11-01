@@ -1,0 +1,52 @@
+{
+  "date": "2026-11-01",
+  "stage": "P2 CPU volume/porosity observer implementation regression",
+  "baseline_head": "43d7d3696708c5b28707987d6ec89c66f060ca13",
+  "production_files": {
+    "src/source/JSphCpu.h": "Protected development-only observer and three double state pointers; no XML entry",
+    "src/source/JSphCpu.cpp": "Allocate/resize J and stage theta, observe the existing corrected pair divergence, integrate J without feedback, compact native export",
+    "src/source/JSphCpuSingle.cpp": "Initialize, periodic-copy, cell-sort and save three double observer diagnostics",
+    "src/source/JCellDivCpu.h": "Declare scalar double sorting overload",
+    "src/source/JCellDivCpu.cpp": "Reuse existing double scratch x component to sort scalar state without narrowing"
+  },
+  "recurrence": {
+    "predictor": "Jhalf=Jn+(dt*.5)*Jn*theta_n",
+    "corrector": "Jend=Jn+dt*Jhalf*theta_half",
+    "derived_porosity": "n=1-(1-n0)/J",
+    "wall_marker": "J=1, n=0, theta=0 for native wall diagnostics; walls are not saturated control volumes",
+    "saved_theta": "PoroThetaLastStage belongs to the last force stage, not necessarily the full-time saved geometry"
+  },
+  "accepted_evidence": {
+    "aggregate": "tests/logs/upl_p2_fixture_r1.check.json",
+    "authoritative_cpu_debug_and_release_builds": "tests/logs/upl_p2_cpu_debug_r2.log and upl_p2_cpu_release_r2.log, both exit zero",
+    "test_recipe": "tests/support/upl_p2_run_r1.ps1",
+    "accepted_recipe_revision": "r3",
+    "configurations": ["DebugCPU", "ReleaseCPU"],
+    "native_frame_pairs": 140,
+    "native_ids_per_frame": 1040,
+    "original_arrays_bitwise_equal": 15,
+    "time_step_dterror_equal_without_exceptions": true,
+    "observer_native_frames": 72,
+    "final_memory_native_matches": 6,
+    "ct_calls": 48,
+    "drained_theta_native_particles": 10,
+    "real_state_lifecycle": "Predictor, changed cell order, periodic copies, resize and corrector with exact ID tags",
+    "invalid_state_checks": "Periodic Kplastic poison ignored; true native plasticity and J=.5/NaN/Inf rejected"
+  },
+  "preserved_failures": {
+    "r1": "Silent-success test logging/receipt wrapper failure; no physical acceptance",
+    "r2": "Observer plastic guard read unmaintained periodic clone data; corrected to check normal native fluid, then fresh r3 tests passed"
+  },
+  "review_conclusion": "CPU observer implementation regression passed; existing u-pw fields remain unchanged in the admitted short tests",
+  "not_implemented_or_accepted": [
+    "No dynamic Darcy term or new pressure operator",
+    "No feedback of J/n into volume, storage, inertia, load or hourglass",
+    "No public HydroMechDynamicSeepage XML switch yet",
+    "No GPU observer, PART restart or exact hourglass restart",
+    "No new model physical accuracy, half-step convergence or full-cycle acceptance",
+    "Whole-program lifecycle evidence is 2D case02; 3D ct evidence is limited to z divergence/xz shear",
+    "No controlled performance claim"
+  ],
+  "next_gate": "Fixture-only consistent J-derived volume/storage/inertia feedback, then acceleration/Darcy closure; expose the single default-OFF model switch only after these form a complete validated branch",
+  "protected": "No formal XML/BAT, accepted data, server packages or server jobs changed"
+}

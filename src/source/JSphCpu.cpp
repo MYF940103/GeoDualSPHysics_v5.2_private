@@ -112,6 +112,8 @@ void JSphCpu::InitVars(){
   Rsigmac=NULL;Kplasticc=NULL;
   ArtificialStressc=NULL;
   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
+  PorosityObserver=false;
+  PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
   //======
@@ -197,6 +199,7 @@ void JSphCpu::AllocCpuMemoryParticles(unsigned np,float over){
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_16B,2); //-velrhop,poscell
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_24B,2); //-pos
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_72B,1); //-CorrMatc
+  if(PorosityObserver)ArraysCpu->AddArrayCount(JArraysCpu::SIZE_8B,3);//-J, last-stage theta, Jpre.
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_12B,2); //-FSNormalc and SaveData temporary arrays
   ArraysCpu->AddArrayCount(JArraysCpu::SIZE_4B,4);  //-FSTypec,PosDivc and SaveData temporary arrays
   //====== mdbr
@@ -281,6 +284,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   float        *porepressrate=SaveArrayCpu(Np,PorePressRatec);
   float        *porepressm1=SaveArrayCpu(Np,PorePressM1c);
   float        *porepresspre=SaveArrayCpu(Np,PorePressPrec);
+  double       *poroj=SaveArrayCpu(Np,PoroJc);
+  double       *porotheta=SaveArrayCpu(Np,PoroThetac);
+  double       *porojpre=SaveArrayCpu(Np,PoroJPrec);
   //==== 
   //-Frees pointers.
   ArraysCpu->Free(Idpc);
@@ -312,6 +318,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   ArraysCpu->Free(PorePressRatec);
   ArraysCpu->Free(PorePressM1c);
   ArraysCpu->Free(PorePressPrec);
+  ArraysCpu->Free(PoroJc);
+  ArraysCpu->Free(PoroThetac);
+  ArraysCpu->Free(PoroJPrec);
   //====
   //-Resizes CPU memory allocation.
   const double mbparticle=(double(MemCpuParticles)/(1024*1024))/CpuParticlesSize; //-MB por particula.
@@ -347,6 +356,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   if(porepressrate) PorePressRatec = ArraysCpu->ReserveFloat();
   if(porepressm1)   PorePressM1c   = ArraysCpu->ReserveFloat();
   if(porepresspre)  PorePressPrec  = ArraysCpu->ReserveFloat();
+  if(poroj)        PoroJc         = ArraysCpu->ReserveDouble();
+  if(porotheta)    PoroThetac     = ArraysCpu->ReserveDouble();
+  if(porojpre)     PoroJPrec      = ArraysCpu->ReserveDouble();
   //=====
   //-Restore data in CPU memory.
   RestoreArrayCpu(Np,idp,Idpc);
@@ -378,6 +390,9 @@ void JSphCpu::ResizeCpuMemoryParticles(unsigned npnew){
   RestoreArrayCpu(Np,porepressrate,PorePressRatec);
   RestoreArrayCpu(Np,porepressm1,PorePressM1c);
   RestoreArrayCpu(Np,porepresspre,PorePressPrec);
+  RestoreArrayCpu(Np,poroj,PoroJc);
+  RestoreArrayCpu(Np,porotheta,PoroThetac);
+  RestoreArrayCpu(Np,porojpre,PoroJPrec);
   //=====
   //-Updates values.
   CpuParticlesSize=npnew;
@@ -423,6 +438,10 @@ void JSphCpu::ReserveBasicArraysCpu(){
   FSTypec=ArraysCpu->ReserveUint();
   FSNormalc=ArraysCpu->ReserveFloat3();
   PosDivc=ArraysCpu->ReserveFloat();
+  if(PorosityObserver){
+    PoroJc=ArraysCpu->ReserveDouble();
+    PoroThetac=ArraysCpu->ReserveDouble();
+  }
   //-mdbr
   Sigmac=ArraysCpu->ReserveSymatrix3d();
   Kplasticc=ArraysCpu->ReserveFloat();
@@ -482,7 +501,7 @@ void JSphCpu::PrintAllocMemory(llong mcpu)const{
 unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   ,unsigned *idp,tdouble3 *pos,tfloat3 *vel,float *rhop,tfloat3 *sigmakk,tfloat3 *sigmaij,float *kplastic,typecode *code
   ,unsigned *fstype,tfloat3 *fsnormal,float *posdiv,float *porepress,float *porepress0,tfloat3 *hydromechloadace
-  ,tdouble3 *sigmastatekk,tdouble3 *sigmastateij)
+  ,tdouble3 *sigmastatekk,tdouble3 *sigmastateij,double *poroj,double *porotheta)
 {
   unsigned num=n;
   //-Copy selected values.
@@ -495,6 +514,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
   if(porepress && PorePressc)memcpy(porepress,PorePressc+pini,sizeof(float)*n);
   if(porepress0 && PorePress0c)memcpy(porepress0,PorePress0c+pini,sizeof(float)*n);
   if(hydromechloadace && HydroMechLoadAcec)memcpy(hydromechloadace,HydroMechLoadAcec+pini,sizeof(tfloat3)*n);
+  if(poroj && PoroJc)memcpy(poroj,PoroJc+pini,sizeof(double)*n);
+  if(porotheta && PoroThetac)memcpy(porotheta,PoroThetac+pini,sizeof(double)*n);
   if(vel && rhop){
     for(unsigned p=0;p<n;p++){
       tfloat4 vr=Velrhopc[p+pini];
@@ -558,6 +579,8 @@ unsigned JSphCpu::GetParticlesData(unsigned n,unsigned pini,bool onlynormal
         if(porepress)porepress[pdel]=porepress[p];
         if(porepress0)porepress0[pdel]=porepress0[p];
         if(hydromechloadace)hydromechloadace[pdel]=hydromechloadace[p];
+        if(poroj)poroj[pdel]=poroj[p];
+        if(porotheta)porotheta[pdel]=porotheta[p];
         code2[pdel]=code2[p];
       }
       if(!normal)ndel++;
@@ -1854,6 +1877,7 @@ void JSphCpu::PreInteractionVars_Forces(unsigned np,unsigned npb){
   memset(Acec,0,sizeof(tfloat3)*np);                                 //Acec[]=(0,0,0)
   if(HydroMechLoadAcec)memset(HydroMechLoadAcec,0,sizeof(tfloat3)*np);//HydroMechLoadAcec[]=(0,0,0)
   if(HydroMechTopLoadRawc)memset(HydroMechTopLoadRawc,0,sizeof(float)*np);
+  if(PoroThetac)memset(PoroThetac,0,sizeof(double)*np);
   if(NoPenShiftc)memset(NoPenShiftc,0,sizeof(tfloat4)*np);           //NoPenShiftc[]=(0,0,0,0)
   if(SpsGradvelc)memset(SpsGradvelc+npb,0,sizeof(tsymatrix3f)*npf);  //SpsGradvelc[]=(0,0,0,0,0,0).
   //====== mdbr
@@ -2292,6 +2316,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     tfloat3 hydromechloadacep1=TFloat3(0);
     tfloat3 w_tensorp1_xy_yz_xz=TFloat3(0);
     double pore_ratep1=0;
+    double porosity_thetap1=0;
     unsigned nopenauxx=0,nopenauxy=0,nopenauxz=0;
     tfloat3 nopenshiftp1=TFloat3(0);
     //-Variables for Shifting.
@@ -2314,8 +2339,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const float rhopp1=velrhop[p1].w;
     const float pressp1=press[p1];
     const bool poreratep1=(useporerate && CODE_IsFluid(code[p1]) && !(drainfs && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)));
+    const bool observeporosity=(PoroThetac && CODE_IsFluid(code[p1]));
     const float pwp1=(poreratep1? porepress[p1]: 0);
-    const tmatrix3d porecorr=(poreratep1 && corrmat? corrmat[p1]: TMatrix3d());
+    const tmatrix3d porecorr=((poreratep1 || observeporosity) && corrmat? corrmat[p1]: TMatrix3d());
     const tsymatrix3f sigmap1=ToTSymMatrix3f(sigma[p1]); //mdbr
     tsymatrix3f artstressp1={0,0,0,0,0,0};
     if(useartstress && !ftp1 && invwabdp>0.f)artstressp1=artificialstress[p1];
@@ -2446,7 +2472,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           const float dvz_grad_deriv=(sprwall? dvz_rhop_deriv: dvz_visc);
           //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
           // SPR changes only the compression derivative; Darcy and viscosity keep their original data.
-          if(poreratep1 && !rsym && velrhop[p2].w>0){
+          if((poreratep1 || observeporosity) && !rsym && velrhop[p2].w>0){
             const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
             const bool inactiveporebound=(mdbc2p2 && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
             if(validporep2 && !inactiveporebound){
@@ -2471,11 +2497,12 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double pdvz=-double(dvz_grad_deriv);
                 const double pdotgrad=pdrx*pcfrx+pdry*pcfry+pdrz*pcfrz;
                 const double divv=vol2*(pdvx*dcfrx+pdvy*dcfry+pdvz*dcfrz);
-                if(PoreCompressionSourceMode==0){
+                if(observeporosity)porosity_thetap1+=divv;
+                if(poreratep1 && PoreCompressionSourceMode==0){
                   const double comp=kwn*(-divv);
                   pore_ratep1+=comp;
                 }
-                if(khyd>0){
+                if(poreratep1 && khyd>0){
                   const double pwp2=double(porepress[p2]);
                   // mDBC pore pressure already stores the hydraulic ghost value used by Darcy diffusion.
                   const double pwp2seep=pwp2;
@@ -2654,6 +2681,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     if(poreratep1 && PoreCompressionSourceMode==1 && rhopp1>0.f)
       pore_ratep1+=kwn*(double(arp1)/double(rhopp1));
     if(poreratep1)porepressrate[p1]+=float(pore_ratep1);
+    if(observeporosity)PoroThetac[p1]+=porosity_thetap1;
     if(shift||arp1||acep1.x||acep1.y||acep1.z||visc){
       if(tdensity!=DDT_None){
         if(delta)delta[p1]=(delta[p1]==FLT_MAX || deltap1==FLT_MAX? FLT_MAX: delta[p1]+deltap1);
@@ -4065,6 +4093,54 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *s
 }
 
 //==============================================================================
+/// Initializes the development-only volume observer without physical feedback.
+//==============================================================================
+void JSphCpu::InitPorosityObserverCpu(){
+  if(!PorosityObserver)return;
+  if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
+    || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
+    || Damping || RelaxZones
+    || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
+    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
+  if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
+    Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
+  for(unsigned p=0;p<Np;p++){PoroJc[p]=1.;PoroThetac[p]=0.;}
+}
+
+//==============================================================================
+/// Non-feedback J observer: explicit midpoint using the same force-stage theta.
+//==============================================================================
+void JSphCpu::ComputeSymplecticPrePorosity(double dt){
+  if(!PorosityObserver)return;
+  PoroJPrec=ArraysCpu->ReserveDouble();
+  swap(PoroJPrec,PoroJc);
+  const double dt05=dt*.5,solid0=1.-double(SoilCte.Porosity);
+  for(unsigned p=0;p<Np;p++){
+    PoroJc[p]=PoroJPrec[p];
+    if(p>=Npb && CODE_IsFluid(Codec[p]))
+      PoroJc[p]+=dt05*PoroJPrec[p]*PoroThetac[p];
+    if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=solid0)
+      Run_Exceptioon("Porosity observer left the saturated incompressible-grain domain in predictor.");
+  }
+}
+
+//==============================================================================
+void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
+  if(!PorosityObserver)return;
+  const double solid0=1.-double(SoilCte.Porosity);
+  for(unsigned p=0;p<Np;p++){
+    const double jhalf=PoroJc[p];
+    PoroJc[p]=PoroJPrec[p];
+    if(p>=Npb && CODE_IsFluid(Codec[p]))
+      PoroJc[p]+=dt*jhalf*PoroThetac[p];
+    if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=solid0
+      || (Kplasticc && CODE_IsFluid(Codec[p]) && CODE_IsNormal(Codec[p]) && Kplasticc[p]!=0))
+      Run_Exceptioon("Porosity observer requires finite saturated elastic states in corrector.");
+  }
+  ArraysCpu->Free(PoroJPrec);PoroJPrec=NULL;
+}
+
+//==============================================================================
 /// Updates pore pressure using the same Verlet history convention as other fields.
 //==============================================================================
 void JSphCpu::ComputeVerletPorePressure(double dt2){
@@ -4170,6 +4246,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   swap(SigmaPrec, Sigmac);
   if(HydroMech)swap(PorePressPrec,PorePressc);
   ComputeSymplecticPrePorePressure(dt);
+  ComputeSymplecticPrePorosity(dt);
   //-Calculate new density for boundary and copy velocity. | Calcula nueva densidad para el contorno y copia velocidad.
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npb>OMP_LIMIT_COMPUTESTEP)
@@ -4440,6 +4517,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   ArraysCpu->Free(movc);   movc=NULL;
 
   ComputeSymplecticCorrPorePressure(dt);
+  ComputeSymplecticCorrPorosity(dt);
 
   //-Free memory assigned to variables Pre and ComputeSymplecticPre(). | Libera memoria asignada a variables Pre en ComputeSymplecticPre().
   ArraysCpu->Free(PosPrec);      PosPrec=NULL;

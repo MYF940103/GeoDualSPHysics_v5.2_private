@@ -407,8 +407,19 @@ void JCellDivCpu::SortArray(float *vec){
 }
 
 //==============================================================================
+/// Reorder values of all particles (for type double).
+/// Reordena datos de todas las particulas (para tipo double).
+//==============================================================================
+void JCellDivCpu::SortArray(double *vec){
+  const int n=int(Nptot);
+  const int ini=(DivideFull? 0: int(NpbFinal));
+  //-Reuse the existing double scratch component; do not narrow persistent J.
+  for(int p=ini;p<n;p++)VSortDouble3[p].x=vec[SortPart[p]];
+  for(int p=ini;p<n;p++)vec[p]=VSortDouble3[p].x;
+}
+
+//==============================================================================
 /// Reorder values of all particles (for type tdouble3).
-/// Reordena datos de todas las particulas (para tipo tdouble3).
 //==============================================================================
 void JCellDivCpu::SortArray(tdouble3 *vec){
   const int n=int(Nptot);
