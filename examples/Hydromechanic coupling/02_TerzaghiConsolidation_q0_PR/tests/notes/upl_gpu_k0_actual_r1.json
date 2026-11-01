@@ -1,0 +1,56 @@
+{
+    "stage": "upl_gpu_k0_actual_r1",
+    "status": "author_only_no_compile_or_execution",
+    "files": ["tests/support/upl_gpu_k0_actual_r1.cpp", "tests/notes/upl_gpu_k0_actual_r1.json"],
+    "retained_include": {
+        "path": "tests/support/upl_gpu_observer_native_r1.cpp",
+        "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+        "mechanism": "Rename only its main while including existing typed array/count/ID/telemetry utilities. Exactly one retained AppInfo definition. New --solver never calls the observer-only old entry/completion."
+    },
+    "entry": {
+        "cli": "--solver or --solver-smoke <ordinary -gpu:0 input_prefix fresh_output -dirdataout data -svres arguments>",
+        "behavior": "Derived actual JSphGpuSingle sets only protected PorosityObserver=true and PorosityFeedback=true, then calls actual Run. No physical field, clock, material, PDE or native state is rewritten by the fixture.",
+        "outputs": ["actual_complete.json", "live_final.csv: ID-sorted live GPU J,n,theta after actual final download"],
+        "scope": "Fresh private CPU-equivalent k=0 2D no-wall XZ-periodic small-amplitude elastic window; shared public GPU dynamic switch remains false/rejected. Actual finite/material/init/time-policy guards remain in force."
+    },
+    "jobs_after_admission_only": {
+        "successful_Debug_smoke_first": "One new actual GPU feedback Run of exactly2 completed steps, dt=2^-24,TimeOut=dt,TimeMax=2^-23,3native frames. Run --solver-smoke under actual memcheck, then --read-smoke GPU DATA DT NEW_REVIEW_DIR. This explicitly reaches real successful Pre/Corr rather than treating first-force rejection components as a successful-step proof. No CPU smoke is added.",
+        "GPU": "Two fresh actual Run coarse/half jobs, private flags true; public master false. Every single-run review passes before next.",
+        "CPU": "Two fresh canonical CPU coarse/half jobs using public master true, conductivity model0 and k0, same retained BI4 and initialization. The old public CPU reader hardcodes nonzero k and is not used unchanged.",
+        "native_count": 512,
+        "grid": "32x16, dp=1/256,Lx=1/8,Lz=1/16, actual h=float(1.8*dp)",
+        "initial": "Exact retained native positions and float vx=(1/512)sin(2pi*x/Lx); vy=vz=p=p0=sigma=theta=0,J=1,n=.25. BI4 copy byte-exact; no new GenCase.",
+        "material_promoted_float_values": {"bulk_K": 89478488, "shear_G": 134217728, "Kw": 67108864, "n0": 0.25, "rho0": 2048, "rho_water": 1000, "conductivity_k": 0},
+        "coarse_dt": "2^-24,512 completed steps",
+        "half_dt": "2^-25,1024 completed steps",
+        "end": "2^-15 seconds",
+        "cadence": "2^-23 seconds;257 actual saved frames including initial and final",
+        "input_binding": "Root-owned driver must verify all runtime XML material, options and only the intended CPU/GPU public-master distinction before execution; native files do not independently store every constitutive constant."
+    },
+    "offline_reader": {
+        "cli": "--read GPU|CPU DATA_DIR DT NEW_REVIEW_DIR, or --read-smoke GPU DATA_DIR DT NEW_REVIEW_DIR",
+        "exactly_two_declared_windows": "Full CPU/GPU:257samples,End2^-15,cadence2^-23,dt2^-24/2^-25. GPU smoke only:3samples,End2^-23,cadence=dt2^-24,2completed steps. No arbitrary samples/end/cadence argument or CPU short mode.",
+        "checks_all_declared_native_frames": ["one piece,512 unique contiguous native IDs,no exclusions,2D/fixed species and XZ periodicity", "exact saved time=part*declared cadence, positive Step=completed_steps-1 and locked dt metadata", "present typed finite signed dterror<=1e-14", "all original15 typed native arrays finite, stored double stress plus rounded legacy stress", "actual three J arrays finite; J>.75,abs(J-1)<=1e-4,0<n<1 and solid-volume ledger<=5e-13", "initial lattice/sine/p/stress/J/n/theta exact", "plastic0,passive Rhop within original700..3000,p0=0,load=0,float excess=p-p0", "saved coupled CFL<=.01 and entire declared-window energy ratio<=1.1", "full natural max abs(J-1)>1e-8;2step smoke only requires max abs(J-1)>0"],
+        "smoke_nonempty_scope": "Short maxJ>0 is a separate explicitly declared nonempty smoke condition, not a relaxation/adoption of the full257-frame maxJ>1e-8 threshold. Full half/cross/physical acceptance does not follow from smoke.",
+        "CPU_native_schema": "Three J arrays plus actual native V/rho/k arrays and PosDiv are required. V/rho checked against J with existing5e-13 relative ledger bound;k exactly0. Four public model metadata keys are typed and true/schema1/model0/Ck0.",
+        "GPU_native_schema": "Exactly the observer-style three J arrays are required; CPU V/rho/k and PosDiv arrays plus public dynamic metadata are absent. Common V,rho_t,k0 are explicitly derived from J/declared zero conductivity, never called native observations.",
+        "energy": "Sum V(J)[rho_t(J)|v|^2/2+dev(sigma):dev(sigma)/(4G)+tr(sigma)^2/(18K)+n*p^2/(2Kw)], initial nonzero. Necessary scales/energy budget are not sufficient stability or conservation proof.",
+        "outputs": ["physical.bin", "native_ids.csv", "history.csv", "CPU-only cpu_posdiv.csv", "completion.json"],
+        "physical_binary": "Little-endian three uint32 header [512,33,257] for full or [512,33,3] for GPU smoke, then each frame one binary64 actual time followed by512 native-ID-sorted rows of33 binary64 values. No PosDiv column and no missing-field zero substitution.",
+        "columns_zero_based": ["x", "y", "z", "vx", "vy", "vz", "p", "p0", "J", "theta_last_stage", "sxx", "sxy", "sxz", "syy", "syz", "szz", "plastic", "FSType", "FSNormal_x", "FSNormal_y", "FSNormal_z", "load_x", "load_y", "load_z", "passive_Rhop", "material_ux", "material_uy", "material_uz", "native_excess", "native_n", "V_native_CPU_or_derived_GPU", "rho_t_native_CPU_or_derived_GPU", "k0"],
+        "material_displacement": "Position at each actual frame minus same native ID initial position, full XYZ. This weak window remains inside primary domain so no periodic-wrap inference.",
+        "stress_shear_order": "Native SigmaState_ij=(xy,yz,xz); common columns reorder explicitly to xy,xz,yz.",
+        "theta_scope": "Stored last force-stage theta diagnostic, not a fresh endpoint divergence observation. Reader does not assert a pressure-log theory identity."
+    },
+    "later_root_analysis_not_implemented_here": {
+        "independent_halves_each_backend": "All257 actual time/ID-matched pressure RMS<=5Pa, max vector material displacement difference<=.005mm, normalized pressure RMS/Pstar, velocity vector RMS/A and displacement vector RMS/Ustar each<=1e-4.",
+        "same_dt_CPU_GPU_cross": "Original pressure RMS<=5Pa and max vector material displacement difference<=.005mm at all257 samples. Normalized p/v/u and J/stress differences recorded descriptively, not new hard cross gates.",
+        "normalizers": "A=1/512;cu0=sqrt((K+4G/3+Kw/n0)/rho0) using actual float-promoted constants;Pstar=(Kw/n0)A/cu0,Ustar=A/(cu0*2pi/Lx).",
+        "passive_density": "CPU rational and GPU additive legacy-density correctors are known different; no backend equality requirement on passive Rhop. Both original validity guards remain.",
+        "theory": "Continuum/discrete modal comparisons may be added offline but are not fabricated by the native reader."
+    },
+    "prerequisites": ["All current Debug time components and retained native OFF/observer controls passed", "Root reads complete new CPP/note and freezes author inputs", "Helper/reader compiled against exact fresh authoritative GPU objects/runtime", "Successful real Debug2step GPU feedback smoke must pass typed native review and actual memcheck zeroerrors/zeroleaks before full jobs", "Root explicitly admits and owns each physical process only after prior gate passes", "Independent CPU/GPU native single-run reviews precede halves and backend cross"],
+    "limits": ["No automatic run authorization from authoring or successful compilation", "No nonzero-k Darcy, dynamic acceleration-gradient pressure pass, general walls or gravity acceptance", "No public GPU master enable or server/formal release", "No exact restart, general mass conservation or full-cycle physical acceptance", "Reader exit does not establish owned solver exit; that remains a separately hash-bound receipt", "No pressure/geometry/energy/half thresholds relaxed"],
+    "author_executed_programs": false,
+    "production_files_changed_by_author": false
+}

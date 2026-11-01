@@ -1,0 +1,31 @@
+{
+  "stage": "upl_gpu_k0_actual_r3",
+  "decision": "bounded_private_k0_actual_Run_and_half_backend_checks_passed",
+  "production_changes_in_this_stage": [],
+  "source_checkpoint": "7a758f3d3c04e379fc272f0f38fbc47e7eb13397",
+  "jobs": "One Debug GPU two-step smoke under memcheck, then canonical CPU coarse/half and private GPU coarse/half. All five successful solvers and their separate readers exited0. Full windows have512 native IDs and257 exact dyadic saved times through2^-15s.",
+  "original_thresholds": "Every single-run original finite/elastic/domain/J-ledger/energy<=1.1/CFL<=.01/signed-dterror<=1e-14 guard remains. Independent halves require every pressure RMS<=5Pa, material vector displacement max<=.005mm and normalized p/v/u RMS<=1e-4. CPU/GPU same-dt comparisons keep5Pa/.005mm; normalized cross differences are descriptive only.",
+  "maxima": {
+    "CPU_half_pressure_RMS_Pa": 0.0006895662358724366,
+    "CPU_half_material_vector_difference_mm": 7.155907810751927e-11,
+    "GPU_half_pressure_RMS_Pa": 0.0007010120896876695,
+    "GPU_half_material_vector_difference_mm": 6.907495408992048e-11,
+    "coarse_CPU_GPU_pressure_RMS_Pa": 3.321813430832631e-5,
+    "half_CPU_GPU_pressure_RMS_Pa": 6.1219280397035e-5,
+    "coarse_CPU_GPU_material_vector_difference_mm": 4.940570424066823e-12,
+    "half_CPU_GPU_material_vector_difference_mm": 5.592748486549226e-12,
+    "energy_ratio_all_four_runs": 1.0022677516802097
+  },
+  "visual_review": "Root inspected all four actual CPU_half/GPU_half/cross_c/cross_h PNGs and matching257-row CSV/JSON. Pressure, full-vector velocity and material displacement are compared at actual times/native IDs. Continuum weak-wave curves are diagnostic only; no new continuum-accuracy threshold is inferred.",
+  "independent_review": "Peer rehashed1162 unique current bindings without mismatch and independently recalculated all257 pair rows from four typed physical.bin exports, including ledger, clock, energy, full XYZ displacement and stress metrics. GPU final live J/n/theta matches typed final native output. This is not a second BI4 parser or a new machine-generated peer PASS receipt.",
+  "retained_setup_failures": [
+    "r1 helper compilation exited2: ADL made an unqualified Finite(tdouble3) call ambiguous. r2 qualifies only k0::Finite; no solver or physics ran in the failed build.",
+    "r2 CPU coarse invocation exited1 at option parsing because -omp:4 is invalid. r3 uses source-documented -ompthreads:4 and fresh labels; the failed invocation and recipes remain untouched."
+  ],
+  "storage_and_integrator_scope": "CPU native V/rho/k and PosDiv are observed; GPU has only native J/n/theta and explicitly derives V/rho/k0 offline. CPU legacy density corrector is rational, GPU legacy density corrector additive; neither is changed or used as the feedback mixture inertia. n is derived from midpoint-integrated double J, not independently integrated.",
+  "limits": "Fresh rectangular2D X/Z-periodic zero-gravity elastic k0 weak-wave window only. No walls/load/drainage/viscosity/shifting/HG/SPR, nonzero-k Darcy, evolved conductivity, full-cycle physical validation, exact restart, public GPU or server-package acceptance. Canonical GPU/server executables and formal case inputs/results remain unchanged.",
+  "next": "After selective verified local/remote backup, add the private complete same-stage constant-k GPU Darcy pressure rate with native-ID periodic C/Ace/theta/rate ownership and current-J diffusion/continuous-domain guards. Keep the public GPU master rejected until the complete branch and its regressions are admitted.",
+  "physical_acceptance": false,
+  "public_GPU_accepted": false,
+  "full_cycle_accepted": false
+}

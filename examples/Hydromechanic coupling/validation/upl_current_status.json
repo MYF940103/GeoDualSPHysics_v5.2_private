@@ -2,7 +2,7 @@
   "date": "2026-11-02",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry, private GPU observer and bounded GPU J-feedback components reviewed; no complete GPU dynamic Run or physical-model release",
+  "status": "Limited canonical CPU entry and private GPU k0 feedback actual coarse/half Runs reviewed; nonzero-k GPU dynamic Darcy and physical-model release remain held",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -165,9 +165,21 @@
     "public_GPU_dynamic_accepted": false,
     "physical_acceptance": false
   },
+  "private_GPU_k0_actual_Run_review": {
+    "source_checkpoint": "7a758f3d3c04e379fc272f0f38fbc47e7eb13397",
+    "root_review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_gpu_k0_actual_root_review_r3.json",
+    "scope": "One actual Debug GPU two-step memcheck, four fresh full short-window CPU/GPU coarse/half Runs;512 native IDs,257 exact saved times to2^-15s. No production changes at this evidence stage.",
+    "independent_halves_max_pressure_RMS_Pa": [0.0006895662358724366, 0.0007010120896876695],
+    "same_dt_CPU_GPU_max_pressure_RMS_Pa": [3.321813430832631e-5, 6.1219280397035e-5],
+    "result": "All original single-run safety, every5Pa/.005mm half/cross gate and normalized half p/v/u<=1e-4 pass. GPU Debug actual successful Pre/Corr memcheck reports0errors/0leaks. All four PNGs/CSVs inspected; independent peer recomputed all257 rows and rehashed1162 bindings without mismatch.",
+    "native_scope": "CPU observes native V/rho/k and PosDiv; GPU observes only J/n/theta, with V/rho/k0 explicitly derived. No fabricated GPU PosDiv or complete backend bitwise-equality claim.",
+    "retained_setup_failures": "r1 helper Finite ADL compile exit2 and r2 -omp:4 option-parse exit1 remain. r2 helper qualification and fresh r3 -ompthreads:4 repair only test machinery, not physical inputs or thresholds.",
+    "limits": "Fresh rectangular2D X/Z-periodic zero-gravity elastic k0 only. Weak continuum reference is diagnostic, not a new physical-accuracy admission. Canonical GPU/server executables, public GPU rejection and formal cases unchanged.",
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false
+  },
   "next_order": [
-    "Selectively back up verified private GPU k0 necessary-step components locally/remotely, keeping every prior numerical/setup rejection and historical CPU initial raw26 mismatches visible.",
-    "Next verify a successful actual GPU feedback two-step Debug memcheck, then bounded periodic k0 CPU/GPU actual coarse/half trajectories at matched native IDs/times. Keep public !Cpu rejection and old OFF/observer-only exact controls; do not expose partial-model switches.",
+    "Selectively back up verified private GPU k0 actual short-window evidence locally/remotely, keeping every prior numerical/setup rejection and historical CPU initial raw26 mismatches visible.",
     "Then GPU periodic k0/constant-k complete rate and same-stage necessary limits, own half and matched CPU controls; smooth-k next, opposing static FreeSlip walls last. No blind copying of zero periodic C or stale ghost acceleration.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
