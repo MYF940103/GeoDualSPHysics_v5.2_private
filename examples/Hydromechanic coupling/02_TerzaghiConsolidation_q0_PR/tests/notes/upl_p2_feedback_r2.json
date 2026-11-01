@@ -1,0 +1,21 @@
+{
+  "date": "2026-11-01",
+  "predeclared_before_r2_execution": true,
+  "extends": "upl_p2_feedback_r1.json",
+  "original_r1_preserved": true,
+  "r1_outcome": "Debug fixture completed the 2D pair, all15 scope guards, nonuniform-J ledger/storage/six-stress-rate/old-rho-poison and compression/dilation/shear tests, then rejected during rotation half-run. No dependent Release or default-OFF jobs were started.",
+  "r1_quantization_evidence": {
+    "retained_run": "outputs/upl_p2_feedback_DebugCPU_r1_run",
+    "retained_build_used_source": "outputs/upl_p2_feedback_DebugCPU_r1/upl_p2_feedback_harness_r1.cpp",
+    "last_complete_time_s": 0.00018310546875,
+    "next_rejected_sample_time_s": 0.00019073486328125,
+    "last_saved_particle0_J_minus_1": 1.1191048088221578e-13,
+    "last_saved_particle0_pressure_pa": -0.00007462037319783121,
+    "last_saved_particle0_theta_per_s": 5.730189833914878e-10,
+    "cause": "Finite sin/cos rotation prescribed double positions and separately float velocities. Float quantization leaves small nonzero discrete divergence; the original trace-zero analytic bound has no FLT_EPSILON term and rejects near512*DBL_EPSILON. This is retained input-quantization evidence, not a passing finite-rotation test."
+  },
+  "r2_only_fixture_change": "Rigid-rotation null test uses the exact-dyadic instantaneous affine velocity (-omega*z,0,omega*x) on the fixed dyadic reference patch. This is a prescribed-gradient component null test, not a finite rigid-body material trajectory. Compression, dilation and shear cases remain unchanged.",
+  "unchanged": ["All production source and authoritative objects", "All dimensional and roundoff gates", "Original declaration and failed r1 raw outputs", "Real FS/ct, pressure and J helper calls", "Independent64/128 steps and all65 exact-time pairs"],
+  "thresholds_relaxed": false,
+  "physical_acceptance": false
+}

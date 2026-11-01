@@ -1,0 +1,2217 @@
+{
+  "passed": true,
+  "utc": "2026-11-01T07:08:57.1880207Z",
+  "git_head": "4dc3577a2a0d87dfdcb89d79e309cba5c89f7198",
+  "scope": "CPU feedback component implementation plus default-feedback-OFF actual production compatibility; no dynamic Darcy/full coupled physical acceptance",
+  "authoritative_msbuild": [
+    {
+      "configuration": "DebugCPU",
+      "errors": 0,
+      "warnings": 1,
+      "owner_reported_exit": 0,
+      "owner_reported_session": 66479,
+      "log": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_cpu_debug_r1.log",
+        "bytes": 9343,
+        "sha256": "e13d979d30b6a1c0f9b2edc089485c5e5d2cd56fca96692c143f852147c11809"
+      }
+    },
+    {
+      "configuration": "ReleaseCPU",
+      "errors": 0,
+      "warnings": 0,
+      "owner_reported_exit": 0,
+      "owner_reported_session": 12982,
+      "log": {
+        "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_cpu_release_r1.log",
+        "bytes": 9132,
+        "sha256": "6531e534b5ca48f72c6039f478adccaa79bea448033a11fc984070f2183fdd32"
+      }
+    }
+  ],
+  "production_sources": [
+    {
+      "path": "src/source/JSphCpu.cpp",
+      "bytes": 241412,
+      "sha256": "3065baf676f30258c5c5bd5b0e4d0be2ffa768016b8ef45b7b8cdb2c5fb41c39"
+    },
+    {
+      "path": "src/source/JSphCpu.h",
+      "bytes": 29137,
+      "sha256": "f9e740bba5227fee77c1969d375a288af1ca287dc8882196077bd7dca82601b5"
+    }
+  ],
+  "canonical_cpu_programs": [
+    {
+      "path": "bin/windows/DualSPHysics5.2CPU_win64_debug.exe",
+      "bytes": 12064256,
+      "sha256": "014eb35883661f45dc752db60a82749958d0752bbb084ed987354532edcbd92b"
+    },
+    {
+      "path": "bin/windows/DualSPHysics5.2CPU_win64.exe",
+      "bytes": 4989952,
+      "sha256": "02067cb67c277f6efcde713052be6ed9bba3cba6b7ae65d2b395602ea98918a9"
+    }
+  ],
+  "cloud_binary_backup_claimed": false,
+  "builds": [
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2.build.json",
+      "bytes": 125779,
+      "sha256": "0f153787c0caac0b28830777d7034353717a85814a6a13f114fb8b81cd83d78c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4.build.json",
+      "bytes": 119563,
+      "sha256": "fbdd0e42258c24d869874a29fd6ec839bb4c513202236b4a28d679ebd03b3487"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2.build.json",
+      "bytes": 125876,
+      "sha256": "f26da2743661d828e33cddd95912e5fa7f4ba9f39dc8799c052fde4d9d9950eb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4.build.json",
+      "bytes": 119653,
+      "sha256": "aeee5e2c95ffa2fa0b38cdaa484b52127bd7be650b7c7191e7169717fabacb5d"
+    }
+  ],
+  "frozen_inputs_runtime_program_manual_hash_checks": "Both new r2 component recipes verify before/after; all334 hashes for each r4 build manually verified before main, between main/open and after open",
+  "passed_summary_receipt_count": 20,
+  "passed_summary_receipts": [
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2_run.check.json",
+      "bytes": 4832,
+      "sha256": "10bdc44e5c9dbf67a4f62042a97629e8dae37ac980d54e873e4d01614449bf31"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer.check.json",
+      "bytes": 1046,
+      "sha256": "fe4c8c22a2431e7069836d4d1f052d8559fe374beddee9bcbe2646e76e546d2c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer.check.json",
+      "bytes": 7163,
+      "sha256": "416fa56439915e75f69357e1e5ba2f2c6f944f422d81c6b135854c5ab9497157"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF.check.json",
+      "bytes": 7129,
+      "sha256": "b7fdd66f062819dae3826b7fdb4edc3794068d2fa253be25b7a2bb6cb6551ecb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer.check.json",
+      "bytes": 7248,
+      "sha256": "3e909f5e93a0d4e081e2cd2be1db4cb032ec349097af25a8e869c87efcc82a59"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF.check.json",
+      "bytes": 7214,
+      "sha256": "21de7f0c4b86ff5d5bc3a2c319b7376b0bcee8ca290a078aa13f3adf161230d5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_native_poro.check.json",
+      "bytes": 186,
+      "sha256": "b3b9d240f34bc53302b0c4fc8a786428f57d133571967bde38c3793bd47245a4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_native_poro.check.json",
+      "bytes": 187,
+      "sha256": "706a2447601c336148adef7fe346b301770c88c092fdf4cf7ff05ccbd6416523"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_native_poro.check.json",
+      "bytes": 187,
+      "sha256": "706a2447601c336148adef7fe346b301770c88c092fdf4cf7ff05ccbd6416523"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_state/state_complete.json",
+      "bytes": 310,
+      "sha256": "3f355a14ad323f7c0cea608b8c4efad5bab7e4a8db48e601df5e5d5cc40a61fb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2_run.check.json",
+      "bytes": 4852,
+      "sha256": "f04632ef7aa43d8fa44fa3bd3cfe4c8cfdb08314e79ac4e999aff48f2c86f474"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer.check.json",
+      "bytes": 1050,
+      "sha256": "30adb6423ac6b75da2099b5f3888d2cbde0b5b73314cb3cbabf627732df9005a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer.check.json",
+      "bytes": 7197,
+      "sha256": "2f7f6323a9536240d92bb31c2010d23449c6d11d4f436183acf912bdb6da8a9b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF.check.json",
+      "bytes": 7163,
+      "sha256": "6326a5906418dfc9b1131b7df34f74a84eb10c2a130d3733e7a2a8f747e0b640"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer.check.json",
+      "bytes": 7282,
+      "sha256": "d4d2be7a0507a3f18ab23ec20990259016a1a7dc56a2caabd5d06fe920f91202"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF.check.json",
+      "bytes": 7248,
+      "sha256": "fd8c1f86cc6685bcc2d518efbc17b4e353f12990c343ea5cddb50f09a1d10fd1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_native_poro.check.json",
+      "bytes": 186,
+      "sha256": "b3b9d240f34bc53302b0c4fc8a786428f57d133571967bde38c3793bd47245a4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_native_poro.check.json",
+      "bytes": 187,
+      "sha256": "706a2447601c336148adef7fe346b301770c88c092fdf4cf7ff05ccbd6416523"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_native_poro.check.json",
+      "bytes": 187,
+      "sha256": "706a2447601c336148adef7fe346b301770c88c092fdf4cf7ff05ccbd6416523"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_state/state_complete.json",
+      "bytes": 310,
+      "sha256": "3f355a14ad323f7c0cea608b8c4efad5bab7e4a8db48e601df5e5d5cc40a61fb"
+    }
+  ],
+  "owned_new_native_calls_exited_0": 230,
+  "run_receipts": [
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p0.run.json",
+      "bytes": 1617,
+      "sha256": "6faa1557c2ce47f000103176a1f7ce48c9aaaa1dafcb32dbe3b30bea60cf68e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p1.run.json",
+      "bytes": 1617,
+      "sha256": "81d54dde9d1843c6f2bc27676a94a7eef242a2d38634040f172427bcf3672947"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p10.run.json",
+      "bytes": 1620,
+      "sha256": "282528569a39404036b83c24463b9df2b365961d34dbd054e9f12951d4e899b3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p11.run.json",
+      "bytes": 1620,
+      "sha256": "aa3f4f019c9bdc5c8f63b83f47d0b524e5feb656b230b1fa1e366ffa10cdd5ab"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p12.run.json",
+      "bytes": 1620,
+      "sha256": "f636d1407067d587fd76978debe8eb19e91b83e462933e9103374e11056f5349"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p13.run.json",
+      "bytes": 1620,
+      "sha256": "78a58379b0d449665fbadcee37f8f0fd90f30c072f146ed867163e42da416b80"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p14.run.json",
+      "bytes": 1620,
+      "sha256": "9e7249a6c82edd773238f21bd48b16f98a581182fdeb153a36717c9112c86575"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p15.run.json",
+      "bytes": 1620,
+      "sha256": "8c245c3c90cf9dac39c019b9e4487bb11564db29f6c9b6bb3ed2097e9b90a88e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p16.run.json",
+      "bytes": 1620,
+      "sha256": "4838e5fd95b2270d26852c6912f6f4d336e49f88f1f9b0d5d2d139e2fdb38610"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p2.run.json",
+      "bytes": 1617,
+      "sha256": "8c23578cc4e54b861520953bb99ef13dca98fbd1c3e88e7a1bd39fe70767a139"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p3.run.json",
+      "bytes": 1617,
+      "sha256": "4a6fd4ea6ad8ebf3aa850f855ce8c50917110e67c3c4574251613784339a057a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p4.run.json",
+      "bytes": 1617,
+      "sha256": "eab1631be32c5e4a2c02779e640f6ccc2d3e7f52a8dc31557bd2f903b17e491e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p5.run.json",
+      "bytes": 1617,
+      "sha256": "d92a8d58469bc6adad07f6fcfe29f78261c35f13fd4832080715296223583071"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p6.run.json",
+      "bytes": 1617,
+      "sha256": "d92dda2017b61ccaf9cf22ee5440bf199168d38ec19e15b47fe497b4926841e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p7.run.json",
+      "bytes": 1617,
+      "sha256": "b28afee6529aaa81569c6af0247554d071e48c23e019442cfe5e72458fa2e8a1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p8.run.json",
+      "bytes": 1617,
+      "sha256": "1097b95851a0e384c24ec4bf4883717147731b498f65c322e2c59b9d659e832e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p9.run.json",
+      "bytes": 1617,
+      "sha256": "c581f955623487397337f5fc8a74612bb55a310b3fd8890cfaee651099fea9e9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p0.run.json",
+      "bytes": 1637,
+      "sha256": "7e592ec9ea0635653a69c3e06800a977ed6c1277e10ef12c48edc54510060cdf"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p1.run.json",
+      "bytes": 1637,
+      "sha256": "fa6c7b8ca389f4f72bf378fa9bac2ddaed3f2b4d7e97869bb8c90b8e4384a95d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p10.run.json",
+      "bytes": 1640,
+      "sha256": "d4cdd150ecc544fcf25bd817f9817a24f98229c440a4bbd588dca2864510753d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p11.run.json",
+      "bytes": 1640,
+      "sha256": "88d644931c6f849a46cef403a3c46f3f10affdd7f1cd14c2e09e5622cfdf58a9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p12.run.json",
+      "bytes": 1640,
+      "sha256": "488d9407d8c740fbe684cd3ba651091414357062c9d1d1cde95b18ecd67867a5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p13.run.json",
+      "bytes": 1640,
+      "sha256": "b143ad35be6abf0ddf8fa80f117b3c5bcbcf53b676a95c83958cf15477bbd32c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p14.run.json",
+      "bytes": 1640,
+      "sha256": "08167066db8bf38892fae766551bb828871ee09ac00db58d245c9dcc279ce655"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p15.run.json",
+      "bytes": 1640,
+      "sha256": "5caa93c753eb909ad834e5815eaaf7555eaba426e45e6f2a06f750024c4d8ac3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p16.run.json",
+      "bytes": 1640,
+      "sha256": "c94ae46a3a5c4f917109799857ee8402b9ee90fbe8ebb69731204d9896d07c50"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p2.run.json",
+      "bytes": 1637,
+      "sha256": "182e242bb99ab94dbc5c34520dfc0bbdbfa6a0deeeb1e431c5fb370f2e1b93f5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p3.run.json",
+      "bytes": 1637,
+      "sha256": "6e57e32b89effb49b1428524b354870d65000d0333e029d07c6a08cec010330b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p4.run.json",
+      "bytes": 1637,
+      "sha256": "f8c0ce8fe3a3853630aaf037ae1640e4e2b5b6c71886f15bc2303e05cc543630"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p5.run.json",
+      "bytes": 1637,
+      "sha256": "4679dc7f564e0b31f54874db5e99e6c738f6702661bc5185dddb05fff57edd16"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p6.run.json",
+      "bytes": 1637,
+      "sha256": "1e1fdd5887cca625b0bbfca2c21ef53d0c7d6b1ee1cb0802c4d33e97b165610d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p7.run.json",
+      "bytes": 1637,
+      "sha256": "1638ca70e5d014691bf14d8a2f281d25dad9e63a444da99ea16da4995c3d6bfd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p8.run.json",
+      "bytes": 1637,
+      "sha256": "4a707a60b81dcced9dc8bfb0076003f988f29e096936471b6976e1b6013c67a5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p9.run.json",
+      "bytes": 1637,
+      "sha256": "85623bc95e60ce5585ca95d68eddecc58f9139b4c5531d5bd83c6043ee75bc7e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o0.run.json",
+      "bytes": 1753,
+      "sha256": "090c4b6454576eb3b42a3db2fb1970755d999405f436aa458b1e076ee18b24b7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o1.run.json",
+      "bytes": 1753,
+      "sha256": "4dbba6a81f43e12a774a9e04334bf1688c8c0022b7cf191b673ec485415207c7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p0.run.json",
+      "bytes": 1645,
+      "sha256": "0e6df2b14e1abf004ab0289163719acca90e3cbe05a289f6bf4a7207d147c65f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p1.run.json",
+      "bytes": 1645,
+      "sha256": "570e1975b1d8b21d089008ab8bcd8b5daaadfe827abacb885ee8b2ea74c1bd2e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p10.run.json",
+      "bytes": 1648,
+      "sha256": "3b7fc6f77ef12ece82232eb8d81ccf73bbe0dfa71be6498695b8fd8c35d78db4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p11.run.json",
+      "bytes": 1648,
+      "sha256": "67743885321ddad2086495d834d84279e1fa4a66d311002f71881f17e7f6bb09"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p12.run.json",
+      "bytes": 1648,
+      "sha256": "18b2fdc639b0e86b5d31c8e1469190bae4b01b86172e2222ff6ccb05c488ed18"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p13.run.json",
+      "bytes": 1648,
+      "sha256": "0537ede47d7504937566e904a99fde275983f0c6bea3b85ab7cd5d933ba802f7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p14.run.json",
+      "bytes": 1648,
+      "sha256": "9e063276667d594f6dc315888d5fb4bae5945bb016f2cdb89f1843bd138c18d6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p15.run.json",
+      "bytes": 1648,
+      "sha256": "e62b6143c5ae2043374c08f28f1d35125d0e393a72aa335b4f7cb27de2db60bd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p16.run.json",
+      "bytes": 1648,
+      "sha256": "a25d05aa3d5ecc81aa45e5216d23e8ea36ff71c0c0dfcc84212473e6e54c33ae"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p2.run.json",
+      "bytes": 1645,
+      "sha256": "37dbc5043702c5dd6d9292af0b2a49b8ad7606eead8672acd85f4ad4cf43b1f2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p3.run.json",
+      "bytes": 1645,
+      "sha256": "ab477c64cd0566bb34a8be12dce0b286798409b10a960693e2f9aad652564ffd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p4.run.json",
+      "bytes": 1645,
+      "sha256": "10bb9a1ace6d12215774ea19c9bd61087ae5cdd5dab399e3f6c645182fc4578e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p5.run.json",
+      "bytes": 1645,
+      "sha256": "68e1782c3188ba87f8d07ce9fd356e489a83bae71de028fd05e82534eda2d1c3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p6.run.json",
+      "bytes": 1645,
+      "sha256": "6e246b3443abf454350cb711b82c9bd45a12c1d96973c376494b356310566d3b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p7.run.json",
+      "bytes": 1645,
+      "sha256": "d288b71808ed605476c531b018961d605163db6bd5f1a83ef66bcc3187e421f7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p8.run.json",
+      "bytes": 1645,
+      "sha256": "ded579bcfe311af5fa48b1935f5d1f784ee0fe55c7df314bcc6a9949dc53a5af"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p9.run.json",
+      "bytes": 1645,
+      "sha256": "3affbe0b9b10c5e19cacdd6aae5af60888e27fb713770b883c25e945563947fd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p0.run.json",
+      "bytes": 1451,
+      "sha256": "9a621ada27af1c9b0c46c451bd577dde0a696227009c7ed812c417e91777f63c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p1.run.json",
+      "bytes": 1451,
+      "sha256": "af77a60e90a266bdd084a721cf43988615338bd3b5d2c90655eae13680ba1f77"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p10.run.json",
+      "bytes": 1453,
+      "sha256": "67c132bb0d44a86411a172e4c7453b31af91c7b1e66ae1829e35f2048cc87434"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p11.run.json",
+      "bytes": 1453,
+      "sha256": "255c3fe653879b746030f553337847574cc665b7588590205fbfcd48e45cd777"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p12.run.json",
+      "bytes": 1453,
+      "sha256": "c11348171fc2e24ce4f9886096aec77d43941cb6478b5e3486e12513f8428407"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p13.run.json",
+      "bytes": 1453,
+      "sha256": "d52e0497c2cb34260b5676eb87d2ac01b858973b471b49f5df61157fee20a6d8"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p14.run.json",
+      "bytes": 1453,
+      "sha256": "3c7f6ef0327b795861041186559bfce59af1310cd6d98c3f42c11ae5dac0cdf4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p15.run.json",
+      "bytes": 1453,
+      "sha256": "7b0a4d65458422e956a93d868ebb1a8f3c27ede5af1c1beecbdd1b5f61fe6b1a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p16.run.json",
+      "bytes": 1453,
+      "sha256": "46d78fab360f1a76dfd5319975d4fe779d81c6ba9b77dfe7123a8dbe0fe949a1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p2.run.json",
+      "bytes": 1451,
+      "sha256": "5c5e9e1175c09fe665ee9d4a141b9c2782cd95a87f60585b8269b41c5cb06396"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p3.run.json",
+      "bytes": 1451,
+      "sha256": "a9cc90592ba1a7c2201ce964b4c3ca834644a1fed07cc3d5778d40369f130051"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p4.run.json",
+      "bytes": 1451,
+      "sha256": "9f51f7ad6826faa2d0114d9b23e2d2700eae7b840e72ef16fcf5e43ad6c0822b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p5.run.json",
+      "bytes": 1451,
+      "sha256": "2adf8e67dd8a5d653d20c3433a02ba40db5a7b9027bd2d9b34d690b82d6478d4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p6.run.json",
+      "bytes": 1451,
+      "sha256": "7410218a3423dd42e731a518a4577e17a3870b776d2ec3c37bb227826337990b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p7.run.json",
+      "bytes": 1451,
+      "sha256": "7c2f953c8e5e283b51a38068738b809335f46414b8221e4bb9f76bbc86df89f9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p8.run.json",
+      "bytes": 1451,
+      "sha256": "4685f26719f5d1e043682335974e1fc906bd19d8aa40070f602d677d4de9eba7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p9.run.json",
+      "bytes": 1451,
+      "sha256": "3db4165482d086e8930435990eb4b60abc219c8c7c7fb4d78563bfd110c0fb5a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_pair.run.json",
+      "bytes": 1182,
+      "sha256": "cf81391b389d9f04cc31127beac7b83b2e7444cd240018d230b8b7e80156fb60"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o0.run.json",
+      "bytes": 1733,
+      "sha256": "f086283e82ec4b5753b9d3b1fd0eabc28066dc9c61bea0807f449c0bab1802e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o1.run.json",
+      "bytes": 1733,
+      "sha256": "c81e31fcf87a4fa1ffa1a6993b5a1ebb5da3197697b905e235943c296cd70937"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p0.run.json",
+      "bytes": 1625,
+      "sha256": "89dcfa4e7bf02eab5cc6c34a82468c6c72970b6281d57bcfc3a0852d9abd82d6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p1.run.json",
+      "bytes": 1625,
+      "sha256": "6cfffc02038b1a4d8bd96ff7b22d82e766b81300f414a242a708a86d7fece90b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p10.run.json",
+      "bytes": 1628,
+      "sha256": "dd7ce29ba66e35557fe6488f742ce8099f2b208fb1a65f53591f2bf9bc5d1145"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p11.run.json",
+      "bytes": 1628,
+      "sha256": "258fa0c7292bcf455ff337dfea862790a75cad2d703e4150860f145ad88dc2e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p12.run.json",
+      "bytes": 1628,
+      "sha256": "bab0bc0703feb6963adfc93262e553d7aabbc758ddca9c4865a5a9eb67c021ff"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p13.run.json",
+      "bytes": 1628,
+      "sha256": "bd40ba22f71ba39017b81daff5ad4cfd867220a1a18fc14770fbd217b95d754f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p14.run.json",
+      "bytes": 1628,
+      "sha256": "2ab2e9ddc1d71a2c63f7e749728082833b0c523e067a2f11656a88ad83cf9340"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p15.run.json",
+      "bytes": 1628,
+      "sha256": "61c7f7edea7e8310dc172c4cf4ef1310b2285940b508259f8e8b6bb1d04f4855"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p16.run.json",
+      "bytes": 1628,
+      "sha256": "3ca0e1484b122567e15a8acbf9582e6bd5888e1b68208f7f3ae374d584a603c7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p2.run.json",
+      "bytes": 1625,
+      "sha256": "423dd6521356eebf2dc96671914be57ed96e3b4c46acf3976174b533bad797a2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p3.run.json",
+      "bytes": 1625,
+      "sha256": "939697ab64051be2a53706db06a49a4a5a00b0b224e35e44a93db40b79547a08"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p4.run.json",
+      "bytes": 1625,
+      "sha256": "2320b599f9cbfd8c4281d9b9798c635ea5dc4aa5e15ba231448ef0e2c5e32408"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p5.run.json",
+      "bytes": 1625,
+      "sha256": "c7cc506c9f05ffbb971ad102080f007671c9090e5c2d751c47aeaa351c51226d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p6.run.json",
+      "bytes": 1625,
+      "sha256": "58aff26f4ecc7c2a91d5d0696f3b3083d0fbb0b65189fe01a3cbe38a814c3255"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p7.run.json",
+      "bytes": 1625,
+      "sha256": "3d5fc9f50d24c3273e819fd49caf794e5f7dac0468a92afcd0c7aab176f5b926"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p8.run.json",
+      "bytes": 1625,
+      "sha256": "ce7146970d7497329ae5bdb078fd2028d6700c34726a4206fe3aca8e9d43e147"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p9.run.json",
+      "bytes": 1625,
+      "sha256": "ff66ea5fe8247d7c99f65e479895fb25cab65f32026d7d9cb272160b5ad652e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p0.run.json",
+      "bytes": 1436,
+      "sha256": "afdaf07b325e32c78b9db905f2979db68c43192b5ba3654d2319e94bec39062a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p1.run.json",
+      "bytes": 1436,
+      "sha256": "a1a72cc52d4a3301b2499369747754cf55f700c0734d57a4801fdf42c3c0d3a5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p10.run.json",
+      "bytes": 1438,
+      "sha256": "2a6530ea6f6a5c001b6465b72e3b21df4198506f82d933a8f7f332f8c12957f2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p11.run.json",
+      "bytes": 1438,
+      "sha256": "f477ee5c8660146c872e31c32990a15de498e565416da5ce2fb0f87bdab58438"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p12.run.json",
+      "bytes": 1438,
+      "sha256": "a5bac57d536074c29ac4a72907116b1fdc66366aadd971d285989f8e209487e0"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p13.run.json",
+      "bytes": 1438,
+      "sha256": "020fdce968e239d42b68eb7bb5361ba9ff1a12e3fdcf26cf614c994495d78393"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p14.run.json",
+      "bytes": 1438,
+      "sha256": "2800d3ca22868caf46d67a1ca162a0e742be14879731b23e538caeaaa92ed4c2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p15.run.json",
+      "bytes": 1438,
+      "sha256": "d72b2ffa774594991aeed588b052ebde7b91de8a44d5f5b089a4b6597e336a80"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p16.run.json",
+      "bytes": 1438,
+      "sha256": "1e5e518f5cabbbf451229af994fec452dfde0d33c883f3fffbca13b62f0f389e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p2.run.json",
+      "bytes": 1436,
+      "sha256": "84c6d0ed0620dd8d375510057ea7643a42169ebf0a571f6e300dde9462083cf3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p3.run.json",
+      "bytes": 1436,
+      "sha256": "3cffbd819e49acc4d794c9fbc1a1c510735b1282f0c164524e959c30ec101a04"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p4.run.json",
+      "bytes": 1436,
+      "sha256": "7a3545c5336b61d99b3554df31d5283b4f41359653448ba6b49473567b008295"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p5.run.json",
+      "bytes": 1436,
+      "sha256": "b3473a43c3a1393899697c62fade0fd4da5662f1ece6c7fb23c2d4a59628d1f8"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p6.run.json",
+      "bytes": 1436,
+      "sha256": "8548e2c0364f6eee8a525fc742162d2311fc3e43095391ceeff3378bd8c86748"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p7.run.json",
+      "bytes": 1436,
+      "sha256": "3d817d6dda731b6347dc260ce84e57ab172d82eca026e962963c56c372180120"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p8.run.json",
+      "bytes": 1436,
+      "sha256": "9bdb243bc825f3f0d86a2b6cbd3081cf8fd6c7a00515df54b4d4f8f595a5913a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p9.run.json",
+      "bytes": 1436,
+      "sha256": "b0959a1da9aa2818ed66e517dd26420f03cc27d3dca318a7844d255158d7b441"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o0.run.json",
+      "bytes": 1727,
+      "sha256": "05f721b2c601974e484b96936151c6bf6bf824cf3f0567650d55168b1d7614a5"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o1.run.json",
+      "bytes": 1727,
+      "sha256": "c4c0e045fa06d34b08f2af602ccd6fb449bb57bd7310d7ecbe819f3399efa875"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p0.run.json",
+      "bytes": 1617,
+      "sha256": "688964af32c1fdaf371b75b10bdfeb614971c2fcfee5b3638fe13e327ef65511"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p1.run.json",
+      "bytes": 1617,
+      "sha256": "e6244ae31bdc53db8a7b5888cd21c02bfdc84142235aa15b2e210d6415a58bf8"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p0.run.json",
+      "bytes": 1430,
+      "sha256": "0cc6afdd60a04fd2cfee67b815d442944936250b2d6660065660a683e84e7328"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p1.run.json",
+      "bytes": 1430,
+      "sha256": "fde2ad00825842718a5a262336102c5921fa260ba9870ad4af22b6ced7c4b5f9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_state.run.json",
+      "bytes": 1632,
+      "sha256": "3320c2bb3c2a7f3901a71d67a7c9d4dc84531fab2e8ff18635af0f0e646c0dd8"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2_run.run.json",
+      "bytes": 1699,
+      "sha256": "764f972505ddc8668e2431460bb60ef53433e2cb4f5c79165694c66ed499f64d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2_run.run.json",
+      "bytes": 1706,
+      "sha256": "19b00b5b9d8e547ba9dde5af9ec7be9d9f269aee7cdd669acb398275459a8ccb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p0.run.json",
+      "bytes": 1626,
+      "sha256": "8bfbfd7bfa5612772676eb015f2f78860fa6d8384872fd30e7625e774dbaf8c9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p1.run.json",
+      "bytes": 1626,
+      "sha256": "554c3f9ae8f3d2011b73769f5d2b788ff0243c6eb3db5684e3353c9fcce0ffaf"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p10.run.json",
+      "bytes": 1629,
+      "sha256": "8798997bf3bf609b60024e737f8f50fcffcc1273b037e5e2985c11addab19028"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p11.run.json",
+      "bytes": 1629,
+      "sha256": "d8afd5b7593fa6553400f0c565fa7e6f31f3a8539fd73a0bbffbf98b73c8f8aa"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p12.run.json",
+      "bytes": 1629,
+      "sha256": "29367e9f8daffddb044d5beaaba8881ff3f78b679f495046996e671fac6249ff"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p13.run.json",
+      "bytes": 1629,
+      "sha256": "529ed5b160210727c38eea390f44aca92b90b3e132b6b717e60621834f788c36"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p14.run.json",
+      "bytes": 1629,
+      "sha256": "6d701078c33ce0b5fa996a90d034f3e0d6cecd33a3570d5a35094446ab3f95ce"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p15.run.json",
+      "bytes": 1629,
+      "sha256": "4fafab13d22d1f308ca2960c9792dcc193d83db5594463292f0220bce325e93d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p16.run.json",
+      "bytes": 1629,
+      "sha256": "02c4caaf5e4207a89e3079cdea55ea1fce7a8bb2935f59a3fa33f9618f4ccdff"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p2.run.json",
+      "bytes": 1626,
+      "sha256": "8eca4a0f4101e3955ea9b49f69a7ff791ac36ac7cda97a4181ea1def03169f81"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p3.run.json",
+      "bytes": 1626,
+      "sha256": "b8db06ffcb3988de1aaac3b3162a51f8314d0fd7c90ad2bba94b1e5f489383b6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p4.run.json",
+      "bytes": 1626,
+      "sha256": "a1e916d498329a8fc9feb7979c40020fc191b94e1b9d84e99304f55b9c1a87a0"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p5.run.json",
+      "bytes": 1626,
+      "sha256": "d7c6cfd768790ec91e48731979b7c9be1d31568c2d6695a2ffb4455971404259"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p6.run.json",
+      "bytes": 1626,
+      "sha256": "df690a4746c3ceded4d6ed9ce4a081a69a7e398281902d6ec2c24ab70550743f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p7.run.json",
+      "bytes": 1626,
+      "sha256": "0a0f6ffeef4ae973a879e70e6cd18ed607a8533ba18db4baa901410be15a4b4b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p8.run.json",
+      "bytes": 1626,
+      "sha256": "e555ddd92e8eaaa31807aac373352c8652a9505fa0abcffccf6db8e3d2844e4a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p9.run.json",
+      "bytes": 1626,
+      "sha256": "ba3206110766babb6ceaecb3132c3cf5f2c83c1ccc4ae635ede7986bbbda8dbb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p0.run.json",
+      "bytes": 1646,
+      "sha256": "73ac541a18c373a3e19383721812bd735b293a39f80ffab7c09ca896614bdc7c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p1.run.json",
+      "bytes": 1646,
+      "sha256": "a86027871689e3c4c1a1ad4d9831c022758ff2e4a2bc281fd30c662e4d6cc349"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p10.run.json",
+      "bytes": 1649,
+      "sha256": "6fcf353d22034f555013e8cedb6bb2ae8276b6ba26829d42d91c5dd259b507b3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p11.run.json",
+      "bytes": 1649,
+      "sha256": "23e412b895edc79db1a7b13f69bfdd187f7e2df186d6ed6ee0edf9344e701473"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p12.run.json",
+      "bytes": 1649,
+      "sha256": "cd7a182fb1a35c9104ea33bc2ad4ce728ea0951f891e908b2ae0876185e154cb"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p13.run.json",
+      "bytes": 1649,
+      "sha256": "1b90ded9ff7869365f0f4999ec38019622ecc662ead20d839b11d1cc05a29b78"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p14.run.json",
+      "bytes": 1649,
+      "sha256": "c5612d5af0dbafc5b5c21ddcaa6c0264b9cf3dd21d3ab15838de8a8164750620"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p15.run.json",
+      "bytes": 1649,
+      "sha256": "4ec23151631d69d6520622e7ccf3af23aa1c292684f660b1b6533eeeba4650a2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p16.run.json",
+      "bytes": 1649,
+      "sha256": "0210e7e00ab983cf33a24b50ba2f6c1c1ab00844817aada1f12e262dc928119f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p2.run.json",
+      "bytes": 1646,
+      "sha256": "66bca1da60388cb56cc3e95c8591b8a89966bfce8d6b146bb44272a04a0416c4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p3.run.json",
+      "bytes": 1646,
+      "sha256": "28bb402bb6d16f9a798d96d87d67aa42b2aee81706866a9eedf55070678c9913"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p4.run.json",
+      "bytes": 1646,
+      "sha256": "1acc54da169da69adefadc22e52e6384f3914362509a5f23d972e4eca147b3f4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p5.run.json",
+      "bytes": 1646,
+      "sha256": "e07276fa5b548cf69b6b9547e1d556c0ffb50d5f947e7f48d0b5c6a54de0dc9b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p6.run.json",
+      "bytes": 1646,
+      "sha256": "7df961b345750f6046f5d5ac36b1aa152472f7f6508a415d41740b48c8f85112"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p7.run.json",
+      "bytes": 1646,
+      "sha256": "9e422a7db3466742bc651948577aeb3fd0b28779b94ed1a35a847f4bcb13fa0c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p8.run.json",
+      "bytes": 1646,
+      "sha256": "961aab179c9a54cdb242dbecf44973a6a8c4e3c49b12e07fcc239edd6dc17ab1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p9.run.json",
+      "bytes": 1646,
+      "sha256": "484f2994292a77574ee8fc7bb6bc470d4b9022602a256a8ae661c111581f5b6e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o0.run.json",
+      "bytes": 1758,
+      "sha256": "4a96851e6e57fcaebc14c03ac32c9bb330efcd4168785e06840b07b434ed97f9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o1.run.json",
+      "bytes": 1758,
+      "sha256": "659c385995a402760be736f5c83b2b9156ca3eb457c115944118b2225d097d6a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p0.run.json",
+      "bytes": 1654,
+      "sha256": "52cb8dacbbfdd44761601c9e99a1018ffb16b5b02c5429f476ddae31dfd3891c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p1.run.json",
+      "bytes": 1654,
+      "sha256": "521dca0ca1fb338d9e0590cb192e1e5081bf9c59b49f8bcda294751ded558303"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p10.run.json",
+      "bytes": 1657,
+      "sha256": "94f187186021fc93a3d52206dcf8be146cc8a8f7985a0816f90607158d5f8bb3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p11.run.json",
+      "bytes": 1657,
+      "sha256": "d6a86b1f849db901db3b911143d8dba4617733510231a0dfa2c5e3ac5020d90c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p12.run.json",
+      "bytes": 1657,
+      "sha256": "40de7356b216988eb851fc9aa4925b65ac32f728b6f285b3130b0f830a15d820"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p13.run.json",
+      "bytes": 1657,
+      "sha256": "b80c6d1edf038df298345f825cffa905ee40d66f78a539a77dff2ce2b3194388"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p14.run.json",
+      "bytes": 1657,
+      "sha256": "20a03f2512e372bde205ef4f3bf802508b15062d41af82212d8b980938c8aedd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p15.run.json",
+      "bytes": 1657,
+      "sha256": "6d0d0f0ecdb254553abe311aa315b5899d9c61d9d2cfab02e056aa6755879dde"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p16.run.json",
+      "bytes": 1657,
+      "sha256": "10a7b624b618d43773d5ba89468b824a9f37245f03f97f534edb742aeab6abbc"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p2.run.json",
+      "bytes": 1654,
+      "sha256": "f6a0019f41a317cb97d39a5bbc1b22e76fdd888e3c4c57f067a149b4143e414d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p3.run.json",
+      "bytes": 1654,
+      "sha256": "8add1f12dfd0a7a73774af70ed95bc3625dd091f64faac550f957bdf0c0e7246"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p4.run.json",
+      "bytes": 1654,
+      "sha256": "fe6dd71de4cd1810a2f28f689386beab96ab254fca6b2b1f66d4aedcf3924131"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p5.run.json",
+      "bytes": 1654,
+      "sha256": "a8c0a63d4d5d37f03fc9878d9927151a75aa2099a90639f5e8e48d6af454b04e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p6.run.json",
+      "bytes": 1654,
+      "sha256": "136076c57bb12f48c38fddc01b24776377ad57de57392548c1029580c80bb483"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p7.run.json",
+      "bytes": 1654,
+      "sha256": "a105fe1eeb27c765b949b0f0ecb223ca1025e39bfef21d7fc67113ae00652525"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p8.run.json",
+      "bytes": 1654,
+      "sha256": "ff2649ab19384cb0e7c692e327ad6b577d98d258edc64a9a4d234caf6fca2180"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p9.run.json",
+      "bytes": 1654,
+      "sha256": "d70cf5e2dc68913ca0190a6ab83883a45c8bfe32bebe4cef06c6558197275ebe"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p0.run.json",
+      "bytes": 1458,
+      "sha256": "f25269a32eaf5fda458041fb411ced9449860e54fb4a15a6659a76383f8be8fc"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p1.run.json",
+      "bytes": 1458,
+      "sha256": "63d385a2b73ef6a7c66fb658a1fccb126e211638b45deed45c30a933584f4f34"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p10.run.json",
+      "bytes": 1460,
+      "sha256": "e9048d59e6a1706f6da7521175c4767abc28ebcb5fac036804ebef4eaa4ccbee"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p11.run.json",
+      "bytes": 1460,
+      "sha256": "8343e78d3768e8f6b677a9dd2d416eb8e0056c5eb28ec6badf9b69323c95cfe4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p12.run.json",
+      "bytes": 1460,
+      "sha256": "989f9631128201bcb2faf14ffc871cc63cebbf64273764e5a72f6065bdd2ecaa"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p13.run.json",
+      "bytes": 1460,
+      "sha256": "9c7504c0e8d793b2ebb68c1a368341762265567b75b886075025e09bb2cd22b1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p14.run.json",
+      "bytes": 1460,
+      "sha256": "7344e36bdf9e8ab5fe9892b6134c643a3a61a7dc0794318624a3f4db0c222ba0"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p15.run.json",
+      "bytes": 1460,
+      "sha256": "69bf2100d1414eec7a51cc8e6d034b1dec0bc101bbcf60aa974d9edbd63f7890"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p16.run.json",
+      "bytes": 1460,
+      "sha256": "99a8a7679e6ed340e245b0fc95f5071465464b13960169cfdd070787373717fa"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p2.run.json",
+      "bytes": 1458,
+      "sha256": "dd4b1a3847920727bb0887232cf1e21702329c8ff38daec10557e474c172fa40"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p3.run.json",
+      "bytes": 1458,
+      "sha256": "5aeee095581b073238c33ba7267cb7458be47a44f8b70303af197004628c2112"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p4.run.json",
+      "bytes": 1458,
+      "sha256": "2f40cedaaf77689114a5cfa11994812ae2e5bcd24fde1894efc9d4b038f831f4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p5.run.json",
+      "bytes": 1458,
+      "sha256": "391382381e1250cecb0ec6f39d2f5b6e847b60814bb12fa26df70991aa014dff"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p6.run.json",
+      "bytes": 1458,
+      "sha256": "ae7e8da9025076fa2df1083d9663cb0c3b38b16e28290d57a89bde35433f77f1"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p7.run.json",
+      "bytes": 1458,
+      "sha256": "9dd4c3a4cca43991d02136cf21139b782771451fcdfc801685f4ea3ce9d70bae"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p8.run.json",
+      "bytes": 1458,
+      "sha256": "32b54cd9387eb9d0e8771fe09d0d437de4baa8fc4db2c0f730325b1de0de772d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p9.run.json",
+      "bytes": 1458,
+      "sha256": "cf3fd85219c97a81e6895d4999b351dcc4845a6bb52c90cda311d064f7449263"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_pair.run.json",
+      "bytes": 1187,
+      "sha256": "db3837f0404efeca81c58508fe34077ccefb4f25963dadbc2da6a37d73ae7f49"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o0.run.json",
+      "bytes": 1738,
+      "sha256": "2b193b0d0c906cbe054183e0dbd0b0674d30d196c3c61ab922d10b39ddb2d346"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o1.run.json",
+      "bytes": 1738,
+      "sha256": "4400377975070bd33f4391b242b72aebcf2114a7e82e2c237e1e6a96bd6bf0e6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p0.run.json",
+      "bytes": 1634,
+      "sha256": "5b89ee44a57fd0a5bd69e82ee31bf6b54faf9561009be7c76b8e0951de768aa8"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p1.run.json",
+      "bytes": 1634,
+      "sha256": "dc554430036d0fe01efb4565f4742bd7e4f983a39d1d36bdacf1b28248032037"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p10.run.json",
+      "bytes": 1637,
+      "sha256": "d808226fa2469b7b708e16155fb26d07a093d6ee1bfd914b944503cfc1ad77ec"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p11.run.json",
+      "bytes": 1637,
+      "sha256": "43061f4a5c23c865ec81a8eeff9283fc6cb4725e5e3151b19ca7fe605f64d409"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p12.run.json",
+      "bytes": 1637,
+      "sha256": "8ee3bc808053f74c32dbd8206a00163c2ab45db73fbdac72a183b76639e96e92"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p13.run.json",
+      "bytes": 1637,
+      "sha256": "d8a3da5bea3a462ce6ab2cac6af7fffb7b0b2605b83e2f8bb5332a54c7a0da2f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p14.run.json",
+      "bytes": 1637,
+      "sha256": "728933c9f61159ecc66f4d82d77e9d0474c146f3b6d728bc9f68b3223f37540e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p15.run.json",
+      "bytes": 1637,
+      "sha256": "4ad8278aa8d04a90192373265dd7b401e77352a9ae6eef66f7b135d111e9c7b3"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p16.run.json",
+      "bytes": 1637,
+      "sha256": "34fd0e71c40bc527f97cf4ff4bf646b685849fad70cb16e8128cbee19fc3a3c9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p2.run.json",
+      "bytes": 1634,
+      "sha256": "3b0d6255cb81e961fa3fdb1bcb312bf2b1965eee2c6c115704c3c61d0a7fb23f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p3.run.json",
+      "bytes": 1634,
+      "sha256": "508852c861f9ff78b5102f4010465e5a4b0cac22a27955105ab01fd73fd4ef7b"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p4.run.json",
+      "bytes": 1634,
+      "sha256": "f67450f6e2c7493174c5b6b609a2b1c86f3307ceef8686678b3a5c409440c2f2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p5.run.json",
+      "bytes": 1634,
+      "sha256": "111ddf11bb67e627160b1c19e2da2ad92d4a3907f0c7efe631e98bbb9bf0df27"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p6.run.json",
+      "bytes": 1634,
+      "sha256": "1787d2ba82e9fa8310c17facce65f045858c0b64a01fee8977841ab79c1d985f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p7.run.json",
+      "bytes": 1634,
+      "sha256": "c549c382ebb219a8286f13743b49c7a0070f378a6bdce15f8c08e2539cb5d6ea"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p8.run.json",
+      "bytes": 1634,
+      "sha256": "db8042a130dc809069390bf4ab2a4d7b702a17a51575aab1f948c79d2b6f940d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p9.run.json",
+      "bytes": 1634,
+      "sha256": "716c081944ac1af42723fe3d0215b55cf318e244db225c089eda2828bae6bca9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p0.run.json",
+      "bytes": 1443,
+      "sha256": "d583c5ec65a72ac8b365d4e07379d527fafaad5cf9d55aa004043f8233321296"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p1.run.json",
+      "bytes": 1443,
+      "sha256": "cfba381ea396011059e16a53ff57ebb06fce290d59995fe2d53d43264f694981"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p10.run.json",
+      "bytes": 1445,
+      "sha256": "e52a8e80789b89fa34e0a34c3808982f82b0047a9984e4f202259dd2fa6e74a7"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p11.run.json",
+      "bytes": 1445,
+      "sha256": "622a82ea152da4a9134acc1cf202b5d342da2b973df1ae056b2a3b9ef536775e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p12.run.json",
+      "bytes": 1445,
+      "sha256": "034f93c86e4f4815c5e0a391e901f7af806321e80cc6efc563ac96147192040e"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p13.run.json",
+      "bytes": 1445,
+      "sha256": "77de571d4b73a82b5ae206a44589f1432e84c4d9d950da3ab22b6a34b645b11d"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p14.run.json",
+      "bytes": 1445,
+      "sha256": "e73c848459fd49c9ae8570242180d3ac2f297d6764f077406fcc28bcfa8da66c"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p15.run.json",
+      "bytes": 1445,
+      "sha256": "f0914ff282d4858c71b5cc8afe59d3d1f5c033e41b1bfcb53050d1aead1dba81"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p16.run.json",
+      "bytes": 1445,
+      "sha256": "6217ca61fd505793a2fae697fc6006e8acc53786ae7669513a646f519a9f1b0f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p2.run.json",
+      "bytes": 1443,
+      "sha256": "02e0c23b279a5ff628ffe0c449fbea17a584ca4fd3e116bcec40d87ec8d6230a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p3.run.json",
+      "bytes": 1443,
+      "sha256": "7dc2765d8a75dc7034519e1fd8d7bfc458161bdab1cb46d0123deced050e6faa"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p4.run.json",
+      "bytes": 1443,
+      "sha256": "2cca6e67ff815c0cdca31b8243a5dae9863ff2a4b978412d6d49c8ac3f8e23dd"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p5.run.json",
+      "bytes": 1443,
+      "sha256": "54dabeb7b9805218ee20c4ca87c967593c3043db321237327f0985fd4f80cbb2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p6.run.json",
+      "bytes": 1443,
+      "sha256": "f3a879a1b67f217a869d62ab6516e614ba3fbe920d17252dc895df5cdcea4334"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p7.run.json",
+      "bytes": 1443,
+      "sha256": "b0218db27c6370f44406aed4beef162c270207c590ab396ead392b7e6b5fa3a6"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p8.run.json",
+      "bytes": 1443,
+      "sha256": "5edb44a3633c0f307c98627ea52485ecebdfaa26c1d0c1486f1171df1a11155f"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p9.run.json",
+      "bytes": 1443,
+      "sha256": "7420e18b5cc3a70f147c33524b46dd6273a0bfad7202917d65758f13be0181e4"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o0.run.json",
+      "bytes": 1732,
+      "sha256": "346e85d983762adee1b654b836a0bb18aaa98ad4626e64142f7d5908806aa225"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o1.run.json",
+      "bytes": 1732,
+      "sha256": "741a53fd11c98c41af38d96fcf283d89ec6c724f4fb879f2cfc7848b5b01eeb9"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p0.run.json",
+      "bytes": 1626,
+      "sha256": "a1034d1c97116f6a66535d319b14e859fa5170a7d5ea08fcbf6eb859641ca152"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p1.run.json",
+      "bytes": 1626,
+      "sha256": "4a44887e5d68f10f6c0b1b3da6d66d9c7681b5d40ec42c3cc2db06085f26e58a"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p0.run.json",
+      "bytes": 1437,
+      "sha256": "e12a69f97941b348e325ec2ada34ff62aa31f4e4fdb5943a1ec04d56cab70ac2"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p1.run.json",
+      "bytes": 1437,
+      "sha256": "c8b8cd3edf66151c8d319983a089426fd250e3e2dfd430e935acd67381b91169"
+    },
+    {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_state.run.json",
+      "bytes": 1637,
+      "sha256": "d33620ec150f94f4367b95186bff7e0b0a9cb7c7814e16a28857a76ea9e80cc8"
+    }
+  ],
+  "component_exact_time_half_pairs": 1040,
+  "actual_feedback_OFF_compatibility_native_frame_pairs": 140,
+  "native_particles_per_frame": 1040,
+  "original_native_arrays_compared": 15,
+  "saved_clocks_steps_dterror_exact": true,
+  "observer_serialized_frames": 72,
+  "new_physical_solver_jobs": 12,
+  "physical_solver_step_limits": [
+    8,
+    128
+  ],
+  "no_retained_controls_rerun": true,
+  "component_metrics": [
+    {
+      "completion": {
+        "passed": true,
+        "actual_feedback_ct_and_state_helpers": true,
+        "old_positive_rho_poison_0ULP": true,
+        "scope_guards": 30,
+        "half_pairs": 520,
+        "max_pressure_log_reference_error_pa": 0.006089325765060494,
+        "max_half_pressure_difference_pa": 0.0078125,
+        "max_analytic_J_log_error": 3.780602905929277e-12,
+        "max_null_pressure_pa": 0.00004448471372597851,
+        "prescribed_kinematics": true,
+        "physical_outer_loop_used": false,
+        "periodic_affine_claimed": false,
+        "dynamic_Darcy_implemented": false,
+        "physical_acceptance": false
+      },
+      "configuration": "DebugCPU"
+    },
+    {
+      "completion": {
+        "passed": true,
+        "actual_feedback_ct_and_state_helpers": true,
+        "old_positive_rho_poison_0ULP": true,
+        "scope_guards": 30,
+        "half_pairs": 520,
+        "max_pressure_log_reference_error_pa": 0.006089325765060494,
+        "max_half_pressure_difference_pa": 0.0078125,
+        "max_analytic_J_log_error": 3.780602905929277e-12,
+        "max_null_pressure_pa": 0.00004448471372597851,
+        "prescribed_kinematics": true,
+        "physical_outer_loop_used": false,
+        "periodic_affine_claimed": false,
+        "dynamic_Darcy_implemented": false,
+        "physical_acceptance": false
+      },
+      "configuration": "ReleaseCPU"
+    }
+  ],
+  "affine_stress_rate_absmax_error_pa_s": {
+    "dimension2": 0.00846354166424135,
+    "dimension3": 0.0078125
+  },
+  "failed_r1": {
+    "addendum": {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p2_feedback_r2.json",
+      "bytes": 1880,
+      "sha256": "d7cf449e435837b00d03fffcf7e765113111f2153bc55898c64ea590934d4284"
+    },
+    "exit_code": 1,
+    "accepted": false,
+    "reason": "Float velocity/double geometry quantization in finite-rotation manufactured input; unchanged gates, r2 only replaces null fixture by exact-dyadic instantaneous rotation",
+    "run_receipt": {
+      "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r1_run.run.json",
+      "bytes": 1699,
+      "sha256": "0ced6fa47f55423531233f648af953cbfedaedb561861f9b6d9d050fd6d4b77a"
+    }
+  },
+  "posthoc_outputs_manifest": {
+    "path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_r2.outputs.json",
+    "bytes": 184939,
+    "sha256": "452a6227703ce969189e09d2f0f6f9e2e0412f1d7679e4f1e6e6788989662ffe"
+  },
+  "posthoc_raw_file_count": 695,
+  "posthoc_raw_bytes": 52904548,
+  "physical_acceptance": false,
+  "full_outer_loop_feedback_tested": false,
+  "dynamic_Darcy_implemented": false,
+  "public_XML_option_added": false,
+  "GPU_tested": false,
+  "Git_whitelist_suggestion_only": [
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4.build.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4.build.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_default_OFF_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_default_OFF_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_observer_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_open_s128_poro_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_pair.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_pair.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_observer_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s128_poro_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_s8_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_state.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_DebugCPU_r4_state.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_cpu_debug_r1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_cpu_release_r1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r1.build.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r1.build.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r1_run.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r1_run.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2.build.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2.build.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2_run.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2_run.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_DebugCPU_r2_run.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_r2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_r2.outputs.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2.build.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2.build.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2_run.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2_run.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_feedback_ReleaseCPU_r2_run.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4.build.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4.build.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_default_OFF_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_default_OFF_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_observer_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_open_s128_poro_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_pair.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_pair.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p10.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p11.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p12.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p13.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p14.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p15.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p16.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p2.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p3.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p4.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p5.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p6.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p7.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p8.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p9.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_observer_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p10.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p10.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p11.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p11.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p12.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p12.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p13.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p13.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p14.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p14.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p15.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p15.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p16.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p16.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p2.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p2.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p3.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p3.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p4.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p4.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p5.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p5.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p6.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p6.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p7.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p7.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p8.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p8.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p9.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s128_poro_p9.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_native_poro.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_o1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p0.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p1.check.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_observer_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p0.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p0.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p1.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_s8_poro_p1.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_state.log",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_p2_ReleaseCPU_r4_state.run.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p2_feedback_r1.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_p2_feedback_r2.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0002_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0003_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0004_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0005_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0006_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0007_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0008_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0009_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0010_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0011_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0012_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0013_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0014_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0015_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Part_0016_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_open_s128_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_pair/theta_pairs.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0002_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0003_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0004_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0005_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0006_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0007_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0008_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0009_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0010_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0011_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0012_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0013_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0014_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0015_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Part_0016_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s128_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_s8_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_state/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_DebugCPU_r4_state/state_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1/upl_p2_feedback_harness_r1.cpp",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1/upl_p2_feedback_r1.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1/upl_p2_feedback_run_r1.ps1",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/guards.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/halves.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/history.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/ledger.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/momentum.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r1_run/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2/upl_p2_feedback_harness_r1.cpp",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2/upl_p2_feedback_r1.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2/upl_p2_feedback_r2.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2/upl_p2_feedback_run_r1.ps1",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/guards.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/halves.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/history.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/ledger.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/momentum.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_DebugCPU_r2_run/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2/upl_p2_feedback_harness_r1.cpp",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2/upl_p2_feedback_r1.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2/upl_p2_feedback_r2.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2/upl_p2_feedback_run_r1.ps1",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/guards.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/halves.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/history.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/ledger.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/momentum.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_feedback_ReleaseCPU_r2_run/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0002_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0003_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0004_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0005_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0006_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0007_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0008_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0009_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0010_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0011_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0012_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0013_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0014_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0015_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Part_0016_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_open_s128_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_pair/theta_pairs.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0002_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0003_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0004_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0005_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0006_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0007_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0008_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0009_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0010_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0011_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0012_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0013_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0014_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0015_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Part_0016_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s128_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o0/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o0/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o0/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o0/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/observer_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/observer_final.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/Part_0000_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/Part_0001_poro.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/Run.csv",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_s8_o1/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_state/Run.out",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p2_ReleaseCPU_r4_state/state_complete.json",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p2_feedback_harness_r1.cpp",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_p2_feedback_run_r1.ps1"
+  ],
+  "Git_whitelist_excludes": "raw BI4/exe/object/DLL/PDB/ILK/build binary; wave files and unrelated worktree edits"
+}

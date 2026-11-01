@@ -113,6 +113,7 @@ void JSphCpu::InitVars(){
   ArtificialStressc=NULL;
   PorePressc=NULL;PorePress0c=NULL;PorePressRatec=NULL;PorePressM1c=NULL;PorePressPrec=NULL;
   PorosityObserver=false;
+  PorosityFeedback=false;
   PoroJc=NULL;PoroThetac=NULL;PoroJPrec=NULL;
   BoundDerivativeVelc=NULL;
   BoundDerivativeFitShift.clear();
@@ -701,6 +702,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ComputeFSParticlesFreeSurface
 {
   const int n=int(np);
   const double volb=(sim2d? Dp*Dp: Dp*Dp*Dp);
+  const double porov0=(PorosityFeedback? double(MassFluid)/double(RhopZero): 0);
   const float nzero=(sim2d?
     float(3.141592*KernelSize2/(Dp*Dp)):
     float((4.f/3.f)*3.141592*KernelSize2*KernelSize2/(Dp*Dp*Dp)));
@@ -746,8 +748,8 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ComputeFSParticlesFreeSurface
             const double frx=fac*drx;
             const double fry=(sim2d? 0: fac*dry);
             const double frz=fac*drz;
-            const double vol2=(velrhop[p2].w>0?
-              double((boundp2? MassBound: MassFluid)/velrhop[p2].w): (boundp2? volb: 0));
+            const double vol2=(PorosityFeedback? porov0*PoroJc[p2]:
+              (velrhop[p2].w>0? double((boundp2? MassBound: MassFluid)/velrhop[p2].w): (boundp2? volb: 0)));
             if(vol2>0){
               neigh++;
               const double dot3=drx*frx+dry*fry+drz*frz;
@@ -2296,6 +2298,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
   const double por=double(SoilCte.Porosity);
   const double khyd=double(SoilCte.HydraulicConductivity);
   const double kwn=(por? kw/por: 0);
+  const double porov0=(PorosityFeedback? double(MassFluid)/double(RhopZero): 0);
   const float wabdp=(useartstress? fsph::GetKernel_Wab<tker>(CSP,float(Dp*Dp)): 0.f);
   const float invwabdp=(wabdp>0.f? 1.f/wabdp: 0.f);
   //-Initialise execution with OpenMP. | Inicia ejecucion con OpenMP.
@@ -2338,6 +2341,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
     const tfloat3 velp1=TFloat3(velrhop[p1].x,velrhop[p1].y,velrhop[p1].z);
     const float rhopp1=velrhop[p1].w;
     const float pressp1=press[p1];
+    double porosity1=por,porovol1=0,pororhot1=0;
+    if(PorosityFeedback)GetPorosityFeedbackStateCpu(unsigned(p1),porosity1,porovol1,pororhot1);
+    const double kwnp1=(PorosityFeedback? kw/porosity1: kwn);
     const bool poreratep1=(useporerate && CODE_IsFluid(code[p1]) && !(drainfs && IsHydroMechDrainedParticle(unsigned(p1),pos,code,fstype)));
     const bool observeporosity=(PoroThetac && CODE_IsFluid(code[p1]));
     const float pwp1=(poreratep1? porepress[p1]: 0);
@@ -2399,6 +2405,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 
           tfloat4 velrhop2=velrhop[p2];
           if(rsym)velrhop2.y=-velrhop2.y; //<vs_syymmetry>
+          const double porovol2=(PorosityFeedback? porov0*PoroJc[p2]: 0);
 
           //-Velocity derivative (Momentum equation).
           if(compute){
@@ -2408,6 +2415,18 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             const float invrhop1_2=1.f/(rhopp1*rhopp1);
             const float invrhop2_2=1.f/(velrhop2.w*velrhop2.w);
             //-Elastoplastic soil momentum from the total-stress tensor.
+            if(PorosityFeedback){
+              //-J-derived quadrature and mixture inertia; combine effective stress and pore pressure once.
+              const double coeff=porovol2/pororhot1;
+              const double pw=double(porepress[p1])+double(porepress[p2]);
+              const double sxx=double(sigmap1.xx)+sigmap2.xx-pw,syy=double(sigmap1.yy)+sigmap2.yy-pw;
+              const double szz=double(sigmap1.zz)+sigmap2.zz-pw,sxy=double(sigmap1.xy)+sigmap2.xy;
+              const double sxz=double(sigmap1.xz)+sigmap2.xz,syz=double(sigmap1.yz)+sigmap2.yz;
+              acep1.x+=float(coeff*(sxx*frx+sxy*fry+sxz*frz));
+              acep1.y+=float(coeff*(syy*fry+sxy*frx+syz*frz));
+              acep1.z+=float(coeff*(szz*frz+syz*fry+sxz*frx));
+            }
+            else{
             const float prsxx = massp2*(sigmap1.xx*invrhop1_2 + sigmap2.xx*invrhop2_2);
 			const float prsyy = massp2*(sigmap1.yy*invrhop1_2 + sigmap2.yy*invrhop2_2);
 			const float prszz = massp2*(sigmap1.zz*invrhop1_2 + sigmap2.zz*invrhop2_2);
@@ -2415,6 +2434,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
 			const float prsxz = massp2*(sigmap1.xz*invrhop1_2 + sigmap2.xz*invrhop2_2);
 			const float prsyz = massp2*(sigmap1.yz*invrhop1_2 + sigmap2.yz*invrhop2_2);
 			acep1.x += (prsxx*frx+prsxy*fry+prsxz*frz); acep1.y += (prsyy*fry+prsxy*frx+prsyz*frz); acep1.z += (prszz*frz+prsyz*fry+prsxz*frx);//form 1
+            }
             //-Flexible confinement pressure for Cryer-type external loading.
             if(useflexconf && !ftp2){
               const float prsconf=flexconfpressure*massp2*(invrhop1_2+invrhop2_2);
@@ -2423,7 +2443,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
               hydromechloadacep1.x+=ax; hydromechloadacep1.y+=ay; hydromechloadacep1.z+=az;
             }
             //-u-pw Eq. (30): separate pore-pressure discretization mapped to tensile-positive stress in this code.
-            if(useporefeedback && !ftp1 && !ftp2){
+            if(useporefeedback && !PorosityFeedback && !ftp1 && !ftp2){
               const float prspw=-massp2*(porepress[p1]+porepress[p2])/(rhopp1*velrhop2.w);
               acep1.x+=prspw*frx; acep1.y+=prspw*fry; acep1.z+=prspw*frz;
             }
@@ -2491,7 +2511,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double dcfrx=(PoreCompressionGradCorr? pcfrx: pfrx);
                 const double dcfry=(PoreCompressionGradCorr? pcfry: pfry);
                 const double dcfrz=(PoreCompressionGradCorr? pcfrz: pfrz);
-                const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
+                const double vol2=(PorosityFeedback? porovol2: double((boundp2? MassBound: MassFluid)/velrhop[p2].w));
                 const double pdvx=-double(dvx_grad_deriv);
                 const double pdvy=(Simulate2D? 0: -double(dvy_grad_deriv));
                 const double pdvz=-double(dvz_grad_deriv);
@@ -2499,7 +2519,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 const double divv=vol2*(pdvx*dcfrx+pdvy*dcfry+pdvz*dcfrz);
                 if(observeporosity)porosity_thetap1+=divv;
                 if(poreratep1 && PoreCompressionSourceMode==0){
-                  const double comp=kwn*(-divv);
+                  const double comp=kwnp1*(-divv);
                   pore_ratep1+=comp;
                 }
                 if(poreratep1 && khyd>0){
@@ -2609,7 +2629,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             const float dot_rr2=dot/(rr2+Eta2);
             visc=max(dot_rr2,visc);
             ///SPH velocity gradients calculation
-            const float volp2=-massp2/velrhop2.w;
+            const float volp2=(PorosityFeedback? -float(porovol2): -massp2/velrhop2.w);
             float dv=dvx_grad_deriv*volp2;  gradvp1_xx_xy_xz.x+=dv*frx; gradvp1_xx_xy_xz.y+=dv*fry; gradvp1_xx_xy_xz.z+=dv*frz;
                   dv=dvy_grad_deriv*volp2;  gradvp1_yx_yy_yz.x+=dv*frx; gradvp1_yx_yy_yz.y+=dv*fry; gradvp1_yx_yy_yz.z+=dv*frz;
                   dv=dvz_grad_deriv*volp2;  gradvp1_zx_zy_zz.x+=dv*frx; gradvp1_zx_zy_zz.y+=dv*fry; gradvp1_zx_zy_zz.z+=dv*frz;
@@ -4096,6 +4116,8 @@ void JSphCpu::ComputeVelrhopBound(const tfloat4* velrhopold,const tsymatrix3d *s
 /// Initializes the development-only volume observer without physical feedback.
 //==============================================================================
 void JSphCpu::InitPorosityObserverCpu(){
+  if(PorosityFeedback && !PorosityObserver)
+    Run_Exceptioon("Porosity feedback fixture requires the J observer state.");
   if(!PorosityObserver)return;
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
@@ -4104,7 +4126,22 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
+  if(PorosityFeedback && (CaseNpb || SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z
+    || HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilHourglassXi!=0 || SoilDamping
+    || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
+    || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
+    Run_Exceptioon("Porosity feedback is restricted to no-wall, k=0 elastic manufactured CPU fixtures without gravity/load/drainage/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard.");
   for(unsigned p=0;p<Np;p++){PoroJc[p]=1.;PoroThetac[p]=0.;}
+}
+
+//==============================================================================
+/// Derives the saturated incompressible-grain ledger from its single J state.
+//==============================================================================
+void JSphCpu::GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const{
+  const double j=PoroJc[p];
+  porosity=1.-(1.-double(SoilCte.Porosity))/j;
+  volume=(double(MassFluid)/double(RhopZero))*j;
+  rhot=double(SoilCte.PoreWaterRho)+(double(RhopZero)-double(SoilCte.PoreWaterRho))/j;
 }
 
 //==============================================================================

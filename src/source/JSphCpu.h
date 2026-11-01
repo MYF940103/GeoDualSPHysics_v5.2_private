@@ -159,6 +159,7 @@ protected:
   float* PorePress0c;  ///<Initial hydrostatic pore-water pressure reference.
   float* PorePressRatec; ///<Current pore-pressure rate dpw/dt for u-pw PR formulation.
   bool PorosityObserver; ///<Development-only CPU observer; no physical feedback or XML entry.
+  bool PorosityFeedback; ///<Fixture-only J-derived volume/storage/inertia; not the dynamic Darcy model.
   double* PoroJc;      ///<Observed solid volume ratio J; native walls remain 1.
   double* PoroThetac;  ///<Divergence from the last force stage, not necessarily the saved full time.
   double* PoroJPrec;   ///<Full-step J held during Symplectic prediction/correction.
@@ -403,6 +404,7 @@ protected:
   void ComputeSymplecticPrePorePressure(double dt);
   void ComputeSymplecticCorrPorePressure(double dt);
   void InitPorosityObserverCpu();
+  void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;
   void ComputeSymplecticPrePorosity(double dt);
   void ComputeSymplecticCorrPorosity(double dt);
 

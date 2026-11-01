@@ -1,0 +1,53 @@
+{
+  "date": "2026-11-01",
+  "stage": "P2 restricted CPU volume, storage and inertia feedback",
+  "parent_checkpoint_local_and_remote": "4dc3577a2a0d87dfdcb89d79e309cba5c89f7198",
+  "exact_source_snapshot": {
+    "folder": "tests/outputs/upl_p2_feedback_source_r1",
+    "JSphCpu.cpp_sha256": "3065baf676f30258c5c5bd5b0e4d0be2ffa768016b8ef45b7b8cdb2c5fb41c39",
+    "JSphCpu.h_sha256": "f9e740bba5227fee77c1969d375a288af1ca287dc8882196077bd7dca82601b5"
+  },
+  "production_changes": {
+    "src/source/JSphCpu.h": "Protected default-false PorosityFeedback and a small J-derived ledger helper; no XML input",
+    "src/source/JSphCpu.cpp": "Use V0*J in the active correction matrix and derivative weights, receiver-local Kw/n in storage, and Vj/rho_ti in a combined total-stress momentum term; exclude the old separate pore force in this branch"
+  },
+  "ledger": {
+    "porosity": "n=1-(1-n0)/J",
+    "volume": "V=(double(MassFluid)/RhopZero)*J",
+    "inertia": "rho_t=rho_w0+(rho_t0-rho_w0)/J",
+    "single_persistent_state": "J remains double; pressure/rate remain float, persistent effective stress remains double"
+  },
+  "component_results_each_debug_and_release": {
+    "real_scope_rejections": 30,
+    "actual_FS_ct_and_pressure_J_helpers": true,
+    "exact_time_half_pairs": 520,
+    "history_particle_rows": 27936,
+    "maximum_pressure_log_storage_error_pa": 0.0060893257650604937,
+    "maximum_half_pressure_difference_pa": 0.0078125,
+    "maximum_half_J_difference": 3.768985124e-12,
+    "maximum_affine_J_log_error": 3.780602906e-12,
+    "maximum_dilation_stress_rate_error_pa_per_s": 0.008463541664,
+    "old_positive_rho_poison": "Correction matrix, theta, pressure rate, acceleration and stress rate bitwise unchanged in the component fixture",
+    "stress_reference_scope": "Six components in affine dilation; nonzero shear rates are not independently validated here"
+  },
+  "original_mode_regression": {
+    "recipe": "tests/support/upl_p2_run_r1.ps1, fresh r4 DebugCPU and ReleaseCPU",
+    "actual_original_native_frame_pairs": 140,
+    "native_ids_per_frame": 1040,
+    "original_arrays_checked": 15,
+    "all_checked_original_fields_ID_aligned_0ULP": true,
+    "saved_time_step_and_dterror_exact": true,
+    "exceptions": [],
+    "adopted_controls": "Retained pre-edit normal/open-drain controls; none rerun or overwritten"
+  },
+  "retained_failure": "Debug component r1 finite-rotation input had double geometry and independently rounded float velocity, leaving tiny nonzero divergence. Fresh r2 uses an exact-dyadic instantaneous rotation on a fixed patch. All original gates remain unchanged. This is not a passing finite rigid-body trajectory.",
+  "limitations": [
+    "Manufactured kinematics are prescribed; this stage is not an actual free coupled trajectory or periodic affine solution",
+    "Only no-wall, k=0 elastic fixtures; no gravity, external load, drainage, HG, damping, viscosity, DDT, artificial stress, SPR or Shepard",
+    "Velrhop.w is still an old positive computational diagnostic, not physical mixture density; production density screening and the coupled wave-speed bound are not validated for public new-mode use",
+    "Stress-gradient volume and accumulation remain float; sharing an algebraic divergence definition does not mean bit-identical stress trace and double theta",
+    "No dynamic acceleration Darcy term, public HydroMechDynamicSeepage switch, GPU, restart, full-cycle or formal physical acceptance"
+  ],
+  "next_gate": "Actual periodic no-wall k=0 longitudinal-wave ComputeStep_Sym; ledger, storage reference, stage wave-speed audit, independent half steps and a positive-old-rho causal twin",
+  "protected": "No formal XML/BAT, accepted case data, server program or server process changed"
+}

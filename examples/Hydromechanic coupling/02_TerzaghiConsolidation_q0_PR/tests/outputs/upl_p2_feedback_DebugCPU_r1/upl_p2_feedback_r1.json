@@ -1,0 +1,32 @@
+{
+  "date": "2026-11-01",
+  "predeclared_before_execution": true,
+  "scope": "CPU-only protected feedback branch; no public XML switch or dynamic acceleration Darcy term",
+  "numerical_difference": "One double J derives n, V and reference-water mixture inertia. Actual corrected gradient, stress gradient, storage and raw total-stress momentum use that ledger rather than old m/rho. Positive Velrhop.w is diagnostic only in this bounded fixture.",
+  "fixture": "2-fluid raw momentum pair and 9/27-fluid full-rank finite patches; actual production FS+C/ct and p/J predictor/corrector helpers; prescribed affine kinematics at each force stage",
+  "not_claimed": ["Physical free-body trajectory", "Affine velocity compatible with fixed periodic velocity copying", "Full ComputeStep or outer loop", "Wall, drainage or global no-flux closure", "Dynamic Darcy, nonzero-k, GPU, restart or formal acceptance"],
+  "disabled": ["physical walls", "k", "gravity", "external load", "HG", "viscosity", "DDT", "SPR", "soil damping", "artificial stress", "shifting"],
+  "tests": ["Actual initialization rejects15 unsupported feedback configurations per dimension", "Unequal-J helper ledger and fixed-solid mass", "Unequal-J2-fluid total-stress momentum reference and pair force balance", "Actual corrected affine gradient and receiver-local Kw/n on nonuniform J", "All six affine elastic stress-rate components using actual J volume: 2G D+lambda theta I, spin0, 2D yy=lambda theta", "Poison positive old rho: correction/theta/pdot/stress-rate/acceleration remain bitwise identical", "Uniform compression/dilation", "Trace-free simple shear/rigid rotation", "Independent64/128-step component integrations"],
+  "material": {"rho0": 2100, "rhow0": 1000, "n0_input_float": 0.3, "Kw_pa": 200000000, "k": 0},
+  "timing": {"coarse_steps": 64, "coarse_dt": "2^-16 s", "half_steps": 128, "half_dt": "2^-17 s", "end": "2^-10 s", "nonzero_divergence": "+/-2^-5 s^-1"},
+  "gates": {
+    "closure_relative": 5e-13,
+    "momentum_component": "64*FLT_EPSILON*max(1e-6,abs(reference))+1e-9 m/s2",
+    "net_pair_force": "L1 norm <=64*FLT_EPSILON*sum(abs(internal force components))+1e-9",
+    "affine_theta": "64*FLT_EPSILON*abs(theta)",
+    "receiver_storage": "64*FLT_EPSILON*abs(-Kw/n_i*theta)",
+    "six_component_stress_rate": "abs(rate-reference)<=64*FLT_EPSILON*max(abs(reference),abs(G*theta))+1e-6 Pa/s; lambda=K-2G/3, D=diag(theta/dimension) in active axes, spin0",
+    "oldrho_poison": "0ULP correction, theta, pressure rate, acceleration and stress rate; old raw density rate may differ",
+    "pressure_log_reference_abs_pa": 1,
+    "log_reference": "-Kw*ln((actual_J-1+n0)/n0); diagnostic EOS storage reference, not exact general flowing water mass",
+    "J_log_error": "abs(ln(J)-theta*t)<=64*FLT_EPSILON*abs(theta*t)+512*DBL_EPSILON",
+    "null_pressure_abs_pa": 0.02,
+    "null_J_abs": 5e-13,
+    "half_pressure_absmax_pa": 0.5,
+    "half_J_absmax": 5e-11,
+    "saved_clock": "All65 coarse samples exactly match every second half sample; no interpolation"
+  },
+  "no_old_controls_rerun": true,
+  "physical_acceptance": false,
+  "build_waits_for_root_signal": true
+}
