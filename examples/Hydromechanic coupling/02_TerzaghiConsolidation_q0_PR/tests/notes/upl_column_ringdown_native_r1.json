@@ -1,0 +1,73 @@
+{
+  "stage": "upl_column_ringdown_native_r1",
+  "status": "author_only_candidate_not_compiled_or_executed",
+  "files": [
+    "support/upl_column_ringdown_native_r1.cpp",
+    "notes/upl_column_ringdown_native_r1.json"
+  ],
+  "scope": "Pure typed public-ON CPU/GPU column native reader candidate for a fresh new-dt two-step smoke or the predeclared .125s dyadic window. No JSph object, solver, integration, force/rate replay, CUDA call, build, input preparation, OFF support or scientific/physical acceptance.",
+  "plan": "Coordinate with notes/upl_column_dyadic_plan_r1.json. A plan is not prepared input, program execution or acceptance. Only the three fixed presets below are readable; no arbitrary external sample count/dt and no reuse of the old769-part decimal clock.",
+  "CLI": "argc6: --read CPU|GPU DATA smoke|coarse|half FRESH_REVIEW. Backend is a caller label only; actual executable/input/source/owned-exit attribution remains the outer owner.",
+  "presets": {
+    "coarse": {
+      "dt_s": 0.0000019073486328125,
+      "completed_steps": 65536,
+      "end_s": 0.125
+    },
+    "half": {
+      "dt_s": 9.5367431640625e-7,
+      "completed_steps": 131072,
+      "end_s": 0.125
+    },
+    "event": "Ramp and drain both5243*2^-19=.0100002288818359375s, exactly representable. Coarse event step5243, half10486. This is declared input/preset knowledge, not absent BI4 event metadata.",
+    "saved": "Coarse sorted unique union{0:64:65536} and{5120:1:5376}=1277 frames. Half exactly doubles EVERY listed completed step, retaining1277 paired times. Event is part203; first saved post-open is part204(c5244/h10488). Expected schedule-labelled post-open frames1073; actual active-receiver counts and p0 checks are measured, not assumed. Smoke uses only completed{0,1,2},dt2^-19/end2^-18; no post-open saved frames or assumed active drainage.",
+    "clock": "Accumulate actual binary64 dt per completed step; native TimeStep must equal that sum exactly and lasttime the declared end exactly (.125 for full presets,2^-18 for smoke), saved Step=initial0 else completed-1. Native SymplecticDtPre double must equal preset dt. No interpolation/time snap, nominal cadence substitution or decimal biases.",
+    "smoke": {
+      "dt_s": 0.0000019073486328125,
+      "completed_steps": 2,
+      "samples": 3,
+      "end_s": 0.000003814697265625
+    }
+  },
+  "reuse": {
+    "parent": "Mechanically reuse the complete typed public-column reader body from support/upl_column_public_native_r1.cpp SHA977c851b840285906c66e0e2e0da6df2a79239c76edc9ea2dbbebea7808c870b; its static LoadNative/Initial/state checks/output encoders are retained. Do not nested-include its main.",
+    "direct_include": "Exactly one main-renamed immutable support/upl_cpu_public_native_r1.cpp,22469bytes SHA9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38; existing JPartDataBi4/JBinaryData/JAppInfo headers/STL, no new library.",
+    "neutral_only": "Reuse NativeArray/Load(model0)/Native/Original15/Metadata(0)/Sequence/scalar helpers. NEVER call the old wave Read/Physical/Energy/Half or retained main. No copied wave fixture/equation implementation."
+  },
+  "native_schema": "Exactly22 native arrays=original15 plus six DatDouble J/n/theta/V/rho/k and actual DatFloat PosDiv. PART HydroMechDynamicSeepage booltrue, DynamicSeepageSchema uint1, ConductivityModel uint0, Ck double0. Typed count/finiteness and all1040 IDs are required; no float position fallback or hidden fabricated PosDiv.",
+  "geometry_material": "Same predeclared column:1000soil IDs40..1039/40fixed0..39, one piece/no exclusions,2D y0/no symmetry/no changing IDs, X periodic width.1, initial10x100soil and10x4fixed belowz0. dp.01/h=float.018/rho0=2100/rhow1000/mass=float.21/n0=float.3/k=float.0001, Kw2e8 from separately bound input. Initial rest/stress0/p0=0/J1/theta0 and elastic/passive-density/original float-excess/double-stress-display guards retained.",
+  "ledger_and_fixed": "Every actual saved soil n/V/rho/k must match the same compacted native J at the inherited5e-13 relative ledger/solid-volume tolerance; saturated state/finite-positive volume/density/k and no bottom crossing retained. Fixed public n/V/rho/k are zero markers only; J/theta and original15 are read/exported unchanged for ALL1040 native IDs. No wave J<=1e-4, arbitrary energy ratio, initial sine or additional coupled CFL gate is imported.",
+  "drain": "Original strict post-open receiver predicate uses completed>5243 or>10486; every actual soil FSType2/3 then requires native p==0. Event-equality saved state is pre-open. J/density are not frozen. Record real post_open_frames/post_open_drained_particle_checks/max_activeDrainCount and perframe activeDrainCount; do NOT hardcode10*1073 as observed, mask receivers, assert nonempty acceptance or copy old359/3590 counts.",
+  "diagnostic": "Retain signed native dterror=maximum(FixedDt-DtVariable), not absolute clock error. Initial -DBL_MAX may be empty, recorded/excluded; every noninitial interval must be finite/nonempty and <=1e-14. All per-ID guards and original output fields remain.",
+  "descriptive_history": "Original history columns retained, then pressure mean; downward-positive settlement mean/top10/bottom10/absolute max in mm; native velocityXYZ RMS m/s; saved last-force theta RMS/mean1/s; -mean stored sigma_zz Pa; stored stress Frobenius RMS Pa (diagonals squared plus twice offdiagonals squared); initial-material top/bottom10 pressure means Pa; actual native current-density min/max/mean, current-volume total m2, sum native rho*V kg/m, and passive legacy Rhop min/max. Top/bottom means use initial material layer99/0, exactly10 real soil IDs each. Summaries are finite and descriptive, not theory/error/energy/decay/conservation or new accuracy gates. Existing rho(J)V(J)*retainedLoadAce is endpoint reweighting of the last-force load, NOT same-force-stage resultant truth.",
+  "outputs": {
+    "leaves": [
+      "original15.bin",
+      "physical.bin",
+      "clock.bin",
+      "common_j_theta.bin",
+      "soil_n.bin",
+      "native_ids.csv",
+      "fixed_ids.csv",
+      "history.csv",
+      "ledger.csv",
+      "fixed_samples.csv",
+      "last_poro.csv",
+      "columns.csv",
+      "completion.json"
+    ],
+    "original15": "uint32[1040,15,samples], samples3(smoke) or1277(full); each actualtime8+1040 ID-sorted original15 typedpayload166400 =>166408bytes/frame.",
+    "common26": "uint32[1000,26,samples3|1277], actualtime8+1000*26binary64 =>208008bytes/frame; unchanged case02_common26_col21_ExcessPorePress_NOT_wave26 field order, column21 true Excess not PosDiv.",
+    "clock": "uint32[samples3|1277,28], each timef8/zero-basedStepu4/lockedDtf8/signeddterrorf8 unaligned28bytes.",
+    "J_theta": "uint32[1040,2,samples3|1277], each time8+ALL1040 interleaved native doubleJ/theta =>16648bytes/frame; no fixed mask.",
+    "soil_n": "uint32[1000,1,samples3|1277], each time8+soil native double n =>8008bytes/frame.",
+    "CSV": "history1277; ledger1277000; fixed_samples51080; final last_poro1000; all doubles setprecision17. Real PosDiv and publicV/rho/k remain in ledger/fixed samples separately from common26. Smoke history3/soil ledger3000/fixed samples120/nativeJtheta3120; otherwise the same per-frame encoders/checks.",
+    "completion": "stage upl_column_ringdown_native_r1; backendCPU_public|GPU_public; windowsmoke|ringdown125;presetsmoke|coarse|half;gridc|h;modelconstant;samples3|1277;physicalcolumns26;actual clock/steps,declared event,typed metadata,full ledger/fixed counters and real drainage counts; descriptive_saved_field_summariestrue/new_scientific_acceptance_gatefalse/physical_acceptancefalse."
+  },
+  "comparison": "Binary schemas/ID/time conventions are suitable for later bounded same-time CPU/GPU and independent-half comparator adaptation at1277 frames. The old hard-coded769/dt2.5us comparator cannot be invoked unchanged. No ON/OFF equality/theory gate is defined, and this ON22 reader must not decode an unsupported OFF file or invent missing J/n.",
+  "build": "Author-only. Root may later adapt the already validated current85non-main ReleaseCPU object reader recipe, compile one new helper and review dependency closure. No build/execute authorization follows from this artifact.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false,
+  "precompile_refinement": "Root added explicit fresh dyadic smoke before the first build/freeze; only smoke preset dispatch/sample count/end/completion label changed. No completed solver or reader run is repeated; original source0f8f...c710 was author-only, not compiled."
+}

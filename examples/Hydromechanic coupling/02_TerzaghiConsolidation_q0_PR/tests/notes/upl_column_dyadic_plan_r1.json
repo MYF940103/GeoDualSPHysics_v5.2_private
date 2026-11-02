@@ -1,0 +1,122 @@
+{
+  "stage": "upl_column_dyadic_plan_r1",
+  "status": "plan_only_no_inputs_prepared_no_program_run",
+  "chosen_scope": "New bounded .125s constant-k noaux FreeSlip loaded-column scientific test. Root chose dt2^-19/2^-20, shifted ramp/drain event,1277 paired saved times. Not an extension preserving the previous decimal-dt trajectory/prefix; no full consolidation/Tv/physical acceptance.",
+  "prerequisite": "Current public column review/checkpoint and actual CPU/GPU shared-state exact gates/OFF151 compatibility must be sealed. Reuse matching current authoritative isolated project main and source265/doc snapshots/canonical7/runtime4, not private --solver helpers; no Rebuild or canonical install is needed while source bytes remain identical.",
+  "input_invariants": "Same accepted1040 seed (1000soil40fixed)/Normals and native rest, dp.01,h=float.018,E2e6,nu=float.3,n0=float.3,k=float1e-4,Kw2e8,rhow1000,rho02100,q010000; g0,Xperiodic,one bottom FreeSlip3, TopKernelBand, fixed-grid top drain, viscosity/HG/SPR/damping/DDT/Shepard OFF. No fields reset, no GenCase, no formal root edits, no variable-k or general-wall admission.",
+  "source_review": {
+    "scheduler": "src/source/JDsOutputTime.cpp157..185 fully read: advance segment at t>=nextanchor; integer quotient with strict nexttime>t; clip to upcoming anchor. Config/AddTimeOut accepts positive timeout and strictly increasing nonnegative anchors. All proposed anchors/cadences are exact binary64 dyadics, no old decimal output bias.",
+    "public_guard": "src/source/JSph.cpp599..628: fresh2D/g0/constant positive DtFixed; bounded constant-k TopKernelBand+drain+fixedgrid. Event grid abs(round(tD/dt)*dt-tD)<=4eps*tD is unchanged.",
+    "CPU_event": "src/source/JSphCpu.cpp1204..1213: active by actual TimeStep>=event, or only nominal Nstep grid roundoff correction. Load ramp1260..1261 and pair2337..2339 use actual TimeStep. Save event-equality frame remains before first open-stage update.",
+    "GPU_event": "src/source/JSphGpu.cpp1155..1176 same event test; dynamic projected native p refreshes periodic p before future neighbor reads. Ramp1200..1201 uses same actual time.",
+    "output_loop": "src/source/JSphCpuSingle.cpp1357..1387 and JSphGpuSingle.cpp1166..1196: actual TimeStep+=stepdt; save if time>=nextoutput or final or NstepsBreak; saved Step before increment = completed-1 except initial0. Do not snap saved time or infer saved Step=part.",
+    "current_safety": "CPU JSphCpu.cpp4908..4968 and GPU JSphGpu.cpp1878..1940: current native n/rho/k/domain; cu2=(M+Kw/n)/rho; D=(Kw/n)k/(rhow9.80665); wave denominator includes max(cu,10VelMax)+hViscDtMax; pore=PoreDtSafety*h^2/D; dt<=min(CFL*sqrt(h/AceMax),CFL*wave,pore); current/requested fixed dt and DtMin checked before updates, never clipped. Positive-k strict continuous-decay margin remains mandatory. J>solid0/finite/elastic/no-exclusion guards unchanged."
+  },
+  "declared_grid": {
+    "coarse_dt_s": 0.0000019073486328125,
+    "half_dt_s": 9.5367431640625e-7,
+    "dt_ini_matches_each_fixed_dt": true,
+    "DtMin_unchanged_s": 1e-8,
+    "end_s": 0.125,
+    "coarse_steps": 65536,
+    "half_steps": 131072,
+    "ramp_and_drain_event_s_exact_decimal": "0.0100002288818359375",
+    "event_coarse_steps": 5243,
+    "event_half_steps": 10486,
+    "old_event_s": 0.01,
+    "event_shift_s_exact_decimal": "0.0000002288818359375",
+    "event_shift_us": 0.2288818359375,
+    "event_shift_percent": 0.002288818359375,
+    "interpretation": "Both ramp end and drain opening shift together by +0.002288818359375% relative to .01. This is explicitly a new experiment, not a repair/mask/snap of the old physical clock or an old-prefix exact claim."
+  },
+  "output_scheduler": {
+    "TimeOut_default_s": 0.0001220703125,
+    "special_timeout": [
+      {
+        "time_s": 0,
+        "timeout_s": 0.0001220703125,
+        "coarse_anchor_step": 0,
+        "cadence_coarse_steps": 64
+      },
+      {
+        "time_s": 0.009765625,
+        "timeout_s": 0.0000019073486328125,
+        "coarse_anchor_step": 5120,
+        "cadence_coarse_steps": 1
+      },
+      {
+        "time_s": 0.01025390625,
+        "timeout_s": 0.0001220703125,
+        "coarse_anchor_step": 5376,
+        "cadence_coarse_steps": 64
+      }
+    ],
+    "coarse_saved_completed_steps": "sorted unique union {0:64:65536} and {5120:1:5376}",
+    "half_saved_completed_steps": "Every coarse saved completed step multiplied by2; physical anchors/cadences unchanged, dense half output every2half steps.",
+    "samples_each": 1277,
+    "count_identity": "1025 uniform frames +(257 dense burst -5 already uniform)=1277",
+    "event_part_zero_based": 203,
+    "event_saved_completed_steps": {
+      "coarse": 5243,
+      "half": 10486
+    },
+    "first_paired_post_open_part": 204,
+    "first_paired_post_open_completed_steps": {
+      "coarse": 5244,
+      "half": 10488
+    },
+    "first_paired_post_open_time_s": 0.01000213623046875,
+    "post_open_saved_frames": 1073,
+    "force_stage_caveat": "First half open-stage force occurs at Nstep10486; the intervening completed10487 state is not a saved paired time. Do not relabel part204 as the first actual half integration step after opening.",
+    "descriptive_drain_count": "Require native p==0 for every actual post-open FSType2/3; record activeDrainCount and nonempty evidence. Do not inherit unexecuted 10x359 or assert10730 drained rows already passed.",
+    "no_interpolation_or_output_bias": true
+  },
+  "scheduler_preflight": {
+    "method": "Independent literal binary64 replay of JDsOutputTime::GetNextTime with the exact source while-loop/SaveData/NstepsBreak ordering, using only declared integers/dyadic times, not any trajectory data. No native program executed.",
+    "replay_result": {
+      "coarse_samples": 1277,
+      "half_samples": 1277,
+      "coarse_table_union_exact": true,
+      "half_steps_twice_coarse": true,
+      "actual_paired_times_bit_exact": true,
+      "coarse_end_exact_0_125": true,
+      "half_end_exact_0_125": true,
+      "zero_based_savedStep_rule_exact": true
+    },
+    "future_requirement": "A later input prepare must persist the entire explicit1277 completed-step/time table and repeat this source-matched scheduler preflight; native reader must verify actual saved clocks/Step against that table. It must not use old3/769-only presets."
+  },
+  "safety_estimate_not_execution": {
+    "initial_rest_only": {
+      "D_m2_s_approximately": 6.7981076,
+      "cu_m_s_approximately": 564.57272,
+      "coarse_cu_dt_over_h_approximately": 0.0598243,
+      "coarse_D_dt_over_h2_approximately": 0.0400196,
+      "rest_CFL_wave_bound_s_approximately": 0.0000063765,
+      "rest_pore_bound_s_approximately": 0.0000476603
+    },
+    "derivation": "Source float-promoted case material at J1; approximate arithmetic preflight only, not observed runtime CSP or all-stage stability proof.",
+    "unchanged_limits": "CFLnumber=float0.2,PoreDtSafety1,DtMin1e-8 and actual signed dterror<=1e-14 (noninitial finite/nonempty) remain. No weak-wave CFL0.01/J1e-4/energy1.1/normalized1e-4 gates imported. Smaller dt cannot repair a failed saturated/continuous domain."
+  },
+  "sequence_and_gates": [
+    "Author/inspect fresh prepare+singleRun owners and explicit1277-step reader preset, then prepare only under separate root authority. Backend switch may exist but initial launch plan is GPU only; no automatic CPU cohort.",
+    "Fresh clock-specific GPU Debug2step smoke at new coarse dt/end2dt; genuine same current project main, owned sanitizer0errors/0leaks and pure native3-frame integrity. Existing same-binary memcheck remains evidence, not an excuse to silently reuse old-dt smoke as this new clock test.",
+    "One GPU ON coarse .125s Run only after own fresh smoke/native QC+explicit root admission; one independent native read then saved safety/ledger/drain QC.",
+    "GPU ON half only after own coarse native QC is sealed; fresh .125s half Run/read, compare all1277 paired times/initial IDs without interpolation. Original absolute half pressure RMS<=5Pa/materialXYZ displacement-difference max<=0.005mm and actualtime difference<=1e-14 remain.",
+    "Matched noaux FreeSlip HydroMechDynamicSeepage0 versus1 controls must use the SAME current executable within each backend, geometry/material/load/drain/dt/cadence/seed identical except master. HydroMech staysON; OFF means legacy u-pw dynamic-master OFF, not dry elasticity. No ON/OFF equality/theory/accuracy gate is currently declared; each control needs owned exit/native safety and independent half evidence before interpreting differences. Preserve any failure without rerun/parameter tuning.",
+    "Any optional CPU cohort uses its own current authoritative CPU main, OMP1 stated; do not infer timing/performance comparison or call CPU/GPU equality a theory proof.",
+    "No .25s or longer admission until .125s current-domain/saved-half/response review. If later expressly chosen, .25s would need a new label/test with131072/262144 steps and2301 paired frames under the same anchors; not prepared or authorized here."
+  ],
+  "cost_and_sampling": {
+    "per_ON_run": "GPU coarse65536 steps,half131072; each1277 frames,1,277,000 soil-frame rows and51,080 fixed-frame rows.",
+    "comparison_to_previous": "Each new Run uses6.5536 times the prior .025s same-grid step count;1277/769≈1.6606 times its native frame count. Not a wall-clock estimate.",
+    "matched_ON_OFF_per_backend": "Four independent coarse/half Runs total393216 physical steps and5108 saved frame instances, if explicitly admitted; no automatic queue.",
+    "limitation": "Outside the dense event burst, cadence122.0703125us is a storage-conscious sampled response, not a guarantee of resolving every acoustic/high-frequency ringing mode. If root wants a full oscillation/ringdown-rate claim, predeclare an additional denser output experiment/window before inspecting its data rather than fitting/interpolating missing samples. Current half gate covers declared saved times only.",
+    "consolidation_scope": "Neither .125s nor .25s is declared full consolidation or full Tv; no .05/.1/full-Tv shortcut, theoretical long-time validation or general physical release."
+  },
+  "reader_coordination": "endpoint_gate_source_review authors neutral public ON ringdown reader: --read CPU|GPU DATA coarse|half FRESHOUT; stage upl_column_ringdown_native_r1/window ringdown125/preset coarse|half/samples1277, original15/common26 col21Excess/clock28 plus six native doubles,PosDiv,13leaf formats. OFF lacks those dynamic arrays and needs its own honest original15/clock decoder path; never fabricate J/n/V/rho/k forOFF or relabel an old decoder preset.",
+  "unchanged": "No production/doc/canonical/formal XML/BAT/old proof/data modified by this plan. Root source/build checkpoints and old failures remain intact. This is not permission to launch a solver.",
+  "physical_acceptance": false,
+  "prepared": false,
+  "solver_or_reader_run": false,
+  "production_changes": false
+}

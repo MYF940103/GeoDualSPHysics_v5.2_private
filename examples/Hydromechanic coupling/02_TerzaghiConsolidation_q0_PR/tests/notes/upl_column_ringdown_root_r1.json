@@ -1,0 +1,54 @@
+{
+  "stage": "upl_column_ringdown_root_r1",
+  "date_local": "2026-11-03",
+  "status": "GPU_ON_125ms_native_and_independent_half_verified_figures_visually_reviewed",
+  "passed_bounded_numerical_review": true,
+  "physical_acceptance": false,
+  "source_or_formal_inputs_changed": false,
+  "evidence": [
+    "logs/upl_column_ringdown_GPU_smoke_r1.run.json",
+    "logs/upl_column_ringdown_GPU_smoke_r1.native.json",
+    "logs/upl_column_ringdown_GPU_coarse_admission_r1.json",
+    "logs/upl_column_ringdown_GPU_coarse_r1.run.json",
+    "logs/upl_column_ringdown_GPU_coarse_r1.native.json",
+    "logs/upl_column_ringdown_GPU_half_r1.run.json",
+    "logs/upl_column_ringdown_GPU_half_r1.native.json",
+    "logs/upl_column_ringdown_half_r1.check.json",
+    "logs/upl_column_ringdown_plot_r1.check.json"
+  ],
+  "independent_half": {
+    "actual_end_s": 0.125,
+    "samples_per_run": 1277,
+    "coarse_steps": 65536,
+    "half_steps": 131072,
+    "dt_coarse_s": 0.0000019073486328125,
+    "dt_half_s": 0.00000095367431640625,
+    "max_pressure_RMS_difference_Pa": 1.27276953561237,
+    "max_material_XYZ_displacement_difference_mm": 0.00001538168927926732,
+    "max_actual_saved_time_difference_s": 0,
+    "original_limits_unchanged": "All1277 samples:5Pa pressureRMS /0.005mm materialXYZ /1e-14s actualclock. Each side retains22 typed native arrays,1040IDs,ledger and nonempty true drainage/necessary-step guards."
+  },
+  "visual_review": {
+    "main_agent_viewed": [
+      "figures/upl_column_ringdown_plot_r1_history.png",
+      "figures/upl_column_ringdown_plot_r1_profiles.png"
+    ],
+    "matching_CSV_rows": {"history": 2554, "native_profiles": 10000},
+    "finding": "Coarse and half visibly overlap. Strong drainage-opening local velocity/theta/J transients subside, but coherent whole-column pressure oscillations remain through125ms. No observed runaway envelope in this window. Spatial layer profiles and total compression are not yet quasi-static. Plots preserve all samples/native points; no smoothing, clipping or shifted time origin.",
+    "interpretation": "Small half differences establish bounded time-step consistency, not agreement with ideal Terzaghi theory. Ordinary122us saves do not certify all high-frequency envelopes."
+  },
+  "reference_review": {
+    "source": "src/papers/u-pw/Lian 2023 u-pl.md sections3.5.1 and4.1",
+    "finding": "The paper explicitly reports load-induced pore-pressure overshoot without global damping and uses damping for its1D comparison. Our noaux prototype cannot silently be treated as that stabilized experiment.",
+    "theory_scope": "Existing classical and finite-Kw quasi-static Fourier references assume idealized undrained loading followed by drainage. Current ramp, distributed band force, inertia, J-dependent coefficients and closed-face Taylor-defect closure do not make that an exact startup solution. Current end corresponds only to roughlyTv0.00315, not full consolidation."
+  },
+  "observed_cost": {
+    "GPU_coarse_loop_s": 451.263428,
+    "GPU_half_loop_s": 896.768188,
+    "controlled_backend_benchmark": false,
+    "finding": "Saved GPU timers identify force and sorting work as large labels; Part saving is about1.7percent of coarse wall time, not the main observed bottleneck. Old CPU025 used one thread, so do not assume CPU1 is an untried faster replacement. A sequential same-input CPU1/CPU8/GPU cost test remains justified before any multi-day full run.",
+    "full_run_cadence_warning": "Do not extend the diagnostic122us cadence through2Tv: it would create roughly600000 frames and over130GB raw data per trajectory. Full-run sampling and actual backend cost require separate planning."
+  },
+  "next": "Admit only the declared matched noaux legacy u-pw OFF smoke/coarse/half diagnostic. Change master1 to0 only, retain original material/seed/clock/event. Each OFF run needs its own saved safety and independent half. Treat ON/OFF as full-framework A/B including J-quadrature/inertia, Darcy and closed-face changes, never isolated acceleration-term causality. No fullTv, damping/HG/SPR compatibility or server installation is admitted here.",
+  "preservation": "Accepted formal u-pw results, canonical/server programs and all failed historical attempts remain unchanged. Raw BI4/readout binaries are local hash-bound evidence, not cloud Git backup."
+}

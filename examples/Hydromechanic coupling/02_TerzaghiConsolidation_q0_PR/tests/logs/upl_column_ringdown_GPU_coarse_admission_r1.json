@@ -1,0 +1,30 @@
+{
+  "stage": "upl_column_ringdown_GPU_coarse_admission_r1",
+  "passed": true,
+  "backend": "GPU",
+  "window": "coarse",
+  "physical_acceptance": false,
+  "prior_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_ringdown_GPU_smoke_r1.run.json",
+    "bytes": 847354,
+    "sha256": "84ab15206682e416f9af1fef1c6650792aa5dc5422cd7ee609e3a3274e7af696"
+  },
+  "native_qc": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_ringdown_GPU_smoke_r1.native.json",
+    "bytes": 22324,
+    "sha256": "db7629f2fde2323683cc72e777b37ef7fc949dba7b491935c9ed19ae7cf77672"
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_column_public_root_r1.json",
+      "bytes": 7233,
+      "sha256": "b4d2d82d2b2527aceb3fa7b83ac6a126483f4a3b0ccafc9bd514fdd428255ab5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_column_dyadic_plan_r1.json",
+      "bytes": 10962,
+      "sha256": "5cb24bdc837df3b063b7f97f9a2d98193bee6a155d433f4c17852544bfd46b7f"
+    }
+  ],
+  "reason": "Own new-dyadic Debug two-step memcheck and all3 native states passed; admit only the declared fresh .125s coarse ringdown, not theory or full consolidation."
+}

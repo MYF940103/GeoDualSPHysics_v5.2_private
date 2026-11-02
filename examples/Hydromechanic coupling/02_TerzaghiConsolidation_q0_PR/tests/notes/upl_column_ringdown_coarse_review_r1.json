@@ -1,0 +1,53 @@
+{
+  "stage": "upl_column_ringdown_coarse_review_r1",
+  "date_local": "2026-11-03",
+  "status": "completed_native_safe_coarse_response_reviewed_half_in_progress",
+  "physical_acceptance": false,
+  "source_or_formal_inputs_changed": false,
+  "evidence": [
+    {"path": "logs/upl_column_ringdown_GPU_coarse_r1.run.json", "bytes": 1369347, "sha256": "6c6d4761da7145f53daea28d3856a15cc35fc047b89d1db499d3450b51cccf33"},
+    {"path": "logs/upl_column_ringdown_GPU_coarse_r1.native.json", "bytes": 23210, "sha256": "a756ce9fcc44f9351a266eb8524de772388ee6dcb20baa5f17f98376f022a963"},
+    {"path": "outputs/upl_column_ringdown_GPU_coarse_r1_native/completion.json", "bytes": 2533, "sha256": "6bf360d9033a06925c4255ef10560559e0d2cd6857af98f822fdac9797ac9a82"},
+    {"path": "outputs/upl_column_ringdown_GPU_coarse_r1_native/history.csv", "bytes": 750404, "sha256": "eb65c3b408903997d02e2ae36442dfb83b3dc0b1242dfd4305036807c2520059"},
+    {"path": "notes/upl_column_dyadic_plan_r1.json", "bytes": 10962, "sha256": "5cb24bdc837df3b063b7f97f9a2d98193bee6a155d433f4c17852544bfd46b7f"}
+  ],
+  "completed": {
+    "backend": "GPU RTX3050",
+    "actual_end_s": 0.125,
+    "completed_steps": 65536,
+    "saved_samples": 1277,
+    "soil_native_IDs": 1000,
+    "fixed_native_IDs": 40,
+    "native_original_and_dynamic_arrays": 22,
+    "post_open_saved_frames": 1073,
+    "true_drained_native_p_zero_checks": 10730,
+    "max_J_n_state_ledger_relative_error": 0,
+    "max_noninitial_signed_dterror_s": -4.430902607633601e-6,
+    "observed_solver_loop_s": 451.263428,
+    "controlled_performance_benchmark": false
+  },
+  "descriptive_response": {
+    "final_soil_pressure_mean_Pa": 9947.023650634766,
+    "final_soil_pressure_RMS_Pa": 10175.813055055714,
+    "final_bottom10_pressure_mean_Pa": 10987.4935546875,
+    "final_top10_pressure_mean_Pa": 0,
+    "final_top10_material_settlement_mm": 0.2527411520824252,
+    "final_bottom10_material_settlement_mm": 0.00011738664628122356,
+    "final_velocity_XYZ_RMS_m_s": 0.0008878688127388768,
+    "max_saved_abs_J_minus_1": 0.0065149924789213998,
+    "pressure_mean_saved_ranges_Pa": [
+      {"time_window_s": [0.01, 0.03125], "minimum": 7989.195498046875, "maximum": 11581.214735839843},
+      {"time_window_s": [0.03125, 0.0625], "minimum": 8126.40994555664, "maximum": 11217.226856445313},
+      {"time_window_s": [0.0625, 0.09375], "minimum": 8224.13656677246, "maximum": 10764.180499267579},
+      {"time_window_s": [0.09375, 0.125], "minimum": 8289.637111206055, "maximum": 10506.61737097168}
+    ],
+    "interpretation": "Saved pressure oscillation ranges shrink across these windows, with no observed runaway response. A substantial pressure oscillation remains; pressure RMS and spatial variation must not be called a temporal damping amplitude or a theory error. Settlement definitions use fixed initial native material IDs."
+  },
+  "decision": "Proceed with the already declared fresh GPU half at dt=2^-20, same exact saved times, geometry, material, ramp/drain and noaux configuration. Preserve the original all1277-sample pressure-RMS5Pa, materialXYZ0.005mm and actual-time1e-14s limits. Half was launched only after the coarse native receipt and this physical overview; no duplicate solver or coarse rerun.",
+  "limitations": [
+    "One coarse trajectory and normal native completion are not independent-half, theory, quasi-static equilibrium or full-consolidation acceptance.",
+    "The declared ramp/drain event is shifted by0.2288818359375microseconds relative to the old decimal-time experiment; there is no same-dt old-prefix equivalence claim.",
+    "Ordinary122.0703125microsecond saves sample the response but do not certify all high-frequency envelopes.",
+    "No matched-setting legacy u-pw OFF control, full force-stage budget, CPU ringdown, auxiliary stabilization or server release has been completed for this new window."
+  ]
+}

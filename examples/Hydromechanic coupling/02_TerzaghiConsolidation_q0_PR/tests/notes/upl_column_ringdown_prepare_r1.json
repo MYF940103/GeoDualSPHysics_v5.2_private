@@ -1,0 +1,43 @@
+{
+  "stage": "upl_column_ringdown_prepare_r1_author",
+  "status": "author_only_not_executed_no_inputs_prepared",
+  "files": ["support/upl_column_ringdown_prepare_r1.ps1", "notes/upl_column_ringdown_prepare_r1.json"],
+  "future_explicit_command": "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_column_ringdown_prepare_r1.ps1 -Mode Prepare -ExecutionAuthorized",
+  "authority": "Root must full-read and separately authorize Prepare. This recipe never builds or starts GenCase, a solver, reader, comparator, OFF control or another job. Authoring this recipe does not create its configs, seed or receipt.",
+  "inputs": "Use only the sealed prepared/passed logs/upl_column_public_r1.inputs.json and its three same-window public ON configurations/runtimes, original1040-particle BI4 and Normals. Verify actual Entries and fixed retained XML/BI4/Normals SHA256 before mutation/copy; do not recursively treat historical source originals as current. Bind this author/note, the dyadic plan and fully read JDsOutputTime.cpp. No duplicate source265 scan.",
+  "future_paths": {
+    "configs": "configs/upl_column_ringdown_{smoke,coarse,half}_r1.xml",
+    "seed_directory": "outputs/upl_column_ringdown_seed_r1",
+    "runtime_prefix": "outputs/upl_column_ringdown_seed_r1/upl_column_ringdown_{smoke,coarse,half}_r1",
+    "receipt": "logs/upl_column_ringdown_r1.inputs.json"
+  },
+  "retained_binary_identity": {
+    "initial_BI4_bytes": 47184,
+    "initial_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_bytes": 1479,
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "particle_fields_rewritten": false
+  },
+  "declared_jobs": [
+    {"window": "smoke", "dt_s": 0.0000019073486328125, "end_s": 0.000003814697265625, "steps": 2, "expected_samples": 3},
+    {"window": "coarse", "dt_s": 0.0000019073486328125, "end_s": 0.125, "steps": 65536, "expected_samples": 1277},
+    {"window": "half", "dt_s": 0.00000095367431640625, "end_s": 0.125, "steps": 131072, "expected_samples": 1277}
+  ],
+  "allowed_DOM_changes": "Exactly DtIni/DtFixed/TimeMax/TimeOut values, HydroMechTopLoadRampTime and HydroMechDrainageStartTime values, two parameter comments and the full-run special timeout node. Serialize the indented body in memory with OmitXmlDeclaration, prepend the original XmlDeclaration.OuterXml verbatim plus LF and write UTF8 without BOM: retain smoke UTF-8 and full utf-8 declaration spelling, four-space indentation and LF, not one flattened OuterXml line. Reload the actual saved config, reverse all six values/comments and restore the exact original timeout node, requiring complete whitespace-normalized OuterXml equality. Smoke originally has no special timeout and keeps it absent. No other attribute, geometry, boundary, material, initial field or schedule mutation is allowed.",
+  "invariants": "Public master1, conductivity model0/Ck0, g0, Xperiodic,1000soil40fixed, TopKernelBand q010000, fixed-grid drain, FreeSlip bottom, noaux, material and all original particle fields remain identical. Generated configuration and runtime XML must be byte-exact copies; retained BI4/Normals are copied without changes. No formal case-root edits.",
+  "clock_event": "Both ramp end and drain start become5243*2^-19=0.0100002288818359375s, exactly coarse5243/half10486 nominal steps. This is a newly declared experiment with shifted event and changed dt, not preservation or repair of the prior decimal-dt trajectory.",
+  "schedule": {
+    "smoke": "Save initial0 and every coarse-dt step1/2, using default TimeOut=2^-19 and no special timeout.",
+    "full": "Default64*2^-19; special segments (time,timeout)=(0,64*2^-19),(5120*2^-19,2^-19),(5376*2^-19,64*2^-19). Sorted union coarse{0:64:65536} with{5120:1:5376}; half saved completed steps are each coarse step*2. Exactly1277 samples each, no decimal biases.",
+    "preflight": "Literal binary64 JDsOutputTime::GetNextTime replay, including segment advancement t>=anchor, Floor for unsigned nonnegative integer quotient, strict nexttime>t and next-anchor clipping. Simulate the actual initial-save/TimeStep+=dt/save/final ordering. Compare every result to an independent sorted integer union, saved Step=completed-1 except initial0, exact dyadic accumulated clocks and coarse/half time bit patterns. This is plan-only arithmetic, not a native simulation result.",
+    "source_pin": "src/source/JDsOutputTime.cpp SHA256 b26c1b87f090b28bdc72c28d6ed7dfeee0ad7a0bcd28eb428f1ae72716d0c72f, fully read Config/AddTimeOut/ReadXml/LoadXml/GetNextTime. Reject another scheduler source rather than claim the replay still matches it.",
+    "full_event": "Part203 saves completed5243/10486; part204 saves5244/10488. There are1073 declared post-open saved frames, not proof of actual mask counts or10730 accepted drain rows. Half completed10487 is not a saved paired frame. Native clocks and actual mask/p0 must be verified later."
+  },
+  "receipt_contract": "stage upl_column_ringdown_prepare_r1; passed/prepared true only if all3 jobs/12 config-runtime-binary Entries and bindings verify. physical_acceptance=false. jobs include window,backend_shared_runtime,configuration/runtime/initial_BI4/normals Entries,input_prefix,dt_s/end_s/steps/expected_samples,required_CLI,retained lineage,declared_clock_event_only_changes=true,inverse_DOM_exact=true,master/model/Ck and event declarations. Each job.saved_clock_table persists EVERY explicit part/completed_steps/saved_step/time_s row:3/1277/1277. Each scheduler_preflight is declared-only. Top inputs/bindings/files are flat Entry arrays; source_replayed_schedule_preflight records1277 pairing/event assertions. No observed native result is invented.",
+  "fresh_and_failure": "Reject any existing target seed, any of three configs or receipt before writing. Never overwrite/delete retained files. Once future Prepare begins, preserve fresh partial files and write passed/prepared=false with failure when possible; no retries or automatic cleanup. All selected input/author/scheduler bindings are verified before and after, and every completed output is rehashed. Preparation success is not numerical admission.",
+  "limitations": "ON-only inputs. Matched OFF controls, solver/native execution, safety/half/response QC, theory comparison, full consolidation/Tv and any longer window remain unprepared/unexecuted and require separate root authority. No production/doc/canonical changes, no threshold changes or field resets.",
+  "prepared": false,
+  "solver_or_reader_run": false,
+  "production_changes": false,
+  "physical_acceptance": false
+}
