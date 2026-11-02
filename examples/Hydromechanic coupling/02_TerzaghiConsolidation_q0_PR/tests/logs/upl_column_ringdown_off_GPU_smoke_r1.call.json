@@ -1,0 +1,66 @@
+{
+    "program":  {
+                    "path":  "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+                    "bytes":  3827200,
+                    "sha256":  "db5aaaf6fa07566eb10b71f5864e2229d8f061950618bb1270a56a25acd17589"
+                },
+    "target_program":  {
+                           "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_Debug_r1\\gpu\\DualSPHysics5.2_win64_debug.exe",
+                           "bytes":  182957056,
+                           "sha256":  "425f61e5cfaa98849ecf35779e5773f51bf716c49d8276e1bfc5fed9002de5af"
+                       },
+    "arguments":  [
+                      "--tool",
+                      "memcheck",
+                      "--leak-check",
+                      "full",
+                      "--error-exitcode",
+                      "99",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_Debug_r1\\gpu\\DualSPHysics5.2_win64_debug.exe",
+                      "-gpu:0",
+                      "-stable",
+                      "-mdbc_freeslip",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_ringdown_off_seed_r1\\upl_column_ringdown_off_smoke_r1",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_ringdown_off_GPU_smoke_r1",
+                      "-dirdataout",
+                      "data",
+                      "-svres",
+                      "-nsteps:2"
+                  ],
+    "target_arguments":  [
+                             "-gpu:0",
+                             "-stable",
+                             "-mdbc_freeslip",
+                             "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_ringdown_off_seed_r1\\upl_column_ringdown_off_smoke_r1",
+                             "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_ringdown_off_GPU_smoke_r1",
+                             "-dirdataout",
+                             "data",
+                             "-svres",
+                             "-nsteps:2"
+                         ],
+    "working_directory":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src",
+    "started_utc":  "2026-11-02T19:59:31.0383217Z",
+    "ended_utc":  "2026-11-02T19:59:40.1710076Z",
+    "direct_native_call":  true,
+    "typed_LASTEXITCODE_captured_immediately":  true,
+    "owned_call_exited":  true,
+    "exit_code":  0,
+    "invocation_failure":  null,
+    "log":  {
+                "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_ringdown_off_GPU_smoke_r1.log",
+                "bytes":  24772,
+                "sha256":  "4930c6c909b4ea58effff64f3a90ced2e38bc3c95d01e84d8e386a264d5e8ad7"
+            },
+    "public_project_main":  true,
+    "fixture_or_Run_override":  false,
+    "memcheck_executed":  true,
+    "memcheck_zero_errors_and_leaks":  true,
+    "memcheck_tool_source":  {
+                                 "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_perm_component_Debug_r1.call.json",
+                                 "bytes":  8146,
+                                 "sha256":  "c9611d2b392a9545cdbba739a9060606ea16da88802f6c3732828dfd26ea55bc"
+                             },
+    "direct_target_call":  false,
+    "target_child_exit_separately_observed":  false,
+    "physical_acceptance":  false
+}

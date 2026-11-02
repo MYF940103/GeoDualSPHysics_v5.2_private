@@ -1,0 +1,62 @@
+{
+  "stage": "upl_column_ringdown_on_off_root_r1",
+  "date_local": "2026-11-03",
+  "status": "four_actual_GPU_trajectories_reviewed_both_independent_halves_passed",
+  "passed_bounded_comparison_review": true,
+  "physical_acceptance": false,
+  "evidence": [
+    "notes/upl_column_ringdown_root_r1.json",
+    "logs/upl_column_ringdown_off_admission_r1.json",
+    "logs/upl_column_ringdown_off_r1.inputs.json",
+    "logs/upl_column_ringdown_off_GPU_smoke_r1.run.json",
+    "logs/upl_column_ringdown_off_GPU_smoke_r1.native.json",
+    "logs/upl_column_ringdown_off_GPU_coarse_admission_r1.json",
+    "logs/upl_column_ringdown_off_GPU_coarse_r1.run.json",
+    "logs/upl_column_ringdown_off_GPU_coarse_r1.native.json",
+    "logs/upl_column_ringdown_off_GPU_half_r1.run.json",
+    "logs/upl_column_ringdown_off_GPU_half_r1.native.json",
+    "logs/upl_column_ringdown_half_r1.check.json",
+    "logs/upl_column_ringdown_off_half_r1.check.json",
+    "logs/upl_column_ringdown_on_off_r1.check.json",
+    "logs/upl_column_ringdown_profile_readability_r2.check.json"
+  ],
+  "original_independent_half_limits": "Each framework separately:all1277 actual-time pairs,1000soil,pressureRMS<=5Pa/materialXYZ difference<=0.005mm/timegap<=1e-14s. No interpolation or relaxed threshold.",
+  "ON_half": {"pressure_RMS_max_Pa": 1.27276953561237, "material_XYZ_max_mm": 0.00001538168927926732, "time_gap_s": 0},
+  "OFF_half": {"pressure_RMS_max_Pa": 2.280231152134655, "material_XYZ_max_mm": 0.0003828933352039482, "time_gap_s": 0},
+  "native_scope": "Both1277-frame Runs per framework complete at.125s,65536/131072steps. ON retains native22 and single-J ledger; OFF retains original15,with all seven dynamic arrays and model metadata absent. All true drainage,finite/elastic/no-exclusion/clock/signed-step checks passed. Original1040 seedIDs/geometry/material/clocks/executable are shared; only the master token changes.",
+  "instantaneous_end_comparison": {
+    "actual_time_s": 0.125,
+    "ON_coarse_pressure_mean_Pa": 9947.023650634766,
+    "OFF_coarse_pressure_mean_Pa": 9323.44918762207,
+    "ON_half_pressure_mean_Pa": 9947.313638366699,
+    "OFF_half_pressure_mean_Pa": 9323.341203735352,
+    "ON_coarse_top_material_settlement_mm": 0.2527411520824252,
+    "OFF_coarse_top_material_settlement_mm": 0.23898512170587027,
+    "ON_half_top_material_settlement_mm": 0.25274213676064194,
+    "OFF_half_top_material_settlement_mm": 0.23879157668824647
+  },
+  "descriptive_same_grid_difference_maxima": {
+    "coarse_mean_pressure_Pa": 749.277939575195,
+    "half_mean_pressure_Pa": 748.9162318725594,
+    "coarse_bottom10_pressure_Pa": 1107.7881835937496,
+    "half_bottom10_pressure_Pa": 1107.7834960937507,
+    "coarse_top10_settlement_mm": 0.013756030376554929,
+    "half_top10_settlement_mm": 0.01395056007239548,
+    "not_half_errors_or_theory_errors": true
+  },
+  "visual_review": {
+    "main_agent_viewed": [
+      "figures/upl_column_ringdown_on_off_r1_history.png",
+      "figures/upl_column_ringdown_on_off_r1_profiles.png",
+      "figures/upl_column_ringdown_profile_readability_r2_profiles.png"
+    ],
+    "matching_source_CSV_rows": {"history": 5108, "material_layer_profiles": 1200},
+    "readability_fix": "Original r1 velocity ticks were crowded. The fresh r2 profile-only render uses exactly the same1200-row CSV, fewer scientific-notation ticks and no new reductions/CSV or changed data. Root visually confirmed readability; r1 artifacts are retained unchanged.",
+    "finding": "Both noaux frameworks retain coherent startup pressure oscillations. ON has greater residual oscillation and larger top settlement in this window; each own coarse/half overlaps closely. This is not a new late-pressure platform or a demonstrated physical-accuracy improvement."
+  },
+  "interpretation": "The master changes J-derived inertia/quadrature, complete Darcy/Lstar and closed-face closure together. This is complete-framework A/B,not isolated acceleration/porosity/boundary causality. The window reaches only roughlyTv0.00315; classical/finite-Kw quasi-static curves are not exact ramp/inertia references. Lian2023 sections3.5.1/4.1 motivate a later explicitly defined damping-compatibility experiment,not silently enabling old damping or fitting the picture.",
+  "observed_loops_s": {"ON_coarse": 451.263428, "ON_half": 896.768188, "OFF_coarse": 236.570831, "OFF_half": 464.131012},
+  "cost_limit": "The current dynamic implementation costs about1.9x the matched OFF loop in this single small-GPU cohort. This is not a general backend/whole-machine benchmark. Before any full run,measure a sequential same-input ON CPU1/CPU8/GPU triplet and keep native compatibility checks. Do not blindly extend122us diagnostic output through2Tv.",
+  "next": "Only bounded025s/10000step/769frame controlled-cost experiments are admitted next. Then review minimal existing stabilizer compatibility and justified longer consolidation/theory checks. No formal/server installation,full-cycle,Cryer/Lian/general-wall/plasticity or restart acceptance is implied.",
+  "preservation": "No production C++/CUDA or formal XML/BAT/result changed during this diagnostic. ON verified evidence is local/remote checkpoint8865b6da72c7b74d80f522a384df5c10c86ee495; OFF evidence awaits selective backup. Raw BI4/readout binaries stay local hash-bound evidence,not cloud Git data."
+}

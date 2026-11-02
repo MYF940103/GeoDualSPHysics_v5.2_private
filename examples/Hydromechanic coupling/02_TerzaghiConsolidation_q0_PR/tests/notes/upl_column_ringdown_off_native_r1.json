@@ -1,0 +1,96 @@
+{
+  "stage": "upl_column_ringdown_off_native_r1",
+  "status": "author_candidate_only_not_built_or_run",
+  "files": [
+    "support/upl_column_ringdown_off_native_r1.cpp",
+    "notes/upl_column_ringdown_off_native_r1.json"
+  ],
+  "purpose": "Pure GPU-only native decoder for a proposed matched noaux legacy u-pw OFF dyadic cohort. HydroMech remains ON; only the dynamic master is OFF. No solver/private constructor, Run/ComputeStep/restart, BI4 changes, native-state repair or theory/equivalence gate.",
+  "cli": "--read GPU DATA smoke|coarse|half FRESH_NEW_REVIEW (argc6). CPU is explicitly rejected until its own saved-wall lifecycle is audited.",
+  "reuse": {
+    "include": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "note": "notes/upl_cpu_public_native_r1.json",
+    "note_sha256": "70a9464b849dc31c7ea3275a03e1817fea4de07dcc4ba6c86ded9c386aaaabc4",
+    "scope": "One main rename/one AppInfo. Reuse immutable Load(file,Total,-1): its already audited OFF branch reads exact original15 types/counts/finite values/IDs, requires all seven dynamic arrays absent and leaves dynamic vectors empty. Small Load15 adds only arrayCount15/global+PART metadata absence/explicit empty-vector checks. Reuse Original15/Sequence/scalar helpers; never call Load(model0), Metadata, Physical, Read, Energy or Half/wave gates."
+  },
+  "native_types": "1040 contiguous native IDs:40fixed IDs0..39,1000soil40..1039. Exact arrays: Idp uint; Posd double3; Vel/Sigma_kk/Sigma_ij/FSNormal/HydroMechLoadAce float3; Rhop/Kplastic/PorePress/PorePress0/ExcessPorePress float; SigmaState_kk/SigmaState_ij double3; FSType uint. SigmaState_ij storage xy,yz,xz is mapped honestly to physical xy,xz,yz.",
+  "absence": "Exactly15 arrays. PoroVolumeRatio/PoroPorosity/PoroThetaLastStage/PoroCurrentVolume/PoroMixtureDensity/PoroHydraulicConductivity/PosDiv all absent. HydroMechDynamicSeepage/DynamicSeepageSchema/HydroMechConductivityModel/HydroMechConductivityCk absent in BOTH global and PART data. No zero J/n/theta/V/rho/k/PosDiv, no derived surrogate ledger, no fabricated last_poro or public metadata.",
+  "presets": [
+    {
+      "name": "smoke",
+      "samples": 3,
+      "dt_s": 0.0000019073486328125,
+      "completed_steps": 2,
+      "end_s": 0.000003814697265625,
+      "saved_steps": [
+        0,
+        1,
+        2
+      ]
+    },
+    {
+      "name": "coarse",
+      "samples": 1277,
+      "dt_s": 0.0000019073486328125,
+      "completed_steps": 65536,
+      "end_s": 0.125,
+      "saved_steps": "sorted unique union0:64:65536 with5120:1:5376"
+    },
+    {
+      "name": "half",
+      "samples": 1277,
+      "dt_s": 9.5367431640625e-7,
+      "completed_steps": 131072,
+      "end_s": 0.125,
+      "saved_steps": "every coarse completed step times2"
+    }
+  ],
+  "clock": "Replay true sequential binary64 additions of preset dt to every declared completed step; exact native TimeStep and Step=(completed?completed-1:0), typed SymplecticDtPre==dt. Signed dterror is actual max(FixedDt-DtVariable), not absolute residual: finite and<=1e-14 for every noninitial nonempty interval; initial -DBL_MAX empty sentinel explicitly recorded/excluded. End must equal .125 exactly (smoke2dt). Legacy OFF telemetry is not evidence of ON complete-rate/current-J coupled-step guard.",
+  "geometry": "Same accepted cell-centred10x100soil+10x4fixed lattice, dp.01,h=float.018,rho02100,MassFluid/MassBound=float.21,2D y0/X-periodic extent.1,no moving/floating/symmetry/dynamicNp/reusedIDs/no exclusions. Initial original15 rest is checked; every native typed value finite, Kplastic0,p00,float excess=p-p0, legacy float stress actual rounding from six double stress fields, native FSType<=4. Soil legacy density700..3000,y0,z>0. These saved checks are not force-stage/integrator observations.",
+  "fixed_GPU_source": "JSphGpuSingle.cpp696..700/787 uses Dbl mDBC for HydroMech. JSphGpu_ker.cu3479..3493 extrapolates actual fixed pore pressure,3519ff/3614..3617 extrapolates stress; these may be nonzero and are preserved. FreeSlip itself keeps Vel.xyz and stores TangenVel separately; completed GPU SymplecticCor in JSphGpuSimple_ker.cu835..842 resets fixed stored VelXYZ0/rho0. Static fixed positions are not moved; SaveData1209..1218/ParticlesDataDown855..921 downloads and normal-compacts them without OFF DynamicWall reclosure. Thus GPU saved fixed Pos bits/Vel0/rho2100 are guarded, not asserted for every force stage or for CPU.",
+  "fixed_other_fields": "PorePress0 fresh allNp memset0(Single219..220), InitNone earlyreturn(Gpu1279), thereafter sort/periodic copy: all saved p00 valid. Fixed Kplastic fresh0(Single207), fixed Pre/Corr skip updates:0 valid. Soil Kplastic0 remains an elastic acceptance gate, not an assumed default. Original15 FSNormal is NOT loaded BoundNormal. No fixed p/stress-zero marker is imposed; all fixed fields are serialized unchanged.",
+  "drainage": "Declared ramp/drain event5243*2^-19=.0100002288818359375 is a preset, not native metadata. Event equality frame is pre-open; completed>5243(coarse)/10486(half) alone activates the saved post-open gate. For every actual soil FSType2/3 require actual p==0. Full1277 contains1073 post-open frames; require actual drainage mask nonempty in each, report min/max/count without inventing10-per-frame result. No J/density freezing claim or ON post-drain row counts inherited.",
+  "outputs": {
+    "original15.bin": "uint32[1040,15,samples]; each actualtime f8 then exact original stable-ID typed bytes=166408bytes/frame including time. No common-array downcast.",
+    "common24.bin": "uint32[1000,24,samples]; each actualtime f8 then1000x24 f8=192008bytes/frame. Explicit separate schema, not physical26.",
+    "clock.bin": "uint32[samples,28]; each unaligned actualtime f8/savedStep u4/lockedDt f8/signeddterror f8.",
+    "native_ids.csv/fixed_ids.csv": "Initial material row/id/x0/y0/z0, kept separate.",
+    "history.csv": "Actual clock/completed-step/drain counts; soil pRMS/mean/top10/bottom10 pressure, material XYZ displacement max, down-positive settlement mean/top10/bottom10/absmax, XYZ velocity RMS/means, six stored mean stress components/Frobenius RMS, passivelegacyrho min/max. Descriptive only, no unavailable J/theta or rho(J).",
+    "fixed_samples.csv": "All24 common fields at actual fixed native IDs/time. p/stress mirrors preserved, no material interpretation.",
+    "columns.csv/completion.json": "Full field names and explicit absence/provenance/limited passed flag. Exactly9 declared output leaves."
+  },
+  "columns": [
+    "x",
+    "y",
+    "z",
+    "vx",
+    "vy",
+    "vz",
+    "PorePress",
+    "PorePress0",
+    "sigma_xx",
+    "sigma_xy",
+    "sigma_xz",
+    "sigma_yy",
+    "sigma_yz",
+    "sigma_zz",
+    "Kplastic",
+    "FSType",
+    "FSNormal_x",
+    "FSNormal_y",
+    "FSNormal_z",
+    "ExcessPorePress",
+    "LoadAce_x",
+    "LoadAce_y",
+    "LoadAce_z",
+    "legacy_Rhop"
+  ],
+  "scope": "No5Pa ON/OFF equality gate; independent OFF coarse/half future pressureRMS<=5Pa/materialXYZ-displacement-difference max<=.005mm/actualtimegap<=1e-14 and strict initial identities. ON/OFF differences descriptive only. No interpolation, wave-normalized1e-4/J1e-4/CFL.01/energy1.1, material-mass force inference or full-consolidation/theory/benchmark acceptance.",
+  "owner_responsibility": "Future owned runner/reader owner must bind same current GPU project main/source265/doc/canonical7/runtime4, ON/OFF inverse-DOM master-only runtime pair, raw BI4 and owned typed exits/input hashes before/after. The pure decoder cannot prove its backend label, input/model flags, executable identity, noaux parameters or force-stage safety from these fifteen arrays alone.",
+  "physical_acceptance": false,
+  "program_executed": false,
+  "inputs_prepared": false,
+  "production_changes": false
+}
