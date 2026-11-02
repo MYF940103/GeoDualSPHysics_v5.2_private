@@ -1,0 +1,173 @@
+{
+  "stage": "upl_gpu_column_root_r1",
+  "date_local": "2026-11-03",
+  "base_commit": "d3ac9c244c75a0f0ce66b8390fc762d5a1d6fca1",
+  "status": "bounded_private_GPU_loaded_column_025s_implementation_verified_public_entry_next",
+  "production_modified": [
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+  ],
+  "source_purposes": [
+    "Current-J raw confinement and normalized band inertia preserve reference q(t)A0; old null-J u-pw arithmetic retained.",
+    "Dynamic drainage rate/predictor/corrector pressure uses matching geometry and refreshes projected periodic pressure.",
+    "Closed-face Taylor-defect gradient uses the CPU same-stage normal target without altering interior symC, acceleration divergence, J or integration.",
+    "Only the exact private constant-k/g0/one-upward-FreeSlip/X-periodic loaded fixture is admitted at this checkpoint; normal public XML entry still excludes it."
+  ],
+  "builds": "Required default CPU Debug and isolated authoritative GPU Debug/Release builds passed. Canonical seven/server programs and four runtime originals remained unchanged; no installation.",
+  "components": "Debug memcheck0errors/0leaks; both configurations12000 conditional rates/4000 load rows/negative controls passed unchanged propagated arithmetic budgets. Exact-plane horizontal forcing and actual measured normals are distinct tests; earlier fixture/wrapper failures preserved.",
+  "compatibility": "DefaultOFF151frames1040IDs original15 typed plus actual clock/Step/dterror exact. Five old dynamic no-load periodic/wall/gravity257-frame trajectories passed original soil33 and applicable fixed-sidecar scope. No broad all-wall-array claim.",
+  "actual_runs": {
+    "hardware": "NVIDIA GeForce RTX 3050 local, not server RTX A6000",
+    "smoke": "Fresh Debug2steps3frames memcheck0/0 and independent native/live-final check.",
+    "coarse": {
+      "dt_s": 0.0000025,
+      "steps": 10000,
+      "samples": 769,
+      "actual_end_s": 0.024999999999998482,
+      "loop_s": 71.988457
+    },
+    "half": {
+      "dt_s": 0.00000125,
+      "steps": 20000,
+      "samples": 769,
+      "actual_end_s": 0.025000000000007405,
+      "loop_s": 139.595047
+    },
+    "single_run": "Each full run all1040 native IDs and original finite/elastic/no-loss/clock/ledger checks; all359 post-open frames have exactly10 active FSType2/3 drained receivers with strict p=0, J/theta continue. No PART restart or native-field rewrite."
+  },
+  "comparisons": {
+    "cross_coarse": {
+      "pressure_RMS_max_Pa": 0.00690197248599179,
+      "material_XYZ_diff_max_mm": 0.000001416684924476025,
+      "timegap_s": 0
+    },
+    "cross_half": {
+      "pressure_RMS_max_Pa": 0.011492993500930328,
+      "material_XYZ_diff_max_mm": 0.0000010615804704864172,
+      "timegap_s": 0
+    },
+    "independent_GPU_half": {
+      "pressure_RMS_max_Pa": 2.100399111503042,
+      "material_XYZ_diff_max_mm": 0.0000020758962770061404,
+      "timegap_s": 8.923417560424696e-15
+    },
+    "original_all_sample_limits": "5Pa pressure RMS, .005mm maximumXYZ material displacement difference,1e-14s actual paired time; all769 samples, no interpolation or relaxed thresholds.",
+    "independent_review": "Read-only peer independently recomputed all three original metrics exactly and rehashed1030 unique bound entries/1.73GB; no additional solver/decoder invocation. Soil FSNormal representations are not bitwise-equivalent; report all26 differences descriptively."
+  },
+  "figures": {
+    "profiles": 1500,
+    "history": 769,
+    "visual_QA": true,
+    "description": "Root viewed both complete PNGs: all CPU/GPU curves visually overlap, axes/units/legends/actual-time labels visible; original threshold lines and full-data insets retained. Matching CSVs preserve exact actual times. .010s event frame is pre-open. Profiles only nearest real states.",
+    "files": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_column_plot_r1_history.png",
+        "bytes": 620084,
+        "sha256": "eac845638a4894e3eae027d7596dc3219b1cb9dd9c67bab2c3e623501b4fb455"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_column_plot_r1_history.csv",
+        "bytes": 701492,
+        "sha256": "e42d6675c69e209ff46b6532587a75c921ca14087b30f6e8f5c7b115a12e01f7"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_column_plot_r1_profiles.png",
+        "bytes": 650835,
+        "sha256": "1524ce82d120b4a15927f8d957be14a71371487730f350e0e797688add45f2ee"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_column_plot_r1_profiles.csv",
+        "bytes": 277829,
+        "sha256": "dab739d8004fb17192c6102301579757e990455ce2b71ef0319c685314cec621"
+      }
+    ]
+  },
+  "physical_observation": "Startup and local drainage-opening transient remain resolved. Global pressure RMS retains a large slowly draining background, so its near-unity late/early ratio alone is not a growth metric. Saved pressure/material settlement/stress profiles match the retained CPU model, not an analytical reference.",
+  "incidents": [
+    "r1 smoke prefix ..xml failed before first CUDA API; no physical output. r2 fixes only parent+GetFileNameWithoutExtension with exact XML prefix check; failed r1 preserved.",
+    "First half r2 wrapper attempt failed a typed-bool path preflight before creating call/log/output; r3 owner casts path existence bool and adopts r2 smoke/coarse. Only one actual half solver Run occurred. All failures and source versions retained.",
+    "Earlier component fixture and offline-review failures preserved; completed native solvers never rerun to repair analysis."
+  ],
+  "primary_receipts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_component_Debug_r4.check.json",
+      "bytes": 196212,
+      "sha256": "20979561036e6a06b77d54b73a397e5f7edbbd6264eb1ae00fa0ca4e64a27773"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_component_Release_r4.check.json",
+      "bytes": 195959,
+      "sha256": "8ad666c3c3afeec6816c0038229e6209bd9e42f7396a64b203dec124b79c5424"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_off_r1.exact.json",
+      "bytes": 12689,
+      "sha256": "6eada0ec822b56aa57997e0da287a749b31bc4d2caf192d1c02737ae81cd354a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_legacy_r1.check.json",
+      "bytes": 27444,
+      "sha256": "05154bf602c9587c0845c8b854a91c85d09c346bf1c8d496331146d4fa1c7c6b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_smoke_r2.run.json",
+      "bytes": 13721,
+      "sha256": "bbf616e74f09f9db7d44be0a0ab7d1f5266597fef87606424e84a9566e3a6cdd"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_smoke_r2.native.json",
+      "bytes": 14824,
+      "sha256": "5d386b140fbd4812f39d8228ef1f219dd9f4c3974fa0e75b393820277f721ef9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_coarse_r2.run.json",
+      "bytes": 324556,
+      "sha256": "d496ac5159e5d945d8322e3534c2ed0791c5562e1dc9388eb48513d54bfe7e85"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_coarse_r2.native.json",
+      "bytes": 14875,
+      "sha256": "6f211e02fa6e5b42a1a71b50dc21138d1585ba397a5703ed23ad7da6f6c673fe"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_half_r2.run.json",
+      "bytes": 322985,
+      "sha256": "ffa2d7ff2692acb64779ced0a12c27b244eb75445fddc19320476e45f26e4afd"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_actual_half_r2.native.json",
+      "bytes": 14829,
+      "sha256": "3c7407dec410762ba0510d513e1fad4b338d8ec7ef1cdf04d3a2dcfec895c410"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_pair_cross_coarse_r1.check.json",
+      "bytes": 799954,
+      "sha256": "541b84caa8976b923a54cd8ea409e6d013177819db14ade605bf2972722bc1c4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_pair_cross_half_r1.check.json",
+      "bytes": 796779,
+      "sha256": "eab27315257180e556912308bdc236c0c6090069820f7a338116e6d89a9da1d9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_pair_half_r1.check.json",
+      "bytes": 707260,
+      "sha256": "9bfb108edff8b2d6790a4960ee03453a294e31797875f5eda58237766574ea32"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_column_plot_r1.check.json",
+      "bytes": 1320124,
+      "sha256": "e3ff10b08f29120b78dbcd67e4d54c1f03449dbcd6c9970666ac5c51b7006095"
+    }
+  ],
+  "next": "Save this verified bounded stage selectively local+remote, then minimal public XML-entry guard parity and independent extra-output contract; public same-backend .025s equivalence precedes a newly designed dyadic longer ringdown window and matched-setting OFF/ON physical control.",
+  "limitations": "Constant-k,g0,elastic2D,one upward FreeSlip bottom/Xperiodic,no HG/SPR/viscosity/damping. Only .025s independent half evidence; no continuum/theory/full-consolidation, general/curved/moving/NoSlip wall, plasticity, exact restart, public loaded-column or server-package acceptance. Loop timings are observed diagnostics, not controlled backend speedup. Same-force-stage resultant was component-tested, not independently observed at every actual internal force stage.",
+  "raw_backup": "BI4, executables, objects, source snapshots and large pointwise exports are hash-bound locally, not cloud Git backup.",
+  "implementation_verified_under_stated_scope": true,
+  "public_loaded_column_accepted": false,
+  "physical_acceptance": false,
+  "formal_case_admission": false,
+  "canonical_programs_installed": false
+}

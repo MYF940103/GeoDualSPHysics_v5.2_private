@@ -1168,7 +1168,13 @@ bool JSphGpu::IsHydroMechDrainageActive()const{
 //==============================================================================
 void JSphGpu::ApplyFreeSurfacePorePressure(){
   if(!HydroMech || !PorePressg || !FSTypeg)return;
-  cusph::ApplyFreeSurfacePorePressure(Np,Npb,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg);
+  const bool drainfs=IsHydroMechDrainageActive();
+  cusph::ApplyFreeSurfacePorePressure(Np,Npb,drainfs,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,DynamicPorePressure? PorePressRateg: NULL);
+  if(DynamicPorePressure && drainfs && PeriActive){
+    //-Projection changes native p after cloning; refresh before any wall/neighbour read.
+    unsigned *ridpg=PrepareDynamicPorePeriodicGpu();
+    if(ridpg)ArraysGpu->Free(ridpg);
+  }
   ApplyYaoTopStripPorePressureExtrapolation();
   Check_CudaErroor("Failed applying free-surface pore pressure.");
 }
@@ -1212,7 +1218,7 @@ void JSphGpu::ApplyHydroMechTopLoadAcceleration(){
 void JSphGpu::NormalizeHydroMechTopBandLoad(){
   if(!HydroMech || HydroMechTopLoadMode!=HMLOAD_TopKernelBand)return;
   const tdouble3 totals=cusph::ComputeHydroMechTopBandTotals(Np,Npb,double(MassFluid),double(KernelSize)
-    ,Poszg,Codeg,HydroMechLoadAceg,HydroMechTopLoadRawg,CellDiv->GetAuxMem(cusph::HydroMechTopBandAuxSize(Np)));
+    ,Poszg,Codeg,HydroMechLoadAceg,HydroMechTopLoadRawg,CellDiv->GetAuxMem(cusph::HydroMechTopBandAuxSize(Np)),PorosityFeedback? PoroJg: NULL);
   Check_CudaErroor("Failed reducing hydromechanical top-band load.");
   if(totals.y==0)return;
   if(!(totals.z<0))Run_Exceptioon("TopKernelBand requires a negative raw vertical load on the top support band.");
@@ -1545,7 +1551,8 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   swap(SigmaPreg,Sigmag);
   if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
-    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg);
+    cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg
+      ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);
   ComputeSymplecticPorosity(false,dt05);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Allocate memory to compute the diplacement.
@@ -1588,7 +1595,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
-  if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
+  if(HydroMech && !DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
   ComputeSymplecticPorosity(true,dt);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
@@ -1596,6 +1603,9 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   //-Aplica desplazamiento a las particulas fluid no periodicas.
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
+  if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
+    cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg
+      ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);
   //-Frees memory allocated for diplacement.
   ArraysGpu->Free(movxyg);   movxyg=NULL;
   ArraysGpu->Free(movzg);    movzg=NULL;
@@ -1615,6 +1625,10 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 //==============================================================================
 void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode){
   if(!DynamicPoreWall)return;
+  const bool loadedcolumn=(DynamicPorePressure && !HydroMechDynamicSeepage && Simulate2D
+    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
+    && HydroMechDrainage && HydroMechDrainageFixedGrid);
   if(!DynamicPorePressure || !PorosityFeedback || !Simulate2D || !CaseNpb
     || TBoundary!=BC_MDBC || !UseNormals || !boundnormal
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
@@ -1647,9 +1661,12 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
     if(!seen[side])plane[side]=xp;
     seen[side]=true;
   }
-  if(!seen[0] || !seen[1] || plane[1]-plane[0]<=2.*double(KernelSize)
-    || PeriY || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ)))
+  if(seen[0] && seen[1] && plane[1]-plane[0]<=2.*double(KernelSize))
+    Run_Exceptioon("GPU dynamic wall requires separated opposing mirror supports.");
+  if(!loadedcolumn && (!seen[0] || !seen[1] || PeriY || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ))))
     Run_Exceptioon("GPU dynamic wall requires separated opposing axis planes and tangential periodicity.");
+  if(loadedcolumn && (axis!=2 || !seen[0] || seen[1] || !PeriX || PeriY || PeriZ))
+    Run_Exceptioon("Private GPU dynamic consolidation requires one upward bottom plane and horizontal X periodicity.");
   const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};const bool periodic[3]={PeriX,PeriY,PeriZ};
   for(int a=0;a<3;a++)if(periodic[a]){
     for(int b=0;b<3;b++)if(!std::isfinite(component(inc[a],b)) || (b!=a && component(inc[a],b)!=0))
@@ -1658,7 +1675,7 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
   }
   for(unsigned p=0;p<Npb;p++){
     const double xm=component(AuxPos[p]+ToTDouble3(boundnormal[p]),axis);
-    if(!std::isfinite(xm) || xm<=plane[0] || xm>=plane[1])
+    if(!std::isfinite(xm) || (seen[0] && xm<=plane[0]) || (seen[1] && xm>=plane[1]))
       Run_Exceptioon("GPU dynamic wall mirror sample must lie strictly inside the fluid slab.");
   }
 }
@@ -1702,14 +1719,18 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(PorosityFeedback && !PorosityObserver)
     Run_Exceptioon("GPU porosity feedback requires the J observer state.");
   if(!PorosityObserver)return;
+  const bool loadedcolumn=(DynamicPorePressure && !HydroMechDynamicSeepage && Simulate2D && DynamicPoreWall
+    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
+    && HydroMechDrainage && HydroMechDrainageFixedGrid);
   if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones || AccInput || SoilDamping || SoilHourglassXi!=0
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
-    || (!DynamicPorePressure && (Gravity.x || Gravity.z)) || HydroMechDrainage
-    || HydroMechInitMode!=HMINIT_None || HydroMechTopLoadMode!=HMLOAD_None
+    || (!DynamicPorePressure && (Gravity.x || Gravity.z))
+    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without load, drainage, shifting or damping; finite in-plane gravity requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting/damping; load/drainage require the private constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
@@ -1805,7 +1826,8 @@ unsigned* JSphGpu::PrepareDynamicPorePeriodicGpu(){
     ridpg=ArraysGpu->ReserveUint();invalidg=ArraysGpu->ReserveUint();
     cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
     cusph::CalcRidp(true,Np-Npb,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg);
-    cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,CorrMatg,NULL,NULL,NULL,invalidg);
+    cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,CorrMatg,NULL,NULL,NULL,invalidg
+      ,IsHydroMechDrainageActive()? PorePressg: NULL);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     Check_CudaErroor("Failed extending GPU dynamic periodic matrices.");
     if(invalid<Np)Run_Exceptioon("GPU dynamic periodic copy has no valid normal-fluid native owner.");
@@ -1834,7 +1856,8 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
-      ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg);
+      ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
+      ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);

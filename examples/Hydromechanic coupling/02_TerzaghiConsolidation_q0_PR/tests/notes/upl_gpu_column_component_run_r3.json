@@ -1,0 +1,14 @@
+{
+  "stage": "upl_gpu_column_component_run_r3",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_gpu_column_component_run_r3.ps1",
+    "notes/upl_gpu_column_component_run_r3.json"
+  ],
+  "single_action": "Release component once only; use unchanged compiled component_Release_r2 helper/program. Debug component is never repeated. Explicit -DebugReviewReceipt must be the separately accepted offline adoption of sealed r2 Debug actual completion.",
+  "reason": "r2 GPU Debug native component completed every declared arithmetic/API/load/guard test and memcheck0/0, but its wrapper recomputation incorrectly used PowerShell casts [double][single].3/.0001, which evaluated to0 in this environment. Only the offline/reference literal spelling changes to0.3/0.0001; original r2 failed wrapper record remains false.",
+  "changes": "Require Release; select fresh Release_r3 log/call/run/output and new owner/note; explicit passed Debug offline review instead of failed r2 run; correct two leading-zero literals. Unchanged component CPP/r2 native stage/counter/budget/source265/objects/runtime/canonical protections. Remove unreachable Debug sanitizer launch.",
+  "gates": "All original12000 rate/12summary/4000load/4summary/4probe budget/invariance/analytic/force/negative gates unchanged. No physical solver, production edit, build, automatic follow-on, retry or relaxed envelope.",
+  "later": "Independent new offline r3 component review still records native data and actual-normal mechanism. No physical/public/formal admission.",
+  "physical_acceptance": false
+}

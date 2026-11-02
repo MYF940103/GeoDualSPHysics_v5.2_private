@@ -1,0 +1,29 @@
+{
+  "stage": "upl_column_public_plan_r1",
+  "date_local": "2026-11-03",
+  "status": "planned_after_GPU_private_025s_visual_review_and_verified_backup",
+  "purpose": "Expose the already tested private constant-k loaded/drained column through the existing default-OFF HydroMechDynamicSeepage XML master, before longer physical validation.",
+  "production_files": [
+    "src/source/JSph.cpp",
+    "src/source/JSphCpu.cpp",
+    "src/source/JSphGpu.cpp",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+  ],
+  "scope": "Fresh zero-gravity elastic2D constant-k, exactly one upward stationary axis FreeSlip bottom wall, X periodic, TopKernelBand and fixed-grid free-surface drainage. Keep original noaux, necessary step, no PART and all unsupported geometry/material guards.",
+  "minimal_change": "Remove the public-master exclusion only from the existing complete loadedcolumn predicate, and make CPU's opposing-plane guard conditional on not being that same loadedcolumn. The shared master-ON loaded preflight restricts constant model0/Ck0, Band+fixed-grid-drain, real fixed nodes and finite positive q with finite nonnegative ramp/drain times; no access to not-yet-loaded normals or backend flags. CPU/GPU force/rate/integration/kernel equations and default OFF path are unchanged. No general boundary or auxiliary stabilizer unlock.",
+  "verification_order": [
+    "Root full source review and independent bounded-scope audit; summarize changed locations and numerical consequences before editing.",
+    "Required default CPU Debug and authoritative isolated CPU Release/GPU Debug/Release builds, preserving canonical/server binaries.",
+    "Fresh public smoke then public .025s CPU/GPU same-physics native output comparisons to each retained private backend. All1040 original15/J/theta plus1000soil n/physical26 and clocks exact; public extra output/typed PART metadata/PosDiv/native derivedV-rho-k validated separately. GPU fixed n switches from private mirror sample to public zero marker by existing schema, not a masked physical field. No complete18-array or BI4 identity claim.",
+    "Preserve default-OFF equality and explicit unsupported cases/PART rejection; no general load or wall acceptance from a build.",
+    "Only after public compatibility, design a dyadic longer-window clock/cadence under the existing1e-14 paired-time rule, and a matched-setting noaux u-pw OFF/ON physical control. More than .025s requires reviewed admission; .05/.1s is ringdown diagnosis, not full consolidation.",
+    "Then constant-k full consolidation, theory/ramp/drain/settlement/stress/load/stability/cost review; Cryer and Lian in authorized order. Yao/TPI/nonlocal/landslide not reopened prematurely."
+  ],
+  "unchanged_limits": "5Pa all-sample pressure RMS, .005mm all-nativeXYZ material displacement difference,1e-14s actual paired clock; original single-run finite/elastic/ledger/no-loss/drainage/necessary-step rules. Same-model equivalence is not continuum accuracy.",
+  "physical_context": "Current .025s contains startup/ramp/drainage and local opening relaxation only; high absolute pressure includes its slowly dissipating baseline. Assess mean-subtracted/individual material histories before interpreting oscillation growth. Do not fit damping or HG merely to pass.",
+  "backups": "Preserve all raw results and failed wrappers; selectively commit/push each verified stage. Raw BI4/programs/objects/source snapshots remain local hash-bound, not cloud backup.",
+  "public_or_formal_accepted": false,
+  "physical_acceptance": false,
+  "solver_started": false,
+  "source_edited_by_plan": false
+}

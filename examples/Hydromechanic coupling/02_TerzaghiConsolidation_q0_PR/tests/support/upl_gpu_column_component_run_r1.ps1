@@ -1,0 +1,59 @@
+param([Parameter(Mandatory=$true)][ValidateSet('Debug','Release')][string]$Configuration)
+# One manufactured component invocation only; no solver, build or automatic follow-on.
+$ErrorActionPreference='Stop';$Configuration=if($Configuration -ieq 'Debug'){'Debug'}else{'Release'}
+$tests=Split-Path -Parent $PSScriptRoot;$repo=(Get-Item -LiteralPath $tests).Parent.Parent.Parent.Parent.FullName;$logs=Join-Path $tests 'logs'
+$tag='upl_gpu_column_component_'+$Configuration+'_r1';$folder=Join-Path $tests ('outputs\upl_gpu_column_component_'+$Configuration+'_run_r1')
+$record=Join-Path $logs ($tag+'.run.json');$callPath=Join-Path $logs ($tag+'.call.json');$log=Join-Path $logs ($tag+'.log')
+function E([string]$p){$f=Get-Item -LiteralPath $p -Force;[ordered]@{path=$f.FullName;bytes=[long]$f.Length;sha256=(Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function J([string]$p){[IO.File]::ReadAllText($p)|ConvertFrom-Json}
+function V($rows){foreach($r in $rows){if(!$r.path){throw 'Missing bound Entry'};$a=E $r.path;if($a.bytes -ne $r.bytes -or $a.sha256 -ine $r.sha256){throw "Changed artifact: $($r.path)"}}}
+function Fresh($paths){foreach($p in $paths){if(Test-Path -LiteralPath $p){throw "Retained path protected: $p"}}}
+function Save([string]$p,$value){Fresh @($p);[IO.File]::WriteAllText($p,($value|ConvertTo-Json -Depth 18)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))}
+function Need([bool]$yes,[string]$message){if(!$yes){throw $message}}
+function N($v){Need ($null -ne $v -and [string]$v -ne '') 'Missing number';$n=if($v -is [ValueType]){[double]$v}else{[double]::Parse([string]$v,[Globalization.CultureInfo]::InvariantCulture)};Need (![double]::IsNaN($n) -and ![double]::IsInfinity($n)) 'Nonfinite number';return $n}
+Fresh @($folder,$record,$callPath,$log)
+$hp=Join-Path $logs ('upl_gpu_column_component_'+$Configuration+'_r1.helper.json');$h=J $hp;$b=J $h.source_build.path;$s=J $h.source_freeze.path
+Need ($h.passed -and $h.status -ceq 'current_column_GPU_helper_linked_not_run' -and $h.kind -ceq 'component' -and $h.configuration -ceq $Configuration -and $h.exact_link_closure_verified -and $h.link_object_count -eq 111 -and @($h.objects).Count -eq 110 -and @($h.runtime).Count -eq 4 -and $h.source_and_protected_artifacts_unchanged -and !$h.program_run -and !$h.solver_started) 'Passed current component helper required'
+Need ($b.passed -and $b.configuration -ceq $Configuration -and $b.objects_exclude_main -and @($b.objects).Count -eq 110 -and $b.source_and_protected_artifacts_unchanged -and @($s.source).Count -eq 265 -and @($s.current_source_snapshot).Count -eq 265 -and @($s.canonical_programs_before).Count -eq 7 -and @($s.runtime_before).Count -eq 4) 'Current authoritative source265/objects110/canonical7/runtime4 closure required'
+foreach($c in @($h.compile_call,$h.link_call)){$v=J $c.path;Need ($v.owned_call_exited -and $v.typed_LASTEXITCODE_captured_immediately -and $v.exit_code -is [int] -and $v.exit_code -eq 0) 'Actual successful compiler/linker calls required'}
+$seedPath=Join-Path $logs 'upl_case02_short_r1.inputs.json';$seed=J $seedPath;$jobs=@($seed.jobs|Where-Object {$_.window -ceq 'coarse'})
+Need ($seed.prepared -and !$seed.solver_started -and $jobs.Count -eq 1) 'Sealed retained short coarse input required';$job=$jobs[0]
+Need ($job.runtime.sha256 -ceq 'd9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8' -and $job.initial_BI4.sha256 -ceq 'f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac' -and $job.normals.sha256 -ceq '0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97') 'Exact accepted XML/BI4/Normals identities required'
+$inputs=@((E $PSCommandPath),(E (Join-Path $tests 'notes\upl_gpu_column_component_run_r1.json')),(E $hp),(E $seedPath),$job.configuration,$job.runtime,$job.initial_BI4,$job.normals);$prior=$null;$mem=$Configuration -ceq 'Debug';$tool=$h.program;$toolSource=$null
+if(!$mem){$prior=E (Join-Path $logs 'upl_gpu_column_component_Debug_r1.run.json');$d=J $prior.path;Need ($d.passed -and $d.configuration -ceq 'Debug' -and $d.memcheck_zero_errors_and_leaks -and !$d.physical_acceptance) 'Own Debug component pass/memcheck0/0 required';V @($d.call,$d.completion);V $d.files;$inputs+=@($prior)}
+if($mem){$toolSource=E (Join-Path $logs 'upl_gpu_perm_component_Debug_r1.call.json');$m=J $toolSource.path;Need ($m.owned_call_exited -and $m.exit_code -is [int] -and $m.exit_code -eq 0 -and $m.memcheck_zero_errors_and_leaks -and $m.program.path -ceq 'C:\Program Files\NVIDIA GPU Computing Toolkit\CUDA\v11.7\compute-sanitizer\compute-sanitizer.exe') 'Accepted CUDA11.7 memcheck tool identity required';$tool=$m.program;$inputs+=@($toolSource,$tool,$m.log)}
+function Verify{
+  V $inputs;V $h.inputs;V $h.author_files;V $h.objects;V $h.tools;V $h.libraries;V @($h.source_build,$h.source_freeze,$h.program,$h.helper_object,$h.compile_call,$h.link_call,$tool)
+  V $s.source;V $s.canonical_programs_before;V $s.runtime_before;V @($s.documentation_snapshot.original,$s.documentation_snapshot.snapshot)
+  foreach($r in $s.current_source_snapshot){V @($r.original,$r.snapshot)};foreach($r in $h.runtime){V @($r.original,$r.copy)};foreach($r in $b.runtime){V @($r.original,$r.copy)}
+}
+Verify
+$targetArgs=@('--input',$job.runtime.path,'--out',$folder);$argv=$targetArgs
+if($mem){$argv=@('--tool','memcheck','--leak-check','full','--error-exitcode','99',$h.program.path)+$targetArgs}
+[IO.File]::WriteAllBytes($log,[byte[]]@());$start=[DateTime]::UtcNow.ToString('o');$code=$null;$launchFailure=$null;$saved=$ErrorActionPreference
+Push-Location (Join-Path $repo 'src')
+try{$ErrorActionPreference='Continue';$global:LASTEXITCODE=$null;& $tool.path @argv 2>&1|Tee-Object -FilePath $log -Append|Out-Host;$code=$LASTEXITCODE}catch{$launchFailure=$_.Exception.Message}finally{Pop-Location;$ErrorActionPreference=$saved}
+$text=[IO.File]::ReadAllText($log);$zero=$mem -and $text -match 'ERROR SUMMARY:\s*0 errors' -and $text -match 'LEAK SUMMARY:\s*0 bytes leaked in 0 allocations'
+Save $callPath ([ordered]@{program=$tool;target_program=$h.program;arguments=$argv;target_arguments=$targetArgs;working_directory=(Join-Path $repo 'src');started_utc=$start;ended_utc=[DateTime]::UtcNow.ToString('o');owned_call_exited=($code -is [int]);typed_LASTEXITCODE_captured_immediately=($code -is [int]);exit_code=$code;invocation_failure=$launchFailure;log=(E $log);memcheck_executed=$mem;memcheck_zero_errors_and_leaks=$zero;memcheck_tool_source=$toolSource;target_child_exit_separately_observed=$false;direct_target_call=(!$mem);physical_solver_invoked=$false;physical_acceptance=$false})
+$failure=$launchFailure;$completion=$null;$done=$null;$files=@();$postUnchanged=$false
+try{
+  Need ($code -is [int] -and $code -eq 0 -and !$launchFailure -and (!$mem -or $zero)) 'Owned component/tool call or original memcheck rejected'
+  $completion=E (Join-Path $folder 'completion.json');$done=J $completion.path
+  Need ($done.passed -and $done.stage -ceq 'upl_gpu_column_component_r1' -and $done.native_count -eq 1000 -and $done.fixed_count -eq 40 -and $done.actual_force_calls -eq 5 -and $done.explicit_complete_rate_calls -eq 12 -and $done.rate_rows -eq 9000 -and $done.affine_summary_rows -eq 9 -and $done.load_rows -eq 4000 -and $done.load_summary_rows -eq 4 -and $done.pressure_API_calls -eq 4 -and $done.normal_exact_method_rejections -eq 2 -and $done.bad_owner_invalid_index_rejections -eq 1 -and $done.periodic_owner_checks -gt 0 -and $done.named_scratch_restores -gt 0 -and $done.physical_steps_advanced -eq 0 -and !$done.host_PreCorr_or_Run_or_ComputeStep_or_SaveData_called -and !$done.actualRun_initial_field_overwritten -and $done.public_master -eq 0 -and !$done.physical_acceptance) 'Component coverage or held-scope mismatch'
+  foreach($key in @('max_rate_error_over_original_budget','max_normal_invariance_over_original_budget','max_load_resultant_over_original_budget','max_finished_force_over_original_budget')){$n=N $done.$key;Need ($n -ge 0 -and $n -le 1) ('Original budget rejected: '+$key)}
+  Need ((N $done.incompatible_signal_over_original_budget) -gt 100 -and (N $done.minimum_wrong_mass_over_original_budget) -gt 100) 'Original nonempty100budget negative controls rejected'
+  $rates=@(Import-Csv -LiteralPath (Join-Path $folder 'rates.csv'));$affine=@(Import-Csv -LiteralPath (Join-Path $folder 'affine.csv'));$loads=@(Import-Csv -LiteralPath (Join-Path $folder 'loads.csv'));$summary=@(Import-Csv -LiteralPath (Join-Path $folder 'load_summary.csv'));$probes=@(Import-Csv -LiteralPath (Join-Path $folder 'probes.csv'))
+  Need ($rates.Count -eq 9000 -and $affine.Count -eq 9 -and $loads.Count -eq 4000 -and $summary.Count -eq 4 -and $probes.Count -eq 4) 'Exact CSV row coverage differs'
+  foreach($r in $rates){foreach($p in $r.PSObject.Properties){$null=N $p.Value};$budget=N $r.budget;$ib=N $r.invariance_budget;Need ($budget -gt 0 -and $ib -gt 0 -and (N $r.old_budget) -gt 0 -and [Math]::Abs((N $r.actual_rate)-(N $r.independent_rate)) -le $budget -and (N $r.error_ratio) -ge 0 -and (N $r.error_ratio) -le 1 -and (N $r.invariance_error) -ge 0 -and (N $r.invariance_error) -le $ib) 'CSV conditional rate/original budget rejected'}
+  foreach($r in $affine){foreach($p in $r.PSObject.Properties){$null=N $p.Value};Need ((N $r.rows) -eq 1000 -and (N $r.upper_rows) -eq 500 -and (N $r.top_rows) -eq 10 -and (N $r.max_error_ratio) -le 1 -and (N $r.max_invariance_ratio) -le 1) 'Affine summary coverage/budget rejected';if((N $r.field) -eq 1){Need ((N $r.max_signal_ratio) -gt 100) 'Each incompatible normal variant needs100budget signal'}}
+  foreach($r in $loads){foreach($p in $r.PSObject.Properties){if($p.Name -cne 'in_actual_band'){$null=N $p.Value}else{Need ($p.Value -ceq '0' -or $p.Value -ceq '1') 'Band flag must be actual0/1'}}}
+  foreach($r in $summary){foreach($p in $r.PSObject.Properties){$null=N $p.Value};$lb=N $r.load_budget_N;$fb=N $r.force_budget_N;Need ($lb -gt 0 -and $fb -gt 0 -and [Math]::Abs((N $r.rhoV_LoadAce_N)-(N $r.retained_target_N)) -le $lb -and [Math]::Abs((N $r.rhoV_LoadAce_N)-(N $r.analytic_qA0_N)) -le $lb -and [Math]::Abs((N $r.rhoV_Ace_N)-(N $r.retained_target_N)) -le $fb -and [Math]::Abs((N $r.rhoV_Ace_N)-(N $r.analytic_qA0_N)) -le $fb -and (N $r.load_error_ratio) -le 1 -and (N $r.force_error_ratio) -le 1) 'Original same-stage resultant budget rejected';if((N $r.case) -ge 2){Need ((N $r.wrong_weight_ratio) -gt 100) 'Each non-J1 wrong-mass witness must exceed100budgets'}}
+  foreach($r in $probes){Need ($r.passed -ceq 'true') 'Exact-method/owner rejection probe false';$null=N $r.witness_count_or_invalid_index}
+}catch{$failure=$_.Exception.Message}
+try{Verify;$postUnchanged=$true}catch{if(!$failure){$failure=$_.Exception.Message}}
+if(Test-Path -LiteralPath $folder){$files=@(Get-ChildItem -LiteralPath $folder -File -Recurse|Sort-Object FullName|ForEach-Object {E $_.FullName})}
+$passed=(!$failure -and $postUnchanged -and $null -ne $done -and $code -is [int] -and $code -eq 0)
+Save $record ([ordered]@{stage='upl_gpu_column_component_run_r1';passed=[bool]$passed;configuration=$Configuration;inputs=$inputs;helper=(E $hp);source_build=$h.source_build;source_freeze=$h.source_freeze;call=(E $callPath);completion=$completion;files=$files;memcheck_executed=$mem;memcheck_zero_errors_and_leaks=$zero;source_inputs_objects_runtime_canonical_unchanged=$postUnchanged;conditional_CSV_budgets_rechecked=([bool]$passed);CSV_is_not_independent_device_or_neighbor_proof=$true;actual_force_calls=$(if($done){$done.actual_force_calls}else{$null});physical_solver_invoked=$false;physical_steps_advanced=0;physical_acceptance=$false;failure=$failure})
+if(!$passed){throw "Component rejected; preserve $record and outputs, no automatic retry"}
+Write-Output "One component sealed: $record"
+

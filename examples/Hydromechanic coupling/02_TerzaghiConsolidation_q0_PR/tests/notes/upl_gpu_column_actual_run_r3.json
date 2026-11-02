@@ -1,0 +1,14 @@
+{
+  "stage": "upl_gpu_column_actual_run_r3",
+  "status": "author_only_not_executed",
+  "base_owner": "support/upl_gpu_column_actual_run_r2.ps1",
+  "one_change": "Cast the half-stage cpu_cross.path existence test to bool before Need([bool]yes). PowerShell rejects a path string for the typed boolean. The r2 half invocation failed preflight before call/log/output creation; no solver started.",
+  "same_scope": "All helper/program/source/input/runtime/hash/physical/numerical rules and r2 own output/run/prior labels retained. r2 smoke/coarse are adopted, never rerun. Native completion stage remains actual_r1; no build/source change.",
+  "files": [
+    "support/upl_gpu_column_actual_run_r3.ps1",
+    "notes/upl_gpu_column_actual_run_r3.json"
+  ],
+  "cli": "Same owner parameters, intended half only after passed root half_admission_r2.",
+  "physical_acceptance": false,
+  "solver_started": false
+}

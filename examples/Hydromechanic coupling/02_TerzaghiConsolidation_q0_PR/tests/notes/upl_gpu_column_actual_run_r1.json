@@ -1,0 +1,71 @@
+{
+  "stage": "upl_gpu_column_actual_run_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_gpu_column_actual_run_r1.ps1",
+    "notes/upl_gpu_column_actual_run_r1.json"
+  ],
+  "cli": "-Window smoke|coarse|half -ComponentDebugReceipt ABS_JSON [-ComponentReleaseReceipt ABS_JSON] -DefaultOffReceipt ABS_EXACT_JSON -LegacyDynamicReceipt ABS_EXACT_JSON [-PriorGateReceipt ABS_JSON]",
+  "one_action": "Exactly one actual JSphGpuSingle::Run using reviewed immutable upl_gpu_column_actual_r1.cpp through current helper manifest. No Prepare, GenCase, build, reader, endpoint replay, subprocess queue or automatic next window. This note authorizes no execution.",
+  "windows": {
+    "smoke": {
+      "configuration": "Debug",
+      "steps": 2,
+      "dt_s": 0.0000025,
+      "end_s": 0.000005,
+      "samples": 3,
+      "memcheck": true
+    },
+    "coarse": {
+      "configuration": "Release",
+      "steps": 10000,
+      "dt_s": 0.0000025,
+      "end_s": 0.025,
+      "samples": 769
+    },
+    "half": {
+      "configuration": "Release",
+      "steps": 20000,
+      "dt_s": 0.00000125,
+      "end_s": 0.025,
+      "samples": 769
+    }
+  },
+  "helper": "logs/upl_gpu_column_actual_CFG_r1.helper.json: passed/status current_column_GPU_helper_linked_not_run/kind actual/110 non-main+1helper/runtime4, own typed compile/link0. No change to actual/helper/source files.",
+  "components": "Explicit ComponentDebugReceipt mandatory for all windows; ComponentReleaseReceipt additionally mandatory for Release. Same r1 component-run field schema, not a guessed future filename, fixed9000 count or old failed whole-pass claim: passed/configuration/source_inputs_objects_runtime_canonical_unchanged, call/completion/helper/source_build/source_freeze/files, Debug executed memcheck0/0. Bind and check own typed call0 and files, compare component's full265source identities with actual current265. Revised component counts and numeric gates belong to its separately reviewed component owner; old r1 failure stays false.",
+  "default_OFF": {
+    "requirement": "Explicit independent DefaultOffReceipt must exist and passed=true,all_original15_typed_exact=true,actual_clock_step_dterror_exact=true,physical_acceptance=false,nonempty files:E[],inputs:E[],source_build:E. The two exactness booleans prevent a passed solver-only OFF run from substituting for the independent native exact check. Rehash direct file/input bindings and source_build; its265source identities must match current source. Missing or false rejects before actual Run.",
+    "schema": "{passed:true,all_original15_typed_exact:true,actual_clock_step_dterror_exact:true,physical_acceptance:false,source_build:E,inputs:E[],files:E[]}. Root may supply a thin reviewed current-OFF admission wrapping its actual exact proof; do not point at unsupported historical builds."
+  },
+  "old_dynamic_gate": "Explicit LegacyDynamicReceipt with passed,true fresh_runs5,complete_same_dt_trajectories_exact,true actual_clock_step_dterror_exact,true source_build:E,inputs:E[],files:E[],physical_acceptancefalse. Five retained same-dt no-load coarse trajectories: constant/smooth periodic, constant/smooth opposing walls,constant tangential-gravity wall. Match current265 source identities; original soil33/fixed-sidecar scope is not relabelled all1280 original15. Root must review actual comparisons first, never infer native equality from solver exit.",
+  "prior_gate": {
+    "coarse": "Explicit root PriorGateReceipt {passed:true,window:'coarse',physical_acceptance:false,prior_run:E pointing exactly logs/upl_gpu_column_actual_smoke_r1.run.json,native_qc:E,inputs:E[]}. Prior own Run must pass memcheck0/0, actual_complete/call/files frozen. NativeQC E must independently pass with physical_acceptancefalse and nonempty files:E[]. Root admission certifies that QC applies to this exact own Run.",
+    "half": "Explicit root PriorGateReceipt analogous with window:'half',prior_run:E exactly own coarse run, cpu_cross:E,inputs:E[]. CPUcross must have passed/physicalfalse/nonempty files and be reviewed as own coarse nativeCPUcross. This is not a half-convergence result and does not automatically admit following trajectories.",
+    "history_rule": "Only current actual closure is rehashed as current. Prior Run raw outputs are directly hash-bound; root thin admission/proof Entries and proof.files are checked without recursively opening old CPU helper inputs or treating historical mutable GPU originals as current. No source hash is silently ignored: matching current265source is checked from source freeze identities."
+  },
+  "inputs": {
+    "smoke": "logs/upl_case02_smoke_r1.inputs.json runtime91361a48145bc12104484081172631dd3dde7667369a829ec733366139ab3336",
+    "coarse": "logs/upl_case02_flux_window25_r1.inputs.json jobs[coarse] XMLc6108504dba705347308dfb3615c945d702efb2e137399237286558d62957bc1",
+    "half": "Same manifest jobs[half] XMLe1871b60a83484775e37f89f3ce614a9629358c8e887b0c8dfce8ff779c54ad8",
+    "BI4": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "unchanged": "Existing prepared XML/BI4/Normals and configurations only; helper Runtime checks same private g0 constant/load/drain contract. GPU argv substitutes -gpu:0 -stable -mdbc_freeslip and matching -nsteps, not any physical XML or initial field."
+  },
+  "argv": "--solver WINDOW -gpu:0 -stable -mdbc_freeslip PREFIX FRESH_OUT -dirdataout data -svres -nsteps:2|10000|20000",
+  "owned_call": "smoke wraps actual target in accepted CUDA11.7 compute-sanitizer --tool memcheck --leak-check full --error-exitcode99; raw0errors/0bytes-leaks required. Tool program/exit and target program/arguments are distinct; no independently observed child-exit fiction. Release directly invokes target with reset-null and immediate original typed LASTEXITCODE. Fresh empty log is precreated; call is sealed before completion analysis.",
+  "outputs": {
+    "folder": "outputs/upl_gpu_column_actual_WINDOW_r1",
+    "call": "logs/upl_gpu_column_actual_WINDOW_r1.call.json",
+    "run": "logs/upl_gpu_column_actual_WINDOW_r1.run.json",
+    "log": "logs/upl_gpu_column_actual_WINDOW_r1.log",
+    "bindings": "All files under this one new output, including actual raw BI4/headers/Run.out/live_final/actual_complete, are hash-bound locally. No raw copy/publication is performed."
+  },
+  "postchecks": "Exact requested steps,dt,samples/end within original1e-14; actualFinish scope/source flags,1000soil40fixed,finite signed dterror<=1e-14 (retained empty sentinel honestly disclosed by helper),scratch release,solid ledger original5e-13,1000live rows. No decoder is called or guessed saved-frame physics. GPU J/theta native download versus derived n/V/rho/k and fixed mirror n not CPU0 marker remain explicit.",
+  "before_after": "Rehash helper.inputs/authors/110objects/program/helperobj/tools/libs/compiler-linker manifests; current265 originals and nested snapshot pairs,doc pair,canonical7,runtime4 originals/copies,sealed inputs,new owner/note and explicit gates. Same sources mean actual current raw identities; legitimate old build attribution is never rewritten. No whole-repository traversal.",
+  "failure": "All output/call/log/run paths must be absent. Any program/tool exit, memcheck, completion, analysis or posthash failure retains actual partials and seals passedfalse; no retry, delete, fallback, new native decode or solver following. A completed solver is not rerun because a later analysis fails.",
+  "held": "No new public switch, variable-k column, nonzero gravity, formal NoSlip/HG/SPR/damping physics, all-stage force/flux proof, nativeQCs, CPUcross, independent half5Pa/.005mm result, long-time/formal/physical acceptance. Original budgets are not changed or replaced by wave gates.",
+  "production_changes": false,
+  "physical_acceptance": false,
+  "author_executed_program": false
+}
+

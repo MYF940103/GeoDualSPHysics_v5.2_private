@@ -1,0 +1,92 @@
+{
+  "stage": "upl_gpu_column_plot_r1",
+  "status": "author_only_not_executed_or_visually_verified",
+  "purpose": "Three sealed pair checks first; then two descriptive scientific static PNGs and matching exact-value CSVs. No solver, native decoder, subprocess or new scientific acceptance gate.",
+  "author_files": [
+    "support/upl_gpu_column_plot_r1.py",
+    "notes/upl_gpu_column_plot_r1.json"
+  ],
+  "command": "D:/anaconda3/python.exe support/upl_gpu_column_plot_r1.py",
+  "optional_fresh_tag": "--tag upl_gpu_column_plot_rN (positive integer N; default r1); every output must not already exist, including partial failures",
+  "reused_dependency": {
+    "path": "support/upl_gpu_column_pair_r1.py",
+    "sha256": "1da9023466c34f3ab77287eb77ccec270b60d2e07389a48e1ea4466cf3bdea28",
+    "note": "notes/upl_gpu_column_pair_r1.json",
+    "functions": "entry/adopt/bind/readjson/require/dataset only; imported module main is not called",
+    "hash_cost": "One shared TRACKED cache verifies unique existing pair inputs and datasets once, plus one final unchanged-file rehash; no duplicate raw/source hash traversal per curve."
+  },
+  "prerequisites": [
+    "logs/upl_gpu_column_pair_cross_coarse_r1.check.json",
+    "logs/upl_gpu_column_pair_cross_half_r1.check.json",
+    "logs/upl_gpu_column_pair_half_r1.check.json"
+  ],
+  "required_prior": "All three passed=true, physical_acceptance=false, all declared gates true, 769 parts x 1000 soil IDs x 26 columns and sealed metrics/files/inputs. Original 5 Pa and 0.005 mm gates are unchanged; this plot script does not replace numerical QC.",
+  "datasets": {
+    "CPU_coarse": "logs/upl_case02_flux_window25_coarse_r1.native.check.json; retained OMP1, historical source snapshots only",
+    "GPU_coarse": "logs/upl_gpu_column_actual_coarse_r2.native.json",
+    "GPU_half": "logs/upl_gpu_column_actual_half_r2.native.json",
+    "note": "Loaded only after all pair checks pass. CPU half contributes the already sealed cross-half difference CSV, not a fourth backend state curve."
+  },
+  "schema": {
+    "name": "case02_private26_col21_ExcessPorePress_NOT_wave26",
+    "samples": 769,
+    "soil_count": 1000,
+    "soil_IDs": "40..1039",
+    "fixed_count": 40,
+    "physical": "12-byte (1000,26,769) header then actual time double and 1000x26 double values per frame",
+    "clock": "8-byte (769,28) header; actual double time, uint32 zero-based saved step, double locked dt, double signed dterror",
+    "columns": "Exact frozen pair.F list; column21 is native ExcessPorePress, NOT PosDiv. Native pressure is float promoted to double; J/theta/stored stress are native saved values. No native V/rho/k is fabricated."
+  },
+  "spatial_reduction": {
+    "layers": "Initial material z0, round(z0/0.01-0.5), exactly 100 layers x 10 soil IDs. All 1000 soil IDs included; fixed particles excluded.",
+    "top_bottom": "Initial layer99/top10 and layer0/bottom10, not dynamic sorting or fixed-wall samples",
+    "settlement": "Downward positive = -(z-z0)*1000 mm, not velocity integral",
+    "pressure_RMS": "sqrt(mean(p^2)) over all 1000 native soil IDs; not error against theory",
+    "stress": "-mean(stored sigma_zz) for compression-positive display, not a claimed total/effective-stress decomposition",
+    "theta": "Saved last-force theta RMS or layer mean; not a reconstructed instantaneous time derivative"
+  },
+  "figure_history": {
+    "path": "figures/upl_gpu_column_plot_r1_history.png",
+    "csv": "figures/upl_gpu_column_plot_r1_history.csv",
+    "rows": 769,
+    "panels": [
+      "soil pressure RMS",
+      "top/bottom material settlement",
+      "mean stored compression -sigma_zz",
+      "mean J-1",
+      "saved last-force theta RMS",
+      "three sealed pair pressure RMS differences + 5 Pa line",
+      "three sealed pair maximum XYZ material-displacement differences + 0.005 mm line",
+      "top/bottom soil mean pressure"
+    ],
+    "time": "Every backend/pair retains its own actual times, displayed in ms over full 0..25 ms. No resampling or interpolation.",
+    "insets": "Difference panels repeat every point with automatic data-scale axes while the main axes keep the unchanged original limit lines; no filtering/clipping or fitted limits."
+  },
+  "figure_profiles": {
+    "path": "figures/upl_gpu_column_plot_r1_profiles.png",
+    "csv": "figures/upl_gpu_column_plot_r1_profiles.csv",
+    "rows": 1500,
+    "requested_times_s": [
+      0.0099,
+      0.01,
+      0.010025,
+      0.0125,
+      0.025
+    ],
+    "selection": "Each backend independently takes argmin(abs(actual_time-requested_time)); exact actual time/part/completed step in CSV and rounded actual ms labels in figure. No temporal interpolation.",
+    "panels": "5 requested instants x pressure / downward material settlement / stored compression -sigma_zz, plotted against initial material height. Each point averages 10 real soil IDs across x.",
+    "additional_CSV_fields": "current mean z, J and saved theta layer means, all in stated SI units except settlement mm"
+  },
+  "check": "logs/upl_gpu_column_plot_r1.check.json; binds both current plot author files, frozen pair files/checks, unique sealed input entries, output hashes and actual selected times. passed means evidence-bound descriptive artifacts written, not new physical/scientific acceptance.",
+  "failure": "Fresh outputs only. A failure writes passed=false with retained partial files and error; do not silently overwrite or rerun at the same tag.",
+  "restrictions": [
+    "private master OFF / constant k=float(0.0001) / g=0 / one FreeSlip bottom / X periodic",
+    "no HG, SPR, viscosity or damping; not unchanged formal NoSlip physics",
+    "do not compare CPU fixed-n zero markers with GPU fixed-n mirror samples",
+    "no theory truth, fitted reference, smoothing, missing-frame interpolation, field masking, physical-release or long-term validation claim",
+    "10 ms event equality is the pre-open saved state; plotting does not prove force-stage load balance or flux conservation",
+    "root must execute only after complete inputs are sealed, then inspect both rendered PNGs; author/static parse is not render or visual QA"
+  ],
+  "physical_acceptance": false,
+  "production_changes": false
+}

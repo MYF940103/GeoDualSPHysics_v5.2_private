@@ -1,0 +1,50 @@
+{
+  "stage": "upl_gpu_column_component_run_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_gpu_column_component_run_r1.ps1",
+    "notes/upl_gpu_column_component_run_r1.json"
+  ],
+  "cli": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_gpu_column_component_run_r1.ps1 -Configuration Debug|Release",
+  "single_action": "Exactly one manufactured component process per invocation; no Build, Prepare, actual solver, Run/ComputeStep trajectory, reader, formal input, auto-next or retry. Configuration normalized only to Debug/Release.",
+  "helper": "logs/upl_gpu_column_component_CFG_r1.helper.json; passed/current_column_GPU_helper_linked_not_run/kind component/exact111 link objects/source and protected artifacts unchanged. Actual compiler/linker calls must own immediate typed exit0. Use own current265 source and110 non-main objects, not historical source originals.",
+  "input": {
+    "manifest": "logs/upl_case02_short_r1.inputs.json",
+    "selector": "jobs[window=coarse]",
+    "runtime": "outputs/upl_case02_short_r1_seed/upl_case02_short_coarse_r1.xml",
+    "runtime_sha256": "d9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8",
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "argv": "--input <runtime.path> --out outputs/upl_gpu_column_component_CFG_run_r1",
+    "meaning": "Existing clocks are source labels only; component advances0 physical steps. No seed copy/XML edit/GenCase."
+  },
+  "owned_debug": "The accepted CUDA11.7 tool Entry is adopted from logs/upl_gpu_perm_component_Debug_r1.call.json and rehashed. New argv: --tool memcheck --leak-check full --error-exitcode 99 TARGET --input XML --out NEW. Dedicated fresh logs/upl_gpu_column_component_Debug_r1.log is precreated and Tee-appended; require raw ERROR SUMMARY:0 errors and LEAK SUMMARY:0 bytes leaked in0 allocations plus actual immediate typed tool exit0. target_program and target_arguments are separate. Sanitizer child exit is not independently observed or fabricated.",
+  "release_gate": "Own logs/upl_gpu_column_component_Debug_r1.run.json passed, memcheck0/0, call/completion/files identities must remain exact. Release invokes the selected target directly once and captures its own immediate typed exit. No crossconfiguration byteidentity is presumed.",
+  "before_after": "Rehash helper.inputs/author_files/objects/tools/libs/program/helperobj/compile/link/build/source; full current source265 and every nested original/snapshot pair; documentation pair; protected canonical7/runtime4; helper and build runtime original/copy rows; sealed input config/XML/BI4/Normals and owner/note. No historical Git HEAD metadata is reinterpreted as current. No broad repository/raw-output scan.",
+  "artifacts": {
+    "output": "outputs/upl_gpu_column_component_CFG_run_r1",
+    "call": "logs/upl_gpu_column_component_CFG_r1.call.json",
+    "result": "logs/upl_gpu_column_component_CFG_r1.run.json",
+    "log": "logs/upl_gpu_column_component_CFG_r1.log",
+    "completion": "completion.json",
+    "csvs": [
+      "rates.csv",
+      "affine.csv",
+      "probes.csv",
+      "loads.csv",
+      "load_summary.csv"
+    ],
+    "other": "Run.out is from component initialization, not proof of an actual solver trajectory."
+  },
+  "checks": {
+    "counts": "1000soil40fixed,5 actual force calls,12 explicit complete-rate calls,9000 rate rows/9affine summaries,4000load rows/4load summaries,4pressure APIs,2exact-method normal rejects,1invalid-owner index reject, positive owner/restore counts,0physical steps/publicmaster0/held scope false.",
+    "original_budgets": "CPP completion original max ratios<=1 and both negative witness aggregates>100; all CSV numeric entries finite. Rates recompute abs(actual-independent)<=declared original budget and invariance_error<=its original budget. Each incompatible field1 variant's own group max_signal_ratio>100; no demand that interior individual rows have a nonzero signal. Loads separately compare measured rhoV*LoadAce and rhoV*finishedAce with retained target and analytic qA0 under their original declared budgets; wrong-mass>100 only for cases2/3. No tolerance or physics changes.",
+    "attribution": "CSV checks reuse the CPP's predeclared conditional rawterm budgets and independently assembled reference columns; they do not independently download device arrays or reconstruct neighbors. Exact exception/method attribution, owner invalid-index and byte rollback are performed by the hash-bound CPP; wrapper checks its counters/probe outputs, not an invented second device proof.",
+    "native_scope": "Five manufactured scratch objects only. No actual integrator Pre/Corr ordering, event-bracket trajectory, all-step force history, native BI4/public output, independent half/CPUcross/theory, physical/general wall/GPU/public acceptance."
+  },
+  "failure": "All paths fresh, empty owned log precreated before native call. Call receipt is sealed before completion/CSV analysis. Nonzero tool/target, memory errors/leaks, missing completion or analysis/hash failure seals passedfalse with available partial files. Completed component is never automatically rerun; any later offline adoption needs separate explicit root authorization.",
+  "production_changes": false,
+  "physical_acceptance": false,
+  "author_executed_program": false
+}
+

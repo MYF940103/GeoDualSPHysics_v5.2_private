@@ -1,0 +1,44 @@
+{
+  "stage": "upl_gpu_column_pair_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_gpu_column_pair_r1.py",
+    "notes/upl_gpu_column_pair_r1.json"
+  ],
+  "cli": "--pair cross-coarse|cross-half|half; one offline pair, fixed fresh output names, no plot or subprocess",
+  "inputs": {
+    "GPU": "Own logs/upl_gpu_column_actual_{coarse,half}_r2.native.json; passed native integrity/live-final/sourceRun/current265+snapshot/runtime/canonical closure, true owned reader+actual tool/solver calls and locally raw files.",
+    "CPU": "Retained logs/upl_case02_flux_window25_{coarse,half}_r1.native.check.json: passed typedreader0/solver0, native exports1000soil/40fixed,769saved frames. CPU run field build points at its helper (NOT nonexistent source_build). Helper.source_build plus historical source_snapshot[*].snapshot are hash-bound; their mutable original GPU paths/oldbindings are never checked as current. No CPU rerun or native decode.",
+    "CPU_threads": "Retained actual arguments -ompthreads:1 required and reported. This is not a timing/throughput comparison.",
+    "schema": "Exactly case02_private26_col21_ExcessPorePress_NOT_wave26; original12-byte header [1000,26,769], then actualtime8+1000*26 doubles. Separate clock8-byte header [769,28], then actualtime8/savedStep4/lockedDt8/signeddterror8. CPU/GPU soil column names identical; pressure col6 is true float promoted double, col21 actual ExcessPorePress, not fabricated PosDiv."
+  },
+  "pairs": {
+    "cross-coarse": "NewGPUcoarse vs retainedCPUcoarse same dt2.5us",
+    "cross-half": "NewGPUhalf vs retainedCPUhalf same dt1.25us",
+    "half": "NewGPUcoarse vs independently runGPUhalf with paired completed steps x2, not nominal interpolation"
+  },
+  "identity": "Exactly769 common indices/1000soil IDs40..1039, native_ids row0..999. Each backend physical initial XYZ must bitwise equal its own native x0; both initial x0 arrays bitwise identical, including signed0. Physical actual time bits must equal its own clock.bin; native locked dt exact, noninitial signed dterror finite/nonempty<=1e-14. Pair actualtime maxdiff<=1e-14 and paired completed-step schedules exact (half x2). No field removal/interpolation/time snap.",
+  "original_gates": {
+    "pressure_RMS_Pa": 5,
+    "definition_pressure": "At every saved common time sqrt(mean1000((p_A-p_B)^2)).",
+    "material_XYZ_displacement_difference_max_mm": 0.005,
+    "definition_u": "For each actual soil ID u_A=x_A-x0_A,u_B=x_B-x0_B;1000*max1000 normXYZ(u_A-u_B). Cartesian component maxima also reported. Original native positions/material reference used; no interpolation/unwrap or full-cycle material tracking claim.",
+    "time_difference_s": 1e-14
+  },
+  "descriptive": "All26 columns at all769 times have RMS/maxabs differences in field CSV, plus native velocityXYZ/effective-six-component-stress/J/theta/legacy passive rho/retainedLoadAce and J-derived n/V/rho/constantk differences in metrics. n0=float(0.3),v0=float(0.21)/2100,rhow1000; nativeVrhoK absent. k both fixed actual float1e-4, so its descriptive difference0 follows sealed model, not an observed extra native array. No arbitrary J/theta/stress/load/passive-rho/normal/category accuracy gates or all26-equivalence claim.",
+  "boundary": "Pressure RMS in initial support-radius bands z0<2*float(0.018) and z0>1-2*float(0.018), descriptive only. No fixed field crosscomparison: CPUfixedn0marker versus GPUmirror sample remains backend-specific and already checked by each own reader.",
+  "ownership": "Hash all directly sealed native exports/rawfiles/ownedcalls/programs. GPU current265 original/snapshot/doc/canonical7/runtime4 and helper110object closure are revalidated as current; CPU only immutable records/program/raw/snapshots as historical. Unique bound files cache initial hashing, all unique bound files rehashed after metrics. No solver/reader/helper/subprocess, no historical receipt overwrite; .readjson avoids variable shadowing. All output JSON scalars explicitly Python float/int/bool; no stdout/log parsing or UTF16 assumption.",
+  "output_names": {
+    "cross_coarse": "logs/upl_gpu_column_pair_cross_coarse_r1.check.json; figures/upl_gpu_column_pair_cross_coarse_r1.csv and _fields.csv",
+    "cross_half": "Same cross_half stem",
+    "half": "Same half stem",
+    "sizes": "Each metrics CSV769 rows; full-field CSV769*26=19994 rows. numpy memmap reads immutable physical/clock binaries, one1000x26 frame at a time; no large ledger CSV loop.",
+    "check": "passed/physicalfalse/inputs:E[]/files:E[]/source_run:E (primary newGPU)/source_runs:E[]/source_build:E (primary newGPU) and native_checks:E[]. Suitable as a source-bound Root PriorGate CPUcross proof, not automatic half admission."
+  },
+  "failure": "All three new outputs must be absent. Missing/changed/unsafe inputs reject; numerical original-gate failure writes full metrics and passedfalse check with original limits, no fitting. Available partials retained on exceptions; no rerun/retry. Root must review source/note then separately execute and independently recompute/visualize.",
+  "scope": "Only independent same-dt CPU/GPU implementation comparison and independentGPU half over.025s. CPUcross is NOT analytical theory validation. No public/formal/long-time/Cryer/generalwall/variablek/nonzero-g or physical acceptance, energy conservation, endpoint-force/face-flux proof. Native ledger/drainage/p0/safety already belong to hash-bound own reader; this pair does not claim independently observing all force stages.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "author_executed_program": false
+}
+

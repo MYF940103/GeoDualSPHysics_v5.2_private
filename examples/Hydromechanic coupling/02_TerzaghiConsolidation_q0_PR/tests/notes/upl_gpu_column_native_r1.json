@@ -1,0 +1,86 @@
+{
+  "stage": "upl_gpu_column_native_r1",
+  "status": "author_only_not_built_or_run",
+  "files": [
+    "support/upl_gpu_column_native_r1.cpp",
+    "notes/upl_gpu_column_native_r1.json"
+  ],
+  "retained_parent": {
+    "path": "support/upl_case02_flux_window25_native_r1.cpp",
+    "bytes": 21942,
+    "sha256": "e938ed103f6721b22a1ef8056e670de79ad62b11acd80cf5b2a09d2db8b2de55",
+    "note": "notes/upl_case02_flux_window25_native_r1.json",
+    "note_sha256": "e7936533cfdf1ff454da038fe18fb799f885fd01b488d7823c23de414028e42e"
+  },
+  "direct_immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "scope": "Exactly one support include with main renamed once; neutral NativeArray finite/type/count decoder, Original15 sorted-ID writer, Sequence, Native container and scalar utilities only. Retained public CPU reader/main is not called. It supplies the single link-time AppInfo; no JSph object or GPU/CUDA call is created by this reader."
+  },
+  "permitted_delta": "Standalone copy of the retained CPU window25 reader, not an include of its main. Retain the private Read body, original15 types/order, soil26, clock28, saves and tolerances. Replace stage/backend/namespace identity, require GPU private18 schema, change initial fixed n from CPU0 marker to n0 and fixed saved n to the actual GPU 1-solid0/J mirror sample with finite saturated-domain checks. Rename fixed_samples columns accordingly. Remove unrequested ReadOff CLI/body; no OFF/half/solver action is exposed. No physics, saved field, clock, interpolation, threshold or decoder type changed.",
+  "cli": [
+    "--read SEALED_GPU_DATA 3 0.0000025 FRESH_REVIEW",
+    "--read SEALED_GPU_DATA 769 0.0000025 FRESH_REVIEW",
+    "--read SEALED_GPU_DATA 769 0.00000125 FRESH_REVIEW"
+  ],
+  "current_source_schema_evidence": {
+    "path": "src/source/JSphGpuSingle.cpp",
+    "bytes": 67301,
+    "sha256": "aeaed0ad29cb31a7d23439739609adebca686e3782945284fee2396fb5670315",
+    "locations": [
+      "SaveData1211-1218: exclude periodic slots and compact matching arrays with ParticlesDataDown before save",
+      "SaveData1249-1262: original fields, native double stress, FSType and FSNormal",
+      "SaveData1263-1269: native double PoroVolumeRatio, PoroPorosity=1-(1-float_promoted_n0)/savedJ for private mode including fixed IDs, and PoroThetaLastStage",
+      "SaveData1270-1287: PosDiv and native V/rho/k require public master true; private schema must not contain them",
+      "SaveData1290-1296: native float PorePress/PorePress0/ExcessPorePress and float3 retained LoadAce"
+    ],
+    "historical_crosscheck": {
+      "path": "support/upl_gpu_wall_actual_r1.cpp",
+      "sha256": "8dcd7ece2011c03eba190bec883997cebf4fa95e8f88680c10d7bbf2623bcea4",
+      "locations": "Load native3 doubles and fixed receiver sample n/J branch at lines75-76 and121. Its wall1280/33/weak-wave constraints are not reused for this1040/26 column."
+    },
+    "scope": "These are author-time read-only schema checks, not a current-source build certificate or proof of a future solver's private flags."
+  },
+  "native_contract": {
+    "total_native_ids1040": "unique exact0..1039, fixed0..39 and soil40..1039; every frame requires onepiece, no exclusions, no moving/floating, exact2D Xperiodic geometry/reference mass and rectangular translation",
+    "arrays": "Exactly18 arrays: native original15 plus PoroVolumeRatio/PoroPorosity/PoroThetaLastStage, all typed/count/finite read using existing JPartDataBi4 API. Posd must be double3, double SigmaState_kk/ij must round to legacy float stress displays, PorePress/PorePress0/ExcessPorePress are float, J/n/theta are double.",
+    "private_master": "The four public model keys must be absent at both global and PART levels; PosDiv and native V/rho/k arrays must be absent. Actual master0/model0/Ck0 XML/private flag selection and real owned exit are outer owner proofs, not inferred from absence alone.",
+    "fixed": "All40 fixed are included in every native15 frame and fixed_samples. Require initial n=n0 (not0), fixed geometry bitwise unchanged, physical velocity0, legacy density2100, theta0, finite J>solid0, exact native n=1-solid0/J and 0<n<1. This is a mirror sampling state, not40 extra physical soil integration points and not a public fixed0 marker.",
+    "soil": "All1000 soil retain elastic Kplastic0, finite native15/3J, p0=0, actual float excess, passive density700..3000, FSType<=4, saturated single-J/native-n/derived V/rho/k ledger, planar y0 and no bottom crossing. No weak-wave small-J requirement is imported."
+  },
+  "material": "Predeclared case constants unchanged from CPU parent: dp.01, h=float(.018), rho0=2100, rhow=1000, n0=float(.3), k=float(1e-4), mass=float(.21). V=mass/rho0*J and rho=rhow+(rho0-rhow)/J are independently derived double values, k is the declared constant; these are NOT GPU native output fields. Material/clock XML and its unchanged geometry/input hashes need separate outer proof.",
+  "saved_completed_steps": {
+    "smoke": "0,1,2 at coarse dt only",
+    "coarse": "0:10:3990;3991:1:4010;4020:10:5000;5020:20:10000",
+    "half": "0:20:7980;7982:2:8020;8040:20:10000;10040:40:20000",
+    "full_samples": 769,
+    "clock": "Actual time must exactly equal binary64 repeated dt addition at declared completed step. Saved Step is initial0 else completed-1; SymplecticDtPre must be actual DatDouble equal selected dt. No displayed/nominal time substitution, snap, interpolation or decimal reparse of a clock is used."
+  },
+  "necessary_step_and_drain": "Require actual present DatDouble signed dterror. Initial -DBL_MAX may denote an empty interval and is recorded/excluded from noninitial summary; every noninitial interval must be finite, nonempty and signed<=1e-14, not abs(error). This inherits the actual solver necessary-step diagnostic, not an independently recomputed force/CFL stability proof. Post-open completed_step>4000 coarse/>8000 half checks every actual FSType2/3 soil p==0. The event-equality frame is not relabelled post-open; J/theta are read normally rather than frozen. Nonempty drainage and half acceptance are separate outer QC.",
+  "outputs": {
+    "files": [
+      "original15.bin",
+      "physical.bin",
+      "clock.bin",
+      "native_ids.csv",
+      "fixed_ids.csv",
+      "history.csv",
+      "ledger.csv",
+      "fixed_samples.csv",
+      "last_poro.csv",
+      "columns.csv",
+      "completion.json"
+    ],
+    "original15": "Header uint32[1040,15,samples], then actualtime double + all1040 ID-sorted original native typed arrays in immutable Original15 order. All fixed original fields are retained too; comparison cannot be replaced by soil26 alone.",
+    "physical26": "Header uint32[1000,26,samples], then actualtime double +1000 ID-sorted double rows in precisely the retained CPU case02 order. Column21 is true float ExcessPorePress promoted to double, NOT PosDiv or an old-wave26 reinterpretation. Stress ij mapping is xy,yz,xz native to xy/xz/yz export at columns11/12/14.",
+    "clock28": "Header uint32[samples,28], then perframe actualtime double, savedStep uint32, lockedDt double, signed dterror double.",
+    "text": "Setprecision17 finite native J/n/theta in all1000 soil ledger rows plus all40 fixed_samples rows perframe allows complete native3 preservation without inventing fixed0. last_poro contains final soil ID/J/n/theta for independent live-final comparison. fixed_samples names J_native,n_native_mirror_sample,theta_native,p_native disclose actual semantics.",
+    "completion": "stage=upl_gpu_column_native_r1; backend=GPU_private; model=constant; fixed_mirror_sample_checks=40*samples; soil_ledger_checks=1000*samples. physical_acceptance, same-force load budget, owned exit, private flag proof, live comparison, half and drainage-nonempty acceptance all remain false/not claimed."
+  },
+  "limits": "This is only a pure typed reader. It does not launch a GPU/CPU solver or CUDA API, perform a new BI4 parser, prove source/tool/runtime hashes, infer shader flags, independently observe all force stages, reconstruct rate/PosDiv, evaluate load balance/energy/theory, or do a CPU/GPU/half comparison. The history rho*V times saved LoadAce uses endpoint J with retained last-stage acceleration and is descriptive, not a same-force resultant. No public, nong0, variable-k, general wall, long-time or physical admission is conferred.",
+  "ownership": "Only two fresh shallow author files added with apply_patch. No retained artifact, formal XML/BAT, production source, program, raw data or old author is modified. No build, reader, solver, prepare, help, output analysis or Git action executed. Root must fully read/bind before any later explicit build/read.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}

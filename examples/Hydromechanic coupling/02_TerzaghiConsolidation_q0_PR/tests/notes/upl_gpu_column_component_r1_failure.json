@@ -1,0 +1,32 @@
+{
+  "stage": "upl_gpu_column_component_r1_failure_review",
+  "date_local": "2026-11-03",
+  "status": "r1_rejected_preserved_test_assumption_diagnosed_actual_normal_measurement_pending",
+  "run": {
+    "path": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gpu_column_component_Debug_r1.run.json",
+    "sha256": "ec1c1e77f2bda07ef43642e1a6808038c9b2c9f25f200de2b1bbb3303aab49aa"
+  },
+  "owned_tool_exit": 1,
+  "memcheck_errors": 0,
+  "memcheck_leaks": 0,
+  "physical_solver_invoked": false,
+  "physical_steps": 0,
+  "retained_rows": 6099,
+  "completed_field0_rows": 3000,
+  "completed_field1_rows": 3000,
+  "field2_written_non_top_rows": 99,
+  "max_actual_vs_independent_original_budget_ratio": 0.0036029436348083772,
+  "normal_flip_scale_invariance_error": 0,
+  "incompatible_signal_original_budget_ratio": 58373.67175293156,
+  "failure": "field2 constant p=2000 and global-horizontal Ace=(1,0,0), first top ID139 at z=.995, fails hard zero expectation after actual-versus-independent-rate gate passed. Failing row was not written, so its normal and rate cannot be recovered or fabricated from old CSV.",
+  "source_review": "CPU and GPU closed-face projection, argument order, same-stage Ace owner/wall/rate agree. Pre-existing FS normal coordinate arithmetic differs: GPU float PosCell differences, CPU double position differences.",
+  "conditional_explanation": "If the measured top Nx is nonzero, the uniform horizontal action is not strictly tangent. Under constant p and uniform Ace the closed Taylor-defect action is (Kw/n)*(k/gamma)*rho_w*Nx*(N dot Lx)/(N dot N); zero is not a valid unconditional expectation. Direct numerical Nx evidence remains pending a new declared fixture.",
+  "next_test": "Keep production and original budgets unchanged. Fresh r2 separates actual-normal and exact prescribed-axis-normal fields, logs N/Gp/Lx/DA/analytic residual before assertions, retains all independent reference, invariance, incompatible-normal and load controls.",
+  "held": [
+    "Release component",
+    "default-OFF solver/exact comparison",
+    "actual loaded-column GPU trajectories",
+    "physical/public/formal/server release"
+  ],
+  "physical_acceptance": false
+}

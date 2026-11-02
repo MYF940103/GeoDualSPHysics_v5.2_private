@@ -1,0 +1,76 @@
+{
+  "stage": "upl_gpu_column_component_r1",
+  "status": "author_only_not_built_or_executed",
+  "author_files": ["support/upl_gpu_column_component_r1.cpp", "notes/upl_gpu_column_component_r1.json"],
+  "cli": "--input RETAINED_CASE02_PRIVATE_XML --out FRESH_DIRECTORY",
+  "scope": "Bounded manufactured GPU component action on five fresh ComponentScratch objects, never an actual-Run wrapper or a saved trajectory. No production/old helper/old evidence edits; no program execution by the author. Public HydroMechDynamicSeepage remains0.",
+  "dependency": {
+    "only_support_include": "support/upl_gpu_observer_native_r1.cpp",
+    "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "usage": "Rename its main once; reuse only neutral declarations, Check, fs and one AppInfo. Do not invoke its retained main, reader or Run. No nested include of an actual/affine/load helper.",
+    "project_headers": ["JSphGpu_ker.h", "JDsTimersGpu.h", "JDsFixedDt.h", "JXml.h", "JException.h", "FunSphKernel.h"],
+    "standard_headers": ["cuda_runtime_api.h", "vector_functions.h", "cfloat", "climits", "limits"],
+    "build_binding": "Future root-owned generic helper builder must capture this CPP/note, the sole immutable support include, current full GPU source/header snapshots and actual110 non-main objects plus1 helper=111 linked objects (the main project's main is excluded), project/CUDA headers, real cl/link environment, libraries/runtime/program and typed exits. CPP makes no independent source-SHA or build-ownership claim. No new library."
+  },
+  "retained_input": {
+    "manifest": "logs/upl_case02_short_r1.inputs.json jobs[window=coarse]",
+    "runtime": "outputs/upl_case02_short_r1_seed/upl_case02_short_coarse_r1.xml",
+    "runtime_sha256": "d9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8",
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "checks": "Existing XML/prefix.bi4/prefix_Normals.nbi4 and fresh output. Future caller binds their actual Entries. XML checks public master/law/Ck0 and both casedef/execution gravity0; actual loaded state asserts1040 native IDs,1000soil/40fixed, Xperiodic width.1, original float material n0=.3,rho2100,Mass.21,rhow1000,Kw2e8,kfloat1e-4,dp.01,hfloat.018,FreeSlip bottom, TopKernelBand q0=10000/ramp.01, drain at.01 with fixed grid. No auxiliary physics, restart or moving/floating bodies.",
+    "no_new_seed": "No GenCase, XML edits or formal-case changes. The CLI can accept an otherwise identical retained window25 runtime; exact clock/scheduler identity must be captured by its root-owned caller, not inferred from this note. The component never advances those clocks."
+  },
+  "lifecycle": {
+    "actual": "Each ComponentScratch sets only the four private model flags before actual SelecDevice/LoadConfig/LoadCaseParticles/VisuConfig/ConfigDomain/ConfigRunMode/InitRunGpu/FreePartsInit/RunCellDivide(true). It verifies the original normal-soil strict-rest p/p0/v/sigma/plastic/J1/theta0 before any manufactured assignment. Five real Interaction_Forces(SymPredictor) calls total, no force replay after scratch release.",
+    "manufactured": "Only ComponentScratch arrays/source-clock labels are changed, never an actual Run's initial field, a BI4/PART payload or an existing output. No Run, ComputeStep, host ComputeSymplecticPre/Corr or SaveData call. Dedicated initialized CUDA buffers test the pressure-update API without reproducing or advancing integration.",
+    "force_scratch": "Read actual rate/Ace/LoadAce/raw band/C while live, then real PosInteraction_Forces and pointer-release checks. No second Normalize call after finished force."
+  },
+  "closed_affine": {
+    "natural": "One initial actual force at t0 must have strict soil Ace/theta/pdot0 and exactly10 actual top FSType2/3 receivers. Actual GPU C/normal/wall fits are retained.",
+    "fields": ["p=float(2000+1000*z), normal-owner Ace=(0,0,-1)", "p=float(2000+1000*z), normal-owner Ace=(0,0,+1)", "p=2000, normal-owner Ace=(1,0,0)"],
+    "input_assignment": "Assign p analytically at all actual fluid slots including X images (samez); this is disclosed manufacturing, not a p-copy proof. J stays1/theta0. Invoke actual wall-state and wall-C fits, never write analytic bottom values. Assign Ace only normal soil; each actual complete-rate host call performs native-owner Ace/theta extension, actual wall acceleration and periodic rate extension.",
+    "normal_variants": "Actual native normals multiplied by1,-1,+2, nine explicit positive complete-rate calls and9000 rate rows. Every variant has500 upper receivers z>.5 and10 top receivers.",
+    "independent_reference": "Host O(Np^2) all-slot loop, actual double coordinates/support/ALMOSTZERO and separate CPU Wendland factor, actual measured C/wall/Ace. It does not call the GPU rate kernel, production neighbor list, or production gpcorr function. It independently assembles Lp,Lx,Gp,DA and the normal projection. This remains a conditional discrete-operator reference, not an independent mechanical solution or proof that measured C/MLS are accurate.",
+    "raw_budget_Pa_s": "Unchanged CPU affine contract:64*FLT_EPS*raw +256*DBL_EPS*max(1,abs(B*theta))+1e-6, B=Kw/n(J). raw=B*(abs(theta)+k/gamma*(sumabs(w*dp)+abs-Gpcorr dot abs-Lx+rhow*sumabs(V*dAce dot Gi))); projection absolute terms include abs(N)*[abs(N) dot(abs-Gp+rhow*abs(Ace))/(N dot N)]. Old action retains its own unprojected raw budget. Gamma=rhow*9.80665; do not add body g to finished Ace.",
+    "gates": "All1000 actual rates each call within independent original raw budget; normal flip/scale difference<=max(original baseline/current budgets). Upper ideal pressure gradients and compatible/tangential zero rates checked within original propagation budget. Unmasked/compatible old action unchanged within max old/new budgets. Each incompatible-normal variant needs actual-old signal>100*max(original old/new budgets); do not tune fields,100 or envelopes if weak.",
+    "negative_normals": "From the already accepted last positive scratch, change just one real top normal to zero or NaN. Only JException matching ::ComputeDynamicPorePressureRateGpu) and its exact valid-periodic-owner/finite-saturated-rate message is accepted. Arbitrary exceptions do not pass. Named bytes/cache restored after each probe."
+  },
+  "drain_and_owner": {
+    "pressure_API": "Four actual cusph::UpdatePorePressureSymplectic calls: half-dt/full-dt crossed with inactive/active drain. Separate valid preGeometry/corrGeometry device buffers contain actual initial coordinates; old p=7/rate=3/result sentinel. Independently require exact float old+dt*rate away from constrained fluid, fixed oldp unchanged, and active FSType2/3 fluid p0 despite oldp7. These buffers do NOT establish that host Pre uses PosxyPreg or Corr is after position write; source review and real trajectory own those facts.",
+    "actual_host_projection": "Explicit source-clock label TimeStep=tD in ComponentScratch, not elapsed integration. Initialize normal fluid p7/image p sentinel and rate3/theta.125, then actual ApplyFreeSurfacePorePressure. Exactly10 top native p/rate0, J unchanged/theta still.125; nonempty periodic pressure owner bytes exact after the real host refresh. Actual complete-rate host call keeps drained native rate0 and refreshes periodic rate/Ace/theta/C; all soil rates finite. Restore clock and named state.",
+    "owner_kernel_positive": "On independent allocated pressure/map/invalid buffers, actual CalcRidp must equal independent normal-ID owner lookup. Actual ExtendDynamicPorePeriodic with its pressure parameter must overwrite nonempty image sentinels with native ID-labelled p.",
+    "owner_kernel_negative": "Point one image ID's map entry at a real fixed native slot. The same actual extension kernel must report exactly the first affected image index via invalid; this is explicitly a device invalid-index API rejection, not a claimed JException or a forged ownership failure in actual Run. Dedicated buffers are RAII-freed; production owner map and IDs are never corrupted.",
+    "not_covered": "No fixed-grid roundoff event-bracket test, strip-footprint geometry discrimination, host Pre/Corr ordering test, actual restart, time integration or saved p/rate metadata proof. TopKernelBand has no strip exemption."
+  },
+  "same_stage_load": {
+    "four_fresh_objects": ["clock0,J1", "source-clock.005,J1", "source-clock.005,J=1+2^-8", "source-clock.005,J=1+2^-8*(2*z-1)"],
+    "manufactured_inputs": "At actual initial fixed geometry assign J to all actual fluid slots, including X images (not a J-copy proof); normalsoil p/p0/v/sigma/plastic remain original strict0 and legacyrho2100. Capture normal-ID/code/cell/position/velocity/sigma/plastic/p/p0/J bytes and require actual force not change them. Read finished same-stage force before release; no constitutive trajectory interpretation.",
+    "reference": "Independent scalar mref=V0*(rho0-rhow+rhow*J), also evaluate n,V,rho and check rhoV versus mref within retained5e-13relative. Normalsoil-only weighted sums exclude fixed/images. Retain target=sum over actual upward top FSType2/3 of MassFluid*(-float(q/(rho0*dp))), independently compare -q*.1 (q5000 gives-500N under the retained2D unit-depth convention). Actual band uses z>zmax-KernelSize and actual nonempty counts, not guessed band width/count.",
+    "budget_N": "Exactly CPU load contract:64*FLT_EPS*sum(abs(m*a))+256*DBL_EPS*max(1,abs(retained_target))+1e-6 for rhoV*LoadAce and separately rhoV*finishedAce. Both target and analytic qA0 must fit; float replacement order is preserved, no requirement Ace equals LoadAce0ULP. Natural clock0 raw/load/Ace/rate strictly0.",
+    "negative": "For both non-J1 fields, descriptive incorrect sum(MassFluid*finishedLoadAce_z) must differ from retained target by>100*max(loadBudget,forceBudget). This is a declared wrong-weight reduction on measured actual output, not a modified-solver execution. Weak signal rejects without field/budget tuning.",
+    "no_extra_Normalize": true
+  },
+  "rollback": "After the first natural live force, named CUDA snapshots cover current Np ID/code/cell/xy/z/velocity/sigma/plastic/p/p0/rate/J/theta/C/FSType/FSNormal/loadAce/Ace/Ar/Rsigma/rawband/BoundDerivativeVel/TangenVel/BoundMode plus the scalar conductivity cache. Exact D2H/H2D byte rollback between affine fields, negative probes and after active API tests; clock/Nstep/locked dt/LastDt/FixedDt error/no predictor histories checked. Does not claim pool capacity, hidden buffers, timers or force statistics whole-object byte identity. Final load J is manufactured scratch disposed with its own object; never changes retained input or actualRun.",
+  "counts": {
+    "fresh_GPU_objects": 5,
+    "actual_force_calls": 5,
+    "explicit_complete_rate_calls": 12,
+    "explicit_complete_rate_breakdown": "9 affine positive+2 exact-method normal rejection+1 active-drain positive; the five force calls' internal rate calls are separate and not double-counted here.",
+    "rate_rows": 9000,
+    "affine_summary_rows": 9,
+    "pressure_update_API_calls": 4,
+    "normal_exact_method_rejections": 2,
+    "owner_invalid_index_rejections": 1,
+    "probe_rows": 4,
+    "load_rows": 4000,
+    "load_summary_rows": 4,
+    "physical_steps": 0
+  },
+  "outputs": ["Run.out", "rates.csv", "affine.csv", "probes.csv", "loads.csv", "load_summary.csv", "completion.json"],
+  "ownership_and_failure": "Root must review and separately authorize build/run. Caller seals actual typed exit/source/input/program/runtime bindings; CPP does not make that provenance claim. Existing outputs protected, failure keeps partial evidence and never writes passed completion. No follow-on action or automatic retry.",
+  "held": ["Full GPU column smoke/coarse/half trajectory and CPU/GPU/half gates", "Actual saved native/PART metadata and original initial-field byte witness for a separate actualRun", "All-stage integration, stability/accuracy/conservation, true face flux, energy/work and long-time acceptance", "Public master, variable-k column, nonzero gravity column, general walls/3D/Cryer/formal case admission", "Original failed histories and frozen artifacts remain unchanged"],
+  "physical_acceptance": false,
+  "production_changes": false,
+  "author_executed_programs": false
+}

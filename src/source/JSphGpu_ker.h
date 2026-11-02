@@ -284,19 +284,20 @@ void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,uns
   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
   ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs,const double *poroj=NULL);
 void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress);
+  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate=NULL);
 void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
 unsigned HydroMechTopBandAuxSize(unsigned np); ///<Required scratch size in floats, not bytes.
 tdouble3 ComputeHydroMechTopBandTotals(unsigned np,unsigned npb,double mass,double support
-  ,const double *posz,const typecode *code,const float3 *loadace,const float *raw,float *aux);
+  ,const double *posz,const typecode *code,const float3 *loadace,const float *raw,float *aux,const double *poroj=NULL);
 void ApplyHydroMechTopBandLoad(unsigned np,unsigned npb,double zmax,double support,double scale
   ,const double *posz,const typecode *code,const float *raw,float3 *ace,float3 *loadace);
 void ExtrapolateYaoTopStripPorePressure(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb,TpHydroMechLoadMode loadmode
   ,const StDivDataGpu &dvd,const unsigned *dcell,const double2 *posxy,const double *posz
   ,const float4 *velrhop,const typecode *code,const unsigned *fstype,float *porepress);
 void UpdatePorePressureVerlet(unsigned np,unsigned npb,double dt2,const typecode *code,const float *poreold,const float *porepressrate,float *porepressnew);
-void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress);
+void UpdatePorePressureSymplectic(unsigned np,unsigned npb,double dt,const typecode *code,const float *porepresspre,const float *porepressrate,float *porepress
+  ,bool drainfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None,const double2 *posxy=NULL,const unsigned *fstype=NULL);
 //-Non-feedback observer; dt is the already-halved predictor or full corrector step.
 //-Caller initializes invalid=np and checks it before advancing any later state.
 void UpdatePorosityObserver(unsigned np,unsigned npb,bool corrector,double dt,double solid0
@@ -308,7 +309,7 @@ void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho
 //-Extend only requested fields from normal-fluid native owners; caller initializes invalid=np.
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp
-  ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid);
+  ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid,float *porepress=NULL);
 //-Private 2-D static FreeSlip mirror closure: stage0=state11,1=C9,2=finished Ace3.
 //-Only npbok active fixed samples are written; caller initializes invalid=np.
 void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
@@ -320,7 +321,8 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
-  ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL);
+  ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL
+  ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

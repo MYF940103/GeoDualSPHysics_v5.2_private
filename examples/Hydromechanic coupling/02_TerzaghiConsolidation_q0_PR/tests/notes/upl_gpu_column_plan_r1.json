@@ -1,0 +1,26 @@
+{
+  "stage": "upl_gpu_column_plan_r1",
+  "date_local": "2026-11-03",
+  "base_commit": "d3ac9c244c75a0f0ce66b8390fc762d5a1d6fca1",
+  "purpose": "Synchronize the already bounded CPU loaded-column contract to private GPU implementation, not introduce a new physical candidate or relax public restrictions.",
+  "production_files": ["src/source/JSphGpu.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu", "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"],
+  "CPU_control": "Case02 CPU .025s519+250 same-dt-prefix/half reviewed at d3ac9c2; original1040 IDs, dp.01,width.1,g0,constant k1e-4,elastic E2MPa,nu.3,one upward fixed FreeSlip bottom,X-periodic,band q10kPa,ramp/drain.01s. No auxiliary HG/SPR/damping/viscosity/Shepard.",
+  "changes": [
+    "J-feedback raw confinement pair uses 2*q*Vj/rho_i; band raw reduction uses rho(J)V(J), reference target remains q(t)A0. Existing float replacement order unchanged.",
+    "Dynamic active-drain p/rate constraints; predictor reads valid pre-position. Dynamic corrector constraint follows the new position; legacy OFF retains its original update order/formula.",
+    "Pressure projected after periodic cloning is immediately extended through the existing checked native-owner map. This first correctness port may repeat map/C work; no efficiency improvement is claimed.",
+    "Complete rate adds drained early-zero and the CPU closed-face gpcorr normal target only in its Taylor defect/consistent smooth-k chain. Interior symC, acceleration divergence, theta/J and integration formulas are unchanged.",
+    "Only the exact private loadedcolumn condition admits one bottom plane; public master and all other boundary/material/restart restrictions remain."
+  ],
+  "verification_order": [
+    "Independent source/ownership/API review; default CPU Debug and isolated authoritative GPU Debug/Release builds. Canonical/server executables protected.",
+    "Bounded Debug components and memcheck: closed affine normal flip/scale/invalid, active drain rate, Pre/Corr valid geometry, nonempty owner pressure refresh, current-J stage-load resultant and missing/wrong owner negatives. Retain original propagated arithmetic budgets.",
+    "Fresh default-OFF native mDBC equality, plus old dynamic no-load periodic/wall/gravity native regressions under unchanged previous guards; compare complete same-dt fields, not only final pressure.",
+    "Fresh GPU two-step actual smoke before actual .0125s/.025s private column coarse and independent half, then native CPU/GPU comparison at actual matched times and original5Pa/.005mm. Earlier failure holds later data.",
+    "Review pressure/material settlement/stress/J/theta/drainage/opening response and cost, inspect matching PNG/CSV, save verified stage selectively local/remote. Only then consider longer benchmark/public-entry readiness."
+  ],
+  "retention": "Fresh shallow tags under existing tests classifications. No completed solver/old worker rerun, PART restart, overwrite, formal input/result change, notifier rearm or automatic full-cycle admission.",
+  "limits": "CPU is a same-discrete-model implementation control, not continuum truth. Closed normal target is not exact conservative discrete flux. Existing short physical benchmark acceptance of default u-pw does not validate this new dynamic model. No general moving/curved/mixed wall, plasticity/HG/SPR, full-cycle or server release.",
+  "physical_acceptance": false,
+  "production_candidate_verified": false
+}

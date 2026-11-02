@@ -1,0 +1,25 @@
+{
+  "stage": "upl_gpu_column_component_r2_wrapper_failure",
+  "status": "native_Debug_completed_safe_postprocessing_failed_no_solver_repeat",
+  "native_component_completion": "outputs/upl_gpu_column_component_Debug_run_r2/completion.json",
+  "owner_record_preserved_false": "logs/upl_gpu_column_component_Debug_r2.run.json",
+  "owned_tool_exit": 0,
+  "memcheck_errors": 0,
+  "memcheck_leaks": 0,
+  "exact_owner_failure": "Actual-normal horizontal analytic term differs",
+  "cause": "PowerShell [double][single].3 and [double][single].0001 cast/member syntax evaluated to0 in this environment, so the wrapper analytic recomputation became NaN. Correct [double][single]0.3 and [double][single]0.0001 preserve original float32 material constants; no new tolerance or model parameter.",
+  "native_rates": 12000,
+  "native_load_rows": 4000,
+  "max_actual_reference_original_budget_ratio": 0.0036029436348083772,
+  "direct_measured_example": {
+    "id": 139,
+    "Nx": 3.2209687361728356e-8,
+    "actual_rate_Pa_s": -0.024063680320978165,
+    "independent_rate_Pa_s": -0.024063679690916495,
+    "original_budget_Pa_s": 0.000001183591370888687,
+    "exact_prescribed_plane_upper_rate": 0
+  },
+  "decision": "Do not repeat Debug native component. Independently review its sealed call/completion/CSV offline under unchanged budgets and correct literal syntax. A new Release-only owner uses the same compiled r2 fixture after that review. Old r1/r2 records remain unchanged and false.",
+  "physical_solver_invoked": false,
+  "physical_acceptance": false
+}

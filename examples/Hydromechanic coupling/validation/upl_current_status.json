@@ -2,7 +2,7 @@
   "date": "2026-11-03",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded private CPU loaded-column closed-face repair and .0125s actual half verified; longer transient review next. Historical stage entries below retain their original scope; no physical-model release.",
+  "status": "CPU and GPU private constant-k loaded-column .025s implementation checks passed: components/memcheck, default-OFF151, five old dynamic no-load trajectories, actual GPU smoke/coarse/half, both CPU/GPU pairs and independent GPU half. Two PNGs and matching CSVs are generated and visually reviewed. Failed setup attempts are preserved. Narrow public XML-entry parity is next, not a physical-model release.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. The bounded CPU entry is verified; new isolated GPU wiring maps explicit true to the same complete branch but remains unaccepted pending native regression/output/rejection checks. Only fresh2D zero-gravity elastic periodic or opposing static FreeSlip planes are candidates. Old GPU executables ignore new keys; canonical/server programs unchanged.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
@@ -255,6 +255,25 @@
     "held": "Only2.5ms post-opening observed; pressure/stress/J dynamic overshoot is not theory acceptance. No GPU/public loaded-column/formal/server admission. Failed old trajectories remain rejected.",
     "physical_acceptance": false
   },
+  "CPU_loaded_column_025s_review": {
+    "checkpoint": "d3ac9c244c75a0f0ce66b8390fc762d5a1d6fca1",
+    "review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_case02_flux_window25_root_r1.json",
+    "result": "Two fresh .025s769-frame CPU Runs passed complete original519-frame same-dt native prefixes and independent half:2.102528907Pa/2.0744619204e-6mm; actual-time discrepancy8.9234175604e-15s. Local/remote Git checkpoint verified equal.",
+    "physical_limit": "Opening local speed/theta envelopes decay, but whole-column pressure oscillations remain. Not quasi-static/theory/long-time/physical or public loaded-column acceptance.",
+    "physical_acceptance": false
+  },
+  "GPU_loaded_column_candidate": {
+    "base_checkpoint": "d3ac9c244c75a0f0ce66b8390fc762d5a1d6fca1",
+    "plan": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_gpu_column_plan_r1.json",
+    "status": "three_GPU_file_port_private_025s_native_cross_half_and_visual_review_verified",
+    "source_scope": "Full bounded CPU current-J raw load/band, dynamic drain Pre/Corr and periodic projected-p refresh, closed-face Taylor-defect target; exact private constant-k g0 one-bottom-FreeSlip/X-periodic column only. No new public entry or canonical installation.",
+    "component_evidence": "tests/logs/upl_gpu_column_component_Debug_r4.check.json and Release_r4.check.json: each12000 conditional rates,4000 actual stage-load rows,original budgets/negative probes passed; Debug memcheck0/0. R1 tangent assumption and r2/r3 postprocessing failures stay false; Debug native never repeated for an analysis repair.",
+    "default_OFF_evidence": "tests/logs/upl_gpu_column_off_r1.exact.json:151 frames/1040 native IDs/all15 original typed arrays25126400 bytes and actual clock/Step/signed-dterror exact; original HG guards pass. This is bounded default-u-pw compatibility, not dynamic physics acceptance.",
+    "legacy_evidence": "tests/logs/upl_gpu_column_legacy_r1.check.json: five fresh same-dt periodic constant/smooth, wall constant/smooth and tangential-gravity trajectories each257 frames passed original native fields and actual clock/Step/dterror exactness. Scope is soil33 and applicable fixed sidecars, not a broader all-array wall acceptance.",
+    "actual_evidence": "tests/notes/upl_gpu_column_root_r1.json:769 frames per GPU Run,10000/20000steps,3590 native drained checks each. Same-dt CPU/GPU pRMS maxima .006901972486/.011492993501Pa; independent GPU half2.100399111503Pa and2.075896277006e-6mm under original5Pa/.005mm/1e-14s. Both PNGs and769/1500-row CSVs reviewed; not theory accuracy.",
+    "held": "No public loaded-column/full-consolidation or server acceptance. Smoke r1 prefix failure and half preflight typed-bool failure occurred before target initialization and are preserved; only one actual smoke/coarse/half trajectory was used. Accepted formal u-pw cases remain unchanged.",
+    "physical_acceptance": false
+  },
   "historical_next_order_before_loaded_column_review": [
     "Selectively back up verified private GPU wall code/evidence locally/remotely; preserve all raw results and failed attempts. Raw programs/BI4 and large pointwise audits are local hash-bound evidence, not cloud Git backup.",
     "Then bounded public GPU master/model/Ck wiring and output contract, retaining default-OFF u-pw. Add an actual retained mDBC default-OFF native regression, parser/unsupported-input/PART rejection, same-physics CPU/private-GPU and independent half checks before accepting the new entry. No independent k history.",
@@ -262,9 +281,9 @@
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],
   "next_order": [
-    "Verify selective local/remote backup of the bounded CPU closed-face code/evidence, retaining all raw/failed data.",
-    "Prepare fresh .025s same-physics CPU coarse/half with exact original519-frame prefix and50us later output. Review actual clocks, original5Pa/.005mm, drain/ledger/natural-step guards and post-opening transient decay.",
-    "Then synchronize the entire verified loaded-column boundary/load/drain contract to GPU, not gpcorr alone; maintain old OFF/periodic/wall/gravity regressions and unsupported public guards.",
+    "CPU Debug and isolated GPU Debug/Release builds, separate actual/prescribed-normal components, memcheck and old OFF/periodic/wall/gravity complete native regressions are verified. Failed fixture/offline records remain preserved.",
+    "GPU .025s actual/private CPUcross/independent half and descriptive figures are verified; save the source/evidence selectively locally/remotely. No canonical installation or physical acceptance.",
+    "Next minimally align the existing public XML master with the verified bounded constant-k loaded column; real canonical-main smoke/native same-backend equivalence and extra-field/metadata contracts must pass before longer benchmarks. See tests/notes/upl_column_public_plan_r1.json.",
     "Only then admit longer consolidation/Cryer/Lian comparisons. Preserve finite-h errors separately; do not introduce TPI/plasticity/general walls just to bypass this compatibility work."
   ],
   "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, loaded-column public/GPU or server-package acceptance follows from the bounded current tests.",

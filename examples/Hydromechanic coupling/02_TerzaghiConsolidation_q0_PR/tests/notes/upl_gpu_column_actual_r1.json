@@ -1,0 +1,88 @@
+{
+  "stage": "upl_gpu_column_actual_r1",
+  "status": "author_only_not_built_or_run",
+  "files": [
+    "support/upl_gpu_column_actual_r1.cpp",
+    "notes/upl_gpu_column_actual_r1.json"
+  ],
+  "direct_immutable_include": {
+    "path": "support/upl_gpu_observer_native_r1.cpp",
+    "bytes": 12180,
+    "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "note": "notes/upl_gpu_observer_native_r1.json",
+    "note_sha256": "26dafa6246e7ba38798cc7e3542bb10d9b3926c8303ae17c54dcd35bd499344d",
+    "reuse": "One main rename/one AppInfo. Only declarations, neutral types/checks and fresh-path helper; no retained solver, observer reader, Compare or ReadPoro entry is called. No nested include of a private CPU/GPU actual main."
+  },
+  "mechanical_references": [
+    {
+      "path": "support/upl_case02_flux_window25_actual_r1.cpp",
+      "bytes": 13365,
+      "sha256": "6c66f805c7e423af08ab84c8e562552879b5065da614f968ce6e7b8cc5f69aec",
+      "reuse": "Local Window/Runtime guards and end-of-Run contract, not a transitive include or CPU instance."
+    },
+    {
+      "path": "support/upl_gpu_wall_actual_r1.cpp",
+      "bytes": 49197,
+      "sha256": "8dcd7ece2011c03eba190bec883997cebf4fa95e8f88680c10d7bbf2623bcea4",
+      "reuse": "Actual JSphGpuSingle::Run, persistent-state GPU download and live_final pattern only; no CNG/SHA library, endpoint audit or imported-state force replay."
+    }
+  ],
+  "project_headers": [
+    "JSphGpuSingle.h",
+    "JSphCfgRun.h",
+    "JAppInfo.h",
+    "JLog2.h",
+    "JPartDataBi4.h",
+    "JDsFixedDt.h",
+    "JXml.h",
+    "JException.h",
+    "cuda_runtime_api.h"
+  ],
+  "cli": "--solver smoke|coarse|half -gpu:0 -stable -mdbc_freeslip PREFIX FRESH_OUT -dirdataout data -svres -nsteps:2|10000|20000",
+  "windows": {
+    "smoke": {
+      "dt_s": 0.0000025,
+      "planned_end_s": 0.000005,
+      "completed_steps": 2,
+      "samples": 3
+    },
+    "coarse": {
+      "dt_s": 0.0000025,
+      "planned_end_s": 0.025,
+      "completed_steps": 10000,
+      "samples": 769
+    },
+    "half": {
+      "dt_s": 0.00000125,
+      "planned_end_s": 0.025,
+      "completed_steps": 20000,
+      "samples": 769
+    }
+  },
+  "input_reuse": {
+    "full_manifest": "logs/upl_case02_flux_window25_r1.inputs.json",
+    "coarse_prefix": "outputs/upl_case02_flux_window25_r1_seed/upl_case02_flux_window25_coarse_r1",
+    "half_prefix": "outputs/upl_case02_flux_window25_r1_seed/upl_case02_flux_window25_half_r1",
+    "BI4_bytes": 47184,
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_bytes": 1479,
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "scope": "Root owns exact input/runtime/BI4/Normals hashes and smoke input adoption. This author neither copied nor changed inputs. No GenCase or field initializer. Runtime verifies both gravity declarations, explicit master/model/Ck0, constants, material, 40 fixed+1000 soil blocks, options and core clocks; full special-timeout schedule is owned by sealed input manifest and subsequent independent native review, not fully parsed by this helper."
+  },
+  "scope": "Private 2-D g0, X-periodic width.1, one stationary bottom FreeSlip3 mDBC, 1000 soil IDs40..1039/40 fixed IDs0..39; constant actual floatk1e-4,n0 float.3,rho0=2100,rhow=1000,Kw=2e8,MassFluid=MassBound=float.21,h=float.018,dp=.01,elastic material matching CPU. TopKernelBand10000Pa ramp.01 and fixed-grid drainage.01. No HG/SPR/viscosity/damping/shifting/auxiliary physics, restart, public-master unlock or variable law.",
+  "actual_execution_contract": "Constructor sets only PorosityObserver/PorosityFeedback/DynamicPorePressure/DynamicPoreWall true and constant-law private fields false/0. Actual production Run performs initialization, force evaluations, pressure projection and Symplectic stepping. Fixture never initializes or overwrites p/J/sigma/v/geometry, overrides a virtual integrator, invokes a completed object's Init, or replays forces. Explicit NstepsBreak limits each requested window; actual double TimeStep is never snapped. End difference<=1e-14 and actual Nstep/LastDt/fixed dt/SymplecticDtPre exact.",
+  "final_download": "Production ParticlesDataDown(Np,0,true,false) downloads all slots without compaction. Normal native IDs are independently mapped uniquely and counted1040. Separate cudaMemcpy downloads live BoundNormalg and optional BoundSlipModeg in the same slot order. Only actual normal fixed owners are interpreted as wall normals. No source or state writes occur in Finish; host downloads do not alter device fields.",
+  "ledger_attribution": "Live device J and theta are downloaded. n=1-(1-n0)/J,V=(MassFluid/rho0)*J,rho=rhow+(rho0-rhow)/J,k=actual constant floatk are host derivations, not independent persistent device arrays or native V/rho/k observations. All1040 J/theta and derived domains/solid-fraction roundoff<=5e-13 are checked. Fixed wall J/theta and n are reconstructed samples; fixed n is not the CPU output zero marker and is never equated or masked to it. Soil stress/p/p0/legacy-rho/velocity/load are actual downloaded persistent fields; p0/plastic remain0, no soil crosses the bottom.",
+  "released_state": "Finish checks predictor position/velocity/stress/p/J histories and force Ace/Ar/ViscDt/Rsigma/boundary derivative/rawband scratch are null. It never reads their freed contents. Persistent last-force LoadAce is multiplied by final endpoint rho(J)V(J) only as a descriptive reweighting; neither this nor final state verifies the same-force-stage resultant, all-stage flux, or physical energy.",
+  "signed_dterror": "Finite signed FixedDt diagnostic must be<=1e-14. -DBL_MAX is explicitly emitted as dterror_interval_empty_sentinel, not represented as an observed maximum over all force stages. Native saved-frame signed dterror safety belongs to the separate pure reader/owner.",
+  "outputs": {
+    "live_final.csv": "1000 ID-sorted soil rows; exact header id,J,n,theta; precision17. Intended for independent final saved native J/n/theta comparison.",
+    "actual_complete.json": "Only written after successful actual Run and local Finish gates. Contains backend/window/model/counts/actual clocks, scratch release, download and ledger attribution, fixed-n sample range, descriptive retained-load integrals and explicit false all-saved/endpoint-audit/independent-half/physical claims.",
+    "Run.out_and_PART": "Produced by actual solver, bound externally. Native BI4 reader is a separate author/task; this file does not decode saved frames."
+  },
+  "required_later_gates": "Root must fully review new source/note, bind current authoritative fresh110 non-main GPU objects+1 helper/tool/libs/runtime/canonical identities and exact inputs, then explicitly authorize Debug smoke first. Successful Finish is not independent reader, CPU/GPU comparison, half convergence, force-stage load/flux audit, longer-time/formal/public acceptance. Preserve all failures; no automatic retry or next job. The original loaded-case half budgets5Pa pressureRMS/.005mm material displacement are unchanged but are not evaluated here; wave1e-4/CFL.01/J1e-4/E0 gates are not imported.",
+  "production_changes": false,
+  "physical_acceptance": false,
+  "executed_by_author": false
+}
+
