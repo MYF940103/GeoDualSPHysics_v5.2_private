@@ -1,0 +1,138 @@
+{
+  "stage": "upl_damp_short_root_r1",
+  "passed": true,
+  "reviewed_scope": "One eta=.02 constant-k loaded/drained1D .125s candidate, CPU coarse/half and same-step GPU bridge against retained noaux GPU ON; not full physical acceptance.",
+  "source_checkpoint": "69da646b8f02aaecc9ccb3fbffa536138a81caab",
+  "CPU_half_verified_checkpoint": "fef204f208e01c0b06a339e02f272634e2ec57a0",
+  "CPU_half_maxima_Pa_mm_time_s": [
+    1.2296427630147513,
+    0.000004953012640627724,
+    0
+  ],
+  "CPU_GPU_maxima_Pa_mm_time_s": [
+    0.009452877829606951,
+    0.000008524514471141016,
+    0
+  ],
+  "original_limits": [
+    5,
+    0.005,
+    1e-14
+  ],
+  "independent_recomputation_agrees": true,
+  "visual_review": {
+    "performed_by_root": true,
+    "history_and_profiles_PNGs_opened_and_inspected": true,
+    "labels_legends_units_ticks_readable": true,
+    "all_four_series_distinct_and_native_profiles_unclipped": true,
+    "CPU_half_and_GPU_damped_traces_overlap_as_expected": true,
+    "observed": "Damping reduces residual mean-pressure/total-stress and velocity oscillation; top material settlement/J/n nearly overlap. Residual ringing and upper-layer speed ripples remain. No smoothing/interpolation/clipping or theory curve added."
+  },
+  "same_GPU_option_comparison": {
+    "window_s": [
+      0.0625,
+      0.125
+    ],
+    "sampled_mean_pressure_peak_to_peak_Pa": {
+      "noaux": 2540.0439324951185,
+      "damped": 1002.1473016357431,
+      "reduction_percent": 60.5460642308135
+    },
+    "sampled_mean_pressure_reversal_variation_Pa": {
+      "noaux": 19702.981250122073,
+      "damped": 5110.540278259279
+    },
+    "max_saved_XYZ_speed_RMS_m_s": {
+      "noaux": 0.0013633935215899705,
+      "damped": 0.0006677812748499669,
+      "reduction_percent": 51.020650731036945
+    },
+    "top_material_settlement_end_mm": {
+      "noaux": 0.2527411520824252,
+      "damped": 0.2518085298589545,
+      "difference_mm": -0.0009326222234706805
+    },
+    "mean_pressure_end_Pa": {
+      "noaux": 9947.023650634766,
+      "damped": 9411.24397064209
+    },
+    "mean_total_compression_end_Pa": {
+      "noaux": 10674.548037838938,
+      "damped": 10136.238556146733
+    },
+    "meaning": "Finite-sample p2p/STD contain trends and phase; these reductions are not accuracy gains or fitted damping ratios. The old/new same-GPU build comparison is not an independent continuum truth or an isolated pressure-acceleration causal test."
+  },
+  "loop_cost_s": {
+    "CPU8_coarse": 180.862366,
+    "CPU8_half": 367.69043,
+    "GPU_coarse": 457.645752,
+    "scope": "Observed runs, not a new isolated whole-machine benchmark; retain prior controlled CPU8 preference for this small local case."
+  },
+  "decision": {
+    "prepare_and_build_long_reader_permitted": true,
+    "next_unique_window_s": 0.5,
+    "backend": "CPU8",
+    "coarse_dt_s": 0.0000019073486328125,
+    "half_dt_s": 9.5367431640625e-7,
+    "saved_samples": 1469,
+    "first1277_actual_native_prefix_required": true,
+    "sequence": "Prepare inputs + compile/link pure reader, then separately admit one fresh coarse; native safety and exact short prefix before separate half. Keep original5Pa/.005mm/1e-14 pair and native guards. No extra eta search/new smallsmoke/GPUlong/full2Tv admission."
+  },
+  "reference_limits": "Current case material differs from Lian2023§4.1. FiniteKw, ramp/drain initial state, particle drainage plane, band-load support, inertia and damping must be identified in any longer-window theory comparison. Necessary water-pressure D is not consolidation Cv.",
+  "physical_acceptance": false,
+  "formal_inputs_canonical_programs_and_retained_data_changed": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_plot_r1.check.json",
+      "bytes": 1582840,
+      "sha256": "e2aeb9bc3f0875c150c0a956219a55d42298062ce2a8f2f77e18ac04c2ef5dd9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_half_r3.check.json",
+      "bytes": 1047714,
+      "sha256": "18b414b84b15b30aae3d4f0df8853ce62af199a17400238cd8f8723f14478874"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_cross_coarse_r3.check.json",
+      "bytes": 1162953,
+      "sha256": "81939045242675adbc58375419477d966b5717e37bbec2e5c05b7ac3d17f108d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_coarse_r2.native.json",
+      "bytes": 905574,
+      "sha256": "ad5afdc970da063874bfca77f5cd465afed0bdad937e10c0264f53745505f559"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_coarse_r1.run.json",
+      "bytes": 1603623,
+      "sha256": "25f960241dfac0ac711622ecf90496a456df08d675e34ca8bd109518535975cc"
+    }
+  ],
+  "plot_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_plot_r1_history.png",
+      "bytes": 670309,
+      "sha256": "92d593006a6314ff7fe25c4e6a68315b1e929ff13be3052de26aa47382948814"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_plot_r1_profiles.png",
+      "bytes": 412899,
+      "sha256": "89a3c2c6a68f25d0b4c6c5948647ae36999de9e81d108ce759a6a184392fd9ef"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_plot_r1_history.csv",
+      "bytes": 3787770,
+      "sha256": "3e76dd8f2b547ad394296f35a44e8bb2e30a8ead261b61b6c8d44f33fea7aa5b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_plot_r1_profiles.csv",
+      "bytes": 154488,
+      "sha256": "96eaa75dbe496ea7efe6f22a022afc7627e8d07ba2afeef602cbff2218cd0197"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_plot_r1_windows.csv",
+      "bytes": 11436,
+      "sha256": "b2940839968a6cdd28036da43ea346f56e4fa3e3ab61a52abb9f17dd84aa8a9c"
+    }
+  ]
+}
