@@ -1,0 +1,62 @@
+{
+  "stage": "upl_gravity_wall_actual_r1",
+  "status": "author_only_not_built_or_executed",
+  "files": ["support/upl_gravity_wall_actual_r1.cpp", "notes/upl_gravity_wall_actual_r1.json"],
+  "scope": "CPU-only independent saved-state endpoint audit of the separately completed private true-Run opposing-x FreeSlip wall trajectory with uniform tangential gravity (0,0,-8). It never calls JSphCpuSingle::Run, ComputeStep, SaveData or a PART restart and does not modify source native files.",
+  "entrypoints": {
+    "audit": "--audit constant|variable smoke|coarse|half SEALED_NATIVE_DATA_DIR EXACT_RUNTIME_XML NEW_OUT",
+    "guards": "--guards constant smoke - EXACT_RUNTIME_SMOKE_XML NEW_OUT",
+    "CPU_initialization_args": "-cpu -ompthreads:1 -stable -mdbc_freeslip EXACT_RUNTIME_PREFIX NEW_OUT -dirdataout data -svres; output saves disabled for this audit only, not for the separately owned solver",
+    "warning": "-mdbc is not -mdbc_freeslip: the former overrides XML SlipMode3 and is rejected. No clock or initial physical field override is admitted. Variable smoke is not a planned physical job; use the constant smoke for method-level guard tests."
+  },
+  "immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "note": "notes/upl_cpu_public_native_r1.json",
+    "use": "One direct main-renamed include supplies exactly one AppInfo, Native, typed finite extraction, sequence, metadata absence and numeric helpers. Public Load/Read/Energy/Physical, the old26-column exporter and retained main are never called. There is no nested authored include or GPU/CUDA/CNG dependency."
+  },
+  "declared_inputs": {
+    "native_geometry": "1280 saved normal native IDs:256 fixed0..255 and1024 soil256..1279; equal dp1/512 and MassBound=MassFluid; two opposing exact-x planes at0 and1/16, pure Z periodicity with period1/16. Actual native+periodic owners and nonempty periodic fixed/fluid images are checked after initialization and every import.",
+    "physics": "Original float-promoted K89478488,G134217728,Kw67108864,rho0=2048,rhow1000,n0=.25,k0=float(1e-4),constant or private smooth Ck2^-13; masterOFF/model0/Ck0 in runtime XML. No load/drainage/viscosity/HG/SPR/shifting/DDT/relaxation/damping/floating/moving/inout path.",
+    "windows": "smoke:dt2^-25,end2^-24,cadence2^-25,3frames; coarse:dt2^-25,end2^-15,cadence2^-23,257frames; half:dt2^-26,sameEnd/cadence,257frames. Each native saved step is part*cadence/dt-1 except initial step0; never rewritten.",
+    "schema": "Private CPU saves original15 typed arrays plus J/n/last-integrator-stage-theta; n is native zero marker on fixed samples. Public metadata, PosDiv and native V/rho/k are absent. Soil33 comparisons derive V/rho/k from J; there is no claim these derived fields were native or that absent PosDiv is zero."
+  },
+  "prerequisites_before_actual_audit": [
+    "Root must fully read the new CPP/note, bind a fresh helper to the current changed CPU wall source and authoritative objects, and own every invocation. Never use the old pre-wall-patch objects merely because their program exits normally.",
+    "Separately owned trueRun and its full typed native review must pass first, including untouched sine initial state, accelerating-frame energy<=1.1, all saved weak-domain/current-k/RH/coupled/diffusion/signed-dterror/elastic/load/fixed-geometry guards. This audit is not a replacement for those single-trajectory gates or half/frame/body-g comparisons.",
+    "The outer owned wrapper must bind and rehash runtime XML, BI4 input, every saved PART, program/runtime/libraries/build/source and all outputs before/after. Component completion explicitly reports raw_SHA_before_after_checked_by_component=false; it does not fabricate an internal hash or owned process exit."
+  ],
+  "actual_lifecycle": [
+    "One independently initialized CPU object uses LoadConfig,LoadCaseParticles,VisuConfig,ConfigDomain,ConfigRunMode,InitRunCpu,FreePartsInit only. Real gravity remains nonzero through every initialization guard and force call.",
+    "For each saved sample load all1280 actual typed native fields/clock; map normal owners by native ID, import only their physical fields, call LoadDcellParticles(1,...) for each normal native slot, then actual RunCellDivide(true). This retires/rebuilds old periodic images through the production lifecycle rather than treating old out-of-primary-domain ghosts as new natives.",
+    "Exactly one actual Interaction_Forces(INTERSTEP_SymPredictor) per saved sample rebuilds wall state,C,finished Ace,wall Ace and full pressure rate in the production order. Source time/step are labels of the imported state, not advanced time. Full ID/code/cell/position/raw-normal arrays and clock must remain exact and all predictor histories NULL.",
+    "Independent O(N^2) references search all actual fixed/fluid native+periodic samples, not production cell ranges. They condition on actual current C and actual finished Ace; no claim of independent reconstruction of C or pressure truth is made.",
+    "After face/force/rate/necessary-step checks, restore soil saved theta,FSType and FSNormal, plus prior InterStep/cache; verify FixedDt signed-error state unchanged, free all force scratch and compare every soil33 row byte-exact by native ID. Boundary reconstruction diagnostics are not physical wall mass/state and are not falsely claimed unchanged. The object is not advanced afterward."
+  ],
+  "unchanged_numeric_budgets": {
+    "conditional_rate": "CPU endpoint r2 prior tighter budget: (32*FLT_EPSILON+4096*DBL_EPSILON)*max(1,raw_allterms),Pa/s. raw=B*[abs(theta)+(ki*(sum_abs(w*dp)+sum_xyz_abs(Gp*Lx)+rhow*sum_neighbor_xyz_abs(Vj*deltaAce*CiGrad))+abs(chain))/gamma],B=Kw/n,chain=alpha*ki*GJ dot(Gp+rhow Ace),gamma=rhow*9.80665. Compression is outside the mobility denominator. No new floor or32-to64 widening.",
+    "rate_equation": "B[-theta+ki/gamma*(Lp-Gp dot Lx+rhow D_C(Ace))+chain/gamma]; all fixed and fluid neighbors use Vj=V0*Jj and symmetric C for Lstar,receiver C for Gp/GJ/D. Constant alpha0; smooth alpha=1/((1-n0)Ck). Native finite rate error must satisfy its own per-row original budget.",
+    "force_reaction": "Original CPU wall: norm(sum_native_soil rho_i*Vi*Ace_i+wall_reaction)<=128*FLT_EPSILON*sum_abs_pair_force+4096*DBL_EPSILON*max(1,sum_abs_pair_force). Ace=as-g is INTERNAL force acceleration: do not add rho*V*g or demand body-force equilibrium during freefall. Symmetric float-stress/raw-float-kernel pair forces are independently accumulated, fixed samples are quadrature not added physical mass.",
+    "face_normal_velocity": "Original physical-plane MLS: bv=4*FLT_EPSILON*vmax*sum_abs_beta+4096*DBL_EPSILON*condition*vmax+1e-4*A; require bv<.01*A and abs(vn)<=bv.",
+    "face_flux": "Original bq=k0/gamma*[2*FLT_EPSILON*pmax*sum_abs_alpha+4*rhow*FLT_EPSILON*amax*sum_abs_beta+4096*DBL_EPSILON*condition*(gradient_abs_scale+rhow*amax)]+1e-4*qstar; require bq<.01*qstar and both base-k and reconstructed-physical-k face flux abs<=bq. The explicit1e-4 characteristic term is a boundary truncation budget, not a pure roundoff proof.",
+    "negative_controls": "For each full257-frame audit, both wrong-zero and wrong-copy wall-Ace face counterfactuals must be detected at least once, for base-k and physical reconstructed-k flux. They alter only the diagnostic formula, never rerun or advance a faulty solver. Smoke records these values without requiring a full-window witness.",
+    "step": "After the actual force, current-state GetDynamicStepScalesCpu and actual cache give necessary wave/diffusion/gradient bounds; declared dt must satisfy each. Cache/reference comparison retains64*FLT_EPSILON*max(1,speed) from the existing wall audit. These scales are not a universal stability proof or original-stage telemetry."
+  },
+  "method_level_guard_probes": {
+    "count": 3,
+    "cases": ["Actual x-wall Init with g=(-8,0,0) must reject the exact tangent message.", "Actual2D Init with g=(0,-8,0) must reject the finite-tangential/2D configuration message.", "Actual Init with g=(0,0,-8) and one real fixed B.z=ldexp(B.x,-22) must reject the exact tangent message. Normalized micro tilt is checked nonzero and less than old8FLT_EPS; raw g dot B is nonzero so this is not a vacuous normal-component or old inclined-normal test."],
+    "restore": "After each caught JException, restore Gravity,CSP.gravity and all native+periodic raw BoundNormal bytes; additionally require an actual zero-gravity Init positive recheck, restore the original gravity/normals again, and require the original tangential-gravity Init positive recheck. Compare geometry/clock/history and soil33 unchanged. Completion reports both positives separately; these are method-level checks, not g0 full-trajectory0ULP. No force, Run, step, canonical bad-XML claim or physical admission."
+  },
+  "outputs": {
+    "endpoint_face_force.csv": "2faces x3 or257samples =6 or514rows, including internal soil force,wall reaction,residual/budget,actual vn/qn,physical reconstructed J/k flux,wrong-zero/copy diagnostics.",
+    "endpoint_rates.csv": "1024soil x3 or257 =3072 or263168rows, saved last-stage theta vs actual endpoint theta,full actual/reference rate,uncancelled raw scale,prior32FLT budget/error,chain/speed references and nonempty wall/periodic-wall counts.",
+    "endpoint_audit.csv": "3 or257 actual source clocks/steps,source signed error and unchanged audit FixedDt error,owner/prefix counts,rate ratio,actual/reference gradient cache,necessary endpoint dt bound,soil33 rollback.",
+    "guards.csv": "Only --guards:3 actual method-level rejected cases and exact expected messages.",
+    "completion.json": "Only written after all checks pass; stage upl_gravity_wall_actual_r1 for audit or upl_gravity_wall_guards_r1 for method probes;physical_acceptance=false. Partial outputs remain on failure."
+  },
+  "limits": "Saved endpoints only,not original force-stage observations; saved theta not endpoint theta. Face q is independently derived from stored/force fields,not a native production q telemetry channel. Tangential g along z with a wave along x does not require or prove a nonzero Gk dot g source. No normal-gravity hydrostatic wall,public gravity,GPU,NoSlip,curved/moving boundary,restart/full-physics acceptance. No solver or completed analysis is automatically rerun by this author-only file.",
+  "built": false,
+  "executed": false,
+  "physical_acceptance": false
+}

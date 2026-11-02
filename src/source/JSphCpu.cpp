@@ -4155,15 +4155,17 @@ static tdouble3 DynamicPoreWallParity(const tfloat3 &raw){
 }
 
 //==============================================================================
-/// Admits only one/two static parallel axis planes; no public boundary mode.
+/// Admits static parallel axis planes with strictly tangential gravity; private only.
 //==============================================================================
 void JSphCpu::InitDynamicPoreWallCpu(){
   if(!DynamicPoreWall)return;
   if(!DynamicPorePressure || !CaseNpb || TBoundary!=BC_MDBC || !UseNormals || !BoundNormalc || !BoundModec
-    || Gravity.x || Gravity.y || Gravity.z || SoilBoundaryDerivativeSPR
+    || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z)
+    || (Simulate2D && Gravity.y!=0) || SoilBoundaryDerivativeSPR
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
-    Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, zero gravity and its own derivative closure.");
+    Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+  const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
   int axis=-1;
   bool seen[2]={false,false};
   double plane[2]={0,0};
@@ -4181,6 +4183,8 @@ void JSphCpu::InitDynamicPoreWallCpu(){
       Run_Exceptioon("Dynamic wall fixture permits parallel axis planes only, without corners.");
     for(int b=0;b<3;b++)if(b!=axis && fabs(component(n,b))>8.*FLT_EPSILON)
       Run_Exceptioon("Dynamic wall fixture rejects inclined normals.");
+    if(hasgravity && (component(ToTDouble3(Gravity),axis)!=0 || Gravity.x*raw.x+Gravity.y*raw.y+Gravity.z*raw.z!=0))
+      Run_Exceptioon("Dynamic wall fixture requires gravity exactly tangent to every wall mirror vector.");
     const unsigned side=(component(n,axis)>0? 0: 1);
     const double xp=component(wall,axis);
     if(!std::isfinite(xp) || (seen[side] && fabs(xp-plane[side])>1e-6*Dp))
@@ -4212,7 +4216,7 @@ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
   if(!DynamicPoreWall || !NpbOk)return;
   const auto read=[&](unsigned p,unsigned c){
     if(c==0)return PoroJc[p];
-    if(c==1)return double(PorePressc[p]); //-First actual-wall scope has g=0.
+    if(c==1)return double(PorePressc[p]); //-Even pressure requires zero normal body gravity.
     if(c<5)return double(c==2? Velrhopc[p].x: (c==3? Velrhopc[p].y: Velrhopc[p].z));
     const tsymatrix3d s=Sigmac[p];
     const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];

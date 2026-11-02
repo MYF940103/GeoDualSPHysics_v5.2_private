@@ -1,0 +1,16 @@
+{
+  "stage": "upl_gravity_wall_pair_r1",
+  "status_at_authoring": "offline_recipe_only_no_pair_executed",
+  "source": "tests/support/upl_gravity_wall_pair_r1.py",
+  "prerequisite": "Separately review exact owned solver/reader exits, immutable build/input/runtime/raw BI4 hashes, all native single-run guards and endpoint wall audits. This script does not replace or pretend to perform those checks.",
+  "scope": "1024 native soil IDs256..1279,256 stationary fixed samples,257 actual dyadic saved times. Constant or manufactured smooth k(J),CPU private strictly tangent g=(0,0,-8). Never normal-g/public/GPU/physical acceptance.",
+  "pairs_per_model": ["independent gravity coarse/half", "gravity coarse versus retained same-dt g0", "gravity half versus retained same-dt g0"],
+  "schema": "Shared33 fields only. Private V/rho/k derived from saved J; retained reference V/rho/k are native and validated by the reader. Saved PosDiv is reference-only diagnostic, not silently inserted into common fields. Fixed samples are independently reviewed and never transformed.",
+  "original_scales": {"pressure_Pa": 1023.9999974568686, "velocity_m_s": 0.001953125, "material_u_m": 7.589099058944216e-8, "normalized_limit": 0.0001},
+  "gates": "All257 actual matched samples: pressureRMS<=5Pa,material-u maximum<=.005mm and fullXYZ normalized pressure/velocity/material-u RMS<=1e-4. p0/plastic/load/passive legacy rho bits exact. No interpolation,new stress/theta/normal precision gate or all33 equality claim.",
+  "body_check": "Same-dt soil inertial velocity difference minus g*t,XYZRMS/A<=1e-4. Missing/double-g final formula-only controls exceed100 original velocity budgets,not faulty solver reruns or center-of-mass proofs.",
+  "independent_saved_checks": "Derive n/V/rho/k ledger,continuous-domain margin,original saved necessary wave/diffusion screens and accelerating-frame energy<=1.1. Preserve original native initial geometry/IDs/clock/step and fixed-wall checks in native reader.",
+  "outputs": "Fresh tests/logs check JSON; matching257-row history CSV and8481-row all-field descriptive CSV under tests/figures,using the same prefix name. All supplied inputs SHA-bound before and after offline reading.",
+  "on_failure": "Preserve checks and rows,diagnose without new fitted tolerance,damping,wall motion or force correction. Completed native solves are not rerun for analysis-only failures.",
+  "physical_acceptance": false
+}

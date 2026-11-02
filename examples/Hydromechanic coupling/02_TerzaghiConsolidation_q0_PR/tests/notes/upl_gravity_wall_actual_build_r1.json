@@ -1,0 +1,38 @@
+{
+  "stage": "upl_gravity_wall_actual_build_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/upl_gravity_wall_actual_build_r1.ps1", "notes/upl_gravity_wall_actual_build_r1.json"],
+  "scope": "One explicitly authorized CPU DebugCPU or ReleaseCPU compile/link of the new frozen-state wall-audit helper only. No production Rebuild, solver, help, reader, audit, guard invocation, install, Git, scheduler, worker, notification or automatic next stage.",
+  "command": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_gravity_wall_actual_build_r1.ps1 -Configuration DebugCPU -ExecutionAuthorized; ReleaseCPU is a separate root-reviewed command after the new Debug helper build passes.",
+  "required_new_main_helper": "logs/upl_gravity_wall_cpu_{DebugCPU,ReleaseCPU}_r2.helper.json, passed/status actual_authoritative_CPU_objects_wall_helper_linked_not_run, fixture GravityTangentWall,label r2,source_build bound to same-configuration fresh wall r1 full-Rebuild receipt,85 non-main objects and one original main-helper object. Require its actual r2 fields fresh_wall_r1_objects_adopted=true,pre_wall_objects_reused=false,Rebuild_executed=false; do not read the absent old_CPU_objects_reused field. This file may not exist until its own root-owned build completes; pending is never treated as passed.",
+  "retained_parent_failure": "The first wall-main-helper r1 compile exited2 with C1083 <string> missing because its old periodic helper.environment was null,not a production numerical failure; it never linked or ran. This builder never adopts that failed call or guesses the environment. It requires the successful r2 helper's hash-bound actual environment.selected,hard rejects any empty INCLUDE/LIB/VS/SDK value,and inherits only r2's successful compile/link vectors. Fresh authoritative wall Rebuild r1 objects remain the same and are not rebuilt.",
+  "source_attribution": {
+    "fresh_build": "logs/upl_gravity_wall_cpu_{Configuration}_r1.build.json: authoritative_CPU_Rebuild_passed_no_program_run,271 exact source files/snapshots,86 authoritative project objects with85 non-main and one main,old_objects_reused=false.",
+    "verification": "Before and after both tool calls verify the exact fresh main-helper/build receipts, current271-source membership and hashes, all original/snapshot pairs, all86 object/source pairs, protected canonical GPU-six/CPU-two, runtime, project/build call, author files and inherited tool/library identities. No old pre-wall-guard objects are linked.",
+    "historical_metadata": "Only the fresh build's explicitly listed git_identity_metadata paths are separated from its current-file input checks. These are historical build-time records, not current source. No Git invocation, recursive mutable validation status traversal or false old-source equality test is introduced.",
+    "no_checkpoint_lock": "Source/build hashes, not a permanently hard-coded later HEAD, bind this helper; the parent main build owns the published checkpoint/one reviewed dirty CPU guard attribution."
+  },
+  "frozen_authors": {
+    "cpp": "support/upl_gravity_wall_actual_r1.cpp,31108B,SHA48f89493d78ab9e1e330ec289492067d655213305cecfe41a4a3dfc8351c6055",
+    "note": "notes/upl_gravity_wall_actual_r1.json,SHA020effe94e085b80bf86e9906097a17c85f144b06b6add03f1b299992c522239",
+    "immutable_include": "support/upl_cpu_public_native_r1.cpp,22469B,SHA9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38 plus its original note; one main-renamed include and one AppInfo. No GPU/CUDA/CNG helper or bcrypt library is added.",
+    "builder": "The new builder and this note are bound by current hash with the four above author files at the actual build invocation. No author file is modified by the builder."
+  },
+  "exact_recipe_remaps": {
+    "compiler": "Use the successful fresh wall-main-helper r2 compile_call.arguments verbatim except exactly one source upl_gravity_wall_cpu_r1.cpp to actual_r1.cpp,one /Fo,one /Fd and one exact old helper-directory compile.dependencies.json output. Preserve /std:c++17,/fp:precise,configuration flags,include paths,sourceDependencies option and actual MSVC/environment identities; environment must be r2's explicit actual nonempty selected values,not the null old periodic helper.environment.",
+    "linker": "Use the successful fresh wall-main-helper link_call.arguments verbatim except exactly one main-helper object to new helper.obj,one /OUT and existing /PDB (one Debug,zero Release). ALL85 production object paths remain literally unchanged and match the fresh authoritative build and main-helper object receipts. Exactly86 objects are linked; no project main.obj,old Gamma object,new library or source-object remapping.",
+    "runtime": "Copy only the already-bound fresh main-helper runtime to the new isolated folder and verify byte count/SHA; never replace canonical executables or server packages.",
+    "owned_calls": "Only actual compiler and linker native invocations; precreate separate logs, reset/capture typed LASTEXITCODE immediately, seal an owned call receipt even on tool failure, link only after compiler typed exit0. Partial failure artifacts are retained and never overwritten."
+  },
+  "outputs": {
+    "folder": "outputs/upl_gravity_wall_actual_{Configuration}_r1_helper/",
+    "program": "upl_gravity_wall_actual_r1.exe",
+    "receipt": "logs/upl_gravity_wall_actual_{Configuration}_r1.helper.json",
+    "receipt_schema": "passed,status,fixture=GravityTangentWallActual,configuration,label=r1,parent_helper,source_build,inputs,author_files,environment,tools,libraries,objects85,CPU_non_main_objects85,helper_object,link_object_count86,exact_link_closure_verified,compile_call,link_call,runtime,program,Rebuild_executed=false,program_run=false,endpoint_audit_executed=false,guard_probes_executed=false,physical_acceptance=false.",
+    "call_and_logs": "logs/upl_gravity_wall_actual_{Configuration}_r1_{Compile,Link}.call.json and matching .log; helper.obj,compile.pdb,compile.dependencies.json and optional Debug link.pdb remain isolated."
+  },
+  "next_gate_not_run_by_builder": "Root must read the actual helper CPP/note/build receipt and first separately invoke --guards constant smoke - EXACT_RUNTIME_SMOKE_XML NEW_OUT. Only after its actual three Init negatives and positive recheck pass may an owned saved-state audit be considered; original trueRun/native/half/frame/face gates are not automatically admitted by a successful link.",
+  "built": false,
+  "executed": false,
+  "physical_acceptance": false
+}

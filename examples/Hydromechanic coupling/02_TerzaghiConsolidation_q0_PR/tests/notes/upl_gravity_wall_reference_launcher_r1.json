@@ -1,0 +1,14 @@
+{
+  "stage": "upl_gravity_wall_reference_launcher_r1",
+  "record_kind": "author_record_of_observed_shell_startup_failure_not_a_native_numeric_check",
+  "first_attempt": "The direct default-shell invocation of support/upl_gravity_wall_job_r1.ps1 for ReadReference constant coarse was rejected with PSSecurityException/UnauthorizedAccess because that shell prohibited script loading. The outer tool returned exit1 before executing the script body. No native reader, solver, owned call/check or output directory was started/created by this attempt.",
+  "failure_evidence": "Original same-thread exec output, chunk10ee68. No historical native call/log is fabricated for an executable that never started; this concise record preserves the failure rather than labeling the first attempt exit0.",
+  "root_authorized_resolution": "Root explicitly authorized only the existing one-off child launcher: powershell.exe -NoProfile -ExecutionPolicy Bypass -File <frozen jobPS> ... -ExecutionAuthorized. This applies only to that child process. No Set-ExecutionPolicy, system/user policy change, security-setting edit, solver retry or old-control rerun occurred.",
+  "subsequent_real_native_reads": [
+    {"path": "logs/upl_gravity_wall_cpu_ReleaseCPU_constant_coarse_r1_reference_reader.call.json", "sha256": "d83e468ff4bdb1a3bc83474a83134edd1e59abc8fce20f7c444d4f901d0562b9", "owned_typed_exit_code": 0},
+    {"path": "logs/upl_gravity_wall_cpu_ReleaseCPU_constant_half_r1_reference_reader.call.json", "sha256": "03258bc6db272a61b0d1e8d87828e4a6dbb8ec4c0aa6f0255db25357438015fe", "owned_typed_exit_code": 0}
+  ],
+  "scope": "Both later calls were pure native BI4 reads of existing g0 constant controls. Their own immutable call/check records prove the real program exits and hashes. They did not rerun a completed solver. No new source, Git or formal/server mutation was performed.",
+  "system_or_user_execution_policy_modified": false,
+  "physical_acceptance": false
+}

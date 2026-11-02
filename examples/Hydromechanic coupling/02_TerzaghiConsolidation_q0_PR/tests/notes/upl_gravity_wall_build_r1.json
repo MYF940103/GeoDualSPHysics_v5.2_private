@@ -1,0 +1,30 @@
+{
+  "stage": "upl_gravity_wall_build_r1",
+  "status": "author_only_no_build_or_program_run",
+  "entry": "support/upl_gravity_wall_build_r1.ps1 -Mode Rebuild|BuildHelper -Configuration DebugCPU|ReleaseCPU -Label rN -ExecutionAuthorized",
+  "ownership": "One explicit build-only action/configuration/label. Rebuild does not run any program; BuildHelper only compiles and links the separately reviewed wall fixture. No solver, reader, endpoint audit, help, GenCase, restart, installation, old-control rerun, scheduler or automatic next action. Root owns all execution after full source/recipe review. No failed label may be reused.",
+  "source": {
+    "published_base": "1823ad24fece480e3c77a2f15e0727d760f27c67",
+    "verified_publication": "logs/upl_gravity_endpoint_publish_r1.verified.json",
+    "reviewed_single_dirty_production_file": "src/source/JSphCpu.cpp",
+    "candidate_raw_sha256": "0224f7383c1b19d40375d79037ffebb99bcf5bb826b2db4a4c77ba7a87621b93",
+    "change_scope": "Root-owned private finite strictly tangential wall-gravity init guard/comment only. Do not require this intentionally dirty source to equal the old published JSphCpu blob. No public or GPU nonzero-gravity unlock.",
+    "proof": "Read the existing worktree HEAD/ref metadata without executing Git. Require the current verified published parent. Compare all271 current source file raw hashes/membership to the retained Gamma r2 source inventory already adopted unchanged through the published endpoint stage: exactly JSphCpu.cpp may differ, and must match the reviewed candidate SHA. The old source inventory is historical source evidence, NEVER an object donor. Snapshot all271 current sources byte-for-byte before the new full Rebuild, reverify every original/snapshot/project/tool/author/canonical hash after each action. No clean-worktree or filtered-blob equivalence is claimed for the dirty candidate."
+  },
+  "authoritative_CPU": {
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "project": "src/VS/DualSPHysics5ReCpu.vcxproj",
+    "Rebuild": "MSBuild /m /t:Rebuild /p:Configuration=DebugCPU|ReleaseCPU /p:Platform=x64 /v:minimal with new isolated tests/outputs/upl_gravity_wall_cpu_CFG_rN_main OutDir and no-space src/VS/Intermediate/upl_gravity_wall_cpu_CFG_rN IntDir. Never touch default IntDir/canonical program outputs; default CPU Debug build is separately root-owned.",
+    "object_closure": "Parse active authoritative project ClCompile items and per-configuration exclusions:86 unique translation units including main,85 non-main. Every object is newly built in the fresh label IntDir, particularly JSphCpu.obj. The helper links only these85 new non-main objects plus its own new object=86. No Gamma/periodic/endpoint object is reused or copied; main.obj is excluded.",
+    "helper_recipe": "Reuse only the sealed successful upl_gravity_periodic_cpu_{DebugCPU,ReleaseCPU}_r1 helper compile/link vectors. Verify original compiler/link receipts/tools/libraries, then remap source/Fo/Fd/dependency/OUT/PDB and every85 object path to the new authoritative build. No old-program run or stale-object identity claim. C++17,fp:precise,CPU-only flags are preserved. The new main wrapper includes only immutable CPU public Native/neutral helpers; it supplies exactly one AppInfo.",
+    "libraries_runtime": "The sealed CPU recipe resolves17 CPU/system libraries in the actual VS2022 x64 environment. No GPU objects,CUDA,CNG or bcrypt link transplant. Only the four existing runtime/config files are byte-identically copied to isolated main/helper folders, with original/copy hashes. Full environment is consumed in memory, not dumped as secrets.",
+    "canonical_protection": "Reverify the retained canonical GPU six. Snapshot both current canonical CPU executables immediately before the isolated action and require them unchanged afterward. The root-owned default Debug build was completed separately and legitimately changed that canonical CPU Debug executable; it is not compared with an obsolete pre-guard identity. No server/formal case is touched."
+  },
+  "author_inputs": "New driver/note, p0's final support/upl_gravity_wall_cpu_r1.cpp and declaration, immutable support/upl_cpu_public_native_r1.cpp plus its note, tangent plan, notes/upl_gravity_wall_inputs_r1.json and all five new configs are bound before/after the chosen action. Root must finish reading/freeze the final p0 author files before authorizing Rebuild. No author SHA is guessed while p0 is still writing.",
+  "prepared_configuration_proof": "notes/upl_gravity_wall_inputs_r1.json records all five exact runtime copies, inverse-DOM whitelist proof,32 unchanged fluidvelocity columns, chosen original h BI4 SHA76ead355...a932f and all four true-run initial native typed comparisons. These are input preparation proofs, not actual candidate output or physical acceptance. No BI4 staging/copy is performed by this build-only script.",
+  "exit_contract": "Distinct precreated immutable Rebuild/Compile/Link logs and .call.json records. Direct & invocation followed immediately by typed Int32 LASTEXITCODE capture; null/nonzero never becomes0. No Start-Process/Refresh, R alias, pipeline exit inference or fabricated owned exit. Preserve failed build artifacts and stop dependent actions.",
+  "output": "logs/upl_gravity_wall_cpu_CFG_rN.{build,helper}.json with per-tool call/logs; outputs/upl_gravity_wall_cpu_CFG_rN_{source,main,helper}. Separate true-Run/read/audit actions are not implemented or automatically launched here.",
+  "nonclaims": ["No new trajectory or actual physical/wall acceptance", "No public/GPU/non-tangential gravity support", "No old control or full simulation rerun", "No old raw BI4/executable cloud-backup claim", "No independent half/theory/flux gate inferred from build success"],
+  "programs_started_by_author": false,
+  "physical_acceptance": false
+}

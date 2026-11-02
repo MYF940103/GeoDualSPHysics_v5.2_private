@@ -1,0 +1,474 @@
+{
+  "stage": "upl_gravity_wall_inputs_r1",
+  "passed": true,
+  "status": "five_config_files_authored_and_existing_initial_state_equality_checked_no_new_native_program",
+  "scope": "Preparation only. Five private CPU tangent-wall runtimes, no BI4 copy, GenCase, compiler, solver, native reader or force audit executed.",
+  "source_checkpoint": "1823ad24fece480e3c77a2f15e0727d760f27c67",
+  "candidate_source": "Root-owned JSphCpu.cpp tangent-only init guard; build must compile a new source snapshot, not reuse old Gamma objects.",
+  "plan": "notes/upl_gravity_wall_tangent_plan_r1.json",
+  "chosen_geometry": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_h\\CaseUplWall_h.bi4",
+    "bytes": 57736,
+    "sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f"
+  },
+  "chosen_runtime_template": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_h\\CaseUplWall_h.xml",
+    "bytes": 19887,
+    "sha256": "c15094a6ec493311ec0053f4864d51f1b8274ff573378eff6e87215b52f290d1"
+  },
+  "geometry_c_header_hash_different": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc",
+  "chosen_geometry_hash_not_equal_to_c": true,
+  "jobs": [
+    {
+      "cadence_s": 2.9802322387695312e-8,
+      "steps": 2,
+      "dt_s": 2.9802322387695312e-8,
+      "inverse_DOM_equal_except_declared_keys_and_comments": true,
+      "velocity_columns": 32,
+      "job": "constant_smoke",
+      "end_s": 5.960464477539063e-8,
+      "window": "smoke",
+      "model": "constant",
+      "config": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_gravity_wall_constant_smoke_r1.xml",
+        "bytes": 20161,
+        "sha256": "cf3d6a158768034fafc36c707ea4b4dfeed45461c962c940c9ba7f59935d2864"
+      },
+      "samples": 3
+    },
+    {
+      "cadence_s": 1.1920928955078125e-7,
+      "steps": 1024,
+      "dt_s": 2.9802322387695312e-8,
+      "inverse_DOM_equal_except_declared_keys_and_comments": true,
+      "velocity_columns": 32,
+      "job": "constant_c",
+      "end_s": 0.000030517578125,
+      "window": "coarse",
+      "model": "constant",
+      "config": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_gravity_wall_constant_c_r1.xml",
+        "bytes": 20171,
+        "sha256": "dd73fb5f6bbcdb49eb18d2367ccb5a3a05ea0bef28711dc174e5beb3ed03be1f"
+      },
+      "samples": 257
+    },
+    {
+      "cadence_s": 1.1920928955078125e-7,
+      "steps": 2048,
+      "dt_s": 1.4901161193847656e-8,
+      "inverse_DOM_equal_except_declared_keys_and_comments": true,
+      "velocity_columns": 32,
+      "job": "constant_h",
+      "end_s": 0.000030517578125,
+      "window": "half",
+      "model": "constant",
+      "config": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_gravity_wall_constant_h_r1.xml",
+        "bytes": 20173,
+        "sha256": "b23a5b4a0f348b5835eb67554fa30fb8e9424c12673d766e7641a6bd14c8cca9"
+      },
+      "samples": 257
+    },
+    {
+      "cadence_s": 1.1920928955078125e-7,
+      "steps": 1024,
+      "dt_s": 2.9802322387695312e-8,
+      "inverse_DOM_equal_except_declared_keys_and_comments": true,
+      "velocity_columns": 32,
+      "job": "variable_c",
+      "end_s": 0.000030517578125,
+      "window": "coarse",
+      "model": "variable",
+      "config": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_gravity_wall_variable_c_r1.xml",
+        "bytes": 20171,
+        "sha256": "65c6256869925af1b65a4efe3a96957cf01d2614616184a93202fdbcff2381fc"
+      },
+      "samples": 257
+    },
+    {
+      "cadence_s": 1.1920928955078125e-7,
+      "steps": 2048,
+      "dt_s": 1.4901161193847656e-8,
+      "inverse_DOM_equal_except_declared_keys_and_comments": true,
+      "velocity_columns": 32,
+      "job": "variable_h",
+      "end_s": 0.000030517578125,
+      "window": "half",
+      "model": "variable",
+      "config": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_gravity_wall_variable_h_r1.xml",
+        "bytes": 20173,
+        "sha256": "3280c8e7a74517d777999c9422004df5c78fcde683984efd5310352035c59de2"
+      },
+      "samples": 257
+    }
+  ],
+  "config_whitelist": {
+    "gravity": "Both /case/casedef/constantsdef/gravity and /case/execution/constants/gravity change from(0,0,0) to(0,0,-8). No normal body gravity.",
+    "public_keys": "Explicit HydroMechDynamicSeepage=0,HydroMechConductivityModel=0,HydroMechConductivityCk=0. The private derived wrapper, not XML or guard bypass, enables the tested model.",
+    "clock": "Only DtIni,DtFixed,TimeMax,TimeOut change to declared dyadic windows. Other values/attributes/geometry/runtime nodes are identical after inverse DOM transform; comments are allowed explanatory differences.",
+    "velocity": "All32 retained fluidvelocity node subtrees are exactly the same as the h canonical template; no manufactured reset or removed OnlyPos column.",
+    "law": "Variable model Ck=2^-13 is assigned by the independently authored private wrapper; it is manufactured, not a calibrated soil parameter."
+  },
+  "all_five_inverse_DOM_equal": true,
+  "initial_native_equivalence": {
+    "method": "Read only already sealed typed exports from four actual canonical CPU runs. Reverify their bound whole-file SHA/size, original owned exits, original XML/BI4 and initial raw PART bindings, then hash only the declared exact initial blocks. No new BI4 parser or new program invocation.",
+    "original15": "Each original15.bin header[1280,15,257] then actual t0 double and15 native typed arrays sorted by all1280 IDs. First204820 bytes=12header+8clock+1280*160 typed bytes, not a33-column reinterpretation.",
+    "soil33": "Each independently raw-native-reread physical.bin header[1024,33,257] then actual t0 and1024 soil33-double rows. First270356 bytes=12header+8clock+1024*33*8; no26-column relabel.",
+    "fixed": "Whole fixed_ids.csv and native_ids.csv hashes match. First257 fixed_samples.csv lines=header+256 original fixed samples, with original CPU n=0 nonphysical markers; these are separate from soil material n.",
+    "claims": "Initial native physical fields and IDs/positions are equivalent for the chosen h seed and all four retained controls. This does NOT claim c/h BI4 whole-file equality, whole trajectories equal, generic metadata equal, or new candidate initial fields already measured.",
+    "all_initial_original15_1280_byte_exact": true,
+    "all_initial_soil1024_columns33_byte_exact": true,
+    "all_native_ID_geometry_byte_exact": true,
+    "all_fixed_ID_geometry_byte_exact": true,
+    "all_initial_fixed_J_n_theta_markers_text_exact": true,
+    "controls": [
+      {
+        "first_original15": {
+          "bytes": 204820,
+          "sha256": "1120834904e0e41541bdbf37738353412c4d1a6b2cc92a00ebb03eb48e9e9cd5",
+          "header": [
+            1280,
+            15,
+            257
+          ],
+          "time": 0
+        },
+        "original15": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_review_r1_wall_constant_c\\original15.bin",
+          "bytes": 52635668,
+          "sha256": "29c2ecd5377bd45072dc0051934a88d96d9b6647c930481e83f89af5d33b90ec"
+        },
+        "owned_solver_call": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_c_r1_solver.run.json",
+          "bytes": 1997,
+          "sha256": "1f6edb67f02a895d57100aab034b752f5583283abebe9465cd53238713e2edbe"
+        },
+        "original_solver_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_c_r1.solver.check.json",
+          "bytes": 110741,
+          "sha256": "1c25da4438c00bd155b762bd8cc47b380d214c59d6af6bdda7182e8caccceec2"
+        },
+        "first_fixed_marker_SHA256": "fcb7016cf4c56fc5c15b3e58b721818ecf742da789b9fd731326d81163f8a34d",
+        "first_soil33": {
+          "bytes": 270356,
+          "sha256": "4fd693e6d052292ee6193ee7f37846660808ec5bed3a6b002e13a231084134fa",
+          "header": [
+            1024,
+            33,
+            257
+          ],
+          "time": 0
+        },
+        "label": "constant_c",
+        "physical33": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_c_r1_review\\physical.bin",
+          "bytes": 69478420,
+          "sha256": "2265294b23ee4934d2da7e70e27dabe0719d7e4319f2d94e1bc64560d21bb1f6"
+        },
+        "original15_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_c_r1.review.check.json",
+          "bytes": 4196,
+          "sha256": "1d8dd7d815b940b973a86caea5d2377b9fa33041e77809583dc65985764d92a0"
+        },
+        "fixed_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_c_r1_review\\fixed_ids.csv",
+          "bytes": 10557,
+          "sha256": "f2c422cc0e46aeccd106b96df8e76420fdff869f909c152d5a5bd8f155735638"
+        },
+        "fixed_samples": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_c_r1_review\\fixed_samples.csv",
+          "bytes": 5516632,
+          "sha256": "c787d7de7724c6b01d1af197d5f7621d4de5e0f70035f4c95a0c2fcc4f2beb8a"
+        },
+        "first_fixed_marker_lines": 257,
+        "runtime": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_c\\CaseUplWall_c.xml",
+          "bytes": 19889,
+          "sha256": "bb23dbe8fdc0518b9489cc979f33d08f218e4640d38a62c0ba3560db01fc3afe"
+        },
+        "native_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_c_r1_review\\native_ids.csv",
+          "bytes": 40157,
+          "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+        },
+        "typed33_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_CPU_constant_c_r1.check.json",
+          "bytes": 158446,
+          "sha256": "f16fac10154d4fc1a623fc02e6f03980c3da972be0c1a97903fe3bb5901872c7"
+        },
+        "bi4": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_c\\CaseUplWall_c.bi4",
+          "bytes": 57736,
+          "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+        },
+        "raw_initial_part": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_r1_wall_constant_c\\data\\Part_0000.bi4",
+          "bytes": 274106,
+          "sha256": "2dab7d60bb9abd55973142d5c6472a9053651f69b46688a3224feed685d631dc"
+        }
+      },
+      {
+        "first_original15": {
+          "bytes": 204820,
+          "sha256": "1120834904e0e41541bdbf37738353412c4d1a6b2cc92a00ebb03eb48e9e9cd5",
+          "header": [
+            1280,
+            15,
+            257
+          ],
+          "time": 0
+        },
+        "original15": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_review_r1_wall_constant_h\\original15.bin",
+          "bytes": 52635668,
+          "sha256": "af387b1902d545875189176f28f4160a586b3fb0b38bf2243ff7ac2e18880339"
+        },
+        "owned_solver_call": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_h_r1_solver.run.json",
+          "bytes": 1997,
+          "sha256": "39766d8e2bd6f45b0545e45b0d22dce62620a8c4ada8c96baf598b391d0c1a71"
+        },
+        "original_solver_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_h_r1.solver.check.json",
+          "bytes": 110741,
+          "sha256": "06d5857215b3628fc2bec216b49f7c71deeffa69b0fc068cb0e6fd93768c3ef1"
+        },
+        "first_fixed_marker_SHA256": "fcb7016cf4c56fc5c15b3e58b721818ecf742da789b9fd731326d81163f8a34d",
+        "first_soil33": {
+          "bytes": 270356,
+          "sha256": "4fd693e6d052292ee6193ee7f37846660808ec5bed3a6b002e13a231084134fa",
+          "header": [
+            1024,
+            33,
+            257
+          ],
+          "time": 0
+        },
+        "label": "constant_h",
+        "physical33": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_h_r1_review\\physical.bin",
+          "bytes": 69478420,
+          "sha256": "e1ad8f3af82a6b1eb50c1d03bc9bfa32137ac884a81757a4355c4ef89605a2e2"
+        },
+        "original15_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_constant_h_r1.review.check.json",
+          "bytes": 4196,
+          "sha256": "27dce46b1a4a126c69f0e016f7e71d3bbdbaf1381792097704acd51572c701a4"
+        },
+        "fixed_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_h_r1_review\\fixed_ids.csv",
+          "bytes": 10557,
+          "sha256": "f2c422cc0e46aeccd106b96df8e76420fdff869f909c152d5a5bd8f155735638"
+        },
+        "fixed_samples": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_h_r1_review\\fixed_samples.csv",
+          "bytes": 5514774,
+          "sha256": "911a70020514d30c294a85a328a7c68052f8815b27883da9a78c33c80811a8cb"
+        },
+        "first_fixed_marker_lines": 257,
+        "runtime": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_h\\CaseUplWall_h.xml",
+          "bytes": 19887,
+          "sha256": "c15094a6ec493311ec0053f4864d51f1b8274ff573378eff6e87215b52f290d1"
+        },
+        "native_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_constant_h_r1_review\\native_ids.csv",
+          "bytes": 40157,
+          "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+        },
+        "typed33_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_CPU_constant_h_r1.check.json",
+          "bytes": 158446,
+          "sha256": "a6261442f5f3c886f681e03a3a85678794ed0f03a51b3727731b005c7464e625"
+        },
+        "bi4": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_constant_h\\CaseUplWall_h.bi4",
+          "bytes": 57736,
+          "sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f"
+        },
+        "raw_initial_part": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_r1_wall_constant_h\\data\\Part_0000.bi4",
+          "bytes": 274106,
+          "sha256": "9e4b078951aac17df3563f05f08456fd2e381dfce5182759c9271d4fdfe81363"
+        }
+      },
+      {
+        "first_original15": {
+          "bytes": 204820,
+          "sha256": "1120834904e0e41541bdbf37738353412c4d1a6b2cc92a00ebb03eb48e9e9cd5",
+          "header": [
+            1280,
+            15,
+            257
+          ],
+          "time": 0
+        },
+        "original15": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_review_r1_wall_evolving_c\\original15.bin",
+          "bytes": 52635668,
+          "sha256": "3d9abcbf6c30e25be9e2ac8cc018a2e00362c1ed98520dfe972734e62ce233c0"
+        },
+        "owned_solver_call": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_c_r1_solver.run.json",
+          "bytes": 1997,
+          "sha256": "d3717dc3418b2c9f3902f15e07eaa38e3078b90e152d822aa24af783a3ebd6e1"
+        },
+        "original_solver_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_c_r1.solver.check.json",
+          "bytes": 110737,
+          "sha256": "6523226e4ebf1a072022f7cb69612e0ff3d4eccce72318991014fb2d5fdb4fac"
+        },
+        "first_fixed_marker_SHA256": "fcb7016cf4c56fc5c15b3e58b721818ecf742da789b9fd731326d81163f8a34d",
+        "first_soil33": {
+          "bytes": 270356,
+          "sha256": "4fd693e6d052292ee6193ee7f37846660808ec5bed3a6b002e13a231084134fa",
+          "header": [
+            1024,
+            33,
+            257
+          ],
+          "time": 0
+        },
+        "label": "variable_c",
+        "physical33": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_c_r1_review\\physical.bin",
+          "bytes": 69478420,
+          "sha256": "abbae980ba4039e23fd5c81a2edc30a387f573c5ba82599862d569ead7085cdf"
+        },
+        "original15_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_c_r1.review.check.json",
+          "bytes": 4196,
+          "sha256": "098963722b418003c30e7b6527d1aded191291661e21ba00915b606501cc99e3"
+        },
+        "fixed_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_c_r1_review\\fixed_ids.csv",
+          "bytes": 10557,
+          "sha256": "f2c422cc0e46aeccd106b96df8e76420fdff869f909c152d5a5bd8f155735638"
+        },
+        "fixed_samples": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_c_r1_review\\fixed_samples.csv",
+          "bytes": 5517334,
+          "sha256": "f439974282207dae0ec8f16aae3e7bd048965525298dd98c5214dcf9677fb78a"
+        },
+        "first_fixed_marker_lines": 257,
+        "runtime": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.xml",
+          "bytes": 20031,
+          "sha256": "eb027f87dbb318b451f2d6d44ef99bfd8d76bd140b6dc6bb2834840e6edefd8e"
+        },
+        "native_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_c_r1_review\\native_ids.csv",
+          "bytes": 40157,
+          "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+        },
+        "typed33_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_CPU_variable_c_r1.check.json",
+          "bytes": 158446,
+          "sha256": "d126848d78496373ac8f67b99dbc4b62e586fa4e4631553c80ae6da3d2db51a9"
+        },
+        "bi4": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_c\\CaseUplWall_c.bi4",
+          "bytes": 57736,
+          "sha256": "3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc"
+        },
+        "raw_initial_part": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_r1_wall_evolving_c\\data\\Part_0000.bi4",
+          "bytes": 274106,
+          "sha256": "adcdbf5818157be885fdb1044a98302aec96a6ec07a06dfbf93b45c0394e927f"
+        }
+      },
+      {
+        "first_original15": {
+          "bytes": 204820,
+          "sha256": "1120834904e0e41541bdbf37738353412c4d1a6b2cc92a00ebb03eb48e9e9cd5",
+          "header": [
+            1280,
+            15,
+            257
+          ],
+          "time": 0
+        },
+        "original15": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_review_r1_wall_evolving_h\\original15.bin",
+          "bytes": 52635668,
+          "sha256": "6b4d54f0149ba782c148ea698960beb81dd43c0f55d76e045b13025ab052fddd"
+        },
+        "owned_solver_call": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_h_r1_solver.run.json",
+          "bytes": 1997,
+          "sha256": "99a6d31b27805abdf348b94d7932b8e015a554fdcf6a4cddfa07c8a482b1acaf"
+        },
+        "original_solver_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_h_r1.solver.check.json",
+          "bytes": 110741,
+          "sha256": "a0f112f1486715e99a01ccf259a8fa2be64bee12b906985be7fa581102f49080"
+        },
+        "first_fixed_marker_SHA256": "fcb7016cf4c56fc5c15b3e58b721818ecf742da789b9fd731326d81163f8a34d",
+        "first_soil33": {
+          "bytes": 270356,
+          "sha256": "4fd693e6d052292ee6193ee7f37846660808ec5bed3a6b002e13a231084134fa",
+          "header": [
+            1024,
+            33,
+            257
+          ],
+          "time": 0
+        },
+        "label": "variable_h",
+        "physical33": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_h_r1_review\\physical.bin",
+          "bytes": 69478420,
+          "sha256": "c8226a36994badda5330d66d0661047d477b2d53c3d6fd3345cd7d36f24ac8ce"
+        },
+        "original15_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_cpu_public_wall_evolving_h_r1.review.check.json",
+          "bytes": 4196,
+          "sha256": "c4a14d52fa69986468c5f7ba3cf6a7c50442fb9b34d8e4638e55f7b72c67e8bc"
+        },
+        "fixed_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_h_r1_review\\fixed_ids.csv",
+          "bytes": 10557,
+          "sha256": "f2c422cc0e46aeccd106b96df8e76420fdff869f909c152d5a5bd8f155735638"
+        },
+        "fixed_samples": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_h_r1_review\\fixed_samples.csv",
+          "bytes": 5513781,
+          "sha256": "8e2747c68c74c5bcd56b4e968551e95c913f23652941c9d058364ad6215dd5a3"
+        },
+        "first_fixed_marker_lines": 257,
+        "runtime": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_h\\CaseUplWall_h.xml",
+          "bytes": 20029,
+          "sha256": "07d6874a4acc0a3224c3173862d567b91cc1fdec9fb5947c85450458f441a815"
+        },
+        "native_ids": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_CPU_variable_h_r1_review\\native_ids.csv",
+          "bytes": 40157,
+          "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+        },
+        "typed33_check": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_wall_actual_CPU_variable_h_r1.check.json",
+          "bytes": 158446,
+          "sha256": "96dae5b7cefd9bbfb600671065e1d71b934d27519745fbd1e290a387434e337c"
+        },
+        "bi4": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_seed_r1_wall_evolving_h\\CaseUplWall_h.bi4",
+          "bytes": 57736,
+          "sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f"
+        },
+        "raw_initial_part": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_cpu_public_r1_wall_evolving_h\\data\\Part_0000.bi4",
+          "bytes": 274106,
+          "sha256": "4754e5c4f65d58e39d93200e4916105c959b14d2cd56bd79283ae8184d4760ae"
+        }
+      }
+    ]
+  },
+  "future_input_staging": "Root-owned single staging step may copy each reviewed XML and exact chosen h BI4 into a fresh same-prefix outputs directory and seal source/copy SHA before actual runs. This author stage does not copy or overwrite any BI4, canonical input or retained output.",
+  "execution_or_admission": false,
+  "new_solver_or_reader_invoked": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,17 @@
+{
+  "stage": "upl_porosity_J_vs_lian_r1",
+  "reason": "User asked whether porosity_thetap1+=divv omits the neighbor solid fraction (1-nj). Read-only source/paper clarification; no production equation changed.",
+  "source": {
+    "theta": "src/source/JSphCpu.cpp:2552-2553: divv=Vj*(vj-vi).corrected_gradW; sum into theta,not directly dn/dt.",
+    "integration": "ComputeSymplecticPrePorosity/ComputeSymplecticCorrPorosity integrate Jdot=J*theta using existing force-stage midpoint values.",
+    "porosity": "GetPorosityFeedbackStateCpu derives n=1-(1-n0)/J. This enforces the algebraic incompressible-grain identity (1-n)*J=1-n0 and implies the continuous local relation ndot=(1-ni)*theta_i. It does not make a finite-step n update identical to directly midpoint-integrating n."
+  },
+  "primary_local_reference": "src/papers/u-pw/Lian 2023 u-pl.md:197-201 equation8 and325-334 equation24,read directly during this answer.",
+  "paper_equation8": "dn/dt=(1-n)*div(vs),assuming incompressible solid grains.",
+  "paper_equation24": "dn_i/dt=sum_j Vj*(1-nj)*(vj-vi).corrected_grad_i_Wij; the solid fraction is inside the neighbor sum.",
+  "discrete_difference": "With the same Vj,velocity differences and corrected gradient, paper24 minus the instantaneous local-J-derived rate is sum_j Vj*(ni-nj)*(vj-vi).corrected_grad_i_Wij. Uniform n makes this zero; spatially varying n does not generally. Do not claim the current code multiplies by (1-nj) elsewhere or exactly reproduces equation24.",
+  "interpretation": "Current J route implements the continuous local solid-volume identity,not a literal equation24 transcription. Both continuum meaning and finite-particle/finite-step differences must be distinguished. No relative accuracy claim follows from the identity alone.",
+  "development_followup": "Complete the already running unchanged tangent-gravity tests. Before general variable-porosity/large-deformation physical release,compare the two discretizations in a separately declared nonuniform-porosity test and assess local/global solid-volume and pressure/k consequences. Do not silently change the current trajectory,rerun controls or mix this option comparison into a half-step error gate.",
+  "new_physical_or_discretization_acceptance": false,
+  "production_changed": false
+}

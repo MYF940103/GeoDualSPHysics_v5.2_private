@@ -1,0 +1,15 @@
+{
+  "stage": "upl_gravity_wall_stage_r1",
+  "conclusion_zh": "CPU私有入口的严格切向重力壁面短窗验证通过。常k和变k的粗/半步及同实际时间的零重力参考系对照均通过；默认OFF的原15字段和时间元数据保持逐字节一致。不是一般u-pl物理算例或公开非零重力支持验收。",
+  "production_change": "仅src/source/JSphCpu.cpp，8新增/4移除行：原全重力拒绝改为有限重力、2D出平面拒绝，并要求重力沿墙轴分量及对每个原始镜像向量点乘严格为0。旧墙几何/FreeSlip/固定/周期条件保留；仅另改说明注释。无新数组、开关、XML参数、力/孔压/应力/积分公式修改。",
+  "builds": "默认CPU Debug及独立权威CPU Debug/Release全Rebuild通过，271源文件快照/86新编译对象；测试工具使用85新非main对象加自己的1对象。所有GPU与正式/server程序保持。默认CPU Debug按项目规则重新构建并有独立记录。",
+  "retained_failures": "第一次测试入口编译脚本从无environment字段的旧收据取环境，真实cl退出2且未链接/运行；r2桥接正确读取已封存Gamma环境，采用同一批新对象，不重复Rebuild。另保留启动前shell执行策略拒绝与首次离线Tee参数错误；未修改系统策略、数值门槛或重跑已完成求解器。",
+  "tests": "5次新private真实Run（Debug2步、Release两模型粗/半步）共6146步/1031帧；4组旧g0参考纯读1028帧不重跑。另1次默认OFF8步9帧。Debug和Release各3项真实Init拒绝负控、g0和切向正控通过。",
+  "quantified": "常/变k半步孔压RMS最大0.0002936213/0.0003448269Pa；四组切向重力去自由落体后相对g0的孔压RMS最大均<0.000038Pa。所有全XYZ归一化p/v/u误差<1e-4，未调门。独立1028次保存末点force回放覆盖1052672压力率行/2056物理面行，原通量、法向速度和内部力反力预算通过；实际法向通量最大约4.5621e-11m/s。",
+  "schema": "私有输出15原数组+3双精度J/n/theta，V/rho/k由J派生；旧公共参考的V/rho/k和PosDiv确为原生输出。固定粒子n=0是非物理标记，未当墙体孔隙率或物质质量；固定位置/速度保持。",
+  "porosity_question": "theta累加体积应变率，Jdot=Jtheta和n=1-(1-n0)/J隐含本粒子(1-ni)。Lian2023式24在邻居求和内用(1-nj)，非均匀孔隙率下不能逐项等同；已单独记录并纳入后续冻结离散对比，当前测试中不临时改公式。",
+  "limits": "仅2D弱弹性、对向静止轴平面FreeSlip、墙切向周期、严格切向重力、fresh starts及常/光滑制造k场。Ck=2^-13不是材料推荐值。保存末点独立审计不是原积分内部stage观察或restart；小半步差不代表连续理论准确、充分稳定或全物理验收。法向重力/压力-应力成套边界、NoSlip/曲面/移动壁/塑性/大转动/实际加载排水以及GPU非零重力仍未放开。",
+  "artifacts": "logs/upl_gravity_wall_stage_r1.check.json；figures/upl_gravity_wall_summary_r1.png及同名6行CSV，六对257行history和全部33字段差异CSV。大原始BI4/bin/可执行程序及逐点rate CSV本地保留并哈希绑定，不声称已上云。",
+  "next": "选择性核验并保存本阶段本地及远端Git；再以小型非均匀孔隙率冻结算子对比明确J路线和论文邻居加权路线差异，不先修改正式公式或启动物理长程。",
+  "physical_acceptance": false
+}
