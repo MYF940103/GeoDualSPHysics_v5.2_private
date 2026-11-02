@@ -1,0 +1,60 @@
+{
+  "stage": "upl_case02_boundary_audit_r1",
+  "status": "bounded_diagnosis_not_physical_acceptance",
+  "production_boundary_patch_applied": false,
+  "formal_program_or_inputs_changed": false,
+  "completed_checks": {
+    "default_OFF": "logs/upl_case02_legacy_off_r1.exact.json: first21 frames, all15 typed arrays and native clocks/steps/dterror exact; no particle or field exclusions.",
+    "actual_short": "logs/upl_case02_short_coarse_r1.run.json: solver exit1,76 retained frames, last saved approximately.001875s, no completion. The planned independent validation half remains held.",
+    "dt_only_diagnostic": "logs/upl_case02_instab_half_r1.run.json: separate diagnostic dt1.25us also exit1,76 retained frames and last display time.001875s; not accepted as a half pair.",
+    "partial_data": "logs/upl_case02_short_failure_r1.review.json and upl_case02_instab_r1.review.json preserve both failed solvers. Official conversions exited0; original wrapper count/sort failures remain unchanged and were separately reviewed offline.",
+    "frozen_Debug": "logs/upl_case02_operator_smoke_r1.run.json:17 actual force calls plus17 noAce diagnostic rate calls,1700 layer responses, strict zero/oddness/amplitude and periodic checks; no physical step.",
+    "frozen_Release": "logs/upl_case02_operator_matrix_r1.run.json:601 actual force calls plus601 noAce diagnostic rate calls,60100 layer responses, projected300x300 central-difference matrix; no physical step.",
+    "source": "Current JSphCpu.cpp SHA3fed0edf70aff9735a498c26edc921dd8436deb76f03afc11f43e213d5c9a08e. Public dynamic master still does not admit this loaded fixture; the four internal flags are explicit in the isolated constructor."
+  },
+  "observations": {
+    "coarse_half_pressure_RMS_at_display_1ms_Pa": [4125.88536699103, 4067.328580931152],
+    "top10_pressure_squared_fraction_at_display_1ms": [0.9944468984603972, 0.9942918865735456],
+    "actual_frozen_dominant_eigenvalue_real_per_s": 7641.395432115323,
+    "actual_frozen_dominant_eigenvalue_imag_rad_per_s": 40152.19398695461,
+    "actual_frozen_period_us": 156.48423369395417,
+    "actual_frozen_top10_mode_pressure_energy_fraction": 0.999263235739795,
+    "actual_Hstress_plus_Hpressure_relative_norm": 0.0,
+    "independent_nominal_eigenvalue_real_per_s": 7641.395636987637,
+    "independent_nominal_eigenvalue_imag_rad_per_s": 40152.19356894702,
+    "trajectory_CSV_top_vz_fit_growth_per_s": 7683.614886947225,
+    "trajectory_CSV_top_vz_fit_period_us": 156.23261231242952,
+    "formal_midpoint_polynomial_growth_for_actual_projection_per_s": 7683.228175482899,
+    "interpretation": "The real manufactured force projection reproduces the observed growing top mode. This establishes a semidiscrete instability in this bounded initial projection, not its unique cause or a validated remedy. CSV time labels are displayed/nominal, and the midpoint polynomial is not an actual production-step replay."
+  },
+  "primary_reference": {
+    "path": "src/papers/PDF/Lian 2021 seepage flow unsaturated porous media.pdf",
+    "sha256": "9edba91f968502e8375ebd4a4d0907286c6e7223179f97bcb95cab066a58f4da",
+    "reviewed_pages": [21, 22],
+    "render": "tests/figures/upl_lian2021_page22_r1.png",
+    "render_sha256": "0984577d9420985f7ec194938d1ac41aebcad88f5518213bf1fe27617b19b062",
+    "result": "Page22 explicitly warns that the second/affine-defect term of Eq57 may produce unwanted free-surface water flux at kernel truncation, and Eq72 omits it on free-surface particles. This is a seepage hydraulic-head/free-seepage discussion, not proof for the present acceleration-coupled closed loading face. Eq74 likewise does not establish the current dynamic wall closure."
+  },
+  "actual_initial_mask": {
+    "source": "outputs/upl_case02_short_failure_r1_export/native_0000.csv, already sealed by the export review",
+    "fixed": "40 FSType4",
+    "soil": "990 FSType0 and10 FSType2; no FSType3",
+    "free_layer": 99,
+    "free_ids": [139, 239, 339, 439, 539, 639, 739, 839, 939, 1039]
+  },
+  "boundary_reasoning_to_test_not_a_patch": {
+    "physical_condition": "Before the scheduled drainage opening, the loaded face is hydraulically closed: q_n=-k/gamma*(gp+rho_w*Ace) dot n=0. Ace is the stored non-gravity acceleration: actual acceleration=Ace+Gravity and body acceleration=Gravity, so no additional gravity term is added to this flux.",
+    "local_target": "For a valid unit normal n, R=(gp+rho_w*Ace) dot n and g_target=gp-n*R. Substituting this target in the Taylor-defect correction gives Lstar+R*(n dot lx), while retaining the existing acceleration-divergence term.",
+    "one_dimensional_frozen_form": "Only the masked top row changes: Lstar to Lp and Da to Da+diag(mask*lx_z). Both the pressure-rate sigma block and pressure block must change. This is not merely globally disabling compensation, dropping dynamics or changing symC.",
+    "offline_counterfactual_only": "A read-only hybrid of the measured initial A and independently reconstructed nominal top-row coefficients removed the positive real mode for either pressure-only Eq72-inspired replacement or the full-q target. This mixed model is NOT a measured modified C++ operator or an accepted solver, and near-zero negative eigenvalues are not a stability margin.",
+    "limits": "A constructed target gradient satisfies a local algebraic condition, not necessarily the recomputed discrete pressure gradient or an integrated face flux. No global mass conservation, energy estimate, moving-surface consistency, variable-k compatibility or event switching is established. Zero/invalid normals must not silently pass.",
+    "next_bounded_checks": [
+      "Finish independent review of the measured operator and its raw response CSVs.",
+      "Review a single minimal closed-face boundary candidate against the complete dynamic flux condition, retaining the accepted symC interior and original u-pw OFF path.",
+      "Before another physical window, measure the candidate's actual frozen action and verify affine flux targets and original periodic/wall implementation controls.",
+      "Only after those checks, admit fresh actual short coarse/half with the original safety, exact native-time and5Pa/.005mm limits; inspect loading, pre-open and post-open behavior separately.",
+      "No long consolidation/GPU/Cryer/Lian u-pl admission follows from a frozen-mode result alone."
+    ]
+  },
+  "held": "No new production patch, full run, physical acceptance, guard relaxation, damping increase, shifting, TPI or accepted-case rewrite was made for this audit."
+}

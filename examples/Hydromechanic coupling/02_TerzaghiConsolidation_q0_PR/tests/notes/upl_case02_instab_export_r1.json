@@ -1,0 +1,23 @@
+{
+  "stage": "upl_case02_instab_export_r1",
+  "status": "author_only_not_executed",
+  "scope": "Exactly one official offline PartVTK conversion of the sealed rejected dt-only half diagnostic; no solver, build, formal inputs, equations, historical records or automatic follow-up.",
+  "script": "support/upl_case02_instab_export_r1.ps1",
+  "invocation": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_case02_instab_export_r1.ps1 -ExecutionAuthorized",
+  "source": "logs/upl_case02_instab_half_r1.run.json; actual exit proof is its owned_exit_record (upl_case02_instab_half_r1.solver.call.json), not fabricated top-level typed fields.",
+  "input_contract": "Exit1 with76 native PARTs, no actual_complete, bindings unchanged, accepted_half_pair=false. The old coarse failed run remains immutable and is bound as rejected_control.",
+  "converter": "Reuse actual PartVTK_win64.exe Entry, unique DsphConfig.xml Entry and exact9-token converter arguments from logs/upl_case02_short_failure_r1.export.json; change only -dirin and -savecsv paths. Its actual converter exited0, but old whole receipt passed=false from statistics-file counting is not inherited as pass.",
+  "selection": "-first:0 -last:75 -csvsep:1 -onlytype:+all; vars exactly idp,vel,rhop,PorePress,PoroVolumeRatio,PoroPorosity,PoroThetaLastStage,SigmaState_kk,SigmaState_ij,Kplastic,FSType,HydroMechLoadAce.",
+  "output_dir": "outputs/upl_case02_instab_half_r1_export",
+  "outputs": [
+    "logs/upl_case02_instab_half_r1.export.json",
+    "logs/upl_case02_instab_half_r1.export.log",
+    "outputs/upl_case02_instab_half_r1_export/native_0000.csv through native_0075.csv",
+    "optional native_stats.csv separately bound and counted, never counted as a particle frame"
+  ],
+  "guards": "Fresh folder/log/record; full PART0000..0075 sequence; immediate typed LASTEXITCODE; direct owned one call; precreated empty log; all bound source/run/author/program/config/input/raw files rehashed before and after; retained failed outputs never overwritten.",
+  "precision": "Official CSV is finite-precision diagnostic export, not bit-exact typed native verification. No half/scientific/physical pass is claimed by conversion.",
+  "physical_acceptance": false,
+  "solver_started": false,
+  "production_changes": false
+}

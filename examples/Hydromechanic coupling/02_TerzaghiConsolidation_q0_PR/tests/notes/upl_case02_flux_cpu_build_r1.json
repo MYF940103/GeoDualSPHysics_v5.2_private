@@ -1,0 +1,41 @@
+{
+  "stage": "upl_case02_flux_cpu_build_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/upl_case02_flux_cpu_build_r1.ps1", "notes/upl_case02_flux_cpu_build_r1.json"],
+  "purpose": "One isolated authoritative CPU solution Build for the root-reviewed closed-free-surface full-q Neumann-target candidate. This recipe does not edit or validate the candidate equations, modify the old recipes/records, install a canonical executable, compile a helper, or execute any program/help/solver.",
+  "parameter_only": {"Configuration": ["DebugCPU", "ReleaseCPU"]},
+  "authorization": "Root must fully read and freeze the actual CPU.cpp candidate and synchronized documentation, then this recipe/note, before each explicit configuration invocation. Authoring starts neither configuration and does not automatically chain them.",
+  "CLI_after_separate_authorization": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_flux_cpu_build_r1.ps1 -Configuration DebugCPU",
+  "prechange_baselines": {
+    "DebugCPU": "logs/upl_case02_cpu_DebugCPU_r2.build.json 340628B SHA928527205bcdee13c49d0317ef4f1ff186f6fb6e480145a405d61f2ebe6bb5db",
+    "ReleaseCPU": "logs/upl_case02_cpu_ReleaseCPU_r1.build.json 342696B SHA85e754287a4057598c11e63e0d326e28dee16efb87624ca1bd7ceeed9c3ab09e",
+    "policy": "Require actual passed typed exit0 matching CPU configuration with265 source/snapshot pairs,86 translation units/objects and seven protected canonical programs. Verify every retained snapshot. Only src/source/JSphCpu.cpp may differ from its retained original; all264 other current code/header files must retain old bytes/SHA and current265 membership must match exactly.",
+    "CPU_exception": "The retained baseline CPU.cpp must be264709B SHA3fed0edf70aff9735a498c26edc921dd8436deb76f03afc11f43e213d5c9a08e. The candidate must differ, but its new bytes/SHA are captured from the actual current file at invocation, never invented or hardcoded before root authoring. The recipe records explicit before/after Entry; the old3fed source is historical, not asserted equal to current CPU.cpp.",
+    "documentation": "Capture doc/xml_format/_FmtXML_ElastoplasticSoil.xml at invocation and copy/rehash it separately as documentation_snapshot. It is not part of the265 C++/CUDA code/header inventory. Root, not the build recipe, reviews the scientific/documentation delta; no broad dirty-worktree or unrelated-file acceptance is claimed."
+  },
+  "authoritative_build": {
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "project": "src/VS/DualSPHysics5ReCpu.vcxproj",
+    "tool": "Use the actual MSBuild.exe Entry and unchanged authoritative solution/project Entries from the matching passed prechange build. Verify these and author identities before/after; do not invoke environment probes or replace the build system.",
+    "arguments": "/m /t:Build /p:Configuration={Configuration} /p:Platform=x64 /p:OutDir={fresh output}/ /p:IntDir={fresh intermediate}/ /v:minimal /bl:{new binlog}",
+    "native_paths": "Both native directory properties use forward slashes and a final slash, as in the successful Release recipe; complete properties remain single arguments, with no manually quoted trailing backslash.",
+    "source_closure": "Read active ClCompile entries for the selected authoritative configuration, honor ExcludedFromBuild, and require the exact86 common compile paths/unique object basenames including exactly one main.obj. Retain all current source Entries, not stale prechange CPU SHA.",
+    "freshness": "Reject existing OutDir,source snapshot directory,IntDir,stdout,binlog or receipt. Copy all265 current code/header files into new snapshots and verify every pair; no old objects are reused. Use /t:Build with a fresh isolated IntDir, not a falsely claimed FullRebuild.",
+    "postbuild": "The project can conditionally move cg_variables.h. Refuse either src/VS/cg_variables.h or src/cg_variables.h before and after, without editing or suppressing the authoritative project event. Canonical installation is not added."
+  },
+  "ownership_and_acceptance": "Precreate stdout; invoke exactly one recorded MSBuild directly from src; reset LASTEXITCODE and capture the actual typed exit immediately. Record log/binlog/timestamps and retain failed/partial outputs. Rehash all current/new snapshots,doc pair,retained snapshots,264 immutable prechange originals,tools/authors/baseline and seven canonical programs after the call. Require typed exit0,program/binlog,source+canonical unchanged and exactly86 fresh object basenames matching the compile closure. These checks prove a build only, not numerical correctness or physical acceptance, and are not a claim of fully pinned OS/SDK/CRT dependencies.",
+  "fresh_outputs": {
+    "OutDir": "tests/outputs/upl_case02_flux_cpu_{Configuration}_r1",
+    "source_snapshots": "tests/outputs/upl_case02_flux_cpu_{Configuration}_r1_source (265 code files plus one separately recorded documentation XML)",
+    "IntDir": "src/VS/Intermediate/upl_case02_flux_cpu_{Configuration}_r1",
+    "receipt": "tests/logs/upl_case02_flux_cpu_{Configuration}_r1.build.json",
+    "logs": "tests/logs/upl_case02_flux_cpu_{Configuration}_r1.log and .binlog",
+    "programs": "DebugCPU: DualSPHysics5.2CPU_win64_debug.exe; ReleaseCPU: DualSPHysics5.2CPU_win64.exe",
+    "common_schema": "source_snapshot265 {original,snapshot} pairs; compile_sources86 flat Entry; objects86 flat Entry; canonical_programs_before7; actual direct/typed/owned exit; source_bindings_unchanged; canonical_programs_unchanged. prechange_source_build binds the old record, not a claim that the old program contains this candidate. Runtime DLL preparation remains the later separately authorized helper-build step."
+  },
+  "held": "No help,solver,helper,installation,default-OFF regression,coarse/half continuation,GPU,Cryer,variable-k or physical acceptance is authorized by a successful build.",
+  "production_changes_by_this_recipe": false,
+  "build_executed": false,
+  "program_run": false,
+  "physical_acceptance": false
+}

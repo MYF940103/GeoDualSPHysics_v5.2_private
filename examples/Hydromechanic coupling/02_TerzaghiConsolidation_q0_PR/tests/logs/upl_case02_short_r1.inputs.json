@@ -1,0 +1,335 @@
+{
+    "stage":  "upl_case02_short_inputs_r1",
+    "prepared":  true,
+    "source_seed":  [
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old.xml",
+                            "bytes":  13660,
+                            "sha256":  "06ea556c3555ad86d53491984897120119596bc90f209c0545196a4f3beced9c"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old.bi4",
+                            "bytes":  47184,
+                            "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old_Normals.nbi4",
+                            "bytes":  1479,
+                            "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                        }
+                    ],
+    "authors":  [
+                    {
+                        "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_case02_short_inputs_r1.ps1",
+                        "bytes":  11783,
+                        "sha256":  "1f244d267bb2604555e7b7f61cc637b23fc5d2f2bf7c29cedbbab358635ecbfa"
+                    },
+                    {
+                        "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_case02_short_inputs_r1.json",
+                        "bytes":  7917,
+                        "sha256":  "66062f24467286e67a591dc7ab1b3389b248d4facca6148a21170f6cac1b6831"
+                    }
+                ],
+    "scheduling_source":  [
+                              {
+                                  "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JDsOutputTime.cpp",
+                                  "bytes":  7458,
+                                  "sha256":  "b26c1b87f090b28bdc72c28d6ed7dfeee0ad7a0bcd28eb428f1ae72716d0c72f"
+                              },
+                              {
+                                  "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+                                  "bytes":  76635,
+                                  "sha256":  "1b2aa2741338c2046380727a680420a8df3bc1d2fedc071f8e3b2bfeaf41f394"
+                              }
+                          ],
+    "jobs":  [
+                 {
+                     "window":  "coarse",
+                     "configuration":  {
+                                           "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_case02_short_coarse_r1.xml",
+                                           "bytes":  14838,
+                                           "sha256":  "d9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8"
+                                       },
+                     "runtime":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_coarse_r1.xml",
+                                     "bytes":  14838,
+                                     "sha256":  "d9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8"
+                                 },
+                     "initial_BI4":  {
+                                         "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_coarse_r1.bi4",
+                                         "bytes":  47184,
+                                         "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                                     },
+                     "normals":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_coarse_r1_Normals.nbi4",
+                                     "bytes":  1479,
+                                     "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                                 },
+                     "parameter_changes":  [
+                                               {
+                                                   "key":  "SlipMode",
+                                                   "old":  "1",
+                                                   "value":  "3",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "mDBC DBC velocity condition",
+                                                   "comment":  "Private CPU column: fixed FreeSlip bottom; not formal SlipMode1"
+                                               },
+                                               {
+                                                   "key":  "Visco",
+                                                   "old":  "0.1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Main-paper artificial viscosity coefficient alpha",
+                                                   "comment":  "Private candidate artificial viscosity OFF; not formal alpha=0.1"
+                                               },
+                                               {
+                                                   "key":  "SoilHourglassXi",
+                                                   "old":  "0.1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Validated elastic small-rotation HG strength; fresh starts only",
+                                                   "comment":  "Private candidate HG OFF; not the formal HG setting"
+                                               },
+                                               {
+                                                   "key":  "SoilBoundaryDerivativeSPR",
+                                                   "old":  "1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fixed-plane mDBC mirrored velocity for S/P/R derivatives",
+                                                   "comment":  "Private dynamic wall owns its derivative closure; legacy SPR OFF"
+                                               },
+                                               {
+                                                   "key":  "SoilDamping",
+                                                   "old":  "1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Bui-Fukagawa damping for ramp-load stabilization",
+                                                   "comment":  "Private candidate soil damping OFF; not the formal damped case"
+                                               },
+                                               {
+                                                   "key":  "DtIni",
+                                                   "old":  "0.00001",
+                                                   "value":  "0.0000025",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Initial step equals the validated fixed step",
+                                                   "comment":  "Private candidate initial locked step; actual current-state bound remains mandatory"
+                                               },
+                                               {
+                                                   "key":  "DtFixed",
+                                                   "old":  "0.00001",
+                                                   "value":  "0.0000025",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Formal fixed step; conductivity-specific stability limit",
+                                                   "comment":  "Private constant-k short candidate fixed step; no clipping or numerical admission implied"
+                                               },
+                                               {
+                                                   "key":  "TimeMax",
+                                                   "old":  "0.15",
+                                                   "value":  "0.0125",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fresh symC implementation short window; not full acceptance",
+                                                   "comment":  "Private load/drain candidate window only; not formal or admitted"
+                                               },
+                                               {
+                                                   "key":  "TimeOut",
+                                                   "old":  "0.001",
+                                                   "value":  "0.0000249999999",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fresh symC implementation short window; not full acceptance",
+                                                   "comment":  "Required default cadence; the three-segment special timeout adds the dense drainage bracket"
+                                               }
+                                           ],
+                     "added_hydro_keys":  [
+                                              "HydroMechDynamicSeepage",
+                                              "HydroMechConductivityModel",
+                                              "HydroMechConductivityCk",
+                                              "PoreDarcySymmetricCorr"
+                                          ],
+                     "special_timeout":  [
+                                             {
+                                                 "time":  "0",
+                                                 "timeout":  "0.0000249999999"
+                                             },
+                                             {
+                                                 "time":  "0.0099749999",
+                                                 "timeout":  "0.00000249999999"
+                                             },
+                                             {
+                                                 "time":  "0.0100249999",
+                                                 "timeout":  "0.0000249999999"
+                                             }
+                                         ],
+                     "dt_s":  2.5E-06,
+                     "end_s":  0.0125,
+                     "steps":  5000,
+                     "expected_samples":  519,
+                     "required_CLI":  [
+                                          "-cpu",
+                                          "-ompthreads:1",
+                                          "-stable",
+                                          "-mdbc_freeslip",
+                                          "-nsteps:5000"
+                                      ],
+                     "inverse_DOM_equal":  true,
+                     "four_space_CRLF":  true
+                 },
+                 {
+                     "window":  "half",
+                     "configuration":  {
+                                           "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_case02_short_half_r1.xml",
+                                           "bytes":  14840,
+                                           "sha256":  "df95326f88b71738fe119dc33c3dc727b7a3882861e0f90b968dd0ab504b7765"
+                                       },
+                     "runtime":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_half_r1.xml",
+                                     "bytes":  14840,
+                                     "sha256":  "df95326f88b71738fe119dc33c3dc727b7a3882861e0f90b968dd0ab504b7765"
+                                 },
+                     "initial_BI4":  {
+                                         "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_half_r1.bi4",
+                                         "bytes":  47184,
+                                         "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                                     },
+                     "normals":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_short_r1_seed\\upl_case02_short_half_r1_Normals.nbi4",
+                                     "bytes":  1479,
+                                     "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                                 },
+                     "parameter_changes":  [
+                                               {
+                                                   "key":  "SlipMode",
+                                                   "old":  "1",
+                                                   "value":  "3",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "mDBC DBC velocity condition",
+                                                   "comment":  "Private CPU column: fixed FreeSlip bottom; not formal SlipMode1"
+                                               },
+                                               {
+                                                   "key":  "Visco",
+                                                   "old":  "0.1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Main-paper artificial viscosity coefficient alpha",
+                                                   "comment":  "Private candidate artificial viscosity OFF; not formal alpha=0.1"
+                                               },
+                                               {
+                                                   "key":  "SoilHourglassXi",
+                                                   "old":  "0.1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Validated elastic small-rotation HG strength; fresh starts only",
+                                                   "comment":  "Private candidate HG OFF; not the formal HG setting"
+                                               },
+                                               {
+                                                   "key":  "SoilBoundaryDerivativeSPR",
+                                                   "old":  "1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fixed-plane mDBC mirrored velocity for S/P/R derivatives",
+                                                   "comment":  "Private dynamic wall owns its derivative closure; legacy SPR OFF"
+                                               },
+                                               {
+                                                   "key":  "SoilDamping",
+                                                   "old":  "1",
+                                                   "value":  "0",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Bui-Fukagawa damping for ramp-load stabilization",
+                                                   "comment":  "Private candidate soil damping OFF; not the formal damped case"
+                                               },
+                                               {
+                                                   "key":  "DtIni",
+                                                   "old":  "0.00001",
+                                                   "value":  "0.00000125",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Initial step equals the validated fixed step",
+                                                   "comment":  "Private candidate initial locked step; actual current-state bound remains mandatory"
+                                               },
+                                               {
+                                                   "key":  "DtFixed",
+                                                   "old":  "0.00001",
+                                                   "value":  "0.00000125",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Formal fixed step; conductivity-specific stability limit",
+                                                   "comment":  "Private constant-k short candidate fixed step; no clipping or numerical admission implied"
+                                               },
+                                               {
+                                                   "key":  "TimeMax",
+                                                   "old":  "0.15",
+                                                   "value":  "0.0125",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fresh symC implementation short window; not full acceptance",
+                                                   "comment":  "Private load/drain candidate window only; not formal or admitted"
+                                               },
+                                               {
+                                                   "key":  "TimeOut",
+                                                   "old":  "0.001",
+                                                   "value":  "0.0000249999999",
+                                                   "had_comment":  true,
+                                                   "old_comment":  "Fresh symC implementation short window; not full acceptance",
+                                                   "comment":  "Required default cadence; the three-segment special timeout adds the dense drainage bracket"
+                                               }
+                                           ],
+                     "added_hydro_keys":  [
+                                              "HydroMechDynamicSeepage",
+                                              "HydroMechConductivityModel",
+                                              "HydroMechConductivityCk",
+                                              "PoreDarcySymmetricCorr"
+                                          ],
+                     "special_timeout":  [
+                                             {
+                                                 "time":  "0",
+                                                 "timeout":  "0.0000249999999"
+                                             },
+                                             {
+                                                 "time":  "0.0099749999",
+                                                 "timeout":  "0.00000249999999"
+                                             },
+                                             {
+                                                 "time":  "0.0100249999",
+                                                 "timeout":  "0.0000249999999"
+                                             }
+                                         ],
+                     "dt_s":  1.25E-06,
+                     "end_s":  0.0125,
+                     "steps":  10000,
+                     "expected_samples":  519,
+                     "required_CLI":  [
+                                          "-cpu",
+                                          "-ompthreads:1",
+                                          "-stable",
+                                          "-mdbc_freeslip",
+                                          "-nsteps:10000"
+                                      ],
+                     "inverse_DOM_equal":  true,
+                     "four_space_CRLF":  true
+                 }
+             ],
+    "predicted_samples_each":  519,
+    "predicted_coarse_save_steps":  "0:10:3990;3991:1:4010;4020:10:5000",
+    "predicted_half_save_steps":  "0:20:7980;7982:2:8020;8040:20:10000",
+    "native_Step_metadata":  "0 at initial,otherwise completed_step-1",
+    "predicted_max_actual_time_pair_difference_s":  1.9186041644303486E-15,
+    "predicted_coarse_final_s":  0.012500000000001159,
+    "predicted_half_final_s":  0.012499999999999241,
+    "pre_open_completed_steps":  [
+                                     4000,
+                                     8000
+                                 ],
+    "next_paired_post_open_completed_steps":  [
+                                                  4001,
+                                                  8002
+                                              ],
+    "time_snap_or_interpolation":  false,
+    "geometry_or_particle_fields_modified":  false,
+    "new_GenCase_run":  false,
+    "original_soil":  1000,
+    "original_fixed":  40,
+    "public_master":  0,
+    "conductivity_model":  0,
+    "private_constant_k_candidate":  true,
+    "stabilizers_OFF_not_formal":  true,
+    "smoke_or_Release_prerequisites_asserted_by_this_preparer":  false,
+    "short_or_half_job_admitted":  false,
+    "solver_started":  false,
+    "physical_acceptance":  false
+}

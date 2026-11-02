@@ -1,0 +1,109 @@
+{
+  "stage": "upl_case02_qc_r1",
+  "status": "author_only_not_executed",
+  "scope": "Pure offline smoke, default-OFF typed-prefix equivalence and independent short-window half QC; no solver, native reader, compiler, subprocess, plot or automatic follow-up.",
+  "files_to_create": [
+    "support/upl_case02_qc_r1.py",
+    "notes/upl_case02_qc_r1.json"
+  ],
+  "cli": [
+    "py support/upl_case02_qc_r1.py --mode smoke",
+    "py support/upl_case02_qc_r1.py --mode off",
+    "py support/upl_case02_qc_r1.py --mode half"
+  ],
+  "outputs": {
+    "smoke": "logs/upl_case02_smoke_r1.qc.json",
+    "off": "logs/upl_case02_legacy_off_r1.exact.json",
+    "half": "logs/upl_case02_short_r1.half.json",
+    "fresh_protection": "Exclusive create; retained output is never overwritten. Exceptions produce a failed fresh QC JSON, not a rerun."
+  },
+  "provenance": {
+    "native_checks": "logs/upl_case02_{smoke,legacy_control,legacy_off,short_coarse,short_half}_r1.native.check.json as selected by mode.",
+    "actual_call_schema": "The native.check itself records direct_native_call, arguments, program, immediate typed LASTEXITCODE, owned exit, start/end, log (possibly null for silent successful readers). There is no invented reader_call Entry.",
+    "bound_Es": "Rehash native.check, program, reader_build, sealed_solver, completion, optional log, flat bindings/native_input_files/files arrays. Hash each unique current path once initially and rehash all bound identities after calculations.",
+    "responsibility_boundary": "Root native checks own source/build/program/input/solver-call verification. QC verifies those actual sealed direct fields and flat file Entries, without recursively treating old build Git metadata or historical source paths as current.",
+    "solver_records": "Current solver records require owned typed exit0/direct call/bindings unchanged; legacy_control uses actual historical solver_finished/owned_exited/exit_code0. No new execution is inferred.",
+    "export_coverage": "Bound reader files must exactly cover the immediate export files; native and fixed IDs are read from their actual CSVs.",
+    "live_final": "Private last_poro.csv must byte-match the unique live_final.csv Entry in its sealed solver run.files, not an unowned path."
+  },
+  "schema": {
+    "identity": "1040 total native: 40 fixed IDs0..39 and 1000 soil IDs40..1039.",
+    "original15": "Little-endian uint32 header[1040,15,samples], then each actualtime double8 + all 15 typed ID-aligned native arrays (166400B): 166408B/frame; array-major layout is preserved, not converted/relabelled.",
+    "clock": "Little-endian uint32[samples,28], then packed records(time double8, savedStep uint32, SymplecticDtPre double8, signed dterror double8). No padding.",
+    "physical26": "Private-only header[1000,26,samples]; each actualtime double followed by1000x26 doubles. Column21 is actual ExcessPorePress, NOT wave PosDiv.",
+    "columns": [
+      "x",
+      "y",
+      "z",
+      "vx",
+      "vy",
+      "vz",
+      "PorePress",
+      "PorePress0",
+      "J",
+      "theta",
+      "sigma_xx",
+      "sigma_xy",
+      "sigma_xz",
+      "sigma_yy",
+      "sigma_yz",
+      "sigma_zz",
+      "Kplastic",
+      "FSType",
+      "FSNormal_x",
+      "FSNormal_y",
+      "FSNormal_z",
+      "ExcessPorePress",
+      "LoadAce_x",
+      "LoadAce_y",
+      "LoadAce_z",
+      "legacy_Rhop"
+    ],
+    "ownership": "Private native outputs contain only three Double J/n/theta arrays; V/rho/k are ledger-derived, and native PosDiv/public model metadata remain absent. OFF has no dynamic arrays and no fabricated ledger."
+  },
+  "modes": {
+    "smoke": {
+      "inputs": [
+        "smoke"
+      ],
+      "samples": 3,
+      "dt_s": 0.0000025,
+      "completed_steps": 2,
+      "checks": "Passed owned decode, native3J/private26/IDs/clock and existing native safety/ledger coverage3000+fixed120, plus independent wholebyte last_poro/live_final. Does not claim a half or force-stage proof."
+    },
+    "off": {
+      "inputs": [
+        "legacy_control",
+        "legacy_off"
+      ],
+      "old_samples": 151,
+      "new_samples": 21,
+      "dt_s": 0.00001,
+      "checks": "Separate native headers validate old151/new21. Compare new entire21*166408B original15 payload against old prefix, plus21*28B complete typed clock payload (including actual time, savedStep, locked dt and signed dterror). native_ids.csv/fixed_ids.csv entire files must byte-match.",
+      "masks": "None: all15 arrays, all1040 native particles including every fixed Rhop are retained. Post-initial legacy fixed density may exceed2100 by its existing production clamp; equality is old/new raw, not a replacement fixed-density constant."
+    },
+    "half": {
+      "inputs": [
+        "short_coarse",
+        "short_half"
+      ],
+      "samples_each": 519,
+      "dt_coarse_s": 0.0000025,
+      "dt_half_s": 0.00000125,
+      "predeclared_coarse_completed_steps": "0:10:3990;3991:1:4010;4020:10:5000. Half exactly twice each completed step.",
+      "checks": "Both sealed single native reviews must already pass. ID files and initial complete26 fields are bit-exact; all519 actualtime discrepancies<=1e-14 with no interpolation or snapped times. Match all519 full native pressure RMS<=5Pa and max fullXYZ material displacement difference<=.005mm.",
+      "drainage": "For every post-open saved frame (completedstep>4000 coarse/>8000 half), actual FSType2 or3 receivers must be nonempty and have p==0; cross-check actual counts with history/completion. At exact event4000/8000 pressure is not forced zero. No assumed fixed number of top receivers.",
+      "descriptive_only": "All26 column max differences plus velocity RMS; J/theta/stress/load are descriptive, without new precision gates. V/rho/k ledger guards are inherited from the owned native decode, not independent force-stage measurements."
+    }
+  },
+  "signed_dterror": "Each noninitial native clock interval is finite, nonempty and signed dterror<=1e-14. Initial -DBL_MAX reset sentinel is not a physical safety maximum. No absolute-error reinterpretation.",
+  "limits_not_applied": [
+    "No wave normalized1e-4 gate",
+    "No wave |J-1|1e-4 gate",
+    "No energy/E0 gate",
+    "No closed-system energy claim for this loaded/open-drain case",
+    "No endpoint rho(J)V(J)*retainedLoadAce force-stage claim"
+  ],
+  "physical_acceptance": false,
+  "production_changes": false
+}

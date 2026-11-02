@@ -1,0 +1,67 @@
+{
+  "stage": "upl_case02_short_inputs_r1",
+  "status": "author_only_not_prepared_or_run",
+  "purpose": "Prepare only two fresh private CPU constant-k loaded-column inputs after root review. This authoring does not admit either short Run or the independent half comparison.",
+  "files": ["support/upl_case02_short_inputs_r1.ps1", "notes/upl_case02_short_inputs_r1.json"],
+  "CLI_after_separate_prepare_authorization": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_short_inputs_r1.ps1 -PrepareAuthorized",
+  "retained_geometry": {
+    "prefix": "outputs/symc_1d_short_r1_cpu_old/symc_1d_short_r1_cpu_old",
+    "XML_sha256": "06ea556c3555ad86d53491984897120119596bc90f209c0545196a4f3beced9c",
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_nbi4_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "native": "40 fixed IDs0..39 plus1000 soil IDs40..1039; dp.01,h.018,width.1,height1,y0,X periodic. BI4 and matching-basename Normals.nbi4 are copied byte-for-byte; no GenCase,particle rewrite or formal-root input/output edit.",
+    "lineage": "The selected seed is the retained actual CPU old-u-pw input. A different formal-root whole-BI4 hash is not relabelled as this source. Only input provenance is reused,not old-physics accuracy acceptance."
+  },
+  "white_list": {
+    "nine_existing_parameter_values": {"SlipMode":"3", "Visco":"0", "SoilHourglassXi":"0", "SoilBoundaryDerivativeSPR":"0", "SoilDamping":"0", "DtIni":"window dt", "DtFixed":"window dt", "TimeMax":"0.0125", "TimeOut":"0.0000249999999"},
+    "comments": "Only these nine parameter comment attributes are replaced by candidate-specific,non-formal wording; original value/comment pairs are recorded for inverse proof.",
+    "four_added_hydro_values_zero": ["HydroMechDynamicSeepage", "HydroMechConductivityModel", "HydroMechConductivityCk", "PoreDarcySymmetricCorr"],
+    "special_timeout": "One genuinely variable three-segment timeout is added for the dense drainage bracket. No existing timeout is permitted. TimeOut remains the required default/fallback; when the special table is active JDsOutputTime uses the table instead,not a second output scheduler.",
+    "inverse_proof": "Before any output write,serialize each proposed XML and parse it back. Restore the nine old value/comment pairs,remove only the four added hydro children and the new timeout node,and require the original DocumentElement.OuterXml exactly. This is a DOM content proof; XML declaration case,indentation and line endings are intentionally format-only.",
+    "format": "XmlWriter UTF-8 without BOM,indent four spaces,newline CRLF. Whitespace from the retained runtime and smoke child appends is not carried over. Physical parameters not in this value whitelist remain unchanged."
+  },
+  "candidate_not_formal": "Public master/model/Ck and legacy symC key are explicit0. The separate reviewed private wrapper enables J observer/feedback,complete dynamic rate and single-bottom closure. Constant k1e-4,zero g,TopKernelBand q0=10kPa/ramp.01s,drainage at.01s on fixed grid are retained. FreeSlip3 and HG/SPR/artificial-viscosity/soil-damping OFF deliberately differ from the old formal SlipMode1/stabilized run; this is not its formal acceptance or same-physics truth. No production or public/GPU guard is changed by this preparer.",
+  "windows": [
+    {"name":"coarse", "dt_s":0.0000025, "end_s":0.0125, "explicit_nsteps":5000, "planned_samples":519},
+    {"name":"half", "dt_s":0.00000125, "end_s":0.0125, "explicit_nsteps":10000, "planned_samples":519}
+  ],
+  "output_schedule": {
+    "units": "seconds",
+    "segments": [
+      {"time":"0", "timeout":"0.0000249999999"},
+      {"time":"0.0099749999", "timeout":"0.00000249999999"},
+      {"time":"0.0100249999", "timeout":"0.0000249999999"}
+    ],
+    "meaning": "Nominal25us cadence outside the event bracket; nominal2.5us cadence from9.975ms through10.025ms. Scheduling thresholds are slightly lower than target accumulated times to avoid alternate-step selection from decimal binary64 accumulation. Physical dt and TimeStep are never snapped,rewritten or interpolated.",
+    "coarse_completed_save_steps": "[0:10:3990] union [3991:1:4010] union [4020:10:5000]",
+    "half_completed_save_steps": "[0:20:7980] union [7982:2:8020] union [8040:20:10000]",
+    "count_proof": "400 prefix samples including initial +20 added dense samples +99 post-bracket samples =519. Every half completed step is exactly twice its coarse pair. Saved native Step metadata is0 initially and completed_step-1 afterward.",
+    "event_witnesses": "The native pre-open pair is completed steps4000/8000 (Step3999/7999); the next paired post-open states are4001/8002 (Step4000/8001). Half's first post-open internal step8001 is not an independently saved pair; do not claim every force stage is observed.",
+    "PS_binary64_prediction": {
+      "method": "Read the entire actual JDsOutputTime GetNextTime,including TimeBase transition,integer truncation,the <=t loop and next-segment clamp. Offline PowerShell double addition repeats actual stepdt and ordinary Run save predicate; initial PART and NstepsBreak final save included. No native program was run for this prediction.",
+      "source_JDsOutputTime_cpp_sha256": "b26c1b87f090b28bdc72c28d6ed7dfeee0ad7a0bcd28eb428f1ae72716d0c72f",
+      "source_JSphCpuSingle_cpp_sha256": "1b2aa2741338c2046380727a680420a8df3bc1d2fedc071f8e3b2bfeaf41f394",
+      "coarse_samples":519, "half_samples":519, "completed_step_pair_mismatches":0,
+      "max_actual_pair_time_difference_s":1.9186041644303486e-15,
+      "coarse_final_s":0.012500000000001159,
+      "half_final_s":0.012499999999999241,
+      "coarse_event_pre_open_s":0.010000000000000394,
+      "half_event_pre_open_s":0.01000000000000021,
+      "coarse_next_pair_s":0.010002500000000395,
+      "half_next_pair_s":0.010002500000000209,
+      "unchanged_actual_time_matching_tolerance_s":1e-14,
+      "qualification": "Predeclared scheduling prediction,not observed PART data. Later native decoding must confirm every actual saved step/time/ID before numerical comparison. Explicit -nsteps avoids an extra half step caused by the final accumulated time being slightly belowTimeMax."
+    }
+  },
+  "fresh_outputs_after_later_prepare": {
+    "directory":"outputs/upl_case02_short_r1_seed",
+    "coarse_prefix":"outputs/upl_case02_short_r1_seed/upl_case02_short_coarse_r1",
+    "half_prefix":"outputs/upl_case02_short_r1_seed/upl_case02_short_half_r1",
+    "configuration_XMLs":["configs/upl_case02_short_coarse_r1.xml", "configs/upl_case02_short_half_r1.xml"],
+    "manifest":"logs/upl_case02_short_r1.inputs.json",
+    "record":"Original seed and scheduling-source hashes,script/note hashes,two XMLs/copy hashes,nine value/comment changes,the three segments,predicted paired step ranges/count/clock difference and explicit no-admission flags. Existing smoke author/input/outputs remain untouched."
+  },
+  "later_Run_prerequisites": "Root must first accept the independent actual smoke-native review and the new authoritative ReleaseCPU build/helper. This input-only author neither checks them as already passed nor launches or admits coarse/half. Each later Run must explicitly include -cpu -ompthreads:1 -stable -mdbc_freeslip and its declared -nsteps; no CLI TimeMax/TimeOut override.",
+  "unchanged_scope": "Preserve original necessary current-step/RH domain checks,finite/elastic/no-exclusion/native-ID and J ledger safety. Independent actual c/h pressureRMS5Pa and material displacement.005mm,event/traction/face checks remain future separate work. Do not transplant closed-wave energy or1e-4 weak-wave accuracy gates into this externally loaded column.",
+  "input_prepared":false, "new_GenCase_run":false, "solver_or_reader_started":false, "production_changed":false, "short_or_half_job_admitted":false, "physical_acceptance":false
+}

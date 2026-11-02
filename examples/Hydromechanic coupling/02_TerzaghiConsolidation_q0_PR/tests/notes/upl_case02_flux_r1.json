@@ -1,0 +1,76 @@
+{
+  "stage": "upl_case02_flux_r1",
+  "status": "candidate_test_plan_only_not_executed",
+  "purpose": "One bounded private CPU closed-top Darcy-gradient substitution candidate. Do not reclassify retained coarse/dt-only failures or treat literature/offline spectra as physical acceptance.",
+  "production_owner": "Root alone owns JSphCpu.cpp/documentation candidate changes, complete review, authoritative rebuilds and explicit individual execution admissions. This author task writes only this new plan.",
+  "candidate": {
+    "scope": "Inside the existing private complete CPU rate, normal fluid receivers only, HydroMechDrainage && !IsHydroMechDrainageActive(), actual FSType2 or3. Existing Init permits this load/drain combination only in the private2D g0 constant-k/one-upward-bottom FreeSlip/X-periodic column.",
+    "formula": "Let N be the actual finite nonzero FSNormal vector, R=N dot (gp+rho_w*Ace). Set gpcorr=gp-N*(R/(N dot N)). Use it only in the existing affine-defect subtraction Lp-gpcorr dot lx, leaving symmetric-C pair sums, DA, theta/J and pressure update/integrator unchanged.",
+    "rate": "B[-theta+k/gamma*(Lp-gpcorr dot lx+rho_w*DA)], B=Kw/n(J), gamma=rho_w*9.80665. Ace=a_true-Gravity under this admitted body's definition; do not add gravity again.",
+    "one_dimensional_identity": "At the initial upward top plane this equals Lp+rho_w*(DA+lx_z*Ace_i). The projected matrix changes both coupled stress and pressure blocks, not only the pressure-L block.",
+    "variable_k": "If the mathematical branch is evaluated with smooth k, use the same gpcorr in grad(k) dot (gpcorr+rho_w Ace). Current loaded-column Init still rejects variable-k; no law1 admission or added tests are inferred.",
+    "opening": "Retain the existing early Dirichlet p-rate0/continue for active drained2/3 receivers, existing FS/Pre/Corr projections and fixed-grid event semantics. Density/J/theta continue evolving; do not freeze them.",
+    "failure": "Nonfinite/zero normal rejects the attempted closed surface; never silently fall back or treat another exception as a passed negative. Invalid-rate paths must stop before state integration and free the temporary periodic map."
+  },
+  "reuse": {
+    "geometry_input": "Reuse exact existing1000soil+40fixed seed/Normals and prepared runtime inputs, not a new GenCase or formal XML/BAT. Existing logs/upl_case02_short_r1.inputs.json binds the coarse/half seed and519-step lists; smoke has its already prepared unchanged seed.",
+    "operator": "Reuse support/upl_case02_operator_r1.cpp source under a fresh current-source helper build/label. First --smoke, then --matrix after explicit review; old helper/program/outputs remain immutable.",
+    "actual": "Reuse support/upl_case02_actual_r1.cpp true Run fixture and support/upl_case02_native_r1.cpp pure typed reader with fresh current-source builds/labels. No wave field initialization, integrator override, new XML schema or old solver rerun.",
+    "offline": "Reuse the case02 physical26 schema (column21=ExcessPorePress), native clocks/IDs and scoped QC methodology. Frozen QC/output labels must not be overwritten; root must own fresh candidate receipts and outputs.",
+    "historical_evidence": "Old coarse and dt-only half generic corrector failures remain rejected; their partial76-frame exports/adoption and old measured unstable operator stay preserved. This candidate does not imply those failed whole windows passed."
+  },
+  "gates_in_order": [
+    {
+      "gate": "Source/build and compatibility",
+      "checks": "Root reviews the exact local rate/doc diff and current-source closure. Required defaultCPU Debug build plus isolated authoritative candidateCPU builds; source/tools/objects/runtime/canonical identities before/after. No canonical/server install. All candidate program calls require fresh outputs and immediate typed owned exits."
+    },
+    {
+      "gate": "Actual frozen operator",
+      "checks": "Current-source true operator smoke must pass strict zero-source, real wall/periodic closure, input/clock/scratch guards and predeclared arithmetic projection/oddness/amplitude checks before matrix. Record the actual300x300 projection and actual FSType/normal mask, not only the nominal Python row substitution.",
+      "interpretation": "Compare measured candidate action and coupled matrix with the retained old operator and independent formula. Report spectral eigenvalues/residuals/localization descriptively for root review; no fitted eigenvalue threshold or claim that a t0 spectrum proves nonlinear/integrator stability."
+    },
+    {
+      "gate": "Manufactured closed-flux action",
+      "checks": "A separately declared frozen operator probe must compare actual complete rate with independent all-neighbor raw-term assembly and the new correction B*k/gamma*[(gp+rho_w Ace) dot unitN]*(unitN dot lx). Retain the prior64FLT_EPS raw-term +256DBL_EPS +1e-6 rate budget; no contraction/fitting.",
+      "fields": "Predeclare J1, geometry fixed, theta0, original material; p affine in z with gradient1000Pa/m and explicitly manufactured uniform Ace_z=-1m/s2 for the compatible condition, plus Ace_z=+1 and tangential Ace_x=1 controls. These scratch fields are declared conditional operator inputs after a true initialized/force state, not a claimed mechanically evolved trajectory. Actual owner/wall extension and all reset/restore bytes must be checked.",
+      "coverage": "Require the compatible normal-flux case to leave the old corrected affine action within the original rounding budget; incompatible normal-flux witness must match the predicted sign and nonempty correction, with amplitude fixed before execution. Reverse/positive-rescale normal invariance; invalid zero/NaN normal must reject. Interior/FSType4 and active-drain rows must retain their original action/projection.",
+      "limits": "Check ideal affine identities only at top/free receivers and complete-support interior away from the fixed-wall support. The real mirrored bottom does not preserve a globally affine normal p/A field; there use the actual reconstructed fields/reference, not a false global affine-zero claim. Never label algebraic (gpcorr+rho Ace) dot N=0 as a measured physical face flux or pair conservation proof."
+    },
+    {
+      "gate": "New default-OFF native regression",
+      "checks": "Run exactly one fresh currentRelease default-OFF case02 prefix through21 saved frames with original retained OFF physics/CLI; pure-read old151 and new21, then all15 typed fields/all1040 particles including fixed Rhop, actual clock/Step/lockedDt/signeddterror prefix and native/fixed ID files must be bit-exact. No masks, no substitution of prior source regression as current proof.",
+      "same_physics_limit": "The private FreeSlip/Visco0/HG0/SPR0/damping0 candidate is not claimed to be the original formal NoSlip/Visco.1/HG.1/SPR1/damping.04 physics."
+    },
+    {
+      "gate": "Actual Debug two-step smoke",
+      "checks": "Only after root reviews the source/component and prior gates, execute the unchanged true private Run at dt2.5e-6/end5e-6/-nsteps:2,3 native frames; then independent typed reader and live-final equality. No physical acceptance from exit0/smoke."
+    },
+    {
+      "gate": "Release short coarse",
+      "checks": "Explicit root admission only after own smoke passed. dt2.5e-6, target.0125s, -nsteps:5000. Must finish and independently pass all519 real saved-frame native safety/ledger/elastic/no-exclusion/clock/signeddterror gates before half admission; no generic exception may be reclassified.",
+      "saved_schedule": "Completed steps0:10:3990;3991:1:4010;4020:10:5000. Native accumulated times are retained, not snapped or interpolated."
+    },
+    {
+      "gate": "Release short half and independent pair",
+      "checks": "Only after complete coarse single-run pass: dt1.25e-6, target.0125s, -nsteps:10000, same519 saved instants at exactly twice the completed steps. Full actual time discrepancy<=1e-14, same material IDs and initial positions; all519 pressure RMS differences<=5Pa and max fullXYZ material-displacement difference<=.005mm. No point removal, resampling or wave normalized/energy gate.",
+      "drain_event": "Exact completed4000coarse/8000half state remains the registered pre-open saved event; first paired post-open4001/8002 and every subsequent saved active FSType2/3 receiver p must be0 with nonempty actual drainage. Preserve original pressure-rate0 and continued J/density evolution; report observed active counts, do not assume a top-particle count after deformation.",
+      "scope": "J/theta/stress/load differences and open-system work/energy are descriptive beyond the unchanged native/domain/elastic gates. Endpoint rho(J)V(J)*retainedLoadAce is not a same-force-stage load-resultant proof."
+    }
+  ],
+  "unmodified_limits": "No change to the saturated J>1-n0 domain, elastic/plastic guard, RH/current-state necessary dt checks, dterror signed<=1e-14, original material/load/ramp/drain timing or original pressure/displacement half limits. Wave |J-1|1e-4/CFL.01/normalized1e-4/E0 ratios do not apply to case02.",
+  "hold_points": [
+    "No actual full/half launch follows automatically from this plan",
+    "General free boundaries/3D/normal gravity/moving walls/partial drainage/variable-k load/drain remain closed",
+    "No claim of discrete q_n=0, pairwise mass conservation, continuum accuracy, coupled stability or formal long-time admission solely from gpcorr or an eigenvalue",
+    "No public GPU/gravity unlock or root formal-case preparation"
+  ],
+  "production_patch_seen_read_only": {
+    "file": "src/source/JSphCpu.cpp",
+    "sha256": "82b0a1610297768204c98c67544c6433230d06792c71aa17daf797ac5a698dad",
+    "lines": "4393,4438-4456; normal receiver subset and early active-drain return remain4400-4403; temporary map released4465-4469",
+    "status": "Root-authored candidate read only; no build/execution result claimed here"
+  },
+  "physical_acceptance": false,
+  "formal_case_admission": false,
+  "author_executed_programs": false
+}

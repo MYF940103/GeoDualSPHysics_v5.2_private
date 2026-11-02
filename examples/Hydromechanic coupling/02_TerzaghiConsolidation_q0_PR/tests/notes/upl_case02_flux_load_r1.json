@@ -1,0 +1,78 @@
+{
+  "stage": "upl_case02_flux_load_r1",
+  "status": "author_only_not_built_or_run",
+  "purpose": "Observe the current CPU actual same-force-stage TopKernelBand resultant before force scratch release. Endpoint rhoV*retainedLoadAce is not substituted for this test.",
+  "files": [
+    "support/upl_case02_flux_load_r1.cpp",
+    "notes/upl_case02_flux_load_r1.json"
+  ],
+  "cli": "--input EXISTING_CASE02_PRIVATE_XML --out FRESH_DIRECTORY",
+  "dependency": {
+    "direct_include": "support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "usage": "One renamed main/one AppInfo, neutral declarations only; do not call retained wave reader/main. Existing project headers/libraries only."
+  },
+  "input": "Reuse the sealed short-coarse private runtime and original1040 seed/Normals, not GenCase/new formal XML. 1000soil+40fixed, dp.01,width.1,height1,FreeSlip bottom/Xperiodic/g0,publicmaster0/private four flags ON,constant floatk1e-4/n0float.3/massfloat.21/rho2100/rhow1000/Kw2e8. TopKernelBand q0=10000/ramp.01,drainage at.01. NoHG/SPR/viscosity/damping/auxiliary physics.",
+  "original_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+  "normal_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+  "lifecycle": "Four independent fresh JSphCpuSingle-derived objects. Actual LoadConfig->LoadCaseParticles->VisuConfig->ConfigDomain->ConfigRunMode->InitRunCpu->FreePartsInit->RunCellDivide(true), then one real Interaction_Forces(SymPredictor) each. Before force assign the declared analytic J to all actual fluid slots at their actual z (X images sharez); this is explicit manufactured input, not proof of a new periodic J-copy call. Actual force performs wall-state/C/Ace closure. Read actual Ace/LoadAce/rawband/J before PosInteraction_Forces; free scratch and restore the manufactured clock to0. No call to Normalize after finished force.",
+  "cases": [
+    {
+      "case": 0,
+      "clock_s": 0,
+      "J": "1",
+      "q_Pa": 0,
+      "gate": "All normalsoil Ace/LoadAce/rawband/theta/pdot strictly0; no Q0/input override."
+    },
+    {
+      "case": 1,
+      "clock_s": 0.005,
+      "J": "1",
+      "q_Pa": 5000,
+      "gate": "Legacy J1 same-stage reference"
+    },
+    {
+      "case": 2,
+      "clock_s": 0.005,
+      "J": "1+2^-8",
+      "q_Pa": 5000,
+      "gate": "Changed uniform mixture mass, fixed geometry"
+    },
+    {
+      "case": 3,
+      "clock_s": 0.005,
+      "J": "1+2^-8*(2*z-1)",
+      "q_Pa": 5000,
+      "gate": "Nonuniform mixture mass, fixed geometry"
+    }
+  ],
+  "manufactured_scope": "Native p/p0/sigma/v/plastic remain the original strict0, legacy rho2100; J fields are conditional manufactured inputs and not constitutively evolved. No mechanical trajectory is overwritten. All named normalsoil input bytes ID/code/cell/position/velocity/sigma/plastic/p/p0/J must survive actual force unchanged; FS/C/theta/rate/load are live outputs. TimeStep=.005 is an explicit source-clock label, Nstep/history never advance and drainage remains inactive; not a simulated elapsed time.",
+  "reference": "Integrate only1000 normalsoil, excluding fixed/periodic. Independently m_ref=V0*(rho0-rhow+rhow*J), check actual ledger rho(J)*V(J) within5e-13relative. Reconstruct retained provisional target from actual upward-FSType2/3 mask, MassFluid and -float(q/(rhomix*Dp)); preserve the production reference-area convention. Separately compare against analytic -q*A0 with A0=.1 per unit depth (q5000 -> -500N). Actual band membership uses actual zmax-KernelSize; report top/band counts, do not impose a guessed40 count.",
+  "actual_checks": "Sum rhoV*finishedLoadAce_z and, with zero internal stress/p/v andg0, rhoV*finishedAce_z. Each must agree with both the retained float target and analytic qA0 within its unchanged predeclared force arithmetic budget. Check downward/nonempty actual raw weighted band and finite scale; output raw denominator and pernode reference float(raw*target/rawsum) descriptively. Finished Ace minus LoadAce need not be0ULP because original float replacement order is preserved.",
+  "budget": "For each resultant F, budget=64*FLT_EPS*sum(abs(m_i*a_i))+256*DBL_EPS*max(1,abs(retained_float_target))+1e-6 N. This new force-unit component budget was fixed before execution, not the pressure-rate budget or a change to pressure5Pa/material displacement.005mm half gates. Do not contract it to a zero-cancelled sum or fit to observed results.",
+  "negative": "For the two non-J1 fields, compute the explicitly incorrect reference-mass integral sum(MassFluid*finishedLoadAce_z). Require abs(wrong-retainedTarget)>100*max(loadBudget,finishedForceBudget). This is a disclosed offline wrong-weight calculation on a real measured stage, not execution of a modified solver. If weak, reject without changing delta or budget. Never repeat Normalize on a finished state; it recomputes target from already normalized LoadAce and is not an idempotent probe.",
+  "outputs": {
+    "files": [
+      "Run.out",
+      "loads.csv",
+      "summary.csv",
+      "completion.json"
+    ],
+    "load_rows": 4000,
+    "summary_rows": 4,
+    "actual_force_calls": 4,
+    "explicit_additional_complete_rate_calls": 0,
+    "physical_steps": 0
+  },
+  "ownership": "Future root-owned build/run must bind exact input/source/object/program/runtime and immediate typed exit. This CPP asserts native component numerics and fresh output only, not independent SHA/source/owned-call proof. Failure keeps partial CSV and no passed completion is written.",
+  "held": [
+    "No Run/ComputeStep/PreCorr/SaveData or repeated Normalize",
+    "No actual full-stage loading history, elastic work/energy or long-time accuracy proof",
+    "No opened-drain event or new half acceptance",
+    "No public/GPU/variable-k/generalwall/formal-case admission",
+    "Original failed trajectories and all frozen files remain unchanged"
+  ],
+  "production_changes": false,
+  "physical_acceptance": false,
+  "author_executed_programs": false
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "upl_case02_cpu_release_build_r1",
+  "status": "author_only_not_executed",
+  "purpose": "Prepare one authoritative isolated ReleaseCPU/x64 solution Build against the already accepted current private loaded-column CPU source. No source edits,helper compile/help/solver,old-result overwrite or canonical installation.",
+  "files": ["support/upl_case02_cpu_release_build_r1.ps1", "notes/upl_case02_cpu_release_build_r1.json"],
+  "authorization": "Root must fully review this script/note and separately authorize the single ReleaseCPU build invocation. No build or program execution is authorized by this author-only record.",
+  "CLI_from_case02_after_separate_authorization": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_cpu_release_build_r1.ps1 -ExecutionAuthorized",
+  "adopted_Debug_source_build": {
+    "path": "logs/upl_case02_cpu_DebugCPU_r2.build.json",
+    "bytes": 340628,
+    "sha256": "928527205bcdee13c49d0317ef4f1ff186f6fb6e480145a405d61f2ebe6bb5db",
+    "requirements": "Actual passed DebugCPU/x64 isolated default solution Build,direct typed owned exit0,86 compile sources/86 objects,265 current/snapshot code-header pairs and seven unchanged canonical programs; no solver or installation.",
+    "source": "Reuse and verify those265 existing {original,snapshot} E pairs before/after the Release build. No new source snapshot copy/directory is created. The accepted JSphCpu.cpp snapshot is the case02 r2 PosPrec-corrected loaded-column source; unchanged264 snapshots retain their original case02 r1 attribution. Do not rewrite historical hashes or falsely call the Debug pre-compiler r1 failure a successful build.",
+    "source_membership": "Verify exact current .cpp/.h/.cu/.cuh path set265 and all byte/SHA pairs. Six non-code source-directory files excluded by the existing265 scope are not claimed as missing translation units. Debug objects are never linked or copied into the fresh Release IntDir."
+  },
+  "actual_build": {
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "project": "src/VS/DualSPHysics5ReCpu.vcxproj",
+    "tool": "The exact recorded MSBuild.exe from the passed DebugCPU r2 tools entry; MSBuild/solution/project and both new author files are rehashed before/after. No new compiler environment probe or alternative build system.",
+    "arguments": "/m /t:Build /p:Configuration=ReleaseCPU /p:Platform=x64 /p:OutDir=<fresh outputs/upl_case02_cpu_ReleaseCPU_r1/> /p:IntDir=<fresh src/VS/Intermediate/upl_case02_cpu_ReleaseCPU_r1/> /v:minimal /bl:<fresh log binlog>",
+    "paths": "Convert OutDir/IntDir to forward slashes and retain a final forward slash as a single native property argument. No manually quoted trailing-backslash directory token. All output/intermediate/log/binlog/record targets must be absent before the actual call.",
+    "membership": "Read the frozen authoritative ReleaseCPU ClCompile exclusions and require the same86 source paths as the adopted CPU set. After the fresh-IntDir build require exactly86 distinct object basenames matching those sources,including exactly one main.obj;85 are non-main CPU objects. This is a fresh isolated /t:Build,not a claimed /t:Rebuild.",
+    "owned_exit": "Precreate only a fresh empty stdout log,reset global LASTEXITCODE to null,invoke the exact recorded MSBuild directly and immediately capture its typed exit. Persist actual arguments,start/end,exit or invocation failure,log/binlog E,EXE E,all86 object E,source pairs and protected-program identities. A partial/failed label remains protected; do not silently retry it."
+  },
+  "project_postbuild_boundary": "The unchanged ReleaseCPU project has IF EXIST cg_variables.h move cg_variables.h $(Configuration)\\ (vcxproj284-286). It has no canonical EXE install. At author inspection both src/VS/cg_variables.h and src/cg_variables.h were absent. The recipe refuses either header before execution and checks absence again after execution,instead of modifying the project,event or retained data. It does not make a universal claim that MSBuild has no other standard project side effects.",
+  "protected_canonical_programs": "Verify all seven actual canonical program E entries from DebugCPU r2 before/after. The new EXE remains isolated,no copy/install into bin/windows. Do not relabel seven as eight.",
+  "fresh_outputs": {
+    "OutDir": "outputs/upl_case02_cpu_ReleaseCPU_r1",
+    "IntDir": "src/VS/Intermediate/upl_case02_cpu_ReleaseCPU_r1",
+    "program": "outputs/upl_case02_cpu_ReleaseCPU_r1/DualSPHysics5.2CPU_win64.exe",
+    "records": ["logs/upl_case02_cpu_ReleaseCPU_r1.log", "logs/upl_case02_cpu_ReleaseCPU_r1.binlog", "logs/upl_case02_cpu_ReleaseCPU_r1.build.json"],
+    "source_snapshots": "Existing DebugCPU r2 source_snapshot pairs only; zero newly copied source files.",
+    "runtime": "This script does not prepare a runnable helper/runtime package or invoke the isolated main program. Any later wrapper link must separately bind/copy its actual required DLL/configuration runtime. No success is inferred merely from a missing program invocation."
+  },
+  "limits": "Build exit0 plus exact source/object/protection checks is compile/link evidence only. It does not establish true-Run smoke,load/drain numerical acceptance,independent half comparison,default-OFF regression,public/GPU/Cryer support or physical validation. Those actions need their own reviewed single-action authorization.",
+  "production_changed": false,
+  "build_executed": false,
+  "program_run": false,
+  "physical_acceptance": false
+}

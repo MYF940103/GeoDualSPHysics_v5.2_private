@@ -1,0 +1,38 @@
+param([switch]$ExecutionAuthorized)
+# One new default-OFF solve; retained prepared seed/control are reused, never rewritten/rerun.
+$ErrorActionPreference='Stop';if(!$ExecutionAuthorized){throw 'Explicit independent flux default-OFF action required'}
+$tests=Split-Path -Parent $PSScriptRoot;$repo=(Get-Item -LiteralPath $tests).Parent.Parent.Parent.Parent.FullName;$tag='upl_case02_flux_legacy_off_r1'
+$buildPath=Join-Path $tests 'logs\upl_case02_flux_cpu_ReleaseCPU_r1.build.json';$priorPath=Join-Path $tests 'logs\upl_case02_legacy_off_r1.run.json';$controlPath=Join-Path $tests 'logs\symc_1d_short_r1_cpu_old.completion.json'
+$out=Join-Path $tests "outputs\$tag";$record=Join-Path $tests "logs\$tag.run.json";$log=Join-Path $tests "logs\$tag.log";$callPath=Join-Path $tests "logs\$tag.solver.call.json"
+function Entry([string]$path){$f=Get-Item -LiteralPath $path;[ordered]@{path=$f.FullName;bytes=$f.Length;sha256=(Get-FileHash -LiteralPath $path -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function Verify($items){foreach($e in $items){$a=Entry $e.path;if($null -eq $e.bytes -or !$e.sha256 -or $a.bytes -ne $e.bytes -or $a.sha256 -ine $e.sha256){throw "Frozen artifact changed: $($e.path)"}}}
+foreach($path in @($out,$record,$log,$callPath)){if(Test-Path -LiteralPath $path){throw "Retained regression protected: $path"}}
+$priorIdentity=Entry $priorPath;if($priorIdentity.bytes -ne 38944 -or $priorIdentity.sha256 -ine 'ef7f8d51606e0b5764c50c97d9f8892130b126fd0df7c5ece35d368a7471db84'){throw 'Retained actual default-OFF input/runtime provenance differs'}
+$build=Get-Content -Raw -LiteralPath $buildPath|ConvertFrom-Json;$prior=Get-Content -Raw -LiteralPath $priorPath|ConvertFrom-Json;$control=Get-Content -Raw -LiteralPath $controlPath|ConvertFrom-Json
+if(!$build.passed -or $build.stage -cne 'upl_case02_flux_cpu_build_r1' -or $build.configuration -cne 'ReleaseCPU' -or !$build.typed_LASTEXITCODE_captured_immediately -or $build.exit_code -ne 0 -or !$build.source_bindings_unchanged -or !$build.exact_object_basename_closure -or !$prior.passed -or !$prior.bindings_unchanged -or !$control.solver_finished -or !$control.owned_exited -or $control.exit_code -ne 0){throw 'Passed new flux Release build and retained completed OFF/control provenance required'}
+$prefix=Join-Path $tests 'outputs\upl_case02_legacy_off_r1_seed\upl_case02_legacy_off_r1';$prepared=@($prior.prepared_inputs)
+$expectedPaths=@((Join-Path $tests 'configs\upl_case02_legacy_off_r1.xml'),($prefix+'.xml'),($prefix+'.bi4'),($prefix+'_Normals.nbi4'));$expectedSHA=@('673bb124fcb6f6ddbaf44e0a0b0526127d50666f07c5c584f0093d3ae55f9c86','673bb124fcb6f6ddbaf44e0a0b0526127d50666f07c5c584f0093d3ae55f9c86','f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac','0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97')
+if($prepared.Count -ne 4){throw 'Exactly four retained prepared inputs required'};for($i=0;$i -lt 4;$i++){if($prepared[$i].path -ine $expectedPaths[$i] -or $prepared[$i].sha256 -ine $expectedSHA[$i]){throw 'Retained OFF input attribution differs'}}
+$bindings=@((Entry $PSCommandPath),(Entry (Join-Path $tests 'notes\upl_case02_flux_owners_r1.json')),(Entry $buildPath),$priorIdentity,(Entry $controlPath),$build.program)+$prepared+@($build.author_files)+@($build.tools)
+function VerifyBuild{Verify $bindings;Verify $build.objects;Verify $build.canonical_programs_before;foreach($pair in $build.source_snapshot){Verify @($pair.original,$pair.snapshot)};Verify @($build.documentation_snapshot.original,$build.documentation_snapshot.snapshot)}
+VerifyBuild
+if(Get-CimInstance Win32_Process|Where-Object{$_.Name -match '^DualSPHysics.*CPU.*\.exe$|^upl_case02_actual.*\.exe$'}){throw 'A CPU solver is active; do not duplicate'}
+$names=@('DsphConfig.xml','ChronoEngine.dll','dsphchrono.dll','vcomp140.dll');if(@($prior.runtime).Count -ne 4 -or @(Compare-Object ($names|Sort-Object) (@($prior.runtime|ForEach-Object{[IO.Path]::GetFileName($_.copy.path)})|Sort-Object)).Count){throw 'Four sealed retained runtime copies required'}
+$runtimeCopies=@();foreach($r in $prior.runtime){
+  Verify @($r.source,$r.copy);$canonical=Entry (Join-Path (Join-Path $repo 'bin\windows') ([IO.Path]::GetFileName($r.copy.path)));if($canonical.bytes -ne $r.copy.bytes -or $canonical.sha256 -ine $r.copy.sha256){throw 'Retained/current runtime differs'}
+  $target=Join-Path ([IO.Path]::GetDirectoryName($build.program.path)) ([IO.Path]::GetFileName($r.copy.path));$existed=Test-Path -LiteralPath $target;if(!$existed){Copy-Item -LiteralPath $r.copy.path -Destination $target}
+  $copied=Entry $target;if($copied.bytes -ne $r.copy.bytes -or $copied.sha256 -ine $r.copy.sha256){throw 'New or existing isolated runtime differs'}
+  $runtimeCopies+=@{source=$r.copy;copy=$copied;existing_copy_reused=$existed};$bindings+=@($r.source,$r.copy,$canonical,$copied)
+}
+VerifyBuild;$argv=@('-cpu','-ompthreads:1','-stable','-mdbc',$prefix,$out,'-dirdataout','data','-svres','-svextraparts:1','-nsteps:2001')
+[IO.File]::WriteAllBytes($log,[byte[]]@());$code=$null;$failure=$null;$started=[DateTime]::UtcNow.ToString('o');$oldPreference=$ErrorActionPreference
+Push-Location ([IO.Path]::GetDirectoryName($build.program.path))
+try{$ErrorActionPreference='Continue';$global:LASTEXITCODE=$null;& $build.program.path @argv 2>&1|Tee-Object -FilePath $log -Append|Out-Host;$code=$LASTEXITCODE}catch{$failure=$_.Exception.Message}finally{Pop-Location;$ErrorActionPreference=$oldPreference}
+$ended=[DateTime]::UtcNow.ToString('o');$call=[ordered]@{program=$build.program;arguments=$argv;started_utc=$started;ended_utc=$ended;direct_native_call=$true;typed_LASTEXITCODE_captured_immediately=($code -is [int]);owned_call_exited=($code -is [int]);exit_code=$code;invocation_failure=$failure;physical_acceptance=$false}
+[IO.File]::WriteAllText($callPath,($call|ConvertTo-Json -Depth 6)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))
+$files=@();if(Test-Path -LiteralPath $out){$files=@(Get-ChildItem -LiteralPath $out -Recurse -File|ForEach-Object{Entry $_.FullName})};$unchanged=$false;try{VerifyBuild;$unchanged=$true}catch{if(!$failure){$failure=$_.Exception.Message}}
+$parts=@($files|Where-Object{[IO.Path]::GetFileName($_.path) -cmatch '^Part_\d{4}\.bi4$'});$runLog=Join-Path $out 'Run.out';$finished=(Test-Path -LiteralPath $runLog) -and (Select-String -LiteralPath $runLog -SimpleMatch '[Simulation finished' -Quiet)
+$passed=($code -is [int] -and $code -eq 0 -and !$failure -and $unchanged -and $parts.Count -eq 21 -and $finished)
+$result=[ordered]@{stage=$tag;passed=$passed;scope='Owned new flux-main default-OFF solve only; separate exact native comparison required';source_build=(Entry $buildPath);retained_control=(Entry $controlPath);retained_OFF_input_provenance=$priorIdentity;owned_exit_record=(Entry $callPath);program=$build.program;runtime=$runtimeCopies;prepared_inputs=$prepared;prepared_inputs_reused_without_copy=$true;new_GenCase_run=$false;old_control_rerun=$false;arguments=$argv;started_utc=$started;ended_utc=$ended;direct_native_call=$true;typed_LASTEXITCODE_captured_immediately=($code -is [int]);owned_call_exited=($code -is [int]);exit_code=$code;failure=$failure;normal_finish_marker=$finished;bindings=$bindings;bindings_unchanged=$unchanged;files=$files;native_frames=$parts.Count;log=(Entry $log);exact_native_comparison_passed=$false;physical_acceptance=$false}
+[IO.File]::WriteAllText($record,($result|ConvertTo-Json -Depth 18)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))
+if(!$passed){throw "Flux default-OFF rejected; inspect $record"};Write-Output "Flux OFF solver completed; native/exact QC not started: $record"

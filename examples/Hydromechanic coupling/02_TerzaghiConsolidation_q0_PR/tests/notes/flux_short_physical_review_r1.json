@@ -1,0 +1,40 @@
+{
+  "stage": "upl_case02_flux_short_physical_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/flux_short_physical_review_r1.py", "notes/flux_short_physical_review_r1.json"],
+  "purpose": "Thin descriptive review of both completed sealed 519-frame flux short windows. No additional physical admission test, old-result rerun, raw decoder, endpoint force or failed-run analysis mode.",
+  "command_after_root_full_review_and_explicit_execution": "D:/anaconda3/python.exe -B tests/support/flux_short_physical_review_r1.py",
+  "immutable_dependencies": {
+    "support/upl_case02_qc_r1.py": "0ed07dd825c4209bb580bef6af821a415112bc6d63c7502cf0ea4e50fa401c96",
+    "notes/upl_case02_qc_r1.json": "15b116e91c74dcde2d6eeefbb7492fad5b9efb3377690289d0abe1db67fee810",
+    "support/upl_case02_flux_qc_r1.py": "460ee3f17fb806c4e4ae48528de4025ea6fae13e3374b3e59a1df9d315c228da",
+    "notes/upl_case02_flux_qc_r1.json": "532ce8b31cd5787728696401249fea7b02d724056f5728aceb476144dcd88146"
+  },
+  "dependency_reuse": "Hashes checked before importing unchanged load_job/drain/saved_steps/identity/bind/VERIFIED/FIELDS/table from the original QC module. No decoder copy, old main call, monkeypatch or replacement globals. Flux QC module itself is hash-bound but not imported/executed.",
+  "prerequisites": [
+    "logs/upl_case02_flux_short_coarse_r1.qc.json: passed, exact stage/mode coarse, unchanged bindings, physical_acceptance false; every QC input Entry rehashed.",
+    "logs/upl_case02_flux_short_r1.half.json: passed, exact stage/mode half, unchanged bindings, physical_acceptance false; every QC input Entry rehashed.",
+    "Both loaded jobs must be the QC-bound current flux native/solver pair with full519, Release actual helper, owned typed solver/reader exit0, complete original structural/ledger/safety checks and final native/live J/n/theta byte identity. Incomplete or failed solver/reader/QC is rejected before any plot/data output.",
+    "Same original material/native/fixed ID CSVs, all26 initial bits, actual c/h time differences <=1e-14s and original saved completed steps. Coarse5000/half10000, dt2.5/1.25us, end.0125s. No snap/interpolation."
+  ],
+  "provenance": "Report each exact solver/native/helper/build/program Entry, candidate JSphCpu.cpp original and snapshot Entry, source stage, and XML/BI4 Entries already sealed in the solver bindings. Current265 originals and retained snapshots, current canonical7, isolated runtime4 originals/copies and solver files rehashed. Historical structural-reader build is not falsely relabelled as the candidate solver build. No new build or Git command.",
+  "native_schema": "1000 soil IDs40..1039 plus40 fixed, private case02 physical26: x/y/z,vx/vy/vz,p,p0,J,saved-last-stage theta,6 double effective stresses,Kplastic,FSType,FSNormalXYZ,actualExcessPorePress,LoadAceXYZ,legacyRhop. Native p0 zero and elastic/finite/derived-ledger/fixed-marker protections come from the unchanged loader; neither native current V/rho/k nor PosDiv/pdot is fabricated.",
+  "descriptive_reductions": [
+    "Every actual native saved time, Step and declared completed-step coordinate. Pressure min/max/mean/RMS, material displacement fullXYZ max/RMS and component statistics, fullXYZ velocity RMS and component statistics, positive-downward soil mean settlement, J/theta and all6 effective-stress component min/max/mean/RMS.",
+    "Fixed initial material layers0(bottom),49(interior),99(top), each10 IDs selected from actual native-ID initial-z records, not moving coordinates. Report the exact selected IDs and original z; per-layer pressure/settlement/sigma_zz/J/theta min/max/mean/RMS.",
+    "Declared drainage event .01s is marked. Original drain predicate requires native FSType2/3 p=0 only for completed coarse step>4000 / half step>8000, with nonempty receivers. CSV records actual active counts and zero-pressure checks; zero values outside active coverage are identified by counts, not presented as face/pressure-rate observations.",
+    "Pressure and XYZ velocity RMS log-envelope slopes in requested actual-time windows [.0005,.001375] and [.005,.009975], using at least3 positive native samples. Fits are descriptive only: load-driven growth is not by itself numerical instability; no slope/frequency/stability threshold or old failed-run fit is used.",
+    "Original passed half pressureRMS5Pa / maximum fullXYZ material-displacement difference .005mm metrics are reported with their source QC. Independent same-export reduction produces all519 series in the shared CSV and reports maximum disagreement with the original QC, not a new acceptance criterion."
+  ],
+  "outputs": {
+    "record": "logs/upl_case02_flux_short_physical_r1.check.json",
+    "same_numeric_data_for_both_figures": "figures/upl_case02_flux_short_physical_r1_history.csv: 1038 rows, coarse/half x519, actual time and material-layer statistics, plus original half quantities",
+    "global_figure": "figures/upl_case02_flux_short_physical_r1_global.png: pressure, settlement/fullXYZ displacement, sigma_zz, XYZ velocity, J and saved last-stage theta",
+    "layer_figure": "figures/upl_case02_flux_short_physical_r1_layers.png: top/interior/bottom p/settlement/sigma_zz/J/theta and .00997.. .01003s actual native drainage zoom"
+  },
+  "ownership_and_freshness": "All four new output paths must initially be absent. Exclusive-create CSV/PNG/JSON; all consumed bindings rehashed at the end. Analysis exceptions preserve partial new outputs and create passedfalse metadata; no retry, native program, child process, solver, structural reader, compiler, preparation or Git action. Source/old author files/results never changed.",
+  "limits": "passed refers only to successful descriptive reduction of already-QC-passed data, not new physical admission. Saved last-stage theta is not endpoint or all-stage force evidence. physical26 has no pressure-rate column: never reconstruct/plot pdot. LoadAce is not an observed force-stage resultant or load-reaction budget; no endpoint surrogate is substituted. No independent physical wall-face flux, all-stage drainage, external-load force budget, continuum/theory accuracy, long-time stability, public/GPU/formal validation or old failure reversal is claimed.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}

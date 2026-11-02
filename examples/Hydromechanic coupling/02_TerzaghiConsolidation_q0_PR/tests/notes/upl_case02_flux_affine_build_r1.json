@@ -1,0 +1,23 @@
+{
+  "stage": "upl_case02_flux_affine_build_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/upl_case02_flux_affine_build_r1.ps1", "notes/upl_case02_flux_affine_build_r1.json"],
+  "scope": "One fixed affine-helper compile/link only, parameter Configuration=DebugCPU|ReleaseCPU. No MSBuild,production edit,source copy,help,helper/solver execution,canonical installation or automatic configuration follow-on.",
+  "fixed_author": "support/upl_case02_flux_affine_r1.cpp and notes/upl_case02_flux_affine_r1.json; capture actual final Entry only at invocation after root author review. The sole support include must be immutable upl_cpu_public_native_r1.cpp22469B SHA9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38; capture its note too, then require actual compiler dependency source and exactly this local include.",
+  "authorization": "Root reads the final affine CPP/note and this recipe/note completely before each explicit configuration invocation. Authoring starts neither build nor program. CLI after separate authorization: powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_flux_affine_build_r1.ps1 -Configuration DebugCPU",
+  "successful_current_recipes": {
+    "DebugCPU": "logs/upl_case02_flux_operator_DebugCPU_r1.helper.json360029B SHA4c3d20d609548e2181cf94e460695141145ce9931cf3d350ddfa82096fb866e0",
+    "ReleaseCPU": "logs/upl_case02_flux_operator_ReleaseCPU_r1.helper.json360766B SHA479012640c71663e72ca5273a39eb2451ed93b214a26af32acf9caf89f887575",
+    "policy": "Both actually passed current flux helpers have owned typed exit0 cl/link,matching source_build/env,85 current non-main objects,265 code/header pairs,17 libraries,four runtime copies and seven canonical programs. Inherit their real arguments/environment,not oldwall vectors; do not traverse or remap oldwall object provenance. Frozen CPU source must remain EF18419340d3b716108bd15ac88c06d8c860b266b95be24d4f17587677b74964."
+  },
+  "minimal_remaps": "cl changes exactly one CPP,/Fo,/Fd and dependency destination,retaining original /std:c++17,/fp:precise,/MTd or /MT and other flags. link changes only the operator helper.obj,/OUT and existing Debug PDB; the85 current CPU object paths are preserved verbatim. Verify exact86 unique link-object membership,85 path equality with both current operator and main-build non-main objects,and no main.obj. Release's actual vector has no PDB option. Complete output filenames remain single native arguments.",
+  "hash_guards": "Before compile,before link and after attempt,rehash actual current-operator recipe/calls/dependency/object/program; current flux main build/tools/program/log/binlog; author files; all265 current/source snapshot pairs plus membership; documentation pair; all86 main objects/compile-source identities; selected compiler/linker/environment tools;17 recorded libraries;four retained/canonical runtime copies;seven canonical programs. Restore five sealed nonempty developer environment values and compiler PATH prefix without invoking an environment probe. This is a bounded recorded closure,not a full OS/SDK/CRT reproducibility claim.",
+  "ownership": "Fresh independent Compile/Link stdout and .call.json; reset LASTEXITCODE,invoke cl/link directly,and capture actual typed exit immediately. Failed compile or prelink check skips link. Preserve failures/partial artifacts; final source-binding status is measured independently of tool success. No affine runtime call is made.",
+  "runtime": "After successful link,copy four actual successful current-operator runtime copies (DsphConfig.xml,ChronoEngine.dll,dsphchrono.dll,vcomp140.dll) into the fresh affine directory after checking current bin/windows same-name equality. Verify copies and originals; never install over canonical files.",
+  "fresh_paths": "outputs/upl_case02_flux_affine_{Configuration}_r1/upl_case02_flux_affine_r1.exe plus helper.obj,PDBs,compile.dependencies.json,runtime4; logs/upl_case02_flux_affine_{Configuration}_r1.helper.json and _Compile.log/.call.json,_Link.log/.call.json. Existing paths are rejected,never overwritten.",
+  "limits": "A future successful build only proves this affine helper links with the recorded current objects. No force/rate affine check,trajectory,half,load-stage,theory,GPU/Cryer/formal or physical acceptance follows without separately owned execution/review.",
+  "build_executed": false,
+  "program_run": false,
+  "production_changes": false,
+  "physical_acceptance": false
+}

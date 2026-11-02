@@ -1,0 +1,40 @@
+{
+  "stage": "upl_case02_operator_build_r1",
+  "status": "author_only_not_executed",
+  "scope": "One fixed case02 frozen-operator helper compile/link. No MSBuild, installation, help, helper execution, solver, time integration or automatic follow-up. Existing generic helper_build_r2 and all receipts remain unchanged.",
+  "files": ["support/upl_case02_operator_build_r1.ps1", "notes/upl_case02_operator_build_r1.json"],
+  "parameter_only": {"Configuration": ["DebugCPU", "ReleaseCPU"]},
+  "fixed_author": "support/upl_case02_operator_r1.cpp and notes/upl_case02_operator_r1.json; capture actual final bytes/SHA at invocation before any build-tool call, then rehash. No speculative or pre-author hash is embedded.",
+  "authorization": "Root must fully review both final operator files and this recipe/note before each explicit invocation. Neither configuration is started by authoring. Planned order is separately authorized DebugCPU compile plus smoke review, then separately authorized ReleaseCPU compile/matrix; this build recipe starts no smoke/matrix and does not automatically chain configurations.",
+  "CLI_after_separate_authorization": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_operator_build_r1.ps1 -Configuration DebugCPU",
+  "reused_pattern": "Minimal fixed-author adaptation of the actually successful upl_case02_helper_build_r2.ps1. It reuses the same current-build records and actual successful matching wall r2 compiler/link/environment recipes without modifying or invoking that script.",
+  "current_builds": {
+    "DebugCPU": "logs/upl_case02_cpu_DebugCPU_r2.build.json 340628B SHA928527205bcdee13c49d0317ef4f1ff186f6fb6e480145a405d61f2ebe6bb5db",
+    "ReleaseCPU": "logs/upl_case02_cpu_ReleaseCPU_r1.build.json 342696B SHA85e754287a4057598c11e63e0d326e28dee16efb87624ca1bd7ceeed9c3ab09e",
+    "closure": "Both actual passed isolated x64 CPU builds have86 compile sources/objects,265 current/original-snapshot code pairs and seven protected canonical programs. Use matching configuration only; no production rebuild or source/snapshot copy. Exclude main.obj and substitute all85 non-main objects by exact unique basename membership in the old link vector. Link only these85 plus the new helper.obj."
+  },
+  "recorded_recipes": {
+    "DebugCPU": "logs/upl_gravity_wall_cpu_DebugCPU_r2.helper.json 55152B SHA83de3d2da0198e62d09ff67b5034cecedffd1d8e0c07becec794985a468c18b0",
+    "ReleaseCPU": "logs/upl_gravity_wall_cpu_ReleaseCPU_r2.helper.json 55363B SHA47aa0e8c3b02a97cd539c2b533c7bff8402df70e179a88dfd4be1e4aa230e3ba",
+    "policy": "Require actual typed exit0 compile/link calls, passed r2 recipe, sealed matching environment_source and five nonempty selected environment values. Only actual cl/link argument shape, tools,17 recorded libraries and four runtime-copy identities are inherited; historical wall source/objects are not current-source acceptance. Debug wall r1 is not used or reclassified."
+  },
+  "compile_link": {
+    "compile": "Remap exactly source,/Fo,/Fd and sourceDependencies destination. Preserve /std:c++17,/fp:precise and /MTd or /MT. Complete filenames are individual native arguments, avoiding manually quoted trailing-backslash directories.",
+    "include": "Only local support include upl_cpu_public_native_r1.cpp 22469B SHA9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38. Capture its note too; actual compiler dependency JSON must name the operator source and exactly this support include.",
+    "link": "Replace all85 old non-main object paths by current same-basename objects; reject duplicate/unknown/main entries. Replace one helper object and OUT, plus the existing Debug-only PDB. Actual Release recipe has no PDB option. Exactly86 object arguments are required before link.",
+    "ownership": "Fresh stdout and owned call receipt per direct cl/link; reset LASTEXITCODE and capture its actual typed value immediately. Failure skips subsequent stages, retains partial artifacts and writes a failed helper receipt when the owned call returns normally. Preflight failure starts no build tool.",
+    "hashes": "Before compile, before link and after the attempt, verify author files,265 current/snapshot pairs plus membership,86 compile-source/object identities, actual build/recipe/environment/call/tool/library records, seven canonical programs and retained/current runtime. Final binding status is recorded independently of compiler success. This bounded closure is not a claim of fully pinned OS/SDK/CRT reproducibility."
+  },
+  "runtime": "After successful link copy DsphConfig.xml,ChronoEngine.dll,dsphchrono.dll,vcomp140.dll from four sealed successful same-configuration helper copies, after verifying each equals current bin/windows same-name bytes/SHA. Rehash copies and originals; never replace canonical files.",
+  "fresh_outputs": {
+    "directory": "outputs/upl_case02_operator_{Configuration}_r1",
+    "program": "upl_case02_operator_r1.exe",
+    "records": "logs/upl_case02_operator_{Configuration}_r1.helper.json and _Compile.log/.call.json,_Link.log/.call.json; helper.obj,PDBs and compile.dependencies.json remain inside the fresh output directory.",
+    "retention": "Each configuration has independent fresh names. Reject existing outputs/logs/receipt; never overwrite old failed/successful build, operator, export or solver evidence."
+  },
+  "limits": "A future compile/link pass proves only that this fixed helper linked against the recorded current objects. It does not prove frozen-matrix correctness, stability, completed coarse/half acceptance, default-OFF/GPU/Cryer support or physical accuracy. Runtime calls require separate root authorization.",
+  "production_changes": false,
+  "build_executed": false,
+  "program_run": false,
+  "physical_acceptance": false
+}

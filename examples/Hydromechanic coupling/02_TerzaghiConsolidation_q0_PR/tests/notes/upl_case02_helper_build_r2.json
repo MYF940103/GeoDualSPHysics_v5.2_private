@@ -1,0 +1,49 @@
+{
+  "stage": "upl_case02_helper_build_r2",
+  "status": "author_only_not_executed",
+  "purpose": "One narrowly selected CPU reader or actual helper compile/link,with current case02 objects and actual same-configuration successful wall r2 compiler/link/environment recipes. No production build,help,reader/solver execution or installation.",
+  "files": ["support/upl_case02_helper_build_r2.ps1", "notes/upl_case02_helper_build_r2.json"],
+  "parameters_only": {"Kind": ["reader", "actual"], "Configuration": ["DebugCPU", "ReleaseCPU"]},
+  "authorization": "Both mandatory selectors choose one build only. Root must fully read the selected final CPP/note and this recipe/note before explicitly invoking it. The recipe adds no execution switch,automatic follow-up,Release-before-Debug policy or solver authorization.",
+  "CLI_from_case02_after_separate_authorization": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_helper_build_r2.ps1 -Kind reader -Configuration ReleaseCPU",
+  "selected_authors": {
+    "reader": "support/upl_case02_native_r1.cpp and notes/upl_case02_native_r1.json",
+    "actual": "support/upl_case02_actual_r1.cpp and notes/upl_case02_actual_r1.json",
+    "late_binding": "Reader authoring was not final when this recipe was requested. Capture actual chosen CPP/note E at invocation before any tool call,and rehash them before link/after copies; never invent a pre-author SHA or treat an author-only note as a run receipt.",
+    "immutable_include": "The only support include admitted by both author contracts is upl_cpu_public_native_r1.cpp22469B SHA9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38; its note is also captured. Compiler-generated sourceDependencies must name the chosen CPP and exactly this local support include. Existing source/SDK headers need no new include path."
+  },
+  "actual_current_builds": {
+    "DebugCPU": "logs/upl_case02_cpu_DebugCPU_r2.build.json340628B SHA928527205bcdee13c49d0317ef4f1ff186f6fb6e480145a405d61f2ebe6bb5db",
+    "ReleaseCPU": "logs/upl_case02_cpu_ReleaseCPU_r1.build.json342696B SHA85e754287a4057598c11e63e0d326e28dee16efb87624ca1bd7ceeed9c3ab09e",
+    "closure": "Both are actual passed typed exit0 isolated configuration builds with86 flat object E,86 compile-source E,265 {original,snapshot} code/header pairs and seven unchanged canonical program E. Select only matching configuration;no old wall/Gamma/other-configuration object can survive the complete85-basename replacement. Source remains the frozen3fed... JSphCpu.cpp loaded-column/PosPrec revision;no source or snapshot copying is performed."
+  },
+  "successful_historical_argument_recipes": {
+    "DebugCPU": "logs/upl_gravity_wall_cpu_DebugCPU_r2.helper.json55152B SHA83de3d2da0198e62d09ff67b5034cecedffd1d8e0c07becec794985a468c18b0",
+    "ReleaseCPU": "logs/upl_gravity_wall_cpu_ReleaseCPU_r2.helper.json55363B SHA47aa0e8c3b02a97cd539c2b533c7bff8402df70e179a88dfd4be1e4aa230e3ba",
+    "inspection": "Both r2 helpers were actually inspected passed=true with real successful owned cl/link calls,sealed same-configuration environment_source,17 recorded explicit libraries and four runtime copies. Debug r1 was a failed compile with no link/environment;neither configuration is guessed from a similarly named r1 file or reclassified.",
+    "scope": "Inherit only actual compiler/link argument shape,tool/library identities and the five selected developer environment values. Old recipe source_build/source snapshots/objects are historical provenance,not asserted equal to the current modified source. No mutable historical Git metadata is traversed.",
+    "environment": "Verify INCLUDE,LIB,VCToolsInstallDir,WindowsSdkDir,WindowsSDKVersion nonempty and equal to the sealed successful environment_source;restore those process values and prefix the recorded compiler directory to PATH. Rehash recorded environment tools without invoking VsDevCmd/cmd or a tool help/probe."
+  },
+  "one_compile_one_link": {
+    "compile": "Remap exactly one CPP,Fo,Fd and sourceDependencies destination in the actual matching cl vector. Preserve all other arguments including /std:c++17,/fp:precise,Debug /MTd or Release /MT. Complete output filenames are single native arguments,no manually quoted trailing-backslash directory.",
+    "link": "Current flat objects must have86 distinct basenames matching all compile sources and one main.obj. Exclude main;substitute all85 historical link-object paths by current objects with identical basenames,reject unknown/duplicate/main entries,and add only one new helper.obj. Remap OUT and the existing Debug-only PDB;Release's actual vector has no PDB option. Exact86 link-object membership is checked before invoking link.",
+    "ownership": "Fresh empty stdout,reset global LASTEXITCODE,direct recorded compiler/linker calls and immediate typed exit capture. Each actual call receives its own log and receipt. Failed compile or prelink binding check skips link. Partial/failed paths are preserved and cannot be silently reused.",
+    "guards": "Before compile,before link and after runtime copies,verify chosen author files,current265 original/snapshot pairs,86 source/object identities,source membership,actual build/recipe/environment receipts,tools,17 explicit libraries and seven canonical programs. These are bounded object/source and recorded-library checks,not a claim of full OS/SDK/CRT reproducibility."
+  },
+  "runtime": {
+    "required": ["DsphConfig.xml", "ChronoEngine.dll", "dsphchrono.dll", "vcomp140.dll"],
+    "policy": "Verify all four actually successful same-configuration recipe runtime copies and equality with current bin/windows same-name SHA/bytes. After link,copy them into the new helper directory,verify destinations and rehash originals/canonical runtime. No canonical program/runtime is overwritten. Neither current main-build record is falsely claimed to have prepared this runtime package."
+  },
+  "fresh_outputs": {
+    "directory": "outputs/upl_case02_{Kind}_{Configuration}_r2",
+    "reader_exe": "upl_case02_native_r1.exe",
+    "actual_exe": "upl_case02_actual_r1.exe",
+    "records": "logs/upl_case02_{Kind}_{Configuration}_r2_Compile.log/.call.json,_Link.log/.call.json and .helper.json;object/PDB/dependency outputs stay in the fresh helper directory.",
+    "no_overwrite": "All four selector combinations have independent new output/log paths. Existing Debug actual r1 and all old build/helper/physical results are retained. No input,BI4,normal sidecar,physical output or review export is created here."
+  },
+  "limits": "Successful compile/link proves no reader result,actual smoke,load/drain stage budget,half/default-OFF regression,public/GPU/Cryer admission or physical accuracy. Root chooses and separately owns each later program action.",
+  "production_changed": false,
+  "build_executed": false,
+  "program_run": false,
+  "physical_acceptance": false
+}

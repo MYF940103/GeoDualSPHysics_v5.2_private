@@ -1,0 +1,74 @@
+{
+  "stage": "upl_case02_actual_r1",
+  "status": "author_only_not_built_or_run",
+  "purpose": "Minimal private CPU true-Run entry for the first bounded constant-k case02 load/drain column; no reader, physical field prescription, production/integrator change or automatic admission.",
+  "files": [
+    "support/upl_case02_actual_r1.cpp",
+    "notes/upl_case02_actual_r1.json"
+  ],
+  "reuse": {
+    "directly_included_author": "support/upl_cpu_public_native_r1.cpp,22469B,SHA256 9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38; main renamed,one AppInfo. Only neutral declarations/Need/Finite/Close/fs are reused. Its wave constants,Load/Read/26-column exporter/Half and retained main are never called.",
+    "other_includes": [
+      "JSphCpuSingle.h",
+      "JSphCfgRun.h",
+      "JDsFixedDt.h",
+      "JXml.h",
+      "JLog2.h"
+    ],
+    "production": "Actual JSphCpuSingle::Run performs its normal LoadConfig/LoadCaseParticles/ConfigDomain/InitRunCpu/SaveData/ComputeStep_Sym loop. The class adds only constructor flags and a post-Run Finish; no virtual hook,force,ComputeStep,position/velocity/stress/pressure/J reset or independent integration.",
+    "source_at_authoring": "Root's current JSphCpu.cpp private loaded-column patch,including PosPrec-based predictor drained predicate; parent will bind the successful fresh upl_case02_cpu_DebugCPU_r2.build.json and its85 non-main CPU objects separately. No build/run authorization is conferred here."
+  },
+  "retained_geometry": {
+    "recommended_prefix": "outputs/symc_1d_short_r1_cpu_old/symc_1d_short_r1_cpu_old",
+    "initial_BI4": {
+      "bytes": 47184,
+      "sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+    },
+    "runtime_header_XML": {
+      "bytes": 13660,
+      "sha256": "06ea556c3555ad86d53491984897120119596bc90f209c0545196a4f3beced9c"
+    },
+    "normals_NBI4": {
+      "bytes": 1479,
+      "sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+    },
+    "lineage": "logs/symc_1d_short_r1_cpu_old.completion.json records actual owned exit0; its receipt passed151 native frames under the old u-pw physics. These are provenance/input controls,not the new dynamic model's acceptance. The original prefix/XML/BI4/normal sidecar/output remain unchanged.",
+    "counts": "1040 unique GenCase-native particles: fixed IDs0..39,soil IDs40..1039. dp.01,h.018,width.1,height1,y0,initial native soil10x100 grid. The40 fixed points form10 columns by4 bottom layers z=-.035,-.025,-.015,-.005; all generated normals point+Z. There are no original side/top wall particles and no periodic images in this40 count.",
+    "normals": "The generated vectors point from fixed positions to z0 with lengths.035/.025/.015/.005. Fresh ConfigBoundNormals multiplies them by2; runtime B is the full mirror displacement,wall=pos+B/2 nearz0 and sample=pos+B inside soil. X periodic ghosts are later made by the real owner lifecycle. Formal root Normals.vtk is byte-identical SHA5451e5e2fea79a01cffea5a92cd4f49f90876ef06b7dd8760d0d9940d65bb16a,but the formal-root BI4 has a different whole-file hash and is not relabelled as the chosen seed.",
+    "future_prepare_only": "Parent must create fresh labelled XML and copy the unchanged initial BI4 plus matching-basename Normals.nbi4. No GenCase is needed. This author creates/copies no input. The runtime validator checks values/header,not SHA; all exact input/normal/header ownership hashes belong to the later root wrapper."
+  },
+  "candidate_physics": {
+    "private_constructor": "PorosityObserver=PorosityFeedback=DynamicPorePressure=DynamicPoreWall=true; DynamicPoreConductivity=false; private Ck0. Runtime public master/model/Ck must all be explicit0. No public/GPU guard is opened.",
+    "material": "Retained XML E2e6,nu.3,phi33,coh1e5,dlt0,n0.3,rho02100,rhow1000,Kw2e8,k1e-4 m/s. Actualfloat K1666666.75,G769230.8125,n0=float(.3),k=float(1e-4),MassFluid=MassBound=float(.21). V0 uses actual double-promoted MassFluid/rho0,not a falsely bit-exact dp^2 identity.",
+    "load_drain": "Zero Gravity in both casedef and execution.constants. Keep TopKernelBand q010000Pa,ramp.01s,Drainage1/start.01/FixedGrid1/InitNone0. Bottom is one stationary upward FreeSlip3 plane; horizontal X periodicity only.",
+    "deliberate_differences_from_formal": "Fresh runtime must set SlipMode3,Visco0,SoilHourglassXi0,SoilBoundaryDerivativeSPR0,SoilDamping0 while keeping corrected pair compression/stress gradients,artificial-viscosity treatment1,DDT/shifting/artificialstress/Shepard OFF. This plus dynamic J/storage/inertia/Darcy/wall closure is NOT the old formal SlipMode1/HG.1/SPR1/Visco.1/damping.04 physics. The old formal data are not a same-physics accuracy truth.",
+    "scopes_rejected": "Nonzero gravity,variablek,NoPenetration,moving/floating/inout/accinput/softening/DEM/damping or relaxation zones,unsupported auxiliary physics,new initialize fields,restart,clock CLI overrides and existing output directories."
+  },
+  "CLI": {
+    "syntax": "upl_case02_actual_r1.exe --solver smoke|coarse|half -cpu -ompthreads:1 -stable -mdbc_freeslip PREFIX NEW_OUT -dirdataout data -svres -nsteps:N",
+    "smoke": "dt2.5e-6s,TimeMax5e-6,TimeOut2.5e-6,N=2; exactly3 saved PARTs required by Finish.",
+    "coarse": "dt2.5e-6s,TimeMax.0125,N=5000; separately root-admitted only,not automatically launched after smoke.",
+    "half": "dt1.25e-6s,TimeMax.0125,N=10000; separately root-admitted only,not automatically launched after coarse.",
+    "decimal_clock": "The existing explicit -nsteps limit is required and checked against the window. Original Run uses while(TimeStep<TimeMax):binary64 accumulation gives coarse end .01250000000000116 and half .012499999999999241 after the planned counts; without the existing step limit half would perform an unintended10001st step. No time snapping/interpolation or integrator change is introduced. Finish requires exactNstep/lockeddt and abs(actual_end-planned_end)<=1e-14.",
+    "outputs": "Only smoke TimeOut is fixed here. Full output cadence/special timeout around.01s is parent-owned and not pre-assumed to produce501 frames or pairwise bit-exact timestamps. Actual saved PART inventory/time/Step/dterror must be independently decoded afterward. The ordinary-mdbc CLI must not be used to override FreeSlip3 back toVel0."
+  },
+  "finish": {
+    "scope": "Uses only live persistent arrays after Run. Unique normal1040 ID map accepts actual periodic copies without miscounting them as new natives. Checks fixed40/soil1000 classifications,one-upward stationary FreeSlip bottom,finite elastic soil,p0=0,saturated single-J n/V/rho ledger,no exclusions,time/counts and constant-law cache0.",
+    "released": "Checks all predictor history pointers plus Ace/Ar/BoundDerivativeVel/top-band raw scratch areNULL. Never dereferences released force arrays or reads rate scratch.",
+    "live_final_csv": "1000 soil rows,id,J,n,theta,ascending actual native IDs40..1039.",
+    "actual_complete_json": "passed means only the declared actual Run and final-state checks completed. Includes actual/planned time,steps,dt,saved PART count,final ledger extrema/solid volume/mixture mass and load descriptions. all_saved_native_fields_reviewed=false,independent_half_performed=false,physical_acceptance=false.",
+    "load_resultant": "Record sum(rho(J_final)*V(J_final)*HydroMechLoadAce_last_corrector) and the reference MassFluid-weighted sum over NORMAL soil only. LoadAce is persistent,but it belongs to the last corrector force while J belongs to the final full endpoint. This is descriptive reweighting,NOT a same-force-stage resultant/traction proof; no new force is called to manufacture one.",
+    "event_semantics": "Keep production's existing event ordering: the native state saved at tD is pre-open; the next actual force at the event's start applies drainage. The completion records this declared semantics,not a claim that an independent all-frame event audit has already run."
+  },
+  "remaining_required_tests": [
+    "Parent full source/note review,then separately authorized helper build and Debug two-step Run/native read.",
+    "A same-candidate legacy OFF control must turn OFF the same auxiliary options and use the same FreeSlip geometry; old formal outputs are not that control.",
+    "Root-owned coarse/half true native decoding and independent pressureRMS<=5Pa/material displacement max<=.005mm,with actual IDs/times and no interpolation.",
+    "Independent event tD pre-open/post-open p/pdot/periodic ownership checks,load/reaction/face/current-step checks and open-system work/storage accounting as required before any longer admission.",
+    "Do not transplant weak-wave J<=1e-4,CFL<=.01,normalized p/v/u1e-4 or closed-wave energy/E0<=1.1 gates into this loaded column. Production necessary current-step/domain guards remain unchanged."
+  ],
+  "production_changed_by_author": false,
+  "input_prepared": false,
+  "built_or_executed": false,
+  "physical_acceptance": false
+}

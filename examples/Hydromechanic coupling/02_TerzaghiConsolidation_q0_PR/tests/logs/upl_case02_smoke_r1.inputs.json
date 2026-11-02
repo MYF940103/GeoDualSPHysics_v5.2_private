@@ -1,0 +1,111 @@
+{
+    "stage":  "upl_case02_smoke_inputs_r1",
+    "prepared":  true,
+    "source_seed":  [
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old_Normals.nbi4",
+                            "bytes":  1479,
+                            "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old.bi4",
+                            "bytes":  47184,
+                            "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\symc_1d_short_r1_cpu_old\\symc_1d_short_r1_cpu_old.xml",
+                            "bytes":  13660,
+                            "sha256":  "06ea556c3555ad86d53491984897120119596bc90f209c0545196a4f3beced9c"
+                        }
+                    ],
+    "script":  {
+                   "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_case02_smoke_inputs_r1.ps1",
+                   "bytes":  4061,
+                   "sha256":  "c7eae27d5678e62f816f2b1c20714a7da915847fbba7af8817e3b1060b548447"
+               },
+    "parameter_changes":  [
+                              {
+                                  "key":  "SlipMode",
+                                  "old":  "1",
+                                  "value":  "3"
+                              },
+                              {
+                                  "key":  "Visco",
+                                  "old":  "0.1",
+                                  "value":  "0"
+                              },
+                              {
+                                  "key":  "SoilHourglassXi",
+                                  "old":  "0.1",
+                                  "value":  "0"
+                              },
+                              {
+                                  "key":  "SoilBoundaryDerivativeSPR",
+                                  "old":  "1",
+                                  "value":  "0"
+                              },
+                              {
+                                  "key":  "SoilDamping",
+                                  "old":  "1",
+                                  "value":  "0"
+                              },
+                              {
+                                  "key":  "DtIni",
+                                  "old":  "0.00001",
+                                  "value":  "0.0000025"
+                              },
+                              {
+                                  "key":  "DtFixed",
+                                  "old":  "0.00001",
+                                  "value":  "0.0000025"
+                              },
+                              {
+                                  "key":  "TimeMax",
+                                  "old":  "0.15",
+                                  "value":  "0.000005"
+                              },
+                              {
+                                  "key":  "TimeOut",
+                                  "old":  "0.001",
+                                  "value":  "0.0000025"
+                              }
+                          ],
+    "configuration":  {
+                          "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\configs\\upl_case02_smoke_r1.xml",
+                          "bytes":  14235,
+                          "sha256":  "91361a48145bc12104484081172631dd3dde7667369a829ec733366139ab3336"
+                      },
+    "runtime":  {
+                    "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_smoke_r1_seed\\upl_case02_smoke_r1.xml",
+                    "bytes":  14235,
+                    "sha256":  "91361a48145bc12104484081172631dd3dde7667369a829ec733366139ab3336"
+                },
+    "initial_BI4":  {
+                        "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_smoke_r1_seed\\upl_case02_smoke_r1.bi4",
+                        "bytes":  47184,
+                        "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                    },
+    "normals":  {
+                    "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_smoke_r1_seed\\upl_case02_smoke_r1_Normals.nbi4",
+                    "bytes":  1479,
+                    "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                },
+    "required_CLI":  [
+                         "-cpu",
+                         "-ompthreads:1",
+                         "-mdbc_freeslip",
+                         "-nsteps:2"
+                     ],
+    "dt_s":  2.5E-06,
+    "end_s":  5E-06,
+    "steps":  2,
+    "expected_frames":  3,
+    "original_soil":  1000,
+    "original_fixed":  40,
+    "new_GenCase_run":  false,
+    "physical_fields_modified":  false,
+    "differences_from_formal":  "FreeSlip3; HG/SPR/artificial viscosity/soil damping OFF; private dynamic closure. This is not the accepted formal setting.",
+    "full_or_half_job_admitted":  false,
+    "solver_started":  false,
+    "physical_acceptance":  false
+}

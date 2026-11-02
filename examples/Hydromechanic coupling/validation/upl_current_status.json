@@ -1,9 +1,9 @@
 {
-  "date": "2026-11-02",
+  "date": "2026-11-03",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Limited canonical CPU entry and private GPU constant/evolving-k periodic and opposing static FreeSlip-wall short Runs reviewed; public GPU entry and physical-model release remain held",
-  "user_entry": "HydroMechDynamicSeepage defaults false and preserves original u-pw. Explicit true atomically enables the already bounded CPU J/porosity/volume/inertia/dynamic-Darcy branch; currently fresh CPU2D zero-gravity elastic periodic or opposing static FreeSlip planes only. Old GPU executables ignore new keys; GPU public mode remains unaccepted.",
+  "status": "Bounded private CPU loaded-column closed-face repair and .0125s actual half verified; longer transient review next. Historical stage entries below retain their original scope; no physical-model release.",
+  "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. The bounded CPU entry is verified; new isolated GPU wiring maps explicit true to the same complete branch but remains unaccepted pending native regression/output/rejection checks. Only fresh2D zero-gravity elastic periodic or opposing static FreeSlip planes are candidates. Old GPU executables ignore new keys; canonical/server programs unchanged.",
   "implemented": [
     "One double J state with n, current integration volume and mixture inertia derived consistently; existing pressure and pressure-rate storage remain float.",
     "CPU post-force pressure rate includes corrected pressure diffusion and the same-stage skeleton-acceleration Darcy term; the experimental public master enables the complete branch, not separately exposed partial flags.",
@@ -236,12 +236,37 @@
     "physical_acceptance": false,
     "public_GPU_dynamic_accepted": false
   },
-  "next_order": [
+  "public_GPU_wiring_candidate": {
+    "base_checkpoint": "b499bc1fc5d5fb37d590563f8aba189494c0df3c",
+    "status": "minimal_four_file_mapping_and_output_candidate_pending_build_and_native_verification",
+    "plan": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_gpu_public_plan_r1.md",
+    "source_files": ["src/source/JSph.h", "src/source/JSph.cpp", "src/source/JSphGpu.cpp", "src/source/JSphGpuSingle.cpp"],
+    "scope": "Reuse shared default-OFF master and existing private model/constant-or-smooth law, no kernel/equation/integrator/CPU physics changes. Retain every existing bounded material/geometry/necessary-step/restart restriction.",
+    "output": "ON-only typed metadata, actual downloaded/compacted PosDiv, same-saved-J derived V/rho/k and nonphysical fixed n/V/rho/k zero markers; private diagnostic output remains unchanged.",
+    "required": "Default CPU Debug, isolated authoritative GPU D/R Rebuild; actual mDBC OFF151frames exact; public/private same-GPU common native fields exact; extra output separately verified, original scientific gates retained; unsupported inputs and PART rejected. No canonical/server installation.",
+    "public_GPU_dynamic_accepted": false,
+    "physical_acceptance": false
+  },
+  "CPU_loaded_column_closed_face_review": {
+    "base_commit": "b6cd3400222a9a7c4917bead9ef2872fbb1cb91d",
+    "review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_case02_flux_root_review_r1.json",
+    "source": "Current JSphCpu.cpp raw EF184193; private g0 constant-k FreeSlip bottom/X-periodic column only. Default-OFF u-pw21-frame original15/1040-ID/clock prefix exact.",
+    "result": "Measured closed-top unstable pole removed in the initial operator; conditional affine/normal guards and same-force-stage manufactured band resultant passed. True .0125s coarse/half519-frame native gates passed:2.10253Pa /1.91934e-6mm, original thresholds unchanged.",
+    "held": "Only2.5ms post-opening observed; pressure/stress/J dynamic overshoot is not theory acceptance. No GPU/public loaded-column/formal/server admission. Failed old trajectories remain rejected.",
+    "physical_acceptance": false
+  },
+  "historical_next_order_before_loaded_column_review": [
     "Selectively back up verified private GPU wall code/evidence locally/remotely; preserve all raw results and failed attempts. Raw programs/BI4 and large pointwise audits are local hash-bound evidence, not cloud Git backup.",
     "Then bounded public GPU master/model/Ck wiring and output contract, retaining default-OFF u-pw. Add an actual retained mDBC default-OFF native regression, parser/unsupported-input/PART rejection, same-physics CPU/private-GPU and independent half checks before accepting the new entry. No independent k history.",
     "Validate load/drainage/gravity and actual wall acceleration/pressure-flux conditions before admitting physical consolidation/Cryer/mixed-slip Lian. Current short CPU/native tests are not general boundary acceptance.",
     "Keep finite-h truncation and fixed-neighbor consistency floor separate from tiny time-step errors; no TPI/plasticity/general moving or curved-wall expansion during this bounded port."
   ],
-  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, public GPU or server-package acceptance follows from the bounded CPU/private-GPU tests.",
+  "next_order": [
+    "Verify selective local/remote backup of the bounded CPU closed-face code/evidence, retaining all raw/failed data.",
+    "Prepare fresh .025s same-physics CPU coarse/half with exact original519-frame prefix and50us later output. Review actual clocks, original5Pa/.005mm, drain/ledger/natural-step guards and post-opening transient decay.",
+    "Then synchronize the entire verified loaded-column boundary/load/drain contract to GPU, not gpcorr alone; maintain old OFF/periodic/wall/gravity regressions and unsupported public guards.",
+    "Only then admit longer consolidation/Cryer/Lian comparisons. Preserve finite-h errors separately; do not introduce TPI/plasticity/general walls just to bypass this compatibility work."
+  ],
+  "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. No general boundary, plasticity, full-cycle, exact restart, loaded-column public/GPU or server-package acceptance follows from the bounded current tests.",
   "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup."
 }

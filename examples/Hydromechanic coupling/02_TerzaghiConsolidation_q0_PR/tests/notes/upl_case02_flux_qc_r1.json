@@ -1,0 +1,20 @@
+{
+  "stage": "upl_case02_flux_qc_r1",
+  "status": "author_only_not_executed",
+  "purpose": "Thin pure-offline candidate smoke/defaultOFF/coarse/half QC reusing the immutable original case02 loader and drainage/step/identity routines; no old loader copy or monkeypatch.",
+  "files": ["support/upl_case02_flux_qc_r1.py", "notes/upl_case02_flux_qc_r1.json"],
+  "dependency": "support/upl_case02_qc_r1.py SHA0ed07dd825c4209bb580bef6af821a415112bc6d63c7502cf0ea4e50fa401c96 and notes/upl_case02_qc_r1.json SHA15b116e91c74dcde2d6eeefbb7492fad5b9efb3377690289d0abe1db67fee810 are checked before import,then bound with both new author files in the reused VERIFIED cache. Import does not call the old main. No old function/global is reassigned or cleared.",
+  "command_after_root_review": "D:/anaconda3/python.exe -B tests/support/upl_case02_flux_qc_r1.py --mode smoke|off|coarse|half",
+  "jobs": "load_job accepts unchanged schema with jobstrings flux_smoke,flux_legacy_off,flux_short_coarse,flux_short_half. Old legacy_control151 remains the sole retained defaultOFF control; its original native check has no current-source-original paths in its flat bindings. No old solver/reader is rerun by this script.",
+  "loader_contract": "Reuse original load_job for passed direct typed owned reader/solver evidence,flat Entry hashes,1040IDs/40fixed/1000soil,original15typed payload,clock28(actualtime/Step/lockedDt/signeddterror),private3J versus OFF absence,private26 column21 actualExcessPorePress,finite/elastic/no-loss/derived ledger and last_poro/live_final wholebyte identity. Reader kindreader/ReleaseCPU and exact actual reader program are required; either old retained structural reader or newly linked flux reader is allowed by that existing contract. Never assert that a structural reader's historical build is the new candidate solver build.",
+  "modes": {
+    "smoke": "flux_smoke3frames,dt2.5us,2steps; original3000soil+120fixed ledger checks and wholebyte live/native final. Target logs/upl_case02_flux_smoke_r1.qc.json.",
+    "off": "flux_legacy_off21frames dt1e-5 versus original legacy_control151. Separate sample headers; every21*166408B original15 payload and21*28B actual clock prefix byte-exact,all1040 including every fixed Rhop; native/fixed ID CSVs byte-exact,no field masks. Target logs/upl_case02_flux_legacy_off_r1.exact.json.",
+    "coarse": "flux_short_coarse519frames dt2.5us and planned5000steps. Original drain verifies coarse completed steps0:10:3990;3991:1:4010;4020:10:5000,history and native FSType2/3 p0 at every completedstep>4000,with nonempty active receivers. Does not claim half/force-stage accuracy. Target logs/upl_case02_flux_short_coarse_r1.qc.json provides the separate half admission prerequisite.",
+    "half": "Require passed unchanged coarse QC/nonempty-drain record,then independently load current coarse and half519frames(dt2.5/1.25us,5000/10000steps). Original drain checks half exactly twice saved completed steps. Native/fixed IDs and initial complete26bits exact; all519 actual-time differences<=1e-14s without snapping/interpolation; pressureRMS<=5Pa and fullXYZ maximum material displacement difference<=.005mm. All519 histories retained; other26-column and velocity differences descriptive. Target logs/upl_case02_flux_short_r1.half.json."
+  },
+  "ownership": "One explicit offline mode per invocation. Existing output protected by exclusive-create. Exceptions create passedfalse fresh QC metadata,not an automatic program retry. All unique consumed Entry hashes are rechecked after calculations; old results/source/notes are untouched.",
+  "limits": "No compiler/helper/native reader/solver/subprocess/Git,physical input preparation or new decoder. No normalized-wave,energy,J-wave-smallness,new-field/native-VrhoK or force-stage load/flux claim. A passed single-window or half record does not prove physical theory/continuum accuracy,all-stage boundary correctness,public/GPU/formal admission or long-time stability.",
+  "physical_acceptance": false,
+  "production_changes": false
+}

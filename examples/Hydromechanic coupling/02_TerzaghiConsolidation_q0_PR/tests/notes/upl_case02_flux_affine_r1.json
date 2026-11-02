@@ -1,0 +1,100 @@
+{
+  "stage": "upl_case02_flux_affine_r1",
+  "status": "author_only_not_built_or_run",
+  "purpose": "Conditional manufactured action of the private CPU closed-top gradient substitution; not a mechanical trajectory, measured face flux, conservation or stability proof.",
+  "author_files": [
+    "support/upl_case02_flux_affine_r1.cpp",
+    "notes/upl_case02_flux_affine_r1.json"
+  ],
+  "cli": "--input EXISTING_CASE02_PRIVATE_XML --out FRESH_DIRECTORY",
+  "dependency": {
+    "direct_include": "support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "use": "One renamed main/one AppInfo; neutral declarations only. Do not invoke its wave reader or retained main. Existing project headers and libraries, no new library."
+  },
+  "input": {
+    "scope": "Unchanged existing1040-native case02 seed:40fixed bottom+1000soil, dp.01,width.1,height1,Xperiodic,g0,FreeSlip3; actual prepared private master0 runtime, constant float1e-4, original float n0=.3/Mass.21/rho2100/rhow1000/Kw2e8. TopKernelBand q0=10000/ramp.01 and drainage start.01 retained, but audit stays t0 with load0/drain closed. No viscosity/HG/SPR/damping/DDT/Shifting/Shepard/softening.",
+    "original_BI4": "outputs/symc_1d_short_r1_cpu_old/symc_1d_short_r1_cpu_old.bi4",
+    "original_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normal_SHA256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "binding": "Future build/caller must bind exact input XML/BI4/Normals, current source/objects/program/runtime and owned exit. CPP does not make independent SHA/owned-call claims."
+  },
+  "lifecycle": "Set the four private flags before actual LoadConfig->LoadCaseParticles->VisuConfig->ConfigDomain->ConfigRunMode->InitRunCpu->FreePartsInit->RunCellDivide(true). One real Interaction_Forces(SymPredictor) at natural rest must yield strict soil Ace/theta/pdot0, actual C and initial10 top FSType2/3. All manufactured complete-rate calls occur before PosInteraction_Forces releases live scratch. No Run/ComputeStep/PreCorr/SaveData, no time or history advance.",
+  "cases": [
+    {
+      "field_case": 0,
+      "name": "compatible_normal",
+      "p_Pa": "2000+1000*z, actual float storage",
+      "native_Ace_m_s2": [
+        0,
+        0,
+        -1
+      ],
+      "condition": "gp_z=1000 and rho_w Ace_z=-1000 at ideal upper/top receivers"
+    },
+    {
+      "field_case": 1,
+      "name": "incompatible_normal",
+      "p_Pa": "2000+1000*z, actual float storage",
+      "native_Ace_m_s2": [
+        0,
+        0,
+        1
+      ],
+      "condition": "Closed-top correction must be nonempty against100 original old/new rate budgets"
+    },
+    {
+      "field_case": 2,
+      "name": "tangential",
+      "p_Pa": 2000,
+      "native_Ace_m_s2": [
+        1,
+        0,
+        0
+      ],
+      "condition": "Ideal upper/top gradient0; no spurious normal substitution outside original budget"
+    }
+  ],
+  "wall_and_periodic": "Manufacture p/J1/theta0 explicitly at actual fluid slots, including X images (same z); this is an input assignment, not a pressure-copy proof. Invoke actual wall-state MLS and wall-C reconstruction, never hand-write bottom p/J/sigma/Ace. Assign Ace only normal soil owners; each real complete-rate call performs its production periodic Ace/theta extension, wall acceleration reconstruction and rate extension. Verify periodic fluid J/C/Ace/theta/rate owner bytes; no claim about uninitialized ghost plastic/load fields.",
+  "reference": {
+    "support": "Independent O(Np^2) all-slot loop for all1000 normal soil receivers, actual double positions, support/ALMOSTZERO, float Wendland factor, current actual C and same-stage wall fields. No production neighbor table, fitted support or analytic bottom replacement.",
+    "formula": "Vj=(MassFluid/rho0)*Jj; w=Vj*d dot((Ci+Cj)gradW)/(r2+Eta2); Lp=sum(w*(pi-pj)); lx=sum(w*d); gp=-sum(Vj*(pi-pj)*Ci gradW); DA=sum(Vj*(Aj-Ai) dot Ci gradW). For actual surface mask, r=N dot(gp+rho_w Ai)/(N dot N), gpcorr=gp-N*r. New=B[-theta+k/gamma*(Lp-gpcorr dot lx+rho_w DA)], old uses gp. B=Kw/n(J), gamma=rho_w*9.80665.",
+    "budget": "For every row keep the prior64*FLT_EPS raw absolute-term envelope +256*DBL_EPS*max(1,abs(B*theta))+1e-6 Pa/s. Absolute gp propagation includes projection: agpcorr=agp+abs(N)*[abs(N) dot(agp+rho_w abs(Ai))/(N dot N)]. Do not shrink the raw bound on a zero-result field. Old action retains its own unprojected raw budget.",
+    "gates": "All actual rates finite and within new raw budget of independent reference. Correction identity new-old=B*k/gamma*r*(N dot lx) uses combined old/new raw envelope. Upper500 soil z>.5 require independently assembled ideal gp; compatible/tangential rates and unmasked old action agree within original budgets. Actual bottom remains a conditional reference check only; no global affine/bottom-zero claim.",
+    "invariance": "Invoke actual completeRate with native soil FSNormal factors1,-1,+2. Compare actual rates using max(original baseline budget,current budget), not a new0ULP requirement. Each incompatible variant requires its maximum actual-old correction ratio>100 using max(new budget,old budget). Constructed projected normal-gradient0 is only algebraic, not observed face q_n.",
+    "norm_guard": "Reuse the already passed last positive tangential/scale2 state. Change just one actual top normal to0, then NaN, in separate restored probes. Accept only JException with method ::ComputeDynamicPorePressureRateCpu) and exact declared nonfinite-rate/conductivity-gradient message; any other exception propagates. No positive result is inferred from arbitrary throws."
+  },
+  "rollback": "Capture original live state after the natural real force. memcpy snapshots cover current Np Pos/Code/ID/Dcell/Vel/sigma/p/p0/rate/J/theta/C/FSType/FSNormal/loadAce/Ace/Arc/Rsigma/BoundDerivativeVel/TangenVel/BoundMode, plus conductivity-speed cache. Restore exact bytes between fields and guard probes and finally before PosInteraction_Forces; check unchanged time/Nstep/locked dt/LastDt/FixedDt error/no predictor histories. This is a named-block claim, not whole-object/pool/statistics byte identity. Raw unused scratch object bytes may be preserved but are not numerically interpreted.",
+  "counts": {
+    "actual_force_calls": 1,
+    "field_cases": 3,
+    "normal_variants": 3,
+    "positive_complete_rate_calls": 9,
+    "expected_exact_guard_calls": 2,
+    "total_explicit_complete_rate_calls": 11,
+    "rate_rows": 9000,
+    "summary_rows": 9,
+    "guard_rows": 2,
+    "upper_affine_receivers_each": 500,
+    "top_receivers_each": 10,
+    "completed_physical_steps": 0
+  },
+  "outputs": [
+    "Run.out",
+    "rates.csv",
+    "summary.csv",
+    "guards.csv",
+    "completion.json"
+  ],
+  "fresh_protection": "Input must exist; output directory must not. Failure retains partial output. No automatic rerun or downstream admission.",
+  "held": [
+    "No active drainage event/Dirichlet opening or nonzero top-load force-stage audit at t0",
+    "No saturated-domain or elastic/RH guards bypassed; no alternate constitutive law",
+    "No actual discrete face flux, pair conservation, full stability or formal-case acceptance",
+    "No variable-k loaded column/public/GPU/3D/general wall admission",
+    "Original coarse and dt-only half failures remain false and untouched"
+  ],
+  "production_changes": false,
+  "physical_acceptance": false,
+  "author_executed_programs": false
+}

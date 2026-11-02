@@ -1,0 +1,87 @@
+{
+  "stage": "upl_case02_operator_r1",
+  "status": "author_only_no_build_or_run",
+  "purpose": "Measure the actual production CPU frozen initial force/complete-rate Jacobian before further loaded case02 integration; manufactured basis values are not an evolved or validated physical trajectory.",
+  "author_files": [
+    "support/upl_case02_operator_r1.cpp",
+    "notes/upl_case02_operator_r1.json"
+  ],
+  "cli": [
+    "--smoke --input EXISTING_CASE02_PRIVATE_XML --out FRESH_DIRECTORY",
+    "--matrix --input EXISTING_CASE02_PRIVATE_XML --out FRESH_DIRECTORY"
+  ],
+  "dependency": {
+    "direct_include": "support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "usage": "One renamed main / one AppInfo; only declarations/utilities, not its reader/wave gates or old main. Existing project headers/libraries only."
+  },
+  "input_scope": "Use the unchanged original1040-particle case02 seed/runtime already sealed by case02 preparation (1000soil/40fixed, dp.01, height1,width.1, pureXperiodic, upward FreeSlip bottom, gravity0). No GenCase or new geometry. Future caller must hash-bind actual runtime+BI4+Normals and current build/program; this CPP does not claim source SHA or owned exit verification.",
+  "model": {
+    "public_master": false,
+    "private_flags": [
+      "PorosityObserver",
+      "PorosityFeedback",
+      "DynamicPorePressure",
+      "DynamicPoreWall"
+    ],
+    "conductivity": "constant float1e-4 m/s; no Ck law",
+    "material": "Actual float n0=.3, MassFluid=MassBound=.21, rho0=2100, rhow=1000, Kw2e8, K1666666.75, G769230.8125; PoreDtSafety1. No viscosity/HG/SPR/damping/shifting/DDT/artificial stress/Shepard/softening.",
+    "time": "TimeStep=Nstep=0 throughout; actual runtime dt retained, no integration or save call. q(t0)=0 and future drain at.01 inactive."
+  },
+  "lifecycle": {
+    "initialization": "Constructor sets private flags before LoadConfig. AppName/Log/CfgRun; Timersc.Config(false); LoadConfig; LoadCaseParticles; VisuConfig; ConfigDomain; ConfigRunMode; InitRunCpu; FreePartsInit; RunCellDivide(true). Same proven path as upl_porosity_operator_r1.cpp:69, without Run.",
+    "source_locations": "JSphCpuSingle.cpp ConfigDomain/RunCellDivide623; Interaction_Forces750–815; JSphCpu.cpp completeRate4377–4458 and PostInteraction2038–2051.",
+    "each_probe": "Reset only normal soil v/sigma/p/p0/plastic/J/theta/rate to the declared basis with J1/rho0; true RunCellDivide(true) retires/regenerates periodic copies. Boundary J/p/sigma and derivative velocity are never manufactured: the actual force's wall MLS rebuilds them. Clearing derivative-output rate to0 defines all slots, not a boundary-pressure replacement.",
+    "actual_force": "Interaction_Forces(INTERSTEP_SymPredictor), download/read Ace.z/Rsigma.zz/PorePressRate/theta before PosInteraction_Forces. No direct substitute ct or copied formula.",
+    "checks": "Normal IDs identify40fixed/1000soil regardless Np/Npb periodic extension. Normal soil physical input/geometry bytes must remain unchanged by force; physical fixed positions/velocities remain fixed, but derived wall stress/p/J may legitimately change. Initial C and FSType must remain exact per normal soil ID; completed fluid periodic J/C/Ace/theta/rate must bit-match actual owners.",
+    "cleanup": "PosInteraction_Forces releases actual Ace/Arc/Rsigma/raw-band/derivative scratch after outputs copied. Clock, locked dt, LastDt, FixedDt error and absence of predictor histories checked throughout. Final normal soil basis reset tozero. No all-persistent-diagnostic/statistics or fixed-quadrature whole-object rollback claim."
+  },
+  "basis": {
+    "coordinate": "100 material z layers(index0..99),10 normal soil columns per layer. No position perturbation or J perturbation.",
+    "input_order": "columns0..99=vz layer0..99;100..199=sigma_zz layer0..99;200..299=p layer0..99.",
+    "amplitudes": "vz is actual double(float(.001))m/s; stress1Pa; pore pressure1Pa; both signs. Smoke also half of each actual amplitude (dyadic exact scaling).",
+    "stress_shape": "sigma_xx=sigma_yy=(lambda/M)*sigma_zz; lambda=actualK−2actualG/3, M=actualK+4actualG/3; shear0. No constitutive/integrator call is suppressed or overridden; force only evaluates its real stress rate.",
+    "smoke_sources": [
+      "vz layer99",
+      "sigma_zz layer99",
+      "p layer99",
+      "p layer0"
+    ],
+    "smoke_counts": "Strict zero state1 force +4sources*4signed/amplitude evaluations=17actual force calls,17explicit noAce rate calls,1700layer response rows. No matrix file or spectral conclusion.",
+    "matrix_counts": "Strict zero1 +300sources*2signs=601actual force calls,601explicit noAce rate calls,60100layer response rows. True central-difference projected Jacobian300x300, plus theta100x300. Matrix is a measured 1D projection, not a claim of all1040*3 eigenmodes.",
+    "matrix_output_order": "Rows0..99=mean az layer0..99;100..199=mean actual Rsigma_zz;200..299=mean complete pdot. Ten columns equally weighted, consistent layer projection, no smoothing or fitting."
+  },
+  "noAce_diagnostic": "After the full real force, preserve all defined Ace/rate and constant-law cache, set Ace scratch to0 and call real ComputeDynamicPorePressureRateCpu once. Copy that rate, then restore Ace/rate byte-exact and cache. This is an explicit frozen component decomposition, never a production fix. With J1: compression=−Kw/n0*mean(theta); pressure contribution=pdot_noAce−compression; acceleration contribution=pdot−pdot_noAce. Float complete-rate rounding remains visible, no native q claim.",
+  "arithmetic_probe_policy": {
+    "zero_source": "All normal soil AceXYZ/Rsigma6/pdot/theta strictly0 at manufactured zero state.",
+    "spreads": "For each channel, record per-layer mean and max−min across10columns, and global per-probe peak. Budget=64FLT_EPS*max(1,peak)+256DBL_EPS*max(1,peak), in the declared output units. No fitted limit or general error theorem.",
+    "oddness": "mean(+a)+mean(−a) checked against the same budget using both response peaks; all raw responses retained.",
+    "amplitude_linearity": "Smoke compares central derivatives at full and half amplitudes, using the same arithmetic envelope on max(1,abs derivative). Matrix only sign pairs, not an additional half-amplitude sweep.",
+    "interpretation": "A budget failure rejects arithmetic/projection reliability of this manufactured probe, not proof of physical or semidiscrete instability. Raw maxima/spreads and error ratios are retained; no pressure5Pa/half displacement/.01CFL/wave energy gate is altered."
+  },
+  "outputs": {
+    "all": [
+      "Run.out",
+      "responses.csv",
+      "linearity.csv",
+      "completion.json"
+    ],
+    "matrix_only": [
+      "jacobian.csv",
+      "theta_jacobian.csv",
+      "basis.csv"
+    ],
+    "responses": "One row per real force/output layer: call/source family/layer/actual amplitude; az,Rsigma_zz,pdot,theta,pdot_noAce means, column spreads, explicit global peak and arithmetic budget; compression/pressure/acceleration diagnostic terms and actual production wave/pore scales.",
+    "linearity": "One source-column row with raw amplitude and oddness/half-amplitude error ratios; responses retain explicit raw channel peaks/budgets and every layer, allowing direct reconstruction of each signed/half-amplitude check.",
+    "fresh": "Input XML/BI4 must exist and output directory must not; failure keeps partial output, no automatic rerun."
+  },
+  "held": [
+    "No Run/ComputeStep/PreCorr/constitutive return/SaveData/PARTrestart",
+    "No eigenvalue or integrator stability conclusion computed by this helper",
+    "No nonzero top-load spatial distribution, later time-source sampling or drainage switch audited at t0",
+    "No public/GPU/3D/generalwall/variable-k/formal-case admission",
+    "No reinterpretation of original coarse or dt-only diagnostic failures as passed"
+  ],
+  "physical_acceptance": false,
+  "production_changes": false
+}

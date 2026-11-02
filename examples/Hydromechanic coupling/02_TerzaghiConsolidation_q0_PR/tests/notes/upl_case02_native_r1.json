@@ -1,0 +1,82 @@
+{
+  "stage": "upl_case02_native_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "purpose": "Pure typed BI4 reader for separately owned case02 private CPU smoke/declared519-frame load-drain short windows and bounded default-OFF implementation controls. No JSph solver object,Run,ComputeStep,force,PART restart,physical state rewrite,plot or automatic follow-up.",
+  "files": [
+    "support/upl_case02_native_r1.cpp",
+    "notes/upl_case02_native_r1.json"
+  ],
+  "authored_include": "Only immutable support/upl_cpu_public_native_r1.cpp,22469B,SHA256 9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38,main renamed/one AppInfo. Reuse neutral Native/NativeArray/Sequence/Original15/Need/Finite/Close/fs declarations. Its retained main,public Load,Metadata,Physical,wave Read,Energy,Half and hardcoded wave material are never called. No new library/include path required.",
+  "CLI": {
+    "private_smoke": "--read DATA 3 2.5e-6 FRESH_REVIEW,unchanged original two-step/three-PART smoke.",
+    "legacy_OFF": "--read-off DATA PARTS 1e-5 FRESH_REVIEW,PARTS only3/21/151. Nominal old cadence.001s; actual accumulated timestamps/zero-basedSteps are retained,not forced to part*.001.",
+    "complete_directories": "Sequence checks the actual full directory count. To compare a fresh21-frame OFF solve to retained151-frame control,read the old directory with151,then root compares its first21 record payloads. Do not pretend the151 directory contains21 or copy a fake prefix solve.",
+    "fresh_protection": "Reject existing target before creating exports. A failed decode leaves partial evidence; there is no retry/solver call or overwritten completion.",
+    "private_short": "--read DATA 519 2.5e-6 FRESH_REVIEW (coarse) or --read DATA 519 1.25e-6 FRESH_REVIEW (half). Both require the exact predeclared completed-step list. completion window='short',grid='c'/'h';smoke remains window='smoke',grid='c'. This author extension does not admit a solver or reader call.",
+    "short_input_manifest": {
+      "path": "logs/upl_case02_short_r1.inputs.json",
+      "bytes": 24018,
+      "sha256": "7d610ee35a30d4de5da71e506551129406bbdc714d1c64842d7a642597dcf7d6",
+      "source": "Fully read before this author revision. New runtime/input ownership remains outer-wrapper responsibility;this reader hardcodes only its exact declared count/step/dt contract."
+    },
+    "short_completed_steps": "Coarse[0:10:3990;3991:1:4010;4020:10:5000],519frames. Half every listed coarse completed step multipliedby2:[0:20:7980;7982:2:8020;8040:20:10000]. Native Step0initial,otherwisecompleted_step-1."
+  },
+  "source_schema": {
+    "exact_current_condition": "JSphCpuSingle.cpp:1444-45/1476-99:PorosityObserver saves three double J/n/theta arrays; native PosDiv/currentV/currentrho/currentk only when HydroMechDynamicSeepage=true. JSph.cpp:2894-98 similarly emits four public PART metadata keys only for the public master. This private model0 run keeps master0.",
+    "private": "Exactly18 arrays=original15 plus PoroVolumeRatio/PoroPorosity/PoroThetaLastStage DatDouble,total1040 each. Four public metadata names must be absent at BOTH global/PART levels. Native PosDiv/PoroCurrentVolume/PoroMixtureDensity/PoroHydraulicConductivity must be absent; no false public bool assertion.",
+    "OFF": "Exactly original15 arrays. All three J arrays,PosDiv/V/rho/k arrays and all four public metadata names at both levels must be absent. OFF exports contain no fabricated or derived J/n/V/rho/k/theta/physical26.",
+    "independent_reader_scope": "One JPartDataBi4 API reader,not a second binary-format implementation. The reader cannot infer the private complete-rate flags,solver owned exit,current runtime/source/program SHA or all-step force telemetry from these saved arrays. Parent must bind those independent receipts.",
+    "original15_types": "Idp/FSType:uint;Posd/SigmaState_kk/SigmaState_ij:double3;Vel/Sigma_kk/Sigma_ij/FSNormal/HydroMechLoadAce:float3;Rhop/Kplastic/PorePress/PorePress0/ExcessPorePress:float. All actual typed arrays are finite;unique native IDs0..1039 sorted for export;SigmaState_ij is xy,yz,xz and the float display must equal the rounded true double state."
+  },
+  "geometry_and_initial": {
+    "counts": "1000soil IDs40..1039,40fixed IDs0..39,total1040. One-piece2D,y0,pure rectangularX periodic,width.1,dp.01,h=double(float.018),rho02100,MassFluid=MassBound=double(float.21),no exclusions/dynamicNp/reusedIDs/moving/floating.",
+    "rest": "Every initial native has zero velocity/p/p0/excess/true stress/plastic/load and legacyRhop2100. Soil decimal lattice10x100 atx=(ix+.5)dp,z=(iz+.5)dp;fixed10x4 atz=(-4..-1+.5)dp. Coordinate reconstruction uses only64DBL_EPS arithmetic allowance,not a field-accuracy budget. Each lattice point unique.",
+    "private_initial": "J1/theta0 for every native;soiln=double(float.3),fixedn0. All saved fixed positions remain byte-identical to their initial doubles,physical velocities0,legacyRhop2100 and private n/theta0 markers. Mirror fixedJ need only remain in its saturated domain after initialization.",
+    "initial_gate_limits": "Initial rest/lattice are checked,not bit equivalence of all initial fields to another run. The original15 typed export preserves every signed-zero/native bit for separate exact comparison.",
+    "legacy_OFF_fixed_Rhop": "Initial rest still requires Rhop==2100 exactly. On later legacy OFF frames,production ComputeSymplecticCorr updates fixed Rhop with only the RhopZero lower clamp;there is no dynamic wall-state reset. Thus OFF fixed Rhop must be>=2100 and retain the common finite/700..3000 bounds,fixed position/zero-velocity checks. This is the actual legacy mDBC storage lifecycle,not a new numerical tolerance. Private-3J fixed Rhop==2100 is unchanged. Every fixed Rhop native bit remains in Original15 and MUST participate in old/new exact comparison;none is masked."
+  },
+  "ledger": {
+    "constants": "N0=double(float.3),k0=double(float.0001),rho02100,rhow1000,Kw2e8. These expected hydromechanical constants are declared case assumptions,not invented native PART metadata; outer source/runtime hashes must prove them.",
+    "derived": "For soil,J>1-N0,n=1-(1-N0)/J,V0=actualPartMassFluid/actualPartRhop0,V=V0J,rho=1000+(2100-1000)/J,k=double(float1e-4). Native n relative mismatch<=5e-13 and abs((1-n_native)J-(1-N0))<=5e-13;all states finite/positive and elastic,p0zero.",
+    "ownership": "Only J/n/theta are native dynamic fields. V/rho/k are explicitly derived,never labelled actual saved native extras. PosDiv is unavailable and neither set0 as a value nor reconstructed.",
+    "no_wave_gates": "No absJ-1<=1e-4,CFL<=.01,normalized wave gate,closed energy/E0 ratio or positive initial energy. Full load/drain/face/pressure-rate/work/storage acceptance is outside this smoke reader."
+  },
+  "clock_and_dterror": {
+    "smoke": "Exactly3 files;actualTimes0,dt,dt+dt and savedSteps0,0,1;each typed DatDouble SymplecticDtPre exactlydt. Unchanged.",
+    "OFF": "Actual Step yieldscompletedSteps=Step+1 afterframe0. Repeated binary64 additions ofdt must reproduce native time exactly;nominalpart*.001 is only a withinone-dt cadence check. No interpolation/snap. Old retained PART20 is .020009999999999355/Step2000=2001completedsteps;forcing a new-nsteps2000 endpoint cannot be called its0ULP prefix.",
+    "signed": "Require PRESENT DatDouble dterror and finite signed<=1e-14 on each NONINITIAL saved interval. -DBL_MAX is an empty/reset interval sentinel:allowed onlyinitial,explicitlyrecorded,andnever included in noninitial min/max. Initial0 is also retained/excluded from that summary. Never use abs(dterror).",
+    "native_binary": "clock.bin headeruint[samples,28];eachrecord nativeTime(double8),nativeStep(uint4),actualSymplecticDtPre(double8),actualsigneddterror(double8),little-endianWindows. This is typed output,not float CSV reinterpretation;history.csv also prints precision17. No struct-padding bytes.",
+    "private_short": "For each exact declared completed-step entry,add the selected dt once per actual completed step since the preceding saved frame and require native actualTime EXACTLY that binary64 sum. Require exact zero-based savedStep and native lockedDt. No part*cadence assumption,snap,interpolation or all-times coarse-half bit identity:the prepared inputs predict max pairclockdifference1.9186041644303486e-15s. Coarse last5000 vs half10000;nominalend.0125,actual accumulated times retained."
+  },
+  "output_contract": {
+    "common": [
+      "original15.bin",
+      "clock.bin",
+      "native_ids.csv",
+      "fixed_ids.csv",
+      "history.csv",
+      "completion.json"
+    ],
+    "private_only": [
+      "physical.bin",
+      "columns.csv",
+      "ledger.csv",
+      "fixed_samples.csv",
+      "last_poro.csv"
+    ],
+    "original15": "headeruint[1040,15,samples];eachframe actualtime double8 thenOriginal15 native-type ID-sorted arrays,unchanged types/bytes. Recordpayload=8+1040*160=166408B. Differentsamples mean differentheaders:old151/new21 exact control compares first21 payloads and IDs/clocks,not wholefile SHA.",
+    "private_physical26": "headeruint[1000,26,samples],samples3or519;actualtime double8 then1000 ID-sorted26double rows. Explicit NEW schema—not the old wave26:0x,1y,2z,3vx,4vy,5vz,6PorePress,7PorePress0,8J,9theta,10sxx,11sxy,12sxz,13syy,14syz,15szz,16Kplastic,17FSType,18FSNormalx,19FSNormaly,20FSNormalz,21ACTUAL ExcessPorePress,22LoadAcex,23LoadAcey,24LoadAcez,25legacyRhop. columns.csv records this exact mapping. NoPosDiv placeholder.",
+    "private_CSV_counts": "Per private frame1000soil ledger rows and40fixed marker rows:smoke3000/120,short519000/20760. History3or519rows,including completed_step/post_open_by_completed_step/activeDrainCount. last_poro1000finalsoil rows id,J,n,theta atprecision17;reader itself does not compare root-owned live_final.",
+    "load_diagnostic": "history sums rho(J_saved)V(J_saved)*retainedLoadAce overnormalsoil only. The load originated at the last corrector force andJ is endpoint state,so this is descriptive reweighting,not a same-stage resultant/traction proof.",
+    "completion": "passed means only this pure decode and the declared per-frame native guards completed,not half/scientific/physical admission. Private counts3or519;OFF0dynamicarrays/0physicalcolumns. window smoke orshort plusgridc/h. Record all declared steps exact,post-open checks/counts and no drainage-nonempty acceptance claim. Ownedsolverexit/rawSHA/privateflags/force-stagecorrectness/half/physicalacceptance remainfalse/unprovenbyreader."
+  },
+  "production_changed": false,
+  "built_or_executed": false,
+  "physical_acceptance": false,
+  "drainage_event_guard": {
+    "pre_open": "Completed4000coarse/8000half is explicitly PRE-OPEN. No zero-pressure condition is imposed there;nonzero p is allowed. The native saved time can lie a few ulps to either side of nominal.01 and is not reclassified by a floating comparison to.01.",
+    "post_open": "Only completed_step>4000coarse/8000half:for each actual SOIL receiver whose native FSType is2(FreeSurface) OR3(Isolated),require actual float PorePress==0 strictly. Record activeDrainCount for each saved frame plus total checks/max count. Do not assume a top10 set or assert count nonempty before data are separately reviewed.",
+    "J_density": "These drained receiver checks do not force J,theta,legacyRhop or derivedrho constant/zero;all original finite/saturated/ledger/elastic guards continue for every native in every519 frames.",
+    "limitations": "This is saved-endpoint pressure enforcement only,not pdot/force-stage/periodic-ghost orface/work/mass proof. There is no after-result tolerance change and no new half/physical acceptance."
+  }
+}

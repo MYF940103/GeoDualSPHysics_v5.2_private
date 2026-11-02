@@ -1,0 +1,54 @@
+{
+  "stage": "upl_case02_flux_root_review_r1",
+  "date_local": "2026-11-03",
+  "status": "bounded_CPU_closed_loading_face_and_short_actual_half_verified_not_physical_release",
+  "base_commit": "b6cd3400222a9a7c4917bead9ef2872fbb1cb91d",
+  "CPU_source_raw_sha256": "ef18419340d3b716108bd15ac88c06d8c860b266b95be24d4f17587677b74964",
+  "production_files": {
+    "src/source/JSphCpu.cpp": [
+      "Private constant-k g0 one-bottom FreeSlip/X-periodic loaded-column admission; public XML entry remains restricted.",
+      "TopKernelBand retains the original q(t)*A0 target while its raw denominator uses current rho(J)*V(J). Feedback flexible-confinement acceleration uses current mixture inertia/volume.",
+      "Dynamic-only drained pressure/rate constraint in the force and pressure Pre/Corr paths; predictor mask uses the valid PosPrec. Projected native pressure is refreshed to periodic neighbours.",
+      "Before configured drainage opens, only actual free-surface Taylor-defect gradient uses gpcorr=gp-N*[N dot(gp+rho_w*Ace)]/(N dot N). Interior symC, acceleration divergence, theta/J and the time integrator are unchanged. Invalid closed normals reject."
+    ],
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml": "Synchronised candidate scope and limitations; no new XML parameter and no formal/public/GPU loaded-column release."
+  },
+  "preserved_failure": "Old private coarse and dt-only half both stopped near .001875s. Their native outputs, failed receipts and offline analyses remain unchanged; they are not accepted controls or completed half windows.",
+  "causal_evidence": {
+    "old_actual_frozen_leading_pole_per_s": [7641.395432, 40152.193987],
+    "candidate_actual_frozen_leading_pole_per_s": [-0.000012997500312244409, 0],
+    "actual_matrix_change": "Only eight coefficients of the top-layer pressure-rate row299 change; all other299 rows remain exact. This is a measured initial coupled operator, not a nonlinear stability proof.",
+    "reference": "Lian2021 page22 discusses free-surface affine-defect flux in a hydraulic-head setting. It motivates checking truncated support, but does not prove this acceleration-coupled closed-face condition."
+  },
+  "verification": {
+    "authoritative_builds": "Default CPU Debug and isolated CPU Release passed. Existing Debug third-party missing-PDB/deprecated-Gm warnings remain; canonical executables unchanged.",
+    "actual_frozen_components": "Debug17-force smoke and Release601-force matrix passed their original decomposition, symmetry, amplitude, geometry and scratch checks.",
+    "conditional_affine": "9000 actual-rate rows: maximum error/original propagated budget=.0010571073046079782; normal flip/scale difference=0; two exact zero/NaN normal rejections. Independent whole-support reference and actual wall/periodic closure retained.",
+    "default_OFF": "21 new frames versus retained151-frame prefix: all15 original typed arrays,1040 IDs and all28-byte native clocks/steps/dterror exact. No field mask.",
+    "actual_smoke": "True Debug Run completed two steps/three native frames and passed independent typed-reader/live-state checks.",
+    "actual_short": "Two fresh true Release Runs to .0125s,5000/10000steps,dt2.5/1.25us,519 frames each; all original native/elastic/ledger/clock/no-exclusion/necessary-step checks passed.",
+    "independent_half_pressure_RMS_max_Pa": 2.102528907336752,
+    "independent_half_material_XYZ_displacement_max_mm": 0.000001919333360708138,
+    "actual_half_time_discrepancy_max_s": 1.9186041644303486e-15,
+    "unchanged_half_limits": "All519 pressure RMS<=5Pa and maximum fullXYZ material displacement<=.005mm; actual paired-time difference<=1e-14s. No interpolation or metadata rewrite.",
+    "drainage": "Saved completed4000/8000 remains pre-open. All109 later saved frames have10 actual FSType2/3 drained native nodes, each p=0; J/theta are not frozen.",
+    "same_force_stage_load_component": "Four manufactured fresh force states,4000 native rows; measured rhoV*LoadAce and zero-internal-force rhoV*Ace both within fixed force-unit arithmetic budgets of retained float target and analytic qA0. Maximum error versus500N/m is1.5683116e-5N/m; two wrong-MassFluid integrals exceed239 original budgets. Not a complete actual-run force history.",
+    "analysis": "Both new history PNGs and matching1038-row CSV inspected. Independent review rehashed2507 unique bindings and recomputed126 key series per grid without mismatch."
+  },
+  "physical_observation": "The old rapid closed-top growth is absent through the tested window. After sudden drainage, real dynamic overshoot remains: pressure peak about12.97kPa, local J about.993485 and sigma_zz about-17.60kPa. The short window ends only2.5ms after opening and does not establish decay or quasi-static theory accuracy.",
+  "primary_receipts": [
+    "logs/upl_case02_flux_operator_review_r1.check.json",
+    "logs/upl_case02_flux_affine_check_r1.run.json",
+    "logs/upl_case02_flux_legacy_off_r1.exact.json",
+    "logs/upl_case02_flux_smoke_r1.qc.json",
+    "logs/upl_case02_flux_short_coarse_r1.qc.json",
+    "logs/upl_case02_flux_short_r1.half.json",
+    "logs/upl_case02_flux_short_physical_r1.check.json",
+    "logs/upl_case02_flux_load_check_r1.run.json"
+  ],
+  "next": "Selectively back up this bounded CPU stage locally/remotely, then fresh .025s same-physics coarse/half with original519 prefix and explicit769-frame schedule; review transient decay before GPU loaded-column synchronization/public or physical benchmark admission.",
+  "limits": "Conditional gradient substitution is not a measured discrete face flux or conservation proof. No variable-k load/drain, general boundary, long-time/theory/full-cycle, exact restart, public loaded-column, GPU loaded-column or server executable acceptance. Raw BI4/programs/object/source snapshots remain local hash-bound artifacts, not cloud Git backup.",
+  "physical_acceptance": false,
+  "formal_case_admission": false,
+  "canonical_programs_installed": false
+}

@@ -1,0 +1,48 @@
+{
+  "stage": "upl_case02_frozen_matrix_r1",
+  "status": "author_only_not_executed",
+  "purpose": "Persist an independent nominal-grid linearized diagnostic and a separate fit to retained failed-run CSVs; do not validate a new physical model or reclassify the failed run.",
+  "script": "tests/support/upl_case02_frozen_matrix_r1.py",
+  "proposed_command": "D:/anaconda3/python.exe -B tests/support/upl_case02_frozen_matrix_r1.py --out tests/logs/upl_case02_frozen_matrix_r1.check.json --csv-prefix tests/figures/upl_case02_frozen_matrix_r1",
+  "execution": "Only after root reads the complete source. No compiler, native solver, converter, reader, build, Git or old worker is invoked. All output targets must be fresh.",
+  "inputs": {
+    "XML": "tests/outputs/upl_case02_short_r1_seed/upl_case02_short_coarse_r1.xml",
+    "input_manifest": "tests/logs/upl_case02_short_r1.inputs.json",
+    "failed_owned_solver": "tests/logs/upl_case02_short_coarse_r1.run.json",
+    "export_receipt": "tests/logs/upl_case02_short_failure_r1.export.json",
+    "export_review": "tests/logs/upl_case02_short_failure_r1.review.json",
+    "CSV": "tests/outputs/upl_case02_short_failure_r1_export/native_0000.csv through native_0075.csv, excluding native_stats.csv",
+    "hash_scope": "Verify every consumed CSV against retained Entry hashes; bind retained metadata, input manifest and runtime XML; bind four explicitly frozen formula source files before and after analysis. Do not recursively represent every historic mutable metadata path as current or re-read the full raw BI4/build closure.",
+    "precision": "PartVTK text: p/v about seven significant digits, J/sigma about twelve. Header times are display/nominal diagnostic labels, not decoded binary TimeStep. Positions only establish the approximate initial ID-to-layer map; matrices use nominal decimal coordinates."
+  },
+  "model": {
+    "geometry": "100 soil layers z=(i+0.5)dp, ten x-periodic columns, four fixed bottom layers; dp and material read from exact retained runtime XML. Model the x-invariant subspace using horizontal offsets -3..3 at h/dp=1.8. No upper ghost is invented.",
+    "coefficients": "KernelH=float(XML h); bwen=float(-2.7852/double(KernelH)^3); awen=float(.557/double(KernelH)^2); KernelSize=float(2*KernelH), KernelSize2=float(KernelSize*KernelSize), Eta2=float((double(KernelH)*.1)^2). fac reproduces the CPU float sqrt/q/w/product sequence. V0=double(float(massfluid))/double(float(rhop0)); n0/Kw/k/material use production float conversions. K/G use float PR arithmetic; M is float(K+4.*G/3.) as actual elastic K4G3.",
+    "C": "Binary64 inverse of the initial 2x2 x-z moment sum -V0*d tensor gradW, using the FS double displacement and float kernel factor. These are independently reconstructed nominal C, not exported actual CorrMatc.",
+    "bottom": "Exact same-node nominal mirror: pressure/sigma_zz/C diagonal even, velocity_z/Ace_z odd; fixed slots -4..-1 refer to native layers 3..0. This uses the anchored mirror contract in the same-node nominal limit, not arbitrary MLS equivalence.",
+    "H": "a_i=sum_j V0/rho0*(t_i+t_j)*raw_float_gradW_z with t=sigma_zz-p. Pair arithmetic constants retain float displacement/gradient; binary64 matrix accumulation does not reproduce float per-pair accumulation.",
+    "Dtheta": "sum V0*(v_j-v_i)*(Ci gradW)_z, with force-loop float displacement -> double and its float kernel factor. No velocity quantization Jacobian is claimed.",
+    "Dsigma": "Approximate linear coefficient map from float(V0)*raw_float_gradW followed by receiver C. Actual intermediate velocity/stress float rounding is not a differentiable map reproduced by this model.",
+    "Da": "Complete-rate divergence uses double displacement, float kernel factor, receiver Ci and odd acceleration mirror.",
+    "Lstar": "Lp=sum w_ij*(p_i-p_j), Gp=sum V0*(p_j-p_i)*Ci gradW, Lx=sum w_ij*d_ij; w=V0*d dot (Ci+Cj)gradW/(r2+Eta2); Lstar=Lp-Gp_z*Lx_z in the x-invariant subspace.",
+    "system": "v'=H(sigma-p); sigma'=M*Dsigma*v; p'=-B*Dtheta*v+(B*k/gamma)*[Lstar*p+rhow*Da*H(sigma-p)], B=Kw/n0, gamma=rhow*9.80665. J is frozen at 1; no base-load forcing, position/C evolution or actual step is integrated.",
+    "diagnostics": ["modeled current Lstar plus acceleration term", "only acceleration term removed", "only Lstar replaced by uncorrected Lp", "only Lstar replaced by rho0*Da*H"],
+    "no_admission": "Every alternative is a diagnostic counterfactual, never a production recommendation or acceptance. Positive growth must be verified against real production operator actions before claiming a root cause. The midpoint polynomial 1+dt*lambda+.5*(dt*lambda)^2 is descriptive, not a production integration replay."
+  },
+  "fit": {
+    "window": "Retained parts20..55 inclusive, both top-layer first-column p and vz. Initial ID selected from Part0 nominal coordinates, not hardcoded ID139.",
+    "formula": "exp(a*(t-tlast))*(c*cos(omega*(t-tlast))+d*sin(omega*(t-tlast)))+e+f*(t-tlast)/window_duration; solve linear c,d,e,f inside nonlinear a/omega least_squares.",
+    "independence": "Frequency seed comes from the CSV FFT, growth seed from whole-column RMS regression. Do not seed from a matrix eigenvalue or hardcode previously observed growth/frequency. Numerical search bounds derive from window duration and sampling Nyquist; no R-squared/growth acceptance threshold is added.",
+    "time": "Fit uses the CSV header display times and separately records nominal part*10*DtFixed and their maximum difference. Neither is described as a new binary clock validation."
+  },
+  "formula_locations_at_authoring": [
+    "src/source/JSph.cpp:LoadConfigCtes around653; ConfigConstants around1633-1650; InitSoilParameters K/G around3723-3724",
+    "src/source/FunSphKernel.h:GetKernelWendland_Ctes around191 and GetKernelWendland_Fac around216",
+    "src/source/JSphCpu.cpp:ComputeFSParticlesFreeSurface around705-789; raw total-stress momentum around2467-2477",
+    "src/source/JSphCpu.cpp:theta operand around2547-2570; stress gradient and C around2682-2738; elastic K4G3 around2167",
+    "src/source/JSphCpu.cpp:wall even/odd reconstruction around4237-4297; full dynamic rate around4377-4456",
+    "src/source/JSphCpuSingle.cpp:Interaction_Forces ordering around749-812"
+  ],
+  "outputs": ["tests/logs/upl_case02_frozen_matrix_r1.check.json", "tests/figures/upl_case02_frozen_matrix_r1_history.csv (76)", "tests/figures/upl_case02_frozen_matrix_r1_eigen.csv (4x300)", "tests/figures/upl_case02_frozen_matrix_r1_mode.csv (4x100)", "tests/figures/upl_case02_frozen_matrix_r1_fit.csv (2x36)"],
+  "limitations": "No actual C++ Jacobian, second native/BI4 parser, actual force, native clock validation, unsaved-stage exception attribution, half-step acceptance, physical truth, public/gpu admission or proposed equation fix. Preserve failed solver exit1 and the original export-count false; the successful converter and its independent offline review are merely consumed evidence."
+}

@@ -1,0 +1,29 @@
+{
+  "stage": "upl_case02_operator_review_r1",
+  "status": "author_only_not_executed",
+  "purpose": "Independently replay exported actual frozen CPU operator probes, then analyze the measured one-dimensional projection. This does not turn the failed short trajectory into a passed trajectory.",
+  "author_files": ["support/upl_case02_operator_review_r1.py", "notes/upl_case02_operator_review_r1.json"],
+  "working_directory": "case02 root",
+  "proposed_command": "D:/anaconda3/python.exe -B tests/support/upl_case02_operator_review_r1.py --out tests/logs/upl_case02_operator_review_r1.check.json --csv-prefix tests/figures/upl_case02_operator_review_r1",
+  "no_execution_in_author_turn": "Root reads the complete script/note before any offline execution. Script never starts a compiler, native solver, helper/reader, converter, build or Git action.",
+  "bindings": "Verify both original direct-owned run records: exit0, passed, typed-LASTEXITCODE/immediate, direct-call, ended, original binding-unchanged and zero physical-step scope. Rehash their explicit flat bindings, program, log, completion and every output. Read each successful helper receipt and verify its current85nonmain+1,265source,17library,4runtime,7canonical closure and selected Entry trees. Do not recursively replay historical worker metadata or silently replace old records. Rehash every unique consumed binding again before writing new outputs.",
+  "inputs": ["logs/upl_case02_operator_smoke_r1.run.json", "logs/upl_case02_operator_matrix_r1.run.json", "each bound helper/completion/responses.csv/linearity.csv", "matrix basis.csv/jacobian.csv/theta_jacobian.csv", "logs/upl_case02_frozen_matrix_r1.check.json and its bound exported CSVs/current formula sources"],
+  "CSV_checks": {
+    "scope": "Smoke17force/17NoAce/1700response rows; matrix601force/601NoAce/60100response rows. Each call has all100unique output layers. Native1000soil/40fixed, time0, no integration is checked from sealed completion, not inferred from spectrum.",
+    "raw_envelopes": "Recompute every original stored budget=64FLT_EPS*max(1,global_peak)+256DBL_EPS*max(1,global_peak). Per-layer column spread must remain<=budget. Verify strict-zero call means/global peaks0, repeated per-call peak consistency, finite positive recorded scales, source-family/layer/actual amplitude ordering, central oddness and original smoke half-amplitude derivative tests.",
+    "statistics_limit": "Export contains layer means, spreads and global peaks, not all ten individual-column values. Recompute only what is observable; do not call this a second full-state/ghost-bit audit.",
+    "identity_roundtrip": "CSV/JSON arithmetic-summary replay allows16DBL_EPS relative roundtrip discrepancy with a DBL_MIN scale floor. This is not a physical-budget relaxation: every original spread/oddness/half-amplitude ratio must independently satisfy its original<=1 gate.",
+    "matrix": "Use actual17-digit responses.csv amplitudes to reconstruct five100x300 central-difference blocks. Compare actual az/Rsigma_zz/pdot against all90000 stored Jacobian values, theta against30000 values; hard-check family/layer/row/column ordering. Report bit differences and maximum arithmetic difference separately.",
+    "basis_amplitude_precision": "basis.csv used default stream precision and prints vz amplitude.001; exact amplitude is double(float(.001)) in responses/linearity. Basis amplitude is checked after float recovery and never used as the derivative denominator.",
+    "decomposition": "Recompute compression=-Kw/n0*theta, noAce pressure part=pdot_noAce-compression, acceleration part=pdot-pdot_noAce. All original response channels and peaks/budgets remain the immutable source."
+  },
+  "spectra": {
+    "actual": "A is the measured300x300 central-difference projection, ordered(vz layers,sigma_zz layers,p layers). Analyze actual A without coefficient edits; save all300 eigenvalues and its max-real mode. This is finite-amplitude measured projection, not the full1040-particle exact C++ Jacobian.",
+    "noAce": "Build N from the actual pdot_noAce100x300 signed responses. Counterfactual A_noAce only replaces A[200:,:]=N.",
+    "compatible": "Counterfactual only sets A[200:,200:]=(rho0/rhow-1)*A[200:,100:200], retaining original A_pv and all remaining blocks. This follows a compatible L=rho0*Da*H reduction only if H_pressure approximately=-H_stress, N_sigma approximately0, A_pv approximately=N_v, and acceleration pressure approximately=-acceleration stress. Report these premise errors/norms against propagated original probe envelopes; do not assume the relations or admit this as a physical replacement.",
+    "mode": "Complex mode is normalized to maximum pressure amplitude1 when nonzero; columns v/sigma/p are eigenvector coordinates, not a trajectory. Report normwise eigenpair residual and top10 pressure-coordinate energy fraction. Formal explicit-midpoint polynomial is descriptive only, not a replay of actual time integration.",
+    "comparison": "Compare actual max-real/frequency to independent nominal-grid result and its independently fitted failed-run growth/frequency. Verify72 fitCSV rows and recompute R-squared from observed/fitted columns; report differences, no fitted pass band. Frozen JSON is parsed using Pythonjson so uppercaseK/lowercasek remain distinct. CSV time labels are not binary native clocks."
+  },
+  "outputs": ["logs/upl_case02_operator_review_r1.check.json", "figures/upl_case02_operator_review_r1_eigen.csv (3x300)", "figures/upl_case02_operator_review_r1_mode.csv (3x100)"],
+  "interpretation": "passed means only owned-artifact/CSV arithmetic/projection review completed. Spectral or diagnostic comparison adds no physical acceptance criterion. No automatic equation change, damping/HG addition, drain/half/generalwall/public admission, rerun of controls, or reclassification of the failed trajectory."
+}

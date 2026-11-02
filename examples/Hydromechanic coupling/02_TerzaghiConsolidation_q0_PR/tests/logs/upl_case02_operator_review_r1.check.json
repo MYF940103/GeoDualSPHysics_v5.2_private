@@ -1,0 +1,185 @@
+{
+  "stage": "upl_case02_operator_review_r1",
+  "passed": true,
+  "physical_acceptance": false,
+  "native_program_started": false,
+  "manufactured_projection_not_trajectory_or_full_CPP_Jacobian": true,
+  "failed_short_trajectory_reclassified_as_passed": false,
+  "proofs": [
+    {
+      "run": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_operator_smoke_r1.run.json",
+        "bytes": 244248,
+        "sha256": "8554cc3be4188e6af03eeb7ae90536fff6caf9b3f3cd6335ce5d4265ef7abaee"
+      },
+      "helper": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_operator_DebugCPU_r1.helper.json",
+        "bytes": 357114,
+        "sha256": "86c810361533de047ab9605ee8c7597cc6712ad2f2335fda9c71e2a39599dfc2"
+      },
+      "bindings": 660,
+      "output_files": 8
+    },
+    {
+      "run": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_operator_matrix_r1.run.json",
+        "bytes": 246454,
+        "sha256": "9013c7cc21a5249f6522221528920f18077f47c54d7a31455b2664b82626d2b8"
+      },
+      "helper": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_operator_ReleaseCPU_r1.helper.json",
+        "bytes": 357319,
+        "sha256": "208167d5e6bfaa91b12a9f465b7807b47205b05697aa974c7de04310138f1793"
+      },
+      "bindings": 662,
+      "output_files": 11
+    }
+  ],
+  "independent_CSV_checks": {
+    "smoke": {
+      "actual_force_calls": 17,
+      "explicit_noAce_calls": 17,
+      "response_rows": 1700,
+      "independent_max_spread_ratio": 1.8189893899933293e-12,
+      "max_decomposition_roundtrip_abs_error": 0.0,
+      "basis_columns": 4,
+      "independent_max_odd_ratio": 0.0,
+      "independent_max_half_amplitude_ratio": 0.0,
+      "native_asserted_periodic_owner_checks": 13600
+    },
+    "matrix": {
+      "actual_force_calls": 601,
+      "explicit_noAce_calls": 601,
+      "response_rows": 60100,
+      "independent_max_spread_ratio": 3.03060627535181e-11,
+      "max_decomposition_roundtrip_abs_error": 0.0,
+      "basis_columns": 300,
+      "independent_max_odd_ratio": 0.0,
+      "independent_max_half_amplitude_ratio": 0.0,
+      "native_asserted_periodic_owner_checks": 480800,
+      "jacobian_values": 90000,
+      "theta_values": 30000,
+      "max_jacobian_reconstruction_abs_error": 0.0,
+      "max_theta_reconstruction_abs_error": 0.0,
+      "jacobian_reconstruction_bit_differences": 0,
+      "basis_amplitude_is_display_limited": true
+    }
+  },
+  "diagnostic_premises_reported_not_assumed": {
+    "raw_pressure_equals_negative_stress_H": {
+      "max_abs_difference": 0.0,
+      "relative_Frobenius_difference": 0.0,
+      "max_difference_over_propagated_probe_envelope": 0.0
+    },
+    "noAce_sigma_block_zero": {
+      "max_abs_difference": 0.0,
+      "relative_Frobenius_difference": 0.0,
+      "max_difference_over_propagated_probe_envelope": 0.0
+    },
+    "velocity_pressure_block_unchanged_by_NoAce": {
+      "max_abs_difference": 0.0,
+      "relative_Frobenius_difference": 0.0,
+      "max_difference_over_propagated_probe_envelope": 0.0
+    },
+    "acceleration_pressure_equals_negative_sigma_block": {
+      "max_abs_difference": 0.0048828125,
+      "relative_Frobenius_difference": 4.6035857720776797e-07,
+      "max_difference_over_propagated_probe_envelope": 0.0038723648260081314
+    }
+  },
+  "spectral_diagnostics": [
+    {
+      "variant": "actual_measured_projection",
+      "max_real_s-1": 7641.395432115181,
+      "imag_rad_s": 40152.19398695458,
+      "top10_pressure_energy_fraction": 0.999263235739795,
+      "eigenpair_normwise_residual": 9.83072592969846e-22,
+      "formal_midpoint_growth_s-1": 7683.228175482724,
+      "formal_midpoint_frequency_rad_s": 40208.44189370666
+    },
+    {
+      "variant": "diagnostic_actual_NoAce",
+      "max_real_s-1": -1.2366369907754875e-06,
+      "imag_rad_s": 0.0,
+      "top10_pressure_energy_fraction": 0.10001624623784339,
+      "eigenpair_normwise_residual": 1.3967842577798244e-21,
+      "formal_midpoint_growth_s-1": -1.236655222671381e-06,
+      "formal_midpoint_frequency_rad_s": 0.0
+    },
+    {
+      "variant": "diagnostic_compatible_pressure_block",
+      "max_real_s-1": -0.0004282570334654149,
+      "imag_rad_s": 0.0,
+      "top10_pressure_energy_fraction": 0.14870250929656623,
+      "eigenpair_normwise_residual": 1.9449175202577163e-22,
+      "formal_midpoint_growth_s-1": -0.00042825703006787406,
+      "formal_midpoint_frequency_rad_s": 0.0
+    }
+  ],
+  "actual_minus_nominal_max_real_s-1": -0.0002048724554697401,
+  "actual_minus_nominal_abs_frequency_rad_s": 0.0004180075629847124,
+  "independent_frozen_diagnostic": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_frozen_matrix_r1.check.json",
+    "bytes": 35812,
+    "sha256": "d4e1c6c5cb46760d8495ec83b92e7ae31048b195b6359532ca6aa5bbc2cf1b6e"
+  },
+  "CSV_fit_comparison_display_clock_only": [
+    {
+      "field": "top_pressure_Pa",
+      "CSV_recomputed_R_squared": 0.9999996938210577,
+      "CSV_fit_growth_s-1": 7691.489082205366,
+      "CSV_fit_omega_rad_s": 40207.0092087914,
+      "fit_minus_actual_formal_midpoint_growth_s-1": 8.260906722642176,
+      "fit_minus_actual_semidiscrete_frequency_rad_s": 54.815221836819546,
+      "fit_minus_actual_formal_midpoint_frequency_rad_s": -1.4326849152566865
+    },
+    {
+      "field": "top_velocity_z_m_s",
+      "CSV_recomputed_R_squared": 0.9999992420838915,
+      "CSV_fit_growth_s-1": 7683.614886947225,
+      "CSV_fit_omega_rad_s": 40216.86134655837,
+      "fit_minus_actual_formal_midpoint_growth_s-1": 0.3867114645017864,
+      "fit_minus_actual_semidiscrete_frequency_rad_s": 64.66735960378719,
+      "fit_minus_actual_formal_midpoint_frequency_rad_s": 8.419452851710957
+    }
+  ],
+  "unique_file_bindings_rehashed_before_after": 799,
+  "author_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_case02_operator_review_r1.py",
+      "bytes": 21758,
+      "sha256": "b7ce64ac74ce3d8baa8ad03b98b604cc709a754e68554c204458ebdf5ffb2c42"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_case02_operator_review_r1.json",
+      "bytes": 5875,
+      "sha256": "9749fd208fb59b3780aa4b173000eea6c9bde3c40ab7ea3760a59db9c3a6b544"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_case02_operator_review_r1_eigen.csv",
+      "bytes": 59215,
+      "sha256": "7ca18b2bdcebc822dca09a5a74afe5697d61b655ca493129e7fa6efc3ffff869"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_case02_operator_review_r1_mode.csv",
+      "bytes": 46455,
+      "sha256": "60f522560cb11201b44d985131d2da3642cfc4b4003e8f762670ce67faa9bdce"
+    }
+  ],
+  "versions": {
+    "Python": "3.11.3 | packaged by Anaconda, Inc. | (main, Apr 19 2023, 23:46:34) [MSC v.1916 64 bit (AMD64)]",
+    "numpy": "1.25.1",
+    "scipy": "1.10.1"
+  },
+  "limitations": [
+    "Native rollback/C/ghost bits are sealed producer assertions, not independently reconstructible from layer means; no second BI4 parser.",
+    "Global peaks/spreads are exported statistics, not all ten individual responses; only original exported arithmetic envelopes and central-difference consistency are recomputed.",
+    "CSV arithmetic identity replay permits16 DBL_EPS relative roundtrip error only; original spread/oddness/amplitude gates remain exactly <=1 with their unchanged64FLT_EPS+256DBL_EPS envelopes.",
+    "basis.csv amplitude has limited default stream precision; actual responses/linearity amplitudes, not its printed .001, normalize derivatives.",
+    "Eigenvalues concern the finite-amplitude100-layer measured projection, not every particle mode, evolved coefficients or physical/integrator stability.",
+    "NoAce and compatible-pressure replacements are conditional diagnostic counterfactuals, not recommended physical changes.",
+    "Fit times remain diagnostic CSV display labels, not decoded binary TimeStep; no new half/drainage/continuum/public admission."
+  ]
+}
