@@ -9,16 +9,22 @@ and fixed dt=2^-20s. No physical solver was rerun for this analysis.
 
 Formal products are under `figures/formal_validation/`:
 
-- [Four-ratio log-Tv pressure comparison](figures/formal_validation/cryer_formal_four_nu_r1_log.png):
+- [Four-ratio log-Tv pressure comparison](figures/formal_validation/cryer_formal_four_nu_r2_log.png):
   finite-Kw theory and simulation at the same fixed18 initial material IDs,
   initially r0/a=.05, with one color per Poisson ratio.
-- [Separate paper-limit comparison](figures/formal_validation/cryer_formal_four_nu_r1_paper_limit_log.png):
+- [Separate paper-limit comparison](figures/formal_validation/cryer_formal_four_nu_r2_paper_limit_log.png):
   incompressible-water, exact-center r=0 reference. It is not the same reference
   as the finite-Kw material-point comparison.
 - [Pressure error, radial contraction and stress](figures/formal_validation/cryer_formal_four_nu_r1_state.png).
 - [All4260 saved-state rows](figures/formal_validation/cryer_formal_four_nu_r1_native.csv),
   [dense analytical curves](figures/formal_validation/cryer_formal_four_nu_r1_theory.csv),
   and [peak/late-state metrics](figures/formal_validation/cryer_formal_four_nu_r1_metrics.csv).
+
+Display revision r2 uses a logarithmic x axis ending at5 and SPH symbols without
+connecting lines (every12 saves plus the final save). Actual SPH runs end near
+Tv=1 and the retained theory tables at1.2; no values are extrapolated to5.
+All original CSVs, metrics and r1 figures are unchanged. Reproduce this display
+with `python -B support/style_cryer_four_nu_r2.py` using a fresh revision label.
 
 Against the finite-Kw fixed18 reference, the Mandel-window sampled peak results are:
 
