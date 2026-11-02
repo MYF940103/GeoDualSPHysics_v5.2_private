@@ -1,0 +1,43 @@
+param([Parameter(Mandatory=$true)][ValidateSet('RunJob','ReviewJob')][string]$Mode,[Parameter(Mandatory=$true)][ValidateSet('constant_smoke','variable_smoke','constant_coarse','constant_half','variable_coarse','variable_half')][string]$Job,[switch]$ExecutionAuthorized)
+# One fresh private GPU Run or one separate offline read; no input edits, builds or automatic next job.
+$ErrorActionPreference='Stop';$t=Split-Path -Parent $PSScriptRoot;$repo=(Get-Item -LiteralPath $t).Parent.Parent.Parent.Parent.FullName;$logs=Join-Path $t 'logs';$out=Join-Path $t 'outputs'
+$note=Join-Path $t 'notes\upl_gpu_gravity_periodic_runs_r1.json';$model,$window=$Job.Split('_');$cfg=if($window-eq'smoke'){'Debug'}else{'Release'};$name='upl_gpu_gravity_'+$Job+'_r1'
+$folder=Join-Path $out $name;$review=$folder+'_review';$runPath=Join-Path $logs ($name+'.run.json');$checkPath=Join-Path $logs ($name+'.check.json')
+function E([string]$p){$f=Get-Item -LiteralPath $p;[ordered]@{path=$f.FullName;bytes=[long]$f.Length;sha256=(Get-FileHash -LiteralPath $p -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function J([string]$p){[IO.File]::ReadAllText($p)|ConvertFrom-Json}
+function V($rows){foreach($r in $rows){$e=E $r.path;if($e.bytes-ne[long]$r.bytes-or$e.sha256-cne$r.sha256){throw "Frozen artifact changed: $($r.path)"}}}
+function Fresh($paths){foreach($p in $paths){if(Test-Path -LiteralPath $p){throw "Retained path protected: $p"}}}
+function Save([string]$p,$v){Fresh @($p);[IO.File]::WriteAllText($p,($v|ConvertTo-Json -Depth 18)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))}
+function Files([string]$p){if(Test-Path -LiteralPath $p){@(Get-ChildItem -LiteralPath $p -Recurse -File|Sort-Object FullName|ForEach-Object {E $_.FullName})}else{@()}}
+function Need([string]$p){$c=J $p;if(!$c.passed-or$c.physical_acceptance){throw "Required reviewed check absent/rejected: $p"};foreach($key in @('files','inputs','bindings')){if($c.$key-is[array]){V $c.$key}};E $p}
+function Call($target,[string[]]$argv,[string]$label,[bool]$mem){
+ $log=Join-Path $logs ($label+'.log');$receipt=Join-Path $logs ($label+'.call.json');Fresh @($log,$receipt);V @($target);$tool=$target;$callArgs=$argv;$memReceipt=$null
+ if($mem){$memReceipt=E (Join-Path $logs 'upl_gpu_perm_component_Debug_r1.call.json');$m=J $memReceipt.path;if(!$m.owned_call_exited-or$m.exit_code-ne0-or!$m.memcheck_zero_errors_and_leaks){throw 'Owned successful memcheck tool identity required'};$tool=$m.program;V @($tool);$callArgs=@('--tool','memcheck','--leak-check','full','--error-exitcode','97',$target.path)+$argv}
+ [IO.File]::WriteAllBytes($log,[byte[]]@());$start=[DateTime]::UtcNow.ToString('o');$saved=$ErrorActionPreference;$ErrorActionPreference='Continue';$code=$null
+ Push-Location (Join-Path $repo 'src');try{$global:LASTEXITCODE=$null;& $tool.path @callArgs 2>&1|Tee-Object -FilePath $log|Out-Host;$code=$LASTEXITCODE}finally{Pop-Location;$ErrorActionPreference=$saved}
+ $text=[IO.File]::ReadAllText($log);$zero=($mem-and$text-match'ERROR SUMMARY:\s*0 errors'-and$text-match'LEAK SUMMARY:\s*0 bytes leaked in 0 allocations');V @($target,$tool)
+ Save $receipt ([ordered]@{program=$tool;target_program=$target;arguments=$callArgs;working_directory=(Join-Path $repo 'src');direct_native_call=$true;typed_LASTEXITCODE_captured_immediately=($code-is[int]);owned_call_exited=($code-is[int]);exit_code=$code;started_utc=$start;ended_utc=[DateTime]::UtcNow.ToString('o');log=(E $log);memcheck_executed=$mem;memcheck_zero_errors_and_leaks=$zero;memcheck_tool_source=$memReceipt;physical_acceptance=$false});E $receipt
+}
+if(!$ExecutionAuthorized){throw 'Root explicit one-action authorization required'}
+$hp=Join-Path $logs ('upl_gpu_gravity_helper_'+$cfg+'_r1.helper.json');$h=J $hp;$bp=Join-Path $logs ('upl_gpu_gravity_'+$cfg+'_r1.build.json');$b=J $bp;$s=J $b.source_freeze.path
+if($h.status-ne'actual_authoritative_GPU_objects_helper_linked_not_run'-or$h.configuration-ne$cfg-or$h.link_object_count-ne111-or!$h.exact_link_closure_verified-or$h.source_build.sha256-cne(E $bp).sha256-or$b.source_base-ne'c476f81e07fda919fe3270fa9085a665ee604496'-or@($b.objects).Count-ne110-or@($s.source).Count-ne265){throw 'Current full GPU build and exact-closure private helper required'}
+V @((E $hp),(E $bp),$b.source_freeze,$b.project_call,$b.isolated_GPU_program,$h.program,$h.compile_call,$h.link_call);V $s.source;V $b.objects;V $s.canonical_GPU_six_and_CPU_two;V $h.author_files;V $h.transitive_author_include_files;V $h.tools;V $h.libraries;foreach($r in $h.runtime){V @($r.original,$r.copy)}
+$cpuName=if($window-eq'smoke'){'DebugCPU_smoke'}elseif($window-eq'coarse'){'ReleaseCPU_c'}else{'ReleaseCPU_h'};$oldp=Join-Path $logs ('upl_gravity_periodic_cpu_'+$cpuName+'_r1.preflight.json');$old=J $oldp
+if(!$old.passed-or@($old.inputs).Count-ne2){throw 'Sealed immutable gravity XML/BI4 pair required'};V $old.inputs;$xml=@($old.inputs|Where-Object {$_.path.EndsWith('.xml')});$bi=@($old.inputs|Where-Object {$_.path.EndsWith('.bi4')});if($xml.Count-ne1-or$bi.Count-ne1-or$bi[0].sha256-cne'364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa'){throw 'Original512 native seed differs'};$prefix=$xml[0].path.Substring(0,$xml[0].path.Length-4)
+$prereq=@(Need (Join-Path $logs 'upl_gpu_gravity_legacy_DefaultOFF_r1.check.json');Need (Join-Path $logs 'upl_gpu_gravity_legacy_PeriodicSmooth_r1.check.json'))
+if($window-ne'smoke'){$prereq+=Need (Join-Path $logs ('upl_gpu_gravity_'+$model+'_smoke_r1.check.json'))};if($window-eq'half'){$prereq+=Need (Join-Path $logs ('upl_gpu_gravity_'+$model+'_coarse_r1.check.json'))}
+$inputs=@(E $PSCommandPath;E $note;E $oldp;E $hp;E $bp)+@($old.inputs)+$prereq
+if($Mode-eq'RunJob'){
+ Fresh @($folder,$runPath,$checkPath,$review);$active=@(Get-CimInstance Win32_Process|Where-Object {$_.Name-like'*.exe'-and($_.Name-like'DualSPHysics*'-or$_.Name-eq'upl_gravity_periodic_gpu_r1.exe')});if($active.Count){throw 'Existing solver/reader process active; do not launch duplicate'}
+ $argv=@('--solver',$model,$window,'-gpu:0','-stable',$prefix,$folder,'-dirdataout','data','-svres');$call=Call $h.program $argv $name ($window-eq'smoke');$c=J $call.path
+ $complete=$null;if(Test-Path -LiteralPath (Join-Path $folder 'actual_complete.json')){$complete=E (Join-Path $folder 'actual_complete.json')};$all=@(Files $folder);V $inputs;V $s.source
+ Save $runPath ([ordered]@{job=$Job;configuration=$cfg;inputs=$inputs;helper=(E $hp);source_build=(E $bp);call=$call;actual_completion=$complete;files=$all;solver_output_sealed_before_analysis=$true;physical_fields_rewritten_by_fixture=$false;old_control_run=$false;physical_acceptance=$false})
+ if(!$c.owned_call_exited-or$c.exit_code-ne0-or($window-eq'smoke'-and!$c.memcheck_zero_errors_and_leaks)-or!$complete){throw 'Owned private Run rejected; retain sealed output and do not restart'};return
+}
+Fresh @($checkPath,$review);$r=J $runPath;V @($r.call,$r.helper,$r.source_build,$r.actual_completion);V $r.inputs;V $r.files;$rc=J $r.call.path;$a=J $r.actual_completion.path
+if(!$rc.owned_call_exited-or$rc.exit_code-ne0-or($window-eq'smoke'-and!$rc.memcheck_zero_errors_and_leaks)-or!$a.passed-or!$a.actual_production_Run-or!$a.private_complete_dynamic_rate-or$a.public_master-or$a.model-ne$model-or$a.window-ne$window){throw 'Sealed completed private Run required; never rerun for offline failure'}
+$reader=Call $h.program @('--read',$model,$window,(Join-Path $folder 'data'),$xml[0].path,$review) ($name+'_reader') $false;$rd=J $reader.path;if(!$rd.owned_call_exited-or$rd.exit_code-ne0){throw 'Offline reader failed; repair only under new review label, not solver'}
+$d=J (Join-Path $review 'completion.json');$live=E (Join-Path $folder 'live_final.csv');$last=E (Join-Path $review 'last_poro.csv');$frames=if($window-eq'smoke'){3}else{257}
+if(!$d.passed-or$d.samples-ne$frames-or$d.native_count-ne512-or$d.common_columns-ne33-or$d.model-ne$model-or$d.window-ne$window-or$d.physical_acceptance-or$live.bytes-ne$last.bytes-or$live.sha256-cne$last.sha256){throw 'Native single-run gate/live final equality failed'}
+V $r.files;V $inputs;V $s.source;V $s.canonical_GPU_six_and_CPU_two
+Save $checkPath ([ordered]@{passed=$true;job=$Job;configuration=$cfg;source_run=(E $runPath);source_build=(E $bp);helper=(E $hp);call=$reader;completion=(E (Join-Path $review 'completion.json'));inputs=$inputs;files=@(Files $review);native_frames=$frames;native_count=512;actual_saved_final_matches_live_J_n_theta=$true;memcheck_zero_errors_and_leaks=($window-eq'smoke'-and$rc.memcheck_zero_errors_and_leaks);old_control_run=$false;half_or_backend_or_frame_comparison_performed=$false;endpoint_rate_independently_audited=$false;physical_acceptance=$false})

@@ -1,0 +1,44 @@
+{
+  "stage": "upl_gpu_gravity_periodic_review_r1",
+  "status": "periodic_native_and_eight_pair_gates_passed_endpoint_and_wall_still_pending",
+  "source_checkpoint": "c476f81e07fda919fe3270fa9085a665ee604496",
+  "question_resolution": "porosity_thetap1 stores theta=div(v_s), not dn/dt. Actual J predictor/corrector integrates Jdot=J*theta and derives n=1-(1-n0)/J, giving ndot_i=(1-ni)*theta_i. This is not the literal neighbor-weighted (1-nj) finite-particle sum of Lian2023 Eq24 when n varies spatially. The completed CPU frozen-operator diagnostic records that difference; neither a missing multiplication nor exact discrete equivalence is claimed. Do not multiply the shared theta by (1-nj), which would also change pressure compression. No porosity equation/integrator was changed in this GPU stage.",
+  "production_candidate": {
+    "JSphGpu.cpp": "Two private Init scope checks now admit finite in-plane uniform gravity only with the complete private dynamic model. The private wall guard additionally requires strictly tangential gravity to every original axis-aligned normal. Public nonzero-gravity entry remains rejected.",
+    "JSphGpu_ker.cu": "One explanatory comment only: for strictly tangential g, Qg=g and Q*(Ace+g)-g=Q*Ace. No CUDA kernel arithmetic/signature change.",
+    "JSphCpu.cpp": "Unchanged0224f7383c1b19d40375d79037ffebb99bcf5bb826b2db4a4c77ba7a87621b93.",
+    "release_status": "Uncommitted and not installed as canonical/server release. Private wall code has not yet received this stage's new GPU tangential-gravity numerical tests."
+  },
+  "builds": "Default CPU Debug passed with unchanged program. Fresh authoritative GPU Debug and Release full Rebuilds passed with complete265 code originals/snapshots,2targets/263others,110non-main objects plus separately recorded projectmain. Two new private helper compile/links use exactly110current GPU objects+one helper. Canonical GPU six/CPU two remain unchanged. Debug warnings include missing third-partyPDBs,LIBCMT conflict,deprecatedGm and temporaryIntDir; no compilation/link failure.",
+  "legacy_regressions": {
+    "DefaultOFF": "Owned15000-step actual Release main,151frames/1040native IDs,original15 typed arrays and actual accumulated clock/step/signeddterror exactly equal retained owned control. Compared25126400bytes,different0. OriginalHG force/rate/cache/dt/spin gates passed; all dynamic arrays/metadata absent.",
+    "PeriodicSmooth_g0": "Owned512-step actual Release main,257frames/512native IDs,public master1/model1/Ck2^-13. Strict original15/J/theta/soiln/clock bridge against the same retained private control passed. Newpublic_extra.csv/common.csv/history.csv match the retained public exports byte-for-byte; no full public33 binary comparison is claimed.",
+    "preparation_repair": "The first smooth Prepare rejected a nonexistent privRun.source_build binding before manifest creation or solver launch. The unchanged r1 driver is retained because DefaultOFF binds it. A separate preparation-only r2 entry binds the actual source_build from the already bound private helper and creates the first actual smooth r1 job manifest; no null was silently discarded and no solver was restarted."
+  },
+  "new_private_runs": "Six fresh GPU true-Run jobs: constant/variable Debug2-step smoke plus Release coarse512steps and independent half1024steps. Same512soil IDs,dp1/256,XZperiodic,no fixed particles; g=(-8,0,0),end2^-15,cadence2^-23,coarse2^-24/half2^-25. Bothsmokes3frames,fulls257frames. Both Debug memchecks report0errors/0leakedbytes. Single-run original native/domain/elastic/ledger/energy/currentwave/currentdiffusion/signedclock guards and exact live-finalJ/n/theta equality passed. No physical fields or clocks were rewritten by solver fixtures.",
+  "paired_review": {
+    "count": 8,
+    "all_saved_samples_each": 257,
+    "native_ids_each": 512,
+    "common_columns_each": 33,
+    "constant_half_max_pressure_RMS_Pa": 0.00030344630406843457,
+    "variable_half_max_pressure_RMS_Pa": 0.0002818158031470744,
+    "variable_CPU_GPU_coarse_max_pressure_RMS_Pa": 0.000040556394910745465,
+    "variable_CPU_GPU_half_max_pressure_RMS_Pa": 0.00004181783038171514,
+    "all_four_g0_frame_pressure_RMS_max_Pa": 0.00005354819717800591,
+    "all_four_body_gravity_XYZ_RMS_over_A_max": 0.00000015350078215498005,
+    "missing_or_doubled_g_formula": "Four same-dt g0 references independently resolve the missing/doubled uniform velocity increment at approximately1250 original budgets,above predeclared100. These are comparison-formula negative controls,not deliberately wrong solver runs or exact center-of-mass conservation claims.",
+    "unchanged_gates": "All257 exact saved times/no interpolation; original5Pa pressureRMS/.005mm XYZ material-u max plus normalizedp/v/u RMS<=1e-4; exact initial33/materialIDs and strictp0/plastic/load/passive-rho bits. All33 differences reported,not all33 per-field accuracy acceptance.",
+    "CPU_control": "Only retained variable nong0CPU coarse/half controls exist and were reused. No constant nong0CPU trajectory was fabricated or rerun."
+  },
+  "visual_review": "Root inspected all8PNG files. Each clearly shows unfiltered p/v/u normalized comparison errors in ppm over actual0..30.517578125microseconds,with original100ppm limit stated in title and autoscaled axes. All matching257-row histories and8481-row fieldCSVs are retained under tests/figures; these are bounded implementation comparisons,not theory-error or full-cycle figures.",
+  "remaining": [
+    "Independent saved-endpoint actualGPU force/rate/periodic-owner/cache audit and nonempty wrong-explicit-gravity sensitivity under the original raw-term budgets",
+    "Fresh real-Init private wall negative/positive scope checks,then tangential-gravity wall smoke/coarse/half and retainedCPU comparisons as justified",
+    "Complete independent peer audit and final stage summary before selective verified Git backup; do not publish public/general-gravity claims"
+  ],
+  "protected": "No accepted formal XML/BAT/data/figures,server program,canonical executables,oldraw files or old workers changed. No new long physical solver or restart. Raw programs/BI4/object/snapshot presence is local evidence,not a cloudGit copy.",
+  "public_nonzero_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "physical_acceptance": false
+}

@@ -1611,17 +1611,19 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 }
 
 //==============================================================================
-/// Validates the private static wall geometry while host normals/slip still exist.
+/// Validates private static walls and strictly tangential gravity before host arrays are freed.
 //==============================================================================
 void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode){
   if(!DynamicPoreWall)return;
   if(!DynamicPorePressure || !PorosityFeedback || !Simulate2D || !CaseNpb
-    || TBoundary!=BC_MDBC || !UseNormals || !boundnormal || Gravity.x || Gravity.y || Gravity.z
+    || TBoundary!=BC_MDBC || !UseNormals || !boundnormal
+    || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || SoilBoundaryDerivativeSPR || CaseNmoving || CaseNfloat
     || !std::isfinite(MassBound) || !(MassBound>0) || !std::isfinite(MassFluid) || !(MassFluid>0)
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
-    Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, zero gravity and its own derivative closure.");
+    Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+  const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
   int axis=-1;bool seen[2]={false,false};double plane[2]={0,0};
   for(unsigned p=0;p<Npb;p++){
     const tdouble3 raw=ToTDouble3(boundnormal[p]);
@@ -1636,6 +1638,8 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
     if(a!=axis || a==1)Run_Exceptioon("GPU dynamic wall permits parallel x/z axis planes only, without corners.");
     for(int b=0;b<3;b++)if(b!=axis && fabs(component(n,b))>8.*FLT_EPSILON)
       Run_Exceptioon("GPU dynamic wall rejects inclined normals.");
+    if(hasgravity && (component(ToTDouble3(Gravity),axis)!=0 || Gravity.x*raw.x+Gravity.y*raw.y+Gravity.z*raw.z!=0))
+      Run_Exceptioon("GPU dynamic wall requires gravity exactly tangent to every wall mirror vector.");
     const unsigned side=(component(n,axis)>0? 0: 1);
     const double xp=component(wall,axis);
     if(!std::isfinite(xp) || (seen[side] && fabs(xp-plane[side])>1e-6*Dp))
@@ -1701,10 +1705,11 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones || AccInput || SoilDamping || SoilHourglassXi!=0
-    || Gravity.x || Gravity.y || Gravity.z || HydroMechDrainage
+    || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
+    || (!DynamicPorePressure && (Gravity.x || Gravity.z)) || HydroMechDrainage
     || HydroMechInitMode!=HMINIT_None || HydroMechTopLoadMode!=HMLOAD_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh no-wall 2-D elastic Symplectic corrected-pair fixtures without gravity, load, drainage, shifting or damping.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without load, drainage, shifting or damping; finite in-plane gravity requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))

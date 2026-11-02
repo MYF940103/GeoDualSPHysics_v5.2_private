@@ -1,0 +1,163 @@
+{
+  "stage": "upl_gravity_wall_gpu_job_r2",
+  "author_only": true,
+  "execution_observed": false,
+  "scope": "Exactly four Release private GPU opposing-wall full-window jobs under strict tangential g=(0,0,-8). One Run/Read/Audit/ReviewAudit per explicit authorization. No preparation, GenCase, XML/BI4 edit, CPU solve, public unlock or automatic next job.",
+  "files_changed": [
+    "tests/support/upl_gravity_wall_gpu_job_r2.ps1",
+    "tests/notes/upl_gravity_wall_gpu_job_r2.json"
+  ],
+  "entry": "-Mode Run|Read|Audit|ReviewAudit -Job constant_coarse|constant_half|variable_coarse|variable_half -ExecutionAuthorized; validated Job is canonicalized to lowercase before model/dt dispatch.",
+  "ancestor": {
+    "script": "support/upl_gravity_wall_gpu_job_r1.ps1",
+    "sha256": "8e994f4b88f1a8c41eed0ab8b78d16ddfa9bbe5c8d5f58e00107dcb108917dad",
+    "unchanged": true,
+    "reuse": "Retain frozen smoke r1 intact. r2 minimally parameterizes the accepted owner and keeps its original per-node rate/face/force/cache/rollback review arithmetic and rounding budgets."
+  },
+  "jobs": [
+    {
+      "job": "constant_coarse",
+      "model": "constant",
+      "dt_s": 2.9802322387695312e-8,
+      "steps": 1024,
+      "source_XML": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_constant_c.xml",
+      "runtime_bytes": 20171,
+      "runtime_sha256": "dd73fb5f6bbcdb49eb18d2367ccb5a3a05ea0bef28711dc174e5beb3ed03be1f"
+    },
+    {
+      "job": "constant_half",
+      "model": "constant",
+      "dt_s": 1.4901161193847656e-8,
+      "steps": 2048,
+      "source_XML": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_constant_h.xml",
+      "runtime_bytes": 20173,
+      "runtime_sha256": "b23a5b4a0f348b5835eb67554fa30fb8e9424c12673d766e7641a6bd14c8cca9"
+    },
+    {
+      "job": "variable_coarse",
+      "model": "variable",
+      "dt_s": 2.9802322387695312e-8,
+      "steps": 1024,
+      "source_XML": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_variable_c.xml",
+      "runtime_bytes": 20171,
+      "runtime_sha256": "65c6256869925af1b65a4efe3a96957cf01d2614616184a93202fdbcff2381fc"
+    },
+    {
+      "job": "variable_half",
+      "model": "variable",
+      "dt_s": 1.4901161193847656e-8,
+      "steps": 2048,
+      "source_XML": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_variable_h.xml",
+      "runtime_bytes": 20173,
+      "runtime_sha256": "3280c8e7a74517d777999c9422004df5c78fcde683984efd5310352035c59de2"
+    }
+  ],
+  "all_jobs": {
+    "configuration": "Release",
+    "helper_window": "full",
+    "samples": 257,
+    "cadence_s": 1.1920928955078125e-7,
+    "end_s": 0.000030517578125,
+    "soil": 1024,
+    "fixed": 256,
+    "common_columns": 33,
+    "geometry_BI4_bytes": 57736,
+    "geometry_BI4_sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f",
+    "conductivity_k0": "double(float(0.0001)) m/s",
+    "variable_Ck": 0.0001220703125,
+    "public_master_model_Ck": "Retained runtime remains explicitly 0/0/0; only the immutable private fixture constructor activates dynamic/wall flags and optional smooth law. Physical initial fields are not rewritten."
+  },
+  "gates": {
+    "all_actions": "Root review + ExecutionAuthorized. Own Debug smoke final native and independent endpoint checks must pass; both original Debug solver and audit memcheck zero summaries must already exist. The source/current helper and all prerequisites remain bound before/after each action.",
+    "constant": {
+      "path": "logs/upl_gravity_wall_gpu_constant_r2.admission.check.json",
+      "kind": "bounded_tangential_wall_constant_full",
+      "required": {
+        "passed": true,
+        "physical_acceptance": false,
+        "public_GPU_dynamic_accepted": false,
+        "inputs": "Nonempty flat E[] containing root-selected early proof bindings",
+        "smoke_check": "Exact E for logs/upl_gravity_wall_gpu_constant_smoke_r1.check.json"
+      },
+      "meaning": "Future explicit root admission; author recipe does not manufacture it. Root binds A/B/Init and own completed smoke. Original combined coarse >100-budget failure remains false."
+    },
+    "half": "constant_half also requires own constant_coarse r2 final native+endpoint check; variable_half also requires own variable_coarse r2 final check. Same current Release helper and source_build must match.",
+    "variable": {
+      "path": "logs/upl_gravity_wall_gpu_variable_r2.admission.check.json",
+      "kind": "bounded_tangential_wall_variable_full",
+      "required": {
+        "passed": true,
+        "physical_acceptance": false,
+        "public_GPU_dynamic_accepted": false,
+        "constant_pair_frame_CPU_cross_and_weak_wave_reference_passed": true,
+        "constant_weak_wave_reference_basis": [
+          "independent_constant_reference",
+          "retained_reference_plus_strict_frame_error_bound"
+        ],
+        "inputs": "Nonempty flat E[]",
+        "job_checks": "Exactly two current constant_coarse/constant_half r2 final check E entries"
+      },
+      "meaning": "The chosen weak-wave basis must be an independently passed constant reference, or a retained reference with a strict new frame-error propagation bound, backed by root proof inputs. Tiny half error alone is not reference/one-percent evidence."
+    }
+  },
+  "input_and_CPU_control_adoption": {
+    "run": "logs/upl_gravity_wall_cpu_ReleaseCPU_JOB_r1.run.json",
+    "reader": "logs/upl_gravity_wall_cpu_ReleaseCPU_JOB_r1_reader.check.json",
+    "verification": "Adopt the exact retained owned exit0 input pair, stable OMP1 CPU provenance and existing private3J CPU reader completion/files. CPU completion.window is coarse/half; new GPU helper.window is full with the corresponding exact dt. These distinct schemas are not relabeled. No old CPU solver or reader is launched. Input XML SHA and shared original h BI4 SHA are fixed above.",
+    "initial_gate": "Every soil initial33 bit and ID-coordinate file must be identical to the corresponding retained CPU nong0 private3J export. No signed-zero exception. CPU fixed-zero material markers are not equated to GPU reconstructed sample n. Old public6J controls are never relabeled as private3J."
+  },
+  "helper": {
+    "receipt": "logs/upl_gravity_wall_gpu_Release_r1.helper.json",
+    "status": "gravity_wall_helper_linked_not_run",
+    "fixture": "GravityWallActual",
+    "source_build": "Authoritative current Release GPU build linked by helper.source_build",
+    "closure": "265 current source files =2 target+263 others, 110 current non-main GPU objects+1 helper, exact tools/libraries (unique SDK bcrypt.lib)/runtime original+copy and protected canonical8. source.current_source_snapshot is nested {original:E,snapshot:E}, verified pairwise. Historical mutable old source/Git/documentation identities are not recursively required as current.",
+    "cpp": "support/upl_gravity_wall_gpu_r1.cpp",
+    "cpp_sha256": "b00656d3fc35b7f33724d75691f59941a360156982d925c89f02e7884c9e5d38",
+    "note_sha256": "bdb51ece0b34b3ca33f2d3722e485edb6ce1f07a20114f1d62def30c9fb73aae"
+  },
+  "actions": {
+    "Run": "One actual --solver MODEL full -gpu:0 -stable -mdbc_freeslip retainedPrefix NEWOUT -dirdataout data -svres. Lock 1024/2048 steps, exact dt/end/257 native files and private law flags. Seal all raw files/actual completion/owned call first. No automatic reader or other job.",
+    "Read": "One --read MODEL GPU full DATA DT XML NEWREVIEW. All257 physical/frame33 files, exact clock/ID attribution, original native ledger/domain/bodyframe energy screens, initial CPU bit proof, raw hash rows and last_poro==live_final all bytes. Inertial physical33 and z/vz/uz accelerating frame33 remain distinct.",
+    "Audit": "Only after the same job's own Run and native Read pass: one fresh independent --audit MODEL full DATA DT XML -- normal GPU args process. Reconstruct all257 saved states, 257 actual endpoint force evaluations,263168 native rate rows and514 faces; zero Run/ComputeStep advancement by the auditor. Seal owned call/files before review.",
+    "ReviewAudit": "No native program: verify retained audit completion, source PART hash rows, all257 clock/cache/necessary-dt/owner/rollback rows, all263168 finite actual/reference/raw-budget ratio rows and514 original face/reaction/flux rows. It rechecks the CSV-reported budgets and source-bound actual assertions, not an independent offline device/neighborhood proof. Full original postinitial wrong-zero/copy-Ace detection gates are retained, including physical-k channels."
+  },
+  "unchanged_thresholds": {
+    "bodyframe_energy_ratio": 1.1,
+    "max_abs_J_minus_1": 0.0001,
+    "ledger_relative_error": 5e-13,
+    "saved_CFL_and_Ddt_h2": 0.01,
+    "signed_dterror_upper_s": 1e-14,
+    "full_natural_J_evolution_lower": 1e-8,
+    "full_variable_k_span_lower": 0.005,
+    "rate": "Frozen actual CPP's original 64FLT_EPS raw-term +256DBL_EPS max(1,|Btheta|)+1e-6 budget. Original velocity/physical Darcy flux/internal force-reaction budgets; q uses Gp+rho_w Ace with no added g. No math, tolerance, amplitude or precision change."
+  },
+  "recording": {
+    "stem": "upl_gravity_wall_gpu_JOB_r2",
+    "directories": [
+      "outputs/STEM",
+      "outputs/STEM_review",
+      "outputs/STEM_audit"
+    ],
+    "records": [
+      "logs/STEM.run.json",
+      "logs/STEM.native.check.json",
+      "logs/STEM.audit.run.json",
+      "logs/STEM.audit.check.json",
+      "logs/STEM.check.json"
+    ],
+    "owned_exit": "Direct native invocation, empty log precreated, LASTEXITCODE reset null and immediately captured; actual int0 required. Release is not claimed memchecked; Debug smoke memory proofs are a prerequisite only.",
+    "failure": "Fresh paths only, failure calls and partial outputs retained. Completed physical solver is never restarted after analysis failure. Completed endpoint audit is never rerun after postcheck failure; any repair needs a new explicit offline label."
+  },
+  "limits": {
+    "pair_or_reference_check_performed_by_job_owner": false,
+    "final_check_claims_pair_passed": false,
+    "half_reference_or_CPU_cross_accepted": false,
+    "original_integrator_force_stages_independently_observed": false,
+    "necessary_step_screen_is_sufficient_stability": false,
+    "public_GPU_dynamic_accepted": false,
+    "physical_acceptance": false,
+    "new_wall_trajectory_automatically_admitted": false
+  }
+}
+

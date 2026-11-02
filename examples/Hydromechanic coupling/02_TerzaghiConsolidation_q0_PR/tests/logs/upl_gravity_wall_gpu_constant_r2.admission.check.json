@@ -1,0 +1,72 @@
+{
+  "stage": "upl_gravity_wall_gpu_constant_r2_root_admission",
+  "passed": true,
+  "kind": "bounded_tangential_wall_constant_full",
+  "smoke_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_constant_smoke_r1.check.json",
+    "bytes": 11865,
+    "sha256": "8f4ddc3c26d620ff909113a811b2c82b0aadab9dd4e61fc5c8003e9232183fa5"
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_constant_smoke_r1.check.json",
+      "bytes": 11865,
+      "sha256": "8f4ddc3c26d620ff909113a811b2c82b0aadab9dd4e61fc5c8003e9232183fa5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_smoke_peer_r1.check.json",
+      "bytes": 8679,
+      "sha256": "a59392fce64bfb91a9ec059bcd3643df44f2f7dac0c3d3ce73e08fcf3b62e007"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_smoke_r1.admission.check.json",
+      "bytes": 6506,
+      "sha256": "e5a67cf417386ada5e38d34b3fe51c28045bf4aaec1a4713d46c6f784e302380"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_periodic_peer_r1.check.json",
+      "bytes": 18082,
+      "sha256": "9e6ab6e22ab4021191f546b19210cd48024015dff11de9652c280d158ebf6046"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_components_peer_r2.check.json",
+      "bytes": 9465,
+      "sha256": "6db9a1a06ecf7311f29befe6d1fff1ba7f540db5999066cf2304965c360ab905"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_init_peer_r1.check.json",
+      "bytes": 14744,
+      "sha256": "934b5ff0e8ea303de62fdfdec89f18db6b97e9a71790ddeb8b4e1900ce047399"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_peer_r1.check.json",
+      "bytes": 13891,
+      "sha256": "03052379c2b276c090c37f20cd564418ac9ab9c5bf68c8b2a107e7fbd07c7a9b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_Release_r1.helper.json",
+      "bytes": 128009,
+      "sha256": "9aaf56d8cffd6a00eaaa9b87455ece721c876ff35911ac43d3e906aa29a57f99"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gravity_wall_gpu_job_r2.ps1",
+      "bytes": 35834,
+      "sha256": "3d8844e54d7a7fd4d9ab7dcb67bb8eeb8f139c1bcea3a95648a556fa1729ab20"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gravity_wall_gpu_job_r2.json",
+      "bytes": 10301,
+      "sha256": "b4becefe3bde4d28301b9d58948a8c4a8b32b010213a6bdb64950b306b878f58"
+    }
+  ],
+  "decision": "Root has fully reviewed the corrected r2 owner/notes, actual retained CPU coarse/half input/reader contracts, current Release build and prior independent evidence. Permit one fresh constant_coarse Run/read/endpoint/review chain; only after its complete final check passes may one fresh constant_half chain use the unchanged declared inputs.",
+  "scope": "Strict tangential g=(0,0,-8), 1024 soil+256 static opposing-x FreeSlip walls, Z periodicity, constant k, weak elastic end2^-15; dt2^-25 coarse and2^-26 half,257 exact shared saved times. No CPU or old-GPU reruns, physical initial rewrite or PART restart.",
+  "requirements": "Preserve native IDs/clocks/step/exclusion/geometry/J-ledger/current necessary limits/bodyframe energy; initial all33 bits versus retained CPU; each257 endpoint Force calls with original per-node rates, both physical face normal velocity/Darcy flux, internal-Ace reaction, nonempty wrong-zero/copy controls, owners/cache/saved33 rollback. Actual native and endpoint completion are required before own half.",
+  "no_automatic_admission": "This record is not a half, continuum-reference, CPU/GPU equivalence, variable-k, full-cycle or physical acceptance. Those require later actual offline comparisons and a separate variable admission.",
+  "preserved_history": "Both original periodic combined >100 signal checks remain failed. The reviewed Gate2 uses conditional trajectory component A plus separate actual manufactured negative-control B; its coverage is explicitly not equivalent to original combined trajectory detection.",
+  "thresholds_relaxed": false,
+  "public_GPU_dynamic_accepted": false,
+  "normal_gravity_accepted": false,
+  "physical_acceptance": false,
+  "formal_or_server_inputs_or_programs_modified": false
+}

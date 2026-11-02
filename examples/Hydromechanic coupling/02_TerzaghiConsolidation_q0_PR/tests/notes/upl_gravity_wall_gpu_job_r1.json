@@ -1,0 +1,113 @@
+{
+  "stage": "upl_gravity_wall_gpu_job_r1",
+  "author_only": true,
+  "execution_observed": false,
+  "scope": "Private GPU constant-k tangential-gravity opposing-wall Debug smoke only: actual 2 steps / 3 saved frames. Four independently authorized one-action modes. No full c/h/variable window, public admission, restart, physics or production edit.",
+  "files_changed": [
+    "tests/support/upl_gravity_wall_gpu_job_r1.ps1",
+    "tests/notes/upl_gravity_wall_gpu_job_r1.json"
+  ],
+  "entry": {
+    "parameters": "-Mode Run|Read|Audit|ReviewAudit -ExecutionAuthorized",
+    "configuration": "Debug only",
+    "job": "constant_smoke",
+    "dt_s": 2.9802322387695312e-8,
+    "cadence_s": 2.9802322387695312e-8,
+    "end_s": 5.960464477539063e-8,
+    "samples": 3,
+    "completed_solver_steps": 2,
+    "saved_steps": [
+      0,
+      0,
+      1
+    ]
+  },
+  "root_admission": {
+    "path": "logs/upl_gravity_wall_gpu_smoke_r1.admission.check.json",
+    "required": {
+      "passed": true,
+      "kind": "bounded_tangential_wall_smoke",
+      "physical_acceptance": false,
+      "public_GPU_dynamic_accepted": false,
+      "inputs": "Nonempty flat artifact E array, hash-verified; optional proofs/files/job_checks also verified."
+    },
+    "meaning": "Root must independently bind A/B/Init and required prerequisites. This author file neither creates nor assumes that record. Original coarse combined-100-budget failure is not promoted to a whole pass."
+  },
+  "frozen_helper": {
+    "receipt": "logs/upl_gravity_wall_gpu_Debug_r1.helper.json",
+    "status": "gravity_wall_helper_linked_not_run",
+    "fixture": "GravityWallActual",
+    "cpp": "support/upl_gravity_wall_gpu_r1.cpp",
+    "cpp_bytes": 48763,
+    "cpp_sha256": "b00656d3fc35b7f33724d75691f59941a360156982d925c89f02e7884c9e5d38",
+    "note": "notes/upl_gravity_wall_gpu_r1.json",
+    "note_sha256": "bdb51ece0b34b3ca33f2d3722e485edb6ce1f07a20114f1d62def30c9fb73aae",
+    "current_source": "Helper source_build/source_freeze, exactly 265 current files = 2 targets + 263 others, 110 non-main authoritative GPU objects + helper =111, tools/libraries including unique bcrypt.lib, runtime original/copy and protected canonical GPU6+CPU2. Pre/post rehash. Historical mutable source/Git/doc paths are not recursively revalidated as current.",
+    "snapshot_binding": "current_source_snapshot is 265 nested {original:E,snapshot:E} rows, verified pairwise rather than passed as flat E. Other flat E arrays/scalars and both runtime original/copy collections were inspected before execution; current project_call actually declares typed_LASTEXITCODE_captured_immediately=true, owned_call_exited=true, exit_code=0.",
+    "pre_execution_fix": "Root static review caught the nested snapshot array being passed to flat V; repaired pairwise before any Run/Read/Audit execution. No numerical budget or acceptance rule changed."
+  },
+  "input_adoption": {
+    "source_run": "logs/upl_gravity_wall_cpu_DebugCPU_constant_smoke_r1.run.json",
+    "owned_CPU_input_only": true,
+    "new_CPU_solve": false,
+    "existing_CPU_reader": "logs/upl_gravity_wall_cpu_DebugCPU_constant_smoke_r1_reader.check.json",
+    "prefix": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_constant_smoke",
+    "runtime_sha256": "cf3d6a158768034fafc36c707ea4b4dfeed45461c962c940c9ba7f59935d2864",
+    "bi4_sha256": "76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f",
+    "XML_or_BI4_copy_or_edit": false,
+    "GenCase": false,
+    "gravity_m_s2": [
+      0,
+      0,
+      -8
+    ],
+    "geometry": "1024 soil IDs256..1279 + fixed IDs0..255; x parallel FreeSlip faces 0/.0625, Z periodic; retained sine/J1/p0 initial state untouched."
+  },
+  "actions": {
+    "Run": "One actual helper --solver constant smoke -gpu:0 -stable -mdbc_freeslip PREFIX NEWOUT -dirdataout data -svres under Debug memcheck. Finish/2-step clock, actual raw files and real owned exit are sealed before any reader. No automatic Read.",
+    "Read": "One pure --read constant GPU smoke DATA DT XML NEWREVIEW. Native15+three real J/n/theta arrays, GPU-derived V/rho/k, no fabricated PosDiv/public metadata. Inertial physical.bin plus z/vz/uz-only accelerating frame.bin. Soil initial33 full bits plus initial ID/coordinate files must match existing CPU private3J reader; fixed material markers are not equated. Live_final == last_poro whole bytes. No automatic Audit.",
+    "Audit": "Requires successful own Run and Read. Separate helper --audit constant smoke DATA DT XML -- -gpu:0 -stable -mdbc_freeslip PREFIX NEWAUDIT ... under Debug memcheck. Real 3 endpoint force evaluations; no Run/ComputeStep/physical advancement. Seal own call and artifacts, no automatic ReviewAudit.",
+    "ReviewAudit": "Pure PowerShell retained CSV/JSON review only. 3 endpoint rows +3072 native rate rows +6 face rows +3 original-PART hash rows. Original raw-term rate budget, actual native ownership, fixed-error/soil33 rollback, cache/current necessary-step screens and original face velocity/flux/reaction budgets retained. No independent neighborhood reconstruction is claimed for CSV rechecking."
+  },
+  "safety": {
+    "native_energy": "bodyframe ratio <=1.1; inertial energy descriptive only",
+    "max_abs_J_minus_1": 0.0001,
+    "ledger_relative_error": 5e-13,
+    "saved_CFL_and_Ddt_h2": 0.01,
+    "signed_dterror_s_upper": 1e-14,
+    "initial_soil33": "exact all bits, no signed-zero exception",
+    "endpoint_rate": "Original 64*FLT_EPS raw-term +256*DBL_EPS max(1,|Btheta|)+1e-6 propagated budget from frozen CPP, all reported actual/ref/error/ratio checked; no new physical tolerance.",
+    "faces": "Both x planes at every sample; q=-k/gamma*(Gp+rho_w*Ace), internal Ace reaction only, no extra gravity term or bodyframe reaction correction. Original vn/q/reaction budgets retained. Smoke does not require the full-window wrong-Ace nonempty gate; all reported detection counts are nevertheless recomputed.",
+    "scope": "Single-run necessary dt screens are not a sufficient stability theorem; endpoint force snapshots are not original integrator-stage telemetry."
+  },
+  "owned_calls": {
+    "typed_exit": "Reset LASTEXITCODE=null, direct native call, capture immediately and require actual int0. Precreate empty raw log so silent readers remain sealable.",
+    "Debug_memcheck": "Both real solver and separate endpoint audit require raw ERROR SUMMARY 0 errors and LEAK SUMMARY 0 bytes leaked in 0 allocations.",
+    "tool_provenance": "Retained logs/upl_gpu_wall_component_Debug_r2.call.json identifies actual sanitizer executable; its historical typed-capture field is not invented. Every new call has its own explicit typed capture.",
+    "failure": "Fresh paths only. Failure call/raw partials/check preserved. A completed actual solver is never restarted for reader/postcheck failure, nor completed audit restarted for review failure; repairs need a new offline label."
+  },
+  "outputs": {
+    "stem": "upl_gravity_wall_gpu_constant_smoke_r1",
+    "directories": [
+      "outputs/STEM",
+      "outputs/STEM_review",
+      "outputs/STEM_audit"
+    ],
+    "records": [
+      "logs/STEM.run.json",
+      "logs/STEM.native.check.json",
+      "logs/STEM.audit.run.json",
+      "logs/STEM.audit.check.json",
+      "logs/STEM.check.json"
+    ],
+    "logs": "Each native process has separate .call.json and .log. Raw source files and all new output files are hash-bound locally; no publication action."
+  },
+  "acceptance": {
+    "physical_acceptance": false,
+    "public_GPU_dynamic_accepted": false,
+    "half_reference_or_CPU_cross_accepted": false,
+    "full_windows_supported": false,
+    "wall_trajectory_automatically_admitted": false
+  }
+}
+

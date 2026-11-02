@@ -1,0 +1,136 @@
+{
+  "stage": "upl_gpu_gravity_init_probe_r1",
+  "status": "author_only_not_built_or_executed",
+  "files": [
+    "support/upl_gpu_gravity_init_probe_r1.cpp",
+    "notes/upl_gpu_gravity_init_probe_r1.json"
+  ],
+  "scope": "Actual fresh GPU initialization and isolated method-level guard probes only. Not wall trajectories, solver integration, public gravity admission or physical truth. Root must read and separately authorize any build/run.",
+  "immutable_include": {
+    "path": "support/upl_gpu_observer_native_r1.cpp",
+    "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "reuse": "One main rename and one AppInfo; neutral Check/Fresh and existing project includes. No nested gravity helper include. Its old main/Run/readers are never called; no new CNG/library."
+  },
+  "CLI": "upl_gpu_gravity_init_probe_r1.exe --probe CASE -- -gpu:0 -stable [-mdbc_freeslip for wall] EXACT_RETAINED_SEED_PREFIX NEW_OUTPUT -dirdataout data -svres",
+  "single_action": "Each invocation selects exactly ONE case and creates ONE fresh JSphGpuSingle-derived object. Eight independent future invocations constitute the proposed matrix; no automatic chaining or reuse of a completed solver. No execution by author.",
+  "seeds": {
+    "wall": {
+      "prefix": "outputs/upl_gravity_wall_seed_r1/CaseGravityWall_constant_smoke",
+      "gravity_m_s2": [
+        0,
+        0,
+        -8
+      ],
+      "actual_counts": "1280 normal native=256 fixed+1024 fluid; opposing x-axis FreeSlip planes, z periodic",
+      "purpose": "Existing sealed CPU/private wall gravity initial XML/BI4 is loaded through the actual GPU initializer; no new geometry or field changes."
+    },
+    "observer": {
+      "prefix": "outputs/upl_gravity_periodic_seed_r1/CaseGravity_c",
+      "gravity_m_s2": [
+        -8,
+        0,
+        0
+      ],
+      "actual_counts": "512 normal fluid,0 fixed; x/z periodic",
+      "purpose": "Existing periodic gravity seed; first initialize with the currently admitted private complete-rate flags, then isolate observer-only guard on alive arrays. No CaseNpb or compound condition hack."
+    },
+    "runtime": "Both execution and casedef gravity declarations must exactly match the selected seed. Three public master/model/Ck keys remain0. Future external wrapper must bind exact XML/initial BI4/source/program/runtime; this component implements no SHA and never reads saved PART files."
+  },
+  "fresh_lifecycle": "SelectDevice/timers→actual LoadConfig→LoadCaseParticles→VisuConfig→ConfigDomain→ConfigRunMode→InitRunGpu→FreePartsInit. ConfigDomain itself executes actual wall Init (wall seed) and actual observer Init with normal production host-array lifetime. No Run/Interaction_Forces/ComputeStep/SaveData/PART restart. Nstep and TimeStep remain0; no PRE histories.",
+  "safe_recheck": {
+    "device_download": "After full normal initialization, independently download current actual Codeg/Idpg/Posxyg/Poszg/Velrhopg/J/theta; wall also downloads actual BoundNormalg and optional BoundSlipModeg. Verify unique normal IDs and actual native/fixed counts without changing CaseNpb/Npb or geometry.",
+    "complete_host_view": "RAII vectors provide full Np alive Code,Idp,AuxPos,Velrhop,PoroJ,PoroTheta simultaneously. Wall normals/slip passed to InitDynamicPoreWallGpu come from the current device download, not deleted ConfigDomain locals or stale host allocations. Actual per-particle slip is used when allocated; otherwise nullptr preserves the actual global SlipMode fallback. Original pointer addresses,Gravity,CSP.gravity,all six private flags/Ck are restored on normal and exception paths.",
+    "observer_write_safety": "InitPorosityObserverGpu writes host PoroJ/PoroTheta[Np] before copying/resetting device arrays; these host vectors are alive even though only device pointers are checked by its production guard. Guard rechecks may reset J/theta, so they are NOT trajectory equivalence controls. Baseline device J1/theta0 is asserted and complete downloaded device view must remain byte-identical after restoration.",
+    "device_constants": "Host Gravity and CSP.gravity are changed together only for the method-level call and restored. No ConstantDataUp or new GPU force is called, so this probe does not claim to test GPU force arithmetic under the perturbed gravity."
+  },
+  "cases": [
+    {
+      "case": "wall_zero",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original actual normal/slip with g0 succeeds.",
+      "expected_rejections": 0
+    },
+    {
+      "case": "wall_tangent",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original normal/slip g0 succeeds, then strict tangential(0,0,-8) succeeds.",
+      "expected_rejections": 0
+    },
+    {
+      "case": "wall_normal",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original g0 succeeds; only gravity changes to(-8,0,0).",
+      "expected_rejections": 1,
+      "expected_method": "InitDynamicPoreWallGpu",
+      "expected_message": "GPU dynamic wall requires gravity exactly tangent to every wall mirror vector."
+    },
+    {
+      "case": "wall_gy",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original g0 succeeds; only gravity changes to(0,1,-8).",
+      "expected_rejections": 1,
+      "expected_method": "InitDynamicPoreWallGpu",
+      "expected_message": "GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure."
+    },
+    {
+      "case": "wall_nan",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original g0 succeeds; only gravity.z becomes quiet_NaN (deliberately nonfinite probe input).",
+      "expected_rejections": 1,
+      "expected_method": "InitDynamicPoreWallGpu",
+      "expected_message": "GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure."
+    },
+    {
+      "case": "wall_tiny",
+      "fresh_initial_seed": "wall",
+      "rechecks": "Original downloaded normals/slip with g0 succeeds. Select an actual normal fixed x-wall slot; change only its temporary host raw.z=ldexp(raw.x,-22),without touching device geometry/normals. Require0<|nz|<=8FLT_EPS and raw·g!=0. Perturbed-normal g0 must still pass all wall geometry checks; only then set(0,0,-8),which must fail exact raw-dot guard,not the earlier inclined-normal guard.",
+      "expected_rejections": 1,
+      "expected_method": "InitDynamicPoreWallGpu",
+      "expected_message": "GPU dynamic wall requires gravity exactly tangent to every wall mirror vector."
+    },
+    {
+      "case": "observer_zero",
+      "fresh_initial_seed": "observer",
+      "rechecks": "After actual complete-rate baseline init, set Observer=true and Feedback/DynamicPressure/Wall/Conductivity=false, Ck0,actual CaseNpb0 unchanged; independently assert all other generic conditions,then g0 actual InitPorosityObserverGpu succeeds.",
+      "expected_rejections": 0
+    },
+    {
+      "case": "observer_gravity",
+      "fresh_initial_seed": "observer",
+      "rechecks": "Separate fresh object. Same observer-only flags and every non-gravity prerequisite independently asserted. First actual g0 observer Init succeeds; then only gravity changes to(-8,0,0),still finite/2D,which must hit the exact observer generic gravity message.",
+      "expected_rejections": 1,
+      "expected_method": "InitPorosityObserverGpu",
+      "expected_message": "GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without load, drainage, shifting or damping; finite in-plane gravity requires the complete dynamic-rate model."
+    }
+  ],
+  "exception_contract": "Only a production JException whose full declared message and ::InitDynamicPoreWallGpu) or ::InitPorosityObserverGpu) method marker both match counts as an expected rejection. CUDA/setup/parser errors,unrelated guards,arbitrary throws and early-return Observer=false cannot pass. Every negative has actual positive prechecks in its own fresh object.",
+  "source_locations": {
+    "src/source/JSphGpu.cpp": "InitDynamicPoreWallGpu1616–1663:livehost read and finite/2D/tangent/exact rawdot guard; InitPorosityObserverGpu1695–1748:private prerequisites,observer-only gravity gate and host J/theta writes.",
+    "src/source/JSphGpuSingle.cpp": "ConfigDomain273 actual wall Init before host locals are deleted;375 actual observer Init;376–377 delete local normal/slip; InitRunGpu then uses current allocated host data."
+  },
+  "outputs": {
+    "probes.csv": "1/2/3 actual method recheck rows depending case; exact expected/observed method/message, intentionally NaN input rendered only in the wall_nan negative row.",
+    "host_view.csv": "Current downloaded actual slots with native ID/code/position/velocity/passive density/J/theta; boundary-prefix raw normals and effective actual slip. Synthetic zeros/-1 label nonboundary normal/slip columns,not measured wall normals.",
+    "completion.json": "Written only after selected case passes,host pointers/flags/gravity restored and device snapshot unchanged; no aggregate eight-case claim.",
+    "Run.out": "Actual fresh initializer output,not completed solver Run."
+  },
+  "expected_counts": {
+    "fresh_objects_per_invocation": 1,
+    "full_initializations_per_invocation": 1,
+    "wall_zero_rechecks": 1,
+    "wall_tangent_normal_gy_nan_rechecks": 2,
+    "wall_tiny_rechecks": 3,
+    "observer_zero_rechecks": 1,
+    "observer_gravity_rechecks": 2,
+    "Run_calls": 0,
+    "actual_force_calls": 0,
+    "ComputeStep_calls": 0,
+    "physical_steps_advanced": 0
+  },
+  "not_proved": "No wall dynamic reconstruction/force/rate/stability/trajectory/flux/hydrostatic/physical accuracy or public gravity acceptance. This does not supersede prior endpoint/witness outcomes,extend any geometry/slip/GPU public support,install executables or authorize wall runs.",
+  "production_modified": false,
+  "built_or_executed_by_author": false,
+  "physical_acceptance": false,
+  "public_gravity_accepted": false,
+  "wall_trajectory_accepted": false
+}

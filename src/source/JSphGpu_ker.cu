@@ -1535,7 +1535,7 @@ template<unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned
   else{
     const float3 a=make_float3(float(qx*v[0]),float(qy*v[1]),float(qz*v[2]));
     if(!isfinite(a.x) || !isfinite(a.y) || !isfinite(a.z)){atomicMin(invalid,p1);return;}
-    ace[p1]=a; //-First actual-wall scope has g=0; reflect the finished native acceleration.
+    ace[p1]=a; //-Strictly tangential g has Qg=g, so Q*(Ace+g)-g=Q*Ace.
   }
 }
 

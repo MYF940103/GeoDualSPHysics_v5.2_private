@@ -1,0 +1,76 @@
+{
+  "stage": "upl_gravity_wall_gpu_pair_r1",
+  "status_at_authoring": "author_only_offline_recipe_no_pair_executed",
+  "files": [
+    "support/upl_gravity_wall_gpu_pair_r1.py",
+    "notes/upl_gravity_wall_gpu_pair_r1.json"
+  ],
+  "immutable_base": {
+    "path": "support/upl_gravity_wall_pair_r1.py",
+    "bytes": 11196,
+    "sha256": "ded73540e1af431246d440789118fc839af14caf4d7d5fa3058587135977cf8b",
+    "use": "Read completely; minimal offline data-role/schema/output adaptation of the original CPU gravity wall comparator. Original file and all controls remain unchanged."
+  },
+  "scope": "One explicitly selected offline pair only; constant or variable weak elastic opposing-x FreeSlip wall data,strict tangential g=(0,0,-8),1024soil IDs256..1279,33common fields,257 actual dyadic samples. No solver,reader helper,build,restart,plot,interpolation,source-data edit or control rerun.",
+  "prerequisites": [
+    "Root must fully read and separately authorize any invocation; author-only file preparation is not permission to run it.",
+    "Root separately verifies current identity-bound owned solver/native-reader exits,raw/source/build/program/runtime/input evidence and original all-saved wall endpoint audits. This script binds supplied exports,not native PART or external process ownership.",
+    "All prior periodic A-coarse/A-half,B,actual Init and explicit bounded wall development admissions remain prerequisites; this comparator does not turn the retained original combined failure into a pass.",
+    "Pair is admitted only once both already completed same-physics full-window exports exist. No old CPU or GPU solver is launched to manufacture controls."
+  ],
+  "CLI": "python support/upl_gravity_wall_gpu_pair_r1.py --model constant|variable --pair half|frame_c|frame_h|cpu_c|cpu_h --a GPU_GRAVITY_REVIEW --b EXACT_CONTROL_REVIEW --out NEW_PREFIX",
+  "pair_roles": {
+    "half": "a=GPU gravity coarse dt2^-25;b=GPU gravity half dt2^-26.",
+    "frame_c": "a=GPU gravity coarse;b=retained old GPU g0 same coarse dt2^-25.",
+    "frame_h": "a=GPU gravity half;b=retained old GPU g0 same half dt2^-26.",
+    "cpu_c": "a=GPU gravity coarse;b=retained CPU private3J gravity same coarse dt2^-25.",
+    "cpu_h": "a=GPU gravity half;b=retained CPU private3J gravity same half dt2^-26."
+  },
+  "role_schema": {
+    "GPU_gravity": "Require new upl_gravity_wall_gpu_r1 completion,backendGPU,private3J,15 original arrays,derived V/rho/k,gravity_z=-8,frame_columns[2,5,27],no fixed transform and bodyframe-energy semantics; use physical.bin+frame.bin.",
+    "GPU_g0": "Require retained old upl_gpu_wall_actual_r1 completion,backendGPU,private3J and derived V/rho/k. Read physical.bin only; frame is an in-memory inertial identity. Do not require,generate or write a fake frame.bin. Old completion does not normally record gravity: actual g0 provenance requires its immutable reader/owned receipts,not inference from filenames. Any present gravity field must be0.",
+    "CPU_gravity": "Require retained upl_gravity_wall_cpu_r1 completion,backendCPU_private_tangential_gravity,gravity_z=-8,private3J with derived V/rho/k,no native PosDiv/public metadata and no fixed transform. Use its existing physical.bin+frame.bin; never pass it through the old GPU public6J CPU reader.",
+    "input_files": "Each role reads physical.bin,native_ids.csv,history.csv,completion.json; both gravity roles additionally read frame.bin. Export header/file byte size must be exactly1024x33x257,with actual dyadic times0..2^-15 and no trailing bytes."
+  },
+  "identity_and_frame": {
+    "ids": "Require all1024 sorted actual native IDs256..1279,actual Part0 material coordinates matching native_ids.csv; all257 binary times and history times/zero-based saved steps/dt must match exactly. Cadence2^-23; endpoints2^-15.",
+    "initial": "EVERY pair,including CPU/GPU,retains the original initial soil33 all-binary64-bit equality gate plus identical initial material coordinates. No pre-emptive FSnormal/FSType/passive-rho exemption at t0.",
+    "soil_transform": "For each gravity role independently copy the full inertial33 array,subtract0.5*Gz*t*t from zero-based2(z) and27(uz),subtractGz*t from5(vz),then require every exported frame bit equal. All other fields are untouched. Old GPU g0 uses inertial identity only; no missing-frame proof is fabricated.",
+    "material_u": "Retain original consistency bound|frame_u-(frame_x-initial_material_x)|<=16epsD,without inferred unwrap or interpolated clocks.",
+    "no_wrap": "Independently retain actual inertial soil0<x<1/16,y0,0<z<1/16. Do not transform/move fixed walls or source geometry to align fields.",
+    "fixed_limit": "Binaries contain soil only; fixed physical geometry/velocity and backend-specific fixed markers remain the separately owned native-reader/endpoint obligations. This pair does not read fixed_samples.csv or claim a new fixed-wall observation."
+  },
+  "original_scales": {
+    "pressure_Pa": 1023.9999974568686,
+    "velocity_m_s": 0.001953125,
+    "material_u_m": 7.589099058944216e-8,
+    "normalized_limit": 0.0001,
+    "coarse_dt_s": 2.9802322387695312e-8,
+    "half_dt_s": 1.4901161193847656e-8
+  },
+  "gates": {
+    "all_pairs": "All257 samples:pressure RMS<=5Pa,material-u maximum<=.005mm AND normalized pressure/fullXYZ velocity/fullXYZ material-u RMS<=1e-4. No interpolation,sample omission,new precision limits or all33 wholehistory-equivalence claim.",
+    "exact": "Columns7(p0),16(plastic),21/22/23(load XYZ) are wholehistory bit-exact for EVERY pair and separately zero/finite screened. GPU half and GPU-vs-GPU g0 additionally retain the original wholehistory passive legacy rho column24 bit gate.",
+    "cross_backend_passive": "Only CPU/GPU wholehistory column24 is descriptive because legacy passive density updates differ. Both sides still satisfy native700..3000 and t0 rho2048/all33 equality. Mixture inertia is independently derived from J in column31; do not confuse it with passive rho.",
+    "body_only_frame_pairs": "Only frame_c/frame_h use full native inertial velocity delta minus g*t,XYZ RMS/A<=1e-4. Only those pairs require final formula-only missing/doubled-g residuals strictly>100 original velocity budgets. No faulty solver calls; no mean/CoM substitute. Half and CPUgravity-vs-GPUgravity correctly do not apply a one-body-gravity-difference test.",
+    "single_screens": "Each input independently recomputes n/V/rho/k ledger<=5e-13,weak|J-1|<=1e-4,n(0,1),native solid-volume/excess/passive/p0/plastic/load screens,current-J coupled CFL<=.01,current-k diffusion dt/h2<=.01,positive-k margin>64epsD max(rho,rhow),accelerating-frame soil kinetic+elastic+pore energy<=1.1. Signed saved dterror finite<=1e-14,never absolute. Full natural max|J-1|>1e-8 and variable span>=.005k0 retain the original native activation screens.",
+    "history_schema": "GPU gravity uses dterror_s/frame_energy_ratio;retained GPUg0 uses dterror_s/energy_ratio;CPUgravity uses signed_dterror_s/frame_energy_ratio. This is an explicit role map,not missing-field fallback."
+  },
+  "descriptive_fields": "For EVERY one of257x33 field entries report RMS difference,max absolute difference and number of binary64 mismatching soil nodes. Stress/theta/J/n/FS type/normal and cross-backend passive differences are not silently promoted to new post-result precision gates. Initial all33 remains exact.",
+  "outputs": {
+    "fresh_only": "All three paths share --out prefix and must not exist; parent directory must already exist. No figures directory or plotting package. Files opened exclusively; no input is written.",
+    "check": "PREFIX.check.json:one selected pair result,gates,roles/dt,metrics,input and output SHA bindings and explicit limits.",
+    "history": "PREFIX.csv:257 rows of original pressure/fullXYZ v/u/max-u/scaled/body metrics; body column blank outside GPU-vs-g0 pairs.",
+    "fields": "PREFIX_fields.csv:8481 descriptive field rows with strict-vs-descriptive interpretation.",
+    "hashes": "Bind every supplied file and script before comparison,then rehash all before sealing check. Existing controls/native files are never copied or rewritten. This does not prove their external solver/reader ownership."
+  },
+  "failure_policy": "Numerical pair gate failure writes retained CSV/check passed=false and returns1. Structural/identity/single-input failure rejects without fabricating a passing check; partial files/call evidence remain. Diagnose offline without relaxing gates,tuning g/Ck/window,rerunning completed solvers or changing original data.",
+  "not_proved": "No new face/force/flux/water-balance/actual-C or original integrator-stage observation. No public gravity,normal-gravity/hydrostatic/NoSlip/general-wall/physical-case acceptance. A successful pair cannot replace original trueRun/native/endpoint/ownership gates.",
+  "production_or_retained_files_modified": false,
+  "built_or_pair_executed_by_author": false,
+  "thresholds_relaxed": false,
+  "original_combined_failure_superseded": false,
+  "public_gravity_accepted": false,
+  "wall_trajectory_accepted": false,
+  "physical_acceptance": false
+}

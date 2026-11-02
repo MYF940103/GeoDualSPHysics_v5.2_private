@@ -1,0 +1,10 @@
+{
+  "stage": "upl_gpu_gravity_init_probe_runs_r1",
+  "purpose": "One explicit actual initialization-only case, never Force/Run/ComputeStep/PART restart.",
+  "matrix": "Debug memcheck three representative paths wall_zero/wall_tiny/observer_gravity; then Release all six wall and two observer cases. Release requires all three sealed Debug passes. Each invocation owns one fresh process/object/output; no automatic wall trajectory.",
+  "unchanged_inputs": "Adopt exact retained wall constant_smoke XML/BI4 or no-wall periodic CaseGravity_c from its actual prior run/preflight. No GenCase, new XML or initial fields.",
+  "expected": "Positive cases must really execute target Init and pass. Negative cases must pass their in-object g0 positive control and reject with exact production method/full message; tiny g0 geometry control must pass first. All counts and original host pointers/device snapshots restored. Source-defined matrix is fixed before calls.",
+  "ownership": "Bind new authors, current 265-file source freeze/110 production objects+new helper, canonical8, exact program/runtime/tool/seed and all generated artifacts. Native LASTEXITCODE reset and captured immediately as integer. Precreated logs preserve silent startup failure.",
+  "limitations": "Guard admissibility and memory/lifecycle only, not wall dynamics, physical agreement or public gravity support. All previous outputs and failed combined endpoint gate remain unchanged.",
+  "physical_acceptance": false
+}

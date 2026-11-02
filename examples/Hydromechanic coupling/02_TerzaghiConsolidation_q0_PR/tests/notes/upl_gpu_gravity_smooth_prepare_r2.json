@@ -1,0 +1,9 @@
+{
+  "stage": "upl_gpu_gravity_smooth_prepare_r2",
+  "purpose": "Preparation-only correction to the never-started PeriodicSmooth legacy job; same first actual r1 solver label and identical physical inputs/argv/guards.",
+  "failure": "The original legacy Prepare rejected an incomplete E binding before writing its manifest or launching a program. It referenced privRun.source_build, which is absent in that retained private run schema. The real exact source-build entry is in the private helper already bound by j.control.helper.",
+  "repair": "Bind ph.source_build instead of nonexistent privRun.source_build. Keep the complete r1 legacy script/note unchanged because the completed DefaultOFF job already binds those exact bytes. This small preparation entry creates only the previously absent PeriodicSmooth.inputs.json compatible with r1 Run/Review.",
+  "unchanged": "Current265-source/110non-main authoritative GPU build, protected canonical8, all old owned native controls and runtime, actual source/build/input/output hashes, original same-physics argv and strict readers/CSV comparison remain. No null is filtered away; the missing claimed identity is resolved through its actual helper receipt.",
+  "ownership": "No programs, solvers, readers, help, GenCase, builds, old worker or watcher are invoked. No existing input/data/manifest is rewritten. Run and Review remain separate explicit actions through the retained r1 driver after root review.",
+  "physical_acceptance": false
+}

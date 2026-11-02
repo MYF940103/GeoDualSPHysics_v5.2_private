@@ -1,0 +1,77 @@
+{
+  "stage": "upl_gravity_wall_gpu_reference_r1",
+  "author_only": true,
+  "execution_observed": false,
+  "scope": "One purely offline direct evaluation per new GPU constant coarse/half accelerating-frame33 export, against the original independently expm/RK4-cross-checked constant-k continuum curve. No fit, interpolation, solver, theory change, input edit or inherited new-trajectory pass.",
+  "CLI": "python support/upl_gravity_wall_gpu_reference_r1.py --window coarse|half --review NEW_GPU_REVIEW --native-check OWN_NATIVE_CHECK --out tests/logs/FRESH_TAG",
+  "outputs": [
+    "logs/FRESH_TAG.check.json",
+    "figures/FRESH_TAG.csv (257 rows)"
+  ],
+  "new_files_only": [
+    "support/upl_gravity_wall_gpu_reference_r1.py",
+    "notes/upl_gravity_wall_gpu_reference_r1.json"
+  ],
+  "neutral_dependency": {
+    "module": "support/upl_gravity_wall_gpu_pair_r1.py",
+    "sha256": "6d32ef164322e5d44a09f387a8af045880a1bcc0f263d9eaed99a2dfb80254be",
+    "guarded_main": true,
+    "calls_only": [
+      "binding",
+      "table",
+      "load"
+    ],
+    "meaning": "Import does not call main. load checks private GPU gravity completion, exact 257 times/native IDs, exact inertial-to-z/vz/uz frame transform, ledger/bodyframe energy/domain/necessary-step and material-u consistency. New numerical fields are actually loaded; no old private raw is decoded."
+  },
+  "reference": {
+    "coarse": {
+      "check": "figures/upl_gpu_wall_constant_c_reference_r1.json",
+      "bytes": 92782,
+      "sha256": "40d8179702e799c6f3789961e6d6c731e66e8adf6a51a407207a8677d0d648a6",
+      "CSV_sha256": "af94250aab2254bbce7df6f2b0ad5e11a811ef1aae444f813ce26ae719aa9f48"
+    },
+    "half": {
+      "check": "figures/upl_gpu_wall_constant_h_reference_r1.json",
+      "bytes": 92786,
+      "sha256": "a4adfcebbd2ae7fde76059cae6dbacc1083fac430ca8e94408f042c0a78fbe7d",
+      "CSV_sha256": "bac74b1dbf27b58aecb7d57a33bb0e7a825125d8e683eb2762ce25a7f0074a78"
+    },
+    "binding": "Hard-bind original JSON SHA, require passed Reference/constant/257/1024/256/33, original 256-band and 1% objective, original scales and expm-vs-physical-RK4 gap <2e-11. Exactly one CSV is selected and its bytes/SHA verified from that old check.files E. Actual257 time/part rows and normalized reference p/v/u are read without new theoretical integration or fitting."
+  },
+  "new_native": {
+    "required": "Own passed native check for constant_coarse/constant_half with initial33 strict proof, saved/live final exact, same completion directory, all selected frame/physical/history/native_ids/completion artifacts matched to own files E. Direct source_run/call/helper/source_build records are hash-bound but this is not a new independent owned-exit audit.",
+    "backend": "GPU private15+3 native J/n/theta, derived V/rho/k, no new native PosDiv. Soil frame only; fixed particles never transformed.",
+    "times": "257 exact actual times i*2^-23, end2^-15, no interpolation; dt2^-25 or2^-26."
+  },
+  "math": {
+    "phase": "2*pi*x0/.125, permanent native material x0",
+    "pressure": "frame_p/Pstar - reference_p_normalized*cos(phase)",
+    "velocity": "frame_vXYZ/A minus [reference_v_normalized*sin(phase),0,0]",
+    "displacement": "frame_material_uXYZ/Ustar minus [reference_u_normalized*sin(phase),0,0]",
+    "global": "sqrt(mean over1024 natives of squared scalar p or complete XYZ vector norm)",
+    "nearwall": "The original fixed256 material band min(x0,.0625-x0)<=2*float(1.8/512); must equal native_ids.wall_band, same fullXYZ RMS definition.",
+    "endpoint": "[2*mean(frame_p*cos(phase))/Pstar]/reference_p_normalized_at_final -1",
+    "scales": {
+      "Pstar": 1023.9999974568686,
+      "A": 0.001953125,
+      "Ustar": 7.589099058944216e-8
+    }
+  },
+  "gates": {
+    "global_all257_p_vXYZ_uXYZ": 0.01,
+    "nearwall256_all257_p_vXYZ_uXYZ": 0.01,
+    "absolute_endpoint_pressure_cosmode_relative": 0.01,
+    "thresholds_changed": false,
+    "half_error_used_as_reference": false,
+    "new_actual_frame33_must_be_evaluated": true
+  },
+  "identity_and_failure": "Only fresh check/CSV paths; no raw/native file writes. All bound inputs are rehashed before final check. Numeric failed objectives write passed=false and exit1, without changing any limit or historical pass/fail. Root separately verifies owned new solver/reader and retained g0/reference source lineage.",
+  "limits": {
+    "no_new_variable_k_theory": true,
+    "no_new_physical_or_public_gravity_admission": true,
+    "no_saved_force_or_flux_claim": true,
+    "no_independent_device_or_owner_proof_from_CSV": true,
+    "physical_acceptance": false
+  }
+}
+

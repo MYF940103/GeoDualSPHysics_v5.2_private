@@ -1,0 +1,58 @@
+{
+  "stage": "upl_gpu_gravity_helper_build_r1",
+  "status": "author_only_not_executed",
+  "driver": "support/upl_gpu_gravity_helper_build_r1.ps1",
+  "action": "Exactly one Debug or Release C++ compile/link of upl_gravity_periodic_gpu_r1.cpp. Requires root review and both authorization switches. No project Rebuild, GPU kernel compile, input Prepare, executable/help/solver/reader invocation or installation. Release requires the fresh Debug helper link only, never numerical admission.",
+  "candidate": {
+    "cpp": "support/upl_gravity_periodic_gpu_r1.cpp",
+    "bytes": 19450,
+    "sha256": "431e3226083013e09b93865fca720e9bd7529c57e331dd7b2506b10a1df7fc16",
+    "note": "notes/upl_gravity_periodic_gpu_r1.json",
+    "note_bytes": 8810,
+    "note_sha256": "eb7ad84a5cefc25d06062d3c799afe83d3916e3ac9fc28c0f51a7bf0ae410deb"
+  },
+  "authored_include": {
+    "cpp": "support/upl_gpu_observer_native_r1.cpp",
+    "bytes": 12180,
+    "sha256": "b112f7e78651dde136c2438a02f326522ef4cb35b5603fa1eb17ee24d3437857",
+    "note": "notes/upl_gpu_observer_native_r1.json",
+    "note_bytes": 5803,
+    "note_sha256": "26dafa6246e7ba38798cc7e3542bb10d9b3926c8303ae17c54dcd35bd499344d",
+    "scope": "Single main rename and one AppInfo; no old main is invoked. Include resolves in the new source directory,with existing project/CUDA include arguments preserved."
+  },
+  "current_source_and_objects": {
+    "build": "logs/upl_gpu_gravity_{Debug|Release}_r1.build.json",
+    "source_freeze": "Its actual source_freeze entry,not a nonexistent baseline field.",
+    "scope": "Current265 code originals plus265 current snapshots,2targets/263others,110 current non-main GPU objects and canonical8 are verified before/after through current build/source receipts. Historical source/Git metadata is not traversed as current. There is no HEAD/ref predicate; legitimate later commits do not invalidate identical compiled source bytes.",
+    "units": "110=96 C++ +12 CUDA .cu +2 CUDA-compiled *_iker.h objects. The separately recorded project main.obj is never linked into this helper. The final link must equal exactly110 current entries+1new helper,with no old GPU object,duplicate,main,CNG or substitute CPU85 closure.",
+    "toolchain": "Preserve actual MSVC14.36.32532,C++17,_WITHGPU,CUDA11.7 include,cudart_static and existing config flags. The linked GPU objects were freshly built for compute_86/sm_86."
+  },
+  "replay": {
+    "manifests": "logs/upl_gpu_public_reader_{Debug|Release}_r1.helper.json and their actual compile/link call records.",
+    "provenance": "Validate immutable recipe/call/source-build record identities,tools,libraries and retained program/runtime; never recursively validate the historical production source inventories or old baseline inputs.",
+    "compile": "Replace exactly one old public reader CPP argument with the new gravity CPP,and exactly Fo/Fd outputs. All flags/includes/argument order stay unchanged; no new dependency/precision/CNG option.",
+    "link": "Replace exactly old helper.obj,all110 old object paths by matching current unique basenames,OUT and Debug-only PDB. Preserve library/flag order. Reject foreign/duplicate/unmapped object terms through the exact111 closure.",
+    "libraries": "Preserve both matching current-build and retained helper resolved library/tool identities. Existing Microsoft system-library arguments remain unchanged. No bcrypt/CNG dependency.",
+    "environment": "Acquire the process VS environment by the same VsDevCmd.bat -arch=x64 -host_arch=x64 convention. Do not access absent helper.environment.selected.",
+    "no_author_source_copies": "New/immutable authored CPP+notes and builder+notes are frozen by hashes at the action; no full author/runtime/program backups are made."
+  },
+  "outputs": {
+    "folder": "outputs/upl_gpu_gravity_helper_{Debug|Release}_r1/",
+    "program": "upl_gravity_periodic_gpu_r1.exe",
+    "receipt": "logs/upl_gpu_gravity_helper_{Debug|Release}_r1.helper.json",
+    "calls": "logs/upl_gpu_gravity_helper_{Debug|Release}_r1_{compile|link}.call.json plus .log",
+    "runtime": "Copy exactly the current GPU build's four DLL/config runtime leaves into the fresh helper folder and verify raw bytes/SHA."
+  },
+  "retention_and_exit": "Reject pre-existing outputs/receipts/logs. Precreate empty logs. Reset global LASTEXITCODE to null; immediately capture the uncoerced native value and require its actual Int32 type and0. Null/stale/missing codes cannot become false exit0. Compiler/linker failures and their calls/logs/helper status are retained,link is not launched after compile failure,and no completed program is automatically retried.",
+  "future_commands": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_gravity_helper_build_r1.ps1 -Configuration Debug -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_gravity_helper_build_r1.ps1 -Configuration Release -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "scope": "Compilation/linkage preparation only. The executable contains separate actual Run and reader entries,but this recipe invokes neither and claims no successful gravity trajectory,half/body/frame/CPUcross,wall or public nonzero-gravity acceptance.",
+  "authored_script_lines": 61,
+  "program_or_component_run": false,
+  "production_or_project_modified_by_this_authoring": false,
+  "private_GPU_gravity_numerical_acceptance": false,
+  "public_nonzero_gravity_accepted": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,73 @@
+{
+  "stage": "upl_gpu_gravity_endpoint_variable_coarse_offline_review_r1",
+  "cryer_priority_completed_and_backed_up_at": "72e35fd00e39b56ac0c1156d915c0a2119f23165",
+  "method": "Read-only existing CSV/source/log recomputation; no native helper, physical solver or build invoked by this offline review.",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_gpu_gravity_pause_for_cryer_r1.json",
+      "bytes": 1540,
+      "sha256": "c5dd017d47c27103075ed13c96cfc248322ab210c510e205a9d6007673b70f81"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gpu_gravity_endpoint_r1.cpp",
+      "bytes": 26752,
+      "sha256": "791dff7f2d5db3d689c7623affa7fad32a07dc7b94752d12f2d8870de0ef9379"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_endpoint_variable_coarse_r1.check.json",
+      "bytes": 8968,
+      "sha256": "2aa2e212bbcc4a3e10003cecc5a2a87bd1282ac9abb7ec9f684c8811dc6c4db5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_endpoint_variable_coarse_r1.call.json",
+      "bytes": 2992,
+      "sha256": "b117be2745eb55ab51db452a669606d4487ad98956713b3f6d87841abd3c84b9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_endpoint_variable_coarse_r1.log",
+      "bytes": 23028,
+      "sha256": "c343a7d2df5fe2ea77a1545252afe6ae7fd7968cf88402877c6635d54be29aaa"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_gravity_endpoint_variable_coarse_r1\\endpoint.csv",
+      "bytes": 68466,
+      "sha256": "afd0a414812445a6f7182596c311be3b9f8f70c281fbac7042a95554e2ec26ec"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_gravity_endpoint_variable_coarse_r1\\endpoint_rates.csv",
+      "bytes": 67939598,
+      "sha256": "6de8ccd0c276cb060d9b4f0ad673a5e13c75636ef4cf6fcbb51f8b94a4664967"
+    }
+  ],
+  "original_endpoint_gate_passed": false,
+  "original_owned_exit": 1,
+  "original_completion_absent": true,
+  "observed_loop": {
+    "actual_force_calls": 257,
+    "normal_rate_rows": 131584,
+    "normal_ids": 512,
+    "periodic_ghost_checks": 115136,
+    "physical33_rollback_frames": 257,
+    "clock_and_fixed_error_unchanged": true,
+    "max_correct_rate_abs_error_Pa_s": 1.057333815842867,
+    "max_correct_rate_error_over_original_budget": 0.006373862306921163,
+    "max_wrong_g_signal_over_original_budget": 43.872170427389236,
+    "postinitial_wrong_g_witnesses_gt100": 0,
+    "worst_signal": {
+      "part": 256,
+      "saved_step": 511,
+      "time_s": 0.000030517578125,
+      "id": 397,
+      "delta_rate_Pa_s": -31395.15235777967,
+      "original_budget_Pa_s": 715.6051786801911
+    }
+  },
+  "wrapper_placeholder": "actual_endpoint_force_calls=0 in the failed check is the wrapper's missing-completion placeholder, not an observed zero-call count. The immutable failed check is not rewritten.",
+  "conclusion": "The correct conditional rate, owner, cache, step and rollback loop completed. The predeclared wrong-explicit-g >100-budget nonempty gate failed and remains failed; no wall/public/physical admission follows.",
+  "next": "A separately labeled prescribed-J zero-internal-force static operator test is being authored with original raw-term budgets and actual +/-g complete-rate negative calls. It is not a rerun or replacement of the failed trajectory gate.",
+  "solver_rerun": false,
+  "thresholds_relaxed": false,
+  "public_nonzero_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "physical_acceptance": false
+}

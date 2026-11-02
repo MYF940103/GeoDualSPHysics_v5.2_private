@@ -1,0 +1,71 @@
+{
+  "stage": "upl_gpu_gravity_build_r1",
+  "status": "author_only_not_executed",
+  "source_checkpoint": "c476f81e07fda919fe3270fa9085a665ee604496",
+  "driver": "support/upl_gpu_gravity_build_r1.ps1",
+  "action": "One explicit Configuration Debug or Release authoritative GPU full Rebuild. There is no Baseline, helper, help, solver, preparation or install action. Release requires the fresh stage Debug build only, not numerical gravity acceptance.",
+  "authorization": "Both ProductionBuildConfirmed and ExecutionAuthorized are required after root full review. This authoring action executes nothing.",
+  "current_candidate": [
+    {
+      "path": "src/source/JSphGpu.cpp",
+      "bytes": 120270,
+      "sha256": "36b9d10c5e6fdcd48b0a30b84d4041d1b3e1471c89d6a94e914a3ade1355320b",
+      "scope": "Root-reviewed changes to two private Init guards/messages only."
+    },
+    {
+      "path": "src/source/JSphGpu_ker.cu",
+      "bytes": 301290,
+      "sha256": "c0ac4a12eb789004db1869c7c533a788d9eef6fedf626b7c3506388b44758e0a",
+      "scope": "Root-reviewed stage2 comment only; no kernel arithmetic change."
+    }
+  ],
+  "CPU_unchanged": {
+    "path": "src/source/JSphCpu.cpp",
+    "sha256": "0224f7383c1b19d40375d79037ffebb99bcf5bb826b2db4a4c77ba7a87621b93",
+    "gate": "logs/upl_gpu_gravity_default_DebugCPU_r1.build.json actual owned exit0 and unchanged canonical CPU Debug program; required, never inferred from log prose."
+  },
+  "source_freeze": {
+    "current_code_files": 265,
+    "targets": 2,
+    "other_source_files": 263,
+    "reference_CPU_wall_directory_files": 271,
+    "noncode_text_files_excluded": 6,
+    "old_source_receipt": "logs/upl_gravity_wall_cpu_DebugCPU_r1.build.json",
+    "old_raw_target_snapshots": "Only the two existing current_source_snapshot.snapshot entries are used as pre-edit raw evidence; their current original source paths are intentionally not verified as unchanged.",
+    "ancestry": "Read-only git hash-object --path=src/source/NAME SNAPSHOT (without -w) must equal git rev-parse c476f81:src/source/NAME. Raw CRLF bytes are never required to equal a Git-filtered blob. This is historical retained-snapshot evidence, not a claim of a newly performed pre-edit backup.",
+    "current_snapshot": "At the future Build action, copy exactly all265 current code files after guard edits and before the project call into one new outputs/upl_gpu_gravity_CONFIG_r1_source directory; require unique leaf names and raw byte/SHA equality. Freeze both originals and snapshot entries. No separate baseline action or historical snapshot mutation.",
+    "current_others": "Verify263 current others against the sealed wall raw source identities, which already include the committed CPU gamma/tangential-wall changes. Do not reuse historical public-stage b499/261 current-source predicates or revalidate old Git identity files as mutable current data."
+  },
+  "build_recipe": {
+    "original_builds": "logs/upl_gpu_public_{Debug|Release}_r1.build.json and their exact project.call.json vectors",
+    "authoritative_solution": "src/VS/DualSPHysics5Re.sln",
+    "authoritative_project": "src/VS/DualSPHysics5Re.vcxproj",
+    "flags_preserved": "/m:1 /nr:false /t:Rebuild /v:minimal, x64/v143/VCToolsVersion14.36.32532, BuildProjectReferences=false, PostBuildEventUseInBuild=false; replace exactly OutDir, IntDir and binlog only.",
+    "toolchain": "Actual CUDA11.7 nvcc and VS2022 MSVC14.36.32532; GPU x64 CodeGeneration compute_86,sm_86. Not CUDA7.5/compute75.",
+    "units": "111 active project units including its own main. Preserve110 non-main objects:96 C++ +12 .cu +2 CUDA-compiled headers FunctionsGeo3d_iker.h and FunctionsMath_iker.h. JSphGpu_InOut_ker.cu is excluded in Debug/Release. Do not select only .cu suffixes or substitute CPU85 objects. The fresh project main.obj is recorded separately and is not a future helper dependency.",
+    "libraries": "Hash only the six resolved third-party/CUDA library identities from the matching immutable public reader helper manifest; no helper is built or invoked, and unchanged MSBuild project/system-library arguments remain authoritative.",
+    "environment": "Same actual VsDevCmd.bat -arch=x64 -host_arch=x64 process environment acquisition as the retained GPU build; do not read a nonexistent GPU helper.environment.selected field."
+  },
+  "new_artifacts": {
+    "isolated_program": "outputs/upl_gpu_gravity_{Debug|Release}_r1/gpu/",
+    "no_space_IntDir": "GetTempPath()/upl_gpu_gravity_r1/{Debug|Release}/int/",
+    "snapshot": "outputs/upl_gpu_gravity_{Debug|Release}_r1_source/",
+    "source_freeze": "logs/upl_gpu_gravity_{Debug|Release}_r1.source.json",
+    "build_receipt": "logs/upl_gpu_gravity_{Debug|Release}_r1.build.json",
+    "owned_call": "logs/upl_gpu_gravity_{Debug|Release}_r1_project.call.json and .log",
+    "binlog": "logs/upl_gpu_gravity_{Debug|Release}_r1.binlog"
+  },
+  "preservation": "Reject every pre-existing new output/snapshot/IntDir/log/receipt path. Protect eight existing canonical GPU/CPU programs/runtime entries plus the retained matching isolated public-GPU program/runtime identities before and after. Copy runtime only into the new isolated output during a later authorized Build; no canonical/server installation. A failed native project call and its source snapshots/log/receipt remain under the failed label without automatic retry.",
+  "owned_exit": "Precreate an empty build log, invoke the actual MSBuild tool directly, capture typed int LASTEXITCODE immediately inside the native-call try block, then persist call/exit/log. Native failure never counts as build pass.",
+  "future_commands": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_gravity_build_r1.ps1 -Configuration Debug -ProductionBuildConfirmed -ExecutionAuthorized",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_gpu_gravity_build_r1.ps1 -Configuration Release -ProductionBuildConfirmed -ExecutionAuthorized"
+  ],
+  "scope": "Build preparation only. Public nonzero-gravity limits and private numerical/trajectory/gravity-wall gates are not relaxed or accepted by compilation. No new helper is bound, built, run or frozen; unfinished peer author files are not inputs.",
+  "authored_script_lines": 78,
+  "program_or_component_run": false,
+  "production_or_project_modified_by_this_authoring": false,
+  "private_GPU_gravity_numerical_acceptance": false,
+  "public_nonzero_gravity_accepted": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,334 @@
+{
+  "stage": "upl_gpu_gravity_witness_r1_independent_readonly_peer",
+  "passed": true,
+  "scope": "Full final CPP/note/wrappers static review; independent binary64 CSV calculation and immutable receipt/source/object/runtime/output SHA verification. No CUDA/native invocation, solver, build, Git or alteration of prior artifacts by this peer.",
+  "physical_acceptance": false,
+  "public_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "source_or_old_artifacts_modified": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_Debug_r1.helper.json",
+      "bytes": 51595,
+      "sha256": "fa4b1d2aac232b21edfc3d0606f8674c117fdb10cb51ffe29b6af9025a6cdaed"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_Release_r1.helper.json",
+      "bytes": 51842,
+      "sha256": "da6b441adf83b8de2e0f776cb4a81da9a95b098720c44288efde81501fa90a48"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_constant_debug_r1.check.json",
+      "bytes": 6371,
+      "sha256": "5233a75a1b5b592d5f8eba1c4658d585f3087395d1ef7ff0d4923bda9ccf92bc"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_variable_debug_r1.check.json",
+      "bytes": 6775,
+      "sha256": "3f38c5d84479f71dcd3a1b2c0d305305cc8472fe973c694a06d8979c0cf50a22"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_constant_release_r1.check.json",
+      "bytes": 7201,
+      "sha256": "5eec55be224fda72766117751aeabbd702263cdf90c8ef2568b8e4caf650c3b1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_witness_variable_release_r1.check.json",
+      "bytes": 7607,
+      "sha256": "1094dca606ee41ca4c06021e12715f76e9d1926ec670ebea5e02e153090efcfa"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_endpoint_variable_coarse_r1.check.json",
+      "bytes": 8968,
+      "sha256": "2aa2e212bbcc4a3e10003cecc5a2a87bd1282ac9abb7ec9f684c8811dc6c4db5"
+    }
+  ],
+  "current_production_targets": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "bytes": 120270,
+      "sha256": "36b9d10c5e6fdcd48b0a30b84d4041d1b3e1471c89d6a94e914a3ade1355320b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 301290,
+      "sha256": "c0ac4a12eb789004db1869c7c533a788d9eef6fedf626b7c3506388b44758e0a"
+    }
+  ],
+  "hash_audit": {
+    "binding_checks": 2262,
+    "unique_files": 1150,
+    "unique_bytes": 1069049938,
+    "mismatches": 0,
+    "per_configuration": "265 actual source files, 265 current source snapshots, 2 changed production targets plus 263 others, 110 authoritative non-main objects and one new helper; compiler/linker tools/libraries/calls, isolated program, runtime pairs and 8 protected canonical programs verified. All four checks/calls/completions/outputs and the retained failed endpoint evidence verified."
+  },
+  "coverage": {
+    "fresh_jobs": 4,
+    "models": [
+      "constant",
+      "variable"
+    ],
+    "configurations": [
+      "Debug",
+      "Release"
+    ],
+    "CSV_rows_recomputed": 6144,
+    "native_IDs_per_case": 512,
+    "cases_per_job": [
+      "natural",
+      "Ace_minus_g",
+      "Ace_plus_g"
+    ],
+    "actual_force_calls_from_frozen_source_and_owned_completions": 4,
+    "actual_negative_complete_rate_calls_from_frozen_source_and_owned_completions": 8,
+    "periodic_owner_checks_reported_and_bound": 5376,
+    "negative_restorations_reported_and_bound": 8,
+    "Debug_memcheck_raw_logs_independently_decoded": "Both UTF-16LE logs: zero errors, zero bytes leaked in zero allocations.",
+    "all_native_owned_typed_exits_zero": true,
+    "full_rate_sentinel_overwrite_and_restoration": "Validated source assertions and owned completed calls; not independently re-read GPU memory.",
+    "zero_advanced_clock_and_no_PRE": "Validated source Clock assertions and zero-step completion; no Run, ComputeStep or PART reader."
+  },
+  "independent_calculations": {
+    "inputs": "Every 3x512 row case/ID, fixed lattice, J=1+2^-15 sin(2*pi*x/.125), n(J), k0=float(1e-4), Ck=2^-13 for law ON, physical a=Ace+g, g=(-8,0,0), gamma=1000*9.80665.",
+    "general_rate": "With exported Gp=theta=lp=divAce=0, independently recompute B/gamma*alpha*k*(GJ dot (rho_w*Ace)); compare to complete host reference and actual float rate.",
+    "budget": "For every row recompute 64*FLT_EPSILON*raw_majorant+256*DBL_EPSILON*max(1,abs(B*theta))+1e-6. All residuals <= their own side budgets. The full raw-majorant construction was source-reviewed; absolute neighbor-pair sums were not independently regenerated by this peer.",
+    "signal": "For each wrong side recompute min(abs(actual_side-base_actual),abs(reference_side-base_reference))/max(base_budget,side_budget). Each variable side has 512 witnesses strictly above 100 in both configurations; each constant side remains strictly zero.",
+    "natural": "For every natural row actual rate/Ace/theta and reference Gp/rate/derived q are numerically strict zero; signed zero is not relabeled as bitwise positive zero.",
+    "derived_flux": "Recomputed conditional q=-k/gamma*(Gp+rho_w*Ace), explicitly not a saved native flux or a wall/face balance.",
+    "scales": "Independently recomputed current-J n/rho, positive-k RH domain, native max acoustic and diffusion scales, gradient-speed reference from exported GJ and original necessary bound. Actual gradient speed remains inside its original 64FLT_EPS budget; dt=2^-24 and DtMin=1e-10 are below bound."
+  },
+  "results": [
+    {
+      "job": "constant_debug",
+      "rows": 1536,
+      "max_error_pa_s": 0,
+      "max_error_over_budget": 0,
+      "ref_recompute_maxdiff": 0,
+      "budget_recompute_maxdiff": 0,
+      "formula_delta_maxdiff": 0,
+      "derived_q_maxdiff": 0,
+      "actual_speed": 0,
+      "reference_speed": 0,
+      "speed_abs_error": 0,
+      "wave_s": 0.000013732703636694324,
+      "pore_s": 0.0000018059523971042185,
+      "necessary_bound_s": 0.0000018059523971042185,
+      "k_over_k0": [
+        1,
+        1
+      ],
+      "cases": [
+        {
+          "case": "natural",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_minus_g",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_plus_g",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        }
+      ]
+    },
+    {
+      "job": "variable_debug",
+      "rows": 1536,
+      "max_error_pa_s": 0.0218052493291907,
+      "max_error_over_budget": 0.011070868805303277,
+      "ref_recompute_maxdiff": 5.820766091346741e-11,
+      "budget_recompute_maxdiff": 0,
+      "formula_delta_maxdiff": 0,
+      "derived_q_maxdiff": 0,
+      "actual_speed": 47.514484540989905,
+      "reference_speed": 47.51448285109648,
+      "speed_abs_error": 0.0000016898934234177432,
+      "wave_s": 0.000013732703636694324,
+      "pore_s": 0.0000012963363298017973,
+      "necessary_bound_s": 0.0000012963363298017973,
+      "k_over_k0": [
+        0.7176823321102566,
+        1.3933741367989694
+      ],
+      "cases": [
+        {
+          "case": "natural",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_minus_g",
+          "rows": 512,
+          "max_abs_rate": 380115.875,
+          "max_error_over_budget": 0.011070868805303277,
+          "max_signal": 131071.95480361143,
+          "witnesses_gt100": 512
+        },
+        {
+          "case": "Ace_plus_g",
+          "rows": 512,
+          "max_abs_rate": 380115.875,
+          "max_error_over_budget": 0.011070868805303277,
+          "max_signal": 131071.95480361143,
+          "witnesses_gt100": 512
+        }
+      ]
+    },
+    {
+      "job": "constant_release",
+      "rows": 1536,
+      "max_error_pa_s": 0,
+      "max_error_over_budget": 0,
+      "ref_recompute_maxdiff": 0,
+      "budget_recompute_maxdiff": 0,
+      "formula_delta_maxdiff": 0,
+      "derived_q_maxdiff": 0,
+      "actual_speed": 0,
+      "reference_speed": 0,
+      "speed_abs_error": 0,
+      "wave_s": 0.000013732703636694324,
+      "pore_s": 0.0000018059523971042185,
+      "necessary_bound_s": 0.0000018059523971042185,
+      "k_over_k0": [
+        1,
+        1
+      ],
+      "cases": [
+        {
+          "case": "natural",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_minus_g",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_plus_g",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        }
+      ]
+    },
+    {
+      "job": "variable_release",
+      "rows": 1536,
+      "max_error_pa_s": 0.0218052493291907,
+      "max_error_over_budget": 0.011070868805303277,
+      "ref_recompute_maxdiff": 5.820766091346741e-11,
+      "budget_recompute_maxdiff": 0,
+      "formula_delta_maxdiff": 0,
+      "derived_q_maxdiff": 0,
+      "actual_speed": 47.514484540989905,
+      "reference_speed": 47.51448285109648,
+      "speed_abs_error": 0.0000016898934234177432,
+      "wave_s": 0.000013732703636694324,
+      "pore_s": 0.0000012963363298017973,
+      "necessary_bound_s": 0.0000012963363298017973,
+      "k_over_k0": [
+        0.7176823321102566,
+        1.3933741367989694
+      ],
+      "cases": [
+        {
+          "case": "natural",
+          "rows": 512,
+          "max_abs_rate": 0,
+          "max_error_over_budget": 0,
+          "max_signal": 0,
+          "witnesses_gt100": 0
+        },
+        {
+          "case": "Ace_minus_g",
+          "rows": 512,
+          "max_abs_rate": 380115.875,
+          "max_error_over_budget": 0.011070868805303277,
+          "max_signal": 131071.95480361143,
+          "witnesses_gt100": 512
+        },
+        {
+          "case": "Ace_plus_g",
+          "rows": 512,
+          "max_abs_rate": 380115.875,
+          "max_error_over_budget": 0.011070868805303277,
+          "max_signal": 131071.95480361143,
+          "witnesses_gt100": 512
+        }
+      ]
+    }
+  ],
+  "Debug_Release_comparison": {
+    "all_rate_CSV_bytes_equal": false,
+    "constant_summary_and_completion_bytes_equal": true,
+    "variable_summary_and_completion_bytes_equal": true,
+    "common_export_columns_bit_equal_all_1536_rows_per_model": [
+      "id",
+      "x",
+      "y",
+      "z",
+      "J",
+      "n",
+      "k",
+      "actual_rate",
+      "Ace_x",
+      "Ace_y",
+      "Ace_z",
+      "theta",
+      "physical_a_x",
+      "physical_a_y",
+      "physical_a_z",
+      "actual_delta"
+    ],
+    "semantics": "n/k/physical_a are derived export values, not additional native GPU arrays. Binary64 bit comparison is of round-trip CSV exports, not a native BI4 equality claim.",
+    "independent_host_reference_column_differences": {
+      "GJ_x_absmax": 6.505213034913027e-19,
+      "GJ_z_absmax": 8.131516293641283e-20,
+      "independent_rate_absmax_Pa_s": 1.7462298274040222e-10,
+      "budget_absmax_Pa_s": 1.3322676295501878e-15,
+      "chain_reference_absmax_Pa_s": 2.3283064365386963e-10
+    },
+    "exact_cross_configuration_host_reference_equality_was_not_an_admission_gate": true
+  },
+  "preserved_failure": {
+    "original_variable_coarse_check_passed": false,
+    "original_257_endpoint_rows_checked": 257,
+    "original_33_rollback_true_rows": 257,
+    "original_wrong_g_signal_max_over_original_budget": 43.872170427389236,
+    "original_threshold": 100,
+    "failure_overridden": false,
+    "interpretation": "The new prescribed-J zero-driving component separately resolves operator sensitivity. It does not retroactively pass the original trajectory's >100 witness, automatically admit its half, or supply a physical solution."
+  },
+  "limitations": [
+    "Manufactured J is prescribed on the unchanged lattice, not a constitutively evolved globally compatible deformation or a real freefall trajectory.",
+    "GJ and the general raw-majorant are host reference exports conditional on actual stage C/Ace/theta. This peer independently recomputed downstream algebra/budgets and reviewed their production/fixture construction, but did not implement a second CUDA kernel, neighbor search or BI4 parser.",
+    "Owner bits, sentinel overwrite and GPU rollback are source-reviewed assertions tied to actual owned calls and Debug memcheck, not independent device-memory observations by this peer.",
+    "No public nonzero-gravity, wall/normal-gravity, hydrostatic equilibrium, full-cycle physical, restart or new half-step acceptance follows from this component."
+  ]
+}
+

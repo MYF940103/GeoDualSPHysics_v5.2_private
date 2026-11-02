@@ -1,0 +1,130 @@
+{
+  "stage": "upl_gravity_wall_gpu_pair_r1",
+  "passed": true,
+  "model": "constant",
+  "pair": "frame_c",
+  "samples": 257,
+  "native_ids": 1024,
+  "columns": 33,
+  "roles": [
+    "GPU_gravity",
+    "GPU_g0"
+  ],
+  "dt_s": [
+    2.9802322387695312e-08,
+    2.9802322387695312e-08
+  ],
+  "gates": {
+    "pressure_RMS_5Pa": true,
+    "material_u_max_0p005mm": true,
+    "pressure_normalized_1e4": true,
+    "velocity_normalized_1e4": true,
+    "material_u_normalized_1e4": true,
+    "p0_plastic_load_bits_exact": true,
+    "passive_legacy_rho_bits_exact": true,
+    "body_gravity_XYZ_RMS_1e4": true,
+    "missing_g_formula_gt100": true,
+    "doubled_g_formula_gt100": true
+  },
+  "initial_all33_bit_gate_passed": true,
+  "comparison_space": "soil_accelerating_frame_or_retained_g0_inertial_identity",
+  "passive_legacy_rho_bits_equal_descriptive": true,
+  "passive_legacy_density_wholehistory_cross_backend_exact_gate": true,
+  "max_pressure_RMS_Pa": 3.374023043082845e-05,
+  "max_velocity_RMS_over_A": 4.471877852440858e-08,
+  "max_material_u_RMS_over_Ustar": 1.3874747744888398e-08,
+  "max_material_u_mm": 4.614364446098307e-12,
+  "max_body_gravity_RMS_over_A": 4.471877852440857e-08,
+  "missing_g_formula_final_over_original_budget": 1250.0000032585224,
+  "doubled_g_formula_final_over_original_budget": 1249.9999967416359,
+  "all33_bitwise_equal": false,
+  "single_run_metrics": [
+    {
+      "role": "GPU_gravity",
+      "max_ledger_relative_error": 0.0,
+      "max_frame_energy_ratio": 1.0015666648643267,
+      "material_position_consistency_m": 0.0,
+      "frame_transform_bit_verified": true,
+      "retained_g0_frame_is_in_memory_inertial_identity": false,
+      "legacy_g0_source_and_owned_receipt_identity_required": false
+    },
+    {
+      "role": "GPU_g0",
+      "max_ledger_relative_error": 0.0,
+      "max_frame_energy_ratio": 1.001566678194258,
+      "material_position_consistency_m": 0.0,
+      "frame_transform_bit_verified": false,
+      "retained_g0_frame_is_in_memory_inertial_identity": true,
+      "legacy_g0_source_and_owned_receipt_identity_required": true
+    }
+  ],
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_gpu_constant_coarse_r2_review\\physical.bin",
+      "bytes": 69478420,
+      "sha256": "b95580e553e02c728104f72bb4991c5a1f7ea410a125dd988a58e6448b7f5393"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_gpu_constant_coarse_r2_review\\frame.bin",
+      "bytes": 69478420,
+      "sha256": "49a9e54e8ac6bf84e8617562e47c5a0ec822c217d5739b621b089715a3182fd4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_gpu_constant_coarse_r2_review\\native_ids.csv",
+      "bytes": 40157,
+      "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_gpu_constant_coarse_r2_review\\history.csv",
+      "bytes": 85143,
+      "sha256": "6cb946a89ad0cfcdd2969540b07dbbcdaa7aeab542dd8f9c1733da197104bc57"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_gpu_constant_coarse_r2_review\\completion.json",
+      "bytes": 1283,
+      "sha256": "ea808fd3fc70039e79d82f0eb34e1d1ed199da9ec8debed4aaa51330c9cf940f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_constant_c_r1_review\\physical.bin",
+      "bytes": 69478420,
+      "sha256": "ee317cb87f4ebd749e42ab73ec2a14e80769ac82cfa22ee6e66436785fdf503c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_constant_c_r1_review\\native_ids.csv",
+      "bytes": 40157,
+      "sha256": "2deb43af8c8134ea29457e1ffe0351b7867dd401400e4ca4b6dcb57b374f4fc5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_constant_c_r1_review\\history.csv",
+      "bytes": 80256,
+      "sha256": "d880bacc78961111cee287695c0978e96d067374eabf76cc8463b9670cb48b59"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_wall_actual_constant_c_r1_review\\completion.json",
+      "bytes": 1096,
+      "sha256": "6170cad340f4ff9f0a7c9a07455221eb3ae2570051367abaebfbd9e833f400de"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gravity_wall_gpu_pair_r1.py",
+      "bytes": 14865,
+      "sha256": "6d32ef164322e5d44a09f387a8af045880a1bcc0f263d9eaed99a2dfb80254be"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_constant_frame_c_r2_pair.csv",
+      "bytes": 49791,
+      "sha256": "28251689c4faf10c23f6cdf167022cf5146de841916e1a62a8460f614e4e189b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_gpu_constant_frame_c_r2_pair_fields.csv",
+      "bytes": 833294,
+      "sha256": "217b99f0beefe7381eda22a4472cc0bafada022213070def59aa5bc7efd5658d"
+    }
+  ],
+  "native_owned_solver_and_reader_receipts_require_separate_review": true,
+  "saved_face_or_force_stage_observed_by_this_script": false,
+  "public_gravity_accepted": false,
+  "wall_trajectory_accepted": false,
+  "physical_acceptance": false
+}

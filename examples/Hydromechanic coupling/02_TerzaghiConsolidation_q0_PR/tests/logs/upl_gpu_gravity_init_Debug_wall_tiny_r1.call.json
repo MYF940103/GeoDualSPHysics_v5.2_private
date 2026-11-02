@@ -1,0 +1,53 @@
+{
+    "program":  {
+                    "path":  "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+                    "bytes":  3827200,
+                    "sha256":  "db5aaaf6fa07566eb10b71f5864e2229d8f061950618bb1270a56a25acd17589"
+                },
+    "target_program":  {
+                           "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_gravity_init_probe_Debug_r1_helper\\upl_gpu_gravity_init_probe_r1.exe",
+                           "bytes":  181849600,
+                           "sha256":  "09b549dc40b22ae13e42000d8a73bdba5ddd5dd29f45d6aea6da06af8a0ce78d"
+                       },
+    "arguments":  [
+                      "--tool",
+                      "memcheck",
+                      "--leak-check",
+                      "full",
+                      "--error-exitcode",
+                      "97",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_gravity_init_probe_Debug_r1_helper\\upl_gpu_gravity_init_probe_r1.exe",
+                      "--probe",
+                      "wall_tiny",
+                      "--",
+                      "-gpu:0",
+                      "-stable",
+                      "-mdbc_freeslip",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_wall_seed_r1\\CaseGravityWall_constant_smoke",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_gravity_init_Debug_wall_tiny_r1",
+                      "-dirdataout",
+                      "data",
+                      "-svres"
+                  ],
+    "working_directory":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src",
+    "started_utc":  "2026-11-02T10:14:35.3903004Z",
+    "ended_utc":  "2026-11-02T10:14:53.7737748Z",
+    "owned_call_exited":  true,
+    "typed_LASTEXITCODE_captured_immediately":  true,
+    "exit_code":  0,
+    "invocation_failure":  null,
+    "log":  {
+                "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_gravity_init_Debug_wall_tiny_r1.log",
+                "bytes":  22714,
+                "sha256":  "d918bfbe7e5ea14896fabbfab695292446003a5f706bb19fefadf63ac5f22abf"
+            },
+    "memcheck_executed":  true,
+    "memcheck_zero_errors_and_leaks":  true,
+    "memcheck_tool_source":  {
+                                 "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_perm_component_Debug_r1.call.json",
+                                 "bytes":  8146,
+                                 "sha256":  "c9611d2b392a9545cdbba739a9060606ea16da88802f6c3732828dfd26ea55bc"
+                             },
+    "physical_steps_advanced":  0,
+    "physical_acceptance":  false
+}
