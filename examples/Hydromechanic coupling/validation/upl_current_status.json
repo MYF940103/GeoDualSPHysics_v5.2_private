@@ -2,7 +2,7 @@
   "date": "2026-11-03",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded default-OFF, eta0 and .125s CPU/GPU compatibility remain verified. Both original-step .5s CPU8 runs completed: all1469 half pairs satisfy original5Pa/.005mm/time bounds (max3.446687629Pa/.000032803666mm/0), and both complete1277-frame retained prefixes are exact. Root inspected history/profile PNGs and matching CSVs. One fresh larger-step CPU8 coarse is active after its own two-frame native smoke; the shifted event makes this a new experiment, not inherited half evidence. No full-consolidation or canonical/server acceptance. Latest verified local/remote checkpoint57ba8c782c4fdd61abad70066a7b180ccce83bda.",
+  "status": "Original-step .5s CPU8 c/h and complete retained prefixes passed and were verified locally/remotely at0baf044. The sole larger-step new-event pair completed safely but FAILED the unchanged all1341-sample5Pa half bound:5.03817364564Pa at .010009765625s, two samples over5; displacement/time passed. Independent direct export recomputation agrees. Candidate is rejected, no threshold relaxation or repeated step search. Prepare one partial Tv~.25 diagnostic using the already accepted old step/event; no full-consolidation/canonical/server acceptance.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has bounded verified CPU/GPU implementation evidence for fresh2D zero-gravity elastic periodic/opposing FreeSlip fixtures and the constant-k single upward FreeSlip-bottom/X-periodic band-loaded/fixed-drained column. The seven-file patch permits only that column's finite eta0..0.1 intrinsic-density damping; bounded components/default-OFF/eta0 compatibility are verified, positive-damping physics is not. Other stabilizers/general boundaries/restart remain held. Canonical/server programs unchanged.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -328,13 +328,23 @@
     "root_visual_and_matching_CSV_review": true,
     "reference_scope": "Finite-Kw ideal quasistatic references, actual material z0, unchangedq0. Explicit H1 nominal and initial pressure-plane H.995 conventions both retained, not fitted. Coarse pressureRMS/q0 .8479/.4101percent and top-material settlement differences3.9274/.11465percent are convention-dependent descriptive comparisons, not full dynamic ramp/band theory acceptance.",
     "load_scope": "Independent component and snapshot reconstruction indicate roughly .45percent constant-stress cancellation mapping offset. This is not proof of the entire pressure difference or a physical-force deficit; unchanged actual resultant is retained. No q0 adjustment.",
-    "next_single_step_experiment": "dt2^-18/2^-19,event2621*2^-18,1341frames to.5s. Own smoke passed; coarse active. Each run admitted separately; no old-event prefix/half adoption. If the sole candidate fails retain accepted smaller dt, without repeated search or relaxed limits.",
+    "next_single_step_experiment": "Completed safely but rejected:dt2^-18/2^-19,event2621*2^-18,1341frames. Pressure half max5.03817364564Pa exceeds5 at only two opening-transient samples; full material displacement2.3246482663e-5mm/time0 pass. Root inspected rejection PNG; original false check is preserved. Retain accepted oldstep2^-19 and oldevent5243*2^-19, without repeated search or relaxed limits.",
+    "physical_acceptance": false
+  },
+  "larger_step_decision_review": {
+    "root_review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_damp_step_root_r1.json",
+    "candidate_adopted": false,
+    "numerical_half_failure_preserved": true,
+    "failure_is_not_solver_or_analysis_failure": true,
+    "candidate_full_plot_not_executed_due_to_its_failed_prerequisite": true,
+    "fallback_mid_scope": "One CPU8 coarse partial diagnostic,dt2^-19,event5243*2^-19,end9.152950286865234s/4798782steps/1746frames. Preserve original1469-frame .5s prefix and append.5s tout.03125. Actual prefix equality still required, half evidence remains only.5s. Cost~3h43min is linear budget, not controlled benchmark or ETA. Prepare and Run remain separate admissions.",
+    "source_or_formal_changes": false,
     "physical_acceptance": false
   },
   "next_order": [
     "Retain verified public CPU/GPU parity and all accepted formal u-pw results. Default masterOFF remains unchanged; no canonical/server installation.",
     "Matched dyadic .125s ON/OFF halves, descriptive visual review and sequential same-input CPU1/CPU8/GPU cost/native compatibility are complete and selectively backed up locally/remotely. Prefer local CPU8 for this small column only.",
-      "Original .5s CPU8 c/h and both1277-frame exact prefixes passed, with root visual/CSV review and independent pair recomputation. Selectively back up this bounded milestone. Evaluate the sole larger-step new-event .5s candidate through fresh singleton smoke/coarse/half and unchanged original limits; on failure retain prior step, not repeated search. No automatic full-cycle admission.",
+      "Original .5s milestone is backed up0baf044. Preserve and selectively back up the sole larger-step rejection, do not relax the original5Pa bound or continue timestep search. Use accepted smaller step in one meaningful partial constant-k Tv~.25 diagnostic after its own prepared-input/Run gates. No1/2/5s staircase or automatic full-cycle admission.",
     "On justified evidence plan a longer constant-k consolidation/theory window with affordable native cadence, then full benchmark/server delivery, Cryer and Lian. Variable-k physical sensitivity follows constant-k benchmarks. No TPI/plasticity/general-wall bypass or precision rewrite without evidence."
   ],
   "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. Bounded public CPU/GPU loaded-column entry implementation parity is verified as recorded above; this does not imply general-boundary/plasticity/full-cycle/exact-restart/continuum-accuracy or server-package acceptance.",

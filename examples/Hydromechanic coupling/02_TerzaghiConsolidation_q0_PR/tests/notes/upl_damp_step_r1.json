@@ -1,0 +1,73 @@
+{
+  "stage": "upl_damp_step_r1",
+  "status": "author_only_not_prepared_or_run",
+  "files": ["support/upl_damp_step_prepare_r1.ps1", "notes/upl_damp_step_r1.json"],
+  "purpose": "One predeclared bounded step-efficiency candidate after the accepted .5s eta.02 CPU result. No repeated dt search, physical equation/material change, new reference, production/formal edit, solver, reader, helper, build or automatic workflow is authored here.",
+  "Prepare_CLI": "-Admission ROOT_JSON -ExecutionAuthorized",
+  "admission": {
+    "stage": "upl_damp_step_prepare_admission_r1",
+    "passed": true,
+    "physical_acceptance": false,
+    "allowed_actions": ["prepare"],
+    "inputs": "Nonempty flat Entry array including exactly one Entry for each current coarse_prefix,half_prefix,half and long_plot check. Root supplies this future gate only after full source/figure review; it does not yet exist or become true by authoring this note.",
+    "direct_prerequisites": "logs/upl_damp_long_{coarse_prefix,half_prefix,half}_r1.check.json all passed with their original4/4/3 gates; half.prefix_checks identities must name those exact two prefix proofs. The .5s long_plot check must passed/physicalfalse and its output files remain hash-bound. No old half or prefix pass is adopted for the new experiment."
+  },
+  "source_and_retained_inputs": {
+    "manifest": "logs/upl_damp_long_r1.inputs.json, own completed coarse/half configurations/runtime/seed; do not rerun or rewrite old results.",
+    "source_build": "logs/upl_damp_ReleaseCPU_r2.build.json, unchanged actual main program;265 source originals+snapshots,doc/README pairs,4runtime pairs,7canonical before/after hash protection. Recorded86object/build authority and original typed project exit0 validated, no compilation or canonical install.",
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "unchanged": "1040native=1000soil+40fixed, initial rest/p0/stress0/J1 fields, eta.02 intrinsic-solid-density damping, n/k/Kw/E/nu/rho, g0, publicmaster1/model0/Ck0, bottomFreeSlip/Xperiodic/nootheraux, q0=10000Pa,TimeMax=.5 and all ordinary physical output cadences/anchors. No GenCase, PART restart or field construction. Old XML comments remain historical metadata; changed values are explicitly recorded here and in manifest.changes."
+  },
+  "declared_new_experiment": {
+    "old_coarse_dt_s": 0.0000019073486328125,
+    "old_half_dt_s": 0.00000095367431640625,
+    "new_coarse_dt_s": 0.000003814697265625,
+    "new_half_dt_s": 0.0000019073486328125,
+    "old_ramp_drain_event_s": 0.0100002288818359375,
+    "new_ramp_drain_event_s": 0.009998321533203125,
+    "event_change_s": -0.0000019073486328125,
+    "interpretation": "Ramp/drain duration moves earlier by one old coarse step, about0.019073% of the old event time; q0 amplitude is unchanged, so ramp slope changes slightly. This is not a same-input time-half extension and cannot inherit old prefix/raw0ULP or old half proof. Cross-experiment changes are descriptive, not a5Pa half gate.",
+    "only_XML_value_changes": ["DtIni", "DtFixed", "HydroMechTopLoadRampTime", "HydroMechDrainageStartTime", "second special tout timeout"],
+    "inverse_DOM": "Restore exactly these5 recorded attributes after serialized XML reload and require original normalized DOM exactly equal. Preserve declaration,comments,node order; write4space/LF UTF8 without BOM. New runtime XML copies authored configuration bytes exactly. TimeMax remains.5 and all4 timeout anchor times are unchanged."
+  },
+  "schedule": {
+    "end_s": 0.5,
+    "coarse_steps": 131072,
+    "half_steps": 262144,
+    "samples_each": 1341,
+    "coarse_saved_completed_steps": "Union0:32:32768;2560:1:2688;33280:512:131072. Half multiplies every completed step by2.",
+    "samples_through_0p125": 1149,
+    "additional_late_samples": 192,
+    "event_part": 141,
+    "event_coarse_completed_step": 2621,
+    "event_half_completed_step": 5242,
+    "first_post_open_part": 142,
+    "post_open_frames": 1199,
+    "future_post_open_drained_particle_checks_expected": 11990,
+    "timeouts": [
+      {"time": 0, "timeout": 0.0001220703125},
+      {"time": 0.009765625, "timeout": 0.000003814697265625},
+      {"time": 0.01025390625, "timeout": 0.0001220703125},
+      {"time": 0.125, "timeout": 0.001953125}
+    ],
+    "clock_proof": "Literal current JDsOutputTime::GetNextTime replay (sourceSHA b26c1b87f090b28bdc72c28d6ed7dfeee0ad7a0bcd28eb428f1ae72716d0c72f), independently compare exactintegerunion with actual repeated dyadic dt accumulation/anchor clamp/cache. Initial savedStep0,thereaftercompleted-1; coarse/half reconstructed times bitwise equal. Saved JSON table is a prediction, not decoded native evidence; consumers must use integerstep*dt, not transient PS ConvertFromJson rowtime. No snapping/tolerance or interpolation."
+  },
+  "outputs_after_future_Prepare_only": [
+    "configs/upl_damp_step_{coarse,half}_r1.xml",
+    "outputs/upl_damp_step_seed_r1/upl_damp_step_{coarse,half}_r1.xml",
+    "outputs/upl_damp_step_seed_r1/upl_damp_step_{coarse,half}_r1.bi4",
+    "outputs/upl_damp_step_seed_r1/upl_damp_step_{coarse,half}_r1_Normals.nbi4",
+    "logs/upl_damp_step_r1.inputs.json"
+  ],
+  "future_only_plan": {
+    "sequence": "Root full read and completed .5s scientific/figure gate; Prepare only. A separately authorized exact2-step smoke must check original current-state necessary bounds and native safety before any fresh .5s coarse then fresh half. No such Run/reader/build owner or smoke config is authored here.",
+    "smoke_cadence_caveat": "These two full-window configs first ordinary save is32newcoarse steps. A terminal CLI2step alone yields initial+final, not a3frame per-step smoke. If3frames are required, a later explicit smoke input must declare per-step output without altering either full schedule; no implied3frame proof here.",
+    "unchanged_gates": "Both actual runs must retain native22/1040/finite/elastic/noexclusion/ledger5e-13,real nonemptydrain/current locked-step necessary acoustic+Darcy guards. New same-experiment1341half pressureRMS<=5Pa,materialfullXYZdifference<=.005mm,actualtimegap<=1e-14s,initialfields/IDs and signed dterror checks. Necessarydt is a bound, not precision or continuum stability proof.",
+    "on_failure": "Preserve failed artifacts; do not relax current bound or error gates, alter damping/material or search repeatedly for another dt. Retain the accepted prior timestep if this single candidate fails."
+  },
+  "reference_measurement_caveat": "A later theory/linear reference must evaluate displacement at the same initial materialz0,particularly lastnativez0=.995m,not relabel that displacement as H=1 surface settlement. Derived volume-contraction equivalent and topnative displacement differ by the missing halfcell contribution. This preparer adds no reference curve or physical accuracy threshold.",
+  "physical_acceptance": false,
+  "solver_reader_or_build_executed_by_author": false,
+  "production_formal_or_retained_artifacts_changed": false
+}
