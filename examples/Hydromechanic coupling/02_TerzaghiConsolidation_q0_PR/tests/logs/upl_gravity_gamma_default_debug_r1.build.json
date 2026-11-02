@@ -1,0 +1,45 @@
+{
+  "stage": "upl_gravity_gamma_default_debug_r1",
+  "owned_call_exited": true,
+  "exit_code": 0,
+  "observed_exec_session": 49093,
+  "command": [
+    "MSBuild.exe",
+    "VS/DualSPHysics5ReCpu_vs2022.sln",
+    "/m",
+    "/t:Build",
+    "/p:Configuration=DebugCPU",
+    "/p:Platform=x64",
+    "/v:minimal"
+  ],
+  "artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "sha256": "475b5b67b02a26f5e3268d9b8192763f1ac1d9ec3c277b33279f6950859bc47d",
+      "bytes": 262241
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\doc\\xml_format\\_FmtXML_ElastoplasticSoil.xml",
+      "sha256": "d7fdee131e6a31c500232f4fa1ea6354edffdfff8c22576307f37da601c6f6f6",
+      "bytes": 31879
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DualSPHysics5.2CPU_win64_debug.exe",
+      "sha256": "b954857a445642eb99ebe685b78333061ea064815b3a8c7bdfcd2e10df4e6819",
+      "bytes": 12452864
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gravity_gamma_pre_default_r1.exe",
+      "sha256": "b08f85fd361faf2e47d0c3ac9ef9511c3a167e1f416fd2831e2fd961a33e6f07",
+      "bytes": 12452864
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_gamma_default_debug_r1.build.log",
+      "sha256": "c4eb0285a7834165fbf45ce044038254ffec1651708acbbed2d76d3e6b29e0c7",
+      "bytes": 650
+    }
+  ],
+  "change": "Only dynamic ON reference gamma in CPU complete rate and necessary step scales; legacy OFF and all public gravity guards unchanged.",
+  "scope": "Default CPU Debug build after production edit. No solver/help call or physical acceptance.",
+  "warnings": "Existing Gm deprecation; no compiler error."
+}

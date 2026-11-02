@@ -4359,8 +4359,7 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
   if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationCpu();
   const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
   const double khyd=SoilCte.HydraulicConductivity,vol0=double(MassFluid)/double(RhopZero);
-  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
-  const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
+  const double gamma=rhow*9.80665; //-k [m/s] uses standard reference weight, independent of body acceleration.
   double speedth[OMP_MAXTHREADS*OMP_STRIDE];
   if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)speedth[th*OMP_STRIDE]=0.;
   unsigned invalid=0;
@@ -4854,8 +4853,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
 void JSphCpu::GetDynamicStepScalesCpu(double &wave,double &pore)const{
   const double m=double(SoilCte.ModulusK)+4.*double(SoilCte.ModulusG)/3.;
   const double kw=SoilCte.PoreWaterBulkModulus,rhow=SoilCte.PoreWaterRho;
-  const double gnorm=sqrt(double(Gravity.x)*Gravity.x+double(Gravity.y)*Gravity.y+double(Gravity.z)*Gravity.z);
-  const double gamma=rhow*(gnorm>0? gnorm: 9.80665);
+  const double gamma=rhow*9.80665; //-Same material mobility as the complete dynamic rate and GPU.
   double cu2max=0,dmax=0;
   for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p]) && CODE_IsFluid(Codec[p])){
     double n,volume,rho;

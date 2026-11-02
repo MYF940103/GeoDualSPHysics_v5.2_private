@@ -1,0 +1,47 @@
+{
+  "stage": "upl_gravity_cpu_r1",
+  "status": "author_only_not_built_or_run",
+  "base_checkpoint": "ff1bd714",
+  "scope": "Conditional manufactured no-wall CPU component calling current production ComputeFreeSurfaceTracking, Interaction_Forces_ct and ComputeDynamicPorePressureRateCpu. No public input/guard/source edit, solver Run, ComputeStep, integration or mechanical hydrostatic equilibrium acceptance.",
+  "author_files": ["tests/support/upl_gravity_cpu_r1.cpp", "tests/notes/upl_gravity_cpu_r1.json"],
+  "cli": "--out NEW_DIRECTORY [--gamma-policy norm|standard]; defaultnorm",
+  "reuse": {
+    "direct_include": "tests/support/upl_p2_feedback_harness_r1.cpp, main renamed RetainedGravityFeedbackMain; retained main never called",
+    "include_sha256": "c61087efadd6393bc7d5460744b1f33ce165d5d145a704e08e67aa8c3ff22c11",
+    "geometry_source": "tests/support/upl_p3_actual_r3.cpp lines41-69, nonperiodic branch mechanically reused in the new constructor; original unchanged",
+    "geometry_source_sha256": "72c64ee5adcaa047d1ca49dc37799b2eb4d2ea5f03fa9d82ac8bae8331df230f",
+    "reason_not_include_actual_directly": "Actual_r3 internally defines/undefines main around Feedback, destroying an outer main rename and causing a duplicate main. Direct Feedback inclusion plus the small known cell setup avoids changing immutable files or copying the whole prior framework. Root explicitly approved this form.",
+    "no_hidden_control_runs": true
+  },
+  "geometry": "2D9 or3D27 native fluid particles, no fixed/moving/floating/periodic particles. dp=.25, original3x3 (3x3x3) lattice around(1,0,1)/(1,1,1). Same deterministic axis=id%dimension and alternating dp/8 disorder as Actual_r3. Stable sort by actual cell key; same4x1x3 or4x3x3 cell table/packed-cell proof; current production neighbor search and C use those tables. No GenCase.",
+  "constants": "Inherited exact float material: K1666666.75,G769230.8125,Kw2e8,rhow1000,n0=float(.3),rho02100; k0=float(1e-5) m/s,Ck=1/8. Current actual Wendland CSP,h=.25float,support=.5float,Eta2=.000625float,V0=double(MassFluid)/rho0. g=(-4,0,-8)2D or(-4,2,-8)3D,stored in BOTH JSph::Gravity and CSP.gravity. J1 for constant-law; smooth-law affine J=1+.005*(x-xmin)/(xmax-xmin),within[1,1.005],n/V/rho and k derived from same J. No independently integrated k.",
+  "gamma_audit_not_final_policy": "Current CPU gamma=rhow*(norm(Gravity)>0?norm(Gravity):9.80665). Defaultnorm oracle uses this actual nonzero norm(g). Optionalstandard oracle uses rhow*9.80665 ONLY in independent references,analytic flux/rates and propagated budgets: it NEVER changes Gravity,CSP.gravity or the production helper. Field3 must separate the alternate policy above10times the unchanged propagated rate budget. Standard is intended for fresh-label retest after an independently authorized standard-mobility production patch; the current norm production must not be falsely admitted merely by switching oracle. Freefall force check/counts/formulas otherwise unchanged. This checks implementation and is NOT final approval that material hydraulic conductivity/mobility should vary with body gravity. Public gravity remains rejected.",
+  "fields": [
+    "hydrostatic: p=65536+rhow*g.x,physical a_s=0,Ace=-g,theta0; analytic Darcy q0",
+    "freefall: constant p65536,physical a_s=g,Ace0,theta0; analytic Darcy q0",
+    "imposed tangential a_s=(.25,0,-.125),g.a_s=0; Gp=rhow*(g-a_s),Ace=a_s-g; analytic Darcy q0",
+    "affine acceleration: constant p,physical a_s=(.125*(x-1),.0625*(y-1)in3D,-.03125*(z-1)),Ace=a_s-g; independent divAce=.125+(.0625in3D)-.03125; positive rate exposes actual gamma",
+    "wrong_missing_g: preserve hydrostatic p and original a_s0 reference; perturb only actual Ace=-g to0 (add g once). Check actual perturbed assembly against independent assembly and require q versus original unchanged reference exceeds100original q budgets",
+    "wrong_doubled_g: preserve hydrostatic p and original a_s0 reference; perturb only actual Ace=-g to-2g (subtract g twice). Same original reference/negative criteria; not a comparison of separately changed gravity or pressure"
+  ],
+  "counts": {"dimensions": 2, "clouds_per_dimension": 2, "laws": 2, "logical_fields": 6, "field_cases": 48, "rate_flux_rows": 864, "actual_complete_rate_calls": 52, "actual_force_ct_calls": 4, "force_freefall_rows": 72},
+  "rate_and_flux_reference": "Independent all-particle O(N^2) search uses actual stored pfloat/Acefloat, actual production C, double positions, actual GetKernel_Fac(float rr2),V0J. Lstar=Lp-Gp.Lx; complete rate=Kw/n*(-theta+[ki*(Lstar+rhow divAce)+ki*alpha*GJ.(Gp+rhowAce)]/gamma),alpha0 constantlaw or1/((1-n0)Ck). gamma follows the explicitly selected test oracle only. q=-ki/gamma*(Gp+rhowAce) is independently diagnosed from these current stored fields/C,not a newly instrumented production q/Gp output; it is checked as a vector,not inferred from zero rate. k independent exp reference relative5e-13*abs(k),not5e-13 absolute.",
+  "predeclared_bounds": {
+    "notation": "epsF=FLT_EPSILON,epsD=DBL_EPSILON,all absolute sums come from declared geometry/stored input and actual C,not observed errors. cond=max(1,||C||inf||M||inf); Sg=sum Vj|Ci gradW|; Wabs=sum|w|; Lpabs=sum|w*dp|; DAabs=sum Vj sum_components|dAce*Ci gradW|; Gabs/Jabs=sum Vj|dp/dJ||Ci gradW|. E=2epsF Pmax,except identical constant-p input has E0; EA=4epsF max(1,max|Ace_true|).",
+    "gradient": "BG=2E*Sg+(64epsF+32768epsD)*cond*|Gp_true|+4096epsD max(1,Gabs); BJ=(64epsF+32768epsD)*cond*|GJ_true|+4096epsD max(1,Jabs)",
+    "operators": "BL=2E*Wabs+BG*|Lx|+4096epsD max(1,Lpabs+|Gp_true||Lx|); BD=2EA*Sg+4096epsD max(1,DAabs). ChainBound=ki*alpha*(|GJ_true|*(BG+rhowEA)+BJ*(|drive_true|+BG+rhowEA)). PropagatedRate=Kw/n/gamma*(ki*(BL+rhowBD)+ChainBound). AnalyticRateLimit=PropagatedRate+2epsF max(1,|analytic_rate|+PropagatedRate).",
+    "independent_discrete": "DiscreteLimit=(32epsF+4096epsD)*max(1,raw_rate_absolute_term_sum),including separate absolute Lp/Gp.Lx/divAce/chain/compression contributions; final float pressure rate must be finite,overwrite sentinel and agree with independent assembly within this prior budget.",
+    "flux": "qLimit=ki/gamma*(BG+rhowEA)+4096epsD max(1,|q_discrete|). Actual vector q must match analytic actual-input q within this bound in EVERYrow,including intentionally wrong inputs. Negative rows additionally retain original unperturbed q/rate reference.",
+    "negative_nonempty": "Each missing/doubled-g case must have max|q_actual-q_original|/qLimit>100. Each smooth-law negative case additionally requires max|rate_actual-rate_original|/AnalyticRateLimit>10,so the actual complete rate is also discriminating when gradk is nonzero. Every affine-acceleration case requires wrong-fallback-gamma analytic separation/budget>10. No after-result threshold fitting.",
+    "not_half_bounds": "These are operator float/geometry propagation budgets,not5Pa/.005mm half-step bounds or physical accuracy acceptance. No interpolation or rewritten metadata."
+  },
+  "force_freefall": "Four actual Interaction_Forces_ct calls,2D/3D regular/disorder,zero effective stress AND zero pore pressure,zero velocities,J1,constantlaw. Require actual Ace exactly0,theta0 and old fused pressure-rate sentinel untouched. Then call actual complete rate and require rate0; physical acceleration computed from actual Ace+Gravity equals Gravity. This tests actual conditional force assembly/body-force split without injecting Ace,not held hydrostatic force balance. Does not execute a predictor/corrector or trajectory.",
+  "outputs": ["rates_flux.csv864rows", "summary.csv48rows", "force_freefall.csv72rows", "completion.json", "Run.out"],
+  "execution_order_pending_authorization": "Root must fully review source/note and create fresh authoritative current CPU Debug/Release object/tool/lib/runtime bindings. Compile/link via authoritative CPU vcxproj object closure excluding main,not old component exe or stale historical Release objects. Root owns explicit Debug then Release calls and receipts. This author step does not build/run anything.",
+  "default_OFF_preservation": "No production file changes in this test. Old Feedback/Actual mains are never invoked implicitly. Existing default-OFF evidence remains intact; any later production gravity patch needs separately explicit same-input current default-OFF typed-field/clock/dterror0ULP regressions,including the original g0 controls and a bound nonzero-g legacy control. This component does not falsely report such a regression executed.",
+  "limitations": ["No real wall/mDBC or boundary closure", "No mechanical hydrostatic full-force/stress well-balancing", "No actual Run/ComputeStep,convergence,half,trajectory,conservation or general stability proof", "No public gravity/GPU admission", "No decision on final material mobility/reference-gravity policy", "Uniform constant-k affine pressure/constant Ace has zero divergence even for a wrong uniform flux; hence q and smooth-k source negative controls are mandatory"],
+  "production_modified": false,
+  "built": false,
+  "executed": false,
+  "physical_acceptance": false
+}

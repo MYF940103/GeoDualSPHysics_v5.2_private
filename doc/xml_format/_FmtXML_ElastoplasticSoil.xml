@@ -38,6 +38,8 @@
                      exp uses the natural base; Ck=delta(e)/delta(ln(k/k0)), not a time-step penalty.
                      An experimental e-log10(k) index Ck10 converts as Ck=Ck10/ln(10).
                      No independent k integration, clipping, tensor or discontinuous-interface law.
+                     Dynamic ON uses gamma_ref=rho_w*9.80665 to convert k [m/s] to material mobility;
+                     this reference weight does not change the configured body Gravity. Legacy OFF is unchanged.
                      Example coefficient syntax only, NOT a recommended/calibrated value:
                      <HydroMechConductivityCk value="0.01" />
                      Verified experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,

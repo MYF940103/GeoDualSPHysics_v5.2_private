@@ -1,0 +1,160 @@
+{
+  "stage": "upl_gravity_baseline_review_r1",
+  "base": "ff1bd714b561f0d9f692387d5443ec03b096de13",
+  "status": "CPU conditional operator and implementation review passed; public gravity remains rejected",
+  "checks": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_DebugCPU_r1.check.json",
+      "sha256": "9934447bc4cb73aeb362db97cbf6919beae184a31a622fb3ffd15d1edd967b97",
+      "bytes": 4349
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_ReleaseCPU_r1.check.json",
+      "sha256": "9e97011585d14f4c89b5d2e7ac6ccce312f129d73a8621679ee391771002b09b",
+      "bytes": 4371
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_balance_DebugCPU_r1.check.json",
+      "sha256": "8280e6614ab6802ced41a0f66d35f1f73130f496dff41f0068f828b15f17e9c8",
+      "bytes": 4365
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_balance_ReleaseCPU_r1.check.json",
+      "sha256": "c39c379ecca8d6209f3de6e41539c6cfa250c893b50af0350a2b902a53a09e3b",
+      "bytes": 4387
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_scales_DebugCPU_r2.check.json",
+      "sha256": "78389f2d258a5ba3cf483f901b4156b364d6e98db158f1f933a99f22074b6b1f",
+      "bytes": 3957
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_scales_ReleaseCPU_r2.check.json",
+      "sha256": "e03b42111e0622a7cdc65141df003f31914a8db1bafa7481a43651e9be0cfaf8",
+      "bytes": 3977
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_scales_DebugCPU_r1.helper.json",
+      "sha256": "3f089b141f06dec7a9de8db6705a3e73bf3a3ec73002b6e5ba392e49346ca159",
+      "bytes": 40485
+    }
+  ],
+  "root_offline_row_review": {
+    "rate": [
+      {
+        "configuration": "DebugCPU",
+        "unique_rate_keys": 864,
+        "cases": 48,
+        "force_rows": 72,
+        "max_discrete_ratio": 0.00830746939689945,
+        "max_analytic_ratio": 0.0002518275691907867,
+        "max_q_ratio": 9.63195184776816e-12,
+        "min_negative_q": 24112.051675298873,
+        "min_smooth_negative_rate": 119.38628269472834,
+        "min_gamma_separation": 113.12967444846186
+      },
+      {
+        "configuration": "ReleaseCPU",
+        "unique_rate_keys": 864,
+        "cases": 48,
+        "force_rows": 72,
+        "max_discrete_ratio": 0.00830746939689945,
+        "max_analytic_ratio": 0.0002518275691907867,
+        "max_q_ratio": 9.63195184776816e-12,
+        "min_negative_q": 24112.051675298873,
+        "min_smooth_negative_rate": 119.38628269472834,
+        "min_gamma_separation": 113.12967444846186
+      }
+    ],
+    "balance_and_scales": [
+      {
+        "configuration": "DebugCPU",
+        "balance_rows": 72,
+        "bit_exact_force_nodes": 72,
+        "centers": [
+          {
+            "dimension": 2,
+            "jitter": 0,
+            "residual_over_g": 0.023773252964019772,
+            "q_magnitude": 2.3773252363456889e-7,
+            "pressure_rate": 4.996844518018184e-12
+          },
+          {
+            "dimension": 2,
+            "jitter": 1,
+            "residual_over_g": 0.07488377121793732,
+            "q_magnitude": 7.488376932621424e-7,
+            "pressure_rate": 4076.39013671875
+          },
+          {
+            "dimension": 3,
+            "jitter": 0,
+            "residual_over_g": 0.017694061710739183,
+            "q_magnitude": 1.7694061263749501e-7,
+            "pressure_rate": -0.00021931027004029602
+          },
+          {
+            "dimension": 3,
+            "jitter": 1,
+            "residual_over_g": 0.06118630987582619,
+            "q_magnitude": 6.118630833012997e-7,
+            "pressure_rate": 4360.7138671875
+          }
+        ],
+        "scale_cases": 20,
+        "ledger_rows": 180,
+        "max_wave_bound_ratio": 0,
+        "max_pore_bound_ratio": 0,
+        "max_ledger_relative_error": 2.1711215564888192e-16,
+        "min_nonzero_gamma_separation": 580303.3194616128
+      },
+      {
+        "configuration": "ReleaseCPU",
+        "balance_rows": 72,
+        "bit_exact_force_nodes": 72,
+        "centers": [
+          {
+            "dimension": 2,
+            "jitter": 0,
+            "residual_over_g": 0.023773252964019772,
+            "q_magnitude": 2.3773252363456889e-7,
+            "pressure_rate": 4.996844518018184e-12
+          },
+          {
+            "dimension": 2,
+            "jitter": 1,
+            "residual_over_g": 0.07488377121793732,
+            "q_magnitude": 7.488376932621424e-7,
+            "pressure_rate": 4076.39013671875
+          },
+          {
+            "dimension": 3,
+            "jitter": 0,
+            "residual_over_g": 0.017694061710739183,
+            "q_magnitude": 1.7694061263749501e-7,
+            "pressure_rate": -0.00021931027004029602
+          },
+          {
+            "dimension": 3,
+            "jitter": 1,
+            "residual_over_g": 0.06118630987582619,
+            "q_magnitude": 6.118630833012997e-7,
+            "pressure_rate": 4360.7138671875
+          }
+        ],
+        "scale_cases": 20,
+        "ledger_rows": 180,
+        "max_wave_bound_ratio": 0,
+        "max_pore_bound_ratio": 0,
+        "max_ledger_relative_error": 2.1711215564888192e-16,
+        "min_nonzero_gamma_separation": 580303.3194616128
+      }
+    ]
+  },
+  "source_unchanged_for_all_baseline_runs": true,
+  "source_inventory": "271 current source-directory files bound per Rebuild:265 C/C++/CUDA headers and sources plus six existing build/version text files; do not call those271 translation units. CPU authoritative project has86 compile units,85 non-main.",
+  "failed_scale_build": "Debug extra label r1 failed before link/run solely on Windows max macro. Original CPP/note hashes and bytes preserved under outputs/upl_gravity_scales_r1_compile_source; original receipts untouched. Only macro-safe numeric_limits syntax and zero-assignment statement split changed before fresh scale label r2.",
+  "initial_invocation": "Direct PS1 invocation was refused by shell execution policy before any script action. Later calls used a per-process powershell.exe invocation; no persistent execution policy or firewall setting was changed.",
+  "scope": "No actual integrated gravity trajectory, walls, equilibrium, sufficient stability, default-OFF rerun, public gravity or physical acceptance. Flux is independently reconstructed from actual stored fields/C, not added production telemetry.",
+  "next_gate": "Unify ON-only CPU material reference gamma to rho_w*9.80665, preserving all legacy coefficients and public zero-gravity guards; fresh Debug/Release standard-oracle rate/scales and actual default/OFF plus g0 ON native regressions required before adoption."
+}

@@ -1,0 +1,34 @@
+{
+  "stage": "upl_gravity_gamma_stage_r1",
+  "status": "实现检查点通过，非零重力物理验收尚未开放",
+  "changed_files": [
+    {
+      "path": "src/source/JSphCpu.cpp",
+      "sha256": "475b5b67b02a26f5e3268d9b8192763f1ac1d9ec3c277b33279f6950859bc47d",
+      "functions": [
+        "ComputeDynamicPorePressureRateCpu",
+        "GetDynamicStepScalesCpu"
+      ],
+      "delta": "Replace two norm(Gravity)/fallback denominators by rho_w*9.80665. Actual body Gravity is unchanged. No kernel, force, integrator, legacy ghyd, guard or GPU edit."
+    },
+    {
+      "path": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+      "delta": "Two comment lines document the dynamic-ON material reference weight; no default/value/support expansion."
+    }
+  ],
+  "conclusions_zh": [
+    "Ace为不含重力的内力加速度，动态Darcy不应重复加入重力。",
+    "CPU动态率与限步的材料参考重度现与GPU一致，为rho_w*9.80665；实际Gravity不变。",
+    "Debug/Release制造场和限步均通过原先验预算，六组真实主程序共1042帧的声明导出合同与保留结果逐位一致。",
+    "规则中心连续静水场仍有约2.38%/1.77%重力残差，已归因于原始力梯度矩缺陷，未盲目改动守恒内力。",
+    "默认u-pw、正式算例、服务器程序及公开零重力限制均保留。",
+    "下一门只准备私有CPU真实Run周期重力短窗，先smoke后coarse/half；法向重力墙、荷载、排水、塑性、大变形、长程和重启仍未验收。"
+  ],
+  "evidence": "../logs/upl_gravity_gamma_stage_r1.check.json",
+  "qualified_attempts": [
+    "Initial PS1 shell refusal executed no script; no persistent policy/firewall change. All actual solver/readers have independent direct typed exit0.",
+    "Scales Debug labelr1 failed before run on Windows max macro; failed source/note archived. New labelr2 fixes only macro syntax/zero assignment statements; thresholds unchanged.",
+    "Native Prepare initial shell exit was not captured. Its immutable manifest content and2060 bindings were adopted independently, never as solver exit proof. Later diagnostic shell refusal/Fresh rejection preserved; no duplicate solver."
+  ],
+  "physical_acceptance": false
+}

@@ -1,0 +1,196 @@
+{
+  "stage": "upl_gravity_gamma_stage_r1",
+  "passed": true,
+  "native_aggregate": {
+    "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_gravity_cpu_native_r1.check.json",
+    "bytes": 38177,
+    "sha256": "1e5c89c07b8ee19b39904fd06ae429984d5749b709e3132195334a5e6719afa8",
+    "main_exit0": 6,
+    "pure_native_reader_exit0": 15,
+    "offline_QC_exit0": 6,
+    "final_binding_mismatches": 0,
+    "binding_count": 2060,
+    "owned_native_survivors": 0
+  },
+  "scope": "Adopt only fixed standard reference weight for CPU dynamic material mobility; implementation/regression checkpoint, NOT nonzero-gravity physical admission.",
+  "base_checkpoint": "ff1bd714b561f0d9f692387d5443ec03b096de13",
+  "production_changes": [
+    {
+      "path": "src/source/JSphCpu.cpp",
+      "sha256": "475b5b67b02a26f5e3268d9b8192763f1ac1d9ec3c277b33279f6950859bc47d",
+      "functions": [
+        "ComputeDynamicPorePressureRateCpu",
+        "GetDynamicStepScalesCpu"
+      ],
+      "delta": "Replace two norm(Gravity)/fallback denominators by rho_w*9.80665. Actual body Gravity is unchanged. No kernel, force, integrator, legacy ghyd, guard or GPU edit."
+    },
+    {
+      "path": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+      "delta": "Two comment lines document the dynamic-ON material reference weight; no default/value/support expansion."
+    }
+  ],
+  "reference_derivation": "Lian2023 Eq5/9 and actual Ace=a_s-g give q=-k/gamma_ref*(grad p+rho_w Ace). No additional g belongs inside this driver. k[m/s] is now consistently referenced to g_ref9.80665, preserving mobility when independent body acceleration changes; existing GPU and accepted g0 use this convention.",
+  "proof": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_DebugCPU_r2.check.json",
+      "sha256": "a491880a7f5183d630ad3457f29b5da4538103e2da0d387f0144aa5f3a8a709a",
+      "bytes": 4353
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_ReleaseCPU_r2.check.json",
+      "sha256": "58231890260579f91419d8a0446452009dcd4ca3bb6b10c2324cb8dbc1b6c718",
+      "bytes": 4375
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_scales_DebugCPU_r3.check.json",
+      "sha256": "affca538bdb884a88d32420af6a48b37618c9035b54fe39abf53425d6aa0494c",
+      "bytes": 3961
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_scales_ReleaseCPU_r3.check.json",
+      "sha256": "ca94dc3ece23055f3c4ffc1d1b0c7e1c479c29706f0a7c6d25d10d211fdf6e30",
+      "bytes": 3981
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_baseline_review_r1.json",
+      "sha256": "fa093aa4b2be4467b48f829c4264f9c0976036b468af2a6249ec46851c72922f",
+      "bytes": 7344
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_gamma_default_debug_r1.build.json",
+      "sha256": "1e3b8a96fc3c0e9156a32ee71c87e937ad730a2acb82a5906d92d70139ae227c",
+      "bytes": 1934
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_OFF_g0.check.json",
+      "sha256": "783405838200dc805b3833c27c6fc3c5a1737d8871969ba9aee28030ea44c85a",
+      "bytes": 6617
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_OFF_g9p81_k0.check.json",
+      "sha256": "fc5433530c06ccadbf386687d824b4e173b225ca86fea9e1a842a4978a195184",
+      "bytes": 12134
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_periodic_constant.check.json",
+      "sha256": "85ae955cbebe58aaffad4c44d31f6bc98432339ee97677e12a1e5f1a87f77ce0",
+      "bytes": 7260
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_periodic_variable.check.json",
+      "sha256": "bc0382d915022118c1b0ddb20201583a5a5ece9f64700543c9458e7963b32c3a",
+      "bytes": 7250
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_wall_constant.check.json",
+      "sha256": "e3a4be049381faa11779b8f2315a68b7526619e735324d0d0a923320e41381e8",
+      "bytes": 7207
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_native_r1_wall_variable.check.json",
+      "sha256": "ae56c961c7e061f4ff2aeb49271017726b9d0c1005193f21ab26db84925f6085",
+      "bytes": 7207
+    }
+  ],
+  "standard_oracle_root_numbers": [
+    {
+      "configuration": "DebugCPU",
+      "rate_cases": 48,
+      "rate_rows": 864,
+      "max_discrete_ratio": 0.00797120894716867,
+      "max_analytic_ratio": 0.00021456093212655062,
+      "max_q_ratio": 1.0304824797074134e-11,
+      "scale_cases": 20,
+      "ledger_rows": 180,
+      "max_wave_bound_ratio": 0,
+      "max_pore_bound_ratio": 0,
+      "g0_wave_and_pore_double_bits_equal_cases": 4,
+      "max_ledger_relative_error": 2.1711215564888192e-16
+    },
+    {
+      "configuration": "ReleaseCPU",
+      "rate_cases": 48,
+      "rate_rows": 864,
+      "max_discrete_ratio": 0.00797120894716867,
+      "max_analytic_ratio": 0.00021456093212655062,
+      "max_q_ratio": 1.0304824797074134e-11,
+      "scale_cases": 20,
+      "ledger_rows": 180,
+      "max_wave_bound_ratio": 0,
+      "max_pore_bound_ratio": 0,
+      "g0_wave_and_pore_double_bits_equal_cases": 4,
+      "max_ledger_relative_error": 2.1711215564888192e-16
+    }
+  ],
+  "actual_native_regressions": [
+    {
+      "fixed": 0,
+      "soil": 512,
+      "comparison": "off15",
+      "physical_acceptance": false,
+      "frames": 9,
+      "owned_typed_exit0": true,
+      "job": "OFF_g0"
+    },
+    {
+      "fixed": 40,
+      "soil": 1000,
+      "comparison": "lossless_native_38_CSV_binary64_comparison",
+      "physical_acceptance": false,
+      "frames": 5,
+      "owned_typed_exit0": true,
+      "job": "OFF_g9p81_k0"
+    },
+    {
+      "fixed": 0,
+      "soil": 512,
+      "comparison": "public26_plus_original15",
+      "physical_acceptance": false,
+      "frames": 257,
+      "owned_typed_exit0": true,
+      "job": "periodic_constant"
+    },
+    {
+      "fixed": 0,
+      "soil": 512,
+      "comparison": "periodic33",
+      "physical_acceptance": false,
+      "frames": 257,
+      "owned_typed_exit0": true,
+      "job": "periodic_variable"
+    },
+    {
+      "fixed": 256,
+      "soil": 1024,
+      "comparison": "public26_plus_original15",
+      "physical_acceptance": false,
+      "frames": 257,
+      "owned_typed_exit0": true,
+      "job": "wall_constant"
+    },
+    {
+      "fixed": 256,
+      "soil": 1024,
+      "comparison": "public26_plus_original15",
+      "physical_acceptance": false,
+      "frames": 257,
+      "owned_typed_exit0": true,
+      "job": "wall_variable"
+    }
+  ],
+  "saved_native_frame_pairs": 1042,
+  "native_particle_frame_pairs": 930896,
+  "comparison_limitations": "Exact listed original15/public26 or periodic33 exports, clocks/Step/signed dterror, or five-frame selfweight38 round-trip bits. Extra ledgers checked independently by existing readers. NOT every BI4 array byte-exported, new half/theory truth or positive-k nonzero-g acceptance.",
+  "baseline_mechanics": "The original raw momentum assembly matches the independent float-pair reference on all72 native points/configuration. Regular center residual/g is .023773252964 in2D and .017694061711 in3D, dominated by first-moment defects. Unsupported patch edges and disordered truncated clouds are descriptive, not actual wall equilibrium failures. No raw-force correction was made.",
+  "qualified_attempts": [
+    "Initial PS1 shell refusal executed no script; no persistent policy/firewall change. All actual solver/readers have independent direct typed exit0.",
+    "Scales Debug labelr1 failed before run on Windows max macro; failed source/note archived. New labelr2 fixes only macro syntax/zero assignment statements; thresholds unchanged.",
+    "Native Prepare initial shell exit was not captured. Its immutable manifest content and2060 bindings were adopted independently, never as solver exit proof. Later diagnostic shell refusal/Fresh rejection preserved; no duplicate solver."
+  ],
+  "current_program_scope": "Default CPU Debug built after edit; isolated Debug/Release candidates source/object/tool/runtime bound. Canonical GPU/server executables and all formal cases/outputs protected. Raw data/programs are local hash-bound, not cloud backups.",
+  "public_gravity_admitted": false,
+  "wall_gravity_admitted": false,
+  "mechanical_hydrostatic_balance_accepted": false,
+  "physical_acceptance": false,
+  "next": "Private CPU true Run periodic gravity pilot only: actual nonzero XML gravity and retained private flags; two-step smoke then coarse/half in accelerating frame. No temporary clearing/restoring g or reimplemented timestep loop. Author-only preparation at this checkpoint; no new gravity Run accepted."
+}
