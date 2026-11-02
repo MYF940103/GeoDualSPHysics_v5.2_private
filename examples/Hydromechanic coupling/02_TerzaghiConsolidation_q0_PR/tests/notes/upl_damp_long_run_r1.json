@@ -1,0 +1,50 @@
+{
+  "stage": "upl_damp_long_run_r1",
+  "status": "author_only_not_executed",
+  "author_files": [
+    "support/upl_damp_long_run_r1.ps1",
+    "support/upl_damp_long_native_run_r1.ps1",
+    "notes/upl_damp_long_run_r1.json"
+  ],
+  "scope": "Two single-action CPU-only owners, separately invoked. No prepare/build/GPU/smoke/eta search/adoption/automatic next/physical admission. Earlier four long author files and all source/docs remain untouched.",
+  "run": {
+    "CLI": "-Window coarse|half -Admission ROOT_JSON -ExecutionAuthorized",
+    "admission": {
+      "stage": "upl_damp_long_admission_r1",
+      "passed": true,
+      "allowed_jobs": "Exactly one string: upl_damp_long_CPU_coarse_r1 or upl_damp_long_CPU_half_r1 matching this invocation.",
+      "physical_acceptance": false,
+      "inputs": "Nonempty flat Entry array. Root must issue per-job gate only after reviewing all prerequisites; owner hashes entries, never fabricates future approvals."
+    },
+    "program_source": "logs/upl_damp_ReleaseCPU_r2.build.json; same unchanged authoritative ReleaseCPU project-main, CPU8, no fixture constructor/Run override or canonical install.",
+    "inputs": "logs/upl_damp_long_r1.inputs.json; only own coarse/half job; dt2^-19/2^-20,262144/524288steps,end.5,1469frames,eta.02, same1040 seed/Normals/material/event.",
+    "argv": "-cpu -ompthreads:8 -stable -mdbc_freeslip INPUT_PREFIX FRESH_OUTPUT -dirdataout data -svres -nsteps:262144|524288",
+    "closure": "Current source265 originals/snapshots,doc+README pairs,current86main-build objects,tools/runtime4/canonical7,sealed inputs/admission/authors before+after. No recursively asserted historical mutable reader source. One direct typed LASTEXITCODE sealed before raw sequence/postchecks; retain partials or failed analysis and never auto-rerun.",
+    "paths": "outputs/upl_damp_long_CPU_WINDOW_r1; logs/samestem.run.json/.call.json/.log",
+    "result_stage": "upl_damp_long_run_r1",
+    "postcheck": "Normal CPU8 finish,actual loop/total time and unchanged eta.02 coefficient diagnostic, exact Part0000..1468 raw sequence. This is owned actual Run integrity, not native/half/physical pass."
+  },
+  "native": {
+    "CLI": "-Window coarse|half",
+    "prerequisite": "Own passed upl_damp_long_CPU_WINDOW_r1.run.json and direct actual typed exit0/current source closure; successful logs/upl_damp_long_reader_ReleaseCPU_r1.helper.json built from same authoritative CPU source.",
+    "actual_call": "Exactly one --read CPU OWN_DATA coarse|half FRESH_REVIEW; actual reader typed exit/call sealed before postcheck. No adoption/reuse of a completed output directory and no solver call.",
+    "paths": "outputs/upl_damp_long_CPU_WINDOW_r1_native; logs/upl_damp_long_CPU_WINDOW_r1.native.json/_reader.call.json/_reader.log",
+    "result_stage": "upl_damp_long_native_run_r1",
+    "completion_stage": "upl_damp_long_native_r1",
+    "completion_window": "damped500",
+    "original_guards": "Typed22/public PART metadata/native1040/1000soil40fixed/common26 col21 ExcessPorePress,finite/elastic/no exclusions,actual n/J/V/rho/k ledger<=5e-13 and fixedzero marker lifecycle; native C++ unchanged scientific guards.1469000soil ledger/58760fixed marker checks,1468noninitial signed dterror<=1e-14,endgap<=1e-14.",
+    "clock": "All1469 part/completed-step/zero-based saved-step exact. Native CSV time/dt binary64 bits equal integer completed_steps times locked dyadic dt; original C++ native-clock exact guard mandatory. Parsed JSON time discrepancy count/max is diagnostic only, never a tolerance and never rewritten.",
+    "drain": "1265 post-open frames x10 actual FSType2/3 p=0 receivers=12650; pre-open event state unchanged. Density/J continue evolving.",
+    "outputs": "Exactly the existing13 native leaves; binary fields never fabricated or relabelled.",
+    "acceptance_limit": "Saved-native completeness/safety only. No first1277 native field-prefix comparison, CPU half comparison, theory, high-frequency stability or physical acceptance is performed; root/P2 may separately author offline QC."
+  },
+  "gates_unchanged": {
+    "half_pressure_RMS_Pa": 5,
+    "half_material_XYZ_max_mm": 0.005,
+    "actual_time_gap_s": 1e-14,
+    "note": "These future scientific pair gates are not executed by either owner."
+  },
+  "production_or_formal_files_changed": false,
+  "solver_reader_or_build_executed_by_author": false,
+  "physical_acceptance": false
+}

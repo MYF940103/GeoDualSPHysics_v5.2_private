@@ -1,0 +1,104 @@
+{
+  "stage": "upl_damp_long_plot_r1",
+  "status": "author_only_not_executed_not_rendered",
+  "files": [
+    "support/upl_damp_long_plot_r1.py",
+    "notes/upl_damp_long_plot_r1.json"
+  ],
+  "CLI": "D:/anaconda3/python.exe -B support/upl_damp_long_plot_r1.py",
+  "purpose": "One descriptive offline figure action for two genuine CPU eta=.02 .5s coarse/half trajectories only. No decoder/solver/build/subprocess/automatic follow-on, no .5s GPU or noaux series is invented.",
+  "prerequisites": {
+    "coarse_prefix": "logs/upl_damp_long_coarse_prefix_r1.check.json",
+    "half_prefix": "logs/upl_damp_long_half_prefix_r1.check.json",
+    "full_half": "logs/upl_damp_long_half_r1.check.json",
+    "rules": "All passed/physicalfalse, stage upl_damp_long_compare_r1 and exact declared gate key sets. Each prefix must name the loaded corresponding long native check. Fullhalf must bind both exact prefix checks and the actual loaded long c/h native checks/source Runs,1469samples/1000soil/samebuild/program. Rehash all their consumed immutable entries and outputs; no failed/missing fallback.",
+    "half_gates": "Original pressureRMS<=5Pa/materialXYZ difference<=.005mm/actualclockgap<=1e-14 are prerequisites, not changed or recalculated as new plotting thresholds."
+  },
+  "reuse": {
+    "long_compare_source": "support/upl_damp_long_compare_r1.py",
+    "long_compare_sha256": "c838ed61d940c078339ac5b630718649e625731bd05f25304d80b16f659bd601",
+    "long_note_sha256": "3155d8dd579ed5d94ee7f5ef4102f710d5d628876d0d671ed798d99dc91a8780",
+    "current_data": "Import only pinned bytes with a non-main name; call dataset('coarse')/dataset('half') and neutral hashing/JSON/mapped functions, never comparator main. Its sealed Run/reader/build/snapshot/export contracts establish existing1469/native22 identity; no new BI4 parser or historical mutable original-source checks.",
+    "summary": "Old support/upl_damp_plot_r1.py and note fully read/pinned as style/provenance. Exact numerical summarize() AST is extracted from pinned support/upl_column_ringdown_plot_r1.py with only its three unchanged literal tuples PROFILE_STEPS/PROFILE_LABELS/RHO_FIELDS. Do not execute either old plot module/imports/main. Pass explicit SimpleNamespace context N1469/STEPSnewlong/base.Fcommon26. Returned old early profiles are ignored; requested long profiles are explicit actual-time layer reductions.",
+    "immutable_summary_sha256": "b46583a96ea8c7f3dc9b345979983440f8f86b22de50d195458b9417f357577d",
+    "mutable_globals": "No monkeypatch/shared inherited cache reconfiguration. Use existing long comparator base.BOUND and rehash its consumed union at end."
+  },
+  "history": {
+    "rows": 2938,
+    "samples_each": 1469,
+    "soil_each": 1000,
+    "mathematics": "Unchanged pinned summary: actual pressuremean/RMS/min/max/spatialSTD; top/bottom/interior material pressure and settlement; fullXYZ velocity RMS; native J and saved-last-stage theta; six stored effective stress means/FrobeniusRMS; derived totalcompression=p-sigma_zz. Native rho comes from existing sealed reader history. Add actual soil_n min/mean/max and per-frame native ledger relative error, original<=5e-13. No per-force theta/pdot is manufactured; the separate snapshot loading hypothesis below is not an observed force-stage resultant.",
+    "history_figure": "5x2 scientific panels showing all1469 actual saved samples without resampling. Meanpressure/top-bottom pressure/topmaterial settlement/XYZspeed/J/n/theta/effectivezz/totalzz/ledger. Units kPa/mm/m/s/1/s as labeled; two fixed colors and solid/dashed styles; actual event and .125/.25 phase boundaries; no hard ylimit/clipping/theoryline."
+  },
+  "profiles": {
+    "actual_times_s": [
+      0.010000228881835938,
+      0.125,
+      0.25,
+      0.5
+    ],
+    "rows": 800,
+    "method": "Two series x4 exact saved times x100initial material layers, each exactly10originalIDs. Pressure mean, downward material settlement mean -1000*(z-z0), derived totalcompression p-sigma_zz mean, XYZspeed RMS. Event equality is pre-open, not a post-open snapshot. Keep actual time/PART/layer/x0 in CSV; no interpolation or smoothing.",
+    "figure": "4x4 panels, initial material z0 versus four quantities. Scientific velocity ticks/MaxNLocator3 avoid long-number overlap. No spatial relabel of moving positions, no fixed-marker mix with soil."
+  },
+  "sampled_phases": {
+    "windows_s": [
+      [
+        "early_post",
+        0.010000228881835938,
+        0.015625
+      ],
+      [
+        "ringdown",
+        0.015625,
+        0.125
+      ],
+      [
+        "early_consolidation",
+        0.125,
+        0.25
+      ],
+      [
+        "late_saved",
+        0.25,
+        0.5
+      ]
+    ],
+    "rows": 32,
+    "method": "For each series/window and globalmean/top/bottom/interior pressure record samplecount/actualfirstlast/minmax/p2p/unweightedSTD/netchange/totalvariation/reversalvariation=(TV-abs(net))/2, max layer sampled p2p and max saved speedRMS. Endpoints included in neighboring windows. These are descriptive sampled quantities, not fitted damping rates or a stability gate; p2p/STD include evolving trend."
+  },
+  "reference_annotation": "Endpoint finite-Kw H=1 bookkeeping Tv approximately.0134 only; .5s is not2Tv/full consolidation. Explicit ideal pressure/material-settlement diagnostics below are not an exact transient reference or acceptance gate. Current E2MPa/nu.3/n.3/Kw.2GPa/rhot2100/k1e-4, bodyforce kernel band,actual drainage particle plane,J-derived geometry/inertia and dynamic ramp differ from the ideal classical benchmark and Lian2023 material. Eta.02 literature motivation does not establish direct paper reproduction.",
+  "ideal_quasistatic_reference": {
+    "scope": "Uniform traction q0=10000Pa and instantaneous step drainage at EVENT, never Qcancel or a fitted load. Only actual .125/.25/.5s, no event/pre-open reference. H=1 nominal and H=.995 initial constrained-pressure particle plane are both explicit, geometry-derived/unfitted conventions, neither silently preferred. No new theory acceptance limit or solver.",
+    "constants": "M=1666666.75+4*769230.8125/3, b=2e8/double(float(.3)), B=b/(M+b), Cv=B*M*double(float(1e-4))/(1000*9.80665). These retain actual float-promoted material constants; Dwater is not substituted for Cv.",
+    "formulas": "m=0..99, lambda=(2m+1)*pi/2, tau=actualtime-EVENT; p(z0)=2*B*q0*sum[(-1)^m/lambda*cos(lambda*z0/H)*exp(-Cv*lambda^2*tau/H^2)]. Integral from0toz0=2*B*q0*H*sum[(-1)^m/lambda^2*sin(lambda*z0/H)*exp(...)]. Downward material settlement mm=1000*(q0*z0-integral)/M. Evaluate the SAME actual initial z0 for every native material ID, not the analytic free surface H versus a native point at .995.",
+    "outputs": "reference_profiles.csv600rows=2H x3times x100layers; ideal pressure and material-settlement layer means. reference_metrics.csv12rows=2CPU x2H x3times; pRMS/q0 percent, actual/ideal top-material settlement, signed relative top-settlement difference percent, all-material settlement RMS difference mm. Pressure/speed/theta/stress/J native series remain actual; no theoretical speed/stress/J is invented.",
+    "display": "Both grey/dotted/dash-dot reference conventions overlay only p and settlement columns for the three post-event profile times. Caption states ideal quasi-static uniform-traction/step-drain comparison, not exact dynamic-ramp/band-load truth or physical acceptance. Keep q0 uncorrected and do not use hypothetical Qcancel."
+  },
+  "snapshot_load_diagnostic": {
+    "rows": 8,
+    "two_dimensional_units": "V0 is area in m2 and particle mass is kg/m of out-of-plane length. Resultants are N/m of out-of-plane length, not a three-dimensional volume or absolute force. New CSV column units make this explicit; retained historical component column labels are not rewritten.",
+    "series_times": "CPU coarse/half x exact saved t=0,.125,.25,.5; one additional matching CSV, no additional PNG or physical gate.",
+    "hypothesis": "At every snapshot (including t0) hypothetically set q=10000Pa, not the actual t0 ramp load. Actual soil x,z,J define V0=double(float(.21))/2100, V=V0*J and rho=1000+1100/J. X minimum image width .1m is valid for R=float(2*float(.018))<.05. Native IDs retain ascending order; no fabricated field or force replay.",
+    "raw_arithmetic": "Float32 dx,dz,rr2,rad,qq,w; rr2 in [1e-18,R^2]. bwen=float(-2.7852/double(float(.018))^3). Left-associative float fac=bwen*qq*w*w*w/rad. Each pair is float(2*q*Vj/rhoi)*float(fac*dz), sequential float32 accumulate by native ID, NOT actual production cell order. Double rhoV sum only receivers z>zmax-R. No fit to observed stress or saved LoadAce.",
+    "target_and_outputs": "Count actual upward FSType2/3 with normal.z/length>.35 (declared ten), target=count*double(floatMass)*float(-q/(2100*.01)); report top/band counts, raw/target, s=target/raw, float-renormalized hypothetical resultant and Qcancel=s*q. Also report recorded snapshot sum(rhoV*LoadAce.z), mean derived total compression p-sigma_zz and descriptive cd*sum(rhoV*vz)/.1 using actual recorded cd. Do not label Qcancel a physical applied-load change or replace q0/theory.",
+    "retained_component": "Bind existing logs/upl_case02_flux_load_check_r1.run.json (actual owned typed0), its passed completion/helper, immutable test author_files and summary.csv entry. Retained J1/q5000 raw=-497.6716799506442 and scale=1.0046784251368994 are provenance only; no equality gate with this hypothetical endpoint/native-ID-order reconstruction. Do not recursively revalidate historical mutable production originals.",
+    "scope": "Endpoint geometry and saved LoadAce are not original force-stage geometry/order or an acceleration reconstruction; no0ULP, force balance, applied-load, energy or physical acceptance claim. Finite nonzero raw is required only to define a diagnostic ratio; no numerical accuracy/ratio limit is introduced. No source/runtime/input/half-admission changes."
+  },
+  "renderer_and_validation": "Explicit scientific static PNG/CSV request: use existing Matplotlib/Agg style rather than an interactive dashboard. Preserve units, actual time spacing, labels/line-style accessibility and source provenance under the visualization skill. Authoring only: no figure generated or visually QAed; root must execute and inspect later.",
+  "outputs": [
+    "figures/upl_damp_long_plot_r1_history.png",
+    "figures/upl_damp_long_plot_r1_profiles.png",
+    "figures/upl_damp_long_plot_r1_history.csv",
+    "figures/upl_damp_long_plot_r1_profiles.csv",
+    "figures/upl_damp_long_plot_r1_windows.csv",
+    "figures/upl_damp_long_plot_r1_qdiagnostic.csv",
+    "figures/upl_damp_long_plot_r1_reference_profiles.csv",
+    "figures/upl_damp_long_plot_r1_reference_metrics.csv",
+    "logs/upl_damp_long_plot_r1.check.json"
+  ],
+  "limits": "Fresh-only. Plot passed means artifacts and consumed bindings completed; physical_acceptancefalse/additional_scientific_gatefalse. Late1.953125ms cadence and ordinary earlier122.0703125us storage cannot certify all high-frequency ringdown or unsaved excursions. No energy/force-stage/wallflux/CPU-GPU/theory/full-cycle/causal-isolation acceptance. Parent-provided completed coarse overview did not change these predeclared formulas or limits; author did not load/reduce long trajectory fields.",
+  "executed_by_author": false,
+  "production_or_frozen_artifacts_changed": false,
+  "physical_acceptance": false
+}

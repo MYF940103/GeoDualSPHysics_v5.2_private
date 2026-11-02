@@ -1,0 +1,180 @@
+{
+  "stage": "upl_damp_long_root_r1",
+  "passed_bounded_window_review": true,
+  "physical_acceptance": false,
+  "scope": "Two fresh CPU8 eta=.02 constant-k public dynamic .5-s runs; no full consolidation, .5-s GPU, restart or general-boundary acceptance.",
+  "actual_runs": {
+    "coarse": {
+      "steps": 262144,
+      "dt_s": 0.0000019073486328125,
+      "loop_s": 731.801331
+    },
+    "half": {
+      "steps": 524288,
+      "dt_s": 9.5367431640625e-7,
+      "loop_s": 1480.327148
+    },
+    "samples_each": 1469,
+    "soil_ids": 1000,
+    "fixed_ids": 40,
+    "actual_end_s": 0.5
+  },
+  "implementation_checks": {
+    "both_exact1277_frame_typed_prefixes": true,
+    "all5_binary_payloads_3_identity_files_3_text_prefixes": true,
+    "signed_dterror_included_no_exclusions": true,
+    "raw_BI4_byte_equivalence_claimed": false,
+    "original_native_safety_ledger_and_nonempty_drainage": true,
+    "half_pressure_RMS_max_Pa": 3.446687628852047,
+    "half_pressure_max_time_s": 0.29296875,
+    "half_material_XYZ_max_mm": 0.00003280366602713325,
+    "half_clock_gap_s": 0,
+    "original_half_limits_Pa_mm_s": [
+      5,
+      0.005,
+      1e-14
+    ],
+    "independent_direct_numpy_recomputation_agreed": true,
+    "initial_common26_bit_exact": true,
+    "passive_legacy_Rhop_max_abs_difference_kg_m3": 2.2578125,
+    "legacy_Rhop_is_not_authoritative_J_derived_mixture_density": true,
+    "active_FSType_masks_equal_and_active_normal_max_X_difference": 2.8279585784218852e-8,
+    "inactive_normal_orientation_changes_descriptive_only": true
+  },
+  "visual_review": {
+    "performed_by_root": true,
+    "history_readable": true,
+    "profiles_readable": true,
+    "both_PNGs_opened": true,
+    "matching_8_output_files": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_history.png",
+        "bytes": 518728,
+        "sha256": "39773f393f15bf0d16e0be5cf5083dcd8d1e316bb42933b8b7ea72c2d0e4923e"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_profiles.png",
+        "bytes": 413427,
+        "sha256": "b021e4f2487a2b12c2b0e42bc2a11a76e8435a398f03fdbea6e35eb34308df6c"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_history.csv",
+        "bytes": 2153442,
+        "sha256": "bcceb02044759af219f7315f31e8877b43483cbb693a85269cf72c0ea8e357f4"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_profiles.csv",
+        "bytes": 98564,
+        "sha256": "68a7be0f8116510fed9f39158f72a24a77dda70d3afea0d13badeb0ecdaedaf1"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_windows.csv",
+        "bytes": 7353,
+        "sha256": "690d07a99a8e6b2115e55f1dd3ad3183b62c5eca90ae7ad503f17ea4704109d2"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_qdiagnostic.csv",
+        "bytes": 2551,
+        "sha256": "d01bbd197455497f520f2d6f41fdaa74682b33e6f0498ad2e212456ce8e9a0d1"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_reference_profiles.csv",
+        "bytes": 56038,
+        "sha256": "a2c5138e2a6906875ca12e65c11596caf8b7509f84737ef6ec1446a788c47c2c"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_damp_long_plot_r1_reference_metrics.csv",
+        "bytes": 2540,
+        "sha256": "7e66e8610e0e5210e81a6b4959dab0436602a1d4764e96372a95afecc11b2b1d"
+      }
+    ],
+    "comments": "CPU c/h histories overlap; saved later mean pressure declines. Upper stress profile has small remaining spatial ripples; sparse output cannot certify unsaved high-frequency behavior."
+  },
+  "endpoint": {
+    "pressure_mean_Pa": [
+      8648.551217224122,
+      8648.591103881836
+    ],
+    "top_material_settlement_mm": [
+      0.4986113442209783,
+      0.49859722455561917
+    ],
+    "mean_total_compression_Pa": [
+      10040.794954808407,
+      10040.795856342967
+    ],
+    "finite_Kw_H1_Tv_approximately": 0.01339829562
+  },
+  "reference_comparison": {
+    "q0_unchanged_Pa": 10000,
+    "conventions": "Explicit unfitted H=1 nominal and H=.995 initial constrained-pressure plane; evaluate same initial native material z0. Ideal quasistatic uniform traction/instantaneous step drainage is not exact dynamic ramp/band-load truth.",
+    "coarse_endpoint": [
+      {
+        "series": "CPU_c",
+        "grid": "coarse",
+        "convention": "nominal_H1",
+        "H_m": "1.0",
+        "part": "1468",
+        "actual_time_s": "0.5",
+        "tau_since_step_drain_s": "0.48999977111816406",
+        "pressure_RMS_difference_Pa": "84.78947156131262",
+        "pressure_RMS_over_q0_percent": "0.8478947156131262",
+        "actual_top_material_settlement_mm": "0.4986113442209783",
+        "ideal_top_material_settlement_mm": "0.4797689655168931",
+        "top_material_settlement_difference_percent": "3.9273858999580855",
+        "all_material_settlement_RMS_difference_mm": "0.004664093249319711"
+      },
+      {
+        "series": "CPU_c",
+        "grid": "coarse",
+        "convention": "initial_pressure_particle_plane_H0.995",
+        "H_m": "0.995",
+        "part": "1468",
+        "actual_time_s": "0.5",
+        "tau_since_step_drain_s": "0.48999977111816406",
+        "pressure_RMS_difference_Pa": "41.008345873811336",
+        "pressure_RMS_over_q0_percent": "0.4100834587381134",
+        "actual_top_material_settlement_mm": "0.4986113442209783",
+        "ideal_top_material_settlement_mm": "0.4980403219939663",
+        "top_material_settlement_difference_percent": "0.1146538145196434",
+        "all_material_settlement_RMS_difference_mm": "0.0006697751088695291"
+      }
+    ],
+    "nominal_H1_native_top_is_not_analytic_H1_surface": true,
+    "not_a_theory_accuracy_acceptance_gate": true
+  },
+  "loading_review": {
+    "snapshot_Qcancel_at_0p5_Pa": 10045.426465450077,
+    "retained_actual_resultant_N_per_m": -1000.000030279059,
+    "interpretation": "Existing independent load component plus snapshot reconstruction supports ~0.45-percent constant-stress cancellation mapping offset. It is not a force-stage replay or complete causal proof; nominal physical load/theory q0 is NOT replaced or fitted.",
+    "production_load_changed": false
+  },
+  "decision": "Proceed to one bounded larger-step candidate as a new experiment, prepare only under separate singleton admission. No repeated dt search or relaxed guard. Old event cannot divide larger dt; new ramp/drain=.009998321533203125, earlier1.9073486328125us, must be fresh c/h evidence. Source/formal/canonical unchanged.",
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_coarse_prefix_r1.check.json",
+      "bytes": 121073,
+      "sha256": "65c1e4d47afeabe6af7fa3e51ba9c4f1722db8b4fa3105823426c6410bb63ea5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_half_prefix_r1.check.json",
+      "bytes": 120955,
+      "sha256": "176fbc8846bf08f38dd0a9538beb795f8db3487074a15c7bea817ff84940fc31"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_half_r1.check.json",
+      "bytes": 119819,
+      "sha256": "639dc76df1aaaf353e40d3922d18a2037abe78f4e11b390a3551293b257469b7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_plot_r1.check.json",
+      "bytes": 147547,
+      "sha256": "4e561fe06c8f75663c703cf39dac6577feb93d43c7db7befc6ee8b82ab4c0615"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_step_reader_ReleaseCPU_r1.helper.json",
+      "bytes": 726086,
+      "sha256": "92addd8d2d65b889caa8b404b57a0e098cb0e2b786498b759a2dc8af0a70e517"
+    }
+  ]
+}

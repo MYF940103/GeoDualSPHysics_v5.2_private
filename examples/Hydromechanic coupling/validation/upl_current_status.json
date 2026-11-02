@@ -2,7 +2,7 @@
   "date": "2026-11-03",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded public CPU/GPU loaded-column parity, matched .125s ON/OFF halves and controlled cost are verified. Intrinsic-solid-density damping passed four builds/components, positive legacy default-OFF exact CPU21/GPU151 and eta0 CPU/GPU769-frame compatibility. New eta=.02 .125s CPU half passed1277 exact-time pairs:1.229642763Pa/4.953012641e-6mm/time0; CPU/GPU coarse passed .009452878Pa/8.524514471e-6mm/time0. Same-GPU noaux comparison PNG/CSV reviewed. One fresh CPU8 .5s coarse is active under a one-job admission; no .5s half or full physical acceptance yet. Latest verified local/remote checkpoint fef204f208e01c0b06a339e02f272634e2ec57a0.",
+  "status": "Bounded default-OFF, eta0 and .125s CPU/GPU compatibility remain verified. Both original-step .5s CPU8 runs completed: all1469 half pairs satisfy original5Pa/.005mm/time bounds (max3.446687629Pa/.000032803666mm/0), and both complete1277-frame retained prefixes are exact. Root inspected history/profile PNGs and matching CSVs. One fresh larger-step CPU8 coarse is active after its own two-frame native smoke; the shifted event makes this a new experiment, not inherited half evidence. No full-consolidation or canonical/server acceptance. Latest verified local/remote checkpoint57ba8c782c4fdd61abad70066a7b180ccce83bda.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has bounded verified CPU/GPU implementation evidence for fresh2D zero-gravity elastic periodic/opposing FreeSlip fixtures and the constant-k single upward FreeSlip-bottom/X-periodic band-loaded/fixed-drained column. The seven-file patch permits only that column's finite eta0..0.1 intrinsic-density damping; bounded components/default-OFF/eta0 compatibility are verified, positive-damping physics is not. Other stabilizers/general boundaries/restart remain held. Canonical/server programs unchanged.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -15,7 +15,7 @@
   },
   "current_damping_candidate": {
     "plan": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_damp_plan_r1.json",
-    "status": "Four builds/components passed, GPU Debug memory0/0. CPU/GPU eta0 all12 exports and default-u-pw CPU21/GPU151 original15/clocks exact. CPU8 .125s coarse/half and same-dt CPU/GPU coarse sealed and passed original1277-pair bounds; independent export recomputation agrees. Root reviewed both history/profile PNGs with matching CSVs and same-GPU noaux comparison. Long .5s coarse is active; one-job gate does not admit half. No long/full physical acceptance or canonical/server installation.",
+    "status": "Four builds/components, default-OFF, eta0 and .125s CPU/GPU compatibility passed. Original-step .5s CPU8 coarse/half and both1277-frame typed prefixes passed. Root inspected two new PNGs and six CSVs; independent1469-pair recomputation agrees. No full-consolidation physical acceptance or canonical/server installation.",
     "CPU_half_pressure_Pa_displacement_mm_time_s": [1.2296427630147513, 0.0000049530126406277242, 0],
     "CPU_half_evidence": "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_damp_CPU_half_r3.check.json",
     "analysis_repair": "CPU coarse solver and typed reader passed; r1 outer PowerShell JSON-time equality failed81 transient1ULP values. RawJSON/native times were all exact. r2 native adopted the original reader offline and uses integer-step times binary dt; failed r1 remains false, no rerun or tolerance change.",
@@ -318,10 +318,23 @@
     "limits": "Only roughlyTv0.00315,not long consolidation. Master simultaneously changes J-inertia/quadrature,Darcy and closed-face closure,so no isolated acceleration-term claim. Lian2023 motivates a separately defined damping-compatibility stage. Ordinary122us cadence must not be blindly extended to full2Tv. Raw BI4/readout binaries are local hash-bound,not cloud Git data.",
     "physical_acceptance": false
   },
+  "public_loaded_column_damped_long_review": {
+    "root_review": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_damp_long_root_r1.json",
+    "samples_each": 1469,
+    "end_s": 0.5,
+    "CPU8_coarse_half_dt_s": [0.0000019073486328125, 0.00000095367431640625],
+    "original_half_max_Pa_mm_s": [3.446687628852047, 0.00003280366602713325, 0],
+    "both_complete1277_frame_native_prefixes_exact": true,
+    "root_visual_and_matching_CSV_review": true,
+    "reference_scope": "Finite-Kw ideal quasistatic references, actual material z0, unchangedq0. Explicit H1 nominal and initial pressure-plane H.995 conventions both retained, not fitted. Coarse pressureRMS/q0 .8479/.4101percent and top-material settlement differences3.9274/.11465percent are convention-dependent descriptive comparisons, not full dynamic ramp/band theory acceptance.",
+    "load_scope": "Independent component and snapshot reconstruction indicate roughly .45percent constant-stress cancellation mapping offset. This is not proof of the entire pressure difference or a physical-force deficit; unchanged actual resultant is retained. No q0 adjustment.",
+    "next_single_step_experiment": "dt2^-18/2^-19,event2621*2^-18,1341frames to.5s. Own smoke passed; coarse active. Each run admitted separately; no old-event prefix/half adoption. If the sole candidate fails retain accepted smaller dt, without repeated search or relaxed limits.",
+    "physical_acceptance": false
+  },
   "next_order": [
     "Retain verified public CPU/GPU parity and all accepted formal u-pw results. Default masterOFF remains unchanged; no canonical/server installation.",
     "Matched dyadic .125s ON/OFF halves, descriptive visual review and sequential same-input CPU1/CPU8/GPU cost/native compatibility are complete and selectively backed up locally/remotely. Prefer local CPU8 for this small column only.",
-    "Implementation/components/default-OFF/eta0 gates for the sole eta=.02 candidate passed and were selectively backed up. CPU8 .125s half and CPU/GPU coarse passed original5Pa/.005mm/1e-14. Same-GPU sampled late pressure-mean peak-to-peak variation fell2540.04 to1002.15Pa and peak RMS speed fell .00136339 to .000667781m/s; this is reduced variation, not61-percent theory-accuracy improvement. Review the active single .5s CPU8 coarse, require exact1277-frame typed-native prefix, then separately admit half if justified. No automatic full-cycle admission.",
+      "Original .5s CPU8 c/h and both1277-frame exact prefixes passed, with root visual/CSV review and independent pair recomputation. Selectively back up this bounded milestone. Evaluate the sole larger-step new-event .5s candidate through fresh singleton smoke/coarse/half and unchanged original limits; on failure retain prior step, not repeated search. No automatic full-cycle admission.",
     "On justified evidence plan a longer constant-k consolidation/theory window with affordable native cadence, then full benchmark/server delivery, Cryer and Lian. Variable-k physical sensitivity follows constant-k benchmarks. No TPI/plasticity/general-wall bypass or precision rewrite without evidence."
   ],
   "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. Bounded public CPU/GPU loaded-column entry implementation parity is verified as recorded above; this does not imply general-boundary/plasticity/full-cycle/exact-restart/continuum-accuracy or server-package acceptance.",

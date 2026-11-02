@@ -1,0 +1,125 @@
+{
+  "stage": "upl_damp_long_r1",
+  "status": "author_only_not_prepared_built_or_run",
+  "scope": "One conditional next bounded .5s constant-k, eta=.02 CPU coarse/half benchmark after the current .125s CPU half, GPU bridge and root figure review. No actual longRun owner or admission is authored here. Not full consolidation, 2Tv, theory, Cryer, variable-k, wall-generalization, public-range or server acceptance.",
+  "author_files": [
+    "support/upl_damp_long_prepare_r1.ps1",
+    "support/upl_damp_long_native_r1.cpp",
+    "support/upl_damp_long_reader_build_r1.ps1",
+    "notes/upl_damp_long_r1.json"
+  ],
+  "prepared_inputs": {
+    "source_manifest": "logs/upl_damp_r1.inputs.json",
+    "source_windows": [
+      "coarse",
+      "half"
+    ],
+    "required_damping": 1,
+    "required_SoilDampingCoef": 0.02,
+    "seed_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "unchanged": "Same1040 native/1000soil40fixed, material, publicmaster1/model0/Ck0, no other auxiliary stabilizers, g0, Xperiodic, single FreeSlip bottom, q010000, fixed-grid drain, all initial fields and existing damping parameters/comments. No GenCase or restart.",
+    "only_XML_changes": [
+      "TimeMax value .125 to .5, retaining its original comment",
+      "Append fourth special timeout at time .125 with timeout .001953125; first three nodes unchanged"
+    ],
+    "other_changes": [
+      "Fresh shallow artifact names",
+      "Required terminal CLI steps262144/524288"
+    ],
+    "inverse_DOM": "Revert TimeMax and remove only appended tout; require exact original normalized DOM.",
+    "outputs": [
+      "configs/upl_damp_long_coarse_r1.xml",
+      "configs/upl_damp_long_half_r1.xml",
+      "outputs/upl_damp_long_seed_r1/upl_damp_long_{coarse,half}_r1.{xml,bi4} and _Normals.nbi4",
+      "logs/upl_damp_long_r1.inputs.json"
+    ]
+  },
+  "schedule": {
+    "dt_coarse_s": 0.0000019073486328125,
+    "dt_half_s": 9.5367431640625e-7,
+    "end_s": 0.5,
+    "coarse_steps": 262144,
+    "half_steps": 524288,
+    "samples": 1469,
+    "coarse_saved_completed_steps": "Union 0:64:65536; 5120:1:5376; 66560:1024:262144. Half multiplies every completed step by2.",
+    "special_timeout": [
+      {
+        "time": 0,
+        "timeout": 0.0001220703125
+      },
+      {
+        "time": 0.009765625,
+        "timeout": 0.0000019073486328125
+      },
+      {
+        "time": 0.01025390625,
+        "timeout": 0.0001220703125
+      },
+      {
+        "time": 0.125,
+        "timeout": 0.001953125
+      }
+    ],
+    "prefix_samples": 1277,
+    "new_late_samples": 192,
+    "prefix_end_part": 1276,
+    "event_s": 0.010000228881835938,
+    "event_coarse_step": 5243,
+    "event_half_step": 10486,
+    "event_part": 203,
+    "first_post_open_part": 204,
+    "post_open_frames": 1265,
+    "post_open_drained_particle_checks": 12650,
+    "clock_truth": "Replay actual GetNextTime and true accumulated dyadic time; independently verify integer union and zero-based saved Step=max(completed-1,0). Integer step*locked binary dt is truth, never transient PowerShell ConvertFrom-Json rowtime.",
+    "prefix_scope": "Prepare proves identical saved integer prefix and reconstructed binary times, not observed new native trajectory equivalence. Future owner/QC must compare first1277 actual payload/clock records, allowing distinct binary header sample counts."
+  },
+  "reader": {
+    "source": "support/upl_damp_long_native_r1.cpp",
+    "mechanical_parent": "support/upl_column_ringdown_native_r1.cpp",
+    "changes": "Samples1469, append192 late saved points, full end.5, stage/window naming and CLI restrict coarse/half. Existing typed22 decoder,1040/native1000/fixed40, common26 col21 true ExcessPorePress, clock28, n/J/V/rho/k ledger, signed dterror and real drainage checks are unchanged. Dormant smoke helper branch is inherited internally but inaccessible from CLI.",
+    "CLI": "--read CPU|GPU DATA coarse|half FRESH_REVIEW",
+    "completion_stage": "upl_damp_long_native_r1",
+    "completion_window": "damped500",
+    "neutral_include": {
+      "path": "support/upl_cpu_public_native_r1.cpp",
+      "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38"
+    },
+    "outputs": "Same13 named native leaves and existing actual26 schema;1469 rows instead of1277, no fake fields or new BI4 parser."
+  },
+  "reader_build": {
+    "script": "support/upl_damp_long_reader_build_r1.ps1",
+    "configuration": "ReleaseCPU",
+    "source_build": "logs/upl_damp_ReleaseCPU_r2.build.json",
+    "retained_recipe": "logs/upl_column_ringdown_reader_ReleaseCPU_r1.helper.json",
+    "tag": "upl_damp_long_reader_ReleaseCPU_r1",
+    "program": "outputs/upl_damp_long_reader_ReleaseCPU_r1/upl_damp_long_native_r1.exe",
+    "record": "logs/upl_damp_long_reader_ReleaseCPU_r1.helper.json",
+    "closure": "Current265 source/snapshots,doc/README,seven protected canonical,four runtime;85current non-mainCPU objects+one new reader=86. Reuse actual cl/link flags,17libraries/order and selected environment. Only source/Fo/Fd/deps/helper-object/OUT and85 basename object mappings change. No main rebuild or canonical install; typed immediate compile/link exits and failure retention. Historical recipe source/doc originals are not asserted current."
+  },
+  "physical_reference_limits": {
+    "current_material": "Retain current E2MPa,nu0.3,n0=float0.3,Kw0.2GPa,rhot0=2100kg/m3,k=float1e-4m/s,q0=10000Pa,event5243*2^-19 and eta0.02. No material, ramp or seed change is made for literature matching.",
+    "literature_distinction": "Lian2023 section4.1 uses different E20MPa,nu0.33,n0.4,Kw1GPa,rhos2000kg/m3,k2e-4 and ramp0.01s. Eta0.02 is literature-motivated, not proof of direct paper reproduction. Initial pore pressure is not required to equal q0 exactly.",
+    "reference_prerequisites": "A later finite-Kw/dynamic-ramp reference must specify the drainage particle plane, effective drainage distance, band-load body-force support, inertia and damping assumptions. The necessary-step water-pressure coefficient D=(Kw/n)*k/(rhow*9.80665) is not automatically consolidation Cv or a time-factor calibration; .5s is not declared2Tv. No new reference or theory pass is claimed here."
+  },
+  "future_gates": {
+    "not_admitted_yet": true,
+    "required_before_any_execution": "Root full reads these author files; current .125s CPU half/GPU bridge/figures accepted; separate explicit Prepare/build permissions and later actual job admission.",
+    "half_pressure_RMS_Pa": 5,
+    "half_material_XYZ_max_difference_mm": 0.005,
+    "actual_time_gap_s": 1e-14,
+    "other": "All existing finite/elastic/noexclusion/native identity/ledger/drainage/necessary current-step checks remain. No arbitrary wave/E0/normalization gate or monotonicity requirement. Pair and plot adapters/actual owner are later tasks, not automatically invoked."
+  },
+  "cost_estimate": {
+    "basis": "181s per65536 CPUcoarse steps; unisolated single observation, proportional step extrapolation only.",
+    "coarse_s": 724,
+    "half_s": 1448,
+    "total_minutes": 36.2,
+    "not_ETA": true,
+    "late_output_caveat": "Only192 additional frames (+15.0%) despite4x duration; sparse late saves reduce I/O rate but do not prove high-frequency ringdown stability."
+  },
+  "physical_acceptance": false,
+  "formal_files_changed": false,
+  "production_changed": false,
+  "solver_reader_or_build_executed_by_author": false
+}
