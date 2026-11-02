@@ -1,0 +1,55 @@
+{
+  "stage": "upl_column_cost_r1",
+  "author_only_not_executed": true,
+  "scope": "One explicitly authorized genuine public Release project-main call; ordered CPU1 -> CPU8 -> GPU, same retained 25 ms coarse experiment. No build, solver fixture, decoder, automatic follow-up, canonical installation or production change.",
+  "invocation": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_column_cost_r1.ps1 -Backend CPU -Threads 1 -PublicStageReceipt tests/notes/upl_column_public_root_r1.json -ExecutionAuthorized",
+    "Same entry with -Backend CPU -Threads 8; then -Backend GPU with Threads omitted. Paths are caller-resolved; no execution-policy setting is modified."
+  ],
+  "actual_jobs": {
+    "tags": [
+      "upl_column_cost_r1_cpu1",
+      "upl_column_cost_r1_cpu8",
+      "upl_column_cost_r1_gpu"
+    ],
+    "record": "logs/TAG.run.json",
+    "owned_call": "logs/TAG.call.json",
+    "stdout": "logs/TAG.log",
+    "output": "outputs/TAG",
+    "configuration": [
+      "ReleaseCPU",
+      "ReleaseCPU",
+      "Release"
+    ],
+    "target": "Authoritative isolated public project main, not a private ActualRun/helper override",
+    "target_arguments": "-cpu -ompthreads:1|8 OR -gpu:0; then -stable -mdbc_freeslip EXACT_PREFIX FRESH_OUT -dirdataout data -svres -nsteps:10000"
+  },
+  "input": {
+    "manifest": "logs/upl_column_public_r1.inputs.json",
+    "selected_job": "coarse",
+    "exact_same_input_prefix_for_all_three": true,
+    "steps": 10000,
+    "samples": 769,
+    "dt_s": 0.0000025,
+    "end_s": 0.025,
+    "runtime_sha256": "3d166d2825f9be0d594f22f4d0e2a3b10eb6cf058d08db591eb78f3e39d0cb77",
+    "initial_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "physics": "1040 native IDs: 1000 soil plus 40 fixed, public master ON, constant k=float(1e-4), model0/Ck0, no auxiliary stabilizers; original runtime/material/initial fields/output cadence unchanged. This is the original decimal-dt 25 ms input, not the newer dyadic ringdown experiment."
+  },
+  "admission": {
+    "public_stage": "Explicit PublicStageReceipt is bound and requires actual passed_implementation_review, physical_acceptance=false and its 14 primary receipt paths each passed. String paths are resolved and hash-bound, not invented Entry aliases.",
+    "future_root_cost_gate": "logs/upl_column_cost_r1.admission.json: stage upl_column_cost_admission_r1, passed=true, physical_acceptance=false, nonempty flat inputs Entries. Root creates only after OFF half and its physical overview. This author note does not assert that gate exists or has passed.",
+    "sequence": "CPU8 requires both own CPU1 Run and own CPU1 native safety. GPU requires both CPU1 and CPU8 Run/native safety. Each prior native check must bind its exact own source_run and real typed reader exit0, current source265 and unchanged raw/export bindings. Structural Run success alone is insufficient.",
+    "records": "public_stage_receipt and cost_admission_receipt are Entries; prior_cost_runs and prior_cost_native_checks are Entry arrays."
+  },
+  "protected_closure": "Current public CPU Release86 project objects or GPU Release110 non-main plus main; current source265 original/snapshot pairs, documentation pair, tools, canonical7, runtime4 and exact project program are rehashed before/after. Historical original-source paths/Git metadata are not recursively treated as current authority. Existing same-identity runtime is retained; any necessary missing CPU runtime leaf is copied without overwriting and verified.",
+  "controlled_cost": {
+    "process_audit": "CIM Win32_Process boundary snapshots reject any observed DualSPHysics*.exe or upl_*.exe before this invocation and require no such process after its direct exit. Record command line/program/PID and timestamps. No watcher, kill, priority, affinity or security change; snapshots cannot certify transient overlap or unrelated machine/background load throughout.",
+    "timing": "Immediate original typed LASTEXITCODE is sealed before output inspection. Stopwatch surrounds direct invocation plus Tee stdout only; preflight and post-run hashing/decoding are excluded. Actual Run.out Simulation Runtime and Total Runtime are separately retained with invariant parsing. Requested CPU1/CPU8 mode and actual OpenMP thread line, or actual GPU hardware/timer sections, must agree.",
+    "limitations": "One ordered triplet, no repetition/order randomization/thermal-power-affinity control. No general hardware-performance conclusion or whole-machine quiescence claim. Retained overlapped CPU1 103.685226 s and GPU 72.705505 s are context only, not the new controlled-cost result."
+  },
+  "later_scientific_checks": "Root/P2 separately decode each own cost output through the existing public769 reader. CPU1 and GPU require exact same-backend retained 25 ms exports. CPU8 is allowed a separate CPU1-vs-CPU8 pressure RMS <=5 Pa and material XYZ displacement difference max <=0.005 mm comparison; no blind thread-bit identity, independent-half or theory claim. Those adapters are not invoked here.",
+  "failure_policy": "Fresh-only records/outputs/logs. A failed call or postcheck retains typed call, raw partials and failure JSON; no automatic retry, decoder, next job or overwriting. Preflight refusal does not fabricate a native exit. Run passed establishes owned normal completion/current binding/769 raw sequence/timing only; completed step, actual native clock and saved scientific safety await its own native check.",
+  "physical_acceptance": false
+}

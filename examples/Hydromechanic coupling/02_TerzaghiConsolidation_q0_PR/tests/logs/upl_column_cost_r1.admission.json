@@ -1,0 +1,36 @@
+{
+  "stage": "upl_column_cost_admission_r1",
+  "passed": true,
+  "physical_acceptance": false,
+  "scope": "Only the declared sequential CPU1/CPU8/GPU ON constant-k025s cost triplet,10000steps/769frames with original input and actual Release mains. Not a long-cycle or stabilization admission.",
+  "inputs": [
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_ringdown_on_off_root_r1.json",
+      "bytes": 5331,
+      "sha256": "60b7bf0f05d5d559f6c788dcdfc50a842de2bfe55e4406429fbf125c803a76d9"
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_column_ringdown_half_r1.check.json",
+      "bytes": 1059729,
+      "sha256": "d4c4a704947af6d3a842922f0647633f9daaaeb7ef4640a16467f42bb78ad469"
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_column_ringdown_off_half_r1.check.json",
+      "bytes": 1100367,
+      "sha256": "6d371bc723a81fb3484383d4b4c34ec88965607761993904d14a58b236ab52aa"
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_column_ringdown_on_off_r1.check.json",
+      "bytes": 1965429,
+      "sha256": "a7fcdf76854994c35549b5a13eb60759dffa1a82ac0cb0a324a5ba9e2a6dd971"
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_column_ringdown_profile_readability_r2.check.json",
+      "bytes": 3348,
+      "sha256": "32d8cb38cb790e58f35f5300865e5011f6b7abffd0ab3aa246037002a1a87926"
+    }
+  ],
+  "review": "Both ON/OFF1277 independent halves passed unchanged5Pa/.005mm/1e-14s; root inspected native histories and both actual comparison PNGs plus the tick-only profile redraw. Residual noaux oscillation is recorded,not physical accuracy acceptance. Backend cost matters before any longer experiment.",
+  "order": "Each fresh CPU1,CPU8,GPU call is separate and rejects other observed project processes. Decode each own769-frame run first. Root requires CPU1/GPU retained same-backend export exactness and CPU1/8 original5Pa/.005mm/time bounds before publishing a timing conclusion. No automatic following job or solver retry.",
+  "limits": "One triplet/boundary-only process observations do not prove whole-machine quietness or general hardware speed. Preserve source/canonical/formal files. No parameter tuning,larger dt,damping/HG/SPR unlock,full-run or server installation is authorized by this gate."
+}

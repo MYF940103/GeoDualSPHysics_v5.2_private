@@ -1,0 +1,178 @@
+{
+  "stage": "upl_column_cost_root_r1",
+  "passed": true,
+  "purpose": "Bounded sequential controlled-cost review of the unchanged public 25 ms no-auxiliary constant-k column; no new physical model or theory acceptance.",
+  "same_setting": {
+    "sequence": [
+      "cpu1",
+      "cpu8",
+      "gpu"
+    ],
+    "backend_configurations": [
+      "ReleaseCPU",
+      "ReleaseCPU",
+      "Release"
+    ],
+    "steps_per_job": 10000,
+    "native_frames_per_job": 769,
+    "native_IDs": 1040,
+    "soil_IDs": 1000,
+    "fixed_IDs": 40,
+    "declared_dt_s": 0.0000025,
+    "declared_end_s": 0.025,
+    "actual_native_end_s": 0.024999999999998482,
+    "runtime_XML_sha256": "3d166d2825f9be0d594f22f4d0e2a3b10eb6cf058d08db591eb78f3e39d0cb77",
+    "initial_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "physics": "Same exact retained public coarse runtime/geometry/material/output cadence: master ON, model0/Ck0, constant k=float(1e-4), g0/X-periodic/single FreeSlip bottom, HG/SPR/viscosity/damping OFF. Only requested backend/thread count and fresh output directory change; no initialization overwrite, integrator override, new seed or program installation."
+  },
+  "timing_measurements": [
+    {
+      "job": "cpu1",
+      "backend": "CPU",
+      "threads": 1,
+      "reported_simulation_runtime_s": 97.174591,
+      "reported_total_runtime_s": 97.231102,
+      "direct_invocation_wall_s_including_Tee": 97.9888312,
+      "actual_mode": "Stable - Pos-Double - Single core"
+    },
+    {
+      "job": "cpu8",
+      "backend": "CPU",
+      "threads": 8,
+      "reported_simulation_runtime_s": 29.476025,
+      "reported_total_runtime_s": 29.505873,
+      "direct_invocation_wall_s_including_Tee": 29.5901899,
+      "actual_mode": "Stable - Pos-Double - OpenMP(Threads:8)"
+    },
+    {
+      "job": "gpu",
+      "backend": "GPU",
+      "threads": null,
+      "reported_simulation_runtime_s": 71.617043,
+      "reported_total_runtime_s": 71.744576,
+      "direct_invocation_wall_s_including_Tee": 72.3618912,
+      "actual_mode": "Stable - Pos-Cell - Single-GPU",
+      "device": "NVIDIA GeForce RTX 3050",
+      "CUDA_runtime": "11.7",
+      "compute_capability": "8.6",
+      "driver_mode": "WDDM"
+    }
+  ],
+  "measured_loop_time_ratios": {
+    "definition": "Numerator reported Simulation Runtime divided by denominator reported Simulation Runtime; not outer shell duration, build/preflight/hash/decoder time or a repeated benchmark estimate.",
+    "cpu1_over_cpu8": 3.2967332264102778,
+    "cpu1_over_gpu": 1.356864049804458,
+    "gpu_over_cpu8": 2.429670995325862,
+    "CPU8_time_reduction_fraction_relative_CPU1": 0.69666942050726,
+    "CPU8_time_reduction_fraction_relative_GPU": 0.5884216414799477
+  },
+  "ownership_and_safety": {
+    "actual_solver_calls": 3,
+    "actual_pure_reader_calls": 3,
+    "all_six_direct_calls_immediate_original_typed_exit0": true,
+    "project_main_not_private_fixture": true,
+    "CPU1_and_CPU8_project_program_sha256": "088fd18a42463e8065dfa4116fc2d0c1238571e8441fa143d111dbb29c3cd4d9",
+    "GPU_project_program_sha256": "5f012c2c613c98c51fdb979b459ee6a7da7614be170584c518f583b4f7fc7874",
+    "all_current_source265_doc_runtime4_canonical7_bindings_unchanged_in_owned_checks": true,
+    "raw_PART_counts": [
+      769,
+      769,
+      769
+    ],
+    "CPU8_prior_Run_and_native_count": 1,
+    "GPU_prior_Run_and_native_count": 2,
+    "native_schema": "Each real reader decoded original15 plus six native doubles and float PosDiv, true PART metadata; 1000 soil common26 columns with column21 actual ExcessPorePress, 40 fixed public zero markers without masking fixed J/theta/original15.",
+    "all_three_saved_clock_step_locked_dt_and_nonempty_signed_dterror_guards_passed": true,
+    "noninitial_signed_dterror_intervals_per_job": 768,
+    "ledger_max_relative_error_per_job": [
+      0,
+      0,
+      0
+    ],
+    "post_open_frames_per_job": 359,
+    "post_open_drained_particle_checks_per_job": 3590,
+    "max_active_drain_count_per_job": 10,
+    "saved_native_integrity_is_not_a_new_force_stage_load_or_full_physical_acceptance_claim": true
+  },
+  "compatibility": {
+    "CPU1_vs_retained_same_backend_public025": "Passed exact comparison of all12 named export files, including original15 across all1040 IDs, common26, clock/Step/lockedDt/signed dterror, true binary J/theta/n and native extra saved representations.",
+    "GPU_vs_retained_same_backend_public025": "Passed the same all12-export exact gate; this is not CPU/GPU cross-backend byte identity.",
+    "CPU1_vs_CPU8": {
+      "passed_original_same_dt_thresholds": true,
+      "samples": 769,
+      "max_pressure_RMS_Pa": 0,
+      "max_material_XYZ_displacement_difference_mm": 0,
+      "max_actual_time_difference_s": 0,
+      "all26_max_abs_and_RMS_differences": 0,
+      "physical_bin_recorded_bytes_and_SHA256_identical": true,
+      "clock_bin_bytes_and_SHA256_identical": true,
+      "clock_SHA256": "ef4f1bb1af0456d81d7c9a807a260d530d6dd0efe8653b6ef1facaede63d24d7",
+      "interpretation": "Zero difference is an observation here, not a newly imposed thread-bit-exact policy or a temporal-half study."
+    },
+    "exported_extra_scope": "V/rho/k and PosDiv comparisons use the native decoder's 17-digit ledger/fixed exports and its true types/ledger guards. Do not rename this as raw-byte comparison of all22 original BI4 arrays or completion JSON whole-file identity."
+  },
+  "verification_scope": {
+    "review": "Read completed Run/native/exact receipts and actual schema; rehashed compact call/stdout/completion/receipt bindings and inspected all769 thread CSV rows (p/u/v/stress maxima zero). Existing exact checks perform the full raw/export hash closure. No solver, decoder, build or comparison was rerun for this note.",
+    "process_control": "All three owned records report no other DualSPHysics/upl process at their before/after boundary snapshots. Those are not continuous monitoring or proof of whole-machine isolation; unrelated background activity, transient overlap between snapshots, temperature/power/affinity and run-order effects were not controlled.",
+    "one_repetition_per_configuration": true,
+    "old_overlapped_timings_not_used_as_controlled_cost_baseline": true,
+    "precision": "Simulation Runtime, Total Runtime and direct-invocation wall-with-Tee are distinct measures. Preflight/post-hashing and separate decode are outside the recorded loop time."
+  },
+  "recommendation": "Prefer the verified local CPU8 project-main path for this small 1000-soil 1D column while retaining GPU regression coverage: CPU8 took 29.476025 s versus RTX3050 71.617043 s in this one ordered triplet. No general GPU scalability, A6000/server, larger case, speedup mechanism or physics conclusion follows; new performance claims would need their own matched measurements.",
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_cpu1.run.json",
+      "bytes": 856661,
+      "sha256": "6f87360b74b0b4a3f228d4c5f62ff040a5ebafc1fbf8381269eef81addf1d7d3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_cpu1.native.json",
+      "bytes": 21270,
+      "sha256": "d3af25311131eb75237c664f4797a1134b906f3072d6a37e4821bac4211a2172"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_cpu8.run.json",
+      "bytes": 1176687,
+      "sha256": "b74f23966a3daad7be2c45a14ba7808ea2691b020a354d199982e7172209cd58"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_cpu8.native.json",
+      "bytes": 21272,
+      "sha256": "f389ac8316336891e1e770322be260250db16c976df1131ed3bf300de31e3e27"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_gpu.run.json",
+      "bytes": 1787722,
+      "sha256": "76b4b124a0da635fe6e430359dc2f05fbf1282daf94ed14ba949412ba8f88940"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_gpu.native.json",
+      "bytes": 21239,
+      "sha256": "47d4a3be73e1380864b4609d5cbf7da3fb5f111a6da9877270cac1e51908b5c1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_cpu1.exact.json",
+      "bytes": 708604,
+      "sha256": "d00e02d5daeb2c5aad4156044b17684d61a8bef14316ff75f95be9994a6155bf"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_gpu.exact.json",
+      "bytes": 1223592,
+      "sha256": "cc684557a15aae7f9cf6b6e562f1c3c9cb541087dce6bdacde7d3ba9fbd3de9c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1_threads.compare.json",
+      "bytes": 703482,
+      "sha256": "92b3bbcf4888db2fd61ab935aeae2cab2123fef4ebdac659919030b867c0362d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_cost_r1.admission.json",
+      "bytes": 2717,
+      "sha256": "e259fc708877a9729d1dd93b4d14aa36d4426c2d231322128c91afa0397bf474"
+    }
+  ],
+  "cloud_backup_scope": "The companion explicit whitelist includes only this stage author recipes/notes and compact log/JSON/CSV evidence. Raw BI4/IBI4/OBI4, native binaries and export tables, program/runtime/objects and historical records remain local/hash-bound by the referenced receipts; excluded local files are not claimed cloud-backed up.",
+  "production_changes": false,
+  "physical_acceptance": false
+}
