@@ -1,0 +1,60 @@
+{
+    "program":  {
+                    "path":  "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+                    "bytes":  3827200,
+                    "sha256":  "db5aaaf6fa07566eb10b71f5864e2229d8f061950618bb1270a56a25acd17589"
+                },
+    "target_program":  {
+                           "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_Debug_r2\\gpu\\DualSPHysics5.2_win64_debug.exe",
+                           "bytes":  182964224,
+                           "sha256":  "7dc82119d5f72533dac0936acde065c7c6d45c4d70c48066e60c0e35b0aa73b8"
+                       },
+    "arguments":  [
+                      "--tool",
+                      "memcheck",
+                      "--leak-check",
+                      "full",
+                      "--error-exitcode",
+                      "99",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_Debug_r2\\gpu\\DualSPHysics5.2_win64_debug.exe",
+                      "-gpu:0",
+                      "-stable",
+                      "-mdbc_freeslip",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_seed_r1\\upl_damp_smoke_r1",
+                      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_GPU_smoke_r1",
+                      "-dirdataout",
+                      "data",
+                      "-svres",
+                      "-nsteps:2"
+                  ],
+    "target_arguments":  [
+                             "-gpu:0",
+                             "-stable",
+                             "-mdbc_freeslip",
+                             "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_seed_r1\\upl_damp_smoke_r1",
+                             "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_GPU_smoke_r1",
+                             "-dirdataout",
+                             "data",
+                             "-svres",
+                             "-nsteps:2"
+                         ],
+    "working_directory":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src",
+    "started_utc":  "2026-11-02T21:13:34.1637556Z",
+    "ended_utc":  "2026-11-02T21:13:48.6073638Z",
+    "direct_native_call":  true,
+    "typed_LASTEXITCODE_captured_immediately":  true,
+    "owned_call_exited":  true,
+    "exit_code":  0,
+    "invocation_failure":  null,
+    "log":  {
+                "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_smoke_r1.log",
+                "bytes":  25068,
+                "sha256":  "609164b61a50de1ffc76e93ad6822ddfe86c3c9ef580c86ff5c78945942e6810"
+            },
+    "public_project_main":  true,
+    "fixture_or_Run_override":  false,
+    "memcheck_executed":  true,
+    "direct_target_call":  false,
+    "target_child_exit_separately_observed":  false,
+    "physical_acceptance":  false
+}

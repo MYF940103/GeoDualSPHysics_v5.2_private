@@ -1,0 +1,34 @@
+{
+  "stage": "upl_damp_cross_initial_r1",
+  "status": "author_only_offline_comparator_correction_not_executed",
+  "physical_acceptance": false,
+  "author_files": ["support/upl_damp_compare_r2.py", "notes/upl_damp_cross_initial_r1.json"],
+  "retained_analysis_failure": {"path": "logs/upl_damp_cross_smoke_r1.check.json", "bytes": 343322, "sha256": "dc5af52e066cdc083276a1106c56e66c4a9a1892b14f6e9dbbc52f33fac9d126", "passed": false, "failure": "Paired material/initial common26 differs"},
+  "retained_comparator": {"path": "support/upl_damp_compare_r1.py", "bytes": 17040, "sha256": "8b99b9457596ca3af065dd67e0a8f9f967bc42b7f69da57b1f479b036f5b11f3"},
+  "reason": "Root diagnosed an added cross-implementation initial-all26 bit gate, not a declared 5Pa/0.005mm/time-gate failure. FSNormal is a computed orientation field, not a prescribed initial physical state on inactive interior receivers. Preserve the failed r1 check, r1 source and completed eta0 pass; author a fresh r2 offline comparison without any solver/decoder rerun.",
+  "actual_evidence_reported_by_root_readonly_review": {
+    "initial_non_normal_columns": "All23 columns0..17 and21..25 are bit-identical, including FSType;1000 soil IDs and initial XYZ match.",
+    "initial_normal_summary_as_reported": "Only FSNormal columns18..20 differ:982 inactive orientations versus near-zero-gradient numerical direction, and952 signed-zero component differences.",
+    "active_FSType2_or3_receivers": 10,
+    "active_normal_max_abs_XYZ": [3.2209687404027024e-8, 0, 0],
+    "three_saved_pair_pressure_RMS_Pa": [0, 0, 5.607238446174786e-10],
+    "max_material_XYZ_difference_mm": 0,
+    "attribution": "These numeric findings are the root already-completed read-only diagnostic, not a new execution or independent data analysis by this author. R2 records the actual diagnostics afresh when root authorizes its offline invocation."
+  },
+  "source_audit": [
+    {"path": "src/source/JSphCpu.cpp", "lines": "1219-1221,4444-4455", "fact": "IsFreeSurfaceParticle requires fluid with FST_FreeSurface or FST_Isolated (2 or3). gpcorr starts as gp; only khyd>0 AND closedfs AND IsFreeSurfaceParticle enters normal-dependent Neumann Taylor-defect projection."},
+    {"path": "src/source/JSphGpu_ker.cu", "lines": "1023-1024,1625-1635", "fact": "KerHydroMechIsFreeSurface requires fluid with FST_FreeSurface or FST_Isolated (2 or3); only that closedfs branch reads normal and projects gpcorr. This is the complete dynamic pressure-rate branch, not a claim that normals are unused by every other model or operator."}
+  ],
+  "new_initial_identity_contract": {
+    "cross_smoke_and_cross_coarse": "Keep original ordered IDs/initial XYZ bit-exact and require all23 non-normal common26 columns0..17 and21..25 bit-exact at t0. All normal values must remain finite. Do not zero, replace, filter or rewrite any normal or input/output array.",
+    "CPU_half": "Keep initial all26 bit-exact, including all three FSNormal components; same-build/program and all original controls remain unchanged.",
+    "eta0": "All12 named saved representations remain whole-file SHA/size exact to both cost and original public025 controls. No eta0 rerun is requested or needed for the already passed r1 evidence.",
+    "new_diagnostics": "Before the initial identity assertion record each of26 initial field bit-difference counts and max absolute differences, active FSType2/3 receiver counts/mask equality, active normal per-component bit counts/maxabs, inactive normal-different receiver count and signed-zero component count. Active selection is the union if masks differ, so the diagnostic never hides a changed active mask; FSType itself remains an exact identity field.",
+    "full_history": "All26 full-history RMS/max metrics, including FSNormal, remain present and descriptive; pressure, XYZ displacement and actual-time comparisons are unchanged."
+  },
+  "unchanged_delivery_gates": {"pressure_RMS_all_times_Pa": 5, "material_XYZ_difference_all_times_mm": 0.005, "actual_time_difference_s": 1e-14},
+  "outputs": "Same fixed --case choices; new stage upl_damp_compare_r2 and fresh logs/upl_damp_CASE_r2.check.json/.csv only. Historical proof, current source/input/program/runtime closure, typed exits, native headers/clocks/IDs, no-interpolation and no-physical-acceptance limits are unchanged.",
+  "limits": "This corrects a comparison precondition with source-grounded field semantics. It is not a physical threshold relaxation, active-face flux proof, continuum/theory/full-cycle admission, smoothing or production equation change. Root must fully read the new source/note before any offline invocation.",
+  "solver_decoder_build_or_comparator_executed_by_author": false,
+  "production_or_frozen_artifacts_changed": false
+}

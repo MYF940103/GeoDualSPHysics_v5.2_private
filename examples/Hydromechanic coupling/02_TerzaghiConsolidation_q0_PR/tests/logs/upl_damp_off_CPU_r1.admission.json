@@ -1,0 +1,32 @@
+{
+  "stage": "upl_damp_off_admission_r1",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_damp_off_CPU_r1"
+  ],
+  "purpose": "One actual CPU21 same-physics positive legacy damping regression and its separate pure native review; no physical candidate admission",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_smoke_r1.native.json",
+      "bytes": 380769,
+      "sha256": "6bd5924c970f1c08bbbb11f909be35e5a1e55abb3cd1d091cc77c18f07406391"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_eta0_exact_r1.check.json",
+      "bytes": 1067110,
+      "sha256": "546080f444c25d55f8529c0cf0c722a0062279e268522a42b0267094ccc450b7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_DebugCPU_run_r1.run.json",
+      "bytes": 670779,
+      "sha256": "28bc5c593981d8377df72153b31c09a5027c09936e93b60ef492ee7c263209fe"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_ReleaseCPU_r2.build.json",
+      "bytes": 453227,
+      "sha256": "d960b34ce8d67042094f3062c4e4bc2718e90c16c1e2e9df6fc9b2987a27ca2d"
+    }
+  ],
+  "review": "Full owner/note read; legal Action case normalized before first execution. New CPU8 eta0 full-export exact and actual Debug components passed. Retained CPU21 uses original eta=.04 HG=.1 SPR/viscosity; no historical solve or formal data is rerun.",
+  "physical_acceptance": false
+}

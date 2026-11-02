@@ -1,0 +1,45 @@
+{
+  "stage": "upl_damp_build_r1",
+  "status": "author_only_not_executed",
+  "physical_acceptance": false,
+  "purpose": "One explicitly authorized authoritative project build for the reviewed damping candidate; no source changes, program invocation, installation, solver or following action.",
+  "author_files": ["support/upl_damp_build_r1.ps1", "notes/upl_damp_build_r1.json"],
+  "interface": "powershell -NoProfile -File support/upl_damp_build_r1.ps1 -Configuration DebugCPU|ReleaseCPU|Debug|Release -ExecutionAuthorized",
+  "authorization": "Root reads the complete two author files and the frozen production delta, obtains peer review, then separately authorizes one configuration per call. This author action does not invoke the script.",
+  "cpu": {
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "project": "src/VS/DualSPHysics5ReCpu.vcxproj",
+    "arguments": ["/m", "/t:Build", "/p:Configuration=selectedCPU", "/p:Platform=x64", "/p:OutDir=fresh_slash_ended", "/p:IntDir=fresh_slash_ended", "/v:minimal", "/bl:fresh"],
+    "meaning": "The standard CPU Debug task is satisfied only by a passed DebugCPU call. Fresh isolated Build is not called a Rebuild.",
+    "closure": "Parse active ClCompile items from the authoritative project and require exactly the same 86 source paths as the actual retained same-configuration successful public build; require 86 fresh distinct object basenames including main.obj, hence 85 non-main.",
+    "libraries": "Capture current hashes at the 17 resolved library paths from the successful same-configuration flux_operator helper recipe. Its immutable receipt supplies library path facts only; its historical source originals, objects, program and inputs are not revalidated as current. The new MSBuild and fresh CL/link command tlogs are recorded; the helper is never invoked.",
+    "postbuild": "Refuse pre/post presence of src/VS/cg_variables.h or src/cg_variables.h because the existing CPU project has a conditional move event; do not modify that project event or claim the project has no side effects."
+  },
+  "gpu": {
+    "solution": "src/VS/DualSPHysics5Re.sln",
+    "project": "src/VS/DualSPHysics5Re.vcxproj",
+    "retained_recipe": "Actual passed upl_column_public_Debug_r1.build.json or Release equivalent and its actual project_call and environment receipts, not a guessed command vector.",
+    "preserved_arguments": ["/m:1", "/nr:false", "/t:Rebuild", "/v:minimal", "/p:Platform=x64", "/p:PlatformToolset=v143", "/p:VCToolsVersion=14.36.32532", "/p:BuildProjectReferences=false", "/p:PostBuildEventUseInBuild=false"],
+    "only_argument_changes": "OutDir, IntDir and binlog are remapped, exactly three remaps; configuration and every other actual argument remain unchanged.",
+    "environment": "Use the actual reviewed VsDevCmd.bat via cmd /d /c call -arch=x64 -host_arch=x64 then set; capture an immediate typed environment exit, apply process environment and publish only INCLUDE/LIB/VCToolsInstallDir/WindowsSdkDir/WindowsSDKVersion, never the full environment stdout.",
+    "closure": "111 fresh objects INCLUDING project main.obj, equal to the actual retained 110 non-main basename set plus main; 12 .cu.obj and 2 .h.obj are required. No retained object is linked or reused. GPU IntDir is fresh under the local temporary directory and must contain no whitespace.",
+    "tools_libraries": "Current hashes at the actual four tool and six library paths from the successful GPU recipe are bound before/after; old mutable source originals are not traversed."
+  },
+  "current_capture": {
+    "source": "At each authorized build invocation enumerate current src/source .cpp/.h/.cu/.cuh, require 265, capture hashes and copy bytes into a fresh per-config source snapshot. Accept the newly reviewed source contents, without comparison to old pre-damping source hashes. Recheck all originals, copies and path membership after the build.",
+    "documentation": "Capture and snapshot current doc/xml_format/_FmtXML_ElastoplasticSoil.xml and case02/README.md; verify both original/snapshot pairs before and after.",
+    "protected": "Capture seven distinct canonical bin/windows executable paths from the successful recipe, plus DsphConfig.xml, ChronoEngine.dll, dsphchrono.dll and vcomp140.dll currently in bin/windows. Require original hashes unchanged. Copy the four runtime files only into the fresh isolated executable directory; accept an already project-generated destination only if byte-identical, never overwrite a different file.",
+    "identity": "Historical recipe receipts and referenced actual call/environment records are immutable path/command evidence. Their source originals are not asserted current. Current source, doc, README, tools, libraries, project files, author files, protected canonical programs and runtime are late-captured before the build."
+  },
+  "ownership": "Precreate log; reset LASTEXITCODE to null immediately before the direct MSBuild invocation; copy it immediately after return; seal a fresh call JSON with its actual typed int exit and times BEFORE output hashing or postchecks. Environment setup is not a program/helper/solver test. Retain failed call/build records and all partial outputs; no automatic retry.",
+  "outputs": {
+    "tag": "upl_damp_CONFIGURATION_r1",
+    "record": "logs/upl_damp_CONFIGURATION_r1.build.json",
+    "call": "logs/upl_damp_CONFIGURATION_r1.call.json",
+    "other_logs": ".log, .binlog, _CL.command.tlog, _link.command.tlog and GPU-only _environment.json",
+    "fresh_folders": "outputs/tag (GPU executable in tag/gpu), outputs/tag_source; CPU src/VS/Intermediate/tag or GPU local Temp/upl_damp_r1/CONFIG/int. All must be absent, as must all new log/receipt destinations.",
+    "receipt_contract": "stage/passed/configuration/platform/backend/build_target; direct typed owned exit fields and owned_exit_record:E/project_call:E (two aliases of the same sealed actual call); program:E; inputs:E[]; source_snapshot[265]={original:E,snapshot:E}; documentation_snapshot and case_readme_snapshot pairs; objects includes main (86 CPU or 111 GPU), non_main_object_count 85 or110, project_main_object:E, exact_object_basename_closure; canonical_programs_before:E[7]/unchanged; runtime_before:E[4], runtime[4]={original:E,copy:E}/unchanged; source_bindings_unchanged; log/binlog:E and compiler_linker_command_tlogs pairs. Failed builds may have missing/partial output entries and passed=false. No old GPU objects-exclude-main schema is silently claimed.",
+    "no_followon": "No executable, help, solver, helper, component, reader, installation, process query, server, second configuration or next action is launched. No source or project edits; no arrays or CTE changes. No physical acceptance is established by compilation."
+  },
+  "verification_this_author_turn": "Source and actual retained schema read; static PowerShell AST and JSON checks only. No build or owner execution. Exact author hashes are handed off separately after final static review."
+}

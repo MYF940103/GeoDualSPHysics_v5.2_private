@@ -2994,6 +2994,7 @@ void JSphCpu::AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,co
   if(SoilCte.ModulusE<=0.f || KernelH<=0.f)return;
   const int ini=int(npb),fin=int(np),npf=int(np-npb);
   const float h2=KernelH*KernelH;
+  const float dynamiccd=(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f);
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTELIGHT)
   #endif
@@ -3001,8 +3002,8 @@ void JSphCpu::AddSoilDampingCpu(unsigned np,unsigned npb,const typecode *code,co
     const typecode rcode=code[p];
     if(CODE_IsNormal(rcode) && CODE_IsFluid(rcode) && !CODE_IsFluidInout(rcode)){
       const float rhop=velrhop[p].w;
-      if(rhop>0.f){
-        const float cd=SoilDampingCoef*sqrt(SoilCte.ModulusE/(rhop*h2));
+      if(dynamiccd>0.f || rhop>0.f){
+        const float cd=(dynamiccd>0.f? dynamiccd: SoilDampingCoef*sqrt(SoilCte.ModulusE/(rhop*h2)));
         ace[p].x-=cd*velrhop[p].x;
         ace[p].y-=cd*velrhop[p].y;
         ace[p].z-=cd*velrhop[p].z;
@@ -4327,14 +4328,15 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
-    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || SoilHourglassXi!=0 || SoilDamping
+    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping)) || SoilHourglassXi!=0
     || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; load/drainage require the bounded constant-k column.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/HG/viscosity/DDT/artificial stress/SPR/Shepard; damping/load/drainage require the bounded constant-k column.");
   if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))
     Run_Exceptioon("Dynamic pore-pressure fixture requires Wendland, finite k>=0, Kw>0 and water density>0.");
+  if(DynamicPorePressure && SoilDamping)Log->Printf("Dynamic soil damping rate: %.9g s^-1 (reference intrinsic solid density)",double(GetDynamicSoilDampingRate()));
   for(unsigned p=0;p<Np;p++){PoroJc[p]=1.;PoroThetac[p]=0.;}
 }
 

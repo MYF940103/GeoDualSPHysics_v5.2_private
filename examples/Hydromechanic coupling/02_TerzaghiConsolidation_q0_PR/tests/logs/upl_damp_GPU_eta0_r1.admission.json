@@ -1,0 +1,25 @@
+{
+  "stage": "upl_damp_admission_r1",
+  "passed": true,
+  "allowed_jobs": ["upl_damp_GPU_eta0_r1"],
+  "purpose": "One current GPU Release 0.025-s zero-strength damping trajectory for same-backend exact compatibility only",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_smoke_r1.native.json",
+      "bytes": 383680,
+      "sha256": "079f59a7e66cbd2afc0d3b42e6afaa19e478a8c4205befb428538390d84a2999"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_cross_smoke_r2.check.json",
+      "bytes": 350248,
+      "sha256": "7b9447ae7d6ace4c26afb1842bbd7101e7a3404c341b0890e07979ad1961f7d7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_Release_r2.build.json",
+      "bytes": 425891,
+      "sha256": "9af6b6ab2183a9bb8c451579641b49901f7d1eb61bb1ce0c6abae30d32682c5a"
+    }
+  ],
+  "review": "Current GPU Debug native smoke and memory check passed. The cross-backend initial normal prerequisite was corrected offline, with all three normal columns diagnosed and original pressure/displacement/time bounds unchanged. CPU eta0 exact and default-u-pw positive legacy damping exact regressions passed. This admission permits only the unchanged prepared GPU eta0 job, not positive damping, full-cycle or physical acceptance.",
+  "physical_acceptance": false
+}

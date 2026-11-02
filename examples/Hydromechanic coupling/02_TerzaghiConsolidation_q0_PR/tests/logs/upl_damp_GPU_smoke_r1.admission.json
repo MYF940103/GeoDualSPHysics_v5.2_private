@@ -1,0 +1,27 @@
+{
+  "stage": "upl_damp_admission_r1",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_damp_GPU_smoke_r1"
+  ],
+  "purpose": "Only actual current GPU Debug two-step smoke under CUDA11.7 memcheck",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_smoke_r1.native.json",
+      "bytes": 380769,
+      "sha256": "6bd5924c970f1c08bbbb11f909be35e5a1e55abb3cd1d091cc77c18f07406391"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_eta0_exact_r1.check.json",
+      "bytes": 1067110,
+      "sha256": "546080f444c25d55f8529c0cf0c722a0062279e268522a42b0267094ccc450b7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_Debug_r2.build.json",
+      "bytes": 425086,
+      "sha256": "ffba1a4d796b16fe2701f4f1b1ac9d61acd1c8188b7791fc46da9c8463302762"
+    }
+  ],
+  "review": "Corrected authoritative111-object GPU Debug build, current CPU Debug native smoke and complete CPU zero-damping same-backend compatibility passed. This permits only2 new GPU steps, not a positive-damping trajectory or physical acceptance.",
+  "physical_acceptance": false
+}

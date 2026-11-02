@@ -3591,6 +3591,25 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 //##############################################################################
 
 //==============================================================================
+/// Lian elastic damping uses reference intrinsic solid density, not legacy rhop.
+//==============================================================================
+float JSph::GetDynamicSoilDampingRate()const{
+  if(!SoilDamping)return 0.f;
+  if(!std::isfinite(SoilDampingCoef) || SoilDampingCoef<0.f || SoilDampingCoef>0.1f)
+    Run_Exceptioon("Dynamic column SoilDampingCoef must be finite and in [0,0.1].");
+  if(SoilDampingCoef==0.f)return 0.f;
+  const double n0=SoilCte.Porosity,h=KernelH,young=SoilCte.ModulusE;
+  const double rhos=(double(RhopZero)-n0*double(SoilCte.PoreWaterRho))/(1.-n0);
+  if(!(n0>0 && n0<1) || !std::isfinite(rhos) || !(rhos>0)
+    || !std::isfinite(young) || !(young>0) || !std::isfinite(h) || !(h>0))
+    Run_Exceptioon("Dynamic column damping requires positive finite solid density, E and h.");
+  const float cd=float(double(SoilDampingCoef)*sqrt(young/(rhos*h*h)));
+  if(!std::isfinite(cd) || !(cd>0))
+    Run_Exceptioon("Dynamic column damping rate is not representable.");
+  return cd;
+}
+
+//==============================================================================
 // Load related data 
 //==============================================================================
 void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){

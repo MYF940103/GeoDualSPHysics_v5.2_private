@@ -588,6 +588,7 @@ protected:
 
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
   void ConfigConstantsSoil();
+  float GetDynamicSoilDampingRate()const;
 };
 
 //-----

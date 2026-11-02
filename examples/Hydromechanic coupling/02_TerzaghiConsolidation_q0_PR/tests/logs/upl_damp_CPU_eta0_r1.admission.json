@@ -1,0 +1,27 @@
+{
+  "stage": "upl_damp_admission_r1",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_damp_CPU_eta0_r1"
+  ],
+  "purpose": "Only fresh actual CPU8 Release 25ms zero-damping compatibility against retained identical-physics cost control",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_smoke_r1.run.json",
+      "bytes": 616709,
+      "sha256": "a14bad62c3d5db79fd8b751a4bfbc84578bc73c2b7ef17878f3a27dce9e44cf4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_smoke_r1.native.json",
+      "bytes": 380769,
+      "sha256": "6bd5924c970f1c08bbbb11f909be35e5a1e55abb3cd1d091cc77c18f07406391"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_ReleaseCPU_r2.build.json",
+      "bytes": 453227,
+      "sha256": "d960b34ce8d67042094f3062c4e4bc2718e90c16c1e2e9df6fc9b2987a27ca2d"
+    }
+  ],
+  "review": "Actual CPU Debug two-step native safety and corrected authoritative CPU Release passed. Eta0 must reproduce saved same-backend outputs; no positive-damping trajectory/physical/long-run admission.",
+  "physical_acceptance": false
+}

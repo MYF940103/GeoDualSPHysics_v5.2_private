@@ -741,7 +741,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ,ShiftPosfsg
     ,NULL,NULL,BoundDerivativeVelg,PoroThetag,PorosityFeedback? PoroJg: NULL);
   cusph::Interaction_Forces(parms);
-  if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg);
+  if(SoilDamping)cusph::AddSoilDamping(Np,Npb,Codeg,Velrhopg,Aceg,(DynamicPorePressure? GetDynamicSoilDampingRate(): 0.f));
   NormalizeHydroMechTopBandLoad();
   if(HourglassGpu){
     if(interstep==INTERSTEP_SymPredictor)

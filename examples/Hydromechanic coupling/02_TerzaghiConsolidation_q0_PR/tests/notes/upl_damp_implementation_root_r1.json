@@ -1,0 +1,159 @@
+{
+  "stage": "upl_damp_implementation_root_r1",
+  "date_local": "2026-11-03",
+  "status": "bounded_implementation_components_and_compatibility_verified_before_positive_trajectory",
+  "passed": true,
+  "production_files": [
+    "src/source/JSph.h",
+    "src/source/JSph.cpp",
+    "src/source/JSphCpu.cpp",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpuSingle.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "source_summary": "59 insertions/13 deletions across seven source files and XML guide/case README. Only dynamic loaded-column damping law/scope and same scalar GPU argument added. No new particle arrays, time integrator, porosity law, Darcy discretization or public parameter/default change.",
+  "builds": "All four authoritative isolated builds passed; required CPU Debug included. Original failed DebugCPU r1 C2065 is retained; corrected shared-base getter has no derived-only flag. Canonical/server programs unchanged.",
+  "component_summary": {
+    "configurations": [
+      "DebugCPU",
+      "ReleaseCPU",
+      "Debug",
+      "Release"
+    ],
+    "each_direct_cases": 5,
+    "each_actual_force_calls": 3,
+    "each_extra_complete_rate_calls": 1,
+    "each_conditional_rate_rows": 4000,
+    "reference_intrinsic_density_kg_m3": 2571.428598189841,
+    "cd_s_inv": 30.987409591674805,
+    "stage_power_range_W": [
+      -0.016548061888835782,
+      -0.016548061884636988
+    ],
+    "max_rate_error_over_original_budget": 0.027335853282009485,
+    "GPU_Debug_memcheck_zero_errors_and_leaks": true,
+    "wall_target_is_constructed_not_independent_face_flux": true,
+    "physical_steps_advanced": 0
+  },
+  "compatibility": {
+    "eta0": "CPU/GPU each769 saved times, all12 named saved export representations exact against retained cost and original public controls. Not all22 raw BI4-array-byte equality.",
+    "default_u_pw_OFF": "CPU21/GPU151 saved frames: all15 original typed arrays plus native IDs, actual time/Step/signed dterror exact; dynamic arrays/model metadata absent. Retained positive damping=.04/HG=.1/SPR/viscosity preserved. Old solvers not rerun.",
+    "cross_smoke": "3 actual matched times, pressure RMS maximum5.607238446174786e-10Pa, XYZ displacement/time difference zero. Initial23 non-normal fields bit exact; all3 FSNormal columns remain descriptive. Ten active receivers have normal-x difference3.2209687404027024e-8;972 inactive receivers differ and952 signed-zero components differ. Full26 history retained; original5Pa/.005mm/1e-14 gates unchanged. Failed extra initial-all26 r1 gate preserved; offline r2 correction only."
+  },
+  "numerical_law": "For explicit dynamic loaded column only c_d=eta*sqrt(E/(rho_s*h^2)),rho_s=(rho_t0-n0*rho_w)/(1-n0), force acceleration -c_d*v. Same finished damped Ace supplies complete Darcy/closed-face reconstruction; not cosmetic smoothing or isolated acceleration causality.",
+  "sole_next_candidate": {
+    "eta": 0.02,
+    "CPU8_coarse_dt_s": 0.0000019073486328125,
+    "CPU8_half_dt_s": 9.5367431640625e-7,
+    "end_s": 0.125,
+    "samples": 1277,
+    "drain_and_ramp_s": 0.010000228881835938,
+    "half_limits_Pa_mm_time": [
+      5,
+      0.005,
+      1e-14
+    ],
+    "order": "CPU coarse -> own native/overview -> separately admitted half -> half check -> separately admitted GPU coarse/native/cross bridge. No eta search or automatic long/full admission."
+  },
+  "backup_scope": "Source/input/scripts/metadata and small numerical evidence only. Hash-bound raw BI4, native binary exports, executables/objects and source snapshots remain local, not cloud Git data backup.",
+  "physical_acceptance": false,
+  "formal_inputs_or_canonical_programs_changed": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_DebugCPU_r2.build.json",
+      "bytes": 452486,
+      "sha256": "080e5cb91ada2a4c7fbcfcf01e4a9cf86f288149358e1af4049e69734d4439c5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_DebugCPU_r1.helper.json",
+      "bytes": 525452,
+      "sha256": "d4de029e801436f65722435bfaf0f75d586389ef18dccb237250b1ad5d850fc5"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_DebugCPU_run_r1.run.json",
+      "bytes": 670779,
+      "sha256": "28bc5c593981d8377df72153b31c09a5027c09936e93b60ef492ee7c263209fe"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_ReleaseCPU_r2.build.json",
+      "bytes": 453227,
+      "sha256": "d960b34ce8d67042094f3062c4e4bc2718e90c16c1e2e9df6fc9b2987a27ca2d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_ReleaseCPU_r1.helper.json",
+      "bytes": 526729,
+      "sha256": "43cc66e16911c56ee60644cfdda70ba2816efcb38f872f7b55741e434122cc3e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_ReleaseCPU_run_r1.run.json",
+      "bytes": 1052563,
+      "sha256": "20b3f2536c2f3e0baa3bfa7105ccc55de7668e0852cb1797feba912b7b21ad17"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_Debug_r2.build.json",
+      "bytes": 425086,
+      "sha256": "ffba1a4d796b16fe2701f4f1b1ac9d61acd1c8188b7791fc46da9c8463302762"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_Debug_r1.helper.json",
+      "bytes": 540170,
+      "sha256": "62bb11991f7c6818388e2128622b5d95602f0f6b5a1fc33ac7ca8f1acaa64630"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_Debug_run_r1.run.json",
+      "bytes": 673581,
+      "sha256": "0e84ec70722349f739404897b73c8ee953f68a72395ea647a980cd3ffe2b7525"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_Release_r2.build.json",
+      "bytes": 425891,
+      "sha256": "9af6b6ab2183a9bb8c451579641b49901f7d1eb61bb1ce0c6abae30d32682c5a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_Release_r1.helper.json",
+      "bytes": 541615,
+      "sha256": "47833abf6e68e6feea788cdd2c122965bc924d41ba20c4f926999d9f6102bd7d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_Release_run_r1.run.json",
+      "bytes": 1058031,
+      "sha256": "f8b7c395ebcc20c4a9c416d6260ba9837740da64f6b903a9e18af67d698e242d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_eta0_exact_r1.check.json",
+      "bytes": 1067110,
+      "sha256": "546080f444c25d55f8529c0cf0c722a0062279e268522a42b0267094ccc450b7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_eta0_exact_r1.check.json",
+      "bytes": 1070177,
+      "sha256": "0f42b3aa000e4834944e5292808b46e4cf8ad409bd2d52ddb4abf42cf31424a7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_off_CPU_r1.exact.json",
+      "bytes": 1737422,
+      "sha256": "8c1aff76c41422f17910a5f0152b9c002c09fb747f5217b004a9e472cb7f7cdb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_off_GPU_r1.exact.json",
+      "bytes": 1948050,
+      "sha256": "90a80a6d722d3c521c00618bacbcec082b64f2e7ce8ed1446950779b6207efd8"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_CPU_smoke_r1.native.json",
+      "bytes": 380769,
+      "sha256": "6bd5924c970f1c08bbbb11f909be35e5a1e55abb3cd1d091cc77c18f07406391"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_smoke_r1.native.json",
+      "bytes": 383680,
+      "sha256": "079f59a7e66cbd2afc0d3b42e6afaa19e478a8c4205befb428538390d84a2999"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_cross_smoke_r2.check.json",
+      "bytes": 350248,
+      "sha256": "7b9447ae7d6ace4c26afb1842bbd7101e7a3404c341b0890e07979ad1961f7d7"
+    }
+  ]
+}

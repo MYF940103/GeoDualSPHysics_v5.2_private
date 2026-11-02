@@ -1,0 +1,12 @@
+{
+  "stage": "upl_damp_build_fix_r1",
+  "date_local": "2026-11-03",
+  "failed_attempt": "logs/upl_damp_DebugCPU_r1.build.json",
+  "actual_failure": "MSVC C2065 in JSph.cpp3597: DynamicPorePressure is declared separately in JSphCpu/JSphGpu, not in shared base JSph. Initial default CPU Debug returned original typed exit1; no solver or helper ran with that attempt.",
+  "preservation": "The initial build call/log/source265/doc snapshots and partial objects remain unchanged. Its source/canonical/runtime checks passed; no canonical or server executable was installed. It is not an accepted build.",
+  "minimal_fix": "Shared GetDynamicSoilDampingRate now only computes the coefficient when SoilDamping is enabled. The existing derived force callers select it only when DynamicPorePressure is true; both Init log/validation callers now also explicitly require DynamicPorePressure. No new state, physical equation, coefficient, integration or supported-scope change.",
+  "corrected_build": "logs/upl_damp_DebugCPU_r2.build.json: fresh isolated default authoritative CPU Debug build passed original typed0,86 objects/current265/doc/README/runtime4/canonical7 closure. Corrected adapter r2 differs from executed r1 only in stage/author-note/output/temporary labels; all historical argument recipes remain r1. CPU Release also passed; GPU configurations are independently pending.",
+  "separate_cost_backup": "Prior no-physics cost stage31 exact paths are verified local/remote282f11bf9bf39cebd6b802785fc564b27255ed78. A frozen executed cost-native script contains one blank line at EOF; its default git diff--check warning was preserved rather than rewriting its bound bytes. The selective staging check excluded only blank-at-EOF whitespace and all staged Git-filtered blobs were checked against working content. No scientific gate or source change was made for that warning.",
+  "physical_acceptance": false,
+  "automatic_old_attempt_restart": false
+}

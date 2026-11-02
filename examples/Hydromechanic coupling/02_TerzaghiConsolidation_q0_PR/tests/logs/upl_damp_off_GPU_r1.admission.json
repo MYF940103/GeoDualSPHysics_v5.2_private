@@ -1,0 +1,27 @@
+{
+  "stage": "upl_damp_off_admission_r1",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_damp_off_GPU_r1"
+  ],
+  "purpose": "One actual GPU151 default-u-pw positive-legacy-damping regression, then its explicit offline Review action",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_GPU_eta0_exact_r1.check.json",
+      "bytes": 1070177,
+      "sha256": "0f42b3aa000e4834944e5292808b46e4cf8ad409bd2d52ddb4abf42cf31424a7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_component_Release_run_r1.run.json",
+      "bytes": 1058031,
+      "sha256": "f8b7c395ebcc20c4a9c416d6260ba9837740da64f6b903a9e18af67d698e242d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_off_CPU_r1.exact.json",
+      "bytes": 1737422,
+      "sha256": "8c1aff76c41422f17910a5f0152b9c002c09fb747f5217b004a9e472cb7f7cdb"
+    }
+  ],
+  "review": "GPU eta0 same-backend all12 exports and GPU Debug/Release actual components passed; CPU21 positive legacy OFF exact passed. Retain original GPU-specific seed, force/HG/SPR/viscosity and15-array/clock comparison. Only the fresh output directory changes. No physical, full-cycle or candidate eta=.02 trajectory acceptance.",
+  "physical_acceptance": false
+}

@@ -1,0 +1,27 @@
+{
+  "stage": "upl_damp_plan_r1",
+  "status": "planned_before_production_edit_not_physical_acceptance",
+  "date_local": "2026-11-03",
+  "basis": "Public constant-k loaded-column entry and matched ON/OFF .125s independent halves are verified. Both noaux frameworks retain startup oscillations. Lian2023 sections3.5.1/4.1 explicitly motivate one elastic global-damping candidate, not fitting to a picture.",
+  "production_files": ["src/source/JSph.h", "src/source/JSph.cpp", "src/source/JSphCpu.cpp", "src/source/JSphGpu.cpp", "src/source/JSphGpuSingle.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu"],
+  "documentation": ["doc/xml_format/_FmtXML_ElastoplasticSoil.xml", "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/README.md"],
+  "numerical_change": "Only dynamic-seepage loaded-column damping uses constant reference intrinsic solid density rho_s=(rho_t0-n0*rho_w)/(1-n0), and c_d=eta_d*sqrt(E_s/(rho_s*h^2)). This is an intentional distinction from old per-particle legacy-rhop damping; no existing u-pw arithmetic or public default changes. The force remains acceleration -c_d*v_s, without multiplying or dividing by density again.",
+  "density_choice": "For this material rho_t0=2100,n0=float(.3),rho_w=1000 gives rho_s approximately2571.43kg/m3 and eta=.02 gives c_d approximately30.9874/s. rho_s is neither current mixture inertia nor legacy density. Keep its timescale distinct from actual rho_t(J)*V(J) used for power/resultants.",
+  "scope": "Fresh static elastic constant-k/g0 single upward FreeSlip-bottom/X-periodic TopKernelBand/fixed-grid drainage column only. SoilDampingCoef must be finite in[0,0.1f]; the sole physical candidate is .02. Existing SPR/HG/viscosity/DDT/Shepard/NoPen/shifting/variable-k/restart restrictions remain. Other experimental fixtures stay undamped.",
+  "coupling": "Apply damping at the existing force stage, then normalize only the tracked external band load, then refresh finished Ace to periodic/wall states and complete the Darcy rate/closed-freeface target using that same Ace. No separate second Darcy damping source or post-integration velocity filter.",
+  "tests_and_locations": "New scripts/C++ in tests/support, plans and conclusions in notes, configurations in configs, isolated builds/actual native outputs in outputs, immutable receipts in logs, plots plus matching CSV in figures. No formal inputs or accepted results are overwritten.",
+  "order": [
+    "Finish and selectively back up controlled same-input CPU1/CPU8/GPU cost stage before editing production.",
+    "Minimal seven-file patch, synchronized XML guide/case README; default authoritative CPU Debug first, then CPU Release and GPU Debug/Release isolated builds. Canonical/server executables remain unchanged.",
+    "Actual component checks: intrinsic coefficient, zero/rest, passive legacy-density independence, particle eligibility, nonpositive damping power, same-stage complete Darcy/closed-face/wall/periodic response and independent band-load target. Preserve existing independent numerical budgets.",
+    "Actual default u-pw OFF regression with retained positive damping and actual u-pl eta0 compatibility. Do not infer unchanged behavior only from inspection or manufacture Debug/Release equivalence.",
+    "One eta=.02 CPU8 .125s coarse/half on the retained exact dyadic clocks and event-dense schedule, after Debug/safety admission; GPU bounded native implementation comparison and memcheck as justified. Reuse noaux controls, no eta search.",
+    "Review startup/pressure/settlement/stress/velocity/ledger and actual measured cost; if justified choose one longer bounded window with sparse late output before full constant-k physical admission. Only afterwards proceed to Cryer/Lian and variable-k sensitivity."
+  ],
+  "unchanged_half_gates": {"all_sample_pressure_RMS_Pa": 5, "all_sample_material_XYZ_difference_mm": 0.005, "actual_time_gap_s": 1e-14},
+  "other_guards": "Keep original finite/elastic/native1040-ID/no-exclusion/true-drainage/signed necessary-step/ledger checks. No new 1D100Pa uniform-stress gate is imported into this experiment. Damping c_d*dt is reported, not a general coupled stability certificate.",
+  "limits": "A half pass or reduced startup oscillation is not quasi-static continuum/theory/full-cycle/physical/server acceptance. Ordinary diagnostic cadence does not certify all high-frequency behavior. Do not extend dense .125s output blindly to2Tv; local disk capacity and measured cost must guide later schedules/server packaging.",
+  "physical_acceptance": false,
+  "formal_XML_BAT_changed": false,
+  "equations_time_integration_porosity_law_changed": false
+}

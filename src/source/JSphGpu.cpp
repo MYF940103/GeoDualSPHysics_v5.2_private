@@ -1725,12 +1725,12 @@ void JSphGpu::InitPorosityObserverGpu(){
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
-    || Damping || RelaxZones || AccInput || SoilDamping || SoilHourglassXi!=0
+    || Damping || RelaxZones || AccInput || (!loadedcolumn && SoilDamping) || SoilHourglassXi!=0
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (!DynamicPorePressure && (Gravity.x || Gravity.z))
     || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting/damping; load/drainage require the bounded constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the bounded constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
@@ -1761,6 +1761,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || ((!DynamicPoreWall || PeriX) && (!std::isfinite(PeriXinc.x) || PeriXinc.x==0))
     || ((!DynamicPoreWall || PeriZ) && (!std::isfinite(PeriZinc.z) || PeriZinc.z==0))))
     Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, consistent conductivity options and PoreDtSafety>0, with rectangular X/Z periodicity.");
+  if(DynamicPorePressure && SoilDamping)Log->Printf("Dynamic soil damping rate: %.9g s^-1 (reference intrinsic solid density)",double(GetDynamicSoilDampingRate()));
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
   cudaMemset(PoroThetag,0,sizeof(double)*Np);

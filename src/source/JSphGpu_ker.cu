@@ -697,7 +697,7 @@ void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,con
 //------------------------------------------------------------------------------
 /// Adds Bui-Fukagawa damping to non-boundary soil particles.
 //------------------------------------------------------------------------------
-__global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,const float4 *velrhop,float3 *ace){
+__global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,const float4 *velrhop,float3 *ace,float dynamiccd){
   unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
   if(p<n){
     p+=pini;
@@ -706,8 +706,8 @@ __global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,
       && CODE_IsNormal(rcode) && CODE_IsFluid(rcode) && !CODE_IsFluidInout(rcode))
     {
       const float4 vrhop=velrhop[p];
-      if(vrhop.w>0.f){
-        const float cd=float(double(CTE.soildampingcoef)*sqrt(double(CTE.modulus_E)/(double(vrhop.w)*double(CTE.kernelh)*double(CTE.kernelh))));
+      if(dynamiccd>0.f || vrhop.w>0.f){
+        const float cd=(dynamiccd>0.f? dynamiccd: float(double(CTE.soildampingcoef)*sqrt(double(CTE.modulus_E)/(double(vrhop.w)*double(CTE.kernelh)*double(CTE.kernelh)))));
         float3 acep=ace[p];
         acep.x-=cd*vrhop.x;
         acep.y-=cd*vrhop.y;
@@ -721,11 +721,11 @@ __global__ void KerAddSoilDamping(unsigned n,unsigned pini,const typecode *code,
 //==============================================================================
 /// Adds Bui-Fukagawa damping on GPU.
 //==============================================================================
-void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace){
+void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace,float dynamiccd){
   if(n>nbound){
     const unsigned npf=n-nbound;
     dim3 sgrid=GetSimpleGridSize(npf,SPHBSIZE);
-    KerAddSoilDamping <<<sgrid,SPHBSIZE>>> (npf,nbound,code,velrhop,ace);
+    KerAddSoilDamping <<<sgrid,SPHBSIZE>>> (npf,nbound,code,velrhop,ace,dynamiccd);
   }
 }
 
