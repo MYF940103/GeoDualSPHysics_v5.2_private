@@ -1,0 +1,42 @@
+{
+  "stage": "upl_damp_native_r2",
+  "status": "author_only_not_executed",
+  "purpose": "Thin r2 wrapper correction for PowerShell ConvertFrom-Json binary64 deserialization of correct dyadic JSON time text; no reader, data, physics, limit, solver or source change.",
+  "script": "support/upl_damp_native_r2.ps1",
+  "preserved_failure": {
+    "check": "logs/upl_damp_CPU_coarse_r1.native.json",
+    "passed": false,
+    "exact_failure": "Actual dyadic history schedule differs",
+    "reader_call": "logs/upl_damp_CPU_coarse_r1_reader.call.json",
+    "native_dir": "outputs/upl_damp_CPU_coarse_r1_native",
+    "reader_typed_exit_code": 0,
+    "completion_passed": true,
+    "interpretation": "Completed reader succeeded; r1 outer schedule comparison used transient deserialized JSON doubles rather than integer-step binary time. Stored JSON and native data are not rewritten."
+  },
+  "actions": {
+    "adoption": "-Backend CPU -Window coarse -AdoptCompletedReader. Only this already-completed case may be adopted. Rehash prior inputs/files, verify original typed exit0/log/program/argv, passed completion, exact failure, own Run and current closure. Reuse existing native directory and reader_call Entry without invoking a reader or creating a replacement call/log.",
+    "normal": "Future half/GPU coarse uses one existing reader invocation and fresh *_r2_native output, *_r2_reader.call.json/log and *_r2.native.json. CPU coarse without explicit adoption is rejected to prevent accidental repetition."
+  },
+  "contract": {
+    "source_run": "logs/upl_damp_BACKEND_WINDOW_r1.run.json (unchanged)",
+    "new_check": "logs/upl_damp_BACKEND_WINDOW_r2.native.json",
+    "stage": "upl_damp_native_r2",
+    "reader_call": "Actual prior r1 Entry for adoption; actual newly owned r2 Entry for a normal read.",
+    "completion": "Existing typed reader schema and all original guards retained; no new C++ decoder."
+  },
+  "clock": {
+    "truth": "Integer table part/completed_steps/saved_step and native CSV step/dt/time. Wanted time is completed_steps multiplied by locked binary 2^-19 (coarse/smoke) or 2^-20 (half). Time and dt compare binary64 bits exactly. Typed C++ exact native-clock preset guard remains mandatory.",
+    "JSON_time": "Deserialized row.time_s discrepancy is counted/max-reported only, never used as an acceptance tolerance or as native clock truth. Correct JSON text and actual native storage remain unchanged.",
+    "eta0": "Original decimal .025s preset and guards unchanged; integer-times-dyadic formula is not applied to eta0.",
+    "limits": "Original ledger relative error <=5e-13, actual end and signed dterror <=1e-14, samples/IDs/public22/finite/no-exclusion/drainage coverage/13 leaf set unchanged."
+  },
+  "scope": {
+    "saved_native_integrity_only": true,
+    "reader_rebuilt": false,
+    "solver_or_build_invoked": false,
+    "production_changed": false,
+    "physical_acceptance": false,
+    "half_or_cross_acceptance_claimed": false
+  },
+  "downstream": "Only coarse/half consumers need new check path/stage. Keep source_run r1, paths.native_dir, reader_call, completion, inputs and files Entry contracts. Do not convert old failed wrapper to passed."
+}
