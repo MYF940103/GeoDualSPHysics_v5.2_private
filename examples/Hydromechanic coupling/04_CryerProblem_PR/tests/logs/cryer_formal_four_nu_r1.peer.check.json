@@ -1,0 +1,162 @@
+{
+  "stage": "cryer_formal_four_nu_r1_independent_export_QC",
+  "passed": true,
+  "physical_acceptance": false,
+  "solver_started": false,
+  "native_reader_started": false,
+  "production_modified": false,
+  "method": "Independent inline Python binary64 CSV recomputation using NumPy/SciPy; no import or execution of the producer/reference scripts. Exact Fraction saved-clock reconstruction, fixed-material center18 reaggregation, independently assembled finite-Kw and paper-limit eigenfunction sums, and initial-cloud radial mean/shell/stress quadrature. This is not a second BI4 parser.",
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_formal_four_nu_r1.check.json",
+      "bytes": 12640,
+      "sha256": "89eefb621fcc7b801419a4891850b4371ef17ba6a88a420690395d1c7c70c922"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_nu_native_r2.build.json",
+      "bytes": 52269,
+      "sha256": "737ebe4199a332b435f086d3224707e4f409fcb4722a63cfd64a2725b19081bc"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_four_nu_identity_peer_r1.check.json",
+      "bytes": 66947,
+      "sha256": "520235ac792a40980240c3a32c95d0bf281d10619ee43583e0fdb8521ac86be3"
+    }
+  ],
+  "bounded_hash_audit": {
+    "binding_checks": 247,
+    "unique_rehashed_files": 217,
+    "unique_rehashed_bytes": 59468593,
+    "mismatches": 0,
+    "coverage": "Producer 23 inputs and 7 artifacts; all four native checks' source manifests/artifacts and three fresh reducer logs; all manifest non-catalog inputs; adopted nu030 parent check/manifest; reducer build's 164 inputs, compiler, executable and log. Root records above were separately hashed for this peer seal.",
+    "raw_catalog_entries_not_rehashed": 4264,
+    "full_raw_BI4_second_pass": false
+  },
+  "coverage": {
+    "groups": 4,
+    "actual_saved_frames_per_group": 1065,
+    "native_summary_rows": 4260,
+    "dense_theory_rows": 5600,
+    "center_rows_per_group": 19170,
+    "fixed_center_native_ids": [17338,17343,17769,17770,17771,17772,18412,18443,18592,18755,18756,18757,18758,19403,19460,19553,19554,19979],
+    "fixed_center_initial_radius_m": 0.0025,
+    "sphere_radius_m": 0.05,
+    "clock_Step_exact_all_4260": true,
+    "initial_closed_rows_retained_per_group": 65,
+    "positive_tau_rows_per_group": 1000,
+    "summary_center_count_and_ID_set_checked": true,
+    "center_inward_radius_change_recomputed_exact": true,
+    "signed_dterror_finite_and_upper_bound_checked_all_summaries": true,
+    "no_loss_37173_soil_and_true_surface_5153_checked_all_summaries": true,
+    "post_opening_true_surface_pressure_zero_checked_all_summaries": true,
+    "three_fresh_pure_reducer_owned_exits_zero": true,
+    "nu030_adopted_old_full_native_safety_passed": true
+  },
+  "numerical_agreement": {
+    "center18_mean_absmax_difference_pa": 5.4569682106375694e-12,
+    "center18_population_std_absmax_difference_pa": 1.9876461587742256e-13,
+    "finite_point_theory_absmax_difference_pa": 7.275957614183426e-12,
+    "dense_finite_theory_absmax_difference_over_q0": 1.4432899320127035e-15,
+    "cloud_mean_pressure_absmax_difference_pa": 5.4569682106375694e-12,
+    "shell_inward_theory_absmax_difference_mm": 1.1102230246251565e-16,
+    "cloud_total_compression_theory_absmax_difference_pa": 3.637978807091713e-12,
+    "Mandel_RMS_absmax_difference_pa": 6.181721801112872e-13,
+    "continuous_peak_pressure_absmax_difference_pa": 3.637978807091713e-12,
+    "continuous_peak_tau_absmax_difference_s": 1.9823935965002093e-09,
+    "peak_time_difference_explanation": "Independent optimization used legacy Tv rather than physical tau. The flat maximum has the same pressure to binary64 rounding; this nanosecond optimizer difference is not a simulation timing error. Published metric times were not rewritten."
+  },
+  "reference_contract": {
+    "E_pa": 2000000,
+    "n0": 0.3,
+    "Kw_pa": 200000000,
+    "k_m_s": 0.00001,
+    "rho_w_kg_m3": 1000,
+    "finite_cv_gravity_m_s2": 9.80665,
+    "legacy_Tv_gravity_m_s2": 9.81,
+    "tau_definition": "actual saved time minus 2^-7 s, never shifted to ramp end or first drained frame",
+    "finite_primary_radius_over_a": 0.05,
+    "paper_companion_radius_over_a": 0,
+    "native_sampled_peak_window": "legacy Tv >= .005 through each actual endpoint, with adjacent saved times retained",
+    "continuous_peak_window": "independent search in predeclared legacy Tv .005 through .5",
+    "shell_definition": "initial r0 >= a - 2*h, initial-volume weighted inward radius change; not vertical settlement or displacement projected on the initial radial vector",
+    "center_std_definition": "population scatter across the fixed 18 material points, not a confidence interval"
+  },
+  "groups": [
+    {
+      "nu": 0.1,
+      "legacy_cv_m2_s": 0.0020850708924103423,
+      "finite_cv_m2_s": 0.002079403175892456,
+      "sampled_peak_part": 125,
+      "sampled_peak_pa": 14564.964138454863,
+      "independent_continuous_peak_pa": 14678.689239409934,
+      "peak_amplitude_error_percent": -0.7747633259360565,
+      "Mandel_window_RMS_pa": 75.80141773048256,
+      "final_actual_tau_s": 1.199000358581543,
+      "final_sim_pressure_pa": 133.75810156928168,
+      "final_theory_pressure_pa": 138.6112440904807,
+      "final_pressure_error_pa": -4.8531425211990324,
+      "displayed_native_and_both_theories_y_minmax": [0.0049594299889886536,1.4727690892285334]
+    },
+    {
+      "nu": 0.2,
+      "legacy_cv_m2_s": 0.002265262204100125,
+      "finite_cv_m2_s": 0.002258507669940041,
+      "sampled_peak_part": 119,
+      "sampled_peak_pa": 13461.809407552084,
+      "independent_continuous_peak_pa": 13594.542386312627,
+      "peak_amplitude_error_percent": -0.9763695973627029,
+      "Mandel_window_RMS_pa": 69.23413063197596,
+      "final_actual_tau_s": 1.1036252975463867,
+      "final_sim_pressure_pa": 51.88858116997613,
+      "final_theory_pressure_pa": 54.10620731069196,
+      "final_pressure_error_pa": -2.2176261407158293,
+      "displayed_native_and_both_theories_y_minmax": [0.0016042183651991412,1.3642675297762539]
+    },
+    {
+      "nu": 0.3,
+      "legacy_cv_m2_s": 0.0027444522857366896,
+      "finite_cv_m2_s": 0.00273434724797759,
+      "sampled_peak_part": 112,
+      "sampled_peak_pa": 12310.520779079861,
+      "independent_continuous_peak_pa": 12439.17595969218,
+      "peak_amplitude_error_percent": -1.0342741434739122,
+      "Mandel_window_RMS_pa": 50.87267272513982,
+      "final_actual_tau_s": 0.9109287261962891,
+      "final_sim_pressure_pa": 17.642986085679794,
+      "final_theory_pressure_pa": 18.047663948618865,
+      "final_pressure_error_pa": -0.4046778629390708,
+      "displayed_native_and_both_theories_y_minmax": [0.000428517691885076,1.249022543346018]
+    },
+    {
+      "nu": 0.45,
+      "legacy_cv_m2_s": 0.007733136489859049,
+      "finite_cv_m2_s": 0.007648740772422239,
+      "sampled_peak_part": 98,
+      "sampled_peak_pa": 10455.135362413197,
+      "independent_continuous_peak_pa": 10512.227332921986,
+      "peak_amplitude_error_percent": -0.5431006075181544,
+      "Mandel_window_RMS_pa": 23.600998162643464,
+      "final_actual_tau_s": 0.3232841491699219,
+      "final_sim_pressure_pa": 2.5700803597768145,
+      "final_theory_pressure_pa": 2.5001893196468292,
+      "final_pressure_error_pa": 0.06989104012998526,
+      "displayed_native_and_both_theories_y_minmax": [0.00003750063893671443,1.1027732801649304]
+    }
+  ],
+  "plot_data_QC": {
+    "positive_native_points_checked": 4000,
+    "dense_points_per_reference_checked": 5600,
+    "x_range": [0.0005,1.2],
+    "y_range": [0,1.6],
+    "clipped_positive_native_or_theory_points": 0,
+    "PNG_artifact_hashes_checked": 3,
+    "independent_visual_review_performed_by_this_peer": false
+  },
+  "limitations": [
+    "This peer reaggregated exported fixed18 data and recomputed references; it did not re-read all raw BI4 fields, all raw stress/load samples, or the roughly 6 GB trajectories.",
+    "Nu=.30 is an explicitly adopted previously audited full native series. Its symplectic_dt_s column is the declared actual fixed-step/runtime-clock contract, not a newly decoded all-frame raw SymplecticDtPre series. Historical EXE/DLL identity remains unproven.",
+    "The generic reducer permits an initial missing dterror default, but the separate identity peer actually decoded initial and final raw dterror presence for all four inputs; this input-specific proof is inherited, not a new generic API guarantee.",
+    "Finite-Kw quasistatic theory, paper incompressible point-center theory and fixed18 finite-radius sampling are distinct reference contracts. No full-cycle half-step, equilibrium, restart, continuum 1% or general physical acceptance is asserted.",
+    "Remaining startup transition, output-resolution peak-time bias and late residual pressure are retained, not smoothed or excluded. In particular nu=.1 final 133.758 Pa is remaining pressure, not a 133.758 Pa error."
+  ]
+}

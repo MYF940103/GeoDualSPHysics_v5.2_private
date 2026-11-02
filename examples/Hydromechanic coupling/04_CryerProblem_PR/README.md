@@ -1,5 +1,61 @@
 # CryerProblem_PR
 
+## Returned four-ratio formal comparison (2026-11-02)
+
+The returned nu=.10/.20/.45 `release_nu*_r1_out` datasets are compared with the
+previously reviewed nu=.30 `symc_nu030_out`, not the June legacy or dp=.002 runs.
+All four actual GPU runs ended normally on RTX A6000, with1065 saved states each
+and fixed dt=2^-20s. No physical solver was rerun for this analysis.
+
+Formal products are under `figures/formal_validation/`:
+
+- [Four-ratio log-Tv pressure comparison](figures/formal_validation/cryer_formal_four_nu_r1_log.png):
+  finite-Kw theory and simulation at the same fixed18 initial material IDs,
+  initially r0/a=.05, with one color per Poisson ratio.
+- [Separate paper-limit comparison](figures/formal_validation/cryer_formal_four_nu_r1_paper_limit_log.png):
+  incompressible-water, exact-center r=0 reference. It is not the same reference
+  as the finite-Kw material-point comparison.
+- [Pressure error, radial contraction and stress](figures/formal_validation/cryer_formal_four_nu_r1_state.png).
+- [All4260 saved-state rows](figures/formal_validation/cryer_formal_four_nu_r1_native.csv),
+  [dense analytical curves](figures/formal_validation/cryer_formal_four_nu_r1_theory.csv),
+  and [peak/late-state metrics](figures/formal_validation/cryer_formal_four_nu_r1_metrics.csv).
+
+Against the finite-Kw fixed18 reference, the Mandel-window sampled peak results are:
+
+| nu | Peak amplitude error | Peak-time error | Final SPH p / Pa | Final theory p / Pa |
+| --- | ---: | ---: | ---: | ---: |
+| .10 | -0.7748% | +6.3962% | 133.7581 | 138.6112 |
+| .20 | -0.9764% | +5.7821% | 51.8886 | 54.1062 |
+| .30 | -1.0343% | +3.9789% | 17.6430 | 18.0477 |
+| .45 | -0.5431% | -0.4179% | 2.5701 | 2.5002 |
+
+The final nonzero pressure,especially nu=.10,is not by itself a numerical floor:
+the corresponding analytical pressure is also nonzero at Tv approximately1.
+Peak amplitude agreement does not erase phase lag or the very early opening
+transient,most visible for nu=.45. The plots retain that transient without filtering.
+
+Time is tau=t-2^-7s from drainage opening; the saved state at t=tD remains pre-open.
+Every nu uses its own legacy cv=H*k/(rho_w*9.81) for the plotted Tv, while the
+finite-storage reference uses its own cv_eff with9.80665 and finite Kw/n.
+No time, pressure, radius or volume is fitted. Nonpositive tau stays in the CSV
+but cannot be shown on a logarithmic x axis. Native peaks use saved samples with
+Tv>=.005 through the actual endpoint; continuous analytical peaks are searched
+in the predeclared Tv=.005.. .5 interval, which contains all four reference peaks.
+Neighbouring save times describe sampling resolution, not a confidence interval.
+
+The three new runs have full-series native reductions. Nu=.30 reuses its sealed
+1065-frame native tables; all four initial/final states were independently decoded,
+and all37173 initial soil rows/35 fields match across the four groups. The nu=.30
+historical EXE/DLL identity is still unproven. Its adopted `symplectic_dt_s` table
+column denotes the actual fixed-step runtime/clock contract, not a newly decoded
+all-frame SymplecticDtPre field. None of this grants full-cycle half-step or
+general physical acceptance; residual peak and late-decay errors remain recorded.
+
+Reproduce the final figures from the sealed compact tables with
+`python -B support/plot_cryer_formal_four_nu_r1.py --plot` in a fresh output label
+(the script refuses to overwrite retained figures). Native extraction is a separate
+read-only action, not part of any formal solver BAT.
+
 ## Three additional Poisson ratios (2026-11-01)
 
 The additional actual-state and shell-quadrature audits found no accepted low-cost

@@ -1,0 +1,1240 @@
+{
+  "stage": "cryer_four_nu_identity_peer_r1",
+  "passed": true,
+  "scope": "Independent read-only input/provenance/catalog and initial/final native sample identity audit; not a full-series numerical or physical acceptance.",
+  "case": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR",
+  "physical_acceptance": false,
+  "full_native_series_checked": false,
+  "full_trajectory_equivalence_claimed": false,
+  "peak_or_theory_or_half_convergence_assessed": false,
+  "actions": {
+    "new_solver_calls": 0,
+    "new_build_calls": 0,
+    "Git_actions": 0,
+    "raw_or_configuration_writes": 0,
+    "pure_decoder_calls": 8,
+    "only_new_file_written_this_seal": "tests/logs/cryer_four_nu_identity_peer_r1.check.json"
+  },
+  "counts": {
+    "groups": 4,
+    "catalogued_main_PART_files_per_group": 1065,
+    "catalogued_main_PART_files_total": 4260,
+    "decoded_sample_frames": 8,
+    "decoded_soil_rows": 297384,
+    "decoded_columns": 35,
+    "new_nu_receipt_metadata_bindings_verified": 15,
+    "new_nu_runtime_before_after_binding_links_verified": 54,
+    "unique_current_program_runtime_files_verified": 9
+  },
+  "decoder": {
+    "program": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+      "bytes": 385536,
+      "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502"
+    },
+    "source": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\scripts\\read_hydro_native.cpp",
+      "bytes": 3826,
+      "sha256": "2c488ae0901e05aa0d046331bd01c3da5a3ccf20697fe4f93ac8d6c6b3dfce76"
+    },
+    "source_read_completely_before_execution": true,
+    "CLI": "ReadHydroNative.exe DATA_DIR PART_INDEX",
+    "purely_reads_JPartDataBi4_LoadFilePart": true,
+    "does_not_initialize_or_advance_solver": true,
+    "source_and_program_hashes_before_after_unchanged": true,
+    "columns": [
+      "time_s",
+      "saved_step",
+      "id",
+      "x",
+      "y",
+      "z",
+      "vx",
+      "vy",
+      "vz",
+      "rho",
+      "pressure",
+      "sigma_xx",
+      "sigma_yy",
+      "sigma_zz",
+      "sigma_xy",
+      "sigma_yz",
+      "sigma_xz",
+      "kplastic",
+      "load_ax",
+      "load_ay",
+      "load_az",
+      "fstype",
+      "normal_x",
+      "normal_y",
+      "normal_z",
+      "load_available",
+      "position_double",
+      "stress_double",
+      "mass",
+      "dp",
+      "h",
+      "native_count",
+      "nout",
+      "has_dterror",
+      "dterror_s"
+    ],
+    "dterror_reader_limitation": "The existing decoder permits missing dterror via GetvDouble(...,true,0); all eight actually sampled native frames contained the typed value (has_dterror=1). This does not prove absent-value rejection or safety of unobserved frames.",
+    "decoded_hash_interpretation": "SHA256 of the decoded 35-column numeric table expanded to binary64 row bytes. This is not a whole-BI4 byte hash or an original-typed-array bit-equivalence claim."
+  },
+  "execution_evidence": {
+    "mode": "Prior actual tool observation, sealed retrospectively without rerunning raw reads or decoders.",
+    "outer_program": "D:\\anaconda3\\python.exe",
+    "outer_arguments": [
+      "-"
+    ],
+    "outer_owned_exec_session": 9905,
+    "outer_exit_code": 0,
+    "PowerShell_immediate_LASTEXITCODE_observed_integer_zero": true,
+    "child_process_method": "subprocess.run([reader, DATA_DIR, PART_INDEX], capture_output=True, timeout=90, creationflags=CREATE_NO_WINDOW)",
+    "child_return_codes": [
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0,
+      0
+    ],
+    "stdout_CSV_parsed_in_memory_only": true,
+    "pandas_float_precision": "round_trip",
+    "durable_per_child_call_receipts_written_at_execution": false,
+    "per_child_execution_timestamps_recorded": false,
+    "no_original_call_receipts_or_empty_logs_fabricated": true
+  },
+  "initial_sample_identity": {
+    "initial35_numeric_table_hash_all_four": "952a625beeee525ba8d5a280bfcc126fb00c4ab570301af615d4a32b6692e9ae",
+    "all_four_initial_decoded_35_column_numeric_tables_bit_equal": true,
+    "initial_comparison_soil_rows_per_group": 37173,
+    "initial_comparison_columns": 35,
+    "whole_initial_BI4_files_byte_equal": false,
+    "interpretation": "Identical sampled decoded initial soil fields across nu; differing BI4 metadata/labels and Poisson material settings are not erased or equated."
+  },
+  "common_runtime_parameters": {
+    "E_Pa": 2000000,
+    "dp_m": 0.0025,
+    "kernel_h_actual_float_promoted_m": 0.0044999998062849045,
+    "radius_m": 0.05,
+    "rho0_kg_m3": 2100,
+    "rhow_kg_m3": 1000,
+    "initial_porosity": 0.3,
+    "fluid_bulk_modulus_Pa": 200000000,
+    "hydraulic_conductivity_m_s": 0.00001,
+    "confinement_q_Pa": 10000,
+    "flexible_confinement_mode": 2,
+    "ramp_end_s": 0.00390625,
+    "drainage_enabled": 1,
+    "drainage_start_s": 0.0078125,
+    "FixedGrid": 1,
+    "initialization_mode": 0,
+    "gravity": [
+      0,
+      0,
+      0
+    ],
+    "stress_and_pore_gradient_correction_G1": 1,
+    "Darcy_symmetric_C": 1,
+    "damping": 0.00004,
+    "SPR": false,
+    "hourglass": false,
+    "shifting": false,
+    "dt_initial_s": 9.5367431640625e-7,
+    "dt_fixed_s": 9.5367431640625e-7,
+    "DtMin_s": 1e-8,
+    "closed_cadence_s": 0.0001220703125,
+    "closed_saved_states_through_Part64": 65,
+    "Part64_at_drainage_start_is_pre_opening": true,
+    "position_and_stored_stress": "native double",
+    "pressure_and_legacy_density": "native float"
+  },
+  "runtime_comparison": {
+    "numeric_value_map_differences_only": [
+      "PRvs",
+      "TimeMax",
+      "TimeOut"
+    ],
+    "other_runtime_numeric_values_matched": true,
+    "post_drain_timeouts_intentionally_nu_specific": true,
+    "root_nu030_Def_is_not_actual_returned_runtime_clock": true,
+    "nu030_root_Def_dt_s": 4.76837158203125e-7,
+    "nu030_actual_returned_runtime_and_log_dt_s": 9.5367431640625e-7
+  },
+  "groups": [
+    {
+      "nu_tag": "010",
+      "poisson_ratio": 0.1,
+      "recommended_output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out",
+      "source_Def": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_Def.xml",
+        "bytes": 9492,
+        "sha256": "d8fb60add070aa881fb3202a87cc058d910814bea4199306352dafc194650ca1"
+      },
+      "runtime_XML": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\CaseCryerProblem_PR_release_nu010_r1.xml",
+        "bytes": 11261,
+        "sha256": "f9d971d769f04152e39ec10f0ebd4469bc2dd36193cc746cc85aa7ccb3a95133"
+      },
+      "Run_out": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\Run.out",
+        "bytes": 96189,
+        "sha256": "a107081da53bac9780cbd9284316dddfc1ffccad06f133d7bfedf063158bc2f3"
+      },
+      "Run_csv": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\Run.csv",
+        "bytes": 1060,
+        "sha256": "74d4bfe26a463181e771d9449b99c4712af35a7c56d2aa04079645a920bc329d"
+      },
+      "native_catalog": {
+        "main_PART_count": 1065,
+        "first": "Part_0000.bi4",
+        "last": "Part_1064.bi4",
+        "contiguous_names": true,
+        "all_frame_contents_decoded_or_hashed": false
+      },
+      "run_log_observations": {
+        "finished_execution_code": 0,
+        "finished_execution_message_present": true,
+        "hardware": "NVIDIA RTX A6000",
+        "device": 0,
+        "driver_mode": "WDDM",
+        "run_mode": "Stable Pos-Cell Single-GPU",
+        "integrator": "Symplectic",
+        "kernel": "Wendland",
+        "total_native_particles": 37181,
+        "fixed_dummy_particles": 8,
+        "soil_particles": 37173,
+        "excluded_particles": 0,
+        "DTs_adjusted_to_DtMin": 0,
+        "initialization_host_clock": "01-11-2026 16:44:47",
+        "finished_host_clock": "02-11-2026 06:43:45",
+        "simulation_runtime_s": 50337.261719,
+        "actual_completed_steps": 1265435,
+        "final_saved_step": 1265434,
+        "final_native_time_s": 1.206812858581543,
+        "fixed_dt_s": 9.5367431640625e-7,
+        "final_time_divided_by_saved_step_plus_one_s": 9.5367431640625e-7,
+        "post_drain_nominal_cadence_s": 0.001199
+      },
+      "sampled_decoder_calls": [
+        {
+          "part": 0,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data",
+            "0"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data",
+            "0"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data\\Part_0000.bi4",
+            "bytes": 5951328,
+            "sha256": "3c68ea21e05dd6baf045056908ea80b968708e1855f003f20afcd292b9477e75"
+          },
+          "raw_sha256_before_decoder": "3c68ea21e05dd6baf045056908ea80b968708e1855f003f20afcd292b9477e75",
+          "raw_sha256_after_decoder": "3c68ea21e05dd6baf045056908ea80b968708e1855f003f20afcd292b9477e75",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "952a625beeee525ba8d5a280bfcc126fb00c4ab570301af615d4a32b6692e9ae",
+          "time_s": 0,
+          "saved_step": 0,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": 0
+        },
+        {
+          "part": 1064,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data",
+            "1064"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data",
+            "1064"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\data\\Part_1064.bi4",
+            "bytes": 5951328,
+            "sha256": "52bed89b8676c3f8048723e9110977e302368db153b0a136d718162b580f89eb"
+          },
+          "raw_sha256_before_decoder": "52bed89b8676c3f8048723e9110977e302368db153b0a136d718162b580f89eb",
+          "raw_sha256_after_decoder": "52bed89b8676c3f8048723e9110977e302368db153b0a136d718162b580f89eb",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "0e14dca0cd4b301fb04140f63d2e03b4ebe16e8c302273d5f398c8165f8da872",
+          "time_s": 1.206812858581543,
+          "saved_step": 1265434,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": -0.000027883522936990494
+        }
+      ],
+      "execution_provenance": {
+        "execution_receipt": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\execution_receipt_nu_r1.json",
+          "bytes": 32851,
+          "sha256": "ee761fe0c70b6da4d664be4a78d6422ca19e35e8dc9f6ba4ee6b20c3675a03a3"
+        },
+        "original_receipt_status": "solver_exited_zero_pending_native_review",
+        "original_receipt_native_completion_verified": false,
+        "original_receipt_physical_acceptance": false,
+        "original_receipt_unchanged": true,
+        "actual_solver_stage_from_retained_receipt": {
+          "stage": "solver",
+          "status": "exited",
+          "started_utc": "2026-11-01T07:44:46.5701842Z",
+          "executable_before": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "argv": [
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "-gpu",
+            "-stable",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\CaseCryerProblem_PR_release_nu010_r1",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out",
+            "-dirdataout",
+            "data",
+            "-svres",
+            "-svextraparts:1"
+          ],
+          "console_log": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\solver.console.log",
+          "exit_code": 0,
+          "ended_utc": "2026-11-01T21:43:45.0955978Z",
+          "executable_after": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "console_log_binding": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\solver.console.log",
+            "bytes": 192480,
+            "sha256": "ab2ebd6898ce6e15cceacc41fe37f719abc5f63c6ab8fe1b769615b93b387d5f"
+          }
+        },
+        "generated_initial_bi4": {
+          "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\CaseCryerProblem_PR_release_nu010_r1.bi4",
+          "bytes": 1637400,
+          "sha256": "689cdf9d5a97673a6d0aba85fdf1b4f3d2bf5bdee2e8f11849d31e71756895d0"
+        },
+        "five_metadata_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\CaseCryerProblem_PR_release_nu010_r1.xml",
+            "bytes": 11261,
+            "sha256": "f9d971d769f04152e39ec10f0ebd4469bc2dd36193cc746cc85aa7ccb3a95133"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\CaseCryerProblem_PR_release_nu010_r1.bi4",
+            "bytes": 1637400,
+            "sha256": "689cdf9d5a97673a6d0aba85fdf1b4f3d2bf5bdee2e8f11849d31e71756895d0"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\Run.out",
+            "bytes": 96189,
+            "sha256": "a107081da53bac9780cbd9284316dddfc1ffccad06f133d7bfedf063158bc2f3"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\gencase.console.log",
+            "bytes": 12882,
+            "sha256": "9267487b5cf9ff2dfeedd9963d0eac24791287341d758f1b3850a173ac7b65fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu010_r1_out\\solver.console.log",
+            "bytes": 192480,
+            "sha256": "ab2ebd6898ce6e15cceacc41fe37f719abc5f63c6ab8fe1b769615b93b387d5f"
+          }
+        ],
+        "runtime_before_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "runtime_after_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "all_listed_bytes_and_sha256_matched_at_read_only_audit": true
+      }
+    },
+    {
+      "nu_tag": "020",
+      "poisson_ratio": 0.2,
+      "recommended_output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out",
+      "source_Def": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_Def.xml",
+        "bytes": 9498,
+        "sha256": "824cb4af3734a8d4966a40be0a245040db7b137822e2d1915db619fa6d1c1533"
+      },
+      "runtime_XML": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\CaseCryerProblem_PR_release_nu020_r1.xml",
+        "bytes": 11267,
+        "sha256": "d0e6c1b92c26ca14d65ff258ef6a7fab32132ea3bb965801e0a8186f08b571d4"
+      },
+      "Run_out": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\Run.out",
+        "bytes": 96194,
+        "sha256": "7c1313c68c350dcb14591e246a18b9bf49caeb869034c356ef198d6a63a83961"
+      },
+      "Run_csv": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\Run.csv",
+        "bytes": 1060,
+        "sha256": "312f780f2895977cbab80deca943d02782bbea4b1279d0546747b234943b414e"
+      },
+      "native_catalog": {
+        "main_PART_count": 1065,
+        "first": "Part_0000.bi4",
+        "last": "Part_1064.bi4",
+        "contiguous_names": true,
+        "all_frame_contents_decoded_or_hashed": false
+      },
+      "run_log_observations": {
+        "finished_execution_code": 0,
+        "finished_execution_message_present": true,
+        "hardware": "NVIDIA RTX A6000",
+        "device": 0,
+        "driver_mode": "WDDM",
+        "run_mode": "Stable Pos-Cell Single-GPU",
+        "integrator": "Symplectic",
+        "kernel": "Wendland",
+        "total_native_particles": 37181,
+        "fixed_dummy_particles": 8,
+        "soil_particles": 37173,
+        "excluded_particles": 0,
+        "DTs_adjusted_to_DtMin": 0,
+        "initialization_host_clock": "01-11-2026 03:48:29",
+        "finished_host_clock": "01-11-2026 16:44:09",
+        "simulation_runtime_s": 46539.863281,
+        "actual_completed_steps": 1165427,
+        "final_saved_step": 1165426,
+        "final_native_time_s": 1.1114377975463867,
+        "fixed_dt_s": 9.5367431640625e-7,
+        "final_time_divided_by_saved_step_plus_one_s": 9.5367431640625e-7,
+        "post_drain_nominal_cadence_s": 0.001103625
+      },
+      "sampled_decoder_calls": [
+        {
+          "part": 0,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data",
+            "0"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data",
+            "0"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data\\Part_0000.bi4",
+            "bytes": 5951328,
+            "sha256": "79c03feaa140bf2704e439e87f3838461dafe9e744b6659917c7f9eb03bae6ce"
+          },
+          "raw_sha256_before_decoder": "79c03feaa140bf2704e439e87f3838461dafe9e744b6659917c7f9eb03bae6ce",
+          "raw_sha256_after_decoder": "79c03feaa140bf2704e439e87f3838461dafe9e744b6659917c7f9eb03bae6ce",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "952a625beeee525ba8d5a280bfcc126fb00c4ab570301af615d4a32b6692e9ae",
+          "time_s": 0,
+          "saved_step": 0,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": 0
+        },
+        {
+          "part": 1064,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data",
+            "1064"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data",
+            "1064"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\data\\Part_1064.bi4",
+            "bytes": 5951328,
+            "sha256": "80d6c9eb39bd6ffc4779b83bdd9c66710c9cdede3a9147d5d6a5e0a519f56076"
+          },
+          "raw_sha256_before_decoder": "80d6c9eb39bd6ffc4779b83bdd9c66710c9cdede3a9147d5d6a5e0a519f56076",
+          "raw_sha256_after_decoder": "80d6c9eb39bd6ffc4779b83bdd9c66710c9cdede3a9147d5d6a5e0a519f56076",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "bf7b19f388f9737d3861bcc0e505a55d8fcf09c01349002ac728c1a051cb68ea",
+          "time_s": 1.1114377975463867,
+          "saved_step": 1165426,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": -0.00002671304334248277
+        }
+      ],
+      "execution_provenance": {
+        "execution_receipt": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\execution_receipt_nu_r1.json",
+          "bytes": 32858,
+          "sha256": "3a1ab6d508b2552666ade46369263afc49cc8325bcbd5963014f8ee0d114a50e"
+        },
+        "original_receipt_status": "solver_exited_zero_pending_native_review",
+        "original_receipt_native_completion_verified": false,
+        "original_receipt_physical_acceptance": false,
+        "original_receipt_unchanged": true,
+        "actual_solver_stage_from_retained_receipt": {
+          "stage": "solver",
+          "status": "exited",
+          "started_utc": "2026-10-31T18:48:29.6793482Z",
+          "executable_before": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "argv": [
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "-gpu",
+            "-stable",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\CaseCryerProblem_PR_release_nu020_r1",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out",
+            "-dirdataout",
+            "data",
+            "-svres",
+            "-svextraparts:1"
+          ],
+          "console_log": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\solver.console.log",
+          "exit_code": 0,
+          "ended_utc": "2026-11-01T07:44:09.9986405Z",
+          "executable_after": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "console_log_binding": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\solver.console.log",
+            "bytes": 192490,
+            "sha256": "43e9591fdaa11d416b1b1250ba2706d347405c37cd155e1e339004ae5392b836"
+          }
+        },
+        "generated_initial_bi4": {
+          "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\CaseCryerProblem_PR_release_nu020_r1.bi4",
+          "bytes": 1637400,
+          "sha256": "68454ab66aab995b92e727239c803999d7112a8aca712953795ee2fda3455216"
+        },
+        "five_metadata_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\CaseCryerProblem_PR_release_nu020_r1.xml",
+            "bytes": 11267,
+            "sha256": "d0e6c1b92c26ca14d65ff258ef6a7fab32132ea3bb965801e0a8186f08b571d4"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\CaseCryerProblem_PR_release_nu020_r1.bi4",
+            "bytes": 1637400,
+            "sha256": "68454ab66aab995b92e727239c803999d7112a8aca712953795ee2fda3455216"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\Run.out",
+            "bytes": 96194,
+            "sha256": "7c1313c68c350dcb14591e246a18b9bf49caeb869034c356ef198d6a63a83961"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\gencase.console.log",
+            "bytes": 12882,
+            "sha256": "d9f6cf0336cc63e62f1104de9c181a78ddc2b0ef7c1e7eca59aaecdd02f98199"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu020_r1_out\\solver.console.log",
+            "bytes": 192490,
+            "sha256": "43e9591fdaa11d416b1b1250ba2706d347405c37cd155e1e339004ae5392b836"
+          }
+        ],
+        "runtime_before_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "runtime_after_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "all_listed_bytes_and_sha256_matched_at_read_only_audit": true
+      }
+    },
+    {
+      "nu_tag": "030",
+      "poisson_ratio": 0.3,
+      "recommended_output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out",
+      "source_Def": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_Def.xml",
+        "bytes": 9365,
+        "sha256": "de11acf171372de173e4f2e3dd559e635d7bd35defa9b44096f9818f5735cb00"
+      },
+      "runtime_XML": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\CaseCryerProblem_PR_symc_nu030.xml",
+        "bytes": 11132,
+        "sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b"
+      },
+      "Run_out": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\Run.out",
+        "bytes": 96163,
+        "sha256": "47606d5dc96ec1fb4d161c00314fb7a1879731206793ba1ca0a5a5c4059df4c5"
+      },
+      "Run_csv": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\Run.csv",
+        "bytes": 1046,
+        "sha256": "408d0ceb807b2404220a284354b148dda090538660b1b0b0b17928de022b9494"
+      },
+      "native_catalog": {
+        "main_PART_count": 1065,
+        "first": "Part_0000.bi4",
+        "last": "Part_1064.bi4",
+        "contiguous_names": true,
+        "all_frame_contents_decoded_or_hashed": false
+      },
+      "run_log_observations": {
+        "finished_execution_code": 0,
+        "finished_execution_message_present": true,
+        "hardware": "NVIDIA RTX A6000",
+        "device": 0,
+        "driver_mode": "WDDM",
+        "run_mode": "Stable Pos-Cell Single-GPU",
+        "integrator": "Symplectic",
+        "kernel": "Wendland",
+        "total_native_particles": 37181,
+        "fixed_dummy_particles": 8,
+        "soil_particles": 37173,
+        "excluded_particles": 0,
+        "DTs_adjusted_to_DtMin": 0,
+        "initialization_host_clock": "30-10-2026 14:21:56",
+        "finished_host_clock": "31-10-2026 01:04:22",
+        "simulation_runtime_s": 38546.402344,
+        "actual_completed_steps": 963370,
+        "final_saved_step": 963369,
+        "final_native_time_s": 0.9187412261962891,
+        "fixed_dt_s": 9.5367431640625e-7,
+        "final_time_divided_by_saved_step_plus_one_s": 9.5367431640625e-7,
+        "post_drain_nominal_cadence_s": 0.0009109285714285714
+      },
+      "sampled_decoder_calls": [
+        {
+          "part": 0,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+            "0"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+            "0"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_0000.bi4",
+            "bytes": 5951322,
+            "sha256": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d"
+          },
+          "raw_sha256_before_decoder": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d",
+          "raw_sha256_after_decoder": "2d5f7d7e3a9324e79862deb16801bed4f2c8ba9591719479d114e09d3a96965d",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "952a625beeee525ba8d5a280bfcc126fb00c4ab570301af615d4a32b6692e9ae",
+          "time_s": 0,
+          "saved_step": 0,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": 0
+        },
+        {
+          "part": 1064,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+            "1064"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data",
+            "1064"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\data\\Part_1064.bi4",
+            "bytes": 5951322,
+            "sha256": "884b40ac7c756f467632f46afd5cf6893293a625b6aee5505f0e748c49af1832"
+          },
+          "raw_sha256_before_decoder": "884b40ac7c756f467632f46afd5cf6893293a625b6aee5505f0e748c49af1832",
+          "raw_sha256_after_decoder": "884b40ac7c756f467632f46afd5cf6893293a625b6aee5505f0e748c49af1832",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "85ad32417a61942a9e2980b4e45bf418b17429e290d776085731efffd85bad2b",
+          "time_s": 0.9187412261962891,
+          "saved_step": 963369,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": -0.000024181950237765404
+        }
+      ],
+      "execution_provenance": {
+        "historical_actual_executable_identity_known": false,
+        "historical_actual_execution_receipt_available": false,
+        "current_package_identity_is_not_historical_execution_identity": true,
+        "limitation": "No historical actual EXE/DLL receipt was found for this returned nu=0.30 run. Matching log version/hardware and sampled initial fields cannot establish its historical binary hash."
+      }
+    },
+    {
+      "nu_tag": "045",
+      "poisson_ratio": 0.45,
+      "recommended_output": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out",
+      "source_Def": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_Def.xml",
+        "bytes": 9518,
+        "sha256": "83bb5e8f171138a0fe25cc29562faefacb2e263d9b791037cc7f318351dd1a1d"
+      },
+      "runtime_XML": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\CaseCryerProblem_PR_release_nu045_r1.xml",
+        "bytes": 11287,
+        "sha256": "12761e86122b6d21eac2c05910a7299c5bc257e35e94997dacb81c056aaa199b"
+      },
+      "Run_out": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\Run.out",
+        "bytes": 96199,
+        "sha256": "2d54e79cbf5c5da60503be2fe51dd24ccf3472a7943f1fe8a635102c69c02ead"
+      },
+      "Run_csv": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\Run.csv",
+        "bytes": 1057,
+        "sha256": "da74d9fcc4ee832e00bb52f88a57bd5f2504c92b719abc2085f496a6c74eb536"
+      },
+      "native_catalog": {
+        "main_PART_count": 1065,
+        "first": "Part_0000.bi4",
+        "last": "Part_1064.bi4",
+        "contiguous_names": true,
+        "all_frame_contents_decoded_or_hashed": false
+      },
+      "run_log_observations": {
+        "finished_execution_code": 0,
+        "finished_execution_message_present": true,
+        "hardware": "NVIDIA RTX A6000",
+        "device": 0,
+        "driver_mode": "WDDM",
+        "run_mode": "Stable Pos-Cell Single-GPU",
+        "integrator": "Symplectic",
+        "kernel": "Wendland",
+        "total_native_particles": 37181,
+        "fixed_dummy_particles": 8,
+        "soil_particles": 37173,
+        "excluded_particles": 0,
+        "DTs_adjusted_to_DtMin": 0,
+        "initialization_host_clock": "02-11-2026 10:49:25",
+        "finished_host_clock": "02-11-2026 14:37:18",
+        "simulation_runtime_s": 13673.675781,
+        "actual_completed_steps": 347180,
+        "final_saved_step": 347179,
+        "final_native_time_s": 0.3310966491699219,
+        "fixed_dt_s": 9.5367431640625e-7,
+        "final_time_divided_by_saved_step_plus_one_s": 9.5367431640625e-7,
+        "post_drain_nominal_cadence_s": 0.00032328409090909093
+      },
+      "sampled_decoder_calls": [
+        {
+          "part": 0,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data",
+            "0"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data",
+            "0"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data\\Part_0000.bi4",
+            "bytes": 5951328,
+            "sha256": "bb1c41c772792494a7286f7309053fe9299707a0d84096888ecfba645f3df604"
+          },
+          "raw_sha256_before_decoder": "bb1c41c772792494a7286f7309053fe9299707a0d84096888ecfba645f3df604",
+          "raw_sha256_after_decoder": "bb1c41c772792494a7286f7309053fe9299707a0d84096888ecfba645f3df604",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "952a625beeee525ba8d5a280bfcc126fb00c4ab570301af615d4a32b6692e9ae",
+          "time_s": 0,
+          "saved_step": 0,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": 0
+        },
+        {
+          "part": 1064,
+          "command_argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\05_LianFlexibleStrip2D_PR\\tests\\outputs\\hydro_native_r1\\ReadHydroNative.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data",
+            "1064"
+          ],
+          "arguments": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data",
+            "1064"
+          ],
+          "owned_pure_decoder_exit_code": 0,
+          "raw": {
+            "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\data\\Part_1064.bi4",
+            "bytes": 5951328,
+            "sha256": "400fcbf8ef24d0ec06b620e371883e2f67ec38b88f34bd6a62441b32ceb84bf7"
+          },
+          "raw_sha256_before_decoder": "400fcbf8ef24d0ec06b620e371883e2f67ec38b88f34bd6a62441b32ceb84bf7",
+          "raw_sha256_after_decoder": "400fcbf8ef24d0ec06b620e371883e2f67ec38b88f34bd6a62441b32ceb84bf7",
+          "raw_unchanged": true,
+          "decoded_columns": 35,
+          "decoded_soil_rows": 37173,
+          "decoded_numeric_table_expanded_binary64_sha256": "f0412bf017b7fb4f4384a5a27ab12e1ba71c15a8d39e10074b498a20c481c4be",
+          "time_s": 0.3310966491699219,
+          "saved_step": 347179,
+          "native_count": 37181,
+          "nout": 0,
+          "soil_id_min": 8,
+          "soil_id_max": 37180,
+          "soil_IDs_unique_and_complete": true,
+          "all_numeric_values_finite": true,
+          "all_soil_kplastic_zero": true,
+          "position_double_flag_all_one": true,
+          "stress_double_flag_all_one": true,
+          "has_dterror_all_one": true,
+          "signed_dterror_s": -0.00001402039344182401
+        }
+      ],
+      "execution_provenance": {
+        "execution_receipt": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\execution_receipt_nu_r1.json",
+          "bytes": 32871,
+          "sha256": "e97055df1f98b3fae05c4f4e82f03eaa2c0d55c11e0e1da2b77585e300b029f9"
+        },
+        "original_receipt_status": "solver_exited_zero_pending_native_review",
+        "original_receipt_native_completion_verified": false,
+        "original_receipt_physical_acceptance": false,
+        "original_receipt_unchanged": true,
+        "actual_solver_stage_from_retained_receipt": {
+          "stage": "solver",
+          "status": "exited",
+          "started_utc": "2026-11-02T01:49:24.1534560Z",
+          "executable_before": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "argv": [
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "-gpu",
+            "-stable",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\CaseCryerProblem_PR_release_nu045_r1",
+            "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out",
+            "-dirdataout",
+            "data",
+            "-svres",
+            "-svextraparts:1"
+          ],
+          "console_log": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\solver.console.log",
+          "exit_code": 0,
+          "ended_utc": "2026-11-02T05:37:19.0439241Z",
+          "executable_after": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          "console_log_binding": {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\solver.console.log",
+            "bytes": 192500,
+            "sha256": "51511d2612a6dcaadb7218cfe3cc33b2a5fa57522a982fb03600d0c9aa64101b"
+          }
+        },
+        "generated_initial_bi4": {
+          "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\CaseCryerProblem_PR_release_nu045_r1.bi4",
+          "bytes": 1637400,
+          "sha256": "0da2afcb4dddcca6acd08aa76240b2f75937941c933b62f46d4146478e66decf"
+        },
+        "five_metadata_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\CaseCryerProblem_PR_release_nu045_r1.xml",
+            "bytes": 11287,
+            "sha256": "12761e86122b6d21eac2c05910a7299c5bc257e35e94997dacb81c056aaa199b"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\CaseCryerProblem_PR_release_nu045_r1.bi4",
+            "bytes": 1637400,
+            "sha256": "0da2afcb4dddcca6acd08aa76240b2f75937941c933b62f46d4146478e66decf"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\Run.out",
+            "bytes": 96199,
+            "sha256": "2d54e79cbf5c5da60503be2fe51dd24ccf3472a7943f1fe8a635102c69c02ead"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\gencase.console.log",
+            "bytes": 12882,
+            "sha256": "bd4ec88c80c1bdd808105f23107b197ef01c6b04988408d58469aa577bdf154e"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_release_nu045_r1_out\\solver.console.log",
+            "bytes": 192500,
+            "sha256": "51511d2612a6dcaadb7218cfe3cc33b2a5fa57522a982fb03600d0c9aa64101b"
+          }
+        ],
+        "runtime_before_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "runtime_after_bindings_previously_verified": [
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DualSPHysics5.2_GEO_win64.exe",
+            "bytes": 20622336,
+            "sha256": "652baea4814ddd106b69de11e785664c83802fad04f4965dab10feb35d7e9096"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\GenCase_win64.exe",
+            "bytes": 2304000,
+            "sha256": "f2f4cd8ed3e6cea4a1922d64f916369aade0a15df4168344edfe66c6efd66c14"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\ChronoEngine.dll",
+            "bytes": 6067712,
+            "sha256": "246d6c92824c55e2ab469e6e9567516fe4cecd84b617fc64cf6d2382fd7fbbe5"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\dsphchrono.dll",
+            "bytes": 772096,
+            "sha256": "c605befbc02991dd9d36266f2ce28e1e0bd675c115cab79e1f10fc873c6ff8fe"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcomp140.dll",
+            "bytes": 185144,
+            "sha256": "1d480d651414304bddd0928b1c1563b4fb7f89b1c6ac30650c884150de0ec540"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\DsphConfig.xml",
+            "bytes": 300,
+            "sha256": "a2bc1f88c6ea95347187a64a991ebada177c6314de5c35ab078b06d78235eece"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\msvcp140.dll",
+            "bytes": 578384,
+            "sha256": "74892d9b4028c05debaf0b9b5d9dc6d22f7956fa7d7eee00c681318c26792823"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140.dll",
+            "bytes": 109440,
+            "sha256": "69320f278d90efaaeb67e2a1b55e5b0543883125834c812c8d9c39676e0494fc"
+          },
+          {
+            "path": "D:\\myf\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\support\\bin\\vcruntime140_1.dll",
+            "bytes": 49560,
+            "sha256": "6fd366a691ed68430bcd0a3de3d8d19a0cb2102952bfc140bbef4354ed082c47"
+          }
+        ],
+        "all_listed_bytes_and_sha256_matched_at_read_only_audit": true
+      }
+    }
+  ],
+  "cross_group_comparison_risks": [
+    "Use the four recommended returned output directories, not similarly named older nu outputs or the dp002_rampclosed sweep.",
+    "After drainage, equal PART number is not equal physical time across nu. Align actual time, tau=t-tD and the chosen finite-storage dimensionless time; do not align rows blindly.",
+    "Part64 at tD=2^-7 is the pre-opening state. Ramp end 2^-8 and first drained saved frame are not alternative origins for tau.",
+    "Finite water bulk modulus requires the corresponding finite-storage reference for each nu, especially nu=.45; do not fit time, radius or pressure to a curve.",
+    "The nu=.30 root Def clock differs from the actual returned runtime/log; use the latter for this historical run.",
+    "The historical actual executable/DLL hashes for nu=.30 remain unknown; current packaged binaries do not retroactively close that provenance gap.",
+    "Sampled initial/final dterror is finite and nonpositive (initial zero); intermediate-frame dterror was not decoded in this peer audit.",
+    "Contiguous names, exit0, no exclusions and sampled initial identity are not full native-content checks, strict one-percent acceptance, a full half-step proof or general physical validation.",
+    "Existing nu=.30 fixed-18-material-node peak amplitude limitation of approximately -1.034 percent remains a prior documented limitation, not newly assessed or relaxed here."
+  ],
+  "source_review_paths": [
+    "AGENTS.md in examples/Hydromechanic coupling",
+    "04_CryerProblem_PR/README.md",
+    "04_CryerProblem_PR/support/README_cryer_nu_release_r1.md",
+    "04_CryerProblem_PR/support/README_cryer_release_r2.md",
+    "04_CryerProblem_PR/support/README_server.md",
+    "04_CryerProblem_PR/tests/notes/cryer_server_return_r1.json"
+  ],
+  "seal_statement": "This single new JSON preserves completed read-only observations and existing evidence identities. It does not alter original execution receipts, retained data, configuration, native status, binaries, or historical claims."
+}
