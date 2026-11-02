@@ -1,0 +1,132 @@
+{
+  "stage": "upl_porosity_operator_DebugCPU_r1_peer",
+  "passed": true,
+  "configuration": "DebugCPU",
+  "source_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_DebugCPU_r1.run.json",
+    "bytes": 5305,
+    "sha256": "bcb157266b6d7a2a33ddfd780afae5b6ab66ffea21acc534d9920eae5cdb6466"
+  },
+  "source_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_wall_cpu_DebugCPU_r1.build.json",
+    "bytes": 494198,
+    "sha256": "455c3270ed598dc773b0804c90cb0402f16c1aa96787d53e12728a71b5f23b51"
+  },
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_porosity_operator_DebugCPU_r1\\completion.json",
+      "bytes": 539,
+      "sha256": "5b343ddedd7a386ce928082960ca1593d84c4435cafae8476d3677e6175c5b33"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_porosity_operator_DebugCPU_r1\\operators.csv",
+      "bytes": 537069,
+      "sha256": "f569637fa3e0478bc15e573f482ebf06171952129390b494d1364a81de6e6405"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_porosity_operator_DebugCPU_r1\\summary.csv",
+      "bytes": 454,
+      "sha256": "9b4ce08785a70f8432aeeb18fde32de5107e3a07ec074e867f351d3938c6553c"
+    }
+  ],
+  "coverage": {
+    "rows": 1536,
+    "cases": 3,
+    "native_ids_per_case": 512,
+    "columns_of_C_checked": 9,
+    "nonuniform_C_bitwise_equal": true,
+    "all_theta_reference_agree_with_actual": true,
+    "all_ndot_J_recomputed_bit_exact": true,
+    "all_prior_budgets_recomputed_bit_exact": true,
+    "all_Lian_minus_J_minus_delta_within_prior_budget": true,
+    "all_pressure_sources_recomputed_float32_exact": true
+  },
+  "cases": [
+    {
+      "case": 0,
+      "theta_RMS_s_inv": 0.2096561493491246,
+      "theta_reference_max_abs_error_s_inv": 0,
+      "ndot_J_RMS_s_inv": 0.15724211201184343,
+      "ndot_Lian_RMS_s_inv": 0.15724211201184346,
+      "ndot_difference_RMS_s_inv": 4.463811151139392e-17,
+      "relative_L2_difference_to_J_rate": 2.838814039080815e-16,
+      "relative_L2_difference_percent": 2.838814039080815e-14,
+      "n_span": 0,
+      "combined_budget_RMS_s_inv": 2.772146639406621e-13,
+      "difference_RMS_over_budget": 0.0001610236301242301,
+      "witness_count": 16,
+      "witness_delta_max_abs_s_inv": 0,
+      "max_theta_error_over_budget": 0,
+      "max_identity_error_over_budget": 0.00023738017720148025,
+      "max_identity_error_s_inv": 8.326672684688674e-17,
+      "supported_neighbours_min": 36,
+      "supported_neighbours_max": 36,
+      "summary_max_abs_difference": 4.996003610813204e-16
+    },
+    {
+      "case": 1,
+      "theta_RMS_s_inv": 0,
+      "theta_reference_max_abs_error_s_inv": 0,
+      "ndot_J_RMS_s_inv": 0,
+      "ndot_Lian_RMS_s_inv": 0,
+      "ndot_difference_RMS_s_inv": 0,
+      "relative_L2_difference_to_J_rate": null,
+      "relative_L2_difference_percent": null,
+      "n_span": 0.0014648451469851942,
+      "combined_budget_RMS_s_inv": 0,
+      "difference_RMS_over_budget": null,
+      "witness_count": 16,
+      "witness_delta_max_abs_s_inv": 0,
+      "max_theta_error_over_budget": 0,
+      "max_identity_error_over_budget": 0,
+      "max_identity_error_s_inv": 0,
+      "supported_neighbours_min": 36,
+      "supported_neighbours_max": 36,
+      "summary_max_abs_difference": 0
+    },
+    {
+      "case": 2,
+      "theta_RMS_s_inv": 0.20965616476414847,
+      "theta_reference_max_abs_error_s_inv": 0,
+      "ndot_J_RMS_s_inv": 0.1572422289702588,
+      "ndot_Lian_RMS_s_inv": 0.15724212985493052,
+      "ndot_difference_RMS_s_inv": 0.00009060138169418976,
+      "relative_L2_difference_to_J_rate": 0.0005761898841520896,
+      "relative_L2_difference_percent": 0.057618988415208953,
+      "n_span": 0.0014648451469851942,
+      "combined_budget_RMS_s_inv": 2.7726093806389414e-13,
+      "difference_RMS_over_budget": 326772975.4030872,
+      "witness_count": 16,
+      "witness_delta_max_abs_s_inv": 0.00012796391523861968,
+      "max_theta_error_over_budget": 0,
+      "max_identity_error_over_budget": 0.00018853003045648652,
+      "max_identity_error_s_inv": 6.619054263024005e-17,
+      "supported_neighbours_min": 36,
+      "supported_neighbours_max": 36,
+      "summary_max_abs_difference": 1.6653345369377348e-16
+    }
+  ],
+  "max_theta_error_over_prior_budget": 0,
+  "max_identity_error_over_prior_budget": 0.00023738017720148025,
+  "max_summary_metric_abs_difference": 4.996003610813204e-16,
+  "bindings": {
+    "entries_checked": 852,
+    "unique_paths": 578,
+    "source_current_and_snapshot_entries_checked": true,
+    "all_before_after_SHA256_exact": true
+  },
+  "interpretation": "Finite-particle weighting difference resolved; not evidence that either continuum equation or paper/current implementation is wrong. n=1-(1-n0)/J and Jdot=Jtheta give the same continuum solid-mass equation.",
+  "limitations": [
+    "Independent binary64 recomputation from sealed native-component CSV exports, not a second BI4 decoder or an independent neighbour/kernel/C inverse reconstruction. theta_reference,raw component scales and neighbour counts are exported conditioned inputs.",
+    "Periodic owner and state restoration assertions are source-reviewed plus native-completion evidence, not independently reconstructed from per-ghost arrays (not exported).",
+    "No native program/build/solver/reader/Git execution or original-output mutation; no finite-time integration or physical acceptance.",
+    "Debug/Release equality is not a declared gate."
+  ],
+  "physical_acceptance": false,
+  "helper": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_DebugCPU_r1.helper.json",
+    "bytes": 17039,
+    "sha256": "7ce0c883362e74b2db1906cd21ad2712cd8b2e2011cbc932c9e9c662376366c3"
+  },
+  "summary_reduction": "Independent binary64 math.fsum of squared exported values; native summary uses serial C++ accumulation. Max observed summary difference4.996003610813204e-16, within64 binary64 epsilon of magnitude. Original per-row arithmetic budgets and nonempty thresholds unchanged."
+}

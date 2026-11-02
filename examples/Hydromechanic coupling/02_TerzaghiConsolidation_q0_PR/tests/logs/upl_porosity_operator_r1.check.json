@@ -1,0 +1,105 @@
+{
+  "stage": "upl_porosity_operator_r1",
+  "passed": true,
+  "conclusion_zh": "当前代码累加theta=div(v)，以Jdot=Jtheta及n=1-(1-n0)/J得到局部ndot=(1-ni)theta，并未在邻居求和里隐含(1-nj)。均匀n两种瞬时离散率在舍入内相同，非均匀n一般不同；这不是缺失连续系数，也不能由本测试判断哪种离散更准确。",
+  "source_checkpoint": "3970018679b3e366dcff8fdce668b244707b93ee",
+  "production_source_sha256": "0224f7383c1b19d40375d79037ffebb99bcf5bb826b2db4a4c77ba7a87621b93",
+  "proofs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_DebugCPU_r1.helper.json",
+      "bytes": 17039,
+      "sha256": "7ce0c883362e74b2db1906cd21ad2712cd8b2e2011cbc932c9e9c662376366c3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_ReleaseCPU_r1.helper.json",
+      "bytes": 16811,
+      "sha256": "8a183a1ee66c494d76d31f65401843176a82e2cc95a60c56e9b914022cb11d70"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_DebugCPU_r1.run.json",
+      "bytes": 5305,
+      "sha256": "bcb157266b6d7a2a33ddfd780afae5b6ab66ffea21acc534d9920eae5cdb6466"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_ReleaseCPU_r1.run.json",
+      "bytes": 5641,
+      "sha256": "099be13cb3707a730b0fa3af6f800be7ace2bc5fb56c868dc947b82b11abb855"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_DebugCPU_r1.peer.check.json",
+      "bytes": 6561,
+      "sha256": "18ad4f9cb881dde1b5788c836d412b022203d8e06cf4e6d98d853f9d7ee8efe7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_ReleaseCPU_r1.peer.check.json",
+      "bytes": 5897,
+      "sha256": "155d6cebd017c6f56c76a42d2165d8c6fe648fb43b8ab7b04111b8486e6d2447"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_porosity_operator_plan_r1.json",
+      "bytes": 6687,
+      "sha256": "706a721076de3ec5818d629c16ac609d004eeb356ae8cd5703c10b4002c551f0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_porosity_operator_r1.json",
+      "bytes": 7632,
+      "sha256": "ab196293379c7b0dd257e3bc707879ed8eaa620bf57be7ed21196babd852b019"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_porosity_operator_r1.cpp",
+      "bytes": 14325,
+      "sha256": "ac844f9059b7913084423ab6bab0351992e8de993a41deee68783cfa108ff515"
+    }
+  ],
+  "actual_configurations": [
+    "DebugCPU",
+    "ReleaseCPU"
+  ],
+  "actual_initializations": 2,
+  "actual_force_calls": 6,
+  "native_ids_per_case": 512,
+  "cases_per_configuration": 3,
+  "CSV_rows_per_configuration": 1536,
+  "physical_steps": 0,
+  "independent_export_review": "Debug peer independently recomputed every row and reductions from conditioned CSV exports; Release peer additionally reread/recomputed all1536 rows and inherited the numerical-export review through actual identical SHA/bytes of operators.csv,summary.csv,completion.json. This is not a second kernel/BI4 parser or a Debug/Release physical-truth gate.",
+  "observed_Debug_Release_three_scientific_exports_byte_identical": true,
+  "cases": [
+    {
+      "name": "uniform_n_periodic_dilation",
+      "ndot_difference_RMS_s_inv": 4.463811151139392e-17,
+      "theta_RMS_s_inv": 0.2096561493491246
+    },
+    {
+      "name": "nonuniform_n_rigid_translation",
+      "ndot_difference_RMS_s_inv": 0,
+      "theta_RMS_s_inv": 0,
+      "n_span": 0.0014648451469851942
+    },
+    {
+      "name": "nonuniform_n_periodic_deformation",
+      "ndot_difference_RMS_s_inv": 0.00009060138169418976,
+      "relative_L2_difference_percent": 0.057618988415208953,
+      "n_span": 0.0014648451469851942,
+      "signal_over_prior_roundoff_budget": 326772975.4030872
+    }
+  ],
+  "max_actual_theta_vs_conditioned_reference_error": 0,
+  "max_identity_error_over_prior_budget": 0.00023738017720148025,
+  "same_nonuniform_C_bit_exact": true,
+  "periodic_owner_checks_per_configuration": 2688,
+  "covered_normal_state_restored": true,
+  "pressure_compression_used_unweighted_theta": true,
+  "original_arithmetic_budgets_unchanged": true,
+  "discrete_identity": "ndot_Lian_i - ndot_J_i = sum_j Vj*(ni-nj)*(vj-vi).corrected_grad_i_Wij",
+  "interpretation": "Both target the same continuous incompressible-solid relation. The displayed 0.0576% is only a manufactured frozen-operator relative difference, NOT a physical accuracy/error estimate or an accuracy victory. Fixed-lattice nonuniform J is not a compatible deformed trajectory. The J algebraic solid-volume ledger alone proves neither global conservation nor better accuracy.",
+  "implementation_decision": "No production equation,pressure source,J integrator,k law,XML switch or GPU path changed in this diagnostic. Do not insert (1-nj) into the shared theta accumulator: it would also incorrectly weight pressure compression. Any future literal Eq24 implementation requires a separate reviewed n/J/volume coupling choice.",
+  "builds": "Separate CPU Debug/Release helper objects linked with the already fresh authoritative85 non-main objects. No new production Rebuild. Debug link had existing dependency-PDB LNK4099 warnings; Release only automatic LTCG information. Default CPU Debug build of the production tangent-wall change and default-OFF 0ULP evidence remain at checkpoint3970018.",
+  "limitations": [
+    "No finite-time integration or new half-step test.",
+    "No independent continuum convergence/theory or global physical-mass acceptance.",
+    "No public/GPU/normal-gravity/general-wall/plasticity/large-deformation/restart acceptance.",
+    "No formal/server case input,program or retained results changed.",
+    "Executables/native headers/local raw artifacts are hash bound,not cloud copies."
+  ],
+  "physical_acceptance": false
+}

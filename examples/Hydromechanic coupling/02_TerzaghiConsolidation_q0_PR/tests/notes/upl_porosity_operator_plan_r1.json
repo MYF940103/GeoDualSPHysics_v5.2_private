@@ -1,0 +1,35 @@
+{
+  "stage": "upl_porosity_operator_plan_r1",
+  "status": "planned_only_no_CPP_build_or_run_authorized",
+  "purpose": "Resolve the finite-particle difference between current J-derived instantaneous ndot and Lian2023 Eq24 without changing production equations,integrating either candidate,or reclassifying the completed tangent-gravity evidence.",
+  "prerequisite": "Root finishes the current four wall audits and selective checkpoint first. Any future tiny component must bind the accepted current CPU source/build and receive separate root author/build/run approval; this note grants none of those actions.",
+  "reuse": {
+    "objects": "The fresh authoritative wall CPU r1 DebugCPU/ReleaseCPU builds and their85 non-main objects,not the older pre-wall/Gamma objects; one separate component object only. No new production Rebuild is proposed.",
+    "g0_periodic_seed_XML": "outputs/upl_cpu_public_seed_r1_periodic_constant_c/CaseUplSpatial_n32_c.xml,18106B,SHA4d489decdcfb1d8871cdc6d105000a8158c154a593a60796fe2a1130d0316567",
+    "g0_periodic_seed_BI4": "Same prefix .bi4,23948B,SHA364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa",
+    "scope": "Existing CPU g0,XZ-periodic,32x16 native512 IDs0..511,zero walls,Lx1/8,Lz1/16,dp1/256,h/dp1.8,Wendland. Existing public masterON/model0 selects constant k; this is merely reuse of an accepted input,not admission of a new public model. No XML/BI4 rewrite,GenCase,GPU or formal-case mutation."
+  },
+  "frozen_fields": {
+    "material": "Keep rho0=2048,rhow1000,n0=.25,K89478488,G134217728,Kw67108864 and k0=float(1e-4) exactly; conductivity law OFF throughout. Gravity0,no wall/load/drainage/HG/SPR/viscosity/shifting/DDT. Current J-derived saturated and positive-k RH domain must remain valid; do not retune material/k to resolve a difference.",
+    "constants": "A=2^-9 m/s,epsilonJ=2^-10,kappa=2*pi/Lx,phi_i=4*kappa*(x_i-dp/2). Fields are smooth and periodic across XZ seams; no affine polynomial discontinuity across a periodic face.",
+    "common": "Use unchanged seed positions and native identity; set declared temporary per-native frozen J/velocity fields only in the new component. p=p0=sigma=plastic=load=0,passive rhop=rho0; n=1-(1-n0)/J,V=V0*J. Rebuild periodic images through the actual owner lifecycle. A frozen J field on this fixed lattice is an operator input,not a compatible deformed physical trajectory."
+  },
+  "three_cases": [
+    {"name": "uniformJ_periodic_dilation", "J": "1", "velocity": "(A*sin(phi),0,0)", "required": "Actual theta RMS is nonzero; the two instantaneous ndot evaluations agree within their prior arithmetic budget because n is uniform. Periodic dilation has zero global mean but locally nonzero divergence,not uniform box expansion."},
+    {"name": "nonuniformJ_translation", "J": "1+epsilonJ*cos(phi)", "velocity": "(A,0,-A/2)", "required": "Nonuniform n span is nonzero,translation velocity is nonzero,actual theta and both rates are numerical zero. This isolates weight variation from an empty or inconsistent velocity-difference branch."},
+    {"name": "nonuniformJ_higher_periodic_velocity", "J": "1+epsilonJ*cos(phi)", "velocity": "(A*sin(phi),0,0)", "required": "Same J/positions/support as the translation case; actual C(Vj) is recorded and must agree between these two cases. Mode4 is intentional: at x=dp/2,J is maximal and all nonzero supported sin(phi_j)*(x_j-x_i) terms have one sign because support2h gives max phase<pi; the weighted difference is therefore not the odd-symmetry zero of a naive affine test. Require a resolved nonzero difference,never retune the fields after seeing results."}
+  ],
+  "one_actual_operator_pass_per_case": "Fresh CPU initialization only,then declared frozen fields by native ID,normal-native Dcell update and actual periodic rebuild. Call actual Interaction_Forces once to obtain the same production corrected theta and actual current C(Vj);no Run,ComputeStep,SaveData,predictor/corrector history or time advance. Release scratch and restore/check covered native identity/geometry/physical arrays after every case. No actual Eq24 production implementation is introduced.",
+  "independent_evaluations": {
+    "terms": "Search all actual native+periodic fluid slots independently of production cell ranges. Use exactly the same actual stored Vj,C_i,CPU compression kernel operands and float-rounded velocity differences; define b_ij=(vj-vi).corrected_grad_i_Wij. C is a conditioned actual input,not an independently proved inverse or continuum gradient.",
+    "rates": "theta_ref=sum(Vj*b); ndot_J_actual=(1-ni)*theta_actual; ndot_Lian=sum(Vj*(1-nj)*b); delta_ref=sum(Vj*(ni-nj)*b). Test ndot_Lian-ndot_J_actual=delta_ref using the actual-theta reference budget. Uniform n0 also gives Vj*(1-nj)=V0*(1-n0),not a hidden solid fraction inside current porovol2.",
+    "prior_roundoff": "Before execution count supported neighbors N and use gamma_m=m*DBL_EPS/(1-m*DBL_EPS),m=64*(N+1). theta budget=gamma_m*sum|Vj*b|; identity budget=gamma_m*(sum|Vj*(1-nj)*b|+abs(1-ni)*sum|Vj*b|+sum|Vj*(ni-nj)*b|),plus propagated theta budget. Retain double-min only to express a zero scale,no dimensioned max(1) or5Pa tolerance. Float-rounded input/kernel/C are common conditioned operands; compare ideal analytic float-free fields only descriptively,not by silently folding their quantization into a double-sum budget. If actual operands are found different,hold and explain them before execution rather than widen a result-dependent budget.",
+    "nonempty": "Case3 difference RMS must exceed100 times RMS of the declared combined identity/production-theta budgets and be nonzero at a native x=dp/2 witness. Record case1 actual-theta nonempty and case2 nonuniform-n/translation witnesses. Failure is retained,not cured by changing amplitude,mode,material or threshold."
+  },
+  "future_small_outputs": "One per-native CSV for3x512 rows:ID,J,n,V,theta_actual/reference,two ndot rates,direct delta,raw absolute scales,budget/error and support count;small case summaries plus original source/build/input/program hashes. Record actual C and periodic owner checks without a new general framework.",
+  "limits": "No time integration or finite-step equivalence claim,no arbitrary5Pa/.005mm gate,no automatic replacement of Jdot=Jtheta,no conservation/accuracy winner from an algebraic identity alone. Local (1-n)J=1-n0 and any descriptive global weighted sums are separate from global physical conservation; future compatible-map/time/pressure/k assessment needs its own declared test. Current saved-stage proofs and notes remain untouched.",
+  "production_changed": false,
+  "CPP_authored": false,
+  "built_or_executed": false,
+  "physical_acceptance": false
+}
