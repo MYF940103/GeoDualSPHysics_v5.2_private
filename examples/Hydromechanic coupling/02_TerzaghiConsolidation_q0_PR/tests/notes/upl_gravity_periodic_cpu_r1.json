@@ -1,0 +1,166 @@
+{
+  "stage": "upl_gravity_periodic_cpu_r1",
+  "status": "author_only_not_compiled_or_run",
+  "author_files": [
+    "tests/support/upl_gravity_periodic_cpu_r1.cpp",
+    "tests/notes/upl_gravity_periodic_cpu_r1.json",
+    "tests/configs/upl_gravity_periodic_cpu_smoke_r1.xml",
+    "tests/configs/upl_gravity_periodic_cpu_c_r1.xml",
+    "tests/configs/upl_gravity_periodic_cpu_h_r1.xml"
+  ],
+  "scope": "Three proposed private CPU true JSphCpuSingle::Run jobs only: Debug two-step smoke, then independent Release coarse/half. No production edit, public gravity unlock, wall, GPU, main-loop transcription, force assignment or initial physical-state rewrite.",
+  "source_review_identity": {
+    "path": "src/source/JSphCpu.cpp",
+    "sha256": "475b5b67b02a26f5e3268d9b8192763f1ac1d9ec3c277b33279f6950859bc47d",
+    "meaning": "Current Gamma2sites candidate reviewed, not proof of this new helper build/run. Root must bind the complete current authoritative CPU build, 85 non-main objects, tools, runtime, source snapshots and candidate native regressions before any helper or actual invocation."
+  },
+  "immutable_reader_include": {
+    "path": "tests/support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "note_path": "tests/notes/upl_cpu_public_native_r1.json",
+    "note_sha256": "70a9464b849dc31c7ea3275a03e1817fea4de07dcc4ba6c86ded9c386aaaabc4",
+    "use": "Direct main-renamed include, exactly one AppInfo. Reuse only neutral NativeArray/Native/Sequence/Metadata(false)/numeric helpers. Never call its public Load, Read, Energy, Physical or old 26-column exporter; it cannot interpret this private three-J CPU schema."
+  },
+  "original_control": {
+    "c_xml": "tests/outputs/upl_gpu_perm_actual_seed_r1/CasePerm_CPU_variable_c.xml",
+    "c_xml_bytes": 17984,
+    "c_xml_sha256": "fd09b0f21df426c57b04051b26a79f7a6b1ab305ccfdda7b7d5298dc5cd35d65",
+    "h_xml": "tests/outputs/upl_gpu_perm_actual_seed_r1/CasePerm_CPU_variable_h.xml",
+    "h_xml_bytes": 17984,
+    "h_xml_sha256": "70a72ca16fbe8774d656b8206e6167226c8b790be0937d48700430852fce4ff4",
+    "bi4": "tests/outputs/upl_gpu_perm_actual_seed_r1/CasePerm_CPU_variable_c.bi4",
+    "bi4_bytes": 23948,
+    "bi4_sha256": "364c4421a8b539d0e8e5eb67e00c547657c9c65f48cd7e83168a4ad32cd5a8fa",
+    "c_raw": "tests/outputs/upl_gpu_perm_actual_CPU_variable_c_r1/data",
+    "h_raw": "tests/outputs/upl_gpu_perm_actual_CPU_variable_h_r1/data",
+    "c_review": "tests/outputs/upl_gpu_perm_actual_CPU_variable_c_r1_review",
+    "h_review": "tests/outputs/upl_gpu_perm_actual_CPU_variable_h_r1_review",
+    "matching": "Actual J1/p0 unmodified lattice and 32-column XML sine velocities, not old mapped-J/p128 private26 controls. Coarse dt2^-24, half2^-25 verified from actual retained runtime. Retained public CPU has six native J-derived arrays plus PosDiv; new private CPU has only three. Common fields may later be compared honestly by ID, not by fabricating missing private arrays or relabelling its backend."
+  },
+  "configuration": {
+    "geometry": "512 native IDs0..511, fixed0, 32x16 XZ periodic, dp1/256,Lx1/8,Lz1/16. BI4 is not copied/rewritten by authoring or this helper; root may copy the sealed exact source only after full review. No GenCase.",
+    "actual_gravity": "Both casedef/constantsdef and execution/constants are (-8,0,0). This is uniform body acceleration/freefall in a periodic cell, not an impossible globally linear periodic hydrostatic pressure.",
+    "physical_initial_state": "Exact original BI4 positions plus the exact original 32 fluidvelocity initialization entries: vx=(1/512)sin(2pi*x/Lx), vy=vz=0,p=p0=stress=theta=0,J1,n.25. The fixture never assigns these fields.",
+    "material": "Original exact K89478488,G134217728,Kw67108864,rho02048,rhow1000,n0.25; k0 is float-promoted1e-4. Smooth k=k0 exp((J-1)/((1-n0)*Ck)),Ck2^-13 unchanged. Manufactured Ck is not a soil calibration recommendation.",
+    "public_XML_keys": "HydroMechDynamicSeepage=0, HydroMechConductivityModel=0, HydroMechConductivityCk=0 explicitly. The derived-class constructor alone sets Observer/Feedback/DynamicPorePressure/DynamicPoreConductivity=true,Ck2^-13. Do not run these XMLs with canonical main and call that the new model; only this explicitly bound private helper is the solver entry.",
+    "retained_options": "Fresh CPU OMP1, fixed dt, Symplectic/Wendland, zero artificial viscosity/DDT/HG/SPR/damping/shifting/load/drainage/initialization mode; SavePosDouble1; PartsOutMax0; passive Rhop700..3000; full original metadata/particles/geometry/velocity XML retained.",
+    "windows": [
+      {
+        "name": "smoke",
+        "xml": "tests/configs/upl_gravity_periodic_cpu_smoke_r1.xml",
+        "sha256": "27326a0b33c9f42ca286f79a1cb1cad67b4b878df41f6df0b7aeee27eefe75b1",
+        "dt": 5.960464477539063e-8,
+        "end": 1.1920928955078125e-7,
+        "cadence": 5.960464477539063e-8,
+        "steps": 2,
+        "samples": 3
+      },
+      {
+        "name": "coarse",
+        "xml": "tests/configs/upl_gravity_periodic_cpu_c_r1.xml",
+        "sha256": "3cb2493f6e29728893ddc9b50c43e241e89a1eaddb29ad44770129571677cb55",
+        "dt": 5.960464477539063e-8,
+        "end": 0.000030517578125,
+        "cadence": 1.1920928955078125e-7,
+        "steps": 512,
+        "samples": 257
+      },
+      {
+        "name": "half",
+        "xml": "tests/configs/upl_gravity_periodic_cpu_h_r1.xml",
+        "sha256": "0d7258e949ba466cfece9ce1bfcc2ff681037a729348fd390fadd3496bc312f5",
+        "dt": 2.9802322387695312e-8,
+        "end": 0.000030517578125,
+        "cadence": 1.1920928955078125e-7,
+        "steps": 1024,
+        "samples": 257
+      }
+    ]
+  },
+  "protocol": {
+    "solver": "--solver smoke|coarse|half -cpu -ompthreads:1 FROZEN_RUNTIME_PREFIX NEW_OUTPUT -dirdataout data -svres",
+    "reader": "--read smoke|coarse|half RAW_DATA_DIR EXACT_RUNTIME_XML NEW_REVIEW_DIR",
+    "sequence": "Root first full source/recipe read, freeze exact authors/current build and source. Then explicit one Debug smoke actual call and separately reader; only after it passes may root admit each Release actual coarse/half and its separate review. No automatic invocation in this CPP. Root-owned wrapper must hash input XML/BI4, current source/build/runtime/program and all raw outputs before/after offline review, seal solver exit before analysis, and never rerun a completed solve after reader-only failure.",
+    "ordinary_CLI_restrictions": "CPU and OMP1 required; no -partbegin, NstepsBreak, TimeMax/TimeOut CLI override, SvAllSteps, help/info. Run is exactly base JSphCpuSingle::Run; protected nonvirtual LoadConfig/Interaction/SaveData are not overridden.",
+    "live_finish": "Checks true Run final clock/steps/locked dt and released Pre arrays, real loaded flags/gravity/material and all512 normal-fluid IDs, then writes live_final.csv and actual_complete.json. This is not an independent record of every internal stage call."
+  },
+  "output_schema": {
+    "native": "Original15 actual typed arrays plus PoroVolumeRatio/PoroPorosity/PoroThetaLastStage double. No public dynamic metadata, PoroCurrentVolume/PoroMixtureDensity/PoroHydraulicConductivity or PosDiv; absence is explicitly checked, never filled with fake zeros.",
+    "review_files": [
+      "physical.bin",
+      "frame.bin",
+      "history.csv",
+      "native_ids.csv",
+      "last_poro.csv",
+      "completion.json"
+    ],
+    "binary": "Both binaries: little-endian native unsigned header[512,33,samples], then per frame actual double time plus512 ID-ordered rows of33 doubles. physical.bin is inertial actual output (V/rho/k derived from actual saved J, not extra native arrays). frame.bin changes only position/velocity/material-displacement columns by the declared accelerating-reference transform.",
+    "columns": [
+      "x",
+      "y",
+      "z",
+      "vx",
+      "vy",
+      "vz",
+      "p",
+      "p0",
+      "J",
+      "theta_last_stage",
+      "sigma_xx",
+      "sigma_xy",
+      "sigma_xz",
+      "sigma_yy",
+      "sigma_yz",
+      "sigma_zz",
+      "plastic",
+      "FSType",
+      "normal_x",
+      "normal_y",
+      "normal_z",
+      "load_x",
+      "load_y",
+      "load_z",
+      "passive_legacy_Rhop",
+      "material_u_x",
+      "material_u_y",
+      "material_u_z",
+      "native_float_excess",
+      "native_n",
+      "derived_current_V",
+      "derived_mixture_rho",
+      "derived_current_k"
+    ],
+    "clocks": "Every3/257 PART must exist exactly, one piece/no exclusions, actual time=part*cadence, native saved step=part?round(time/dt)-1:0 and native SymplecticDtPre=dt; signed dterror must be actually present double/finite and<=1e-14, not abs(dterror).",
+    "force_stage_note": "Saved theta is native last-stage theta, not recomputed endpoint divergence. Saved current CFL/diffusion/domain checks are not independent observations of every force-stage C/Ace/gradient cache. Real Run executes the production predictor/corrector guards, but the fixture does not claim counted callbacks."
+  },
+  "scientific_gates": {
+    "unchanged_native": "All native typed fields finite, exact512 IDs, no exclusions/plastic/load,p00, native float excess=p-p0 and float display stresses round actual double stress, passive legacy rho700..3000. J>1-n0,|J-1|<=1e-4,positive finite n/V/rho/k; actual native n ledger relative5e-13 and solid-volume residual<=5e-13.",
+    "unchanged_nonempty": "Smoke max|J-1|>0; full>1e-8 and spatial current-k span/k0>=.005. These are inherited natural-evolution activation checks, not a new pressure-accuracy assertion.",
+    "unchanged_necessary_scales": "Saved cu*dt/h<=.01,D(J)*dt/h^2<=.01 with gamma_ref=rhow*9.80665; original strict positive-k continuum margin>64DBL_EPS max(rho,rhow). Actual DtVariable fixed/current-step/half-stage/gradient guards remain source enforced with no clipping or DtMin uplift. No claim of sufficient stability.",
+    "accelerating_energy": "Use v*=v-g*t in kinetic energy and the original stored elastic/pore energy at each saved J; entire saved history energy/E0<=original1.1. Inertial energy/E0 is recorded separately and is not the g0 wave-energy acceptance quantity.",
+    "future_half": "Not implemented/performed by this helper. Root must separately compare all257 actual-matched coarse/half frames under original pressureRMS<=5Pa,material-u-max<=.005mm and normalized p/v/u<=1e-4. Use frame material displacement consistently; no interpolation/exclusion.",
+    "future_frame": "g0 coarse/half comparisons must use the matching true retained states and frame.bin; common initial fields should be checked. Absolute5Pa/.005mm caps may be retained, but stricter per-field/normalized reference-frame roundoff budgets are PENDING root prior declaration, not fitted after seeing new runs. No frame-equivalence pass is emitted by this CPP.",
+    "future_body_g_integration": "MANDATORY PENDING gate, not inferred from small p/J differences: root must seal the real Run.out/header loaded Gravity=(-8,0,0), actual constructor/private flags and source identity, then compare actual native uniform velocity increment against g*t using a prior float-accumulation/stage-response budget. Missing or doubled body-g should differ by |g*t|; the prior budget must resolve that comfortably, not simply use5Pa/.005mm (end body displacement is only3.725290298461914e-9m). history.csv records unweighted_mean_vx, unweighted_mean_frame_vx and expected_uniform_body_velocity_shift as DIAGNOSTICS ONLY. The helper does not prove a physical mass-weighted CoM law; mixture rho*V varies withJ and unweighted internal force need not exactly cancel. Do not claim actual body-g integration passed until a separately reviewed independent native/reference calculation and nonempty wrong-missing/double discrimination have passed. No original coordinates/velocities are changed to obtain the comparison.",
+    "future_flux_sensitivity": "Initial J1 makes GJ=0; do not demand or claim initial chain activation. Along-wave g and later variable J allow a wrong explicit g term to matter, but actual Gk dot g signal versus the prior propagated rate/flux budget must still be independently established from later same-stage fields before any nonzero-gravity physical/public admission. q is not a saved native production field here; pressure equality alone cannot prove q correct."
+  },
+  "actual_integration_formula": {
+    "locations": "JSphCpuSingle::Run1316/ComputeStep_Sym959 and JSphCpu Pre4545/Corr4694; exact line numbers are audit-location hints, not source identity proof.",
+    "endpoint": "Compare x*=unwrap(x)-.5*g*t^2, v*=v-g*t. This short fixture requires every point remain inside its primary periodic interval, so no inferred wrap counts are fabricated; it does not test a boundary-crossing trajectory.",
+    "predictor": "At step t_n,dt, predictor uses x_half=x_n+.5dt*v_n, not a second-order continuous midpoint location. Therefore gravity-vs-zero-g position shift at predictor is .5g*t_n^2+.5g*t_n*dt (no g*dt^2/8), and velocity shift g*(t_n+.5dt).",
+    "corrector": "Corrector adds (Ace_half+g)*dt to v_n and trapezoidal endpoint displacement .5dt*(v_n+v_new), giving endpoint .5g*t^2. Uniform shifts leave relative geometry exact in algebra, not guaranteed native floating bitwise equivalence.",
+    "acceleration": "Ace stores a_s-g, completed before dynamic rate. The complete pressure operator consumes Gp+rhow*Ace with no extra +/-g. A body-gravity vector is not the material k-to-mobility reference acceleration."
+  },
+  "limits": [
+    "No production/source/public guard change",
+    "No walls, normal-gravity wall, GPU, PART/restart, general gravity or static hydrostatic well-balance admission",
+    "No pair-force correction to remove the separately measured1.77–2.38% raw discrete hydrostatic residual",
+    "No actual native PosDiv or native extra k/rho/V fabrication",
+    "No endpoint force replay, q telemetry, full-stage gradient measurement, mass-conservation or continuum accuracy claim",
+    "All incomplete or failed outputs must remain; reader-only repair must not rerun a completed solver"
+  ],
+  "built": false,
+  "executed": false,
+  "public_gravity_accepted": false,
+  "physical_acceptance": false
+}

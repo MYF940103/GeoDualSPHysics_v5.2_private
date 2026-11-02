@@ -1,0 +1,40 @@
+{
+  "stage": "upl_gravity_periodic_stage_r1",
+  "date": "2026-11-02",
+  "source_checkpoint": "043527d7e84a05808b58f086fd14bc0797426abf",
+  "status": "private_CPU_periodic_gravity_short_implementation_gates_passed",
+  "production_changes": [],
+  "purpose": "Verify actual predictor/corrector body acceleration with complete dynamic Darcy rate and naturally evolving J/n/k after the already-backed-up CPU material-mobility reference fix.",
+  "configuration": "512 native soil IDs, fresh real JSphCpuSingle::Run, 2D periodic sine wave, actual g=(-8,0,0), no wall/load/drainage/HG/SPR/damping/shifting. Current k follows the existing J law with manufactured Ck=2^-13; this is activation testing, not a calibrated soil law.",
+  "runs": [
+    {"configuration": "DebugCPU", "steps": 2, "saved_frames": 3, "dt_s": 5.9604644775390625e-8},
+    {"configuration": "ReleaseCPU coarse", "steps": 512, "saved_frames": 257, "dt_s": 5.9604644775390625e-8},
+    {"configuration": "ReleaseCPU half", "steps": 1024, "saved_frames": 257, "dt_s": 2.9802322387695312e-8}
+  ],
+  "completed_end_s": 0.000030517578125,
+  "native_provenance": "Three fresh solvers and three separately called typed native readers have direct owned exit0 receipts. Actual saved identities/times/steps, native J/n/theta and final live-state equality passed. New private outputs have only three native J-derived arrays; V/rho/k in the 33-column review are derived, and no public metadata or PosDiv is fabricated.",
+  "independent_half": {
+    "actual_matched_samples": 257,
+    "pressure_RMS_max_Pa": 0.00029628130151212627,
+    "material_displacement_max_mm": 4.783674300749705e-11,
+    "normalized_p_v_u_RMS_max": [2.893372092265125e-7, 4.981066406062503e-7, 2.63265730846993e-7],
+    "original_limits": "Every sample <=5 Pa / 0.005 mm and each normalized p/v/u RMS <=1e-4; unchanged."
+  },
+  "same_dt_accelerating_frame": {
+    "retained_g0_runs_rerun": false,
+    "pressure_RMS_max_Pa_coarse_half": [4.574282728763432e-5, 3.8277878266123727e-5],
+    "native_body_velocity_residual_RMS_over_A_max_coarse_half": [8.42940165622249e-8, 1.330166747718511e-7],
+    "formula_negative_controls": "Missing and doubled g*t subtraction at the endpoint produce about 1250 original velocity budgets. These are comparator formula negatives, not deliberately faulty solver runs. No unweighted or mixture-mass CoM conservation is assumed.",
+    "scope": "Bounded p/v/u frame and body-g response only; all 33 columns are reported, not declared bitwise or physically equivalent."
+  },
+  "activation": "Maximum current-k spatial span is about 5.7886 percent of k0. Native energy, weak J domain, saturated ledger and necessary saved-step bounds all pass; necessary bounds do not establish general stability.",
+  "analysis_repairs": "r1 pair JSON writing failed on a NumPy boolean; exact failed source and outputs are retained. Only bool conversion was repaired. The three complete r2 numeric results then had an outer silent-Tee receipt failure; their original native analysis exit0 was not durably recorded and is NOT claimed. A separate direct-exit0 independent binary64 QC verified/adopted all three complete results and 1138 unique bindings. A preliminary PowerShell metadata comparison failed before adoption and was not used. No completed solver was rerun, no scientific threshold was relaxed, and no phantom original log/exit receipt was created.",
+  "figures": "tests/figures/upl_gravity_periodic_summary_r2.png, plus all three r2 257-row histories and 8481-row field-difference CSVs. The root inspected plots; the summary uses readable ppm axes with the unchanged 100-ppm limit stated off-scale. Older plot/source versions remain preserved.",
+  "builds": "New private CPU Debug/Release helpers link the same 85 authoritative non-main objects plus one new test entry; compiler/linker exit0. Known third-party Debug PDB warnings and Release LTCG informational relink remain. No production Rebuild or canonical program installation was needed for test-only changes.",
+  "next": "Freeze one completed endpoint and independently audit actual C/Ace/theta/complete rate, including smooth-k wrong-explicit-g sensitivity. Then separately test tangential-gravity fixed walls. Normal-gravity pressure and effective-stress closure remain a distinct later task, as recorded in upl_gravity_wall_audit_r1.json.",
+  "public_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "GPU_gravity_accepted": false,
+  "physical_acceptance": false,
+  "formal_and_server_cases_changed": false
+}

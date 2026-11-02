@@ -1,0 +1,34 @@
+{
+  "stage": "upl_gravity_periodic_admission_r1",
+  "date": "2026-11-02",
+  "parent_checkpoint": "043527d7e84a05808b58f086fd14bc0797426abf",
+  "scope": "Private CPU periodic nonzero-body-gravity implementation check, not public gravity, hydrostatic equilibrium or physical-case admission.",
+  "prerequisites": [
+    "Sealed Debug two-step true-Run smoke and independent native reader passed.",
+    "Release helper compile/link passed with the same 85 authoritative non-main objects and unchanged production source.",
+    "Three runtime XMLs differ from the sealed control only in two gravity vectors, three explicitly OFF public keys, four clocks and comments; exact original BI4 copies retain initial fields."
+  ],
+  "sequence": "One fresh Release coarse and its independent reader; root safety review before one fresh half and its independent reader. No retained g0 rerun or restart.",
+  "predeclared_comparisons": {
+    "samples": 257,
+    "native_ids": 512,
+    "clock": "Exact saved times part*2^-23 through 2^-15 seconds; no interpolation, omissions or metadata rewriting.",
+    "coarse_half": "Every saved sample: pressure RMS <=5 Pa, material displacement maximum <=0.005 mm; independent normalized pressure/velocity/material-displacement RMS each <=1e-4, using the retained wave scales below.",
+    "same_dt_g0_frame": "Every saved sample: the same absolute and normalized p/v/u limits, compared at native IDs against its retained same-dt zero-g trajectory. Only x, vx and material ux are transformed by the prescribed accelerating frame. This is bounded p/v/u frame agreement, not bitwise or all-field equivalence.",
+    "scales": {
+      "velocity_m_s": 0.001953125,
+      "pressure_Pa": 1023.9999974568686,
+      "material_displacement_m": 7.589099058944216e-8,
+      "normalized_limit": 0.0001
+    },
+    "all_columns": "Record RMS, maximum absolute and bitwise differences for every one of the 33 common fields; keep native identity, p0, plasticity, load and passive legacy-density checks. J/n/V/rho/k ledger, finite/domain, necessary-step and energy guards remain the existing single-run guards. Do not invent a post-result per-column accuracy threshold or call descriptive stress/theta/normal differences accepted equivalence.",
+    "body_gravity": "Independently form native inertial velocity_g - velocity_g0 - g*t, full XYZ RMS divided by the initial velocity amplitude <=1e-4 at every sample. This is a field response comparison, not an assertion of unweighted or mixture-mass center-of-mass conservation.",
+    "negative_body_controls": "On the final saved frame, omit or double the g*t subtraction in the comparison formula only. Both resulting field residuals must exceed 100 original velocity budgets. These are comparator negative controls, not trajectories from deliberately faulty solvers. End |g*t| is 0.000244140625 m/s, 1250 original velocity budgets before the admitted residual.",
+    "not_proved": "Endpoint p/v/u frame agreement does not independently observe every internal pressure gradient, Darcy flux or force stage. Nonempty actual Gk-dot-g sensitivity and gravity-wall pressure/stress closure remain separate later gates."
+  },
+  "preservation": "Formal and server inputs/programs/results unchanged; default OFF u-pw remains protected. No GPU gravity, walls, hydrostatic well-balance, full-cycle or physical accuracy claim. Preserve failures and completed solver outputs; repair analysis offline only.",
+  "production_files_changed_in_this_stage": [],
+  "public_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "physical_acceptance": false
+}

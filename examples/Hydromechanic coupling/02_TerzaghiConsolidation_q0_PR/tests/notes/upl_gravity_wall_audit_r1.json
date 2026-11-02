@@ -1,0 +1,32 @@
+{
+  "stage": "upl_gravity_wall_audit_r1",
+  "date": "2026-11-02",
+  "source_checkpoint": "043527d7e84a05808b58f086fd14bc0797426abf",
+  "status": "read_only_design_audit_no_wall_gravity_admission",
+  "convention": {
+    "total_stress": "T = effective_sigma - p I",
+    "stored_acceleration": "Ace = actual_skeleton_acceleration - g",
+    "Darcy_flux": "q = -k/(rho_w*9.80665) * (grad(p) + rho_w*Ace)",
+    "wall_geometry": "B=BoundNormal points from stored wall point xb to mirror sample xm=xb+B; physical face is xb+B/2."
+  },
+  "audited_code": [
+    "JSphCpu.cpp InitDynamicPoreWallCpu rejects all nonzero gravity.",
+    "ComputeDynamicPoreWallStateCpu currently mirrors scalar pressure evenly and effective stress as Q*sigma*Q; its admitted wall scope has zero gravity.",
+    "ComputeDynamicPoreWallAccelerationCpu already implements Q*(Ace+g)-g on CPU, with Q=I-2*n*nT for the admitted axis plane."
+  ],
+  "hydraulic_normal_gravity": "At an impermeable stationary plane a_s dot n=0 and q dot n=0 imply grad(p) dot n = rho_w*g dot n. A necessary constant-rho_w pressure extension is p_b=p_m-rho_w*(g dot B), equivalently even perturbations about pH=rho_w*g dot x. The distance is B, not B/2; rho_w is not mixture rho.",
+  "mechanical_normal_gravity": "Static equilibrium independently requires div(effective_sigma)=-(rho-rho_w)*g. Merely adding the pressure offset while leaving an arbitrary stress even can destroy total-stress balance. A background extension sigma_b=sigmaH(xb)+Q*(sigma_m-sigmaH(xm))*Q needs a declared physical background. An isotropic prestress, only-normal load and a laterally confined self-weight column are different problems; do not silently interchange them. Variable J also changes rho, so a general background is not just a constant-density offset.",
+  "known_spatial_limit": "The separately sealed raw-force audit has about 1.77-2.38 percent regular-support first-moment hydrostatic residual. A wall-only offset cannot remove that interior defect. Do not receiver-correct the force alone, lose pair conservation, or interpret an unsupported finite-patch edge without applied traction as a wall failure.",
+  "next_order": [
+    "Finish private periodic coarse/half, p/v/u accelerating-frame and independent body-g comparisons.",
+    "Use a frozen endpoint component to resolve the actual smooth-k wrong-explicit-g rate/flux sensitivity; endpoint replay is not an observation of every original internal stage or a restart trajectory.",
+    "Then consider strictly tangential gravity at the existing opposing FreeSlip planes; normal gravity and public gravity stay rejected. This does not require a hydrostatic pressure head across the wall.",
+    "For normal gravity first test the explicit affine hydraulic/background-stress components on both real mirror faces, including off-node samples and missing/sign/half-distance/wrong-density negatives. Check raw momentum separately against its independent discrete assembly.",
+    "Only after those results choose a physical column's top load, drainage, pressure gauge, lateral constraint and initial stress; compare legacy OFF controls without calling them theory truth."
+  ],
+  "production_edits": [],
+  "solver_calls": 0,
+  "public_gravity_accepted": false,
+  "normal_gravity_wall_accepted": false,
+  "physical_acceptance": false
+}
