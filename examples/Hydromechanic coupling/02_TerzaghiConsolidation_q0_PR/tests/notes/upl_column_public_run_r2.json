@@ -1,0 +1,10 @@
+{
+  "stage": "upl_column_public_run_r2",
+  "status": "author_only_not_executed",
+  "base_owner": "support/upl_column_public_run_r1.ps1",
+  "change": "Consume build.author_files only for CPU, whose actual receipt contains it. GPU build author identities already occur in its complete inputs array; it has no duplicate top-level author_files field. No fabricated/missing Entry is appended.",
+  "retained": "All r1 output/run/smoke labels and existing CPU smoke control remain, original runtime/source/physical gates unchanged. Only first actual GPU smoke or CPU coarse may run after its own prerequisite.",
+  "failure": "The GPU r1-owner attempt rejected a null author_files Entry before target invocation/output/call/log creation. Preserve original script/note and CPU smoke hashes. No solver rerun or production change.",
+  "cli": "Same -Backend CPU|GPU -Window smoke|coarse [-PriorGateReceipt]",
+  "physical_acceptance": false
+}

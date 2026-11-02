@@ -44,9 +44,10 @@
                      <HydroMechConductivityCk value="0.01" />
                      Verified experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,
                      InitMode=None; axis-aligned rectangular XZ periodicity without walls, or two opposing fixed parallel axis
-                     FreeSlip mDBC planes with tangential periodicity. Existing strict guards reject loads,
-                     drainage, viscosity/damping, HG/SPR, plasticity, shifting, moving walls and other
-                     unsupported features. No general consolidation/Cryer/Lian or GPU release is implied.
+                     FreeSlip mDBC planes with tangential periodicity. A separate bounded loaded-column
+                     entry candidate is described below; other loads/drainage, viscosity/damping,
+                     HG/SPR, plasticity, shifting, moving walls and other
+                     unsupported features remain rejected. No general consolidation/Cryer/Lian or GPU release is implied.
                      Old GPU executables IGNORE the new XML keys: do not use them for this model.
                      Dynamic/J-state PART restart is rejected, including loading with the master OFF.
                      CPU BI4 saves double J/n/last-stage theta and derived current volume/mixture density/k;
@@ -131,14 +132,28 @@
                      original5Pa/.005mm bounds; old519-frame same-dt native prefixes are exact.
                      Opening transients decay locally, but pressure oscillations remain; this is
                      not quasi-static, continuum accuracy or full-consolidation acceptance. -->
-                <!-- GPU column synchronization candidate (2026-11-03, builds/tests pending):
+                <!-- Private GPU column synchronization check (2026-11-03):
                      same private constant-k/g0/bottom-FreeSlip/X-periodic scope only. Raw load
                      and band inertia use current V(J)/rho(J), while the target remains q(t)*A0.
                      Dynamic drained p/rate constraints, valid Pre/Corr geometry, immediate
                      projected-pressure periodic refresh and closed-face Taylor-defect target
                      follow CPU. No new XML key, persistent field, altered event clock or public
-                     load/drain admission. Default u-pw arithmetic/order must pass fresh native
-                     regressions; no GPU implementation/physical/formal/server acceptance yet. -->
+                     load/drain admission at this checkpoint. Components/memcheck, default-OFF151,
+                     five old dynamic trajectories and actual .025s CPU/GPU/independent-GPU-half
+                     native checks passed original budgets; see case02 tests/notes/upl_gpu_column_root_r1.json.
+                     This is bounded implementation evidence, not physical/formal/server acceptance. -->
+                <!-- Public loaded-column entry candidate (2026-11-03, canonical-main tests pending):
+                     HydroMechDynamicSeepage=1 may select that same constant-k/g0 column with
+                     HydroMechConductivityModel=0, Ck=0, InitMode=None, one upward fixed planar
+                     FreeSlip bottom and rectangular X periodicity; no other wall topology is unlocked.
+                     Requires TopKernelBand, finite q0>0, finite ramp/drain times>=0 and fixed-grid
+                     free-surface drainage. Existing noaux/elastic/necessary-step/PART restrictions remain.
+                     No equation, kernel, integration or default-OFF arithmetic change in this wiring step.
+                     ON-only J/n/theta/PosDiv/current V-rho-k output and typed PART metadata use the
+                     existing public schema. GPU fixed n changes from a private mirror sample to the
+                     public zero marker; compare soil n separately, not all18 private arrays blindly.
+                     Fresh canonical CPU/GPU smoke and native equivalence are required before acceptance;
+                     .025s agreement alone does not admit long consolidation or a server executable. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
 				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />

@@ -4176,6 +4176,10 @@ static tdouble3 DynamicPoreWallParity(const tfloat3 &raw){
 //==============================================================================
 void JSphCpu::InitDynamicPoreWallCpu(){
   if(!DynamicPoreWall)return;
+  const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
+    && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
+    && HydroMechDrainage && HydroMechDrainageFixedGrid);
   if(!DynamicPorePressure || !CaseNpb || TBoundary!=BC_MDBC || !UseNormals || !BoundNormalc || !BoundModec
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z)
     || (Simulate2D && Gravity.y!=0) || SoilBoundaryDerivativeSPR
@@ -4211,13 +4215,13 @@ void JSphCpu::InitDynamicPoreWallCpu(){
   }
   if(seen[0] && seen[1] && plane[1]-plane[0]<=2.*double(KernelSize))
     Run_Exceptioon("Dynamic wall fixture requires separated opposing mirror supports.");
-  if(HydroMechDynamicSeepage && (!seen[0] || !seen[1] || PeriY
+  if(HydroMechDynamicSeepage && !loadedcolumn && (!seen[0] || !seen[1] || PeriY
     || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ))))
     Run_Exceptioon("Experimental dynamic seepage walls require two opposing axis planes and tangential periodicity.");
   if((HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
     && (!Simulate2D || axis!=2 || !seen[0] || seen[1] || !PeriX || PeriY || PeriZ
       || !std::isfinite(PeriXinc.x) || PeriXinc.x==0 || PeriXinc.y || PeriXinc.z))
-    Run_Exceptioon("Private dynamic consolidation requires one upward bottom plane and horizontal X periodicity.");
+    Run_Exceptioon("Dynamic consolidation requires one upward bottom plane and horizontal X periodicity.");
   const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};
   const bool periodic[3]={PeriX,PeriY,PeriZ};
   for(int a=0;a<3;a++)if(periodic[a] && component(inc[a],axis)!=0)
@@ -4308,7 +4312,7 @@ void JSphCpu::InitPorosityObserverCpu(){
   if(PorosityFeedback && !PorosityObserver)
     Run_Exceptioon("Porosity feedback fixture requires the J observer state.");
   if(!PorosityObserver)return;
-  const bool loadedcolumn=(DynamicPorePressure && !HydroMechDynamicSeepage && Simulate2D && DynamicPoreWall
+  const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
@@ -4326,7 +4330,7 @@ void JSphCpu::InitPorosityObserverCpu(){
     || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || SoilHourglassXi!=0 || SoilDamping
     || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; load/drainage require the private constant-k column.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/HG/damping/viscosity/DDT/artificial stress/SPR/Shepard; load/drainage require the bounded constant-k column.");
   if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

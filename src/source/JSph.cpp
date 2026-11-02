@@ -609,6 +609,13 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       Run_Exceptioon("Dynamic seepage without walls currently requires XZ periodicity.");
     if(PoreDarcySymmetricCorr || PoreMdbcInterpolationMode)
       Run_Exceptioon("Dynamic seepage has its own Darcy/wall operator; legacy PoreDarcySymmetricCorr and PoreMdbcInterpolationMode must remain zero.");
+    if((HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
+      && (HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0 || !CaseNpb
+        || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage || !HydroMechDrainageFixedGrid
+        || !std::isfinite(HydroMechTopLoadQ0) || HydroMechTopLoadQ0<=0
+        || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0
+        || !std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<0))
+      Run_Exceptioon("Experimental dynamic loading requires the constant-k TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.");
   }
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand && (!HydroMech || !Simulate2D))
     Run_Exceptioon("TopKernelBand loading requires a 2-D hydromechanical case with a horizontal top surface.");

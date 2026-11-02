@@ -1,0 +1,40 @@
+{
+  "stage": "upl_column_public_exact_r2",
+  "status": "author_only_CPU_schema_repair_not_executed",
+  "files": [
+    "support/upl_column_public_exact_r2.py",
+    "notes/upl_column_public_exact_r2.json"
+  ],
+  "cli": "D:/anaconda3/python.exe support/upl_column_public_exact_r2.py --backend CPU",
+  "retained": {
+    "source": "support/upl_column_public_exact_r1.py",
+    "source_sha256": "d41fdb6c4003bf6ca65212c4c11449ec0dee89ce721b00c4adec3dd23482482f",
+    "note": "notes/upl_column_public_exact_r1.json",
+    "CPU_failure": "logs/upl_column_public_CPU_coarse_r1.exact.json stays false and is bound by r2, never overwritten",
+    "GPU_pass": "logs/upl_column_public_GPU_coarse_r1.exact.json remains the accepted r1 GPU result; r2 CLI rejects GPU and never invokes GPU proof or reruns it"
+  },
+  "diagnosed_actual_schema": {
+    "reader_owned": "logs/upl_case02_flux_window25_coarse_r1.reader.call.json: read FULL record. Contains program/arguments/start/end/direct_native_call/typed_LASTEXITCODE_captured_immediately/owned_call_exited/exit_code(int0)/invocation_failure/offline_reader_only/solver_started/physical_acceptance. It has NO log or alternate stdout_log.",
+    "reader_log": "Actual E is parent logs/upl_case02_flux_window25_coarse_r1.native.check.json.log -> logs/upl_case02_flux_window25_coarse_r1.native.log (0-byte log is a real previously sealed file).",
+    "solver_owned": "logs/upl_case02_flux_window25_coarse_r1.solver.call.json: read FULL record. Contains program/arguments/start/end/direct_native_call/typed_LASTEXITCODE_captured_immediately/owned_call_exited/exit_code(int0)/invocation_failure/physical_acceptance. It also has NO log alias.",
+    "solver_log": "Actual E is parent logs/upl_case02_flux_window25_coarse_r1.run.json.log -> logs/upl_case02_flux_window25_coarse_r1.log.",
+    "other_aliases": "Explicitly verified native-check reader_build/owned_exit_record/sealed_solver/paths/files/completion/bindings_unchanged/owned_reader_exit0/source_solver_exit_verified. Source-run build/input_manifest/owned_exit_record/window/files/bindings_unchanged/log exist. build is an actual helper whose source_build points to the265-snapshot production build; reader_build.program exists. No guessed source_run/call/source_build alias is added to these historical CPU records."
+  },
+  "precise_delta": [
+    "Fresh r2 source and note only; r1 source/note/failed CPU check/passed GPU check and every input/output remain unchanged.",
+    "owned gains historical_log=None. Only the two explicitly identified historical private CPU calls receive their PARENT log E; the function requires those call JSONs to lack a log key, then binds the real supplied log. New public calls still strictly require call.log.",
+    "Proof passes c.log only for the old CPU reader owned_exit_record and r.log only for the old CPU solver owned_exit_record. No optional skip, synthesized log, edited receipt or guessed alias.",
+    "CLI choices becomes CPU only; r2 output check/CSV and stage/note labels only. Actual public/private source/native/input labels stay r1/r2 exactly as before.",
+    "Bind retained r1 algorithm/note and CPU failed receipt as lineage. Old failure must still be passed=false."
+  ],
+  "unchanged_science": "Identical r1 whole-file raw SHA/byte identity for original15/physical26/clock/IDs, complete26 columns, all1040 native J/theta and1000 soil native n IEEE bits, same setprecision17 roundtrip/strict actual clocks/IDs/fixed-marker checks/769-frame streaming and input before-after hash checks. No tolerance, mask, pressure5Pa fallback, data resampling, physics, guard or reader changed.",
+  "output": {
+    "check": "logs/upl_column_public_CPU_coarse_r2.exact.json",
+    "summary": "logs/upl_column_public_CPU_coarse_r2.exact.csv",
+    "rows": 769,
+    "fresh_only": true
+  },
+  "ownership": "Only author/static parsing. No comparison, solver, native decoder, GPU, build, subprocess, Git or prior artifact mutation executed. Root must read exact diff before authorizing one fresh CPU-only offline call.",
+  "physical_acceptance": false,
+  "executed_by_author": false
+}

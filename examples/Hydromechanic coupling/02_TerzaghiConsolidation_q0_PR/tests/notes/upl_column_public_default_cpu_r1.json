@@ -1,0 +1,71 @@
+{
+  "stage": "upl_column_public_default_cpu_r1",
+  "status": "author_only_not_executed",
+  "scope": "One root-reviewed isolated invocation of the authoritative default CPU DebugCPU MSBuild Build before a separately authorized GPU column build; no solver/helper/help invocation, installation, production-source edit or physical acceptance.",
+  "author_files": [
+    "support/upl_column_public_default_cpu_r1.ps1",
+    "notes/upl_column_public_default_cpu_r1.json"
+  ],
+  "invocation": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_column_public_default_cpu_r1.ps1",
+  "parameters": "None: configuration is fixed DebugCPU, platform x64, one MSBuild /m /t:Build. No follow-on action is started.",
+  "retained_recipe": {
+    "record": "logs/upl_case02_flux_cpu_DebugCPU_r1.build.json",
+    "usage": "Require its actual passed DebugCPU typed-exit/265-source/86-unit/seven-canonical schema and recorded authoritative MSBuild/solution argv. Reuse path identities and compile-source membership only. Do not validate historical source originals, old CPU candidate hash, old target objects or old tool hashes as current.",
+    "solution": "src/VS/DualSPHysics5ReCpu_vs2022.sln",
+    "project": "src/VS/DualSPHysics5ReCpu.vcxproj",
+    "arguments": [
+      "AUTHORITATIVE_SOLUTION",
+      "/m",
+      "/t:Build",
+      "/p:Configuration=DebugCPU",
+      "/p:Platform=x64",
+      "/p:OutDir=FRESH_SLASH_ENDED_OUTPUT/",
+      "/p:IntDir=FRESH_SLASH_ENDED_INTERMEDIATE/",
+      "/v:minimal",
+      "/bl:FRESH_BINLOG"
+    ]
+  },
+  "current_bindings": {
+    "capture_time": "At invocation after root freezes the current candidate; no production SHA is predetermined in this author note or script.",
+    "code": "All 265 direct source/*.cpp,*.h,*.cu,*.cuh files; membership must equal retained source path membership, but contents are freshly captured without an old-hash allowlist. Copy each into the fresh source directory and require original/snapshot byte and SHA equality, then recheck before/after the actual Build.",
+    "documentation": "Fresh capture and copy of doc/xml_format/_FmtXML_ElastoplasticSoil.xml as one original/snapshot pair; not counted in the265 code/header files.",
+    "tools_authors": "Current MSBuild, CPU solution/project, this wrapper and note plus retained recipe identity are checked before/after. Parse actual selected DebugCPU project exclusions and require the exact86 active source paths, unique object basenames and one main.obj.",
+    "canonical_programs": "Fresh current Entries for the seven retained bin/windows DualSPHysics executable paths, unchanged before/after; no canonical executable is installed.",
+    "runtime": "Fresh current Entries for bin/windows/DsphConfig.xml, ChronoEngine.dll, dsphchrono.dll, vcomp140.dll, unchanged before/after. Build-only: none is copied, installed, or used to claim program execution.",
+    "postbuild_event": "The authoritative project retains its conditional cg_variables.h move event. Refuse that header at both src and src/VS before/after rather than claiming the project has no side effects."
+  },
+  "fresh_outputs": {
+    "outdir": "outputs/upl_column_public_default_DebugCPU_r1",
+    "intdir": "src/VS/Intermediate/upl_column_public_default_DebugCPU_r1",
+    "source_copy": "outputs/upl_column_public_default_DebugCPU_r1_source",
+    "program": "outputs/upl_column_public_default_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe",
+    "log": "logs/upl_column_public_default_DebugCPU_r1.log",
+    "binlog": "logs/upl_column_public_default_DebugCPU_r1.binlog",
+    "owned_call": "logs/upl_column_public_default_DebugCPU_r1.msbuild.call.json",
+    "receipt": "logs/upl_column_public_default_DebugCPU_r1.build.json",
+    "overwrite_policy": "Refuse every existing output/intermediate/source/log/binlog/call/receipt path. Retain failed native-call records and partial artifacts; do not retry, delete or overwrite. Preflight refusal starts no Build."
+  },
+  "exit_and_gate": {
+    "owned_call": "Precreate the log, reset LASTEXITCODE to null, invoke MSBuild directly exactly once and assign its typed LASTEXITCODE immediately after the native pipeline. Seal the owned call JSON before hashing build outputs or doing postchecks. Failed invocation/missing typed exit must remain failed, not inferred from log text.",
+    "passed_requires": "Typed int exit0, no invocation failure, source_bindings_unchanged, canonical_programs_unchanged, runtime_unchanged, actual private program and binlog present, exactly86 fresh objects with the exact active source-derived basename set. This is fresh isolated Build, not a claimed FullRebuild or physical result.",
+    "consumer_fields": [
+      "passed",
+      "configuration",
+      "direct_native_call",
+      "typed_LASTEXITCODE_captured_immediately",
+      "owned_call_exited",
+      "exit_code",
+      "source_bindings_unchanged",
+      "canonical_programs_unchanged",
+      "source_snapshot",
+      "documentation_snapshot",
+      "canonical_programs_before",
+      "runtime_before",
+      "program",
+      "log"
+    ],
+    "Entry": "Every E is {path:absolute,bytes:actual,sha256:lowercase}; source_snapshot is265 {original:E,snapshot:E}; documentation_snapshot is one {original:E,snapshot:E}; canonical_programs_before is E[7]; runtime_before is E[4]. The actual build receipt also binds the sealed owned-call Entry,86 current compile sources/objects, author/tools, arguments, actual UTCs and failure fields.",
+    "not_authorized_by_this_note": "Execution, GPU build, helper build, help/solver run, formal XML/BAT changes, installation, or any physical acceptance. Root must fully review and explicitly call this wrapper first."
+  },
+  "parent_recipe_author": "support/upl_gpu_column_default_cpu_r1.ps1 (frozen previous GPU stage; only fresh public-stage labels changed)"
+}

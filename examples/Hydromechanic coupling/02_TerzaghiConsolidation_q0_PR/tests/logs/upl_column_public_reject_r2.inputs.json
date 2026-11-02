@@ -1,0 +1,227 @@
+{
+    "stage":  "upl_column_public_reject_prepare_r2",
+    "passed":  true,
+    "prepared":  true,
+    "jobs":  [
+                 {
+                     "edits":  [
+                                   {
+                                       "before":  "0.000005",
+                                       "xpath":  "/case/execution/parameters/parameter[@key=\"TimeMax\"]",
+                                       "after":  "0"
+                                   },
+                                   {
+                                       "before":  "1",
+                                       "xpath":  "/case/execution/special/hydromechanics/HydroMechDrainageFixedGrid",
+                                       "after":  "0"
+                                   }
+                               ],
+                     "expected_exit_code":  1,
+                     "expected_message":  "Experimental dynamic loading requires the constant-k TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.",
+                     "expected_method":  "JSphCpuSingle::LoadConfig",
+                     "normals":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2_Normals.nbi4",
+                                     "bytes":  1479,
+                                     "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                                 },
+                     "duration_s":  0,
+                     "name":  "NonFixedDrain",
+                     "slip_argument":  "-mdbc_freeslip",
+                     "initial_BI4":  {
+                                         "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2.bi4",
+                                         "bytes":  47184,
+                                         "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                                     },
+                     "runtime":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2.xml",
+                                     "bytes":  14226,
+                                     "sha256":  "25bd5393b42f6f26137ad86054e90666900864e03670ec3205e6545740d990f6"
+                                 },
+                     "inverse_DOM_exact":  true,
+                     "input_prefix":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2"
+                 },
+                 {
+                     "edits":  [
+                                   {
+                                       "before":  "0.000005",
+                                       "xpath":  "/case/execution/parameters/parameter[@key=\"TimeMax\"]",
+                                       "after":  "0"
+                                   },
+                                   {
+                                       "before":  "0",
+                                       "xpath":  "/case/execution/special/hydromechanics/HydroMechConductivityModel",
+                                       "after":  "1"
+                                   },
+                                   {
+                                       "before":  "0",
+                                       "xpath":  "/case/execution/special/hydromechanics/HydroMechConductivityCk",
+                                       "after":  "0.0001220703125"
+                                   }
+                               ],
+                     "expected_exit_code":  1,
+                     "expected_message":  "Experimental dynamic loading requires the constant-k TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.",
+                     "expected_method":  "JSphCpuSingle::LoadConfig",
+                     "normals":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2_Normals.nbi4",
+                                     "bytes":  1479,
+                                     "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                                 },
+                     "duration_s":  0,
+                     "name":  "LoadedVariable",
+                     "slip_argument":  "-mdbc_freeslip",
+                     "initial_BI4":  {
+                                         "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2.bi4",
+                                         "bytes":  47184,
+                                         "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                                     },
+                     "runtime":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2.xml",
+                                     "bytes":  14240,
+                                     "sha256":  "4c7240e0850afcef81dbc539f0c12982c5fd038e994b634d97cd700085db47b5"
+                                 },
+                     "inverse_DOM_exact":  true,
+                     "input_prefix":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2"
+                 },
+                 {
+                     "edits":  [
+                                   {
+                                       "before":  "0.000005",
+                                       "xpath":  "/case/execution/parameters/parameter[@key=\"TimeMax\"]",
+                                       "after":  "0"
+                                   },
+                                   {
+                                       "before":  "3",
+                                       "xpath":  "/case/execution/parameters/parameter[@key=\"SlipMode\"]",
+                                       "after":  "2"
+                                   }
+                               ],
+                     "expected_exit_code":  1,
+                     "expected_message":  "Dynamic wall fixture requires finite stationary FreeSlip wall normals.",
+                     "expected_method":  "JSphCpuSingle::InitDynamicPoreWallCpu",
+                     "normals":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2_Normals.nbi4",
+                                     "bytes":  1479,
+                                     "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                                 },
+                     "duration_s":  0,
+                     "name":  "BottomNoSlip",
+                     "slip_argument":  "-mdbc_noslip",
+                     "initial_BI4":  {
+                                         "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2.bi4",
+                                         "bytes":  47184,
+                                         "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                                     },
+                     "runtime":  {
+                                     "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2.xml",
+                                     "bytes":  14226,
+                                     "sha256":  "e5640e5ddd4dbfec0010ee4ddccaa450c11b849f684e11cf55a4857e3e217e96"
+                                 },
+                     "inverse_DOM_exact":  true,
+                     "input_prefix":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2"
+                 }
+             ],
+    "inputs":  [
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_column_public_reject_r2.ps1",
+                       "bytes":  12706,
+                       "sha256":  "dee892034c957ec0cc4722980a36a623e6e50d1fec297d41b65f08485ca22709"
+                   },
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_column_public_reject_r2.json",
+                       "bytes":  8518,
+                       "sha256":  "221d2ba83a934887117e0ec5dd23820bfcc233c9f3b59575914fe00e9a308080"
+                   },
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_public_r1.inputs.json",
+                       "bytes":  40259,
+                       "sha256":  "931139552852c8f663966f27e0293c2b21db98f8da783ba7c50dec173ac4949e"
+                   },
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1.xml",
+                       "bytes":  14233,
+                       "sha256":  "418ec4e70ca3fa3903e685b73c24914aca224e1ee3a94e35819903ed1504de43"
+                   },
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1.bi4",
+                       "bytes":  47184,
+                       "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                   },
+                   {
+                       "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1_Normals.nbi4",
+                       "bytes":  1479,
+                       "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                   }
+               ],
+    "files":  [
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2.xml",
+                      "bytes":  14226,
+                      "sha256":  "25bd5393b42f6f26137ad86054e90666900864e03670ec3205e6545740d990f6"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2.bi4",
+                      "bytes":  47184,
+                      "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_NonFixedDrain_r2_Normals.nbi4",
+                      "bytes":  1479,
+                      "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2.xml",
+                      "bytes":  14240,
+                      "sha256":  "4c7240e0850afcef81dbc539f0c12982c5fd038e994b634d97cd700085db47b5"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2.bi4",
+                      "bytes":  47184,
+                      "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_LoadedVariable_r2_Normals.nbi4",
+                      "bytes":  1479,
+                      "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2.xml",
+                      "bytes":  14226,
+                      "sha256":  "e5640e5ddd4dbfec0010ee4ddccaa450c11b849f684e11cf55a4857e3e217e96"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2.bi4",
+                      "bytes":  47184,
+                      "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                  },
+                  {
+                      "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_reject_seed_r2\\upl_column_public_reject_BottomNoSlip_r2_Normals.nbi4",
+                      "bytes":  1479,
+                      "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                  }
+              ],
+    "parent":  {
+                   "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_column_public_r1.inputs.json",
+                   "bytes":  40259,
+                   "sha256":  "931139552852c8f663966f27e0293c2b21db98f8da783ba7c50dec173ac4949e"
+               },
+    "source_seed":  [
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1.xml",
+                            "bytes":  14233,
+                            "sha256":  "418ec4e70ca3fa3903e685b73c24914aca224e1ee3a94e35819903ed1504de43"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1.bi4",
+                            "bytes":  47184,
+                            "sha256":  "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac"
+                        },
+                        {
+                            "path":  "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_column_public_seed_r1\\upl_column_public_smoke_r1_Normals.nbi4",
+                            "bytes":  1479,
+                            "sha256":  "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+                        }
+                    ],
+    "solver_build_reader_invoked":  false,
+    "physical_acceptance":  false,
+    "failure":  null
+}

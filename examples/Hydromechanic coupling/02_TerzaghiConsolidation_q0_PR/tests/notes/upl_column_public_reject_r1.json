@@ -1,0 +1,34 @@
+{
+  "stage": "upl_column_public_reject_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/upl_column_public_reject_r1.ps1", "notes/upl_column_public_reject_r1.json"],
+  "scope": "Exactly three proportionate unsupported variations of the newly opened constant-k, g0, single-bottom FreeSlip, X-periodic, TopKernelBand/fixed-grid-drain column. Canonical project-main only, no private fixture, Run override or physical trajectory. One explicit action per invocation; no batch, retry, build, decoder or old-control execution.",
+  "cli": [
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_column_public_reject_r1.ps1 -Mode Prepare",
+    "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_column_public_reject_r1.ps1 -Mode Run -Case NonFixedDrain|LoadedVariable|BottomNoSlip -Configuration DebugCPU|ReleaseCPU"
+  ],
+  "selection": [
+    {"case": "NonFixedDrain", "change": "HydroMechDrainageFixedGrid 1->0 only", "expected_method": "JSphCpuSingle::LoadConfig", "reason": "The public loaded-column event must retain its constant-dt fixed-grid drainage contract."},
+    {"case": "LoadedVariable", "change": "HydroMechConductivityModel 0->1 and Ck 0->2^-13; Ck is valid, finite and positive", "expected_method": "JSphCpuSingle::LoadConfig", "reason": "Reject the unsupported loaded evolving-k combination, not an invalid Ck or missing-law-input shortcut."},
+    {"case": "BottomNoSlip", "change": "SlipMode 3->2 and CLI -mdbc_noslip instead of -mdbc_freeslip", "expected_method": "JSphCpuSingle::InitDynamicPoreWallCpu", "reason": "Reject a real non-FreeSlip bottom after native geometry/normals load, without a CLI FreeSlip override masking the input."}
+  ],
+  "common_safety_cap": "All three XMLs change the already sealed public smoke TimeMax from0.000005 to0. Actual JSphCpuSingle::Run performs LoadConfig/particle/domain/InitRun before the integration while(TimeStep<TimeMax); the chosen guards are earlier. Unexpected acceptance would save initial Part0000 and fail this checker, but cannot integrate a physical step at TimeMax0. This is a configuration rejection test, not a shortened accepted trajectory. No -nsteps or approximate timeout is used.",
+  "prepare": "Prepare reads logs/upl_column_public_r1.inputs.json's unique smoke job and its frozen runtime/BI4/Normals, writes only a fresh outputs/upl_column_public_reject_seed_r1, and seals logs/upl_column_public_reject_r1.inputs.json. Per XML, reversing exactly the declared edits (including TimeMax) must reproduce the original whitespace-preserving DOM. Master stays1, physics/material/positions/normal binary data are untouched; BI4 and Normals are byte-identical renamed copies. No GenCase or program is invoked. Failed partials/false manifest remain retained.",
+  "current_source_authority": "Run uses logs/upl_column_public_default_DebugCPU_r1.build.json or upl_column_public_ReleaseCPU_r1.build.json, actual current265 source pairs and86 objects with the authoritative CPU solution/direct typed build0. Release adopts the same-round Debug documentation/runtime identity exactly as its real build schema declares. Verify new sources+snapshots/doc, tool/author/object/program/log/binlog, canonical7, input/raw copies and four executable-directory runtimes before/after. Missing identical runtime files may be copied, existing unequal files are never overwritten. No old mutable source closure is treated as current and no helper/GPU-object recipe is substituted.",
+  "expected_result": "Require direct project-main immediate typed LASTEXITCODE int1, its exact expected exception method and complete Text message in the owned log, no integration-loop banner, and zero numbered Part_[0-9]+.bi4 files. Part_Head is not a numerical frame. Actual call is sealed before interpreting output. Seal false on any different exception, successful acceptance, missing exit evidence, changed input/source/runtime, or saved native frame; no automatic retry. Debug/Release each case is independently selectable; the script never launches the remaining cases or configuration.",
+  "source_locations_at_authoring": {
+    "src/source/JSph.cpp": "LoadConfig approx599-619 new public loaded-column guard; InitSoilParameters approx3706-3712 validates model1/Ck before it.",
+    "src/source/JSphCpu.cpp": "InitDynamicPoreWallCpu approx4177-4202 stationary FreeSlip native-wall guard; shared loaded predicate and bottom-only geometry remain unchanged by tests.",
+    "src/source/JSphCpuSingle.cpp": "Run approx1314-1354 performs initialization and SaveData before entering while(TimeStep<TimeMax).",
+    "src/source/JSphCfgRun.cpp": "MDBC_NOSLIP/MDBC_FREESLIP approx312-319 set actual SlipMode2/3 respectively."
+  },
+  "historical_evidence_adoptable_without_rerun": {
+    "PART": "logs/upl_cpu_public_part_r1.check.json and its three child checks already prove canonical ON_from_OFF early reject and OFF_from_ON/OFF_from_FALSE native loader rejects, plus a real OFF loader-positive control and false-scalar-only copy proof. The loader's presence-based state-discard guard is not changed by the column patch. This is retained historical evidence, not six fresh current-column PART calls or a restart acceptance claim.",
+    "general_public_invalid": "logs/upl_cpu_public_reject_r1_{gravity,fixed_zero,hydro_off,pore_safety_overflow,periodic_crossinc,model_invalid,model_master_off,model_missing_ck,wall_noslip,spr_conflict,drainage}.run.json preserve actual owned exit1/zero frames/expected-guard results. Their old drainage/no-wall message is intentionally not adopted as evidence that the new loaded-column combination is rejected; the new three cases provide the bounded delta check. Historical Python ownership records do not contain PowerShell typed_LASTEXITCODE fields and are not rewritten to invent them.",
+    "qualification": "Fresh evidence will cover only the selected new current-CPU project-main cases and builds. Existing unchanged guard evidence is cited by its sealed records, not recursively validated against evolved mutable source originals. No GPU unsupported-case execution, normal-gravity, general walls, NoSlip support, variable-k loaded physics, public long-consolidation or physical accuracy acceptance is claimed."
+  },
+  "outputs": "For each explicit Run: logs/upl_column_public_reject_CASE_CONFIGURATION_r1.call.json/.log/.check.json and fresh outputs/same_tag. Check contains passed,source_build,call,inputs,files,runtime,expected method/message,typedexit1,numbered frame count,pre-loop proof and physical_acceptancefalse. There is no aggregate claiming unexecuted cases passed.",
+  "production_changed": false,
+  "executed_by_author": false,
+  "physical_acceptance": false
+}

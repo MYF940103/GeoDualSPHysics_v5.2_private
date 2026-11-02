@@ -1,0 +1,56 @@
+{
+  "stage": "upl_column_public_exact_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_column_public_exact_r1.py",
+    "notes/upl_column_public_exact_r1.json"
+  ],
+  "cli": "D:/anaconda3/python.exe support/upl_column_public_exact_r1.py --backend CPU|GPU",
+  "window": "Only coarse769 saved frames /10000 completed steps at dt2.5e-6 to actual accumulated .025s. No smoke/half/CPU-GPU/theory or solver/decoder action.",
+  "proofs": {
+    "public": "logs/upl_column_public_{CPU,GPU}_coarse_r1.native.json, source_run:E, reader_helper:E, reader_call:E, completion:E, flat inputs/files, paths.native_dir",
+    "CPU_private": "logs/upl_case02_flux_window25_coarse_r1.native.check.json: sealed_solver:E, owned_exit_record:E actual reader; source solver owned_exit_record:E and build:E actual helper",
+    "GPU_private": "logs/upl_gpu_column_actual_coarse_r2.native.json: source_run:E and reader_call:E; source solver call:E",
+    "ownership": "Each native check/source Run/reader build must be passed, physical_acceptance=false. Bind actual typed owned exit0 reader and solver program/logs; bind all raw output files and require exactly769 Part_####.bi4. Reader program SHA must match its sealed helper. No fabricated reader_call alias for old CPU.",
+    "current_source": "Only new public source_run current265 original/snapshot/doc/canonical7/runtime4 plus its flat current inputs/files and new reader author identities are revalidated. Its source_build:E must be passed.",
+    "historical_source": "Old CPU actual helper source_build.source_snapshot or oldGPU source_freeze.current_source_snapshot: hash only the265 immutable snapshot copies and metadata records. Never recursively check old bindings/inputs/historical source original paths or Git identities as current."
+  },
+  "schema": {
+    "common": "1000soil IDs40..1039 and40fixed IDs0..39; physical26 identical named fields to private. Public label case02_common26_col21_ExcessPorePress_NOT_wave26 vs private case02_private26_col21_ExcessPorePress_NOT_wave26 is an explicit schema-name difference, NOT a field difference.",
+    "column21": "Actual native ExcessPorePress float promoted to double; no wave PosDiv reinterpretation. Public true PosDiv/current V/rho/k and PART typedmetadata are separate native22 reader guards, not fabricated absent private fields.",
+    "whole_files": "Entire original15.bin/physical.bin/clock.bin and native_ids.csv/fixed_ids.csv byte counts plus recomputed raw SHA256 must match exactly. original15 header1040/15/769 and payload166408B/frame; no fixed particles or arrays excluded. physical header1000/26/769; clock header769/28. SHA+length equality is the whole-file byte-identity test, not an RMS tolerance.",
+    "columns": "Both columns.csv must contain the exact26 names/order, including sigma_ij native xy,yz,xz -> physical xy/xz/yz mapping."
+  },
+  "dynamic_bits": {
+    "public_J_theta": "common_j_theta.bin header1040,2,769; each frame actualtime8 + all1040 ID-sorted native double(J,theta).",
+    "private_soil_J_theta": "Read existing physical.bin columns8/9,1000 soil rows; no old decoder rerun or relabeling.",
+    "private_fixed_J_theta": "Stream existing fixed_samples.csv once,40 IDs/frame. CPU actual native columns J/theta_zero_marker; GPU J_native/theta_native. Source writers were inspected to output a.j/a.theta, despite CPU historical column label containing zero_marker.",
+    "public_n": "soil_n.bin header1000,1,769; each frame actualtime8 +1000 saved native double n.",
+    "private_soil_n": "Stream existing ledger.csv n_native once, requiring each part/time/ID in exact native order. Do not substitute derived n(J), zero or a cached formula.",
+    "roundtrip": "CSV source setprecision17 finite doubles roundtrip through Python float to original IEEE754 binary64, including -0. Compare little-endian uint64 bit patterns, never numerical == for J/theta/soiln.",
+    "fixed_schema": "Public fixed_samples J/theta are bit-compared to the public all1040 binary; actual n/V/rho/k remain0 markers. CPU old/new fixed n must be bitwise equal. GPU old fixed n remains its actual positive saturated mirror sample and is recorded as the sole common private dynamic schema exception; it is not compared to fabricated private0. Every fixed J/theta and every original15 field remain strict."
+  },
+  "stream": "Keep old physical and new dynamic binaries read-only memmap; stream old fixed CSV, old ledger n CSV and new fixed-marker CSV once in matching frame order. No second CSV parse or large-ledger summary loop. Hash checks use one unique-entry cache initially and one final unchanged-file hash pass.",
+  "strict_clocks": "Each of769 actual clock times must be bitwise equal among old physical/clock and new clock/Jtheta/n. Each streamed CSV row part/id/actualtime must match exactly. No interpolation, nominal-time snap, row dropping or signed-zero mask. Whole clock identity includes savedStep,lockedDt,signed dterror, and each native reader already checked noninitial signed safety.",
+  "gates": "Whole original15/common26/clock/IDs exact plus zero mismatches for all799760 native J rows,799760 theta rows and769000 soil-n rows. No5Pa/.005mm fallback; any single shared-field bit difference makes passed=false.",
+  "outputs": {
+    "check": "logs/upl_column_public_{CPU,GPU}_coarse_r1.exact.json",
+    "csv": "logs/upl_column_public_{CPU,GPU}_coarse_r1.exact.csv",
+    "rows": 769,
+    "summary": "part/actualtime/savedStep; per-frame mismatched J/theta/native-soil-n counts; explicitly counted fixed-n schema difference; repeated whole-file equality flags refer to global full-file hash checks, not additional per-frame raw comparisons.",
+    "check_scope": "passed is bounded same-backend public-vs-private implementation equivalence only. Public native extra ledger/PosDiv/metadata are inherited from the referenced typed reader check, not compared to absent private arrays. No new physical acceptance."
+  },
+  "fresh_failure": "Check and summary must not exist before action. Any malformed proof/row/time or changed input causes failed check, retaining partial CSV. Data bit differences accumulate across all frames and fail the exact gates. No previous result/input/raw/decoder is overwritten.",
+  "no_actions": [
+    "no solver",
+    "no decoder/native call",
+    "no build",
+    "no subprocess",
+    "no plots",
+    "no formal root change",
+    "no old receipt/source status rewrite",
+    "no threshold relaxation"
+  ],
+  "physical_acceptance": false,
+  "executed_by_author": false
+}

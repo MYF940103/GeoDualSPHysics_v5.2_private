@@ -1,0 +1,42 @@
+{
+  "stage": "upl_column_public_prepare_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_column_public_prepare_r1.ps1",
+    "notes/upl_column_public_prepare_r1.json",
+    "configs/upl_column_public_smoke_r1.xml",
+    "configs/upl_column_public_coarse_r1.xml",
+    "configs/upl_column_public_half_r1.xml"
+  ],
+  "cli_after_root_full_read_and_separate_authorization": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_column_public_prepare_r1.ps1 -ExecutionAuthorized",
+  "single_action": "Prepare input copies only. The author has created three XML configurations through apply_patch; no runtime seed, BI4/Normals copy or manifest has been generated. A later explicitly authorized Prepare copies only those authored XML bytes plus each exact retained BI4/Normals into one fresh shallow seed folder. It does not modify XML at execution, invoke GenCase/solver/help/reader/build, install a canonical program, change formal files or run a subsequent action.",
+  "retained_manifests": {
+    "logs/upl_case02_smoke_r1.inputs.json": "215aa1b4e94e82f0eaf663685aea525a093cbe5c8cb70f1b3b866e5ebc357d70",
+    "logs/upl_case02_flux_window25_r1.inputs.json": "8281306010ac1bf01393dc97abed0f272dea30d7567754fb1d5934f03886be05"
+  },
+  "only_value_change": "Each new XML inherits its complete corresponding sealed runtime. Only /case/execution/special/hydromechanics/HydroMechDynamicSeepage/@value changes0 to1; model0/Ck0/legacy symmetric option0 and every other physical/geometry/material/clock/saving attribute and text remain exactly unchanged. Selected comment attributes clarify public canonical entry, FreeSlip/noaux and candidate scope; whitespace corrects the old smoke hydromechanics indentation. Config files are UTF-8, four-space nesting and apply_patch-authored LF text. Prepare copies their bytes as-is, not a regenerated DOM or an undocumented runtime transformation.",
+  "inverse_proof": "Before creating the seed, load old/new XML with PreserveWhitespace=false, require exactly one expected master0/1, reverse the new master to0, remove comment attributes/XML comments only and require full OuterXml case-sensitive equality. All other attributes/text, including units_comment, dates, old vtk filenames, timeout segment times/intervals and numerical spelling, remain part of this comparison. Source manifest/runtime/configuration/BI4/Normals bytes and SHA are verified before and after.",
+  "windows": {
+    "smoke": {"dt_s": 0.0000025, "end_s": 0.000005, "steps": 2, "expected_samples": 3, "retained_runtime_sha256": "91361a48145bc12104484081172631dd3dde7667369a829ec733366139ab3336"},
+    "coarse": {"dt_s": 0.0000025, "end_s": 0.025, "steps": 10000, "expected_samples": 769, "retained_runtime_sha256": "c6108504dba705347308dfb3615c945d702efb2e137399237286558d62957bc1"},
+    "half": {"dt_s": 0.00000125, "end_s": 0.025, "steps": 20000, "expected_samples": 769, "retained_runtime_sha256": "e1871b60a83484775e37f89f3ce614a9629358c8e887b0c8dfce8ff779c54ad8"}
+  },
+  "initial_data": {
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "scope": "Same retained1040 native IDs,40 fixed bottom+1000 soil,dp.01,h.018,reference mass.21/rho2100 as declared in the sealed XML. No new BI4 parser, physical field construction, initial state rewrite, GenCase or PART restart is performed. Full initial particle equality remains the later native reader's task."
+  },
+  "metadata_only_geometry": "The retained casedef/normal geometry specification and execution/vtkout filenames symc_1d_short_r1_cpu_old_* remain literal provenance. They are not regenerated or renamed to claim a new geometry. Canonical runtime uses the already generated matching-prefix BI4 and copied _Normals.nbi4; the old VTK filenames are unused geometry metadata for this no-GenCase preparation and need not be copied.",
+  "output_contract": {
+    "seed": "outputs/upl_column_public_seed_r1",
+    "files": "Exactly three matching-prefix groups upl_column_public_WINDOW_r1.xml/.bi4/_Normals.nbi4 (nine files), fresh only. XML byte-identical to authored config; binary files byte/SHA identical to the same-window retained source.",
+    "manifest": "logs/upl_column_public_r1.inputs.json",
+    "schema": "stage=upl_column_public_prepare_r1,prepared/passed true only for complete input preparation,physical_acceptancefalse,jobs3,inputs/bindings/files flat E arrays. Every job: window,backend_shared_runtime,configuration:E,runtime:E,input_prefix,initial_BI4:E,normals:E,dt_s,end_s,steps,expected_samples,required_CLI,retained_required_CLI,retained_manifest/configuration/runtime/initial_BI4/normals Entries,physical_XML_equal_except_master=true,master1/model0/Ck0. No build/source identity is fabricated by input preparation.",
+    "backend": "CPU and GPU share the same three runtime XML/BI4/Normals sets. required_CLI lists common FreeSlip/svres/nsteps only; backend/OMP/stable/output args and actual program/runtime gates belong to separately reviewed single-run owners. Original CPU required_CLI is retained as historical input declaration, not automatically executed."
+  },
+  "scope_limits": "Canonical-main wiring candidates only: constant-k,g0,elastic2D,one upward planar fixed FreeSlip bottom,X periodic,TopKernelBand ramp10000Pa over.01s,drain starts.01s on the fixed grid,no HG/SPR/viscosity/damping/shifting. The .025 test is unchanged physically, not a formal benchmark or full-consolidation acceptance. Public saved original15+6double J/n/theta/V/rho/k+PosDiv and four typed PART metadata require a separate actual native review. GPU fixed n becomes the public zero marker rather than the private mirrored sample; no all18 private arrays equality is implied. Old OFF/raw results, controls, configs and formal XML/BAT remain untouched.",
+  "failure": "Existing seed folder or manifest rejects before copying. Any later error preserves fresh partial copies and writes prepared/passedfalse; it never deletes, overwrites, retries or launches a program. All author/source bindings are checked after the copy, before a prepared pass.",
+  "production_changes": false,
+  "author_executed_Prepare_or_program": false,
+  "physical_acceptance": false
+}

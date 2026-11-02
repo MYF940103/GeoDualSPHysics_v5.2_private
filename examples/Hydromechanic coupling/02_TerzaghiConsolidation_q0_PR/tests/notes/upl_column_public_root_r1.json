@@ -1,0 +1,61 @@
+{
+  "stage": "upl_column_public_root_r1",
+  "date_local": "2026-11-03",
+  "base_checkpoint": "9cb501efca97e022aa0b6f6cf3c0dd7b74032212",
+  "status": "bounded_public_CPU_GPU_loaded_column_entry_verified_longer_physical_window_next",
+  "passed_implementation_review": true,
+  "physical_acceptance": false,
+  "production_delta": {
+    "src/source/JSph.cpp": "Validate the newly admitted loaded case as constant-k, real fixed nodes, TopKernelBand, positive finite q0, nonnegative finite ramp/drain times and fixed-grid drainage. Default OFF is not affected.",
+    "src/source/JSphCpu.cpp": "Recognize the same complete loaded-column predicate with the public master ON; retain one upward stationary FreeSlip bottom/X-periodic geometry and every existing noaux/material/step guard.",
+    "src/source/JSphGpu.cpp": "Same public loaded-column predicate in wall and observer initialization. No CUDA kernel, equation, force order or Pre/Corr change in this stage.",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml": "Document the bounded public entry candidate, existing private .025s evidence, output schema and unaccepted general/full/server scope. The frozen build-time text precedes this completed review; this note records its actual verification outcome."
+  },
+  "source_raw_SHA256": {
+    "JSph.cpp": "e624e47f8a3bc825f966f6d160ff7458f3814a7dbe0edebb8ccaa6f1759ea989",
+    "JSphCpu.cpp": "5eb1271f6c66c4a940ac992dfed2bf0bfe4d5bf6dbfddfd90b12e79f55141a3c",
+    "JSphGpu.cpp": "8f6d06e5858bd4168c2e2e554f642b6c9d25de7d3ef8999db979dc33769129f2"
+  },
+  "builds": "Default authoritative CPU Debug and isolated CPU Release/GPU Debug/GPU Release all passed with current265 source snapshots, required project-main objects and runtime. Existing Gm/PDB/LNK4098/MSB8029 warnings retained. Seven canonical/server programs were not installed or overwritten.",
+  "actual_project_main_runs": {
+    "CPU_smoke": "Two actual Debug steps,3 native frames to5us; typed owned exit0 and native22/metadata safety passed.",
+    "GPU_smoke": "Two actual Debug steps,3 native frames to5us; actual memcheck0errors/0leaks, typed owned exit0 and native safety passed.",
+    "CPU_coarse": "10000 Release steps,769 native frames; actual end .024999999999998482s.",
+    "GPU_coarse": "10000 Release steps,769 native frames; actual end .024999999999998482s on RTX3050.",
+    "single_run_guards": "1040 native IDs including40fixed/1000soil,22 typed arrays, ON-only typed PART metadata, finite/elastic/no-loss/actual saved clock and signed necessary-step checks pass. Each coarse has359 post-opening saved states/3590 strict native FSType2-or3 p=0 checks. Every saved J/n/V/rho/k ledger relative error is0.",
+    "timing": "CPU coarse loop103.685226s; GPU coarse loop72.705505s. Runs overlapped; these are observed costs, NOT an isolated backend benchmark."
+  },
+  "exact_public_private_bridge": {
+    "CPU": "logs/upl_column_public_CPU_coarse_r2.exact.json",
+    "GPU": "logs/upl_column_public_GPU_coarse_r1.exact.json",
+    "result": "All769 frames: full original15 typed payload, soil common26, actual clock/Step/dterror and native ID files are byte-identical to each retained same-backend private run. All799760 native J and theta rows and769000 actual soil n rows match IEEE754 bits. No5Pa tolerance, interpolation or field mask.",
+    "public_extras": "Actual PosDiv, V/rho/k and typed model metadata independently decoded/checked. GPU private fixed n mirror samples become public nonmaterial zero markers:30760 fixed-row n schema differences explicitly counted. Fixed J/theta and every original15 field remain exact; no all18-array/whole-BI4 equality claim.",
+    "half_evidence": "The prior private .025s half evidence remains valid within its recorded scope. No new public half or full-cycle half trajectory was run or relabeled."
+  },
+  "default_OFF": "logs/upl_column_public_off_r1.exact.json: one fresh actual Release project-main15000-step run,151 frames. All1040 native IDs and15 original typed arrays/25126400 bytes plus actual clocks,Step and signed dterror are exact against retained explicit-OFF. Dynamic arrays/metadata remain absent. Original HG count/cache/dt/spin guards passed.",
+  "new_rejection_delta": "Three current CPU Debug project-main negative checks each passed the exact intended method/message, actual typed exit1, zero numbered PART and pre-integration rejection: non-fixed drainage, valid evolving-k law combined with this unsupported load, and a real NoSlip bottom. No GPU negative or Release negative claim. Unchanged PART state-discard rejection retains its earlier sealed evidence, not fresh-column restart tests.",
+  "retained_harness_incidents": [
+    "First GPU smoke owner failed before program launch because GPU build records have inputs but no author_files; fresh run_r2 repaired this wrapper-only schema distinction.",
+    "CPU offline exact_r1 failed before data comparison because historical CPU call records store log Entries in the parent receipts. CPU-only exact_r2 explicitly binds those real parent logs; GPU pass and all completed solvers were not repeated.",
+    "Negative Prepare r1 wrote only a partial XML then rejected UTF-8 versus utf-8 declaration spelling. Fresh r2 preserves the declaration and the original strict inverse-DOM comparison. No r1 negative solver was started."
+  ],
+  "primary_receipts": [
+    "logs/upl_column_public_default_DebugCPU_r1.build.json",
+    "logs/upl_column_public_ReleaseCPU_r1.build.json",
+    "logs/upl_column_public_Debug_r1.build.json",
+    "logs/upl_column_public_Release_r1.build.json",
+    "logs/upl_column_public_CPU_smoke_r1.native.json",
+    "logs/upl_column_public_GPU_smoke_r1.native.json",
+    "logs/upl_column_public_CPU_coarse_r1.native.json",
+    "logs/upl_column_public_GPU_coarse_r1.native.json",
+    "logs/upl_column_public_CPU_coarse_r2.exact.json",
+    "logs/upl_column_public_GPU_coarse_r1.exact.json",
+    "logs/upl_column_public_off_r1.exact.json",
+    "logs/upl_column_public_reject_NonFixedDrain_DebugCPU_r2.check.json",
+    "logs/upl_column_public_reject_LoadedVariable_DebugCPU_r2.check.json",
+    "logs/upl_column_public_reject_BottomNoSlip_DebugCPU_r2.check.json"
+  ],
+  "visual_carryover": "Existing private .025s history/profile PNGs and matching CSVs were visually reviewed at9cb501e. Exact public/common-field bridges justify reusing those descriptive plots; no duplicate public plot or improved-theory claim is created.",
+  "next": "Selective verified local/remote backup, then a newly declared dyadic .125s ringdown coarse/half experiment. Preserve the original5Pa/.005mm/1e-14s limits, true drainage and necessary-step guards. Use matched-setting noaux u-pw OFF/ON control before full-consolidation/theory admission. No routine approval pause.",
+  "limits": "Fresh elastic2D g0 constant-k single upward stationary planar FreeSlip bottom, rectangular X-periodic, band loading/fixed-grid drainage only. No HG/SPR/damping/viscosity/DDT/shifting/plasticity/general boundary/3D/Cryer/Lian/evolving-k loaded/full consolidation/exact PART restart/server-package acceptance. Accepted formal u-pw results and server programs remain unchanged. Raw BI4/programs/objects/source snapshots are local hash-bound evidence, not cloud Git data backup."
+}

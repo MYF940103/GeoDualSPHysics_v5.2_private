@@ -1,0 +1,12 @@
+{
+  "stage": "upl_column_public_cpu_release_r1",
+  "status": "author_only_not_executed",
+  "scope": "One isolated authoritative ReleaseCPU Build using same-current source snapshots from passed default DebugCPU gate. No program/helper/solver or install.",
+  "parent_author": "support/upl_case02_cpu_release_build_r1.ps1 (retained)",
+  "changes": "Fresh public-stage labels; adopt current passed Debug source receipt rather than hardcoded old bytes/SHA. Keep all original265source/86objects/canonical7/project/postbuild guards. Also verify same-current doc pair and runtime4 before/after. No authoritative project/arguments/physical source edits by builder.",
+  "inputs": "logs/upl_column_public_default_DebugCPU_r1.build.json; require typed actual Build0,DebugCPU,265snapshot pairs,86active sources/objects and unchanged canonical programs. No old objects reused.",
+  "outputs": "outputs/upl_column_public_ReleaseCPU_r1; src/VS/Intermediate/same; logs/same.{log,binlog,build.json}; fresh-only.",
+  "command": "powershell -NoProfile -ExecutionPolicy Bypass -File support/upl_column_public_cpu_release_r1.ps1 -ExecutionAuthorized",
+  "physical_acceptance": false,
+  "canonical_program_installed": false
+}

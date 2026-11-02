@@ -1625,7 +1625,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
 //==============================================================================
 void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boundslipmode){
   if(!DynamicPoreWall)return;
-  const bool loadedcolumn=(DynamicPorePressure && !HydroMechDynamicSeepage && Simulate2D
+  const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
@@ -1666,7 +1666,7 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
   if(!loadedcolumn && (!seen[0] || !seen[1] || PeriY || (axis==0? (!PeriZ || PeriX): (!PeriX || PeriZ))))
     Run_Exceptioon("GPU dynamic wall requires separated opposing axis planes and tangential periodicity.");
   if(loadedcolumn && (axis!=2 || !seen[0] || seen[1] || !PeriX || PeriY || PeriZ))
-    Run_Exceptioon("Private GPU dynamic consolidation requires one upward bottom plane and horizontal X periodicity.");
+    Run_Exceptioon("GPU dynamic consolidation requires one upward bottom plane and horizontal X periodicity.");
   const tdouble3 inc[3]={PeriXinc,PeriYinc,PeriZinc};const bool periodic[3]={PeriX,PeriY,PeriZ};
   for(int a=0;a<3;a++)if(periodic[a]){
     for(int b=0;b<3;b++)if(!std::isfinite(component(inc[a],b)) || (b!=a && component(inc[a],b)!=0))
@@ -1719,7 +1719,7 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(PorosityFeedback && !PorosityObserver)
     Run_Exceptioon("GPU porosity feedback requires the J observer state.");
   if(!PorosityObserver)return;
-  const bool loadedcolumn=(DynamicPorePressure && !HydroMechDynamicSeepage && Simulate2D && DynamicPoreWall
+  const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
@@ -1730,7 +1730,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || (!DynamicPorePressure && (Gravity.x || Gravity.z))
     || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting/damping; load/drainage require the private constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting/damping; load/drainage require the bounded constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))

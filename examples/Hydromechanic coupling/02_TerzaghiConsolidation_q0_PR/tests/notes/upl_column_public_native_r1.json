@@ -1,0 +1,87 @@
+{
+  "stage": "upl_column_public_native_r1",
+  "status": "author_only_not_compiled_or_executed",
+  "files": [
+    "support/upl_column_public_native_r1.cpp",
+    "notes/upl_column_public_native_r1.json"
+  ],
+  "scope": "One pure typed public ON CPU/GPU reader for the bounded g=0 constant-k loaded column. No JSph instance, CUDA call, solver, integration, input preparation, comparison execution or production change.",
+  "cli": [
+    "--read CPU DATA 3 0.0000025 NEW_REVIEW",
+    "--read GPU DATA 3 0.0000025 NEW_REVIEW",
+    "--read CPU DATA 769 0.0000025 NEW_REVIEW",
+    "--read GPU DATA 769 0.0000025 NEW_REVIEW",
+    "--read CPU|GPU DATA 769 0.00000125 NEW_REVIEW (same already declared half schedule; separate root admission required)"
+  ],
+  "backend_argument": "CPU or GPU is an explicit caller label, not independent proof of an executable's backend. The outer owned reader/solver/source/runtime/input receipts must establish actual program identity.",
+  "immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "note": "notes/upl_cpu_public_native_r1.json",
+    "note_sha256": "70a9464b849dc31c7ea3275a03e1817fea4de07dcc4ba6c86ded9c386aaaabc4",
+    "use": "Exactly one main-renamed include / one AppInfo. Reuse neutral Load/NativeArray, Native, Original15, Sequence, scalar utilities and Metadata(file,0) only. Do NOT invoke its wave Read, Physical, Energy, Half or retained main. Its Physical column21 is PosDiv and is intentionally NOT reused."
+  },
+  "retained_body_sources": [
+    {
+      "path": "support/upl_gpu_column_native_r1.cpp",
+      "sha256": "d1628f312de48f79035166e4c5238ee3d0a54debeed9e314353d296bbd2096ba",
+      "note": "notes/upl_gpu_column_native_r1.json",
+      "note_sha256": "7e3c93479e8e3b28576ff69b9992263bbddc3c7defed711850e3d56bd7abf8ad"
+    },
+    {
+      "path": "support/upl_case02_flux_window25_native_r1.cpp",
+      "sha256": "e938ed103f6721b22a1ef8056e670de79ad62b11acd80cf5b2a09d2db8b2de55",
+      "note": "notes/upl_case02_flux_window25_native_r1.json",
+      "note_sha256": "e7936533cfdf1ff454da038fe18fb799f885fd01b488d7823c23de414028e42e"
+    }
+  ],
+  "implementation_delta": "Copy only the proven 1040/1000/40 finite/geometry/rest/saved-step/private26/clock/drain body, then replace the private18 loader with neutral public22 Load(model0), verify typed PART metadata, independently check native n/V/rho/k against that same ID-compacted saved J, and separately preserve real PosDiv. Old private files are unchanged and are not nested includes.",
+  "native_schema": {
+    "arrays": "Exactly22: original15 + six DatDouble arrays PoroVolumeRatio/PoroPorosity/PoroThetaLastStage/PoroCurrentVolume/PoroMixtureDensity/PoroHydraulicConductivity + actual DatFloat PosDiv. Every array has exactly1040 finite native entries and exact declared type.",
+    "original15": "Idp uint; Posd double3; Vel/Sigma_kk/Sigma_ij/FSNormal/HydroMechLoadAce float3; Rhop/Kplastic/PorePress/PorePress0/ExcessPorePress float; SigmaState_kk/ij double3; FSType uint. No float Pos fallback. Original15 writes all1040 ID-sorted typed original bytes, including every fixed entry.",
+    "PART_metadata": "HydroMechDynamicSeepage DatBool true; DynamicSeepageSchema DatUint1; HydroMechConductivityModel DatUint0; HydroMechConductivityCk DatDouble0. Production writes these at PART level; the reader does not invent a requirement that global metadata also be present.",
+    "public_source_locations": "JSph::SavePartData JSph.cpp2900..2905. CPU SaveData JSphCpuSingle.cpp1476..1499, GPU SaveData JSphGpuSingle.cpp1263..1286. Current production/build identity is an outer receipt, not certified by these author-time source locations."
+  },
+  "geometry_material": "Exactly1040 native IDs0..1039: fixed0..39/soil40..1039, one piece/no exclusions, fixed 2D y=0/no symmetry/no changing IDs, X periodic rectangle width0.1. dp0.01, h=float0.018, rho0=2100, rhow=1000, mass=float0.21, n0=float0.3, k0=float0.0001. Kw=2e8 belongs to the separately bound case input and is not inferred from absent BI4 material metadata. Initial soil10x100 and fixed10x4 below z0, all at rest/J1/p0=0/stress0/plastic0/load0.",
+  "native_ledger": "For every soil saved J: n=1-(1-float0.3)/J; V=(native MassFluid/native Rhop0)*J; rho=1000+(2100-1000)/J; k=float0.0001. All four actual saved values must agree with independent reference at inherited 5e-13 relative tolerance and saturated solid-volume identity. No wave J<=1e-4, CFL<=0.01, fixed energy ratio or initial sine guard is imported.",
+  "fixed_semantics": "Both public backends require actual saved n/V/rho/k double0 markers. GPU private fixed n was the reconstructed mirror sample; only this explicit schema field differs from private GPU. J and theta are read/exported unchanged, never set to a marker; fixed theta remains0 by the original field guard, not by the save transformation. Original15, fixed geometry/velocity/rho and every native J/theta must still be checked exactly against the same-backend private control by the outer comparison. No fixed field is masked out of Original15 or common_j_theta.",
+  "clocks": {
+    "smoke": "3 samples at completed0,1,2 with dt2.5e-6.",
+    "window25": "769 samples coarse completed0:10:3990;3991:1:4010;4020:10:5000;5020:20:10000. Half uses every listed completed step multiplied by2 and dt1.25e-6.",
+    "exact": "Accumulate actual binary64 dt by each completed step; saved TimeStep must equal that sum exactly; saved Step=initial0 else completed-1; PART SymplecticDtPre actual DatDouble must equal locked dt. No nominal time snap/interpolation.",
+    "signed_error": "PART dterror actual DatDouble is signed max(FixedDt-DtVariable). Initial -DBL_MAX may be an empty interval, recorded and excluded from the noninitial summary; every later interval must be finite/nonempty and <=1e-14, never abs(error)."
+  },
+  "drainage": "Original strict post-open completed_step>4000 coarse/>8000 half: every actual soil FSType2/3 must have native p==0. Event-equality is pre-open and not forced to zero. J/density continue evolving. Frame count, activeDrainCount and checks are recorded; nonempty drainage and scientific half admission remain separate outer QC, not assumed from an unexecuted reader.",
+  "outputs": {
+    "files": [
+      "original15.bin",
+      "physical.bin",
+      "clock.bin",
+      "common_j_theta.bin",
+      "soil_n.bin",
+      "native_ids.csv",
+      "fixed_ids.csv",
+      "history.csv",
+      "ledger.csv",
+      "fixed_samples.csv",
+      "last_poro.csv",
+      "columns.csv",
+      "completion.json"
+    ],
+    "original15": "Header uint32[1040,15,samples], each frame actualtime double + all1040 ID-sorted original15 native typed bytes; same format as the private column reader.",
+    "common26": "Header uint32[1000,26,samples], each frame actualtime double + all1000 soil rows26 double. Exact column names/order as private column: x,y,z,vx,vy,vz,PorePress,PorePress0,J,theta,sigma_xx,sigma_xy,sigma_xz,sigma_yy,sigma_yz,sigma_zz,Kplastic,FSType,FSNormal_x/y/z,ExcessPorePress,LoadAce_x/y/z,legacy_Rhop. New schema label case02_common26_col21_ExcessPorePress_NOT_wave26; column21 is true float ExcessPorePress promoted to double, NOT native PosDiv. SigmaState_ij native xy,yz,xz is correctly mapped to xy/xz/yz.",
+    "clock28": "Header uint32[samples,28], each actualtime double + savedStep uint32 + lockedDt double + signed dterror double. IDs, columns, history and last_poro keep the private bridge formats; history max_ledger_relative_error retains its original native-n-only definition, whereas completion max_ledger_relative_error covers all four public ledger values.",
+    "common_j_theta": "Header uint32[1040,2,samples]; each frame actualtime double followed by ID0..1039 interleaved native double(J,theta). No fixed values dropped, rounded or replaced.",
+    "soil_n": "Header uint32[1000,1,samples]; each frame actualtime double followed by soil ID40..1039 native double n. Fixed public0 versus private GPU mirror n is not silently hidden in a supposed all-native-n equality.",
+    "ledger": "1000*samples soil rows with native J/n/theta/V/rho/k/PosDiv plus independent reference V/rho/k and legacy Rhop, setprecision17. Actual PosDiv is read finite, preserved and described; it is NOT derived from theta/J or claimed identical to any private absent diagnostic.",
+    "fixed_samples": "40*samples rows containing actual unchanged J/theta and original fixed sample data, plus explicitly named n/V/rho/k zero markers and actual PosDiv. Marker policy does not authorize differences in fixed J/theta or original15.",
+    "last_poro": "Final1000 soil id,J,n,theta, setprecision17, for outer live_final exact comparison.",
+    "completion": "stage upl_column_public_native_r1; backend CPU_public|GPU_public; window smoke|window25; grid c|h; model constant; native1000/fixed40/total1040; array22 and PART schema flags; exact clock/diagnostic counters and ledger/marker/drain summaries; physical_acceptance=false."
+  },
+  "exclusions": "No backend proof from CLI alone, historical private byte comparison, owned solver/reader exit/input/source/tool/runtime SHA proof, force-stage load budget/rate replay, half/CPUcross theory, public nonzero gravity/3D/variable loaded-k/general wall/long-time physical acceptance. The history rho(J)V(J)*retained LoadAce is descriptive endpoint reweighting, not a same-force-stage resultant.",
+  "ownership": "Only these two new author files are written. No source/build/program/input/retained private/pair/plot file changed; no compile, native read, solver, prepare or Git action. Root and peer must fully read before any build or decoder call.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "upl_column_public_run_r1",
+  "status": "author_only_not_executed",
+  "files": ["support/upl_column_public_run_r1.ps1", "notes/upl_column_public_run_r1.json"],
+  "scope": "Exactly one genuine authoritative CPU/GPU public-ON project-main run. No fixture, Run override, build, helper, reader, QC, automatic coarse/half/long follow-on, input preparation or canonical installation.",
+  "CLI": "-Backend CPU|GPU -Window smoke|coarse [-PriorGateReceipt EXACT_ROOT_COARSE_ADMISSION_JSON]",
+  "jobs": {
+    "smoke": "DebugCPU or Debug; dt2.5us, planned2 steps/3 frames/end5us. GPU only uses the already accepted CUDA11.7 compute-sanitizer memcheck --leak-check full --error-exitcode99 and requires log0errors/0leaks plus actual owned typed tool exit0.",
+    "coarse": "ReleaseCPU or Release; dt2.5us, planned10000 steps/769 frames/end0.025s, explicit root admission required. No half CLI or automatic next action.",
+    "argv": "CPU -cpu -ompthreads:1 or GPU -gpu:0; both -stable -mdbc_freeslip EXACT_RUNTIME_PREFIX FRESH_SOLVER_OUTPUT -dirdataout data -svres -nsteps:2|10000. No --solver fixture prefix. Runtime prefix is dirname + GetFileNameWithoutExtension and must exactly match manifest input_prefix and prefix+'.xml'."
+  },
+  "builds": {
+    "CPU_smoke": "logs/upl_column_public_default_DebugCPU_r1.build.json; actual isolated authoritative project-main build with86 objects/current265 source_snapshot pairs/doc/canonical7/runtime4 and top-level direct typed exit0.",
+    "CPU_coarse": "logs/upl_column_public_ReleaseCPU_r1.build.json; actual86objects/current265 source_snapshot/top-level direct typed exit0. This receipt has no runtime_before/documentation_snapshot or standalone owned_exit_record. Its real adopted_Debug_source_build Entry supplies the same-round Debug doc pair/runtime4; no nonexistent fields or fabricated call are required.",
+    "GPU": "logs/upl_column_public_{Debug,Release}_r1.build.json; actual authoritative project_call typed0,110non-main objects plus own project main, current265 source_freeze/current_source_snapshot pairs/doc/canonical7/runtime4, isolated_GPU_program and four built runtime copies. Receipt is late-bound and must really be passed before invocation; authoring does not imply a pending GPU build passed.",
+    "identity": "Current source originals AND immutable snapshots are rehashed before/after this new run, with documentation pair, selected build authors/tools/objects, canonical7, runtime4 and executable. Historical old private failed records and their source originals are neither rewritten nor relabelled as current. The accepted old CUDA11.7 call binds only the unchanged sanitizer binary/log identity, not current production-source equivalence."
+  },
+  "inputs": {
+    "manifest": "logs/upl_column_public_r1.inputs.json, stage upl_column_public_prepare_r1, prepared/passed true only for prepare, physical_acceptance false, exactly3 CPU/GPU-shared jobs smoke/coarse/half. This owner selects exactly one smoke/coarse row.",
+    "job": "window, configuration:E, runtime:E, input_prefix:string, initial_BI4:E, normals:E, dt_s/end_s/steps/expected_samples, physical_XML_equal_except_master=true. Top manifest inputs/bindings/files are flat E[] and are hash-checked without recursive historical-state reinterpretation.",
+    "authority": "Input author checks the retained DOM against master1 DOM with only the public switch changed. Owner consumes the sealed manifest and unchanged runtime/seed/normals; it does not mutate any XML or actual initial physical fields."
+  },
+  "coarse_admission_contract": {
+    "root_gate": "Explicit -PriorGateReceipt JSON must have passed:true, backend:CPU|GPU matching the requested backend, window:coarse, physical_acceptance:false, prior_run:E for logs/upl_column_public_BACKEND_smoke_r1.run.json, native_qc:E and optional flat inputs:E[]. No discovery of a convenient unrelated passed receipt.",
+    "native_qc": "The pointed native_qc must be passed:true/physical_acceptance:false with source_run:E exactly equal to this own smoke run, plus its sealed inputs/files. Its detailed physical schema belongs to the separately authored public reader and root review, not a guessed private completion contract.",
+    "prior_run": "Own smoke run must be passed with matching backend/window, source_inputs_objects_runtime_canonical_unchanged true and owned typed call0; GPU also requires memcheck0/0. Prior inputs/files and native_qc inputs/files are rehashed. Root must author/review this admission only after the real public smoke native review passes."
+  },
+  "runtime": "CPU may copy only the four sealed same-round Debug runtime files into the selected isolated executable directory. Existing identical leaves are reused; different existing leaves reject without overwrite. Every original/copy Entry and copied_by_this_action is recorded. GPU uses the four existing builder copies, requiring their executable-directory location and agreement with current runtime4. No executable or canonical file is copied or installed.",
+  "ownership": "Fresh fixed tag upl_column_public_BACKEND_WINDOW_r1 protects output folder, run.json, call.json and log. Pre-create native log, reset LASTEXITCODE=null, call one selected project main or sanitizer tool, capture the actual int LASTEXITCODE immediately, and seal call.json before any solver-output hash. Call records real tool/target/program/argv/cwd/times/log; sanitizer child exit is not claimed separately observed. Failures retain real call, logs and partial output hashes; no retry or old-record overwrite.",
+  "postcall": "Require owned typed exit0, GPU-smoke memcheck0errors/0leaks, Run.out and exact Part_0000..Part_N native filename sequence for3|769 frames. Hash every actual file in the fresh solver folder. Recheck all source/input/tool/object/runtime/canonical bindings. No synthetic actual_complete/live_final or private fixture Finish is expected. The owner does not independently assert completed steps, actual end time, no exclusions, physical arrays, ledger, drainage or physical correctness; actual BI4 public reader/root QC must do that separately.",
+  "outputs": {
+    "folder": "outputs/upl_column_public_{CPU,GPU}_{smoke,coarse}_r1",
+    "run": "logs/upl_column_public_BACKEND_WINDOW_r1.run.json; stage/passed/backend/window/configuration, source_build:E, source_freeze:E forGPU ornull forCPU, real source_snapshot265/doc pair/canonical7/runtime4, program/input_manifest/runtime_input/call Entries, files:E[], planned schedule, memcheck, prior admission and unchanged-binding flags.",
+    "call": "logs/upl_column_public_BACKEND_WINDOW_r1.call.json sealed first; typed_LASTEXITCODE_captured_immediately, owned_call_exited, actual exit_code, invocation_failure, program/target_program Entries, target_arguments and tool arguments, direct_target_call, memcheck flags, public_project_main:true, fixture_or_Run_override:false.",
+    "limits": "passed is owned-run/structural evidence only. No helper, native review, QC, force-stage resultant truth, independent half or public physical acceptance is inferred. A descriptive Run.out and sealed raw BI4 are not numerical validation."
+  },
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}
