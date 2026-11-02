@@ -1,0 +1,51 @@
+{
+  "stage": "upl_case02_flux_window25_native_r1",
+  "status": "author_only_not_built_or_run",
+  "files": [
+    "support/upl_case02_flux_window25_native_r1.cpp",
+    "notes/upl_case02_flux_window25_native_r1.json"
+  ],
+  "retained_parent": {
+    "path": "support/upl_case02_native_r1.cpp",
+    "bytes": 21840,
+    "sha256": "bcb59a2fc986bdd620dba02ae2021e50e8c970f865ca80bb142efa191c27d825",
+    "note": "notes/upl_case02_native_r1.json",
+    "note_sha256": "7453c3bd16de9183eff26c70bc782c6f025a0f8bbee7d74a4c543b49c026eae1"
+  },
+  "direct_immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38"
+  },
+  "permitted_source_delta": "Copy unchanged reader, replace first comment and completion stage identities, accept769 instead of519 for full private windows, append250 coarse saved steps5020:20:10000 (half times2), raise command count cap519->769 and label full window window25. Existing3-frame smoke and ReadOff code are mechanically retained but are not new run/read authorizations. No decoder/type/schema/physics/budget/diagnostic formula changed.",
+  "cli": "--read SEALED_DATA 769 0.0000025|0.00000125 FRESH_REVIEW",
+  "native_contract": "Exactly1040 unique IDs: fixed0..39, soil40..1039. Private master/model metadata absent globally and perPART; exactly15 original native typed arrays plus3 native double arrays PoroVolumeRatio/PoroPorosity/PoroThetaLastStage. True native double stress and float legacy display/floatExcess retained. No PosDiv, public-derived fields or rate fabricated. Physical26 stays case02 schema with actual ExcessPorePress column21, not wave26 or selfweight38.",
+  "unchanged_guards": "Complete raw sequence and counts, no exclusion, actual decimal-lattice initial state, exact repeated-addition native clock/zero-based savedStep/lockedDt, finite actual signed dterror<=1e-14 excluding initial empty interval, native elastic/p0, fixed geometry/velocity/rho2100 and zero n/theta markers, saturated single-J/derived V/rho/k ledger, all finite physical26 and exactly rounded legacy stress display. No threshold relaxed.",
+  "saved_completed_steps": {
+    "coarse": "0:10:3990;3991:1:4010;4020:10:5000;5020:20:10000",
+    "half": "0:20:7980;7982:2:8020;8040:20:10000;10040:40:20000",
+    "samples": 769,
+    "source_schedule_note": "notes/upl_case02_flux_window25_actual_r1.json"
+  },
+  "drain": "Original strict completed-step>4000 coarse/>8000 half for native FSType2/3 p0 checks. Every769 frame contributes actual J/n/theta; drained J/theta are not frozen. Saved native theta is last-stage, never labelled endpoint recomputation.",
+  "output_files": [
+    "original15.bin",
+    "physical.bin",
+    "clock.bin",
+    "native_ids.csv",
+    "fixed_ids.csv",
+    "history.csv",
+    "ledger.csv",
+    "fixed_samples.csv",
+    "last_poro.csv",
+    "columns.csv",
+    "completion.json"
+  ],
+  "output_contract": "Same binary layouts as parent: original15 header1040/15/samples then perframe actualtime+native typed arrays sortedID; physical header1000/26/samples then actualtime+double26 soil rows; clock header samples/28 then actualtime double, savedStep uint32, lockedDt double, signed dterror double. Ledger soil and fixed_samples contain original native J/n/theta at setprecision17, not derived substitutes; only V/rho/k are derived and explicitly labelled.",
+  "pending_prefix_comparison": "After both windows finish under owned exit0, independent QC compares first519 payloads excluding only separately verified sample headers: all15 original typed arrays/all1040IDs, clock28 and soilphysical26. For remaining native3 double arrays reassemble all1040 sortedID/part from soil ledger native J/n/theta and fixed_samples native J/n/theta; parse17-significant-digit finite values to binary64 and compare uint64 bits (including signed0). Complete ID/initial-coordinate CSVs exact. Old saved outputs are read only; no old solver rerun or BI4/global metadata equality claim.",
+  "pending_independent_QC": "Separate caller must prove source/input/executable/owned0, reader-output raw hashes, live_final/last_poro exact, all769 expected steps and nonempty active drainage; then apply unchanged5Pa/.005mm and1e-14 actual-time half limits. This reader itself does not perform those pair/binding/force-stage/physical-admission checks. Passed reader completion is not physical truth.",
+  "ownership": "Pure existing JPartDataBi4 typed reader; no JSph object, Run/ComputeStep, source/input write, solver/build/help/Git, native field mutation or new raw parser. Fresh new outputs only; all frozen parent artifacts untouched. Root-owned later compile/read requires explicit review/authorization.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}
+

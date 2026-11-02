@@ -1,0 +1,78 @@
+{
+  "stage": "upl_case02_flux_window25_actual_r1",
+  "status": "author_only_not_built_or_run",
+  "files": [
+    "support/upl_case02_flux_window25_actual_r1.cpp",
+    "notes/upl_case02_flux_window25_actual_r1.json"
+  ],
+  "retained_parent": {
+    "path": "support/upl_case02_actual_r1.cpp",
+    "bytes": 13334,
+    "sha256": "0b1cfa12c0420aadba6c6a5b73d0bd4e62de662ef5d7e114f9238c8242c08784",
+    "note": "notes/upl_case02_actual_r1.json",
+    "note_sha256": "8974789d127a1ac5a0f2ab1a280da3428bea2831a64d999a4b6bf98e09631f4c"
+  },
+  "direct_immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38"
+  },
+  "permitted_source_delta": "Copy parent, then only first comment, End .0125->.025, coarse5000->10000/half10000->20000, full-window Part769 coverage assertion and completion stage identity. All runtime material/physics guards, actual Run/Finish, field types, private flags, fixed/soil guards, original1e-14 end-clock tolerance and signed dterror unchanged. Existing dormant smoke selector is unchanged; this plan authorizes no smoke or other run.",
+  "cli": "--solver coarse|half ordinaryCPUargs, including -cpu -ompthreads:1 -stable -mdbc_freeslip PREFIX FRESH_OUT -dirdataout data -svres -nsteps:10000|20000",
+  "scope": "Only current1000soil+40fixed, original1040IDs/BI4/Normals, uniform initial J1, Xperiodic/g0/constant floatk1e-4/FreeSlip bottom, private complete rate and closure, TopKernelBand10000Pa ramp.01/drain.01, noHG/SPR/viscosity/damping/auxiliary physics. No production/initial state/clock/integrator override or Part restart.",
+  "windows": {
+    "coarse": {
+      "dt_s": 0.0000025,
+      "planned_end_s": 0.025,
+      "completed_steps": 10000,
+      "samples": 769
+    },
+    "half": {
+      "dt_s": 0.00000125,
+      "planned_end_s": 0.025,
+      "completed_steps": 20000,
+      "samples": 769
+    }
+  },
+  "required_output_schedule": [
+    {
+      "time": "0",
+      "timeout": "0.0000249999999"
+    },
+    {
+      "time": "0.0099749999",
+      "timeout": "0.00000249999999"
+    },
+    {
+      "time": "0.0100249999",
+      "timeout": "0.0000249999999"
+    },
+    {
+      "time": "0.0124999999",
+      "timeout": "0.0000499999999"
+    }
+  ],
+  "schedule_contract": "XML output-only addition at.0124999999 retains the prior519 native save steps. It selects the same final.0125 step before the new50us segment. Input preparation must separately seal four-space/CRLF XML, inverse-DOM whitelist, unchanged BI4/Normals and exact segment values before any run. Existing Runtime guards do not independently hash or fully parse the special timeout; outer input proof plus Part769 and independent native saved-step checks remain required.",
+  "saved_completed_steps": {
+    "coarse": "0:10:3990;3991:1:4010;4020:10:5000;5020:20:10000",
+    "half": "0:20:7980;7982:2:8020;8040:20:10000;10040:40:20000",
+    "saved_Step": "initial0; otherwise completed_step-1"
+  },
+  "offline_clock_prediction": {
+    "method": "Independent binary64 transcription of current JDsOutputTime::GetNextTime and JSphCpuSingle Run save predicate; no solver or source function executed. Native actual clock must still equal repeated dt additions.",
+    "coarse_final_s": 0.024999999999998482,
+    "half_final_s": 0.025000000000007405,
+    "max_paired_save_time_difference_s": 8.923417560424696e-15,
+    "unchanged_clock_limit_s": 1e-14,
+    "headroom_s": 1.0765824395753043e-15,
+    "predicted_prefix519_completed_step_and_time_bits_equal_to_old_plan": true,
+    "coarse_schedule_sha256_LE_uint32completed_doubletime": "068c1da2520582967970da1fb37446f1d2e0c8ad942bbc4a70c51af1fcf7f8d5",
+    "half_schedule_sha256_LE_uint32completed_doubletime": "3bd20aa2c1c876d6c3061a6e5b1d586fcaea46e984ee220611fbf0eac372113b"
+  },
+  "pending_prefix_proof": "Prediction is not actual equality. Future QC must compare new first519 original15 typed payloads+3 native J/n/theta arrays for all1040IDs, clock28 and soilphysical26 against each corresponding accepted flux_short coarse/half result. Sample-count headers differ by design and are validated separately. WholeBI4/global metadata equality is NOT asserted because TimeMax/input identity differ.",
+  "ownership": "No prepare/build/run/reader/QC/child process/Git executed by this author. Root must fully review, bind current authoritative85objects+1helper/source/runtime/input/exits and explicitly invoke one action at a time. Old parent source, notes, inputs and completed results are unchanged. All failures retained; no automatic retry.",
+  "limits": "A possible.025 short window is not admitted by this note. Original5Pa/.005mm and actual-time1e-14 independent-half limits remain unchanged; original saved native guards still apply. Finite p/elastic/J/domain and small half error do not prove quasi-static theory or natural decay. Full force-stage load history/flux/energy not measured by true Run fixture; final endpoint-rhoV times last-corrector LoadAce remains descriptive, not same-stage resultant. No public/GPU/formal/long-time admission.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}
+

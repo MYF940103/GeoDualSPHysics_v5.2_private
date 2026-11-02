@@ -1,0 +1,59 @@
+{
+  "stage": "upl_case02_flux_window25_physical_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/flux_window25_physical_review_r1.py",
+    "notes/flux_window25_physical_review_r1.json"
+  ],
+  "retained_parent": {
+    "source": "support/flux_short_physical_review_r1.py",
+    "bytes": 17255,
+    "sha256": "de9e34935f2797e3de344854b91c56830d1f43e56321b5f560464b687ef237e7",
+    "note": "notes/flux_short_physical_review_r1.json",
+    "note_sha256": "13a4a87e8925f0755ff0bfe2821191722307d6c7480b643c15babcc3c40b88c8"
+  },
+  "purpose": "Descriptive extension of the accepted short analysis to completed window25 c/h769, plus derived total sigma_zz and post-open early/late envelopes. No data import/load/calculation/main/plot execution by the author; failed/incomplete pairs never enter this plotting path.",
+  "command_after_root_full_review_and_explicit_execution": "D:/anaconda3/python.exe -B tests/support/flux_window25_physical_review_r1.py",
+  "immutable_dependencies": {
+    "support/upl_case02_qc_r1.py": "0ed07dd825c4209bb580bef6af821a415112bc6d63c7502cf0ea4e50fa401c96",
+    "notes/upl_case02_qc_r1.json": "15b116e91c74dcde2d6eeefbb7492fad5b9efb3377690289d0abe1db67fee810",
+    "support/upl_case02_flux_window25_qc_r1.py": "919f1c15adb1daaca138313616033dc7e4f053b7540bd84f4867327205fe1170",
+    "notes/upl_case02_flux_window25_qc_r1.json": "b334b64c8ac2d19bb654d33acca5559809decaf6b2d599202fe684820534812b"
+  },
+  "reuse": "All locks checked before imports. Reuse unchanged load_job/identity/bind/VERIFIED/FIELDS/table from original QC; reuse pure window_steps/drainage from locked window25 QC without calling either main, replacing globals or monkeypatching. Reduction/plot/source-binding mathematics otherwise follows parent; no new BI4 decoder.",
+  "prerequisites": [
+    "Passed unchanged logs/upl_case02_flux_window25_coarse_r1.qc.json (modecoarse) and logs/upl_case02_flux_window25_r1.half.json (modehalf), exact window25 stage, physicalfalse, all bound inputs rehashed.",
+    "Only load flux_window25_coarse769/dt2.5us and flux_window25_half769/dt1.25us. Exact owned0/helper/source265/runtime/canonical7/nativeID/clock/ledger/live-final safety and prior519 native18-array+clock/physical26 prefix checks inherit from bound QC. No old run/read invoked.",
+    "Actual time unchanged. Report/reduce original1e-14 actual-time and passed5Pa/.005mm independent-half quantities; no new physical criterion."
+  ],
+  "reductions": "Parent p/p0, fullXYZ native velocity/material displacement, positive-downward settlement, J/saved-last-stage theta and6 effective-stress mean/min/max/RMS remain. Initial material layers0/49/99 each10 IDs. Two figures/single shared numeric CSV retain dense native drainage zoom.",
+  "derived_total_stress": "total_sigma_zz_Pa=actual saved effective sigma_zz minus actual saved native pore pressure, under current compression-negative convention. A documented binary64 derived quantity, not a BI4 array. Include global and selected-layer min/max/mean/RMS in CSV; global stress panel shows both effective and derived-total envelopes.",
+  "early_late_comparison": {
+    "requested_windows_s": {
+      "early": [
+        0.01,
+        0.0125
+      ],
+      "late": [
+        0.02,
+        0.025
+      ]
+    },
+    "selection": "Inclusive actual native saved-time bounds AND original post-open completed-step predicate. The event saved state at completed4000/8000 is pre-open and excluded. No snapping/interpolation to align window edges; report each grid's count and true first/last times. Counts may differ at rounded boundary values and are disclosed.",
+    "statistics": "p, fullXYZ speed, J-1, saved theta,6 effective stress components and derived total sigma_zz: extrema/peak absolute/peak native-frame RMS plus first/last-frame RMS. Late/early peak absolute and peak-frame RMS ratios descriptive only. No time-averaged equal-sample weighting across dense/sparse cadence, fitted stability threshold or causal inference from loading growth.",
+    "J": "Use J-1 for dynamic-envelope ratios so constant referenceJ=1 is not called a fluctuation.",
+    "empty_case": "Empty eligible window is samples0/no metric, not fabricated zero or a decay claim."
+  },
+  "output_files": [
+    "logs/upl_case02_flux_window25_physical_r1.check.json",
+    "figures/upl_case02_flux_window25_physical_r1_history.csv",
+    "figures/upl_case02_flux_window25_physical_r1_global.png",
+    "figures/upl_case02_flux_window25_physical_r1_layers.png"
+  ],
+  "output_scope": "1538rows=two769 grids, actual times/material IDs and shared plot data; exactly2PNGs. Event line and9.97..10.03ms actual-time drainage zoom unchanged. Global full-window statistics include actual final states even if the nominal phase-bound filter excludes a rounded final time.",
+  "retention": "Every new target initially absent. Exclusive-create data/figures/JSON and rehash consumed Entries afterward. Analysis exceptions preserve failed fresh artifacts and return passedfalse; no retry, solver, native reader, build, prepare, subprocess or Git. Frozen old files unchanged.",
+  "limits": "passed means descriptive processing of already-QC-passed data, not physical/quasi-static/continuum/theory, long-time, public/GPU/formal or stability admission. Loaded pressure growth alone is not instability; decreasing envelope does not prove correct dissipation. Native theta is last-stage, not endpoint/allstage; no native pdot/PosDiv is fabricated. LoadAce/endpoint-inertia reweighting is not a true force-stage resultant/flux/work/energy. Any failed-run diagnosis is a separately authorized path.",
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_by_author": false
+}

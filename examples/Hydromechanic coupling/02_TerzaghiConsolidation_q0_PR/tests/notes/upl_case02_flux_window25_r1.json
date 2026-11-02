@@ -1,0 +1,81 @@
+{
+  "stage": "upl_case02_flux_window25_r1",
+  "status": "author_only_not_prepared_or_run",
+  "purpose": "Input-only extension of the private closed-top CPU short window. No new physics, execution or formal-case/half admission.",
+  "author_files": [
+    "support/upl_case02_flux_window25_r1.ps1",
+    "notes/upl_case02_flux_window25_r1.json",
+    "configs/upl_case02_flux_window25_coarse_r1.xml",
+    "configs/upl_case02_flux_window25_half_r1.xml"
+  ],
+  "CLI_after_root_review": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_case02_flux_window25_r1.ps1 -PrepareAuthorized",
+  "templates": {
+    "manifest": "logs/upl_case02_short_r1.inputs.json",
+    "coarse_runtime": "outputs/upl_case02_short_r1_seed/upl_case02_short_coarse_r1.xml",
+    "coarse_sha256": "d9703a85543e56557697b5e084f96a7d20cd98ca1f0c78f74d55d93ae87772b8",
+    "half_runtime": "outputs/upl_case02_short_r1_seed/upl_case02_short_half_r1.xml",
+    "half_sha256": "df95326f88b71738fe119dc33c3dc727b7a3882861e0f90b968dd0ab504b7765",
+    "BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "Normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+  },
+  "allowed_delta": "Only TimeMax value.0125->.025, a truthful output-only TimeOut comment three->four segments, and appended tout time.0124999999/timeout.0000499999999. All original three timeout rows and physical/header/particle/material/load/ramp/drain/dt/publicmaster0/model0/Ck0/noaux/FreeSlip settings stay unchanged. Reverse DOM restores TimeMax/comment and removes only fourth tout, requiring exact old runtime DOM. Only output basename/prefix is renamed; internal retained header/vtk names remain unchanged.",
+  "format": "New configs are UTF8/noBOM, four-space indentation,CRLF. Prepare copies authored XML byte-exact plus original BI4 and matching-basename Normals byte-exact; it does not rewrite the authored or retained configs.",
+  "windows": [
+    {
+      "window": "coarse",
+      "dt_s": 0.0000025,
+      "end_s": 0.025,
+      "explicit_NstepsBreak": 10000,
+      "planned_samples": 769
+    },
+    {
+      "window": "half",
+      "dt_s": 0.00000125,
+      "end_s": 0.025,
+      "explicit_NstepsBreak": 20000,
+      "planned_samples": 769
+    }
+  ],
+  "schedule": {
+    "segments": [
+      {
+        "time": "0",
+        "timeout": "0.0000249999999"
+      },
+      {
+        "time": "0.0099749999",
+        "timeout": "0.00000249999999"
+      },
+      {
+        "time": "0.0100249999",
+        "timeout": "0.0000249999999"
+      },
+      {
+        "time": "0.0124999999",
+        "timeout": "0.0000499999999"
+      }
+    ],
+    "coarse_steps": "0:10:3990;3991:1:4010;4020:10:5000;5020:20:10000",
+    "half_steps": "0:20:7980;7982:2:8020;8040:20:10000;10040:40:20000",
+    "count": "Original519 completed-step prefix +250 later saves=769; half steps exactly2*coarse. Authoring has not executed the scheduling prediction or prepared any runtime.",
+    "event": "Pre-open4000/8000 and first paired post-open4001/8002 unchanged; no claim every internal force stage is saved.",
+    "later_prediction": "Prepare only repeats the old reviewed binary64 GetNextTime and ordinary Run save predicate with the fourth segment/.025end. Reject unless769, exact declared steps and actual accumulated c/h time difference<=1e-14. No clock snapping/interpolation. NstepsBreak10000/20000 prevents an extra step if accumulated finaltime is below TimeMax. Later native data must independently confirm the real saved schedule.",
+    "source_hashes": {
+      "JDsOutputTime_cpp": "b26c1b87f090b28bdc72c28d6ed7dfeee0ad7a0bcd28eb428f1ae72716d0c72f",
+      "JSphCpuSingle_cpp": "1b2aa2741338c2046380727a680420a8df3bc1d2fedc071f8e3b2bfeaf41f394"
+    }
+  },
+  "future_outputs": {
+    "directory": "outputs/upl_case02_flux_window25_r1_seed",
+    "coarse_prefix": "outputs/upl_case02_flux_window25_r1_seed/upl_case02_flux_window25_coarse_r1",
+    "half_prefix": "outputs/upl_case02_flux_window25_r1_seed/upl_case02_flux_window25_half_r1",
+    "manifest": "logs/upl_case02_flux_window25_r1.inputs.json"
+  },
+  "protection": "Require new runtime directory/manifest absent. Existing authored configs are read and bound, not overwritten. Before/after hash all sealed templates/configs/authors/scheduling sources and verify copies. No Git HEAD requirement or historical mutable Git metadata revalidation. No GenCase, solver/reader/build, formal-root edits or automatic next action.",
+  "admission": "Input preparation is not window25 Run or half admission. Root separately owns actual-wrapper/reader/owner769-schema review and current program/source/prerequisite binding. Keep J-domain, elastic/no-exclusion/ledger/signeddterror/current-step safeguards and independent5Pa/.005mm half limits unchanged; no wave normalized/energy gate.",
+  "input_prepared": false,
+  "author_executed_programs": false,
+  "production_changes": false,
+  "formal_root_changes": false,
+  "physical_acceptance": false
+}

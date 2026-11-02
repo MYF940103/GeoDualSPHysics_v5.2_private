@@ -1,0 +1,9 @@
+{
+  "stage": "upl_case02_flux_window25_prepare_r2",
+  "scope": "Input-only local PowerShell name repair; numerical/input contract unchanged.",
+  "retained_failure": "r1 failed before creating seed/manifest because PowerShell variables are case-insensitive: timeOut parameter node was overwritten by timeout special node. Original r1 script and XMLs remain immutable.",
+  "change": "Only rename camel-case $timeOut to $timeOutParameter; lowercase $timeout remains the special timeout node. Bind this r2 author note. Output manifest/seed keep the unused original r1 names, fresh-only.",
+  "inherited_note": "notes/upl_case02_flux_window25_r1.json has been fully reviewed; all original DOM/CRLF/physics/schedule/clock thresholds and copy/source guards remain.",
+  "execution": "Explicit -PrepareAuthorized creates only fresh runtime copies/manifest. No GenCase/build/reader/solver or automatic next action.",
+  "physical_acceptance": false
+}

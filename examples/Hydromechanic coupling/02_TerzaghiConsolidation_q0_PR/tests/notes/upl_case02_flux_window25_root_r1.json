@@ -1,0 +1,49 @@
+{
+  "stage": "upl_case02_flux_window25_root_r1",
+  "date_local": "2026-11-03",
+  "base_commit": "fbdaed15e9223c4749e6eaaad745125b0f0e88a3",
+  "status": "CPU_025s_native_prefix_and_independent_half_verified_GPU_port_next_not_physical_release",
+  "CPU_source_raw_sha256": "ef18419340d3b716108bd15ac88c06d8c860b266b95be24d4f17587677b74964",
+  "production_changes_this_window": false,
+  "actual_runs": "Two fresh Release CPU OMP1 Runs with unchanged physics and dt2.5/1.25us,10000/20000steps,769 native frames each. No PART restart, initial field rewrite, old trajectory rerun or time snapping.",
+  "verification": {
+    "builds": "Isolated current-source CPU Debug/Release actual helpers and Release native reader passed; the required authoritative default CPU Debug was already passed for this unchanged production source. Seven canonical programs unchanged.",
+    "smoke": "New Debug actual helper completed two steps/three frames and passed native/live-state QC before the pair.",
+    "prefix": "Each original519 same-dt states: complete typed15,28-byte clock,physical26 and native J/n/theta including fixed markers remain bitwise exact. Not whole-BI4 identity because configured TimeMax changed.",
+    "coarse_actual_end_s": 0.024999999999998482,
+    "half_actual_end_s": 0.025000000000007405,
+    "all_sample_half_pressure_RMS_max_Pa": 2.102528907336752,
+    "all_sample_half_material_XYZ_difference_max_mm": 0.0000020744619204013383,
+    "actual_paired_time_max_difference_s": 8.923417560424696e-15,
+    "original_limits": "All769 samples: pressure RMS<=5Pa, maximum fullXYZ material displacement difference<=.005mm, paired actual-time difference<=1e-14s. No interpolation, threshold relaxation or metadata rewrite.",
+    "single_run": "Owned solver/reader exit0,1040 IDs, finite/elastic/no-exclusion/ledger/necessary-step and signed-dterror checks pass. All359 saved post-opening frames have10 actual FSType2/3 drained native nodes with p strictly zero; J/theta remain evolved.",
+    "figures": "Both global/layer PNGs inspected; shared1538-row CSV contains actual times, native material groups and derived total_sigma_zz=effective_sigma_zz-p. Not native pressure rate, all-stage load resultant or discrete face flux."
+  },
+  "physical_observation": {
+    "scope": "Descriptive early(.01..0125s) versus late(.02..025s) post-opening windows only. The pre-open event frame is excluded. Actual floating-point endpoints can change eligible count by one; global figures retain every actual final state.",
+    "coarse_speed_peak_late_over_early": 0.09044605200933754,
+    "coarse_theta_peak_late_over_early": 0.07957612746595122,
+    "coarse_effective_sigma_zz_absolute_peak_late_over_early": 0.6017523143610242,
+    "coarse_pressure_absolute_peak_late_over_early": 0.9773215636822195,
+    "coarse_pressure_frame_RMS_peak_late_over_early": 0.95758597770186,
+    "interpretation": "The old rapid closed-face growth is absent through this window. Strong local opening transients decay, but slower whole-column pressure/velocity oscillations remain. No monotone pressure dissipation, quasi-static equilibrium, continuum theory accuracy, long-time stability or conservation claim follows."
+  },
+  "test_harness_incidents": [
+    "Input prepare r1 rejected a PowerShell case-insensitive timeOut/timeout name collision before writing inputs or launching a solver. Preserved failure; new prepare_r2 changes only that variable name and author binding.",
+    "First half-native-review invocation occurred before the solver owner finished sealing its run manifest. It exited on missing manifest before decoding or creating outputs. After the owned solver wrapper exited0 and sealed its receipt, the same still-unexecuted native decoding action ran once successfully. No physical solver rerun."
+  ],
+  "primary_receipts": [
+    "logs/upl_case02_flux_window25_actual_DebugCPU_r1.helper.json",
+    "logs/upl_case02_flux_window25_actual_ReleaseCPU_r1.helper.json",
+    "logs/upl_case02_flux_window25_reader_ReleaseCPU_r1.helper.json",
+    "logs/upl_case02_flux_window25_smoke_r1.qc.json",
+    "logs/upl_case02_flux_window25_coarse_r1.qc.json",
+    "logs/upl_case02_flux_window25_r1.half.json",
+    "logs/upl_case02_flux_window25_physical_r1.check.json"
+  ],
+  "next": "Selective local/remote evidence backup, then private GPU synchronization of the full verified CPU boundary/load/drain contract. Preserve original OFF/periodic/wall/gravity controls; compare components and actual fresh native CPU/GPU/half results before longer benchmark admission.",
+  "limits": "Constant-k,g0,elastic2D,one upward FreeSlip bottom wall/X periodic private fixture only; public XML master remains OFF in this fixture. No general wall/plastic/HG/SPR/variable-k loaded column, public/GPU/formal/server or exact-HG/PART-restart acceptance. Raw programs,source snapshots,objects and BI4 remain hash-bound local data, not cloud Git backup.",
+  "physical_acceptance": false,
+  "formal_case_admission": false,
+  "canonical_programs_installed": false
+}
