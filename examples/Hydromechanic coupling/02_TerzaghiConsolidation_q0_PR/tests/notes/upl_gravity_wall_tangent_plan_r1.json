@@ -1,0 +1,52 @@
+{
+  "stage": "upl_gravity_wall_tangent_plan_r1",
+  "status": "planned_only_not_implemented_prepared_built_or_executed",
+  "scope": "Next bounded CPU private true-Run check only: opposing static x-FreeSlip planes,1024soil+256fixed,Z periodic,uniform g=(0,0,-8). No normal gravity, hydrostatic column, NoSlip, adaptive stepping, GPU or public scope expansion.",
+  "sequence_prerequisite": "Finish and review endpoint Release r2/QC and current-stage selective Git checkpoint before any production edit or new build; root remains execution owner.",
+  "candidate_production_file": "src/source/JSphCpu.cpp only; no new arrays, flags, public XML keys or CPU/GPU shared parser changes.",
+  "minimal_guard_design": {
+    "location": "InitDynamicPoreWallCpu around4160: remove the early any-component-g rejection only after replacement checks are ready; determine actual wall axis/normals through the existing complete geometry loop first.",
+    "finite_and_dimension": "Require finite allGravity components. In2D require Gravity.y==0; otherwise out-of-plane acceleration would enter the integrator despite 2D forces. This preserves previously unsupported-state protection, not redundant new physics. The first new nonzero-g experiment remains2D only; existing g0 behavior is unchanged.",
+    "normal_component": "For nonzero g require Gravity[axis]==0 exactly, without a new fitted tolerance. Keep stationary FreeSlip, equal mass/dp, one axis, coplanarity, separated mirrors and periodic-translation checks unchanged.",
+    "actual_mirror_vector": "Additionally, for EVERY active nonzero-g wall sample require double(g).dot(double(BoundNormal))==0 exactly. Existing axis-normal tolerance8FLT_EPS may otherwise admit a tiny tangential B component, making g.dot(B) nonzero even though Gravity[axis]==0. Strict dot-zero guarantees the scalar-pressure hydrostatic offset is truly zero. The retained exact-x normals satisfy this without adding any tolerance; zero-g old fixtures keep their original behavior.",
+    "fixture_restriction": "The new true-Run wrapper independently requires both opposing x faces, pure Z periodicity,no X/Y periodicity,exact g=(0,0,-8),physical fixed-wall velocity0 and unchanged native geometry; no temporary clearing g to bypass init.",
+    "comments": "Update the Init error/comment from unconditional zero gravity to finite strictly tangential gravity for the private scope. Update State pressure comment near4215: even pressure is valid only with zero normal body gravity. No state/force/rate arithmetic changes.",
+    "public_and_GPU": "JSph.cpp shared HydroMechDynamicSeepage masterON still rejects ANY nonzero gravity. GPU InitPorosityObserver/InitWall remain any-g rejecting. Public format/README zero-g restrictions must not be relaxed. CPU private masterOFF uses the explicit wrapper flags; canonical old u-pw remains OFF-compatible."
+  },
+  "closure_reason": "For B=BoundNormal,xm=xb+B,xf=xb+B/2,impermeability would generally require p_b=p_m-rhow*g.dot(B). Strict tangential g makes this offset zero, so the existing scalar even p/J, Q*sigma*Q, Q*v and CPU Q*(Ace+g)-g are algebraically compatible. This argument does not authorize normal-g p/stress closure.",
+  "retained_controls": {
+    "manifest": "tests/logs/upl_cpu_public_r1.inputs.json: wall_constant_c/h and wall_evolving_c/h are owned canonical CPU true-Run controls, not reset-by-companion trajectories.",
+    "raw_outputs": "tests/outputs/upl_cpu_public_r1_wall_constant_c/h and upl_cpu_public_r1_wall_evolving_c/h; reread actual native BI4 rather than pretending their old26-column export is33.",
+    "seed": "Retain32 actual fluidvelocity XML columns and exact original BI4 embedded normals. Canonical h geometry is57736B SHA76ead35508f882ff8d3ac8c890a57b77120d610f04d9f3d802c17103077a932f; old c BI4 SHA3df8f7a82d9791cfb2a22dc463e8f8a89b58bdd80961cb1e6951aad95c0558cc has a different header. Declare the exact chosen copy before Prepare and prove matching full initial native fields/IDs; never claim these two whole-file hashes match.",
+    "physics": "Original weak standing wave A2^-9,full wavelengthLx1/8,wall width1/16,dp1/512; k0=float(1e-4),constant or smooth Ck2^-13,original material/no load/drain/HG/SPR/viscosity/DDT/shifting; no initial physical field rewriting.",
+    "schema": "Saved1280 IDs: fixed0..255,soil256..1279. Private CPU saves original15+threeJ arrays,no public metadata/PosDiv/extra nativeVrhoK. CPU fixed n remains the original nonphysical zero marker; do not use private-GPU fixed-n semantics."
+  },
+  "smallest_future_test_files": [
+    "One new support/upl_gravity_wall_cpu_r1.cpp: constructor flags then actual JSphCpuSingle::Run, separate private-native reader and separately invoked frozen-state face/force audit; no virtual callback or rewritten main loop.",
+    "One new notes/upl_gravity_wall_cpu_r1.json plus five tests/configs runtime XMLs: constant smoke/coarse/half,variable coarse/half; author/copy only after root authorization.",
+    "One narrow owned build/run/review recipe and one offline pair variant reusing the existing scientific formulas; no scheduler/general framework or old-control rerun."
+  ],
+  "gated_fresh_jobs": [
+    "1 Debug constant two-step smoke:dt2^-25,end2^-24,cadence2^-25,3frames; successful true Pre/Corr plus typed-native review,not a body-g accuracy admission.",
+    "2-3 Release constant coarse/half:dt2^-25/2^-26,end2^-15,cadence2^-23,1024/2048steps,257frames. Require single safety,independent half,same-dt g0-frame and all saved face/force gates before variable.",
+    "4-5 Release variable coarse/half with the same clocks,Ck2^-13 and same true initial fields. Require their independent halves,g0-frame and full saved face/force gates; no extra retained g0 solve."
+  ],
+  "native_and_frame_gates": {
+    "identity_and_safety": "All native IDs/clocks/zero-based saved steps/signed dterror<=1e-14,no exclusions/plastic/load,p0=0,finite/weak saturatedJ/currentk and passive-rho guards unchanged. Preserve original per-single ledger,actual necessary-step/source-domain screens and source/build/input/output hashes.",
+    "soil_frame": "Only1024soil points transform z*=z-.5*gz*t^2,vz*=vz-gz*t,uz*=uz-.5*gz*t^2. Fixed native positions and physical velocities must remain exact unchanged; do not accelerate or frame-transform the physical wall samples.",
+    "half_and_frame": "All257 matched samples: original pressureRMS<=5Pa,material-u maximum<=.005mm and normalized fullXYZp/v/u RMS<=1e-4. Use original Pstar1023.9999974568686Pa,A2^-9,Ustar7.589099058944216e-8m; no interpolation or omission.",
+    "body": "Same-dt native inertial velocity difference minus g*t,full1024point XYZRMS/A<=1e-4,not a mean/CoM conservation assumption. End |g*t|=.000244140625m/s; formula-only missing/double-g final residuals must exceed100 original velocity budgets. No faulty-solver negative runs.",
+    "energy_and_other_fields": "Use accelerating-frame soil kinetic energy with original elastic/pore energy and original1.1 history limit. Record all33field RMS/max/bit differences,retain exact fixed/identity/p0/plastic/load/passive checks,do not invent post-result stress/theta/normal precision gates or claim all33 equivalence."
+  },
+  "face_force_gates": {
+    "coverage": "Retain original all257saved-state FaceAndForce qn/normal-v/negative-control/reaction budgets; genuine Run first,then separate frozen-state import/actual-force audit. Saved last-stage theta and recomputed endpoint theta are separate. The audit is not restart or all-integrator-stage telemetry.",
+    "reaction": "Internal-force/reaction balance uses Ace=as-g,or subtract sum(rho*V*g) explicitly from physical acceleration. Do NOT demand total including body force plus wall reaction vanish during freefall. Fixed quadrature samples are not extra physical wall mass.",
+    "signal_scope": "The standing wave varies in x while g is z,so ideal Gk.dot(g)=0. Do not require or claim nonempty wrong-g chain sensitivity from this tangential-wall fixture; the preceding periodic along-wave endpoint component is separate evidence.",
+    "failure_policy": "Tangential fluid motion changes relative alignment against a fixed wall lattice,so exact scalar frame equality is not guaranteed in floating discrete geometry. Retain failures and diagnose under the original budgets; do not loosen thresholds,move physical wall particles,add a global C force correction or rerun a completed solve after analysis-only failure."
+  },
+  "built_or_executed": false,
+  "production_modified": false,
+  "normal_gravity_wall_accepted": false,
+  "public_or_GPU_gravity_accepted": false,
+  "physical_acceptance": false
+}

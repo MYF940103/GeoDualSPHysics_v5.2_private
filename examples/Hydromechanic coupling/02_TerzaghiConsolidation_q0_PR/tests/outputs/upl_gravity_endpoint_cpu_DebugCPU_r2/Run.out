@@ -1,0 +1,283 @@
+[Initialising JSphCpuSingle  02-11-2026 13:10:24]
+ProgramFile=".../outputs/upl_gravity_endpoint_cpu_DebugCPU_r2_helper/upl_gravity_endpoint_cpu_r2.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_gravity_periodic_seed_r1/CaseGravity_c.xml"
+OutputDir=".../tests/outputs/upl_gravity_endpoint_cpu_DebugCPU_r2"
+OutputDataDir=".../outputs/upl_gravity_endpoint_cpu_DebugCPU_r2/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  CaseName=["CaseGravity_c"]  Data2D=[1]  Data2DPosy=[0]  H=[0.00703125]  KernelSize=[0.0140625]  B=[0]  Gamma=[7]  Rhop0=[2048]  Dp=[0.00390625]  Gravity_x=[-8]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.03125]  MassBound=[0.03125]
+XML-Vars (parameters): TimeMax=[3.05176e-05]  TimeOut=[1.19209e-07]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 999999995904.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.000000
+  Bulk Modulus: 89478488.000000
+  Shear Modulus: 134217728.000000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=False
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 6.71089e+07
+  Porosity: 0.250000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 512
+MapRealPos(border)=(0,-0.000351562,0)-(0.125,0.000351562,0.0625)
+MapRealPos(final)=(0,-0.000351562,0)-(0.125,0.000351562,0.0625)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseGravity_c"
+RunName="CaseGravity_c"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="DBC"
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=11266.53
+  Wendland.bwen=-8012330
+Viscosity="Artificial"
+  Visco=0
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="None"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=512
+CaseNbound=0
+CaseNfixed=0
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=512
+PeriodicActive="Axes-XZ"
+PeriodicXinc=(-0.125,0,0)
+PeriodicZinc=(0,0,-0.0625)
+Dp=0.00390625
+KernelH=0.007031  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.0140625
+CteB=3.834792e+07
+Gamma=7
+RhopZero=2048
+Cs0=362.0386719675124
+CFLnumber=0.2
+DtIni=5.960464477539062e-08
+DtMin=0.0000000001
+DtAllParticles=False
+FixedDt=5.960464477539062e-08
+MassFluid=0.03125
+MassBound=0.03125
+TimeMax=0.000030517578125
+TimePart=1.192092895507812e-07
+Gravity=(-8,0,0)
+NpMinimum=512
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(11,1,7)
+CellDomFixed=False
+**Requested CPU memory for 640 particles: 0.3 MB.
+DomCells=(11,1,7)
+DomCellCode="1+11_9_11"
+**JSphCpu: Requesting cpu memory for 800 particles: 0.4 MB.
+**JSphCpu: Requesting cpu memory for 867 particles: 0.4 MB.
+**JSphCpu: Requesting cpu memory for 1136 particles: 0.5 MB.
+**CellDiv: Requested cpu memory for 1136 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 192 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Double - Single core"
+ 
+Initialization configuration:
+Initialize_0
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.000976562,MIN,MIN)-(0.00292969,MAX,MAX)
+  Constant velocity: 0.00019144
+Initialize_1
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.00488281,MIN,MIN)-(0.00683594,MAX,MAX)
+  Constant velocity: 0.000566962
+Initialize_2
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.00878906,MIN,MIN)-(0.0107422,MAX,MAX)
+  Constant velocity: 0.000920697
+Initialize_3
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0126953,MIN,MIN)-(0.0146484,MAX,MAX)
+  Constant velocity: 0.00123905
+Initialize_4
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0166016,MIN,MIN)-(0.0185547,MAX,MAX)
+  Constant velocity: 0.00150979
+Initialize_5
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0205078,MIN,MIN)-(0.0224609,MAX,MAX)
+  Constant velocity: 0.0017225
+Initialize_6
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0244141,MIN,MIN)-(0.0263672,MAX,MAX)
+  Constant velocity: 0.00186902
+Initialize_7
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0283203,MIN,MIN)-(0.0302734,MAX,MAX)
+  Constant velocity: 0.00194372
+Initialize_8
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0322266,MIN,MIN)-(0.0341797,MAX,MAX)
+  Constant velocity: 0.00194372
+Initialize_9
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0361328,MIN,MIN)-(0.0380859,MAX,MAX)
+  Constant velocity: 0.00186902
+Initialize_10
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0400391,MIN,MIN)-(0.0419922,MAX,MAX)
+  Constant velocity: 0.0017225
+Initialize_11
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0439453,MIN,MIN)-(0.0458984,MAX,MAX)
+  Constant velocity: 0.00150979
+Initialize_12
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0478516,MIN,MIN)-(0.0498047,MAX,MAX)
+  Constant velocity: 0.00123905
+Initialize_13
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0517578,MIN,MIN)-(0.0537109,MAX,MAX)
+  Constant velocity: 0.000920697
+Initialize_14
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0556641,MIN,MIN)-(0.0576172,MAX,MAX)
+  Constant velocity: 0.000566962
+Initialize_15
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0595703,MIN,MIN)-(0.0615234,MAX,MAX)
+  Constant velocity: 0.00019144
+Initialize_16
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0634766,MIN,MIN)-(0.0654297,MAX,MAX)
+  Constant velocity: -0.00019144
+Initialize_17
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0673828,MIN,MIN)-(0.0693359,MAX,MAX)
+  Constant velocity: -0.000566962
+Initialize_18
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0712891,MIN,MIN)-(0.0732422,MAX,MAX)
+  Constant velocity: -0.000920697
+Initialize_19
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0751953,MIN,MIN)-(0.0771484,MAX,MAX)
+  Constant velocity: -0.00123905
+Initialize_20
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0791016,MIN,MIN)-(0.0810547,MAX,MAX)
+  Constant velocity: -0.00150979
+Initialize_21
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0830078,MIN,MIN)-(0.0849609,MAX,MAX)
+  Constant velocity: -0.0017225
+Initialize_22
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0869141,MIN,MIN)-(0.0888672,MAX,MAX)
+  Constant velocity: -0.00186902
+Initialize_23
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0908203,MIN,MIN)-(0.0927734,MAX,MAX)
+  Constant velocity: -0.00194372
+Initialize_24
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0947266,MIN,MIN)-(0.0966797,MAX,MAX)
+  Constant velocity: -0.00194372
+Initialize_25
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.0986328,MIN,MIN)-(0.100586,MAX,MAX)
+  Constant velocity: -0.00186902
+Initialize_26
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.102539,MIN,MIN)-(0.104492,MAX,MAX)
+  Constant velocity: -0.0017225
+Initialize_27
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.106445,MIN,MIN)-(0.108398,MAX,MAX)
+  Constant velocity: -0.00150979
+Initialize_28
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.110352,MIN,MIN)-(0.112305,MAX,MAX)
+  Constant velocity: -0.00123905
+Initialize_29
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.114258,MIN,MIN)-(0.116211,MAX,MAX)
+  Constant velocity: -0.000920697
+Initialize_30
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.118164,MIN,MIN)-(0.120117,MAX,MAX)
+  Constant velocity: -0.000566962
+Initialize_31
+  Operation: FluidVel
+  MkFluid..: 0 (16 / 512 particles)
+  OnlyPos..: (0.12207,MIN,MIN)-(0.124023,MAX,MAX)
+  Constant velocity: -0.00019144
+ 
+**JSphCpu: Requesting cpu memory for 1270 particles: 0.6 MB.
+**JSphCpu: Requesting cpu memory for 1337 particles: 0.6 MB.
+**JSphCpu: Requesting cpu memory for 1606 particles: 0.8 MB.
+**CellDiv: Requested cpu memory for 1606 particles: 0.1 MB.

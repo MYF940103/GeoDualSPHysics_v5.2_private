@@ -1,0 +1,61 @@
+{
+  "stage": "upl_gravity_endpoint_cpu_r2",
+  "status": "author_only_not_built_or_executed",
+  "files": ["support/upl_gravity_endpoint_cpu_r2.cpp", "notes/upl_gravity_endpoint_cpu_r2.json"],
+  "retained_r1_input_failure": "The r1 component exited1 before endpoint force/rate because unqualified Part in the derived Execute resolved to inherited JSph::Part=0, not namespace endpoint::Part=256. Original r1 source, note, build, program, call and failed outputs remain unchanged. This fresh r2 source changes only that argument to endpoint::Part; all input assertions, formulas and numerical budgets are identical. The completion stage string remains the original operator-contract name upl_gravity_endpoint_cpu_r1; the distinct wrapper/program/output identities identify this repaired r2 execution. No coarse/half trajectory is rerun. See logs/upl_gravity_endpoint_cpu_DebugCPU_r1.check.json.",
+  "scope": "One actual production CPU force call on the already sealed coarse final endpoint, plus two temporary same-state acceleration-input perturbations of the actual complete-rate helper. No new trajectory, Run, ComputeStep, PART restart, public gravity, wall, GPU, hydrostatic balance or physical-case admission.",
+  "CLI": "--audit SEALED_COARSE_DATA_DIR EXACT_CASEGRAVITY_C_XML NEW_OUT",
+  "sealed_input": {
+    "data": "outputs/upl_gravity_periodic_cpu_ReleaseCPU_c_r1/data",
+    "part": 256,
+    "source_time_s": 0.000030517578125,
+    "source_saved_step": 511,
+    "runtime": "outputs/upl_gravity_periodic_seed_r1/CaseGravity_c.xml",
+    "runtime_sha256": "3cb2493f6e29728893ddc9b50c43e241e89a1eaddb29ad44770129571677cb55",
+    "root_owned_run": "logs/upl_gravity_periodic_cpu_ReleaseCPU_c_r1.run.json",
+    "root_owned_native_check": "logs/upl_gravity_periodic_cpu_ReleaseCPU_c_r1.check.json",
+    "root_owned_native_check_sha256": "21c752a43d9bd0c269ca231d9df78efe0a085be0dbd59d82d6b32341a978c6b7",
+    "identity": "Exactly512 normal-fluid IDs0..511, fixed0, one-piece final native PART; no exclusions, dynamic IDs or reuse. Original actual XML gravity(-8,0,0), private masterOFF/model0/Ck0. Private constructor enables the already implemented observer/feedback/full rate/smooth-k flags with manufactured Ck2^-13. No initial or imported physical value is adjusted to obtain a signal."
+  },
+  "immutable_include": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "note": "notes/upl_cpu_public_native_r1.json",
+    "use": "Direct main-renamed include supplies exactly one AppInfo, NativeArray/Native/Metadata(false)/finite helpers only. Its public Load/Read/Energy/Physical and 26-column exporter are never called. No nested-main inclusion of old full fixtures."
+  },
+  "actual_lifecycle": [
+    "Mechanical current-CPU initialization: LoadConfig, LoadCaseParticles, VisuConfig, ConfigDomain, ConfigRunMode, InitRunCpu, FreePartsInit. No JSphCpuSingle::Run or ComputeStep call.",
+    "Read native PART256 with JPartDataBi4; load original typed physical arrays and the three native J/n/last-stage-theta arrays. Preserve all six double-stress component ordering (native ij=xy,yz,xz), float p/p0/excess, passive rho, plasticity, FSType/normal/load.",
+    "Map actual initialized normal owners by native ID, import sealed fields, call LoadDcellParticles(1,...) on NORMAL native slots only, then actual RunCellDivide(true). Old periodic images are retired/rebuilt by production lifecycle, never passed as new natives or manually truncated. Require512 owners and nonempty periodic images/no exclusions.",
+    "Set component source-clock labels to actual saved time/step, not a claim of advanced time. Once call actual Interaction_Forces(INTERSTEP_SymPredictor): actual current C, final Ace, recomputed endpoint theta and actual full rate. Original saved theta is kept separately in CSV; this endpoint replay does not expose the original integrator's internal stages.",
+    "Compare full baseline rate with independent all-particle O(N^2) reference conditional on actual production C. For each sign restore original Ace then add float-rounded +/-Gravity to NORMAL native Ace only; call actual ComputeDynamicPorePressureRateCpu, which refreshes periodic owner Ace/theta/rate itself. All pressure/J/velocity/stress/material data remain unchanged.",
+    "Restore baseline Ace/rate/cache byte-exactly, verify covered physical state and source-clock labels never advanced, free scratch with PosInteraction_Forces. The fresh component object is then discarded; no trajectory continues from imported state."
+  ],
+  "independent_reference": {
+    "kernel_and_quadrature": "Same actual Wendland header, double position differences and rr2 with kernel Fac(float(rr2)), actual float h/Eta2, Vj=MassFluid/Rho0*Jj, receiver C and symmetric pair C for Lstar. Independent search over all actual fluid native/periodic slots, not production cell ranges/helper calls. C itself is a conditioned input, not independently reconstructed here.",
+    "complete_rate": "B[-theta + (ki*(Lp-Gp dot Lx+rho_w D_C(Ace)) + alpha*ki*GJ dot (Gp+rho_w Ace_i))/gamma_ref], B=Kw/n_i, alpha=1/((1-n0)Ck), gamma_ref=rho_w*9.80665.",
+    "actual_float_delta": "deltaAi=double(float(Ace_base_i +/- g))-double(Ace_base_i) retained from actual post-helper Ace. Do NOT assume it is a spatially constant exact +/-g. Independent rate change is B*rho_w/gamma_ref*[ki*D_C(deltaA)+alpha*ki*GJ dot deltaAi], including both divergence and chain terms and actual periodic values.",
+    "ideal_and_quantization": "Separate ideal signed B*rho_w*alpha*ki/gamma_ref*(GJ dot g), then quantization correction=complete actual-float delta reference minus ideal. Both signs and every512 native node are exported, not only maxima.",
+    "q_difference": "Optional CSV XYZ deltaq=-ki*rho_w/gamma_ref*deltaAi is a DERIVED conditional Darcy diagnostic, not a saved native production q, not an independently assembled production flux-divergence or new q acceptance gate."
+  },
+  "unchanged_prior_budgets": {
+    "source": "Exact tighter conditional-discrete budget from support/upl_gravity_cpu_r1.cpp original line134, not the looser GPU64 budget initially mentioned. No thresholds are chosen from endpoint results.",
+    "rawrate": "B*[abs(theta)+(ki*(sum_abs_neighbor(w*dp)+abs(Gp_x*Lx_x)+abs(Gp_y*Lx_y)+abs(Gp_z*Lx_z)+rho_w*sum_abs_neighbor(Vj deltaAce dot CiGrad))+abs(chain))/gamma_ref]. Absolute divergence sum retains all XYZ component products before cancellation, as in the original gravity component.",
+    "single_side": "budget=(32*FLT_EPSILON+4096*DBL_EPSILON)*max(1,rawrate), Pa/s. Each of baseline, -g and +g actual complete rates must satisfy its own unchanged budget against its all-particle reference. No new1e-6 floor,32-to64 widening, smoothing or exclusion.",
+    "delta": "Actual float-rate difference versus complete actual-float delta reference must be within baseline_budget+shifted_budget at every native ID. No independent 5Pa time-integration tolerance is used for these Pa/s operator checks.",
+    "nonempty_prior": "For EACH sign, actual rate-difference RMS AND ideal GJ-dot-g chain RMS must each exceed10 times RMS(baseline_budget+shifted_budget). This is a predeclared wrong-explicit-g input sensitivity gate, not an added physical accuracy claim. If actual saved endpoint does not resolve it, retain failure; do not tune J,Ck,g,p or extend/rerun the trajectory."
+  },
+  "rollback_and_limits": "Covered physical byte snapshot includes native IDs/code, position, velocity+passive rho, full double sigma, plasticity,p,p0,J and load; actual force may legitimately refresh theta,FSType,FSNormal,PosDiv and C diagnostics. Those are not falsely claimed unchanged. No uninitialized first-force statistics are read; first actual force defines them. Ace/rate/cache restoration is explicitly checked before scratch free. Runtime/PART/program/source/object hashes before/after are REQUIRED OUTER owned-wrapper guards; completion correctly says input_SHA_before_after_checked_by_component=false. No CNG/hash subprocess or new production hook is added.",
+  "outputs": {
+    "rates.csv": "1536 rows = baseline/-g/+g x512; source saved theta, endpoint theta, actual/independent rate, raw absolute scale, prior budget,error/ratio,actual-C-derived GJ XYZ.",
+    "delta.csv": "1024 rows = +/- x512; actual deltaA XYZ, actual rate difference, independent full delta,ideal GJ-dot-g chain,quantization correction,combined budget/error/ratio,derived conditional deltaq XYZ.",
+    "summary.csv": "Two sign rows: actual/ideal RMS, combined budget RMS,nonempty ratios.",
+    "completion.json": "Only if all declared component and unchanged-budget gates pass; one real endpoint force, two additional real complete-rate calls,0physical steps. Failures preserve partial CSV/logs; no completed solve is rerun."
+  },
+  "admission_sequence": "Root must fully read source/note, bind current authoritative CPU85+newhelper1 objects/tools/runtime/immutable include, sealed coarse source receipt/native PART/runtime and candidate implementation regression before compiling or running this separately owned bounded component. No execution is authorized by this note.",
+  "built": false,
+  "executed": false,
+  "public_gravity_accepted": false,
+  "physical_acceptance": false
+}

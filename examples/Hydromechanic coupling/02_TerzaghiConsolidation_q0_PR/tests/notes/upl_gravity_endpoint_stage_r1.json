@@ -1,0 +1,32 @@
+{
+  "stage": "upl_gravity_endpoint_stage_r1",
+  "date": "2026-11-02",
+  "source_checkpoint": "ca363501b960b7f379bf969fac268fec363f0ad6",
+  "status": "CPU_Debug_and_Release_frozen_endpoint_operator_gates_passed",
+  "production_changes": [],
+  "source": "Existing coarse PART256, 512 native IDs, actual time2^-15 seconds, saved zero-based step511. No original trajectory, BI4, runtime XML, physical input or numerical budget was changed.",
+  "retained_failure": "r1 Debug component exited1 before force/rate: inherited JSph::Part=0 shadowed the intended namespace Part256. The original source/note/bridge/build/program/call/failed outputs remain unchanged. Fresh r2 source differs only by qualifying endpoint::Part. Its native completion keeps the original operator-contract stage string r1, while source/program/owned-output identities explicitly identify r2.",
+  "valid_calls": "One Debug and one Release endpoint component, each1 actual force and2 additional complete-rate calls. No Run, ComputeStep or PART restart;0 physical time steps. Each real exit is directly recorded0, followed by independent pure CSV QC. The old failed component is recorded separately as exit1, never counted as a passed force call.",
+  "coverage_per_configuration": {"rates": 1536, "actual_delta_references": 1024, "sign_summaries": 2},
+  "unchanged_budget": "Each actual rate is compared to an independent all-particle reference conditional on actual C, within (32*FLT_EPS+4096*DBL_EPS)*max(1,raw_abs_rate). Actual float-rate differences use the sum of both original side budgets, including nonconstant float deltaAce divergence and chain terms.",
+  "results_both_configurations": {
+    "max_single_rate_error_over_original_budget": 0.009431562818261715,
+    "max_delta_error_over_combined_budget": 0.008955432859187687,
+    "extra_minus_g_rate_difference_RMS_Pa_s": 22248.35608548965,
+    "extra_plus_g_rate_difference_RMS_Pa_s": 22248.353878760216,
+    "combined_budget_RMS_Pa_s_approx": 292.9369123,
+    "actual_signal_over_budget_minus_plus": [75.94930904574431,75.94930151070035],
+    "ideal_GJ_dot_g_signal_over_budget_approx": 75.9492498,
+    "float_deltaA_quantization_correction_RMS_Pa_s_minus_plus": [0.07062676242143263,0.0705221623228746],
+    "saved_last_stage_minus_replayed_endpoint_theta_RMS_s_inverse": 3.565036394410469e-5
+  },
+  "interpretation": "Wrong explicit gravity added to the stored non-body acceleration would make a well-resolved rate error in this naturally evolved variable-k state; the test is not vacuous. These deliberately perturbed component inputs are NOT the actual simulated pressure history and do not establish physical accuracy by themselves.",
+  "configuration_equality": "Debug and Release rates.csv, delta.csv, summary.csv and completion.json are byte-identical. This is a frozen operator check, not another trajectory, half-step or theory comparison.",
+  "integrity": "Current source/build/object/program/runtime and exact input/output bindings passed before and after each real call. Raw source frames remain unchanged, covered physical state/clock never advances, and temporary Ace/rate/cache are restored. Existing force diagnostics such as theta/C/FSType may legitimately refresh; saved last-stage theta and endpoint theta remain separate columns.",
+  "limits": "Actual C is a conditioned input to the reference, not independently proved here. Delta q is derived conditional Darcy data, not saved native production flux. Endpoint replay is not observation of every original force stage or exact restart. No public/gravity-wall/GPU/hydrostatic/physical-case admission follows.",
+  "next": "Checkpoint this verified component stage, then separately admit only strictly tangential gravity for existing private CPU fixed FreeSlip planes and verify old paths, actual wall flux/reaction and accelerating-frame/half comparisons. Normal-gravity pressure plus effective-stress background remains held.",
+  "public_gravity_accepted": false,
+  "wall_gravity_accepted": false,
+  "physical_acceptance": false,
+  "formal_and_server_changes": false
+}
