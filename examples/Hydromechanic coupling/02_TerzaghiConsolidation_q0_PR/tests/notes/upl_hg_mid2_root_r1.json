@@ -1,0 +1,120 @@
+{
+  "stage": "upl_hg_mid2_root_r1",
+  "reviewed_utc": "2026-11-03T12:28:09+00:00",
+  "status": "completed_coarse_native_and_offline_review_promising_prepare_independent_half",
+  "physical_acceptance": false,
+  "production_source_changed_by_this_review": false,
+  "formal_inputs_or_retained_results_changed": false,
+  "run": {
+    "tag": "upl_hg_mid2_CPU1_coarse_r1",
+    "backend": "CPU",
+    "threads": 1,
+    "dt_s": 0.0000019073486328125,
+    "actual_end_s": 2,
+    "completed_steps": 1048576,
+    "saved_frames": 1517,
+    "loop_s": 13932.866211,
+    "actual_owned_exit_code": 0,
+    "no_solver_or_reader_repeated": true,
+    "note": "Solver exit, typed native safety and offline comparison are separately owned checks. They do not imply full-consolidation or theory acceptance."
+  },
+  "evidence": [
+    {"relative_path": "tests/logs/upl_hg_mid2_followup_r1.terminal.json", "bytes": 2265082, "sha256": "7c164fe7f82fe03f0f72c8f1d9f31966caadabdb218a04fab7267c6a5f4c9c61"},
+    {"relative_path": "tests/logs/upl_hg_mid2_followup_r1.queue_attempt.json", "bytes": 3938736, "sha256": "31e4861894dea31ba5aec5f42ae1181fc25de6e06fc236d7ef1c35bd4b453b89"},
+    {"relative_path": "tests/logs/upl_hg_mid2_CPU1_coarse_r1.run.json", "bytes": 1129301, "sha256": "49962273717016b2e6a4996fa8471d636d4eb6803d7d79579e9fc15c6c2e3062"},
+    {"relative_path": "tests/logs/upl_hg_mid2_CPU1_coarse_r1.call.json", "bytes": 2994, "sha256": "2de696e28dd95ce404de878563ef460a6133d110cb95f0315967f0c5cd24c16b"},
+    {"relative_path": "tests/logs/upl_hg_mid2_CPU1_coarse_r1.native.json", "bytes": 903743, "sha256": "3ca8c2726c54899b1e8d030907dddbd7e827510ad52df92356fb57ecedbc20c0"},
+    {"relative_path": "tests/logs/upl_hg_mid2_CPU1_coarse_r1_reader.call.json", "bytes": 3753, "sha256": "518f19804290eced06af5d38716169ee53e88b3b9e4e27c45f7368ba8b23c2c0"},
+    {"relative_path": "tests/outputs/upl_hg_mid2_CPU1_coarse_r1_native/completion.json", "bytes": 2520, "sha256": "1702763720b930303c67a508b53bb269d700591b091b8e45631e33cc3c83d2d7"},
+    {"relative_path": "tests/logs/upl_hg_mid2_review_r1.check.json", "bytes": 45828, "sha256": "62f9241ac4e0ebf20cc7ff6d776412e8e674e90f75e6c478429a9ea44ea4d3e1"}
+  ],
+  "native_verification": {
+    "all_1040_IDs_and_22_arrays": true,
+    "soil_ledger_checks": 1517000,
+    "fixed_zero_marker_checks": 60680,
+    "all_ID_J_theta_rows": 1577680,
+    "signed_noninitial_clock_intervals": 1516,
+    "event_completed_step": 5243,
+    "true_drained_receivers_per_frame_at_or_before_event": 0,
+    "true_drained_receivers_per_frame_after_event": 10,
+    "post_open_frames": 1313,
+    "actual_drained_receiver_checks": 13130,
+    "physical_FSType_receiver_mask_independently_recounted": true,
+    "original_native_guards_passed": true,
+    "bindings_unchanged_and_independently_rehashed": true
+  },
+  "prefix_and_thread_verification": {
+    "CPU1_short_first458_all_five_raw_export_prefixes_bitwise_equal": true,
+    "retained_CPU8_first1469_all_five_raw_export_prefixes_bitwise_equal": true,
+    "clock_and_signed_dterror_included_without_exclusion": true,
+    "same_dt_CPU1_CPU8_pressure_RMS_max_Pa": 0,
+    "same_dt_CPU1_CPU8_material_XYZ_difference_max_mm": 0,
+    "same_dt_CPU1_CPU8_actual_clock_difference_max_s": 0,
+    "independent_2s_half_performed": false
+  },
+  "descriptive_comparison_at_2s": {
+    "HG_xi": 0.1,
+    "HG0_control": "Retained genuine 1673-frame interrupted trajectory through 6.875 s; only its first 1517 actual-matched states are viewed. Original solver exit remains unknown. Different retained builds/threads mean this is descriptive operator evidence, not an isolated same-build physical proof or half gate.",
+    "HG": {
+      "mean_pressure_Pa": 7331.383398880005,
+      "top10_material_settlement_mm": 0.9872055807639057,
+      "bottom10_material_settlement_mm": 0.0001829564694837832,
+      "alternating_column_Uz_coefficient_RMS_mm": 8.48923617378584e-9,
+      "alternating_column_Uz_coefficient_all1517_max_RMS_mm": 2.3042927305030143e-8,
+      "within_layer_Uz_span_max_mm": 2.4096791229055725e-7,
+      "mean_total_compression_zz_Pa": 10041.480517129365,
+      "total_compression_zz_RMS_difference_from_10000Pa": 41.51626770263676,
+      "total_compression_zz_material_span_Pa": 11.738027284354757
+    },
+    "HG0": {
+      "mean_pressure_Pa": 7291.804915298462,
+      "top10_material_settlement_mm": 1.0822826427478118,
+      "bottom10_material_settlement_mm": 0.00043331904810272465,
+      "alternating_column_Uz_coefficient_RMS_mm": 2.085468074296491,
+      "within_layer_Uz_span_max_mm": 5.0634991323492695,
+      "mean_total_compression_zz_Pa": 10000.439132581654,
+      "total_compression_zz_RMS_difference_from_10000Pa": 291.97120336344807,
+      "total_compression_zz_material_span_Pa": 1934.381538961543
+    },
+    "interpretation_zh": "本轮保存时刻中，HG显著抑制1.5至2秒的交替X列竖向扰动，并降低总应力空间起伏。孔压耗散和顶部沉降保持连续。顶部沉降的差值不是理论误差；约41.48Pa的平均总应力偏差仍需记录，不能以抑制模态替代理论精度验收。"
+  },
+  "root_visual_review": {
+    "performed": true,
+    "figures": [
+      "tests/figures/upl_hg_mid2_review_r1_history.png",
+      "tests/figures/upl_hg_mid2_review_r1_profiles.png",
+      "tests/figures/upl_hg_mid2_review_r1_mode_heatmap.png"
+    ],
+    "matching_CSVs": [
+      "tests/figures/upl_hg_mid2_review_r1_history.csv",
+      "tests/figures/upl_hg_mid2_review_r1_profiles.csv",
+      "tests/figures/upl_hg_mid2_review_r1_modal.csv",
+      "tests/figures/upl_hg_mid2_review_r1_comparisons.csv",
+      "tests/figures/upl_hg_mid2_review_r1_prefixes.csv"
+    ],
+    "history_rows": 3034,
+    "material_layer_rows": 303400,
+    "per_ID_profile_rows": 12000,
+    "mode_heatmap_common_actual_scale": true,
+    "all_six_profiles_at_actual_times": true,
+    "observation_zh": "HG关闭后1.5秒开始形成竖向交替列模式，2秒沉降剖面和总应力出现明显扰动。HG开启的模态在共同色阶上接近零，孔压和J/n/真实密度剖面连续；剩余平均应力偏差可见，未隐藏启动振荡或缩放数据。"
+  },
+  "next_decision": {
+    "prepare_fresh_independent_2s_half": true,
+    "half_execution_admitted_by_this_note": false,
+    "condition": "Root must separately inspect new half preparation, actual input identities, reader/owner and original unchanged gates before one fresh run. Preserve identical physical output times, ramp/drain time and model; halve only DtIni/DtFixed.",
+    "no_automatic_mid_full_or_formal_run": true,
+    "minimum_delivery_order": [
+      "Independent 2s half and original all-sample 5Pa/.005mm/1e-14s checks.",
+      "Matched supported-setting u-pw/u-pl short comparison, then a separately justified full 2Tv benchmark.",
+      "Keep Lian2023 literal second-derivative verification and bounded 3D/public initialization work in the roadmap before their relevant formal packages."
+    ]
+  },
+  "limitations": [
+    "2s coarse and .5s independent-half evidence do not establish full consolidation, theory accuracy, unsaved stability, exact HG restart or general-boundary acceptance.",
+    "Current supported prototype uses SPR0,Visco0,eta=.02; old formal SPR1,Visco=.1,eta=.04 data are references rather than a matched causal A/B.",
+    "Current native saved-J-weighted retained load is descriptive; no independent same-force-stage load or energy proof is claimed.",
+    "All raw BI4/NBI4, exports, snapshots and frozen programs are retained locally. Large modal CSV is retained with its hash-bound analysis receipt and is not claimed as cloud Git data backup.",
+    "GPU Cryer private zero-step component and lossless VTK cleanup are closed; no independent task was stopped, restarted or rearmed."
+  ]
+}
