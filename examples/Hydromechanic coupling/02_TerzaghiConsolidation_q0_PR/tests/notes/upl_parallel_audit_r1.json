@@ -1,0 +1,117 @@
+{
+  "stage": "upl_parallel_audit_r1",
+  "utc": "2026-11-03T18:56:58.709223+00:00",
+  "physical_acceptance": false,
+  "production_or_active_dependencies_changed": false,
+  "new_solver_or_component_run": false,
+  "source_archive": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1_source\\JSphCpu.cpp",
+      "bytes": 267740,
+      "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1_source\\JSphCpuSingle.cpp",
+      "bytes": 76944,
+      "sha256": "116495114aa9fdc0fc7f4882fecf16e2aaec6048f5bc0722f270f1cf8bdd2512"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1_source\\JSphHourglassCpu.cpp",
+      "bytes": 15465,
+      "sha256": "3ad806887a551aec30510479fb3da0713506d93cf1b60f6f617819253cbf6582"
+    }
+  ],
+  "active_full_observed": [
+    {
+      "pid": 73076,
+      "created_epoch": 1793726502.8094437,
+      "exe": "D:\\Anaconda3\\python.exe",
+      "argv": [
+        "D:\\anaconda3\\python.exe",
+        "-u",
+        "-B",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_bigstep_full_r1_run.py",
+        "--admission",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_full_run_admission_r1.json",
+        "--execution-authorized"
+      ]
+    },
+    {
+      "pid": 38440,
+      "created_epoch": 1793726513.835409,
+      "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+      "argv": [
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+        "-cpu",
+        "-ompthreads:1",
+        "-stable",
+        "-mdbc_freeslip",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_full_r1_seed\\upl_bigstep_2tv_CPU1_r1",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_2tv_CPU1_r1",
+        "-dirdataout",
+        "data",
+        "-svres",
+        "-nsteps:11661219"
+      ]
+    },
+    {
+      "pid": 66132,
+      "created_epoch": 1793726575.2038233,
+      "exe": "D:\\Anaconda3\\python.exe",
+      "argv": [
+        "D:\\anaconda3\\python.exe",
+        "-B",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_bigstep_full_followup_r1.py",
+        "--worker",
+        "--thread",
+        "01a07683-bc64-7463-8db7-9ee6243967d8",
+        "--codex",
+        "C:\\Users\\syosh\\.vscode\\extensions\\openai.chatgpt-26.1021.22027-win32-x64\\bin\\windows-x86_64\\codex.exe",
+        "--lock-sha256",
+        "56a07e0cfb2c2c21c9f2b6bb79a697630faaaf39e24fe34afcebb480c2f1481d"
+      ]
+    }
+  ],
+  "future_full_reviewer": {
+    "script": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_bigstep_full_review_r1.py",
+      "bytes": 38206,
+      "sha256": "8e1ce9083390a63b446d6a50e842d6ed6727971e72778bfec04a9875629e35c2"
+    },
+    "note": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_review_r1.json",
+      "bytes": 8730,
+      "sha256": "269430b1c2354355fd8141e386abcf342f5892fbde3e300524fe12969be55527"
+    },
+    "root_full_source_and_note_read": true,
+    "AST_checked": true,
+    "executed_or_imported": false,
+    "next_execution_only_after_sealed_full_Run0_and_existing_reader_status_check": true
+  },
+  "porosity_prior_verified_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_porosity_operator_r1.check.json",
+    "bytes": 6651,
+    "sha256": "97802aec134b5d9880c723fe0c52046c301c470b699435ff6e27135695b975dc"
+  },
+  "porosity_findings": {
+    "prior_all9_proof_files_rehashed": true,
+    "actual_Debug_and_Release_force_calls": 6,
+    "physical_steps": 0,
+    "uniform_n_difference_RMS_per_s": 4.463811151139392e-17,
+    "nonuniform_n_difference_RMS_per_s": 9.060138169418976e-05,
+    "nonuniform_relative_L2_difference_percent": 0.057618988415208953,
+    "identity": "nDot_paper - nDot_J = sum Vj*(ni-nj)*(vj-vi).Ci_gradWij",
+    "current_trace": "Cpu.cpp2565-2571: theta=sum V0*Jj*dv.Ci_gradW;4369-4372:n=1-(1-n0)/J,V=V0*J;4505-4532:midpoint Jdot=J*theta. No hidden neighbor solid-fraction factor.",
+    "historical_vs_current": "The historical test used a different full program. Read-only function/text comparisons found relevant theta, n/J, predictor/corrector and wall state/matrix expressions unchanged; this is not a current whole-program native regression or SPR/AV-only equivalence.",
+    "interpretation": "Uniform n gives the same instantaneous rate to rounding; nonuniform n generally differs. Per-particle (1-n)*V=(1-n0)*V0 is an algebraic solid-volume ledger, not global physical mass/accuracy proof. Do not weight shared pressure-compression theta by (1-nj). No duplicate diagnostic needed now."
+  },
+  "cost_candidates": {
+    "measured_speedup": null,
+    "primary": "A same-force-stage rho cache could remove repeated neighbor rho_w+(rho0-rho_w)/J divisions in approaching AV pairs(Cpu.cpp2694). Preserve exact expression and accumulation order.",
+    "secondary": "Store validated HG ParticleMass in existing BuildPairs Node for Rate reuse only; never reuse after predictor J changes.",
+    "invalidation": "Current sorted slots including actual ghosts/mirrors; rebuild after stage wall/FS closure and before force. Invalidate on sorting, periodic refresh, predictor/corrector J and wall reconstruction.",
+    "not_cost_problem": "Current neighbor V=V0*J is one multiply. Constant-k returns before exp; variable-k calls are per receiver. Unused state outputs may already be optimized away.",
+    "decision": "Keep current dynamic step limiter; no production caching until accepted full baseline and native equivalence/controlled timing checks."
+  },
+  "next": "Bounded standalone Eq25 variable-k arithmetic comparison, then actual near-wall consistency only when justified. Active full solve continues unchanged."
+}
