@@ -1,0 +1,50 @@
+{
+  "stage": "upl_gpu_hg_delivery_options_r1",
+  "status": "optional_plan_only",
+  "later_user_priority": "The user waived repeated half/mid prerequisites and requested SPR/artificial-viscosity integration before direct CPU full2Tv. That run is now active. The gate strings below are retained planning options, not a mandatory sequence or permission to start new work.",
+  "current_scope_correction": "GPU dynamic SPR/artificial viscosity must also be synchronized and independently checked; the seven-file HG-only sketch is not a complete implementation plan for the current requested combination.",
+  "date_local": "2026-11-03",
+  "scope": "OPTION for existing fresh constant-k/g0/elastic2D/X-periodic/one-upward-FreeSlip-bottom column, xi=.1/eta=.02. No general3D/slip/restart, TPI, new physics, damping or dt tuning. GPU port is not an automatic prerequisite.",
+  "CPU_cost": {
+    "observed_tag": "upl_hg_mid2_CPU1_coarse_r1",
+    "observed_steps": 1048576,
+    "observed_simulated_seconds": 2,
+    "observed_simulation_loop_seconds": 13932.866211,
+    "observed_threads": 1,
+    "source_run": "../02_TerzaghiConsolidation_q0_PR/tests/logs/upl_hg_mid2_CPU1_coarse_r1.run.json",
+    "source_run_SHA256": "49962273717016b2e6a4996fa8471d636d4eb6803d7d79579e9fc15c6c2e3062",
+    "linear_72s_days": 5.80536092125,
+    "linear_73s_days": 5.8859909340451395,
+    "qualification": "Linear estimate, not measured full/server timing or controlled benchmark. Half adds cost."
+  },
+  "minimal_core_option": [
+    {"files": ["src/source/JSphHourglassGpu.h", "src/source/JSphHourglassGpu.cpp"], "functions": "Config/EvaluateRate/AddHistory/PredictorForce/CorrectorForce/CorrectorUpdate", "delta": "Optional rho0/rhow/same-stage J; preserve null-J branch/phases."},
+    {"files": ["src/source/JSphHourglassGpu_ker.h", "src/source/JSphHourglassGpu_ker.cu"], "functions": "StNode/StGrid/Gather/KerGather/KerRates/AddHistory/KerAddHistory", "delta": "J volume/cache, current-mi stiffness/force; reference-mass rate."},
+    {"files": ["src/source/JSphGpuSingle.cpp"], "functions": "ConfigDomain/Interaction_Forces/ComputeStep_Sym/FinishRun", "delta": "Pass J/material; honest force diagnostics."},
+    {"files": ["src/source/JSphGpu.cpp"], "functions": "InitPorosityObserverGpu", "delta": "Replace unconditional HG rejection with CPU narrow public-column restrictions."},
+    {"files": ["src/source/JSph.cpp"], "functions": "LoadConfig", "delta": "Remove CPU-only condition for that exact column; retain other guards."}
+  ],
+  "required_semantics": {
+    "volume": "Vi=(M0/rho0)*Ji",
+    "current_inertia": "mi=(M0/rho0)*(rho0-rhow+rhow*Ji)",
+    "history": "H=Q/M0; Hdot=Qdot/M0. Reference-M0 rate, two half-step updates and GPU non-FMA writeback remain.",
+    "force_and_stiffness": "deltaAce=(M0/mi)*H; lambda=max_i(2*sum_j beta_ij/mi). Distinguish sum(M0*H) from actual float-add sum(mi*deltaAce).",
+    "critical_corrector": "Use current slot PoroJg after predictor J update/sort, never cached prior rate-stage Nodesg J. Existing integrator order, HG-before-Darcy and final AceMax remain.",
+    "cache": "Compare raw J too: one-ULP J can share volume bits. Endpoints recompute; reorder/copy-only reuse exact. Positive-J/inertia/caller saturation guards remain."
+  },
+  "performance_uncertainty": "GPU has four phases/exact legacy cache, but M0/legacy_Rhop volume and constant inertia. Seven synchronous reduction readbacks per cached step, eight on predictor recalculation, may dominate1000 points. CPU traversal/GPU tree reductions differ; no cross-backend bit identity or speedup claim.",
+  "smallest_future_gates": [
+    "Component: CPU dense oracle/GPU real operator; J1/uniform/nonuniform/current-corrector-buffer/reorder/copies/one-ULP equal-volume J. Original finite/phase/stiffness/spin/work limits/cache exactness. Legal HG sequence proves Darcy consumes HG-inclusive Ace; old scratch excludes HG/cannot restore history.",
+    "Fresh default-OFF/explicit-xi0 original typed arrays/clocks exact; legacy null-J HG coverage retained. Synchronize docs; authoritative project/object closure, no canonical installation.",
+    "Debug two-step memory smoke then GPU coarse/half458 versus genuine CPU controls. Explicit GPU public22/all1040 IDs; finite/elastic/no-loss/ledger/true-drain/signed-dterror/actual clocks. No CPU aliases/header rewriting.",
+    "All samples: pRMS<=5Pa, max per-ID XYZ<=.005mm, timegap<=1e-14s. If promising, separately admit GPU2s coarse/half1517 versus completed CPU controls. Reuse pinned definitions/mechanical readers, no large wrappers.",
+    "Measure same-physics short loop before GPU/server-CPU selection. CPU route needs no port; server cost/availability unmeasured. Preserve failures/gates; no automatic full/formal/next window."
+  ],
+  "planning_execution": "Source/compact-receipt inspection only. No implementation/admission; active half dependencies and old plans untouched.",
+  "core_or_old_plan_modified": false,
+  "solver_decoder_build_import_Git_or_watcher_invoked": false,
+  "GPU_faster_claimed": false,
+  "physical_acceptance": false,
+  "automatic_blocking_requirement": false,
+  "run_admission": false
+}
