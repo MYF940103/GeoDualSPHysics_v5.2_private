@@ -1,0 +1,34 @@
+{
+  "stage": "upl_hg_column_pair_decision_r1",
+  "date": "2026-11-03",
+  "review": {
+    "path": "tests/logs/upl_hg_column_full_review_r1_pair.check.json",
+    "bytes": 59862,
+    "sha256": "4f577bcfc5090e93505c8df20112dbc84694396e9078eff7185dcfe78644d2b0",
+    "passed": true,
+    "actual_end_s": 0.5,
+    "samples_each": 1469,
+    "max_pressure_RMS_Pa": 3.481728511412269,
+    "max_material_XYZ_difference_mm": 0.000013835638514506275,
+    "max_actual_time_difference_s": 0,
+    "both_five_export_458_record_prefixes_bit_equal_including_dterror": true
+  },
+  "visual_review": "Root inspected all three pair history/profile/mode-heatmap PNGs and their matching native CSV diagnostics. No time interpolation, smoothing, tiny-HG0 normalization or formal output replacement. Main pressure and material settlement trajectories nearly coincide; small near-top total-stress oscillations remain. This is not theory or full-cycle acceptance.",
+  "endpoint_coarse": {
+    "pressure_mean_HG_Pa": 8648.574238891602,
+    "pressure_mean_HG0_Pa": 8648.551217224122,
+    "top10_settlement_HG_mm": 0.4986053678104785,
+    "top10_settlement_HG0_mm": 0.4986113442209783,
+    "bottom10_settlement_HG_mm": 0.0000842791317971249,
+    "bottom10_settlement_HG0_mm": 0.00011192302665895965,
+    "total_compression_mean_HG_Pa": 10040.732489984852,
+    "A_pi_Uz_RMS_HG_mm": 0.000000014448947577052742,
+    "A_pi_Uz_RMS_HG0_mm": 0.000003324731293571142
+  },
+  "limits": "HG-versus-HG0 is an operator comparison, not a half-step or theory error. The old mode was still tiny at 0.5 s and grew later over 1.5..6.875 s. Neither small early amplitudes nor this independent half pass proves late-mode suppression. Saved final-J-weighted load is descriptive, not a same-force-stage external-force guard. Original native22/all1040-ID/ledger/drain/HG checks remain unchanged.",
+  "next_authorized_bounded_preparation": "Prepare one fresh CPU1 short-coarse diagnostic, same current frozen program/input, xi=.1, eta=.02, dt=2^-19, 13120 steps, 458 native frames, end=.0250244140625 s. Explicit new stage/tag and original CPU8 provenance required; do not pretend CPU1 was in the old manifest. Reuse the unchanged short reader and original guards. Verify native fields before selecting threads. No automatic repeated thread search, mid/formal run or GPU HG implementation admission.",
+  "production_equations_changed": false,
+  "formal_inputs_or_results_changed": false,
+  "physical_acceptance": false,
+  "later_mid_or_formal_jobs_admitted": false
+}
