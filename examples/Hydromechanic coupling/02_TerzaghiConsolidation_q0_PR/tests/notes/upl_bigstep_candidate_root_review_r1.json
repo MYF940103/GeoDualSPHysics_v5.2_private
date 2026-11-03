@@ -1,0 +1,132 @@
+{
+  "stage": "upl_bigstep_candidate_root_review_r1",
+  "utc": "2026-11-03T17:17:34.885912+00:00",
+  "source_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_c625_r1.run.json",
+    "bytes": 879160,
+    "sha256": "6a3a761e808bf1bfb48d5f69e09d20e230f9808059c738031ddc61361447dfa8"
+  },
+  "source_native": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_r1.native.json",
+    "bytes": 727018,
+    "sha256": "a8fa37ea11cacd5ed8488e8e3cc47c9fdce967d9ff0e2816d2751eecfb9235fe"
+  },
+  "source_review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_r1.review.json",
+    "bytes": 727492,
+    "sha256": "8f748abc246739fc55e146f874b818e5f263364b2c993909e4fcfced8ea37bd8"
+  },
+  "terminal_root_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_candidate_terminal_root_r1.check.json",
+    "bytes": 1334,
+    "sha256": "ef149cd436512b8a819916ffec292403bd3442c6bbcb0301c70ee652873bca47"
+  },
+  "both_comparison_PNGs_visually_inspected": true,
+  "all1292_native_safety_and_11740_drain_checks_passed": true,
+  "all100_material_layers_reviewed": true,
+  "late_mode_metrics": {
+    "A_pi_Uz_RMS_mm": {
+      "first": 2.1586062453308015e-09,
+      "last": 1.1506186604007088e-09,
+      "max": 2.8135818235977033e-09,
+      "last_over_first": 0.5330377705010202
+    },
+    "A_pi_total_sigma_RMS_Pa": {
+      "first": 6.57280634761137e-05,
+      "last": 6.059232983084425e-05,
+      "max": 0.00011465010350746935,
+      "last_over_first": 0.9218639136213737
+    }
+  },
+  "final_metrics": {
+    "time_s": 2.0000457763593587,
+    "pressure_mean_Pa": 7327.189555648803,
+    "top_pressure_Pa": 0.0,
+    "bottom_pressure_Pa": 9945.03916015625,
+    "top_settlement_mm": 0.986931777140898,
+    "bottom_settlement_mm": 0.00018404432124523307,
+    "J_min": 0.9962779454788936,
+    "J_mean": 0.9989947573091477,
+    "J_max": 0.9999670864524463,
+    "n_min": 0.29738483998800846,
+    "n_mean": 0.2992947895894512,
+    "n_max": 0.2999769716796976,
+    "rho_min": 2100.03620609398,
+    "rho_mean": 2101.108206539766,
+    "rho_max": 2104.1095559645746,
+    "A_pi_Uz_RMS_mm": 1.1384309840021283e-09,
+    "A_pi_total_sigma_RMS_Pa": 5.3385025156276765e-05,
+    "total_compression_mean_Pa": 10036.595057293527,
+    "finite_Kw_reference_mean_P_Pa": 7338.645863932555,
+    "finite_Kw_reference_top_settlement_mm": 0.9700433943782304,
+    "mean_P_relative_reference_percent": -0.15610929449608735,
+    "top_settlement_relative_reference_percent": 1.74099250204085,
+    "total_stress_offset_relative_q0_percent": 0.36595057293526967
+  },
+  "nearest_differences_descriptive_only": {
+    "short": {
+      "pressure_difference_RMS_Pa": 31.860738129127864,
+      "Uz_difference_RMS_mm": 3.776869844942941e-05
+    },
+    "fine": {
+      "pressure_difference_RMS_Pa": 1079.3002651113056,
+      "Uz_difference_RMS_mm": 0.030577308940911267
+    }
+  },
+  "actual_nearest_clock_coverage": {
+    "short": {
+      "overlap_pairs": 279,
+      "distinct_reference_frames": 279,
+      "duplicate_reference_uses": 0,
+      "exact_clock_pairs": 1,
+      "max_abs_gap_s": 6.222724913518274e-06,
+      "phase_mismatches": 0
+    },
+    "fine": {
+      "overlap_pairs": 559,
+      "distinct_reference_frames": 283,
+      "duplicate_reference_uses": 276,
+      "exact_clock_pairs": 1,
+      "max_abs_gap_s": 0.0909335863589707,
+      "phase_mismatches": 0
+    }
+  },
+  "comparison_limits": "Short458 actual maximum gap6.2227249135us; fine partial has sparse save gaps up to.0909335864s and duplicate nearest frames, so no cross-dt equivalence claim. Dynamic ramp/inertia, finiteKw and top-band traction differ from unfitted quasi-static companions. These are not independent-half or full-cycle accuracy gates.",
+  "candidate_review_accepted_for_full": true,
+  "reason": "All original native/runtime gates pass, smooth pressure and settlement progression and negligible bounded alternating modes through2s support the user-authorized full comparison. Preserve current dynamic limiter; no new half or reference solve.",
+  "new_full_physical_acceptance": false,
+  "old_conservative_run_intentionally_stopped_not_restarted": true,
+  "source_or_formal_changes": false,
+  "source_figures": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.history.csv",
+      "bytes": 744390,
+      "sha256": "52817517fda4b346827d6e07a8dc7b2f43638d6b4155bc92d3998292db024d2d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.layers.csv",
+      "bytes": 48155568,
+      "sha256": "13d80920af5015c41607ff219541efef65cecb2040ccb7b85efafbca00f19e05"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.nearest.csv",
+      "bytes": 112845,
+      "sha256": "eec984c9b3f15b25a364d1ced2004f45b9258905f0a996eaa940e9aa9d2bf00c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.theory.csv",
+      "bytes": 135561,
+      "sha256": "cb959e77e09f27668a53c5d8b9d6ebcdc1f1cfc9751596558c994f5016697ff6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.history.png",
+      "bytes": 276528,
+      "sha256": "801c4065ebba3948def22a4c89717d9e959ae1cbccb429bb9c1002aa69ec3fd0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_bigstep_r1.modes.png",
+      "bytes": 707100,
+      "sha256": "727b7c174a84aa46e17d061327321e64411269159a14dd87b68c6049e20b1b34"
+    }
+  ]
+}
