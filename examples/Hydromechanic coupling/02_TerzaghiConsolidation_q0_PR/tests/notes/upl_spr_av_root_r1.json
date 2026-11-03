@@ -1,0 +1,140 @@
+{
+  "stage": "upl_spr_av_root_r1",
+  "created_utc": "2026-11-03T14:49:13.551041+00:00",
+  "status": "CPU bounded SPR/AV compatibility passed; full2Tv actually running",
+  "source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+    "bytes": 267740,
+    "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+  },
+  "guide": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\doc\\xml_format\\_FmtXML_ElastoplasticSoil.xml",
+    "bytes": 40841,
+    "sha256": "ea3a0ac29495e09fabca404a2494fbc5622972db4ef293c69ce70c74da99e13f"
+  },
+  "source_change_regions": [
+    {
+      "line": 1759,
+      "purpose": "Dynamic SPR reuses its authoritative same-stage J-weighted mirror; no duplicate legacy reconstruction"
+    },
+    {
+      "line": 2690,
+      "purpose": "Artificial viscosity uses current mixture rho(J) and neighbor current rho(J)*V(J); original physical dv_visc/approach-only and defaultOFF arithmetic preserved"
+    },
+    {
+      "line": 4196,
+      "purpose": "Admit SPR only in the bounded constant-k g0 FreeSlip CPU column"
+    },
+    {
+      "line": 4334,
+      "purpose": "Admit finite nonnegative constant artificial viscosity in the same column; unsupported combinations still rejected"
+    }
+  ],
+  "proofs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_DebugCPU_r1.build.json",
+      "bytes": 2148,
+      "sha256": "aac60de4773e4d3ec1690c7baf569ddae043b74f58b4bb16e56370e68567d729"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_ReleaseCPU_r1.build.json",
+      "bytes": 706640,
+      "sha256": "d091338698c2992910e54d67c55b16d8fc6b18b6b70e1aaf836737e13255c032"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_pair_cpu_r1.run.json",
+      "bytes": 2693,
+      "sha256": "d6f714fe283d30327769046caed0fd8eb740eb2fcfe0e21d003adaee14c70693"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_off_native_r1.run.json",
+      "bytes": 372763,
+      "sha256": "2c37cd00e6ab2dda6077b48c909877ee7019699ede9099a93a58cdbdaaaa794b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_new_ON0_r1.native_r2.json",
+      "bytes": 561944,
+      "sha256": "341eb8f4edc81461ba0f3bebb747d661bb93c20f7bb9c1f0d13822b2f44678fb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_new_ONSPR_r1.native_r2.json",
+      "bytes": 564765,
+      "sha256": "5a6111681ce66136dfd5387ebd2146a8e7d57d88aa36676fb543942fd5a95d99"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_new_requested_ON_r1.native_r2.json",
+      "bytes": 405811,
+      "sha256": "3701178a2fd96e6b91ef00f3ed169d152ed03dec0badffd50ef633fe88f99f05"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_full_admission_r1.json",
+      "bytes": 112241,
+      "sha256": "e8f72b78578b856dc6226638130a88b243a5f539000e91b0600717708eead843"
+    }
+  ],
+  "checks": {
+    "default_OFF_original15_and_clock_exact_458": true,
+    "old_dynamic_ON0_all22_exports_and_clock_exact_458": true,
+    "SPR_shared_producer_all22_exports_and_clock_exact_458": true,
+    "requested_combination_all_original_native_guards_passed_458": true,
+    "pair_component_states": 31,
+    "pair_actual_dispatches": 248,
+    "pair_rows": 40,
+    "post_open_receiver_checks_per_ON_run": 2540,
+    "soil_ledger_checks_per_ON_run": 458000
+  },
+  "requested_short_final": {
+    "pressure_RMS_Pa": 9862.111740904915,
+    "top10_settlement_mean_mm": 0.10638563327369788,
+    "bottom10_settlement_mean_mm": 8.927475215938369e-05,
+    "settlement_abs_max_mm": 0.10638563327369788,
+    "velocity_XYZ_RMS_m_s": 0.0010186202411914507,
+    "saved_theta_RMS_s_inv": 0.011292979329589706,
+    "stored_stress_Frobenius_RMS_Pa": 1617.3540288332981,
+    "native_current_rho_min_kg_m3": 2100.0158262477585,
+    "native_current_rho_max_kg_m3": 2104.085488595676,
+    "native_rho_V_mass_kg_per_m": 209.98790858523216
+  },
+  "requested_short_loop_s": 134.323456,
+  "full": {
+    "start": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_2tv_CPU1_r1.start.json",
+      "bytes": 370640,
+      "sha256": "3df188211e1a4dca636e314900815377bfd60f42f4c30a03ac3da3f6acd8ff22"
+    },
+    "owner_pid": 68848,
+    "solver_pid": 37560,
+    "actual_process_identity_observed": true,
+    "tag": "upl_spr_av_2tv_CPU1_r1",
+    "steps": 38212357,
+    "dt_s": 1.9073486328125e-06,
+    "end_s": 72.88428688049316,
+    "planned_frames": 858,
+    "late_DeltaTv": 0.005,
+    "estimated_days": 4.5280175994256995,
+    "linear_estimate_only": true,
+    "actual_full_native_and_prefix_review_pending": true,
+    "completion_notifier": "fresh single same-thread watcher pending root read/launch"
+  },
+  "half_policy": "User explicitly waived repeated half/mid staircase; no new half was run or required for full launch; runtime safety unchanged",
+  "retired_half": "Original2s half intentionally stopped by userpriority, raw1297files retained; not numerical rejection",
+  "reader_r1_preflight_repair": "No reader was started. Authorized Debug build changed live canonical hash; fresh r2 binds genuine pre-edit archive and preserves failed r1 receipt. No solver rerun, raw overwrite or numerical-threshold change.",
+  "boundaries_and_controls": "Current public u-pl supports FreeSlip3 only in this column. Fresh matched FreeSlip u-pw OFF short exists. Historical formalVel0/dt1e-5 results remain qualifiedreferences; no matched OFF full is claimed.",
+  "GPU_dynamic_SPR_AV_HG_supported": false,
+  "exact_HG_restart_supported": false,
+  "physical_acceptance": false,
+  "Lian_Eq23_offline": {
+    "check": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_eq23_review_r1.check.json",
+      "bytes": 35036,
+      "sha256": "2a361775c841a279564f7cf685e36b8f4225422e34ac39c5e1521990b63760b3"
+    },
+    "figures_inspected_by_root": [
+      "upl_lian_eq23_review_r1_errors_clean.png",
+      "upl_lian_eq23_review_r1_spectra.png"
+    ],
+    "literal_ordered_interior_x2_tensor_relative_error": 0.038043963290819945,
+    "literal_ordered_interior_x2_trace_relative_error": 5.453105385130469e-16,
+    "interpretation": "Standalone constant-J 2D diagnostic only; tensor errors and trace cancellation differ. No unconditional precision gain or coupled stability proof; no operator replacement in this full run."
+  }
+}

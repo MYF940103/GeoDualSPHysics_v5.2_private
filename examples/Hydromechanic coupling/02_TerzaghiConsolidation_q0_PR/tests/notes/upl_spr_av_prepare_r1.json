@@ -1,0 +1,37 @@
+{
+  "stage": "upl_spr_av_prepare_r1",
+  "status": "authored_only_not_executed",
+  "author_files": ["tests/support/upl_spr_av_prepare_r1.py", "tests/notes/upl_spr_av_prepare_r1.json"],
+  "scope": "Preparation only: four fixed physical input variants and five CPU1 short jobs, no half. Root separately owns every run, typed exit, native read, exact regression and descriptive comparison. No imported fixed producer, build, executable invocation, solver, decoder, watcher, queue, Git or physical acceptance.",
+  "command_after_root_full_read_and_separate_authorization": "D:/anaconda3/python.exe -u -B tests/support/upl_spr_av_prepare_r1.py --execution-authorized",
+  "actual_retained_source": {
+    "run": "tests/logs/upl_hg_cpu1_short_r1.run.json, stage upl_hg_cpu1_short_r1.run,624373B/SHAa1b0b48a1f88573efa3fb4b48888534b6a4678b06d764bbb146b287ff263590d",
+    "call": "tests/logs/upl_hg_cpu1_short_r1.call.json, stage upl_hg_cpu1_short_r1.run_call, actual Python typed_returncode0,2439B/SHA4401245031382b83a660d9ef1cb4792204752dc7db9a700953620bd0d6285634",
+    "physical_manifest": "tests/logs/upl_hg_column_r1.inputs.json, coarse variant. Runtime/configuration14776B/SHAe1c187ea6d2f2c634a904cf60be20172bf1bd967a67d3f021a7181d83b8ff035. Preserve exact old runtime and prefix for newON0.",
+    "old_program": "tests/outputs/upl_hg_column_ReleaseCPU_r1/DualSPHysics5.2CPU_win64.exe,5115392B/SHAb5a44073b7303b7df917d01105d3cb0a20a0ca1a90a9a963ccb35be9b2b3530c",
+    "provenance_limits": "Bind immutable old run/call/build/manifest receipts, physical runtime/config/seed/normals, isolated program/runtime copies and265 source plus guide/README SNAPSHOTS. Recorded old original/archive equality is historical metadata only. Never hash old mutable source originals, old canonical programs/runtime or the old run's whole transitive inputs/raw payload list after authorized source edits."
+  },
+  "new_build_prerequisite": "Require actual tests/logs/upl_spr_av_ReleaseCPU_r1.build.json stage upl_spr_av_build_r1,passed true, no status alias. Actual MSBuild call stage upl_spr_av_build_r1.msbuild and original integer LASTEXITCODE0; exact current265 archived source/86 objects including main/85 non-main,17 libraries,four isolated runtime copies and passed source/runtime/canonical checks scoped to THAT build. New program path tests/outputs/upl_spr_av_ReleaseCPU_r1/DualSPHysics5.2CPU_win64.exe. Reviewed JSphCpu.cpp267740B/SHA6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e must match new archived CPP. Builder/note hashes are pinned. Preparation binds new immutable archives/objects/program/runtime/calls/logs; it neither rebuilds nor claims to re-prove live build inputs or default Debug order. The fixed CPU builder legitimately records environment:null; bind only a present environment Entry and never fabricate that proof.",
+  "variants": [
+    {"name": "OFF", "generated": true, "changes_from_exact_source": ["HydroMechDynamicSeepage:1->0", "SoilBoundaryDerivativeSPR:0->1", "Visco:0->0.1", "SoilDampingCoef:0.02->0.04"], "shared_by": ["upl_spr_av_old_OFF_r1", "upl_spr_av_new_OFF_r1"]},
+    {"name": "ON0", "generated": false, "changes_from_exact_source": [], "job": "upl_spr_av_new_ON0_r1", "input_prefix": "Exact retained tests/outputs/upl_hg_column_seed_r1/upl_hg_column_coarse_r1"},
+    {"name": "ONSPR", "generated": true, "changes_from_exact_source": ["SoilBoundaryDerivativeSPR:0->1"], "job": "upl_spr_av_new_ONSPR_r1"},
+    {"name": "requested_ON", "generated": true, "changes_from_exact_source": ["SoilBoundaryDerivativeSPR:0->1", "Visco:0->0.1", "SoilDampingCoef:0.02->0.04"], "job": "upl_spr_av_new_requested_ON_r1"}
+  ],
+  "unchanged_input_and_clock_contract": "All variants retain FreeSlip3,HG=.1, material/loading/drainage/geometry, exact dt2^-19 and TimeMax0.5. Actual retained XML has FOUR literal tout children plus default TimeOut, not five literal children: preserve the entire timeout DOM and default TimeOut, including settings beyond this stopped window. Each job uses original -cpu -ompthreads:1 -stable -mdbc_freeslip PREFIX OUT -dirdataout data -svres -nsteps:13120. The stop argument, not a rewritten TimeMax, defines actual end0.0250244140625s/458 saved states. Clock truth is the independently reconstructed integer SAVE table; old serialized JSON times are not equality truth. Event completedstep5243;254 post-open saved frames. All three generated BI4/Normals pairs are unchanged byte copies of the one retained fresh seed. No GenCase.",
+  "text_proof": "Only exact single-occurrence value tokens are replaced; source comments/XML whitespace/style are retained even where historical comments describe the old values. Manifest changed_values and actual XML numeric values are authoritative. Inverse text UTF8 bytes must reproduce the source exactly; inverse DOM must reproduce the whole source DOM. DtIni/DtFixed/TimeMax/TimeOut/HG nodes and the complete timeout DOM must be unchanged. No XML serialization changes are used.",
+  "outputs": {
+    "manifest": "tests/logs/upl_spr_av_r1.inputs.json",
+    "three_configurations": "tests/configs/upl_spr_av_{OFF,ONSPR,requested_ON}_r1.xml",
+    "three_seed_prefixes": "tests/outputs/upl_spr_av_seed_r1/upl_spr_av_{OFF,ONSPR,requested_ON}_r1",
+    "generated_files": 12,
+    "job_output_directories": "Five fresh tests/outputs/<job tag> paths are reserved by absence only; preparation does not create or run them."
+  },
+  "pending_proofs": "OldOFF versus newOFF original15/actual clocks exact; retained CPU1 short versus newON0 all native exports/clocks exact; newON0 versus newONSPR all exports/clocks exact. RequestedON retains the original typed22/all1040/ledger/fixed-state/drainage/signed-dterror/HG safety guards. RequestedON versus fresh matched FreeSlip OFF is descriptive physics, with no newly imposed5Pa/.005mm model-equivalence gate. Existing formal Vel0 stays a reference; no dynamic Vel0/NoSlip/3D admission. SPR1 reuses the existing intrinsic dynamic mirror producer; do not claim a new SPR force effect.",
+  "failure_and_ownership": "Fresh preparation paths and receipt only, exclusive file creation. Validate all planned text transformations before writing inputs. Preserve failed receipts and partial files; no automatic overwrite/retry. Final independent SHA256 rehash covers every consumed/generated Entry. No raw solver output is consumed by this preparer, and no existing source/control is changed.",
+  "author_executed_imported_or_syntax_checked": false,
+  "solver_reader_build_Git_watcher_queue_invoked": false,
+  "half_prepared_or_admitted": false,
+  "run_native_or_full_2Tv_admitted": false,
+  "physical_acceptance": false
+}

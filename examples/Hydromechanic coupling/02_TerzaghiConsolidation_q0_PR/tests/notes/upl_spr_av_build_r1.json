@@ -1,0 +1,37 @@
+{
+  "stage": "upl_spr_av_build_r1",
+  "status": "authored_only_not_executed",
+  "scope": "One isolated authoritative ReleaseCPU build after separately owned successful default DebugCPU build. No solver/component/reader/help/GPU build, install or half builder.",
+  "author_files": [
+    "support/upl_spr_av_build_r1.ps1",
+    "notes/upl_spr_av_build_r1.json"
+  ],
+  "derivation": {
+    "parent": "support/upl_hg_column_build_r1.ps1",
+    "parent_bytes": 17100,
+    "parent_SHA256": "ee7df96cfb8c61daf18f51c962c77d154f361df50d13b5e45fa16d033fac0bf3",
+    "changes": "Fixed ReleaseCPU validation; fresh upl_spr_av labels; bind immutable backup/control snapshots and exact reviewed CPU patch; prove only that source changed and the same nine MSBuild arguments except OutDir/IntDir/binlog. Existing build/call/source265/object86/runtime/tlog closure retained. Dormant GPU/Debug bodies remain unreachable, not new admitted branches."
+  },
+  "command": "powershell -NoProfile -ExecutionPolicy Bypass -File tests/support/upl_spr_av_build_r1.ps1 -Configuration ReleaseCPU -ExecutionAuthorized",
+  "outputs": {
+    "program": "tests/outputs/upl_spr_av_ReleaseCPU_r1/DualSPHysics5.2CPU_win64.exe",
+    "source_snapshot": "tests/outputs/upl_spr_av_ReleaseCPU_r1_source",
+    "intermediate": "src/VS/Intermediate/upl_spr_av_ReleaseCPU_r1",
+    "receipt": "tests/logs/upl_spr_av_ReleaseCPU_r1.build.json",
+    "call": "tests/logs/upl_spr_av_ReleaseCPU_r1.call.json"
+  },
+  "source": {
+    "path": "src/source/JSphCpu.cpp",
+    "bytes": 267740,
+    "SHA256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e",
+    "meaning": "Bounded public constant-k FreeSlip SPR-compatible shared J mirror plus current-mi artificial viscosity. No new SPR force closure, general wall, Vel0 or GPU scope."
+  },
+  "baseline": "logs/upl_spr_av_base_r1.json binds archived pre-edit CPU CPP/XML guide/Debug EXE/PDB; accepted isolated b5a440... ReleaseCPU program/build and265 source SNAPSHOTS remain immutable. Never reassert their old mutable original-source/canonical hashes after authorized edits/default Debug build.",
+  "build_contract": "Existing VS/DualSPHysics5ReCpu_vs2022.sln and project, same MSBuild tool/project hashes and ReleaseCPU arguments as accepted control. Fresh complete86 objects include main and85 non-main; current265 source/header and guide/README snapshots, actual compiler/linker tlogs,17 libraries, tool/runtime and canonical7 identities captured/rechecked. No compilation optimization override or object reuse.",
+  "ownership": "Actual direct native MSBuild integer LASTEXITCODE is sealed before post-build validation. Exclusive paths preserve failures/partials. Canonical7/source binding unchanged means during THIS isolated invocation only; current Debug output is captured after its separately owned build. Required default Debug success/order remains root-owned and is not proved or executed here.",
+  "author_execution": false,
+  "physical_acceptance": false,
+  "candidate_tests_pending": true,
+  "solver_started": false,
+  "canonical_program_installed": false
+}

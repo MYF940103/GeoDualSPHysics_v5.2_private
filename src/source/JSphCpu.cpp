@@ -1756,7 +1756,8 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
 /// Reconstructs derivative-only velocity at a fixed plane using its local slip mode.
 //==============================================================================
 void JSphCpu::ComputeBoundaryDerivativeVelocity(){
-  if(!SoilBoundaryDerivativeSPR)return;
+  //-The dynamic wall supplies the authoritative same-stage J-weighted mirror velocity.
+  if(!SoilBoundaryDerivativeSPR || DynamicPoreWall)return;
   for(unsigned p=0;p<Npb;p++){
     const tfloat4 v=Velrhopc[p];
     const TpSlipMode mode=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
@@ -2686,9 +2687,20 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             if(tvisco==VISCO_Artificial){//-Artificial viscosity.
               if(dot<0){
                 const float amubar=KernelH*dot_rr2;  //amubar=CTE.h*dot/(rr2+CTE.eta2);
+                if(PorosityFeedback && visco!=0.f){
+                  //-Use current mixture density and neighbor inertia, never passive legacy rhop.
+                  //-At a fixed wall this is mirror quadrature, not physical wall mass.
+                  const double rhow=SoilCte.PoreWaterRho;
+                  const double rhot2=rhow+(double(RhopZero)-rhow)/PoroJc[p2];
+                  const double robar=(pororhot1+rhot2)*.5,mass2=porovol2*rhot2;
+                  const double pi_visc=(-double(visco)*double(cbar)*double(amubar)/robar)*mass2;
+                  acep1.x-=float(pi_visc*double(frx));acep1.y-=float(pi_visc*double(fry));acep1.z-=float(pi_visc*double(frz));
+                }
+                else{
                 const float robar=(rhopp1+velrhop2.w)*0.5f;
                 const float pi_visc=(-visco*cbar*amubar/robar)*massp2;
                 acep1.x-=pi_visc*frx; acep1.y-=pi_visc*fry; acep1.z-=pi_visc*frz;
+                }
               }
             }
             else if(tvisco==VISCO_LaminarSPS){//-Laminar+SPS viscosity. 
@@ -4181,9 +4193,11 @@ void JSphCpu::InitDynamicPoreWallCpu(){
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
+  const bool allowcolumnspr=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+    && PeriX && !PeriY && !PeriZ && !ViscoTime);
   if(!DynamicPorePressure || !CaseNpb || TBoundary!=BC_MDBC || !UseNormals || !BoundNormalc || !BoundModec
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z)
-    || (Simulate2D && Gravity.y!=0) || SoilBoundaryDerivativeSPR
+    || (Simulate2D && Gravity.y!=0) || (SoilBoundaryDerivativeSPR && !allowcolumnspr)
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
@@ -4317,10 +4331,13 @@ void JSphCpu::InitPorosityObserverCpu(){
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
-  const bool allowcolumnhg=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+  const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
-  if(SoilHourglassXi!=0 && !allowcolumnhg)
+  if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
+  if(allowcolumnstabilization && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+    || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+    Run_Exceptioon("Dynamic column artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones
@@ -4333,9 +4350,10 @@ void JSphCpu::InitPorosityObserverCpu(){
   if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping))
-    || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
+    || (Visco!=0 && !allowcolumnstabilization) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+    || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/viscosity/DDT/artificial stress/SPR/Shepard; damping/HG/load/drainage require the bounded constant-k column.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/HG/SPR/artificial viscosity/load/drainage require the public constant-k column.");
   if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

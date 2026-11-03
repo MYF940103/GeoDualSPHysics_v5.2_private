@@ -1,0 +1,59 @@
+{
+  "stage": "upl_spr_av_full_plan_r1",
+  "status": "source_and_receipt_based_plan_only_no_full_inputs_or_job_created",
+  "decision": "After the current requested_ON short run/native review and root admission, start ONE fresh requested_ON CPU1 full2Tv run. Do not wait for matched OFF full, repeat half/mid windows, scan threads or restart retained work. Matched FreeSlip OFF short plus accepted formal CPU/GPU results are interim references with their boundary/model differences disclosed.",
+  "references": [
+    "tests/notes/upl_spr_av_prepare_r1.json",
+    "tests/logs/upl_hg_cpu1_short_r1.run.json",
+    "tests/logs/upl_hg_mid2_CPU1_coarse_r1.run.json",
+    "tests/logs/upl_hg_column_ReleaseCPU_short_c_r1.run.json",
+    "tests/logs/upl_spr_av_old_OFF_r1.run.json",
+    "tests/support/formal_release_prepare.py::inputs",
+    "src/source/JDsOutputTime.cpp::GetNextTime",
+    "src/source/JSphCpuSingle.cpp::Run/SaveData",
+    "src/source/JSph.cpp::SaveData",
+    "src/source/JDsFixedDt.cpp::GetDtError",
+    "tests/notes/gpu_release_result.md"
+  ],
+  "physics": "Use the exact requested_ON short runtime and original BI4/Normals, without GenCase: public constant-k u-pl,2D,g0,one fixed FreeSlip bottom,X periodic,SPR1,Visco.1,eta.04,HG.1 and all material/load/drainage settings unchanged. Keep the same proven new ReleaseCPU program/build/archive/runtime closure. Root formal Vel0 XML/BAT/results stay unchanged. No GPU dynamic SPR/viscosity/HG admission.",
+  "legacy_endpoint": {
+    "reference_definition": "E=2e6,nu=.3,H=1,k=1e-4,rho_w=1000,g_ref=9.81,tL=.01. M=E*(1-nu)/((1+nu)*(1-2nu)); Cv=k*M/(rho_w*g_ref)=350/12753. Preserve this existing nominal reference, not production gamma9.80665 or a substituted finite-Kw coefficient.",
+    "Cv_m2_s": 0.027444522857366895,
+    "nominal_end_exact_fraction": "51019/700",
+    "dt_s": 0.0000019073486328125,
+    "end_steps": 38212357,
+    "TimeMax_exact_dyadic_decimal": "72.8842868804931640625",
+    "arguments_stop": "-nsteps:38212357",
+    "actual_grid_end_s": 72.88428688049316,
+    "Tv_at_grid_end": 2.0000000320060067,
+    "rounding": "Ceil((tL+2*H^2/Cv)/dt); about1.16621microseconds above nominal. Actual clocks, finite-Kw/ramp/initial-state theory limits remain explicit."
+  },
+  "output_schedule": {
+    "rule": "Keep the first three retained tout entries byte-identical. Replace only the old fourth entry time=.125/timeout=.001953125 by time=.0250244140625/timeout=.18218571428571428. Set default TimeOut to that same late interval and TimeMax to the exact grid endpoint. No1469/1517-frame full-window requirement.",
+    "late_interval_reference_fraction": "DeltaTv=.005 gives DeltaT=12753/70000 seconds; XML round-trip double .18218571428571428",
+    "segments_time_interval_s": [[0,0.0001220703125],[0.009765625,0.0000019073486328125],[0.01025390625,0.0001220703125],[0.0250244140625,0.18218571428571428]],
+    "derivation": "Model actual GetNextTime: advance segment, nt=unsigned((t-tb)/tout), increment until tb+tout*nt>t, cap at next segment boundary. Save on first n*dt>=threshold and force final frame at TimeMax/nsteps. Binary64 source-derived arithmetic model gives858 total:458 startup +399 late regular +1 final partial.",
+    "first_late_completed_step": 108638,
+    "first_late_time_s": 0.20721054077148438,
+    "penultimate_completed_step": 38124716,
+    "penultimate_time_s": 72.71712493896484,
+    "frames": 858,
+    "clock_truth": "Future preparation must emit the complete independently generated858 integer table, savedStep=n-1 except initial0; actual native TimeStep/Step/lockedDt must match. Late cadence is anchored at the startup endpoint, so first late Tv=.005412349, not an invented exact Tv=.005. Plot/reference uses actual Tv=Cv*(t-.01)/H^2.",
+    "prefix_proof_pending": "Planned first458 completed-step integers match the short exactly, including13120 as an ordinary scheduled save. This is not a measured native bitproof. SaveData refreshes free-surface/dynamic wall data and resets signed dterror; compare the full run's first458 original15/physical/Jtheta/n/clock exports, including actual signed diagnostics, with the genuine completed requested_ON short before claiming equality. No header/count/stage patch."
+  },
+  "cost_and_controls": {
+    "selection": "CPU1. Matching old HG short CPU1/CPU8 loop times134.980179/139.216217s for13120steps do not justify a new thread scan or automatic CPU8 selection.",
+    "ON_CPU1_estimate": "Old HG CPU1 short134.980179s/13120steps projects4.55days; actual2s loop13932.866211s/1048576steps projects5.88days. New requested viscosity work and machine load are unmeasured here; update from its actual short receipt, budget days, not hours. Sparse late output does not remove38199237 remaining physical updates after startup.",
+    "matched_OFF_CPU1_estimate": "Actual newly sealed oldOFF short loop110.448578s/13120steps projects3.72days at the same full step count. It is a linear estimate, not a full cost result. Defer this extra full run; no second full process or automatic chain is required for ON launch.",
+    "available_legacy_references": "Accepted k1e-4 formal u-pw CPU/GPU2Tv results already exist:7288429steps atdt1e-5, legacy Vel0 rather than the new FreeSlip control. Historical loop69785.181087/33148.285782s; reuse costs no new solver time. They are qualified references, not matched causal ON/OFF proof.",
+    "later_GPU_OFF_only": "Legacy GPU masterOFF supports SPR/AV/HG independently of blocked dynamic GPU entry. A fresh matched FreeSlip GPU OFF full would require its own justified same-parameter short/native backend check and admission; not prepared or launched here. Historical GPU per-step scaling suggests roughly2.01days at38212357steps, not a validated new FreeSlip timing. Keep deferred rather than expand a backend matrix."
+  },
+  "minimum_controls": "Future full preparation clones requested_ON physical inputs and changes only TimeMax/default TimeOut/final tout segment; bind genuine passed short component/oldOFF-newOFF/ON0/SPR-alias/requested native proofs and current immutable program/archive closure. One direct owner, one actual Python typed returncode, start PID+creation/program/argv, no scheduler timeout/retry/restart/auto-next. Reuse generic binding/owned-call primitives only; fixed short producers/readers cannot be relabelled full. One full typed native adapter may reuse original Load/Metadata/Original15 and guard bodies with honest858 schedule/stage, followed by offline theory/descriptive comparison. No interpolation or fabricated OFF dynamic fields.",
+  "guards_and_counts": "Retain1040 IDs/22 typed ON arrays, finite elastic state/no exclusions/no bottom crossing, J/n/V/rho/k ledger<=5e-13, unmasked fixed markers, actual drainage mask0 through5243/10 after,857 finite nonempty signed dterror intervals<=1e-14, current-J HG counters/cache,dt/tau<=.2 andspin<.01. Expected858000 soil ledger/n rows,34320 fixed markers,892320 all-ID J/theta rows,654 post-open frames/6540 receivers. Full counters force/rate76424714,predictor/corrector38212357,calculations38212358,reuses38212356. Preserve existing admitted safety thresholds; no new5Pa/.005mm equivalence gate between different ON/OFF models. Saved-load diagnostics do not prove independent every-force-stage traction/energy.",
+  "one_shot_followup": "Reuse the verified held owner/start/PID-creation and sealed call/run binding pattern. One same-thread codex queue attempt for thread01a07683-bc64-7463-8db7-9ee6243967d8 after validated completion or observed failure;45s timeout, uncertain status means no resend. Notify only; no solver/decoder/analysis/build/Git/cleanup/rearm or automatic OFF job. Root reviews actual results and chooses later work.",
+  "full_inputs_authored": false,
+  "solver_build_native_watcher_Git_or_process_action_performed": false,
+  "full_run_admitted": false,
+  "half_requested": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,40 @@
+{
+  "stage": "upl_spr_av_pair_cpu_r1",
+  "status": "authored_only_root_full_read_and_new_ReleaseCPU_link_required",
+  "scope": "Private, nonadvancing 2-D two-particle component using a protected JSphCpuSingle-derived Pair and the actual compiled Interaction_Forces_ct dispatch. This fixture does not copy the AV expression, override Run, exercise public initialization, solve a case, decode native output, run Darcy or MLS, establish general boundary or 3-D support, or grant physical acceptance.",
+  "files_added_only": ["support/upl_spr_av_pair_cpu_r1.cpp", "notes/upl_spr_av_pair_cpu_r1.json"],
+  "source_observed_before_authoring": {
+    "path": "src/source/JSphCpu.cpp",
+    "bytes": 267740,
+    "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e",
+    "actual_AV_branch": "InteractionForcesFluid around lines 2677-2704; PorosityFeedback with nonzero viscosity uses current receiver/neighbor mixture rho and neighbor volume*rho. Visco-zero takes the unchanged old branch; SPR derivative velocity does not replace dv_visc."
+  },
+  "fixture_pattern": {
+    "path": "support/bv_pair_cpu_r1.cpp",
+    "bytes": 7625,
+    "sha256": "72a15182943701ba7a21f0121266dd6c668f1f2532eced024d56fe1ad0ec86b1",
+    "reused_structure_only": "Protected Pair, two particles, one-cell StDivDataCpu, actual Interaction_Forces_ct, fresh output directory, CSV and completion. The old Near 20/2000 Pa floors are not reused."
+  },
+  "physical_ledger_inputs": "Reference Rho0=2, pore-water rho=1, n0=0.5, reference M0=1, Cs0=4, h=0.25, oblique separation=(0.0625,0,0.125), manual wall normal=(0,0,1), alpha=0.125. J pairs are (1,1), (0.75,1.25), (0.625,1.5), all strictly above 1-n0=0.5. Current rho, volume and mi are captured through the actual production GetPorosityFeedbackStateCpu helper; no AV formula is reproduced in this component.",
+  "state_reset_and_ownership": "Every native call resets pressure, pore pressure, effective stress, acceleration, density/pore/stress derivative outputs and theta. PorosityObserver and PorosityFeedback are explicit; DynamicPorePressure, DynamicPoreWall and DynamicPoreConductivity stay false because this component bypasses public initialization and tests only fused interactions. SoilBoundaryDerivativeSPR stays false in all calls: derivative_scratch_present is a private manually supplied consumer buffer, not a public SPR producer switch. Np=2, Npb=0 for two fluid receivers or 1 for wall/fluid, NpbOk=0, begin cells={0,Npb,Npb,2}; the actual member DivData is set to the passed one-cell search. Borrowed BoundModec, BoundNormalc, TangenVelc, BoundDerivativeVelc, PoroJc, PoroThetac and DivData are nulled before base destruction; temporary call borrows are reset on return.",
+  "oracle": "AV is the actual Visco-on minus Visco-zero acceleration, with zero initial pressure and stress. Each receiver gets separate actual compiled legacy-branch on/off calls using legacy density inputs equal to the current pair rho and the global legacy MassFluid=MassBound equal to that receiver neighbor current mi. Separate receiver calls are necessary because a single global legacy mass cannot represent unequal current mi for both nodes. Oracle mass and density conversions to float are recorded and covered by the predeclared float-roundoff budget. The reference is not a copied source expression.",
+  "trial_matrix": "31 input states: three physical J pairs, approach/rest/recession, two-fluid or fixed-wall/one-fluid; wall states each use derivative scratch absent and present. Two-fluid vz=(-motion/8,motion/8), wall stored vz=3/8, wall physical tangent velocity=0, wall fluid vz=motion/4, with motion=-1/0/1. Four extra manual tangent states use J=(0.75,1.25), vx_wall=vx_fluid=TangenVel.x=+/-1/8, zero normal velocity and scratch absent/present. On the oblique pair these require exact AV null rather than relying on a vertical dot product being blind to tangential errors. Each state has native Visco-on/off controls and independent passive legacy density mutation from (2,2) to (0.75,7). Manually supplied derivative auxiliary velocity=(0.5,0,0.75) is toggled without changing stored physical velocities or TangenVel. Nonzero derivative response is required while isolated AV stays unchanged. Expected authoring count is 248 native dispatch calls and 40 per-receiver CSV rows; root must verify actual completion rather than treating those expectations as observed results. This does not call the SPR/dynamic-wall producer or Init. Actual public SPR alias equivalence belongs to a separate project-main short.",
+  "predeclared_roundoff": {
+    "epsilon": "std::numeric_limits<float>::epsilon()",
+    "force_comparison": "For each Cartesian component, budget=64*epsilon_float*current_receiver_mi*(abs(actual_on)+abs(actual_off)+abs(reference_on)+abs(reference_off)). The reference may be the actual compiled legacy oracle, passive-Rhop mutation or derivative-scratch toggle. This covers the production float acceleration addition and on/off AV subtraction; no dimensional absolute floor is added.",
+    "fluid_pair_opposition": "Each component uses actual current-mi-weighted isolated native forces F0 and F1. Budget=128*epsilon_float*(abs(F0)+abs(F1)); wall mirror quadrature is not treated as physical wall mass or subjected to a fictitious wall momentum check.",
+    "instantaneous_work": "Fluid pair work=sum(F_i dot physical v_i); fixed-wall fluid relative work=F_fluid dot (v_fluid-v_tangent). Require strict negative work for approach and exact zero AV force for rest/recession. Compare actual and legacy-oracle work with budget=256*epsilon_float*sum(abs(actual work terms)+abs(reference work terms)); any allowed positive roundoff is also bounded by that budget.",
+    "zero_scale": "A zero operand scale requires exactly zero error. Every Visco-zero acceleration and all rest/recession AV accelerations must be exactly zero. No unit floor, fitted tolerance or old Near floor is used.",
+    "scaled_error_gate": "Each nonzero-budget error/budget must be <=1. Nonfinite diagnostics fail; completion prints nonfinite maxima as JSON null with passed=false."
+  },
+  "J1_legacy_control": "The (1,1) rows require the actual feedback force to match actual compiled legacy force with M=1 and rho=(2,2) within the same predeclared float budget. All calls keep the public SPR flag zero and include Visco-zero controls. Passive legacy Rhop mutation must not affect feedback AV; manual derivative-scratch mutation changes derivative outputs while the physical/tangent dv_visc sample remains fixed. No public SPR producer or initialization acceptance is claimed.",
+  "future_output": "Run only the separately linked new component as upl_spr_av_pair_cpu_r1 --out <fresh tests/outputs directory>. It refuses any existing directory and writes pairs.csv plus completion.json. CSV records configured J/rho/velocities/differences, production current rho/V/mi, actual on/off and oracle accelerations, mi-weighted forces, derivative values, pair residual/work and every scaled error. completion.json explicitly labels private component, no time integration, no public initialization, no Darcy/MLS/general boundary/3-D/physical acceptance.",
+  "build_contract": "Root must full-read both authored files, verify source closure, and compile/link this new component against the newly rebuilt 85 ReleaseCPU non-main production objects from the current source. Never substitute the old JSphCpu object or an archived half-run object. Production source ordering is unchanged; static review and a separate authorized project-main short cover the full pipeline. No component build/run is performed by this author.",
+  "latest_scope": "The user stopped the default half workflow and requested u-pl SPR+AV integration followed by full 2 Tv. Do not launch or rearm any old or new watcher here, do not resume the stopped half run, and preserve its retained raw files. This component alone neither admits nor executes the later full run.",
+  "script_imported_or_executed": false,
+  "syntax_checked": false,
+  "built": false,
+  "component_executed": false,
+  "watcher_rearmed": false,
+  "physical_acceptance": false
+}

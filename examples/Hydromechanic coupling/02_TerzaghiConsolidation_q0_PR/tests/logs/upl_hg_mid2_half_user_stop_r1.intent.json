@@ -1,0 +1,100 @@
+{
+  "stage": "upl_hg_mid2_half_user_stop_r1",
+  "requested_utc": "2026-11-03T13:19:28.227384+00:00",
+  "reason": "User explicitly waived repeated half-step prerequisite, then prioritized u-pl SPR and artificial-viscosity integration before a full same-parameter2Tv comparison.",
+  "start": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_CPU1_half_r1.start.json",
+    "bytes": 407337,
+    "sha256": "07d853d1524644926ddda38a19df8f6389c62ba7ca347fafa18bf4257a31398d"
+  },
+  "watcher_lock": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_followup_r1.lock.json",
+    "bytes": 632317,
+    "sha256": "68e8b4883b0884f521cbbe37c1f4c8cadff921f0c8f5a67f5e76a70f1fd44bd3"
+  },
+  "last_observed_watcher_status": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_followup_r1.status.json",
+    "bytes": 1423,
+    "sha256": "b458413bc3b0bb8d257f4243e82098b6aa527a55e64772e39aa8d9d55f1fde83"
+  },
+  "owner": {
+    "pid": 72324,
+    "created_epoch": 1793710259.5733173,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "command": [
+      "D:\\anaconda3\\python.exe",
+      "-u",
+      "-B",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_r1.py",
+      "--action",
+      "run",
+      "--admission",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_hg_mid2_half_admission_r1.json",
+      "--execution-authorized"
+    ],
+    "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src"
+  },
+  "solver": {
+    "pid": 53352,
+    "created_epoch": 1793710292.596491,
+    "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_column_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+    "command": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_column_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+      "-cpu",
+      "-ompthreads:1",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_mid2_half_seed_r1\\upl_hg_mid2_half_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_mid2_CPU1_half_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2097152"
+    ],
+    "parent_pid": 72324
+  },
+  "watcher": {
+    "pid": 33236,
+    "created_epoch": 1793710323.605858,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "command": [
+      "D:\\anaconda3\\python.exe",
+      "-B",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_followup_r1.py",
+      "--worker",
+      "--thread",
+      "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "--codex",
+      "C:\\Users\\syosh\\.vscode\\extensions\\openai.chatgpt-26.1021.22027-win32-x64\\bin\\windows-x86_64\\codex.exe",
+      "--owner-pid",
+      "72324",
+      "--owner-created",
+      "1793710259.5733173",
+      "--lock-sha256",
+      "68e8b4883b0884f521cbbe37c1f4c8cadff921f0c8f5a67f5e76a70f1fd44bd3"
+    ],
+    "observed_status": "waiting",
+    "queue_attempts": 0,
+    "first_poll_utc": "2026-11-03T12:52:34.815327+00:00",
+    "lock": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_followup_r1.lock.json",
+      "bytes": 632317,
+      "sha256": "68e8b4883b0884f521cbbe37c1f4c8cadff921f0c8f5a67f5e76a70f1fd44bd3"
+    }
+  },
+  "stop_order": [
+    "watcher",
+    "owned_solver",
+    "allow_original_owner_to_seal_original_returncode"
+  ],
+  "last_console_rows_before_stop": [
+    "Part_1284      0.140625        147456     2048   10430.02  04-11-2026 04:05:51",
+    "Part_1285      0.142578        149504     2048   10288.13  04-11-2026 04:05:25",
+    "Part_1286      0.144531        151552     2048   10685.24  04-11-2026 04:05:10",
+    "Part_1287      0.146484        153600     2048   11205.63  04-11-2026 04:05:09",
+    "Part_1288      0.148438        155648     2048   11125.27  04-11-2026 04:05:08"
+  ],
+  "native_completion_or_physical_acceptance_claimed": false,
+  "restart_or_rearm_allowed": false,
+  "raw_output_preserved": true
+}
