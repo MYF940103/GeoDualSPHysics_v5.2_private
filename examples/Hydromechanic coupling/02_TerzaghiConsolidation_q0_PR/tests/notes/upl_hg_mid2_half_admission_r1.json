@@ -1,0 +1,70 @@
+{
+  "stage": "upl_hg_mid2_half_admission_r1",
+  "created_utc": "2026-11-03T12:50:29.017751+00:00",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_hg_mid2_CPU1_half_r1"
+  ],
+  "physical_acceptance": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_r1.inputs.json",
+      "bytes": 626846,
+      "sha256": "7581c55194c9d861c992ced408046f45e2aeaef048225213068afecd91793fec"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_reader_ReleaseCPU_r1.helper.json",
+      "bytes": 316937,
+      "sha256": "44a66dae347ee26c7b1bae77936c371685314a24bb78b2e97b2844b32abc820c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_CPU1_coarse_r1.native.json",
+      "bytes": 903743,
+      "sha256": "3ca8c2726c54899b1e8d030907dddbd7e827510ad52df92356fb57ecedbc20c0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_review_r1.check.json",
+      "bytes": 45828,
+      "sha256": "62f9241ac4e0ebf20cc7ff6d776412e8e674e90f75e6c478429a9ea44ea4d3e1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_hg_mid2_root_r1.json",
+      "bytes": 7761,
+      "sha256": "5cddccbeecd1bed8fdb531bdb0849de7279b4e08b2671f1fbb6362fd349d3ff2"
+    }
+  ],
+  "root_full_read_and_static_review_performed": true,
+  "independent_static_review": "No concrete defect reported; no script execution by reviewers.",
+  "reviewed_author_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_r1.py",
+      "bytes": 43093,
+      "sha256": "ca5b2d2acbe3f78ea8365ea815fb896537d628e6893e3d42604450d89f9f9337"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_native_r1.cpp",
+      "bytes": 18578,
+      "sha256": "f9644c3f52489687217fa013576624f5410f1160dcc06a6ac61b442b1387a987"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_hg_mid2_half_r1.json",
+      "bytes": 9283,
+      "sha256": "91413f292cd28b2cb7a9b6da21b6d12217854bc327c62a6d6b842894da21558b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_followup_r1.py",
+      "bytes": 23802,
+      "sha256": "096be0851c4878d26ac743aab3116a2c233431273a6a3307acb7c595fbdfa9b1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_hg_mid2_half_followup_r1.json",
+      "bytes": 6624,
+      "sha256": "19528ced08686a3e50ffc109d8f7b5d75da309235e59537c5b3b3feda8551c47"
+    }
+  ],
+  "admitted_scope": "One fresh independent CPU1 half at2^-20s through2s/2097152steps/1517frames only, using frozen same program,xi=.1,eta=.02. Same physical ramp/drain/output times and seed. All1517 actual-matched pressureRMS<=5Pa/material-IDXYZmax<=.005mm/time<=1e-14s and original native22/all1040/drain/HG guards remain. Native and comparison require separate actions after owned completion.",
+  "run_owned_exit_or_half_result_already_observed": false,
+  "automatic_decoder_analysis_full_or_formal_admission": false,
+  "formal_or_production_changes": false,
+  "reason": "Root-inspected coarse1517 review shows alternating-column mode suppressed through2s, coherent pressure/material settlement, and reduced stress spatial variation; independent temporal validation is the next bounded test."
+}

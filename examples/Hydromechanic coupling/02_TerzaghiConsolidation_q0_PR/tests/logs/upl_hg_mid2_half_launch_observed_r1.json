@@ -1,0 +1,79 @@
+{
+  "stage": "upl_hg_mid2_half_launch_observed_r1",
+  "observed_utc": "2026-11-03T12:52:37.823348+00:00",
+  "start": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_CPU1_half_r1.start.json",
+    "bytes": 407337,
+    "sha256": "07d853d1524644926ddda38a19df8f6389c62ba7ca347fafa18bf4257a31398d"
+  },
+  "owner": {
+    "pid": 72324,
+    "created_epoch": 1793710259.5733173,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "command": [
+      "D:\\anaconda3\\python.exe",
+      "-u",
+      "-B",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_r1.py",
+      "--action",
+      "run",
+      "--admission",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_hg_mid2_half_admission_r1.json",
+      "--execution-authorized"
+    ],
+    "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src"
+  },
+  "owner_observed_exact_live": true,
+  "actual_solver": {
+    "pid": 53352,
+    "created_epoch": 1793710292.596491,
+    "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_column_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+    "command": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_column_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+      "-cpu",
+      "-ompthreads:1",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_mid2_half_seed_r1\\upl_hg_mid2_half_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_mid2_CPU1_half_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:2097152"
+    ],
+    "parent_pid": 72324
+  },
+  "solver_program_arguments_parent_exact": true,
+  "watcher": {
+    "pid": 33236,
+    "created_epoch": 1793710323.605858,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "command": [
+      "D:\\anaconda3\\python.exe",
+      "-B",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_mid2_half_followup_r1.py",
+      "--worker",
+      "--thread",
+      "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "--codex",
+      "C:\\Users\\syosh\\.vscode\\extensions\\openai.chatgpt-26.1021.22027-win32-x64\\bin\\windows-x86_64\\codex.exe",
+      "--owner-pid",
+      "72324",
+      "--owner-created",
+      "1793710259.5733173",
+      "--lock-sha256",
+      "68e8b4883b0884f521cbbe37c1f4c8cadff921f0c8f5a67f5e76a70f1fd44bd3"
+    ],
+    "observed_status": "waiting",
+    "queue_attempts": 0,
+    "first_poll_utc": "2026-11-03T12:52:34.815327+00:00",
+    "lock": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_half_followup_r1.lock.json",
+      "bytes": 632317,
+      "sha256": "68e8b4883b0884f521cbbe37c1f4c8cadff921f0c8f5a67f5e76a70f1fd44bd3"
+    }
+  },
+  "terminal_event_already_observed": false,
+  "physical_acceptance": false,
+  "duplicate_solver_or_watcher_started": false
+}

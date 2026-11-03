@@ -1,0 +1,31 @@
+{
+  "stage": "upl_lian_second_order_reaudit_r1",
+  "status": "read_only_findings_preserved_operator_not_executed_or_accepted",
+  "parent_plan": "examples/Hydromechanic coupling/validation/upl_lian_second_order_plan_r1.json",
+  "primary_sources": {
+    "PDF": "src/papers/PDF/Lian 2023 u-pl.pdf",
+    "markdown": "src/papers/u-pw/Lian 2023 u-pl.md",
+    "visual_check": "PDF skill read; existing validation/upl_refs_r1/lian_p06.png inspected for page 6 Eq23/definitions/Eq25. No new render."
+  },
+  "literal_2D_equation": {
+    "definitions": "r_ji=x_j-x_i; ghat_ij=C_i*grad_i(W_ij), using the receiver normalization from Eq22; gp_i=sum_j V_j*(p_j-p_i)*ghat_ij; F_ij=dot(r_ji,ghat_ij)/dot(r_ji,r_ji); D_mn=4*r_m*r_n/r2-delta_mn.",
+    "Eq23": "H_mn=sum_j V_j*((p_j-p_i)-dot(gp_i,r_ji))*D_mn*F_ij. Retain Hxx,Hxz,Hzz, not trace alone.",
+    "matched_trace": "2D trace(D)=2; production d=-r_ji and dp=p_i-p_j. With both pair matrices equal receiver C_i, Eta2=0, matched volumes/neighbors/kernel and unchanged gradient target, lp-gp_i dot lx=trace(H). This algebra is not discrete Eq23 validation or quadratic exactness."
+  },
+  "current_code": {
+    "CPU": "src/source/JSphCpu.cpp::ComputeDynamicPorePressureRateCpu",
+    "GPU": "src/source/JSphGpu_ker.cu::KerComputeDynamicPorePressureRate",
+    "distinctions": "Actual w=V_j*dot(d,(C_i+C_j)*gradW)/(r2+Eta2); gp uses C_i. Closed-face gpcorr uses (grad p+rho_w*Ace).n=0. Separate receiver-C, Eta2, pair-C and Neumann effects. Constant isotropic k contracts trace(H); Eq25 variable-k pair means are a later task."
+  },
+  "minimal_future_harness": [
+    "Reuse the standalone actual-header moment pattern in case02 tests/support/upl_p3_spatial_symbol_r1.cpp. No JSph, BI4 or integration. Current Wendland isolates the derivative; no full paper-kernel reproduction claim.",
+    "Ordered and deterministic bounded-jitter 2D clouds, constant volume/J=1 and isotropic k. Fields: 1,x,z,x*x,x*z,z*z plus one smooth mode on three small spacings. Report interior/truncated-support errors, all Hessian components, trace and conditioning.",
+    "Keep receiver-C/r2, receiver-C/Eta2, pair-C/Eta2 and compatible Neumann cases separate. Require exact constant null; predeclare scale-aware forward-roundoff budgets for algebra/affine checks. Measure quadratic errors/refinement rates without assuming exactness or order.",
+    "One small periodic matrix per cloud: row sums, weighted global residual, symmetric-part/eigenvalue behavior, work/memory. Existing upl_gpu_darcy_component_r3.cpp regular/jitter checks establish Lstar implementation, not Eq23. candidate_screen.py P2 is a different least-squares diagnostic."
+  ],
+  "scope_limits": "No variable-k/anisotropic expansion, 3D coefficient transplant, coupled runs or threshold changes. Algebra does not complete Eq23 validation. Preserve accepted controls.",
+  "harness_authored_or_executed": false,
+  "Eq23_discrete_validation_passed": false,
+  "production_equations_or_existing_plan_changed": false,
+  "physical_acceptance": false
+}
