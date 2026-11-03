@@ -151,7 +151,8 @@ def exports(u, directory, files, completion, table, window, fresh_reader=True):
     import numpy as np
     u.adopt(np.__file__)
     leaves = {Path(v["path"]).name: v for v in files}
-    need(set(leaves) == LEAVES and len(files) == 13 and all(Path(v["path"]).resolve().parent == directory.resolve() for v in files), "Exact13 export closure required")
+    need(set(leaves) == LEAVES and len(files) == 13 and {v.name for v in directory.iterdir()} == LEAVES and
+         all(Path(v["path"]).resolve().parent == directory.resolve() for v in files), "Exact13 export closure required")
     for v in files:
         u.bind(v)
     c, count = u.read(completion), len(table)
@@ -251,6 +252,7 @@ def review(u,p,b,result):
     native_e=u.adopt(T/"logs/upl_bigstep_r1.native.json")
     receipt=u.read(native_e)
     need(receipt.get("stage")==NAME+".native" and receipt.get("passed")is True and receipt.get("reader_attempts")==2 and
+         receipt.get("original_native_guards_passed")is True and receipt.get("physical_acceptance")is False and
          receipt.get("bindings_unchanged")is True and receipt.get("independent_final_rehash_performed")is True and receipt["reader_helper"]==he,
          "Passed two-call native phase required; review never decodes")
     data={}
@@ -263,10 +265,14 @@ def review(u,p,b,result):
         data[key]=exports(u,DIRS[key],item["files"],item["completion"],v["table"],v["window"])
     short_e=pinned(u,"logs/upl_spr_av_new_requested_ON_r1.native_r2.json");s=u.read(short_e)
     sr=u.read(s["source_run"]);sc=u.owned(s["reader_call"],SHORT+".reader_r2_call");u.owned(sr["call"],SHORT+".run_call")
-    need(s.get("passed")is True and s.get("original_native_guards_passed")is True and s.get("bindings_unchanged")is True and
+    need(s.get("stage")==SHORT+".native_r2" and s.get("passed")is True and s.get("original_native_guards_passed")is True and s.get("bindings_unchanged")is True and
          s.get("independent_final_rehash_performed")is True and sr.get("passed")is True and sr["program"]==ctx["program"] and
-         (sr["job"]["SPR"],sr["job"]["Visco"],sr["job"]["eta"],sr["job"]["HG"])==(1,.1,.04,.1) and sc["program"]==u.read(s["reader_helper"])["program"], "Genuine matched requested458 short required")
-    data["short"]=exports(u,Path(s["paths"]["native_dir"]),s["files"],s["completion"],sr["job"]["saved_clock_table"],"dyadic_short458",False)
+         s["source_build"]==sr["source_build"] and s["source_solver_call"]==sr["call"] and
+         (sr["job"]["SPR"],sr["job"]["Visco"],sr["job"]["eta"],sr["job"]["HG"])==(1,.1,.04,.1) and sc["program"]==u.read(s["reader_helper"])["program"] and
+         sc["arguments"]==["--read","CPU",str(Path(sr["job"]["output_directory"])/"data"),"coarse",s["paths"]["native_dir"]], "Genuine matched requested458 short required")
+    short_table=[dict(r,dt_s=sr["job"]["dt_s"],post_open_by_completed_step=int(r["completed_steps"]>sr["job"]["event_completed_step"]))
+                 for r in sr["job"]["saved_clock_table"]]  # Add analysis metadata only; original native clocks/steps stay literal.
+    data["short"]=exports(u,Path(s["paths"]["native_dir"]),s["files"],s["completion"],short_table,"dyadic_short458",False)
     products={k:T/"figures"/("upl_bigstep_r1."+k) for k in ("history.csv","layers.csv","nearest.csv","theory.csv","history.png","modes.png")}
     u.fresh(*products.values())
     history,layer_rows,nearest=[],[],[]
@@ -331,6 +337,8 @@ def review(u,p,b,result):
     fig.suptitle("All100 original material layers; alternating original X columns, saved states only");fig.savefig(products["modes.png"],dpi=160);plt.close(fig)
     late=[v for v in history if v["series"]=="candidate" and 1.5<=v["time_s"]<=2.]
     result.update(source_native=native_e,source_requested_short=short_e,nearest_actual_time_coverage=coverage,
+        requested_short_analysis_metadata=dict(source_run=s["source_run"],dt_source_field="job.dt_s",dt_s=sr["job"]["dt_s"],
+            event_source_field="job.event_completed_step",event_completed_step=sr["job"]["event_completed_step"],original_four_field_table_preserved=True,native_clocks_or_receipts_rewritten=False),
         late_1p5_to_2s={field:dict(first=late[0][field],last=late[-1][field],max=max(v[field]for v in late),last_over_first=late[-1][field]/late[0][field] if late[0][field]>0 else None)
             for field in ("A_pi_Uz_RMS_mm","A_pi_total_sigma_RMS_Pa")},late_actual_time_bounds_s=[late[0]["time_s"],late[-1]["time_s"]],
         theory_constants=dict(E=E,nu=nu,M=M,k=k,rho_w=water,g_reference=9.81,Kw=Kw,n0=n0,q0=q0,H=1.,tD=tD,Cv_legacy=Cv,B_finite_Kw=B,Cv_finite_Kw=Cv*B,modes=512),

@@ -562,6 +562,51 @@
     "owner_pid_at_launch": 61776,
     "solver_pid_at_launch": 68640,
     "dt_s": 6.250143051147461e-06,
-    "next": "Seal original run, decode once, review actual native pressure/material settlement/stress/alternatingX modes and qualified comparisons. If justified, prepare and start one fresh larger-step full2Tv without another routine approval or half staircase."
+    "next": "Seal original run, decode once, review actual native pressure/material settlement/stress/alternatingX modes and qualified comparisons. If justified, prepare and start one fresh larger-step full2Tv without another routine approval or half staircase.",
+    "offline_review_root": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_review_root_r1.json",
+      "bytes": 1517,
+      "sha256": "e1da52a6fe7d49c60e8c722ec83b4707b15abe576cd00e11dffb950b7d52b3ad"
+    },
+    "offline_phase_commands_after_sealed_run": [
+      "D:/anaconda3/python.exe -B tests/support/upl_bigstep_review_r1.py --phase native --execution-authorized",
+      "D:/anaconda3/python.exe -B tests/support/upl_bigstep_review_r1.py --phase review --execution-authorized"
+    ],
+    "offline_receipt_paths": [
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_bigstep_r1.native.json",
+      "02_TerzaghiConsolidation_q0_PR/tests/logs/upl_bigstep_r1.review.json"
+    ],
+    "larger_full_authoring_only": {
+      "proposed_tag": "upl_bigstep_2tv_CPU1_r1",
+      "expected_steps_independently_derived": 11661219,
+      "nominal_target_s": 72.88428571428571,
+      "planned_scalar_end_s": 72.88428689946836,
+      "planned_frames": 1682,
+      "candidate_common_prefix_planned_frames": 1291,
+      "candidate_final_forced_save_not_shared": true,
+      "files": [
+        "support/upl_bigstep_full_r1_prepare.py",
+        "notes/upl_bigstep_full_r1_prepare.json",
+        "support/upl_bigstep_full_r1_run.py",
+        "notes/upl_bigstep_full_r1_run.json"
+      ],
+      "prepared_or_started": false,
+      "root_prepare_source_and_pure_schedule_review": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_prepare_root_r1.json",
+        "bytes": 3129,
+        "sha256": "b080f1a0b00bca3e79d4bae1520c3ea05ffe7e919c8b1458d6f9b735511922c3"
+      },
+      "root_run_source_syntax_review": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_run_root_r1.json",
+        "bytes": 1365,
+        "sha256": "fd44a0bc91b7926d313f8122a8371b52949e3f865650c1a3951b28ddc005552c"
+      },
+      "root_full_read_and_syntax_passed": true,
+      "actual_2s_review_and_prepare_run_admissions_still_required": true,
+      "future_prepare_command": "D:/anaconda3/python.exe -B tests/support/upl_bigstep_full_r1_prepare.py --admission ROOT_ACTUAL_PREPARE_ADMISSION_JSON --execution-authorized",
+      "future_run_command": "D:/anaconda3/python.exe -u -B tests/support/upl_bigstep_full_r1_run.py --admission ROOT_ACTUAL_RUN_ADMISSION_JSON --execution-authorized",
+      "future_root_admission_contracts": "Read both frozen author notes. After actual2s figures/CSV inspection create stageupl_bigstep_full_prepare_admission_r1 withpassedtrue,physical_acceptancefalse,candidate_review_accepted_for_fulltrue,allowed_actions[prepare],inputsactualcandidate manifest/program/build+Run/native/review. Actualprepare mustpass. Then separatestageupl_bigstep_full_run_admission_r1,allowed_jobs[upl_bigstep_2tv_CPU1_r1],sameboolean plusactualnewmanifest/program/build/prepareadmission+3proofs. No new user permission or half/reference chain.",
+      "later_one_shot_watch_authoring": "support/upl_bigstep_full_followup_r1.py andnotes proposed byagent; rootmustfullyread/checkactualfiles and pinactualfuturestart beforeone launch. No fullwatch launched now; candidatewatch stays active."
+    }
   }
 }

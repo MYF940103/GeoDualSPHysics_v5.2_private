@@ -1,0 +1,75 @@
+{
+  "stage": "upl_bigstep_full_prepare_root_r1",
+  "utc": "2026-11-03T16:32:39.845656+00:00",
+  "source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_bigstep_full_r1_prepare.py",
+    "bytes": 14548,
+    "sha256": "0223aa1782b1391c53a47ae77da02c448b90730d0e044897dfa40e87b7f3a305"
+  },
+  "note": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_r1_prepare.json",
+    "bytes": 4935,
+    "sha256": "7c691ce7e5629e18b200209a3efbe07839ce8c6264ac9874f556d6279110e134"
+  },
+  "root_full_read": true,
+  "syntax_and_expected_hashes_passed": true,
+  "pure_transform_and_scalar_schedule_executed": true,
+  "actual_prepare_main_run_or_solver_invoked": false,
+  "inputs_or_configs_written_by_preparer": false,
+  "frames": 1682,
+  "steps": 11661219,
+  "actual_scalar_end_s": 72.88428689946836,
+  "post_open_frames": 1564,
+  "planned_candidate_common_frames": 1291,
+  "candidate_final_only_step320000_not_shared": true,
+  "clock": {
+    "method": "binary64 scalar +=dt and unchanged JDsOutputTime arithmetic; never n*dt as clock",
+    "nominal_2Tv_target_s": 72.88428571428571,
+    "nominal_2Tv_fraction": "51019/700",
+    "runtime_TimeMax_s": 72.88428690075874,
+    "actual_scalar_end_s": 72.88428689946836,
+    "scalar_end_minus_runtime_cap_s": -1.2903740298497723e-09,
+    "scalar_end_minus_nominal_2Tv_s": 1.1851826542397248e-06,
+    "max_scalar_minus_n_dt_abs_s": 7.597648732371454e-09,
+    "candidate_final_only_completed_step": 320000,
+    "candidate_final_only_shared": false,
+    "planned_common_prefix_frames": 1291,
+    "first_new_full_completed_step": 320001
+  },
+  "declared_changes": {
+    "attributes": [
+      {
+        "setting": "TimeMax",
+        "attribute": "value",
+        "old": "2.0000457763671875",
+        "new": "72.88428690075874",
+        "numeric": true
+      },
+      {
+        "setting": "TimeOut",
+        "attribute": "value",
+        "old": "0.001953125",
+        "new": "0.18218571428571428",
+        "numeric": true
+      },
+      {
+        "setting": "TimeMax",
+        "attribute": "comment",
+        "old": "Nominal 200 times original drainage time; 320000 scalar additions cap this candidate",
+        "new": "Ceil 2Tv step-product cap; actual scalar endpoint is independently replayed",
+        "numeric": false
+      },
+      {
+        "setting": "TimeOut",
+        "attribute": "comment",
+        "old": "Retained first three special segments; late interval 0.001953125 seconds",
+        "new": "After candidate window, nominal DeltaTv=.005; actual saved clocks remain authoritative",
+        "numeric": false
+      }
+    ],
+    "inserted_fifth_tout_UTF8": "                <tout time=\"2.0000457763671875\" timeout=\"0.18218571428571428\" />\n",
+    "unchanged_first_four_tout": true
+  },
+  "actual_candidate_run_native_physical_review_still_required": true,
+  "full_preparation_or_run_admitted": false
+}
