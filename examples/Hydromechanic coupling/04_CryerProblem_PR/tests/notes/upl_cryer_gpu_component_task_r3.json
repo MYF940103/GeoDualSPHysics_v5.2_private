@@ -1,0 +1,66 @@
+{
+  "stage": "upl_cryer_gpu_component_task_r3",
+  "status": "author_only_never_registered_or_run",
+  "files": [
+    "support/upl_cryer_gpu_component_task_r3.ps1",
+    "notes/upl_cryer_gpu_component_task_r3.json"
+  ],
+  "purpose": "Optional explicit-root-authorized once-only OS-owned demand launch of the new r3 owner, independent of the tool's execution session. This is not a recurring monitor/notifier, solver trajectory, build, native smoke, physical gate or completion receipt.",
+  "CLI": "powershell.exe -NoProfile -ExecutionPolicy Bypass -File support/upl_cryer_gpu_component_task_r3.ps1 -Configuration Debug|Release -ExecutionAuthorized",
+  "guards": [
+    "Exact immutable interruption audit1200299B SHA25615c9b4fb9e23f8e89c540db9ccf2aadb0b68ff48934109613bf63f86716c8160; no invented r2 exit/completion.",
+    "Require unchanged selected r2 helper and component program; Debug helper equals the interrupted audit. Release additionally requires fresh r3 Debug offline pass. The actual r3 owner independently rehashes the original110+1/265/archive/runtime/metadata closure.",
+    "Require no active DualSPHysics/upl_/compute-sanitizer project processes before registration and again immediately before Run.",
+    "All own claim/XML/registration/launch/start/call/run/log/memcheck/output paths must be fresh. No overwrite, deletion, legacy task stop, automatic retry or fallback."
+  ],
+  "task": {
+    "name": "GeoDualSPH_upl_cryer_component_{Debug|Release}_r3_20261103",
+    "registration": "TASK_CREATE=2 only; never UPDATE or CREATE_OR_UPDATE. Existing task collision or registration permission failure is retained without Run/fallback.",
+    "account": "Current Windows user SID, InteractiveToken3, RunLevel0 LeastPrivilege. Normalize the actual Principal.UserId (SID or NTAccount representation) back to its exact SID and require current SID equality. No password, administrator elevation, service-account switch or global policy change.",
+    "action": "SystemDirectory/WindowsPowerShell/v1.0/powershell.exe with -NoLogo -NoProfile -NonInteractive -ExecutionPolicy Bypass -WindowStyle Hidden -File absolute run_r3.ps1 -Configuration selected -ExecutionAuthorized; exact argv/string/cwd and shell/owner/note/helper/program/audit hashes recorded.",
+    "triggers": 0,
+    "retries": 0,
+    "multiple_instances": "IgnoreNew=2; no second queued or parallel instance.",
+    "hidden": true,
+    "execution_time_limit": "PT2H; hard termination enabled at task limit. Hitting this limit is an interruption, never a passing native exit.",
+    "automatic_rearming": false,
+    "notifier_or_connectivity_test": false,
+    "automatic_analysis_or_next_stage": false,
+    "Run_calls": 1
+  },
+  "evidence": {
+    "attempt": "Fresh *.task_attempt.json is written before registration and blocks accidental replay; it does not claim registration or Run occurred.",
+    "registered": "Fresh exported actual *.task.xml and *.task_registered.json after actual COM definition verification but before Run; rehash inputs and compare re-queried actual XML immediately before the one Run.",
+    "launch": "Fresh *.task_launch.json records actual COM Run invocation/return, instance GUID, engine PID/state and observed scheduler LastTaskResult/LastRunTime. These are scheduler facts, not native tool/target exit or physical acceptance.",
+    "actual_native": "The r3 owner independently records own real PID/parent/creationUTC then captures the direct native tool's typed LASTEXITCODE immediately into call.json before completion analysis. Debug owns sanitizer exit, not an independently captured target exit.",
+    "failure": "No Run if registration fails. If Run was invoked but its RPC/instance query fails, start state is uncertain: inspect task/processes rather than call it not started or retry. No automatic deletion/relaunch. A registered but unrun task may remain for root diagnosis."
+  },
+  "limitations": [
+    "InteractiveToken requires the same user to remain logged on. This does not promise survival across logoff, reboot, OS termination, resource exhaustion or task deadline.",
+    "WindowStyle Hidden suppresses the launch window; native child priority is not independently observed. The existing owner requests BelowNormal.",
+    "A launcher success only means one demand Run was submitted. Actual owner/call/completion/strict offline metadata/CSV/memcheck gates remain required.",
+    "No helper build, producer, native decoder, analysis main or TaskScheduler API was executed by the author. Root must finish full source/note review and separately decide whether to use this launcher.",
+    "No production/formal/canonical/server data or old worker/task changed. Unrelated worktree dirt remains protected."
+  ],
+  "official_API_sources": [
+    {
+      "title": "Microsoft TaskFolder.RegisterTaskDefinition",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/taskschd/taskfolder-registertaskdefinition",
+      "applied": "TASK_CREATE2 creates only; InteractiveToken3 uses the already logged-on user's session."
+    },
+    {
+      "title": "Microsoft TaskSettings.MultipleInstances",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/taskschd/tasksettings-multipleinstances",
+      "applied": "IgnoreNew2 prevents a concurrent instance of this same task; it is not a queue/retry."
+    },
+    {
+      "title": "Microsoft TaskSettings.ExecutionTimeLimit",
+      "url": "https://learn.microsoft.com/en-us/windows/win32/taskschd/tasksettings-executiontimelimit",
+      "applied": "PT2H is a finite task duration, not a solver convergence or accuracy condition."
+    }
+  ],
+  "production_or_physics_changed": false,
+  "registered_by_author": false,
+  "executed_by_author": false,
+  "physical_acceptance": false
+}

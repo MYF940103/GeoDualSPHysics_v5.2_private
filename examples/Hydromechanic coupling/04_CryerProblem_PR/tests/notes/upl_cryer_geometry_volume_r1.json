@@ -1,0 +1,36 @@
+{
+  "soil": 37173,
+  "radius_min": 0.0024999999999999996,
+  "radius_max": 0.05000000000000002,
+  "centroid": [
+    -2.5113707447280947e-17,
+    7.613594143749928e-20,
+    0.000012240066715088291
+  ],
+  "float_massfluid": 0.000032812498830026016,
+  "rhop0": 2100,
+  "quadrature_volume": 0.0005808281042897891,
+  "ideal_volume_a0p05": 0.0005235987755982989,
+  "quadrature_volume_ratio": 1.109299966612978,
+  "volume_equivalent_radius": 0.05175905489469332,
+  "assumed_physical_radius": 0.05,
+  "not_an_error_cause_proof": true,
+  "input_hashes": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\upl_cryer_fs_audit_r1.csv",
+      "bytes": 11804562,
+      "sha256": "f10d18a1c267ce1cfd404e8e01be08bfa65c6bf8642771613ee411a878e1af22"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\CaseCryerProblem_PR_symc_nu030_out\\CaseCryerProblem_PR_symc_nu030.xml",
+      "bytes": 11132,
+      "sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b"
+    }
+  ],
+  "stage": "upl_cryer_geometry_volume_r1",
+  "scope": "Offline geometry/quadrature context for the required load/stress consistency reaudit. Not a new discretization, normalization, theory-radius fit or proven Cryer-error cause.",
+  "interpretation": "The37173 soil points lie within declared radius.05, but constant float MassFluid/rho0 summed over those points gives1.1092999666 times the ideal sphere volume. This is a property of retained point placement plus assigned quadrature, not by itself a10.93percent pressure-peak error. Effective volume radius is diagnostic only and must not replace the physical theory radius to fit results.",
+  "next": "Use the same retained geometry to check raw/matched-corrected moment reproduction, uniform stress/load cancellation and radial work/virial with consistent V/rho. Do not globally rescale q0 or particle masses without a separate numerical/physical justification and regression.",
+  "production_changed": false,
+  "physical_acceptance": false
+}

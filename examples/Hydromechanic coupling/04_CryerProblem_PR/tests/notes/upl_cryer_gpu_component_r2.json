@@ -1,0 +1,92 @@
+{
+  "stage": "upl_cryer_gpu_component_r2",
+  "status": "authored_reference_only_upper_support_edge_enclosure_root_peer_review_before_build",
+  "scope": "Six real non-advancing GPU force calls on original37173soil/8remoteDBC sphere; all receivers conditionally checked. Public3D/observer/feedback startup and physical trajectory remain unadmitted.",
+  "files": [
+    "support/upl_cryer_gpu_component_r2.cpp",
+    "notes/upl_cryer_gpu_component_r2.json"
+  ],
+  "CLI": "upl_cryer_gpu_component_r2.exe --input RETAINED_RUNTIME_XML --out FRESH_DIRECTORY",
+  "neutral_include": {
+    "relative_path": "../../../02_TerzaghiConsolidation_q0_PR/tests/support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "use": "One main rename / one AppInfo and backend-neutral utilities; retained reader/main never invoked."
+  },
+  "retained_input_provenance": {
+    "runtime": "CaseCryerProblem_PR_symc_nu030_out/CaseCryerProblem_PR_symc_nu030.xml",
+    "runtime_bytes": 11132,
+    "runtime_sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b",
+    "seed": "CaseCryerProblem_PR_symc_nu030_out/CaseCryerProblem_PR_symc_nu030.bi4",
+    "seed_bytes": 1637394,
+    "seed_sha256": "087d47b3f30a9149ed694dd4054eb80135752da0ca8869cd0c96bfad8248a8e3",
+    "scope": "Same actual original 3D particle IDs and positions; never remove dummy IDs or fake Simulate2D/Npb."
+  },
+  "lifecycle": [
+    "All private flags/master OFF: actual LoadConfig/LoadCaseParticles/ConfigDomain/InitRunGpu/FreePartsInit/RunCellDivide. Explicit TEST OBJECT overrides load=None,drainfalse,dampingfalse,Visco0,HG0,SPRfalse,Shepardfalse before initialization; formal inputs unchanged.",
+    "GPU observer initialization itself rejects3D. AFTER actual legacy initialization, explicitly add8B array-pool count4 and4B count2, ReserveDouble J/theta, install whole-Np J1/theta0, set observer and actual divide/sort. Never call InitPorosityObserverGpu. BOTH observer and feedback init guards bypassed; observer_initialization_validated=false.",
+    "Verify native natural rest/zero p,p0,sigma/plastic, actual manual J install, original8dummy separation outside both packed and double supports; enable feedback+dynamic only after these assertions. No dynamic wall/conductivity.",
+    "Reset manufactured inputs by actual slots, ConstantDataUp and actual RunCellDivide. Call real Interaction_Forces(SymPredictor), synchronize, download live Ace/Arg/Rsigmag and state, compare declared input bytes, evaluate conditional references, then actual PostInteraction. No separate extra complete-rate invocation.",
+    "Reset all declared input fields and flags at end; declared_input_bytes_restored covers IDs/Code/Dcell/doubleXY,Z/packedPosCell plus SOIL vel,rho,sigma,plastic,p,p0,J only. Not fixed physical fields/derived C/FS/rates/global-stat/whole-object rollback. Clock/lastdt/locked pre/history/FixedDt error remain unchanged."
+  ],
+  "probes": [
+    "constant p=float1Pa with sigma'=pI: zero total stress/momentum/theta/pdot/six-stress strict0.",
+    "p=float(1+16X-8Y+4Z),sigma'=pI: fullXYZ native-float conditional Darcy response, not binary64 affine exactness.",
+    "v=float(-.001X,-.001Y,-.001Z),p=sigma'=0: actual corrected theta and six elastic rates.",
+    "cyclic v=float(.001Y,.001Z,.001X),p=sigma'=0: all three off-diagonal rates; not a standalone rigid rotation/objectivity test.",
+    "Actual instantaneous manufactured raw confinement q10000,ramp0,t0,p=sigma'=v0: real source must activate.",
+    "Same actual source plus totalstress=-qI from p10000,sigma'=0,v0: finished force cancels within predeclared propagated float budget, not bitzero or a formal ramp/equilibrium trajectory."
+  ],
+  "reference": {
+    "neighbors": "Download actual DivData begin/end table and Dcell with Z ordering; enumerate corresponding fluid cells on host. Shared actual cell table, not independent geometric-neighbor proof. Dummy separation separately excludes boundary support. No O(Np^2) all-soil search.",
+    "geometry": "FS/main-force/theta: actual downloaded float PosCell local components plus integer cell differences. Complete rate: actual downloaded double Posxy/Posz. Record maximal difference; do not substitute CPU double-to-float geometry or assume support sets identical.",
+    "support": "Keep original displacement/radius error formulas and all numeric ratio gates. Reject any non-outside interval touching ALMOSTZERO. A pair whose interval crosses ONLY the upper cutoff has zero reference gradient with an absolute bound covering both device omission and included rounded kernel*dr. The stored cutoff need not equal(2h)^2; the actual fast-math factor is not presumed bitwise0. Packed/main, separate inner-double theta guard, and full-double rate membership remain distinct; if only inner guard is ambiguous, zero theta-reference gradient and add abs(original g) to its existing gradient error.",
+    "C": "Reassemble FS3D moment with packed geometry, same J1 double quadrature, mathematically evaluated Wendland and propagated device-factor error. Condition on observed GPU correction matrix; check Ci*M against I with its propagated envelope. No CPU C-bit equality or P2 accuracy claim.",
+    "theta": "Actual float velocity difference; propagated packed dr/factor through observed Ci and double contraction. GPU uses same main-force float factor when J feedback present; separate double support guard retained.",
+    "stress": "Rsigmag is float24B while persistent Sigmag is double48B. Propagate actual narrowed volume/float velocity-products/reduction through observed Ci and final float gradients, elastic constants and six rates. Sigma0 or isotropic constant/affine with v0 makes spin contribution zero; no general rotation proof.",
+    "rate": "Full kw/n*(-theta + k/gamma*(lp-gp.lx+rhow*divAce)); observed GPU C/Ace are conditional inputs. Double geometry with float kernel factor separately propagated. No closed-face or active drainage in these probes, no repeated compression source.",
+    "load": "Check activation separately from cancellation. Existing raw LoadAce write gate depends on finished pair acceleration/density/visc/shift; for raw v0 probes assert ar0/no shift/visc0, record open/closed gates and compare telemetry conditionally. Gated vector resultant is not a true total external-force measurement."
+  },
+  "budget": {
+    "definition": "uF=FLT_EPSILON/2,uD=DBL_EPSILON/2,Gamma(n,u)=n*u/(1-n*u); positive finite units per output channel, actual receiver neighbor count. No CPU absolute or half-step physical thresholds reused.",
+    "packed": "Per displacement component, Gamma(3,uF) plus Gamma(8,uD) times sum of absolute stored local operands and size*integer-difference, plus3*FLT_MIN. Squared radius propagates dr uncertainty and Gamma(5,uF) plus host reference arithmetic. Full-double displacement uses Gamma(2,uD), squared radius uses corresponding double count.",
+    "kernel": "Use analytic Wendland factor (bwen/h)*(1-r/(2h))^3; this is the real-number reference, not a claim that device code divides bwen/h. Actual device bwen*qq*w*w*w/rad has two fast divides (qq=rad/h, final/rad), budgeted at5uF each including final rounding, plus four products at uF each; 14uF before composition is contained in Gamma(16,uF). Shared rad correlation is not ignored by silently equating rounded qq/rad to1/h; separate explicit q/radius intervals remain. Propagate squared-radius and optional float-cast error through positive sqrt and q, then cubic product. Device sqrt1ULP+rounding and division2ULP+rounding assumptions enter these intervals; include small FTZ allowances. This remains a conditional published-envelope engineering screen, not a universal floating-point proof or a guarantee for all CUDA inputs.",
+    "accumulation": "Propagate pair bounds and absolute-term sums through FS moment, C products, corrected theta, raw float gradient reductions, six elastic rates, and complete Darcy lp/lx/gp/divAce. Final pressure/stress storage float cast included. Each Ratio<=1; failures retained without tuning bounds from results. Upper-edge union makes zero-center/nonzero-error pairs possible: reduction magnitudes therefore retain abs(pair_center)+pair_error; final Darcy major uses abs(sum_center)+sum_error for lp/da and both gp/lx factors, including their bilinear error, and gd*(major+le). The C-moment product reduction similarly uses max(1,cmag+ce). Gamma operation counts are unchanged. These are reference-side arithmetic closure repairs, not physical tolerances.",
+    "source_math_reference": "https://docs.nvidia.com/cuda/archive/11.7.0/cuda-c-programming-guide/index.html#mathematical-functions-appendix",
+    "source_math_scope": "Official CUDA11.7 H.1 tables report fast division2ULP and fast sqrt1ULP for SM>=5.2, based on extensive but nonexhaustive tests, not guaranteed bounds. H.2 documents FMA contraction and fast-math intrinsic substitutions. Actual retained GPU logs show -use_fast_math and compute_86/sm_86. Fixture requires device SM>=5.2; no flags or kernels changed.",
+    "upper_support_edge": "Original analytic fac=(bwen/h)*(1-sqrt(rr)/(2h))^3 and ef remain. For upper-edge pair set g_ref=fr_ref=0; g_error=(abs(fac)+ef)*(abs(d)+de)*(1+Gamma(4,uD)), then retain original final-float cast allowance for fr_error. This encloses the union of omitted0 and included factor within the unchanged radius/q/factor interval; no new empirical constant/tolerance fit. Existing FS moment/theta/stress/Darcy/load propagation uses the bound. Gamma neighbor count includes possible pairs. A solely inner-theta edge uses zero reference plus abs(g)+ge. Counts and maximum bounded uncorrected gradient contribution are emitted per probe/sample and in total, not hidden.",
+    "unchanged": "No physical gate, Gamma operation count, original inside-pair/kernel uncertainty or production CUDA flag/kernel changed; no frozen r1 record changed. Upper-cutoff union and nonzero-error magnitude propagation repair reference definition, not physics accuracy or a blanket passed result."
+  },
+  "outputs": {
+    "summary": "Six rows with means/maxima, original predeclared ratio channels, FS coverage, source gates, raw diagnostic vector, natural step scales, maximum C moment residual and packed/double displacement difference. Append integer packed/double/theta-inner upper-edge pair counts and kernel_edge_grad_bound_max.",
+    "samples": "48 rows: same8 soil native IDs per probe, references/budgets, packed geometry, actual full3D C. No all-particle CSV or PART trajectory. Append the same per-receiver support-edge diagnostics.",
+    "completion": "223038 conditional receiver checks,6 real forces/6 complete-rate calls/0 explicit extra rate calls/0 physical steps. Manual init bypass and conditional fast-math assumptions explicit. Upper-edge counts sum all6 probes; positive packed coverage required, maximal bound recorded. packed_and_double_support_intervals_unambiguous=false; upper_support_edges_enclosed=true; zero_distance_ambiguity_rejected=true.",
+    "normal_initialization": "May emit configuration VTK and scalar-only initial Part_Head.ibi4/PartOut_000.obi4. These require actual strict offline metadata inspection, not an extension-only snapshot classifier."
+  },
+  "limitations": [
+    "Fresh r2 component only; never rerun or adopt r1's failed memcheck tool exit as a passing predecessor. The reference is conditioned on the same published not-guaranteed CUDA11.7 math envelope and observed C/Ace.",
+    "No build or execution from this note. Root must finish source/peer review and separately authorize isolated Debug build then actual memcheck before Release execution.",
+    "Not formal stabilized physics: original Visco.1/eta.00004 are OFF. No load/drain/startup integration, actual J evolution, pressure peak, half-step/full-cycle, general-boundary or public3D acceptance.",
+    "References reuse actual cell table and observed C/Ace; no global flux conservation, exact neighbor search, stable integration or continuum order proof.",
+    "No CPU/GPU or Debug/Release0ULP requirement or whole-object-restoration claim. Any completed native call is never rerun merely for analysis repair."
+  ],
+  "production_changes": false,
+  "compiled_by_author": false,
+  "executed_by_author": false,
+  "physical_acceptance": false,
+  "prior_failure": {
+    "stage": "upl_cryer_gpu_component_Debug_probe_r1",
+    "preserved": true,
+    "solver_trajectory_started": false,
+    "tool_exit": 1,
+    "memcheck_errors": 0,
+    "memcheck_leaked_bytes": 0,
+    "complete_six_probe_checks": false,
+    "reason": "Host Support() rejected a squared-radius interval crossing the upper kernel cutoff. Known reproduced pair4912->7031; this is not proof it was the first failing receiver, of actual device membership, or of a production-operator error."
+  },
+  "changes_vs_r1": [
+    "Host reference only: upper-support membership union with explicitly bounded included-or-omitted contribution, retaining origin rejection and original inside arithmetic.",
+    "Reduction magnitude bookkeeping includes propagated pair errors even when the chosen union reference is zero. Darcy final product/sum and C-moment magnitude use their full intervals; no Gamma counts changed.",
+    "Extra edge diagnostics and probe/native-ID/channel/actual/reference/budget failure context.",
+    "New r2 labels; same production objects/physical parameters/six force inputs/zero clock. No CPU/GPU or r1/r2 full-state equality claim."
+  ]
+}

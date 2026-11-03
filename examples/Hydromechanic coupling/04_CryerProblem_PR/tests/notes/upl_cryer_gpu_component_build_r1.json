@@ -1,0 +1,41 @@
+{
+  "stage": "upl_cryer_gpu_component_build_r1",
+  "purpose": "Build-only independent Cryer GPU zero-step component from actual authoritative GPU111-object builds. No project rebuild, help, program, trajectory or installation.",
+  "configuration": [
+    "Debug",
+    "Release"
+  ],
+  "source": "support/upl_cryer_gpu_component_r1.cpp",
+  "author_note": "notes/upl_cryer_gpu_component_r1.json",
+  "retained_program_build": "case02 tests/logs/upl_damp_{Configuration}_r2.build.json",
+  "retained_compiler_recipe": "case02 tests/logs/upl_gpu_gravity_helper_{Configuration}_r1.helper.json",
+  "closure": {
+    "main_removed": true,
+    "retained_non_main_objects": 110,
+    "new_helper_objects": 1,
+    "linked_total": 111,
+    "source_snapshots": 265,
+    "include_project_headers": "Only matching immutable source_snapshot directory, actual compiler sourceDependencies checked after compile. No live production include.",
+    "neutral": "One immutable main-renamed upl_cpu_public_native_r1.cpp, SHA256 9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38; old reader/main not called.",
+    "runtime_copies": 4
+  },
+  "recipe_changes": [
+    "CPP/Fo/Fd/output mappings and sourceDependencies export only in original cl.exe /D_WITHGPU /fp:precise /std:c++17 /MT(d) recipe; preserve CUDA11.7 include.",
+    "Replace matching old object basenames with matching frozen damp-build objects; do not change any CUDA compiler flag or rebuild kernels.",
+    "Resolve original18 explicit .lib arguments in original /LIBPATH then recorded LIB order; bind all18 selected files, require original6 project/CUDA hash identities; no new library.",
+    "Original ordered link options unchanged except fresh helper/OUT/PDB and exact resolved library paths."
+  ],
+  "environment": "Use sealed build's selected MSVC/SDK environment; do not acquire or log unrelated process environment.",
+  "evidence": "Immediately seal each actual cl/link typed LASTEXITCODE including failures. Precreate empty logs. Fresh output labels; never overwrite/retry a completed native call.",
+  "postcheck": "Independent final hash verification covers archived source/header/object/runtime copies, authors/tool/libs and newly generated program/helper/dependencies. Do not rehash historical live original source or canonical executable paths.",
+  "protection": [
+    "case02 active mid Run and its frozen closure",
+    "all canonical CPU/GPU programs and formal/server inputs/results",
+    "all CPU component results and retained failures"
+  ],
+  "limits": [
+    "Build pass is not component or public3D/physical acceptance.",
+    "Actual GPU component requires separately root-reviewed source/budgets, actual Debug runtime/memcheck and later Release check.",
+    "Original archived GPU kernels retain -use_fast_math; host helper /fp:precise is not a same-arithmetic claim."
+  ]
+}

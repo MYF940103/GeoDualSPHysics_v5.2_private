@@ -1,0 +1,37 @@
+{
+  "stage": "upl_hg_compat_plan_r1",
+  "date": "2026-11-03",
+  "status": "CPU_first_preimplementation_audit_complete_not_publicly_enabled",
+  "reason": "The sealed interrupted mid record has an alternating X-column vertical mode, despite close layer-mean pressure. Existing HG is OFF under the current u-pl guard; its old u-pw acceptance is not automatically variable-J acceptance.",
+  "existing_operator": "Keep the soil-only weighted least-squares velocity gradient, non-nested residual, symmetric beta=xi*G*Vi*Vj*w, native-ID histories, two half updates, minimum-image/independent endpoint cell graph and cache mechanism. No new constitutive law, strain variable, pressure source or public switch.",
+  "required_semantics": {
+    "state": "Same singleJ: Vi=V0*Ji, rhoi=rhow+(rho0-rhow)/Ji, mi=rhoi*Vi=V0*(rho0-rhow+rhow*Ji),V0=M0/rho0.",
+    "history": "For the new branch only, keep existing H/Rate vectors but interpret Q=M0*H as internal force history; Rref=sum(fdot_pair)/M0; add aHG=M0*H/mi(J_force). Integrate Hhalf=Hn+.5dt*Rref_n,Hend=Hhalf+.5dt*Rref_end. Do not integrate acceleration with a changing inertia and then claim force conservation.",
+    "stage": "Pass current const J per PredictorForce/CorrectorForce/CorrectorUpdate; do not retain its array pointer across swaps/sorts or use endpoint cached J at the half-force stage.",
+    "cache": "Store only a Node input-J snapshot, not another physical evolving state; compare exact J bits along with the existing rate inputs. A solely changed J must invalidate the rate cache.",
+    "scale": "lambda=max_i(2*sum_j beta_ij/mi),tau=1/sqrt(lambda); retain dt/tau<=.2 and cumulative spin<.01.",
+    "diagnostics": "Virtual-work rate uses sum v*(M0*Rref)=-2form; history netforce uses sum M0*H; actual float-added force uses sum mi(Jstage)*deltaAce. H/GetHistory/maxhistory remain M0-normalized reference quantities in the new branch, not a mislabeled actual-acceleration maximum.",
+    "coupling": "HG stays before final AceMax and the complete dynamic Darcy rate. Its same-stage solid acceleration enters the existing Darcy term naturally, once."
+  },
+  "CPU_scope": {
+    "files": [
+      "src/source/JSphHourglassCpu.h",
+      "src/source/JSphHourglassCpu.cpp",
+      "src/source/JSphCpuSingle.cpp"
+    ],
+    "first_step": "Only private class compatibility and current-J call wiring initially; keep public u-pl+HG rejected until component and regression gates pass.",
+    "later_public_guard": "Only the existing constant-k/single-bottom-FreeSlip/X-periodic/non-Z-periodic column after verified CPU evidence; synchronize XML guide/README before enabling. No broader 3D/curve/motion/plasticity/variable-k/restart acceptance."
+  },
+  "gates": [
+    "Default-OFF old HG arithmetic/fields and xi0 u-pl fields/clocks remain exact; xi0 still has no HG object/pass.",
+    "Real CPU class vs independent all-pair reference for J1/uniformJ!=1/nonuniformJ, affine-null translation/compression/shear/small rotation and the alternating-column mode.",
+    "Frozen pair force, reference-history force, virtual work, generalized-inertia stiffness bound and bounded oscillator energy; these are not a proof for evolving/open-mass coupled energy.",
+    "Nonzero history followed by changed nonuniform/half-stage J, exact cache invalidation, native reorder/periodic-copy and original invalid-state/stage/dt checks.",
+    "Only then existing short/half/full-prefix native/safety gates at unchanged eta/xi/material/event/load, then a fresh meaningful mid window with per-material-layer/column spread, mode projection, pressure/settlement/stress. Do not accept layer means alone.",
+    "CPU passed evidence precedes GPU transfer; original GPU source/program used by the active independent zero-step r3 remains frozen."
+  ],
+  "precision": "Stress remains double, pore pressure/rate remain float; no precision rewrite or damping/xi increase to mask the mode.",
+  "baseline_or_formal_changed": false,
+  "implemented": false,
+  "physical_acceptance": false
+}

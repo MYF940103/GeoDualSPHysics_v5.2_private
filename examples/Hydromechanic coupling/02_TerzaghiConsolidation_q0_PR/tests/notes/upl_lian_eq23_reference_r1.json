@@ -1,0 +1,54 @@
+{
+  "stage": "upl_lian_eq23_reference_r1",
+  "status": "authored_not_executed_on_retained_data_pending_root_review",
+  "evaluator": {"bytes": 20441, "sha256": "d36ea549ac1618a3b05c5f27632dd09a6add00c561f10fe3e79fcce01c536983"},
+  "output": "case02/tests/outputs/upl_lian_eq23_reference_r1; must not exist",
+  "scope": "Independent static Eq23-form isolation with current Wendland and h/dp=1.8 only. No production, original test, formal input or retained output modification. No solver/native/build/time integration/plots. Root must read the complete evaluator and this note before actual offline execution admission.",
+  "equations": {
+    "coordinates": "r=xj-xi=-CSV_d; g=kernel_fac_float*CSV_d=grad_iW. 2D axes are x,z with V=dp^2 and a 2x2 C; 3D uses xyz and V=dp^3.",
+    "G1": "b_j=Vj*Ci*g_j; G=sum b_j*(fj-fi); M=sum b_j*r_j^T. 2D Ci/Cj are recomputed locally; full21 stored receiver C is an independent descriptive comparison.",
+    "tensor": "D_mn=(dimension+2)*r_m*r_n/r2-delta_mn; F=r.dot(Cs*g)/(r2+eta); s_mn=V*D_mn*F; T_mn=sum s_mn*r; rawH=sum s_mn*df; defect=G.dot(T_mn); H=rawH-defect. D's directional denominator remains r2 even with Eta2.",
+    "variants": "Ci/Eta0; real Cavg/Eta0; real Cavg/Eta2. G always uses Ci. Only the 2D Ci/Eta0 variant is the literal Eq23 algebraic form, with Wendland substituted for the paper's chosen kernel. Cavg/Eta variants are explicit modified comparisons. 3D D5 is a conditional dimension generalization, not a literal paper 3D reproduction.",
+    "scalar": "Independently construct w=2V*d.dot(Cs*g)/(r2+eta), lx=sum w*d, scalar=-sum w*df-G.dot(lx). trace(D)=2 gives trace(H)=scalar, subject to arithmetic residuals.",
+    "coefficients": "h_j^mn=s_j^mn-b_j.dot(T_mn). Record first moment sum h_j*r_j. P1 follows only if M=I: first=(I-M^T)*T. No P2 exactness is assumed.",
+    "basis": "Rows/columns xx,zz,xz in 2D or xx,yy,zz,xy,xz,yz in 3D; basis functions r_a^2/2 on diagonal and r_a*r_b off diagonal. Response diagonal columns=sum h*r_a^2/2 and off-diagonal columns=sum h*r_a*r_b. No engineering-shear factor2. Report response-I without an accuracy pass gate."
+  },
+  "clouds": {
+    "2D_full21": "Read only nodes_regular_21.csv and nodes_disorder_21.csv from sealed P1 r1c. Three reference-grid receivers (10,10),(0,10),(10,0); ghost9 gives complete local C neighborhoods. dp=1/20, h=1.8dp. Reference-index reach4 and cached local C/edges only; no all-pairs global matrix.",
+    "2D_truncated9": "Read only matrix_nodes_regular.csv and matrix_nodes_disorder.csv. Three receivers (4,4),(0,4),(0,0); dp=1/8, h=1.8dp. This is a geometrically truncated patch, not a wall/drainage boundary model. C is recomputed because these CSVs do not contain C.",
+    "3D": "Read the old 12 receiver instances from four scalar3d clouds. Use saved Ci/Cavg, rr2 and actual float fac; no kernel recomputation or new cloud. Reconstruct xj=xi-d only for manufactured field evaluation.",
+    "coverage": "24 receiver instances * 3 variants =72 tensor_moments rows; 12 2D receivers*3*10 fields +12 3D receivers*3*14 fields =864 tensor_fields rows. Small local rows only, no global operator/spectrum/flux calculation."
+  },
+  "fields": "2D uses the old P1 10 field definitions including sine and hydrostatic_head; 3D uses the old scalar3d 14 definitions including smooth_cos_xyz. Analytic gradients and full Hessians are calculated independently. Polynomial evaluation uses algebraic coefficient/Hessian form and math.fsum; it does not claim bitwise reproduction of the old C++ field-expression order.",
+  "precision": {
+    "kernel2d": "Python struct float32 round-trips explicitly model archived bwen/rad/qq/wqq1 and chained float Fac operations; coordinates/moments/C remain binary64, reductions use math.fsum. This is a reference formula emulation, not proof of native CRT sqrt, compiler evaluation/FMA, or old C bitwise identity. Full21 recomputed-minus-stored C is descriptive, never an accepted native regression gate.",
+    "Eta2": "3D reads current_Eta2_float from sealed completion. 2D uses float32((0.1*h)^2), explicitly differing from old P1's binary64 .01*h*h regularization; old P1 scalar samples are not presented as exact comparisons.",
+    "reconstruction": "3D xj=xi-d may differ by 1ulp from the original cloud coordinate; old field-expression order also differs. trace-minus-old-Lstar is descriptive roundoff/reconstruction residual, not a bitwise replay claim or an accuracy gate.",
+    "storage": "Manufactured fields and local operator arithmetic are binary64, not native float pressure or a complete production rate/force call."
+  },
+  "roundoff_model": {
+    "fixed_before_execution": true,
+    "formula": "epsilon=sys.float_info.epsilon; gamma=(64*N+256)*epsilon/(1-(64*N+256)*epsilon); bound=gamma*max(1,scale). Fixed conservative operation-count model, not a formal IEEE/native-compiler forward-error proof.",
+    "M_scale": "max_ab sum_j abs(b_ja*r_jb); check max_abs(M-I)<=bound.",
+    "field_scale": "max(abs(fi),max abs(fj)); scale=max(abs(independent_scalar),sum abs(H),max_mn sum abs(s_mn*df),max_mn(sum abs(h_mn)*field_scale)). Same fixed bound checks trace-scalar, coefficient-action-H and constant/affine corrected H. No adjustment after results.",
+    "limits": "These are newly declared arithmetic consistency checks, not changed physical or old-test gates. Quadratic/smooth Hessian errors, basis-I, P1 first moments, stored-C and old-Lstar differences are fully reported without fitted acceptance thresholds. Failure remains visible and raises after fresh output retention."
+  },
+  "provenance": "All listed data and reference-source files are SHA256/bytes pinned. Code hash is pinned below in this note; runtime records hashes of all inputs plus evaluator and note before and after evaluation. Headers are read only as provenance, never imported; old .cpp main is never included or invoked. Output CSV hashes are recorded in fresh completion.json.",
+  "inputs": [
+    {"name":"neighbors3d","path":"examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_cryer_scalar3d_r1/neighbors.csv","bytes":896289,"sha256":"ebe1f228692ba3c668ee591cba2104e89d0161790821b134a8edb77e6e9e4f02"},
+    {"name":"moments3d","path":"examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_cryer_scalar3d_r1/moments.csv","bytes":42808,"sha256":"470676b6800f9453433a7735e1fc6e1af98356f58d612fef686844c0fcf56501"},
+    {"name":"fields3d","path":"examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_cryer_scalar3d_r1/fields.csv","bytes":210408,"sha256":"2659072f9baa3ff55fd2a81cb6f608b00ae80176d9b8f7e258ca2209ec997f5b"},
+    {"name":"completion3d","path":"examples/Hydromechanic coupling/04_CryerProblem_PR/tests/outputs/upl_cryer_scalar3d_r1/completion.json","bytes":999,"sha256":"6acc520433a06833c99f7775ffb34d358514d57acd6c1947eca8c6e684245522"},
+    {"name":"full2d_regular","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p1_scalar_r1c/nodes_regular_21.csv","bytes":197874,"sha256":"7a569e2043c8b4b4e2aca2e39ce244e255fad143024f1f6022e5e5f8460e466f"},
+    {"name":"full2d_jitter","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p1_scalar_r1c/nodes_disorder_21.csv","bytes":209290,"sha256":"57652e09fc234a9aec29c0034402d6b7d92773a9fadf8486846f0d0ff63e2be4"},
+    {"name":"truncated2d_regular","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p1_scalar_r1c/matrix_nodes_regular.csv","bytes":1814,"sha256":"62fcce204e2433d5e6e14ef30f9a3c9d51d2b3fffae6bc77d036e6e4e60eae9f"},
+    {"name":"truncated2d_jitter","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p1_scalar_r1c/matrix_nodes_disorder.csv","bytes":4307,"sha256":"d4d5e89ef22e3f1b926e065239c55619d0993cefec9e4afc646dc629ab657435"},
+    {"name":"source3d","path":"examples/Hydromechanic coupling/04_CryerProblem_PR/tests/support/upl_cryer_scalar3d_r1.cpp","bytes":16321,"sha256":"f73f0ceed8e863d8d3574efee9aef42dc52c72863181359bcf1fffca8dd606ab"},
+    {"name":"source2d","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p1_scalar_r1c/upl_p1_scalar_r1.cpp.frozen","bytes":12454,"sha256":"0e21d882f8573aa35ed9904a1d90519fc49bddd813f8637180da21ec3a84ab67"},
+    {"name":"kernel_header","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_damp_ReleaseCPU_r2_source/FunSphKernel.h","bytes":13412,"sha256":"a4cc4a372c9c1bd40ed4d1f4b993564b2c26510143b06049a08c9cb9f66cb44d"},
+    {"name":"kernel_def_header","path":"examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_damp_ReleaseCPU_r2_source/FunSphKernelDef.h","bytes":2304,"sha256":"40dc1e374b9f25d541bb508205c7cf5073e2e8321761c82b23f60e033d5b0b89"}
+  ],
+  "physical_acceptance": false,
+  "production_changes": false,
+  "executed_on_retained_data_by_author": false
+}

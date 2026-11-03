@@ -1,0 +1,39 @@
+{
+  "stage": "upl_cryer_gpu_component_run_r3",
+  "purpose": "One fresh selected-configuration r3 zero-step component after the audited incomplete r2. Reuse the unchanged completed r2 helper build/program; no rebuild or physical integration. Debug uses CUDA11.7 Compute Sanitizer; Release requires the fresh r3 Debug offline review.",
+  "configuration": [
+    "Debug",
+    "Release"
+  ],
+  "execution": {
+    "Debug": "Direct typed sanitizer tool call --tool memcheck --leak-check full --error-exitcode99 --log-file OWN_MEMLOG TARGET --input retainedruntime --out fresh; tool exit captured, native target exit not independently captured.",
+    "Release": "Direct typed component executable call only after Debug component+metadata/memcheck offline pass.",
+    "launcher_priority": "BelowNormal",
+    "child_priority_independently_observed": false,
+    "threads": 1,
+    "actual_force_calls": 6,
+    "steps": 0
+  },
+  "admission": "Actual110+1 archived-header r2 helper link pass, original input/seed hashes, immutable program/runtime/object/source copies. Source and predeclared GPU fast-math-envelope note fully reviewed first.",
+  "evidence": "Immediately seal actual native tool exit/argv/target/cwd/log. Then basic C++ completion counts only; deep CSV budgets, actual metadata decoding and memcheck summary require separate offline reviewer. No blanket Part* prohibition.",
+  "fresh_outputs": "outputs/upl_cryer_gpu_component_{Debug|Release}_probe_r3; matching logs call/run/stdout/memcheck. Refuse any retained target. Never rerun for completed-native postcheck failure.",
+  "limits": [
+    "BOTH GPU observer and feedback init guards deliberately bypassed; manual J state storage, not public3D initialization.",
+    "No CPU/GPU or Debug/Release0ULP, no Pre/Corr/Run/SaveData/PART restart/physical acceptance.",
+    "No production/canonical/formal/server changes; retain the interrupted1D mid data without treating its planned window as complete.",
+    "Debug sanitizer exit0 is owned tool evidence, not a separately captured direct target exit. Release direct target ownership is recorded separately."
+  ],
+  "automatic_follow_up": false,
+  "r1_retention": "r1 failed support-reference attempt remains unchanged. r2 component source/build/program are reused without alteration, while its incomplete Debug probe/output and absent native exit are preserved; neither failed r1 nor incomplete r2 is adopted as passing.",
+  "upper_support_edges": "Basic completion requires packed_and_double_support_intervals_unambiguous=false,upper_support_edges_enclosed=true,zero_distance_ambiguity_rejected=true; packed/double/theta-inner nonnegative JSON integer total counts,packed>0,and finite positive kernel_edge_grad_bound_max. Offline reviewer independently checks all six summary counts and maximum against completion. These are conditional zero-reference omitted-or-included compact-kernel bounds, not assumed exact neighbor membership.",
+  "recovery": {
+    "audit": "case02 tests/logs/upl_mid_gpu_interruption_r1.check.json",
+    "bytes": 1200299,
+    "sha256": "15c9b4fb9e23f8e89c540db9ccf2aadb0b68ff48934109613bf63f86716c8160",
+    "require": "Exact audit seal, interrupted GPU tag and null exit; old full gate preserved. Debug helper Entry must be identical to audited completed r2 Debug build. Immediately before the new native call require no DualSPHysics/upl_/compute-sanitizer project processes.",
+    "owner_start": "Fresh logs/*_probe_r3.start.json records actual PowerShell PID, parentPID and creationUTC plus source/helper/program/audit Entries. It is not a native-start or native-exit receipt.",
+    "old_exit_reconstructed": false
+  },
+  "existing_component_program": "outputs/upl_cryer_gpu_component_{Debug|Release}_r2/upl_cryer_gpu_component_r2.exe; actual native completion stage remains upl_cryer_gpu_component_r2. No new C++ or math reference in r3.",
+  "invocation": "Root-reviewed direct call or separately admitted one-shot task launcher; owner does not register/rearm a task, chain analysis, retry or notify."
+}

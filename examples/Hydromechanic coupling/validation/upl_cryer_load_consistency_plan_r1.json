@@ -1,0 +1,18 @@
+{
+  "stage": "upl_cryer_load_consistency_plan_r1",
+  "user_reaffirmed": "2026-11-03",
+  "status": "required_reaudit_not_new_loading_implementation",
+  "current": "Both formal u-pw and the developing u-pl raw flexible-confinement path use the uncorrected kernel gradient. Stress-rate gradient correction and symmetric Darcy correction do not correct external traction.",
+  "production_locations": ["src/source/JSphCpu.cpp Flexible confinement pressure", "src/source/JSphGpu_ker.cu Flexible confinement pressure"],
+  "position": "During bounded Cryer integration/accuracy review and before the next formal long-run/server admission. Coordinate with the literal Lian Eq23 operator comparison; preserve all existing formal data.",
+  "audit_order": [
+    "Reproduce the actual source-clock ramp, quadrature, current density/J volumes, kernel support and native curved-surface geometry; do not change time alignment or q0 to fit the peak.",
+    "Check raw internal total stress plus raw confinement pointwise for uniform compression. In the u-pl branch a_load=(2q/rho_i)*sum(Vj*gradWij), so uniform total stress=-qI cancels it term by term with the same quadrature. Test both actual CPU/GPU arithmetic and source-telemetry gating.",
+    "If testing a correction, first compare raw/raw with a mathematically matched stress/load pair. Do not correct the load alone. Check constant-stress cancellation, linear-field consistency, pair/global force and torque behavior, conditioning and curved-neighborhood errors.",
+    "Uniform spherical pressure has near-zero net vector force by symmetry; that alone cannot establish correct loading magnitude or transmission. Also inspect radial work/virial against geometric volume, inward traction measures, radial total-stress profiles and the fixed material center response.",
+    "Only a low-cost, supported candidate proceeds to native startup/ramp-hold-drain/half/backend gates and pressure-peak amplitude/time plus radial-field/theory comparisons. Operator-option changes are not half-step errors; no automatic physical acceptance or unlimited tuning."
+  ],
+  "comparison_limits": "u-pl J-derived inertia/quadrature/complete Darcy and stabilization differ together from retained u-pw. Do not call a whole-framework comparison an isolated correction test. Preserve finite-Kw/finite-radius theory, fixed18 native center IDs, drainage-relative tau, actual saved times and full startup.",
+  "changes_by_this_record": "No production operator, physical gate, formal XML/BAT, retained output or server program changed.",
+  "physical_acceptance": false
+}

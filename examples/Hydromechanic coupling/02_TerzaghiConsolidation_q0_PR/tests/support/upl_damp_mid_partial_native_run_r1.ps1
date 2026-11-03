@@ -1,0 +1,39 @@
+# One pure typed read of sealed interrupted data; never a solver, build or successful-run reconstruction.
+$ErrorActionPreference='Stop';$tests=Split-Path -Parent $PSScriptRoot;$tag='upl_damp_mid_partial_r1';$logs=Join-Path $tests 'logs';$out=Join-Path $tests ('outputs\'+$tag+'_native');$record=Join-Path $logs ($tag+'.native.json');$callPath=Join-Path $logs ($tag+'.call.json');$stdout=Join-Path $logs ($tag+'.log');$cache=@{}
+function Need([bool]$b,[string]$w){if(!$b){throw $w}}
+function RawE([string]$p){$f=Get-Item -LiteralPath $p;Need (!$f.PSIsContainer) 'Expected file';return [ordered]@{path=$f.FullName;bytes=[long]$f.Length;sha256=(Get-FileHash -LiteralPath $f.FullName -Algorithm SHA256).Hash.ToLowerInvariant()}}
+function E([string]$p){$k=[IO.Path]::GetFullPath($p).ToLowerInvariant();if(!$cache.ContainsKey($k)){$cache[$k]=RawE $p};return $cache[$k]}
+function V($es){foreach($e in @($es)){Need ($e.path -and $e.sha256) 'Malformed Entry';$a=E $e.path;Need ($a.bytes -eq $e.bytes -and $a.sha256 -ceq $e.sha256) ('Changed binding: '+$e.path)}}
+function FinalV($es){$seen=@{};foreach($e in @($es)){$k=$e.path.ToLowerInvariant();if(!$seen.ContainsKey($k)){$seen[$k]=RawE $e.path};$a=$seen[$k];Need ($a.bytes -eq $e.bytes -and $a.sha256 -ceq $e.sha256) ('Final changed binding: '+$e.path)}}
+function J([string]$p){return ([IO.File]::ReadAllText($p)|ConvertFrom-Json)}
+function Fresh($ps){foreach($p in @($ps)){Need (!(Test-Path -LiteralPath $p)) ('Retained artifact protected: '+$p)}}
+function Save([string]$p,$d){Fresh @($p);[IO.File]::WriteAllText($p,($d|ConvertTo-Json -Depth 18)+[Environment]::NewLine,(New-Object Text.UTF8Encoding($false)))}
+function Call0($e){V @($e);$c=J $e.path;Need ($c.direct_native_call -and $c.typed_LASTEXITCODE_captured_immediately -and $c.owned_call_exited -and $c.exit_code -is [int] -and $c.exit_code -eq 0 -and !$c.invocation_failure) 'Actual owned typed0 required';V @($c.program,$c.log)}
+Fresh @($out,$record,$callPath,$stdout)
+$auditE=E (Join-Path $logs 'upl_mid_gpu_interruption_r1.check.json');$a=J $auditE.path
+Need ($a.stage -ceq 'upl_mid_gpu_interruption_r1' -and $a.interruption_audited -and $a.all_observed_owned_processes_absent -and $null -eq $a.real_exit_code -and !$a.typed_exit_evidence_available -and !$a.normal_completion_or_failure_exit_invented -and !$a.mid.planned_window_completed -and $a.mid.observed_raw_frames -eq 1673 -and $a.mid.last_console_time_s -eq 6.875 -and $a.mid.last_console_completed_steps -eq 3604480) 'Only sealed interrupted1673-frame data admitted'
+$helperE=E (Join-Path $logs 'upl_damp_mid_partial_reader_ReleaseCPU_r1.helper.json');$h=J $helperE.path
+Need ($h.stage -ceq 'upl_damp_mid_partial_reader_build_r1' -and $h.passed -and $h.kind -ceq 'reader' -and $h.configuration -ceq 'ReleaseCPU' -and $h.actual_headers_archived_not_live -and $h.exact_link_closure_verified -and $h.CPU_non_main_objects -eq 85 -and $h.link_object_count -eq 86 -and @($h.objects).Count -eq 85 -and @($h.source_snapshots265).Count -eq 265 -and @($h.libraries).Count -eq 17 -and @($h.runtime).Count -eq 4 -and !$h.program_run -and $h.frozen_build_program_inputs_runtime_unchanged) 'Frozen pure-reader85+1/265/17/4 helper required'
+Need ([IO.Path]::GetFileName($h.program.path) -ceq 'upl_damp_mid_partial_r1.exe') 'Only own typed partial reader may run'
+$inputs=@($auditE,$helperE,$h.program,$h.source_build,$h.helper_object,$h.compiler_dependency_record,$h.compile_call,$h.link_call,(E $PSCommandPath),(E (Join-Path $PSScriptRoot 'upl_damp_mid_partial_r1.cpp')),(E (Join-Path $tests 'notes\upl_damp_mid_partial_r1.json')))+@($a.verified_input_bindings)+@($a.retained_output_files)+@($a.retained_logs)+@($h.inputs)+@($h.author_files)+@($h.objects)+@($h.source_snapshots265)+@($h.actual_project_headers)+@($h.libraries)+@($h.tools)
+foreach($p in $h.runtime){$inputs+=@($p.original,$p.copy)}
+V $inputs;Call0 $h.compile_call;Call0 $h.link_call
+$data=Join-Path $tests 'outputs\upl_damp_mid_CPU_coarse_r1\data';$argsReader=@('--read','CPU',$data,'partial',$out);$working=Split-Path -Parent $h.program.path
+[IO.File]::WriteAllBytes($stdout,[byte[]]@());$code=$null;$invokeFailure=$null;$started=[DateTime]::UtcNow.ToString('o');$prior=$ErrorActionPreference
+Push-Location $working
+try{$ErrorActionPreference='Continue';$global:LASTEXITCODE=$null;& $h.program.path @argsReader 2>&1|Tee-Object -FilePath $stdout -Append|Out-Host;$code=$LASTEXITCODE}catch{$invokeFailure=$_.Exception.Message}finally{Pop-Location;$ErrorActionPreference=$prior}
+Save $callPath ([ordered]@{program=$h.program;arguments=$argsReader;working_directory=$working;started_utc=$started;ended_utc=[DateTime]::UtcNow.ToString('o');direct_native_call=$true;typed_LASTEXITCODE_captured_immediately=($code -is [int]);owned_call_exited=($code -is [int]);exit_code=$code;invocation_failure=$invokeFailure;log=(E $stdout);pure_reader=$true;actual_solver_call=$false;source_solver_exit_code=$null;source_solver_completion_verified=$false;physical_acceptance=$false})
+$failure=$null;$completeE=$null;$files=@();$unchanged=$false
+try{
+  Need ($code -is [int] -and $code -eq 0 -and !$invokeFailure) 'Pure read did not return owned typed0; preserve partial artifacts'
+  $completeE=E (Join-Path $out 'completion.json');$d=J $completeE.path
+  Need ($d.stage -ceq $tag -and $d.passed -and $d.partial_decode_safety_passed -and $d.interrupted_evidence_only -and $d.samples -eq 1673 -and $d.original_expected_samples -eq 1746 -and $d.actual_end_s -eq 6.875 -and $d.actual_saved_completed_steps -eq 3604480 -and $d.planned_completed_steps -eq 4798782 -and $d.native_total_arrays -eq 22 -and $d.total_native_count -eq 1040 -and $d.soil_ledger_checks -eq 1673000 -and $d.fixed_public_zero_marker_checks -eq 66920 -and $d.all_native_J_theta_rows -eq 1739920 -and $d.noninitial_signed_dterror_intervals -eq 1672 -and $d.post_open_frames -eq 1469 -and $d.post_open_drained_particle_checks -eq 14690 -and $d.max_activeDrainCount -eq 10 -and $null -eq $d.source_solver_exit_code -and !$d.source_solver_exit_verified -and !$d.source_solver_normal_completion_verified -and !$d.original_planned_window_completed -and !$d.full_consolidation_acceptance -and !$d.full_window_gates_adopted_or_relaxed -and !$d.physical_acceptance) 'Original partial native coverage/unknown-source-exit meaning differs'
+  $leaves=@('original15.bin','physical.bin','clock.bin','common_j_theta.bin','soil_n.bin','native_ids.csv','fixed_ids.csv','history.csv','ledger.csv','fixed_samples.csv','last_poro.csv','columns.csv','completion.json')
+  $got=@(Get-ChildItem -LiteralPath $out -File);Need ($got.Count -eq 13 -and !(Compare-Object ($got.Name|Sort-Object) ($leaves|Sort-Object))) 'Exactly13 declared diagnostic exports required'
+  $hist=@(Import-Csv -LiteralPath (Join-Path $out 'history.csv'));Need ($hist.Count -eq 1673 -and $hist[-1].part -ceq '1672' -and $hist[-1].time_s -ceq '6.875' -and $hist[-1].completed_step -ceq '3604480') 'History endpoint differs'
+  $files=@($got|Sort-Object FullName|ForEach-Object{E $_.FullName})
+}catch{$failure=$_.Exception.Message}
+try{FinalV ($inputs+@($completeE,$h.program,(E $callPath),(E $stdout))+$files|Where-Object{$_});$unchanged=$true}catch{if(!$failure){$failure=$_.Exception.Message}}
+$passed=(!$failure -and $unchanged)
+Save $record ([ordered]@{stage='upl_damp_mid_partial_native_r1';passed=[bool]$passed;partial_decode_only=$true;interruption_audit=$auditE;helper=$helperE;program=$h.program;call=(E $callPath);inputs=$inputs;files=$files;outdir=$out;completion=$completeE;source_solver_exit_code=$null;source_solver_completion_verified=$false;original_window_completed=$false;independent_half_performed=$false;independent_final_rehash_performed=$unchanged;physical_acceptance=$false;solver_invoked=$false;original_full_gate_adopted=$false;failure=$failure})
+if(!$passed){throw ('Partial native diagnostic rejected; no solver rerun: '+$record)};Write-Output $record

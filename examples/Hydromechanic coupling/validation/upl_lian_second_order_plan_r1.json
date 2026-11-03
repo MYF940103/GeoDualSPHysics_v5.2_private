@@ -1,0 +1,24 @@
+{
+  "stage": "upl_lian_second_order_plan_r1",
+  "user_reaffirmed": "2026-11-03",
+  "status": "required_not_yet_validated_or_installed",
+  "source": "src/papers/u-pw/Lian 2023 u-pl.md, section3.1 Eq22-23 and section3.2 Eq25; original PDF formulas must also be checked before implementation",
+  "position": "After the active constant-k1D mid review and bounded3D operator/initialization checks, but before admitting the next formal long benchmark/server package. Independent offline operator work can proceed alongside the current solver. Preserve the existing accepted control.",
+  "question": "Compare the literal Lian second-derivative discretization with the current scalar Taylor-defect Lstar, rather than relabeling symmetric C or Lstar as a completed Eq23 implementation.",
+  "known_distinctions": [
+    "Eq23 includes a first-gradient defect subtraction to reduce disorder error. It is not automatically a generally quadratic-exact Hessian or a guaranteed higher convergence order.",
+    "For2D Dmn=4*rm*rn/r2-delta_mn. Its isotropic trace is2. In the same receiver-C/volume/neighborhood/zero-Eta2/no-boundary-substitution limit, the scalar trace can coincide with the current Taylor-defect form; algebraic equality is a valid test result, not evidence the task can be skipped.",
+    "Current production additionally uses pair-averaged C, stored Eta2 and a closed-face gradient target. Separate these differences instead of changing all of them in a coupled physical A/B.",
+    "Any3D tensor extension needs its own dimensional derivation; do not transplant coefficient4 or replace scalar trace2 with3.",
+    "Eq25 pair-mean variable permeability is a later separate comparison with the current receiver-k/product-rule law, not proof from constant-k tests."
+  ],
+  "bounded_order": [
+    "Check originalPDF/index/sign/dimensional conventions; write one literal reference and an algebraic same-limit crosscheck.",
+    "Compare constant/affine/quadratic and smooth modes on matched regular, controlled-disorder and truncated-neighborhood clouds in2D and justified3D; retain all six Hessian components when testing3D, not only a scalar trace.",
+    "Quantify derivative errors, constant null response, linear defect, conditioning, pair/global residuals, measured work and memory. Quadratic errors are diagnostics, not an assumed exactness claim; check dissipative/discrete spectral behavior before integration.",
+    "Only a justified candidate proceeds to existing1D and Cryer same-physics native/half/backend compatibility and actual-time theory comparisons. Keep original safety and5Pa/.005mm limits; operator option changes are not half-step errors.",
+    "Merge only if real accuracy/robustness improves at acceptable measured cost, or record demonstrated equivalence/no worthwhile benefit and retain the existing operator. Synchronize docs and verify selective local/remote Git."
+  ],
+  "no_changes": "No production source, numerical equation, physical threshold, formal input, retained output, active1D solver or server computation changed by this plan.",
+  "physical_acceptance": false
+}
