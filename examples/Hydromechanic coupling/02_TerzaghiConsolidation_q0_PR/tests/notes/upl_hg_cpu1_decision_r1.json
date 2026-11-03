@@ -1,0 +1,29 @@
+{
+  "stage": "upl_hg_cpu1_decision_r1",
+  "date": "2026-11-03",
+  "comparison": {
+    "path": "tests/logs/upl_hg_cpu1_short_r1.compare.json",
+    "bytes": 21010,
+    "sha256": "21eb787965b20dce4d819693492e891e08712a0b66fc10e6757bd9c557a9431b",
+    "passed": true,
+    "samples": 458,
+    "actual_end_s": 0.0250244140625,
+    "pressure_RMS_difference_Pa": 0,
+    "max_material_XYZ_difference_mm": 0,
+    "actual_clock_difference_s": 0,
+    "all_five_binary_exports_bit_identical": true,
+    "all26_max_abs_difference": 0,
+    "all1040_J_theta_and_soil_n_difference": 0
+  },
+  "observed_cost": {
+    "CPU1_loop_seconds": 134.980179,
+    "retained_CPU8_loop_seconds": 139.216217,
+    "controlled_benchmark": false,
+    "significant_speedup_demonstrated": false
+  },
+  "decision": "CPU1 is eligible for the next separately reviewed bounded diagnostic because the unchanged current program/input produced exact raw exports and uses fewer worker threads. Do not claim a 3-percent difference against a historical uncontrolled run is an established speedup. Keep the current numerical method and cache; no blind CPU2/4 search or source optimization is justified by these timings alone.",
+  "limits": "Run/native/compare actions each passed once, including original native22/all1040 IDs, ledger/drain/HG/clocks. This is same-step thread compatibility, not another independent-half study. A later longer window still needs its own explicit preparation, admission, source/program/input binding and fresh start; no exact HG restart or late-mode cure follows.",
+  "mid_or_formal_run_admitted": false,
+  "production_or_formal_files_changed": false,
+  "physical_acceptance": false
+}
