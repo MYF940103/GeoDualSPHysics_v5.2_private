@@ -1,0 +1,44 @@
+{
+  "stage": "upl_hg_mid2_admission_r1",
+  "utc": "2026-11-03T08:21:59.711565+00:00",
+  "passed": true,
+  "allowed_jobs": [
+    "upl_hg_mid2_CPU1_coarse_r1"
+  ],
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_r1.inputs.json",
+      "bytes": 1593497,
+      "sha256": "b595ea644faf20d8dadaace5e58980066128a596db1c8ffa07edde2ce015da9f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_mid2_reader_ReleaseCPU_r1.helper.json",
+      "bytes": 532547,
+      "sha256": "d3d86f3ed7647d32b457a48bd253160b197ae8d955adae097b708aac8e5dab5c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu1_short_r1.compare.json",
+      "bytes": 21010,
+      "sha256": "21eb787965b20dce4d819693492e891e08712a0b66fc10e6757bd9c557a9431b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_column_full_review_r1_pair.check.json",
+      "bytes": 59862,
+      "sha256": "4f577bcfc5090e93505c8df20112dbc84694396e9078eff7185dcfe78644d2b0"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_gpu_component_Release_probe_r4_release_review_r1.check.json",
+      "bytes": 263246,
+      "sha256": "3844c684f21b465552ce0fbf6e76b20a3079710b14ef744bad4a6f5b9f335b49"
+    }
+  ],
+  "reason": "Root fully reviewed prepared input, mechanically derived native reader/build and new owned runner/followup. Existing .5s independent half and all458 CPU1/CPU8 byte-identical exports passed; separate GPU Release zero-step component passed. Admit one fresh2s CPU1 coarse diagnosis only.",
+  "purpose": "Determine whether xi=.1 suppresses the old alternating-column mode (HG0 RMS2.0854681mm at actual2s) while preserving pressure, material settlement and total stress. Old HG0 source run remains interrupted/exit unknown.",
+  "unchanged_physics": "Current frozen program; dt2^-19,xi=.1,eta=.02,constantk1e-4,geometry/material/load/drain unchanged. Only prepared TimeMax and HG/comment differ from retained mid input.",
+  "physical_acceptance": false,
+  "half_or_formal_jobs_admitted": false,
+  "independent_2s_half_inherited": false,
+  "all_native_fields_and_actual_times_pending": true,
+  "root_full_read_and_syntax_checks_passed": true,
+  "source_or_canonical_program_changed": false
+}
