@@ -1,0 +1,17 @@
+{
+  "stage": "upl_hg_column_build_r1",
+  "scope": "CPU-only authoritative isolated DebugCPU/ReleaseCPU build after narrow public dynamic+HG column guards. No GPU build, install, solver or program invocation.",
+  "parent_verified_local_remote": "98e3861fbabbdb1d50910593f25ac35193863f2b",
+  "derivation": "Reviewed upl_hg_build_r1.ps1 with fresh upl_hg_column_ artifact names and CPU-only parameter validation; authoritative solution/project/compiler recipes unchanged.",
+  "changes": [
+    "src/source/JSph.cpp",
+    "src/source/JSphCpu.cpp",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/README.md"
+  ],
+  "scope_enforced": "Public-master CPU constant-k loaded/drained column, one upward fixed FreeSlip bottom verified by unchanged real-particle wall check; Xperiodic only. Reject GPUHG, variablek, SPR, Visco/ViscoTime and existing unsupported paths.",
+  "same_stage_HG_semantics": "Reuse verified private current-J class and call wiring. No changed force/pressure equation or time clock in this admission step.",
+  "candidate_coupled_testing_pending": true,
+  "formal_inputs_or_canonical_changed": false,
+  "physical_acceptance": false
+}

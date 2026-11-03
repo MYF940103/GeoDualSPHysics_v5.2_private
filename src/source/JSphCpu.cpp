@@ -4317,6 +4317,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
+  const bool allowcolumnhg=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+    && PeriX && !PeriY && !PeriZ && !ViscoTime);
+  if(SoilHourglassXi!=0 && !allowcolumnhg)
+    Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones
@@ -4328,10 +4332,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
-    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping)) || SoilHourglassXi!=0
+    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping))
     || Visco!=0 || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress || SoilBoundaryDerivativeSPR
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/HG/viscosity/DDT/artificial stress/SPR/Shepard; damping/load/drainage require the bounded constant-k column.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/viscosity/DDT/artificial stress/SPR/Shepard; damping/HG/load/drainage require the bounded constant-k column.");
   if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

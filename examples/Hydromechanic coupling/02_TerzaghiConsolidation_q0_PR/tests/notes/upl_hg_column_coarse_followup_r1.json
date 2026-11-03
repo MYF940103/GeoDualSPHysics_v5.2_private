@@ -1,0 +1,50 @@
+{
+  "stage": "upl_hg_column_coarse_followup_r1",
+  "date": "2026-11-03",
+  "status": "authored_only_root_must_inspect_before_launch",
+  "author_files": [
+    "tests/support/upl_hg_column_coarse_followup_r1.py",
+    "tests/notes/upl_hg_column_coarse_followup_r1.json"
+  ],
+  "root_thread": "01a07683-bc64-7463-8db7-9ee6243967d8",
+  "command_after_root_inspection": "D:/anaconda3/python.exe -B tests/support/upl_hg_column_coarse_followup_r1.py --launch --thread 01a07683-bc64-7463-8db7-9ee6243967d8 --codex <root-inspected-literal-absolute-Codex-executable-path>",
+  "working_directory": "case02 root; an absolute script path also works",
+  "interpreter": "D:/anaconda3/python.exe already provides psutil. Default py -3 does not; no installation is performed by this script.",
+  "scope": "One hidden polling worker and at most one Codex queue notification for the already-active actual CPU coarse project-main job. This is not a solver, native-reader, physical-review, build, cleanup or Git runner. No model/API calls, keys, connectivity self-test, thread environment lookup, retry, restart or rearming.",
+  "fixed_job": {
+    "tag": "upl_hg_column_ReleaseCPU_coarse_r1",
+    "owner_pid": 73260,
+    "owner_creation_utc": "2026-11-03T05:41:21.9384630Z",
+    "owner_script": "tests/support/upl_hg_column_run_r2.ps1",
+    "start_record": "tests/logs/upl_hg_column_ReleaseCPU_coarse_r1.start.json",
+    "start_bytes": 550629,
+    "start_sha256": "299bb94afb4d02da8a394569b13fc35299b3bfe53629a5f92c43ae0b5d9341f1",
+    "configuration": "ReleaseCPU",
+    "window": "coarse",
+    "threads": 8,
+    "dt_s": 0.0000019073486328125,
+    "steps": 262144,
+    "end_s": 0.5,
+    "native_samples": 1469,
+    "post_open_frames": 1265
+  },
+  "launch_validation": "Require the exact pinned start bytes/schema/PID/creation/tag/program/job and its bound owner script, program, build, input manifest and admission. Check the live psutil PID creation, full command line, cwd and executable, including run_r2 -Configuration ReleaseCPU -Window coarse -Admission exactpath -ExecutionAuthorized. Freeze this script/note, the interpreter, psutil module and explicit Codex executable before watching. Launch derives worker owner arguments from this fixed start; it accepts no replacement owner.",
+  "fresh_artifacts_only_if_launched": [
+    "tests/logs/upl_hg_column_coarse_followup_r1.lock.json",
+    "tests/logs/upl_hg_column_coarse_followup_r1.status.json",
+    "tests/logs/upl_hg_column_coarse_followup_r1.worker.log",
+    "tests/logs/upl_hg_column_coarse_followup_r1.terminal.json",
+    "tests/logs/upl_hg_column_coarse_followup_r1.queue_attempt.json",
+    "tests/logs/upl_hg_column_coarse_followup_r1.queue_result.json"
+  ],
+  "existing_paths": "Any existing lock/status/log/terminal/attempt/result or temporary status file blocks launch. Immutable evidence uses exclusive creation. Only this worker's own identified status is atomically updated; locks, terminal, attempt and result are never overwritten. A failed or orphaned watcher is preserved and never restarted automatically.",
+  "terminal_rules": "Poll at30-second intervals. A stable, valid exact run_r2 coarse.run.json is terminal whether passed or failed; bind its exact start/program/arguments/job/build/input/admission and owned call identity. Success requires the sealed Run's original typed exit0, steps262144, native1469 and binding guards. A call alone never proves completion. Owner PID reuse/command change or rejected Run identity is a failure notification. A genuinely dead owner without valid final Run must remain observed dead for more than120seconds before notification. AccessDenied is unobservable, never evidence of exit.",
+  "queue_contract": "Before external action, independently rehash every frozen consumed immutable input and record its original expected identity plus actual observed identity or read error. Any mismatch changes the terminal event to watch_final_binding_rejected, sets immutable_hashes_reverified=false and passed=false, and preserves every mismatch without claiming completion. Seal the terminal report and an exclusive queue_attempt.json containing its full copy and all expected/observed immutable identities, then attempt the failure notification once. Invoke only [codex, queue, --thread, explicit_root_thread, --message, message] with45-second timeout and CREATE_NO_WINDOW. Save return code/output or timeout uncertainty in a fresh result file and status. A timeout may already have queued; never resend.",
+  "notification_content": "The queued message identifies an authorized same-thread continuation, requires original start/call/run/hash/ID/actual-time inspection, and allows the existing native_run_r2 -Window coarse decoder only if not already decoded. It asks for offline0.5s HG/HG0 pressure/settlement/stress/alternating-mode review before deciding the independent half stage. It prohibits automatic mid/formal expansion, completed-solver reruns and changed acceptance gates. Preserve current independent GPU component r3 and all active dependencies while cleanup continues. Report in Chinese and continue authorized work.",
+  "limits": "The notifier checks receipt ownership and terminal metadata; it does not parse/re-hash every raw PART, observe native IDs/actual final time, establish physical acceptance or authorize a new computation. Worker startup binding failures remain fail-closed before watching. Changes detected during watching or final hashing are retained as explicit failure evidence and trigger at most one failure notification, never a success claim. It never stops any owner or GPU process.",
+  "script_executed": false,
+  "worker_launched": false,
+  "notification_queued": false,
+  "solver_reader_build_Git_cleanup_or_model_API_invoked": false,
+  "physical_acceptance": false
+}

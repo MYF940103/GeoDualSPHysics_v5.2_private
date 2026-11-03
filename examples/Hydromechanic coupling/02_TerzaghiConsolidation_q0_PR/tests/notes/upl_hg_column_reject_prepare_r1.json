@@ -1,0 +1,70 @@
+{
+  "stage": "upl_hg_column_reject_prepare_r1",
+  "date": "2026-11-03",
+  "status": "authored_not_executed",
+  "source": "tests/support/upl_hg_column_reject_prepare_r1.py",
+  "later_explicit_preparation_command": "python tests/support/upl_hg_column_reject_prepare_r1.py --prepare",
+  "source_manifest": {
+    "path": "tests/logs/upl_hg_column_r1.inputs.json",
+    "bytes": 628141,
+    "sha256": "c1d9ec4018fff42dd444caf4bca757e5e3d27ad546ca49a68596225abf68e187",
+    "variant": "smoke",
+    "runtime_sha256": "fe5388994c5a1055fb63d4643614f4c572d681e64e0cb049e30ed507a5a38584",
+    "initial_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97"
+  },
+  "scope": "Preparation only for three fresh CPU Debug negative-entry probes, cloning the prepared actual HG=.1 smoke runtime and identical initial BI4/normals. No solver, build, reader, GenCase, Git, GPU program or production/formal input mutation is part of this script.",
+  "planned_cases": [
+    {
+      "case": "variable_k",
+      "changed_attributes_only": ["HydroMechConductivityModel value:0->1", "HydroMechConductivityCk value:0->0.1"],
+      "CLI_boundary": "-mdbc_freeslip",
+      "reason": "Model1 and positive Ck=.1 are a valid conductivity-law configuration; expected failure is the shared HG constant-k scope guard, not an invalid-Ck parser error.",
+      "expected_error_substring": "Experimental dynamic HG is CPU-only in the constant-k X-periodic loaded column, without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.",
+      "expected_no_Part1": true,
+      "result_observed": false
+    },
+    {
+      "case": "visco_time",
+      "added_parameter_only": "ViscoTime with value upl_hg_column_reject_visco_r1.dat, relative to the runtime XML directory",
+      "scalar_Visco_unchanged": 0,
+      "two_number_column_file": "0 0\n0.0000019073486328125 0.1\n",
+      "CLI_boundary": "-mdbc_freeslip",
+      "reason": "JDsViscoInput::LoadFile reads two numeric time/value columns and requires at least two rows. The initial viscosity is0 and a later value is nonzero; the ViscoTime object itself must trigger the shared HG guard before stepping.",
+      "expected_error_substring": "Experimental dynamic HG is CPU-only in the constant-k X-periodic loaded column, without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.",
+      "expected_no_Part1": true,
+      "result_observed": false
+    },
+    {
+      "case": "no_slip",
+      "changed_attribute_only": "parameter SlipMode value:3->2",
+      "CLI_boundary": "-mdbc_noslip",
+      "reason": "JSphCfgRun MDBC_NOSLIP sets TBoundary2/SlipMode2; JSph::LoadConfigCommands applies NoSlip, overriding the XML consistently. The unchanged InitDynamicPoreWallCpu loop must reject the actual native wall SlipMode before stepping.",
+      "expected_error_substring": "Dynamic wall fixture requires finite stationary FreeSlip wall normals.",
+      "expected_no_Part1": true,
+      "result_observed": false
+    }
+  ],
+  "planned_fresh_paths": {
+    "configs": "tests/configs/upl_hg_column_reject_{variable_k,visco_time,no_slip}_r1.xml",
+    "seed": "tests/outputs/upl_hg_column_reject_seed_r1/",
+    "manifest": "tests/logs/upl_hg_column_reject_r1.inputs.json",
+    "later_owned_outputs": "tests/outputs/upl_hg_column_reject_DebugCPU_{case}_r1/",
+    "later_owned_logs": "tests/logs/upl_hg_column_reject_DebugCPU_{case}_r1.{call.json,run.json,console.log}",
+    "overwrite_policy": "Reject every existing seed, manifest, configuration, future solve output or future log label. Create no solver-output directory or solve log during preparation."
+  },
+  "proof_and_bindings": [
+    "Pin and rehash the current manifest, select exactly one smoke variant and verify its configuration/runtime/BI4/normals identities; copy only these shallow entries, not nested retained-control receipt trees.",
+    "Change existing XML value attributes by unique byte edits; preserve all other bytes, including the HG ON comment. Insert the sole new ViscoTime parameter after the original Visco line with the same indentation and newline style.",
+    "Reverse the declared edits to prove byte-identical original runtime and independently reverse attributes/remove the sole new parameter to prove the same comment-preserving DOM.",
+    "Leave HG=.1, eta=.02, initial scalar Visco0, clocks, material, loading/drainage, particle fields and normals unchanged except the declared negative-case value attributes/new parameter.",
+    "Record current parser/guard source hashes and reverify all source inputs at preparation completion. Root separately binds them to the actual Debug program used for each later call.",
+    "Declare expected_error_substring, exact future argv, before-stepping expectation and forbidden data/Part_0001.bi4 for each job; preparation does not observe those results."
+  ],
+  "later_root_owner_requirements": "For each separate actual DebugCPU project-main call, capture the immediate typed exit code, expected exact guard error, absence of Part_0001 and any later PART, no advanced steps/HG force activity, and unchanged input/source/program/runtime bindings. A parser/file/CLI error, a different guard, successful stepping or a bare nonzero exit is not a passed rejection. Do not run a GPU probe against the frozen independent GPU program.",
+  "preparation_executed": false,
+  "configs_or_seed_outputs_created": false,
+  "negative_tests_executed": false,
+  "all_rejections_verified": false,
+  "physical_acceptance": false
+}

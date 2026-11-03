@@ -1,0 +1,33 @@
+{
+  "stage": "upl_cryer_load_reaudit_r1",
+  "date": "2026-11-03",
+  "scope": "Read-only source and retained frozen-operator review. No solver, build, physical-parameter change or formal acceptance.",
+  "source_context": "upl-dev checkpoint98e3861 plus the uncommitted narrow CPU dynamic-HG column admission. The confinement formulas were not changed by that admission.",
+  "current_external_load": "CPU JSphCpu.cpp:2487 and GPU JSphGpu_ker.cu:2108 use raw fac*dr with no correction matrix. FlexibleConfinement bypasses the separate top-surface acceleration and TopKernelBand normalization. Stress-rate gradient correction and symmetric Darcy correction do not correct traction.",
+  "uniform_total_stress_audit": {
+    "convention": "T=sigma_effective-p*I, tension positive; g_ij=grad_i W_ij.",
+    "single_J_branch": "a_internal_ij=(Vj/rho_i)*(Ti+Tj)*g_ij; a_load_ij=(2*q*Vj/rho_i)*g_ij. Ti=Tj=-q*I cancels termwise for arbitrary valid J, apart from actual rounding.",
+    "legacy_upw_branch": "Effective stress uses mj*(sigma_i/rho_i^2+sigma_j/rho_j^2); pore pressure uses -mj*(pi+pj)/(rho_i*rho_j). Uniform p and sigma_effective=(p-q)*I leave p*mj*(1/rho_i-1/rho_j)^2*g_ij. Equal density or p=0 cancels; do not claim exact general variable-density cancellation.",
+    "retained_legacy_variable_density_residual": "cryer_load_pair_r1 reports component RMS6.825710290433883e-5 and vector max0.0004103307001920457 m/s^2. This is not proof of the coupled pressure-peak error cause."
+  },
+  "historical_evidence": {
+    "load_only_receiver_C_rejected": "Initial uniform-density drained field: component RMS315.7757940671312 m/s^2 versus raw/raw0. A load-only correction must not be enabled.",
+    "work_and_geometry": "Raw compressive load work/(3*q*Vnative)=0.9585396250793303 and /(3*q*Vgeom)=1.0633079740977176. The offline pair-adjoint form closes native affine work, but Vnative/Vgeom=1.109299966612978 remains. Do not fit q, mass or theory radius to remove that difference.",
+    "candidate_limit": "Matching receiver-C stress/load restores a uniform field but does not generally preserve pair momentum. The retained pair-adjoint algebra is not a real production-function or coupled-trajectory validation, and is not symC Darcy."
+  },
+  "next_after_current_gates": [
+    "Call real CPU/GPU frozen operators for uniform total compression with zero/nonzero pore pressure and nonuniform J; accumulate internal, pore and external contributions independently.",
+    "For a single mathematically matched candidate check linear fields, pair/global force and torque, curved-neighborhood conditioning, radial work/virial with both native and geometric volume, and radial total-stress transmission.",
+    "Inspect load telemetry gating: current load writeback sits within the outer nonzero-interaction-result condition. An exactly cancelling manufactured state can suppress load telemetry; zero recorded load alone is not proof of no applied force.",
+    "Only a justified low-cost candidate proceeds to fresh short coupled/half/backend checks. Preserve fixed18 center material IDs, finite-Kw/finite-radius theory, actual drainage-relative times and full startup."
+  ],
+  "reviewed_inputs": [
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphCpu.cpp","bytes":266363,"sha256":"40b93f0601b56a80190634ccebbdf811276c3f72ff6550e67eeab4c390d37579"},
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphGpu_ker.cu","bytes":303519,"sha256":"2031a140a5db3f01507748c2fd41f3574ab156c3e88e6497e15fe048b13fccf7"},
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/04_CryerProblem_PR/tests/logs/cryer_load_pair_r1.check.json","bytes":291427,"sha256":"77f8b1478da58e6e8c54a86c22c023da958c6bf1a248b3a0219d288bb7a44ed9"},
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/04_CryerProblem_PR/tests/notes/upl_cryer_geometry_volume_r1.json","bytes":2138,"sha256":"7fbd086292f0fe3e8254116bc5d6957d407ae88beeae21525eda233c7911e567"}
+  ],
+  "production_changed": false,
+  "formal_inputs_or_outputs_changed": false,
+  "physical_acceptance": false
+}

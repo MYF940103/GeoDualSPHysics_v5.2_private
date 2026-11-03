@@ -46,7 +46,7 @@
                      InitMode=None; axis-aligned rectangular XZ periodicity without walls, or two opposing fixed parallel axis
                      FreeSlip mDBC planes with tangential periodicity. A separate bounded loaded-column
                      entry candidate is described below; other loads/drainage, viscosity/damping,
-                     HG/SPR, plasticity, shifting, moving walls and other
+                     HG/SPR outside the separate CPU column candidate below, plasticity, shifting, moving walls and other
                      unsupported features remain rejected. No general consolidation/Cryer/Lian or GPU release is implied.
                      Old GPU executables IGNORE the new XML keys: do not use them for this model.
                      Dynamic/J-state PART restart is rejected, including loading with the master OFF.
@@ -163,6 +163,18 @@
                      reconstruction after external band-load normalization. No new XML key, pressure
                      source or velocity filter. Default u-pw retains its old per-particle damping law.
                      The sole planned elastic candidate is eta_d=.02; no physical acceptance yet. -->
+                <!-- Dynamic loaded-column CPU HG integration candidate (2026-11-03):
+                     SoilHourglassXi>0 is admitted only in the above public constant-k/g0 CPU column,
+                     with its unchanged single upward fixed FreeSlip bottom, X periodicity, TopKernelBand
+                     and fixed-grid drainage. GPU dynamic HG, variable k, SPR, viscosity/ViscoTime,
+                     plasticity, restart and other wall topologies remain rejected.
+                     Existing matched-LS GNOG integrates H=Q/M0 with two half updates. It uses V=V0*J,
+                     mi=V0*(rho_t0-rho_w+rho_w*J), and adds aHG=M0*H/mi at the current force-stage J.
+                     HG precedes finished AceMax and the same-stage dynamic Darcy source once.
+                     Exact J is part of the rate cache; dt/tau<=.2 and accumulated spin<.01 remain.
+                     Actual CPU Debug/Release components and legacy-HG/xi0 native regressions passed;
+                     coupled HG windows remain pending. This is not physical/full-cycle/server acceptance
+                     or an evolving/open-mass energy proof. Default u-pw arithmetic remains unchanged. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
 				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />

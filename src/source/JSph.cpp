@@ -609,6 +609,10 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       Run_Exceptioon("Dynamic seepage without walls currently requires XZ periodicity.");
     if(PoreDarcySymmetricCorr || PoreMdbcInterpolationMode)
       Run_Exceptioon("Dynamic seepage has its own Darcy/wall operator; legacy PoreDarcySymmetricCorr and PoreMdbcInterpolationMode must remain zero.");
+    if(SoilHourglassXi>0 && (!Cpu || HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0
+      || !CaseNpb || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage
+      || !HydroMechDrainageFixedGrid || !PeriX || PeriY || PeriZ || ViscoTime))
+      Run_Exceptioon("Experimental dynamic HG is CPU-only in the constant-k X-periodic loaded column, without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.");
     if((HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
       && (HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0 || !CaseNpb
         || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage || !HydroMechDrainageFixedGrid

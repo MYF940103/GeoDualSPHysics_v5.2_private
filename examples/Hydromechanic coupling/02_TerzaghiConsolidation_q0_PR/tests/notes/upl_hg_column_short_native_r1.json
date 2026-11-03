@@ -1,0 +1,72 @@
+{
+  "stage": "upl_hg_column_short_native_r1",
+  "date": "2026-11-03",
+  "status": "authored_not_built_or_run",
+  "source": {
+    "path": "tests/support/upl_hg_column_short_native_r1.cpp",
+    "bytes": 19207,
+    "sha256": "759161c449a2b01c7d5e117d41e7b44c0f613a87051bc28eeae83eaf215ed577"
+  },
+  "command": "upl_hg_column_short_native_r1.exe --read CPU DATA coarse|half FRESH",
+  "derivation": {
+    "retained_full_reader": "tests/support/upl_damp_long_native_r1.cpp",
+    "retained_full_reader_sha256": "3376ecf2e6ec087a23288259817f2bd15b75094493a887fa179fc01a76b7700a",
+    "retained_full_reader_modified": false,
+    "neutral_include": "tests/support/upl_cpu_public_native_r1.cpp",
+    "neutral_include_sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "neutral_include_modified": false,
+    "method": "Copy the full reader with local namespace/stage/window naming, retaining its neutral Native/Load/WriteTyped implementation through main rename. Preserve every original data/safety check and all export schemas.",
+    "changes": [
+      "Change Samples from1469 to458; construct and validate the original complete1469 saved-step set before erasing entries after factor*13120, where factor is1 coarse or2 half.",
+      "Require the selected sequence to contain458 frames, beginning at completed step0 and ending at completed13120 coarse or26240 half.",
+      "Change the declared endpoint from.5 to13120*2^-19=0.0250244140625 seconds; retain dt=2^-19 coarse and2^-20 half, drain thresholds5243/10486, and every actual saved-clock/Step/locked-dt/signed-dterror check.",
+      "Add per-frame activeDrainCount==10 after the unchanged completed-step opening threshold, otherwise0; add exact totals254 post-opening frames,2540 zero-pressure native receiver checks, and maximum active count10.",
+      "Restrict the CLI and reader entry to CPU coarse/half only; smoke/GPU paths are rejected.",
+      "Rename completion stage/window to upl_hg_column_short_native_r1/dyadic_short458; report the actual short endpoint, full_half_second_complete=false and full_window_prefix_data_compared=false."
+    ],
+    "thresholds_changed": false,
+    "solver_equations_or_execution_changed": false
+  },
+  "declared_window": {
+    "samples": 458,
+    "coarse_dt_s": 0.0000019073486328125,
+    "half_dt_s": 0.00000095367431640625,
+    "coarse_completed_steps": 13120,
+    "half_completed_steps": 26240,
+    "actual_end_s_required": 0.0250244140625,
+    "coarse_opening_completed_step_threshold": 5243,
+    "half_opening_completed_step_threshold": 10486,
+    "post_open_test": "completed_step > threshold; preserve the original force/event convention",
+    "post_open_frames": 254,
+    "post_open_drained_particle_checks": 2540,
+    "noninitial_signed_dterror_intervals": 457,
+    "soil_ledger_rows": 458000,
+    "fixed_marker_rows": 18320,
+    "all_native_J_theta_rows": 476320,
+    "input_schedule_is_unchanged_full_window_schedule": true,
+    "decimal_025_clock_substituted": false,
+    "full_half_second_complete": false
+  },
+  "unchanged_checks": [
+    "Exactly458 single-piece raw PART files;1040 unique complete native IDs including40 fixed and1000 soil; no exclusions, moving/floating particles, dynamic/reused IDs; original2D X-periodic decimal lattice/reference geometry and material mass.",
+    "Actual22 native arrays: original15 plus six doubles J/n/theta/V/rho/k and real float PosDiv; exact native types/counts, finite data and typed public constant-law metadata. No reconstruction from old CSV exports.",
+    "Exact actual saved clock, zero-based uint32 Step, locked dt and signed dterror; preserve initial empty sentinel and original finite/noninitial1e-14 signed guard. Clock record remains28 bytes.",
+    "Original strict rest/zero pressure/stress/J initialization; fixed positions/velocities and public n/V/rho/k zero markers; passive Rhop700..3000, elastic Kplastic, p0/excess, FSType and double stress/float display checks.",
+    "Same single-J saturated solid-volume ledger, native n/V/rho/k relative agreement5e-13, positive state and no bottom crossing; pressure zero on actual post-opening FSType2/3 receivers.",
+    "Same common26 field order with column21 actual ExcessPorePress; same original15, clock, all-native J/theta, soil-n, ledger, fixed-marker, final-state and descriptive-history exports."
+  ],
+  "fresh_output_policy": "Require FRESH absent and a pre-existing parent. Write original15.bin, physical.bin, clock.bin, common_j_theta.bin, soil_n.bin, native_ids.csv, fixed_ids.csv, history.csv, ledger.csv, fixed_samples.csv, last_poro.csv, columns.csv and completion.json. Never modify raw inputs or retained results.",
+  "owner_requirements": [
+    "Bind the actual project-main solver exit, CPU backend, current source/build/configuration/runtime/raw output hashes, intended HG xi, eta=.02 and otherwise unchanged physical inputs/events. The offline reader does not prove these from BI4.",
+    "Bind existing real HG runtime counters and force/dt/tau/spin diagnostics separately. The native reader does not add HG state arrays or infer class history from saved fields.",
+    "Final-J-weighted retained HydroMechLoadAce remains descriptive, not a same-force-stage q(t)*A0 guard; preserve the original reference area and independent same-stage load evidence requirements.",
+    "Compare newly owned coarse/half material states at the same actual times with the unchanged all-time5-Pa pressure-RMS/.005-mm material-XYZ limits in a separate owner. No interpolation or altered thresholds.",
+    "A schedule prefix is not proof of data equality. Compare a future same-HG/same-dt long run to this fresh short candidate separately; do not require candidate fields equal an old xi0 control. Full.5s work can use the retained full reader unchanged."
+  ],
+  "verification": "Read-only saved-step arithmetic confirms1469 full frames,458 selected frames and254 post-opening frames for both factor-scaled presets. No helper compilation or execution, solver, GenCase, input preparation or Git operation performed by the author.",
+  "built_or_run": false,
+  "comparison_performed": false,
+  "new_physical_accuracy_threshold": false,
+  "production_or_formal_inputs_changed": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,123 @@
+{
+  "stage": "upl_hg_column_native_run_r2",
+  "date": "2026-11-03",
+  "status": "prepared_native_analysis_repair_no_solver_or_reader_rerun_for_Debug_smoke",
+  "script": "tests/support/upl_hg_column_native_run_r2.ps1",
+  "scope": "One pure native-reader action or the explicitly bounded offline adoption described below. No solver/build/Git/GenCase, original safety unchanged.",
+  "parameters": {
+    "Configuration": [
+      "DebugCPU",
+      "ReleaseCPU"
+    ],
+    "Window": [
+      "smoke",
+      "short_c",
+      "short_h",
+      "coarse",
+      "half"
+    ],
+    "ExecutionAuthorized": "Required switch. The unique selected configuration/window must already exist among the six prepared jobs; DebugCPU is smoke only."
+  },
+  "paths": {
+    "prepared_manifest": "tests/logs/upl_hg_column_r1.inputs.json",
+    "actual_source_build": "tests/logs/upl_hg_column_<Configuration>_r1.build.json",
+    "actual_owned_run": "tests/logs/upl_hg_column_<Configuration>_<Window>_r1.run.json",
+    "new_reader_output": "tests/outputs/upl_hg_column_<Configuration>_<Window>_r1_native/",
+    "new_owned_reader_call": "tests/logs/upl_hg_column_<Configuration>_<Window>_r1_reader.call.json",
+    "new_reader_log": "tests/logs/upl_hg_column_<Configuration>_<Window>_r1_reader.log",
+    "new_native_gate_record": "tests/logs/upl_hg_column_<Configuration>_<Window>_r1.native_r2.json",
+    "overwrite_policy": "All four reader output/log/record paths must be absent. Failed analysis preserves its call and partial output; it never reruns the completed solver."
+  },
+  "reader_selection": {
+    "smoke": {
+      "helper": "tests/logs/upl_column_ringdown_reader_ReleaseCPU_r1.helper.json",
+      "helper_stage": "upl_column_ringdown_reader_build_r1",
+      "arguments": "--read CPU OWN_DATA smoke NEW_NATIVE_DIR",
+      "completion_stage": "upl_column_ringdown_native_r1",
+      "samples": 3,
+      "completed_steps": 2,
+      "dt_s": 1.9073486328125e-06,
+      "post_open_frames": 0
+    },
+    "short_c_and_short_h": {
+      "helper": "tests/logs/upl_hg_column_short_native_ReleaseCPU_r1.helper.json",
+      "helper_stage": "upl_hg_column_short_native_build_r1",
+      "arguments": "--read CPU OWN_DATA coarse|half NEW_NATIVE_DIR",
+      "completion_stage": "upl_hg_column_short_native_r1",
+      "samples": 458,
+      "coarse_completed_steps": 13120,
+      "half_completed_steps": 26240,
+      "actual_end_s": 0.0250244140625,
+      "post_open_frames": 254,
+      "post_open_drained_receivers": 2540
+    },
+    "coarse_and_half": {
+      "helper": "tests/logs/upl_damp_long_reader_ReleaseCPU_r1.helper.json",
+      "helper_stage": "upl_damp_long_reader_build_r1",
+      "arguments": "--read CPU OWN_DATA coarse|half NEW_NATIVE_DIR",
+      "completion_stage": "upl_damp_long_native_r1",
+      "samples": 1469,
+      "coarse_completed_steps": 262144,
+      "half_completed_steps": 524288,
+      "actual_end_s": 0.5,
+      "post_open_frames": 1265,
+      "post_open_drained_receivers": 12650
+    }
+  },
+  "preflight_authority": [
+    "Exact prepared six-job manifest and actual run stage/CPU/configuration/window/tag are required, with passed and unchanged closure flags",
+    "Actual solver call must have owned, direct, immediately captured integer exit0, matching project program/target and all prepared arguments; fixture/Run overrides are rejected",
+    "Actual run source_build must match the exact current HG-column authoritative CPU86 project-main build; source inputs, objects, archived/current source pairs, runtime, tool records, canonical programs and every actual raw output hash remain bound before and after reading",
+    "Every expected PART is present in the exact completed raw file inventory and bound by its actual Run; no extra/missing PART/piece is admitted",
+    "Reader helper must prove actual85 CPU non-main objects plus one helper, exact86 link closure, four runtimes and passed owned compile/link calls. Retained helpers use objects/link_object_count; new short helper uses project_objects/object_count/frozen_inputs_unchanged/actual_project_classes_no_stubs. Actual owned linker arguments are independently checked for the same85+1 objects without main in either schema, and actual compile arguments must select the one declared reader CPP.",
+    "Historical reader builds are provenance. Historical original source/doc entries are mapped by exact path/hash/size to their archived copies; old source originals are never asserted equal to today's solver. New short reader additionally binds the actual HG ReleaseCPU build. Optional old project_call log fields are handled without fabricating a log."
+  ],
+  "clock_truth": {
+    "method": "Independently regenerate integer saved completed steps; exact native CSV clock bits must equal completed_steps*locked_binary_dt. The sealed typed C++ reader also checks native BI4 time, zero-based saved Step and typed locked dt exactly.",
+    "coarse_dt": "2^-19",
+    "half_dt": "2^-20",
+    "event_completed_steps": "5243 coarse / 10486 half; drainage is active only strictly after the event step",
+    "saved_schedule": "Coarse union: 0..65536 stride64; 5120..5376 stride1; 66560..262144 stride1024. Half doubles each completed step. Short keeps the first458 through coarse13120/half26240; smoke is0,1,2.",
+    "manifest_time_s": "Deserialized JSON time differences are recorded as diagnostics only, never equality gates. Original JSON/native clock data are not modified."
+  },
+  "original_thresholds_and_guards": {
+    "typed_schema": "Original15 typed arrays + six double dynamic arrays + true float PosDiv =22; typed bool/uint/uint/double public metadata;1000 soil+40 fixed IDs, no exclusions, finite fields and exact original native identity/topology",
+    "ledger": "All1000*samples soil V/rho/n/k/J ledgers and40*samples fixed public-zero markers are checked by the typed reader, relative ledger error<=5e-13; fixed J/theta/original15 are never zeroed or masked",
+    "signed_necessary_step": "Every noninitial interval is nonempty and signed dterror<=1e-14; retain signed semantics and initial-sentinel exclusion, never replace it with abs(dterror) or zero",
+    "drainage": "Independently recheck every history activeDrainCount=0 before/at event and10 after event; retain actual native FSType/pressure receiver checks inside the typed reader. Density/J are not frozen on drained receivers.",
+    "exports": "Exactly13 unchanged leaf names; validate all five binary headers and exact byte lengths, all1040 initial IDs, final soil1000 J/n/theta CSV IDs40..1039, every history clock/mask/ledger error and all26 named physical columns. All1040 J/theta states remain covered by common_j_theta.bin and all fixed states by fixed_samples.csv. Column21 is actual ExcessPorePress, actual PosDiv remains separate.",
+    "CSV_scope": "The wrapper reparses ID/history/final-state/column CSV summaries. It records zero ledger_CSV_rows_reparsed; exhaustive ledger values are verified directly from typed BI4 by the owned real reader."
+  },
+  "required_output_leaves": [
+    "original15.bin",
+    "physical.bin",
+    "clock.bin",
+    "common_j_theta.bin",
+    "soil_n.bin",
+    "native_ids.csv",
+    "fixed_ids.csv",
+    "history.csv",
+    "ledger.csv",
+    "fixed_samples.csv",
+    "last_poro.csv",
+    "columns.csv",
+    "completion.json"
+  ],
+  "limitations": [
+    "Prepared only; this note does not assert any reader run or passed gate",
+    "Owned typed reader exit is sealed before completion/export analysis; native.json binds that call and completion for later run-gate chains",
+    "Saved final-J-weighted retained load is descriptive and is not same-force-stage q*A verification. same_force_stage_qA_guard_verified, same_force_stage_load_budget_verified and force_stage_guard_independently_observed remain explicitly false.",
+    "Native safety/schema/clock acceptance does not establish independent half-step accuracy, ON/OFF bit identity, coupled conservation, long-window physical acceptance or GPU dynamic-HG support",
+    "No existing solver output, formal XML/BAT, historical reader artifact, metadata field, float field or original threshold is changed"
+  ],
+  "execution_performed": false,
+  "solver_or_build_invoked": false,
+  "formal_files_changed": false,
+  "physical_acceptance": false,
+  "repair": {
+    "sole_analysis_variable_fix": "Rename local $error to $nativeStepError; PowerShell reserved $Error is read-only. Original checks/thresholds unchanged.",
+    "adoption": "Explicit -AdoptCompletedReader only for exact sealed DebugCPU smoke decoder exit0/completion13exports whose r1 postanalysis failed solely on the readonly variable. Rehash original inputs/outputs/call, then rerun all remaining offline checks. No decoder or solver invocation.",
+    "new_record": "<jobtag>.native_r2.json; retain failed .native.json and used r1 sources unchanged",
+    "future": "Without adoption, fresh reader call as before; permit actual owned Run r1 or r2. The actual job tags/output schemas stay r1."
+  }
+}

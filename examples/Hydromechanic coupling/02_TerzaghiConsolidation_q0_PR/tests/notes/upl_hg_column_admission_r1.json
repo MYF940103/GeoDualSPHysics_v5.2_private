@@ -1,0 +1,24 @@
+{
+  "stage": "upl_hg_column_admission_r1",
+  "date": "2026-11-03",
+  "passed": true,
+  "allowed_jobs": ["upl_hg_column_ReleaseCPU_coarse_r1"],
+  "inputs": [
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_hg_column_short_review_r1.check.json","bytes":30082,"sha256":"66ed18c7e2c72d6d1ae26dd5f2b965fdbdbff0e9006c1cc2ddf1a786153c4dbe"}
+  ],
+  "decision": "Admit one fresh CPU8 constant-k xi=.1 coarse trajectory to .5s after root inspection of all458 independent-half metrics and both native comparison figures. This is a bounded stability diagnostic, not physical acceptance or admission of the half/mid/full-consolidation stages.",
+  "short_evidence": {
+    "pressure_RMS_max_Pa": 1.2304070903527276,
+    "material_XYZ_difference_max_mm": 0.0000014048935389918935,
+    "actual_time_difference_max_s": 0,
+    "original_limits_Pa_mm": [5, 0.005],
+    "actual_end_s": 0.0250244140625,
+    "all1040_ID_native_guards_passed": true,
+    "both_HG_stage_cache_dt_spin_guards_passed": true
+  },
+  "physical_review": "HG coarse/half pressure and settlement curves overlap closely. Compared with retained HG0, maximum transient pressure RMS difference is106.08Pa and material displacement difference .007023mm: descriptive operator changes, not failed half bounds. At the endpoint HG mean pressure9820.79Pa versus HG0 9815.54Pa, top settlement .106264mm versus .106549mm; total compression10146.15Pa versus10142.25Pa. Initial non-affine vertical profiles change slightly. Both variants have zero resolved X-column Uz residual at this short endpoint, so late-mode suppression remains unproved.",
+  "retained_safety": "Use unchanged prepared runtime, binary dt2^-19, native1469 schedule, all22 typed arrays/all1040IDs, original ledger/drainage/finite/elastic/natural-step and HG dt/tau<=.2, spin<.01 guards. Do not add a uniform100Pa stress gate to startup or call endpoint-J-weighted load a force-stage guard.",
+  "disk_context": "User-requested safe cleanup runs concurrently. Approximately48.6GiB free was observed before admission; this bounded1040-ID window is not a day-scale formal calculation. Protect its input/build/output dependencies from cleanup.",
+  "next_gate": "Seal and decode the completed coarse trajectory, inspect its full startup/decay/modal history, then separately decide the independent .5s half. No PART restart, source edit, formal input change or GPU-HG admission.",
+  "physical_acceptance": false
+}

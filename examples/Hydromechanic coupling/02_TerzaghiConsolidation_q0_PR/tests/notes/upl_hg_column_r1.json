@@ -1,0 +1,62 @@
+{
+  "stage": "upl_hg_column_r1",
+  "date": "2026-11-03",
+  "status": "prepared_script_only_not_executed_no_HG_column_acceptance",
+  "checkpoint_context": "Private single-J CPU HG checkpoint98e3861 is verified. Root separately edits the narrow CPU public guards/documentation and owns the new authoritative column builds. This preparation script neither builds nor launches a program.",
+  "author_files": [
+    "tests/support/upl_hg_column_prepare_r1.py",
+    "tests/notes/upl_hg_column_r1.json"
+  ],
+  "preparation_command_after_root_review": "py -3 tests/support/upl_hg_column_prepare_r1.py --execution-authorized",
+  "command_working_directory": "case02 root; an absolute script path also works",
+  "provenance": {
+    "smoke": "Use the unique smoke job from the pinned successful tests/logs/upl_damp_r1.inputs.json and its actual outputs/upl_damp_seed_r1/upl_damp_smoke_r1 runtime XML, BI4 and normals. The source is the actual retained two-step CPU Debug project-main control, not an eta0 or regenerated case.",
+    "full_coarse_half": "Use the unique coarse/half jobs from the pinned successful tests/logs/upl_damp_long_r1.inputs.json and actual outputs/upl_damp_long_seed_r1/upl_damp_long_coarse_r1 or half runtime XML/BI4/normals. Both retained actual CPU8 Release .5s HG0 run/native owners are bound by their immutable receipts.",
+    "initial_BI4_sha256": "f2836ffeb049fc777de7687608dd5dfbece81f78440bdc01f21890ee3e3fedac",
+    "normals_sha256": "0509139e4fee0c57d3b480f213c4b9062cf467ce6a24c0a1d13d87148a885f97",
+    "old_HG0_controls": [
+      "tests/logs/upl_damp_CPU_smoke_r1.run.json and .native.json",
+      "tests/logs/upl_damp_long_CPU_coarse_r1.run.json and .native.json",
+      "tests/logs/upl_damp_long_CPU_half_r1.run.json and .native.json"
+    ],
+    "binding_limit": "Verify consumed retained input/manifests, successful actual tool ownership and native completion metadata. Historical mutable source originals are not treated as current. Preparation does not rehash all old raw PART files, decode them or rerun controls; the subsequent root-owned native comparison must bind the consumed raw controls."
+  },
+  "sole_runtime_change": "The only numerical change is the unique SoilHourglassXi value0 to0.1. Also correct its historical HG OFF comment to describe the CPU test ON without claiming formal release. Separate inverse proofs restore both changes to the exact retained XML bytes. Preserve whitespace, attribute ordering, all other comments, eta=.02, initial BI4/normals, material/load/drain parameters, dt, TimeMax and timeout nodes. No new constitutive law, damping increase, event adjustment, clock snapping, particle initialization or GenCase rerun.",
+  "current_singleJ_semantics": "Keep the implemented M0/rho0/rhow convention: V0=M0/rho0, Vi=V0*Ji, rhoi=rhow+(rho0-rhow)/Ji and mi=rhoi*Vi. H and Rate are Q/M0 and Qdot/M0; same-stage acceleration is M0*H/mi(Jstage). The current stage J is passed by the production caller and is not replaced by legacy Rhop or an endpoint cache. The preparation changes no such arithmetic.",
+  "fresh_artifacts_created_only_when_executed": {
+    "configurations": "tests/configs/upl_hg_column_smoke_r1.xml, upl_hg_column_coarse_r1.xml and upl_hg_column_half_r1.xml",
+    "seed_directory": "tests/outputs/upl_hg_column_seed_r1",
+    "manifest": "tests/logs/upl_hg_column_r1.inputs.json",
+    "policy": "Preflight all configuration/seed/manifest/planned-run paths, write files exclusively and never overwrite. Partial failures remain retained with a failed manifest. Planned solver output directories are listed but never created."
+  },
+  "execution_order_for_later_root_owned_actions": [
+    "DebugCPU two-step coarse smoke using the retained smoke clock: dt2^-19, end2^-18, three native frames. Check actual owned exit, source/build/runtime closure, no exclusions, actual HG stage counters, finite22-array J-ledger and all original HG safety guards. This is operational smoke only.",
+    "ReleaseCPU same two-step smoke. No reference solver is rerun and no canonical executable is installed.",
+    "ReleaseCPU paired useful short gates using unchanged long coarse/half runtimes, stopping only through CLI -nsteps13120 or26240. End0.0250244140625 is the first retained scheduled point after decimal .025. This yields458 paired frames and254 post-opening frames, including the unchanged drainage bracket. No runtime XML clock or TimeMax alteration is needed.",
+    "Only after the short gates pass, ReleaseCPU full coarse/half .5s with262144/524288 steps and1469 paired frames. Require1265 post-opening frames and the retained per-frame drainage count. Root owns meaningful native safety, half-step and physical diagnostics before making an acceptance claim."
+  ],
+  "exact_clock_plan": {
+    "coarse_dt_s": 0.0000019073486328125,
+    "half_dt_s": 0.00000095367431640625,
+    "ramp_and_drain_event_s": 0.010000228881835938,
+    "event_completed_steps_coarse_half": [5243, 10486],
+    "full_coarse_integer_union": "sorted unique union(range(0,65537,64), range(5120,5377), range(66560,262145,1024))",
+    "half": "Twice each coarse completed step, identical binary64 output times",
+    "native_saved_Step": "max(0,completed_steps-1)",
+    "clock_truth": "Replay the pinned unchanged JDsOutputTime::GetNextTime source behavior and independently check integer union and accumulated locked binary dt. Old PowerShell JSON time roundtrip differences are diagnostic only; source integer steps define clocks. Actual native clocks are not observed during preparation.",
+    "why_not_decimal025_eta0": "The retained eta0 .025s input uses decimal2.5e-6 and zero eta; it is not the requested unchanged dyadic eta=.02 control. The new short endpoint stays on the retained long output grid instead."
+  },
+  "later_native_and_safety_scope": {
+    "expected_arrays": "All22 actual native arrays: original15 plus six double J/n/theta/V/rho/k and true float PosDiv; all1040 IDs including40 fixed and1000 soil. Preserve double constitutive stress and float pressure/rate precision.",
+    "HG_safety": "Original dt/tau<=.2, cumulative spin<.01, elastic/no-loss/finite-state and complete production stage/cache counters remain required without relaxed thresholds. The new branch's Q/M0 and actual-mi force diagnostics must retain their stated meanings.",
+    "comparison": "HGON and retained HGOFF are different operators; do not claim0-ULP identity between them. Compare matched actual clocks/native IDs and report pressure, settlement, stress, per-material-layer/column spread and alternating-column mode projection. Layer means alone cannot establish suppression of the sealed mode.",
+    "limits": "The existing long decoder only accepts1469 full frames; a later pure short reader/comparator must explicitly support the declared458-frame prefix rather than fabricate absent frames. Root retains its existing quantitative gates and must resolve scientific acceptance from observed results. Frozen-operator component energy is not evolving/open-mass coupled energy proof."
+  },
+  "optional_later_negative_scope": "Configured SPR, variable conductivity and other out-of-scope combinations may be tested separately after root review. This preparation does not create negative inputs, broaden the CPU guard, alter restart rules or perform GPU work.",
+  "preparation_executed": false,
+  "configs_or_outputs_created": false,
+  "production_source_project_formal_files_changed_by_this_preparation": false,
+  "solver_build_reader_GenCase_Git_executed": false,
+  "HG_ON_vs_OFF_bit_identity_claimed": false,
+  "physical_acceptance": false
+}
