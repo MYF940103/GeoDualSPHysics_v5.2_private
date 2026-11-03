@@ -33,14 +33,23 @@ double JSphHourglassCpu::MinImage(double dx)const{
   return(Period>0? dx-Period*floor(dx/Period+.5): dx);
 }
 
+double JSphHourglassCpu::ParticleMass(double j)const{
+  const double mass=(Mass/RhopZero)*(RhopZero-WaterRho+WaterRho*j);
+  Check(isfinite(j) && j>0 && isfinite(mass) && mass>0,"HG invalid single-J volume or inertia.");
+  return(mass);
+}
+
 void JSphHourglassCpu::Config(unsigned firstid,unsigned count,double xi,double mass,
-  double period,double kernelh,double support,double bwen,double shear)
+  double period,double kernelh,double support,double bwen,double shear,double rhopzero,double waterrho)
 {
   Check(count>0 && count<unsigned(INT_MAX) && isfinite(xi) && xi>0 && mass>0
     && isfinite(period) && period>=0 && kernelh>0 && support>0
     && (!period || support<period*.5) && bwen<0 && shear>0,
     "HG invalid particle, elastic, kernel or neighbor configuration.");
+  Check((rhopzero==0 && waterrho==0) || (isfinite(rhopzero) && rhopzero>0 && isfinite(waterrho) && waterrho>=0),
+    "HG invalid single-J material configuration.");
   FirstId=firstid;Count=count;Xi=xi;Mass=mass;Period=period;KernelH=kernelh;
+  RhopZero=rhopzero;WaterRho=waterrho;
   Support=support;Bwen=bwen;Shear=shear;StepDt=0;PredictorSkew=0;
   Nodes.assign(Count,Node{});History.assign(Count,Vec{});HistoryRate.assign(Count,Vec{});
   RateSeen.assign(Count,0);EndpointRateReady=false;
@@ -54,17 +63,20 @@ void JSphHourglassCpu::Config(unsigned firstid,unsigned count,double xi,double m
 /// traversal order; changing it also changes floating-point accumulation order.
 //==============================================================================
 void JSphHourglassCpu::BuildPairs(unsigned np,unsigned npb,const unsigned* idp,
-  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic)
+  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,const double* poroj)
 {
+  Check(!RhopZero || poroj,"HG single-J state is missing.");
   double xmin=DBL_MAX,xmax=-DBL_MAX,zmin=DBL_MAX,zmax=-DBL_MAX;
   for(auto& n:Nodes)n=Node{};
   unsigned count=0;
   for(unsigned p=npb;p<np;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
     auto& n=Nodes[Index(idp[p])];Check(n.vol==0,"HG duplicate native soil ID.");
     const auto v=velrhop[p];
-    Check(v.w>0 && isfinite(v.w),"HG invalid density.");
+    if(!RhopZero)Check(v.w>0 && isfinite(v.w),"HG invalid density.");
     Check(kplastic[p]==0,"HG currently supports elastic states only.");
-    n.x=pos[p].x;n.z=pos[p].z;n.vx=v.x;n.vz=v.z;n.vol=Mass/v.w;
+    n.x=pos[p].x;n.z=pos[p].z;n.vx=v.x;n.vz=v.z;
+    if(RhopZero){n.j=poroj[p];ParticleMass(n.j);n.vol=(Mass/RhopZero)*n.j;}
+    else n.vol=Mass/v.w;
     Check(isfinite(n.x) && isfinite(n.z) && isfinite(n.vx) && isfinite(n.vz),"HG nonfinite particle state.");
     xmin=(std::min)(xmin,n.x);xmax=(std::max)(xmax,n.x);
     zmin=(std::min)(zmin,n.z);zmax=(std::max)(zmax,n.z);count++;
@@ -144,7 +156,7 @@ void JSphHourglassCpu::Rate(){
     HistoryRate[pair.j].x-=rx;HistoryRate[pair.j].z-=rz;
     RateInfo.form+=.25*beta*(aix*aix+aiz*aiz+bjx*bjx+bjz*bjz);
   }
-  for(const auto& n:Nodes)RateInfo.lambda=(std::max)(RateInfo.lambda,2*n.betasum/Mass);
+  for(const auto& n:Nodes)RateInfo.lambda=(std::max)(RateInfo.lambda,2*n.betasum/(RhopZero? ParticleMass(n.j): Mass));
 }
 
 //==============================================================================
@@ -154,28 +166,30 @@ void JSphHourglassCpu::Rate(){
 /// gather and its checks; no approximate or pointer-based state test is used.
 //==============================================================================
 bool JSphHourglassCpu::SameRateState(unsigned np,unsigned npb,const unsigned* idp,
-  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic)
+  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,const double* poroj)
 {
+  if(RhopZero && !poroj)return(false);
   std::fill(RateSeen.begin(),RateSeen.end(),::byte(0));unsigned count=0;
   for(unsigned p=npb;p<np;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
     const unsigned i=Index(idp[p]);if(RateSeen[i])return(false);RateSeen[i]=1;
     const auto v=velrhop[p];
-    if(!(v.w>0 && isfinite(v.w)) || kplastic[p]!=0)return(false);
-    const auto& n=Nodes[i];const double vx=v.x,vz=v.z,vol=Mass/v.w;
+    if((!RhopZero && !(v.w>0 && isfinite(v.w))) || kplastic[p]!=0)return(false);
+    const auto& n=Nodes[i];const double vx=v.x,vz=v.z,vol=(RhopZero? (Mass/RhopZero)*poroj[p]: Mass/v.w);
     if(memcmp(&n.x,&pos[p].x,sizeof(double)) || memcmp(&n.z,&pos[p].z,sizeof(double))
       || memcmp(&n.vx,&vx,sizeof(double)) || memcmp(&n.vz,&vz,sizeof(double))
       || memcmp(&n.vol,&vol,sizeof(double)))return(false);
+    if(RhopZero && memcmp(&n.j,poroj+p,sizeof(double)))return(false);
     count++;
   }
   return(count==Count);
 }
 
 void JSphHourglassCpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const unsigned* idp,
-  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic)
+  const typecode* code,const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,const double* poroj)
 {
-  const bool reuse=!endpoint && EndpointRateReady && SameRateState(np,npb,idp,code,pos,velrhop,kplastic);
+  const bool reuse=!endpoint && EndpointRateReady && SameRateState(np,npb,idp,code,pos,velrhop,kplastic,poroj);
   if(!reuse){
-    BuildPairs(np,npb,idp,code,pos,velrhop,kplastic);
+    BuildPairs(np,npb,idp,code,pos,velrhop,kplastic,poroj);
     RateInfo=StRateInfo{};Rate();RateInfo.tau=1/sqrt(RateInfo.lambda);
   }
   auto& ri=RateInfo;
@@ -207,15 +221,24 @@ void JSphHourglassCpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
 /// Add a double history to the physical float acceleration once, keeping the
 /// tested conversion order. Resolve IDs again after the predictor cell sort.
 //==============================================================================
-void JSphHourglassCpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace){
+void JSphHourglassCpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj){
+  Check(!RhopZero || poroj,"HG single-J force state is missing.");
   Vec net{},actualnet{};double sumforce=0,hmax=0;
   unsigned count=0;
   for(unsigned p=npb;p<np;p++)if(CODE_IsNormal(code[p]) && CODE_IsFluid(code[p])){
     const auto a=History[Index(idp[p])];
     Check(isfinite(a.x) && isfinite(a.z),"HG nonfinite history.");
     const double ax=ace[p].x,az=ace[p].z;
-    ace[p].x=float(ax+a.x);ace[p].z=float(az+a.z);
-    actualnet.x+=Mass*(double(ace[p].x)-ax);actualnet.z+=Mass*(double(ace[p].z)-az);
+    if(RhopZero){
+      //-Integrate Q/M0, then use this force-stage J for the physical inertia.
+      const double mass=ParticleMass(poroj[p]),scale=Mass/mass;
+      ace[p].x=float(ax+scale*a.x);ace[p].z=float(az+scale*a.z);
+      actualnet.x+=mass*(double(ace[p].x)-ax);actualnet.z+=mass*(double(ace[p].z)-az);
+    }
+    else{
+      ace[p].x=float(ax+a.x);ace[p].z=float(az+a.z);
+      actualnet.x+=Mass*(double(ace[p].x)-ax);actualnet.z+=Mass*(double(ace[p].z)-az);
+    }
     net.x+=Mass*a.x;net.z+=Mass*a.z;sumforce+=Mass*hypot(a.x,a.z);
     hmax=(std::max)(hmax,hypot(a.x,a.z));count++;
   }
@@ -234,11 +257,11 @@ void JSphHourglassCpu::UpdateHistory(double dt){
 }
 
 void JSphHourglassCpu::PredictorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-  const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,tfloat3* ace,double dt)
+  const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,tfloat3* ace,double dt,const double* poroj)
 {
   Check(Phase==PH_PredictorForce && isfinite(dt) && dt>0,"HG invalid predictor force stage.");
-  StepDt=dt;EvaluateRate(false,np,npb,idp,code,pos,velrhop,kplastic);
-  AddHistory(np,npb,idp,code,ace);Phase=PH_PredictorUpdate;
+  StepDt=dt;EvaluateRate(false,np,npb,idp,code,pos,velrhop,kplastic,poroj);
+  AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_PredictorUpdate;
 }
 
 void JSphHourglassCpu::PredictorUpdate(double dt){
@@ -246,16 +269,16 @@ void JSphHourglassCpu::PredictorUpdate(double dt){
   UpdateHistory(dt);Stats.predictorupdates++;Phase=PH_CorrectorForce;
 }
 
-void JSphHourglassCpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace){
+void JSphHourglassCpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,tfloat3* ace,const double* poroj){
   Check(Phase==PH_CorrectorForce,"HG invalid corrector force stage.");
-  AddHistory(np,npb,idp,code,ace);Phase=PH_CorrectorUpdate;
+  AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_CorrectorUpdate;
 }
 
 void JSphHourglassCpu::CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-  const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,double dt)
+  const tdouble3* pos,const tfloat4* velrhop,const float* kplastic,double dt,const double* poroj)
 {
   Check(Phase==PH_CorrectorUpdate && dt==StepDt,"HG invalid endpoint history update.");
-  EvaluateRate(true,np,npb,idp,code,pos,velrhop,kplastic);
+  EvaluateRate(true,np,npb,idp,code,pos,velrhop,kplastic,poroj);
   UpdateHistory(dt);Stats.correctorupdates++;Phase=PH_PredictorForce;
 }
 

@@ -1,0 +1,270 @@
+{
+  "stage": "upl_hg_cpu_private_root_r1",
+  "date": "2026-11-03",
+  "scope": "Root-reviewed private CPU single-J HG compatibility, current production class/call wiring only; public dynamic+HG remains rejected. No coupled-HG trajectory or public/physical release.",
+  "production_sources": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassCpu.h",
+      "bytes": 4911,
+      "sha256": "b68f4df918a46e4019df67caa6404fcc1b666a24fc9298c989cbb9036bf4ea05"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassCpu.cpp",
+      "bytes": 15465,
+      "sha256": "3ad806887a551aec30510479fb3da0713506d93cf1b60f6f617819253cbf6582"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+      "bytes": 76944,
+      "sha256": "116495114aa9fdc0fc7f4882fecf16e2aaec6048f5bc0722f270f1cf8bdd2512"
+    }
+  ],
+  "semantics": "V=V0*J,mi=V0*(rho0-rhow+rhow*J),H=Q/M0,Rate=Qdot/M0,current force aHG=M0*H/mi(Jstage),generalized lambda=max(2sum beta/mi). Exact J input cache; no persistent J pointer. Legacy false branch keeps old operation order; xi0 has no HG object/pass.",
+  "builds_and_components": {
+    "DebugCPU": {
+      "authoritative_build": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_DebugCPU_r1.build.json",
+        "bytes": 451730,
+        "sha256": "7a3a7a3a782c7b50824aed2e1a5c9afa7b8543935fb50d39dd44ed87fe135449"
+      },
+      "oracle": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_DebugCPU_r2.run.json",
+        "bytes": 404624,
+        "sha256": "b6ced365ccd1d76817ecd04f20a59fe20694172a0d2cc5145e8acf26510c52ae"
+      },
+      "oracle_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_DebugCPU_r2.check.json",
+        "bytes": 4999,
+        "sha256": "382f2f3a585250b6971cdb1bf6485be47f9652d6a37a59d9cbe6839640b8b12e"
+      },
+      "oracle_cases": 69,
+      "max_operator_rate_error": 6.938893903907228e-18,
+      "frozen_energy": {
+        "steps": 512,
+        "dt_over_tau": 0.02,
+        "min_energy_ratio": 0.9999457926115428,
+        "max_energy_ratio": 1.0000000388044454
+      },
+      "legacy": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_legacy_DebugCPU_r1.run.json",
+        "bytes": 437192,
+        "sha256": "e43ff3450ee5ab340e4f39b87dfd387ca54c2043dc00fa4172317947859b4256"
+      },
+      "legacy_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_legacy_DebugCPU_r1.check.json",
+        "bytes": 2029,
+        "sha256": "2cfcd02429c2aeb1c22ac031fa2e6f689fbd9d14f5d98008ad8bddcdb4657a8a"
+      },
+      "legacy_scalar_bit_checks": 3315678,
+      "legacy_actual_guard_exceptions": 24,
+      "legacy_diff_bytes": 0
+    },
+    "ReleaseCPU": {
+      "authoritative_build": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_ReleaseCPU_r1.build.json",
+        "bytes": 452471,
+        "sha256": "bc7951f3b2f644ecb4ae235c8005841fbbecba7d1715b75b635d50c4e22bd3b1"
+      },
+      "oracle": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_ReleaseCPU_r2.run.json",
+        "bytes": 406739,
+        "sha256": "6a94647336b89c165a863fbd14086c6f730b705d58f463e0b26de11931a1d823"
+      },
+      "oracle_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_ReleaseCPU_r2.check.json",
+        "bytes": 4999,
+        "sha256": "382f2f3a585250b6971cdb1bf6485be47f9652d6a37a59d9cbe6839640b8b12e"
+      },
+      "oracle_cases": 69,
+      "max_operator_rate_error": 6.938893903907228e-18,
+      "frozen_energy": {
+        "steps": 512,
+        "dt_over_tau": 0.02,
+        "min_energy_ratio": 0.9999457926115428,
+        "max_energy_ratio": 1.0000000388044454
+      },
+      "legacy": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_legacy_ReleaseCPU_r1.run.json",
+        "bytes": 440121,
+        "sha256": "a1b6f079e04e7959ca513a81a521dbc3e462dcf9c55b898b1cf8dc53ccaf8e38"
+      },
+      "legacy_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_legacy_ReleaseCPU_r1.check.json",
+        "bytes": 1997,
+        "sha256": "7b96469e1021df74e27506edd0b54fbafae70ffdc820e4d7c20969bf81dc7c41"
+      },
+      "legacy_scalar_bit_checks": 3315678,
+      "legacy_actual_guard_exceptions": 24,
+      "legacy_diff_bytes": 0
+    }
+  },
+  "actual_project_main_native_regressions": {
+    "Legacy": {
+      "check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_raw_Legacy_r1.check.json",
+        "bytes": 449634,
+        "sha256": "d0fe95f79ccc56736a99964f69d79cfe7a0ab6416e09bfb80a579a01d6d7c67f"
+      },
+      "completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Legacy_r1\\completion.json",
+        "bytes": 2173,
+        "sha256": "1b8a0b903a18950b0a7b6ab20e3ab9087d711bc4a0c327a2c7a1562aab101280"
+      },
+      "frames": 21,
+      "arrays": 15,
+      "array_bytes": 3494400,
+      "array_diff": 0,
+      "clock_diff": 0,
+      "physical_metadata_diff": 0,
+      "nonphysical_metadata_exclusions": [
+        "RunCode",
+        "Date",
+        "AppName",
+        "CaseName",
+        "RunTime",
+        "timesim",
+        "cpualloc",
+        "nctalloc",
+        "nctused",
+        "npalloc",
+        "npused"
+      ],
+      "all_raw_exports": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Legacy_r1\\arrays.csv",
+          "bytes": 12431,
+          "sha256": "e38fdaaafd9707ae9dc76fc4759b34712f801d1377426d68521add754d9945cd"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Legacy_r1\\completion.json",
+          "bytes": 2173,
+          "sha256": "1b8a0b903a18950b0a7b6ab20e3ab9087d711bc4a0c327a2c7a1562aab101280"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Legacy_r1\\frames.csv",
+          "bytes": 3966,
+          "sha256": "f21ab054419acc0dab91a50b0a5cdb602650d74c7220a317f574a83a63c2032c"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Legacy_r1\\metadata.csv",
+          "bytes": 93011,
+          "sha256": "d1800bab9a51496e90cfdadc9f7ca0f1bb2d565e97d417035f4cf1e9951e06cc"
+        }
+      ]
+    },
+    "Dynamic": {
+      "check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_raw_Dynamic_r1.check.json",
+        "bytes": 1601902,
+        "sha256": "0f38f8a4e980489134dce8d39cf13e02eeee91e58b41abe4af2a88258a3e3d2d"
+      },
+      "completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Dynamic_r1\\completion.json",
+        "bytes": 2181,
+        "sha256": "b73c43c985e6274ac32401093904f41c35bfd94dc0da8314a1177f9df4ac9c55"
+      },
+      "frames": 1469,
+      "arrays": 22,
+      "array_bytes": 323885120,
+      "array_diff": 0,
+      "clock_diff": 0,
+      "physical_metadata_diff": 0,
+      "nonphysical_metadata_exclusions": [
+        "RunCode",
+        "Date",
+        "AppName",
+        "CaseName",
+        "RunTime",
+        "timesim",
+        "cpualloc",
+        "nctalloc",
+        "nctused",
+        "npalloc",
+        "npused"
+      ],
+      "all_raw_exports": [
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Dynamic_r1\\arrays.csv",
+          "bytes": 1381562,
+          "sha256": "313455059884cc2016d1dea4ff3ec51e337dea0fd7b7b6f97826b47b55ed31ce"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Dynamic_r1\\completion.json",
+          "bytes": 2181,
+          "sha256": "b73c43c985e6274ac32401093904f41c35bfd94dc0da8314a1177f9df4ac9c55"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Dynamic_r1\\frames.csv",
+          "bytes": 240632,
+          "sha256": "3c4095824d5575032493450ce31115b1ab28d663a216596da69c11371c3808e7"
+        },
+        {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_hg_raw_Dynamic_r1\\metadata.csv",
+          "bytes": 7062641,
+          "sha256": "a27c041d2010731419e7f653afee11269d10a71d9b6e621344035f7daaf4ee30"
+        }
+      ]
+    }
+  },
+  "original_native_safety_inheritance": {
+    "Legacy": {
+      "retained_native_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_flux_legacy_off_r1.native.check.json",
+        "bytes": 52262,
+        "sha256": "b00fb33728617f067b64f8362cb7243ff4328c25935b00fe914077f44a4cb4e1"
+      },
+      "retained_completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_case02_flux_legacy_off_r1_native\\completion.json",
+        "bytes": 1036,
+        "sha256": "08cc39a49a87aac69291702034d73370ece269b0718d3180a1aabe9a2c7a3fbf"
+      },
+      "source_control": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_case02_flux_legacy_off_r1.run.json",
+        "bytes": 43181,
+        "sha256": "f0f985a7b2d3466fbb1eac46b15adf4b2a6a4b4ff7760ade27044f342b5dd784"
+      },
+      "inherited_by_full_same_dt_native_field_and_clock_equality": true,
+      "new_half_or_physical_acceptance": false
+    },
+    "Dynamic": {
+      "retained_native_check": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_CPU_coarse_r1.native.json",
+        "bytes": 1314237,
+        "sha256": "bd0808e9189c017260be45d64ff8f23b3c2080d057a285ef3743fab247338701"
+      },
+      "retained_completion": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_long_CPU_coarse_r1_native\\completion.json",
+        "bytes": 2524,
+        "sha256": "1747eb9428ea450b46c52429f2c88c7a347261ca88d3006f7962d3e72763a1bd"
+      },
+      "source_control": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_long_CPU_coarse_r1.run.json",
+        "bytes": 1754310,
+        "sha256": "b2ecacb825ea8f98537237384529d21ef339386dad9386deae95cbe03e367497"
+      },
+      "inherited_by_full_same_dt_native_field_and_clock_equality": true,
+      "new_half_or_physical_acceptance": false
+    }
+  },
+  "failed_fixture_preserved": {
+    "check": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_DebugCPU_r1.check.json",
+      "bytes": 3837,
+      "sha256": "85452b9e239afc53a064e523f5bb50cceeb709402b88a3347c0e8e8edf9e7290"
+    },
+    "reason": "The .75 fixture start cannot create adjacent-J/equal-rounded-volume pair in its2048-step search. Fresh r2 starts .8; search count/adjacent-J requirement/all numerical gates unchanged. Production code unchanged between r1 and r2."
+  },
+  "root_preexecution_wrapper_repairs": "Before any affected native call, correct r2 expected helper-stage label and legacy prepared_inputs key. No solver was run by either rejected preflight. Native completed results were not overwritten or rerun.",
+  "equation_and_scope_limits": [
+    "Existing matched LS residual and two half history updates retained; no constitutive/pressure/time-integration change.",
+    "Instantaneous internal force balance and fixed-J/geometry oscillator do not prove evolving/open-mass coupled energy/momentum conservation.",
+    "New branch intentionally derives quadrature/inertia from J, not passive legacy float Rhop; caller retains saturation-domain guard.",
+    "CorrectorForce uses actual half J; frozen dt/tau and spin checks are not a global evolving-geometry stability proof.",
+    "Only same-input compatibility was tested in actual program main; no new coupled-HG accuracy/half/full/restart/GPU/plasticity/large-rotation/wall acceptance.",
+    "Separate frozen GPU3D Debug zero-step reference continues; no duplicate solver or formal input/data modification."
+  ],
+  "next": "After selective verified local/remote backup, narrow CPU-only constant-k loaded-column admission and docs; new boundary/switch rejection checks, fresh short/half HG trajectory and meaningful mid-mode review. GPU dynamic+HG stays rejected until ported/verified.",
+  "public_dynamic_HG_guard_changed": false,
+  "formal_or_canonical_modified": false,
+  "physical_acceptance": false
+}

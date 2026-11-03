@@ -1,0 +1,9 @@
+{
+  "stage": "upl_hg_cpu_oracle_build_r2",
+  "scope": "Compile the prepared independent all-pair oracle and link actual current authoritative CPU objects, excluding project main. No stubs, solver, CUDA, public enablement or program execution.",
+  "recipe": "Reuse retained same-configuration actual cl/link arguments. Change only oracle source, compiler output/dependency paths, program/PDB paths and the85 project-object paths to the freshly passed upl_hg build. Preserve compiler flags and17 libraries.",
+  "outputs": "tests/outputs/upl_hg_cpu_oracle_DebugCPU_r2 or ReleaseCPU_r2; typed compile/link receipts and immutable helper record in tests/logs",
+  "overwrite": "Fresh paths only; retain failed evidence. Separate owned execution follows root review of the build receipt.",
+  "default_CPU_Debug_build": "Already separately performed through the authoritative CPU solution, DebugCPU/x64, fresh isolated OutDir/IntDir.",
+  "physical_acceptance": false
+}

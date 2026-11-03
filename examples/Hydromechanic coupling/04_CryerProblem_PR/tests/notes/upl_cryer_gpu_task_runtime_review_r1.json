@@ -1,0 +1,15 @@
+{
+  "stage": "upl_cryer_gpu_task_runtime_review_r1",
+  "date": "2026-11-03",
+  "task": "GeoDualSPH_upl_cryer_component_Debug_r3_20261103",
+  "instance": "{4CDBCF98-B64D-41DE-8FF8-C2D6EB52E76B}",
+  "recorded_launch_XML": {"bytes":1744,"sha256":"3d45cb38711a54a289dab44995241bec4ef74edf057e26948550dcdb3e2bdf97"},
+  "correction_to_runtime_interpretation": "The immutable task definition configures PT2H, but this task was started on demand by its single registered Run. Microsoft documents that ExecutionTimeLimit is bypassed for demand-started tasks. Thus PT2H is a configuration value, not a proved enforced two-hour deadline for this active instance.",
+  "primary_source": "https://learn.microsoft.com/en-us/windows/win32/api/taskschd/nf-taskschd-itasksettings-put_executiontimelimit",
+  "native_work": "Exactly six fixed zero-step force probes and six complete37173-node conditional host references; no physical trajectory. Debug host all-pair reference is costly and must not be described as Cryer solver loop performance.",
+  "observed_progress": {"local_time":"2026-11-03T13:35:24+09:00","read_only_own_context_bytes":8,"probe_zero_based":2,"current_native_id":6977,"sealed_six_probe_pass":false},
+  "action": "Keep the existing owned run and its immutable inputs. Continue monitoring actual progress/call/completion; do not update/restart the task, modify its program, create another watcher or invent an exit. Inspect any genuine unexpected exit before further work.",
+  "task_or_process_changed": false,
+  "numerical_or_physical_guard_changed": false,
+  "physical_acceptance": false
+}

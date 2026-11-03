@@ -1,0 +1,16 @@
+{
+  "stage": "upl_hg_build_r1",
+  "scope": "Authoritative isolated CPU DebugCPU or ReleaseCPU build of private single-J hourglass compatibility. Public u-pl+HG guard stays closed; no CUDA build or solver is authorized by this script invocation.",
+  "derivation": "Exact upl_damp_build_r2.ps1 recipe with fresh upl_hg_ / r1 artifact names; original recipes and objects are not overwritten.",
+  "production_changes": [
+    "src/source/JSphHourglassCpu.h",
+    "src/source/JSphHourglassCpu.cpp",
+    "src/source/JSphCpuSingle.cpp"
+  ],
+  "numerical_convention": "Vi=(M0/rho0)*Ji; mi=(M0/rho0)*(rho0-rhow+rhow*Ji); integrate H=Q/M0 with old two half-updates, apply M0*H/mi(current force-stage J). Exact J cache input; existing matched LS residual, spin/work/dt guards and legacy default arithmetic retained.",
+  "public_parameters_changed": false,
+  "public_support_extended": false,
+  "canonical_program_installed": false,
+  "physical_acceptance": false,
+  "component_and_regression_required": true
+}

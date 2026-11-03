@@ -143,7 +143,8 @@ void JSphCpuSingle::ConfigDomain(){
       Run_Exceptioon("SoilHourglassXi requires a bounded domain or axis-aligned x periodicity with kernel support smaller than half the period.");
     HourglassCpu=new JSphHourglassCpu();
     HourglassCpu->Config(CaseNpb,CaseNfluid,SoilHourglassXi,MassFluid,(PeriX? fabs(PeriXinc.x): 0),
-      CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG);
+      CSP.kernelh,KernelSize,CSP.kwend.bwen,SoilCte.ModulusG,
+      (PorosityFeedback? RhopZero: 0),(PorosityFeedback? SoilCte.PoreWaterRho: 0));
   }
   //-Configure cell map division (defines ScellDiv, Scell, Map_Cells). 
   ConfigCellDivision();
@@ -806,8 +807,8 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand)NormalizeHydroMechTopBandLoad();
   if(HourglassCpu){
     if(interstep==INTERSTEP_SymPredictor)
-      HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre);
-    else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec);
+      HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre,(PorosityFeedback? PoroJc: NULL));
+    else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec,(PorosityFeedback? PoroJc: NULL));
   }
   if(DynamicPorePressure)ComputeDynamicPorePressureRateCpu();
   //-Calculates maximum value of Ace (periodic particles are ignored).
@@ -977,7 +978,7 @@ double JSphCpuSingle::ComputeStep_Sym(){
   const double ddt_c=DtVariable(true);         //-Calculate dt of corrector step.
   if(Shifting)RunShifting(dt);                 //-Shifting.
   ComputeSymplecticCorr(dt);                   //-Apply Symplectic-Corrector to particles (periodic particles become invalid).
-  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt);
+  if(HourglassCpu)HourglassCpu->CorrectorUpdate(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,dt,(PorosityFeedback? PoroJc: NULL));
   if(CaseNfloat)RunFloating(dt,false);         //-Control of floating bodies.
   PosInteraction_Forces();                     //-Free memory used for interaction.
   if(Damping)RunDamping(dt,Np,Npb,Posc,Codec,Velrhopc); //-Applies Damping.
@@ -1561,7 +1562,9 @@ void JSphCpuSingle::FinishRun(bool stop){
       hg.forcecalls,hg.predictorupdates,hg.correctorupdates,hg.ratecalls);
     Log->Printf("SoilHourglass: ratecalculations=%u endpoint_rate_reuses=%u",
       hg.ratecalculations,hg.ratecachehits);
-    Log->Printf("SoilHourglass: max|sum(m*H)|=%g max|sum(m*deltaAce)|=%g max(dt/tau)=%g spinbound=%g",
+    Log->Printf((PorosityFeedback?
+      "SoilHourglass: max|sum(M0*Href)|=%g max|sum(mi*deltaAce)|=%g max(dt/tau)=%g spinbound=%g":
+      "SoilHourglass: max|sum(m*H)|=%g max|sum(m*deltaAce)|=%g max(dt/tau)=%g spinbound=%g"),
       hg.maxnetforce,hg.maxactualnetforce,hg.maxtauratio,hg.spinbound);
   }
   Log->Print(" ");

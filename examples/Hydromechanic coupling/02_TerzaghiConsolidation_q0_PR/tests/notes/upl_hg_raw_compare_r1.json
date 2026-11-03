@@ -1,0 +1,47 @@
+{
+  "stage": "upl_hg_raw_compare_r1",
+  "date": "2026-11-03",
+  "status": "authored_not_built_or_run",
+  "source": "tests/support/upl_hg_raw_compare_r1.cpp",
+  "command": "upl_hg_raw_compare_r1.exe --compare Legacy|Dynamic OLD_DATA NEW_DATA FRESH_OUT",
+  "purpose": "Compare retained and newly generated actual project-main native BI4 data, using exact raw equality rather than previous CSV exports or physical accuracy thresholds.",
+  "neutral_include": {
+    "path": "tests/support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "mechanism": "Rename the neutral fixture main while including its immutable Native, Load, real JAppInfo AppInfo and support definitions; call no retained solver workflow.",
+    "changed": false
+  },
+  "build_policy": "Owner links one helper translation unit against authoritative CPU project objects excluding project main, including real JPartDataBi4, JBinaryData, JObject, JException and JAppInfo implementations. No stub exceptions. No build or run performed by the source author.",
+  "inputs": {
+    "Legacy": "21 retained/new raw PART files; 1040 complete native IDs including 40 fixed and 1000 soil; original15 only; all six dynamic arrays and actual PosDiv absent; all four dynamic PART metadata keys absent.",
+    "Dynamic": "1469 retained/new raw PART files; same complete native ID set; original15 plus native double J/n/theta/V/rho/k and actual float PosDiv, 22 arrays on BOTH sides; typed constant-law dynamic metadata required. Exact coarse dt=2^-19 and existing dyadic saved-step set through .5s."
+  },
+  "scope": {
+    "arrays": "Every element of every native array, including fixed IDs, aligned independently by native Idp on each side. Require complete unique IDs, exact expected type/count, finite values, and compare each stored element byte without numeric tolerance. Original15=160 bytes/ID/frame; native22=212 bytes/ID/frame.",
+    "clock28": "TimeStep double8 + Step uint32/4 + SymplecticDtPre double8 + signed dterror double8. Compare every frame byte exactly, including initial -DBL_MAX empty-interval sentinel. Step is NOT uint64. No interpolation, resampling, replacement, absolute-value conversion, or initial masking.",
+    "header_metadata": "Compare all root and PART scalar names, types and exact decoded typed value bytes except the explicitly listed changing values below. Excluded fields still require matching presence and type. Check one PART hierarchy, one piece, expected Cpart, fixed 2D X-periodic geometry, no dynamic/reused IDs, no splitting/moving/floating particles, and Nout=0.",
+    "excluded_header_values": ["RunCode", "Date", "AppName", "CaseName"],
+    "excluded_PART_values": ["RunTime", "timesim", "cpualloc", "nctalloc", "nctused", "npalloc", "npused"],
+    "exclusion_reason": "Run identity, execution time and allocation telemetry can change between separately owned actual-main runs. No array, clock, step, signed dterror, dt summary, count, geometry, physical metadata, or dynamic switch/schema/conductivity metadata is excluded.",
+    "excluded_value_evidence": "Every encountered excluded name, type and both values are retained per frame in metadata.csv as exact hexadecimal bytes of decoded typed values. completion.json repeats the exhaustive exclusion lists and references that value evidence. These are decoded typed-value bytes, not an equality claim for BI4 container/provenance bytes.",
+    "dynamic_preset_provenance": "Saved-step set follows existing upl_damp_long_native_r1.cpp: multiples of 64 through 65536, every step 5120..5376, multiples of 1024 from 66560..262144; sort and deduplicate to 1469. Legacy clocks are compared to each other without imposing a new time schedule."
+  },
+  "fresh_outputs": {
+    "policy": "Reject an existing FRESH_OUT, two equivalent input directories, or output nested beneath either canonical input directory; never modify either input or retained results. Parent directory must already exist.",
+    "frames.csv": "Per-frame clocks, array byte totals/differences, metadata checks/exclusion counts and result.",
+    "arrays.csv": "Per-frame/per-array native type, count, byte totals/differences, number of differing elements and first differing native ID/element byte.",
+    "metadata.csv": "Per-frame root/PART scalar presence/types, both exact decoded values in hexadecimal, exclusion flag, equality and result.",
+    "completion.json": "Fresh comparison totals, complete/passed status, declared comparison scope and exclusions, explicit limitations. Content mismatches produce complete=true/passed=false and exit 1; a decoding/schema error after output creation produces incomplete evidence and a failure completion when possible."
+  },
+  "acceptance": "Only all requested native arrays, clock28 and all nonexcluded typed header/PART values equal on all expected frames, with schema/finite/no-exclusion checks complete, gives comparator exit 0 and passed=true. No new physical-accuracy threshold.",
+  "limitations": [
+    "Authored only; no compile, run or passed comparison is asserted here.",
+    "Owner must bind retained/new outputs to solver/source/configuration hashes, successful actual project-main exits, CPU backend, Legacy HG-on state, Dynamic master-on xi=0 state, and unchanged intended configuration.",
+    "Raw fields cannot prove that xi=0 caused no HG allocation/pass; that requires owner code/run evidence.",
+    "The comparator neither invokes a solver/GenCase nor adjusts inputs, clocks, particle data or historical evidence.",
+    "Finite raw equality is a compatibility check, not physical accuracy, conservation, coupled stability or broader model acceptance.",
+    "No old CSV/export file is input. Dynamic22 is claimed only if both raw BI4 sequences load all 22 exact native arrays."
+  ],
+  "production_or_formal_inputs_changed": false,
+  "physical_acceptance": false
+}

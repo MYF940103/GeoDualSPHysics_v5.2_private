@@ -1,0 +1,92 @@
+{
+  "stage": "upl_lian_eq23_reference_review_r1",
+  "date": "2026-11-03",
+  "status": "independent_static_review_completed_pending_root_read",
+  "scope": "Read-only review and reductions of the retained Eq23 reference outputs; this note is the only authored file. No evaluator rerun, generated dataset, plot, solver, build or Git operation.",
+  "artifact_bindings": [
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/support/upl_lian_eq23_reference_r1.py", "bytes": 20441, "sha256": "d36ea549ac1618a3b05c5f27632dd09a6add00c561f10fe3e79fcce01c536983"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/notes/upl_lian_eq23_reference_r1.json", "bytes": 8930, "sha256": "d7688b02da42ec2ecb72613fbbb1177ab5720f9d01c6ea5542c540c235132a2b"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_lian_eq23_reference_r1/completion.json", "bytes": 5935, "sha256": "bc73eca0d9edd74f3146bb59f856c6d808f7d17cdb6e75d5427fd35df61f6aca"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_lian_eq23_reference_r1/tensor_fields.csv", "bytes": 529148, "sha256": "fe45ef9032783d83a78539c664a78e4088c3e29ff05b6c8fea2bde1ec19848ab"},
+    {"path": "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_lian_eq23_reference_r1/tensor_moments.csv", "bytes": 79415, "sha256": "79725743af4229256062923a7aa4c4387f12409d955f33ee9c784e8cc7e6aa65"}
+  ],
+  "retained_execution": {
+    "started_utc": "2026-11-03T04:06:19.409453+00:00",
+    "finished_utc": "2026-11-03T04:06:23.441113+00:00",
+    "completion_status": "completed_arithmetic_review_required",
+    "receiver_instances": 24,
+    "tensor_moment_rows": 72,
+    "tensor_field_rows": 864,
+    "arithmetic_checks": 2124,
+    "arithmetic_failures": 0,
+    "input_closure_unchanged": true,
+    "native_or_solver_calls": 0,
+    "physical_steps_advanced": 0
+  },
+  "trace_equivalence": {
+    "algebra": "For D_mn=(d+2)*r_m*r_n/r2-delta_mn, trace(D)=2. Taking the trace of both raw and gradient-defect terms gives trace(H)=Lstar with w=2*V*d.dot(Cs*g)/(r2+eta), d=-r, and the same first gradient G.",
+    "required_matching": "Same variant, neighbors, volumes, Cs, Eta and first-gradient construction. This is not an identity between Ci_Eta0 and Cavg_Eta2.",
+    "max_abs_trace_minus_independent_scalar": {"2D": 5.10702591327572e-15, "3D": 4.547473508864641e-13},
+    "max_trace_residual_divided_by_predeclared_bound": {"2D": 0.00043972070761104837, "3D": 0.00002064177485871149},
+    "max_abs_trace_minus_retained_old_scalar_3D": 2.9320712524594228e-12,
+    "old_scalar_qualification": "Descriptive roundoff/coordinate-reconstruction residual only; not a bitwise native replay or an accuracy gate. No old 2D scalar identity is asserted.",
+    "constant_isotropic_k": "k:H=k*trace(H)=k*Lstar. The current scalar construction already contains the matching tensor trace; explicitly evaluating all tensor components alone adds no new constant-isotropic-k diffusion operator."
+  },
+  "arithmetic_and_P1": {
+    "max_abs_M_minus_I": {"2D": 2.220446049250313e-16, "3D": 6.661338147750939e-16},
+    "max_abs_H_first_moment": {"2D": 2.7911700728466826e-15, "3D": 2.2632430559487826e-14},
+    "max_coefficient_action_error": {"2D": 5.6308581929120916e-15, "3D": 2.2737367544323206e-13},
+    "max_abs_raw_H_for_constant_or_affine_fields": {"2D": 47.389652385757174, "3D": 202.64524754619254},
+    "max_abs_corrected_H_for_constant_or_affine_fields": {"2D": 1.6497914145929826e-13, "3D": 9.485745522397337e-13},
+    "interpretation": "The defect term is necessary. Local P1 cancellation is consistent with M=I on these sampled rows; it does not establish P2 or a global operator property."
+  },
+  "quadratic_response": {
+    "measure": "Frobenius norm of basis_response-I in the recorded Hessian-component basis; no engineering-shear factor. These are descriptive errors without an accuracy pass threshold.",
+    "Ci_Eta0_basis_minus_I_Frobenius_ranges": {
+      "2d_full_support_regular": [0.07608781199082172, 0.07608781199082186],
+      "2d_full_support_jitter": [0.026405926453680843, 0.09781046545029685],
+      "2d_truncated_regular": [0.07608788332454272, 1.8796528788573674],
+      "2d_truncated_jitter": [0.09985120756280266, 1.8913429181718484],
+      "3d_full_support_regular": [0.07211270262245492, 0.07211270262245492],
+      "3d_full_support_jitter": [0.08589378988941672, 0.08589378988941672],
+      "3d_sphere_cut_regular": [0.07211270262245492, 0.9333555755024252],
+      "3d_sphere_cut_jitter": [0.08589378988941672, 1.033043014881433]
+    },
+    "2D_full_regular_receiver760_Ci_Eta0_examples": {
+      "f_x_squared_Hxx_Hzz_Hxz": [2.053802207824358, -0.05380220782435717, -3.2959746043559335e-17],
+      "f_xz_Hxz": 0.9461977921756425,
+      "interpretation": "An almost exact quadratic trace can coexist with incorrect individual Hessian components. Full Eq23-form evaluation is not P2 exact here."
+    }
+  },
+  "Ci_Cavg_Eta_and_smooth_fields": {
+    "variant_order": ["Ci_Eta0", "Cavg_Eta0", "Cavg_Eta2"],
+    "full_support_center_absolute_relative_trace_error_percent": {
+      "2D_regular_sine_receiver760": [1.1057115142988535, 1.1057115142988176, 2.4749929659285585],
+      "2D_jitter_sine_receiver760": [1.0474853748022634, 0.6208940037040029, 1.9766389007361274],
+      "3D_regular_smooth_cos_xyz_receiver3429": [4.330922672917729, 4.330922672917718, 5.35766597922157],
+      "3D_jitter_smooth_cos_xyz_receiver3429": [4.4195939154674665, 4.969533365388868, 6.0045149850611705]
+    },
+    "interpretation": "Ci and Cavg agree to roundoff in the fully regular complete-support examples. Cavg changes disturbed/truncated rows and can improve or worsen error; Eta2 also does not produce a uniform accuracy gain. Comparing variants is a discretization comparison, not a benefit caused by tensor storage.",
+    "geometrically_truncated_2D_regular_sine_exact_trace_zero": {
+      "receiver36_traces_in_variant_order": [0.5968251645706297, 0.49822044976480284, 0.4695332046148504],
+      "receiver0_traces_in_variant_order": [-4.187372920643736, -3.187625965394375, -3.0886497335303758]
+    },
+    "boundary_qualification": "The truncated 2D patch and 3D sphere cut are geometric support tests, not wall, drainage or coupled physical boundary models."
+  },
+  "delivery_decision": {
+    "constant_isotropic_k": "Do not add full tensor storage or computation cost for constant isotropic k alone: the existing matching scalar Lstar already contains its trace.",
+    "separate_future_work": "Revisit variable or anisotropic permeability and robust boundary treatment separately, with their own discretization derivation and validation. No such implementation or admission is granted here.",
+    "thresholds": "Preserve all original test and physical-acceptance thresholds. The predeclared arithmetic model is unchanged; quadratic/smooth errors are reported without fitted acceptance gates."
+  },
+  "limitations": [
+    "Static local reference using current Wendland and h/dp=1.8; not the paper's cubic-kernel replication.",
+    "Only 2D Ci_Eta0 follows the literal printed D4 algebraic form with a substituted kernel. Cavg/Eta variants are modified comparisons.",
+    "3D D5 is a conditional dimension generalization, not literal paper 3D reproduction; no public 3D admission.",
+    "No global matrix, spectrum, conservation, pair symmetry, stability, convergence-order or general P2 proof.",
+    "No native production-call regression, time integration, benchmark or physical acceptance."
+  ],
+  "production_changes": false,
+  "physical_acceptance": false,
+  "P2_accuracy_gate": false,
+  "public_3D_admitted": false
+}

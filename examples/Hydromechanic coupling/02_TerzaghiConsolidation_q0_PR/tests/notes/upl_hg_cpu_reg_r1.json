@@ -1,0 +1,14 @@
+{
+  "stage": "upl_hg_cpu_reg_r1",
+  "scope": "Fresh actual authoritative CPU Release program, same retained input/arguments/time schedule as the accepted control; only program and output directory change. Old controls are never rerun.",
+  "jobs": {
+    "LegacyOff": "masterOFF old u-pw with HG=.1, SPR1, eta=.04, viscosity=.1; CPU1 dt1e-5,2001steps,21frames; outputs/upl_hg_reg_LegacyOff_r1",
+    "DynamicXi0": "masterON u-pl with HG0, SPR0, eta=.02, viscosity0; CPU8 dt2^-19,262144steps,.5s,1469frames; outputs/upl_hg_reg_DynamicXi0_r1"
+  },
+  "prerequisites": "Current authoritative DebugCPU/ReleaseCPU builds and both69-case actual-class oracle passes. No dynamic+HG public admission is implied.",
+  "checks": "Seal actual typed program exit before postchecking normal finish, configured steps, no exclusions, exact raw frame membership, original HG call/cache/dt/spin or xi0 absence. A separate pure all-native raw comparison is required for field/clock0ULP.",
+  "concurrency": "The independently owned frozen GPU zero-step component may continue; no second CPU solver is admitted. These are correctness regressions, not controlled timing benchmarks.",
+  "unchanged": "All seed bytes, physics, original numerical thresholds and retained outputs. Canonical binaries and formal XML/BAT remain untouched.",
+  "failure_policy": "Preserve outputs. Repair completed-run analysis offline where justified, never rerun a completed solver or overwrite a failed label.",
+  "physical_acceptance": false
+}

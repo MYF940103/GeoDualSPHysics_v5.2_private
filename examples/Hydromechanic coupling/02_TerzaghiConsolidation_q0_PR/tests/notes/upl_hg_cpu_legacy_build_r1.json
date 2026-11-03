@@ -1,0 +1,22 @@
+{
+  "stage": "upl_hg_cpu_legacy_build_r1",
+  "status": "prepared_not_built_or_run",
+  "scope": "CPU-only build wrapper for the prepared actual default-legacy HG regression. Compile the two new fixture/reference CPPs separately, then link85 current non-main authoritative project objects plus those2 objects, exactly87. No program, solver, GPU, MSBuild or canonical installation is performed by this wrapper.",
+  "derived_recipe": "tests/support/upl_hg_cpu_oracle_build_r2.ps1",
+  "configuration_order": "Root full-reads this wrapper and both CPPs, then explicitly invokes DebugCPU first. ReleaseCPU additionally requires the successfully sealed DebugCPU legacy helper receipt. Each invocation builds exactly one configuration; no automatic second action or run.",
+  "commands_after_root_review": [
+    "powershell -NoProfile -File tests/support/upl_hg_cpu_legacy_build_r1.ps1 -Configuration DebugCPU -ExecutionAuthorized",
+    "powershell -NoProfile -File tests/support/upl_hg_cpu_legacy_build_r1.ps1 -Configuration ReleaseCPU -ExecutionAuthorized"
+  ],
+  "working_directory_for_commands": "case02 directory; root may instead use the wrapper's full path",
+  "current_build": "tests/logs/upl_hg_DebugCPU_r1.build.json or upl_hg_ReleaseCPU_r1.build.json; require passed actual project call with typed exit0,86 objects including project main,265 current code/header snapshots, four runtime files and seven unchanged canonical program identities. Exclude main only for the fixture link. The current JSphHourglassCpu object is already included among85; never compile an extra current HG translation unit.",
+  "retained_tool_recipe": "Use the retained same-configuration actual cl/link vectors and17 libraries from upl_case02_flux_affine_DebugCPU_r1.helper.json or upl_case02_flux_operator_ReleaseCPU_r1.helper.json. Remap the fixture source/Fo/Fd/dependency outputs separately for each new CPP, remap85 object paths to the current upl_hg build, replace the old helper object by the two new fixture objects, and remap exe/PDB outputs. Preserve runtime and floating-point flags. Neither new fixture TU uses /GL, and no explicit /LTCG is added. Retained Release project objects or libraries may trigger MSVC's automatic LTCG; no identical optimization-model claim is made.",
+  "frozen_reference": "Resolve only source/JSphHourglassCpu.h and .cpp beneath the exact tests/outputs/hg_release_base snapshot named by tests/logs/hg_release_base.json. Verify both size/SHA entries against that manifest before compiling and bind manifest/files through final verification. Do not treat the manifest's historical original source paths as current. Compiler dependencies must include the frozen header in both new TUs and the frozen CPP in the separate reference TU.",
+  "actual_objects": "Require current JSphHourglassCpu/JObject/JException/Functions/JAppInfo objects in the exact85 link closure. The fixture supplies AppInfo only; neither new source replaces JObject or exception implementations.",
+  "outputs": "Fresh tests/outputs/upl_hg_cpu_legacy_DebugCPU_r1 or ReleaseCPU_r1; separate legacy.obj and legacy_reference.obj/dependency/PDB paths; three owned CompileFixture/CompileReference/Link typed-exit receipts and logs; one immutable helper record in tests/logs. Failed partials remain retained and are never overwritten or retried automatically.",
+  "verification": "Bind current build/source/object/tool/library/runtime/canonical identities, new authors and frozen reference before tools; verify compiler source/dependency identities, all bound inputs and actual outputs after tools. Copy four sealed runtime leaves into the fresh helper directory. Root reviews the passed87-object helper receipt before a separate owned fixture execution.",
+  "production_source_or_project_changed": false,
+  "formal_input_or_retained_result_changed": false,
+  "build_or_run_executed": false,
+  "physical_acceptance": false
+}

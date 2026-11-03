@@ -1,0 +1,75 @@
+{
+  "stage": "upl_hg_cpu_legacy_r1",
+  "date": "2026-11-03",
+  "status": "prepared_not_built_or_run",
+  "source": "tests/support/upl_hg_cpu_legacy_r1.cpp",
+  "reference_translation_unit": "tests/support/upl_hg_cpu_legacy_reference_r1.cpp",
+  "derived_from": [
+    "tests/support/hg_cpu_cache_test.cpp",
+    "tests/support/hg_cpu_cache_reference.cpp"
+  ],
+  "frozen_reference": [
+    "tests/outputs/hg_release_base/source/JSphHourglassCpu.h",
+    "tests/outputs/hg_release_base/source/JSphHourglassCpu.cpp"
+  ],
+  "reference_policy": "Both frozen files stay untouched. Rename the reference class with the preprocessor and compile its CPP in a separate translation unit, as in the retained cache regression; do not include its implementation in the fixture translation unit or enable cross-translation-unit inlining only for one class.",
+  "build_policy": "Root owns compile/link/run. Link the current authoritative CPU Debug non-main project objects, including actual JSphHourglassCpu, JObject, JException, Functions and JAppInfo, plus the fixture and separately compiled reference object. The fixture defines actual AppInfo and contains no JObject or exception implementation stub. Preserve the current project compiler/runtime/floating-point flags and exact object/library closure; choose new isolated outputs and receipts, never replace a canonical executable.",
+  "planned_command": "upl_hg_cpu_legacy_r1.exe NEW_CHECK_JSON 20",
+  "arguments": "Fresh JSON required; optional repeat count defaults to 200 and accepts only complete integer strings in [20,10000]. Existing check paths are rejected.",
+  "parameter_difference": "Manufactured retained cache fixture only: first native ID40, 20x50 native soil particles, two ignored fixed slots and four ignored periodic copies; dp=.1, dt=1e-5, M0=20, period=2, h=.13, support=.26, bwen=-1, G=1e5, xi=.1. The current class receives only the original nine Config arguments and no J-state argument, selecting the default legacy branch. Formal XML/BAT, retained outputs and production source are untouched.",
+  "fixed_acceptance": {
+    "maximum_ULP": 0,
+    "different_field_bytes": 0,
+    "comparison": "Memberwise scalar memcmp, including signed zeros; no whole-struct padding comparison and no tolerance weakening.",
+    "fields": [
+      "All x/y/z components of GetHistory and GetRate for all1000 native IDs after each of four stages",
+      "All x/y/z acceleration components for every input slot, including ignored fixed/periodic slots",
+      "All15 StRateInfo double members",
+      "All22 shared StStats members from the frozen pre-cache class",
+      "First native ID, native count, pair count and dt limit"
+    ],
+    "current_only_cache_fields": "The frozen StStats predates ratecalculations/ratecachehits. Validate their sum against logical ratecalls, expected cache decision per predictor, endpoint recalculation, Config invalidation and retained repeat-count identities independently; do not fabricate reference fields.",
+    "timing": "Retain three alternating-order batches after ten warmups, but no elapsed-time or speedup acceptance threshold. Timing is descriptive only."
+  },
+  "scenarios": [
+    "unchanged",
+    "native reorder",
+    "ignored periodic-copy mutation/addition",
+    "position_x",
+    "position_z",
+    "velocity_x",
+    "velocity_z",
+    "one-ULP density",
+    "signed_zero",
+    "changed_dt",
+    "evolving_endpoint"
+  ],
+  "original_guard_meaning_compatibility": {
+    "actual_exception_type": "Catch real JException before std::exception; a different exception type or missing rejection fails the fixture.",
+    "normalization": "Read only the actual JException ToStr Text line. Class name, source path and source line are presentation and are excluded; fixed original guard messages themselves are compared without rewriting.",
+    "fixed_original_guards": [
+      "elastic/plastic NaN: HG currently supports elastic states only.",
+      "duplicate ID: HG duplicate native soil ID.",
+      "unexpected ID: HG unexpected native soil ID.",
+      "missing native: HG native soil particle set changed.",
+      "zero/NaN density: HG invalid density.",
+      "NaN position/velocity: HG nonfinite particle state.",
+      "coincident: HG coincident native particles.",
+      "cached dt: HG dt exceeds 0.2 frozen stiffness time scale."
+    ],
+    "xi0_known_wording": "The frozen configuration guard says periodic configuration; the current guard says neighbor configuration following existing bounded-neighbor support. Assert both complete known messages separately and preserve the same xi=0 invalid-enabled-class meaning. This is not solver xi0 allocation/pass compatibility.",
+    "expected_real_guard_exceptions": 24
+  },
+  "limitations": [
+    "Prepared only; no build, execution, passed comparison or physical acceptance is asserted by this note.",
+    "Actual-class manufactured legacy arithmetic/cache regression is separate from actual solver native-field and clock regressions.",
+    "No dynamic-J branch, constitutive/pore update, wall, drainage, load, coupled energy, GPU or physical acceptance is exercised.",
+    "Root must seal frozen reference identity, current source/object/tool/library/runtime closure and actual owned exits in fresh build/run receipts."
+  ],
+  "production_source_changed": false,
+  "frozen_reference_changed": false,
+  "formal_input_or_retained_result_changed": false,
+  "build_or_run_executed": false,
+  "public_dynamic_HG_guard_changed": false,
+  "physical_acceptance": false
+}

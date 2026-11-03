@@ -1,0 +1,76 @@
+{
+  "stage": "upl_hg_cpu_oracle_r2",
+  "date": "2026-11-03",
+  "status": "prepared_not_built_or_run",
+  "source": "tests/support/upl_hg_cpu_oracle_r2.cpp",
+  "planned_outputs": {
+    "build": "tests/outputs/upl_hg_cpu_oracle_DebugCPU_r2/",
+    "logs": "tests/logs/upl_hg_cpu_oracle_DebugCPU_r2.*",
+    "run_command": "upl_hg_cpu_oracle_r2.exe --json NEW_CHECK_JSON",
+    "overwrite_policy": "The harness rejects an existing check path. Build/run wrappers must also reject existing output/log paths."
+  },
+  "build_policy": "Link the current authoritative CPU Debug project objects excluding main, including actual JSphHourglassCpu, JObject, JException, Functions and JAppInfo. The harness defines AppInfo. No exceptions are stubbed. No physical solver or GPU is launched.",
+  "parameter_difference": "Manufactured component fixtures only: M0=20, rho0=2000, rhow=1000, xi=0.1, G=1e5, dp=0.125, h=0.1625, support=0.325, bwen=-1; bounded or X period=1, 8x10 native particles plus ignored boundary/periodic/out slots. J=1, uniform 0.8, or deterministic nonuniform [0.75,1.23]. Formal XML/BAT and retained results are untouched.",
+  "independence": "Dense directed O(N^2) all-pair graph, ascending native-ID accumulation, explicit generic 2x2 inverse/matrix multiply; no production cell lists, pairs, gradients, cache, private state or GPU reference. Inertia is independently evaluated as Vi*[rhow+(rho0-rhow)/Ji].",
+  "fixed_tolerances_before_execution": {
+    "rate_form_power_lambda_tau": "1e-8*(1+abs(reference)); vector rate uses maximum Euclidean norm",
+    "virtual_work_pair_net_rate": "1e-9*(1+relevant force/work magnitude)",
+    "affine_null_max_rate": 1e-12,
+    "history": "1e-10*max(1e-15,maxnorm(reference H))",
+    "history_net_force": "1e-10*max(1e-15,sum|M0*H|)",
+    "float_acceleration": "64*FLT_EPSILON*max(1e-30,abs(expected HG increment)); zero base Ace prevents an absolute +1 term hiding a half-stage inertia error",
+    "float_net_force": "64*FLT_EPSILON*max(1e-30,sum|mi*deltaAce|)",
+    "actual_float_force_diagnostic": "Compare accumulated maxima using 64*DBL_EPSILON*max(1e-30,maximum force-magnitude sum); allows the independent V*rho and production expanded-mi rounding difference",
+    "generalized_rayleigh": "-1e-12 <= -v.fdot/(v.M.v) <= lambda*(1+1e-10)",
+    "frozen_oscillator": "512 velocity-Verlet steps, dt=0.02*tau, abs(E/E0-1)<=0.001; fixed nonuniform J and geometry, potential=form(q), acceleration=M0*Rate(q)/mi, kinetic=0.5*sum mi*|v|^2"
+  },
+  "acceptance_cases": [
+    "Actual CPU rates/form/power/lambda/tau vs independent all-pair for J1/uniform/nonuniform and bounded/X-periodic graphs",
+    "Bounded affine translation/compression/shear/small rotation nulls; periodic translation and X-independent affine nulls; alternating X-column, checkerboard and irregular velocity response",
+    "Instantaneous pair-force balance, LS virtual work, generalized inertia Rayleigh bound",
+    "Nonzero Q/M0 history, different nonuniform half-J array, destroyed old input array contents, native reorder, current-stage acceleration and actual float force diagnostic",
+    "Independent endpoint geometry/J/rate and two half history updates; endpoint exact reuse under native reorder/modified ignored periodic copies",
+    "One-ULP-only changed J invalidates endpoint cache even when rounded Vi bits are unchanged",
+    "Real HG exceptions after endpoint population for invalid J/plastic/native set/geometry/velocity/dt, invalid stage ordering/dt, missing J at predictor/half-force/endpoint, bad half J, invalid material and cumulative spin",
+    "Frozen nonuniform-J generalized-inertia oscillator with bounded energy"
+  ],
+  "separate_required_gates": [
+    "Default CPU Debug authoritative solution build after production changes",
+    "Legacy default branch frozen-class bitwise arithmetic/fields/clocks regression; dynamic J1 equivalence does not imply bit identity",
+    "xi0 solver allocation/pass/fields/clocks compatibility",
+    "Private main-loop stage wiring and solver short/half/full-prefix native/safety and meaningful mid-window physical evidence before any public guard enablement",
+    "GPU evidence only after verified CPU evidence; active independent GPU baseline remains frozen"
+  ],
+  "limitations": [
+    "Prepared only: no execution result or passed acceptance is asserted by this note",
+    "Component tests are not a coupled u-pl, wall, Darcy, load, restart or physical acceptance",
+    "Frozen geometry/J energy and instantaneous sum(mi*aHG)=0 do not imply evolving/open-mass coupled energy or momentum conservation; d(sum mi*v)/dt includes mass-rate terms",
+    "Manufactured Rayleigh vectors are samples; the bound follows analytically from the weighted-LS projection and graph-degree inequality",
+    "CorrectorForce does not evaluate a rate: dt/tau guards are predictor/endpoint frozen-operator checks, not a bound for all intermediate evolving geometry/J",
+    "Dynamic quadrature/inertia derives from double J and intentionally ignores vel.w; legacy invalid-density behavior belongs to the separate default-branch regression",
+    "Saturated J>1-n0 domain remains the caller's responsibility; the component validates positive finite J/inertia"
+  ],
+  "public_dynamic_HG_guard_changed": false,
+  "formal_input_or_retained_result_changed": false,
+  "physical_acceptance": false,
+  "fixture_repair": {
+    "prior_failed_source": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_hg_cpu_oracle_r1.cpp",
+      "bytes": 23392,
+      "sha256": "73eacee25c065ac55600902463e066206f7e3591a6db56d9d134faac92727bb5"
+    },
+    "prior_failed_call": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_DebugCPU_r1.call.json",
+      "bytes": 1528,
+      "sha256": "2e955423a24722ed68e5da5b69f859a8d51c37c41508a6b0d9aef45312398be5"
+    },
+    "prior_failed_check": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_cpu_oracle_DebugCPU_r1.check.json",
+      "bytes": 3837,
+      "sha256": "85452b9e239afc53a064e523f5bb50cceeb709402b88a3347c0e8e8edf9e7290"
+    },
+    "reason": "Starting at J=.75,2048 adjacent samples stay in a multiplication interval with no rounded-volume collisions. Starting at .8 finds collision at offset2: lower=.8000000000000003,upper=.8000000000000004,V=.008000000000000004. Change only starting fixture value, preserve adjacent-J/cache requirement, search count and all thresholds.",
+    "production_changed": false,
+    "prior_run_overwritten": false
+  }
+}
