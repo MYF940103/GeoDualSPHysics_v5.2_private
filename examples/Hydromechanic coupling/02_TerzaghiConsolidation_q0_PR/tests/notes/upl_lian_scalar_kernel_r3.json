@@ -1,0 +1,83 @@
+{
+  "stage": "upl_lian_scalar_kernel_r3.author_contract",
+  "author_only": true,
+  "author_executed_imported_or_syntax_checked": false,
+  "physical_acceptance": false,
+  "author_files": [
+    "tests/support/upl_lian_scalar_kernel_r3.cpp",
+    "tests/notes/upl_lian_scalar_kernel_r3.json"
+  ],
+  "scope": "One fixed-receiver2D constant-isotropic-k/J1 spatial check. Scalar Laplacian accuracy is the objective; P2 Hessian transfer is a diagnostic. No wall fixture, variable-k/anisotropy, global matrix, time integration, production installation or active full-run data is read or changed.",
+  "primary_references": {
+    "PDF": "src/papers/PDF/Lian 2023 u-pl.pdf, original pp5-6 Eq21-23; PDF skill read, existing full p06 render and root-rendered outputs/upl_lian_paper_r2/lian_kernel_detail-05.png inspected; author performed no render",
+    "markdown": "src/papers/u-pw/Lian 2023 u-pl.md:285-293 cubic kernel/h=1.2dx;300-317 Eq22 receiver normalization/Eq23/rji definition",
+    "prior_harness": "tests/support/upl_lian_eq23_operator_r1.cpp and its retained review/rootcheck remain frozen",
+    "production_witness": "src/source/JSphCpu.cpp:4405-4477 and JSphGpu_ker.cu:1574-1635, scalar lp-gp dot lx; no actual JSph method is invoked"
+  },
+  "frozen_future_build_proposal": "Root full-reads these two files first, then captures one genuine standalone MSVC /std:c++17 /EHsc /fp:precise compile/link with fresh isolated object/program/dependency/log paths. Include only the already-frozen archived FunSphKernel.h and actual transitive archived headers. No production project/libraries/object directory, canonical executable or source archive is written. Use a single compiler worker without /MP or OpenMP; no new build system. This authoring does not execute the build or program.",
+  "future_invocation": "FRESH_STANDALONE_PROGRAM tests/outputs/upl_lian_scalar_kernel_r3; directory must not exist. Root captures source/note/header/compiler/program identities, original typed native exit and before/after hashes. No owner framework, watcher, retry or chained solver is introduced.",
+  "resources": "Runtime creates no threads/OpenMP work, sets only its own process BelowNormal and restricts only itself to the lowest already-allowed CPU affinity bit. Maximum361 nodes retained per cloud; clouds are evaluated sequentially.12 clouds and576 responses; small pair vectors and one CSV, no dense matrix. The larger retained r1 test cost.536s program time; this is a seconds-scale expectation, not a measured r2 result or a reason to change active solver scheduling.",
+  "controlled_clouds": {
+    "conditions": [
+      "Archived production Wendland, h=float(1.8*dp)",
+      "Archived projectCubic_h1p2, h=float(1.2*dp); controlled project-kernel condition, not literal printed Eq21 reproduction"
+    ],
+    "spacings": "dp1/16,1/32,1/64; fixed receiver exactly(0,0) at every spacing, not changing regional means",
+    "geometry": "19x19 cell-index stencil from-9 through9 on each axis. Ordered or deterministic integer-hash jitter bounded by.08dp independently in X/Z; central receiver is pinned exactly at the origin. No periodic wrap, physical boundary, neighbor-volume correction or current-J evolution. V=dp^2,J1. Actual double displacement/float rr2/float archived Fac/double vector arithmetic is retained.",
+    "guard": "Every Cj used by the receiver has support entirely inside the guarded patch; verify abs(xj.axis)+2h <=(9-.08)dp. Current moment/inverse arithmetic pattern, positive determinant and original gamma*condition<.01 arithmetic-informativeness guard. Peripheral matrices outside the used set do not enter the operator.",
+    "normalization": "M=sum V*rji outer grad_iW,C=M^-1; corrected first moment and common kernel-amplitude1.5 invariance are checked. A global kernel amplitude cancels C*gradW and cannot repair a tensor angular-moment plateau. Fixed h/dp preserves the scaled stencil; smooth error and quadratic transfer are therefore reported separately."
+  },
+  "operators": {
+    "DIRECT_literal_Eq23": "r=xj-xi; gp=sum V*(pj-pi)*Ci*grad_iW. Compute the paper's raw sum and gradient-defect sum separately for Hxx,Hxz,Hzx,Hzz using Dmn=4*rm*rn/r2-delta and F=r dot(Ci*grad_iW)/r2. The operator uses this approximate corrected SPH gradient from the same cloud. Exact analytic gradient is used only to measure error and bound double affine checks. Hxz/Hzx symmetry is checked; direct trace is compared to the separately accumulated receiver-C/r2 scalar within the original forward budget, not assumed equal.",
+    "three_response_variants": [
+      "receiver_C_r2",
+      "receiver_C_Eta2",
+      "production_pair_C_Eta2"
+    ],
+    "scalar_witness": "Independently accumulate actual XZ lp,lx,gp signs: d=xi-xj,dp=pi-pj,w=V*d dot(gi+gj)/(r2+Eta2),lp+=w*dp,lx+=w*d,gp-=V*dp*gi,return lp-gp dot lx. Receiver-C variants substitute Cj=Ci; only variant0 has Eta2=0. Actual pair variant uses guarded neighbor Cj. Eta2=float((.1*h)^2). This is a standalone expression witness, not an actual production call or trajectory.",
+    "modified_tensor": "For each variant also sum defect=(pj-pi)-gp dot r times V*D*F using that variant's scalar kernel/correction operands, then check its trace against its independently accumulated scalar. Eta2 changes ONLY the denominator of F; every D4 directional denominator remains unregularized r2. These modified tensors are not relabelled literal Eq23.",
+    "kernel_parity": "Each archived Fac result must be bit-identical to a separately spelled float operation sequence with the same archived constants, float rr2/rad/q and operation order. This tests API/operation parity, not ideal-double kernel error. Project Cubic uses10/(7*pi) times(1-1.5q^2+.75q^3) inside and.25*(2-q)^3 outside; normalized branch values atq1 are both.25 and derivative limits both-.75, so its actual definition is continuous with continuous first derivative. No production kernel setting is changed.",
+    "printed_Eq21_caveat": "Primary PDFp5 zoom actually prints inner2/3-q^2+(1/3)q^3 and outer(1/6)*(2-q)^3. Atq1 these give0 versus1/6 and derivative limits-1 versus-1/2, before their common alpha factor. This is an internally inconsistent printed profile, plausibly a typo, but the authors' code is unknown. Do not replace its1/3 by1/2 and call that literal PDF. The second test is explicitly projectCubic_h1p2; no bad-printed-branch experiment or global kernel change is added. Eq23 itself remains visually clear and unchanged."
+  },
+  "fields_and_precision": "Eight fields:1,x,z,.5x2,xz,.5z2,cos(2pi*x),cos(2pi*(x+z)). The three quadratic responses provide the3x3 Hessian transfer in xx,xz,zz basis without an engineering-shear factor. Both smooth fields have nonzero analytic Laplacians at the fixed receiver, including an oblique mode. Evaluate manufactured double pressures and separately values quantized through float. Report input quantization, gradient error, scalar absolute/relative error and previous/current absolute-error ratio, with empty relative/ratio cells for undefined denominators. No expected convergence order is asserted.",
+  "predeclared_arithmetic_gates": {
+    "base": "Same r1 gamma=(64*m+256)*DBL_EPSILON/(1-(64*m+256)*DBL_EPSILON), with actual receiver neighbor countm; float kernel samples are shared fixed operands. No result-tuned multiplier or absolute floor.",
+    "constant": "Exact zero gradient, every direct/modified Hessian component and scalar for field1 in both storage modes.72 response controls.",
+    "double_affine": "For x/z ONLY with double pressure, use the original gradient budget from corrected-affine residual,gamma,moment absolute scale and pressure subtraction scale. Component Hessian bound sums abs(V*D*F) times pressure/dot-product/gradient forward bounds plus gamma*sum abs(component terms). Gate72 component-group records and their gradient residuals. These are arithmetic/P1 tests, not P2 accuracy gates.",
+    "float_affine": "Float-quantized x/z residuals are DIAGNOSTIC. They are not forced zero, not compared to the double affine budget and not subjected to an affine convergence gate. The known prior float residual scale around2e-5 is neither a new tolerance nor a fitted expected result.",
+    "formula": "576 matched tensor/scalar and192 separate DIRECT Eq23-trace/receiver-C-r2 identities. Bounds use gamma times absolute accumulated raw/defect/scalar operands. Zero scale requires exact equality. Formula identity does not imply accuracy.",
+    "quadratic_smooth": "No P2 exactness, percent accuracy, convergence order, monotonic benefit, kernel superiority, stability or conservation gate. All errors and ratios remain visible."
+  },
+  "outputs": [
+    "tests/outputs/upl_lian_scalar_kernel_r3/responses.csv",
+    "tests/outputs/upl_lian_scalar_kernel_r3/completion.json"
+  ],
+  "completion_meaning": "passed/arithmetic_checks_passed means only finite input/moments and the declared constant/double-affine/formula/kernel checks completed. It never declares Eq23 accuracy, production acceptance, a worthwhile replacement or full-run accuracy. Exclusive directory creation and nonzero exit preserve failures/partial outputs; no automatic rerun.",
+  "later_consistency_gaps": "Paper Eq24 literally weights neighbor1-nj; the current local-J continuum integration is a distinct discretization requiring a later nonuniform-porosity check. Eq25 pair-mean variable k versus receiver-k/product-rule remains separate. Neither is exercised or installed in this J1 constant-k test, and the long baseline is unchanged.",
+  "protected": "Active full owner73076/solver38440/watcher66132, all frozen programs/archives/configurations and candidate exports; formal cases/results and all prior Eq23 sources/outputs. No production, solver, decoder, Git, watcher, active raw or original source archive operation is performed.",
+  "root_revision": {
+    "reason": "First standalone compile rejected unqualified StKWendlandCte/StKCubicCte; actual archived types are in fsph namespace. No diagnostic executable was produced or run.",
+    "source_changes": "Qualify both ManualFac parameter types with fsph::; mechanically rename diagnostic namespace/stage r2 to r3. Exact inverse bytes verified; no numerical expression or gate changed.",
+    "retained_failed_build": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_scalar_kernel_r2.build.json",
+      "bytes": 2594,
+      "sha256": "e30ae814a6d70a4fab029c92733cd359e7f9044fa5a616826771a0e84fb0948b"
+    },
+    "original_source": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_lian_scalar_kernel_r2.cpp",
+      "bytes": 18159,
+      "sha256": "617c7d92e006aeabd12930a549cf75aa50e2fcece4bd174f821933779682ebc1"
+    },
+    "original_note": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_lian_scalar_kernel_r2.json",
+      "bytes": 9743,
+      "sha256": "b4e4cfa333342b02a20100097f5fdec844059281b6fca664b4a726331a27f7cf"
+    },
+    "source": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_lian_scalar_kernel_r3.cpp",
+      "bytes": 18171,
+      "sha256": "5352b2551510d6d01a8dea09d784e5a1b86d128f459bd8ad50bcf43c6bb277ec"
+    },
+    "production_or_active_full_dependencies_changed": false
+  }
+}

@@ -1,0 +1,83 @@
+{
+  "stage": "upl_parallel_root_r1",
+  "utc": "2026-11-03T18:23:49.482654+00:00",
+  "source_or_active_full_dependencies_modified": false,
+  "production_algorithm_replaced": false,
+  "full_run_tag": "upl_bigstep_2tv_CPU1_r1",
+  "full_completion_watcher_pid": 66132,
+  "scalar_native": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_scalar_kernel_r4.run.json",
+    "bytes": 1847,
+    "sha256": "fcb02d0a4646b00704760d1e28533bf026bca429e7908731d051a2b50b329337"
+  },
+  "scalar_numeric_review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_scalar_kernel_r4.review.json",
+    "bytes": 23653,
+    "sha256": "219ae08048f21567fd0057747992534e8f9aeed0cafff641e4b79a8a2b505022"
+  },
+  "scalar_plot_QA": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_scalar_kernel_r4_plot_r1.check.json",
+    "bytes": 1589,
+    "sha256": "4f2f3a60705025af2e510fa1b1e4a5f662c63569363505279e9ebe6aed38aad1"
+  },
+  "accepted_scalar_plot": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_lian_scalar_kernel_r4_clean.png",
+    "bytes": 300408,
+    "sha256": "f46cd6cf7b4416b08278fd3991b5fa7184489dfc60f69edbc3557d41b2532d46"
+  },
+  "scalar_CSV": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_lian_scalar_kernel_r4.csv",
+    "bytes": 16389,
+    "sha256": "3bddf881f3b3df60d71189bbff3e3cec4a5f43e210dfa59332cdc7c47d5de958"
+  },
+  "root_visual_plot_inspected": true,
+  "arithmetic_checks": "12 full-support clouds,768responses,96constantnulls,96doubleaffinegroups,192DIRECTEq23trace comparisons,107928archivedkernelbit-parity checks;576prior response rows remain exactly identical.",
+  "scalar_findings": "At fixed h/dp, regularization leaves an ordered-P2 trace bias:Wendland1.8 gain.9862108003 andprojectCubic1.2 gain.9897995680. Retaining symmetric pair C and removing only this denominator regularization reduces orderedWendlanddp1/64 axis/oblique smooth errors from1.5935/1.8089 to.2165/.4337percent. It is not uniformly superior:projectCubicjitter axis .3970percent withEta versus.6213without. No wall, variable-k, near-coincident-pair or coupled-stability acceptance.",
+  "local_float_double_smooth_difference_percentage_points": 0.0002364250476219118,
+  "float_result_is_not_a_cumulative_time_integration_proof": true,
+  "scalar_native_wall_seconds": 0.0227274,
+  "reference_snapshot": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_reference_snapshot_r1.check.json",
+    "bytes": 15762,
+    "sha256": "cc04f6ef65818b7439f2f747bb1ad9405387ad2a3d9327e4c73d3496f94bdbe0"
+  },
+  "reference_plot": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_reference_snapshot_r1.png",
+    "bytes": 102369,
+    "sha256": "198199cc1b887cb5944e3989750c8de465aad263457a7b752dfe29fc23568dd7"
+  },
+  "reference_CSV": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_reference_snapshot_r1.csv",
+    "bytes": 113285,
+    "sha256": "328c9bf0ba26750e51346f7c3114a6d0b3e85d35d5508de1d8404dd0cb363cf1"
+  },
+  "reference_visual_inspected": true,
+  "reference_findings": "Use identical materialIDs and actualtime. H1 primary:topsettlement+1.741percent, same-node pressuremean difference?11.5567Pa. Pre-existingUNFITTEDpressureplaneH.995:topsettlement?.1514percent butsame-nodePmean difference+38.5434Pa. TheH.995continuumintegralmean mustnotstandinfor the100-nodearithmeticmean. Matching J-volumeweighting onbothsides barelychanges theH1mean residual(?11.5015Pa), so averaging alone doesnot explain it. Gamma9.80665vs9.81 changesreferencePmean about.448Pa/topS.01714percent;floatM/n effects are muchsmaller.",
+  "primary_PDF": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\papers\\PDF\\Lian 2023 u-pl.pdf",
+    "bytes": 10565300,
+    "sha256": "c5bb5e8862c87893cd5891758df1d46ea47ddd498e1e61096554e0622756943b"
+  },
+  "primary_PDF_pages_5_6_visually_inspected": true,
+  "paper_kernel_caveat": "PrintedEq21 inner1/3 coefficient is discontinuous atq1 versusouter1/6. ActualprojectCubic is continuous; controlled projectCubic_h1p2 is not labelled literalprintedkernel or authors-code reproduction. Eq23 directtrace uses approximateEq22gradient as printed.",
+  "retained_attempts": "r2 actualcompilefailed fsph type qualification; r3 preflight bookkeepingfailed beforecompiler. Freshr3b tools exited0 but case-sensitive dependencyname postcheckfailed; sealed offline review verified all11 archived headers and original exits withoutrebuild. r3native andr4actualbuild/nativepassed; numericalexpressions/gates unchanged except deliberatefourthfactorialvariant.",
+  "next_bounded_checks": [
+    "Actual supported near-wall/mirror consistency, before any production operator adoption.",
+    "Variable-k pair-mean Eq25 versus current receiver-k/product-rule, with manufactured geometry/J/k and no parameter fitting.",
+    "Later nonuniform-porosity Eq24neighbor-factor versus local-J discrete-consistency audit; currentcontinuumJ relation is not identical to the printed neighbor-weighted SPH sum."
+  ],
+  "physical_or_formal_acceptance": false,
+  "scalar_plot_reproducer": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_lian_scalar_review_r1.py",
+    "bytes": 5152,
+    "sha256": "87f1885ddc98750c21e4288ee3a6503f86df0c03d7f16645f87e3aa5e0f60c0d"
+  },
+  "plot_regeneration_proof": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_lian_scalar_regeneration_root_r1.check.json",
+    "bytes": 2455,
+    "sha256": "02bc8c8e6fbdbda28b1075bc0d0e6879248f8900bc45e395d82d67501530f697"
+  },
+  "reproducer_CSV_and_PNG_byte_identical": true,
+  "conductivity_continuum_check": "Primary markdownLian2023Eq4,lines164-168 explicitly uses natural exp. With incompressible solid grains, e-e0=(J-1)/(1-n0), so existing exp((J-1)/((1-n0)*Ck)) matches that CONTINUUM law. This is not a variable-k SPH discretization or physical sensitivity validation.",
+  "future_full_reviewer_status": "Separate38,206B script is authored/peer-reviewed and syntax/hash checked, still unexecuted. Root must full-read it and its8,730B note before future full-native invocation; H1 remainsprimary andunfittedH.995 sensitivity keeps node/weighted/continuum observables distinct."
+}

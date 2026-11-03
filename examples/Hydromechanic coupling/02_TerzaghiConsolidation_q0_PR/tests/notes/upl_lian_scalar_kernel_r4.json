@@ -1,0 +1,35 @@
+{
+  "stage": "upl_lian_scalar_kernel_r4.author_contract",
+  "author_only": true,
+  "author_executed_imported_or_syntax_checked": false,
+  "physical_acceptance": false,
+  "author_files": ["tests/support/upl_lian_scalar_kernel_r4.cpp", "tests/notes/upl_lian_scalar_kernel_r4.json"],
+  "parent_source": {"path": "tests/support/upl_lian_scalar_kernel_r3.cpp", "bytes": 18171, "sha256": "5352b2551510d6d01a8dea09d784e5a1b86d128f459bd8ad50bcf43c6bb277ec"},
+  "parent_note": {"path": "tests/notes/upl_lian_scalar_kernel_r3.json", "bytes": 11621, "sha256": "fde377fa68aaa6cf096c6847dc52a72be5d40391b25e4c164238fa48fde1ee85"},
+  "scope": "Complete only the2x2 receiver/pair correction by r2/Eta2 denominator comparison on the same fixed full-support local clouds. Add fourth pair_C_r2 without removing the symmetric correction concept. No production pressure regularization, C matrix, kernel, wall, material, integration, limiter, full run or previous artifact is changed.",
+  "mechanical_delta": [
+    "Rename diagnostic namespace scalar_r3 to scalar_r4 and completion stage upl_lian_scalar_kernel_r3 to upl_lian_scalar_kernel_r4.",
+    "Append pair_C_r2 as variant3; preserve original variants0,1,2 and their labels.",
+    "At all three scalar/tensor coefficient denominator sites, use Eta2 iff variant==1 or variant==2. Variants0 and3 use bare r2. Ci substitution remains variant<2; variants2 and3 use guarded neighbor Cj.",
+    "Loop four variants; enlarge previous-error array192 to256 and change key stride3 to4.",
+    "Require768 response/formula rows,96 constant and96 double-affine groups; retain192 DIRECT Eq23 checks and all other arithmetic, pressure, kernel, guard, resource and output logic unchanged."
+  ],
+  "author_static_check": "Exact occurrence counts for every listed literal replacement and exact inverse source-text equality to the read parent were checked without importing, compiling or running either source. fsph::StKWendlandCte and fsph::StKCubicCte qualifiers from the genuinely compiled r3 parent are preserved. Root independently verifies final files before any future build.",
+  "variant_table": [
+    {"index": 0, "label": "receiver_C_r2", "correction_in_F": "Ci", "F_denominator": "r2"},
+    {"index": 1, "label": "receiver_C_Eta2", "correction_in_F": "Ci", "F_denominator": "r2+Eta2"},
+    {"index": 2, "label": "production_pair_C_Eta2", "correction_in_F": "(Ci+Cj)/2", "F_denominator": "r2+Eta2"},
+    {"index": 3, "label": "pair_C_r2", "correction_in_F": "(Ci+Cj)/2", "F_denominator": "r2"}
+  ],
+  "unchanged_numerical_contract": {
+    "clouds": "12 clouds,361 nodes maximum, fixed receiver exactly(0,0), dp1/16,1/32,1/64, ordered or identical bounded.08dp jitter; every used Cj has complete support guard. V=dp2,J1,constant normalized isotropic k.",
+    "kernel_conditions": "Production Wendland h=float(1.8dp) and projectCubic_h1p2 h=float(1.2dp), actual archived float kernel and position arithmetic. These are two combined kernel/support conditions, not a pure kernel-superiority experiment. Preserve the primary PDF Eq21 printed-profile caveat from the parent note; project Cubic is not a claimed reproduction of that inconsistent printed polynomial.",
+    "DIRECT_Eq23": "Same printed two-sum2D D4 formula using the approximate corrected Eq22 gradient from this cloud. Exact analytic gradients remain error/budget references only. DIRECT trace identity remains gated only against matched receiver_C_r2. Every modified tensor trace is checked against its independently accumulated scalar. D4 always retains unregularized r2; Eta2 affects F only.",
+    "precision_and_gates": "Eight identical constant/affine/P2/smooth fields and both double and float-quantized pressure modes. Original gamma(64*m+256), exact constant null, double-only affine forward bounds, formula and kernel parity gates unchanged. Float affine remains diagnostic, never a false zero or convergence gate. No P2 accuracy, percent error, monotonic benefit, stability, conservation or production acceptance gate is added.",
+    "resources": "Same single native thread, own process BelowNormal and one already-allowed CPU affinity bit; no OpenMP, JSph, production libraries, solver, dense matrix or significant memory. Kernel parity count should remain107928 because geometry/kernel construction is unchanged; this is a planned coverage observation, not an r4 execution claim."
+  },
+  "future_build_and_call": "Only after root full-read: one fresh isolated standalone MSVC compile/link using the genuine r3 recipe and frozen archived headers, no production project/library/object/canonical/archive writes. Capture original typed compiler/linker/program exits and all consumed hashes. Invoke FRESH_PROGRAM tests/outputs/upl_lian_scalar_kernel_r4; output must not exist. No build or invocation is performed by this authoring.",
+  "future_outputs": ["tests/outputs/upl_lian_scalar_kernel_r4/responses.csv", "tests/outputs/upl_lian_scalar_kernel_r4/completion.json"],
+  "interpretation": "The fourth condition separates neighbor-matrix effects from Eta2 on each kernel/cloud/precision/field/spacing. Compare same-row scalar errors and P2 gains first. Formula identity alone gives no accuracy benefit. This standalone expression witness does not call actual production JSph, exercise a physical wall or variable conductivity, prove coupled stability, or admit a method change.",
+  "protected": "All r2/r3 sources, notes, failed/preflight/build/native receipts and outputs, active full solver38440/watcher66132, all frozen full dependencies and candidate exports, formal cases/results. No solver/decoder/queue/watcher/Git/process action or active raw read is performed."
+}
