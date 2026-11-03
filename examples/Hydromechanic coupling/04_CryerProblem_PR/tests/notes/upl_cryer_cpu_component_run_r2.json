@@ -1,0 +1,42 @@
+{
+  "stage": "upl_cryer_cpu_component_run_r2",
+  "purpose": "Execute only already-built ReleaseCPU r2 component once after actual Debug native exit0 and strict offline metadata review. Do not rebuild or integrate a trajectory.",
+  "changes_vs_run_r1": [
+    "ReleaseCPU only; fresh probe_r2 output",
+    "Adopt immutable failed Debug wrapper plus separately passed strict binary metadata review; never rerun Debug",
+    "Seal direct typed native exit before any analysis",
+    "Basic completion and immutable-closure seal only; all CSV budgets and actual metadata decoding deferred to existing independent offline reviewer"
+  ],
+  "preconditions": [
+    "Original 37173 soil +8 dummy Cryer seed/runtime hashes unchanged",
+    "Passed archived 85+1 ReleaseCPU helper; immutable object/source/header/runtime copies only",
+    "DebugCPU_probe_r1_review_r1 passed with native call exit0 and no particle payload or exclusions"
+  ],
+  "execution": {
+    "configuration": "ReleaseCPU",
+    "requested_OpenMP_threads": 1,
+    "launcher_priority": "BelowNormal",
+    "child_priority_independently_observed": false,
+    "actual_force_calls": 6,
+    "actual_physical_steps": 0,
+    "actual_time_s": 0,
+    "automatic_follow_up": false
+  },
+  "outputs": {
+    "tag": "upl_cryer_cpu_component_ReleaseCPU_probe_r2",
+    "deep_review_command": "python -B support/upl_cryer_cpu_component_review_r1.py --configuration ReleaseCPU"
+  },
+  "limits": [
+    "Private component bypasses feedback initialization guard, not public 3D support",
+    "No Run, ComputeStep, SaveData, integration, PART restart or physical acceptance",
+    "Initialization .ibi4/.obi4 scalar metadata are not snapshots; only offline parser may establish this",
+    "No Debug/Release 0-ULP or half-step claim",
+    "Any postcheck failure after completed native call is repaired offline only; never rerun or overwrite prior artifacts"
+  ],
+  "protected": [
+    "case02 active mid-run and its frozen closure",
+    "all production sources/canonical programs",
+    "formal XML/BAT/data/server packages",
+    "all failed r1 evidence"
+  ]
+}

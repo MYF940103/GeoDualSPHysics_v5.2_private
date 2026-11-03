@@ -1,0 +1,120 @@
+{
+  "stage": "upl_cryer_cpu_component_root_r1",
+  "status": "Debug_and_Release_zero_step_component_checks_passed_not_public_3D_or_physical_acceptance",
+  "reviewed_2026_11_03_JST": true,
+  "source_or_physical_equations_modified": false,
+  "production_build_run_in_this_component_stage": false,
+  "actual_programs": [
+    {
+      "configuration": "DebugCPU",
+      "typed_native_exit_code": 0,
+      "force_calls": 6,
+      "soil_reference_checks": 223038,
+      "physical_steps": 0,
+      "independent_offline_review_passed": true,
+      "original_wrapper_passed": false,
+      "wrapper_failure": "Unexpected PART output from non-advancing component",
+      "resolution": "Original record unchanged; actual strict binary parsing establishes two initialization scalar metadata files with 0 arrays, no snapshots/exclusions and strict EOF. No native rerun."
+    },
+    {
+      "configuration": "ReleaseCPU",
+      "typed_native_exit_code": 0,
+      "force_calls": 6,
+      "soil_reference_checks": 223038,
+      "physical_steps": 0,
+      "basic_call_sealed": true,
+      "independent_offline_review_passed": true
+    }
+  ],
+  "findings": {
+    "constant_pressure_1Pa_with_zero_total_stress": "Strict zero momentum, theta, pressure rate and all six stress rates.",
+    "affine_native_float_pressure_max_abs_pdot_Pa_s": 0.01654866337776184,
+    "compression_theta_mean_per_s": -0.003000000008729489,
+    "compression_pdot_mean_Pa_s": 1999999.9254667365,
+    "tracefree_cyclic_shear_theta_mean_per_s": -2.9105166458018006e-15,
+    "maximum_original_predeclared_propagation_budget_ratio": 0.040203964001552926,
+    "confinement_only_Ace_max_m_s2": 1585.0069722057438,
+    "uniform_totalstress_confinement_cancellation_Ace_max_m_s2": 0.00006908710585126814,
+    "uniform_cancellation_pdot_abs_max_Pa_s": 10.362534523010254,
+    "raw_LoadAce_telemetry_gate": {
+      "cancel_probe_open": 36760,
+      "cancel_probe_closed": 413,
+      "interpretation": "Finished force can cancel exactly and suppress source telemetry under existing write gate; gated LoadAce vector resultant is not true applied-force imbalance. Activation and cancellation are checked separately. No production repair or physical perturbation."
+    },
+    "FS_per_probe": {
+      "interior": 32020,
+      "surface2": 5153,
+      "surface3": 0
+    },
+    "dummy_count": 8,
+    "minimum_actual_dummy_soil_distance_m": 0.1059116779986076,
+    "kernel_support_m": 0.009
+  },
+  "cross_configuration": {
+    "summary_csv_raw_bytes_equal": true,
+    "samples_csv_raw_bytes_equal": true,
+    "interpretation": "Only these two exported CSVs are byte-identical; no whole-native-state or Debug/Release 0-ULP claim."
+  },
+  "retained_failure": "Initial r1 Debug helper compile exit2: two missing direct headers and inherited Gamma name shadow. New r2 changes only those declarations/name and labels; equations/budgets unchanged. Failed source/build/logs retained.",
+  "limits": [
+    "Observer CPU3D initialization legitimate; feedback init guard intentionally bypassed by private fixture.",
+    "All six probes use frozen J=1 geometry. No Pre/Corr, changing porosity, actual ramp/drain or physical-time trajectory.",
+    "Reference shares actual neighbor search and observed correction matrices/Ace; it is conditional arithmetic verification, not independent neighbor/flux conservation, continuum accuracy or stability proof.",
+    "Actual scalar Lstar passes prior P1 arithmetic; this does not establish Lian Eq23 full second-order tensor/P2 accuracy.",
+    "Existing 1D mid CPU8 trajectory remains the next physical review gate; no automatic full-cycle/Cryer admission.",
+    "No formal input, accepted result, server program or canonical executable changed."
+  ],
+  "next": "Prepare only GPU zero-step compatibility component while 1D mid finishes. Review sealed mid native output, full1469 exact prefix and physics before trajectory admission.",
+  "evidence": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\upl_cryer_cpu_component_r2.cpp",
+      "bytes": 25155,
+      "sha256": "f03827c59bbb66103d37ca3b44f16d31d1b48e38b195bcee6d1c679d8be08e98"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_cpu_component_r2.json",
+      "bytes": 11077,
+      "sha256": "f0259fab3a2edc4e5b4cc152988fd654adba393593eed01e353f5973147b9d12"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\upl_cryer_cpu_component_review_r1.py",
+      "bytes": 17112,
+      "sha256": "ebb4d4f55cece72deb948d718b39300a057a23d92a6fa5900276b3f225ab815b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_r1.helper.json",
+      "bytes": 415397,
+      "sha256": "db49166bfca037596aa882737933a650b36db1b2d84179cb6a4ba39727a8b95f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_r2.helper.json",
+      "bytes": 436377,
+      "sha256": "cd18b3c2a825a2fa4a13e58463073e53b70e550e04b962a65136a8c8f602a462"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_ReleaseCPU_r2.helper.json",
+      "bytes": 437222,
+      "sha256": "c7427b69ada44f567a71d139b0d3e985a4e876d1d1fcb1e368186b78d861cbca"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_probe_r1.run.json",
+      "bytes": 162720,
+      "sha256": "2965d5ce8f83f6fa52db5002babcd9d1015946f2d48a163e53cc297b271e582a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_probe_r1_review_r1.check.json",
+      "bytes": 131817,
+      "sha256": "ab5e53ebdfd141ba6a90984cb92137ca9a29e9ad8368b8b29e6c32ea6370912f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_ReleaseCPU_probe_r2.run.json",
+      "bytes": 316947,
+      "sha256": "40c19544f4c5da330d4a034a9c9b3355432701ee00e782d5d86ebbf5ac7965e3"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_ReleaseCPU_probe_r2_review_r1.check.json",
+      "bytes": 249784,
+      "sha256": "0d7183f15d61dda1023164e79b4d2a6976e34541b6257e06418e84a0ca6ca3ec"
+    }
+  ]
+}

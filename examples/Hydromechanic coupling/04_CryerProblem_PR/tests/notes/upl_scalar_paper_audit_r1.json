@@ -1,0 +1,28 @@
+{
+  "stage": "upl_scalar_paper_audit_r1",
+  "status": "read_only_equation_audit_not_new_discretization_acceptance",
+  "source_checkpoint": "69da646b8f02aaecc9ccb3fbffa536138a81caab",
+  "root_reviewed": [
+    "src/papers/u-pw/Lian 2023 u-pl.md, section3.1-3.2 Eq22-26",
+    "src/source/JSphCpu.cpp, ComputeDynamicPorePressureRateCpu4383-4480",
+    "tests/support/upl_cryer_scalar3d_r1.cpp and its independent offline review"
+  ],
+  "operator": {
+    "definitions": "r=xj-xi; b_j=Vj*Ci*grad_iW; t_j=-w_j; Gf=sum b_j*(fj-fi); ell=sum t_j*r_j. Current Lstar=sum(t_j-b_j.dot(ell))*(fj-fi) before the closed-face target substitution.",
+    "P1_condition": "For M=sum b_j*r_j^T and a_j=t_j-b_j.dot(ell), sum a_j*r_j=(I-M^T)*ell. Exact M=I removes affine-field bias. Native float pressure/gradients are separately subject to rounding.",
+    "P2_condition": "General quadratic consistency additionally requires B=.5*sum a_j*r_j*r_j^T=I. P1 alone does not establish this. The static scalar companion measures Gx and Lstar_second explicitly, without a new quadratic pass threshold.",
+    "paper_relation": "Eq23 uses the tensor Dmn=4*rm*rn/r2-delta_mn in its2D form. Its trace is2. With the same receiver Ci, neighborhood, volumes, zero Eta2 and no boundary-gradient substitution, its scalar trace has the Taylor-defect form. Production additionally uses real Cavg, Eta2 and a closed-face gradient target; it is not the literal full tensor equation.",
+    "dimension": "The isotropic-continuum angular-moment tensor generalization is (d+2)*rr^T/r2-I, whose trace remains2. This is a conditional derivation, not a validated production3D tensor implementation. Do not replace scalar coefficient2 by3 or transplant the2D tensor coefficient4 unchanged into3D."
+  },
+  "coupled_rate": {
+    "constant_k": "pdot=Kw/n*(-theta+k/gamma*(Lstar(p)+rho_w*D_C(A))), where A is the completed same-stage acceleration excluding body gravity and gamma=rho_w*9.80665.",
+    "smooth_k": "The J-law adds Kw/(n*gamma)*k_i/((1-n0)*Ck)*GJ.dot(Gp_corrected+rho_w*A_i), with k_i times the original scalar Laplacian/acceleration-divergence term. This is a receiver-k discrete product rule, not Eq25's literal pair-mean permeability-tensor discretization or a conservative discontinuous-interface flux.",
+    "single_J_porosity": "Jdot=J*theta and n=1-(1-n0)/J give local Eq8 ndot=(1-n_i)*theta. This preserves the declared single-J grain ledger; it is not the literal Eq24 neighbor(1-n_j) discretization for nonuniform n.",
+    "notation": "Eq26 Cij is a numerical-stabilization term, not the gradient correction matrix Ci. Do not conflate the two."
+  },
+  "decision": "Retain the existing bounded constant-k implementation while the one-dimensional mid diagnostic runs. Actual3D force/rate/closure and subsequent GPU/native trajectory checks are separate prerequisites. No claim that the coarse synthetic sphere truncation causes the actual Cryer peak error, and no operator tuning solely to reduce that picture's quadratic errors.",
+  "production_or_formal_changes": false,
+  "new_program_or_solver_invocations": 0,
+  "public_3D_admitted": false,
+  "physical_acceptance": false
+}

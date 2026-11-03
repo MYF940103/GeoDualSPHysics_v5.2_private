@@ -1,0 +1,23 @@
+{
+  "stage": "upl_cryer_cpu_component_review_r1",
+  "status": "author_only_not_executed",
+  "files": [
+    "support/upl_cryer_cpu_component_review_r1.py",
+    "notes/upl_cryer_cpu_component_review_r1.json"
+  ],
+  "CLI": "python support/upl_cryer_cpu_component_review_r1.py [--configuration DebugCPU|ReleaseCPU]; defaultDebug",
+  "scope": "Pure offline review,zero programs/solvers/BI4 decoders. Never import/call producer exe. Fresh check only; r1 source/false owner/call/output remain immutable.",
+  "Debug": "Reads exact DebugCPU_probe_r1.run.json. Require its only failure be Unexpected PART output from non-advancing component,typed component exit0/old finalbindings true/no call/postbinding failure. Rehash old flatinputs/files/call/helper/source snapshots and recompute same completion/CSV gates.",
+  "Release_contract": "Future ReleaseCPU_probe_r2.run.json from explicit Release-only owner is sealed after one native call/posthash/basic completion. Require stage upl_cryer_cpu_component_run_r2,passed/owned_component_exit0/basic_completion_verified true,deep_component_review_completed false,helper:E,call:E,flat inputs/files anddebug_review:E. Root subsequently runs this same pure reviewer separately;no PS-to-Python invocation/circular run dependency andno repeated helper. Final component acceptance is this separate review,not basic runseal.",
+  "outputs": "logs/upl_cryer_cpu_component_{DebugCPU_probe_r1|ReleaseCPU_probe_r2}_review_r1.check.json",
+  "format_source": "Archived265 JSph.cpp ConfigSaveData2669–2712; JPartDataHead.cpp SaveFile208–271; JPartOutBi4Save.cpp SaveInitial162–168/SavePartOut213–224; JBinaryData.h64B StHead,scalar enum; JBinaryData.cpp InItemBase853/ReadItem1124/VALUES formats. Bind actual selected helper archived source Entries,not live production.",
+  "metadata_contract": "StHead64: title58spacepadded,newline58,NUL59,little-endianbyte60=0,three reservedzeros. Each ITEM: uint32basebytes,strict size-limited strings/32bitbools/fmtstrings/narrays/nitems/sizevalues; parse every typed scalar VALUES block and exact declared block EOF. Recursively require arrays0,no PART_* names and overall strict EOF:no append/list tail accepted.",
+  "PartHead": "Only root JPartDataHead -> MkBlocks(Count2) -> MkBlock_000/001 Count8/37173;all4items arrays0,only Type/Mk/MkType/Count leaves. Root counts37181/8/0/0/37173,3D/g0/no periodic,piece1. No particle arrays. Exact bound original1578B preserved; size is reported not a generic suffix allowance.",
+  "PartOut": "Only root JPartOutBi4,arrays0/items0,Block0/Piece0/Npiece1,matchingCase counts,3D,no Nout and strict EOF. Hidden Part is not serialized by SaveInitial; SavePartOut alone would append PART_* with arrays. Thus metadata root is zero excluded-particle payload,not observation of an evolved trajectory.",
+  "numeric_gates": "Original r2 completion0time/0steps/6force/223038soilchecks/6summary48samples and Init-bypass/publicfalse/wholeobjectfalse preserved. CSV7/49lines,allnumbersfinite,6names×8IDs,FS coverage,all originalratios<=1; sampled8channel budgets recomputed without threshold or float-budget changes.",
+  "ownership": "Cached unique initial hashes reject conflicting Entries; independent unique final rehash. Both configurations read their sealed run/call/flatinputs/output membership. Oldmutable originals/canonical/runtime originals are not recursively validated; frozen helper flatinputs,snapshots,ownruntime copies and sealed input/output/call records are.",
+  "limits": "All-soil reference/device/owner facts still producer assertions bound to source; outer CSV read is not independent neighbor/device proof. No dynamic/public3D/physical/DebugRelease0ULP acceptance. Original Debug owner stays false; actual native0 and numericcompletiontrue are separately stated.",
+  "production_modified": false,
+  "programs_executed_by_author": 0,
+  "physical_acceptance": false
+}

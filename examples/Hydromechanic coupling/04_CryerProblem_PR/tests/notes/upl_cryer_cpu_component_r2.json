@@ -1,0 +1,115 @@
+{
+  "stage": "upl_cryer_cpu_component_r2",
+  "status": "author_only_no_build_no_execution",
+  "files": [
+    "support/upl_cryer_cpu_component_r2.cpp",
+    "notes/upl_cryer_cpu_component_r2.json"
+  ],
+  "CLI": "upl_cryer_cpu_component_r2.exe --input RETAINED_RUNTIME_XML --out FRESH_DIRECTORY",
+  "scope": "Six real zero-step CPU force calls on original37173soil/8DBC-dummy sphere. Check every soil; emit6summary/48sample rows. No Run/PreCorr/SaveData/restart/public3D/physical acceptance.",
+  "neutral_include": {
+    "relative_path": "../../../02_TerzaghiConsolidation_q0_PR/tests/support/upl_cpu_public_native_r1.cpp",
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38",
+    "usage": "One main rename/one AppInfo; declarations only,no old reader/main. Future85+1 DebugCPU/ReleaseCPU builds use the corresponding configuration's sealed69da-era upl_damp_{Configuration}_r2 archived265 source headers, with matching declared bytes. No builder authored here."
+  },
+  "retained_input_provenance": {
+    "runtime": "CaseCryerProblem_PR_symc_nu030_out/CaseCryerProblem_PR_symc_nu030.xml",
+    "runtime_bytes": 11132,
+    "runtime_sha256": "268812b2efd38be1101d3bf93da8e028a07ca0b60b0353fbd8929d3073b6334b",
+    "seed": "CaseCryerProblem_PR_symc_nu030_out/CaseCryerProblem_PR_symc_nu030.bi4",
+    "seed_bytes": 1637394,
+    "seed_sha256": "087d47b3f30a9149ed694dd4054eb80135752da0ca8869cd0c96bfad8248a8e3",
+    "source_proof": "cryer_full_native_r1.check.json -> inputs_manifest. Future owner seals exact runtime/BI4/program/build/archivedheaders/exit; CPP performs no SHA/executable attribution.",
+    "geometry": "Keep8fixed IDs0..7,fluid8..37180; actual minimum dummy/soil distance>KernelSize,no periodic. No fake Npb0,new geometry or same-formal-physics claim."
+  },
+  "lifecycle": [
+    "Observer=true,Feedback/Dynamic/Wall/Ck=false. Read unchanged publicOFF runtime; then TEST OBJECT overrides load=None,drainfalse,SoilDampingfalse,Visco0,HG0,SPRfalse,Shepardfalse. No file/source edit.",
+    "LoadCaseParticles;VisuConfig;ConfigDomain;ConfigRunMode;InitRunCpu;FreePartsInit;RunCellDivide(true). Assert actual initial rest/zero p,p0,sigma/plastic/J1 before manufacture; observer legitimately allocated/initialized J.",
+    "After init ONLY,enable Feedback+Dynamic,Wall/Ckfalse. Never InitObserver again. Explicitly bypasses CaseNpb&&!DynamicWall/dynamic-load init admission,NOT supported feedback/public3D startup.",
+    "Reset declared fields,real divide and Interaction_Forces(SymPredictor),read live outputs then PostInteraction. Check all soil input bytes unchanged and first actual post-feedback C/FS fixed across probes.",
+    "declared_input_bytes_restored covers all native ID/Code/Dcell/Pos and SOIL Vel/rho/sigma/J/p/p0/plastic byte-exact only. Feedback/Dynamic disabled;clock/dt/LastDt/error/history unchanged. Fixed physical fields,derived C/FS,rate and other outputs are outside this comparison: theta resets0 but pdot remains finite reset sentinel123.25,not its original value. whole_object_restored=false;no whole-object/statistics rollback claim."
+  ],
+  "probes": [
+    "0 constant p=float1Pa,sigma'=same p promoted to double I,v0,J1,p0=0: Ace/load/theta/pdot/six stress rates strict0. Natural zero seed asserted separately,not seventh force.",
+    "1 p=float(1+16X-8Y+4Z),sigma'=pI,v0: Ace/load/theta/stress strict0; native-float Lstar uses conditional discrete reference,not P1double accuracy.",
+    "2 v=float(-.001X,-.001Y,-.001Z),sigma'=p=0: actual theta/six stress plus descriptive affine targets.",
+    "3 cyclic v=float(.001Y,.001Z,.001X),sigma'=p=0: three off-diagonal stress rates; no separate rigid-rotation/objectivity claim.",
+    "4 real confinement-only q10000Pa,TEST ramp0 at unchanged t0,p=sigma'=v0,J1: actual force/load must activate.",
+    "5 p10000,sigma'=v0,J1 gives Ttotal=-qI with SAME real source; finished Ace cancels within propagated float budget,not bitzero. Reference rate uses observed residual Ace. Not actual init/ramp/fit."
+  ],
+  "reference_contract": {
+    "neighborhood": "Own local formula loop reuses actual DivData/C/J/typed inputs,all soil,no global matrix. NOT independent neighbor-search/cell-order proof. Dummy-separation proves fluid-only scope.",
+    "C": "Reassemble3D FS moment with double displacement/float rr2/kernel/J volume; check observed Ci*M≈I with double propagation. Never equate feedback C bits to old float Mass/rho observer C.",
+    "theta": "Production float velocity subtraction/geometric displacement then double corrected contraction; analytic affine values descriptive.",
+    "stress": "Sum actual float-rounded dv*(-floatV)*float gradW products in double;apply actual3D Ci; reconstruct6elastic rates with float(K+4G/3),float(K-2G/3). Spin term0 because v0 or sigma'=0; no general Jaumann test.",
+    "rate": "Independent lp,lx,gp,divAce expression with double geometry and observed C/Ace; Kw/n*(-theta_ref+k/(rhow9.80665)*(lp-gp.lx+rhowDA)). Observed Ace is conditional input,not native q."
+  },
+  "budgets": {
+    "definition": "uF=FLT_EPSILON/2,uD=DBL_EPSILON/2,Gamma(n,u)=n*u/(1-n*u). n is the actual receiver neighbor count,not fitted. RoundBudget(n,S,single)=Gamma(n,u)*S+256DBL_EPSILON*max(1,S); every term carries its output-channel units.",
+    "C": "Ci*M reference: RoundBudget(32n+128,max(1,sum|Ci*M|),double), against I.",
+    "theta": "RoundBudget(32n_force+128,sum|V dv.gradCorr|,double),1/s. Stored native float input/cast differences are already present in the reference,not discarded.",
+    "stress": "Raw float-sum error Gamma(n_force,uF)*sum|float pair term| is propagated through |Ci|; add64DBL_EPSILON*max(1,magnitude) and final float-cast envelope4FLT_EPSILON*(|corrected gradient|+sum bound). Propagate these componentwise through |elastic stiffness|,then add64FLT_EPSILON*max(1,stress raw magnitude)+256DBL_EPSILON*max(1,magnitude)+1e-6Pa/s.",
+    "rate": "Let S= sum|lp terms|+sum_a(sum|gp_a terms|*sum|lx_a terms|)+rhow*sum|DA terms|. Propagate theta bound plus mobility*RoundBudget(64n+256,S,double) through Kw/n; add64FLT_EPSILON*max(1,raw complete-rate magnitude)+256DBL_EPSILON*max(1,magnitude)+1e-6Pa/s.",
+    "raw_force": "Per XYZ, sum absolute separately float-rounded totalstress and confinement pair terms. Finished force envelope RoundBudget(2n_force+128,sumabs,float)+64FLT_EPSILON*max(1,sumabs)+1e-6m/s²; source uses n_force+64 and its own sumabs. No physical5Pa/.005mm criterion, no P1 1e-10/1e-8 gate. All formula budgets are predeclared; failures retained,never tuned from results."
+  },
+  "LoadAce_gate": "CPU2771 writes LoadAce only if shift||arp1||acep1XYZ||visc. Raw probes assert Arc0/no shift/visc diagnostic0; actual finished Ace then identifies store gate. Compare stored source to gate?rawReference:0,record gate counts/reference separately. Exact cancellation may suppress telemetry without suppressing the applied force; confinement-only proves activation. No physical perturbation/production fix to force nonzero records.",
+  "outputs": {
+    "Run.out": "Real init log; test-object overrides explicitly disclosed. Normal initialization may emit small configuration artifacts,no PART save.",
+    "summary.csv": "6 rows/all37173soil: native pressure/theta/pdot/stress means,ratios/C error,force/load maxima,FS counts,load-vector resultantN,store gates,scales and descriptive affine targets. Sphere vector resultant may cancel;not traction/energy proof.",
+    "samples.csv": "48 rows:IDs8,100,1000,10000,20000,30000,37179,37180. Actual fields/references/budgets/raw telemetry gate/full3D C. No large all-particle CSV.",
+    "completion.json": "6forces,223038receiver checks,0steps;physicalfalse/public3Dfalse/explicit Init bypass. Fresh-only;keep failure partials/no retry."
+  },
+  "compatibility_limits": "Formal alpha=.1/eta=.00004 are OFF here; dynamic damping uses intrinsic density,legacy rhop. Future unmatched runs cannot isolate framework/precision. Public guards,dummy treatment,3Dload/drain startup and matched stabilization remain later gates after1D;paper equilibrium fields never replace actual init.",
+  "production_changes": false,
+  "compiled_by_author": false,
+  "executed_by_author": false,
+  "active_mid_outputs_read": false,
+  "physical_acceptance": false,
+  "retained_r1_failure": {
+    "status": "actual_DebugCPU_compile_failed_retained_immutable",
+    "compile_exit_code": 2,
+    "compile_owned_call_exited": true,
+    "typed_LASTEXITCODE_captured_immediately": true,
+    "link_called": false,
+    "program": null,
+    "component_executed": false,
+    "causes": [
+      "Missing direct JCellSearch_inline.h declarations: nsearch::Init/ParticleRange C2653/C3861.",
+      "Missing direct FunSphKernel.h definitions: fsph::GetKernel_Fac C2039/C2065 and consequent uninitialized-const diagnostics.",
+      "Unqualified helper Gamma is hidden inside Ref by inherited JSph::Gamma data member: C2064 on its two expressions. Rename free definition plus all3 call occurrences to FPgamma."
+    ],
+    "changes_only": [
+      "Add #include \"JCellSearch_inline.h\" and #include \"FunSphKernel.h\" matching production JSphCpu.cpp direct includes.",
+      "Rename free Gamma definition and3 calls to FPgamma; mathematical Gamma(n,u) formula, all coefficients, probes and budgets unchanged.",
+      "New completion stage upl_cryer_cpu_component_r2 and own author file/CLI labels; r1 source/note/build/call/log retained untouched."
+    ],
+    "evidence": [
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\upl_cryer_cpu_component_r1.cpp",
+        "bytes": 25089,
+        "sha256": "3582a9be1c2240f01cc172f944f37ab0e5eae77bb920dc42966c17a9f47fd7a2"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_cpu_component_r1.json",
+        "bytes": 8244,
+        "sha256": "f1a9f241e0b63e386e82b21de2ba565451a6e1f17d8b3b49f3b6f957e31c3308"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_r1.helper.json",
+        "bytes": 415397,
+        "sha256": "db49166bfca037596aa882737933a650b36db1b2d84179cb6a4ba39727a8b95f"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_r1_Compile.call.json",
+        "bytes": 2624,
+        "sha256": "36d75132b0eaa03efa05cf601f41d0ef9705021545f33223df58ba7ed5cdcfac"
+      },
+      {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_cpu_component_DebugCPU_r1_Compile.log",
+        "bytes": 8982,
+        "sha256": "f13a2576a044ac14babd0e1756e57704e90e437586ada24554a9b40336f90f8d"
+      }
+    ],
+    "acceptance": "Declaration/name fixes only; r2 remains author-only, no claim compiled or numerically passed."
+  }
+}
