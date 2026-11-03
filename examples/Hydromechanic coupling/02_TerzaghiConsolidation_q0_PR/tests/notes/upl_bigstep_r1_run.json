@@ -1,0 +1,48 @@
+{
+  "stage": "upl_bigstep_r1_run.author_contract",
+  "author_only": true,
+  "executed_by_author": false,
+  "physical_acceptance": false,
+  "script": "support/upl_bigstep_r1_run.py",
+  "invocation": "D:/Anaconda3/python.exe support/upl_bigstep_r1_run.py --execution-authorized",
+  "one_job": {
+    "tag": "upl_bigstep_c625_r1",
+    "window": "candidate2s",
+    "backend": "CPU",
+    "configuration": "ReleaseCPU",
+    "threads": 1,
+    "steps": 320000,
+    "expected_frames": 1292,
+    "dt_s": "6.2501430511474609E-06",
+    "nominal_TimeMax_s": "2.0000457763671875",
+    "actual_scalar_end_s_planned": "2.0000457763593587",
+    "event_completed_step": 1600,
+    "post_open_frames": 1174,
+    "actual_drained_receiver_checks_expected": 11740,
+    "physical_options": "Unchanged requested master1/SPR1/Visco.1/eta.04/HG.1, constant-k loaded 2D X-periodic fixed FreeSlip bottom.",
+    "program_sha256": "bee3e36348b2146b6532cc2d2edf2717c8f4ff657da75812c0bcd5bc2f6e931e"
+  },
+  "prerequisites": "Passed fresh logs/upl_bigstep_r1.inputs.json, pinned new prepare source/note, pinned generic file/hash utilities, current genuine86-object/85-non-main ReleaseCPU build, immutable267 source/document archives and four isolated runtime copies. Original requested XML/seed/normals provenance remains bound. No stale live-source/canonical input revalidation and no old fixed short context/main are used.",
+  "plan_verification": "Replay all320000 scalar +=dt updates and literal output scheduler again, compare complete manifest table and exact numeric8-column CSV, assert actual scalar end and1292/1174 counts. Actual native clocks still require typed22 decoding; neither nominalTimeMax nor n*dt substitutes for actual native times.",
+  "coexisting_fine_control": {
+    "start": "logs/upl_spr_av_2tv_CPU1_r1.start.json",
+    "start_bytes": 370640,
+    "start_sha256": "3df188211e1a4dca636e314900815377bfd60f42f4c30a03ac3da3f6acd8ff22",
+    "owner_pid": 68848,
+    "solver_pid": 37560,
+    "watcher_pid_protected": 61148,
+    "guard": "Before candidate Popen, require both original owner and solver live with exact sealed creation epoch, executable and full argv, original solver parent68848, matching nested/flat identities and same frozen program. Reject every other actual DualSPHysics CPU process. Do not read/hash growing fine-control data or change its process, priority, watcher or output."
+  },
+  "ownership_and_receipts": {
+    "start": "logs/upl_bigstep_c625_r1.start.json; stage upl_bigstep_c625_r1.start",
+    "call": "logs/upl_bigstep_c625_r1.call.json; stage upl_bigstep_c625_r1.run_call",
+    "terminal": "logs/upl_bigstep_c625_r1.run.json; stage upl_bigstep_c625_r1.run",
+    "log": "logs/upl_bigstep_c625_r1.log",
+    "output": "outputs/upl_bigstep_c625_r1",
+    "start_contract": "Actual Popen child PID/creation/executable/full argv/parent sealed before wait; actual owner PID/creation/executable/full argv/script; both nested and flat solver fields; job, manifest, build, program, planned_clock_CSV, clock, fine_control and flat immutable input Entries.",
+    "call_contract": "Original immediate child.wait integer returncode, actual target program/arguments/cwd/start/solver/log, direct_native_call, typed_returncode_captured_immediately, owned_call_exited, invocation_failure and owner_exception_terminated_owned_child are sealed before output postchecks. No synthetic LASTEXITCODE, historical receipt alias or task scheduler.",
+    "owner_failure": "If bookkeeping fails after Popen, terminate and wait only this owned candidate to avoid an orphan, recording actual exit and failure. Never touch original fine control, owner or watcher. Preserve all failed receipts/output; no automatic rerun."
+  },
+  "postguards": "Actual normal stable CPU1 exit0,320000 steps,no excluded particles,SPR/HG/damping/AV coefficients; original HG counts force/rate640000,predictor/corrector320000,calculations320001,reuses319999; finite nonnegative reference-history/current-mi diagnostics, dt/tau<=.2 and spin<.01; exact Part_0000..Part_1291 sequence. Immutable inputs finally rehashed and own payload inventoried once after exit.",
+  "acceptance_limits": "Run passed means structural execution guards only. Typed22 arrays/1040 IDs, all clocks, signed finite noninitial dterror<=1e-14 without sentinel, J/theta/density ledgers, fixed markers, drainage1174/11740 and actual candidate comparison remain pending. No automatic full restart, reference rerun, half/mid stage, decoder, analysis, build, Git, cleanup, queue, watcher or next action. Root reviews and decides continuation."
+}

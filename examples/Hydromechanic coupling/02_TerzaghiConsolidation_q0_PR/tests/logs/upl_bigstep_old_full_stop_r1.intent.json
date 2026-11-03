@@ -1,0 +1,40 @@
+{
+  "stage": "upl_bigstep_old_full_stop_r1",
+  "utc": "2026-11-03T16:04:09.335148+00:00",
+  "reason": "User explicitly stops old conservative full2Tv; larger-step bounded candidate must continue",
+  "start": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_2tv_CPU1_r1.start.json",
+    "bytes": 370640,
+    "sha256": "3df188211e1a4dca636e314900815377bfd60f42f4c30a03ac3da3f6acd8ff22"
+  },
+  "watch_launch": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_spr_av_2tv_watch_launch_r1.json",
+    "bytes": 3979,
+    "sha256": "ee2a72dba8c7630e7e85499a49ff22c07df860726309f9926dc7326384b4cd17"
+  },
+  "watcher_pid": 61148,
+  "solver_pid": 37560,
+  "owner_pid": 68848,
+  "candidate_to_preserve": {
+    "pid": 68640,
+    "created_epoch": 1793721749.2206707,
+    "command": [
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+      "-cpu",
+      "-ompthreads:1",
+      "-stable",
+      "-mdbc_freeslip",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_r1_seed\\upl_bigstep_c625_r1",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_c625_r1",
+      "-dirdataout",
+      "data",
+      "-svres",
+      "-nsteps:320000"
+    ]
+  },
+  "last_console_PART_observation": "Part_0460      0.571583        299674    95518    6265.81  09-11-2026 14:12:21",
+  "console_is_not_native_acceptance": true,
+  "order": "watcher first, then owned old solver; allow original owner to seal typed exit",
+  "raw_outputs_or_sources_deleted": false,
+  "earlier_stop_preflight": "No action; constructed interpreter argv casing differed. Actual recorded launch argv now used without changing PID/creation/argument checks."
+}

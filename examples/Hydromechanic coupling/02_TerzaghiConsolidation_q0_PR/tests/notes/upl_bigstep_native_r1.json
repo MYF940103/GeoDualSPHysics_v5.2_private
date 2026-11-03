@@ -1,0 +1,52 @@
+{
+  "stage": "upl_bigstep_native_r1",
+  "status": "authored_only_root_full_read_plan_ownership_build_and_native_admission_required",
+  "files_added_only": [
+    "support/upl_bigstep_native_r1.cpp",
+    "notes/upl_bigstep_native_r1.json"
+  ],
+  "cli": "--read CPU DATA PLAN_CSV WINDOW FRESH_OUTPUT",
+  "window": "candidate2s",
+  "actual_prepared_plan": {
+    "manifest": {"path": "logs/upl_bigstep_r1.inputs.json", "bytes": 651239, "sha256": "da17c2a094531df07b11e3bc9b2aeadb2a9e670836c4e5938a8a45f886888655"},
+    "CSV": {"path": "logs/upl_bigstep_r1.clock.csv", "bytes": 102411, "sha256": "49987042fbd1aed72ec806378bc1c2d6fe808878e9824f22c1dbd60974fb86fa"},
+    "observed_prepare_passed": true
+  },
+  "source": {
+    "path": "support/upl_spr_av_2tv_native_r1.cpp",
+    "bytes": 20482,
+    "sha256": "b112823bb000e7c6de60ecc9685bc1e451629ee97c71c86685350e175b63557a"
+  },
+  "neutral_loader": {
+    "path": "support/upl_cpu_public_native_r1.cpp",
+    "bytes": 22469,
+    "sha256": "9f6668bfe3d1bbcca7c45c58809f7062c21fcb46baae76f0a2a1b0ef3ca56d38"
+  },
+  "scope": "Pure typed22/1040-ID CPU candidate native decode; no solver, source change, build, execution, Git, half/pair gate, interpolation, restart or physical acceptance. The existing fine full CPU remains an independent live control.",
+  "plan_contract": "The separately reviewed owner must hash-bind logs/upl_bigstep_r1.inputs.json and logs/upl_bigstep_r1.clock.csv to the genuine completed candidate run and independently compare its expected sample/step/post-open counts with completion. This C++ reader deliberately does not invent a JSON parser or claim to verify the owner/plan SHA. It strictly reads only the exact8-column unquoted CSV, validates row indices/saved Step/constant dt/integer drainage membership and scalar clock replay before reading native frames.",
+  "CSV_header": "part,completed_steps,saved_step,time_s,dt_s,post_open_by_completed_step,target_time_s,forced_final",
+  "CSV_values": "Unsigned decimal integer fields; finite clean numeric double fields; exact 0/1 boolean markers; LF or CRLF, no BOM/quotes/extra columns. Candidate windows require constant dt6.2501430511474609e-6=tD/1600; reference_prefix requires constant dt2^-19 and drain step5243, selected only by the explicit whitelist. Scalar +=dt replay uses a volatile binary64 accumulator and bit-matches every planned time. Each ordinary row must be its first scalar threshold crossing; unscheduled/forced rows can be terminal only.",
+  "candidate2s_declarations": {
+    "steps": 320000,
+    "samples": 1292,
+    "event_completed_step": 1600,
+    "event_part": 117,
+    "first_post_part": 118,
+    "first_post_completed_step": 1601,
+    "post_open_frames": 1174,
+    "post_open_checks": 11740,
+    "penultimate_completed_step": 319935,
+    "nominal_steps_times_dt_end_s": 2.0000457763671875,
+    "actual_scalar_end_s": 2.0000457763593587,
+    "forced_final": true
+  },
+  "clock_truth": "Actual scalar clocks are never replaced by n*dt or snapped to the nominal endpoint. Eventpart117 actual time0.010000228881835686 is below nominal tD yet remains completed1600/pre-open; firstpostpart118 is completed1601 at0.010006479024886833. Native TimeStep, zero-based Step and typed SymplecticDtPre must match the scalar plan at0 ULP. Signed dterror<=1e-14 remains its original necessary-step safety guard, not an absolute clock residual.",
+  "mechanical_guards": "Unchanged neutral Native/Metadata/Load/Original15 plus original initial lattice/rest,22 exact typed arrays,1040 unique IDs,finite/unmasked fields,legacy density range,elasticity,double stress/float display,no bottom crossing,current-J n/V/rho/k ledger<=5e-13,fixed public zero markers,ten actual native drain receivers after the window-selected event and zero through it (candidate1600; reference5243). Preserve signed noninitial finite/nonempty dterror<=1e-14 and initial empty-sentinel semantics. HG Run.out/count/tau/spin and genuine owned solver exit remain separate owner checks.",
+  "output": "Same13 leaves and five binary record layouts, with honest plan-derived sample headers and stage upl_bigstep_native_r1/window explicitly selected from candidate2s,candidate_full2Tv,reference_prefix/declared_window_complete only. Counts are plan-derived and independently fixed for current1292-frame candidate2s; no old458/858 stage alias. Completion records scalar and nominal endpoints separately and explicitly denies input/plan SHA, HG Run.out, cross-dt accuracy, exact restart and physical acceptance claims.",
+  "future_reuse": "The same parser can read a separately verified future candidate_full2Tv CSV at the identical fixed candidate dt/event/geometry. Its independent owner must declare and verify that plan/window/duration/counts before any decode; current authoring does not prepare or admit a full candidate. The explicit reference_prefix window uses dt2^-19/event5243 and the same unchanged typed physics/mesh guards; its owner must derive a normalized8-column plan from the actual fine full manifest, bind only an event-covering firstK closed-PART snapshot in its OWN directory and avoid the growing live directory. It declares only plan completion, never solver/full completion. Generic plan-derived N avoids another copied duration-specific decoder.",
+  "comparison_limits": "Only later separately reviewed descriptive comparisons to genuine existing fine data at reported actual times/gaps; no interpolation, fabricated timestamps,5Pa/.005mm equivalence gate or invented matched half study.",
+  "build": "Root must full-read and compile/link a fresh helper using the frozen85 non-main production objects and actual archived headers/runtime closure. No old source hashes are asserted as current live identities. This author performs no build/run/import/syntax/Git or process action.",
+  "built": false,
+  "executed": false,
+  "physical_acceptance": false
+}

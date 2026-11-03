@@ -1,0 +1,52 @@
+{
+  "stage": "upl_bigstep_r1_prepare.author_contract",
+  "author_only": true,
+  "executed_by_author": false,
+  "physical_acceptance": false,
+  "scope": "One requested-physics CPU1 bounded larger-step input; no source, CFL, material, wall, formal, active-output or original-control modification.",
+  "script": "support/upl_bigstep_r1_prepare.py",
+  "invocation": "D:/Anaconda3/python.exe support/upl_bigstep_r1_prepare.py --execution-authorized",
+  "source": {
+    "manifest": "logs/upl_spr_av_r1.inputs.json",
+    "tag": "upl_spr_av_new_requested_ON_r1",
+    "program_sha256": "bee3e36348b2146b6532cc2d2edf2717c8f4ff657da75812c0bcd5bc2f6e931e",
+    "physical_options": "master1, SPR1, artificial viscosity .1, damping eta .04, HG .1, fixed FreeSlip plane, constant k, 2D, X periodic",
+    "binding_scope": "Pinned passed preparation and actual build; program, physical XML/seed/normals, four isolated runtime copies and 267 immutable source/document archives. Historical mutable original source/canonical paths are not revalidated. Generic pinned short file/hash/receipt definitions are imported only; its fixed context/run/check_output/main are never called."
+  },
+  "declared_numeric_changes": {
+    "DtIni_and_DtFixed_s": "6.2501430511474609E-06",
+    "TimeMax_s": "2.0000457763671875",
+    "default_TimeOut_s": "0.001953125",
+    "fourth_tout_origin_s": "0.0250244140625",
+    "fourth_tout_interval_s_unchanged": "0.001953125",
+    "numeric_attribute_changes": 5,
+    "comments": "Only the four changed parameter comments are updated. Exact inverse UTF8 bytes and DOM restoration prove all other content, including first three tout entries and original ramp/drainage time, unchanged."
+  },
+  "clock": {
+    "dt_relation": "Original tD / 1600; dt*1600 == tD in binary64",
+    "original_tD_s": "0.010000228881835938",
+    "steps": 320000,
+    "frames": 1292,
+    "nominal_TimeMax_s": "2.0000457763671875",
+    "actual_scalar_end_s": "2.0000457763593587",
+    "scalar_end_minus_nominal_s": "-7.828848680447074e-12",
+    "method": "Replay all 320000 binary64 scalar time += dt additions and literal JDsOutputTime GetNextTime floor/multiply/strictly-greater/segment-cap arithmetic. No n*dt clock replacement, snapping, interpolation, schedule or native metadata rewriting.",
+    "event": "Completed1600 remains preopen; completed1601 is postopen. Original fixed-grid drainage guard stays enabled. Event part117 time .010000228881835686; first post part118 time .010006479024886833.",
+    "post_open_frames": 1174,
+    "actual_drained_receiver_checks_expected": 11740,
+    "CSV": "logs/upl_bigstep_r1.clock.csv",
+    "CSV_header": "part,completed_steps,saved_step,time_s,dt_s,post_open_by_completed_step,target_time_s,forced_final",
+    "CSV_boolean_fields": "Numeric 0/1; no quoted text fields. forced_final is true only at the terminal step cap when neither ordinary target nor nominal TimeMax has been reached; final target2.0015869140625.",
+    "limits": "Clock plan is independently derived, not native evidence. Changing step size and save cadence can change trajectory and diagnostics. Typed22 native clocks, signed noninitial dterror, fields, HG stiffness/spin and comparison remain pending."
+  },
+  "fresh_outputs": [
+    "logs/upl_bigstep_r1.inputs.json",
+    "logs/upl_bigstep_r1.clock.csv",
+    "configs/upl_bigstep_c625_r1.xml",
+    "outputs/upl_bigstep_r1_seed/upl_bigstep_c625_r1.xml",
+    "outputs/upl_bigstep_r1_seed/upl_bigstep_c625_r1.bi4",
+    "outputs/upl_bigstep_r1_seed/upl_bigstep_c625_r1_Normals.nbi4"
+  ],
+  "future_job": "upl_bigstep_c625_r1: candidate2s, CPU ReleaseCPU, -ompthreads:1, -stable, -mdbc_freeslip, -nsteps:320000. No half, reference rerun, full launch, watcher, decoder or next action is invoked by preparation.",
+  "safety": "Exclusive creation and retained-output guards; seed/normals byte-exact copies; input hashes rechecked at completion. Failed or partial preparation is preserved and must be reviewed, never blindly rerun. Active fine-control owner68848/solver37560/watcher61148 are untouched."
+}

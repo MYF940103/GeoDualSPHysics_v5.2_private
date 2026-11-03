@@ -1,0 +1,54 @@
+{
+  "stage": "upl_bigstep_root_r1",
+  "date_local": "2026-11-04",
+  "user_decision": "Keep the current dynamic mechanical/Darcy step calculation. Retire the conservative full run, evaluate one larger-step requested-combination 2-s window, then restart a fresh larger-step full2Tv only if its actual review justifies it. Repeated independent-half/reference-solver staircases are not required by this user decision.",
+  "production_code_change_in_this_stage": false,
+  "formal_inputs_or_results_changed": false,
+  "current_job": {
+    "tag": "upl_bigstep_c625_r1",
+    "owner_pid_at_launch": 61776,
+    "solver_pid_at_launch": 68640,
+    "backend": "CPU1",
+    "dt_s": 0.000006250143051147461,
+    "ramp_and_drain_time_s_unchanged": 0.010000228881835938,
+    "completed_updates": 320000,
+    "nominal_TimeMax_s": 2.0000457763671875,
+    "planned_actual_scalar_clock_end_s": 2.0000457763593587,
+    "native_frames": 1292,
+    "physics": "Constant k1e-4; dp.01,width.1,zero gravity,X-periodic column,fixed upward FreeSlip bottom; dynamic u-pl pressure/J, double stress, SPR1, artificial viscosity.1, damping.04, HG.1. Original ramp/drainage, load, material and runtime guards remain unchanged.",
+    "structural_run_native_and_physical_acceptance_pending": true
+  },
+  "retired_control": {
+    "tag": "upl_spr_av_2tv_CPU1_r1",
+    "classification": "Intentional user stop, not numerical failure or completed2Tv",
+    "order": "Exact old watcher61148 first, exact solver37560 second; owner68848 sealed original solver exit15 and then exited. All three observed absent.",
+    "completion": "logs/upl_bigstep_old_full_stop_r1.completion.json",
+    "retained_raw_files": 469,
+    "retained_PART_frames": 461,
+    "last_console_saved_time_approx_s": 0.571583,
+    "unsaved_stop_time_known": false,
+    "reference_policy": "Use only the actual retained native prefix after independent decode. No completed-control or reference beyond its last saved time is implied. Never restart or rearm the old watcher/solver."
+  },
+  "dynamic_step_scope": "Current conductivity model is constant, so this case already returns its original k without exp evaluation. The dynamic branch also checks current n(J), mixture rho(J), coupled wave speed and Darcy diffusivity; it is not merely a time-varying-k branch. Preserve it under the latest user instruction. No static replacement or extra benchmark blocks this test.",
+  "reader": {
+    "build": "logs/upl_bigstep_native_r1.build.json",
+    "build_passed": true,
+    "compile_and_link_original_typed_exits": [0, 0],
+    "root_rehashed_unique_build_inputs_and_artifacts": 293,
+    "executed_at_this_observation": false,
+    "source": "support/upl_bigstep_native_r1.cpp",
+    "program_sha256": "ba95f78036e3ce10724b1c1457d9b136ec3ef709573d02add5d0ad298255a157",
+    "planned_scope": "Native22 arrays, all1040IDs, actual scalar clock, signed interval diagnostic, J/n/rho/V/k ledger, fixed markers, actual event1600/preopen and1174 postopen frames/11740 true receivers, original HG guards. reference_prefix is explicitly an incomplete retained control."
+  },
+  "completion_mechanism": {
+    "source": "support/upl_bigstep_followup_r1.py",
+    "root_full_read_syntax_and_expected_hash_checks_passed": true,
+    "worker_pid_at_launch": 70004,
+    "lock": "logs/upl_bigstep_followup_r1.lock.json",
+    "lock_sha256": "231101d375dad05bb2ffddba3abd34ac9441f66274383fe9f2e54de9189a1941",
+    "first_poll": "Waiting; exact owner and solver live; zero queue attempts. One same-thread terminal notification only, no resend or self-test.",
+    "current_stop_record_supersedes_historical_control_live_text": true
+  },
+  "offline_review": "Only after the original sealed run and native checks pass: inspect all100layers of alternating-X Uz, total stress, material top/bottom settlement, pressure,J/n/rho,1.5-2s growth and unfitted qualified theory. Nearest actual-time comparisons against the genuine requested458-frame short and retained fine partial explicitly report gaps/duplicates; no interpolation or new5Pa equivalence gate. Older eta.02/SPR0/AV0 runs are contextual only.",
+  "next_authorized_action": "Use reviewed actual results to decide one fresh larger-step full2Tv. Preserve the stopped conservative run and accepted u-pw data. No automatic physical acceptance, blind step search, old-worker restart, GPU support claim or server package."
+}
