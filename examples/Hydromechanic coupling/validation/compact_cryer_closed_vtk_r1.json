@@ -1,0 +1,42 @@
+{
+  "stage": "compact_cryer_closed_vtk_r1",
+  "date": "2026-11-03",
+  "status": "authored_for_root_full_review_not_executed",
+  "author_files": ["validation/compact_cryer_closed_vtk_r1.py", "validation/compact_cryer_closed_vtk_r1.json"],
+  "command_after_root_review": "D:/Anaconda3/python.exe -B validation/compact_cryer_closed_vtk_r1.py --execution-authorized",
+  "working_directory": "examples/Hydromechanic coupling; absolute script paths also work",
+  "scope": "Lossless NTFS storage compression of only direct PartFluid_NNNN.vtk files in eight exact closed June Cryer root particles directories. Keep all file bytes, paths and modification times. No deletion, moves, regeneration, solver, build, Git, hardlinks or junctions.",
+  "groups": [
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu045_out/particles", "files": 1008, "bytes": 8250572736},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu010_out/particles", "files": 1003, "bytes": 8209647276},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu020_out/particles", "files": 1003, "bytes": 8209647276},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_dp002_rampclosed_nu030_out/particles", "files": 1003, "bytes": 8209647276},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_nu010_out/particles", "files": 1001, "bytes": 4279711436},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_nu020_out/particles", "files": 1001, "bytes": 4279711436},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_nu045_out/particles", "files": 1001, "bytes": 4279711436},
+    {"directory": "04_CryerProblem_PR/CaseCryerProblem_PR_out/particles", "files": 1001, "bytes": 4279711436}
+  ],
+  "expected_files": 8021,
+  "expected_logical_bytes": 49998360308,
+  "observed_inventory_only": "At authoring, every target is BINARY VTK3.0 with attribute32, not compressed. Each target frame has an exactly matching retained Part_NNNN.bi4, including the1008/1003 saved-frame sets. Every Run.out ends with Finished execution (code=0). These read-only observations are not execution evidence for this new script.",
+  "preflight": "Check each of the eight particles/data ancestor chains at preflight, each affected chain once per40-file batch, and all chains at final verification. Reject non-directories and reparse ancestors through the drive root. Exact literal directory names and strict sequential child names preserve containment; no atomic filesystem race-proof guarantee is claimed. Each file metadata check uses one lstat to reject nonregular/reparse/nonsingle-link leaves. Require exact VTK counts/byte totals and exactly matching BI4 frame sets. Bind Run.out SHA256, June2026 modification date and actual closing line. Snapshot all target/source sizes and nanosecond modification times before modifying storage attributes; hash only the current batch's VTK files.",
+  "streaming": "First process one probe and require at least10percent actual GetCompressedFileSizeW saving after exact bytes/SHA256/mtime checks. Then process up to40 literal files per batch: hash before and flush/fsync exclusive before JSONL; invoke SystemRoot/System32/compact.exe /C /I /Q without shell, recursion or wildcards; record actual argv/exit/output in exclusive calls JSONL; hash after and flush/fsync exclusive after JSONL; update status immediately. No whole49.998GB prehash barrier before initial space recovery.",
+  "fresh_records": [
+    "validation/compact_cryer_closed_vtk_r1.targets.json",
+    "validation/compact_cryer_closed_vtk_r1.before.jsonl",
+    "validation/compact_cryer_closed_vtk_r1.after.jsonl",
+    "validation/compact_cryer_closed_vtk_r1.calls.jsonl",
+    "validation/compact_cryer_closed_vtk_r1.status.json",
+    "validation/compact_cryer_closed_vtk_r1.check.json"
+  ],
+  "failure_policy": "Any existing record blocks execution, including a partial attempt. On failure retain all existing files and evidence, capture a failed final summary where possible, and stop without rerun or automatic decompression. compact /I can partially compress a batch; actual after metadata/SHA rows are journaled before comparison and after hashes are attempted even when its captured exit is nonzero. Unchanged formal payload is verified only on complete success; a failed attempt never asserts an unverified unchanged payload. The first already-compressed successful probe is retained if its savings gate fails.",
+  "final_verification": "Every8021 file receives full SHA256 immediately before and after its own compression batch, with equal length and mtime and compressed attribute checked. Final pass rechecks all path/size/mtime/compressed flags and raw BI4 size/mtime, plus bound Run.out/script/note/tool SHA256. No atomic tree snapshot or raw BI4 content hash is claimed. The successful final summary reports verified GetCompressedFileSizeW saving; disk free-space delta is descriptive because independent jobs continue.",
+  "priority": "Set only this script's own psutil process priority to standard NORMAL, following the observed starvation of the separate BelowNormal legacy cleanup behind the ongoing CPU8 job. Invoke only Windows compact. Do not inspect, change priority, stop, signal or rearm any other process or task.",
+  "protected": "No November formal output or data is selected by the eight literal June directory names. Preserve all raw BI4/NBI4, XML/BAT, figures/CSV, programs, archives, active CPU jobs, active GPU component Debug_r2/probe_r3 and dependencies. The separate2697-file legacy refinement compression PID30096 is neither managed nor touched.",
+  "reversibility": "Windows compact.exe /U /I /Q over exactly these retained literal file paths restores uncompressed storage attributes; sufficient free space is required. Paths and payloads remain usable without decompression commands.",
+  "script_executed": false,
+  "compression_performed": false,
+  "tests_or_syntax_commands_executed": false,
+  "physical_acceptance": false,
+  "production_source_or_formal_payload_changed": false
+}

@@ -1,0 +1,75 @@
+{
+  "stage": "upl_hg_column_half_followup_r1",
+  "date": "2026-11-03",
+  "status": "authored_only_root_must_read_script_note_and_exact_diff_before_launch",
+  "author_files": [
+    "tests/support/upl_hg_column_half_followup_r1.py",
+    "tests/notes/upl_hg_column_half_followup_r1.json"
+  ],
+  "derived_from_immutable_coarse_watcher": {
+    "script": {
+      "path": "tests/support/upl_hg_column_coarse_followup_r1.py",
+      "bytes": 20852,
+      "sha256": "a26c707475a46dc624e6896a582e028b4011529afe1b43321f802baa38dd71c3"
+    },
+    "note": {
+      "path": "tests/notes/upl_hg_column_coarse_followup_r1.json",
+      "bytes": 5792,
+      "sha256": "8e3a02757672d787d06a67ae3e1e1f8d332ef066101b04b2d3a053a0de1b8990"
+    },
+    "derivation": "Copy the inspected complete coarse source, change lowercase coarse to half, replace the fixed owner/start identity, double completed steps and event step, halve dt, and replace only the queued continuation message body. All remaining function bodies, final mismatch notification, status locking and one-attempt queue behavior stay identical. The coarse source/note and its already-used watcher artifacts are never modified or rearmed."
+  },
+  "root_thread": "01a07683-bc64-7463-8db7-9ee6243967d8",
+  "command_after_root_inspection": "D:/anaconda3/python.exe -B tests/support/upl_hg_column_half_followup_r1.py --launch --thread 01a07683-bc64-7463-8db7-9ee6243967d8 --codex <root-inspected-literal-absolute-Codex-executable-path>",
+  "working_directory": "case02 root; an absolute script path also works",
+  "interpreter": "D:/anaconda3/python.exe already provides psutil. No package install, environment thread lookup or connectivity test is performed.",
+  "scope": "One hidden polling worker and at most one explicit same-root-thread Codex queue notification for the already-running actual CPU half. It never starts a solver, decoder, analysis, build, Git, deletion, compression or model/API call. No retries, watcher restarts or rearming.",
+  "fixed_job": {
+    "tag": "upl_hg_column_ReleaseCPU_half_r1",
+    "owner_pid": 52308,
+    "owner_creation_utc": "2026-11-03T06:49:30.5392510Z",
+    "owner_script": "tests/support/upl_hg_column_run_r2.ps1",
+    "start_record": "tests/logs/upl_hg_column_ReleaseCPU_half_r1.start.json",
+    "start_bytes": 551831,
+    "start_sha256": "aa9191c599daad0deb115dff9e4f6a68c8a621924ed5bdf46bb24c0364bda882",
+    "admission": "tests/notes/upl_hg_column_half_admission_r1.json",
+    "admission_bytes": 2874,
+    "admission_sha256": "d17f69bfa5595d88d437e3fdb6670136955b9295607389c4ead9c7db7c3dac56",
+    "configuration": "ReleaseCPU",
+    "window": "half",
+    "threads": 8,
+    "dt_s": 0.00000095367431640625,
+    "steps": 524288,
+    "end_s": 0.5,
+    "native_samples": 1469,
+    "event_completed_step": 10486,
+    "post_open_frames": 1265,
+    "program_sha256": "b5a44073b7303b7df917d01105d3cb0a20a0ca1a90a9a963ccb35be9b2b3530c"
+  },
+  "read_only_live_child_observation": {
+    "pid": 32624,
+    "created_epoch": 1793688633.5361495,
+    "exe": "tests/outputs/upl_hg_column_ReleaseCPU_r1/DualSPHysics5.2CPU_win64.exe",
+    "observation": "psutil showed this actual child under fixed owner52308 with exactly the pinned start program and full half argv. Child identity is supplementary launch-review evidence; the watcher observes the owner and requires a sealed Run, never child exit alone. No process was launched, stopped or changed during this observation."
+  },
+  "launch_validation": "Require the exact pinned start bytes/schema/PID/creation/tag/program/job and all five bound owner-script/program/build/input-manifest/admission entries. Check live owner creation, full command, cwd and executable, including run_r2 -Configuration ReleaseCPU -Window half -Admission the pinned half-admission path -ExecutionAuthorized. Freeze this new script/note, interpreter, psutil module and explicit Codex executable before watching. Worker owner arguments come from that verified fixed start.",
+  "fresh_artifacts_only_if_launched": [
+    "tests/logs/upl_hg_column_half_followup_r1.lock.json",
+    "tests/logs/upl_hg_column_half_followup_r1.status.json",
+    "tests/logs/upl_hg_column_half_followup_r1.worker.log",
+    "tests/logs/upl_hg_column_half_followup_r1.terminal.json",
+    "tests/logs/upl_hg_column_half_followup_r1.queue_attempt.json",
+    "tests/logs/upl_hg_column_half_followup_r1.queue_result.json"
+  ],
+  "protection": "Any existing half lock/status/log/terminal/attempt/result or temporary status file blocks launch. Immutable evidence uses exclusive creation; only this worker's identified status is atomically updated. Never overwrite, retry or rearm. All existing coarse watcher files remain untouched.",
+  "polling": "Target at most30seconds between polls. While waiting, hash only the551831-byte start and inspect owner/Run availability. Larger frozen dependencies are hashed at launch/startup and final notification, not on every poll. A stable exact run_r2 half.run.json is terminal whether passed or failed; a call or process exit alone is never completion. Owner PID reuse/command changes are explicit failures. A dead owner without valid Run must remain observed dead for more than120seconds; AccessDenied is unobservable, not proof of exit.",
+  "terminal_validation": "Bind exact start/program/argv/job/build/input/admission and owned call identity. A passed Run must retain typed exit0, steps524288, native1469 and original binding guards. The notifier does not independently parse raw PARTs, IDs, actual endpoint clocks, ledger or physical results; continuation owns those checks.",
+  "failure_notification_and_queue_contract": "Preserve the original coarse watcher's complete final mismatch behavior. Record every frozen expected entry plus observed identity/read error. Mismatches set watch_final_binding_rejected, immutable_hashes_reverified=false, passed=false and no completion claim while preserving previous event/reported metadata. Seal terminal plus a fresh queue_attempt.json containing the full report/all hashes before the sole [codex, queue, --thread, root_thread, --message, message] call. Timeout45seconds and CREATE_NO_WINDOW; save return code/output or delivery uncertainty in an exclusive result. A timeout may already have delivered: no resend. Worker startup binding failures remain fail-closed without queueing.",
+  "half_native_and_pair_constraints": "The pinned half admission allows only this one current half. It requires one native decode after a successful sealed Run, only when no decoder is active and no existing completed/partial decoder evidence would be overwritten. Use existing native_run_r2 -Configuration ReleaseCPU -Window half -ExecutionAuthorized. Only after both full native owners pass, run full_review_r1 --phase pair --execution-authorized once if no pair review already exists or is active. Preserve1469 native states/all1040 IDs/22 arrays/ledger/drainage/HG guards; all1469 independent pressure RMS<=5Pa, per-material-ID XYZ max<=.005mm and actual time difference<=1e-14s. Verify all raw bytes of both full results' first458 records in all five binary exports, including clock and signed dterror; no field/record/interval masking.",
+  "continuation_message": "Ask root to inspect .run/.native_r2 and all ownership/hash/ID/actual-time evidence, review pore pressure/material top-bottom settlement/stress/alternating X-column Uz, and report quantitative results in Chinese. HG0 remains a descriptive different-operator control. No automatic mid/full-consolidation/formal expansion or late-mode cure claim. Inspect current GPU-component and cleanup statuses before continuing authorized diagnosis; do not alter/restart those jobs or wait for a user progress prompt. Coarse notifier already queued once and must not be rearmed.",
+  "script_executed": false,
+  "worker_launched": false,
+  "notification_queued": false,
+  "solver_decoder_analysis_build_Git_deletion_compression_or_API_invoked": false,
+  "physical_acceptance": false
+}

@@ -1,0 +1,12 @@
+{
+  "stage":"upl_hg_cpu_cost_review_r1",
+  "date":"2026-11-03",
+  "scope":"Read-only cost planning after the current independent half gate; no solver, build or optimization performed by this audit.",
+  "matched_halfsecond_histories":{"steps_each":262144,"frames_each":1469,"CPU_threads_each":8,"eta_each":0.02,"HG_coarse":"tests/outputs/upl_hg_column_ReleaseCPU_coarse_r1/Run.out","HG0_coarse":"tests/outputs/upl_damp_long_CPU_coarse_r1/Run.out","HG_loop_s":2310.288818,"HG0_loop_s":731.801331,"historical_elapsed_ratio":3.156989},
+  "not_an_isolated_HG_penalty":"The runs had different concurrent CPU/GPU/disk workloads. NL-SortData changed126.645191->414.746715s and SavePart9.863854->39.119014s as well. Do not attribute the whole historical ratio to HG or quote it as a controlled optimization speedup.",
+  "compiler_and_cache":"All86 authoritative ReleaseCPU compile commands, including HG and CPU integration, use /O2 /openmp /fp:precise; no /Od. Current HG rate calculations262145=N+1 and endpoint reuses262143=N-1 mean every eligible predictor reused its endpoint. No cache-miss explanation is visible.",
+  "timer_limits":"HG is serial and has no dedicated timer. Force-side work lies within CF-Forces; history updates and endpoint rate work lie outside SU-ComputeStep. Displayed timer regions cannot isolate total HG cost. OpenMP waiting/spinning is an unproved hypothesis.",
+  "old_thread_evidence":"The earlier public025 triplet with HG/damping/SPR off measured CPU1 97.174591s, CPU8 29.476025s and GPU71.617043s; CPU1/8 native comparison was exact. It does not predict current HG cost. The old k5 CPU1/2/4 timings use another grid/physics and overlapped other work; do not substitute them.",
+  "bounded_next_after_half_pass":"If the current .5s independent half passes, first try one fresh CPU1 copy of the already validated HG short coarse: same program/input/material/HG=.1/eta=.02/dt2^-19,13120steps,.0250244140625s,458frames. Change only thread count and fresh output identities. Existing CPU8 short loop was139.216217s. Keep all native/clock/HG/ledger/drainage guards and compare saved fields before selecting threads; timing is contextual until a justified matched repeat. Do not bypass the existing CPU8 owner/manifest or perform a blind thread search.",
+  "physical_acceptance":false
+}

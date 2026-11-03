@@ -1,0 +1,17 @@
+{
+  "stage": "upl_hg_column_admission_r1",
+  "date": "2026-11-03",
+  "passed": true,
+  "allowed_jobs": ["upl_hg_column_ReleaseCPU_half_r1"],
+  "inputs": [
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_hg_column_full_review_r1_coarse.check.json","bytes":34398,"sha256":"d0f5d285ce671b817d9468fd6b89a796ab7546576dfe32f0dcdc0b103cdcb31b"},
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_hg_column_ReleaseCPU_coarse_r1.native_r2.json","bytes":1464698,"sha256":"e8b35ea299316a6f77b658fae1a485e3ad3dfe281c7989199a6c9dcab9b5fe55"},
+    {"path":"D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/logs/upl_hg_column_ReleaseCPU_coarse_r1.run.json","bytes":1548582,"sha256":"8effa59c9c2bb79b4b3e99fcd4f82fe5d72d7014b6d5f477125f89eb4f78f7c2"}
+  ],
+  "decision": "After root inspected all three coarse history/profile/modal PNGs and the complete1469-frame native review, admit one fresh independent CPU8 half to the same .5s endpoint. Keep the prepared half runtime and current frozen program; no new physics or restart.",
+  "coarse_evidence": "Owned exit0;262144steps;1469 actual native states through .5s; all1040 IDs/22 arrays/ledger/drainage and HG stage/cache/dt/spin guards passed. Every raw byte of all458 short-prefix records in five binary leaves, including clock and signed dterror, matched. This is not a half-step or theory acceptance.",
+  "physical_review": "At .5s HG mean pressure8648.574Pa versus HG0 8648.551Pa, top settlement .498605368mm versus .498611344mm, total compression10040.732Pa versus10040.795Pa. Startup histories decay smoothly and the layer-mean pressure/settlement curves overlap. The alternating-column Uz amplitude is already tiny in HG0 (RMS3.3247e-6mm); HG is1.4449e-8mm. Do not advertise a large physical gain from this tiny early amplitude or claim the old1.5..6.875s instability is resolved. Upper-layer stress variation and bottom bias remain recorded.",
+  "next_required": "Seal and decode the half once; inspect its own exact458-frame prefix and all1469 independent coarse/half samples at original5Pa pressure RMS/.005mm per-ID XYZ limits and exact actual clocks. Use existing full_review_r1 --phase pair only after a successful half native receipt. Preserve all data and original guards; no automatic mid/full-consolidation/formal/GPU-HG admission.",
+  "cleanup_context": "User-authorized lossless compression affects only old closed Cryer VTK files and three deleted cold selfweight link caches. The current CPU/GPU source, program, inputs, raw outputs and reader dependencies remain protected. Roughly59GiB free was observed before this bounded1040-ID admission.",
+  "physical_acceptance": false
+}

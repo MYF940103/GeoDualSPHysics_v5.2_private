@@ -1,0 +1,11 @@
+{
+  "stage":"upl_cryer_live_exit_r1",
+  "date":"2026-11-03",
+  "purpose":"Preserve actual exit codes of the already-running Debug r3 tool and target after their original PowerShell owner unexpectedly disappeared. No restart, source change, numerical change or old receipt reconstruction.",
+  "fixed_processes":{"original_owner":57736,"tool":52096,"target":43136},
+  "method":"Acquire SYNCHRONIZE|QUERY_LIMITED_INFORMATION handles while both native processes are live. Verify creation FILETIME against psutil instance, original parent chain, actual argv/executable and frozen target hash; bind original start. Hold both kernel objects until signaled and use GetExitCodeProcess to capture their actual DWORD exit codes. These are independent Win32 observations, never an invented original PowerShell LASTEXITCODE.",
+  "evidence":"Fresh logs/upl_cryer_live_exit_r1 lock, opened, per-process exit and result JSON records plus one queue attempt/result. Preserve old r3 files, raw native output, runtime/source/build archives and current CPU/cleanup jobs.",
+  "next":"Actual captured exits are not acceptance. Investigate original task termination, review native six-probe completion and memcheck under original budgets, and prepare a fresh explicit recovery reviewer if needed. Never rewrite old r3 owner receipts or rerun a completed component merely to replace missing monitoring.",
+  "one_shot":"One hidden observer, one same-root-thread completion queue attempt, no connectivity test, no retry/rearm. Root has read the whole script before launch.",
+  "physical_acceptance":false
+}

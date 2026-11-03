@@ -1,0 +1,70 @@
+{
+  "stage": "upl_hg_column_full_review_r1",
+  "date": "2026-11-03",
+  "status": "authored_for_root_full_read_not_executed",
+  "author_files": [
+    "tests/support/upl_hg_column_full_review_r1.py",
+    "tests/notes/upl_hg_column_full_review_r1.json"
+  ],
+  "root_review_requirement": "Root must read both new files completely before authorizing either offline phase. No execution, solver, decoder, build, Git or admission is authorized by preparing these files.",
+  "commands_only_after_root_review_and_phase_authorization": {
+    "coarse": "D:/anaconda3/python.exe -B tests/support/upl_hg_column_full_review_r1.py --phase coarse --execution-authorized",
+    "pair": "D:/anaconda3/python.exe -B tests/support/upl_hg_column_full_review_r1.py --phase pair --execution-authorized"
+  },
+  "working_directory": "case02 root; an absolute script path also works",
+  "scope": "Pure offline analysis. Coarse reads the completed current HG coarse1469 owner and retained HG0 coarse1469 owner. Pair requires separately completed current HG coarse/half1469 owners and retained HG0 coarse/half1469 owners. Both phases validate each used current HG full run against its sealed458-record current HG counterpart. Missing receipts cause failure; there is no solver, decoder, build, GenCase, Git, process control, cleanup or automatic admission path.",
+  "current_HG_full_tags": [
+    "upl_hg_column_ReleaseCPU_coarse_r1",
+    "upl_hg_column_ReleaseCPU_half_r1"
+  ],
+  "current_HG_short_prefix_tags": [
+    "upl_hg_column_ReleaseCPU_short_c_r1",
+    "upl_hg_column_ReleaseCPU_short_h_r1"
+  ],
+  "retained_HG0_tags": [
+    "upl_damp_long_CPU_coarse_r1",
+    "upl_damp_long_CPU_half_r1"
+  ],
+  "state_at_authoring": "Current CPU8 dynamic-J xi=.1 coarse is running toward0.5s with262144 steps at2^-19s and1469 frames; independent full half has not been admitted. Neither full completion nor half admission is asserted by this preparation. The sealed current short pair already passed its separate458-frame review, with max pressure RMS1.230407Pa and material XYZ difference1.4048935e-6mm; these are historical short observations, never substituted for a full pair.",
+  "owner_schemas": "Current HG uses actual <tag>.run.json stage upl_hg_column_run_r2, <tag>.native_r2.json stage upl_hg_column_native_run_r2, exact own solver/reader .call.json, source_build and prepared input entries. Current full decoder must be unchanged upl_damp_long_reader_ReleaseCPU_r1 helper (stage upl_damp_long_reader_build_r1), with completion upl_damp_long_native_r1/window damped500. Current short uses upl_hg_column_short_native_r1/window dyadic_short458. Retained HG0 uses upl_damp_long_run_r1/upl_damp_long_native_run_r1 and original full completion. No stage aliases or shortened controls are accepted.",
+  "historical_reader_binding": "Full native.source_build must equal current solver run.source_build. Its reader_source_build intentionally matches the unchanged historical long-reader helper source_build, not the current HG solver build. Bind the historical receipts without asserting mutable historical source originals still equal current sources. Existing native owner sealed archive provenance remains authoritative; no huge duplicate build-validation framework is introduced.",
+  "consumed_hashes": "Freeze this script and note, all consumed native/run/build/input/helper/source-build/call/completion receipts, actual programs/call logs/Run.out, runtime/seed/normals, all five binary exports, native_ids.csv, columns.csv and history.csv before consumption and independently after successful analysis. Raw PART files and mutable historical source originals are not reparsed or rehashed here. Native owners retain all13 export bindings and raw ownership guards; this script does not claim every ledger CSV row was independently reparsed.",
+  "native_schema": "Preserve CPU public common26 with column21 actual ExcessPorePress; all22 native arrays/all1040 IDs, soil IDs40..1039, all15 original typed arrays, six dynamic doubles and actual float PosDiv. Full coverage:1469000 soil ledger/n rows,58760 fixed zero marker checks,1527760 all-ID J/theta rows,1265 post-open frames and12650 drained-receiver checks. Retain ledger<=5e-13, finite-state, no-exclusion, original fixed J/theta, unchanged drainage and one-sided signed noninitial dterror<=1e-14 guards. Full completion has no full_half_second_complete field; only the short completion has that false scope flag.",
+  "binary_prefix_comparison": {
+    "records": 458,
+    "rule": "Independently validate original full1469 and short458 headers and exact file lengths. Then compare every declared raw byte of each of the first458 records, including each actual time, dt and signed dterror record. Header sample counts differ naturally and are not rewritten. No metadata fabrication, numeric tolerance, field masking or dterror exclusion is permitted. Same current program/source_build required for each full/short pair.",
+    "leaves": {
+      "original15.bin": {"header_bytes": 12, "record_bytes": 166408},
+      "physical.bin": {"header_bytes": 12, "record_bytes": 208008},
+      "clock.bin": {"header_bytes": 8, "record_bytes": 28},
+      "common_j_theta.bin": {"header_bytes": 12, "record_bytes": 16648},
+      "soil_n.bin": {"header_bytes": 12, "record_bytes": 8008}
+    }
+  },
+  "clock_scope": "Full1469 dyadic schedule spans0..0.5s; coarse dt2^-19, half dt2^-20 with twice the completed/saved-step schedule. Actual binary and CSV clocks use completed_steps*locked binary dt. Event is5243*2^-19=0.010000228881835938s; post-open is strictly after that event. Manifest JSON time round-trip fields are diagnostic rather than equality truth. No interpolation, time snapping or smoothing.",
+  "independent_pair_gates_only_in_pair_phase": {
+    "pressure_RMS_over_all1000_soil_IDs_at_each_of1469_actual_times_Pa": 5.0,
+    "maximum_per_ID_material_XYZ_Euclidean_displacement_difference_over_all1469_times_mm": 0.005,
+    "maximum_actual_time_difference_s": 1e-14,
+    "pair": "independently completed current xi=.1 coarse versus current xi=.1 half",
+    "HG_vs_HG0": "all1469 operator differences are descriptive; never half-step gates"
+  },
+  "material_diagnostics": "Validate fixed native IDs40..1039 on the initial10-X-column by100-Z-layer lattice. Top/bottom settlement follows the ten original material IDs in layers99/0. Uz=1000*(z-z0) is up positive and settlement=-Uz. Total compression zz=p-sigma_zz for stored effective stress. Material XYZ comparisons use native saved positions and do not invent periodic unwrapping.",
+  "mode": "At each actual state remove each original layer's ten-column mean Uz, project onto(-1)^column with even X columns positive, preserve all100 signed coefficients, report their RMS/max plus all within-layer Uz RMS/spans and pressure/total-stress spreads. Heatmaps use every actual saved time and a common signed color scale. Do not normalize by the tiny HG0 amplitude at0.5s.",
+  "profiles": "All1000 per-ID values at actual coarse completed steps5242,5243,5244 (event bracket),65536(0.125s),131072(0.25s),262144(0.5s). Profile figures use the corresponding actual native times, ten-ID layer means and signed modal coefficients. Histories/modal tables retain every saved frame.",
+  "fresh_phase_outputs": {
+    "coarse_tag": "upl_hg_column_full_review_r1_coarse",
+    "pair_tag": "upl_hg_column_full_review_r1_pair",
+    "each_under_tests_figures": ["<tag>_history.png", "<tag>_profiles.png", "<tag>_mode_heatmap.png", "<tag>_history.csv", "<tag>_profiles.csv", "<tag>_modal.csv", "<tag>_comparisons.csv", "<tag>_short_prefix.csv"],
+    "each_under_tests_logs": "<tag>.check.json",
+    "protection": "Every target must be absent before execution. Exclusively create each CSV/PNG/check; retain failed receipts and any partial evidence. The two phases have separate tags, so pair never overwrites coarse. Never overwrite formal figures, retained controls, raw BI4/NBI4 or existing short-review evidence. No interaction with ongoing NTFS legacy-VTK cleanup."
+  },
+  "load_scope": "Saved final-J-weighted retained LoadAce totals are descriptive only. They are not a same-force-stage qA/load/force guard or a coupled-energy proof.",
+  "interpretation_limit": "A coarse-phase pass means its ownership/native safety/prefix validation passed, with descriptive1469-frame HG-vs-HG0 diagnostics; it cannot admit half. A pair-phase pass additionally means the original independent-half gates passed at all1469 actual times. Neither phase implies theory acceptance, full consolidation, formal/physical acceptance, unsaved stability or any later run/window admission. The old mode was tiny at0.5s and grew to about2.4mm over1.5..6.875s; a0.5s result cannot establish resolution of that late-growing mode.",
+  "script_executed": false,
+  "outputs_created": false,
+  "production_source_or_formal_files_changed": false,
+  "solver_build_reader_GenCase_or_Git_executed": false,
+  "physical_acceptance": false,
+  "half_or_later_run_admitted": false
+}
