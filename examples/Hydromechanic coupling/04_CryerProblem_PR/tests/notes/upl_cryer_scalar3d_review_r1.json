@@ -1,0 +1,63 @@
+{
+  "stage": "upl_cryer_scalar3d_review_r1_author_contract",
+  "status": "author_only_not_executed",
+  "entry": "D:/anaconda3/python.exe -B support/upl_cryer_scalar3d_review_r1.py",
+  "new_outputs_only": [
+    "logs/upl_cryer_scalar3d_review_r1.check.json",
+    "figures/upl_cryer_scalar3d_review_r1.png"
+  ],
+  "ownership_qualification": {
+    "required_original_record": "notes/upl_cryer_scalar3d_run_r1_record_audit.json",
+    "original_outer_shell_exit_code": 1,
+    "cause": "The silent standalone executable generated all seven complete outputs; Tee-Object did not create the run.log, so constructing its Entry failed before serializing the native exit.",
+    "native_exit_proven": false,
+    "native_exit_code": null,
+    "not_a_proven_native_runtime_failure": true,
+    "no_rerun_no_fictitious_old_log_or_call": true,
+    "compiler_owned_exit0_is_distinct_from_unproven_program_exit": true,
+    "offline_pass_cannot_retroactively_prove_native_exit": true
+  },
+  "binding": "Pin the original build, original CPP/note and run-record-audit bytes. Bind compiler actual int0/log/tool, standalone exe/object/dependency record, all11 archived project headers and direct flat build inputs, self/new note and all seven retained outputs. Cache by resolved case-folded path, reject conflicting Entry claims, independently rehash every unique consumed file once at the end. No recursive validation of historical mutable sources/canonical programs or active mid data. The seven outputs are hash-sealed by this review, not claimed to have a missing historical owned-run receipt.",
+  "counts": {
+    "field_rows": 672,
+    "moment_rows": 48,
+    "neighbor_rows": 1855,
+    "selected_volume_budget_rows": 224,
+    "original_arithmetic_rows": 432,
+    "isotropic_clone_rows": 4,
+    "receiver_instances": 12,
+    "figure_values": 40
+  },
+  "independent_math": {
+    "scope": "NumPy binary64 reconstruction conditional on exported actual d=xi-xj, float fac promoted to double, Ci and real Cj. Does not call, exec, translate or import the C++ program, kernel or any production loop.",
+    "four_methods": "receiver-C or actual half(Ci*g+Cj*g), crossed with eta=0 or the original float Eta2 denominator regularizer; Eta2 is not material damping.",
+    "definitions": [
+      "g=fac*d; b=V*Ci*g; w=2*V*d.dot(corrected_g)/(rr2+eta); lx=sum(w*d)",
+      "Gp=sum(b*(pj-pi)); lp=-sum(w*(pj-pi)); Lstar=lp-Gp.dot(lx)",
+      "a=-w-b.dot(lx); Gx=-sum(b outer d); first=-sum(a*d); second=.5*sum(a*d outer d)",
+      "Independent fields use c+l.x+.5*x.H*x, gradient=l+H*x and laplacian=trace(H); the fourteenth field is the separable product of three cosines with k=pi/(12dp).",
+      "Check all48 moment rows, all672 field responses, analytic identities and local selected-volume sums. Receiver Ci is unchanged across eta/method; verify Ci times reconstructed raw moment against I, not a new production inverse implementation.",
+      "Raw reciprocal pair-weight defect is reconstructible from Ci/Cj. Corrected reciprocal star defect also needs each neighbor's full reverse lx, which is not exported: check finite/nonnegative/max-vs-sum/relative range only."
+    ],
+    "original_unchanged_gates": "48 constant |Lstar|<=1e-10; 192 affine gradient norm errors<=1e-10; 192 affine |Lstar|<=1e-8. Recheck source fields, all432 arithmetic rows and independently reconstructed values. No quadratic or smooth accuracy threshold.",
+    "clone": "The complete-support regular eta0 receiver-C isotropic response is 3*alpha=6 within the predeclared arithmetic propagation budget. Other eta/disorder cases are not required to give6. The 1.5-times response associated with replacing2 by3 tends to4.5*alpha=9 in that one algebraic identity, and is descriptive only; real symC uses actual neighbor C variation."
+  },
+  "predeclared_reconstruction_budgets": {
+    "epsilon": "binary64 machine epsilon; gamma(k)=k*eps/(1-k*eps); G=gamma(64*(neighbor_count+1)). These are arithmetic/export propagation bounds, not physical tolerances and are not fitted to observed errors.",
+    "weighted_majorants": "bm=V*abs(Ci)*abs(g); cgm=abs(Ci)*abs(g) or .5*(abs(Ci)+abs(Cj))*abs(g); wm=2V*sum(abs(d)*cgm)/(rr2+eta); lm=sum(wm*abs(d)); lb=G*lm; am=wm+bm.dot(abs(lx)); ab=G*am+bm.dot(lb).",
+    "moments": "First bound=sum((G*am+ab)*abs(d)); second bound=.5 sum((G*am+ab)*abs(d outer d)); Gx bound=G sum(bm outer abs(d)). Norm bounds include their propagated entry bounds and fixed gamma(32) norm rounding. Raw moment determinant bound=G*6*product(rowmax(raw_product_majorant)); inverse-residual bound=G*(abs(Ci)*raw_majorant+I).",
+    "coordinate": "Neighbor xj is reconstructed from exported xi-d, not independently exported original coordinates. dx=gamma(4)*(abs(xi)+abs(d)+abs(xj)); polynomial coordinate variation=(abs(l)+abs(H)*abs(xj)).dx+.5 dx.abs(H).dx; cosine variation<=k*sum(dx).",
+    "fields": "Field magnitude majorant fm=|c|+sum|l*x|+.5 sum|H_ab*x_a*x_b| (cosine1). gp budget=G sum(bm*(fi_major+fj_major))+sum(bm*coordinate_variation), lp similarly with wm. Lstar budget=lp_budget+sum(abs(lx)*gp_budget+abs(gp)*lb+gp_budget*lb)+gamma(8)*sum(abs(gp*lx)). Coefficient-action uses G sum(am*field_major)+sum(ab*abs(df)+abs(a)*coordinate_variation), then adds Lstar budget for their difference.",
+    "analytic": "Independent analytic input/gradient/laplacian comparisons use fixed gamma(128) times uncancelled polynomial derivative or trigonometric amplitude majorants. Zero majorant requires zero difference; no additive empirical floor.",
+    "selected_volume": "Weighted source-export sums use gamma(64*(selected_receiver_count+1))*V*sum(abs(Lstar)+abs(exact)). Their nonzero difference is descriptive, never asserted to be global conservation or surface flux."
+  },
+  "figure": {
+    "layout": "2x2: regular/disordered rows; isotropic absolute relative error in percent and second-minus-I Frobenius columns.",
+    "data": "Forty validated fields/moments CSV values for sphere-cut center/x4/y4/z4/(3,3,3) receivers and all four method/eta paths; short categorical lines with markers, no spatial interpolation, smoothing or clipping. Numeric figure values are also in the new check JSON; do not duplicate CSVs.",
+    "limitations": "The sphere-cut nominal lattice is not the actual Cryer annular cloud. dp=.01m and R=.06m give coarse curvature. Its binary64 Dot(x,x)<=36*.01*.01 crop can include boundary points differently under axis permutations; receiver differences do not establish failure of rotational covariance or actual Cryer error. No pressure-trajectory/paper overlay. Root must inspect the freshly rendered PNG; automated review records visual_review_performed=false."
+  },
+  "physical_acceptance": false,
+  "production_call_regression": false,
+  "public_3D_admitted": false,
+  "new_solver_reader_build_or_executable_invocations": 0
+}

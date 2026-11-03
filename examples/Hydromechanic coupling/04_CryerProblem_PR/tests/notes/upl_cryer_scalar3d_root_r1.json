@@ -1,0 +1,50 @@
+{
+  "stage": "upl_cryer_scalar3d_root_r1",
+  "status": "offline_artifact_arithmetic_review_passed_not_native_exit_or_public3D_acceptance",
+  "source_checkpoint": "69da646b8f02aaecc9ccb3fbffa536138a81caab",
+  "root_read_full_CPP_note_review_script_and_contract": true,
+  "review": {
+    "path": "logs/upl_cryer_scalar3d_review_r1.check.json",
+    "bytes": 28256,
+    "sha256": "069ba938760f816da291a00b31ff3681106d3e0d685c7c862ae2d484feb8e519",
+    "owned_python_review_exit_code": 0,
+    "passed": true,
+    "independent_original_gate_rechecks": 432,
+    "original_native_export_constant_abs_max": 0,
+    "original_native_export_affine_gradient_abs_max": 7.1488794229767016e-15,
+    "original_native_export_affine_Lstar_abs_max": 3.1796787425264483e-12,
+    "independent_original_gate_max_ratio": 0.0002277511512716046,
+    "unique_bound_artifacts": 34,
+    "all_consumed_artifacts_rehashed_unchanged": true
+  },
+  "root_visual_review": {
+    "performed": true,
+    "figure": "figures/upl_cryer_scalar3d_review_r1.png",
+    "sha256": "d1c2b1b227b077f5b14d985cb7886dbd89f728a85e2cab59cb4a9123b649dd0c",
+    "matching_data": ["outputs/upl_cryer_scalar3d_r1/fields.csv", "outputs/upl_cryer_scalar3d_r1/moments.csv"],
+    "layout": "Both regular/disordered rows and all five receiver categories visible; four methods and denominator regularizers labeled, zero and large errors not clipped. Footer distinguishes this coarse static crop from a Cryer trajectory and records the missing native-exit evidence.",
+    "interpretation": "Linear-field arithmetic is correct but quadratic exactness is not established. In the regular coarse sphere/Eta2/real-symC example, isotropic relative errors are about1.036percent at the center,6.26-6.50percent at the three axial receivers and36.46percent near the curved cutoff. These are manufactured scalar truncation errors at dp=.01/R=.06, NOT actual Cryer pressure errors or a physical acceptance gate."
+  },
+  "coefficient_identity": "For the complete-support regular/Eta0/common-C control, the isotropic quadratic response is6=3alpha at alpha2. Replacing coefficient2 by3 would produce9, not6. Keep coefficient2; varying-C, Eta2 and truncated-support cases are not required to satisfy this conditional identity.",
+  "runtime_record_gap": {
+    "original_outer_wrapper_exit_code": 1,
+    "original_native_exit_proven": false,
+    "original_native_exit_code": null,
+    "audit": "notes/upl_cryer_scalar3d_run_r1_record_audit.json",
+    "reason": "The silent standalone program produced the seven complete files, but the wrapper tried to hash a nonexistent empty stdout log before serializing the native exit. The new offline pass does not recreate that missing receipt or alter the old failure.",
+    "standalone_program_rerun": false
+  },
+  "next": "Review and build the minimal non-advancing actual CPU3D force/rate component separately. Keep public3D guards and all formal/server files unchanged. No Cryer physical trajectory before the running 1D mid result is reviewed.",
+  "limits": [
+    "Independent reconstruction is conditional on exported d, fac, Ci and Cj; not a second production kernel/parser.",
+    "Complete reverse-neighbor Lx was not exported, so corrected star-pair defects are only finite/scope checked, not independently reconstructed.",
+    "Selected-receiver volume sums are not whole-domain conservation or boundary-flux proof.",
+    "Binary64 sphere cropping may alter boundary inclusion under axis permutations; this is not a rotational-covariance failure claim.",
+    "Manufactured pressure is binary64, whereas production pressure remains float."
+  ],
+  "production_or_formal_changes": false,
+  "physical_solver_started": false,
+  "production_call_regression": false,
+  "public_3D_admitted": false,
+  "physical_acceptance": false
+}

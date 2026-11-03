@@ -1,0 +1,738 @@
+{
+  "stage": "upl_cryer_scalar3d_review_r1",
+  "passed": true,
+  "offline_artifact_arithmetic_review_only": true,
+  "native_exit_proven": false,
+  "native_exit_code": null,
+  "original_outer_shell_exit_code": 1,
+  "physical_acceptance": false,
+  "production_call_regression": false,
+  "public_3D_admitted": false,
+  "native_or_solver_programs_invoked_by_review": 0,
+  "visual_review_performed": false,
+  "limits": [
+    "Conditional on exported d/fac/Ci/Cj; not a second kernel, point-cloud or production parser.",
+    "Full reverse-neighbor Lx is absent: corrected star-pair defects get finite/scope sanity checks only, not independent reconstruction.",
+    "Selected-receiver volume sums do not prove global conservation or boundary flux.",
+    "The sphere-cut nominal cloud is not the real Cryer annular cloud; dp=.01 m, R=.06 m is coarse curvature.",
+    "Binary64 sphere cutoff at boundary lattice points can differ under axis permutation; no rotational-covariance failure is inferred.",
+    "Double manufactured fields test arithmetic only; no quadratic/smooth accuracy, trajectory, physical or public-3D acceptance."
+  ],
+  "coverage": {
+    "field_rows": 672,
+    "moment_rows": 48,
+    "neighbor_rows": 1855,
+    "budget_rows": 224,
+    "isotropic_clone_rows": 4,
+    "arithmetic_rows": 432,
+    "arithmetic_failures": 0,
+    "receiver_instances": 12
+  },
+  "independent_original_gate_rechecks": 432,
+  "independent_original_gate_max_ratio": 0.0002277511512716046,
+  "original_export_maxima": {
+    "constant_abs_max": 0.0,
+    "affine_gradient_abs_max": 7.148879422976702e-15,
+    "affine_star_abs_max": 3.1796787425264483e-12
+  },
+  "arithmetic_reconstruction": {
+    "rr2": {
+      "comparisons": 7420,
+      "max_ratio": 0.0,
+      "max_abs_difference": 0.0,
+      "worst_key": null
+    },
+    "Cavg": {
+      "comparisons": 66780,
+      "max_ratio": 0.0,
+      "max_abs_difference": 0.0,
+      "worst_key": null
+    },
+    "moment_determinant": {
+      "comparisons": 48,
+      "max_ratio": 0.0002101864591844864,
+      "max_abs_difference": 2.55351295663786e-15,
+      "worst_key": "('sphere_cut', 0, 3433, 0, 'receiverC_star')"
+    },
+    "Ci_moment_residual": {
+      "comparisons": 432,
+      "max_ratio": 0.00026755136986245846,
+      "max_abs_difference": 1.1102230246251565e-15,
+      "worst_key": "('sphere_cut', 0, 3505, 0, 'receiverC_star')"
+    },
+    "lx": {
+      "comparisons": 144,
+      "max_ratio": 0.00010812520750951306,
+      "max_abs_difference": 2.842170943040401e-14,
+      "worst_key": "('sphere_cut', 1, 4572, 0, 'receiverC_star')"
+    },
+    "Gx": {
+      "comparisons": 432,
+      "max_ratio": 7.76538992027769e-05,
+      "max_abs_difference": 2.220446049250313e-16,
+      "worst_key": "('full_support', 1, 3429, 0, 'receiverC_star')"
+    },
+    "first_moment": {
+      "comparisons": 144,
+      "max_ratio": 1.9981645464851006e-05,
+      "max_abs_difference": 2.842170943040401e-14,
+      "worst_key": "('sphere_cut', 0, 3505, 0, 'symC_star')"
+    },
+    "second_moment": {
+      "comparisons": 432,
+      "max_ratio": 2.2857301691086194e-05,
+      "max_abs_difference": 2.220446049250313e-16,
+      "worst_key": "('sphere_cut', 1, 3505, 1, 'receiverC_star')"
+    },
+    "second_error": {
+      "comparisons": 48,
+      "max_ratio": 9.51912583572139e-06,
+      "max_abs_difference": 2.220446049250313e-16,
+      "worst_key": "('sphere_cut', 1, 4572, 1, 'receiverC_star')"
+    },
+    "C_variation": {
+      "comparisons": 48,
+      "max_ratio": 0.0,
+      "max_abs_difference": 0.0,
+      "worst_key": null
+    },
+    "raw_pair_defect": {
+      "comparisons": 48,
+      "max_ratio": 7.259385706367357e-05,
+      "max_abs_difference": 4.336808689942018e-19,
+      "worst_key": "('sphere_cut', 1, 4873, 0, 'receiverC_star')"
+    },
+    "field_input": {
+      "comparisons": 672,
+      "max_ratio": 0.009972504492519777,
+      "max_abs_difference": 1.1102230246251565e-16,
+      "worst_key": "(('sphere_cut', 1, 3505, 0, 'receiverC_star'), 'quadratic_mix')"
+    },
+    "exact_gradient": {
+      "comparisons": 2016,
+      "max_ratio": 0.0047746482927567245,
+      "max_abs_difference": 3.552713678800501e-15,
+      "worst_key": "(('sphere_cut', 1, 3505, 0, 'receiverC_star'), 'smooth_cos_xyz')"
+    },
+    "exact_laplacian": {
+      "comparisons": 672,
+      "max_ratio": 0.0,
+      "max_abs_difference": 0.0,
+      "worst_key": null
+    },
+    "gradient": {
+      "comparisons": 2016,
+      "max_ratio": 0.00017109283433638177,
+      "max_abs_difference": 5.384581669432009e-15,
+      "worst_key": "(('sphere_cut', 0, 3505, 0, 'receiverC_star'), 'quadratic_xy')"
+    },
+    "lp": {
+      "comparisons": 672,
+      "max_ratio": 0.0006101813110165808,
+      "max_abs_difference": 2.9949376312288223e-12,
+      "worst_key": "(('full_support', 0, 3429, 0, 'symC_star'), 'quadratic_z')"
+    },
+    "Lstar": {
+      "comparisons": 672,
+      "max_ratio": 0.000610181311013225,
+      "max_abs_difference": 2.9913849175500218e-12,
+      "worst_key": "(('full_support', 0, 3429, 0, 'symC_star'), 'quadratic_z')"
+    },
+    "analytic_error_identity": {
+      "comparisons": 672,
+      "max_ratio": 0.0006030323914493776,
+      "max_abs_difference": 2.9913849175500218e-12,
+      "worst_key": "(('full_support', 0, 3429, 0, 'symC_star'), 'quadratic_z')"
+    },
+    "gradient_error": {
+      "comparisons": 672,
+      "max_ratio": 0.00013547524467480754,
+      "max_abs_difference": 5.2615002811139354e-15,
+      "worst_key": "(('sphere_cut', 0, 3505, 0, 'receiverC_star'), 'quadratic_xy')"
+    },
+    "coefficient_action": {
+      "comparisons": 672,
+      "max_ratio": 7.562034803217195e-05,
+      "max_abs_difference": 2.2737367544323206e-12,
+      "worst_key": "(('sphere_cut', 0, 3433, 1, 'receiverC_star'), 'quadratic_y')"
+    },
+    "field_scale": {
+      "comparisons": 672,
+      "max_ratio": 0.006956377219269444,
+      "max_abs_difference": 2.220446049250313e-16,
+      "worst_key": "(('sphere_cut', 1, 3505, 0, 'receiverC_star'), 'quadratic_z')"
+    },
+    "selected_volume_sum": {
+      "comparisons": 896,
+      "max_ratio": 0.0023795893297392998,
+      "max_abs_difference": 1.734723475976807e-18,
+      "worst_key": "('sphere_cut', 0, 0, 'symC_star', 'affine_y')"
+    },
+    "clone_export": {
+      "comparisons": 16,
+      "max_ratio": 0.0003524057612655478,
+      "max_abs_difference": 7.105427357601002e-15,
+      "worst_key": "(0, 1)"
+    },
+    "conditional_trace3_identity": {
+      "comparisons": 1,
+      "max_ratio": 0.0,
+      "max_abs_difference": 0.0,
+      "worst_key": null
+    }
+  },
+  "isotropic_clone": [
+    {
+      "disorder": 0,
+      "eta": 0,
+      "receiverC_Lstar": 6.0,
+      "real_symC_Lstar": 6.000000000000002,
+      "coefficient3_counterfactual": 9.0,
+      "only_regular_eta0_requires_6": true
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "receiverC_Lstar": 5.93648129268749,
+      "real_symC_Lstar": 5.936481292687491,
+      "coefficient3_counterfactual": 8.904721939031235,
+      "only_regular_eta0_requires_6": false
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "receiverC_Lstar": 5.995623432965639,
+      "real_symC_Lstar": 5.96144353983922,
+      "coefficient3_counterfactual": 8.993435149448459,
+      "only_regular_eta0_requires_6": false
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "receiverC_Lstar": 5.931198137396456,
+      "real_symC_Lstar": 5.897448022102201,
+      "coefficient3_counterfactual": 8.896797206094684,
+      "only_regular_eta0_requires_6": false
+    }
+  ],
+  "plot_values_40": [
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 2.9605947323337504e-14,
+      "second_minus_I_Frobenius": 2.053200798949386e-15
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 2.97066271040638,
+      "second_minus_I_Frobenius": 0.13268602146089714
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 2.970662710406395,
+      "second_minus_I_Frobenius": 0.1326860214608972
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 2.9706627104063648,
+      "second_minus_I_Frobenius": 0.1326860214608971
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 42.32322474292503,
+      "second_minus_I_Frobenius": 0.850024749641738
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 0.022962450102722208,
+      "second_minus_I_Frobenius": 0.0003984681888127737
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 7.715963461517772,
+      "second_minus_I_Frobenius": 0.17621362137763782
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 7.715963461517712,
+      "second_minus_I_Frobenius": 0.17621362137763769
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 7.476453054536132,
+      "second_minus_I_Frobenius": 0.17154822969390418
+    },
+    {
+      "disorder": 0,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 35.50988499168097,
+      "second_minus_I_Frobenius": 0.7730378800069274
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 1.0586451218752422,
+      "second_minus_I_Frobenius": 0.018336271382727566
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 4.0740797259920445,
+      "second_minus_I_Frobenius": 0.14102013787849185
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 4.074079725992075,
+      "second_minus_I_Frobenius": 0.14102013787849182
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 4.074079725992089,
+      "second_minus_I_Frobenius": 0.14102013787849205
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 43.13288775286601,
+      "second_minus_I_Frobenius": 0.8599405843361612
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 1.0357586238248118,
+      "second_minus_I_Frobenius": 0.017939882063413192
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 6.498431872624029,
+      "second_minus_I_Frobenius": 0.16109213312551487
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 6.498431872624015,
+      "second_minus_I_Frobenius": 0.16109213312551474
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 6.260329932186289,
+      "second_minus_I_Frobenius": 0.1565562643148485
+    },
+    {
+      "disorder": 0,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 36.45632349617461,
+      "second_minus_I_Frobenius": 0.7836069107494887
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 0.07294278390602335,
+      "second_minus_I_Frobenius": 0.02152813207355891
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 5.0223922143601385,
+      "second_minus_I_Frobenius": 0.15346221855379932
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 3.313860697511606,
+      "second_minus_I_Frobenius": 0.15623412439450313
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 2.376293721823375,
+      "second_minus_I_Frobenius": 0.14952101989081312
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "receiverC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 49.04094603372906,
+      "second_minus_I_Frobenius": 0.9410981213984521
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 0.6147336957444367,
+      "second_minus_I_Frobenius": 0.03167360173863145
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 6.8392024088021435,
+      "second_minus_I_Frobenius": 0.16685846299934792
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 7.380671478372299,
+      "second_minus_I_Frobenius": 0.1896630805614938
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 7.213475316475855,
+      "second_minus_I_Frobenius": 0.18291578149945448
+    },
+    {
+      "disorder": 1,
+      "eta": 0,
+      "method": "symC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 43.5925549158131,
+      "second_minus_I_Frobenius": 0.8677514200806605
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 1.1466977100590339,
+      "second_minus_I_Frobenius": 0.02901154849670512
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 6.136495269622419,
+      "second_minus_I_Frobenius": 0.16555327706895268
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 4.409453810825278,
+      "second_minus_I_Frobenius": 0.1636978594230752
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 3.5029140917595867,
+      "second_minus_I_Frobenius": 0.15608473941122997
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "receiverC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 49.723243355253466,
+      "second_minus_I_Frobenius": 0.9499103300918752
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3429,
+      "isotropic_absolute_relative_error_percent": 1.6814199861259205,
+      "second_minus_I_Frobenius": 0.041400064304397854
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3433,
+      "isotropic_absolute_relative_error_percent": 5.581367005153318,
+      "second_minus_I_Frobenius": 0.1532204741231773
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 3505,
+      "isotropic_absolute_relative_error_percent": 6.175101366429528,
+      "second_minus_I_Frobenius": 0.17623541486456565
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 4873,
+      "isotropic_absolute_relative_error_percent": 5.98055426588752,
+      "second_minus_I_Frobenius": 0.1696152588724424
+    },
+    {
+      "disorder": 1,
+      "eta": 1,
+      "method": "symC_star",
+      "receiver_id": 4572,
+      "isotropic_absolute_relative_error_percent": 44.40103768195892,
+      "second_minus_I_Frobenius": 0.8780174841987083
+    }
+  ],
+  "reported_not_rebuilt_cloud_counts": {
+    "source_cloud_max_nodes": 6859,
+    "total_source_nodes_four_clouds": 15540,
+    "lazy_correction_matrices": 4345
+  },
+  "source_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_scalar3d_r1.build.json",
+    "bytes": 13332,
+    "sha256": "8fa724f52cfeaa825d5087587f6e3d7080a9ded89bbf6b5b4c605140ff6a89eb"
+  },
+  "original_run_record_audit": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_scalar3d_run_r1_record_audit.json",
+    "bytes": 2128,
+    "sha256": "fff781b8ba00cde5de2f01e055ad4ef95219088dcae1054f866f470774df6a13"
+  },
+  "original_wrapper_error": "Get-Item could not find tests/logs/upl_cryer_scalar3d_r1.run.log while constructing the final record. The silent program's Tee-Object pipeline did not create an empty log.",
+  "compiler_exit_proven": true,
+  "bindings_unchanged": true,
+  "unique_bound_artifacts": 34,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_scalar3d_r1.build.json",
+      "bytes": 13332,
+      "sha256": "8fa724f52cfeaa825d5087587f6e3d7080a9ded89bbf6b5b4c605140ff6a89eb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_scalar3d_run_r1_record_audit.json",
+      "bytes": 2128,
+      "sha256": "fff781b8ba00cde5de2f01e055ad4ef95219088dcae1054f866f470774df6a13"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\upl_cryer_scalar3d_r1.cpp",
+      "bytes": 16321,
+      "sha256": "f73f0ceed8e863d8d3574efee9aef42dc52c72863181359bcf1fffca8dd606ab"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_scalar3d_r1.json",
+      "bytes": 8199,
+      "sha256": "6a552840f2aa711ed09beb146c629bfa724847d0f4e73339a88572f983a414a2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\support\\upl_cryer_scalar3d_review_r1.py",
+      "bytes": 26065,
+      "sha256": "2bd9be4af0a95872553d287b9b06063195023ae2697a6e5f8763987455e7cfaa"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\notes\\upl_cryer_scalar3d_review_r1.json",
+      "bytes": 6813,
+      "sha256": "703b7daae7166f3c0c8cdfd6eeeea8538c06407fc972687f4382867d80a27bc6"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_damp_mid_reader_ReleaseCPU_r1.helper.json",
+      "bytes": 392814,
+      "sha256": "796ffd6457eb1d7f1f34ada36e7c6b29ae4915e2df4630e825ecd8024393ed6c"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gravity_cpu_ReleaseCPU_r2.helper.json",
+      "bytes": 51107,
+      "sha256": "ad1a6813d3cb69db52744764cbca7284fc42fecf2a7b04c7f9b83b4cef9de147"
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\cl.exe",
+      "bytes": 814048,
+      "sha256": "253dca7d545c2d4e831bbff57b9aec23bb47eae53055e315fd7acf0358a2bb8e"
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx64\\x64\\link.exe",
+      "bytes": 2387424,
+      "sha256": "bf196b1fd6cbdfe1bf8937d1549312937d2fcda5d41552f8f833f817a303a096"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\DualSphDef.h",
+      "bytes": 32528,
+      "sha256": "028865deccdfd86044e1883ff54dedbb15809dea7eef349285eaf8b3eb005ac7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\FunSphKernel.h",
+      "bytes": 13412,
+      "sha256": "a4cc4a372c9c1bd40ed4d1f4b993564b2c26510143b06049a08c9cb9f66cb44d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\FunSphKernelDef.h",
+      "bytes": 2304,
+      "sha256": "40dc1e374b9f25d541bb508205c7cf5073e2e8321761c82b23f60e033d5b0b89"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JSph.cpp",
+      "bytes": 190795,
+      "sha256": "a07b1ce905aba69b7b44a7f7f627b85e46065ae52014de9635b58681f3d99e02"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JSphCpu.cpp",
+      "bytes": 266050,
+      "sha256": "1e303b0a0955cced3923cebedbd07ab6da5f167365056775240198a6b18097a2"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\TypesDef.h",
+      "bytes": 37988,
+      "sha256": "6cee8de4ecf33304828fb8dd566c0cada2132f8dd76ae4ff8fdb683aa828e886"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JAppInfoDef.h",
+      "bytes": 1092,
+      "sha256": "aae93c1b694ea7c4d2b34721e8e03f2d2b0726cf9d7feb0ce9ab4574657dacd9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JParticlesDef.h",
+      "bytes": 3439,
+      "sha256": "830dd398c799f33955b1dfec598d933978745d350cf2eb96b7f4739e981fa4ad"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JPeriodicDef.h",
+      "bytes": 4155,
+      "sha256": "a8c8eccfd6f021f3b8d5f676e8d89016356444e59f18b118b421ecc05a193312"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JDsDcellDef.h",
+      "bytes": 3824,
+      "sha256": "aaf6e75a588544bc8eb322a002407db7f2df5b26b88ace469f6eb1e08d854674"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\OmpDefs.h",
+      "bytes": 1858,
+      "sha256": "c678dee9356206c7a30c2926b0937be16ba8f126a2defebb26ffcf1b76af93fb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JNumexLibDef.h",
+      "bytes": 1101,
+      "sha256": "8864f9cf9135ffba7116b573fdeb0a189c9869706980ca18ea3d25dd7d51f18d"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_damp_ReleaseCPU_r2_source\\JVtkLibDef.h",
+      "bytes": 1988,
+      "sha256": "1384688ee9df83e70bce7497be33334bbc102e8f8668c30614b8a37e6a940ea1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_ReleaseCPU_r1\\upl_cryer_scalar3d_r1.exe",
+      "bytes": 338432,
+      "sha256": "42410b38f2f40f5978a2558c81b35263486cc77e9844bfbe6b4c79d36b9c7c56"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_ReleaseCPU_r1\\scalar3d.obj",
+      "bytes": 760124,
+      "sha256": "18c428beaf586534176cfa6f03bedbf859a40e5ffd98cc3404e0b08edf482f65"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_ReleaseCPU_r1\\compile.dependencies.json",
+      "bytes": 14509,
+      "sha256": "0e0b416a6f4eecdafc87375452ae2f84fb67b2340c94d2748ff2a1f31dabd039"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_scalar3d_r1.build.log",
+      "bytes": 56,
+      "sha256": "7ae68cad906cf47ba997d16ff9cd421141d518e550e4774ffcb2e1769aef3543"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\completion.json",
+      "bytes": 999,
+      "sha256": "6acc520433a06833c99f7775ffb34d358514d57acd6c1947eca8c6e684245522"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\fields.csv",
+      "bytes": 210408,
+      "sha256": "2659072f9baa3ff55fd2a81cb6f608b00ae80176d9b8f7e258ca2209ec997f5b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\moments.csv",
+      "bytes": 42808,
+      "sha256": "470676b6800f9453433a7735e1fc6e1af98356f58d612fef686844c0fcf56501"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\neighbors.csv",
+      "bytes": 896289,
+      "sha256": "ebe1f228692ba3c668ee591cba2104e89d0161790821b134a8edb77e6e9e4f02"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\budgets.csv",
+      "bytes": 27790,
+      "sha256": "5363147afc926f77fd6522e1976175502b4360a16ac4c6c49b788be36a2b84fb"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\arithmetic.csv",
+      "bytes": 36766,
+      "sha256": "0ee7c690eac93a9e56a61a472485c0de8a2d9cdbf02ec339846acbcd6297313f"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_scalar3d_r1\\isotropic_clone.csv",
+      "bytes": 754,
+      "sha256": "e73b413ed5a8219a19c6bd012680a2fc588ace876cbe0138121738b5a7d30fed"
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\upl_cryer_scalar3d_review_r1.png",
+      "bytes": 209553,
+      "sha256": "d1c2b1b227b077f5b14d985cb7886dbd89f728a85e2cab59cb4a9123b649dd0c"
+    }
+  ]
+}

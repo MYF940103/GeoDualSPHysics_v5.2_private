@@ -1,0 +1,37 @@
+{
+  "stage": "upl_cryer_fs_audit_r1",
+  "status": "author_only_not_executed_pending_root_full_read",
+  "author_files": ["tests/support/upl_cryer_fs_audit_r1.py", "tests/notes/upl_cryer_fs_audit_r1.json"],
+  "scope": "One bounded static geometry/classification diagnostic of the retained initial nu=.30 sphere. No production, formal XML/BAT, initial geometry, old evidence, default-OFF path, active mid job, build or solver is changed or started.",
+  "CLI_from_case04": "D:/Anaconda3/python.exe -B tests/support/upl_cryer_fs_audit_r1.py --run",
+  "default": "Help only. Author does not invoke this script, its decoder or a real data audit. Root must read and authorize the first --run.",
+  "fresh_outputs": ["tests/logs/upl_cryer_fs_audit_r1.check.json", "tests/logs/upl_cryer_fs_audit_r1.reader.call.json", "tests/figures/upl_cryer_fs_audit_r1.csv"],
+  "frozen_parent": {
+    "check": "tests/logs/cryer_full_native_r1.check.json",
+    "sha256": "b67debe21b06b020852ae381b9cbae418291bc11ce29ef2a913bac2b4743a042",
+    "required": "passed, native_safety_passed, initial35_passed, checked_frames=1065",
+    "cloud": "The unique bound artifacts entry cryer_full_native_r1_initial_cloud.csv (37173 rows).",
+    "inputs_manifest": "Consume the parent's inputs_manifest Entry to select only actual runtime XML, data/Part_0000.bi4 and generated seed Bound.vtk. Do not recursively revalidate historical mutable source originals or all full-run raw PARTs."
+  },
+  "decoder": {
+    "program": "Only the parent's frozen reader_program ReadHydroNative.exe",
+    "sha256": "5d8fbeadc5f5b953eff85457c1bff690e22afc06a345d6d752113a1fa8f52502",
+    "argv": "ReadHydroNative.exe CaseCryerProblem_PR_symc_nu030_out/data 0",
+    "count": 1,
+    "contract": "Existing 35-column soil-only CSV; IDs8..37180, native_count37181. No PosDiv or fixed particle coordinates are exported by this decoder. Own integer return code and stderr are sealed in the fresh reader.call before parsing or numerical analysis; no PowerShell LASTEXITCODE field is fabricated.",
+    "resources": "Set BLAS/OpenMP/NumExpr thread environments1 before NumPy import. Windows parent BELOW_NORMAL and restricted to one allowed logical CPU; its one decoder inherits affinity and has explicit BELOW_NORMAL/CREATE_NO_WINDOW. cKDTree workers=1, no parallel hash or analysis pool."
+  },
+  "identity": "Rehash every directly consumed sealed Entry before and after. Require native XYZ, IDs, rho, mass and FSType to match the retained initial cloud, XYZ/rho/mass bitwise. Confirm runtime np/nb/fixed/fluid blocks, dt-independent native initial time/step, dp/h/mass and positive volumes used by the neighbor predicate. These are audit-input identity checks, not new physical acceptance thresholds.",
+  "dummy_proof": "Parse the sealed generated seed BINARY Bound.vtk: actual8 big-endian float points, IDs0..7, fixed Type0, stationary velocity and positive rho. Match the runtime dummyb/dp cube corners and fixed block count. Compute minimum distance from these actual seed points to all actual native soil positions; require it beyond the conservative query radius and require actual counted dummy neighbors0. This proves seed geometry/metadata separation, not fixed coordinates independently exported from PART (the frozen decoder omits them). No dummy coordinates are guessed from an unbound formal XML or a nominal sphere.",
+  "neighbor_predicate": "cKDTree query supplies a conservative radius superset; each pair is then filtered using CPU-model rr2=float32((dx*dx+dy*dy)+dz*dz), with double native coordinate differences, rr2<=float32(float32(2*h)^2), rr2>=float32(1e-18), and positive volume. Includes all soil and8 actual seed dummy points. Native-ID ordering is deterministic for witnesses, not historical cell ordering.",
+  "nzero_counterfactual": "Explicit CPU expression: cast final to float32 of float32(4/3)*3.141592*R2*R2/(dp^3). The contrast replaces one R2 factor by R, giving R2*R, and otherwise keeps coefficient/casts/denominator. nzero/float32(neigh) and cutofffloat32(.4) are used. This numerator-only dimensional contrast is NOT an approved fix, not a changed inequality and not a claim of literal historical GPU arithmetic replay.",
+  "classification_limit": "Enums are Inner0, NearFreeSurface1, FreeSurface2, Isolated3, Boundary4. Preserve actual FS0/1/2 unmodified. Only actual FS3 with positive counted neighbors logically implies its old pre-umbrella threshold was<1.8 under the documented branch. For those no longer satisfying the R3 ratio<.4, hypothetically start fromFS2 and apply CPU3D umbrella using the actual native float FSNormal, without renormalization. Witness makes itInner0, otherwiseFS2. Actual FS3 with zero neighbors remains3. No numerical fs_threshold/PosDiv is fabricated, and no full pre/post classification rebuild is claimed.",
+  "umbrella": "Model source JSphCpu.cpp ScanUmbrellaFreeSurface: float coordinate differences and rr2, raw native float normal, norm2<=1e-12 skip; split rr2>2*h*h, far q-distance<h or near acos(clamp(-dr dot normal /sqrt(rr2)))<float32(.785398). Log normal norm2 margin, minimum absolute branch/far/angle margins, ratio margins and closest support margin. NumPy elementary functions, saved coordinates and sorted native witnesses do not prove MSVC cell order/FMA/acos or historical CUDA 0ULP equivalence.",
+  "CSV": "All37173 IDs: actual type, positive-volume neighbor count, dummy count, both nzero/ratios/cutoff distances, native normal, inferred-threshold boolean only, counterfactual-candidate flag, umbrella result/witness/threshold distances, counterfactual type and active2|3 mask. No pressure trajectory or physical peak metrics are produced.",
+  "check": "passed means identity/one owned decoder/static diagnostic completed, never physical acceptance or an accepted correction. Retain original counts, contrast counts, candidate/removed counts, zero-neighbor cases, seed geometry proof, actual call, selected inputs and CSV hashes. Failure preserves its actual exit/partial outputs; never retry or overwrite.",
+  "reference_locations": ["src/source/JSphCpu.cpp:708-712, 740-798, 804-867", "src/source/JSphGpu_ker.cu:800-870, 878-973", "src/source/DualSphDef.h:132, 337-341", "src/source/JSph.cpp:1637-1643"],
+  "limitations": ["Counterfactual static FS mask only; no repair, solver replay, 3D dynamic-seepage admission or Cryer peak-error causation.", "Only the actual FS3 subset is hypothetically reclassified. Existing FS0/1/2 are not reconstructed; threshold is logically bounded, never numerically observed.", "The retained full-native proof does not establish historical solver-executable attribution. Reader identity and directly consumed old inputs are bound without recursing mutable historical originals.", "No old source, PART, CSV, log, default-OFF behavior, server package or active current-mid output is changed."],
+  "physical_acceptance": false,
+  "production_or_formal_files_modified": false,
+  "author_executed_decoder_or_analysis": false
+}

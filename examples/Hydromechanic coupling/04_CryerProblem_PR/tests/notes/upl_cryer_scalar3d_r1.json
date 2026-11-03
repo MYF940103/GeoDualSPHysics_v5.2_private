@@ -1,0 +1,115 @@
+{
+  "stage": "upl_cryer_scalar3d_r1",
+  "status": "author_only_not_compiled_not_executed_no_trajectory_data_read",
+  "files": [
+    "support/upl_cryer_scalar3d_r1.cpp",
+    "notes/upl_cryer_scalar3d_r1.json"
+  ],
+  "CLI": "upl_cryer_scalar3d_r1.exe --out FRESH_OUTPUT_DIRECTORY",
+  "purpose": "Small standalone 3-D frozen-particle scalar pressure-Lstar diagnostic, not a JSphCpu force/complete-rate invocation, Cryer solver, boundary implementation or public3D admission. No XML/BI4/PART input, time integration, HG, field calibration, global matrix, eigenspectrum or FS repair.",
+  "provenance": {
+    "case02_tests_root": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests",
+    "references": [
+      {
+        "relative_path": "support/upl_p1_scalar_r1.cpp",
+        "bytes": 12454,
+        "sha256": "0e21d882f8573aa35ed9904a1d90519fc49bddd813f8637180da21ec3a84ab67"
+      },
+      {
+        "relative_path": "notes/upl_p1_scalar_r1.json",
+        "bytes": 3264,
+        "sha256": "49ef7a88d85b51adb671d5a553610f880e41ed3353640d07b3fb3b58fbffbcab"
+      },
+      {
+        "relative_path": "logs/upl_p1_scalar_r1c.run.json",
+        "bytes": 74802,
+        "sha256": "c9af569a0cdcd1ac1350c40bf34c9a34b91c1fca791f7ee1554c4bdc6b00f106"
+      },
+      {
+        "relative_path": "logs/upl_p1_scalar_r1c.check.json",
+        "bytes": 53257,
+        "sha256": "096193d52c521660146d501a105b1dc10f497453737a01fe302305fbbc84f418"
+      },
+      {
+        "relative_path": "logs/upl_damp_ReleaseCPU_r2.build.json",
+        "bytes": 453227,
+        "sha256": "d960b34ce8d67042094f3062c4e4bc2718e90c16c1e2e9df6fc9b2987a27ca2d"
+      }
+    ],
+    "archived_source_root": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_damp_ReleaseCPU_r2_source",
+    "archived_files": [
+      {
+        "leaf": "DualSphDef.h",
+        "bytes": 32528,
+        "sha256": "028865deccdfd86044e1883ff54dedbb15809dea7eef349285eaf8b3eb005ac7"
+      },
+      {
+        "leaf": "FunSphKernel.h",
+        "bytes": 13412,
+        "sha256": "a4cc4a372c9c1bd40ed4d1f4b993564b2c26510143b06049a08c9cb9f66cb44d"
+      },
+      {
+        "leaf": "FunSphKernelDef.h",
+        "bytes": 2304,
+        "sha256": "40dc1e374b9f25d541bb508205c7cf5073e2e8321761c82b23f60e033d5b0b89"
+      },
+      {
+        "leaf": "JSph.cpp",
+        "bytes": 190795,
+        "sha256": "a07b1ce905aba69b7b44a7f7f627b85e46065ae52014de9635b58681f3d99e02"
+      },
+      {
+        "leaf": "JSphCpu.cpp",
+        "bytes": 266050,
+        "sha256": "1e303b0a0955cced3923cebedbd07ab6da5f167365056775240198a6b18097a2"
+      },
+      {
+        "leaf": "TypesDef.h",
+        "bytes": 37988,
+        "sha256": "6cee8de4ecf33304828fb8dd566c0cada2132f8dd76ae4ff8fdb683aa828e886"
+      }
+    ],
+    "build_requirement": "Future standalone MSVC C++17: project /I ONLY this sealed69da-era265-source snapshot root; actual /sourceDependencies must select its archived project headers, never live src/source. No historical original/Git metadata is asserted current. No builder authored/run."
+  },
+  "source_read": "Current full ComputeDynamicPorePressureRateCpu(JSphCpu.cpp4383+), FsCorrMatInverse667-685, JSph.cpp1642-1657, archived kernel headers and P1 code/note/retained run/check were read. Tests lp-gp.lx ONLY, not Ace divergence/theta/smooth-k/Dirichlet/closed-FS/J/constitutive or coupled force.",
+  "geometry": {
+    "dp_m": 0.01,
+    "h": "double(float(.018))",
+    "volume": "uniform dp^3",
+    "cloud": "At most19^3=6859 points, indices -9..9, X-fastest reference IDs. Lazy LOCAL C/rows only, never a full dense matrix.",
+    "patterns": "Regular or xorshift32 seed20261101, each XYZ offset in [-.15dp,.15dp]. Consume every candidate's offsets before sphere selection; shared surviving positions agree.",
+    "full_support": "Only reference(0,0,0) receiver. Halo covers receiver,neighbor C,and reverse-row supports. Reach4 is sufficient: closest four-cell axial gap .037m>2h.",
+    "sphere_cut": "Actual |x|<=6dp; receivers(0,0,0),(4,0,0),(0,4,0),(0,0,4),(3,3,3). Curved support truncation, NOT mDBC/traction/drain/ghosts/formal Cryer geometry. Center support may be complete but neighboring C support cut.",
+    "instances": "Four clouds,12 receiver instances; no6e4-particle global grid."
+  },
+  "arithmetic": {
+    "kernel": "Actual GetKernelWendland_Ctes(false,H)/GetKernelWendland_Fac(kw,float(H),float(rr2)); float awen/bwen/rad/qq/fac, double coordinates/moments/C/scalars. Support=float(2H),support2=support*support; Eta0 and double(float((.1H)^2)) separately.",
+    "C": "Full3x3 inverse of -sum V*d tensor gradW, including cross terms; reject synthetic nonfinite/det<=1e-12 rather than substitute identity. No production CInverse/FS call.",
+    "operators": "d=xi-xj,g=fac*d,b=V*Ci*g. Receiver uses Ci*g; real symC uses .5(Ci+Cj)*g. w=2V*d.cgrad/(r2+eta2); lp=sum w(fi-fj); lx=sum w*d; gp=sum V(fj-fi)Ci*g; Lstar=lp-gp.lx. Coefficient2 unchanged.",
+    "moments": "a_ij=-w_ij-b_ij.lx_i. First=sum a_ij(xj-xi); second=.5sum a_ij(xj-xi)tensor(xj-xi). Record full Ci/Gx/second tensors, lx/first, second-I Frobenius error, real Cj/Cavg/variation.",
+    "precision_scope": "Binary64 manufactured inputs, NOT production float pressure. Original absolute constant/affine-gradient1e-10 and affine-Lstar1e-8 gates test P1 arithmetic, not native-float affine accuracy. Local field scale and17-digit values recorded; no fitted limit."
+  },
+  "fields": "14 fixed fields:7; X/Y/Z and1+3X-2Y+.5Z; .5alpha X^2/Y^2/Z^2; alpha XY/XZ/YZ; alpha(.5X^2+Y^2+1.5Z^2+.3XY-.2XZ+.4YZ); .5alpha|x|^2; cos(kX)cos(kY)cos(kZ). alpha2,k=pi/(12dp); analytic gradients/Laplacians. Quadratic/mixed/smooth errors descriptive; no exactness/convergence-order/physical gate.",
+  "isotropic_control": "Separately labeled receiverC row is a common-Cj=Ci COUNTERFACTUAL, never substituted for real symC. Full-support regular paired/Eta0 response should be3alpha; coefficient3 counterfactual is4.5alpha. Four rows also report disorder/Eta2/real-symC/Cvariation; no3alpha claim for varying sphere Cavg and no quadratic pass threshold.",
+  "pair_and_volume": "Local reciprocal V_i*a_ij vs V_j*a_ji defects max/sum/relative, plus raw-weight defect. Reverse rows use actual cloud. Selected-receiver sum V*Lstar vs V*exact is NOT whole-domain conservation or surface flux. No spectrum.",
+  "outputs": {
+    "neighbors.csv": "One real Ci-neighbor entry table per geometry/pattern/receiver, including d, rr2, actual float fac, Cj and Cavg; no eta/method duplication. At most12*728=8736 rows.",
+    "moments.csv": "48 rows=12receiver instances*2eta*2methods; full Ci/Gx/second tensors, lp coordinate defect, Lstar first moment, pair and C variation diagnostics.",
+    "fields.csv": "672 rows=48*14; lp/Lstar/exact/error, exact and corrected XYZ gradient, local field scale, independent coefficient-row action discrepancy.",
+    "budgets.csv": "224 rows=4clouds*2eta*2methods*14fields, selected-receiver volumes only.",
+    "arithmetic.csv": "432 checks:48constant +192affine gradient +192affine Lstar. Limits unchanged1e-10/1e-10/1e-8.",
+    "isotropic_clone.csv": "4 explicitly counterfactual rows, no quadratic gate.",
+    "completion.json": "Counts, source-cloud sizes, precision and original arithmetic result. passed only means finite standalone arithmetic coverage; physical_acceptance=false/public_3D_admitted=false/production_call_regression=false/zero force calls and physical steps."
+  },
+  "failure": "Fresh directory must not exist. Preserve partial output/false arithmetic completion and exit1 on failure; no overwrite/retry. Future external owner seals compiler/program/hash/exit; author asserts no result.",
+  "exclusions": [
+    "No production/public3D/wall/FS fix/formal XML/BAT/output change.",
+    "No native float-pressure/coupled operator, constitutive/timestep/flux/conservation/physical acceptance.",
+    "No quadratic accuracy-winner claim or coupled Cryer stability proof."
+  ],
+  "production_changes": false,
+  "compiled_by_author": false,
+  "executed_by_author": false,
+  "active_mid_outputs_read": false,
+  "physical_acceptance": false
+}
