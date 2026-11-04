@@ -1,0 +1,193 @@
+{
+  "stage": "cryer_load_matrix_review_r2",
+  "utc": "2026-11-04T04:49:38.414417+00:00",
+  "scope": "Read-only source/retained-evidence audit plus fresh offline aggregation; no program/reader/build/physical trajectory/production edit.",
+  "current_source": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "bytes": 267740,
+      "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 303519,
+      "sha256": "2031a140a5db3f01507748c2fd41f3574ab156c3e88e6497e15fe048b13fccf7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "bytes": 191269,
+      "sha256": "9296c4db5bdfd929a20fdebda413fb09d8576781caca79b2721a5778dd53214d"
+    }
+  ],
+  "source_locations": {
+    "CPU_internal_load_pore": "JSphCpu.cpp2467-2499",
+    "GPU_internal_load_pore": "JSphGpu_ker.cu2085-2118",
+    "stress_rate_only": "CPU2741/GPU2475",
+    "Darcy_symC_only": "CPU2582/GPU2204",
+    "load_telemetry_guard": "CPU2767-2782/GPU2498 and following writeback"
+  },
+  "source_finding": "Both current backends use raw fac*dr for internal momentum, confinement and pore force. G1 corrects the constitutive velocity gradient; Darcy symC is a separate pressure-rate operation. TopKernelBand normalization is bypassed for FlexibleConfinement.",
+  "uniform_balance": {
+    "convention": "T=sigma_effective-pI, tension-positive; g=grad_iW_ij",
+    "single_J": "a_internal+a_load=(Vj/rhoi)*(Ti+Tj+2qI)*g; uniform Ti=Tj=-qI cancels algebraically for arbitrary valid J. Actual force paths retain float rounding.",
+    "legacy": "For uniform total stress, raw mixed-density residual is mj*(1/rhoi-1/rhoj)*(pi/rhoi-pj/rhoj)*g; constant p reduces to p*mj*(1/rhoi-1/rhoj)^2*g. Equal density/p0 special cases must be distinguished."
+  },
+  "correction_choices": {
+    "B_load_only": "Leaves (Ci-I)*a_load_raw in otherwise balanced equal-density compression. Rejected by retained uniform frozen field.",
+    "C_matched_receiver": "Applying the same receiver Ci and compatible density/volume weights to effective stress,pore and load restores uniform balance. This does not enforce equal/opposite pair forces for nonuniform stress and Ci!=Cj.",
+    "D_pair_adjoint": "Fij=Vi*Vj*[(Ti+qI)*Ci+(Tj+qI)*Cj]*g, with force a_i=F_i/(rho_i*Vi). Tensor order T*C matters. Pair force is antisymmetric; torque/affine-work closure additionally uses exactly matched affine-exact gradient and same volumes. D is not Darcy symC or a currently implemented production traction option."
+  },
+  "uniform_frozen_results": {
+    "A_current_raw": {
+      "uniform_total_component_RMS_m_s2": 0.0,
+      "load_work_over_3q_nativeV": 0.9585396250793303,
+      "load_work_over_3q_geometricV": 1.0633079740977176
+    },
+    "B_load_only_receiver_C": {
+      "uniform_total_component_RMS_m_s2": 315.7757940671312,
+      "load_work_over_3q_nativeV": 1.731612296333497,
+      "load_work_over_3q_geometricV": 1.9208774625093705
+    },
+    "C_receiver_C_coupled_extension": {
+      "uniform_total_component_RMS_m_s2": 1.6951548920846513e-13,
+      "load_work_over_3q_nativeV": 1.7316122963334974,
+      "load_work_over_3q_geometricV": 1.920877462509371
+    },
+    "D_pair_adjoint_extension": {
+      "uniform_total_component_RMS_m_s2": 1.4990790001588055e-13,
+      "load_work_over_3q_nativeV": 0.9999999999999998,
+      "load_work_over_3q_geometricV": 1.109299966612978
+    }
+  },
+  "nonuniform_radial_equilibrium_results": [
+    {
+      "variant": "A_current_raw",
+      "region": "whole",
+      "count": "37173",
+      "vector_RMS_m_s2": 4.852379688495176
+    },
+    {
+      "variant": "A_current_raw",
+      "region": "center",
+      "count": "18",
+      "vector_RMS_m_s2": 46.820237022588934
+    },
+    {
+      "variant": "A_current_raw",
+      "region": "true_surface",
+      "count": "5153",
+      "vector_RMS_m_s2": 5.819913679416074
+    },
+    {
+      "variant": "B_load_only_receiver_C",
+      "region": "whole",
+      "count": "37173",
+      "vector_RMS_m_s2": 549.0585068374218
+    },
+    {
+      "variant": "B_load_only_receiver_C",
+      "region": "center",
+      "count": "18",
+      "vector_RMS_m_s2": 122.23571620155283
+    },
+    {
+      "variant": "B_load_only_receiver_C",
+      "region": "true_surface",
+      "count": "5153",
+      "vector_RMS_m_s2": 1467.0512723193367
+    },
+    {
+      "variant": "C_receiver_C_coupled_extension",
+      "region": "whole",
+      "count": "37173",
+      "vector_RMS_m_s2": 4.794025288255251
+    },
+    {
+      "variant": "C_receiver_C_coupled_extension",
+      "region": "center",
+      "count": "18",
+      "vector_RMS_m_s2": 36.55404115716232
+    },
+    {
+      "variant": "C_receiver_C_coupled_extension",
+      "region": "true_surface",
+      "count": "5153",
+      "vector_RMS_m_s2": 2.502787415438495
+    },
+    {
+      "variant": "D_pair_adjoint_extension",
+      "region": "whole",
+      "count": "37173",
+      "vector_RMS_m_s2": 4.912025323602271
+    },
+    {
+      "variant": "D_pair_adjoint_extension",
+      "region": "center",
+      "count": "18",
+      "vector_RMS_m_s2": 38.98733669305015
+    },
+    {
+      "variant": "D_pair_adjoint_extension",
+      "region": "true_surface",
+      "count": "5153",
+      "vector_RMS_m_s2": 9.184191251575406
+    }
+  ],
+  "nonuniform_qualification": "The polynomial field has div(T)=0, Trr(R)=-q and p(R)=0. Manufactured p is not overwritten on all detected surface particles; true_surface is a diagnostic group. Whole/core/surface metrics use vector RMS, whereas the uniform panel uses component RMS. D reduces some center errors but raises surface errors; no blanket accuracy benefit.",
+  "load_transmission": "Legacy eight snapshots use12 fixed center IDs from float initial positions, distinct from newer18-ID double-initial references. At t=.0455474133s center total compression11654.74Pa exceeds q10000Pa, not a simple deficient-center-load picture. p/q is not a transmitted-force fraction. Direct interior load is small/zero only when weighted zeroth gradient sum vanishes; first-moment correction does not enforce that condition.",
+  "geometry": "Native/geometric volume ratio1.1092999666 and raw normalized work.95854(native)/1.06331(geometric). D restores native work1 but leaves geometric ratio1.10930. Do not fit q,mass or theory radius to these diagnostics.",
+  "completed_actual_component_evidence": {
+    "legacy_CPU_force_review": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_force_cpu_r1.review.json",
+      "bytes": 3593,
+      "sha256": "c6d79a94a5e50262f4a2789b3192d5680dcdeb26a6891b691b40759dcacf1a48"
+    },
+    "legacy_CPU_scope": "Six Debug actual-force manufactured cases completed and reviewed; stale prepared-only note is superseded by sealed run/review. No C/D production candidate was executed. Balanced full-call load telemetry can be zero despite separate actual load probeRMS338.30841m/s2.",
+    "dynamic_GPU_review": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\upl_cryer_gpu_component_Release_probe_r4_release_review_r1.check.json",
+      "bytes": 263246,
+      "sha256": "3844c684f21b465552ce0fbf6e76b20a3079710b14ef744bad4a6f5b9f335b49"
+    },
+    "dynamic_GPU_scope": "Passed retained Release six-probe component and distinct Debug recovery evidence; raw confinement/cancellation J1 only, no corrected-force candidate, time integration, nonuniform-J public3D or physical acceptance. Old r3 PowerShell owner exit remains unavailable; no alias invented."
+  },
+  "aggregation": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\logs\\cryer_load_matrix_review_r2.check.json",
+    "bytes": 2685,
+    "sha256": "bdd320557ce55f4bd083f67b2343d22c0a4a13e97577845514b80ad70450add1"
+  },
+  "plots_and_CSV": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_load_matrix_review_r2.schemes.csv",
+      "bytes": 5774,
+      "sha256": "5dc44fed1ae794038afe30d5edcc6891d0fa5a90780e02749a612b4f18a8008b"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_load_matrix_review_r2.patch.csv",
+      "bytes": 13312,
+      "sha256": "4b49e044f3e70f4e21d721ec414ab38b82a93c4ca08cd71d8da30cd2a787c739"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_load_matrix_review_r2.history.csv",
+      "bytes": 1135,
+      "sha256": "f3b0654467896b86fc49b7573d988935decebc305ce257b60f4fc8ddaee6cfe9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\figures\\cryer_load_matrix_review_r2.png",
+      "bytes": 238605,
+      "sha256": "5252651a951442f1c948e1d7e9f2161ab255c64e0970e17a46b980f50adc82a8"
+    }
+  ],
+  "root_plot_visually_inspected": true,
+  "decision": "Uniformly correcting all coupled terms fixes the load-only imbalance. Existing data do not justify replacing current raw traction: receiver-C lacks general pair balance, while pair-adjoint D lacks uniformly better local radial accuracy and coupled-trajectory evidence. Any future candidate must change stress/pore/load together and retain force/torque/work, radial local and pressure-peak checks. Current production and full2Tv stay unchanged.",
+  "production_changed": false,
+  "formal_inputs_or_results_changed": false,
+  "physical_acceptance": false,
+  "independent_peer_review": {
+    "source_and_all3_inputs_all4_products_hashes_checked": true,
+    "all60_patch_selector_triples_unique": true,
+    "patch_export_byte_identical_to_retained_source": true,
+    "component_and_vector_RMS_and_legacy_vs_current_ID_groups_reviewed": true,
+    "no_semantic_or_math_blocker_found": true,
+    "new_program_or_active_full_access": false
+  }
+}
