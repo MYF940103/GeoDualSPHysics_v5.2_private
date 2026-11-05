@@ -1,0 +1,228 @@
+{
+  "stage": "upl_bigstep_full_root_r1",
+  "utc": "2026-11-05T11:24:38.283334+00:00",
+  "passed": true,
+  "scope": "Completed CPU implementation/native/full-cycle diagnostic review; not unconditional physical or formal release acceptance",
+  "physical_acceptance": false,
+  "full_solver_completed": true,
+  "original_native_guards_passed": true,
+  "common_prefix_measured_1291_all_five_including_signed_clock_dterror": true,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_full_terminal_root_r1.check.json",
+      "bytes": 2641,
+      "sha256": "ff9a811a83613d303c780fbf73f90f62b7f801d8f50e1e21702e3704e01876f7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_2tv_CPU1_r1.run.json",
+      "bytes": 1127870,
+      "sha256": "cf1ac1b19a3ed26c4973281217d0ded7e02fa9f2882fd0f0b4ab43aa0fcb1523"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_full_r1.native.json",
+      "bytes": 1112684,
+      "sha256": "2c5e681bcda8a3fab11fcc99f83a53530276adca8fa8054ca9380b31d32d9d7a"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_bigstep_full_r1.review.json",
+      "bytes": 1119808,
+      "sha256": "5613343b5675bc6e6378ccd7c446b68f84c3fd2b72a5f548e69203259adf5bfc"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_full_upw_compare_r1.check.json",
+      "bytes": 9105,
+      "sha256": "03760c27e36b84a2a3bf629473b616ce6472cbe798033c8ef4ed2f15cc957ca4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_full_focus_r1.check.json",
+      "bytes": 6442,
+      "sha256": "6f1c43dde6bc95385cc16b2f791068613f564e393f11defd947d3a06c807e08a"
+    }
+  ],
+  "metrics": {
+    "final_time_s": 72.88428689946836,
+    "final_actual_Tv": 2.0000000262452198,
+    "steps": 11661219,
+    "frames": 1682,
+    "dt_s": 6.250143051147461e-06,
+    "simulation_runtime_s": 148603.90625,
+    "pressure": {
+      "native_same_node_mean_Pa": 58.66512840259075,
+      "H1_finite_Kw_same_node_mean_Pa": 59.22529191825259,
+      "difference_Pa": -0.5601635156618343,
+      "residual_relative_percent": -0.9458180745398708,
+      "profile_RMS_Pa": 0.5705096604222258
+    },
+    "top_settlement": {
+      "native_mm": 3.683853952119287,
+      "H1_finite_Kw_mm": 3.673717224763563,
+      "difference_mm": 0.010136727355723796,
+      "relative_percent": 0.27592562888060024
+    },
+    "bottom_settlement": {
+      "native_mm": 0.020739545853447252,
+      "H1_finite_Kw_mm": 0.01839866050630464,
+      "difference_mm": 0.0023408853471426107,
+      "relative_percent": 12.72312919921786
+    },
+    "late_window": {
+      "rows": 201,
+      "first_time_s": 36.615331793116944,
+      "first_pressure_Pa": 681.4897560100555,
+      "last_pressure_Pa": 58.66512840259075,
+      "all_successive_saved_means_strictly_decrease": true,
+      "later_uncomputed_floor_claim": false
+    },
+    "stress": {
+      "post_point1_rows": 1364,
+      "rows_exceeding_retained_old_100Pa_criterion": 226,
+      "max_post_point1_layer_error_Pa": 110.57550439811712,
+      "final_layer_error_Pa": 110.56293691879364,
+      "final_top_gap_Pa": 4.8272178961124155,
+      "final_Q_Pa": 18.878322200690036,
+      "old_final_Q_Pa": 10.108109519031537,
+      "old_final_layer_error_Pa": 50.53535052874213,
+      "old_100Pa_accuracy_criterion_met": false,
+      "not_an_added_runtime_guard": true
+    },
+    "alternating_X": {
+      "final_Uz_RMS_mm": 1.009955120398166e-08,
+      "max_history_Uz_RMS_mm": 1.6001114799065808e-08,
+      "final_six_stress_components_RMS_Pa": 3.053100214764525e-05,
+      "strict_no_growth_claim": false
+    },
+    "final_J": {
+      "min": 0.9962751168157646,
+      "mean": 0.9962974629525586,
+      "max": 0.9963268540736964
+    },
+    "final_n": {
+      "min": 0.2973828450956705,
+      "mean": 0.2973986041390377,
+      "max": 0.2974193305972124
+    },
+    "final_actual_rho_kg_m3": {
+      "min": 2104.0553564349025,
+      "mean": 2104.0879265840176,
+      "max": 2104.112690795445
+    }
+  },
+  "program_and_physics": {
+    "backend": "CPU1 Release",
+    "dynamic_seepage": true,
+    "k_m_s": 0.0001,
+    "dp_m": 0.01,
+    "width_m": 0.1,
+    "SPR": 1,
+    "AV": 0.1,
+    "damping_eta": 0.04,
+    "HG_xi": 0.1,
+    "load_band_layers": 5,
+    "wall": "FreeSlip3",
+    "stress": "double",
+    "pressure": "float",
+    "porosity": "current single double J",
+    "fresh_start": true
+  },
+  "acceptance": {
+    "pressure_and_top_material_settlement_close_to_qualified_reference": true,
+    "late_saved_pressure_platform_observed": false,
+    "macroscopic_alternating_X_mode_observed": false,
+    "old_100Pa_bottom_stress_criterion_passes": false,
+    "no_new_theory_half_or_backend_equivalence_gate": true,
+    "only_completed_CPU_combination_reviewed": true
+  },
+  "comparison_limits": [
+    "H1 finite-Kw is an unfitted companion, not exact coupled dynamic ramp/band theory. H=.995 remains a separately reported unfitted geometry sensitivity. Same-native-node arithmetic/J-weighted means are distinct from continuum integrals.",
+    "Old retained u-pw uses GPU,dt1e-5,Vel0/Slip1,tD=.01 versus new CPU1,dt6.250143us,FreeSlip3,tD=.010000228881835938,currentJ/inertia. This is a qualified aggregate comparison, not isolated formulation, precision, wall, timestep or backend A/B.",
+    "No full-cycle half-step validation, plastic/general-boundary/exact-HG-restart/server-release claim. All original identities and thresholds unchanged."
+  ],
+  "visual_review": {
+    "root_inspected": [
+      "upl_bigstep_full_r1.history.png",
+      "upl_bigstep_full_r1.modes.png",
+      "upl_bigstep_full_r1.profiles.png",
+      "upl_full_upw_compare_r1.history.png",
+      "upl_full_upw_compare_r1.profiles.png",
+      "upl_full_focus_r1.png"
+    ],
+    "focus_views_are_explicit_subsets_with_full_history_retained": true,
+    "matching_CSVs_retained": true
+  },
+  "bottom_quadrature_witness": {
+    "execution": "Independent agent bounded read-only snapshot calculation,83,200candidate pairs; not an exact production force replay",
+    "initial_G0_vector_RMS_per_m_approx": 6e-15,
+    "final_actual_G0z_per_m": 0.121532082727,
+    "final_uniform_stress_only_az_m_s2": -1.155192661,
+    "counterfactual_reflected_current_first4_layers_G0z_per_m": -0.007019311067,
+    "counterfactual_uniform_stress_only_az_m_s2": 0.0667202968,
+    "magnitude_decrease_percent_approx": 94.22,
+    "receiver_C_does_not_remove_zero_moment": true,
+    "limitations": [
+      "Counterfactual geometry is a diagnostic only,not adopted boundary physics.",
+      "Saved fixed-J can be force-stage stale; omitted HG/damping/load and sorted float accumulation.",
+      "Not proof of the110.6Pa residual cause; no actual acceleration,work/conservation or wall correction acceptance."
+    ],
+    "reproduction": {
+      "original15": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_2tv_CPU1_r1_native_r1\\original15.bin",
+        "bytes": 279898268,
+        "sha256": "0fb7686aa3d592b5307ef339d051c79bef6d25f73ee8a9d4d2c762d5bf62cd15",
+        "header_LE_uint32": [
+          1040,
+          15,
+          1682
+        ],
+        "record_bytes": 166408,
+        "record_schema": "time:f8,ID:u4[1040],pos:f8[1040,3],remaining137280bytes; column arrays not particle-interleaved"
+      },
+      "J_theta": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_2tv_CPU1_r1_native_r1\\common_j_theta.bin",
+        "bytes": 28001948,
+        "sha256": "ec1b49c71d28c4fc210b741493f1f69c19f5dc96dee13797d8e5453c45a26307",
+        "header_LE_uint32": [
+          1040,
+          2,
+          1682
+        ],
+        "record_bytes": 16648,
+        "record_schema": "time:f8,Jtheta:f8[1040,2]"
+      },
+      "parts": [
+        0,
+        1681
+      ],
+      "receivers": "native40+100*c,c=0..9",
+      "reflection_sources": "native40+100*c+l,l=0..3,c=0..9",
+      "volume": "V0=double(float32(.21))/2100;Vj=V0*Jj",
+      "density": "rho_i=1000+(2100-1000)/Ji",
+      "gradient": "Periodic minimum-image dx atL=.1 then float32 dr/rr/rad/q/fac/g in source order;h=float32(.018),bwen=float32(-2.7852/h^3). G0=sum(Vj*double(gradW)) in native-ID order/double reduction.",
+      "stress_only_acceleration": "a_i=-20000/rho_i*G0_i for hypothetical totalT=-10000I",
+      "first_moment": "M_i=-sum(Vj*d32_XZ outergrad32_XZ); C_i=inverse(M_i); C_i*G0_i not zero",
+      "arithmetic_crosscheck": "All-double diagnostic retained float h/cutoff and confirmed actualG0z=.1215315924,mirrorG0z=-.0070189753",
+      "frozen_source": "outputs/upl_spr_av_ReleaseCPU_r1_source/JSphCpu.cpp:2419-2430,2458,2468-2477;FunSphKernel.h:191-195,217-221",
+      "candidate_pairs": 83200,
+      "cost_note": "Whole separate Python invocation3.6s incl startup/read; processCPU timer belowresolution,not literallyzero."
+    }
+  },
+  "current_solver_processes": [],
+  "source_or_formal_inputs_or_results_changed": false,
+  "new_solver_reader_or_watcher_launched_in_root_final_review": false,
+  "automatic_new_solver_admitted": false,
+  "next": [
+    "Save verified full review/plots/CSV selectively to local and remote Git.",
+    "Bounded read-only bottom quadrature and exact CPU/GPU stabilizer gap review; no extra half/reference chain.",
+    "Before a physical operator patch, state files and consequences,retain current full baseline and require focused implementation checks."
+  ],
+  "independent_closed_review": {
+    "agent": "half_notifier_author",
+    "all25_overlay_hashes_match": true,
+    "full1682_Q_maxstress_topgap_recomputed_from100_layers": true,
+    "max_Q_roundoff_difference_Pa": 1.14e-13,
+    "endpoint512_mode_reference_recomputed": true,
+    "old_classical_bottom_error_um": 0.926597124,
+    "old_error_is_not_finite_Kw_reference": true,
+    "root_focus_figure_visually_inspected": true,
+    "no_solver_or_decoder_or_wrapper_invoked": true
+  }
+}

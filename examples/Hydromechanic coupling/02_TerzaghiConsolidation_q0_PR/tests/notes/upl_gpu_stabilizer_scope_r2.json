@@ -1,0 +1,133 @@
+{
+  "stage": "upl_gpu_stabilizer_scope_r2",
+  "status": "bounded_read_only_scope_review",
+  "physical_acceptance": false,
+  "implementation_or_run_admission": false,
+  "source_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "bytes": 122366,
+      "sha256": "ef88296027f2947965b5823b75f655c2b3cad0908c855db4fcdd5cc1e82dee99"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 303519,
+      "sha256": "2031a140a5db3f01507748c2fd41f3574ab156c3e88e6497e15fe048b13fccf7"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu.h",
+      "bytes": 3434,
+      "sha256": "bf23f851ac86d406d852c28beae8a799ab5f527dd9391a2b3a6019fda3c5a3c1"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu.cpp",
+      "bytes": 11010,
+      "sha256": "7f86dd23bc29a58de2c61e5f8f7c5e5d05ea62b6f5cc5c357d5e0029fedefc01"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.h",
+      "bytes": 2258,
+      "sha256": "8528ffeb26acb43406a61a21a178c8d0544f563b2e9d320aca2c8555adb36491"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.cu",
+      "bytes": 11488,
+      "sha256": "41cf020fa35317170645147106c1748f68868a4311d72f6df72ef682d4d815c4"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "bytes": 67357,
+      "sha256": "198a7a490005e21cf9e184fa9f2fd1d9b89908c2ead34c858ed534c5e3cc36b9"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "bytes": 191269,
+      "sha256": "9296c4db5bdfd929a20fdebda413fb09d8576781caca79b2721a5778dd53214d"
+    }
+  ],
+  "CPU_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+    "bytes": 267740,
+    "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+  },
+  "CPU_frozen_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_spr_av_ReleaseCPU_r1_source\\JSphCpu.cpp",
+    "bytes": 267740,
+    "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+  },
+  "root_full_review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_root_r1.json",
+    "bytes": 10784,
+    "sha256": "34a74789f5b54bd10de3200c0e0547e6835ea57b87f36b34206d15c9c2b0e8e7"
+  },
+  "old_optional_plan": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\validation\\upl_gpu_hg_delivery_options_r1.json",
+    "bytes": 5144,
+    "sha256": "ea27311282cd8c9aa1243a46db2c322a5ca09002423b68092113899207277305"
+  },
+  "scope": "Reproduce only current public constant-k/g0/fresh2D/X-periodic/single-upward-FreeSlip-bottom elastic loaded column; no lifting general restrictions,wall/operator replacement or newdt/half/reference chain.",
+  "gaps": {
+    "SPR": {
+      "files": [
+        "JSphGpu.cpp"
+      ],
+      "locations": [
+        1253,
+        1635,
+        1740
+      ],
+      "change": "Narrow admission plus skip ordinary BoundaryDerivativeVelocity when DynamicPoreWall owns same-stage J-aware reconstruction. Reuse existing producer v_deriv=Qv and v_tan=.5(I+Q)v atJSphGpu_ker.cu1533-1542; no new array/mirror equation.",
+      "physical_consequence": "Matches accepted CPU derivative closure; preserves physical/tangential viscosity differences."
+    },
+    "AV": {
+      "files": [
+        "JSphGpu_ker.cu"
+      ],
+      "locations": [
+        2308,
+        2311
+      ],
+      "change": "Currentrho_i=rhow+(rho0-rhow)/Ji;rho_j likewise;mj=V0*Jj*rho_j; pi=(-alpha*cbar*mu/((rho_i+rho_j)/2))*mj, then float component add as CPU2690-2697.",
+      "preserve": "Approach-only dot<0,physicaldv_visc,boundaryfactor,alphaCs0,mu=h*d.dv/(r2+eta2),literalOFF/Visco0 legacy branch. Existing poroj/pororhot1/porovol2 suffice."
+    },
+    "HG": {
+      "files": [
+        "JSphHourglassGpu.h",
+        "JSphHourglassGpu.cpp",
+        "JSphHourglassGpu_ker.h",
+        "JSphHourglassGpu_ker.cu",
+        "JSphGpuSingle.cpp"
+      ],
+      "locations": [
+        67,
+        189,
+        200,
+        213
+      ],
+      "change": "Vi=V0Ji,mi=V0(rho0-rhow+rhowJi),beta=xiGViVjw,Hdot=Qdot/M0,deltaAce=(M0/mi)H,lambda_i=2sum(beta)/mi. Compare rawJ in cache; corrector AddHistory uses currentPoroJg through fresh native slots,not stalecachedNodesJ.",
+      "preserve": "Current geometry and endpoint grid; legacy nullJ branch/reference-M0 history/netforce; current-mi actual float-add force; no-FMA writeback,fourphases."
+    },
+    "entry": {
+      "files": [
+        "JSph.cpp",
+        "JSphGpu.cpp"
+      ],
+      "locations": [
+        612,
+        1728,
+        1738,
+        1740
+      ],
+      "change": "Only after implementation checks allow the exact CPU column restrictions. Guards cannot simply be removed."
+    }
+  },
+  "ordering_already_correct": "JSphGpuSingle.cpp744-760:physicalforce -> damping -> normalizedtopband -> HG -> final-totalAce dynamicDarcy; retain last acceleration limiter order.",
+  "next_checks": [
+    "Review a minimal reversible candidate before editing the8corefiles; document newly supported scope and preserve current acceptedCPU source.",
+    "After future code changes defaultCPU Debug plus relevantGPU Debug are required. NativeOFF and legacy nullJ effects require focused implementation regression before adoption.",
+    "No extra half/mid/full chain or automatic solver is admitted by this note; user-directed later fullCPU/GPU comparison remains separate."
+  ],
+  "not_a_bottom_stress_fix": true,
+  "production_files_changed": false,
+  "solver_build_decoder_watcher_invoked": false
+}
