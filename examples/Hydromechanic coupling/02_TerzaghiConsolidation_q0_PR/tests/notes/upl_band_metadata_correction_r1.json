@@ -1,0 +1,46 @@
+{
+  "stage": "upl_band_metadata_correction_r1",
+  "passed": true,
+  "metadata_only": true,
+  "physics_or_source_or_saved_fields_changed": false,
+  "sealed_record_preserved": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_bigstep_full_root_r1.json",
+    "bytes": 10784,
+    "sha256": "34a74789f5b54bd10de3200c0e0547e6835ea57b87f36b34206d15c9c2b0e8e7"
+  },
+  "sealed_record_Git": "d9200cc615fe02245e3d7116384a39d4098e9938",
+  "incorrect_field": "program_and_physics.load_band_layers=5",
+  "correction": "5 is HMLOAD_TopKernelBand enum,not a count of material layers. Actual normalized support is z>current_zmax-KernelSize,KernelSize=2h. Use normalized top-2h band in publications.",
+  "initial_geometry": {
+    "dp_m": 0.01,
+    "h_float_m": 0.017999999225139618,
+    "kernel_size_2h_m": 0.035999998450279236,
+    "initial_top_material_z_m": 0.995,
+    "included_initial_material_layers": 4,
+    "included_initial_z_m": [
+      0.995,
+      0.985,
+      0.975,
+      0.965
+    ],
+    "first_excluded_initial_z_m": 0.955
+  },
+  "source": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "bytes": 267740,
+      "sha256": "6de7e04477e92ea141224b9df38e0860ae07efdc7b5d512ed30c318e7260236e"
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\DualSphDef.h",
+      "bytes": 32528,
+      "sha256": "028865deccdfd86044e1883ff54dedbb15809dea7eef349285eaf8b3eb005ac7"
+    }
+  ],
+  "source_locations": [
+    "DualSphDef.h:332",
+    "JSphCpu.cpp:1290-1314"
+  ],
+  "this_does_not_supersede_numerical_metrics_or_frozen_hash_evidence": true,
+  "plotter_uses_correct_top2h_label": true
+}

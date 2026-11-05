@@ -1,0 +1,37 @@
+{
+  "stage": "upl_root_figures_author_r1",
+  "authoring_only": true,
+  "executed_by_author": false,
+  "physical_acceptance": false,
+  "script": "support/plot_upl_full2tv_r1.py",
+  "output_directory": "figures",
+  "fresh_flat_prefix": "full_validation_upl_CPU1_r1",
+  "purpose": "Publish reproducible root-level full-cycle CPU diagnostic figures and matching CSVs from sealed review artifacts. No solver, decoder, new theory calculation, fit or interpolation.",
+  "pinned_receipts": {
+    "tests/logs/upl_bigstep_full_r1.review.json": "5613343b5675bc6e6378ccd7c446b68f84c3fd2b72a5f548e69203259adf5bfc",
+    "tests/logs/upl_full_upw_compare_r1.check.json": "03760c27e36b84a2a3bf629473b616ce6472cbe798033c8ef4ed2f15cc957ca4",
+    "tests/logs/upl_full_focus_r1.check.json": "6f1c43dde6bc95385cc16b2f791068613f564e393f11defd947d3a06c807e08a",
+    "tests/notes/upl_bigstep_full_root_r1.json": "34a74789f5b54bd10de3200c0e0547e6835ea57b87f36b34206d15c9c2b0e8e7"
+  },
+  "figures": [
+    "profiles: all ten requested Tv targets including 1.5 and 2, finite-Kw solid curves and same-color current open circles; separate late-profile view",
+    "history: complete pressure/top/bottom material histories, same-time H1 finite/classical companions, qualified old u-pw, and late pressure/top/bottom error views",
+    "startup: the saved pressure/top/bottom response through 0.1 s with no discarded oscillations",
+    "overview: pressure profiles, mean pressure history and top material settlement",
+    "diagnostics: vertical-layer Q, total-stress residual and old 100 Pa line, bottom bias, distinct alternating-X modes, J/n/actual native rho, final all-layer stress profile",
+    "qualified_upw_profiles: byte-exact copy of the previously reviewed old/new ten-target profile figure, preserving its own-time reference qualifications"
+  ],
+  "CSV_outputs": "Byte-exact copies of all five full-review CSVs including all 168200 layer rows, three overlay CSVs and two focus CSVs; new endpoint reference/error summary and ten-target layer-mean profile RMS summary.",
+  "numerical_labels": [
+    "Actual recorded times/Tv and signed target gaps retained; no matched-time or isolated A/B claim.",
+    "Layer-mean RMS uses 100 material layers; endpoint native-node RMS is a separately labeled 1000-ID statistic.",
+    "H1 is primary; H=.995 remains an unfitted sensitivity in copied CSVs and endpoint summary, never a selected fitted truth.",
+    "Same-native-node arithmetic/J-weighted means remain distinct from continuum integral means.",
+    "Current CPU1/FreeSlip3/dt6.250143us/currentJ-inertia differs from old GPU/Vel0/dt10us/legacy inertia and drainage event.",
+    "Finite-Kw/classical ideal-drainage companions do not reproduce the dynamic ramp, normalized current-top 2h load band, inertia or deformed quadrature exactly. The sealed root note's load_band_layers=5 is not used: the actual cutoff is within 2h of current zmax, initially four material layers at h=.018 and dp=.01.",
+    "All plotted axes are linear. Startup/late/post-0.1 windows are explicitly named; matching complete histories remain available.",
+    "The retained old 100 Pa stress criterion is shown, including current exceedances, without adding or relaxing a new-run accuracy gate. Plotting pass is not unconditional physical/formal acceptance."
+  ],
+  "guards": "Require pinned passed diagnostic receipts, exact full row counts and 100 ordered layers per target, exact current history/theory time membership, and the correct overlay full-review association. Hash every consumed receipt/file/script/note before and after. Refuse any existing destination; exclusive creation protects retained data. Copy source CSV/qualified PNG bytes exactly. Future plotting uses Windows BelowNormal priority, one BLAS/OpenMP thread and PNG160dpi.",
+  "author_validation": "Manual source/schema review and AST/JSON-only static checks; plotting code is not imported or executed by author. Parent owns visual review of the actual generated PNGs before publication claims."
+}
