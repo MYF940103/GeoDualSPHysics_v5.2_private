@@ -1,0 +1,34 @@
+{
+  "stage": "upl_noslip_gpu_review_r1",
+  "date_local": "2026-11-06",
+  "CPU_review": "tests/notes/upl_noslip_cpu_review_r1.json",
+  "source_files": ["src/source/JSphGpu.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu"],
+  "change": "Reuse existing BoundSlipModeg with CTE slip fallback; retain fitted q coefficients for NoSlip stress at B. Full negative derivative image and existing tangent projection are separate from geometric C and Darcy Ace. No new particle array or neighbor pass; public guards remain restricted.",
+  "builds": {
+    "GPU_Debug": "tests/logs/upl_noslip_Debug_r1.build.json",
+    "required_CPU_Debug_after_GPU_edits": "tests/logs/upl_noslip_postgpu_DebugCPU_r1.call.json",
+    "both_owned_exits_zero": true,
+    "warnings": "Retained third-party PDB LNK4099 and GPU default-library LNK4098 warnings; no new compile failure in production builds."
+  },
+  "new_component": {
+    "check": "tests/logs/upl_noslip_gpu_component_r1.check.json",
+    "conditions": 12,
+    "wall_rows": 24,
+    "NoSlip_FreeSlip_offgrid_rows_each": 12,
+    "max_error_over_original_budget": 0.000004286042945277757,
+    "actual_CTE_and_conflicting_override_proved": true,
+    "memcheck_errors": 0,
+    "memcheck_leaked_bytes": 0,
+    "tool_and_actual_target_exits_zero": true,
+    "one_memcheck_no_duplicate_direct_run": true,
+    "author_fixture_correction": "Before first compile, two CUDA float3 conversions use existing Vec rather than incompatible ToTDouble3. Production equations/budgets unchanged."
+  },
+  "retained_controls": [
+    {"check": "tests/logs/upl_noslip_cubic_gpu_control_r1.check.json", "files_byte_exact": 4, "bytes_byte_exact": 635408, "rate_rows": 4536},
+    {"check": "tests/logs/upl_noslip_gravity_gpu_control_r1.check.json", "files_byte_exact": 5, "bytes_byte_exact": 131490, "rate_rows": 972}
+  ],
+  "identity": "Consumed source, object, program, runtime and input size/mtime remained unchanged through closed calls; SHA scans zero. No canonical executable installation, solver trajectory or old worker restart.",
+  "limits": "Synthetic 81-fluid/2-fixed GPU component differs from CPU1280 geometry. No matched-ID CPU/GPU physical comparison, wall-force/SH feedback, normal-gravity NoSlip, mixed-axis corner, inactive-wall, plasticity or performance acceptance.",
+  "physical_acceptance": false,
+  "public_NoSlip_admission": false
+}

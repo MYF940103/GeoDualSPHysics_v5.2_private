@@ -1,0 +1,90 @@
+{
+  "stage": "upl_noslip_gravity_gpu_control_r1.check",
+  "passed": true,
+  "actual_owned_exit": 0,
+  "completion": {
+    "stage": "upl_gravity_wall_gpu_component_r1",
+    "passed": true,
+    "good_conditions": 12,
+    "wall_rows": 24,
+    "physical_face_rows": 24,
+    "rate_rows": 972,
+    "negative_face_probes": 16,
+    "negative_counterfactual_evaluations": 32,
+    "zero_normal_g_skipped_face_probes": 8,
+    "zero_normal_g_skipped_counterfactuals": 16,
+    "separate_expected_stage0_overflow_rejections": 1,
+    "max_wall_state_over_original_budget": 0,
+    "max_face_flux_over_propagated_budget": 3.733398533578861e-12,
+    "max_rate_over_original_budget": 0.007568623365038049,
+    "min_missing_head_flux_over_good_budget": 1043.6818198679605,
+    "min_wrong_Ace_flux_over_good_budget": 1052.7500143280292,
+    "fluid_slots": 81,
+    "fixed_slots": 2,
+    "dp": 0.125,
+    "h_over_dp": 1.2,
+    "actual_GPU_FS_three_wall_stages_Darcy": true,
+    "independent_host_raw_sum_and_physical_face_MLS": true,
+    "reference_uses_actual_conditional_C": true,
+    "native_input_and_FS_C_unchanged_by_wall": true,
+    "rate_input_state_unchanged": true,
+    "normal_head_only_not_full_gravity_pressure": true,
+    "native_Ace_minus_gn_true_as_gt": true,
+    "negative_controls_are_host_counterfactuals": true,
+    "CPU1280_geometry_or_same_ID_comparison": false,
+    "JSph_loading_or_periodic_or_force_solver": false,
+    "completed_physical_steps": 0,
+    "public_gravity_admission": false,
+    "physical_acceptance": false
+  },
+  "table_rows": {
+    "face.csv": 24,
+    "overflow.csv": 1,
+    "rates.csv": 972,
+    "wall.csv": 24
+  },
+  "retained_control": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_gravity_wall_gpu_component_r1\\result",
+  "byte_comparisons": [
+    {
+      "file": "completion.json",
+      "old_bytes": 1214,
+      "new_bytes": 1214,
+      "byte_equal": true
+    },
+    {
+      "file": "face.csv",
+      "old_bytes": 5551,
+      "new_bytes": 5551,
+      "byte_equal": true
+    },
+    {
+      "file": "overflow.csv",
+      "old_bytes": 131,
+      "new_bytes": 131,
+      "byte_equal": true
+    },
+    {
+      "file": "rates.csv",
+      "old_bytes": 121514,
+      "new_bytes": 121514,
+      "byte_equal": true
+    },
+    {
+      "file": "wall.csv",
+      "old_bytes": 3080,
+      "new_bytes": 3080,
+      "byte_equal": true
+    }
+  ],
+  "all_CSV_and_completion_byte_exact": true,
+  "source_unmodified": true,
+  "consumed_SMT_unchanged": true,
+  "attempts": {
+    "compile": 1,
+    "link": 1,
+    "direct_component": 1,
+    "memcheck": 0
+  },
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

@@ -24,7 +24,7 @@
   "kernel": {
     "paper": "Cubic",
     "hdp": 1.2,
-    "current_dynamic_rate_and_fit": "Wendland hardcoded; Cubic requires implementation and validation"
+    "current_dynamic_rate_and_fit": "Wendland/Cubic dispatch implemented; bounded CPU/GPU components passed, full Cubic integration pending"
   },
   "paper_step_s": 2e-05,
   "paper_step_uses_TPI": true,
@@ -37,7 +37,6 @@
   "restart_interoperability_claimed": false,
   "current_source_gaps": [
     "public dynamic g=0/elastic admission and specific wall restrictions",
-    "Cubic dynamic Darcy and wall interpolation dispatch",
     "nonperiodic mixed FreeSlip/NoSlip walls,normal gravity and corners",
     "dynamic DP/strength softening/plastic-volume state compatibility",
     "Eq19 dilation-angle softening and plastic strain definition",
@@ -212,6 +211,19 @@
     "necessary_double_reflection_repairs": 6,
     "remaining_full_rank_below_original_det_limit": 4,
     "far_ghost_targets_constructed": false,
-    "production_boundary_changed": false
+    "production_boundary_changed": false,
+    "weak_top_fit_center_review": "tests/logs/upl_wall_topshift_r1.check.json",
+    "weak_top_offline_original_det_4of4_recovered_without_threshold_change": true,
+    "corner_real_neighbor_recenter_review": "tests/logs/upl_wall_cornerfit_r1.check.json",
+    "corner_static_det_passes": 6,
+    "remaining": "Actual backend mixed-plane/gravity, physical contact/wetness, non-affine extrapolation and inactive-wall consistency remain required; no public gate bypass."
+  },
+  "NoSlip_implementation_20261106": {
+    "CPU_review": "tests/notes/upl_noslip_cpu_review_r1.json",
+    "GPU_review": "tests/notes/upl_noslip_gpu_review_r1.json",
+    "CPU_instantaneous_force_review": "tests/notes/upl_noslip_force_review_r1.json",
+    "legacy_18CSV_6JSON_byte_exact": true,
+    "GPU_memcheck_zero_errors_leaks": true,
+    "transient_gravity_corners_or_public_admission": false
   }
 }

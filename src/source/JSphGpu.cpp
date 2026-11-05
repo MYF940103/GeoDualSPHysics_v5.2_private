@@ -1696,7 +1696,7 @@ void JSphGpu::ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg){
     if(owned){invalidg=ArraysGpu->ReserveUint();cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);}
     cusph::DynamicPoreWall(stage,Np,NpbOk,MdbcThreshold,DivData,Posxyg,Poszg,Codeg,BoundNormalg
       ,BoundModeg,TangenVelg,BoundDerivativeVelg,Velrhopg,Sigmag,PorePressg,PoroJg,PoroThetag,CorrMatg,Aceg
-      ,1.-double(SoilCte.Porosity),invalidg,TKernel);
+      ,1.-double(SoilCte.Porosity),invalidg,TKernel,BoundSlipModeg);
     if(owned)cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   }
   catch(...){if(owned && invalidg)ArraysGpu->Free(invalidg);throw;}

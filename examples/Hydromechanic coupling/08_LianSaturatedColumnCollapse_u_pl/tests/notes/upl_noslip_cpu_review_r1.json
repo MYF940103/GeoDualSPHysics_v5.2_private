@@ -1,0 +1,42 @@
+{
+  "stage": "upl_noslip_cpu_review_r1",
+  "date_local": "2026-11-06",
+  "scope": "CPU reconstruction and shared-writer implementation regression; no public NoSlip or physical acceptance",
+  "source_base": "9e0dd89aa3a74a3aabb3454802f6b29f45a32793",
+  "source_change": "JSphCpu.cpp reuses fitted gradients through the internal MLS callback. NoSlip uses the existing slip selector, full negative mirror derivative velocity, legacy tangent projection and unflipped stress extrapolated to the boundary. J/p head, geometric C and Darcy Ace policies are retained.",
+  "CPU_Debug_build": "tests/logs/upl_noslip_DebugCPU_r2.build.json",
+  "reconstruction": {
+    "checks": ["tests/logs/upl_noslip_CPU_Wendland_r1.check.json", "tests/logs/upl_noslip_CPU_Cubic_r1.check.json"],
+    "kernels": ["Wendland", "Cubic"],
+    "conditions_total": 12,
+    "wall_rows_total": 3072,
+    "NoSlip_rows_total": 1536,
+    "offgrid_rows_total": 1536,
+    "max_error_over_original_budget_W_C": [0.0010784045518715092, 0.001218812036167976],
+    "native_physical26_and_C_Ace_unchanged": true,
+    "geometry_IDs_normal_and_borrowed_slip_pointer_restored": true,
+    "all_original_roundoff_budgets_preserved": true
+  },
+  "retained_Cubic_control": {
+    "check": "tests/logs/upl_noslip_cubic_zero_control_r1.check.json",
+    "four_CSVs_and_completion_byte_exact": true,
+    "no_Wendland_old_counterpart_invented": true
+  },
+  "shared_writer_regression": {
+    "check": "tests/logs/upl_noslip_legacy_r1.check.json",
+    "unchanged_fixture": "../02_TerzaghiConsolidation_q0_PR/tests/support/mdbc_vector_test.cpp",
+    "actual_component_conditions": 6,
+    "scope": "Wendland axis-aligned 2D/3D Vel0, NoSlip and FreeSlip; actual SPR, scalar pore writer and stress/pressure/density consumers",
+    "CSV_files": 18,
+    "completion_JSON_files": 6,
+    "compared_CSV_rows": 16776,
+    "compared_numeric_values": 146952,
+    "all_files_byte_exact": true,
+    "native_density_rate_wiring_0ULP": true,
+    "forced_inactive_is_not_natural_support_fallback": true
+  },
+  "execution": "One compile/link per helper and one execution per declared condition; closed process exits and consumed size/mtime bindings passed. No SHA scans, old worker restart, solver trajectory, new half-step chain or canonical executable installation.",
+  "next": "GPU counterpart and actual wall-force/SH feedback checks, then corner/inactive/weak-top support before mixed-wall gravity admission.",
+  "physical_acceptance": false,
+  "public_NoSlip_admission": false
+}

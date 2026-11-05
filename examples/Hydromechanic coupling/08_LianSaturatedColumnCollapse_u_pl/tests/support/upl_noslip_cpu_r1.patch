@@ -1,0 +1,54 @@
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1707,6 +1707,9 @@
+               //-The fitted d=target-source coefficients are minus the physical gradient.
+               //-Anchor to a native sample to avoid smoothing a coincident mirror node.
+               if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qz*neardr.z;
++              if(DynamicPoreWall && ncomp==11 && c>=5
++                && (BoundSlipModec? TpSlipMode(BoundSlipModec[p1]): SlipMode)==SLIP_NoSlip)
++                fieldfinal[c]+=qx*boundnormal[p1].x+qz*boundnormal[p1].z; //-Legacy NoSlip stress is extrapolated from mirror to boundary.
+               if(shifted)fieldfinal[c]+=qx*fitshift.x+qz*fitshift.z;
+             }
+           }
+@@ -1725,6 +1728,9 @@
+               const double qy=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldy[c]+inv.a34*gradfieldz[c];
+               const double qz=inv.a41*fieldsum[c]+inv.a42*gradfieldx[c]+inv.a43*gradfieldy[c]+inv.a44*gradfieldz[c];
+               if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qy*neardr.y-qz*neardr.z;
++              if(DynamicPoreWall && ncomp==11 && c>=5
++                && (BoundSlipModec? TpSlipMode(BoundSlipModec[p1]): SlipMode)==SLIP_NoSlip)
++                fieldfinal[c]+=qx*boundnormal[p1].x+qy*boundnormal[p1].y+qz*boundnormal[p1].z;
+               if(shifted)fieldfinal[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
+             }
+           }
+@@ -4250,7 +4256,7 @@
+ 
+ //==============================================================================
+ /// Reconstructs fixed quadrature samples, not moving native particle owners.
+-/// J and hydrostatic excess are even; velocity/stress use Q*v and Q*sigma*Q.
++/// J/head, geometric C and Darcy Ace keep their reflection rules; NoSlip uses the legacy stress/velocity policy.
+ //==============================================================================
+ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
+   if(!DynamicPoreWall || !NpbOk)return;
+@@ -4274,9 +4280,19 @@
+     //-Even excess over the hydrostatic head pairs with Q*(Ace+Gravity)-Gravity.
+     PoroJc[p]=v[0];PoroThetac[p]=0.;
+     PorePressc[p]=float(hydrostatichead? v[1]+head(p): v[1]);
+-    Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
+-    if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
+-    if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));
++    const bool noslip=((BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode)==SLIP_NoSlip);
++    if(noslip){
++      //-Fixed-wall limit of legacy mDBC v_image=2*v_wall-v_mirror; stress was extrapolated to p.
++      const tfloat3 imagevel=TFloat3(float(-v[2]),float(-v[3]),float(-v[4]));
++      Sigmac[p]=TSymMatrix3d(v[5],v[8],v[9],v[6],v[10],v[7]);
++      if(BoundDerivativeVelc)BoundDerivativeVelc[p]=imagevel;
++      if(TangenVelc)TangenVelc[p]=Mdbc2TangenVel(BoundNormalc[p],imagevel);
++    }
++    else{
++      Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
++      if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
++      if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));
++    }
+     Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.
+     BoundModec[p]=BMODE_MDBC2;
+   };

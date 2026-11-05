@@ -244,6 +244,17 @@
                      different CPU/GPU manufactured geometries, not a matched-ID physical comparison.
                      Gravity trajectories, NoSlip, corners and inactive bottom walls remain unadmitted.
                      See case08 tests/notes/upl_gravity_wall_gpu_review_r1.json. -->
+                <!-- Dynamic-wall NoSlip candidate (2026-11-06, CPU/GPU components checked):
+                     Reuse the existing per-boundary slip selector. NoSlip uses the full negative
+                     mirror velocity, the legacy tangential projection, and double stress extrapolated
+                     to the actual boundary. The common MLS writer now receives its existing fitted
+                     gradients; J/p normal head, geometric C and Darcy Ace are unchanged.
+                     GPU reuses its existing per-boundary array with CTE slip fallback; no new array/pass.
+                     CPU W/C reconstruction and six legacy u-pw/SPR components passed; GPU W/C
+                     reconstruction, retained FreeSlip/head byte regressions and memcheck passed.
+                     CPU instantaneous shear-force/action-reaction checks also passed (zero time steps).
+                     Initialization restrictions are retained; this is not NoSlip transient/integrator,
+                     mixed-corner, inactive-wall, gravity-trajectory or plastic-collapse acceptance. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

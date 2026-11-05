@@ -1614,6 +1614,7 @@ void JSphCpu::InteractionPorePressureRate(){
 
 //==============================================================================
 /// Interpolates field components at boundary ghost points using one MLS matrix.
+/// Writer receives physical gradients (null for 0th order), reusing fitted RHS storage.
 //==============================================================================
 template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void JSphCpu::InterpolateBoundaryGhostFieldT
   (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
@@ -1701,14 +1702,15 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldz[c];
             fieldfinal[c]=qg;
+            const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldz[c];
+            const double qz=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldz[c];
             if(shifted || DynamicPoreWall){
-              const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldz[c];
-              const double qz=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldz[c];
               //-The fitted d=target-source coefficients are minus the physical gradient.
               //-Anchor to a native sample to avoid smoothing a coincident mirror node.
               if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qz*neardr.z;
               if(shifted)fieldfinal[c]+=qx*fitshift.x+qz*fitshift.z;
             }
+            gradfieldx[c]=-qx;gradfieldy[c]=0.;gradfieldz[c]=-qz;
           }
         }
       }
@@ -1720,20 +1722,21 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
           for(unsigned c=0;c<ncomp;c++){
             const double qg = inv.a11*fieldsum[c] + inv.a12*gradfieldx[c] + inv.a13*gradfieldy[c] + inv.a14*gradfieldz[c];
             fieldfinal[c]=qg;
+            const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldy[c]+inv.a24*gradfieldz[c];
+            const double qy=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldy[c]+inv.a34*gradfieldz[c];
+            const double qz=inv.a41*fieldsum[c]+inv.a42*gradfieldx[c]+inv.a43*gradfieldy[c]+inv.a44*gradfieldz[c];
             if(shifted || DynamicPoreWall){
-              const double qx=inv.a21*fieldsum[c]+inv.a22*gradfieldx[c]+inv.a23*gradfieldy[c]+inv.a24*gradfieldz[c];
-              const double qy=inv.a31*fieldsum[c]+inv.a32*gradfieldx[c]+inv.a33*gradfieldy[c]+inv.a34*gradfieldz[c];
-              const double qz=inv.a41*fieldsum[c]+inv.a42*gradfieldx[c]+inv.a43*gradfieldy[c]+inv.a44*gradfieldz[c];
               if(DynamicPoreWall)fieldfinal[c]=nearest[c]-qx*neardr.x-qy*neardr.y-qz*neardr.z;
               if(shifted)fieldfinal[c]+=qx*fitshift.x+qy*fitshift.y+qz*fitshift.z;
             }
+            gradfieldx[c]=-qx;gradfieldy[c]=-qy;gradfieldz[c]=-qz;
           }
         }
       }
       bool finite=true;
       if(DynamicPoreWall)for(unsigned c=0;c<ncomp;c++)finite=finite && std::isfinite(fieldfinal[c]);
       if(DynamicPoreWall && (!firstorder || !finite))missing++;
-      else write(p1,fieldfinal);
+      else write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr);
     }
     else if(DynamicPoreWall)missing++;
   }
@@ -1748,7 +1751,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::InteractionPorePressureMdbcCorr
   ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const
 {
   const auto readpressure=[&](unsigned p,unsigned){return(double(porepress[p])-double(porepress0[p]));};
-  const auto writepressure=[&](unsigned p,const double *excess){porepress[p]=float(double(porepress0[p])+excess[0]);};
+  const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);};
   InterpolateBoundaryGhostFieldT<tker,sim2d,1>(n,divdata,pos,code,velrhop,boundnormal,readpressure,writepressure);
 }
 
@@ -1769,7 +1772,7 @@ void JSphCpu::ComputeBoundaryDerivativeVelocity(){
     const tfloat4 v=Velrhopc[p];
     return(double(c==0? v.x: (c==1? v.y: v.z)));
   };
-  const auto writevelocity=[&](unsigned p,const double *velocity){
+  const auto writevelocity=[&](unsigned p,const double *velocity,const double*,const double*,const double*){
     const TpSlipMode mode=(BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode);
     if(mode>=SLIP_NoSlip && BoundModec && BoundModec[p]==BMODE_MDBC2OFF)return;
     const tfloat4 v=Velrhopc[p];
@@ -4250,7 +4253,7 @@ void JSphCpu::InitDynamicPoreWallCpu(){
 
 //==============================================================================
 /// Reconstructs fixed quadrature samples, not moving native particle owners.
-/// J and hydrostatic excess are even; velocity/stress use Q*v and Q*sigma*Q.
+/// J and hydrostatic excess keep their geometry; NoSlip follows the legacy stress/velocity policy.
 //==============================================================================
 void JSphCpu::ComputeDynamicPoreWallStateCpu(){
   if(!DynamicPoreWall || !NpbOk)return;
@@ -4269,14 +4272,25 @@ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
     const tsymatrix3d s=Sigmac[p];
     const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
   };
-  const auto write=[&](unsigned p,const double *v){
+  const auto write=[&](unsigned p,const double *v,const double *gradx,const double *grady,const double *gradz){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     //-Even excess over the hydrostatic head pairs with Q*(Ace+Gravity)-Gravity.
     PoroJc[p]=v[0];PoroThetac[p]=0.;
     PorePressc[p]=float(hydrostatichead? v[1]+head(p): v[1]);
-    Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
-    if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
-    if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));
+    const bool noslip=((BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode)==SLIP_NoSlip);
+    if(noslip){
+      //-Legacy NoSlip stress is extrapolated to the boundary; fixed-wall velocity image is -v_mirror.
+      const tfloat3 raw=BoundNormalc[p],imagevel=TFloat3(float(-v[2]),float(-v[3]),float(-v[4]));
+      const auto sigmab=[&](unsigned c){return v[c]-(gradx[c]*raw.x+grady[c]*raw.y+gradz[c]*raw.z);};
+      Sigmac[p]=TSymMatrix3d(sigmab(5),sigmab(8),sigmab(9),sigmab(6),sigmab(10),sigmab(7));
+      if(BoundDerivativeVelc)BoundDerivativeVelc[p]=imagevel;
+      if(TangenVelc)TangenVelc[p]=Mdbc2TangenVel(raw,imagevel);
+    }
+    else{
+      Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
+      if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
+      if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));
+    }
     Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.
     BoundModec[p]=BMODE_MDBC2;
   };
@@ -4302,7 +4316,7 @@ void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
   if(!DynamicPoreWall || !NpbOk)return;
   const auto read=[&](unsigned p,unsigned c){const tmatrix3d m=CorrMatc[p];
     const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];};
-  const auto write=[&](unsigned p,const double *v){
+  const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     CorrMatc[p]=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);
   };
@@ -4328,7 +4342,7 @@ void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
 void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
   if(!DynamicPoreWall || !NpbOk)return;
   const auto read=[&](unsigned p,unsigned c){return(c==0? double(Acec[p].x)+Gravity.x: (c==1? double(Acec[p].y)+Gravity.y: double(Acec[p].z)+Gravity.z));};
-  const auto write=[&](unsigned p,const double *v){
+  const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));
   };

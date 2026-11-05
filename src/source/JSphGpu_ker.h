@@ -310,12 +310,12 @@ void ComputePorosityWaveSpeed2(unsigned np,unsigned npb,double solid0,double rho
 void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
   ,const typecode *code,const unsigned *idp,const unsigned *ridp
   ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid,float *porepress=NULL);
-//-Private 2-D static FreeSlip mirror closure: stage0=state11,1=C9,2=finished Ace3.
+//-Private 2-D static mirror closure: stage0=state11,1=C9,2=finished Ace3; public guards remain separate.
 //-Only npbok active fixed samples are written; caller initializes invalid=np.
 void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
-  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland);
+  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland,const byte *boundslipmode=NULL);
 //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
 void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace

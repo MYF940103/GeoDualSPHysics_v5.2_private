@@ -1,0 +1,81 @@
+{
+  "stage": "upl_noslip_CPU_Cubic_r1.check",
+  "passed": true,
+  "result": {
+    "kernel": "Cubic",
+    "cases": 6,
+    "wall_rows": 1536,
+    "NoSlip_rows": 768,
+    "FreeSlip_rows": 768,
+    "max_recomputed_error_over_original_budget": 0.001218812036167976,
+    "min_wrong_sign_over_original_stress_budget": 1381400683.0184631,
+    "min_missing_extrapolation_over_original_stress_budget": 5417253.066528097
+  },
+  "component_completion": {
+    "stage": "upl_noslip_cpu_component_r1",
+    "passed": true,
+    "kernel": "Cubic",
+    "h_over_dp": 1.8,
+    "native_soil": 1024,
+    "native_fixed": 256,
+    "actual_slots": 1600,
+    "actual_fixed_prefix": 320,
+    "component_cases": 6,
+    "native_wall_rows": 1536,
+    "noncoincident_rows": 768,
+    "NoSlip_rows": 768,
+    "FreeSlip_rows": 768,
+    "explicit_each_wall_stage_calls": 6,
+    "max_error_over_original_budget": 0.001218812036167976,
+    "min_wrong_shear_sign_over_original_stress_budget": 1381400683.0184631,
+    "min_missing_stress_extrapolation_over_original_stress_budget": 5417253.066528097,
+    "all_native_physical26_and_C_Ace_unchanged_by_wall_stages": true,
+    "all_geometry_ID_normal_bytes_restored": true,
+    "initial_native_physical26_restored": true,
+    "slip_pointer_and_global_mode_restored": true,
+    "actual_CPU_initialization": true,
+    "actual_Interaction_Forces_called": false,
+    "actual_ComputeStep_Sym_called": false,
+    "actual_Run_called": false,
+    "completed_physical_steps": 0,
+    "actual_time_s": 0,
+    "NoSlip_physical_admission": false,
+    "wall_force_or_SH_wave_checked": false,
+    "physical_acceptance": false
+  },
+  "tables": [
+    {
+      "file": "global_free_coincident.csv",
+      "rows": 256
+    },
+    {
+      "file": "global_free_offgrid.csv",
+      "rows": 256
+    },
+    {
+      "file": "global_noslip_coincident.csv",
+      "rows": 256
+    },
+    {
+      "file": "global_noslip_offgrid.csv",
+      "rows": 256
+    },
+    {
+      "file": "left_noslip_right_free_coincident.csv",
+      "rows": 256
+    },
+    {
+      "file": "left_noslip_right_free_offgrid.csv",
+      "rows": 256
+    }
+  ],
+  "all_original_budgets_preserved": true,
+  "source_canonical_consumed_stats_unchanged": true,
+  "component_attempts": 1,
+  "scope_correction": "Root correction: unchanged upl_cubic_cpu_wall_r1.cpp admits Cubic only; its zero-g old-control comparison runs only a genuine Cubic seed. Genuine Wendland NoSlip six cases cover its FreeSlip components; no fabricated W counterpart or old test alteration.",
+  "new_SHA_scans": 0,
+  "old_SHA_scans": 0,
+  "NoSlip_public_admission": false,
+  "wall_force_or_SH_wave_checked": false,
+  "physical_acceptance": false
+}

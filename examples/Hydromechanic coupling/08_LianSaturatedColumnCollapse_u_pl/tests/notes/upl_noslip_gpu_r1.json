@@ -1,0 +1,17 @@
+{
+  "stage": "upl_noslip_gpu_r1.author",
+  "status": "Unapplied three-file GPU candidate only; no production/source application, build, program execution, SHA or Git by the author. Root full-read and CPU gates precede application.",
+  "patch": "tests/support/upl_noslip_gpu_r1.patch",
+  "files": [
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "interface": "Append existing const byte* boundslipmode as one final optional DynamicPoreWall wrapper argument, default NULL after existing default tkernel. Production passes BoundSlipModeg. Internal dispatcher/kernel pass the same pointer. No new global mode argument, option/state/array/allocation or neighbor pass. Old direct source callers still compile with default NULL; old object files must be rebuilt/relinked because a C++ wrapper signature changes.",
+  "selector": "Only stage0 reads boundslipmode[p1] if present, otherwise existing CTE.slipmode. Thus a future private global-mode fixture must upload its genuine global selector to the already existing CTE using the normal constant-upload route; passing overrides for every case would not test fallback.",
+  "stage0": "Reuse gx/gz temporary arrays after both current q coefficients and anchored v[c] are finished. These are d=target-source coefficients, minus the physical gradient. NoSlip writes all six sigma_B=v_sigma+q_x*bn.x+q_z*bn.z, full derivative image=-v_mirror, and the old KerMdbc2TangenVel(bn,image) for viscous tangent velocity. Its one local device forward declaration matches the existing later definition; no helper duplication. Physical wall velocity/rho and mode stay fixed.",
+  "unchanged": "FreeSlip derivative/tangent/stress arithmetic is retained literally in else; the added coefficient storage does not modify another field component. J/theta, validated normal-only pressure-head restoration and its finite/FLT range checks, geometric C, Darcy Q*(Ace+g_n)-g_n, neighbor support/MLS weights/determinant/active policy and public initialization guards remain unchanged. This is still restricted private parallel 2D support, not mixed-axis/corner/inactive-wall/public NoSlip acceptance.",
+  "required_checks": "After root review/application/build: two actual kernels and six CPU-equivalent zero-step mode/target conditions, prescribed NS boundary versus FS mirror all-six stress, combined nonzero affine xz shear sign/extrapolation witnesses, full derivative and legacy tangent separation, native/geometry invariance and pointer ownership, old FS/head zero/tangential-g bit regressions, actual CPU/GPU roundoff comparisons. Keep original td/tf gates; GPU tangent projection uses its legacy rsqrtf while CPU uses 1/sqrt, so compare under the existing float budget rather than demanding legacy CPU/GPU bit equality. Existing Debug GPU memcheck remains required for the new pointer path.",
+  "limits": "This patch carries the CPU legacy stress-location/slip policy with current anchored double reconstruction. Correct reconstruction is not actual wall reaction/SH propagation proof; the separately authored upl_noslip_force_plan_r1 describes the bounded next force test. No plasticity/moving wall/corner/general boundary, time integration, half chain or physical acceptance.",
+  "physical_acceptance": false
+}

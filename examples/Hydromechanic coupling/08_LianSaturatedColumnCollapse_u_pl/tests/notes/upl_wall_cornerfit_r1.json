@@ -1,0 +1,23 @@
+{
+  "stage": "upl_wall_cornerfit_r1",
+  "purpose": "Check existing SPR fit-centre projection as a geometric alternative to multi-image neighbour machinery; no production adoption",
+  "native_ids": [274, 278, 279, 783, 1800, 1852],
+  "selection": "Exactly the six retained physically-near bottom-corner single-mirror raw-det failures; exclude four top-side points",
+  "input": "Existing initial geometry ledger: 5000 actual soil coordinates, 2060 fixed IDs, J=1; no images or artificial source particles",
+  "reuse": "Pure support/cubic from upl_wall_geometry_r1.py via upl_wall_topshift_r1.py; shifted constant/affine reconstruction uses the latter pure fit unchanged",
+  "projection": "JSphCpuSingle.cpp:275-290: only if original target violates a real half-space by >1e-6*dp, project sequentially to one-dp clearance, real plane order left/bottom/right, max128 iterations and stop residual<=1e-6*dp",
+  "planes": ["x>=0", "z>=0", "x<=4"],
+  "evaluation": "Actual own-face reflection at x=0/x=4/z=0 stays the evaluation mirror. Only the fit centre moves; return fitted-intercept and nearest-sample-anchor values to that original mirror using q=-physical gradient.",
+  "physical_eligibility": "Original fixed coordinate must remain within2h=.096m of real initial soil, unchanged",
+  "dp_m": 0.04,
+  "h_m": 0.048,
+  "det_gate": "Original abs(raw unscaled a_corr2 determinant)>=1e-3; no rescaling or relaxation",
+  "singular_policy": "Report original rank/determinant/condition without any original inverse. Only shifted rank3 matrices passing the original determinant gate receive constant/affine reproduction calculations.",
+  "fields": ["128", "128+x", "128+z", "128+3*x-2*z"],
+  "reproduction": "Record original-mirror value and physical-gradient errors without a new numerical or physical acceptance threshold",
+  "arithmetic": "Binary64 offline Cubic W/Fac and numpy matrix operations, exact XML wall planes. Not actual initialized float-normal plane offsets, CPU/GPU float kernel arithmetic, sorted accumulation or 0-ULP proof.",
+  "limitations": "Initial geometry only. Not stress/NoSlip parity, force/flux acceptance, nonlinear field accuracy or deformed support validity; different fitting support can change non-affine results.",
+  "fresh_outputs": ["tests/figures/upl_wall_cornerfit_r1.csv", "tests/logs/upl_wall_cornerfit_r1.check.json"],
+  "protected": "No production/input/old record edits; no solver/build/Git/SHA; input metadata checked before/after",
+  "physical_acceptance": false
+}

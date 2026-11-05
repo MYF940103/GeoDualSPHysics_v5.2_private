@@ -1,0 +1,121 @@
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1696,7 +1696,7 @@
+     if(owned){invalidg=ArraysGpu->ReserveUint();cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);}
+     cusph::DynamicPoreWall(stage,Np,NpbOk,MdbcThreshold,DivData,Posxyg,Poszg,Codeg,BoundNormalg
+       ,BoundModeg,TangenVelg,BoundDerivativeVelg,Velrhopg,Sigmag,PorePressg,PoroJg,PoroThetag,CorrMatg,Aceg
+-      ,1.-double(SoilCte.Porosity),invalidg,TKernel);
++      ,1.-double(SoilCte.Porosity),invalidg,TKernel,BoundSlipModeg);
+     if(owned)cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+   }
+   catch(...){if(owned && invalidg)ArraysGpu->Free(invalidg);throw;}
+--- a/src/source/JSphGpu_ker.h
++++ b/src/source/JSphGpu_ker.h
+@@ -310,12 +310,12 @@
+ void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned idfin
+   ,const typecode *code,const unsigned *idp,const unsigned *ridp
+   ,tmatrix3d *corrmat,float3 *ace,double *theta,float *rate,unsigned *invalid,float *porepress=NULL);
+-//-Private 2-D static FreeSlip mirror closure: stage0=state11,1=C9,2=finished Ace3.
++//-Private 2-D static mirror closure: stage0=state11,1=C9,2=finished Ace3; public guards remain separate.
+ //-Only npbok active fixed samples are written; caller initializes invalid=np.
+ void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+-  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland);
++  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland,const byte *boundslipmode=NULL);
+ //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
+ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
+--- a/src/source/JSphGpu_ker.cu
++++ b/src/source/JSphGpu_ker.cu
+@@ -1460,6 +1460,9 @@
+ /// Static 2-D mirror samples: the fitted d=target-source coefficients are -grad.
+ /// The anchored value avoids smoothing a mirror point coincident with a fluid node.
+ //==============================================================================
++//-Reuse the legacy tangent projection; its definition follows the force kernels.
++__device__ float3 KerMdbc2TangenVel(const float3 boundnormal,const float3 velfinal);
++
+ template<unsigned stage> __device__ double KerDynamicPoreWallRead(unsigned p,unsigned c
+   ,const float3 normalg,const double2 *posxy,const double *posz
+   ,const float4 *velrhop,const tsymatrix3d *sigma,const float *porepress,const double *j
+@@ -1489,11 +1492,12 @@
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *fluidcells,const double2 *posxy,const double *posz
+   ,const typecode *code,const float3 *boundnormal,byte *boundmode,float3 *tangenvel,float3 *derivativevel
+   ,float4 *velrhop,tsymatrix3d *sigma,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace
+-  ,double solid0,unsigned *invalid)
++  ,double solid0,unsigned *invalid,const byte *boundslipmode)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+   if(p1>=npbok || p1>=np)return;
+   const float3 bn=boundnormal[p1];
++  const bool noslip=(stage==0 && (boundslipmode? unsigned(boundslipmode[p1]): CTE.slipmode)==unsigned(SLIP_NoSlip));
+   const double r2=double(bn.x)*bn.x+double(bn.y)*bn.y+double(bn.z)*bn.z;
+   if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}
+   const double qx=(double(bn.x)*bn.x>.5*r2? -1.: 1.),qy=(double(bn.y)*bn.y>.5*r2? -1.: 1.),qz=(double(bn.z)*bn.z>.5*r2? -1.: 1.);
+@@ -1539,6 +1543,7 @@
+     const double gradx=inv.a21*sum[c]+inv.a22*gx[c]+inv.a23*gz[c];
+     const double gradz=inv.a31*sum[c]+inv.a32*gx[c]+inv.a33*gz[c];
+     v[c]=nearest[c]-gradx*nearx-gradz*nearz;
++    gx[c]=gradx;gz[c]=gradz; //-Keep the existing d=target-source coefficients for the state writer.
+     if(!isfinite(v[c])){atomicMin(invalid,p1);return;}
+   }
+   if(stage==0){
+@@ -1546,12 +1551,22 @@
+     //-Restore the normal head at the boundary sample, not at its fitted mirror target.
+     const double pressure=(hydrostatichead? v[1]+double(CTE.porewaterrho)*(double(normalg.x)*posxy[p1].x
+       +double(normalg.y)*posxy[p1].y+double(normalg.z)*posz[p1]): v[1]);
+-    const float3 dv=make_float3(float(qx*v[2]),float(qy*v[3]),float(qz*v[4]));
+-    const float3 tv=make_float3(float(.5*(1.+qx)*v[2]),float(.5*(1.+qy)*v[3]),float(.5*(1.+qz)*v[4]));
++    float3 dv,tv;tsymatrix3d s;
++    if(noslip){
++      dv=make_float3(float(-v[2]),float(-v[3]),float(-v[4]));
++      tv=KerMdbc2TangenVel(bn,dv);
++      //-Legacy stress is extrapolated from the mirror target to B: physical grad is -gx/-gz.
++      s.xx=v[5]+gx[5]*bn.x+gz[5]*bn.z;s.yy=v[6]+gx[6]*bn.x+gz[6]*bn.z;s.zz=v[7]+gx[7]*bn.x+gz[7]*bn.z;
++      s.xy=v[8]+gx[8]*bn.x+gz[8]*bn.z;s.xz=v[9]+gx[9]*bn.x+gz[9]*bn.z;s.yz=v[10]+gx[10]*bn.x+gz[10]*bn.z;
++    }
++    else{
++      dv=make_float3(float(qx*v[2]),float(qy*v[3]),float(qz*v[4]));
++      tv=make_float3(float(.5*(1.+qx)*v[2]),float(.5*(1.+qy)*v[3]),float(.5*(1.+qz)*v[4]));
++      s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];
++    }
+     if(v[0]<=solid0 || !isfinite(pressure) || fabs(pressure)>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
+       || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}
+-    j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(pressure);
+-    tsymatrix3d s;s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];sigma[p1]=s;
++    j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(pressure);sigma[p1]=s;
+     if(derivativevel)derivativevel[p1]=dv;
+     if(tangenvel)tangenvel[p1]=tv;
+     velrhop[p1]=make_float4(0,0,0,CTE.rhopzero);boundmode[p1]=BMODE_MDBC2;
+@@ -1574,23 +1589,23 @@
+ template<TpKernel tker> void DynamicPoreWallT(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+-  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid)
++  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,const byte *boundslipmode)
+ {
+   if(npbok){
+     dim3 grid=GetSimpleGridSize(npbok,SPHBSIZE);
+-    if(stage==0)KerDynamicPoreWall<tker,0><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+-    else if(stage==1)KerDynamicPoreWall<tker,1><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+-    else if(stage==2)KerDynamicPoreWall<tker,2><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
++    if(stage==0)KerDynamicPoreWall<tker,0><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid,boundslipmode);
++    else if(stage==1)KerDynamicPoreWall<tker,1><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid,boundslipmode);
++    else if(stage==2)KerDynamicPoreWall<tker,2><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid,boundslipmode);
+   }
+ }
+ 
+ void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+-  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel)
+-{
+-  if(tkernel==KERNEL_Wendland)DynamicPoreWallT<KERNEL_Wendland>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+-  else if(tkernel==KERNEL_Cubic)DynamicPoreWallT<KERNEL_Cubic>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
++  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel,const byte *boundslipmode)
++{
++  if(tkernel==KERNEL_Wendland)DynamicPoreWallT<KERNEL_Wendland>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid,boundslipmode);
++  else if(tkernel==KERNEL_Cubic)DynamicPoreWallT<KERNEL_Cubic>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid,boundslipmode);
+   else throw "Kernel unknown.";
+ }
+ 

@@ -1,0 +1,65 @@
+{
+  "stage": "upl_noslip_cubic_gpu_control_r1.check",
+  "passed": true,
+  "actual_owned_exit": 0,
+  "completion": {
+    "stage": "upl_cubic_component_r1",
+    "passed": true,
+    "kernel_conditions": 8,
+    "affine_wall_rows": 32,
+    "coincident_anchor_rows": 16,
+    "rate_rows": 4536,
+    "negative_rows": 24,
+    "max_rate_error_over_original_budget": 0.006896201385043145,
+    "max_wall_error_over_original_budget": 0,
+    "actual_GPU_FS_wall_Darcy_wrappers": true,
+    "CPU_direct_sum_reference": true,
+    "CPU_production_Darcy_called": false,
+    "physical_steps": 0,
+    "host_geometry_admission_tested": false,
+    "physical_acceptance": false
+  },
+  "table_rows": {
+    "negative.csv": 24,
+    "rates.csv": 4536,
+    "walls.csv": 32
+  },
+  "retained_control": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_component_r2\\result",
+  "byte_comparisons": [
+    {
+      "file": "completion.json",
+      "old_bytes": 453,
+      "new_bytes": 453,
+      "byte_equal": true
+    },
+    {
+      "file": "negative.csv",
+      "old_bytes": 1362,
+      "new_bytes": 1362,
+      "byte_equal": true
+    },
+    {
+      "file": "rates.csv",
+      "old_bytes": 629734,
+      "new_bytes": 629734,
+      "byte_equal": true
+    },
+    {
+      "file": "walls.csv",
+      "old_bytes": 3859,
+      "new_bytes": 3859,
+      "byte_equal": true
+    }
+  ],
+  "all_CSV_and_completion_byte_exact": true,
+  "source_unmodified": true,
+  "consumed_SMT_unchanged": true,
+  "attempts": {
+    "compile": 1,
+    "link": 1,
+    "direct_component": 1,
+    "memcheck": 0
+  },
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}
