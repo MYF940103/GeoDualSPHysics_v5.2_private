@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case>
+    <!-- Geometry admission only. This file does not start a u-pl physical calculation. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+            <rhop0 value="2072.5" comment="Initial saturated mixture density: (1-0.35)*2650+0.35*1000" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" comment="Maximum still water level" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem" />
+            <speedsound value="0" auto="true" comment="Geometry-only seed; physical sound speed requires the coupled solver" />
+            <hdp value="1.2" comment="Lian 2023 Section 3.1: h/dp for the cubic spline kernel" />
+            <cflnumber value="0.2" comment="Candidate explicit CFL coefficient; not the paper TPI step" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.04" _rem="Lian 2023 Section 4.4 particle spacing" />
+                <newvarcte ColumnLength="4.0" _rem="Lian 2023 Fig.13" />
+                <newvarcte ColumnHeight="2.0" _rem="Lian 2023 Fig.13" />
+                <newvarcte BedLength="12.0" _rem="Numerical runout margin, not a dimension stated in Fig.13; paper plots show x=0..8" />
+                <newvarcte WallLayers="4" _rem="Numerical boundary thickness; not specified by the paper" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#Dp/2-12*Dp" y="0" z="#Dp/2-12*Dp" />
+                <pointmax x="#BedLength+12*Dp+Dp/2" y="0" z="#ColumnHeight+12*Dp+Dp/2" />
+            </definition>
+            <commands>
+                <list name="GeometryForNormals">
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setnormalinvert invert="true" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>left</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#ColumnLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>bottom</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#BedLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="2" />
+                    <drawbox>
+                        <boxfill>right</boxfill>
+                        <point x="0" y="-0.1" z="0" />
+                        <size x="#ColumnLength" y="0.2" z="#ColumnHeight" />
+                    </drawbox>
+                    <shapeout file="hdp" />
+                    <resetdraw />
+                </list>
+                <mainlist>
+                    <runlist name="GeometryForNormals" />
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-WallLayers*Dp" y="-1" z="0" />
+                        <size x="#WallLayers*Dp" y="2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkbound mk="1" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#-WallLayers*Dp" y="-1" z="#-WallLayers*Dp" />
+                        <size x="#BedLength+2*WallLayers*Dp" y="2" z="#WallLayers*Dp" />
+                    </drawbox>
+                    <setmkbound mk="2" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#ColumnLength" y="-1" z="0" />
+                        <size x="#WallLayers*Dp" y="2" z="#ColumnHeight" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#Dp/2" y="-1" z="#Dp/2" />
+                        <size x="#ColumnLength-Dp" y="2" z="#ColumnHeight-Dp" />
+                    </drawbox>
+                    <shapeout file="" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="2.0" comment="Maximum distance H*distanceh to compute mDBC normals" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="Geometry of the closed prestress container" />
+            <svshapes value="1" comment="Save boundary geometry for inspection" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <boundnormal_plane mkbound="0">
+                    <point x="0" y="0" z="0" />
+                    <normal x="1" y="0" z="0" />
+                    <maxdisth v="0" comment="Left wall layers" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="1">
+                    <point x="0" y="0" z="0" />
+                    <normal x="0" y="0" z="1" />
+                    <maxdisth v="0" comment="Bottom wall layers" />
+                    <clear v="true" />
+                </boundnormal_plane>
+                <boundnormal_plane mkbound="2">
+                    <point x="#ColumnLength" y="0" z="0" />
+                    <normal x="-1" y="0" z="0" />
+                    <maxdisth v="0" comment="Retaining wall layers before removal" />
+                    <clear v="true" />
+                </boundnormal_plane>
+            </initialize>
+            <soils>
+                <phi value="25" comment="Lian 2023 Table 1, all three groups" />
+                <coh value="5000" comment="Geometry seed uses the psi=0 group; no physical solve" units_comment="Pa" />
+                <dlt value="0" comment="Geometry seed uses the psi=0 group" />
+                <ModulusE value="20e6" comment="Lian 2023 Table 1" units_comment="Pa" />
+                <PRvs value="0.33" comment="Lian 2023 Table 1" />
+                <phi_r value="25" comment="Residual friction angle" />
+                <n_phi value="0" comment="Peak and residual friction angles are equal" />
+                <coh_r value="1000" comment="Residual cohesion" units_comment="Pa" />
+                <n_coh value="5" comment="Exponential cohesion softening coefficient" />
+            </soils>
+            <mdbcslip>
+                <bound mkbound="0" slipmode="3" comment="Left wall: free-slip" />
+                <bound mkbound="1" slipmode="2" comment="Bottom: no-slip" />
+                <bound mkbound="2" slipmode="3" comment="Right retaining wall: free-slip before removal" />
+            </mdbcslip>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" comment="Save double-precision particle positions" />
+            <parameter key="DPCtes" value="3" comment="DP constants for 2D plane strain" />
+            <parameter key="Boundary" value="2" comment="mDBC boundary" />
+            <parameter key="SlipMode" value="3" comment="Per-mk overrides retain the no-slip bottom" />
+            <parameter key="StepAlgorithm" value="2" comment="Symplectic; this geometry input is not a physical run" />
+            <parameter key="Kernel" value="1" comment="Cubic spline, matching Lian 2023" />
+            <parameter key="ViscoTreatment" value="1" comment="Artificial viscosity" />
+            <parameter key="Visco" value="0.1" comment="Numerical candidate, not the paper negative-pressure stabilization alpha" />
+            <parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Plasticity compatibility not yet admitted" />
+            <parameter key="SoilHourglassXi" value="0" comment="Elastic HG is not a plastic-collapse model" />
+            <parameter key="DensityDT" value="0" comment="No added stress diffusion in the geometry seed" />
+            <parameter key="Shifting" value="0" comment="No particle shifting in the geometry seed" />
+            <parameter key="DtFixed" value="0" comment="Physical step selection remains pending" units_comment="seconds" />
+            <parameter key="TimeMax" value="0" comment="GenCase-only seed, not a physical calculation" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.01" comment="Planned physical-time save interval; includes all paper snapshots" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="Allowed fraction out of domain" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="700" comment="Geometry seed only" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" comment="Geometry seed only" units_comment="kg/m^3" />
+            <simulationdomain comment="Runout margin must be verified before physical release">
+                <posmin x="default" y="default" z="default" />
+                <posmax x="default" y="default" z="default + 2" />
+            </simulationdomain>
+        </parameters>
+    </execution>
+</case>
