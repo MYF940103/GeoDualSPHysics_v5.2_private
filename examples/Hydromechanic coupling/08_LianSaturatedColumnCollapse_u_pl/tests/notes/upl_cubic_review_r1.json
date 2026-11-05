@@ -1,0 +1,129 @@
+{
+  "stage": "upl_cubic_review_r1",
+  "date_local": "2026-11-06",
+  "builds_passed": [
+    "DebugCPU",
+    "Debug"
+  ],
+  "production_files": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.h",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.h",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu"
+  ],
+  "kernel_dispatch": "Existing W/Cubic kernel samples selected once on host; no extra neighbour pass,array,equation,time integration or XML key.",
+  "default_u_pw_behavior_changed": false,
+  "Wendland_actual_CPU_regression": {
+    "cases": 48,
+    "rates": 864,
+    "force_rows": 72,
+    "CSV_files_byte_exact": 3
+  },
+  "Wendland_actual_GPU_regression": {
+    "Darcy_CSV_files_byte_exact": 9,
+    "wall_CSV_files_byte_exact": 8,
+    "wall_memcheck_zero_errors_zero_leaks": true
+  },
+  "Cubic_actual_CPU_complete_rate_component": {
+    "stage": "upl_cubic_cpu_component_r1",
+    "passed": true,
+    "kernel": "Cubic",
+    "h_over_dp": 1.2,
+    "program": {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_cpu_component_r1\\component.exe",
+      "bytes": 13042688,
+      "sha256": "1a9bd15fd5149ad9ddc6e8bfb47e70c67d3049385aec0083632718192f8b4870"
+    },
+    "actual_component_completion": {
+      "passed": true,
+      "stage": "upl_cubic_cpu_component_r1",
+      "gamma_policy": "standard",
+      "gamma_policy_changes_oracle_only": true,
+      "field_cases": 48,
+      "rate_flux_rows": 864,
+      "actual_complete_rate_calls": 52,
+      "actual_force_ct_calls": 4,
+      "force_freefall_rows": 72,
+      "nonzero_Gravity_and_CSP_gravity": true,
+      "prior_propagated_bounds": true,
+      "independent_all_particle_reference": true,
+      "public_guard_changed": false,
+      "wall_tested": false,
+      "actual_Run_or_ComputeStep_called": false,
+      "completed_physical_steps": 0,
+      "default_OFF_regression_executed": false,
+      "final_material_mobility_policy_accepted": false,
+      "mechanical_hydrostatic_well_balance_accepted": false,
+      "physical_acceptance": false
+    },
+    "max_over_original_forward_roundoff_budget": {
+      "max_discrete_ratio": 0.007971213220843524,
+      "max_analytic_ratio": 0.0002447693642761989,
+      "max_q_ratio": 1.2990787388554396e-11
+    },
+    "spatial_steps": 0,
+    "physical_acceptance": false,
+    "old_object_or_raw_SHA_scans": 0,
+    "new_program_SHA_scans": 1
+  },
+  "GPU_selected_kernel_component": {
+    "stage": "upl_cubic_component_r2",
+    "passed": true,
+    "actual_component": {
+      "stage": "upl_cubic_component_r1",
+      "passed": true,
+      "kernel_conditions": 8,
+      "affine_wall_rows": 32,
+      "coincident_anchor_rows": 16,
+      "rate_rows": 4536,
+      "negative_rows": 24,
+      "max_rate_error_over_original_budget": 0.006896201385043145,
+      "max_wall_error_over_original_budget": 0,
+      "actual_GPU_FS_wall_Darcy_wrappers": true,
+      "CPU_direct_sum_reference": true,
+      "CPU_production_Darcy_called": false,
+      "physical_steps": 0,
+      "host_geometry_admission_tested": false,
+      "physical_acceptance": false
+    },
+    "memcheck_zero_errors_and_leaks": true,
+    "parent_compile_failure_preserved": true,
+    "source_and_thresholds_unchanged": true,
+    "physical_acceptance": false
+  },
+  "independent_root_CSV_inspection": [
+    {
+      "file": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_component_r2\\result\\walls.csv",
+      "rows": 32,
+      "all_numeric_finite": true
+    },
+    {
+      "file": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_component_r2\\result\\rates.csv",
+      "rows": 4536,
+      "all_numeric_finite": true
+    },
+    {
+      "file": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_component_r2\\result\\negative.csv",
+      "rows": 24,
+      "all_numeric_finite": true
+    }
+  ],
+  "production_five_source_stats_still_match_build": true,
+  "documentation_post_review_update": [
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+    "examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/README.md"
+  ],
+  "prebuild_source_archive_includes_pre_review_documentation": true,
+  "failed_test_fixture_compile_r1_preserved": "CUDA float3 was passed to project tfloat3 conversion. r2 uses existing Vec(float3) at3 host sites. Production source unchanged; no r1 link/target run.",
+  "r2_environment_setup_preflight_preserved": true,
+  "physical_steps_in_all_component_jobs": 0,
+  "CPU_production_Cubic_wall_numeric_coverage": false,
+  "full_Cubic_time_integration": false,
+  "mixed_slip_gravity_plasticity_gate_or_collapse": false,
+  "public_geometry_restart_SPR_HG_restrictions_unchanged": true,
+  "canonical_programs_installed": false,
+  "physical_acceptance": false,
+  "next": "CPU zero-step Cubic wall/component admission, then bounded gravity/mixed-slip compatibility before material/plastic spatial admission; no additional local Cryer solver.",
+  "hash_policy": "Existing source/build/program identities reused; only new source ZIP and each new program sealed once. No old object or raw BI4 hash sweep."
+}

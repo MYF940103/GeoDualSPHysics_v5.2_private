@@ -1,0 +1,125 @@
+{
+  "stage": "upl_cubic_W_gpu_darcy_r1.check",
+  "passed": true,
+  "checked_utc": "2026-11-05T21:14:14.626850+00:00",
+  "configuration": "Debug",
+  "selected_kernel": "Wendland from unchanged retained Kernel=2 seeds/default direct API",
+  "component_source": "upl_gpu_darcy_component_r3.cpp",
+  "build": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_cubic_W_gpu_darcy_r1.build.json",
+  "call": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_cubic_W_gpu_darcy_r1.call.json",
+  "completion": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_cubic_W_gpu_darcy_r1\\result\\completion.json",
+  "retained_control": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_darcy_component_Debug_run_r3",
+  "retained_passed_offline_review": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_darcy_component_Debug_review_r4.check.json",
+  "completion_fields_exact_retained": true,
+  "original_internal_budgets_unchanged": true,
+  "all_numerical_CSVs_byte_exact_retained": true,
+  "CSV_files": 9,
+  "CSV_rows": 2069,
+  "numerical_CSVs": [
+    {
+      "file": "host_owner_negative.csv",
+      "rows": 1,
+      "bytes": 64,
+      "retained_bytes": 64,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "owner_negatives.csv",
+      "rows": 3,
+      "bytes": 152,
+      "retained_bytes": 152,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "patch_rates.csv",
+      "rows": 108,
+      "bytes": 12714,
+      "retained_bytes": 12714,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "patch_summary.csv",
+      "rows": 12,
+      "bytes": 537,
+      "retained_bytes": 537,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "periodic_rates.csv",
+      "rows": 1920,
+      "bytes": 236862,
+      "retained_bytes": 236862,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "periodic_summary.csv",
+      "rows": 2,
+      "bytes": 149,
+      "retained_bytes": 149,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "prefix.csv",
+      "rows": 6,
+      "bytes": 183,
+      "retained_bytes": 183,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "requests.csv",
+      "rows": 12,
+      "bytes": 1637,
+      "retained_bytes": 1637,
+      "whole_CSV_byte_exact": true
+    },
+    {
+      "file": "scales.csv",
+      "rows": 5,
+      "bytes": 579,
+      "retained_bytes": 579,
+      "whole_CSV_byte_exact": true
+    }
+  ],
+  "independently_checked_rate_rows": 2028,
+  "max_recomputed_rate_error_over_original_budget": 0.007892884781834414,
+  "component_completion": {
+    "passed": true,
+    "stage": "upl_gpu_darcy_component_r3",
+    "prefix_stage_cases": 6,
+    "owner_negative_cases": 4,
+    "finite_patch_cases": 12,
+    "finite_patch_rate_rows": 108,
+    "actual_host_periodic_cases": 2,
+    "actual_host_periodic_rate_rows": 1920,
+    "corner_clone_witnesses": 128,
+    "class_scale_cases": 4,
+    "positive_k_domain_rejections": 1,
+    "actual_DtVariable_cases": 12,
+    "max_rate_reference_error_pa_s": 0.2631578966975212,
+    "max_error_over_budget": 0.007892884781834414,
+    "actual_private_rate_kernel": true,
+    "actual_host_owner_and_rate_helpers": true,
+    "independent_all_particle_reference": true,
+    "kernel_float_factor_budget_predeclared": true,
+    "full_rate_overwrite": true,
+    "actual_LoadConfig_ConfigDomain_InitRunGpu": true,
+    "actual_ComputeStep_Sym_called": false,
+    "completed_physical_steps": 0,
+    "public_GPU_dynamic_mode": false,
+    "variable_k_tested": false,
+    "physical_acceptance": false,
+    "device_name": "NVIDIA GeForce RTX 3050"
+  },
+  "source_canonical_consumed_stats_unchanged": true,
+  "source_files_observed": 265,
+  "canonical_files_observed": 9,
+  "component_attempts": 1,
+  "memcheck_attempts": 0,
+  "memcheck_zero_errors_and_leaks": null,
+  "new_executable_SHA_scans": 1,
+  "old_object_or_raw_SHA_scans": 0,
+  "completed_physical_steps": 0,
+  "physical_acceptance": false,
+  "Cubic_kernel_numerical_acceptance": false,
+  "legacy_failure_qualification": "Retained run_r3 component/exit passed; its old PowerShell postcheck failed on read-only $Error. Offline review_r4 passed on identical retained payload. No old record rewritten."
+}

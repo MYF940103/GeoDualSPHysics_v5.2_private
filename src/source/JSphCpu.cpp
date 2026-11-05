@@ -4270,8 +4270,15 @@ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
     Velrhopc[p]=TFloat4(0,0,0,RhopZero); //-The physical fixed wall never moves.
     BoundModec[p]=BMODE_MDBC2;
   };
-  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
-  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  if(TKernel==KERNEL_Wendland){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else if(TKernel==KERNEL_Cubic){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Cubic,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else Run_Exceptioon("Kernel unknown.");
   for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=1.-double(SoilCte.Porosity)
     || !std::isfinite(PorePressc[p]) || (BoundDerivativeVelc && (!std::isfinite(BoundDerivativeVelc[p].x)
       || !std::isfinite(BoundDerivativeVelc[p].y) || !std::isfinite(BoundDerivativeVelc[p].z))))
@@ -4289,8 +4296,15 @@ void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     CorrMatc[p]=TMatrix3d(v[0],q.x*q.y*v[1],q.x*q.z*v[2],q.y*q.x*v[3],v[4],q.y*q.z*v[5],q.z*q.x*v[6],q.z*q.y*v[7],v[8]);
   };
-  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
-  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  if(TKernel==KERNEL_Wendland){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else if(TKernel==KERNEL_Cubic){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Cubic,true,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else Run_Exceptioon("Kernel unknown.");
   for(unsigned p=0;p<NpbOk;p++){
     const tmatrix3d m=CorrMatc[p];
     const double det=(Simulate2D? m.a11*m.a33-m.a13*m.a31: fmath::Determinant3x3(m));
@@ -4308,8 +4322,15 @@ void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
     Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));
   };
-  if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
-  else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  if(TKernel==KERNEL_Wendland){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Wendland,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Wendland,false,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else if(TKernel==KERNEL_Cubic){
+    if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Cubic,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+    else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+  }
+  else Run_Exceptioon("Kernel unknown.");
   for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(Acec[p].x) || !std::isfinite(Acec[p].y) || !std::isfinite(Acec[p].z))
     Run_Exceptioon("Dynamic wall acceleration reconstruction must remain finite.");
 }
@@ -4356,10 +4377,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/artificial viscosity/load/drainage require the public constant-k column or admitted free body; HG/SPR remain column-only.");
-  if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
+  if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))
-    Run_Exceptioon("Dynamic pore-pressure fixture requires Wendland, finite k>=0, Kw>0 and water density>0.");
+    Run_Exceptioon("Dynamic pore-pressure fixture requires Wendland or Cubic, finite k>=0, Kw>0 and water density>0.");
   if(DynamicPorePressure && SoilDamping)Log->Printf("Dynamic soil damping rate: %.9g s^-1 (reference intrinsic solid density)",double(GetDynamicSoilDampingRate()));
   for(unsigned p=0;p<Np;p++){PoroJc[p]=1.;PoroThetac[p]=0.;}
 }
@@ -4404,8 +4425,7 @@ unsigned* JSphCpu::GetDynamicPeriodicMapCpu(){
 /// Ace excludes Gravity: grad(p)-rho_w*(g-a_s) = grad(p)+rho_w*Ace.
 /// Lstar cancels affine-pressure bias, but is not a conservative pair flux.
 //==============================================================================
-void JSphCpu::ComputeDynamicPorePressureRateCpu(){
-  if(!DynamicPorePressure)return;
+template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
   DynamicConductivitySpeedMax=0.;
   unsigned* ridp=NULL;
   if(PeriActive){
@@ -4455,7 +4475,7 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
           const tdouble3 d=TDouble3(Posc[p1].x-Posc[p2].x,(Simulate2D? 0: Posc[p1].y-Posc[p2].y),Posc[p1].z-Posc[p2].z);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
-          const double fac=fsph::GetKernel_Fac<KERNEL_Wendland>(CSP,float(rr2));
+          const double fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
           const tdouble3 g=d*fac;
           const tdouble3 gi=TDouble3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);
           const tmatrix3d cj=CorrMatc[p2];
@@ -4506,6 +4526,18 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
     "Dynamic Darcy fixture produced a nonfinite pressure rate or conductivity-gradient speed.");
   if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)
     if(DynamicConductivitySpeedMax<speedth[th*OMP_STRIDE])DynamicConductivitySpeedMax=speedth[th*OMP_STRIDE];
+}
+
+//==============================================================================
+/// Selects the dynamic Darcy kernel once, outside all particle/neighbour loops.
+//==============================================================================
+void JSphCpu::ComputeDynamicPorePressureRateCpu(){
+  if(!DynamicPorePressure)return;
+  switch(TKernel){
+    case KERNEL_Wendland: ComputeDynamicPorePressureRateCpuT<KERNEL_Wendland>(); break;
+    case KERNEL_Cubic:    ComputeDynamicPorePressureRateCpuT<KERNEL_Cubic   >(); break;
+    default: Run_Exceptioon("Kernel unknown.");
+  }
 }
 
 //==============================================================================

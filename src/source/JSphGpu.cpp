@@ -1696,7 +1696,7 @@ void JSphGpu::ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg){
     if(owned){invalidg=ArraysGpu->ReserveUint();cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);}
     cusph::DynamicPoreWall(stage,Np,NpbOk,MdbcThreshold,DivData,Posxyg,Poszg,Codeg,BoundNormalg
       ,BoundModeg,TangenVelg,BoundDerivativeVelg,Velrhopg,Sigmag,PorePressg,PoroJg,PoroThetag,CorrMatg,Aceg
-      ,1.-double(SoilCte.Porosity),invalidg);
+      ,1.-double(SoilCte.Porosity),invalidg,TKernel);
     if(owned)cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   }
   catch(...){if(owned && invalidg)ArraysGpu->Free(invalidg);throw;}
@@ -1748,14 +1748,14 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
-  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
+  if(PorosityFeedback && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic) || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
     || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr || PoreShepardRegularization
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires bounded complete Darcy Wendland elastic fixtures; artificial viscosity requires the public constant-k column or admitted free body; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
-      "GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
+      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity requires the public constant-k column or admitted free body; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires a private k=0 Wendland/Cubic elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
     || !std::isfinite(RhopZero) || !std::isfinite(MassFluid) || !(MassFluid>0)
@@ -1872,7 +1872,7 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
       ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
       ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode
-      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.));
+      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);

@@ -1,0 +1,119 @@
+{
+  "stage": "lian_material_baseline_review_r1",
+  "date_local": "2026-11-06",
+  "status": "completed_offline_observation_review_not_material_acceptance",
+  "review_complete": true,
+  "physical_acceptance": false,
+  "new_formula_accepted": false,
+  "inputs_read": [
+    "tests/support/lian_material_baseline_r1.cpp",
+    "tests/notes/lian_material_baseline_r1.json",
+    "tests/outputs/lian_material_baseline_r1/points.csv",
+    "tests/outputs/lian_material_baseline_r1/completion.json",
+    "tests/logs/lian_material_baseline_r1.call.json",
+    "tests/logs/lian_material_baseline_r1.log",
+    "tests/logs/lian_material_baseline_DebugCPU_r1.link.json",
+    "tests/logs/lian_material_baseline_DebugCPU_r1.link.log",
+    "tests/logs/lian_material_baseline_DebugCPU_r2.compile.json",
+    "tests/logs/lian_material_baseline_DebugCPU_r2.link.json"
+  ],
+  "existing_execution": {
+    "program": "tests/outputs/lian_material_baseline_DebugCPU_r2/probe.exe",
+    "run_exit_code": 0,
+    "direct_exit": true,
+    "started_utc": "2026-11-05T20:46:24.030293+00:00",
+    "ended_utc": "2026-11-05T20:46:24.241431+00:00",
+    "r1_link_exit_code": 1120,
+    "r1_link_failure": "Missing global AppInfo; failed evidence retained",
+    "r2_compile_exit_code": 0,
+    "r2_link_exit_code": 0,
+    "r2_new_main_supplies_AppInfo": true,
+    "adopted_CPU_Debug_non_main_objects": 85,
+    "old_objects_unchanged_is_existing_call_claim_not_new_rehash": true,
+    "spatial_solver_started": false,
+    "completion_observations_only": true
+  },
+  "coverage": {
+    "rows": 36,
+    "materials": ["constant_strength", "cohesion_softening"],
+    "psi_target_deg": [0, 2.5, -5],
+    "steps_per_path": 6,
+    "elastic_unload_elastic_reload_unchanged_rows": 18,
+    "ordinary_return_rows": 12,
+    "synthetic_kappa_0p5_rows": 6,
+    "synthetic_is_history_continuation": false,
+    "stress_dtype": "double",
+    "material_and_history_dtype": "float",
+    "E_Pa": 20000000,
+    "nu": 0.33,
+    "phi_peak_and_residual_deg": 25,
+    "coh_peak_Pa_all_paths": 5000,
+    "coh_residual_Pa_soft_paths": 1000,
+    "cohesion_softening_eta": 5,
+    "negative_psi_cp_is_paper_7500Pa": false,
+    "psi_softening_implemented": false
+  },
+  "yield_observations": {
+    "definition": "Independent Eq16/18 evaluated on actual returned double stress and saved old/new float kappa; production DP coefficients remain float",
+    "constant_strength_ordinary_return_max_abs_residual_Pa": 0.0007642404816579074,
+    "softening_ordinary_return_old_kappa_max_abs_residual_Pa": 0.0007618156432727119,
+    "softening_new_kappa": [
+      {"psi_deg": 0, "first_yield_Pa": 0.13427367111944477, "further_loading_Pa": 1.3497474458790748},
+      {"psi_deg": 2.5, "first_yield_Pa": 0.12833954006509884, "further_loading_Pa": 1.2903407659578079},
+      {"psi_deg": -5, "first_yield_Pa": 0.14850716805540287, "further_loading_Pa": 1.4921318530768986}
+    ],
+    "interpretation": "Positive new-kappa residual cannot be attributed solely to the approximately0.0008Pa coefficient-precision difference. Production freezes old strength and performs final old-strength projection after history update; no new accuracy threshold is imposed."
+  },
+  "norm_observations": {
+    "constant_strength_source": "src/source/JSphCpu.cpp:3891-3901",
+    "softening_source": "src/source/JSphCpu.cpp:3984-4012",
+    "hdev": 0.5773502691896258,
+    "hfull_formula": "sqrt((2/3)*(3*a_psi*a_psi+0.5))",
+    "rows": [
+      {"psi_deg": 0, "actual_float_hfull": 0.5773502588272095, "full_vs_dev_excess_percent": -0.00000179482316786661},
+      {"psi_deg": 2.5, "actual_float_hfull": 0.5777161121368408, "full_vs_dev_excess_percent": 0.0633658572167128},
+      {"psi_deg": -5, "actual_float_hfull": 0.5788065791130066, "full_vs_dev_excess_percent": 0.252240277886218}
+    ],
+    "interpretation": "Nonzero-psi difference is a full-versus-deviatoric definition difference, not just floating precision. Total-return compliance norms include final projection, not hidden first lambda."
+  },
+  "sign_convention": {
+    "status": "unresolved_no_production_formula_change_authorized",
+    "source_derivative": "src/source/JSphCpu.cpp:3785-3812",
+    "source_denominator": "src/source/JSphCpu.cpp:3987",
+    "initial_actual_dfdk_Pa": 17609.537109375,
+    "initial_independent_fd_dfdk_Pa": 17609.538377746503,
+    "max_relative_derivative_difference": 1.20198799587279e-7,
+    "observed_dfdk_sign_for_cohesion_softening": "positive partial f/partial kappa",
+    "linearization_under_current_definitions": "f_new approximately f_trial-A*lambda+f_kappa*h*lambda gives A-f_kappa*h; actual source uses A+f_kappa*h",
+    "paper_caveat": "Local Lian2023 Eq13 text also prints a plus. Resolve original PDF derivative/softening-modulus and kappa conventions before choosing a production formula. Prediction columns do not mean all candidate denominators were executed."
+  },
+  "writeback_observations": {
+    "synthetic_old_kappa": 0.5,
+    "float_next_ulp": 5.9604644775390625e-8,
+    "predicted_first_dk_min": 1.1153934438490088e-10,
+    "predicted_first_dk_max": 1.495459615738078e-10,
+    "actual_zero_written_increment_rows": 6,
+    "actual_nonzero_return_strain_rows": 6,
+    "predicted_float_loss_true_rows": 6,
+    "zero_written_kappa_despite_return_strain_true_rows": 6,
+    "interpretation": "Predicted first increments lie below half a float ULP and actual saved kappa does not change. This artificial probe does not establish long-run collapse history locking or justify changing all material constants to double."
+  },
+  "minimal_next_checks_suggestions_only": [
+    "Resolve original PDF Eq13/Eq17-19 sign and kappa norm definitions first, retaining the existing float material/history convention.",
+    "Only if an implementation candidate is separately authorized: one small material companion retaining constant-strength control, exposing first return versus final projection, and evaluating yield at new kappa; add negative-psi cp7500Pa and one nonzero-shear point. No candidate formula is preaccepted.",
+    "Within that same material companion, a few consecutive small increments can distinguish single-step float rounding from accumulated-history behavior; no spatial or half-step chain is proposed."
+  ],
+  "limits": [
+    "No off-diagonal stress, apex/tensile cracking, phi0, shear reversal or GPU coverage",
+    "No Eq19 psi-softening implementation, coupled J/pore-pressure, gravity/wall or spatial physical acceptance",
+    "Completion only establishes finite observation/write checks; no physical thresholds were added"
+  ],
+  "audit_actions": {
+    "new_files_only": ["tests/notes/lian_material_baseline_review_r1.md", "tests/notes/lian_material_baseline_review_r1.json"],
+    "solver_or_probe_rerun": false,
+    "build_invoked": false,
+    "hashes_computed": false,
+    "Git_invoked": false,
+    "production_README_or_source_snapshot_modified": false
+  }
+}

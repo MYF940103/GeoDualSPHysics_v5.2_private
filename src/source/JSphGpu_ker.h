@@ -315,7 +315,7 @@ void ExtendDynamicPorePeriodic(unsigned np,unsigned npb,unsigned idini,unsigned 
 void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
-  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid);
+  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland);
 //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
 void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
@@ -323,7 +323,7 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL
   ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None
-  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0);
+  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0,TpKernel tkernel=KERNEL_Wendland);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

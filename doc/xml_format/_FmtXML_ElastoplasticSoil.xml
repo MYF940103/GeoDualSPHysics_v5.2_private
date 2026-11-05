@@ -217,7 +217,19 @@
                      and server release remain pending. Default u-pw retains its previous equations. No Vel0/NoSlip,
                      general-wall/3-D dynamic extension, variable-k HG, plastic flow or restart support.
                      See case02 tests/notes/upl_gpu_stabilizers_r1.json for the current verification state. -->
-                <!-- 3-D free-body compatibility candidate (2026-11-05, startup verified only):
+                <!-- Dynamic Darcy Cubic component verification (2026-11-06):
+                     Kernel=1 selects the existing Cubic samples for the complete CPU/GPU Darcy rate
+                     and the three dynamic wall fits; Kernel=2 keeps the existing Wendland path.
+                     Selection occurs once on the host, outside particle/neighbour loops. No new
+                     field, neighbour pass, equation, time integrator or public key is introduced.
+                     CPU/GPU Debug builds and retained Wendland component CSV regressions passed.
+                     Cubic CPU has48 manufactured cases at h/dp1.2. The GPU selected-kernel component
+                     has8 conditions,32 affine wall rows,4536 rate rows and24 negative controls;
+                     its memcheck has zero errors/leaks. These are zero-step component checks,
+                     not complete Cubic integration, mixed-slip/gravity/plasticity or collapse acceptance.
+                     Independent SPR/HG kernel restrictions and all existing geometry/restart limits
+                     remain. See case08 tests/notes/upl_cubic_review_r1.json for bounded evidence. -->
+                <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid
                      ramp/hold/drain scheduling. All fixed native markers remain present and must be
@@ -234,7 +246,11 @@
                      The 69-save ramp/hold/drain window passed native and original closed diagnostics;
                      max closed pressure RMS4.176 Pa and six-stress RMS2.960 Pa. True drainage covered
                      20612 saved receivers. Column regression preserves150 actual saves and signed-clock
-                     export bytes. A separate coarse peak window is prepared, not peak/full acceptance.
+                     export bytes. The 577-save coarse peak passed native/ledger/drainage and exact
+                     69-save common26/signed-clock prefix checks. Mandel fixed18 peak error is -1.4931%
+                     and phase error +2.4708% against the unfitted finite-Kw/r0/a=.05 reference.
+                     A nu=.30 server full-decay validation candidate is packaged; no full-cycle,
+                     peak-half or strict1-percent physical acceptance is claimed.
                      Closed-face correction constrains a Taylor defect, not an exact-Neumann claim.
                      The default-OFF equations and the bounded column scope are unchanged. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />

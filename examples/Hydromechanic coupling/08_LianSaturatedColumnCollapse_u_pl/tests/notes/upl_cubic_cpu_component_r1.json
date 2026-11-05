@@ -1,0 +1,53 @@
+{
+  "stage": "upl_cubic_cpu_component_r1",
+  "source_parent": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_gravity_cpu_r1.cpp",
+  "changes": [
+    {
+      "from": "#include \"upl_p2_feedback_harness_r1.cpp\"",
+      "to": "#include \"../../../02_TerzaghiConsolidation_q0_PR/tests/support/upl_p2_feedback_harness_r1.cpp\""
+    },
+    {
+      "from": "fsph::GetKernel_Fac<KERNEL_Wendland>",
+      "to": "fsph::GetKernel_Fac<KERNEL_Cubic>"
+    },
+    {
+      "from": "DynamicPorePressure=true;SoilCte.HydraulicConductivity=1e-5f;",
+      "to": "TKernel=KERNEL_Cubic;CSP.tkernel=TKernel;DynamicPorePressure=true;SoilCte.HydraulicConductivity=1e-5f;"
+    },
+    {
+      "from": "KernelH=.25f;KernelSize=.5f;KernelSize2=.25f;Eta2=.000625f;",
+      "to": "KernelH=float(1.2*Dp);KernelSize=2*KernelH;KernelSize2=KernelSize*KernelSize;Eta2=.01f*KernelH*KernelH;"
+    },
+    {
+      "from": "CSP.kwend=fsph::GetKernelWendland_Ctes(Simulate2D,KernelH);",
+      "to": "CSP.kcubic=fsph::GetKernelCubic_Ctes(Simulate2D,KernelH);"
+    },
+    {
+      "from": "upl_gravity_cpu_r1\\\"",
+      "to": "upl_cubic_cpu_component_r1\\\""
+    }
+  ],
+  "kernel": "Cubic",
+  "h_over_dp": 1.2,
+  "actual_production_entry": "ComputeDynamicPorePressureRateCpu and Interaction_Forces_ct",
+  "cases": 48,
+  "rate_rows": 864,
+  "force_rows": 72,
+  "same_parsed_material_constants": true,
+  "reference": "Independent all-particle direct sum with Cubic coefficients and the retained unmodified propagated roundoff budgets",
+  "dimension": [
+    2,
+    3
+  ],
+  "jitter": [
+    false,
+    true
+  ],
+  "constant_and_smooth_k": true,
+  "gravity_public_admission": false,
+  "physical_steps": 0,
+  "spatial_or_collapse_acceptance": false,
+  "CLI": "component.exe --out FRESH_DIR --gamma-policy standard",
+  "no_new_Cryer_solver": true,
+  "source_and_note_full_read_required_before_run": true
+}

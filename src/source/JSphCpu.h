@@ -412,6 +412,7 @@ protected:
   void GetPorosityFeedbackStateCpu(unsigned p,double &porosity,double &volume,double &rhot)const;
   double GetDynamicConductivityCpu(unsigned p)const;
   unsigned* GetDynamicPeriodicMapCpu();
+  template<TpKernel tker> void ComputeDynamicPorePressureRateCpuT();
   void ComputeDynamicPorePressureRateCpu();
   void InitDynamicPoreWallCpu();
   void ComputeDynamicPoreWallStateCpu();

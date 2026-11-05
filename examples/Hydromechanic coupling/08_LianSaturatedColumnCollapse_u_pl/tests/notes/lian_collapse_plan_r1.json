@@ -3,15 +3,37 @@
   "date_local": "2026-11-06",
   "user_order": "Complete current Cryer review/server delivery,then reproduce Lian2023 Section4.4 in newcase08; defer a new variable-k one-dimensional physical benchmark.",
   "source": "src/papers/PDF/Lian 2023 u-pl.pdf, printedpages19-22 visually inspected; Section4.4,Fig13-17,Table1,Eq4/14-19/47",
-  "geometry": {"length_m": 4, "height_m": 2, "dp_m": 0.04, "soil_count": 5000, "soil_columns": 100, "soil_layers": 50, "paper_initial_water_level_m": 2, "numerical_bed_length_m": 12, "bed_length_is_paper_parameter": false},
-  "walls": {"mkbound0": "left FreeSlip", "mkbound1": "bottom NoSlip", "mkbound2": "right FreeSlip before removal; future runtime event required", "hydraulic": "impermeable walls; paper free-seepage/ponding requires separate compatibility review"},
+  "geometry": {
+    "length_m": 4,
+    "height_m": 2,
+    "dp_m": 0.04,
+    "soil_count": 5000,
+    "soil_columns": 100,
+    "soil_layers": 50,
+    "paper_initial_water_level_m": 2,
+    "numerical_bed_length_m": 12,
+    "bed_length_is_paper_parameter": false
+  },
+  "walls": {
+    "mkbound0": "left FreeSlip",
+    "mkbound1": "bottom NoSlip",
+    "mkbound2": "right FreeSlip before removal; future runtime event required",
+    "hydraulic": "impermeable walls; paper free-seepage/ponding requires separate compatibility review"
+  },
   "parameter_table": "support/lian2023_collapse_parameters.csv",
-  "kernel": {"paper": "Cubic", "hdp": 1.2, "current_dynamic_rate_and_fit": "Wendland hardcoded; Cubic requires implementation and validation"},
-  "paper_step_s": 0.00002,
+  "kernel": {
+    "paper": "Cubic",
+    "hdp": 1.2,
+    "current_dynamic_rate_and_fit": "Wendland hardcoded; Cubic requires implementation and validation"
+  },
+  "paper_step_s": 2e-05,
   "paper_step_uses_TPI": true,
   "explicit_step_selected": false,
   "planned_save_interval_s": 0.01,
-  "fresh_run_phases": ["gravity coupled prestress in closed container", "remove right support and evolve collapse without resetting J/n/k/plastic history"],
+  "fresh_run_phases": [
+    "gravity coupled prestress in closed container",
+    "remove right support and evolve collapse without resetting J/n/k/plastic history"
+  ],
   "restart_interoperability_claimed": false,
   "current_source_gaps": [
     "public dynamic g=0/elastic admission and specific wall restrictions",
@@ -23,13 +45,21 @@
     "variable conductivity in gravity/drainage/plastic scope",
     "free-seepage/ponding and Eq47 negative-pressure stabilization"
   ],
-  "initial_checks": ["native soil5000/100x50", "native IDs/positions/wallMK/nooverlap", "geometry normals and later initialized wall normals distinguished"],
+  "initial_checks": [
+    "native soil5000/100x50",
+    "native IDs/positions/wallMK/nooverlap",
+    "geometry normals and later initialized wall normals distinguished"
+  ],
   "geometry_admission": {
     "actual_GenCase_BAT_exit": 0,
     "check": "tests/logs/lian_collapse_geometry_r1.check.json",
     "soil_native_count": 5000,
     "boundary_native_count": 2060,
-    "left_bottom_right_counts": [255,1545,260],
+    "left_bottom_right_counts": [
+      255,
+      1545,
+      260
+    ],
     "duplicate_positions": 0,
     "root_png_inspected": true,
     "matching_particle_CSV": "tests/figures/lian_collapse_geometry_r1_particles.csv",
@@ -42,19 +72,105 @@
     "current_fast_state": "Stress tensors already double; material coefficients,kplastic/tk and some local calculations remain float.",
     "material_constants_promoted_or_retyped": false,
     "same_parsed_material_values_in_both_controls": true,
-    "priority_targets": ["kplastic/tk accumulated plastic-strain writeback", "precision-sensitive softening exponent and return-mapping intermediate arithmetic"],
-    "sequence": ["audit accumulated equivalent plastic-strain definition", "same-path same-algorithm constant-psi fast versus double reference", "same psi0*exp(-sf*epsp) law in both references", "compare stress,epsp,c/phi/psi,yield residual and cost", "only then matched short soil-column precision comparison"],
+    "priority_targets": [
+      "kplastic/tk accumulated plastic-strain writeback",
+      "precision-sensitive softening exponent and return-mapping intermediate arithmetic"
+    ],
+    "sequence": [
+      "audit accumulated equivalent plastic-strain definition",
+      "same-path same-algorithm constant-psi fast versus double reference",
+      "same psi0*exp(-sf*epsp) law in both references",
+      "compare stress,epsp,c/phi/psi,yield residual and cost",
+      "only then matched short soil-column precision comparison"
+    ],
     "arithmetic_and_persistent_state_precision_separated": true,
     "double_plastic_history_requires_storage_sorting_output_CPU_GPU_review": true,
     "default_behavior_preserved": true,
     "implemented_or_verified": false,
     "elastic_Cryer_rerun_required": false
   },
-  "comparison": {"psi0_and_psi2p5_s": [0.3,0.6,1.2], "psim5_s": [0.2,0.5,1.6,3.0], "figure14_15_excess_kPa": [-10,10], "figure16_total_pore_kPa": [-10,20], "figure17_excess_kPa": [-10,20], "fields": ["PorePress", "ExcessPorePress with an explicit material/spatial reference", "effective and total stress", "equivalent plastic strain with audited definition", "J", "n", "k", "displacement", "runout", "energy and drainage diagnostics"]},
+  "plastic_norm_audit_20261106": {
+    "reference": "Lian2023 original PDF Eq13 uses dg/ds; Bui2021 Eq78 defines deviatoric plastic history. Lian Eq17-19 use equivalent strain without an explicit code-kappa mapping in those equations.",
+    "current_softening_factor": "sqrt((2/3)*(3*DP_psi^2+0.5)), including volumetric plastic flow",
+    "deviatoric_factor_for_DP_potential": "1/sqrt(3) for positive plastic multiplier and J2>0",
+    "CPU_softening": "src/source/JSphCpu.cpp:3984-4012",
+    "CPU_nonsoftening": "src/source/JSphCpu.cpp:3883-3901",
+    "GPU_softening": "src/source/JSphGpuSimple_ker.cu:355-383",
+    "nonzero_psi_definition_difference": true,
+    "model_definition_and_float_error_must_be_separated": true,
+    "psi_update": "Inside the material return at the same evaluated accumulated state as strength/flow; predictor does not commit plastic history.",
+    "remaining_local_checks": [
+      "plastic multiplier sign and residual at updated strength",
+      "consistency denominator sign under the actual code convention",
+      "same-path legacy/default regression before any material equation change"
+    ],
+    "production_changed_or_material_test_executed": false
+  },
+  "comparison": {
+    "psi0_and_psi2p5_s": [
+      0.3,
+      0.6,
+      1.2
+    ],
+    "psim5_s": [
+      0.2,
+      0.5,
+      1.6,
+      3.0
+    ],
+    "figure14_15_excess_kPa": [
+      -10,
+      10
+    ],
+    "figure16_total_pore_kPa": [
+      -10,
+      20
+    ],
+    "figure17_excess_kPa": [
+      -10,
+      20
+    ],
+    "fields": [
+      "PorePress",
+      "ExcessPorePress with an explicit material/spatial reference",
+      "effective and total stress",
+      "equivalent plastic strain with audited definition",
+      "J",
+      "n",
+      "k",
+      "displacement",
+      "runout",
+      "energy and drainage diagnostics"
+    ]
+  },
   "formal_XML_BAT_released": false,
   "solver_started": false,
   "physical_acceptance": false,
   "TPI_or_nonlocal_required_for_first_compatibility_stage": false,
   "active_Cryer_source_program_input_unchanged": true,
-  "SHA_policy": "No repeated hashing; reuse closed records and metadata. Seal new delivery identities only when necessary."
+  "SHA_policy": "No repeated hashing; reuse closed records and metadata. Seal new delivery identities only when necessary.",
+  "Cubic_component_20261106": {
+    "review": "tests/notes/upl_cubic_review_r1.json",
+    "CPU_GPU_Debug_builds_passed": true,
+    "Wendland_component_regression": true,
+    "CPU_Cubic_48_cases": true,
+    "GPU_8_conditions_4536_rates_32_walls": true,
+    "memcheck_zero_errors_zero_leaks": true,
+    "actual_full_Cubic_time_integration": false,
+    "physical_acceptance": false
+  },
+  "material_actual_probe_20261106": {
+    "review": "tests/notes/lian_material_baseline_review_r1.md",
+    "points": 36,
+    "observations_only": true,
+    "constitutive_or_precision_production_changes": false
+  },
+  "material_original_PDF_review_20261106": {
+    "Lian_Eq13_plus_sign_verified_in_original": true,
+    "Bui_Eq86_positive_dfdk_and_Eq87_plus_require_convention_explanation": true,
+    "no_sign_flip_authorized_by_a_picture": true,
+    "psi_law": "psi0*exp(-sf*eps_eq_p),sf independent default0; no separate psi state needed",
+    "material_constants_double": false,
+    "production_formula_changed": false
+  }
 }

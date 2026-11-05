@@ -1476,7 +1476,7 @@ template<unsigned stage> __device__ double KerDynamicPoreWallRead(unsigned p,uns
   return(c==0? double(ace[p].x): (c==1? double(ace[p].y): double(ace[p].z)));
 }
 
-template<unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned npbok,float threshold
+template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned npbok,float threshold
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *fluidcells,const double2 *posxy,const double *posz
   ,const typecode *code,const float3 *boundnormal,byte *boundmode,float3 *tangenvel,float3 *derivativevel
   ,float4 *velrhop,tsymatrix3d *sigma,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace
@@ -1503,7 +1503,7 @@ template<unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned
       const float rr2=float(dx*dx+dz*dz);
       if(rr2<=CTE.kernelsize2){
         float fac;
-        const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<KERNEL_Wendland>(rr2))): double(cufsph::GetKernel_WabFac<KERNEL_Wendland>(rr2,fac)));
+        const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<tker>(rr2))): double(cufsph::GetKernel_WabFac<tker>(rr2,fac)));
         const double fx=double(fac)*dx,fz=double(fac)*dz;
         const double vol=double(CTE.massf)/double(CTE.rhopzero)*j[p2],w=wab*vol,vx=fx*vol,vz=fz*vol;
         const double distance2=dx*dx+dz*dz;const bool nearer=(distance2<nearest2);
@@ -1554,24 +1554,34 @@ template<unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned
   }
 }
 
-void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+template<TpKernel tker> void DynamicPoreWallT(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
   ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid)
 {
   if(npbok){
     dim3 grid=GetSimpleGridSize(npbok,SPHBSIZE);
-    if(stage==0)KerDynamicPoreWall<0><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
-    else if(stage==1)KerDynamicPoreWall<1><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
-    else if(stage==2)KerDynamicPoreWall<2><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+    if(stage==0)KerDynamicPoreWall<tker,0><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+    else if(stage==1)KerDynamicPoreWall<tker,1><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+    else if(stage==2)KerDynamicPoreWall<tker,2><<<grid,SPHBSIZE>>>(np,npbok,threshold,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
   }
+}
+
+void DynamicPoreWall(unsigned stage,unsigned np,unsigned npbok,float threshold,const StDivDataGpu &dvd
+  ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+  ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+  ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel)
+{
+  if(tkernel==KERNEL_Wendland)DynamicPoreWallT<KERNEL_Wendland>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+  else if(tkernel==KERNEL_Cubic)DynamicPoreWallT<KERNEL_Cubic>(stage,np,npbok,threshold,dvd,posxy,posz,code,boundnormal,boundmode,tangenvel,derivativevel,velrhop,sigma,porepress,j,theta,corrmat,ace,solid0,invalid);
+  else throw "Kernel unknown.";
 }
 
 //==============================================================================
 /// Complete rate with optional smooth div(k*(grad p+rho_w*Ace)) chain.
 /// Lstar cancels affine-pressure bias; it is not a conservative pair flux.
 //==============================================================================
-__global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
+template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
@@ -1608,7 +1618,7 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
           const double3 d=make_double3(xy1.x-posxy[p2].x,(CTE.simulate2d? 0.: xy1.y-posxy[p2].y),z1-posz[p2]);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(CTE.kernelsize2) || rr2<ALMOSTZERO)continue;
-          const double fac=cufsph::GetKernel_Fac<KERNEL_Wendland>(float(rr2));
+          const double fac=cufsph::GetKernel_Fac<tker>(float(rr2));
           const double3 g=make_double3(fac*d.x,fac*d.y,fac*d.z);
           const double3 gi=make_double3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);
           const tmatrix3d cj=corrmat[p2];
@@ -1655,7 +1665,7 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
   }
 }
 
-void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+template<TpKernel tker> void ComputeDynamicPorePressureRateT(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
@@ -1665,10 +1675,23 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
-    KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
+    KerComputeDynamicPorePressureRate<tker> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode
       ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2);
   }
+}
+
+void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+  ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
+  ,const double *j,const double *theta,const float *porepress,float *rate
+  ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+  ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
+  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
+  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel)
+{
+  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
+  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
+  else throw "Kernel unknown.";
 }
 
 //==============================================================================
