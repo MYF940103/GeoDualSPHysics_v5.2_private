@@ -229,6 +229,17 @@
                      not complete Cubic integration, mixed-slip/gravity/plasticity or collapse acceptance.
                      Independent SPR/HG kernel restrictions and all existing geometry/restart limits
                      remain. See case08 tests/notes/upl_cubic_review_r1.json for bounded evidence. -->
+                <!-- CPU dynamic-wall normal-gravity component (2026-11-06):
+                     Reconstruct p-rho_w*Gravity_normal.dot(position), then restore the head at the fixed
+                     sample. This pairs with the existing Q*(Ace+Gravity)-Gravity reconstruction.
+                     DebugCPU and the old zero-gravity Cubic CSV regression passed. Each selected
+                     Wendland/Cubic kernel has4 static manufactured conditions,1024 wall rows,
+                     256 true-plane flux checks and4096 complete-rate reference rows within the
+                     original budgets. The normal-only projection also passed6 mixed/pure-tangential
+                     manufactured conditions per kernel (1536 wall/384 face/6144 rate rows), with
+                     exact zero complete rates in the pure-tangential conditions. Public zero-gravity and parallel-wall restrictions remain;
+                     GPU synchronization, gravity trajectories, NoSlip, corners and inactive bottom
+                     walls are not admitted by this component. See case08 tests/notes/upl_gravity_wall_cpu_review_r1.json. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

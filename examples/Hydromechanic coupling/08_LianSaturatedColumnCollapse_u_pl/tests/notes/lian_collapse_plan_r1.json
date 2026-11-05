@@ -172,5 +172,28 @@
     "psi_law": "psi0*exp(-sf*eps_eq_p),sf independent default0; no separate psi state needed",
     "material_constants_double": false,
     "production_formula_changed": false
+  },
+  "gravity_wall_CPU_20261106": {
+    "review": "tests/notes/upl_gravity_wall_cpu_review_r1.json",
+    "pure_normal_and_mixed_tangent_components_passed": true,
+    "default_zero_g_Cubic_CSVs_byte_exact": true,
+    "GPU_synchronization": "pending_reviewed_patch",
+    "public_scope_expanded": false,
+    "physical_acceptance": false
+  },
+  "material_history_precision_20261106": {
+    "review": "tests/logs/lian_material_history_r1.review.json",
+    "ordinary_16_updates_max_stress_gap_Pa": 0,
+    "synthetic_256_subULP_updates_max_stress_gap_Pa": 0.0028575056021509226,
+    "synthetic_double_history_increment": 1.8792647320520217e-06,
+    "material_and_DP_parameters_float": true,
+    "production_history_precision_changed": false,
+    "constitutive_consistency_fixed": false
+  },
+  "second_derivative_policy": {
+    "retained_review": "../02_TerzaghiConsolidation_q0_PR/tests/notes/upl_lian_variable_root_r1.json",
+    "prior_actual_responses": 1536,
+    "prior_conclusion": "No uniform Eq25 pair-k improvement; retain current product-rule pressure operator.",
+    "next_condition": "Revisit a bounded actual deformed snapshot if collapse errors indicate this operator; no replacement or redundant variable-k 1D full benchmark from this note."
   }
 }

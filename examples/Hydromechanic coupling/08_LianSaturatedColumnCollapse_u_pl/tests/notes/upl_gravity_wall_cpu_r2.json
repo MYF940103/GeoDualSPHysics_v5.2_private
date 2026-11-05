@@ -1,0 +1,24 @@
+{
+  "stage": "upl_gravity_wall_cpu_r2.author",
+  "purpose": "Minimal fresh r2 of retained r1 zero-step CPU wall manufacture. Test normal-head pressure reconstruction with mixed normal/tangential gravity and periodic Z, without modifying production or any r1 evidence.",
+  "base_source": "tests/support/upl_gravity_wall_cpu_r1.cpp",
+  "source": "tests/support/upl_gravity_wall_cpu_r2.cpp",
+  "initialization": "Reuse actual r1 CPU initialization with retained zero-g parallel FreeSlip wall seeds (Wendland original or prepared Cubic copy), 1024 soil +256 fixed native IDs, dp=1/512 and h/dp=1.8. No GenCase, resampling, public admission change or integrator.",
+  "manufacture": {
+    "cases": "sign=-1,0,+1 crossed with coincident and exact Dp/8 mirror offsets: six conditions.",
+    "full_gravity": "After actual zero-g initialization, Gravity=CSP.gravity=(sign,0,2). The retained walls are x-normal, so gn=(sign,0,0), gt=(0,0,2).",
+    "pressure": "p=128+rho_w*gn dot x, rho_w=1000; pressure is independent of periodic Z. J=1, theta=0, effective stress=0, zero saved physical/derivative/tangent velocities.",
+    "finished_acceleration": "Native Darcy-Ace=-gn. Since Ace=as-g, this is prescribed true tangential as=gt; it is not a mechanically static full-gravity equilibrium. Correct mirrored Q*(Ace+g)-g remains -gn.",
+    "pure_tangent": "sign=0 keeps full g=(0,0,2), constant pressure128 and native Ace=0. It must satisfy the SAME good wall state, actual-plane pressure/gradient/Ace/normal flux and independent complete-rate checks."
+  },
+  "budgets": "Unchanged r1 constants, arithmetic and original criteria. Condition uses actual J/kernel weights. td=32768*DBL_EPSILON*condition; tf=64*FLT_EPSILON*condition. Pressure/J/Ace bounds remain256tf/2td/tf. True gradient is rho_w*gn, expected fitted Ace=-gn. Flux bound uses k/gamma*(tf*(rho_w*|gn|+rho_w)+256td/h), NEVER |full g|; the extra tangential2 cannot widen any state/flux budget. Complete-rate bound remains (32*FLT_EPSILON+4096*DBL_EPSILON)*max(1,raw absolute-term rate).",
+  "negative_controls": {
+    "eligible": "Only sign!=0: 256 actual-plane probes, each evaluates both omitted-normal-head and wrong-Q*Ace counterfactuals with the unchanged >100-times-good-budget witness.",
+    "pure_tangent": "Skip both negatives at all128 sign0 probes: both have no mathematical effect when gn=0. CSV negative flux cells are blank and negative_controls_evaluated=0; no zero-normal-g negative pass is claimed.",
+    "normal_head_counterfactual": "The deliberately missing head uses p=128+rho_w*gn dot mirror_x, not full g dot x. This isolates the normal-head defect instead of injecting an unrelated periodic-Z pressure jump."
+  },
+  "coverage": "6 cases,1536 native wall rows,384 true-plane rows,6144 complete-rate receiver rows,256 eligible negative probes and128 explicitly skipped probes;1280 original native identities. Eighteen field CSVs plus native_ids.csv and honest completion.json. Native physical18 and geometry/ID/normal invariants remain r1 checks.",
+  "execution": "AUTHOR ONLY. No build/run/import/syntax check now. Root must full-read this fresh source/note before separately authorizing a new helper from the forthcoming upl_gravity_wall_r2 DebugCPU objects. Each eventual kernel execution requires a fresh output; no retry/overwrite.",
+  "limits": "Private parallel-wall, constant-J/k, prescribed instantaneous acceleration component. No public normal-gravity admission, force-stage mechanical equilibrium, pressure-head trajectory, periodic full-g hydrostatics, evolving material, wall corner, integral time step, Cryer solver or physical acceptance.",
+  "physical_acceptance": false
+}

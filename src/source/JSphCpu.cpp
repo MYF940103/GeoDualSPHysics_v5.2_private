@@ -4250,20 +4250,30 @@ void JSphCpu::InitDynamicPoreWallCpu(){
 
 //==============================================================================
 /// Reconstructs fixed quadrature samples, not moving native particle owners.
-/// Scalars are even; velocity and effective stress use Q*v and Q*sigma*Q.
+/// J and hydrostatic excess are even; velocity/stress use Q*v and Q*sigma*Q.
 //==============================================================================
 void JSphCpu::ComputeDynamicPoreWallStateCpu(){
   if(!DynamicPoreWall || !NpbOk)return;
+  //-The admitted parallel walls share one axis. Keep tangential periodic data unchanged.
+  const tdouble3 wallq=DynamicPoreWallParity(BoundNormalc[0]);
+  const tdouble3 normalg=TDouble3(wallq.x<0? double(Gravity.x): 0.
+    ,wallq.y<0? double(Gravity.y): 0.,wallq.z<0? double(Gravity.z): 0.);
+  const bool hydrostatichead=(normalg.x!=0 || normalg.y!=0 || normalg.z!=0);
+  const double rhow=SoilCte.PoreWaterRho;
+  const auto head=[&](unsigned p){return rhow*(normalg.x*Posc[p].x
+    +normalg.y*Posc[p].y+normalg.z*Posc[p].z);};
   const auto read=[&](unsigned p,unsigned c){
     if(c==0)return PoroJc[p];
-    if(c==1)return double(PorePressc[p]); //-Even pressure requires zero normal body gravity.
+    if(c==1)return(hydrostatichead? double(PorePressc[p])-head(p): double(PorePressc[p]));
     if(c<5)return double(c==2? Velrhopc[p].x: (c==3? Velrhopc[p].y: Velrhopc[p].z));
     const tsymatrix3d s=Sigmac[p];
     const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
   };
   const auto write=[&](unsigned p,const double *v){
     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
-    PoroJc[p]=v[0];PoroThetac[p]=0.;PorePressc[p]=float(v[1]);
+    //-Even excess over the hydrostatic head pairs with Q*(Ace+Gravity)-Gravity.
+    PoroJc[p]=v[0];PoroThetac[p]=0.;
+    PorePressc[p]=float(hydrostatichead? v[1]+head(p): v[1]);
     Sigmac[p]=TSymMatrix3d(v[5],q.x*q.y*v[8],q.x*q.z*v[9],v[6],q.y*q.z*v[10],v[7]);
     if(BoundDerivativeVelc)BoundDerivativeVelc[p]=TFloat3(float(q.x*v[2]),float(q.y*v[3]),float(q.z*v[4]));
     if(TangenVelc)TangenVelc[p]=TFloat3(float(.5*(1.+q.x)*v[2]),float(.5*(1.+q.y)*v[3]),float(.5*(1.+q.z)*v[4]));

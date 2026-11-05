@@ -1,0 +1,95 @@
+{
+  "stage": "upl_gravity_wall_CPU_Wendland_r1.check",
+  "passed": true,
+  "kernel": "Wendland",
+  "completion": {
+    "stage": "upl_gravity_wall_cpu_r1",
+    "passed": true,
+    "private_manufactured": true,
+    "kernel": "Wendland",
+    "h_over_dp": 1.8,
+    "cases": 4,
+    "wall_rows": 1024,
+    "true_plane_rows": 256,
+    "complete_rate_rows": 4096,
+    "max_state_over_retained_budget": 0,
+    "max_true_plane_flux_over_propagated_budget": 2.9137872069944905e-10,
+    "max_complete_rate_over_old_roundoff_budget": 6.47192968009299e-11,
+    "min_missing_head_flux_over_budget": 18177.264765704236,
+    "min_wrong_Ace_flux_over_budget": 17188.11652985031,
+    "native_soil": 1024,
+    "native_fixed": 256,
+    "native_physical18_unchanged": true,
+    "geometry_ID_normal_bytes_restored": true,
+    "actual_CPU_initialization": true,
+    "actual_free_surface_and_wall_stages": true,
+    "actual_complete_Darcy_rate": true,
+    "public_guard_changed": false,
+    "actual_Run_or_ComputeStep_called": false,
+    "completed_physical_steps": 0,
+    "actual_time_s": 0,
+    "mechanical_equilibrium_accepted": false,
+    "physical_acceptance": false
+  },
+  "tables": [
+    {
+      "file": "gminus_coincident_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gminus_coincident_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gminus_coincident_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gminus_offgrid_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gminus_offgrid_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gminus_offgrid_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gplus_coincident_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gplus_coincident_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gplus_coincident_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gplus_offgrid_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gplus_offgrid_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gplus_offgrid_rate.csv",
+      "rows": 1024
+    }
+  ],
+  "native_ID_rows": 1280,
+  "independent_max_rate_ratio": 6.47192968009299e-11,
+  "independent_max_face_flux_ratio": 2.9137872069944905e-10,
+  "independent_min_missing_head_ratio": 18177.264765704236,
+  "independent_min_wrong_Ace_ratio": 17188.11652985031,
+  "all_original_budgets_preserved": true,
+  "source_canonical_consumed_stats_unchanged": true,
+  "component_attempts": 1,
+  "normal_gravity_only_private_manufacture": true,
+  "public_guard_changed": false,
+  "physical_acceptance": false
+}

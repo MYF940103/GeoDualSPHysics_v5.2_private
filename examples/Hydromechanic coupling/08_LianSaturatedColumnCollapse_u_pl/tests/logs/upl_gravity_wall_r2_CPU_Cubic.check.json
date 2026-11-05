@@ -1,0 +1,219 @@
+{
+  "stage": "upl_gravity_wall_r2_CPU_Cubic.check",
+  "passed": true,
+  "kernel": "Cubic",
+  "completion": {
+    "stage": "upl_gravity_wall_cpu_r2",
+    "passed": true,
+    "private_manufactured": true,
+    "kernel": "Cubic",
+    "h_over_dp": 1.8,
+    "cases": 6,
+    "wall_rows": 1536,
+    "true_plane_rows": 384,
+    "complete_rate_rows": 6144,
+    "negative_control_probes": 256,
+    "negative_probes_skipped_for_zero_normal_g": 128,
+    "gravity_tangent_z": 2,
+    "pressure_and_budget_use_normal_g_only": true,
+    "native_Ace_is_minus_normal_g": true,
+    "manufactured_true_acceleration_is_tangent_g": true,
+    "max_state_over_retained_budget": 0,
+    "max_true_plane_flux_over_propagated_budget": 2.794083282147818e-10,
+    "max_complete_rate_over_old_roundoff_budget": 5.523307485651828e-11,
+    "min_missing_head_flux_over_budget": 20652.955009721052,
+    "min_wrong_Ace_flux_over_budget": 19637.218823981006,
+    "native_soil": 1024,
+    "native_fixed": 256,
+    "native_physical18_unchanged": true,
+    "geometry_ID_normal_bytes_restored": true,
+    "actual_CPU_initialization": true,
+    "actual_free_surface_and_wall_stages": true,
+    "actual_complete_Darcy_rate": true,
+    "public_guard_changed": false,
+    "actual_Run_or_ComputeStep_called": false,
+    "completed_physical_steps": 0,
+    "actual_time_s": 0,
+    "mechanical_equilibrium_accepted": false,
+    "physical_acceptance": false
+  },
+  "tables": [
+    {
+      "file": "gminus_coincident_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gminus_coincident_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gminus_coincident_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gminus_offgrid_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gminus_offgrid_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gminus_offgrid_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gtangent_coincident_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gtangent_coincident_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gtangent_coincident_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gtangent_offgrid_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gtangent_offgrid_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gtangent_offgrid_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gplus_coincident_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gplus_coincident_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gplus_coincident_rate.csv",
+      "rows": 1024
+    },
+    {
+      "file": "gplus_offgrid_wall.csv",
+      "rows": 256
+    },
+    {
+      "file": "gplus_offgrid_face.csv",
+      "rows": 64
+    },
+    {
+      "file": "gplus_offgrid_rate.csv",
+      "rows": 1024
+    }
+  ],
+  "native_ID_rows": 1280,
+  "absolute_metrics": {
+    "max_abs_normal_flux_m_s": 1.3795468735100927e-19,
+    "max_abs_actual_rate_Pa_s": 4.59286358944766e-10,
+    "max_abs_reference_rate_Pa_s": 4.5928636501324255e-10,
+    "max_abs_actual_minus_reference_Pa_s": 4.090530579159399e-10,
+    "min_original_rate_budget_Pa_s": 3.814698175119702e-06,
+    "max_original_rate_budget_Pa_s": 7.40594397430448,
+    "min_good_flux_budget_m_s": 2.4687789043295847e-10,
+    "max_good_flux_budget_m_s": 4.938281720667969e-10
+  },
+  "per_case_absolute_metrics": [
+    {
+      "case": "gminus_coincident",
+      "max_abs_normal_flux_m_s": 7.071626830597954e-20,
+      "max_abs_actual_rate_Pa_s": 4.59286358944766e-10,
+      "max_abs_reference_rate_Pa_s": 4.5928636501324255e-10,
+      "max_abs_actual_minus_reference_Pa_s": 4.090530579159399e-10,
+      "min_original_rate_budget_Pa_s": 7.405943974304477,
+      "max_original_rate_budget_Pa_s": 7.40594397430448,
+      "min_good_flux_budget_m_s": 4.937386377580097e-10,
+      "max_good_flux_budget_m_s": 4.9373863775801e-10,
+      "eligible_negative_probes": 64,
+      "skipped_negative_probes": 0
+    },
+    {
+      "case": "gminus_offgrid",
+      "max_abs_normal_flux_m_s": 8.346838226279552e-20,
+      "max_abs_actual_rate_Pa_s": 4.59286358944766e-10,
+      "max_abs_reference_rate_Pa_s": 4.5928636501324255e-10,
+      "max_abs_actual_minus_reference_Pa_s": 4.090530579159399e-10,
+      "min_original_rate_budget_Pa_s": 7.405943974304477,
+      "max_original_rate_budget_Pa_s": 7.40594397430448,
+      "min_good_flux_budget_m_s": 4.938281720667968e-10,
+      "max_good_flux_budget_m_s": 4.938281720667969e-10,
+      "eligible_negative_probes": 64,
+      "skipped_negative_probes": 0
+    },
+    {
+      "case": "gtangent_coincident",
+      "max_abs_normal_flux_m_s": 9.02823660150456e-36,
+      "max_abs_actual_rate_Pa_s": 0.0,
+      "max_abs_reference_rate_Pa_s": 0.0,
+      "max_abs_actual_minus_reference_Pa_s": 0.0,
+      "min_original_rate_budget_Pa_s": 3.814698175119702e-06,
+      "max_original_rate_budget_Pa_s": 3.814698175119702e-06,
+      "min_good_flux_budget_m_s": 2.4687789043295847e-10,
+      "max_good_flux_budget_m_s": 2.468778904329586e-10,
+      "eligible_negative_probes": 0,
+      "skipped_negative_probes": 64
+    },
+    {
+      "case": "gtangent_offgrid",
+      "max_abs_normal_flux_m_s": 4.0252886031034323e-23,
+      "max_abs_actual_rate_Pa_s": 0.0,
+      "max_abs_reference_rate_Pa_s": 0.0,
+      "max_abs_actual_minus_reference_Pa_s": 0.0,
+      "min_original_rate_budget_Pa_s": 3.814698175119702e-06,
+      "max_original_rate_budget_Pa_s": 3.814698175119702e-06,
+      "min_good_flux_budget_m_s": 2.469226591417132e-10,
+      "max_good_flux_budget_m_s": 2.4692265914171323e-10,
+      "eligible_negative_probes": 0,
+      "skipped_negative_probes": 64
+    },
+    {
+      "case": "gplus_coincident",
+      "max_abs_normal_flux_m_s": 1.3795468735100927e-19,
+      "max_abs_actual_rate_Pa_s": 4.59286358944766e-10,
+      "max_abs_reference_rate_Pa_s": 4.5928636501324255e-10,
+      "max_abs_actual_minus_reference_Pa_s": 4.090530579159399e-10,
+      "min_original_rate_budget_Pa_s": 7.405943974304477,
+      "max_original_rate_budget_Pa_s": 7.40594397430448,
+      "min_good_flux_budget_m_s": 4.937386377580097e-10,
+      "max_good_flux_budget_m_s": 4.9373863775801e-10,
+      "eligible_negative_probes": 64,
+      "skipped_negative_probes": 0
+    },
+    {
+      "case": "gplus_offgrid",
+      "max_abs_normal_flux_m_s": 9.506121313262823e-20,
+      "max_abs_actual_rate_Pa_s": 4.59286358944766e-10,
+      "max_abs_reference_rate_Pa_s": 4.5928636501324255e-10,
+      "max_abs_actual_minus_reference_Pa_s": 4.090530579159399e-10,
+      "min_original_rate_budget_Pa_s": 7.405943974304477,
+      "max_original_rate_budget_Pa_s": 7.40594397430448,
+      "min_good_flux_budget_m_s": 4.938281720667968e-10,
+      "max_good_flux_budget_m_s": 4.938281720667969e-10,
+      "eligible_negative_probes": 64,
+      "skipped_negative_probes": 0
+    }
+  ],
+  "independent_max_rate_ratio": 5.523307485651828e-11,
+  "independent_max_face_flux_ratio": 2.794083282147818e-10,
+  "independent_min_missing_head_ratio": 20652.955009721052,
+  "independent_min_wrong_Ace_ratio": 19637.218823981006,
+  "eligible_negative_probes": 256,
+  "skipped_zero_normal_g_negative_probes": 128,
+  "all_original_budgets_preserved": true,
+  "source_canonical_consumed_stats_unchanged": true,
+  "component_attempts": 1,
+  "private_mixed_gravity_manufacture": true,
+  "public_guard_changed": false,
+  "new_SHA_scans": 0,
+  "old_SHA_scans": 0,
+  "physical_acceptance": false
+}
