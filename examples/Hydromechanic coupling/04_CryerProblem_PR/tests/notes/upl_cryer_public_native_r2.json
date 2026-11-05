@@ -1,0 +1,18 @@
+{
+  "stage": "upl_cryer_public_native_r2_author",
+  "source": "support/upl_cryer_public_native_r2.cpp",
+  "derived_from": "support/upl_cryer_public_native_r1.cpp, including its restored passive legacy Rhop range [700,3000]",
+  "authoring_only": true,
+  "reader_built_or_executed": false,
+  "physical_acceptance": false,
+  "CLI": "--read CPU|GPU DATA CLOCK_CSV FRESHOUT",
+  "diff_hunks": [
+    "Clock integer ceiling increases from 8704 to 73728. A generic two-row prefix remains actual completed 0/N with 1<=N<=73728; no invented intermediate frames.",
+    "Exact full cadence additionally admits 577 frames completed 0,128,...73728, dt=2^-20, actual end .0703125s. Existing 69-frame short and two-row prefix remain valid. Scalar +=dt and native zero-based saved Step checks are unchanged.",
+    "The 577-frame window requires 512 post-open frames at actual t>2^-7 (completed>8192). Part64/completed8192 stays pre-open; actual true FS2/3 receiver checks remain nonempty and exactly zero pressure. Existing short requires four post-open frames.",
+    "Completion stage becomes upl_cryer_public_native_r2; window is peak_73728, short_8704 or prefix_completed_plan according to the independently checked count. No native metadata/header/state is rewritten."
+  ],
+  "unchanged": "All37181 IDs,22 typed arrays, common26 field order and all raw26 observations,18 fixed material-center IDs, native finite/elastic/geometry/700..3000 passive-Rhop guards, saturated J/n/V/rho/k ledger, fixed markers, signed dterror, load-proxy caveat and raw BI4 preservation remain identical to r1. Neutral included helper source is unchanged. No auxiliary or full-node ledger export duplication.",
+  "prefix_evidence": "A new peak's first69 actual common26 and clock records may be compared to an existing same-dt/same-cadence short export. This reader alone does not compare them or prove all22 raw typed arrays bitwise identical; raw BI4 remains the source for any stronger proof.",
+  "handoff": "Parent reviews the four source delta hunks and compiles using its existing closure85 before any fresh peak. No source controls, production code, numerical budgets, solver, build, decoder execution, hash sweep or Git operation was changed or invoked by this author."
+}

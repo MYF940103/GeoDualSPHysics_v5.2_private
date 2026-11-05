@@ -1,0 +1,33 @@
+{
+  "stage": "upl_cryer_freebody_review_r1_author",
+  "authoring_only": true,
+  "author_executed_imported_syntax_checked_or_hashed": false,
+  "physical_acceptance": false,
+  "scope": "Future pure offline review of the completed69-frame Release GPU free-body startup. Author never reads the live output. No solver, decoder, build, Git, new half/reference run, raw BI4 modification or automatic continuation.",
+  "future_command": "python tests/support/upl_cryer_freebody_review_r1.py",
+  "inputs": [
+    "tests/outputs/upl_cryer_freebody_short_GPU_r1_native/{completion.json,summary.csv,center18.csv,native_ids.csv,columns.csv,common26.bin,clock.bin}",
+    "figures/formal_validation/cryer_formal_four_nu_r1_nu030_summary.csv",
+    "tests/configs/upl_cryer_freebody_short_r1_Def.xml",
+    "tests/notes/upl_cryer_comparison_contract_r1.json"
+  ],
+  "prerequisite": "Original upl_cryer_public_native_r1 completion must explicitly pass69/8704/37181IDs/22arrays, complete ledger/fixed markers,68 signed intervals and four nonempty post-open drained frames. Original reader owns all-frame typed/native geometry/saturation/no-exclusion/elasticity/drain checks. Root separately owns actual program/source/runtime/solver and decoder-exit provenance; this script does not rebuild that framework.",
+  "read_cost": "Consume every69 native summary row and every69x18 original-center history row. Direct common26 reads are limited to the initial record and Parts61–64; no raw BI4 decode or old raw reads. Selected files are observed by path/size/mtime before and after; no SHA operations or independent content-identity claim.",
+  "old_control": "Only retained formal nu030 summary is overlaid. Independently match actual binary64 times and verify the expected65 rows/Parts0–64, all pre-opening; never interpolate or invent four old post-open rows. Whole-framework u-pw/u-pl comparison, not an isolated Darcy A/B or5Pa cross-model gate. Historical nu030 actual solver EXE/DLL attribution remains unknown; the existing summary/observation contract cannot repair that provenance gap. No other old control is adopted.",
+  "closed_reference": {
+    "window": "Parts61–64 only, including saved t=tD=2^-7 as pre-opening. Four Parts65–68 are post-open, not a Mandel-peak window.",
+    "constants": "K=E_XML/[3(1-2nu_XML)], Mf=Kw/n0 with n0=double(float(XMLPorosity)); B=Mf/(K+Mf). Reference uses nominal XML E/nu and actual float initial porosity; production rounded elastic constants remain distinct. No fit.",
+    "targets": "p=B*q0; effective diagonal=-K*q0/(K+Mf), shear0; total diagonal=-q0; fixed-origin uvec=alpha*x0 with alpha=-q0/[3(K+Mf)]. Shell target uses each fixed initial r0, not a single surface radius.",
+    "original_five_definitions": "Copied mechanically from cryer_preload_probe_r1.py:87–138: initial-native-volume-weighted pressure-target RMS100Pa; six stored total-stress component target RMS100Pa (mean over six, not Frobenius); maximum speed1e-5m/s; fixed-origin SINGLE-scalar isotropic-fit full-vector residual RMS1e-5mm; fixed initial shell per-particle inward target-error RMS1e-5mm. No translation/tensor fit enters the criterion. Additionally report the unfitted theoretical full-vector displacement error, with no new threshold.",
+    "interpretation": "These are the original conditional homogeneous undrained initial-state diagnostics, not exact transient theory during ramp, a post-drain uniform-stress gate or full physical admission. Each of four states is reported separately; no averaging hides failures. A completed analysis may report all_five_closed_diagnostics_passed=false while passed=true means only the bounded offline analysis/schema completed. Failures never launch anything."
+  },
+  "outputs": [
+    "tests/figures/upl_cryer_freebody_review_r1_history.csv — all69 actual native summary rows plus only exact-time old fields",
+    "tests/figures/upl_cryer_freebody_review_r1_center18.csv — all1242 individual original-ID/initial-coordinate/native-field history rows",
+    "tests/figures/upl_cryer_freebody_review_r1_closed.csv — four independent closed-state diagnostics and conditional targets",
+    "tests/figures/upl_cryer_freebody_review_r1_history.png — pressure/18 points, material-shell motion,J,n/rho,effective/total stress,saved load proxies,FS/drain and speed",
+    "tests/figures/upl_cryer_freebody_review_r1_closed.png — original five diagnostic limits plus unfitted vector target error",
+    "tests/logs/upl_cryer_freebody_review_r1.check.json"
+  ],
+  "limits": "Every output path must be fresh. Native mixture rho/V/J observations remain distinct from passive legacy Rhop. Saved-J retained-load proxies are not actual force-stage load telemetry or its .001 force budget. All18 points remain finite-radius material observations at original r0/a=.05, not exact origin or fitted radius. No smoothing, resampling, fitted event/load, post-open peak, theory-accuracy, independent half, cross-model equivalence or physical acceptance is claimed. Root must full-read source/note before future execution and inspect generated figures afterward."
+}

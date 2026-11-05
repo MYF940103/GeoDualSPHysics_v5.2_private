@@ -946,7 +946,7 @@
     "bottom_and_stress_not_improved": true
   },
   "Cryer_upl_next_20261105": {
-    "status": "startup_verified_dense69_running",
+    "status": "dense69_verified_peak_prepared",
     "existing_3D_probes_not_actual_integration": true,
     "raw_stress_and_confinement_pairing_preserved": true,
     "dummy_native_IDs_retained": true,
@@ -972,6 +972,21 @@
     "planned_frames": 69,
     "planned_end_s": 0.00830078125,
     "physical_acceptance": false,
-    "next": "Finish sole managed dense69 run,decode once,review startup/preload/true drainage and reference limitations; no automatic peak/full/half run."
+    "next": "Launch one fresh peak after selective checkpoint. On genuine completion inspect actual Run,decode once withr2,compareactual finiteKw peaks/phase without fittedradius/time and keepstartup distinct.",
+    "dense_69_native_and_closed_diagnostics_passed": true,
+    "source_solver_closed": true,
+    "ledger_checks": 2564937,
+    "true_drained_receiver_checks": 20612,
+    "peak_plan": {
+      "tag": "upl_cryer_freebody_peak_GPU_r1",
+      "steps": 73728,
+      "frames": 577,
+      "dt_s": 9.5367431640625e-07,
+      "end_s": 0.0703125,
+      "reader": "tests/outputs/upl_cryer_public_native_DebugCPU_r2/reader.exe",
+      "single_direct_owner": "tests/support/upl_cryer_freebody_peak_r1_run.py",
+      "thread": "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "no_extra_half_or_control": true
+    }
   }
 }

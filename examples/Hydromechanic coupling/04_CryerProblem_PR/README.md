@@ -372,4 +372,10 @@ it; do not use that option for retained results.
 
 CPU Debug、GPU Debug／Release构建已通过。CPU／GPU Release的128步真实初始化和预测校正短测原生检查通过：37181 IDs、22数组，孔压RMS差1.39505e-5 Pa、逐材料XYZ差1.76737e-11 mm，自由面分类相同。GPU Debug两步内存检查为0错误、0泄漏；故意将固定标记放近球面的工况在初始化时被正确拒绝，未接受成物理计算。阴性工况前两次GenCase调用仅因输入名后缀错误失败，均未进入求解；修正后的新输入用于预期拒绝检查，原记录保留。
 
-目前新的GPU Release 69帧短窗`upl_cryer_freebody_short_GPU_r1`运行中。它将检查ramp、未排水保持和真正开启排水后的状态，但不是峰值、全程或服务器发行验收。CPU Debug与GPU Release的短测耗时也不能作为公平性能对比。实际初始状态、未改写的原生字段和符号诊断见`tests/outputs/upl_cryer_freebody_smoke128_CPU_r1_native`及GPU同名目录；审查入口为`tests/logs/upl_cryer_freebody_smoke128_cross_r1.json`。
+GPU Release 69帧短窗`upl_cryer_freebody_short_GPU_r1`已完成，主循环1863.303 s、8704步、实际终点0.00830078125 s。全部原生检查通过：2564937次材料ledger检查、552次固定标记检查、20612次真实排水接收检查。Parts61–64的原五项闭合诊断均通过，最大孔压目标RMS4.17517 Pa、总应力六分量目标RMS2.95946 Pa、最大速度6.59830e-6 m/s。首两个实际状态的common26和含signed dterror的clock与128步GPU短测逐字节一致。
+
+图和全部69行／18材料点数据在`tests/figures/upl_cryer_freebody_review_r1_*`，结论为`tests/logs/upl_cryer_freebody_review_r1.check.json`。开启排水后有快速瞬态，首点中心孔压12366.99 Pa；旧局部细步长u-pw对应11617.36 Pa，但释放速度约.059 m/s、壳层位移突增相近。这段在原Mandel比较窗口Tv>=.005之前，不作为Mandel峰误差，也不直接认定新框架回归。旧正式nu=.3只有前65个未排水保存时刻能与本窗精确配对，不能补造排水后对照。
+
+已准备单条新鲜GPU峰窗`upl_cryer_freebody_peak_GPU_r1`，不改方程或步长：73728步、577帧至0.0703125 s，即排水后.0625 s，预计本机约4.4小时。完成后按固定18材料点、有限Kw参考及实际tau比较峰幅和相位；只有一条粗步，不增加半步长／新对照链。原生读取器r2已构建，数值门不变，仅扩展声明时钟范围。完成通知由直接运行owner发起一次同线程队列投递，不另建watcher，也不重发超时通知。这仍不是峰值、全程或服务器发行验收。
+
+CPU Debug与GPU Release的短测耗时不能作为公平性能对比。实际初始状态、未改写的原生字段和符号诊断见`tests/outputs/upl_cryer_freebody_smoke128_CPU_r1_native`及GPU同名目录；启动审查入口为`tests/logs/upl_cryer_freebody_smoke128_cross_r1.json`。此次三维接线后，既有u-pl列柱150帧的五份二进制导出载荷及signed clock与原GPU Release逐字节一致，见case02的`tests/logs/upl_cryer_column_regression_r1.check.json`。
