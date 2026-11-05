@@ -1,0 +1,48 @@
+{
+  "stage": "upl_gpu_stabilizers_r1",
+  "status": "Debug_build_components_native_and_legacy_main_passed_pending_Release",
+  "physical_acceptance": false,
+  "default_u_pw_equations_changed": false,
+  "CPU_baseline_source_unchanged": true,
+  "numerical_consequences": [
+    "GPU SPR reuses same-stage single-J mirror producer instead of invoking ordinary SPR again.",
+    "Artificial viscosity uses current mixture density and current neighbor inertia,matching acceptedCPU.",
+    "HG current volumes/inertias and rawJ cache; same referenceMass history,twohalfupdates,freshcorrectorJ.",
+    "Damping/topband/HG order before completeDarcy and originallimits unchanged; not a bottom-wall quadrature fix."
+  ],
+  "scope": "Only public fresh constant-k/g0/elastic2D/Xperiodic/singleupwardfixedFreeSlipbottom column; no general3D,plastic,variable-kHG,restart or production package adoption.",
+  "files": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu.h",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.h",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.cu"
+  ],
+  "documentation": [
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+    "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/README.md"
+  ],
+  "next": "ReleaseGPU authoritative build, bounded same-physics accuracy and timing; no extra half/full-chain or formal package admission.",
+  "source_snapshot_before": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_stabilizers_r1_source_before",
+  "verification": {
+    "CPU_Debug_build": true,
+    "GPU_Debug_build": true,
+    "current_J_valid_cases": 16,
+    "invalid_backend_cases": 36,
+    "legacy_nullJ_cases": 42,
+    "memcheck_errors": 0,
+    "coupled_short_samples": 150,
+    "coupled_short_seconds": 0.010200233459472378,
+    "pressure_RMS_cross_max_Pa": 0.0020815332901524047,
+    "material_XYZ_cross_max_mm": 4.630782180162922e-08,
+    "legacy_main_modes": 2,
+    "legacy_frames_each": 21,
+    "all_legacy_array_and_signed_clock_bytes_equal": true,
+    "true_force_stage_budget_directly_observed": false,
+    "release_or_full_GPU_acceptance": false
+  },
+  "conclusion_note": "tests/notes/upl_gpu_stabilizers_r1.md"
+}

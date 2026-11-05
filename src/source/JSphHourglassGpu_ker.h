@@ -15,7 +15,7 @@ enum TpError{ERR_Id=1,ERR_Duplicate=2,ERR_Missing=4,ERR_Density=8,
   ERR_Plastic=16,ERR_State=32,ERR_Coincident=64,ERR_Rank=128,
   ERR_Rate=256,ERR_History=512};
 struct StNode{
-  double x,z,vx,vz,vol;
+  double x,z,vx,vz,vol,j,mass;
   double lxx,lxz,lzx,lzz,condition,skew;
 };
 struct StGrid{
@@ -35,14 +35,14 @@ void MapNative(unsigned np,unsigned npb,unsigned firstid,unsigned count,
   const unsigned* idp,const typecode* code,unsigned* slots,unsigned* errors);
 void Gather(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
   const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,
-  StNode* nodes,StReduce* partial);
+  StNode* nodes,StReduce* partial,const double* poroj=NULL,double rhopzero=0,double waterrho=0);
 void CellKeys(unsigned count,StGrid grid,const StNode* nodes,unsigned* keys,unsigned* order);
 void Moments(unsigned count,StGrid grid,const unsigned* order,const int2* ranges,
   StNode* nodes,unsigned* errors);
 void Rates(unsigned count,StGrid grid,const unsigned* order,const int2* ranges,
-  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial);
+  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial,bool singlej=false);
 void AddHistory(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
-  const double2* history,float3* ace,StReduce* partial);
+  const double2* history,float3* ace,StReduce* partial,const double* poroj=NULL,double rhopzero=0,double waterrho=0);
 void UpdateHistory(unsigned count,double dt,const double2* rates,double2* history,StReduce* partial);
 void Reduce(unsigned count,const StReduce* partial,StReduce* result);
 }

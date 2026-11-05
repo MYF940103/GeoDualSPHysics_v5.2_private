@@ -901,5 +901,40 @@
     "CSVs": 12,
     "physical_acceptance": false,
     "production_or_formal_inputs_changed": false
+  },
+  "user_working_preferences": {
+    "hash_checks": "Only when necessary: baseline sealing,delivery/migration,changed files or uncertainidentity. Do not repeatedlySHAunchangedfiles or bulkdata. Reuse existingreceipt/version/size/mtime in the sameclosed review session. Numerical verification usesnativeIDs,actualclocks,typedarrays,errors andphysics; SHA is provenance only. Keephistoricalrecords unchanged.",
+    "explicit_user_instruction_date_local": "2026-11-05",
+    "avoid_redundant_wrappers": true
+  },
+  "GPU_stabilizers_20261105": {
+    "stage": "Debug implementation,components,actual coupled short and legacy main verified",
+    "production_candidate_files": 8,
+    "CPU_Debug_build_passed": true,
+    "GPU_Debug_build_passed": true,
+    "currentJ_component_valid_cases": 16,
+    "currentJ_invalid_backend_cases": 36,
+    "legacy_nullJ_component_cases": 42,
+    "memcheck_zero_errors": true,
+    "short_native_samples": 150,
+    "short_cross_review": "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_stabilizers_short_r1.cross_r2.json",
+    "short_numeric_comparison_passed": true,
+    "release_build_or_speed_or_fullGPU_acceptance": false,
+    "physical_acceptance": false,
+    "next": "Selective verified code checkpoint, then Release accuracy and measured same-physics CPU/GPU cost; no new long solver admitted.",
+    "legacy_default_OFF_and_HG_main_passed": true,
+    "legacy_frames_each": 21,
+    "legacy_native_and_signed_clock_byte_differences": 0
+  },
+  "common_classical_comparison_20261105": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_upl_CPU1_r1_common_classical.md",
+    "reference": "Both H1 classical; ownactualtimes/native material layers",
+    "final_profile_RMS_Pa": {
+      "upl": 0.667835621,
+      "upw": 0.881094384
+    },
+    "majority_of_selected_times_upl_better": false,
+    "top_abs_error_reduction_percent": 36.04,
+    "bottom_and_stress_not_improved": true
   }
 }

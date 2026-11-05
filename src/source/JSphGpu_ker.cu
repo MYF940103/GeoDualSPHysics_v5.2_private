@@ -2308,9 +2308,20 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
         if(!lamsps){//-Artificial viscosity.
           if(dot<0){
             const float amubar=CTE.kernelh*dot_rr2;  //amubar=CTE.kernelh*dot/(rr2+CTE.eta2);
+            if(poroj && visco!=0.f){
+              //-Use current mixture density and neighbor inertia, never passive legacy rhop.
+              //-At a fixed wall this is mirror quadrature, not physical wall mass.
+              const double rhow=CTE.porewaterrho;
+              const double rhot2=rhow+(double(CTE.rhopzero)-rhow)/poroj[p2];
+              const double robar=(pororhot1+rhot2)*.5,mass2=porovol2*rhot2;
+              const double pi_visc=(-double(visco)*double(cbar)*double(amubar)/robar)*mass2;
+              acep1.x-=float(pi_visc*double(frx));acep1.y-=float(pi_visc*double(fry));acep1.z-=float(pi_visc*double(frz));
+            }
+            else{
             const float robar=(velrhop1.w+velrhop2.w)*0.5f;
             const float pi_visc=(-visco*cbar*amubar/robar)*massp2final;
             acep1.x-=pi_visc*frx; acep1.y-=pi_visc*fry; acep1.z-=pi_visc*frz;
+            }
           }
         }
         else{//-Laminar+SPS viscosity.

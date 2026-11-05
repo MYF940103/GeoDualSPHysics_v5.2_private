@@ -1,0 +1,45 @@
+{
+  "stage": "upl_hg_gpu_j_r1_author",
+  "authoring_only": true,
+  "author_built_or_executed": false,
+  "physical_acceptance": false,
+  "new_files_only": ["support/upl_hg_gpu_j_r1.cpp", "notes/upl_hg_gpu_j_r1.json"],
+  "scope": "Real CPU/CUDA HG single-J component compatibility and native-ID/cache behavior. No solver trajectory, half-step chain, physical admission or production-source changes.",
+  "reuse": {
+    "included_source": "support/upl_hg_cpu_oracle_r2.cpp",
+    "included_source_sha256": "92e1ad7281658bfe0d932fdbe105064835c9135a97815d39a475f845be7b702b",
+    "mechanism": "Rename only retained main while including the unchanged source. Reuse State, positive-J V*rho inertia, directed dense oracle, exact phase helpers, history/virtual-work checks and predetermined tolerances. Compile the new translation unit without separately linking the included CPU fixture object. The included oscillator and retained main are not called.",
+    "unchanged_separate_legacy_source": "support/hg_gpu_hourglass_test.cpp",
+    "unchanged_separate_legacy_sha256": "411e725def669483e0ba873239a853c0509b34bfa9f8ece40a064ed773cf19ba",
+    "legacy_requirement": "Parent must compile/run the unchanged NULL-J GPU suite as a separate executable against the same authoritative fresh HG CPU/GPU objects. New JSON explicitly does not claim that suite executed. No frozen old HG object substitution."
+  },
+  "fixture": {
+    "native_nodes": 80,
+    "fixed_prefix_nodes": 2,
+    "geometry": "Retained 8x10 two-dimensional X-periodic lattice, dp=.125, period1, h=.1625, support.325; native IDs40..119. Retained periodic and ignored/fixed slots do not carry independent HG state.",
+    "material": "Reference mass20, rho0=2000, water rho1000, xi=.1, G1e5, bwen=-1; V=(M0/rho0)J and independently evaluated current mi=V*(rho_w+(rho0-rho_w)/J). H=Q/M0 and its rate are not current acceleration.",
+    "cycles": 4,
+    "phases": "Actual PredictorForce -> PredictorUpdate -> CorrectorForce -> CorrectorUpdate; dt1e-5. No particle/time advancement by a solver.",
+    "comparison": "Real CPU, real GPU cache-on and real GPU cache-off. All normal native rates/history/statistics use original cross-backend tolerances. GPU cache variants must match bitwise. CPU-GPU maxactualnetforce differences remain descriptive because they include float force rounding, while independent actual-mi float balance and per-node acceleration checks are mandatory."
+  },
+  "cases": [
+    "J1, uniformJ=.8 and nonuniformJ, each translation/periodic-affine/checkerboard/random; original affine/null or non-affine oracle checks remain active",
+    "Fresh half-stage J and native reordering: predictor host J and predictor GPU J buffer are poisoned only after a separate valid half array is created; corrector uses its own current device J buffer. Its physical increment must be M0/currentmi times history, without a rate recalculation. Endpoint J/velocity/geometry then change and rates are recomputed.",
+    "Adjacent raw double J differing by one ULP with identical rounded V, constructed by the retained bounded2048 search; predictor must miss cached endpoint despite equal volume bits. The actual witness values are recorded.",
+    "Native reorder plus corrupted ignored periodic copies and one appended copy: exact native endpoint reuse, cache-on/off bit identity, no force on ignored slots.",
+    "Passive legacy Rhop is changed to zero/negative/NaN/infinity with identical dynamic-J state. Within the same GPU its cached endpoint rates/history remain bit-identical, and the independently recalculating GPU matches exactly. CPU-GPU remains tolerance based.",
+    "Missing, zero, negative, NaN, infinite J and overflowing current inertia are rejected by both real backends at predictor, corrector and endpoint. Predictor guards are exercised after populating a valid endpoint cache."
+  ],
+  "predeclared_gates": {
+    "CPU_GPU_double": "1e-8*(1+reference magnitude), retained component gate",
+    "GPU_cache_max_ULP": 0,
+    "float_acceleration": "64*FLT_EPSILON; retained current-inertia oracle bound relative to the HG increment, with1e-30 arithmetic zero scale; cross-backend float Ace retains64eps*max(1,abs(CPU Ace)). Zero initial acceleration prevents a float subtraction floor from hiding stale mass.",
+    "current_mi_actual_float_net_force": "64*FLT_EPSILON*max(1e-30,sum_i mi*norm(actual HG deltaAce_i))",
+    "double_history_net_reference_force": "1e-10*max(1e-15,sum_i M0*norm(history_i)), retained CPU oracle history gate",
+    "work": "1e-9*(1+abs(power)+2*form), unchanged LS virtual-work check",
+    "history": "Included CPU dense-reference history uses1e-10*max(1e-15,reference scale); GPU/CPU history uses retained1e-8 relative-plus-absolute comparison. No gate is relaxed after observing results."
+  },
+  "future_CLI": "upl_hg_gpu_j_r1.exe --json NEW_CHECK_JSON",
+  "future_record": "Fresh result path required. JSON passed means only this actual component suite passed; physical_acceptance=false and solver_run=false. Device/error/per-case metrics and the raw-J collision witness are recorded; the unchanged legacy NULL-J suite requires its separate actual result.",
+  "author_validation": "Manual source/API review only. No syntax compilation, build, CUDA execution, solver, Git, or other-file changes by author. Parent owns full read and authoritative fresh-object linking after production builds."
+}

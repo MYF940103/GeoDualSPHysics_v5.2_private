@@ -1,0 +1,61 @@
+{
+  "stage": "upl_hg_gpu_j_r2_author",
+  "authoring_only": true,
+  "author_built_or_executed": false,
+  "physical_acceptance": false,
+  "new_files_only": [
+    "support/upl_hg_gpu_j_r2.cpp",
+    "notes/upl_hg_gpu_j_r2.json"
+  ],
+  "preserved_r1": {
+    "source": {
+      "path": "support/upl_hg_gpu_j_r1.cpp",
+      "bytes": 15670,
+      "sha256": "25a6c12f97040f67c1946e8678dd6f8b6d84d4fd3c0d5985fddee109153bdf0c"
+    },
+    "note": {
+      "path": "notes/upl_hg_gpu_j_r1.json",
+      "bytes": 5385,
+      "sha256": "a93817d826b4a409bd00cd1417ebcfbc684bedfcd909f4a13b7d78857284a0be"
+    },
+    "failed_Debug_result": {
+      "path": "logs/upl_hg_gpu_j_r1_Debug_r1.check.json",
+      "bytes": 6918,
+      "sha256": "3dfe5b1571091901420555de917c336a81ffcbb980374b0d46518ce32ddebef2",
+      "passed": false
+    },
+    "failed_Debug_stdout": {
+      "path": "logs/upl_hg_gpu_j_r1_Debug_r1.run.log",
+      "bytes": 354,
+      "sha256": "f4f8743c56ec7023fcea1bdb53ac602b4e596703d0e996a0753b844d9a65ca32"
+    }
+  },
+  "diagnosis": "Actual r1 Debug stopped after nine completed cases at the fourth endpoint history check of nonuniform_periodic_affine: CPU versus integrated generic dense residual1.0594833044645266e-25 exceeded original1.0000000000000002e-25 budget. The recorded CPU affine-rate null errors were exactly zero across48 rate checks. The generic inverse/matrix-product dense evaluation has a tiny cancellation residual; integrating that numerical residual tests a different near-zero quantity from history update correctness. CPU/GPU actual float Ace differences were zero and maximum cross-backend rate error6.9388939039072284e-18 in the partial suite. These observations do not turn the failed r1 suite into a pass and are not a universal exact-null production guarantee.",
+  "minimal_revision": [
+    "All16 valid cases, four four-phase cycles each, all J/mass/oracle/null/work/float/cache gates and18 invalid stage/J combinations per backend remain. No production files, tolerances or state samples changed.",
+    "Each real backend must update H bitwise according to its own actual input rate: RN(H_old + RN(RN(.5*dt)*Rate_input)). Volatile binary64 writebacks in the host recurrence witness prevent FMA contraction. Predictor rates are captured before PredictorUpdate. Endpoint rates are read immediately after the indivisible CorrectorUpdate, whose verified production update does not mutate its rate buffer.",
+    "PredictorForce and CorrectorForce must leave history bitwise unchanged in each CPU/GPU backend. This is separate from cache-on/off equality and tolerance-based CPU/GPU comparisons.",
+    "The unchanged strict integrated dense-history gate remains mandatory for genuine non-affine cases. For the existing exactly representable translation and x-periodic-compatible affine velocity fixtures, the independent analytical zero history uses the same original1e-25 minimum budget on CPU and each GPU. This changes the reference from a rounded dense null residual to its exact manufactured law, without increasing the budget.",
+    "Dense() itself is unchanged and its RHS/form/work/lambda plus existing affine-null checks remain at each rate stage. Its former near-zero integrated-history errors and error/original-budget ratios are separately accumulated for all three backends, including exceedance counts. The new result explicitly labels that original joint gate diagnostic_only_not_claimed_passed_r1_failed; those exceedances are not scientific acceptance claims."
+  ],
+  "reuse": {
+    "included_source": "support/upl_hg_cpu_oracle_r2.cpp",
+    "included_source_sha256": "92e1ad7281658bfe0d932fdbe105064835c9135a97815d39a475f845be7b702b",
+    "mechanism": "Mechanically derive r1 with only the history-reference/recurrence separation and honest r2 stage/CLI. Continue renaming the unchanged CPU fixture main; do not separately link that included fixture object.",
+    "legacy_NULL_J_source": "support/hg_gpu_hourglass_test.cpp",
+    "legacy_NULL_J_sha256": "411e725def669483e0ba873239a853c0509b34bfa9f8ece40a064ed773cf19ba",
+    "legacy_requirement": "Unchanged legacy NULL-J GPU suite remains a separate executable against the same authoritative fresh objects; r2 does not claim it executed."
+  },
+  "unchanged_budgets": {
+    "CPU_GPU_double": "1e-8*(1+reference magnitude)",
+    "float": "64*FLT_EPSILON with original current-mi increment/net-force and CPU-GPU scales",
+    "history": "1e-10*max(1e-15,reference history scale); affine analytic zero therefore1e-25",
+    "virtual_work": "1e-9*(1+abs(power)+2*form)",
+    "GPU_cache_max_ULP": 0,
+    "own_history_recurrence_max_ULP": 0,
+    "force_history_write_max_ULP": 0
+  },
+  "scope": "Real nonadvancing CPU/CUDA four-phase HG component only. No physical solver, coupled public GPU acceptance, half-step chain, wall/Darcy/load/full2Tv or evolving-J energy-conservation claim.",
+  "future_CLI": "upl_hg_gpu_j_r2.exe --json NEW_CHECK_JSON",
+  "author_validation": "Manual source/API and derivation review only. No compiler, syntax compilation, build, CUDA execution, solver, Git or production edits. Root may link the new test with the same frozen authoritative objects after full read."
+}

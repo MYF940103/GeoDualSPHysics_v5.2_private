@@ -112,3 +112,13 @@ precision完整结果仍有晚期孔压平台，详见[对比报告](figures/pre
 - `tests/notes/upw_float_restore_before.zip`、`pore_double_stage1_baseline_sources.zip` 是历史源码/程序恢复档案，不是待清理的缓存。
 
 今后的正式版本只有通过验收后才在根目录增加或更新对应 XML/BAT；测试文件不占根目录，原始输出和历史正式图不得被自动覆盖。
+
+## u-pl 完整CPU基线与GPU对接候选（2026-11-05）
+
+`upl_bigstep_2tv_CPU1_r1` 已完成2Tv，实际终点72.88428689946836 s、1682个原生状态；1040 IDs、22数组、时钟、ledger、排水及HG检查通过。图表与数据入口为 [full_validation_upl_CPU1_r1](figures/full_validation_upl_CPU1_r1.README.md)。孔压和顶部沉降接近参考，但底层总应力误差110.576 Pa高于旧100 Pa标准，不作无条件物理验收。与旧u-pw比较使用相同经典参考、各自实际时刻和材料位置；中前期孔压误差仍较大，后期孔压与终点顶部沉降较好，不能称为全面优于旧版。
+
+GPU候选只同步当前恒定k、零重力、X周期、单一向上固定FreeSlip底壁弹性列体的SPR/人工粘性/HG组合。复用动态边界的同阶段镜像速度，AV按当前J计算密度与邻粒子惯性，HG按当前体积及惯性加入参考质量历史；不改变边界几何或时间积分，也不处理本轮底层应力偏差。默认关闭动态渗流时仍沿用原u-pw。
+
+当前CPU/GPU Debug构建、16组当前J分量、36组非法输入、42组旧空J分量及GPU memcheck已通过。实际GPU短窗至0.010200233459472378 s，150个原生保存状态与保留CPU Release逐材料比较：孔压RMS差最大0.002082 Pa、XYZ位移差最大4.631e-8 mm。默认关闭动态渗流及关闭动态渗流并开启旧HG的两组真实主程序回归，各21帧的原生数组与有符号时钟均逐字节一致。它们不替代Release效率、完整GPU周期或通用边界验收；未替换正式发行程序或服务器包。外力阶段与保存状态质量不同，不能将保存加速度乘新质量的代理量误认为归一化时的总外力。完整范围及保留的失败记录见 [GPU阶段结论](tests/notes/upl_gpu_stabilizers_r1.md)和[对接记录](tests/notes/upl_gpu_stabilizers_r1.json)。
+
+已完成CPU和旧正式输出保持原位。新旧精度采用同一经典参考的完整表格见[统一参考比较](figures/full_validation_upl_CPU1_r1_common_classical.md)，不是将有限Kw和经典参考混合排名。

@@ -1,0 +1,33 @@
+{
+  "stage": "upl_gpu_stabilizers_short_r1.cross_r2",
+  "passed": true,
+  "physical_acceptance": false,
+  "source_completed_native": "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_stabilizers_short_r1.native.json",
+  "prior_failed_review_preserved": "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_gpu_stabilizers_short_r1.cross.json",
+  "original_failure_not_relabelled": true,
+  "scope": "CPU/GPU same-physics short implementation comparison;not fullphysical/load-stage acceptance",
+  "samples": 150,
+  "IDs": 1000,
+  "arrays_each_native": 22,
+  "max_time_gap_s": 0,
+  "pressure_RMS_max_Pa": 0.0020815332901524047,
+  "per_material_XYZ_difference_max_mm": 4.630782180162922e-08,
+  "stored6stress_RMS_max_Pa": 0.0001580034611226406,
+  "saved_load_proxy_backend_difference_max_N_m": 6.816434790835046e-05,
+  "pressure_gate_Pa": 5,
+  "per_material_XYZ_gate_mm": 0.005,
+  "clock_gate_s": 1e-14,
+  "saved_load_proxy_comparison_gate_N_m": 0.001,
+  "true_force_stage_budget_N_m": 0.001,
+  "true_force_stage_budget_observed_or_claimed_passed": false,
+  "absolute_saved_proxy_target_errors_retained": true,
+  "previous_invalid_observable": "r1 applied the trueforce-stage targettol to retained acceleration weighted by Jnew. BothCPU/GPU savedproxiesfailthisbecause correctornormalizationusesJhalf. No force-stage tolerance was increased.",
+  "source_identity_in_same_closed_review_session": "Reuses existing sealed source/run/native receipts and closed arrays; no repeat fullSHA sweeps.",
+  "loadproxy_formula": "F_saved?F_force=V0*rhow*sum((Jnew?Jhalf)*aL) while loading acceleration retained fromcorrector force stage.",
+  "files": [
+    "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_stabilizers_short_r1_loadproxy.csv",
+    "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_stabilizers_short_r1_CPU_GPU.csv",
+    "..\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_gpu_stabilizers_short_r1_CPU_GPU.png"
+  ],
+  "full_GPU_or_half_or_theory_acceptance": false
+}

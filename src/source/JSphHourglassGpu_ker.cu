@@ -64,9 +64,12 @@ void MapNative(unsigned np,unsigned npb,unsigned firstid,unsigned count,
   if(np>npb)KerMapNative<<<PartialCount(np-npb),BLOCK>>>(np,npb,firstid,count,idp,code,slots,errors);
 }
 __device__ bool SameDouble(double a,double b){ return(__double_as_longlong(a)==__double_as_longlong(b)); }
+__device__ double ParticleMass(double mass,double rhopzero,double waterrho,double j){
+  return((mass/rhopzero)*(rhopzero-waterrho+waterrho*j));
+}
 __global__ void KerGather(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
   const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,
-  StNode* nodes,StReduce* partial)
+  StNode* nodes,StReduce* partial,const double* poroj,double rhopzero,double waterrho)
 {
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;StReduce r=Empty();r.errors=*errors;
   if(i<count){
@@ -75,14 +78,22 @@ __global__ void KerGather(unsigned count,double mass,const unsigned* slots,const
     else{
       const float4 v=velrhop[p];
       const double x=posxy[p].x,z=posz[p],vx=v.x,vz=v.z;
-      if(!(v.w>0 && isfinite(v.w)))r.errors|=ERR_Density;
+      if(!rhopzero && !(v.w>0 && isfinite(v.w)))r.errors|=ERR_Density;
       if(kplastic[p]!=0)r.errors|=ERR_Plastic;
       if(!(isfinite(x) && isfinite(z) && isfinite(vx) && isfinite(vz)))r.errors|=ERR_State;
+      double j=0,mi=mass,vol=0;
+      if(rhopzero){
+        j=poroj[p];mi=ParticleMass(mass,rhopzero,waterrho,j);vol=(mass/rhopzero)*j;
+        if(!(isfinite(j) && j>0 && isfinite(mi) && mi>0 && isfinite(vol) && vol>0))r.errors|=ERR_Density;
+      }
       if(!r.errors){
-        const double vol=mass/double(v.w);StNode& n=nodes[i];
+        if(!rhopzero)vol=mass/double(v.w);
+        StNode& n=nodes[i];
         r.changed=!(SameDouble(n.x,x) && SameDouble(n.z,z) && SameDouble(n.vx,vx)
           && SameDouble(n.vz,vz) && SameDouble(n.vol,vol));
+        if(rhopzero && !SameDouble(n.j,j))r.changed=1; //-Raw J matters even when V rounds to the same bits.
         n.x=x;n.z=z;n.vx=vx;n.vz=vz;n.vol=vol;r.zmin=z;r.zmax=z;r.xmin=x;r.xmax=x;
+        n.j=j;n.mass=mi;
       }
     }
   }
@@ -90,9 +101,9 @@ __global__ void KerGather(unsigned count,double mass,const unsigned* slots,const
 }
 void Gather(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
   const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,
-  StNode* nodes,StReduce* partial)
+  StNode* nodes,StReduce* partial,const double* poroj,double rhopzero,double waterrho)
 {
-  KerGather<<<PartialCount(count),BLOCK>>>(count,mass,slots,errors,posxy,posz,velrhop,kplastic,nodes,partial);
+  KerGather<<<PartialCount(count),BLOCK>>>(count,mass,slots,errors,posxy,posz,velrhop,kplastic,nodes,partial,poroj,rhopzero,waterrho);
 }
 
 __device__ int CellX(const StNode& n,const StGrid& g){
@@ -171,7 +182,7 @@ void Moments(unsigned count,StGrid grid,const unsigned* order,const int2* ranges
   KerMoments<<<PartialCount(count),BLOCK>>>(count,grid,order,ranges,nodes,errors);
 }
 __global__ void KerRates(unsigned count,StGrid g,const unsigned* order,const int2* ranges,
-  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial)
+  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial,bool singlej)
 {
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;StReduce r=Empty();r.errors=*errors;
   if(i<count && !r.errors){
@@ -197,7 +208,7 @@ __global__ void KerRates(unsigned count,StGrid g,const unsigned* order,const int
     rates[i]=make_double2(rx,rz);
     if(coincident)r.errors|=ERR_Coincident;
     if(!(isfinite(rx) && isfinite(rz)))r.errors|=ERR_Rate;
-    r.condition=a.condition;r.skew=a.skew;r.lambda=2*betasum/g.mass;
+    r.condition=a.condition;r.skew=a.skew;r.lambda=2*betasum/(singlej? a.mass: g.mass);
     r.netx=g.mass*rx;r.netz=g.mass*rz;r.rmax=hypot(rx,rz);r.sumrate=g.mass*r.rmax;
     r.ratepower=g.mass*(a.vx*rx+a.vz*rz);
     const double div=a.lxx+a.lzz;r.meandxx=a.lxx;r.rmsdxx=a.lxx*a.lxx;r.meandiv=div;r.rmsdiv=div*div;
@@ -205,13 +216,13 @@ __global__ void KerRates(unsigned count,StGrid g,const unsigned* order,const int
   BlockReduce(r,partial);
 }
 void Rates(unsigned count,StGrid grid,const unsigned* order,const int2* ranges,
-  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial)
+  const StNode* nodes,const unsigned* errors,double2* rates,StReduce* partial,bool singlej)
 {
-  KerRates<<<PartialCount(count),BLOCK>>>(count,grid,order,ranges,nodes,errors,rates,partial);
+  KerRates<<<PartialCount(count),BLOCK>>>(count,grid,order,ranges,nodes,errors,rates,partial,singlej);
 }
 
 __global__ void KerAddHistory(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
-  const double2* history,float3* ace,StReduce* partial)
+  const double2* history,float3* ace,StReduce* partial,const double* poroj,double rhopzero,double waterrho)
 {
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;StReduce r=Empty();r.errors=*errors;
   if(i<count){
@@ -222,8 +233,21 @@ __global__ void KerAddHistory(unsigned count,double mass,const unsigned* slots,c
       if(!(isfinite(h.x) && isfinite(h.y)))r.errors|=ERR_History;
       else{
         const double ax=ace[p].x,az=ace[p].z;
-        const float x=float(ax+h.x),z=float(az+h.y);ace[p].x=x;ace[p].z=z;
-        r.actualx=mass*(double(x)-ax);r.actualz=mass*(double(z)-az);
+        if(rhopzero){
+          //-Read this force-stage J through fresh slots, never the cached rate-stage node.
+          const double j=poroj[p],mi=ParticleMass(mass,rhopzero,waterrho,j);
+          if(!(isfinite(j) && j>0 && isfinite(mi) && mi>0))r.errors|=ERR_Density;
+          else{
+            const double scale=mass/mi;
+            const float x=float(__dadd_rn(ax,__dmul_rn(scale,h.x))),z=float(__dadd_rn(az,__dmul_rn(scale,h.y)));
+            ace[p].x=x;ace[p].z=z;
+            r.actualx=mi*(double(x)-ax);r.actualz=mi*(double(z)-az);
+          }
+        }
+        else{
+          const float x=float(ax+h.x),z=float(az+h.y);ace[p].x=x;ace[p].z=z;
+          r.actualx=mass*(double(x)-ax);r.actualz=mass*(double(z)-az);
+        }
         r.netx=mass*h.x;r.netz=mass*h.y;r.hmax=hypot(h.x,h.y);r.sumforce=mass*r.hmax;
       }
     }
@@ -231,9 +255,9 @@ __global__ void KerAddHistory(unsigned count,double mass,const unsigned* slots,c
   BlockReduce(r,partial);
 }
 void AddHistory(unsigned count,double mass,const unsigned* slots,const unsigned* errors,
-  const double2* history,float3* ace,StReduce* partial)
+  const double2* history,float3* ace,StReduce* partial,const double* poroj,double rhopzero,double waterrho)
 {
-  KerAddHistory<<<PartialCount(count),BLOCK>>>(count,mass,slots,errors,history,ace,partial);
+  KerAddHistory<<<PartialCount(count),BLOCK>>>(count,mass,slots,errors,history,ace,partial,poroj,rhopzero,waterrho);
 }
 __global__ void KerUpdateHistory(unsigned count,double dt,const double2* rates,double2* history,StReduce* partial){
   const unsigned i=blockIdx.x*blockDim.x+threadIdx.x;StReduce r=Empty();

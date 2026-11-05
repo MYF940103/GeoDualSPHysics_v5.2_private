@@ -23,7 +23,7 @@ private:
   enum TpPhase{PH_Unconfigured,PH_PredictorForce,PH_PredictorUpdate,
     PH_CorrectorForce,PH_CorrectorUpdate};
   unsigned FirstId=0,Count=0,PairCount=0,CellCapacity=0,PartialCount=0;
-  double Xi=0,Mass=0,Period=0,KernelH=0,Support=0,Bwen=0,Shear=0;
+  double Xi=0,Mass=0,RhopZero=0,WaterRho=0,Period=0,KernelH=0,Support=0,Bwen=0,Shear=0;
   double StepDt=0,PredictorSkew=0;
   TpPhase Phase=PH_Unconfigured;
   bool EndpointRateReady=false,RateCacheEnabled=true;
@@ -44,8 +44,8 @@ private:
   void MapNative(unsigned np,unsigned npb,const unsigned* idp,const typecode* code);
   void EvaluateRate(bool endpoint,unsigned np,unsigned npb,const unsigned* idp,
     const typecode* code,const double2* posxy,const double* posz,
-    const float4* velrhop,const float* kplastic);
-  void AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace);
+    const float4* velrhop,const float* kplastic,const double* poroj);
+  void AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj);
   void UpdateHistory(double dt);
 public:
   JSphHourglassGpu();
@@ -53,13 +53,13 @@ public:
   JSphHourglassGpu(const JSphHourglassGpu&)=delete;
   JSphHourglassGpu& operator=(const JSphHourglassGpu&)=delete;
   void Config(unsigned firstid,unsigned count,double xi,double mass,double period,
-    double kernelh,double support,double bwen,double shear);
+    double kernelh,double support,double bwen,double shear,double rhopzero=0,double waterrho=0);
   void PredictorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-    const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,float3* ace,double dt);
+    const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,float3* ace,double dt,const double* poroj=NULL);
   void PredictorUpdate(double dt);
-  void CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace);
+  void CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj=NULL);
   void CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-    const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,double dt);
+    const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,double dt,const double* poroj=NULL);
   llong GetAllocMemory()const;
   double GetDtLimit()const;
   unsigned GetFirstId()const{ return(FirstId); }
@@ -67,6 +67,7 @@ public:
   unsigned GetPairCount()const{ return(PairCount); }
   const StStats& GetStats()const{ return(Stats); }
   const StRateInfo& GetRateInfo()const{ return(RateInfo); }
+  /// With single-J inertia, H=Q/M0 and Rate=Qdot/M0; neither is the current acceleration.
   tdouble3 GetHistory(unsigned id)const;
   tdouble3 GetRate(unsigned id)const;
   /// Internal fixture control only; no XML option or alternative physical law.

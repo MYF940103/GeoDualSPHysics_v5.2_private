@@ -34,13 +34,16 @@ unsigned JSphHourglassGpu::Index(unsigned id)const{
   Check(id>=FirstId && id-FirstId<Count,"HG unexpected native soil ID.");return(id-FirstId);
 }
 void JSphHourglassGpu::Config(unsigned firstid,unsigned count,double xi,double mass,
-  double period,double kernelh,double support,double bwen,double shear)
+  double period,double kernelh,double support,double bwen,double shear,double rhopzero,double waterrho)
 {
   Check(count>0 && count<unsigned(INT_MAX) && isfinite(xi) && xi>0 && mass>0
     && isfinite(period) && period>=0 && kernelh>0 && support>0
     && (!period || support<period*.5) && bwen<0 && shear>0,
     "HG invalid particle, elastic, kernel or neighbor configuration.");
+  Check((rhopzero==0 && waterrho==0) || (isfinite(rhopzero) && rhopzero>0 && isfinite(waterrho) && waterrho>=0),
+    "HG invalid single-J material configuration.");
   FreeMemory();FirstId=firstid;Count=count;Xi=xi;Mass=mass;Period=period;
+  RhopZero=rhopzero;WaterRho=waterrho;
   KernelH=kernelh;Support=support;Bwen=bwen;Shear=shear;StepDt=0;PredictorSkew=0;
   PartialCount=cuhg::PartialCount(Count);
   CheckCuda(cudaMalloc(reinterpret_cast<void**>(&Nodesg),sizeof(cuhg::StNode)*Count));
@@ -66,7 +69,7 @@ void JSphHourglassGpu::CheckState(unsigned errors)const{
   Check(!(errors&cuhg::ERR_Id),"HG unexpected native soil ID.");
   Check(!(errors&cuhg::ERR_Duplicate),"HG duplicate native soil ID.");
   Check(!(errors&cuhg::ERR_Missing),"HG native soil particle set changed.");
-  Check(!(errors&cuhg::ERR_Density),"HG invalid density.");
+  Check(!(errors&cuhg::ERR_Density),(RhopZero? "HG invalid single-J volume or inertia.": "HG invalid density."));
   Check(!(errors&cuhg::ERR_Plastic),"HG currently supports elastic states only.");
   Check(!(errors&cuhg::ERR_State),"HG nonfinite particle state.");
   Check(!(errors&cuhg::ERR_Coincident),"HG coincident native particles.");
@@ -84,10 +87,11 @@ void JSphHourglassGpu::MapNative(unsigned np,unsigned npb,const unsigned* idp,co
 /// main SPH cell ranges refer to the pre-corrector state at this point.
 //==============================================================================
 void JSphHourglassGpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const unsigned* idp,
-  const typecode* code,const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic)
+  const typecode* code,const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,const double* poroj)
 {
+  Check(!RhopZero || poroj,"HG single-J state is missing.");
   MapNative(np,npb,idp,code);
-  cuhg::Gather(Count,Mass,Slotsg,Errorg,posxy,posz,velrhop,kplastic,Nodesg,Partialg);
+  cuhg::Gather(Count,Mass,Slotsg,Errorg,posxy,posz,velrhop,kplastic,Nodesg,Partialg,poroj,RhopZero,WaterRho);
   const cuhg::StReduce state=ReadResult();CheckState(state.errors);
   const bool reuse=RateCacheEnabled && !endpoint && EndpointRateReady && !state.changed;
   if(!reuse){
@@ -104,7 +108,7 @@ void JSphHourglassGpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
     cudiv::Sort(Keysg,Orderg,Count,true);
     cudiv::CalcBeginEndCell(true,Count,0,ncells,0,Keysg,Rangesg);
     cuhg::Moments(Count,grid,Orderg,Rangesg,Nodesg,Errorg);
-    cuhg::Rates(Count,grid,Orderg,Rangesg,Nodesg,Errorg,HistoryRateg,Partialg);
+    cuhg::Rates(Count,grid,Orderg,Rangesg,Nodesg,Errorg,HistoryRateg,Partialg,RhopZero!=0);
     const cuhg::StReduce r=ReadResult();CheckState(r.errors);
     PairCount=r.pairs;if(!Stats.ratecalls)Stats.firstpairs=PairCount;
     Stats.minpairs=(std::min)(Stats.minpairs,PairCount);Stats.maxpairs=(std::max)(Stats.maxpairs,PairCount);
@@ -131,10 +135,11 @@ void JSphHourglassGpu::EvaluateRate(bool endpoint,unsigned np,unsigned npb,const
   EndpointRateReady=endpoint;
 }
 
-void JSphHourglassGpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace){
+void JSphHourglassGpu::AddHistory(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj){
+  Check(!RhopZero || poroj,"HG single-J force state is missing.");
   // Resolve the physical slots again after the predictor's main cell sorting.
   MapNative(np,npb,idp,code);
-  cuhg::AddHistory(Count,Mass,Slotsg,Errorg,Historyg,ace,Partialg);
+  cuhg::AddHistory(Count,Mass,Slotsg,Errorg,Historyg,ace,Partialg,poroj,RhopZero,WaterRho);
   const cuhg::StReduce r=ReadResult();CheckState(r.errors);
   Stats.maxnetforce=(std::max)(Stats.maxnetforce,hypot(r.netx,r.netz));
   Stats.maxactualnetforce=(std::max)(Stats.maxactualnetforce,hypot(r.actualx,r.actualz));
@@ -147,25 +152,25 @@ void JSphHourglassGpu::UpdateHistory(double dt){
   Stats.maxhistory=(std::max)(Stats.maxhistory,r.hmax);
 }
 void JSphHourglassGpu::PredictorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-  const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,float3* ace,double dt)
+  const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,float3* ace,double dt,const double* poroj)
 {
   Check(Phase==PH_PredictorForce && isfinite(dt) && dt>0,"HG invalid predictor force stage.");
-  StepDt=dt;EvaluateRate(false,np,npb,idp,code,posxy,posz,velrhop,kplastic);
-  AddHistory(np,npb,idp,code,ace);Phase=PH_PredictorUpdate;
+  StepDt=dt;EvaluateRate(false,np,npb,idp,code,posxy,posz,velrhop,kplastic,poroj);
+  AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_PredictorUpdate;
 }
 void JSphHourglassGpu::PredictorUpdate(double dt){
   Check(Phase==PH_PredictorUpdate && dt==StepDt,"HG invalid predictor history update.");
   UpdateHistory(dt);Stats.predictorupdates++;Phase=PH_CorrectorForce;
 }
-void JSphHourglassGpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace){
+void JSphHourglassGpu::CorrectorForce(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,float3* ace,const double* poroj){
   Check(Phase==PH_CorrectorForce,"HG invalid corrector force stage.");
-  AddHistory(np,npb,idp,code,ace);Phase=PH_CorrectorUpdate;
+  AddHistory(np,npb,idp,code,ace,poroj);Phase=PH_CorrectorUpdate;
 }
 void JSphHourglassGpu::CorrectorUpdate(unsigned np,unsigned npb,const unsigned* idp,const typecode* code,
-  const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,double dt)
+  const double2* posxy,const double* posz,const float4* velrhop,const float* kplastic,double dt,const double* poroj)
 {
   Check(Phase==PH_CorrectorUpdate && dt==StepDt,"HG invalid endpoint history update.");
-  EvaluateRate(true,np,npb,idp,code,posxy,posz,velrhop,kplastic);
+  EvaluateRate(true,np,npb,idp,code,posxy,posz,velrhop,kplastic,poroj);
   UpdateHistory(dt);Stats.correctorupdates++;Phase=PH_PredictorForce;
 }
 llong JSphHourglassGpu::GetAllocMemory()const{

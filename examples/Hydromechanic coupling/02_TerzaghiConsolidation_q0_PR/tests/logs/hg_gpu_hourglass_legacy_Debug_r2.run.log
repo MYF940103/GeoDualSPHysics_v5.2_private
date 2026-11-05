@@ -1,0 +1,210 @@
+PASS unchanged
+PASS reorder
+PASS periodic
+PASS position_x
+PASS position_z
+PASS velocity_x
+PASS velocity_z
+PASS density
+PASS signed_zero
+PASS changed_dt
+PASS evolving_endpoint
+PASS multiblock_520
+PASS negative_x_periodic_seam
+PASS nx2_distinct_neighbor_columns
+PASS strict_support_-1
+PASS strict_support_0
+PASS strict_support_1
+PASS translation
+PASS periodic_z_affine
+PASS checkerboard
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG currently supports elastic states only.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG currently supports elastic states only.
+
+PASS reject elastic
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG currently supports elastic states only.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG currently supports elastic states only.
+
+PASS reject plastic_nan
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG duplicate native soil ID.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG duplicate native soil ID.
+
+PASS reject duplicate_id
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG unexpected native soil ID.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG unexpected native soil ID.
+
+PASS reject unexpected_id
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG native soil particle set changed.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG native soil particle set changed.
+
+PASS reject missing_native
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid density.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid density.
+
+PASS reject bad_density
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid density.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid density.
+
+PASS reject density_nan
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG nonfinite particle state.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG nonfinite particle state.
+
+PASS reject position_nan
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG nonfinite particle state.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG nonfinite particle state.
+
+PASS reject velocity_nan
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG coincident native particles.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG coincident native particles.
+
+PASS reject coincident
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG rank-deficient soil-only LS moment.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG rank-deficient soil-only LS moment.
+
+PASS reject rank
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG dt exceeds 0.2 frozen stiffness time scale.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG dt exceeds 0.2 frozen stiffness time scale.
+
+PASS reject dt_guard_cached
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid predictor force stage.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid predictor force stage.
+
+PASS reject dt_nan
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid predictor force stage.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid predictor force stage.
+
+PASS reject dt_zero
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid predictor history update.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid predictor history update.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid corrector force stage.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid corrector force stage.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid endpoint history update.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid endpoint history update.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid predictor force stage.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid predictor force stage.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid predictor history update.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid predictor history update.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid endpoint history update.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid endpoint history update.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG invalid particle, elastic, kernel or neighbor configuration.
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG invalid particle, elastic, kernel or neighbor configuration.
+
+
+*** Exception (JSphHourglassCpu::Check) at DualSPHysics/source/JSphHourglassCpu.cpp:24
+Text: HG accumulated spin exceeds the small-rotation limit (0.01 rad).
+
+
+*** Exception (JSphHourglassGpu::Check) at DualSPHysics/source/JSphHourglassGpu.cpp:20
+Text: HG accumulated spin exceeds the small-rotation limit (0.01 rad).
+

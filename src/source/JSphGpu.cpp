@@ -1251,6 +1251,8 @@ void JSphGpu::InteractionPorePressureMdbcCorrection(){
 /// Reconstructs derivative-only wall velocity after each stage's mDBC update.
 //==============================================================================
 void JSphGpu::ComputeBoundaryDerivativeVelocity(){
+  //-The same-stage single-J wall closure already owns the derivative velocity.
+  if(DynamicPoreWall)return;
   if(SoilBoundaryDerivativeSPR)cusph::BoundaryDerivativeVelocity(Simulate2D,Npb,NpbOk,
     MdbcThreshold,SlipMode,DivData,Posxyg,Poszg,Codeg,Velrhopg,BoundNormalg,
     BoundModeg,BoundSlipModeg,BoundDerivativeVelg,Idpg,BoundDerivativeFitShiftg);
@@ -1629,10 +1631,12 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
+  const bool allowcolumnspr=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+    && PeriX && !PeriY && !PeriZ && !ViscoTime);
   if(!DynamicPorePressure || !PorosityFeedback || !Simulate2D || !CaseNpb
     || TBoundary!=BC_MDBC || !UseNormals || !boundnormal
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
-    || SoilBoundaryDerivativeSPR || CaseNmoving || CaseNfloat
+    || (SoilBoundaryDerivativeSPR && !allowcolumnspr) || CaseNmoving || CaseNfloat
     || !std::isfinite(MassBound) || !(MassBound>0) || !std::isfinite(MassFluid) || !(MassFluid>0)
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
@@ -1723,9 +1727,16 @@ void JSphGpu::InitPorosityObserverGpu(){
     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
+  const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+    && PeriX && !PeriY && !PeriZ && !ViscoTime);
+  if(SoilHourglassXi!=0 && !allowcolumnstabilization)
+    Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
+  if(allowcolumnstabilization && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+    || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+    Run_Exceptioon("Dynamic column artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
-    || Damping || RelaxZones || AccInput || (!loadedcolumn && SoilDamping) || SoilHourglassXi!=0
+    || Damping || RelaxZones || AccInput || (!loadedcolumn && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (!DynamicPorePressure && (Gravity.x || Gravity.z))
     || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
@@ -1735,13 +1746,13 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
-  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || Visco!=0
+  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowcolumnstabilization)
     || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
-    || SoilBoundaryDerivativeSPR || !SoilStressRateGradCorr || PoreShepardRegularization
+    || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr || PoreShepardRegularization
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires a private complete Darcy Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires bounded complete Darcy Wendland elastic fixtures; HG/SPR/artificial viscosity require the public constant-k column, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)

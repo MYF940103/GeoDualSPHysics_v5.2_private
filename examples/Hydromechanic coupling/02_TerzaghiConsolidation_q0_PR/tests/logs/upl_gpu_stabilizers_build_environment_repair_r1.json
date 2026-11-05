@@ -1,0 +1,23 @@
+{
+  "stage": "upl_gpu_stabilizers_build_environment_repair_r1",
+  "utc": "2026-11-05T12:05:49.726524+00:00",
+  "original_driver_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_stabilizers_build_attempt_r1\\upl_gpu_stabilizers_build_r1.py",
+    "bytes": 7598,
+    "sha256": "32eccdd8ae41a5776f18c07126d862fdd43e341b7e6271a29a66848dd5567125"
+  },
+  "previous_failure": "VS environment setup assertion before anyMSBuild/call/start/object/output. Previous numeric environment exit was not retained; no invented value.",
+  "cause": "subprocess Windows argv quoting escaped embedded cmd call quotes; cmd uses different argument parsing from C runtime.",
+  "repair": "Use explicit trusted command line for cmd.exe CALL only; no filesystem operation in this shell.",
+  "probe_command": "\"C:\\WINDOWS\\System32\\cmd.exe\" /d /c call \"D:\\Program Files\\VS2022\\Common7\\Tools\\VsDevCmd.bat\" -arch=x64 -host_arch=x64 >nul && set",
+  "actual_probe_returncode": 0,
+  "selected": {
+    "VCToolsInstallDir": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\",
+    "WindowsSdkDir": "C:\\Program Files (x86)\\Windows Kits\\10\\",
+    "WindowsSDKVersion": "10.0.22000.0\\"
+  },
+  "stderr_if_failed": null,
+  "no_prior_MSBuild_start_records": true,
+  "source_snapshot_preserved": true,
+  "solver_invoked": false
+}

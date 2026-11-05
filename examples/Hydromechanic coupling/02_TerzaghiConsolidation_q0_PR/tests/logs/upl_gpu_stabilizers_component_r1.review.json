@@ -1,0 +1,24 @@
+{
+  "stage": "upl_gpu_stabilizers_component_r1_review",
+  "passed": false,
+  "physical_acceptance": false,
+  "owned_call": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_gpu_j_r1_Debug_r1.run.call.json",
+    "bytes": 1310,
+    "sha256": "7b0f82dc037556d8b7a0d9d9dbc283b4bec32e6b205dbe58b0ff2f327c573deb"
+  },
+  "result": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_hg_gpu_j_r1_Debug_r1.check.json",
+    "bytes": 6918,
+    "sha256": "3dfe5b1571091901420555de917c336a81ffcbb980374b0d46518ce32ddebef2"
+  },
+  "failure_reason": "reference_force_history error=1.0594833044645266e-25 limit=1.0000000000000002e-25",
+  "actual_device": "NVIDIA GeForce RTX 3050",
+  "prior_valid_cases": 9,
+  "actual_CPU_affine_null_max": 0,
+  "CPU_GPU_float_ace_max": 0,
+  "legacy_suite_and_memcheck_not_run": true,
+  "production_changed_to_fix_test": false,
+  "diagnosis": "Exact-affine realCPU rate is zero; independent generic dense inverse leaves a tiny cancellation residual. Extending retained nonaffine cumulativehistory1e-25floor to allaffine4cycles caused rejection. Keepfaileddata; separatelycheck analyticalzero and exactactualinputrate recurrence in a fresh test without raising thresholds.",
+  "next": "Fresh r2 test reference review; no coupled solver admitted until required component/legacy/memory checks pass."
+}
