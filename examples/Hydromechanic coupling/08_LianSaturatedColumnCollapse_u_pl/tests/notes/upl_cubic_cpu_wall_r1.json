@@ -1,0 +1,31 @@
+{
+  "stage": "upl_cubic_cpu_wall_r1.author",
+  "purpose": "Zero-step CPU Cubic dynamic-wall dispatch component, extracted from the fully read retained upl_p3_wall_wave_harness_r2.cpp initialization and Component().",
+  "source": "tests/support/upl_cubic_cpu_wall_r1.cpp",
+  "seed": {
+    "retained_prefix": "../02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_wall_wave_seed_r3_h/CaseUplWall_h",
+    "fresh_prefix": "tests/outputs/upl_cubic_cpu_wall_r1_seed/CaseUplWall_h",
+    "transformation": "Copy BI4 byte-for-byte, copy XML changing only parameter Kernel value 2 to 1. No GenCase or resampling. Retain all 1280 original IDs/coordinates/normals and h/dp=1.8.",
+    "soil": 1024,
+    "fixed": 256,
+    "geometry": "32x32 soil lattice between two parallel FreeSlip mDBC planes, 128 fixed markers on each face, tangential Z periodic copies.",
+    "historical_h_tag": "The old seed directory and stored dt comment are provenance only. No half-step or time-integration operation is performed."
+  },
+  "checks": {
+    "actual_initialization": "LoadConfig, LoadCaseParticles, ConfigDomain, ConfigRunMode, InitRunCpu and FreePartsInit, using the original private fixture flags. Retain the old Reset() initial component field assignment before taking the initial state; no uninitialized correction-matrix contents are consumed.",
+    "actual_three_stages": "ComputeDynamicPoreWallStateCpu, ComputeDynamicPoreWallMatrixCpu and ComputeDynamicPoreWallAccelerationCpu, each once at coincident targets and once with exact Dp/8 normal offsets.",
+    "fields": "Original affine J, float p, derivative velocity, all six double stress components, all nine correction-matrix components and acceleration; physical fixed velocity, tangent velocity and active mDBC mode. Native physical26, C and Ace must be byte-unchanged by the three stages.",
+    "original_budgets": "condition=max(1,||M||inf*||inverse(M)||inf), using actual J-weighted Cubic W. td=32768*DBL_EPSILON*condition, tf=64*FLT_EPSILON*condition. J<=2td, p<=256tf, derivative-v<=tf, Ace<=tf, sigma<=128td, C<=4td. No budget widening.",
+    "condition_at_zero": "Condition estimation needs only W; GetKernel_Wab<Cubic> avoids evaluating the unused radial Fac at an exact coincident target. Production stage uses its existing rr2==0 guard.",
+    "counts": "2 cases, 512 native wall rows, 256 exact noncoincident targets; all native IDs and true fixed planes verified. All geometry/ID/normal bytes and initial native physical26 restored at completion.",
+    "output": "Fresh helper/result under tests/outputs/upl_cubic_cpu_wall_r1, four CSVs (two component error tables and soil/fixed ID tables), completion.json; exact typed Popen exits in tests/logs with the same tag."
+  },
+  "execution_plan": {
+    "build": "After root reads the source, compile one new helper and link all 85 non-main current upl_cubic_r1 DebugCPU objects. Do not execute an old wrapper.",
+    "CLI": "upl_cubic_cpu_wall_r1.exe --wall -cpu -ompthreads:1 -stable -mdbc_freeslip ABS_NEW_SEED ABS_FRESH_RESULT",
+    "one_attempt": "One actual component run only. Failure is retained; no automatic retry.",
+    "identity_policy": "Use current source/input/runtime/canonical size and mtime before/after, reuse existing source/build receipts, and hash only the newly generated helper exe once. Do not require historical prebuild document mtimes after root's documented review updates. No old object/raw SHA scans."
+  },
+  "limits": "This CPU component isolates Cubic dispatch at retained h/dp=1.8. The separate GPU component is the source of any actual paper h/dp=1.2 evidence. No copied wave modes, force audits, Darcy-rate comparison, trajectory, energy, half-step, Cryer run, solver main, formal input edit or physical acceptance is included.",
+  "physical_acceptance": false
+}
