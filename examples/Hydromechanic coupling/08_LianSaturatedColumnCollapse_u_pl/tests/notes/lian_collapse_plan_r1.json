@@ -40,9 +40,12 @@
   "softening_precision_comparison": {
     "user_requested_local_date": "2026-11-06",
     "current_fast_state": "Stress tensors already double; material coefficients,kplastic/tk and some local calculations remain float.",
+    "material_constants_promoted_or_retyped": false,
+    "same_parsed_material_values_in_both_controls": true,
+    "priority_targets": ["kplastic/tk accumulated plastic-strain writeback", "precision-sensitive softening exponent and return-mapping intermediate arithmetic"],
     "sequence": ["audit accumulated equivalent plastic-strain definition", "same-path same-algorithm constant-psi fast versus double reference", "same psi0*exp(-sf*epsp) law in both references", "compare stress,epsp,c/phi/psi,yield residual and cost", "only then matched short soil-column precision comparison"],
     "arithmetic_and_persistent_state_precision_separated": true,
-    "full_double_state_requires_storage_sorting_output_CPU_GPU_review": true,
+    "double_plastic_history_requires_storage_sorting_output_CPU_GPU_review": true,
     "default_behavior_preserved": true,
     "implemented_or_verified": false,
     "elastic_Cryer_rerun_required": false
