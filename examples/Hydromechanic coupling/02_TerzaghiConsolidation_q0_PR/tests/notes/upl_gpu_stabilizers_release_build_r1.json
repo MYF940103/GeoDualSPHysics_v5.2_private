@@ -1,0 +1,17 @@
+{
+  "stage": "upl_gpu_stabilizers_release_build_r1_author",
+  "authoring_only": true,
+  "author_executed_or_built": false,
+  "physical_acceptance": false,
+  "script": "support/upl_gpu_stabilizers_release_build_r1.py",
+  "scope": "One isolated authoritative GPU Release project build only. No CPU build, solver, decoder, component, canonical installation, source editing or Git command.",
+  "root_verified_checkpoint": "295261305527e1d8b2fb76a3eb8d650bf3275a2b",
+  "output": "outputs/upl_gpu_stabilizers_Release_r1/gpu",
+  "intermediate": "TEMP/upl_gpu_stabilizers_r1/Release/int, required fresh and without spaces",
+  "recipe": "Read the retained successful upl_gpu_column_Release_r1_project.call.json; preserve its authoritative DualSPHysics5Re.sln, MSBuild /m:1 /nr:false /t:Rebuild, v143 and VCToolsVersion14.36.32532 arguments. Explicitly set Configuration=Release and remap only fresh OutDir, IntDir and binlog. Disable project references and postbuild event as in the captured call. Author inspected the current authoritative Release configuration compute_86,sm_86 and CUDA11.7 imports; the driver records project before/after stats and child CUDA_PATH_V11_7 explicitly points to installed11.7. Reuse repaired Debug VS environment CALL quoting. Build process BelowNormal.",
+  "hash_policy": "Do not recompute source, archive, object, canonical executable, runtime, tool or receipt content hashes. Reuse the closed Debug source receipt and runtime hashes as historical provenance, not a fresh current-identity proof. Current compilation is associated with the root-verified checkpoint; record all265 current code-file size/mtime values and verify them unchanged after build. Current README/XML documentation stats are also retained without claiming they equal the historical snapshot. No archive comparison is performed by this driver. Hash only the newly generated final Release executable once, at successful sealing; verify its stat is stable across that single read.",
+  "ownership_and_records": "Fresh start/call/build JSON and log/binlog under logs/upl_gpu_stabilizers_Release_r1.*. Save exact argv/Windows commandline, working directory, Python owner and child PID/creation time. Capture child.wait() returncode directly and seal original call before output inspection. Closed source receipt and current consumed/protected size/mtime baselines are recorded. Count111 project objects including main; store names rather than object hash lists.",
+  "runtime": "Four retained Debug runtime files must match current canonical source size/mtime. copy2 into the fresh isolated output after build success; require matching source/copy stats and retain reused closed hashes with fresh_hash_performed=false. Canonical binaries are watched by stats and never installed or overwritten.",
+  "freshness": "Refuse existing output parent, intermediate directory or any planned receipt/log/binlog. Failure preserves produced files and original call. No cleanup, retry or fallback build.",
+  "author_validation": "Existing Debug driver, actual successful GPU Release argv, current project CUDA/toolset configuration and source/runtime stats were read. Manual review and note JSON parse only; this driver is not imported, executed or built by author. Parent owns full read and execution after checkpoint."
+}

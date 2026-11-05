@@ -1,0 +1,71 @@
+{
+  "stage": "upl_gpu_stabilizers_release_short_r1_author",
+  "authoring_only": true,
+  "author_built_executed_imported_or_syntax_checked": false,
+  "physical_acceptance": false,
+  "files": ["support/upl_gpu_stabilizers_release_short_r1.py", "notes/upl_gpu_stabilizers_release_short_r1.json"],
+  "known_production_source_commit": "295261305527e1d8b2fb76a3eb8d650bf3275a2b",
+  "scope": "One fresh isolated Release GPU bounded same-physics short diagnostic, then one unchanged native reader invocation, then an offline comparison with the already completed CPU full first150 actual frames. Actions are separate and never automatically chain. No new half/reference/full solver, production edits, retry or overwrite.",
+  "future_commands": [
+    "python support/upl_gpu_stabilizers_release_short_r1.py run --execution-authorized",
+    "python support/upl_gpu_stabilizers_release_short_r1.py native",
+    "python support/upl_gpu_stabilizers_release_short_r1.py review"
+  ],
+  "source_inputs": {
+    "release_build": "logs/upl_gpu_stabilizers_Release_r1.build.json; actual passed Release/111 objects and exact expected isolated program path required",
+    "release_program": "outputs/upl_gpu_stabilizers_Release_r1/gpu/DualSPHysics5.2_GEO_win64.exe",
+    "unchanged_preparation": "logs/upl_gpu_stabilizers_short_r1.prepare.json",
+    "unchanged_seed": "outputs/upl_gpu_stabilizers_short_r1_seed/upl_gpu_stabilizers_short_r1",
+    "unchanged_plan": "logs/upl_gpu_stabilizers_short_r1.clock.csv",
+    "reader_build": "logs/upl_gpu_stabilizers_native_Debug_r1.build.json",
+    "reader_program": "outputs/upl_gpu_stabilizers_native_Debug_r1/reader.exe",
+    "reader_sources_fully_read_by_author": ["support/upl_gpu_stabilizers_native_r1.cpp", "support/upl_cpu_public_native_r1.cpp"],
+    "retained_CPU_full": "logs/upl_bigstep_full_r1.native.json; completed outputs/upl_bigstep_2tv_CPU1_r1_native_r1, first150 records only"
+  },
+  "clock": {
+    "samples": 150,
+    "steps": 1632,
+    "dt_s": 6.250143051147461e-6,
+    "actual_scalar_end_s": 0.010200233459472378,
+    "nominal_steps_times_dt_s": 0.010200233459472656,
+    "drain_completed_step": 1600,
+    "event_part": 117,
+    "first_post_open_part": 118,
+    "post_open_frames": 32,
+    "true_drained_receiver_checks": 320,
+    "resampling_or_interpolation": false
+  },
+  "runtime": {
+    "argv": "-gpu -stable -mdbc_freeslip SAME_SEED FRESH_OUTPUT -dirdataout data -svres -nsteps:1632",
+    "cwd": "repository/src",
+    "expected_HG_force_predictor_corrector_rate": [3264, 1632, 1632, 3264],
+    "expected_HG_calculation_reuse": [1633, 1631],
+    "existing_HG_dt_tau_max": 0.2,
+    "existing_HG_spinbound_max": 0.01,
+    "typed_actual_exit": "Popen child PID/creation/exe/argv/parent is sealed before wait; the actual integer wait result is saved before checks. Nonzero exits preserve the call and partial output; no automatic retry.",
+    "freshness": "Exclusive logs/start/call/receipts, fresh solver/native directories and fresh CSV/PNG; a running DualSPHysics solver prevents run/native action. No overwrites."
+  },
+  "native": {
+    "exact_CLI": "reader.exe --read GPU FRESH_OUTPUT/data SAME_CLOCK_CSV gpu_stabilizers_short FRESH_NATIVE_OUTPUT",
+    "attempts": 1,
+    "coverage": "Unchanged reader validates all1040 IDs/all22 actual typed arrays/150 clocks/149 noninitial signed dterror intervals,150000 soil ledger rows,6000 fixed marker rows,156000 J/theta rows and320 actual drained receivers; column21 is true ExcessPorePress, not PosDiv.",
+    "no_relabelled_schema": "Reader completion retains actual stage upl_gpu_stabilizers_native_r1/window gpu_stabilizers_short/backend GPU_public; this outer owner has distinct Release receipts."
+  },
+  "comparison": {
+    "unchanged_gates": {"pressure_RMS_per_frame_Pa": 5, "maximum_each_material_ID_XYZ_mm": 0.005, "actual_clock_gap_s": 1e-14, "saved_load_proxy_backend_vector_difference_N_per_m": 0.001},
+    "identity": "Same original soil/fixed ID-coordinate CSV rows and bit-exact initial common26 values. Top/bottom settlement uses the original ten-ID z=.995/.005 material layers.",
+    "saved_proxy": "sum(V0*(rho0-rhow+rhow*Jnew)*retained LoadAce), with V0=double(float(.21))/2100. This uses saved Jnew with retained corrector acceleration; compare CPU/GPU vectors only. Saved-time nominal target residuals remain descriptive and are explicitly not the actual Jhalf force-stage budget.",
+    "original_force_stage_budget_N_per_m": 0.001,
+    "force_stage_budget_observed_or_claimed_passed": false,
+    "stress": "Stored6 stress difference is the per-ID Frobenius RMS with doubled xy/xz/yz terms; descriptive only. Total vertical compression is mean(P-sigma_zz). No added stress/J accuracy threshold.",
+    "outputs": ["figures/upl_gpu_stabilizers_release_short_r1.csv", "figures/upl_gpu_stabilizers_release_short_r1.png", "logs/upl_gpu_stabilizers_release_short_r1.cross.json"],
+    "figure": "All150 actual times: arithmetic mean P, material top/bottom settlement, P/XYZ errors with original comparison bounds, mean J, total vertical compression/stored-stress error, saved proxy backend error and signed dterror. Matching CSV retains each plotted series plus absolute saved proxy target residuals."
+  },
+  "provenance_policy": "No hash scans. Reuse the actual Release build's sealed program SHA as historical provenance, require its byte/mtime identity, and capture selected immutable inputs/programs/runtime/native files by absolute path/bytes/mtime before and after each action. Receipts explicitly say metadata bindings, not independent SHA revalidation. Authoring does not run Git; source commit is the root-provided known production source node, not a clean-worktree assertion.",
+  "limits": [
+    "Native reader success and equal-time CPU/GPU short bounds are implementation evidence, not a full physical/load-stage/theory or long-time acceptance.",
+    "The historical t>=.1s stress criterion is not exercised by this .0102s window; it is not relaxed or silently passed.",
+    "No controlled performance comparison or speedup claim; Run.csv TSimul and actual Hardware/device are recorded/printed as observations only. Release component/legacy/memcheck orchestration remains root-owned.",
+    "Root must full-read both author files and review the actual Release build before executing any action. Author performed only manual source/schema review."
+  ]
+}

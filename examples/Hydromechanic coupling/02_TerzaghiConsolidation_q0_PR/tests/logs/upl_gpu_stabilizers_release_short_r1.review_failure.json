@@ -1,0 +1,11 @@
+{
+  "stage": "upl_gpu_stabilizers_release_short_r1.review_failure",
+  "review_tool_observed_exit_code": 1,
+  "exact_exception": "RuntimeError: Initial common26 fields differ",
+  "failed_at": "support/upl_gpu_stabilizers_release_short_r1.py:247",
+  "solver_and_native_completed": true,
+  "numerical_comparison_not_completed_by_this_review": true,
+  "original_helper_and_completed_native_unchanged": true,
+  "reason_found": "Only derived initial FSNormal18:20 differs; physical initial inputs exact. All original records preserved. New offline qualified comparison is separate; original bit gate remains false.",
+  "source_audit": "CPU doublePos versus GPU floatPosCell kernel differences, norm(G)>1e-12 normalization. Nearzero interior normals ill-conditioned; exact rawG cancellation not directly observed. No production change."
+}

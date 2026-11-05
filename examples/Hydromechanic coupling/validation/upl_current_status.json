@@ -908,7 +908,7 @@
     "avoid_redundant_wrappers": true
   },
   "GPU_stabilizers_20261105": {
-    "stage": "Debug implementation,components,actual coupled short and legacy main verified",
+    "stage": "Debug and Release bounded column implementation verified",
     "production_candidate_files": 8,
     "CPU_Debug_build_passed": true,
     "GPU_Debug_build_passed": true,
@@ -921,10 +921,18 @@
     "short_numeric_comparison_passed": true,
     "release_build_or_speed_or_fullGPU_acceptance": false,
     "physical_acceptance": false,
-    "next": "Selective verified code checkpoint, then Release accuracy and measured same-physics CPU/GPU cost; no new long solver admitted.",
+    "next": "Narrow fresh3D Cryer free-body actual init and Pre/Corr; source work in progress, no new run admitted yet",
     "legacy_default_OFF_and_HG_main_passed": true,
     "legacy_frames_each": 21,
-    "legacy_native_and_signed_clock_byte_differences": 0
+    "legacy_native_and_signed_clock_byte_differences": 0,
+    "GPU_Release_build_passed": true,
+    "Release_short_native_and_physical_comparison_passed": true,
+    "Release_initial_all26_bit_gate_passed": false,
+    "Release_pressure_RMS_Pa": 0.002355368743342379,
+    "Release_material_XYZ_difference_mm": 5.066655508575523e-08,
+    "observed_short_CPU1_over_GPU_ratio": 1.2890017729289547,
+    "full_GPU_acceptance": false,
+    "server_program_installed": false
   },
   "common_classical_comparison_20261105": {
     "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\figures\\full_validation_upl_CPU1_r1_common_classical.md",
@@ -936,5 +944,13 @@
     "majority_of_selected_times_upl_better": false,
     "top_abs_error_reduction_percent": 36.04,
     "bottom_and_stress_not_improved": true
+  },
+  "Cryer_upl_next_20261105": {
+    "status": "bounded_compatibility_implementation_in_progress",
+    "existing_3D_probes_not_actual_integration": true,
+    "raw_stress_and_confinement_pairing_preserved": true,
+    "dummy_native_IDs_retained": true,
+    "HG_and_SPR_off": true,
+    "no_new_equation_or_XML_option": true
   }
 }

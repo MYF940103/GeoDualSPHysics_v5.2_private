@@ -1,6 +1,6 @@
 {
   "stage": "upl_gpu_stabilizers_r1",
-  "status": "Debug_build_components_native_and_legacy_main_passed_pending_Release",
+  "status": "Debug_and_Release_bounded_column_implementation_verified",
   "physical_acceptance": false,
   "default_u_pw_equations_changed": false,
   "CPU_baseline_source_unchanged": true,
@@ -25,7 +25,7 @@
     "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "examples/Hydromechanic coupling/02_TerzaghiConsolidation_q0_PR/README.md"
   ],
-  "next": "ReleaseGPU authoritative build, bounded same-physics accuracy and timing; no extra half/full-chain or formal package admission.",
+  "next": "Narrow fresh3D Cryer free-body init/integration compatibility; no extra half-chain or server/full acceptance",
   "source_snapshot_before": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_gpu_stabilizers_r1_source_before",
   "verification": {
     "CPU_Debug_build": true,
@@ -42,7 +42,13 @@
     "legacy_frames_each": 21,
     "all_legacy_array_and_signed_clock_bytes_equal": true,
     "true_force_stage_budget_directly_observed": false,
-    "release_or_full_GPU_acceptance": false
+    "release_or_full_GPU_acceptance": false,
+    "GPU_Release_build": true,
+    "Release_native_samples": 150,
+    "Release_pressure_RMS_cross_max_Pa": 0.002355368743342379,
+    "Release_material_XYZ_cross_max_mm": 5.066655508575523e-08,
+    "Release_initial_all26_bit_gate": false,
+    "Release_physical_comparison_passed": true
   },
   "conclusion_note": "tests/notes/upl_gpu_stabilizers_r1.md"
 }

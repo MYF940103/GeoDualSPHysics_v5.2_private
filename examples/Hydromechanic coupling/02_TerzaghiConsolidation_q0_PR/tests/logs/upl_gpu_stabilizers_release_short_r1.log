@@ -1,0 +1,461 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../upl_gpu_stabilizers_Release_r1/gpu/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device default: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  05-11-2026 22:19:38]
+ProgramFile=".../upl_gpu_stabilizers_Release_r1/gpu/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_gpu_stabilizers_short_r1_seed/upl_gpu_stabilizers_short_r1.xml"
+OutputDir=".../tests/outputs/upl_gpu_stabilizers_release_short_r1"
+OutputDataDir=".../outputs/upl_gpu_stabilizers_release_short_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["upl_gpu_stabilizers_short_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+
+*** WARNING: The execution will be cancelled after 1632 simulation steps.
+
+XML-Vars (parameters): TimeMax=[72.8843]  TimeOut=[0.182186]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental CPU/GPU 2-D elastic, zero gravity, fresh start; not a general u-pl release
+  HydroMechConductivityModel="Constant"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.0100002
+  HydroMechDrainageFixedGrid=True
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopKernelBand"
+  HydroMechTopLoadDiscretization: top kernel band, normalized to the unchanged TopVertical resultant
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.0100002
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1040
+MapRealPos(border)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+MapRealPos(final)=(4.33681e-18,-0.0009,-0.0359)-(0.1,0.0009,0.9959)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.036000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="upl_gpu_stabilizers_short_r1"
+RunName="upl_gpu_stabilizers_short_r1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=1719.136
+  Wendland.bwen=-477572.1
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="MirroredWallDerivatives"
+SoilHourglassXi: 0.1 (GPU elastic GNOG, endpoint-trapezoidal history)
+  GNOG scope: 2-D Wendland, x-periodic, small rotation, no restart or plastic flow.
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.04
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1040
+CaseNbound=40
+CaseNfixed=40
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1000
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.1,0,0)
+Dp=0.01
+KernelH=0.018000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.036
+CteB=384615.4
+Gamma=7
+RhopZero=2100
+Cs0=35.80574408560461
+CFLnumber=0.2
+DtIni=6.250143051147461e-06
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=6.250143051147461e-06
+MassFluid=0.21
+MassBound=0.21
+TimeMax=72.88428690075874
+TimePart=0.1821857142857143
+Gravity=(0,0,0)
+NpMinimum=40
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(5,1,29)
+CellDomFixed=False
+**Requested GPU memory for 1168 particles: 0.7 MB (0 times).
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\02_TerzaghiConsolidation_q0_PR\tests\outputs\upl_gpu_stabilizers_short_r1_seed/upl_gpu_stabilizers_short_r1_Normals.nbi4"
+SPR stationary wall planes (one per mk): 1
+DomCells=(5,1,29)
+DomCellCode="1+10_9_12"
+Dynamic soil damping rate: 61.9748192 s^-1 (reference intrinsic solid density)
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1253 particles: 0.7 MB.
+**JSphGpu: Requesting gpu memory for 2093 particles: 1.2 MB.
+**CellDiv: Requested gpu memory for 2093 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 40  id:(0-39)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1000  id:(40-1039)   MKs:1 (1)
+
+Total particles: 1040 (bound=40 (fx=40 mv=0 ft=0) fluid=1000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+TimeOut configuration:
+  Time: 0.000000  (tout:0.000122)
+  Time: 0.009766  (tout:0.000002)
+  Time: 0.010254  (tout:0.000122)
+  Time: 0.025024  (tout:0.001953)
+  Time: 2.000046  (tout:0.182186)
+ 
+Allocated memory in CPU: 552586 (0.53 MB)
+Allocated memory in GPU: 1414617 (1.35 MB)
+Part_0000        1040 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 1632 simulation steps.
+
+[Initialising simulation (7mbd9c63)  05-11-2026 22:19:38]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 2967 particles: 1.7 MB.
+**CellDiv: Requested gpu memory for 2967 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 360 cells (CellMode=Full): 0.0 MB.
+Part_0001      0.000125            20       20    1396.72  07-11-2026 02:36:16
+Part_0002      0.000250            40       20    1304.54  07-11-2026 01:40:50
+Part_0003      0.000369            59       19    1291.76  07-11-2026 01:17:59
+Part_0004      0.000494            79       20    1366.11  07-11-2026 01:28:39
+Part_0005      0.000613            98       19    1333.09  07-11-2026 01:27:01
+Part_0006      0.000738           118       20    1328.02  07-11-2026 01:24:47
+Part_0007      0.000856           137       19    1334.56  07-11-2026 01:24:24
+Part_0008      0.000981           157       20    1350.34  07-11-2026 01:26:33
+Part_0009      0.001100           176       19    1316.53  07-11-2026 01:23:41
+Part_0010      0.001225           196       20    1309.01  07-11-2026 01:20:20
+Part_0011      0.001344           215       19    1350.70  07-11-2026 01:22:12
+Part_0012      0.001469           235       20    1335.40  07-11-2026 01:22:15
+Part_0013      0.001588           254       19    1332.19  07-11-2026 01:21:59
+Part_0014      0.001713           274       20    1341.07  07-11-2026 01:22:34
+Part_0015      0.001831           293       19    1332.01  07-11-2026 01:22:20
+Part_0016      0.001956           313       20    1359.22  07-11-2026 01:24:12
+Part_0017      0.002081           333       20    1316.63  07-11-2026 01:22:46
+Part_0018      0.002200           352       19    1326.37  07-11-2026 01:22:11
+Part_0019      0.002325           372       20    1274.61  07-11-2026 01:18:14
+Part_0020      0.002444           391       19    1292.26  07-11-2026 01:15:56
+Part_0021      0.002569           411       20    1281.18  07-11-2026 01:13:04
+Part_0022      0.002688           430       19    1320.26  07-11-2026 01:12:41
+Part_0023      0.002813           450       20    1308.40  07-11-2026 01:11:41
+Part_0024      0.002931           469       19    1323.31  07-11-2026 01:11:32
+Part_0025      0.003056           489       20    1293.32  07-11-2026 01:09:55
+Part_0026      0.003175           508       19    1318.65  07-11-2026 01:09:41
+Part_0027      0.003300           528       20    1318.15  07-11-2026 01:09:23
+Part_0028      0.003419           547       19    1301.58  07-11-2026 01:08:26
+Part_0029      0.003544           567       20    1264.79  07-11-2026 01:05:54
+Part_0030      0.003663           586       19    1262.41  07-11-2026 01:03:35
+Part_0031      0.003788           606       20    1243.99  07-11-2026 01:00:33
+Part_0032      0.003906           625       19    1267.61  07-11-2026 00:58:43
+Part_0033      0.004031           645       20    1254.95  07-11-2026 00:56:27
+Part_0034      0.004156           665       20    1284.20  07-11-2026 00:55:22
+Part_0035      0.004275           684       19    1308.36  07-11-2026 00:55:13
+Part_0036      0.004400           704       20    1306.50  07-11-2026 00:55:00
+Part_0037      0.004519           723       19    1322.13  07-11-2026 00:55:18
+Part_0038      0.004644           743       20    1279.67  07-11-2026 00:54:14
+Part_0039      0.004763           762       19    1285.51  07-11-2026 00:53:26
+Part_0040      0.004888           782       20    1283.08  07-11-2026 00:52:34
+Part_0041      0.005006           801       19    1303.64  07-11-2026 00:52:22
+Part_0042      0.005131           821       20    1271.92  07-11-2026 00:51:13
+Part_0043      0.005250           840       19    1291.42  07-11-2026 00:50:44
+Part_0044      0.005375           860       20    1292.19  07-11-2026 00:50:16
+Part_0045      0.005494           879       19    1290.06  07-11-2026 00:49:46
+Part_0046      0.005619           899       20    1327.85  07-11-2026 00:50:19
+Part_0047      0.005738           918       19    1301.32  07-11-2026 00:50:09
+Part_0048      0.005863           938       20    1290.10  07-11-2026 00:49:40
+Part_0049      0.005988           958       20    1314.53  07-11-2026 00:49:50
+Part_0050      0.006106           977       19    1301.60  07-11-2026 00:49:40
+Part_0051      0.006231           997       20    1287.61  07-11-2026 00:49:11
+Part_0052      0.006350          1016       19    1269.02  07-11-2026 00:48:19
+Part_0053      0.006475          1036       20    1270.14  07-11-2026 00:47:27
+Part_0054      0.006594          1055       19    1283.00  07-11-2026 00:46:56
+Part_0055      0.006719          1075       20    1311.99  07-11-2026 00:47:05
+Part_0056      0.006838          1094       19    1303.36  07-11-2026 00:47:02
+Part_0057      0.006963          1114       20    1271.29  07-11-2026 00:46:16
+Part_0058      0.007081          1133       19    1284.59  07-11-2026 00:45:52
+Part_0059      0.007206          1153       20    1266.16  07-11-2026 00:45:03
+Part_0060      0.007325          1172       19    1313.50  07-11-2026 00:45:14
+Part_0061      0.007450          1192       20    1346.44  07-11-2026 00:46:06
+Part_0062      0.007569          1211       19    1314.82  07-11-2026 00:46:17
+Part_0063      0.007694          1231       20    1299.12  07-11-2026 00:46:10
+Part_0064      0.007813          1250       19    1340.42  07-11-2026 00:46:50
+Part_0065      0.007938          1270       20    1330.03  07-11-2026 00:47:18
+Part_0066      0.008063          1290       20    1374.07  07-11-2026 00:48:34
+Part_0067      0.008181          1309       19    1332.87  07-11-2026 00:49:02
+Part_0068      0.008306          1329       20    1321.27  07-11-2026 00:49:17
+Part_0069      0.008425          1348       19    1278.57  07-11-2026 00:48:47
+Part_0070      0.008550          1368       20    1278.91  07-11-2026 00:48:16
+Part_0071      0.008669          1387       19    1291.08  07-11-2026 00:48:02
+Part_0072      0.008794          1407       20    1314.61  07-11-2026 00:48:09
+Part_0073      0.008913          1426       19    1331.75  07-11-2026 00:48:34
+Part_0074      0.009038          1446       20    1440.87  07-11-2026 00:50:49
+Part_0075      0.009156          1465       19    1324.31  07-11-2026 00:51:04
+Part_0076      0.009281          1485       20    1293.17  07-11-2026 00:50:48
+Part_0077      0.009400          1504       19    1285.03  07-11-2026 00:50:27
+Part_0078      0.009525          1524       20    1296.08  07-11-2026 00:50:15
+Part_0079      0.009644          1543       19    1276.88  07-11-2026 00:49:46
+Part_0080      0.009769          1563       20    1294.81  07-11-2026 00:49:34
+Part_0081      0.009775          1564        1    2009.33  07-11-2026 00:50:07
+Part_0082      0.009781          1565        1    2176.22  07-11-2026 00:50:48
+Part_0083      0.009788          1566        1    1917.52  07-11-2026 00:51:18
+Part_0084      0.009794          1567        1    2114.64  07-11-2026 00:51:56
+Part_0085      0.009800          1568        1    2037.35  07-11-2026 00:52:30
+Part_0086      0.009806          1569        1    2433.10  07-11-2026 00:53:23
+Part_0087      0.009813          1570        1    1983.71  07-11-2026 00:53:55
+Part_0088      0.009819          1571        1    1975.71  07-11-2026 00:54:27
+Part_0089      0.009825          1572        1    2074.82  07-11-2026 00:55:03
+Part_0090      0.009831          1573        1    2016.40  07-11-2026 00:55:37
+Part_0091      0.009838          1574        1    2028.71  07-11-2026 00:56:11
+Part_0092      0.009844          1575        1    2125.41  07-11-2026 00:56:49
+Part_0093      0.009850          1576        1    1923.35  07-11-2026 00:57:18
+Part_0094      0.009856          1577        1    2157.28  07-11-2026 00:57:58
+Part_0095      0.009863          1578        1    2041.49  07-11-2026 00:58:32
+Part_0096      0.009869          1579        1    2075.54  07-11-2026 00:59:08
+Part_0097      0.009875          1580        1    2105.14  07-11-2026 00:59:45
+Part_0098      0.009881          1581        1    2100.05  07-11-2026 01:00:22
+Part_0099      0.009888          1582        1    2055.71  07-11-2026 01:00:57
+Part_0100      0.009894          1583        1    2108.13  07-11-2026 01:01:35
+Part_0101      0.009900          1584        1    2041.97  07-11-2026 01:02:09
+Part_0102      0.009906          1585        1    2237.66  07-11-2026 01:02:52
+Part_0103      0.009913          1586        1    2089.33  07-11-2026 01:03:28
+Part_0104      0.009919          1587        1    2131.78  07-11-2026 01:04:06
+Part_0105      0.009925          1588        1    2141.73  07-11-2026 01:04:45
+Part_0106      0.009931          1589        1    2224.70  07-11-2026 01:05:27
+Part_0107      0.009938          1590        1    2182.29  07-11-2026 01:06:08
+Part_0108      0.009944          1591        1    2474.39  07-11-2026 01:07:02
+Part_0109      0.009950          1592        1    2158.29  07-11-2026 01:07:41
+Part_0110      0.009956          1593        1    2202.77  07-11-2026 01:08:22
+Part_0111      0.009963          1594        1    2060.27  07-11-2026 01:08:56
+Part_0112      0.009969          1595        1    2419.06  07-11-2026 01:09:48
+Part_0113      0.009975          1596        1    2287.08  07-11-2026 01:10:33
+Part_0114      0.009981          1597        1    2467.27  07-11-2026 01:11:27
+Part_0115      0.009988          1598        1    2300.38  07-11-2026 01:12:12
+Part_0116      0.009994          1599        1    2439.13  07-11-2026 01:13:04
+Part_0117      0.010000          1600        1    2666.96  07-11-2026 01:14:06
+Part_0118      0.010006          1601        1    3153.22  07-11-2026 01:15:30
+Part_0119      0.010013          1602        1    2186.09  07-11-2026 01:16:10
+Part_0120      0.010019          1603        1    2128.18  07-11-2026 01:16:47
+Part_0121      0.010025          1604        1    2128.91  07-11-2026 01:17:24
+Part_0122      0.010031          1605        1    2233.58  07-11-2026 01:18:06
+Part_0123      0.010038          1606        1    2170.83  07-11-2026 01:18:45
+Part_0124      0.010044          1607        1    2209.52  07-11-2026 01:19:26
+Part_0125      0.010050          1608        1    2378.35  07-11-2026 01:20:14
+Part_0126      0.010056          1609        1    2845.45  07-11-2026 01:21:24
+Part_0127      0.010063          1610        1    2304.12  07-11-2026 01:22:08
+Part_0128      0.010069          1611        1    2290.65  07-11-2026 01:22:53
+Part_0129      0.010075          1612        1    3460.66  07-11-2026 01:24:30
+Part_0130      0.010081          1613        1    2466.94  07-11-2026 01:25:22
+Part_0131      0.010088          1614        1    2687.92  07-11-2026 01:26:24
+Part_0132      0.010094          1615        1    2531.33  07-11-2026 01:27:19
+Part_0133      0.010100          1616        1    2502.49  07-11-2026 01:28:13
+Part_0134      0.010106          1617        1    2792.74  07-11-2026 01:29:20
+Part_0135      0.010113          1618        1    2607.48  07-11-2026 01:30:18
+Part_0136      0.010119          1619        1    2439.75  07-11-2026 01:31:09
+Part_0137      0.010125          1620        1    2764.50  07-11-2026 01:32:14
+Part_0138      0.010131          1621        1    2845.45  07-11-2026 01:33:23
+Part_0139      0.010138          1622        1    2724.55  07-11-2026 01:34:27
+Part_0140      0.010144          1623        1    2729.63  07-11-2026 01:35:30
+Part_0141      0.010150          1624        1    2528.13  07-11-2026 01:36:25
+Part_0142      0.010156          1625        1    2445.06  07-11-2026 01:37:16
+Part_0143      0.010163          1626        1    2399.51  07-11-2026 01:38:04
+Part_0144      0.010169          1627        1    2447.54  07-11-2026 01:38:54
+Part_0145      0.010175          1628        1    2171.20  07-11-2026 01:39:32
+Part_0146      0.010181          1629        1    2147.58  07-11-2026 01:40:09
+Part_0147      0.010188          1630        1    2459.14  07-11-2026 01:40:59
+Part_0148      0.010194          1631        1    2269.02  07-11-2026 01:41:41
+Part_0149      0.010200          1632        1    2308.12  07-11-2026 01:42:25
+
+[Simulation finished  05-11-2026 22:19:52]
+Particles of simulation (initial): 1040
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 13.823481 sec.
+Simulation Runtime...............: 13.794687 sec.
+Runtime per physical second......: 1352.389404 sec.
+Steps per second.................: 118.306412
+Steps of simulation..............: 1632
+PART files.......................: 150
+Maximum number of particles......: 1872
+Maximum number of cells..........: 145
+CPU Memory.......................: 764094 (0.73 MB)
+GPU Memory.......................: 1940411 (1.85 MB)
+SoilHourglass: forcecalls=3264 predictorupdates=1632 correctorupdates=1632 ratecalls=3264
+SoilHourglass: ratecalculations=1633 endpoint_rate_reuses=1631
+SoilHourglass: max|sum(M0*Href)|=1.04083e-16 max|sum(mi*deltaAce)|=2.33502e-05 max(dt/tau)=0.00497579 spinbound=3.28821e-09
+ 
+[GPU Timers]
+VA-Init..........................: 0.028773 sec.
+NL-Limits........................: 0.515276 sec.
+NL-PreSort.......................: 0.014793 sec.
+NL-RadixSort.....................: 0.154468 sec.
+NL-CellBegin.....................: 0.175050 sec.
+NL-SortData......................: 2.176013 sec.
+NL-OutCheck......................: 0.044811 sec.
+CF-PreForces.....................: 0.328796 sec.
+CF-Forces........................: 4.857266 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 0.249104 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0.624562 sec.
+SU-ResizeNp......................: 0.001072 sec.
+SU-DownData......................: 0.038185 sec.
+SU-SavePart......................: 0.761122 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The execution will be cancelled after 1632 simulation steps.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+

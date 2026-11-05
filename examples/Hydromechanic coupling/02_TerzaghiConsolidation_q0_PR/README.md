@@ -122,3 +122,5 @@ GPU候选只同步当前恒定k、零重力、X周期、单一向上固定FreeSl
 当前CPU/GPU Debug构建、16组当前J分量、36组非法输入、42组旧空J分量及GPU memcheck已通过。实际GPU短窗至0.010200233459472378 s，150个原生保存状态与保留CPU Release逐材料比较：孔压RMS差最大0.002082 Pa、XYZ位移差最大4.631e-8 mm。默认关闭动态渗流及关闭动态渗流并开启旧HG的两组真实主程序回归，各21帧的原生数组与有符号时钟均逐字节一致。它们不替代Release效率、完整GPU周期或通用边界验收；未替换正式发行程序或服务器包。外力阶段与保存状态质量不同，不能将保存加速度乘新质量的代理量误认为归一化时的总外力。完整范围及保留的失败记录见 [GPU阶段结论](tests/notes/upl_gpu_stabilizers_r1.md)和[对接记录](tests/notes/upl_gpu_stabilizers_r1.json)。
 
 已完成CPU和旧正式输出保持原位。新旧精度采用同一经典参考的完整表格见[统一参考比较](figures/full_validation_upl_CPU1_r1_common_classical.md)，不是将有限Kw和经典参考混合排名。
+
+同日GPU Release构建及150帧短窗也已完成：孔压RMS差最大0.00235537 Pa，逐材料XYZ位移差最大5.06666e-8 mm，全部原生安全检查通过。初始物理输入一致，但CPU的double位置差与GPU的float PosCell差产生了不同的自由面法向舍入结果，因此不称初始全部26字段逐位一致；原失败检查保留，有效自由面法向差最大5.11745e-8，150帧分类一致。所有原始法向和有符号诊断保留，未改写为零。主循环同物理顺序计时CPU1为17.781376 s、RTX3050 GPU为13.794687 s，短窗比值1.289；这不是完整2Tv加速比。详见[Release结论](tests/notes/upl_gpu_stabilizers_release_r1.md)。当前并未更新服务器发行包。

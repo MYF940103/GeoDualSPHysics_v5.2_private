@@ -210,8 +210,11 @@
                      null-J cases and GPU memcheck passed. A 150-save actual coupled short window agrees
                      with retained CPU Release (pressure RMS <=.002082 Pa, material XYZ <=4.631e-8 mm).
                      Two 21-save default-OFF/legacy-HG main-program regressions preserve all native array
-                     and signed clock bytes. Release/cost/full-GPU verification remains pending; this is
-                     not a validated server release. Default u-pw retains its previous equations. No Vel0/NoSlip,
+                     and signed clock bytes. Release also passed the 150-save native/physical comparison
+                     (pressure RMS <=.002356 Pa, material XYZ <=5.067e-8 mm); derived FS normals differ,
+                     so initial all-field bit identity is not claimed. Same-window CPU1/GPU loop times
+                     were 17.781/13.795 s on the local RTX3050, not a full-run speedup. Full-GPU validation
+                     and server release remain pending. Default u-pw retains its previous equations. No Vel0/NoSlip,
                      general-wall/3-D dynamic extension, variable-k HG, plastic flow or restart support.
                      See case02 tests/notes/upl_gpu_stabilizers_r1.json for the current verification state. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
