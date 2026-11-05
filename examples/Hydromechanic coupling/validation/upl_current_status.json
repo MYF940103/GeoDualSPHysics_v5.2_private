@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "CPU1 column 2Tv retained with recorded stress limitations. Cryer GPU coarse peak completed, native577/37181/22 and exact69 common26+signed-clock prefix passed; amplitude -1.4931%, phase +2.4708%, not strict1%/full physical acceptance. Independent full-decay server validation candidate packaged, not run. Case08 geometry passed; Cubic CPU/GPU Debug builds and bounded components passed; complete Cubic time integration pending; material baseline audit found issues requiring bounded review.",
+  "status": "Cryer GPU peak native577 reviewed: amplitude -1.4931%, phase +2.4708%; independent full-decay server candidate prepared, no full acceptance. Case08 Cubic CPU/GPU components and static normal-head CPU/GPU components passed with unchanged zero-g controls; mixed-wall/corner/gravity trajectories and plastic collapse remain pending. Material history-only precision probe closed; material constants and production plastic state unchanged.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1022,6 +1022,10 @@
     "material_history_comparison": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/lian_material_history_r1.review.json",
     "material_constants_promoted": false,
     "production_plastic_history_changed": false,
-    "next": "GPU normal-gravity synchronization and verification; then per-MK NoSlip/corner/unsupported-wall compatibility before geostatic/plastic collapse."
+    "next": "Per-MK NoSlip stress/velocity consistency and corner/inactive/weak-top support; preserve current verified free-slip paths.",
+    "GPU_normal_head_component": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_gravity_wall_gpu_review_r1.json",
+    "GPU_normal_head_debug_and_memcheck_passed": true,
+    "initial_wall_support_audit": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_wall_geometry_r1.check.json",
+    "public_gravity_or_mixed_wall_admission": false
   }
 }

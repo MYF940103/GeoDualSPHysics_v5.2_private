@@ -1,0 +1,20 @@
+{
+  "purpose": "Quantify local support obstacles before designing mixed-wall implementation",
+  "input_CSV": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\lian_collapse_geometry_r1_particles.csv",
+  "seed_XML": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\lian_collapse_geometry_r1\\CaseLianSaturatedColumnCollapse_geometry_r1.xml",
+  "seed_VTK": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\lian_collapse_geometry_r1\\CaseLianSaturatedColumnCollapse_geometry_r1_All.vtk",
+  "kernel_source": "src/source/FunSphKernel.h:51-132",
+  "volume": "dp^2*J at J=1",
+  "arithmetic": "binary64, not production float kernel constants/evaluation",
+  "original_target": "Reflect the actual fixed coordinate across its XML per-MK initialize plane. GenCase normal VTK is not substituted for these solver-plane prescriptions.",
+  "candidate_target": "Only when original wall min distance to actual soil<=2h: start with its own face reflection; reflect once across any remaining violated x=0/x=4/z=0 half-space. At most two local faces; no virtual top wall, fluid images, infinite folding, recentering or far-bed target.",
+  "det_scope": "Report original dimensionful raw a_corr2 determinant/condition and the existing abs(det)>=1e-3 test. This alone does not reproduce mDBC active-threshold policy, float arithmetic, returned field values or physical validity.",
+  "limitations": "No stress/NoSlip/derivative/viscous parity or Darcy pressure/Ace proof; corner quadrature and duplicated virtual volume remain separate issues. Single/double target support is a necessary geometric observation, not operator or physical acceptance.",
+  "source_or_input_changes": false,
+  "solver_or_build_or_Git": false,
+  "outputs": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_wall_geometry_r1.csv",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_wall_geometry_r1.png",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_geometry_r1.check.json"
+  ]
+}

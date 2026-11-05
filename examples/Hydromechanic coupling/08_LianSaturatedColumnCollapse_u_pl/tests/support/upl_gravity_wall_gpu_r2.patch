@@ -1,0 +1,83 @@
+--- a/src/source/JSphGpu_ker.cu
++++ b/src/source/JSphGpu_ker.cu
+@@ -1461,19 +1461,28 @@
+ /// The anchored value avoids smoothing a mirror point coincident with a fluid node.
+ //==============================================================================
+ template<unsigned stage> __device__ double KerDynamicPoreWallRead(unsigned p,unsigned c
++  ,const float3 normalg,const double2 *posxy,const double *posz
+   ,const float4 *velrhop,const tsymatrix3d *sigma,const float *porepress,const double *j
+   ,const tmatrix3d *corrmat,const float3 *ace)
+ {
+   if(stage==0){
+     if(c==0)return j[p];
+-    if(c==1)return double(porepress[p]);
++    if(c==1){
++      if(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f)
++        return double(porepress[p])-double(CTE.porewaterrho)*(double(normalg.x)*posxy[p].x
++          +double(normalg.y)*posxy[p].y+double(normalg.z)*posz[p]);
++      return double(porepress[p]); //-Keep the old zero-normal-g path, including signed zero.
++    }
+     if(c<5)return(c==2? double(velrhop[p].x): (c==3? double(velrhop[p].y): double(velrhop[p].z)));
+     const tsymatrix3d s=sigma[p];const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
+   }
+   if(stage==1){
+     const tmatrix3d m=corrmat[p];const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];
+   }
+-  return(c==0? double(ace[p].x): (c==1? double(ace[p].y): double(ace[p].z)));
++  const double a=(c==0? double(ace[p].x): (c==1? double(ace[p].y): double(ace[p].z)));
++  if(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f)
++    return a+(c==0? double(normalg.x): (c==1? double(normalg.y): double(normalg.z)));
++  return a; //-Do not add signed zero on the old zero-normal-g path.
+ }
+ 
+ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsigned np,unsigned npbok,float threshold
+@@ -1488,6 +1497,8 @@
+   const double r2=double(bn.x)*bn.x+double(bn.y)*bn.y+double(bn.z)*bn.z;
+   if(!CODE_IsFixed(code[p1]) || !isfinite(r2) || !(r2>0)){atomicMin(invalid,p1);return;}
+   const double qx=(double(bn.x)*bn.x>.5*r2? -1.: 1.),qy=(double(bn.y)*bn.y>.5*r2? -1.: 1.),qz=(double(bn.z)*bn.z>.5*r2? -1.: 1.);
++  //-Only the admitted axis-plane normal head is extended; tangential/periodic semantics stay unchanged.
++  const float3 normalg=make_float3(qx<0? CTE.gravityx: 0.f,qy<0? CTE.gravityy: 0.f,qz<0? CTE.gravityz: 0.f);
+   double3 gp=make_double3(posxy[p1].x+bn.x,posxy[p1].y+bn.y,posz[p1]+bn.z);
+   if(CTE.periactive)gp=KerUpdatePeriodicPos(gp);
+   enum {ncomp=(stage==0? 11: (stage==1? 9: 3))};
+@@ -1508,7 +1519,7 @@
+         const double vol=double(CTE.massf)/double(CTE.rhopzero)*j[p2],w=wab*vol,vx=fx*vol,vz=fz*vol;
+         const double distance2=dx*dx+dz*dz;const bool nearer=(distance2<nearest2);
+         for(unsigned c=0;c<ncomp;c++){
+-          const double field=KerDynamicPoreWallRead<stage>(p2,c,velrhop,sigma,porepress,j,corrmat,ace);
++          const double field=KerDynamicPoreWallRead<stage>(p2,c,normalg,posxy,posz,velrhop,sigma,porepress,j,corrmat,ace);
+           sum[c]+=w*field;gx[c]+=vx*field;gz[c]+=vz*field;if(nearer)nearest[c]=field;
+         }
+         if(nearer){nearest2=distance2;nearx=dx;nearz=dz;}
+@@ -1531,11 +1542,15 @@
+     if(!isfinite(v[c])){atomicMin(invalid,p1);return;}
+   }
+   if(stage==0){
++    const bool hydrostatichead=(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f);
++    //-Restore the normal head at the boundary sample, not at its fitted mirror target.
++    const double pressure=(hydrostatichead? v[1]+double(CTE.porewaterrho)*(double(normalg.x)*posxy[p1].x
++      +double(normalg.y)*posxy[p1].y+double(normalg.z)*posz[p1]): v[1]);
+     const float3 dv=make_float3(float(qx*v[2]),float(qy*v[3]),float(qz*v[4]));
+     const float3 tv=make_float3(float(.5*(1.+qx)*v[2]),float(.5*(1.+qy)*v[3]),float(.5*(1.+qz)*v[4]));
+-    if(v[0]<=solid0 || fabs(v[1])>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
++    if(v[0]<=solid0 || !isfinite(pressure) || fabs(pressure)>FLT_MAX || !isfinite(dv.x) || !isfinite(dv.y) || !isfinite(dv.z)
+       || !isfinite(tv.x) || !isfinite(tv.y) || !isfinite(tv.z)){atomicMin(invalid,p1);return;}
+-    j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(v[1]);
++    j[p1]=v[0];theta[p1]=0.;porepress[p1]=float(pressure);
+     tsymatrix3d s;s.xx=v[5];s.yy=v[6];s.zz=v[7];s.xy=qx*qy*v[8];s.xz=qx*qz*v[9];s.yz=qy*qz*v[10];sigma[p1]=s;
+     if(derivativevel)derivativevel[p1]=dv;
+     if(tangenvel)tangenvel[p1]=tv;
+@@ -1548,9 +1563,11 @@
+     corrmat[p1]=m;
+   }
+   else{
+-    const float3 a=make_float3(float(qx*v[0]),float(qy*v[1]),float(qz*v[2]));
++    const bool hydrostatichead=(normalg.x!=0.f || normalg.y!=0.f || normalg.z!=0.f);
++    const float3 a=(hydrostatichead? make_float3(float(qx*v[0]-double(normalg.x)),float(qy*v[1]-double(normalg.y)),float(qz*v[2]-double(normalg.z)))
++      : make_float3(float(qx*v[0]),float(qy*v[1]),float(qz*v[2])));
+     if(!isfinite(a.x) || !isfinite(a.y) || !isfinite(a.z)){atomicMin(invalid,p1);return;}
+-    ace[p1]=a; //-Strictly tangential g has Qg=g, so Q*(Ace+g)-g=Q*Ace.
++    ace[p1]=a; //-Q*(Ace+g_n)-g_n equals Q*(Ace+g)-g; zero g_n keeps the old literal path.
+   }
+ }
+ 

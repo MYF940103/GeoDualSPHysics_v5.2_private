@@ -1,0 +1,63 @@
+{
+  "stage": "upl_gravity_wall_gpu_component_r1.author",
+  "authoring_only": true,
+  "source": "tests/support/upl_gravity_wall_gpu_component_r1.cpp",
+  "base": "Fully read, already passed tests/support/upl_cubic_component_r2.cpp: Device/transfer helpers, single-cell patch, CSP/CTE constants, actual FS/wall/Darcy wrappers and independent all-particle raw-sum reference",
+  "scope": "Private zero-step normal-head GPU component only. No JSph object/loading, periodic owner map, actual mechanical force solver, integrator, public admission change or production edit.",
+  "good_manufacture": {
+    "kernels": ["Wendland", "Cubic"],
+    "h_over_dp": 1.2,
+    "dp_m": 0.125,
+    "fluid_slots": 81,
+    "fixed_slots": 2,
+    "single_cell": true,
+    "normal_g_x": [-0.0625, 0, 0.0625],
+    "tangent_g_z": 2,
+    "mirror_offsets": ["coincident", "Dp/8"],
+    "J": 1,
+    "theta": 0,
+    "native_pressure": "128+rho_w*gn*x, rho_w=1000. All normal-good physical positions stay strictly within abs(p)<256; the extra tangential gravity never enters p.",
+    "native_Ace": "(-gn,0,0); Ace=as-g, so prescribed true acceleration as=(0,0,2)=gt. This is not static mechanical equilibrium.",
+    "velocity_and_effective_stress": "Zero; fixed physical velocities stay zero, derived velocity/tangent stay zero, wall theta stays zero.",
+    "expected_wall_pressure": "Evaluate the hydrostatic normal head at ACTUAL boundary slot B, not fitted mirror M=B+bn.",
+    "expected_wall_Ace": "Q*(Ace+gn)-gn=(-gn,0,0); equivalent to Q*(Ace+g)-g for these axis-plane normals.",
+    "C": "Produced by real GPU FS, then real stage1 wall C. Native FS C is byte-unchanged by wall stages; actual conditional C is consumed by the independent rate reference. This fixture does not claim an independent FS-C accuracy oracle."
+  },
+  "normal_good_counts": {
+    "conditions": 12,
+    "wall_rows": 24,
+    "physical_face_rows": 24,
+    "rate_rows": 972,
+    "negative_face_probes": 16,
+    "negative_counterfactual_evaluations": 32,
+    "zero_normal_g_skipped_face_probes": 8,
+    "zero_normal_g_skipped_counterfactuals": 16
+  },
+  "budgets": {
+    "state": "Original small GPU patch td=32768*DBL_EPSILON*condition, tf=64*FLT_EPSILON*condition; pressure/J/Ace remain256tf/2td/tf. Zero velocity/stress/theta semantics remain exact. Original mirror support determinant check remains.",
+    "physical_face": "Independent host positive-weight MLS at q=B+bn/2, using ALL supported fluid and actual fixed-boundary positions/actual J. Pressure/gradient/Ace use retained affine propagation. Flux bound is the CPU gravity manufacture's k/gamma*(tf*(rho_w*abs(gn)+rho_w)+256td/h), never abs(full g). vn must be zero. True normal flux is -k/gamma*(gradp_x+rho_w*Ace_x)*inward.",
+    "complete_rate": "Original upl_cubic_component_r2 raw-sum expression and propagated budget specialized only to constant-k/law=false, with actual conditional C and actual post-wall J/p/Ace. Budget stays64*FLT_EPSILON*raw+256*DBL_EPSILON*max(1,abs(B*theta))+1e-6. No rate-zero claim replaces this comparison.",
+    "negative_nonemptiness": "Both host counterfactual fluxes must exceed the SAME good flux budget (>1 ratio), preserving the original GPU small-patch non-vacuity criterion. This is not a claim of the different CPU1280 fixture's >100 ratio witness. No good-state or flux/rate tolerance is widened."
+  },
+  "negative_controls": {
+    "omitted_normal_head": "Only boundary pressure is replaced in the host physical-face reconstruction by128+rho_w*gn*mirror_x, the old even-pressure image.",
+    "wrong_Ace": "Only boundary normal Ace is sign-flipped, representing Q*Ace instead of Q*(Ace+gn)-gn.",
+    "actual_GPU_mutation": false,
+    "zero_normal_g": "Both counterfactuals are skipped explicitly; CSV cells are blank and evaluated=0. They are mathematically ineffective for gn=0 and cannot be counted as passed negatives."
+  },
+  "overflow_witness": {
+    "kernel": "Cubic",
+    "launch": "Exactly one extra DynamicPoreWall stage0 kernel; no FS, rate or independent-good reference call for this witness",
+    "finite_normal_g_x": "FLT_MAX/4",
+    "fluid_pressure": 0,
+    "geometry": "Same unshifted single-cell patch",
+    "expected": "Restoring the mirror pressure requires a value outside float range. invalid must identify a real fixed slot0 or1 and preserve its second canary; no input-state write is allowed on rejection.",
+    "counts": "One separate expected overflow rejection; excluded from all12 normal-good/ref conditions and negative physical-face counts",
+    "physical_acceptance": false
+  },
+  "outputs": ["wall.csv", "face.csv", "rates.csv", "overflow.csv", "completion.json"],
+  "execution_contract": "Root first full-reads this fresh source/note and the actual production GPU patch. Later build from the authoritative GPU Debug closure and run only if separately authorized. CLI --out FRESH_OUTPUT_DIRECTORY, parent must exist; refuses existing output. No build, run, AST/compiler check, hash or Git operation was performed by this author.",
+  "limits": "The manufactured GPU patch is81fluid+2fixed, dp=.125, h/dp1.2 and nonperiodic. It differs from the actual CPU1280 initialization/periodic geometry, so no same-ID or cross-backend5Pa/0.005mm equivalence is claimed. Physical-face checks sample one point per wall per condition. Host negative reconstructions are counterfactuals, not additional GPU runs. No full3D/gravity/wall-corner, trajectory, equilibrium or physical release follows.",
+  "protected": "Only this new C++ and note were authored. Production API/source, old fixtures, evidence, frozen dependencies and paper files remain unchanged.",
+  "physical_acceptance": false
+}

@@ -177,7 +177,7 @@
     "review": "tests/notes/upl_gravity_wall_cpu_review_r1.json",
     "pure_normal_and_mixed_tangent_components_passed": true,
     "default_zero_g_Cubic_CSVs_byte_exact": true,
-    "GPU_synchronization": "pending_reviewed_patch",
+    "GPU_synchronization": "Debug build, zero-g byte regression and private static normal/tangent component passed",
     "public_scope_expanded": false,
     "physical_acceptance": false
   },
@@ -195,5 +195,23 @@
     "prior_actual_responses": 1536,
     "prior_conclusion": "No uniform Eq25 pair-k improvement; retain current product-rule pressure operator.",
     "next_condition": "Revisit a bounded actual deformed snapshot if collapse errors indicate this operator; no replacement or redundant variable-k 1D full benchmark from this note."
+  },
+  "gravity_wall_GPU_20261106": {
+    "review": "tests/notes/upl_gravity_wall_gpu_review_r1.json",
+    "old_zero_g_byte_regression": true,
+    "manufactured_conditions": 12,
+    "memcheck_zero_errors_zero_leaks": true,
+    "public_scope_expanded": false,
+    "physical_acceptance": false
+  },
+  "wall_initial_support_audit_20261106": {
+    "check": "tests/logs/upl_wall_geometry_r1.check.json",
+    "CSV": "tests/figures/upl_wall_geometry_r1.csv",
+    "actual_near_walls": 410,
+    "far_walls": 1650,
+    "necessary_double_reflection_repairs": 6,
+    "remaining_full_rank_below_original_det_limit": 4,
+    "far_ghost_targets_constructed": false,
+    "production_boundary_changed": false
   }
 }

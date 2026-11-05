@@ -238,8 +238,12 @@
                      original budgets. The normal-only projection also passed6 mixed/pure-tangential
                      manufactured conditions per kernel (1536 wall/384 face/6144 rate rows), with
                      exact zero complete rates in the pure-tangential conditions. Public zero-gravity and parallel-wall restrictions remain;
-                     GPU synchronization, gravity trajectories, NoSlip, corners and inactive bottom
-                     walls are not admitted by this component. See case08 tests/notes/upl_gravity_wall_cpu_review_r1.json. -->
+                     GPU Debug and12 selected-kernel static conditions (24 wall/face and972 rate rows)
+                     also passed, with zero-error/leak memcheck and zero-g8-condition CSV byte equality.
+                     The separate finite-head overflow witness was correctly rejected. These are
+                     different CPU/GPU manufactured geometries, not a matched-ID physical comparison.
+                     Gravity trajectories, NoSlip, corners and inactive bottom walls remain unadmitted.
+                     See case08 tests/notes/upl_gravity_wall_gpu_review_r1.json. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

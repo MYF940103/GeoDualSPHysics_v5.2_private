@@ -1,0 +1,13 @@
+{
+  "stage": "upl_gravity_wall_gpu_r2.author",
+  "status": "Proposed patch only, not applied/compiled/run by its author. Root full-read and existing CPU gates are prerequisites to application.",
+  "patch": "tests/support/upl_gravity_wall_gpu_r2.patch",
+  "supersedes": "r1 full-g head patch is retained unchanged for review history and must not be applied. r2 preserves the existing tangential-gravity/periodic semantics.",
+  "scope": "One production file if later applied: src/source/JSphGpu_ker.cu. No host header/cpp API, public option, array, allocation, neighbour pass, iteration, kernel choice or admission-guard change.",
+  "normal_projection": "For the already restricted axis-plane geometry, derive per-boundary g_n by selecting CTE.gravity components only where qx/qy/qz<0. This is the geometric normal projection, independent of opposite face orientation. Existing CTE.porewaterrho and CTE.gravityx/y/z already carry all needed constants.",
+  "stage0": "The existing internal reader receives local normalg plus existing posxy/posz. When g_n is nonzero it reads p-rho_w*g_n dot x; write restores +rho_w*g_n dot x at the actual boundary sample, not the fitted/wrapped mirror target. Validate the restored pressure is finite and abs<=FLT_MAX, in addition to the existing finite fitted-component checks.",
+  "stage2": "Read Ace+g_n, then write Q*fit-g_n. Because Q*g_t=g_t, this equals Q*(Ace+g)-g without changing the tangential component model. Physical wall velocity, derivative/tangent velocity, J/theta, sigma and C rules are unchanged.",
+  "zero_normal_g": "When g_n=0, both pressure and Ace reads and writes explicitly use the original expressions without adding/subtracting a signed zero. This includes fully zero gravity and purely tangential gravity, including any existing tangential periodic copies. This source intention still needs actual old-program 0-ULP regression after compilation; no such result is asserted here.",
+  "required_review": "After root application/build: retain Wendland/Cubic CPU-GPU manufactured normal-gravity comparisons and original roundoff/true-plane flux/negative-control budgets; verify mixed normal+tangential gravity separately, pure tangential and zero-g legacy bitwise regression, and rejection when restored actual pressure is nonfinite or exceeds float range. Normal g is orthogonal to the currently admitted tangential periodic translations; no inclined/corner/NoSlip/inactive-wall/physical integration acceptance is added.",
+  "physical_acceptance": false
+}
