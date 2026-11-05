@@ -1729,39 +1729,41 @@ void JSphGpu::InitPorosityObserverGpu(){
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
+  const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
+  const bool allowartvisco=(allowcolumnstabilization || freebody);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
-  if(allowcolumnstabilization && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+  if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
-    Run_Exceptioon("Dynamic column artificial viscosity requires finite nonnegative constant coefficients.");
-  if(!HydroMech || !Simulate2D || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall) || CaseNmoving
+    Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
+  if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
-    || Damping || RelaxZones || AccInput || (!loadedcolumn && SoilDamping)
+    || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (!DynamicPorePressure && (Gravity.x || Gravity.z))
-    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
+    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded 2-D elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the bounded constant-k column and finite in-plane gravity requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the constant-k column or admitted 3-D free body; finite in-plane gravity requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
-  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowcolumnstabilization)
+  if(PorosityFeedback && (TKernel!=KERNEL_Wendland || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
     || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr || PoreShepardRegularization
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires bounded complete Darcy Wendland elastic fixtures; HG/SPR/artificial viscosity require the public constant-k column, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires bounded complete Darcy Wendland elastic fixtures; artificial viscosity requires the public constant-k column or admitted free body; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
-  if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && (!PeriX || !PeriZ))
+  if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)
     || !std::isfinite(RhopZero) || !std::isfinite(MassFluid) || !(MassFluid>0)
     || !std::isfinite(SoilCte.ModulusK) || !(SoilCte.ModulusK>0)
     || !std::isfinite(SoilCte.ModulusG) || SoilCte.ModulusG<0
     || !std::isfinite(KernelH) || !(KernelH>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0)
     || !std::isfinite(DtMin) || DtMin<0))
-    Run_Exceptioon("GPU porosity feedback requires finite saturated elastic material and step parameters, with X/Z periodicity and no floating particles.");
+    Run_Exceptioon("GPU porosity feedback requires finite saturated elastic material and step parameters, with supported walls/periodicity or an admitted free body and no floating particles.");
   const bool conductivitymodelok=(HydroMechDynamicSeepage?
     (HydroMechConductivityModel==unsigned(DynamicPoreConductivity)
       && (!DynamicPoreConductivity || DynamicPoreConductivityCk==HydroMechConductivityCk)):
@@ -1769,9 +1771,9 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(DynamicPorePressure && (!std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !conductivitymodelok || !std::isfinite(PoreDtSafety) || !(PoreDtSafety>0)
     || PeriXinc.y!=0 || PeriXinc.z!=0 || PeriZinc.x!=0 || PeriZinc.y!=0
-    || ((!DynamicPoreWall || PeriX) && (!std::isfinite(PeriXinc.x) || PeriXinc.x==0))
-    || ((!DynamicPoreWall || PeriZ) && (!std::isfinite(PeriZinc.z) || PeriZinc.z==0))))
-    Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, consistent conductivity options and PoreDtSafety>0, with rectangular X/Z periodicity.");
+    || (!freebody && (!DynamicPoreWall || PeriX) && (!std::isfinite(PeriXinc.x) || PeriXinc.x==0))
+    || (!freebody && (!DynamicPoreWall || PeriZ) && (!std::isfinite(PeriZinc.z) || PeriZinc.z==0))))
+    Run_Exceptioon("GPU dynamic pore pressure requires finite k0>=0, consistent conductivity options and PoreDtSafety>0, with supported rectangular periodicity/walls or an admitted free body.");
   if(DynamicPorePressure && SoilDamping)Log->Printf("Dynamic soil damping rate: %.9g s^-1 (reference intrinsic solid density)",double(GetDynamicSoilDampingRate()));
   for(unsigned p=0;p<Np;p++){PoroJ[p]=1.;PoroTheta[p]=0.;}
   cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
@@ -1869,7 +1871,8 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
       ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
-      ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode);
+      ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode
+      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.));
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);
@@ -1879,7 +1882,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
   ArraysGpu->Free(invalidg);
   if(ridpg)ArraysGpu->Free(ridpg);
   Check_CudaErroor("Failed computing GPU dynamic pore-pressure rate.");
-  if(invalid<Np)Run_Exceptioon("GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
+  if(invalid<Np)Run_Exceptioon(DynamicPoreFreeBody?
+    "GPU dynamic free body lost its inactive-DBC separation envelope or produced an invalid Darcy rate.":
+    "GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
   if(!std::isfinite(maxspeed) || maxspeed<0)Run_Exceptioon("GPU dynamic conductivity-gradient speed must remain finite and nonnegative.");
   DynamicConductivitySpeedMax=maxspeed;
 }

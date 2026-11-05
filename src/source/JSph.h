@@ -211,6 +211,9 @@ protected:
   bool ArtificialStressExpAuto; ///<Uses default ArtificialStressExp when XML value is not defined. //mdbr
   bool HydroMech;             ///<Hydromechanical u-pw support switch (default=0). //mdbr
   bool HydroMechDynamicSeepage; ///<Experimental limited CPU/GPU J/n/dynamic-Darcy model; default=false keeps u-pw.
+  bool DynamicPoreFreeBody;    ///<Limited 3-D free body with inactive fixed DBC markers, not a mirror wall.
+  tdouble3 DynamicPoreBodyCentre; ///<Centre of the no-contact enclosure; never a physical/theory radius fit.
+  double DynamicPoreBodyRadius2; ///<Squared admission radius, checked before each dynamic update.
   unsigned HydroMechConductivityModel; ///<0=constant k0, 1=void-ratio exponential law; requires dynamic seepage.
   double HydroMechConductivityCk; ///<Dimensionless void-ratio law coefficient; no calibrated default.
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
@@ -589,6 +592,8 @@ protected:
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
+  void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+    ,const typecode *code,const tfloat4 *velrhop);
 };
 
 //-----

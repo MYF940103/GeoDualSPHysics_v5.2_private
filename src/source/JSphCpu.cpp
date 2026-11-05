@@ -4333,11 +4333,13 @@ void JSphCpu::InitPorosityObserverCpu(){
     && HydroMechDrainage && HydroMechDrainageFixedGrid);
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
+  const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
+  const bool allowartvisco=(allowcolumnstabilization || freebody);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
-  if(allowcolumnstabilization && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+  if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
-    Run_Exceptioon("Dynamic column artificial viscosity requires finite nonnegative constant coefficients.");
+    Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones
@@ -4347,13 +4349,13 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("Variable conductivity exponent scale must be representable.");
-  if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall) || AccInput
+  if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall && !freebody) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
-    || (!loadedcolumn && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping))
-    || (Visco!=0 && !allowcolumnstabilization) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping))
+    || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/HG/SPR/artificial viscosity/load/drainage require the public constant-k column.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/artificial viscosity/load/drainage require the public constant-k column or admitted free body; HG/SPR remain column-only.");
   if(DynamicPorePressure && (TKernel!=KERNEL_Wendland
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))
@@ -4418,7 +4420,7 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
   const double khyd=SoilCte.HydraulicConductivity,vol0=double(MassFluid)/double(RhopZero);
   const double gamma=rhow*9.80665; //-k [m/s] uses standard reference weight, independent of body acceleration.
   const bool drainfs=IsHydroMechDrainageActive();
-  const bool closedfs=(HydroMechDrainage && !drainfs); //-Private column: closed loading face before opening.
+  const bool closedfs=(HydroMechDrainage && !drainfs); //-Closed loaded surface before drainage opens; Taylor defect only, not an exact zero-flux boundary.
   double speedth[OMP_MAXTHREADS*OMP_STRIDE];
   if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)speedth[th*OMP_STRIDE]=0.;
   unsigned invalid=0;
@@ -4426,6 +4428,11 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
     #pragma omp parallel for schedule(guided) reduction(+:invalid)
   #endif
   for(int p1=int(Npb);p1<int(Np);p1++)if(CODE_IsNormal(Codec[p1]) && CODE_IsFluid(Codec[p1])){
+    if(DynamicPoreFreeBody){
+      const tdouble3 d=Posc[p1]-DynamicPoreBodyCentre;
+      const double r2=d.x*d.x+d.y*d.y+d.z*d.z;
+      if(!std::isfinite(r2) || r2>=DynamicPoreBodyRadius2){invalid++;continue;}
+    }
     if(drainfs && IsHydroMechDrainedParticle(unsigned(p1),Posc,Codec,FSTypec)){
       PorePressRatec[p1]=0; //-Dirichlet p is constrained; theta and J still evolve normally.
       continue;
@@ -4494,7 +4501,9 @@ void JSphCpu::ComputeDynamicPorePressureRateCpu(){
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsPeriodic(Codec[p]))PorePressRatec[p]=PorePressRatec[ridp[Idpc[p]]];
     ArraysCpu->Free(ridp);
   }
-  if(invalid)Run_Exceptioon("Dynamic Darcy fixture produced a nonfinite pressure rate or conductivity-gradient speed.");
+  if(invalid)Run_Exceptioon(DynamicPoreFreeBody?
+    "Dynamic free body lost its inactive-DBC separation envelope or produced an invalid Darcy rate.":
+    "Dynamic Darcy fixture produced a nonfinite pressure rate or conductivity-gradient speed.");
   if(DynamicPoreConductivity)for(int th=0;th<OmpThreads;th++)
     if(DynamicConductivitySpeedMax<speedth[th*OMP_STRIDE])DynamicConductivitySpeedMax=speedth[th*OMP_STRIDE];
 }

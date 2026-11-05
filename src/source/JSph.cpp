@@ -211,6 +211,9 @@ void JSph::InitVars(){
   ArtificialStressExpAuto=true;
   HydroMech=false;
   HydroMechDynamicSeepage=false;
+  DynamicPoreFreeBody=false;
+  DynamicPoreBodyCentre=TDouble3(0);
+  DynamicPoreBodyRadius2=0;
   HydroMechConductivityModel=0;
   HydroMechConductivityCk=0;
   HydroMechInitMode=HMINIT_None;
@@ -596,11 +599,19 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
+  DynamicPoreFreeBody=false;
+  DynamicPoreBodyCentre=TDouble3(0);
+  DynamicPoreBodyRadius2=0;
   if(HydroMechDynamicSeepage){
-    if(!HydroMech || !Simulate2D || PartBegin || Gravity.x || Gravity.y || Gravity.z
+    DynamicPoreFreeBody=(!Simulate2D && !PeriActive && TBoundary==BC_DBC
+      && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
+      && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+      && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechDrainage && HydroMechDrainageFixedGrid
+      && !SoilBoundaryDerivativeSPR && SoilHourglassXi==0 && !ViscoTime);
+    if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin || Gravity.x || Gravity.y || Gravity.z
       || HydroMechInitMode!=HMINIT_None || !FixedDt || !(FixedDt->GetFixedValue()>0)
       || !std::isfinite(FixedDt->GetFixedValue()))
-      Run_Exceptioon("HydroMechDynamicSeepage is experimental: fresh CPU/GPU 2-D, zero gravity, InitMode=None and positive constant DtFixed only.");
+      Run_Exceptioon("HydroMechDynamicSeepage requires fresh zero-gravity CPU/GPU 2-D fixtures or the limited 3-D free body, InitMode=None and positive constant DtFixed.");
     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
@@ -613,13 +624,17 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       || !CaseNpb || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage
       || !HydroMechDrainageFixedGrid || !PeriX || PeriY || PeriZ || ViscoTime))
       Run_Exceptioon("Experimental dynamic HG requires the constant-k X-periodic loaded column without time-dependent viscosity; actual FreeSlip bottom geometry is checked after loading particles.");
-    if((HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
+    if(!DynamicPoreFreeBody && (HydroMechTopLoadMode!=HMLOAD_None || HydroMechDrainage)
       && (HydroMechConductivityModel!=0 || HydroMechConductivityCk!=0 || !CaseNpb
         || HydroMechTopLoadMode!=HMLOAD_TopKernelBand || !HydroMechDrainage || !HydroMechDrainageFixedGrid
         || !std::isfinite(HydroMechTopLoadQ0) || HydroMechTopLoadQ0<=0
         || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0
         || !std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<0))
       Run_Exceptioon("Experimental dynamic loading requires the constant-k TopKernelBand column, finite positive q0, finite nonnegative ramp/drain times and fixed-grid drainage; bottom FreeSlip geometry is checked after loading particles.");
+    if(DynamicPoreFreeBody && (!std::isfinite(HydroMechTopLoadQ0) || HydroMechTopLoadQ0<=0
+      || !std::isfinite(HydroMechTopLoadRampTime) || HydroMechTopLoadRampTime<0
+      || !std::isfinite(HydroMechDrainageStartTime) || HydroMechDrainageStartTime<HydroMechTopLoadRampTime))
+      Run_Exceptioon("Dynamic free-body confinement requires finite positive q0 and finite nonnegative ramp/hold/drain times.");
   }
   if(HydroMechTopLoadMode==HMLOAD_TopKernelBand && (!HydroMech || !Simulate2D))
     Run_Exceptioon("TopKernelBand loading requires a 2-D hydromechanical case with a horizontal top surface.");
@@ -3595,12 +3610,56 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 //##############################################################################
 
 //==============================================================================
+/// Admits an isolated free body without turning its remote DBC markers into walls.
+/// The enclosure only rejects loss of separation; it never rescales the body/load.
+//==============================================================================
+void JSph::ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+  ,const typecode *code,const tfloat4 *velrhop)
+{
+  if(!DynamicPoreFreeBody)return;
+  if(np!=CaseNp || !npb || npb!=CaseNpb || npb!=CaseNfixed || np<=npb || !pos || !idp || !code || !velrhop)
+    Run_Exceptioon("Dynamic free body requires its complete native soil and fixed DBC markers.");
+  tdouble3 pmin=TDouble3(DBL_MAX),pmax=TDouble3(-DBL_MAX);
+  std::vector<bool> seen(np,false);
+  for(unsigned p=0;p<np;p++){
+    const tdouble3 x=pos[p];const tfloat4 v=velrhop[p];
+    if(!CODE_IsNormal(code[p]) || idp[p]>=np || seen[idp[p]]
+      || !std::isfinite(x.x) || !std::isfinite(x.y) || !std::isfinite(x.z)
+      || v.x!=0 || v.y!=0 || v.z!=0 || v.w!=RhopZero
+      || (p<npb? (!CODE_IsFixed(code[p]) || idp[p]>=npb): (!CODE_IsFluid(code[p]) || idp[p]<npb)))
+      Run_Exceptioon("Dynamic free body requires finite native rest data and unchanged fixed/soil IDs.");
+    seen[idp[p]]=true;
+    if(p>=npb){
+      pmin=TDouble3(min(pmin.x,x.x),min(pmin.y,x.y),min(pmin.z,x.z));
+      pmax=TDouble3(max(pmax.x,x.x),max(pmax.y,x.y),max(pmax.z,x.z));
+    }
+  }
+  const tdouble3 centre=(pmin+pmax)*.5;
+  double radius2=0,dummy2=DBL_MAX;
+  for(unsigned p=0;p<np;p++){
+    const tdouble3 d=pos[p]-centre;const double r2=d.x*d.x+d.y*d.y+d.z*d.z;
+    if(p<npb)dummy2=min(dummy2,r2);else radius2=max(radius2,r2);
+  }
+  const double radius=sqrt(radius2),dummy=sqrt(dummy2),support=KernelSize;
+  const double gap=dummy-radius-support;
+  const double scale=fabs(centre.x)+fabs(centre.y)+fabs(centre.z)+dummy+radius+support;
+  if(!std::isfinite(radius) || !(radius>0) || !std::isfinite(dummy) || !(support>0)
+    || !std::isfinite(gap) || !(gap>64.*FLT_EPSILON*scale))
+    Run_Exceptioon("Dynamic free body has no roundoff-separated inactive-DBC support clearance.");
+  const double guard=radius+gap*.5;
+  if(!std::isfinite(guard*guard) || !(guard*guard>0))Run_Exceptioon("Dynamic free-body separation envelope is not representable.");
+  DynamicPoreBodyCentre=centre;DynamicPoreBodyRadius2=guard*guard;
+  Log->Printf("Dynamic free body: soil=%u fixed=%u, initial enclosure=%g m, guard=%g m, dummy clearance=%g m.",
+    np-npb,npb,radius,guard,gap);
+}
+
+//==============================================================================
 /// Lian elastic damping uses reference intrinsic solid density, not legacy rhop.
 //==============================================================================
 float JSph::GetDynamicSoilDampingRate()const{
   if(!SoilDamping)return 0.f;
   if(!std::isfinite(SoilDampingCoef) || SoilDampingCoef<0.f || SoilDampingCoef>0.1f)
-    Run_Exceptioon("Dynamic column SoilDampingCoef must be finite and in [0,0.1].");
+    Run_Exceptioon("Dynamic SoilDampingCoef must be finite and in [0,0.1].");
   if(SoilDampingCoef==0.f)return 0.f;
   const double n0=SoilCte.Porosity,h=KernelH,young=SoilCte.ModulusE;
   const double rhos=(double(RhopZero)-n0*double(SoilCte.PoreWaterRho))/(1.-n0);

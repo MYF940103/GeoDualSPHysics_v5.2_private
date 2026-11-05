@@ -138,7 +138,7 @@ void JSphGpuSingle::LoadConfig(const JSphCfgRun *cfg){
   JSph::LoadConfig(cfg);
   if(HydroMechDynamicSeepage){
     PorosityObserver=PorosityFeedback=DynamicPorePressure=true;
-    DynamicPoreWall=(CaseNpb>0);
+    DynamicPoreWall=(CaseNpb>0 && !DynamicPoreFreeBody);
     DynamicPoreConductivity=(HydroMechConductivityModel==1);
     DynamicPoreConductivityCk=HydroMechConductivityCk;
   }
@@ -270,6 +270,7 @@ void JSphGpuSingle::ConfigDomain(){
 
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,AuxPos,Idp,Code,Velrhop,boundnormal);
+  ConfigDynamicPoreFreeBody(Np,Npb,AuxPos,Idp,Code,Velrhop);
   if(UseNormals)ConfigBoundNormals(Np,Npb,AuxPos,Idp,boundnormal);
   if(DynamicPoreWall)InitDynamicPoreWallGpu(boundnormal,boundslipmode);
 

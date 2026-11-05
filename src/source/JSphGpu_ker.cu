@@ -1577,10 +1577,15 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const int2 *beginendcellbound,const byte *boundmode
-  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode)
+  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2)
 {
   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
+    if(bodyradius2>0){
+      const double dx=posxy[p1].x-bodycentre.x,dy=posxy[p1].y-bodycentre.y,dz=posz[p1]-bodycentre.z;
+      const double r2=dx*dx+dy*dy+dz*dz;
+      if(!isfinite(r2) || r2>=bodyradius2){atomicMin(invalid,p1);return;}
+    }
     if(drainfs && KerHydroMechIsDrainedParticle(p1,loadmode,posxy,code,fstype)){rate[p1]=0.f;return;}
     const double jp=j[p1],n=1.-solid0/jp;
     if(!isfinite(jp) || jp<=solid0 || !isfinite(n) || !(n>0 && n<1)){atomicMin(invalid,p1);return;}
@@ -1627,7 +1632,7 @@ __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
       const float3 normal=fsnormal[p1];
       const double norm2=double(normal.x)*normal.x+double(normal.y)*normal.y+double(normal.z)*normal.z;
       if(!isfinite(norm2) || norm2<=0){atomicMin(invalid,p1);return;}
-      //-Neumann target for the Taylor defect only; Ace already excludes body gravity.
+      //-Taylor-defect target only, not an exact zero-flux boundary; Ace excludes body gravity.
       const double flux=(double(normal.x)*(gp.x+rhow*ace[p1].x)
         +double(normal.y)*(gp.y+rhow*ace[p1].y)+double(normal.z)*(gp.z+rhow*ace[p1].z))/norm2;
       gpcorr=make_double3(gp.x-double(normal.x)*flux,gp.y-double(normal.y)*flux,gp.z-double(normal.z)*flux);
@@ -1655,13 +1660,14 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
-  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode)
+  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
+  ,tdouble3 bodycentre,double bodyradius2)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     KerComputeDynamicPorePressureRate <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode
-      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode));
+      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2);
   }
 }
 

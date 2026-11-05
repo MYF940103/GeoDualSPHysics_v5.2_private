@@ -361,3 +361,15 @@ also requires checking the paths used by the existing scripts. A successful
 solver exit is not evidence that the remaining peak/late-time errors have
 been resolved. When an output directory already exists, BAT option 1 deletes
 it; do not use that option for retained results.
+
+## 2026-11-05：u-pl三维自由球体对接候选
+
+当前准备的是`tests`内的新候选，原正式四泊松比结果、图表和服务器包保持不变。显式开启动态渗流后，保留原球体及远处固定标记的全部ID；只有验证这些固定粒子不进入核支持域，才关闭不适用的近壁镜像重构。实现采用初始几何的保守隔离包络，在现有Darcy循环中逐接收粒子检查，不增加新的邻粒子扫描，也不以该包络替代理论球半径。
+
+沿用已有三维J/孔隙率/体积/惯性及完整Darcy率、原始应力与FlexibleConfinement配套离散、预测/校正积分，以及当前惯性人工黏性和参考固体密度阻尼。HG/SPR仍关闭，未新增XML控制项或外载修正矩阵。封闭面的Taylor缺陷修正不代表已证明严格零通量精度。
+
+首轮配置为`tests/configs/upl_cryer_freebody_short_r1_Def.xml`，原生种子在`tests/outputs/upl_cryer_freebody_short_r1_seed`；dt=2^-20 s、ramp=2^-8 s、排水tD=2^-7 s，69帧至0.00830078125 s。使用既有18个初始材料点与tau=t-tD的参考口径；没有半步长或峰值/全程自动准入。
+
+CPU Debug、GPU Debug／Release构建已通过。CPU／GPU Release的128步真实初始化和预测校正短测原生检查通过：37181 IDs、22数组，孔压RMS差1.39505e-5 Pa、逐材料XYZ差1.76737e-11 mm，自由面分类相同。GPU Debug两步内存检查为0错误、0泄漏；故意将固定标记放近球面的工况在初始化时被正确拒绝，未接受成物理计算。阴性工况前两次GenCase调用仅因输入名后缀错误失败，均未进入求解；修正后的新输入用于预期拒绝检查，原记录保留。
+
+目前新的GPU Release 69帧短窗`upl_cryer_freebody_short_GPU_r1`运行中。它将检查ramp、未排水保持和真正开启排水后的状态，但不是峰值、全程或服务器发行验收。CPU Debug与GPU Release的短测耗时也不能作为公平性能对比。实际初始状态、未改写的原生字段和符号诊断见`tests/outputs/upl_cryer_freebody_smoke128_CPU_r1_native`及GPU同名目录；审查入口为`tests/logs/upl_cryer_freebody_smoke128_cross_r1.json`。

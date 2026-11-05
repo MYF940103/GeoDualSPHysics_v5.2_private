@@ -217,6 +217,23 @@
                      and server release remain pending. Default u-pw retains its previous equations. No Vel0/NoSlip,
                      general-wall/3-D dynamic extension, variable-k HG, plastic flow or restart support.
                      See case02 tests/notes/upl_gpu_stabilizers_r1.json for the current verification state. -->
+                <!-- 3-D free-body compatibility candidate (2026-11-05, startup verified only):
+                     Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
+                     bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid
+                     ramp/hold/drain scheduling. All fixed native markers remain present and must be
+                     separated from the initial soil enclosure by the full kernel support plus a
+                     roundoff margin. A conservative no-contact envelope is checked in the existing
+                     CPU/GPU Darcy receiver loops before the drained-node early return. It is only
+                     an admission guard, never a fitted physical radius or a load/pressure correction.
+                     Existing single-J integration, XYZ rate, current-inertia AV and reference-solid
+                     damping are reused. HG and SPR remain off for this candidate; no curved-wall
+                     reconstruction, shifting, variable k, plasticity or restart is admitted.
+                     CPU Debug/GPU Debug/Release builds and actual 128-step CPU/GPU startup passed;
+                     pressure RMS difference <=1.396e-5 Pa and material XYZ <=1.768e-11 mm. A near-DBC
+                     input was rejected and GPU Debug two-step memcheck reported zero errors/leaks.
+                     The 69-save ramp/hold/drain window is in progress, not peak/full acceptance.
+                     Closed-face correction constrains a Taylor defect, not an exact-Neumann claim.
+                     The default-OFF equations and the bounded column scope are unchanged. -->
 				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
 				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
 				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />

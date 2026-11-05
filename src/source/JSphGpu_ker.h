@@ -322,7 +322,8 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL
-  ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None);
+  ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None
+  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0);
 void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
   ,const double2 *posxy,const double *posz,const float4 *poscell

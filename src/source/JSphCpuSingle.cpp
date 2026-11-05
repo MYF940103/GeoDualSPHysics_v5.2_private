@@ -103,7 +103,7 @@ void JSphCpuSingle::LoadConfig(const JSphCfgRun *cfg){
   JSph::LoadConfig(cfg);
   if(HydroMechDynamicSeepage){
     PorosityObserver=PorosityFeedback=DynamicPorePressure=true;
-    DynamicPoreWall=(CaseNpb>0);
+    DynamicPoreWall=(CaseNpb>0 && !DynamicPoreFreeBody);
     DynamicPoreConductivity=(HydroMechConductivityModel==1);
     DynamicPoreConductivityCk=HydroMechConductivityCk;
   }
@@ -208,6 +208,7 @@ void JSphCpuSingle::ConfigDomain(){
 
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,Posc,Idpc,Codec,Velrhopc,BoundNormalc);
+  ConfigDynamicPoreFreeBody(Np,Npb,Posc,Idpc,Codec,Velrhopc);
   if(UseNormals)ConfigBoundNormals(Np,Npb,Posc,Idpc,BoundNormalc);
   if(DynamicPoreWall)InitDynamicPoreWallCpu();
   if(SoilBoundaryDerivativeSPR){

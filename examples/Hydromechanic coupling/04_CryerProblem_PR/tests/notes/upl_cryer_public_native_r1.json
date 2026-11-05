@@ -1,0 +1,31 @@
+{
+  "stage": "upl_cryer_public_native_r1_author",
+  "authoring_only": true,
+  "author_built_or_executed_or_hashed": false,
+  "physical_acceptance": false,
+  "source": "support/upl_cryer_public_native_r1.cpp",
+  "CLI": "--read CPU|GPU DATA CLOCK_CSV FRESHOUT",
+  "reuse": "Fully read case02/tests/support/upl_cpu_public_native_r1.cpp is included with renamed main. Only neutral typed NativeArray/Load/Metadata/Sequence and finite/ledger helpers are called; no old wave/column reducer, geometry, output schema, half comparison or solver is invoked. Compile this translation unit without a separate included-reader object.",
+  "clock": "Exact CSV columns part,time_s,completed_step,saved_step,dt_s. dt=2^-20; either two actual prefix frames at completed0/N with1<=N<=8704 (root's smoke uses128) or69 frames completed0,128,...8704. Independently replay scalar +=dt; verify actual native time, zero-based Step and typed locked dt. Drainage is strictly time>2^-7: full Part64 at completed8192 remains pre-opening; four full-window post-open frames require nonempty actual FS2/3 and exactly zero receiver pressure. Prefix completion is labeled prefix_completed_plan with its actual N, never a69-frame completion. Preserve signed tau and original signed dterror<=1e-14; the initial empty sentinel is separately reported, never turned into an absolute error test.",
+  "body_and_arrays": "Require fixed 3-D nonperiodic/no-symmetry/no-dynamic-ID/no-exclusion body:37173 soil IDs8..37180 and8 fixed IDs0..7, one piece, all22 public arrays with exact types/counts and finite values. Check public constant-law metadata, double native positions/stress, float pressure/p0/excess/PosDiv, native J/n/theta/V/rho/k, legacy display stress, elasticity, current saturated ledger and original radius<=.0525m about origin0. Initial rest/J1/zero-load/zero-pressure state is observed and checked, not fabricated. Fixed positions/velocities/J/theta and explicit nonphysical n/V/rho/k zero markers remain checked and exported as actually stored.",
+  "observation": "Exact fixed18 center IDs are those in upl_cryer_comparison_contract_r1.json. Verify their initial coordinates/radius .0025 and the entire initial center predicate; never reselect by current position. center18.csv retains each ID individually at every actual clock. Its arithmetic mean is a finite-radius r0/a=.05 observation; STD is spatial spread. All global/shell reference observations use frozen initial native-volume weights and initial radii; shell r0>=.05-2h. Current-volume means are separately labeled descriptive fields. No radius, load or time fitting.",
+  "outputs": {
+    "common26.bin": "LE uint32 header[37181,26,frames], each frame actual time f64 then26 f64 values for every native ID ascending0..37180. Actual float values are promoted losslessly; native double xyz/sigma/J/theta remain double. Columns listed in columns.csv; sigma offdiagonal converted from native xy,yz,xz to named xx,xy,xz,yy,yz,zz. Column21 is actual ExcessPorePress, not an invented zero or relabeled PosDiv.",
+    "clock.bin": "LE uint32 header[frames,28]; each record actual time f64,saved Step u32,actual locked dt f64,signed dterror f64. Completed-step indices remain in supplied clock CSV and summary.",
+    "native_ids.csv": "All37181 initial IDs/coordinates/radii/actual native initial V, with explicit soil/center/shell roles.",
+    "summary.csv": "One row per actual frame: fixed18 mean/spread, global pressure and material/shell motion, effective/total mean compression, J/n/current native rho/V/k and legacy-rho descriptions, true surface/drain counts, normal activity and load proxies, ledger error.",
+    "center18.csv": "Long-format18 individual material histories, including all common26 values plus actual n/V/rho/k/PosDiv and initial material coordinates.",
+    "completion.json": "Decode/schema/safety completion only, honest prefix or short window. No backend/owner/runtime/source attribution or physical acceptance claim."
+  },
+  "limits": [
+    "Raw BI4 is read only and retains every original typed array. No duplicate original15/J-theta/n export set or repeated full-node ledger CSV is written.",
+    "All actual FSNormal values remain finite and are exported; summary surface/other nonzero counts and norm maximum cover soil only. The matching zero counts are surface_count minus surface_nonzero and37173 minus surface_count minus other_nonzero. Fixed normals remain in the all-ID binary. These are descriptive activity statistics, not a CPU/GPU bitwise-normal identity requirement.",
+    "Physical mixture observations use native V(J) and rho(J); passive legacyRhop is descriptive and never used as current volume/inertia.",
+    "Saved rho(J)*V(J)*LoadAce is explicitly a retained-load proxy. It is not the force-stage actual total force and cannot assert the existing .001 force budget. The owner reviews actual runtime/load-stage telemetry separately.",
+    "No post-drain uniform-stress100Pa gate, cross-model5Pa u-pw equality, analytical-reference calculation, new force balance or fitted radius/tau is introduced.",
+    "The reader does not prove CPU/GPU program identity, complete-run exit or provenance. Its wrapper owns sealed source/runtime/raw/clock associations. No new ownership/hash framework is included."
+  ],
+  "freshness": "Require absent output directory and exact declared closed PART sequence. Raw BI4 is never edited. Failure retains partial fresh exports and returns nonzero; completion is written only after complete checks.",
+  "author_validation": "Manual full contract, old Cryer reducer, fully read neutral helper, source metadata and actual preparer clock-schema review. No compiler, run, decoder execution, Git or SHA by author. Root owns future compile and actual execution.",
+  "root_review_before_build": "Full reader and neutral helper read. Restore explicit original passive legacy Rhop range [700,3000] in addition to positivity of current physical mixture density; no physics source or budget changed."
+}
