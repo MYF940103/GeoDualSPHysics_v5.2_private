@@ -1,0 +1,83 @@
+{
+  "stage": "lian_material_history_r1_author",
+  "authoring_only": true,
+  "source": "tests/support/lian_material_history_r1.cpp",
+  "planned_output_only": "tests/outputs/lian_material_history_r1",
+  "build_or_probe_or_solver_or_hash_or_Git_invoked_by_author": false,
+  "physical_acceptance": false,
+  "new_material_formula_or_production_fix": false,
+  "purpose": "Isolate persistent kappa accumulation precision while retaining the existing production softening-return algorithm and float material/DP coefficients. No alternative norm, denominator, projection, psi law or all-double material arithmetic is introduced.",
+  "read_before_authoring": [
+    "src/source/JSphCpu.cpp GetStressInvariant/GetDPYieldFunction/UpdateDPvars/Updatedfdk/ConsRelationEP_fast/ConsRelationEPsft_fast complete functions",
+    "tests/support/lian_material_baseline_r1.cpp complete source",
+    "tests/notes/lian_material_baseline_r1.json",
+    "tests/notes/lian_material_baseline_review_r1.md and.json",
+    "previous actual36-point CSV/completion/call"
+  ],
+  "link_contract": "Root first full-reads this source and links only its new main to the same frozen85 CPU Debug NON-main objects and matching headers used by baseline r2. Production ConsRelationEPsft_fast and all four invariant/material helpers are actually linked, never cloned or recompiled here. The sole test-only copied function is ConsRelationEPsft_history_double; no JSph object or spatial kernel is instantiated. AppInfo is defined in the new main, matching the already resolved baseline link requirement.",
+  "exact_companion_changes": [
+    "Rename the copied ConsRelationEPsft_fast body to static ConsRelationEPsft_history_double",
+    "Change persistent input kplastic, output nkplastic and local tk from float to double",
+    "Pass float(tk) explicitly to the ACTUAL linked UpdateDPvars and Updatedfdk",
+    "Replace tk=float(double(tk)+dk) with tk=double(tk)+dk"
+  ],
+  "unchanged_algorithm": [
+    "Every material input, Bulk/Shear input and DP_phi/DP_kc/DP_psi remains float",
+    "The exact existing full-flow dkflowcoef, plus dfdk term and frozen trial coefficients remain",
+    "The existing err=1e-5f, tensile/apex branch and old-strength radial projection remain in the same order",
+    "No implicit return, denominator sign flip, deviatoric norm substitution, new-strength re-projection or Eq19 psi softening",
+    "No new global precision option, production state array or public configuration"
+  ],
+  "material": {
+    "E_Pa": 20000000,
+    "nu": 0.33,
+    "phi_peak_and_residual_deg": 25,
+    "coh_peak_Pa": 5000,
+    "coh_residual_Pa": 1000,
+    "cohesion_softening_eta": 5,
+    "psi_target_deg": 2.5,
+    "psi_constant": true,
+    "sf_implemented": false,
+    "DPCtes": "DP_PS",
+    "stress_dtype_both_branches": "double",
+    "material_and_DP_dtype_both_branches": "float",
+    "control_history_dtype": "float",
+    "companion_persistent_history_dtype": "double with float conversion at BOTH material helper entries"
+  },
+  "paths": [
+    {
+      "name": "ordinary_continuous",
+      "initial_kappa": 0,
+      "updates_per_branch": 16,
+      "deviatoric_stress_increment_Pa": 1000,
+      "CSV_rows_including_both_initial_branches": 34
+    },
+    {
+      "name": "subulp_continuous",
+      "initial_kappa": 0.5,
+      "updates_per_branch": 256,
+      "deviatoric_stress_increment_Pa": 0.1,
+      "CSV_rows_including_both_initial_branches": 514
+    }
+  ],
+  "loading_contract": "Each path starts from identical double diagonal stress at mean compression20kPa and the actual linked float-coefficient yield surface for its initial kappa. At every update BOTH branches add the same fixed external deviatoric stress increment (+dq to xx,-dq to zz) to their OWN previous returned stress. Each branch carries its own history continuously; kappa or trial stress is never reset between increments. The second path is an explicitly synthetic high-history probe, not a continuation of the first or a collapse observation. Sub-ULP behavior is observed, not forced to pass.",
+  "expected_accounting_only": {
+    "paths": 2,
+    "CSV_rows": 548,
+    "production_calls": 272,
+    "companion_calls": 272,
+    "initial_rows_no_material_return_call": 4
+  },
+  "outputs": ["points.csv", "completion.json"],
+  "measurements": "All six double EFFECTIVE stress components; mean_effective_compression=-trace(effective stress)/3. There is NO pore-pressure state or equation. Persistent and material-entry kappa, actual increments and both float/material versus persistent ULPs; linked DP_kc cone-intercept strength; trial/returned yield using old and new MATERIAL float kappa; zero-history-write/nonzero-stress-return flags; paired effective-stress/mean/kappa/kc differences. No separate all-double material-law reference is mixed into these measurements.",
+  "timing": "A single steady_clock measurement covers BOTH paths including CSV/diagnostics. It describes one tiny probe overhead only, not per-branch speed or any production/case performance. No timing ratio or long-run extrapolation is produced.",
+  "completion_semantics": "Only fresh-output, finite-observation and write checks. It may complete with negligible/no stress differences or with remaining new-kappa yield residuals. No accuracy-improvement threshold, formula acceptance, sub-ULP success threshold or physical pass is imposed.",
+  "future_execution": "CLI is FRESH_OUTPUT_DIRECTORY whose parent already exists. Root reviews and separately builds/runs once if authorized; no automatic subprocess/build/next stage exists in this program. No execution was performed by the author.",
+  "limits": [
+    "Only cohesion-softening psi+2.5deg and two compressive diagonal paths; the previous36 observations are retained without rerun",
+    "Double persistence still samples strength/dfdk at rounded float kappa; this deliberately isolates accumulation and does not make material arithmetic fully double",
+    "Existing full-versus-deviatoric and denominator-sign issues remain; double history is not asserted to cure them",
+    "No spatial u-pl plastic, predictor/corrector history commit, GPU, walls, gravity, pore-pressure, general apex or physical-collapse acceptance"
+  ],
+  "protected": "Only this new test source and note were authored. Production source, README, prior notes/outputs, frozen objects/programs/source snapshots and Cryer package dependencies remain untouched. No hash scan, Git operation, build or program run."
+}
