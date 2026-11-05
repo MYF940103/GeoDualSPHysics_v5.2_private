@@ -379,3 +379,11 @@ GPU Release 69帧短窗`upl_cryer_freebody_short_GPU_r1`已完成，主循环186
 已准备单条新鲜GPU峰窗`upl_cryer_freebody_peak_GPU_r1`，不改方程或步长：73728步、577帧至0.0703125 s，即排水后.0625 s，预计本机约4.4小时。完成后按固定18材料点、有限Kw参考及实际tau比较峰幅和相位；只有一条粗步，不增加半步长／新对照链。原生读取器r2已构建，数值门不变，仅扩展声明时钟范围。完成通知由直接运行owner发起一次同线程队列投递，不另建watcher，也不重发超时通知。这仍不是峰值、全程或服务器发行验收。
 
 CPU Debug与GPU Release的短测耗时不能作为公平性能对比。实际初始状态、未改写的原生字段和符号诊断见`tests/outputs/upl_cryer_freebody_smoke128_CPU_r1_native`及GPU同名目录；启动审查入口为`tests/logs/upl_cryer_freebody_smoke128_cross_r1.json`。此次三维接线后，既有u-pl列柱150帧的五份二进制导出载荷及signed clock与原GPU Release逐字节一致，见case02的`tests/logs/upl_cryer_column_regression_r1.check.json`。
+
+### 2026-11-06：u-pl峰窗结论与服务器完整衰减候选
+
+`upl_cryer_freebody_peak_GPU_r1`已完成73728步、577帧至0.0703125 s，RTX3050主循环16043.775 s。37181 IDs、22原生数组、21448821次材料ledger、2638336次真实排水接收检查全部通过；首69个common26及含signed dterror的clock记录与保留短窗逐字节一致。
+
+在预先声明的Mandel窗legacy Tv>=.005内，固定18材料点采样峰为12253.447 Pa，有限Kw同半径参考峰12439.176 Pa：幅值误差-1.4931%、峰时误差+2.4708%。旧u-pw对应为-1.0343%、+3.9789%；新幅值略差、时刻更近，不是全面改善或1%物理通过。开启瞬态及全部实际时刻保留在 `tests/figures/upl_cryer_freebody_peak_review_r1_*` 的两张PNG和四份CSV；旧正式四组结果保持原样。
+
+服务器候选包为 `Cryer_upl_nu030_Windows_RTXA6000_r1.zip`，说明见 [运行说明](support/README_cryer_upl_nu030_r1.md)。解压后双击 `xCaseCryerProblem_u_pl_nu030_r1_win64_GPU.bat`，运行至排水后Tv约1；本地没有追加该完整计算。包固定使用本轮已运行的程序和原生几何，保留当前误差与范围说明，供完整衰减验收，不包含尚未验证的后续Cubic改动。迁移时可核对ZIP附带的一次性SHA256，不反复扫描旧程序或原始输出。
