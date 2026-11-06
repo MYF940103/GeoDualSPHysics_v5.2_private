@@ -600,7 +600,8 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
-  if(HydroMechFreeSeepage && !IsDynamicPoreContainerConfig())
+  const bool gravitycontainer=IsDynamicPoreContainerConfig();
+  if(HydroMechFreeSeepage && !gravitycontainer)
     Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
@@ -612,10 +613,12 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechDrainage && HydroMechDrainageFixedGrid
       && !SoilBoundaryDerivativeSPR && SoilHourglassXi==0 && !ViscoTime);
     if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin
-      || ((Gravity.x || Gravity.y || Gravity.z) && !IsDynamicPoreContainerConfig())
-      || HydroMechInitMode!=HMINIT_None || !FixedDt || !(FixedDt->GetFixedValue()>0)
+      || ((Gravity.x || Gravity.y || Gravity.z) && !gravitycontainer)
+      || (HydroMechInitMode!=HMINIT_None && !gravitycontainer) || !FixedDt || !(FixedDt->GetFixedValue()>0)
       || !std::isfinite(FixedDt->GetFixedValue()))
-      Run_Exceptioon("HydroMechDynamicSeepage requires fresh zero-gravity fixtures, the limited 3-D free body or the fixed 2-D gravity container, InitMode=None and positive constant DtFixed.");
+      Run_Exceptioon("HydroMechDynamicSeepage requires fresh bounded fixtures and positive constant DtFixed; ConstantZ initialization is restricted to the fixed gravity container.");
+    if(PoreShepardRegularization && (!gravitycontainer || HydroMechInitMode!=HMINIT_ConstantZ))
+      Run_Exceptioon("Dynamic Shepard regularization requires the constant-k gravity preload with explicit ConstantZ hydrostatic baseline.");
     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
@@ -3627,14 +3630,13 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && TBoundary==BC_MDBC && UseNormals && TMdbc2!=MDBC2_NoPen && !NoPenetration
     && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
-    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
+    && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
-    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1) && !SoilDamping
+    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1)
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
-    && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0
-    && !PoreShepardRegularization);
+    && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0);
 }
 
 //==============================================================================
@@ -3686,13 +3688,18 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
   if(!seen[0] || !seen[1] || !seen[2] || plane[1]-plane[0]<=2.*double(KernelSize))
     Run_Exceptioon("Dynamic gravity container requires separated opposing sides and one bottom plane.");
   //-Only native soil must start inside. Do not project far bed samples or mirror targets into this box.
+  double topsoil=-DBL_MAX;
   for(unsigned p=npb;p<np;p++){
     const tdouble3 x=pos[p];
     if(!CODE_IsNormal(code[p]) || !CODE_IsFluid(code[p])
       || !std::isfinite(x.x) || !std::isfinite(x.y) || !std::isfinite(x.z)
       || x.x<plane[0]-planetol || x.x>plane[1]+planetol || x.z<plane[2]-planetol)
       Run_Exceptioon("Dynamic gravity container requires its initial native soil inside the three fixed half-spaces.");
+    topsoil=max(topsoil,x.z);
   }
+  if(HydroMechInitMode==HMINIT_ConstantZ && (!std::isfinite(HydroMechInitZ)
+    || fabs(HydroMechInitZ-(topsoil+.5*Dp))>planetol))
+    Run_Exceptioon("Dynamic ConstantZ preload requires the water table at the fully saturated flat soil top.");
 }
 
 //==============================================================================

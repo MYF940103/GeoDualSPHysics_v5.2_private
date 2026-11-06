@@ -1406,6 +1406,9 @@ void JSphCpu::InitHydroMechState(){
     }
     else{
       float pw=float(gammaw*max(0.,zwt-Posc[p].z));
+      //-Extend the dynamic hydrostatic baseline affinely through fixed wall samples.
+      if(DynamicPorePressure && HydroMechInitMode==HMINIT_ConstantZ && p<Npb)
+        pw=float(gammaw*(zwt-Posc[p].z));
       if(HydroMechInitMode==HMINIT_FreeSurface && p>=Npb && IsFreeSurfaceParticle(p,Codec,FSTypec))pw=0.f;
       PorePressc[p]=pw;
       PorePress0c[p]=pw;
@@ -1881,6 +1884,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
   try{ preg=new float[np]; }
   catch(const std::bad_alloc){ Run_Exceptioon("Could not allocate the requested memory."); }
   memcpy(preg,porepress,sizeof(float)*np);
+  const bool dynamicvolume=(DynamicPorePressure && PorosityFeedback);
   const int pini=int(npb),pfin=int(np);
   #ifdef OMP_USE
     #pragma omp parallel for schedule(guided)
@@ -1894,7 +1898,7 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
     const tdouble3 posp1=pos[p1];
     double sumwab=0,pwexcesssum=0;
     if(velrhop[p1].w>0){
-      const double vol1=double(MassFluid/velrhop[p1].w);
+      const double vol1=(dynamicvolume? (double(MassFluid)/double(RhopZero))*PoroJc[p1]: double(MassFluid/velrhop[p1].w));
       const double wab0=double(fsph::GetKernel_Wab<tker>(CSP,0));
       sumwab+=wab0*vol1;
       pwexcesssum+=wab0*vol1*(double(porepress[p1])-double(porepress0[p1]));
@@ -1914,7 +1918,8 @@ template<TpKernel tker,bool sim2d> void JSphCpu::ShepardRegularizePorePressureT
           const double drz=posp1.z-pos[p2].z;
           const float rr2=float(drx*drx+dry*dry+drz*drz);
           if(rr2<=KernelSize2 && rr2>=ALMOSTZERO){
-            const double vol2=double((boundp2? MassBound: MassFluid)/velrhop[p2].w);
+            const double vol2=(dynamicvolume? (double(boundp2? MassBound: MassFluid)/double(RhopZero))*PoroJc[p2]
+              : double((boundp2? MassBound: MassFluid)/velrhop[p2].w));
             const double vwab=double(fsph::GetKernel_Wab<tker>(CSP,rr2))*vol2;
             sumwab+=vwab;
             pwexcesssum+=vwab*(double(porepress[p2])-double(porepress0[p2]));
@@ -1948,6 +1953,11 @@ void JSphCpu::ShepardRegularizePorePressure(){
     }
   }
   ApplyFreeSurfacePorePressure();
+  //-Regularization keeps the existing classification; do not repeat its neighbour pass.
+  if(HydroMechFreeSeepage && !PorePressPrec){
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])
+      && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;
+  }
 }
 
 //==============================================================================
@@ -4454,7 +4464,8 @@ void JSphCpu::InitPorosityObserverCpu(){
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
-  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
+  const bool gravitycontainer=IsDynamicPoreContainerConfig();
+  const bool allowartvisco=(allowcolumnstabilization || freebody || gravitycontainer);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
@@ -4471,11 +4482,12 @@ void JSphCpu::InitPorosityObserverCpu(){
     Run_Exceptioon("Variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((CaseNpb && !DynamicPoreWall && !freebody) || AccInput
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
-    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None || SoilDamping))
+    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None))
+    || (SoilDamping && !loadedcolumn && !freebody && !gravitycontainer)
     || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
-    || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; artificial viscosity additionally permits the fixed gravity container; damping/load/drainage require the column or free body; HG/SPR remain column-only.");
+    || !SoilStressRateGradCorr || (PoreShepardRegularization && !gravitycontainer) || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
+    Run_Exceptioon("Porosity feedback requires bounded CPU fixtures without acceleration input/DDT/artificial stress; damping also permits the fixed gravity container, Shepard is restricted to its hydrostatic preload, and HG/SPR remain column-only.");
   if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

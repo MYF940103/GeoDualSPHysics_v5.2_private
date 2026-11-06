@@ -335,6 +335,7 @@ void JSphCpuSingle::ConfigDomain(){
   if(HydroMech && HydroMechInitMode!=HMINIT_None){
     ComputeFreeSurfaceTracking();
     InitHydroMechState();
+    if(HydroMechDynamicSeepage && HydroMechInitMode==HMINIT_ConstantZ)ApplyPorePressureBoundaries();
   }
 }
 
@@ -686,9 +687,11 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(HydroMech){
     ApplyPorePressureBoundaries();
     if(!PorePressPrec && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
-      InteractionPorePressureMdbcCorrection();
+      if(DynamicPoreWall)ComputeDynamicPoreWallStateCpu();
+      else InteractionPorePressureMdbcCorrection();
       ShepardRegularizePorePressure();
-      InteractionPorePressureMdbcCorrection();
+      if(DynamicPoreWall)ComputeDynamicPoreWallStateCpu();
+      else InteractionPorePressureMdbcCorrection();
     }
   }
   Timersc->TmStop(TMC_NlSortData);

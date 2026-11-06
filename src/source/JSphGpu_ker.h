@@ -338,7 +338,7 @@ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,
   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
-  ,const float *porepress0,const float *porepress,float *porepressnew);
+  ,const float *porepress0,const float *porepress,float *porepressnew,const double *poroj=NULL);
 
 //-Kernels for the force calculation.
 void Interaction_Forces(const StInterParmsg &t);

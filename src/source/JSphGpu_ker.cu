@@ -2017,7 +2017,7 @@ void BoundaryDerivativeVelocity(bool simulate2d,unsigned npb,unsigned npbok,floa
 template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePressure(unsigned np,unsigned npb,unsigned drainfs,unsigned loadmode
   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcell,unsigned cellfluid,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
-  ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode,const float *porepress0,const float *porepress,float *porepressnew)
+  ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode,const float *porepress0,const float *porepress,float *porepressnew,const double *poroj)
 {
   const unsigned p1=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(p1<np && CODE_IsFluid(code[p1])){
@@ -2029,10 +2029,10 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
     const double posp1z=posz[p1];
     double sumwab=0,pwexcesssum=0;
     if(velrhop[p1].w>0.f){
-      const double vol1=double(CTE.massf)/double(velrhop[p1].w);
+      const double vol1=(poroj? (double(CTE.massf)/double(CTE.rhopzero))*poroj[p1]: double(CTE.massf)/double(velrhop[p1].w));
       const double wab0=double(cufsph::GetKernel_Wab<tker>(0.f));
       sumwab+=wab0*vol1;
-      pwexcesssum+=wab0*vol1*double(porepress[p1]-porepress0[p1]);
+      pwexcesssum+=wab0*vol1*(poroj? double(porepress[p1])-double(porepress0[p1]): double(porepress[p1]-porepress0[p1]));
     }
     int ini1,fin1,ini2,fin2,ini3,fin3;
     cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
@@ -2053,10 +2053,10 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
           const double drz=posp1z-posz[p2];
           const float rr2=float(drx*drx+dry*dry+drz*drz);
           if(rr2<=CTE.kernelsize2 && rr2>=ALMOSTZERO){
-            const double vol2=double(boundp2? CTE.massb: CTE.massf)/double(velrhop[p2].w);
+            const double vol2=(poroj? (double(boundp2? CTE.massb: CTE.massf)/double(CTE.rhopzero))*poroj[p2]: double(boundp2? CTE.massb: CTE.massf)/double(velrhop[p2].w));
             const double vwab=double(cufsph::GetKernel_Wab<tker>(rr2))*vol2;
             sumwab+=vwab;
-            pwexcesssum+=vwab*double(porepress[p2]-porepress0[p2]);
+            pwexcesssum+=vwab*(poroj? double(porepress[p2])-double(porepress0[p2]): double(porepress[p2]-porepress0[p2]));
           }
         }
       }
@@ -2067,11 +2067,11 @@ template<TpKernel tker,bool sim2d> __global__ void KerShepardRegularizePorePress
 
 template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
-  ,const float *porepress0,const float *porepress,float *porepressnew)
+  ,const float *porepress0,const float *porepress,float *porepressnew,const double *poroj)
 {
   if(np>npb && porepress0 && porepress && porepressnew){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
+    KerShepardRegularizePorePressure<tker,sim2d> <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell,dvd.cellfluid,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew,poroj);
   }
 }
 
@@ -2079,16 +2079,16 @@ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,
   ,bool drainfs,TpHydroMechLoadMode loadmode,const StDivDataGpu &dvd,const unsigned *dcell
   ,const double2 *posxy,const double *posz,const float4 *velrhop,const typecode *code
   ,const unsigned *fstype,const byte *boundmode,const byte *boundslipmode
-  ,const float *porepress0,const float *porepress,float *porepressnew)
+  ,const float *porepress0,const float *porepress,float *porepressnew,const double *poroj)
 {
   if(simulate2d){
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew,poroj);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,true >(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew,poroj);
     else throw "Kernel unknown.";
   }
   else{
-    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
-    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew);
+    if(tkernel==KERNEL_Wendland)ShepardRegularizePorePressureT<KERNEL_Wendland,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew,poroj);
+    else if(tkernel==KERNEL_Cubic)ShepardRegularizePorePressureT<KERNEL_Cubic,false>(np,npb,drainfs,loadmode,dvd,dcell,posxy,posz,velrhop,code,fstype,boundmode,boundslipmode,porepress0,porepress,porepressnew,poroj);
     else throw "Kernel unknown.";
   }
 }

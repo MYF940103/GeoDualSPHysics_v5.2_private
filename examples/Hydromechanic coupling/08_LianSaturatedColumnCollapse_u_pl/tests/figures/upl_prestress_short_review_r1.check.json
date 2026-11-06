@@ -1,0 +1,167 @@
+{
+  "stage": "upl_prestress_short_review_r1",
+  "short_implementation_comparison_passed": true,
+  "original_pressure_RMS_bound_Pa": 5,
+  "original_material_XYZ_bound_mm": 0.005,
+  "same_dt_comparison_not_half": true,
+  "all_actual_clocks_matched": true,
+  "pairs": 22,
+  "maxima": {
+    "pressure_difference_RMS_Pa": 0.0019164230426809935,
+    "pressure_difference_max_Pa": 0.009765625,
+    "material_XYZ_displacement_difference_max_mm": 1.82540898942965e-08,
+    "total_stress_difference_Frobenius_RMS_Pa": 0.0035937482765959544,
+    "J_difference_max": 1.7482315595174214e-10,
+    "kappa_difference_max": 0.0
+  },
+  "timing": [
+    {
+      "program": "DebugCPU",
+      "steps": 400,
+      "actual_physical_end_s": 0.0010000000000000013,
+      "loop_s": 12.412897,
+      "steps_per_loop_second": 32.2245483870526,
+      "linear5s_loop_estimate_hours": 17.24013472222222,
+      "hardware": "CPU",
+      "short_observed_timing_not_controlled_benchmark": true
+    },
+    {
+      "program": "ReleaseCPU",
+      "steps": 400,
+      "actual_physical_end_s": 0.0010000000000000013,
+      "loop_s": 2.398547,
+      "steps_per_loop_second": 166.76763056967405,
+      "linear5s_loop_estimate_hours": 3.331315277777778,
+      "hardware": "CPU",
+      "short_observed_timing_not_controlled_benchmark": true
+    },
+    {
+      "program": "ReleaseGPU",
+      "steps": 400,
+      "actual_physical_end_s": 0.0010000000000000013,
+      "loop_s": 2.735856,
+      "steps_per_loop_second": 146.20652548964566,
+      "linear5s_loop_estimate_hours": 3.7998000000000003,
+      "hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+      "short_observed_timing_not_controlled_benchmark": true
+    }
+  ],
+  "recommended_local_backend": "CPU8",
+  "physical_acceptance": false,
+  "figure_visual_QA_pending": true,
+  "source_inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_prestress_short_review_r1.py",
+      "bytes": 6253,
+      "mtime_ns": 1793972047410135700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_CPU_r1_native_r1.check.json",
+      "bytes": 1317,
+      "mtime_ns": 1793971572788911600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_CPU_r1.run.json",
+      "bytes": 1781,
+      "mtime_ns": 1793970521314300800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_CPU_r1_native_r1\\completion.json",
+      "bytes": 2250,
+      "mtime_ns": 1793971572677591700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_CPU_r1_native_r1\\typed22.bin",
+      "bytes": 16464020,
+      "mtime_ns": 1793971572675916700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_CPU_r1_native_r1\\history.csv",
+      "bytes": 31730,
+      "mtime_ns": 1793971572675916700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_CPU_r1_native_r1\\clocks.csv",
+      "bytes": 1102,
+      "mtime_ns": 1793971572675916700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_release_CPU_r1_native_r1.check.json",
+      "bytes": 1349,
+      "mtime_ns": 1793971587434936100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_release_CPU_r1.run.json",
+      "bytes": 1789,
+      "mtime_ns": 1793971380962424000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_release_CPU_r1_native_r1\\completion.json",
+      "bytes": 2266,
+      "mtime_ns": 1793971587402981500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_release_CPU_r1_native_r1\\typed22.bin",
+      "bytes": 16464020,
+      "mtime_ns": 1793971587401190400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_release_CPU_r1_native_r1\\history.csv",
+      "bytes": 31730,
+      "mtime_ns": 1793971587401190400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_release_CPU_r1_native_r1\\clocks.csv",
+      "bytes": 1102,
+      "mtime_ns": 1793971587401190400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_GPU_r1_native_r1.check.json",
+      "bytes": 1317,
+      "mtime_ns": 1793971947898106300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_prestress_check_GPU_r1.run.json",
+      "bytes": 1909,
+      "mtime_ns": 1793971870924149600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_GPU_r1_native_r1\\completion.json",
+      "bytes": 2250,
+      "mtime_ns": 1793971947869031700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_GPU_r1_native_r1\\typed22.bin",
+      "bytes": 16464020,
+      "mtime_ns": 1793971947868031000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_GPU_r1_native_r1\\history.csv",
+      "bytes": 31743,
+      "mtime_ns": 1793971947868031000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_check_GPU_r1_native_r1\\clocks.csv",
+      "bytes": 1102,
+      "mtime_ns": 1793971947868031000
+    }
+  ],
+  "outputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_prestress_short_review_r1_metrics.csv",
+      "bytes": 2685,
+      "mtime_ns": 1793972053515994600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_prestress_short_review_r1_timing.csv",
+      "bytes": 460,
+      "mtime_ns": 1793972053520212400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_prestress_short_review_r1.png",
+      "bytes": 262132,
+      "mtime_ns": 1793972053938721900
+    }
+  ],
+  "SHA_scans": 0
+}

@@ -1183,7 +1183,7 @@
     "material_mode1_general_spatial_plasticity_accepted": false
   },
   "latest_verified_code_checkpoint": "7f02506361d64768471db022887fd7887cbcdfe9",
-  "last_updated_utc": "2026-11-06T11:45:08.574068+00:00",
+  "last_updated_utc": "2026-11-06T13:58:13.176087+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "Offline initial-state/preload review after completed 8192-update case08 GPU observation. No physical solver or native decoder remains active for this stage; no wall-release acceptance.",
+  "active_work": "Prestress hydrostatic-pressure-only initialization, damping and dynamic-volume Shepard implemented and short-validated on CPU/GPU; one fresh CPU8 Release5s preload admitted pending verified checkpoint and launch. No solver active yet.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1241,5 +1241,50 @@
     "physical_acceptance": false,
     "source_changes_in_stage": [],
     "next": "Review geostatic initial-state compatibility and physical cold-equilibration time scales before continuous wall release; no extra half/control chain."
+  },
+  "case08_prestress_route_20261106": {
+    "user_correction": "Continue actual extended gravity preload with damping and optional Shepard; do not directly prescribe effective stress.",
+    "source_status": "Seven-file integration built and short-validated; defaults unchanged; no new geostatic stress initialization.",
+    "existing_controls": {
+      "HydroMechInitMode": "ConstantZ",
+      "HydroMechInitZ_m": 2.0,
+      "SoilDamping": 1,
+      "SoilDampingCoef": 0.02,
+      "PoreShepardRegularization": 1,
+      "PoreShepardInterval": 40
+    },
+    "CPU_Debug_build_passed": true,
+    "GPU_Debug_full111_object_build_passed": true,
+    "CPU_field_component_passed": {
+      "slots": 81,
+      "rows": 486,
+      "constant_excess_bit_checks": 160,
+      "distinct_wrong_weight_witnesses": 80,
+      "max_wrong_weight_difference_Pa": 1.4031592536391457,
+      "postfilter_surface_positive_projections": 24
+    },
+    "legacy_81_row_csv_old_new_byte_identical": true,
+    "CPU8_short_solver_completed": {
+      "updates": 400,
+      "saved_frames": 11,
+      "dt_s": 2.5e-06,
+      "actual_end_s": 0.0010000000000000013,
+      "native_review_pending": false
+    },
+    "release_builds": "CPU/GPU Debug and Release completed with real exits0",
+    "extended_input": {
+      "TimeMax_s": 5.0,
+      "TimeOut_s": 0.01,
+      "DtFixed_s": 2.5e-06,
+      "updates": 2000000
+    },
+    "extended_solver_started": false,
+    "physical_acceptance": false,
+    "short_implementation_check": "08_LianSaturatedColumnCollapse_u_pl/tests/figures/upl_prestress_short_review_r1.check.json",
+    "short_visual_QA": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_prestress_short_review_r1.visual.json",
+    "GPU_memcheck_errors": 0,
+    "pressure_cross_RMS_max_Pa": 0.0019164230426809935,
+    "material_XYZ_difference_max_mm": 1.82540898942965e-08,
+    "selected_extended_backend": "CPU8 Release"
   }
 }

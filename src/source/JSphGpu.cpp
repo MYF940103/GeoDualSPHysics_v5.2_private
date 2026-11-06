@@ -1276,10 +1276,14 @@ void JSphGpu::ShepardRegularizePorePressure(){
   float *porepressnew=ArraysGpu->ReserveFloat();
   cudaMemcpy(porepressnew,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   cusph::ShepardRegularizePorePressure(TKernel,Simulate2D,Np,Npb,IsHydroMechDrainageActive()
-    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,BoundSlipModeg,PorePress0g,PorePressg,porepressnew);
+    ,HydroMechTopLoadMode,DivData,Dcellg,Posxyg,Poszg,Velrhopg,Codeg,FSTypeg,BoundModeg,BoundSlipModeg,PorePress0g,PorePressg,porepressnew,(DynamicPorePressure && PorosityFeedback? PoroJg: NULL));
   cudaMemcpy(PorePressg+Npb,porepressnew+Npb,sizeof(float)*(Np-Npb),cudaMemcpyDeviceToDevice);
   ArraysGpu->Free(porepressnew); porepressnew=NULL;
   ApplyFreeSurfacePorePressure();
+  if(HydroMechFreeSeepage && !PorePressPreg){
+    cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
+    Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
+  }
   Check_CudaErroor("Failed applying pore-pressure Shepard regularization.");
 }
 
@@ -1386,6 +1390,8 @@ void JSphGpu::InitHydroMechPorePressure(){
     }
     else{
       float pw=float(gammaw*max(0.,zwt-Posz[p]));
+      if(DynamicPorePressure && HydroMechInitMode==HMINIT_ConstantZ && p<Npb && CODE_IsFixed(Code[p]))
+        pw=float(gammaw*(zwt-Posz[p])); //-Affine wall baseline, including samples above the water table.
       if(HydroMechInitMode==HMINIT_FreeSurface && p>=Npb && CODE_IsFluid(Code[p]) && IsHydroMechTrackedFreeSurface(AuxFSType[p]))pw=0.f;
       PorePress[p]=pw;
       PorePress0[p]=pw;
@@ -1764,7 +1770,8 @@ void JSphGpu::InitPorosityObserverGpu(){
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
-  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
+  const bool container=IsDynamicPoreContainerConfig();
+  const bool allowartvisco=(allowcolumnstabilization || freebody || container);
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
@@ -1772,10 +1779,11 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
-    || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
+    || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && !container && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))
-    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
+    || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None))
+    || (HydroMechInitMode!=HMINIT_None && !(container && HydroMechInitMode==HMINIT_ConstantZ))
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
     Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the constant-k column or admitted 3-D free body; in-plane gravity with feedback requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
@@ -1784,7 +1792,8 @@ void JSphGpu::InitPorosityObserverGpu(){
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic) || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
     || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
-    || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr || PoreShepardRegularization
+    || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr
+    || (PoreShepardRegularization && !(container && HydroMechInitMode==HMINIT_ConstantZ))
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?

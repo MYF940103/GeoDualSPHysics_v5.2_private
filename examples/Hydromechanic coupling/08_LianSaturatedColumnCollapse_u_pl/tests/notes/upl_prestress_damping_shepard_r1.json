@@ -1,0 +1,59 @@
+{
+  "stage": "upl_prestress_damping_shepard_r1",
+  "status": "Source integration in progress; no admitted solver run",
+  "user_route": "Actual gravity preload with existing damping and Shepard, extend duration; no direct effective-stress initialization",
+  "retired_plan": "DrainedGeostatic enum/initializer proposal withdrawn before source edits. The zero-step prescribed-field probe is descriptive only; source archive retained, no such public mode exists.",
+  "precedent": "03_RetrogressiveSlopeFailure_u_pw/CaseRetroSlope_u_pw_prestress_Def.xml: g-9.81, static HydroInitFreeSurface, SoilDamping1/.02, Shepard1/40,TimeMax5,TimeOut.1,dt1e-6. It also has other u-pw options that are not admitted to the new u-pl container.",
+  "planned_existing_controls": {
+    "HydroMechInitMode": "ConstantZ",
+    "HydroMechInitZ_m": 2,
+    "SoilDamping": 1,
+    "SoilDampingCoef": 0.02,
+    "PoreShepardRegularization": 1,
+    "PoreShepardInterval": 40
+  },
+  "physical_scope": "Same fixed sideFreeSlip/bedNoSlip, constant k and dynamic finite-Kw law. Initialize hydrostatic pressure/baseline only, effective stress remains zero; retain completed-step free-seepage policy.",
+  "new_parameters": [],
+  "equations": "Reuse existing damping. Adapt Shepard quadrature to V0*J and current single-J wall closure; this optional filter is not an exact fluid-mass conservation law.",
+  "time_policy": "Future collapse configuration uses regular decimal physical time; no dyadic cadence for bit checks. Planned extended preload5s, output.01/.1s as needed, dt below the existing necessary explicit limit; no new half chain.",
+  "source_before_archive": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_prestress_before_r1.zip",
+  "source_before": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSph.cpp",
+      "bytes": 203051,
+      "mtime_ns": 1793964467217750300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.cpp",
+      "bytes": 279437,
+      "mtime_ns": 1793962807823800600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "bytes": 126346,
+      "mtime_ns": 1793962768843528200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpuSingle.cpp",
+      "bytes": 77099,
+      "mtime_ns": 1793952810472221000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "bytes": 67886,
+      "mtime_ns": 1793952810424572600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 312991,
+      "mtime_ns": 1793952810416566800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.h",
+      "bytes": 25209,
+      "mtime_ns": 1793952810412567200
+    }
+  ],
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

@@ -42,11 +42,13 @@
 				<!-- Legacy DtFixed bypasses automatic pore-step limiting; dynamic seepage checks its necessary coupled limits. -->
 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
+				<!-- Experimental dynamic Shepard: constant-k fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
 				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
 				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C for soil pairs; default=0" />
 
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
 				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
+				<!-- Dynamic mode2 is restricted to the fully saturated flat-top gravity container; initializes pore pressure only, with zero initial effective stress. -->
 
 				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand; default=0" />
 				<!-- Modes3/4 use case-specific strip geometry; mode5 spreads the top load over a horizontal kernel band. -->
@@ -80,7 +82,7 @@
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG hourglass strength; default=0 (off); must be >=0" />
 			<!-- HG: 2D Wendland/Symplectic, small-rotation elastic soil; no plasticity or history restart. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0=off, 1=on; default=0" />
-			<parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient; default=0.02; >=0 (dynamic column: at most0.1)" />
+			<parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient; default=0.02; >=0 (dynamic: at most0.1)" />
 			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0=off, 1=Molteni, 2=Feng/Fourtakas, 3=internal-fluid only; default=0" />
 			<parameter key="DensityDTvalue" value="0.1" comment="Stress-diffusion coefficient; default=0.1" />
 
