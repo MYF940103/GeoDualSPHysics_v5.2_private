@@ -1,0 +1,76 @@
+{
+  "stage": "upl_c08_observer_review_r1",
+  "status": "Closed field-state component baseline, independently read by root; this note summarizes existing evidence and runs no new analysis.",
+  "evidence": {
+    "configuration": "tests/configs/CaseLianSaturatedColumnCollapse_observer_r1.xml",
+    "source": "tests/support/upl_c08_observer_r2.cpp",
+    "source_archive": "tests/outputs/upl_c08_observer_r2_source.zip",
+    "seed_preparation": "tests/logs/upl_c08_observer_r1.prepare.json",
+    "build": "tests/logs/upl_c08_observer_helper_r2.build.json",
+    "call": "tests/logs/upl_c08_observer_CPU_r2.call.json",
+    "check": "tests/logs/upl_c08_observer_CPU_r2.check.json",
+    "stats": "tests/logs/upl_c08_observer_r2.stats.json",
+    "completion": "tests/outputs/upl_c08_observer_CPU_r2/completion.json",
+    "all_wall_rows": "tests/outputs/upl_c08_observer_CPU_r2/walls.csv"
+  },
+  "geometry": {
+    "native_IDs": 7060,
+    "native_soil_IDs": 5000,
+    "original_wall_IDs": 2060,
+    "positions": "Queries use actual loaded double Posc coordinates, actual native IDs/cells and original wall normals. The earlier VTK audit used float exported coordinates; its geometry arithmetic is not substituted for these native coordinates or treated as binary-identical evidence.",
+    "per_MK": [
+      {"mk": 10, "boundary": "left FreeSlip", "total": 255, "near": 102, "far": 153, "reconstructed": 100, "original_gate_rejected": 2},
+      {"mk": 11, "boundary": "bed NoSlip", "total": 1545, "near": 204, "far": 1341, "reconstructed": 200, "original_gate_rejected": 4},
+      {"mk": 12, "boundary": "right FreeSlip", "total": 260, "near": 104, "far": 156, "reconstructed": 100, "original_gate_rejected": 4}
+    ]
+  },
+  "field_state_baseline": {
+    "physical_near_actual_queries": 410,
+    "actual_reconstructions": 400,
+    "expected_original_geometry_rejections": 10,
+    "far_without_actual_state_call": 1650,
+    "rejected_native_IDs": [203, 254, 274, 278, 279, 783, 1800, 1851, 1852, 1903],
+    "rejection_policy": "Catch only the actual first-order MLS JException when the independent original raw-matrix gate also rejects. No support retry, threshold change, alternate target or relaxed numerical budget. Rejected query inputs remain unchanged.",
+    "max_pressure_error_Pa": 0.001953125,
+    "max_J_error": 0,
+    "max_error_over_original_condition_scaled_budget": 0.30115126973768747,
+    "original_budget": "td=32768*DBL_EPSILON*condition and tf=64*FLT_EPSILON*condition; p_error<=256*tf and J_error<=2*td.",
+    "arrays_IDs_geometry_cells_controls_restored": true,
+    "interpretation": "400 successful field reconstructions and 10 correctly observed original-gate rejections are a component baseline, not 400/10 physical pass outcomes."
+  },
+  "original_legacy_activation": {
+    "NpbOk": 465,
+    "physical_near": {"count": 410, "all_mode": 1},
+    "physical_far": {
+      "mode1_active": 54,
+      "OFF": {"count": 1, "native_ID": 791},
+      "ignored_mode0": 1595
+    },
+    "interpretation": "These are original legacy mDBC eligibility/mode observations, not wet/contact truth. An ID being inside NpbOk does not prove that a later Darcy neighbor loop actually visits it. The 1650 far slots received no actual state query in this component."
+  },
+  "above_initial_height": {
+    "negative_ghost_pressure_rows_retained": 10,
+    "near_negative_rows": 4,
+    "near_negative_original_gate_rejections": 4,
+    "accepted_negative_rows": 0,
+    "interpretation": "The manufactured affine pressure is retained above H=2 without clipping. Height alone is not a dry-wall, saturation or wet/contact rule; these rows do not establish such a classification."
+  },
+  "known_untested_candidate": {
+    "issue": "Current CPU dynamic Darcy boundary traversal and its GPU counterpart check inactive wall state before applying the kernel-distance cutoff.",
+    "scope": "A prospective local ordering correction would ignore genuinely out-of-kernel inactive slots while retaining in-range inactive rejection. No production correction or physical-near mask is implemented or tested by this baseline.",
+    "ID791_causality": "UNTESTED: legacy OFF ID791 inside NpbOk does not prove an actual consumer visited it, that it was inside that consumer's support, or that it caused a runtime error. No such causal claim follows from this table.",
+    "distance_caution": "Any future mask must preserve a slot that is in range for any actual consumer, including float force and double Darcy distance conventions."
+  },
+  "execution_provenance": {
+    "r1_failure_preserved": "r1 CL exited2 before link/state execution because Windows near/far macros collided with counter names; original CPP/note/call/log remain intact.",
+    "r2_change_only": "Rename counters/references near/far to nearCount/farCount and update AppInfo/stage to r2; no formula, budget, production, geometry or input change.",
+    "r2_compile_link_component_owned_exit_codes": [0, 0, 0],
+    "copy_only_BAT_total_attempts": 1,
+    "seed": "Reuse the existing r1 seed: exact BI4, NBI4 and XML copies verified during its sole successful preparation. No r2 BAT, GenCase or copy attempt.",
+    "consumed_source_objects_canonical_runtime_raw_seed_SMT_unchanged": true,
+    "SHA_scans": 0
+  },
+  "limits": "Actual C08 field primitive only: zero physical steps, no PreInteraction, force, Darcy rate, matrix/Ace or integrator invocation; no full mixed-plane dynamics, public wall admission, physical acceptance or formal validation follows. Existing production/formal/Cryer evidence is unchanged.",
+  "new_analysis_or_component_run_by_this_note": false,
+  "physical_acceptance": false
+}

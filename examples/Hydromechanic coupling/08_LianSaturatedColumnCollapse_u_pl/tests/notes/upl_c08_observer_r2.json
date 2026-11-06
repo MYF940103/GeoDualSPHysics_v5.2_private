@@ -1,0 +1,38 @@
+{
+  "stage": "upl_c08_observer_r2.author",
+  "status": "Root reviewed the routine near/far counter-name repair after the preserved r1 compiler failure. Fresh r2 build/run evidence will be written separately; this note does not assert a component pass.",
+  "files": [
+    "tests/configs/CaseLianSaturatedColumnCollapse_observer_r1.xml",
+    "tests/support/xupl_c08_observer_r1_prepare.bat",
+    "tests/support/upl_c08_observer_r2.cpp"
+  ],
+  "seed": {
+    "retained_prefix": "tests/outputs/lian_collapse_geometry_r1/CaseLianSaturatedColumnCollapse_geometry_r1",
+    "fresh_prefix": "tests/outputs/upl_c08_observer_r1_seed/CaseLianSaturatedColumnCollapse_geometry_r1",
+    "copy_policy": "BAT copies exact retained BI4 and _Normals.nbi4, verifies each with fc /b, and installs the reviewed fresh XML companion under the same seed basename. No GenCase, resampling, field export, alternate geometry or solver call. Existing/partial fresh output is never overwritten. casedef and execution particle/constants/uservars metadata are retained.",
+    "IDs": "7060 exact original IDs: mk10 left255 [0,254], mk11 bed1545 [255,1799], mk12 right260 [1800,2059], native soil5000 [2060,7059]. Real loaded positions and fluid cell list are used, rather than the old float VTK CSV as binary truth."
+  },
+  "configuration": {
+    "kernel": "Actual Cubic, h=.048, dp=.04, h/dp1.2, nonperiodic",
+    "material": "rho0=2072.5, n0=.35, Kw=1e9, rho_w=1000, k0=2e-4, E=20e6, nu=.33, g_z=-9.81; original phi25/coh5000 remain, but n_phi=n_coh0 and residual cohesion5000 disable softening. No constitutive call is made.",
+    "boundary": "Original mk10/12 FreeSlip and mk11 bed NoSlip; no wall removed or new top face invented. Original initialize planes remain x0,x4,z0.",
+    "disabled": "Public HydroMechDynamicSeepage0, constant-k model0, no initial pore preset, drainage/load/SPR/HG/softening/damping/shifting/DDT off.",
+    "time": "TimeMax0, DtFixed0 and TimeOut.01 are explicitly unused by this zero-step component. No paper TPI20us step or explicit final step is admitted."
+  },
+  "initialization": "Probe constructor sets ONLY PorosityObserver=true. PorosityFeedback/DynamicPorePressure/DynamicPoreWall remain false throughout genuine LoadConfig/LoadCaseParticles/ConfigDomain/InitRunCpu/FreePartsInit, so existing public mixed-plane/gravity guards are not bypassed. Observer allocates double J/theta legitimately. The test then temporarily enables private field-only flags to call ComputeDynamicPoreWallStateCpu directly; it never calls InitDynamicPoreWallCpu, PreInteraction_Forces, matrix, Ace, rate, forces or time integrators. BoundDerivativeVelc/Acec remain null, avoiding an array budget that observer initialization did not reserve. Existing TangenVelc is available.",
+  "legacy_activation": "After prescribing the affine inputs, call the actual MdbcBoundCorrection once with unchanged original NpbOk, original selectors, true B/normal and native cells. Record every original fixed ID mode and whether its sorted slot was in NpbOk. This is original legacy activation, not wet/contact truth. Then restore the prescribed field inputs before querying. All original geometry/ID/cell bytes must stay unchanged.",
+  "state_queries": "One actual fixed slot0, temporary NpbOk1. For each original fixed ID record actual B, normal, original mode and true minimum distance to real5000 soil. Only 410 physically near B (minDist^2<=actual KernelSize2) are queried; each temporarily assigns slot0 original B/normal/mode, then restores slot fields and geometry. Other slots and all native fields are unchanged. 1650 far B get no actual state call or substitute target. No images, recentering, contact mask, nearest retry, threshold change or moving fluid/cell memberships.",
+  "independent_precheck": "Independently sum over actual loaded soil positions using actual CSP Cubic float W/Fac, float rr2, zero-distance Fac0 and double(MassFluid)/RhopZero*J volume. Form the original unscaled raw3x3 MLS matrix and original activation/sum policy. Require original finite abs(det)>=1e-3; never invert a matrix below this threshold. A separate scaled W Gram condition is computed only after the original raw gate passes. This is an independent numerical support check, not the previous binary64 ideal-kernel geometry audit.",
+  "expected_baseline": "Observe 410 near,1650 far; current unchanged algorithm should reconstruct400 near and throw its exact first-order MLS exception on10 geometrically unsupported near targets. Catch only that exact JException when the independent precheck rejected; unexpected exceptions, gate disagreement or different counts fail the component and retain evidence. Rejection must leave every query input byte unchanged. Expected geometry rejection is a baseline observation, not accepted physical wall behavior.",
+  "manufactured_inputs": "At actual positions prescribe float p=rho_w*g_z*(z-H), H2, J1, theta0, p00, rate0, rho0, v0 and one constant nonzero six-component effective stress; this is an affine interpolation probe, not a geostatic state. Negative pressure at side ghosts above initial H is deliberately retained and recorded, not clipped or interpreted as saturation/contact.",
+  "checks": "For accepted actual state, p(B) compared against independently prescribed float affine p evaluated at original B, J1, fixed physical velocity0/rho0 and active mDBC mode. Keep original condition-scaled td=32768 DBL_EPSILON cond, tf=64 FLT_EPSILON cond; p_error<=256tf and J_error<=2td. No new physical tolerance or half-step bound. Native arrays, original IDs/codes/positions/normals/cells, selector pointer/global mode, NpbOk and private flags restore; no predictor state or time advancement. Existing C/rate/FSType/FSnormal/PosDiv/load arrays remain unchanged.",
+  "outputs": "Fresh result directory holds Run.out, walls.csv (2060 rows) and completion.json. CSV distinguishes true-B nearness, original legacy mode/eligibility, mirror support/determinant, actual state calls/successes/expected failures, p/J errors and above-H/negative ghosts. Empty value columns identify far/rejected samples. No force/rate/particle BI4 output is fabricated.",
+  "CLI": {
+    "prepare": "ALREADY COMPLETED ONCE: reuse the exact verified tests/outputs/upl_c08_observer_r1_seed prefix. DO NOT rerun BAT, GenCase or copy.",
+    "component": "upl_c08_observer_r2.exe --state -cpu -ompthreads:1 -stable -mdbc_freeslip ABS_EXISTING_R1_SEED_PREFIX ABS_FRESH_UPL_C08_OBSERVER_CPU_R2_RESULT",
+    "link": "Root should compile/link current receiver-head-fixed source-frozen85 non-main CPU Debug objects, using established helper recipes. No old executable or source archive is rewritten."
+  },
+  "limits": "No public mixed-plane dynamic-wall admission, wet/contact classification, full3face mechanics, gravity trajectory, equilibrium, force/rate, matrix/Ace, Darcy flux, plasticity, wall removal, integration, half-chain, physical or formal acceptance. Nearness and successful affine reconstruction are necessary support observations only. No arbitrary dry-top or far-wall activation rule follows from this baseline.",
+  "physical_acceptance": false,
+  "revision_reason": "r1 CL exited2 before linking or any state call because Windows minwindef.h defines near/far as empty macros. r2 changes only the two counter identifiers/references to nearCount/farCount and AppInfo/stage tags; no #undef, system/production/seed/formula/gate/budget change. Preserve r1 CPP/note/build failure/log and the already successful r1 copied seed."
+}

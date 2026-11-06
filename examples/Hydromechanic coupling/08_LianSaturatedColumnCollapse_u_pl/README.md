@@ -48,7 +48,7 @@
 
 GPU已同步上述法向补偿，复用现有CTE常量，没有增加公共接口、数组或邻居遍历。12个小型制造条件、972个率观测及一次预期压力溢出拒绝通过，memcheck为零错误/零泄漏；旧零g八条件CSV逐字节一致。GPU使用81土样本+2墙样本，CPU使用原1280原生粒子几何，不能把这两组当作相同ID的跨后端比较或完整重力验收。记录见 [GPU组件](tests/notes/upl_gravity_wall_gpu_review_r1.json)。
 
-初始几何的 [离线支持域审计图](tests/figures/upl_wall_geometry_r1.png) 与 [对应CSV](tests/figures/upl_wall_geometry_r1.csv) 明确了后续边界工作：2060墙样本中410个进入真实土体2h范围，1650个为远墙；6个底角样本的局部多面反射恢复了有效拟合，另4个侧壁顶部样本矩阵满秩但行列式仍低于原门槛。实际墙-土接触范围与镜像拟合质量必须分别判断。这只是初始二进制64位离线审计，尚未改变墙行为或放宽任何生产门槛。
+初始几何的 [离线支持域审计图](tests/figures/upl_wall_geometry_r1.png) 与 [对应CSV](tests/figures/upl_wall_geometry_r1.csv) 明确了后续边界工作：2060墙样本中410个进入真实土体2h范围，1650个为远墙；6个底角样本的局部多面反射恢复了有效拟合，另4个侧壁顶部样本矩阵满秩但行列式仍低于原门槛。实际墙-土接触范围与镜像拟合质量必须分别判断。这是基于VTK float导出坐标、以double算术进行的离线审计，尚未改变墙行为或放宽任何生产门槛。
 
 CPU NoSlip 重构已通过两种核共12条件、3072条墙样本检查：应力外推到实际边界且保留剪应力，导数速度完整镜像，黏性速度仍采用原切向投影；C及Darcy加速度保持几何规则。共享MLS回调修改后的旧u-pw/SPR六个二维、三维分滑移组件也保持18个CSV和6个完成JSON逐字节一致。该结果没有验证墙反力、瞬态反射或混合墙重力演化，公共NoSlip限制保留。详见 [CPU NoSlip审查](tests/notes/upl_noslip_cpu_review_r1.json)。
 
@@ -61,6 +61,10 @@ GPU NoSlip对应的12条件、24条墙记录和冲突逐粒子覆盖检查通过
 六个底角点复用原SPR的真实墙半空间投影后，也在 [初始离线检查](tests/figures/upl_wall_cornerfit_r1.csv) 中6/6通过原门槛，无需先增加多镜像邻居。最大拟合中心偏移约0.102 m，原mirror保持不变；这包含外推，不能由仿射再现直接推断非仿射或塑性阶段有效。侧壁顶部及远墙的真实接触/浸润资格仍须与拟合质量分别检查。
 
 CPU静水头已改为按当前墙接收点的法向计算：[审查](tests/notes/upl_wall_receiver_head_review_r1.json)。两种核、交换X/Z查询顺序及FS/NS共16行p/J误差为零；72个旧CSV和10个完成记录逐字节一致。GPU原本已逐点处理。这仍是诊断查询，不开放三面墙物理运行。
+
+原C08几何的实际字段基线已完成：[记录](tests/notes/upl_c08_observer_review_r1.json)及[全部2060墙记录](tests/outputs/upl_c08_observer_CPU_r2/walls.csv)。本轮使用实际加载的double位置、原生ID、法向及cell；410个近墙查询中400个完成原重构，10个由原MLS门拒绝，1650个远墙不调用实际state。最大p误差0.001953125 Pa、J误差0、原条件预算比0.30115127。400/10是组件基线，不是物理通过/失败计数；above-H负压未剪裁，也不据高度定义干墙或接触。
+
+原NpbOk中的远墙OFF ID791仅为激活状态观察，不能据此断言Darcy实际访问或报错。inactive检查先于核截断的排序问题仍是未测试候选；不得把这次字段查询当作force/rate、混合墙重力积分或公共准入。r1的Windows near/far宏冲突编译失败保留，r2仅改计数器名称；seed仅由一次copy-only BAT准备，未重跑GenCase。
 
 另一个 [离线候选](tests/figures/upl_wall_nearestfit_r1.csv) 仅将十个弱点的拟合中心移到其最近真实土粒子，也全部通过原det门，可减少新增接口；底角条件数约530，较半空间投影约48更差，需要实际后端比较。原镜像和边界条件没有在离线测试中改变。
 
