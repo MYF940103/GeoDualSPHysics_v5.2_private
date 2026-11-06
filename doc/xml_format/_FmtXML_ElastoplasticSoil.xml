@@ -390,6 +390,21 @@
 				<!-- CPU/GPU event predicates, case-02 15-s coarse/half and same-dt full 2Tv checks passed; full-cycle half-step convergence is not claimed. -->
 				<!-- Corrects accumulated-time roundoff at that event only; TimeStep and the load ramp are unchanged. -->
 				<HydroMechDrainageFixedGrid value="0" comment="Drainage event fixed-grid alignment 0:Off, 1:On (default=0); independent of SPR" />
+                <HydroMechFreeSeepage value="0" comment="Experimental default0; dynamic constant-k elastic gravity container only; requires HydroMechDrainage=0 and FixedGrid=0; bounded component/startup checks passed, not collapse validation" />
+                <!-- Free-seepage candidate, not physical acceptance: existing fluid FS2/3 only.
+                     Initial5000-soil mask matches Eq68 including wall quadrature and self; no new detector.
+                     At completed-geometry division only, finite p>0 becomes0; p<=0/nonfinite, rate,J,theta remain.
+                     Predictor/half states are NOT clipped; next force/save refreshes wall state before use.
+                     No extra post-projection wall pass, array or loop-stage flag is introduced.
+                     Constant-k surface L candidate is lp+rho_w*(Ace.dot(lx)+divAce), removing the complete
+                     (gradp+rho_w*Ace) defect. Interior/default/legacy fixed-zero drainage stay unchanged.
+                     This dynamic extension is motivated by Lian2021 Eq72, not proved by that static equation.
+                     CPU/GPU zero-step hydrostatic/affine/nonconstant-Ace and projection checks passed;
+                     new/OFF rate and FS records stayed byte-exact against their matching old closures.
+                     GPU component memcheck reported zero errors/leaks. Both real128-step startups passed
+                     five native saves/7060 IDs/22 arrays;100 actual FS receivers per save had p<=0,
+                     with negative values retained. This is not equilibrium, variable-k, plasticity or collapse admission.
+                     Native metadata adds HydroMechFreeSeepage=true only for explicitON; arrays/schema unchanged. -->
 			</hydromechanics>
 
 			<!-- Optional mDBC mechanical slip overrides by boundary mkbound. -->

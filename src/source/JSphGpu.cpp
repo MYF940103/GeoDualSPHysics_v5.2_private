@@ -1234,6 +1234,12 @@ void JSphGpu::ApplyPorePressureBoundaries(){
   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
   ComputeFreeSurfaceTracking();
   ApplyFreeSurfacePorePressure();
+  if(HydroMechFreeSeepage && !PorePressPreg){
+    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
+    cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
+    Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
+    //-The next force/save refreshes wall state before consuming its pressure samples.
+  }
 }
 
 //==============================================================================
@@ -1876,7 +1882,7 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
       ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
       ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode
-      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel);
+      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel,HydroMechFreeSeepage);
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);

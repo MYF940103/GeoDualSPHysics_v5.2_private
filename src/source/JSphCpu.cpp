@@ -1860,6 +1860,12 @@ void JSphCpu::ApplyPorePressureBoundaries(){
   if(!HydroMech || !PorePressc || !DivData.begincell)return;
   ComputeFreeSurfaceTracking();
   ApplyFreeSurfacePorePressure();
+  if(HydroMechFreeSeepage && !PorePressPrec){
+    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
+    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])
+      && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;
+    //-The next force/save refreshes wall state before consuming its pressure samples.
+  }
 }
 
 //==============================================================================
@@ -4593,7 +4599,10 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
         +normal.y*(gp.y+rhow*Acec[p1].y)+normal.z*(gp.z+rhow*Acec[p1].z))/norm2;
       gpcorr=gp-normal*flux;
     }
-    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
+    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
+    const double lap=(HydroMechFreeSeepage && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)?
+      lp+rhow*(double(Acec[p1].x)*lx.x+double(Acec[p1].y)*lx.y+double(Acec[p1].z)*lx.z+da):
+      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
     double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*lap);
     if(DynamicPoreConductivity && khyd>0){
       //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.

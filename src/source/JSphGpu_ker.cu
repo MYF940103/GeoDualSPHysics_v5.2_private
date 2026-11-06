@@ -1054,21 +1054,23 @@ __device__ bool KerHydroMechIsDrainedParticle(unsigned p,unsigned loadmode,const
 /// Enforces drained pore pressure on free-surface particles.
 //==============================================================================
 __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs
-  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate)
+  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
   if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype)){
     porepress[p]=0.f;
     if(rate)rate[p]=0.f;
   }
+  if(ponding && p<np && CODE_IsNormal(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)
+    && isfinite(porepress[p]) && porepress[p]>0)porepress[p]=0.f;
 }
 
 void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate)
+  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
 {
   if(np>npb && porepress){
     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
-    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress,rate);
+    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress,rate,ponding);
   }
 }
 
@@ -1660,7 +1662,7 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
   ,const double *j,const double *theta,const float *porepress,float *rate
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const int2 *beginendcellbound,const byte *boundmode
-  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2)
+  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2,bool freeseepage)
 {
   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
@@ -1720,7 +1722,10 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
         +double(normal.y)*(gp.y+rhow*ace[p1].y)+double(normal.z)*(gp.z+rhow*ace[p1].z))/norm2;
       gpcorr=make_double3(gp.x-double(normal.x)*flux,gp.y-double(normal.y)*flux,gp.z-double(normal.z)*flux);
     }
-    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
+    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
+    const double lap=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype)?
+      lp+rhow*(double(ace[p1].x)*lx.x+double(ace[p1].y)*lx.y+double(ace[p1].z)*lx.z+da):
+      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
     double speed=0.;
     if(conductivity && khyd>0){
@@ -1744,13 +1749,13 @@ template<TpKernel tker> void ComputeDynamicPorePressureRateT(unsigned np,unsigne
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
-  ,tdouble3 bodycentre,double bodyradius2)
+  ,tdouble3 bodycentre,double bodyradius2,bool freeseepage)
 {
   if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     KerComputeDynamicPorePressureRate<tker> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode
-      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2);
+      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2,freeseepage);
   }
 }
 
@@ -1760,10 +1765,10 @@ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu 
   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
-  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel)
+  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel,bool freeseepage)
 {
-  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
-  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
+  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
+  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
   else throw "Kernel unknown.";
 }
 

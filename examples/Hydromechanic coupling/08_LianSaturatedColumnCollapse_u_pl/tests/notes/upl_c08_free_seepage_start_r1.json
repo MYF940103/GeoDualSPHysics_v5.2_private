@@ -1,0 +1,47 @@
+{
+  "stage": "upl_c08_free_seepage_start_r1.author",
+  "status": "Author only: five fresh files. No seed/runtime/BI4/Normals copy, GenCase, BAT, solver, native reader, build, SHA or Git execution.",
+  "files": [
+    "tests/configs/CaseLianSaturatedColumnCollapse_free_seepage_start_r1_Def.xml",
+    "tests/configs/CaseLianSaturatedColumnCollapse_free_seepage_start_r1.xml",
+    "tests/support/xCaseLianSaturatedColumnCollapse_free_seepage_start_r1_win64_CPU.bat",
+    "tests/support/xCaseLianSaturatedColumnCollapse_free_seepage_start_r1_win64_GPU.bat",
+    "tests/notes/upl_c08_free_seepage_start_r1.json"
+  ],
+  "derivation": "Copy the already reviewed elastic_start_r2 Def/hand-derived companion and CPU/GPU BAT structure. The sole added physical key is special/hydromechanics/HydroMechFreeSeepage value1. Replace fresh identity/seed/output/runtime/program paths and correct only the startup/policy comments. Existing geometry/constants/material/parameters/particle metadata are retained; no field or numeric value is retuned.",
+  "unchanged_physics": "Dynamic master1, legacy Drainage0, FixedGrid default0 (the absent key remains absent), InitNone0, constant conductivity model0/Ck0/k2e-4, G1 and corrected pair pressure gradients, gravity(0,0,-9.81), artificial viscosity.1. Cubic1,h/dp1.2,dp.04,L4,H2; native5000 soil+2060 fixed with original geometry/Normals and MK10/11/12 sideFreeSlip/bottomNoSlip. Coh=coh_r5000,n_coh0,n_phi0,phi25,dilatancy0; only actual kappa0 satisfies the existing elastic checkpoint. No load,independent SPR,HG,soil damping,DDT,shifting,NoPen,softening or wall removal.",
+  "new_boundary_scope": "HydroMechFreeSeepage is the separately reviewed candidate raw hydraulic surface-rate policy. At full-state geometry only, finite positive native fluid FS2/3 pressure is clamped to0; negative/zero p and rate/J/theta are not zeroed. The predictor remains unprojected. Legacy all-sign zero drainage stays disabled. No extra post-clamp wall fit is added. This is a dynamic candidate, not proof of the paper static raw-head boundary, geostatic equilibrium, saturated collapse accuracy or negative-pressure stability alpha.5.",
+  "geometry_companion": "The hand-derived companion keeps the original GenCase app/date as historical geometry metadata and preserves execution particles/constants/uservars/motion/vtkout. No new GenCase pass is claimed. Actual outward five layers remain the retained generated geometry despite WallLayers4. Future CPU BAT copies only the explicit observer_r1 geometry BI4/Normals source filenames plus this new companion under the new stem; no wildcard, VTK copy or regeneration.",
+  "clock_plan": {
+    "DtIni_DtFixed_s": 0.000003814697265625,
+    "DtMin_s": 0.00000001,
+    "TimeMax_s": 0.00048828125,
+    "TimeOut_s": 0.0001220703125,
+    "CLI": "-nsteps:128",
+    "planned_completed_updates": [0,32,64,96,128],
+    "planned_saved_steps": [0,31,63,95,127],
+    "planned_times_s": [0,0.0001220703125,0.000244140625,0.0003662109375,0.00048828125],
+    "qualification": "Unchanged dyadic plan, not observed clocks. Actual Run/native counts and every existing signed-dt/current-state necessary bound remain authoritative. No floor, timestep, CFL or pore-factor relaxation."
+  },
+  "future_CPU": {
+    "program": "tests/outputs/upl_free_seepage_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe",
+    "build_receipt": "tests/logs/upl_free_seepage_DebugCPU_r1.build.json",
+    "seed_prefix": "tests/outputs/upl_c08_free_seepage_start_r1_seed/CaseLianSaturatedColumnCollapse_free_seepage_start_r1",
+    "source_geometry_prefix": "tests/outputs/upl_c08_observer_r1_seed/CaseLianSaturatedColumnCollapse_geometry_r1",
+    "output": "tests/outputs/upl_c08_free_seepage_start_CPU_r1",
+    "runtime": "tests/outputs/upl_c08_free_seepage_start_CPU_r1_runtime",
+    "argv": "-cpu -ompthreads:1 -stable -mdbc_freeslip SEED OUTPUT -dirdataout data -svres -nsteps:128"
+  },
+  "future_GPU": {
+    "program": "tests/outputs/upl_free_seepage_Debug_r1/DualSPHysics5.2_win64_debug.exe",
+    "build_receipt": "tests/logs/upl_free_seepage_Debug_r1.build.json",
+    "output": "tests/outputs/upl_c08_free_seepage_start_GPU_r1",
+    "runtime": "tests/outputs/upl_c08_free_seepage_start_GPU_r1_runtime",
+    "argv": "-gpu:0 -stable -mdbc_freeslip SAME_CPU_PREPARED_SEED OUTPUT -dirdataout data -svres -nsteps:128",
+    "scope": "Ordinary Debug startup only if root separately admits it after actual GPU zero-step memcheck/OFF regression and CPU startup/native review. This BAT does not run compute-sanitizer or invoke CPU. Its CPU exit text prerequisite is only a convenience check, not native/physical/process-ownership proof."
+  },
+  "BAT_contract": "Both locate paths from their own support directory, refuse existing output/runtime; CPU additionally refuses existing fresh seed. CPU copies exact companion/BI4/Normals and sealed exe/four runtime files; GPU reuses that seed and copies only its sealed exe/four runtime files. Each captures immediate solver ERRORLEVEL in solver_exit_code.txt, preserves partial failure, has no delete/overwrite retry, no GenCase/postprocessor/queue/automatic next stage. No BAT has been executed by this author.",
+  "future_review": "Root full-read and separate launch authorization remain required. Actual128 updates/five saved clocks,7060 IDs/22 native arrays, no exclusion/DtMin adjustment, finite state, kappa0, original single-J cache/ledger/signed-error/domain/source-support guards and native full-state surface pressure policy are required. Inspect pressure/rate/velocity/stress/theta and wall eligibility descriptively. Prior elastic_start_r2 has a different surface rate/projection policy and is not byte/5Pa equivalent physical truth. Backend comparisons must preserve their declared qualifications and cannot add an FSNormal bit gate or invent a new physical threshold.",
+  "production_or_retained_inputs_modified": false,
+  "physical_acceptance": false
+}

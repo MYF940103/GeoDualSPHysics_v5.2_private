@@ -1,0 +1,239 @@
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -221,6 +221,7 @@
+   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
+   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
+   bool HydroMechDrainageFixedGrid; ///<Align a drainage event on a fresh constant-dt grid (default=false).
++  bool HydroMechFreeSeepage;  ///<Candidate constant-k container free surface; completed-step positive-only p projection (default=false).
+   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
+   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
+   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -221,6 +221,7 @@
+   HydroMechDrainage=true;
+   HydroMechDrainageStartTime=0;
+   HydroMechDrainageFixedGrid=false;
++  HydroMechFreeSeepage=false;
+   HydroMechTopLoadMode=HMLOAD_None;
+   HydroMechTopLoadQ0=0;
+   HydroMechTopLoadRampTime=0;
+@@ -599,6 +600,8 @@
+ 
+   //-Loads case configuration from XML and command line.
+   LoadCaseConfig(cfg);
++  if(HydroMechFreeSeepage && !IsDynamicPoreContainerConfig())
++    Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
+   DynamicPoreFreeBody=false;
+   DynamicPoreBodyCentre=TDouble3(0);
+   DynamicPoreBodyRadius2=0;
+@@ -2921,6 +2924,7 @@
+     if(HydroMechDynamicSeepage){
+       bdpart->SetvBool("HydroMechDynamicSeepage",true);
+       bdpart->SetvUint("DynamicSeepageSchema",1);
++      if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
+       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
+       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
+     }
+@@ -3799,6 +3803,7 @@
+   HydroMechDrainage=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainage","value",true,true);
+   HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
+   HydroMechDrainageFixedGrid=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainageFixedGrid","value",true,false);
++  HydroMechFreeSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechFreeSeepage","value",true,false);
+   const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechTopLoadMode","value",true,"None"));
+   if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
+   else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
+@@ -3902,7 +3907,9 @@
+   if(HydroMech){
+     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
+     if(HydroMechDynamicSeepage){
+-      Log->Print("  DynamicSeepageScope: experimental CPU/GPU 2-D elastic, zero gravity, fresh start; not a general u-pl release");
++      Log->Print(HydroMechFreeSeepage?
++        "  DynamicSeepageScope: candidate fresh constant-k elastic gravity container with free-seepage surface; verification pending":
++        "  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded");
+       Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
+       if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);
+     }
+@@ -3911,6 +3918,9 @@
+     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
+     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
+     Log->Print(fun::VarStr("  HydroMechDrainageFixedGrid",HydroMechDrainageFixedGrid));
++    Log->Print(fun::VarStr("  HydroMechFreeSeepage",HydroMechFreeSeepage));
++    if(HydroMechFreeSeepage)
++      Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
+     Log->Print((HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)?
+       "  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint":
+       "  HydroMechDrainageBoundary: FreeSurface");
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1860,6 +1860,12 @@
+   if(!HydroMech || !PorePressc || !DivData.begincell)return;
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
++  if(HydroMechFreeSeepage && !PorePressPrec){
++    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
++    for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])
++      && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;
++    //-The next force/save refreshes wall state before consuming its pressure samples.
++  }
+ }
+ 
+ //==============================================================================
+@@ -4593,7 +4599,10 @@
+         +normal.y*(gp.y+rhow*Acec[p1].y)+normal.z*(gp.z+rhow*Acec[p1].z))/norm2;
+       gpcorr=gp-normal*flux;
+     }
+-    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
++    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
++    const double lap=(HydroMechFreeSeepage && IsFreeSurfaceParticle(unsigned(p1),Codec,FSTypec)?
++      lp+rhow*(double(Acec[p1].x)*lx.x+double(Acec[p1].y)*lx.y+double(Acec[p1].z)*lx.z+da):
++      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
+     double rate=kw/porosity*(-PoroThetac[p1]+khyd/gamma*lap);
+     if(DynamicPoreConductivity && khyd>0){
+       //-Smooth scalar k: div(k*(grad p+rho_w*Ace)); not a conservative interface flux.
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1234,6 +1234,12 @@
+   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
++  if(HydroMechFreeSeepage && !PorePressPreg){
++    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
++    cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
++    Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
++    //-The next force/save refreshes wall state before consuming its pressure samples.
++  }
+ }
+ 
+ //==============================================================================
+@@ -1876,7 +1882,7 @@
+       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
+       ,DynamicPoreConductivity,DynamicPoreConductivityCk,maxspeedg,DynamicPoreWall,BoundModeg
+       ,FSTypeg,FSNormalg,IsHydroMechDrainageActive(),HydroMechDrainage && !IsHydroMechDrainageActive(),HydroMechTopLoadMode
+-      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel);
++      ,DynamicPoreBodyCentre,(DynamicPoreFreeBody? DynamicPoreBodyRadius2: 0.),TKernel,HydroMechFreeSeepage);
+     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,NULL,NULL,PorePressRateg,invalidg);
+     cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+     if(maxspeedg)cudaMemcpy(&maxspeed,maxspeedg,sizeof(double),cudaMemcpyDeviceToHost);
+--- a/src/source/JSphGpu_ker.h
++++ b/src/source/JSphGpu_ker.h
+@@ -284,7 +284,7 @@
+   ,const float4 *velrhop,const typecode *code,tmatrix3d *corrmat
+   ,unsigned *fstype,float3 *fsnormal,float *posdiv,bool marknearfs,const double *poroj=NULL);
+ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate=NULL);
++  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate=NULL,bool ponding=false);
+ void ApplyHydroMechTopLoadAcceleration(unsigned np,unsigned npb,TpHydroMechLoadMode loadmode,float accmag
+   ,const double2 *posxy,const double *posz,const typecode *code,const unsigned *fstype,const float3 *fsnormal,float3 *ace,float3 *loadace);
+ unsigned HydroMechTopBandAuxSize(unsigned np); ///<Required scratch size in floats, not bytes.
+@@ -323,7 +323,7 @@
+   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+   ,bool conductivity=false,double ck=0,double *maxspeed=NULL,bool wall=false,const byte *boundmode=NULL
+   ,const unsigned *fstype=NULL,const float3 *fsnormal=NULL,bool drainfs=false,bool closedfs=false,TpHydroMechLoadMode loadmode=HMLOAD_None
+-  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0,TpKernel tkernel=KERNEL_Wendland);
++  ,tdouble3 bodycentre=TDouble3(0),double bodyradius2=0,TpKernel tkernel=KERNEL_Wendland,bool freeseepage=false);
+ void PorePressureMdbcCorrection(TpKernel tkernel,bool simulate2d,unsigned n
+   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin
+   ,const double2 *posxy,const double *posz,const float4 *poscell
+--- a/src/source/JSphGpu_ker.cu
++++ b/src/source/JSphGpu_ker.cu
+@@ -1054,21 +1054,23 @@
+ /// Enforces drained pore pressure on free-surface particles.
+ //==============================================================================
+ __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigned drainfs
+-  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate)
++  ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
+   if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype)){
+     porepress[p]=0.f;
+     if(rate)rate[p]=0.f;
+   }
++  if(ponding && p<np && CODE_IsNormal(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)
++    && isfinite(porepress[p]) && porepress[p]>0)porepress[p]=0.f;
+ }
+ 
+ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+-  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate)
++  ,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
+ {
+   if(np>npb && porepress){
+     dim3 sgrid=GetSimpleGridSize(np-npb,SPHBSIZE);
+-    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress,rate);
++    KerApplyFreeSurfacePorePressure <<<sgrid,SPHBSIZE>>> (np,npb,(drainfs? 1u: 0u),unsigned(loadmode),posxy,code,fstype,porepress,rate,ponding);
+   }
+ }
+ 
+@@ -1660,7 +1662,7 @@
+   ,const double *j,const double *theta,const float *porepress,float *rate
+   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+   ,bool conductivity,double ck,double *maxspeed,bool wall,const int2 *beginendcellbound,const byte *boundmode
+-  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2)
++  ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,unsigned loadmode,double3 bodycentre,double bodyradius2,bool freeseepage)
+ {
+   const unsigned p1=blockIdx.x*blockDim.x+threadIdx.x;
+   if(p1<np && p1>=npb && CODE_IsNormal(code[p1]) && CODE_IsFluid(code[p1])){
+@@ -1720,7 +1722,10 @@
+         +double(normal.y)*(gp.y+rhow*ace[p1].y)+double(normal.z)*(gp.z+rhow*ace[p1].z))/norm2;
+       gpcorr=make_double3(gp.x-double(normal.x)*flux,gp.y-double(normal.y)*flux,gp.z-double(normal.z)*flux);
+     }
+-    const double lap=lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da;
++    //-Candidate raw hydraulic term omits the complete (grad p+rho_w*Ace) defect, not just grad p.
++    const double lap=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype)?
++      lp+rhow*(double(ace[p1].x)*lx.x+double(ace[p1].y)*lx.y+double(ace[p1].z)*lx.z+da):
++      lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
+     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
+     double speed=0.;
+     if(conductivity && khyd>0){
+@@ -1744,13 +1749,13 @@
+   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
+   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
+-  ,tdouble3 bodycentre,double bodyradius2)
++  ,tdouble3 bodycentre,double bodyradius2,bool freeseepage)
+ {
+   if(np){
+     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
+     KerComputeDynamicPorePressureRate<tker> <<<sgrid,SPHBSIZE>>> (np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid,dcell
+       ,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,dvd.beginendcell,boundmode
+-      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2);
++      ,fstype,fsnormal,drainfs,closedfs,unsigned(loadmode),make_double3(bodycentre.x,bodycentre.y,bodycentre.z),bodyradius2,freeseepage);
+   }
+ }
+ 
+@@ -1760,10 +1765,10 @@
+   ,double solid0,double kw,double rhow,double khyd,double gamma,double vol0,unsigned *invalid
+   ,bool conductivity,double ck,double *maxspeed,bool wall,const byte *boundmode
+   ,const unsigned *fstype,const float3 *fsnormal,bool drainfs,bool closedfs,TpHydroMechLoadMode loadmode
+-  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel)
+-{
+-  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
+-  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2);
++  ,tdouble3 bodycentre,double bodyradius2,TpKernel tkernel,bool freeseepage)
++{
++  if(tkernel==KERNEL_Wendland)ComputeDynamicPorePressureRateT<KERNEL_Wendland>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
++  else if(tkernel==KERNEL_Cubic)ComputeDynamicPorePressureRateT<KERNEL_Cubic>(np,npb,dvd,dcell,posxy,posz,code,corrmat,ace,j,theta,porepress,rate,solid0,kw,rhow,khyd,gamma,vol0,invalid,conductivity,ck,maxspeed,wall,boundmode,fstype,fsnormal,drainfs,closedfs,loadmode,bodycentre,bodyradius2,freeseepage);
+   else throw "Kernel unknown.";
+ }
+ 
+--- a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
++++ b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+@@ -390,6 +390,18 @@
+ 				<!-- CPU/GPU event predicates, case-02 15-s coarse/half and same-dt full 2Tv checks passed; full-cycle half-step convergence is not claimed. -->
+ 				<!-- Corrects accumulated-time roundoff at that event only; TimeStep and the load ramp are unchanged. -->
+ 				<HydroMechDrainageFixedGrid value="0" comment="Drainage event fixed-grid alignment 0:Off, 1:On (default=0); independent of SPR" />
++                <HydroMechFreeSeepage value="0" comment="Candidate default0; explicit dynamic constant-k elastic gravity container only; requires HydroMechDrainage=0 and FixedGrid=0; verification pending" />
++                <!-- Free-seepage candidate, not physical acceptance: existing fluid FS2/3 only.
++                     Initial5000-soil mask matches Eq68 including wall quadrature and self; no new detector.
++                     At completed-geometry division only, finite p>0 becomes0; p<=0/nonfinite, rate,J,theta remain.
++                     Predictor/half states are NOT clipped; next force/save refreshes wall state before use.
++                     No extra post-projection wall pass, array or loop-stage flag is introduced.
++                     Constant-k surface L candidate is lp+rho_w*(Ace.dot(lx)+divAce), removing the complete
++                     (gradp+rho_w*Ace) defect. Interior/default/legacy fixed-zero drainage stay unchanged.
++                     This dynamic extension is motivated by Lian2021 Eq72, not proved by that static equation.
++                     Actual zero-step hydrostatic/affine/nonconstant-Ace and stage-projection checks must pass
++                     before a new bounded startup. No equilibrium, variable-k, plasticity or collapse admission.
++                     Native metadata adds HydroMechFreeSeepage=true only for explicitON; arrays/schema unchanged. -->
+ 			</hydromechanics>
+ 
+ 			<!-- Optional mDBC mechanical slip overrides by boundary mkbound. -->

@@ -221,6 +221,7 @@ protected:
   bool HydroMechDrainage;     ///<Enforces drained pore pressure on selected boundary particles (default=1). //mdbr
   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
   bool HydroMechDrainageFixedGrid; ///<Align a drainage event on a fresh constant-dt grid (default=false).
+  bool HydroMechFreeSeepage;  ///<Candidate constant-k container free surface; completed-step positive-only p projection (default=false).
   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr

@@ -1022,7 +1022,7 @@
     "material_history_comparison": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/lian_material_history_r1.review.json",
     "material_constants_promoted": false,
     "production_plastic_history_changed": false,
-    "next": "Save verified fixed-container CPU/GPU startup stage, then implement and zero-step verify explicitly selected free-seepage hydraulic drive and completed-step positive-only projection; material/psi, wall release and variable k follow. No added half chain/formal collapse yet.",
+    "next": "Save verified free-seepage bounded stage, then shared CPU/GPU material-point core for dev-kappa and psi decay with default LegacyFast preserved. Initial stress/prebalance then same-run wall removal and variable-k compatibility before any server collapse package. Revisit Lian second-order operator on actual deformed snapshots. No repeated half chains.",
     "CPU_global_wall_stage_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_c08_global_root_r1.json",
     "CPU_global_support_pairs": 2188,
     "CPU_global_OFF_missing_supported_pairs": 0,
@@ -1113,13 +1113,41 @@
       "startup_XYZ_material_difference_max_m": 1.2179747186251943e-12,
       "original_compare_exit": 1,
       "compare_artifacts_offline_review_passed": true,
-      "compare_serialization_fixed_after_original_source_archive": true
+      "compare_serialization_fixed_after_original_source_archive": true,
+      "verified_local_remote_checkpoint": "632ed74d77b2d9d71b07f28915c84c0f70d7478c"
     },
     "initial_free_surface_mask_review": "08_LianSaturatedColumnCollapse_u_pl/tests/figures/upl_c08_fsmask_r1.check.json",
     "initial_Eq68_soil_wall_self_matches_all5000_native_IDs": true,
     "initial_open_surface_soil_count": 100,
-    "free_seepage_scope_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_free_seepage_scope_r1.json"
+    "free_seepage_scope_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_free_seepage_scope_r1.json",
+    "free_seepage_candidate": {
+      "default": false,
+      "working_source_applied": true,
+      "base_checkpoint": "632ed74d77b2d9d71b07f28915c84c0f70d7478c",
+      "scope": "Fresh static2D constant-k elastic gravity container only; no extra wall pass; completed finite positive FS pressure projection, predictor unprojected",
+      "CPU_GPU_Debug_builds_passed": true,
+      "CPU_components_and_matching_old_OFF_passed": true,
+      "GPU_components_memcheck_and_matching_old_OFF_passed": true,
+      "CPU_GPU_real128_native_passed": true,
+      "native_saved_FS_checks_per_backend": 500,
+      "native_frames_per_backend": 5,
+      "actual_end_s": 0.00048828125,
+      "native_arrays": 22,
+      "pressure_RMS_cross_backend_max_Pa": 0.0004221094727277917,
+      "same_backend_pressure_policy_difference_only_roundoff": true,
+      "root_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_free_seepage_root_review_r1.md",
+      "analysis": "08_LianSaturatedColumnCollapse_u_pl/tests/figures/upl_c08_free_start_compare_r1.check.json",
+      "physical_acceptance": false
+    },
+    "paper_coefficients_erratum": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/lian_coefficients_erratum_r1.md",
+    "material_next": {
+      "selector_proposal": "Independent MaterialReturn, defaultLegacyFast; prototype ConsistentDev",
+      "persistent_parameters_and_kappa": "float retained",
+      "local_root_tensor_arithmetic": "double where necessary",
+      "apex_softening_policy": "Not invented; radial prototype returns ApexNeeded",
+      "source_integrated": false
+    }
   },
-  "latest_verified_code_checkpoint": "1d5c1c2fdca3295b4915974aeff53ca0d8372708",
-  "last_updated_utc": "2026-11-06T04:54:56.765416+00:00"
+  "latest_verified_code_checkpoint": "632ed74d77b2d9d71b07f28915c84c0f70d7478c",
+  "last_updated_utc": "2026-11-06T06:02:36.782281+00:00"
 }

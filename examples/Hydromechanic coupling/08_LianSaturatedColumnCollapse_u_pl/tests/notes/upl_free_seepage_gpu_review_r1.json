@@ -1,0 +1,86 @@
+{
+  "stage": "upl_free_seepage_gpu_review_r1",
+  "bounded_component_passed": true,
+  "physical_acceptance": false,
+  "authoritative_check": "tests/logs/upl_free_seepage_GPU_r1.check.json",
+  "actual_calls": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.new.compile.call.json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.new.link.call.json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.new.memcheck.call.json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.old.compile.call.json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.old.link.call.json",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_free_seepage_GPU_r1.old.run.call.json"
+  ],
+  "new_completion": {
+    "stage": "upl_free_seepage_gpu_r1",
+    "passed": true,
+    "legacy_only": false,
+    "rate_rows": 243,
+    "inner_counts": [
+      49,
+      49,
+      49
+    ],
+    "surface_counts": [
+      32,
+      32,
+      32
+    ],
+    "inner_bit_checks": 147,
+    "surface_checks": 96,
+    "hydrostatic_naive_negative_witnesses": 30,
+    "projection_rows": 243,
+    "nonfinite_input_bits_preserved": 2,
+    "max_reference_ratio": 0.011546482825802023,
+    "max_hydrostatic_ratio": 4.424568834215829e-11,
+    "max_naive_hydrostatic_ratio": 131071.96875000745,
+    "completed_physical_steps": 0,
+    "actual_GPU_FS_rate_projection_wrappers": true,
+    "CPU_production_called": false,
+    "same_ID_CPU_result_assumed": false,
+    "host_full_only_projection_timing_proven": false,
+    "nonfinite_inputs_physically_accepted": false,
+    "physical_acceptance": false
+  },
+  "old_new_byte_comparisons": {
+    "free_off_rates.bin": true,
+    "mask.csv": true
+  },
+  "CPU_GPU_actual_ID_descriptors": {
+    "0": {
+      "IDs": 81,
+      "FS_class_differences": 0,
+      "max_abs_OFF_rate_Pa_s": 1.159283037404854e-13,
+      "max_abs_ON_rate_Pa_s": 8.694622780536405e-14,
+      "max_abs_reference_Pa_s": 2.393929246454261e-06,
+      "new_5Pa_or_FSNormal_gate": false
+    },
+    "1": {
+      "IDs": 81,
+      "FS_class_differences": 0,
+      "max_abs_OFF_rate_Pa_s": 5.3133807575121705e-14,
+      "max_abs_ON_rate_Pa_s": 1.52587890625e-05,
+      "max_abs_reference_Pa_s": 1.35908371134974e-05,
+      "new_5Pa_or_FSNormal_gate": false
+    },
+    "2": {
+      "IDs": 81,
+      "FS_class_differences": 0,
+      "max_abs_OFF_rate_Pa_s": 0.0,
+      "max_abs_ON_rate_Pa_s": 3.0517578125e-05,
+      "max_abs_reference_Pa_s": 3.242081152166065e-05,
+      "new_5Pa_or_FSNormal_gate": false
+    }
+  },
+  "joined_CSV": "tests/figures/upl_free_seepage_cpu_gpu_r1.csv",
+  "joined_rows": 243,
+  "memcheck": "Actual retained tool and target process handles reported exit0; original log contains ERROR SUMMARY0errors and LEAK SUMMARY0bytes/0allocations.",
+  "finite_projection": "243device rows coverOFF/ponding/legacy with negative,+0,-0,positive and fixed/interior/tail controls; two additional +infinity/quietNaN binary32 canaries unchanged. Bad inputs were not physically admitted or passed through the rate equation.",
+  "legacy_scope": "Old header-only CRC-checked extraction from archived containerGPU source.zip into shortTemp root, old110nonmain objects, LEGACY_ONLY source. Default-OFF243floats972bytes and actual mask.csv match currentGPU byte-exact. No Debug/Release equivalence claim.",
+  "historical_completion_wording_limit": "The old LEGACY_ONLY completion hardcodes actual_GPU_FS_rate_projection_wrappers=true although its projection_rows=0 and projection method is compiled out. This capability label is not old-projection coverage. Actual old stage covers FS/C/rate and OFF regression only; raw completion/code are preserved unchanged.",
+  "log_path_limit": "The new memcheck invocation redirected stdout to the same path supplied to sanitizer --log-file. Successful helper emits no stdout; complete sanitizer summaries and independent tool/target exit0, completion and all CSVs are retained. No target rerun or historical log rewrite. Future calls should use distinct console and sanitizer paths.",
+  "scope": "Independent conditional potential/curvature rate reference with original propagated32epsF+4096epsD budgets; no new5Pa or FSNormal bit gate. CPU/GPU join differences are descriptive rates inPa/s, not pressure errors or spatial accuracy. Device projection value semantics do not prove host completed-only timing; actual bounded startup remains next.",
+  "consumed_stats_unchanged": true,
+  "SHA_scans": 0,
+  "solver_or_native_decoder_invocations": 0
+}

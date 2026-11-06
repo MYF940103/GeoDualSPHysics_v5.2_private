@@ -221,6 +221,7 @@ void JSph::InitVars(){
   HydroMechDrainage=true;
   HydroMechDrainageStartTime=0;
   HydroMechDrainageFixedGrid=false;
+  HydroMechFreeSeepage=false;
   HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
@@ -599,6 +600,8 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
+  if(HydroMechFreeSeepage && !IsDynamicPoreContainerConfig())
+    Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
   DynamicPoreBodyRadius2=0;
@@ -2921,6 +2924,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
     if(HydroMechDynamicSeepage){
       bdpart->SetvBool("HydroMechDynamicSeepage",true);
       bdpart->SetvUint("DynamicSeepageSchema",1);
+      if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
     }
@@ -3799,6 +3803,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   HydroMechDrainage=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainage","value",true,true);
   HydroMechDrainageStartTime=sxml->ReadElementDouble(hydroReadNode,"HydroMechDrainageStartTime","value",true,0);
   HydroMechDrainageFixedGrid=sxml->ReadElementBool(hydroReadNode,"HydroMechDrainageFixedGrid","value",true,false);
+  HydroMechFreeSeepage=sxml->ReadElementBool(hydroReadNode,"HydroMechFreeSeepage","value",true,false);
   const string toploadmodestr=fun::StrLower(sxml->ReadElementStr(hydroReadNode,"HydroMechTopLoadMode","value",true,"None"));
   if(toploadmodestr=="none" || toploadmodestr=="off" || toploadmodestr=="0")HydroMechTopLoadMode=HMLOAD_None;
   else if(toploadmodestr=="topvertical" || toploadmodestr=="top_vertical" || toploadmodestr=="vertical" || toploadmodestr=="1")HydroMechTopLoadMode=HMLOAD_TopVertical;
@@ -3902,7 +3907,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   if(HydroMech){
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
-      Log->Print("  DynamicSeepageScope: experimental CPU/GPU 2-D elastic, zero gravity, fresh start; not a general u-pl release");
+      Log->Print(HydroMechFreeSeepage?
+        "  DynamicSeepageScope: candidate fresh constant-k elastic gravity container with free-seepage surface; verification pending":
+        "  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded");
       Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
       if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);
     }
@@ -3911,6 +3918,9 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  HydroMechDrainage", (HydroMechDrainage? "Enabled": "Disabled")));
     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
     Log->Print(fun::VarStr("  HydroMechDrainageFixedGrid",HydroMechDrainageFixedGrid));
+    Log->Print(fun::VarStr("  HydroMechFreeSeepage",HydroMechFreeSeepage));
+    if(HydroMechFreeSeepage)
+      Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
     Log->Print((HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)?
       "  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint":
       "  HydroMechDrainageBoundary: FreeSurface");
