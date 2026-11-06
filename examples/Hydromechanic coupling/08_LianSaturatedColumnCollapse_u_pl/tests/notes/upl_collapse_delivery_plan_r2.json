@@ -1,0 +1,78 @@
+{
+  "stage": "upl_collapse_delivery_plan_r2",
+  "date_local": "2026-11-07",
+  "status": "Planned subsequent delivery; current CPU8 preload not changed. No collapse solver or new physical acceptance.",
+  "paper": "Lian2023 Section4.4,Table1,Fig14-17; existing local MD and visually inspected original figure-time record in lian_collapse_plan_r1.json",
+  "groups": [
+    {
+      "label": "psi0",
+      "psi0_deg": 0,
+      "cohesion_peak_Pa": 5000,
+      "cohesion_residual_Pa": 1000,
+      "cohesion_decay": 5,
+      "dilation_decay": 0,
+      "paper_comparison_times_s": [
+        0.3,
+        0.6,
+        1.2
+      ]
+    },
+    {
+      "label": "psi2p5",
+      "psi0_deg": 2.5,
+      "cohesion_peak_Pa": 5000,
+      "cohesion_residual_Pa": 1000,
+      "cohesion_decay": 5,
+      "dilation_decay": 0.2,
+      "paper_comparison_times_s": [
+        0.3,
+        0.6,
+        1.2
+      ]
+    },
+    {
+      "label": "psim5",
+      "psi0_deg": -5,
+      "cohesion_peak_Pa": 7500,
+      "cohesion_residual_Pa": 1000,
+      "cohesion_decay": 5,
+      "dilation_decay": 0.2,
+      "paper_comparison_times_s": [
+        0.2,
+        0.5,
+        1.6,
+        3.0
+      ]
+    }
+  ],
+  "time_policy": {
+    "time_zero": "Right-wall retirement event, tau=t-t_release",
+    "proposed_post_release_end_s": 3.0,
+    "save_interval_s": 0.01,
+    "preload_s_initial_diagnostic": 5.0,
+    "total_time_if_5s_preload_adequate_s": 8.0,
+    "preload_accepted_just_from_reaching_5s": false,
+    "extension": "If motion or pore-pressure evolution still requires review at tau3s, extend the affected group to a regular decimal physical endpoint; do not call paper cessation an exact criterion.",
+    "dt": "Existing2.5us explicit preload is tested. Final collapse step must satisfy actual evolving necessary limits; do not copy paper TPI20us."
+  },
+  "sequence": [
+    "Complete current5s preload native/late physical review; extend actual gravity relaxation only if justified.",
+    "Implement and review same-process one-time right-wall retirement, preserving native soil IDs,p0,J,n,stress,kappa and refreshing all wall paths.",
+    "Validate variable-k gravity/plastic/wall scope for the existing Ck2 law; current preload remains constant-k.",
+    "Start psi0 bounded collapse then positive/negative dilation; audit negative-pressure behavior and Eq47 explicit compatibility only as needed.",
+    "Prepare three root formal XML/BAT and server runtime package after necessary bounded checks; keep each material prestress consistent with its material.",
+    "Use one process per formal group for preload then removal; no unverified PART restart or history reset.",
+    "Analyze actual-time pressure/excess,plastic strain,runout,settlement,n,k and matching paper panels; formal PNG and CSV together.",
+    "After bounded2D material/collapse evidence, extend MaterialReturn1 with existing3D DP coefficient choices,correct derivative terms and CPU/GPU material/spatial checks before any3D plastic release."
+  ],
+  "three_dimensional_material": {
+    "explicitly_authorized": true,
+    "scheduled_after": "Current2D case08 compatibility and bounded collapse",
+    "already_supported": false,
+    "do_not_remove_only_Simulate2D_guard": true
+  },
+  "unchanged_current_run": "upl_prestress_extended_CPU_r1",
+  "source_changes": false,
+  "solver_started": false,
+  "SHA_scans": 0
+}
