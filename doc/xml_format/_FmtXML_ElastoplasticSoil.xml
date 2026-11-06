@@ -274,6 +274,14 @@
                      removed from a required stencil. Real CPU case08 and GPU14-case predicates,
                      including poison/canaries and zero-error memcheck, passed. This is not a
                      wet/contact classifier or full mixed-wall validation. -->
+                <!-- CPU nonperiodic2D wall support composition (2026-11-06, zero-step checked):
+                     State refreshes existing BoundMode from current boundary-position support,
+                     including each existing float/double consumer cutoff. OFF samples skip state/C/Ace
+                     fitting and validation; active failed fits and in-support OFF Darcy still reject.
+                     Real case08 has410 participating and55 ignored-in-prefix samples, with2188
+                     supported pairs and no missing/OFF pair; finite/poison live fields agree.
+                     Acceleration was prescribed, not a solved force. GPU and public gravity/plastic
+                     case08 admission remain pending; no input switch or wetness rule was added. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

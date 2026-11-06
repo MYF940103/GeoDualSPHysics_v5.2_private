@@ -1,0 +1,92 @@
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1626,8 +1626,9 @@
+     #pragma omp parallel for schedule(guided) reduction(+:missing)
+   #endif
+   for(int p1=0;p1<nn;p1++){
+     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
++    if(DynamicPoreWall && sim2d && !PeriActive && BoundModec[p1]==BMODE_MDBC2OFF)continue;
+     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
+     tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
+     bool shifted=(fitshift!=TDouble3(0));
+     if(shifted)gposp1=gposp1+fitshift;
+@@ -4276,8 +4277,33 @@
+ /// J and hydrostatic excess keep their geometry; NoSlip follows the legacy stress/velocity policy.
+ //==============================================================================
+ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
+   if(!DynamicPoreWall || !NpbOk)return;
++  if(Simulate2D && !PeriActive){
++    //-Current support participation, not a wet/contact test; no density or J weighting.
++    const int n=int(NpbOk);
++    #ifdef OMP_USE
++      #pragma omp parallel for schedule(guided)
++    #endif
++    for(int p1=0;p1<n;p1++){
++      bool active=false;
++      const StNgSearch ngs=nsearch::Init(Posc[p1],false,DivData);
++      for(int z=ngs.zini;z<ngs.zfin && !active;z++)for(int y=ngs.yini;y<ngs.yfin && !active;y++){
++        const tuint2 range=nsearch::ParticleRange(y,z,ngs,DivData);
++        for(unsigned p2=range.x;p2<range.y && !active;p2++)if(CODE_IsFluid(Codec[p2])){
++          const double dx=Posc[p1].x-Posc[p2].x,dy=Posc[p1].y-Posc[p2].y,dz=Posc[p1].z-Posc[p2].z;
++          const double rr2=dx*dx+dz*dz; //-2-D Darcy and FS use no Y distance.
++          const float fsrr2=float(rr2),fx=float(dx),fy=float(dy),fz=float(dz);
++          const float forcerr2=fx*fx+fy*fy+fz*fz,umbrellarr2=fx*fx+fz*fz;
++          active=(rr2<=double(KernelSize2) && rr2>=ALMOSTZERO)
++            || (fsrr2<=KernelSize2 && fsrr2>=ALMOSTZERO)
++            || (forcerr2<=KernelSize2 && forcerr2>=ALMOSTZERO)
++            || (umbrellarr2<=KernelSize2 && umbrellarr2>=ALMOSTZERO);
++        }
++      }
++      BoundModec[p1]=(active? BMODE_MDBC2: BMODE_MDBC2OFF);
++    }
++  }
+   const double rhow=SoilCte.PoreWaterRho;
+   const auto read=[&](unsigned receiver,unsigned p,unsigned c){
+     if(c==0)return PoroJc[p];
+     if(c==1){
+@@ -4326,12 +4352,15 @@
+     if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Cubic,true,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+     else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,11>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+   }
+   else Run_Exceptioon("Kernel unknown.");
+-  for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=1.-double(SoilCte.Porosity)
+-    || !std::isfinite(PorePressc[p]) || (BoundDerivativeVelc && (!std::isfinite(BoundDerivativeVelc[p].x)
+-      || !std::isfinite(BoundDerivativeVelc[p].y) || !std::isfinite(BoundDerivativeVelc[p].z))))
+-    Run_Exceptioon("Dynamic wall left the finite saturated state domain.");
++  for(unsigned p=0;p<NpbOk;p++){
++    if(Simulate2D && !PeriActive && BoundModec[p]==BMODE_MDBC2OFF)continue;
++    if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=1.-double(SoilCte.Porosity)
++      || !std::isfinite(PorePressc[p]) || (BoundDerivativeVelc && (!std::isfinite(BoundDerivativeVelc[p].x)
++        || !std::isfinite(BoundDerivativeVelc[p].y) || !std::isfinite(BoundDerivativeVelc[p].z))))
++      Run_Exceptioon("Dynamic wall left the finite saturated state domain.");
++  }
+ }
+ 
+ //==============================================================================
+ /// Extends current fluid C after free-surface tracking has rebuilt it.
+@@ -4353,8 +4382,9 @@
+     else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,9>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+   }
+   else Run_Exceptioon("Kernel unknown.");
+   for(unsigned p=0;p<NpbOk;p++){
++    if(Simulate2D && !PeriActive && BoundModec[p]==BMODE_MDBC2OFF)continue;
+     const tmatrix3d m=CorrMatc[p];
+     const double det=(Simulate2D? m.a11*m.a33-m.a13*m.a31: fmath::Determinant3x3(m));
+     if(!std::isfinite(det) || det<=0)Run_Exceptioon("Dynamic wall C reconstruction must remain nonsingular and positive oriented.");
+   }
+@@ -4378,10 +4408,13 @@
+     if(Simulate2D)InterpolateBoundaryGhostFieldT<KERNEL_Cubic,true,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+     else InterpolateBoundaryGhostFieldT<KERNEL_Cubic,false,3>(NpbOk,DivData,Posc,Codec,Velrhopc,BoundNormalc,read,write);
+   }
+   else Run_Exceptioon("Kernel unknown.");
+-  for(unsigned p=0;p<NpbOk;p++)if(!std::isfinite(Acec[p].x) || !std::isfinite(Acec[p].y) || !std::isfinite(Acec[p].z))
+-    Run_Exceptioon("Dynamic wall acceleration reconstruction must remain finite.");
++  for(unsigned p=0;p<NpbOk;p++){
++    if(Simulate2D && !PeriActive && BoundModec[p]==BMODE_MDBC2OFF)continue;
++    if(!std::isfinite(Acec[p].x) || !std::isfinite(Acec[p].y) || !std::isfinite(Acec[p].z))
++      Run_Exceptioon("Dynamic wall acceleration reconstruction must remain finite.");
++  }
+ }
+ 
+ //==============================================================================
+ /// Initializes J state and validates the private observer/feedback/dynamic modes.

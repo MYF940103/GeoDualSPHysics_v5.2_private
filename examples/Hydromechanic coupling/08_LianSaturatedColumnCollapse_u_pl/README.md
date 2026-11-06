@@ -72,6 +72,8 @@ CPU [实际Darcy截断检查](tests/logs/upl_inactive_cutoff_CPU_r1.check.json) 
 
 GPU对应 [14条件检查](tests/logs/upl_inactive_cutoff_GPU_r2.check.json) 及memcheck也已通过，包含6次必要拒绝、精确半径、缺失模式和无效输入检查。首次夹具因压缩项掩盖Darcy响应而停止，失败记录保留；r2仅隔离该输入，原预算未变。两处修复的文件、构建和限制汇总于 [阶段记录](tests/notes/upl_wall_support_root_r1.json)。
 
+CPU完整字段流程现已通过 [全局零步检查](tests/notes/upl_c08_global_root_r1.json)：每次state从当前真实B位置刷新已有BoundMode，按各消费者的float/double支持判据取并集；410个参与、55个prefix内不参与，2188个支持对没有OFF、遗漏或越过prefix。状态/FS/C/指定加速度镜像/Darcy两次组合中，5410个有效粒子的字段不受OFF诊断输入影响。指定静水压下率RMS为23.63995 Pa/s、峰值64.28318 Pa/s，不能称作静力平衡或纯舍入误差；实际力、重力演化及GPU仍待检查。侧壁FreeSlip和底面NoSlip保持原区别，未加入干湿墙或自由渗流规则。
+
 另一个 [离线候选](tests/figures/upl_wall_nearestfit_r1.csv) 仅将十个弱点的拟合中心移到其最近真实土粒子，也全部通过原det门，可减少新增接口；底角条件数约530，较半空间投影约48更差，需要实际后端比较。原镜像和边界条件没有在离线测试中改变。
 
 原文边界审查见 [记录](tests/notes/lian_seepage_boundary_review_r1.json)：2023 §4.4沿用2021论文的单边自由渗出及非正压力条件，开放土表面的率处理亦有单独规定。现有固结/Cryer的固定零压排水保留，case08后续单独验证该表面处理；不能把数值墙样本直接当作暴露大气的土粒子。
