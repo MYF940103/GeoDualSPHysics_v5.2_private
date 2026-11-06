@@ -1,0 +1,10 @@
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -3644,7 +3644,6 @@
+   return(SoilCte.MaterialReturn==1 && HydroMech && HydroMechDynamicSeepage
+     && !CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
+     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+-    && SoilCte.dlt==0.f && SoilCte.psiDecay==0.f
+     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !SoilDamping && Visco==0.f && !ViscoTime
+     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
+     && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage);

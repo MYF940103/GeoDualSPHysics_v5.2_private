@@ -1,0 +1,23 @@
+{
+  "stage": "upl_plastic_dilation_native_r1.author",
+  "status": "AUTHOR ONLY: no compile/link, decoder execution, solver, production edit, Git or SHA action.",
+  "source": "tests/support/upl_plastic_dilation_native_r1.cpp",
+  "CLI": "--read POS|NEG CPU|GPU DATA FRESHOUT; compile this one source by absolute path.",
+  "POS": {
+    "stem": "CaseLianMaterialPeriodicDilative_r1",
+    "input_run_tags": "upl_plastic_dilative_CPU_r1 / upl_plastic_dilative_GPU_r1",
+    "initial_dilation_degrees": 2.5,
+    "cohesion_peak_Pa": 5000
+  },
+  "NEG": {
+    "stem": "CaseLianMaterialPeriodicContractive_r1",
+    "input_run_tags": "upl_plastic_contractive_CPU_r1 / upl_plastic_contractive_GPU_r1",
+    "initial_dilation_degrees": -5,
+    "cohesion_peak_Pa": 7500
+  },
+  "shared_material": "Residual cohesion1000Pa, cohesion decay5, fixed friction25degrees, DilationDecay=float(.2). Initial dilation is rounded to float radians exactly as the existing material input conversion. The profile requires typed DatFloat DilationDecay=.2f and MaterialReturn DatUint1. The true-only HydroMechFreeSeepage key must remain ABSENT.",
+  "unchanged_guards": "Reuse the verified113-line softening reader, neutral BI4 parser and public22 typed layout. Preserve all1024 native IDs,5 actual frames,scalar+=2^-19 saved clocks/steps,signed nonempty diagnostics,5120 single-J ledger/nativeRhop-cache checks,1024 initial literal velocity-bit checks,4096 saved-kappa nonnegative/nondecreasing transitions and final nonzero plastic witness. Same32-row original velocity CSV; no interpolation, state rewrite, threshold relaxation or new half/backend error gate.",
+  "descriptive_only": "At actual saved float kappa, c=1000+(selected_peak-1000)*exp(-5*kappa) and psi=double(float(initial_radians))*exp(-double(float(.2))*kappa). Ledger gains psi_radians_from_saved_kappa; history gains min/max saved-history psi, alongside the existing correct selected-cohesion range and fixed-phi yield diagnostic. These derived quantities are not serialized constitutive parameters or the local return's continuous-double-kappa root residual. The profile makes no new assertion linking J to plastic strain and performs no pressure clipping.",
+  "outputs": "The same typed22.bin/layout,clocks,native_ids,ledger/history/completion files. Raw typed layout212bytes/ID is unchanged. Completion explicitly records POS/NEG, initial float-radian dilation, float decay and selected peak cohesion. No spatial or physical acceptance follows from decoding success.",
+  "physical_acceptance": false
+}

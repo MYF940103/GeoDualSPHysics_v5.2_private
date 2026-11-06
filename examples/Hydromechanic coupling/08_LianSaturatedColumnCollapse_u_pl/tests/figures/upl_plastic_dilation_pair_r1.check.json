@@ -1,0 +1,626 @@
+{
+  "stage": "upl_plastic_dilation_pair_r1",
+  "offline_analysis_completed": true,
+  "original_all_four_native_gates_passed": true,
+  "matched_actual_frames": 5,
+  "native_IDs_per_frame": 1024,
+  "typed_arrays_per_frame": 22,
+  "history_rows": 20,
+  "difference_rows": 10,
+  "array_metric_rows": 220,
+  "initial_different_array_names_descriptive": {
+    "POS": [
+      "FSNormal",
+      "PosDiv"
+    ],
+    "NEG": [
+      "FSNormal",
+      "PosDiv"
+    ]
+  },
+  "maxima_within_options_only": {
+    "POS": {
+      "p_difference_RMS_Pa": 0.004531200768799991,
+      "p_difference_max_Pa": 0.011362552642822266,
+      "material_XYZ_difference_RMS_mm": 3.222662666975032e-10,
+      "material_XYZ_difference_max_mm": 1.0836870042417192e-09,
+      "sigma_eff_difference_RMS_Pa": 0.00015670963248167065,
+      "sigma_eff_difference_max_Pa": 0.0006490431444963441,
+      "sigma_total_difference_RMS_Pa": 0.007928118063595575,
+      "sigma_total_difference_max_Pa": 0.020035228307235954,
+      "cohesion_difference_RMS_Pa": 3.0157047231902e-07,
+      "cohesion_difference_max_Pa": 1.163292836281471e-06,
+      "psi_difference_RMS_rad": 1.3177435298983863e-13,
+      "psi_difference_max_rad": 5.079409115538169e-13,
+      "kappa_difference_RMS_1": 1.5101104433888694e-11,
+      "kappa_difference_max_1": 5.820766091346741e-11,
+      "J_difference_RMS_1": 1.906179642805014e-12,
+      "J_difference_max_1": 8.499867476530198e-12,
+      "n_difference_RMS_1": 1.2390179118286045e-12,
+      "n_difference_max_1": 5.524913859744629e-12,
+      "rho_mix_difference_RMS_kg_m3": 2.0443625486528158e-09,
+      "rho_mix_difference_max_kg_m3": 9.11586539587006e-09,
+      "k_difference_RMS_m_s": 0.0,
+      "k_difference_max_m_s": 0.0
+    },
+    "NEG": {
+      "p_difference_RMS_Pa": 0.0022822548293540044,
+      "p_difference_max_Pa": 0.006082162261009216,
+      "material_XYZ_difference_RMS_mm": 3.4377424496312256e-10,
+      "material_XYZ_difference_max_mm": 1.2157549482649649e-09,
+      "sigma_eff_difference_RMS_Pa": 0.00021793954997671394,
+      "sigma_eff_difference_max_Pa": 0.0008524942275344048,
+      "sigma_total_difference_RMS_Pa": 0.003952019142806432,
+      "sigma_total_difference_max_Pa": 0.010661780769745853,
+      "cohesion_difference_RMS_Pa": 4.863168730532934e-07,
+      "cohesion_difference_max_Pa": 1.8901864677900448e-06,
+      "psi_difference_RMS_rad": 2.61355092949692e-13,
+      "psi_difference_max_rad": 1.0158818231076339e-12,
+      "kappa_difference_RMS_1": 1.4975085565935865e-11,
+      "kappa_difference_max_1": 5.820766091346741e-11,
+      "J_difference_RMS_1": 1.2472098983117361e-12,
+      "J_difference_max_1": 9.275913370743183e-12,
+      "n_difference_RMS_1": 8.106887616166204e-13,
+      "n_difference_max_1": 6.0293992021343e-12,
+      "rho_mix_difference_RMS_kg_m3": 1.3376307623551622e-09,
+      "rho_mix_difference_max_kg_m3": 9.948507795343176e-09,
+      "k_difference_RMS_m_s": 0.0,
+      "k_difference_max_m_s": 0.0
+    }
+  },
+  "material_and_born_metadata_evidence": {
+    "POS_CPU": {
+      "native_completion": {
+        "stage": "upl_plastic_dilation_native_r1",
+        "input_run_tag": "upl_plastic_dilative_CPU_r1",
+        "passed": true,
+        "backend_argument": "CPU",
+        "backend_proven_by_reader": false,
+        "samples": 5,
+        "completed_steps": 128,
+        "actual_end_s": 0.000244140625,
+        "dt_s": 1.9073486328125e-06,
+        "total_native_IDs": 1024,
+        "soil_IDs": 1024,
+        "fixed_IDs": 0,
+        "fixed_marker_rows": 0,
+        "fixed_marker_policy": "not applicable",
+        "typed_arrays": 22,
+        "typed_bytes_per_particle": 212,
+        "ledger_checks": 5120,
+        "native_Rhop_float_cache_checks": 5120,
+        "initial_velocity_bits_checks": 1024,
+        "noninitial_kappa_monotonic_ID_checks": 4096,
+        "final_kappa_nonzero_IDs": 640,
+        "max_kappa": 0.00033009116305038333,
+        "max_kappa_decrease": 0,
+        "max_ledger_relative_error": 0,
+        "noninitial_signed_intervals": 4,
+        "initial_empty_intervals": 0,
+        "min_noninitial_signed_dterror_s": -2.0466928074304987e-06,
+        "max_noninitial_signed_dterror_s": -2.046692523227245e-06,
+        "FS23_counts_by_part": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "all22_arrays_finite_and_ID_aligned": true,
+        "actual_scalar_clock_verified": true,
+        "later_pressure_J_theta_forced_zero": false,
+        "yield_and_wave_diagnostics_are_descriptive": true,
+        "material_selector": "POS",
+        "initial_dilation_radians_float": 0.04363323003053665,
+        "dilation_decay_float": 0.20000000298023224,
+        "cohesion_peak_Pa": 5000,
+        "cohesion_residual_Pa": 1000,
+        "cohesion_decay": 5,
+        "cohesion_uses_saved_float_kappa_descriptively": true,
+        "energy_or_water_mass_gate_applied": false,
+        "half_or_cross_backend_error_gate": false,
+        "physical_acceptance": false
+      },
+      "native_metadata_verified_by_reader": {
+        "MaterialReturn_type": "DatUint",
+        "MaterialReturn": 1,
+        "DilationDecay_type": "DatFloat",
+        "DilationDecay": 0.20000000298023224,
+        "free_seepage_true_only_key_absent": true
+      },
+      "law_parameters_source": "Explicit option plus root-reviewed XML and the closed compiled native profile; psi0/strength outputs are derived, not extra native arrays."
+    },
+    "POS_GPU": {
+      "native_completion": {
+        "stage": "upl_plastic_dilation_native_r1",
+        "input_run_tag": "upl_plastic_dilative_GPU_r1",
+        "passed": true,
+        "backend_argument": "GPU",
+        "backend_proven_by_reader": false,
+        "samples": 5,
+        "completed_steps": 128,
+        "actual_end_s": 0.000244140625,
+        "dt_s": 1.9073486328125e-06,
+        "total_native_IDs": 1024,
+        "soil_IDs": 1024,
+        "fixed_IDs": 0,
+        "fixed_marker_rows": 0,
+        "fixed_marker_policy": "not applicable",
+        "typed_arrays": 22,
+        "typed_bytes_per_particle": 212,
+        "ledger_checks": 5120,
+        "native_Rhop_float_cache_checks": 5120,
+        "initial_velocity_bits_checks": 1024,
+        "noninitial_kappa_monotonic_ID_checks": 4096,
+        "final_kappa_nonzero_IDs": 640,
+        "max_kappa": 0.0003300911921542138,
+        "max_kappa_decrease": 0,
+        "max_ledger_relative_error": 0,
+        "noninitial_signed_intervals": 4,
+        "initial_empty_intervals": 0,
+        "min_noninitial_signed_dterror_s": -2.0466928074314533e-06,
+        "max_noninitial_signed_dterror_s": -2.046692523232661e-06,
+        "FS23_counts_by_part": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "all22_arrays_finite_and_ID_aligned": true,
+        "actual_scalar_clock_verified": true,
+        "later_pressure_J_theta_forced_zero": false,
+        "yield_and_wave_diagnostics_are_descriptive": true,
+        "material_selector": "POS",
+        "initial_dilation_radians_float": 0.04363323003053665,
+        "dilation_decay_float": 0.20000000298023224,
+        "cohesion_peak_Pa": 5000,
+        "cohesion_residual_Pa": 1000,
+        "cohesion_decay": 5,
+        "cohesion_uses_saved_float_kappa_descriptively": true,
+        "energy_or_water_mass_gate_applied": false,
+        "half_or_cross_backend_error_gate": false,
+        "physical_acceptance": false
+      },
+      "native_metadata_verified_by_reader": {
+        "MaterialReturn_type": "DatUint",
+        "MaterialReturn": 1,
+        "DilationDecay_type": "DatFloat",
+        "DilationDecay": 0.20000000298023224,
+        "free_seepage_true_only_key_absent": true
+      },
+      "law_parameters_source": "Explicit option plus root-reviewed XML and the closed compiled native profile; psi0/strength outputs are derived, not extra native arrays."
+    },
+    "NEG_CPU": {
+      "native_completion": {
+        "stage": "upl_plastic_dilation_native_r1",
+        "input_run_tag": "upl_plastic_contractive_CPU_r1",
+        "passed": true,
+        "backend_argument": "CPU",
+        "backend_proven_by_reader": false,
+        "samples": 5,
+        "completed_steps": 128,
+        "actual_end_s": 0.000244140625,
+        "dt_s": 1.9073486328125e-06,
+        "total_native_IDs": 1024,
+        "soil_IDs": 1024,
+        "fixed_IDs": 0,
+        "fixed_marker_rows": 0,
+        "fixed_marker_policy": "not applicable",
+        "typed_arrays": 22,
+        "typed_bytes_per_particle": 212,
+        "ledger_checks": 5120,
+        "native_Rhop_float_cache_checks": 5120,
+        "initial_velocity_bits_checks": 1024,
+        "noninitial_kappa_monotonic_ID_checks": 4096,
+        "final_kappa_nonzero_IDs": 512,
+        "max_kappa": 0.00019435035937931389,
+        "max_kappa_decrease": 0,
+        "max_ledger_relative_error": 0,
+        "noninitial_signed_intervals": 4,
+        "initial_empty_intervals": 0,
+        "min_noninitial_signed_dterror_s": -2.046692807659732e-06,
+        "max_noninitial_signed_dterror_s": -2.0466925970648975e-06,
+        "FS23_counts_by_part": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "all22_arrays_finite_and_ID_aligned": true,
+        "actual_scalar_clock_verified": true,
+        "later_pressure_J_theta_forced_zero": false,
+        "yield_and_wave_diagnostics_are_descriptive": true,
+        "material_selector": "NEG",
+        "initial_dilation_radians_float": -0.0872664600610733,
+        "dilation_decay_float": 0.20000000298023224,
+        "cohesion_peak_Pa": 7500,
+        "cohesion_residual_Pa": 1000,
+        "cohesion_decay": 5,
+        "cohesion_uses_saved_float_kappa_descriptively": true,
+        "energy_or_water_mass_gate_applied": false,
+        "half_or_cross_backend_error_gate": false,
+        "physical_acceptance": false
+      },
+      "native_metadata_verified_by_reader": {
+        "MaterialReturn_type": "DatUint",
+        "MaterialReturn": 1,
+        "DilationDecay_type": "DatFloat",
+        "DilationDecay": 0.20000000298023224,
+        "free_seepage_true_only_key_absent": true
+      },
+      "law_parameters_source": "Explicit option plus root-reviewed XML and the closed compiled native profile; psi0/strength outputs are derived, not extra native arrays."
+    },
+    "NEG_GPU": {
+      "native_completion": {
+        "stage": "upl_plastic_dilation_native_r1",
+        "input_run_tag": "upl_plastic_contractive_GPU_r1",
+        "passed": true,
+        "backend_argument": "GPU",
+        "backend_proven_by_reader": false,
+        "samples": 5,
+        "completed_steps": 128,
+        "actual_end_s": 0.000244140625,
+        "dt_s": 1.9073486328125e-06,
+        "total_native_IDs": 1024,
+        "soil_IDs": 1024,
+        "fixed_IDs": 0,
+        "fixed_marker_rows": 0,
+        "fixed_marker_policy": "not applicable",
+        "typed_arrays": 22,
+        "typed_bytes_per_particle": 212,
+        "ledger_checks": 5120,
+        "native_Rhop_float_cache_checks": 5120,
+        "initial_velocity_bits_checks": 1024,
+        "noninitial_kappa_monotonic_ID_checks": 4096,
+        "final_kappa_nonzero_IDs": 512,
+        "max_kappa": 0.00019435040303505957,
+        "max_kappa_decrease": 0,
+        "max_ledger_relative_error": 0,
+        "noninitial_signed_intervals": 4,
+        "initial_empty_intervals": 0,
+        "min_noninitial_signed_dterror_s": -2.0466928076573222e-06,
+        "max_noninitial_signed_dterror_s": -2.046692597024815e-06,
+        "FS23_counts_by_part": [
+          0,
+          0,
+          0,
+          0,
+          0
+        ],
+        "all22_arrays_finite_and_ID_aligned": true,
+        "actual_scalar_clock_verified": true,
+        "later_pressure_J_theta_forced_zero": false,
+        "yield_and_wave_diagnostics_are_descriptive": true,
+        "material_selector": "NEG",
+        "initial_dilation_radians_float": -0.0872664600610733,
+        "dilation_decay_float": 0.20000000298023224,
+        "cohesion_peak_Pa": 7500,
+        "cohesion_residual_Pa": 1000,
+        "cohesion_decay": 5,
+        "cohesion_uses_saved_float_kappa_descriptively": true,
+        "energy_or_water_mass_gate_applied": false,
+        "half_or_cross_backend_error_gate": false,
+        "physical_acceptance": false
+      },
+      "native_metadata_verified_by_reader": {
+        "MaterialReturn_type": "DatUint",
+        "MaterialReturn": 1,
+        "DilationDecay_type": "DatFloat",
+        "DilationDecay": 0.20000000298023224,
+        "free_seepage_true_only_key_absent": true
+      },
+      "law_parameters_source": "Explicit option plus root-reviewed XML and the closed compiled native profile; psi0/strength outputs are derived, not extra native arrays."
+    }
+  },
+  "input_receipts_and_exports": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_plastic_dilation_pair_r1.py",
+      "bytes": 13061,
+      "mtime_ns": 1793962452508913500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_plastic_softening_pair_r1.py",
+      "bytes": 12385,
+      "mtime_ns": 1793961126021930400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_plastic_periodic_pair_r1.py",
+      "bytes": 10985,
+      "mtime_ns": 1793954788222850000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_fsmask_r1.py",
+      "bytes": 11920,
+      "mtime_ns": 1793940229989901300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_CPU_r1_native_r1.check.json",
+      "bytes": 14461,
+      "mtime_ns": 1793962236731759500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_CPU_r1.check.json",
+      "bytes": 8278,
+      "mtime_ns": 1793962173003866000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_CPU_r1.call.json",
+      "bytes": 2717,
+      "mtime_ns": 1793962172995863100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilation_native_r1.build.json",
+      "bytes": 37381,
+      "mtime_ns": 1793961867640898700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_CPU_r1_native_r1.call.json",
+      "bytes": 1471,
+      "mtime_ns": 1793962236725867400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\completion.json",
+      "bytes": 1413,
+      "mtime_ns": 1793962236697852600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\clocks.csv",
+      "bytes": 478,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\completion.json",
+      "bytes": 1413,
+      "mtime_ns": 1793962236697852600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\history.csv",
+      "bytes": 2914,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\ledger.csv",
+      "bytes": 1402878,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\native_ids.csv",
+      "bytes": 66536,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\typed22.bin",
+      "bytes": 1085492,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_CPU_r1_native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1793962236696848700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_GPU_r1_native_r1.check.json",
+      "bytes": 5398,
+      "mtime_ns": 1793962004576311800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_GPU_r1.check.json",
+      "bytes": 9740,
+      "mtime_ns": 1793961999468932800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_GPU_r1.call.json",
+      "bytes": 4128,
+      "mtime_ns": 1793961999279479400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilation_native_r1.build.json",
+      "bytes": 37381,
+      "mtime_ns": 1793961867640898700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilative_GPU_r1_native_r1.call.json",
+      "bytes": 2075,
+      "mtime_ns": 1793962004164575400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\completion.json",
+      "bytes": 1413,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\clocks.csv",
+      "bytes": 478,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\completion.json",
+      "bytes": 1413,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\history.csv",
+      "bytes": 2915,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\ledger.csv",
+      "bytes": 1402379,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\native_ids.csv",
+      "bytes": 66536,
+      "mtime_ns": 1793962004128561100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\typed22.bin",
+      "bytes": 1085492,
+      "mtime_ns": 1793962004127561500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_dilative_GPU_r1_native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1793962004127561500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_CPU_r1_native_r1.check.json",
+      "bytes": 14451,
+      "mtime_ns": 1793962237306278100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_CPU_r1.check.json",
+      "bytes": 8310,
+      "mtime_ns": 1793962180277429600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_CPU_r1.call.json",
+      "bytes": 2744,
+      "mtime_ns": 1793962180270094300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilation_native_r1.build.json",
+      "bytes": 37381,
+      "mtime_ns": 1793961867640898700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_CPU_r1_native_r1.call.json",
+      "bytes": 1485,
+      "mtime_ns": 1793962237299257000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\completion.json",
+      "bytes": 1416,
+      "mtime_ns": 1793962237270370100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\clocks.csv",
+      "bytes": 477,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\completion.json",
+      "bytes": 1416,
+      "mtime_ns": 1793962237270370100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\history.csv",
+      "bytes": 2866,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\ledger.csv",
+      "bytes": 1357807,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\native_ids.csv",
+      "bytes": 66536,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\typed22.bin",
+      "bytes": 1085492,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_CPU_r1_native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1793962237268866500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_GPU_r1_native_r1.check.json",
+      "bytes": 5438,
+      "mtime_ns": 1793962087985648800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_GPU_r1.check.json",
+      "bytes": 9792,
+      "mtime_ns": 1793962087384730400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_GPU_r1.call.json",
+      "bytes": 4177,
+      "mtime_ns": 1793962087366697700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_dilation_native_r1.build.json",
+      "bytes": 37381,
+      "mtime_ns": 1793961867640898700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_contractive_GPU_r1_native_r1.call.json",
+      "bytes": 2090,
+      "mtime_ns": 1793962087967581100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\completion.json",
+      "bytes": 1417,
+      "mtime_ns": 1793962087934024200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\clocks.csv",
+      "bytes": 478,
+      "mtime_ns": 1793962087932022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\completion.json",
+      "bytes": 1417,
+      "mtime_ns": 1793962087934024200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\history.csv",
+      "bytes": 2859,
+      "mtime_ns": 1793962087932022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\ledger.csv",
+      "bytes": 1357979,
+      "mtime_ns": 1793962087932022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\native_ids.csv",
+      "bytes": 66536,
+      "mtime_ns": 1793962087932022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\typed22.bin",
+      "bytes": 1085492,
+      "mtime_ns": 1793962087932022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_plastic_contractive_GPU_r1_native_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1793962087932022000
+    }
+  ],
+  "output_artifacts": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_plastic_dilation_pair_r1_history.csv",
+      "bytes": 11121,
+      "mtime_ns": 1793962554468424700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_plastic_dilation_pair_r1_differences.csv",
+      "bytes": 5122,
+      "mtime_ns": 1793962554472425700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_plastic_dilation_pair_r1_arrays.csv",
+      "bytes": 18161,
+      "mtime_ns": 1793962554513274000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_plastic_dilation_pair_r1.png",
+      "bytes": 367384,
+      "mtime_ns": 1793962555304230300
+    }
+  ],
+  "figure_visual_QA_pending": true,
+  "no_cross_option_error_comparison": true,
+  "new_numerical_gate": false,
+  "source_build_solver_decoder_Git_SHA_actions": 0,
+  "physical_acceptance": false
+}
