@@ -428,7 +428,7 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
   ,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre
-  ,double *poroj=NULL,double *porotheta=NULL,double *porojpre=NULL);
+  ,double *poroj=NULL,double *porotheta=NULL,double *porojpre=NULL,float *kplastic=NULL,float *kplasticdk=NULL);
 void PeriodicDuplicateNormals(unsigned n,unsigned pini,const unsigned *listp,float3 *normals,float3 *motionvel,byte *boundslipmode);
 
 //-Kernels for Damping.

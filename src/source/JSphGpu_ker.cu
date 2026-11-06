@@ -5442,7 +5442,7 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
   ,uint3 cellmax,double3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
   ,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre
-  ,double *poroj,double *porotheta,double *porojpre)
+  ,double *poroj,double *porotheta,double *porojpre,float *kplastic,float *kplasticdk)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -5464,6 +5464,8 @@ template<bool varspre> __global__ void KerPeriodicDuplicateSymplectic(unsigned n
     if(poroj)poroj[pnew]=poroj[pcopy];
     if(porotheta)porotheta[pnew]=porotheta[pcopy];
     if(porojpre)porojpre[pnew]=porojpre[pcopy];
+    if(kplastic)kplastic[pnew]=kplastic[pcopy];
+    if(kplasticdk)kplasticdk[pnew]=kplasticdk[pcopy];
     if(varspre){
       posxypre[pnew]=posxypre[pcopy];
       poszpre[pnew]=poszpre[pcopy];
@@ -5483,13 +5485,13 @@ void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre
   ,tsymatrix3d *sigma, tsymatrix3d *sigmapre,float *porepress,float *porepress0,float *porepressrate,float *porepresspre
-  ,double *poroj,double *porotheta,double *porojpre)
+  ,double *poroj,double *porotheta,double *porojpre,float *kplastic,float *kplasticdk)
 {
   if(n){
     uint3 cellmax=make_uint3(domcells.x-1,domcells.y-1,domcells.z-1);
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
-    if(posxypre!=NULL)KerPeriodicDuplicateSymplectic<true>  <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,poroj,porotheta,porojpre);
-    else              KerPeriodicDuplicateSymplectic<false> <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,poroj,porotheta,porojpre);
+    if(posxypre!=NULL)KerPeriodicDuplicateSymplectic<true>  <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,poroj,porotheta,porojpre,kplastic,kplasticdk);
+    else              KerPeriodicDuplicateSymplectic<false> <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,posxypre,poszpre,velrhoppre,sigma,sigmapre,porepress,porepress0,porepressrate,porepresspre,poroj,porotheta,porojpre,kplastic,kplasticdk);
   }
 }
 

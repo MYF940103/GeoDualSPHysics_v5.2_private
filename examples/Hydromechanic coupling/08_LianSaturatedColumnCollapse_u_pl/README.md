@@ -125,4 +125,10 @@ GPU同原生几何的 [实际主力检查](tests/notes/upl_c08_force_GPU_root_r1
 
 mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有限正K/G及有效强度/角度范围。它采用dev κ和端点c/ψ，保留float材料参数与持久κ；顶点、无效输入、非正一致性或不收敛明确使阶段失败，不套用旧cap或弹性回退，也不保证失败阶段整体回滚。详见 [接口与限制](tests/notes/upl_material_interface_r1.md)。
 
-两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，实际新增内存4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。dynamic软化及非零κ保护仍关闭，不因此开放空间塑性、地应力平衡、撤墙或塌陷。
+两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，程序记录的新增状态4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。随后非零κ仅在下述窄周期短程开放；dynamic软化、塑性重力容器、地应力平衡、撤墙和塌陷仍未准入。
+
+### 常强度周期塑性短程
+
+两端各一次真实128步已通过：1024土粒子、XZ周期、零重力/无墙、Wendland、固定φ与coh=coh_r=5000、ψ=sf=0；dt=2^-19 s，末时刻0.000244140625 s，保存5帧。末态两端均640个非零κ，最大约3.450397e-4；全部22数组、J关系、密度缓存、初速度及κ不回退检查通过。GPU该唯一物理运行置于memcheck中，零错误/泄漏。
+
+本轮还补齐了新材料路径的周期κ复制，GPU包括已有κ增量诊断量；只在原复制循环中增加赋值，不增加数组或邻居遍历。旧fast路径保持原行为。CPU/GPU最大孔压RMS差0.00385087 Pa、总应力Frobenius RMS差0.00673502 Pa、材料位移差1.08535e-9 mm、κ差8.73115e-11。初始FSNormal及PosDiv存在差异，未冒称全部22字段跨后端位相同。见[对比图](tests/figures/upl_plastic_periodic_pair_r1.png)、同前缀三份CSV及[阶段审查](tests/notes/upl_plastic_periodic_root_r1.md)。该短程证明有界实现兼容，不是软化/剪胀、空间收敛或塌陷物理验收。

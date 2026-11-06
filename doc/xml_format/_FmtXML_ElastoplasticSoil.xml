@@ -30,8 +30,10 @@
                      Mode0 retains the literal old path; nonzero decay with mode0 is rejected.
                      CPU/CUDA standalone71-point and actual stage checks passed. Default native outputs
                      and an elastic selector-ON startup match retained controls; this is not plastic physics.
-                     Dynamic seepage softening/nonzero-kappa guards remain closed. Selecting mode1
-                     does not open spatial plasticity, gravity equilibrium, wall removal or collapse. -->
+                     Dynamic nonzero kappa has bounded CPU/GPU128-step support only in zero-gravity,
+                     wall-free XZ-periodic constant-strength/zero-dilation fixtures, without stabilizers.
+                     Dynamic softening, plastic gravity containers, HG and general collapse remain held;
+                     this is not continuum plasticity, equilibrium, localization or release acceptance. -->
 
 				<phi_r value="30" comment="Residual friction angle for softening; default=phi when omitted" units_comment="degrees" />
 				<coh_r value="0" comment="Residual cohesion for softening; default=coh when omitted" units_comment="Pa" />

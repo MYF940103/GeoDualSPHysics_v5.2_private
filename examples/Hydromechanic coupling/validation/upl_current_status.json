@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Experimental MaterialReturn1 integrated with LegacyFast default preserved. CPU/GPU Debug builds, actual Pre/Cor material checks, both-backend default128 native regressions and explicit-selector GPU128 memory/native startup all passed. Dynamic plastic/nonzero-kappa gates remain closed; no collapse run or formal release claim.",
+  "status": "Bounded constant-strength periodic plastic coupling passed on CPU/GPU:1024 native IDs,128 updates,5 saves; nonzero history640 IDs. Periodic kappa copy repaired for explicit MaterialReturn1; prior elastic/default behavior retained. No softening/dilation/gravity collapse or formal release acceptance.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1022,7 +1022,7 @@
     "material_history_comparison": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/lian_material_history_r1.review.json",
     "material_constants_promoted": false,
     "production_plastic_history_changed": false,
-    "next": "Bounded constant-strength periodic plastic shear: audit and narrowly admit nonzero kappa only for the selected material; retain J/finite/domain/step guards. Then softening/dilation, gravity prebalance, same-run wall removal and variable-k. Lian second derivatives must still be compared on deformed/disordered snapshots before choosing any operator change.",
+    "next": "Same bounded periodic cohesion-softening stage(cp5000/cr1000/n_coh5,psi=sf0), no half-chain or repeated controls; then dilation, gravity prebalance/wall release and variable-k. Lian second-derivative/disorder and efficiency comparisons remain later.",
     "CPU_global_wall_stage_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_c08_global_root_r1.json",
     "CPU_global_support_pairs": 2188,
     "CPU_global_OFF_missing_supported_pairs": 0,
@@ -1168,8 +1168,20 @@
     "material_default128_both_backends_all22_and_signedclock_byte_differences": 0,
     "material_explicit_GPU128_memcheck_errors": 0,
     "material_explicit_GPU128_added_allocated_bytes": 4,
-    "material_mode1_spatial_plasticity_accepted": false
+    "material_mode1_spatial_plasticity_accepted": false,
+    "periodic_plastic_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_periodic_root_r1.md",
+    "periodic_plastic_samples_IDs_updates": [
+      5,
+      1024,
+      128
+    ],
+    "periodic_plastic_final_nonzero_kappa_IDs": 640,
+    "periodic_plastic_cross_max_pressure_RMS_Pa": 0.00385086984,
+    "periodic_plastic_cross_max_kappa": 8.73114914e-11,
+    "periodic_plastic_GPU_memcheck_errors": 0,
+    "periodic_plastic_scope_implementation_passed": true,
+    "material_mode1_general_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "0c29b432b2343351e98afacc474e93440cfde628",
-  "last_updated_utc": "2026-11-06T07:21:10.813743+00:00"
+  "latest_verified_code_checkpoint": "369e244dbea82b465e61e9d2e1d81e188476efca",
+  "last_updated_utc": "2026-11-06T08:52:58.019998+00:00"
 }

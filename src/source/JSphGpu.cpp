@@ -1828,11 +1828,11 @@ void JSphGpu::ComputeSymplecticPorosity(bool corrector,double dt){
   unsigned *invalidg=ArraysGpu->ReserveUint();
   cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
   cusph::UpdatePorosityObserver(Np,Npb,corrector,dt,1.-double(SoilCte.Porosity)
-    ,Codeg,Kplasticg,PoroJPreg,PoroThetag,PoroJg,invalidg);
+    ,Codeg,(corrector && IsDynamicPorePlasticPeriodicConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   ArraysGpu->Free(invalidg);
   Check_CudaErroor("Failed advancing GPU porosity observer.");
-  if(invalid<Np)Run_Exceptioon("GPU porosity observer requires finite saturated elastic states.");
+  if(invalid<Np)Run_Exceptioon("GPU porosity observer requires finite saturated states and elastic or admitted periodic radial material.");
   if(corrector){ArraysGpu->Free(PoroJPreg);PoroJPreg=NULL;}
 }
 

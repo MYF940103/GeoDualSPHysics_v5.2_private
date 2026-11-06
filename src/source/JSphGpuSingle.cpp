@@ -489,7 +489,7 @@ void JSphGpuSingle::RunPeriodic(){
             if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PoroJg,PoroThetag,PoroJPreg);
+              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PoroJg,PoroThetag,PoroJPreg,(SoilCte.MaterialReturn==1? Kplasticg: NULL),(SoilCte.MaterialReturn==1? KplasticDkg: NULL));
             }
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg,BoundSlipModeg);
 

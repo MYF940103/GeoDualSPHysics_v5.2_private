@@ -1,0 +1,87 @@
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -594,6 +594,7 @@
+   void ConfigConstantsSoil();
+   float GetDynamicSoilDampingRate()const;
+   bool IsDynamicPoreContainerConfig()const;
++  bool IsDynamicPorePlasticPeriodicConfig()const;
+   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
+     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
+   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -3638,6 +3638,19 @@
+ }
+ 
+ //==============================================================================
++/// Narrow first spatial radial-return scope; base material/operator guards remain.
++//==============================================================================
++bool JSph::IsDynamicPorePlasticPeriodicConfig()const{
++  return(SoilCte.MaterialReturn==1 && HydroMechDynamicSeepage && DynamicPorePressure && PorosityFeedback
++    && !CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
++    && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
++    && SoilCte.coh==SoilCte.coh_r && SoilCte.n_coh==0.f && SoilCte.dlt==0.f && SoilCte.psiDecay==0.f
++    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !SoilDamping && Visco==0.f && !ViscoTime
++    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
++    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage);
++}
++
++//==============================================================================
+ /// Fixed +X/-X FreeSlip sides and +Z NoSlip bed; far bed samples are not soil.
+ //==============================================================================
+ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -4447,6 +4447,8 @@
+   if(PorosityFeedback && !PorosityObserver)
+     Run_Exceptioon("Porosity feedback fixture requires the J observer state.");
+   if(!PorosityObserver)return;
++  if(SoilCte.MaterialReturn==1 && !IsDynamicPorePlasticPeriodicConfig())
++    Run_Exceptioon("Dynamic ConsistentDev currently requires the constant-strength zero-dilation periodic fixture without walls, gravity or stabilization.");
+   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
+     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
+@@ -4662,6 +4664,7 @@
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
+   if(!PorosityObserver)return;
++  const bool allowplastic=IsDynamicPorePlasticPeriodicConfig();
+   const double solid0=1.-double(SoilCte.Porosity);
+   for(unsigned p=0;p<Np;p++){
+     const double jhalf=PoroJc[p];
+@@ -4669,8 +4672,8 @@
+     if(p>=Npb && CODE_IsFluid(Codec[p]))
+       PoroJc[p]+=dt*jhalf*PoroThetac[p];
+     if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=solid0
+-      || (Kplasticc && CODE_IsFluid(Codec[p]) && CODE_IsNormal(Codec[p]) && Kplasticc[p]!=0))
+-      Run_Exceptioon("Porosity observer requires finite saturated elastic states in corrector.");
++      || (!allowplastic && Kplasticc && CODE_IsFluid(Codec[p]) && CODE_IsNormal(Codec[p]) && Kplasticc[p]!=0))
++      Run_Exceptioon("Porosity corrector requires finite saturated states and elastic or admitted periodic radial material.");
+   }
+   ArraysCpu->Free(PoroJPrec);PoroJPrec=NULL;
+ }
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1757,6 +1757,8 @@
+   if(PorosityFeedback && !PorosityObserver)
+     Run_Exceptioon("GPU porosity feedback requires the J observer state.");
+   if(!PorosityObserver)return;
++  if(SoilCte.MaterialReturn==1 && !IsDynamicPorePlasticPeriodicConfig())
++    Run_Exceptioon("Dynamic ConsistentDev currently requires the constant-strength zero-dilation periodic fixture without walls, gravity or stabilization.");
+   const bool loadedcolumn=(DynamicPorePressure && Simulate2D && DynamicPoreWall
+     && !DynamicPoreConductivity && !Gravity.x && !Gravity.y && !Gravity.z
+     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_TopKernelBand
+@@ -1828,11 +1830,11 @@
+   unsigned *invalidg=ArraysGpu->ReserveUint();
+   cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+   cusph::UpdatePorosityObserver(Np,Npb,corrector,dt,1.-double(SoilCte.Porosity)
+-    ,Codeg,Kplasticg,PoroJPreg,PoroThetag,PoroJg,invalidg);
++    ,Codeg,(IsDynamicPorePlasticPeriodicConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
+   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+   ArraysGpu->Free(invalidg);
+   Check_CudaErroor("Failed advancing GPU porosity observer.");
+-  if(invalid<Np)Run_Exceptioon("GPU porosity observer requires finite saturated elastic states.");
++  if(invalid<Np)Run_Exceptioon("GPU porosity observer requires finite saturated states and elastic or admitted periodic radial material.");
+   if(corrector){ArraysGpu->Free(PoroJPreg);PoroJPreg=NULL;}
+ }
+ 

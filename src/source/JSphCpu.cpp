@@ -4662,6 +4662,7 @@ void JSphCpu::ComputeSymplecticPrePorosity(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
   if(!PorosityObserver)return;
+  const bool allowplastic=IsDynamicPorePlasticPeriodicConfig();
   const double solid0=1.-double(SoilCte.Porosity);
   for(unsigned p=0;p<Np;p++){
     const double jhalf=PoroJc[p];
@@ -4669,8 +4670,9 @@ void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
     if(p>=Npb && CODE_IsFluid(Codec[p]))
       PoroJc[p]+=dt*jhalf*PoroThetac[p];
     if(!std::isfinite(PoroJc[p]) || PoroJc[p]<=solid0
-      || (Kplasticc && CODE_IsFluid(Codec[p]) && CODE_IsNormal(Codec[p]) && Kplasticc[p]!=0))
-      Run_Exceptioon("Porosity observer requires finite saturated elastic states in corrector.");
+      || (Kplasticc && CODE_IsFluid(Codec[p]) && CODE_IsNormal(Codec[p])
+        && (allowplastic? (!std::isfinite(Kplasticc[p]) || Kplasticc[p]<0.f): Kplasticc[p]!=0)))
+      Run_Exceptioon("Porosity corrector requires finite saturated J and elastic or admitted finite nonnegative plastic state.");
   }
   ArraysCpu->Free(PoroJPrec);PoroJPrec=NULL;
 }

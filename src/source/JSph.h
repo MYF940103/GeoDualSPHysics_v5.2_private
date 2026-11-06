@@ -594,6 +594,7 @@ protected:
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
   bool IsDynamicPoreContainerConfig()const;
+  bool IsDynamicPorePlasticPeriodicConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp

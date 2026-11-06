@@ -1,0 +1,45 @@
+{
+  "stage": "upl_material_periodic_copy_cpu_r1.author",
+  "status": "author_only_not_built_or_run",
+  "source": "support/upl_material_periodic_copy_cpu_r1.cpp",
+  "scope": "Direct actual protected JSphCpuSingle::PeriodicDuplicateSymplectic call, not a copied field-transfer implementation, scene or physical integration.",
+  "future_source_build": "logs/upl_plastic_periodic_DebugCPU_r2.build.json; must actually close before any helper build",
+  "planned_result": "outputs/upl_material_periodic_copy_CPU_r1/result",
+  "fixture": {
+    "pool_owned_slots": 8,
+    "native_slots": [0, 1],
+    "native_kappa_float": [0.125, 0.75],
+    "X_destinations": [2, 3],
+    "X_sources": [0, 1],
+    "Z_after_X_destinations": [4, 5],
+    "Z_after_X_sources": [2, 3],
+    "canary_slots": [6, 7],
+    "direction_bits": "positive first copy and negative second copy in each axis, exercising existing list high-bit encoding",
+    "periodic_translation": "manufactured dyadic1.25 in X or Z; copy-component geometry only, not the1.28 physical problem",
+    "cell_geometry": "Scell=.125, DomPosMin=(-4,-4,-4), cellmax(63,63,63); all translated source positions inside the supported nonnegative cell range",
+    "all_fields_initialized": true,
+    "all_particle_arrays_pool_owned": true
+  },
+  "checks": [
+    "MaterialReturn1 nonzero kappa is copied bit exactly to both first-axis and chained second-axis images.",
+    "MaterialReturn0 leaves every destination kappa literal old bits untouched, even though the direct field fixture supplies nonzero native history; this is not old-mode plastic physical admission.",
+    "Original ID, periodic CODE, translated current position and recomputed cell are correct.",
+    "Current/pre velocity, current/pre six stress scalars, optional SPS tensor, four pore fields and J/Jpre/theta are copied bit exactly; pre-position is the literal existing unshifted source copy.",
+    "All non-destination slots, including native sources and two canaries, retain each named scalar bit. No padded tensor/struct memcmp is used.",
+    "Exactly four actual calls produce eight destination rows over mode1 then mode0; Np advances only by the fixture's explicit append bookkeeping.",
+    "TimeStep/Nstep remain0; no InitRun, RunPeriodic search, CellDivide, Pre/Cor, force, solver or density/material update is invoked."
+  ],
+  "ownership": "Eight slots are explicitly allocated through JArraysCpu with sufficient typed pool counts; current and pre pointers remain owned by the inherited pool through destruction. No borrowed host buffer or changed production signature.",
+  "budgets": "Exact scalar bits for field transfers and exact dyadic translation/cell integers. No new physical or force tolerance.",
+  "output": "copies.csv (8 rows,19 columns) and completion.json; fresh directory only, failed partials retained.",
+  "limits": [
+    "Not a full RunPeriodic list/search/sort/resize test; the next authorized actual periodic128 fixture will exercise that lifecycle.",
+    "Optional copy fields are nonnull in this compact test. Existing default/null-pointer physical behavior is not inferred from this component alone.",
+    "Does not establish correct spatial plastic response, yield residuals, pressure trajectory, CPU/GPU equivalence or a general periodic plastic model."
+  ],
+  "helper_built": false,
+  "component_executed": false,
+  "SHA_scans": 0,
+  "Git_used": false,
+  "physical_acceptance": false
+}

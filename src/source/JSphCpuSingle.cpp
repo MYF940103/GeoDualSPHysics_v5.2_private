@@ -493,6 +493,7 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     code[pnew]=CODE_SetPeriodic(code[pcopy]);
     velrhop[pnew]=velrhop[pcopy];
     sigma[pnew]=sigma[pcopy];//mdbr
+    if(SoilCte.MaterialReturn==1)Kplasticc[pnew]=Kplasticc[pcopy];
     if(porepress)porepress[pnew]=porepress[pcopy];
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];

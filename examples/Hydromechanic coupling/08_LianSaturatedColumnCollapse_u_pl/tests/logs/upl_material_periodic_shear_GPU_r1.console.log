@@ -1,0 +1,456 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../outputs/upl_material_periodic_shear_GPU_r1_runtime/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  06-11-2026 17:36:07]
+ProgramFile=".../outputs/upl_material_periodic_shear_GPU_r1_runtime/DualSPHysics5.2_win64_debug.exe"
+ExecutionDir=".../SPH/GeoDualSPHysics_redevelop_f66777b/src"
+XmlFile=".../outputs/upl_material_periodic_shear_r1_seed/CaseLianMaterialPeriodicShear_r1.xml"
+OutputDir=".../tests/outputs/upl_material_periodic_shear_GPU_r1"
+OutputDataDir=".../outputs/upl_material_periodic_shear_GPU_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): Length=[1.28]  MResId=[0]  CaseName=["CaseLianMaterialPeriodicShear_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  KernelSize=[0.096]  B=[0]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[3.316]  MassBound=[3.316]
+
+*** WARNING: The execution will be cancelled after 128 simulation steps.
+
+XML-Vars (parameters): TimeMax=[0.000244141]  TimeOut=[6.10352e-05]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  MaterialReturn: 1=ConsistentDev (experimental radial return; unsupported apex stops the stage)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded
+  HydroMechConductivityModel="Constant"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 1024
+MapRealPos(border)=(0,-0.0024,0)-(1.28,0.0024,1.28)
+MapRealPos(final)=(0,-0.0024,0)-(1.28,0.0024,1.28)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.096000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseLianMaterialPeriodicShear_r1"
+RunName="CaseLianMaterialPeriodicShear_r1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="DBC"
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=241.7535
+  Wendland.bwen=-25184.46
+Viscosity="Artificial"
+  Visco=0
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="None"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=1024
+CaseNbound=0
+CaseNfixed=0
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=1024
+PeriodicActive="Axes-XZ"
+PeriodicXinc=(-1.28,0,0)
+PeriodicZinc=(0,0,-1.28)
+Dp=0.04
+KernelH=0.048000  (CoefficientH=0.848528; H/Dp=1.2)
+KernelSize=0.096
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.0000019073486328125
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.0000019073486328125
+MassFluid=3.316
+MassBound=3.316
+TimeMax=0.000244140625
+TimePart=0.00006103515625
+Gravity=(0,0,0)
+NpMinimum=1024
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(16,1,16)
+CellDomFixed=False
+**Requested GPU memory for 1152 particles: 0.6 MB (0 times).
+DomCells=(16,1,16)
+DomCellCode="1+12_8_11"
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (96 regs)
+  BsForcesFluid=128 (143 regs)
+ 
+**JSphGpu: Requesting gpu memory for 1337 particles: 0.7 MB.
+**JSphGpu: Requesting gpu memory for 1488 particles: 0.8 MB.
+**CellDiv: Requested gpu memory for 1488 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 512 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 0
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 1024  id:(0-1023)   MKs:1 (1)
+
+Total particles: 1024 (bound=0 (fx=0 mv=0 ft=0) fluid=1024)
+Total MK blocks: 1 (bound=0 (fx=0 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.01)-(MAX,MAX,0.03)
+  Constant velocity: 0.0980171
+Initialize_1
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.05)-(MAX,MAX,0.07)
+  Constant velocity: 0.290285
+Initialize_2
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.09)-(MAX,MAX,0.11)
+  Constant velocity: 0.471397
+Initialize_3
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.13)-(MAX,MAX,0.15)
+  Constant velocity: 0.634393
+Initialize_4
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.17)-(MAX,MAX,0.19)
+  Constant velocity: 0.77301
+Initialize_5
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.21)-(MAX,MAX,0.23)
+  Constant velocity: 0.881921
+Initialize_6
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.25)-(MAX,MAX,0.27)
+  Constant velocity: 0.95694
+Initialize_7
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.29)-(MAX,MAX,0.31)
+  Constant velocity: 0.995185
+Initialize_8
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.33)-(MAX,MAX,0.35)
+  Constant velocity: 0.995185
+Initialize_9
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.37)-(MAX,MAX,0.39)
+  Constant velocity: 0.95694
+Initialize_10
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.41)-(MAX,MAX,0.43)
+  Constant velocity: 0.881921
+Initialize_11
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.45)-(MAX,MAX,0.47)
+  Constant velocity: 0.77301
+Initialize_12
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.49)-(MAX,MAX,0.51)
+  Constant velocity: 0.634393
+Initialize_13
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.53)-(MAX,MAX,0.55)
+  Constant velocity: 0.471397
+Initialize_14
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.57)-(MAX,MAX,0.59)
+  Constant velocity: 0.290285
+Initialize_15
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.61)-(MAX,MAX,0.63)
+  Constant velocity: 0.0980171
+Initialize_16
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.65)-(MAX,MAX,0.67)
+  Constant velocity: -0.0980171
+Initialize_17
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.69)-(MAX,MAX,0.71)
+  Constant velocity: -0.290285
+Initialize_18
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.73)-(MAX,MAX,0.75)
+  Constant velocity: -0.471397
+Initialize_19
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.77)-(MAX,MAX,0.79)
+  Constant velocity: -0.634393
+Initialize_20
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.81)-(MAX,MAX,0.83)
+  Constant velocity: -0.77301
+Initialize_21
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.85)-(MAX,MAX,0.87)
+  Constant velocity: -0.881921
+Initialize_22
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.89)-(MAX,MAX,0.91)
+  Constant velocity: -0.95694
+Initialize_23
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.93)-(MAX,MAX,0.95)
+  Constant velocity: -0.995185
+Initialize_24
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,0.97)-(MAX,MAX,0.99)
+  Constant velocity: -0.995185
+Initialize_25
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.01)-(MAX,MAX,1.03)
+  Constant velocity: -0.95694
+Initialize_26
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.05)-(MAX,MAX,1.07)
+  Constant velocity: -0.881921
+Initialize_27
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.09)-(MAX,MAX,1.11)
+  Constant velocity: -0.77301
+Initialize_28
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.13)-(MAX,MAX,1.15)
+  Constant velocity: -0.634393
+Initialize_29
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.17)-(MAX,MAX,1.19)
+  Constant velocity: -0.471397
+Initialize_30
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.21)-(MAX,MAX,1.23)
+  Constant velocity: -0.290285
+Initialize_31
+  Operation: FluidVel
+  MkFluid..: 0 (32 / 1024 particles)
+  OnlyPos..: (MIN,MIN,1.25)-(MAX,MAX,1.27)
+  Constant velocity: -0.0980171
+ 
+Allocated memory in CPU: 406176 (0.39 MB)
+Allocated memory in GPU: 824852 (0.79 MB)
+Part_0000        1024 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 128 simulation steps.
+
+[Initialising simulation (4m30maui)  06-11-2026 17:36:12]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphGpu: Requesting gpu memory for 1623 particles: 0.8 MB.
+**JSphGpu: Requesting gpu memory for 1774 particles: 0.9 MB.
+**CellDiv: Requested gpu memory for 1774 particles: 0.0 MB.
+**CellDiv: Requested gpu memory for 512 cells (CellMode=Full): 0.0 MB.
+Part_0001      0.000061            32       32  213460.54  06-11-2026 17:37:04
+Part_0002      0.000122            64       32  210917.77  06-11-2026 17:37:03
+Part_0003      0.000183            96       32  208998.97  06-11-2026 17:37:03
+Part_0004      0.000244           128       32  209516.05  06-11-2026 17:37:04
+
+[Simulation finished  06-11-2026 17:37:04]
+Particles of simulation (initial): 1024
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 56.594524 sec.
+Simulation Runtime...............: 51.447071 sec.
+Runtime per physical second......: 210727.203125 sec.
+Steps per second.................: 2.487994
+Steps of simulation..............: 128
+PART files.......................: 5
+Maximum number of particles......: 1296
+Maximum number of cells..........: 225
+CPU Memory.......................: 475388 (0.45 MB)
+GPU Memory.......................: 981604 (0.94 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 5.147395 sec.
+NL-Limits........................: 1.189945 sec.
+NL-PreSort.......................: 0.118709 sec.
+NL-RadixSort.....................: 8.602257 sec.
+NL-CellBegin.....................: 0.155609 sec.
+NL-SortData......................: 1.682898 sec.
+NL-OutCheck......................: 1.611950 sec.
+CF-PreForces.....................: 0.444663 sec.
+CF-Forces........................: 11.327666 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 1.081895 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 22.605697 sec.
+SU-ResizeNp......................: 0.033952 sec.
+SU-DownData......................: 0.027818 sec.
+SU-SavePart......................: 0.039085 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000001 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk...: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk.: Saves the cell division of the simulation domain.
+- Run.csv..............: One line CSV file with execution parameters and other simulation data.
+- Run.out..............: Log file of the simulation.
+- data/PartInfo.ibi4...: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4...: Binary file with particle data in different instants.
+- data/Part_Head.ibi4..: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The execution will be cancelled after 128 simulation steps.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Dynamic boundary conditions (Crespo et al., 2007  https://doi.org/10.3970/cmc.2007.005.173)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+

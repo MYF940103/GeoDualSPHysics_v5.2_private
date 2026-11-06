@@ -3638,6 +3638,19 @@ bool JSph::IsDynamicPoreContainerConfig()const{
 }
 
 //==============================================================================
+/// Narrow waiver of the elastic-only J corrector gate; base admission remains.
+//==============================================================================
+bool JSph::IsDynamicPorePlasticPeriodicConfig()const{
+  return(SoilCte.MaterialReturn==1 && HydroMech && HydroMechDynamicSeepage
+    && !CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
+    && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+    && SoilCte.coh==SoilCte.coh_r && SoilCte.n_coh==0.f && SoilCte.dlt==0.f && SoilCte.psiDecay==0.f
+    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !SoilDamping && Visco==0.f && !ViscoTime
+    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
+    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage);
+}
+
+//==============================================================================
 /// Fixed +X/-X FreeSlip sides and +Z NoSlip bed; far bed samples are not soil.
 //==============================================================================
 void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code

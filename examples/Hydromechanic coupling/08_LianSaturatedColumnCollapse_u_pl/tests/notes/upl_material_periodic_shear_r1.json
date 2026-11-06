@@ -1,0 +1,186 @@
+{
+  "stage": "upl_material_periodic_shear_r1.prepare",
+  "status": "author_only_not_executed",
+  "scope": "One bounded constant-strength periodic plastic-shear candidate, not the Lian collapse or equilibrium validation",
+  "author_files": [
+    "configs/CaseLianMaterialPeriodicShear_r1_Def.xml",
+    "support/upl_material_periodic_shear_r1_velocity.csv",
+    "support/xCaseLianMaterialPeriodicShear_r1_GenCase.bat",
+    "support/xCaseLianMaterialPeriodicShear_r1_win64_CPU.bat",
+    "support/xCaseLianMaterialPeriodicShear_r1_win64_GPU.bat"
+  ],
+  "future_seed": "outputs/upl_material_periodic_shear_r1_seed/CaseLianMaterialPeriodicShear_r1",
+  "generated_companion_hand_authored": false,
+  "GenCase_invoked": false,
+  "solver_invoked": false,
+  "future_programs": {
+    "CPU": "outputs/upl_plastic_periodic_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe",
+    "GPU": "outputs/upl_plastic_periodic_Debug_r1/DualSPHysics5.2_win64_debug.exe"
+  },
+  "programs_are_future_paths_not_build_pass_claims": true,
+  "future_outputs": {
+    "CPU": "outputs/upl_material_periodic_shear_CPU_r1",
+    "GPU": "outputs/upl_material_periodic_shear_GPU_r1"
+  },
+  "geometry": {
+    "dimension": 2,
+    "expected_native_particles": 1024,
+    "expected_native_grid": [
+      32,
+      32
+    ],
+    "dp_m": 0.04,
+    "expected_loaded_h": "double(float(0.048))",
+    "domain_xz_m": [
+      0,
+      1.28
+    ],
+    "nominal_x_and_z": "(2*i+1)/50 for i=0..31; actual GenCase double coordinates are authoritative",
+    "fixed": 0,
+    "floating": 0,
+    "moving": 0,
+    "walls": 0,
+    "periodic": "XZPeriodic=1; axis-aligned and no offset",
+    "expected_mass": "double(float(2072.5*0.04*0.04)) = double(float(3.316))",
+    "no_dummy_boundary_added": true
+  },
+  "zero_boundary_GenCase_evidence": [
+    "../02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_p3_spatial_seed_r1_n32_c/CaseUplSpatial_n32_c.out: Finished execution(code=0), No boundary particles were created in the defined domain",
+    "same generated .xml: particles np512/nb0/nbf0 and one fluid block",
+    "../02_TerzaghiConsolidation_q0_PR/tests/outputs/upl_cpu_public_r1_periodic_constant_h/Run.out: CaseNbound=0, CaseNfixed=0, CaseNfluid=512"
+  ],
+  "initial_velocity": {
+    "amplitude_m_s": 1,
+    "formula": "vx=float32(sin(2*pi*z_nominal/1.28)), vy=vz=0",
+    "implementation": "32 existing fluidvelocity constant assignments, direction(1,0,0), onlypos z bands of nominal row centre +/-0.01; no new engine initializer",
+    "csv_columns": [
+      "row",
+      "z",
+      "vx_float",
+      "vx_float_bits_hex",
+      "z_min",
+      "z_max"
+    ],
+    "rounding": "Author table computed with Python math.sin then struct pack/unpack float32; decimal literals retain17 significant digits. XML uses exactly the declared float values. Reader must match table bits, not independently recompute libm sin.",
+    "onlypos_semantics": "JDsInitialize.cpp:ReadXmlOnlyPos and FluidVel::Run, double inclusive bounds; CheckPos in JDsInitialize.h. Bands are disjoint and have ample clearance from generated lattice rounding.",
+    "initial_coordinates_not_yet_observed": true,
+    "author_XML_CSV_check": "32 disjoint bands and all literal float bits matched; this was a shallow input check, not GenCase or a solver"
+  },
+  "material": {
+    "MaterialReturn": 1,
+    "DilationDecay": 0,
+    "phi_deg": 25,
+    "phi_r_deg": 25,
+    "n_phi": 0,
+    "coh_Pa": 5000,
+    "coh_r_Pa": 5000,
+    "n_coh": 0,
+    "dlt_deg": 0,
+    "E_Pa": 20000000,
+    "nu": 0.33,
+    "parameter_precision": "retain production float material constants",
+    "unsupported_apex": "explicit stage stop, no alternate return"
+  },
+  "hydromechanics": {
+    "HydroMech": 1,
+    "HydroMechDynamicSeepage": 1,
+    "conductivity_model": 0,
+    "Ck": 0,
+    "k_m_s": 0.0002,
+    "n0_xml": 0.35,
+    "rho0": 2072.5,
+    "rhow": 1000,
+    "Kw": 1000000000,
+    "InitMode": 0,
+    "initial_J": 1,
+    "initial_p_p0_effective_stress_kappa": 0,
+    "gravity": [
+      0,
+      0,
+      0
+    ],
+    "SoilStressRateGradCorr": 1,
+    "PoreCompressionGradCorr": 1,
+    "PoreCompressionSourceMode": 0,
+    "drainage": 0,
+    "free_seepage": 0,
+    "fixed_grid_drainage": "absent/default0"
+  },
+  "disabled": [
+    "hourglass",
+    "independent SPR",
+    "soil damping",
+    "artificial viscosity(Visco0)",
+    "Shepard",
+    "artificial stress",
+    "prescribed load",
+    "DDT",
+    "shifting",
+    "NoPenetration",
+    "cohesion/friction softening",
+    "wall removal"
+  ],
+  "time": {
+    "fixed_dt_s": 0.0000019073486328125,
+    "DtMin_s": 1e-8,
+    "CFL": 0.2,
+    "PoreDtSafety": 0.1,
+    "TimeMax_s": 0.000244140625,
+    "TimeOut_s": 0.00006103515625,
+    "CLI_nsteps": 128,
+    "planned_completed_updates": [
+      0,
+      32,
+      64,
+      96,
+      128
+    ],
+    "planned_native_steps": [
+      0,
+      31,
+      63,
+      95,
+      127
+    ],
+    "planned_time_s": [
+      0,
+      0.00006103515625,
+      0.0001220703125,
+      0.00018310546875,
+      0.000244140625
+    ],
+    "all_original_necessary_bounds_retained": true
+  },
+  "entry_contract": "GenCase BAT only generates fresh seed. Solver BAT reads actual generated XML+BI4 directly and copies only the chosen isolated program plus four established runtime files to its fresh runtime directory. Both reject existing runtime/output, record immediate native ERRORLEVEL, and never start another action, reader or plot. No mDBC CLI is used because no walls exist.",
+  "future_review_requirements": [
+    "Root full-read before any GenCase or solver invocation",
+    "Actual GenCase1024 fluid/zero fixed, no floating/moving; actual double lattice and generated constants, XML physical identity",
+    "Actual owned exit and128 updates/5 frames/no exclusions/original finite and necessary-step guards",
+    "All1024 original IDs and22 typed arrays, exact five scalar clocks and nonempty signed intervals, current-J/n/V/rho/k ledger and float density cache",
+    "Initial velocity float bits by CSV row and actual x/z lattice, J1/p/p0/stress/kappa0",
+    "Finite nonnegative kappa without per-ID rollback, at least one positive final kappa; no unsupported apex/invalid/nonconvergent material stage",
+    "Pressure/J and stresses after initialization are actual coupled outputs; they are not forced to zero and no new manufactured physical tolerance is declared"
+  ],
+  "limits": [
+    "This preparation does not assert a passed new source build or public plastic admission.",
+    "No generated companion/BI4 is fabricated, copied from another geometry or claimed produced.",
+    "This short periodic material-coupled fixture does not validate the large-deformation collapse, negative dilation, softening, gravity equilibrium, wall release or a full physical trajectory."
+  ],
+  "SHA_scans": 0,
+  "Git_used": false,
+  "physical_acceptance": false,
+  "build_revision_update": {
+    "reason": "Root found missing nonzero kappa transfer to periodic ghosts on CPU and GPU. The r1 build group was held/retired before any periodic PDE run; it is not accepted plastic evidence. Root corrected the narrow copy path and selected fresh r2 builds.",
+    "supersedes_original_future_programs_above": true,
+    "current_future_programs": {
+      "CPU": "outputs/upl_plastic_periodic_DebugCPU_r2/DualSPHysics5.2CPU_win64_debug.exe",
+      "GPU": "outputs/upl_plastic_periodic_Debug_r2/DualSPHysics5.2_win64_debug.exe"
+    },
+    "both_solver_BAT_changes": "Only the sealed-program directory line r1 to r2; argv, seed, output tags, physical input and numerical gates unchanged.",
+    "actual_GenCase_once_completed": "logs/upl_material_periodic_shear_r1.gencase.call.json and .gencase.check.json;1024fluid/zero bound, actual double32x32 verified.",
+    "GenCase_rerun": false,
+    "periodic_solver_started": false,
+    "r2_build_pass_claimed_by_preparation": false,
+    "root_new_build_and_component_review_required_before_physical_run": true
+  }
+}

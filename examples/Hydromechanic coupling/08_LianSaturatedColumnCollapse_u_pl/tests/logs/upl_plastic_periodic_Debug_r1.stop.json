@@ -1,0 +1,293 @@
+{
+  "stage": "upl_plastic_periodic_Debug_r1.intentional_build_retirement",
+  "reason": "Root authorized stop after discovering missing kappa copying in CPU/GPU PeriodicDuplicateSymplectic; no physical test authorized.",
+  "started_utc": "2026-11-06T08:08:49.813016+00:00",
+  "owner": {
+    "pid": 2656,
+    "created_epoch": 1793952101.1341176,
+    "ppid": 21872,
+    "exe": "D:\\Anaconda3\\python.exe",
+    "command": [
+      "D:\\anaconda3\\python.exe",
+      "-u",
+      "-B",
+      "..\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_plastic_periodic_r1_build.py",
+      "Debug"
+    ]
+  },
+  "owned_build_tree": [
+    {
+      "pid": 69100,
+      "created_epoch": 1793952123.9693968,
+      "ppid": 2656,
+      "exe": "D:\\Program Files\\VS2022\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "command": [
+        "D:\\Program Files\\VS2022\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS\\DualSPHysics5Re.sln",
+        "/m:1",
+        "/nr:false",
+        "/t:Build",
+        "/v:minimal",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/p:PlatformToolset=v143",
+        "/p:VCToolsVersion=14.36.32532",
+        "/p:BuildProjectReferences=false",
+        "/p:PostBuildEventUseInBuild=false",
+        "/p:OutDir=D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/tests/outputs/upl_plastic_periodic_Debug_r1/",
+        "/p:IntDir=C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/",
+        "/bl:D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_periodic_Debug_r1.binlog"
+      ]
+    },
+    {
+      "pid": 50260,
+      "created_epoch": 1793952125.89994,
+      "ppid": 69100,
+      "exe": "C:\\Windows\\System32\\conhost.exe",
+      "command": [
+        "\\??\\C:\\WINDOWS\\system32\\conhost.exe",
+        "0x4"
+      ]
+    },
+    {
+      "pid": 35976,
+      "created_epoch": 1793952230.8601527,
+      "ppid": 69100,
+      "exe": "C:\\Windows\\System32\\cmd.exe",
+      "command": [
+        "cmd.exe",
+        "/C",
+        "C:\\Users\\syosh\\AppData\\Local\\Temp\\tmpeb2fbeadd7cb4352bf7d0a7e543e56ab.cmd"
+      ]
+    },
+    {
+      "pid": 35072,
+      "created_epoch": 1793952230.8780477,
+      "ppid": 35976,
+      "exe": "C:\\Windows\\System32\\conhost.exe",
+      "command": [
+        "\\??\\C:\\WINDOWS\\system32\\conhost.exe",
+        "0x4"
+      ]
+    },
+    {
+      "pid": 31552,
+      "created_epoch": 1793952230.921446,
+      "ppid": 35976,
+      "exe": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe",
+      "command": [
+        "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe",
+        "-gencode=arch=compute_86,code=\"sm_86,compute_86\"",
+        "--use-local-env",
+        "-ccbin",
+        "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64",
+        "-x",
+        "cu",
+        "-IC:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include",
+        "-G",
+        "--keep-dir",
+        "C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/",
+        "-maxrregcount=0",
+        "--machine",
+        "64",
+        "--compile",
+        "-cudart",
+        "static",
+        "-use_fast_math",
+        "-Xcompiler",
+        "/wd 4267",
+        "-Wno-deprecated-gpu-targets",
+        "-g",
+        "-D_WITHGPU",
+        "-DWIN32",
+        "-D_CONSOLE",
+        "-D_VC80_UPGRADE=0x0710",
+        "-D_MBCS",
+        "-Xcompiler",
+        "/EHsc /W3 /nologo /Od /FdC:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/vc143.pdb /FS /Zi /RTC1 /MTd ",
+        "-o",
+        "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\\\JSphGpu_ker.cu.obj",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu"
+      ]
+    },
+    {
+      "pid": 69608,
+      "created_epoch": 1793952304.739,
+      "ppid": 31552,
+      "exe": "C:\\Windows\\System32\\cmd.exe",
+      "command": [
+        "C:\\WINDOWS\\system32\\cmd.exe",
+        "/c",
+        "ptxas",
+        "-arch=sm_86",
+        "-m64",
+        "-g",
+        "--dont-merge-basicblocks",
+        "--return-at-end",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-7_JSphGpu_ker.ptx",
+        "-o",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-11_JSphGpu_ker.sm_86.cubin"
+      ]
+    },
+    {
+      "pid": 69172,
+      "created_epoch": 1793952304.7682006,
+      "ppid": 69608,
+      "exe": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\ptxas.exe",
+      "command": [
+        "ptxas",
+        "-arch=sm_86",
+        "-m64",
+        "-g",
+        "--dont-merge-basicblocks",
+        "--return-at-end",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-7_JSphGpu_ker.ptx",
+        "-o",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-11_JSphGpu_ker.sm_86.cubin"
+      ]
+    }
+  ],
+  "owner_not_targeted": true,
+  "original_pid_creation_argv_parent_verified": true,
+  "last_log_lines_before_stop": [
+    "  Compiling CUDA source file ..\\source\\JSphHourglassGpu_ker.cu...",
+    "  ",
+    "  D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS>\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe\" -gencode=arch=compute_86,code=\\\"sm_86,compute_86\\\" --use-local-env -ccbin \"D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\" -x cu    -I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include\"  -G   --keep-dir C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/  -maxrregcount=0  --machine 64 --compile -cudart static -use_fast_math -Xcompiler \"/wd 4267\" -Wno-deprecated-gpu-targets -g  -D_WITHGPU -DWIN32 -D_CONSOLE -D_VC80_UPGRADE=0x0710 -D_MBCS -Xcompiler \"/EHsc /W3 /nologo /Od /FdC:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/vc143.pdb /FS /Zi /RTC1 /MTd \" -o C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\\\JSphHourglassGpu_ker.cu.obj \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.cu\" ",
+    "  JSphHourglassGpu_ker.cu",
+    "  Skipping CUDA source file ..\\source\\JSphGpu_InOut_ker.cu (excluded from build).",
+    "  Compiling CUDA source file ..\\source\\JSphGpu_ker.cu...",
+    "  ",
+    "  D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS>\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe\" -gencode=arch=compute_86,code=\\\"sm_86,compute_86\\\" --use-local-env -ccbin \"D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\" -x cu    -I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include\"  -G   --keep-dir C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/  -maxrregcount=0  --machine 64 --compile -cudart static -use_fast_math -Xcompiler \"/wd 4267\" -Wno-deprecated-gpu-targets -g  -D_WITHGPU -DWIN32 -D_CONSOLE -D_VC80_UPGRADE=0x0710 -D_MBCS -Xcompiler \"/EHsc /W3 /nologo /Od /FdC:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/vc143.pdb /FS /Zi /RTC1 /MTd \" -o C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\\\JSphGpu_ker.cu.obj \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu\" "
+  ],
+  "SHA_scans": 0,
+  "Git_used": false,
+  "production_source_written": false,
+  "retry": false,
+  "stop_tool": {
+    "command": [
+      "C:/Windows/System32/taskkill.exe",
+      "/PID",
+      "69100",
+      "/T",
+      "/F"
+    ],
+    "actual_exit_code": 0,
+    "output": "SUCCESS: The process with PID 69172 (child process of PID 69608) has been terminated.\r\nSUCCESS: The process with PID 69608 (child process of PID 31552) has been terminated.\r\nSUCCESS: The process with PID 35072 (child process of PID 35976) has been terminated.\r\nSUCCESS: The process with PID 31552 (child process of PID 35976) has been terminated.\r\nSUCCESS: The process with PID 50260 (child process of PID 69100) has been terminated.\r\nSUCCESS: The process with PID 35976 (child process of PID 69100) has been terminated.\r\nSUCCESS: The process with PID 69100 (child process of PID 2656) has been terminated.\r\n"
+  },
+  "same_owned_instances_remaining": [
+    {
+      "pid": 69100,
+      "created_epoch": 1793952123.9693968,
+      "ppid": 2656,
+      "exe": "D:\\Program Files\\VS2022\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+      "command": [
+        "D:\\Program Files\\VS2022\\MSBuild\\Current\\Bin\\amd64\\MSBuild.exe",
+        "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS\\DualSPHysics5Re.sln",
+        "/m:1",
+        "/nr:false",
+        "/t:Build",
+        "/v:minimal",
+        "/p:Configuration=Debug",
+        "/p:Platform=x64",
+        "/p:PlatformToolset=v143",
+        "/p:VCToolsVersion=14.36.32532",
+        "/p:BuildProjectReferences=false",
+        "/p:PostBuildEventUseInBuild=false",
+        "/p:OutDir=D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/tests/outputs/upl_plastic_periodic_Debug_r1/",
+        "/p:IntDir=C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/",
+        "/bl:D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_plastic_periodic_Debug_r1.binlog"
+      ]
+    },
+    {
+      "pid": 69172,
+      "created_epoch": 1793952304.7682006,
+      "ppid": 69608,
+      "exe": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\ptxas.exe",
+      "command": [
+        "ptxas",
+        "-arch=sm_86",
+        "-m64",
+        "-g",
+        "--dont-merge-basicblocks",
+        "--return-at-end",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-7_JSphGpu_ker.ptx",
+        "-o",
+        "C:/Users/syosh/AppData/Local/Temp/tmpxft_00007b40_00000000-11_JSphGpu_ker.sm_86.cubin"
+      ]
+    }
+  ],
+  "owned_tree_absent": false,
+  "ended_utc": "2026-11-06T08:08:50.442121+00:00",
+  "retained_partial_objects": [
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\FunctionsGeo3d_iker.h.obj",
+      "bytes": 139361,
+      "mtime_ns": 1793952156807072900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\FunctionsMath_iker.h.obj",
+      "bytes": 341473,
+      "mtime_ns": 1793952160402536800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JCellDivGpu_ker.cu.obj",
+      "bytes": 15052782,
+      "mtime_ns": 1793952193662969300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JCellDivGpuSingle_ker.cu.obj",
+      "bytes": 147174,
+      "mtime_ns": 1793952196807895200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JDsAccInput_ker.cu.obj",
+      "bytes": 152448,
+      "mtime_ns": 1793952215379432000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JDsGauge_ker.cu.obj",
+      "bytes": 300198,
+      "mtime_ns": 1793952202179769700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JDsPips_ker.cu.obj",
+      "bytes": 223642,
+      "mtime_ns": 1793952199373047000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JReduSum_ker.cu.obj",
+      "bytes": 280647,
+      "mtime_ns": 1793952205808199000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JRelaxZone_ker.cu.obj",
+      "bytes": 708757,
+      "mtime_ns": 1793952208773656100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JSphGpuSimple_ker.cu.obj",
+      "bytes": 3502318,
+      "mtime_ns": 1793952225922375000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JSphHourglassGpu_ker.cu.obj",
+      "bytes": 361270,
+      "mtime_ns": 1793952230596596800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\JSphShifting_ker.cu.obj",
+      "bytes": 276281,
+      "mtime_ns": 1793952212256828700
+    }
+  ],
+  "last_log_lines_after_stop": [
+    "  Compiling CUDA source file ..\\source\\JSphHourglassGpu_ker.cu...",
+    "  ",
+    "  D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS>\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe\" -gencode=arch=compute_86,code=\\\"sm_86,compute_86\\\" --use-local-env -ccbin \"D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\" -x cu    -I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include\"  -G   --keep-dir C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/  -maxrregcount=0  --machine 64 --compile -cudart static -use_fast_math -Xcompiler \"/wd 4267\" -Wno-deprecated-gpu-targets -g  -D_WITHGPU -DWIN32 -D_CONSOLE -D_VC80_UPGRADE=0x0710 -D_MBCS -Xcompiler \"/EHsc /W3 /nologo /Od /FdC:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/vc143.pdb /FS /Zi /RTC1 /MTd \" -o C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\\\JSphHourglassGpu_ker.cu.obj \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphHourglassGpu_ker.cu\" ",
+    "  JSphHourglassGpu_ker.cu",
+    "  Skipping CUDA source file ..\\source\\JSphGpu_InOut_ker.cu (excluded from build).",
+    "  Compiling CUDA source file ..\\source\\JSphGpu_ker.cu...",
+    "  ",
+    "  D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\VS>\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe\" -gencode=arch=compute_86,code=\\\"sm_86,compute_86\\\" --use-local-env -ccbin \"D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\HostX64\\x64\" -x cu    -I\"C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\include\"  -G   --keep-dir C:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/  -maxrregcount=0  --machine 64 --compile -cudart static -use_fast_math -Xcompiler \"/wd 4267\" -Wno-deprecated-gpu-targets -g  -D_WITHGPU -DWIN32 -D_CONSOLE -D_VC80_UPGRADE=0x0710 -D_MBCS -Xcompiler \"/EHsc /W3 /nologo /Od /FdC:/Users/syosh/AppData/Local/Temp/upl_plastic_periodic_r1/Debug/int/vc143.pdb /FS /Zi /RTC1 /MTd \" -o C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_plastic_periodic_r1\\Debug\\int\\\\JSphGpu_ker.cu.obj \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu\" "
+  ]
+}
