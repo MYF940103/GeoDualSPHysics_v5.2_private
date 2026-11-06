@@ -1,0 +1,90 @@
+{
+  "stage": "upl_gravity_release_r1.author",
+  "status": "UNAPPLIED patch only. Live source, builds, runtime, seed, readers and admissions untouched. No build/component/solver/decoder/Git/queue/SHA action by author.",
+  "patch": "support/upl_gravity_release_r1.patch",
+  "source_base_SMT": [
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSph.h",
+      "bytes": 40512,
+      "mtime_ns": 1793962768822226400
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSph.cpp",
+      "bytes": 203633,
+      "mtime_ns": 1793969525312324500
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphCpuSingle.h",
+      "bytes": 5078,
+      "mtime_ns": 1791737217143482100
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphCpuSingle.cpp",
+      "bytes": 77331,
+      "mtime_ns": 1793969715464192100
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphGpuSingle.h",
+      "bytes": 3349,
+      "mtime_ns": 1792181870965595600
+    },
+    {
+      "path": "D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source/JSphGpuSingle.cpp",
+      "bytes": 68114,
+      "mtime_ns": 1793969721334967500
+    }
+  ],
+  "patch_scope": [
+    {
+      "path": "src/source/JSph.h",
+      "added": 6,
+      "deleted": 1,
+      "hunks": 2
+    },
+    {
+      "path": "src/source/JSph.cpp",
+      "added": 67,
+      "deleted": 1,
+      "hunks": 9
+    },
+    {
+      "path": "src/source/JSphCpuSingle.h",
+      "added": 1,
+      "deleted": 0,
+      "hunks": 1
+    },
+    {
+      "path": "src/source/JSphCpuSingle.cpp",
+      "added": 28,
+      "deleted": 1,
+      "hunks": 3
+    },
+    {
+      "path": "src/source/JSphGpuSingle.h",
+      "added": 1,
+      "deleted": 0,
+      "hunks": 1
+    },
+    {
+      "path": "src/source/JSphGpuSingle.cpp",
+      "added": 33,
+      "deleted": 1,
+      "hunks": 3
+    }
+  ],
+  "XML": "Optional <gravitypreload time=\"10\" release_mkbound=\"2\" /> under execution/special. Latest user asks10s stability, never a15s physical run. A pure10s preload leaves this object ABSENT, retaining damping.02 and Shepard40 throughout; an enabled combined preload/release run must configure TimeMax beyond its event.",
+  "defaults": "Absent object: GravityPreload=false, no new metadata, save event, retirement, filter switch or GPU constant upload. Scalar event fields initialize0. Present object requires both attributes; reject unknown attributes/children or another same event.",
+  "admission": "Only the unchanged fresh2D constant-k gravity-container scope with MR1/ConstantZ/top-water-plane/free-seepage, configured SoilDamping.02/Shepard40 and finite positive constant dt. Existing material, finite/domain, timestep, fixed/moving/periodic/HG/SPR/load/variable-k/restart/apex gates stay unchanged. Time must be positive on its integer completed-step grid;16epsilon grid check concerns only parsing/division roundoff, not a physical tolerance or accumulated-clock reset.",
+  "RIGHT_validation": "CheckDynamicPoreContainer becomes nonconst only to cache MK Begin/Count. Existing MkInfo selected fixed block Code type/value must classify exclusively as normal RIGHT (-X) FreeSlip samples; selected count must equal both its native block Count and the entire right-face count. All original three-face/inside-soil/saturated-top checks remain literal. No new idp argument or caller edit, no source-kernel changes.",
+  "timing": "Previous loop: add enabled-only completed=Nstep+1==eventStep to the existing SaveData OR condition, producing a genuine PRE-event native record with the original zero-based Step. If ordinary save already applies there is only one save. Next loop entry after Nstep++: event requires Nstep==eventStep and all predictor pointersNULL; retire before the next predictor. Never call SaveData at loop entry, relabel records, reset TimeStep, or replace scalar+=dt with n*dt. An additional first-post save can occur at the next actual crossing; reader must use actual rows rather than a fabricated fixed frame count.",
+  "retirement": "Walk ALL current boundary slots by original Idp in the validated range, mark exactly Count CODE_OUTIGNORE, set BoundChanged and use the actual full divide. Preserve CaseNp/CaseNpb/MK/original IDs. Soil p0/J/sigma/kappa and other histories are not initialized/reset; lawful new free-surface positive p projection is a distinct boundary operation. No extra wall pass after clamp: next force refreshes state/C/Ace before its consumers; ordinary SaveData also refreshes classification/closures.",
+  "GPU": "Download only the current boundary Idp/Code prefix into existing allocated host arrays, mark there, upload Code only, check CUDA errors. No new kernel, persistent array, position manipulation or stale host-state upload. Disable damping/Shepard flags before divide; call ConstantDataUp once for GPU damping.",
+  "NpMinimum_accounting": "After a successful expected divide do NpMinimum-=retired on both backends. Initially min=CaseNfixed+CaseNfluid-allowedFluidLoss; afterward min=(CaseNfixed-retired)+CaseNfluid-allowedFluidLoss. Same allowed soil-loss count; no threshold relaxation, original Case registry untouched. PartsOutMax=0 gives new min6800 for current geometry so planned260 fixed retirements do not falsely stop the run; one lost soil would still cross that strict minimum.",
+  "phase_semantics": "One internal released flag; configured .02/40 apply only before the event, then SoilDamping=false and PoreShepardRegularization=false. Coefficient/interval values stay stored, not silently retuned. FreeSeepage/dynamic wall/AV/material/pressure reference remain. Log request, actual accumulated time, completed count, target range, attempt and successful phase. Failures stop with partial evidence, no rollback/balance detector/restart or automatic retry.",
+  "metadata": "Only enabled objects add typed PART scalars: GravityPreloadPhase uint0/1; GravityPreloadRequestedTime double; GravityPreloadEventCompletedStep uint; GravityPreloadReleaseMkBound uint; GravityPreloadTargetIdBegin/TargetIdCount uint; only after release GravityPreloadActualTime double and GravityPreloadActualCompletedStep uint; SoilDampingActive/PoreShepardActive bool. Existing22 arrays and clock/dterror schema are unchanged; actual fields are absent before success, never invented0.",
+  "future_reader": "Original case header remains7060/2060 fixed. Before phase1 require every original ID; afterward require precisely6800=5000soil+1800remaining fixed for current geometry, with ONLY the declared right260 IDs absent. All soil/other native IDs,22 fields,J/n/rho/k/finite/signed-clock/material/free-seepage guards remain. Native saved Step is zero-based; actual event completed count is separate. No hidden exclusion waiver or physical collapse acceptance.",
+  "planned_verification": "CPU zero-step retirement already passed; GPU counterpart actual memcheck/check has passed per root. After root announcement/application, authoritative matching new CPU/GPU closures required because JSph class layout changes. Reuse same-backend absent-object short controls for typed22+signed-clock/default scheduling/metadata equality, no5s rerun or half chain. One later explicitly admitted tiny event case must exercise PartsOutMax=0, genuine pre-event record, first post-phase record/retired set, flagsOFF and no false minimum-stop; component alone did not enter that outer-loop branch. Root owns all execution admission.",
+  "format": "Repo-root paths a/src/source/...; unified hunks preserve their source CRLF/mixed-line-ending contexts. Root must inspect/apply-check before application; author performed no Git apply/check.",
+  "physical_acceptance": false,
+  "SHA_scans": 0
+}

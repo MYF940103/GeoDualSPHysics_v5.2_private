@@ -62,6 +62,10 @@
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
+			<!-- Optional experimental fresh 2D constant-k MR1 gravity preload; omitted=disabled. -->
+			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
+			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
+			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->
 
 			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
 			<mdbcslip>

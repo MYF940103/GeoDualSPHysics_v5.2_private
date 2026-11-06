@@ -1316,6 +1316,31 @@ void JSphCpuSingle::ComputePips(bool run){
 }
 
 //==============================================================================
+/// Retires the validated right MK once at a completed-step boundary; no state reinitialization.
+//==============================================================================
+void JSphCpuSingle::RunGravityPreloadRelease(){
+  if(!GravityPreload || GravityPreloadReleased || unsigned(Nstep)<GravityPreloadStep)return;
+  if(unsigned(Nstep)!=GravityPreloadStep || PosPrec || VelrhopPrec || SigmaPrec || PorePressPrec || PoroJPrec
+    || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb)
+    Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
+  Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
+  unsigned retired=0;const unsigned oldnp=Np,oldnb=Npb;
+  for(unsigned p=0;p<Npb;p++)if(Idpc[p]>=GravityPreloadIdBegin && Idpc[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
+    if(!CODE_IsNormal(Codec[p]) || !CODE_IsFixed(Codec[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
+    Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;
+  }
+  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+  SoilDamping=false;PoreShepardRegularization=false;
+  BoundChanged=true;RunCellDivide(true);
+  if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
+    || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
+  NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
+  GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
+  Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+}
+
+//==============================================================================
 /// Initialises execution of simulation.
 /// Inicia ejecucion de simulacion.
 //==============================================================================
@@ -1361,6 +1386,7 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   if(DsPips)ComputePips(true);
   PrintHeadPart();
   while(TimeStep<TimeMax){
+    if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();
     InterStep=(TStep==STEP_Symplectic? INTERSTEP_SymPredictor: INTERSTEP_Verlet);
     if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
     if(DDTRamp.x)RunInitialDDTRamp(); //<vs_ddramp>
@@ -1373,7 +1399,8 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
     LastDt=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
     //-Retain the final native state even when TimeMax is between output events.
-    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)){
+    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)
+      || (GravityPreload && !GravityPreloadReleased && unsigned(Nstep+1)==GravityPreloadStep)){
       if(partoutstop){
         Log->PrintWarning("Particles OUT limit reached...");
         TimeMax=TimeStep;

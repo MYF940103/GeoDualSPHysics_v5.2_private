@@ -1120,6 +1120,36 @@ void JSphGpuSingle::ComputePips(bool run){
 }
 
 //==============================================================================
+/// Uses existing host boundary ID/code buffers for the single release; no new device kernel.
+//==============================================================================
+void JSphGpuSingle::RunGravityPreloadRelease(){
+  if(!GravityPreload || GravityPreloadReleased || unsigned(Nstep)<GravityPreloadStep)return;
+  if(unsigned(Nstep)!=GravityPreloadStep || PosxyPreg || PoszPreg || VelrhopPreg || SigmaPreg || PorePressPreg || PoroJPreg
+    || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb || !Idp || !Code || CpuParticlesSize<Npb)
+    Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
+  Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
+  const unsigned oldnp=Np,oldnb=Npb;unsigned retired=0;
+  cudaMemcpy(Idp,Idpg,sizeof(unsigned)*Npb,cudaMemcpyDeviceToHost);
+  cudaMemcpy(Code,Codeg,sizeof(typecode)*Npb,cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed in gravitypreload boundary ID/code download.");
+  for(unsigned p=0;p<Npb;p++)if(Idp[p]>=GravityPreloadIdBegin && Idp[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
+    if(!CODE_IsNormal(Code[p]) || !CODE_IsFixed(Code[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
+    Code[p]=CODE_SetOutIgnore(Code[p]);retired++;
+  }
+  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+  cudaMemcpy(Codeg,Code,sizeof(typecode)*Npb,cudaMemcpyHostToDevice);
+  Check_CudaErroor("Failed in gravitypreload boundary code upload.");
+  SoilDamping=false;PoreShepardRegularization=false;ConstantDataUp();
+  BoundChanged=true;RunCellDivide(true);
+  if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
+    || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
+  NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
+  GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
+  Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+}
+
+//==============================================================================
 /// Initialises execution of simulation.
 /// Inicia ejecucion de simulacion.
 //==============================================================================
@@ -1169,6 +1199,7 @@ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   if(DsPips)ComputePips(true);
   PrintHeadPart();
   while(TimeStep<TimeMax){
+    if(GravityPreload && !GravityPreloadReleased)RunGravityPreloadRelease();
     InterStep=(TStep==STEP_Symplectic? INTERSTEP_SymPredictor: INTERSTEP_Verlet);
     if(ViscoTime)Visco=ViscoTime->GetVisco(float(TimeStep));
     if(DDTRamp.x)RunInitialDDTRamp(); //<vs_ddramp>
@@ -1181,7 +1212,8 @@ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
     LastDt=stepdt;
     partoutstop=(Np<NpMinimum || !Np);
     //-Retain the final native state even when TimeMax is between output events.
-    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)){
+    if(TimeStep>=TimePartNext || partoutstop || TimeStep>=TimeMax || (NstepsBreak && Nstep+1>=NstepsBreak)
+      || (GravityPreload && !GravityPreloadReleased && unsigned(Nstep+1)==GravityPreloadStep)){
       if(partoutstop){
         Log->PrintWarning("Particles OUT limit reached...");
         TimeMax=TimeStep;

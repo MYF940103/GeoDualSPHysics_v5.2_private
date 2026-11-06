@@ -222,6 +222,11 @@ protected:
   double HydroMechDrainageStartTime; ///<Time when drained pore-pressure boundary starts (default=0). //mdbr
   bool HydroMechDrainageFixedGrid; ///<Align a drainage event on a fresh constant-dt grid (default=false).
   bool HydroMechFreeSeepage;  ///<Candidate constant-k container free surface; completed-step positive-only p projection (default=false).
+  bool GravityPreload;        ///<Optional single right-wall release; absent XML keeps the original path.
+  bool GravityPreloadReleased;
+  double GravityPreloadTime,GravityPreloadActualTime;
+  unsigned GravityPreloadStep,GravityPreloadActualStep,GravityPreloadMkBound;
+  unsigned GravityPreloadIdBegin,GravityPreloadIdCount;
   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
@@ -596,7 +601,7 @@ protected:
   bool IsDynamicPoreContainerConfig()const;
   bool IsDynamicPorePlasticConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
-    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode);
   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,const tfloat4 *velrhop);
 };

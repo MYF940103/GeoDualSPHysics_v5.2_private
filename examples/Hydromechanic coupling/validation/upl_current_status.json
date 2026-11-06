@@ -1183,7 +1183,7 @@
     "material_mode1_general_spatial_plasticity_accepted": false
   },
   "latest_verified_code_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac",
-  "last_updated_utc": "2026-11-06T18:01:41.114441+00:00",
+  "last_updated_utc": "2026-11-06T18:47:45.653835+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "CPU/GPU zero-step retirement components passed. Next preload candidate changed by user to10s with damping.02. Preparing minimal opt-in production release event; no active physical solver and no15s run.",
+  "active_work": "Production OFF/ON CPU/GPU short native and visual checks passed. Selective backup, then fresh10s CPU8 pure preload; no15s/extra half.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1326,6 +1326,18 @@
     "preserved_soil_IDs": 5000,
     "remaining_fixed_IDs": 1800,
     "production_event_tested": false,
+    "physical_acceptance": false
+  },
+  "case08_gravity_release_r1": {
+    "short_implementation_passed": true,
+    "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_gravity_release_root_r1.json",
+    "max_pressure_cross_RMS_Pa": 0.003549344270476466,
+    "max_material_XYZ_cross_mm": 6.939744193523323e-08,
+    "OFF_complete_bit_regression": true,
+    "ON_frames": 22,
+    "retired_right_IDs": 260,
+    "preload10_solver_started": false,
+    "preload_equilibrium_accepted": false,
     "physical_acceptance": false
   }
 }

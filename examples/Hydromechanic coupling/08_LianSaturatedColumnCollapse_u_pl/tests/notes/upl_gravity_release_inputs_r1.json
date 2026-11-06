@@ -1,0 +1,49 @@
+{
+  "stage": "upl_gravity_release_inputs_r1",
+  "prepared_only": true,
+  "dt_s": 2.5e-06,
+  "geometry_unchanged": true,
+  "GenCase_invocations": 0,
+  "OFF": "Reuse existing prestress_check seed,400 updates,end.001,out.0001; no event",
+  "ON": {
+    "steps": 800,
+    "end_s": 0.002,
+    "output_s": 0.0001,
+    "event_s": 0.00095,
+    "fluid_loss_allowed": 0,
+    "event_completed_step": 380,
+    "tests_actual_forced_pre_event_save_off_output_cadence": true,
+    "old_control_comparison": "Ten genuine common pre-event saves through completed360; forced380 is not an old reference sample. No interpolation or full-phase-file equality claim."
+  },
+  "smoke": {
+    "steps": 40,
+    "end_s": 0.0001,
+    "output_s": 5e-05,
+    "event_s": 5e-05
+  },
+  "preload10": {
+    "steps": 4000000,
+    "end_s": 10,
+    "output_s": 0.01,
+    "event_absent": true,
+    "damping": 0.02,
+    "Shepard_interval": 40,
+    "solver_started": false,
+    "equilibrium_accepted": false
+  },
+  "direct_effective_stress_assignment": false,
+  "unsupported_restart": false,
+  "solver_invocations": 0,
+  "SHA_scans": 0,
+  "outputs": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_releasecheck_r1_Def.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_releasecheck_r1.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_gravity_release_on_r1_seed",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_releasesmoke_r1_Def.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_releasesmoke_r1.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_gravity_release_smoke_r1_seed",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_prestress10_r1_Def.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_prestress10_r1.xml",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_gravity_release_preload10_r1_seed"
+  ]
+}

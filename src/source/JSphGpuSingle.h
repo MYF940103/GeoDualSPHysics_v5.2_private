@@ -50,6 +50,7 @@ protected:
   void ResizeParticlesSize(unsigned newsize,float oversize,bool updatedivide);
   void RunPeriodic();
   void RunCellDivide(bool updateperiodic);
+  void RunGravityPreloadRelease();
   void AbortBoundOut();
 
   void Interaction_Forces(TpInterStep interstep);

@@ -222,6 +222,10 @@ void JSph::InitVars(){
   HydroMechDrainageStartTime=0;
   HydroMechDrainageFixedGrid=false;
   HydroMechFreeSeepage=false;
+  GravityPreload=GravityPreloadReleased=false;
+  GravityPreloadTime=GravityPreloadActualTime=0.;
+  GravityPreloadStep=GravityPreloadActualStep=GravityPreloadMkBound=0;
+  GravityPreloadIdBegin=GravityPreloadIdCount=0;
   HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
@@ -603,6 +607,20 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
   const bool gravitycontainer=IsDynamicPoreContainerConfig();
   if(HydroMechFreeSeepage && !gravitycontainer)
     Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
+  if(GravityPreload){
+    if(!gravitycontainer || SoilCte.MaterialReturn!=1 || HydroMechInitMode!=HMINIT_ConstantZ
+      || !HydroMechFreeSeepage || !FixedDt
+      || !std::isfinite(FixedDt->GetFixedValue()) || !(FixedDt->GetFixedValue()>0)
+      || !std::isfinite(GravityPreloadTime) || !(GravityPreloadTime>0)
+      || !std::isfinite(TimeMax) || !(TimeMax>GravityPreloadTime))
+      Run_Exceptioon("gravitypreload requires the fresh constant-k MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
+    const double steps=GravityPreloadTime/FixedDt->GetFixedValue(),rounded=floor(steps+0.5);
+    if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
+      || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
+      Run_Exceptioon("gravitypreload time must lie on the constant-dt completed-step grid.");
+    GravityPreloadStep=unsigned(rounded);
+    Log->Printf("GravityPreload: requested=%.17g event_completed_step=%u release_mkbound=%u; damping/Shepard are preload-only.",GravityPreloadTime,GravityPreloadStep,GravityPreloadMkBound);
+  }
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
   DynamicPoreBodyRadius2=0;
@@ -1449,6 +1467,16 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
     if(TVisco!=VISCO_Artificial)Run_Exceptioon("Symmetry is only allowed with Artificial viscosity.");
   } //<vs_syymmetry_end>
   InitSoilParameters(&xml,"case.execution.special.soils");
+  if(TiXmlNode* node=xml.GetNodeSimple("case.execution.special.gravitypreload",true)){
+    TiXmlElement* ele=node->ToElement();
+    xml.CheckAttributeNames(ele,"time release_mkbound comment units_comment");
+    xml.CheckElementNames(ele,true,"");
+    if(ele->NextSiblingElement("gravitypreload"))Run_Exceptioon("Only one gravitypreload event is supported.");
+    GravityPreload=true;
+    GravityPreloadTime=xml.GetAttributeDouble(ele,"time");
+    GravityPreloadMkBound=xml.GetAttributeUnsigned(ele,"release_mkbound");
+    if(GravityPreloadMkBound>0xffff)Run_Exceptioon("gravitypreload release_mkbound is outside the MK bound range.");
+  }
   ConfigConstantsSoil();
   NpMinimum=CaseNp-unsigned(PartsOutMax*CaseNfluid);
   Log->Print("**Basic case configuration is loaded");
@@ -2935,6 +2963,20 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
     }
+    if(GravityPreload){
+      bdpart->SetvUint("GravityPreloadPhase",(GravityPreloadReleased? 1u: 0u));
+      bdpart->SetvDouble("GravityPreloadRequestedTime",GravityPreloadTime);
+      bdpart->SetvUint("GravityPreloadEventCompletedStep",GravityPreloadStep);
+      bdpart->SetvUint("GravityPreloadReleaseMkBound",GravityPreloadMkBound);
+      bdpart->SetvUint("GravityPreloadTargetIdBegin",GravityPreloadIdBegin);
+      bdpart->SetvUint("GravityPreloadTargetIdCount",GravityPreloadIdCount);
+      if(GravityPreloadReleased){
+        bdpart->SetvDouble("GravityPreloadActualTime",GravityPreloadActualTime);
+        bdpart->SetvUint("GravityPreloadActualCompletedStep",GravityPreloadActualStep);
+      }
+      bdpart->SetvBool("SoilDampingActive",SoilDamping);
+      bdpart->SetvBool("PoreShepardActive",PoreShepardRegularization);
+    }
     if(TStep==STEP_Symplectic)bdpart->SetvDouble("SymplecticDtPre",SymplecticDtPre);
     if(UseDEM)bdpart->SetvDouble("DemDtForce",DemDtForce); //(DEM)
     if(infoplus && SvData&SDAT_Info){
@@ -3656,7 +3698,7 @@ bool JSph::IsDynamicPorePlasticConfig()const{
 /// Fixed +X/-X FreeSlip sides and +Z NoSlip bed; far bed samples are not soil.
 //==============================================================================
 void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
-  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const
+  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)
 {
   if(np!=CaseNp || !npb || npb!=CaseNpb || npb!=CaseNfixed || np<=npb
     || !pos || !code || !velrhop || !boundnormal
@@ -3666,6 +3708,15 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
     Run_Exceptioon("Dynamic gravity container requires complete equal-dp native soil and fixed mDBC planes.");
   const double normaltol=8.*FLT_EPSILON,planetol=1e-6*Dp;
   bool seen[3]={false,false,false};double plane[3]={0,0,0};
+  const JSphMkBlock* release=NULL;unsigned selected=0,right=0;
+  if(GravityPreload){
+    const unsigned block=MkInfo->GetMkBlockByMkBound(word(GravityPreloadMkBound));
+    if(block>=MkInfo->Size())Run_Exceptioon("gravitypreload release MK block was not found.");
+    release=MkInfo->Mkblock(block);
+    if(!release->Bound || !CODE_IsFixed(release->Code) || !release->Count
+      || release->Begin>=CaseNpb || release->Count>CaseNpb-release->Begin)
+      Run_Exceptioon("gravitypreload requires one original fixed native MK block.");
+  }
   for(unsigned p=0;p<npb;p++){
     const tdouble3 x=pos[p],raw=ToTDouble3(boundnormal[p]);
     const double len=sqrt(raw.x*raw.x+raw.y*raw.y+raw.z*raw.z);
@@ -3679,6 +3730,14 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
     const TpSlipMode slip=(boundslipmode? TpSlipMode(boundslipmode[p]): SlipMode);
     if(slip!=(face<2? SLIP_FreeSlip: SLIP_NoSlip))
       Run_Exceptioon("Dynamic gravity container requires FreeSlip sides and a NoSlip bed.");
+    if(GravityPreload){
+      right+=unsigned(face==1);
+      if(CODE_GetTypeAndValue(code[p])==CODE_GetTypeAndValue(release->Code)){
+        if(face!=1 || !CODE_IsNormal(code[p]))
+          Run_Exceptioon("gravitypreload selected MK must contain only the native right FreeSlip face.");
+        selected++;
+      }
+    }
     const double location=(face<2? wall.x: wall.z);
     if(!std::isfinite(location) || (seen[face] && fabs(location-plane[face])>planetol))
       Run_Exceptioon("Dynamic gravity container requires one coplanar face per inward normal direction.");
@@ -3687,6 +3746,8 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
   }
   if(!seen[0] || !seen[1] || !seen[2] || plane[1]-plane[0]<=2.*double(KernelSize))
     Run_Exceptioon("Dynamic gravity container requires separated opposing sides and one bottom plane.");
+  if(GravityPreload && (!selected || selected!=release->Count || selected!=right))
+    Run_Exceptioon("gravitypreload must select the entire right face and no other fixed samples.");
   //-Only native soil must start inside. Do not project far bed samples or mirror targets into this box.
   double topsoil=-DBL_MAX;
   for(unsigned p=npb;p<np;p++){
@@ -3700,6 +3761,10 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
   if(HydroMechInitMode==HMINIT_ConstantZ && (!std::isfinite(HydroMechInitZ)
     || fabs(HydroMechInitZ-(topsoil+.5*Dp))>planetol))
     Run_Exceptioon("Dynamic ConstantZ preload requires the water table at the fully saturated flat soil top.");
+  if(GravityPreload){
+    GravityPreloadIdBegin=release->Begin;GravityPreloadIdCount=release->Count;
+    Log->Printf("GravityPreload: validated native right-wall range=[%u,%u), count=%u.",GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount,GravityPreloadIdCount);
+  }
 }
 
 //==============================================================================

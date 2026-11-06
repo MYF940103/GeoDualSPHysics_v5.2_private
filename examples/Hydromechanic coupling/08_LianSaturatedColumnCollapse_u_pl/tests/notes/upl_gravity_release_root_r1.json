@@ -1,0 +1,67 @@
+{
+  "stage": "upl_gravity_release_root_r1",
+  "source_files": {
+    "src/source/JSph.h": "Optional event scalar state; absent by default.",
+    "src/source/JSph.cpp": "Read optional execution/special/gravitypreload; validate entire right fixed FreeSlip MK; add enabled-only typed phase metadata.",
+    "src/source/JSphCpuSingle.h": "Declare one loop-boundary release method.",
+    "src/source/JSphCpuSingle.cpp": "Actual native-ID retirement/full divide before next predictor; preload damping/Shepard OFF afterward; preserve fluid-loss budget and real pre-event save.",
+    "src/source/JSphGpuSingle.h": "Declare GPU loop-boundary release method.",
+    "src/source/JSphGpuSingle.cpp": "Reuse allocated host boundary ID/code buffers; one upload/full divide and constant refresh; same CPU event semantics."
+  },
+  "documentation": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml optional four-line entry; default absent=disabled.",
+  "root_changes_to_author_patch": [
+    "Removed arbitrary requirement that damping=.02/filter40 be exact admission constants; existing configured controls/range checks apply. Current physical candidate still uses.02/40.",
+    "Limit event completed step to actual signed int counter; use explicit unsigned comparisons/log arguments."
+  ],
+  "four_builds_passed": [
+    "DebugCPU",
+    "Debug",
+    "ReleaseCPU",
+    "Release"
+  ],
+  "GPU_Debug40step_memcheck_errors_leaks": 0,
+  "release_short_updates": {
+    "OFF": 400,
+    "ON": 800
+  },
+  "native_frames": {
+    "OFF": 11,
+    "ON": 22
+  },
+  "phase_frames_ON": [
+    11,
+    11
+  ],
+  "soil_IDs_retained": 5000,
+  "original_total_IDs": 7060,
+  "remaining_total_IDs": 6800,
+  "retired_right_fixed_IDs": 260,
+  "OFF_all22_complete_file_and_signed_clock_byte_exact_by_backend": {
+    "CPU": true,
+    "GPU": true
+  },
+  "ON_shared_pre_event_records_by_backend": {
+    "CPU": 10,
+    "GPU": 10
+  },
+  "ON_CPU_GPU_pairs": 22,
+  "maxima": {
+    "pressure_difference_RMS_Pa": 0.003549344270476466,
+    "pressure_difference_max_Pa": 0.015625,
+    "material_XYZ_displacement_difference_max_mm": 6.939744193523323e-08,
+    "total_stress_difference_Frobenius_RMS_Pa": 0.0071100078732710004,
+    "effective_stress_difference_Frobenius_RMS_Pa": 0.0022244315120850664,
+    "J_difference_max": 4.3677961247823305e-10,
+    "porosity_difference_max": 2.8391033968233614e-10,
+    "density_difference_max": 4.684520718001295e-07,
+    "conductivity_difference_max": 0.0,
+    "kappa_difference_max": 0.0
+  },
+  "review": "figures\\upl_gravity_release_short_review_r1.check.json",
+  "visual": "logs/upl_gravity_release_short_review_r1.visual.json",
+  "actual_event": "completed380, requested.00095; actual accumulated clock in rawmetadata. Forced pre-save not replaced or relabeled.",
+  "limits": "Tiny event/default compatibility only; no equilibrium, nonzero plastic gravity/wall, variable-k, collapse, restart or half/theory acceptance.",
+  "next": "Pure10s CPU8 gravity relaxation, event absent, dt2.5us/out.01, damping.02/Shepard40. No15s run. Require actual tail review, not guaranteed balanced.",
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

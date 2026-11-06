@@ -1,0 +1,19 @@
+{
+  "stage": "upl_gravity_release_short_r1.author",
+  "status": "Author only; no invocation, import, syntax check, build, decoder or solver executed by the author.",
+  "script": "support/upl_gravity_release_short_r1_run.py",
+  "CLI": "D:/Anaconda3/python.exe -X utf8 -B support/upl_gravity_release_short_r1_run.py off|on CPU|GPU",
+  "fixed_jobs": ["upl_gravity_release_off_CPU_r1", "upl_gravity_release_off_GPU_r1", "upl_gravity_release_on_CPU_r1", "upl_gravity_release_on_GPU_r1"],
+  "admission": {"path": "logs/upl_gravity_release_short_r1.admission.json", "required": ["passed=true", "own tag in allowed_jobs", "all inputs unchanged"], "input_schema": "flat {Path, Length, LastWriteTimeUtc}; UTC ISO timestamp with up to nine fractional digits, checked without microsecond truncation"},
+  "programs": "Current passed upl_gravity_release_ReleaseCPU_r1 / Release_r1 programs; their captured source JSON and source.zip archive are bound, without walking mutable live sources or old object closures.",
+  "runtime": "Only DsphConfig.xml, ChronoEngine.dll, dsphchrono.dll, vcomp140.dll from closed matching retained short runtime; copy2 only when absent beside the shared new build executable. Existing destination must match source bytes/mtime. No per-case executable copy.",
+  "root_gates": "Four current Debug/Release build receipts, both zero-step retirement component receipts, selected same-backend retained 400-step/11-frame run and native original-guard receipts; future analysis filenames are not assumed.",
+  "off": {"seed": "outputs/upl_prestress_check_r1_seed/CaseLianSaturatedColumnCollapse_prestress_check_r1", "updates": 400, "nominal_end_s": 0.001, "event": "absent; no GravityPreload: console marker allowed"},
+  "on": {"seed": "outputs/upl_gravity_release_on_r1_seed/CaseLianSaturatedColumnCollapse_releasecheck_r1", "updates": 800, "nominal_end_s": 0.002, "requested_event_s": 0.00095, "event_completed_step": 380, "retired_native_walls": 260, "PartsOutMax": 0, "event_observation": "Exactly one actual phase=released marker; preserve actual console time text in event_markers, never substitute n*dt. Damping/Shepard OFF and FreeSeepage ON."},
+  "clock": "Unchanged dt 2.5e-6 s / output 0.0001 s. Actual scalar/native clocks and forced pre-event sample are deferred to the sole native review; Run.csv physical time is rounded.",
+  "execution": "CPU8 or GPU0, stable/mdbc_freeslip/dirdataout data/svres, fixed nsteps. Reject any existing output/start/call/run/log and any active DualSPHysics process. No retry, overwrite, decoder, next solver, notifier or queue.",
+  "ownership": "Actual Popen child PID/creation/exe/argv/parent; keep original child handle through wait. Seal Python typed wait and Win32 handle exit in .call.json before Run checks. Ownership observation failure still waits for the owned child and fails the run.",
+  "receipts": "<tag>.start.json stage <tag>.start; .call.json stage <tag>.run_call; .run.json stage <tag>.run. Native wrapper can consume actual_exit/actual_Win32_exit/actual_steps/saved_frames/summary/consumed_stats_unchanged/consumed and program/source_build/source_capture/source_archive/seed/admission/start_record/actual_call Entries.",
+  "run_guards": "Normal code=0 marker, no ordinary exclusion, actual 400/800 Steps, original Run.csv Np=7060/Nbound=Nfixed=2060 and zero PartsOut/Rhop/Vel, nonempty continuous PART filenames matching actual PartFiles. ON active 6800 IDs are not claimed before native decoding.",
+  "limits": "passed means only owned solver/run evidence passed and native_review_pending=true; no 22-array, phase-identity, pressure/load, equilibrium, collapse or physical acceptance inferred. Original numerical guards are untouched. All metadata checks are size/mtime; SHA_scans=0. Root invokes the four cases sequentially after full source review."
+}
