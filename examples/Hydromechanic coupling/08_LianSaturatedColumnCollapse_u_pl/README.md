@@ -159,4 +159,4 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 
 新输入使用规整十进制时间：dt=2.5微秒，接线短窗0.001 s、每0.0001 s保存；延长预载输入为5 s、每0.01 s保存。CPU/GPU Debug及Release构建通过；CPU Debug、CPU8 Release和GPU Release各完成400步/11帧，并通过全部22数组、静水p0、J账本及自由面检查，GPU另一次40步内存检查零错误/泄漏。三组最大孔压RMS差约0.00192 Pa、材料位移差约1.83e-8 mm；见[短窗图及CSV](tests/figures/upl_prestress_short_review_r1.png)。旧u-pw Shepard的81行实际结果与保留对象程序逐字节一致。
 
-本机短窗CPU8 Release循环2.398547 s，GPU Release为2.735856 s，故下一次5 s诊断预载选择CPU8；这不是完整长窗或严格空载基准。5 s计算尚未启动；进入长窗后仍以实际速度、孔压、应力及其晚窗变化判断预载状态，不能因到达5 s就认定平衡。当前仍为固定容器，撤墙、全耦合重启和塌陷物理验收待完成。
+本机短窗CPU8 Release循环2.398547 s，GPU Release为2.735856 s，故下一次5 s诊断预载选择CPU8；这不是完整长窗或严格空载基准。已启动一次CPU8 Release的5 s重力预载`upl_prestress_extended_CPU_r1`；以实际速度、孔压、应力及其晚窗变化判断预载状态，不能因到达5 s就认定平衡。当前仍为固定容器，撤墙、全耦合重启和塌陷物理验收待完成。

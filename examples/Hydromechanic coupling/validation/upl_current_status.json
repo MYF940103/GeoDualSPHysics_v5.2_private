@@ -1182,8 +1182,8 @@
     "periodic_plastic_scope_implementation_passed": true,
     "material_mode1_general_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "7f02506361d64768471db022887fd7887cbcdfe9",
-  "last_updated_utc": "2026-11-06T13:58:13.176087+00:00",
+  "latest_verified_code_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac",
+  "last_updated_utc": "2026-11-06T14:00:49.406438+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "Prestress hydrostatic-pressure-only initialization, damping and dynamic-volume Shepard implemented and short-validated on CPU/GPU; one fresh CPU8 Release5s preload admitted pending verified checkpoint and launch. No solver active yet.",
+  "active_work": "One fresh CPU8 Release5s actual gravity preload is active; damping.02 and dynamic-volume Shepard every40 steps. Owned PID74456 under Python66208. No wall release or automatic extra solver.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1278,13 +1278,17 @@
       "DtFixed_s": 2.5e-06,
       "updates": 2000000
     },
-    "extended_solver_started": false,
+    "extended_solver_started": true,
     "physical_acceptance": false,
     "short_implementation_check": "08_LianSaturatedColumnCollapse_u_pl/tests/figures/upl_prestress_short_review_r1.check.json",
     "short_visual_QA": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_prestress_short_review_r1.visual.json",
     "GPU_memcheck_errors": 0,
     "pressure_cross_RMS_max_Pa": 0.0019164230426809935,
     "material_XYZ_difference_max_mm": 1.82540898942965e-08,
-    "selected_extended_backend": "CPU8 Release"
+    "selected_extended_backend": "CPU8 Release",
+    "extended_tag": "upl_prestress_extended_CPU_r1",
+    "owner_pid": 66208,
+    "solver_pid": 74456,
+    "source_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac"
   }
 }
