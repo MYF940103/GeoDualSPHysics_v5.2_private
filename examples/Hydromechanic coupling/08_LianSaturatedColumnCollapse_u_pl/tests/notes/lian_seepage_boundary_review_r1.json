@@ -1,0 +1,17 @@
+{
+  "stage": "lian_seepage_boundary_review_r1",
+  "date_local": "2026-11-06",
+  "original_sources_visually_checked": [
+    {"file": "src/papers/PDF/Lian 2021 seepage flow unsaturated porous media.pdf", "printed_pages": "20-22", "items": "Fig9/10, Eq68, Eq70-74"},
+    {"file": "src/papers/PDF/Lian 2023 u-pl.pdf", "printed_pages": "19", "items": "Section4.4 and Ref36"}
+  ],
+  "open_soil_surface": "Eq71 gives pressure head h_w<=0. At each completed step only positive head is set to zero; otherwise the rate equation continues. Eq72 separately treats the free-surface rate without the Eq57 error-removal term. This is not an unconditional zero-pressure Dirichlet surface.",
+  "surface_identification": "Eq68 uses the volume-weighted kernel support sum below .95; Fig10 distinguishes real surface soil particles from wall support particles. Mapping to current FS2/3 tracking requires an actual compatibility test, not a label equivalence assumption.",
+  "impermeable_wall": "Eq73 imposes approximately zero normal flow components; Eq74 gives receiver-local copies H_v=H_k, h_v=h_k and k_v=k_k. The original text does not supply a global single-valued MLS mirror pressure formula or a special wall-top contact switch. Simultaneously copying total and pressure head at different elevations needs an explicit geometric interpretation.",
+  "current_code": "CPU JSphCpu.cpp ApplyFreeSurfacePorePressure and rate resets; GPU JSphGpu_ker.cu corresponding free-surface kernels impose zero pressure and rate on active drained fluid FS2/3, including negative pressure. Fixed wall quadrature is outside that fluid predicate.",
+  "case08_implication": "Retain accepted fixed-zero drainage as the default. Add and independently verify the paper-compatible free-seepage/rate policy at its planned hydraulic-boundary stage; do not silently change existing 1D/Cryer inputs or only remove the negative-pressure reset without checking the surface operator.",
+  "geometry_implication": "No paper basis was found for a fixed H-height dry-wall switch or treating numerical wall samples above the initial free surface as atmospheric soil owners. Separate fluid free-surface status, true wall interaction and numerical fit quality. Recenter alone establishes none of those physical conditions.",
+  "source_changes": false,
+  "solver_or_build_or_SHA": false,
+  "physical_acceptance": false
+}

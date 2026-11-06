@@ -216,7 +216,8 @@
     "weak_top_offline_original_det_4of4_recovered_without_threshold_change": true,
     "corner_real_neighbor_recenter_review": "tests/logs/upl_wall_cornerfit_r1.check.json",
     "corner_static_det_passes": 6,
-    "remaining": "Actual backend mixed-plane/gravity, physical contact/wetness, non-affine extrapolation and inactive-wall consistency remain required; no public gate bypass."
+    "remaining": "Actual backend mixed-plane/gravity, physical contact/wetness, non-affine extrapolation and inactive-wall consistency remain required; no public gate bypass.",
+    "nearest_source_alternative": "tests/logs/upl_wall_nearestfit_r1.check.json"
   },
   "NoSlip_implementation_20261106": {
     "CPU_review": "tests/notes/upl_noslip_cpu_review_r1.json",
@@ -225,5 +226,28 @@
     "legacy_18CSV_6JSON_byte_exact": true,
     "GPU_memcheck_zero_errors_leaks": true,
     "transient_gravity_corners_or_public_admission": false
+  },
+  "free_seepage_primary_review_20261106": {
+    "review": "tests/notes/lian_seepage_boundary_review_r1.json",
+    "paper_boundary": "One-sided pressure/head<=0 with separate free-surface rate treatment; not unconditional Dirichlet0",
+    "default_accepted_Dirichlet_preserved": true,
+    "implemented_or_verified": false
+  },
+  "receiver_head_CPU_20261106": {
+    "review": "tests/notes/upl_wall_receiver_head_review_r1.json",
+    "new_queries": 16,
+    "legacy_CSV_byte_exact": 72,
+    "public_scope_expanded": false
+  },
+  "initial_step_estimate": {
+    "source": "GetDynamicStepScalesCpu, nominal paper initial parameters only",
+    "CFL": 0.2,
+    "PoreDtSafety": 0.1,
+    "D_m2_s": 58.26949788445306,
+    "wave_CFL_bound_s": 8.134146265469768e-06,
+    "pore_bound_s": 3.954041279999999e-06,
+    "possible_later_dyadic_step_s": 3.814697265625e-06,
+    "actual_step_admitted_or_selected": false,
+    "necessary_scales_not_coupled_stability_proof": true
   }
 }

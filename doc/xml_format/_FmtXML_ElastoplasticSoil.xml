@@ -255,6 +255,12 @@
                      CPU instantaneous shear-force/action-reaction checks also passed (zero time steps).
                      Initialization restrictions are retained; this is not NoSlip transient/integrator,
                      mixed-corner, inactive-wall, gravity-trajectory or plastic-collapse acceptance. -->
+                <!-- CPU per-receiver normal-head candidate (2026-11-06, components checked):
+                     The internal MLS reader receives the boundary sample index, so each sample
+                     uses its own normal component of gravity. GPU already uses that local normal.
+                     W/C FS/NS swapped-axis state queries passed; 72 retained CSVs and ten
+                     completion records stayed byte-exact. These query points are not container walls.
+                     This does not admit public multi-plane gravity or change the drainage mode. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

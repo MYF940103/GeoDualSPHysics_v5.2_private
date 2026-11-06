@@ -1,0 +1,31 @@
+{
+  "stage": "upl_wall_receiver_head_review_r1",
+  "date_local": "2026-11-06",
+  "source_base": "1e2b4a183672cfb43f9ebb3a2d91bc726296f1eb",
+  "problem": "CPU state reconstruction used BoundNormalc[0] to choose the normal hydrostatic potential. That is sufficient for its admitted parallel planes but attributes the wrong head to a different axis in a future mixed-plane fixture.",
+  "change": "JSphCpu.cpp passes receiver,source,component to the internal field reader. The state reader and writer use the current receiver normal; four other readers ignore the extra index. No public argument, allocated state, neighbor pass, pressure dtype or initialization guard change. GPU already uses its current receiver normal.",
+  "CPU_Debug_build": "tests/logs/upl_wall_receiver_DebugCPU_r1.build.json",
+  "aggregate_check": "tests/logs/receiver_regression_r1.check.json",
+  "new_state_evidence": {
+    "genuine_kernels": ["Wendland", "Cubic"],
+    "cases_total": 8,
+    "query_rows_total": 16,
+    "max_p_J_error_over_original_budget": 0,
+    "analytic_old_nonfirst_receiver_errors_Pa": [1.46484375, 2.9296875],
+    "min_counterfactual_separation_over_original_p_budget_W_C": [207.61342368183324, 236.58548272359877],
+    "old_program_rerun_for_counterfactual": false,
+    "query_geometry_is_not_physical_container": true,
+    "all_native_fields_and_controls_restored": true
+  },
+  "unchanged_controls": {
+    "conditions": 10,
+    "scope": "Two NoSlip W/C, two normal-head W/C and six legacy axis u-pw/SPR components",
+    "CSV_files_byte_exact": 72,
+    "CSV_rows_byte_exact": 41096,
+    "completion_files_byte_exact": 10,
+    "original_error_budgets_unchanged": true
+  },
+  "execution": "Four helpers each compiled/linked once, twelve component invocations each exited zero. Consumed code/input/object/runtime size/mtime unchanged; SHA scans zero. A preliminary missing-DLL setup refusal had zero compile/component attempts; the established CPU Debug runtime was then copied, without rerunning a component.",
+  "limits": "Pressure/J receiver attribution only; no full case08 plane/contact/recenter/gravity trajectory, Darcy/force rerun, new half-step chain, public NoSlip/multi-plane admission or physical acceptance.",
+  "physical_acceptance": false
+}

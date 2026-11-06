@@ -1,0 +1,94 @@
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1660,7 +1660,7 @@
+           const double vfry=fry*vol2;
+           const double vfrz=frz*vol2;
+           double field[ncomp];
+-          for(unsigned c=0;c<ncomp;c++)field[c]=read(p2,c);
++          for(unsigned c=0;c<ncomp;c++)field[c]=read(unsigned(p1),p2,c);
+           const double distance2=drx*drx+dry*dry+drz*drz;
+           if(DynamicPoreWall && distance2<nearest2){
+             nearest2=distance2;neardr=TDouble3(drx,dry,drz);
+@@ -1750,7 +1750,7 @@
+   (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
+   ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const
+ {
+-  const auto readpressure=[&](unsigned p,unsigned){return(double(porepress[p])-double(porepress0[p]));};
++  const auto readpressure=[&](unsigned,unsigned p,unsigned){return(double(porepress[p])-double(porepress0[p]));};
+   const auto writepressure=[&](unsigned p,const double *excess,const double*,const double*,const double*){porepress[p]=float(double(porepress0[p])+excess[0]);};
+   InterpolateBoundaryGhostFieldT<tker,sim2d,1>(n,divdata,pos,code,velrhop,boundnormal,readpressure,writepressure);
+ }
+@@ -1768,7 +1768,7 @@
+     //-Preserve the retained horizontal Vel0 fallback, including signed zero.
+     if(mode==SLIP_Vel0 && BoundNormalc[p].x==0 && BoundNormalc[p].y==0)BoundDerivativeVelc[p].z=-v.z;
+   }
+-  const auto readvelocity=[&](unsigned p,unsigned c){
++  const auto readvelocity=[&](unsigned,unsigned p,unsigned c){
+     const tfloat4 v=Velrhopc[p];
+     return(double(c==0? v.x: (c==1? v.y: v.z)));
+   };
+@@ -4253,30 +4253,35 @@
+ 
+ //==============================================================================
+ /// Reconstructs fixed quadrature samples, not moving native particle owners.
++/// CPU per-receiver normal-head candidate; public plane/gravity guards remain unchanged.
+ /// J and hydrostatic excess keep their geometry; NoSlip follows the legacy stress/velocity policy.
+ //==============================================================================
+ void JSphCpu::ComputeDynamicPoreWallStateCpu(){
+   if(!DynamicPoreWall || !NpbOk)return;
+-  //-The admitted parallel walls share one axis. Keep tangential periodic data unchanged.
+-  const tdouble3 wallq=DynamicPoreWallParity(BoundNormalc[0]);
+-  const tdouble3 normalg=TDouble3(wallq.x<0? double(Gravity.x): 0.
+-    ,wallq.y<0? double(Gravity.y): 0.,wallq.z<0? double(Gravity.z): 0.);
+-  const bool hydrostatichead=(normalg.x!=0 || normalg.y!=0 || normalg.z!=0);
+   const double rhow=SoilCte.PoreWaterRho;
+-  const auto head=[&](unsigned p){return rhow*(normalg.x*Posc[p].x
+-    +normalg.y*Posc[p].y+normalg.z*Posc[p].z);};
+-  const auto read=[&](unsigned p,unsigned c){
++  const auto read=[&](unsigned receiver,unsigned p,unsigned c){
+     if(c==0)return PoroJc[p];
+-    if(c==1)return(hydrostatichead? double(PorePressc[p])-head(p): double(PorePressc[p]));
++    if(c==1){
++      const tdouble3 q=DynamicPoreWallParity(BoundNormalc[receiver]);
++      const tdouble3 normalg=TDouble3(q.x<0? double(Gravity.x): 0.
++        ,q.y<0? double(Gravity.y): 0.,q.z<0? double(Gravity.z): 0.);
++      const bool hydrostatichead=(normalg.x!=0 || normalg.y!=0 || normalg.z!=0);
++      return(hydrostatichead? double(PorePressc[p])-rhow*(normalg.x*Posc[p].x
++        +normalg.y*Posc[p].y+normalg.z*Posc[p].z): double(PorePressc[p]));
++    }
+     if(c<5)return double(c==2? Velrhopc[p].x: (c==3? Velrhopc[p].y: Velrhopc[p].z));
+     const tsymatrix3d s=Sigmac[p];
+     const double v[6]={s.xx,s.yy,s.zz,s.xy,s.xz,s.yz};return v[c-5];
+   };
+   const auto write=[&](unsigned p,const double *v,const double *gradx,const double *grady,const double *gradz){
+     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+-    //-Even excess over the hydrostatic head pairs with Q*(Ace+Gravity)-Gravity.
++    const tdouble3 normalg=TDouble3(q.x<0? double(Gravity.x): 0.
++      ,q.y<0? double(Gravity.y): 0.,q.z<0? double(Gravity.z): 0.);
++    const bool hydrostatichead=(normalg.x!=0 || normalg.y!=0 || normalg.z!=0);
++    //-Even excess over this receiver's normal head pairs with its geometric Darcy reflection.
+     PoroJc[p]=v[0];PoroThetac[p]=0.;
+-    PorePressc[p]=float(hydrostatichead? v[1]+head(p): v[1]);
++    PorePressc[p]=float(hydrostatichead? v[1]+rhow*(normalg.x*Posc[p].x
++      +normalg.y*Posc[p].y+normalg.z*Posc[p].z): v[1]);
+     const bool noslip=((BoundSlipModec? TpSlipMode(BoundSlipModec[p]): SlipMode)==SLIP_NoSlip);
+     if(noslip){
+       //-Legacy NoSlip stress is extrapolated to the boundary; fixed-wall velocity image is -v_mirror.
+@@ -4314,7 +4319,7 @@
+ //==============================================================================
+ void JSphCpu::ComputeDynamicPoreWallMatrixCpu(){
+   if(!DynamicPoreWall || !NpbOk)return;
+-  const auto read=[&](unsigned p,unsigned c){const tmatrix3d m=CorrMatc[p];
++  const auto read=[&](unsigned,unsigned p,unsigned c){const tmatrix3d m=CorrMatc[p];
+     const double v[9]={m.a11,m.a12,m.a13,m.a21,m.a22,m.a23,m.a31,m.a32,m.a33};return v[c];};
+   const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
+     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+@@ -4341,7 +4346,7 @@
+ //==============================================================================
+ void JSphCpu::ComputeDynamicPoreWallAccelerationCpu(){
+   if(!DynamicPoreWall || !NpbOk)return;
+-  const auto read=[&](unsigned p,unsigned c){return(c==0? double(Acec[p].x)+Gravity.x: (c==1? double(Acec[p].y)+Gravity.y: double(Acec[p].z)+Gravity.z));};
++  const auto read=[&](unsigned,unsigned p,unsigned c){return(c==0? double(Acec[p].x)+Gravity.x: (c==1? double(Acec[p].y)+Gravity.y: double(Acec[p].z)+Gravity.z));};
+   const auto write=[&](unsigned p,const double *v,const double*,const double*,const double*){
+     const tdouble3 q=DynamicPoreWallParity(BoundNormalc[p]);
+     Acec[p]=TFloat3(float(q.x*v[0]-Gravity.x),float(q.y*v[1]-Gravity.y),float(q.z*v[2]-Gravity.z));

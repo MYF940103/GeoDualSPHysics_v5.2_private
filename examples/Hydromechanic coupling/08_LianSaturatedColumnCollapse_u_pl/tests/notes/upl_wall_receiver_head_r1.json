@@ -1,0 +1,9 @@
+{
+  "stage": "upl_wall_receiver_head_r1.author",
+  "status": "Unapplied CPU candidate only; root full-read precedes application/build/tests. No source/old-input changes or runs by author.",
+  "patch": "tests/support/upl_wall_receiver_head_r1.patch",
+  "scope": "JSphCpu.cpp only. Template declaration/header/call arguments and public guards are unchanged. One existing internal reader invocation becomes read(receiver,source,c), with all five lambdas updated; four ignore receiver. No array, pass, new public option/state/API or physical scope admission.",
+  "pressure": "Dynamic state c==1 projects g onto the actual receiver axis from BoundNormalc[receiver], reads p-rho_w*g_n dot x, and restores at that boundary using its own q/normalg. No BoundNormalc[0] or full-g pressure shortcut remains. Existing literal zero-g_n read/write alternatives and floating expression groups are preserved; existing shared J/stress/velocity/NoSlip/C/Darcy rules are untouched.",
+  "intended_evidence": "New private two-query state-only component with X/Z receiver order swap, nonzero gx/gz, genuine W/C initialization and FS/NS selection. This diagnoses receiver attribution, not multi-plane physical/periodic/gravity admission. Existing old cheap controls can prove unchanged unrelated paths after root approval.",
+  "physical_acceptance": false
+}

@@ -1,0 +1,93 @@
+{
+  "stage": "receiver_noslip_Cubic_r1.check",
+  "passed": true,
+  "control": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_noslip_CPU_Cubic_r1",
+  "component_completion": {
+    "stage": "upl_noslip_cpu_component_r1",
+    "passed": true,
+    "kernel": "Cubic",
+    "h_over_dp": 1.8,
+    "native_soil": 1024,
+    "native_fixed": 256,
+    "actual_slots": 1600,
+    "actual_fixed_prefix": 320,
+    "component_cases": 6,
+    "native_wall_rows": 1536,
+    "noncoincident_rows": 768,
+    "NoSlip_rows": 768,
+    "FreeSlip_rows": 768,
+    "explicit_each_wall_stage_calls": 6,
+    "max_error_over_original_budget": 0.001218812036167976,
+    "min_wrong_shear_sign_over_original_stress_budget": 1381400683.0184631,
+    "min_missing_stress_extrapolation_over_original_stress_budget": 5417253.066528097,
+    "all_native_physical26_and_C_Ace_unchanged_by_wall_stages": true,
+    "all_geometry_ID_normal_bytes_restored": true,
+    "initial_native_physical26_restored": true,
+    "slip_pointer_and_global_mode_restored": true,
+    "actual_CPU_initialization": true,
+    "actual_Interaction_Forces_called": false,
+    "actual_ComputeStep_Sym_called": false,
+    "actual_Run_called": false,
+    "completed_physical_steps": 0,
+    "actual_time_s": 0,
+    "NoSlip_physical_admission": false,
+    "wall_force_or_SH_wave_checked": false,
+    "physical_acceptance": false
+  },
+  "CSV_tables": [
+    {
+      "file": "fixed_ids.csv",
+      "rows": 256,
+      "bytes": 10564,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "global_free_coincident.csv",
+      "rows": 256,
+      "bytes": 38384,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "global_free_offgrid.csv",
+      "rows": 256,
+      "bytes": 43764,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "global_noslip_coincident.csv",
+      "rows": 256,
+      "bytes": 50917,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "global_noslip_offgrid.csv",
+      "rows": 256,
+      "bytes": 57494,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "left_noslip_right_free_coincident.csv",
+      "rows": 256,
+      "bytes": 44813,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "left_noslip_right_free_offgrid.csv",
+      "rows": 256,
+      "bytes": 50995,
+      "whole_bytes_equal": true
+    },
+    {
+      "file": "native_ids.csv",
+      "rows": 1024,
+      "bytes": 38106,
+      "whole_bytes_equal": true
+    }
+  ],
+  "all_CSV_and_completion_byte_exact": true,
+  "source_canonical_consumed_stats_unchanged": true,
+  "component_attempts": 1,
+  "new_SHA_scans": 0,
+  "old_SHA_scans": 0,
+  "physical_acceptance": false
+}

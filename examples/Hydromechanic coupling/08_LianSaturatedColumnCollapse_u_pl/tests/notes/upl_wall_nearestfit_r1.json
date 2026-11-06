@@ -1,0 +1,21 @@
+{
+  "stage": "upl_wall_nearestfit_r1",
+  "purpose": "Evaluate one nearest-real-source retry without per-ID FitShift state; no production decision",
+  "native_ids": [203, 254, 274, 278, 279, 783, 1800, 1851, 1852, 1903],
+  "selection": "Exactly the retained ten physically-near initial single-mirror raw-det failures, four top-side and six bottom-corner",
+  "source": "Existing initial 5000 real soil coordinates and native IDs; no images or synthetic support",
+  "retry": "For each original mirror, choose exactly one nearest real source from its existing support and centre the retry there. No second candidate or parameter search.",
+  "ties": "Record exact binary64 squared-distance tie count; the retained native ledger order chooses the first. Current sorted CPU/GPU neighbour order and float arithmetic are not claimed to choose the same ID in ties.",
+  "evaluation": "Original own-face mirror stays the evaluation point. Reuse unchanged top-shift pure fit to return fitted-intercept and dynamic nearest-anchor values with q=-physical gradient.",
+  "comparison": "Retained four-point top tangential-minus-dp and six-point existing-SPR halfspace-projection CSVs; compare raw determinant, condition, support and shift without refitting those alternatives",
+  "matrix": "Same retained double-only 2D Cubic W/Fac, dp=.04, h=.048, V=dp^2 at initial J=1, original unscaled a_corr2",
+  "eligibility": "Original physical wall distance to real soil<=2h=.096m, unchanged. Retry source must lie strictly within the original mirror support.",
+  "det_gate": "Original abs(raw determinant)>=1e-3, unchanged; original failed/singular matrices are never inverted. Only valid rank3 retry fits receive reproduction checks.",
+  "fields": ["128", "128+x", "128+z", "128+3*x-2*z"],
+  "reproduction": "Record values at original mirror and physical fitted-gradient errors; no new numerical or physical acceptance threshold",
+  "implementation_scope": "The existing dynamic MLS nearest source/neardr could supply a geometric retry centre locally, potentially avoiding new per-ID GPU FitShift input. This offline check does not implement or admit it.",
+  "limitations": "Binary64 static geometry only, not production float kernel constants/arithmetic or sorted accumulation. Far-wall eligibility/masking remains unresolved; nonlinear accuracy, actual NoSlip/state/stress/pressure/Ace parity and deformed-stage support remain unproved.",
+  "protected": "Only new script/note/10-row CSV/check; source and old evidence unchanged, input metadata before/after, SHA0, no solver/build/Git",
+  "fresh_outputs": ["tests/figures/upl_wall_nearestfit_r1.csv", "tests/logs/upl_wall_nearestfit_r1.check.json"],
+  "physical_acceptance": false
+}
