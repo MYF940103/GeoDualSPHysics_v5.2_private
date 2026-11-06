@@ -1,0 +1,30 @@
+{
+  "stage": "upl_material_return_r1",
+  "status": "authored_only_not_built_or_run",
+  "scope": "Small standalone linked material-point candidate, no spatial solver, production changes or constitutive public flag. Read primary audit and actual legacy UpdateDPvars/Updatedfdk/ConsRelationEPsft_fast plus retained baseline/history helpers.",
+  "files": [
+    "tests/support/upl_material_return_r1.cpp",
+    "tests/notes/upl_material_return_r1.json"
+  ],
+  "CLI": "upl_material_return_r1.exe ABS_FRESH_OUTPUT_DIRECTORY",
+  "link": "Existing frozen CPU non-main objects and Debug libraries, exactly as prior small material-point probes; AppInfo supplied in this main. No JSphCpu.cpp inclusion or full cloned material routine.",
+  "material": "Original float E20MPa,nu.33,phi_p=phi_r=25deg. Cohesion cp5000 for psi0/+2.5,cp7500 for psi-5;cr1000,eta5. Actual Lian Table1 sf=.2 is independent from eta5. Constant-strength cp=cr control included. Stress and necessary local/root arithmetic double; final stored kappa remains float.",
+  "branches": [
+    "linked_legacy: actual production function, old full norm/plus denominator/old-strength final projection/constant psi; output can be nonfinite at apex and is recorded rather than forced to pass.",
+    "consistent_full_constant_psi: change only return consistency formulation with existing full history choice and constant psi; scalar solve reevaluates new-kappa strength, no old-strength final projection.",
+    "consistent_dev_constant_psi: isolate h_dev=1/sqrt(3) history while keeping constant psi.",
+    "consistent_dev_decay_psi: additionally psi(knew)=psi0 exp(-sf*knew), evaluated inside each scalar trial; explicitly an endpoint flow candidate, not a claim to reproduce the published semi-implicit implementation."
+  ],
+  "consistency": "For positive q and radial direction, k=old+h*lambda, q=q_trial-G*lambda, I=I_trial-9K*beta(k)*lambda. F=q+alpha(k)*I-kc(k). With literal f_k, dF/dlambda=-A+f_k*h (constant beta); endpoint beta(k) adds -9K*alpha*lambda*beta_prime*h. Positive stable consistency is -dF/dlambda>0. phi fixed25 so alpha_prime=0; no direct partial f/partial psi.",
+  "coefficient_arithmetic": "Parsed constants stay float. Candidate coefficients/exponent are evaluated with double temporary arithmetic at continuous local kappa, not rounded each Newton iteration. This arithmetic difference from legacy float coefficients is explicit; independent yield after saved float-kappa write distinguishes storage residual from local root convergence.",
+  "bounded_root": "Bracket lambda in[0,q_trial/G], safeguarded Newton/bisection max80, original yield elastic tolerance1e-5. Scalar local tolerance1e-10*max(1,q_trial,abs(alpha*I_trial),kc) Pa is algebraic root precision, not physical material acceptance. No crossing q=0 or apex flow invention. Positive local derivative failure/no bracket/apex are explicit unavailable statuses, not elastic fallback or automatic pass.",
+  "paths": "Each psi/branch: elastic, first yield and three further nonzero-shear loads, unload, elastic reload; separately kappa=.5 nonzero-shear point, hydrostatic apex,near-apex and constant-strength closed-lambda control. Paths stop if no valid return; independent points continue. Not a large sensitivity matrix.",
+  "independent_observations": "Returned tensor gives I/q; Eq14/16/18 yield evaluated at old,continuous and saved float kappa. Elastic compliance of actual total stress correction supplies dev/full equivalent plastic norms and volume. Constant strength closed-form lambda is independent of iterative solver. All residuals/norms/old-vs-new differences recorded without forced legacy pass. Candidate history-norm error and an independent tensor-yield consistency bit are descriptive CSV columns; elastic rows can remain inside yield rather than on its boundary.",
+  "outputs": "points.csv and completion.json in fresh shallow directory; native/program logs belong to later authorized execution. Expected132 rows if all 7-step loading paths return; unsupported apex rows are included, not silently removed.",
+  "limits": [
+    "No apex/tensile-cutoff general plastic algorithm; real collapse can hit apex, so these candidates cannot unlock plastic u-pl or formal collapse.",
+    "No gradient,wall,pore,seepage or time step. No automatic production sign flip, no use of seepage flag as constitutive switch.",
+    "Continuous root can be accurate while saved float kappa produces a separate finite residual or zero history update; no all-material double change.",
+    "Candidate comparison is not proof that legacy or Lian images are wrong. Root decides any production algorithm and later CPU/GPU synchronization."
+  ]
+}

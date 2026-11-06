@@ -1,0 +1,116 @@
+{
+  "stage": "upl_material_return_review_r1",
+  "actual_compile_link_helper_exits": [
+    0,
+    0,
+    0
+  ],
+  "old_CPU_nonmain_objects": 85,
+  "old_CPU_closure": "tests/logs/upl_wall_gpuport_DebugCPU_r1.build.json",
+  "new_cache_objects_used": false,
+  "consumed_SMT_unchanged": true,
+  "SHA_scans": 0,
+  "outputs": {
+    "raw": "tests/outputs/upl_material_return_CPU_result_r1/points.csv",
+    "completion": "tests/outputs/upl_material_return_CPU_result_r1/completion.json",
+    "check": "tests/logs/upl_material_return_CPU_review_r1.check.json",
+    "summary": "tests/figures/upl_material_return_CPU_review_r1.csv"
+  },
+  "observations": {
+    "rows": 132,
+    "candidate_radial": 54,
+    "candidate_exact_elastic": 27,
+    "candidate_apex_unavailable": 18,
+    "legacy_hydrostatic_apex_nonfinite": 3,
+    "constant_strength_closed_lambda_checks": 9,
+    "max_independent_continuous_yield_residual_Pa": 4.547473508864641e-12,
+    "max_saved_float_kappa_yield_residual_Pa": 6.17173559476214e-05,
+    "max_independent_compliance_norm_error": 2.303929616531697e-19,
+    "max_independent_tensor_q_I_error_Pa": 7.275957614183426e-12,
+    "constant_strength_closed_lambda_error": 0.0,
+    "maximum_root_iterations": 2,
+    "ordinary_legacy_saved_kappa_yield_max_Pa": {
+      "psi0_cp5000": 1.3508663618222272,
+      "psi2p5_cp5000": 1.2910322346060639,
+      "psim5_cp7500": 2.426646645495566
+    },
+    "scope": "Ordinary plastic rows exclude elastic negative f and all apex diagnostics. Candidate root checks passed, NOT constitutive release or physical validation."
+  },
+  "separation": "All material inputs and persistent kappa remained float. Scalar/root and coefficient temporaries double. Improved local algebraic return must not be called a precision-only A/B; full/dev history and endpoint psi decay remain separate test branches. Saved-float residual is not scalar-root failure.",
+  "primary_apex_readonly_review": {
+    "Lian": "Original PDF pp4-5 Eqs11-19 states nonnegative plastic multiplier and cites Bui for semi-implicit return. No explicit apex/tensile cap algorithm given there.",
+    "Bui": "Original PDF pp17-18 Sec3.2.2, Eqs81-87 and Algorithms1-2 freeze trial gradients. p17 directs detailed stress correction to Bui etal2008a; no explicit complete apex/softened-history rule in the reviewed formulation.",
+    "current_code": "JSphCpu.cpp3930-3945 and4040-4055 has I1>kc/alpha hydrostatic tensile correction plus radial scaling; it is applied AFTER G/sqrt(J2), so it does not protect an exact q0 plastic trial from the earlier singular flow direction.",
+    "mechanism": "For a positive hydrostatic tensile trial, smooth g=beta I+q with psi=0 cannot reduce I because DeltaI=-9K beta lambda=0; psi<0 makes I increase for positive lambda. A separate admissible apex/subgradient or tensile mechanism must be defined, not inferred from a scalar radial root or arbitrary rescaling.",
+    "root_decision_needed": "Choose and document the intended apex/tensile correction and matching plastic-volume/history update, preserving legacy behavior by explicit constitutive scope. Until then no general plastic/collapse admission from these radial material candidates."
+  },
+  "not_done": [
+    "No production formula/state/interface change",
+    "No spatial solver",
+    "No second helper run",
+    "No automatic material sign flip",
+    "No Git or program replacement",
+    "No physical acceptance"
+  ],
+  "note": "Matching numeric summary and radial-only log plot retained. Apex18 unavailable and legacy3 nonfinite explicitly excluded/annotated, not accepted as elastic. Source/helper/raw/check data unchanged; no extra material or spatial run.",
+  "ordinary_only_summary": [
+    {
+      "psi0_target_deg": 0.0,
+      "ordinary_points_per_branch": 4,
+      "maximum_saved_float_yield_residual_Pa": {
+        "linked_legacy": 1.3508663618222272,
+        "consistent_full_constant_psi": 1.1206975614186376e-07,
+        "consistent_dev_constant_psi": 1.1206975614186376e-07,
+        "consistent_dev_decay_psi": 1.1206975614186376e-07
+      }
+    },
+    {
+      "psi0_target_deg": 2.5,
+      "ordinary_points_per_branch": 4,
+      "maximum_saved_float_yield_residual_Pa": {
+        "linked_legacy": 1.2910322346060639,
+        "consistent_full_constant_psi": 5.613037501461804e-08,
+        "consistent_dev_constant_psi": 9.992072591558099e-08,
+        "consistent_dev_decay_psi": 5.811307346448302e-08
+      }
+    },
+    {
+      "psi0_target_deg": -5.0,
+      "ordinary_points_per_branch": 4,
+      "maximum_saved_float_yield_residual_Pa": {
+        "linked_legacy": 2.426646645495566,
+        "consistent_full_constant_psi": 2.0388415578054264e-07,
+        "consistent_dev_constant_psi": 1.9472827261779457e-07,
+        "consistent_dev_decay_psi": 4.092389644938521e-07
+      }
+    }
+  ],
+  "preset_kappa_0p5_psi_decay": [
+    {
+      "psi0_target_deg": 0.0,
+      "psi_at_old_kappa0p5_deg": 0.0,
+      "returned_continuous_kappa": 0.5000767961131681,
+      "psi_at_returned_continuous_kappa_deg": 0.0
+    },
+    {
+      "psi0_target_deg": 2.5,
+      "psi_at_old_kappa0p5_deg": 2.2620934759132143,
+      "returned_continuous_kappa": 0.5000736826659342,
+      "psi_at_returned_continuous_kappa_deg": 2.262060140742761
+    },
+    {
+      "psi0_target_deg": -5.0,
+      "psi_at_old_kappa0p5_deg": -4.524186951826429,
+      "returned_continuous_kappa": 0.5000838795237251,
+      "psi_at_returned_continuous_kappa_deg": -4.524111055132566
+    }
+  ],
+  "summary_scope_clarification": "Earlier review.check groups ordinary_plastic_rows include the separate preset-kappa=.5 point, so its candidate saved-float maxima6.17e-5Pa are not the ordinary loading-only numbers. The new radial plot/CSV explicitly includes ONLY four ordinary first/further-loading states and keeps preset columns separate. Raw/check unchanged.",
+  "plot": {
+    "png": "tests/figures/upl_material_return_radial_r1.png",
+    "csv": "tests/figures/upl_material_return_radial_r1.csv",
+    "script": "tests/support/upl_material_return_plot_r1.py",
+    "visually_inspected": true,
+    "meaning": "Algebraic radial material yield residual after float-kappa writeback; NOT spatial/physical accuracy. Candidate coefficients use double temporaries, so not a precision-only isolation."
+  }
+}
