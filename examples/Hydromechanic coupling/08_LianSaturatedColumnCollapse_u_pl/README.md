@@ -172,3 +172,6 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 
 
 五秒预载审查见[结果记录](tests/notes/upl_prestress_extended_root_r1.md)及[历史图](tests/figures/upl_prestress_equilibrium_review_r1.png)、[材料层剖面图](tests/figures/upl_prestress_equilibrium_review_r1_profiles.png)。全部原生守卫通过，κ全程0；末1s孔压变化RMS829 Pa、顶部继续沉降0.0502 mm，故尚不能据此物理撤墙。当前首先推进零步撤墙状态连续性组件；后续新鲜同进程程序准备更长预载，15 s仅为依据已有衰减和固结时标提出的候选，未执行或自动准入。每组“预载5 s＋塌陷3 s＝8 s”依赖预载已平衡的前提，这个前提现在不成立；正式总时长将按后续预载审查修订。原始BI4/typed及旧图均保留。
+
+
+用户随后将下一轮预载候选由15 s调整为10 s，保持阻尼0.02；15 s未执行。约2.7 s时标只能估计10 s剩余超压为几百Pa量级，是否足够仍检查真实晚窗孔压/有效应力/沉降/速度。若10 s满足必要条件，三组正式时间预算对应10＋3=13 s；不据时间长度自动验收。CPU/GPU零步退休组件现已分别通过，尚不代表生产事件或物理塌陷通过。
