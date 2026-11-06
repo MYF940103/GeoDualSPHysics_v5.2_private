@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded constant-strength periodic plastic coupling passed on CPU/GPU:1024 native IDs,128 updates,5 saves; nonzero history640 IDs. Periodic kappa copy repaired for explicit MaterialReturn1; prior elastic/default behavior retained. No softening/dilation/gravity collapse or formal release acceptance.",
+  "status": "Bounded zero-dilation periodic cohesion-softening CPU/GPU128 integration passed after retained constant-strength pair;1024 IDs/22 arrays/five actual saves,640 positive-kappa IDs,about6.904Pa observed strength loss. Nonzero dilation/gravity plastic collapse remains pending.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1182,6 +1182,15 @@
     "periodic_plastic_scope_implementation_passed": true,
     "material_mode1_general_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "369e244dbea82b465e61e9d2e1d81e188476efca",
-  "last_updated_utc": "2026-11-06T08:52:58.019998+00:00"
+  "latest_verified_code_checkpoint": "41fbfbd1f30f2bd09305b6f03163b42d095f1444",
+  "last_updated_utc": "2026-11-06T08:59:42.691979+00:00",
+  "material_softening_periodic_20261106": {
+    "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
+    "CPU_GPU_single_runs_passed": true,
+    "GPU_memcheck_errors": 0,
+    "GPU_memcheck_leaks": 0,
+    "maximum_pressure_cross_RMS_Pa": 0.004365207419954232,
+    "physical_acceptance": false,
+    "SHA_scans": 0
+  }
 }

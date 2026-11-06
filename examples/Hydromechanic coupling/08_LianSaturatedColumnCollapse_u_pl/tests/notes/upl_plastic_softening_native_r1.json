@@ -1,0 +1,11 @@
+{
+  "stage":"upl_plastic_softening_native_r1.author",
+  "status":"AUTHOR ONLY: verified periodic native profile adapted; no CL/link, decode, GenCase, solver, source change, Git or SHA action for this reader.",
+  "source":"tests/support/upl_plastic_softening_native_r1.cpp",
+  "CLI":"--read CPU|GPU DATA FRESHOUT; admit only tests/outputs/upl_plastic_softening_{CPU,GPU}_r1/data. Compile by absolute path. The seed/stem coordinated with the input author is CaseLianMaterialPeriodicSoftening_r1.",
+  "derivation":"Retain the existing111-line periodic profile's neutral BI4 parser/22 fields,1024 native IDs,5 frames,actual scalar+=2^-19 clocks/steps,signed diagnostic,5120 ledger/cache,1024 initial literal velocity-bit checks,4096 nonnegative/nondecreasing kappa transitions and final nonzero plastic witness. All original numerical/metadata gates remain. The actual old true-only HydroMechFreeSeepage key must remain ABSENT. Retained32-row velocity CSV and all initial geometry/material constants are unchanged.",
+  "only_new_material_reference":"Physical input changes are coh_r=1000 and n_coh=5 with peak5000; fixedphi25/dilation0/decay0 and every other parameter remain. For descriptive postprocessing only, calculate c(saved_kappa)=1000+4000*exp(-5*double(native_float_kappa)); use3c/den in the fixed-phi DP_PS yield diagnostic. Do not retain the old constant kc from cohesion5000. The initial derived cohesion is5000.",
+  "new_columns":"ledger.csv adds cohesion_from_saved_kappa_Pa; history.csv adds frame minimum/maximum derived cohesion. These are reconstructed from the actual saved float history, not serialized instantaneous constitutive coefficients. The diagnostic yield is NOT the local root residual evaluated at the solver's continuous double kappa and is not used as a physical acceptance tolerance.",
+  "outputs":"Same typed22.bin/layout,clocks,native_ids,ledger/history/completion output families; native raw layout remains212bytes/ID and1085492bytes total. Only new tag/completion labels and strength-derived descriptive columns differ. No pressure/J/theta/late-state zero forcing,degree/friction change,half/reference test or new parser is introduced.",
+  "physical_acceptance":false
+}

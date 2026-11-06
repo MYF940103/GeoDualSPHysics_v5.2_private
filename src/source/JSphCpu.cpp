@@ -4461,7 +4461,7 @@ void JSphCpu::InitPorosityObserverCpu(){
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
-    || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
+    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
     || Damping || RelaxZones
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");

@@ -1771,7 +1771,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
-    || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
+    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
     || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))

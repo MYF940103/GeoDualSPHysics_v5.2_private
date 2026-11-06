@@ -1,0 +1,18 @@
+{
+  "stage": "upl_plastic_softening_pair_r1.author",
+  "status": "AUTHOR ONLY; not imported, syntax-tested, executed or plotted. Root must full-read before any offline run; future GPU data must close first.",
+  "script": "support/upl_plastic_softening_pair_r1.py",
+  "future_output_prefix": "figures/upl_plastic_softening_pair_r1",
+  "reuse": "Import only reviewed pure schema,stat,CSV and arithmetic/plot definitions from upl_plastic_periodic_pair_r1 (its main guard prevents old run). The short load body is mechanically retained with explicit softening/constant tag and completion-stage selection; no global monkeypatch or old main execution.",
+  "inputs": "Four closed native profiles: upl_plastic_softening_{CPU,GPU}_r1_native_r1 plus retained upl_material_periodic_shear_{CPU,GPU}_r1_native_r1. Require their passed native receipts/original guards/SMT, real solver and reader exit0, exact22 typed schema and1024 native IDs, five scalar clocks and initial original-ID coordinate/row maps. No BI4 is opened and no program/decoder/build is invoked.",
+  "prerequisite_schema": "Each native.check has source_run_check/source_run_call/source_build/reader_call/native_completion/files Entries; source call has actual_solver_Win32_exit0,reader call actual_Popen_wait_exit0. Do not substitute exit aliases or adopt unclosed future data. A schema mismatch requires root review, not a target rerun.",
+  "comparisons": ["Softening GPU minus softening CPU", "Softening CPU minus retained constant-strength CPU", "Softening GPU minus retained constant-strength GPU"],
+  "metrics": "All1024 IDs at each of the same five actual times: pressure scalar RMS/max; minimum-image material XYZ displacement Euclidean RMS/max in mm; effective and total stress Frobenius RMS/max in Pa; kappa,J,n,current mixture rho and k scalar RMS/max. Record worst native ID per metric. Total stress is native double effective stress minus p on diagonals, shear orderxy,yz,xz with Frobenius weight2. This reports differences, not a5Pa/0.005mm half or truth gate.",
+  "strength": "Softening c(saved kappa)=1000+4000exp(-5kappa); retained constant c=5000Pa. Use actual float saved kappa promoted to double only for descriptive evaluation. cmin/cmax and kappa/nonzero ranges are reported at every saved state and final original material row. No continuous-root residual, new material tolerance, clipping, time fitting or parameter fitting is claimed.",
+  "initial_auxiliary_fields": "Report all initially differing array names per comparison. FSNormal and PosDiv may differ across backends even with identical primary input/state; no all22-initial-bit claim or FSNormal bit gate is imposed.",
+  "outputs": "Fresh _history.csv20dataset/time records, _differences.csv15comparison/time records, _row_profile.csv32material rows, one2x3PNG, and .check.json. Plotted points/row means are exactly represented in those CSVs. No smoothing/interpolation; existing artifacts refuse execution. Root must visually inspect the future PNG before figure acceptance.",
+  "figure": "Four dataset curves for kappa max,derived cohesion min,pressure RMS,effective-stress RMS; matched-ID softening effect in effective stress for each backend; final original-row kappa. GPU hollow markers / constant-strength distinct markers/dashes disclose overlapping observations.",
+  "limits": "A128-update witness changes strength only slightly. Same-backend effects use retained programs and are descriptive; independent overall physical correctness, full softening toward1000Pa,apex,gravity/large strain/collapse and negative dilation remain unvalidated. Instrumented GPU timing is not used for performance claims.",
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

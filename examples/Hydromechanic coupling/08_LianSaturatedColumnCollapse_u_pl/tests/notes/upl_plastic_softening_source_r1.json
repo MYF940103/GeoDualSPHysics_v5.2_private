@@ -1,0 +1,101 @@
+{
+  "stage": "upl_plastic_softening_source_r1",
+  "status": "source_candidate_only_not_built_or_run",
+  "base_head_reported": "41fbfbd",
+  "source_changes": [
+    {
+      "before": {
+        "path": "src/source/JSph.cpp",
+        "bytes": 203001,
+        "mtime_ns": 1793951836136416900
+      },
+      "after": {
+        "path": "src/source/JSph.cpp",
+        "bytes": 202949,
+        "mtime_ns": 1793959728928618100
+      },
+      "exact_one_declared_line_replacement": true,
+      "CRLF_preserved": true,
+      "BOM_added": false
+    },
+    {
+      "before": {
+        "path": "src/source/JSphCpu.cpp",
+        "bytes": 279398,
+        "mtime_ns": 1793951836142418000
+      },
+      "after": {
+        "path": "src/source/JSphCpu.cpp",
+        "bytes": 279441,
+        "mtime_ns": 1793959728939617000
+      },
+      "exact_one_declared_line_replacement": true,
+      "CRLF_preserved": true,
+      "BOM_added": false
+    },
+    {
+      "before": {
+        "path": "src/source/JSphGpu.cpp",
+        "bytes": 126319,
+        "mtime_ns": 1793951836149457300
+      },
+      "after": {
+        "path": "src/source/JSphGpu.cpp",
+        "bytes": 126362,
+        "mtime_ns": 1793959728961507900
+      },
+      "exact_one_declared_line_replacement": true,
+      "CRLF_preserved": true,
+      "BOM_added": false
+    }
+  ],
+  "protected_source_before_after": [
+    {
+      "path": "src/source/JSph.h",
+      "bytes": 40520,
+      "mtime_ns": 1793951836132414300
+    },
+    {
+      "path": "src/source/JSphCpuSingle.cpp",
+      "bytes": 77099,
+      "mtime_ns": 1793952810472221000
+    },
+    {
+      "path": "src/source/JSphGpuSingle.cpp",
+      "bytes": 67886,
+      "mtime_ns": 1793952810424572600
+    },
+    {
+      "path": "src/source/JSphGpu_ker.h",
+      "bytes": 25209,
+      "mtime_ns": 1793952810412567200
+    },
+    {
+      "path": "src/source/JSphGpu_ker.cu",
+      "bytes": 312991,
+      "mtime_ns": 1793952810416566800
+    },
+    {
+      "path": "src/source/FunSoilMaterial.h",
+      "bytes": 6862,
+      "mtime_ns": 1793947279820894200
+    },
+    {
+      "path": "src/source/DualSphDef.h",
+      "bytes": 32724,
+      "mtime_ns": 1793947279911500200
+    }
+  ],
+  "protected_source_stats_unchanged": true,
+  "modified_source_count": 3,
+  "declared_scope": "Remove only constant-strength terms from the existing zero-dilation periodic predicate; condition only the two observer StrainSoftening rejections on that same narrow predicate.",
+  "duplicate_guards_review": "CPU Single122/140 and GPU Single157/175 StrainSoftening gates remain literal inside SPR/HG option branches. JSph gravity-container StrainSoftening gate is unchanged. These unsupported options remain excluded.",
+  "retained": "MaterialReturn0 predicate remains false; fixedphi/fresh2D/DP_PS/Symplectic guards, psi=sf0, constantk/no wall/g0, kappa/J/time/domain/finite/support checks and material failure statuses unchanged.",
+  "diff": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_plastic_softening_source_r1.diff",
+  "build_started": false,
+  "solver_started": false,
+  "physical_acceptance": false,
+  "Git_used": false,
+  "SHA_scans": 0,
+  "ended_utc": "2026-11-06T10:08:48.972508+00:00"
+}

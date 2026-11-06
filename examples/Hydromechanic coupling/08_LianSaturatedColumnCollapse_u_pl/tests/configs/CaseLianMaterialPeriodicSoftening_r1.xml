@@ -1,0 +1,394 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.278c (30-10-2023)" date="06-11-2026 17:04:19">
+    <!-- Derived from the actual periodic-shear GenCase XML; only residual cohesion and its decay change. This is not a new GenCase output or physical acceptance. -->
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="0" units_comment="m/s^2" />
+            <rhop0 value="2072.5" comment="Initial saturated mixture density" units_comment="kg/m^3" />
+            <hswl value="0" auto="true" />
+            <gamma value="7" />
+            <speedsystem value="0" auto="true" />
+            <coefsound value="20" />
+            <speedsound value="0" auto="true" comment="Retained zero-gravity geometry convention; the coupled current-state step guard remains mandatory" />
+            <hdp value="1.2" comment="Wendland h/dp; loaded float h is expected to be float(0.048)" />
+            <cflnumber value="0.2" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.04" />
+                <newvarcte Length="1.28" _rem="32 spacings in each periodic direction" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#Dp/2" y="0" z="#Dp/2" />
+                <pointmax x="#Length+Dp/2" y="0" z="#Length+Dp/2" />
+            </definition>
+            <commands>
+                <mainlist>
+                    <setshapemode>real | bound</setshapemode>
+                    <setdrawmode mode="full" />
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="#Length" y="0" z="#Length" />
+                    </drawbox>
+                </mainlist>
+            </commands>
+        </geometry>
+    </casedef>
+    <execution>
+        <special>
+            <initialize>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 0; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.01" />
+                        <posmax z="0.029999999999999999" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.098017141222953796" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 1; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.049999999999999996" />
+                        <posmax z="0.069999999999999993" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.290284663438797" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 2; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.090000000000000011" />
+                        <posmax z="0.11" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.47139674425125122" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 3; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.13" />
+                        <posmax z="0.15000000000000002" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.63439327478408813" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 4; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.16999999999999998" />
+                        <posmax z="0.19" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.77301043272018433" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 5; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.20999999999999999" />
+                        <posmax z="0.23000000000000001" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.88192129135131836" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 6; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.25" />
+                        <posmax z="0.27000000000000002" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.95694035291671753" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 7; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.28999999999999998" />
+                        <posmax z="0.31" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.99518471956253052" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 8; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.33000000000000002" />
+                        <posmax z="0.35000000000000003" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.99518471956253052" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 9; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.37" />
+                        <posmax z="0.39000000000000001" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.95694035291671753" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 10; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.40999999999999998" />
+                        <posmax z="0.42999999999999999" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.88192129135131836" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 11; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.45000000000000001" />
+                        <posmax z="0.47000000000000003" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.77301043272018433" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 12; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.48999999999999999" />
+                        <posmax z="0.51000000000000001" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.63439327478408813" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 13; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.53000000000000003" />
+                        <posmax z="0.55000000000000004" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.47139674425125122" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 14; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.56999999999999995" />
+                        <posmax z="0.58999999999999997" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.290284663438797" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 15; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.60999999999999999" />
+                        <posmax z="0.63" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="0.098017141222953796" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 16; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.65000000000000002" />
+                        <posmax z="0.67000000000000004" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.098017141222953796" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 17; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.68999999999999995" />
+                        <posmax z="0.70999999999999996" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.290284663438797" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 18; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.72999999999999998" />
+                        <posmax z="0.75" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.47139674425125122" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 19; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.77000000000000002" />
+                        <posmax z="0.79000000000000004" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.63439327478408813" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 20; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.80999999999999994" />
+                        <posmax z="0.82999999999999996" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.77301043272018433" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 21; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.84999999999999998" />
+                        <posmax z="0.87" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.88192129135131836" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 22; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.89000000000000001" />
+                        <posmax z="0.91000000000000003" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.95694035291671753" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 23; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.92999999999999994" />
+                        <posmax z="0.94999999999999996" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.99518471956253052" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 24; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="0.96999999999999997" />
+                        <posmax z="0.98999999999999999" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.99518471956253052" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 25; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.01" />
+                        <posmax z="1.03" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.95694035291671753" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 26; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.05" />
+                        <posmax z="1.0700000000000001" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.88192129135131836" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 27; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.0900000000000001" />
+                        <posmax z="1.1100000000000001" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.77301043272018433" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 28; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.1299999999999999" />
+                        <posmax z="1.1499999999999999" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.63439327478408813" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 29; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.1699999999999999" />
+                        <posmax z="1.1899999999999999" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.47139674425125122" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 30; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.21" />
+                        <posmax z="1.23" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.290284663438797" units_comment="m/s" />
+                </fluidvelocity>
+                <fluidvelocity mkfluid="0" comment="Declared sine row 31; literal pre-rounded float from the companion velocity CSV">
+                    <onlypos>
+                        <posmin z="1.25" />
+                        <posmax z="1.27" />
+                    </onlypos>
+                    <direction x="1" y="0" z="0" />
+                    <velocity v="-0.098017141222953796" units_comment="m/s" />
+                </fluidvelocity>
+            </initialize>
+            <soils>
+                <MaterialReturn value="1" comment="Experimental consistent dev-kappa radial return; unsupported apex stops the stage" />
+                <DilationDecay value="0" comment="Constant zero dilation" />
+                <phi value="25" />
+                <coh value="5000" units_comment="Pa" />
+                <dlt value="0" />
+                <ModulusE value="20e6" units_comment="Pa" />
+                <PRvs value="0.33" />
+                <phi_r value="25" />
+                <n_phi value="0" />
+                <coh_r value="1000" units_comment="Pa" />
+                <n_coh value="5" comment="Cohesion softening; fixed friction and zero dilatancy retained" />
+            </soils>
+            <hydromechanics>
+                <HydroMech value="1" />
+                <HydroMechDynamicSeepage value="1" comment="Fresh XZ-periodic constant-k cohesion-softening candidate; future source/run admission required" />
+                <HydroMechConductivityModel value="0" />
+                <HydroMechConductivityCk value="0" />
+                <PoreWaterRho value="1000" units_comment="kg/m^3" />
+                <PoreWaterBulkModulus value="1e9" units_comment="Pa" />
+                <Porosity value="0.35" />
+                <HydraulicConductivity value="2e-4" units_comment="m/s" />
+                <PoreDtSafety value="0.1" comment="Original necessary-step factor" />
+                <PoreShepardRegularization value="0" />
+                <PoreDarcySymmetricCorr value="0" />
+                <PoreMdbcInterpolationMode value="0" />
+                <PoreCompressionSourceMode value="0" comment="Pair divergence" />
+                <PoreCompressionGradCorr value="1" />
+                <HydroMechInitMode value="0" comment="Fresh J1, p/p0, effective stress and kappa zero; velocity initialized above" />
+                <HydroMechTopLoadMode value="0" />
+                <HydroMechDrainage value="0" />
+                <HydroMechFreeSeepage value="0" />
+            </hydromechanics>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="1" />
+            <parameter key="DPCtes" value="3" comment="2-D plane strain" />
+            <parameter key="Boundary" value="1" comment="No actual boundary particles; no mDBC normal file is required" />
+            <parameter key="StepAlgorithm" value="2" comment="Symplectic" />
+            <parameter key="Kernel" value="2" comment="Wendland" />
+            <parameter key="ViscoTreatment" value="1" />
+            <parameter key="Visco" value="0" />
+            <parameter key="ArtificialStress" value="0" />
+            <parameter key="SoilDamping" value="0" />
+            <parameter key="SoilStressRateGradCorr" value="1" />
+            <parameter key="SoilBoundaryDerivativeSPR" value="0" />
+            <parameter key="SoilHourglassXi" value="0" />
+            <parameter key="DensityDT" value="0" />
+            <parameter key="Shifting" value="0" />
+            <parameter key="NoPenetration" value="0" />
+            <parameter key="DtIni" value="0.0000019073486328125" units_comment="seconds" />
+            <parameter key="DtMin" value="1e-8" units_comment="seconds" />
+            <parameter key="DtFixed" value="0.0000019073486328125" comment="2^-19; actual coupled bounds remain mandatory" units_comment="seconds" />
+            <parameter key="TimeMax" value="0.000244140625" comment="128 updates; actual -nsteps and native clocks remain authoritative" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.00006103515625" comment="32 updates; planned saves0/32/64/96/128" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="0" comment="No particle exclusion is admitted" />
+            <parameter key="RhopOutMin" value="700" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" units_comment="kg/m^3" />
+            <parameter key="XZPeriodic" value="1" comment="Axis-aligned periodic translations, no wall or free surface" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="0" y="default" z="0" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="1.28" y="default" z="1.28" />
+            </simulationdomain>
+        </parameters>
+        <particles np="1024" nb="0" nbf="0" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="0.02" y="0" z="0.02" />
+                    <posmax x="1.26" y="0" z="1.26" />
+                </positions>
+                <fluid count="1024" id="0-1023" mkcount="1" mkvalues="1" />
+            </_summary>
+            <fluid mkfluid="0" mk="1" begin="0" count="1024" />
+        </particles>
+        <constants>
+            <data2d value="true" />
+            <data2dposy value="0" units_comment="metres (m)" />
+            <gravity x="0" y="0" z="0" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="2072.5" units_comment="kg/m^3" />
+            <dp value="0.04" units_comment="metres (m)" />
+            <h value="0.048" units_comment="metres (m)" />
+            <b value="0" units_comment="Pascal (Pa)" />
+            <massbound value="3.316" units_comment="kg" />
+            <massfluid value="3.316" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="Length" value="1.28" />
+            <varnum name="MResId" value="0" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1" />
+    </execution>
+</case>
