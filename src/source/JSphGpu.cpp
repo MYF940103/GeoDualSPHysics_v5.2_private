@@ -1771,7 +1771,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
+    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
     || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
     || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))
@@ -1828,7 +1828,7 @@ void JSphGpu::ComputeSymplecticPorosity(bool corrector,double dt){
   unsigned *invalidg=ArraysGpu->ReserveUint();
   cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
   cusph::UpdatePorosityObserver(Np,Npb,corrector,dt,1.-double(SoilCte.Porosity)
-    ,Codeg,(corrector && IsDynamicPorePlasticPeriodicConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
+    ,Codeg,(corrector && IsDynamicPorePlasticConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   ArraysGpu->Free(invalidg);
   Check_CudaErroor("Failed advancing GPU porosity observer.");

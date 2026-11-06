@@ -125,7 +125,7 @@ GPU同原生几何的 [实际主力检查](tests/notes/upl_c08_force_GPU_root_r1
 
 mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有限正K/G及有效强度/角度范围。它采用dev κ和端点c/ψ，保留float材料参数与持久κ；顶点、无效输入、非正一致性或不收敛明确使阶段失败，不套用旧cap或弹性回退，也不保证失败阶段整体回滚。详见 [接口与限制](tests/notes/upl_material_interface_r1.md)。
 
-两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，程序记录的新增状态4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。随后非零κ仅在下述窄周期短程开放；塑性重力容器、地应力平衡、撤墙和塌陷仍未准入。
+两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，程序记录的新增状态4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。随后非零κ在下述窄周期短程得到验证；新增重力容器的冷启动范围见末节，地应力平衡、撤墙和塌陷仍未验收。
 
 ### 常强度周期塑性短程
 
@@ -142,3 +142,7 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 同一初始周期场新增两组，各CPU/GPU一次128步及一次原生读取已通过：POS为ψ0=+2.5°、cp5000 Pa；NEG为ψ0=-5°、cp7500 Pa，均cr1000 Pa、n_coh5、sf=.2，原1024 IDs、22数组、五帧及时间步/状态检查保持。两次GPU均memcheck零错误/泄漏。末态POS有640个非零κ，CPU/GPU最大约3.30091163e-4/3.30091192e-4；NEG有512个，约1.94350359e-4/1.94350403e-4。末孔压RMS分别约34.84/8.94 Pa，负压未截断。J继续积分总速度散度，没有额外叠加塑性体积源。
 
 两组峰值黏聚力不同，不能将组间差别当作仅剪胀角的独立效应；ψ和cohesion图表由实际保存float κ派生，不冒称连续材料求根的历史。该短窗只覆盖很小的衰减，不证明重力塑性、预应力、撤墙、负压稳定或完整塌陷验收。输入说明见[本轮记录](tests/notes/upl_plastic_dilation_inputs_r1.json)。
+
+### 新材料重力容器冷启动
+
+固定容器的显式`MaterialReturn=1`路径已完成CPU/GPU各一次128步、5帧至0.00048828125 s，保留5000土粒子及2060墙样本；22原生数组、实际时钟、J关系、密度缓存、κ有限及不回退均通过，GPU memcheck零错误/泄漏。新CPU与保留的默认MR0控制、新GPU与保留的显式MR1控制，其完整typed22及clock文件分别逐字节一致；两种控制身份分开记录，见[对比图及CSV](tests/figures/upl_material_gravity_pair_r1.png)与[阶段审查](tests/notes/upl_material_gravity_root_r1.md)。五帧土体跨后端孔压RMS差最大0.00042211 Pa，总应力Frobenius RMS差0.00075540 Pa，材料位移差最大1.218e-12 m。实际κ始终0，故只证明该新准入与冷启动兼容，尚未覆盖非零塑性墙响应、地应力平衡或撤墙塌陷；J仍由总速度散度更新，不另加塑性体积源。此后仅整理材料选择参数的读取位置并完成一次默认CPU Debug构建，未据该文字/读取顺序整理重复GPU或物理计算。

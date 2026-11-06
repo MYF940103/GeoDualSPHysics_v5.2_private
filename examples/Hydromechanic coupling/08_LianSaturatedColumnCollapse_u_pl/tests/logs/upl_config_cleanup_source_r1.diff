@@ -1,0 +1,28 @@
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -3782,11 +3782,6 @@
+   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
+   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
+   SoilCte.dlt=float(TORAD*sxml->ReadElementFloat(solidNode,"dlt","value",true));
+-  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
+-  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
+-  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
+-  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
+-    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
+ 
+   //-Strain-softening parameters and activation switch.
+   const bool hascohr=sxml->ExistsElement(solidEle,"coh_r","value");
+@@ -3804,6 +3799,13 @@
+   const bool softphi=(hasphir && hasnphi && SoilCte.n_phi>0.f);
+   const bool softcoh=(hascohr && hasncoh && SoilCte.n_coh>0.f);
+   StrainSoftening=(softphi || softcoh);
++
++  //-Constitutive return and dilation evolution; valid without strength softening.
++  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
++  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
++  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
++  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
++    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
+ 
+   //-Soil elastic parameters.
+   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);

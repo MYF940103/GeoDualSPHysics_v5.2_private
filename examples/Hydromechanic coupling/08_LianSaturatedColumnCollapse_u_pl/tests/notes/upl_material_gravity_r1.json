@@ -1,0 +1,30 @@
+{
+  "stage": "upl_material_gravity_r1.author",
+  "status": "INPUTS/NATIVE AUTHOR ONLY; no GenCase, seed/runtime copy, build, physical target, decoder, Git or SHA action by this preparation.",
+  "files": [
+    "configs/CaseLianSaturatedColumnCollapse_material_gravity_r1_Def.xml",
+    "configs/CaseLianSaturatedColumnCollapse_material_gravity_r1.xml",
+    "support/xCaseLianSaturatedColumnCollapse_material_gravity_r1_win64_CPU.bat",
+    "support/xCaseLianSaturatedColumnCollapse_material_gravity_r1_win64_GPU.bat",
+    "support/upl_material_gravity_native_r1.cpp"
+  ],
+  "baseline": "Actual accepted7060 MR1/free GPU control upl_material_on_GPU_r1 and its runtime seed outputs/upl_material_on_r1_seed/CaseLianSaturatedColumnCollapse_material_on_r1; retained CPU free/default controls exist separately and are not relabelled as an old MR1 CPU trajectory.",
+  "physical_changes": "Relative to the accepted MR1 cold gravity/free-start XML, only coh_r5000->1000 and n_coh0->5; cp5000/phi25/n_phi0/dlt0/DilationDecay0/MaterialReturn1 unchanged. Identity/comments only otherwise.",
+  "companion_truth": "New companion is explicitly derived from the actual accepted runtime XML, itself documented from GenCase geometry; historical app/date and all generated particles/constants/geometry blocks are retained. It is not a new GenCase output or restart.",
+  "unchanged": "7060 original IDs=5000soil+2060fixed,Cubic hfloat(.048)/dp.04/L4H2,mixed sideFreeSlip/bottomNoSlip normals,MK and original mdbc_freeslip CLI; g(0,0,-9.81),AV.1,G1/poregrad1/pair0,constant k2e-4/model0/Ck0,nfloat(.35),rho2072.5/rhow1000/Kw1e9,InitNone/no load/free1/drain0/fixedgrid0,no HG/independentSPR/damping/DDT/shifting/NoPen.",
+  "clock": "Original dtIni=dtFixed2^-18,DtMin1e-8,CFL.2/PoreSafety.1,TimeMax128dt=.00048828125,timeout32dt=.0001220703125,CLI128. Actual scalar+=dt and original4nonempty signed intervals remain authoritative.",
+  "paths": {
+    "seed": "outputs/upl_material_gravity_r1_seed/CaseLianSaturatedColumnCollapse_material_gravity_r1",
+    "CPU": "outputs/upl_material_gravity_CPU_r1",
+    "GPU": "outputs/upl_material_gravity_GPU_r1",
+    "CPU_program": "outputs/upl_material_gravity_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe",
+    "GPU_program": "outputs/upl_material_gravity_Debug_r1/DualSPHysics5.2_win64_debug.exe"
+  },
+  "BAT": "Mechanical retained default7060 CPU/GPU style. Future owned CPU BAT will copy exactly derivedXML+acceptedMR1 BI4+Normals into fresh seed, plus fresh program/runtime. GPU reuses that seed. Both refuse existing outputs/runtime, retain real immediate ERRORLEVEL and never start readers/plots/next stage. GPU CPUexit text is convenience only; root owns full native admission. No copy was performed during authoring.",
+  "reader": "Mechanically clone119line upl_material_on_native_r1.cpp: new tags/stage; typed MR1=1/sf0/free=true and every existing7060/5000/2060/22/ledger/cache/fixed/FS/clock/metadata gate remain. Only old all-particle elastic kappa0 rule becomes finite nonnegative soil history plus20000 noninitial saved-ID monotonic checks. Initial soil kappa0 and every fixed kappa0 still required. Completion adds max/finalnonzero count; final nonzero is explicitly not required. Existing typed22 already exports kappa; no new schema/array/framework.",
+  "reader_CLI": "--read CPU|GPU DATA FRESHOUT, exact new gravity tag DATA whitelist; old programs remain protected and cannot read new path tags.",
+  "limits": "This is a fresh cold128 startup, not gravitational equilibrium, nonzero-plastic-wall proof or full softening/column collapse acceptance. Do not lower cohesion, force prestress, add nonzero-kappa admission, fit heights/times, or claim all22 cross-backend initial bits. Derived c(saved kappa)=1000+4000exp(-5kappa) can be reported descriptively offline if useful.",
+  "root_builds": "New CPU/GPU gravity build paths are selected; actual closed build receipts, root full-read and separate target authorizations still govern any execution.",
+  "physical_acceptance": false,
+  "SHA_scans": 0
+}

@@ -1,0 +1,84 @@
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -594,7 +594,7 @@
+   void ConfigConstantsSoil();
+   float GetDynamicSoilDampingRate()const;
+   bool IsDynamicPoreContainerConfig()const;
+-  bool IsDynamicPorePlasticPeriodicConfig()const;
++  bool IsDynamicPorePlasticConfig()const;
+   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
+     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
+   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -3630,7 +3630,7 @@
+     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
+     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
+     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+-    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !StrainSoftening && !SoilDamping
++    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1) && !SoilDamping
+     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
+     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
+     && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0
+@@ -3640,13 +3640,14 @@
+ //==============================================================================
+ /// Narrow waiver of the elastic-only J corrector gate; base admission remains.
+ //==============================================================================
+-bool JSph::IsDynamicPorePlasticPeriodicConfig()const{
++bool JSph::IsDynamicPorePlasticConfig()const{
+   return(SoilCte.MaterialReturn==1 && HydroMech && HydroMechDynamicSeepage
+-    && !CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
++    && (IsDynamicPoreContainerConfig()
++    || (!CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
+     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !SoilDamping && Visco==0.f && !ViscoTime
+     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
+-    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage);
++    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage)));
+ }
+ 
+ //==============================================================================
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -4461,10 +4461,10 @@
+     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
+   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
+-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
++    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
+     || Damping || RelaxZones
+     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
+-    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
++    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/unsupported softening/DEM/damping zones/relaxation zones.");
+   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
+     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
+   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
+@@ -4662,7 +4662,7 @@
+ //==============================================================================
+ void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
+   if(!PorosityObserver)return;
+-  const bool allowplastic=IsDynamicPorePlasticPeriodicConfig();
++  const bool allowplastic=IsDynamicPorePlasticConfig();
+   const double solid0=1.-double(SoilCte.Porosity);
+   for(unsigned p=0;p<Np;p++){
+     const double jhalf=PoroJc[p];
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1771,7 +1771,7 @@
+     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
+   if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
+-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
++    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
+     || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
+     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
+     || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))
+@@ -1828,7 +1828,7 @@
+   unsigned *invalidg=ArraysGpu->ReserveUint();
+   cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);
+   cusph::UpdatePorosityObserver(Np,Npb,corrector,dt,1.-double(SoilCte.Porosity)
+-    ,Codeg,(corrector && IsDynamicPorePlasticPeriodicConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
++    ,Codeg,(corrector && IsDynamicPorePlasticConfig()? NULL: Kplasticg),PoroJPreg,PoroThetag,PoroJg,invalidg);
+   cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+   ArraysGpu->Free(invalidg);
+   Check_CudaErroor("Failed advancing GPU porosity observer.");

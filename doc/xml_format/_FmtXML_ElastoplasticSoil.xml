@@ -1,584 +1,102 @@
 <?xml version="1.0" encoding="UTF-8" ?>
-<!-- *** GeoDualSPHysics local elastoplastic soil XML notes (18-05-2026) *** -->
-<!-- This file documents local XML additions for elastoplastic soil cases and -->
-<!-- stabilization options introduced on top of the native DualSPHysics v5.2 format. -->
-<!-- Copy the relevant blocks into the real case XML under <case>. -->
-
+<!-- Parameter examples. Defaults refer to omitted XML keys, not the example values below. -->
 <case>
-
-	<!-- Section: Elastoplastic soil material and pore-water parameters. -->
-	<!-- Location in real cases: <case><execution><special><soils>...</soils>. -->
-	<!-- Angles are given in degrees in XML and converted to radians internally. -->
-	<!-- ModulusK and ModulusG are computed internally from ModulusE and PRvs. -->
 	<execution>
 		<special>
 			<soils>
-				<phi value="30" comment="Peak friction angle" units_comment="degrees" />
-				<coh value="0" comment="Peak cohesion" units_comment="Pa" />
-				<dlt value="0" comment="Dilation angle" units_comment="degrees" />
-				<MaterialReturn value="0" comment="0=LegacyFast (default), 1=experimental ConsistentDev; independent of HydroMech switches" />
-				<DilationDecay value="0" comment="Independent sf in psi=psi0*exp(-sf*kappa); finite sf>=0; nonzero requires MaterialReturn=1" />
-				<!-- Experimental material interface; CPU/GPU Debug builds and bounded Pre/Cor checks passed.
-                     Mode1 requires a fresh 2-D DP_PS Symplectic case, fixed friction (n_phi=0),
-                     finite positive K/G, valid fixed phi, coh>=coh_r>=0, finite n_coh>=0,
-                     and a finite dilation angle with absolute value below90 degrees.
-                     DilationDecay is NOT n_coh: n_coh controls cohesion, sf controls dilation.
-                     Mode1 uses dev delta-kappa=lambda/sqrt(3), continuous endpoint cohesion/dilation,
-                     local double arithmetic and existing float material/persistent-kappa storage.
-                     ApexNeeded, invalid input or nonconvergence fail the actual stage explicitly;
-                     there is no automatic old-cap/elastic fallback or transactional stage rollback.
-                     Mode0 retains the literal old path; nonzero decay with mode0 is rejected.
-                     CPU/CUDA standalone71-point and actual stage checks passed. Default native outputs
-                     and an elastic selector-ON startup match retained controls; this is not plastic physics.
-                     Dynamic nonzero kappa has bounded CPU/GPU128-step support only in zero-gravity,
-                     wall-free XZ-periodic constant-strength or cohesion-softening fixtures, without stabilizers.
-                     Same128-step CPU/GPU tests passed at psi0=0,+2.5,-5 degrees; the nonzero-angle tests
-                     use sf=.2, n_coh5, coh_r1000 Pa and peak cohesion5000/7500 Pa respectively.
-                     Observed strength losses are only about6-7 Pa and dilation decay is small;
-                     this is not complete post-peak or large-strain validation.
-                     Plastic gravity containers, HG and general collapse remain held;
-                     this is not continuum plasticity, equilibrium, localization or release acceptance. -->
+				<!-- Elasticity and strength; angles are in degrees. K and G are derived from E and nu. -->
+				<ModulusE value="1.0e6" comment="Young modulus; parser default=0; specify a positive material value" units_comment="Pa" />
+				<PRvs value="0.3" comment="Poisson ratio; default=0" />
+				<phi value="30" comment="Peak friction angle; default=0" units_comment="degrees" />
+				<coh value="0" comment="Peak cohesion; default=0" units_comment="Pa" />
+				<dlt value="0" comment="Initial dilation angle; default=0" units_comment="degrees" />
 
-				<phi_r value="30" comment="Residual friction angle for softening; default=phi when omitted" units_comment="degrees" />
-				<coh_r value="0" comment="Residual cohesion for softening; default=coh when omitted" units_comment="Pa" />
-				<n_phi value="0" comment="Friction softening coefficient; default=0; use 0 for no friction softening" />
-				<n_coh value="0" comment="Cohesion softening coefficient; default=0; use 0 for no cohesion softening" />
-				<SoilTriggerFos value="1.65" comment="Peak strength reduction factor for restart-triggered softening; default=1.65, valid range >=1; active when restarting with strain softening" />
+				<!-- Return algorithm is independent of strength softening and hydromechanics. -->
+				<MaterialReturn value="0" comment="0=LegacyFast, 1=experimental ConsistentDev; default=0" />
+				<!-- Mode1: fresh 2D DP_PS (DPCtes=3), Symplectic, fixed phi in (0,90) and n_phi=0; no apex return or PART restart. -->
 
-				<ModulusE value="1.0e6" comment="Young modulus of the soil skeleton" units_comment="Pa" />
-				<PRvs value="0.3" comment="Poisson ratio of the soil skeleton" />
+				<!-- Softening: residual strength must be supplied when its decay coefficient is positive. -->
+				<phi_r value="30" comment="Residual friction angle; default=phi" units_comment="degrees" />
+				<coh_r value="0" comment="Residual cohesion; default=coh" units_comment="Pa" />
+				<n_phi value="0" comment="Friction-angle exponential decay coefficient; default=0" />
+				<n_coh value="0" comment="Cohesion exponential decay coefficient; default=0" />
+				<DilationDecay value="0" comment="sf in psi=psi0*exp(-sf*kappa); default=0; sf>=0; nonzero requires MaterialReturn=1" />
+				<SoilTriggerFos value="1.65" comment="Restart strength-reduction factor for strength softening; default=1.65; must be >=1" />
 			</soils>
 
-			<!-- Hydromechanical water phase, pore-pressure numerics, initialization, external loading and drainage control. -->
-			<!-- Drainage is always applied to tracked free-surface particles when enabled. -->
 			<hydromechanics>
-				<HydroMech value="1" comment="Enable u-pw pore-pressure-rate formulation; default=0" />
-				<HydroMechDynamicSeepage value="0" comment="Experimental dynamic Darcy + J-dependent porosity/volume/inertia; bounded CPU/GPU entry checks passed, not physical release; default=0 retains u-pw" />
-				<HydroMechConductivityModel value="0" comment="Within dynamic seepage: 0=constant initial k0 (default), 1=void-ratio exponential k(J)" />
-				<!-- Model1 requires explicit HydroMechConductivityCk>0 (dimensionless, calibrated material coefficient).
-                     Lian2023 Eq4: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0).
-                     exp uses the natural base; Ck=delta(e)/delta(ln(k/k0)), not a time-step penalty.
-                     An experimental e-log10(k) index Ck10 converts as Ck=Ck10/ln(10).
-                     No independent k integration, clipping, tensor or discontinuous-interface law.
-                     Dynamic ON uses gamma_ref=rho_w*9.80665 to convert k [m/s] to material mobility;
-                     this reference weight does not change the configured body Gravity. Legacy OFF is unchanged.
-                     Example coefficient syntax only, NOT a recommended/calibrated value:
-                     <HydroMechConductivityCk value="0.01" />
-                     Verified experimental entry: CPU 2-D, zero gravity, fresh constant-DtFixed elastic run,
-                     InitMode=None; axis-aligned rectangular XZ periodicity without walls, or two opposing fixed parallel axis
-                     FreeSlip mDBC planes with tangential periodicity. A separate bounded loaded-column
-                     entry candidate is described below; other loads/drainage, viscosity/damping,
-                     HG/SPR outside the separate CPU column candidate below, plasticity, shifting, moving walls and other
-                     unsupported features remain rejected. No general consolidation/Cryer/Lian or GPU release is implied.
-                     Old GPU executables IGNORE the new XML keys: do not use them for this model.
-                     Dynamic/J-state PART restart is rejected, including loading with the master OFF.
-                     CPU BI4 saves double J/n/last-stage theta and derived current volume/mixture density/k;
-                     with feedback ON, native Rhop is a float cache of rho_w+(rho_t0-rho_w)/J;
-                     the exported double mixture-density ledger remains the inertia reference;
-                     ON-only float PosDiv exposes the existing support diagnostic without new particle state;
-                     fixed-wall n/volume/density/k=0 are nonphysical markers, not soil values.
-                     Limited canonical CPU wiring/output, default-OFF, short independent half-step and
-                     invalid-input/PART-rejection checks are verified; see tests/notes/upl_cpu_public_stage_r1.md
-                     in case02. Initial PosDiv/signed-zero differences prevent a blanket full-trajectory
-                     private-fixture raw-bit equivalence claim. This is not a formal physical release. -->
-				<!-- Private GPU constant-k implementation check (2026-11-02): current-J acoustic/diffusion
-                     bounds, native-owner periodic C/Ace/theta/rate extension and the complete same-force-stage
-                     Darcy pressure rate passed component checks and actual coarse/half short Runs.
-                     Seven old-path regressions preserve557 original15-array/clock/Step/dterror frame pairs
-                     exactly. New k0 bridges preserve both257-frame33-column trajectories exactly;
-                     positive-k GPU half pressure RMS max=.000310364Pa, matched CPU/GPU max=.0000530255Pa.
-                     Scope: fresh2D rectangular XZ-periodic zero-gravity elastic fixtures only, constant k;
-                     no wall/load/drainage/viscosity/damping/SPR/HG, evolving k or PART restart admission.
-                     This private test entry is NOT enabled by these XML keys. Public GPU was rejected at that checkpoint;
-                     canonical/server executables are not replaced, and no physical/full-cycle release follows. -->
-				<!-- Private GPU smooth-k implementation check (2026-11-02): k(J), both coefficient-gradient
-                     pressure/acceleration terms and the same-force-stage gradient step bound passed
-                     Debug/Release components, Debug memcheck and fresh actual periodic short Runs.
-                     Constant-k/k0 controls preserve1031 typed33/clock/ID frame instances exactly.
-                     Variable-k CPU/GPU independent half pressure RMS maxima=.000284317/.000279258Pa;
-                     matched CPU/GPU maximum=.0000427787Pa. Manufactured Ck=2^-13 produces a resolved
-                     model effect, NOT material calibration or a physical accuracy improvement.
-                     GPU J/n/theta are native diagnostics; V/rho/k are explicitly derived from saved J.
-                     Periodic-stage verified scope remains: no wall/interface/gravity/load/drainage,
-                     sufficient stability, exact restart, formal/full-cycle or server-package admission. -->
-				<!-- Private GPU static-wall implementation check (2026-11-02): nearest-node-anchored
-                     V0J mirror reconstruction of J/p/stress/derivative velocity, Q*C*Q and finished Q*Ace
-                     passed component and actual opposing x-FreeSlip-wall short Runs with Z periodicity.
-                     Seven fresh GPU jobs save1065 frames; four retained CPU controls were re-read, not re-run.
-                     Constant-k GPU half pressure RMS max=.000284857Pa, CPU/GPU max=.0000818932Pa;
-                     global/near-wall/endpoint weak-wave continuum objectives remain below1percent.
-                     Variable-k half max=.000342332Pa, CPU/GPU max=.0000468231Pa; manufactured Ck2^-13
-                     resolves an option effect, not calibration or a physical accuracy improvement.
-                     Every saved endpoint has separate force/rate/normal-flux/reaction checks; these are
-                     not observations of every original predictor/corrector stage or PART restart.
-                     Existing no-wall old paths preserve557 legacy and1031 complete-rate frame instances
-                     exactly; this is not a default-OFF physical mDBC regression for all formal cases.
-                     These private tests do NOT verify the public GPU XML entry. No NoSlip/general wall,
-                     3D, gravity/load/drainage/HG/SPR/plasticity, full-cycle or server-package admission.
-                     GPU native fixed-sample n is not a wall material; CPU fixed markers differ. -->
-				<!-- Limited public GPU wiring review (2026-11-02): explicit master1 maps
-                     the already bounded J/feedback/complete-rate branch atomically; model0/1 selects
-                     constant/smooth k and model1 requires explicit finite positive Ck. Default master0
-                     remains original u-pw. No new mathematical kernel or integrator is introduced.
-                     ON-only output adds actual downloaded/compacted PosDiv, V/rho/k derived from the
-                     same saved J and typed model metadata. Fixed n/V/rho/k are nonphysical zero markers.
-                     Fresh 2D zero-gravity elastic periodic/opposing-axis-FreeSlip restrictions above remain.
-                     Two Debug two-step memchecks and eight Release short trajectories preserve common
-                     original15/J/theta/soil n and actual clock bits exactly; extra outputs are separate.
-                     Explicit master0/model0/Ck0 mDBC:151 frames/1040 IDs/original15 and clocks exact,
-                     proven process exit0. Omitted-key151 data are also exact but its OS exit code was not
-                     captured; that run is retained as qualified data, not retrospectively passed.
-                     Six representative unsupported-input/real-PART guards passed. Scientific half/reference
-                     budgets are inherited through complete exact same-backend trajectories, not recomputed.
-                     See tests/logs/upl_gpu_public_stage_r1.check.json. Canonical/server executables unchanged;
-                     no gravity/load/drainage/general wall, physical/formal/full-cycle GPU release implied. -->
-				<!-- Private GPU gravity check (2026-11-02): periodic constant/smooth k and strictly
-                     tangential-gravity constant-k FreeSlip walls passed their bounded native checks.
-                     Wall half pressure RMS max=.000284055Pa; direct weak-wave reference maximum=.25813percent.
-                     Variable-k gravity walls remain unrun. Original combined wrong-g trajectory checks
-                     remain failed; separate conditional-rate and manufactured-signal evidence is not
-                     equivalent coverage. See case02 tests/logs/upl_gravity_wall_gpu_constant_peer_r2.check.json.
-                     Public XML still rejects nonzero gravity; no load/drainage, normal gravity,
-                     actual consolidation/Cryer, general-boundary or server-release acceptance follows. -->
-				<!-- Private CPU column compatibility check (2026-11-03, not physical release):
-                     private constant-k, zero gravity, one fixed upward FreeSlip bottom plane, X periodicity,
-                     TopKernelBand and fixed-grid drainage. Drained p/rate are constrained without freezing J;
-                     band force targets q(t)*A0 using current mixture inertia rho(J)*V(J).
-                     This candidate does not expand the public XML entry or admit HG/SPR/damping,
-                     variable k, Cryer, a formal consolidation run or a server executable. -->
-                <!-- CPU closed-face candidate (2026-11-03): before the configured
-                     drainage opening, the dynamic free-surface Taylor-defect term uses a gradient
-                     target with (grad p+rho_w*Ace).normal=0; interior symC and acceleration divergence
-                     are retained. This is a local Neumann substitution, not a conservative flux
-                     projection or a general moving/variable-k boundary validation. No new XML key;
-                     default u-pw is unchanged. Actual .025s coarse/half769-frame checks pass the
-                     original5Pa/.005mm bounds; old519-frame same-dt native prefixes are exact.
-                     Opening transients decay locally, but pressure oscillations remain; this is
-                     not quasi-static, continuum accuracy or full-consolidation acceptance. -->
-                <!-- Private GPU column synchronization check (2026-11-03):
-                     same private constant-k/g0/bottom-FreeSlip/X-periodic scope only. Raw load
-                     and band inertia use current V(J)/rho(J), while the target remains q(t)*A0.
-                     Dynamic drained p/rate constraints, valid Pre/Corr geometry, immediate
-                     projected-pressure periodic refresh and closed-face Taylor-defect target
-                     follow CPU. No new XML key, persistent field, altered event clock or public
-                     load/drain admission at this checkpoint. Components/memcheck, default-OFF151,
-                     five old dynamic trajectories and actual .025s CPU/GPU/independent-GPU-half
-                     native checks passed original budgets; see case02 tests/notes/upl_gpu_column_root_r1.json.
-                     This is bounded implementation evidence, not physical/formal/server acceptance. -->
-                <!-- Public loaded-column entry candidate (2026-11-03, canonical-main tests pending):
-                     HydroMechDynamicSeepage=1 may select that same constant-k/g0 column with
-                     HydroMechConductivityModel=0, Ck=0, InitMode=None, one upward fixed planar
-                     FreeSlip bottom and rectangular X periodicity; no other wall topology is unlocked.
-                     Requires TopKernelBand, finite q0>0, finite ramp/drain times>=0 and fixed-grid
-                     free-surface drainage. Existing noaux/elastic/necessary-step/PART restrictions remain.
-                     No equation, kernel, integration or default-OFF arithmetic change in this wiring step.
-                     ON-only J/n/theta/PosDiv/current V-rho-k output and typed PART metadata use the
-                     existing public schema. GPU fixed n changes from a private mirror sample to the
-                     public zero marker; compare soil n separately, not all18 private arrays blindly.
-                     Fresh canonical CPU/GPU smoke and native equivalence are required before acceptance;
-                     .025s agreement alone does not admit long consolidation or a server executable. -->
-                <!-- Dynamic loaded-column damping candidate (2026-11-03, tests pending):
-                     Only the above constant-k/g0 column may use SoilDamping=1 with finite
-                     SoilDampingCoef in [0,0.1]. Lian2023 Eq44 uses reference intrinsic solid density
-                     rho_s=(rho_t0-n0*rho_w)/(1-n0), not legacy rhop or current mixture density;
-                     c_d=eta_d*sqrt(E_s/(rho_s*h^2)), acceleration=-c_d*v_s.
-                     Finished same-stage Ace, including damping, enters complete Darcy and closed-face
-                     reconstruction after external band-load normalization. No new XML key, pressure
-                     source or velocity filter. Default u-pw retains its old per-particle damping law.
-                     The initial bounded candidate used eta_d=.02; matched eta_d=.04 with CPU SPR/AV/HG
-                     passed its short native checks below. Full physical checks remain pending. -->
-                <!-- Dynamic loaded-column CPU HG integration candidate (2026-11-03):
-                     SoilHourglassXi>0 is admitted only in the above public constant-k/g0 CPU column,
-                     with its unchanged single upward fixed FreeSlip bottom, X periodicity, TopKernelBand
-                     and fixed-grid drainage. At this checkpoint GPU dynamic HG/SPR/viscosity were
-                     rejected; the separate 2026-11-05 GPU implementation candidate is described below.
-                     Variable k, ViscoTime, plasticity, restart and other wall topologies remain rejected.
-                     Existing matched-LS GNOG integrates H=Q/M0 with two half updates. It uses V=V0*J,
-                     mi=V0*(rho_t0-rho_w+rho_w*J), and adds aHG=M0*H/mi at the current force-stage J.
-                     HG precedes finished AceMax and the same-stage dynamic Darcy source once.
-                     Exact J is part of the rate cache; dt/tau<=.2 and accumulated spin<.01 remain.
-                     Actual CPU Debug/Release components and legacy-HG/xi0 native regressions passed;
-                     bounded .5-s coupled halves and a 2-s coarse review passed their recorded checks.
-                     This is not physical/full-cycle/server acceptance
-                     or an evolving/open-mass energy proof. Default u-pw arithmetic remains unchanged. -->
-                <!-- CPU loaded-column SPR/artificial-viscosity candidate (2026-11-03):
-                     Debug/Release builds and the 31-state actual-interaction component passed.
-                     Only the above public constant-k, 2-D, zero-gravity loaded X-periodic column with
-                     one upward fixed FreeSlip bottom may combine SPR=1 and artificial viscosity.
-                     SPR=1 reuses the intrinsic same-stage V0*J mirror producer for derivative velocity;
-                     SPR=0 already uses that dynamic producer, so this admission is not a new force effect.
-                     Physical fixed-wall velocity stays zero. Viscosity retains existing physical dv_visc
-                     and its approach-only switch; feedback uses rho(J) and neighbor rho(J)*V0*J weighting
-                     instead of the former independent continuity density/reference mass. Finished acceleration, including
-                     viscosity, enters the existing complete Darcy source once. No new parameter or
-                     default change; master-OFF and dynamic Visco=0 retain their original arithmetic.
-                     The 458-frame CPU checks passed: default-OFF original15 exact; original dynamic
-                     SPR0/Visco0 and SPR1 shared-producer paths retain all22 arrays and actual clocks.
-                     SPR1/Visco=.1/eta_d=.04/HG=.1 passed original native/ledger/drainage checks.
-                     The larger-step CPU full2Tv completed at72.88428689946836s; all1682 native checks
-                     and the measured1291-frame prefix passed. Pressure/top settlement are close to
-                     unfitted references, but bottom total-stress error110.576Pa exceeds the old100Pa
-                     accuracy benchmark. See case02 figures/full_validation_upl_CPU1_r1.README.md.
-                     No full-cycle half-step result or unconditional physical release is claimed. -->
-                <!-- GPU loaded-column stabilization implementation candidate (2026-11-05):
-                     Same explicit HydroMechDynamicSeepage=1 and the same narrow constant-k/g0 column
-                     may select SPR/artificial viscosity/HG. Reuses the existing same-stage single-J
-                     wall producer, not a second ordinary-SPR reconstruction. Physical/viscous wall
-                     velocity differences remain separate from the mirrored derivative velocity.
-                     AV uses current rho(J) and neighbor rho(J)*V0*J; HG uses V0*J/current inertia,
-                     reference-M0 history and the fresh corrector-stage J. Raw J invalidates its cache.
-                     Damping, normalized top-2h loading and HG precede the complete dynamic Darcy rate.
-                     No new XML key/default, boundary operator, time integrator or step law is added.
-                     CPU/GPU Debug builds, 16 current-J cases, 36 invalid-input backend checks, 42 legacy
-                     null-J cases and GPU memcheck passed. A 150-save actual coupled short window agrees
-                     with retained CPU Release (pressure RMS <=.002082 Pa, material XYZ <=4.631e-8 mm).
-                     Two 21-save default-OFF/legacy-HG main-program regressions preserve all native array
-                     and signed clock bytes. Release also passed the 150-save native/physical comparison
-                     (pressure RMS <=.002356 Pa, material XYZ <=5.067e-8 mm); derived FS normals differ,
-                     so initial all-field bit identity is not claimed. Same-window CPU1/GPU loop times
-                     were 17.781/13.795 s on the local RTX3050, not a full-run speedup. Full-GPU validation
-                     and server release remain pending. Default u-pw retains its previous equations. No Vel0/NoSlip,
-                     general-wall/3-D dynamic extension, variable-k HG, plastic flow or restart support.
-                     See case02 tests/notes/upl_gpu_stabilizers_r1.json for the current verification state. -->
-                <!-- Dynamic Darcy Cubic component verification (2026-11-06):
-                     Kernel=1 selects the existing Cubic samples for the complete CPU/GPU Darcy rate
-                     and the three dynamic wall fits; Kernel=2 keeps the existing Wendland path.
-                     Selection occurs once on the host, outside particle/neighbour loops. No new
-                     field, neighbour pass, equation, time integrator or public key is introduced.
-                     CPU/GPU Debug builds and retained Wendland component CSV regressions passed.
-                     Cubic CPU has48 manufactured cases at h/dp1.2. The GPU selected-kernel component
-                     has8 conditions,32 affine wall rows,4536 rate rows and24 negative controls;
-                     its memcheck has zero errors/leaks. These are zero-step component checks,
-                     not complete Cubic integration, mixed-slip/gravity/plasticity or collapse acceptance.
-                     Independent SPR/HG kernel restrictions and all existing geometry/restart limits
-                     remain. See case08 tests/notes/upl_cubic_review_r1.json for bounded evidence. -->
-                <!-- CPU dynamic-wall normal-gravity component (2026-11-06):
-                     Reconstruct p-rho_w*Gravity_normal.dot(position), then restore the head at the fixed
-                     sample. This pairs with the existing Q*(Ace+Gravity)-Gravity reconstruction.
-                     DebugCPU and the old zero-gravity Cubic CSV regression passed. Each selected
-                     Wendland/Cubic kernel has4 static manufactured conditions,1024 wall rows,
-                     256 true-plane flux checks and4096 complete-rate reference rows within the
-                     original budgets. The normal-only projection also passed6 mixed/pure-tangential
-                     manufactured conditions per kernel (1536 wall/384 face/6144 rate rows), with
-                     exact zero complete rates in the pure-tangential conditions. Public zero-gravity and parallel-wall restrictions remain;
-                     GPU Debug and12 selected-kernel static conditions (24 wall/face and972 rate rows)
-                     also passed, with zero-error/leak memcheck and zero-g8-condition CSV byte equality.
-                     The separate finite-head overflow witness was correctly rejected. These are
-                     different CPU/GPU manufactured geometries, not a matched-ID physical comparison.
-                     Gravity trajectories, NoSlip, corners and inactive bottom walls remain unadmitted.
-                     See case08 tests/notes/upl_gravity_wall_gpu_review_r1.json. -->
-                <!-- Dynamic-wall NoSlip candidate (2026-11-06, CPU/GPU components checked):
-                     Reuse the existing per-boundary slip selector. NoSlip uses the full negative
-                     mirror velocity, the legacy tangential projection, and double stress extrapolated
-                     to the actual boundary. The common MLS writer now receives its existing fitted
-                     gradients; J/p normal head, geometric C and Darcy Ace are unchanged.
-                     GPU reuses its existing per-boundary array with CTE slip fallback; no new array/pass.
-                     CPU W/C reconstruction and six legacy u-pw/SPR components passed; GPU W/C
-                     reconstruction, retained FreeSlip/head byte regressions and memcheck passed.
-                     CPU instantaneous shear-force/action-reaction checks also passed (zero time steps).
-                     Initialization restrictions are retained; this is not NoSlip transient/integrator,
-                     mixed-corner, inactive-wall, gravity-trajectory or plastic-collapse acceptance. -->
-                <!-- CPU per-receiver normal-head candidate (2026-11-06, components checked):
-                     The internal MLS reader receives the boundary sample index, so each sample
-                     uses its own normal component of gravity. GPU already uses that local normal.
-                     W/C FS/NS swapped-axis state queries passed; 72 retained CSVs and ten
-                     completion records stayed byte-exact. These query points are not container walls.
-                     This does not admit public multi-plane gravity or change the drainage mode. -->
-                <!-- CPU/GPU local support retry (2026-11-06, field components checked):
-                     Only nonperiodic 2-D dynamic-wall MLS may retry a failed geometry fit once
-                     at an already visited nearest real source; values return to the original mirror.
-                     The raw determinant gate and finite first-order requirement stay unchanged.
-                     Actual case08 near-wall queries passed410/410;400 original pressure values and
-                     six ordinary legacy components stayed exact. GPU also passed the same410-wall
-                     affine budgets and zero-error/leak memcheck using actual native geometry.
-                     This adds no input switch and does not admit mixed-wall gravity or collapse. -->
-                <!-- CPU/GPU Darcy cutoff ordering (2026-11-06, components checked):
-                     Reject inactive fixed sources only after the unchanged compact-support cutoff.
-                     In-support and exact-radius inactive sources still reject; no wall is silently
-                     removed from a required stencil. Real CPU case08 and GPU14-case predicates,
-                     including poison/canaries and zero-error memcheck, passed. This is not a
-                     wet/contact classifier or full mixed-wall validation. -->
-                <!-- CPU/GPU nonperiodic2D wall support composition (2026-11-06, zero-step checked):
-                     State refreshes existing BoundMode from current boundary-position support,
-                     including each existing float/double consumer cutoff. OFF samples skip state/C/Ace
-                     fitting and validation; active failed fits and in-support OFF Darcy still reject.
-                     Real case08 has410 participating and55 ignored-in-prefix samples, with2188
-                     supported pairs and no missing/OFF pair; finite/poison live fields agree.
-                     GPU borrows existing packed PosCell for its actual float force/FS cutoffs;
-                     no new particle array is allocated. Global acceleration was prescribed.
-                     CPU/GPU actual one-force affine compression also passed derivative/stress budgets,
-                     but is not a gravity equilibrium or integrator test. GPU default NULL-J force
-                     retained72 and six OFF conditions stayed byte-exact before/after this port.
-                     Observer-only GPU initialization now matches CPU; feedback guards are retained.
-                     Public gravity/plastic case08 admission remains pending; no wetness rule added. -->
-                <!-- Single-J native density cache (2026-11-06, stage components checked):
-                     Feedback ON derives native Rhop from actual predictor Jhalf or a same-expression
-                     full-J corrector preview. Existing J commit, pore/stress/position order and double
-                     quadrature/inertia are unchanged. Only unused native legacy Arc accumulation stops.
-                     Original density bounds apply in double before the final float cache write;
-                     no clamp or replacement of V0*J by reference_mass/Rhop is permitted.
-                     CPU boundary Arc integration and GPU fixed rho0 writes retain their old rules.
-                     CPU7060-ID stages and GPU4-slot stages passed cache/Code/domain checks;
-                     OFF/observer stage bytes stayed exact; GPU memcheck had zero errors/leaks.
-                     A real old/new CPU column128-update comparison also passed: all eight actual
-                     saved states retained21 other typed arrays and signed clocks byte-exact;
-                     native Rhop intentionally changed and8000 new soil caches matched actual J.
-                     This is bounded compatibility evidence, not a new consolidation/long-run claim.
-                     Legacy velocity/level/force gauges are NOT J-aware and must not be used as
-                     dynamic physical force/volume acceptance evidence. No new XML input added. -->
-                <!-- Fixed 2-D gravity-container candidate (2026-11-06):
-                     Explicit dynamic seepage may admit fresh nonperiodic fixed +X/-X FreeSlip sides
-                     and a +Z NoSlip bed, vertical gravity, constant k, corrected gradients and AV.
-                     No moving wall, NoPen, load, drainage, HG, independent SPR, damping, softening
-                     or plasticity is admitted. A shared host check validates actual loaded normals,
-                     slip modes, coplanar interfaces and initial soil half-spaces; far bed samples
-                     remain allowed and current support still determines their participation.
-                     CPU/GPU Debug builds and128-update startup passed: each has7060 native IDs,
-                     five actual saves and22 typed arrays; soil J/n/V/rho/k ledgers and25000 density
-                     cache float-bit checks passed per backend, with no exclusions. GPU memcheck
-                     reported zero errors/leaks. Across these five times pressure RMS difference
-                     is at most0.00042211 Pa and material XYZ difference at most1.218e-12 m.
-                     This test sets DtMin=1e-8 below DtFixed=2^-18; all necessary upper bounds remain.
-                     Drainage=0 does NOT imply sealed flux: closedfs is false and the full existing
-                     Taylor-defect surface rate remains. This is not paper free-seepage, geostatic
-                     equilibrium, wall removal or collapse acceptance. No public input key added. -->
-                <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
-                     Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
-                     bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid
-                     ramp/hold/drain scheduling. All fixed native markers remain present and must be
-                     separated from the initial soil enclosure by the full kernel support plus a
-                     roundoff margin. A conservative no-contact envelope is checked in the existing
-                     CPU/GPU Darcy receiver loops before the drained-node early return. It is only
-                     an admission guard, never a fitted physical radius or a load/pressure correction.
-                     Existing single-J integration, XYZ rate, current-inertia AV and reference-solid
-                     damping are reused. HG and SPR remain off for this candidate; no curved-wall
-                     reconstruction, shifting, variable k, plasticity or restart is admitted.
-                     CPU Debug/GPU Debug/Release builds and actual 128-step CPU/GPU startup passed;
-                     pressure RMS difference <=1.396e-5 Pa and material XYZ <=1.768e-11 mm. A near-DBC
-                     input was rejected and GPU Debug two-step memcheck reported zero errors/leaks.
-                     The 69-save ramp/hold/drain window passed native and original closed diagnostics;
-                     max closed pressure RMS4.176 Pa and six-stress RMS2.960 Pa. True drainage covered
-                     20612 saved receivers. Column regression preserves150 actual saves and signed-clock
-                     export bytes. The 577-save coarse peak passed native/ledger/drainage and exact
-                     69-save common26/signed-clock prefix checks. Mandel fixed18 peak error is -1.4931%
-                     and phase error +2.4708% against the unfitted finite-Kw/r0/a=.05 reference.
-                     A nu=.30 server full-decay validation candidate is packaged; no full-cycle,
-                     peak-half or strict1-percent physical acceptance is claimed.
-                     Closed-face correction constrains a Taylor defect, not an exact-Neumann claim.
-                     The default-OFF equations and the bounded column scope are unchanged. -->
-				<PoreWaterRho value="1000" comment="Reference pore-water density; default=1000" units_comment="kg/m^3" />
-				<PoreWaterBulkModulus value="2.0e6" comment="Pore-water bulk modulus used by u-pw; default=0, must be >0 when HydroMech=1" units_comment="Pa" />
-				<Porosity value="0.3" comment="Reference n0; constant in default u-pw, dynamic model uses n=1-(1-n0)/J; must be in (0,1)" />
-				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; constant by default, optional J-law only within dynamic seepage; valid >=0" units_comment="m/s" />
-				<PoreDtSafety value="0.1" comment="Safety factor for pore-pressure diffusion time step; default=0.1" />
-				<!-- Original u-pw CPU/GPU behavior: DtFixed bypasses automatic min(dt,dtw). Check a fixed
-                     step explicitly against dtw=PoreDtSafety*(rho_w*g/(Kw/n))*h^2/k; a zero
-                     fixed-step mechanical error statistic does not certify the pore-diffusion limit.
-                     Experimental dynamic CPU instead rejects unsafe current/requested fixed steps or
-                     DtMin above its necessary coupled-wave/diffusion/coefficient-gradient bound;
-                     PoreDtSafety and CFLnumber must be finite and positive;
-                     this is not sufficient spectral stability or TPI, and does not remove Kw stiffness. -->
-				<PoreShepardRegularization value="0" comment="Optional Shepard regularization of excess pore pressure; default=0" />
-				<PoreShepardInterval value="30" comment="Step interval for pore-pressure Shepard regularization; default=30" />
-				<!-- mDBC pore-pressure interpolation mode for boundary pore-pressure reconstruction only. -->
-				<!-- 0=zero-order/default stable mode; 1=MLS direct opt-in mode. -->
-				<!-- This does not select mechanical wall slip and does not replace HydroMechDrainage free-surface drainage. -->
-				<PoreMdbcInterpolationMode value="0" comment="mDBC boundary pore-pressure interpolation: 0=zero-order, 1=MLS direct; default=0" />
-				<PoreDarcySymmetricCorr value="0" comment="0=legacy receiver-C Darcy, 1=symmetric-C soil-soil Darcy; CPU/GPU, default=0" />
-				<!-- Opt-in changes only the soil-soil Darcy lapw/lapz contraction to r.(Ci+Cj)/2.gradW;
-                     boundary pairs retain Ci. Compression, mechanical force/load, Eta2, time integration
-                     and storage precision are unchanged; no new particle arrays are allocated.
-                     Isolated Cryer nu=.3,dp=.0025 finite-Kw peak coarse/half passed the original
-                     safety/5-Pa/.005-mm screens (2026-10-30): peak error about-0.99%, time about+3.92%.
-                     CPU/GPU default-OFF and explicit-ON implementation regressions passed69states
-                     each/all35 native fields0ULP; Debug smokes/GPU memcheck passed (2026-10-30).
-                     Default stays0 for accepted cases; full decay/general boundaries,
-                     plasticity and varying-material accuracy are not established. -->
+				<!-- Move the whole hydromechanical configuration here when migrating it from legacy soils XML. -->
+				<HydroMech value="1" comment="Enable hydromechanical coupling; default=0" />
+				<HydroMechDynamicSeepage value="0" comment="0=original u-pw, 1=experimental dynamic seepage with evolving J/n; default=0" />
+				<!-- Dynamic seepage has restricted feature combinations; see the case README. PART restart is unsupported. -->
+				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
+				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
+				<!-- <HydroMechConductivityCk value="0.01" comment="Example only; natural-log conductivity index; default=0, no calibrated universal value" /> -->
+
+				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
+				<PoreWaterBulkModulus value="2.0e6" comment="Water bulk modulus; default=0; must be >0 when HydroMech=1" units_comment="Pa" />
+				<Porosity value="0.3" comment="Reference porosity n0; default=0; must be in (0,1) when HydroMech=1" />
+				<HydraulicConductivity value="1.0e-4" comment="Initial hydraulic conductivity k0; default=0; must be >=0" units_comment="m/s" />
+
+				<PoreDtSafety value="0.1" comment="Pore-diffusion step safety factor; default=0.1; must be >0" />
+				<!-- Legacy DtFixed bypasses automatic pore-step limiting; dynamic seepage checks its necessary coupled limits. -->
+				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
+				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
+				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
+				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C for soil pairs; default=0" />
+
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
-				<!-- Required only when HydroMechInitMode=2; default=0. -->
-				<!-- <HydroMechInitZ value="1.0" comment="Constant water-table/init elevation; default=0" units_comment="m" /> -->
-				<!-- TopKernelBand GPU G2: origin/normalization, legacy modes 0-4, and Debug/Release 20-step mode5 lifecycle/field comparisons checked. -->
-				<!-- CPU/GPU near-zero raw cancellation differs on the existing float neighbor paths; no local 64-eps equivalence is claimed. Case-02 k=1e-4 CPU/GPU 2Tv passed the scoped delivery comparison (2026-10-20). -->
-				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=YaoTopStrip, 4=LianFlexibleStrip, 5=TopKernelBand (CPU/GPU 2D horizontal top, same resultant as 1); default=0" />
-				<!-- Mode4: half-domain x>=0, strip0..1.25m; CPU/GPU mirror the predicate to |x|<=1.25 across the x=0 free-slip wall. -->
-				<!-- Loading, contact drainage exemption and pore-rate selection use the same footprint; q and nodal quadrature are unchanged. -->
-				<!-- Debug/memcheck and actual GPU 15-s coarse/half contact repair passed (2026-10-26); no normal-drift load/drain toggles in that window. -->
-				<!-- Original13-node quadrature remains +4% versus ideal width; 100-s/SPH/FEM accuracy pending, no general contact/curved-wall extension. -->
-				<HydroMechTopLoadQ0 value="0" comment="Compressive q0; default=0; required when HydroMechTopLoadMode is not None" units_comment="Pa" />
-				<HydroMechTopLoadRampTime value="0" comment="q0 ramp time; default=0" units_comment="s" />
-				<HydroMechDrainage value="1" comment="Enable drained free-surface pore pressure; default=1" />
-				<HydroMechDrainageStartTime value="0" comment="Drainage start time; default=0" units_comment="s" />
-				<!-- CPU/GPU fresh constant-DtFixed runs only; start time must be an integer multiple of DtFixed. -->
-				<!-- CPU/GPU event predicates, case-02 15-s coarse/half and same-dt full 2Tv checks passed; full-cycle half-step convergence is not claimed. -->
-				<!-- Corrects accumulated-time roundoff at that event only; TimeStep and the load ramp are unchanged. -->
-				<HydroMechDrainageFixedGrid value="0" comment="Drainage event fixed-grid alignment 0:Off, 1:On (default=0); independent of SPR" />
-                <HydroMechFreeSeepage value="0" comment="Experimental default0; dynamic constant-k elastic gravity container only; requires HydroMechDrainage=0 and FixedGrid=0; bounded component/startup checks passed, not collapse validation" />
-                <!-- Free-seepage candidate, not physical acceptance: existing fluid FS2/3 only.
-                     Initial5000-soil mask matches Eq68 including wall quadrature and self; no new detector.
-                     At completed-geometry division only, finite p>0 becomes0; p<=0/nonfinite, rate,J,theta remain.
-                     Predictor/half states are NOT clipped; next force/save refreshes wall state before use.
-                     No extra post-projection wall pass, array or loop-stage flag is introduced.
-                     Constant-k surface L candidate is lp+rho_w*(Ace.dot(lx)+divAce), removing the complete
-                     (gradp+rho_w*Ace) defect. Interior/default/legacy fixed-zero drainage stay unchanged.
-                     This dynamic extension is motivated by Lian2021 Eq72, not proved by that static equation.
-                     CPU/GPU zero-step hydrostatic/affine/nonconstant-Ace and projection checks passed;
-                     new/OFF rate and FS records stayed byte-exact against their matching old closures.
-                     GPU component memcheck reported zero errors/leaks. Both real128-step startups passed
-                     five native saves/7060 IDs/22 arrays;100 actual FS receivers per save had p<=0,
-                     with negative values retained. This is not equilibrium, variable-k, plasticity or collapse admission.
-                     Native metadata adds HydroMechFreeSeepage=true only for explicitON; arrays/schema unchanged. -->
+				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
+
+				<HydroMechTopLoadMode value="0" comment="0=None, 1=TopVertical, 2=FlexibleConfinement, 3=TopStripVertical, 4=LianFlexibleStrip, 5=TopKernelBand; default=0" />
+				<!-- Modes3/4 use case-specific strip geometry; mode5 spreads the top load over a horizontal kernel band. -->
+				<HydroMechTopLoadQ0 value="0" comment="Compressive load; default=0; must be >0 when loading is enabled" units_comment="Pa" />
+				<HydroMechTopLoadRampTime value="0" comment="Load ramp duration; default=0; must be >=0" units_comment="s" />
+
+				<HydroMechDrainage value="1" comment="Zero pore pressure at tracked drained free-surface soil; default=1" />
+				<HydroMechDrainageStartTime value="0" comment="Drainage opening time; default=0; must be >=0" units_comment="s" />
+				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
+				<!-- With fixed-grid drainage, opening time must be an integer multiple of DtFixed. -->
+				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
+				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
 
-			<!-- Optional mDBC mechanical slip overrides by boundary mkbound. -->
-			<!-- Location in real cases: <case><execution><special><mdbcslip>...</mdbcslip>. -->
-			<!-- Requires Boundary=2. SlipMode remains the global default for mkbound values not listed here. -->
-			<!-- Use GenCase mkbound values, not mk values. Split wall geometry with <setmkbound mk="..."/> before draw commands. -->
-			<!-- Each listed mkbound must exist in the generated particles and can appear only once. -->
-			<!-- slipmode accepts 1/Vel0, 2/NoSlip, 3/FreeSlip and aliases such as vel0, no-slip, free-slip. -->
-			<!-- This is a mechanical mDBC wall-slip setting only; hydraulic drainage remains controlled by HydroMechDrainage. -->
+			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
 			<mdbcslip>
-				<bound mkbound="0" slipmode="3" comment="Example: lateral walls free-slip" />
-				<bound mkbound="1" slipmode="2" comment="Example: bottom wall no-slip" />
+				<bound mkbound="0" slipmode="3" comment="Example: side walls FreeSlip; unlisted boundaries inherit global SlipMode" />
+				<bound mkbound="1" slipmode="2" comment="Example: bed NoSlip" />
 			</mdbcslip>
 		</special>
-	</execution>
 
-	<!-- Section: Local elastoplastic solver and stabilization parameters. -->
-	<!-- Location in real cases: <case><execution><parameters>...</parameters>. -->
-	<execution>
 		<parameters>
-			<!-- Stress state/history: CPU and GPU double. G1 storage/PART checks and case-02 k=1e-4 same-physics CPU/GPU 2Tv passed; this is not general plastic-flow validation. -->
-			<!-- CPU/GPU save the native terminal step when TimeMax or NstepsBreak is reached, even between TimeOut events; this output-only condition does not change dt or integration. -->
-			<!-- Consolidation output: TimeOut (seconds) = DeltaTv*H^2/Cv, Cv=k*M/(rho_w*g), M=E*(1-nu)/((1+nu)*(1-2*nu)); use positive reference g even in a no-gravity surcharge test. -->
-			<!-- Case-02 DeltaTv=.005 gives TimeOut=.0182185714285714/.182185714285714/1.82185714285714 s for k=1e-3/1e-4/1e-5; this changes saving only, not DtFixed. -->
-			<!-- Case-02 replaced k=1e-5 by k=5e-5 and requires all three groups dp=.01 m, width=.1 m. The refined partial run was preserved. Third-group TimeOut=.36437142857142857 s, TimeMax=145.75858 s, dt=1e-5; CPU8 full 2Tv completed and passed the user's provisional 1D pressure/settlement scope on 2026-10-24. -->
-			<!-- Original Darcy with HG xi=.05 passed CPU/GPU .3-s, CPU 1/15-s dt/half, and CPU2Tv checks. Accepted k=1e-3/1e-4 retain xi=.1, so strengths differ. Final k=5e-5 pressure RMSE1.16Pa, settlement error-.430%, Q12.45Pa and bottom bias.001275mm; residual stress errors remain. No full-cycle half-step or general-boundary claim. Density/Darcy prototypes were rejected, not production features. -->
-			<!-- Default saving is anchored at t=0, not drainage tD; compare theory at actual Tv=Cv*(t-tD)/H^2. Retain dense startup diagnostics separately; existing results keep their original cadence. -->
-			<!-- Stress rates, pore pressure/rates, material parameters, plastic history and local force/boundary arithmetic remain float. -->
-			<!-- Double SigmaState_kk/ij PART fields retain integration state; legacy float stress fields remain for display. This does not enable HG or general plastic restart. -->
-			<!-- Hydromechanical CPU/GPU PART also saves HydroMechLoadAce (float3), the existing applied-load acceleration for resultant-force diagnostics, not total acceleration. -->
-			<!-- GPU external-load telemetry repair (2026-10-24, pending output-only regression): record top loads
-                 for all load modes, not only mode5; add neighbor-load diagnostics instead of overwriting them.
-                 No Ace/pressure/stress integration change. Earlier mode3 GPU PART can contain zero telemetry
-                 despite a physically applied load; do not interpret that missing observation as zero force. -->
-			<!-- CPU output-only addition checked against the retained CPU8 .03-s trajectory: old physical fields remain 0 ULP; this diagnostic field is not a new load or XML switch. -->
-			<!-- Drucker-Prager constant mapping for the elastoplastic return mapping. -->
-			<parameter key="DPCtes" value="1" comment="DP constants 1:3D circumscribed, 2:3D middle-circumscribed/Mohr-Coulomb, 3:plane-strain (default=1)" />
+			<parameter key="DPCtes" value="1" comment="1=3D circumscribed, 2=Mohr-Coulomb mapping, 3=plane strain; default=1" />
 
-			<!-- Bui et al. (2008) artificial stress for tensile-instability control. -->
-			<parameter key="ArtificialStress" value="0" comment="Bui 2008 artificial stress 0:Off, 1:On (default=0)" />
-			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial stress coefficient in [0,1] (default=0.2)" />
-			<!-- Optional. If omitted, the solver uses the fixed default exponent. -->
-			<!-- <parameter key="ArtificialStressExp" value="2.55" comment="Artificial stress exponent; default=2.55" /> -->
-			<parameter key="SoilStressRateGradCorr" value="0" comment="Soil stress-rate velocity-gradient correction 0:Off, 1:On (default=0)" />
-			<!-- SPR reconstructs wall-ghost velocity vectors for stress, pore-pressure and density derivatives (including wall density). -->
-			<!-- For a stationary plane with unit normal n and reconstructed ghost velocity vg: Vel0=-dot(vg,n)*n, NoSlip=-vg, FreeSlip=vg-2*dot(vg,n)*n. -->
-			<!-- Vel0 retains its zero tangential closure, not full NoSlip. NoSlip/FreeSlip derivative MLS is a new first-order candidate, not the old zeroth-order tangential extrapolation. -->
-			<!-- Physical wall velocity, momentum/viscosity, Darcy diffusion and loading are unchanged. No density KEEP patch is enabled. -->
-			<!-- Candidate scope: fresh 2D x-z or 3D Wendland/Symplectic elastic soil.
-                 CPU/GPU multi-plane operator and bounded pulse checks below passed;
-                 NOT general multi-plane physical acceptance. Existing single-plane delivery stands. -->
-			<!-- 2026-10-27 per-mk NoSlip/FreeSlip SPR candidate: initialization now admits these two
-                 local modes with a NoSlip/FreeSlip global default. Existing vector reflection formulas
-                 and one-coplanar-face-per-mk/nonzero-normal/convex-interior checks remain unchanged.
-                 Mixed Vel0 is not admitted. CPU Debug/GPU Debug/Release passed constant/affine fields
-                 on 2D corners and 3D edges with the two local slip assignments exchanged (12 fixtures).
-                 GPU Debug edge memcheck has zero errors. Original Lian SPR-OFF CPU Debug3-frame and
-                 GPURelease31-frame native regressions remain0ULP. Lian mixed-slip SPR3s independent half
-                 passed .016484Pa/.00001354mm; not paper/full-cycle or general-contact acceptance. -->
-			<!-- CPU per-mk multi-plane candidate (2026-10-24): each wall mk must remain one stationary coplanar face;
-                 inward half-spaces must define a convex common interior. Local normals are not averaged at corners.
-                 If a ghost lies outside another face, fit one dp inside all faces and evaluate the same affine MLS
-                 polynomial at the ORIGINAL ghost; one-plane arithmetic and pore-pressure extrapolation are unchanged.
-                 HG is off in independent candidate tests. CPU Debug/Release passed 18 corner/edge/wedge
-                 manufactured cases in total; eight CPU 2-ms pulse half-step pairs passed (two axis-NoPen).
-                 CPU Yao .1-s off/on/half passed 101 matched 5-Pa/.005-mm pairs; not theory or long-cycle acceptance.
-                 GPU Debug/Release passed 18 multi-face and 36 legacy single-plane manufactured cases in total;
-                 eight GPU 2-ms pulse half pairs passed. Four SPR/HG old one-plane paths retain 31-frame 0 ULP.
-                 GPU Yao .02/.1-s startup, independent half steps and CPU comparisons passed (101 samples at .1 s);
-                 .3-s GPU post-ramp window passed 301 half pairs and all 101 .1-s same-dt prefixes 0 ULP;
-                 full-window maxima .277975 Pa / .000287019 mm. The subsequent SPR-on 1-s CPU/GPU
-                 window passed all 1001 cross/independent GPU half pairs: .000630828 Pa / .00000196073 mm
-                 cross-backend, .277975 Pa / .000287019 mm half-step (that stage had no off control beyond .3 s).
-                 A subsequent GPU off/on/half 10-s window passed all 1001 saved .01-s pairs:
-                 half maxima .139152 Pa / .000136888 mm; shared .3/1-s prefixes remain 0 ULP.
-                 At 10 s the maximum bottom/side normal-displacement residual decreases by 93.9/87.1 percent;
-                 loaded-band alternating stress remains about 13.6 Pa. HG and NoPen were off.
-                 Coarser output sampling does not supersede the retained dense startup half-step maxima.
-                 No 10-s CPU comparison or independent pressure/settlement theory reference;
-                 not general boundary/long-cycle acceptance. Original strict strip-load quadrature is unchanged. -->
-			<!-- 3D fixed two-face edges and three-face corners (2026-10-25): NoSlip/FreeSlip, nonzero XYZ startup,
-                 16 production-step companion runs over 2 ms, 201 native samples each. Eight independent CPU/GPU
-                 half pairs and eight same-dt cross-backend pairs passed 0.5 Pa / 1e-5 mm bounds;
-                 maxima .0148596 Pa / 1.170e-9 mm (half), .000064899 Pa / 8.837e-10 mm (cross).
-                 Approximate energy ratio max 1.020237 below 1.1. HG, NoPen, damping, drainage and load off.
-                 NoSlip has a tangential startup transient, not an exact affine solution. These bounded checks
-                 do not validate full 3D consolidation, curved/moving walls, plastic flow or large rotations. -->
-			<!-- CPU/GPU NoPen+SPR candidate: NoSlip/FreeSlip with axis-aligned fixed plane faces only.
-                 Original componentwise NoPen is unchanged; inclined NoPen remains rejected because an SPR-off
-                 pure-tangent production test produces a spurious normal correction. Two axis-NoPen pulse half pairs
-                 passed independently on each backend. Yao .1-s CPU/GPU/half compatibility also passed,
-                 but NoPen on/off saved native fields are 0 ULP: its proximity guard was inactive.
-                 This adds no active-NoPen/general-wall/long-cycle acceptance. -->
-			<!-- GPU Debug/Release each passed the same 18 manufactured fields; SPR-off matches retained 20-step GPU output bitwise with HG on/off. Case-02 15-s coarse/half and k=1e-4 same-dt CPU/GPU 2Tv passed (2026-10-20). -->
-			<!-- Each face needs finite, nonzero, consistently oriented and coplanar normals. For multiple CPU/GPU faces
-                 normals must point into their convex common interior. Curved and moving walls remain rejected. -->
-			<!-- Requires one uniform mDBC SlipMode 1/2/3 (no per-mk overrides), corrected stress/pore gradients,
-                 PairDivergence, artificial viscosity and DensityDT=0. NoPen is off except the axis-plane candidate above. -->
-			<!-- No restart, moving/floating bodies, in/out, shifting, relaxation, softening or artificial stress. Periodicity must be tangent to the wall (no y periodicity in 2D). -->
-			<!-- Validated: 18 stationary-plane manufactured fields (2D/3D, horizontal/vertical/tilted, SlipMode 1/2/3); case-02 horizontal Vel0 0.15-s coarse/half regression is bitwise unchanged. -->
-			<!-- Manufactured fields do not validate arbitrary 2D/3D coupled time histories, inactive-wall dynamics or complex boundaries; these still need separate validation. -->
-			<!-- Plastic flow and large rotations have not been validated; SPR does not expand the independent 2D-only SoilHourglassXi scope. -->
-			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Mirrored wall S/P/R derivatives 0:Off, 1:On (default=0); bounded CPU/GPU plane/pulse/Yao checks outside case-02, not general physical release" />
-			<!-- GNOG is limited to 2D CPU/GPU Wendland, small-rotation elastic soil and Symplectic integration. -->
-			<!-- Nonperiodic bounded-neighbor candidate (2026-10-27): real X distances/no cell wrap, no new XML switch.
-                 CPU/GPU 58 operator checks each, frozen-geometry oscillator, Debug memcheck and old-periodic
-                 Release 0-ULP checks passed. Actual Lian .15-s half pair passed .009139Pa/.000009084mm;
-                 HG-off CPU/GPU native regressions remain0ULP. Lian mixed-slip HGxi=.1 SPRoff/on3s coarse
-                 saved-state safety/drainage passed. User waived the HG3s half and requested an independent
-                 100-s server run (HG=.1, SPR=1, gradient correction=1); inputs/package are not a completed
-                 paper/full-cycle/100-s validation. No new XML option or equation change in this delivery. -->
-			<!-- No history restart, plastic flow, moving/floating bodies, in/out, shifting or relaxation is supported. -->
-			<!-- GPU Debug/Release each passed 42 operator tests and 20-step coupled checks; HG-off matches retained GPU output bitwise. Case-02 xi=.1, damping=.04 fixed-plane elastic CPU/GPU 2Tv delivery passed; local Q growth and boundary bias remain disclosed. -->
-			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG strength; 0 disables all HG work/storage (default=0); case-02 xi=.1 (k1e-3/1e-4) and CPU xi=.05 (k5e-5) provisionally accepted for 1D pressure/settlement only; not plasticity or large rotation" />
+			<!-- Soil stabilization. -->
+			<parameter key="ArtificialStress" value="0" comment="Artificial stress 0=off, 1=on; default=0" />
+			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial-stress coefficient; default=0.2; range [0,1]" />
+			<parameter key="SoilStressRateGradCorr" value="0" comment="Stress-rate velocity-gradient correction 0=off, 1=on; default=0" />
+			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Reconstructed wall velocity for soil derivatives 0=off, 1=on; default=0" />
+			<!-- SPR supports fixed planar walls; per-mk modes require separate faces. Inclined NoPen and curved/moving walls are unsupported. -->
+			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG hourglass strength; default=0 (off); must be >=0" />
+			<!-- HG: 2D Wendland/Symplectic, small-rotation elastic soil; no plasticity or history restart. -->
+			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0=off, 1=on; default=0" />
+			<parameter key="SoilDampingCoef" value="0.02" comment="Damping coefficient; default=0.02; >=0 (dynamic column: at most0.1)" />
+			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0=off, 1=Molteni, 2=Feng/Fourtakas, 3=internal-fluid only; default=0" />
+			<parameter key="DensityDTvalue" value="0.1" comment="Stress-diffusion coefficient; default=0.1" />
 
-			<!-- Bui-Fukagawa style soil damping for static/relaxation soil cases. -->
-			<!-- Experimental dynamic loaded-column scope/rate is specified above; other dynamic fixtures remain undamped. -->
-			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0:Off, 1:On (default=0)" />
-			<parameter key="SoilDampingCoef" value="0.02" comment="Non-negative damping coefficient (default=0.02)" />
+			<!-- Mechanical mDBC settings are separate from pore-pressure boundary conditions. -->
+			<parameter key="Boundary" value="2" comment="1=DBC, 2=mDBC; default=1" />
+			<parameter key="SlipMode" value="1" comment="mDBC wall velocity 1=Vel0, 2=NoSlip, 3=FreeSlip; default=1" />
+			<parameter key="MDBCCorrector" value="1" comment="mDBC in Symplectic corrector 0=off, 1=on; default=1" />
+			<parameter key="MDBCFastSingle" value="1" comment="Fast single-precision mDBC; default=1; CPU and hydromechanics force the double path" />
+			<!-- <parameter key="NoPenetration" value="1" comment="mDBC NoSlip/FreeSlip penetration correction; default=0" /> -->
 
-			<!-- Soil stress diffusion. The key name is inherited from DualSPHysics density diffusion. -->
-			<parameter key="DensityDT" value="0" comment="Soil stress diffusion 0:None, 1:Molteni-style, 2:Feng/Fourtakas with boundary contribution, 3:full/internal fluid-only (default=0)" />
-			<parameter key="DensityDTvalue" value="0.1" comment="Stress diffusion coefficient (default=0.1)" />
-			<!-- DensityDT=4 and DensityDT=5 are not supported in the current code; they were tested and removed. -->
-
-			<!-- mDBC slip mode for boundary interactions. Boundary=2 is required for mDBC. -->
-			<parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC (default=1)" />
-			<parameter key="SlipMode" value="1" comment="mDBC slip mode 1:Vel0, 2:NoSlip, 3:FreeSlip (default=1)" />
-			<!-- Use <execution><special><mdbcslip> to override SlipMode for selected mkbound values. -->
-			<parameter key="MDBCCorrector" value="1" comment="mDBC correction in Symplectic corrector 0:predictor only, 1:predictor and corrector (default=1)" />
-			<parameter key="MDBCFastSingle" value="1" comment="mDBC uses fast single precision calculation on GPU (default=1; CPU forces double path)" />
-			<!-- Optional for SlipMode=2 or 3. -->
-			<!-- <parameter key="NoPenetration" value="1" comment="Enable mDBC2 no-penetration correction for no-slip/free-slip mDBC (default=0)" /> -->
-
-			<!-- Native DualSPHysics stabilization options remain available and independent. -->
-			<parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS (default=1)" />
-			<parameter key="Visco" value="0.01" comment="Viscosity value" />
-			<parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full (default=0)" />
-			<parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation (default=-2)" />
-			<parameter key="ShiftTFS" value="0" comment="Threshold to detect free surface; default=0; typically 1.5 for 2D and 2.75 for 3D when shifting is active" />
+			<!-- Existing DualSPHysics viscosity and shifting controls. -->
+			<parameter key="ViscoTreatment" value="1" comment="1=artificial viscosity, 2=laminar+SPS; default=1" />
+			<parameter key="Visco" value="0.01" comment="Viscosity coefficient; required, no XML default" />
+			<parameter key="Shifting" value="0" comment="0=off, 1=ignore boundaries, 2=ignore fixed, 3=full; default=0" />
+			<parameter key="ShiftCoef" value="-2" comment="Shifting coefficient when enabled; default=-2" />
+			<parameter key="ShiftTFS" value="0" comment="Shifting free-surface threshold; default=0; typical 2D/3D values 1.5/2.75" />
 		</parameters>
 	</execution>
-
-	<!-- Section: Notes for current local implementation. -->
-	<notes>
-		<note value="ArtificialStress and SoilDamping are applied to soil/fluid particles only; boundary particles are excluded." />
-		<note value="Dynamic loaded-column damping uses constant reference intrinsic solid density; default u-pw keeps its existing legacy-rhop law. This bounded candidate requires independent compatibility and physical checks." />
-		<note value="DPCtes, ArtificialStress, SoilDamping and DensityDT are reported in the solver log; use the log to verify active options." />
-		<note value="The mDBC no-slip/free-slip implementation stores a corrected tangential boundary velocity for viscous and velocity-gradient terms." />
-		<note value="The mDBC bound-mode switch for non-submerged boundary particles is internal and currently has no XML key." />
-		<note value="MDBCThreshold is a runtime configuration option with default=0; it is not read from the XML parameters block in the current code." />
-		<note value="For soil sound speed, verify the solver log. The local soil path can compute Cs0 from ModulusE, PRvs and RhopZero." />
-	</notes>
-
 </case>

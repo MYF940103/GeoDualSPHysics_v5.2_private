@@ -3630,7 +3630,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
-    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !StrainSoftening && !SoilDamping
+    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1) && !SoilDamping
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
     && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0
@@ -3640,13 +3640,14 @@ bool JSph::IsDynamicPoreContainerConfig()const{
 //==============================================================================
 /// Narrow waiver of the elastic-only J corrector gate; base admission remains.
 //==============================================================================
-bool JSph::IsDynamicPorePlasticPeriodicConfig()const{
+bool JSph::IsDynamicPorePlasticConfig()const{
   return(SoilCte.MaterialReturn==1 && HydroMech && HydroMechDynamicSeepage
-    && !CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
+    && (IsDynamicPoreContainerConfig()
+    || (!CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !SoilDamping && Visco==0.f && !ViscoTime
     && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
-    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage);
+    && !HydroMechDrainage && !HydroMechDrainageFixedGrid && !HydroMechFreeSeepage)));
 }
 
 //==============================================================================
@@ -3781,11 +3782,6 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
   SoilCte.dlt=float(TORAD*sxml->ReadElementFloat(solidNode,"dlt","value",true));
-  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
-  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
-  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
-  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
-    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
 
   //-Strain-softening parameters and activation switch.
   const bool hascohr=sxml->ExistsElement(solidEle,"coh_r","value");
@@ -3803,6 +3799,13 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   const bool softphi=(hasphir && hasnphi && SoilCte.n_phi>0.f);
   const bool softcoh=(hascohr && hasncoh && SoilCte.n_coh>0.f);
   StrainSoftening=(softphi || softcoh);
+
+  //-Constitutive return and dilation evolution; valid without strength softening.
+  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
+  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
+  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
+  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
+    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
 
   //-Soil elastic parameters.
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);

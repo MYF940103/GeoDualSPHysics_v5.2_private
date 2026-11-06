@@ -1182,8 +1182,8 @@
     "periodic_plastic_scope_implementation_passed": true,
     "material_mode1_general_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "86bc238ac04f5d60079a486531f04c4ece58242b",
-  "last_updated_utc": "2026-11-06T10:41:30.891104+00:00",
+  "latest_verified_code_checkpoint": "8edd7366ed429d6d7d2a794e46b000592946de79",
+  "last_updated_utc": "2026-11-06T11:01:18.448665+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1200,5 +1200,21 @@
     "pressure_cross_RMS_POS_Pa": 0.004531200768799991,
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
+  },
+  "active_work": "Preparing fresh fixed-gravity/mixed-slip softening startup after periodic material checks. Four-host-file predicate reuse is an uncommitted candidate; CPU/GPU builds in progress or preparation, no gravity solver admission yet.",
+  "configuration_interface_review": {
+    "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
+    "guide_lines_before": 584,
+    "guide_lines_after": 102,
+    "existing_parameter_examples_preserved": 53,
+    "all_defaults_or_required_inputs_documented": true,
+    "default_values_or_XML_paths_changed": false,
+    "checklist": "validation/upl_interface_review_r1.md",
+    "hydromechanics_keys_in_checklist": 24,
+    "public_interface_removal_done": false,
+    "scheduled_before": "case08 formal XML/BAT and server packaging",
+    "MaterialReturn": "Constitutive algorithm; valid without strength softening",
+    "DilationDecay": "Dilation evolution; separate from n_coh; not guarded by StrainSoftening",
+    "default_CPU_Debug_cleanup_build": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_config_cleanup_DebugCPU_r1.build.json"
   }
 }

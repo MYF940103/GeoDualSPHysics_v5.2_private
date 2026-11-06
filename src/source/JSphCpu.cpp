@@ -4461,10 +4461,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticPeriodicConfig()) || UseDEM
+    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
     || Damping || RelaxZones
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
-    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/softening/DEM/damping zones/relaxation zones.");
+    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/unsupported softening/DEM/damping zones/relaxation zones.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
@@ -4662,7 +4662,7 @@ void JSphCpu::ComputeSymplecticPrePorosity(double dt){
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorrPorosity(double dt){
   if(!PorosityObserver)return;
-  const bool allowplastic=IsDynamicPorePlasticPeriodicConfig();
+  const bool allowplastic=IsDynamicPorePlasticConfig();
   const double solid0=1.-double(SoilCte.Porosity);
   for(unsigned p=0;p<Np;p++){
     const double jhalf=PoroJc[p];
