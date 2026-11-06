@@ -1183,7 +1183,7 @@
     "material_mode1_general_spatial_plasticity_accepted": false
   },
   "latest_verified_code_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac",
-  "last_updated_utc": "2026-11-06T14:00:49.406438+00:00",
+  "last_updated_utc": "2026-11-06T17:37:11.268973+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "One fresh CPU8 Release5s actual gravity preload is active; damping.02 and dynamic-volume Shepard every40 steps. Owned PID74456 under Python66208. No wall release or automatic extra solver.",
+  "active_work": "5s CPU8 preload and unique native/offline review completed; safe but still elastic consolidation, not equilibrated. Continue zero-step right-wall retirement implementation review; no active physical solver or admitted automatic follow-on.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1289,6 +1289,14 @@
     "extended_tag": "upl_prestress_extended_CPU_r1",
     "owner_pid": 66208,
     "solver_pid": 74456,
-    "source_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac"
+    "source_checkpoint": "af9caa4085815b96eef575b5142d68e4163ea5ac",
+    "extended_solver_completed": true,
+    "actual_end_s": 4.999999999853004,
+    "saved_frames": 501,
+    "preload_equilibrium_accepted": false,
+    "final_kappa_max": 0,
+    "final_velocity_RMS_m_s": 2.908253644215869e-05,
+    "late1s_pressure_change_RMS_Pa": 829.3563552649968,
+    "root_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_prestress_extended_root_r1.md"
   }
 }

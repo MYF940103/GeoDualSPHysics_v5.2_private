@@ -159,7 +159,7 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 
 新输入使用规整十进制时间：dt=2.5微秒，接线短窗0.001 s、每0.0001 s保存；延长预载输入为5 s、每0.01 s保存。CPU/GPU Debug及Release构建通过；CPU Debug、CPU8 Release和GPU Release各完成400步/11帧，并通过全部22数组、静水p0、J账本及自由面检查，GPU另一次40步内存检查零错误/泄漏。三组最大孔压RMS差约0.00192 Pa、材料位移差约1.83e-8 mm；见[短窗图及CSV](tests/figures/upl_prestress_short_review_r1.png)。旧u-pw Shepard的81行实际结果与保留对象程序逐字节一致。
 
-本机短窗CPU8 Release循环2.398547 s，GPU Release为2.735856 s，故下一次5 s诊断预载选择CPU8；这不是完整长窗或严格空载基准。已启动一次CPU8 Release的5 s重力预载`upl_prestress_extended_CPU_r1`；以实际速度、孔压、应力及其晚窗变化判断预载状态，不能因到达5 s就认定平衡。当前仍为固定容器，撤墙、全耦合重启和塌陷物理验收待完成。
+本机短窗CPU8 Release循环2.398547 s，GPU Release为2.735856 s，故下一次5 s诊断预载选择CPU8；这不是完整长窗或严格空载基准。CPU8 Release的5 s重力预载`upl_prestress_extended_CPU_r1`已安全完成并通过501帧原生审查；末段仍在弹性固结，尚未接受为平衡初态。当前仍为固定容器，撤墙、全耦合重启和塌陷物理验收待完成。
 
 
 ### 三组塌陷交付时长与后续三维材料扩展
@@ -169,3 +169,6 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 三组统一先计划撤墙后τ=3.0 s，每0.01 s输出；τ=t−t_release，论文对比时刻为0.3/0.6/1.2 s及收缩组0.2/0.5/1.6/3.0 s。论文描述正剪胀组约1.2 s停止、收缩组约3 s停止；这不是强制本模型同刻停止的验收阈值。如果τ=3 s仍明显运动，继续延长相应组的规整物理时间。若5 s预载满足要求，每组正式总时长为8 s；实际预载时间仍由收敛审查决定。正式程序按同进程“预载→撤墙”保持历史连续，不使用未验收的PART重启。完成必要短程兼容检查后准备根目录三组XML/BAT和服务器运行包。
 
 新MaterialReturn=1当前仅二维DP_PS。后续在二维case08兼容和有界塌陷证据明确后，补齐三维DP系数选择、对应软化导数及CPU/GPU验证；不能只删除Simulate2D限制。详见[交付计划](tests/notes/upl_collapse_delivery_plan_r2.json)。
+
+
+五秒预载审查见[结果记录](tests/notes/upl_prestress_extended_root_r1.md)及[历史图](tests/figures/upl_prestress_equilibrium_review_r1.png)、[材料层剖面图](tests/figures/upl_prestress_equilibrium_review_r1_profiles.png)。全部原生守卫通过，κ全程0；末1s孔压变化RMS829 Pa、顶部继续沉降0.0502 mm，故尚不能据此物理撤墙。当前首先推进零步撤墙状态连续性组件；后续新鲜同进程程序准备更长预载，15 s仅为依据已有衰减和固结时标提出的候选，未执行或自动准入。每组“预载5 s＋塌陷3 s＝8 s”依赖预载已平衡的前提，这个前提现在不成立；正式总时长将按后续预载审查修订。原始BI4/typed及旧图均保留。
