@@ -1,0 +1,65 @@
+{
+  "stage": "upl_wall_support_root_r1",
+  "base_checkpoint": "60f3bf3b382665e87e088383bf33eb98d9b51fc2",
+  "status": "CPU nearest-fit and CPU/GPU inactive-cutoff implementation components reviewed; physical wall admission remains held",
+  "production_files": {
+    "src/source/JSphCpu.cpp": "One local nearest-real-source retry for failed nonperiodic 2D dynamic-wall fit geometry; return values to original mirror, preserve original determinant/finite first-order gates. Move inactive-source rejection after the existing Darcy distance cutoff.",
+    "src/source/JSphGpu_ker.cu": "Only move the same inactive/missing-mode rejection after the existing Darcy distance cutoff. No GPU nearest-fit retry yet."
+  },
+  "source_diff": "25 insertions and 6 deletions across the two production files; no new XML option, array, material precision, public admission or physical equation",
+  "builds": {
+    "CPU": "tests/logs/upl_wall_support_DebugCPU_r1.build.json",
+    "GPU": "tests/logs/upl_wall_support_Debug_r1.build.json",
+    "actual_exit_codes": [0, 0],
+    "canonical_programs_replaced": false
+  },
+  "CPU_real_geometry": {
+    "review": "tests/logs/upl_c08_nearest_CPU_r1.check.json",
+    "native_soil_wall_IDs": [5000, 2060],
+    "near_successes": 410,
+    "nearest_retries": 10,
+    "primary_pressure_float_values_exact": 400,
+    "max_pressure_error_Pa": 0.001953125,
+    "max_J_error": 4.440892098500626e-16,
+    "max_retry_fit_shift_m": 0.07999999999999996,
+    "old_raw_J_bitproof_claimed": false,
+    "far_actual_state_calls": 0
+  },
+  "legacy_CPU": {
+    "review": "tests/logs/support_legacy_regression_r1.check.json",
+    "conditions": 6,
+    "CSV_byte_exact": 18,
+    "completion_JSON_byte_exact": 6,
+    "CSV_data_rows": 16776
+  },
+  "CPU_cutoff": {
+    "review": "tests/logs/upl_inactive_cutoff_CPU_r1.check.json",
+    "real_off791_search_pairs": 3,
+    "real_off791_in_range_pairs": 0,
+    "finite_and_poison_exact_zero_native_rates": 10000,
+    "in_range_OFF254_original_rejection_retained": true
+  },
+  "GPU_cutoff": {
+    "review": "tests/logs/upl_inactive_cutoff_GPU_r2.check.json",
+    "kernel_cases": 14,
+    "required_rejections": 6,
+    "max_error_over_unchanged_budget": 0.0015351364645236345,
+    "actual_tool_and_target_exit_codes": [0, 0],
+    "memcheck_errors_and_leaked_bytes": [0, 0],
+    "preserved_r1_failure": "The first fixture did not isolate the small Darcy witness from its much larger compression error budget; target/tool exit1, no numeric rows/completion. r2 changes only active_IN theta to0, keeps other six compression canaries and every original budget/predicate. No production change or r1 rerun."
+  },
+  "plot": "tests/figures/upl_wall_support_review_r1.png",
+  "plot_CSV": "tests/figures/upl_wall_support_review_r1.csv",
+  "root_review": "Root read sealed checks and original CSVs, independently counted GPU14/6 and CPU10000 exact-zero rows, and visually inspected the field-support comparison. Source/input/program identities use existing receipts and stable size/mtime; no new SHA scan.",
+  "remaining": [
+    "Same-stage current support participation across state/C/Ace and consumers; current query-only proof does not admit the complete wall workflow.",
+    "J-derived density exclusion and neighbour qualification before large-deformation/plastic case08 admission; the separate audit is an analytic compatibility finding, not an old benchmark trajectory diagnosis.",
+    "GPU local support retry and actual packed-position support classification, then genuine force/gravity integration.",
+    "Plasticity/history/psi decay, free-seepage and same-run wall release remain later planned compatibility work."
+  ],
+  "Cryer_or_accepted_formal_results_modified": false,
+  "physical_steps": 0,
+  "new_half_or_physical_solver_runs": 0,
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

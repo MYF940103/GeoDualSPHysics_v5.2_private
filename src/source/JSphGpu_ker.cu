@@ -1646,10 +1646,10 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
         unsigned pini,pfin=0;
         cunsearch::ParticleRange(c2,c3,ini1,fin1,(boundary? beginendcellbound: beginendcellfluid),pini,pfin);
         if(pfin)for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2]) || (boundary && CODE_IsFixed(code[p2]))){
-          if(boundary && (!boundmode || boundmode[p2]==BMODE_MDBC2OFF)){atomicMin(invalid,p1);continue;}
           const double3 d=make_double3(xy1.x-posxy[p2].x,(CTE.simulate2d? 0.: xy1.y-posxy[p2].y),z1-posz[p2]);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(CTE.kernelsize2) || rr2<ALMOSTZERO)continue;
+          if(boundary && (!boundmode || boundmode[p2]==BMODE_MDBC2OFF)){atomicMin(invalid,p1);continue;}
           const double fac=cufsph::GetKernel_Fac<tker>(float(rr2));
           const double3 g=make_double3(fac*d.x,fac*d.y,fac*d.z);
           const double3 gi=make_double3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);

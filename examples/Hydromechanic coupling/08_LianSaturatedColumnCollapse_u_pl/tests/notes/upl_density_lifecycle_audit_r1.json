@@ -1,0 +1,51 @@
+{
+  "stage": "upl_density_lifecycle_audit_r1",
+  "scope": "Read-only current CPU/GPU PorosityFeedback density-exclusion and sorting audit before case08 large-deformation admission",
+  "finding": "Legacy Velrhop.w is not completely passive: valid J-derived physical states can still receive legacy density-out exclusion, and nonpositive legacy values can suppress required neighbours.",
+  "locations": {
+    "physical_state": "src/source/JSphCpu.cpp:4420-4424 GetPorosityFeedbackStateCpu; src/source/JSphGpu_ker.cu:2481-2483 and1373-1422",
+    "legacy_continuity": "JSphCpu.cpp:2602; JSphGpu_ker.cu:2281 retain legacy density derivative and float writeback independently of J",
+    "CPU_predictor": "JSphCpu.cpp:4736,4749,4804 ComputeSymplecticPre: legacy rhopnew -> RhopOutMin/Max -> CODE_SetOutRhop",
+    "CPU_corrector": "JSphCpu.cpp:4869-4870,4935,4955 ComputeSymplecticCorr: same legacy decision",
+    "GPU_predictor": "JSphGpuSimple_ker.cu:664,682,739-740 KerComputeStepSymplecticPre",
+    "GPU_corrector": "JSphGpuSimple_ker.cu:855,893,952-954 KerComputeStepSymplecticCor",
+    "GPU_callers": "JSphGpu.cpp:1565-1567,1597-1599 do not pass a feedback/J-based density-out selector",
+    "out_cell": "JSphCpu.cpp:3735-3741 UpdatePos; JSphGpu_ker.cu:372-378 KerUpdatePos",
+    "cell_exclusion": "JCellDivCpuSingle.cpp:148-155,332-337; JCellDivGpuSingle_ker.cu:63-69,131-133; JCellDivGpuSingle.cpp:222-227",
+    "correct_sorting": "JSphCpuSingle.cpp:649-662 and502; JSphGpuSingle.cpp:575-583 and492 carry J/theta/Jpre through sorting and periodic duplication; they do not undo OutRhop",
+    "remaining_positive_legacy_gates": "JSphCpu.cpp:1645 dynamic MLS,2549 theta/pore derivative; JSphGpu_ker.cu:1516,1753 dynamic wall and2227 theta/pore derivative",
+    "already_protected_FS_volume": "JSphCpu.cpp:755-756 uses J volume before legacy-density fallback; GPU corresponding current-J FS path also exists",
+    "initial_input_check": "JSph.cpp:2324-2331 CheckRhopLimits still checks loaded .w; current fresh J=1 seeds initialize rho0 consistently"
+  },
+  "analytic_counterexample": {
+    "status": "Illustrative uniform-deformation calculation, not an observed trajectory or a claim of exact discrete continuity/J agreement",
+    "rho0_kg_m3": 2072.5,
+    "n0_nominal": 0.35,
+    "water_rho_kg_m3": 1000,
+    "physical_density": "1000+1072.5/J",
+    "legacy_continuity_density_approx": "2072.5/J",
+    "porosity": "1-.65/J",
+    "J": 0.68,
+    "physical_density_kg_m3": 2577.205882352941,
+    "legacy_density_kg_m3": 3047.7941176470586,
+    "porosity_at_J": 0.044117647058823484,
+    "examined_limits": "tests/configs/CaseLianSaturatedColumnCollapse_geometry_r1_Def.xml:148-149 has700..3000 kg/m3, explicitly geometry-seed limits; future actual inputs must retain their own declared bounds",
+    "mismatch_interval_at_these_limits": "Physical J>.65 gives1000<rho<2650, but ideal legacy rho exceeds3000 for.65<J<.6908333333 or falls below700 forJ>2.9607142857",
+    "material_precision": "Nominal arithmetic shown only; existing float material constants are retained, not promoted or retuned"
+  },
+  "existing_protection_and_stage_caveat": {
+    "J_domain": "CPU.cpp:4575-4600 and GPU_ker.cu:1338-1349 enforce finite J>1-n0; dynamic limiter validates J-derived n/rho. These checks do not bypass legacy OutRhop.",
+    "predictor": "CPU Jhalf computed at4715 before density exclusion; GPU Jhalf computed at JSphGpu.cpp1558 before simple integration kernel",
+    "corrector": "CPU Jfull commits at4986 after current legacy exclusion/position update; GPU Jfull commits at JSphGpu.cpp1602 after simple kernel tagging. A replacement full-step physical-density decision must use validated full J, not silently use the old half J.",
+    "current_scope": "Elastic observer/plastic-state guards remain separate; this audit does not admit case08 plasticity or infer causation for retained benchmarks"
+  },
+  "minimal_future_work": [
+    "Only PorosityFeedback ON: use validated same-stage J-derived physical density/domain for density-out and neighbour qualification, retaining declared density limits. Preserve stored legacy .w and literal OFF arithmetic; do not disable RhopOut globally.",
+    "One small CPU/GPU lifecycle component: valid J with positive out-of-range legacy .w must retain ID; true invalid J/physical density must retain rejection; OFF must retain original legacy exclusion. Exercise predictor/corrector and a forced cell permutation, checking native ID/J/Jpre alignment.",
+    "Expose the remaining legacy<=0 neighbour qualification separately; preserve CODE and inactive-wall classification. No new half/reference/physical solver chain is needed for this compatibility test."
+  ],
+  "production_modified": false,
+  "solver_build_or_component_run": false,
+  "hash_or_Git_used": false,
+  "physical_acceptance": false
+}

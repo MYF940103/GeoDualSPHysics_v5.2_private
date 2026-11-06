@@ -1,0 +1,36 @@
+{
+  "stage": "upl_inactive_cutoff_gpu_r2.author",
+  "status": "Fresh uncompiled/unexecuted fixture correction only. r1 failed execution and all original source/outputs/receipts stay retained. No production changes, build, component, solver, SHA or Git.",
+  "source": "tests/support/upl_inactive_cutoff_gpu_r2.cpp",
+  "cause": "The sole active_IN case combined theta=-.125 compression32768Pa/s with an approximately.76Pa/s Darcy contribution. Its original64 FLT_EPSILON propagated budget was dominated by compression~.25Pa/s, so the separate >10budget nonempty-source witness could not pass despite a valid implementation. This is an under-isolated fixture input, not relaxation of any predicate or numerical gate.",
+  "input_correction": "ONLY active_IN, recognizable as the sole scenario with BMODE_MDBC2 and a selector, sets theta0. All other six scenarios retain theta=-.125 and exact32768Pa/s compression canary. Geometry, radius, cell ranges, p/J/C/Ace/k/Kw, poison, invalid handling, source witness>10originalbudget, original propagated budget and all canaries remain literal. CSV now explicitly records theta; completion marks this isolated input change.",
+  "offline_method": "Read current FunSphKernel.h float coefficient definitions and evaluate the same single pair without CUDA/build. h1/8, d=-1/8, r2=1/64, eta2=1/65536,V0=1/64,Kw65536,n.25,rho_w1000,k=double(float.0001),gamma1000*9.80665. Wendland power-of-two q1 operations preserve stored bwen; Cubic Fac is float(c1+d1)/.125 with independently rounded float coefficients. Python numpy.float32 stages model those header operations; these are offline input/reference predictions, not a GPU execution or bit-equivalence claim.",
+  "offline_reference": [
+    {
+      "kernel": "Wendland",
+      "Fac": -1426.0224609375,
+      "Darcy_amplitude_Pa_s": 0.7754993004606421,
+      "r1_theta": -0.125,
+      "r1_budget_Pa_s": 0.25001055025155544,
+      "r1_witness_over_10budget": 0.31018662999635443,
+      "r2_active_theta": 0,
+      "r2_budget_Pa_s": 1.0548388967146845e-05,
+      "r2_witness_over_10budget": 7351.826927087626
+    },
+    {
+      "kernel": "Cubic",
+      "Fac": -1396.92578125,
+      "Darcy_amplitude_Pa_s": 0.7580196749788508,
+      "r1_theta": -0.125,
+      "r1_budget_Pa_s": 0.2500103427890749,
+      "r1_witness_over_10budget": 0.3031953264503004,
+      "r2_active_theta": 0,
+      "r2_budget_Pa_s": 1.0340926486628859e-05,
+      "r2_witness_over_10budget": 7330.287822459564
+    }
+  ],
+  "coverage": "Same two actual GPU kernels x seven cases,14rows/sixrequiredrejections. Missing-mode, exact-R, in-rangeOFF and poison-outside/zero cases unchanged. No unchanged-invalid-rate claim. All host/device source arrays and rate/invalid canaries remain checked.",
+  "CLI": "upl_inactive_cutoff_gpu_r2.exe --out ABS_FRESH_R2_RESULT. Root full-read then fresh compile/link and one memcheck under original acceptance budgets; never overwrite/restart r1.",
+  "limits": "Predicate implementation diagnostic only; no dynamic field equations or production algorithm modified. No wall/contact/mixedgeometry/physical acceptance.",
+  "physical_acceptance": false
+}

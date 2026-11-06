@@ -1,0 +1,60 @@
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1627,12 +1627,14 @@
+   #endif
+   for(int p1=0;p1<nn;p1++){
+     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
+     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
+-    const tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
+-    const bool shifted=(fitshift!=TDouble3(0));
++    tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
++    bool shifted=(fitshift!=TDouble3(0));
+     if(shifted)gposp1=gposp1+fitshift;
+     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
++    bool retried=false;
++    for(;;){ //-Primary fit stays unchanged; at most one local real-source retry below.
+     double sumwab=0,submerged=0;
+     double fieldsum[ncomp]={0};
+     double gradfieldx[ncomp]={0},gradfieldy[ncomp]={0},gradfieldz[ncomp]={0};
+     double nearest[ncomp]={0},nearest2=DBL_MAX;
+@@ -1688,8 +1690,9 @@
+         }
+       }
+     }
+     const bool active=(submerged>0 || sumwab>=double(MdbcThreshold) || (MdbcThreshold>=2 && sumwab+2>=double(MdbcThreshold)));
++    bool geometryfailed=false;
+     if(active && sumwab>0){
+       const double determlimit=1e-3;
+       double fieldfinal[ncomp];
+       bool firstorder=false;
+@@ -1734,12 +1737,28 @@
+         }
+       }
+       bool finite=true;
+       if(DynamicPoreWall)for(unsigned c=0;c<ncomp;c++)finite=finite && std::isfinite(fieldfinal[c]);
+-      if(DynamicPoreWall && (!firstorder || !finite))missing++;
++      if(DynamicPoreWall && (!firstorder || !finite)){
++        if(!firstorder)geometryfailed=true;
++        else missing++;
++      }
+       else write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr);
+     }
+-    else if(DynamicPoreWall)missing++;
++    else if(DynamicPoreWall)geometryfailed=true;
++    if(geometryfailed){
++      bool nearestfinite=std::isfinite(nearest2) && nearest2<DBL_MAX
++        && std::isfinite(neardr.x) && std::isfinite(neardr.y) && std::isfinite(neardr.z);
++      for(unsigned c=0;c<ncomp && nearestfinite;c++)nearestfinite=std::isfinite(nearest[c]);
++      if(DynamicPoreWall && sim2d && !PeriActive && !retried && nearestfinite && neardr!=TDouble3(0)){
++        //-Fit once at an existing real source, then return to the original mirror with q*fitshift.
++        gposp1=gposp1-neardr;fitshift=fitshift-neardr;shifted=(fitshift!=TDouble3(0));
++        retried=true;continue;
++      }
++      missing++;
++    }
++    break;
++    }
+   }
+   if(missing)Run_Exceptioon("Dynamic wall requires a finite first-order MLS fit at every active mirror sample.");
+ }
+ 

@@ -261,6 +261,19 @@
                      W/C FS/NS swapped-axis state queries passed; 72 retained CSVs and ten
                      completion records stayed byte-exact. These query points are not container walls.
                      This does not admit public multi-plane gravity or change the drainage mode. -->
+                <!-- CPU local support retry (2026-11-06, field components checked):
+                     Only nonperiodic 2-D dynamic-wall MLS may retry a failed geometry fit once
+                     at an already visited nearest real source; values return to the original mirror.
+                     The raw determinant gate and finite first-order requirement stay unchanged.
+                     Actual case08 near-wall queries passed410/410;400 original pressure values and
+                     six ordinary legacy components stayed exact. GPU has not received this retry.
+                     This adds no input switch and does not admit mixed-wall gravity or collapse. -->
+                <!-- CPU/GPU Darcy cutoff ordering (2026-11-06, components checked):
+                     Reject inactive fixed sources only after the unchanged compact-support cutoff.
+                     In-support and exact-radius inactive sources still reject; no wall is silently
+                     removed from a required stencil. Real CPU case08 and GPU14-case predicates,
+                     including poison/canaries and zero-error memcheck, passed. This is not a
+                     wet/contact classifier or full mixed-wall validation. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

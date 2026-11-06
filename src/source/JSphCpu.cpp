@@ -1628,10 +1628,12 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
   for(int p1=0;p1<nn;p1++){
     if(CODE_IsFluid(code[p1]) || boundnormal[p1]==TFloat3(0))continue;
     tdouble3 gposp1=pos[p1]+ToTDouble3(boundnormal[p1]);
-    const tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
-    const bool shifted=(fitshift!=TDouble3(0));
+    tdouble3 fitshift=(recenter && !BoundDerivativeFitShift.empty()? BoundDerivativeFitShift[Idpc[p1]]: TDouble3(0));
+    bool shifted=(fitshift!=TDouble3(0));
     if(shifted)gposp1=gposp1+fitshift;
     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
+    bool retried=false;
+    for(;;){ //-Primary fit stays unchanged; at most one local real-source retry below.
     double sumwab=0,submerged=0;
     double fieldsum[ncomp]={0};
     double gradfieldx[ncomp]={0},gradfieldy[ncomp]={0},gradfieldz[ncomp]={0};
@@ -1689,6 +1691,7 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
       }
     }
     const bool active=(submerged>0 || sumwab>=double(MdbcThreshold) || (MdbcThreshold>=2 && sumwab+2>=double(MdbcThreshold)));
+    bool geometryfailed=false;
     if(active && sumwab>0){
       const double determlimit=1e-3;
       double fieldfinal[ncomp];
@@ -1735,10 +1738,26 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
       }
       bool finite=true;
       if(DynamicPoreWall)for(unsigned c=0;c<ncomp;c++)finite=finite && std::isfinite(fieldfinal[c]);
-      if(DynamicPoreWall && (!firstorder || !finite))missing++;
+      if(DynamicPoreWall && (!firstorder || !finite)){
+        if(!firstorder)geometryfailed=true;
+        else missing++;
+      }
       else write(p1,fieldfinal,firstorder? gradfieldx: nullptr,firstorder? gradfieldy: nullptr,firstorder? gradfieldz: nullptr);
     }
-    else if(DynamicPoreWall)missing++;
+    else if(DynamicPoreWall)geometryfailed=true;
+    if(geometryfailed){
+      bool nearestfinite=std::isfinite(nearest2) && nearest2<DBL_MAX
+        && std::isfinite(neardr.x) && std::isfinite(neardr.y) && std::isfinite(neardr.z);
+      for(unsigned c=0;c<ncomp && nearestfinite;c++)nearestfinite=std::isfinite(nearest[c]);
+      if(DynamicPoreWall && sim2d && !PeriActive && !retried && nearestfinite && neardr!=TDouble3(0)){
+        //-Fit once at an existing real source, then return to the original mirror with q*fitshift.
+        gposp1=gposp1-neardr;fitshift=fitshift-neardr;shifted=(fitshift!=TDouble3(0));
+        retried=true;continue;
+      }
+      missing++;
+    }
+    break;
+    }
   }
   if(missing)Run_Exceptioon("Dynamic wall requires a finite first-order MLS fit at every active mirror sample.");
 }
@@ -4500,10 +4519,10 @@ template<TpKernel tker> void JSphCpu::ComputeDynamicPorePressureRateCpuT(){
       for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
         const tuint2 pif=nsearch::ParticleRange(y,z,ngs,DivData);
         for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(Codec[p2]) || (boundary && CODE_IsFixed(Codec[p2]))){
-          if(boundary && BoundModec[p2]==BMODE_MDBC2OFF){invalid++;continue;}
           const tdouble3 d=TDouble3(Posc[p1].x-Posc[p2].x,(Simulate2D? 0: Posc[p1].y-Posc[p2].y),Posc[p1].z-Posc[p2].z);
           const double rr2=d.x*d.x+d.y*d.y+d.z*d.z;
           if(rr2>double(KernelSize2) || rr2<ALMOSTZERO)continue;
+          if(boundary && BoundModec[p2]==BMODE_MDBC2OFF){invalid++;continue;}
           const double fac=fsph::GetKernel_Fac<tker>(CSP,float(rr2));
           const tdouble3 g=d*fac;
           const tdouble3 gi=TDouble3(ci.a11*g.x+ci.a12*g.y+ci.a13*g.z,ci.a21*g.x+ci.a22*g.y+ci.a23*g.z,ci.a31*g.x+ci.a32*g.y+ci.a33*g.z);

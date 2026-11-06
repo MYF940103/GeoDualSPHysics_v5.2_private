@@ -64,7 +64,13 @@ CPU静水头已改为按当前墙接收点的法向计算：[审查](tests/notes
 
 原C08几何的实际字段基线已完成：[记录](tests/notes/upl_c08_observer_review_r1.json)及[全部2060墙记录](tests/outputs/upl_c08_observer_CPU_r2/walls.csv)。本轮使用实际加载的double位置、原生ID、法向及cell；410个近墙查询中400个完成原重构，10个由原MLS门拒绝，1650个远墙不调用实际state。最大p误差0.001953125 Pa、J误差0、原条件预算比0.30115127。400/10是组件基线，不是物理通过/失败计数；above-H负压未剪裁，也不据高度定义干墙或接触。
 
-原NpbOk中的远墙OFF ID791仅为激活状态观察，不能据此断言Darcy实际访问或报错。inactive检查先于核截断的排序问题仍是未测试候选；不得把这次字段查询当作force/rate、混合墙重力积分或公共准入。r1的Windows near/far宏冲突编译失败保留，r2仅改计数器名称；seed仅由一次copy-only BAT准备，未重跑GenCase。
+上述字段基线中的远墙OFF ID791仅为激活状态观察，单凭它不能断言Darcy实际访问或报错；排序问题的后续独立检查见下文。不得把字段查询当作force/rate、混合墙重力积分或公共准入。r1的Windows near/far宏冲突编译失败保留，r2仅改计数器名称；seed仅由一次copy-only BAT准备，未重跑GenCase。
+
+后续CPU [局部支持检查](tests/logs/upl_c08_nearest_CPU_r1.check.json) 已使410个近墙查询全部重构；仅10个原弱点改在已访问的最近真实粒子处重新拟合一次，再返回原镜像位置求值。原det门槛不变，最大拟合中心位移0.08 m，最大p误差0.001953125 Pa、J误差4.45e-16。原400个primary孔压浮点值和真实几何/误差列保持一致；六个旧u-pw/SPR条件的18份CSV及6份完成记录也逐字节一致。见[图](tests/figures/upl_wall_support_review_r1.png)及[十个弱点数据](tests/figures/upl_wall_support_review_r1.csv)。该功能尚未移植GPU；以上是仿射字段检查，不是角点非线性精度、力平衡或塌陷验收。
+
+CPU [实际Darcy截断检查](tests/logs/upl_inactive_cutoff_CPU_r1.check.json) 进一步确认ID791被真实cell搜索访问3次、均在核支持域外。将失效判断移到原距离截断之后，有限及无效诊断输入两组共10000个原生孔压率均为零；支持域内的失效ID254仍按原规则拒绝。这是邻居候选筛选顺序修复，不是干湿墙判定。完整state/C/Ace及各消费者仍需统一同阶段的活动状态，公共混合墙和重力准入没有开放。
+
+GPU对应 [14条件检查](tests/logs/upl_inactive_cutoff_GPU_r2.check.json) 及memcheck也已通过，包含6次必要拒绝、精确半径、缺失模式和无效输入检查。首次夹具因压缩项掩盖Darcy响应而停止，失败记录保留；r2仅隔离该输入，原预算未变。两处修复的文件、构建和限制汇总于 [阶段记录](tests/notes/upl_wall_support_root_r1.json)。
 
 另一个 [离线候选](tests/figures/upl_wall_nearestfit_r1.csv) 仅将十个弱点的拟合中心移到其最近真实土粒子，也全部通过原det门，可减少新增接口；底角条件数约530，较半空间投影约48更差，需要实际后端比较。原镜像和边界条件没有在离线测试中改变。
 
