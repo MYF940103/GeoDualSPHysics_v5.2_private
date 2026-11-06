@@ -146,3 +146,5 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 ### 新材料重力容器冷启动
 
 固定容器的显式`MaterialReturn=1`路径已完成CPU/GPU各一次128步、5帧至0.00048828125 s，保留5000土粒子及2060墙样本；22原生数组、实际时钟、J关系、密度缓存、κ有限及不回退均通过，GPU memcheck零错误/泄漏。新CPU与保留的默认MR0控制、新GPU与保留的显式MR1控制，其完整typed22及clock文件分别逐字节一致；两种控制身份分开记录，见[对比图及CSV](tests/figures/upl_material_gravity_pair_r1.png)与[阶段审查](tests/notes/upl_material_gravity_root_r1.md)。五帧土体跨后端孔压RMS差最大0.00042211 Pa，总应力Frobenius RMS差0.00075540 Pa，材料位移差最大1.218e-12 m。实际κ始终0，故只证明该新准入与冷启动兼容，尚未覆盖非零塑性墙响应、地应力平衡或撤墙塌陷；J仍由总速度散度更新，不另加塑性体积源。此后仅整理材料选择参数的读取位置并完成一次默认CPU Debug构建，未据该文字/读取顺序整理重复GPU或物理计算。
+
+随后使用同一冻结GPU程序完成一次8192步重力预载观察：实际末时刻0.03125 s、257帧，全部7060 IDs及22数组的原生检查通过；首五帧记录内容及带符号时钟与原短窗逐字节一致。最后四分之一窗内土体速度RMS仍在0.000147～0.00750 m/s间振荡、孔压RMS在5.64～41.91 kPa间变化，尚不能作为平衡初态撤墙。见[预载图及CSV](tests/figures/upl_material_preload_observe_r1.png)和[审查记录](tests/notes/upl_material_preload_root_r1.md)。此次没有新增阻尼、指定预应力、半步长计算或重启；下一步先核对地应力初态与预载时间尺度。

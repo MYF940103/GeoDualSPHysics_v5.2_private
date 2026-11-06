@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded periodic cohesion/dilation integration passed on CPU/GPU:psi0=0,+2.5,-5deg, each1024 IDs/128updates/five saves. Positive and negative dilation use sf=.2 and remain small-history checks; gravity-plasticity/prestress/wall removal/collapse pending.",
+  "status": "Bounded periodic material and fixed-gravity cold startup checks completed; user-requested parameter guide cleanup and constitutive input grouping completed. Gravity startup kappa remains0; equilibrium and wall release/collapse pending.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1182,8 +1182,8 @@
     "periodic_plastic_scope_implementation_passed": true,
     "material_mode1_general_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "8edd7366ed429d6d7d2a794e46b000592946de79",
-  "last_updated_utc": "2026-11-06T11:01:18.448665+00:00",
+  "latest_verified_code_checkpoint": "7f02506361d64768471db022887fd7887cbcdfe9",
+  "last_updated_utc": "2026-11-06T11:45:08.574068+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "Preparing fresh fixed-gravity/mixed-slip softening startup after periodic material checks. Four-host-file predicate reuse is an uncommitted candidate; CPU/GPU builds in progress or preparation, no gravity solver admission yet.",
+  "active_work": "Offline initial-state/preload review after completed 8192-update case08 GPU observation. No physical solver or native decoder remains active for this stage; no wall-release acceptance.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1216,5 +1216,30 @@
     "MaterialReturn": "Constitutive algorithm; valid without strength softening",
     "DilationDecay": "Dilation evolution; separate from n_coh; not guarded by StrainSoftening",
     "default_CPU_Debug_cleanup_build": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_config_cleanup_DebugCPU_r1.build.json"
+  },
+  "case08_material_preload_8192_r1": {
+    "status": "solver_native_and_offline_review_complete_not_equilibrated",
+    "solver": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_material_preload_GPU_r1.run.json",
+    "native": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/upl_material_preload_GPU_r1_native_r1.check.json",
+    "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_material_preload_root_r1.md",
+    "GPU": "RTX 3050",
+    "steps": 8192,
+    "actual_end_s": 0.03125,
+    "frames": 257,
+    "native_IDs": 7060,
+    "typed_arrays": 22,
+    "first_five_payload_and_signed_clock_records_exact": true,
+    "late_velocity_RMS_range_m_s": [
+      0.00014701339916401934,
+      0.007504865958923648
+    ],
+    "late_pressure_RMS_range_Pa": [
+      5636.813254215047,
+      41914.18776821356
+    ],
+    "kappa_max": 0,
+    "physical_acceptance": false,
+    "source_changes_in_stage": [],
+    "next": "Review geostatic initial-state compatibility and physical cold-equilibration time scales before continuous wall release; no extra half/control chain."
   }
 }

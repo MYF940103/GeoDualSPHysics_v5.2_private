@@ -1,0 +1,26 @@
+{
+  "stage": "upl_material_preload_r1",
+  "purpose": "One fresh GPU gravity-preload observation, no change to physical inputs/equations and no half or control replay",
+  "base_checkpoint": "7f02506361d64768471db022887fd7887cbcdfe9",
+  "material": "cp5000/cr1000/n_coh5,phi25 fixed,psi=sf0,MR1; constant k2e-4",
+  "geometry": "Original7060 IDs=5000soil+2060fixed, mixed sideFreeSlip/bedNoSlip, same BI4/Normals",
+  "time": {
+    "dt_s": 3.814697265625e-06,
+    "steps": 8192,
+    "end_s": 0.03125,
+    "save_steps": 32,
+    "samples": 257
+  },
+  "physical_changes_from_short_control": [],
+  "execution_change": "Only TimeMax/step limit extended; original TimeOut32dt retained, first5 original save times shared",
+  "source_program": "upl_material_gravity_Debug_r1; compiled before the subsequent cosmetic input-read regrouping, original build/source archives retained",
+  "no_SAN_replay": "No kernel/source mathematical change after two closed gravity Debug/memcheck runs; one ordinary GPU target for this longer observation",
+  "review": "Original native finite/IDs/22/J/cache/fixed/FS/clock guards remain, plus saved-kappa monotonic; no forced plasticity/equilibrium/half gate",
+  "comparison": "Compare actual initial5 state record payloads and signed clock rows to retained short control; sample-count binary header naturally differs and is not rewritten",
+  "limits": "Observation window, not a prescribed equilibrium time. Assess velocity, p/stress/J/n/theta histories by fixed initial material bands. Do not infer wall force/reaction from pressure proxy. No wall release, fitting, new damping, prestress assignment or negative-pressure clipping.",
+  "BI4_native_export_budget_bytes_approx": 900000000,
+  "free_space_before_bytes": 174558601216,
+  "GenCase_invocations": 0,
+  "solver_started": false,
+  "SHA_scans": 0
+}
