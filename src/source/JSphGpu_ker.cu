@@ -1541,10 +1541,11 @@ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsign
   cunsearch::InitCte(gp.x,gp.y,gp.z,scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
   for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
     unsigned pini,pfin=0;cunsearch::ParticleRange(c2,c3,ini1,fin1,fluidcells,pini,pfin);
-    if(pfin)for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2]) && velrhop[p2].w>0.f){
+    if(pfin)for(unsigned p2=pini;p2<pfin;p2++)if(CODE_IsFluid(code[p2])){
       const double dx=gp.x-posxy[p2].x,dz=gp.z-posz[p2];
       const float rr2=float(dx*dx+dz*dz);
       if(rr2<=CTE.kernelsize2){
+        if(!isfinite(j[p2]) || j[p2]<=solid0){atomicMin(invalid,p1);return;}
         float fac;
         const double wab=(rr2==0? (fac=0.f,double(cufsph::GetKernel_Wab<tker>(rr2))): double(cufsph::GetKernel_WabFac<tker>(rr2,fac)));
         const double fx=double(fac)*dx,fz=double(fac)*dz;
@@ -2265,7 +2266,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
       const float dvx_grad_deriv=(sprwall? dvx_rhop_deriv: dvx_visc);
       const float dvy_grad_deriv=(sprwall? dvy_rhop_deriv: dvy_visc);
       const float dvz_grad_deriv=(sprwall? dvz_rhop_deriv: dvz_visc);
-      if((poreratep1 || observeporosity) && !symm && velrhop[p2].w>0.f){
+      if((poreratep1 || observeporosity) && !symm && (poroj || velrhop[p2].w>0.f)){
         const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
         const bool inactiveporebound=(mdbc2p2 && boundmode && boundmode[p2]==BMODE_MDBC2OFF);
         if(validporep2 && !inactiveporebound){
@@ -2274,6 +2275,9 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
           const double pdrz=double(drz);
           const double prr2=pdrx*pdrx+pdry*pdry+pdrz*pdrz;
           if(prr2<=double(CTE.kernelsize2) && prr2>=ALMOSTZERO){
+            if(poroj && (!isfinite(poroj[p2]) || poroj[p2]<=1.-double(CTE.porosity))){
+              porosity_thetap1=nan("");continue; //-The existing J-stage validator rejects this source state.
+            }
             //-J feedback shares the FS moment's actual float pair factor.
             const double pfac=(poroj? double(fac): double(cufsph::GetKernel_Fac<tker>(float(prr2))));
             const double pfrx=pfac*pdrx;
@@ -2319,7 +2323,7 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
           }
         }
       }
-      if(compute)arp1+=massp2final*(dvx_rhop_deriv*frx+dvy_rhop_deriv*fry+dvz_rhop_deriv*frz)*(velrhop1.w/velrhop2.w);
+      if(compute && !poroj)arp1+=massp2final*(dvx_rhop_deriv*frx+dvy_rhop_deriv*fry+dvz_rhop_deriv*frz)*(velrhop1.w/velrhop2.w);
 
       const float cbar=CTE.cs0;
       const float dot3=(tdensity!=DDT_None || shift? drx*frx+dry*fry+drz*frz: 0);

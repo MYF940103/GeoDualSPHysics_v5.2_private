@@ -1621,6 +1621,7 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
   ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const TRead &read,const TWrite &write,bool recenter)const
 {
   const int nn=int(n);
+  const bool feedbackj=(PorosityFeedback && DynamicPoreWall);
   unsigned missing=0;
   #ifdef OMP_USE
     #pragma omp parallel for schedule(guided) reduction(+:missing)
@@ -1636,6 +1637,7 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
     bool retried=false;
     for(;;){ //-Primary fit stays unchanged; at most one local real-source retry below.
     double sumwab=0,submerged=0;
+    bool invalidj=false;
     double fieldsum[ncomp]={0};
     double gradfieldx[ncomp]={0},gradfieldy[ncomp]={0},gradfieldz[ncomp]={0};
     double nearest[ncomp]={0},nearest2=DBL_MAX;
@@ -1645,12 +1647,13 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
     const StNgSearch ngs=nsearch::Init(gposp1,false,divdata);
     for(int z=ngs.zini;z<ngs.zfin;z++)for(int y=ngs.yini;y<ngs.yfin;y++){
       const tuint2 pif=nsearch::ParticleRange(y,z,ngs,divdata);
-      for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(code[p2]) && velrhop[p2].w>0){
+      for(unsigned p2=pif.x;p2<pif.y;p2++)if(CODE_IsFluid(code[p2]) && (feedbackj || velrhop[p2].w>0)){
         const double drx=gposp1.x-pos[p2].x;
         const double dry=(sim2d? 0: gposp1.y-pos[p2].y);
         const double drz=gposp1.z-pos[p2].z;
         const float rr2=float(drx*drx+dry*dry+drz*drz);
         if(rr2<=KernelSize2){
+          if(feedbackj && (!std::isfinite(PoroJc[p2]) || PoroJc[p2]<=1.-double(SoilCte.Porosity))){invalidj=true;continue;}
           float fac;
           //-A mirror sample can coincide with a fluid node: W(0) is finite and grad W(0)=0.
           const double wab=(DynamicPoreWall && rr2==0? (fac=0.f,double(fsph::GetKernel_Wab<tker>(CSP,rr2))): double(fsph::GetKernel_WabFac<tker>(CSP,rr2,fac)));
@@ -1691,6 +1694,7 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
         }
       }
     }
+    if(invalidj){missing++;break;} //-Invalid source state is not a geometry-retry candidate.
     const bool active=(submerged>0 || sumwab>=double(MdbcThreshold) || (MdbcThreshold>=2 && sumwab+2>=double(MdbcThreshold)));
     bool geometryfailed=false;
     if(active && sumwab>0){
@@ -2566,7 +2570,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
           const float dvz_grad_deriv=(sprwall? dvz_rhop_deriv: dvz_visc);
           //-u-pw pore-pressure-rate equation: volumetric strain plus Darcy seepage terms.
           // SPR changes only the compression derivative; Darcy and viscosity keep their original data.
-          if((poreratep1 || observeporosity) && !rsym && velrhop[p2].w>0){
+          if((poreratep1 || observeporosity) && !rsym && (PorosityFeedback || velrhop[p2].w>0)){
             const bool validporep2=(boundp2 || CODE_IsFluid(code[p2]));
             const bool inactiveporebound=(mdbc2p2 && BoundModec && BoundModec[p2]==BMODE_MDBC2OFF);
             if(validporep2 && !inactiveporebound){
@@ -2575,6 +2579,9 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
               const double pdrz=double(drz);
               const double prr2=pdrx*pdrx+pdry*pdry+pdrz*pdrz;
               if(prr2<=double(KernelSize2) && prr2>=ALMOSTZERO){
+                if(PorosityFeedback && (!std::isfinite(PoroJc[p2]) || PoroJc[p2]<=1.-double(SoilCte.Porosity))){
+                  porosity_thetap1=std::numeric_limits<double>::quiet_NaN();continue; //-Existing J-stage validation must fail, never silently omit this source.
+                }
                 const double pfac=double(fsph::GetKernel_Fac<tker>(CSP,float(prr2)));
                 const double pfrx=pfac*pdrx;
                 const double pfry=(Simulate2D? 0: pfac*pdry);
@@ -2619,7 +2626,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
               }
             }
           }
-          if(compute)arp1+=massp2*(dvx_rhop_deriv*frx+dvy_rhop_deriv*fry+dvz_rhop_deriv*frz)*(rhopp1/velrhop2.w);
+          if(compute && !PorosityFeedback)arp1+=massp2*(dvx_rhop_deriv*frx+dvy_rhop_deriv*fry+dvz_rhop_deriv*frz)*(rhopp1/velrhop2.w);
 
           const float cbar=(float)Cs0;
           const float dot3=(drx*frx+dry*fry+drz*frz);
@@ -4784,8 +4791,19 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   #endif
   for(int p=npb;p<np;p++){
     const typecode rcode=Codec[p];
-    //-Calculate density.
-    const float rhopnew=float(double(VelrhopPrec[p].w)+dt05*Arc[p]);
+    //-Feedback stores a J-derived native mixture-density cache, not a second continuity state.
+    const bool feedbackj=(PorosityFeedback && CODE_IsFluid(rcode));
+    float rhopnew;
+    bool feedbackout=false;
+    if(feedbackj){
+      const double j=PoroJc[p],rhow=double(SoilCte.PoreWaterRho);
+      const double rhot=rhow+(double(RhopZero)-rhow)/j; //-Already advanced/validated Jhalf.
+      feedbackout=(!std::isfinite(j) || j<=1.-double(SoilCte.Porosity)
+        || !std::isfinite(rhot) || rhot<=0 || rhot<RhopOutMin || rhot>RhopOutMax);
+      rhopnew=float(rhot);
+      feedbackout=feedbackout || !std::isfinite(rhopnew) || rhopnew<=0;
+    }
+    else rhopnew=float(double(VelrhopPrec[p].w)+dt05*Arc[p]);
     tsymatrix3d signew=SigmaPrec[p];//mdbr
     float kplasnew=Kplasticc[p];//
     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
@@ -4798,7 +4816,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         dy+=double(ShiftPosfsc[p].y);
         dz+=double(ShiftPosfsc[p].z);
       }
-      bool outrhop=(rhopnew<RhopOutMin || rhopnew>RhopOutMax);
+      bool outrhop=(feedbackj? feedbackout: (rhopnew<RhopOutMin || rhopnew>RhopOutMax));
       //-Calculate velocity & density. | Calcula velocidad y densidad.
       tfloat4 rvelrhopnew=TFloat4(
         float(double(VelrhopPrec[p].x) + (double(Acec[p].x)+Gravity.x) * dt05),
@@ -4918,8 +4936,25 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   #endif
   for(int p=npb;p<np;p++){
     const typecode rcode=Codec[p];
-    const double epsilon_rdot=(-double(Arc[p])/double(Velrhopc[p].w))*dt;
-    const float rhopnew=float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
+    const bool feedbackj=(PorosityFeedback && CODE_IsFluid(rcode));
+    float rhopnew;
+    bool feedbackout=false;
+    if(feedbackj){
+      //-Same full-J expression as the later commit; no early J/Kplastic/Code commit.
+      const double jhalf=PoroJc[p];
+      double jfull=PoroJPrec[p];
+      jfull+=dt*jhalf*PoroThetac[p];
+      const double rhow=double(SoilCte.PoreWaterRho);
+      const double rhot=rhow+(double(RhopZero)-rhow)/jfull;
+      feedbackout=(!std::isfinite(jfull) || jfull<=1.-double(SoilCte.Porosity)
+        || !std::isfinite(rhot) || rhot<=0 || rhot<RhopOutMin || rhot>RhopOutMax);
+      rhopnew=float(rhot);
+      feedbackout=feedbackout || !std::isfinite(rhopnew) || rhopnew<=0;
+    }
+    else{
+      const double epsilon_rdot=(-double(Arc[p])/double(Velrhopc[p].w))*dt;
+      rhopnew=float(double(VelrhopPrec[p].w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
+    }
     tsymatrix3d signew=SigmaPrec[p];//mdbr
     float kplasnew=Kplasticc[p];//
     if(!WithFloating || CODE_IsFluid(rcode)){//-Fluid Particles.
@@ -4984,7 +5019,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         dy+=double(ShiftPosfsc[p].y);
         dz+=double(ShiftPosfsc[p].z);
       }
-      bool outrhop=(rhopnew<RhopOutMin || rhopnew>RhopOutMax);
+      bool outrhop=(feedbackj? feedbackout: (rhopnew<RhopOutMin || rhopnew>RhopOutMax));
       //-Restore data of inout particles.
       if(InOut && CODE_IsFluidInout(rcode)){
         outrhop=false;

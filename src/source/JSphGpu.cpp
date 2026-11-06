@@ -1564,7 +1564,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag});
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
@@ -1596,7 +1596,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag});
   if(HydroMech && !DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
   ComputeSymplecticPorosity(true,dt);

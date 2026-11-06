@@ -1,0 +1,65 @@
+{
+  "stage": "upl_density_cache_r1",
+  "status": "AUTHOR-ONLY: unapplied five-file candidate; no build, component, physical step or Git operation.",
+  "patch": "tests/support/upl_density_cache_r1.patch",
+  "decision": "SINGLE-J native mixture-density cache replaces the earlier criterion-only proposal as a candidate design. The earlier lifecycle patch/note and all closed evidence remain unchanged.",
+  "intended_source_files": [
+    "src/source/JSphCpu.cpp",
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpuSimple_ker.h",
+    "src/source/JSphGpuSimple_ker.cu",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "source_observation_SMT_only": [
+    "JSphCpu.cpp: 275137 bytes, mtime_ns 1793927564921811400",
+    "JSphGpu.cpp: 124130 bytes, mtime_ns 1793929800676557100",
+    "JSphGpuSimple_ker.h: 3824 bytes, mtime_ns 1792178625590425400",
+    "JSphGpuSimple_ker.cu: 58016 bytes, mtime_ns 1792178625603051600",
+    "JSphGpu_ker.cu: 311950 bytes, mtime_ns 1793929800666470600"
+  ],
+  "native_cache": {
+    "ON": "Only non-boundary CODE_IsFluid slots use rho(J)=double(rhow)+(double(rho0)-double(rhow))/Jstage, then one float cast for Velrhop.w. Working periodic soil copies carry the same stage cache; they do not become additional native owners.",
+    "predictor": "Use the actual PoroJ half state already advanced and domain-validated by ComputeSymplecticPrePorosity / ComputeSymplecticPorosity(false,dt/2). Do not evolve density from Arc.",
+    "corrector": "Preview exactly: jhalf=current J; jfull=Jn; jfull+=dt*jhalf*theta. This matches the later commit's source expression/order without publishing half J as full or moving the J, kplastic, Code, position or pore-pressure commits.",
+    "exclusion": "Check double J finite and J>1-n0, double rho finite/positive and the original RhopOutMin/Max before the float cache cast; also reject a nonfinite/nonpositive float result. Do not clamp, change limits, bypass invalid J or retune material constants. Code tagging stays at its original location and the existing unconditional J validator remains.",
+    "OFF": "Null GPU j / CPU feedback=false selects the existing literal legacy predictor/corrector density arithmetic and original float range comparison. Observer-only remains OFF for this change. Source-level preservation is not a compiled bit-identity result."
+  },
+  "Arc_and_walls": {
+    "native": "The feedback native main pair loop directly skips only its old Arc expression. PoroTheta, stress-rate, momentum, AV, ViscDt, load and Darcy work remain. Native Arc stays initialized zero; it is not a new physical mixture-density rate.",
+    "fixed": "Boundary Arc and its ViscDt work are unchanged; no whole Bound-Fluid loop is bypassed. CPU boundary predictor/corrector retain their original Arc integration and clamps literally. GPU retains its existing direct rho0 boundary writes. Dynamic wall-state reconstruction still writes rho0 in its original order: this is a fixed-wall marker/reference convention, not a claim CPU boundary w is rho0 at every integration stage or that ghost J represents physical wall mass."
+  },
+  "qualification": {
+    "MLS": "Feedback dynamic-wall source qualification uses actual J inside the original support cutoff, independently of legacy w. An in-support nonfinite/J<=1-n0 source records the existing terminal query failure and cannot take the nearest-geometry retry. OFF scalar/vector MLS qualification is unchanged.",
+    "theta": "Feedback accepts sources independently of w and validates actual J only after CODE/inactive-wall/support checks. A bad supported J makes theta nonfinite so the existing J-stage validator rejects; no immediate-throw or finite/unchanged partial raw-force result is promised. Out-of-support poison remains ignored.",
+    "unchanged": "No wall release/removal, dry/wet rule, physical-near cutoff, public gravity admission, constitutive/plastic update or fixed-wall density unification."
+  },
+  "physical_and_output_limits": [
+    "Keep all current explicit J quadrature/inertia: V=V0*J and mi=V*rho(J). M0/rho_mix is not V0*J, and rho_dot=-(rho-rhow)*theta is not the old continuity formula.",
+    "Momentum, flexible confinement, reference top resultant/band inertia, FS/C, stress gradients, AV, HG, complete Darcy, dynamic damping and limiter formulas are not changed.",
+    "Native public Rhop becomes a float J-derived cache; PoroMixtureDensity remains its double J-derived ledger. Arc and Rhop differences are intentional semantics changes, not evidence that every exported field is bit-identical.",
+    "CPU/GPU gauges remain unported diagnostics: velocity/level use M0/w and force gauges use legacy density/stress weights without J/p. Projection may change their output; do not use them as J-based total force/reaction acceptance. No gauge implementation change is proposed.",
+    "Laminar/SPS, DDT, artificial stress, shifting, Shepard, legacy strip/contact quadrature and other forbidden combinations remain forbidden. A physical rho cache does not port their fixed-mass operators.",
+    "CPU boundary Arc and Visco0 fallback are not broadly sanitized. Direct field-only zero/negative-w poison rows are not complete physical integrator/finite-force admission claims."
+  ],
+  "proposed_one_component": {
+    "status": "PLAN ONLY; no new component source/build/run is included or authorized by this note.",
+    "entry": "One small shared CPU/GPU stage/lifetime component using the real Pre/Cor entries and current native-ID initialization, elastic k=0, no trajectory/load/drain. Record native ID, Code, Jn/Jhalf/Jfull, theta, actual float w, independent double rho and stage ownership.",
+    "fixed_rows": [
+      "J=1 exact rho0; uniform/nonuniform valid J; positive finite old w inside/outside bounds and deliberately unused native Arc scratch do not control the ON cache. Verify native Arc from the real feedback pair call is zero without losing original theta/stress/ViscDt checks.",
+      "Choose one declared component interval before execution (for example rho0=2100, rhow=1000, n0=float(.3), limits1800..2400). Exercise predictor limits and stage-local corrector half/full traps on both sides; label manually supplied corrector states as stage tests, not completed physical trajectories.",
+      "In each successful real entry compare the stored cache to float(rho(actual committed stage J)); include dyadic and non-dyadic expressions and record any preview/commit ULP discrepancy without claiming it passed. Keep invalid-J predictor/corrector failure checkpoints, including NaN/infinity/J<=1-n0; do not count partial failures as completed steps.",
+      "One forced permutation/periodic-copy operation checks ID alignment of J/Jn/theta/cache. OFF and observer-only compare literal data/Code bytes to the retained prepatch closure using the same bounded fixture.",
+      "Within the same component, source-J qualification rows cover valid J with differing w, true in-support invalid J with no geometry rescue, and unsupported poisoned candidates. Zero/negative-w raw-field rows have field-only scope; preserve actual nonfinite residuals and original finite gates."
+    ],
+    "budgets": "No new physical accuracy gate or relaxed existing component tolerance. Stage/cache/Code identities are arithmetic and lifecycle requirements. Preserve the first actual failure rather than rerun or tune thresholds."
+  },
+  "proposed_short_old_new": {
+    "status": "PLAN ONLY, after root review/application/build/component pass and separate execution authorization.",
+    "scope": "One retained already-admitted constant-k loaded 1040-ID column, identical seed/XML/material floats/kernel/h, AV/HG/damping, ramp/drain, fixed dt and backend; two fresh old/new outputs for exactly128 complete updates, with common saves0/64/128. Use the same retained/current object closures per backend actually chosen; no mixed objects, half-step case, Cryer or long run.",
+    "review": "Require original IDs/counts/finite/domain/clock/bounds. Report actual nonzero theta and compare p/J/xyz/velocity/sigma/FS/Code/step scales/load resultant by own saved ID/time. Report Rhop/Arc changes separately; do not preclaim ON physical 0-ULP identity, compensate by fitting, or invent a new5Pa/accuracy gate. Gauges are descriptive only.",
+    "stop": "If128 updates do not exercise a nonzero theta, disclose that limit and let root choose the next scope; no automatic extension or retry. Preserve every retained program, raw result and accepted Cryer package."
+  },
+  "author_review": "Current relevant functions and old forwarding proposal read fully. Candidate derived only in memory against these five current files; all original old-hunk matches were unique, then a fresh unified diff was produced. Five source SMT observations were unchanged. Headers use a/src/source and b/src/source. No patch application, Git apply check, syntax/build/solver/decoder or SHA operation was performed.",
+  "production_modified": false,
+  "physical_acceptance": false
+}

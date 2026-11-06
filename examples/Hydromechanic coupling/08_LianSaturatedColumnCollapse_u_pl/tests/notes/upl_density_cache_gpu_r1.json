@@ -1,0 +1,39 @@
+{
+  "stage": "upl_density_cache_gpu_r1",
+  "status": "AUTHOR-ONLY; no compilation, execution, memcheck, solver, Git or SHA.",
+  "source": "tests/support/upl_density_cache_gpu_r1.cpp",
+  "purpose": "Small actual GPU stage/cache/lifetime diagnostic, not a spatial solver, force test, material admission or physical trajectory.",
+  "CLI": "--out FRESH_DIRECTORY",
+  "fixture": "GPU device0; one fixed slot0 and three CODE_TYPE_FLUID slots1..3, explicitly initialized device buffers. Slots are component identities, not loaded case08 particle IDs. No neighbours, position update kernel, native sorting or periodic copy.",
+  "material": "Upload the original StSoilCte through actual cusphs::CteInteractionUpTStep: rho0=2072.5f, water rho=1000.f, n0=.35f, K16/G8, cohesion1e6 keeps supplied finite stresses elastic, softening/PartBegin0. dt=.125 and dt/2=.0625 are stage-test increments, not admitted physical timesteps.",
+  "real_calls": [
+    "cusph::UpdatePorosityObserver(false,dt/2), check the returned device invalid index, then cusphs::ComputeStepSymplecticPre.",
+    "cusphs::ComputeStepSymplecticCor, then the actual cusph::UpdatePorosityObserver(true,dt), check invalid index.",
+    "Actual API is UpdatePorosityObserver, not a copied J commit or a new UpdatePorositySymplectic implementation. The production wrappers and their original constitutive work run; the internal cache function is never copied or called directly."
+  ],
+  "density_written_rule": "A pre-J rejection is recorded with density_stage_written=false and blank native/wall cache columns. The component does not cudaMemcpy velout before the wrapper has actually run. Corrector preview failures occur after the wrapper wrote its partial cache, which is reported honestly; an invalid phase is never a completed physical step.",
+  "ON_primary_cases": [
+    "J068 uniform: actual J=.68, theta0, old input w=float(double(rho0)/.68)>3000 with additional positive legacy variations; physical mixture rho is within700..3000 and must remain normal.",
+    "Nonuniform: Jn native(.75,1,1.125), predictor theta(-1.5,0,.5), corrector theta(.125,0,-.25). First slot matches the CPU core half=.6796875/full=.7606201171875 trap; second supplies J=1 exact rho0. All native Arc inputs are deliberately NaN scratch to prove these stage wrappers do not read the unused native rate.",
+    "Declared component1800..2400 interval: predictor theta-4/8 yields high/low physical rho at half J=.75/1.5; corrector begins with a real valid predictor at half J1 and theta-2/4 yields full J=.75/1.5 outside bounds while half is inside. No range is tuned after execution.",
+    "Each phase has NaN, infinity and exact J=solid0 rejection. Predictor failures stop before SimplePre. Corrector failures follow real valid Pre, write a partial cache in SimpleCor, and the unchanged J validator must flag index1 even after density-out tagging. Other slots stay valid."
+  ],
+  "identities": "For every written finite valid actual committed J, recompute the double mixture ledger then cast once and compare native cache float bits. Corrector preview uses host Jn +=dt*actualJhalf*theta and compares double bits to actual commit for valid slots; selected arithmetic is dyadic except the unchanged .68 input. No universal CPU/GPU trajectory bit identity is claimed. Range decisions retain original configured limits. Invalid NaN payload bits are descriptive only, not an equality gate.",
+  "fixed_slot": "Fixed Jn=1.125 and nonzero supplied theta deliberately make a J-derived wall density differ from rho0. Actual GPU Pre/Cor must still write exact float rho0. This does not change or describe CPU boundary Arc integration; there is no physical wall-mass claim.",
+  "NULL_compatibility": {
+    "same_source": "Compile normal current helper against current archived headers/all110 current non-main objects. Compile the same CPP with /DUPL_DENSITY_CACHE_LEGACY_ONLY against genuine retained precache headers/all110 retained non-main objects. The macro removes every new aggregate/type/ON reference. Both paths call Pre/Cor with the original argument list; the current header supplies its default-empty state. No old/new object mixing.",
+    "old_closure": "logs/upl_wall_active_Debug_r2.build.json and source.json; source.zip under outputs/upl_wall_active_Debug_r2; objects C:/Users/syosh/AppData/Local/Temp/upl_wall_active_r2/Debug/int. Consume actual original archived headers, not invented live-header compatibility or old solver execution.",
+    "new_closure": "logs/upl_density_cache_Debug_r1.build.json and source.json; objects C:/Users/syosh/AppData/Local/Temp/upl_density_cache_r1/Debug/int. Root owns any future SMT/recipe checks.",
+    "rows": "OFF and observer-only each real Pre+Cor, with native old w699/rho0/3001 and finite rates0/8/0. Assert the actual GPU literal density expression and resulting OutRhop. Preserve all four slots of Code/vel/sigma/kplastic/movement/J in null_stage.bin; null.csv includes12 native rows. Byte-compare both exports between the two fresh helpers; completion metadata differs honestly by legacy_only.",
+    "limits": "The old helper proves only NULL-state compatibility. It does not claim ON coverage or execute the retained old program. Binary records contain no paths, clocks, struct-owner data or new-header aliases."
+  },
+  "expected_counts_if_all_pass": "Current helper:11 SimplePre calls,9 SimpleCor calls,21 actual J commits,19 ON stage records/57 native rows including5 visible valid setup stages,6 expected J rejections; NULL export4 snapshots/12 native rows. Legacy-only helper:2 Pre,2 Cor,2 observer J commits; no ON rows/rejections. These are source predictions, not observed results.",
+  "exports": "cache.csv for current ON stage observations; null.csv and null_stage.bin for same-backend old/new literal comparison; completion.json carries actual counters/passed/failure/private_stage_only/physical_acceptance=false. Each fresh directory is exclusive. CSV is flushed before identity failure so first failure evidence is retained; no automatic retry.",
+  "scope_limits": [
+    "No actual native Arc producer/force kernel, pressure equation, acceleration energy, MLS rescue/qualification, default solver, Init admission, GPU mask, sorting/periodic behavior, constitutive plasticity or physical timestep stability is established here.",
+    "No hidden density read on predictor failure, no sanitization/relaxed finite gate, no half solver or Cryer rerun, and no new production kernel/array/API is introduced by this component.",
+    "A later single memcheck execution and the two whole-closure NULL compatibility builds/runs need separate root authorization. All accepted Cryer/program/results remain protected."
+  ],
+  "author_review": "Before any compilation/execution, the nonexistent six-argument TSymMatrix3f spelling was replaced by direct aggregate assignment of the identical six declared values; TypesDef.h supplies only a zero-argument TSymMatrix3f helper. No numeric or coverage change.",
+  "physical_acceptance": false
+}

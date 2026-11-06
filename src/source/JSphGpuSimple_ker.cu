@@ -634,13 +634,28 @@ void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdb
 /// Computes new values for Pos, Check, Vel and Ros (used with Symplectic-Predictor).
 /// Calcula los nuevos valores de Pos, Vel y Rhop (usando para Symplectic-Predictor).
 //------------------------------------------------------------------------------
+//-Cache native mixture density from stage J; the existing J kernel still owns its commit.
+template<bool corrector> static __device__ __forceinline__ bool KerPorosityRhopCache
+  (StPorosityRhopState state,unsigned p,double dt,float rho0,float minimum,float maximum,float &cache)
+{
+  const double jstage=state.j[p];
+  double value=jstage;
+  if(corrector){value=state.jn[p];value+=dt*jstage*state.theta[p];}
+  const double rhow=double(SOILSCTE.PoreWaterRho);
+  const double rhot=rhow+(double(rho0)-rhow)/value;
+  const bool out=(!isfinite(value) || value<=1.-double(SOILSCTE.Porosity)
+    || !isfinite(rhot) || rhot<=0 || rhot<minimum || rhot>maximum);
+  cache=float(rhot);
+  return(out || !isfinite(cache) || cache<=0.f);
+}
+
 template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void KerComputeStepSymplecticPre
   (unsigned n,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
   ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,double2 *sigma,float *kplastic,float *kplasticdk)
+  ,double2 *sigma,float *kplastic,float *kplasticdk,StPorosityRhopState porostate)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -661,7 +676,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       //-Updates density.
       const float4 rvelrhoppre=velrhoppre[p];
       float4 rvelrhopnew=rvelrhoppre;
-      rvelrhopnew.w=float(double(rvelrhoppre.w)+dtm*ar[p]);
+      const bool feedbackj=(porostate.j && CODE_IsFluid(rcode));
+      bool feedbackout=false;
+      if(feedbackj)feedbackout=KerPorosityRhopCache<false>(porostate,p,dtm,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w);
+      else rvelrhopnew.w=float(double(rvelrhoppre.w)+dtm*ar[p]);
       //==== mdbr ==
       double2 sigmapre_xx_xy=sigmapre[p*3];
 	  double2 sigmapre_xz_yy=sigmapre[p*3+1];
@@ -679,7 +697,7 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           dy+=double(rshiftpos.y);
           dz+=double(rshiftpos.z);
         }
-        bool outrhop=(rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax);
+        bool outrhop=(feedbackj? feedbackout: (rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax));
         //-Calculate velocity & density. | Calcula velocidad y densidad.
         const float3 race=ace[p];
         rvelrhopnew.x=float(double(rvelrhoppre.x) + (double(race.x)+gravity.x) * dtm);
@@ -760,26 +778,26 @@ template<TpDPCtes dpctes> void ComputeStepSymplecticPreT(bool floating,bool shif
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d *sigma,float *kplastic,float *kplasticdk
-  ,cudaStream_t stm)
+  ,cudaStream_t stm,StPorosityRhopState porostate)
 {
 	if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     if(inout){      const bool tinout=true;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }
     }
     else{           const bool tinout=false;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticPre<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticPre<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }
     }
   }
@@ -794,21 +812,21 @@ void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpcte
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d *sigma,float *kplastic,float *kplasticdk
-  ,cudaStream_t stm)
+  ,cudaStream_t stm,StPorosityRhopState porostate)
 {
   //cudaProfilerStart();//mdbr
     switch(dpctes){
 	  case DP_C:{ const TpDPCtes tdpctes=DP_C;
 		  ComputeStepSymplecticPreT<tdpctes>(floating,shift,inout,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  case DP_MC:{ const TpDPCtes tdpctes=DP_MC;
 		  ComputeStepSymplecticPreT<tdpctes>(floating,shift,inout,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  case DP_PS:{ const TpDPCtes tdpctes=DP_PS;
 		  ComputeStepSymplecticPreT<tdpctes>(floating,shift,inout,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,dtm,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  default: throw "DP Constants unknown at ComputeStepSymplecticPre().";
   }
@@ -828,7 +846,7 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
   ,const double2 *sigmapre,const float *kplasticpre,const float2 *rsigma
   ,const float3 *indirvel,const float4 *nopenshift,TpMdbc2Mode mdbc2,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,float3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
-  ,double2 *sigma,float *kplastic,float *kplasticdk)
+  ,double2 *sigma,float *kplastic,float *kplasticdk,StPorosityRhopState porostate)
 {
   unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -852,7 +870,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       const float4 rvelrhoppre=velrhoppre[p];
       float4 rvelrhopnew=rvelrhoppre;
       //rvelrhopnew.w=float(double(rvelrhoppre.w) * (2.-epsilon_rdot)/(2.+epsilon_rdot));
-      rvelrhopnew.w=float(double(rvelrhoppre.w)+dt*ar[p]);
+      const bool feedbackj=(porostate.j && CODE_IsFluid(rcode));
+      bool feedbackout=false;
+      if(feedbackj)feedbackout=KerPorosityRhopCache<true>(porostate,p,dt,rhopzero,rhopoutmin,rhopoutmax,rvelrhopnew.w);
+      else rvelrhopnew.w=float(double(rvelrhoppre.w)+dt*ar[p]);
       //==== mdbr ==
      //==== mdbr ==
       double2 sigmapre_xx_xy=sigmapre[p*3];
@@ -890,7 +911,7 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
           dy+=double(rshiftpos.y);
           dz+=double(rshiftpos.z);
         }
-        bool outrhop=(rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax);
+        bool outrhop=(feedbackj? feedbackout: (rvelrhopnew.w<rhopoutmin || rvelrhopnew.w>rhopoutmax));
         //-Calculate elastic stress
         double2 sigmapre_xx_xy=sigmapre[p*3];
 	    double2 sigmapre_xz_yy=sigmapre[p*3+1];
@@ -975,26 +996,26 @@ template<TpDPCtes dpctes> void ComputeStepSymplecticCorT(bool floating,bool shif
   ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk 
-  ,cudaStream_t stm)
+  ,cudaStream_t stm,StPorosityRhopState porostate)
 {
 	if(np){
     dim3 sgrid=GetSimpleGridSize(np,SPHBSIZE);
     if(inout){      const bool tinout=true;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }
     }
     else{           const bool tinout=false;
       if(shift){    const bool shift=true;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }else{        const bool shift=false;
-        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
-        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk);
+        if(floating)KerComputeStepSymplecticCor<true ,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
+        else        KerComputeStepSymplecticCor<false,shift,tinout,dpctes> <<<sgrid,SPHBSIZE,0,stm>>> (np,npb,velrhoppre,ar,ace,shiftposfs,(const double2*)sigmapre,kplasticpre,(const float2*)rsigma,indirvel,nopenshift,mdbc2,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,Float3(gravity),code,movxy,movz,velrhop,(double2*)sigma,kplastic,kplasticdk,porostate);
       }
     }
   }
@@ -1009,21 +1030,21 @@ void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpcte
   ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk
-  ,cudaStream_t stm)
+  ,cudaStream_t stm,StPorosityRhopState porostate)
 {
   //cudaProfilerStart();//mdbr
       switch(dpctes){
 	  case DP_C:{ const TpDPCtes tdpctes=DP_C;
 		  ComputeStepSymplecticCorT<tdpctes>(floating,shift,inout,mdbc2,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  case DP_MC:{ const TpDPCtes tdpctes=DP_MC;
 		  ComputeStepSymplecticCorT<tdpctes>(floating,shift,inout,mdbc2,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  case DP_PS:{ const TpDPCtes tdpctes=DP_PS;
 		  ComputeStepSymplecticCorT<tdpctes>(floating,shift,inout,mdbc2,np,npb,velrhoppre,ar,ace,shiftposfs,sigmapre,kplasticpre,rsigma
-            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm);
+            ,indirvel,nopenshift,dtm,dt,rhopzero,rhopoutmin,rhopoutmax,gravity,code,movxy,movz,velrhop,sigma,kplastic,kplasticdk,stm,porostate);
 	  }break;
 	  default: throw "DP Constants unknown at ComputeStepSymplecticCor().";
   }

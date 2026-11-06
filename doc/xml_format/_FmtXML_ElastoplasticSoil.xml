@@ -51,7 +51,8 @@
                      Old GPU executables IGNORE the new XML keys: do not use them for this model.
                      Dynamic/J-state PART restart is rejected, including loading with the master OFF.
                      CPU BI4 saves double J/n/last-stage theta and derived current volume/mixture density/k;
-                     legacy Rhop remains a passive float diagnostic, not the dynamic mixture density;
+                     with feedback ON, native Rhop is a float cache of rho_w+(rho_t0-rho_w)/J;
+                     the exported double mixture-density ledger remains the inertia reference;
                      ON-only float PosDiv exposes the existing support diagnostic without new particle state;
                      fixed-wall n/volume/density/k=0 are nonphysical markers, not soil values.
                      Limited canonical CPU wiring/output, default-OFF, short independent half-step and
@@ -186,7 +187,7 @@
                      SPR=0 already uses that dynamic producer, so this admission is not a new force effect.
                      Physical fixed-wall velocity stays zero. Viscosity retains existing physical dv_visc
                      and its approach-only switch; feedback uses rho(J) and neighbor rho(J)*V0*J weighting
-                     instead of passive legacy Rhop/reference mass. Finished acceleration, including
+                     instead of the former independent continuity density/reference mass. Finished acceleration, including
                      viscosity, enters the existing complete Darcy source once. No new parameter or
                      default change; master-OFF and dynamic Visco=0 retain their original arithmetic.
                      The 458-frame CPU checks passed: default-OFF original15 exact; original dynamic
@@ -288,6 +289,21 @@
                      retained72 and six OFF conditions stayed byte-exact before/after this port.
                      Observer-only GPU initialization now matches CPU; feedback guards are retained.
                      Public gravity/plastic case08 admission remains pending; no wetness rule added. -->
+                <!-- Single-J native density cache (2026-11-06, stage components checked):
+                     Feedback ON derives native Rhop from actual predictor Jhalf or a same-expression
+                     full-J corrector preview. Existing J commit, pore/stress/position order and double
+                     quadrature/inertia are unchanged. Only unused native legacy Arc accumulation stops.
+                     Original density bounds apply in double before the final float cache write;
+                     no clamp or replacement of V0*J by reference_mass/Rhop is permitted.
+                     CPU boundary Arc integration and GPU fixed rho0 writes retain their old rules.
+                     CPU7060-ID stages and GPU4-slot stages passed cache/Code/domain checks;
+                     OFF/observer stage bytes stayed exact; GPU memcheck had zero errors/leaks.
+                     A real old/new CPU column128-update comparison also passed: all eight actual
+                     saved states retained21 other typed arrays and signed clocks byte-exact;
+                     native Rhop intentionally changed and8000 new soil caches matched actual J.
+                     This is bounded compatibility evidence, not a new consolidation/long-run claim.
+                     Legacy velocity/level/force gauges are NOT J-aware and must not be used as
+                     dynamic physical force/volume acceptance evidence. No new XML input added. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid
