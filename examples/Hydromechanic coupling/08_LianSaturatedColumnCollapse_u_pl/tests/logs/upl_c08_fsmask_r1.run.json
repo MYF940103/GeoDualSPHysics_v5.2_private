@@ -1,0 +1,34 @@
+{
+  "stage": "upl_c08_fsmask_r1_execution",
+  "analysis_invocations": 1,
+  "command": "D:/anaconda3/python.exe -B tests/support/upl_c08_fsmask_r1.py --native tests/outputs/upl_c08_elastic_start_CPU_r2_native_r1 --companion tests/outputs/upl_c08_elastic_start_r2_seed/CaseLianSaturatedColumnCollapse_elastic_start_r2.xml --out-prefix tests/figures/upl_c08_fsmask_r1",
+  "tool_start": {
+    "chunk_id": "52a80e",
+    "wall_time_seconds": 10.0032102,
+    "session_id": 16110,
+    "original_token_count": 0,
+    "output": ""
+  },
+  "tool_final": {
+    "chunk_id": "aa62e6",
+    "wall_time_seconds": 0.0000307,
+    "exit_code": 0,
+    "original_token_count": 142,
+    "output": "{\"stage\": \"upl_c08_fsmask_r1\", \"analysis_completed\": true, \"all\": {\"soil_count\": 5000, \"current_FS2\": 100, \"current_FS3\": 0, \"soil_self\": {\"Eq68_count\": 296, \"both\": 100, \"Eq68_only\": 196, \"current_only\": 0, \"both_interior\": 4704}, \"soil_no_self\": {\"Eq68_count\": 5000, \"both\": 100, \"Eq68_only\": 4900, \"current_only\": 0, \"both_interior\": 0}, \"soil_wall_self\": {\"Eq68_count\": 100, \"both\": 100, \"Eq68_only\": 0, \"current_only\": 0, \"both_interior\": 4900}, \"soil_wall_no_self\": {\"Eq68_count\": 5000, \"both\": 100, \"Eq68_only\": 4900, \"current_only\": 0, \"both_interior\": 0}}}\r\n"
+  },
+  "independent_Win32_PID_or_handle_observed": false,
+  "PNG_visual_review": "Original PNG numerically correct but row title/x-axis overlap observed. Original artifacts retained. One plot-only fresh readable PNG generated from the existing5000-row CSV; inspected2340x1620 and no overlap.",
+  "plot_only_call": {
+    "chunk_id": "25ed0c",
+    "wall_time_seconds": 1.1355028,
+    "exit_code": 0,
+    "original_token_count": 41,
+    "output": "{\"plot_only\": true, \"CSV_rows\": 5000, \"output\": \"tests\\\\figures\\\\upl_c08_fsmask_r1_readable.png\", \"original_PNG_preserved\": true, \"numerical_reanalysis\": false}\r\n"
+  },
+  "plot_only_reproduction_python": "import csv,json\nfrom pathlib import Path\nimport matplotlib; matplotlib.use('Agg')\nimport matplotlib.pyplot as plt\nfrom matplotlib.colors import ListedColormap\nfrom matplotlib.lines import Line2D\nimport numpy as np\nbase=Path('tests/figures/upl_c08_fsmask_r1')\nout=Path(str(base)+'_readable.png')\nassert not out.exists()\nrows=list(csv.DictReader(base.with_suffix('.csv').open(newline='',encoding='utf-8')))\nassert len(rows)==5000\nsummary=json.loads(base.with_suffix('.check.json').read_text())['regions_and_masks']['all']\nx=np.array([float(r['x_m']) for r in rows]);z=np.array([float(r['z_m']) for r in rows]);cur=np.array([int(r['current_FS2_or_3']) for r in rows],bool)\nvariants=('soil_self','soil_no_self','soil_wall_self','soil_wall_no_self')\ncolors=ListedColormap(['#d2d2d2','#149065','#db8c24','#296ea6'])\nfig,axes=plt.subplots(2,2,figsize=(13,9),sharex=True,sharey=True)\nfor n,(ax,var) in enumerate(zip(axes.flat,variants)):\n m=np.array([int(r['Eq68_'+var]) for r in rows],bool);labels=np.where(m,np.where(cur,1,2),np.where(cur,3,0));c=summary[var]\n ax.scatter(x,z,c=labels,cmap=colors,vmin=-.5,vmax=3.5,s=5,marker='s',linewidths=0)\n ax.set(xlim=(-.02,4.02),ylim=(-.02,2.02),aspect='equal',ylabel='z [m]')\n if n>=2:ax.set_xlabel('x [m]')\n ax.set_title(var.replace('_',' ')+f\": Eq68={c['Eq68_count']}, current={cur.sum()}\\nEq68 only={c['Eq68_only']}; current only={c['current_only']}\",fontsize=11,pad=11)\nhandles=[Line2D([],[],color=colors(n),marker='s',linestyle='',label=t) for n,t in enumerate(['Both interior','Both surface','Eq68 only','Current only'])]\nfig.legend(handles=handles,loc='lower center',bbox_to_anchor=(.5,.02),ncol=4,frameon=False)\nfig.suptitle('C08 initial frame: Eq68 sum(Vj W_ij)<0.95 vs native FS2/3\\nWall and self definitions retained separately; no tuned threshold',fontsize=14,y=.97)\nfig.subplots_adjust(left=.06,right=.98,bottom=.12,top=.85,wspace=.16,hspace=.35)\nfig.savefig(out,dpi=180);plt.close(fig)\nprint(json.dumps({'plot_only':True,'CSV_rows':len(rows),'output':str(out),'original_PNG_preserved':True,'numerical_reanalysis':False}))",
+  "no_numerical_reanalysis": true,
+  "no_BI4_decoding_or_solver": true,
+  "production_changes": false,
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

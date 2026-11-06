@@ -1,0 +1,165 @@
+diff --git a/src/source/JSph.h b/src/source/JSph.h
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -592,6 +592,9 @@
+   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
+   void ConfigConstantsSoil();
+   float GetDynamicSoilDampingRate()const;
++  bool IsDynamicPoreContainerConfig()const;
++  void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
++    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
+   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+     ,const typecode *code,const tfloat4 *velrhop);
+ };
+diff --git a/src/source/JSph.cpp b/src/source/JSph.cpp
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -608,10 +608,11 @@
+       && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+       && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement && HydroMechDrainage && HydroMechDrainageFixedGrid
+       && !SoilBoundaryDerivativeSPR && SoilHourglassXi==0 && !ViscoTime);
+-    if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin || Gravity.x || Gravity.y || Gravity.z
++    if(!HydroMech || (!Simulate2D && !DynamicPoreFreeBody) || PartBegin
++      || ((Gravity.x || Gravity.y || Gravity.z) && !IsDynamicPoreContainerConfig())
+       || HydroMechInitMode!=HMINIT_None || !FixedDt || !(FixedDt->GetFixedValue()>0)
+       || !std::isfinite(FixedDt->GetFixedValue()))
+-      Run_Exceptioon("HydroMechDynamicSeepage requires fresh zero-gravity CPU/GPU 2-D fixtures or the limited 3-D free body, InitMode=None and positive constant DtFixed.");
++      Run_Exceptioon("HydroMechDynamicSeepage requires fresh zero-gravity fixtures, the limited 3-D free body or the fixed 2-D gravity container, InitMode=None and positive constant DtFixed.");
+     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
+       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
+     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
+@@ -3610,6 +3611,70 @@
+ //##############################################################################
+ 
+ //==============================================================================
++/// Narrow gravity warmup scope; actual fixed-face geometry is checked after loading.
++//==============================================================================
++bool JSph::IsDynamicPoreContainerConfig()const{
++  return(HydroMechDynamicSeepage && HydroMech && Simulate2D && !PartBegin && !PeriActive
++    && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
++    && TBoundary==BC_MDBC && UseNormals && TMdbc2!=MDBC2_NoPen && !NoPenetration
++    && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
++    && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
++    && HydroMechInitMode==HMINIT_None && HydroMechTopLoadMode==HMLOAD_None
++    && !HydroMechDrainage && !HydroMechDrainageFixedGrid
++    && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
++    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && !StrainSoftening && !SoilDamping
++    && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
++    && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
++    && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0
++    && !PoreShepardRegularization);
++}
++
++//==============================================================================
++/// Fixed +X/-X FreeSlip sides and +Z NoSlip bed; far bed samples are not soil.
++//==============================================================================
++void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
++  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const
++{
++  if(np!=CaseNp || !npb || npb!=CaseNpb || npb!=CaseNfixed || np<=npb
++    || !pos || !code || !velrhop || !boundnormal
++    || !std::isfinite(Dp) || !(Dp>0) || !std::isfinite(KernelSize) || !(KernelSize>0)
++    || !std::isfinite(MassFluid) || !(MassFluid>0) || !std::isfinite(MassBound) || !(MassBound>0)
++    || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
++    Run_Exceptioon("Dynamic gravity container requires complete equal-dp native soil and fixed mDBC planes.");
++  const double normaltol=8.*FLT_EPSILON,planetol=1e-6*Dp;
++  bool seen[3]={false,false,false};double plane[3]={0,0,0};
++  for(unsigned p=0;p<npb;p++){
++    const tdouble3 x=pos[p],raw=ToTDouble3(boundnormal[p]);
++    const double len=sqrt(raw.x*raw.x+raw.y*raw.y+raw.z*raw.z);
++    if(!CODE_IsFixed(code[p]) || !std::isfinite(x.x) || !std::isfinite(x.y) || !std::isfinite(x.z)
++      || !std::isfinite(len) || !(len>0) || velrhop[p].x || velrhop[p].y || velrhop[p].z)
++      Run_Exceptioon("Dynamic gravity container requires finite stationary fixed samples and nonzero normals.");
++    const tdouble3 n=raw/len,wall=x+raw*.5;
++    const unsigned face=(n.x>.5? 0: (n.x<-.5? 1: (n.z>.5? 2: 3)));
++    if(face==3 || fabs(n.y)>normaltol || (face<2? fabs(n.z): fabs(n.x))>normaltol)
++      Run_Exceptioon("Dynamic gravity container supports +X/-X sides and an upward +Z bed only.");
++    const TpSlipMode slip=(boundslipmode? TpSlipMode(boundslipmode[p]): SlipMode);
++    if(slip!=(face<2? SLIP_FreeSlip: SLIP_NoSlip))
++      Run_Exceptioon("Dynamic gravity container requires FreeSlip sides and a NoSlip bed.");
++    const double location=(face<2? wall.x: wall.z);
++    if(!std::isfinite(location) || (seen[face] && fabs(location-plane[face])>planetol))
++      Run_Exceptioon("Dynamic gravity container requires one coplanar face per inward normal direction.");
++    if(!seen[face])plane[face]=location;
++    seen[face]=true;
++  }
++  if(!seen[0] || !seen[1] || !seen[2] || plane[1]-plane[0]<=2.*double(KernelSize))
++    Run_Exceptioon("Dynamic gravity container requires separated opposing sides and one bottom plane.");
++  //-Only native soil must start inside. Do not project far bed samples or mirror targets into this box.
++  for(unsigned p=npb;p<np;p++){
++    const tdouble3 x=pos[p];
++    if(!CODE_IsNormal(code[p]) || !CODE_IsFluid(code[p])
++      || !std::isfinite(x.x) || !std::isfinite(x.y) || !std::isfinite(x.z)
++      || x.x<plane[0]-planetol || x.x>plane[1]+planetol || x.z<plane[2]-planetol)
++      Run_Exceptioon("Dynamic gravity container requires its initial native soil inside the three fixed half-spaces.");
++  }
++}
++
++//==============================================================================
+ /// Admits an isolated free body without turning its remote DBC markers into walls.
+ /// The enclosure only rejects loss of separation; it never rescales the body/load.
+ //==============================================================================
+diff --git a/src/source/JSphCpu.cpp b/src/source/JSphCpu.cpp
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -4230,6 +4230,10 @@
+     || (Simulate2D && Gravity.y!=0) || (SoilBoundaryDerivativeSPR && !allowcolumnspr)
+     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
+     Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
++  if(IsDynamicPoreContainerConfig()){
++    CheckDynamicPoreContainer(Np,Npb,Posc,Codec,Velrhopc,BoundNormalc,BoundSlipModec);
++    return;
++  }
+   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+   const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
+   int axis=-1;
+@@ -4443,7 +4447,7 @@
+   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+     && PeriX && !PeriY && !PeriZ && !ViscoTime);
+   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
+-  const bool allowartvisco=(allowcolumnstabilization || freebody);
++  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
+   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
+     Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
+   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+@@ -4464,7 +4468,7 @@
+     || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
+     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
+-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/artificial viscosity/load/drainage require the public constant-k column or admitted free body; HG/SPR remain column-only.");
++    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; artificial viscosity additionally permits the fixed gravity container; damping/load/drainage require the column or free body; HG/SPR remain column-only.");
+   if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
+     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
+     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))
+diff --git a/src/source/JSphGpu.cpp b/src/source/JSphGpu.cpp
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1640,6 +1640,10 @@
+     || !std::isfinite(MassBound) || !(MassBound>0) || !std::isfinite(MassFluid) || !(MassFluid>0)
+     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
+     Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
++  if(IsDynamicPoreContainerConfig()){
++    CheckDynamicPoreContainer(Np,Npb,AuxPos,Code,Velrhop,boundnormal,boundslipmode);
++    return;
++  }
+   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
+   const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
+   int axis=-1;bool seen[2]={false,false};double plane[2]={0,0};
+@@ -1730,7 +1734,7 @@
+   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
+     && PeriX && !PeriY && !PeriZ && !ViscoTime);
+   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
+-  const bool allowartvisco=(allowcolumnstabilization || freebody);
++  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
+   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
+     Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
+   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
+@@ -1754,7 +1758,7 @@
+     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
+     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
+     Run_Exceptioon(DynamicPorePressure?
+-      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity requires the public constant-k column or admitted free body; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
++      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity permits the constant-k column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
+       "GPU porosity feedback requires a private k=0 Wendland/Cubic elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
+   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
+     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)

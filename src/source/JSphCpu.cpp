@@ -4230,6 +4230,10 @@ void JSphCpu::InitDynamicPoreWallCpu(){
     || (Simulate2D && Gravity.y!=0) || (SoilBoundaryDerivativeSPR && !allowcolumnspr)
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
+  if(IsDynamicPoreContainerConfig()){
+    CheckDynamicPoreContainer(Np,Npb,Posc,Codec,Velrhopc,BoundNormalc,BoundSlipModec);
+    return;
+  }
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
   const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
   int axis=-1;
@@ -4443,7 +4447,7 @@ void JSphCpu::InitPorosityObserverCpu(){
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
-  const bool allowartvisco=(allowcolumnstabilization || freebody);
+  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded CPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
@@ -4464,7 +4468,7 @@ void JSphCpu::InitPorosityObserverCpu(){
     || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || PoreShepardRegularization || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; damping/artificial viscosity/load/drainage require the public constant-k column or admitted free body; HG/SPR remain column-only.");
+    Run_Exceptioon("Porosity feedback requires bounded elastic CPU fixtures without acceleration input/DDT/artificial stress/Shepard; artificial viscosity additionally permits the fixed gravity container; damping/load/drainage require the column or free body; HG/SPR remain column-only.");
   if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

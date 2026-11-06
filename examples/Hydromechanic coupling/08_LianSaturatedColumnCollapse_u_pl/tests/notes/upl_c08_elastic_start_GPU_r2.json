@@ -1,0 +1,59 @@
+{
+  "stage": "upl_c08_elastic_start_GPU_r2.author",
+  "status": "AUTHOR ONLY. No GPU preparation copy/build/run/memcheck/decoder/Git/SHA. Root holds GPU run until CPU r2 actual native/safety review passes.",
+  "files": [
+    "tests/support/xCaseLianSaturatedColumnCollapse_elastic_start_r2_win64_GPU.bat",
+    "tests/notes/upl_c08_elastic_start_GPU_r2.json"
+  ],
+  "predecessor": "GPU r1 BAT/note remain unexecuted drafts and unchanged. CPU r1 actual startup was stopped at step0 by its auto-derived DtMin~27.3665us exceeding current necessary bound~3.954us (root-reviewed report); only Part0 retained, no restart or overwrite. Fixed dt2^-18 itself was below that bound.",
+  "side_by_side_changes": [
+    {
+      "field": "companion and seed stem",
+      "r1": "CaseLianSaturatedColumnCollapse_elastic_start_r1",
+      "r2": "CaseLianSaturatedColumnCollapse_elastic_start_r2",
+      "meaning": "Fresh separate CPU-prepared immutable input, reused directly by GPU."
+    },
+    {
+      "field": "DtMin",
+      "r1": "Omitted; startup derived~27.3665us",
+      "r2": "Explicit1e-8s in CPU r2 XML",
+      "meaning": "Only numerical input change authorized for r2; avoids auto floor exceeding existing necessary bound. No necessary bound or rejection is relaxed."
+    },
+    {
+      "field": "dt,TimeMax,TimeOut,step cap",
+      "r1": "dt2^-18,end2^-11,save32updates,-nsteps:128",
+      "r2": "UNCHANGED",
+      "meaning": "Exactly the same planned128 updates and five saved states; root must verify actual native clock."
+    },
+    {
+      "field": "program",
+      "r1": "upl_container_Debug_r1/DualSPHysics5.2_win64_debug.exe",
+      "r2": "UNCHANGED",
+      "meaning": "No new build, canonical fallback or replacement."
+    },
+    {
+      "field": "seed directory",
+      "r1": "tests/outputs/upl_c08_elastic_start_r1_seed",
+      "r2": "tests/outputs/upl_c08_elastic_start_r2_seed",
+      "meaning": "GPU never prepares/copies input XML/BI4/normals or reruns GenCase."
+    },
+    {
+      "field": "CPU exit0 prerequisite",
+      "r1": "upl_c08_elastic_start_CPU_r1/solver_exit_code.txt",
+      "r2": "upl_c08_elastic_start_CPU_r2/solver_exit_code.txt",
+      "meaning": "Failed r1 cannot authorize r2 GPU. Exit0 is only runtime barrier; root-native gate still mandatory."
+    },
+    {
+      "field": "GPU runtime and output",
+      "r1": "upl_c08_elastic_start_GPU_r1_runtime / upl_c08_elastic_start_GPU_r1",
+      "r2": "upl_c08_elastic_start_GPU_r2_runtime / upl_c08_elastic_start_GPU_r2",
+      "meaning": "Refuse existing targets, preserve all old and partial data."
+    }
+  ],
+  "unchanged_physics": "Same retained7060 geometry/native IDs, Cubic h1.2dp, rho2072.5,n.35,E20MPa,nu.33,Kw1GPa,k2e-4,constant-strength phi25/coh5000,verticalg-9.81,sideFS/bedNS,zero generatedp/sigma,InitNone,publicdynamic/G1 on,AV.1; no HG/independentSPR/damping/softening/drain/load/NoPen/shifting. DtMin is not a material or boundary change.",
+  "relative_paths_and_scope": "Same CPU/BAT root pushd and explicitruntime copy style; only sealed exe and four named runtime files would copy on future execution. Default BAT prepares fresh GPU runtime/out then invokes ONE solver and writes immediate exit code; no postprocessing, analysis or acceptance.",
+  "argv": "-gpu:0 -stable -mdbc_freeslip tests/outputs/upl_c08_elastic_start_r2_seed/CaseLianSaturatedColumnCollapse_elastic_start_r2 tests/outputs/upl_c08_elastic_start_GPU_r2 -dirdataout data -svres -nsteps:128",
+  "run_hold": "This authoring grants NO GPU launch. Any CPU r2 runtime/native/safety failure blocks GPU even if seed exists or solver_exit_code says0. Root may later perform one direct memcheck using the identical argv after CPU gates; that must not be described as double-click/BAT execution or followed by an extra BAT solver.",
+  "limits": "Not a half-step chain or geostatic/paper free-seepage/collapse validation. Every original step/saturation/finite/elastic/ID/geometry/ledger guard remains. No blind retry or altered threshold after failure.",
+  "CPU_r2_path_confirmation": "CPU r2 author hg_cpu_cost_readonly confirmed exact companionstem/seed/output/runtime names in same-thread handoff; sole numerical additionDtMin1e-8, fixed dt/end/save plan unchanged. CPU BAT will prepare shared seed without overwrite; GPU only reuses it. CPU r2 has not been run by this author."
+}

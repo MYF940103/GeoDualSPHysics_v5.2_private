@@ -592,6 +592,9 @@ protected:
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
+  bool IsDynamicPoreContainerConfig()const;
+  void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)const;
   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,const tfloat4 *velrhop);
 };

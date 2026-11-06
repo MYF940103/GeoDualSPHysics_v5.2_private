@@ -1,0 +1,389 @@
+{
+  "stage": "upl_c08_fsmask_r1",
+  "analysis_completed": true,
+  "physical_acceptance": false,
+  "input_native": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_elastic_start_CPU_r2_native_r1",
+  "input_companion": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_elastic_start_r2_seed\\CaseLianSaturatedColumnCollapse_elastic_start_r2.xml",
+  "initial_frame_only": true,
+  "native_IDs": 7060,
+  "soil_IDs_compared": 5000,
+  "wall_IDs_as_optional_sources": 2060,
+  "threshold_unchanged": 0.95,
+  "material": {
+    "massfluid_actual_float": 3.315999984741211,
+    "massbound_actual_float": 3.315999984741211,
+    "rho0": 2072.5,
+    "V0_actual_mass_over_rho": 0.0015999999926374962,
+    "h_actual_float": 0.04800000041723251,
+    "initial_fixed_J_range": [
+      0.9999999999999999,
+      1.0000000000000004
+    ]
+  },
+  "kernel": "FunSphKernel.h GetKernelCubic_Wab float expression; double offline accumulation; not bit-equivalence",
+  "definitions": "Eq68 has no explicit j!=i; Eq33/Eq68 do not unambiguously specify N's wall/self membership. Four sensitivity definitions are retained without selecting/tuning one.",
+  "wall_volume": "V0*actual initial wall J, matching current FS quadrature; saved fixed PoroCurrentVolume=0 is a marker and is not used as wall volume.",
+  "regions": "Overlapping true-plane-distance <=2h bands at x=0,4,z=0,2, and their corner intersections; interior excludes all four. Not a wetness/contact mask.",
+  "native_FSType_histogram_soil": {
+    "0": 4900,
+    "1": 0,
+    "2": 100,
+    "3": 0,
+    "4": 0
+  },
+  "D_ranges": {
+    "soil_self": [
+      0.613602221383394,
+      0.9997574128876495
+    ],
+    "soil_no_self": [
+      0.2978186046724303,
+      0.6839737961766859
+    ],
+    "soil_wall_self": [
+      0.7845956704275655,
+      0.9997574128876497
+    ],
+    "soil_wall_no_self": [
+      0.4688120537166018,
+      0.6839737961766861
+    ]
+  },
+  "self_VW_range": [
+    0.3157836167109637,
+    0.3157836167109637
+  ],
+  "regions_and_masks": {
+    "all": {
+      "soil_count": 5000,
+      "current_FS2": 100,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 296,
+        "both": 100,
+        "Eq68_only": 196,
+        "current_only": 0,
+        "both_interior": 4704
+      },
+      "soil_no_self": {
+        "Eq68_count": 5000,
+        "both": 100,
+        "Eq68_only": 4900,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 100,
+        "both": 100,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 4900
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 5000,
+        "both": 100,
+        "Eq68_only": 4900,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "left": {
+      "soil_count": 100,
+      "current_FS2": 2,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 52,
+        "both": 2,
+        "Eq68_only": 50,
+        "current_only": 0,
+        "both_interior": 48
+      },
+      "soil_no_self": {
+        "Eq68_count": 100,
+        "both": 2,
+        "Eq68_only": 98,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 2,
+        "both": 2,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 98
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 100,
+        "both": 2,
+        "Eq68_only": 98,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "right": {
+      "soil_count": 100,
+      "current_FS2": 2,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 52,
+        "both": 2,
+        "Eq68_only": 50,
+        "current_only": 0,
+        "both_interior": 48
+      },
+      "soil_no_self": {
+        "Eq68_count": 100,
+        "both": 2,
+        "Eq68_only": 98,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 2,
+        "both": 2,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 98
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 100,
+        "both": 2,
+        "Eq68_only": 98,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "bottom": {
+      "soil_count": 200,
+      "current_FS2": 0,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 102,
+        "both": 0,
+        "Eq68_only": 102,
+        "current_only": 0,
+        "both_interior": 98
+      },
+      "soil_no_self": {
+        "Eq68_count": 200,
+        "both": 0,
+        "Eq68_only": 200,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 0,
+        "both": 0,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 200
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 200,
+        "both": 0,
+        "Eq68_only": 200,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "top": {
+      "soil_count": 200,
+      "current_FS2": 100,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 102,
+        "both": 100,
+        "Eq68_only": 2,
+        "current_only": 0,
+        "both_interior": 98
+      },
+      "soil_no_self": {
+        "Eq68_count": 200,
+        "both": 100,
+        "Eq68_only": 100,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 100,
+        "both": 100,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 100
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 200,
+        "both": 100,
+        "Eq68_only": 100,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "left_bottom": {
+      "soil_count": 4,
+      "current_FS2": 0,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 3,
+        "both": 0,
+        "Eq68_only": 3,
+        "current_only": 0,
+        "both_interior": 1
+      },
+      "soil_no_self": {
+        "Eq68_count": 4,
+        "both": 0,
+        "Eq68_only": 4,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 0,
+        "both": 0,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 4
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 4,
+        "both": 0,
+        "Eq68_only": 4,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "left_top": {
+      "soil_count": 4,
+      "current_FS2": 2,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 3,
+        "both": 2,
+        "Eq68_only": 1,
+        "current_only": 0,
+        "both_interior": 1
+      },
+      "soil_no_self": {
+        "Eq68_count": 4,
+        "both": 2,
+        "Eq68_only": 2,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 2,
+        "both": 2,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 2
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 4,
+        "both": 2,
+        "Eq68_only": 2,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "right_bottom": {
+      "soil_count": 4,
+      "current_FS2": 0,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 3,
+        "both": 0,
+        "Eq68_only": 3,
+        "current_only": 0,
+        "both_interior": 1
+      },
+      "soil_no_self": {
+        "Eq68_count": 4,
+        "both": 0,
+        "Eq68_only": 4,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 0,
+        "both": 0,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 4
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 4,
+        "both": 0,
+        "Eq68_only": 4,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "right_top": {
+      "soil_count": 4,
+      "current_FS2": 2,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 3,
+        "both": 2,
+        "Eq68_only": 1,
+        "current_only": 0,
+        "both_interior": 1
+      },
+      "soil_no_self": {
+        "Eq68_count": 4,
+        "both": 2,
+        "Eq68_only": 2,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 2,
+        "both": 2,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 2
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 4,
+        "both": 2,
+        "Eq68_only": 2,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    },
+    "interior": {
+      "soil_count": 4416,
+      "current_FS2": 0,
+      "current_FS3": 0,
+      "soil_self": {
+        "Eq68_count": 0,
+        "both": 0,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 4416
+      },
+      "soil_no_self": {
+        "Eq68_count": 4416,
+        "both": 0,
+        "Eq68_only": 4416,
+        "current_only": 0,
+        "both_interior": 0
+      },
+      "soil_wall_self": {
+        "Eq68_count": 0,
+        "both": 0,
+        "Eq68_only": 0,
+        "current_only": 0,
+        "both_interior": 4416
+      },
+      "soil_wall_no_self": {
+        "Eq68_count": 4416,
+        "both": 0,
+        "Eq68_only": 4416,
+        "current_only": 0,
+        "both_interior": 0
+      }
+    }
+  },
+  "solver_decoder_build_git_SHA_invocations": 0
+}

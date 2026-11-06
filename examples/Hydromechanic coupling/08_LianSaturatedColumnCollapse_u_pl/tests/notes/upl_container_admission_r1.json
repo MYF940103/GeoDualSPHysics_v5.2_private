@@ -1,0 +1,30 @@
+{
+  "stage": "upl_container_admission_r1",
+  "status": "unapplied_author_only",
+  "patch": "tests/support/upl_container_admission_r1.patch",
+  "production_files": [
+    "src/source/JSph.h",
+    "src/source/JSph.cpp",
+    "src/source/JSphCpu.cpp",
+    "src/source/JSphGpu.cpp"
+  ],
+  "patch_size": {
+    "insertions": 82,
+    "deletions": 6
+  },
+  "interfaces": "Exactly one shared pure derived predicate IsDynamicPoreContainerConfig() and one shared host CheckDynamicPoreContainer(...). No XML option, data member, persistent mask, class, kernel, array allocation or neighbor pass.",
+  "configuration_scope": [
+    "Explicit HydroMechDynamicSeepage and HydroMech; fresh2D, no periodicity; all CaseNpb fixed; mDBC with normals; no NoPen, moving/floating/inout/DEM/shifting/symmetry/relaxation/acceleration input.",
+    "Wendland/Cubic Symplectic; vertical finite gz<0, gx=gy=0; InitNone; no load/drain/fixed-grid drainage; constant conductivity model0,Ck0.",
+    "No HG, independent SPR, softening, SoilDamping or damping zone; constant artificial AV only (no ViscoTime), DDTNone, no artificial stress or Shepard; corrected stress/pore gradients and PairDivergence remain mandatory."
+  ],
+  "existing_checks_preserved": "The shared positive DtFixed/PoreDtSafety/CFL and backend material/J/saturation/step checks remain active. Existing finite nonnegative constant-AV validation is reused; only its allowed scope adds the derived container predicate. No physics guard deleted. Old common InitDynamicWall array/mass/finite checks run BEFORE the container geometry branch, then old parallel/column/private routes are untouched.",
+  "geometry": "AFTER existing RunInitialize/ConfigBoundNormals calls, before first forces: shared host input uses real CPU Posc/Codec/Velrhopc/normals/slip and real GPU AuxPos/Code/Velrhop/normals/slip. All native counts complete, equal positive reference mass, finite positive Dp/R and finite stationary fixed geometry required. Group by normal direction +X,-X,+Z, not by MK, so opposite FreeSlip faces can share MK. Exactly one coplanar location per direction; side FS, bottom NS; all three directions present; X gap>2*KernelSize. Original8*FLT_EPSILON axis-direction and1e-6*Dp plane thresholds reused, no fitting.",
+  "soil_and_far_bed": "Only initial normal native soil must lie inside the three physical interface half-spaces. Fixed bed can extend outside left/right span; no whole-box check of fixed B/mirror targets, no global projection/activation and no far-wall fit. Existing each-state current-support union, OFF and nearest-source retry remain unchanged. Proximity does not prove wet/contact eligibility.",
+  "rejections": "Reject top/downward-Z walls, inclined/nonstationary/zero/nonfinite normals, mixed slip incompatible with the three directions, noncoplanar faces, missing side/bed, overlapping opposing supports, initial out-of-container soil, moving/floating/restart/periodic and all unported options above. Geometry supplied by real data, no case name or numeric 7060/5000/2060/4/2/12 restrictions.",
+  "numerical_consequence": "Only admits the already ported state/C/Ace/Darcy/momentum path into actual fresh Pre/Corr for bounded elastic gravity diagnostics; no equation, time integrator, field, kernel or constitutive policy changed. Real plasticity remains unaccepted and existing nonzero-Kplastic rejection stays. DefaultOFF, old periodic/column/freebody arithmetic unaffected.",
+  "not_physical_acceptance": "No-drain gravity warmup is NOT the paper free-seepage/in-situ preparation and does not release the retaining wall, plastic/apex treatment, evolved k, negative-pore boundary, curved/moving/3D walls or full collapse. Actual same-geometry CPU/GPU Pre/Corr still requires reviewed execution and native safety; no new test launched.",
+  "author_production_SMT_unchanged": true,
+  "built_applied_run_Git_SHA": false,
+  "handoff": "Root full-read before apply. The active/accepted cache source/program and old 128-state comparisons were not modified or rerun."
+}

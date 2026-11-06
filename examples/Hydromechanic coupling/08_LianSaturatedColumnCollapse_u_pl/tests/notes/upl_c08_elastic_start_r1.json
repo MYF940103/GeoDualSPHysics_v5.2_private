@@ -1,0 +1,42 @@
+{
+  "stage": "upl_c08_elastic_start_r1.author",
+  "status": "AUTHOR ONLY: four fresh configuration/BAT/note files. No GenCase, input BI4/normals copy, runtime copy, build, solver, reader, SHA or Git operation was performed.",
+  "files": [
+    "tests/configs/CaseLianSaturatedColumnCollapse_elastic_start_r1_Def.xml",
+    "tests/configs/CaseLianSaturatedColumnCollapse_elastic_start_r1.xml",
+    "tests/support/xCaseLianSaturatedColumnCollapse_elastic_start_r1_win64_CPU.bat",
+    "tests/notes/upl_c08_elastic_start_r1.json"
+  ],
+  "geometry_provenance": "Existing geometry_r1_Def casedef plus observer generated execution XML. L4,H2,dp.04,h/dp1.2,Cubic1;5000 soil IDs2060..7059 and2060 fixed IDs0..2059. Actual generated five outward boundary layers are retained; WallLayers4 is not relabelled as four actual layers. All three real planes and resolved MK10/11/12 side-FreeSlip/bottom-NoSlip rules stay unchanged. No top wall, new image particle, geometry regeneration, retaining-wall removal or restart is implemented.",
+  "companion_derivation": "The Def uses the retained geometry casedef and the same new execution special/parameters as the companion. The companion preserves the generated particles/constants/uservars/motion/vtkout sections and original GenCase app/date as HISTORICAL geometry metadata; it was hand-derived, not newly generated. Existing vtkout filenames describe retained geometry provenance; the BAT neither copies VTK nor runs plotting. Runtime BI4/normals are later copied by EXACT explicit source filenames from tests/outputs/upl_c08_observer_r1_seed under the fresh companion stem, without wildcard or GenCase.",
+  "physical_values": {
+    "unchanged_from_observer": "rho0=2072.5,rhow1000,n0.35,E20MPa,nu.33,Kw1GPa,k2e-4,phi=phi_r25,dilatancy0. Material inputs remain float in production. Initial generated geometry/mass3.316 and current-J density/inertia conventions are unchanged. Relative to the original geometry Def execution block, residual cohesion1000->5000 and n_coh5->0 deliberately reproduce the already-retained observer constant-strength setup; they are not a paper-model reproduction.",
+    "constant_strength": "Actual observer seed has coh=coh_r=5000Pa,n_coh0,n_phi0. Those exact values are retained; no artificial high cohesion is invented. Softening is OFF. Only actual native kappa0 can satisfy the existing elastic checkpoint. This is not the paper cp5kPa/cr1kPa/exponential-softening5 collapse law, even though the peak cohesion number is shared.",
+    "changes_from_observer": "Public HydroMechDynamicSeepage0->1 and SoilStressRateGradCorr0->1. HydroMech1, constant conductivity model0 with explicit unused Ck0, corrected pair divergence0/grad1, artificial viscosity.1, vertical gravity-9.81. No damping,HG,independent SPR,DDT,shifting,NoPen,drain,prescribed surcharge,variable k or softening. Existing per-MK mirror/derivative closure is used.",
+    "initial_state": "Fresh HydroMechInitMode0 and retained generated zero stress/pressure initialization; actual native initial fields must be verified. Gravity starts at t0. There is no geostatic/equilibrated-state claim. Free-seepage/ponding and paper negative-pressure stability alpha.5 are not enabled or validated. This is a closed fixed-container elastic startup diagnostic, not a paper collapse or final prestress stage."
+  },
+  "clock_plan": {
+    "dt_candidate_s": "3.814697265625e-6 (2^-18), both DtIni and DtFixed",
+    "TimeMax_s": "0.00048828125 =128*dt",
+    "TimeOut_s": "0.0001220703125 =32*dt",
+    "CLI_limit": "-nsteps:128, unchanged runtime save schedule",
+    "planned_completed_updates": [0,32,64,96,128],
+    "planned_times_s": [0,0.0001220703125,0.000244140625,0.0003662109375,0.00048828125],
+    "planned_saved_Step": [0,31,63,95,127],
+    "qualification": "These are a dyadic plan, not observations. At128 the regular save target and terminal nsteps/TimeMax conditions coincide; no duplicate final save is intended. Actual Run/native counts, scalar clocks, Step and original signed-error checks remain authoritative."
+  },
+  "necessary_step_margin": "PoreDtSafety.1 and CFL.2 are unchanged. For initial J1, h.048,n.35,k2e-4,Kw1GPa, gamma=1000*9.80665, current production pore=.1*h^2/(Kw/n*k/gamma) is approximately3.954us, only about3.5percent above the candidate3.814697us; the initial coupled-wave CFL is approximately8.13us before velocity/viscous reductions. This initial calculation is NOT stability admission. Root must inspect actual first/predictor/corrector necessary limits. Every existing J/domain/finite/decay-domain/dt guard remains active; no automatic dt change, half chain or tolerance relaxation follows a failure.",
+  "future_BAT": {
+    "scope": "After root full-read and separate run admission, prepare exact fresh seed/runtime copies and invoke the CPU program once. It implements preparation+solver only, no GenCase/postprocessing/reader/GPU/server package.",
+    "program": "tests/outputs/upl_container_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe, authoritative completed container CPU build; root must bind its actual passed receipt and source/runtime stats before launch. Canonical or older programs are not substituted.",
+    "fresh_seed": "tests/outputs/upl_c08_elastic_start_r1_seed/CaseLianSaturatedColumnCollapse_elastic_start_r1",
+    "fresh_runtime": "tests/outputs/upl_c08_elastic_start_CPU_r1_runtime",
+    "fresh_output": "tests/outputs/upl_c08_elastic_start_CPU_r1",
+    "argv": "-cpu -ompthreads:1 -stable -mdbc_freeslip FRESH_SEED FRESH_OUTPUT -dirdataout data -svres -nsteps:128",
+    "preservation": "Locate paths from BAT itself, refuse any existing seed/runtime/output directory, copy only explicitly listed XML/BI4/normals/exe/four runtime files, preserve all partial failures and capture immediate solver ERRORLEVEL in solver_exit_code.txt. Do not interpret that file as physical acceptance or process-ownership proof; root's owned execution record is separate."
+  },
+  "future_review": "Require actual owned normal exit, exactly128 updates, planned5 saves only after actual confirmation,7060 original IDs/5000 soil/2060 fixed, zero exclusions/DtMin adjustment, every required native typed field finite, actual kappa0 and soil single-J n/rho/mi/V ledger consistency. Fixed outputs retain their existing marker/ghost conventions; they are not physical wall mass. Retain original clock/signed-dt and internal natural bound/wall-source/load restrictions; no5Pa cross-model or new continuum tolerance is invented. Record pressure/stress/displacement/velocity/theta and boundary eligibility evolution descriptively, including tangential/normal behavior; this window does not establish settlement, collapse, contact, wetness or geostatic accuracy. Native/physical reader is a later separately reviewed step.",
+  "production_or_formal_inputs_modified": false,
+  "seed_or_runtime_copied": false,
+  "physical_acceptance": false
+}

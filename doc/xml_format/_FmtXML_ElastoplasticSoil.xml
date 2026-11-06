@@ -304,6 +304,22 @@
                      This is bounded compatibility evidence, not a new consolidation/long-run claim.
                      Legacy velocity/level/force gauges are NOT J-aware and must not be used as
                      dynamic physical force/volume acceptance evidence. No new XML input added. -->
+                <!-- Fixed 2-D gravity-container candidate (2026-11-06):
+                     Explicit dynamic seepage may admit fresh nonperiodic fixed +X/-X FreeSlip sides
+                     and a +Z NoSlip bed, vertical gravity, constant k, corrected gradients and AV.
+                     No moving wall, NoPen, load, drainage, HG, independent SPR, damping, softening
+                     or plasticity is admitted. A shared host check validates actual loaded normals,
+                     slip modes, coplanar interfaces and initial soil half-spaces; far bed samples
+                     remain allowed and current support still determines their participation.
+                     CPU/GPU Debug builds and128-update startup passed: each has7060 native IDs,
+                     five actual saves and22 typed arrays; soil J/n/V/rho/k ledgers and25000 density
+                     cache float-bit checks passed per backend, with no exclusions. GPU memcheck
+                     reported zero errors/leaks. Across these five times pressure RMS difference
+                     is at most0.00042211 Pa and material XYZ difference at most1.218e-12 m.
+                     This test sets DtMin=1e-8 below DtFixed=2^-18; all necessary upper bounds remain.
+                     Drainage=0 does NOT imply sealed flux: closedfs is false and the full existing
+                     Taylor-defect surface rate remains. This is not paper free-seepage, geostatic
+                     equilibrium, wall removal or collapse acceptance. No public input key added. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

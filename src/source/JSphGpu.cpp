@@ -1640,6 +1640,10 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
     || !std::isfinite(MassBound) || !(MassBound>0) || !std::isfinite(MassFluid) || !(MassFluid>0)
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
+  if(IsDynamicPoreContainerConfig()){
+    CheckDynamicPoreContainer(Np,Npb,AuxPos,Code,Velrhop,boundnormal,boundslipmode);
+    return;
+  }
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
   const bool hasgravity=(Gravity.x!=0 || Gravity.y!=0 || Gravity.z!=0);
   int axis=-1;bool seen[2]={false,false};double plane[2]={0,0};
@@ -1730,7 +1734,7 @@ void JSphGpu::InitPorosityObserverGpu(){
   const bool allowcolumnstabilization=(HydroMechDynamicSeepage && PorosityFeedback && loadedcolumn
     && PeriX && !PeriY && !PeriZ && !ViscoTime);
   const bool freebody=(HydroMechDynamicSeepage && DynamicPoreFreeBody);
-  const bool allowartvisco=(allowcolumnstabilization || freebody);
+  const bool allowartvisco=(allowcolumnstabilization || freebody || IsDynamicPoreContainerConfig());
   if(SoilHourglassXi!=0 && !allowcolumnstabilization)
     Run_Exceptioon("Dynamic HG requires the public constant-k loaded GPU column; observer-only and private-flag HG combinations remain unsupported.");
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
@@ -1754,7 +1758,7 @@ void JSphGpu::InitPorosityObserverGpu(){
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)
     || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
     Run_Exceptioon(DynamicPorePressure?
-      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity requires the public constant-k column or admitted free body; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
+      "GPU porosity feedback requires bounded complete Darcy Wendland/Cubic elastic fixtures; artificial viscosity permits the constant-k column, free body or fixed gravity container; HG/SPR remain column-only, with corrected stress gradients and positive mixture inertia.":
       "GPU porosity feedback requires a private k=0 Wendland/Cubic elastic fixture without viscosity/DDT/artificial stress/SPR/Shepard, with corrected stress gradients and positive mixture inertia.");
   if(PorosityFeedback && (CaseNfloat || (!DynamicPoreWall && !freebody && (!PeriX || !PeriZ))
     || !std::isfinite(SoilCte.PoreWaterBulkModulus) || !std::isfinite(SoilCte.PoreWaterRho)

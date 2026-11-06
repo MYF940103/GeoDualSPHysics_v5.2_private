@@ -1,0 +1,21 @@
+Traceback (most recent call last):
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\upl_c08_elastic_start_compare_r1.py", line 119, in <module>
+    if __name__=="__main__":main()
+                            ^^^^^^
+  File "D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\support\upl_c08_elastic_start_compare_r1.py", line 118, in main
+    json.dump(dict(stage=TAG,passed=True,scope="Offline descriptive comparison only; no cross-backend accuracy gate, fit, interpolation, FSNormal bit gate or physical acceptance.",source_receipts=[cpu["receipt"],gpu["receipt"]],actual_times_s=times,paired_soil_IDs_per_frame=5000,metrics=metrics,consumed=list(OBS.values()),consumed_stats_unchanged=True,outputs=[stat(p) for p in outputs],SHA_scans=0,physical_acceptance=False),f,indent=2);f.write("\n")
+    ^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
+  File "D:\anaconda3\Lib\json\__init__.py", line 179, in dump
+    for chunk in iterable:
+  File "D:\anaconda3\Lib\json\encoder.py", line 432, in _iterencode
+    yield from _iterencode_dict(o, _current_indent_level)
+  File "D:\anaconda3\Lib\json\encoder.py", line 406, in _iterencode_dict
+    yield from chunks
+  File "D:\anaconda3\Lib\json\encoder.py", line 326, in _iterencode_list
+    yield from chunks
+  File "D:\anaconda3\Lib\json\encoder.py", line 439, in _iterencode
+    o = _default(o)
+        ^^^^^^^^^^^
+  File "D:\anaconda3\Lib\json\encoder.py", line 180, in default
+    raise TypeError(f'Object of type {o.__class__.__name__} '
+TypeError: Object of type WindowsPath is not JSON serializable

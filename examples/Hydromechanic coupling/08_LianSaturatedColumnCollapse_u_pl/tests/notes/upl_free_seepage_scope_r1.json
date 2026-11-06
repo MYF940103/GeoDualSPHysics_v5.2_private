@@ -1,0 +1,42 @@
+{
+  "stage": "upl_free_seepage_scope_r1",
+  "kind": "read_only_primary_equation_and_current_source_review",
+  "sources": [
+    "src/papers/PDF/Lian 2021 seepage flow unsaturated porous media.pdf: PDF pages 15,21,22; Eqs57,68,71,72",
+    "src/papers/PDF/Lian 2023 u-pl.pdf: PDF pages 18,19; Section4.4",
+    "tests/notes/lian_seepage_boundary_review_r1.json"
+  ],
+  "paper": {
+    "detector": "Eq68 uses sum(Vj*Wij)<.95; it is not the current position-divergence plus umbrella detector by definition.",
+    "rate": "Eq72 omits the second/error-removal term of Eq57 at the open soil surface, using total hydraulic head H=h+z.",
+    "projection": "Eq71 is h<=0, enforced at completed steps: positive becomes zero; zero/negative continues to integrate. Lian2023 Section4.4 explicitly adopts this free-seepage treatment and p<=0. It does not prescribe zero pressure and zero rate regardless of sign.",
+    "scope": "Borrowing this saturated-surface boundary is not implementing unsaturated saturation/storage laws. Wall quadrature samples are not native open-surface soil receivers. No initial-height dry-wall rule follows."
+  },
+  "current_cpu_gpu": {
+    "rate": "CPU JSphCpu.cpp:4577,4596; GPU JSphGpu_ker.cu:1701-1708,1723: lp-gp_corrected.dot(lx)+rho_w*da. The pressure Taylor-defect subtraction corresponds structurally to Eq57's error-removal term; paired symmetric C/Brookshaw is not the paper's full tensor Dmn operator.",
+    "fixed_zero": "CPU ApplyFreeSurfacePorePressure:1428 and Pre/Cor pore updates:4686/4706; GPU free-surface projection:1056 and pore update:1306 impose p=0, and active rate loop skips with rate=0 at CPU4548/GPU1672. Negative pressure is also reset. These are independent places which must not accidentally remain active for a new free-seepage policy.",
+    "detector": "CPU ComputeFSParticlesFreeSurface:729-798 uses -sum(Vj*r_ij.dot(gradW_ij)), 2-D thresholds1.7/1.1 then ScanUmbrellaFreeSurface:804. Reuse FSType/normal arrays and actual native-fluid identity, but establish mapping to Eq68 rather than declaring masks equal.",
+    "no_drain_clarification": "CPU4535 and GPU wrapper JSphGpu.cpp:1878 enable closedfs only when HydroMechDrainage is configured but not yet active. With current container HydroMechDrainage=0, closedfs is false: the full Taylor-defect surface rate remains. This is neither a demonstrated sealed-flux boundary nor Eq72 free-seepage. Earlier shorthand 'closed-flux diagnostic' must not be used as a physical claim; retained records are not rewritten."
+  },
+  "essential_operator_caveat": {
+    "no_naive_deletion": "Do not merely remove -gp.dot(lx). At constant-J hydrostatic equilibrium gp=rho_w*g and Ace=-g, lp approximately equals gp.dot(lx). Omitting only the pressure defect would create a nonzero rate at a truncated surface although total hydraulic head is constant.",
+    "identity_for_review": "Let b=gp+rho_w*Ace_i. The current unprojected constant-k expression is exactly [lp+rho_w*Ace_i.dot(lx)+rho_w*da]-b.dot(lx). This algebra identifies a possible complete hydraulic-defect treatment, not an accepted new discretization. A free-surface raw-head candidate must retain zero hydrostatic response and be checked for nonconstant acceleration; Eq72 alone, derived for static seepage, does not establish that dynamic extension.",
+    "first_scope": "Constant-k only. Keep compression -theta and existing dynamic acceleration contribution; do not zero them because a particle is on the free surface. Variable-k chain/boundary consistency is a later distinct check."
+  },
+  "minimal_candidate_integration_plan_not_implemented": [
+    "One explicit default-OFF free-seepage policy in special/hydromechanics, mutually exclusive with legacy HydroMechDrainage=1; do not silently redefine the accepted fixed-zero flag. No extra start-time option in the first scope.",
+    "Shared member/default/XML/read/log/validation in JSph.h/.cpp; CPU rate and projection/update separation in JSphCpu.cpp; GPU host and existing rate/projection wrapper arguments in JSphGpu.cpp plus JSphGpu_ker.h/.cu. Preserve old literal branches and append optional wrapper args where old component callers require compatibility.",
+    "Use the existing completed-geometry RunCellDivide -> ApplyPorePressureBoundaries -> ComputeFreeSurfaceTracking stage (CPU Single686, GPU Single660). A step-end positive-only projection must occur before saved output or the next force evaluation using current geometry; do not rely on stale predictor FSType or on SaveData-only tracking. Keep positive-rate history rather than indiscriminately setting rate=0. Predictor admissibility and wall-state refresh need an explicit common CPU/GPU policy.",
+    "Narrow container admission at JSph.cpp:3616 and the shared loading/drainage scope around628 must explicitly recognize the new policy after checks; do not remove gravity/mixed-wall guards broadly. Preserve the no-drain startup control and constant-k/elastic/no-removable-wall scope. No plasticity, wall removal or formal release follows from this audit."
+  ],
+  "minimum_checks_without_new_half_chain": [
+    "Offline/native same-geometry comparison of Eq68 volume-kernel support mask against current final FSType2/3, including top corners, wall-adjacent soil and fixed quadrature exclusion. Record disagreement, not a tuned threshold.",
+    "Small actual CPU/GPU zero-step truncated-surface component: hydrostatic constant total head with Ace=-g; nonzero affine hydraulic drive; nonconstant acceleration; interior unchanged. Independent raw-head/reference and omission-negative-control must distinguish the naive pressure-only deletion.",
+    "Positive/zero/negative native surface pressures: completed positive-only clamp, negative evolution, interior and fixed wall unchanged; actual Pre/Cor/current-mask timing and all-sign legacy drain control preserved. Use existing numerical budgets and canaries, not a new spatial-accuracy claim.",
+    "Only after zero-step and default/old-route regressions, compare one fresh bounded actual gravity-container startup using the accepted same input/step. No extra half/reference chain, full pre-equilibrium or collapse admission is implied."
+  ],
+  "cost": "No new persistent field or neighbor pass is required for a first constant-k policy. Detection compatibility and same-stage projection ordering are numerical requirements, not reasons to add a general boundary framework.",
+  "production_changes": false,
+  "build_solver_decode_git_sha": false,
+  "physical_acceptance": false
+}
