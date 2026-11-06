@@ -66,13 +66,21 @@ CPU静水头已改为按当前墙接收点的法向计算：[审查](tests/notes
 
 上述字段基线中的远墙OFF ID791仅为激活状态观察，单凭它不能断言Darcy实际访问或报错；排序问题的后续独立检查见下文。不得把字段查询当作force/rate、混合墙重力积分或公共准入。r1的Windows near/far宏冲突编译失败保留，r2仅改计数器名称；seed仅由一次copy-only BAT准备，未重跑GenCase。
 
-后续CPU [局部支持检查](tests/logs/upl_c08_nearest_CPU_r1.check.json) 已使410个近墙查询全部重构；仅10个原弱点改在已访问的最近真实粒子处重新拟合一次，再返回原镜像位置求值。原det门槛不变，最大拟合中心位移0.08 m，最大p误差0.001953125 Pa、J误差4.45e-16。原400个primary孔压浮点值和真实几何/误差列保持一致；六个旧u-pw/SPR条件的18份CSV及6份完成记录也逐字节一致。见[图](tests/figures/upl_wall_support_review_r1.png)及[十个弱点数据](tests/figures/upl_wall_support_review_r1.csv)。该功能尚未移植GPU；以上是仿射字段检查，不是角点非线性精度、力平衡或塌陷验收。
+后续CPU [局部支持检查](tests/logs/upl_c08_nearest_CPU_r1.check.json) 已使410个近墙查询全部重构；仅10个原弱点改在已访问的最近真实粒子处重新拟合一次，再返回原镜像位置求值。原det门槛不变，最大拟合中心位移0.08 m，最大p误差0.001953125 Pa、J误差4.45e-16。原400个primary孔压浮点值和真实几何/误差列保持一致；六个旧u-pw/SPR条件的18份CSV及6份完成记录也逐字节一致。见[图](tests/figures/upl_wall_support_review_r1.png)及[十个弱点数据](tests/figures/upl_wall_support_review_r1.csv)。GPU后续结果见下文；以上是仿射字段检查，不是角点非线性精度、力平衡或塌陷验收。
 
 CPU [实际Darcy截断检查](tests/logs/upl_inactive_cutoff_CPU_r1.check.json) 进一步确认ID791被真实cell搜索访问3次、均在核支持域外。将失效判断移到原距离截断之后，有限及无效诊断输入两组共10000个原生孔压率均为零；支持域内的失效ID254仍按原规则拒绝。这是邻居候选筛选顺序修复，不是干湿墙判定。完整state/C/Ace及各消费者仍需统一同阶段的活动状态，公共混合墙和重力准入没有开放。
 
 GPU对应 [14条件检查](tests/logs/upl_inactive_cutoff_GPU_r2.check.json) 及memcheck也已通过，包含6次必要拒绝、精确半径、缺失模式和无效输入检查。首次夹具因压缩项掩盖Darcy响应而停止，失败记录保留；r2仅隔离该输入，原预算未变。两处修复的文件、构建和限制汇总于 [阶段记录](tests/notes/upl_wall_support_root_r1.json)。
 
-CPU完整字段流程现已通过 [全局零步检查](tests/notes/upl_c08_global_root_r1.json)：每次state从当前真实B位置刷新已有BoundMode，按各消费者的float/double支持判据取并集；410个参与、55个prefix内不参与，2188个支持对没有OFF、遗漏或越过prefix。状态/FS/C/指定加速度镜像/Darcy两次组合中，5410个有效粒子的字段不受OFF诊断输入影响。指定静水压下率RMS为23.63995 Pa/s、峰值64.28318 Pa/s，不能称作静力平衡或纯舍入误差；实际力、重力演化及GPU仍待检查。侧壁FreeSlip和底面NoSlip保持原区别，未加入干湿墙或自由渗流规则。
+CPU完整字段流程现已通过 [全局零步检查](tests/notes/upl_c08_global_root_r1.json)：每次state从当前真实B位置刷新已有BoundMode，按各消费者的float/double支持判据取并集；410个参与、55个prefix内不参与，2188个支持对没有OFF、遗漏或越过prefix。状态/FS/C/指定加速度镜像/Darcy两次组合中，5410个有效粒子的字段不受OFF诊断输入影响。指定静水压下率RMS为23.63995 Pa/s、峰值64.28318 Pa/s，不能称作静力平衡或纯舍入误差。侧壁FreeSlip和底面NoSlip保持原区别，未加入干湿墙或自由渗流规则。
+
+GPU已同步当前B支持分类、一次局部拟合重试及J动量路径的OFF墙跳过：[根审查](tests/notes/upl_wall_gpu_root_review_r1.json)。使用原生排序、PosCell和cell表，410个参与墙与55个prefix内OFF墙、2188个支持对均核对通过；两次5410个有效粒子的字段不受OFF诊断输入影响。820个墙p/J观测沿用CPU原预算，最大p误差0.001953125 Pa、J误差3.33e-16。实际FSType2自由表面100点的CPU/GPU法向最大差1.49e-7；内部未使用法向的差异单独记录。GPU率RMS为23.64048 Pa/s，仍是指定Ace的仿射试验。memcheck零错误、零泄漏，CPU/GPU Debug构建通过；首次GPU构建发现的空cell区间循环问题在执行任何组件前修复，原构建记录保留。
+
+旧u-pw主力路径另有 [NULL-J回归](tests/logs/upl_gpu_nullj_off_r1.check.json)：两个完整版本各执行72个原条件和6个OFF退出条件，三份数值输出逐字节一致；72条件也与保留基线逐字节一致。OFF条件仍保留原正的ViscDt，不能把此次J专用跳过无条件移入旧路径。observer-only GPU初始化与CPU对齐只影响无反馈诊断；实际反馈的公共准入没有放宽。
+
+真实CPU主相互作用已在同一5000土粒子/410参与墙几何上完成一次：[记录](tests/logs/upl_c08_force_CPU_r1.check.json)。指定小仿射压缩速度后，由实际力计算得到加速度，再进入墙Ace重构与完整Darcy；5000个体积率及30000个应力率分量通过原预算，最大体积率误差8.88e-11 s^-1、应力率误差0.003174 Pa/s。这里初始有效应力为零，实际加速度并不平衡重力；约1.002e6 Pa/s的完整率RMS是该非平衡制造输入的响应，不能当作重力预平衡通过。此组件借用测试自有导数缓冲，不证明生产分配或时间积分。
+
+GPU同原生几何的 [实际主力检查](tests/notes/upl_c08_force_GPU_root_r1.json) 也已完成：一次真实主相互作用、真实二维y处理后，直接使用最终Ace计算墙Ace和Darcy。5000个体积率和30000个应力率检查通过相同CPU预算，最大误差分别9.84e-11 s^-1和0.003418 Pa/s；memcheck零错误、零泄漏。CPU/GPU完整孔压率的最大差118.3125 Pa/s、RMS差22.4390 Pa/s，仅为此指定输入的跨后端描述，不是孔压场误差或5 Pa半步门槛。两端均未推进时间；J密度存储一致性及重力演化继续单独验收。
 
 另一个 [离线候选](tests/figures/upl_wall_nearestfit_r1.csv) 仅将十个弱点的拟合中心移到其最近真实土粒子，也全部通过原det门，可减少新增接口；底角条件数约530，较半空间投影约48更差，需要实际后端比较。原镜像和边界条件没有在离线测试中改变。
 

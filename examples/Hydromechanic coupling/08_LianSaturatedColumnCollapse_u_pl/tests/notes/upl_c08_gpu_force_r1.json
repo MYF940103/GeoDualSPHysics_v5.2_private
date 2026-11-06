@@ -1,0 +1,34 @@
+{
+  "stage": "upl_c08_gpu_force_r1",
+  "status": "authored_only_not_compiled_or_run",
+  "purpose": "Actual case08 one GPU main interaction from current native affine compression, followed by real finished-Ace wall reconstruction and complete Darcy. No prescribed-Ace substitution or time update.",
+  "files": [
+    "tests/support/upl_c08_gpu_force_r1.cpp",
+    "tests/notes/upl_c08_gpu_force_r1.json"
+  ],
+  "input": "Retained observer-only same7060 seed, no GenCase or new XML. Constructor ONLY PorosityObserver=true; genuine SelecDevice/LoadConfig/LoadCaseParticles/ConfigDomain/ConfigRunMode/InitRunGpu/FreePartsInit.",
+  "CLI": "upl_c08_gpu_force_r1.exe --force --cpu-dir ABS/tests/outputs/upl_c08_force_CPU_r1 -gpu:0 -stable -mdbc_freeslip ABS/tests/outputs/upl_c08_observer_r1_seed/CaseLianSaturatedColumnCollapse_geometry_r1 ABS_FRESH_RESULT",
+  "manufacturing": "Same CPU c=-2^-13, v=(0,0,float(c*z)) on native5000 only, fixed physicalv0/rho0, sigma0, J1, p=float(rhow*gz*(z-2)), p0=0. Parsed material remains float, stress remains double. Cubic, Visco=.1, no damping/HG/SPR/DDT/shifting/load/drain.",
+  "budgets_before_observation": {
+    "derivative": "128*FLT_EPSILON*max(abs(c),max(abs(stored_vz))/h)+4096*DBL_EPSILON*max(1,abs(c)); EXACT CPU r1 expression.",
+    "stress_reference_order": "xx,yy,zz,xy,yz,xz: lambda*c,lambda*c,(lambda+2G)*c,0,0,0; K,G are parsed float promoted to double.",
+    "stress_diagonal": "derivative_budget*max(K+4G/3,2G)+64*FLT_EPSILON*max(1,abs(reference)); EXACT CPU r1.",
+    "stress_shear": "derivative_budget*2G; EXACT CPU r1."
+  },
+  "actual_sequence": [
+    "PreInteraction_Forces under original observer flags; external cudaMalloc Np float3 AFTER Pre.",
+    "Attach borrowed BoundDerivativeVelg and NaN initialize. Private feedback/dynamic/wall/G1 flags true; ConstantDataUp uploads actual CTE.soilstressrategradcorr.",
+    "ComputeFreeSurfaceTracking once; require410 live images/55 OFF NaN images; no-drain projection and no-load application follow production order.",
+    "ONE actual cusph::Interaction_Forces with literal JSphGpuSingle production parameters, then actual 2D Resety. Read real theta, six float stress rates, Ace, Arg and finite viscosity scale.",
+    "ComputeDynamicPorePressureRateGpu(nullptr) from finished native Ace, no override; native finished Ace and persistent inputs must remain exact.",
+    "Borrow pointer restored NULL BEFORE cudaFree; private flags RAII restored, then ConstantDataUp restores CTE BEFORE Pos cleanup. Restore original native arrays/material/controls, no predictor."
+  ],
+  "comparisons": "Independent5000 theta and30000 stress-rate checks under original CPU budgets; CPU kinematics/rates joined by all5000 native IDs with exact manufactured positions/stored velocity. Fourteen CPU/GPU field deltas are descriptive, not half or5Pa equivalence.",
+  "outputs": "ids.csv7060;kinematics.csv5000;walls.csv410;rates.csv5000;cpu_descriptor.csv70000;completion.json and actual Run.out.",
+  "limits": [
+    "Zero physical steps, no full mechanical wall/contact release or physical acceptance.",
+    "External scratch borrowing is NOT production allocator validation.",
+    "Finished total Ace includes artificial viscosity; no isolated AV dissipation/conservation claim.",
+    "No copied neighbor formula, rate, force kernel, altered public guard, half-chain, solver or source modification."
+  ]
+}

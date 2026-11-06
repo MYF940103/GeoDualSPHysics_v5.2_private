@@ -1696,7 +1696,7 @@ void JSphGpu::ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg){
     if(owned){invalidg=ArraysGpu->ReserveUint();cudaMemcpy(invalidg,&invalid,sizeof(unsigned),cudaMemcpyHostToDevice);}
     cusph::DynamicPoreWall(stage,Np,NpbOk,MdbcThreshold,DivData,Posxyg,Poszg,Codeg,BoundNormalg
       ,BoundModeg,TangenVelg,BoundDerivativeVelg,Velrhopg,Sigmag,PorePressg,PoroJg,PoroThetag,CorrMatg,Aceg
-      ,1.-double(SoilCte.Porosity),invalidg,TKernel,BoundSlipModeg);
+      ,1.-double(SoilCte.Porosity),invalidg,TKernel,BoundSlipModeg,(Simulate2D && !PeriActive? PosCellg: NULL));
     if(owned)cudaMemcpy(&invalid,invalidg,sizeof(unsigned),cudaMemcpyDeviceToHost);
   }
   catch(...){if(owned && invalidg)ArraysGpu->Free(invalidg);throw;}
@@ -1736,14 +1736,14 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(allowartvisco && Visco!=0.f && (!std::isfinite(Visco) || Visco<0.f
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
-  if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
+  if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
     || InOut || Shifting || NoPenetration || Symmetry || StrainSoftening || UseDEM
     || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && SoilDamping)
     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
-    || (!DynamicPorePressure && (Gravity.x || Gravity.z))
+    || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))
     || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None)) || HydroMechInitMode!=HMINIT_None
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0 || PeriY)
-    Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the constant-k column or admitted 3-D free body; finite in-plane gravity requires the complete dynamic-rate model.");
+    Run_Exceptioon("GPU porosity observer requires fresh bounded elastic Symplectic corrected-pair fixtures without shifting; damping/load/drainage require the constant-k column or admitted 3-D free body; in-plane gravity with feedback requires the complete dynamic-rate model.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJg || !PoroThetag)
     Run_Exceptioon("GPU porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))

@@ -1,0 +1,19 @@
+{
+  "stage": "upl_wall_support_gpu_r3.apply",
+  "base_checkpoint": "7e12a0c8116eb2a7c768d13a74506e80a1857ad6",
+  "prior_port": "tests/support/upl_wall_support_gpu_r2.patch",
+  "new_corrections": [
+    "Add the existing if(pfin) loop style before reading the candidate range start in the new current-B scan; empty ranges never read an uninitialized pini.",
+    "Scope the GPU observer boundary and non-dynamic gravity restrictions under PorosityFeedback. Pure non-feedback2D observer can legitimately load the unchanged fixed-wall/gravity seed, matching CPU; actual feedback and public dynamic wall/material/physics guards stay unchanged.",
+    "Clarify the existing initialization error string to describe feedback gravity."
+  ],
+  "preserved_compiler_only_build": "tests/logs/upl_wall_active_Debug_r1.build.json; actual exit0/111objects, known empty-range flaw. No helper/component from that program was run or admitted.",
+  "source_files": [
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "all_new_diff_reverse_check_passed": true,
+  "new_build_or_component_run": false,
+  "physical_acceptance": false
+}

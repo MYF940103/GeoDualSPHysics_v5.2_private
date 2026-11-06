@@ -1,0 +1,31 @@
+{
+  "stage": "upl_wall_support_gpu_r1.author",
+  "status": "Unapplied three-file GPU proposal only. Root must fully read and choose timing after the CPU global stage; no build, helper, solver, numerical acceptance, Git or SHA.",
+  "patch": "tests/support/upl_wall_support_gpu_r1.patch",
+  "source_basis": "Current GPU files retained from root-reported8b696029 stage, including the already-applied two-line inactive-cutoff ordering fix. No Git identity was independently queried.",
+  "intended_source_files": ["src/source/JSphGpu.cpp", "src/source/JSphGpu_ker.h", "src/source/JSphGpu_ker.cu"],
+  "borrowed_pointer": "Append optional const float4* poscell=NULL to the existing DynamicPoreWall wrapper, dispatch and three stage launches. Production ComputeDynamicPoreWallGpu supplies existing PosCellg only when Simulate2D && !PeriActive. No new array, owner ID, persistent FitShift, option or general interface.",
+  "pointer_lifetime": "JSphGpuSingle.cpp:652 regenerates PosCellg after sorting, before ApplyPorePressureBoundaries at660 and dynamic state/FS/C/Ace consumers. No independent packed coordinate reconstruction is substituted for those stored native values.",
+  "current_B_support": {
+    "scope": "Only nonperiodic2D calls with the borrowed pointer. Existing fixed/nonzero-finite normal validation still precedes support refresh.",
+    "stage0": "Search existing real fluid candidates around the current physical boundary coordinate B, never around its mirror or retry centre. Geometry only: CODE_IsFluid, no legacy density, J, volume or free-surface weighting.",
+    "union": "double(Posxy_B-Posxy_j)^2 + double(Posz_B-Posz_j)^2 for actual2D Darcy; packed-float xz sum for FS/umbrella; packed-float xyz sum for momentum. Each uses its original ALMOSTZERO<=rr2<=storedKernelSize2, including exactR.",
+    "packed_expression": "drx=pcB.x-pcj.x + CTE.poscellsize*(PSCEL_GetfX(pcB.w)-PSCEL_GetfX(pcj.w)); y/z analogous. Reuse literal expressions from JSphGpu_ker.cu:813-817,907-911,2092-2097, not float(double coordinate difference). Existing JCellSearch_iker.h:172 Distance2 expresses the xyz metric; local shared components also retain the distinct2D xz metric.",
+    "mode": "Refresh existing BoundModeg to MDBC2 or MDBC2OFF at stage0. Under this borrowed-pointer mode, all three stages return for OFF before MLS fields are read. This is support participation, not a wet/dry/contact test or wall-removal policy. No top wall, altered normal, source image or H-based switch.",
+    "legacy_queries": "Default-NULL field-only wrapper queries retain the original participation behavior. Their already-valid primary fits keep literal arithmetic. Periodic production supplies NULL and neither support refresh nor retry runs."
+  },
+  "nearest_retry": {
+    "trigger": "Only the original geometric failure condition: inactive MLS threshold, nonpositive sumW, nonfinite determinant or abs(det)<1e-3. The original gate is unchanged.",
+    "candidate": "Nonperiodic2D only, exactly once, centred at the previously visited nearest real source using the existing nearx/nearz. Require finite nearest fields/distance and nonzero shift. No new search for alternative candidates or parameter fitting.",
+    "return": "Keep the original evaluation mirror: fitshift accumulates -neardr; after the existing anchored expression v=nearest-qx*nearx-qz*nearz, add qx*fitshiftx+qz*fitshiftz only after an actual retry. q is minus the physical gradient. Existing NoSlip boundary extrapolation, C parity and normal-head pressure/Ace restoration then operate at their original evaluation locations.",
+    "failure": "A finite-first-order fit with invalid field/pressure/J output, state velocity, C orientation or Ace still takes the existing invalid path immediately; none is rescued by a second fit. A failed retry also rejects. Source-J/legacy-density qualification is intentionally unchanged here; the separate lifecycle proposal is not merged.",
+    "primary_preservation": "The primary neighbour traversal, W/Fac, moment sums, inverse, anchored values and phase writers retain their original expressions/order. No +0 shift operation is inserted on the primary path; no FMA/build flags change. Compiled bit identity is not claimed by this author-only patch."
+  },
+  "momentum_parity": "Inside the existing mdbc2p2 && BoundMode==OFF block, retain both original zero-mass assignments and add if(poroj)continue. This matches the accepted CPU feedback path and prevents J quadrature from bypassing an inactive wall. Null-J legacy momentum remains unchanged.",
+  "guards": "Public/private plane, gravity, material, periodicity, strain-softening, HG, drainage and caller admission guards are untouched. No public case08 or mixed-wall physical admission is added.",
+  "review_limits": "Initial offline top/corner/nearest support findings motivated the proposal; no deformed support, nonlinear accuracy, flux/stress parity, CPU/GPU physical equivalence or production timing has been tested by this authoring action.",
+  "production_patch_applied": false,
+  "build_or_program_invoked": false,
+  "SHA_or_Git_used": false,
+  "physical_acceptance": false
+}

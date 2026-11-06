@@ -1,0 +1,30 @@
+{
+  "stage": "upl_wall_gpu_root_review_r1",
+  "passed": true,
+  "GPU_affine_wall_pairs": 820,
+  "GPU_wall_max_p_error_Pa": 0.001953125,
+  "GPU_wall_max_J_error": 3.3306690738754696e-16,
+  "GPU_wall_original_budget_max_ratio": 0.30115126973768747,
+  "CPU_GPU_used_FSType2_normal_max_difference": 1.4901161193847656e-07,
+  "unused_interior_normal_difference_is_not_a_new_gate": true,
+  "CPU_actual_force_theta_max_budget_ratio": 0.0011558051685082703,
+  "CPU_actual_force_sigma_max_budget_ratio": 0.001377264888235903,
+  "CPU_finished_Ace_rate_RMS_Pa_s": 1001958.9779932877,
+  "CPU_finished_Ace_rate_absmax_Pa_s": 6680809.0,
+  "default_NULL_J_78_conditions_old_new_byte_exact": true,
+  "default_72_active_conditions_retained_bytes_exact": true,
+  "GPU_memcheck_zero_errors_and_leaks": true,
+  "physical_steps": 0,
+  "new_SHA": 0,
+  "limits": [
+    "Global hydrostatic test prescribes Ace=-g; its 23.64048 Pa/s RMS is not mechanical equilibrium.",
+    "Actual-force CPU test uses cold manufactured sigma=0 and compression. Its large complete pressure rates are not a gravity-equilibrium result.",
+    "Default regression is a NULL-J main-force comparison, not a dynamic physical trajectory.",
+    "No new tolerance, half-step chain, production allocation, gravity integration or plastic-collapse acceptance."
+  ],
+  "consumed_checks": [
+    "upl_c08_global_GPU_r1.check",
+    "upl_c08_force_CPU_r1.check",
+    "upl_gpu_nullj_off_r1.check"
+  ]
+}

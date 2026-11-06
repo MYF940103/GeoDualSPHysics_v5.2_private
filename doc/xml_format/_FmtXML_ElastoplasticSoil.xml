@@ -261,12 +261,13 @@
                      W/C FS/NS swapped-axis state queries passed; 72 retained CSVs and ten
                      completion records stayed byte-exact. These query points are not container walls.
                      This does not admit public multi-plane gravity or change the drainage mode. -->
-                <!-- CPU local support retry (2026-11-06, field components checked):
+                <!-- CPU/GPU local support retry (2026-11-06, field components checked):
                      Only nonperiodic 2-D dynamic-wall MLS may retry a failed geometry fit once
                      at an already visited nearest real source; values return to the original mirror.
                      The raw determinant gate and finite first-order requirement stay unchanged.
                      Actual case08 near-wall queries passed410/410;400 original pressure values and
-                     six ordinary legacy components stayed exact. GPU has not received this retry.
+                     six ordinary legacy components stayed exact. GPU also passed the same410-wall
+                     affine budgets and zero-error/leak memcheck using actual native geometry.
                      This adds no input switch and does not admit mixed-wall gravity or collapse. -->
                 <!-- CPU/GPU Darcy cutoff ordering (2026-11-06, components checked):
                      Reject inactive fixed sources only after the unchanged compact-support cutoff.
@@ -274,14 +275,19 @@
                      removed from a required stencil. Real CPU case08 and GPU14-case predicates,
                      including poison/canaries and zero-error memcheck, passed. This is not a
                      wet/contact classifier or full mixed-wall validation. -->
-                <!-- CPU nonperiodic2D wall support composition (2026-11-06, zero-step checked):
+                <!-- CPU/GPU nonperiodic2D wall support composition (2026-11-06, zero-step checked):
                      State refreshes existing BoundMode from current boundary-position support,
                      including each existing float/double consumer cutoff. OFF samples skip state/C/Ace
                      fitting and validation; active failed fits and in-support OFF Darcy still reject.
                      Real case08 has410 participating and55 ignored-in-prefix samples, with2188
                      supported pairs and no missing/OFF pair; finite/poison live fields agree.
-                     Acceleration was prescribed, not a solved force. GPU and public gravity/plastic
-                     case08 admission remain pending; no input switch or wetness rule was added. -->
+                     GPU borrows existing packed PosCell for its actual float force/FS cutoffs;
+                     no new particle array is allocated. Global acceleration was prescribed.
+                     CPU/GPU actual one-force affine compression also passed derivative/stress budgets,
+                     but is not a gravity equilibrium or integrator test. GPU default NULL-J force
+                     retained72 and six OFF conditions stayed byte-exact before/after this port.
+                     Observer-only GPU initialization now matches CPU; feedback guards are retained.
+                     Public gravity/plastic case08 admission remains pending; no wetness rule added. -->
                 <!-- 3-D free-body compatibility candidate (2026-11-06, peak reviewed):
                      Explicit dynamic seepage may admit fresh zero-gravity, nonperiodic DBC elastic
                      bodies with constant k, InitMode=None, raw FlexibleConfinement and fixed-grid

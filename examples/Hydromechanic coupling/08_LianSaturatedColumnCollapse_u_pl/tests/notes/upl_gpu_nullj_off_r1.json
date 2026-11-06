@@ -1,0 +1,66 @@
+{
+  "stage": "upl_gpu_nullj_off_r1.author",
+  "status": "AUTHOR ONLY. No fixture compilation, linking, CUDA run, solver, SHA or Git by this author; root must review and separately authorize the bounded old/new component group.",
+  "source": "tests/support/upl_gpu_nullj_off_r1.cpp",
+  "retained_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\bv_pair_gpu_r1.cpp",
+    "bytes": 10249,
+    "mtime_ns": "1793473882162739500"
+  },
+  "purpose": "Direct default NULL-J main-force regression after the new if(poroj) continue inside the existing inactive-wall branch. The retained42-case HG suite does not call this main force kernel and is not used as its proof.",
+  "derivation": "Mechanically reuse bv_pair_gpu_r1 geometry, constants, StInterParmsg arguments, all72 active trials, original numeric gates and CSV numeric formatting. Add one bool to the test-only run method, actual OFF selector put/download checks, NULL-J assertion and6 focused receding OFF calls; no production or retained source edit.",
+  "actual_consumer": "cusph::Interaction_Forces with the real project CUDA kernel. Two native slots, original fixed/fluid code, one cell, identity injected C, original Wendland/2D-or3D/visco.125/rho2/material/Kw128 parameters. No MLS or wall reconstruction occurs in this retained fixture; set actual device BoundMode=BMODE_MDBC2OFF immediately before this consumer, not after it. Assert p.poroj==nullptr before every kernel and download/check both mode bytes afterward.",
+  "cases": "Each fresh executable: original72 active cases plus6 OFF_recede_aux0 (2D/3D x slip1/2/3), total78. Positive physical soil vz=.25 is receding. In OFF NoSlip/FreeSlip the original legacy source mass is0, so soil Arc/pore/Ace/six stress rates must be exact numerical0, yet soil ViscDt must remain strictly positive and equal the corresponding active receding control. An accidental unconditional continue loses this nonvacuous legacy scale. Vel0 keeps its original analytic consumer gates; its mdbc2 inactive branch is not active.",
+  "preserved_gates": "Keep all original72 active zero requirements and 20/2000/.02+2e-5*abs(reference) legacy nonzero limits, trace consistency and sign/auxiliary invariants. No tolerance is added or relaxed. Added OFF cases require all downloaded values finite. Wall receiver Arc is exported and compared, not interpreted as reaction or required to vanish.",
+  "output": "Fresh active.csv72 and off.csv6, both the original25-column numeric schema (wall/soil Arc, soil pore rate, wall/soil ViscDt, soil Ace and six sigma rates), plus completion.json. No enormous binary exports, new schema framework, true-J state or time step.",
+  "planned_group": {
+    "preport": {
+      "build_receipt": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_support_Debug_r1.build.json",
+        "bytes": 25911,
+        "mtime_ns": "1793926736797169900"
+      },
+      "actual_typed_call": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_support_Debug_r1.call.json",
+      "source_receipt": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_support_Debug_r1.source.json",
+      "source_archive": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_wall_support_Debug_r1\\source.zip",
+      "object_directory": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_wall_support_r1\\Debug\\int",
+      "project_objects_excluding_main": 110
+    },
+    "current": {
+      "build_receipt": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_active_Debug_r2.build.json",
+        "bytes": 26344,
+        "mtime_ns": "1793930367346970200"
+      },
+      "actual_typed_call": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_active_Debug_r2.call.json",
+      "source_receipt": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_wall_active_Debug_r2.source.json",
+      "source_archive": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_wall_active_Debug_r2\\source.zip",
+      "object_directory": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_wall_active_r2\\Debug\\int",
+      "project_objects_excluding_main": 110
+    },
+    "object_rule": "Build exactly the SAME fresh variant against each entire sealed110-object closure, never mix old/new objects or include main.obj. New helper objects/programs only. Both native production build receipts already passed owned exit0; this is not a claim that either future fixture ran.",
+    "future_paths": [
+      "tests/outputs/upl_gpu_nullj_off_preport_helper_r1",
+      "tests/outputs/upl_gpu_nullj_off_current_helper_r1",
+      "tests/outputs/upl_gpu_nullj_off_preport_r1",
+      "tests/outputs/upl_gpu_nullj_off_current_r1"
+    ],
+    "CLI": "Each fresh program ONCE: upl_gpu_nullj_off_r1.exe --out ABS_FRESH_RESULT --device 0. No old retained executable/control run or overwrite.",
+    "compile_link_recipe": "Reuse tests/logs/upl_c08_global_GPU_r1.compile.call.json and .link.call.json, MSVC14.36/CUDA11.7 Debug with _WITHGPU. Remap fixture/output paths and EVERY project-object basename to the selected old/current directory;110 project+1 new fixture=111 link objects. Preserve the six project/CUDA libraries and system libraries.",
+    "runtime": "Use the four SMT-matching files from tests/logs/upl_c08_global_GPU_r1.build.json runtime: DsphConfig.xml300,ChronoEngine.dll6067712,dsphchrono.dll772096,vcomp140.dll185144. Copy to each new helper directory, retain source/runtime/object/code SMT before/after,0SHA.",
+    "comparison": "Require both actual owned exits0, completed78-call receipts and all78 passed rows. Compare active.csv and off.csv byte-for-byte across the two NEW programs, including every exported numeric field and signed zero spelling. Also compare each active.csv byte-for-byte to the retained C02 outputs/bv_pair_gpu_debug_run_r2/pairs.csv72. Adopt its closed completion and logs/bv_review_r1.check.json; do not rerun it.",
+    "failure": "Preserve the first compile/link/run/comparison failure and actual outputs. No automatic retry, budget relaxation, rewriting of old records, solver or notifier."
+  },
+  "author_read_only_binding_check": {
+    "old_new_build_exit_codes": [
+      0,
+      0
+    ],
+    "same110_object_basenames": true,
+    "all220_selected_object_SMT_match_sealed_records": true,
+    "archive_header_inspection": "Read old/current source.zip without extraction or hash. DualSphDef.h,TypesDef.h,JCellDivDataGpu.h,JDsDcellDef.h,FunSphKernel.h text is identical. JSphGpu_ker.h differs only by an added optional poscell argument to DynamicPoreWall, which this fixture never calls. Its StCteInteraction/StInterParmsg definitions and used CteInteractionUp/Interaction_Forces declarations are unchanged, so current helper headers are compatible with both complete closures.",
+    "scope": "Author-time metadata and selected header compatibility observation only. Future owner must reobserve consumed SMT and use the recorded closures, not demand that historical archived GPU CPP equal the edited live GPU source."
+  },
+  "limits": "A manually selected inactive two-particle consumer regression only; identity C is injected and cannot establish MLS rank or physical boundary correctness. It does not test natural activation, mask geometry, true-J momentum, wall removal, conservation, coupled integration, half chains, continuum accuracy or physical acceptance.",
+  "physical_acceptance": false
+}

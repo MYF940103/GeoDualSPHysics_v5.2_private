@@ -1,0 +1,13 @@
+{
+  "stage": "upl_wall_support_gpu_r2.apply",
+  "basis": "tests/support/upl_wall_support_gpu_r1.patch",
+  "semantic_changes": "Exactly the reviewed three-file proposal; no numerical difference from r1 author patch",
+  "format_repair": "Original JSphGpu_ker.h has457 CRLF lines while r1 author patch has LF contexts. git apply --check rejected header and changed no production. Apply checked CPP/CU hunks, then exactly one header byte replacement preserving all457 CRLF. This fresh diff is generated from actual three-file edits and passes reverse git apply --check.",
+  "source_files": [
+    "src/source/JSphGpu.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "build_or_component_run": false,
+  "physical_acceptance": false
+}
