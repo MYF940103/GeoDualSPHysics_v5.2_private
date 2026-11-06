@@ -1,0 +1,18 @@
+{
+  "stage": "upl_material_shared_gpu_review_r1",
+  "bounded_standalone_component_passed": true,
+  "authoritative_check": "tests/logs/upl_material_shared_GPU_r1.check.json",
+  "actual_execution": "One CUDA11.7 NVCC compile/link, actual process59692 exit0. One compute-sanitizer memcheck process67864 and retained target68852 both actual Win32 exit0. Independent sanitizer log reports0errors/0bytes leaked. No target replay or compiler-flag adjustment.",
+  "build_configuration": "Debug sm86+compute86 PTX,-G,-g,-use_fast_math,host MSVC14.36 Od/MTd/Zi/RTC1; cuda runtime static. No engine/Chrono object linked. Actual complete argv and source/input size/mtime receipts retained in logs. Debug results are not Release evidence.",
+  "actual_warning": "NVCC link emitted LNK4098: defaultlib LIBCMT conflicts with other defaults, in the standalone MTd/static-CUDA-runtime combination. The actual binary nevertheless exited0 and memcheck passed. Warning is preserved, not suppressed or retrospectively called warning-free. Any future runtime-link configuration adjustment needs its own build identity; no rerun is needed to describe this existing result.",
+  "coverage": {"same_input_CPU_GPU_rows":71,"original_reference_rows":66,"Invalid":5,"Elastic":18,"Radial":36,"ApexNeeded":12,"NonConverged":0,"constant_strength_closed_controls":6,"kernel_launches":1,"input_Points_field_checks":73,"Result_tail_member_checks":2,"failure_state_scalar_bit_checks":17},
+  "actual_CPU_comparison": "Consumed actual closed MSVC outputs/upl_material_shared_CPU_r1/result/points.csv, not NVCC-host Return. All input bit strings/statuses agree. Maximum six-stress/continuous-kappa/lambda/saved-float-kappa differences are0; all71 returned State field bit strings also happen to agree. Result padding and diagnostic iteration bits were not parity gates.",
+  "independent_radial_maxima": {"continuous_yield_Pa":4.547473508864641e-12,"saved_float_kappa_yield_Pa_descriptive":3.7070172766107135e-5,"saved_float_yield_shift_Pa_descriptive":3.707017162923876e-5,"dev_compliance_error":1.6940658945086007e-19,"q_error_Pa":3.637978807091713e-12,"I_error_Pa":7.275957614183426e-12,"constant_strength_lambda_error":2.439454888092385e-19,"continuous_yield_over_original_four_root_budget":7.295549256248568e-7,"dev_error_over_original_budget":9.313225746154785e-8,"q_error_over_original_tensor_budget":3.3297111226241647e-5,"I_error_over_original_tensor_budget":6.666666666666667e-5},
+  "interpretation": "Continuous local root residual and the effect of one persistent float-kappa write are distinct. These are algebraic material-point results under the original budgets, not spatial pressure/settlement precision or constitutive release. NonConverged has no natural case witness. ApexNeeded remains unsupported, preserves input State and cannot be silently committed as an elastic or tensile-cap solution.",
+  "outputs": ["tests/outputs/upl_material_shared_GPU_r1/result/points.csv","tests/outputs/upl_material_shared_GPU_r1/result/CPU_GPU.csv","tests/outputs/upl_material_shared_GPU_r1/result/completion.json"],
+  "source_and_input_stats_unchanged": true,
+  "SHA_scans":0,
+  "engine_source_changes":false,
+  "physical_solver_or_decoder_invocations":0,
+  "physical_acceptance":false
+}

@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Case08 CPU/GPU current-wall and actual one-force components passed. Single-J native density cache passed both-backend stage/default checks and real old/new CPU128 updates: eight native states, all21 non-Rhop typed arrays and clocks exact. Cache source checkpoint1d5c1c2 verified local/remote. Four-file static closed-container gravity admission is applied and Debug-building; physical startup not yet run. Material radial candidate is test-only; plastic/apex/free-seepage/release remain pending.",
+  "status": "Case08 fixed gravity container and explicit free-seepage startup passed on CPU/GPU and backed up at ff2124e. Shared test-only radial material return passed separate CPU/CUDA71 cases; production material integration is next. No spatial plastic collapse or full release claim.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1022,7 +1022,7 @@
     "material_history_comparison": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/lian_material_history_r1.review.json",
     "material_constants_promoted": false,
     "production_plastic_history_changed": false,
-    "next": "Save verified free-seepage bounded stage, then shared CPU/GPU material-point core for dev-kappa and psi decay with default LegacyFast preserved. Initial stress/prebalance then same-run wall removal and variable-k compatibility before any server collapse package. Revisit Lian second-order operator on actual deformed snapshots. No repeated half chains.",
+    "next": "Integrate an independent opt-in ConsistentDev material return with LegacyFast default, named CPU/GPU stress mapping and explicit unsupported-apex stop; then bounded actual-stage checks. Initial equilibrium and same-run wall release remain before spatial collapse.",
     "CPU_global_wall_stage_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_c08_global_root_r1.json",
     "CPU_global_support_pairs": 2188,
     "CPU_global_OFF_missing_supported_pairs": 0,
@@ -1137,7 +1137,8 @@
       "same_backend_pressure_policy_difference_only_roundoff": true,
       "root_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_free_seepage_root_review_r1.md",
       "analysis": "08_LianSaturatedColumnCollapse_u_pl/tests/figures/upl_c08_free_start_compare_r1.check.json",
-      "physical_acceptance": false
+      "physical_acceptance": false,
+      "verified_local_remote_checkpoint": "ff2124edeadceb1cbe9120c8d0a84904c57b09c5"
     },
     "paper_coefficients_erratum": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/lian_coefficients_erratum_r1.md",
     "material_next": {
@@ -1146,8 +1147,15 @@
       "local_root_tensor_arithmetic": "double where necessary",
       "apex_softening_policy": "Not invented; radial prototype returns ApexNeeded",
       "source_integrated": false
-    }
+    },
+    "shared_material_CPU_GPU_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_material_shared_root_r1.md",
+    "shared_material_cases_per_backend": 71,
+    "shared_material_max_CPU_GPU_stress_Pa": 0.0,
+    "shared_material_max_continuous_yield_Pa": 4.547473508864641e-12,
+    "shared_material_max_saved_float_yield_Pa": 3.7070172766107135e-05,
+    "shared_material_memcheck_errors": 0,
+    "shared_material_production_integrated": false
   },
-  "latest_verified_code_checkpoint": "632ed74d77b2d9d71b07f28915c84c0f70d7478c",
-  "last_updated_utc": "2026-11-06T06:02:36.782281+00:00"
+  "latest_verified_code_checkpoint": "ff2124edeadceb1cbe9120c8d0a84904c57b09c5",
+  "last_updated_utc": "2026-11-06T06:33:16.095519+00:00"
 }
