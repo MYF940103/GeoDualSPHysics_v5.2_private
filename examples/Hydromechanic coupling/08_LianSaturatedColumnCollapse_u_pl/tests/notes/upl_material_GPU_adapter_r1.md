@@ -1,0 +1,13 @@
+# GPU material-return adapter candidate
+
+Author-only production change, pending root review and builds. No build, CUDA target, spatial solver, native decoder, or Git operation was run for this adapter stage.
+
+Changed production files are `JSphGpu.h/.cpp` and `JSphGpuSimple_ker.h/.cu`. The root separately owns `FunSoilMaterial.h`, the tail fields `StSoilCte::MaterialReturn` and `psiDecay`, shared configuration, and scope validation. This adapter targets the agreed `fsoil::ReturnPlaneStrain(double2,double2,double2,float,StSoilCte,...)` success-only output interface.
+
+- Mode 0 retains the existing DP constants and fast-return arithmetic in the existing order. The new mode-1 branch avoids computing those unused legacy constants. Verlet and hydromechanical scope guards are untouched.
+- Mode 1 supplies the same six double trial stresses and float old history to the shared named tensor adapter. The predictor still restores `kplasticnew=kplasticold`; the corrector alone commits returned history and its existing positive-increment diagnostic. This prevents counting the predictor's plastic history twice.
+- `MaterialErrorg` is one `sizeof(unsigned)` allocation per run, allocated only for mode 1 by `AllocGpuMemoryFixed`, counted in `MemGpuFixed`, and released by `FreeGpuMemoryFixed` before CUDA context reset. It is not an Np array or an `ArraysGpu::ReserveUint` slot.
+- Pre and Cor each clear the word, pass it explicitly through the wrapper/helper/kernel tail, and copy/check it immediately after the integration kernel. The optional tail pointer defaults to null for old direct callers; null is the legacy-mode contract, while mode-1 callers must supply the scalar. A rejected `Invalid`, `ApexNeeded`, or `NonConverged` result atomically ORs `1u << unsigned(status)` and returns before that particle's movement/code/velocity/stress/history writes. No NaN, assert, cap, or silent fallback substitutes for rejection.
+- A host rejection releases both movement scratch slots before throwing. Pre is checked before `ComputeStepPos2`; Cor is checked before subsequent pressure/J/position updates. Predictor pressure/J preparation and other threads may already have produced intermediate data, so this is an aborted, unaccepted stage, not a rollback guarantee. The status word reports failure kinds, not a particle ID.
+
+Required next checks remain root-owned: default CPU Debug build, CUDA Debug build, actual mode-0 native equivalence, mode-1 actual integration-kernel and rejection witnesses, and appropriate bounded spatial admission. The earlier 71-point standalone CPU/GPU agreement does not by itself validate this adapter, apex behavior, or a complete plastic simulation. Existing dynamic elastic guards are not relaxed here.

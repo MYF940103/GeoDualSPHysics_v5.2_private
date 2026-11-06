@@ -117,4 +117,12 @@ GPU同原生几何的 [实际主力检查](tests/notes/upl_c08_force_GPU_root_r1
 候选的18个顶点/近顶点条件明确尚未支持；旧算法3个精确静水顶点输入出现非有限值。原先顶点修正在除以sqrt(J2)之后，无法保护该奇异输入。非关联流动在psi=0或负值时不能任意使用径向缩放补成顶点解，后续须明确拉伸/顶点处理及对应体积、历史更新。这不妨碍当前弹性墙和密度存储验证，但不能据径向材料点结果开放正式塑性塌陷。所有材料候选仍在测试文件中，生产材料公式未改。
 
 
-??CPU/GPU???????71???????????18???36???12?????????5??????????????????????float?????????????????????? [??????](tests/notes/upl_material_shared_root_r1.md)?
+独立CPU/GPU共享核的71点组件已通过：18个弹性、36个径向、12个明确不支持的顶点和5个无效输入；材料参数及持久κ仍为float，局部返回运算为double。这不是空间材料或崩塌准入，见 [共享材料核审查](tests/notes/upl_material_shared_root_r1.md)。
+
+### 实验材料接口：接线通过，空间塑性待验
+
+新增接口位于`special/soils`：`MaterialReturn=0`为默认LegacyFast；显式`1`选择实验ConsistentDev。`DilationDecay=0`默认保持恒定ψ；非零sf仅允许mode1，按`ψ=ψ0*exp(-sf*κ)`评价，独立于黏聚力软化`n_coh`。材料选择独立于Hydro，开启u-pl不会自动更换返回算法；现有正式和测试输入未被改成mode1。
+
+mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有限正K/G及有效强度/角度范围。它采用dev κ和端点c/ψ，保留float材料参数与持久κ；顶点、无效输入、非正一致性或不收敛明确使阶段失败，不套用旧cap或弹性回退，也不保证失败阶段整体回滚。详见 [接口与限制](tests/notes/upl_material_interface_r1.md)。
+
+两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，实际新增内存4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。dynamic软化及非零κ保护仍关闭，不因此开放空间塑性、地应力平衡、撤墙或塌陷。

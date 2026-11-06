@@ -16,6 +16,22 @@
 				<phi value="30" comment="Peak friction angle" units_comment="degrees" />
 				<coh value="0" comment="Peak cohesion" units_comment="Pa" />
 				<dlt value="0" comment="Dilation angle" units_comment="degrees" />
+				<MaterialReturn value="0" comment="0=LegacyFast (default), 1=experimental ConsistentDev; independent of HydroMech switches" />
+				<DilationDecay value="0" comment="Independent sf in psi=psi0*exp(-sf*kappa); finite sf>=0; nonzero requires MaterialReturn=1" />
+				<!-- Experimental material interface; CPU/GPU Debug builds and bounded Pre/Cor checks passed.
+                     Mode1 requires a fresh 2-D DP_PS Symplectic case, fixed friction (n_phi=0),
+                     finite positive K/G, valid fixed phi, coh>=coh_r>=0, finite n_coh>=0,
+                     and a finite dilation angle with absolute value below90 degrees.
+                     DilationDecay is NOT n_coh: n_coh controls cohesion, sf controls dilation.
+                     Mode1 uses dev delta-kappa=lambda/sqrt(3), continuous endpoint cohesion/dilation,
+                     local double arithmetic and existing float material/persistent-kappa storage.
+                     ApexNeeded, invalid input or nonconvergence fail the actual stage explicitly;
+                     there is no automatic old-cap/elastic fallback or transactional stage rollback.
+                     Mode0 retains the literal old path; nonzero decay with mode0 is rejected.
+                     CPU/CUDA standalone71-point and actual stage checks passed. Default native outputs
+                     and an elastic selector-ON startup match retained controls; this is not plastic physics.
+                     Dynamic seepage softening/nonzero-kappa guards remain closed. Selecting mode1
+                     does not open spatial plasticity, gravity equilibrium, wall removal or collapse. -->
 
 				<phi_r value="30" comment="Residual friction angle for softening; default=phi when omitted" units_comment="degrees" />
 				<coh_r value="0" comment="Residual cohesion for softening; default=coh when omitted" units_comment="Pa" />

@@ -2,7 +2,7 @@
   "date": "2026-11-06",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Case08 fixed gravity container and explicit free-seepage startup passed on CPU/GPU and backed up at ff2124e. Shared test-only radial material return passed separate CPU/CUDA71 cases; production material integration is next. No spatial plastic collapse or full release claim.",
+  "status": "Experimental MaterialReturn1 integrated with LegacyFast default preserved. CPU/GPU Debug builds, actual Pre/Cor material checks, both-backend default128 native regressions and explicit-selector GPU128 memory/native startup all passed. Dynamic plastic/nonzero-kappa gates remain closed; no collapse run or formal release claim.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -1022,7 +1022,7 @@
     "material_history_comparison": "08_LianSaturatedColumnCollapse_u_pl/tests/logs/lian_material_history_r1.review.json",
     "material_constants_promoted": false,
     "production_plastic_history_changed": false,
-    "next": "Integrate an independent opt-in ConsistentDev material return with LegacyFast default, named CPU/GPU stress mapping and explicit unsupported-apex stop; then bounded actual-stage checks. Initial equilibrium and same-run wall release remain before spatial collapse.",
+    "next": "Bounded constant-strength periodic plastic shear: audit and narrowly admit nonzero kappa only for the selected material; retain J/finite/domain/step guards. Then softening/dilation, gravity prebalance, same-run wall removal and variable-k. Lian second derivatives must still be compared on deformed/disordered snapshots before choosing any operator change.",
     "CPU_global_wall_stage_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_c08_global_root_r1.json",
     "CPU_global_support_pairs": 2188,
     "CPU_global_OFF_missing_supported_pairs": 0,
@@ -1154,8 +1154,22 @@
     "shared_material_max_continuous_yield_Pa": 4.547473508864641e-12,
     "shared_material_max_saved_float_yield_Pa": 3.7070172766107135e-05,
     "shared_material_memcheck_errors": 0,
-    "shared_material_production_integrated": false
+    "shared_material_production_integrated": true,
+    "material_integration_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_material_integration_root_r1.md",
+    "material_Debug_builds_passed": [
+      "DebugCPU",
+      "Debug"
+    ],
+    "material_actual_CPU_Pre_Cor_calls": [
+      2,
+      2
+    ],
+    "material_actual_GPU_Pre_Cor_calls": 142,
+    "material_default128_both_backends_all22_and_signedclock_byte_differences": 0,
+    "material_explicit_GPU128_memcheck_errors": 0,
+    "material_explicit_GPU128_added_allocated_bytes": 4,
+    "material_mode1_spatial_plasticity_accepted": false
   },
-  "latest_verified_code_checkpoint": "ff2124edeadceb1cbe9120c8d0a84904c57b09c5",
-  "last_updated_utc": "2026-11-06T06:33:16.095519+00:00"
+  "latest_verified_code_checkpoint": "0c29b432b2343351e98afacc474e93440cfde628",
+  "last_updated_utc": "2026-11-06T07:21:10.813743+00:00"
 }

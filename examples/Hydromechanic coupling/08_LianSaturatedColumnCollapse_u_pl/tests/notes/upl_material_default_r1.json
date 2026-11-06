@@ -1,0 +1,33 @@
+{
+  "stage": "upl_material_default_r1.author",
+  "status": "AUTHOR ONLY. Six fresh files; no production source/doc/retained input change, seed/runtime copy, GenCase, build, solver, decoder, SHA or Git action.",
+  "files": [
+    "tests/configs/CaseLianSaturatedColumnCollapse_material_default_r1_Def.xml",
+    "tests/configs/CaseLianSaturatedColumnCollapse_material_default_r1.xml",
+    "tests/support/xCaseLianSaturatedColumnCollapse_material_default_r1_win64_CPU.bat",
+    "tests/support/xCaseLianSaturatedColumnCollapse_material_default_r1_win64_GPU.bat",
+    "tests/support/upl_material_default_native_r1.cpp",
+    "tests/notes/upl_material_default_r1.json"
+  ],
+  "purpose": "Prepare the already admitted free-seepage128 startup as a future compatibility check of the newly integrated material selector's DEFAULT legacy path. No new physical model, forced plasticity or additional reference/half/full run is prepared.",
+  "input_derivation": "Copy the root-read free_seepage_start_r1 Def and generated companion. Only their top identity comments differ. Every physical value and key is identical, including HydroMechFreeSeepage1/Dynamic1/Drainage0, constant k/model0/Ck0, InitNone and fixed-grid default0. MaterialReturn and DilationDecay are BOTH ABSENT, exercising default0/0, not explicit mode1. Companion historical GenCase app/date, geometry/particle/constants/uservars/motion/vtkout blocks remain unchanged. Do not regenerate geometry or overwrite existing inputs.",
+  "unchanged_scope": "5000 soil/2060 fixed native IDs; Cubic h/dp1.2/dp.04/L4H2, original sidesFreeSlip/bottomNoSlip normals/MK; E20MPa/nu.33/rho02072.5/n.35/Kw1GPa/k2e-4, constant-strength coh=coh_r5000,n_coh0,n_phi0,dlt0, vertical g-9.81, AV.1/G1. No load/HG/independentSPR/damping/DDT/shifting/NoPen/softening/wall removal. Existing J/finite/domain/support/elastic and step bounds are not relaxed.",
+  "clock_plan": "Unchanged DtIni=DtFixed=2^-18s, explicit DtMin1e-8, TimeMax128dt=.00048828125, TimeOut32dt=.0001220703125, CLI-nsteps:128. Planned completed0/32/64/96/128 and savedStep0/31/63/95/127; actual scalar/native clocks and signed nonempty intervals remain authoritative.",
+  "new_paths": {
+    "stem": "CaseLianSaturatedColumnCollapse_material_default_r1",
+    "shared_seed_prefix": "tests/outputs/upl_material_default_r1_seed/CaseLianSaturatedColumnCollapse_material_default_r1",
+    "source_geometry_prefix_unchanged": "tests/outputs/upl_c08_observer_r1_seed/CaseLianSaturatedColumnCollapse_geometry_r1",
+    "CPU_output_runtime": "tests/outputs/upl_material_default_CPU_r1 and upl_material_default_CPU_r1_runtime",
+    "GPU_output_runtime": "tests/outputs/upl_material_default_GPU_r1 and upl_material_default_GPU_r1_runtime",
+    "CPU_program": "tests/outputs/upl_material_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe",
+    "GPU_program": "tests/outputs/upl_material_Debug_r1/DualSPHysics5.2_win64_debug.exe",
+    "program_status": "These are the isolated new material build paths, not a claim both builds or any regression run has passed. Root must bind actual successful full-build/source/runtime receipts before launch; canonical or old programs are not substitutes."
+  },
+  "BAT_only_differences": "Retained free-start BAT logic/flags/error handling are literal. Replace only case identity, fresh seed/output/runtime paths, new isolated program paths and descriptive text. CPU creates exact companion/BI4/Normals seed and runtime copies only after all freshness/missing guards; GPU reuses that same CPU-prepared seed and checks retained CPU immediate exit text. Both reject existing output/runtime, preserve partial failure, capture actual ERRORLEVEL immediately, invoke only their own128-update program and do no postprocessing/queue. CPU1/stable/mdbc_freeslip and GPU0/stable/mdbc_freeslip flags are unchanged. Exit text is not independent ownership/native/physical proof.",
+  "reader_derivation": "Mechanically clone upl_c08_free_seepage_start_native_r1.cpp. ONLY new input-tag prefix upl_material_default_, completion stage upl_material_default_native_r1, top identity comment and two error messages differ. Namespace/neutral T02 include/parser/counts/layout/ledger/history/field/clock/signed-error/sign logic are literal. Old reader and executable remain protected; its exact path whitelist means it cannot decode the new tags. The new profile itself is only authored, not built or executed.",
+  "reader_CLI": "--read CPU|GPU DATA FRESHOUT; admit ONLY corresponding tests/outputs/upl_material_default_{CPU,GPU}_r1/data. Source must be compiled by absolute path. Backend/path argument is not program provenance; root owns genuine run/reader calls and source bindings.",
+  "reader_guards_unchanged": "Five contiguous single-piece frames,128 actual updates,7060 IDs/5000soil/2060fixed,22 original typed arrays/allfinite, no exclusion, native kappa0/p0/excess and float-display-vs-double-stress rules; constant-k single-J n/V/rho/k ledger5e-13 and25000 native Rhop float-cache bits; exact dyadic scalar+=dt/Step/locked dt and four nonempty signed dterror<=1e-14 intervals. Require typed bool HydroMechFreeSeepage=true each frame, actual nonempty FS2/3 soil with original saved p<=0. No pressure editing, forced zero RHS, FSNormal bit cross-gate, artificial CODE/Ace/reaction inference or energy/watermass claim.",
+  "future_comparison": "After root full-read and separate authorization, compare each new default run/native output with its retained SAME-backend actual free_start128 control; never assume equality from source/default semantics. Current profile adds no new metadata or physics acceptance threshold. Absence of material keys in XML is a declared input fact, not by itself proof of actual PART metadata/default arithmetic; root must review actual program/configuration/output provenance. Any observed bit/numeric difference remains reported, not normalized or hidden. No extra solver or reference is automatically launched.",
+  "outputs_pending": "Future new-profile outputs retain typed22.bin/layout,clocks,native_ids,ledger,history,completion with the exact old212bytes/ID and7483652-byte expected typed file. There are no new runtime/native/physical results in this author note.",
+  "physical_acceptance": false
+}

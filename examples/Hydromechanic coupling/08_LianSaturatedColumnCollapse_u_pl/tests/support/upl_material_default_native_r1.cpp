@@ -1,0 +1,119 @@
+// C08 default-material regression native profile; same free-seepage guards, no solver or C02 Energy call.
+#define main RetainedNeutralPublicReaderMain
+#include "../../../02_TerzaghiConsolidation_q0_PR/tests/support/upl_cpu_public_native_r1.cpp"
+#undef main
+namespace c08free {
+constexpr unsigned Soil=5000,Fixed=2060,Total=7060,Steps=128;
+constexpr double Dt=1./262144.,Dp=.04,Rho=2072.5,Water=1000.;
+static const double Por=double(float(.35)),Mass=double(float(3.316)),K0Case=double(float(.0002)),H=double(float(.048));
+static unsigned currentPart=~0u,currentId=~0u;static double currentJ=0,currentRhop=0,currentP=0;
+static bool Bits(double a,double b){return !std::memcmp(&a,&b,8);}
+static bool Bits(float a,float b){return !std::memcmp(&a,&b,4);}
+static std::vector<std::string> Tokens(std::string line,char sep){
+  if(!line.empty()&&line.back()=='\r')line.pop_back();std::vector<std::string> v;std::size_t b=0;
+  for(;;){const auto p=line.find(sep,b);v.push_back(line.substr(b,p==std::string::npos?p:p-b));if(p==std::string::npos)break;b=p+1;}return v;
+}
+static std::map<std::string,std::string> RunCsv(const fs::path& p){
+  std::ifstream f(p);std::string h,d,x;Need(bool(std::getline(f,h))&&bool(std::getline(f,d))&&!std::getline(f,x),"Actual completed two-line Run.csv required");
+  const char sep=h.find(';')==std::string::npos?',':';';const auto a=Tokens(h,sep),b=Tokens(d,sep);Need(a.size()==b.size(),"Run.csv width differs");std::map<std::string,std::string> r;
+  for(unsigned n=0;n<a.size();n++)Need(r.emplace(a[n],b[n]).second,"Repeated Run.csv key");
+  Need(r.at("Steps")=="128"&&r.at("PartFiles")=="5"&&r.at("Np")=="7060"&&r.at("Nfixed")=="2060"&&r.at("Nbound")=="2060"&&r.at("PartsOut")=="0"&&r.at("PartsOutRhop")=="0"&&r.at("PartsOutVel")=="0","Actual128-step/5-frame/ID/no-exclusion summary differs");return r;
+}
+static std::vector<tdouble3> InitialCoordinates(const fs::path& p){
+  std::ifstream f(p);std::string line;Need(bool(std::getline(f,line)),"Closed initial coordinate CSV missing");
+  Need(Tokens(line,',')==std::vector<std::string>{"native_id","sorted_slot","is_fluid","x","y","z","original_mode","in_original_NpbOk"},"Closed coordinate header differs");
+  std::vector<tdouble3> x(Total);std::vector<bool> seen(Total,false);unsigned count=0;
+  while(std::getline(f,line)){
+    const auto v=Tokens(line,',');Need(v.size()==8,"Initial coordinate CSV width differs");const unsigned id=unsigned(std::stoul(v[0]));
+    Need(id<Total&&!seen[id]&&v[2]==(id<Fixed?"0":"1"),"Initial coordinate ID/classification differs");
+    x[id]=TDouble3(std::stod(v[3]),std::stod(v[4]),std::stod(v[5]));Need(Finite(x[id])&&x[id].y==0,"Nonfinite/off-plane initial coordinate");seen[id]=true;count++;
+  }Need(f.eof()&&count==Total,"Incomplete initial coordinate IDs");return x;
+}
+struct Summary{
+  unsigned count=0;double p=0,p2=0,plo=DBL_MAX,phi=-DBL_MAX,u2=0,umax=0,v2=0,theta=0,theta2=0,jlo=DBL_MAX,jhi=-DBL_MAX,nlo=DBL_MAX,nhi=-DBL_MAX,mass=0,kinetic=0,s2=0;
+  tdouble3 du=TDouble3(0),velocity=TDouble3(0);std::array<double,6> sigma{};
+  void add(const Native& a,unsigned q,tdouble3 x0){
+    const auto u=a.pos[q]-x0;const auto v=ToTDouble3(a.vel[q]);const auto s=a.sk[q],t=a.si[q];const double mi=a.rho[q]*a.volume[q],vv=Norm2(v),uu=Norm2(u);
+    count++;p+=a.p[q];p2+=double(a.p[q])*a.p[q];plo=(std::min)(plo,double(a.p[q]));phi=(std::max)(phi,double(a.p[q]));
+    u2+=uu;umax=(std::max)(umax,std::sqrt(uu));du=du+u;velocity=velocity+v;v2+=vv;theta+=a.theta[q];theta2+=a.theta[q]*a.theta[q];
+    jlo=(std::min)(jlo,a.j[q]);jhi=(std::max)(jhi,a.j[q]);nlo=(std::min)(nlo,a.n[q]);nhi=(std::max)(nhi,a.n[q]);mass+=mi;kinetic+=.5*mi*vv;s2+=Norm2(s)+2*Norm2(t);
+    const double ss[]={s.x,s.y,s.z,t.x,t.y,t.z};for(unsigned k=0;k<6;k++)sigma[k]+=ss[k];
+  }
+  void write(std::ofstream& out,unsigned part,double time,const char* band)const{
+    Need(count>0,"Empty initial-material band");const double n=count;
+    const double values[]={p/n,std::sqrt(p2/n),plo,phi,sigma[0]/n,sigma[1]/n,sigma[2]/n,sigma[3]/n,sigma[4]/n,sigma[5]/n,std::sqrt(s2/n),du.x/n,du.y/n,du.z/n,1000*std::sqrt(u2/n),1000*umax,velocity.x/n,velocity.y/n,velocity.z/n,std::sqrt(v2/n),theta/n,std::sqrt(theta2/n),jlo,jhi,nlo,nhi,mass,kinetic};
+    out<<part<<','<<time<<','<<band<<','<<count;for(double x:values){Need(std::isfinite(x),"Nonfinite descriptive history");out<<','<<x;}out<<'\n';
+  }
+};
+static void Typed22(std::ofstream& out,const Native& a){
+  Original15(out,a);for(const auto* v:{&a.j,&a.n,&a.theta,&a.volume,&a.rho,&a.k})WriteTyped(out,*v,a.slot);WriteTyped(out,a.posdiv,a.slot);
+}
+static void Read(const std::string& backend,const fs::path& dir,const fs::path& out){
+  const std::string tag="upl_material_default_"+backend+"_r1";
+  const auto tests=fs::path(__FILE__).parent_path().parent_path();Need(tests.is_absolute(),"Compile this source by absolute path");
+  Need(fs::is_directory(dir)&&fs::equivalent(dir,tests/"outputs"/tag/"data"),"Only the corresponding declared default-material CPU/GPU r1 DATA is admitted");
+  Need(!fs::exists(out),"Retained reader output protected");RunCsv(dir.parent_path()/"Run.csv");Sequence(dir,5);
+  const auto x0=InitialCoordinates(tests/"outputs/upl_c08_global_CPU_r1/ids.csv");
+  double xmin=DBL_MAX,xmax=-DBL_MAX,zmin=DBL_MAX,zmax=-DBL_MAX;
+  for(unsigned id=Fixed;id<Total;id++){xmin=(std::min)(xmin,x0[id].x);xmax=(std::max)(xmax,x0[id].x);zmin=(std::min)(zmin,x0[id].z);zmax=(std::max)(zmax,x0[id].z);}
+  Need(fs::create_directory(out),"Cannot create fresh native output");
+  std::ofstream raw(out/"typed22.bin",std::ios::binary),layout(out/"typed22_layout.csv"),clock(out/"clocks.csv"),ids(out/"native_ids.csv"),ledger(out/"ledger.csv"),history(out/"history.csv");
+  static_assert(sizeof(unsigned)==4&&sizeof(float)==4&&sizeof(double)==8&&sizeof(tfloat3)==12&&sizeof(tdouble3)==24,"Original typed x64 layout differs");
+  const unsigned header[]={Total,22,5};raw.write(reinterpret_cast<const char*>(header),12);
+  for(auto* f:{&clock,&ids,&ledger,&history})*f<<std::setprecision(17);
+  layout<<"array,type,components,bytes_per_particle\nIdp,uint32,1,4\nPosd,float64,3,24\nVel,float32,3,12\nSigma_kk,float32,3,12\nSigma_ij,float32,3,12\nFSNormal,float32,3,12\nHydroMechLoadAce,float32,3,12\nnative_Rhop,float32,1,4\nKplastic,float32,1,4\nPorePress,float32,1,4\nPorePress0,float32,1,4\nExcessPorePress,float32,1,4\nSigmaState_kk,float64,3,24\nSigmaState_ij,float64,3,24\nFSType,uint32,1,4\nPoroVolumeRatio,float64,1,8\nPoroPorosity,float64,1,8\nPoroThetaLastStage,float64,1,8\nPoroCurrentVolume,float64,1,8\nPoroMixtureDensity,float64,1,8\nPoroHydraulicConductivity,float64,1,8\nPosDiv,float32,1,4\n";
+  clock<<"part,file,time_s,completed_step,saved_step,dt_s,signed_dterror_s,dterror_interval_empty\n";
+  ids<<"id,is_fixed,x0,y0,z0\n";for(unsigned id=0;id<Total;id++)ids<<id<<','<<(id<Fixed)<<','<<x0[id].x<<','<<x0[id].y<<','<<x0[id].z<<'\n';
+  ledger<<"part,time_s,id,J,n_native,theta_native,V_native_m2,rho_native_kg_m3,k_native_m_s,PosDiv_native,native_Rhop,V_reference_m2,rho_reference_kg_m3,k_reference_m_s,current_mi_kg_per_m\n";
+  history<<"part,time_s,initial_material_band,count,p_mean_Pa,p_RMS_Pa,p_min_Pa,p_max_Pa,sigma_eff_xx_mean_Pa,sigma_eff_yy_mean_Pa,sigma_eff_zz_mean_Pa,sigma_eff_xy_mean_Pa,sigma_eff_yz_mean_Pa,sigma_eff_xz_mean_Pa,sigma_eff_Frobenius_RMS_Pa,mean_dx_m,mean_dy_m,mean_dz_m,displacement_RMS_mm,max_displacement_mm,mean_vx_m_s,mean_vy_m_s,mean_vz_m_s,velocity_XYZ_RMS_m_s,theta_mean_s_inv,theta_RMS_s_inv,min_J,max_J,min_n,max_n,current_soil_mixture_mass_kg_per_m,kinetic_J_per_m\n";
+  volatile double scalar=0.;unsigned previous=0,intervals=0,initialEmpty=0,soilRows=0,fixedRows=0,cacheChecks=0,metadataChecks=0,freeSurfaceRows=0;double minError=DBL_MAX,maxError=-DBL_MAX,maxLedger=0;std::array<unsigned,5> bandCounts{},freeCounts{};
+  for(unsigned part=0;part<5;part++){
+    currentPart=part;currentId=~0u;JPartDataBi4 f;f.LoadFilePart(dir.string(),part,0,1);
+    Need(f.GetNpiece()==1&&f.Get_Npok()==Total&&!f.Get_Nout()&&f.Get_CaseNp()==Total&&f.Get_CaseNfluid()==Soil&&f.Get_CaseNfixed()==Fixed&&!f.Get_CaseNmoving()&&!f.Get_CaseNfloat(),"Native ID/count/exclusion differs");
+    Need(f.Get_Data2d()&&f.Get_Data2dPosY()==0&&!f.Get_Symmetry()&&!f.Get_NpDynamic()&&!f.Get_ReuseIds()&&f.Get_PeriMode()==PERI_None,"Outside fresh static nonperiodic C08 startup scope");
+    Need(f.Get_Dp()==Dp&&f.Get_H()==H&&f.Get_Rhop0()==Rho&&f.Get_MassFluid()==Mass&&f.Get_MassBound()==Mass,"Actual float mass/h/reference material differs");
+    const unsigned step=f.Get_Step(),completed=part?step+1:0;Need(completed==32*part&&(!part?step==0:completed<=Steps),"Actual planned32-update save/Step differs");
+    for(unsigned n=previous;n<completed;n++)scalar+=Dt;previous=completed;const double time=f.Get_TimeStep();Need(Bits(time,scalar),"Native dyadic scalar clock differs");
+    const auto* info=f.GetPart();Need(info->ExistsValue("SymplecticDtPre",DatDouble)&&Bits(info->GetvDouble("SymplecticDtPre"),Dt)&&info->ExistsValue("dterror",DatDouble),"Typed locked dt/signed diagnostic missing");
+    Need(info->ExistsValue("HydroMechFreeSeepage",DatBool)&&info->GetvBool("HydroMechFreeSeepage"),"Free-seepage candidate metadata is not bool true");metadataChecks++;
+    const double error=info->GetvDouble("dterror");const bool empty=error==-DBL_MAX;Need(std::isfinite(error),"Nonfinite signed diagnostic");
+    if(part){Need(!empty&&error<=1e-14,"Original noninitial signed necessary-step guard failed/empty");intervals++;minError=(std::min)(minError,error);maxError=(std::max)(maxError,error);}
+    else{Need(empty||error<=1e-14,"Initial signed diagnostic failed");initialEmpty+=unsigned(empty);}
+    Need(f.ArraysCount()==22,"Exactly22 public typed arrays required");Metadata(f,0);const Native a=Load(f,Total,0);Summary bands[5];const double v0=f.Get_MassFluid()/f.Get_Rhop0();
+    for(unsigned id=0;id<Total;id++){
+      currentId=id;const unsigned q=a.slot[id];const auto x=a.pos[q];const auto s=a.sk[q],t=a.si[q];currentJ=a.j[q];currentRhop=a.rhop[q];currentP=a.p[q];
+      Need(a.rhop[q]>0&&a.plastic[q]==0&&a.p0[q]==0&&a.excess[q]==float(a.p[q]-a.p0[q])&&a.fstype[q]<=4&&Norm2(a.load[q])==0&&x.y==0,"Positive density/elastic/p0/excess/FSType/no-prescribed-load/2D guard failed");
+      Need(a.legacykk[q].x==float(s.x)&&a.legacykk[q].y==float(s.y)&&a.legacykk[q].z==float(s.z)&&a.legacyij[q].x==float(t.x)&&a.legacyij[q].y==float(t.y)&&a.legacyij[q].z==float(t.z),"Float display no longer rounds native double stress");
+      if(!part)Need(!std::memcmp(&x,&x0[id],sizeof(x)),"Initial actual double coordinates differ from closed reference by ID");
+      double V=0,rho=0,k=0,mi=0;
+      if(id<Fixed){Need(!std::memcmp(&x,&x0[id],sizeof(x))&&Norm2(a.vel[q])==0&&a.j[q]>1.-Por&&a.theta[q]==0&&a.n[q]==0&&a.volume[q]==0&&a.rho[q]==0&&a.k[q]==0,"Original fixed geometry/velocity/J/theta/zero marker differs");fixedRows++;}
+      else{
+        if(a.fstype[q]==2||a.fstype[q]==3){Need(a.p[q]<=0,"Saved native free-surface soil pressure is positive");freeSurfaceRows++;freeCounts[part]++;}
+        const double j=a.j[q],n=1.-(1.-Por)/j;V=v0*j;rho=Water+(Rho-Water)/j;k=K0Case;mi=a.rho[q]*a.volume[q];
+        Need(j>1.-Por&&n>0&&n<1&&V>0&&rho>0&&std::fabs((1.-a.n[q])*j-(1.-Por))<=5e-13,"Saturated single-J ledger failed");
+        const double got[]={a.n[q],a.volume[q],a.rho[q],a.k[q]},ref[]={n,V,rho,k};for(unsigned z=0;z<4;z++){Need(Close(got[z],ref[z]),"Native n/V/rho/k differs from same actual J");maxLedger=(std::max)(maxLedger,std::fabs(got[z]-ref[z])/(std::max)(std::fabs(ref[z]),DBL_MIN));}
+        const float cached=float(rho);Need(Bits(a.rhop[q],cached),"Native soil Rhop float cache differs from actual saved J");cacheChecks++;soilRows++;
+        if(!part)Need(a.j[q]==1&&a.n[q]==Por&&a.theta[q]==0&&a.rhop[q]==Rho&&Norm2(a.vel[q])==0&&a.p[q]==0&&Norm2(s)==0&&Norm2(t)==0,"Initial soil rest/p0/effective-stress/J1 state differs");
+        bands[0].add(a,q,x0[id]);if(x0[id].z>=zmax-2*H)bands[1].add(a,q,x0[id]);if(x0[id].z<=zmin+2*H)bands[2].add(a,q,x0[id]);if(x0[id].x<=xmin+2*H)bands[3].add(a,q,x0[id]);if(x0[id].x>=xmax-2*H)bands[4].add(a,q,x0[id]);
+      }
+      ledger<<part<<','<<time<<','<<id<<','<<a.j[q]<<','<<a.n[q]<<','<<a.theta[q]<<','<<a.volume[q]<<','<<a.rho[q]<<','<<a.k[q]<<','<<a.posdiv[q]<<','<<a.rhop[q]<<','<<V<<','<<rho<<','<<k<<','<<mi<<'\n';
+    }
+    Need(freeCounts[part]>0,"Saved free-seepage surface mask is empty");
+    raw.write(reinterpret_cast<const char*>(&time),8);Typed22(raw,a);clock<<part<<','<<JPartDataBi4::GetFileNamePart(part)<<','<<time<<','<<completed<<','<<step<<','<<Dt<<','<<error<<','<<empty<<'\n';
+    const char* names[]={"all","top_2h","bottom_2h","left_2h","right_2h"};for(unsigned z=0;z<5;z++){if(!part)bandCounts[z]=bands[z].count;Need(bands[z].count==bandCounts[z],"Initial material band IDs changed");bands[z].write(history,part,time,names[z]);}
+  }
+  Need(previous==Steps&&intervals==4&&soilRows==25000&&fixedRows==10300&&cacheChecks==25000&&metadataChecks==5,"Incomplete original128/5-frame/free-metadata coverage");
+  for(auto* f:{&raw,&layout,&clock,&ids,&ledger,&history}){f->flush();Need(bool(*f),"Native export write failed");}
+  std::ofstream done(out/"completion.json");done<<std::setprecision(17)<<"{\"stage\":\"upl_material_default_native_r1\",\"input_run_tag\":\""<<tag<<"\",\"passed\":true,\"backend_argument\":\""<<backend<<"\",\"backend_proven_by_reader\":false,\"samples\":5,\"completed_steps\":128,\"last_saved_step\":127,\"actual_end_s\":"<<double(scalar)
+    <<",\"dt_s\":"<<Dt<<",\"total_native_IDs\":7060,\"soil_IDs\":5000,\"fixed_IDs\":2060,\"typed_arrays\":22,\"typed_bytes_per_particle\":212,\"soil_ledger_rows\":"<<soilRows<<",\"fixed_marker_rows\":"<<fixedRows<<",\"soil_cache_float_bits_checks\":"<<cacheChecks<<",\"max_ledger_relative_error\":"<<maxLedger
+    <<",\"free_seepage_candidate\":true,\"free_seepage_metadata_checks\":"<<metadataChecks<<",\"saved_FS23_soil_checks\":"<<freeSurfaceRows<<",\"saved_FS23_soil_checks_by_part\":["<<freeCounts[0]<<','<<freeCounts[1]<<','<<freeCounts[2]<<','<<freeCounts[3]<<','<<freeCounts[4]<<']'
+    <<",\"noninitial_signed_intervals\":"<<intervals<<",\"initial_empty_intervals\":"<<initialEmpty<<",\"min_noninitial_signed_dterror_s\":"<<minError<<",\"max_noninitial_signed_dterror_s\":"<<maxError<<",\"initial_material_band_counts\":["<<bandCounts[0]<<','<<bandCounts[1]<<','<<bandCounts[2]<<','<<bandCounts[3]<<','<<bandCounts[4]<<']'
+    <<",\"all22_arrays_finite_and_ID_aligned\":true,\"actual_scalar_clock_verified\":true,\"no_exclusions\":true,\"constant_conductivity_model\":0,\"CODE_native_array_present\":false,\"total_Ace_or_wall_reaction_native_array_present\":false,\"active_wall_count_inferred\":false,\"legacy_HydroMechDrainage_declared_zero_by_owner_XML\":true,\"saved_FS23_soil_pressure_nonpositive\":true,\"pressure_data_modified_by_reader\":false,\"pore_pressure_stage_rate_zero_required\":false,\"FS_pressure_forced_zero_by_reader\":false,\"closed_normal_flux_projection_claimed\":false,\"energy_ratio_gate_applied\":false,\"water_mass_conservation_claimed\":false,\"owned_solver_exit_verified_by_reader\":false,\"physical_acceptance\":false}\n";
+  done.flush();Need(bool(done),"Completion write failed");
+}
+}
+int main(int argc,char** argv){try{
+  Need(argc==5&&std::string(argv[1])=="--read"&&(std::string(argv[2])=="CPU"||std::string(argv[2])=="GPU"),"Use --read CPU|GPU DATA FRESHOUT");c08free::Read(argv[2],argv[3],argv[4]);return 0;
+}catch(const std::exception& e){std::cerr<<"part="<<c08free::currentPart<<" id="<<c08free::currentId;
+  if(c08free::currentId<c08free::Total)std::cerr<<" J="<<c08free::currentJ<<" native_Rhop="<<c08free::currentRhop<<" p="<<c08free::currentP;
+  std::cerr<<" : "<<e.what()<<'\n';return 1;}catch(const char* e){std::cerr<<e<<'\n';return 1;}catch(...){std::cerr<<"C08 default-material native review rejected; preserve partial output\n";return 2;}}

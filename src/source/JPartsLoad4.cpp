@@ -258,6 +258,8 @@ void JPartsLoad4::LoadParticles(const std::string &casedir,const std::string &ca
       if(PartBegin && (pd.ArrayExists("PorePress")!=PorePressureDataLoaded || pd.ArrayExists("PorePress0")!=PorePressureDataLoaded))
         Run_Exceptioon("Pore-pressure restart array availability is inconsistent across PART pieces.");
       //-Do not silently discard precision from experimental restart formats.
+      if(PartBegin && (pd.GetPart()->ExistsValue("MaterialReturn") || pd.GetPart()->ExistsValue("DilationDecay")))
+        Run_Exceptioon("Consistent material-return PART restart is not supported; refusing to change the plastic-history definition.");
       if(PartBegin && (pd.ArrayExists("PoroVolumeRatio") || pd.ArrayExists("PoroPorosity")
         || pd.ArrayExists("PoroThetaLastStage") || pd.ArrayExists("PoroCurrentVolume")
         || pd.ArrayExists("PoroMixtureDensity") || pd.ArrayExists("PoroHydraulicConductivity")

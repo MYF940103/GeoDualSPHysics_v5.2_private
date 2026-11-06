@@ -1,0 +1,679 @@
+{
+  "stage": "upl_material_on_GPU_r1",
+  "passed": true,
+  "actual_call": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_on_GPU_r1.memcheck.call.json",
+    "bytes": 4288,
+    "mtime_ns": 1793949460605350700
+  },
+  "reader_call": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_on_GPU_r1.native.call.json",
+    "bytes": 2088,
+    "mtime_ns": 1793949468498555200
+  },
+  "native_completion": {
+    "stage": "upl_material_on_native_r1",
+    "input_run_tag": "upl_material_on_GPU_r1",
+    "passed": true,
+    "backend_argument": "GPU",
+    "backend_proven_by_reader": false,
+    "samples": 5,
+    "completed_steps": 128,
+    "last_saved_step": 127,
+    "actual_end_s": 0.00048828125,
+    "dt_s": 3.814697265625e-06,
+    "total_native_IDs": 7060,
+    "soil_IDs": 5000,
+    "fixed_IDs": 2060,
+    "typed_arrays": 22,
+    "typed_bytes_per_particle": 212,
+    "soil_ledger_rows": 25000,
+    "fixed_marker_rows": 10300,
+    "soil_cache_float_bits_checks": 25000,
+    "max_ledger_relative_error": 0,
+    "free_seepage_candidate": true,
+    "free_seepage_metadata_checks": 5,
+    "saved_FS23_soil_checks": 500,
+    "saved_FS23_soil_checks_by_part": [
+      100,
+      100,
+      100,
+      100,
+      100
+    ],
+    "noninitial_signed_intervals": 4,
+    "initial_empty_intervals": 0,
+    "min_noninitial_signed_dterror_s": -1.3933585654336754e-07,
+    "max_noninitial_signed_dterror_s": -1.3929109396585078e-07,
+    "initial_material_band_counts": [
+      5000,
+      300,
+      300,
+      150,
+      150
+    ],
+    "all22_arrays_finite_and_ID_aligned": true,
+    "actual_scalar_clock_verified": true,
+    "no_exclusions": true,
+    "constant_conductivity_model": 0,
+    "CODE_native_array_present": false,
+    "total_Ace_or_wall_reaction_native_array_present": false,
+    "active_wall_count_inferred": false,
+    "legacy_HydroMechDrainage_declared_zero_by_owner_XML": true,
+    "saved_FS23_soil_pressure_nonpositive": true,
+    "pressure_data_modified_by_reader": false,
+    "pore_pressure_stage_rate_zero_required": false,
+    "FS_pressure_forced_zero_by_reader": false,
+    "closed_normal_flux_projection_claimed": false,
+    "energy_ratio_gate_applied": false,
+    "water_mass_conservation_claimed": false,
+    "owned_solver_exit_verified_by_reader": false,
+    "physical_acceptance": false
+  },
+  "same_backend_default_descriptive": {
+    "typed22.bin": {
+      "bit_identical": true,
+      "different_bytes": 0,
+      "different_bits": 0,
+      "comparison_is_descriptive": true
+    },
+    "clocks.csv": {
+      "bit_identical": true,
+      "different_bytes": 0,
+      "different_bits": 0,
+      "comparison_is_descriptive": true
+    },
+    "typed22_layout.csv": {
+      "bit_identical": true,
+      "different_bytes": 0,
+      "different_bits": 0,
+      "comparison_is_descriptive": true
+    },
+    "native_ids.csv": {
+      "bit_identical": true,
+      "different_bytes": 0,
+      "different_bits": 0,
+      "comparison_is_descriptive": true
+    }
+  },
+  "summary": {
+    "#RunName": "CaseLianSaturatedColumnCollapse_material_on_r1",
+    "Rcode-VersionInfo": "mh6m2uqh-DualSPHysics5 v5.2.274 (02-02-2024)",
+    "DateTime": "06-11-2026 16:16:05",
+    "Np": "7060",
+    "TSimul": "89.653236",
+    "TSeg": "183609.828125",
+    "TTotal": "94.804489",
+    "MemCpu": "1785576",
+    "MemGpu": "4343368",
+    "Steps": "128",
+    "GPIPS": "",
+    "PhysicalTime": "0.000488",
+    "PartFiles": "5",
+    "PartsOut": "0",
+    "MaxParticles": "7060",
+    "MaxCells": "968",
+    "Hardware": "Gpu_0=\"NVIDIA GeForce RTX 3050\"",
+    "RunMode": "CellsFull - Stable - Pos-Cell - Single-GPU",
+    "Configuration": "CaseLianSaturatedColumnCollapse_material_on_r1 - 2D - SvPosDouble - mDBC(Free slip - SlipModeByMk - Corrector) - Symplectic - CubicSpline - Visco_Artificial(0.1b1) - SoilGradCorr - DDT0 - RhopOut(700-3000)",
+    "Nbound": "2060",
+    "Nfixed": "2060",
+    "Dp": "0.040000",
+    "H": "0.048000",
+    "PartsOutRhop": "0",
+    "PartsOutVel": "0",
+    "VA-Init": "5.15115",
+    "NL-Limits": "0.603259",
+    "NL-PreSort": "0.112197",
+    "NL-RadixSort": "10.2403",
+    "NL-CellBegin": "0.18193",
+    "NL-SortData": "28.9227",
+    "NL-OutCheck": "0.0228144",
+    "CF-PreForces": "0.420856",
+    "CF-Forces": "20.4293",
+    "SU-Shifting": "0",
+    "SU-ComputeStep": "0.938681",
+    "SU-Floating": "0",
+    "SU-Motion": "0",
+    "SU-Periodic": "0",
+    "SU-ResizeNp": "0",
+    "SU-DownData": "0.0051521",
+    "SU-SavePart": "0.0988585",
+    "SU-Chrono": "0",
+    "SU-Moorings": "0",
+    "SU-InOut": "0",
+    "SU-Gauges": "8e-07"
+  },
+  "consumed_stats_unchanged": true,
+  "consumed_stats": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_default_r1.check.json",
+      "bytes": 12853,
+      "mtime_ns": 1793949110269129700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_default_GPU_r1.check.json",
+      "bytes": 5720,
+      "mtime_ns": 1793949110261500200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_DebugCPU_r1.build.json",
+      "bytes": 84215,
+      "mtime_ns": 1793947729756952200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_DebugCPU_r1\\DualSPHysics5.2CPU_win64_debug.exe",
+      "bytes": 12735488,
+      "mtime_ns": 1793947729213448900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_Debug_r1.build.json",
+      "bytes": 104839,
+      "mtime_ns": 1793948173719007000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_Debug_r1\\DualSPHysics5.2_win64_debug.exe",
+      "bytes": 189824000,
+      "mtime_ns": 1793948171464147400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_material_on_GPU_r1_execute.py",
+      "bytes": 13211,
+      "mtime_ns": 1793949343248358400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_material_on_r1.xml",
+      "bytes": 14668,
+      "mtime_ns": 1793948783442719000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\CaseLianSaturatedColumnCollapse_material_on_r1_Def.xml",
+      "bytes": 12574,
+      "mtime_ns": 1793948783430646300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_material_on_native_r1.cpp",
+      "bytes": 16128,
+      "mtime_ns": 1793948988758823000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_material_on_GPU_r1.json",
+      "bytes": 4852,
+      "mtime_ns": 1793948837541765500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_material_on_native_r1.json",
+      "bytes": 3549,
+      "mtime_ns": 1793949033701962200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\xCaseLianSaturatedColumnCollapse_material_on_r1_win64_GPU.bat",
+      "bytes": 2877,
+      "mtime_ns": 1793948876803736700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_observer_r1_seed\\CaseLianSaturatedColumnCollapse_geometry_r1.bi4",
+      "bytes": 312083,
+      "mtime_ns": 1793896741531686900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_observer_r1_seed\\CaseLianSaturatedColumnCollapse_geometry_r1_Normals.nbi4",
+      "bytes": 49978,
+      "mtime_ns": 1793896741574006500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\DsphConfig.xml",
+      "bytes": 300,
+      "mtime_ns": 1697414720000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\ChronoEngine.dll",
+      "bytes": 6067712,
+      "mtime_ns": 1697414718000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\dsphchrono.dll",
+      "bytes": 772096,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\vcomp140.dll",
+      "bytes": 185144,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+      "bytes": 3827200,
+      "mtime_ns": 1649210963000000000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\Functions.obj",
+      "bytes": 1597957,
+      "mtime_ns": 1793947726911313100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\FunGeo3d.obj",
+      "bytes": 97253,
+      "mtime_ns": 1793947726926074400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\FunSphKernelsCfg.obj",
+      "bytes": 285799,
+      "mtime_ns": 1793947726941139400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JAppInfo.obj",
+      "bytes": 294315,
+      "mtime_ns": 1793947726958191700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JArraysCpu.obj",
+      "bytes": 195202,
+      "mtime_ns": 1793947726973430100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JBinaryData.obj",
+      "bytes": 1725930,
+      "mtime_ns": 1793947727018971400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseCtes.obj",
+      "bytes": 437339,
+      "mtime_ns": 1793947707086865900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseEParms.obj",
+      "bytes": 614283,
+      "mtime_ns": 1793947707108227600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseParts.obj",
+      "bytes": 810827,
+      "mtime_ns": 1793947707067364500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseProperties.obj",
+      "bytes": 1131819,
+      "mtime_ns": 1793947713913742400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseUserVars.obj",
+      "bytes": 413348,
+      "mtime_ns": 1793947713935628300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCaseVtkOut.obj",
+      "bytes": 473243,
+      "mtime_ns": 1793947713958308200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCellDivCpu.obj",
+      "bytes": 327452,
+      "mtime_ns": 1793947725059649700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCellDivCpuSingle.obj",
+      "bytes": 226769,
+      "mtime_ns": 1793947725080263500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JCfgRunBase.obj",
+      "bytes": 887388,
+      "mtime_ns": 1793947725110422000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JChronoObjects.obj",
+      "bytes": 977390,
+      "mtime_ns": 1793947725153627900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JComputeMotionRef.obj",
+      "bytes": 258922,
+      "mtime_ns": 1793947725174166200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDataArrays.obj",
+      "bytes": 729130,
+      "mtime_ns": 1793947725226179300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsAccInput.obj",
+      "bytes": 559325,
+      "mtime_ns": 1793947713981955700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsDamping.obj",
+      "bytes": 715826,
+      "mtime_ns": 1793947725200490800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsDcell.obj",
+      "bytes": 42006,
+      "mtime_ns": 1793947725239231000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsExtraData.obj",
+      "bytes": 283177,
+      "mtime_ns": 1793947725258375400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsFixedDt.obj",
+      "bytes": 200106,
+      "mtime_ns": 1793947714042027100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsFtForcePoints.obj",
+      "bytes": 335417,
+      "mtime_ns": 1793947714060632200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsGaugeItem.obj",
+      "bytes": 967935,
+      "mtime_ns": 1793947725349838800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsGaugeSystem.obj",
+      "bytes": 642074,
+      "mtime_ns": 1793947725375730600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsInitialize.obj",
+      "bytes": 883416,
+      "mtime_ns": 1793947714088787200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsMooredFloatings.obj",
+      "bytes": 530805,
+      "mtime_ns": 1793947725478626900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsMotion.obj",
+      "bytes": 188556,
+      "mtime_ns": 1793947714223297600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsOutputTime.obj",
+      "bytes": 385444,
+      "mtime_ns": 1793947707018318500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsPartsInit.obj",
+      "bytes": 153091,
+      "mtime_ns": 1793947714238341000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsPartsOut.obj",
+      "bytes": 155153,
+      "mtime_ns": 1793947706907307200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsphConfig.obj",
+      "bytes": 200077,
+      "mtime_ns": 1793947725273241000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsPips.obj",
+      "bytes": 322505,
+      "mtime_ns": 1793947725290610500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsSaveDt.obj",
+      "bytes": 270748,
+      "mtime_ns": 1793947719389505500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsTimers.obj",
+      "bytes": 295168,
+      "mtime_ns": 1793947725307892200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JDsViscoInput.obj",
+      "bytes": 199813,
+      "mtime_ns": 1793947706885523500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JException.obj",
+      "bytes": 231433,
+      "mtime_ns": 1793947725322897900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JFtMotionSave.obj",
+      "bytes": 194011,
+      "mtime_ns": 1793947725393549500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JLinearValue.obj",
+      "bytes": 388756,
+      "mtime_ns": 1793947725411690500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JLog2.obj",
+      "bytes": 993038,
+      "mtime_ns": 1793947725439965000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMLPistonsGpu.obj",
+      "bytes": 146577,
+      "mtime_ns": 1793947725454614600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMotion.obj",
+      "bytes": 809241,
+      "mtime_ns": 1793947718989451400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMotionList.obj",
+      "bytes": 171033,
+      "mtime_ns": 1793947719003405500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMotionMov.obj",
+      "bytes": 347304,
+      "mtime_ns": 1793947719024083100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMotionObj.obj",
+      "bytes": 794317,
+      "mtime_ns": 1793947719051093300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JMotionPos.obj",
+      "bytes": 51786,
+      "mtime_ns": 1793947719063793600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JObject.obj",
+      "bytes": 146410,
+      "mtime_ns": 1793947719076894700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JOutputCsv.obj",
+      "bytes": 757050,
+      "mtime_ns": 1793947719101973700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartDataBi4.obj",
+      "bytes": 524525,
+      "mtime_ns": 1793947719126757500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartDataHead.obj",
+      "bytes": 572977,
+      "mtime_ns": 1793947719154231700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartFloatBi4.obj",
+      "bytes": 425461,
+      "mtime_ns": 1793947719177199500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartNormalData.obj",
+      "bytes": 322281,
+      "mtime_ns": 1793947719198185800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartOutBi4Save.obj",
+      "bytes": 297673,
+      "mtime_ns": 1793947719218927200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JPartsLoad4.obj",
+      "bytes": 419536,
+      "mtime_ns": 1793947719246079400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JRadixSort.obj",
+      "bytes": 495209,
+      "mtime_ns": 1793947719268698100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JRangeFilter.obj",
+      "bytes": 328122,
+      "mtime_ns": 1793947719296226200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JReadDatafile.obj",
+      "bytes": 689522,
+      "mtime_ns": 1793947719326344200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JRelaxZonesGpu.obj",
+      "bytes": 179383,
+      "mtime_ns": 1793947719343488400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSaveCsv2.obj",
+      "bytes": 681391,
+      "mtime_ns": 1793947719369213700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSimpleNeigs.obj",
+      "bytes": 247829,
+      "mtime_ns": 1793947713878726400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSph.obj",
+      "bytes": 2943860,
+      "mtime_ns": 1793947707183763400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphCfgRun.obj",
+      "bytes": 394790,
+      "mtime_ns": 1793947707039678500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphCpu.obj",
+      "bytes": 8214526,
+      "mtime_ns": 1793947707444981700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphCpu_InOut.obj",
+      "bytes": 461141,
+      "mtime_ns": 1793947714024815900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphCpuSingle.obj",
+      "bytes": 1021580,
+      "mtime_ns": 1793947706975651000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphCpuSingle_InOut.obj",
+      "bytes": 233535,
+      "mtime_ns": 1793947714001145700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphHourglassCpu.obj",
+      "bytes": 554994,
+      "mtime_ns": 1793947706941806200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOut.obj",
+      "bytes": 759611,
+      "mtime_ns": 1793947714116333700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutGridData.obj",
+      "bytes": 426588,
+      "mtime_ns": 1793947714137073500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutPoints.obj",
+      "bytes": 659699,
+      "mtime_ns": 1793947714162866100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutVel.obj",
+      "bytes": 515301,
+      "mtime_ns": 1793947719416607700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutVelAwas.obj",
+      "bytes": 396218,
+      "mtime_ns": 1793947713808552000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutZone.obj",
+      "bytes": 445723,
+      "mtime_ns": 1793947714184280300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphInOutZsurf.obj",
+      "bytes": 417790,
+      "mtime_ns": 1793947713831044800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphMk.obj",
+      "bytes": 282026,
+      "mtime_ns": 1793947714206321000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JSphShifting.obj",
+      "bytes": 590235,
+      "mtime_ns": 1793947713859035300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JTimeControl.obj",
+      "bytes": 314800,
+      "mtime_ns": 1793947706999672300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JWaveSpectrumGpu.obj",
+      "bytes": 143698,
+      "mtime_ns": 1793947707487913600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\JXml.obj",
+      "bytes": 1052215,
+      "mtime_ns": 1793947707534124200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\randomc.obj",
+      "bytes": 8944,
+      "mtime_ns": 1793947707568915100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\tinystr.obj",
+      "bytes": 27034,
+      "mtime_ns": 1793947707578420500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\tinyxml.obj",
+      "bytes": 251279,
+      "mtime_ns": 1793947707592237400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\tinyxmlerror.obj",
+      "bytes": 6012,
+      "mtime_ns": 1793947707601424300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\upl_material_r1\\DebugCPU\\int\\tinyxmlparser.obj",
+      "bytes": 146004,
+      "mtime_ns": 1793947707619377200
+    }
+  ],
+  "solver_invocations": 1,
+  "reader_invocations": 1,
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

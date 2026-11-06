@@ -24,6 +24,7 @@
 #include "JPartFloatBi4.h"
 #include "FunSphKernel.h"
 #include "FunSphEos.h"
+#include "FunSoilMaterial.h"
 #include "Functions.h"
 #include "FunctionsMath.h"
 #include "JDsMotion.h"
@@ -4799,8 +4800,9 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   //-Compute displacement, velocity and density for fluid.
   tdouble3 *movc=ArraysCpu->ReserveDouble3();
   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);
+  unsigned materialerror=0;
   #ifdef OMP_USE
-    #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP)
+    #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)
   #endif
   for(int p=npb;p<np;p++){
     const typecode rcode=Codec[p];
@@ -4845,28 +4847,34 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         sigma_e.xy = SigmaPrec[p].xy + Rsigmac[p].xy * dt05;
         sigma_e.yz = SigmaPrec[p].yz + Rsigmac[p].yz * dt05;
         sigma_e.xz = SigmaPrec[p].xz + Rsigmac[p].xz * dt05;
-      //-Update DP constants
-      float phi=SoilCte.phi;
-      float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
-      float psi=SoilCte.dlt;
-      //default 3D 
-      float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-      if(DPCtes==DP_MC){
-         DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
+      //-Plastic Corretor
+      if(SoilCte.MaterialReturn==1){
+        const fsoil::Status status=fsoil::ReturnPlaneStrain(sigma_e,kplasticold,SoilCte,signew,kplasnew);
+        if(!fsoil::CommitAllowed(status)){materialerror|=1u<<unsigned(status);continue;}
+      }
+      else{
+        //-Update DP constants
+        float phi=SoilCte.phi;
+        float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
+        float psi=SoilCte.dlt;
+        //default 3D 
+        float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
+        float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
+        float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
+        if(DPCtes==DP_MC){
+           DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
 	     DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
 	     DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
+        }
+        if(DPCtes==DP_PS){
+           DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
+           DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
+           DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
+        }	
+        if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
+          ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
+        else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       }
-      if(DPCtes==DP_PS){
-         DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-         DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-         DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
-      }	
-      //-Plastic Corretor
-      if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
-        ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
-      else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       kplasnew=kplasticold;
       // 
       //-Restore data of inout particles.
@@ -4892,6 +4900,11 @@ void JSphCpu::ComputeSymplecticPre(double dt){
     }
     Sigmac[p]=signew;//mdbr
     Kplasticc[p]=kplasnew;//mdbr
+  }
+
+  if(materialerror){
+    ArraysCpu->Free(movc);movc=NULL;
+    Run_Exceptioon(fun::PrintStr("ConsistentDev material return failed in predictor; status mask=%u.",materialerror));
   }
 
   //-Applies displacement to non-periodic fluid particles.
@@ -4944,8 +4957,9 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   //-Compute displacement, velocity and density for fluid.
   tdouble3 *movc=ArraysCpu->ReserveDouble3();
   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);
+  unsigned materialerror=0;
   #ifdef OMP_USE
-    #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP)
+    #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)
   #endif
   for(int p=npb;p<np;p++){
     const typecode rcode=Codec[p];
@@ -4986,28 +5000,34 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         sigma_e.xy = SigmaPrec[p].xy + Rsigmac[p].xy * dt;
         sigma_e.yz = SigmaPrec[p].yz + Rsigmac[p].yz * dt;
         sigma_e.xz = SigmaPrec[p].xz + Rsigmac[p].xz * dt;
-      //-Update DP constants
-      float phi=SoilCte.phi;
-      float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
-      float psi=SoilCte.dlt;
-      //default 3D 
-      float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
-      float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
-      if(DPCtes==DP_MC){
-         DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
+      //-Plastic Corretor
+      if(SoilCte.MaterialReturn==1){
+        const fsoil::Status status=fsoil::ReturnPlaneStrain(sigma_e,kplasticold,SoilCte,signew,kplasnew);
+        if(!fsoil::CommitAllowed(status)){materialerror|=1u<<unsigned(status);continue;}
+      }
+      else{
+        //-Update DP constants
+        float phi=SoilCte.phi;
+        float coh=(PartBegin && StrainSoftening? SoilCte.coh/SoilCte.SoilTriggerFos: SoilCte.coh);
+        float psi=SoilCte.dlt;
+        //default 3D 
+        float DP_phi = 2.f*sin(phi)/((3.f-sin(phi))* 1.732f);
+        float DP_kc = 6.f*coh*cos(phi)/((3.f-sin(phi))* 1.732f);
+        float DP_psi = 2.f*sin(psi)/((3.f-sin(psi))* 1.732f);
+        if(DPCtes==DP_MC){
+           DP_phi = 2.f*sin(phi)/((3.f+sin(phi))* 1.732f);
 	     DP_kc = 6.f*coh*cos(phi)/((3.f+sin(phi))* 1.732f);
 	     DP_psi = 2.f*sin(psi)/((3.f+sin(psi))* 1.732f);
+        }
+        if(DPCtes==DP_PS){
+           DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
+           DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
+           DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
+        }	
+        if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
+          ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
+        else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       }
-      if(DPCtes==DP_PS){
-         DP_phi = tan(phi)/sqrt(9.f+12.f*tan(phi)*tan(phi));
-         DP_kc = 3.f*coh/sqrt(9.f+12.f*tan(phi)*tan(phi)); 
-         DP_psi = tan(psi)/sqrt(9.f+12.f*tan(psi)*tan(psi));
-      }	
-      //-Plastic Corretor
-      if(StrainSoftening)ConsRelationEPsft_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,SoilCte.phi,SoilCte.phi_r,SoilCte.n_phi
-        ,coh,SoilCte.coh_r,SoilCte.n_coh,SoilCte.dlt,DPCtes,kplasticold,signew,kplasnew);
-      else ConsRelationEP_fast(sigma_e,SoilCte.ModulusK,SoilCte.ModulusG,DP_phi,DP_kc,DP_psi,kplasticold,signew,kplasnew);
       // 
       //-Calculate displacement. | Calcula desplazamiento.
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 
@@ -5061,6 +5081,11 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
     }
     Sigmac[p]=signew;//mdbr
     Kplasticc[p]=kplasnew;//mdbr
+  }
+
+  if(materialerror){
+    ArraysCpu->Free(movc);movc=NULL;
+    Run_Exceptioon(fun::PrintStr("ConsistentDev material return failed in corrector; status mask=%u.",materialerror));
   }
 
   //-Applies displacement to non-periodic fluid particles.

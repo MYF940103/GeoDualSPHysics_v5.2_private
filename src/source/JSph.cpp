@@ -2921,6 +2921,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       domainmax=MaxValues(domainmax,vdom[c*2+1]);
     }
     JBinaryData* bdpart=DataBi4->AddPartInfo(Part,TimeStep,npok,nout,Nstep,TimerPart.GetElapsedTimeD()/1000.,domainmin,domainmax,TotalNp);
+    if(SoilCte.MaterialReturn){
+      bdpart->SetvUint("MaterialReturn",SoilCte.MaterialReturn);
+      bdpart->SetvFloat("DilationDecay",SoilCte.psiDecay);
+    }
     if(HydroMechDynamicSeepage){
       bdpart->SetvBool("HydroMechDynamicSeepage",true);
       bdpart->SetvUint("DynamicSeepageSchema",1);
@@ -3765,6 +3769,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.coh=sxml->ReadElementFloat(solidNode,"coh","value",true);
   SoilCte.phi=float(TORAD*sxml->ReadElementFloat(solidNode,"phi","value",true));
   SoilCte.dlt=float(TORAD*sxml->ReadElementFloat(solidNode,"dlt","value",true));
+  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
+  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
+  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
+  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
+    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
 
   //-Strain-softening parameters and activation switch.
   const bool hascohr=sxml->ExistsElement(solidEle,"coh_r","value");
@@ -3881,6 +3890,18 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   //-Derived soil elastic constants.
   SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
   SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
+  if(SoilCte.MaterialReturn){
+    if(!Simulate2D || DPCtes!=DP_PS || TStep!=STEP_Symplectic || PartBegin || SoilCte.n_phi!=0.f)
+      Run_Exceptioon("MaterialReturn=1 requires a fresh 2D DP_PS Symplectic run with fixed friction angle; restart and other return branches are not supported.");
+    if(!std::isfinite(SoilCte.ModulusK) || !(SoilCte.ModulusK>0.f)
+      || !std::isfinite(SoilCte.ModulusG) || !(SoilCte.ModulusG>0.f)
+      || !std::isfinite(SoilCte.phi) || !(SoilCte.phi>0.f && SoilCte.phi<float(PI/2.))
+      || !std::isfinite(SoilCte.dlt) || !(fabs(double(SoilCte.dlt))<PI/2.)
+      || !std::isfinite(SoilCte.coh) || !std::isfinite(SoilCte.coh_r)
+      || SoilCte.coh_r<0.f || SoilCte.coh<SoilCte.coh_r
+      || !std::isfinite(SoilCte.n_coh) || SoilCte.n_coh<0.f)
+      Run_Exceptioon("MaterialReturn=1 requires finite positive moduli, 0<phi<90 degrees, |dlt|<90 degrees, peak cohesion>=residual>=0 and n_coh>=0.");
+  }
 
   //-Shows soil parameter information.
   const StSoilCte &ct=SoilCte;
@@ -3888,6 +3909,10 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   //-Log soil strength, softening and elastic parameters.
   Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
+  if(ct.MaterialReturn){
+    Log->Print("  MaterialReturn: 1=ConsistentDev (experimental radial return; unsupported apex stops the stage)");
+    Log->Printf("  DilationDecay: %g",ct.psiDecay);
+  }
   Log->Printf("  Cohesion: %f",ct.coh);
   if(ct.n_coh){
     Log->Printf("  Residual Cohesion: %f",ct.coh_r);

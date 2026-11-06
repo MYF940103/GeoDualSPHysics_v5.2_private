@@ -178,7 +178,7 @@ void JSphGpu::InitVars(){
   Rsigmag=NULL;//ruofeng
   ArtificialStressg=NULL;//mdbr
   ShiftPosfsg=NULL;                                //-Shifting.
-  RidpMoveg=NULL;
+  RidpMoveg=NULL; MaterialErrorg=NULL;
   FtRidpg=NULL;   FtoMasspg=NULL;                  //-Floatings.
   FtoDatpg=NULL;  FtoMassg=NULL;  FtoConstraintsg=NULL;                           //-Calculates forces on floating bodies.
   FtoForcesg=NULL;  FtoForcesResg=NULL;  FtoCenterResg=NULL; //-Calculates forces on floating bodies.
@@ -228,6 +228,7 @@ void JSphGpu::AllocCpuMemoryFixed(){
 //==============================================================================
 void JSphGpu::FreeGpuMemoryFixed(){
   MemGpuFixed=0;
+  if(MaterialErrorg)cudaFree(MaterialErrorg); MaterialErrorg=NULL;
   if(BoundDerivativeFitShiftg)cudaFree(BoundDerivativeFitShiftg); BoundDerivativeFitShiftg=NULL;
   if(RidpMoveg)         cudaFree(RidpMoveg);          RidpMoveg=NULL;
   if(FtRidpg)           cudaFree(FtRidpg);            FtRidpg=NULL;
@@ -250,6 +251,9 @@ void JSphGpu::FreeGpuMemoryFixed(){
 //==============================================================================
 void JSphGpu::AllocGpuMemoryFixed(){
   MemGpuFixed=0;
+  if(SoilCte.MaterialReturn==1){
+    cudaMalloc((void**)&MaterialErrorg,sizeof(unsigned)); MemGpuFixed+=sizeof(unsigned);
+  }
   //-Allocates memory for moving objects.
   if(CaseNmoving){
     size_t m=sizeof(unsigned)*CaseNmoving;
@@ -1568,9 +1572,19 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   double *movzg=ArraysGpu->ReserveDouble();
   //-Compute displacement, velocity and density.
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
+  if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag});
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg);
+  if(MaterialErrorg){
+    try{
+      unsigned materialerror=0;
+      cudaMemcpy(&materialerror,MaterialErrorg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+      Check_CudaErroor("Failed checking GPU material predictor return.");
+      if(materialerror)Run_Exceptioon(fun::PrintStr("GPU material predictor return rejected the stage (status bits %u).",materialerror));
+    }
+    catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+  }
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
@@ -1600,9 +1614,19 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   //-Computes displacement, velocity and density.
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
+  if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag});
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg);
+  if(MaterialErrorg){
+    try{
+      unsigned materialerror=0;
+      cudaMemcpy(&materialerror,MaterialErrorg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+      Check_CudaErroor("Failed checking GPU material corrector return.");
+      if(materialerror)Run_Exceptioon(fun::PrintStr("GPU material corrector return rejected the stage (status bits %u).",materialerror));
+    }
+    catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+  }
   if(HydroMech && !DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
   ComputeSymplecticPorosity(true,dt);
