@@ -1,0 +1,406 @@
+{
+  "stage": "upl_darcy_eta_wave_review_r1",
+  "passed": true,
+  "physical_acceptance": false,
+  "solver_invocations": 0,
+  "decoder_invocations": 0,
+  "SHA_scans": 0,
+  "summary": {
+    "baseline": {
+      "actual_Debug_elapsed_s": 15.391000000294298,
+      "completion": {
+        "passed": true,
+        "darcy_bare": false,
+        "global_eta2": 4.943847216054564e-07,
+        "darcy_eta2": 4.943847216054564e-07,
+        "actual_ComputeStep_Sym": true,
+        "Nx": 32,
+        "native_ids": 512,
+        "samples": 257,
+        "steps": 512,
+        "actual_end_s": 3.0517578125e-05,
+        "smoke": false,
+        "cu": 512.0000012715657,
+        "Pstar": 1023.9999974568686,
+        "Ustar": 7.589099058944216e-08,
+        "max_energy_ratio": 1.000884843187361,
+        "max_coupled_CFL": 0.004340283585887058,
+        "max_Ddt_h2": 0.003300180482155596,
+        "min_endpoint_bound_s": 1.8061026051713624e-06,
+        "min_RH_margin": 23.99453709450563,
+        "max_discrete_pressure_RMS_Pa": 0.0021374116618257492,
+        "max_discrete_v_RMS_normalized": 4.6860418257097726e-07,
+        "max_discrete_u_RMS_normalized": 1.852620089286553e-07,
+        "max_continuum_p_RMS_normalized": 0.007339875735176764,
+        "max_continuum_v_RMS_normalized": 0.007695817835752708,
+        "max_continuum_u_RMS_normalized": 0.002093868041282758,
+        "discrete_Kr": 49.17052973510357,
+        "discrete_Ks": 49.40056872073357,
+        "discrete_Ksig": 49.40056873736829,
+        "discrete_ell": 2470.180778720091,
+        "physical_acceptance": false
+      },
+      "maximum_field_errors": {
+        "p_RMS_Pa": 7.516032734154745,
+        "u_XYZ_RMS_m": 1.5890571981674445e-10,
+        "v_XYZ_RMS_m_s": 1.503089421045604e-05,
+        "sigma_xx_RMS_Pa": 6.703031084956763
+      },
+      "maximum_p_RMS_over_Pstar": 0.007339875735176771,
+      "maximum_u_RMS_over_Ustar": 0.00209386804128567,
+      "maximum_v_RMS_over_A": 0.007695817835753492,
+      "maximum_sigma_xx_RMS_over_Sstar": 0.006545928745132119,
+      "endpoint_modal_u_v_sigma_p": [
+        5.389131862903516e-08,
+        0.0014027789178592057,
+        714.6458391643893,
+        -711.6745776676796
+      ],
+      "endpoint_pressure_amplitude_relative_error": 0.014715794412231822,
+      "cpp_continuum_vs_expm_max_abs": {
+        "u_m": 3.110199103199384e-22,
+        "v_m_s": 5.854691731421724e-18,
+        "sigma_xx_Pa": 1.3642420526593924e-12,
+        "p_Pa": 1.2505552149377763e-12
+      },
+      "cpp_pressure_field_error_vs_independent_max_abs": 8.647596527744383e-16,
+      "signed_fixed_error_min_s": 0.0,
+      "signed_fixed_error_max_s": 0.0,
+      "original_single_run_guards_passed": true
+    },
+    "candidate": {
+      "actual_Debug_elapsed_s": 15.046999999787658,
+      "completion": {
+        "passed": true,
+        "darcy_bare": true,
+        "global_eta2": 4.943847216054564e-07,
+        "darcy_eta2": 0,
+        "actual_ComputeStep_Sym": true,
+        "Nx": 32,
+        "native_ids": 512,
+        "samples": 257,
+        "steps": 512,
+        "actual_end_s": 3.0517578125e-05,
+        "smoke": false,
+        "cu": 512.0000012715657,
+        "Pstar": 1023.9999974568686,
+        "Ustar": 7.589099058944216e-08,
+        "max_energy_ratio": 1.0005549262514661,
+        "max_coupled_CFL": 0.004340283586096916,
+        "max_Ddt_h2": 0.003300180483124347,
+        "min_endpoint_bound_s": 1.8061026046411903e-06,
+        "min_RH_margin": 23.994536893211375,
+        "max_discrete_pressure_RMS_Pa": 0.0021847083817867984,
+        "max_discrete_v_RMS_normalized": 5.125023790532386e-07,
+        "max_discrete_u_RMS_normalized": 1.8755337299938472e-07,
+        "max_continuum_p_RMS_normalized": 0.008043672328480625,
+        "max_continuum_v_RMS_normalized": 0.00778819391083255,
+        "max_continuum_u_RMS_normalized": 0.0021125304762071957,
+        "discrete_Kr": 49.17052973510357,
+        "discrete_Ks": 49.40056872073357,
+        "discrete_Ksig": 49.40056873736829,
+        "discrete_ell": 2504.8237321562583,
+        "physical_acceptance": false
+      },
+      "maximum_field_errors": {
+        "p_RMS_Pa": 8.23672044390805,
+        "u_XYZ_RMS_m": 1.6032203048997133e-10,
+        "v_XYZ_RMS_m_s": 1.5211316232096341e-05,
+        "sigma_xx_RMS_Pa": 6.684250347543022
+      },
+      "maximum_p_RMS_over_Pstar": 0.00804367232848063,
+      "maximum_u_RMS_over_Ustar": 0.0021125304762101113,
+      "maximum_v_RMS_over_A": 0.007788193910833327,
+      "maximum_sigma_xx_RMS_over_Sstar": 0.0065275881813881605,
+      "endpoint_modal_u_v_sigma_p": [
+        5.3893321594664065e-08,
+        0.0014030340731251939,
+        714.6723991386209,
+        -710.6553713124551
+      ],
+      "endpoint_pressure_amplitude_relative_error": 0.016126843725428264,
+      "cpp_continuum_vs_expm_max_abs": {
+        "u_m": 3.110199103199384e-22,
+        "v_m_s": 5.854691731421724e-18,
+        "sigma_xx_Pa": 1.3642420526593924e-12,
+        "p_Pa": 1.2505552149377763e-12
+      },
+      "cpp_pressure_field_error_vs_independent_max_abs": 8.795048023202412e-16,
+      "signed_fixed_error_min_s": 0.0,
+      "signed_fixed_error_max_s": 0.0,
+      "original_single_run_guards_passed": true
+    }
+  },
+  "reference": {
+    "K": 89478488.0,
+    "G": 134217728.0,
+    "Kw": 67108864.0,
+    "n0": 0.25,
+    "rho0": 2048.0,
+    "rhow": 1000.0,
+    "hydraulic_k_float32": 9.999999747378752e-05,
+    "gamma": 9806.65,
+    "M": 268435458.6666666,
+    "B": 268435456.0,
+    "D": 2.7372797970637275,
+    "k": 50.26548245743669,
+    "Lx": 0.125,
+    "A": 0.001953125,
+    "Pstar": 1023.9999974568686,
+    "Ustar": 7.589099058944216e-08,
+    "Sstar": 1024.0000076293945,
+    "initial_u_v_sigma_p": [
+      0,
+      0.001953125,
+      0,
+      0
+    ],
+    "endpoint": [
+      5.366659200555205e-08,
+      0.001381522023451166,
+      724.1253565976526,
+      -722.3038526666855
+    ],
+    "conditioning": {
+      "matrix_physical": [
+        [
+          0.0,
+          1.0,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -0.02454369260617026,
+          0.02454369260617026
+        ],
+        [
+          0.0,
+          13493037838.563303,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -13493037704.522018,
+          -3376.983591514144,
+          -3539.0788039068225
+        ]
+      ],
+      "matrix_scaled": [
+        [
+          0.0,
+          25735.927082123446,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          0.0,
+          -12867.963604977593,
+          12867.963477145862
+        ],
+        [
+          0.0,
+          25735.927082123446,
+          0.0,
+          0.0
+        ],
+        [
+          0.0,
+          -25735.92708212345,
+          -3376.983625061461,
+          -3539.0788039068225
+        ]
+      ],
+      "scales": [
+        7.589099058944216e-08,
+        0.001953125,
+        1024.0000076293945,
+        1023.9999974568686
+      ],
+      "end_scaled_matrix_norm2": 1.3630994488214148,
+      "end_scaled_exponential_condition2": 2.3746113678323275
+    },
+    "unfitted": true
+  },
+  "samples": 257,
+  "native_IDs": 512,
+  "initial26_different_bitpatterns": 0,
+  "maximum_actual_time_gap_s": 0.0,
+  "pressure_continuum_RMS_change_percent": 9.588671779971335,
+  "production_denominator_retained": true,
+  "no_new_A_B_physical_gate": true,
+  "visual_QA_pending": true,
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_darcy_eta_wave_review_r1.py",
+      "bytes": 15505,
+      "mtime_ns": 1794056592120056400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1_baseline.check.json",
+      "bytes": 2886,
+      "mtime_ns": 1794056177256811500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1_baseline.call.json",
+      "bytes": 2361,
+      "mtime_ns": 1794056177199344700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1.build.json",
+      "bytes": 80931,
+      "mtime_ns": 1794056130756673300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\complete.json",
+      "bytes": 999,
+      "mtime_ns": 1794056177150576000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\CfgInit_Domain.vtk",
+      "bytes": 854,
+      "mtime_ns": 1794056161943097100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\CfgInit_MapCells.vtk",
+      "bytes": 1010,
+      "mtime_ns": 1794056161946095900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\complete.json",
+      "bytes": 999,
+      "mtime_ns": 1794056177150576000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\endpoint_policy.csv",
+      "bytes": 81549,
+      "mtime_ns": 1794056177150065500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\modes.csv",
+      "bytes": 115957,
+      "mtime_ns": 1794056177150065500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\physical.bin",
+      "bytes": 27371540,
+      "mtime_ns": 1794056177150065500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_baseline\\Run.out",
+      "bytes": 4124,
+      "mtime_ns": 1794056161974135300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_build\\baseline.exe",
+      "bytes": 13191680,
+      "mtime_ns": 1794056121066320900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_build\\JSphCpu_eta0.cpp",
+      "bytes": 201002,
+      "mtime_ns": 1794056055376649500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_darcy_eta_wave_r1.cpp",
+      "bytes": 20217,
+      "mtime_ns": 1794055825580994900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1_candidate.check.json",
+      "bytes": 2896,
+      "mtime_ns": 1794056220481800700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1_candidate.call.json",
+      "bytes": 2367,
+      "mtime_ns": 1794056220383039300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\logs\\upl_darcy_eta_wave_r1.build.json",
+      "bytes": 80931,
+      "mtime_ns": 1794056130756673300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\complete.json",
+      "bytes": 981,
+      "mtime_ns": 1794056220360533100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\CfgInit_Domain.vtk",
+      "bytes": 854,
+      "mtime_ns": 1794056205588483500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\CfgInit_MapCells.vtk",
+      "bytes": 1010,
+      "mtime_ns": 1794056205618961600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\complete.json",
+      "bytes": 981,
+      "mtime_ns": 1794056220360533100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\endpoint_policy.csv",
+      "bytes": 81559,
+      "mtime_ns": 1794056220359030000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\modes.csv",
+      "bytes": 115986,
+      "mtime_ns": 1794056220359030000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\physical.bin",
+      "bytes": 27371540,
+      "mtime_ns": 1794056220359030000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_candidate\\Run.out",
+      "bytes": 4127,
+      "mtime_ns": 1794056205646907700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_build\\candidate.exe",
+      "bytes": 13198848,
+      "mtime_ns": 1794056129455336400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_darcy_eta_wave_r1_build\\JSphCpu_eta0.cpp",
+      "bytes": 201002,
+      "mtime_ns": 1794056055376649500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\support\\upl_darcy_eta_wave_r1.cpp",
+      "bytes": 20217,
+      "mtime_ns": 1794055825580994900
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_darcy_eta_wave_review_r1.png",
+      "bytes": 227286,
+      "mtime_ns": 1794056652010178200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_darcy_eta_wave_review_r1.csv",
+      "bytes": 254155,
+      "mtime_ns": 1794056651424996100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\figures\\upl_darcy_eta_wave_review_r1_fields.csv",
+      "bytes": 451891,
+      "mtime_ns": 1794056651454098200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\notes\\upl_darcy_eta_wave_review_r1.md",
+      "bytes": 1830,
+      "mtime_ns": 1794056652013695400
+    }
+  ]
+}

@@ -1,0 +1,9 @@
+# Closed Darcy-Eta weak-wave review
+
+All257 actual times and all512 ordered IDs are compared; initial26-field bits match. The independent reference uses scipy.linalg.expm on a dimensionlessly scaled4x4 continuous system with the declared material constants, k=2pi/.125 and initial[0,1/512,0,0]. No discrete ell/Kr/Ks, fitted amplitude, clock substitution or parameter fit enters it. Pstar=1023.9999974568686Pa, Ustar=7.5890990589442159e-08m, Sstar=1024.0000076293945Pa. Initial velocity float quantization and the nonlinear current-J/current-C solver remain real differences from this linear continuous reference.
+
+Maximum all-ID pressure RMS error: baseline7.51603273415Pa, candidate8.23672044391Pa; candidate change+9.5886718%. Endpoint pressure-amplitude relative errors: 0.0147157944122/0.0161268437254. This verdict concerns pressure only: sigma_xx can improve slightly while other fields worsen; no uniform coupled accuracy gain is claimed. Individual p/u/v/sigma errors and CPP-continuum/expm differences are retained in the JSON/CSV whether candidate improves or worsens. Small errors against each helper's own discrete symbol are not continuous accuracy.
+
+All original single-run finite/ledger/periodic/energy1.1/step/CFL/diffusion/discrete-reference and absolute signed FixedDt1e-14s guards remain in force. Signed FixedDt is not a temporal-reference error metric. A/B field differences are descriptive; there is no5Pa equivalence threshold. Actual Debug elapsed times are not a speed benchmark. Production denominator is retained by root decision; this analysis makes no production edit.
+
+Scope: XZ-periodic regular small-strain constant-k Wendland only, no FS/wall/variable-k/strong-disorder or collapse admission. No solver/decoder/build is invoked. PNG visual QA remains pending until inspected separately.
