@@ -1,8 +1,16 @@
 # 当前发包状态
 
-**当前只在tests检验AS＋固定平面候选，根目录r4入口仍暂停。** 新候选沿用AS既有ε=.2/exp2.55、dt2.5 us和原r2 GPU认证PRE；只放行严格handoff范围内的组合，并补时步拒绝分项日志。CPU Debug、GPU Debug/Release构建通过；CPU/GPU各40更新、1帧原生22数组/6800IDs检查通过，GPU memcheck 0错误/0泄漏。跨后端pRMS=.001724343 Pa、材料XYZ最大差1.252068e−9 mm。AS关闭的新Release前2帧与保留固定平面54帧的实际共同前缀，完整22数组/time/signed clock逐byte一致。
+**当前在tests运行保留浅层底面粒子的AS＋固定平面0.6 s候选，根目录r4入口仍暂停。** 新标签`upl_c08_bedkeep_window_GPU_r1`，实际owner58076→GPU solver22148，启动UTC 2026-11-07 21:10:28；只复用原r2认证PRE，不重算10 s。`keep_bed_overlap=true`在撤墙事件保留原ID 1800/1852/1904/1956/2008作为NoSlip浅床，其余255个右墙点退休，活动6805=1805固定+5000土粒。AS ε=.2/exp2.55、NoPen固定平面、dt2.5 us及原数值门不变；ReactionClosed=false，尚非正式3 s或论文验收。
 
-AS开启的0.03 s短窗正常完成并通过3帧原生22数组/6800IDs/ledger/clock/signed/FS/接触门；最大保存速度.191152 m/s、最小z=.0174043 m，无穿左墙/底面。单次0.6 s窗口`upl_c08_asplane_window_GPU_r1`现已启动：实际owner74200→solver80168，RTX3050，计划240000更新/60帧；原始start及root/owner admission分别保存。只设置该直接owner的一次同线程终态通知，不额外设watcher。完成后先核run，再独立native与AS对照物理审查；尚无0.6 s或正式3 s组合物理结论。隔离的ReleaseCPU补充构建现也通过，四种配置全部通过；活动GPU程序未更换。
+新CPU Debug、GPU Debug/Release构建通过；CPU/GPU各40更新/1帧6805点原生检查通过，GPU memcheck 0错误/0泄漏，跨后端pRMS=.001723329 Pa、XYZmax=1.252068e−9 mm。新选项关闭的3帧对原AS开启短窗，全部22数组、layout、time及signed clocks整文件逐byte相同。开启后0.03 s/3帧原生门通过：末帧最大速度.136565（旧.191152）m/s、最大κ=.0225326（旧.0410586）、最小z=.0199834（旧.0174043）m；是边界算子改变的描述性收益，不套用half误差或理论精度结论。审查见`tests/figures/upl_c08_bedkeep_short_review_r1_*`，启动前准入见`tests/logs/upl_c08_bedkeep_window_GPU_r1.admission.json`。根目录runtime/XML/BAT均未替换。
+
+以下保留此前AS＋固定平面的实现记录：沿用AS既有ε=.2/exp2.55、dt2.5 us和原r2 GPU认证PRE；只放行严格handoff范围内的组合，并补时步拒绝分项日志。CPU/GPU各40更新、1帧原生22数组/6800IDs检查通过，GPU memcheck 0错误/0泄漏。跨后端pRMS=.001724343 Pa、材料XYZ最大差1.252068e−9 mm。AS关闭的新Release前2帧与保留固定平面54帧的实际共同前缀，完整22数组/time/signed clock逐byte一致。
+
+AS开启的0.03 s短窗正常完成并通过3帧原生22数组/6800IDs/ledger/clock/signed/FS/接触门；最大保存速度.191152 m/s、最小z=.0174043 m，无穿左墙/底面。四种配置构建全部通过。
+
+**0.6 s AS组合窗口`upl_c08_asplane_window_GPU_r1`已失败，不准入正式三组。** 原owner74200→solver80168身份一致，Popen/Win32/solver均exit1，无所有权错误，必要输入/程序/PRE stat均未变。耗时1318.422 s；最后原样console为`Part_0052     10.530000       4212000     4000    2518.45  08-11-2026 05:21:28`，53帧原PART及60行启动前计划全部保留。53帧已由独立partial适配器一次性解码，原22数组/6800IDs/clock/ledger/FS/平面门通过，末native时刻10.530000000542486 s；这不改变solver失败结论。
+
+首因是`DynamicPoreWall` stage0、sorted_slot564、native828，真实报告的力阶段step_start=10.532042500543135、step4212817，B=(4.42,0,−.06)、normal=(0,0,.119999997)，要求有限饱和一阶镜像拟合；不是时步拒绝。此阶段报告不是最后保存native状态，不捏造未保存故障数据。53帧图CSV见`upl_c08_asplane_partial_review_r1_*`：τ=.49时AS使负孔压极值由−973054.5降至−50429.8 Pa，但τ=.53土点7014仍达−168014.3 Pa、5.915 m/s。局部828现有nearest重试在最后保存态det=.27498，不能据未保存的错误盲加MLS重试。另已确认撤墙移除了5个浅床原点、留下.24 m支撑缺口；当前只修该明确几何问题。原dt/半径/det/饱和门不改，不增加half或重跑10 s。审计见`tests/logs/upl_c08_asplane_failure_audit_r1.json`；旧终态通知仅投递过一次，不重挂。
 
 CPU短测实际exit0，原owner仅因Run.csv配置说明中未转义的AS分号而后检失败；原failed记录/CSV未改，已用独立offline adoption重新核全部原post门，随后只解码一次。未来入口r2仅修解析与实际日志等号格式，不改数值门或求解器。相关记录以`upl_c08_asplane_*`、`upl_c08_as_plane_native_r2*`及`upl_c08_as_short_review_r1*`为标签。
 

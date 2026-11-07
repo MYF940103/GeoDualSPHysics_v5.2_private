@@ -1256,12 +1256,21 @@ void JSphCpuSingle::RunGravityPreloadRelease(){
     || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb)
     Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
   Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
-  unsigned retired=0;const unsigned oldnp=Np,oldnb=Npb;
+  unsigned retired=0,kept=0;const unsigned oldnp=Np,oldnb=Npb;
+  if(GravityPreloadKeepBedOverlap && (!BoundNormalc || !BoundSlipModec || GravityPreloadBedIds.empty()))
+    Run_Exceptioon("keep_bed_overlap requires its planned native IDs, normals and per-particle slip modes.");
   for(unsigned p=0;p<Npb;p++)if(Idpc[p]>=GravityPreloadIdBegin && Idpc[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
     if(!CODE_IsNormal(Codec[p]) || !CODE_IsFixed(Codec[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
-    Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;
+    if(IsGravityPreloadBedId(Idpc[p])){
+      BoundNormalc[p]=TFloat3(0,0,float(Dp));BoundSlipModec[p]=byte(SLIP_NoSlip);kept++;
+    }
+    else{Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;}
   }
-  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+  if(GravityPreloadKeepBedOverlap){
+    if(retired+kept!=GravityPreloadIdCount || kept!=unsigned(GravityPreloadBedIds.size()))
+      Run_Exceptioon("keep_bed_overlap release did not preserve/retire exactly its planned native IDs.");
+  }
+  else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
   SoilDamping=false;PoreShepardRegularization=false;
   BoundChanged=true;RunCellDivide(true);
   if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
@@ -1269,6 +1278,13 @@ void JSphCpuSingle::RunGravityPreloadRelease(){
     Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
   NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
   GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
+  if(GravityPreloadKeepBedOverlap){
+    std::ostringstream ids;
+    for(unsigned c=0;c<unsigned(GravityPreloadBedIds.size());c++){
+      if(c)ids<<',';ids<<GravityPreloadBedIds[c];
+    }
+    Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.",GravityPreloadIdCount,retired,kept,ids.str().c_str());
+  }
   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
 }
 

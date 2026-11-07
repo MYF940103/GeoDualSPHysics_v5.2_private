@@ -1051,15 +1051,29 @@ void JSphGpuSingle::RunGravityPreloadRelease(){
     || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb || !Idp || !Code || CpuParticlesSize<Npb)
     Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
   Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
-  const unsigned oldnp=Np,oldnb=Npb;unsigned retired=0;
+  const unsigned oldnp=Np,oldnb=Npb;unsigned retired=0,kept=0;
+  if(GravityPreloadKeepBedOverlap && (GravityPreloadBedIds.empty() || !BoundNormalg || !BoundSlipModeg))
+    Run_Exceptioon("gravitypreload bed overlap requires its planned native IDs and boundary attributes.");
   cudaMemcpy(Idp,Idpg,sizeof(unsigned)*Npb,cudaMemcpyDeviceToHost);
   cudaMemcpy(Code,Codeg,sizeof(typecode)*Npb,cudaMemcpyDeviceToHost);
   Check_CudaErroor("Failed in gravitypreload boundary ID/code download.");
   for(unsigned p=0;p<Npb;p++)if(Idp[p]>=GravityPreloadIdBegin && Idp[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
     if(!CODE_IsNormal(Code[p]) || !CODE_IsFixed(Code[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
-    Code[p]=CODE_SetOutIgnore(Code[p]);retired++;
+    if(GravityPreloadKeepBedOverlap && IsGravityPreloadBedId(Idp[p])){
+      //-Retain the fixed native slot and primary state; only its per-particle wall role changes.
+      const tfloat3 normal=TFloat3(0,0,float(Dp));const byte slip=byte(SLIP_NoSlip);
+      cudaMemcpy(BoundNormalg+p,&normal,sizeof(tfloat3),cudaMemcpyHostToDevice);
+      cudaMemcpy(BoundSlipModeg+p,&slip,sizeof(byte),cudaMemcpyHostToDevice);
+      kept++;
+    }
+    else{Code[p]=CODE_SetOutIgnore(Code[p]);retired++;}
   }
-  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+  if(GravityPreloadKeepBedOverlap){
+    if(retired+kept!=GravityPreloadIdCount || kept!=unsigned(GravityPreloadBedIds.size()))
+      Run_Exceptioon("gravitypreload bed overlap did not match its planned native ID roles.");
+    Check_CudaErroor("Failed in gravitypreload retained bed attribute upload.");
+  }
+  else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
   cudaMemcpy(Codeg,Code,sizeof(typecode)*Npb,cudaMemcpyHostToDevice);
   Check_CudaErroor("Failed in gravitypreload boundary code upload.");
   SoilDamping=false;PoreShepardRegularization=false;ConstantDataUp();
@@ -1069,6 +1083,12 @@ void JSphGpuSingle::RunGravityPreloadRelease(){
     Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
   NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
   GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
+  if(GravityPreloadKeepBedOverlap){
+    std::string keptids;
+    for(unsigned id:GravityPreloadBedIds){if(!keptids.empty())keptids+=",";keptids+=std::to_string(id);}
+    Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip."
+      ,GravityPreloadIdCount,retired,kept,keptids.c_str());
+  }
   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
 }
 

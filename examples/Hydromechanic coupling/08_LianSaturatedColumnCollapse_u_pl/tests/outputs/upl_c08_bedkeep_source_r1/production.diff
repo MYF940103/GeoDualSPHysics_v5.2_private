@@ -1,0 +1,242 @@
+diff --git a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+index 5938744..0eb79a7 100644
+--- a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
++++ b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+@@ -70,6 +70,7 @@
+ 			<!-- Shared elastic PRE handoff has bounded CPU/GPU continuity checks only: elastic_source=false, statefile="" by default. -->
+ 			<!-- Use either elastic_source="true" to qualify every preload material trial, or statefile="relative/Part_####.bi4" to import its certified PRE state. -->
+ 			<!-- Requires Model1, damping/Shepard and full double-position binary output; plastic trials reject the shared source. Ordinary PART restart remains unsupported. -->
++			<!-- keep_bed_overlap="false" by default. Only certified statefile + fixed-plane dynamic NoPen may preserve the half-dp shallow bed row as NoSlip at release; bounded validation pending. -->
+ 
+ 			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
+ 			<mdbcslip>
+diff --git a/src/source/JSph.cpp b/src/source/JSph.cpp
+index 77e4b0e..dde6000 100644
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -226,7 +226,8 @@ void JSph::InitVars(){
+   HydroMechDrainageStartTime=0;
+   HydroMechDrainageFixedGrid=false;
+   HydroMechFreeSeepage=false;
+-  GravityPreload=GravityPreloadReleased=GravityPreloadElasticSource=false;
++  GravityPreload=GravityPreloadReleased=GravityPreloadElasticSource=GravityPreloadKeepBedOverlap=false;
++  GravityPreloadBedIds.clear();
+   GravityPreloadStateFile.clear();
+   GravityPreloadNormalContract.clear();
+   GravityPreloadTime=GravityPreloadActualTime=0.;
+@@ -634,6 +635,9 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
+         || !(SvData&SDAT_Binx) || !(SvData&SDAT_Info))
+         Run_Exceptioon("Shared preload requires one elastic_source or statefile, Model1, preload damping/Shepard, stable double-position binary/info output and fresh geometry initialization.");
+     }
++    if(GravityPreloadKeepBedOverlap && (!IsGravityPreloadHandoff() || GravityPreloadElasticSource
++      || !NoPenetration || TMdbc2!=MDBC2_NoPen))
++      Run_Exceptioon("gravitypreload keep_bed_overlap requires a certified statefile handoff with fixed-plane dynamic NoPen; it cannot alter an elastic source.");
+     GravityPreloadStep=unsigned(rounded);
+     Log->Printf("GravityPreload: requested=%.17g event_completed_step=%u release_mkbound=%u; damping/Shepard are preload-only.",GravityPreloadTime,GravityPreloadStep,GravityPreloadMkBound);
+   }
+@@ -1485,7 +1489,7 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
+   InitSoilParameters(&xml,"case.execution.special.soils");
+   if(TiXmlNode* node=xml.GetNodeSimple("case.execution.special.gravitypreload",true)){
+     TiXmlElement* ele=node->ToElement();
+-    xml.CheckAttributeNames(ele,"time release_mkbound elastic_source statefile comment units_comment");
++    xml.CheckAttributeNames(ele,"time release_mkbound elastic_source statefile keep_bed_overlap comment units_comment");
+     xml.CheckElementNames(ele,true,"");
+     if(ele->NextSiblingElement("gravitypreload"))Run_Exceptioon("Only one gravitypreload event is supported.");
+     GravityPreload=true;
+@@ -1493,6 +1497,7 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
+     GravityPreloadMkBound=xml.GetAttributeUnsigned(ele,"release_mkbound");
+     GravityPreloadElasticSource=xml.GetAttributeBool(ele,"elastic_source",true,false);
+     GravityPreloadStateFile=xml.GetAttributeStr(ele,"statefile",true,"");
++    GravityPreloadKeepBedOverlap=xml.GetAttributeBool(ele,"keep_bed_overlap",true,false);
+     if(GravityPreloadMkBound>0xffff)Run_Exceptioon("gravitypreload release_mkbound is outside the MK bound range.");
+   }
+   ConfigConstantsSoil();
+@@ -3009,6 +3014,17 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
+         bdpart->SetvText("GravityPreloadHandoffContract",GetGravityPreloadContract());
+         bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
+       }
++      if(GravityPreloadKeepBedOverlap && GravityPreloadReleased){
++        std::ostringstream ids;
++        for(unsigned c=0;c<unsigned(GravityPreloadBedIds.size());c++){
++          if(c)ids<<',';ids<<GravityPreloadBedIds[c];
++        }
++        bdpart->SetvBool("GravityPreloadKeepBedOverlap",true);
++        bdpart->SetvText("GravityPreloadReleasePolicy","KeepBedOverlap");
++        bdpart->SetvText("GravityPreloadKeptBedIds",ids.str());
++        bdpart->SetvUint("GravityPreloadKeptBedCount",unsigned(GravityPreloadBedIds.size()));
++        bdpart->SetvUint("GravityPreloadActualRetiredCount",GravityPreloadIdCount-unsigned(GravityPreloadBedIds.size()));
++      }
+       if(IsGravityPreloadHandoff())bdpart->SetvText("GravityPreloadStateFile",GravityPreloadStateFile);
+       if(NoPenetration && IsGravityPreloadHandoff()){
+         bdpart->SetvText("DynamicNoPenetrationPolicy","FixedPlaneStageProjectionReleaseOnly");
+@@ -3703,7 +3719,14 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
+ //##############################################################################
+ 
+ //==============================================================================
+-/// Contract for a shared elastic preload; group cohesion/dilation and output times may differ.
++/// Tests the planned original ID set; it does not alter the source PRE contract.
++//==============================================================================
++bool JSph::IsGravityPreloadBedId(unsigned id)const{
++  return(GravityPreloadKeepBedOverlap && std::binary_search(GravityPreloadBedIds.begin(),GravityPreloadBedIds.end(),id));
++}
++
++//==============================================================================
++/// Contract for a shared elastic preload; release-only bed-role changes are excluded.
+ //==============================================================================
+ std::string JSph::GetGravityPreloadContract()const{
+   //-The qualified elastic source has NoPen off; the receiving collapse enables it after release.
+@@ -3880,6 +3903,40 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
+     GravityPreloadIdBegin=release->Begin;GravityPreloadIdCount=release->Count;
+     Log->Printf("GravityPreload: validated native right-wall range=[%u,%u), count=%u.",GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount,GravityPreloadIdCount);
+   }
++  GravityPreloadBedIds.clear();
++  if(GravityPreloadKeepBedOverlap){
++    if(!IsGravityPreloadHandoff() || !NoPenetration || !boundslipmode || !idp || !release)
++      Run_Exceptioon("keep_bed_overlap requires the certified dynamic NoPen handoff and per-particle wall slip modes.");
++    std::vector<std::pair<double,unsigned>> shallow;
++    const double zbed=plane[2]-.5*Dp;
++    for(unsigned p=0;p<npb;p++)if(CODE_GetTypeAndValue(code[p])==CODE_GetTypeAndValue(release->Code) && pos[p].z<plane[2]){
++      const double mappedplane=pos[p].z+.5*double(float(Dp));
++      if(fabs(pos[p].z-zbed)>planetol || fabs(mappedplane-plane[2])>planetol
++        || idp[p]<release->Begin || idp[p]-release->Begin>=release->Count)
++        Run_Exceptioon("keep_bed_overlap permits only the original half-dp shallow row on the existing bed plane.");
++      GravityPreloadBedIds.push_back(idp[p]);shallow.push_back(std::make_pair(pos[p].x,idp[p]));
++    }
++    if(shallow.empty() || shallow.size()>=release->Count)
++      Run_Exceptioon("keep_bed_overlap requires a nonempty shallow bed row and a remaining right wall to retire.");
++    std::sort(GravityPreloadBedIds.begin(),GravityPreloadBedIds.end());
++    if(std::adjacent_find(GravityPreloadBedIds.begin(),GravityPreloadBedIds.end())!=GravityPreloadBedIds.end())
++      Run_Exceptioon("keep_bed_overlap found duplicate native bed IDs.");
++    std::sort(shallow.begin(),shallow.end());
++    for(unsigned p=1;p<unsigned(shallow.size());p++)if(fabs(shallow[p].first-shallow[p-1].first-Dp)>planetol)
++      Run_Exceptioon("keep_bed_overlap shallow bed samples must be consecutive at the original dp.");
++    double left=-DBL_MAX,right=DBL_MAX;
++    for(unsigned p=0;p<npb;p++)if(CODE_GetTypeAndValue(code[p])!=CODE_GetTypeAndValue(release->Code)
++      && boundnormal[p].z>0.f && fabs(pos[p].z-zbed)<=planetol){
++      const double x=pos[p].x;
++      if(x<shallow.front().first)left=max(left,x);
++      else if(x>shallow.back().first)right=min(right,x);
++      else Run_Exceptioon("keep_bed_overlap would duplicate an existing shallow bed sample.");
++    }
++    if(left==-DBL_MAX || right==DBL_MAX || fabs(shallow.front().first-left-Dp)>planetol
++      || fabs(right-shallow.back().first-Dp)>planetol)
++      Run_Exceptioon("keep_bed_overlap must fill one shallow-row gap between the existing bed samples.");
++    Log->Printf("GravityPreload: planned KeepBedOverlap original_target=%u kept_bed=%u; initial normals and PRE contract are unchanged.",release->Count,unsigned(GravityPreloadBedIds.size()));
++  }
+   if(GravityPreloadElasticSource || IsGravityPreloadHandoff()){
+     std::vector<tfloat3> normals(npb);std::vector<bool> found(npb,false);
+     for(unsigned p=0;p<npb;p++){
+diff --git a/src/source/JSph.h b/src/source/JSph.h
+index 650cdf1..ab8baed 100644
+--- a/src/source/JSph.h
++++ b/src/source/JSph.h
+@@ -227,6 +227,8 @@ protected:
+   bool GravityPreload;        ///<Optional single right-wall release; absent XML keeps the original path.
+   bool GravityPreloadReleased;
+   bool GravityPreloadElasticSource; ///<Explicit shared-source qualification; both material stages must stay elastic.
++  bool GravityPreloadKeepBedOverlap; ///<Release-only shallow-bed preservation; certified NoPen handoff only.
++  std::vector<unsigned> GravityPreloadBedIds; ///<Sorted original fixed IDs retained as the shallow NoSlip bed at release.
+   std::string GravityPreloadStateFile; ///<Optional qualified full-step PRE import; ordinary PART restart is unchanged.
+   std::string GravityPreloadNormalContract; ///<Original native-ID wall normals, encoded once for shared PRE identity.
+   double GravityPreloadTime,GravityPreloadActualTime;
+@@ -605,6 +607,7 @@ protected:
+   void ConfigConstantsSoil();
+   float GetDynamicSoilDampingRate()const;
+   bool IsGravityPreloadHandoff()const{ return(!GravityPreloadStateFile.empty()); }
++  bool IsGravityPreloadBedId(unsigned id)const;
+   bool RequireElasticGravityPreload()const{ return(GravityPreloadElasticSource && !GravityPreloadReleased); }
+   bool UseDynamicPorePlaneContact()const{ return(HydroMechDynamicSeepage && GravityPreload && GravityPreloadReleased && NoPenetration && IsGravityPreloadHandoff()); }
+   std::string GetGravityPreloadContract()const;
+diff --git a/src/source/JSphCpuSingle.cpp b/src/source/JSphCpuSingle.cpp
+index ff0d906..d05ccc3 100644
+--- a/src/source/JSphCpuSingle.cpp
++++ b/src/source/JSphCpuSingle.cpp
+@@ -1256,12 +1256,21 @@ void JSphCpuSingle::RunGravityPreloadRelease(){
+     || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb)
+     Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
+   Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
+-  unsigned retired=0;const unsigned oldnp=Np,oldnb=Npb;
++  unsigned retired=0,kept=0;const unsigned oldnp=Np,oldnb=Npb;
++  if(GravityPreloadKeepBedOverlap && (!BoundNormalc || !BoundSlipModec || GravityPreloadBedIds.empty()))
++    Run_Exceptioon("keep_bed_overlap requires its planned native IDs, normals and per-particle slip modes.");
+   for(unsigned p=0;p<Npb;p++)if(Idpc[p]>=GravityPreloadIdBegin && Idpc[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
+     if(!CODE_IsNormal(Codec[p]) || !CODE_IsFixed(Codec[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
+-    Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;
++    if(IsGravityPreloadBedId(Idpc[p])){
++      BoundNormalc[p]=TFloat3(0,0,float(Dp));BoundSlipModec[p]=byte(SLIP_NoSlip);kept++;
++    }
++    else{Codec[p]=CODE_SetOutIgnore(Codec[p]);retired++;}
++  }
++  if(GravityPreloadKeepBedOverlap){
++    if(retired+kept!=GravityPreloadIdCount || kept!=unsigned(GravityPreloadBedIds.size()))
++      Run_Exceptioon("keep_bed_overlap release did not preserve/retire exactly its planned native IDs.");
+   }
+-  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
++  else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+   SoilDamping=false;PoreShepardRegularization=false;
+   BoundChanged=true;RunCellDivide(true);
+   if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
+@@ -1269,6 +1278,13 @@ void JSphCpuSingle::RunGravityPreloadRelease(){
+     Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
+   NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
+   GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
++  if(GravityPreloadKeepBedOverlap){
++    std::ostringstream ids;
++    for(unsigned c=0;c<unsigned(GravityPreloadBedIds.size());c++){
++      if(c)ids<<',';ids<<GravityPreloadBedIds[c];
++    }
++    Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.",GravityPreloadIdCount,retired,kept,ids.str().c_str());
++  }
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 
+diff --git a/src/source/JSphGpuSingle.cpp b/src/source/JSphGpuSingle.cpp
+index bb16d97..cb662e5 100644
+--- a/src/source/JSphGpuSingle.cpp
++++ b/src/source/JSphGpuSingle.cpp
+@@ -1051,15 +1051,29 @@ void JSphGpuSingle::RunGravityPreloadRelease(){
+     || !GravityPreloadIdCount || Np!=CaseNp || Npb!=CaseNpb || !Idp || !Code || CpuParticlesSize<Npb)
+     Run_Exceptioon("gravitypreload release requires the complete native state between full steps.");
+   Log->Printf("GravityPreload: release attempt requested=%.17g actual=%.17g completed_step=%u native_range=[%u,%u).",GravityPreloadTime,TimeStep,unsigned(Nstep),GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount);
+-  const unsigned oldnp=Np,oldnb=Npb;unsigned retired=0;
++  const unsigned oldnp=Np,oldnb=Npb;unsigned retired=0,kept=0;
++  if(GravityPreloadKeepBedOverlap && (GravityPreloadBedIds.empty() || !BoundNormalg || !BoundSlipModeg))
++    Run_Exceptioon("gravitypreload bed overlap requires its planned native IDs and boundary attributes.");
+   cudaMemcpy(Idp,Idpg,sizeof(unsigned)*Npb,cudaMemcpyDeviceToHost);
+   cudaMemcpy(Code,Codeg,sizeof(typecode)*Npb,cudaMemcpyDeviceToHost);
+   Check_CudaErroor("Failed in gravitypreload boundary ID/code download.");
+   for(unsigned p=0;p<Npb;p++)if(Idp[p]>=GravityPreloadIdBegin && Idp[p]-GravityPreloadIdBegin<GravityPreloadIdCount){
+     if(!CODE_IsNormal(Code[p]) || !CODE_IsFixed(Code[p]))Run_Exceptioon("gravitypreload selected an invalid fixed native ID.");
+-    Code[p]=CODE_SetOutIgnore(Code[p]);retired++;
++    if(GravityPreloadKeepBedOverlap && IsGravityPreloadBedId(Idp[p])){
++      //-Retain the fixed native slot and primary state; only its per-particle wall role changes.
++      const tfloat3 normal=TFloat3(0,0,float(Dp));const byte slip=byte(SLIP_NoSlip);
++      cudaMemcpy(BoundNormalg+p,&normal,sizeof(tfloat3),cudaMemcpyHostToDevice);
++      cudaMemcpy(BoundSlipModeg+p,&slip,sizeof(byte),cudaMemcpyHostToDevice);
++      kept++;
++    }
++    else{Code[p]=CODE_SetOutIgnore(Code[p]);retired++;}
++  }
++  if(GravityPreloadKeepBedOverlap){
++    if(retired+kept!=GravityPreloadIdCount || kept!=unsigned(GravityPreloadBedIds.size()))
++      Run_Exceptioon("gravitypreload bed overlap did not match its planned native ID roles.");
++    Check_CudaErroor("Failed in gravitypreload retained bed attribute upload.");
+   }
+-  if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
++  else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+   cudaMemcpy(Codeg,Code,sizeof(typecode)*Npb,cudaMemcpyHostToDevice);
+   Check_CudaErroor("Failed in gravitypreload boundary code upload.");
+   SoilDamping=false;PoreShepardRegularization=false;ConstantDataUp();
+@@ -1069,6 +1083,12 @@ void JSphGpuSingle::RunGravityPreloadRelease(){
+     Run_Exceptioon("gravitypreload divide changed particles beyond its intentional right-wall retirement.");
+   NpMinimum-=retired; //-Remove only planned fixed samples; the original fluid-loss budget is unchanged.
+   GravityPreloadActualTime=TimeStep;GravityPreloadActualStep=Nstep;GravityPreloadReleased=true;
++  if(GravityPreloadKeepBedOverlap){
++    std::string keptids;
++    for(unsigned id:GravityPreloadBedIds){if(!keptids.empty())keptids+=",";keptids+=std::to_string(id);}
++    Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip."
++      ,GravityPreloadIdCount,retired,kept,keptids.c_str());
++  }
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 

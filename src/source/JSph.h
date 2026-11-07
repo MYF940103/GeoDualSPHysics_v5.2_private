@@ -227,6 +227,8 @@ protected:
   bool GravityPreload;        ///<Optional single right-wall release; absent XML keeps the original path.
   bool GravityPreloadReleased;
   bool GravityPreloadElasticSource; ///<Explicit shared-source qualification; both material stages must stay elastic.
+  bool GravityPreloadKeepBedOverlap; ///<Release-only shallow-bed preservation; certified NoPen handoff only.
+  std::vector<unsigned> GravityPreloadBedIds; ///<Sorted original fixed IDs retained as the shallow NoSlip bed at release.
   std::string GravityPreloadStateFile; ///<Optional qualified full-step PRE import; ordinary PART restart is unchanged.
   std::string GravityPreloadNormalContract; ///<Original native-ID wall normals, encoded once for shared PRE identity.
   double GravityPreloadTime,GravityPreloadActualTime;
@@ -605,6 +607,7 @@ protected:
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
   bool IsGravityPreloadHandoff()const{ return(!GravityPreloadStateFile.empty()); }
+  bool IsGravityPreloadBedId(unsigned id)const;
   bool RequireElasticGravityPreload()const{ return(GravityPreloadElasticSource && !GravityPreloadReleased); }
   bool UseDynamicPorePlaneContact()const{ return(HydroMechDynamicSeepage && GravityPreload && GravityPreloadReleased && NoPenetration && IsGravityPreloadHandoff()); }
   std::string GetGravityPreloadContract()const;
