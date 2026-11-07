@@ -1,0 +1,11 @@
+# Basic DP granular collapse regression
+
+This is the actual a=1 granular column case, not a material-point substitute. The retained root `CaseGranularColumnCollapse2D_a10_Def.xml` is copied unchanged into tests/configs. One user-authorized fresh GenCase invocation generated the shared seed:2500soil+2028fixed,dp.002,column.1×.1m,container.6×.2m,2D y=1. The old retained CPU Vel0/FreeSlip logs are context only; their raw output is absent and neither is the current NoSlip baseline.
+
+Preserve rho2079.5,E5.84MPa,nu.3,phi21.9deg,cohesion0,psi0,n_phi/n_coh0,Symplectic,DPCtes3,Wendland h/dp1.8,AV.1,DDT3(.1),NoSlip,MDBCCorrector0,noDamping,noArtificialStress,noShifting. The short companion changes only TimeMax1→.1s; save.01 and original adaptive dt remain unchanged. Following safe short old/new field review, the original1s cases are authorized; no automatic extra run or GPU target is implied.
+
+Whole old/new ReleaseCPU programs are fresh local copies of the sealed handoff_ReleaseCPU_r2 and material_release_ReleaseCPU_r3 with closed runtime4. Actual CPU1/stable/-mdbc_noslip runs capture child identity and original Popen/Win32 exits, then normal completion/count/no-exclusion and native save membership. Formal XML/BAT/results and all H source/program/runtime/archives remain read-only. No SHA scan.
+
+Shared owner, frozen-r3 native reader and offline review live at `examples/Elastoplastic_basic/10_StaticDrySoilColumn/tests/support/` from the repository root; this case uses its own configs/outputs/logs/notes/figures. Native double SigmaState is exported directly; original float positions/velocity/density/kappa are identified as such. Native ID matching uses all2500 original soil IDs. All times are actual, no interpolation or borrowed u-pl5Pa/.005mm gate. Dry stress is effective=total; no pore equation or pore-pressure acceptance is claimed. Dynamic contour/runout/stress/history comparisons have no exact analytical solution here; Feng2021 template/retained runs provide context, not a fabricated physical truth.
+
+Expected analysis artifacts are per-window PNG plus matching history/final-per-ID/difference CSV and a separate visual-QA receipt. The first compile-only reader namespace failure is preserved in case10; the fresh r2 explicit enum-alias repair changes no numeric operation/guard and does not rerun any physical solver.

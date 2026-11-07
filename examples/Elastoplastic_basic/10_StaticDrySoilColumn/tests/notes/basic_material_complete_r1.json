@@ -1,0 +1,471 @@
+{
+  "stage": "basic_material_complete_r1",
+  "passed": true,
+  "physical_acceptance": false,
+  "solver_runs": 8,
+  "solver_retries": 0,
+  "SHA_scans": 0,
+  "GPU_runs": 0,
+  "production_changes": false,
+  "position_precision": "native float32 exactly expanded for arithmetic",
+  "stress_precision": "native SigmaState float64 in every frame",
+  "timing": "shared-machine observations, not a benchmark",
+  "cases": {
+    "column": {
+      "short": {
+        "records": {
+          "old": {
+            "actual_steps": 6803,
+            "saved_frames": 6,
+            "solver_pid": 75192,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 23.875,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 6,
+              "soil": 750,
+              "fixed": 60,
+              "native_end_s": 0.5000176335131187,
+              "float64_stress_frames": 6,
+              "float64_position_frames": 0,
+              "max_kappa": 0.0002555416722316295,
+              "final_nonzero_kappa": 750,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "5",
+              "time_s": "0.50001763351311868",
+              "velocity_RMS_m_s": "5.8688806820802366e-05",
+              "max_velocity_m_s": "0.0003082689072600653",
+              "sigma_Frobenius_RMS_Pa": "15375.729642521323",
+              "sigma_zz_mean_Pa": "-10350.71259870864",
+              "kappa_max": "0.00025554167223162949",
+              "kappa_nonzero": "750",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.00040958203623692196",
+              "top_material_settlement_m": "0.00065618753433227539",
+              "bottom_material_settlement_m": "2.2693226734797161e-05",
+              "x_min_m": "0.009999995119869709",
+              "x_max_m": "0.29000002145767212",
+              "z_min_m": "0.0099773053079843521",
+              "z_max_m": "0.98934382200241089"
+            }
+          },
+          "new": {
+            "actual_steps": 6803,
+            "saved_frames": 6,
+            "solver_pid": 28364,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 25.828999999910593,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 6,
+              "soil": 750,
+              "fixed": 60,
+              "native_end_s": 0.5000176335123822,
+              "float64_stress_frames": 6,
+              "float64_position_frames": 0,
+              "max_kappa": 0.0002555416140239686,
+              "final_nonzero_kappa": 750,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "5",
+              "time_s": "0.50001763351238215",
+              "velocity_RMS_m_s": "5.8689613481706285e-05",
+              "max_velocity_m_s": "0.00030830345351455307",
+              "sigma_Frobenius_RMS_Pa": "15375.727930519777",
+              "sigma_zz_mean_Pa": "-10350.711396040086",
+              "kappa_max": "0.00025554161402396858",
+              "kappa_nonzero": "750",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.00040958182637890178",
+              "top_material_settlement_m": "0.00065618753433227539",
+              "bottom_material_settlement_m": "2.2693040470282237e-05",
+              "x_min_m": "0.009999995119869709",
+              "x_max_m": "0.28999999165534973",
+              "z_min_m": "0.0099773053079843521",
+              "z_max_m": "0.98934382200241089"
+            }
+          }
+        },
+        "summary": {
+          "old": {
+            "end_actual_s": 0.5000176335131187,
+            "samples": 6,
+            "kappa_max": 0.0002555416722316295,
+            "kappa_nonzero": 750,
+            "max_velocity_m_s": 0.0003082689072600653,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64",
+            "relative_L2_sigma_zz_vs_H1_current_z": 0.0044999912996388095,
+            "normalized_sigma_zz_RMSE": 0.0025991548563227135,
+            "normalized_sigma_zz_max_abs": 0.006657710390716484
+          },
+          "new": {
+            "end_actual_s": 0.5000176335123822,
+            "samples": 6,
+            "kappa_max": 0.0002555416140239686,
+            "kappa_nonzero": 750,
+            "max_velocity_m_s": 0.00030830345351455307,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64",
+            "relative_L2_sigma_zz_vs_H1_current_z": 0.004499894733250901,
+            "normalized_sigma_zz_RMSE": 0.002599099079370999,
+            "normalized_sigma_zz_max_abs": 0.006657697338418114
+          }
+        },
+        "maximum_nearest_actual_time_gap_s": 9.809514311953649e-13,
+        "maximum_descriptive_sigma_Frobenius_RMS_gap_Pa": 0.004118692282947091,
+        "maximum_descriptive_position_XYZ_RMS_gap_m": 6.909049437485048e-09,
+        "final_kappa_max_change_percent": -2.2778148234259277e-05
+      },
+      "full": {
+        "records": {
+          "old": {
+            "actual_steps": 68090,
+            "saved_frames": 51,
+            "solver_pid": 44180,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 355.125,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 51,
+              "soil": 750,
+              "fixed": 60,
+              "native_end_s": 5.000048480125465,
+              "float64_stress_frames": 51,
+              "float64_position_frames": 0,
+              "max_kappa": 0.00039918484981171787,
+              "final_nonzero_kappa": 750,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "50",
+              "time_s": "5.0000484801254652",
+              "velocity_RMS_m_s": "1.9827985908151768e-05",
+              "max_velocity_m_s": "0.00013175362257413661",
+              "sigma_Frobenius_RMS_Pa": "15414.635127901865",
+              "sigma_zz_mean_Pa": "-10350.398698545458",
+              "kappa_max": "0.00039918484981171787",
+              "kappa_nonzero": "750",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.00040993574758370718",
+              "top_material_settlement_m": "0.00092637538909912109",
+              "bottom_material_settlement_m": "1.9873554507891336e-05",
+              "x_min_m": "0.0099999783560633659",
+              "x_max_m": "0.29000002145767212",
+              "z_min_m": "0.0099801206961274147",
+              "z_max_m": "0.98907363414764404"
+            }
+          },
+          "new": {
+            "actual_steps": 68090,
+            "saved_frames": 51,
+            "solver_pid": 76164,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 443.64099999982864,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 51,
+              "soil": 750,
+              "fixed": 60,
+              "native_end_s": 5.000048480105922,
+              "float64_stress_frames": 51,
+              "float64_position_frames": 0,
+              "max_kappa": 0.0003356934175826609,
+              "final_nonzero_kappa": 750,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "50",
+              "time_s": "5.0000484801059217",
+              "velocity_RMS_m_s": "1.9828443123049122e-05",
+              "max_velocity_m_s": "0.0001317771532732623",
+              "sigma_Frobenius_RMS_Pa": "15414.636908555509",
+              "sigma_zz_mean_Pa": "-10350.400033337284",
+              "kappa_max": "0.00033569341758266091",
+              "kappa_nonzero": "750",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.00040993573764959971",
+              "top_material_settlement_m": "0.00092637538909912109",
+              "bottom_material_settlement_m": "1.9874051213264464e-05",
+              "x_min_m": "0.0099999802187085152",
+              "x_max_m": "0.29000002145767212",
+              "z_min_m": "0.0099801206961274147",
+              "z_max_m": "0.98907363414764404"
+            }
+          }
+        },
+        "summary": {
+          "old": {
+            "end_actual_s": 5.000048480125465,
+            "samples": 51,
+            "kappa_max": 0.00039918484981171787,
+            "kappa_nonzero": 750,
+            "max_velocity_m_s": 0.0001317536225741366,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64",
+            "relative_L2_sigma_zz_vs_H1_current_z": 0.004327784112475548,
+            "normalized_sigma_zz_RMSE": 0.0024997104534811984,
+            "normalized_sigma_zz_max_abs": 0.005258048593442283
+          },
+          "new": {
+            "end_actual_s": 5.000048480105922,
+            "samples": 51,
+            "kappa_max": 0.0003356934175826609,
+            "kappa_nonzero": 750,
+            "max_velocity_m_s": 0.0001317771532732623,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64",
+            "relative_L2_sigma_zz_vs_H1_current_z": 0.004327906408348677,
+            "normalized_sigma_zz_RMSE": 0.0024997810909091586,
+            "normalized_sigma_zz_max_abs": 0.0052580491657716125
+          }
+        },
+        "maximum_nearest_actual_time_gap_s": 1.9543477947081556e-11,
+        "maximum_descriptive_sigma_Frobenius_RMS_gap_Pa": 0.010720947113099769,
+        "maximum_descriptive_position_XYZ_RMS_gap_m": 2.1375155005621785e-08,
+        "final_kappa_max_change_percent": -15.905271018928635
+      }
+    },
+    "collapse": {
+      "short": {
+        "records": {
+          "old": {
+            "actual_steps": 8564,
+            "saved_frames": 11,
+            "solver_pid": 11388,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 102.79699999978766,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 11,
+              "soil": 2500,
+              "fixed": 2028,
+              "native_end_s": 0.10000993016368716,
+              "float64_stress_frames": 11,
+              "float64_position_frames": 0,
+              "max_kappa": 3.0238125324249268,
+              "final_nonzero_kappa": 2500,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "10",
+              "time_s": "0.10000993016368716",
+              "velocity_RMS_m_s": "0.29703587354037631",
+              "max_velocity_m_s": "0.8454547779841256",
+              "sigma_Frobenius_RMS_Pa": "1280.3436563740772",
+              "sigma_zz_mean_Pa": "-773.36527271710622",
+              "kappa_max": "3.0238125324249268",
+              "kappa_nonzero": "2500",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.0094008100309409207",
+              "top_material_settlement_m": "0.017981399297714234",
+              "bottom_material_settlement_m": "-4.5022699050605295e-05",
+              "x_min_m": "0.0018865511519834399",
+              "x_max_m": "0.1399170309305191",
+              "z_min_m": "0.0019922228530049324",
+              "z_max_m": "0.095610417425632477"
+            }
+          },
+          "new": {
+            "actual_steps": 8564,
+            "saved_frames": 11,
+            "solver_pid": 63252,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 143.43800000008196,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 11,
+              "soil": 2500,
+              "fixed": 2028,
+              "native_end_s": 0.10000993044164314,
+              "float64_stress_frames": 11,
+              "float64_position_frames": 0,
+              "max_kappa": 2.9558539390563965,
+              "final_nonzero_kappa": 2500,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "10",
+              "time_s": "0.10000993044164314",
+              "velocity_RMS_m_s": "0.29703588329305725",
+              "max_velocity_m_s": "0.84545669037231963",
+              "sigma_Frobenius_RMS_Pa": "1280.3433416372175",
+              "sigma_zz_mean_Pa": "-773.36506464685317",
+              "kappa_max": "2.9558539390563965",
+              "kappa_nonzero": "2500",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.0094008102983236305",
+              "top_material_settlement_m": "0.01798139974474907",
+              "bottom_material_settlement_m": "-4.5022717677056791e-05",
+              "x_min_m": "0.0018865511519834399",
+              "x_max_m": "0.1399170458316803",
+              "z_min_m": "0.0019922228530049324",
+              "z_max_m": "0.095610417425632477"
+            }
+          }
+        },
+        "summary": {
+          "old": {
+            "end_actual_s": 0.10000993016368716,
+            "samples": 11,
+            "kappa_max": 3.0238125324249268,
+            "kappa_nonzero": 2500,
+            "max_velocity_m_s": 0.8454547779841256,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64"
+          },
+          "new": {
+            "end_actual_s": 0.10000993044164314,
+            "samples": 11,
+            "kappa_max": 2.9558539390563965,
+            "kappa_nonzero": 2500,
+            "max_velocity_m_s": 0.8454566903723196,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64"
+          }
+        },
+        "maximum_nearest_actual_time_gap_s": 2.779559776788787e-10,
+        "maximum_descriptive_sigma_Frobenius_RMS_gap_Pa": 0.004229045115055337,
+        "maximum_descriptive_position_XYZ_RMS_gap_m": 5.9164538921229805e-09,
+        "final_kappa_max_change_percent": -2.247447308316808
+      },
+      "full": {
+        "records": {
+          "old": {
+            "actual_steps": 85608,
+            "saved_frames": 101,
+            "solver_pid": 70856,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 1031.5789999999106,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 101,
+              "soil": 2500,
+              "fixed": 2028,
+              "native_end_s": 1.0000017528966658,
+              "float64_stress_frames": 101,
+              "float64_position_frames": 0,
+              "max_kappa": 12.598020553588867,
+              "final_nonzero_kappa": 2500,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "100",
+              "time_s": "1.0000017528966658",
+              "velocity_RMS_m_s": "0.00024607769803960272",
+              "max_velocity_m_s": "0.001397189967047927",
+              "sigma_Frobenius_RMS_Pa": "795.82625174473071",
+              "sigma_zz_mean_Pa": "-488.631550759135",
+              "kappa_max": "12.598020553588867",
+              "kappa_nonzero": "2500",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.025813623140519486",
+              "top_material_settlement_m": "0.067135506179183721",
+              "bottom_material_settlement_m": "-1.185218570753932e-05",
+              "x_min_m": "0.0017035451019182801",
+              "x_max_m": "0.32591751217842102",
+              "z_min_m": "0.0017046016873791814",
+              "z_max_m": "0.071242883801460266"
+            }
+          },
+          "new": {
+            "actual_steps": 85608,
+            "saved_frames": 101,
+            "solver_pid": 35804,
+            "actual_Popen_wait_exit": 0,
+            "actual_Win32_exit": 0,
+            "elapsed_s": 1213.1720000002533,
+            "native_completion": {
+              "stage": "basic_native_r2",
+              "passed": true,
+              "samples": 101,
+              "soil": 2500,
+              "fixed": 2028,
+              "native_end_s": 1.0000018624807263,
+              "float64_stress_frames": 101,
+              "float64_position_frames": 0,
+              "max_kappa": 12.540630340576172,
+              "final_nonzero_kappa": 2500,
+              "no_exclusions": true,
+              "physical_acceptance": false
+            },
+            "final_history": {
+              "part": "100",
+              "time_s": "1.0000018624807263",
+              "velocity_RMS_m_s": "0.00024774224743594615",
+              "max_velocity_m_s": "0.0013991763966731277",
+              "sigma_Frobenius_RMS_Pa": "795.82099255221624",
+              "sigma_zz_mean_Pa": "-488.62825061564621",
+              "kappa_max": "12.540630340576172",
+              "kappa_nonzero": "2500",
+              "minimum_kappa_increment": "0",
+              "mean_settlement_m": "0.025813745024614036",
+              "top_material_settlement_m": "0.067135709002614022",
+              "bottom_material_settlement_m": "-1.1854986660182476e-05",
+              "x_min_m": "0.0017033836338669062",
+              "x_max_m": "0.32592803239822388",
+              "z_min_m": "0.0017059283563867211",
+              "z_max_m": "0.071242831647396088"
+            }
+          }
+        },
+        "summary": {
+          "old": {
+            "end_actual_s": 1.0000017528966658,
+            "samples": 101,
+            "kappa_max": 12.598020553588867,
+            "kappa_nonzero": 2500,
+            "max_velocity_m_s": 0.001397189967047927,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64"
+          },
+          "new": {
+            "end_actual_s": 1.0000018624807263,
+            "samples": 101,
+            "kappa_max": 12.540630340576172,
+            "kappa_nonzero": 2500,
+            "max_velocity_m_s": 0.0013991763966731277,
+            "position_storage": "native float32 expanded exactly to float64",
+            "stress_storage": "native float64"
+          }
+        },
+        "maximum_nearest_actual_time_gap_s": 1.1586376036376578e-07,
+        "maximum_descriptive_sigma_Frobenius_RMS_gap_Pa": 1.5537850381258786,
+        "maximum_descriptive_position_XYZ_RMS_gap_m": 4.308686164566228e-05,
+        "final_kappa_max_change_percent": -0.45554944738002145
+      }
+    }
+  },
+  "particles": {
+    "short_frames": 11,
+    "full_frames": 101,
+    "soil_points_per_frame": 2500,
+    "full_first_file": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_material_full_new_CPU_r1\\particles\\PartFluid_0000.vtk",
+    "full_last_file": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_material_full_new_CPU_r1\\particles\\PartFluid_0100.vtk",
+    "dry_Press_is_EOS_not_pore_pressure": true
+  }
+}

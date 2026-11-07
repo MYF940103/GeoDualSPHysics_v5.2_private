@@ -1,0 +1,83 @@
+{
+  "stage": "upl_c08_branches_r1",
+  "author_only": true,
+  "source_native_check": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_material_release_native_r1_source_GPU_release.native.check.json",
+  "PRE": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_release_native_r1_source_GPU_release\\data\\Part_0010.bi4",
+  "PRE_backend": "GPU Release",
+  "PRE_material_law_version": 2,
+  "PRE_event_completed_step": 380,
+  "PRE_actual_time_s": 0.0009500000000000023,
+  "target_build": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\mdbc_partition_Release_r1.build.json",
+  "target_program": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\mdbc_partition_Release_r1\\DualSPHysics5.2_GEO_win64.exe",
+  "groups": {
+    "psi2p5": {
+      "config": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_c08_branches_r1_psi2p5_GPU.xml",
+      "base": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_material_release_native_r1_receive_new_GPU.xml",
+      "changed_values": {
+        "coh": "5000",
+        "dlt": "2.5",
+        "DilationDecay": "0.2",
+        "gravitypreload.statefile": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_release_native_r1_source_GPU_release\\data\\Part_0010.bi4"
+      },
+      "only_other_changes": "comments of the two changed dilation parameters; all geometry/time/hydraulic/boundary parameters preserved"
+    },
+    "psim5": {
+      "config": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_c08_branches_r1_psim5_GPU.xml",
+      "base": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_material_release_native_r1_receive_new_GPU.xml",
+      "changed_values": {
+        "coh": "7500",
+        "dlt": "-5",
+        "DilationDecay": "0.2",
+        "gravitypreload.statefile": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_release_native_r1_source_GPU_release\\data\\Part_0010.bi4"
+      },
+      "only_other_changes": "comments of the two changed dilation parameters; all geometry/time/hydraulic/boundary parameters preserved"
+    }
+  },
+  "original_global_completed_steps": 800,
+  "fresh_updates": 420,
+  "expected_actual_frames": 11,
+  "dt_s": 2.5e-06,
+  "actual_part0_policy": "Nonzero actual advanced state; no pseudo t0 or repeated PRE frame",
+  "source_rerun": false,
+  "half_or_10s_or_long_or_server_package_actions": false,
+  "physical_acceptance": false,
+  "strict_comparison": "All 22 typed arrays/native IDs and signed real clocks vs retained certified ReleaseGPU source post11; numerical5Pa/.005mm cannot mask bit/state loss",
+  "source_remains_elastic": "These11receiver samples do not establish nonzero-plastic psiDecay or full-collapse precision",
+  "author_files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_r1.py",
+      "bytes": 9787,
+      "mtime_ns": 1794049802480926300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_native_r1.cpp",
+      "bytes": 13767,
+      "mtime_ns": 1794049692650738200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_native_r1_build.py",
+      "bytes": 3429,
+      "mtime_ns": 1794049692681121200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_review_r1.py",
+      "bytes": 6919,
+      "mtime_ns": 1794049863340136400
+    }
+  ],
+  "owner_helpers": "Read-only import of correct mdbc_admission_r2 bind/invoke and exact-exe/output lexical guard; no standalone ownership framework",
+  "reader_basis": "Mechanical receiver-only derivation of passed mdbc_admission_native_r2.cpp with the same22 typed fields/layout; adds real JGravityPreloadState::Load, initial completed380/nonzero clock, sf0.2 and actual one-shot release metadata; links same six BI4 utility objects, no JSph ABI",
+  "reader_no_native_rewrite": true,
+  "new_array_schema": false,
+  "syntax_checked_without_import": true,
+  "run_or_build_or_decoder_or_review_executed": false,
+  "explicit_commands": {
+    "build": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_native_r1_build.py\" --execution-authorized",
+    "run_psi2p5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_r1.py\" run psi2p5 --execution-authorized",
+    "decode_psi2p5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_r1.py\" decode psi2p5 --execution-authorized",
+    "review_psi2p5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_review_r1.py\" psi2p5 --execution-authorized",
+    "run_psim5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_r1.py\" run psim5 --execution-authorized",
+    "decode_psim5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_r1.py\" decode psim5 --execution-authorized",
+    "review_psim5": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_branches_review_r1.py\" psim5 --execution-authorized"
+  }
+}

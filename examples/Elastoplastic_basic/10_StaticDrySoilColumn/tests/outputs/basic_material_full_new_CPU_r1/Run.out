@@ -1,0 +1,271 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[Initialising JSphCpuSingle  07-11-2026 19:24:19]
+ProgramFile=".../outputs/basic_material_r1_runtime_new/DualSPHysics5.2CPU_win64.exe"
+ExecutionDir=".../examples/Elastoplastic_basic/10_StaticDrySoilColumn"
+XmlFile=".../outputs/basic_material_full_new_CPU_r1_seed/CaseStaticDrySoilColumn2D_Feng2021_dp002.xml"
+OutputDir=".../tests/outputs/basic_material_full_new_CPU_r1"
+OutputDataDir=".../outputs/basic_material_full_new_CPU_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.3]  sizebz=[1.2]  sizefx=[0.3]  sizefz=[1]  CaseName=["CaseStaticDrySoilColumn2D_Feng2021_dp002"]  Data2D=[1]  Data2DPosy=[0]  H=[0.036]  KernelSize=[0.072]  B=[1.15366e+06]  Gamma=[7]  Rhop0=[2100]  Dp=[0.02]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[0.84]  MassBound=[0.84]
+XML-Vars (parameters): TimeMax=[5]  TimeOut=[0.1]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 0.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 12500001.000000
+  Shear Modulus: 5769231.000000
+  Hydromechanics="Disabled"
+
+**Basic case configuration is loaded
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 810
+MapRealPos(border)=(8.67362e-18,-0.0018,-0.0718)-(0.3,0.0018,0.9918)
+MapRealPos(final)=(8.67362e-18,-0.0018,-0.0718)-(0.3,0.0018,0.9918)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="CaseStaticDrySoilColumn2D_Feng2021_dp002"
+RunName="CaseStaticDrySoilColumn2D_Feng2021_dp002"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=False
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="No-slip"
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="Wendland"
+  Wendland.awen=429.784
+  Wendland.bwen=-59696.51
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="None"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="Fourtakas et al 2019 (inner)"
+  DensityDiffusionValue=0.1
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=810
+CaseNbound=60
+CaseNfixed=60
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=750
+PeriodicActive="Axis-X"
+PeriodicXinc=(-0.3,0,0)
+Dp=0.02
+KernelH=0.036000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.072
+CteB=2884616
+Gamma=7
+RhopZero=2100
+Cs0=98.0580683162011
+CFLnumber=0.2
+DtIni=0.0005805303705625268
+DtMin=5.805303575866619e-06
+DtAllParticles=False
+MassFluid=0.84
+MassBound=0.84
+TimeMax=5
+TimePart=0.1
+Gravity=(0,0,-9.81)
+NpMinimum=60
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=2500
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(7,1,15)
+CellDomFixed=False
+**Requested CPU memory for 938 particles: 0.4 MB.
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\10_StaticDrySoilColumn\tests\outputs\basic_material_full_new_CPU_r1_seed/CaseStaticDrySoilColumn2D_Feng2021_dp002_Normals.nbi4"
+DomCells=(7,1,15)
+DomCellCode="1+11_9_11"
+**JSphCpu: Requesting cpu memory for 1012 particles: 0.4 MB.
+**JSphCpu: Requesting cpu memory for 1432 particles: 0.6 MB.
+**CellDiv: Requested cpu memory for 1432 particles: 0.1 MB.
+**CellDiv: Requested cpu memory for 256 cells (CellMode=Full): 0.0 MB.
+ 
+RunMode="Stable - Pos-Double - Single core"
+ 
+Particle summary:
+  Fixed....: 60  id:(0-59)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 750  id:(60-809)   MKs:1 (1)
+
+Total particles: 810 (bound=60 (fx=60 mv=0 ft=0) fluid=750)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+ 
+Allocated memory in CPU: 784836 (0.75 MB)
+Part_0000        810 particles successfully stored
+
+[Initialising simulation (da83e6cz)  07-11-2026 19:24:19]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+**JSphCpu: Requesting cpu memory for 1885 particles: 0.8 MB.
+**CellDiv: Requested cpu memory for 1885 particles: 0.1 MB.
+Part_0001      0.100071          1356     1356      50.21  07-11-2026 19:28:30
+Part_0002      0.200003          2717     1361      49.45  07-11-2026 19:28:28
+Part_0003      0.300008          4079     1362      50.94  07-11-2026 19:28:29
+Part_0004      0.400013          5441     1362      51.42  07-11-2026 19:28:31
+Part_0005      0.500018          6803     1362      51.85  07-11-2026 19:28:32
+Part_0006      0.600023          8165     1362      52.26  07-11-2026 19:28:33
+Part_0007      0.700028          9527     1362      53.69  07-11-2026 19:28:36
+Part_0008      0.800033         10889     1362      53.17  07-11-2026 19:28:36
+Part_0009      0.900038         12251     1362      55.65  07-11-2026 19:28:39
+Part_0010      1.000044         13613     1362      56.97  07-11-2026 19:28:41
+Part_0011      1.100049         14975     1362      59.02  07-11-2026 19:28:44
+Part_0012      1.200054         16337     1362      96.44  07-11-2026 19:29:02
+Part_0013      1.300060         17699     1362     127.16  07-11-2026 19:29:30
+Part_0014      1.400065         19061     1362     152.32  07-11-2026 19:30:01
+Part_0015      1.500070         20423     1362     132.36  07-11-2026 19:30:23
+Part_0016      1.600002         21784     1361     121.65  07-11-2026 19:30:38
+Part_0017      1.700008         23146     1362     131.32  07-11-2026 19:30:54
+Part_0018      1.800013         24508     1362     136.35  07-11-2026 19:31:10
+Part_0019      1.900019         25870     1362     222.87  07-11-2026 19:31:47
+Part_0020      2.000024         27232     1362     127.66  07-11-2026 19:31:56
+Part_0021      2.100030         28594     1362     121.79  07-11-2026 19:32:03
+Part_0022      2.200036         29956     1362     136.57  07-11-2026 19:32:14
+Part_0023      2.300041         31318     1362     122.26  07-11-2026 19:32:19
+Part_0024      2.400047         32680     1362     122.67  07-11-2026 19:32:25
+Part_0025      2.500052         34042     1362     121.78  07-11-2026 19:32:30
+Part_0026      2.600058         35404     1362     136.38  07-11-2026 19:32:37
+Part_0027      2.700064         36766     1362     135.74  07-11-2026 19:32:44
+Part_0028      2.800069         38128     1362     119.15  07-11-2026 19:32:47
+Part_0029      2.900001         39489     1361     109.00  07-11-2026 19:32:49
+Part_0030      3.000007         40851     1362      87.66  07-11-2026 19:32:46
+Part_0031      3.100013         42213     1362      93.83  07-11-2026 19:32:45
+Part_0032      3.200018         43575     1362     136.55  07-11-2026 19:32:50
+Part_0033      3.300024         44937     1362     132.74  07-11-2026 19:32:55
+Part_0034      3.400030         46299     1362     139.81  07-11-2026 19:33:00
+Part_0035      3.500036         47661     1362      58.33  07-11-2026 19:32:53
+Part_0036      3.600041         49023     1362      55.60  07-11-2026 19:32:47
+Part_0037      3.700047         50385     1362      54.26  07-11-2026 19:32:40
+Part_0038      3.800053         51747     1362      54.24  07-11-2026 19:32:35
+Part_0039      3.900058         53109     1362      52.73  07-11-2026 19:32:28
+Part_0040      4.000064         54471     1362      53.07  07-11-2026 19:32:22
+Part_0041      4.100070         55833     1362      52.72  07-11-2026 19:32:18
+Part_0042      4.200002         57194     1361      52.00  07-11-2026 19:32:12
+Part_0043      4.300008         58556     1362      52.20  07-11-2026 19:32:07
+Part_0044      4.400014         59918     1362      52.63  07-11-2026 19:32:02
+Part_0045      4.500020         61280     1362      52.07  07-11-2026 19:31:58
+Part_0046      4.600025         62642     1362      54.22  07-11-2026 19:31:54
+Part_0047      4.700031         64004     1362      54.56  07-11-2026 19:31:50
+Part_0048      4.800037         65366     1362      56.81  07-11-2026 19:31:46
+Part_0049      4.900043         66728     1362      56.78  07-11-2026 19:31:43
+Part_0050      5.000048         68090     1362      63.89  07-11-2026 19:31:41
+
+[Simulation finished  07-11-2026 19:31:41]
+Particles of simulation (initial): 810
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 442.520477 sec.
+Simulation Runtime...............: 442.485504 sec.
+Runtime per physical second......: 88.496239 sec.
+Steps per second.................: 153.880753
+Steps of simulation..............: 68090
+PART files.......................: 51
+Maximum number of particles......: 1242
+Maximum number of cells..........: 105
+CPU Memory.......................: 1017225 (0.97 MB)
+ 
+[CPU Timers]
+VA-Init..........................: 0.034954 sec.
+NL-Limits........................: 0.880299 sec.
+NL-MakeSort......................: 1.490597 sec.
+NL-SortData......................: 5.184012 sec.
+NL-OutCheck......................: 0.008262 sec.
+CF-PreForces.....................: 16.190316 sec.
+CF-Forces........................: 299.112253 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 37.655903 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 2.754435 sec.
+SU-ResizeNp......................: 0.000580 sec.
+SU-SavePart......................: 0.650210 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0.000000 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Density diffusion Term: Fourtakas (Fourtakas et al., 2019  https://doi.org/10.1016/j.compfluid.2019.06.009)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Quintic Wendland (Wendland, 1995  https://doi.org/10.1007/BF02123482)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+- Periodic open boundaries (Gomez-Gesteira et al., 2012  https://doi.org/10.1016/j.cageo.2012.02.029)
+
+Finished execution (code=0).
+
