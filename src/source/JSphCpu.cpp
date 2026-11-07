@@ -25,6 +25,7 @@
 #include "FunSphKernel.h"
 #include "FunSphEos.h"
 #include "FunSoilMaterial.h"
+#include "FunFixedPlaneContact.h"
 #include "Functions.h"
 #include "FunctionsMath.h"
 #include "JDsMotion.h"
@@ -3420,6 +3421,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   const int np=int(Np);
   const int npb=int(Npb);
   const int npf=np-npb;
+  const bool planecontact=UseDynamicPorePlaneContact();
 
   //-Assign memory to variables Pre. | Asigna memoria a variables Pre.
   PosPrec=ArraysCpu->ReserveDouble3();
@@ -3516,6 +3518,10 @@ void JSphCpu::ComputeSymplecticPre(double dt){
         }
       }
       //-Update particle data.
+      if(planecontact && CODE_IsNormal(rcode)){
+        fcontact::ProjectLowerPlane(PosPrec[p].x,DynamicPoreContactPlane.x,dx,rvelrhopnew.x);
+        fcontact::ProjectLowerPlane(PosPrec[p].z,DynamicPoreContactPlane.z,dz,rvelrhopnew.z);
+      }
       movc[p]=TDouble3(dx,dy,dz);
       Velrhopc[p]=rvelrhopnew;
       if(outrhop && CODE_IsNormal(rcode))Codec[p]=CODE_SetOutRhop(rcode); //-Only brands as excluded normal particles (not periodic). | Solo marca como excluidas las normales (no periodicas).
@@ -3563,6 +3569,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
 /// Actualizacion de particulas segun fuerzas y dt usando Symplectic-Corrector.
 //==============================================================================
 void JSphCpu::ComputeSymplecticCorr(double dt){
+  const bool planecontact=UseDynamicPorePlaneContact();
   Timersc->TmStart(TMC_SuComputeStep);
   const bool shift=(Shifting!=NULL);
   const double dt05=dt*.5;
@@ -3636,7 +3643,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
       double dx=(double(VelrhopPrec[p].x)+double(rvelrhopnew.x)) * dt05; 
       double dy=(double(VelrhopPrec[p].y)+double(rvelrhopnew.y)) * dt05; 
       double dz=(double(VelrhopPrec[p].z)+double(rvelrhopnew.z)) * dt05;
-      if(TMdbc2==MDBC2_NoPen && NoPenShiftc && NoPenShiftc[p].w>5.f){
+      if(!planecontact && TMdbc2==MDBC2_NoPen && NoPenShiftc && NoPenShiftc[p].w>5.f){
         if(NoPenShiftc[p].x!=0.f){
           rvelrhopnew.x=VelrhopPrec[p].x+NoPenShiftc[p].x;
           dx=double(rvelrhopnew.x)*dt;
@@ -3674,6 +3681,10 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
         }
       }
       //-Update particle data.
+      if(planecontact && CODE_IsNormal(rcode)){
+        fcontact::ProjectLowerPlane(PosPrec[p].x,DynamicPoreContactPlane.x,dx,rvelrhopnew.x);
+        fcontact::ProjectLowerPlane(PosPrec[p].z,DynamicPoreContactPlane.z,dz,rvelrhopnew.z);
+      }
       movc[p]=TDouble3(dx,dy,dz);
       if(outrhop && CODE_IsNormal(rcode))Codec[p]=CODE_SetOutRhop(rcode); //-Only brands as excluded normal particles (not periodic). | Solo marca como excluidas las normales (no periodicas).
       Velrhopc[p]=rvelrhopnew;

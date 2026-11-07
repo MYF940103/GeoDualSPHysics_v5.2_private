@@ -20,6 +20,7 @@
 
 #include "JSphGpuSimple_ker.h"
 #include "FunSoilMaterial.h"
+#include "FunFixedPlaneContact.h"
 //#include "Functions.h"
 //#include "FunctionsCuda.h"
 //#include <math_constants.h>
@@ -320,6 +321,29 @@ void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdb
 /// Computes new values for Pos, Check, Vel and Ros (used with Symplectic-Predictor).
 /// Calcula los nuevos valores de Pos, Vel y Rhop (usando para Symplectic-Predictor).
 //------------------------------------------------------------------------------
+__global__ void KerProjectFixedPlaneContact(unsigned np,unsigned npb,const typecode *code
+  ,const double2 *posxy,const double *posz,double2 *movxy,double *movz,float4 *velrhop
+  ,double lowerx,double lowerz)
+{
+  const unsigned p=npb+blockIdx.x*blockDim.x+threadIdx.x;
+  if(p<np && CODE_IsFluid(code[p]) && CODE_IsNormal(code[p])){
+    double2 move=movxy[p];double dz=movz[p];float4 velocity=velrhop[p];
+    fcontact::ProjectLowerPlane(posxy[p].x,lowerx,move.x,velocity.x);
+    fcontact::ProjectLowerPlane(posz[p],lowerz,dz,velocity.z);
+    movxy[p]=move;movz[p]=dz;velrhop[p]=velocity;
+  }
+}
+
+void ProjectFixedPlaneContact(unsigned np,unsigned npb,const typecode *code
+  ,const double2 *posxy,const double *posz,double2 *movxy,double *movz,float4 *velrhop
+  ,double lowerx,double lowerz,cudaStream_t stm)
+{
+  if(np>npb){
+    const dim3 grid=GetSimpleGridSize(np-npb,SPHBSIZE);
+    KerProjectFixedPlaneContact<<<grid,SPHBSIZE,0,stm>>>(np,npb,code,posxy,posz,movxy,movz,velrhop,lowerx,lowerz);
+  }
+}
+
 //-Cache native mixture density from stage J; the existing J kernel still owns its commit.
 template<bool corrector> static __device__ __forceinline__ bool KerPorosityRhopCache
   (StPorosityRhopState state,unsigned p,double dt,float rho0,float minimum,float maximum,float &cache)

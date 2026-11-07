@@ -44,6 +44,11 @@ void Resety(unsigned n,unsigned ini,float3 *v,cudaStream_t stm);
 //-Optional single-J native density cache; null j retains literal legacy updates/exclusion.
 struct StPorosityRhopState{const double *j;const double *jn;const double *theta;};
 
+//-Released u-pl fixed container only; geometry projection is separate from Darcy reaction.
+void ProjectFixedPlaneContact(unsigned np,unsigned npb,const typecode *code
+  ,const double2 *posxy,const double *posz,double2 *movxy,double *movz,float4 *velrhop
+  ,double lowerx,double lowerz,cudaStream_t stm);
+
 //-Kernels for ComputeStep (vel & rhop).
 //----------------------------------------
 void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb

@@ -1,5 +1,11 @@
 # 当前发包状态
 
+**r4入口暂缓继续计算，不能将其余两组当作已准入。** 新固定平面接触候选正在`tests`独立验证，未替换`runtime_r4`或原正式XML/BAT。四种构建、host组件17点/两反例、CPU/GPU Debug 2 ms实际接收及native均通过；GPU memcheck为0错误/0泄漏。两帧跨后端pRMS最大差.00428253 Pa，各材料XYZ最大差1.91257e−7 mm。NoPen关闭3帧对旧关闭11帧中的真实共有前缀，完整22数组/time/signed clock逐byte一致。
+
+已启动唯一新GPU Release候选`upl_c08_plane_on_GPU_r1`，由同名owner持有solver PID77916，目标仅撤墙后0.6 s（global4240000/60帧，dt2.5us、输出10ms）。启动前记录见`tests/logs/upl_c08_plane_window_admission_r1.json`，实际start/call/run/status沿同tag。它只验证固定平面投影能否越过旧.438 s失败区间，不是正式3 s或物理通过，不追加half链。首次调用在任何GenCase/solver前因准入记录文件名撞fresh保护而拒绝；保留记录改用非冲突名后才启动这一次真实求解，见`upl_c08_plane_window_launch_guard_r1.json`。只有本新owner在终态尝试一次同线程通知，不重挂旧通知器。
+
+诊断checkpoint本地/远端为`4262eb5c0633a449c0f7fc8c83878b91622332aa`。新接触代码仍为受限候选，`FixedPlaneStageProjectionReleaseOnly`、`ReactionClosed=false`；正式三组尚未准入。
+
 **ψ0 r4完整GPU接收计算失败，尚未完成3 s塌陷。** 原owner PID70440→根BAT/cmd PID78608→solver PID77788均已结束，GenCase exit0、solver exit1、根BAT exit1。输入/程序的106项冻结stat未改变，未重复求解、未调用正式后处理。ψ=+2.5°和ψ=−5°尚未启动。原始start/call/run/status见 `tests/logs/upl_c08_formal_psi0_r4_r1.*`，唯一完成通知已投递，不再布防。
 
 最后原样PART行为 `Part_0042     10.430000       4172000     4000    2355.02  08-11-2026 04:21:21`；43帧真实native末时刻10.430000000510745 s。错误为dynamic wall stage0、native823，报告step_start=10.43789250051325、step=4175157，要求有效饱和一阶镜像拟合。此未保存力阶段时刻与最后保存状态分开记录，不虚构未保存的状态。实际GPU为RTX3050，耗时约1060.6 s。

@@ -1604,6 +1604,8 @@ void JSphGpu::ComputeSymplecticPre(double dt){
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
+  if(UseDynamicPorePlaneContact())cusphs::ProjectFixedPlaneContact(Np,Npb,Codeg,PosxyPreg,PoszPreg
+    ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
   //-Frees memory allocated for the displacement.
@@ -1631,7 +1633,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
-  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
+  cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
   if(MaterialErrorg){
@@ -1649,6 +1651,8 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
+  if(UseDynamicPorePlaneContact())cusphs::ProjectFixedPlaneContact(Np,Npb,Codeg,PosxyPreg,PoszPreg
+    ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
   if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)

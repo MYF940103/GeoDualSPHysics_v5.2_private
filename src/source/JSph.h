@@ -232,6 +232,7 @@ protected:
   double GravityPreloadTime,GravityPreloadActualTime;
   unsigned GravityPreloadStep,GravityPreloadActualStep,GravityPreloadMkBound;
   unsigned GravityPreloadIdBegin,GravityPreloadIdCount;
+  tdouble3 DynamicPoreContactPlane; ///<Validated lower X/Z planes; released fixed-container NoPen only.
   TpHydroMechLoadMode HydroMechTopLoadMode; ///<Mode used to distribute external hydromechanical load. //mdbr
   float HydroMechTopLoadQ0;   ///<Compressive top surcharge magnitude q0 [Pa]. //mdbr
   double HydroMechTopLoadRampTime; ///<Ramp time for the external hydromechanical load [s]. //mdbr
@@ -605,6 +606,7 @@ protected:
   float GetDynamicSoilDampingRate()const;
   bool IsGravityPreloadHandoff()const{ return(!GravityPreloadStateFile.empty()); }
   bool RequireElasticGravityPreload()const{ return(GravityPreloadElasticSource && !GravityPreloadReleased); }
+  bool UseDynamicPorePlaneContact()const{ return(HydroMechDynamicSeepage && GravityPreload && GravityPreloadReleased && NoPenetration && IsGravityPreloadHandoff()); }
   std::string GetGravityPreloadContract()const;
   void LoadGravityPreloadState(JGravityPreloadState &state)const;
   void RestoreGravityPreloadClock(const JGravityPreloadState &state);

@@ -232,6 +232,7 @@ void JSph::InitVars(){
   GravityPreloadTime=GravityPreloadActualTime=0.;
   GravityPreloadStep=GravityPreloadActualStep=GravityPreloadMkBound=0;
   GravityPreloadIdBegin=GravityPreloadIdCount=0;
+  DynamicPoreContactPlane=TDouble3(0);
   HydroMechTopLoadMode=HMLOAD_None;
   HydroMechTopLoadQ0=0;
   HydroMechTopLoadRampTime=0;
@@ -3010,7 +3011,7 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       }
       if(IsGravityPreloadHandoff())bdpart->SetvText("GravityPreloadStateFile",GravityPreloadStateFile);
       if(NoPenetration && IsGravityPreloadHandoff()){
-        bdpart->SetvText("DynamicNoPenetrationPolicy","LegacyOperatorSplitReleaseOnly");
+        bdpart->SetvText("DynamicNoPenetrationPolicy","FixedPlaneStageProjectionReleaseOnly");
         bdpart->SetvBool("DynamicNoPenetrationActive",GravityPreloadReleased);
         bdpart->SetvBool("DynamicNoPenetrationReactionClosed",false);
       }
@@ -3748,7 +3749,7 @@ void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
   if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
   Log->Printf("GravityPreload: source material law=%s; certified elastic schema/contract1.",
     (state.MaterialLawVersion==2? "unified2": "legacy MR1 ElasticV1"));
-  if(NoPenetration)Log->Print("Dynamic NoPen: LegacyOperatorSplitReleaseOnly; elastic PRE uses NoPen off, collapse uses the existing corrector velocity/displacement projection; same-stage Darcy reaction is not included.");
+  if(NoPenetration)Log->Print("Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; elastic PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.");
 }
 
 //==============================================================================
@@ -3859,6 +3860,7 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
   }
   if(!seen[0] || !seen[1] || !seen[2] || plane[1]-plane[0]<=2.*double(KernelSize))
     Run_Exceptioon("Dynamic gravity container requires separated opposing sides and one bottom plane.");
+  DynamicPoreContactPlane=TDouble3(plane[0],0,plane[2]);
   if(GravityPreload && (!selected || selected!=release->Count || selected!=right))
     Run_Exceptioon("gravitypreload must select the entire right face and no other fixed samples.");
   //-Only native soil must start inside. Do not project far bed samples or mirror targets into this box.
