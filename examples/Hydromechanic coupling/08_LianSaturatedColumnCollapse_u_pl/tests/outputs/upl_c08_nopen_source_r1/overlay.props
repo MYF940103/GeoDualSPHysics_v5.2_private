@@ -1,0 +1,32 @@
+<?xml version='1.0' encoding='utf-8'?>
+<Project xmlns="http://schemas.microsoft.com/developer/msbuild/2003">
+  <ItemGroup>
+    <_C08NoPenJSph Include="@(ClCompile)" Condition="'%(ClCompile.Filename)%(ClCompile.Extension)'=='JSph.cpp'" />
+    <ClCompile Remove="@(_C08NoPenJSph)" />
+    <ClCompile Include="@(_C08NoPenJSph-&gt;'D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/tests/outputs/upl_c08_nopen_source_r1/JSph.cpp')">
+      <AdditionalIncludeDirectories>D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <_C08NoPenJSphCpu Include="@(ClCompile)" Condition="'%(ClCompile.Filename)%(ClCompile.Extension)'=='JSphCpu.cpp'" />
+    <ClCompile Remove="@(_C08NoPenJSphCpu)" />
+    <ClCompile Include="@(_C08NoPenJSphCpu-&gt;'D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/tests/outputs/upl_c08_nopen_source_r1/JSphCpu.cpp')">
+      <AdditionalIncludeDirectories>D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+    <_C08NoPenJSphGpu Include="@(ClCompile)" Condition="'%(ClCompile.Filename)%(ClCompile.Extension)'=='JSphGpu.cpp'" />
+    <ClCompile Remove="@(_C08NoPenJSphGpu)" />
+    <ClCompile Include="@(_C08NoPenJSphGpu-&gt;'D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/tests/outputs/upl_c08_nopen_source_r1/JSphGpu.cpp')">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+      <AdditionalIncludeDirectories>D:/MYF/SPH/GeoDualSPHysics_redevelop_f66777b/src/source;%(AdditionalIncludeDirectories)</AdditionalIncludeDirectories>
+    </ClCompile>
+  </ItemGroup>
+  <Target Name="C08NoPenValidateClCompileItems" BeforeTargets="ClCompile">
+    <ItemGroup>
+      <_C08NoPenOriginal Include="@(_C08NoPenJSph);@(_C08NoPenJSphCpu);@(_C08NoPenJSphGpu)" />
+      <_C08NoPenActual Include="@(ClCompile)" Condition="'%(ClCompile.Filename)%(ClCompile.Extension)'=='JSph.cpp' Or '%(ClCompile.Filename)%(ClCompile.Extension)'=='JSphCpu.cpp' Or '%(ClCompile.Filename)%(ClCompile.Extension)'=='JSphGpu.cpp'" />
+    </ItemGroup>
+    <Error Condition="'@(_C08NoPenOriginal-&gt;Count())'!='3' Or '@(_C08NoPenActual-&gt;Count())'!='3'" Text="C08 NoPen overlay must replace exactly three ClCompile items." />
+    <WriteLinesToFile File="$(C08NoPenItemsReport)" Lines="kind|Filename|Extension|FullPath|ExcludedFromBuild|PrecompiledHeader|CompileAs|Optimization|RuntimeLibrary|WarningLevel|ObjectFileName|DebugInformationFormat|AdditionalOptions|PreprocessorDefinitions|BasicRuntimeChecks|SDLCheck|ExceptionHandling|EnableEnhancedInstructionSet|MultiProcessorCompilation|SupportJustMyCode|WholeProgramOptimization|FloatingPointModel|AdditionalIncludeDirectories" Overwrite="true" Encoding="UTF-8" />
+    <WriteLinesToFile File="$(C08NoPenItemsReport)" Lines="@(_C08NoPenOriginal-&gt;'original|%(Filename)|%(Extension)|%(FullPath)|%(ExcludedFromBuild)|%(PrecompiledHeader)|%(CompileAs)|%(Optimization)|%(RuntimeLibrary)|%(WarningLevel)|%(ObjectFileName)|%(DebugInformationFormat)|%(AdditionalOptions)|%(PreprocessorDefinitions)|%(BasicRuntimeChecks)|%(SDLCheck)|%(ExceptionHandling)|%(EnableEnhancedInstructionSet)|%(MultiProcessorCompilation)|%(SupportJustMyCode)|%(WholeProgramOptimization)|%(FloatingPointModel)|%(AdditionalIncludeDirectories)')" Overwrite="false" Encoding="UTF-8" />
+    <WriteLinesToFile File="$(C08NoPenItemsReport)" Lines="@(_C08NoPenActual-&gt;'overlay|%(Filename)|%(Extension)|%(FullPath)|%(ExcludedFromBuild)|%(PrecompiledHeader)|%(CompileAs)|%(Optimization)|%(RuntimeLibrary)|%(WarningLevel)|%(ObjectFileName)|%(DebugInformationFormat)|%(AdditionalOptions)|%(PreprocessorDefinitions)|%(BasicRuntimeChecks)|%(SDLCheck)|%(ExceptionHandling)|%(EnableEnhancedInstructionSet)|%(MultiProcessorCompilation)|%(SupportJustMyCode)|%(WholeProgramOptimization)|%(FloatingPointModel)|%(AdditionalIncludeDirectories)')" Overwrite="false" Encoding="UTF-8" />
+  </Target>
+</Project>

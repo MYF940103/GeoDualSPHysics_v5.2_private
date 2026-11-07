@@ -1,0 +1,9 @@
+# NoPen诊断构建的早期编译项报告
+
+r2两个配置的独立求值都通过：实际三个CPP路径与所有编译metadata正确。但VS在ClCompile前过滤CPU配置中排除的JSphGpu项，r2 CPU build因此触发三项数量检查。此为自定义构建检查放置阶段错误，未进行C++编译，不是物理代码错误。
+
+r3仅把overlay_r2.props内自定义核验target的BeforeTargets从ClCompile改成PrepareForBuild，在VS过滤前记录完整三项。源码副本、所有数值、原NoPen、metadata、原权威工程/solution及原r1/r2记录不改；新helper/OutDir/Temp/收据使用r3。先独立evaluate再build，不覆盖旧编译产物。原r2 GPU build已启动则等待其真实退出，不更改其依赖或重复使用其输出。
+
+本轮测试仍只有AS0+既有NoPen的0.15秒GPU诊断，不代表反力、Darcy或J一致性已闭合。正式源码和runtime未更改。
+
+实际r2 GPU Release最终构建通过：GPU配置中三项均不排除，所以其ClCompile前检查仍成立，113个对象和程序已封口。不为标签统一重复构建GPU；后续采用这个真实通过的Release_r2程序。r3仅继续CPU Debug，修复其排除项导致的构建检查问题。r3 Release独立求值记录保留，但不启动其重复build。

@@ -1,0 +1,72 @@
+--- baselineAS/src/source/JSph.cpp
++++ NoPenDiagnostic/JSph.cpp
+@@ -3009,6 +3009,10 @@
+         bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
+       }
+       if(IsGravityPreloadHandoff())bdpart->SetvText("GravityPreloadStateFile",GravityPreloadStateFile);
++      if(NoPenetration && IsGravityPreloadHandoff()){
++        bdpart->SetvText("DynamicNoPenetrationPolicy","LegacyProjectionDiagnostic");
++        bdpart->SetvBool("DynamicNoPenetrationReactionClosed",false);
++      }
+ 
+     }
+     if(TStep==STEP_Symplectic)bdpart->SetvDouble("SymplecticDtPre",SymplecticDtPre);
+@@ -3701,6 +3705,7 @@
+ /// Contract for a shared elastic preload; group cohesion/dilation and output times may differ.
+ //==============================================================================
+ std::string JSph::GetGravityPreloadContract()const{
++  const bool nopenprobe=(NoPenetration && TMdbc2==MDBC2_NoPen && IsGravityPreloadHandoff());
+   //-Release-only artificial stress is inactive in PRE; its policy is saved separately.
+   std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-1 "
+     <<CaseNp<<' '<<CaseNpb<<' '<<CaseNfluid<<' '<<Dp<<' '<<KernelH<<' '
+@@ -3714,8 +3719,8 @@
+     <<SoilStressRateGradCorr<<' '<<PoreCompressionGradCorr<<' '<<PoreCompressionSourceMode<<' '
+     <<PoreMdbcInterpolationMode<<' '<<PoreDtSafety<<' '<<CFLnumber<<' '<<FixedDt->GetFixedValue()<<' '
+     <<DtMin<<' '<<RhopOut<<' '<<RhopOutMin<<' '<<RhopOutMax<<' '<<PartsOutMax<<' '
+-    <<HydroMechInitZ<<' '<<unsigned(TBoundary)<<' '<<unsigned(SlipMode)<<' '<<unsigned(TMdbc2)<<' '
+-    <<NoPenetration<<' '<<Stable<<' '<<DomPosMin.x<<' '<<DomPosMin.y<<' '<<DomPosMin.z<<' '
++    <<HydroMechInitZ<<' '<<unsigned(TBoundary)<<' '<<unsigned(SlipMode)<<' '<<unsigned(nopenprobe? MDBC2_Std: TMdbc2)<<' '
++    <<(nopenprobe? false: NoPenetration)<<' '<<Stable<<' '<<DomPosMin.x<<' '<<DomPosMin.y<<' '<<DomPosMin.z<<' '
+     <<DomPosMax.x<<' '<<DomPosMax.y<<' '<<DomPosMax.z;
+   for(const auto &face:MdbcSlipModeMk)out<<' '<<face.MkBound<<' '<<unsigned(face.SlipMode);
+   out<<" normals "<<GravityPreloadNormalContract;
+@@ -3742,6 +3747,7 @@
+   if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
+   Log->Printf("GravityPreload: source material law=%s; certified elastic schema/contract1.",
+     (state.MaterialLawVersion==2? "unified2": "legacy MR1 ElasticV1"));
++  if(NoPenetration && IsGravityPreloadHandoff())Log->Print("NoPenLegacyProjectionDiagnostic: PRE contract uses source Std/false only for admission; active legacy NoPen projection has no closed reaction/J/Darcy coupling; diagnostic only.");
+ }
+ 
+ //==============================================================================
+@@ -3772,7 +3778,8 @@
+ bool JSph::IsDynamicPoreContainerConfig()const{
+   return(HydroMechDynamicSeepage && HydroMech && Simulate2D && !PartBegin && !PeriActive
+     && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
+-    && TBoundary==BC_MDBC && UseNormals && TMdbc2!=MDBC2_NoPen && !NoPenetration
++    && TBoundary==BC_MDBC && UseNormals && ((!NoPenetration && TMdbc2!=MDBC2_NoPen)
++      || (IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen && !ArtificialStress))
+     && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
+     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
+     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
+--- baselineAS/src/source/JSphCpu.cpp
++++ NoPenDiagnostic/JSphCpu.cpp
+@@ -3106,7 +3106,7 @@
+     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
+   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
+-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
++    || InOut || Shifting || (NoPenetration && !(gravitycontainer && IsGravityPreloadHandoff())) || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
+     || Damping || RelaxZones
+     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
+     Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/unsupported softening/DEM/damping zones/relaxation zones.");
+--- baselineAS/src/source/JSphGpu.cpp
++++ NoPenDiagnostic/JSphGpu.cpp
+@@ -1696,7 +1696,7 @@
+     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
+     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
+   if(!HydroMech || (!Simulate2D && !freebody) || TStep!=STEP_Symplectic || PartBegin || (PorosityFeedback && CaseNpb && !DynamicPoreWall && !freebody) || CaseNmoving
+-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
++    || InOut || Shifting || (NoPenetration && !(container && IsGravityPreloadHandoff())) || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
+     || Damping || RelaxZones || AccInput || (!loadedcolumn && !freebody && !container && SoilDamping)
+     || !std::isfinite(Gravity.x) || !std::isfinite(Gravity.y) || !std::isfinite(Gravity.z) || Gravity.y!=0
+     || (PorosityFeedback && !DynamicPorePressure && (Gravity.x || Gravity.z))

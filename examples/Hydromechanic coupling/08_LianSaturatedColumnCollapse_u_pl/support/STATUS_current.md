@@ -1,6 +1,8 @@
 # 当前发包状态
 
-**完整ψ0 r3 GPU已中断，最后保存总时刻10.11s，尚未完成3s撤墙。已定位state重构墙点791，并发现土点7010穿底；其他两组不启动。原始输出/PRE保留，tests内的撤墙后人工应力候选待验证，正式runtime和输入未切换。详情见tests/notes/upl_c08_wall_failure_review_r1.md。**
+**完整ψ0 r3 GPU已中断，最后保存总时刻10.11s，尚未完成3s撤墙。已定位state重构墙点791，并发现土点7010穿底；其他两组尚未启动。人工应力默认强度短试仍失败，只推迟约7.25ms。既有NoPen开启/AS关闭的0.15秒GPU诊断已完成且15帧原生安全门通过，保存帧未见穿底或左墙；正式runtime和输入未切换。结论与限制见tests/notes/upl_c08_nopen_result_r1.md。**
+
+人工应力结论与图CSV见 `tests/notes/upl_c08_as_short_review_r1.md`。墙应力放大主要来自侧向稀薄支撑的外推，见 `tests/notes/upl_c08_wall_stress_decompose_r1.md`。NoPen诊断只检验原法向速度/位移投影；约束反力与J/Darcy的一致性尚未闭合，不据正常退出声称完整u-pl或正式塌陷验收。
 
 当前使用根目录 r3 正式模板和 `support/runtime_r3` 统一材料程序，操作说明以根 README.md 为准。r1/r2 根入口已可恢复归档；其 runtime、ZIP 和 manifest 保留作历史复现，不再作为当前新塌陷入口。
 
