@@ -193,3 +193,14 @@ CPU/GPU Debug及Release四种构建通过，GPU事件内存检查零错误/泄�
 相较保留5 s末态，速度RMS从2.9083e-5降为4.0400e-6 m/s，动能下降98.07%；相对固定初始H2参照的当前坐标孔压残差RMS从1532.11降为104.70 Pa。顶部材料带沉降0.720355 mm，受限弹性参考0.709276 mm（+1.56%）；该参考不是精确二维真值。最后实际0.99 s内全体孔压变化RMS113.87 Pa、顶部继续沉降0.006892 mm，说明仍有较弱固结。
 
 据此继续采用10 s作为下一阶段带量化残差的有界撤墙检验基线，不认定严格静止/完全排水平衡，不先增加阻尼或延长15 s。本次没有新求解或重启。下一步检查已有Ck2变渗透率与重力、自由面、撤墙的组合兼容，再推进三组剪胀角。见[全历史](tests/figures/upl_prestress10_equilibrium_review_r1.png)、[全部深度剖面](tests/figures/upl_prestress10_equilibrium_review_r1_profiles.png)、[8–10秒局部图](tests/figures/upl_prestress10_late_r2.png)，各图有同前缀CSV；[完整审查](tests/notes/upl_prestress10_root_review_r1.json)保留实际时间、剩余偏差及原安全门。
+
+
+### Ck2 重力容器组合的当前状态
+
+已有变渗透率公式的重力、自由面和墙重构零步组合检查现已在CPU和GPU通过，GPU memcheck零错误、零泄漏。测试保留5000土粒子、2060固定样本，两组制造场共162个选定率、820个墙记录及10000个掩码记录；采用原误差预算，不宣称完整流量守恒或物理塌陷验收。见[GPU审查](tests/notes/upl_ck2_free_wall_gpu_root_review_r1.json)和CPU同前缀记录。
+
+生产改动只在`JSph.cpp`移除固定二维重力容器专有的恒k限制，复用已有Model/Ck校验及同一J推导的k、梯度项和必要时步限制；不新增公式、数组或邻居遍历。XML指导同步说明候选范围。CPU Debug、CPU Release和GPU Release构建已通过；这还不是新的组合积分验收，默认路径未据此冒称新程序0ULP回归。HG/独立SPR、加载柱、三维和周期塑性等范围的限制仍保留。
+
+下一条Ck2组合短窗输入已准备为0.002 s、800步、380步撤墙，只改变Model1/Ck2，不新增半步长链或重跑旧控制。旧读取器内置另一Ck，故新profile须显式核Ck=2和保存J对应的指数k；原22数组、IDs、p0、自由面、κ、时钟与两阶段计数守卫保持。本轮终端提醒不自动启动新的物理求解或重启。
+
+三组候选XML/BAT仍放在tests，统一10＋3=13 s、dt=2.5微秒、每0.01 s输出；运行入口保持候选锁定，尚不是可直接发给服务器的正式包。已去掉重复墙法向的逐帧PartExtra输出，初始Normals及完整主22数组保留，SavePosDouble=1不变。

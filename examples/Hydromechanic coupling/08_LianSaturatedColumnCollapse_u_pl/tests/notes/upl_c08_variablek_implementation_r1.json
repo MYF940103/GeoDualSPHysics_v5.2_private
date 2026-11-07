@@ -1,0 +1,25 @@
+{
+  "stage": "upl_c08_variablek_implementation_r1",
+  "scope": "Fresh fixed 2D gravity container only. Existing Model1 law admitted after CPU/GPU zero-step component review. HG/SPR, loaded column, 3D/freebody and periodic-plastic restrictions remain.",
+  "source_files": [
+    "src/source/JSph.cpp",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+  ],
+  "sole_logic_change": "Remove redundant container-specific Model0/Ck0 clause; prior InitSoilParameters model/Ck validation is retained.",
+  "default_paths": "Dynamic0 and Model0/Ck0 equations unchanged. Model0 unused Ck follows pre-existing global ignore policy.",
+  "components": [
+    "upl_ck2_free_wall_CPU_r1.check.json",
+    "upl_ck2_free_wall_GPU_r1.check.json"
+  ],
+  "build_helper": "tests\\support\\upl_c08_variablek_r1_build.py",
+  "builds_requested": [
+    "DebugCPU",
+    "ReleaseCPU",
+    "Release"
+  ],
+  "GPU_Debug_not_repeated": "No CUDA kernel or memory/index change in this admission-only patch; the existing combined GPU Debug component just passed memcheck.",
+  "new_physical_solver_or_restart_admitted": false,
+  "physical_combination_acceptance": false,
+  "formal_server_package_ready": false,
+  "SHA_scans": 0
+}

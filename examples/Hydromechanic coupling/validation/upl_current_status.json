@@ -1,8 +1,8 @@
 {
-  "date": "2026-11-06",
+  "date": "2026-11-07",
   "branch": "upl-dev",
   "stage_base": "d8bdcef8b3cf723f954769c598d2dbb2fa19f714",
-  "status": "Bounded periodic material and fixed-gravity cold startup checks completed; user-requested parameter guide cleanup and constitutive input grouping completed. Gravity startup kappa remains0; equilibrium and wall release/collapse pending.",
+  "status": "C08 10s constant-k preload and full native/physical review completed with quantified residuals. Ck2 gravity/free-surface/wall zero-step composition passed on CPU/GPU; minimal public admission candidate built in CPU Debug/Release and GPU Release. Combined advancing Model1 release is prepared, not yet run or accepted.",
   "user_entry": "HydroMechDynamicSeepage defaults false and preserves u-pw. Explicit true has a completed constant-k elastic CPU1 loaded-column2Tv with SPR/AV/HG and bounded GPU compatibility; pressure/top settlement are close while bottom-stress accuracy remains open. Narrow3D free-body Cryer is in actual peak review,not general3D walls,plasticity,exact restart or server-package acceptance.",
   "controlled_cost_review": {
     "evidence": "02_TerzaghiConsolidation_q0_PR/tests/notes/upl_column_cost_root_r1.json",
@@ -498,10 +498,10 @@
     "physical_acceptance": false
   },
   "next_order": [
-    "Review closed Cryer coarse peak and preserve its limitations; full-decay server candidate prepared without local rerun.",
-    "Case08: Cubic dynamic Darcy/wall CPU/GPU implementation regression, then gravity/mixed-slip boundaries and material-path compatibility.",
-    "Material audit: psi decay and necessary kplastic/return arithmetic precision only; material constants stay float.",
-    "Bounded case08 spatial verification before formal three-group collapse release/server package."
+    "C08: complete minimal Model1/Ck2 gravity/free-surface/mixed-slip/material/release compatibility review using the10s quantified-residual baseline; no direct stress initialization or unreviewed PART restart.",
+    "Prepare three psi0/psi2p5/psim5 root XML/BAT and verified Win64 NVIDIA runtime: fresh10s preload then3s motion,dt2.5us,output.01s; retain finite residual/compatibility limitations.",
+    "After returned complete collapse data, compare paper fields/runout/pressure/material histories, variable-k effects and only necessary precision changes. Lian second-derivative/disorder/efficiency work remains in plan.",
+    "Add3D DP coefficients and consistent softening derivatives at the later justified material stage; retain current2D-onlyMR1 restriction until validated."
   ],
   "limitations": "Lstar is not generally quadratic-exact or a conservative pair flux. Necessary private step rejection is not universal spectral/adaptive stability. Bounded public CPU/GPU loaded-column entry implementation parity is verified as recorded above; this does not imply general-boundary/plasticity/full-cycle/exact-restart/continuum-accuracy or server-package acceptance.",
   "preservation": "Formal cases/results/server packages unchanged. Failed attempts and accidental fresh-label wave duplicates are retained and identified, not counted as additional acceptance. Raw trajectories/programs are hash-bound locally, not claimed as cloud Git data backup.",
@@ -1183,7 +1183,7 @@
     "material_mode1_general_spatial_plasticity_accepted": false
   },
   "latest_verified_code_checkpoint": "1688b1f89af8d59e30af63d07d118917ab57e6c9",
-  "last_updated_utc": "2026-11-07T01:53:44.354021+00:00",
+  "last_updated_utc": "2026-11-07T02:55:46.459815+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "10s CPU preload and sole native/offline/visual review completed. Quantified residuals allow bounded release preparation, not strict equilibrium/full collapse acceptance. Next existing Ck2 gravity/free/wall compatibility preparation; no active solver.",
+  "active_work": "No active physical solver. Preparing independent Ck2 typed profile and the bounded combined release check; no automatic new solver/restart/half from the10s terminal notification.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1350,5 +1350,26 @@
     "preload10_saved_frames": 1001,
     "preload10_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_prestress10_root_review_r1.json",
     "bounded_release_preparation_allowed": true
+  },
+  "case08_ck2_current_20261107": {
+    "CPU_component": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_ck2_free_wall_cpu_root_review_r1.json",
+    "GPU_component": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_ck2_free_wall_gpu_root_review_r1.json",
+    "GPU_memcheck_errors": 0,
+    "GPU_memcheck_leaks_bytes": 0,
+    "component_backed_up_local_remote": "6ae07bfac8a379be87429881ff84e1f7071220e3",
+    "production_candidate": [
+      "src/source/JSph.cpp",
+      "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+    ],
+    "equations_changed": false,
+    "builds_passed": [
+      "DebugCPU",
+      "ReleaseCPU",
+      "Release"
+    ],
+    "combined_model1_physical_run_started": false,
+    "formal_runtime_ready": false,
+    "three_inputs": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_collapse_candidates_r1.json",
+    "root_next": "One deliberate bounded combined Ck2 startup/release check per backend after complete execution/profile review; no new half or old controls rerun. Then prepare independently verified three-group server package. No inference of physical acceptance from zero-step components or build success."
   }
 }

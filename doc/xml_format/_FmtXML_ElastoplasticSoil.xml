@@ -31,6 +31,7 @@
 				<!-- Dynamic seepage has restricted feature combinations; see the case README. PART restart is unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
 				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
+				<!-- Candidate fixed 2D gravity-container combination: Model1/Ck=2 compatibility remains to be verified; HG, loaded columns and 3D remain constant-k. -->
 				<!-- <HydroMechConductivityCk value="0.01" comment="Example only; natural-log conductivity index; default=0, no calibrated universal value" /> -->
 
 				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
@@ -42,7 +43,7 @@
 				<!-- Legacy DtFixed bypasses automatic pore-step limiting; dynamic seepage checks its necessary coupled limits. -->
 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
-				<!-- Experimental dynamic Shepard: constant-k fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
+				<!-- Experimental dynamic Shepard: fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
 				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
 				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C for soil pairs; default=0" />
 
@@ -62,7 +63,7 @@
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
-			<!-- Optional experimental fresh 2D constant-k MR1 gravity preload; omitted=disabled. -->
+			<!-- Optional experimental fresh 2D MR1 gravity preload; omitted=disabled. -->
 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
 			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->

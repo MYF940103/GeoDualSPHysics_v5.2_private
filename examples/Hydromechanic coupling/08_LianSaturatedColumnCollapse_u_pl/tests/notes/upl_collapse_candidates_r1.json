@@ -1,0 +1,113 @@
+{
+  "stage": "upl_collapse_candidates_r1",
+  "status": "AUTHOR_ONLY_UNEXECUTED_NOT_A_FORMAL_RUNTIME_PACKAGE",
+  "base_Def": "tests/configs/CaseLianSaturatedColumnCollapse_prestress10_r1_Def.xml",
+  "material_reference": "support/lian2023_collapse_parameters.csv",
+  "plan_reference": "tests/notes/upl_collapse_delivery_plan_r2.json",
+  "style_references": [
+    "../03_RetrogressiveSlopeFailure_u_pw actual formal prestress/failure BAT files",
+    "../05_LianFlexibleStrip2D_PR/xCaseLianFlexibleStrip2D_PR_release_win64_GPU.bat",
+    "../AGENTS.md"
+  ],
+  "groups": [
+    {
+      "label": "psi0",
+      "stem": "CaseLianSaturatedColumnCollapse_psi0_r1",
+      "psi0_deg": 0,
+      "cp_Pa": 5000,
+      "cr_Pa": 1000,
+      "eta": 5,
+      "sf": 0,
+      "paper_tau_s": [
+        0.3,
+        0.6,
+        1.2
+      ]
+    },
+    {
+      "label": "psi2p5",
+      "stem": "CaseLianSaturatedColumnCollapse_psi2p5_r1",
+      "psi0_deg": 2.5,
+      "cp_Pa": 5000,
+      "cr_Pa": 1000,
+      "eta": 5,
+      "sf": 0.2,
+      "paper_tau_s": [
+        0.3,
+        0.6,
+        1.2
+      ]
+    },
+    {
+      "label": "psim5",
+      "stem": "CaseLianSaturatedColumnCollapse_psim5_r1",
+      "psi0_deg": -5,
+      "cp_Pa": 7500,
+      "cr_Pa": 1000,
+      "eta": 5,
+      "sf": 0.2,
+      "paper_tau_s": [
+        0.2,
+        0.5,
+        1.6,
+        3.0
+      ]
+    }
+  ],
+  "file_convention": {
+    "Def": "tests/configs/<stem>_Def.xml",
+    "entry": "tests/support/x<stem>_win64_CPU.bat or _GPU.bat",
+    "common_launcher": "tests/support/upl_collapse_candidate_r1_win64.bat",
+    "output": "tests/outputs/<stem>_out"
+  },
+  "material": "Fixed phi25/phi_r25/n_phi0; MaterialReturn1. Existing float material and double stress unchanged; unsupported apex still rejects the stage.",
+  "unchanged_recipe": "Nominal5000soil/2060walls before retirement, dp.04, Cubic h/dp1.2, E20MPa, nu.33, rho2072.5, n0.35, Kw1GPa, water1000, k0.0002m/s. Exact geometry recipe retained; not newly generated in this task. Bed12m is a numerical runout margin, not a paper dimension.",
+  "conductivity": {
+    "HydroMechConductivityModel": 1,
+    "HydroMechConductivityCk": 2,
+    "meaning": "Explicit existing void-ratio exponential k(J) law; combined gravity/free-seepage/material/retirement compatibility remains pending. No new law or default."
+  },
+  "continuous_phases": {
+    "fresh": true,
+    "initial_effective_sigma": "zero; no direct geostatic stress assignment",
+    "initial_pressure": "Existing ConstantZ H2 plus finite-positive native FS projection; fixed p0 and negative native excess retained",
+    "preload_event_s": 10.0,
+    "release_mkbound": 2,
+    "post_release_tau_end_s": 3.0,
+    "TimeMax_s": 13.0,
+    "dt_s": 2.5e-06,
+    "TimeOut_s": 0.01,
+    "nominal_event_completed_step": 4000000,
+    "nominal_total_steps": 5200000,
+    "SoilDampingCoef_preload": 0.02,
+    "Shepard_interval_preload": 40,
+    "event_policy": "Existing gravitypreload disables configured soil damping and Shepard at release, preserving material IDs/p0/J/theta/stress/kappa in the same process; no PART restart or copied10s initialization."
+  },
+  "boundaries_and_options": "Left/right FreeSlip, bottom NoSlip; original right MK2 retired at event. FreeSeepage1 retains negative pressure and projects finite positive native surface pressure at completed steps. HG/independentSPR/NoPen/shifting/DDT disabled. No TPI/Eq47 negative-pressure relaxation, new limiter, 3D or restart admission.",
+  "runtime_policy": "No verified runtime supplied. Common launcher has candidate_ready=0 as an unconditional pre-execution lock. dirbin points only to tests/outputs/upl_collapse_runtime_PENDING, never canonical or a debug fallback. After necessary reviews root must package verified Release executables/GenCase/runtime and deliberately update dirbin/readiness. No BAT was run.",
+  "output_policy": "Each group has a same-stem _out. CPU/GPU entries are alternatives for that output, not instructions to run both. Existing output causes refusal. There is no deletion, force, restart, nsteps cap or CLI time override. GenCase plus one fresh solver only; particle conversion/PNG/CSV analysis follows complete copy-back on the local machine. No per-save PartExtra normals: initial Normals.nbi4 plus the complete22 main arrays remain required; SavePosDouble1 is unchanged.",
+  "future_command": {
+    "CPU": "GenCase <group_Def> <group_out/group> -save:all; then verified Release CPU -cpu -ompthreads:8 -stable -mdbc_freeslip <group_out/group> <group_out> -dirdataout data -svres",
+    "GPU": "Same GenCase; one verified Release GPU -gpu:0 -stable -mdbc_freeslip with the same other arguments. RTX A6000 is the future server target, not hardware observed here.",
+    "unattended": "Optional --unattended suppresses pause only; it does not unlock or change physics."
+  },
+  "qualification": "Retained10s constant-k preload was reviewed with residual and late-drift qualification, not strict equilibrium. It is not a Ck2/material-specific preload. Each candidate evolves freshly with its own material. Short retirement compatibility is not3s/full-collapse/paper acceptance. No5Pa/.005mm physical equilibrium limit is introduced; evolving necessary timestep guards remain binding.",
+  "before_formal_delivery": [
+    "Complete Model1/Ck2 wall/rate/stability and bounded combined material/gravity/free-seepage/retirement review; input existence does not unlock the launcher.",
+    "Root full-read candidates, later verify actual GenCase native geometry/markers/normals on a fresh seed, and bind an accepted Release runtime.",
+    "Prepare formal root entries/runtime only after necessary checks; no root files or existing outputs are changed by this author task.",
+    "After complete copy-back analyze actual-time pressure/excess, runout/displacement/stress/kappa/n/k and paper panels, with matching PNG/CSV."
+  ],
+  "author_checks": "XML parsed once with stdlib, target values inspected against retained parameter CSV; not GenCase, solver, BAT execution, build, native or program identity proof.",
+  "execution": {
+    "GenCase": false,
+    "solver": false,
+    "BAT": false,
+    "build": false,
+    "decoder": false,
+    "production_source_modified": false,
+    "root_formal_files_modified": false,
+    "Git": false,
+    "SHA_scans": 0
+  }
+}

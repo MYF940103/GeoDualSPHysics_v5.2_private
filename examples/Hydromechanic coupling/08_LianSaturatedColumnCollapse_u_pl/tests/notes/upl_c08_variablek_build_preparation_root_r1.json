@@ -1,0 +1,97 @@
+{
+  "stage": "upl_c08_variablek_build_preparation_root_r1",
+  "passed_build_and_static_preparation": true,
+  "production_files": [
+    "src/source/JSph.cpp",
+    "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+  ],
+  "sole_logic_change": "Existing valid Model1 may use bounded fixed2D gravity-container path; no law/kernel/state/integrator change.",
+  "independent_patch_review": "No blocking guard omission; model/Ck validated before predicate, unsupported companion scopes remain rejected.",
+  "builds": {
+    "DebugCPU": {
+      "receipt": "tests\\logs\\upl_c08_variablek_DebugCPU_r1.build.json",
+      "objects": 86,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_variablek_DebugCPU_r1\\DualSPHysics5.2CPU_win64_debug.exe",
+        "bytes": 12759040,
+        "mtime_ns": 1794019915467053800
+      },
+      "warning_codes": [
+        "D9035",
+        "LNK4099",
+        "MSB8029"
+      ]
+    },
+    "ReleaseCPU": {
+      "receipt": "tests\\logs\\upl_c08_variablek_ReleaseCPU_r1.build.json",
+      "objects": 86,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_variablek_ReleaseCPU_r1\\DualSPHysics5.2CPU_win64.exe",
+        "bytes": 5234176,
+        "mtime_ns": 1794019972359612000
+      },
+      "warning_codes": [
+        "MSB8029"
+      ]
+    },
+    "Release": {
+      "receipt": "tests\\logs\\upl_c08_variablek_Release_r1.build.json",
+      "objects": 111,
+      "program": {
+        "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_variablek_Release_r1\\DualSPHysics5.2_GEO_win64.exe",
+        "bytes": 25573376,
+        "mtime_ns": 1794020032032538900
+      },
+      "warning_codes": [
+        "MSB8029"
+      ]
+    }
+  },
+  "reader_build": "tests/logs/upl_ck2_release_native_r1.build.json",
+  "reader_current_k_model": 1,
+  "reader_Ck": 2,
+  "reader_build_passed": true,
+  "decoder_invocations": 0,
+  "new_physical_solver_invocations": 0,
+  "no_exact_restart_claim": true,
+  "prepared_groups": [
+    {
+      "label": "psi0",
+      "cp_Pa": 5000,
+      "psi0_deg": 0,
+      "sf": 0,
+      "TimeMax_s": 13,
+      "release_s": 10,
+      "TimeOut_s": 0.01,
+      "dt_s": 2.5e-06
+    },
+    {
+      "label": "psi2p5",
+      "cp_Pa": 5000,
+      "psi0_deg": 2.5,
+      "sf": 0.2,
+      "TimeMax_s": 13,
+      "release_s": 10,
+      "TimeOut_s": 0.01,
+      "dt_s": 2.5e-06
+    },
+    {
+      "label": "psim5",
+      "cp_Pa": 7500,
+      "psi0_deg": -5,
+      "sf": 0.2,
+      "TimeMax_s": 13,
+      "release_s": 10,
+      "TimeOut_s": 0.01,
+      "dt_s": 2.5e-06
+    }
+  ],
+  "shared_geometry_initialize_slip_tree_equal": true,
+  "launcher_locked": true,
+  "combined_advancing_Model1_native_acceptance": false,
+  "full_collapse_acceptance": false,
+  "formal_server_package_ready": false,
+  "next_step": "Separately reviewed two-backend800-step Ck2 combined release, without half/reference chain; this terminal follow-up does not automatically launch it.",
+  "SHA_scans": 0,
+  "retained_raw_BI4_NBI4_and_formal_cases_unchanged": true
+}

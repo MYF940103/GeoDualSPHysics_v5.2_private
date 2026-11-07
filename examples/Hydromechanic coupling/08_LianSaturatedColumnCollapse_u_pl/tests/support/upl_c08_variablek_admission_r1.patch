@@ -1,0 +1,73 @@
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -606,14 +606,14 @@
+   LoadCaseConfig(cfg);
+   const bool gravitycontainer=IsDynamicPoreContainerConfig();
+   if(HydroMechFreeSeepage && !gravitycontainer)
+-    Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
++    Run_Exceptioon("HydroMechFreeSeepage requires the fresh bounded dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
+   if(GravityPreload){
+     if(!gravitycontainer || SoilCte.MaterialReturn!=1 || HydroMechInitMode!=HMINIT_ConstantZ
+       || !HydroMechFreeSeepage || !FixedDt
+       || !std::isfinite(FixedDt->GetFixedValue()) || !(FixedDt->GetFixedValue()>0)
+       || !std::isfinite(GravityPreloadTime) || !(GravityPreloadTime>0)
+       || !std::isfinite(TimeMax) || !(TimeMax>GravityPreloadTime))
+-      Run_Exceptioon("gravitypreload requires the fresh constant-k MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
++      Run_Exceptioon("gravitypreload requires the fresh MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
+     const double steps=GravityPreloadTime/FixedDt->GetFixedValue(),rounded=floor(steps+0.5);
+     if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
+       || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
+@@ -636,7 +636,7 @@
+       || !std::isfinite(FixedDt->GetFixedValue()))
+       Run_Exceptioon("HydroMechDynamicSeepage requires fresh bounded fixtures and positive constant DtFixed; ConstantZ initialization is restricted to the fixed gravity container.");
+     if(PoreShepardRegularization && (!gravitycontainer || HydroMechInitMode!=HMINIT_ConstantZ))
+-      Run_Exceptioon("Dynamic Shepard regularization requires the constant-k gravity preload with explicit ConstantZ hydrostatic baseline.");
++      Run_Exceptioon("Dynamic Shepard regularization requires the fixed gravity preload with explicit ConstantZ hydrostatic baseline.");
+     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
+       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
+     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
+@@ -3674,7 +3674,6 @@
+     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
+     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
+     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
+-    && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
+     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1)
+     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
+     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
+@@ -4020,7 +4019,7 @@
+     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
+     if(HydroMechDynamicSeepage){
+       Log->Print(HydroMechFreeSeepage?
+-        "  DynamicSeepageScope: candidate fresh constant-k elastic gravity container with free-seepage surface; verification pending":
++        "  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification":
+         "  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded");
+       Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
+       if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);
+--- a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
++++ b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+@@ -31,6 +31,7 @@
+ 				<!-- Dynamic seepage has restricted feature combinations; see the case README. PART restart is unsupported. -->
+ 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
+ 				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
++				<!-- Candidate fixed 2D gravity-container combination: Model1/Ck=2 compatibility remains to be verified; HG, loaded columns and 3D remain constant-k. -->
+ 				<!-- <HydroMechConductivityCk value="0.01" comment="Example only; natural-log conductivity index; default=0, no calibrated universal value" /> -->
+ 
+ 				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
+@@ -42,7 +43,7 @@
+ 				<!-- Legacy DtFixed bypasses automatic pore-step limiting; dynamic seepage checks its necessary coupled limits. -->
+ 				<PoreShepardRegularization value="0" comment="Excess-pressure Shepard regularization 0=off, 1=on; default=0" />
+ 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
+-				<!-- Experimental dynamic Shepard: constant-k fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
++				<!-- Experimental dynamic Shepard: fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
+ 				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
+ 				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C for soil pairs; default=0" />
+ 
+@@ -62,7 +63,7 @@
+ 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
+ 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
+ 			</hydromechanics>
+-			<!-- Optional experimental fresh 2D constant-k MR1 gravity preload; omitted=disabled. -->
++			<!-- Optional experimental fresh 2D MR1 gravity preload; omitted=disabled. -->
+ 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
+ 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
+ 			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->

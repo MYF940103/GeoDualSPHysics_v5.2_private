@@ -1,0 +1,44 @@
+{
+  "stage": "upl_c08_variablek_admission_r1",
+  "state": "AUTHOR_ONLY_UNAPPLIED_UNBUILT_UNEXECUTED",
+  "files": {
+    "unapplied_patch": "tests/support/upl_c08_variablek_admission_r1.patch",
+    "planned_production_file": "src/source/JSph.cpp",
+    "planned_guide_file": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml"
+  },
+  "purpose": "Permit the existing Model1 law with an explicit Ck=2 input in the same bounded 2D fixed gravity-container scope, conditional on later component/regression review; no new law, parameter, array, kernel, time integrator or physical acceptance.",
+  "minimal_logic_change": "Remove only HydroMechConductivityModel==0 && HydroMechConductivityCk==0 from IsDynamicPoreContainerConfig. All other source edits are error/log wording; guide edits are comments only. Do not remove the separately retained constant-k checks for 3D free body, HG, loaded column or no-wall periodic plastic scope.",
+  "actual_names": "Current source has IsDynamicPoreContainerConfig and LoadConfig inline public scope checks, not separately named IsDynamicGravityPoreContainer / CheckDynamicPoreScope functions.",
+  "order": [
+    "JSph::LoadConfig line606 calls LoadCaseConfig; LoadCaseConfig reads kernel/constants, ConfigConstants1 at1210, execution/command options, ConfigConstants2 at1233, and original particle counts.",
+    "LoadCaseConfig line1469 calls InitSoilParameters: model/Ck are read at3889-3890 and validated at3954-3959 before returning; Model>1 rejects, Model1 requires Dynamic=1 and explicit finite Ck>0. MaterialReturn validations and elastic constants also complete here.",
+    "LoadCaseConfig ConfigConstantsSoil at1480 derives Cs0/default time scales only; it neither overrides nor validates conductivity. Return to LoadConfig computes the shared container predicate at607, then free-seepage/gravitypreload/dynamic/Shepard/HG/load scope guards.",
+    "CPU/GPU Single::LoadConfig then copies public Model1/Ck to DynamicPoreConductivity/Ck (CpuSingle107-108; GpuSingle142-143). InitDynamicPoreWall later invokes actual shared container geometry validation, and InitPorosityObserver retains finite material/exponent/step checks."
+  ],
+  "existing_parameter_validation_not_duplicated": {
+    "public": "JSph.cpp3954-3959 remains the single public model/domain validation; no duplicate predicate range test is added.",
+    "backend": "CPU4451/4481 and GPU1759/1791 retain private-state and exponent-representability validation. GPU1810-1818 also binds dynamic/public options.",
+    "model0_unused_Ck": "Removing the pair also stops the container-only rejection of an explicitly supplied but unused Model0 Ck. Global parsing already ignores Ck in Model0; no new arithmetic uses it. Defaults remain Model0/Ck0 and saved Model0 Ck remains0. Do not claim invalid unused Model0 Ck is newly validated."
+  },
+  "predicate_reach": {
+    "gravity_ConstantZ": "LoadConfig607/633-639; keeps fresh2D/nonperiodic/fixed mDBC/vertical negative finite gravity/None-or-ConstantZ/no load/no legacy drainage and all other restrictions.",
+    "free_seepage": "LoadConfig608-609; existing completed-step finite positive surface projection and full driving-vector rate unchanged.",
+    "Shepard": "LoadConfig638-639 plus CPU/GPU observer gates; still only this container with explicit ConstantZ, V0J weights, same p0 and refresh/projection order.",
+    "MR1": "IsDynamicPorePlasticConfig3687-3694 inherits only its container arm. Existing fixed-phi MaterialReturn validation, apex failure and J/total-theta rules unchanged; no-wall periodic arm remains constant-k.",
+    "wall_geometry_AV_damping": "CPU4250/GPU1679 choose the same actual +X/-X FreeSlip/+Z NoSlip geometry checker. CPU4467/GPU1773 reuse the predicate for existing constant AV/damping waivers; no new stabilization option.",
+    "retirement": "LoadConfig610-623 and CheckDynamicPoreContainer use the same predicate and original right-MK validation; new k remains derived from preserved same-stage J, with no separately copied k history. Event timing, forced PRE save, counts and retired IDs unchanged."
+  },
+  "numerical_consequences": [
+    "The candidate admits an already implemented law k=k0*exp((J-1)/((1-n0)*Ck)); at J=1 k is exactly k0. Ck=2 must be explicit in the future test input and is not a new default.",
+    "Existing same-stage conductivity, conductivity-gradient contribution and coupled necessary-step checks are reused; no static-k time-limit substitution, clamping, new loop or neighbor pass. Relevant CPU paths begin GetDynamicConductivityCpu4513 and dynamic rate below; GPU uses its existing DynamicPoreConductivity arguments.",
+    "Default Dynamic=0 and ordinary Model0/Ck0 paths retain the same executable equations and predicate truth values. Existing free-body, loaded-column, HG/SPR, restart, 3D, moving-wall, non-axis and other unsupported scope restrictions remain.",
+    "No model1 gravity/free-seepage/Shepard/plastic/retirement physical or native compatibility pass is claimed by this author patch. Current10s constant-k preload stays retained with its residual qualification."
+  ],
+  "next_review_before_public_application": "Root full-read patch and existing model1 components; then choose the smallest authorized zero-step/current-J wall+Darcy+time/finite regression and bounded combined startup/release checks. No automatic new physical solver, half/reference chain, long preload or formal collapse run is authorized by this note.",
+  "execution": {
+    "production_applied": false,
+    "build_or_solver_or_decoder_or_Git": false,
+    "hash_sweeps": false,
+    "old_consumed_files_modified": false
+  }
+}

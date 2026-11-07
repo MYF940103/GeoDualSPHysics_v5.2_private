@@ -606,14 +606,14 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
   LoadCaseConfig(cfg);
   const bool gravitycontainer=IsDynamicPoreContainerConfig();
   if(HydroMechFreeSeepage && !gravitycontainer)
-    Run_Exceptioon("HydroMechFreeSeepage requires the fresh constant-k elastic dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
+    Run_Exceptioon("HydroMechFreeSeepage requires the fresh bounded dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
   if(GravityPreload){
     if(!gravitycontainer || SoilCte.MaterialReturn!=1 || HydroMechInitMode!=HMINIT_ConstantZ
       || !HydroMechFreeSeepage || !FixedDt
       || !std::isfinite(FixedDt->GetFixedValue()) || !(FixedDt->GetFixedValue()>0)
       || !std::isfinite(GravityPreloadTime) || !(GravityPreloadTime>0)
       || !std::isfinite(TimeMax) || !(TimeMax>GravityPreloadTime))
-      Run_Exceptioon("gravitypreload requires the fresh constant-k MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
+      Run_Exceptioon("gravitypreload requires the fresh MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
     const double steps=GravityPreloadTime/FixedDt->GetFixedValue(),rounded=floor(steps+0.5);
     if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
       || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
@@ -636,7 +636,7 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
       || !std::isfinite(FixedDt->GetFixedValue()))
       Run_Exceptioon("HydroMechDynamicSeepage requires fresh bounded fixtures and positive constant DtFixed; ConstantZ initialization is restricted to the fixed gravity container.");
     if(PoreShepardRegularization && (!gravitycontainer || HydroMechInitMode!=HMINIT_ConstantZ))
-      Run_Exceptioon("Dynamic Shepard regularization requires the constant-k gravity preload with explicit ConstantZ hydrostatic baseline.");
+      Run_Exceptioon("Dynamic Shepard regularization requires the fixed gravity preload with explicit ConstantZ hydrostatic baseline.");
     if(!std::isfinite(PoreDtSafety) || !(PoreDtSafety>0) || !std::isfinite(CFLnumber) || !(CFLnumber>0))
       Run_Exceptioon("Experimental dynamic seepage requires finite positive PoreDtSafety and CFLnumber.");
     if(PeriXinc.y || PeriXinc.z || PeriZinc.x || PeriZinc.y)
@@ -3674,7 +3674,6 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
-    && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1)
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
@@ -4020,7 +4019,7 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Print(fun::VarStr("  HydroMechDynamicSeepage",HydroMechDynamicSeepage));
     if(HydroMechDynamicSeepage){
       Log->Print(HydroMechFreeSeepage?
-        "  DynamicSeepageScope: candidate fresh constant-k elastic gravity container with free-seepage surface; verification pending":
+        "  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification":
         "  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded");
       Log->Print(fun::VarStr("  HydroMechConductivityModel",(HydroMechConductivityModel? "VoidRatioExponential": "Constant")));
       if(HydroMechConductivityModel)Log->Printf("  HydroMechConductivityCk: %.17g",HydroMechConductivityCk);

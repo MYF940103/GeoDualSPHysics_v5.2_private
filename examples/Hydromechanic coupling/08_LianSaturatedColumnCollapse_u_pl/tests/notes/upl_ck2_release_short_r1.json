@@ -1,0 +1,44 @@
+{
+  "stage": "upl_ck2_release_short_r1",
+  "status": "PREPARED_ONLY_NOT_ADMITTED_NOT_STARTED",
+  "input_record": "tests/logs/upl_ck2_release_short_r1.inputs.json",
+  "Def": "tests/configs/CaseLianSaturatedColumnCollapse_ck2_release_short_r1_Def.xml",
+  "derived_companion": "tests/configs/CaseLianSaturatedColumnCollapse_ck2_release_short_r1.xml",
+  "shared_seed": "tests/outputs/upl_ck2_release_short_r1_seed/CaseLianSaturatedColumnCollapse_ck2_release_short_r1",
+  "scope": "One future fresh CPU8 and one future fresh GPU0 same-input800-update bounded implementation window. No half, extra control, restart, long preload or collapse run is authorized here.",
+  "difference": "Only existing Model1/Ck2 replaces Model0/Ck0 in both copied XMLs. Geometry/material/initialization/slip/pressure policy/damping/Shepard/times remain literal old ON input; two conductivity node comments identify the pending candidate. Retained sources unchanged.",
+  "time": {
+    "dt_s": 2.5e-06,
+    "TimeMax_s": 0.002,
+    "TimeOut_s": 0.0001,
+    "requested_event_s": 0.00095,
+    "event_completed_step": 380,
+    "owner_step_cap": 800,
+    "genuine_forced_PRE_save": "Step379/completed380 is off ordinary output cadence; retain actual scalar+=dt clocks and signed diagnostic; determine actual saved counts from metadata, not a fixed21/22 assumption."
+  },
+  "seed_copy": "Existing original7060 geometry /5000soil /2060fixed. BI4 and Normals copied using shutil.copy2, byte equality and preserved mtimes inspected without hashes. Generated companion retains original GenCase app/date/vtkout provenance; it is a derived XML, not newly generated data.",
+  "future_checks": [
+    "Both800-update runs require actual owned successful exits and immutable program/runtime/input binding; preparation is not admission.",
+    "All22 typed arrays, original IDs0..7059 with only declared right-wall IDs1800..2059 retired, current phase1 count6800/1800fixed+5000soil. Preserve original Run.csv CaseNp7060/CaseNbound2060 registry.",
+    "Same original finite/elastic-or-admitted-plastic/positive saturatedJ/p0-fixedbits/float-excess/cache/J-ledger/FS2or3 pressure<=0/kappa-nondecreasing/no-fluid-exclusion and signed dterror<=1e-14 guards. Negative signed margin is not an absolute error.",
+    "Per-frame typed metadata Dynamic=true/schema1/ConductivityModeluint1/ConductivityCkdouble2; native k derives from actual same-stage saved J, is finite positive for positive k0, and equalsk0 exactly whenJ1. Do not substitute initial-k time limiting.",
+    "Preload damping.02 and Shepard40 remain active before the genuine event. Event retires exactly260 fixed IDs, preserves soil history and p0, then disables damping/Shepard; free seepage remains active.",
+    "CPU/GPU matching actual step/time comparisons retain original5Pa pressureRMS/.005mm materialXYZ implementation bounds; not half, theory, preload equilibrium or full-collapse acceptance. Model0-vs1 changes are descriptive, not backend errors."
+  ],
+  "minimal_new_reader_plan": [
+    "Do not edit or reuse old profile with forged headers/tags. Author a new sibling profile from upl_gravity_release_native_r1.cpp, retaining its two-phase actual-size export and all original phase/array/ID/clock/P0/FS/kappa/ledger guards. Declare only the two new run DATA tags and800-step ON window; no new raw parser or generic framework.",
+    "Old profile line116 calls Metadata(f,0). Merely changing this to Metadata(f,1) is WRONG: included neutral upl_cpu_public_native_r1.cpp line26 sets Ck=1/8192, so its Metadata function would reject actualCk2. Use a small local typed four-key check in the new profile requiring Dynamicbooltrue, schemauint1, Modeluint1 and Ckdouble2; do not modify the consumed neutral reader.",
+    "Old line126 forces k=K0Case. New soil reference is J==1 ? K0Case : K0Case*exp((J-1)/((1-Por)*2.)); require finite positive k and keep the same original Close comparison. Fixed native k remains marker0. All22 arrays/layout/order remain unchanged.",
+    "Use a distinct completion stage/inputtag and honest actual phase counts. Do not compare whole phase files to constant-k controls as0ULP or interpolate forced380/ordinary400 states. No reader source is authored or compiled in this preparation task."
+  ],
+  "not_done": [
+    "No production patch application",
+    "No build or physical executable",
+    "No new GenCase",
+    "No solver or decoder",
+    "No BAT launch",
+    "No admission/notification/queue",
+    "No Git or SHA scan"
+  ],
+  "physical_acceptance": false
+}
