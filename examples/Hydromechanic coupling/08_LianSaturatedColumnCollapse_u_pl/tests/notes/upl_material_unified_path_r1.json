@@ -1,0 +1,12 @@
+{
+  "stage": "upl_material_unified_path_r1",
+  "scope": "test-only shared basic/softening return; no production or server-package change",
+  "input": "the 7560 unchanged candidate_general rows from the completed 22680-row path audit",
+  "reference": "reuse upl_material_path_r1 independent DOP853 records; no new ODE or spatial solve",
+  "admission": "all 84 complete paths remain finite/admissible with correct deviatoric and volumetric flow; compare actual new and retained old candidate trajectories",
+  "merge_comparison_budget": {"max_stress_component_Pa": 0.01, "max_saved_kappa": 1e-8},
+  "budget_scope": "material merge regression only, much smaller than the measured evolving-law path discretization error; not a physical or backend-half bound",
+  "near_tip_and_soft_apex": "independent unified component probe, not these compressive paths",
+  "SHA_scans": 0,
+  "physical_acceptance": false
+}

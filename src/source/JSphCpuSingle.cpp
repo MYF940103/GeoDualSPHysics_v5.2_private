@@ -171,6 +171,11 @@ void JSphCpuSingle::ConfigDomain(){
     memset(Sigmac, 0, sizeof(tsymatrix3d)*Np);
     memset(Kplasticc, 0, sizeof(float)*Np);
   }
+  if(TStep==STEP_Verlet){
+    //-The first divide/periodic copy precedes InitRunCpu().
+    memcpy(SigmaM1c,Sigmac,sizeof(tsymatrix3d)*Np);
+    memcpy(KplasticM1c,Kplasticc,sizeof(float)*Np);
+  }
   if(HydroMech){
     const bool initpore=(HydroMechInitMode!=HMINIT_None);
     if(PartBegin && !initpore){
@@ -460,6 +465,8 @@ void JSphCpuSingle::PeriodicDuplicateVerlet(unsigned np,unsigned pini,tuint3 cel
     sigma[pnew]=sigma[pcopy];//mdbr
     velrhopm1[pnew]=velrhopm1[pcopy];
     sigmam1[pnew]=sigmam1[pcopy];//mdbr
+    Kplasticc[pnew]=Kplasticc[pcopy];
+    KplasticM1c[pnew]=KplasticM1c[pcopy];
     if(porepress)porepress[pnew]=porepress[pcopy];
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
@@ -495,7 +502,7 @@ void JSphCpuSingle::PeriodicDuplicateSymplectic(unsigned np,unsigned pini,tuint3
     code[pnew]=CODE_SetPeriodic(code[pcopy]);
     velrhop[pnew]=velrhop[pcopy];
     sigma[pnew]=sigma[pcopy];//mdbr
-    if(SoilCte.MaterialReturn==1)Kplasticc[pnew]=Kplasticc[pcopy];
+    Kplasticc[pnew]=Kplasticc[pcopy];
     if(porepress)porepress[pnew]=porepress[pcopy];
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
@@ -654,6 +661,7 @@ void JSphCpuSingle::RunCellDivide(bool updateperiodic){
   if(TStep==STEP_Verlet){
     CellDivSingle->SortArray(VelrhopM1c);
     CellDivSingle->SortArray(SigmaM1c);
+    CellDivSingle->SortArray(KplasticM1c);
     if(PorePressM1c)CellDivSingle->SortArray(PorePressM1c);
   }
   else if(TStep==STEP_Symplectic && (PosPrec || VelrhopPrec)){//-In reality, this is only necessary in divide for corrector, not in predictor??? | En realidad solo es necesario en el divide del corrector, no en el predictor???

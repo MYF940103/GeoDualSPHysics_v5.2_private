@@ -1,0 +1,14 @@
+{
+  "stage": "upl_material_periodic_gpu_r2.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_periodic_gpu_r2.cpp",
+  "command": "upl_material_periodic_gpu_r2.exe --out FRESH_RESULT",
+  "scope": "Eight defined device slots per Symplectic/Verlet case: two native, two X images, two chained XZ images and two protected tail slots. Actual production periodic wrappers, two public GPU cell divisions, two SortBasicArrays and five float-history SortDataArrays calls. No InitRun, neighbor force, integrator, new CUDA kernel or physical step.",
+  "copy_checks": "Four real periodic calls produce8 rows. All named defined legacy fields, current kappa/rawDK and optional Verlet kappaM1 must copy exactly. Symplectic has no M1 allocation. Native0 history changes after X copying, so chained Z must read its immediate X image rather than recopy the changed native. Both inverse and forward copies are exercised and non-destination slots remain unchanged.",
+  "sort_checks": "Six active slots must undergo a nonidentity permutation, inferred independently by native ID plus translated position. Public SortBasicArrays preserves the matching basic fields; real SortDataArrays places current kappa/rawDK and Verlet M1 in that same order. Two tail slots remain exact and source arrays are unchanged. Other copied fields are not claimed to have been sorted by this minimal witness.",
+  "CPU_fixture_failure_avoidance": "AppInfo.LogInit occurs before divider construction. Cellcode is the real JDsDcell::CalcCellCode(65,2,65), not the invalid hand-packed13-bit distribution of retained CPU r2/r3. Six keys must decode exactly to geometric xyz with full31-coordinate-bit distribution and domain bounds before Divide; cells CSVs and before/after Divide stderr markers are retained. No production change is inferred from those earlier fixture access violations.",
+  "expected_outputs": "copies.csv8rows, sort.csv12rows, cells_Symplectic.csv6rows, cells_Verlet.csv6rows, component.log and completion.json. Existing output is refused. Defined members are compared, not native struct padding.",
+  "link_recipe": "Reuse upl_material_periodic_GPU_component_r1.compile.call.json and upl_material_periodic_GPU_component_repair_r2.link.call.json with new source/helper/output and current r3 110nonmain objects/headers. Host C++/CUDA11.7 runtime, no new NVCC kernel. Future admission/execution belongs to root after the active physical source closes.",
+  "physical_acceptance": false
+}

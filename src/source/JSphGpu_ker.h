@@ -423,7 +423,7 @@ unsigned PeriodicMakeList(unsigned n,unsigned pini,bool stable,unsigned nmax,tdo
 void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3d *sigma,tsymatrix3d *sigmam1
-  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1);
+  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *kplastic=NULL,float *kplasticdk=NULL,float *kplasticm1=NULL);
 void PeriodicDuplicateSymplectic(unsigned n,unsigned pini
   ,tuint3 domcells,tdouble3 perinc,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,double2 *posxypre,double *poszpre,float4 *velrhoppre

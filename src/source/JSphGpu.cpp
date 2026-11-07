@@ -166,7 +166,7 @@ void JSphGpu::InitVars(){
   BoundDerivativeVelg=NULL;
   BoundDerivativeFitShiftg=NULL;
   VelrhopM1g=NULL;                                 //-Verlet
-  SigmaM1g=NULL;//ruofeng
+  SigmaM1g=NULL; KplasticM1g=NULL;//ruofeng
   PorePressM1g=NULL;
   PosxyPreg=NULL; PoszPreg=NULL; VelrhopPreg=NULL; //-Symplectic
   SigmaPreg=NULL;//ruofeng
@@ -251,7 +251,7 @@ void JSphGpu::FreeGpuMemoryFixed(){
 //==============================================================================
 void JSphGpu::AllocGpuMemoryFixed(){
   MemGpuFixed=0;
-  if(SoilCte.MaterialReturn==1){
+  if(SoilCte.ModulusK>0.f && SoilCte.ModulusG>0.f){
     cudaMalloc((void**)&MaterialErrorg,sizeof(unsigned)); MemGpuFixed+=sizeof(unsigned);
   }
   //-Allocates memory for moving objects.
@@ -380,6 +380,7 @@ void JSphGpu::FreeGpuMemoryParticles(){
   GpuParticlesSize=0;
   MemGpuParticles=0;
   ArraysGpu->Reset();
+  KplasticM1g=NULL;
   PoroJg=NULL; PoroThetag=NULL; PoroJPreg=NULL;
 }
 
@@ -426,6 +427,7 @@ void JSphGpu::AllocGpuMemoryParticles(unsigned np,float over){
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_16B,1); //-velrhopm1
     //====mdbr
     ArraysGpu->AddArrayCount(JArraysGpu::SIZE_48B, 1);//-sigmam1
+    ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,1); //-kplasticm1; reuses existing float sort scratch.
     if(HydroMech)ArraysGpu->AddArrayCount(JArraysGpu::SIZE_4B,2);//-PorePressM1 and sort buffer
   }
   else if(TStep==STEP_Symplectic){
@@ -505,6 +507,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   double* porojpre=SaveArrayGpu(Np,PoroJPreg);
   tsymatrix3d* sigmapre = SaveArrayGpu(Np, SigmaPreg);
   tsymatrix3d* sigmam1 = SaveArrayGpu(Np, SigmaM1g);
+  float* kplasticm1 = SaveArrayGpu(Np, KplasticM1g);
   // 
   //-Frees pointers.
   ArraysGpu->Free(Idpg);
@@ -543,6 +546,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   ArraysGpu->Free(PoroJPreg);
   ArraysGpu->Free(SigmaPreg);
   ArraysGpu->Free(SigmaM1g);
+  ArraysGpu->Free(KplasticM1g);
   // 
   //-Resizes GPU memory allocation.
   const double mbparticle=(double(MemGpuParticles)/(1024*1024))/GpuParticlesSize; //-MB por particula.
@@ -585,6 +589,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   if(porojpre)PoroJPreg=ArraysGpu->ReserveDouble();
   if(sigmapre)   SigmaPreg = ArraysGpu->ReserveSymatrix3d();
   if(sigmam1)      SigmaM1g = ArraysGpu->ReserveSymatrix3d();
+  if(kplasticm1) KplasticM1g = ArraysGpu->ReserveFloat();
   // 
   //-Restore data in GPU memory.
   RestoreArrayGpu(Np,idp,Idpg);
@@ -622,6 +627,7 @@ void JSphGpu::ResizeGpuMemoryParticles(unsigned npnew){
   RestoreArrayGpu(Np,porotheta,PoroThetag);
   RestoreArrayGpu(Np,porojpre,PoroJPreg);
   RestoreArrayGpu(Np,sigmam1,SigmaM1g);
+  RestoreArrayGpu(Np,kplasticm1,KplasticM1g);
   RestoreArrayGpu(Np,sigmapre,SigmaPreg);
   //
   //-Updates values.
@@ -687,6 +693,7 @@ void JSphGpu::ReserveBasicArraysGpu(){
   }
   if(TStep==STEP_Verlet){VelrhopM1g=ArraysGpu->ReserveFloat4();
     SigmaM1g = ArraysGpu->ReserveSymatrix3d();//mdbr
+    KplasticM1g=ArraysGpu->ReserveFloat();
     if(HydroMech)PorePressM1g=ArraysGpu->ReserveFloat();
   }
   if(TVisco==VISCO_LaminarSPS)SpsTaug=ArraysGpu->ReserveSymatrix3f();
@@ -832,6 +839,7 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal,const byte *
   //===mdbr
   cudaMemcpy(Sigmag, Sigma, sizeof(tsymatrix3d)*n, cudaMemcpyHostToDevice);
   cudaMemcpy(Kplasticg, Kplastic, sizeof(float)*n, cudaMemcpyHostToDevice);
+  if(KplasticM1g)cudaMemcpy(KplasticM1g,Kplastic,sizeof(float)*n,cudaMemcpyHostToDevice);
   cudaMemset(KplasticDkg,0,sizeof(float)*n);
   if(HydroMech){
     cudaMemcpy(PorePressg,PorePress,sizeof(float)*n,cudaMemcpyHostToDevice);
@@ -1121,6 +1129,7 @@ void JSphGpu::InitRunGpu(){
   if(TStep==STEP_Verlet){cudaMemcpy(VelrhopM1g,Velrhopg,sizeof(float4)*Np,cudaMemcpyDeviceToDevice);
   //======mdbr
   cudaMemcpy(SigmaM1g,Sigmag,sizeof(tsymatrix3d)*Np,cudaMemcpyDeviceToDevice);
+  cudaMemcpy(KplasticM1g,Kplasticg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   if(HydroMech && PorePressM1g)cudaMemcpy(PorePressM1g,PorePressg,sizeof(float)*Np,cudaMemcpyDeviceToDevice);
   }
   if(HydroMech && PorePressRateg)cudaMemset(PorePressRateg,0,sizeof(float)*Np);
@@ -1513,24 +1522,36 @@ void JSphGpu::ComputeVerlet(double dt){  //pdtedom
   double *movzg=ArraysGpu->ReserveDouble();
   //-Computes displacement, velocity and density.
   //-Calcula desplazamiento, velocidad y densidad.
-  if(VerletStep<VerletSteps){
-    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
-    if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
-      cusph::UpdatePorePressureVerlet(Np,Npb,dt+dt,Codeg,PorePressM1g,PorePressRateg,PorePressM1g);
+  if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
+  const bool fullstep=(VerletStep<VerletSteps);
+  if(fullstep){
+    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,VelrhopM1g,SigmaM1g,KplasticM1g,Kplasticg,Rsigmag,Arg
+      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt+dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,KplasticM1g,KplasticDkg,NULL,MaterialErrorg,RequireElasticGravityPreload());
   }
   else{
-    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Rsigmag,Arg
-      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,Kplasticg,KplasticDkg,NULL);
-    if(HydroMech && PorePressg && PorePressM1g && PorePressRateg)
-      cusph::UpdatePorePressureVerlet(Np,Npb,dt,Codeg,PorePressg,PorePressRateg,PorePressM1g);
-    VerletStep=0;
+    cusphs::ComputeStepVerlet(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,Velrhopg,Velrhopg,Sigmag,Kplasticg,Kplasticg,Rsigmag,Arg
+      ,Aceg,ShiftPosfsg,indirvel,NoPenShiftg,dt,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity,Codeg,movxyg,movzg,VelrhopM1g,SigmaM1g,KplasticM1g,KplasticDkg,NULL,MaterialErrorg,RequireElasticGravityPreload());
   }
+  if(MaterialErrorg){
+    try{
+      unsigned materialerror=0;
+      cudaMemcpy(&materialerror,MaterialErrorg,sizeof(unsigned),cudaMemcpyDeviceToHost);
+      Check_CudaErroor("Failed checking GPU material Verlet return.");
+      if(materialerror)Run_Exceptioon(fun::PrintStr("GPU material Verlet return rejected the stage (status bits %u).",materialerror));
+    }
+    catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+  }
+  if(HydroMech && PorePressg && PorePressM1g && PorePressRateg){
+    if(fullstep)cusph::UpdatePorePressureVerlet(Np,Npb,dt+dt,Codeg,PorePressM1g,PorePressRateg,PorePressM1g);
+    else cusph::UpdatePorePressureVerlet(Np,Npb,dt,Codeg,PorePressg,PorePressRateg,PorePressM1g);
+  }
+  if(!fullstep)VerletStep=0;
   //-The new values are calculated in VelRhopM1g.
   //-Los nuevos valores se calculan en VelrhopM1g.
   swap(Velrhopg,VelrhopM1g);   //-Exchanges Velrhopg and VelrhopM1g. | Intercambia Velrhopg y VelrhopM1g.
   //==== mdbr
   swap(Sigmag,SigmaM1g);
+  swap(Kplasticg,KplasticM1g);
   if(HydroMech && PorePressg && PorePressM1g){
     swap(PorePressg,PorePressM1g);
     ApplyFreeSurfacePorePressure();

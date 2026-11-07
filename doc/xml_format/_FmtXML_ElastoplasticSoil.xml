@@ -11,16 +11,15 @@
 				<coh value="0" comment="Peak cohesion; default=0" units_comment="Pa" />
 				<dlt value="0" comment="Initial dilation angle; default=0" units_comment="degrees" />
 
-				<!-- Return algorithm is independent of strength softening and hydromechanics. -->
-				<MaterialReturn value="0" comment="0=LegacyFast, 1=experimental ConsistentDev; default=0" />
-				<!-- Mode1: fresh 2D DP_PS (DPCtes=3), Symplectic, fixed phi in (0,90) and n_phi=0; no apex return or PART restart. -->
+				<!-- Unified DP return supports all three DPCtes fits, phi=0, softening and the existing cone-tip tension policy. -->
+				<!-- Deprecated MaterialReturn=0/1 is accepted as an identical alias; omit it in new files. Material-law PART restart is unsupported. -->
 
 				<!-- Softening: residual strength must be supplied when its decay coefficient is positive. -->
 				<phi_r value="30" comment="Residual friction angle; default=phi" units_comment="degrees" />
 				<coh_r value="0" comment="Residual cohesion; default=coh" units_comment="Pa" />
 				<n_phi value="0" comment="Friction-angle exponential decay coefficient; default=0" />
 				<n_coh value="0" comment="Cohesion exponential decay coefficient; default=0" />
-				<DilationDecay value="0" comment="sf in psi=psi0*exp(-sf*kappa); default=0; sf>=0; nonzero requires MaterialReturn=1" />
+				<DilationDecay value="0" comment="sf in psi=psi0*exp(-sf*kappa); default=0; must be finite and >=0" />
 				<SoilTriggerFos value="1.65" comment="Restart strength-reduction factor for strength softening; default=1.65; must be >=1" />
 			</soils>
 
@@ -28,7 +27,7 @@
 				<!-- Move the whole hydromechanical configuration here when migrating it from legacy soils XML. -->
 				<HydroMech value="1" comment="Enable hydromechanical coupling; default=0" />
 				<HydroMechDynamicSeepage value="0" comment="0=original u-pw, 1=experimental dynamic seepage with evolving J/n; default=0" />
-				<!-- Dynamic seepage has restricted feature combinations; see the case README. PART restart is unsupported. -->
+				<!-- Dynamic plasticity remains restricted to fresh 2D plane-strain fixed-phi container/periodic fixtures; generic PART restart is unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
 				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
 				<!-- Model1: bounded 2D gravity/startup-release CPU/GPU checks only; full collapse pending. HG/loaded-column/3D combinations remain constant-k. -->
@@ -63,7 +62,7 @@
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
 				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
-			<!-- Optional experimental fresh 2D MR1 gravity preload; omitted=disabled. -->
+			<!-- Optional fresh 2D fixed-phi plane-strain gravity preload; omitted=disabled. -->
 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
 			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->

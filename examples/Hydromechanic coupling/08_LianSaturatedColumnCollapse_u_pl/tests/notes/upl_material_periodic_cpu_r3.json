@@ -1,0 +1,13 @@
+{
+  "stage": "upl_material_periodic_cpu_r3.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_periodic_cpu_r3.cpp",
+  "command": "upl_material_periodic_cpu_r3.exe --out FRESH_RESULT",
+  "retained_failure": "r2 source/build/actual access-violation exit 3221225477 and partial results remain untouched; r2 is not passed.",
+  "diagnosis": "JAppInfo constructor leaves Log NULL (JAppInfo.cpp37-41). Real JCellDivCpu captures AppInfo.LogPtr at construction (37), then unconditionally logs allocated memory at150/173. r2 omitted LogInit; this was a fixture lifecycle error, not a numerical threshold failure.",
+  "only_changes_from_r2": ["r3 identity strings", "AppInfo.LogInit(result/component.log) before constructing Probe/divider", "flush existing copy CSV before the real Divide for failure localization"],
+  "numeric_and_API_scope": "Identical eight slots, four real copy calls/eight rows, two public Divide and SortArray permutations/twelve rows; same named-member bit gates and defined tail canaries. No production, field values or budgets changed.",
+  "link_scope": "Current root-closed CPU Debug r3 matching headers and 85 non-main objects; no old ABI closure.",
+  "physical_acceptance": false
+}

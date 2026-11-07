@@ -1,0 +1,24 @@
+{
+  "stage": "upl_material_stage_gpu_r1.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_stage_gpu_r1.cpp",
+  "command": "upl_material_stage_gpu_r1.exe --cpu CLOSED_CPU_stages.csv --out FRESH_RESULT",
+  "CPU_control": "The closed upl_material_stage_cpu_r1/result/stages.csv and sibling passed completion.json, all26 rows. Case generation is a literal copy of that retained source's pure manufacturing block; no include-main rename or copied production kernel.",
+  "scope": "Host C++ calls actual cusphs Pre/Cor/Verlet wrappers from the matching new DebugGPU r3 whole-object closure. No new CUDA kernel, scene initialization, force or physical update loop. Manufactured dt=.125 tests stage arithmetic and is not a stable physical timestep.",
+  "coverage": {
+    "manufactured_points": 14,
+    "actual_wrapper_calls": 26,
+    "Pre_old_kappa_bits": 12,
+    "Cor_successful_commits": 11,
+    "Cor_UnresolvedPath_rejection": 1,
+    "Verlet_pairing_and_raw_DK": 2,
+    "fixed_and_tail_slot_checks": 52
+  },
+  "points": "Three DP fits each basic and jointly evolving phi/cohesion/dilation; phi0; sf-only trigger without cohesion FOS; phi-only trigger with unused residual cohesion; positive-beta apex with dev-history saturation; zero-modulus no-soil. One valid Pre followed by actual rejected Cor and two distinct Verlet base/current-history calls complete14 points.",
+  "checks": "Named tensor members compare with actual CPU stage at the sum of the two existing8192*DBL_EPS tensor roundoff scales; float history writeback is exact. No new physical threshold. The already closed CPU component supplies independent dev/volume/yield-compliance checks, not an independent continuum path truth. Fixed/tail inputs and outputs are fully initialized and checked by member, not struct padding.",
+  "Verlet": "Full2dt reads and writes the same M1 sigma/kappa buffers; separate current kappa=.75 exposes rawDK's actual current-history baseline. Reset dt reads current and writes distinct M1 output. RawDK equals previousDK+max(new-current,0). This wrapper component does not call host ComputeVerlet or claim host swap, startup accuracy or general irreversible-history monotonicity.",
+  "failure": "Actual kernel status scalar must be exactly the UnresolvedPath bit; the initialized rejected output fields remain unchanged and flag/tail canaries remain exact. No rollback of a whole solver state is claimed.",
+  "link_recipe": "Reuse upl_material_gpu_step_r2.compile.call.json and .link.call.json with source/output substitutions and current matching r3 110nonmain objects/headers; never link an old ABI closure. Host compiler with _WITHGPU and CUDA11.7 headers/runtime; no NVCC source compilation required.",
+  "physical_acceptance": false
+}

@@ -48,12 +48,12 @@ struct StPorosityRhopState{const double *j;const double *jn;const double *theta;
 //----------------------------------------
 void ComputeStepVerlet(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhop1,const float4 *velrhop2
-  ,const tsymatrix3d* sigma1,const float* kplastic1,const tsymatrix3f* rsigma
+  ,const tsymatrix3d* sigma2,const float* kplastic2,const float* kplasticcurrent,const tsymatrix3f* rsigma
   ,const float *ar,const float3 *ace,const float4 *shiftposfs,const float3 *indirvel,const float4 *nopenshift
   ,double dt,double dt2,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhopnew
   ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk
-  ,cudaStream_t stm);
+  ,cudaStream_t stm,unsigned *materialerror=NULL,bool requireelastic=false);
 void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpctes,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
   ,const tsymatrix3d* sigmapre,const float* kplasticpre,const tsymatrix3f* rsigma

@@ -1,0 +1,19 @@
+{
+  "stage": "upl_material_stage_cpu_r1.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_stage_cpu_r1.cpp",
+  "command": "upl_material_stage_cpu_r1.exe --out FRESH_RESULT",
+  "link_scope": "Fresh root-selected CPU Debug r3 85 non-main objects and matching current headers; never retained r1/r2 ABI objects.",
+  "reuse": "Minimal two pool-owned slots from upl_material_cpu_stage_r1.cpp; actual protected ComputeSymplecticPre/Cor and ComputeVerlet, no copied engine integrator.",
+  "manufactured_points": 14,
+  "points": "Six smooth (three fits x basic/joint phi-c-psi evolution), one phi-zero evolving cylinder, sf-only FOS exclusion, friction-only FOS with unused residual cohesion, positive-beta hydrostatic apex, zero-material state; one rejected Cor; two Verlet pairing/reset witnesses.",
+  "expected_calls": {"Pre": 12, "Cor": 12, "Verlet": 2, "CSV_rows": 26},
+  "reference": "Frozen test-only upl_material_unified_candidate_r1.h referenceU, not an independent physical truth. Separate named-component stress compliance, dev-kappa, endpoint volume and published coefficient/yield formulas are evaluated independently.",
+  "budgets": "Retain 8192 DBL_EPSILON stress/compliance scales and four times the original 1e-10 relative scalar-root budget; no new physical error threshold. Float-written kappa versus continuous-history residual are separate.",
+  "stage_interval": "dt=.125 is manufactured stage arithmetic, not a stable physical timestep. Rate xx=8192, yy=-8192 Pa/s gives distinct actual Pre and Cor trials; no force, scene, InitRun or global time advance.",
+  "history": "Pre must retain old kappa bits; Cor must equal reference float writeback. One invalid certification path must throw UnresolvedPath in actual Cor after a valid Pre, preserving its already-written native state and releasing mov scratch. Unavailable failed-return diagnostics are empty CSV cells.",
+  "Verlet": "Different defined current/M1 states test the real 2dt branch and periodic Euler-reset branch, paired sigma/kappa bases and pointer swaps only. Does not claim general irreversible history, unload monotonicity or a changed startup strategy.",
+  "not_claimed": ["dynamic 3D admission", "spatial plastic acceptance", "equilibrium", "old/new algorithm bit identity", "GPU result", "physical acceptance"],
+  "production_or_old_evidence_modified": false
+}

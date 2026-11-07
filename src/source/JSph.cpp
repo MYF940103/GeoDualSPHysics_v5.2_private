@@ -613,12 +613,12 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
   if(HydroMechFreeSeepage && !gravitycontainer)
     Run_Exceptioon("HydroMechFreeSeepage requires the fresh bounded dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
   if(GravityPreload){
-    if(!gravitycontainer || SoilCte.MaterialReturn!=1 || HydroMechInitMode!=HMINIT_ConstantZ
+    if(!gravitycontainer || !IsDynamicPorePlasticMaterialConfig() || HydroMechInitMode!=HMINIT_ConstantZ
       || !HydroMechFreeSeepage || !FixedDt
       || !std::isfinite(FixedDt->GetFixedValue()) || !(FixedDt->GetFixedValue()>0)
       || !std::isfinite(GravityPreloadTime) || !(GravityPreloadTime>0)
       || !std::isfinite(TimeMax) || !(TimeMax>GravityPreloadTime))
-      Run_Exceptioon("gravitypreload requires the fresh MR1 ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
+      Run_Exceptioon("gravitypreload requires the fresh 2D fixed-phi DP_PS ConstantZ gravity container, free seepage and TimeMax beyond its positive event time.");
     const double steps=GravityPreloadTime/FixedDt->GetFixedValue(),rounded=floor(steps+0.5);
     if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
       || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
@@ -2966,8 +2966,8 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       domainmax=MaxValues(domainmax,vdom[c*2+1]);
     }
     JBinaryData* bdpart=DataBi4->AddPartInfo(Part,TimeStep,npok,nout,Nstep,TimerPart.GetElapsedTimeD()/1000.,domainmin,domainmax,TotalNp);
-    if(SoilCte.MaterialReturn){
-      bdpart->SetvUint("MaterialReturn",SoilCte.MaterialReturn);
+    if(SoilCte.ModulusE>0.f){
+      bdpart->SetvUint("MaterialLawVersion",2);
       bdpart->SetvFloat("DilationDecay",SoilCte.psiDecay);
     }
     if(HydroMechDynamicSeepage){
@@ -3729,6 +3729,8 @@ void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
     || state.MkBound!=GravityPreloadMkBound)
     Run_Exceptioon("Shared preload target MK/ID range differs from the validated fixed geometry.");
   if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
+  Log->Printf("GravityPreload: source material law=%s; certified elastic schema/contract1.",
+    (state.MaterialLawVersion==2? "unified2": "legacy MR1 ElasticV1"));
 }
 
 //==============================================================================
@@ -3746,6 +3748,14 @@ void JSph::RestoreGravityPreloadClock(const JGravityPreloadState &state){
 }
 
 //==============================================================================
+/// Material capability retained for the bounded dynamic-plastic fixtures.
+//==============================================================================
+bool JSph::IsDynamicPorePlasticMaterialConfig()const{
+  return(Simulate2D && !PartBegin && DPCtes==DP_PS && TStep==STEP_Symplectic
+    && SoilCte.n_phi==0.f && SoilCte.phi>0.f && SoilCte.phi<float(PI/2.));
+}
+
+//==============================================================================
 /// Narrow gravity warmup scope; actual fixed-face geometry is checked after loading.
 //==============================================================================
 bool JSph::IsDynamicPoreContainerConfig()const{
@@ -3756,7 +3766,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
-    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || SoilCte.MaterialReturn==1)
+    && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || IsDynamicPorePlasticMaterialConfig())
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
     && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
     && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0);
@@ -3766,7 +3776,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
 /// Narrow waiver of the elastic-only J corrector gate; base admission remains.
 //==============================================================================
 bool JSph::IsDynamicPorePlasticConfig()const{
-  return(SoilCte.MaterialReturn==1 && HydroMech && HydroMechDynamicSeepage
+  return(IsDynamicPorePlasticMaterialConfig() && HydroMech && HydroMechDynamicSeepage
     && (IsDynamicPoreContainerConfig()
     || (!CaseNpb && PeriX && PeriZ && !PeriY && !Gravity.x && !Gravity.y && !Gravity.z
     && HydroMechConductivityModel==0 && HydroMechConductivityCk==0
@@ -3959,20 +3969,21 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
   SoilCte.phi_r=(hasphir? float(TORAD*sxml->ReadElementFloat(solidNode,"phi_r","value",true)): SoilCte.phi);
   SoilCte.n_coh=(hasncoh? sxml->ReadElementFloat(solidNode,"n_coh","value",true): 0.f);
   SoilCte.n_phi=(hasnphi? sxml->ReadElementFloat(solidNode,"n_phi","value",true): 0.f);
+  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
   SoilCte.SoilTriggerFos=sxml->ReadElementFloat(solidNode,"SoilTriggerFos","value",true,1.65f);
-  if(SoilCte.SoilTriggerFos<1.f)Run_Exceptioon("SoilTriggerFos must be equal to or greater than 1.");
+  if(!std::isfinite(SoilCte.SoilTriggerFos) || SoilCte.SoilTriggerFos<1.f)
+    Run_Exceptioon("SoilTriggerFos must be finite and equal to or greater than 1.");
   if(SoilCte.n_coh>0.f && !hascohr)Run_Exceptioon("coh_r must be defined when n_coh is greater than zero.");
   if(SoilCte.n_phi>0.f && !hasphir)Run_Exceptioon("phi_r must be defined when n_phi is greater than zero.");
   const bool softphi=(hasphir && hasnphi && SoilCte.n_phi>0.f);
   const bool softcoh=(hascohr && hasncoh && SoilCte.n_coh>0.f);
-  StrainSoftening=(softphi || softcoh);
+  StrainSoftening=(softphi || softcoh || SoilCte.psiDecay>0.f);
 
-  //-Constitutive return and dilation evolution; valid without strength softening.
-  SoilCte.MaterialReturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
-  SoilCte.psiDecay=sxml->ReadElementFloat(solidNode,"DilationDecay","value",true,0.f);
-  if(SoilCte.MaterialReturn>1)Run_Exceptioon("MaterialReturn must be 0=LegacyFast or 1=ConsistentDev.");
-  if(!std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f || (!SoilCte.MaterialReturn && SoilCte.psiDecay!=0.f))
-    Run_Exceptioon("DilationDecay must be finite and nonnegative, and requires MaterialReturn=1 when nonzero.");
+  //-Legacy XML aliases no longer select different constitutive algorithms.
+  const unsigned materialreturn=sxml->ReadElementUnsigned(solidNode,"MaterialReturn","value",true,0);
+  if(materialreturn>1)Run_Exceptioon("Deprecated MaterialReturn accepts only 0 or 1; both use the unified material law.");
+  if(sxml->ExistsElement(solidEle,"MaterialReturn","value"))
+    Log->PrintWarning("MaterialReturn is deprecated: values 0 and 1 both use the unified DP return; remove this XML key.");
 
   //-Soil elastic parameters.
   SoilCte.ModulusE=sxml->ReadElementFloat(solidNode,"ModulusE","value",true);
@@ -4069,20 +4080,32 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     if(PoreCompressionSourceMode>1)Run_Exceptioon("PoreCompressionSourceMode must be 0=PairDivergence or 1=DensityRate.");
   }
 
-  //-Derived soil elastic constants.
-  SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
-  SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
-  if(SoilCte.MaterialReturn){
-    if(!Simulate2D || DPCtes!=DP_PS || TStep!=STEP_Symplectic || PartBegin || SoilCte.n_phi!=0.f)
-      Run_Exceptioon("MaterialReturn=1 requires a fresh 2D DP_PS Symplectic run with fixed friction angle; restart and other return branches are not supported.");
+  //-Validate every material, including the zero-elasticity pure-fluid configuration.
+  if(!std::isfinite(SoilCte.ModulusE) || SoilCte.ModulusE<0.f || !std::isfinite(SoilCte.PRvs)
+    || !std::isfinite(SoilCte.phi) || !std::isfinite(SoilCte.phi_r)
+    || SoilCte.phi_r<0.f || SoilCte.phi<SoilCte.phi_r || !(SoilCte.phi<float(PI/2.))
+    || !std::isfinite(SoilCte.dlt) || !(fabs(double(SoilCte.dlt))<PI/2.)
+    || !std::isfinite(SoilCte.coh) || !std::isfinite(SoilCte.coh_r)
+    || SoilCte.coh_r<0.f || SoilCte.coh<SoilCte.coh_r
+    || !std::isfinite(SoilCte.n_phi) || SoilCte.n_phi<0.f
+    || !std::isfinite(SoilCte.n_coh) || SoilCte.n_coh<0.f
+    || !std::isfinite(SoilCte.psiDecay) || SoilCte.psiDecay<0.f)
+    Run_Exceptioon("Soil material requires finite E>=0, 0<=phi_r<=phi<90 degrees, |dlt|<90 degrees, peak cohesion>=residual>=0 and nonnegative decay rates.");
+  if(SoilCte.ModulusE==0.f){
+    if(SoilCte.phi!=0.f || SoilCte.phi_r!=0.f || SoilCte.dlt!=0.f
+      || SoilCte.coh!=0.f || SoilCte.coh_r!=0.f || SoilCte.n_phi!=0.f
+      || SoilCte.n_coh!=0.f || SoilCte.psiDecay!=0.f)
+      Run_Exceptioon("Zero ModulusE is reserved for a pure fluid with zero strength, dilation and decay rates.");
+    SoilCte.ModulusK=SoilCte.ModulusG=0.f;
+  }
+  else{
+    if(!(SoilCte.PRvs>-1.f && SoilCte.PRvs<0.5f))
+      Run_Exceptioon("Positive soil elasticity requires -1<PRvs<0.5.");
+    SoilCte.ModulusK = float(SoilCte.ModulusE / (3.f*(1.f - 2.f*SoilCte.PRvs)));
+    SoilCte.ModulusG = float(SoilCte.ModulusE / (2.f*(1.f + SoilCte.PRvs)));
     if(!std::isfinite(SoilCte.ModulusK) || !(SoilCte.ModulusK>0.f)
-      || !std::isfinite(SoilCte.ModulusG) || !(SoilCte.ModulusG>0.f)
-      || !std::isfinite(SoilCte.phi) || !(SoilCte.phi>0.f && SoilCte.phi<float(PI/2.))
-      || !std::isfinite(SoilCte.dlt) || !(fabs(double(SoilCte.dlt))<PI/2.)
-      || !std::isfinite(SoilCte.coh) || !std::isfinite(SoilCte.coh_r)
-      || SoilCte.coh_r<0.f || SoilCte.coh<SoilCte.coh_r
-      || !std::isfinite(SoilCte.n_coh) || SoilCte.n_coh<0.f)
-      Run_Exceptioon("MaterialReturn=1 requires finite positive moduli, 0<phi<90 degrees, |dlt|<90 degrees, peak cohesion>=residual>=0 and n_coh>=0.");
+      || !std::isfinite(SoilCte.ModulusG) || !(SoilCte.ModulusG>0.f))
+      Run_Exceptioon("Soil elasticity requires finite positive derived K and G.");
   }
 
   //-Shows soil parameter information.
@@ -4091,10 +4114,8 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
 
   //-Log soil strength, softening and elastic parameters.
   Log->Print(fun::VarStr("  Strain Softening", (StrainSoftening? "Enabled": "Disabled")));
-  if(ct.MaterialReturn){
-    Log->Print("  MaterialReturn: 1=ConsistentDev (experimental radial return; unsupported apex stops the stage)");
-    Log->Printf("  DilationDecay: %g",ct.psiDecay);
-  }
+  if(ct.ModulusE>0.f)Log->Print("  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)");
+  Log->Printf("  DilationDecay: %g",ct.psiDecay);
   Log->Printf("  Cohesion: %f",ct.coh);
   if(ct.n_coh){
     Log->Printf("  Residual Cohesion: %f",ct.coh_r);

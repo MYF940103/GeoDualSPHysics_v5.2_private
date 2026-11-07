@@ -19,7 +19,7 @@
 // interval to that fresh seed before importing by original ID.
 class JGravityPreloadState{
 public:
-  unsigned Count=0,Fixed=0,CompletedStep=0;
+  unsigned Count=0,Fixed=0,CompletedStep=0,MaterialLawVersion=0;
   unsigned RetireBegin=0,RetireCount=0,MkBound=0;
   double Time=0.,Dt=0.;
   std::vector<unsigned> Idp,ById,FSType;
@@ -128,8 +128,12 @@ public:
         && p->ExistsValue("PoreShepardActive",DatBool)&&p->GetvBool("PoreShepardActive")
         && p->ExistsValue("HydroMechFreeSeepage",DatBool)&&p->GetvBool("HydroMechFreeSeepage")
         ,"Required preload/free-seepage flags differ.");
-      Need(p->ExistsValue("MaterialReturn",DatUint)&&p->GetvUint("MaterialReturn")==1
-        && p->ExistsValue("DilationDecay",DatFloat)
+      const bool unified=p->ExistsValue("MaterialLawVersion");
+      if(unified)Need(p->ExistsValue("MaterialLawVersion",DatUint)&&p->GetvUint("MaterialLawVersion")==2
+        ,"Unknown/untyped material-law version in certified PRE.");
+      else Need(p->ExistsValue("MaterialReturn",DatUint)&&p->GetvUint("MaterialReturn")==1
+        ,"Legacy certified elastic PRE requires MaterialReturn=1.");
+      Need(p->ExistsValue("DilationDecay",DatFloat)
         && Finite(p->GetvFloat("DilationDecay"))&&p->GetvFloat("DilationDecay")>=0.f
         && p->ExistsValue("HydroMechDynamicSeepage",DatBool)&&p->GetvBool("HydroMechDynamicSeepage")
         && p->ExistsValue("DynamicSeepageSchema",DatUint)&&p->GetvUint("DynamicSeepageSchema")==1
@@ -155,6 +159,7 @@ public:
 
       JGravityPreloadState state;
       state.Count=count;state.Fixed=fixed;state.CompletedStep=f.Get_Step()+1;
+      state.MaterialLawVersion=(unified? 2u: 1u);
       state.Time=f.Get_TimeStep();state.Dt=p->GetvDouble("SymplecticDtPre");
       state.MkBound=p->GetvUint("GravityPreloadReleaseMkBound");
       state.RetireBegin=p->GetvUint("GravityPreloadTargetIdBegin");

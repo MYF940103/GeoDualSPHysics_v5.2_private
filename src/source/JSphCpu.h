@@ -182,6 +182,7 @@ protected:
   //======= mdbr
   tsymatrix3d* SigmaPrec;
   tsymatrix3d* SigmaM1c;
+  float* KplasticM1c; ///<Verlet plastic-history state paired with SigmaM1c.
   //=======
   //-Variables for floating bodies.
   unsigned *FtRidp;             ///<Identifier to access to the particles of the floating object [CaseNfloat].

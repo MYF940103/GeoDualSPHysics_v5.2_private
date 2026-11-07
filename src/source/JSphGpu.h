@@ -136,7 +136,7 @@ protected:
   //-Particle position according to the identifier for the motion.
   //-Posicion de particula segun id para motion.
   unsigned *RidpMoveg;  ///<Only for moving boundary particles [CaseNmoving] and when CaseNmoving!=0 | Solo para boundary moving particles [CaseNmoving] y cuando CaseNmoving!=0 
-  unsigned *MaterialErrorg; ///<One run-owned scalar: rejected material-return status bits.
+  unsigned *MaterialErrorg; ///<One run-owned scalar for positive-modulus soil: rejected material-return status bits.
 
   //-List of particle arrays on GPU. | Lista de arrays en GPU para particulas.
   JArraysGpu* ArraysGpu;
@@ -185,6 +185,7 @@ protected:
   //-Variables for compute step: VERLET.
   float4 *VelrhopM1g;  ///<Verlet: in order to keep previous values. | Verlet: para guardar valores anteriores.
   tsymatrix3d *SigmaM1g;//ruofeng
+  float *KplasticM1g; ///<Verlet plastic history at the same time layer as SigmaM1g.
   float *PorePressM1g; ///<Verlet pore pressure history.
   //-Variables for compute step: SYMPLECTIC.
   double2 *PosxyPreg;  ///<Sympletic: in order to keep previous values. | Sympletic: para guardar valores en predictor.

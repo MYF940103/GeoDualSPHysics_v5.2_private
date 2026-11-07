@@ -5387,7 +5387,7 @@ __device__ void KerPeriodicDuplicatePos(unsigned pnew,unsigned pcopy
 __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellmax,double3 perinc
   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1,tsymatrix3d *sigma,tsymatrix3d *sigmam1
-  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)
+  ,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *kplastic,float *kplasticdk,float *kplasticm1)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x; //-Number of particle.
   if(p<n){
@@ -5409,6 +5409,9 @@ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellma
     if(porepress0)porepress0[pnew]=porepress0[pcopy];
     if(porepressrate)porepressrate[pnew]=porepressrate[pcopy];
     if(porepressm1)porepressm1[pnew]=porepressm1[pcopy];
+    if(kplastic)kplastic[pnew]=kplastic[pcopy];
+    if(kplasticdk)kplasticdk[pnew]=kplasticdk[pcopy];
+    if(kplasticm1)kplasticm1[pnew]=kplasticm1[pcopy];
     if(spstau)spstau[pnew]=spstau[pcopy];
   }
 }
@@ -5420,12 +5423,12 @@ __global__ void KerPeriodicDuplicateVerlet(unsigned n,unsigned pini,uint3 cellma
 void PeriodicDuplicateVerlet(unsigned n,unsigned pini,tuint3 domcells,tdouble3 perinc
   ,const unsigned *listp,unsigned *idp,typecode *code,unsigned *dcell
   ,double2 *posxy,double *posz,float4 *velrhop,tsymatrix3f *spstau,float4 *velrhopm1
-  ,tsymatrix3d *sigma,tsymatrix3d *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1)
+  ,tsymatrix3d *sigma,tsymatrix3d *sigmam1,float *porepress,float *porepress0,float *porepressrate,float *porepressm1,float *kplastic,float *kplasticdk,float *kplasticm1)
 {
   if(n){
     uint3 cellmax=make_uint3(domcells.x-1,domcells.y-1,domcells.z-1);
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
-    KerPeriodicDuplicateVerlet <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,velrhopm1,sigma,sigmam1,porepress,porepress0,porepressrate,porepressm1);
+    KerPeriodicDuplicateVerlet <<<sgrid,SPHBSIZE>>> (n,pini,cellmax,Double3(perinc),listp,idp,code,dcell,posxy,posz,velrhop,spstau,velrhopm1,sigma,sigmam1,porepress,porepress0,porepressrate,porepressm1,kplastic,kplasticdk,kplasticm1);
   }
 }
 

@@ -312,8 +312,7 @@ typedef struct{
   float PoreWaterBulkModulus; ///<Pore-water bulk modulus Kw for u-pw hydromechanics.
   float Porosity;             ///<Soil porosity n for u-pw hydromechanics.
   float HydraulicConductivity;///<Hydraulic conductivity k [m/s] for u-pw hydromechanics.
-  unsigned MaterialReturn;   ///<0=legacy fast (default), 1=experimental consistent DP_PS radial return.
-  float psiDecay;            ///<Dilation-angle decay sf; used only by MaterialReturn=1.
+  float psiDecay;            ///<Dilation-angle decay sf; zero keeps the dilation angle constant.
 }StSoilCte;
 
 ///Hydromechanical initialization mode for pore pressure and optional prestress.

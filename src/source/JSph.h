@@ -205,7 +205,7 @@ protected:
   bool NoPenetration;         ///<NoPenetration correction for mDBC2.
   TpMdbc2Mode TMdbc2;         ///<mDBC2 mode used by NoPenetration.
   TpDPCtes DPCtes;            ///<DP constants 1:3D Circumscribed DP, 2:3D Mid Circumscribed DP, 3:Plain Strain condition (default=1). //mdbr
-  bool StrainSoftening;       ///<Uses strain-softening DP correction when residual strength parameters are defined. //mdbr
+  bool StrainSoftening;       ///<Uses evolving DP friction/cohesion or dilation decay. //mdbr
   bool ArtificialStress;      ///<Bui 2008 artificial stress for tensile instability (default=0). //mdbr
   float ArtificialStressCoef; ///<Coefficient epsilon for Bui 2008 artificial stress. //mdbr
   float ArtificialStressExp;  ///<Exponent n for Bui 2008 artificial stress kernel ratio. //mdbr
@@ -607,6 +607,7 @@ protected:
   std::string GetGravityPreloadContract()const;
   void LoadGravityPreloadState(JGravityPreloadState &state)const;
   void RestoreGravityPreloadClock(const JGravityPreloadState &state);
+  bool IsDynamicPorePlasticMaterialConfig()const;
   bool IsDynamicPoreContainerConfig()const;
   bool IsDynamicPorePlasticConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code

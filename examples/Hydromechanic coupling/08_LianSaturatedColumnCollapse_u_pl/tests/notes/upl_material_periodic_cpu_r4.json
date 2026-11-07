@@ -1,0 +1,14 @@
+{
+  "stage": "upl_material_periodic_cpu_r4.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_periodic_cpu_r4.cpp",
+  "command": "upl_material_periodic_cpu_r4.exe --out FRESH_RESULT",
+  "retained_failures": "r2/r3 sources, owned nonzero exits and partial results remain untouched. r3 log proves memory allocation was reached; it does not prove Divide completed.",
+  "concrete_cell_fixture_defect": "DCEL encodes 1+31 bits. r2/r3 manually chose sx=6,sy=1,sz=6 (sum13), so Cellz retained high x bits. This could index beyond declared cell memory. Production JSph.cpp uses JDsDcell::CalcCellCode(DomCells+1), which allocates31 coordinate bits; the fresh fixture now uses that same real function.",
+  "before_Divide": "Each of six active keys is decoded and written with geometric expected xyz into cells_Symplectic.csv/cells_Verlet.csv; exact xyz equality and domain bounds are mandatory before invoking Divide. The code distribution itself must have31 coordinate bits.",
+  "diagnostics": "Keep r3 LogInit; flush copy CSV; stderr before/after each real Divide and each public SortArray call. No speculative production fix or diagnostic kernel.",
+  "unchanged": "Same eight slots, X/XZ copies, actual public sorting, named field bit gates and canaries; no altered physical equation or tolerance. Earlier stage fixture never claimed cell-partition or spatial-force validation.",
+  "link_scope": "Matching root-closed DebugCPU r3 headers/85 non-main objects, not old ABI objects.",
+  "physical_acceptance": false
+}

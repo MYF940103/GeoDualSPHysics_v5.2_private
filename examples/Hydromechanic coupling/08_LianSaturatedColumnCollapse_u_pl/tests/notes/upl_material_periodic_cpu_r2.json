@@ -1,0 +1,15 @@
+{
+  "stage": "upl_material_periodic_cpu_r2.author",
+  "author_only": true,
+  "compiled_or_executed": false,
+  "source": "tests/support/upl_material_periodic_cpu_r2.cpp",
+  "command": "upl_material_periodic_cpu_r2.exe --out FRESH_RESULT",
+  "link_scope": "Matching fresh CPU Debug r3 headers plus its 85 non-main objects; no old ABI closure.",
+  "reuse": "Eight-slot actual PeriodicDuplicateSymplectic fixture extended to actual PeriodicDuplicateVerlet; no copied production periodic kernel.",
+  "coverage": "Per integrator: two native, four X then XZ images, two defined tail slots; change native history after X to make immediate image-source inheritance nonvacuous. Both history levels have distinct bits. Symplectic KplasticM1c remains NULL.",
+  "sorting": "One small actual JCellDivCpuSingle::Divide and public SortArray permutation per integrator, 6 defined records, nonidentity permutation required. Match original ID plus translated position; every named field and unused tail must be exact. No arbitrary sort-map injection.",
+  "expected": {"copy_calls": 4, "copy_rows": 8, "Divide_calls": 2, "sort_rows": 12},
+  "scope": "Only copy/permutation: no InitRun, force, integrator or physical step, and no general Verlet irreversible-history claim. Pressure/J fields are defined copy operands, not a coupled flow solution.",
+  "not_claimed": ["legacy MR0 untouched-history semantics", "CPU GPU bit identity", "dynamic 3D admission", "physical acceptance"],
+  "production_or_old_evidence_modified": false
+}

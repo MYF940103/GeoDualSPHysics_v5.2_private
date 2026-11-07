@@ -488,10 +488,10 @@ void JSphGpuSingle::RunPeriodic(){
             run=false;
             //-Create new periodic particles duplicating the particles from the list
             //-Crea nuevas particulas periodicas duplicando las particulas de la lista.
-            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g);
+            if(TStep==STEP_Verlet)cusph::PeriodicDuplicateVerlet(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,VelrhopM1g,Sigmag,SigmaM1g,PorePressg,PorePress0g,PorePressRateg,PorePressM1g,Kplasticg,KplasticDkg,KplasticM1g);
             if(TStep==STEP_Symplectic){
               if((PosxyPreg || PoszPreg || VelrhopPreg) && (!PosxyPreg || !PoszPreg || !VelrhopPreg))Run_Exceptioon("Symplectic data is invalid.") ;
-              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PoroJg,PoroThetag,PoroJPreg,(SoilCte.MaterialReturn==1? Kplasticg: NULL),(SoilCte.MaterialReturn==1? KplasticDkg: NULL));
+              cusph::PeriodicDuplicateSymplectic(count,Np,DomCells,perinc,listpg,Idpg,Codeg,Dcellg,Posxyg,Poszg,Velrhopg,SpsTaug,PosxyPreg,PoszPreg,VelrhopPreg,Sigmag,SigmaPreg,PorePressg,PorePress0g,PorePressRateg,PorePressPreg,PoroJg,PoroThetag,PoroJPreg,Kplasticg,KplasticDkg);
             }
             if(UseNormals)cusph::PeriodicDuplicateNormals(count,Np,listpg,BoundNormalg,MotionVelg,BoundSlipModeg);
 
@@ -591,6 +591,9 @@ void JSphGpuSingle::RunCellDivide(bool updateperiodic){
     tsymatrix3d* sigmag = ArraysGpu->ReserveSymatrix3d();
     CellDivSingle->SortDataArrays(SigmaM1g, sigmag);
     swap(SigmaM1g, sigmag);   ArraysGpu->Free(sigmag);
+    float* kplasticm1g=ArraysGpu->ReserveFloat();
+    CellDivSingle->SortDataArrays(KplasticM1g,kplasticm1g);
+    swap(KplasticM1g,kplasticm1g); ArraysGpu->Free(kplasticm1g);
     //
     CellDivSingle->SortDataArrays(VelrhopM1g,velrhopg);
     swap(VelrhopM1g,velrhopg);   ArraysGpu->Free(velrhopg);

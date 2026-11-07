@@ -1,0 +1,9 @@
+"""One same-configuration old/new Release source audit, offline only; no tolerance substitution."""
+import json,sys
+import upl_material_release_native_r1_review as base
+T=base.T;L=base.L;F='upl_material_gpu_release_control_r1'
+def main():
+    base.need(len(sys.argv)==1,'No arguments; one explicit closed-native Release comparison');check=L/(F+'.review.json');csv=T/'figures'/(F+'_pairs.csv');fields=T/'figures'/(F+'_fields.csv');base.need(not any(p.exists() for p in [check,csv,fields]),'Existing/partial Release review protected');a=base.load('source','GPU',True);b=base.load('source','GPU_release');rows,details,fail=base.compare(a,b,True,'baseline_GPU_release');base.need(len(rows)==22,'All22 actual common states required');clock=(a['out']/'clocks.csv').read_bytes()==(b['out']/'clocks.csv').read_bytes()
+    if not clock:fail.append('entire_original_signed_clock_CSV_bytes')
+    base.write(csv,rows);base.write(fields,details);consumed=a['consumed']+b['consumed'];base.need(all(base.stat(e['path'])==e for e in consumed),'Frozen exports changed during offline review');result=dict(stage=F+'.review',passed=not fail,actual_matched_states=22,typed_arrays=22,all_typed22_bits_equal=all(x['typed22_bit_equal'] for x in rows),all_actual_signed_clock_fields_exact=all(x['signed_clock_exact'] for x in rows),entire_actual_clock_CSV_bytes_equal=clock,max_pressure_RMS_difference_Pa=max(x['pressure_RMS_difference_Pa'] for x in rows),max_material_XYZ_difference_mm=max(x['material_XYZ_max_difference_mm'] for x in rows),failures=fail,configuration_comparison='old_Release_r2_vs_new_Release_r3_GPU',earlier_Debug_vs_Release_strict_failure_preserved=True,new_tolerance_or_half_run=False,physical_acceptance=False,solver_decoder_build_Git_SHA_actions=0,consumed=consumed,outputs=[base.stat(csv),base.stat(fields)]);base.save(check,result);print(json.dumps(result),flush=True);return 0 if result['passed'] else 1
+if __name__=='__main__':raise SystemExit(main())
