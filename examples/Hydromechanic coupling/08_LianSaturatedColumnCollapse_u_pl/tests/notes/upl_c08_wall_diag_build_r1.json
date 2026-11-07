@@ -1,0 +1,20 @@
+{
+  "stage": "upl_c08_wall_diag_build_r1.author",
+  "status": "author_only_not_imported_built_or_run",
+  "script": "tests/support/upl_c08_wall_diag_build_r1.py",
+  "purpose": "Authoritative isolated builds after the root-owned error-only GPU dynamic-wall diagnostic: report invalid sample ID/B/normal and stage/TimeStep/Nstep before the unchanged original exception. No numerical or acceptance change is claimed by this builder.",
+  "recipe": "Minimal clone of the fully read mdbc_partition_build_r1.py. One configuration argument only: DebugCPU, Debug, or Release. DebugCPU is the project-default check; Debug/Release exercise the CUDA host path. No automatic multi-configuration batch.",
+  "commands_after_root_review_only": [
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_wall_diag_build_r1.py DebugCPU",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_wall_diag_build_r1.py Debug",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_wall_diag_build_r1.py Release"
+  ],
+  "paths": "Fresh outputs/upl_c08_wall_diag_<configuration>_r1 and LOCALAPPDATA/Temp/upl_c08_wall_diag_r1/<configuration>/int; the CUDA intermediate path must contain no spaces. Fresh common outputs/upl_c08_wall_diag_source_r1/source.zip and source.json. Fresh logs/<tag>.start.json/.call.json/.build.json/.log/.binlog, with collision refusal and no cleanup/retry.",
+  "source_identity": "Capture current source files and authoritative VS solution/project inputs once, plus this build script, using bytes/mtime and ZIP. Reuse requires unchanged source stats. The prior mdbc_partition capture/commit is explicitly historical lineage, not a claim that the new binary was built at that commit or current HEAD. No Git or SHA command is used.",
+  "protection": "Before/after SMT protects canonical executable/runtime files, current support/runtime_r3 files, the retained r2/r3 ZIPs and r3 provenance records, the prior source archive/JSON, and all four closed mdbc_partition programs/project-object records. No old objects, canonical programs, runtime companions, server package, physical input or BI4 are overwritten.",
+  "toolchain": "Reuse the selected configuration's actual closed MSBuild argv; authoritative VS solution, x64 MSVC14.36.32532, GPU CUDA11.7 sm86, no PostBuildEvent. Fresh expected project objects: CPU87/non-main86; GPU113/non-main112. Real owned MSBuild Popen wait plus Win32 handle exit are sealed in call.json before object/log checks.",
+  "receipt_scope": "Passed requires actual exits0, expected output executable/object count, no compiler error lines, stable source and protected stats. Warning lines and output/object stat records are retained. The driver invokes MSBuild only; it never starts any generated program, helper, component, solver, native decoder, notifier or queue.",
+  "physical_acceptance": false,
+  "SHA_scans": 0,
+  "execution_by_author": false
+}

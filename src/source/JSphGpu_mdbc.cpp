@@ -225,7 +225,17 @@ void JSphGpu::ComputeDynamicPoreWallGpu(unsigned stage,unsigned *invalidg){
   if(owned){
     ArraysGpu->Free(invalidg);
     Check_CudaErroor("Failed reconstructing GPU dynamic wall samples.");
-    if(invalid<Np)Run_Exceptioon("GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.");
+    if(invalid<Np){
+      unsigned id;tdouble2 posxy;double posz;tfloat3 normal;
+      cudaMemcpy(&id,Idpg+invalid,sizeof(unsigned),cudaMemcpyDeviceToHost);
+      cudaMemcpy(&posxy,Posxyg+invalid,sizeof(tdouble2),cudaMemcpyDeviceToHost);
+      cudaMemcpy(&posz,Poszg+invalid,sizeof(double),cudaMemcpyDeviceToHost);
+      cudaMemcpy(&normal,BoundNormalg+invalid,sizeof(tfloat3),cudaMemcpyDeviceToHost);
+      Check_CudaErroor("Failed reading rejected dynamic wall sample.");
+      Log->Printf("DynamicPoreWall rejected: stage=%u sorted_slot=%u native_id=%u step_start=%.17g step=%u B=(%.17g,%.17g,%.17g) normal=(%.9g,%.9g,%.9g)."
+        ,stage,invalid,id,TimeStep,unsigned(Nstep),posxy.x,posxy.y,posz,normal.x,normal.y,normal.z);
+      Run_Exceptioon("GPU dynamic wall requires a finite saturated first-order mirror fit at every active sample.");
+    }
   }
 }
 void JSphGpu::ComputeDynamicPoreWallStateGpu(){ComputeDynamicPoreWallGpu(0);}
