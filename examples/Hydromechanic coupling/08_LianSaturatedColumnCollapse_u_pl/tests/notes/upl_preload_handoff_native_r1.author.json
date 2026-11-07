@@ -1,0 +1,42 @@
+{
+  "stage": "upl_preload_handoff_native_r1.author",
+  "author_only_unexecuted": true,
+  "files": [
+    "support/upl_preload_handoff_native_r1.cpp",
+    "support/upl_preload_handoff_native_r1_build.py",
+    "support/upl_preload_handoff_native_r1_run.py"
+  ],
+  "build_dependency": "logs/upl_preload_handoff_DebugCPU_r2.build.json",
+  "scope": "Original C08 psi0 Ck2 800-global-step source and receive windows, dt2.5us,event380,out0.1ms; no solver/native invocation by author",
+  "command_build": "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_native_r1_build.py",
+  "command_decode": "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_native_r1_run.py source|receive CPU|GPU",
+  "command_direct": "reader.exe --read source|receive CPU|GPU DATA PRE|- FRESHOUT",
+  "source_receipt": "logs/upl_preload_handoff_source_BACKEND_r1_native_r1.check.json; certified_pre_file stat Entry, qualified_elastic_PRE_verified true, source_run Entry",
+  "source_compact_completion": [
+    "genuine_pre_event_part",
+    "genuine_pre_event_time_s",
+    "certified_pre_filename",
+    "qualified_PRE_read_by_current_helper",
+    "source_PRE_completed_step",
+    "source_PRE_actual_time_s"
+  ],
+  "receiver_rules": [
+    "Part0 is real globalStep+1 not t0",
+    "Every receiver signed dterror interval must be nonempty <=1e-14",
+    "scalar clock replays actual +=dt from0 to first global completed count",
+    "all native original IDs/22arrays and J ledger/cache/FS/p0/excess finite safety",
+    "source schema only once at genuine PRE, receiver statefile exact named PRE",
+    "source and receiver phase1 typed22 exports permit by-ID same-time comparison",
+    "new scalar metadata/headers derive true raw counts, no native rewrite"
+  ],
+  "limits": [
+    "This is not generic PART restart",
+    "Native source contract is read from source itself; actual solver independently enforces target fresh contract",
+    "Certification is accepted only with bound completed actual source run; reader cannot independently witness all predictor trials",
+    "Original BI4 is sorted by original IDs, not solver cell raw order; no promised post-advance 0ULP",
+    "Original fixed bands and initial reference data depend on retained outputs/upl_c08_global_CPU_r1/ids.csv",
+    "Profile currently psi0 target DilationDecay0/cohesion5000; other-group receiver profiles need explicit separate scope",
+    "Normal reader result is not physical/full/preload equilibrium acceptance"
+  ],
+  "SHA_scans": 0
+}

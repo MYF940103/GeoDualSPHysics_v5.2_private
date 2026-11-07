@@ -19,6 +19,7 @@
 /// \file JSphGpuSingle.cpp \brief Implements the class \ref JSphGpuSingle.
 
 #include "JSphGpuSingle.h"
+#include "JGravityPreloadState.h"
 #include "JSphHourglassGpu.h"
 #include "JCellDivGpuSingle.h"
 #include "JArraysGpu.h"
@@ -1150,6 +1151,86 @@ void JSphGpuSingle::RunGravityPreloadRelease(){
 }
 
 //==============================================================================
+/// Imports one qualified elastic full-step PRE state; this is not PART restart.
+//==============================================================================
+void JSphGpuSingle::RunGravityPreloadHandoffGpu(){
+  if(!IsGravityPreloadHandoff())return;
+  JGravityPreloadState source;LoadGravityPreloadState(source);
+  if(Np!=source.Count || Npb!=source.Fixed || CpuParticlesSize<Np || PosxyPreg || PoszPreg
+    || VelrhopPreg || SigmaPreg || PorePressPreg || PoroJPreg)
+    Run_Exceptioon("Gravity preload handoff requires the complete fresh full-step allocation.");
+  ParticlesDataDown(Np,0,true,false);
+  std::vector<tfloat3> normal(Np);std::vector<byte> slip(BoundSlipModeg? Np: 0);
+  cudaMemcpy(normal.data(),BoundNormalg,sizeof(tfloat3)*Np,cudaMemcpyDeviceToHost);
+  if(BoundSlipModeg)cudaMemcpy(slip.data(),BoundSlipModeg,sizeof(byte)*Np,cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed downloading fresh gravity preload wall attributes.");
+  std::vector<typecode> codebyid(Np);std::vector<tfloat3> normalbyid(Np);
+  std::vector<byte> slipbyid(slip.size());std::vector<bool> seen(Np,false);
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=Idp[p];
+    if(id>=Np || seen[id] || !CODE_IsNormal(Code[p]))Run_Exceptioon("Invalid fresh native ID in gravity preload handoff.");
+    seen[id]=true;codebyid[id]=Code[p];normalbyid[id]=normal[p];
+    if(BoundSlipModeg)slipbyid[id]=slip[p];
+    const unsigned s=source.ById[id];
+    if(memcmp(PorePress0+p,&source.PorePress0[s],sizeof(float))
+      || (CODE_IsFixed(Code[p]) && (Posxy[p].x!=source.Pos[s].x || Posxy[p].y!=source.Pos[s].y || Posz[p]!=source.Pos[s].z)))
+      Run_Exceptioon("Gravity preload fixed geometry or initial P0 differs from the fresh input.");
+  }
+  //-Use the source's actual slot order, with static wall attributes from this fresh input.
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=source.Idp[p];Idp[p]=id;Code[p]=codebyid[id];normal[p]=normalbyid[id];
+    if(BoundSlipModeg)slip[p]=slipbyid[id];
+  }
+  const auto copystate=[&](){
+    for(unsigned p=0;p<Np;p++){
+      const unsigned s=source.ById[Idp[p]];
+      AuxPos[p]=source.Pos[s];Posxy[p]=TDouble2(AuxPos[p].x,AuxPos[p].y);Posz[p]=AuxPos[p].z;Velrhop[p]=source.VelRhop[s];
+      const tdouble3 kk=source.SigmaKK[s],ij=source.SigmaIJ[s];
+      Sigma[p]=TSymMatrix3d(kk.x,ij.x,ij.z,kk.y,ij.y,kk.z);
+      Kplastic[p]=source.Kplastic[s];PorePress[p]=source.PorePress[s];PorePress0[p]=source.PorePress0[s];
+      PoroJ[p]=source.J[s];PoroTheta[p]=source.Theta[s];
+      AuxFSType[p]=source.FSType[s];AuxFSNormal[p]=source.FSNormal[s];AuxPosDiv[p]=source.PosDiv[s];
+    }
+    cudaMemcpy(Posxyg,Posxy,sizeof(tdouble2)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(Poszg,Posz,sizeof(double)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(Velrhopg,Velrhop,sizeof(tfloat4)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(Sigmag,Sigma,sizeof(tsymatrix3d)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(Kplasticg,Kplastic,sizeof(float)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(PorePressg,PorePress,sizeof(float)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(PorePress0g,PorePress0,sizeof(float)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(PoroJg,PoroJ,sizeof(double)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(PoroThetag,PoroTheta,sizeof(double)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(FSTypeg,AuxFSType,sizeof(unsigned)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(FSNormalg,AuxFSNormal,sizeof(tfloat3)*Np,cudaMemcpyHostToDevice);
+    cudaMemcpy(PosDivg,AuxPosDiv,sizeof(float)*Np,cudaMemcpyHostToDevice);
+    Check_CudaErroor("Failed restoring gravity preload primary/FS state.");
+  };
+  copystate();
+  LoadDcellParticles(Np,Code,AuxPos,Dcell);
+  cudaMemcpy(Idpg,Idp,sizeof(unsigned)*Np,cudaMemcpyHostToDevice);
+  cudaMemcpy(Codeg,Code,sizeof(typecode)*Np,cudaMemcpyHostToDevice);
+  cudaMemcpy(Dcellg,Dcell,sizeof(unsigned)*Np,cudaMemcpyHostToDevice);
+  cudaMemcpy(BoundNormalg,normal.data(),sizeof(tfloat3)*Np,cudaMemcpyHostToDevice);
+  if(BoundSlipModeg)cudaMemcpy(BoundSlipModeg,slip.data(),sizeof(byte)*Np,cudaMemcpyHostToDevice);
+  Check_CudaErroor("Failed uploading gravity preload ownership/cell data.");
+  const bool shepard=PoreShepardRegularization,freeseepage=HydroMechFreeSeepage;
+  PoreShepardRegularization=false;HydroMechFreeSeepage=false;
+  try{BoundChanged=true;RunCellDivide(true);}
+  catch(...){PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;throw;}
+  PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;
+  if(Np!=source.Count || Npb!=source.Fixed || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut()
+    || CellDivSingle->GetNpbOutIgnore() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("Gravity preload handoff cell rebuild changed native ownership.");
+  //-Divide updates real PosCell/cells. Refill by its new ID order without changing that cell order.
+  cudaMemcpy(Idp,Idpg,sizeof(unsigned)*Np,cudaMemcpyDeviceToHost);
+  Check_CudaErroor("Failed downloading gravity preload sorted native IDs.");
+  copystate();
+  cudaMemset(KplasticDkg,0,sizeof(float)*Np);cudaMemset(PorePressRateg,0,sizeof(float)*Np);
+  Check_CudaErroor("Failed resetting recomputed gravity preload rate diagnostics.");
+  RestoreGravityPreloadClock(source);
+}
+
+//==============================================================================
 /// Initialises execution of simulation.
 /// Inicia ejecucion de simulacion.
 //==============================================================================
@@ -1178,16 +1259,17 @@ void JSphGpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.
   //------------------------------------------------------------------------------------
   InitRunGpu();
+  RunGravityPreloadHandoffGpu();
   RunGaugeSystem(TimeStep,true);
   if(InOut)InOutInit(TimeStepIni);
   FreePartsInit();
   UpdateMaxValues();
   PrintAllocMemory(GetAllocMemoryCpu(),GetAllocMemoryGpu());
-  SaveData(); 
+  if(!IsGravityPreloadHandoff())SaveData();
   Timersg->ResetTimes();
   Timersg->TmStop(TMG_Init,false);
   if(Log->WarningCount())Log->PrintWarningList("\n[WARNINGS]","");
-  PartNstep=-1; Part++;
+  if(!IsGravityPreloadHandoff()){PartNstep=-1;Part++;}
 
   //-Main Loop.
   //------------

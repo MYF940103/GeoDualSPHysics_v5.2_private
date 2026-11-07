@@ -60,14 +60,14 @@ void ComputeStepSymplecticPre(bool floating,bool shift,bool inout,TpDPCtes dpcte
   ,const float3 *indirvel,double dtm,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d* sigma,float* kplastic,float* kplasticdk
-  ,cudaStream_t stm,StPorosityRhopState porostate=StPorosityRhopState{},unsigned *materialerror=NULL);
+  ,cudaStream_t stm,StPorosityRhopState porostate=StPorosityRhopState{},unsigned *materialerror=NULL,bool requireelastic=false);
 void ComputeStepSymplecticCor(bool floating,bool shift,bool inout,TpDPCtes dpctes,TpMdbc2Mode mdbc2,unsigned np,unsigned npb
   ,const float4 *velrhoppre,const float *ar,const float3 *ace,const float4 *shiftposfs
   ,const tsymatrix3d* sigmapre, const float* kplasticpre, const tsymatrix3f* rsigma
   ,const float3 *indirvel,const float4 *nopenshift,double dtm,double dt,float rhopzero,float rhopoutmin,float rhopoutmax,tfloat3 gravity
   ,typecode *code,double2 *movxy,double *movz,float4 *velrhop
   ,tsymatrix3d* sigma, float* kplastic, float* kplasticdk 
-  ,cudaStream_t stm,StPorosityRhopState porostate=StPorosityRhopState{},unsigned *materialerror=NULL);
+  ,cudaStream_t stm,StPorosityRhopState porostate=StPorosityRhopState{},unsigned *materialerror=NULL,bool requireelastic=false);
  void CteInteractionUpTStep(const StSoilCte *soilcte,unsigned strainsoftening,unsigned partbegin);//Constants loaded to time integration
 
 

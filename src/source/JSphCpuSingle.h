@@ -57,6 +57,7 @@ protected:
 
   void RunCellDivide(bool updateperiodic);
   void RunGravityPreloadRelease();
+  void RunGravityPreloadHandoffCpu();
   void AbortBoundOut();
 
   void Interaction_Forces(TpInterStep tinterstep);

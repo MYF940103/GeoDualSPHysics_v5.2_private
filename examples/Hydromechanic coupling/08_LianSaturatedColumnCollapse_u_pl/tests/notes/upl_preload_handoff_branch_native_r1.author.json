@@ -1,0 +1,37 @@
+{
+  "stage": "upl_preload_handoff_branch_native_r1.author",
+  "author_only_unexecuted": true,
+  "files": [
+    "support/upl_preload_handoff_branch_native_r1.cpp",
+    "support/upl_preload_handoff_branch_native_r1_build.py",
+    "support/upl_preload_handoff_branch_native_r1_run.py",
+    "support/upl_preload_handoff_branch_review_r1.py"
+  ],
+  "source_derived_from": "Unmodified closed upl_preload_handoff_native_r1 profile and original typed22 output format",
+  "group_profiles": {
+    "psi2p5": {
+      "coh": 5000,
+      "dlt": 2.5,
+      "DilationDecay": 0.2
+    },
+    "psim5": {
+      "coh": 7500,
+      "dlt": -5,
+      "DilationDecay": 0.2
+    }
+  },
+  "target_Coh_for_source_Load": "5000 or7500; source certified cohesion5000 remains unchanged",
+  "source": "Original certified sourceCPU actual PRE Entry from passed native.check; no source rerun",
+  "commands": [
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_branch_native_r1_build.py",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_branch_native_r1_run.py psi2p5",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_branch_native_r1_run.py psim5",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_preload_handoff_branch_review_r1.py"
+  ],
+  "scope": "Two new CPU short elastic receivers, all22 fields, 420 actual new updates/global800; no half/full/10s equilibrium/plastic branch acceptance",
+  "low_cohesion_reject_is_not_positive_decode": "Expected failed source needs actual nonzero exit and native cert absence audit by root, not positive native wrapper",
+  "decoder_invocations": 0,
+  "solver_invocations": 0,
+  "build_invocations": 0,
+  "SHA_scans": 0
+}

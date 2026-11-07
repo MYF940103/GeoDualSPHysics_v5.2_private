@@ -1581,7 +1581,7 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
   if(MaterialErrorg){
     try{
       unsigned materialerror=0;
@@ -1623,7 +1623,7 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,TMdbc2,Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
-    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg);
+    ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
   if(MaterialErrorg){
     try{
       unsigned materialerror=0;
@@ -1677,7 +1677,7 @@ void JSphGpu::InitDynamicPoreWallGpu(const tfloat3 *boundnormal,const byte *boun
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("GPU dynamic wall requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
   if(IsDynamicPoreContainerConfig()){
-    CheckDynamicPoreContainer(Np,Npb,AuxPos,Code,Velrhop,boundnormal,boundslipmode);
+    CheckDynamicPoreContainer(Np,Npb,AuxPos,Code,Velrhop,boundnormal,boundslipmode,Idp);
     return;
   }
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};

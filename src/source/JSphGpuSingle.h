@@ -51,6 +51,7 @@ protected:
   void RunPeriodic();
   void RunCellDivide(bool updateperiodic);
   void RunGravityPreloadRelease();
+  void RunGravityPreloadHandoffGpu();
   void AbortBoundOut();
 
   void Interaction_Forces(TpInterStep interstep);

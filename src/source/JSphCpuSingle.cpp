@@ -19,6 +19,7 @@
 /// \file JSphCpuSingle.cpp \brief Implements the class \ref JSphCpuSingle.
 
 #include "JSphCpuSingle.h"
+#include "JGravityPreloadState.h"
 #include "JSphHourglassCpu.h"
 #include "JCellDivCpuSingle.h"
 #include "JArraysCpu.h"
@@ -1341,6 +1342,59 @@ void JSphCpuSingle::RunGravityPreloadRelease(){
 }
 
 //==============================================================================
+/// Imports one qualified elastic full-step PRE state; this is not PART restart.
+//==============================================================================
+void JSphCpuSingle::RunGravityPreloadHandoffCpu(){
+  if(!IsGravityPreloadHandoff())return;
+  JGravityPreloadState source;LoadGravityPreloadState(source);
+  if(Np!=source.Count || Npb!=source.Fixed || PosPrec || VelrhopPrec || SigmaPrec || PorePressPrec || PoroJPrec)
+    Run_Exceptioon("Gravity preload handoff requires the complete fresh full-step allocation.");
+  std::vector<typecode> codebyid(Np);
+  std::vector<tfloat3> normalbyid(Np);
+  std::vector<byte> slipbyid(BoundSlipModec? Np: 0);
+  std::vector<bool> seen(Np,false);
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=Idpc[p];
+    if(id>=Np || seen[id] || !CODE_IsNormal(Codec[p]))Run_Exceptioon("Invalid fresh native ID in gravity preload handoff.");
+    seen[id]=true;codebyid[id]=Codec[p];normalbyid[id]=BoundNormalc[p];
+    if(BoundSlipModec)slipbyid[id]=BoundSlipModec[p];
+    const unsigned s=source.ById[id];
+    if(memcmp(PorePress0c+p,&source.PorePress0[s],sizeof(float))
+      || (CODE_IsFixed(Codec[p]) && (Posc[p].x!=source.Pos[s].x || Posc[p].y!=source.Pos[s].y || Posc[p].z!=source.Pos[s].z)))
+      Run_Exceptioon("Gravity preload fixed geometry or initial P0 differs from the fresh input.");
+  }
+  //-Start from the actual source slot order; keep fresh ID-owned static wall attributes.
+  for(unsigned p=0;p<Np;p++){
+    const unsigned id=source.Idp[p];Idpc[p]=id;Codec[p]=codebyid[id];BoundNormalc[p]=normalbyid[id];
+    if(BoundSlipModec)BoundSlipModec[p]=slipbyid[id];
+  }
+  const auto copystate=[&](){
+    for(unsigned p=0;p<Np;p++){
+      const unsigned s=source.ById[Idpc[p]];
+      Posc[p]=source.Pos[s];Velrhopc[p]=source.VelRhop[s];
+      const tdouble3 kk=source.SigmaKK[s],ij=source.SigmaIJ[s];
+      Sigmac[p]=TSymMatrix3d(kk.x,ij.x,ij.z,kk.y,ij.y,kk.z);
+      Kplasticc[p]=source.Kplastic[s];PorePressc[p]=source.PorePress[s];PorePress0c[p]=source.PorePress0[s];
+      PoroJc[p]=source.J[s];PoroThetac[p]=source.Theta[s];
+      FSTypec[p]=source.FSType[s];FSNormalc[p]=source.FSNormal[s];PosDivc[p]=source.PosDiv[s];
+    }
+  };
+  copystate();
+  LoadDcellParticles(Np,Codec,Posc,Dcellc);
+  const bool shepard=PoreShepardRegularization,freeseepage=HydroMechFreeSeepage;
+  PoreShepardRegularization=false;HydroMechFreeSeepage=false;
+  try{BoundChanged=true;RunCellDivide(true);}
+  catch(...){PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;throw;}
+  PoreShepardRegularization=shepard;HydroMechFreeSeepage=freeseepage;
+  if(Np!=source.Count || Npb!=source.Fixed || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut()
+    || CellDivSingle->GetNpbOutIgnore() || CellDivSingle->GetNpfOutIgnore())
+    Run_Exceptioon("Gravity preload handoff cell rebuild changed native ownership.");
+  //-The rebuild may refresh ghosts/FS. Restore every saved primary/FS field by the real ID.
+  copystate();
+  RestoreGravityPreloadClock(source);
+}
+
+//==============================================================================
 /// Initialises execution of simulation.
 /// Inicia ejecucion de simulacion.
 //==============================================================================
@@ -1365,16 +1419,17 @@ void JSphCpuSingle::Run(std::string appname,const JSphCfgRun *cfg,JLog2 *log){
   //-Initialisation of execution variables. | Inicializacion de variables de ejecucion.
   //------------------------------------------------------------------------------------
   InitRunCpu();
+  RunGravityPreloadHandoffCpu();
   RunGaugeSystem(TimeStep,true);
   if(InOut)InOutInit(TimeStepIni);
   FreePartsInit();
   UpdateMaxValues();
   PrintAllocMemory(GetAllocMemoryCpu());
-  SaveData(); 
+  if(!IsGravityPreloadHandoff())SaveData();
   Timersc->ResetTimes();
   Timersc->TmStop(TMC_Init);
   if(Log->WarningCount())Log->PrintWarningList("\n[WARNINGS]","");
-  PartNstep=-1; Part++;
+  if(!IsGravityPreloadHandoff()){PartNstep=-1;Part++;}
 
   //-Main Loop.
   //------------

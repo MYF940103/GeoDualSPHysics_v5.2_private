@@ -28,6 +28,7 @@
 #include "JSphMk.h"
 #include "JDsPartsInit.h"
 #include "JPartsLoad4.h"
+#include "JGravityPreloadState.h"
 #include "JDsMotion.h"
 #include "JXml.h"
 #include "JCaseCtes.h"
@@ -68,6 +69,8 @@
 #include <algorithm>
 #include <cmath>
 #include <limits>
+#include <sstream>
+#include <iomanip>
 
 using namespace std;
 
@@ -222,7 +225,9 @@ void JSph::InitVars(){
   HydroMechDrainageStartTime=0;
   HydroMechDrainageFixedGrid=false;
   HydroMechFreeSeepage=false;
-  GravityPreload=GravityPreloadReleased=false;
+  GravityPreload=GravityPreloadReleased=GravityPreloadElasticSource=false;
+  GravityPreloadStateFile.clear();
+  GravityPreloadNormalContract.clear();
   GravityPreloadTime=GravityPreloadActualTime=0.;
   GravityPreloadStep=GravityPreloadActualStep=GravityPreloadMkBound=0;
   GravityPreloadIdBegin=GravityPreloadIdCount=0;
@@ -618,6 +623,13 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
     if(!std::isfinite(steps) || rounded<1 || rounded>=double((std::numeric_limits<int>::max)())
       || fabs(steps-rounded)>16.*std::numeric_limits<double>::epsilon()*max(1.,fabs(steps)))
       Run_Exceptioon("gravitypreload time must lie on the constant-dt completed-step grid.");
+    if(GravityPreloadElasticSource || IsGravityPreloadHandoff()){
+      if((GravityPreloadElasticSource && IsGravityPreloadHandoff()) || PartBegin
+        || HydroMechConductivityModel!=1 || !Stable || !SvPosDouble
+        || !SoilDamping || !PoreShepardRegularization
+        || !(SvData&SDAT_Binx) || !(SvData&SDAT_Info))
+        Run_Exceptioon("Shared preload requires one elastic_source or statefile, Model1, preload damping/Shepard, stable double-position binary/info output and fresh geometry initialization.");
+    }
     GravityPreloadStep=unsigned(rounded);
     Log->Printf("GravityPreload: requested=%.17g event_completed_step=%u release_mkbound=%u; damping/Shepard are preload-only.",GravityPreloadTime,GravityPreloadStep,GravityPreloadMkBound);
   }
@@ -1469,12 +1481,14 @@ void JSph::LoadCaseConfig(const JSphCfgRun *cfg){
   InitSoilParameters(&xml,"case.execution.special.soils");
   if(TiXmlNode* node=xml.GetNodeSimple("case.execution.special.gravitypreload",true)){
     TiXmlElement* ele=node->ToElement();
-    xml.CheckAttributeNames(ele,"time release_mkbound comment units_comment");
+    xml.CheckAttributeNames(ele,"time release_mkbound elastic_source statefile comment units_comment");
     xml.CheckElementNames(ele,true,"");
     if(ele->NextSiblingElement("gravitypreload"))Run_Exceptioon("Only one gravitypreload event is supported.");
     GravityPreload=true;
     GravityPreloadTime=xml.GetAttributeDouble(ele,"time");
     GravityPreloadMkBound=xml.GetAttributeUnsigned(ele,"release_mkbound");
+    GravityPreloadElasticSource=xml.GetAttributeBool(ele,"elastic_source",true,false);
+    GravityPreloadStateFile=xml.GetAttributeStr(ele,"statefile",true,"");
     if(GravityPreloadMkBound>0xffff)Run_Exceptioon("gravitypreload release_mkbound is outside the MK bound range.");
   }
   ConfigConstantsSoil();
@@ -2976,6 +2990,16 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       }
       bdpart->SetvBool("SoilDampingActive",SoilDamping);
       bdpart->SetvBool("PoreShepardActive",PoreShepardRegularization);
+      if(GravityPreloadElasticSource && !GravityPreloadReleased && Part>PartIni
+        && unsigned(Nstep+1)==GravityPreloadStep){
+        if(npok!=CaseNp || nout)Run_Exceptioon("Cannot certify an incomplete gravity preload state.");
+        bdpart->SetvUint("GravityPreloadHandoffSchema",1);
+        bdpart->SetvBool("GravityPreloadElasticSource",true);
+        bdpart->SetvText("GravityPreloadHandoffContract",GetGravityPreloadContract());
+        bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
+      }
+      if(IsGravityPreloadHandoff())bdpart->SetvText("GravityPreloadStateFile",GravityPreloadStateFile);
+
     }
     if(TStep==STEP_Symplectic)bdpart->SetvDouble("SymplecticDtPre",SymplecticDtPre);
     if(UseDEM)bdpart->SetvDouble("DemDtForce",DemDtForce); //(DEM)
@@ -3664,6 +3688,64 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 //##############################################################################
 
 //==============================================================================
+/// Contract for a shared elastic preload; group cohesion/dilation and output times may differ.
+//==============================================================================
+std::string JSph::GetGravityPreloadContract()const{
+  std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-1 "
+    <<CaseNp<<' '<<CaseNpb<<' '<<CaseNfluid<<' '<<Dp<<' '<<KernelH<<' '
+    <<MassFluid<<' '<<MassBound<<' '<<RhopZero<<' '<<unsigned(TKernel)<<' '
+    <<SoilCte.ModulusE<<' '<<SoilCte.PRvs<<' '<<SoilCte.phi<<' '<<SoilCte.phi_r<<' '
+    <<SoilCte.n_phi<<' '<<SoilCte.SoilTriggerFos<<' '<<SoilCte.Porosity<<' '
+    <<SoilCte.PoreWaterRho<<' '<<SoilCte.PoreWaterBulkModulus<<' '
+    <<SoilCte.HydraulicConductivity<<' '<<HydroMechConductivityModel<<' '<<HydroMechConductivityCk<<' '
+    <<Gravity.x<<' '<<Gravity.y<<' '<<Gravity.z<<' '<<Visco<<' '<<ViscoBoundFactor<<' '
+    <<SoilDamping<<' '<<SoilDampingCoef<<' '<<PoreShepardRegularization<<' '<<PoreShepardInterval<<' '
+    <<SoilStressRateGradCorr<<' '<<PoreCompressionGradCorr<<' '<<PoreCompressionSourceMode<<' '
+    <<PoreMdbcInterpolationMode<<' '<<PoreDtSafety<<' '<<CFLnumber<<' '<<FixedDt->GetFixedValue()<<' '
+    <<DtMin<<' '<<RhopOut<<' '<<RhopOutMin<<' '<<RhopOutMax<<' '<<PartsOutMax<<' '
+    <<HydroMechInitZ<<' '<<unsigned(TBoundary)<<' '<<unsigned(SlipMode)<<' '<<unsigned(TMdbc2)<<' '
+    <<NoPenetration<<' '<<Stable<<' '<<DomPosMin.x<<' '<<DomPosMin.y<<' '<<DomPosMin.z<<' '
+    <<DomPosMax.x<<' '<<DomPosMax.y<<' '<<DomPosMax.z;
+  for(const auto &face:MdbcSlipModeMk)out<<' '<<face.MkBound<<' '<<unsigned(face.SlipMode);
+  out<<" normals "<<GravityPreloadNormalContract;
+  return(out.str());
+}
+
+//==============================================================================
+/// Imports only a newly qualified elastic PRE file; the legacy PART loader is not used.
+//==============================================================================
+void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
+  const bool absolute=(!GravityPreloadStateFile.empty() &&
+    (GravityPreloadStateFile[0]=='/' || GravityPreloadStateFile[0]=='\\'
+      || (GravityPreloadStateFile.size()>1 && GravityPreloadStateFile[1]==':')));
+  const std::string file=(absolute? GravityPreloadStateFile: DirCase+GravityPreloadStateFile);
+  try{
+    state.Load(file,GetGravityPreloadContract(),CaseNp,CaseNpb,GravityPreloadStep,GravityPreloadTime,
+      FixedDt->GetFixedValue(),SoilCte.coh,SoilCte.Porosity,RhopZero,SoilCte.PoreWaterRho,
+      MassFluid,SoilCte.HydraulicConductivity,HydroMechConductivityCk);
+  }
+  catch(const std::exception &e){Run_Exceptioon(e.what());}
+  if(state.RetireBegin!=GravityPreloadIdBegin || state.RetireCount!=GravityPreloadIdCount
+    || state.MkBound!=GravityPreloadMkBound)
+    Run_Exceptioon("Shared preload target MK/ID range differs from the validated fixed geometry.");
+  if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
+}
+
+//==============================================================================
+/// Keeps the actual accumulated binary64 clock; no artificial t=0 or duplicate PRE save.
+//==============================================================================
+void JSph::RestoreGravityPreloadClock(const JGravityPreloadState &state){
+  TimeStep=TimeStepIni=TimeStepM1=state.Time;
+  Nstep=state.CompletedStep;Part=PartIni=0;PartNstep=int(Nstep)-1;
+  LastDt=SymplecticDtPre=state.Dt;
+  TimePartNext=(SvAllSteps? TimeStep: OutputTime->GetNextTime(TimeStep));
+  PartDtMin=DBL_MAX;PartDtMax=-DBL_MAX;
+  FixedDt->GetDtError(true); //-The source PRE save already closed its diagnostic interval.
+  Log->Printf("GravityPreload: state imported file=%s actual=%.17g completed_step=%u; next loop releases the right wall once.",
+    GravityPreloadStateFile.c_str(),TimeStep,unsigned(Nstep));
+}
+
+//==============================================================================
 /// Narrow gravity warmup scope; actual fixed-face geometry is checked after loading.
 //==============================================================================
 bool JSph::IsDynamicPoreContainerConfig()const{
@@ -3697,7 +3779,7 @@ bool JSph::IsDynamicPorePlasticConfig()const{
 /// Fixed +X/-X FreeSlip sides and +Z NoSlip bed; far bed samples are not soil.
 //==============================================================================
 void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
-  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode)
+  ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode,const unsigned *idp)
 {
   if(np!=CaseNp || !npb || npb!=CaseNpb || npb!=CaseNfixed || np<=npb
     || !pos || !code || !velrhop || !boundnormal
@@ -3763,6 +3845,20 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
   if(GravityPreload){
     GravityPreloadIdBegin=release->Begin;GravityPreloadIdCount=release->Count;
     Log->Printf("GravityPreload: validated native right-wall range=[%u,%u), count=%u.",GravityPreloadIdBegin,GravityPreloadIdBegin+GravityPreloadIdCount,GravityPreloadIdCount);
+  }
+  if(GravityPreloadElasticSource || IsGravityPreloadHandoff()){
+    std::vector<tfloat3> normals(npb);std::vector<bool> found(npb,false);
+    for(unsigned p=0;p<npb;p++){
+      if(!idp || idp[p]>=npb || found[idp[p]])Run_Exceptioon("Invalid original wall ID in shared preload.");
+      found[idp[p]]=true;normals[idp[p]]=boundnormal[p];
+    }
+    std::ostringstream out;out<<std::hex<<std::setfill('0');
+    for(const auto &normal:normals){
+      unsigned bits[3];static_assert(sizeof(bits)==sizeof(normal),"Wall normal layout differs.");
+      memcpy(bits,&normal,sizeof(bits));
+      for(unsigned value:bits)out<<std::setw(8)<<value;
+    }
+    GravityPreloadNormalContract=out.str();
   }
 }
 

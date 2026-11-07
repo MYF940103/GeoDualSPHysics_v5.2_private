@@ -67,6 +67,9 @@
 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
 			<!-- <gravitypreload time="10" release_mkbound="2" /> -->
 			<!-- Configured soil damping/Shepard apply before release and are disabled afterward; material histories are retained. -->
+			<!-- Shared elastic PRE handoff has bounded CPU/GPU continuity checks only: elastic_source=false, statefile="" by default. -->
+			<!-- Use either elastic_source="true" to qualify every preload material trial, or statefile="relative/Part_####.bi4" to import its certified PRE state. -->
+			<!-- Requires Model1, damping/Shepard and full double-position binary output; plastic trials reject the shared source. Ordinary PART restart remains unsupported. -->
 
 			<!-- Optional mechanical wall-slip overrides; requires Boundary=2 and existing, unique mkbound values. -->
 			<mdbcslip>

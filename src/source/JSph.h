@@ -69,6 +69,7 @@ class JXml;
 class JDsOutputTime;
 class JGaugeSystem;
 class JPartsLoad4;
+class JGravityPreloadState;
 class JCasePartBlock;
 class JChronoObjects;
 class JDsMooredFloatings;
@@ -224,6 +225,9 @@ protected:
   bool HydroMechFreeSeepage;  ///<Candidate constant-k container free surface; completed-step positive-only p projection (default=false).
   bool GravityPreload;        ///<Optional single right-wall release; absent XML keeps the original path.
   bool GravityPreloadReleased;
+  bool GravityPreloadElasticSource; ///<Explicit shared-source qualification; both material stages must stay elastic.
+  std::string GravityPreloadStateFile; ///<Optional qualified full-step PRE import; ordinary PART restart is unchanged.
+  std::string GravityPreloadNormalContract; ///<Original native-ID wall normals, encoded once for shared PRE identity.
   double GravityPreloadTime,GravityPreloadActualTime;
   unsigned GravityPreloadStep,GravityPreloadActualStep,GravityPreloadMkBound;
   unsigned GravityPreloadIdBegin,GravityPreloadIdCount;
@@ -598,10 +602,15 @@ protected:
   void InitSoilParameters(const JXml *sxml,std::string xmlpath);
   void ConfigConstantsSoil();
   float GetDynamicSoilDampingRate()const;
+  bool IsGravityPreloadHandoff()const{ return(!GravityPreloadStateFile.empty()); }
+  bool RequireElasticGravityPreload()const{ return(GravityPreloadElasticSource && !GravityPreloadReleased); }
+  std::string GetGravityPreloadContract()const;
+  void LoadGravityPreloadState(JGravityPreloadState &state)const;
+  void RestoreGravityPreloadClock(const JGravityPreloadState &state);
   bool IsDynamicPoreContainerConfig()const;
   bool IsDynamicPorePlasticConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
-    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode);
+    ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode,const unsigned *idp);
   void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,const tfloat4 *velrhop);
 };

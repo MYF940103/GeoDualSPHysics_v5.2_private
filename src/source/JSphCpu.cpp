@@ -4248,7 +4248,7 @@ void JSphCpu::InitDynamicPoreWallCpu(){
     || fabs(double(MassBound)-MassFluid)>4.*FLT_EPSILON*double(MassFluid))
     Run_Exceptioon("Dynamic wall fixture requires equal-dp fixed mDBC FreeSlip planes, finite tangential gravity and its own derivative closure.");
   if(IsDynamicPoreContainerConfig()){
-    CheckDynamicPoreContainer(Np,Npb,Posc,Codec,Velrhopc,BoundNormalc,BoundSlipModec);
+    CheckDynamicPoreContainer(Np,Npb,Posc,Codec,Velrhopc,BoundNormalc,BoundSlipModec,Idpc);
     return;
   }
   const auto component=[](const tdouble3 &v,int a){return(a==0? v.x: (a==1? v.y: v.z));};
@@ -4815,6 +4815,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
   tdouble3 *movc=ArraysCpu->ReserveDouble3();
   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);
   unsigned materialerror=0;
+  const bool requireelastic=RequireElasticGravityPreload();
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)
   #endif
@@ -4864,7 +4865,7 @@ void JSphCpu::ComputeSymplecticPre(double dt){
       //-Plastic Corretor
       if(SoilCte.MaterialReturn==1){
         const fsoil::Status status=fsoil::ReturnPlaneStrain(sigma_e,kplasticold,SoilCte,signew,kplasnew);
-        if(!fsoil::CommitAllowed(status)){materialerror|=1u<<unsigned(status);continue;}
+        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){materialerror|=1u<<unsigned(status);continue;}
       }
       else{
         //-Update DP constants
@@ -4972,6 +4973,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
   tdouble3 *movc=ArraysCpu->ReserveDouble3();
   const tfloat3 *indirvel=(InOut? InOut->GetDirVel(): NULL);
   unsigned materialerror=0;
+  const bool requireelastic=RequireElasticGravityPreload();
   #ifdef OMP_USE
     #pragma omp parallel for schedule (static) if(npf>OMP_LIMIT_COMPUTESTEP) reduction(|:materialerror)
   #endif
@@ -5017,7 +5019,7 @@ void JSphCpu::ComputeSymplecticCorr(double dt){
       //-Plastic Corretor
       if(SoilCte.MaterialReturn==1){
         const fsoil::Status status=fsoil::ReturnPlaneStrain(sigma_e,kplasticold,SoilCte,signew,kplasnew);
-        if(!fsoil::CommitAllowed(status)){materialerror|=1u<<unsigned(status);continue;}
+        if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){materialerror|=1u<<unsigned(status);continue;}
       }
       else{
         //-Update DP constants
