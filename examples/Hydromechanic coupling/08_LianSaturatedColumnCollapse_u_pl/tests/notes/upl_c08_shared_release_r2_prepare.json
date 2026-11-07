@@ -1,0 +1,41 @@
+{
+  "stage": "upl_c08_shared_release_r2_prepare",
+  "status": "authored_only_not_imported_or_executed",
+  "author_script": "tests/support/upl_c08_shared_release_r2_prepare.py",
+  "author_script_dependency": "tests/support/upl_c08_release_package_r1.py, read-only packaging/XML helpers only; no r1 admission fallback",
+  "future_CLI": "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_shared_release_r2_prepare.py --prepare --source-head ROOT_SUPPLIED_40_HEX_COMMIT",
+  "gate": {
+    "file": "tests/logs/upl_preload_handoff_delivery_r2.check.json",
+    "required": [
+      "passed=true",
+      "certified_source_and_handoff_verified=true: means bounded interface verification, not completed 10s physical certification",
+      "builds.DebugCPU/ReleaseCPU/Debug/Release: unchanged stat entries to four actual passed r2 build checks",
+      "programs.CPU/GPU: unchanged stat entries to matching new ReleaseCPU/Release program in those build receipts",
+      "source_archives.CPU/GPU: unchanged stat entries to corresponding r2 closed source archives",
+      "physical_review: unchanged stat entry to actual passed new bounded handoff review"
+    ],
+    "no_fallback": "Missing, failed or changed records stop preparation. Full13s physical acceptance is not asserted or required to prepare a calculation package."
+  },
+  "generated_new_paths_only": [
+    "CaseLianSaturatedColumnCollapse_shared_preload_r2_Def.xml",
+    "CaseLianSaturatedColumnCollapse_{psi0,psi2p5,psim5}_shared_r2_Def.xml",
+    "xCaseLianSaturatedColumnCollapse_shared_preload_r2_win64_{CPU,GPU}.bat",
+    "xCaseLianSaturatedColumnCollapse_{psi0,psi2p5,psim5}_shared_r2_win64_{CPU,GPU}.bat",
+    "support/run_lian_collapse_shared_r2_win64.bat",
+    "support/runtime_r2/",
+    "support/README_server_r2.md",
+    "support/preload_schedule_r2.json",
+    "support/SOURCE_VERSION_r2.txt",
+    "support/THIRD_PARTY_NOTICES_r2.txt",
+    "support/server_manifest_r2.json",
+    "support/SHA256SUMS_r2.txt",
+    "support/LianCollapse_upl_win64_r2.zip and .zip.sha256"
+  ],
+  "source_recipe": "One selected backend only. Fresh sigma0/ConstantZ H2, cp5000/psi0/sf0, MaterialReturn1, Model1/Ck2, dt2.5us/TimeOut.01s, event10s/TimeMax13. Source BAT caps at completed4000000 PRE with -nsteps:4000000, before next-loop release. Every Pre and Cor trial must be Elastic; failure is retained and no branch can bypass native loader qualification.",
+  "receiver_recipe": "Three receiver Def templates use one statefile marker. A Windows PowerShell substitution writes a fresh per-output Def with this backend's actual absolute source PRE path, preserving root templates. Each receiver GenCase+one solver imports actual clock/history and continues to total13s; no PART loader, fake t0 or duplicate PRE frame. cp/sf/psi are 5000/0/0, 5000/.2/+2.5, 7500/.2/-5; cr1000/ncoh5/phi25 unchanged.",
+  "scheduling": "prepare() replays scalar+=2.5us and the actual constant-.01 GetNextTime algorithm over4M steps before deriving filename from actual simulated PartFiles. Expected1001/Part1000 is asserted only after that replay. BAT independently checks actual Run.csv Steps4000000/PartFiles1001/PartsOut0 and actual last file exists. This does not certify native schema, elasticity, equilibrium or fields; the actual loader enforces those.",
+  "outputs": "Source and each material output include CPU or GPU in directory name. Each entry refuses existing target output; the source remains available for three separate receiver launches. CPU and GPU source paths cannot be selected interchangeably by these BAT entries.",
+  "runtime": "Only new closed r2 ReleaseCPU/Release programs. Four existing matching runtime files, retained C05 GenCase and accepted signed app-local CRT3, project LICENSE and parameter CSV. No Visual Studio/CUDA Toolkit/Python needed on server; Windows PowerShell, UCRT and suitable NVIDIA driver are required.",
+  "preservation": "No execution now. Existing r1 ZIP/formal XML/BAT/runtime/raw data unchanged. Existing identical case LICENSE and parameter CSV are reused read-only; all new r2 destinations refuse overwrite. SHA only one pass over actual delivered key payload, manifest and ZIP during later authorized preparation, never old objects/raw data.",
+  "post_prepare_root_checks": "Root full-read, real fresh-path extraction, GenCase for generated source and actual substituted receiver inputs, Release help/launcher path checks; no automatic local13s or10s solve. Actual source must still certify on server, and physical preload/collapse/figures remain separate reviews."
+}

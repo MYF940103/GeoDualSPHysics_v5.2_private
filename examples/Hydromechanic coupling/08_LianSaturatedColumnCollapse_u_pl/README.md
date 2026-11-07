@@ -216,3 +216,10 @@ CPU/GPU Debug及Release四种构建通过，GPU事件内存检查零错误/泄�
 下一条Ck2组合短窗输入已准备为0.002 s、800步、380步撤墙，只改变Model1/Ck2，不新增半步长链或重跑旧控制。旧读取器内置另一Ck，故新profile须显式核Ck=2和保存J对应的指数k；原22数组、IDs、p0、自由面、κ、时钟与两阶段计数守卫保持。本轮终端提醒不自动启动新的物理求解或重启。
 
 三组候选源仍保留在tests；通过组合检查后，正式根XML/BAT及support下的便携包已经生成。统一10＋3=13 s、dt=2.5微秒、每0.01 s输出；初始Normals及完整主22数组保留，SavePosDouble=1不变。
+
+
+### 当前交付：r2共享弹性预载
+
+正式入口改为 [r2服务器说明](support/README_server_r2.md) 与 [r2运行包](support/LianCollapse_upl_win64_r2.zip)。先选择CPU或GPU，运行shared_preload_r2对应BAT完成真实10秒预载；通过源资格后，用同后端三组shared_r2 BAT承接至13秒。无需三组重复预载；原r1独立路线保留，未覆盖任何旧结果。
+
+这轮所需状态交接已通过CPU/GPU各11后续帧全部22数组及signed时钟逐字节连续性，三个材料短承接和低强度塑性源拒绝也已验证。四构建及新路径两help、四GenCase、缺源拒绝检查通过；[完整实现记录](tests/notes/upl_preload_handoff_root_r1.md)与PNG/CSV保留。10秒真实源资格、其平衡残差及完整塌陷仍须实际计算审查，未将接口短窗当物理验收。

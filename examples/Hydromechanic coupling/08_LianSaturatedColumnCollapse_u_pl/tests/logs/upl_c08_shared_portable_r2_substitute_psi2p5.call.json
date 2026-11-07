@@ -1,0 +1,32 @@
+{
+  "label": "substitute_psi2p5",
+  "passed": true,
+  "expected_exit": 0,
+  "issued_argv": [
+    "C:\\WINDOWS\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "-NoProfile",
+    "-Command",
+    "try { $t=[IO.File]::ReadAllText($env:template); if(([regex]::Matches($t,'__GRAVITY_PRELOAD_STATE__')).Count -ne 1){throw 'Statefile marker differs'}; $t=$t.Replace('__GRAVITY_PRELOAD_STATE__',[Security.SecurityElement]::Escape($env:prestate)); [IO.File]::WriteAllText($env:prepared,$t,(New-Object Text.UTF8Encoding($false))) } catch { Write-Error $_; exit 1 }"
+  ],
+  "actual_commandline": null,
+  "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_shared_portable_r2\\LianCollapse_upl_win64_r2",
+  "PID": 66040,
+  "program": {
+    "path": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+    "bytes": 495616,
+    "mtime_ns": 1791918031224982800
+  },
+  "creation_filetime_100ns": 134385039097152081,
+  "actual_image_observed_before_wait": "C:\\Windows\\System32\\WindowsPowerShell\\v1.0\\powershell.exe",
+  "actual_Popen_wait_exit": 0,
+  "actual_Win32_exit": 0,
+  "started_utc": "2026-11-07T05:45:09.711984+00:00",
+  "ended_utc": "2026-11-07T05:45:10.053466+00:00",
+  "elapsed_s": 0.32899999991059303,
+  "log": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_shared_portable_r2_substitute_psi2p5.log",
+    "bytes": 0,
+    "mtime_ns": 1794030309711984400
+  },
+  "physical_solver_updates": 0
+}
