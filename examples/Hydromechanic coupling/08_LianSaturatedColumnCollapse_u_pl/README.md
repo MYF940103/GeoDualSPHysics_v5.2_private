@@ -1,227 +1,26 @@
-# Lian 2023 饱和土柱塌陷：u-pl
+# Lian 2023 饱和土柱塌陷：当前 r3 入口
 
-2026-11-07 材料整合更新：开发源码已统一基本/软化DP返回、偏塑性历史及φ/c/ψ演化，四配置构建和受限CPU/GPU实际调用回归通过，详见[比较、成本及适用范围](tests/notes/upl_material_migration_r1.md)。本轮独立程序位于tests/outputs，尚未替换canonical程序或已冻结的服务器r2包；已有服务器计算继续使用其原程序。材料组件通过不等于完整塌陷或三维动态塑性验收。后续回到三组塌陷及u-pl主线，Lian二阶导数项仍保留在后续验证计划。
+当前交付说明见 [README_server_r3.md](README_server_r3.md)。r3 是待完整物理验证的计算包；正常退出、短程兼容和材料组件通过均不等于塌陷精度或地应力平衡验收。
 
-复现论文 §4.4、图13-17及表1。三组正式计算入口与Windows便携包现已生成，受限CPU/GPU组合检查通过；完整13 s塌陷与论文精度仍待服务器结果验收。
+**本机已有真实 GPU r2 PRE 回传。不要再次点击 PRELOAD 入口重跑 10 s。** 保留 `CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out` 全目录。三个根 GPU r3 接收 BAT 已通过显式 `C08_PRELOAD_SOURCE` 绑定该源，运行新版统一材料程序；加载器仍逐项认证旧版弹性 PRE。先完成 `tests` 内短窗及原生审查，再运行独立的完整分支。没有将 r2 数据重命名为 r3，也不使用撤墙后的塑性 PART 重启。
 
-## 当前交付入口（2026-11-07）
+CPU 入口仍要求自己的 r3 CPU 认证源，本轮没有启动它。`support/LianCollapse_upl_win64_r3.zip` 是原冻结服务器快照，不代表本机后续入口更新；本机操作以此 README 和当前根 BAT 为准。
 
-直接复制并完整解压 [LianCollapse_upl_win64_r1.zip](support/LianCollapse_upl_win64_r1.zip)，随后双击解压根目录对应组的GPU BAT；Windows x64＋NVIDIA，目标服务器RTX A6000。程序和依赖都在包内support/runtime，三个XML及六个CPU/GPU入口也已放在本case根目录。详见[服务器说明](support/README_server_r1.md)。CPU/GPU同一组择一，已有输出会拒绝；BAT执行GenCase与完整求解，绘图在结果复制回来后进行。
+## 最新正式输入：4 XML、8 BAT
 
-三组共用几何、预载设置及运行库，各自同进程完成10 s预载＋3 s撤墙运动，dt=2.5微秒、每0.01 s输出。各组的剪胀角/峰值黏聚力按论文区分。若预载始终处于共同弹性域，物理上可以共用状态；本版不支持dynamic/MR1完整PART重启，且已有10 s基线为常k，不能把它直接充作三组变k初态。本次重复相同预载配方属于衔接方式的限制，不表示人为设置三种预载条件。
+- 共享预载：[XML](CaseLianSaturatedColumnCollapse_shared_preload_r3_Def.xml)、[CPU](xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_CPU.bat)、[GPU](xCaseLianSaturatedColumnCollapse_shared_preload_r3_win64_GPU.bat)。本机已有 PRE 的续算不重新运行这一源流程。
+- ψ=0°：[XML](CaseLianSaturatedColumnCollapse_psi0_shared_r3_Def.xml)、[CPU](xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_CPU.bat)、[GPU](xCaseLianSaturatedColumnCollapse_psi0_shared_r3_win64_GPU.bat)。
+- ψ=+2.5°：[XML](CaseLianSaturatedColumnCollapse_psi2p5_shared_r3_Def.xml)、[CPU](xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_CPU.bat)、[GPU](xCaseLianSaturatedColumnCollapse_psi2p5_shared_r3_win64_GPU.bat)。
+- ψ=−5°：[XML](CaseLianSaturatedColumnCollapse_psim5_shared_r3_Def.xml)、[CPU](xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_CPU.bat)、[GPU](xCaseLianSaturatedColumnCollapse_psim5_shared_r3_win64_GPU.bat)。
 
-Ck2组合CPU/GPU各800步、22帧检查通过，实际撤去260个右墙样本、保留全部5000土粒子。最大跨后端孔压RMS差0.0034028 Pa、材料XYZ位移差6.92025e-8 mm，GPU memcheck零错误/泄漏。ZIP已在新位置解压，两个Release程序help及三组真实GenCase均通过；实际几何/MK/法向与保留基线相同。见[组合检查](tests/logs/upl_ck2_release_short_r1.check.json)和[便携实测](tests/logs/upl_c08_release_portable_r2.check.json)。这些是实现和交付检查，不是完整塌陷验收。
+源和接收使用同一后端，一次只运行一个目标；已有物理输出保留并拒绝覆盖。现有源目录的 [只读 check BAT](xCheckLianSaturatedColumnCollapse_preload_win64.bat) 不替代原生PRE认证。当前双击入口已接入求解正常后处理：接收执行native→独立PartFluid/PartBound→PNG/CSV；新预载执行原schedule检查后做预载VTK。不会自动启动下一组或重试求解。
 
-## 早期开发记录
+完整流程需Python 3、numpy、matplotlib及`support/runtime_r3`中的C08Native/PartVTK；优先`D:/anaconda3/python.exe`，否则用PATH的`python`。依赖检查先于任何GenCase/求解，不自动安装。对已完成输出可运行原入口加`--postprocess --unattended`，两个选项可互换顺序；该模式不GenCase、不求解、不改原BI4，并保留已有后处理记录的保护。现有r2 PRE的两套1001帧particles已完成，无需再次处理。
 
-以下按当时阶段保留；旧的“当前/待完成”描述不替代上面的交付状态。
+当前程序采用统一 DP v2；公开 u-pl 塑性范围仍限已审二维固定 φ、DP_PS、Symplectic 容器。5000 土粒子、dp=0.04 m、Cubic、侧壁 FreeSlip/底面 NoSlip、Model1/Ck=2 和自由渗流等具体参数及限制以 r3 说明为准。三组完整撤墙运动和论文对照仍需实际结果审查，不能据短窗放开三维、曲墙、大转动或通用 PART 重启。
 
-当前已完成 CPU/GPU Debug 的固定重力容器构建及真实128步启动：原5000土粒子、侧壁FreeSlip/底面NoSlip，各保存5帧至0.00048828125 s；22原生字段、J/n/V/rho/k关系和密度缓存检查通过，GPU内存检查零错误/泄漏。五帧孔压CPU/GPU RMS差最大0.00042211 Pa，最大材料位移差1.218e-12 m，见[对比图和数据](tests/figures/upl_c08_elastic_start_compare_r1.png)。测试固定步长为2^-18 s，显式DtMin=1e-8；r1因旧自动DtMin过大在第0步拒绝，原记录保留，r2只修正该下限。此次无排水开关不等价密封边界：实际`closedfs=false`，仍使用现有完整Taylor缺陷率，既不是论文自由渗流，也不是地应力平衡。下文组件记录中的旧准入限制按其当时阶段理解；本段是早期阶段记录。
+## 历史与可恢复归档
 
-初帧5000个土粒子的[自由面判据对照](tests/figures/upl_c08_fsmask_r1_readable.png)表明，文献核支持和在包含墙支撑和自身贡献时，与当前标记逐点一致，均为顶部100个粒子；这不证明变形后仍一致。后续先对接自由渗流的完整水力驱动力率及步末正压限制，再进入塑性、撤墙和变渗透率。
+旧 r1/r2 根 XML/BAT 已移入 `tests/outputs/retired_root_inputs_r4`，原路径、字节/mtime核对及恢复依赖见 [归档清单](tests/notes/retired_root_inputs_r4.manifest.json)。历史 BAT 需恢复到原根路径使用；旧打包脚本仍可能读取根 r2 Def，不改写其证据路径。
 
-自由渗流候选 `HydroMechFreeSeepage` 已加入源码，默认0；显式开启时要求上述常k弹性容器和旧排水开关0。CPU/GPU零步静水、线性场、非恒加速度及正/零/负压投影检查通过，GPU内存检查零错误/泄漏，关闭开关的原率和自由面记录与旧对象版本逐字节一致。新CPU/GPU各128步的22原生字段检查也通过，每帧实际100个自由面土粒子的压力均非正，负值保留。
-
-新旧边界的[启动对比图及CSV](tests/figures/upl_c08_free_start_compare_r1.png)仅覆盖0.48828125 ms：同后端孔压变化约1e-11 Pa，位移/J/n/密度差为0，因此没有据此宣称宏观改善。图中raw压力指原生保存值、离线分析未截断；求解器已按新政策约束正压。当前仍无塑性塌陷或地应力平衡验收，阶段范围见[审查](tests/notes/upl_free_seepage_root_review_r1.md)。
-
-## 目录与入口
-
-- 根目录保存正式计算用 `*_Def.xml`、CPU/GPU BAT、README及其正式 `*_out`。
-- `tests/configs`、`tests/support`、`tests/outputs`、`tests/logs`、`tests/notes`、`tests/figures`保存开发试验；保留现有分类，不增加日期/阶段多层目录。
-- 正式图片及对应CSV进入 `figures`，正式后处理和必要资料进入 `support`。
-- 早期开发几何入口为 [GenCase BAT](tests/support/xCaseLianSaturatedColumnCollapse_geometry_r1_GenCase.bat)。它只生成粒子和法向，不运行求解器，已有输出时保留原目录。
-- 早期几何配置为 [几何 XML](tests/configs/CaseLianSaturatedColumnCollapse_geometry_r1_Def.xml)。它没有水力耦合配置，`TimeMax=0`，不得作为u-pl物理计算入口。
-
-正式XML/BAT已由当前通过的受限组合检查生成；完整物理验收待结果返回，既有保护和J状态连续性保留。
-
-后续新配置采用规整十进制物理时间设置计算步长、输出间隔、总时长及预载/撤墙时刻，并尽量对应整数计算步。步长仍受显式稳定条件约束，不能直接继承论文TPI的20微秒；快速预载诊断可用更细输出，塌陷图示则按实际物理秒比较。已有`2^-n`短窗记录作为历史证据保持原样，不为统一格式重跑。本例不采用固结/Cryer的`Tv`输出换算。
-
-## 文献条件
-
-原文：[Lian 2023 PDF](<../../../src/papers/PDF/Lian 2023 u-pl.pdf>)，DOI `10.1016/j.cma.2023.115967`。已逐页查看原PDF第19-22页，参考页保存在 `tests/support/lian2023_p19.png` 至 `lian2023_p22.png`。
-
-几何为长4 m、高2 m的二维土柱，dp=0.04 m，5000个土粒子。初始水位在顶面。左墙和撤除前的右墙自由滑移，底面无滑移，各墙不透水。先建立重力地应力，再撤去右墙；论文图中的塌陷时间以撤墙为零点。
-
-三组材料的完整SI参数见 [参数表](support/lian2023_collapse_parameters.csv)。共同参数为 E=20 MPa、nu=0.33、n0=0.35、固粒密度2650 kg/m3、水密度1000 kg/m3、Kw=1 GPa、k0=2e-4 m/s、Ck=2。输入混合密度为2072.5 kg/m3，不能把2650作为混合密度。
-
-| 分组 | psi0 | 峰值黏聚力 | 残余黏聚力 | 图示时刻，撤墙后s |
-|---|---:|---:|---:|---|
-| psi0 | 0 deg | 5 kPa | 1 kPa | 0.3、0.6、1.2 |
-| psi2p5 | +2.5 deg | 5 kPa | 1 kPa | 0.3、0.6、1.2 |
-| psim5 | -5 deg | 7.5 kPa | 1 kPa | 0.2、0.5、1.6、3.0 |
-
-三组峰值/残余摩擦角均为25 deg，黏聚力指数软化系数为5；后两组剪胀软化系数为0.2。psi0组的该系数在原表为N/A。`DPCtes=3`的平面应变DP锥参数与论文式16对应，但累积塑性应变定义仍须与式14及17-19逐项核对。
-
-论文使用Cubic核、h=1.2dp，并使用TPI计算20微秒步长。当前显式算法不能直接继承20微秒。表1的alpha=0.5属于式38–39的TPI压力外推；式47的负孔压稳定系数是beta=0.04，两者不能混用，也不能填写到人工黏性、HG或阻尼参数中。当前显式实现尚未采用这两项，详见[系数更正](tests/notes/lian_coefficients_erratum_r1.md)。
-
-当前几何测试把床面延伸到12 m，作为右侧数值域裕量。论文图14-17显示x=0..8 m，但未给出完整床面长度；12 m不是论文指定参数。后续必须确认流动前缘未接触域边界，文献对比图仍使用相同显示范围。边界厚度也是数值设置，实际生成层数和数量以检查记录为准。
-
-## 开发和验收顺序
-
-1. 核对几何：5000个原生土粒子、100列x50层、分开的左/底/右墙MK、坐标、互不重叠及生成法向。此步不证明静止墙的物理正确性。
-2. 对接Cubic动态Darcy与镜像拟合，以及二维非周期混合滑移墙、角点和底面法向重力；先检查静水/静力和墙响应，保持默认u-pw行为。
-3. 对接现有DP和黏聚力软化，核对塑性体积率、单一J与n/k；补充论文式19的 `psi=psi0*exp(-sf*eps_eq_p)`。先核对现有累计塑性应变与文献定义，再同步CPU/GPU。正psi逐渐趋于零，负psi从负值趋近零。通过材料路径和原生状态检查后才开放塑性运行。
-4. 优先在同一次新鲜运行中执行“封闭容器重力平衡 -> 右墙失活”，保留J、n、k、应力、孔压及塑性历史。机械、黏性、导数和渗流墙路径必须同时处理撤墙；当前不依赖未验收的u-pl PART重启。
-5. 接入Ck=2及自由渗流条件，先做psi0；再做psi2p5和psim5。剪胀负压稳定须单独核对式47及显式积分适配，不用全场孔压截断或通用阻尼代替。
-6. 比较图13的初始孔压/总应力/有效应力、图14-17的孔压/超孔压和塑性应变，并补充n、k、位移、流动前缘及能量/排水记录。论文是数值参考，不把图片颜色当作解析真值。
-7. 验收后准备根目录三组正式XML/BAT及服务器运行包；长程、多组和敏感性计算迁移服务器。回传数据后生成 `figures` 下匹配PNG/CSV，每个有效修改和验证阶段选择性保存到本地及远端Git。
-
-现有u-pl还限制g=0、弹性及特定墙/常k组合。2026-11-06已将动态Darcy和三个墙拟合从硬编码Wendland扩展为现有Wendland/Cubic的host模板分派。CPU/GPU Debug构建通过，旧Wendland组件数值CSV逐字节回归通过；Cubic CPU的48组制造条件、GPU的8组核/支持域比例/扰动条件及原误差预算检查通过，GPU内存检查为零错误/零泄漏。这些是零物理步的组件证据，尚不代表完整Cubic积分、重力混合墙或本例塌陷验收。详见 [组件记录](tests/notes/upl_cubic_review_r1.json)。独立SPR/HG的核限制保留，两者首轮关闭，能否用于塑性另外评估。TPI和非局部模型不作为本例首轮兼容开发的前置条件。
-
-法向重力墙面补偿已完成CPU组件检查：先重构 `p-rho_w*g_n·x` 再恢复墙样本孔压，`g_n`仅取当前平行墙的法向重力，与既有 `Q*(Ace+g)-g` 配套，避免沿周期切向引入非周期静水势。两种核各4个纯法向静水制造场、各6个混合/纯切向重力条件的墙状态、真实墙面法向通量和完整Darcy离散参考检查通过，零g控制保持原CSV字节。该测试不计算力学平衡或时间演化，公共g=0、平行FreeSlip墙的限制仍在；混合墙/角点/远处无支撑墙仍待完成。记录见 [CPU法向重力组件](tests/notes/upl_gravity_wall_cpu_review_r1.json)。
-
-GPU已同步上述法向补偿，复用现有CTE常量，没有增加公共接口、数组或邻居遍历。12个小型制造条件、972个率观测及一次预期压力溢出拒绝通过，memcheck为零错误/零泄漏；旧零g八条件CSV逐字节一致。GPU使用81土样本+2墙样本，CPU使用原1280原生粒子几何，不能把这两组当作相同ID的跨后端比较或完整重力验收。记录见 [GPU组件](tests/notes/upl_gravity_wall_gpu_review_r1.json)。
-
-初始几何的 [离线支持域审计图](tests/figures/upl_wall_geometry_r1.png) 与 [对应CSV](tests/figures/upl_wall_geometry_r1.csv) 明确了后续边界工作：2060墙样本中410个进入真实土体2h范围，1650个为远墙；6个底角样本的局部多面反射恢复了有效拟合，另4个侧壁顶部样本矩阵满秩但行列式仍低于原门槛。实际墙-土接触范围与镜像拟合质量必须分别判断。这是基于VTK float导出坐标、以double算术进行的离线审计，尚未改变墙行为或放宽任何生产门槛。
-
-CPU NoSlip 重构已通过两种核共12条件、3072条墙样本检查：应力外推到实际边界且保留剪应力，导数速度完整镜像，黏性速度仍采用原切向投影；C及Darcy加速度保持几何规则。共享MLS回调修改后的旧u-pw/SPR六个二维、三维分滑移组件也保持18个CSV和6个完成JSON逐字节一致。该结果没有验证墙反力、瞬态反射或混合墙重力演化，公共NoSlip限制保留。详见 [CPU NoSlip审查](tests/notes/upl_noslip_cpu_review_r1.json)。
-
-GPU NoSlip对应的12条件、24条墙记录和冲突逐粒子覆盖检查通过，memcheck零错误、零泄漏；旧Cubic与法向重力组件共9个输出文件仍逐字节一致。沿用已有滑移数组，无新增粒子数组或邻居遍历。两后端测试几何不同，因此不是同ID的CPU/GPU轨迹对照。详见 [GPU NoSlip审查](tests/notes/upl_noslip_gpu_review_r1.json)。
-
-随后用真实CPU动量调用检查了恒定剪应力传递：[加速度图](tests/figures/upl_noslip_force_review_r1.png) 与 [对应CSV](tests/figures/upl_noslip_force_review_r1.csv)。两种核各检查三种滑移、3072个原生接收点；NoSlip双墙离散反力分别约±0.497672、±0.496885 N/m，自由滑移剪反力为零，混合条件的土体合力与单侧反力闭合。图中是零时间步的指定初始剪应力响应，并非塌陷瞬态或反射验证。首次测试夹具的Gamma名称冲突编译失败已保留，r2只更名后通过，预算未改。
-
-四个侧壁顶部弱拟合点的 [离线数据](tests/figures/upl_wall_topshift_r1.csv) 显示：只将拟合中心沿侧墙切向下移一个dp、保持原mirror求值位置，可使4/4通过原行列式门槛，条件数由约2.8–3.1万降至约530–543。该双精度初始几何观察没有添加顶墙或修改法向，尚未合入生产，也不证明变形后的支持有效性。
-
-六个底角点复用原SPR的真实墙半空间投影后，也在 [初始离线检查](tests/figures/upl_wall_cornerfit_r1.csv) 中6/6通过原门槛，无需先增加多镜像邻居。最大拟合中心偏移约0.102 m，原mirror保持不变；这包含外推，不能由仿射再现直接推断非仿射或塑性阶段有效。侧壁顶部及远墙的真实接触/浸润资格仍须与拟合质量分别检查。
-
-CPU静水头已改为按当前墙接收点的法向计算：[审查](tests/notes/upl_wall_receiver_head_review_r1.json)。两种核、交换X/Z查询顺序及FS/NS共16行p/J误差为零；72个旧CSV和10个完成记录逐字节一致。GPU原本已逐点处理。这仍是诊断查询，不开放三面墙物理运行。
-
-原C08几何的实际字段基线已完成：[记录](tests/notes/upl_c08_observer_review_r1.json)及[全部2060墙记录](tests/outputs/upl_c08_observer_CPU_r2/walls.csv)。本轮使用实际加载的double位置、原生ID、法向及cell；410个近墙查询中400个完成原重构，10个由原MLS门拒绝，1650个远墙不调用实际state。最大p误差0.001953125 Pa、J误差0、原条件预算比0.30115127。400/10是组件基线，不是物理通过/失败计数；above-H负压未剪裁，也不据高度定义干墙或接触。
-
-上述字段基线中的远墙OFF ID791仅为激活状态观察，单凭它不能断言Darcy实际访问或报错；排序问题的后续独立检查见下文。不得把字段查询当作force/rate、混合墙重力积分或公共准入。r1的Windows near/far宏冲突编译失败保留，r2仅改计数器名称；seed仅由一次copy-only BAT准备，未重跑GenCase。
-
-后续CPU [局部支持检查](tests/logs/upl_c08_nearest_CPU_r1.check.json) 已使410个近墙查询全部重构；仅10个原弱点改在已访问的最近真实粒子处重新拟合一次，再返回原镜像位置求值。原det门槛不变，最大拟合中心位移0.08 m，最大p误差0.001953125 Pa、J误差4.45e-16。原400个primary孔压浮点值和真实几何/误差列保持一致；六个旧u-pw/SPR条件的18份CSV及6份完成记录也逐字节一致。见[图](tests/figures/upl_wall_support_review_r1.png)及[十个弱点数据](tests/figures/upl_wall_support_review_r1.csv)。GPU后续结果见下文；以上是仿射字段检查，不是角点非线性精度、力平衡或塌陷验收。
-
-CPU [实际Darcy截断检查](tests/logs/upl_inactive_cutoff_CPU_r1.check.json) 进一步确认ID791被真实cell搜索访问3次、均在核支持域外。将失效判断移到原距离截断之后，有限及无效诊断输入两组共10000个原生孔压率均为零；支持域内的失效ID254仍按原规则拒绝。这是邻居候选筛选顺序修复，不是干湿墙判定。完整state/C/Ace及各消费者仍需统一同阶段的活动状态，公共混合墙和重力准入没有开放。
-
-GPU对应 [14条件检查](tests/logs/upl_inactive_cutoff_GPU_r2.check.json) 及memcheck也已通过，包含6次必要拒绝、精确半径、缺失模式和无效输入检查。首次夹具因压缩项掩盖Darcy响应而停止，失败记录保留；r2仅隔离该输入，原预算未变。两处修复的文件、构建和限制汇总于 [阶段记录](tests/notes/upl_wall_support_root_r1.json)。
-
-CPU完整字段流程现已通过 [全局零步检查](tests/notes/upl_c08_global_root_r1.json)：每次state从当前真实B位置刷新已有BoundMode，按各消费者的float/double支持判据取并集；410个参与、55个prefix内不参与，2188个支持对没有OFF、遗漏或越过prefix。状态/FS/C/指定加速度镜像/Darcy两次组合中，5410个有效粒子的字段不受OFF诊断输入影响。指定静水压下率RMS为23.63995 Pa/s、峰值64.28318 Pa/s，不能称作静力平衡或纯舍入误差。侧壁FreeSlip和底面NoSlip保持原区别，未加入干湿墙或自由渗流规则。
-
-GPU已同步当前B支持分类、一次局部拟合重试及J动量路径的OFF墙跳过：[根审查](tests/notes/upl_wall_gpu_root_review_r1.json)。使用原生排序、PosCell和cell表，410个参与墙与55个prefix内OFF墙、2188个支持对均核对通过；两次5410个有效粒子的字段不受OFF诊断输入影响。820个墙p/J观测沿用CPU原预算，最大p误差0.001953125 Pa、J误差3.33e-16。实际FSType2自由表面100点的CPU/GPU法向最大差1.49e-7；内部未使用法向的差异单独记录。GPU率RMS为23.64048 Pa/s，仍是指定Ace的仿射试验。memcheck零错误、零泄漏，CPU/GPU Debug构建通过；首次GPU构建发现的空cell区间循环问题在执行任何组件前修复，原构建记录保留。
-
-旧u-pw主力路径另有 [NULL-J回归](tests/logs/upl_gpu_nullj_off_r1.check.json)：两个完整版本各执行72个原条件和6个OFF退出条件，三份数值输出逐字节一致；72条件也与保留基线逐字节一致。OFF条件仍保留原正的ViscDt，不能把此次J专用跳过无条件移入旧路径。observer-only GPU初始化与CPU对齐只影响无反馈诊断；实际反馈的公共准入没有放宽。
-
-真实CPU主相互作用已在同一5000土粒子/410参与墙几何上完成一次：[记录](tests/logs/upl_c08_force_CPU_r1.check.json)。指定小仿射压缩速度后，由实际力计算得到加速度，再进入墙Ace重构与完整Darcy；5000个体积率及30000个应力率分量通过原预算，最大体积率误差8.88e-11 s^-1、应力率误差0.003174 Pa/s。这里初始有效应力为零，实际加速度并不平衡重力；约1.002e6 Pa/s的完整率RMS是该非平衡制造输入的响应，不能当作重力预平衡通过。此组件借用测试自有导数缓冲，不证明生产分配或时间积分。
-
-GPU同原生几何的 [实际主力检查](tests/notes/upl_c08_force_GPU_root_r1.json) 也已完成：一次真实主相互作用、真实二维y处理后，直接使用最终Ace计算墙Ace和Darcy。5000个体积率和30000个应力率检查通过相同CPU预算，最大误差分别9.84e-11 s^-1和0.003418 Pa/s；memcheck零错误、零泄漏。CPU/GPU完整孔压率的最大差118.3125 Pa/s、RMS差22.4390 Pa/s，仅为此指定输入的跨后端描述，不是孔压场误差或5 Pa半步门槛。两端均未推进时间；J密度存储一致性及重力演化继续单独验收。
-
-单一J原生密度缓存已完成 [两端阶段审查](tests/notes/upl_density_cache_stage_root_r1.json)：反馈开启时，预测阶段由实际半步J、校正阶段由同表达式完整J预览写入 `rho_w+(rho_t0-rho_w)/J`，不再独立累计原生连续性Arc。真实J提交与孔压、应力、位置顺序不变；原密度范围在double下判断，最后只将缓存存为float，不夹取或改阈值。J=.68时，旧连续性密度3047.79超过原3000上限，而混合密度2577.21有效，现正确保留原生ID。CPU40000次缓存检查、GPU45次缓存位比较及18次完整J预览位比较通过；两端关闭反馈/observer的完整阶段输出与旧版逐字节一致。GPU内存检查零错误、零泄漏，CPU/GPU Debug构建通过。制造阶段dt=.125不代表可用物理步长。
-
-真实旧/新CPU柱体各128次更新已完成 [独立原生对比](../02_TerzaghiConsolidation_q0_PR/tests/notes/upl_density_cache_column_pair_root_r1.json)，测试资料位于对应case02的tests内，不改正式结果。实际8帧均为1040 IDs/22 typed数组，末时刻0.0008000183105468761 s；除有意改变的Rhop，其余21个数组、实际时钟及signed dterror逐字节一致。新8000个土粒子缓存值均与实际J派生float相同，旧/新Rhop最大差0.00170898 kg/m3。最大非零体积率0.00241278 s^-1，确认不是静止空跑。该短窗只验证兼容性，不新增固结理论或完整周期验收；源码邻居J资格的异常注入分支尚未单独直接测试，限制见 [独立审查](tests/notes/upl_density_cache_peer_r1.md)。
-
-原生Rhop的新存储语义仅适用于反馈开启的程序；已保留旧结果、程序和Cryer服务器包不改。固定墙仍遵守各自原阶段处理，不把镜像J当作物理墙质量；当前体积仍是V0*J，不能改成参考质量/Rhop。旧速度、液位和力Gauge尚未按J移植，不能据其输出验收动态体系反力或体积。未支持的DDT、SPS、shifting等组合继续禁用。
-
-另一个 [离线候选](tests/figures/upl_wall_nearestfit_r1.csv) 仅将十个弱点的拟合中心移到其最近真实土粒子，也全部通过原det门，可减少新增接口；底角条件数约530，较半空间投影约48更差，需要实际后端比较。原镜像和边界条件没有在离线测试中改变。
-
-原文边界审查见 [记录](tests/notes/lian_seepage_boundary_review_r1.json)：2023 §4.4沿用2021论文的单边自由渗出及非正压力条件，开放土表面的率处理亦有单独规定。现有固结/Cryer的固定零压排水保留，case08后续单独验证该表面处理；不能把数值墙样本直接当作暴露大气的土粒子。
-
-## 软化模型精度对照
-
-按用户2026-11-06的补充，只对必要的演化状态和关键运算做double对照。现有fast应力张量已为double，不重复改动。E、nu、初始/残余强度、软化系数等材料常数保持现有精度；两条对照使用同一组已解析参数值，不把材料常数改为double，也不新增对应double参数数组。
-
-优先检查 `kplastic/tk` 累计塑性应变的保存和累加，以及软化指数、返回映射中确有精度敏感性的中间量。固定相同加载路径、返回映射算法和收敛标准，对比应力、累计塑性应变、c/phi/psi、屈服残差及计算时间。先检查恒定psi的原模型，再加入相同psi衰减律，避免把精度和模型变化混为一项。区分“局部运算double但历史仍float”与“塑性历史也持久保存double”；后者需要单独评估存储、排序、输出及CPU/GPU兼容，不能由前者冒称。
-
-材料级差异明确后再做同配置土柱短程对照；若误差差异有实际意义，再决定是否保留双精度正式路径。保留默认行为及现有结果，不为这一项重跑弹性Cryer。
-
-仅改变持久κ精度的两条材料点连续路径已完成：[审查记录](tests/logs/lian_material_history_r1.review.json)。普通16步应力差为0；κ=.5的合成亚ULP路径中，float连续256次未累计而double保留约1.88e-6，最大有效应力分量差仅0.00286 Pa。两条路径的材料入口和DP系数均为float，旧返回算法未变；该观察不构成空间误差或全double材料模型的依据，正式κ存储类型尚未修改。
-
-2026-11-06材料审计已发现需要先隔离的模型差别：Lian式13含塑性势对偏应力的梯度，Bui式78明确以偏塑性应变累计历史；Lian式17–19使用等效塑性应变，但未在这几式中显式给出与代码κ的完整映射。现有非软化返回先扣除塑性体积部分，而软化返回的 `dkflowcoef=sqrt((2/3)*(3*DP_psi^2+0.5))` 包含该部分。两者在非零psi下不同，不能把这项差别归因于float精度。实际36点材料探针已观察到：软化返回按新保存κ重算的屈服残差约0.128–1.492 Pa；κ=.5合成小增量点发生float回写丢失。这不是空间塌陷误差的定量结论。详见 [材料点审计](tests/notes/lian_material_baseline_review_r1.md)。加入psi衰减时需在材料返回内部按同一状态更新流动方向，不能只在主循环外冻结一次psi；导数符号约定和历史范数仍需在候选路径中明确。原材料实现和材料常数类型尚未修改。
-
-后续独立的 [132行材料点观察](tests/notes/upl_material_return_review_r1.json) 分开比较真实链接的旧算法、一致返回、偏塑性历史及端点psi衰减四条路径。[径向返回图](tests/figures/upl_material_return_radial_r1.png) 与 [对应CSV](tests/figures/upl_material_return_radial_r1.csv) 中，每组四个普通非零剪切加载点的旧算法最大新κ屈服残差为1.351、1.291、2.427 Pa；候选为约5.6e-8至4.1e-7 Pa。另列κ=.5点后，候选最大保存残差为6.17e-5 Pa。材料参数和持久κ均保持float，局部求根和系数运算为double，因此这些是返回算法与历史定义的代数观察，不是单独精度A/B或空间计算改善。psi衰减采用论文sf=.2，独立于黏聚力软化eta=5；κ=.5时+2.5和−5度分别变为约+2.26209和−4.52419度。
-
-候选的18个顶点/近顶点条件明确尚未支持；旧算法3个精确静水顶点输入出现非有限值。原先顶点修正在除以sqrt(J2)之后，无法保护该奇异输入。非关联流动在psi=0或负值时不能任意使用径向缩放补成顶点解，后续须明确拉伸/顶点处理及对应体积、历史更新。这不妨碍当前弹性墙和密度存储验证，但不能据径向材料点结果开放正式塑性塌陷。所有材料候选仍在测试文件中，生产材料公式未改。
-
-
-独立CPU/GPU共享核的71点组件已通过：18个弹性、36个径向、12个明确不支持的顶点和5个无效输入；材料参数及持久κ仍为float，局部返回运算为double。这不是空间材料或崩塌准入，见 [共享材料核审查](tests/notes/upl_material_shared_root_r1.md)。
-
-### 实验材料接口：接线通过，空间塑性待验
-
-新增接口位于`special/soils`：`MaterialReturn=0`为默认LegacyFast；显式`1`选择实验ConsistentDev。`DilationDecay=0`默认保持恒定ψ；非零sf仅允许mode1，按`ψ=ψ0*exp(-sf*κ)`评价，独立于黏聚力软化`n_coh`。材料选择独立于Hydro，开启u-pl不会自动更换返回算法；现有正式和测试输入未被改成mode1。
-
-mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有限正K/G及有效强度/角度范围。它采用dev κ和端点c/ψ，保留float材料参数与持久κ；顶点、无效输入、非正一致性或不收敛明确使阶段失败，不套用旧cap或弹性回退，也不保证失败阶段整体回滚。详见 [接口与限制](tests/notes/upl_material_interface_r1.md)。
-
-两端Debug构建、CPU实际2Pre/2Cor、GPU实际142次Pre/Cor及默认旧路径回归已通过。默认CPU/GPU各128步、5帧、7060 IDs/22数组及带符号时钟均与各自保留对照逐字节一致。显式mode1的GPU整程序128步也通过相同原生守卫和memcheck，程序记录的新增状态4字节；该弹性启动的字段与新默认GPU分支逐字节一致，控制元数据按预期不同。见[接线审查](tests/notes/upl_material_integration_root_r1.md)。随后非零κ在下述窄周期短程得到验证；新增重力容器的冷启动范围见末节，地应力平衡、撤墙和塌陷仍未验收。
-
-### 常强度周期塑性短程
-
-两端各一次真实128步已通过：1024土粒子、XZ周期、零重力/无墙、Wendland、固定φ与coh=coh_r=5000、ψ=sf=0；dt=2^-19 s，末时刻0.000244140625 s，保存5帧。末态两端均640个非零κ，最大约3.450397e-4；全部22数组、J关系、密度缓存、初速度及κ不回退检查通过。GPU该唯一物理运行置于memcheck中，零错误/泄漏。
-
-本轮还补齐了新材料路径的周期κ复制，GPU包括已有κ增量诊断量；只在原复制循环中增加赋值，不增加数组或邻居遍历。旧fast路径保持原行为。CPU/GPU最大孔压RMS差0.00385087 Pa、总应力Frobenius RMS差0.00673502 Pa、材料位移差1.08535e-9 mm、κ差8.73115e-11。初始FSNormal及PosDiv存在差异，未冒称全部22字段跨后端位相同。见[对比图](tests/figures/upl_plastic_periodic_pair_r1.png)、同前缀三份CSV及[阶段审查](tests/notes/upl_plastic_periodic_root_r1.md)。该短程证明有界实现兼容，不是软化/剪胀、空间收敛或塌陷物理验收。
-
-### 黏聚力软化周期短程
-
-同一周期场只将残余黏聚力改为1000 Pa、n_coh改为5，CPU/GPU各一次真实128步及唯一原生读取已通过：1024 IDs、5帧、22数组、J关系、密度缓存和κ非回退均有效，GPU memcheck零错误/泄漏。末态均640个非零κ，最大分别3.45506589e-4和3.45506618e-4；保存κ对应的最低黏聚力约4993.0958 Pa。本次仅观察到约6.9 Pa软化，不证明完整后峰、局部化或塌陷精度，非零剪胀见下一阶段。输入、程序、原生输出与旧常强度对照分开保留，见[测试说明](tests/notes/upl_plastic_softening_r1.json)。
-
-### 正负剪胀及衰减的周期短程
-
-同一初始周期场新增两组，各CPU/GPU一次128步及一次原生读取已通过：POS为ψ0=+2.5°、cp5000 Pa；NEG为ψ0=-5°、cp7500 Pa，均cr1000 Pa、n_coh5、sf=.2，原1024 IDs、22数组、五帧及时间步/状态检查保持。两次GPU均memcheck零错误/泄漏。末态POS有640个非零κ，CPU/GPU最大约3.30091163e-4/3.30091192e-4；NEG有512个，约1.94350359e-4/1.94350403e-4。末孔压RMS分别约34.84/8.94 Pa，负压未截断。J继续积分总速度散度，没有额外叠加塑性体积源。
-
-两组峰值黏聚力不同，不能将组间差别当作仅剪胀角的独立效应；ψ和cohesion图表由实际保存float κ派生，不冒称连续材料求根的历史。该短窗只覆盖很小的衰减，不证明重力塑性、预应力、撤墙、负压稳定或完整塌陷验收。输入说明见[本轮记录](tests/notes/upl_plastic_dilation_inputs_r1.json)。
-
-### 新材料重力容器冷启动
-
-固定容器的显式`MaterialReturn=1`路径已完成CPU/GPU各一次128步、5帧至0.00048828125 s，保留5000土粒子及2060墙样本；22原生数组、实际时钟、J关系、密度缓存、κ有限及不回退均通过，GPU memcheck零错误/泄漏。新CPU与保留的默认MR0控制、新GPU与保留的显式MR1控制，其完整typed22及clock文件分别逐字节一致；两种控制身份分开记录，见[对比图及CSV](tests/figures/upl_material_gravity_pair_r1.png)与[阶段审查](tests/notes/upl_material_gravity_root_r1.md)。五帧土体跨后端孔压RMS差最大0.00042211 Pa，总应力Frobenius RMS差0.00075540 Pa，材料位移差最大1.218e-12 m。实际κ始终0，故只证明该新准入与冷启动兼容，尚未覆盖非零塑性墙响应、地应力平衡或撤墙塌陷；J仍由总速度散度更新，不另加塑性体积源。此后仅整理材料选择参数的读取位置并完成一次默认CPU Debug构建，未据该文字/读取顺序整理重复GPU或物理计算。
-
-随后使用同一冻结GPU程序完成一次8192步重力预载观察：实际末时刻0.03125 s、257帧，全部7060 IDs及22数组的原生检查通过；首五帧记录内容及带符号时钟与原短窗逐字节一致。最后四分之一窗内土体速度RMS仍在0.000147～0.00750 m/s间振荡、孔压RMS在5.64～41.91 kPa间变化，尚不能作为平衡初态撤墙。见[预载图及CSV](tests/figures/upl_material_preload_observe_r1.png)和[审查记录](tests/notes/upl_material_preload_root_r1.md)。此次没有新增阻尼、指定预应力、半步长计算或重启；下一步先核对地应力初态与预载时间尺度。
-
-### 延长实际重力预载
-
-按用户随后明确的路线，继续参照case03的实际重力松弛，开启现有`SoilDamping=1`、系数0.02和每40步的孔压Shepard，并延长预载时间。先前对指定地应力场的零步检查仅作为离散诊断保留；没有加入新的地应力初始化模式，也不直接给土粒子赋有效应力。
-
-本轮复用现有`HydroMechInitMode=ConstantZ`、`HydroMechInitZ=2`，只建立静水孔压及其初始材料基线p0，骨架应力从零开始经自重加载形成。固定墙的p0按同一静水场仿射延伸，避免墙样本的基线截断跳变。初始自由面正孔压按既有free-seepage政策清零，p0保留，因此顶层初始超孔压约为−196 Pa；这不是剪胀造成的负压。Shepard仅平均p−p0，动态分支使用同一J的V0·J权重，滤波后复用已有自由面标记限制正压；没有引入论文TPI或式47。
-
-新输入使用规整十进制时间：dt=2.5微秒，接线短窗0.001 s、每0.0001 s保存；延长预载输入为5 s、每0.01 s保存。CPU/GPU Debug及Release构建通过；CPU Debug、CPU8 Release和GPU Release各完成400步/11帧，并通过全部22数组、静水p0、J账本及自由面检查，GPU另一次40步内存检查零错误/泄漏。三组最大孔压RMS差约0.00192 Pa、材料位移差约1.83e-8 mm；见[短窗图及CSV](tests/figures/upl_prestress_short_review_r1.png)。旧u-pw Shepard的81行实际结果与保留对象程序逐字节一致。
-
-本机短窗CPU8 Release循环2.398547 s，GPU Release为2.735856 s，故下一次5 s诊断预载选择CPU8；这不是完整长窗或严格空载基准。CPU8 Release的5 s重力预载`upl_prestress_extended_CPU_r1`已安全完成并通过501帧原生审查；末段仍在弹性固结，尚未接受为平衡初态。当前仍为固定容器，撤墙、全耦合重启和塌陷物理验收待完成。
-
-
-### 三组塌陷交付时长与后续三维材料扩展
-
-2026-11-07计划：预载达到必要平衡条件后，复现ψ0=0°、+2.5°、−5°三组。前两组cp=5 kPa，收缩组cp=7.5 kPa；cr均1 kPa、黏聚力衰减系数5，后两组剪胀衰减系数sf=0.2。正式复现还需完成当前重力/塑性边界范围下的Ck=2变渗透率兼容，不能把当前恒k预载当成完整论文工况。
-
-三组统一先计划撤墙后τ=3.0 s，每0.01 s输出；τ=t−t_release，论文对比时刻为0.3/0.6/1.2 s及收缩组0.2/0.5/1.6/3.0 s。论文描述正剪胀组约1.2 s停止、收缩组约3 s停止；这不是强制本模型同刻停止的验收阈值。如果τ=3 s仍明显运动，继续延长相应组的规整物理时间。若5 s预载满足要求，每组正式总时长为8 s；实际预载时间仍由收敛审查决定。正式程序按同进程“预载→撤墙”保持历史连续，不使用未验收的PART重启。完成必要短程兼容检查后准备根目录三组XML/BAT和服务器运行包。
-
-新MaterialReturn=1当前仅二维DP_PS。后续在二维case08兼容和有界塌陷证据明确后，补齐三维DP系数选择、对应软化导数及CPU/GPU验证；不能只删除Simulate2D限制。详见[交付计划](tests/notes/upl_collapse_delivery_plan_r2.json)。
-
-
-五秒预载审查见[结果记录](tests/notes/upl_prestress_extended_root_r1.md)及[历史图](tests/figures/upl_prestress_equilibrium_review_r1.png)、[材料层剖面图](tests/figures/upl_prestress_equilibrium_review_r1_profiles.png)。全部原生守卫通过，κ全程0；末1s孔压变化RMS829 Pa、顶部继续沉降0.0502 mm，故尚不能据此物理撤墙。当前首先推进零步撤墙状态连续性组件；后续新鲜同进程程序准备更长预载，15 s仅为依据已有衰减和固结时标提出的候选，未执行或自动准入。每组“预载5 s＋塌陷3 s＝8 s”依赖预载已平衡的前提，这个前提现在不成立；正式总时长将按后续预载审查修订。原始BI4/typed及旧图均保留。
-
-
-用户随后将下一轮预载候选由15 s调整为10 s，保持阻尼0.02；15 s未执行。约2.7 s时标只能估计10 s剩余超压为几百Pa量级，是否足够仍检查真实晚窗孔压/有效应力/沉降/速度。若10 s满足必要条件，三组正式时间预算对应10＋3=13 s；不据时间长度自动验收。CPU/GPU零步退休组件现已分别通过，尚不代表生产事件或物理塌陷通过。
-
-
-### 同进程撤墙接口短程通过
-
-新增可选`execution/special/gravitypreload`；缺席时保持原行为。它在完整步之间撤去指定右侧FreeSlip墙，保留土体材料历史，并关闭预载专用阻尼和Shepard；原有自由面排水继续。只调整计划移除的固定粒子计数，不增加土粒子丢失容许量。
-
-CPU/GPU Debug及Release四种构建通过，GPU事件内存检查零错误/泄漏。两端OFF的11帧全部22数组及带符号时钟与原对照逐字节一致；ON各22帧、5000土粒子保留，指定260墙粒子移除。撤墙前10个真正共享记录一致，强制380步记录和旧400步记录未冒称共享。CPU/GPU最大孔压RMS差0.00355 Pa、材料XYZ位移差6.94e-8 mm。见[图和对应CSV](tests/figures/upl_gravity_release_short_review_r1.png)及[源码位置与限制](tests/notes/upl_gravity_release_root_r1.json)。这是接口检查，不是预载平衡或塌陷验收。
-
-下一轮采用10 s纯预载，dt=2.5微秒、每0.01 s输出，保持阻尼0.02和Shepard40，事件对象缺席；不安排15 s。按已完成5 s循环耗时估计CPU8约6.9小时，实际以进程记录为准。10 s是否足够由真实末段孔压、有效应力、沉降和速度决定。
-
-
-### 10秒预载结果：下一阶段的受限基线
-
-`upl_prestress10_CPU_r1`已完成400万步、1001帧及唯一原生解码，实际末时刻10.000000000374257 s，CPU8耗时约6小时42分。全部7060 IDs、22数组、J账本/密度缓存、固定p0、自由面及原始带符号时间步检查通过，κ全程0。
-
-相较保留5 s末态，速度RMS从2.9083e-5降为4.0400e-6 m/s，动能下降98.07%；相对固定初始H2参照的当前坐标孔压残差RMS从1532.11降为104.70 Pa。顶部材料带沉降0.720355 mm，受限弹性参考0.709276 mm（+1.56%）；该参考不是精确二维真值。最后实际0.99 s内全体孔压变化RMS113.87 Pa、顶部继续沉降0.006892 mm，说明仍有较弱固结。
-
-据此继续采用10 s作为下一阶段带量化残差的有界撤墙检验基线，不认定严格静止/完全排水平衡，不先增加阻尼或延长15 s。本次没有新求解或重启。下一步检查已有Ck2变渗透率与重力、自由面、撤墙的组合兼容，再推进三组剪胀角。见[全历史](tests/figures/upl_prestress10_equilibrium_review_r1.png)、[全部深度剖面](tests/figures/upl_prestress10_equilibrium_review_r1_profiles.png)、[8–10秒局部图](tests/figures/upl_prestress10_late_r2.png)，各图有同前缀CSV；[完整审查](tests/notes/upl_prestress10_root_review_r1.json)保留实际时间、剩余偏差及原安全门。
-
-
-### Ck2 重力容器组合的当前状态
-
-已有变渗透率公式的重力、自由面和墙重构零步组合检查现已在CPU和GPU通过，GPU memcheck零错误、零泄漏。测试保留5000土粒子、2060固定样本，两组制造场共162个选定率、820个墙记录及10000个掩码记录；采用原误差预算，不宣称完整流量守恒或物理塌陷验收。见[GPU审查](tests/notes/upl_ck2_free_wall_gpu_root_review_r1.json)和CPU同前缀记录。
-
-生产改动只在`JSph.cpp`移除固定二维重力容器专有的恒k限制，复用已有Model/Ck校验及同一J推导的k、梯度项和必要时步限制；不新增公式、数组或邻居遍历。XML指导同步说明候选范围。CPU Debug、CPU Release和GPU Release构建已通过；这还不是新的组合积分验收，默认路径未据此冒称新程序0ULP回归。HG/独立SPR、加载柱、三维和周期塑性等范围的限制仍保留。
-
-下一条Ck2组合短窗输入已准备为0.002 s、800步、380步撤墙，只改变Model1/Ck2，不新增半步长链或重跑旧控制。旧读取器内置另一Ck，故新profile须显式核Ck=2和保存J对应的指数k；原22数组、IDs、p0、自由面、κ、时钟与两阶段计数守卫保持。本轮终端提醒不自动启动新的物理求解或重启。
-
-三组候选源仍保留在tests；通过组合检查后，正式根XML/BAT及support下的便携包已经生成。统一10＋3=13 s、dt=2.5微秒、每0.01 s输出；初始Normals及完整主22数组保留，SavePosDouble=1不变。
-
-
-### 当前交付：r2共享弹性预载
-
-正式入口改为 [r2服务器说明](support/README_server_r2.md) 与 [r2运行包](support/LianCollapse_upl_win64_r2.zip)。先选择CPU或GPU，运行shared_preload_r2对应BAT完成真实10秒预载；通过源资格后，用同后端三组shared_r2 BAT承接至13秒。无需三组重复预载；原r1独立路线保留，未覆盖任何旧结果。
-
-这轮所需状态交接已通过CPU/GPU各11后续帧全部22数组及signed时钟逐字节连续性，三个材料短承接和低强度塑性源拒绝也已验证。四构建及新路径两help、四GenCase、缺源拒绝检查通过；[完整实现记录](tests/notes/upl_preload_handoff_root_r1.md)与PNG/CSV保留。10秒真实源资格、其平衡残差及完整塌陷仍须实际计算审查，未将接口短窗当物理验收。
+原 README 全文保存在 [历史记录](tests/notes/README_root_history_before_r3_cleanup.md)，其中相对链接按原根目录上下文理解。`support` 内旧 runtime、ZIP、manifest 和源版本记录继续保留，供历史复现；r2 原始输出不移动、不覆盖。许可证见 [LICENSE](LICENSE)。
