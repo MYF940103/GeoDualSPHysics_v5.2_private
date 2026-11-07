@@ -1451,7 +1451,7 @@ void JSphGpu::PreInteraction_Forces(){
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
-  if(ArtificialStressg)cusph::ComputeArtificialStress(Np,Npb,Codeg,Velrhopg,Sigmag,ArtificialStressg);
+  if(ArtificialStressg && !PorosityFeedback)cusph::ComputeArtificialStress(Np,Npb,Codeg,Velrhopg,Sigmag,ArtificialStressg);
 
   //-Computes VelMax: Includes the particles from floating bodies and does not affect the periodic conditions.
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
@@ -1463,6 +1463,17 @@ void JSphGpu::PreInteraction_Forces(){
   ViscDtMax=0;
   Timersg->TmStop(TMG_CfPreForces,true);
   Check_CudaErroor("Failed calculating VelMax.");
+}
+
+//==============================================================================
+/// Uses current wall and projected surface pressure for J-based artificial stress.
+//==============================================================================
+void JSphGpu::PrepareArtificialStress(){
+  if(!PorosityFeedback || !ArtificialStressg)return;
+  //-The certified gravity preload keeps the original AS=0 operator.
+  if(GravityPreload && !GravityPreloadReleased)cudaMemset(ArtificialStressg,0,sizeof(tsymatrix3f)*Np);
+  else cusph::ComputeArtificialStress(Np,Npb,Codeg,Velrhopg,Sigmag,ArtificialStressg,PorePressg);
+  Check_CudaErroor("Failed preparing current-J artificial stress.");
 }
 
 //==============================================================================
@@ -1698,7 +1709,7 @@ void JSphGpu::InitPorosityObserverGpu(){
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
     Run_Exceptioon("GPU variable conductivity exponent scale must be representable.");
   if(PorosityFeedback && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic) || (!DynamicPorePressure && SoilCte.HydraulicConductivity!=0) || (Visco!=0 && !allowartvisco)
-    || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+    || TVisco!=VISCO_Artificial || TDensity!=DDT_None || (ArtificialStress && !container)
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization) || !SoilStressRateGradCorr
     || (PoreShepardRegularization && !(container && HydroMechInitMode==HMINIT_ConstantZ))
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)

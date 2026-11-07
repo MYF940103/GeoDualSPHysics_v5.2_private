@@ -1,0 +1,20 @@
+{
+  "stage": "upl_c08_artstress_build_r1.author",
+  "status": "author_only_not_imported_or_executed_no_source_capture_created",
+  "script": "tests/support/upl_c08_artstress_build_r1.py",
+  "purpose": "Isolated authoritative builds of the root/CPU/GPU agents' release-only J-weighted total-stress ArtificialStress candidate, only after all production edits are frozen and root has fully read this driver. The author does not capture currently changing source or run any build.",
+  "recipe": "Mechanical clone of the closed upl_c08_wall_diag_build_r1.py. One CLI configuration only: DebugCPU, Debug, or Release. Reuse that configuration's actual wall-diag MSBuild argv, MSVC14.36.32532, CUDA11.7 sm86 for GPU, and disabled PostBuildEvent. No implicit configuration loop or generated-program execution.",
+  "commands_for_later_root_review": [
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_artstress_build_r1.py DebugCPU",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_artstress_build_r1.py Debug",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_artstress_build_r1.py Release"
+  ],
+  "fresh_paths": "outputs/upl_c08_artstress_<configuration>_r1; LOCALAPPDATA/Temp/upl_c08_artstress_r1/<configuration>/int with no spaces; common outputs/upl_c08_artstress_source_r1/source.json and source.zip. logs/<tag>.start.json/.call.json/.build.json/.log/.binlog all refuse existing paths. No overwrite, cleanup or retry.",
+  "minimal_differences": "Only new tag/output/intermediate/capture names, lineage to the closed wall-diag capture, recipe from the matching wall-diag call, and extended protection. All original owned Popen/Win32 wait, call-before-postchecks, source-SMT, compiler error/warning and 87 CPU/113 GPU object checks remain unchanged.",
+  "protected": "Before/after bytes/mtime covers canonical bin files; all files directly in C08 support/runtime, runtime_r2 and runtime_r3; retained r2/r3 ZIPs and r3 provenance records; new AS capture plus old wall-diag and mdbc source archive/JSON; all three closed wall-diag programs/project objects/build receipts and all four original mdbc programs/project objects/build receipts. No raw BI4 scan or SHA/Git operation.",
+  "source_identity": "A future authorized first build creates the current-source archive once. Subsequent configurations require the exact source stats. Historical base commit is inherited only as lineage and is not relabelled as current HEAD or a new compiled-commit claim.",
+  "receipt_scope": "Actual owned MSBuild identity/parent/exe/argv/creation and Popen+Win32 exits are recorded before object/log checks. Passed means compilation/output/source-protection checks only; no generated executable, component, solver, decoder, postprocessor, queue or notifier is launched.",
+  "physical_acceptance": false,
+  "SHA_scans": 0,
+  "execution_by_author": false
+}

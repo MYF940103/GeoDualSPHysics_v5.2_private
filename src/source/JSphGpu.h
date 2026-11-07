@@ -303,6 +303,7 @@ protected:
 
   void PreInteractionVars_Forces(unsigned np,unsigned npb);
   void PreInteraction_Forces();
+  void PrepareArtificialStress();
   void PosInteraction_Forces();
   void ComputeFreeSurfaceTracking();
   bool IsHydroMechDrainageActive()const;

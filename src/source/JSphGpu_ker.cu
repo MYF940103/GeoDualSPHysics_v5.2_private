@@ -668,7 +668,7 @@ __device__ void KerComputeBuiArtificialStress(float2 sigma_xx_xy,float2 sigma_xz
 //------------------------------------------------------------------------------
 /// Precomputes Bui 2008 artificial stress tensor for each non-floating particle.
 //------------------------------------------------------------------------------
-__global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,float2 *artificialstress){
+__global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,float2 *artificialstress,const float *porepress){
   const unsigned p=blockIdx.x*blockDim.x+threadIdx.x;
   if(p<n){
     float2 rstress_xx_xy=make_float2(0,0);
@@ -676,8 +676,15 @@ __global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const type
     float2 rstress_yz_zz=make_float2(0,0);
     const bool ftp=CODE_IsFloating(code[p]);
     if(!ftp){
-      const tsymatrix3f sig=KerStressToFloat(sigma[p]);
-      KerComputeBuiArtificialStress(make_float2(sig.xx,sig.xy),make_float2(sig.xz,sig.yy),make_float2(sig.yz,sig.zz),velrhop[p].w,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
+      if(porepress){
+        //-Current-J quadrature consumes raw Pa; total stress includes absolute pore pressure once.
+        const tsymatrix3d sig=sigma[p];const double pw=double(porepress[p]);
+        KerComputeBuiArtificialStress(make_float2(float(sig.xx-pw),float(sig.xy)),make_float2(float(sig.xz),float(sig.yy-pw)),make_float2(float(sig.yz),float(sig.zz-pw)),1.f,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
+      }
+      else{
+        const tsymatrix3f sig=KerStressToFloat(sigma[p]);
+        KerComputeBuiArtificialStress(make_float2(sig.xx,sig.xy),make_float2(sig.xz,sig.yy),make_float2(sig.yz,sig.zz),velrhop[p].w,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
+      }
     }
     artificialstress[p*3]=rstress_xx_xy;
     artificialstress[p*3+1]=rstress_xz_yy;
@@ -687,10 +694,10 @@ __global__ void KerComputeArtificialStress(unsigned n,unsigned nbound,const type
 //==============================================================================
 /// Precomputes Bui 2008 artificial stress tensor on GPU.
 //==============================================================================
-void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,tsymatrix3f *artificialstress){
+void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,tsymatrix3f *artificialstress,const float *porepress){
   if(n){
     dim3 sgrid=GetSimpleGridSize(n,SPHBSIZE);
-    KerComputeArtificialStress <<<sgrid,SPHBSIZE>>> (n,nbound,code,velrhop,sigma,(float2*)artificialstress);
+    KerComputeArtificialStress <<<sgrid,SPHBSIZE>>> (n,nbound,code,velrhop,sigma,(float2*)artificialstress,porepress);
   }
 }
 
@@ -1804,16 +1811,30 @@ template<TpKernel tker,TpFtMode ftmode,bool lamsps,TpDensity tdensity,bool shift
             const float arsxz0=artstressp1_xz_yy.x+artstressp2_xz_yy.x;
             const float arsyz0=artstressp1_yz_zz.x+artstressp2_yz_zz.x;
             if(ratio>0.f && (arsxx0 || arsyy0 || arszz0 || arsxy0 || arsxz0 || arsyz0)){
-              const float artmass=massp2final*powf(ratio,CTE.artificialstressexp);
-              const float arsxx=artmass*arsxx0;
-              const float arsyy=artmass*arsyy0;
-              const float arszz=artmass*arszz0;
-              const float arsxy=artmass*arsxy0;
-              const float arsxz=artmass*arsxz0;
-              const float arsyz=artmass*arsyz0;
-              acep1.x+=(arsxx*frx+arsxy*fry+arsxz*frz);
-              acep1.y+=(arsxy*frx+arsyy*fry+arsyz*frz);
-              acep1.z+=(arsxz*frx+arsyz*fry+arszz*frz);
+              if(poroj){
+                const double coeff=porovol2/pororhot1*double(powf(ratio,CTE.artificialstressexp));
+                const double arsxx=coeff*(double(artstressp1_xx_xy.x)+artstressp2_xx_xy.x);
+                const double arsyy=coeff*(double(artstressp1_xz_yy.y)+artstressp2_xz_yy.y);
+                const double arszz=coeff*(double(artstressp1_yz_zz.y)+artstressp2_yz_zz.y);
+                const double arsxy=coeff*(double(artstressp1_xx_xy.y)+artstressp2_xx_xy.y);
+                const double arsxz=coeff*(double(artstressp1_xz_yy.x)+artstressp2_xz_yy.x);
+                const double arsyz=coeff*(double(artstressp1_yz_zz.x)+artstressp2_yz_zz.x);
+                acep1.x+=float(arsxx*frx+arsxy*fry+arsxz*frz);
+                acep1.y+=float(arsxy*frx+arsyy*fry+arsyz*frz);
+                acep1.z+=float(arsxz*frx+arsyz*fry+arszz*frz);
+              }
+              else{
+                const float artmass=massp2final*powf(ratio,CTE.artificialstressexp);
+                const float arsxx=artmass*arsxx0;
+                const float arsyy=artmass*arsyy0;
+                const float arszz=artmass*arszz0;
+                const float arsxy=artmass*arsxy0;
+                const float arsxz=artmass*arsxz0;
+                const float arsyz=artmass*arsyz0;
+                acep1.x+=(arsxx*frx+arsxy*fry+arsxz*frz);
+                acep1.y+=(arsxy*frx+arsyy*fry+arsyz*frz);
+                acep1.z+=(arsxz*frx+arsyz*fry+arszz*frz);
+              }
             }
           }
       }

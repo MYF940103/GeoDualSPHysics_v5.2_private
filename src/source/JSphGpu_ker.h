@@ -277,7 +277,7 @@ void ComputeAceMod(unsigned n,const float3 *ace,float *acemod);
 void ComputeAceMod(unsigned n,const typecode *code,const float3 *ace,float *acemod);
 
 void ComputeVelMod(unsigned n,const float4 *vel,float *velmod);
-void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,tsymatrix3f *artificialstress);
+void ComputeArtificialStress(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,const tsymatrix3d *sigma,tsymatrix3f *artificialstress,const float *porepress=NULL);
 void AddSoilDamping(unsigned n,unsigned nbound,const typecode *code,const float4 *velrhop,float3 *ace,float dynamiccd=0.f);
 void ComputeFreeSurfaceTracking(TpKernel tkernel,bool simulate2d,unsigned np,unsigned npb
   ,const StDivDataGpu &dvd,const unsigned *dcell,const float4 *poscell

@@ -701,6 +701,7 @@ void JSphCpuSingle::Interaction_Forces(TpInterStep interstep){
   Timersc->TmStart(TMC_CfForces);
   //-Interaction of Fluid-Fluid/Bound & Bound-Fluid (forces and DEM). | Interaccion Fluid-Fluid/Bound & Bound-Fluid (forces and DEM).
   if(HydroMech)ApplyFreeSurfacePorePressure();
+  if(ArtificialStressc && PorosityFeedback)PrepareArtificialStress();
   const stinterparmsc parms=StInterparmsc(Np,Npb,NpbOk
     ,DivData,Dcellc
     ,Posc,Velrhopc,Idpc,Codec,Pressc,(HydroMech? PorePressc: NULL)

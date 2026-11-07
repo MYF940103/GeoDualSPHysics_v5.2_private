@@ -636,6 +636,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
     ApplyFreeSurfacePorePressure();
     if(HydroMechTopLoadMode!=HMLOAD_FlexibleConfinement)ApplyHydroMechTopLoadAcceleration();
   }
+  if(ArtificialStressg && PorosityFeedback)PrepareArtificialStress();
   float3 *dengradcorr=NULL;
 
   Timersg->TmStart(TMG_CfForces,true);

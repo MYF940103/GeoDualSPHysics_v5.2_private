@@ -1786,7 +1786,7 @@ void JSphCpu::PreInteraction_Forces(){
 
   //-Initialise arrays.
   PreInteractionVars_Forces(Np,Npb);
-  if(ArtificialStressc)ComputeArtificialStressArray(Np,Codec,Velrhopc,Sigmac,ArtificialStressCoef,ArtificialStressc);
+  if(ArtificialStressc && !PorosityFeedback)PrepareArtificialStress();
 
   //-Calculate VelMax: Floating object particles are included and do not affect use of periodic condition.
   //-Calcula VelMax: Se incluyen las particulas floatings y no afecta el uso de condiciones periodicas.
@@ -2111,6 +2111,37 @@ static void ComputeArtificialStressArray(unsigned np,const typecode *code,const 
 }
 
 //==============================================================================
+/// Prepares legacy density-normalized R or staged u-pl total-stress R in Pa.
+//==============================================================================
+void JSphCpu::PrepareArtificialStress(){
+  if(!ArtificialStressc)return;
+  if(!PorosityFeedback){
+    ComputeArtificialStressArray(Np,Codec,Velrhopc,Sigmac,ArtificialStressCoef,ArtificialStressc);
+    return;
+  }
+  //-The shared elastic PRE uses AS=0; this candidate activates only after release.
+  if(GravityPreload && !GravityPreloadReleased){
+    memset(ArtificialStressc,0,sizeof(tsymatrix3f)*Np);
+    return;
+  }
+  const int n=int(Np);
+  #ifdef OMP_USE
+    #pragma omp parallel for schedule (static) if(n>OMP_LIMIT_COMPUTELIGHT)
+  #endif
+  for(int p=0;p<n;p++){
+    tsymatrix3f rstress={0,0,0,0,0,0};
+    if(!CODE_IsFloating(Codec[p])){
+      tsymatrix3d total=Sigmac[p];
+      const double pressure=PorePressc[p];
+      total.xx-=pressure;total.yy-=pressure;total.zz-=pressure;
+      //-Unit density leaves -epsilon*positive(total stress) in Pa, without rho^-2.
+      rstress=ComputeBuiArtificialStress(ToTSymMatrix3f(total),1.f,ArtificialStressCoef);
+    }
+    ArtificialStressc[p]=rstress;
+  }
+}
+
+//==============================================================================
 /// Accumulates v5.4 NoPenetration velocity correction for one normal component.
 //==============================================================================
 static void ComputeNoPenVel(const float dv,const float norm,const float dr,unsigned &nopencount,float &nopenshift){
@@ -2314,6 +2345,27 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
             if(useartstress && !ftp1 && !ftp2 && invwabdp>0.f){
               const tsymatrix3f artstressp2=artificialstress[p2];
               const float ratio=wab*invwabdp;
+              if(PorosityFeedback){
+                const double arsxx0=double(artstressp1.xx)+artstressp2.xx;
+                const double arsyy0=double(artstressp1.yy)+artstressp2.yy;
+                const double arszz0=double(artstressp1.zz)+artstressp2.zz;
+                const double arsxy0=double(artstressp1.xy)+artstressp2.xy;
+                const double arsxz0=double(artstressp1.xz)+artstressp2.xz;
+                const double arsyz0=double(artstressp1.yz)+artstressp2.yz;
+                if(ratio>0.f && (arsxx0 || arsyy0 || arszz0 || arsxy0 || arsxz0 || arsyz0)){
+                  const double artmass=porovol2/pororhot1*double(powf(ratio,ArtificialStressExp));
+                  const double arsxx=artmass*arsxx0;
+                  const double arsyy=artmass*arsyy0;
+                  const double arszz=artmass*arszz0;
+                  const double arsxy=artmass*arsxy0;
+                  const double arsxz=artmass*arsxz0;
+                  const double arsyz=artmass*arsyz0;
+                  acep1.x+=float(arsxx*frx+arsxy*fry+arsxz*frz);
+                  acep1.y+=float(arsyy*fry+arsxy*frx+arsyz*frz);
+                  acep1.z+=float(arszz*frz+arsyz*fry+arsxz*frx);
+                }
+              }
+              else{
               const float arsxx0=artstressp1.xx+artstressp2.xx;
               const float arsyy0=artstressp1.yy+artstressp2.yy;
               const float arszz0=artstressp1.zz+artstressp2.zz;
@@ -2331,6 +2383,7 @@ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool sh
                 acep1.x += (arsxx*frx+arsxy*fry+arsxz*frz);
                 acep1.y += (arsyy*fry+arsxy*frx+arsyz*frz);
                 acep1.z += (arszz*frz+arsyz*fry+arsxz*frx);
+              }
               }
             }
           }
@@ -3065,10 +3118,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     || (!DynamicPorePressure && (SoilCte.HydraulicConductivity!=0 || Gravity.x || Gravity.y || Gravity.z))
     || (!loadedcolumn && !freebody && (HydroMechDrainage || HydroMechTopLoadMode!=HMLOAD_None))
     || (SoilDamping && !loadedcolumn && !freebody && !gravitycontainer)
-    || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || ArtificialStress
+    || (Visco!=0 && !allowartvisco) || TVisco!=VISCO_Artificial || TDensity!=DDT_None || (ArtificialStress && !gravitycontainer)
     || (SoilBoundaryDerivativeSPR && !allowcolumnstabilization)
     || !SoilStressRateGradCorr || (PoreShepardRegularization && !gravitycontainer) || !(RhopZero>SoilCte.Porosity*SoilCte.PoreWaterRho)))
-    Run_Exceptioon("Porosity feedback requires bounded CPU fixtures without acceleration input/DDT/artificial stress; damping also permits the fixed gravity container, Shepard is restricted to its hydrostatic preload, and HG/SPR remain column-only.");
+    Run_Exceptioon("Porosity feedback requires bounded CPU fixtures without acceleration input/DDT; artificial stress is restricted to the staged gravity-preload container, damping also permits the fixed gravity container, Shepard is restricted to its hydrostatic preload, and HG/SPR remain column-only.");
   if(DynamicPorePressure && ((TKernel!=KERNEL_Wendland && TKernel!=KERNEL_Cubic)
     || !std::isfinite(SoilCte.HydraulicConductivity) || SoilCte.HydraulicConductivity<0
     || !(SoilCte.PoreWaterBulkModulus>0) || !(SoilCte.PoreWaterRho>0)))

@@ -1856,6 +1856,7 @@ void JSph::VisuConfig(){
     Log->Print(fun::VarStr("  ArtificialStressExp",ArtificialStressExp));
     Log->Print(fun::VarStr("  ArtificialStressExpMode",ArtificialStressExpAuto? "DefaultFixed": "XML"));
     Log->Print(fun::VarStr("  ArtificialStressBoundary","StressExtrapolated"));
+    if(HydroMechDynamicSeepage)Log->Print("  Dynamic artificial stress: total stress, current-J quadrature; disabled during certified preload, enabled after wall release.");
     ConfigInfo=ConfigInfo+sep+fun::PrintStr("AS_Bui2008(%g,%g)",ArtificialStressCoef,ArtificialStressExp);
   }
   Log->Print(fun::VarStr("SoilStressRateGradCorr",SoilStressRateGradCorr? "KernelGradient": "None"));
@@ -2979,6 +2980,12 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
+      if(ArtificialStress){
+        bdpart->SetvText("DynamicArtificialStressPolicy","ReleaseOnly");
+        bdpart->SetvBool("DynamicArtificialStressActive",GravityPreloadReleased);
+        bdpart->SetvFloat("DynamicArtificialStressCoef",ArtificialStressCoef);
+        bdpart->SetvFloat("DynamicArtificialStressExp",ArtificialStressExp);
+      }
     }
     if(GravityPreload){
       bdpart->SetvUint("GravityPreloadPhase",(GravityPreloadReleased? 1u: 0u));
@@ -3694,6 +3701,7 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 /// Contract for a shared elastic preload; group cohesion/dilation and output times may differ.
 //==============================================================================
 std::string JSph::GetGravityPreloadContract()const{
+  //-Release-only artificial stress is inactive in PRE; its policy is saved separately.
   std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-1 "
     <<CaseNp<<' '<<CaseNpb<<' '<<CaseNfluid<<' '<<Dp<<' '<<KernelH<<' '
     <<MassFluid<<' '<<MassBound<<' '<<RhopZero<<' '<<unsigned(TKernel)<<' '
@@ -3771,7 +3779,10 @@ bool JSph::IsDynamicPoreContainerConfig()const{
     && !HydroMechDrainage && !HydroMechDrainageFixedGrid
     && !SoilHourglassXi && !SoilBoundaryDerivativeSPR && (!StrainSoftening || IsDynamicPorePlasticMaterialConfig())
     && !InOut && !Shifting && !Damping && !RelaxZones && !AccInput && !UseDEM && !Symmetry
-    && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None && !ArtificialStress
+    && !ViscoTime && TVisco==VISCO_Artificial && TDensity==DDT_None
+    && (!ArtificialStress || (GravityPreload && std::isfinite(ArtificialStressCoef)
+      && ArtificialStressCoef>=0.f && ArtificialStressCoef<=1.f
+      && std::isfinite(ArtificialStressExp) && ArtificialStressExp>0.f))
     && SoilStressRateGradCorr && PoreCompressionGradCorr && PoreCompressionSourceMode==0);
 }
 

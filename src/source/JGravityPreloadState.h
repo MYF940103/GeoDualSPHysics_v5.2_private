@@ -111,6 +111,9 @@ public:
         && p->ExistsValue("GravityPreloadHandoffContract",DatText)
         && p->GetvText("GravityPreloadHandoffContract")==contract
         ,"Missing/incompatible certified elastic handoff schema/contract.");
+      Need(!p->ExistsValue("DynamicArtificialStressActive")
+        || (p->ExistsValue("DynamicArtificialStressActive",DatBool)&&!p->GetvBool("DynamicArtificialStressActive"))
+        ,"Certified PRE must precede dynamic artificial-stress activation.");
       Need(p->ExistsValue("GravityPreloadSourceCohesion",DatFloat)
         && Finite(p->GetvFloat("GravityPreloadSourceCohesion"))
         && p->GetvFloat("GravityPreloadSourceCohesion")>=0.f

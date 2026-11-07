@@ -84,6 +84,8 @@
 			<!-- Soil stabilization. -->
 			<parameter key="ArtificialStress" value="0" comment="Artificial stress 0=off, 1=on; default=0" />
 			<parameter key="ArtificialStressCoef" value="0.2" comment="Artificial-stress coefficient; default=0.2; range [0,1]" />
+			<parameter key="ArtificialStressExp" value="2.55" comment="Artificial-stress kernel-ratio exponent; default=2.55; must be >0" />
+			<!-- u-pl gravitypreload candidate: total-stress artificial stress starts after release; bounded validation pending. -->
 			<parameter key="SoilStressRateGradCorr" value="0" comment="Stress-rate velocity-gradient correction 0=off, 1=on; default=0" />
 			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Reconstructed wall velocity for soil derivatives 0=off, 1=on; default=0" />
 			<!-- SPR supports fixed planar walls; per-mk modes require separate faces. Inclined NoPen and curved/moving walls are unsupported. -->
