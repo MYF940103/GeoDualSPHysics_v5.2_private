@@ -1,0 +1,70 @@
+{
+  "stage": "upl_c08_bedkeep_window_decision_r1",
+  "passed": true,
+  "utc": "2026-11-07T21:45:11.717074+00:00",
+  "decision": "admit_one_fresh_root_psi0_3s_diagnostic_only",
+  "allowed_job": "upl_c08_formal_psi0_r5_r1",
+  "root_3s_admitted": true,
+  "other_psi_admitted": false,
+  "physical_acceptance": false,
+  "source_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_window_GPU_r1.run.json",
+    "bytes": 33366,
+    "mtime_ns": 1794087412917761000
+  },
+  "source_native": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_window_GPU_r1.native.json",
+    "bytes": 39369,
+    "mtime_ns": 1794087486789834200
+  },
+  "review": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_window_review_r1.check.json",
+    "bytes": 95866,
+    "mtime_ns": 1794087504905390500
+  },
+  "visual": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_window_review_r1.visual.json",
+    "bytes": 2169,
+    "mtime_ns": 1794087911714075400
+  },
+  "evidence": [
+    "All60 original native numerical guards passed, sourcePRE unchanged, 6805 active IDs and all5000 soil retained",
+    "All saved soil z above .013094m; no new wall fitting or required-dt rejection",
+    "At actual tau .53, maximumspeed1.710602m/s versus old AS1 5.914994m/s; by .6 speedRMS fell to .495537m/s",
+    "Actual first3 same-dt states remain byte exact in22 arrays/time and signed clock rows"
+  ],
+  "negative_pressure_limitation": {
+    "minimum_Pa": -115985.453125,
+    "native_ID": 7013,
+    "actual_tau_s": 0.34000000010792064,
+    "transient_recovery_does_not_prove_physical_accuracy": true,
+    "late_negative_region_must_be_reviewed": true
+  },
+  "max_saved_speed_m_s": 1.7106023436004638,
+  "full_window_J_min": 0.9947770930722066,
+  "full_window_J_max": 1.0469872308768122,
+  "dt_s": 2.5e-06,
+  "output_s": 0.01,
+  "end_global_s": 13,
+  "new_updates": 1200000,
+  "planned_frames": 300,
+  "kept_bed_IDs": [
+    1800,
+    1852,
+    1904,
+    1956,
+    2008
+  ],
+  "expected_native_IDs": 6805,
+  "expected_fixed_IDs": 1805,
+  "expected_soil_IDs": 5000,
+  "AS_coef": 0.2,
+  "AS_exp": 2.55,
+  "NoPen_policy": "FixedPlaneStageProjectionReleaseOnly",
+  "ReactionClosed": false,
+  "old_outputs_and_PRE_protected": true,
+  "no_half_chain": true,
+  "no_new_solver_launched_by_this_record": true,
+  "no_new_equations_or_thresholds": true,
+  "SHA_scans": 0
+}

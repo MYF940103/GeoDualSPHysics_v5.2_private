@@ -1,6 +1,10 @@
 # 当前发包状态
 
-**当前在tests运行保留浅层底面粒子的AS＋固定平面0.6 s候选，根目录r4入口仍暂停。** 新标签`upl_c08_bedkeep_window_GPU_r1`，实际owner58076→GPU solver22148，启动UTC 2026-11-07 21:10:28；只复用原r2认证PRE，不重算10 s。`keep_bed_overlap=true`在撤墙事件保留原ID 1800/1852/1904/1956/2008作为NoSlip浅床，其余255个右墙点退休，活动6805=1805固定+5000土粒。AS ε=.2/exp2.55、NoPen固定平面、dt2.5 us及原数值门不变；ReactionClosed=false，尚非正式3 s或论文验收。
+**保留浅床点的0.6 s候选已正常完成并通过60帧原生门，正在准备新r5单组ψ0的3 s正式诊断；根目录r4入口仍暂停。** `upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过。
+
+仍有τ=.34近床ID7013的−115985 Pa负压脉冲和末上部负压区域，尚无论文精度/物理验收。根只准入一个新ψ0完整3 s诊断，不自动启动另两组；决定、完整4PNG/7CSV及局限见`tests/notes/upl_c08_bedkeep_window_result_r1.md`、`tests/logs/upl_c08_bedkeep_window_decision_r1.json`。新r5入口/runtime准备并检查前不得把旧r4当成该候选。
+
+本轮只复用原r2认证PRE，不重算10 s。`keep_bed_overlap=true`在撤墙事件保留原ID 1800/1852/1904/1956/2008作为NoSlip浅床，其余255个右墙点退休，活动6805=1805固定+5000土粒。AS ε=.2/exp2.55、NoPen固定平面、dt2.5 us及原数值门不变；ReactionClosed=false。Predictor投影后的半步状态会反馈本步Corrector，但额外接触冲量没有同阶段Darcy闭合，不能概括为完全没有本步水力反馈。
 
 新CPU Debug、GPU Debug/Release构建通过；CPU/GPU各40更新/1帧6805点原生检查通过，GPU memcheck 0错误/0泄漏，跨后端pRMS=.001723329 Pa、XYZmax=1.252068e−9 mm。新选项关闭的3帧对原AS开启短窗，全部22数组、layout、time及signed clocks整文件逐byte相同。开启后0.03 s/3帧原生门通过：末帧最大速度.136565（旧.191152）m/s、最大κ=.0225326（旧.0410586）、最小z=.0199834（旧.0174043）m；是边界算子改变的描述性收益，不套用half误差或理论精度结论。审查见`tests/figures/upl_c08_bedkeep_short_review_r1_*`，启动前准入见`tests/logs/upl_c08_bedkeep_window_GPU_r1.admission.json`。根目录runtime/XML/BAT均未替换。
 
