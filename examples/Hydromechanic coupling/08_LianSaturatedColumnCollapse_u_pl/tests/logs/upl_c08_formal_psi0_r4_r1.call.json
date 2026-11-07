@@ -1,0 +1,71 @@
+{
+  "stage": "upl_c08_formal_psi0_r4_r1.call",
+  "started_utc": "2026-11-07T17:20:50.422029+00:00",
+  "ended_utc": "2026-11-07T17:38:31.008411+00:00",
+  "wrapper": {
+    "pid": 78608,
+    "creation_filetime_100ns": 134385456504407737,
+    "created_epoch": 1794072050.4407735,
+    "exe": "C:\\Windows\\System32\\cmd.exe",
+    "argv": [
+      "C:\\WINDOWS\\system32\\cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic",
+      "coupling\\08_LianSaturatedColumnCollapse_u_pl\\xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_GPU.bat --unattended"
+    ],
+    "parent_pid": 70440
+  },
+  "wrapper_command_line": "\"C:\\WINDOWS\\system32\\cmd.exe\" /d /s /c \"\"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\xCaseLianSaturatedColumnCollapse_psi0_shared_r4_win64_GPU.bat\" --unattended\"",
+  "actual_wrapper_Popen_wait_exit": 1,
+  "actual_wrapper_Win32_exit": 1,
+  "children": [
+    {
+      "role": "GenCase",
+      "identity": {
+        "pid": 79792,
+        "creation_filetime_100ns": 134385456534873580,
+        "created_epoch": 1794072053.487358,
+        "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r4\\GenCase_win64.exe",
+        "argv": [
+          "support\\runtime_r4\\GenCase_win64.exe",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r4_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r4_Def",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r4_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r4",
+          "-save:all"
+        ],
+        "parent_pid": 78608
+      },
+      "actual_Win32_exit": 0
+    },
+    {
+      "role": "solver",
+      "identity": {
+        "pid": 77788,
+        "creation_filetime_100ns": 134385456541901077,
+        "created_epoch": 1794072054.1901076,
+        "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r4\\DualSPHysics5.2_GEO_win64.exe",
+        "argv": [
+          "support\\runtime_r4\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu:0",
+          "-stable",
+          "-mdbc_freeslip:1",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r4_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r4",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r4_GPU_out",
+          "-dirdataout",
+          "data",
+          "-svres"
+        ],
+        "parent_pid": 78608
+      },
+      "actual_Win32_exit": 1
+    }
+  ],
+  "ownership_errors": [],
+  "elapsed_s": 1060.5779999997467,
+  "log": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_formal_psi0_r4_r1.log",
+    "bytes": 20933,
+    "mtime_ns": 1794073110983817200
+  }
+}
