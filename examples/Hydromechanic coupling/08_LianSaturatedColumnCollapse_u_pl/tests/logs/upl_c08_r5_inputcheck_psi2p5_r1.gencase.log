@@ -1,0 +1,137 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../support/runtime_r5/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: GeometryForNormals
+List: MAIN
+
+Total operations: 22
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  Rhop0=[2072.5]  MResId=[0]  Dp=[0.04]  ColumnLength=[4]  ColumnHeight=[2]  BedLength=[12]  WallLayers=[4]  PosMin_x=[-0.46]  PosMin_y=[0]  PosMin_z=[-0.46]  PosMax_x=[12.5]  PosMax_y=[0]  PosMax_z=[2.5]  CaseName=["upl_c08_r5_inputcheck_psi2p5_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  MassBound=[3.316]  MassFluid=[3.316]
+
+Mk size: 1 bytes
+Case limits: (-0.46,0,-0.46) - (12.5,0,2.5)
+Distance between points (Dp): 0.04
+Case domain: (0,0,0)-(323,0,73)
+Domain points: 324 x 1 x 74 = 23976
+Case parts: 1 x 74z
+Memory: 0.00Gb 0.02Mb (23976)
+
+> MAIN
+>> GeometryForNormals
+FileShapes> hdp_Actual.vtk  shapes:3  points:12   (time:0.003s)
+<< GeometryForNormals (8+3+1)
+FileShapes> _Actual.vtk  shapes:18  points:24   (time:0.003s)
+<MAIN (Operations= 15+7+2 = 24)
+
+Triangles: 70 (0 ignored)
+[Draw-End  time:0.326s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.002s)
+BitSizeTot: 18 (2 + 9+1+6)
+Points loaded: 7060
+Sorting points by Z...
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):    255  -->     255
+  block[  1] (mk: 11):   1545  -->    1545
+  block[  2] (mk: 12):    260  -->     260
+Points -> Fluid particles:
+  block[  3] (mk:  1):   5000  -->    5000
+
+Particle summary:
+  Fixed....: 2060  id:(0-2059)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2060-7059)   MKs:1 (1)
+
+Total particles: 7060 (bound=2060 (fx=2060 mv=0 ft=0) fluid=5000)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+
+Maximum depth: 1.96 (automatic)
+Speed of system: 4.38493 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 87.6986 max(87.6986,43.8493)
+Speed of sound: 87.6986 (automatic)
+
+Coefh:0.848528 (hdp:1.200000)
+
+[PreparePoints-End  time:0.010s]
+
+[SaveCase2D]
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_MkCells.vtk  (time:0.003s, shapes:6, points:24)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1.bi4<double>  (time:0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_All.vtk  (time: 0.005s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_Bound.vtk  (time: 0.003s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_Fluid.vtk  (time: 0.003s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1.xml  (time:0.008s)
+Computing normals data...
+  Evaluating 2060 particles with 3 shapes (distance 2x H = 0.096).
+  Time for computing 820 normals: 0.000s.
+  Non-zero particle normals: 812/2060    Normals size range: (0.020000 - 0.084853).
+  Saving results files...
+  D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_Normals.vtk
+  D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_r5_inputcheck_psi2p5_r1/upl_c08_r5_inputcheck_psi2p5_r1_Normals.nbi4  (time:0.020s)
+
+Save files time: 0.038s
+
+Particle limits:
+  X range: -0.18 to 12.18 [m]
+  Y range: 0 to 0 [m]
+  Z range: -0.18 to 2.02 [m]
+
+[SaveCase2D-End  time:0.040s]
+
+
+Time of execution: 0.376 sec. (16 threads)
+
+Finished execution (code=0).
+

@@ -1,6 +1,8 @@
 # 当前发包状态
 
-**保留浅床点的0.6 s候选已正常完成并通过60帧原生门，正在准备新r5单组ψ0的3 s正式诊断；根目录r4入口仍暂停。** `upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过。
+**根目录r5单组ψ0的3 s正式诊断已启动。** 新owner80120→根BAT/cmd81612→GPU solver63384；真实GenCase76088已exit0，solver正在运行，目标global5200000/300帧。入口为`xCaseLianSaturatedColumnCollapse_psi0_shared_r5_win64_GPU.bat`，输出`CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out`。三份新XML实际GenCase检查均通过，另外两组入口已验证会在工具前拒绝；不是三组均已运行。新流程将于求解成功后自动native→分别Fluid/Bound→PNG/CSV，不重复已完成工具。根目录r4入口仍暂停。
+
+准入依据：保留浅床点的0.6 s候选正常完成且60帧原生门通过。`upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过，完整窗口证据已保存本地/远端`c55852d93af3b0100c2acb90d5c51b06d2c775b9`。
 
 仍有τ=.34近床ID7013的−115985 Pa负压脉冲和末上部负压区域，尚无论文精度/物理验收。根只准入一个新ψ0完整3 s诊断，不自动启动另两组；决定、完整4PNG/7CSV及局限见`tests/notes/upl_c08_bedkeep_window_result_r1.md`、`tests/logs/upl_c08_bedkeep_window_decision_r1.json`。新r5入口/runtime准备并检查前不得把旧r4当成该候选。
 

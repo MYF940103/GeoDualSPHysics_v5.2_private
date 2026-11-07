@@ -1,0 +1,17 @@
+// Formal psi0 3s KeepBedOverlap/AS adapter; only the core decodes field arrays.
+#define wmain BedKeepCoreMain
+#include "bedkeep_formal_core_r1.cpp"
+#undef wmain
+int wmain(int argc,wchar_t** argv){unsigned headerPart=~0u;try{
+  Need(argc==8&&std::wstring(argv[1])==L"--read"&&std::wstring(argv[2])==L"psi0"&&(std::wstring(argv[3])==L"CPU"||std::wstring(argv[3])==L"GPU")&&std::wstring(argv[6])==L"5200000","Use --read psi0 CPU|GPU DATA PRE 5200000 FRESHOUT; other groups/windows are not admitted");
+  const unsigned samples=300,end=5200000;
+  const fs::path data=argv[4],out=argv[7];Need(fs::is_directory(data)&&!fs::exists(out),"Existing native output protected or missing DATA");
+  for(unsigned part=0;part<samples;part++){
+    headerPart=part;JPartDataBi4 f;f.LoadFilePart(data.string(),part,0,1);const auto* p=f.GetPart();
+    // LoadFilePart opens a lazy structure; no GetArray/GetDataCopy occurs here.
+    Need(p->ExistsValue("GravityPreloadKeepBedOverlap",DatBool)&&p->GetvBool("GravityPreloadKeepBedOverlap")&&p->ExistsValue("GravityPreloadReleasePolicy",JBinaryDataDef::DatText)&&p->GetvText("GravityPreloadReleasePolicy")=="KeepBedOverlap"&&p->ExistsValue("GravityPreloadKeptBedIds",JBinaryDataDef::DatText)&&p->GetvText("GravityPreloadKeptBedIds")=="1800,1852,1904,1956,2008"&&p->ExistsValue("GravityPreloadKeptBedCount",DatUint)&&p->GetvUint("GravityPreloadKeptBedCount")==5&&p->ExistsValue("GravityPreloadActualRetiredCount",DatUint)&&p->GetvUint("GravityPreloadActualRetiredCount")==255,"Typed KeepBedOverlap policy/explicit five retained IDs/actual255 retirement differs");
+    Need(p->ExistsValue("DynamicArtificialStressPolicy",JBinaryDataDef::DatText)&&p->GetvText("DynamicArtificialStressPolicy")=="ReleaseOnly"&&p->ExistsValue("DynamicArtificialStressActive",DatBool)&&p->GetvBool("DynamicArtificialStressActive")&&p->ExistsValue("DynamicArtificialStressCoef",DatFloat)&&Bits(p->GetvFloat("DynamicArtificialStressCoef"),.2f)&&p->ExistsValue("DynamicArtificialStressExp",DatFloat)&&Bits(p->GetvFloat("DynamicArtificialStressExp"),2.55f),"AS1 ReleaseOnly/Active/float coefficient metadata differs");
+  }
+  const int rc=BedKeepCoreMain(argc,argv);if(rc)return rc;
+  std::ofstream done(out/"bedkeep_metadata.json");done<<std::setprecision(17)<<"{\"stage\":\"upl_c08_bedkeep_formal_native_r1.metadata\",\"passed\":true,\"samples\":"<<samples<<",\"completed_steps\":"<<end<<",\"keep_bed_overlap\":true,\"original_target_count\":260,\"actual_retired_count\":255,\"kept_bed_IDs\":[1800,1852,1904,1956,2008],\"kept_bed_count\":5,\"expected_AS\":true,\"AS_policy\":\"ReleaseOnly\",\"AS_coefficient_float_reference\":"<<double(.2f)<<",\"AS_exponent_float_reference\":"<<double(2.55f)<<",\"metadata_header_scans\":"<<samples<<",\"keep_policy_headers\":"<<samples<<",\"AS_active_true_headers\":"<<samples<<",\"metadata_scans_decode_field_arrays\":false,\"core_array_decode_passes\":1,\"core_original_numerical_budgets_changed\":false,\"PRE_arrays_reloaded_by_adapter\":false,\"backend_proven_by_reader\":false,\"reaction_J_Darcy_closed\":false,\"physical_acceptance\":false}\n";done.flush();Need(bool(done),"Keep-bed annotation failed; preserve core output, no repeated decode");return 0;
+}catch(const JException& e){std::cerr<<"Keep-bed header part="<<headerPart<<' '<<e.ToStr()<<'\n';return 1;}catch(const std::exception& e){std::cerr<<"Keep-bed header part="<<headerPart<<' '<<e.what()<<'\n';return 1;}}
