@@ -3009,7 +3009,11 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
         bdpart->SetvFloat("GravityPreloadSourceCohesion",SoilCte.coh);
       }
       if(IsGravityPreloadHandoff())bdpart->SetvText("GravityPreloadStateFile",GravityPreloadStateFile);
-
+      if(NoPenetration && IsGravityPreloadHandoff()){
+        bdpart->SetvText("DynamicNoPenetrationPolicy","LegacyOperatorSplitReleaseOnly");
+        bdpart->SetvBool("DynamicNoPenetrationActive",GravityPreloadReleased);
+        bdpart->SetvBool("DynamicNoPenetrationReactionClosed",false);
+      }
     }
     if(TStep==STEP_Symplectic)bdpart->SetvDouble("SymplecticDtPre",SymplecticDtPre);
     if(UseDEM)bdpart->SetvDouble("DemDtForce",DemDtForce); //(DEM)
@@ -3701,6 +3705,8 @@ void JSph::DgSaveCsvParticlesCpu(std::string filename,int numfile,unsigned pini,
 /// Contract for a shared elastic preload; group cohesion/dilation and output times may differ.
 //==============================================================================
 std::string JSph::GetGravityPreloadContract()const{
+  //-The qualified elastic source has NoPen off; the receiving collapse enables it after release.
+  const bool releaseonlynopen=(NoPenetration && TMdbc2==MDBC2_NoPen && IsGravityPreloadHandoff());
   //-Release-only artificial stress is inactive in PRE; its policy is saved separately.
   std::ostringstream out;out<<std::setprecision(17)<<"gravity-preload-1 "
     <<CaseNp<<' '<<CaseNpb<<' '<<CaseNfluid<<' '<<Dp<<' '<<KernelH<<' '
@@ -3714,8 +3720,8 @@ std::string JSph::GetGravityPreloadContract()const{
     <<SoilStressRateGradCorr<<' '<<PoreCompressionGradCorr<<' '<<PoreCompressionSourceMode<<' '
     <<PoreMdbcInterpolationMode<<' '<<PoreDtSafety<<' '<<CFLnumber<<' '<<FixedDt->GetFixedValue()<<' '
     <<DtMin<<' '<<RhopOut<<' '<<RhopOutMin<<' '<<RhopOutMax<<' '<<PartsOutMax<<' '
-    <<HydroMechInitZ<<' '<<unsigned(TBoundary)<<' '<<unsigned(SlipMode)<<' '<<unsigned(TMdbc2)<<' '
-    <<NoPenetration<<' '<<Stable<<' '<<DomPosMin.x<<' '<<DomPosMin.y<<' '<<DomPosMin.z<<' '
+    <<HydroMechInitZ<<' '<<unsigned(TBoundary)<<' '<<unsigned(SlipMode)<<' '<<unsigned(releaseonlynopen? MDBC2_Std: TMdbc2)<<' '
+    <<(releaseonlynopen? false: NoPenetration)<<' '<<Stable<<' '<<DomPosMin.x<<' '<<DomPosMin.y<<' '<<DomPosMin.z<<' '
     <<DomPosMax.x<<' '<<DomPosMax.y<<' '<<DomPosMax.z;
   for(const auto &face:MdbcSlipModeMk)out<<' '<<face.MkBound<<' '<<unsigned(face.SlipMode);
   out<<" normals "<<GravityPreloadNormalContract;
@@ -3742,6 +3748,7 @@ void JSph::LoadGravityPreloadState(JGravityPreloadState &state)const{
   if(TimeMax<=state.Time)Run_Exceptioon("Shared preload target TimeMax must exceed the actual PRE time.");
   Log->Printf("GravityPreload: source material law=%s; certified elastic schema/contract1.",
     (state.MaterialLawVersion==2? "unified2": "legacy MR1 ElasticV1"));
+  if(NoPenetration)Log->Print("Dynamic NoPen: LegacyOperatorSplitReleaseOnly; elastic PRE uses NoPen off, collapse uses the existing corrector velocity/displacement projection; same-stage Darcy reaction is not included.");
 }
 
 //==============================================================================
@@ -3772,7 +3779,8 @@ bool JSph::IsDynamicPorePlasticMaterialConfig()const{
 bool JSph::IsDynamicPoreContainerConfig()const{
   return(HydroMechDynamicSeepage && HydroMech && Simulate2D && !PartBegin && !PeriActive
     && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
-    && TBoundary==BC_MDBC && UseNormals && TMdbc2!=MDBC2_NoPen && !NoPenetration
+    && TBoundary==BC_MDBC && UseNormals && ((!NoPenetration && TMdbc2!=MDBC2_NoPen)
+      || (GravityPreload && IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen && !ArtificialStress))
     && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None

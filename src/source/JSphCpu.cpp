@@ -3106,10 +3106,10 @@ void JSphCpu::InitPorosityObserverCpu(){
     || !std::isfinite(ViscoBoundFactor) || ViscoBoundFactor<0.f))
     Run_Exceptioon("Dynamic artificial viscosity requires finite nonnegative constant coefficients.");
   if(!HydroMech || TStep!=STEP_Symplectic || PartBegin || CaseNmoving || CaseNfloat
-    || InOut || Shifting || NoPenetration || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
+    || InOut || Shifting || (NoPenetration && !(gravitycontainer && IsGravityPreloadHandoff())) || Symmetry || (StrainSoftening && !IsDynamicPorePlasticConfig()) || UseDEM
     || Damping || RelaxZones
     || !PoreCompressionGradCorr || PoreCompressionSourceMode!=0)
-    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics, corrected pair divergence and no NoPen/shifting/in-out/floating/unsupported softening/DEM/damping zones/relaxation zones.");
+    Run_Exceptioon("Porosity observer requires fresh static CPU Symplectic hydromechanics with corrected pair divergence; NoPen is limited to qualified gravity-preload receivers; shifting/in-out/floating/unsupported softening/DEM/zones remain unsupported.");
   if(!(SoilCte.Porosity>0 && SoilCte.Porosity<1) || !PoroJc || !PoroThetac)
     Run_Exceptioon("Porosity observer requires 0<n0<1 and allocated double state.");
   if(DynamicPoreConductivity && !std::isfinite(1./((1.-double(SoilCte.Porosity))*DynamicPoreConductivityCk)))
