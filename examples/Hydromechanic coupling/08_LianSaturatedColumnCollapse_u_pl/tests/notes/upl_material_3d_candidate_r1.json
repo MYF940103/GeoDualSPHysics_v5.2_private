@@ -1,0 +1,33 @@
+{
+  "stage": "upl_material_3d_candidate_r1",
+  "status": "authorized_CPU_component_milestone_author_preparation_only_not_built_or_run",
+  "files": [
+    "tests/support/upl_material_3d_candidate_r1.h",
+    "tests/support/upl_material_3d_probe_r1.cpp"
+  ],
+  "production_and_package_changes": false,
+  "header": "Independent fsoil3d_candidate_r1 namespace cloned from current FunSoilMaterial core only. Explicit TpDPCtes in At/Evaluate/Return; original DP_PS expression/order retained, DP_C/DP_MC use original primary Eq12b/12c double coefficients and cohesion/dilation derivatives. Eight float parameters, float saved kappa and local double return remain. No native adapters, phi softening, apex/cap, GPU/spatial admission or implicit seepage/material switch. Return rejects invalid fit before internal At/Evaluate calls.",
+  "probe_scope": "41 material rows: 21 ordinary radial,12 elastic/unload,3 ApexNeeded,5 Invalid. Three fits and psi0/+2.5/-5; constant-strength and cohesion+dilation decay at oldkappa.5, plus one initial-history radial per fit. All ordinary trials have six nonzero stress components. No solver,time-step or half chain.",
+  "checks": {
+    "DP_PS_current_core": "14 cases: every named state/result scalar, status and iterations must match current fsoil::Return exactly, including failed-state NaN scalar bits. No POD-padding comparison.",
+    "new_kappa_yield": "Independent invariant formula uses principal-stress differences; yield evaluated at continuous root history must satisfy original4*root_budget. Saved-float kappa yield and its difference are exported separately, without a new physical Pa gate.",
+    "original_arithmetic_budgets": "Tensor q/I and constant-rotation error8192eps*max(1,|Itrial|,qtrial,|Inew|,qnew); dev history and plastic trace8192eps absolute because current declared strain increments are below1; constant-strength closed multiplier4096eps. Positive consistency, unchanged failures and exact float(kcontinuous) storage remain required.",
+    "rotation": "Nine constant-strength cases use a proper non-axis 3-D quaternion-derived orthogonal matrix, with all xy/yz/xz exercised. Nonlinear softening rotation is not silently assigned the tighter constant-strength budget.",
+    "derivatives": "Fourteen three-dimensional radial cases independently central-difference fixed-stress f(k),beta(k),and F(lambda). Fixed h_k=1e-5; h_lambda=min(1e-7,one-quarter distance to radial endpoints). Budgets are analytic third-derivative truncation plus16eps propagated evaluation/subtraction error, set in source before execution. Dpsi>=2 gives |beta_psi'|<.867,|beta_psi''|<1.733,|beta_psi'''|<4.764; chain-rule bounds include actual sf and maximum|psi| in the increment interval. No pressure/half-step limit is reused.",
+    "legacy_observations": "Only two psi0/kappa.5 softening examples, one DP_C and one DP_MC, call actual linked UpdateDPvars/Updatedfdk. Float and1.732 differences are recorded, never forced to double equality or treated as new solver accuracy.",
+    "unsupported": "Hydrostatic tensile apex and invalid shear/NaN/fit return unchanged state. NonConverged has no natural witness in this bounded set; report uncovered rather than force one."
+  },
+  "candidate_build": {
+    "closed_CPU_build": "tests/logs/upl_preload_handoff_DebugCPU_r2.build.json",
+    "objects": "Exactly the85 non-main entries in its86 project_objects; main.obj excluded once. Do not rebuild production or use GPU/cache-active objects.",
+    "fresh_helper": "tests/outputs/upl_material_3d_CPU_helper_r1",
+    "fresh_program": "tests/outputs/upl_material_3d_CPU_helper_r1/upl_material_3d_probe_r1.exe",
+    "compiler_and_flags": "MSVC14.36.32532 x64. Reuse actual upl_material_preload_native_r1.compile.call.json argument style: /std:c++17 /EHsc /W3 /openmp /fp:precise /DWIN32 /D_CONSOLE /D_MBCS /Od /MTd /Zi /RTC1; absolute new CPP and existing source include path; new helper.obj/compile.pdb/sourceDependencies paths. Header sits beside CPP. Global three-string JAppInfo AppInfo is defined for the85-object closure.",
+    "link_recipe": "Reuse non-object library/flag arguments from actual upl_material_preload_native_r1.link.call.json; replace helper/PDB/EXE paths and substitute the closed r2 85 non-main objects. Same src/lib/vs2022 Debug Chrono/JVtk/JNumex/JWaveGen/MoorDyn/Windows libraries, no CUDA closure.",
+    "runtime": "Matching closed DebugCPU DsphConfig.xml,ChronoEngine.dll,dsphchrono.dll,vcomp140.dll copied to fresh helper; no canonical executable replacement.",
+    "future_single_target_CLI": "ABS_HELPER/upl_material_3d_probe_r1.exe --out ABS_TESTS/outputs/upl_material_3d_CPU_result_r1",
+    "execution_record": "After code full-read, one CL/link and one direct material target using existing lean owned-tool recipe. Seal actual Popen/Win32 exits before result checks, preserve first failure, no automatic retry. Stat binding only; no SHA/archive sweep. This note does not execute any tool.",
+    "outputs": "points.csv with named inputs/returned tensor,continuous/saved history,yield/compliance/rotation/derivative ratios and two marked legacy observations; completion.json only after all declared checks pass."
+  },
+  "acceptance_boundary": "CPU candidate algebraic milestone only. Old default and frozen r2 delivery are unchanged. Subsequent GPU actual adapters/PreCor and ordinary 3-D scope remain later implementation stages; no claim of3-D u-pl,mDBC,plastic HG,restart,spatial convergence or collapse acceptance."
+}
