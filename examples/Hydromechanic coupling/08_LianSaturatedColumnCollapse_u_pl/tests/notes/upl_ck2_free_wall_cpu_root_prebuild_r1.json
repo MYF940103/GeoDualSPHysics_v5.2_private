@@ -1,0 +1,11 @@
+{
+  "stage": "upl_ck2_free_wall_cpu_r1.root_prebuild_review",
+  "complete_source_and_author_note_read": true,
+  "original_author_archive": "outputs/upl_ck2_free_wall_author_r1.zip",
+  "before_first_build_change": "Select projection sign canaries on true top FS more than2*KernelSize from side planes, so actual repeated wall refresh is unaffected. Keep all fixed/soil held-state checks; near-wall rate receivers remain unchanged.",
+  "reason": "ApplyPorePressureBoundaries calls ComputeFreeSurfaceTracking first, which lawfully refreshes wall pressure. Original first3 slot-ordered FS canaries could be near a wall and invalidate the held-wall-pressure oracle.",
+  "new_numerical_budget": false,
+  "production_modified": false,
+  "component_executed": false,
+  "SHA_scans": 0
+}
