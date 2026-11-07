@@ -1,0 +1,135 @@
+
+
+ <GENCASE>  Copyright (c) 2020 by Dr Jose M. Dominguez
+ All rights reserved.
+
+ GenCase is a free tool for DualSPHysics simulations.
+ DualSPHysics project is an international collaboration between
+ University of Vigo (Spain) and University of Manchester (UK).
+
+ Redistribution and use in source and binary forms, with or without
+ modification, are permitted provided that the following conditions
+ are met:
+ * Redistributions of source code must retain the above copyright
+   notice, this list of conditions and the following disclaimer.
+ * Redistributions in binary form must reproduce the above copyright
+   notice, this list of conditions and the following disclaimer in the
+   documentation and/or other materials provided with the distribution.
+ * Neither the name of the GenCase nor the names of its contributors
+   may be used to endorse or promote products derived from this software
+   without specific prior written permission.
+
+ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS"
+ AND ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE
+ IMPLIED WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE
+ ARE DISCLAIMED. IN NO EVENT SHALL THE COPYRIGHT OWNER BE LIABLE FOR ANY
+ DIRECT, INDIRECT, INCIDENTAL, SPECIAL, EXEMPLARY, OR CONSEQUENTIAL DAMAGES
+ (INCLUDING, BUT NOT LIMITED TO, PROCUREMENT OF SUBSTITUTE GOODS OR SERVICES;
+ LOSS OF USE, DATA, OR PROFITS; OR BUSINESS INTERRUPTION) HOWEVER CAUSED AND
+ ON ANY THEORY OF LIABILITY, WHETHER IN CONTRACT, STRICT LIABILITY, OR TORT
+ (INCLUDING NEGLIGENCE OR OTHERWISE) ARISING IN ANY WAY OUT OF THE USE OF
+ THIS SOFTWARE, EVEN IF ADVISED OF THE POSSIBILITY OF SUCH DAMAGE.
+
+
+GenCase v5.0.278c (30-10-2023)
+===============================
+LoadDsphConfig> .../bin/windows/DsphConfig.xml
+OmpThreads: 16
+
+[LoadXMLInit]
+List: GeometryForNormals
+List: MAIN
+
+Total operations: 14
+[LoadXMLInit-End  time:0.001s]
+
+[Draw]
+List of available variables: Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  Rhop0=[1850]  MResId=[0]  Dp=[0.002]  ColumnLength=[0.2]  ColumnHeight=[0.1]  ContainerLength=[0.6]  ContainerHeight=[0.2]  PosMin_x=[-0.02]  PosMin_y=[1]  PosMin_z=[-0.02]  PosMax_x=[0.62]  PosMax_y=[1]  PosMax_z=[0.22]  CaseName=["CaseGranularColumnCollapse2D_a05_dp002_basic_r2"]  Data2D=[1]  Data2DPosy=[1]  H=[0.0036]  MassBound=[0.0074]  MassFluid=[0.0074]
+
+Mk size: 1 bytes
+Case limits: (-0.02,1,-0.02) - (0.62,1,0.22)
+Distance between points (Dp): 0.002
+Case domain: (0,0,0)-(319,0,119)
+Domain points: 320 x 1 x 120 = 38400
+Case parts: 1 x 120z
+Memory: 0.00Gb 0.04Mb (38400)
+
+> MAIN
+>> GeometryForNormals
+FileShapes> hdp_Actual.vtk  shapes:3  points:8   (time:0.002s)
+<< GeometryForNormals (6+1+1)
+FileShapes> _Actual.vtk  shapes:12  points:32   (time:0.004s)
+<MAIN (Operations= 11+3+2 = 16)
+
+Triangles: 46 (0 ignored)
+[Draw-End  time:0.008s]
+
+[LoadsXMLConfig]
+Execution parameters.
+Initials configuration.
+Floating bodies configuration.
+Properties configuration.
+Predefined motion configuration.
+[LoadsXMLConfig-End  time:0.000s]
+
+[PreparePoints]
+Computing Vtk-Cells data...  (time:0.000s)
+BitSizeTot: 18 (1 + 9+1+7)
+Points loaded: 7028
+Sorting points by Z...
+Sorting points by Mk...
+
+List of Points:
+Points -> Fixed-Boundary particles:
+  block[  0] (mk: 10):   2028  -->    2028
+Points -> Fluid particles:
+  block[  1] (mk:  1):   5000  -->    5000
+
+Particle summary:
+  Fixed....: 2028  id:(0-2027)   MKs:1 (10)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2028-7027)   MKs:1 (1)
+
+Total particles: 7028 (bound=2028 (fx=2028 mv=0 ft=0) fluid=5000)
+Total MK blocks: 2 (bound=1 (fx=1 mv=0 ft=0) fluid=1)
+
+Maximum depth: 0.098 (automatic)
+Speed of system: 0.9805 (automatic)
+Speed of sound: max(coefsound*speedsystem,10*sqrt(g*depth))
+Speed of sound: 19.61 max(19.61,9.805)
+Speed of sound: 19.61 (automatic)
+
+Coefh:1.272792 (hdp:1.800000)
+
+[PreparePoints-End  time:0.001s]
+
+[SaveCase2D]
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_MkCells.vtk  (time:0.003s, shapes:4, points:16)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2.bi4<double>  (time:0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_All.vtk  (time: 0.005s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_Bound.vtk  (time: 0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_Fluid.vtk  (time: 0.004s)
+D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2.xml  (time:0.007s)
+Computing normals data...
+  Evaluating 2028 particles with 3 shapes (distance 2x H = 0.0072).
+  Time for computing 2060 normals: 0.001s.
+  Non-zero particle normals: 2028/2028    Normals size range: (0.001000 - 0.009900).
+  Saving results files...
+  D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_Normals.vtk
+  D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Elastoplastic_basic\12_GranularColumnCollapse\tests\outputs\basic_a05_dp002_r2_seed/CaseGranularColumnCollapse2D_a05_dp002_basic_r2_Normals.nbi4  (time:0.020s)
+
+Save files time: 0.039s
+
+Particle limits:
+  X range: -0.006 to 0.606 [m]
+  Y range: 1 to 1 [m]
+  Z range: -0.006 to 0.2 [m]
+
+[SaveCase2D-End  time:0.041s]
+
+
+Time of execution: 0.051 sec. (16 threads)
+
+Finished execution (code=0).
+

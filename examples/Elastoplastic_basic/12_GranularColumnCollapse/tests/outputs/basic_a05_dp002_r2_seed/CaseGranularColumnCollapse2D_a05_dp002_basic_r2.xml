@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="UTF-8" ?>
+<case app="GenCase v5.0.278c (30-10-2023)" date="07-11-2026 20:44:24">
+    <casedef>
+        <constantsdef>
+            <gravity x="0" y="0" z="-9.81" comment="Gravitational acceleration" units_comment="m/s^2" />
+            <rhop0 value="1850" comment="Feng et al. (2021), Table 1: granular flow Case1 density" units_comment="kg/m^3" />
+            <rhopgradient value="2" comment="Initial density gradient 1:Rhop0, 2:Water column, 3:Max. water height" />
+            <hswl value="0" auto="true" comment="Maximum still water level to calculate speedofsound using coefsound" units_comment="metres (m)" />
+            <gamma value="7" comment="Polytropic constant used in the state equation" />
+            <speedsystem value="0" auto="true" comment="Maximum system speed" />
+            <coefsound value="20" comment="Coefficient to multiply speedsystem when speedsound is automatic" />
+            <speedsound value="0" auto="true" comment="sqrt(E/rho) for E=10 MPa and rho=1850 kg/m^3" />
+            <hdp value="1.8" comment="Feng et al. (2021), Table 1: h/dp for granular flow" />
+            <cflnumber value="0.2" comment="Feng et al. (2021), Table 1: Courant number" />
+        </constantsdef>
+        <mkconfig boundcount="240" fluidcount="9" />
+        <geometry>
+            <predefinition>
+                <newvarcte Dp="0.002" _rem="User-requested 0.002 m comparison; original reference resolution is 0.001 m" />
+                <newvarcte ColumnLength="0.20" _rem="Aspect ratio a=H/L=0.5, length 20 cm" />
+                <newvarcte ColumnHeight="0.10" _rem="Aspect ratio a=H/L=0.5, height 10 cm" />
+                <newvarcte ContainerLength="0.60" _rem="Runout bed length following the existing 2-D collapse template" />
+                <newvarcte ContainerHeight="0.20" _rem="Side-wall height above the initial column" />
+            </predefinition>
+            <definition dp="#Dp" units_comment="metres (m)">
+                <pointmin x="#-Dp*10" y="1" z="#-Dp*10" />
+                <pointmax x="#ContainerLength+Dp*10" y="1" z="#ContainerHeight+Dp*10" />
+            </definition>
+            <commands>
+                <list name="GeometryForNormals">
+                    <setactive drawpoints="0" drawshapes="1" />
+                    <setshapemode>actual | bound</setshapemode>
+                    <setnormalinvert invert="true" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>bottom|left|right</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="#ContainerLength" y="2" z="#ContainerHeight" />
+                        <layers vdp="-0.5" />
+                    </drawbox>
+                    <shapeout file="hdp" />
+                    <resetdraw />
+                </list>
+                <mainlist>
+                    <runlist name="GeometryForNormals" />
+                    <setdrawmode mode="full" />
+                    <setmkbound mk="0" />
+                    <drawbox>
+                        <boxfill>bottom|left|right</boxfill>
+                        <point x="0" y="0" z="0" />
+                        <size x="#ContainerLength" y="2" z="#ContainerHeight" />
+                        <layers vdp="0,1,2,3" />
+                    </drawbox>
+                    <setmkfluid mk="0" />
+                    <drawbox>
+                        <boxfill>solid</boxfill>
+                        <point x="#Dp/2" y="0" z="#Dp/2" />
+                        <size x="#ColumnLength-Dp" y="2" z="#ColumnHeight-Dp" />
+                    </drawbox>
+                    <shapeout file="" />
+                </mainlist>
+            </commands>
+        </geometry>
+        <normals>
+            <distanceh value="2.0" comment="Maximum distance H*distanceh to compute mDBC normals" />
+            <geometryfile file="[CaseName]_hdp_Actual.vtk" comment="File with boundary geometry for mDBC normals" />
+            <svshapes value="1" comment="Save VTK normal-generation geometry for inspection" />
+        </normals>
+    </casedef>
+    <execution>
+        <special>
+            <soils>
+                <phi value="22" comment="Feng et al. (2021), Table 1: granular flow Case1 friction angle" />
+                <coh value="0" comment="Feng et al. (2021), Table 1: cohesion" />
+                <dlt value="0" comment="Feng et al. (2021), Table 1: dilatancy angle" />
+                <ModulusE value="10e6" comment="Feng et al. (2021), Table 1: elastic modulus 10 MPa" />
+                <PRvs value="0.3" comment="Feng et al. (2021), Table 1: Poisson ratio" />
+                <phi_r value="22" comment="Residual friction angle; softening disabled" />
+                <n_phi value="0" comment="Friction softening disabled" />
+                <coh_r value="0" comment="Residual cohesion" />
+                <n_coh value="0" comment="Cohesion softening disabled" />
+            </soils>
+        </special>
+        <parameters>
+            <parameter key="SavePosDouble" value="0" comment="Saves particle position using double precision" />
+            <parameter key="DPCtes" value="3" comment="DP constants type 3: 2D plane strain" />
+            <parameter key="Boundary" value="2" comment="Boundary method 1:DBC, 2:mDBC" />
+            <parameter key="SlipMode" value="2" comment="No-slip mDBC for bottom and side walls" />
+            <parameter key="MDBCCorrector" value="0" comment="mDBC correction in Symplectic corrector: 0=skip corrector, 1=apply in both predictor and corrector" />
+            <parameter key="StepAlgorithm" value="2" comment="Step Algorithm 1:Verlet, 2:Symplectic" />
+            <parameter key="VerletSteps" value="40" comment="Verlet only: Number of steps to apply Euler timestepping" />
+            <parameter key="Kernel" value="2" comment="Interaction Kernel 1:Cubic Spline, 2:Wendland" />
+            <parameter key="ViscoTreatment" value="1" comment="Viscosity formulation 1:Artificial, 2:Laminar+SPS" />
+            <parameter key="Visco" value="0.1" comment="Feng et al. (2021), Table 1: artificial viscosity coefficient" />
+            <parameter key="ViscoBoundFactor" value="1" comment="Multiply viscosity value with boundary" />
+            <parameter key="ArtificialStress" value="0" comment="Bui 2008 tensile instability treatment 0:None, 1:Enable" />
+            <parameter key="SoilDamping" value="0" comment="Dynamic granular collapse: Bui-Fukagawa static damping disabled" />
+            <parameter key="SoilDampingCoef" value="0.02" comment="Unused when SoilDamping=0" />
+            <parameter key="DensityDT" value="3" comment="Noise-free stress treatment 0:None, 1:Molteni, 2:Feng, 3:Feng(full)" />
+            <parameter key="DensityDTvalue" value="0.1" comment="Feng et al. (2021), Table 1: diffusion coefficient" />
+            <parameter key="Shifting" value="0" comment="Shifting mode 0:None, 1:Ignore bound, 2:Ignore fixed, 3:Full" />
+            <parameter key="ShiftCoef" value="-2" comment="Coefficient for shifting computation" />
+            <parameter key="ShiftTFS" value="1.5" comment="Threshold to detect free surface" />
+            <parameter key="RigidAlgorithm" value="1" comment="Rigid Algorithm 1:SPH, 2:DEM, 3:Chrono" />
+            <parameter key="FtPause" value="0.0" comment="Time to freeze floatings at simulation start" units_comment="seconds" />
+            <parameter key="CoefDtMin" value="0.05" comment="Coefficient to calculate minimum time step" />
+            <parameter key="RelaxationDt" value="0.2" comment="Relaxation parameter for viscous time step restriction" />
+            <parameter key="DtIni" value="0" comment="Initial time step. Use 0 for default" units_comment="seconds" />
+            <parameter key="DtMin" value="0" comment="Minimum time step. Use 0 for default" units_comment="seconds" />
+            <parameter key="DtFixed" value="0" comment="Fixed Dt value. Use 0 to disable" units_comment="seconds" />
+            <parameter key="DtFixedFile" value="NONE" comment="Dt values are loaded from file. Use NONE to disable" />
+            <parameter key="DtAllParticles" value="0" comment="Velocity of particles used to calculate DT. 1:All, 0:Only fluid/floating" />
+            <parameter key="TimeMax" value="1.0" comment="Granular column collapse comparison interval" units_comment="seconds" />
+            <parameter key="TimeOut" value="0.01" comment="Time between output files" units_comment="seconds" />
+            <parameter key="PartsOutMax" value="1" comment="Allowed fraction of fluid particles out of domain" units_comment="decimal" />
+            <parameter key="RhopOutMin" value="500" comment="Minimum valid density" units_comment="kg/m^3" />
+            <parameter key="RhopOutMax" value="3000" comment="Maximum valid density" units_comment="kg/m^3" />
+            <simulationdomain comment="Defines domain of simulation (default=Uses minimun and maximum position of the generated particles)">
+                <posmin x="default" y="default" z="default" comment="e.g.: x=0.5, y=default-1, z=default-10%" />
+                <posmax x="default" y="default" z="default + 50%" />
+            </simulationdomain>
+        </parameters>
+        <particles np="7028" nb="2028" nbf="2028" mkboundfirst="10" mkfluidfirst="1">
+            <_summary>
+                <positions units_comment="metres (m)">
+                    <posmin x="-0.006" y="1" z="-0.006" />
+                    <posmax x="0.606" y="1" z="0.2" />
+                </positions>
+                <fixed count="2028" id="0-2027" mkcount="1" mkvalues="10" />
+                <fluid count="5000" id="2028-7027" mkcount="1" mkvalues="1" />
+            </_summary>
+            <fixed mkbound="0" mk="10" begin="0" count="2028" />
+            <fluid mkfluid="0" mk="1" begin="2028" count="5000" />
+        </particles>
+        <constants>
+            <data2d value="true" />
+            <data2dposy value="1" units_comment="metres (m)" />
+            <gravity x="0" y="0" z="-9.81" units_comment="m/s^2" />
+            <cflnumber value="0.2" />
+            <gamma value="7" />
+            <rhop0 value="1850" units_comment="kg/m^3" />
+            <dp value="0.002" units_comment="metres (m)" />
+            <h value="0.0036" units_comment="metres (m)" />
+            <b value="101631.6" units_comment="Pascal (Pa)" />
+            <massbound value="0.0074" units_comment="kg" />
+            <massfluid value="0.0074" units_comment="kg" />
+        </constants>
+        <uservars>
+            <varnum name="ColumnHeight" value="0.1" />
+            <varnum name="ColumnLength" value="0.2" />
+            <varnum name="ContainerHeight" value="0.2" />
+            <varnum name="ContainerLength" value="0.6" />
+            <varnum name="MResId" value="0" />
+        </uservars>
+        <motion />
+        <vtkout mkboundfirst="10" mkfluidfirst="1">
+            <vtkfile name="CaseGranularColumnCollapse2D_a05_dp002_basic_r2_hdp_Actual.vtk" mk="10" mkbound="0" />
+            <vtkfile name="CaseGranularColumnCollapse2D_a05_dp002_basic_r2__Actual.vtk" mk="10" mkbound="0" />
+        </vtkout>
+    </execution>
+</case>

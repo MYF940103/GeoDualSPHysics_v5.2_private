@@ -1,0 +1,358 @@
+{
+  "stage": "basic_a05_dp002_r2.complete",
+  "passed": true,
+  "physical_acceptance": false,
+  "definition_numeric_change": "Dp.001 -> .002 only, plus honest resolution comment; original formal Def remains unchanged.",
+  "actual_soil": 5000,
+  "actual_fixed": 2028,
+  "dp_m": 0.002,
+  "h_m": 0.0036,
+  "GPU": "NVIDIA GeForce RTX3050",
+  "updates_old_new": [
+    108926,
+    108926
+  ],
+  "samples_old_new": [
+    101,
+    101
+  ],
+  "actual_end_old_new": [
+    1.0000052194934204,
+    1.0000052194934204
+  ],
+  "maximum_actual_saved_time_gap_s": 0.0,
+  "kappa_max_old_new": [
+    11.57367992401123,
+    11.519975662231445
+  ],
+  "kappa_max_change_percent": -0.46402062379803377,
+  "maximum_same_actual_time_sigma_Frobenius_RMS_gap_Pa": 0.6833644068793321,
+  "maximum_same_actual_time_position_XYZ_RMS_gap_m": 7.726008185432821e-06,
+  "main_loop_seconds_old_new": [
+    183.013931,
+    219.516113
+  ],
+  "observed_main_loop_ratio_new_over_old": 1.1994502921201118,
+  "timing_is_controlled_benchmark": false,
+  "final_old": {
+    "part": "100",
+    "time_s": "1.0000052194934204",
+    "velocity_RMS_m_s": "0.00018862996179623781",
+    "max_velocity_m_s": "0.0011524775121466175",
+    "sigma_Frobenius_RMS_Pa": "1063.9270146860708",
+    "sigma_zz_mean_Pa": "-660.41910420610941",
+    "kappa_max": "11.57367992401123",
+    "kappa_nonzero": "5000",
+    "minimum_kappa_increment": "0",
+    "mean_settlement_m": "0.013688659926410765",
+    "top_material_settlement_m": "0.037892557447776198",
+    "bottom_material_settlement_m": "-6.4920866861939429e-06",
+    "x_min_m": "0.001996609615162015",
+    "x_max_m": "0.43125280737876892",
+    "z_min_m": "0.001482639811001718",
+    "z_max_m": "0.099975012242794037"
+  },
+  "final_new": {
+    "part": "100",
+    "time_s": "1.0000052194934204",
+    "velocity_RMS_m_s": "0.0001890349537551329",
+    "max_velocity_m_s": "0.0011506003793018103",
+    "sigma_Frobenius_RMS_Pa": "1063.9416748623923",
+    "sigma_zz_mean_Pa": "-660.42891640310222",
+    "kappa_max": "11.519975662231445",
+    "kappa_nonzero": "5000",
+    "minimum_kappa_increment": "0",
+    "mean_settlement_m": "0.013688943067518994",
+    "top_material_settlement_m": "0.037893182868137955",
+    "bottom_material_settlement_m": "-6.4913276582956316e-06",
+    "x_min_m": "0.001996609615162015",
+    "x_max_m": "0.43125453591346741",
+    "z_min_m": "0.0014886942226439714",
+    "z_max_m": "0.099975012242794037"
+  },
+  "owned_calls": {
+    "old": {
+      "solver": {
+        "stage": "basic_a05_dp002_old_GPU_r2.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 63104,
+          "created_epoch": 1794051876.5908177,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_old\\DualSPHysics5.2_GEO_win64.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_old\\DualSPHysics5.2_GEO_win64.exe",
+            "-gpu:0",
+            "-stable",
+            "-mdbc_noslip",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2",
+            "-dirdataout",
+            "data",
+            "-svres"
+          ],
+          "parent_pid": 65740
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_old\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu:0",
+          "-stable",
+          "-mdbc_noslip",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2",
+          "-dirdataout",
+          "data",
+          "-svres"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 183.625,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_old_GPU_r2.log",
+          "bytes": 20105,
+          "mtime_ns": 1794052060199887600
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_old\\DualSPHysics5.2_GEO_win64.exe",
+          "bytes": 25659392,
+          "mtime_ns": 1794029221253078800
+        }
+      },
+      "native": {
+        "stage": "basic_a05_dp002_old_GPU_r2.native_r2.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 27808,
+          "created_epoch": 1794052069.7355,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\data",
+            "5000",
+            "2028",
+            "101",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_native_r2"
+          ],
+          "parent_pid": 27756
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\data",
+          "5000",
+          "2028",
+          "101",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_native_r2"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 1.5469999997876585,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_old_GPU_r2.native_r2.log",
+          "bytes": 0,
+          "mtime_ns": 1794052069705885900
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "bytes": 13161472,
+          "mtime_ns": 1794046505678407400
+        }
+      },
+      "PartVTK": {
+        "stage": "basic_a05_dp002_old_GPU_r2.particles_r1.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 74852,
+          "created_epoch": 1794052337.6404274,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+            "-dirin",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\data",
+            "-filexml",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2.xml",
+            "-savevtk",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\particles\\PartFluid",
+            "-onlytype:-all,fluid",
+            "-vars:-all,+idp,+mk,+vel,+rhop,+press,+SigmaState_kk,+SigmaState_ij,+Sigma_kk,+Sigma_ij,+Kplastic",
+            "-threads:1"
+          ],
+          "parent_pid": 44780
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "-dirin",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\data",
+          "-filexml",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2.xml",
+          "-savevtk",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\particles\\PartFluid",
+          "-onlytype:-all,fluid",
+          "-vars:-all,+idp,+mk,+vel,+rhop,+press,+SigmaState_kk,+SigmaState_ij,+Sigma_kk,+Sigma_ij,+Kplastic",
+          "-threads:1"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 1.3130000000819564,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_old_GPU_r2.particles_r1.log",
+          "bytes": 14817,
+          "mtime_ns": 1794052338798861000
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "bytes": 2375168,
+          "mtime_ns": 1697414728000000000
+        }
+      }
+    },
+    "new": {
+      "solver": {
+        "stage": "basic_a05_dp002_new_GPU_r2.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 14308,
+          "created_epoch": 1794052079.59746,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_new\\DualSPHysics5.2_GEO_win64.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_new\\DualSPHysics5.2_GEO_win64.exe",
+            "-gpu:0",
+            "-stable",
+            "-mdbc_noslip",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2",
+            "-dirdataout",
+            "data",
+            "-svres"
+          ],
+          "parent_pid": 11876
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_new\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu:0",
+          "-stable",
+          "-mdbc_noslip",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2",
+          "-dirdataout",
+          "data",
+          "-svres"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 220.25,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_new_GPU_r2.log",
+          "bytes": 20213,
+          "mtime_ns": 1794052299833038700
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_r2_runtime_new\\DualSPHysics5.2_GEO_win64.exe",
+          "bytes": 28120576,
+          "mtime_ns": 1794044042568941300
+        }
+      },
+      "native": {
+        "stage": "basic_a05_dp002_new_GPU_r2.native_r2.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 73128,
+          "created_epoch": 1794052308.5010977,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\data",
+            "5000",
+            "2028",
+            "101",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_native_r2"
+          ],
+          "parent_pid": 33508
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\data",
+          "5000",
+          "2028",
+          "101",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_native_r2"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 1.3909999998286366,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_new_GPU_r2.native_r2.log",
+          "bytes": 0,
+          "mtime_ns": 1794052308496801800
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\10_StaticDrySoilColumn\\tests\\outputs\\basic_native_r2_build\\basic_native_r2.exe",
+          "bytes": 13161472,
+          "mtime_ns": 1794046505678407400
+        }
+      },
+      "PartVTK": {
+        "stage": "basic_a05_dp002_new_GPU_r2.particles_r1.call",
+        "actual_Popen_wait_exit": 0,
+        "actual_Win32_exit": 0,
+        "typed_exit_captured_first": true,
+        "child": {
+          "pid": 55732,
+          "created_epoch": 1794052339.5293932,
+          "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "argv": [
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+            "-dirin",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\data",
+            "-filexml",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2.xml",
+            "-savevtk",
+            "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\particles\\PartFluid",
+            "-onlytype:-all,fluid",
+            "-vars:-all,+idp,+mk,+vel,+rhop,+press,+SigmaState_kk,+SigmaState_ij,+Sigma_kk,+Sigma_ij,+Kplastic",
+            "-threads:1"
+          ],
+          "parent_pid": 47120
+        },
+        "argv": [
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "-dirin",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\data",
+          "-filexml",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2_seed\\CaseGranularColumnCollapse2D_a05_dp002_basic_r2.xml",
+          "-savevtk",
+          "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\particles\\PartFluid",
+          "-onlytype:-all,fluid",
+          "-vars:-all,+idp,+mk,+vel,+rhop,+press,+SigmaState_kk,+SigmaState_ij,+Sigma_kk,+Sigma_ij,+Kplastic",
+          "-threads:1"
+        ],
+        "cwd": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse",
+        "elapsed_s": 1.2190000000409782,
+        "log": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\logs\\basic_a05_dp002_new_GPU_r2.particles_r1.log",
+          "bytes": 14817,
+          "mtime_ns": 1794052340729694400
+        },
+        "program": {
+          "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\bin\\windows\\PartVTK_win64.exe",
+          "bytes": 2375168,
+          "mtime_ns": 1697414728000000000
+        }
+      }
+    }
+  },
+  "no_owned_physical_target_remaining": true,
+  "interpolation": false,
+  "new_5Pa_or_half_gate": false,
+  "no_a10_truth_or_resolution_convergence_claim": true,
+  "raw_data_and_prior_174_untouched": true,
+  "dp001_partial": "Intentionally stopped exact65368 on user mesh change; actualPopen/Win3215, Part9/.090001/19691steps. Preserved/notdecoded; not a numerical failure verdict.",
+  "particles": {
+    "old": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_old_GPU_r2\\particles\\PartFluid_0000.vtk",
+    "new": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Elastoplastic_basic\\12_GranularColumnCollapse\\tests\\outputs\\basic_a05_dp002_new_GPU_r2\\particles\\PartFluid_0000.vtk"
+  },
+  "SHA_scans": 0
+}
