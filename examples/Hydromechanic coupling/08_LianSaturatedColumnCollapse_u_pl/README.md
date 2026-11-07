@@ -184,3 +184,12 @@ mode1目前仅面向fresh二维DP_PS、Symplectic、固定φ（n_phi0）、有�
 CPU/GPU Debug及Release四种构建通过，GPU事件内存检查零错误/泄漏。两端OFF的11帧全部22数组及带符号时钟与原对照逐字节一致；ON各22帧、5000土粒子保留，指定260墙粒子移除。撤墙前10个真正共享记录一致，强制380步记录和旧400步记录未冒称共享。CPU/GPU最大孔压RMS差0.00355 Pa、材料XYZ位移差6.94e-8 mm。见[图和对应CSV](tests/figures/upl_gravity_release_short_review_r1.png)及[源码位置与限制](tests/notes/upl_gravity_release_root_r1.json)。这是接口检查，不是预载平衡或塌陷验收。
 
 下一轮采用10 s纯预载，dt=2.5微秒、每0.01 s输出，保持阻尼0.02和Shepard40，事件对象缺席；不安排15 s。按已完成5 s循环耗时估计CPU8约6.9小时，实际以进程记录为准。10 s是否足够由真实末段孔压、有效应力、沉降和速度决定。
+
+
+### 10秒预载结果：下一阶段的受限基线
+
+`upl_prestress10_CPU_r1`已完成400万步、1001帧及唯一原生解码，实际末时刻10.000000000374257 s，CPU8耗时约6小时42分。全部7060 IDs、22数组、J账本/密度缓存、固定p0、自由面及原始带符号时间步检查通过，κ全程0。
+
+相较保留5 s末态，速度RMS从2.9083e-5降为4.0400e-6 m/s，动能下降98.07%；相对固定初始H2参照的当前坐标孔压残差RMS从1532.11降为104.70 Pa。顶部材料带沉降0.720355 mm，受限弹性参考0.709276 mm（+1.56%）；该参考不是精确二维真值。最后实际0.99 s内全体孔压变化RMS113.87 Pa、顶部继续沉降0.006892 mm，说明仍有较弱固结。
+
+据此继续采用10 s作为下一阶段带量化残差的有界撤墙检验基线，不认定严格静止/完全排水平衡，不先增加阻尼或延长15 s。本次没有新求解或重启。下一步检查已有Ck2变渗透率与重力、自由面、撤墙的组合兼容，再推进三组剪胀角。见[全历史](tests/figures/upl_prestress10_equilibrium_review_r1.png)、[全部深度剖面](tests/figures/upl_prestress10_equilibrium_review_r1_profiles.png)、[8–10秒局部图](tests/figures/upl_prestress10_late_r2.png)，各图有同前缀CSV；[完整审查](tests/notes/upl_prestress10_root_review_r1.json)保留实际时间、剩余偏差及原安全门。

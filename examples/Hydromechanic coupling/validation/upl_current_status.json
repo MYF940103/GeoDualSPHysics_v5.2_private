@@ -1183,7 +1183,7 @@
     "material_mode1_general_spatial_plasticity_accepted": false
   },
   "latest_verified_code_checkpoint": "1688b1f89af8d59e30af63d07d118917ab57e6c9",
-  "last_updated_utc": "2026-11-06T18:51:03.184325+00:00",
+  "last_updated_utc": "2026-11-07T01:53:44.354021+00:00",
   "material_softening_periodic_20261106": {
     "review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_plastic_softening_root_r1.md",
     "CPU_GPU_single_runs_passed": true,
@@ -1201,7 +1201,7 @@
     "pressure_cross_RMS_NEG_Pa": 0.0022822548293540044,
     "physical_acceptance": false
   },
-  "active_work": "Fresh10s CPU8 pure preload running (dt2.5us,out.01,damping.02/Shepard40). Production OFF/ON short gates and selective local/remote code backup passed; final native/physical review pending.",
+  "active_work": "10s CPU preload and sole native/offline/visual review completed. Quantified residuals allow bounded release preparation, not strict equilibrium/full collapse acceptance. Next existing Ck2 gravity/free/wall compatibility preparation; no active solver.",
   "configuration_interface_review": {
     "guide": "doc/xml_format/_FmtXML_ElastoplasticSoil.xml",
     "guide_lines_before": 584,
@@ -1344,6 +1344,11 @@
     "solver_pid": 68028,
     "source_checkpoint": "1688b1f89af8d59e30af63d07d118917ab57e6c9",
     "single_completion_owner": true,
-    "preload10_native_review_pending": true
+    "preload10_native_review_pending": false,
+    "preload10_solver_completed": true,
+    "preload10_actual_end_s": 10.000000000374257,
+    "preload10_saved_frames": 1001,
+    "preload10_review": "08_LianSaturatedColumnCollapse_u_pl/tests/notes/upl_prestress10_root_review_r1.json",
+    "bounded_release_preparation_allowed": true
   }
 }
