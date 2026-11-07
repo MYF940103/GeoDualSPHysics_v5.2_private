@@ -102,9 +102,10 @@
 			<parameter key="MDBCCorrector" value="1" comment="mDBC in Symplectic corrector 0=off, 1=on; default=1" />
 			<parameter key="MDBCFastSingle" value="1" comment="Fast single-precision mDBC; default=1; CPU and hydromechanics force the double path" />
 			<!-- <parameter key="NoPenetration" value="1" comment="mDBC NoSlip/FreeSlip penetration correction; default=0" /> -->
-			<!-- u-pl: qualified elastic PRE receivers only, fixed axis-aligned gravity container, AS=0. -->
+			<!-- u-pl: qualified elastic PRE receivers only, fixed axis-aligned gravity container. -->
 			<!-- Candidate: predictor/corrector unilateral position/normal-velocity projection at validated fixed X/Z planes. -->
 			<!-- PRE uses NoPen=0; same-stage Darcy reaction is not included. Full collapse validation pending. -->
+			<!-- Optional existing ReleaseOnly artificial stress may be combined after PRE; combination validation pending. -->
 
 			<!-- Existing DualSPHysics viscosity and shifting controls. -->
 			<parameter key="ViscoTreatment" value="1" comment="1=artificial viscosity, 2=laminar+SPS; default=1" />

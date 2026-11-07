@@ -1,8 +1,18 @@
 # 当前发包状态
 
+**当前只在tests检验AS＋固定平面候选，根目录r4入口仍暂停。** 新候选沿用AS既有ε=.2/exp2.55、dt2.5 us和原r2 GPU认证PRE；只放行严格handoff范围内的组合，并补时步拒绝分项日志。CPU Debug、GPU Debug/Release构建通过；CPU/GPU各40更新、1帧原生22数组/6800IDs检查通过，GPU memcheck 0错误/0泄漏。跨后端pRMS=.001724343 Pa、材料XYZ最大差1.252068e−9 mm。AS关闭的新Release前2帧与保留固定平面54帧的实际共同前缀，完整22数组/time/signed clock逐byte一致。
+
+AS开启的0.03 s短窗正常完成并通过3帧原生22数组/6800IDs/ledger/clock/signed/FS/接触门；最大保存速度.191152 m/s、最小z=.0174043 m，无穿左墙/底面。单次0.6 s窗口`upl_c08_asplane_window_GPU_r1`现已启动：实际owner74200→solver80168，RTX3050，计划240000更新/60帧；原始start及root/owner admission分别保存。只设置该直接owner的一次同线程终态通知，不额外设watcher。完成后先核run，再独立native与AS对照物理审查；尚无0.6 s或正式3 s组合物理结论。隔离的ReleaseCPU补充构建现也通过，四种配置全部通过；活动GPU程序未更换。
+
+CPU短测实际exit0，原owner仅因Run.csv配置说明中未转义的AS分号而后检失败；原failed记录/CSV未改，已用独立offline adoption重新核全部原post门，随后只解码一次。未来入口r2仅修解析与实际日志等号格式，不改数值门或求解器。相关记录以`upl_c08_asplane_*`、`upl_c08_as_plane_native_r2*`及`upl_c08_as_short_review_r1*`为标签。
+
 **r4入口暂缓继续计算，不能将其余两组当作已准入。** 新固定平面接触候选正在`tests`独立验证，未替换`runtime_r4`或原正式XML/BAT。四种构建、host组件17点/两反例、CPU/GPU Debug 2 ms实际接收及native均通过；GPU memcheck为0错误/0泄漏。两帧跨后端pRMS最大差.00428253 Pa，各材料XYZ最大差1.91257e−7 mm。NoPen关闭3帧对旧关闭11帧中的真实共有前缀，完整22数组/time/signed clock逐byte一致。
 
-已启动唯一新GPU Release候选`upl_c08_plane_on_GPU_r1`，由同名owner持有solver PID77916，目标仅撤墙后0.6 s（global4240000/60帧，dt2.5us、输出10ms）。启动前记录见`tests/logs/upl_c08_plane_window_admission_r1.json`，实际start/call/run/status沿同tag。它只验证固定平面投影能否越过旧.438 s失败区间，不是正式3 s或物理通过，不追加half链。首次调用在任何GenCase/solver前因准入记录文件名撞fresh保护而拒绝；保留记录改用非冲突名后才启动这一次真实求解，见`upl_c08_plane_window_launch_guard_r1.json`。只有本新owner在终态尝试一次同线程通知，不重挂旧通知器。
+AS关闭的GPU Release候选`upl_c08_plane_on_GPU_r1`已失败退出，目标0.6 s/60帧未完成。实际solver PID77916、parent/owner81040、argv/创建身份一致；Popen/Win32均exit1，ownership_errors为空，30项输入/程序/runtime/PRE stat均未变。最后原样PART行为`Part_0053     10.540000       4216000     4000    2425.38  08-11-2026 03:47:15`。54个原始PART已独立partial解码一次，全部原生门通过，末native时刻10.54000000054566；所有保存帧未穿底，最小z=+7.1525574e−9 m。0.49 s内部ID4808出现−973054.5 Pa，不能据几何改善验收。完整图CSV和两项条件压力算子诊断已保存到本地/远端`4688bd1b0890559f67494127cb770b42d9ac48a8`；原始BI4及程序归档原位保护。
+
+本次首因不是旧MLS错误，而是`DtVariable`在step4218523拒绝`current=2.5e-06 bound=2.49899e-06 DtMin=1e-08`。旧日志不能区分力/波速黏性/扩散/渗透率梯度分项，不从未保存故障点推断原因。冻结几何诊断未见所选矩阵近奇异，但压力—加速度—Darcy耦合响应不能只看直接扩散项；详见`tests/notes/upl_c08_plane_result_r1.md`。原dt/墙拟合阈值和必要稳定门未放宽、不加half链。此旧完成通知已真实投递exit0，不重挂。
+
+原启动前记录仍见`tests/logs/upl_c08_plane_window_admission_r1.json`，真实start/call/run/status均保留。首次调用在任何GenCase/solver前因准入记录文件名撞fresh保护而拒绝；保留记录改用非冲突名后才启动这一次真实求解，见`upl_c08_plane_window_launch_guard_r1.json`。
 
 诊断checkpoint本地/远端为`4262eb5c0633a449c0f7fc8c83878b91622332aa`。新接触代码仍为受限候选，`FixedPlaneStageProjectionReleaseOnly`、`ReactionClosed=false`；正式三组尚未准入。
 

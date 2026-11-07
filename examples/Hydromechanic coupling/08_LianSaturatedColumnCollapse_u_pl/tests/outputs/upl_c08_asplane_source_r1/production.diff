@@ -1,0 +1,55 @@
+diff --git a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+index 93370bb..5938744 100644
+--- a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
++++ b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+@@ -102,9 +102,10 @@
+ 			<parameter key="MDBCCorrector" value="1" comment="mDBC in Symplectic corrector 0=off, 1=on; default=1" />
+ 			<parameter key="MDBCFastSingle" value="1" comment="Fast single-precision mDBC; default=1; CPU and hydromechanics force the double path" />
+ 			<!-- <parameter key="NoPenetration" value="1" comment="mDBC NoSlip/FreeSlip penetration correction; default=0" /> -->
+-			<!-- u-pl: qualified elastic PRE receivers only, fixed axis-aligned gravity container, AS=0. -->
++			<!-- u-pl: qualified elastic PRE receivers only, fixed axis-aligned gravity container. -->
+ 			<!-- Candidate: predictor/corrector unilateral position/normal-velocity projection at validated fixed X/Z planes. -->
+ 			<!-- PRE uses NoPen=0; same-stage Darcy reaction is not included. Full collapse validation pending. -->
++			<!-- Optional existing ReleaseOnly artificial stress may be combined after PRE; combination validation pending. -->
+ 
+ 			<!-- Existing DualSPHysics viscosity and shifting controls. -->
+ 			<parameter key="ViscoTreatment" value="1" comment="1=artificial viscosity, 2=laminar+SPS; default=1" />
+diff --git a/src/source/JSph.cpp b/src/source/JSph.cpp
+index 2686ae3..77e4b0e 100644
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -3781,7 +3781,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
+   return(HydroMechDynamicSeepage && HydroMech && Simulate2D && !PartBegin && !PeriActive
+     && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
+     && TBoundary==BC_MDBC && UseNormals && ((!NoPenetration && TMdbc2!=MDBC2_NoPen)
+-      || (GravityPreload && IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen && !ArtificialStress))
++      || (GravityPreload && IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen))
+     && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
+     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
+     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None
+diff --git a/src/source/JSphCpu.cpp b/src/source/JSphCpu.cpp
+index 19caddd..f9931a0 100644
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -3795,7 +3795,7 @@ double JSphCpu::DtVariable(bool final){
+     //-Both calls precede their state update, including the first predictor step.
+     if(!std::isfinite(bound) || !(bound>0) || !std::isfinite(SymplecticDtPre) || !(SymplecticDtPre>0)
+       || double(DtMin)>bound || SymplecticDtPre>bound)
+-      Run_Exceptioon(fun::PrintStr("Dynamic current step or DtMin exceeds its necessary bound: step=%u current=%g bound=%g DtMin=%g.",Nstep,SymplecticDtPre,bound,DtMin));
++      Run_Exceptioon(fun::PrintStr("Dynamic current step or DtMin exceeds its necessary bound: step=%u current=%.17g bound=%.17g DtMin=%.17g; final=%u force=%.17g wave_visc=%.17g pore=%.17g k_gradient=%.17g AceMax=%.17g VelMax=%.17g ViscDtMax=%.17g conductivity_speed=%.17g.",Nstep,SymplecticDtPre,bound,DtMin,unsigned(final),CFLnumber*dt1,CFLnumber*dt2,dtw,(DynamicPoreConductivity && DynamicConductivitySpeedMax>0? double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax: DBL_MAX),AceMax,VelMax,ViscDtMax,DynamicConductivitySpeedMax));
+     dt=(FixedDt? FixedDt->GetDt(TimeStep,bound): bound);
+     if(!std::isfinite(dt) || !(dt>0) || dt>bound || dt<double(DtMin))
+       Run_Exceptioon(fun::PrintStr("Dynamic requested step=%g is outside bound=%g or DtMin=%g; no fixed-grid clipping or DtMin uplift is allowed.",dt,bound,DtMin));
+diff --git a/src/source/JSphGpu.cpp b/src/source/JSphGpu.cpp
+index d64c888..59ee5c0 100644
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1916,7 +1916,7 @@ double JSphGpu::DtVariable(bool final){
+     const double bound=min(dt,dtw);
+     if(!std::isfinite(bound) || !(bound>0) || !std::isfinite(SymplecticDtPre) || !(SymplecticDtPre>0)
+       || double(DtMin)>bound || SymplecticDtPre>bound)
+-      Run_Exceptioon(fun::PrintStr("GPU porosity current step or DtMin exceeds its necessary bound: step=%u current=%g bound=%g DtMin=%g.",Nstep,SymplecticDtPre,bound,DtMin));
++      Run_Exceptioon(fun::PrintStr("GPU porosity current step or DtMin exceeds its necessary bound: step=%u current=%.17g bound=%.17g DtMin=%.17g; final=%u force=%.17g wave_visc=%.17g pore=%.17g k_gradient=%.17g AceMax=%.17g VelMax=%.17g ViscDtMax=%.17g conductivity_speed=%.17g.",Nstep,SymplecticDtPre,bound,DtMin,unsigned(final),CFLnumber*dt1,CFLnumber*dt2,dtw,(DynamicPoreConductivity && DynamicConductivitySpeedMax>0? double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax: DBL_MAX),AceMax,VelMax,ViscDtMax,DynamicConductivitySpeedMax));
+     dt=(FixedDt? FixedDt->GetDt(TimeStep,bound): bound);
+     if(!std::isfinite(dt) || !(dt>0) || dt>bound || dt<double(DtMin))
+       Run_Exceptioon(fun::PrintStr("GPU porosity requested step=%g is outside bound=%g or DtMin=%g; no clipping or DtMin uplift is allowed.",dt,bound,DtMin));

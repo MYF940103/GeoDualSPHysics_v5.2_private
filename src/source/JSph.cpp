@@ -3781,7 +3781,7 @@ bool JSph::IsDynamicPoreContainerConfig()const{
   return(HydroMechDynamicSeepage && HydroMech && Simulate2D && !PartBegin && !PeriActive
     && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
     && TBoundary==BC_MDBC && UseNormals && ((!NoPenetration && TMdbc2!=MDBC2_NoPen)
-      || (GravityPreload && IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen && !ArtificialStress))
+      || (GravityPreload && IsGravityPreloadHandoff() && NoPenetration && TMdbc2==MDBC2_NoPen))
     && (TKernel==KERNEL_Wendland || TKernel==KERNEL_Cubic) && TStep==STEP_Symplectic
     && !Gravity.x && !Gravity.y && std::isfinite(Gravity.z) && Gravity.z<0
     && (HydroMechInitMode==HMINIT_None || HydroMechInitMode==HMINIT_ConstantZ) && HydroMechTopLoadMode==HMLOAD_None

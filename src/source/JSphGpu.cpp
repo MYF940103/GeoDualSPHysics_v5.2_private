@@ -1916,7 +1916,7 @@ double JSphGpu::DtVariable(bool final){
     const double bound=min(dt,dtw);
     if(!std::isfinite(bound) || !(bound>0) || !std::isfinite(SymplecticDtPre) || !(SymplecticDtPre>0)
       || double(DtMin)>bound || SymplecticDtPre>bound)
-      Run_Exceptioon(fun::PrintStr("GPU porosity current step or DtMin exceeds its necessary bound: step=%u current=%g bound=%g DtMin=%g.",Nstep,SymplecticDtPre,bound,DtMin));
+      Run_Exceptioon(fun::PrintStr("GPU porosity current step or DtMin exceeds its necessary bound: step=%u current=%.17g bound=%.17g DtMin=%.17g; final=%u force=%.17g wave_visc=%.17g pore=%.17g k_gradient=%.17g AceMax=%.17g VelMax=%.17g ViscDtMax=%.17g conductivity_speed=%.17g.",Nstep,SymplecticDtPre,bound,DtMin,unsigned(final),CFLnumber*dt1,CFLnumber*dt2,dtw,(DynamicPoreConductivity && DynamicConductivitySpeedMax>0? double(PoreDtSafety)*double(KernelH)/DynamicConductivitySpeedMax: DBL_MAX),AceMax,VelMax,ViscDtMax,DynamicConductivitySpeedMax));
     dt=(FixedDt? FixedDt->GetDt(TimeStep,bound): bound);
     if(!std::isfinite(dt) || !(dt>0) || dt>bound || dt<double(DtMin))
       Run_Exceptioon(fun::PrintStr("GPU porosity requested step=%g is outside bound=%g or DtMin=%g; no clipping or DtMin uplift is allowed.",dt,bound,DtMin));
