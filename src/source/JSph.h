@@ -215,6 +215,7 @@ protected:
   bool DynamicPoreFreeBody;    ///<Limited 3-D free body with inactive fixed DBC markers, not a mirror wall.
   tdouble3 DynamicPoreBodyCentre; ///<Centre of the no-contact enclosure; never a physical/theory radius fit.
   double DynamicPoreBodyRadius2; ///<Squared admission radius, checked before each dynamic update.
+  bool HydroMechNoWall;          ///<No physical hydraulic wall; cDBC correction is disabled.
   unsigned HydroMechConductivityModel; ///<0=constant k0, 1=void-ratio exponential law; requires dynamic seepage.
   double HydroMechConductivityCk; ///<Dimensionless void-ratio law coefficient; no calibrated default.
   TpHydroMechInitMode HydroMechInitMode; ///<Mode for initial hydromechanical state. //mdbr
@@ -612,7 +613,8 @@ protected:
   bool IsDynamicPorePlasticConfig()const;
   void CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const byte *boundslipmode,const unsigned *idp);
-  void ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+  bool IsHydroMechNoWallCandidate()const;
+  void ConfigHydroMechNoWall(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
     ,const typecode *code,const tfloat4 *velrhop);
 };
 

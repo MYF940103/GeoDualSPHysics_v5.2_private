@@ -344,6 +344,9 @@ void ShepardRegularizePorePressure(TpKernel tkernel,bool simulate2d,unsigned np,
 void Interaction_Forces(const StInterParmsg &t);
 
 //-Kernels for the boundary correction (mDBC).
+//-Read-only marker/support query; caller initializes invalid=npbok.
+void CheckHydroMechNoWallSupport(unsigned npbok,const StDivDataGpu &dvd
+  ,const double2 *posxy,const double *posz,const float4 *poscell,const typecode *code,unsigned *invalid);
 void Interaction_MdbcCorrection(TpKernel tkernel,bool simulate2d
   ,TpSlipMode slipmode,bool fastsingle,unsigned n,unsigned nbound
   ,float mdbcthreshold,const StDivDataGpu &dvd,const tdouble3 &mapposmin

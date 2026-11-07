@@ -1,0 +1,24 @@
+{
+  "stage": "mdbc_partition_gpu_nowall_r1.static_review",
+  "passed": true,
+  "checks": {
+    "partition_host_block_bytes_preserved": true,
+    "partition_device_block_bytes_preserved": true,
+    "GPU_main_unchanged_since_partition": true,
+    "GPU_ker_main_unchanged_since_partition": true,
+    "host_declared_once": true,
+    "device_wrapper_declared_once": true
+  },
+  "root_owned_Single_changes_observed": "ConfigHydroMechNoWall call; NoWall support branch before Pre; hydromechanical CDBC rejection. Not edited or reverted by GPU query author.",
+  "support_union": [
+    "direct double rr2",
+    "per-component float casts then rr2",
+    "float(direct double rr2)",
+    "packed poscell XYZ float rr2",
+    "packed poscell XZ float rr2 in 2D"
+  ],
+  "threshold": "same CTE.kernelsize2; no lower-distance exclusion or new tolerance",
+  "writes": "temporary invalid uint only; no particle state writes",
+  "pool": "one existing 4B reserve before PreInteraction_Forces; two kplastic/Dk sort slots are not reserved then",
+  "build_target_Git_SHA_invoked": false
+}

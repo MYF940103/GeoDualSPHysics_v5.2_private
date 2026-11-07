@@ -271,95 +271,11 @@ void JSphGpuSingle::ConfigDomain(){
 
   //-Runs initialization operations from XML.
   RunInitialize(Np,Npb,AuxPos,Idp,Code,Velrhop,boundnormal);
-  ConfigDynamicPoreFreeBody(Np,Npb,AuxPos,Idp,Code,Velrhop);
+  ConfigHydroMechNoWall(Np,Npb,AuxPos,Idp,Code,Velrhop);
   if(UseNormals)ConfigBoundNormals(Np,Npb,AuxPos,Idp,boundnormal);
   if(DynamicPoreWall)InitDynamicPoreWallGpu(boundnormal,boundslipmode);
 
-  if(SoilBoundaryDerivativeSPR){
-    //-Each wall mk defines one stationary plane; never average corner normals.
-    if(!Npb)Run_Exceptioon("SoilBoundaryDerivativeSPR requires fixed boundary planes.");
-    std::map<word,unsigned> wallplanes;
-    const double normaltol=8.*FLT_EPSILON; //-Float-normal direction roundoff, not a fitted geometry tolerance.
-    for(unsigned p=0;p<Npb;p++){
-      const word mk=MkInfo->GetMkByCode(Code[p]);
-      const unsigned p0=wallplanes.insert(std::make_pair(mk,p)).first->second;
-      const tdouble3 n0=ToTDouble3(boundnormal[p0]);
-      const double len0=sqrt(n0.x*n0.x+n0.y*n0.y+n0.z*n0.z);
-      if(!std::isfinite(len0) || len0<=0)
-        Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite nonzero boundary normals.");
-      const tdouble3 unit0=n0/len0,wall0=AuxPos[p0]+n0*.5;
-      const bool legacyhorizontal=(n0.z>0 && fabs(n0.x)<=1e-8*Dp && fabs(n0.y)<=1e-8*Dp);
-      const tdouble3 n=ToTDouble3(boundnormal[p]),wall=AuxPos[p]+n*.5;
-      const double len=sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
-      if(!CODE_IsFixed(Code[p]) || !std::isfinite(len) || len<=0
-        || !std::isfinite(wall.x) || !std::isfinite(wall.y) || !std::isfinite(wall.z)
-        || Velrhop[p].x!=0 || Velrhop[p].y!=0 || Velrhop[p].z!=0)
-        Run_Exceptioon("SoilBoundaryDerivativeSPR requires finite stationary fixed-wall particles and nonzero normals.");
-      if(NoPenetration){
-        const tdouble3 unit=n/len;
-        const unsigned components=unsigned(fabs(unit.x)>normaltol)+unsigned(fabs(unit.y)>normaltol)+unsigned(fabs(unit.z)>normaltol);
-        if(components!=1)Run_Exceptioon("SPR with existing NoPen requires axis-aligned wall normals; inclined NoPen is not rotation-consistent.");
-      }
-      if(legacyhorizontal){
-        //-Keep the original case-02 direction and coplanarity thresholds unchanged.
-        if(n.z<=0 || fabs(n.x)>1e-8*Dp || fabs(n.y)>1e-8*Dp || fabs(wall.z-wall0.z)>1e-6*Dp)
-          Run_Exceptioon("SoilBoundaryDerivativeSPR requires stationary coplanar horizontal bottom-wall normals within each wall mk.");
-      }
-      else{
-        const tdouble3 unit=n/len,delta=wall-wall0;
-        //-A float normal affects both the wall midpoint and its projection over the plane span.
-        const double planetol=1e-6*Dp+normaltol*(len0+len+sqrt(delta.x*delta.x+delta.y*delta.y+delta.z*delta.z));
-        if(fabs(unit.x-unit0.x)>normaltol || fabs(unit.y-unit0.y)>normaltol || fabs(unit.z-unit0.z)>normaltol
-          || (Simulate2D && fabs(unit.y)>normaltol)
-          || fabs(delta.x*unit0.x+delta.y*unit0.y+delta.z*unit0.z)>planetol)
-          Run_Exceptioon("SoilBoundaryDerivativeSPR requires one coplanar, consistently oriented fixed wall per mk (x-z plane normals in 2-D).");
-      }
-    }
-    const tdouble3 perinc[3]={PeriXinc,PeriYinc,PeriZinc};
-    const bool peractive[3]={PeriX,PeriY,PeriZ};
-    for(const auto &plane:wallplanes)for(unsigned a=0;a<3;a++)if(peractive[a]){
-      const tdouble3 n=ToTDouble3(boundnormal[plane.second]);
-      const tdouble3 unit=n/sqrt(n.x*n.x+n.y*n.y+n.z*n.z);
-      const tdouble3 inc=perinc[a];
-      const double len=sqrt(inc.x*inc.x+inc.y*inc.y+inc.z*inc.z);
-      if(!std::isfinite(len) || len<=0 || fabs(inc.x*unit.x+inc.y*unit.y+inc.z*unit.z)>normaltol*len)
-        Run_Exceptioon("SoilBoundaryDerivativeSPR permits periodic translations tangent to every wall plane only.");
-    }
-    if(wallplanes.size()>1){
-      std::vector<tdouble4> planes;
-      for(const auto &plane:wallplanes){
-        const unsigned p=plane.second;
-        const tdouble3 raw=ToTDouble3(boundnormal[p]);
-        const tdouble3 n=raw/sqrt(raw.x*raw.x+raw.y*raw.y+raw.z*raw.z),wall=AuxPos[p]+raw*.5;
-        planes.push_back(TDouble4(n.x,n.y,n.z,-(n.x*wall.x+n.y*wall.y+n.z*wall.z)));
-      }
-      std::vector<tdouble3> fitshift(CaseNpb,TDouble3(0));
-      for(unsigned p=0;p<Npb;p++){
-        const tdouble3 target=AuxPos[p]+ToTDouble3(boundnormal[p]);
-        bool outside=false;
-        for(const auto &a:planes)outside=outside || (a.x*target.x+a.y*target.y+a.z*target.z+a.w < -1e-6*Dp);
-        if(!outside)continue;
-        tdouble3 centre=target;
-        //-Static convex half-space projection; leave one dp of interior MLS support.
-        for(unsigned iteration=0;iteration<128;iteration++){
-          double residual=0;
-          for(const auto &a:planes){
-            const double gap=Dp-(a.x*centre.x+a.y*centre.y+a.z*centre.z+a.w);
-            if(gap>0){centre=centre+TDouble3(a.x,a.y,a.z)*gap;residual=(std::max)(residual,gap);}
-          }
-          if(residual<=1e-6*Dp)break;
-          if(iteration==127)Run_Exceptioon("SPR fixed wall planes do not admit a common interior MLS centre with one-dp clearance.");
-        }
-        fitshift[Idp[p]]=centre-target;
-      }
-      static_assert(sizeof(tdouble3)==sizeof(double3),"CPU/GPU MLS offset layouts differ");
-      const size_t bytes=sizeof(double3)*CaseNpb;
-      cudaMalloc((void**)&BoundDerivativeFitShiftg,bytes); MemGpuFixed+=bytes;
-      cudaMemcpy(BoundDerivativeFitShiftg,fitshift.data(),bytes,cudaMemcpyHostToDevice);
-      Check_CudaErroor("Failed in fixed SPR MLS offset upload.");
-    }
-    Log->Printf("SPR stationary wall planes (one per mk): %u",unsigned(wallplanes.size()));
-  }
+  InitBoundaryDerivativeGpu(boundnormal);
 
   //-Computes MK domain for boundary and fluid particles.
   MkInfo->ComputeMkDomains(Np,AuxPos,Code);
@@ -705,6 +621,7 @@ void JSphGpuSingle::Interaction_Forces(TpInterStep interstep){
   if(DynamicPoreWall){
     //-Same-stage state/C closure runs below through free-surface tracking.
   }
+  else if(HydroMechNoWall)CheckHydroMechNoWallSupportGpu();
   else if(TBoundary==BC_MDBC){
     if(MdbcCorrector || interstep!=INTERSTEP_SymCorrector)MdbcBoundCorrection(); //-Boundary correction for mDBC.
   }
@@ -808,6 +725,7 @@ void JSphGpuSingle::MdbcBoundCorrection(){
 /// Calcula datos extrapolados en el contorno para mDBC.
 //==============================================================================
 void JSphGpuSingle::CdbcBoundCorrection(){
+  if(HydroMech)Run_Exceptioon("Hydromechanical wall boundaries require mDBC; cDBC correction is not supported.");
   Timersg->TmStart(TMG_CfPreForces,false);
   //unsigned n=Np;
   const unsigned n=(WithFloating? Np: NpbOk);

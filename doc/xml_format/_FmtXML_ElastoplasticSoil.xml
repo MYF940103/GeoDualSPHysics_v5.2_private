@@ -26,6 +26,7 @@
 			<hydromechanics>
 				<!-- Move the whole hydromechanical configuration here when migrating it from legacy soils XML. -->
 				<HydroMech value="1" comment="Enable hydromechanical coupling; default=0" />
+				<!-- Hydraulic wall reconstruction requires mDBC. cDBC is rejected; an explicitly checked no-wall free body skips cDBC. -->
 				<HydroMechDynamicSeepage value="0" comment="0=original u-pw, 1=experimental dynamic seepage with evolving J/n; default=0" />
 				<!-- Dynamic plasticity remains restricted to fresh 2D plane-strain fixed-phi container/periodic fixtures; generic PART restart is unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />

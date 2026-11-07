@@ -303,6 +303,8 @@ protected:
     (unsigned n,StDivDataCpu divdata,const tdouble3 *pos,const typecode *code
     ,const tfloat4 *velrhop,const tfloat3 *boundnormal,const float *porepress0,float *porepress)const;
   void InteractionPorePressureMdbcCorrection();
+  void CheckHydroMechNoWallSupportCpu();
+  void InitBoundaryDerivativeCpu();
   void ComputeBoundaryDerivativeVelocity();
   template<TpKernel tker,bool sim2d> void ShepardRegularizePorePressureT
     (unsigned np,unsigned npb,StDivDataCpu divdata,const unsigned *dcell

@@ -1,0 +1,94 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../outputs/mdbc_partition_DebugCPU_r1/DsphConfig.xml
+Threads by host for parallel execution: 8
+
+[Initialising JSphCpuSingle  07-11-2026 19:43:47]
+ProgramFile=".../outputs/mdbc_partition_DebugCPU_r1/DualSPHysics5.2CPU_win64_debug.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl"
+XmlFile=".../outputs/mdbc_admission_r2_column_dbc_CPU_new_seed/upl_bigstep_c625_r1.xml"
+OutputDir=".../tests/outputs/mdbc_admission_r2_column_dbc_CPU_new"
+OutputDataDir=".../outputs/mdbc_admission_r2_column_dbc_CPU_new/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): MResId=[0]  sizebx=[0.1]  sizebz=[1.2]  sizefx=[0.1]  sizefz=[1]  CaseName=["upl_bigstep_c625_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.018]  KernelSize=[0.036]  B=[0]  Gamma=[7]  Rhop0=[2100]  Dp=[0.01]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[0]  MassFluid=[0.21]  MassBound=[0.21]
+
+*** WARNING: The execution will be cancelled after 2 simulation steps.
+
+XML-Vars (parameters): TimeMax=[2.00005]  TimeOut=[0.00195313]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Disabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 100000.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.575959
+  Bulk Modulus: 1666666.750000
+  Shear Modulus: 769230.812500
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental CPU/GPU elastic fresh fixtures; selected geometry/options remain bounded
+  HydroMechConductivityModel="Constant"
+  HydroMechInitMode="None"
+  HydroMechDrainage="Enabled"
+  HydroMechDrainageStartTime: 0.0100002
+  HydroMechDrainageFixedGrid=True
+  HydroMechFreeSeepage=False
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="TopKernelBand"
+  HydroMechTopLoadDiscretization: top kernel band, normalized to the unchanged TopVertical resultant
+  HydroMechTopLoadQ0: 10000
+  HydroMechTopLoadRampTime: 0.0100002
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 2e+08
+  Porosity: 0.300000
+  HydraulicConductivity: 0.0001
+  PoreDtSafety: 1.000000
+  PoreShepardRegularization="Disabled"
+  PoreShepardInterval: 30
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+
+*** Exception (JSphCpuSingle::LoadConfig) at DualSPHysics/source/JSph.cpp:614
+Text: Hydromechanical wall boundaries require mDBC; cDBC does not reconstruct the hydraulic wall state.
+
+
+Finished execution (code=1).
+

@@ -1,0 +1,75 @@
+{
+  "stage": "mdbc_partition_gpu_r1.static_review",
+  "passed": true,
+  "retained_source_exact_after_only_declared_moves_and_call": {
+    "JSphGpu.cpp": true,
+    "JSphGpu_ker.cu": true,
+    "JSphGpuSingle.cpp": true,
+    "JSphGpu.h": true
+  },
+  "moved_blocks_byte_exact": {
+    "SPR_initialization": true,
+    "pore_SPR_host": true,
+    "dynamic_wall_host": true,
+    "dynamic_wall_device": true,
+    "pore_SPR_device": true,
+    "traditional_mDBC_CDBC_device": true
+  },
+  "new_host_include_closure": [
+    "JSphGpu.h",
+    "JSphGpu_ker.h",
+    "FunctionsCuda.h",
+    "JArraysGpu.h",
+    "JSphMk.h",
+    "cfloat",
+    "cmath",
+    "map"
+  ],
+  "cuda_include_same_cusph_and_CTE": true,
+  "new_CUDA_objects": 0,
+  "build_run_Git_or_SHA_invoked": false,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.cpp",
+      "bytes": 120656,
+      "mtime_ns": 1794046220662895200,
+      "LF": 2351,
+      "CRLF": 2351
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu.h",
+      "bytes": 23271,
+      "mtime_ns": 1794046220681465300,
+      "LF": 364,
+      "CRLF": 336
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpuSingle.cpp",
+      "bytes": 71237,
+      "mtime_ns": 1794046220668695600,
+      "LF": 1407,
+      "CRLF": 1407
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 226827,
+      "mtime_ns": 1794046220674713300,
+      "LF": 4341,
+      "CRLF": 4341
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_mdbc.cpp",
+      "bytes": 14624,
+      "mtime_ns": 1794046256261135700,
+      "LF": 234,
+      "CRLF": 234
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphGpu_mdbc_ker.cuh",
+      "bytes": 88081,
+      "mtime_ns": 1794046220690500800,
+      "LF": 1500,
+      "CRLF": 1500
+    }
+  ]
+}

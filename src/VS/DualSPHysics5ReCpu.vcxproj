@@ -755,6 +755,7 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClInclude Include="..\source\JCaseEParms.h" />
     <ClInclude Include="..\source\JSph.h" />
     <ClInclude Include="..\source\JSphCpu.h" />
+    <ClInclude Include="..\source\JSphGpu_mdbc_ker.cuh" />
     <CustomBuildStep Include="..\source\JSphGpu.h">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
@@ -876,7 +877,12 @@ rem %CudaNvcc% -ccbin "$(VCInstallDir)bin" %gpuhw% -use_fast_math -c %ptxinfo% -
     <ClCompile Include="..\source\JCaseEParms.cpp" />
     <ClCompile Include="..\source\JSph.cpp" />
     <ClCompile Include="..\source\JSphCpu.cpp" />
+    <ClCompile Include="..\source\JSphCpu_mdbc.cpp" />
     <ClCompile Include="..\source\JSphGpu.cpp">
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
+      <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
+    </ClCompile>
+    <ClCompile Include="..\source\JSphGpu_mdbc.cpp">
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='ReleaseCPU|x64'">true</ExcludedFromBuild>
       <ExcludedFromBuild Condition="'$(Configuration)|$(Platform)'=='DebugCPU|x64'">true</ExcludedFromBuild>
     </ClCompile>

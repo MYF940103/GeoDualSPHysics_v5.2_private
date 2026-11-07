@@ -217,6 +217,7 @@ void JSph::InitVars(){
   DynamicPoreFreeBody=false;
   DynamicPoreBodyCentre=TDouble3(0);
   DynamicPoreBodyRadius2=0;
+  HydroMechNoWall=false;
   HydroMechConductivityModel=0;
   HydroMechConductivityCk=0;
   HydroMechInitMode=HMINIT_None;
@@ -609,6 +610,8 @@ void JSph::LoadConfig(const JSphCfgRun *cfg){
 
   //-Loads case configuration from XML and command line.
   LoadCaseConfig(cfg);
+  if(HydroMech && TBoundary==BC_DBC && CaseNpb && !IsHydroMechNoWallCandidate())
+    Run_Exceptioon("Hydromechanical wall boundaries require mDBC; cDBC does not reconstruct the hydraulic wall state.");
   const bool gravitycontainer=IsDynamicPoreContainerConfig();
   if(HydroMechFreeSeepage && !gravitycontainer)
     Run_Exceptioon("HydroMechFreeSeepage requires the fresh bounded dynamic gravity container, HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0.");
@@ -3873,13 +3876,27 @@ void JSph::CheckDynamicPoreContainer(unsigned np,unsigned npb,const tdouble3 *po
 }
 
 //==============================================================================
-/// Admits an isolated free body without turning its remote DBC markers into walls.
+/// Metadata candidate only; particle geometry must still prove separation.
+//==============================================================================
+bool JSph::IsHydroMechNoWallCandidate()const{
+  return(HydroMech && TBoundary==BC_DBC && !Simulate2D && !PeriActive && !PartBegin
+    && CaseNpb>0 && CaseNpb==CaseNfixed && !CaseNmoving && !CaseNfloat
+    && !Gravity.x && !Gravity.y && !Gravity.z
+    && HydroMechTopLoadMode==HMLOAD_FlexibleConfinement);
+}
+
+//==============================================================================
+/// Admits no-wall hydromechanics without turning remote DBC markers into walls.
 /// The enclosure only rejects loss of separation; it never rescales the body/load.
 //==============================================================================
-void JSph::ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
+void JSph::ConfigHydroMechNoWall(unsigned np,unsigned npb,const tdouble3 *pos,const unsigned *idp
   ,const typecode *code,const tfloat4 *velrhop)
 {
-  if(!DynamicPoreFreeBody)return;
+  HydroMechNoWall=false;
+  if(!HydroMech || TBoundary!=BC_DBC)return;
+  if(!npb){HydroMechNoWall=true;return;}
+  if(!IsHydroMechNoWallCandidate())
+    Run_Exceptioon("Hydromechanical wall boundaries require mDBC; cDBC does not reconstruct the hydraulic wall state.");
   if(np!=CaseNp || !npb || npb!=CaseNpb || npb!=CaseNfixed || np<=npb || !pos || !idp || !code || !velrhop)
     Run_Exceptioon("Dynamic free body requires its complete native soil and fixed DBC markers.");
   tdouble3 pmin=TDouble3(DBL_MAX),pmax=TDouble3(-DBL_MAX);
@@ -3912,7 +3929,10 @@ void JSph::ConfigDynamicPoreFreeBody(unsigned np,unsigned npb,const tdouble3 *po
   const double guard=radius+gap*.5;
   if(!std::isfinite(guard*guard) || !(guard*guard>0))Run_Exceptioon("Dynamic free-body separation envelope is not representable.");
   DynamicPoreBodyCentre=centre;DynamicPoreBodyRadius2=guard*guard;
-  Log->Printf("Dynamic free body: soil=%u fixed=%u, initial enclosure=%g m, guard=%g m, dummy clearance=%g m.",
+  HydroMechNoWall=true;
+  Log->Printf(DynamicPoreFreeBody?
+    "Dynamic free body: soil=%u fixed=%u, initial enclosure=%g m, guard=%g m, dummy clearance=%g m.":
+    "Hydromechanical no-wall body: soil=%u fixed=%u, initial enclosure=%g m, guard=%g m, dummy clearance=%g m; cDBC disabled.",
     np-npb,npb,radius,guard,gap);
 }
 

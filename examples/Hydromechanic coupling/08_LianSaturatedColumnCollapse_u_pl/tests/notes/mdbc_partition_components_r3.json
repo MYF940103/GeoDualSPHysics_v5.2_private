@@ -1,0 +1,24 @@
+{
+  "stage": "mdbc_partition_components_r3.author",
+  "status": "author_only_not_imported_built_or_run",
+  "wrapper": "tests/support/mdbc_partition_components_r3.py",
+  "prerequisite": "Closed passed mdbc_partition_DebugCPU_r1 / mdbc_partition_Debug_r1 builds,87/113 project objects including main; helpers link86/112 actual current non-main objects plus one newly compiled source. No old ABI objects or engine source edits.",
+  "components": {
+    "CPU_planes": "Unmodified case02 spr_planes_test.cpp: explicit corner2_s1..3 or edge3_s1..3. True2D/3D, three global slips, multiple native wall MKs, multi-plane SPR initialization and real mDBC/derivative/ct consumers. Controls are passed spr_planes_r2_dbg_* results, never Release.",
+    "GPU_planes": "Unmodified case02 spr_gpu_planes_test.cpp: same six explicit selectors. Exact original GPU Debug seed/argv come from spr_gpu_planes_dbg_r1.check.json; reuse its existing CPU-generated geometry, no GenCase. Multiple MKs here share the selected global slip; this alone is not the mixed-slip witness.",
+    "CPU_wall": "Unmodified upl_noslip_cpu_component_r1.cpp, explicit Wendland or Cubic. Each six conditions preserve globalFS/globalNS/per-plane override, coincident/offgrid, actual wall state/C/Ace stages, all old conditioning/roundoff/canary/native restoration guards.",
+    "GPU_wall": "Unmodified upl_noslip_gpu_component_r1.cpp --out, explicit all means its existing12 fixed W/C/globalFS/globalNS/conflicting-override/offset conditions,36 actual stages. No new physical run or parameter sweep. Original2D81-fluid/two-wall geometry differs from CPU; compare each only to its own old Debug CSV."
+  },
+  "commands": [
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/mdbc_partition_components_r3.py build GPU_planes --execution-authorized",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/mdbc_partition_components_r3.py run GPU_planes --case edge3_s3 --memcheck --execution-authorized",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/mdbc_partition_components_r3.py build GPU_wall --execution-authorized",
+    "D:/anaconda3/python.exe -X utf8 -B tests/support/mdbc_partition_components_r3.py run GPU_wall --case all --memcheck --execution-authorized"
+  ],
+  "execution_scope": "Each invocation builds exactly one helper or runs exactly one explicit existing component case. No implicit loop over CLI cases, solver, decoder, new source clone, threshold changes, half/reference chain, notifier, Git or SHA. The above are examples, not proof of execution.",
+  "numerics": "Require original completion passed, identical set and full raw bytes of all old/new CSV files. No header rewriting, field exclusions, cross-backend5Pa reinterpretation, relaxed budget or physical acceptance. Failure keeps first log/call/partial outputs and blocks same-tag retry.",
+  "flags_runtime": "Mechanically reuse each backend's actual passed Debug CL/link arguments (/Od /MTd /fp:precise; GPU_WITHGPU and CUDA11.7 static runtime), replace every project object with current closure, never use Release controls. Copy four existing same-backend Debug runtime companions. Capture source_capture stat and actual owned Win32 exits; GPU memcheck is optional explicit and then captures actual target handle before exit plus zero errors/leaks.",
+  "outputs": "Fresh tests/outputs/mdbc_partition_components_r3_<component> helper and <component>_<case> result; corresponding flat logs/build/call/check records. Retained old sources, inputs, outputs, executables and objects remain untouched.",
+  "physical_acceptance": false,
+  "repair": "Preserve r2 GPU_planes build preflight false, zero CL/link/target calls. Old GPU direct_Popen_wait is boolean provenance, not a numeric return code; require is True and actual_exit_code0. Fresh invocations still capture Win32 exits. No component/input/numerical/CSV gate change. Only two GPU helpers and seven GPU cases remain; all eight passed CPU r2 cases and their helpers must not be rerun."
+}

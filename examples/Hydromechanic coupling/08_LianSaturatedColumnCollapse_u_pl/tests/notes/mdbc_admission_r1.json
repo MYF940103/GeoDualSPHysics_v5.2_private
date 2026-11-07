@@ -1,0 +1,119 @@
+{
+  "tag": "mdbc_admission_r1",
+  "author_only": true,
+  "solver_launched": false,
+  "reader_built": false,
+  "configuration_map": {
+    "source_CPU": "DebugCPU",
+    "source_GPU": "Release",
+    "periodic_CPU": "DebugCPU",
+    "periodic_GPU": "Debug",
+    "cryer_CPU": "DebugCPU",
+    "cryer_GPU": "Debug"
+  },
+  "configs": {
+    "source_CPU": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_source_CPU.xml",
+    "periodic_CPU": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_periodic_CPU.xml",
+    "source_GPU": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_source_GPU.xml",
+    "periodic_GPU": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_periodic_GPU.xml",
+    "cryer_static": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_cryer_static.xml",
+    "cryer_dynamic": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_cryer_dynamic.xml",
+    "column_dbc": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\mdbc_admission_r1_column_dbc.xml"
+  },
+  "origins": {
+    "source_CPU": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_material_release_native_r1_source_CPU.xml",
+      "only_parameter_changes": {},
+      "all_other_XML_bytes_identical": true
+    },
+    "periodic_CPU": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_material_release_native_r1_plastic_CPU.xml",
+      "only_parameter_changes": {},
+      "all_other_XML_bytes_identical": true
+    },
+    "source_GPU": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_material_release_native_r1_source_GPU_release_seed\\CaseLianSaturatedColumnCollapse_ck2_release_short_r1.xml",
+      "only_parameter_changes": {},
+      "all_other_XML_bytes_identical": true
+    },
+    "periodic_GPU": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\upl_material_release_native_r1_plastic_GPU.xml",
+      "only_parameter_changes": {},
+      "all_other_XML_bytes_identical": true
+    },
+    "cryer_static": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_darcy_switch_native_r1_cpu_on\\cryer_darcy_switch_native_r1_cpu_on.xml",
+      "only_parameter_changes": {
+        "TimeMax": "9.5367431640625e-07",
+        "TimeOut": "4.76837158203125e-07"
+      },
+      "all_other_XML_bytes_identical": true
+    },
+    "cryer_dynamic": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_freebody_peak_r1_seed\\upl_cryer_freebody_peak_r1.xml",
+      "only_parameter_changes": {
+        "TimeMax": "1.9073486328125e-06",
+        "TimeOut": "9.5367431640625e-07"
+      },
+      "all_other_XML_bytes_identical": true
+    },
+    "column_dbc": {
+      "origin": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_r1_seed\\upl_bigstep_c625_r1.xml",
+      "only_parameter_changes": {},
+      "all_other_XML_bytes_identical": true
+    }
+  },
+  "column_seed": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\02_TerzaghiConsolidation_q0_PR\\tests\\outputs\\upl_bigstep_r1_seed\\upl_bigstep_c625_r1",
+  "cryer_seed": {
+    "cryer_static": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\cryer_darcy_switch_native_r1_cpu_on\\cryer_darcy_switch_native_r1_cpu_on",
+    "cryer_dynamic": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\04_CryerProblem_PR\\tests\\outputs\\upl_cryer_freebody_peak_r1_seed\\upl_cryer_freebody_peak_r1"
+  },
+  "source_control": {
+    "CPU": "upl_material_release_native_r1_source_CPU",
+    "GPU": "upl_material_release_native_r1_source_GPU_release"
+  },
+  "periodic_control": {
+    "CPU": "upl_material_release_native_r1_plastic_CPU",
+    "GPU": "upl_material_release_native_r1_plastic_GPU"
+  },
+  "negative_expected_first_error": "Hydromechanical wall boundaries require mDBC; cDBC does not reconstruct the hydraulic wall state.",
+  "scope": "implementation/admission regression only; no half/full or physical acceptance",
+  "hash_scans": 0,
+  "reader_r1_build_failed_preserved": true,
+  "reader_version": "mdbc_admission_native_r2",
+  "reader_r1_failure": "JBinaryDataDef is a class, not a namespace; r2 only replaces the namespace directive with explicit TpData constants and updates helper stage label",
+  "current_reader_source": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_native_r2.cpp",
+  "current_reader_build": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_native_r2_build.py",
+  "selected_job_owner": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py",
+  "offline_review": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_review_r1.py",
+  "cpp_schema_and_numerical_gates_changed_for_r2": false,
+  "owner_dynamic_log_rule": "dynamic requires retained Dynamic free body log; static requires Hydromechanical no-wall body and cDBC disabled",
+  "reader_objects": [
+    "JPartDataBi4",
+    "JPartDataHead",
+    "JBinaryData",
+    "JObject",
+    "JException",
+    "Functions"
+  ],
+  "JSph_objects_in_reader": false,
+  "noWall_runtime_contact_component": "Deferred by root; do not fabricate DivData or launch additional solver",
+  "global_actual_solver_guard": "Owner refuses another active DualSPHysics process; wait for basic case-12 to finish, do not stop it",
+  "pure_AST_checks": "All three new Python scripts syntax-parsed without importing/executing them",
+  "explicit_command_examples": {
+    "build_reader": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_native_r2_build.py\" --execution-authorized",
+    "negative_admission": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run column_dbc CPU new --execution-authorized",
+    "C08_new_source_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run source CPU new --execution-authorized",
+    "decode_source_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" decode mdbc_admission_r1_source_CPU_new --execution-authorized",
+    "review_source_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_review_r1.py\" source CPU --execution-authorized",
+    "C08_new_source_GPU_Release": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run source GPU new --execution-authorized",
+    "periodic_GPU_Debug": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run periodic GPU new --execution-authorized",
+    "Cryer_old_static_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run cryer_static CPU old --execution-authorized",
+    "Cryer_new_static_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" run cryer_static CPU new --execution-authorized",
+    "decode_Cryer_old_static_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" decode mdbc_admission_r1_cryer_static_CPU_old --execution-authorized",
+    "decode_Cryer_new_static_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_r1.py\" decode mdbc_admission_r1_cryer_static_CPU_new --execution-authorized",
+    "review_Cryer_static_CPU": "D:/anaconda3/python.exe -B \"D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\mdbc_admission_review_r1.py\" cryer_static CPU --execution-authorized"
+  },
+  "command_substitution": "Repeat only the explicitly selected context: source/periodic CPU or GPU new; Cryer_static/dynamic CPU or GPU old then new. Each run, decode and review is separate; no automatic chain or watcher. Historical C08/periodic controls are never rerun or decoded again.",
+  "strict_review": "All actual 22 dynamic or 15 static native fields compared by ID and byte, plus real clocks and signed dterror including sign bits. Reports all per-array changed IDs/max numerical differences and pressure/XYZ budgets; no clock/statistic exclusions or replacement of strict equality by 5 Pa/.005 mm."
+}

@@ -1,0 +1,27 @@
+{
+  "tag": "mdbc_nowall_cpu_r1",
+  "created_utc": "2026-11-07T10:18:22.497998+00:00",
+  "scope": "CPU read-only support check addition after exact source partition",
+  "modified_files": [
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu_mdbc.cpp",
+    "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\source\\JSphCpu.h"
+  ],
+  "added_member": "JSphCpu::CheckHydroMechNoWallSupportCpu",
+  "return_guards": [
+    "!NpbOk",
+    "DynamicPoreFreeBody"
+  ],
+  "invalid_mode_throws": true,
+  "marker_scope": "native normal fixed marker among [0,NpbOk)",
+  "neighbor_scope": "actual nsearch fluid cells and CODE_IsFluid neighbors",
+  "contact_condition": "double dx^2+dy^2+dz^2 <= double(KernelSize2) OR float(dx)^2+float(dy)^2+float(dz)^2 <= KernelSize2, including zero separation",
+  "particle_state_writes": false,
+  "new_array_or_tolerance": false,
+  "existing_cpp_bytes_unchanged_except_new_member": true,
+  "existing_header_bytes_unchanged_except_new_declaration": true,
+  "original_partition_check_preserved": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\mdbc_partition_cpu_base_r1\\partition.check.json",
+  "hashes_calculated": false,
+  "build_executed": false,
+  "solver_executed": false,
+  "physical_acceptance": false
+}

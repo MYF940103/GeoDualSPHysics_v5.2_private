@@ -313,6 +313,8 @@ protected:
   void ApplyPorePressureBoundaries();
   void InteractionPorePressureMdbcCorrection();
   void ComputeBoundaryDerivativeVelocity();
+  void InitBoundaryDerivativeGpu(const tfloat3 *boundnormal);
+  void CheckHydroMechNoWallSupportGpu();
   void ShepardRegularizePorePressure();
   void InitHydroMechPorePressure();
   
