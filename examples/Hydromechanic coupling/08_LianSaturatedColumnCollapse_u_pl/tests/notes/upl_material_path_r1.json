@@ -1,0 +1,20 @@
+{
+  "stage": "upl_material_path_r1",
+  "scope": "CPU material points only; no production, spatial solver, server package or formal input changes",
+  "history_target": "accumulated equivalent deviatoric plastic strain",
+  "fits": ["DP_PS", "DP_C", "DP_MC"],
+  "models": "9 constant, 9 combined evolution and 3 isolated PS evolution laws; 21 total",
+  "strain_path": "spin-free coaxial strain: xx increments .006,-.001,.005; yy opposite, other increments zero; initial I=-300000 Pa on yield, kappa=0",
+  "N_per_segment": [8, 16, 32, 64],
+  "methods": ["candidate_general", "linearized_dev", "legacy_actual"],
+  "reference": "independent DOP853 differential consistency, analytic elastic yield entry; continuous history and complex-step coefficient derivatives",
+  "reference_refinement_limits": {"stress_Pa": 0.0001, "kappa": 1e-10},
+  "reference_yield_limit_Pa": 0.001,
+  "reference_energy_balance_limit_Pa": 0.0001,
+  "constant_strength_closed_form_limit_Pa": 0.0001,
+  "root_residual_is_not_path_accuracy": true,
+  "legacy_is_different_history_sign_and_float_coefficients": true,
+  "apex_tension_phi_zero_not_admitted_by_this_smooth_path_probe": true,
+  "physical_acceptance": false,
+  "SHA_scans": 0
+}
