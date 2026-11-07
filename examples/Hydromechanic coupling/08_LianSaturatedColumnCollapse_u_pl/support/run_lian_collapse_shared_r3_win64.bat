@@ -61,9 +61,7 @@ echo Run the three material BAT files with the SAME backend. Preserve this sourc
 goto done
 
 :checksource
-if not exist "%sourceout%\Run.csv" exit /b 1
-if not exist "%sourceout%\data\%prepart%" exit /b 1
-powershell -NoProfile -Command "try { $r=@(Import-Csv -LiteralPath (Join-Path $env:sourceout 'Run.csv') -Delimiter ';'); if($r.Count -ne 1 -or [int]$r[0].Steps -ne 4000000 -or [int]$r[0].PartFiles -ne 1001 -or [int]$r[0].PartsOut -ne 0){throw 'Source scheduling or ordinary-loss record differs'} } catch { Write-Error $_; exit 1 }"
+powershell -NoProfile -ExecutionPolicy Bypass -File "support\check_lian_preload_schedule_r1.ps1" -SourceOut "%sourceout%"
 exit /b %ERRORLEVEL%
 
 :exists
