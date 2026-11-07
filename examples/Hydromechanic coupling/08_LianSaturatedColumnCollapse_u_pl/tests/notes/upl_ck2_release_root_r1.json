@@ -1,0 +1,35 @@
+{
+  "stage": "upl_ck2_release_root_r1",
+  "implementation_passed": true,
+  "check": "tests/logs/upl_ck2_release_short_r1.check.json",
+  "actual_jobs": [
+    "upl_ck2_release_short_CPU_r1",
+    "upl_ck2_release_short_GPU_r1"
+  ],
+  "updates_each": 800,
+  "frames_each": 22,
+  "phase_frames": [
+    11,
+    11
+  ],
+  "soil_IDs": 5000,
+  "original_fixed_IDs": 2060,
+  "retired_right_IDs": 260,
+  "typed_arrays": 22,
+  "pressure_cross_RMS_max_Pa": 0.0034028006011385774,
+  "material_cross_XYZ_max_mm": 6.920246614280062e-08,
+  "total_stress_cross_Frobenius_RMS_max_Pa": 0.006908070400323601,
+  "CPU_GPU_clock_difference_s": 0,
+  "memcheck_errors": 0,
+  "leaked_bytes": 0,
+  "actual_kappa_max": 0,
+  "owning_real_exits_checked": true,
+  "native_J_k_P0_FS_and_signed_clock_guards_passed": true,
+  "physical_acceptance": false,
+  "full_collapse_acceptance": false,
+  "metadata_analysis_repair": "First analysis wrote correct CSV/PNG then KeyError on final object field. Offline completion independently recomputed all pair metrics from native arrays; original artifacts preserved, no solver/reader rerun.",
+  "decision": "Proceed to three-group Win64 server computation package with bounded implementation status and qualified10s constant-k preload evidence. No extra half/control/long local run.",
+  "shared_preload": "Common physical preload is possible while all groups stay elastic; current reviewed10s is Model0/psi0 and cannot be silently reused as Model1 state. Dynamic/MR1 PART restart remains rejected. Package repeats the same gravity recipe in fresh same-process runs, not three invented preloading conditions.",
+  "production_source_changed_this_stage": false,
+  "SHA_scans": 0
+}

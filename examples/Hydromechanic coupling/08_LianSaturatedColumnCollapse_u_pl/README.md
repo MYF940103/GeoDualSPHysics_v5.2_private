@@ -1,8 +1,20 @@
 # Lian 2023 饱和土柱塌陷：u-pl
 
-复现论文 §4.4、图13-17及表1。当前为几何和兼容开发准备阶段，尚无塌陷求解或物理验收结果。按照用户2026-11-06的调整，Cryer评估及服务器长程包之后优先进入本例，不新增变k一维固结试验。
+复现论文 §4.4、图13-17及表1。三组正式计算入口与Windows便携包现已生成，受限CPU/GPU组合检查通过；完整13 s塌陷与论文精度仍待服务器结果验收。
 
-当前已完成 CPU/GPU Debug 的固定重力容器构建及真实128步启动：原5000土粒子、侧壁FreeSlip/底面NoSlip，各保存5帧至0.00048828125 s；22原生字段、J/n/V/rho/k关系和密度缓存检查通过，GPU内存检查零错误/泄漏。五帧孔压CPU/GPU RMS差最大0.00042211 Pa，最大材料位移差1.218e-12 m，见[对比图和数据](tests/figures/upl_c08_elastic_start_compare_r1.png)。测试固定步长为2^-18 s，显式DtMin=1e-8；r1因旧自动DtMin过大在第0步拒绝，原记录保留，r2只修正该下限。此次无排水开关不等价密封边界：实际`closedfs=false`，仍使用现有完整Taylor缺陷率，既不是论文自由渗流，也不是地应力平衡。下文组件记录中的旧准入限制按其当时阶段理解；本段为当前状态。
+## 当前交付入口（2026-11-07）
+
+直接复制并完整解压 [LianCollapse_upl_win64_r1.zip](support/LianCollapse_upl_win64_r1.zip)，随后双击解压根目录对应组的GPU BAT；Windows x64＋NVIDIA，目标服务器RTX A6000。程序和依赖都在包内support/runtime，三个XML及六个CPU/GPU入口也已放在本case根目录。详见[服务器说明](support/README_server_r1.md)。CPU/GPU同一组择一，已有输出会拒绝；BAT执行GenCase与完整求解，绘图在结果复制回来后进行。
+
+三组共用几何、预载设置及运行库，各自同进程完成10 s预载＋3 s撤墙运动，dt=2.5微秒、每0.01 s输出。各组的剪胀角/峰值黏聚力按论文区分。若预载始终处于共同弹性域，物理上可以共用状态；本版不支持dynamic/MR1完整PART重启，且已有10 s基线为常k，不能把它直接充作三组变k初态。本次重复相同预载配方属于衔接方式的限制，不表示人为设置三种预载条件。
+
+Ck2组合CPU/GPU各800步、22帧检查通过，实际撤去260个右墙样本、保留全部5000土粒子。最大跨后端孔压RMS差0.0034028 Pa、材料XYZ位移差6.92025e-8 mm，GPU memcheck零错误/泄漏。ZIP已在新位置解压，两个Release程序help及三组真实GenCase均通过；实际几何/MK/法向与保留基线相同。见[组合检查](tests/logs/upl_ck2_release_short_r1.check.json)和[便携实测](tests/logs/upl_c08_release_portable_r2.check.json)。这些是实现和交付检查，不是完整塌陷验收。
+
+## 早期开发记录
+
+以下按当时阶段保留；旧的“当前/待完成”描述不替代上面的交付状态。
+
+当前已完成 CPU/GPU Debug 的固定重力容器构建及真实128步启动：原5000土粒子、侧壁FreeSlip/底面NoSlip，各保存5帧至0.00048828125 s；22原生字段、J/n/V/rho/k关系和密度缓存检查通过，GPU内存检查零错误/泄漏。五帧孔压CPU/GPU RMS差最大0.00042211 Pa，最大材料位移差1.218e-12 m，见[对比图和数据](tests/figures/upl_c08_elastic_start_compare_r1.png)。测试固定步长为2^-18 s，显式DtMin=1e-8；r1因旧自动DtMin过大在第0步拒绝，原记录保留，r2只修正该下限。此次无排水开关不等价密封边界：实际`closedfs=false`，仍使用现有完整Taylor缺陷率，既不是论文自由渗流，也不是地应力平衡。下文组件记录中的旧准入限制按其当时阶段理解；本段是早期阶段记录。
 
 初帧5000个土粒子的[自由面判据对照](tests/figures/upl_c08_fsmask_r1_readable.png)表明，文献核支持和在包含墙支撑和自身贡献时，与当前标记逐点一致，均为顶部100个粒子；这不证明变形后仍一致。后续先对接自由渗流的完整水力驱动力率及步末正压限制，再进入塑性、撤墙和变渗透率。
 
@@ -12,13 +24,13 @@
 
 ## 目录与入口
 
-- 根目录最终保存验收后的正式 `*_Def.xml`、CPU/GPU BAT、README及其正式 `*_out`。
+- 根目录保存正式计算用 `*_Def.xml`、CPU/GPU BAT、README及其正式 `*_out`。
 - `tests/configs`、`tests/support`、`tests/outputs`、`tests/logs`、`tests/notes`、`tests/figures`保存开发试验；保留现有分类，不增加日期/阶段多层目录。
 - 正式图片及对应CSV进入 `figures`，正式后处理和必要资料进入 `support`。
-- 当前可双击的几何入口为 [GenCase BAT](tests/support/xCaseLianSaturatedColumnCollapse_geometry_r1_GenCase.bat)。它只生成粒子和法向，不运行求解器，已有输出时保留原目录。
-- 当前配置为 [几何 XML](tests/configs/CaseLianSaturatedColumnCollapse_geometry_r1_Def.xml)。它没有水力耦合配置，`TimeMax=0`，不得作为u-pl物理计算入口。
+- 早期开发几何入口为 [GenCase BAT](tests/support/xCaseLianSaturatedColumnCollapse_geometry_r1_GenCase.bat)。它只生成粒子和法向，不运行求解器，已有输出时保留原目录。
+- 早期几何配置为 [几何 XML](tests/configs/CaseLianSaturatedColumnCollapse_geometry_r1_Def.xml)。它没有水力耦合配置，`TimeMax=0`，不得作为u-pl物理计算入口。
 
-正式XML/BAT会在下述能力通过对应验收后准备，不用禁用现有保护或重置J的方式制造可运行版本。
+正式XML/BAT已由当前通过的受限组合检查生成；完整物理验收待结果返回，既有保护和J状态连续性保留。
 
 后续新配置采用规整十进制物理时间设置计算步长、输出间隔、总时长及预载/撤墙时刻，并尽量对应整数计算步。步长仍受显式稳定条件约束，不能直接继承论文TPI的20微秒；快速预载诊断可用更细输出，塌陷图示则按实际物理秒比较。已有`2^-n`短窗记录作为历史证据保持原样，不为统一格式重跑。本例不采用固结/Cryer的`Tv`输出换算。
 
@@ -203,4 +215,4 @@ CPU/GPU Debug及Release四种构建通过，GPU事件内存检查零错误/泄�
 
 下一条Ck2组合短窗输入已准备为0.002 s、800步、380步撤墙，只改变Model1/Ck2，不新增半步长链或重跑旧控制。旧读取器内置另一Ck，故新profile须显式核Ck=2和保存J对应的指数k；原22数组、IDs、p0、自由面、κ、时钟与两阶段计数守卫保持。本轮终端提醒不自动启动新的物理求解或重启。
 
-三组候选XML/BAT仍放在tests，统一10＋3=13 s、dt=2.5微秒、每0.01 s输出；运行入口保持候选锁定，尚不是可直接发给服务器的正式包。已去掉重复墙法向的逐帧PartExtra输出，初始Normals及完整主22数组保留，SavePosDouble=1不变。
+三组候选源仍保留在tests；通过组合检查后，正式根XML/BAT及support下的便携包已经生成。统一10＋3=13 s、dt=2.5微秒、每0.01 s输出；初始Normals及完整主22数组保留，SavePosDouble=1不变。

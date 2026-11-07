@@ -31,7 +31,7 @@
 				<!-- Dynamic seepage has restricted feature combinations; see the case README. PART restart is unsupported. -->
 				<HydroMechConductivityModel value="0" comment="Dynamic seepage: 0=constant k0, 1=void-ratio exponential k(J); default=0" />
 				<!-- Model1 requires dynamic seepage and explicit Ck>0: k=k0*exp((e-e0)/Ck), e-e0=(J-1)/(1-n0). -->
-				<!-- Candidate fixed 2D gravity-container combination: Model1/Ck=2 compatibility remains to be verified; HG, loaded columns and 3D remain constant-k. -->
+				<!-- Model1: bounded 2D gravity/startup-release CPU/GPU checks only; full collapse pending. HG/loaded-column/3D combinations remain constant-k. -->
 				<!-- <HydroMechConductivityCk value="0.01" comment="Example only; natural-log conductivity index; default=0, no calibrated universal value" /> -->
 
 				<PoreWaterRho value="1000" comment="Reference water density; default=1000" units_comment="kg/m^3" />
