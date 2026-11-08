@@ -1,0 +1,180 @@
+LoadDsphConfig> .../outputs/upl_c08_av_velocity_r1_helper/DsphConfig.xml
+
+[Initialising JSphCpuSingle  09-11-2026 06:34:08]
+ProgramFile=".../outputs/upl_c08_av_velocity_r1_helper/component.exe"
+ExecutionDir=".../tests/outputs/upl_c08_av_velocity_r1_helper"
+XmlFile=".../outputs/upl_c08_shepard_window_GPU_r1/upl_c08_shepard_window_GPU_r1.xml"
+OutputDir=".../tests/outputs/upl_c08_av_velocity_r1"
+OutputDataDir=".../tests/outputs/upl_c08_av_velocity_r1"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["upl_c08_shepard_window_GPU_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  KernelSize=[0.096]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+XML-Vars (parameters): TimeMax=[10.9]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+GravityPreload: requested=10 event_completed_step=4000000 release_mkbound=2; damping/Shepard are preload-only.
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 7060
+MapRealPos(border)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,2.0224)
+MapRealPos(final)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,4.0224)
+**Initial state of particles is loaded
+**2D-Simulation parameters:
+CaseName="upl_c08_shepard_window_GPU_r1"
+RunName="upl_c08_shepard_window_GPU_r1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:1 -> No-slip
+    mkbound:2 -> Free slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=True
+StepAlgorithm="Symplectic"
+Kernel="CubicSpline"
+  Cubic.a1=0.4547284
+  Cubic.aa=4111.766
+  Cubic.a24=49.34119
+  Cubic.c1=-12335.3
+  Cubic.c2=-3083.824
+  Cubic.d1=9251.473
+  Cubic.od_wdeltap=0.009120169
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="Bui2008"
+  ArtificialStressCoef=0.2
+  ArtificialStressExp=3
+  ArtificialStressExpMode="XML"
+  ArtificialStressBoundary="StressExtrapolated"
+  Dynamic artificial stress: total stress, current-J quadrature; disabled during certified preload, enabled after wall release.
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=7060
+CaseNbound=2060
+CaseNfixed=2060
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=5000
+PeriodicActive="None"
+Dp=0.04
+KernelH=0.048000  (CoefficientH=0.848528; H/Dp=1.2)
+KernelSize=0.096
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.0000025
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.0000025
+MassFluid=3.316
+MassBound=3.316
+TimeMax=10.9
+TimePart=0.01
+Gravity=(0,0,-9.81)
+NpMinimum=7060
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(129,1,44)
+CellDomFixed=False
+**Requested CPU memory for 7188 particles: 4.0 MB.
+Dynamic soil damping rate: 36.1976852 s^-1 (reference intrinsic solid density)
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_shepard_window_GPU_r1/upl_c08_shepard_window_GPU_r1_Normals.nbi4"
+GravityPreload: validated native right-wall range=[1800,2060), count=260.
+GravityPreload: planned KeepBedOverlap original_target=260 kept_bed=5; initial normals and PRE contract are unchanged.
+DomCells=(129,1,44)
+DomCellCode="1+13_7_11"
+**CellDiv: Requested cpu memory for 7541 particles: 0.4 MB.
+**CellDiv: Requested cpu memory for 2070 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 7060 particles (ConstantZ, min=-196.2, max=21385.8).
+ 
+RunMode="Stable - Pos-Double - Single core"
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (255 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (1545 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (260 particles)
+  Point....: (4,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+
+*** WARNING: The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+GravityPreload: source material law=legacy MR1 ElasticV1; certified elastic schema/contract1.
+Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; elastic PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.
+GravityPreload: state imported file=D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out\data\Part_1000.bi4 actual=10.000000000374257 completed_step=4000000; next loop releases the right wall once.
+GravityPreload: release attempt requested=10 actual=10.000000000374257 completed_step=4000000 native_range=[1800,2060).
+GravityPreload: release policy=KeepBedOverlap original_target=260 retired=255 kept_bed=5 kept_ids=1800,1852,1904,1956,2008; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.
+GravityPreload: phase=released actual=10.000000000374257 completed_step=4000000 retired=255; damping=OFF Shepard=OFF FreeSeepage=ON.
