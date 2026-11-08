@@ -20,7 +20,7 @@
 				<n_phi value="0" comment="Friction-angle exponential decay coefficient; default=0" />
 				<n_coh value="0" comment="Cohesion exponential decay coefficient; default=0" />
 				<DilationDecay value="0" comment="sf in psi=psi0*exp(-sf*kappa); default=0; must be finite and >=0" />
-				<SoilTriggerFos value="1.65" comment="Restart strength-reduction factor for strength softening; default=1.65; must be >=1" />
+				<SoilTriggerFos value="1.65" comment="Peak-cohesion reduction factor for legacy PART strength-softening restart; default=1.65; >=1; inactive in statefile handoff" />
 			</soils>
 
 			<hydromechanics>
@@ -45,7 +45,7 @@
 				<PoreShepardInterval value="30" comment="Regularization interval in steps; default=30; positive when enabled" />
 				<!-- Experimental dynamic Shepard: fixed gravity preload with mode2 hydrostatic baseline; J-volume weights. -->
 				<PoreMdbcInterpolationMode value="0" comment="Legacy pore-boundary interpolation 0=zero order, 1=direct MLS; default=0" />
-				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C for soil pairs; default=0" />
+				<PoreDarcySymmetricCorr value="0" comment="Legacy Darcy correction 0=receiver C, 1=mean pair C; default=0; dynamic seepage uses its own pair operator" />
 
 				<HydroMechInitMode value="0" comment="0=None, 1=FreeSurface, 2=ConstantZ, 3=AnalyticalSelfWeight1D; default=0" />
 				<!-- <HydroMechInitZ value="1.0" comment="Required in mode2; parser default=0; otherwise unused" units_comment="m" /> -->
@@ -89,7 +89,7 @@
 			<!-- u-pl gravitypreload candidate: total-stress artificial stress starts after release; bounded validation pending. -->
 			<parameter key="SoilStressRateGradCorr" value="0" comment="Stress-rate velocity-gradient correction 0=off, 1=on; default=0" />
 			<parameter key="SoilBoundaryDerivativeSPR" value="0" comment="Reconstructed wall velocity for soil derivatives 0=off, 1=on; default=0" />
-			<!-- SPR supports fixed planar walls; per-mk modes require separate faces. Inclined NoPen and curved/moving walls are unsupported. -->
+			<!-- Independent SPR requires Wendland, fixed elastic planar walls and no AS; per-mk modes require separate faces. Inclined NoPen and curved/moving walls are unsupported. -->
 			<parameter key="SoilHourglassXi" value="0" comment="Elastic GNOG hourglass strength; default=0 (off); must be >=0" />
 			<!-- HG: 2D Wendland/Symplectic, small-rotation elastic soil; no plasticity or history restart. -->
 			<parameter key="SoilDamping" value="0" comment="Bui-Fukagawa soil damping 0=off, 1=on; default=0" />
