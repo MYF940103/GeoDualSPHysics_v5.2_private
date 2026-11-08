@@ -1,0 +1,25 @@
+# C08 continued delivery after the hdp sensitivity review
+
+User authorization: continue diagnosis to suitable accuracy/stability, then complete the other two dilation groups and compare all three with Lian2023. No routine confirmation is required. This note opens no extra solver by itself and does not modify an active job or old acceptance gates.
+
+## Active and prepared
+
+- Single active physical job: upl_c08_asn4_window_GPU_r1, original certified r2 GPU10s PRE, hdp1.2, epsilon.2/exponent4, dt2.5us,90 native saves through release tau.90s. The unchanged runtime_r6 law2 is used. Its direct owner captures exits and queues exactly once; do not add another watcher or retry.
+- A dedicated90-state/6805-ID/22-array native adapter was built and root-reviewed; unique decoding requires the real completed run and absence of an existing/active reader. Normal solver exit is not physics acceptance.
+- upl_c08_asn4_compare_r1.py/.md were root-read and prepared, not run. They compare the new90 saves with the actual first90 of the retained rootr6/n3 full300-state result, preserving both original headers. No BI4 repeat, SHA scan, dense-trace scan, interpolation or cross-parameter5Pa gate. Three scientific figures and five matching CSVs cover whole soil, fixed material IDs, nearest-neighbor/near-pair proxies and raw morphology.
+
+## Review and next decision
+
+1. Review actual runtime/ownership and every original native safety/clock/ledger/P0/FS/AS/keepbed/fixed-plane gate. Preserve failures; repair derived analysis only if the physical solver already completed. Never infer an unsaved failure state.
+2. Review all actual paired saves: particle near-pairs/spacing and its spatial distribution, pressure pulses, J/n/k/plastic history, total stress, material displacement, front/height and velocity. Near-pair counts alone do not establish tensile causation; compression and shear can also shorten distances. Retain negative pressures and sampling limitations. Do not call saved extrema dense peaks.
+3. If n4 is a useful candidate, admit one fresh full3s psi0 run with the selected unchanged physics; do not add an automatic half-step/reference chain. A.90s pass cannot establish the1.2s paper shape or final3s result. If n4 fails or worsens the physical tradeoff, continue a targeted diagnosis under existing authorization rather than publish it or blindly increase parameters. In particular preserve the hdp1.5 lower-corner issue and fixed-plane reaction/J/Darcy closure limitation.
+4. Judge the full psi0 shape/response against Fig14 at release tau.3/.6/1.2s and native end3s, with actual particle-center geometry and explicit uncertainty. Do not tune FOS or pressure/time/color scales merely to match a picture. The paper provides numerical/figure references, not an exact full-field error standard. Total pressure, fixed-material native p-P0 and the paper's less explicit excess reference are distinct; Kplastic is not automatically identical to the plotted paper strain tensor measure.
+5. After root physical review selects a suitable scheme, prepare the other two root release XML/BAT/native/postprocess profiles, with one separate root admission per actual run. Their old r5 inputs use n2.55 and cannot be mistaken for updated n3/n4 release files. Preserve all historical versions and outputs; do not bypass the old psi0 locks in place.
+
+## Remaining two groups and source continuity
+
+Paper Table1: psi0/+2.5/-5 degrees; peak cohesion5/5/7.5kPa, residual1kPa, softening rate5, phi=phi_r25degrees; dilation decay N/A/.2/.2. Existing two-group material templates already match. Sourcecohesion5kPa is allowed for target5 or7.5kPa only under the existing certified elastic/zero-kappa handoff contract; its common elastic/hydraulic/kernel/boundary/AV conditions and actual states/clock must remain unchanged. This is a narrow law1-to-law2 PRE interoperability path, not generic exact restart. The failed hdp1.5 partial and new hdp1.2 .52s control are not alternative sources.
+
+No paper basis was found for an extra strength-reduction FOS. Existing custom handoff keeps PartBegin0; default1.65 is not activated as strength reduction. Do not change its contractual default just to suppress a printed number. The paper explicitly says the+2.5 case stops around1.2s and the-5 case around3s; psi0 has no exact stop-time target, so early arrest must be assessed jointly with shape and material motion.
+
+Each completed selected full run must use the actual root standard workflow: GenCase, receive the original PRE without another10s source, solver, one native review, separate PartFluid5000 and PartBound1805 all-save exports, then histories/morphology and matching CSVs. Compare all three groups against paper Fig14-17 with identical displayed actual times, disclosed pressure/plastic-history definitions and quantified geometry uncertainty. Save verified stages selectively to local and remote Git; raw BI4/executables remain protected locally, not claimed cloud-backed. Do not reopen accepted case02/KEEP or unrelated benchmarks during this diagnosis.
