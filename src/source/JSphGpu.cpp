@@ -50,6 +50,12 @@
 #include <climits>
 #include <cmath>
 #include <limits>
+#ifdef C08_STAGE_TRACE
+#include "C08StageTrace.h"
+#include <fstream>
+#include <iomanip>
+#include <stdexcept>
+#endif
 
 using namespace std;
 
@@ -59,6 +65,51 @@ namespace{
   }
 }
 
+#ifdef C08_STAGE_TRACE
+namespace{
+  bool C08TraceBegin(unsigned step,double time,unsigned interstep,double dtstate,double dtop,unsigned phase
+    ,const unsigned *idp,const unsigned *fstype,const float *rate){
+    if(step<4000000 || step>=4264000 || (step<4240000 && step%40))return false;
+    const C08StageTraceContext context={1,phase,step,interstep,time,dtstate,dtop,idp,fstype,rate};
+    if(!cusph::C08StageTraceStart(context))throw std::runtime_error("C08_STAGE_TRACE observation: CUDA context/buffer setup failed.");
+    return true;
+  }
+  void C08TraceEnd(bool selected,const std::string& dirout){
+    if(!selected)return;
+    C08StageTraceRecord records[3];
+    if(!cusph::C08StageTraceRead(records))throw std::runtime_error("C08_STAGE_TRACE observation: CUDA copy/disable failed.");
+    const unsigned wanted[3]={5809,4956,4959};
+    for(unsigned q=0;q<3;q++)if(records[q].hits!=1 || records[q].native_id!=wanted[q])
+      throw std::runtime_error("C08_STAGE_TRACE observation: a requested native ID was missing/duplicated; no physical guard is replaced.");
+    static std::ofstream file;static std::string boundpath;
+    const std::string path=fun::GetDirWithSlash(dirout)+"C08StageTrace.csv";
+    if(!file.is_open()){
+      std::string normal=path;for(char& c:normal)if(c=='\\')c='/';
+      if(normal.find("/tests/outputs/")==std::string::npos || fun::FileExists(path))
+        throw std::runtime_error("C08_STAGE_TRACE observation: fresh tests/outputs CSV required.");
+      boundpath=path;file.open(path);file<<std::setprecision(17);
+      file<<"step_start_s,nstep,interstep,event,stored_dt_s,operator_dt_s,native_id,hits,FSType,p_before_Pa,p_after_Pa,rate_before_Pa_s,rate_after_Pa_s,J,n,theta,ki,LP,divAce,lap,chain,value_double";
+      for(const char* prefix:{"pos","FSNormal"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
+      for(unsigned c=0;c<9;c++)file<<",C"<<c;
+      for(const char* prefix:{"finishedAce","Lx","Gp","GpCorr","GJ"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
+      file<<",raw_FS_branch,drainfs,closedfs,freeseepage,ponding_changed\n";
+    }
+    if(boundpath!=path)throw std::runtime_error("C08_STAGE_TRACE observation: one output path per process required.");
+    for(const auto& r:records){
+      const bool rhs=r.context.phase==C08_TRACE_RHS;
+      file<<r.context.time<<','<<r.context.nstep<<','<<r.context.interstep<<','<<r.context.phase<<','<<r.context.dt_state<<','<<r.context.dt_operator<<','<<r.native_id<<','<<r.hits<<','<<r.fstype<<','<<r.p_before<<','<<r.p_after<<','<<r.rate_before<<','<<r.rate_after;
+      const auto number=[&](double v){file<<',';if(rhs)file<<v;};
+      for(double v:{r.J,r.n,r.theta,r.ki,r.lp,r.da,r.lap,r.chain,r.value})number(v);
+      for(const double* a:{r.pos,r.fsnormal})for(unsigned c=0;c<3;c++)number(a[c]);
+      for(double v:r.C)number(v);
+      for(const double* a:{r.Ace,r.lx,r.gp,r.gpcorr,r.gJ})for(unsigned c=0;c<3;c++)number(a[c]);
+      for(unsigned v:{r.raw_fs,r.drainfs,r.closedfs,r.freeseepage}){file<<',';if(rhs)file<<v;}
+      file<<',';if(r.context.phase==C08_TRACE_PONDING)file<<r.projected;file<<'\n';
+    }
+    file.flush();if(!file)throw std::runtime_error("C08_STAGE_TRACE observation: CSV write failed.");
+  }
+}
+#endif
 //==============================================================================
 /// Constructor.
 //==============================================================================
@@ -1248,9 +1299,15 @@ void JSphGpu::ApplyPorePressureBoundaries(){
   ComputeFreeSurfaceTracking();
   ApplyFreeSurfacePorePressure();
   if(HydroMechFreeSeepage && !PorePressPreg){
+#ifdef C08_STAGE_TRACE
+    const bool c08traceponding=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_PONDING,Idpg,FSTypeg,PorePressRateg);
+#endif
     //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
     Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
+#ifdef C08_STAGE_TRACE
+    C08TraceEnd(c08traceponding,DirOut);
+#endif
     //-The next force/save refreshes wall state before consuming its pressure samples.
   }
 }
@@ -1578,9 +1635,16 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   //==== mdbr
   swap(SigmaPreg,Sigmag);
   if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);
+#ifdef C08_STAGE_TRACE
+  const bool c08traceupdate=(HydroMech && PorePressg && PorePressPreg && PorePressRateg
+    ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt05,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
+#endif
   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg
       ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);
+#ifdef C08_STAGE_TRACE
+  C08TraceEnd(c08traceupdate,DirOut);
+#endif
   ComputeSymplecticPorosity(false,dt05);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Allocate memory to compute the diplacement.
@@ -1655,9 +1719,16 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
     ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
+#ifdef C08_STAGE_TRACE
+  const bool c08traceupdate=(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg
+    ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
+#endif
   if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg
       ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);
+#ifdef C08_STAGE_TRACE
+  C08TraceEnd(c08traceupdate,DirOut);
+#endif
   //-Frees memory allocated for diplacement.
   ArraysGpu->Free(movxyg);   movxyg=NULL;
   ArraysGpu->Free(movzg);    movzg=NULL;
@@ -1825,6 +1896,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
   unsigned *invalidg=NULL;
   double *maxspeedg=NULL,maxspeed=0.;
   unsigned invalid=Np;
+#ifdef C08_STAGE_TRACE
+  bool c08tracerhs=false;
+#endif
   try{
     invalidg=ArraysGpu->ReserveUint();
     if(DynamicPoreConductivity && SoilCte.HydraulicConductivity>0){maxspeedg=ArraysGpu->ReserveDouble();cudaMemset(maxspeedg,0,sizeof(double));}
@@ -1832,6 +1906,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,Aceg,PoroThetag,NULL,invalidg);
     if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationGpu(invalidg);
     const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
+#ifdef C08_STAGE_TRACE
+    c08tracerhs=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_RHS,Idpg,FSTypeg,PorePressRateg);
+#endif
     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
@@ -1852,6 +1929,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     "GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
   if(!std::isfinite(maxspeed) || maxspeed<0)Run_Exceptioon("GPU dynamic conductivity-gradient speed must remain finite and nonnegative.");
   DynamicConductivitySpeedMax=maxspeed;
+#ifdef C08_STAGE_TRACE
+  C08TraceEnd(c08tracerhs,DirOut); //-Existing CUDA/physical-rate guards have already passed.
+#endif
 }
 
 //==============================================================================

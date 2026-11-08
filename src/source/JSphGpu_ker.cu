@@ -22,6 +22,9 @@
 #include "Functions.h"
 #include "FunctionsCuda.h"
 #include "JLog2.h"
+#ifdef C08_STAGE_TRACE
+#include "C08StageTrace.h"
+#endif
 #include <cfloat>
 #include <math_constants.h>
 //:#include "JDgKerPrint.h"
@@ -46,6 +49,31 @@ namespace cusph{
 #include "JCellSearch_iker.h"
 
 
+#ifdef C08_STAGE_TRACE
+__constant__ C08StageTraceContext C08TraceContext;
+__device__ C08StageTraceRecord C08TraceRecords[3];
+bool C08StageTraceStart(const C08StageTraceContext& context){
+  const C08StageTraceRecord zero[3]={};
+  return cudaMemcpyToSymbol(C08TraceRecords,zero,sizeof(zero))==cudaSuccess
+    && cudaMemcpyToSymbol(C08TraceContext,&context,sizeof(context))==cudaSuccess;
+}
+bool C08StageTraceRead(C08StageTraceRecord records[3]){
+  const cudaError_t got=cudaMemcpyFromSymbol(records,C08TraceRecords,3*sizeof(C08StageTraceRecord));
+  const C08StageTraceContext off={};
+  const cudaError_t disabled=cudaMemcpyToSymbol(C08TraceContext,&off,sizeof(off));
+  return got==cudaSuccess && disabled==cudaSuccess;
+}
+static __device__ int C08TraceSlot(unsigned p,unsigned phase){
+  if(!C08TraceContext.enabled || C08TraceContext.phase!=phase || !C08TraceContext.idp)return -1;
+  const unsigned id=C08TraceContext.idp[p];return id==5809?0:(id==4956?1:(id==4959?2:-1));
+}
+static __device__ C08StageTraceRecord& C08TraceTake(unsigned p,int slot){
+  C08StageTraceRecord& r=C08TraceRecords[slot];r.context=C08TraceContext;
+  r.native_id=C08TraceContext.idp[p];r.hits++; //-One normal native owner per declared C08 ID.
+  r.fstype=(C08TraceContext.fstype? C08TraceContext.fstype[p]: ~0u);return r;
+}
+static __device__ void C08TraceVector(double out[3],const double3& value){out[0]=value.x;out[1]=value.y;out[2]=value.z;}
+#endif
 __device__ float4 KerComputePosCell(const double3 &ps,const double3 &mapposmin,float poscellsize);
 
 //-Persistent stress is double; force and boundary arithmetic retain float inputs.
@@ -1064,12 +1092,21 @@ __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigne
   ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
 {
   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
+#ifdef C08_STAGE_TRACE
+  const int c08slot=(p<np && ponding? C08TraceSlot(p,C08_TRACE_PONDING): -1);
+  const float c08p=(c08slot>=0? porepress[p]: 0.f);
+  const float c08rate=(c08slot>=0 && C08TraceContext.rate? C08TraceContext.rate[p]: 0.f);
+#endif
   if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype)){
     porepress[p]=0.f;
     if(rate)rate[p]=0.f;
   }
   if(ponding && p<np && CODE_IsNormal(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)
     && isfinite(porepress[p]) && porepress[p]>0)porepress[p]=0.f;
+#ifdef C08_STAGE_TRACE
+  if(c08slot>=0){auto& r=C08TraceTake(p,c08slot);r.p_before=c08p;r.p_after=porepress[p];r.rate_before=c08rate;
+    r.rate_after=(C08TraceContext.rate? C08TraceContext.rate[p]: 0.f);r.projected=(c08p!=porepress[p]);}
+#endif
 }
 
 void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
@@ -1320,6 +1357,11 @@ template<bool drainfs> __global__ void KerUpdatePorePressure(unsigned np,unsigne
     if(p<npb || !CODE_IsFluid(code[p]))porepressnew[p]=poreold[p];
     else if(drainfs && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype))porepressnew[p]=0.f;
     else porepressnew[p]=float(double(poreold[p])+dt*double(porepressrate[p]));
+#ifdef C08_STAGE_TRACE
+    const int c08slot=C08TraceSlot(p,C08_TRACE_UPDATE);
+    if(c08slot>=0){auto& r=C08TraceTake(p,c08slot);r.p_before=poreold[p];r.p_after=porepressnew[p];
+      r.rate_before=porepressrate[p];r.rate_after=porepressrate[p];}
+#endif
   }
 }
 
@@ -1541,10 +1583,16 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
       lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
     double speed=0.;
+#ifdef C08_STAGE_TRACE
+    double c08chain=0.;
+#endif
     if(conductivity && khyd>0){
       const double scale=ki/(solid0*ck);
       const double chain=scale*(gjstate.x*(gpcorr.x+rhow*ace[p1].x)
         +gjstate.y*(gpcorr.y+rhow*ace[p1].y)+gjstate.z*(gpcorr.z+rhow*ace[p1].z));
+#ifdef C08_STAGE_TRACE
+      c08chain=chain;
+#endif
       value=kw/n*(-theta[p1]+ki/gamma*lap+chain/gamma);
       speed=kw/n/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);
       if(!isfinite(speed) || speed<0){atomicMin(invalid,p1);return;}
@@ -1552,7 +1600,22 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
     if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}
     //-Finite nonnegative double bits are ordered; no new block barrier after early returns.
     if(maxspeed)atomicMax((unsigned long long*)maxspeed,(unsigned long long)__double_as_longlong(speed));
+#ifdef C08_STAGE_TRACE
+    const int c08slot=C08TraceSlot(p1,C08_TRACE_RHS);
+    const float c08rate=(c08slot>=0? rate[p1]: 0.f);
+#endif
     rate[p1]=float(value); //-One complete overwrite, never add the compression source twice.
+#ifdef C08_STAGE_TRACE
+    if(c08slot>=0){
+      auto& r=C08TraceTake(p1,c08slot);r.p_before=r.p_after=porepress[p1];r.rate_before=c08rate;r.rate_after=rate[p1];
+      r.J=jp;r.n=n;r.theta=theta[p1];r.ki=ki;r.lp=lp;r.da=da;r.lap=lap;r.chain=c08chain;r.value=value;
+      r.pos[0]=posxy[p1].x;r.pos[1]=posxy[p1].y;r.pos[2]=posz[p1];
+      if(fsnormal){r.fsnormal[0]=fsnormal[p1].x;r.fsnormal[1]=fsnormal[p1].y;r.fsnormal[2]=fsnormal[p1].z;}
+      const tmatrix3d ci=corrmat[p1];r.C[0]=ci.a11;r.C[1]=ci.a12;r.C[2]=ci.a13;r.C[3]=ci.a21;r.C[4]=ci.a22;r.C[5]=ci.a23;r.C[6]=ci.a31;r.C[7]=ci.a32;r.C[8]=ci.a33;
+      C08TraceVector(r.Ace,make_double3(ace[p1].x,ace[p1].y,ace[p1].z));C08TraceVector(r.lx,lx);C08TraceVector(r.gp,gp);C08TraceVector(r.gpcorr,gpcorr);C08TraceVector(r.gJ,gjstate);
+      r.raw_fs=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype));r.drainfs=drainfs;r.closedfs=closedfs;r.freeseepage=freeseepage;
+    }
+#endif
   }
 }
 

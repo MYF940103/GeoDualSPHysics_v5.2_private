@@ -1,0 +1,297 @@
+diff --git a/src/source/JSphGpu.cpp b/src/source/JSphGpu.cpp
+index 59ee5c0..ed82ae3 100644
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -50,6 +50,12 @@
+ #include <climits>
+ #include <cmath>
+ #include <limits>
++#ifdef C08_STAGE_TRACE
++#include "C08StageTrace.h"
++#include <fstream>
++#include <iomanip>
++#include <stdexcept>
++#endif
+ 
+ using namespace std;
+ 
+@@ -59,6 +65,51 @@ namespace{
+   }
+ }
+ 
++#ifdef C08_STAGE_TRACE
++namespace{
++  bool C08TraceBegin(unsigned step,double time,unsigned interstep,double dtstate,double dtop,unsigned phase
++    ,const unsigned *idp,const unsigned *fstype,const float *rate){
++    if(step<4000000 || step>=4264000 || (step<4240000 && step%40))return false;
++    const C08StageTraceContext context={1,phase,step,interstep,time,dtstate,dtop,idp,fstype,rate};
++    if(!cusph::C08StageTraceStart(context))throw std::runtime_error("C08_STAGE_TRACE observation: CUDA context/buffer setup failed.");
++    return true;
++  }
++  void C08TraceEnd(bool selected,const std::string& dirout){
++    if(!selected)return;
++    C08StageTraceRecord records[3];
++    if(!cusph::C08StageTraceRead(records))throw std::runtime_error("C08_STAGE_TRACE observation: CUDA copy/disable failed.");
++    const unsigned wanted[3]={5809,4956,4959};
++    for(unsigned q=0;q<3;q++)if(records[q].hits!=1 || records[q].native_id!=wanted[q])
++      throw std::runtime_error("C08_STAGE_TRACE observation: a requested native ID was missing/duplicated; no physical guard is replaced.");
++    static std::ofstream file;static std::string boundpath;
++    const std::string path=fun::GetDirWithSlash(dirout)+"C08StageTrace.csv";
++    if(!file.is_open()){
++      std::string normal=path;for(char& c:normal)if(c=='\\')c='/';
++      if(normal.find("/tests/outputs/")==std::string::npos || fun::FileExists(path))
++        throw std::runtime_error("C08_STAGE_TRACE observation: fresh tests/outputs CSV required.");
++      boundpath=path;file.open(path);file<<std::setprecision(17);
++      file<<"step_start_s,nstep,interstep,event,stored_dt_s,operator_dt_s,native_id,hits,FSType,p_before_Pa,p_after_Pa,rate_before_Pa_s,rate_after_Pa_s,J,n,theta,ki,LP,divAce,lap,chain,value_double";
++      for(const char* prefix:{"pos","FSNormal"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
++      for(unsigned c=0;c<9;c++)file<<",C"<<c;
++      for(const char* prefix:{"finishedAce","Lx","Gp","GpCorr","GJ"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
++      file<<",raw_FS_branch,drainfs,closedfs,freeseepage,ponding_changed\n";
++    }
++    if(boundpath!=path)throw std::runtime_error("C08_STAGE_TRACE observation: one output path per process required.");
++    for(const auto& r:records){
++      const bool rhs=r.context.phase==C08_TRACE_RHS;
++      file<<r.context.time<<','<<r.context.nstep<<','<<r.context.interstep<<','<<r.context.phase<<','<<r.context.dt_state<<','<<r.context.dt_operator<<','<<r.native_id<<','<<r.hits<<','<<r.fstype<<','<<r.p_before<<','<<r.p_after<<','<<r.rate_before<<','<<r.rate_after;
++      const auto number=[&](double v){file<<',';if(rhs)file<<v;};
++      for(double v:{r.J,r.n,r.theta,r.ki,r.lp,r.da,r.lap,r.chain,r.value})number(v);
++      for(const double* a:{r.pos,r.fsnormal})for(unsigned c=0;c<3;c++)number(a[c]);
++      for(double v:r.C)number(v);
++      for(const double* a:{r.Ace,r.lx,r.gp,r.gpcorr,r.gJ})for(unsigned c=0;c<3;c++)number(a[c]);
++      for(unsigned v:{r.raw_fs,r.drainfs,r.closedfs,r.freeseepage}){file<<',';if(rhs)file<<v;}
++      file<<',';if(r.context.phase==C08_TRACE_PONDING)file<<r.projected;file<<'\n';
++    }
++    file.flush();if(!file)throw std::runtime_error("C08_STAGE_TRACE observation: CSV write failed.");
++  }
++}
++#endif
+ //==============================================================================
+ /// Constructor.
+ //==============================================================================
+@@ -1248,9 +1299,15 @@ void JSphGpu::ApplyPorePressureBoundaries(){
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
+   if(HydroMechFreeSeepage && !PorePressPreg){
++#ifdef C08_STAGE_TRACE
++    const bool c08traceponding=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_PONDING,Idpg,FSTypeg,PorePressRateg);
++#endif
+     //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
+     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
+     Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
++#ifdef C08_STAGE_TRACE
++    C08TraceEnd(c08traceponding,DirOut);
++#endif
+     //-The next force/save refreshes wall state before consuming its pressure samples.
+   }
+ }
+@@ -1578,9 +1635,16 @@ void JSphGpu::ComputeSymplecticPre(double dt){
+   //==== mdbr
+   swap(SigmaPreg,Sigmag);
+   if(HydroMech && PorePressPreg)swap(PorePressPreg,PorePressg);
++#ifdef C08_STAGE_TRACE
++  const bool c08traceupdate=(HydroMech && PorePressg && PorePressPreg && PorePressRateg
++    ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt05,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
++#endif
+   if(HydroMech && PorePressg && PorePressPreg && PorePressRateg)
+     cusph::UpdatePorePressureSymplectic(Np,Npb,dt05,Codeg,PorePressPreg,PorePressRateg,PorePressg
+       ,DynamicPorePressure && IsHydroMechDrainageActive(),HydroMechTopLoadMode,PosxyPreg,FSTypeg);
++#ifdef C08_STAGE_TRACE
++  C08TraceEnd(c08traceupdate,DirOut);
++#endif
+   ComputeSymplecticPorosity(false,dt05);
+   //-Boundary conditions follow cell division, with matching geometry and neighbours.
+   //-Allocate memory to compute the diplacement.
+@@ -1655,9 +1719,16 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
+     ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
+   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
+     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
++#ifdef C08_STAGE_TRACE
++  const bool c08traceupdate=(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg
++    ? C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt,C08_TRACE_UPDATE,Idpg,FSTypeg,PorePressRateg): false);
++#endif
+   if(HydroMech && DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
+     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg
+       ,IsHydroMechDrainageActive(),HydroMechTopLoadMode,Posxyg,FSTypeg);
++#ifdef C08_STAGE_TRACE
++  C08TraceEnd(c08traceupdate,DirOut);
++#endif
+   //-Frees memory allocated for diplacement.
+   ArraysGpu->Free(movxyg);   movxyg=NULL;
+   ArraysGpu->Free(movzg);    movzg=NULL;
+@@ -1825,6 +1896,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
+   unsigned *invalidg=NULL;
+   double *maxspeedg=NULL,maxspeed=0.;
+   unsigned invalid=Np;
++#ifdef C08_STAGE_TRACE
++  bool c08tracerhs=false;
++#endif
+   try{
+     invalidg=ArraysGpu->ReserveUint();
+     if(DynamicPoreConductivity && SoilCte.HydraulicConductivity>0){maxspeedg=ArraysGpu->ReserveDouble();cudaMemset(maxspeedg,0,sizeof(double));}
+@@ -1832,6 +1906,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
+     if(ridpg)cusph::ExtendDynamicPorePeriodic(Np,Npb,CaseNpb,CaseNp,Codeg,Idpg,ridpg,NULL,Aceg,PoroThetag,NULL,invalidg);
+     if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationGpu(invalidg);
+     const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
++#ifdef C08_STAGE_TRACE
++    c08tracerhs=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_RHS,Idpg,FSTypeg,PorePressRateg);
++#endif
+     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
+       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)
+       ,rhow,double(SoilCte.HydraulicConductivity),gamma,double(MassFluid)/double(RhopZero),invalidg
+@@ -1852,6 +1929,9 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
+     "GPU dynamic pore pressure requires valid periodic owners and finite saturated pressure rates.");
+   if(!std::isfinite(maxspeed) || maxspeed<0)Run_Exceptioon("GPU dynamic conductivity-gradient speed must remain finite and nonnegative.");
+   DynamicConductivitySpeedMax=maxspeed;
++#ifdef C08_STAGE_TRACE
++  C08TraceEnd(c08tracerhs,DirOut); //-Existing CUDA/physical-rate guards have already passed.
++#endif
+ }
+ 
+ //==============================================================================
+diff --git a/src/source/JSphGpu_ker.cu b/src/source/JSphGpu_ker.cu
+index 927c455..5d806ad 100644
+--- a/src/source/JSphGpu_ker.cu
++++ b/src/source/JSphGpu_ker.cu
+@@ -22,6 +22,9 @@
+ #include "Functions.h"
+ #include "FunctionsCuda.h"
+ #include "JLog2.h"
++#ifdef C08_STAGE_TRACE
++#include "C08StageTrace.h"
++#endif
+ #include <cfloat>
+ #include <math_constants.h>
+ //:#include "JDgKerPrint.h"
+@@ -46,6 +49,31 @@ namespace cusph{
+ #include "JCellSearch_iker.h"
+ 
+ 
++#ifdef C08_STAGE_TRACE
++__constant__ C08StageTraceContext C08TraceContext;
++__device__ C08StageTraceRecord C08TraceRecords[3];
++bool C08StageTraceStart(const C08StageTraceContext& context){
++  const C08StageTraceRecord zero[3]={};
++  return cudaMemcpyToSymbol(C08TraceRecords,zero,sizeof(zero))==cudaSuccess
++    && cudaMemcpyToSymbol(C08TraceContext,&context,sizeof(context))==cudaSuccess;
++}
++bool C08StageTraceRead(C08StageTraceRecord records[3]){
++  const cudaError_t got=cudaMemcpyFromSymbol(records,C08TraceRecords,3*sizeof(C08StageTraceRecord));
++  const C08StageTraceContext off={};
++  const cudaError_t disabled=cudaMemcpyToSymbol(C08TraceContext,&off,sizeof(off));
++  return got==cudaSuccess && disabled==cudaSuccess;
++}
++static __device__ int C08TraceSlot(unsigned p,unsigned phase){
++  if(!C08TraceContext.enabled || C08TraceContext.phase!=phase || !C08TraceContext.idp)return -1;
++  const unsigned id=C08TraceContext.idp[p];return id==5809?0:(id==4956?1:(id==4959?2:-1));
++}
++static __device__ C08StageTraceRecord& C08TraceTake(unsigned p,int slot){
++  C08StageTraceRecord& r=C08TraceRecords[slot];r.context=C08TraceContext;
++  r.native_id=C08TraceContext.idp[p];r.hits++; //-One normal native owner per declared C08 ID.
++  r.fstype=(C08TraceContext.fstype? C08TraceContext.fstype[p]: ~0u);return r;
++}
++static __device__ void C08TraceVector(double out[3],const double3& value){out[0]=value.x;out[1]=value.y;out[2]=value.z;}
++#endif
+ __device__ float4 KerComputePosCell(const double3 &ps,const double3 &mapposmin,float poscellsize);
+ 
+ //-Persistent stress is double; force and boundary arithmetic retain float inputs.
+@@ -1064,12 +1092,21 @@ __global__ void KerApplyFreeSurfacePorePressure(unsigned np,unsigned npb,unsigne
+   ,unsigned loadmode,const double2 *posxy,const typecode *code,const unsigned *fstype,float *porepress,float *rate,bool ponding)
+ {
+   const unsigned p=blockIdx.x*blockDim.x + threadIdx.x + npb;
++#ifdef C08_STAGE_TRACE
++  const int c08slot=(p<np && ponding? C08TraceSlot(p,C08_TRACE_PONDING): -1);
++  const float c08p=(c08slot>=0? porepress[p]: 0.f);
++  const float c08rate=(c08slot>=0 && C08TraceContext.rate? C08TraceContext.rate[p]: 0.f);
++#endif
+   if(drainfs && p<np && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype)){
+     porepress[p]=0.f;
+     if(rate)rate[p]=0.f;
+   }
+   if(ponding && p<np && CODE_IsNormal(code[p]) && KerHydroMechIsFreeSurface(p,code,fstype)
+     && isfinite(porepress[p]) && porepress[p]>0)porepress[p]=0.f;
++#ifdef C08_STAGE_TRACE
++  if(c08slot>=0){auto& r=C08TraceTake(p,c08slot);r.p_before=c08p;r.p_after=porepress[p];r.rate_before=c08rate;
++    r.rate_after=(C08TraceContext.rate? C08TraceContext.rate[p]: 0.f);r.projected=(c08p!=porepress[p]);}
++#endif
+ }
+ 
+ void ApplyFreeSurfacePorePressure(unsigned np,unsigned npb,bool drainfs,TpHydroMechLoadMode loadmode
+@@ -1320,6 +1357,11 @@ template<bool drainfs> __global__ void KerUpdatePorePressure(unsigned np,unsigne
+     if(p<npb || !CODE_IsFluid(code[p]))porepressnew[p]=poreold[p];
+     else if(drainfs && KerHydroMechIsDrainedParticle(p,loadmode,posxy,code,fstype))porepressnew[p]=0.f;
+     else porepressnew[p]=float(double(poreold[p])+dt*double(porepressrate[p]));
++#ifdef C08_STAGE_TRACE
++    const int c08slot=C08TraceSlot(p,C08_TRACE_UPDATE);
++    if(c08slot>=0){auto& r=C08TraceTake(p,c08slot);r.p_before=poreold[p];r.p_after=porepressnew[p];
++      r.rate_before=porepressrate[p];r.rate_after=porepressrate[p];}
++#endif
+   }
+ }
+ 
+@@ -1541,10 +1583,16 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
+       lp-gpcorr.x*lx.x-gpcorr.y*lx.y-gpcorr.z*lx.z+rhow*da);
+     double value=kw/n*(-theta[p1]+khyd/gamma*lap);
+     double speed=0.;
++#ifdef C08_STAGE_TRACE
++    double c08chain=0.;
++#endif
+     if(conductivity && khyd>0){
+       const double scale=ki/(solid0*ck);
+       const double chain=scale*(gjstate.x*(gpcorr.x+rhow*ace[p1].x)
+         +gjstate.y*(gpcorr.y+rhow*ace[p1].y)+gjstate.z*(gpcorr.z+rhow*ace[p1].z));
++#ifdef C08_STAGE_TRACE
++      c08chain=chain;
++#endif
+       value=kw/n*(-theta[p1]+ki/gamma*lap+chain/gamma);
+       speed=kw/n/gamma*scale*sqrt(gjstate.x*gjstate.x+gjstate.y*gjstate.y+gjstate.z*gjstate.z);
+       if(!isfinite(speed) || speed<0){atomicMin(invalid,p1);return;}
+@@ -1552,7 +1600,22 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
+     if(!isfinite(value) || fabs(value)>FLT_MAX){atomicMin(invalid,p1);return;}
+     //-Finite nonnegative double bits are ordered; no new block barrier after early returns.
+     if(maxspeed)atomicMax((unsigned long long*)maxspeed,(unsigned long long)__double_as_longlong(speed));
++#ifdef C08_STAGE_TRACE
++    const int c08slot=C08TraceSlot(p1,C08_TRACE_RHS);
++    const float c08rate=(c08slot>=0? rate[p1]: 0.f);
++#endif
+     rate[p1]=float(value); //-One complete overwrite, never add the compression source twice.
++#ifdef C08_STAGE_TRACE
++    if(c08slot>=0){
++      auto& r=C08TraceTake(p1,c08slot);r.p_before=r.p_after=porepress[p1];r.rate_before=c08rate;r.rate_after=rate[p1];
++      r.J=jp;r.n=n;r.theta=theta[p1];r.ki=ki;r.lp=lp;r.da=da;r.lap=lap;r.chain=c08chain;r.value=value;
++      r.pos[0]=posxy[p1].x;r.pos[1]=posxy[p1].y;r.pos[2]=posz[p1];
++      if(fsnormal){r.fsnormal[0]=fsnormal[p1].x;r.fsnormal[1]=fsnormal[p1].y;r.fsnormal[2]=fsnormal[p1].z;}
++      const tmatrix3d ci=corrmat[p1];r.C[0]=ci.a11;r.C[1]=ci.a12;r.C[2]=ci.a13;r.C[3]=ci.a21;r.C[4]=ci.a22;r.C[5]=ci.a23;r.C[6]=ci.a31;r.C[7]=ci.a32;r.C[8]=ci.a33;
++      C08TraceVector(r.Ace,make_double3(ace[p1].x,ace[p1].y,ace[p1].z));C08TraceVector(r.lx,lx);C08TraceVector(r.gp,gp);C08TraceVector(r.gpcorr,gpcorr);C08TraceVector(r.gJ,gjstate);
++      r.raw_fs=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype));r.drainfs=drainfs;r.closedfs=closedfs;r.freeseepage=freeseepage;
++    }
++#endif
+   }
+ }
+ 
+diff --git a/src/source/C08StageTrace.h b/src/source/C08StageTrace.h
+new file mode 100644
+--- /dev/null
++++ b/src/source/C08StageTrace.h
+@@ -0,0 +1,23 @@
++// Test-only C08 genuine-stage telemetry. No code/API exists without this macro.
++#pragma once
++#ifdef C08_STAGE_TRACE
++#pragma message("C08_STAGE_TRACE enabled")
++struct C08StageTraceContext{
++  unsigned enabled,phase,nstep,interstep;
++  double time,dt_state,dt_operator;
++  const unsigned *idp,*fstype;
++  const float *rate;
++};
++struct C08StageTraceRecord{
++  C08StageTraceContext context;
++  unsigned native_id,hits,fstype,raw_fs,drainfs,closedfs,freeseepage,projected;
++  double p_before,p_after,rate_before,rate_after;
++  double J,n,theta,ki,lp,da,lap,chain,value;
++  double pos[3],fsnormal[3],C[9],Ace[3],lx[3],gp[3],gpcorr[3],gJ[3];
++};
++enum{C08_TRACE_RHS=1,C08_TRACE_UPDATE=2,C08_TRACE_PONDING=3};
++namespace cusph{
++  bool C08StageTraceStart(const C08StageTraceContext& context);
++  bool C08StageTraceRead(C08StageTraceRecord records[3]);
++}
++#endif

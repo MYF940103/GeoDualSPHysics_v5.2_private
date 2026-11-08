@@ -4,6 +4,12 @@
 
 完整窗出现新的物理问题：τ=.63/.64 s有−450.667/+1352.125 kPa压力簇，约.8 s后运动很弱；末前缘粒子中心x=4.70149 m、速度RMS9.04e−5 m/s，1.2 s形态尚未复现论文的后退分块/滑出。末仍3781/5000土点为负孔压。当前只进行保存状态的自由面、压力/AS—加速度—Darcy分项审查，未归因于某项已证实bug；另两组仍锁定，无新solver/half/PRE。图和数据见`figures/collapse_psi0_r5`，结论见`tests/notes/upl_c08_r5_science_review_r1.md`、`upl_c08_r5_psi0_paper_review_r1.md`；终态审计见`tests/logs/upl_c08_formal_psi0_r5_r1.terminal_audit.json`。原终态通知已投递一次，不重新布防。
 
+后续离线18点分解已完成：所选邻域C条件数1.004–2.682；负峰5809的直接扩散恢复负压，但pressure→raw-Ace→Darcy通道可翻向，AS谱响应只部分缓和。没有据此证明完整因果或修改方程。完整结果及分项审查已验证保存本地/远端`190a2c3f82af1e656e0bb249303268409b01e054`。更清楚的有符号对数压力图在`tests/figures/upl_c08_r5_pressure_fields_r1.png`，对应原CSV不变。
+
+**观测器三份隔离构建已完成，正在准备很短的实现回归。** 原owner76072，`upl_c08_stage_trace_sequence_r1`总耗时576.469 s；默认CPU Debug退出0、87对象、宏关闭，GPU Debug/Release各退出0、113对象，CPP/CUDA均有宏实际启用标记。静态审查未发现当前唯一ID/无周期C08范围的阻塞；907项必要源码/程序/保护文件stat一致，原PRE和runtime_r5未改。构建审查见`tests/logs/upl_c08_stage_trace_build_review_r1.check.json`。仅编译通过，不代表运行无扰动或物理验收；下一步限Debug 40更新内存检查及Release 0.03 s同时间原生比较，不做half或新长程。
+
+源码只增加`C08_STAGE_TRACE`下的三个ID步内日志，默认undef时两原文件文本保持相同；未改变物理算式/参数或替换runtime_r5。原构建owner已仅通知一次，不重新布防。另两ψ/新PRE/新长程均未准入；后续0.66 s观测窗须另做根审查。
+
 准入依据：保留浅床点的0.6 s候选正常完成且60帧原生门通过。`upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过，完整窗口证据已保存本地/远端`c55852d93af3b0100c2acb90d5c51b06d2c775b9`。
 
 仍有τ=.34近床ID7013的−115985 Pa负压脉冲和末上部负压区域，尚无论文精度/物理验收。根只准入一个新ψ0完整3 s诊断，不自动启动另两组；决定、完整4PNG/7CSV及局限见`tests/notes/upl_c08_bedkeep_window_result_r1.md`、`tests/logs/upl_c08_bedkeep_window_decision_r1.json`。新r5入口/runtime准备并检查前不得把旧r4当成该候选。
