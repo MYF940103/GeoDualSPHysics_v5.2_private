@@ -1,0 +1,53 @@
+{
+  "stage": "upl_c08_hdp_frozen_review_r1",
+  "passed": true,
+  "analysis_completed": true,
+  "physical_acceptance": false,
+  "inputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_hdp_frozen_review_r1.py",
+      "bytes": 5234,
+      "mtime_ns": 1794141843801587700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_c08_hdp_frozen_review_r1.md",
+      "bytes": 2019,
+      "mtime_ns": 1794141819609949300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_n3_full_compare_r1_spatial.csv",
+      "bytes": 7607397,
+      "mtime_ns": 1794138117952346300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r6_Def.xml",
+      "bytes": 14055,
+      "mtime_ns": 1794128704440090300
+    }
+  ],
+  "outputs": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_hdp_frozen_review_r1_neighbors.csv",
+      "bytes": 1189,
+      "mtime_ns": 1794141946778798900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_hdp_frozen_review_r1_weights.csv",
+      "bytes": 994,
+      "mtime_ns": 1794141946782800600
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "dp_m": 0.04,
+  "snapshots": 5,
+  "neighbor_summary_rows": 10,
+  "weight_rows": 14,
+  "scope": "Frozen n3 XZ soil only; no fixed walls, ghost images or actual force-neighbor claim",
+  "neighbor_definition": "distinct unordered soil pairs, strict r<2h; each contributes one neighbor to each end",
+  "arithmetic": "Nominal h=hdp*dp and normalized Cubic shape in float64; not GPU float-bit replay",
+  "weight_formula": "epsilon*[W(r;h)/W(dp;h)]^3 with epsilon=.2; not actual pair acceleration",
+  "kernel_shape": "q<1:1-1.5q^2+.75q^3; 1<=q<2:.25(2-q)^3; otherwise0",
+  "solver_invocations": 0,
+  "decoder_invocations": 0,
+  "SHA_scans": 0
+}

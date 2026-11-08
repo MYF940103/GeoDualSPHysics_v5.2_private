@@ -66,6 +66,129 @@ namespace{
 }
 
 #ifdef C08_STAGE_TRACE
+#ifdef C08_CAUSAL_TRACE
+namespace{
+  bool C08CausalRange(unsigned step){return step>=4000000 && step<4360000;}
+  bool C08CausalSelected(unsigned step){
+    return C08CausalRange(step) && (!(step%40) || (step>=4316000 && step<4324000) || (step>=4332000 && step<4340000));
+  }
+  bool C08TraceBegin(unsigned step,double time,unsigned interstep,double dtstate,double dtop,unsigned phase
+    ,const unsigned *idp,const unsigned *fstype,const float *rate,const tsymatrix3f *rsigma=NULL){
+    if(!C08CausalSelected(step))return false;
+    if(phase==C08_TRACE_RHS && !rsigma)throw std::runtime_error("C08_CAUSAL_TRACE observation: actual stress-rate pointer missing.");
+    C08StageTraceContext context={1,phase,step,interstep,time,dtstate,dtop,idp,fstype,rate};context.rsigma=rsigma;context.emit=1;
+    if(!cusph::C08StageTraceStart(context))throw std::runtime_error("C08_CAUSAL_TRACE observation: interaction buffer setup failed.");
+    return true;
+  }
+  bool C08CausalBegin(unsigned step,double time,unsigned interstep,double dtstate,double dtop,unsigned phase
+    ,const unsigned *idp,const unsigned *fstype,const float *rate,const float *pressure,const float *oldpressure
+    ,const double *jbase,const double *jstage,const double *theta){
+    if(!C08CausalRange(step))return false;
+    if(!idp || !fstype || !rate || !pressure || !oldpressure || !jstage || !theta
+      || (!jbase && !(phase==C08_TRACE_PLANE && interstep==3)))
+      throw std::runtime_error("C08_CAUSAL_TRACE observation: actual pressure/J stage pointers missing.");
+    C08StageTraceContext context={1,phase,step,interstep,time,dtstate,dtop,idp,fstype,rate};
+    context.porepress=pressure;context.poreold=oldpressure;context.jbase=jbase;context.jstage=jstage;context.theta=theta;
+    context.emit=C08CausalSelected(step);
+    if(!cusphs::C08CausalTraceStart(context))throw std::runtime_error("C08_CAUSAL_TRACE observation: simple-TU buffer setup failed.");
+    return context.emit!=0; //-Unselected stages still ran the cumulative device observer.
+  }
+  void C08TraceEnd(bool selected,const std::string& dirout,bool simple=false){
+    if(!selected)return;
+    C08StageTraceRecord records[3];
+    if(!(simple? cusphs::C08CausalTraceRead(records): cusph::C08StageTraceRead(records)))
+      throw std::runtime_error("C08_CAUSAL_TRACE observation: CUDA record copy/disable failed.");
+    const unsigned wanted[3]={7017,5944,6814};
+    for(unsigned q=0;q<3;q++)if(records[q].hits!=1 || records[q].native_id!=wanted[q] || (simple && records[q].cumulative.errors))
+      throw std::runtime_error("C08_CAUSAL_TRACE observation: missing/duplicate ID or invalid cumulative linkage.");
+    static std::ofstream file;static std::string boundpath;
+    const std::string path=fun::GetDirWithSlash(dirout)+"C08CausalTrace.csv";
+    if(!file.is_open()){
+      std::string normal=path;for(char& c:normal)if(c=='\\')c='/';
+      if(normal.find("/tests/outputs/")==std::string::npos || fun::FileExists(path))
+        throw std::runtime_error("C08_CAUSAL_TRACE observation: fresh tests/outputs CSV required.");
+      boundpath=path;file.open(path);file<<std::setprecision(17);
+      file<<"step_start_s,nstep,interstep,event,stored_dt_s,operator_dt_s,native_id,hits,FSType,p_before_Pa,p_after_Pa,rate_before_Pa_s,rate_after_Pa_s,J,n,theta,ki,LP,divAce,lap,chain,value_double";
+      for(const char* prefix:{"pos","FSNormal"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
+      for(unsigned c=0;c<9;c++)file<<",C"<<c;
+      for(const char* prefix:{"finishedAce","Lx","Gp","GpCorr","GJ"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
+      file<<",raw_FS_branch,drainfs,closedfs,freeseepage,ponding_changed,material_status,material_commit,base_I_Pa,trial_I_Pa,returned_I_Pa,kappa_old,kappa_candidate,kappa_saved,trace_drop_roundoff_budget_Pa,actual_bulk_modulus_Pa,trial_update_identity_Pa,trial_update_roundoff_budget_Pa";
+      for(const char* c:{"xx","yy","zz","xy","yz","xz"})file<<",sigma_rate_"<<c;
+      file<<",sigma_rate_trace,Jbase,Jhalf,Jnew,stage_theta,pressure_base_Pa";
+      for(const char* prefix:{"move_before","move_after","velocity_before","velocity_after"})for(unsigned c=0;c<3;c++)file<<','<<prefix<<c;
+      file<<",plane_hit_x,plane_hit_z,plane_velocity_clamp_x,plane_velocity_clamp_z\n";
+    }
+    if(boundpath!=path)throw std::runtime_error("C08_CAUSAL_TRACE observation: one output path per process required.");
+    for(const auto& r:records){
+      const bool rhs=r.context.phase==C08_TRACE_RHS,material=r.context.phase==C08_TRACE_MATERIAL,plane=r.context.phase==C08_TRACE_PLANE;
+      file<<r.context.time<<','<<r.context.nstep<<','<<r.context.interstep<<','<<r.context.phase<<','<<r.context.dt_state<<','<<r.context.dt_operator<<','<<r.native_id<<','<<r.hits<<','<<r.fstype<<','<<r.p_before<<','<<r.p_after<<','<<r.rate_before<<','<<r.rate_after;
+      const auto number=[&](double v,bool applicable){file<<',';if(applicable)file<<v;};
+      for(double v:{r.J,r.n,r.theta,r.ki,r.lp,r.da,r.lap,r.chain,r.value})number(v,rhs);
+      for(const double* a:{r.pos,r.fsnormal})for(unsigned c=0;c<3;c++)number(a[c],rhs);
+      for(double v:r.C)number(v,rhs);
+      for(const double* a:{r.Ace,r.lx,r.gp,r.gpcorr,r.gJ})for(unsigned c=0;c<3;c++)number(a[c],rhs);
+      for(unsigned v:{r.raw_fs,r.drainfs,r.closedfs,r.freeseepage})number(v,rhs);
+      number(r.projected,r.context.phase==C08_TRACE_PONDING);
+      number(r.material_status,material);number(r.material_commit,material);number(r.base_I,material);number(r.trial_I,material);
+      number(r.returned_I,material && r.material_commit);
+      for(double v:{r.kappa_old,r.kappa_candidate,r.kappa_saved,r.trace_drop_budget})number(v,material);
+      number(r.modulus_K,rhs||material);number(r.trial_update_residual,material);number(r.trial_update_budget,material);
+      for(double v:r.sigma_rate)number(v,rhs||material);number(r.sigma_rate_trace,rhs||material);
+      number(r.jbase,material||plane);number(r.jhalf,material||plane);number(r.jnew,plane && r.context.interstep==3);
+      number(r.stage_theta,material||plane);number(r.pressure_base,material||plane);
+      for(const double* a:{r.move_before,r.move_after,r.velocity_before,r.velocity_after})for(unsigned c=0;c<3;c++)number(a[c],plane);
+      for(unsigned v:r.plane_hit)number(v,plane);for(unsigned v:r.plane_velocity_clamp)number(v,plane);file<<'\n';
+    }
+    file.flush();if(!file)throw std::runtime_error("C08_CAUSAL_TRACE observation: CSV write failed.");
+  }
+  void C08CausalSaveTotals(const std::string& dirout){
+    C08CausalTotals totals[3];
+    if(!cusphs::C08CausalTraceTotals(totals))throw std::runtime_error("C08_CAUSAL_TRACE observation: cumulative copy failed.");
+    const unsigned count=totals[0].material_cor;if(!count)return;
+    static unsigned previous=0;static std::ofstream file;static std::string boundpath;
+    const unsigned wanted[3]={7017,5944,6814};
+    for(unsigned q=0;q<3;q++){
+      const auto& c=totals[q];unsigned pre=0,cor=0;for(unsigned k=0;k<8;k++){pre+=c.status_pre[k];cor+=c.status_cor[k];}
+      if(c.native_id!=wanted[q] || c.errors || c.pending_valid || c.material_cor!=count || c.material_pre!=count
+        || c.plane_pre!=count || c.plane_cor!=count || pre!=count || cor!=count || count>360000
+        || c.pending_step!=4000000+count-1)throw std::runtime_error("C08_CAUSAL_TRACE observation: incomplete cumulative Cor/plane/ID coverage.");
+    }
+    if(count<previous)throw std::runtime_error("C08_CAUSAL_TRACE observation: cumulative count regressed.");
+    if(count==previous)return;
+    const std::string path=fun::GetDirWithSlash(dirout)+"C08CausalTotals.csv";
+    if(!file.is_open()){
+      std::string normal=path;for(char& c:normal)if(c=='\\')c='/';
+      if(normal.find("/tests/outputs/")==std::string::npos || fun::FileExists(path))throw std::runtime_error("C08_CAUSAL_TRACE observation: fresh cumulative CSV required.");
+      boundpath=path;file.open(path);file<<std::setprecision(17);
+      file<<"completed_step,native_id,last_step_start_s,last_operator_dt_s,sum_cor_dt_s,material_pre_count,material_cor_count,plane_pre_count,plane_cor_count,errors";
+      for(const char* stage:{"pre","cor"})for(unsigned k=0;k<8;k++)file<<",status_"<<stage<<k;
+      for(const char* stage:{"pre","cor"})for(const char* axis:{"x","z"})file<<",plane_hit_"<<stage<<'_'<<axis;
+      for(const char* stage:{"pre","cor"})for(const char* axis:{"x","z"})file<<",velocity_clamp_"<<stage<<'_'<<axis;
+      file<<",sum_cor_dt_rsigma_trace_Pa,sum_cor_trial_minus_returned_I_Pa,sum_cor_abs_trace_drop_Pa,sum_cor_local_trace_budget_Pa,trace_drop_sum_roundoff_budget_Pa,sum_cor_log_Jnew_over_Jbase,sum_cor_dt_theta,initial_I_Pa,last_returned_I_Pa,actual_bulk_modulus_Pa,base_trace_changes,sum_cor_trial_update_identity_Pa,sum_cor_local_trial_update_budget_Pa,sum_cor_abs_dt_rsigma_trace_Pa,endpoint_trace_closure_Pa,endpoint_trace_roundoff_budget_Pa";
+      for(const char* stage:{"pre","cor"})for(unsigned k=0;k<3;k++)file<<",sum_delta_v_"<<stage<<k;
+      file<<"\n";
+    }
+    if(boundpath!=path)throw std::runtime_error("C08_CAUSAL_TRACE observation: cumulative output path changed.");
+    for(const auto& c:totals){
+      file<<c.pending_step+1<<','<<c.native_id<<','<<c.last_time<<','<<c.last_dt<<','<<c.cor_dt<<','<<c.material_pre<<','<<c.material_cor<<','<<c.plane_pre<<','<<c.plane_cor<<','<<c.errors;
+      for(unsigned v:c.status_pre)file<<','<<v;for(unsigned v:c.status_cor)file<<','<<v;
+      for(unsigned v:c.hit_pre)file<<','<<v;for(unsigned v:c.hit_cor)file<<','<<v;
+      for(unsigned v:c.velocity_clamp_pre)file<<','<<v;for(unsigned v:c.velocity_clamp_cor)file<<','<<v;
+      const double u=DBL_EPSILON*.5,gamma=(double(count)*u)/(1.-double(count)*u);
+      const double budget=c.cor_trace_drop_local_budget+gamma*(c.cor_abs_trace_drop+c.cor_trace_drop_local_budget);
+      for(double v:{c.cor_dt_rsigma_trace,c.cor_trace_drop,c.cor_abs_trace_drop,c.cor_trace_drop_local_budget,budget,c.cor_log_j_ratio,c.cor_dt_theta})file<<','<<v;
+      const double endpoint=(c.cor_dt_rsigma_trace-c.cor_trace_drop)-(c.last_returned_I-c.initial_I);
+      const double local=c.cor_trial_update_local_budget+c.cor_trace_drop_local_budget;
+      const double gamma4=(4.*u)/(1.-4.*u);
+      const double endpointbudget=local+gamma*(c.cor_abs_dt_rsigma_trace+c.cor_abs_trace_drop+local)
+        +gamma4*(fabs(c.cor_dt_rsigma_trace)+fabs(c.cor_trace_drop)+fabs(c.last_returned_I)+fabs(c.initial_I));
+      for(double v:{c.initial_I,c.last_returned_I,c.modulus_K,double(c.base_trace_changes),c.cor_trial_update_residual,c.cor_trial_update_local_budget,c.cor_abs_dt_rsigma_trace,endpoint,endpointbudget})file<<','<<v;
+      for(double v:c.delta_v_pre)file<<','<<v;for(double v:c.delta_v_cor)file<<','<<v;file<<'\n';
+    }
+    file.flush();if(!file)throw std::runtime_error("C08_CAUSAL_TRACE observation: cumulative CSV write failed.");previous=count;
+  }
+}
+#else
 namespace{
   bool C08TraceBegin(unsigned step,double time,unsigned interstep,double dtstate,double dtop,unsigned phase
     ,const unsigned *idp,const unsigned *fstype,const float *rate){
@@ -109,6 +232,7 @@ namespace{
     file.flush();if(!file)throw std::runtime_error("C08_STAGE_TRACE observation: CSV write failed.");
   }
 }
+#endif
 #endif
 //==============================================================================
 /// Constructor.
@@ -916,6 +1040,9 @@ void JSphGpu::ParticlesDataUp(unsigned n,const tfloat3 *boundnormal,const byte *
 /// - onlynormal: Solo se queda con las normales, elimina las particulas periodicas.
 //==============================================================================
 unsigned JSphGpu::ParticlesDataDown(unsigned n,unsigned pini,bool code,bool onlynormal){
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  if(Nstep>=4000000 && Nstep<=4360000)C08CausalSaveTotals(DirOut);
+#endif
   unsigned num=n;
   cudaMemcpy(Idp    ,Idpg    +pini,sizeof(unsigned)*n,cudaMemcpyDeviceToHost);
   cudaMemcpy(Posxy  ,Posxyg  +pini,sizeof(double2) *n,cudaMemcpyDeviceToHost);
@@ -1653,6 +1780,12 @@ void JSphGpu::ComputeSymplecticPre(double dt){
   //-Compute displacement, velocity and density.
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  bool c08material=false;
+  try{c08material=C08CausalBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt05,C08_TRACE_MATERIAL
+    ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,PoroJPreg,PoroJg,PoroThetag);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   cusphs::ComputeStepSymplecticPre(WithFloating,shift,inout,DPCtes,Np,Npb,VelrhopPreg,Arg
     ,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,dt05,RhopZero,RhopOutMin,RhopOutMax,Gravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
@@ -1665,11 +1798,25 @@ void JSphGpu::ComputeSymplecticPre(double dt){
     }
     catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
   }
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  try{C08TraceEnd(c08material,DirOut,true);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
 
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  bool c08plane=false;
+  try{c08plane=(UseDynamicPorePlaneContact()? C08CausalBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt05,C08_TRACE_PLANE
+    ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,PoroJPreg,PoroJg,PoroThetag): false);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   if(UseDynamicPorePlaneContact())cusphs::ProjectFixedPlaneContact(Np,Npb,Codeg,PosxyPreg,PoszPreg
     ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  try{C08TraceEnd(c08plane,DirOut,true);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
   //-Frees memory allocated for the displacement.
@@ -1697,6 +1844,12 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
   const double dt05=dt*.5;
   const float3 *indirvel=(InOut? InOut->GetDirVelg(): NULL);
   if(MaterialErrorg)cudaMemset(MaterialErrorg,0,sizeof(unsigned));
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  bool c08material=false;
+  try{c08material=C08CausalBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt,C08_TRACE_MATERIAL
+    ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,PoroJPreg,PoroJg,PoroThetag);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   cusphs::ComputeStepSymplecticCor(WithFloating,shift,inout,DPCtes,(UseDynamicPorePlaneContact()? MDBC2_Std: TMdbc2),Np,Npb,VelrhopPreg
     ,Arg,Aceg,ShiftPosfsg,SigmaPreg,Kplasticg,Rsigmag,indirvel,NoPenShiftg,dt05,dt,RhopZero,RhopOutMin,RhopOutMax,Gravity
     ,Codeg,movxyg,movzg,Velrhopg,Sigmag,Kplasticg,KplasticDkg,NULL,cusphs::StPorosityRhopState{PorosityFeedback? PoroJg: NULL,PoroJPreg,PoroThetag},MaterialErrorg,RequireElasticGravityPreload());
@@ -1709,14 +1862,28 @@ void JSphGpu::ComputeSymplecticCorr(double dt){
     }
     catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
   }
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  try{C08TraceEnd(c08material,DirOut,true);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   if(HydroMech && !DynamicPorePressure && PorePressg && PorePressPreg && PorePressRateg)
     cusph::UpdatePorePressureSymplectic(Np,Npb,dt,Codeg,PorePressPreg,PorePressRateg,PorePressg);
   ComputeSymplecticPorosity(true,dt);
   //-Boundary conditions follow cell division, with matching geometry and neighbours.
   //-Applies displacement to non-periodic fluid particles.
   //-Aplica desplazamiento a las particulas fluid no periodicas.
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  bool c08plane=false;
+  try{c08plane=(UseDynamicPorePlaneContact()? C08CausalBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,dt,C08_TRACE_PLANE
+    ,Idpg,FSTypeg,PorePressRateg,PorePressg,PorePressPreg,NULL,PoroJg,PoroThetag): false);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   if(UseDynamicPorePlaneContact())cusphs::ProjectFixedPlaneContact(Np,Npb,Codeg,PosxyPreg,PoszPreg
     ,movxyg,movzg,Velrhopg,DynamicPoreContactPlane.x,DynamicPoreContactPlane.z,NULL);
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+  try{C08TraceEnd(c08plane,DirOut,true);}
+  catch(...){ArraysGpu->Free(movxyg);ArraysGpu->Free(movzg);throw;}
+#endif
   cusph::ComputeStepPos2(PeriActive,WithFloating,Np,Npb,PosxyPreg,PoszPreg
     ,movxyg,movzg,Posxyg,Poszg,Dcellg,Codeg);
 #ifdef C08_STAGE_TRACE
@@ -1907,7 +2074,11 @@ void JSphGpu::ComputeDynamicPorePressureRateGpu(unsigned *ridpg){
     if(DynamicPoreWall)ComputeDynamicPoreWallAccelerationGpu(invalidg);
     const double rhow=SoilCte.PoreWaterRho,gamma=rhow*9.80665;
 #ifdef C08_STAGE_TRACE
+#ifdef C08_CAUSAL_TRACE
+    c08tracerhs=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_RHS,Idpg,FSTypeg,PorePressRateg,Rsigmag);
+#else
     c08tracerhs=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_RHS,Idpg,FSTypeg,PorePressRateg);
+#endif
 #endif
     cusph::ComputeDynamicPorePressureRate(Np,Npb,DivData,Dcellg,Posxyg,Poszg,Codeg,CorrMatg,Aceg
       ,PoroJg,PoroThetag,PorePressg,PorePressRateg,1.-double(SoilCte.Porosity),double(SoilCte.PoreWaterBulkModulus)

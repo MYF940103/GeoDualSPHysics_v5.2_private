@@ -1,0 +1,25 @@
+{
+  "stage": "upl_c08_causal_smoke_GPU_r1.admission",
+  "passed": true,
+  "allowed_job": "upl_c08_causal_smoke_GPU_r1",
+  "ArtificialStressCoef": 0.2,
+  "ArtificialStressExp": 3,
+  "FreeSeepagePondingPolicy": "CompletedOnly",
+  "purpose": "Root-reviewed output-only observer: exactly ten Debug GPU updates under memcheck; no physical acceptance",
+  "new_updates": 10,
+  "source_PRE_reruns": 0,
+  "other_psi_admitted": false,
+  "half_admitted": false,
+  "full_admitted": false,
+  "builds_reviewed": [
+    "DebugCPU",
+    "Debug",
+    "Release"
+  ],
+  "source_files": [
+    "C08StageTrace.h",
+    "JSphGpu.cpp",
+    "JSphGpu_ker.cu",
+    "JSphGpuSimple_ker.cu"
+  ]
+}

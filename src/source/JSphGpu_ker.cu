@@ -65,7 +65,11 @@ bool C08StageTraceRead(C08StageTraceRecord records[3]){
 }
 static __device__ int C08TraceSlot(unsigned p,unsigned phase){
   if(!C08TraceContext.enabled || C08TraceContext.phase!=phase || !C08TraceContext.idp)return -1;
+#ifdef C08_CAUSAL_TRACE
+  const unsigned id=C08TraceContext.idp[p];return id==7017?0:(id==5944?1:(id==6814?2:-1));
+#else
   const unsigned id=C08TraceContext.idp[p];return id==5809?0:(id==4956?1:(id==4959?2:-1));
+#endif
 }
 static __device__ C08StageTraceRecord& C08TraceTake(unsigned p,int slot){
   C08StageTraceRecord& r=C08TraceRecords[slot];r.context=C08TraceContext;
@@ -1614,6 +1618,14 @@ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsign
       const tmatrix3d ci=corrmat[p1];r.C[0]=ci.a11;r.C[1]=ci.a12;r.C[2]=ci.a13;r.C[3]=ci.a21;r.C[4]=ci.a22;r.C[5]=ci.a23;r.C[6]=ci.a31;r.C[7]=ci.a32;r.C[8]=ci.a33;
       C08TraceVector(r.Ace,make_double3(ace[p1].x,ace[p1].y,ace[p1].z));C08TraceVector(r.lx,lx);C08TraceVector(r.gp,gp);C08TraceVector(r.gpcorr,gpcorr);C08TraceVector(r.gJ,gjstate);
       r.raw_fs=(freeseepage && KerHydroMechIsFreeSurface(p1,code,fstype));r.drainfs=drainfs;r.closedfs=closedfs;r.freeseepage=freeseepage;
+#ifdef C08_CAUSAL_TRACE
+      if(C08TraceContext.rsigma){
+        const tsymatrix3f s=C08TraceContext.rsigma[p1];
+        r.sigma_rate[0]=s.xx;r.sigma_rate[1]=s.yy;r.sigma_rate[2]=s.zz;r.sigma_rate[3]=s.xy;r.sigma_rate[4]=s.yz;r.sigma_rate[5]=s.xz;
+        r.sigma_rate_trace=(double(s.xx)+double(s.yy))+double(s.zz);
+        r.modulus_K=double(CTE.modulus_K);
+      }
+#endif
     }
 #endif
   }

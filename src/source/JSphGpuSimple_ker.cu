@@ -21,6 +21,9 @@
 #include "JSphGpuSimple_ker.h"
 #include "FunSoilMaterial.h"
 #include "FunFixedPlaneContact.h"
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+#include "C08StageTrace.h"
+#endif
 //#include "Functions.h"
 //#include "FunctionsCuda.h"
 //#include <math_constants.h>
@@ -35,6 +38,124 @@ __constant__ unsigned SOILPARTBEGIN;
 //#include <cuda_profiler_api.h> //mdbr
 namespace cusphs{
 #include "FunctionsBasic_iker.h"
+
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+// Independent test-only TU storage: no device reference to the interaction TU.
+__constant__ C08StageTraceContext C08SimpleContext;
+__device__ C08StageTraceRecord C08SimpleRecords[3];
+__device__ C08CausalTotals C08SimpleTotals[3];
+bool C08CausalTraceStart(const C08StageTraceContext& context){
+  static bool initialized=false;
+  if(!initialized){
+    if(context.nstep!=4000000 || context.phase!=C08_TRACE_MATERIAL || context.interstep!=2)return false;
+    const C08CausalTotals zero[3]={};
+    if(cudaMemcpyToSymbol(C08SimpleTotals,zero,sizeof(zero))!=cudaSuccess)return false;
+    initialized=true;
+  }
+  if(context.emit){
+    const C08StageTraceRecord zero[3]={};
+    if(cudaMemcpyToSymbol(C08SimpleRecords,zero,sizeof(zero))!=cudaSuccess)return false;
+  }
+  return cudaMemcpyToSymbol(C08SimpleContext,&context,sizeof(context))==cudaSuccess;
+}
+bool C08CausalTraceRead(C08StageTraceRecord records[3]){
+  const cudaError_t got=cudaMemcpyFromSymbol(records,C08SimpleRecords,3*sizeof(C08StageTraceRecord));
+  const C08StageTraceContext off={};
+  return cudaMemcpyToSymbol(C08SimpleContext,&off,sizeof(off))==cudaSuccess && got==cudaSuccess;
+}
+bool C08CausalTraceTotals(C08CausalTotals totals[3]){
+  return cudaMemcpyFromSymbol(totals,C08SimpleTotals,3*sizeof(C08CausalTotals))==cudaSuccess;
+}
+static __device__ int C08SimpleSlot(unsigned p,unsigned phase){
+  if(!C08SimpleContext.enabled || C08SimpleContext.phase!=phase || !C08SimpleContext.idp)return -1;
+  const unsigned id=C08SimpleContext.idp[p];return id==7017?0:(id==5944?1:(id==6814?2:-1));
+}
+static __device__ C08StageTraceRecord& C08SimpleTake(unsigned p,int slot){
+  auto& r=C08SimpleRecords[slot];r.context=C08SimpleContext;r.native_id=C08SimpleContext.idp[p];r.hits++;
+  r.fstype=(C08SimpleContext.fstype? C08SimpleContext.fstype[p]: ~0u);
+  if(C08SimpleContext.porepress)r.p_before=r.p_after=C08SimpleContext.porepress[p];
+  if(C08SimpleContext.poreold)r.pressure_base=C08SimpleContext.poreold[p];
+  if(C08SimpleContext.rate)r.rate_before=r.rate_after=C08SimpleContext.rate[p];
+  return r;
+}
+static __device__ void C08CausalMaterial(unsigned p,double dt,double baseI,fsoil::Status status,float old,float candidate
+  ,const double2& ta,const double2& tb,const double2& tc,const double2& ra,const double2& rb,const double2& rc
+  ,const float2& sa,const float2& sb,const float2& sc,const double2& ba,const double2& bb,const double2& bc){
+  const int slot=C08SimpleSlot(p,C08_TRACE_MATERIAL);if(slot<0)return;
+  auto& c=C08SimpleTotals[slot];c.native_id=C08SimpleContext.idp[p];
+  const bool cor=C08SimpleContext.interstep==3,committed=fsoil::CommitAllowed(status);
+  const unsigned st=unsigned(status);if(st>=8)c.errors|=1u;
+  else if(cor)c.status_cor[st]++;else c.status_pre[st]++;
+  const double trial=(ta.x+tb.y)+tc.y,returned=(ra.x+rb.y)+rc.y;
+  const double trace=(double(sa.x)+double(sb.y))+double(sc.y),drop=trial-returned;
+  const double u=DBL_EPSILON*.5,gamma5=(5.*u)/(1.-5.*u);
+  const double budget=gamma5*(fabs(ta.x)+fabs(tb.y)+fabs(tc.y)+fabs(ra.x)+fabs(rb.y)+fabs(rc.y));
+  const double trialbudget=(16.*u)/(1.-16.*u)*(fabs(ba.x)+fabs(bb.y)+fabs(bc.y)+fabs(dt)*(fabs(double(sa.x))+fabs(double(sb.y))+fabs(double(sc.y))));
+  const double trialresidual=(trial-baseI)-dt*trace;
+  const double jbase=(C08SimpleContext.jbase? C08SimpleContext.jbase[p]: 0.);
+  const double jhalf=(C08SimpleContext.jstage? C08SimpleContext.jstage[p]: 0.);
+  const double theta=(C08SimpleContext.theta? C08SimpleContext.theta[p]: 0.);
+  if(C08SimpleContext.dt_operator!=dt || !isfinite(trace) || !isfinite(trial) || !committed || !isfinite(returned))c.errors|=2u;
+  if(cor){
+    if(!c.material_cor)c.initial_I=baseI;
+    else if(baseI!=c.last_returned_I)c.base_trace_changes++;
+    c.last_returned_I=returned;c.modulus_K=double(SOILSCTE.ModulusK);
+    c.material_cor++;c.cor_dt_rsigma_trace+=dt*trace;c.cor_dt+=dt;c.last_time=C08SimpleContext.time;c.last_dt=dt;
+    c.cor_abs_dt_rsigma_trace+=fabs(dt*trace);c.cor_trial_update_local_budget+=trialbudget;c.cor_trial_update_residual+=trialresidual;
+    if(committed){c.cor_trace_drop+=drop;c.cor_abs_trace_drop+=fabs(drop);c.cor_trace_drop_local_budget+=budget;}
+    if(c.pending_valid)c.errors|=4u;
+    c.pending_jbase=jbase;c.pending_jhalf=jhalf;c.pending_theta=theta;c.pending_dt=dt;
+    c.pending_step=C08SimpleContext.nstep;c.pending_valid=1;
+  }
+  else c.material_pre++;
+  if(C08SimpleContext.emit){
+    auto& r=C08SimpleTake(p,slot);r.material_status=st;r.material_commit=committed;
+    r.base_I=baseI;r.trial_I=trial;r.returned_I=returned;r.kappa_old=old;r.kappa_candidate=candidate;r.trace_drop_budget=budget;
+    r.modulus_K=double(SOILSCTE.ModulusK);r.trial_update_budget=trialbudget;r.trial_update_residual=trialresidual;
+    r.sigma_rate[0]=sa.x;r.sigma_rate[1]=sb.y;r.sigma_rate[2]=sc.y;r.sigma_rate[3]=sa.y;r.sigma_rate[4]=sc.x;r.sigma_rate[5]=sb.x;
+    r.sigma_rate_trace=trace;r.jbase=jbase;r.jhalf=jhalf;r.stage_theta=theta;r.cumulative=c;
+  }
+}
+static __device__ void C08CausalMaterialSaved(unsigned p,float saved){
+  const int slot=C08SimpleSlot(p,C08_TRACE_MATERIAL);
+  if(slot>=0 && C08SimpleContext.emit)C08SimpleRecords[slot].kappa_saved=saved;
+}
+static __device__ void C08CausalPlane(unsigned p,const double2& base,double basez,const double2& before,double beforez
+  ,const float4& vbefore,const double2& after,double afterz,const float4& vafter,double lowerx,double lowerz){
+  const int slot=C08SimpleSlot(p,C08_TRACE_PLANE);if(slot<0)return;
+  auto& c=C08SimpleTotals[slot];c.native_id=C08SimpleContext.idp[p];
+  const bool cor=C08SimpleContext.interstep==3;
+  const unsigned hit[2]={unsigned(base.x+before.x<=lowerx),unsigned(basez+beforez<=lowerz)};
+  const unsigned clamp[2]={unsigned(hit[0] && vbefore.x<0.f),unsigned(hit[1] && vbefore.z<0.f)};
+  const double dv[3]={double(vafter.x)-vbefore.x,double(vafter.y)-vbefore.y,double(vafter.z)-vbefore.z};
+  double jbase=(C08SimpleContext.jbase? C08SimpleContext.jbase[p]: 0.);
+  double jhalf=(C08SimpleContext.jstage? C08SimpleContext.jstage[p]: 0.),jnew=jhalf;
+  double theta=(C08SimpleContext.theta? C08SimpleContext.theta[p]: 0.);
+  if(cor){
+    c.plane_cor++;jbase=c.pending_jbase;jhalf=c.pending_jhalf;theta=c.pending_theta;
+    if(!c.pending_valid || c.pending_step!=C08SimpleContext.nstep || c.pending_dt!=C08SimpleContext.dt_operator
+      || !isfinite(jbase) || !isfinite(jnew) || !(jbase>0.) || !(jnew>0.) || !isfinite(theta))c.errors|=8u;
+    else{c.cor_log_j_ratio+=log(jnew/jbase);c.cor_dt_theta+=c.pending_dt*theta;}
+    c.pending_valid=0;
+    for(unsigned k=0;k<2;k++){c.hit_cor[k]+=hit[k];c.velocity_clamp_cor[k]+=clamp[k];}
+    for(unsigned k=0;k<3;k++)c.delta_v_cor[k]+=dv[k];
+  }
+  else{
+    c.plane_pre++;
+    for(unsigned k=0;k<2;k++){c.hit_pre[k]+=hit[k];c.velocity_clamp_pre[k]+=clamp[k];}
+    for(unsigned k=0;k<3;k++)c.delta_v_pre[k]+=dv[k];
+  }
+  if(C08SimpleContext.emit){
+    auto& r=C08SimpleTake(p,slot);r.jbase=jbase;r.jhalf=jhalf;r.jnew=jnew;r.stage_theta=theta;
+    r.pos[0]=base.x;r.pos[1]=base.y;r.pos[2]=basez;
+    r.move_before[0]=before.x;r.move_before[1]=before.y;r.move_before[2]=beforez;
+    r.move_after[0]=after.x;r.move_after[1]=after.y;r.move_after[2]=afterz;
+    r.velocity_before[0]=vbefore.x;r.velocity_before[1]=vbefore.y;r.velocity_before[2]=vbefore.z;
+    r.velocity_after[0]=vafter.x;r.velocity_after[1]=vafter.y;r.velocity_after[2]=vafter.z;
+    for(unsigned k=0;k<2;k++){r.plane_hit[k]=hit[k];r.plane_velocity_clamp[k]=clamp[k];}r.cumulative=c;
+  }
+}
+#endif
 
 
 //##############################################################################
@@ -328,9 +449,15 @@ __global__ void KerProjectFixedPlaneContact(unsigned np,unsigned npb,const typec
   const unsigned p=npb+blockIdx.x*blockDim.x+threadIdx.x;
   if(p<np && CODE_IsFluid(code[p]) && CODE_IsNormal(code[p])){
     double2 move=movxy[p];double dz=movz[p];float4 velocity=velrhop[p];
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+    const double2 c08move=move;const double c08dz=dz;const float4 c08velocity=velocity;
+#endif
     fcontact::ProjectLowerPlane(posxy[p].x,lowerx,move.x,velocity.x);
     fcontact::ProjectLowerPlane(posz[p],lowerz,dz,velocity.z);
     movxy[p]=move;movz[p]=dz;velrhop[p]=velocity;
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+    C08CausalPlane(p,posxy[p],posz[p],c08move,c08dz,c08velocity,move,dz,velocity,lowerx,lowerz);
+#endif
   }
 }
 
@@ -419,6 +546,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         float2 rsigma_yz_zz=rsigma[p*3+2];
         double2 sigma_e_xx_xy=make_double2(0,0);   double2 sigma_e_xz_yy=make_double2(0,0);   double2 sigma_e_yz_zz=make_double2(0,0);
         float kplasticold = kplasticpre[p];
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;
+#endif
         sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dtm;
         sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dtm;
         sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dtm;
@@ -428,6 +558,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE
           ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+        C08CausalMaterial(p,dtm,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz
+          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);
+#endif
         if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}
 		kplasticnew=kplasticold;//Update in the corrector step
         //-Restore data of inout particles.
@@ -459,6 +593,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       sigma[p*3+1]=sigmanew_xz_yy;
       sigma[p*3+2]=sigmanew_yz_zz;
       kplastic[p]=kplasticnew;
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+      C08CausalMaterialSaved(p,kplastic[p]);
+#endif
     }
   }
 }
@@ -612,6 +749,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
 	    float2 rsigma_yz_zz=rsigma[p*3+2];
         double2 sigma_e_xx_xy=make_double2(0,0);double2 sigma_e_xz_yy=make_double2(0,0);double2 sigma_e_yz_zz=make_double2(0,0);
         float kplasticold = kplasticpre[p];
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+        const double c08baseI=(sigmapre_xx_xy.x+sigmapre_xz_yy.y)+sigmapre_yz_zz.y;
+#endif
         sigma_e_xx_xy.x = double(sigmapre_xx_xy.x) + double(rsigma_xx_xy.x) * dt;
         sigma_e_xz_yy.y = double(sigmapre_xz_yy.y) + double(rsigma_xz_yy.y) * dt;
         sigma_e_yz_zz.y = double(sigmapre_yz_zz.y) + double(rsigma_yz_zz.y) * dt;
@@ -621,6 +761,10 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
         const bool usesoftening=(SOILSTRAINSOFTENING!=0);
         const fsoil::Status status=fsoil::ReturnMaterial(sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz,kplasticold,SOILSCTE
           ,dpctes,usesoftening,(SOILPARTBEGIN && usesoftening),sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,kplasticnew);
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+        C08CausalMaterial(p,dt,c08baseI,status,kplasticold,kplasticnew,sigma_e_xx_xy,sigma_e_xz_yy,sigma_e_yz_zz
+          ,sigmanew_xx_xy,sigmanew_xz_yy,sigmanew_yz_zz,rsigma_xx_xy,rsigma_xz_yy,rsigma_yz_zz,sigmapre_xx_xy,sigmapre_xz_yy,sigmapre_yz_zz);
+#endif
         if(!fsoil::CommitAllowed(status) || (requireelastic && status!=fsoil::Status::Elastic)){atomicOr(materialerror,1u<<unsigned(status));return;}
         //-Restore data of inout particles.
         if(inout && CODE_IsFluidInout(rcode)){
@@ -658,6 +802,9 @@ template<bool floating,bool shift,bool inout,TpDPCtes dpctes> __global__ void Ke
       sigma[p*3+2]=sigmanew_yz_zz;
       if(kplasticdk)kplasticdk[p]+=fmaxf(kplasticnew-kplasticpre[p],0.f);
       kplastic[p] = kplasticnew;
+#if defined(C08_STAGE_TRACE) && defined(C08_CAUSAL_TRACE)
+      C08CausalMaterialSaved(p,kplastic[p]);
+#endif
     }
   }
 }
