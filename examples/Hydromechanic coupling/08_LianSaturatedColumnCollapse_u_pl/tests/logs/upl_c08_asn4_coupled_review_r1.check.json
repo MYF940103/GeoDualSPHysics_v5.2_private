@@ -1,0 +1,720 @@
+{
+  "stage": "upl_c08_asn4_coupled_review_r1",
+  "passed": true,
+  "analysis_completed": true,
+  "source_terminal_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_asn4_coupled_cpu_r1.check.json",
+    "bytes": 60845,
+    "mtime_ns": 1794161611214091600
+  },
+  "source_target_passed": true,
+  "terminal": {
+    "source_passed": true,
+    "actual_exit": 0,
+    "completed_rows": 4000,
+    "reason": "normal4000-update completion"
+  },
+  "actual_completed_rows": 4000,
+  "focus_rows": 16000,
+  "first_completed_step": 4260001,
+  "last_completed_step": 4264000,
+  "source_part64_time_s": 10.650000000580576,
+  "elastic_PRE_actual_time_s": 10.000000000374257,
+  "last_completed_time_s": 10.66000000058375,
+  "scalar_plus_equal_dt_verified": true,
+  "signed_dterror_min_s": -1.4379652232694435e-06,
+  "signed_dterror_max_s": -1.2006652508149068e-06,
+  "original_source_consumed_stats_unchanged": true,
+  "events_are_descriptive_not_acceptance_thresholds": true,
+  "events_extrema": [
+    {
+      "kind": "descriptive_first_sample",
+      "name": "first_sample_pmin_lt_minus100kPa",
+      "field": "p_Pa_min",
+      "condition": "<-100000.0",
+      "found": true,
+      "completed_step": 4262957,
+      "time_s": 10.657392500582922,
+      "tau_s": 0.6573925002086654,
+      "updates": 2957,
+      "native_ID": 7015,
+      "value": -100374.5703125,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "descriptive_first_sample",
+      "name": "first_sample_pmin_lt_minus300kPa",
+      "field": "p_Pa_min",
+      "condition": "<-300000.0",
+      "found": true,
+      "completed_step": 4263195,
+      "time_s": 10.657987500583111,
+      "tau_s": 0.6579875002088542,
+      "updates": 3195,
+      "native_ID": 7015,
+      "value": -301192.8125,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "descriptive_first_sample",
+      "name": "first_sample_speed_gt2m_s",
+      "field": "speed_m_s_max",
+      "condition": ">2.0",
+      "found": true,
+      "completed_step": 4263402,
+      "time_s": 10.658505000583276,
+      "tau_s": 0.6585050002090185,
+      "updates": 3402,
+      "native_ID": 7015,
+      "value": 2.000937541280299,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "descriptive_first_sample",
+      "name": "first_sample_speed_gt10m_s",
+      "field": "speed_m_s_max",
+      "condition": ">10.0",
+      "found": true,
+      "completed_step": 4263766,
+      "time_s": 10.659415000583564,
+      "tau_s": 0.6594150002093073,
+      "updates": 3766,
+      "native_ID": 7015,
+      "value": 10.008324761318597,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "p_Pa_min",
+      "field": "p_Pa_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4263709,
+      "time_s": 10.65927250058352,
+      "tau_s": 0.6592725002092621,
+      "updates": 3709,
+      "native_ID": 7015,
+      "value": -4412447.5,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "p_Pa_max",
+      "field": "p_Pa_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4263793,
+      "time_s": 10.659482500583586,
+      "tau_s": 0.6594825002093287,
+      "updates": 3793,
+      "native_ID": 7013,
+      "value": 1082423.125,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "last_cor_rate_Pa_s_min",
+      "field": "last_cor_rate_Pa_s_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4263576,
+      "time_s": 10.658940000583414,
+      "tau_s": 0.6589400002091566,
+      "updates": 3576,
+      "native_ID": 7015,
+      "value": -5778555392.0,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "last_cor_rate_Pa_s_max",
+      "field": "last_cor_rate_Pa_s_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4263906,
+      "time_s": 10.659765000583675,
+      "tau_s": 0.6597650002094184,
+      "updates": 3906,
+      "native_ID": 7015,
+      "value": 6986424832.0,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "last_cor_theta_s_min",
+      "field": "last_cor_theta_s_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4263736,
+      "time_s": 10.65934000058354,
+      "tau_s": 0.6593400002092835,
+      "updates": 3736,
+      "native_ID": 7013,
+      "value": -54.05331513407229,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "last_cor_theta_s_max",
+      "field": "last_cor_theta_s_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4263694,
+      "time_s": 10.659235000583507,
+      "tau_s": 0.6592350002092502,
+      "updates": 3694,
+      "native_ID": 7015,
+      "value": 70.9476912654755,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "J_min",
+      "field": "J_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7014,
+      "value": 0.9487808238554502,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "J_max",
+      "field": "J_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4262514,
+      "time_s": 10.65628500058257,
+      "tau_s": 0.6562850002083138,
+      "updates": 2514,
+      "native_ID": 7013,
+      "value": 1.0960356404134617,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "n_min",
+      "field": "n_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7014,
+      "value": 0.3149102620780897,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "n_max",
+      "field": "n_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4262514,
+      "time_s": 10.65628500058257,
+      "tau_s": 0.6562850002083138,
+      "updates": 2514,
+      "native_ID": 7013,
+      "value": 0.4069535861851513,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "rho_min",
+      "field": "rho_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4262514,
+      "time_s": 10.65628500058257,
+      "tau_s": 0.6562850002083138,
+      "updates": 2514,
+      "native_ID": 7013,
+      "value": 1978.5265738214653,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "rho_max",
+      "field": "rho_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7014,
+      "value": 2130.3980572054634,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "k_min",
+      "field": "k_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7014,
+      "value": 0.0001922733342210333,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "k_max",
+      "field": "k_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4262514,
+      "time_s": 10.65628500058257,
+      "tau_s": 0.6562850002083138,
+      "updates": 2514,
+      "native_ID": 7013,
+      "value": 0.00021533412900069047,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "kappa_min",
+      "field": "kappa_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4260001,
+      "time_s": 10.650002500580577,
+      "tau_s": 0.6500025002063197,
+      "updates": 1,
+      "native_ID": 2060,
+      "value": 0.0,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "kappa_max",
+      "field": "kappa_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7013,
+      "value": 2.1516289710998535,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "speed_m_s_min",
+      "field": "speed_m_s_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4261156,
+      "time_s": 10.652890000581493,
+      "tau_s": 0.6528900002072362,
+      "updates": 1156,
+      "native_ID": 2311,
+      "value": 2.5871149663777917e-07,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "speed_m_s_max",
+      "field": "speed_m_s_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7015,
+      "value": 14.715783384735504,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "effective_trace_Pa_min",
+      "field": "effective_trace_Pa_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4263997,
+      "time_s": 10.659992500583748,
+      "tau_s": 0.6599925002094906,
+      "updates": 3997,
+      "native_ID": 7013,
+      "value": -3348396.0777265667,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "effective_trace_Pa_max",
+      "field": "effective_trace_Pa_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4260001,
+      "time_s": 10.650002500580577,
+      "tau_s": 0.6500025002063197,
+      "updates": 1,
+      "native_ID": 6456,
+      "value": 29802.816862339445,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "total_trace_Pa_min",
+      "field": "total_trace_Pa_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4263803,
+      "time_s": 10.659507500583594,
+      "tau_s": 0.6595075002093367,
+      "updates": 3803,
+      "native_ID": 7013,
+      "value": -5865252.269371568,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "total_trace_Pa_max",
+      "field": "total_trace_Pa_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4263709,
+      "time_s": 10.65927250058352,
+      "tau_s": 0.6592725002092621,
+      "updates": 3709,
+      "native_ID": 7015,
+      "value": 13243963.904779006,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "x_m_min",
+      "field": "x_m_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4262772,
+      "time_s": 10.656930000582776,
+      "tau_s": 0.6569300002085185,
+      "updates": 2772,
+      "native_ID": 2100,
+      "value": 0.019971008975452148,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "x_m_max",
+      "field": "x_m_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 7028,
+      "value": 4.40769871596354,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "z_m_min",
+      "field": "z_m_min",
+      "condition": "min",
+      "found": true,
+      "completed_step": 4264000,
+      "time_s": 10.66000000058375,
+      "tau_s": 0.660000000209493,
+      "updates": 4000,
+      "native_ID": 6860,
+      "value": 0.01841577663007507,
+      "not_an_acceptance_limit": true
+    },
+    {
+      "kind": "global_sampled_extremum",
+      "name": "z_m_max",
+      "field": "z_m_max",
+      "condition": "max",
+      "found": true,
+      "completed_step": 4260001,
+      "time_s": 10.650002500580577,
+      "tau_s": 0.6500025002063197,
+      "updates": 1,
+      "native_ID": 2309,
+      "value": 1.9788402709788995,
+      "not_an_acceptance_limit": true
+    }
+  ],
+  "GPU_endpoint_comparison": {
+    "performed": true,
+    "reason": "Actual completed step/time match only; no interpolation",
+    "comparison_is_descriptive": true,
+    "GPU_exact_restart_or_replay": false,
+    "original_GPU_part": 65,
+    "completed_step": 4264000,
+    "time_s": 10.66000000058375,
+    "stress_comparison": "effective/total traces only; CPU focus CSV has no six stress components",
+    "points": [
+      {
+        "native_ID": 7013,
+        "CPU": {
+          "p_Pa": -230063.078125,
+          "J": 1.039072787960276,
+          "kappa": 2.1516289710998535,
+          "vx_m_s": 5.728006839752197,
+          "vy_m_s": 0.0,
+          "vz_m_s": 3.355234146118164,
+          "speed_m_s": 6.638347575377869,
+          "effective_trace_Pa": -3348236.1457665665,
+          "total_trace_Pa": -2658046.9113915665
+        },
+        "GPU": {
+          "p_Pa": -230093.703125,
+          "J": 1.0390724771591002,
+          "kappa": 2.1516289710998535,
+          "vx_m_s": 5.7280049324035645,
+          "vy_m_s": 0.0,
+          "vz_m_s": 3.355250358581543,
+          "speed_m_s": 6.638354123907607,
+          "effective_trace_Pa": -3348253.766354704,
+          "total_trace_Pa": -2657972.656979704
+        },
+        "CPU_minus_GPU": {
+          "p_Pa": 30.625,
+          "J": 3.108011756847162e-07,
+          "kappa": 0.0,
+          "vx_m_s": 1.9073486328125e-06,
+          "vy_m_s": 0.0,
+          "vz_m_s": -1.621246337890625e-05,
+          "speed_m_s": -6.548529738026332e-06,
+          "effective_trace_Pa": 17.620588137302548,
+          "total_trace_Pa": -74.25441186269745
+        },
+        "CPU_FS": 0,
+        "GPU_FS": 0
+      },
+      {
+        "native_ID": 7015,
+        "CPU": {
+          "p_Pa": -942175.0,
+          "J": 1.0793676536368848,
+          "kappa": 1.0205037593841553,
+          "vx_m_s": 8.53824234008789,
+          "vy_m_s": 0.0,
+          "vz_m_s": -11.985520362854004,
+          "speed_m_s": 14.715783384735504,
+          "effective_trace_Pa": 6590.020206272617,
+          "total_trace_Pa": 2833115.0202062726
+        },
+        "GPU": {
+          "p_Pa": -942110.8125,
+          "J": 1.0793679465779864,
+          "kappa": 1.020504355430603,
+          "vx_m_s": 8.538320541381836,
+          "vy_m_s": 0.0,
+          "vz_m_s": -11.985589981079102,
+          "speed_m_s": 14.715885459663198,
+          "effective_trace_Pa": 6590.019738611438,
+          "total_trace_Pa": 2832922.4572386113
+        },
+        "CPU_minus_GPU": {
+          "p_Pa": -64.1875,
+          "J": -2.929411015983874e-07,
+          "kappa": -5.960464477539062e-07,
+          "vx_m_s": -7.82012939453125e-05,
+          "vy_m_s": 0.0,
+          "vz_m_s": 6.961822509765625e-05,
+          "speed_m_s": -0.00010207492769431781,
+          "effective_trace_Pa": 0.00046766117884544656,
+          "total_trace_Pa": 192.56296766130254
+        },
+        "CPU_FS": 0,
+        "GPU_FS": 0
+      },
+      {
+        "native_ID": 6963,
+        "CPU": {
+          "p_Pa": -401685.5625,
+          "J": 1.0636338893233706,
+          "kappa": 1.279911756515503,
+          "vx_m_s": -1.578345537185669,
+          "vy_m_s": 0.0,
+          "vz_m_s": -1.9170283079147339,
+          "speed_m_s": 2.483177836583668,
+          "effective_trace_Pa": 6476.298244736516,
+          "total_trace_Pa": 1211532.9857447366
+        },
+        "GPU": {
+          "p_Pa": -401687.875,
+          "J": 1.0636340573411296,
+          "kappa": 1.279911756515503,
+          "vx_m_s": -1.5783525705337524,
+          "vy_m_s": 0.0,
+          "vz_m_s": -1.9170441627502441,
+          "speed_m_s": 2.483194547119756,
+          "effective_trace_Pa": 6476.298244727684,
+          "total_trace_Pa": 1211539.9232447278
+        },
+        "CPU_minus_GPU": {
+          "p_Pa": 2.3125,
+          "J": -1.6801775903907412e-07,
+          "kappa": 0.0,
+          "vx_m_s": 7.033348083496094e-06,
+          "vy_m_s": 0.0,
+          "vz_m_s": 1.5854835510253906e-05,
+          "speed_m_s": -1.671053608776063e-05,
+          "effective_trace_Pa": 8.832103048916906e-09,
+          "total_trace_Pa": -6.9374999911524355
+        },
+        "CPU_FS": 0,
+        "GPU_FS": 0
+      },
+      {
+        "native_ID": 7014,
+        "CPU": {
+          "p_Pa": -152132.96875,
+          "J": 0.9487808238554502,
+          "kappa": 1.4097366333007812,
+          "vx_m_s": -0.14991909265518188,
+          "vy_m_s": 0.0,
+          "vz_m_s": -4.226705551147461,
+          "speed_m_s": 4.229363492352403,
+          "effective_trace_Pa": -3092791.8896365226,
+          "total_trace_Pa": -2636392.9833865226
+        },
+        "GPU": {
+          "p_Pa": -152152.015625,
+          "J": 0.9487806530908253,
+          "kappa": 1.40973699092865,
+          "vx_m_s": -0.14986716210842133,
+          "vy_m_s": 0.0,
+          "vz_m_s": -4.22667121887207,
+          "speed_m_s": 4.229327341164307,
+          "effective_trace_Pa": -3092802.487633446,
+          "total_trace_Pa": -2636346.440758446
+        },
+        "CPU_minus_GPU": {
+          "p_Pa": 19.046875,
+          "J": 1.7076462488496702e-07,
+          "kappa": -3.5762786865234375e-07,
+          "vx_m_s": -5.193054676055908e-05,
+          "vy_m_s": 0.0,
+          "vz_m_s": -3.4332275390625e-05,
+          "speed_m_s": 3.615118809552342e-05,
+          "effective_trace_Pa": 10.597996923606843,
+          "total_trace_Pa": -46.54262807639316
+        },
+        "CPU_FS": 0,
+        "GPU_FS": 0
+      }
+    ]
+  },
+  "stress_endpoint_comparison_limited_to_trace": true,
+  "last_Cor_rate_theta_not_completed_state_RHS": true,
+  "no_material_plane_order_or_net_force_causation_claim": true,
+  "first_threshold_sample_is_not_proven_onset": true,
+  "first_plot_state_is_first_completed_update_not_input_snapshot": true,
+  "source_failure_not_relabelled_success": true,
+  "analysis_passed_does_not_imply_trajectory_passed": true,
+  "GPU_exact_restart_or_replay": false,
+  "physical_acceptance": false,
+  "visual_QA_pending": true,
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_asn4_coupled_review_r1.py",
+      "bytes": 17898,
+      "mtime_ns": 1794161455375977000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_c08_asn4_coupled_review_r1.md",
+      "bytes": 3530,
+      "mtime_ns": 1794161392433646100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_asn4_coupled_cpu_r1.check.json",
+      "bytes": 60845,
+      "mtime_ns": 1794161611214091600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_asn4_coupled_cpu_r1.run.call.json",
+      "bytes": 2914,
+      "mtime_ns": 1794161611049974300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_coupled_cpu_r1\\states.csv",
+      "bytes": 3002950,
+      "mtime_ns": 1794161611021165100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_coupled_cpu_r1\\focus.csv",
+      "bytes": 5557012,
+      "mtime_ns": 1794161611021165100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_window_GPU_r1\\native_partial_r1\\completion.json",
+      "bytes": 2509,
+      "mtime_ns": 1794155751056379800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_window_GPU_r1\\native_partial_r1\\clocks.csv",
+      "bytes": 8617,
+      "mtime_ns": 1794155751055876000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_coupled_cpu_r1\\completion.json",
+      "bytes": 714,
+      "mtime_ns": 1794161611021882100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_fsmask_r1.py",
+      "bytes": 11920,
+      "mtime_ns": 1793940229989901300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_window_GPU_r1\\native_partial_r1\\typed22.bin",
+      "bytes": 95216100,
+      "mtime_ns": 1794155751055477600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_window_GPU_r1\\native_partial_r1\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1794155751055876000
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_asn4_coupled_review_r1_history.csv",
+      "bytes": 3076044,
+      "mtime_ns": 1794161644333219400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_asn4_coupled_review_r1_focus.csv",
+      "bytes": 6222500,
+      "mtime_ns": 1794161644473942300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_asn4_coupled_review_r1_events_extrema.csv",
+      "bytes": 4287,
+      "mtime_ns": 1794161644476964000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_asn4_coupled_review_r1_global.png",
+      "bytes": 281378,
+      "mtime_ns": 1794161645109578000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_asn4_coupled_review_r1_focus.png",
+      "bytes": 254886,
+      "mtime_ns": 1794161645745072300
+    }
+  ],
+  "solver_invocations": 0,
+  "decoder_invocations": 0,
+  "VTK_invocations": 0,
+  "build_invocations": 0,
+  "SHA_scans": 0
+}

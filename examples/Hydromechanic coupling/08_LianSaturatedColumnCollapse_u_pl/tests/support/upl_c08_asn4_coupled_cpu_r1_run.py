@@ -1,0 +1,42 @@
+"""One new real CPU physical short trajectory, at most4000 updates; no notifier or follow-up."""
+import argparse,csv,math,struct
+from pathlib import Path
+import psutil
+import upl_c08_asn4_coupled_cpu_r1_build as b
+T,L,TAG,HELPER,PROGRAM=b.T,b.L,b.TAG,b.HELPER,b.PROGRAM
+OUT=T/'outputs'/TAG;JOB='upl_c08_asn4_window_GPU_r1';need,read,stat,bind,save=b.need,b.read,b.stat,b.bind,b.save
+def table(path):
+ with Path(path).open(encoding='utf-8-sig',newline='') as f:return list(csv.DictReader(f))
+def run():
+ check=L/(TAG+'.check.json');callpath=L/(TAG+'.run.call.json');need(not OUT.exists() and not check.exists() and not callpath.exists() and not (L/(TAG+'.run.log')).exists(),'Existing complete/partial physical trajectory protected');before=[];actual=None;result=dict(stage=TAG,passed=False,physical_trajectories=0,formal_Run_invocations=0,planned_max_integrated_updates=4000,source_part=64,source_completed_step=4260000,planned_end_completed_step=4264000,GenCase_invocations=0,native_decodes=0,VTK_invocations=0,queue_invocations=0,SHA_scans=0,physical_acceptance=False)
+ try:
+  bp=L/(TAG+'.build.json');build=read(bp);zp=L/'upl_c08_asn4_zero_cpu_r2.check.json';zero=read(zp);pp=L/'upl_c08_asn4_pressure_review_r1.check.json';pressure=read(pp)
+  need(build['passed'] and build['consumed_stats_unchanged'] and build['project_non_main_objects']==86 and build['actual_link_objects']==87 and build['solver_builds']==0,'Closed matching frozen DebugCPU helper build required');need(zero['passed'] and zero['consumed_stats_unchanged'] and zero['actual_physical_steps']==0 and pressure['passed'] and pressure['analysis_completed'],'Root-reviewed passed zero/pressure stages required before explicit trajectory invocation')
+  sourcecheck=Path(bind(zero['source_n4_native'])['path']);n=read(sourcecheck);runpath=Path(bind(zero['source_n4_run'])['path']);r=read(runpath);d=read(bind(n['completion'])['path']);native=Path(n['completion']['path']).parent;zbuild=read(bind(zero['component_build'])['path']);need(build['source_capture']==zbuild['source_capture'] and build['source_archive']==zbuild['source_archive'] and n['passed'] and n['partial'] and n['original_saved_native_guards_passed'] and n['consumed_stats_unchanged'] and not n['runtime_success_claimed'] and d['samples']==66 and d['actual_native_IDs_per_frame']==6805 and d['typed_arrays']==22 and not r['passed'] and r['actual_exit']==r['actual_Win32_exit']==1,'Same-source qualified saved input, not an accepted original trajectory, required')
+  before=[stat(p) for p in (Path(__file__),Path(b.__file__),b.NOTE,bp,zp,pp,sourcecheck,runpath)]+[bind(build[k]) for k in ('program','source','source_build','source_capture','source_archive')]+[bind(v) for v in build['runtime']]+[bind(v) for v in build['frozen_headers']]+[bind(n[k]) for k in ('completion','metadata','actual_call','source_run')]+[bind(r[k]) for k in ('input_xml','source_pre_file','source_capture','source_archive')]+[bind(v) for v in r['seed']]
+  for leaf in ('typed22.bin','typed22_layout.csv','clocks.csv'):before.append(bind(next(v for v in n['outputs'] if Path(v['path']).samefile(native/leaf))))
+  clocks=table(native/'clocks.csv');need(len(clocks)==66 and int(clocks[64]['completed_step'])==4260000 and int(clocks[64]['saved_step'])==4259999,'Actual original part64 clock/step required');start=float(clocks[64]['time_s']);source=d['source_actual_time_s'];stride=8+6805*212
+  with (native/'typed22.bin').open('rb') as f:need(struct.unpack('<III',f.read(12))==(6805,22,66),'Actual66 native header required');f.seek(12+64*stride);need(f.read(8)==struct.pack('<d',start),'Actual selected native timestamp differs')
+  xml=Path(r['input_xml']['path']);seed=xml.with_suffix('');need({Path(v['path']).resolve() for v in r['seed']}=={Path(str(seed)+suffix).resolve() for suffix in ('.xml','.bi4','_Normals.nbi4')},'Original seed companions differ')
+  for p in psutil.process_iter(['exe']):
+   try:need(not p.info['exe'] or Path(p.info['exe']).resolve()!=PROGRAM.resolve(),'Existing exact CPU trajectory process protected')
+   except (psutil.NoSuchProcess,psutil.AccessDenied):pass
+  need(all(stat(v['path'])==v for v in before),'Consumed frozen input/build binding changed');argv=[str(PROGRAM),'--trajectory','--snapshot',str(native),'-cpu','-ompthreads:1','-stable','-svres','-mdbc_freeslip:1',str(seed),str(OUT)];result['physical_trajectory_attempts']=1;actual=b.invoke(TAG+'.run',argv,HELPER);result.update(physical_trajectories=1,actual_exit=0,actual_Win32_exit=0,program_completed_normally=True,actual_call=actual);done=read(OUT/'completion.json')
+  need(done['passed'] and done['stage']==TAG and done['source_part']==64 and done['source_completed_step']==4260000 and done['source_saved_time_s']==start and done['elastic_PRE_actual_time_s']==source and done['physical_updates']==4000 and done['completed_step']==4264000 and done['states_rows']==4000 and done['focus_rows']==16000 and done['native_IDs']==6805 and done['soil']==5000 and done['fixed']==1805 and done['Restore_calls']==1 and done['uses_real_ComputeStep_Sym'] and done['necessary_DtVariable_both_stages_unchanged'] and done['AS_exponent']==4 and done['all_completed_original_guards_passed'] and not done['Ace_Rsigma_after_cleanup_read'] and not done['GPU_exact_restart_or_replay'] and not done['physical_acceptance'],'Actual completed physical trajectory scope differs')
+  result.update(physical_trajectory_completed=True,actual_integrated_updates=done['physical_updates'],actual_end_completed_step=done['completed_step'],actual_end_s=done['actual_end_s'],component_completion=stat(OUT/'completion.json'));states,focus=table(OUT/'states.csv'),table(OUT/'focus.csv');need(len(states)==4000 and len(focus)==16000,'Actual completed row coverage differs');scalar=start;fm={}
+  for row in focus:fm.setdefault(int(row['completed_step']),[]).append(row)
+  for i,row in enumerate(states,1):
+   scalar+=.0000025;step=4260000+i;need(int(row['completed_step'])==step and int(row['updates'])==i and float(row['time_s'])==scalar and float(row['tau_s'])==scalar-source and float(row['dt_s'])==.0000025 and math.isfinite(float(row['signed_dterror_new_window_s'])) and float(row['signed_dterror_new_window_s'])<=1e-14 and float(row['max_ledger_relative_error'])<=5e-13,'Actual completed scalar clock/signed/ledger output differs');rr=fm.get(step,[]);need(len(rr)==4 and {int(v['native_id']) for v in rr}=={7013,7015,6963,7014} and all(float(v['time_s'])==scalar and int(v['updates'])==i for v in rr),'Actual four focus rows differ')
+  need(done['actual_end_s']==scalar and all(stat(v['path'])==v for v in before),'Actual endpoint or consumed frozen input changed');result.update(passed=True,physical_trajectory_completed=True,actual_integrated_updates=4000,actual_end_completed_step=4264000,actual_end_s=scalar,component_completion=stat(OUT/'completion.json'),consumed_stats_unchanged=True)
+ except Exception as error:
+  result.update(first_failure=str(error),actual_call=stat(callpath) if callpath.exists() else actual)
+  if callpath.exists():
+   call=read(callpath);result.update(physical_trajectories=int(call.get('child') is not None),actual_exit=call.get('actual_Popen_wait_exit'),actual_Win32_exit=call.get('actual_Win32_exit'),ownership_failure=call.get('ownership_failure'))
+  if (OUT/'failure.json').exists():
+   failure=read(OUT/'failure.json');result.update(component_failure=stat(OUT/'failure.json'),failed_phase=failure['failed_phase'],first_component_exception=failure['first_exception'],actual_completed_rows=failure['completed_rows'],last_output_completed_step=failure['last_output_completed_step'],last_output_time_s=failure['last_output_time_s'],unsaved_failure_state_read=False,unsaved_failure_time_inferred=False)
+  if (OUT/'states.csv').exists():
+   with (OUT/'states.csv').open(encoding='utf-8',newline='') as f:lines=f.readlines()
+   result['last_original_states_csv_line']=lines[-1] if len(lines)>1 else None
+ result['consumed']=before;result['files']=[stat(p) for p in sorted(OUT.iterdir()) if p.is_file()] if OUT.exists() else [];save(check,result);print('COUPLED_CPU_RESULT',result['passed'],check,flush=True);return 0 if result['passed'] else 1
+if __name__=='__main__':
+ ap=argparse.ArgumentParser(description=__doc__);ap.add_argument('--execution-authorized',action='store_true');a=ap.parse_args();need(a.execution_authorized,'Author-only until root full-read and explicit physical trajectory admission');raise SystemExit(run())

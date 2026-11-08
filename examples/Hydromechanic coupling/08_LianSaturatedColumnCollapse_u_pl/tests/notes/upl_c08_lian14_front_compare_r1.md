@@ -1,0 +1,7 @@
+# 保留n3与Fig14粗略前沿参照
+
+只读已生成的r6正式history/source及新Fig14栅格summary，不改正式数据、不读取BI4。原300个actual时间点保持，参考仅0.3/0.6/1.2秒三个离散值；对应原生实际时刻差小于1e-8秒，无插值或时间拟合。
+
+图比较native粒子中心最大x与论文可见绿色主体前沿，两者不是同一种表示。论文约2pixel的辨读量级约0.036m，另保留dp/2=0.02m作为表示尺度差，不平移数据或将其当已知glyph半径。差值不是理论解误差或物理验收。未读取压力颜色值。
+
+唯一离线执行：`D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_lian14_front_compare_r1.py --execution-authorized`。新CSV/PNG/check拒覆盖；root须查看图和栅格QA。源论文只作数值参照，不能据图片判谁的方程必然正确。
