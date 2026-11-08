@@ -1,0 +1,50 @@
+[Initialising JSphCpuSingle  09-11-2026 02:21:41]
+ProgramFile=".../outputs/upl_c08_asn4_zero_cpu_r1_helper/component.exe"
+ExecutionDir=".../tests/outputs/upl_c08_asn4_zero_cpu_r1_helper"
+XmlFile=".../outputs/upl_c08_asn4_window_GPU_r1/upl_c08_asn4_window_GPU_r1.xml"
+OutputDir=".../tests/outputs/upl_c08_asn4_zero_cpu_r1"
+OutputDataDir=".../tests/outputs/upl_c08_asn4_zero_cpu_r1"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["upl_c08_asn4_window_GPU_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  KernelSize=[0.096]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+XML-Vars (parameters): TimeMax=[10.9]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
