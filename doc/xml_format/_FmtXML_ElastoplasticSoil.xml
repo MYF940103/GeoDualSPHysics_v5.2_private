@@ -61,7 +61,7 @@
 				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
 				<!-- With fixed-grid drainage, opening time must be an integer multiple of DtFixed. -->
 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
-				<!-- Unverified FreeSeepage candidate: finite positive surface pressure is projected at completed geometry and released dynamic-feedback gravity half stages; negative pressure is retained. -->
+				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
 			</hydromechanics>
 			<!-- Optional fresh 2D fixed-phi plane-strain gravity preload; omitted=disabled. -->
 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->

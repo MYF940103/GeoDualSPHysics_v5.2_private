@@ -1,19 +1,29 @@
-# ReleasedSubstages 的真实 half 投影检查器
+# C08：半步自由面正压投影的取舍
 
-仅新增同名 `tests/support/upl_c08_stage_ponding_review_r1.py` 和本说明；事前两个目标不存在且未受 Git 跟踪。旧 window checker、输入、程序、CSV 和收据不修改。作者仅做 AST / 机械差异检查，不执行或 import 检查器，不启动 solver / reader / build / queue。
+本轮新 GPU 窗口 `upl_c08_stage_ponding_window_GPU_r2` 已完成一次求解和一次独立原生读取：264000 次新增更新、66 帧，实际 tau=.660000000209493 s，loop1822.339355 s（RTX3050）。正常出口和原生安全门通过均不等于物理验收。原 r2 GPU 10 s PRE、r5 正式结果和旧失败记录未改动。
 
-原 `row_checks` 位于旧 `review` 闭包，故采用机械派生，保留原 parse、57 列 / 三 ID / hits、有限值 / float32 bits、正压投影与不变 rate、RHS 分项、128eps 实际操作数量级预算、C 的二维布局及描述性条件数、标量 `+=dt` 时钟和原始 p_n 基值检查。负孔压保持原位；原 NaN / Inf 拒绝规则不变，不用新阈值容纳非有限状态。
+原生检查覆盖全部6805 IDs（5000 soil、1805 fixed）、22数组、P0、J/n/rho/k账本、保持/退役床面IDs、FS、接触平面、塑性历史和原signed-dterror；实际clock和ledger最大误差均为0。540003行阶段记录独立检查通过：30000次half投影事件，三个固定ID的90000个half记录中92条正压发生改变，负压及旧p_n基值保留。此统计不代表全体粒子的微秒极值。
 
-唯一事件状态机变化：每个被采样 step 必须为 `RHS2 → UPDATE2 → PONDING2 → RHS3 → UPDATE3 → 完成 ponding`；其中 mandatory half PONDING 恰好一次，位于两组原 RHS/update 之间且 interstep=2。未知插入位置、重复 half 或缺 half 一律拒绝。真实 leading 及 repeated trailing ponding 仍逐条读取、关联和计数，不删行或硬写总行数。正常每 step 6 events × 3 IDs；额外真实事件以原 CSV 为准。
+## 同AS epsilon=.2、指数3、相同真实保存时间
 
-half 的输入压力 / rate 必须逐 float 位接续 predictor UPDATE；half 本身只将 FS2/3 的有限正 p 归零，rate 不变。corrector RHS 必须读取该投影后的 half p，且其 FSType 与 half 相同；corrector overwrite 前的旧 rate 也须连续。原 `UPDATE2.p_before == UPDATE3.p_before` 位检查继续独立保留，确保 full update 仍以保存的 p_n 为基值，不能误用投影后的 half p。四个 core RHS/update 的顺序、operator_dt 和实际更新表达式均不变。
+| tau=.66 的量 | CompletedOnly | ReleasedSubstages |
+|---|---:|---:|
+| 孔压RMS (kPa，含均值) | 12.97630 | 13.89954 |
+| 最小孔压 (kPa) | -44.16631 | -65.69314 |
+| 速度RMS (m/s) | .3525815 | .3835383 |
+| 相对PRE平均沉降 (mm) | 91.35392 | 92.93705 |
+| 前缘粒心x (m) | 4.55461542 | 4.59192834 |
+| 最小NN/dp | .447312 | .519820 |
+| r<.5dp唯一土粒对 | 2 | 0 |
+| r<.7dp唯一土粒对 | 45 | 58 |
+| NN/dp的5%分位 | .773745 | .764088 |
 
-`window` 保留 4000000..4239999 每 40 步、4240000..4263999 每步，30000 个真实采样 step / 66 个原生保存帧的 trace 范围。root 现已明确新增固定 `smoke2ms`：源 4000000 步、dt=2.5µs、结束 4000800 步，实际 trace 预期 `range(4000000,4000800,40)` 共 20 个采样 step；计划输出 .001s、两帧 completed=4000400/4000800。只是局部 profile end，window 原全局常数、完整列表及预算不变。两种 profile 的检查器均不读取 PART 或证明帧数；本计划尚未实际求解。正常结束不自动准入下一阶段，native 与 trace 必须独立审阅。新增 half 计数只描述真实记录，不是新物理门。
+全66个保存态最小NN/dp由.320216变为.396358，严重近对有所减少，但仍不能宣布团聚消除。完整空间图仍有剪切带裂隙及间距不规则。三个固定ID的相同窄窗[.635,.637)去均值孔压RMS（Pa）依次为旧31.80/33.23/29.94、新22.64/164.63/66.80；不是一致改善。这些RMS和约500 Hz FFT格点不能用来拟合已确定的特征模态。
 
-root 全文审阅并确认真实 run 封口后，可一次显式执行（路径由实际新 owner 决定）：
+## 结论与下一步
 
-```powershell
-D:/anaconda3/python.exe -X utf8 -B tests/support/upl_c08_stage_ponding_review_r1.py --profile window --csv tests/outputs/ACTUAL_NEW_RUN/C08StageTrace.csv --check tests/logs/upl_c08_stage_trace_ponding_window_r1.check.json --execution-authorized
-```
+半步正压投影按设计生效，但整体改善不明确，而且新增了不同于原完成步扫描的非光滑积分政策。撤回本轮三个CPP和XML指导文件中的实验补丁，保留全部实验源程序、原始数据、图表及失败记录。选回已冻结的CompletedOnly排水时序，下一轮只保留AS指数3这一有明确短窗收益的变化。
 
-只写全新 check，保留首因，不改 CSV；程序 / 输入 / PRE / 退出与所有权仍由实际 owner 收据及 root 负责。`runtime_binding_proven_by_this_check=false`、`physical_acceptance=false` 保留。无 SHA、额外 half-step 求解链或自动后续工作。
+AS n3相对2.55已显著压低原三个重点ID的MPa级脉冲；仍须一次新的psi0完整3 s诊断来查更晚是否复发。这是有限诊断准入，不是最低张拉问题已解决、论文吻合或物理验收。其余psi继续锁定，不新增half链，不重新预载，不直接打开旧shifting。接触反力/J/Darcy仍未闭合，必须继续披露。
+
+已实际查看新body history、endpoint和三ID trace共三张PNG，对应CSV均保留在tests/figures。不同policy差异是描述性比较，不套5Pa半步误差门。r6后续使用新标签和独立完整后处理，流体/边界分开导出。

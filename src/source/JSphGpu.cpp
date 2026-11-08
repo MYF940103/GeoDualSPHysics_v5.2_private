@@ -1298,14 +1298,13 @@ void JSphGpu::ApplyPorePressureBoundaries(){
   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
   ComputeFreeSurfaceTracking();
   ApplyFreeSurfacePorePressure();
-  if(HydroMechFreeSeepage && (!PorePressPreg
-    || (HydroMechDynamicSeepage && PorosityFeedback && GravityPreload && GravityPreloadReleased))){
+  if(HydroMechFreeSeepage && !PorePressPreg){
 #ifdef C08_STAGE_TRACE
     const bool c08traceponding=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_PONDING,Idpg,FSTypeg,PorePressRateg);
 #endif
-    //-Completed geometry and released half stages only; keep negative p, rate and the saved p_n base.
+    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
-    Check_CudaErroor("Failed applying released-stage/completed-step free-seepage ponding.");
+    Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
 #ifdef C08_STAGE_TRACE
     C08TraceEnd(c08traceponding,DirOut);
 #endif
