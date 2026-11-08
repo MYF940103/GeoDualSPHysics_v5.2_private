@@ -1,0 +1,250 @@
+{
+  "stage": "upl_c08_local_pressure_spectrum_r1",
+  "passed": true,
+  "analysis_completed": true,
+  "selected_parts": [
+    60,
+    61,
+    62,
+    63
+  ],
+  "nominal_selected_tau_s": [
+    0.61,
+    0.62,
+    0.63,
+    0.64
+  ],
+  "actual_times_are_saved_native_clock": true,
+  "focus_groups": [
+    [
+      5809
+    ],
+    [
+      4956,
+      4959
+    ]
+  ],
+  "patch_variables_fixed_across_saved_states": true,
+  "patch_selection": "four-time union of2R focus balls; all rows use complete original Cloud stencils",
+  "patch_sizes": {
+    "5809": 47,
+    "4956_4959": 62
+  },
+  "requested_saved_state_blocks": 8,
+  "evaluated_saved_state_blocks": 8,
+  "not_evaluated_WallStencil_blocks": 0,
+  "spectral_variants": [
+    "direct",
+    "direct_plus_rawAce"
+  ],
+  "variable_views": [
+    "all_patch_variables",
+    "FS0_principal"
+  ],
+  "ASJac_included": false,
+  "actual_r5_AS1_was_active": true,
+  "raw_mechanical_pressure_self_terms_retained": true,
+  "all_original_WallStencil_guards_kept": true,
+  "C_Darcy_and_mechanical_stencils_not_truncated": true,
+  "outside_pressure_perturbations_held_zero": true,
+  "principal_block_is_not_global_coupled_spectrum": true,
+  "positive_real_part_is_not_causation_or_full_instability_proof": true,
+  "no_positive_real_part_does_not_exclude_nonnormal_transients_or_stage_switches": true,
+  "midpoint_R": "1+dt*lambda+.5*(dt*lambda)^2; frozen pressure-only explicit midpoint surrogate, not full integrator eigenvalues",
+  "midpoint_dt_s": 2.5e-06,
+  "storage_symmetric_part": "sym(W^.5 A W^-.5), W=nV/Kw; frozen pressure-storage norm only, not full-state energy",
+  "FS23_zero_pressure_projection_not_linearized": true,
+  "geometry_J_n_k_sigmaeff_theta_velocity_and_FS_frozen": true,
+  "AS_AV_effective_stress_and_velocity_response_not_included": true,
+  "saved_C_reconstruction_not_unsaved_GPU_C_or_float_AD": true,
+  "physical_acceptance": false,
+  "thresholds_changed": false,
+  "solver_invocations": 0,
+  "decoder_invocations": 0,
+  "build_invocations": 0,
+  "SHA_scans": 0,
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_r5_pressure_probe_r2.py",
+      "bytes": 28658,
+      "mtime_ns": 1794098280602008800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_c08_r5_pressure_probe_r2.md",
+      "bytes": 6357,
+      "mtime_ns": 1794098359605347100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_pressure_coeff_r1.py",
+      "bytes": 14609,
+      "mtime_ns": 1794078878599812100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_pressure_ace_jac_r1.py",
+      "bytes": 10046,
+      "mtime_ns": 1794079345333145600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_plane_window_review_r1.py",
+      "bytes": 17756,
+      "mtime_ns": 1794075567738881600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_wall_geometry_r1.py",
+      "bytes": 15217,
+      "mtime_ns": 1794063995040234400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_fsmask_r1.py",
+      "bytes": 11920,
+      "mtime_ns": 1793940229989901300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_formal_psi0_r5_r1.run.json",
+      "bytes": 30962,
+      "mtime_ns": 1794096945243528000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\postprocess_r5.json",
+      "bytes": 98767,
+      "mtime_ns": 1794096944663370200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\logs\\native.call.json",
+      "bytes": 93397,
+      "mtime_ns": 1794096928195030400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_formal_psi0_r5_r1.call.json",
+      "bytes": 2944,
+      "mtime_ns": 1794096944884537900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\completion.json",
+      "bytes": 2454,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\typed22.bin",
+      "bytes": 432800412,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\typed22_layout.csv",
+      "bytes": 602,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\clocks.csv",
+      "bytes": 38721,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\history.csv",
+      "bytes": 122577,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\plane_gaps.csv",
+      "bytes": 35044,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\bedkeep_metadata.json",
+      "bytes": 731,
+      "mtime_ns": 1794096927504802500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\completion.json",
+      "bytes": 2454,
+      "mtime_ns": 1794096927083246200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out\\native\\bedkeep_metadata.json",
+      "bytes": 731,
+      "mtime_ns": 1794096927504802500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_local_pressure_spectrum_r1.py",
+      "bytes": 11680,
+      "mtime_ns": 1794105131822801800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_c08_local_pressure_spectrum_r1.md",
+      "bytes": 3446,
+      "mtime_ns": 1794105131828606000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_c08_r5_pressure_probe_r2.py",
+      "bytes": 28658,
+      "mtime_ns": 1794098280602008800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_r5_pressure_probe_r2.check.json",
+      "bytes": 25003,
+      "mtime_ns": 1794098598395881900
+    }
+  ],
+  "files": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part060_5809.npz",
+      "bytes": 159350,
+      "mtime_ns": 1794105237863984600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part060_4956_4959.npz",
+      "bytes": 249686,
+      "mtime_ns": 1794105237993140600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part061_5809.npz",
+      "bytes": 159350,
+      "mtime_ns": 1794105238133476600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part061_4956_4959.npz",
+      "bytes": 249686,
+      "mtime_ns": 1794105238273557300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part062_5809.npz",
+      "bytes": 159350,
+      "mtime_ns": 1794105238399578500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part062_4956_4959.npz",
+      "bytes": 249686,
+      "mtime_ns": 1794105238529062800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part063_5809.npz",
+      "bytes": 159350,
+      "mtime_ns": 1794105238639571200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_part063_4956_4959.npz",
+      "bytes": 249686,
+      "mtime_ns": 1794105238796830200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_patch_IDs.csv",
+      "bytes": 7200,
+      "mtime_ns": 1794105238809368200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_summary.csv",
+      "bytes": 12643,
+      "mtime_ns": 1794105238812369400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_row_geometry.csv",
+      "bytes": 147169,
+      "mtime_ns": 1794105238822830600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\upl_c08_local_pressure_spectrum_r1_modes.csv",
+      "bytes": 331376,
+      "mtime_ns": 1794105238845081400
+    }
+  ]
+}

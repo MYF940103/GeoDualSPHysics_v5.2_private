@@ -12,7 +12,9 @@
 
 源码只增加默认undef的`C08_STAGE_TRACE`三个ID日志，未改物理表达式或替换runtime_r5。短窗通过不证明压力脉冲或物理精度通过。
 
-**已单独准入并启动0.66 s阶段观测窗。** `upl_c08_stage_trace_window_GPU_r1`：原owner72580→实际GPU solver77844，创建时间/exe/argv/parent已核对，RTX3050、dt2.5 us、264000新更新、66个计划保存帧。输入只改测试窗TimeMax/TimeOut，复用原r2 GPU PRE，不重算10 s；0.60–0.66 s逐步记录3个原ID。新66帧读取器编译/link真实退出均0，原22数组/6805点数值检查不变，但还未读取本次活动输出。短回归本地/远端节点`f4e68b5`，窗口准备节点`73d8290`。当前只运行这一个窗；终态由direct owner单次同线程通知，再独立审查native/CSV，不自动解码或新求解。其他ψ、half、新PRE和正式长程未准入。
+**0.66 s阶段观测窗及独立原生/代数审查均已完成。** `upl_c08_stage_trace_window_GPU_r1`：原owner72580→实际GPU solver77844，创建时间/exe/argv/parent及真实三出口0已核，RTX3050耗时1772.078 s。dt2.5 us、264000新更新、66帧实际末时刻10.66000000058375 s；原r2 GPU PRE未重算。单次读取的6805IDs/22数组、P0/J/ledger/FS/AS/keep/clock/signed门全部通过；66帧完整payload/time/layout及signed clock与原r5前66帧逐字节一致。450003条stage记录、180000个RHS/UPDATE及90003个PONDING记录检查通过，额外初始化PONDING保留；观测器未改变这段轨迹。
+
+逐步记录揭示保存之间的强高频振荡：4956内部FS0点完整步p范围−2.620688/+2.018243 MPa，4959始终FS2、负峰−4.135124 MPa；4959还存在半步正压进入正确器、最后才清零的实际顺序。率转float和p写回的最大单步影响约.0205/.1249 Pa，远小于脉冲。本次没有物理验收或方程修正，正在纯离线审查耦合时间法/冻结空间子算子。新图、选段CSV与定量说明见`tests/figures/upl_c08_stage_trace_zoom_r1_*`、`tests/notes/upl_c08_stage_trace_window_science_r1.md`。所有旧out/PRE/失败历史仍保护，无活动求解器；旧owner只通知过一次，不重新布防。其他ψ、half、新PRE和正式长程未准入。
 
 准入依据：保留浅床点的0.6 s候选正常完成且60帧原生门通过。`upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过，完整窗口证据已保存本地/远端`c55852d93af3b0100c2acb90d5c51b06d2c775b9`。
 
