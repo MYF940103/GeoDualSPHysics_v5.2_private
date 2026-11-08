@@ -1,0 +1,89 @@
+--- bedkeep/src/source/JSphGpuSingle.cpp
++++ private/src/source/JSphGpuSingle.cpp
+@@ -54,6 +54,10 @@
+ #include <cfloat>
+ #include <cmath>
+ #include <map>
++#include <vector>
++#include <fstream>
++#include <iomanip>
++#include <cstring>
+ 
+ using namespace std;
+ //==============================================================================
+@@ -582,7 +586,56 @@
+     if(!PorePressPreg && PoreShepardRegularization && PoreShepardInterval && ((Nstep+1)%PoreShepardInterval)==0){
+       if(DynamicPoreWall)ComputeDynamicPoreWallStateGpu();
+       else InteractionPorePressureMdbcCorrection();
++      //-Private output-only meter: existing Shepard wrapper plus its FS positive-p projection.
++      static std::vector<float> c08before,c08after,c08p0before,c08p0after,c08kbefore,c08kafter;
++      static std::vector<double> c08j,c08jafter;
++      static std::ofstream c08csv;
++      static unsigned long long c08calls=0;
++      const bool c08measure=GravityPreloadReleased;
++      const unsigned c08nf=Np-Npb;
++      if(c08measure){
++        c08before.resize(c08nf);c08after.resize(c08nf);c08j.resize(c08nf);
++        cudaMemcpy(c08before.data(),PorePressg+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++        cudaMemcpy(c08j.data(),PoroJg+Npb,sizeof(double)*c08nf,cudaMemcpyDeviceToHost);
++        if(!c08calls){
++          c08p0before.resize(c08nf);c08p0after.resize(c08nf);c08kbefore.resize(c08nf);c08kafter.resize(c08nf);c08jafter.resize(c08nf);
++          cudaMemcpy(c08p0before.data(),PorePress0g+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++          cudaMemcpy(c08kbefore.data(),Kplasticg+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++        }
++        Check_CudaErroor("Private ReleaseShepard pre-meter download failed.");
++      }
+       ShepardRegularizePorePressure();
++      if(c08measure){
++        cudaMemcpy(c08after.data(),PorePressg+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++        const bool c08first=(c08calls==0);
++        if(c08first){
++          cudaMemcpy(c08p0after.data(),PorePress0g+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++          cudaMemcpy(c08kafter.data(),Kplasticg+Npb,sizeof(float)*c08nf,cudaMemcpyDeviceToHost);
++          cudaMemcpy(c08jafter.data(),PoroJg+Npb,sizeof(double)*c08nf,cudaMemcpyDeviceToHost);
++        }
++        Check_CudaErroor("Private ReleaseShepard post-meter download failed.");
++        const bool c08bitok=(!c08first || (!std::memcmp(c08p0before.data(),c08p0after.data(),sizeof(float)*c08nf)
++          && !std::memcmp(c08kbefore.data(),c08kafter.data(),sizeof(float)*c08nf)
++          && !std::memcmp(c08j.data(),c08jafter.data(),sizeof(double)*c08nf)));
++        if(!c08bitok)Run_Exceptioon("Private ReleaseShepard first-call implementation check changed soil P0/J/kappa bits.");
++        double c08sb=0,c08sa=0,c08abs=0,c08max=0,c08bmin=DBL_MAX,c08bmax=-DBL_MAX,c08amin=DBL_MAX,c08amax=-DBL_MAX;
++        unsigned c08changed=0;
++        const double c08v0=double(MassFluid)/double(RhopZero),c08solid=1.-double(SoilCte.Porosity),c08kw=double(SoilCte.PoreWaterBulkModulus);
++        for(unsigned q=0;q<c08nf;q++){
++          const double c08n=1.-c08solid/c08j[q],c08v=c08v0*c08j[q],c08w=c08n*c08v/c08kw;
++          const double c08pb=double(c08before[q]),c08pa=double(c08after[q]),c08dp=c08pa-c08pb;
++          c08sb+=c08w*c08pb;c08sa+=c08w*c08pa;c08abs+=std::abs(c08w*c08dp);
++          c08max=(std::max)(c08max,std::abs(c08dp));c08changed+=std::memcmp(&c08before[q],&c08after[q],sizeof(float))!=0;
++          c08bmin=(std::min)(c08bmin,c08pb);c08bmax=(std::max)(c08bmax,c08pb);c08amin=(std::min)(c08amin,c08pa);c08amax=(std::max)(c08amax,c08pa);
++        }
++        if(!c08csv.is_open()){
++          c08csv.open((DirOut+"C08ReleaseShepard.csv").c_str());c08csv<<std::setprecision(17);
++          c08csv<<"call,Nstep,completed_step,step_start_time_s,operator_dt_s,soil_IDs,interval,storage_before_m3,storage_after_m3,delta_storage_m3,sum_abs_weighted_delta_m3,max_abs_delta_p_Pa,changed_pressure_bits,p_before_min_Pa,p_before_max_Pa,p_after_min_Pa,p_after_max_Pa,primary_bitcheck_performed,primary_bitcheck_passed\n";
++        }
++        ++c08calls;
++        c08csv<<c08calls<<','<<Nstep<<','<<unsigned(Nstep+1)<<','<<TimeStep<<','<<SymplecticDtPre<<','<<c08nf<<','<<PoreShepardInterval<<','<<c08sb<<','<<c08sa<<','<<c08sa-c08sb<<','<<c08abs<<','<<c08max<<','<<c08changed<<','<<c08bmin<<','<<c08bmax<<','<<c08amin<<','<<c08amax<<','<<(c08first? 1: 0)<<','<<(c08first? "true": "")<<'\n';
++        c08csv.flush();if(!c08csv)Run_Exceptioon("Private ReleaseShepard CSV write failed; preserve the actual partial run.");
++      }
+       if(DynamicPoreWall)ComputeDynamicPoreWallStateGpu();
+       else InteractionPorePressureMdbcCorrection();
+     }
+@@ -1076,7 +1129,7 @@
+   else if(retired!=GravityPreloadIdCount)Run_Exceptioon("gravitypreload did not retire its entire native MK block.");
+   cudaMemcpy(Codeg,Code,sizeof(typecode)*Npb,cudaMemcpyHostToDevice);
+   Check_CudaErroor("Failed in gravitypreload boundary code upload.");
+-  SoilDamping=false;PoreShepardRegularization=false;ConstantDataUp();
++  SoilDamping=false;ConstantDataUp(); //-Private ReleaseShepard: retain the original loaded XML flag.
+   BoundChanged=true;RunCellDivide(true);
+   if(Np!=oldnp-retired || Npb!=oldnb-retired || CellDivSingle->GetNpbOutIgnore()!=retired
+     || CellDivSingle->GetNpbOut() || CellDivSingle->GetNpfOut() || CellDivSingle->GetNpfOutIgnore())
+@@ -1089,7 +1142,8 @@
+     Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip."
+       ,GravityPreloadIdCount,retired,kept,keptids.c_str());
+   }
+-  Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
++  Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=%s interval=%u FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired,(PoreShepardRegularization? "ON": "OFF"),PoreShepardInterval);
++  Log->Print("Private ReleaseShepard: retains loaded XML flag after release; old public preload-only description is not applicable; metering covers smoothing plus FS projection, not fluid-mass conservation.");
+ }
+ 
+ //==============================================================================

@@ -1,0 +1,347 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+[Initialising JSphGpuSingle  09-11-2026 05:37:28]
+ProgramFile=".../outputs/upl_c08_shepard_release_Debug_r1/DualSPHysics5.2_win64_debug.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl"
+XmlFile=".../outputs/upl_c08_shepard_smoke_GPU_r1/upl_c08_shepard_smoke_GPU_r1.xml"
+OutputDir=".../tests/outputs/upl_c08_shepard_smoke_GPU_r1"
+OutputDataDir=".../outputs/upl_c08_shepard_smoke_GPU_r1/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["upl_c08_shepard_smoke_GPU_r1"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  KernelSize=[0.096]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+
+*** WARNING: The execution will be cancelled after 4000080 simulation steps.
+
+XML-Vars (parameters): TimeMax=[10.0002]  TimeOut=[0.0001]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+GravityPreload: requested=10 event_completed_step=4000000 release_mkbound=2; damping/Shepard are preload-only.
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 7060
+MapRealPos(border)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,2.0224)
+MapRealPos(final)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,4.0224)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.096000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="upl_c08_shepard_smoke_GPU_r1"
+RunName="upl_c08_shepard_smoke_GPU_r1"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:1 -> No-slip
+    mkbound:2 -> Free slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=True
+StepAlgorithm="Symplectic"
+Kernel="CubicSpline"
+  Cubic.a1=0.4547284
+  Cubic.aa=4111.766
+  Cubic.a24=49.34119
+  Cubic.c1=-12335.3
+  Cubic.c2=-3083.824
+  Cubic.d1=9251.473
+  Cubic.od_wdeltap=0.009120169
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="Bui2008"
+  ArtificialStressCoef=0.2
+  ArtificialStressExp=3
+  ArtificialStressExpMode="XML"
+  ArtificialStressBoundary="StressExtrapolated"
+  Dynamic artificial stress: total stress, current-J quadrature; disabled during certified preload, enabled after wall release.
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=7060
+CaseNbound=2060
+CaseNfixed=2060
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=5000
+PeriodicActive="None"
+Dp=0.04
+KernelH=0.048000  (CoefficientH=0.848528; H/Dp=1.2)
+KernelSize=0.096
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.0000025
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.0000025
+MassFluid=3.316
+MassBound=3.316
+TimeMax=10.0002
+TimePart=0.0001
+Gravity=(0,0,-9.81)
+NpMinimum=7060
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(129,1,44)
+CellDomFixed=False
+**Requested GPU memory for 7188 particles: 4.3 MB (0 times).
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\upl_c08_shepard_smoke_GPU_r1/upl_c08_shepard_smoke_GPU_r1_Normals.nbi4"
+GravityPreload: validated native right-wall range=[1800,2060), count=260.
+GravityPreload: planned KeepBedOverlap original_target=260 kept_bed=5; initial normals and PRE contract are unchanged.
+DomCells=(129,1,44)
+DomCellCode="1+13_7_11"
+Dynamic soil damping rate: 36.1976852 s^-1 (reference intrinsic solid density)
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (96 regs)
+  BsForcesFluid=128 (143 regs)
+ 
+**CellDiv: Requested gpu memory for 7541 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 2070 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 7060 particles (ConstantZ, min=-196.2, max=21385.8).
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 2060  id:(0-2059)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2060-7059)   MKs:1 (1)
+
+Total particles: 7060 (bound=2060 (fx=2060 mv=0 ft=0) fluid=5000)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (255 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (1545 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (260 particles)
+  Point....: (4,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+
+*** WARNING: The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+GravityPreload: source material law=legacy MR1 ElasticV1; certified elastic schema/contract1.
+Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; elastic PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.
+GravityPreload: state imported file=D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out\data\Part_1000.bi4 actual=10.000000000374257 completed_step=4000000; next loop releases the right wall once.
+Allocated memory in CPU: 1785576 (1.70 MB)
+Allocated memory in GPU: 4630888 (4.42 MB)
+
+[WARNINGS]
+1. The execution will be cancelled after 4000080 simulation steps.
+2. The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+[Initialising simulation (ni9yo779)  09-11-2026 05:37:34]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+GravityPreload: release attempt requested=10 actual=10.000000000374257 completed_step=4000000 native_range=[1800,2060).
+GravityPreload: release policy=KeepBedOverlap original_target=260 retired=255 kept_bed=5 kept_ids=1800,1852,1904,1956,2008; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.
+GravityPreload: phase=released actual=10.000000000374257 completed_step=4000000 retired=255; damping=OFF Shepard=ON interval=40 FreeSeepage=ON.
+Private ReleaseShepard: retains loaded XML flag after release; old public preload-only description is not applicable; metering covers smoothing plus FS projection, not fluid-mass conservation.
+Part_0000     10.000100       4000040       40  286983.69  09-11-2026 05:38:31
+  Progress 52.50% in 30.1s. Estimated finish time: 09-11-2026 05:38:31
+Part_0001     10.000200       4000080       40  285389.19  09-11-2026 05:38:31
+
+[Simulation finished  09-11-2026 05:38:31]
+Particles of simulation (initial): 7060
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 63.497467 sec.
+Simulation Runtime...............: 57.237793 sec.
+Runtime per physical second......: 5.723665 sec.
+Steps per second.................: 69885.296875
+Steps of simulation..............: 4000080
+PART files.......................: 2
+Maximum number of particles......: 7060
+Maximum number of cells..........: 968
+CPU Memory.......................: 1785576 (1.70 MB)
+GPU Memory.......................: 4630888 (4.42 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 6.259645 sec.
+NL-Limits........................: 0.381579 sec.
+NL-PreSort.......................: 0.075050 sec.
+NL-RadixSort.....................: 6.307188 sec.
+NL-CellBegin.....................: 0.117753 sec.
+NL-SortData......................: 18.484221 sec.
+NL-OutCheck......................: 0.013472 sec.
+CF-PreForces.....................: 0.287459 sec.
+CF-Forces........................: 13.225421 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 0.789218 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0 sec.
+SU-ResizeNp......................: 0 sec.
+SU-DownData......................: 0.002098 sec.
+SU-SavePart......................: 0.014030 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The execution will be cancelled after 4000080 simulation steps.
+2. The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Cubic Spline (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+
+Finished execution (code=0).
+

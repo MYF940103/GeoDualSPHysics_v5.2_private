@@ -1,0 +1,59 @@
+{
+  "baseline_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_causal_native_r1.build.json",
+    "bytes": 9562,
+    "mtime_ns": 1794138848107883200
+  },
+  "baseline_generated_core": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_causal_native_r1_build\\causal_core_r1.cpp",
+    "bytes": 25421,
+    "mtime_ns": 1794138835204498500
+  },
+  "generated_core": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_shepard_native_r1_build\\shepard_core_r1.cpp",
+    "bytes": 25425,
+    "mtime_ns": 1794170208390449200
+  },
+  "diff": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_shepard_native_r1_build\\shepard_vs_causal_core_r1.diff",
+    "bytes": 11389,
+    "mtime_ns": 1794170208394953400
+  },
+  "declared_replacements": [
+    {
+      "before": "&&!p->GetvBool(\"PoreShepardActive\")",
+      "after": "&&p->GetvBool(\"PoreShepardActive\")",
+      "count": 1
+    },
+    {
+      "before": "Post-release damping/Shepard remained active",
+      "after": "Post-release requires damping OFF and Shepard ON",
+      "count": 1
+    },
+    {
+      "before": "upl_c08_causal_native_r1",
+      "after": "upl_c08_shepard_native_r1",
+      "count": 1
+    }
+  ],
+  "reverse_normalized_bytes_exact": true,
+  "only_metadata_expectation_message_and_stage_changed": true,
+  "PoreShepardActive_expected": true,
+  "SoilDampingActive_expected": false,
+  "adapter_profiles": [
+    {
+      "samples": 2,
+      "end": 4000080,
+      "cadence": 40,
+      "final_only": false
+    },
+    {
+      "samples": 90,
+      "end": 4360000,
+      "cadence": 4000,
+      "final_only": false
+    }
+  ],
+  "all_original22_guards_and_budgets_unchanged": true,
+  "filter_call_counts_not_inferred_from_native": true
+}
