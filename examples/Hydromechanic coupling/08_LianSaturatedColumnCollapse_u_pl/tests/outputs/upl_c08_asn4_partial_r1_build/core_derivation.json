@@ -1,0 +1,49 @@
+{
+  "baseline_normal_reader_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_asn4_window_native_r1.build.json",
+    "bytes": 9662,
+    "mtime_ns": 1794152734462950300
+  },
+  "baseline_core": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_window_native_r1_build\\asn4_window_core_r1.cpp",
+    "bytes": 25426,
+    "mtime_ns": 1794152725442841100
+  },
+  "generated_core": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_partial_r1_build\\asn4_partial_core_r1.cpp",
+    "bytes": 25801,
+    "mtime_ns": 1794155719069316800
+  },
+  "diff": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_asn4_partial_r1_build\\asn4_partial_vs_normal_r1.diff",
+    "bytes": 9999,
+    "mtime_ns": 1794155719073769100
+  },
+  "declared_replacements": [
+    {
+      "before": "const auto steps=Planned(planned,samples,expected);Need(RunSamples(data.parent_path()/\"Run.csv\",expected)==samples,\"Normal Run.csv end/count differs from the explicit owner plan\");",
+      "after": "Need(expected==4264000&&samples==66&&nopen,\"Only failed GPU66/4264000/NoPen1 saved-state profile is admitted\");const auto steps=Planned(planned,90,4360000);Need(steps[samples-1]==expected,\"Original90 launch plan must have this genuine66-state prefix\");",
+      "count": 1
+    },
+    {
+      "before": "upl_c08_asn4_window_native_r1",
+      "after": "upl_c08_asn4_partial_r1",
+      "count": 1
+    },
+    {
+      "before": "\\\"completed_runtime_Run_csv_checked\\\":true",
+      "after": "\\\"completed_runtime_Run_csv_checked\\\":false,\\\"partial\\\":true,\\\"runtime_success_claimed\\\":false,\\\"original_planned_samples\\\":90,\\\"original_planned_end\\\":4360000,\\\"used_launch_plan_prefix_samples\\\":66,\\\"last_saved_step\\\":4263999,\\\"completed_steps_are_last_saved\\\":true,\\\"new_updates_are_to_last_saved\\\":true,\\\"failure_unsaved_state_reconstructed\\\":false",
+      "count": 1
+    }
+  ],
+  "reverse_normalization_equal": true,
+  "original_core_lines61_to99_literal_unchanged": true,
+  "original_Planned_function_unchanged": true,
+  "original_plan_samples": 90,
+  "original_plan_end": 4360000,
+  "actual_saved_samples": 66,
+  "actual_last_saved_completed_step": 4264000,
+  "RuntimeCSV_called": false,
+  "source_PRE_and22_numeric_guards_unchanged": true,
+  "original_numerical_budgets_changed": false
+}
