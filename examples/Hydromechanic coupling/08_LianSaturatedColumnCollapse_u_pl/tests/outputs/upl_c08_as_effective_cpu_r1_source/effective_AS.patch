@@ -1,0 +1,22 @@
+--- bedkeep_frozen/src/source/JSphCpu.cpp
++++ effective_test_only/JSphCpu.cpp
+@@ -2133,12 +2133,17 @@
+     tsymatrix3f rstress={0,0,0,0,0,0};
+     if(!CODE_IsFloating(Codec[p])){
+       tsymatrix3d total=Sigmac[p];
+-      const double pressure=PorePressc[p];
+-      total.xx-=pressure;total.yy-=pressure;total.zz-=pressure;
+       //-Unit density leaves -epsilon*positive(total stress) in Pa, without rho^-2.
+       rstress=ComputeBuiArtificialStress(ToTSymMatrix3f(total),1.f,ArtificialStressCoef);
+     }
+     ArtificialStressc[p]=rstress;
++  }
++  //-Output-only proof for the first true predictor of this private saved-state intervention.
++  if(unsigned(Nstep)==4260000u && InterStep==INTERSTEP_SymPredictor){
++    for(unsigned p=0;p<Np;p++)if(Idpc[p]==7013u || Idpc[p]==7015u || Idpc[p]==6963u || Idpc[p]==7014u){
++      const tsymatrix3d s=Sigmac[p];const tsymatrix3f r=ArtificialStressc[p];
++      Log->Printf("AS_EFFECTIVE_PROBE id=%u step=%u phase=predictor epsilon=%.9g sigma=(%.17g,%.17g,%.17g,%.17g,%.17g,%.17g) p=%.9g R=(%.9g,%.9g,%.9g,%.9g,%.9g,%.9g)",Idpc[p],unsigned(Nstep),double(ArtificialStressCoef),s.xx,s.yy,s.zz,s.xy,s.yz,s.xz,double(PorePressc[p]),double(r.xx),double(r.yy),double(r.zz),double(r.xy),double(r.yz),double(r.xz));
++    }
+   }
+ }
+ 
