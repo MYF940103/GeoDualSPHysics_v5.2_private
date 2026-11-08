@@ -1,0 +1,13 @@
+--- bedkeep/src/source/JSphGpu_ker.cu
++++ effective_test_only/src/source/JSphGpu_ker.cu
+@@ -678,8 +678,8 @@
+     if(!ftp){
+       if(porepress){
+         //-Current-J quadrature consumes raw Pa; total stress includes absolute pore pressure once.
+-        const tsymatrix3d sig=sigma[p];const double pw=double(porepress[p]);
+-        KerComputeBuiArtificialStress(make_float2(float(sig.xx-pw),float(sig.xy)),make_float2(float(sig.xz),float(sig.yy-pw)),make_float2(float(sig.yz),float(sig.zz-pw)),1.f,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
++        const tsymatrix3d sig=sigma[p];
++        KerComputeBuiArtificialStress(make_float2(float(sig.xx),float(sig.xy)),make_float2(float(sig.xz),float(sig.yy)),make_float2(float(sig.yz),float(sig.zz)),1.f,CTE.artificialstresscoef,rstress_xx_xy,rstress_xz_yy,rstress_yz_zz);
+       }
+       else{
+         const tsymatrix3f sig=KerStressToFloat(sigma[p]);
