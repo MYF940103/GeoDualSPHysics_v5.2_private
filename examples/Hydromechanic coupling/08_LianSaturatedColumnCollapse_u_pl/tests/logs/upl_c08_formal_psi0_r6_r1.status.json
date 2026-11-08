@@ -1,0 +1,75 @@
+{
+  "stage": "upl_c08_formal_psi0_r6_r1.status",
+  "utc": "2026-11-08T11:24:30.172053+00:00",
+  "owner": {
+    "pid": 76768,
+    "created_epoch": 1794129261.3524132
+  },
+  "wrapper": {
+    "pid": 21628,
+    "creation_filetime_100ns": 134386028635215636,
+    "created_epoch": 1794129263.5215635,
+    "exe": "C:\\Windows\\System32\\cmd.exe",
+    "argv": [
+      "C:\\WINDOWS\\system32\\cmd.exe",
+      "/d",
+      "/s",
+      "/c",
+      "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic",
+      "coupling\\08_LianSaturatedColumnCollapse_u_pl\\xCaseLianSaturatedColumnCollapse_psi0_shared_r6_win64_GPU.bat --unattended"
+    ],
+    "parent_pid": 76768
+  },
+  "owned_wrapper_alive": false,
+  "children": [
+    {
+      "role": "GenCase",
+      "identity": {
+        "pid": 73852,
+        "creation_filetime_100ns": 134386028647269726,
+        "created_epoch": 1794129264.7269726,
+        "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\GenCase_win64.exe",
+        "argv": [
+          "support\\runtime_r6\\GenCase_win64.exe",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r6_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r6_Def",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r6_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r6",
+          "-save:all"
+        ],
+        "parent_pid": 21628
+      },
+      "owned_alive": false,
+      "actual_Win32_exit": 0
+    },
+    {
+      "role": "solver",
+      "identity": {
+        "pid": 79924,
+        "creation_filetime_100ns": 134386028649338386,
+        "created_epoch": 1794129264.9338386,
+        "exe": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\DualSPHysics5.2_GEO_win64.exe",
+        "argv": [
+          "support\\runtime_r6\\DualSPHysics5.2_GEO_win64.exe",
+          "-gpu:0",
+          "-stable",
+          "-mdbc_freeslip:1",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r6_GPU_out\\CaseLianSaturatedColumnCollapse_psi0_shared_r6",
+          "CaseLianSaturatedColumnCollapse_psi0_shared_r6_GPU_out",
+          "-dirdataout",
+          "data",
+          "-svres"
+        ],
+        "parent_pid": 21628
+      },
+      "owned_alive": false,
+      "actual_Win32_exit": 0
+    }
+  ],
+  "state": "terminal_pending_physical_plot_review",
+  "last_console_report": {
+    "raw_complete_line": "Part_0299     13.000000       5200000     4000    2640.09  08-11-2026 20:23:44\r\n",
+    "not_decoded_native_clock": true
+  },
+  "ownership_errors": [],
+  "progress_is_console_observation_not_native_clock": true,
+  "physical_acceptance": false
+}
