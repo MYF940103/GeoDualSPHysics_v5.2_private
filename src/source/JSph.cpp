@@ -2984,6 +2984,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
       bdpart->SetvBool("HydroMechDynamicSeepage",true);
       bdpart->SetvUint("DynamicSeepageSchema",1);
       if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
+      if(HydroMechFreeSeepage && GravityPreload){
+        bdpart->SetvText("FreeSeepagePondingPolicy","ReleasedSubstages");
+        bdpart->SetvBool("FreeSeepagePondingActive",GravityPreloadReleased);
+      }
       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
       if(ArtificialStress){
@@ -4245,8 +4249,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
     Log->Print(fun::VarStr("  HydroMechDrainageFixedGrid",HydroMechDrainageFixedGrid));
     Log->Print(fun::VarStr("  HydroMechFreeSeepage",HydroMechFreeSeepage));
-    if(HydroMechFreeSeepage)
-      Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
+    if(HydroMechFreeSeepage){
+      if(HydroMechDynamicSeepage && GravityPreload)
+        Log->Print("  FreeSeepagePolicy: candidate ReleasedSubstages; clamp finite p>0 at completed geometry and released half stages; negative p, rate and saved p_n base unchanged; no physical acceptance");
+      else Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
+    }
     Log->Print((HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)?
       "  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint":
       "  HydroMechDrainageBoundary: FreeSurface");

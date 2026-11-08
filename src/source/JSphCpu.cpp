@@ -1634,8 +1634,9 @@ void JSphCpu::ApplyPorePressureBoundaries(){
   if(!HydroMech || !PorePressc || !DivData.begincell)return;
   ComputeFreeSurfaceTracking();
   ApplyFreeSurfacePorePressure();
-  if(HydroMechFreeSeepage && !PorePressPrec){
-    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
+  if(HydroMechFreeSeepage && (!PorePressPrec
+    || (HydroMechDynamicSeepage && PorosityFeedback && GravityPreload && GravityPreloadReleased))){
+    //-Completed geometry and released half stages only; keep negative p, rate and the saved p_n base.
     for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])
       && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;
     //-The next force/save refreshes wall state before consuming its pressure samples.

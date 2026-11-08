@@ -1,0 +1,80 @@
+diff --git a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+index cc69533..ce90d31 100644
+--- a/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
++++ b/doc/xml_format/_FmtXML_ElastoplasticSoil.xml
+@@ -61,7 +61,7 @@
+ 				<HydroMechDrainageFixedGrid value="0" comment="Align drainage event to the fixed-step count; default=0; requires a fresh constant-DtFixed run" />
+ 				<!-- With fixed-grid drainage, opening time must be an integer multiple of DtFixed. -->
+ 				<HydroMechFreeSeepage value="0" comment="Experimental dynamic free-seepage surface; default=0; requires HydroMechDrainage=0 and HydroMechDrainageFixedGrid=0" />
+-				<!-- FreeSeepage projects positive surface pressure to zero at completed steps; negative pressure is retained. -->
++				<!-- Unverified FreeSeepage candidate: finite positive surface pressure is projected at completed geometry and released dynamic-feedback gravity half stages; negative pressure is retained. -->
+ 			</hydromechanics>
+ 			<!-- Optional fresh 2D fixed-phi plane-strain gravity preload; omitted=disabled. -->
+ 			<!-- time is in seconds; both attributes are required. The entire right FreeSlip MK is retired before the next predictor. -->
+diff --git a/src/source/JSph.cpp b/src/source/JSph.cpp
+index dde6000..7a67896 100644
+--- a/src/source/JSph.cpp
++++ b/src/source/JSph.cpp
+@@ -2984,6 +2984,10 @@ void JSph::SavePartData(unsigned npok,unsigned nout,const JDataArrays& arrays
+       bdpart->SetvBool("HydroMechDynamicSeepage",true);
+       bdpart->SetvUint("DynamicSeepageSchema",1);
+       if(HydroMechFreeSeepage)bdpart->SetvBool("HydroMechFreeSeepage",true);
++      if(HydroMechFreeSeepage && GravityPreload){
++        bdpart->SetvText("FreeSeepagePondingPolicy","ReleasedSubstages");
++        bdpart->SetvBool("FreeSeepagePondingActive",GravityPreloadReleased);
++      }
+       bdpart->SetvUint("HydroMechConductivityModel",HydroMechConductivityModel);
+       bdpart->SetvDouble("HydroMechConductivityCk",(HydroMechConductivityModel? HydroMechConductivityCk: 0.));
+       if(ArtificialStress){
+@@ -4245,8 +4249,11 @@ void JSph::InitSoilParameters(const JXml *sxml,std::string xmlpath){
+     Log->Printf("  HydroMechDrainageStartTime: %g",HydroMechDrainageStartTime);
+     Log->Print(fun::VarStr("  HydroMechDrainageFixedGrid",HydroMechDrainageFixedGrid));
+     Log->Print(fun::VarStr("  HydroMechFreeSeepage",HydroMechFreeSeepage));
+-    if(HydroMechFreeSeepage)
+-      Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
++    if(HydroMechFreeSeepage){
++      if(HydroMechDynamicSeepage && GravityPreload)
++        Log->Print("  FreeSeepagePolicy: candidate ReleasedSubstages; clamp finite p>0 at completed geometry and released half stages; negative p, rate and saved p_n base unchanged; no physical acceptance");
++      else Log->Print("  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance");
++    }
+     Log->Print((HydroMechTopLoadMode==HMLOAD_TopStripVertical || HydroMechTopLoadMode==HMLOAD_LianFlexibleStrip)?
+       "  HydroMechDrainageBoundary: FreeSurface excluding the hard-coded impermeable strip footprint":
+       "  HydroMechDrainageBoundary: FreeSurface");
+diff --git a/src/source/JSphCpu.cpp b/src/source/JSphCpu.cpp
+index f9931a0..df7aeee 100644
+--- a/src/source/JSphCpu.cpp
++++ b/src/source/JSphCpu.cpp
+@@ -1634,8 +1634,9 @@ void JSphCpu::ApplyPorePressureBoundaries(){
+   if(!HydroMech || !PorePressc || !DivData.begincell)return;
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
+-  if(HydroMechFreeSeepage && !PorePressPrec){
+-    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
++  if(HydroMechFreeSeepage && (!PorePressPrec
++    || (HydroMechDynamicSeepage && PorosityFeedback && GravityPreload && GravityPreloadReleased))){
++    //-Completed geometry and released half stages only; keep negative p, rate and the saved p_n base.
+     for(unsigned p=Npb;p<Np;p++)if(CODE_IsNormal(Codec[p])
+       && IsFreeSurfaceParticle(p,Codec,FSTypec) && std::isfinite(PorePressc[p]) && PorePressc[p]>0)PorePressc[p]=0.f;
+     //-The next force/save refreshes wall state before consuming its pressure samples.
+diff --git a/src/source/JSphGpu.cpp b/src/source/JSphGpu.cpp
+index ed82ae3..30fd0a6 100644
+--- a/src/source/JSphGpu.cpp
++++ b/src/source/JSphGpu.cpp
+@@ -1298,13 +1298,14 @@ void JSphGpu::ApplyPorePressureBoundaries(){
+   if(!HydroMech || !PorePressg || !DivData.beginendcell)return;
+   ComputeFreeSurfaceTracking();
+   ApplyFreeSurfacePorePressure();
+-  if(HydroMechFreeSeepage && !PorePressPreg){
++  if(HydroMechFreeSeepage && (!PorePressPreg
++    || (HydroMechDynamicSeepage && PorosityFeedback && GravityPreload && GravityPreloadReleased))){
+ #ifdef C08_STAGE_TRACE
+     const bool c08traceponding=C08TraceBegin(unsigned(Nstep),TimeStep,unsigned(InterStep),SymplecticDtPre,0.,C08_TRACE_PONDING,Idpg,FSTypeg,PorePressRateg);
+ #endif
+-    //-Completed geometry only; predictor pressure/rate are not constrained by this policy.
++    //-Completed geometry and released half stages only; keep negative p, rate and the saved p_n base.
+     cusph::ApplyFreeSurfacePorePressure(Np,Npb,false,HydroMechTopLoadMode,Posxyg,Codeg,FSTypeg,PorePressg,NULL,true);
+-    Check_CudaErroor("Failed applying completed-step free-seepage ponding.");
++    Check_CudaErroor("Failed applying released-stage/completed-step free-seepage ponding.");
+ #ifdef C08_STAGE_TRACE
+     C08TraceEnd(c08traceponding,DirOut);
+ #endif
