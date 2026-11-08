@@ -1,0 +1,30 @@
+"""Build one isolated two-profile PRE inspector from six sealed BI4 utility objects; never run it."""
+import os,subprocess,sys
+from pathlib import Path
+from zipfile import ZipFile
+import mdbc_partition_components_r3 as e
+T=Path(__file__).resolve().parents[1];L=T/'logs';TAG='upl_c08_hdp15_preload_partial_r3';OUT=T/'outputs'/(TAG+'_build')
+need,read,stat,bind,save,invoke=e.need,e.read,e.stat,e.bind,e.save,e.invoke
+
+def main():
+    need(sys.argv[1:]==['--execution-authorized'],'Root full-read before one utility reader build');check=L/(TAG+'.build.json');need(not OUT.exists() and not check.exists(),'Existing/partial reader build protected');before=[];calls=[]
+    try:
+        bp=L/'mdbc_partition_ReleaseCPU_r1.build.json';b=read(bp);need(b['passed'] and b['actual_typed_exit_code']==b['actual_Win32_exit']==0 and b['source_stats_unchanged'],'Closed six-utility parent build required');objects=[q for q in b['project_objects'] if Path(q['path']).stem in ('JPartDataBi4','JPartDataHead','JBinaryData','JObject','JException','Functions')];need(len(objects)==6,'Exactly six utility objects, no solver objects')
+        cap=read(bind(b['source_capture'])['path']);archive=Path(bind(cap['archive'])['path']);adpath=L/'upl_c08_hdp15_preload_GPU_r1.owner_admission.json';ad=read(adpath);physical_build=Path(bind(ad['source_build'])['path']);p=read(physical_build);need(p['passed'] and p['actual_typed_exit_code']==p['actual_Win32_exit']==0 and p['source_archive']==ad['source_archive'],'Actual runtime_r6 physical source archive required');physical_archive=Path(bind(ad['source_archive'])['path'])
+        source=T/'support'/'upl_c08_hdp15_preload_partial_r3.cpp';note=T/'notes'/(TAG+'.md');neutral=T.parent.parent/'02_TerzaghiConsolidation_q0_PR/tests/support/upl_cpu_public_native_r1.cpp';before=[stat(q) for q in (Path(__file__),Path(e.__file__),source,note,neutral,bp,adpath,physical_build)]+[bind(b['source_capture']),stat(archive),stat(physical_archive),*[bind(q) for q in objects]]
+        OUT.mkdir();headers=OUT/'headers';headers.mkdir()
+        with ZipFile(archive) as z:
+            for q in z.infolist():
+                if q.filename.startswith('src/source/') and Path(q.filename).suffix.lower() in ('.h','.hpp','.inl','.cuh'):
+                    dest=headers/Path(q.filename).name;need(not dest.exists(),'Duplicate utility header leaf');dest.write_bytes(z.read(q))
+        with ZipFile(physical_archive) as z:
+            for leaf in ('JPartDataBi4.h','JPartDataHead.h','JBinaryData.h','TypesDef.h'):need((headers/leaf).read_bytes()==z.read('src/source/'+leaf),'Actual material-source/utility ABI header differs: '+leaf)
+            material=z.read('src/source/FunSoilMaterial.h');(headers/'FunSoilMaterial.h').write_bytes(material)
+        raw=neutral.read_text(encoding='utf-8-sig');begin=raw.index('static void Need(');end=raw.index('using Row=');stop=raw.index('static constexpr double A=');pure=raw[:stop]+raw[begin:end];unused=['#include "JAppInfo.h"\n','JAppInfo AppInfo("PublicDynamicCpuNative","r1","01-11-2026");\n'];need(all(pure.count(v)==1 for v in unused),'Exact unused AppInfo declarations required');pure=pure.replace(unused[0],'').replace(unused[1],'');need('AppInfo' not in pure,'Unexpected AppInfo reference');need('JGravityPreloadState' not in pure and 'static Native Load(' in pure and 'static void Original15(' in pure and 'int main(' not in pure,'Only the retained pure22 loader/functions may be reused');core=OUT/'public22_core_r1.h';core.write_text(pure,encoding='utf-8',newline='\n');derivation=OUT/'core_derivation.json';save(derivation,dict(source=stat(neutral),generated=stat(core),selection='includes/type aliases before neutral physics constants, then Need through Original15 before Row',original_loader_text_unchanged=True,removed_unused_AppInfo_include_and_global_only=True,prior_failed_build=stat(L/'upl_c08_hdp15_preload_partial_r1.build.json'),physical_material_header_archive=stat(physical_archive),physical_material_header=stat(headers/'FunSoilMaterial.h'),no_PRE_Load=True,no_solver_objects=True,profiles=['h15_failed','h12_control'],numeric_guards_not_relaxed=True));before += [stat(core),stat(derivation),stat(headers/'FunSoilMaterial.h')]
+        setup=subprocess.run('cmd.exe /d /s /c "call "D:/Program Files/VS2022/VC/Auxiliary/Build/vcvarsall.bat" x64 -vcvars_ver=14.36 >nul && set"',stdout=subprocess.PIPE,stderr=subprocess.PIPE,creationflags=subprocess.CREATE_NO_WINDOW);need(setup.returncode==0,'MSVC setup failed');env=dict(os.environ);env.update(s.split('=',1) for s in setup.stdout.decode('mbcs').splitlines() if '=' in s and not s.startswith('='));need(env['VCTOOLSVERSION']=='14.36.32532','Matching MSVC14.36 required');cl=Path(env['VCToolsInstallDir'])/'bin/Hostx64/x64/cl.exe';obj=OUT/'reader.obj';exe=OUT/'C08PreloadPartial_win64.exe'
+        ca=[str(cl),'/nologo','/c','/std:c++17','/D_HAS_STD_BYTE=0','/EHsc','/W3','/fp:precise','/O2','/MT','/GL-','/DWIN32','/D_CONSOLE','/D_MBCS','/I'+str(OUT),'/I'+str(headers),'/Fo'+str(obj),str(source)];la=[str(cl.with_name('link.exe')),'/NOLOGO','/MACHINE:X64','/SUBSYSTEM:CONSOLE','/ENTRY:wmainCRTStartup','/INCREMENTAL:NO','/OPT:REF','/OPT:NOICF','/OUT:'+str(exe),str(obj),*[q['path'] for q in objects]];calls.append(invoke(TAG+'.compile',ca,OUT,env));calls.append(invoke(TAG+'.link',la,OUT,env));need(all(stat(q['path'])==q for q in before),'Closed source/object bindings changed')
+        save(check,dict(stage=TAG+'.build',passed=True,program=stat(exe),source=stat(source),source_build=stat(bp),source_capture=b['source_capture'],source_archive=stat(archive),physical_source_build=stat(physical_build),physical_source_archive=stat(physical_archive),generated_core=stat(core),core_derivation=stat(derivation),objects=objects,actual_link_objects=7,JSph_objects_linked=False,calls=calls,consumed=before,consumed_stats_unchanged=True,solver_invocations=0,native_decodes=0,SHA_scans=0))
+    except Exception as error:
+        if not check.exists():save(check,dict(stage=TAG+'.build',passed=False,first_failure=str(error),calls=calls,consumed=before,SHA_scans=0))
+        raise
+if __name__=='__main__':main()

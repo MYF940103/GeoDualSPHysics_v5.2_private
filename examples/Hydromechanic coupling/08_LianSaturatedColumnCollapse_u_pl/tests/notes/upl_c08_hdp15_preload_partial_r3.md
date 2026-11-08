@@ -1,0 +1,7 @@
+# PRE partial reader ledger repair r3
+
+The original r1 utility link failure is retained; r2 removed only the unused AppInfo declarations and built successfully. One h15 reader invocation then stopped at saved part1, ID2060 on the n/V/rho/k ledger. Its partial output and exact receipts are protected. No physical solver was rerun.
+
+Root source audit identified a reader-only formula transcription error: r1 CPP used k0*pow(10,(J-1)/((1-n0)*Ck)). The actual frozen runtime_r6 CPU JSphCpu.cpp3151, GPU KerDynamicConductivity and certified JGravityPreloadState.h223 all use k0*exp((J-1)/((1-n0)*Ck)). This r3 changes only that reference formula and its diagnostic stage label. All original ledger tolerances, other original guards and metadata remain unchanged. The r3 builder retains the r2 unused-AppInfo repair and uses the same six utility objects; its wrapper uses distinct new r3 profile output/check tags. No production source or input changes. No native records are rewritten.
+
+Root reviews all four new files before one build and one separately authorized read per sealed profile. Commands: `upl_c08_hdp15_preload_partial_r3_build.py --execution-authorized`, then `upl_c08_hdp15_preload_partial_r3_run.py h15_failed|h12_control --execution-authorized`. Complete limits are retained in r1.md/r2.md. No PRE qualification, new solver, VTK, relaxed guard or automatic retry follows. The h12 physical control is still running independently and is not decoded until its real terminal records are sealed.
