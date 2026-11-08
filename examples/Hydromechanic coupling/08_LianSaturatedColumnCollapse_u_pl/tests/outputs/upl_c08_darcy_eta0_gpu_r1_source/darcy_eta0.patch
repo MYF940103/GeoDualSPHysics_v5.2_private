@@ -1,0 +1,11 @@
+--- src/source/JSphGpu_ker.cu
++++ src/source/JSphGpu_ker.cu
+@@ -1512,7 +1512,7 @@
+           const tmatrix3d cj=corrmat[p2];
+           const double3 gj=make_double3(cj.a11*g.x+cj.a12*g.y+cj.a13*g.z,cj.a21*g.x+cj.a22*g.y+cj.a23*g.z,cj.a31*g.x+cj.a32*g.y+cj.a33*g.z);
+           const double vol2=vol0*j[p2],dp=double(porepress[p1])-double(porepress[p2]);
+-          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/(rr2+double(CTE.eta2));
++          const double w=vol2*(d.x*(gi.x+gj.x)+d.y*(gi.y+gj.y)+d.z*(gi.z+gj.z))/rr2;
+           lp+=w*dp;lx.x+=d.x*w;lx.y+=d.y*w;lx.z+=d.z*w;
+           gp.x-=gi.x*(vol2*dp);gp.y-=gi.y*(vol2*dp);gp.z-=gi.z*(vol2*dp);
+           if(conductivity){
