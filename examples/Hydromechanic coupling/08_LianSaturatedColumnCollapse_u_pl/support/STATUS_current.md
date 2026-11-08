@@ -1,6 +1,8 @@
 # 当前发包状态
 
-**根目录r5单组ψ0的3 s正式诊断已启动。** 新owner80120→根BAT/cmd81612→GPU solver63384；真实GenCase76088已exit0，solver正在运行，目标global5200000/300帧。入口为`xCaseLianSaturatedColumnCollapse_psi0_shared_r5_win64_GPU.bat`，输出`CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out`。三份新XML实际GenCase检查均通过，另外两组入口已验证会在工具前拒绝；不是三组均已运行。新流程将于求解成功后自动native→分别Fluid/Bound→PNG/CSV，不重复已完成工具。根目录r4入口仍暂停。
+**根目录r5单组ψ0的3 s计算及自动后处理已完成，物理验收待排查。** 原owner80120→根BAT/cmd81612→GPU solver63384所有权与真实退出均通过，GenCase/solver/BAT均exit0；RTX3050实际求解耗时约7972 s。已完成global5200000、300帧，实际末时刻13.000000001326498 s、相对原PRE为3.000000000952241 s。唯一native读取、分别PartFluid/PartBound各300帧及全部PNG/CSV均成功，不重复这些工具。前60帧的22数组/time和signed clock与保留窗口逐字节相同；原数值门和浅床5点检查通过，全程土粒最低z=.01243938 m，无保存帧穿底。
+
+完整窗出现新的物理问题：τ=.63/.64 s有−450.667/+1352.125 kPa压力簇，约.8 s后运动很弱；末前缘粒子中心x=4.70149 m、速度RMS9.04e−5 m/s，1.2 s形态尚未复现论文的后退分块/滑出。末仍3781/5000土点为负孔压。当前只进行保存状态的自由面、压力/AS—加速度—Darcy分项审查，未归因于某项已证实bug；另两组仍锁定，无新solver/half/PRE。图和数据见`figures/collapse_psi0_r5`，结论见`tests/notes/upl_c08_r5_science_review_r1.md`、`upl_c08_r5_psi0_paper_review_r1.md`；终态审计见`tests/logs/upl_c08_formal_psi0_r5_r1.terminal_audit.json`。原终态通知已投递一次，不重新布防。
 
 准入依据：保留浅床点的0.6 s候选正常完成且60帧原生门通过。`upl_c08_bedkeep_window_GPU_r1`实际owner58076→GPU solver22148，三个真实退出均0，耗时1584.609 s，末native=10.600000000564705 s。仅一次6805点/22数组解码；全窗无穿底，最低土粒z=.0130940694 m，最初3帧完整22/time/signed记录与已通过短窗逐byte一致。τ=.53最大速度从旧AS1的5.914994降为1.710602 m/s；τ=.6速度RMS回落至.495537 m/s。四种solver构建全部通过，完整窗口证据已保存本地/远端`c55852d93af3b0100c2acb90d5c51b06d2c775b9`。
 

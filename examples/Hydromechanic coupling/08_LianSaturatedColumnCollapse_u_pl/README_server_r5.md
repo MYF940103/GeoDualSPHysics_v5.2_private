@@ -1,5 +1,7 @@
 # r5: one psi0 GPU 3 s diagnostic, other groups locked
 
+Local psi0 execution and automatic postprocessing are complete:300 native states,300 PartFluid and300 PartBound VTK files, PNGs and matching CSVs. The actual end is13.000000001326498 s (tau3.000000000952241 s). Do not launch it again. All original numerical guards passed, but pressure pulses of−450.667/+1352.125 kPa at tau.63/.64 and early motion arrest prevent paper-accuracy acceptance. Other groups remain locked pending diagnosis; see tests/notes/upl_c08_r5_science_review_r1.md and upl_c08_r5_psi0_paper_review_r1.md. The completed output and original PRE are protected.
+
 Double-click xCaseLianSaturatedColumnCollapse_psi0_shared_r5_win64_GPU.bat. It checks Python/NumPy/Matplotlib, runtime_r5 tools and the original source schedule before GenCase; then performs one fresh receiver, native review, separate PartFluid/PartBound series and PNG/CSV. Nothing is installed automatically. Python prefers D:/anaconda3/python.exe, otherwise PATH python. Runtime contains only the matched GPU Release solver, GenCase, PartVTK, new C08Native and their supplied configuration/DLLs; no old-exe fallback.
 
 All three group XML/GPU BAT files are prepared with their original material values. Only psi0 is admitted. psi2p5 and psim5 stop before any GenCase, solver or postprocessing; there is no automatic three-group sequence. No CPU or new PRELOAD entry is provided.

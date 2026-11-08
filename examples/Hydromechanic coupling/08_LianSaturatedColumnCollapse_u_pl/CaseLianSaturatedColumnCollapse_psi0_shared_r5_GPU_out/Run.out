@@ -1,0 +1,639 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+[Initialising JSphGpuSingle  08-11-2026 07:02:30]
+ProgramFile=".../support/runtime_r5/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl"
+XmlFile=".../08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out/CaseLianSaturatedColumnCollapse_psi0_shared_r5.xml"
+OutputDir=".../Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out"
+OutputDataDir=".../08_LianSaturatedColumnCollapse_u_pl/CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["CaseLianSaturatedColumnCollapse_psi0_shared_r5"]  Data2D=[1]  Data2DPosy=[0]  H=[0.048]  KernelSize=[0.096]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+XML-Vars (parameters): TimeMax=[13]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+GravityPreload: requested=10 event_completed_step=4000000 release_mkbound=2; damping/Shepard are preload-only.
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 7060
+MapRealPos(border)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,2.0224)
+MapRealPos(final)=(-0.1824,-0.0024,-0.1824)-(12.1824,0.0024,4.0224)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.096000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="CaseLianSaturatedColumnCollapse_psi0_shared_r5"
+RunName="CaseLianSaturatedColumnCollapse_psi0_shared_r5"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:1 -> No-slip
+    mkbound:2 -> Free slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=True
+StepAlgorithm="Symplectic"
+Kernel="CubicSpline"
+  Cubic.a1=0.4547284
+  Cubic.aa=4111.766
+  Cubic.a24=49.34119
+  Cubic.c1=-12335.3
+  Cubic.c2=-3083.824
+  Cubic.d1=9251.473
+  Cubic.od_wdeltap=0.009120169
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="Bui2008"
+  ArtificialStressCoef=0.2
+  ArtificialStressExp=2.55
+  ArtificialStressExpMode="XML"
+  ArtificialStressBoundary="StressExtrapolated"
+  Dynamic artificial stress: total stress, current-J quadrature; disabled during certified preload, enabled after wall release.
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.02
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=7060
+CaseNbound=2060
+CaseNfixed=2060
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=5000
+PeriodicActive="None"
+Dp=0.04
+KernelH=0.048000  (CoefficientH=0.848528; H/Dp=1.2)
+KernelSize=0.096
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.0000025
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.0000025
+MassFluid=3.316
+MassBound=3.316
+TimeMax=13
+TimePart=0.01
+Gravity=(0,0,-9.81)
+NpMinimum=7060
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(129,1,44)
+CellDomFixed=False
+**Requested GPU memory for 7188 particles: 4.3 MB (0 times).
+NormalDataFile="CaseLianSaturatedColumnCollapse_psi0_shared_r5_GPU_out/CaseLianSaturatedColumnCollapse_psi0_shared_r5_Normals.nbi4"
+GravityPreload: validated native right-wall range=[1800,2060), count=260.
+GravityPreload: planned KeepBedOverlap original_target=260 kept_bed=5; initial normals and PRE contract are unchanged.
+DomCells=(129,1,44)
+DomCellCode="1+13_7_11"
+Dynamic soil damping rate: 36.1976852 s^-1 (reference intrinsic solid density)
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**CellDiv: Requested gpu memory for 7541 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 2070 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 7060 particles (ConstantZ, min=-196.2, max=21385.8).
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 2060  id:(0-2059)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2060-7059)   MKs:1 (1)
+
+Total particles: 7060 (bound=2060 (fx=2060 mv=0 ft=0) fluid=5000)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (255 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (1545 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (260 particles)
+  Point....: (4,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+
+*** WARNING: The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+GravityPreload: source material law=legacy MR1 ElasticV1; certified elastic schema/contract1.
+Dynamic NoPen: FixedPlaneStageProjectionReleaseOnly; elastic PRE uses NoPen off, collapse projects predictor/corrector trial positions and incoming normal velocities at the fixed left/bed planes; same-stage Darcy reaction is not included.
+GravityPreload: state imported file=D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out\data\Part_1000.bi4 actual=10.000000000374257 completed_step=4000000; next loop releases the right wall once.
+Allocated memory in CPU: 1785576 (1.70 MB)
+Allocated memory in GPU: 4630888 (4.42 MB)
+
+[WARNINGS]
+1. The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+[Initialising simulation (j60xo5cp)  08-11-2026 07:02:30]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+GravityPreload: release attempt requested=10 actual=10.000000000374257 completed_step=4000000 native_range=[1800,2060).
+GravityPreload: release policy=KeepBedOverlap original_target=260 retired=255 kept_bed=5 kept_ids=1800,1852,1904,1956,2008; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.
+GravityPreload: phase=released actual=10.000000000374257 completed_step=4000000 retired=255; damping=OFF Shepard=OFF FreeSeepage=ON.
+Part_0000     10.010000       4004000     4000    2524.87  08-11-2026 09:08:45
+  Progress 0.40% in 30.0s. Estimated finish time: 08-11-2026 09:08:46
+Part_0001     10.020000       4008000     4000    2534.38  08-11-2026 09:08:59
+Part_0002     10.030000       4012000     4000    2555.82  08-11-2026 09:09:25
+Part_0003     10.040000       4016000     4000    2646.03  08-11-2026 09:10:46
+Part_0004     10.050000       4020000     4000    2624.10  08-11-2026 09:11:21
+Part_0005     10.060000       4024000     4000    2583.32  08-11-2026 09:11:24
+Part_0006     10.070000       4028000     4000    2579.29  08-11-2026 09:11:25
+Part_0007     10.080000       4032000     4000    2626.24  08-11-2026 09:11:43
+Part_0008     10.090000       4036000     4000    2669.89  08-11-2026 09:12:11
+Part_0009     10.100000       4040000     4000    2654.64  08-11-2026 09:12:29
+Part_0010     10.110000       4044000     4000    2610.45  08-11-2026 09:12:33
+Part_0011     10.120000       4048000     4000    2671.10  08-11-2026 09:12:50
+Part_0012     10.130000       4052000     4000    2629.34  08-11-2026 09:12:56
+Part_0013     10.140000       4056000     4000    2633.41  08-11-2026 09:13:01
+Part_0014     10.150000       4060000     4000    2692.07  08-11-2026 09:13:17
+Part_0015     10.160000       4064000     4000    2655.26  08-11-2026 09:13:24
+Part_0016     10.170000       4068000     4000    2671.44  08-11-2026 09:13:34
+Part_0017     10.180000       4072000     4000    2682.80  08-11-2026 09:13:44
+Part_0018     10.190000       4076000     4000    2670.94  08-11-2026 09:13:52
+Part_0019     10.200000       4080000     4000    2656.94  08-11-2026 09:13:56
+Part_0020     10.210000       4084000     4000    2644.21  08-11-2026 09:13:58
+Part_0021     10.220000       4088000     4000    2722.51  08-11-2026 09:14:11
+Part_0022     10.230000       4092000     4000    2721.37  08-11-2026 09:14:22
+Part_0023     10.240000       4096000     4000    2664.17  08-11-2026 09:14:26
+Part_0024     10.250000       4100000     4000    2621.66  08-11-2026 09:14:24
+Part_0025     10.260000       4104000     4000    2626.18  08-11-2026 09:14:22
+Part_0026     10.270000       4108000     4000    2633.39  08-11-2026 09:14:22
+Part_0027     10.280000       4112000     4000    2631.13  08-11-2026 09:14:21
+Part_0028     10.290000       4116000     4000    2641.72  08-11-2026 09:14:21
+Part_0029     10.300000       4120000     4000    2619.39  08-11-2026 09:14:19
+Part_0030     10.310000       4124000     4000    2688.90  08-11-2026 09:14:25
+Part_0031     10.320000       4128000     4000    2593.60  08-11-2026 09:14:20
+Part_0032     10.330000       4132000     4000    2580.60  08-11-2026 09:14:15
+Part_0033     10.340000       4136000     4000    2583.13  08-11-2026 09:14:11
+Part_0034     10.350000       4140000     4000    2625.15  08-11-2026 09:14:10
+Part_0035     10.360000       4144000     4000    2689.18  08-11-2026 09:14:15
+Part_0036     10.370000       4148000     4000    2671.87  08-11-2026 09:14:18
+Part_0037     10.380000       4152000     4000    2626.91  08-11-2026 09:14:17
+Part_0038     10.390000       4156000     4000    2647.70  08-11-2026 09:14:18
+Part_0039     10.400000       4160000     4000    2646.36  08-11-2026 09:14:19
+Part_0040     10.410000       4164000     4000    2651.92  08-11-2026 09:14:20
+Part_0041     10.420000       4168000     4000    2617.59  08-11-2026 09:14:19
+Part_0042     10.430000       4172000     4000    2608.23  08-11-2026 09:14:17
+Part_0043     10.440000       4176000     4000    2636.96  08-11-2026 09:14:17
+Part_0044     10.450000       4180000     4000    2681.26  08-11-2026 09:14:20
+Part_0045     10.460000       4184000     4000    2611.01  08-11-2026 09:14:18
+Part_0046     10.470000       4188000     4000    2579.02  08-11-2026 09:14:15
+Part_0047     10.480000       4192000     4000    2578.68  08-11-2026 09:14:11
+Part_0048     10.490000       4196000     4000    2677.48  08-11-2026 09:14:13
+Part_0049     10.500000       4200000     4000    2690.08  08-11-2026 09:14:17
+Part_0050     10.510000       4204000     4000    2633.01  08-11-2026 09:14:17
+Part_0051     10.520000       4208000     4000    2619.67  08-11-2026 09:14:16
+Part_0052     10.530000       4212000     4000    2663.48  08-11-2026 09:14:17
+Part_0053     10.540000       4216000     4000    2648.58  08-11-2026 09:14:18
+Part_0054     10.550000       4220000     4000    2666.38  08-11-2026 09:14:20
+Part_0055     10.560000       4224000     4000    2688.14  08-11-2026 09:14:22
+Part_0056     10.570000       4228000     4000    2668.02  08-11-2026 09:14:24
+Part_0057     10.580000       4232000     4000    2735.55  08-11-2026 09:14:30
+Part_0058     10.590000       4236000     4000    2742.85  08-11-2026 09:14:35
+Part_0059     10.600000       4240000     4000    2707.11  08-11-2026 09:14:38
+Part_0060     10.610000       4244000     4000    2704.65  08-11-2026 09:14:41
+Part_0061     10.620000       4248000     4000    2736.60  08-11-2026 09:14:45
+Part_0062     10.630000       4252000     4000    2802.74  08-11-2026 09:14:52
+Part_0063     10.640000       4256000     4000    2776.78  08-11-2026 09:14:59
+Part_0064     10.650000       4260000     4000    2696.39  08-11-2026 09:15:01
+Part_0065     10.660000       4264000     4000    2746.23  08-11-2026 09:15:06
+Part_0066     10.670000       4268000     4000    2721.05  08-11-2026 09:15:09
+Part_0067     10.680000       4272000     4000    2707.68  08-11-2026 09:15:11
+Part_0068     10.690000       4276000     4000    2715.13  08-11-2026 09:15:14
+Part_0069     10.700000       4280000     4000    2682.10  08-11-2026 09:15:15
+Part_0070     10.710000       4284000     4000    2707.75  08-11-2026 09:15:17
+Part_0071     10.720000       4288000     4000    2732.89  08-11-2026 09:15:20
+Part_0072     10.730000       4292000     4000    2653.10  08-11-2026 09:15:20
+Part_0073     10.740000       4296000     4000    2650.29  08-11-2026 09:15:19
+Part_0074     10.750000       4300000     4000    2624.42  08-11-2026 09:15:19
+Part_0075     10.760000       4304000     4000    2735.54  08-11-2026 09:15:22
+Part_0076     10.770000       4308000     4000    2730.73  08-11-2026 09:15:24
+Part_0077     10.780000       4312000     4000    2664.45  08-11-2026 09:15:25
+Part_0078     10.790000       4316000     4000    2693.09  08-11-2026 09:15:26
+Part_0079     10.800000       4320000     4000    2702.71  08-11-2026 09:15:28
+Part_0080     10.810000       4324000     4000    2696.84  08-11-2026 09:15:29
+Part_0081     10.820000       4328000     4000    2675.82  08-11-2026 09:15:30
+Part_0082     10.830000       4332000     4000    2667.86  08-11-2026 09:15:30
+Part_0083     10.840000       4336000     4000    2639.57  08-11-2026 09:15:30
+Part_0084     10.850000       4340000     4000    2727.64  08-11-2026 09:15:32
+Part_0085     10.860000       4344000     4000    2670.09  08-11-2026 09:15:32
+Part_0086     10.870000       4348000     4000    2632.07  08-11-2026 09:15:31
+Part_0087     10.880000       4352000     4000    2611.82  08-11-2026 09:15:29
+Part_0088     10.890000       4356000     4000    2650.40  08-11-2026 09:15:29
+Part_0089     10.900000       4360000     4000    2685.11  08-11-2026 09:15:29
+Part_0090     10.910000       4364000     4000    2676.02  08-11-2026 09:15:30
+Part_0091     10.920000       4368000     4000    2625.24  08-11-2026 09:15:29
+Part_0092     10.930000       4372000     4000    2667.96  08-11-2026 09:15:29
+Part_0093     10.940000       4376000     4000    2657.88  08-11-2026 09:15:30
+Part_0094     10.950000       4380000     4000    2648.73  08-11-2026 09:15:29
+Part_0095     10.960000       4384000     4000    2634.93  08-11-2026 09:15:29
+Part_0096     10.970000       4388000     4000    2617.75  08-11-2026 09:15:27
+Part_0097     10.980000       4392000     4000    2653.33  08-11-2026 09:15:27
+Part_0098     10.990000       4396000     4000    2670.95  08-11-2026 09:15:27
+Part_0099     11.000000       4400000     4000    2643.11  08-11-2026 09:15:26
+Part_0100     11.010000       4404000     4000    2622.74  08-11-2026 09:15:26
+Part_0101     11.020000       4408000     4000    2622.82  08-11-2026 09:15:25
+Part_0102     11.030000       4412000     4000    2712.88  08-11-2026 09:15:26
+Part_0103     11.040000       4416000     4000    2708.03  08-11-2026 09:15:28
+Part_0104     11.050000       4420000     4000    2646.01  08-11-2026 09:15:28
+Part_0105     11.060000       4424000     4000    2650.22  08-11-2026 09:15:27
+Part_0106     11.070000       4428000     4000    2653.98  08-11-2026 09:15:27
+Part_0107     11.080000       4432000     4000    2640.88  08-11-2026 09:15:26
+Part_0108     11.090000       4436000     4000    2656.79  08-11-2026 09:15:27
+Part_0109     11.100000       4440000     4000    2643.08  08-11-2026 09:15:26
+Part_0110     11.110000       4444000     4000    2615.09  08-11-2026 09:15:25
+Part_0111     11.120000       4448000     4000    2668.30  08-11-2026 09:15:25
+Part_0112     11.130000       4452000     4000    2659.96  08-11-2026 09:15:25
+Part_0113     11.140000       4456000     4000    2627.82  08-11-2026 09:15:25
+Part_0114     11.150000       4460000     4000    2611.26  08-11-2026 09:15:23
+Part_0115     11.160000       4464000     4000    2633.84  08-11-2026 09:15:22
+Part_0116     11.170000       4468000     4000    2688.26  08-11-2026 09:15:23
+Part_0117     11.180000       4472000     4000    2671.34  08-11-2026 09:15:24
+Part_0118     11.190000       4476000     4000    2601.66  08-11-2026 09:15:22
+Part_0119     11.200000       4480000     4000    2659.92  08-11-2026 09:15:22
+Part_0120     11.210000       4484000     4000    2642.69  08-11-2026 09:15:22
+Part_0121     11.220000       4488000     4000    2655.19  08-11-2026 09:15:21
+Part_0122     11.230000       4492000     4000    2657.23  08-11-2026 09:15:22
+Part_0123     11.240000       4496000     4000    2646.93  08-11-2026 09:15:21
+Part_0124     11.250000       4500000     4000    2658.15  08-11-2026 09:15:22
+Part_0125     11.260000       4504000     4000    2691.10  08-11-2026 09:15:23
+Part_0126     11.270000       4508000     4000    2651.67  08-11-2026 09:15:22
+Part_0127     11.280000       4512000     4000    2620.05  08-11-2026 09:15:22
+Part_0128     11.290000       4516000     4000    2618.26  08-11-2026 09:15:21
+Part_0129     11.300000       4520000     4000    2689.18  08-11-2026 09:15:22
+Part_0130     11.310000       4524000     4000    2702.11  08-11-2026 09:15:23
+Part_0131     11.320000       4528000     4000    2642.91  08-11-2026 09:15:22
+Part_0132     11.330000       4532000     4000    2617.63  08-11-2026 09:15:21
+Part_0133     11.340000       4536000     4000    2650.61  08-11-2026 09:15:21
+Part_0134     11.350000       4540000     4000    2637.67  08-11-2026 09:15:20
+Part_0135     11.360000       4544000     4000    2653.13  08-11-2026 09:15:21
+Part_0136     11.370000       4548000     4000    2632.69  08-11-2026 09:15:20
+Part_0137     11.380000       4552000     4000    2610.40  08-11-2026 09:15:19
+Part_0138     11.390000       4556000     4000    2684.83  08-11-2026 09:15:19
+Part_0139     11.400000       4560000     4000    2669.34  08-11-2026 09:15:20
+Part_0140     11.410000       4564000     4000    2649.82  08-11-2026 09:15:19
+Part_0141     11.420000       4568000     4000    2621.63  08-11-2026 09:15:18
+Part_0142     11.430000       4572000     4000    2637.79  08-11-2026 09:15:19
+Part_0143     11.440000       4576000     4000    2714.05  08-11-2026 09:15:20
+Part_0144     11.450000       4580000     4000    2710.76  08-11-2026 09:15:21
+Part_0145     11.460000       4584000     4000    2618.56  08-11-2026 09:15:20
+Part_0146     11.470000       4588000     4000    2664.62  08-11-2026 09:15:20
+Part_0147     11.480000       4592000     4000    2659.30  08-11-2026 09:15:20
+Part_0148     11.490000       4596000     4000    2667.42  08-11-2026 09:15:20
+Part_0149     11.500000       4600000     4000    2640.50  08-11-2026 09:15:21
+Part_0150     11.510000       4604000     4000    2638.36  08-11-2026 09:15:20
+Part_0151     11.520000       4608000     4000    2630.44  08-11-2026 09:15:19
+Part_0152     11.530000       4612000     4000    2692.99  08-11-2026 09:15:20
+Part_0153     11.540000       4616000     4000    2636.26  08-11-2026 09:15:19
+Part_0154     11.550000       4620000     4000    2620.75  08-11-2026 09:15:19
+Part_0155     11.560000       4624000     4000    2619.17  08-11-2026 09:15:18
+Part_0156     11.570000       4628000     4000    2671.69  08-11-2026 09:15:19
+Part_0157     11.580000       4632000     4000    2704.61  08-11-2026 09:15:20
+Part_0158     11.590000       4636000     4000    2652.81  08-11-2026 09:15:19
+Part_0159     11.600000       4640000     4000    2608.43  08-11-2026 09:15:18
+Part_0160     11.610000       4644000     4000    2655.01  08-11-2026 09:15:19
+Part_0161     11.620000       4648000     4000    2636.85  08-11-2026 09:15:18
+Part_0162     11.630000       4652000     4000    2655.16  08-11-2026 09:15:18
+Part_0163     11.640000       4656000     4000    2655.22  08-11-2026 09:15:18
+Part_0164     11.650000       4660000     4000    2647.76  08-11-2026 09:15:18
+Part_0165     11.660000       4664000     4000    2684.88  08-11-2026 09:15:19
+Part_0166     11.670000       4668000     4000    2702.01  08-11-2026 09:15:20
+Part_0167     11.680000       4672000     4000    2656.76  08-11-2026 09:15:19
+Part_0168     11.690000       4676000     4000    2622.94  08-11-2026 09:15:18
+Part_0169     11.700000       4680000     4000    2624.77  08-11-2026 09:15:18
+Part_0170     11.710000       4684000     4000    2713.45  08-11-2026 09:15:19
+Part_0171     11.720000       4688000     4000    2701.06  08-11-2026 09:15:20
+Part_0172     11.730000       4692000     4000    2633.29  08-11-2026 09:15:19
+Part_0173     11.740000       4696000     4000    2654.89  08-11-2026 09:15:20
+Part_0174     11.750000       4700000     4000    2632.42  08-11-2026 09:15:19
+Part_0175     11.760000       4704000     4000    2627.36  08-11-2026 09:15:18
+Part_0176     11.770000       4708000     4000    2656.71  08-11-2026 09:15:19
+Part_0177     11.780000       4712000     4000    2644.20  08-11-2026 09:15:18
+Part_0178     11.790000       4716000     4000    2643.06  08-11-2026 09:15:18
+Part_0179     11.800000       4720000     4000    2713.11  08-11-2026 09:15:19
+Part_0180     11.810000       4724000     4000    2647.90  08-11-2026 09:15:19
+Part_0181     11.820000       4728000     4000    2611.75  08-11-2026 09:15:18
+Part_0182     11.830000       4732000     4000    2608.00  08-11-2026 09:15:18
+Part_0183     11.840000       4736000     4000    2677.39  08-11-2026 09:15:17
+Part_0184     11.850000       4740000     4000    2720.40  08-11-2026 09:15:19
+Part_0185     11.860000       4744000     4000    2692.98  08-11-2026 09:15:19
+Part_0186     11.870000       4748000     4000    2630.80  08-11-2026 09:15:19
+Part_0187     11.880000       4752000     4000    2668.14  08-11-2026 09:15:19
+Part_0188     11.890000       4756000     4000    2646.44  08-11-2026 09:15:19
+Part_0189     11.900000       4760000     4000    2661.41  08-11-2026 09:15:19
+Part_0190     11.910000       4764000     4000    2663.77  08-11-2026 09:15:19
+Part_0191     11.920000       4768000     4000    2642.21  08-11-2026 09:15:19
+Part_0192     11.930000       4772000     4000    2675.91  08-11-2026 09:15:19
+Part_0193     11.940000       4776000     4000    2700.33  08-11-2026 09:15:20
+Part_0194     11.950000       4780000     4000    2655.38  08-11-2026 09:15:20
+Part_0195     11.960000       4784000     4000    2621.09  08-11-2026 09:15:19
+Part_0196     11.970000       4788000     4000    2600.58  08-11-2026 09:15:18
+Part_0197     11.980000       4792000     4000    2689.01  08-11-2026 09:15:19
+Part_0198     11.990000       4796000     4000    2700.59  08-11-2026 09:15:20
+Part_0199     12.000000       4800000     4000    2636.12  08-11-2026 09:15:19
+Part_0200     12.010000       4804000     4000    2643.18  08-11-2026 09:15:19
+Part_0201     12.020000       4808000     4000    2646.39  08-11-2026 09:15:19
+Part_0202     12.030000       4812000     4000    2635.33  08-11-2026 09:15:19
+Part_0203     12.040000       4816000     4000    2638.44  08-11-2026 09:15:18
+Part_0204     12.050000       4820000     4000    2656.36  08-11-2026 09:15:19
+Part_0205     12.060000       4824000     4000    2639.97  08-11-2026 09:15:18
+Part_0206     12.070000       4828000     4000    2723.85  08-11-2026 09:15:19
+Part_0207     12.080000       4832000     4000    2665.56  08-11-2026 09:15:19
+Part_0208     12.090000       4836000     4000    2638.85  08-11-2026 09:15:19
+Part_0209     12.100000       4840000     4000    2617.64  08-11-2026 09:15:18
+Part_0210     12.110000       4844000     4000    2675.25  08-11-2026 09:15:19
+Part_0211     12.120000       4848000     4000    2705.56  08-11-2026 09:15:19
+Part_0212     12.130000       4852000     4000    2685.50  08-11-2026 09:15:20
+Part_0213     12.140000       4856000     4000    2630.45  08-11-2026 09:15:19
+Part_0214     12.150000       4860000     4000    2667.04  08-11-2026 09:15:20
+Part_0215     12.160000       4864000     4000    2653.19  08-11-2026 09:15:20
+Part_0216     12.170000       4868000     4000    2655.39  08-11-2026 09:15:19
+Part_0217     12.180000       4872000     4000    2643.78  08-11-2026 09:15:20
+Part_0218     12.190000       4876000     4000    2634.09  08-11-2026 09:15:19
+Part_0219     12.200000       4880000     4000    2675.66  08-11-2026 09:15:20
+Part_0220     12.210000       4884000     4000    2685.10  08-11-2026 09:15:20
+Part_0221     12.220000       4888000     4000    2658.89  08-11-2026 09:15:20
+Part_0222     12.230000       4892000     4000    2630.15  08-11-2026 09:15:19
+Part_0223     12.240000       4896000     4000    2609.73  08-11-2026 09:15:19
+Part_0224     12.250000       4900000     4000    2689.99  08-11-2026 09:15:19
+Part_0225     12.260000       4904000     4000    2704.33  08-11-2026 09:15:19
+Part_0226     12.270000       4908000     4000    2647.77  08-11-2026 09:15:20
+Part_0227     12.280000       4912000     4000    2654.40  08-11-2026 09:15:20
+Part_0228     12.290000       4916000     4000    2671.44  08-11-2026 09:15:20
+Part_0229     12.300000       4920000     4000    2666.13  08-11-2026 09:15:20
+Part_0230     12.310000       4924000     4000    2664.54  08-11-2026 09:15:21
+Part_0231     12.320000       4928000     4000    2668.73  08-11-2026 09:15:20
+Part_0232     12.330000       4932000     4000    2640.35  08-11-2026 09:15:21
+Part_0233     12.340000       4936000     4000    2710.27  08-11-2026 09:15:21
+Part_0234     12.350000       4940000     4000    2672.99  08-11-2026 09:15:21
+Part_0235     12.360000       4944000     4000    2635.71  08-11-2026 09:15:21
+Part_0236     12.370000       4948000     4000    2629.59  08-11-2026 09:15:20
+Part_0237     12.380000       4952000     4000    2660.31  08-11-2026 09:15:21
+Part_0238     12.390000       4956000     4000    2693.00  08-11-2026 09:15:21
+Part_0239     12.400000       4960000     4000    2674.98  08-11-2026 09:15:21
+Part_0240     12.410000       4964000     4000    2614.44  08-11-2026 09:15:21
+Part_0241     12.420000       4968000     4000    2673.18  08-11-2026 09:15:21
+Part_0242     12.430000       4972000     4000    2646.83  08-11-2026 09:15:21
+Part_0243     12.440000       4976000     4000    2668.66  08-11-2026 09:15:20
+Part_0244     12.450000       4980000     4000    2640.87  08-11-2026 09:15:21
+Part_0245     12.460000       4984000     4000    2627.61  08-11-2026 09:15:20
+Part_0246     12.470000       4988000     4000    2650.47  08-11-2026 09:15:21
+Part_0247     12.480000       4992000     4000    2698.47  08-11-2026 09:15:21
+Part_0248     12.490000       4996000     4000    2674.88  08-11-2026 09:15:21
+Part_0249     12.500000       5000000     4000    2630.10  08-11-2026 09:15:21
+Part_0250     12.510000       5004000     4000    2625.12  08-11-2026 09:15:20
+Part_0251     12.520000       5008000     4000    2711.04  08-11-2026 09:15:21
+Part_0252     12.530000       5012000     4000    2716.34  08-11-2026 09:15:21
+Part_0253     12.540000       5016000     4000    2660.48  08-11-2026 09:15:22
+Part_0254     12.550000       5020000     4000    2650.93  08-11-2026 09:15:21
+Part_0255     12.560000       5024000     4000    2656.57  08-11-2026 09:15:22
+Part_0256     12.570000       5028000     4000    2653.47  08-11-2026 09:15:21
+Part_0257     12.580000       5032000     4000    2663.16  08-11-2026 09:15:22
+Part_0258     12.590000       5036000     4000    2654.12  08-11-2026 09:15:22
+Part_0259     12.600000       5040000     4000    2628.59  08-11-2026 09:15:21
+Part_0260     12.610000       5044000     4000    2701.34  08-11-2026 09:15:22
+Part_0261     12.620000       5048000     4000    2667.47  08-11-2026 09:15:22
+Part_0262     12.630000       5052000     4000    2636.29  08-11-2026 09:15:22
+Part_0263     12.640000       5056000     4000    2612.86  08-11-2026 09:15:21
+Part_0264     12.650000       5060000     4000    2640.64  08-11-2026 09:15:20
+Part_0265     12.660000       5064000     4000    2692.87  08-11-2026 09:15:21
+Part_0266     12.670000       5068000     4000    2688.32  08-11-2026 09:15:21
+Part_0267     12.680000       5072000     4000    2603.93  08-11-2026 09:15:21
+Part_0268     12.690000       5076000     4000    2657.68  08-11-2026 09:15:21
+Part_0269     12.700000       5080000     4000    2659.37  08-11-2026 09:15:21
+Part_0270     12.710000       5084000     4000    2654.94  08-11-2026 09:15:21
+Part_0271     12.720000       5088000     4000    2657.72  08-11-2026 09:15:21
+Part_0272     12.730000       5092000     4000    2644.79  08-11-2026 09:15:21
+Part_0273     12.740000       5096000     4000    2647.31  08-11-2026 09:15:21
+Part_0274     12.750000       5100000     4000    2685.87  08-11-2026 09:15:21
+Part_0275     12.760000       5104000     4000    2658.38  08-11-2026 09:15:21
+Part_0276     12.770000       5108000     4000    2633.99  08-11-2026 09:15:21
+Part_0277     12.780000       5112000     4000    2626.90  08-11-2026 09:15:21
+Part_0278     12.790000       5116000     4000    2706.50  08-11-2026 09:15:21
+Part_0279     12.800000       5120000     4000    2715.25  08-11-2026 09:15:22
+Part_0280     12.810000       5124000     4000    2650.37  08-11-2026 09:15:21
+Part_0281     12.820000       5128000     4000    2641.17  08-11-2026 09:15:22
+Part_0282     12.830000       5132000     4000    2643.98  08-11-2026 09:15:21
+Part_0283     12.840000       5136000     4000    2637.50  08-11-2026 09:15:22
+Part_0284     12.850000       5140000     4000    2668.60  08-11-2026 09:15:21
+Part_0285     12.860000       5144000     4000    2649.57  08-11-2026 09:15:21
+Part_0286     12.870000       5148000     4000    2622.13  08-11-2026 09:15:21
+Part_0287     12.880000       5152000     4000    2694.92  08-11-2026 09:15:21
+Part_0288     12.890000       5156000     4000    2662.04  08-11-2026 09:15:21
+Part_0289     12.900000       5160000     4000    2627.35  08-11-2026 09:15:21
+Part_0290     12.910000       5164000     4000    2618.01  08-11-2026 09:15:21
+Part_0291     12.920000       5168000     4000    2642.76  08-11-2026 09:15:20
+Part_0292     12.930000       5172000     4000    2727.22  08-11-2026 09:15:21
+Part_0293     12.940000       5176000     4000    2726.16  08-11-2026 09:15:22
+Part_0294     12.950000       5180000     4000    2624.83  08-11-2026 09:15:21
+Part_0295     12.960000       5184000     4000    2675.67  08-11-2026 09:15:22
+Part_0296     12.970000       5188000     4000    2653.08  08-11-2026 09:15:21
+Part_0297     12.980000       5192000     4000    2655.46  08-11-2026 09:15:22
+Part_0298     12.990000       5196000     4000    2659.28  08-11-2026 09:15:22
+Part_0299     13.000000       5200000     4000    2643.36  08-11-2026 09:15:22
+
+[Simulation finished  08-11-2026 09:15:22]
+Particles of simulation (initial): 7060
+DTs adjusted to DtMin............: 0
+Excluded particles...............: 0
+Total Runtime....................: 7971.717285 sec.
+Simulation Runtime...............: 7971.565918 sec.
+Runtime per physical second......: 613.197388 sec.
+Steps per second.................: 652.318481
+Steps of simulation..............: 5200000
+PART files.......................: 300
+Maximum number of particles......: 7060
+Maximum number of cells..........: 1122
+CPU Memory.......................: 1785576 (1.70 MB)
+GPU Memory.......................: 4630888 (4.42 MB)
+ 
+[GPU Timers]
+VA-Init..........................: 0.152077 sec.
+NL-Limits........................: 116.593370 sec.
+NL-PreSort.......................: 12.807711 sec.
+NL-RadixSort.....................: 253.420108 sec.
+NL-CellBegin.....................: 137.906689 sec.
+NL-SortData......................: 1770.526827 sec.
+NL-OutCheck......................: 30.302709 sec.
+CF-PreForces.....................: 236.294831 sec.
+CF-Forces........................: 3177.428898 sec.
+SU-Shifting......................: 0 sec.
+SU-ComputeStep...................: 508.085353 sec.
+SU-Floating......................: 0 sec.
+SU-Motion........................: 0 sec.
+SU-Periodic......................: 0 sec.
+SU-ResizeNp......................: 0 sec.
+SU-DownData......................: 0.119971 sec.
+SU-SavePart......................: 2.671485 sec.
+SU-Chrono........................: 0 sec.
+SU-Moorings......................: 0 sec.
+SU-InOut.........................: 0 sec.
+SU-Gauges........................: 0 sec.
+ 
+[Output files]
+- CfgInit_Domain.vtk......: Saves the limits of the case and the simulation domain limits.
+- CfgInit_MapCells.vtk....: Saves the cell division of the simulation domain.
+- CfgInit_Normals.vtk.....: Saves VTK file with initial normals (from boundary particles to boundary limit).
+- CfgInit_NormalsGhost.vtk: Saves VTK file with initial normals (from boundary particles to ghost node).
+- Run.csv.................: One line CSV file with execution parameters and other simulation data.
+- Run.out.................: Log file of the simulation.
+- data/PartInfo.ibi4......: Binary file with execution information for each instant (input for PartInfo program).
+- data/PartOut_???.obi4...: Binary file with particles excluded during simulation (input for PartVtkOut program).
+- data/Part_????.bi4......: Binary file with particle data in different instants.
+- data/Part_Head.ibi4.....: Binary file with basic information of simulation data.
+ 
+[WARNINGS]
+1. The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+ 
+[References]
+- Official solver reference DualSPHysics v5.0: J.M. Dominguez, G. Fourtakas,
+    C. Altomare, R.B. Canelas, A. Tafuni, O. Garcia-Feal, I. Martinez-Estevez,
+    A. Mokos, R. Vacondio, A.J.C. Crespo, B.D. Rogers, P.K. Stansby, M. Gomez-Gesteira.
+    2022. DualSPHysics: from fluid dynamics to multiphysics problems.
+    Computational Particle Mechanics, 9:867-895. doi: https://doi.org/10.1007/s40571-021-00404-2
+
+- Optimised CPU multi-core and GPU implementation (Dominguez et al., 2013  https://doi.org/10.1016/j.cpc.2012.10.015)
+- Modified Dynamic boundary conditions (English et al., 2021  https://doi.org/10.1007/s40571-021-00403-3)
+- Viscosity: Artificial (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Kernel: Cubic Spline (Monaghan, 1992  https://doi.org/10.1146/annurev.aa.30.090192.002551)
+- Time integration scheme: Symplectic (Leimkhuler, 1996  https://doi.org/10.1007/978-3-319-16375-8_1)
+
+Finished execution (code=0).
+
