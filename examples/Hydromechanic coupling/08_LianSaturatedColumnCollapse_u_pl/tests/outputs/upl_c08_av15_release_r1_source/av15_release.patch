@@ -1,0 +1,42 @@
+--- original/src/source/JSph.cpp
++++ private/src/source/JSph.cpp
+@@ -2993,6 +2993,11 @@
+         bdpart->SetvFloat("DynamicArtificialStressExp",ArtificialStressExp);
+       }
+     }
++    if(IsGravityPreloadHandoff() && GravityPreloadReleased){
++      bdpart->SetvText("DynamicArtificialViscosityPolicy","ReleaseOnly");
++      bdpart->SetvBool("DynamicArtificialViscosityOverrideActive",true);
++      bdpart->SetvFloat("DynamicArtificialViscosityCoef",Visco);
++    }
+     if(GravityPreload){
+       bdpart->SetvUint("GravityPreloadPhase",(GravityPreloadReleased? 1u: 0u));
+       bdpart->SetvDouble("GravityPreloadRequestedTime",GravityPreloadTime);
+--- original/src/source/JSphCpuSingle.cpp
++++ private/src/source/JSphCpuSingle.cpp
+@@ -1285,6 +1285,11 @@
+     }
+     Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip.",GravityPreloadIdCount,retired,kept,ids.str().c_str());
+   }
++  //-Private release-only AV sensitivity; the certified input/PRE retains Visco=.1.
++  if(!IsGravityPreloadHandoff() || !GravityPreloadKeepBedOverlap || ViscoTime || TVisco!=VISCO_Artificial || Visco!=.1f)
++    Run_Exceptioon("Private AV.15 requires the original AV.1 certified keep5 handoff without ViscoTime.");
++  Visco=.15f;
++  Log->Printf("Private AV: policy=ReleaseOnly input_coefficient=%.9g actual_coefficient=%.9g completed_step=%u actual=%.17g; startup Configuration records the certified input, runtime metadata records the released coefficient.",double(.1f),double(Visco),unsigned(Nstep),TimeStep);
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 
+--- original/src/source/JSphGpuSingle.cpp
++++ private/src/source/JSphGpuSingle.cpp
+@@ -1089,6 +1089,11 @@
+     Log->Printf("GravityPreload: release policy=KeepBedOverlap original_target=%u retired=%u kept_bed=%u kept_ids=%s; coordinates/IDs/fixed MK codes retained, bed normal=+DpZ NoSlip."
+       ,GravityPreloadIdCount,retired,kept,keptids.c_str());
+   }
++  //-Private release-only AV sensitivity; the certified input/PRE retains Visco=.1.
++  if(!IsGravityPreloadHandoff() || !GravityPreloadKeepBedOverlap || ViscoTime || TVisco!=VISCO_Artificial || Visco!=.1f)
++    Run_Exceptioon("Private AV.15 requires the original AV.1 certified keep5 handoff without ViscoTime.");
++  Visco=.15f;
++  Log->Printf("Private AV: policy=ReleaseOnly input_coefficient=%.9g actual_coefficient=%.9g completed_step=%u actual=%.17g; startup Configuration records the certified input, runtime metadata records the released coefficient.",double(.1f),double(Visco),unsigned(Nstep),TimeStep);
+   Log->Printf("GravityPreload: phase=released actual=%.17g completed_step=%u retired=%u; damping=OFF Shepard=OFF FreeSeepage=ON.",TimeStep,unsigned(Nstep),retired);
+ }
+ 
