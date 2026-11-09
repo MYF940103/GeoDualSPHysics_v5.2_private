@@ -1,0 +1,23 @@
+--- old/src/source/JSphCpuSingle.cpp
++++ new/src/source/JSphCpuSingle.cpp
+@@ -49,6 +49,10 @@
+ 
+ #include <climits>
+ #include <map>
++
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++extern void C08ResidualViscosityApply(JSphCpuSingle*);
++#endif
+ 
+ using namespace std;
+ //==============================================================================
+@@ -746,6 +750,9 @@
+       HourglassCpu->PredictorForce(Np,Npb,Idpc,Codec,Posc,Velrhopc,Kplasticc,Acec,SymplecticDtPre,(PorosityFeedback? PoroJc: NULL));
+     else HourglassCpu->CorrectorForce(Np,Npb,Idpc,Codec,Acec,(PorosityFeedback? PoroJc: NULL));
+   }
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++  C08ResidualViscosityApply(this);
++#endif
+   if(DynamicPorePressure)ComputeDynamicPorePressureRateCpu();
+   //-Calculates maximum value of Ace (periodic particles are ignored).
+   AceMax=ComputeAceMax(Np-Npb,Acec+Npb,Codec+Npb);
