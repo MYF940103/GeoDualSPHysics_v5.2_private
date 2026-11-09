@@ -1,0 +1,13 @@
+# AV=.15 release-only implementation review
+
+2026-11-09. The CPU Debug and GPU Release private builds passed, with two host translation units rebuilt per backend and all CUDA objects retained. The build/source checkpoint is local and remote `b75fd4b2c6ce7b735edea097c7499e597b2c7187`. Production source, formal inputs, original PRE and old programs remain unchanged.
+
+The root independently reviewed the five CPU-smoke/native files, their note, and the GPU owner/preparation/analysis files. An independent peer found no interface blocker. The new utility reader was built once; it supports only the CPU 2-frame/80-update and GPU 30-frame/120000-update profiles. No extra half-step chain is admitted.
+
+The one CPU Debug smoke completed normally: original r2 GPU PRE at actual `10.000000000374257 s`, new completed steps 4000040 and 4000080, final actual `10.000200000374321 s`. A separate unique native read passed all 22 arrays and 6805 active IDs. It performed 10000 ledger/cache/plastic-history checks, 13610 P0 bit checks, 3610 fixed-marker checks, 20000 plane checks and 298 true FS2/3 pressure checks. Scalar-clock and ledger error were zero; the original signed dterror guard passed. Both saved headers contain actual `DynamicArtificialViscosityCoef=.15f`, ReleaseOnly and OverrideActive=true. Original XML/PRE contract AV=.1 was preserved. This is implementation evidence, not a Debug/Release bit comparison, physical accuracy or equilibrium acceptance.
+
+After this pass the root admitted exactly one fresh GPU .30 s window, `upl_c08_av15_window_GPU_r1`, with original PRE, fixed 2.5 us, total-AS epsilon=.2/exponent3, keep5/fixed-plane and CompletedOnly. Release Shepard and damping stay off. It has 120000 new updates and 30 planned saves. Its owner is the sole terminal notification mechanism and does not launch a reader, VTK or a later solver. Startup Configuration still reports the certified input AV=.1; actual .15 must be verified by the separate typed-header reader after normal completion.
+
+The comparison is against the retained true n3/AV=.1 first 30 records at actual matched clocks. Pressure, stress, velocity, settlement, plastic history, J and particle spacing must all be inspected. Reduced motion alone is not repair. The old AS025 .90 s preparation remains unadmitted. Other psi groups stay held. Fixed-plane reaction closure remains false.
+
+Inputs and analysis tools, implementation receipts, source patch/archive and small native summaries are selectively Git-backed. BI4, typed binaries, executables and objects remain local; Git backup is not a raw-data backup. Existing failures and their original records remain untouched. No SHA scan was performed.

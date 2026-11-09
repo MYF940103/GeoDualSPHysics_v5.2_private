@@ -1,0 +1,48 @@
+"""Explicit prepare or one80-update CPU AV.15 smoke; never starts a reader or GPU window."""
+import argparse,csv,json,os,re,struct,xml.etree.ElementTree as ET
+from pathlib import Path
+import psutil
+import mdbc_partition_components_r3 as e
+from upl_c08_asn3_window_r1 import summary
+T=Path(__file__).resolve().parents[1];C=T.parent;L=T/'logs';TAG='upl_c08_av15_smoke_CPU_r1';OUT=T/'outputs'/TAG;CONFIG=T/'configs'/(TAG+'_Def.xml');PLAN=OUT/'planned_steps.csv'
+ROOT=C/'CaseLianSaturatedColumnCollapse_psi0_shared_r6_Def.xml';PRE=C/'CaseLianSaturatedColumnCollapse_shared_preload_r2_GPU_out/data/Part_1000.bi4';NOTE=T/'notes/upl_c08_av15_native_r1.md';END=4000080
+need,read,stat,bind,save=e.need,e.read,e.stat,e.bind,e.save
+def signature(n):return n.tag,tuple(sorted((k,v) for k,v in n.attrib.items() if k!='comment' and not k.endswith('_comment'))),(n.text or '').strip(),tuple(signature(q) for q in n)
+def expected():
+ r=ET.fromstring(ROOT.read_bytes());r.find('execution/special/gravitypreload').set('statefile',str(PRE.resolve()))
+ for key,value in (('TimeMax','10.0002'),('TimeOut','0.0001')):r.find("execution/parameters/parameter[@key='"+key+"']").set('value',value)
+ return r
+def check_input(path,generated=False):
+ r=ET.parse(path).getroot();want=expected();need(all(signature(r.find(p))==signature(want.find(p)) for p in ('execution/special','execution/parameters')),'Actual smoke physical sections differ from original r6 beyond clocks/source')
+ if not generated:need(signature(r)==signature(want),'Prepared geometry differs')
+ else:need(float(r.find('execution/constants/h').get('value'))==float(struct.unpack('<f',struct.pack('<f',.048))[0]) or float(r.find('execution/constants/h').get('value'))==.048,'Generated original h differs')
+def context(build_check):
+ b=read(build_check);need(b['passed'] and b['configuration']=='DebugCPU' and b['consumed_stats_unchanged'] and b['physical_objects_recompiled']==2 and b['actual_link_objects']==87 and b['compile_invocations']==2 and b['link_invocations']==1 and b['CUDA_compile_invocations']==0,'Passed private CPU Debug two-host-TU build required');sc=read(bind(b['source_capture'])['path']);need(sc['only_release_AV_override_and_actual_metadata_changed'] and sc['reverse_reconstruction_original_bytes_exact'] and not sc['GetGravityPreloadContract_changed'] and not sc['class_layout_changed'] and not sc['CUDA_source_changed'],'Actual private AV source proof differs')
+ return b,[stat(build_check),bind(b['program']),bind(b['source_capture']),bind(b['source_archive']),*[bind(v) for v in b['runtime']],stat(ROOT),stat(PRE),stat(__file__),stat(NOTE)]
+def prepare(build_check):
+ b,before=context(build_check);receipt=L/(TAG+'.prepare.json');need(not CONFIG.exists() and not OUT.exists() and not receipt.exists(),'Existing prepared/partial smoke protected');text=ROOT.read_bytes().decode('utf-8-sig');original=text
+ for key,value in (('TimeMax','10.0002'),('TimeOut','0.0001')):
+  text,n=re.subn(r'(<parameter key="'+key+r'" value=")[^"]*',lambda m:m[1]+value,text);need(n==1,'Unique existing clock parameter required')
+ need(text.count('statefile="__GRAVITY_PRELOAD_STATE__"')==1,'Unique original PRE marker required');text=text.replace('statefile="__GRAVITY_PRELOAD_STATE__"','statefile="'+str(PRE.resolve()).replace('&','&amp;').replace('"','&quot;')+'"',1);text,n=re.subn(r'<!-- r6 psi0-only diagnostic:.*? -->','<!-- Private AV.15 CPU two-frame implementation smoke; XML AV.1 remains for certified loading, override occurs only after release. Not physical acceptance. -->',text,count=1);need(n==1,'Original explanatory header missing')
+ with CONFIG.open('xb') as f:f.write(text.encode('utf-8'))
+ check_input(CONFIG);OUT.mkdir()
+ with PLAN.open('x',encoding='utf-8',newline='') as f:w=csv.writer(f);w.writerow(('part','completed_step'));w.writerows(((0,4000040),(1,4000080)))
+ need(ROOT.read_bytes().decode('utf-8-sig')==original and all(stat(v['path'])==v for v in before),'Closed input changed during prepare');save(receipt,dict(stage=TAG+'.prepare',passed=True,source_build=stat(build_check),program=b['program'],input_xml=stat(CONFIG),planned_steps=stat(PLAN),GenCase_invocations=0,solver_invocations=0,reader_invocations=0,consumed=before,consumed_stats_unchanged=True))
+def run(build_check,admission):
+ receipt=L/(TAG+'.run.json');need(not receipt.exists() and OUT.is_dir() and {p.name for p in OUT.iterdir()}=={'planned_steps.csv'},'Existing solver/partial smoke protected');b,before=context(build_check);stage='preflight';result=dict(stage=TAG,passed=False,configuration='DebugCPU',solver_completed=False,solver_invocations=0,GenCase_invocations=0,reader_invocations=0,native_review_pending=True,AV_policy='ReleaseOnly',input_ArtificialViscosityCoef=.1,released_ArtificialViscosityCoef=.15,actual_AV_metadata_key='DynamicArtificialViscosityCoef',ArtificialStress=True,ArtificialStressCoef=.2,ArtificialStressExp=3.,physical_acceptance=False,SHA_scans=0)
+ try:
+  ad=read(admission);need(ad['passed'] and ad['allowed_job']==TAG,'Explicit root CPU-smoke admission required');prep=L/(TAG+'.prepare.json');p=read(prep);need(p['passed'] and p['source_build']==stat(build_check) and p['program']==b['program'] and bind(p['input_xml'])==stat(CONFIG) and bind(p['planned_steps'])==stat(PLAN),'Actual prepared CPU input/plan/build differs');check_input(CONFIG);before += [stat(admission),stat(prep),stat(CONFIG),stat(PLAN)];program=Path(b['program']['path']);gen=C/'support/runtime_r6/GenCase_win64.exe';before.append(stat(gen))
+  for q in psutil.process_iter(['exe']):
+   try:need(not q.info['exe'] or os.path.normcase(os.path.abspath(q.info['exe']))!=os.path.normcase(os.path.abspath(program)),'Actual private CPU program already active')
+   except (psutil.NoSuchProcess,psutil.AccessDenied):pass
+  prefix=OUT/TAG;stage='GenCase';result['GenCase_invocations']=1;result['GenCase_call']=e.invoke(TAG+'.gencase',[str(gen),str(CONFIG.with_suffix('')),str(prefix),'-save:all'],C);seed=Path(str(prefix)+'.xml');check_input(seed,True);seeds=[stat(Path(str(prefix)+s)) for s in ('.xml','.bi4','_Normals.nbi4')];before+=seeds;argv=[str(program),'-cpu','-ompthreads:1','-stable','-mdbc_freeslip:1',str(prefix),str(OUT),'-dirdataout','data','-svres','-nsteps:'+str(END)]
+  owner=e.stat(__file__);op=L/(TAG+'.owner_admission.json');save(op,dict(stage=TAG,owner=dict(pid=os.getpid(),created_epoch=psutil.Process().create_time()),root_admission=stat(admission),owner_script=owner,program=b['program'],source_build=stat(build_check),source_pre_file=stat(PRE),input_xml=stat(seed),seed=seeds,planned_steps=stat(PLAN),planned_global_end=END,expected_saved_frames=2,argv=argv));result.update(program=b['program'],source_build=stat(build_check),source_capture=b['source_capture'],source_archive=b['source_archive'],source_pre_file=stat(PRE),input_xml=stat(seed),seed=seeds,planned_steps=stat(PLAN),owner_admission=stat(op),runtime=b['runtime']);stage='solver';result['solver_invocations']=1;result['actual_call']=e.invoke(TAG+'.solver',argv,program.parent);result.update(solver_completed=True,actual_exit=0,actual_Win32_exit=0);stage='solver_output_review'
+  r=summary(OUT/'Run.csv');text=(OUT/'Run.out').read_text(encoding='utf-8-sig');parts=sorted((OUT/'data').glob('Part_*.bi4'));need(int(r['Steps'])==END and int(r['PartFiles'])==2 and int(r['Np'])==7060 and int(r['Nbound'])==int(r['Nfixed'])==2060 and all(int(r[k])==0 for k in ('PartsOut','PartsOutRhop','PartsOutVel')) and 'Gpu_' not in r['Hardware'] and [p.name for p in parts]==['Part_0000.bi4','Part_0001.bi4'],'Actual CPU80-update/2frame/no-exclusion summary differs')
+  imported=re.findall(r'GravityPreload: state imported file=.*? actual=([0-9.eE+-]+) completed_step=(\d+);',text);override=re.findall(r'Private AV: policy=ReleaseOnly input_coefficient=([0-9.eE+-]+) actual_coefficient=([0-9.eE+-]+) completed_step=(\d+) actual=([0-9.eE+-]+);',text);need('Finished execution (code=0).' in text and len(imported)==len(override)==1 and int(imported[0][1])==int(override[0][2])==4000000 and float(imported[0][0])==float(override[0][3]) and all(struct.pack('<f',float(override[0][i]))==struct.pack('<f',v) for i,v in enumerate((.1,.15))) and text.count('retired=255; damping=OFF Shepard=OFF FreeSeepage=ON.')==1,'Actual original import/unique AV override/release differs')
+  need(all(stat(v['path'])==v for v in before),'Consumed closed files changed');result.update(passed=True,actual_steps=END,saved_frames=2,summary=r,Hardware=r['Hardware'],actual_source_time_from_loader=float(imported[0][0]),Run_csv=stat(OUT/'Run.csv'),Run_out=stat(OUT/'Run.out'),PARTs=[stat(p) for p in parts],consumed_stats_unchanged=True)
+ except Exception as error:
+  result.update(first_failure=str(error),failed_stage=stage);cp=L/(TAG+'.solver.call.json')
+  if cp.exists():c=read(cp);result.update(actual_call=stat(cp),actual_exit=c['actual_Popen_wait_exit'],actual_Win32_exit=c['actual_Win32_exit'],ownership_failure=c['ownership_failure'])
+ result.update(consumed=before,physical_acceptance=False);save(receipt,result);print(json.dumps(dict(passed=result['passed'],receipt=str(receipt),first_failure=result.get('first_failure'))),flush=True);return 0 if result['passed'] else 1
+if __name__=='__main__':
+ p=argparse.ArgumentParser(description=__doc__);p.add_argument('action',choices=('prepare','run'));p.add_argument('--build-check',type=Path,required=True);p.add_argument('--admission',type=Path);p.add_argument('--execution-authorized',action='store_true');a=p.parse_args();need(a.execution_authorized,'Root full-read before explicit action');need(a.action!='run' or a.admission is not None,'Run requires root admission');raise SystemExit(prepare(a.build_check) if a.action=='prepare' else run(a.build_check,a.admission))
