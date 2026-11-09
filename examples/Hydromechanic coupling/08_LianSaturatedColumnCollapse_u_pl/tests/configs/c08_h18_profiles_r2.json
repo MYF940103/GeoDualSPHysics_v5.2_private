@@ -1,0 +1,72 @@
+{
+  "schema": 1,
+  "source_job": "c08_h18_pre_r2",
+  "kernel": "Cubic",
+  "kernel_id": 1,
+  "hdp": 1.8,
+  "Dp": 0.04,
+  "H_nominal_m": 0.072,
+  "fixed_dt_s": 5e-06,
+  "preload_time_s": 10.0,
+  "preload_completed_step": 2000000,
+  "preload_samples": 1001,
+  "preload_plan": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_pre_r2.steps.csv",
+  "preload_actual_end_s": 9.999999999706008,
+  "preload_damping_coefficient": 0.03,
+  "release_damping": false,
+  "release_Shepard": false,
+  "residual_viscosity": false,
+  "AS_coefficients_first": [
+    0.3,
+    0.5,
+    0.7
+  ],
+  "AS_exponent_first": 3.825,
+  "AS_exponents_followup": [
+    3.0,
+    5.0
+  ],
+  "maximum_followup_combinations": 2,
+  "receiver": [
+    {
+      "duration_s": 0.9,
+      "end_completed_step": 2180000,
+      "samples": 91,
+      "plan": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_release_w09_r2.steps.csv",
+      "first_actual_time_s": 10.000004999706007,
+      "actual_end_s": 10.899999999671936
+    },
+    {
+      "duration_s": 3.0,
+      "end_completed_step": 2600000,
+      "samples": 301,
+      "plan": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\configs\\c08_h18_release_full3_r2.steps.csv",
+      "first_actual_time_s": 10.000004999706007,
+      "actual_end_s": 12.999999999592434
+    }
+  ],
+  "groups": [
+    {
+      "name": "psi0",
+      "dilation_deg": 0.0,
+      "cohesion_Pa": 5000.0,
+      "decay": 0.0
+    },
+    {
+      "name": "psi2p5",
+      "dilation_deg": 2.5,
+      "cohesion_Pa": 5000.0,
+      "decay": 0.2
+    },
+    {
+      "name": "psim5",
+      "dilation_deg": -5.0,
+      "cohesion_Pa": 7500.0,
+      "decay": 0.2
+    }
+  ],
+  "selection_requires_physical_review": true,
+  "source_guards_unchanged": true,
+  "new_half_runs_planned": false,
+  "formal_inputs_written": false
+}
