@@ -1,0 +1,22 @@
+--- old/src/source/JSphCpu.cpp
++++ new/src/source/JSphCpu.cpp
+@@ -2159,6 +2159,9 @@
+ /// Perform interaction between particles: Fluid/Float-Fluid/Float or Fluid/Float-Bound
+ /// Realiza interaccion entre particulas: Fluid/Float-Fluid/Float or Fluid/Float-Bound
+ //==============================================================================
++#ifdef C08_PAIR_GRADIENT_OBSERVER
++extern void C08PairGradientObserve(unsigned,bool,const tfloat3&,const tfloat3&,const tfloat3&);
++#endif
+ template<TpKernel tker,TpFtMode ftmode,TpVisco tvisco,TpDensity tdensity,bool shift> 
+   void JSphCpu::InteractionForcesFluid(unsigned n,unsigned pinit,bool boundp2,float visco
+   ,StDivDataCpu divdata,const unsigned *dcell
+@@ -2614,6 +2617,9 @@
+       gradvp1_yx_yy_yz=ApplyGradCorr(gradvp1_yx_yy_yz,invcorr);
+       gradvp1_zx_zy_zz=ApplyGradCorr(gradvp1_zx_zy_zz,invcorr);
+     }
++#ifdef C08_PAIR_GRADIENT_OBSERVER
++    if(idp)C08PairGradientObserve(idp[p1],boundp2,gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz);
++#endif
+     //Calculate strain/spin rate tensor mdbr
+     GetStrainSpinRateTensor_sym(gradvp1_xx_xy_xz,gradvp1_yx_yy_yz,gradvp1_zx_zy_zz,e_tensorp1,w_tensorp1_xy_yz_xz);
+     //Calculate stress rate tensor mdbr
