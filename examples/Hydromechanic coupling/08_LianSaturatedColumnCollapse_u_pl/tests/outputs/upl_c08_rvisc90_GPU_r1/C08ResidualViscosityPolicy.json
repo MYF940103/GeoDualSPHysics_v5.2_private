@@ -1,0 +1,19 @@
+{
+  "policy": "C08ResidualViscosityPolicy",
+  "schema": 1,
+  "phase_policy": "ReleaseOnly",
+  "active": true,
+  "alpha": 0.10000000000000001,
+  "Cubic_2D_normal_soil_only": true,
+  "eta0": "G/2*(h/sqrt(G/rho_i)+h/sqrt(G/rho_j))",
+  "lambda_bound": "2*alpha*max_i(sum_j beta0_ij/(rho_i*V_i))",
+  "isolated_bound": "dt*lambda_bound/2<=1",
+  "LS_regularized": false,
+  "wall_bonds": false,
+  "ephemeral_GPU_scratch_per_stage": true,
+  "host_sync_before_Ace_commit": true,
+  "BI4_metadata": false,
+  "native_22_schema_changed": false,
+  "PRE_contract_changed": false,
+  "physical_acceptance": false
+}
