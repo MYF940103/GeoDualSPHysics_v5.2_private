@@ -1,0 +1,42 @@
+--- old/src/source/JSphGpu.cpp
++++ new/src/source/JSphGpu.cpp
+@@ -98,7 +98,7 @@
+     C08StageTraceRecord records[3];
+     if(!(simple? cusphs::C08CausalTraceRead(records): cusph::C08StageTraceRead(records)))
+       throw std::runtime_error("C08_CAUSAL_TRACE observation: CUDA record copy/disable failed.");
+-    const unsigned wanted[3]={7017,5944,6814};
++    const unsigned wanted[3]={7011,7012,6230};
+     for(unsigned q=0;q<3;q++)if(records[q].hits!=1 || records[q].native_id!=wanted[q] || (simple && records[q].cumulative.errors))
+       throw std::runtime_error("C08_CAUSAL_TRACE observation: missing/duplicate ID or invalid cumulative linkage.");
+     static std::ofstream file;static std::string boundpath;
+@@ -146,7 +146,7 @@
+     if(!cusphs::C08CausalTraceTotals(totals))throw std::runtime_error("C08_CAUSAL_TRACE observation: cumulative copy failed.");
+     const unsigned count=totals[0].material_cor;if(!count)return;
+     static unsigned previous=0;static std::ofstream file;static std::string boundpath;
+-    const unsigned wanted[3]={7017,5944,6814};
++    const unsigned wanted[3]={7011,7012,6230};
+     for(unsigned q=0;q<3;q++){
+       const auto& c=totals[q];unsigned pre=0,cor=0;for(unsigned k=0;k<8;k++){pre+=c.status_pre[k];cor+=c.status_cor[k];}
+       if(c.native_id!=wanted[q] || c.errors || c.pending_valid || c.material_cor!=count || c.material_pre!=count
+--- old/src/source/JSphGpu_ker.cu
++++ new/src/source/JSphGpu_ker.cu
+@@ -66,7 +66,7 @@
+ static __device__ int C08TraceSlot(unsigned p,unsigned phase){
+   if(!C08TraceContext.enabled || C08TraceContext.phase!=phase || !C08TraceContext.idp)return -1;
+ #ifdef C08_CAUSAL_TRACE
+-  const unsigned id=C08TraceContext.idp[p];return id==7017?0:(id==5944?1:(id==6814?2:-1));
++  const unsigned id=C08TraceContext.idp[p];return id==7011?0:(id==7012?1:(id==6230?2:-1));
+ #else
+   const unsigned id=C08TraceContext.idp[p];return id==5809?0:(id==4956?1:(id==4959?2:-1));
+ #endif
+--- old/src/source/JSphGpuSimple_ker.cu
++++ new/src/source/JSphGpuSimple_ker.cu
+@@ -68,7 +68,7 @@
+ }
+ static __device__ int C08SimpleSlot(unsigned p,unsigned phase){
+   if(!C08SimpleContext.enabled || C08SimpleContext.phase!=phase || !C08SimpleContext.idp)return -1;
+-  const unsigned id=C08SimpleContext.idp[p];return id==7017?0:(id==5944?1:(id==6814?2:-1));
++  const unsigned id=C08SimpleContext.idp[p];return id==7011?0:(id==7012?1:(id==6230?2:-1));
+ }
+ static __device__ C08StageTraceRecord& C08SimpleTake(unsigned p,int slot){
+   auto& r=C08SimpleRecords[slot];r.context=C08SimpleContext;r.native_id=C08SimpleContext.idp[p];r.hits++;
