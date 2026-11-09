@@ -1,0 +1,333 @@
+
+
+ <DUALSPHYSICS5> Copyright (c) 2023 by
+ Dr Jose M. Dominguez Alonso, Dr Alejandro Crespo,
+ Prof. Moncho Gomez Gesteira, Prof. Benedict Rogers,
+ Dr Georgios Fourtakas, Prof. Peter Stansby,
+ Dr Renato Vacondio, Dr Corrado Altomare, Dr Angelo Tafuni,
+ Dr Orlando Garcia Feal, Ivan Martinez Estevez,
+ Dr Joseph O'Connor, Dr Aaron English
+
+ EPHYSLAB Environmental Physics Laboratory, Universidade de Vigo
+ School of Mechanical, Aerospace and Civil Engineering, University of Manchester
+
+ DualSPHysics is free software: you can redistribute it and/or
+ modify it under the terms of the GNU Lesser General Public License
+ as published by the Free Software Foundation, either version 2.1 of
+ the License, or (at your option) any later version.
+
+ DualSPHysics is distributed in the hope that it will be useful,
+ but WITHOUT ANY WARRANTY; without even the implied warranty of
+ MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the
+ GNU Lesser General Public License for more details.
+
+ You should have received a copy of the GNU Lesser General Public License
+ along with DualSPHysics. If not, see <http://www.gnu.org/licenses/>.
+
+ Free download source files and documentation from DualSPHysics website (http://dual.sphysics.org).
+ Full list of developers and contributors is available at https://dual.sphysics.org/developers
+ Properly cite the use of DualSPHysics (Dominguez et al., 2022) (https://dual.sphysics.org/references).
+
+
+DualSPHysics5 v5.2.274 (02-02-2024)
+====================================
+LoadDsphConfig> .../support/runtime_r6/DsphConfig.xml
+[CUDA Capable device(s)]
+  Detected 1 CUDA Capable device(s)
+  CUDA Driver Version / Runtime Version: 13.3 / 11.7
+ 
+Device 0: "NVIDIA GeForce RTX 3050"
+  CUDA Capability Major....: 8.6
+  Global memory............: 8192 MBytes
+  CUDA Cores...............: 2560 (20 Multiprocessors, 128 CUDA Cores/MP)
+  GPU Max Clock rate.......: 1777 MHz (1.78 GHz)
+  Memory Clock rate........: 7001 Mhz
+  Memory Bus Width.........: 128-bit
+  L2 Cache Size............: 1536 KBytes
+  Constant memory..........: 64 KBytes
+  Shared memory per block..: 48 KBytes
+  Registers per block......: 65536
+  Maximum threads per MP...: 1536
+  Maximum threads per block: 1024
+  Concurrent copy and kernel execution....: Yes with 1 copy engine(s)
+  Run time limit on kernels...............: Yes
+  Integrated GPU sharing Host Memory......: No
+  Support host page-locked memory mapping.: Yes
+  Device has ECC support..................: Disabled
+  CUDA Device Driver Mode (TCC or WDDM)...: WDDM (Windows Display Driver Model)
+  Device supports Unified Addressing (UVA): Yes
+  Device PCI (Domain / Bus / location)....: 0 / 1 / 0
+  Device supports P2P and RDMA............: No
+ 
+[GPU Hardware]
+Device selected: 0 "NVIDIA GeForce RTX 3050"
+Compute capability: 8.6
+Memory global: 8191 MB
+Memory shared: 49152 Bytes
+ 
+
+[Initialising JSphGpuSingle  09-11-2026 18:01:20]
+ProgramFile=".../support/runtime_r6/DualSPHysics5.2_GEO_win64.exe"
+ExecutionDir=".../examples/Hydromechanic coupling/08_LianSaturatedColumnCollapse_u_pl"
+XmlFile=".../outputs/c08_h18_pre_r2/c08_h18_pre_r2.xml"
+OutputDir=".../tests/outputs/c08_h18_pre_r2"
+OutputDataDir=".../outputs/c08_h18_pre_r2/data"
+XML-App: GenCase v5.0.278c (30-10-2023)
+XML-Vars (uservars + ctes): BedLength=[12]  ColumnHeight=[2]  ColumnLength=[4]  MResId=[0]  WallLayers=[4]  CaseName=["c08_h18_pre_r2"]  Data2D=[1]  Data2DPosy=[0]  H=[0.072]  KernelSize=[0.144]  B=[2.2771e+06]  Gamma=[7]  Rhop0=[2072.5]  Dp=[0.04]  Gravity_x=[0]  Gravity_y=[0]  Gravity_z=[-9.81]  MassFluid=[3.316]  MassBound=[3.316]
+
+*** WARNING: The execution will be cancelled after 2000000 simulation steps.
+
+XML-Vars (parameters): TimeMax=[13]  TimeOut=[0.01]
+
+[Soil modelling configuration]
+
+  DP Constants="Plain Strain DP"
+  Strain Softening="Enabled"
+  Material law: unified DP v2 (smooth/apex and explicit existing tension-face policy)
+  DilationDecay: 0
+  Cohesion: 5000.000000
+  Residual Cohesion: 1000.000000
+  Cohesion Softening Coefficient: 5.000000
+  Trigger Strength Reduction Factor: 1.650000
+  Frictional Angle: 0.436332
+  Bulk Modulus: 19607844.000000
+  Shear Modulus: 7518796.500000
+  Hydromechanics="Enabled"
+  HydroMechDynamicSeepage=True
+  DynamicSeepageScope: experimental fresh fixed gravity container with free-seepage surface; selected combinations require verification
+  HydroMechConductivityModel="VoidRatioExponential"
+  HydroMechConductivityCk: 2
+  HydroMechInitMode="ConstantZ"
+  HydroMechInitZ: 2.000000
+  HydroMechDrainage="Disabled"
+  HydroMechDrainageStartTime: 0
+  HydroMechDrainageFixedGrid=False
+  HydroMechFreeSeepage=True
+  FreeSeepagePolicy: candidate raw hydraulic surface rate; completed steps clamp p>0 only, predictor remains unprojected; no physical acceptance
+  HydroMechDrainageBoundary: FreeSurface
+  HydroMechTopLoadMode="None"
+  PoreWaterRho: 1000.000000
+  PoreWaterBulkModulus: 1e+09
+  Porosity: 0.350000
+  HydraulicConductivity: 0.0002
+  PoreDtSafety: 0.100000
+  PoreShepardRegularization="Enabled"
+  PoreShepardInterval: 40
+  PoreMdbcInterpolationMode="ZeroOrder"
+  PoreCompressionSourceMode="PairDivergence"
+  PoreCompressionGradCorr="KernelGradient"
+  PoreDarcySymmetricCorr="Receiver"
+
+**Basic case configuration is loaded
+GravityPreload: requested=10 event_completed_step=2000000 release_mkbound=2; damping/Shepard are preload-only.
+**Special case configuration is loaded
+Loading initial state of particles...
+Loaded particles: 7060
+MapRealPos(border)=(-0.1836,-0.0036,-0.1836)-(12.1836,0.0036,2.0236)
+MapRealPos(final)=(-0.1836,-0.0036,-0.1836)-(12.1836,0.0036,4.0236)
+**Initial state of particles is loaded
+PosCellCode="13_10_9 (8192,1024,512)"
+PosCellSize=0.144000  (1 x KernelSize)
+**2D-Simulation parameters:
+CaseName="c08_h18_pre_r2"
+RunName="c08_h18_pre_r2"
+Simulate2DPosY=0
+Symmetry=False
+SavePosDouble=True
+SvExtraParts=""
+SaveFtAce=False
+SvTimers=True
+Boundary="mDBC"
+  SlipMode="Free slip"
+  SlipModeByMkBound="Enabled"
+    mkbound:0 -> Free slip
+    mkbound:1 -> No-slip
+    mkbound:2 -> Free slip
+  mDBC-Corrector=True
+  mDBC-FastSingle=False
+  mDBC-Threshold=0
+  No Penetration=False
+StepAlgorithm="Symplectic"
+Kernel="CubicSpline"
+  Cubic.a1=0.4547284
+  Cubic.aa=1218.301
+  Cubic.a24=21.92942
+  Cubic.c1=-3654.904
+  Cubic.c2=-913.7259
+  Cubic.d1=2741.177
+  Cubic.od_wdeltap=0.02052038
+Viscosity="Artificial"
+  Visco=0.1
+  ViscoBoundFactor=1
+ArtificialStress="None"
+SoilStressRateGradCorr="KernelGradient"
+SoilBoundaryDerivativeSPR="None"
+SoilDamping="BuiFukagawa2013"
+  SoilDampingCoef=0.03
+  SoilDampingBoundary="Excluded"
+DensityDiffusion="None"
+Shifting="None"
+RigidAlgorithm="None"
+FloatingCount=0
+CaseNp=7060
+CaseNbound=2060
+CaseNfixed=2060
+CaseNmoving=0
+CaseNfloat=0
+CaseNfluid=5000
+PeriodicActive="None"
+Dp=0.04
+KernelH=0.072000  (CoefficientH=1.27279; H/Dp=1.8)
+KernelSize=0.144
+CteB=4233272
+Gamma=7
+RhopZero=2072.5
+Cs0=119.5748520184038
+CFLnumber=0.2
+DtIni=0.000005
+DtMin=0.00000001
+DtAllParticles=False
+FixedDt=0.000005
+MassFluid=3.316
+MassBound=3.316
+TimeMax=13
+TimePart=0.01
+Gravity=(0,0,-9.81)
+NpMinimum=7060
+RhopOut=True
+RhopOutMin=700
+RhopOutMax=3000
+WrnPartsOut=True
+CellMode="Full"
+ScellDiv=1
+MapCells=(86,1,30)
+CellDomFixed=False
+**Requested GPU memory for 7188 particles: 4.1 MB (0 times).
+NormalDataFile="D:\MYF\SPH\GeoDualSPHysics_redevelop_f66777b\examples\Hydromechanic coupling\08_LianSaturatedColumnCollapse_u_pl\tests\outputs\c08_h18_pre_r2/c08_h18_pre_r2_Normals.nbi4"
+GravityPreload: validated native right-wall range=[1800,2060), count=260.
+DomCells=(86,1,30)
+DomCellCode="1+13_8_10"
+Dynamic soil damping rate: 36.1976891 s^-1 (reference intrinsic solid density)
+ 
+BlockSize calculation mode: Fixed.
+  BsForcesBound=128 (48 regs)
+  BsForcesFluid=128 (78 regs)
+ 
+**CellDiv: Requested gpu memory for 7541 particles: 0.1 MB.
+**CellDiv: Requested gpu memory for 1054 cells (CellMode=Full): 0.0 MB.
+Hydromechanics: initial pore pressure assigned to 7060 particles (ConstantZ, min=-196.2, max=21385.8).
+ 
+RunMode="Stable - Pos-Cell - Single-GPU"
+ 
+Particle summary:
+  Fixed....: 2060  id:(0-2059)   MKs:3 (10-12)
+  Moving...: 0
+  Floating.: 0
+  Fluid....: 5000  id:(2060-7059)   MKs:1 (1)
+
+Total particles: 7060 (bound=2060 (fx=2060 mv=0 ft=0) fluid=5000)
+Total MK blocks: 4 (bound=3 (fx=3 mv=0 ft=0) fluid=1)
+ 
+Initialization configuration:
+Initialize_0
+  Operation: BoundNormalPlane
+  MkBound..: 0 (255 particles)
+  Point....: (0,0,0)
+  Normal...: (1,0,0)
+  MaxDistH.: 0
+Initialize_1
+  Operation: BoundNormalPlane
+  MkBound..: 1 (1545 particles)
+  Point....: (0,0,0)
+  Normal...: (0,0,1)
+  MaxDistH.: 0
+Initialize_2
+  Operation: BoundNormalPlane
+  MkBound..: 2 (260 particles)
+  Point....: (4,0,0)
+  Normal...: (-1,0,0)
+  MaxDistH.: 0
+ 
+
+*** WARNING: The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+Allocated memory in CPU: 1785576 (1.70 MB)
+Allocated memory in GPU: 4327112 (4.13 MB)
+Part_0000        7060 particles successfully stored
+
+[WARNINGS]
+1. The execution will be cancelled after 2000000 simulation steps.
+2. The kernel Cubic Spline is not available in GaugeSystem, so kernel Wendland is used.
+
+[Initialising simulation (35f4evqy)  09-11-2026 18:01:20]
+PART       PartTime      TotalSteps    Steps    Time/Sec   Finish time        
+=========  ============  ============  =======  =========  ===================
+Part_0001      0.010005          2001     2001    1995.44  10-11-2026 01:13:40
+Part_0002      0.020000          4000     1999    1970.67  10-11-2026 01:11:00
+Part_0003      0.030000          6000     2000    1955.29  10-11-2026 01:08:59
+Part_0004      0.040000          8000     2000    1945.57  10-11-2026 01:07:28
+Part_0005      0.050005         10001     2001    1958.42  10-11-2026 01:07:05
+Part_0006      0.060005         12001     2000    1967.11  10-11-2026 01:07:10
+Part_0007      0.070005         14001     2000    1962.10  10-11-2026 01:07:04
+Part_0008      0.080000         16000     1999    1991.31  10-11-2026 01:07:47
+Part_0009      0.090000         18000     2000    1997.65  10-11-2026 01:08:30
+Part_0010      0.100000         20000     2000    1957.19  10-11-2026 01:08:11
+Part_0011      0.110000         22000     2000    1945.82  10-11-2026 01:07:42
+Part_0012      0.120000         24000     2000    1944.88  10-11-2026 01:07:17
+Part_0013      0.130000         26000     2000    1977.19  10-11-2026 01:07:29
+Part_0014      0.140000         28000     2000    2010.35  10-11-2026 01:08:09
+Part_0015      0.150000         30000     2000    2046.06  10-11-2026 01:09:14
+Part_0016      0.160000         32000     2000    2033.42  10-11-2026 01:10:03
+Part_0017      0.170000         34000     2000    2002.42  10-11-2026 01:10:21
+Part_0018      0.180000         36000     2000    1964.69  10-11-2026 01:10:09
+Part_0019      0.190000         38000     2000    1996.54  10-11-2026 01:10:21
+Part_0020      0.200000         40000     2000    1990.26  10-11-2026 01:10:28
+Part_0021      0.210000         42000     2000    1971.15  10-11-2026 01:10:22
+Part_0022      0.220000         44000     2000    1972.88  10-11-2026 01:10:18
+Part_0023      0.230000         46000     2000    1995.95  10-11-2026 01:10:27
+Part_0024      0.240000         48000     2000    1984.30  10-11-2026 01:10:28
+Part_0025      0.250000         50000     2000    1971.27  10-11-2026 01:10:24
+Part_0026      0.260000         52000     2000    1992.71  10-11-2026 01:10:30
+Part_0027      0.270000         54000     2000    2015.79  10-11-2026 01:10:47
+Part_0028      0.280000         56000     2000    1979.45  10-11-2026 01:10:46
+Part_0029      0.290005         58001     2001    1975.09  10-11-2026 01:10:43
+Part_0030      0.300005         60001     2000    1969.72  10-11-2026 01:10:38
+Part_0031      0.310005         62001     2000    1970.61  10-11-2026 01:10:33
+Part_0032      0.320005         64001     2000    1999.95  10-11-2026 01:10:40
+Part_0033      0.330005         66001     2000    2050.77  10-11-2026 01:11:08
+Part_0034      0.340005         68001     2000    2039.83  10-11-2026 01:11:29
+Part_0035      0.350005         70001     2000    2003.72  10-11-2026 01:11:36
+Part_0036      0.360005         72001     2000    1967.18  10-11-2026 01:11:30
+Part_0037      0.370005         74001     2000    1978.06  10-11-2026 01:11:27
+Part_0038      0.380005         76001     2000    1976.69  10-11-2026 01:11:24
+Part_0039      0.390005         78001     2000    1983.97  10-11-2026 01:11:23
+Part_0040      0.400005         80001     2000    1971.46  10-11-2026 01:11:19
+Part_0041      0.410005         82001     2000    1979.14  10-11-2026 01:11:18
+Part_0042      0.420005         84001     2000    1991.59  10-11-2026 01:11:20
+Part_0043      0.430005         86001     2000    1971.31  10-11-2026 01:11:15
+Part_0044      0.440005         88001     2000    1966.99  10-11-2026 01:11:11
+Part_0045      0.450005         90001     2000    2000.60  10-11-2026 01:11:15
+Part_0046      0.460005         92001     2000    1961.52  10-11-2026 01:11:09
+Part_0047      0.470005         94001     2000    1952.25  10-11-2026 01:11:00
+Part_0048      0.480005         96001     2000    1948.89  10-11-2026 01:10:51
+Part_0049      0.490005         98001     2000    1956.26  10-11-2026 01:10:44
+Part_0050      0.500005        100001     2000    1997.51  10-11-2026 01:10:48
+Part_0051      0.510005        102001     2000    2134.70  10-11-2026 01:11:27
+Part_0052      0.520005        104001     2000    2087.28  10-11-2026 01:11:52
+Part_0053      0.530005        106001     2000    2049.24  10-11-2026 01:12:08
+Part_0054      0.540005        108001     2000    2021.64  10-11-2026 01:12:16
+Part_0055      0.550005        110001     2000    2009.98  10-11-2026 01:12:20
+Part_0056      0.560005        112001     2000    1986.86  10-11-2026 01:12:20
+Part_0057      0.570005        114001     2000    1986.04  10-11-2026 01:12:19
+Part_0058      0.580005        116001     2000    1986.62  10-11-2026 01:12:19
+Part_0059      0.590005        118001     2000    1990.38  10-11-2026 01:12:19
+Part_0060      0.600005        120001     2000    1983.83  10-11-2026 01:12:18
+Part_0061      0.610005        122001     2000    1975.58  10-11-2026 01:12:15
+Part_0062      0.620005        124001     2000    1986.67  10-11-2026 01:12:14
+
+*** Exception (JSphGpuSingle::ComputeSymplecticPre) at DualSPHysics/source/JSphGpu.cpp:1600
+Text: GPU material predictor return rejected the stage (status bits 4).
+
+
+Finished execution (code=1).
+
