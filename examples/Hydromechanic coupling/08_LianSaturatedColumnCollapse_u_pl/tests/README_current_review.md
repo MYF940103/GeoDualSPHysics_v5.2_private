@@ -20,6 +20,7 @@
 | 残差黏性CPU零步/GPU数学组件 | CPU OFF 210264字段0ULP；ON实际Darcy响应已审；GPU八组数学及memcheck通过 | [残差候选结论](notes/upl_c08_residual_visc_decision_r1.md) |
 | 私有GPU主循环候选 | 三构建及alpha0首帧全22/布局/真实时钟/signed字节对照通过；开启候选Debug 2ms memcheck为0错误0泄漏，两个原生状态全部原门通过；Release .30s正在运行，尚未物理验收 | [集成审查](notes/upl_c08_rvisc_root_review_r1.md) |
 | Lian表1的alpha=.5 | 确认为TPI Eq39系数，不是AV；当前Visco=.1仅线性AV，参考二次项/声速存在定义差异，未证明为团聚原因，本轮未改动 | [参数审计](notes/upl_c08_av_parameter_audit_r1.md) |
+| Bui2008人工应力epsilon=.5 | 原文明确推荐Cubic h/dp1.2、n2.55、epsilon.5，当前C08也是同核同比例；既有单epsilon .66s对照改善间距但负孔压与过早停止加重，不能仅凭末态0近对验收 | [原文与既有对照审计](notes/upl_c08_bui_as_audit_r1.md) |
 
 当前：私有GPU集成、关闭回归、2ms开启候选Debug/memcheck及原生22数组审核已通过。Debug两态实际时钟/ledger误差0，Pre/Cor各800次尝试及提交，最大dt*lambda/2=.000641791254，0错误0泄漏。新的Release alpha=.1 .30s窗口已独立准入并运行，不修改正式源码或输入。α=.1的新增机械耗散与原AV量级相当，真实压力率也明显变化；必须观察压力、团聚和提前停滞，不能凭负机械功或正常退出验收。没有新的长程物理计算。AS025 的 .90 s 准备文件仅保留，未准入、未运行；其他 ψ 尚未准入。
 
