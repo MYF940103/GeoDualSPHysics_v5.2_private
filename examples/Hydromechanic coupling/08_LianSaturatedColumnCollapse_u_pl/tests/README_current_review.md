@@ -17,8 +17,9 @@
 | 实际梯度与局部拟合 | 首近对闭合明显强于邻域梯度；支撑土粒较少且残差局部反向，尚非沙漏因果证明 | [梯度与通量结论](notes/upl_c08_gradient_flux_decision_r1.md) |
 | 变k成对通量影子 | 当前率重构、常压零场和常k退化通过；制造场无一致改善，不合入正式算子 | [梯度与通量结论](notes/upl_c08_gradient_flux_decision_r1.md) |
 | Cubic残差恢复率影子 | 首对恢复方向、冻结图功率/净力/力矩及仿射零场检查通过；没有施加到轨迹 | [残差候选结论](notes/upl_c08_residual_visc_decision_r1.md) |
-| 残差黏性CPU零步/GPU数学组件 | CPU OFF 210264字段0ULP；ON实际Darcy响应已审；GPU八组数学及memcheck通过，尚未完成GPU主循环集成 | [残差候选结论](notes/upl_c08_residual_visc_decision_r1.md) |
+| 残差黏性CPU零步/GPU数学组件 | CPU OFF 210264字段0ULP；ON实际Darcy响应已审；GPU八组数学及memcheck通过 | [残差候选结论](notes/upl_c08_residual_visc_decision_r1.md) |
+| 私有GPU主循环候选 | Debug/Release/alpha0三构建通过；alpha0首帧全22/布局/真实时钟/signed与保留causal90逐字节一致；Debug 2ms实际memcheck正在运行，尚未物理验收 | [集成审查](notes/upl_c08_rvisc_root_review_r1.md) |
 
-当前：首对观测、梯度/局部拟合、成对通量、Cubic恢复率及残差黏性零步检查已完成。没有新的长程物理计算；正在准备私有GPU残差黏性集成及其关闭回归/Debug检查，不修改正式源码或输入。α=.1的新增机械耗散与原AV量级相当，真实压力率也明显变化；必须通过新的短窗观察压力、团聚和提前停滞，不能凭负机械功验收。AS025 的 .90 s 准备文件仅保留，未准入、未运行；其他 ψ 尚未准入。
+当前：首对观测、梯度/局部拟合、成对通量、Cubic恢复率及残差黏性零步检查已完成。私有GPU集成已构建、关闭回归已通过，正在做开启候选的2ms Debug/memcheck，不修改正式源码或输入。α=.1的新增机械耗散与原AV量级相当，真实压力率也明显变化；仍须新的短窗观察压力、团聚和提前停滞，不能凭负机械功验收。没有新的长程物理计算。AS025 的 .90 s 准备文件仅保留，未准入、未运行；其他 ψ 尚未准入。
 
 配置在 configs，原始和解码输出在 outputs，图与匹配 CSV 在 figures，调用及检查收据在 logs，结论在 notes，再生工具在 support。不覆盖正式 XML/BAT、PRE、失败记录或旧结果。Git 保存输入、工具、结论及必要图表；BI4、typed 二进制和执行程序仍由本地保留，不称为云端备份。

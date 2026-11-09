@@ -1,0 +1,159 @@
+{
+  "stage": "upl_c08_residual_visc_gpu_r1.source",
+  "prepared_only": true,
+  "private_host_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_residual_visc_gpu_r1_source\\JSphGpuSingle.cpp",
+    "bytes": 81019,
+    "mtime_ns": 1794199916791335300
+  },
+  "private_gpu_header": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_residual_visc_gpu_r1_source\\JSphGpu_ker.h",
+    "bytes": 26237,
+    "mtime_ns": 1794199035586022700
+  },
+  "private_gpu_source": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_residual_visc_gpu_r1_source\\JSphGpu_ker.cu",
+    "bytes": 239182,
+    "mtime_ns": 1794199109408822200
+  },
+  "archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_residual_visc_gpu_r1_source\\source.zip",
+    "bytes": 1092151,
+    "mtime_ns": 1794199917126027000
+  },
+  "diff": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_residual_visc_gpu_r1_source\\residual_viscosity.patch",
+    "bytes": 22521,
+    "mtime_ns": 1794199916956520900
+  },
+  "note": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\upl_c08_residual_visc_gpu_r1.md",
+    "bytes": 7942,
+    "mtime_ns": 1794199892793813200
+  },
+  "baseline_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_bedkeep_source_r1\\source.json",
+    "bytes": 49430,
+    "mtime_ns": 1794084850455220500
+  },
+  "baseline_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\upl_c08_bedkeep_source_r1\\source.zip",
+    "bytes": 1086487,
+    "mtime_ns": 1794084849985048900
+  },
+  "baseline_Debug_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_Debug_r1.build.json",
+    "bytes": 128369,
+    "mtime_ns": 1794085283547228800
+  },
+  "baseline_Release_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_bedkeep_Release_r1.build.json",
+    "bytes": 106309,
+    "mtime_ns": 1794085039704278200
+  },
+  "CPU_component_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_residual_visc_cpu_r2.check.json",
+    "bytes": 16417,
+    "mtime_ns": 1794197780813933800
+  },
+  "GPU_math_check": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\upl_c08_residual_visc_gpu_math_r1.check.json",
+    "bytes": 6345,
+    "mtime_ns": 1794198031541749000
+  },
+  "changed_archive_members": [
+    "src/source/JSphGpuSingle.cpp",
+    "src/source/JSphGpu_ker.h",
+    "src/source/JSphGpu_ker.cu"
+  ],
+  "only_three_archive_members_changed": true,
+  "macro_off_reverse_original_bytes_exact": true,
+  "all_other_archive_member_bytes_exact": true,
+  "reverse_reconstruction_original_bytes_exact": true,
+  "class_layout_changed": false,
+  "CTE_layout_changed": false,
+  "public_interfaces_changed": false,
+  "release_only": true,
+  "true_cell_neighbor_search": true,
+  "candidate_macro": "C08_RESIDUAL_VISCOSITY_CANDIDATE",
+  "alpha0_macro": "C08_RESIDUAL_VISCOSITY_ALPHA0",
+  "alpha": 0.1,
+  "alpha0_skips_entire_numerical_helper": true,
+  "physical_objects_required": 2,
+  "retained_original_objects": 111,
+  "actual_link_objects": 113,
+  "soil_nodes": 5000,
+  "current_particles": 6805,
+  "fixed_nodes": 1805,
+  "LS_weights": "eta0_ij*V_j*(-Cubic_fac)",
+  "force_weights": "alpha*eta0_ij*V_i*V_j*(-Cubic_fac)",
+  "rho": "rho_w+(rho0-rho_w)/J",
+  "volume": "MassFluid/RhopZero*J",
+  "LS_regularized": false,
+  "history_or_plastic_gamma": false,
+  "wall_bonds": false,
+  "kernels_per_active_stage": 2,
+  "host_all_errors_lambda_checked_before_Ace_commit": true,
+  "ephemeral_GPU_arrays_per_active_stage": 5,
+  "persistent_GPU_members": 0,
+  "GPU_globals_added": 0,
+  "new_pure_bound": "dt*lambda_max/2<=1; lambda_max=2*alpha*max_degree/mass",
+  "original_base_dt_guards_changed": false,
+  "original_total_AS": true,
+  "reference_AS_epsilon": 0.2,
+  "reference_AS_exponent": 3,
+  "reference_AV": 0.1,
+  "release_Shepard_OFF": true,
+  "release_damping_OFF": true,
+  "plane_keep5_policy_changed": false,
+  "PRE_contract_changed": false,
+  "original_22_schema_changed": false,
+  "BI4_candidate_metadata_added": false,
+  "policy_file": "C08ResidualViscosityPolicy.json",
+  "CSV_file": "C08ResidualViscosity.csv",
+  "CSV_fields": [
+    "record",
+    "phase",
+    "active",
+    "alpha",
+    "step_start_global",
+    "completed_global",
+    "step_start_time_s",
+    "force_stage_time_s",
+    "save_time_s",
+    "operator_dt_s",
+    "phase_calls",
+    "phase_commits",
+    "pre_calls",
+    "cor_calls",
+    "pre_commits",
+    "cor_commits",
+    "last_lambda_max_s_1",
+    "running_lambda_max_s_1",
+    "last_dt_lambda_half",
+    "running_dt_lambda_half",
+    "validated_soil_nodes",
+    "committed",
+    "error_bits",
+    "invalid_sorted_index",
+    "invalid_native_id",
+    "cuda_status"
+  ],
+  "telemetry": "actual attempted/committed Pre/Cor counters; original SaveData emits latest phases/cumulative counts; immediate rejection row",
+  "physical_equations_original_bodies_changed": false,
+  "new_momentum_operator": true,
+  "full_coupled_stability_claimed": false,
+  "physical_acceptance": false,
+  "source_stat_only": true,
+  "full_project_builds": 0,
+  "solver_invocations": 0,
+  "native_decodes": 0,
+  "SHA_scans": 0,
+  "pre_execution_scope_fix": {
+    "removed_condition": "NpbOk!=Npb",
+    "reason": "Legitimate ignored distant fixed-bed nodes do not alter the complete normal-soil-only graph; no wall bonds",
+    "actual_candidate_previously_built": false,
+    "numeric_kernels_thresholds_headers_layout_unchanged": true,
+    "other_scope_conditions_unchanged": true
+  }
+}

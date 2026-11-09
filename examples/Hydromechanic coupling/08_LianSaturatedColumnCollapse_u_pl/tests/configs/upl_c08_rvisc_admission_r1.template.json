@@ -1,0 +1,67 @@
+{
+  "author_only_template_not_admission": true,
+  "instruction": "Root copies one profile object to tests/logs/<allowed_job>.admission.json after full review. Fill real stat Entries from prepared receipt and the passed exact build; verify earlier required run/native evidence, then explicitly set reviewed_prior_results/passed. This file never admits or launches a job.",
+  "build_receipts": {
+    "off": "tests/logs/upl_c08_residual_visc_gpu_Release_alpha0_r1.build.json",
+    "debug": "tests/logs/upl_c08_residual_visc_gpu_Debug_r1.build.json",
+    "window": "tests/logs/upl_c08_residual_visc_gpu_Release_r1.build.json"
+  },
+  "profiles": {
+    "off": {
+      "passed": false,
+      "allowed_job": "upl_c08_rvisc_off_GPU_r1",
+      "profile": "off",
+      "planned_global_end": 4004000,
+      "expected_saved_frames": 1,
+      "reviewed_prior_results": false,
+      "root_thread_id": "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "build": null,
+      "preparation_receipt": null,
+      "prepared_XML": null,
+      "prepared_BAT": null,
+      "preparation_tool": null,
+      "owner": null,
+      "prerequisites": {}
+    },
+    "debug": {
+      "passed": false,
+      "allowed_job": "upl_c08_rvisc_debug_GPU_r1",
+      "profile": "debug",
+      "planned_global_end": 4000800,
+      "expected_saved_frames": 2,
+      "reviewed_prior_results": false,
+      "root_thread_id": "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "build": null,
+      "preparation_receipt": null,
+      "prepared_XML": null,
+      "prepared_BAT": null,
+      "preparation_tool": null,
+      "owner": null,
+      "prerequisites": {
+        "off_run": null,
+        "off_native": null
+      }
+    },
+    "window": {
+      "passed": false,
+      "allowed_job": "upl_c08_rvisc_window_GPU_r1",
+      "profile": "window",
+      "planned_global_end": 4120000,
+      "expected_saved_frames": 30,
+      "reviewed_prior_results": false,
+      "root_thread_id": "01a07683-bc64-7463-8db7-9ee6243967d8",
+      "build": null,
+      "preparation_receipt": null,
+      "prepared_XML": null,
+      "prepared_BAT": null,
+      "preparation_tool": null,
+      "owner": null,
+      "prerequisites": {
+        "off_run": null,
+        "off_native": null,
+        "debug_run": null,
+        "debug_native": null
+      }
+    }
+  }
+}

@@ -1,0 +1,323 @@
+--- src/source/JSphGpuSingle.cpp
++++ src/source/JSphGpuSingle.cpp
+@@ -54,6 +54,69 @@
+ #include <cfloat>
+ #include <cmath>
+ #include <map>
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++#include <fstream>
++#include <iomanip>
++namespace {
++struct C08ResidualPhase {
++  unsigned long long Calls,Commits;
++  unsigned Step,ErrorBits,InvalidSorted,InvalidId,CudaStatus,Soil;
++  double StartTime,StageTime,Dt,Lambda,MaxLambda,Bound,MaxBound;
++  bool Committed;
++};
++struct C08ResidualCounters {
++  const void* Owner;unsigned StartStep,LastSavedStep;double Alpha;
++  C08ResidualPhase Pre,Cor;
++};
++static C08ResidualCounters C08ResidualCount={}; // Host POD only; no GPU destructor/storage.
++static bool C08ResidualInit(const void* owner,const std::string& dir,unsigned step,double alpha){
++  if(C08ResidualCount.Owner)return(C08ResidualCount.Owner==owner && C08ResidualCount.Alpha==alpha);
++  const std::string policy=dir+"C08ResidualViscosityPolicy.json",csv=dir+"C08ResidualViscosity.csv";
++  if(std::ifstream(policy.c_str()).good() || std::ifstream(csv.c_str()).good())return(false);
++  std::ofstream p(policy.c_str());p<<std::setprecision(17)
++    <<"{\n  \"policy\": \"C08ResidualViscosityPolicy\",\n  \"schema\": 1,\n"
++    <<"  \"phase_policy\": \"ReleaseOnly\",\n  \"active\": "<<(alpha>0? "true": "false")<<",\n"
++    <<"  \"alpha\": "<<alpha<<",\n  \"Cubic_2D_normal_soil_only\": true,\n"
++    <<"  \"eta0\": \"G/2*(h/sqrt(G/rho_i)+h/sqrt(G/rho_j))\",\n"
++    <<"  \"lambda_bound\": \"2*alpha*max_i(sum_j beta0_ij/(rho_i*V_i))\",\n"
++    <<"  \"isolated_bound\": \"dt*lambda_bound/2<=1\",\n"
++    <<"  \"LS_regularized\": false,\n  \"wall_bonds\": false,\n"
++    <<"  \"ephemeral_GPU_scratch_per_stage\": true,\n  \"host_sync_before_Ace_commit\": true,\n"
++    <<"  \"BI4_metadata\": false,\n  \"native_22_schema_changed\": false,\n"
++    <<"  \"PRE_contract_changed\": false,\n  \"physical_acceptance\": false\n}\n";
++  p.flush();if(!p)return(false);p.close();std::ofstream f(csv.c_str());
++  f<<"record,phase,active,alpha,step_start_global,completed_global,step_start_time_s,force_stage_time_s,save_time_s,operator_dt_s,phase_calls,phase_commits,pre_calls,cor_calls,pre_commits,cor_commits,last_lambda_max_s_1,running_lambda_max_s_1,last_dt_lambda_half,running_dt_lambda_half,validated_soil_nodes,committed,error_bits,invalid_sorted_index,invalid_native_id,cuda_status\n";
++  f.flush();if(!f)return(false);C08ResidualCount.Owner=owner;C08ResidualCount.StartStep=step;C08ResidualCount.Alpha=alpha;return(true);
++}
++static bool C08ResidualRow(const std::string& dir,const char* record,const char* phase
++  ,const C08ResidualPhase& q,unsigned completed,double saveTime){
++  const C08ResidualCounters& s=C08ResidualCount;
++  std::ofstream f((dir+"C08ResidualViscosity.csv").c_str(),std::ios::out|std::ios::app);
++  f<<std::setprecision(17)<<record<<','<<phase<<','<<(s.Alpha>0? 1: 0)<<','<<s.Alpha
++    <<','<<q.Step<<','<<completed<<','<<q.StartTime<<','<<q.StageTime<<','<<saveTime<<','<<q.Dt
++    <<','<<q.Calls<<','<<q.Commits<<','<<s.Pre.Calls<<','<<s.Cor.Calls<<','<<s.Pre.Commits<<','<<s.Cor.Commits
++    <<','<<q.Lambda<<','<<q.MaxLambda<<','<<q.Bound<<','<<q.MaxBound<<','<<q.Soil<<','<<(q.Committed? 1: 0)
++    <<','<<q.ErrorBits<<','<<q.InvalidSorted<<','<<q.InvalidId<<','<<q.CudaStatus<<'\n';
++  f.flush();return(bool(f));
++}
++static bool C08ResidualSave(const void* owner,const std::string& dir,unsigned completed,double saveTime){
++  C08ResidualCounters& s=C08ResidualCount;if(s.Owner!=owner || s.LastSavedStep==completed)return(s.Owner==owner);
++  if(s.Alpha>0){
++    if(s.Pre.Calls!=s.Cor.Calls || s.Pre.Commits!=s.Pre.Calls || s.Cor.Commits!=s.Cor.Calls
++      || s.Pre.Step+1!=completed || s.Cor.Step+1!=completed
++      || s.Pre.Calls!=static_cast<unsigned long long>(completed-s.StartStep))return(false);
++    if(!C08ResidualRow(dir,"save","Pre",s.Pre,completed,saveTime) || !C08ResidualRow(dir,"save","Cor",s.Cor,completed,saveTime))return(false);
++  }
++  else{
++    if(s.Pre.Calls || s.Cor.Calls || s.Pre.Commits || s.Cor.Commits)return(false);
++    C08ResidualPhase off={};off.Step=UINT_MAX;off.InvalidSorted=off.InvalidId=UINT_MAX;
++    // OFF zero force time/dt fields are inapplicable, not fictitious stage calls.
++    if(!C08ResidualRow(dir,"save","OFF",off,completed,saveTime))return(false);
++  }
++  s.LastSavedStep=completed;return(true);
++}
++} // anonymous host-only namespace
++#endif
+ 
+ using namespace std;
+ //==============================================================================
+@@ -684,6 +747,49 @@
+   //-For 2D simulations always overrides the 2nd component (Y axis).
+   //-Para simulaciones 2D anula siempre la 2nd componente.
+   if(Simulate2D)cusph::Resety(Np-Npb,Npb,Aceg);
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++  if(GravityPreloadReleased){
++    if(!GravityPreload || !IsGravityPreloadHandoff() || !GravityPreloadKeepBedOverlap
++      || !UseDynamicPorePlaneContact() || !HydroMechDynamicSeepage || !PorosityFeedback
++      || !DynamicPorePressure || !DynamicPoreWall || !Simulate2D || Symmetry || PeriActive
++      || TKernel!=KERNEL_Cubic || TStep!=STEP_Symplectic || !FixedDt || SymplecticDtPre!=.0000025
++      || (interstep!=INTERSTEP_SymPredictor && interstep!=INTERSTEP_SymCorrector)
++      || Np!=6805 || Npb!=1805 || CaseNpb!=2060 || CaseNfluid!=5000
++      || !PoroJg || !Aceg || HourglassGpu || Shifting || SoilDamping || PoreShepardRegularization
++      || !ArtificialStress || ArtificialStressCoef!=.2f || ArtificialStressExp!=3.f || Visco!=.1f)
++      Run_Exceptioon("Private residual viscosity requires unchanged released C08 Cubic2D/keep5/total-AS n3 fixed-step configuration.");
++    #ifdef C08_RESIDUAL_VISCOSITY_ALPHA0
++    const double residualAlpha=0.;
++    #else
++    const double residualAlpha=.1;
++    #endif
++    if(!C08ResidualInit(this,DirOut,Nstep,residualAlpha))Run_Exceptioon("Private residual-viscosity policy/counter output exists or cannot initialize.");
++    if(residualAlpha>0){ // ALPHA0 skips the complete numeric helper/allocation/launch/commit.
++      C08ResidualCounters& count=C08ResidualCount;const bool predictor=(interstep==INTERSTEP_SymPredictor);
++      if((predictor && (count.Pre.Calls!=count.Cor.Calls || Nstep!=count.StartStep+count.Cor.Calls))
++        || (!predictor && (count.Pre.Calls!=count.Cor.Calls+1 || Nstep!=count.StartStep+count.Cor.Calls)))
++        Run_Exceptioon("Private residual-viscosity actual Pre/Cor call order differs.");
++      C08ResidualPhase& record=(predictor? count.Pre: count.Cor);
++      record.Calls++;record.Step=Nstep;record.StartTime=TimeStep;record.Dt=SymplecticDtPre;
++      record.StageTime=TimeStep+(predictor? 0.: .5*SymplecticDtPre);record.Committed=false;
++      cusph::StResidualViscosityCandidate result={};
++      const cudaError_t status=cusph::AddResidualViscosityCandidate(Np,Npb,DivData,Dcellg,Idpg
++        ,Posxyg,Poszg,Velrhopg,Codeg,PoroJg,1.-double(SoilCte.Porosity),double(RhopZero)
++        ,double(SoilCte.PoreWaterRho),double(MassFluid)/double(RhopZero),SymplecticDtPre,residualAlpha,Aceg,result);
++      record.CudaStatus=unsigned(status);record.ErrorBits=result.error_bits;
++      record.InvalidSorted=result.invalid_sorted;record.InvalidId=result.invalid_native_id;
++      record.Soil=result.validated_soil;record.Lambda=result.lambda_max;record.Bound=SymplecticDtPre*result.lambda_max*.5;
++      record.MaxLambda=(record.MaxLambda>record.Lambda? record.MaxLambda: record.Lambda);
++      record.MaxBound=(record.MaxBound>record.Bound? record.MaxBound: record.Bound);
++      record.Committed=result.committed;if(result.committed)record.Commits++;
++      if(status!=cudaSuccess || result.error_bits || !result.committed){
++        if(!C08ResidualRow(DirOut,"failure",predictor? "Pre": "Cor",record,Nstep,TimeStep))Run_Exceptioon("Failed preserving residual-viscosity rejection evidence.");
++        Log->Printf("Private residual viscosity rejected: phase=%s Nstep=%u native_id=%u sorted=%u bits=%u CUDA=%u dt=%.17g lambda=%.17g dt_lambda_half=%.17g; Ace not committed.",predictor? "Pre": "Cor",Nstep,result.invalid_native_id,result.invalid_sorted,result.error_bits,unsigned(status),SymplecticDtPre,result.lambda_max,record.Bound);
++        Run_Exceptioon("Private matched residual viscosity rejected rank/finite/isolated damping bound before Ace commit.");
++      }
++    }
++  }
++#endif
+   if(DynamicPorePressure)ComputeDynamicPorePressureRateGpu(dynamicridpg);
+ 
+   //-Computes Tau for Laminar+SPS.
+@@ -1357,6 +1463,10 @@
+     if(AuxHydroMechLoadAce)arrays.AddArray("HydroMechLoadAce",npsave,AuxHydroMechLoadAce);
+   }
+   JSph::SaveData(npsave,arrays,1,vdom,&infoplus);
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++  if(GravityPreloadReleased && !C08ResidualSave(this,DirOut,Nstep+1,TimeStep))
++    Run_Exceptioon("Failed saving residual-viscosity actual Pre/Cor counters at completed scalar clock.");
++#endif
+   if(UseNormals && SvNormals)SaveVtkNormalsGpu("normals/Normals.vtk",Part,npsave,Npb,Posxyg,Poszg,Idpg,BoundNormalg);
+   //-Save extra data.
+   if(SvExtraDataBi4)SaveExtraData();
+--- src/source/JSphGpu_ker.h
++++ src/source/JSphGpu_ker.h
+@@ -316,6 +316,18 @@
+   ,const double2 *posxy,const double *posz,const typecode *code,const float3 *boundnormal
+   ,byte *boundmode,float3 *tangenvel,float3 *derivativevel,float4 *velrhop,tsymatrix3d *sigma
+   ,float *porepress,double *j,double *theta,tmatrix3d *corrmat,float3 *ace,double solid0,unsigned *invalid,TpKernel tkernel=KERNEL_Wendland,const byte *boundslipmode=NULL,const float4 *poscell=NULL);
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++// Private compile-only candidate ABI; no class/CTE layout or normal-build symbol.
++struct StResidualViscosityCandidate {
++  double lambda_max;
++  unsigned error_bits,invalid_sorted,invalid_native_id,validated_soil;
++  bool committed;
++};
++cudaError_t AddResidualViscosityCandidate(unsigned np,unsigned npb,const StDivDataGpu& dvd
++  ,const unsigned* dcell,const unsigned* idp,const double2* posxy,const double* posz,const float4* velrhop
++  ,const typecode* code,const double* j,double solid0,double rho0,double rhow,double vol0,double dt,double alpha
++  ,float3* ace,StResidualViscosityCandidate& result);
++#endif
+ //-Complete same-stage rate; optional smooth k(J) chain and native gradient-speed maximum.
+ void ComputeDynamicPorePressureRate(unsigned np,unsigned npb,const StDivDataGpu &dvd,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
+--- src/source/JSphGpu_ker.cu
++++ src/source/JSphGpu_ker.cu
+@@ -32,6 +32,10 @@
+ #pragma warning(disable : 4503) //Cancels "warning C4503: decorated name length exceeded, name was truncated"
+ #include <thrust/device_vector.h>
+ #include <thrust/sort.h>
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++#include <vector>
++#include <cmath>
++#endif
+ 
+ __constant__ StCteInteraction CTE;
+ #define CTE_AVAILABLE
+@@ -1469,6 +1473,155 @@
+ /// Complete rate with optional smooth div(k*(grad p+rho_w*Ace)) chain.
+ /// Lstar cancels affine-pressure bias; it is not a conservative pair flux.
+ //==============================================================================
++#ifdef C08_RESIDUAL_VISCOSITY_CANDIDATE
++// Private instantaneous matched viscosity. This is not GNOG/history or an AV option.
++enum C08ResidualError { C08RVInput=1u,C08RVCoincident=2u,C08RVWeight=4u,
++  C08RVRank=8u,C08RVFit=16u,C08RVNeighbor=32u,C08RVForce=64u,C08RVBound=128u };
++struct C08ResidualNode {double2 x,v;double V,rho,tau;};
++static __device__ __forceinline__ bool KerC08ResidualNode(unsigned p,unsigned np,unsigned npb
++  ,const unsigned* idp,const double2* posxy,const double* posz,const float4* velrhop
++  ,const typecode* code,const double* j,double solid0,double rho0,double rhow,double vol0,C08ResidualNode& a){
++  if(p<npb || p>=np || !CODE_IsNormal(code[p]) || !CODE_IsFluid(code[p]) || idp[p]<2060 || idp[p]>=7060)return(false);
++  const double jp=j[p];const double G=double(CTE.modulus_G);
++  a.x=make_double2(posxy[p].x,posz[p]);a.v=make_double2(double(velrhop[p].x),double(velrhop[p].z));
++  a.V=vol0*jp;a.rho=rhow+(rho0-rhow)/jp;a.tau=double(CTE.kernelh)/sqrt(G/a.rho);
++  return(CTE.simulate2d && !CTE.periactive && isfinite(G) && G>0
++    && isfinite(jp) && jp>solid0 && isfinite(a.V) && a.V>0 && isfinite(a.rho) && a.rho>0
++    && isfinite(a.tau) && a.tau>0 && isfinite(a.x.x) && isfinite(a.x.y)
++    && isfinite(posxy[p].y) && isfinite(a.v.x) && isfinite(a.v.y) && isfinite(velrhop[p].y));
++}
++// Shared predicate/weight in BOTH passes. Fixed walls never become bonds.
++static __device__ __forceinline__ bool KerC08ResidualPair(unsigned p1,unsigned p2,unsigned np,unsigned npb
++  ,const unsigned* idp,const double2* posxy,const double* posz,const float4* velrhop
++  ,const typecode* code,const double* j,double solid0,double rho0,double rhow,double vol0
++  ,const C08ResidualNode& a,double2& d,double2& dv,double& momentWeight,double& beta0,unsigned& error){
++  C08ResidualNode b;
++  if(!KerC08ResidualNode(p2,np,npb,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,b)
++    || idp[p1]==idp[p2]){error|=C08RVInput;return(false);}
++  d=make_double2(a.x.x-b.x.x,a.x.y-b.x.y);const double rr2=d.x*d.x+d.y*d.y;
++  if(!isfinite(rr2)){error|=C08RVInput;return(false);}
++  if(rr2==0){error|=C08RVCoincident;return(false);}
++  const double h=double(CTE.kernelh);if(rr2>=4.*h*h)return(false);
++  const double w=-double(cufsph::GetKernel_Fac<KERNEL_Cubic>(float(rr2)));
++  if(w==0)return(false);if(!(w>0) || !isfinite(w)){error|=C08RVWeight;return(false);}
++  const double eta0=double(CTE.modulus_G)*.5*(a.tau+b.tau);
++  momentWeight=eta0*b.V*w;
++  beta0=(idp[p1]<idp[p2]? eta0*a.V*b.V*w: eta0*b.V*a.V*w);
++  dv=make_double2(a.v.x-b.v.x,a.v.y-b.v.y);
++  if(!isfinite(momentWeight) || !isfinite(beta0) || !(momentWeight>0) || !(beta0>0)){
++    error|=C08RVWeight;return(false);
++  }
++  return(true);
++}
++__global__ void KerC08ResidualFit(unsigned np,unsigned npb,int scelldiv,int4 nc,int3 cellzero
++  ,const int2* beginendcellfluid,const unsigned* dcell,const unsigned* idp
++  ,const double2* posxy,const double* posz,const float4* velrhop,const typecode* code,const double* j
++  ,double solid0,double rho0,double rhow,double vol0,double alpha,double4* fit,double* lambda,unsigned* errors){
++  const unsigned slot=blockIdx.x*blockDim.x+threadIdx.x,p1=npb+slot;if(p1>=np)return;
++  fit[slot]=make_double4(NAN,NAN,NAN,NAN);lambda[slot]=NAN;unsigned error=0;C08ResidualNode a;
++  if(!KerC08ResidualNode(p1,np,npb,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,a)){errors[slot]=C08RVInput;return;}
++  double mxx=0,mxz=0,mzz=0,nxx=0,nxz=0,nzx=0,nzz=0,degree=0;
++  int ini1,fin1,ini2,fin2,ini3,fin3;cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
++  for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
++    unsigned pini,pfin=0;cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcellfluid,pini,pfin);
++    if(pfin)for(unsigned p2=pini;p2<pfin;p2++){
++      if(p2==p1)continue;double2 d,dv;double weight,beta0;
++      if(!KerC08ResidualPair(p1,p2,np,npb,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,a,d,dv,weight,beta0,error))continue;
++      mxx+=weight*d.x*d.x;mxz+=weight*d.x*d.y;mzz+=weight*d.y*d.y;
++      nxx+=weight*dv.x*d.x;nxz+=weight*dv.x*d.y;nzx+=weight*dv.y*d.x;nzz+=weight*dv.y*d.y;degree+=beta0;
++    }
++  }
++  const double scale=fmax(fmax(fabs(mxx),fabs(mxz)),fabs(mzz));
++  if(!(scale>0) || !isfinite(scale))error|=C08RVRank;if(error){errors[slot]=error;return;}
++  const double aa=mxx/scale,b=mxz/scale,c=mzz/scale,det=aa*c-b*b;
++  if(!(aa>0 && c>0 && det>128.*DBL_EPSILON*(aa*c+b*b))){errors[slot]=C08RVRank;return;}
++  const double den=scale*det;
++  const double4 l=make_double4((nxx*c-nxz*b)/den,(-nxx*b+nxz*aa)/den,(nzx*c-nzz*b)/den,(-nzx*b+nzz*aa)/den);
++  const double bound=2.*alpha*(degree/(a.rho*a.V));
++  if(!isfinite(l.x)||!isfinite(l.y)||!isfinite(l.z)||!isfinite(l.w)||!isfinite(bound)||!(bound>0)){
++    errors[slot]=C08RVFit;return;
++  }
++  fit[slot]=l;lambda[slot]=bound;errors[slot]=0;
++}
++__global__ void KerC08ResidualForce(unsigned np,unsigned npb,int scelldiv,int4 nc,int3 cellzero
++  ,const int2* beginendcellfluid,const unsigned* dcell,const unsigned* idp
++  ,const double2* posxy,const double* posz,const float4* velrhop,const typecode* code,const double* j
++  ,double solid0,double rho0,double rhow,double vol0,double alpha,const double4* fit
++  ,const unsigned* fiterrors,const float3* ace,float3* candidateAce,unsigned* errors){
++  const unsigned slot=blockIdx.x*blockDim.x+threadIdx.x,p1=npb+slot;if(p1>=np)return;
++  candidateAce[slot]=make_float3(NAN,NAN,NAN);unsigned error=fiterrors[slot];
++  if(error){errors[slot]=error;return;}C08ResidualNode a;
++  if(!KerC08ResidualNode(p1,np,npb,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,a)){errors[slot]=C08RVInput;return;}
++  const double4 li=fit[slot];double fx=0,fz=0;
++  int ini1,fin1,ini2,fin2,ini3,fin3;cunsearch::InitCte(dcell[p1],scelldiv,nc,cellzero,ini1,fin1,ini2,fin2,ini3,fin3);
++  for(int c3=ini3;c3<fin3;c3+=nc.w)for(int c2=ini2;c2<fin2;c2+=nc.x){
++    unsigned pini,pfin=0;cunsearch::ParticleRange(c2,c3,ini1,fin1,beginendcellfluid,pini,pfin);
++    if(pfin)for(unsigned p2=pini;p2<pfin;p2++){
++      if(p2==p1)continue;double2 d,dv;double weight,beta0;
++      if(!KerC08ResidualPair(p1,p2,np,npb,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,a,d,dv,weight,beta0,error))continue;
++      if(fiterrors[p2-npb]){error|=C08RVNeighbor;continue;}const double4 lj=fit[p2-npb];
++      const double rix=dv.x-(li.x*d.x+li.y*d.y),riz=dv.y-(li.z*d.x+li.w*d.y);
++      const double rjx=dv.x-(lj.x*d.x+lj.y*d.y),rjz=dv.y-(lj.z*d.x+lj.w*d.y);
++      const double f=-.5*alpha*beta0;fx+=(rix+rjx)*f;fz+=(riz+rjz)*f;
++    }
++  }
++  const float3 oldAce=ace[p1];const double ax=fx/(a.rho*a.V),az=fz/(a.rho*a.V);
++  const float3 value=make_float3(float(double(oldAce.x)+ax),oldAce.y,float(double(oldAce.z)+az));
++  if(!isfinite(ax)||!isfinite(az)||!isfinite(value.x)||!isfinite(value.y)||!isfinite(value.z))error|=C08RVForce;
++  errors[slot]=error;if(!error)candidateAce[slot]=value;
++}
++struct C08ResidualScratch {
++  double4* Fit;double* Lambda;float3* CandidateAce;unsigned *FitErrors,*Errors;
++  C08ResidualScratch():Fit(NULL),Lambda(NULL),CandidateAce(NULL),FitErrors(NULL),Errors(NULL){}
++  ~C08ResidualScratch(){cudaFree(Errors);cudaFree(FitErrors);cudaFree(CandidateAce);cudaFree(Lambda);cudaFree(Fit);}
++};
++cudaError_t AddResidualViscosityCandidate(unsigned np,unsigned npb,const StDivDataGpu& dvd
++  ,const unsigned* dcell,const unsigned* idp,const double2* posxy,const double* posz,const float4* velrhop
++  ,const typecode* code,const double* j,double solid0,double rho0,double rhow,double vol0,double dt,double alpha
++  ,float3* ace,StResidualViscosityCandidate& result){
++  result=StResidualViscosityCandidate();result.invalid_sorted=result.invalid_native_id=UINT_MAX;
++  if(np!=6805 || npb!=1805 || !dcell || !idp || !posxy || !posz || !velrhop || !code || !j || !ace
++    || !std::isfinite(solid0) || !(solid0>0 && solid0<1) || !std::isfinite(rho0) || !(rho0>0)
++    || !std::isfinite(rhow) || !(rhow>0) || !std::isfinite(vol0) || !(vol0>0)
++    || !std::isfinite(dt) || !(dt>0) || (alpha!=.1 && alpha!=0.))return(cudaErrorInvalidValue);
++  if(alpha==0.)return(cudaSuccess); // Caller also skips this helper completely for ALPHA0.
++  const unsigned count=np-npb;C08ResidualScratch scratch;cudaError_t status;
++  #define C08_RV_CUDA(call) do{status=(call);if(status!=cudaSuccess)return(status);}while(0)
++  C08_RV_CUDA(cudaMalloc((void**)&scratch.Fit,sizeof(double4)*count));
++  C08_RV_CUDA(cudaMalloc((void**)&scratch.Lambda,sizeof(double)*count));
++  C08_RV_CUDA(cudaMalloc((void**)&scratch.CandidateAce,sizeof(float3)*count));
++  C08_RV_CUDA(cudaMalloc((void**)&scratch.FitErrors,sizeof(unsigned)*count));
++  C08_RV_CUDA(cudaMalloc((void**)&scratch.Errors,sizeof(unsigned)*count));
++  const dim3 grid=GetSimpleGridSize(count,SPHBSIZE);
++  KerC08ResidualFit<<<grid,SPHBSIZE>>>(np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid
++    ,dcell,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,alpha,scratch.Fit,scratch.Lambda,scratch.FitErrors);
++  C08_RV_CUDA(cudaGetLastError());
++  KerC08ResidualForce<<<grid,SPHBSIZE>>>(np,npb,dvd.scelldiv,dvd.nc,dvd.cellzero,dvd.beginendcell+dvd.cellfluid
++    ,dcell,idp,posxy,posz,velrhop,code,j,solid0,rho0,rhow,vol0,alpha,scratch.Fit,scratch.FitErrors,ace,scratch.CandidateAce,scratch.Errors);
++  C08_RV_CUDA(cudaGetLastError());
++  std::vector<unsigned> errors(count);std::vector<double> lambda(count);
++  C08_RV_CUDA(cudaMemcpy(errors.data(),scratch.Errors,sizeof(unsigned)*count,cudaMemcpyDeviceToHost));
++  C08_RV_CUDA(cudaMemcpy(lambda.data(),scratch.Lambda,sizeof(double)*count,cudaMemcpyDeviceToHost));
++  unsigned maxSlot=0;
++  for(unsigned slot=0;slot<count;slot++){
++    unsigned error=errors[slot];if(!std::isfinite(lambda[slot]) || !(lambda[slot]>0))error|=C08RVFit;
++    if(error){result.error_bits|=error;if(result.invalid_sorted==UINT_MAX)result.invalid_sorted=npb+slot;}
++    else if(lambda[slot]>result.lambda_max){result.lambda_max=lambda[slot];maxSlot=slot;}
++  }
++  if(!result.error_bits){
++    result.validated_soil=count;const double bound=dt*result.lambda_max*.5;
++    if(!std::isfinite(bound) || bound>1.){result.error_bits=C08RVBound;result.invalid_sorted=npb+maxSlot;}
++  }
++  if(result.error_bits){
++    if(result.invalid_sorted!=UINT_MAX)C08_RV_CUDA(cudaMemcpy(&result.invalid_native_id,idp+result.invalid_sorted,sizeof(unsigned),cudaMemcpyDeviceToHost));
++    return(cudaSuccess); // No Ace writes on any mathematical rejection.
++  }
++  C08_RV_CUDA(cudaMemcpy(ace+npb,scratch.CandidateAce,sizeof(float3)*count,cudaMemcpyDeviceToDevice));
++  result.committed=true;
++  #undef C08_RV_CUDA
++  return(cudaSuccess); // Local scratch is freed before return to the original Darcy/wallAce wrapper.
++}
++#endif
+ template<TpKernel tker> __global__ void KerComputeDynamicPorePressureRate(unsigned np,unsigned npb
+   ,int scelldiv,int4 nc,int3 cellzero,const int2 *beginendcellfluid,const unsigned *dcell
+   ,const double2 *posxy,const double *posz,const typecode *code,const tmatrix3d *corrmat,const float3 *ace
