@@ -1,0 +1,13 @@
+# Lian 2023 coefficients and the current C08 viscosity
+
+Read-only literature/code audit during the residual-viscosity Debug job. No parameter, source, input or active dependency was changed. The local PDF pages 8 and 19 were visually inspected; page6 and the cited Bui references were checked for the distinct artificial-viscosity definition.
+
+Lian2023 Table1's `Stabilisation coefficient (alpha)=.5` is the TPI pore-pressure extrapolation coefficient in Eq39, `p^(t+alpha)=p^t+alpha*(p^t-p^(t-1))`. It is not the momentum artificial-viscosity parameter. Section3.2 Eq26 refers AV/AS to Bui2008 and Bui-Fukagawa2013, adopting the latter sound-speed definition. Section3.5 separately uses global velocity damping; these coefficients must not be interchanged.
+
+Current C08 retains XML `Visco=.1`. The GPU dynamic path uses only `-Visco*cbar*mu/rhobar` in its pair artificial viscosity, with current mixture density/volume and `cbar=CTE.cs0`; it has no quadratic beta*mu^2 term. Its global dry constrained wave speed is computed from `(K+4G/3)/rho0`. These are genuine definition differences from the Bui reference: Bui2008 Eq60-62 used alpha=beta=.1 for most examples; Bui-Fukagawa2013 Eq17 uses `sqrt(E/rho)`. Lian does not directly list AV=.5.
+
+For the same E=20MPa and the same rho0=2072.5kg/m3, current constrained speed is119.57485m/s and Young speed98.23533m/s. This scalar comparison is not an exact comparison to paper AV strength: the reference's solid-phase density convention and pair weighting must also be checked. The actual coupled necessary step uses its own current-J/undrained limits and is not this AV sound-speed constant. A missing quadratic term or different wave speed has not been established as the clumping cause; increasing Visco to.5 is not justified by the TPI table.
+
+The new private residual numerical-viscosity alpha=.1 is a third coefficient, distinct from both TPI alpha and XML Visco. Current diagnostics keep original AV unchanged. After its bounded trajectory comparison, weigh a controlled reference-form AV check against the retained AV=.15 evidence and actual low-Mach quadratic-term magnitude; do not simultaneously change sound speed, beta, AS or time integration just to match the paper.
+
+Sources: `src/papers/PDF/Lian 2023 u-pl.pdf` pp6,8,19; `src/papers/u-pw/Lian 2023 u-pl.md` lines360-363,463-474,499-500,879; `src/papers/PDF/Bui 2013.pdf` p5 Eq17; local Bui2008 PDF pp14-15 Eq60-62. Code: frozen macro-off C08 `JSphGpu_ker.cu` AV path, global `JSph.cpp` constrained-speed setup; current matching lines2084-2096 and4283-4291 respectively. No new solver, decode, SHA scan or physical acceptance.
