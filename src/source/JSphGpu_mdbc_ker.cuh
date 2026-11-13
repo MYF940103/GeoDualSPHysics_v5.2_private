@@ -96,8 +96,8 @@ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsign
   double3 gp=make_double3(posxy[p1].x+bn.x,posxy[p1].y+bn.y,posz[p1]+bn.z);
   if(CTE.periactive)gp=KerUpdatePeriodicPos(gp);
   enum {ncomp=(stage==0? 11: (stage==1? 9: 3))};
-  double fitshiftx=0,fitshiftz=0;bool retried=false;
-  for(;;){ //-Keep the primary arithmetic; one local real-source retry after geometry failure.
+  double fitshiftx=0,fitshiftz=0;bool retried=false,centroidretried=false;
+  for(;;){ //-Keep primary/nearest fits; one final centroid retry after geometry failure.
   double sum[ncomp]={0},gx[ncomp]={0},gz[ncomp]={0},nearest[ncomp]={0};
   double sumwab=0,submerged=0,nearest2=DBL_MAX,nearx=0,nearz=0;
   tmatrix3d moment;cumath::Tmatrix3dReset(moment);
@@ -136,6 +136,16 @@ template<TpKernel tker,unsigned stage> __global__ void KerDynamicPoreWall(unsign
       //-Use the visited real source, retaining the original evaluation mirror.
       gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;
       retried=true;continue;
+    }
+    if(tker==KERNEL_Wendland && CTE.simulate2d && !CTE.periactive && retried && !centroidretried && nearestfinite
+      && isfinite(moment.a11) && moment.a11>0){
+      //-Positive W*V first moments locate the donor centroid; retain the original mirror target.
+      const double dx=moment.a12/moment.a11,dz=moment.a13/moment.a11;
+      const double cx=gp.x-dx,cz=gp.z-dz;
+      if(isfinite(dx) && isfinite(dz) && isfinite(cx) && isfinite(cz) && (cx!=gp.x || cz!=gp.z)){
+        gp.x=cx;gp.z=cz;fitshiftx-=dx;fitshiftz-=dz;
+        centroidretried=true;continue;
+      }
     }
     atomicMin(invalid,p1);return;
   }

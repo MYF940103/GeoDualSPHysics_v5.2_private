@@ -161,8 +161,8 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
     bool shifted=(fitshift!=TDouble3(0));
     if(shifted)gposp1=gposp1+fitshift;
     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
-    bool retried=false;
-    for(;;){ //-Primary fit stays unchanged; at most one local real-source retry below.
+    bool retried=false,centroidretried=false;
+    for(;;){ //-Keep primary/nearest fits; one final centroid retry for dynamic 2-D walls.
     double sumwab=0,submerged=0;
     bool invalidj=false;
     double fieldsum[ncomp]={0};
@@ -285,6 +285,17 @@ template<TpKernel tker,bool sim2d,unsigned ncomp,class TRead,class TWrite> void 
         //-Fit once at an existing real source, then return to the original mirror with q*fitshift.
         gposp1=gposp1-neardr;fitshift=fitshift-neardr;shifted=(fitshift!=TDouble3(0));
         retried=true;continue;
+      }
+      if(tker==KERNEL_Wendland && DynamicPoreWall && sim2d && !PeriActive && retried && !centroidretried && nearestfinite
+        && std::isfinite(a_corr2.a11) && a_corr2.a11>0){
+        //-Positive W*V first moments locate the donor centroid; still evaluate at the original mirror.
+        const tdouble3 centroiddr=TDouble3(a_corr2.a12/a_corr2.a11,0.,a_corr2.a13/a_corr2.a11);
+        const tdouble3 centre=gposp1-centroiddr;
+        if(std::isfinite(centroiddr.x) && std::isfinite(centroiddr.z)
+          && std::isfinite(centre.x) && std::isfinite(centre.z) && centre!=gposp1){
+          gposp1=centre;fitshift=fitshift-centroiddr;shifted=(fitshift!=TDouble3(0));
+          centroidretried=true;continue;
+        }
       }
       missing++;
     }

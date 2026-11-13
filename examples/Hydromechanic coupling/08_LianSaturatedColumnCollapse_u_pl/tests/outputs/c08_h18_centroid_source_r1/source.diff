@@ -1,0 +1,61 @@
+--- schema2/src/source/JSphCpu_mdbc.cpp
++++ centroid/src/source/JSphCpu_mdbc.cpp
+@@ -161,8 +161,8 @@
+     bool shifted=(fitshift!=TDouble3(0));
+     if(shifted)gposp1=gposp1+fitshift;
+     gposp1=(PeriActive!=0? UpdatePeriodicPos(gposp1): gposp1);
+-    bool retried=false;
+-    for(;;){ //-Primary fit stays unchanged; at most one local real-source retry below.
++    bool retried=false,centroidretried=false;
++    for(;;){ //-Keep primary/nearest fits; one final centroid retry for dynamic 2-D walls.
+     double sumwab=0,submerged=0;
+     bool invalidj=false;
+     double fieldsum[ncomp]={0};
+@@ -285,6 +285,17 @@
+         //-Fit once at an existing real source, then return to the original mirror with q*fitshift.
+         gposp1=gposp1-neardr;fitshift=fitshift-neardr;shifted=(fitshift!=TDouble3(0));
+         retried=true;continue;
++      }
++      if(tker==KERNEL_Wendland && DynamicPoreWall && sim2d && !PeriActive && retried && !centroidretried && nearestfinite
++        && std::isfinite(a_corr2.a11) && a_corr2.a11>0){
++        //-Positive W*V first moments locate the donor centroid; still evaluate at the original mirror.
++        const tdouble3 centroiddr=TDouble3(a_corr2.a12/a_corr2.a11,0.,a_corr2.a13/a_corr2.a11);
++        const tdouble3 centre=gposp1-centroiddr;
++        if(std::isfinite(centroiddr.x) && std::isfinite(centroiddr.z)
++          && std::isfinite(centre.x) && std::isfinite(centre.z) && centre!=gposp1){
++          gposp1=centre;fitshift=fitshift-centroiddr;shifted=(fitshift!=TDouble3(0));
++          centroidretried=true;continue;
++        }
+       }
+       missing++;
+     }
+--- schema2/src/source/JSphGpu_mdbc_ker.cuh
++++ centroid/src/source/JSphGpu_mdbc_ker.cuh
+@@ -96,8 +96,8 @@
+   double3 gp=make_double3(posxy[p1].x+bn.x,posxy[p1].y+bn.y,posz[p1]+bn.z);
+   if(CTE.periactive)gp=KerUpdatePeriodicPos(gp);
+   enum {ncomp=(stage==0? 11: (stage==1? 9: 3))};
+-  double fitshiftx=0,fitshiftz=0;bool retried=false;
+-  for(;;){ //-Keep the primary arithmetic; one local real-source retry after geometry failure.
++  double fitshiftx=0,fitshiftz=0;bool retried=false,centroidretried=false;
++  for(;;){ //-Keep primary/nearest fits; one final centroid retry after geometry failure.
+   double sum[ncomp]={0},gx[ncomp]={0},gz[ncomp]={0},nearest[ncomp]={0};
+   double sumwab=0,submerged=0,nearest2=DBL_MAX,nearx=0,nearz=0;
+   tmatrix3d moment;cumath::Tmatrix3dReset(moment);
+@@ -136,6 +136,16 @@
+       //-Use the visited real source, retaining the original evaluation mirror.
+       gp.x-=nearx;gp.z-=nearz;fitshiftx-=nearx;fitshiftz-=nearz;
+       retried=true;continue;
++    }
++    if(tker==KERNEL_Wendland && CTE.simulate2d && !CTE.periactive && retried && !centroidretried && nearestfinite
++      && isfinite(moment.a11) && moment.a11>0){
++      //-Positive W*V first moments locate the donor centroid; retain the original mirror target.
++      const double dx=moment.a12/moment.a11,dz=moment.a13/moment.a11;
++      const double cx=gp.x-dx,cz=gp.z-dz;
++      if(isfinite(dx) && isfinite(dz) && isfinite(cx) && isfinite(cz) && (cx!=gp.x || cz!=gp.z)){
++        gp.x=cx;gp.z=cz;fitshiftx-=dx;fitshiftz-=dz;
++        centroidretried=true;continue;
++      }
+     }
+     atomicMin(invalid,p1);return;
+   }
