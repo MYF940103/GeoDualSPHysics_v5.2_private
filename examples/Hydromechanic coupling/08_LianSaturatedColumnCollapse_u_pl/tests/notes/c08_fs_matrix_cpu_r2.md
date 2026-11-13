@@ -1,0 +1,9 @@
+# Frozen pressure matrix: fixture cell-code correction
+
+The original r1 CPU Raw execution failed its first hydrostatic OFF formula comparison. Preserve its actual call, partial CSVs and failed run receipt; Normal was not invoked. Independent source review found a concrete fixture error: DCEL_GetCode(27,2,2) reserves only two Z bits, but the C08-scaled cloud and origin0.5 occupy cell Z=4. Encoding that value spills into Y, so the actual neighbor search does not represent the intended cloud. The previous dp0.25 affine fixtures occupied Z<=3 and are unaffected. This is not a physical C08 failure or a negative result about the proposed closure.
+
+The new r2 entry copies r1 exactly except the local cell code becomes DCEL_GetCode(26,2,3), every encoded coordinate must decode back to the intended X/Y/Z, and the diagnostic stage name is r2. Positions, J profiles, fields, coefficients, basis, arithmetic budgets, actual FS/C generation and every numerical check are unchanged. No public source or retained result is modified. The r1 note still defines the controls, matrices and scientific limitations.
+
+The seven-line r2 build wrapper uses the already reviewed r1 object builder with fresh tag/output/entry/note. It compiles one new entry, links Raw and Normal against the same closed original/candidate CPU objects and85 shared objects, and copies the same seven companions. It runs neither component. Root binds the wrapper separately with the actual build receipt; no existing receipt is rewritten.
+
+Only after a successful new build may root separately invoke each fresh component, Raw first. The formula and hydrostatic checks retain their original budgets. The two original r1 executables/partials remain protected. Neither this fixture repair nor normal completion proves spectral, coupled, moving-wall or physical C08 acceptance.

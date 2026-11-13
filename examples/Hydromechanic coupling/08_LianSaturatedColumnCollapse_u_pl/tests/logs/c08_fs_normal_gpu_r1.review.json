@@ -1,0 +1,4222 @@
+{
+  "stage": "c08_fs_normal_gpu_r1.review",
+  "passed": true,
+  "build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.build.json",
+    "bytes": 192064,
+    "mtime_ns": 1794611766205389600
+  },
+  "run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.run.json",
+    "bytes": 5502,
+    "mtime_ns": 1794611867562804100
+  },
+  "cpu_run": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.run.json",
+    "bytes": 4417,
+    "mtime_ns": 1794610671001051400
+  },
+  "cpu_build": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.build.json",
+    "bytes": 142525,
+    "mtime_ns": 1794610598856041000
+  },
+  "intervention": "free_surface_normal_taylor_projection",
+  "actual_hardware": {
+    "Raw": "NVIDIA GeForce RTX 3050",
+    "Normal": "NVIDIA GeForce RTX 3050"
+  },
+  "actual_GPU_Debug_target_and_tool_exits_zero": true,
+  "memcheck_zero_errors_and_leaks": true,
+  "GPU_formula_and_saved_guards": {
+    "Raw": {
+      "nonzero_FS_chain_witnesses": [
+        0,
+        32
+      ],
+      "interior_bit_checks": [
+        245,
+        245
+      ],
+      "maxima": {
+        "0": {
+          "reference": 0.021585054084541543,
+          "hydro": 0.0720070418933824,
+          "chain": 0.0
+        },
+        "1": {
+          "reference": 0.01981161887796094,
+          "hydro": 0.07192767425785822,
+          "chain": 673.6552807740791
+        }
+      }
+    },
+    "Normal": {
+      "nonzero_FS_chain_witnesses": [
+        0,
+        32
+      ],
+      "interior_bit_checks": [
+        245,
+        245
+      ],
+      "maxima": {
+        "0": {
+          "reference": 0.017743169422241457,
+          "hydro": 0.0720070418933824,
+          "chain": 0.0
+        },
+        "1": {
+          "reference": 0.015828974675925964,
+          "hydro": 0.07192767425785822,
+          "chain": 316.5807505064778
+        }
+      }
+    }
+  },
+  "cross_GPU_controls": {
+    "nodes_byte_exact": true,
+    "OFF_binary_byte_exact": true,
+    "outside_ON_FS_bit_checks": 1300,
+    "changed_ON_FS_rate_rows": 252,
+    "CPU_GPU_tracking_and_rates_descriptive_only": true
+  },
+  "CPU_GPU_node_differences": [
+    {
+      "label": "Raw",
+      "profile": 0,
+      "rows": 81,
+      "classification_mismatches": 0,
+      "max_normal_L2": 1.0000000073145632,
+      "max_C_component_abs": 3.1184031661357636e-06,
+      "max_posdiv_abs": 8.344650268554688e-07
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "rows": 81,
+      "classification_mismatches": 0,
+      "max_normal_L2": 7.506953596218931e-05,
+      "max_C_component_abs": 3.0926847358614395e-06,
+      "max_posdiv_abs": 8.344650268554688e-07
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "rows": 81,
+      "classification_mismatches": 0,
+      "max_normal_L2": 1.0000000073145632,
+      "max_C_component_abs": 3.1184031661357636e-06,
+      "max_posdiv_abs": 8.344650268554688e-07
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "rows": 81,
+      "classification_mismatches": 0,
+      "max_normal_L2": 7.506953596218931e-05,
+      "max_C_component_abs": 3.0926847358614395e-06,
+      "max_posdiv_abs": 8.344650268554688e-07
+    }
+  ],
+  "CPU_GPU_rate_differences": [
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 0,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 7.41582721701278,
+      "CPU_rate_RMS_Pa_s": 6.143288397361928,
+      "GPU_minus_CPU_RMS_Pa_s": 4.309167507039901,
+      "GPU_minus_CPU_abs_max_Pa_s": 21.13886046409607,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 0,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 6.596577256164684,
+      "CPU_rate_RMS_Pa_s": 6.708203068567748,
+      "GPU_minus_CPU_RMS_Pa_s": 0.5381627365443666,
+      "GPU_minus_CPU_abs_max_Pa_s": 1.6097793579101562,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 1,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 279.77179883938703,
+      "CPU_rate_RMS_Pa_s": 279.7752184295797,
+      "GPU_minus_CPU_RMS_Pa_s": 0.009069707408221703,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.023801403082457526,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 1,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 34020.77815329042,
+      "CPU_rate_RMS_Pa_s": 34020.78413299267,
+      "GPU_minus_CPU_RMS_Pa_s": 0.012292289589804358,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.0390625,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 2,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 290.74405220090864,
+      "CPU_rate_RMS_Pa_s": 290.7438098269384,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0032753537794437087,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.02008819580078125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 0,
+      "field": 2,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 5617.238057236237,
+      "CPU_rate_RMS_Pa_s": 5617.23912143455,
+      "GPU_minus_CPU_RMS_Pa_s": 0.001696881977074189,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.0087890625,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 0,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 7.370078061338568,
+      "CPU_rate_RMS_Pa_s": 6.114350721431163,
+      "GPU_minus_CPU_RMS_Pa_s": 4.251218723865384,
+      "GPU_minus_CPU_abs_max_Pa_s": 20.64646828174591,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 0,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 6.574617043378728,
+      "CPU_rate_RMS_Pa_s": 6.68175716779073,
+      "GPU_minus_CPU_RMS_Pa_s": 0.5386133767148921,
+      "GPU_minus_CPU_abs_max_Pa_s": 1.6642460823059082,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 1,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 257.79926439378545,
+      "CPU_rate_RMS_Pa_s": 257.80194219916956,
+      "GPU_minus_CPU_RMS_Pa_s": 0.009047148036876774,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.0238494873046875,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 1,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 34033.728864722056,
+      "CPU_rate_RMS_Pa_s": 34033.734695826126,
+      "GPU_minus_CPU_RMS_Pa_s": 0.011846244575168445,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.03515625,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 2,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 298.93098276824065,
+      "CPU_rate_RMS_Pa_s": 298.93081297281054,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0032333566809104562,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.01966094970703125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Raw",
+      "profile": 1,
+      "field": 2,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 5619.129386966511,
+      "CPU_rate_RMS_Pa_s": 5619.130472125654,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0017655590156145115,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.0087890625,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 0,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 7.41582721701278,
+      "CPU_rate_RMS_Pa_s": 6.143288397361928,
+      "GPU_minus_CPU_RMS_Pa_s": 4.309167507039901,
+      "GPU_minus_CPU_abs_max_Pa_s": 21.13886046409607,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 0,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 6.808006339431996,
+      "CPU_rate_RMS_Pa_s": 6.717434562788341,
+      "GPU_minus_CPU_RMS_Pa_s": 0.800870473608251,
+      "GPU_minus_CPU_abs_max_Pa_s": 2.8309755325317383,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 1,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 279.77179883938703,
+      "CPU_rate_RMS_Pa_s": 279.7752184295797,
+      "GPU_minus_CPU_RMS_Pa_s": 0.009069707408221703,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.023801403082457526,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 1,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 32607.57269323055,
+      "CPU_rate_RMS_Pa_s": 32607.57811754065,
+      "GPU_minus_CPU_RMS_Pa_s": 0.01669091441701864,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.08203125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 2,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 290.74405220090864,
+      "CPU_rate_RMS_Pa_s": 290.7438098269384,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0032753537794437087,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.02008819580078125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 0,
+      "field": 2,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 5578.348043671175,
+      "CPU_rate_RMS_Pa_s": 5578.34892982639,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0024447172419327754,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.009765625,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 0,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 7.370078061338568,
+      "CPU_rate_RMS_Pa_s": 6.114350721431163,
+      "GPU_minus_CPU_RMS_Pa_s": 4.251218723865384,
+      "GPU_minus_CPU_abs_max_Pa_s": 20.64646828174591,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 0,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 6.786637015136912,
+      "CPU_rate_RMS_Pa_s": 6.690151323962551,
+      "GPU_minus_CPU_RMS_Pa_s": 0.8029432718057862,
+      "GPU_minus_CPU_abs_max_Pa_s": 2.8602795600891113,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 1,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 257.79926439378545,
+      "CPU_rate_RMS_Pa_s": 257.80194219916956,
+      "GPU_minus_CPU_RMS_Pa_s": 0.009047148036876774,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.0238494873046875,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 1,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 32615.00131817304,
+      "CPU_rate_RMS_Pa_s": 32615.00724843491,
+      "GPU_minus_CPU_RMS_Pa_s": 0.016529842088415847,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.08203125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 2,
+      "free_on": 0,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 298.93098276824065,
+      "CPU_rate_RMS_Pa_s": 298.93081297281054,
+      "GPU_minus_CPU_RMS_Pa_s": 0.0032333566809104562,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.01966094970703125,
+      "classification_mismatches": 0
+    },
+    {
+      "label": "Normal",
+      "profile": 1,
+      "field": 2,
+      "free_on": 1,
+      "rows": 81,
+      "GPU_rate_RMS_Pa_s": 5580.952211000937,
+      "CPU_rate_RMS_Pa_s": 5580.95308964154,
+      "GPU_minus_CPU_RMS_Pa_s": 0.002376049863069694,
+      "GPU_minus_CPU_abs_max_Pa_s": 0.009765625,
+      "classification_mismatches": 0
+    }
+  ],
+  "figures": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_fs_normal_gpu_r1_control_metrics.csv",
+      "bytes": 3347,
+      "mtime_ns": 1794612270507140200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_fs_normal_gpu_r1_cpu_gpu_metrics.csv",
+      "bytes": 2327,
+      "mtime_ns": 1794612270510646800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\figures\\c08_fs_normal_gpu_r1_node_differences.csv",
+      "bytes": 411,
+      "mtime_ns": 1794612270514153900
+    }
+  ],
+  "source_capture": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.json",
+    "bytes": 84670,
+    "mtime_ns": 1794609661603938600
+  },
+  "source_archive": {
+    "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.zip",
+    "bytes": 1082270,
+    "mtime_ns": 1794609661511149200
+  },
+  "consumed": [
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_fs_normal_gpu_r1_review.py",
+      "bytes": 22882,
+      "mtime_ns": 1794612236678769200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_fs_normal_gpu_r1_review.md",
+      "bytes": 6897,
+      "mtime_ns": 1794612135033677800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.run.json",
+      "bytes": 5502,
+      "mtime_ns": 1794611867562804100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.build.json",
+      "bytes": 192064,
+      "mtime_ns": 1794611766205389600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.json",
+      "bytes": 84670,
+      "mtime_ns": 1794609661603938600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.zip",
+      "bytes": 1082270,
+      "mtime_ns": 1794609661511149200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_preload_schema2_Debug_r1.build.json",
+      "bytes": 57485,
+      "mtime_ns": 1794223315722039100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.json",
+      "bytes": 48353,
+      "mtime_ns": 1794222843364623500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+      "bytes": 1082321,
+      "mtime_ns": 1794222843308768900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 232151,
+      "mtime_ns": 1794609660562717900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_mdbc_ker.cuh",
+      "bytes": 90424,
+      "mtime_ns": 1794609660547700400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_fs_normal_gpu_r1.cpp",
+      "bytes": 16938,
+      "mtime_ns": 1794611233272563300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\fixture.obj",
+      "bytes": 2804637,
+      "mtime_ns": 1794611758237583000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_cubic_component_r2.cpp",
+      "bytes": 18781,
+      "mtime_ns": 1793913371404299500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_ker.cu.obj",
+      "bytes": 141539980,
+      "mtime_ns": 1794223260787348300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\JSphGpu_ker.cu.obj",
+      "bytes": 141560160,
+      "mtime_ns": 1794611757047946700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\main.obj",
+      "bytes": 457738,
+      "mtime_ns": 1794223273911291500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\DsphConfig.xml",
+      "bytes": 300,
+      "mtime_ns": 1697414720000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\ChronoEngine.dll",
+      "bytes": 6067712,
+      "mtime_ns": 1697414718000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\dsphchrono.dll",
+      "bytes": 772096,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\vcomp140.dll",
+      "bytes": 185144,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\msvcp140.dll",
+      "bytes": 578384,
+      "mtime_ns": 1688102775894223200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\vcruntime140.dll",
+      "bytes": 109440,
+      "mtime_ns": 1688102775972745900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\vcruntime140_1.dll",
+      "bytes": 49560,
+      "mtime_ns": 1688102775982743700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_preload_schema2_Debug_r1.build.json",
+      "bytes": 57485,
+      "mtime_ns": 1794223315722039100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_taylor_r1.prepare.json",
+      "bytes": 968,
+      "mtime_ns": 1794609661608956100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\notes\\c08_fs_normal_gpu_r1_build.md",
+      "bytes": 4563,
+      "mtime_ns": 1794611120497229500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_fs_normal_gpu_r1_build.py",
+      "bytes": 16303,
+      "mtime_ns": 1794611120492057300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_fs_affine_cpu_r1_build.py",
+      "bytes": 10549,
+      "mtime_ns": 1794608886647875100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_h18_wend_matrix_r1.py",
+      "bytes": 23449,
+      "mtime_ns": 1794593943565762800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_preload_schema2_Debug_r1.call.json",
+      "bytes": 2076,
+      "mtime_ns": 1794223314837284500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\DualSPHysics5.2_win64_debug.exe",
+      "bytes": 199029760,
+      "mtime_ns": 1794223312839339700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.json",
+      "bytes": 48353,
+      "mtime_ns": 1794222843364623500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_source_r1\\full_source.zip",
+      "bytes": 1082321,
+      "mtime_ns": 1794222843308768900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.json",
+      "bytes": 84670,
+      "mtime_ns": 1794609661603938600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.zip",
+      "bytes": 1082270,
+      "mtime_ns": 1794609661511149200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\TypesDef.h",
+      "bytes": 37988,
+      "mtime_ns": 1794609660266828000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinyxmlparser.cpp",
+      "bytes": 48731,
+      "mtime_ns": 1794609660271827000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinyxmlerror.cpp",
+      "bytes": 1916,
+      "mtime_ns": 1794609660276334100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinyxml.h",
+      "bytes": 73692,
+      "mtime_ns": 1794609660279333600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinyxml.cpp",
+      "bytes": 44367,
+      "mtime_ns": 1794609660285162500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinystr.h",
+      "bytes": 9885,
+      "mtime_ns": 1794609660290167000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\tinystr.cpp",
+      "bytes": 2892,
+      "mtime_ns": 1794609660294661000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\RunExceptionGpuDef.h",
+      "bytes": 1715,
+      "mtime_ns": 1794609660296661700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\RunExceptionDef.h",
+      "bytes": 2026,
+      "mtime_ns": 1794609660298660900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\randomc.h",
+      "bytes": 7616,
+      "mtime_ns": 1794609660301661200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\randomc.cpp",
+      "bytes": 6243,
+      "mtime_ns": 1794609660305167800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\OmpDefs.h",
+      "bytes": 1858,
+      "mtime_ns": 1794609660307676100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\main.cpp",
+      "bytes": 9998,
+      "mtime_ns": 1794609660326485700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JXml.h",
+      "bytes": 60397,
+      "mtime_ns": 1794609660330485400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JXml.cpp",
+      "bytes": 43553,
+      "mtime_ns": 1794609660334988300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveSpectrumGpu.h",
+      "bytes": 2771,
+      "mtime_ns": 1794609660340092400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveSpectrumGpu.cpp",
+      "bytes": 4714,
+      "mtime_ns": 1794609660343093800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveOrder2_ker.h",
+      "bytes": 2156,
+      "mtime_ns": 1794609660346091400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveOrder2_ker.cu",
+      "bytes": 8474,
+      "mtime_ns": 1794609660349092400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveGenUndef.h",
+      "bytes": 3213,
+      "mtime_ns": 1794609660353598900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JWaveGen.h",
+      "bytes": 10048,
+      "mtime_ns": 1794609660356599400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JVtkLibUndef.h",
+      "bytes": 7388,
+      "mtime_ns": 1794609660360598000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JVtkLibDef.h",
+      "bytes": 1988,
+      "mtime_ns": 1794609660364599100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JVtkLib.h",
+      "bytes": 10548,
+      "mtime_ns": 1794609660366599900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JTimerCuda.h",
+      "bytes": 2733,
+      "mtime_ns": 1794609660371105800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JTimerClock.h",
+      "bytes": 2396,
+      "mtime_ns": 1794609660373108900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JTimer.h",
+      "bytes": 4388,
+      "mtime_ns": 1794609660376108700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JTimeControl.h",
+      "bytes": 4073,
+      "mtime_ns": 1794609660380109100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JTimeControl.cpp",
+      "bytes": 7648,
+      "mtime_ns": 1794609660384108800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphShifting_ker.h",
+      "bytes": 2473,
+      "mtime_ns": 1794609660387613400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphShifting_ker.cu",
+      "bytes": 8977,
+      "mtime_ns": 1794609660390613900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphShifting.h",
+      "bytes": 6686,
+      "mtime_ns": 1794609660394613700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphShifting.cpp",
+      "bytes": 21845,
+      "mtime_ns": 1794609660397614100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphMk.h",
+      "bytes": 5982,
+      "mtime_ns": 1794609660402120800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphMk.cpp",
+      "bytes": 14010,
+      "mtime_ns": 1794609660405628200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutZsurf.h",
+      "bytes": 6100,
+      "mtime_ns": 1794609660409630400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutZsurf.cpp",
+      "bytes": 18939,
+      "mtime_ns": 1794609660414631000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutZone.h",
+      "bytes": 7708,
+      "mtime_ns": 1794609660419630600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutZone.cpp",
+      "bytes": 19980,
+      "mtime_ns": 1794609660423045000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutVelAwas.h",
+      "bytes": 4169,
+      "mtime_ns": 1794609660427047300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutVelAwas.cpp",
+      "bytes": 8908,
+      "mtime_ns": 1794609660431297500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutVel.h",
+      "bytes": 6057,
+      "mtime_ns": 1794609660434878700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutVel.cpp",
+      "bytes": 24940,
+      "mtime_ns": 1794609660437716800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutPoints.h",
+      "bytes": 5302,
+      "mtime_ns": 1794609660443211700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutPoints.cpp",
+      "bytes": 28614,
+      "mtime_ns": 1794609660446210900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutGridData.h",
+      "bytes": 5779,
+      "mtime_ns": 1794609660451211100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutGridData.cpp",
+      "bytes": 24667,
+      "mtime_ns": 1794609660453210700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOutDef.h",
+      "bytes": 4669,
+      "mtime_ns": 1794609660457716700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOut.h",
+      "bytes": 14733,
+      "mtime_ns": 1794609660515686700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphInOut.cpp",
+      "bytes": 61797,
+      "mtime_ns": 1794609660519686800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassGpu_ker.h",
+      "bytes": 2406,
+      "mtime_ns": 1794609660525192000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassGpu_ker.cu",
+      "bytes": 12945,
+      "mtime_ns": 1794609660530191900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassGpu.h",
+      "bytes": 3698,
+      "mtime_ns": 1794609660534191700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassGpu.cpp",
+      "bytes": 11612,
+      "mtime_ns": 1794609660536697900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassCpu.h",
+      "bytes": 4911,
+      "mtime_ns": 1794609660540700600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphHourglassCpu.cpp",
+      "bytes": 15465,
+      "mtime_ns": 1794609660543700500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_mdbc_ker.cuh",
+      "bytes": 90424,
+      "mtime_ns": 1794609660547700400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_mdbc.cpp",
+      "bytes": 16432,
+      "mtime_ns": 1794609660554203800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_ker.h",
+      "bytes": 25579,
+      "mtime_ns": 1794609660558717700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_ker.cu",
+      "bytes": 232151,
+      "mtime_ns": 1794609660562717900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_InOut_iker.h",
+      "bytes": 5790,
+      "mtime_ns": 1794609660573721300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu_InOut_iker.cu",
+      "bytes": 79757,
+      "mtime_ns": 1794609660577274900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpuSingle_InOut.cpp",
+      "bytes": 13579,
+      "mtime_ns": 1794609660583275400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpuSingle.h",
+      "bytes": 3424,
+      "mtime_ns": 1794609660587784500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpuSingle.cpp",
+      "bytes": 72884,
+      "mtime_ns": 1794609660591783600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpuSimple_ker.h",
+      "bytes": 4629,
+      "mtime_ns": 1794609660597932000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpuSimple_ker.cu",
+      "bytes": 56086,
+      "mtime_ns": 1794609660601931800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu.h",
+      "bytes": 23348,
+      "mtime_ns": 1794609660606439700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphGpu.cpp",
+      "bytes": 140520,
+      "mtime_ns": 1794609660611440700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpu_mdbc.cpp",
+      "bytes": 72717,
+      "mtime_ns": 1794609660619948700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpu_InOut.cpp",
+      "bytes": 29177,
+      "mtime_ns": 1794609660626451900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpuSingle_InOut.cpp",
+      "bytes": 12133,
+      "mtime_ns": 1794609660630638900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpuSingle.h",
+      "bytes": 5160,
+      "mtime_ns": 1794609660636142500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpuSingle.cpp",
+      "bytes": 79654,
+      "mtime_ns": 1794609660640146200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpu.h",
+      "bytes": 30357,
+      "mtime_ns": 1794609660646648100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCpu.cpp",
+      "bytes": 204578,
+      "mtime_ns": 1794609660650651500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCfgRun.h",
+      "bytes": 4592,
+      "mtime_ns": 1794609660659651800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSphCfgRun.cpp",
+      "bytes": 21081,
+      "mtime_ns": 1794609660665058000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSph.h",
+      "bytes": 42394,
+      "mtime_ns": 1794609660671057800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSph.cpp",
+      "bytes": 224180,
+      "mtime_ns": 1794609660676058500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSimpleNeigs.h",
+      "bytes": 3302,
+      "mtime_ns": 1794609660687570800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSimpleNeigs.cpp",
+      "bytes": 9598,
+      "mtime_ns": 1794609660690570000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSaveCsv2.h",
+      "bytes": 11650,
+      "mtime_ns": 1794609660694570300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JSaveCsv2.cpp",
+      "bytes": 11033,
+      "mtime_ns": 1794609660697611400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRelaxZone_ker.h",
+      "bytes": 4360,
+      "mtime_ns": 1794609660702610600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRelaxZone_ker.cu",
+      "bytes": 27451,
+      "mtime_ns": 1794609660705671600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRelaxZonesGpu.h",
+      "bytes": 7608,
+      "mtime_ns": 1794609660709671300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRelaxZonesGpu.cpp",
+      "bytes": 14592,
+      "mtime_ns": 1794609660713701500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRelaxZones.h",
+      "bytes": 6591,
+      "mtime_ns": 1794609660717704400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JReduSum_ker.h",
+      "bytes": 4058,
+      "mtime_ns": 1794609660720704200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JReduSum_ker.cu",
+      "bytes": 35138,
+      "mtime_ns": 1794609660723704600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JReadDatafile.h",
+      "bytes": 5017,
+      "mtime_ns": 1794609660728703900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JReadDatafile.cpp",
+      "bytes": 13604,
+      "mtime_ns": 1794609660733209700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRangeFilter.h",
+      "bytes": 3398,
+      "mtime_ns": 1794609660736209500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRangeFilter.cpp",
+      "bytes": 10371,
+      "mtime_ns": 1794609660740549000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRadixSort.h",
+      "bytes": 5704,
+      "mtime_ns": 1794609660744055800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JRadixSort.cpp",
+      "bytes": 23925,
+      "mtime_ns": 1794609660748058700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPeriodicDef.h",
+      "bytes": 4155,
+      "mtime_ns": 1794609660752059100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartsLoad4.h",
+      "bytes": 6252,
+      "mtime_ns": 1794609660756058600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartsLoad4.cpp",
+      "bytes": 21193,
+      "mtime_ns": 1794609660759059100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartOutBi4Save.h",
+      "bytes": 8161,
+      "mtime_ns": 1794609660763058700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartOutBi4Save.cpp",
+      "bytes": 10593,
+      "mtime_ns": 1794609660767506100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartNormalData.h",
+      "bytes": 5970,
+      "mtime_ns": 1794609660772504800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartNormalData.cpp",
+      "bytes": 11621,
+      "mtime_ns": 1794609660776523300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartMotionDef.h",
+      "bytes": 1959,
+      "mtime_ns": 1794609660780523200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JParticlesDef.h",
+      "bytes": 3439,
+      "mtime_ns": 1794609660785526300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartFloatBi4.h",
+      "bytes": 12625,
+      "mtime_ns": 1794609660789526000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartFloatBi4.cpp",
+      "bytes": 29818,
+      "mtime_ns": 1794609660793526600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartDataHead.h",
+      "bytes": 9973,
+      "mtime_ns": 1794609660798346900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartDataHead.cpp",
+      "bytes": 18180,
+      "mtime_ns": 1794609660802348000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartDataBi4.h",
+      "bytes": 17352,
+      "mtime_ns": 1794609660807362100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JPartDataBi4.cpp",
+      "bytes": 28560,
+      "mtime_ns": 1794609660812367900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JOutputCsv.h",
+      "bytes": 2958,
+      "mtime_ns": 1794609660817368000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JOutputCsv.cpp",
+      "bytes": 12894,
+      "mtime_ns": 1794609660820367900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JObjectGpu.h",
+      "bytes": 2533,
+      "mtime_ns": 1794609660824369200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JObjectGpu.cpp",
+      "bytes": 3591,
+      "mtime_ns": 1794609660828367800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JObject.h",
+      "bytes": 2562,
+      "mtime_ns": 1794609660831874000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JObject.cpp",
+      "bytes": 4502,
+      "mtime_ns": 1794609660833873400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JNumexLibUndef.h",
+      "bytes": 3994,
+      "mtime_ns": 1794609660837891900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JNumexLibDef.h",
+      "bytes": 1101,
+      "mtime_ns": 1794609660840894600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JNumexLib.h",
+      "bytes": 4448,
+      "mtime_ns": 1794609660843895700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionPos.h",
+      "bytes": 2101,
+      "mtime_ns": 1794609660847896400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionPos.cpp",
+      "bytes": 4457,
+      "mtime_ns": 1794609660850896300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionObj.h",
+      "bytes": 5094,
+      "mtime_ns": 1794609660855914000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionObj.cpp",
+      "bytes": 35196,
+      "mtime_ns": 1794609660860912700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionMov.h",
+      "bytes": 15905,
+      "mtime_ns": 1794609660865913800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionMov.cpp",
+      "bytes": 16960,
+      "mtime_ns": 1794609660870032700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionList.h",
+      "bytes": 4307,
+      "mtime_ns": 1794609660874543100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionList.cpp",
+      "bytes": 7622,
+      "mtime_ns": 1794609660878541700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotionEvent.h",
+      "bytes": 1747,
+      "mtime_ns": 1794609660882541300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotion.h",
+      "bytes": 9209,
+      "mtime_ns": 1794609660885541800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMotion.cpp",
+      "bytes": 37615,
+      "mtime_ns": 1794609660890545600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMLPistonsGpu.h",
+      "bytes": 3067,
+      "mtime_ns": 1794609660895544600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMLPistonsGpu.cpp",
+      "bytes": 5280,
+      "mtime_ns": 1794609660898546500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMLPistons.h",
+      "bytes": 8100,
+      "mtime_ns": 1794609660902573400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMeanValues.h",
+      "bytes": 2393,
+      "mtime_ns": 1794609660907081400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JMatrix4.h",
+      "bytes": 20209,
+      "mtime_ns": 1794609660911082100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JLog2.h",
+      "bytes": 5995,
+      "mtime_ns": 1794609660929085100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JLog2.cpp",
+      "bytes": 14029,
+      "mtime_ns": 1794609660932083500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JLinearValueDef.h",
+      "bytes": 1102,
+      "mtime_ns": 1794609660936364900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JLinearValue.h",
+      "bytes": 8453,
+      "mtime_ns": 1794609660938364800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JLinearValue.cpp",
+      "bytes": 24490,
+      "mtime_ns": 1794609660942798200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JGravityPreloadState.h",
+      "bytes": 15790,
+      "mtime_ns": 1794609660946796300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JFtMotionSave.h",
+      "bytes": 3883,
+      "mtime_ns": 1794609660952799200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JFtMotionSave.cpp",
+      "bytes": 8089,
+      "mtime_ns": 1794609660956798500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JException.h",
+      "bytes": 2912,
+      "mtime_ns": 1794609660959799000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JException.cpp",
+      "bytes": 3836,
+      "mtime_ns": 1794609660963301200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsViscoInput.h",
+      "bytes": 2960,
+      "mtime_ns": 1794609660965303800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsViscoInput.cpp",
+      "bytes": 4930,
+      "mtime_ns": 1794609660968809100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsTimersGpu.h",
+      "bytes": 5034,
+      "mtime_ns": 1794609660973808800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsTimersCpu.h",
+      "bytes": 4373,
+      "mtime_ns": 1794609660979809000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsTimers.h",
+      "bytes": 2570,
+      "mtime_ns": 1794609660982812200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsTimers.cpp",
+      "bytes": 5222,
+      "mtime_ns": 1794609660985811700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsSaveDt.h",
+      "bytes": 5124,
+      "mtime_ns": 1794609660989812400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsSaveDt.cpp",
+      "bytes": 10338,
+      "mtime_ns": 1794609660992811800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPips_ker.h",
+      "bytes": 1883,
+      "mtime_ns": 1794609660996315100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPips_ker.cu",
+      "bytes": 13574,
+      "mtime_ns": 1794609660999318400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPips.h",
+      "bytes": 4043,
+      "mtime_ns": 1794609661003583700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPips.cpp",
+      "bytes": 13069,
+      "mtime_ns": 1794609661007089400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsphConfig.h",
+      "bytes": 2369,
+      "mtime_ns": 1794609661010091300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsphConfig.cpp",
+      "bytes": 3173,
+      "mtime_ns": 1794609661013089300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPartsOut.h",
+      "bytes": 3690,
+      "mtime_ns": 1794609661015876900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPartsOut.cpp",
+      "bytes": 4989,
+      "mtime_ns": 1794609661019881000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPartsInit.h",
+      "bytes": 2774,
+      "mtime_ns": 1794609661023881300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsPartsInit.cpp",
+      "bytes": 3445,
+      "mtime_ns": 1794609661026364400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsOutputTime.h",
+      "bytes": 3779,
+      "mtime_ns": 1794609661031372300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsOutputTime.cpp",
+      "bytes": 7458,
+      "mtime_ns": 1794609661034876900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsMotionDef.h",
+      "bytes": 2289,
+      "mtime_ns": 1794609661038385900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsMotion.h",
+      "bytes": 4491,
+      "mtime_ns": 1794609661041890600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsMotion.cpp",
+      "bytes": 8688,
+      "mtime_ns": 1794609661045893200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsMooredFloatings.h",
+      "bytes": 7370,
+      "mtime_ns": 1794609661048896200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsMooredFloatings.cpp",
+      "bytes": 20249,
+      "mtime_ns": 1794609661052685800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsInitialize.h",
+      "bytes": 14357,
+      "mtime_ns": 1794609661058685400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsInitialize.cpp",
+      "bytes": 40240,
+      "mtime_ns": 1794609661062196600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGpuInfo.h",
+      "bytes": 2358,
+      "mtime_ns": 1794609661066701000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGpuInfo.cpp",
+      "bytes": 4554,
+      "mtime_ns": 1794609661069701500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGauge_ker.h",
+      "bytes": 2445,
+      "mtime_ns": 1794609661072716200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGauge_ker.cu",
+      "bytes": 19055,
+      "mtime_ns": 1794609661075715900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGaugeSystem.h",
+      "bytes": 8888,
+      "mtime_ns": 1794609661079718400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGaugeSystem.cpp",
+      "bytes": 24912,
+      "mtime_ns": 1794609661084719100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGaugeItem.h",
+      "bytes": 17067,
+      "mtime_ns": 1794609661089718400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsGaugeItem.cpp",
+      "bytes": 45837,
+      "mtime_ns": 1794609661095223200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsFtForcePoints.h",
+      "bytes": 7026,
+      "mtime_ns": 1794609661100236300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsFtForcePoints.cpp",
+      "bytes": 19213,
+      "mtime_ns": 1794609661103236100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsFixedDt.h",
+      "bytes": 3210,
+      "mtime_ns": 1794609661107244100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsFixedDt.cpp",
+      "bytes": 5357,
+      "mtime_ns": 1794609661110246400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsExtraData.h",
+      "bytes": 3809,
+      "mtime_ns": 1794609661114246300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsExtraData.cpp",
+      "bytes": 9513,
+      "mtime_ns": 1794609661117246300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsDcellDef.h",
+      "bytes": 3824,
+      "mtime_ns": 1794609661122246700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsDcell.h",
+      "bytes": 2153,
+      "mtime_ns": 1794609661125423000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsDcell.cpp",
+      "bytes": 4576,
+      "mtime_ns": 1794609661127422600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsDamping.h",
+      "bytes": 11259,
+      "mtime_ns": 1794609661131674300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsDamping.cpp",
+      "bytes": 34781,
+      "mtime_ns": 1794609661134674600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsAccInput_ker.h",
+      "bytes": 2082,
+      "mtime_ns": 1794609661139177700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsAccInput_ker.cu",
+      "bytes": 6356,
+      "mtime_ns": 1794609661142181000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsAccInput.h",
+      "bytes": 5986,
+      "mtime_ns": 1794609661145253000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDsAccInput.cpp",
+      "bytes": 20813,
+      "mtime_ns": 1794609661149252600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDebugSphGpu.h",
+      "bytes": 3876,
+      "mtime_ns": 1794609661152667200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDebugSphGpu.cpp",
+      "bytes": 13204,
+      "mtime_ns": 1794609661157740500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDataArrays.h",
+      "bytes": 17710,
+      "mtime_ns": 1794609661161756200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JDataArrays.cpp",
+      "bytes": 38425,
+      "mtime_ns": 1794609661165755400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JComputeMotionRef.h",
+      "bytes": 3471,
+      "mtime_ns": 1794609661170755400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JComputeMotionRef.cpp",
+      "bytes": 11117,
+      "mtime_ns": 1794609661174259800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JChronoObjectsUndef.h",
+      "bytes": 3168,
+      "mtime_ns": 1794609661178260000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JChronoObjects.h",
+      "bytes": 7736,
+      "mtime_ns": 1794609661181260000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JChronoObjects.cpp",
+      "bytes": 55134,
+      "mtime_ns": 1794609661184763400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JChronoData.h",
+      "bytes": 28142,
+      "mtime_ns": 1794609661189764300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCfgRunBaseDef.h",
+      "bytes": 1103,
+      "mtime_ns": 1794609661194269300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCfgRunBase.h",
+      "bytes": 5363,
+      "mtime_ns": 1794609661196269300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCfgRunBase.cpp",
+      "bytes": 14326,
+      "mtime_ns": 1794609661200269200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellSearch_inline.h",
+      "bytes": 5246,
+      "mtime_ns": 1794609661203269100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellSearch_iker.h",
+      "bytes": 7819,
+      "mtime_ns": 1794609661207276900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpu_ker.h",
+      "bytes": 4335,
+      "mtime_ns": 1794609661211280600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpu_ker.cu",
+      "bytes": 48158,
+      "mtime_ns": 1794609661214280400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpuSingle_ker.h",
+      "bytes": 1621,
+      "mtime_ns": 1794609661218787600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpuSingle_ker.cu",
+      "bytes": 8664,
+      "mtime_ns": 1794609661221785700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpuSingle.h",
+      "bytes": 2847,
+      "mtime_ns": 1794609661225798300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpuSingle.cpp",
+      "bytes": 12897,
+      "mtime_ns": 1794609661229800800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpu.h",
+      "bytes": 10592,
+      "mtime_ns": 1794609661235800600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivGpu.cpp",
+      "bytes": 23063,
+      "mtime_ns": 1794609661241303700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivDataGpu.h",
+      "bytes": 3250,
+      "mtime_ns": 1794609661245812200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivDataCpu.h",
+      "bytes": 2787,
+      "mtime_ns": 1794609661247813100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivCpuSingle.h",
+      "bytes": 3133,
+      "mtime_ns": 1794609661253423600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivCpuSingle.cpp",
+      "bytes": 18500,
+      "mtime_ns": 1794609661256426500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivCpu.h",
+      "bytes": 10855,
+      "mtime_ns": 1794609661261429900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCellDivCpu.cpp",
+      "bytes": 24435,
+      "mtime_ns": 1794609661265429200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseVtkOut.h",
+      "bytes": 3741,
+      "mtime_ns": 1794609661270430100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseVtkOut.cpp",
+      "bytes": 10187,
+      "mtime_ns": 1794609661273430000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseUserVars.h",
+      "bytes": 2732,
+      "mtime_ns": 1794609661277863900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseUserVars.cpp",
+      "bytes": 6603,
+      "mtime_ns": 1794609661281956800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseProperties.h",
+      "bytes": 10605,
+      "mtime_ns": 1794609661285463600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseProperties.cpp",
+      "bytes": 42244,
+      "mtime_ns": 1794609661289470300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCasePartsDef.h",
+      "bytes": 1188,
+      "mtime_ns": 1794609661295469400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseParts.h",
+      "bytes": 18305,
+      "mtime_ns": 1794609661297991700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseParts.cpp",
+      "bytes": 38473,
+      "mtime_ns": 1794609661303095500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseEParms.h",
+      "bytes": 6539,
+      "mtime_ns": 1794609661307494800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseEParms.cpp",
+      "bytes": 19162,
+      "mtime_ns": 1794609661315022000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseCtes.h",
+      "bytes": 11496,
+      "mtime_ns": 1794609661319528400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JCaseCtes.cpp",
+      "bytes": 16567,
+      "mtime_ns": 1794609661323528300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JBinaryData.h",
+      "bytes": 27223,
+      "mtime_ns": 1794609661327528200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JBinaryData.cpp",
+      "bytes": 110441,
+      "mtime_ns": 1794609661332530700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JArraysGpu.h",
+      "bytes": 7069,
+      "mtime_ns": 1794609661340530800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JArraysGpu.cpp",
+      "bytes": 9700,
+      "mtime_ns": 1794609661344054000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JArraysCpu.h",
+      "bytes": 7131,
+      "mtime_ns": 1794609661351113400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JArraysCpu.cpp",
+      "bytes": 11855,
+      "mtime_ns": 1794609661355128700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JAppInfoDef.h",
+      "bytes": 1092,
+      "mtime_ns": 1794609661360128400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JAppInfo.h",
+      "bytes": 4501,
+      "mtime_ns": 1794609661362127700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\JAppInfo.cpp",
+      "bytes": 6752,
+      "mtime_ns": 1794609661366131100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphKernel_iker.h",
+      "bytes": 8479,
+      "mtime_ns": 1794609661370130700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphKernelsCfg.h",
+      "bytes": 1658,
+      "mtime_ns": 1794609661377636200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphKernelsCfg.cpp",
+      "bytes": 3900,
+      "mtime_ns": 1794609661381638400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphKernelDef.h",
+      "bytes": 2304,
+      "mtime_ns": 1794609661385636900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphKernel.h",
+      "bytes": 13412,
+      "mtime_ns": 1794609661389141400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphEos_iker.h",
+      "bytes": 3293,
+      "mtime_ns": 1794609661392656700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSphEos.h",
+      "bytes": 3269,
+      "mtime_ns": 1794609661395657800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunSoilMaterial.h",
+      "bytes": 16720,
+      "mtime_ns": 1794609661399658600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunGeo3d.h",
+      "bytes": 36738,
+      "mtime_ns": 1794609661411165400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunGeo3d.cpp",
+      "bytes": 12709,
+      "mtime_ns": 1794609661415672500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunFixedPlaneContact.h",
+      "bytes": 557,
+      "mtime_ns": 1794609661430179400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsMath_iker.h",
+      "bytes": 26866,
+      "mtime_ns": 1794609661432182400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsMath.h",
+      "bytes": 19629,
+      "mtime_ns": 1794609661437182200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsGeo3d_iker.h",
+      "bytes": 9658,
+      "mtime_ns": 1794609661441182300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsCuda.h",
+      "bytes": 9025,
+      "mtime_ns": 1794609661445686400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsCuda.cpp",
+      "bytes": 33278,
+      "mtime_ns": 1794609661449758900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\FunctionsBasic_iker.h",
+      "bytes": 3459,
+      "mtime_ns": 1794609661454262800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\Functions.h",
+      "bytes": 23600,
+      "mtime_ns": 1794609661457261100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\Functions.cpp",
+      "bytes": 83948,
+      "mtime_ns": 1794609661461767600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\DualSphDef.h",
+      "bytes": 32698,
+      "mtime_ns": 1794609661467887100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\DSphMoorDynUndef.h",
+      "bytes": 2457,
+      "mtime_ns": 1794609661473891000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\DSphMoorDyn.h",
+      "bytes": 6031,
+      "mtime_ns": 1794609661476891100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\DSPHChronoLib.h",
+      "bytes": 11598,
+      "mtime_ns": 1794609661480890800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\source\\C08StageTrace.h",
+      "bytes": 2484,
+      "mtime_ns": 1794609661484931800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\VS\\DualSPHysics5Re.sln",
+      "bytes": 1475,
+      "mtime_ns": 1794609661488934600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\VS\\DualSPHysics5Re.vcxproj",
+      "bytes": 57328,
+      "mtime_ns": 1794609661492015700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\VS\\DualSPHysics5ReCpu_vs2022.sln",
+      "bytes": 1119,
+      "mtime_ns": 1794609661498015200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\src\\VS\\DualSPHysics5ReCpu.vcxproj",
+      "bytes": 56451,
+      "mtime_ns": 1794609661501015600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_preload_schema2_Release_r1.build.json",
+      "bytes": 57510,
+      "mtime_ns": 1794223128208769000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_taylor_r1_source\\source.diff",
+      "bytes": 2846,
+      "mtime_ns": 1794609661548066700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\DualSPHysics.tlog\\CL.command.1.tlog",
+      "bytes": 130082,
+      "mtime_ns": 1794223306626248300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\DualSPHysics.tlog\\link.command.1.tlog",
+      "bytes": 40178,
+      "mtime_ns": 1794223314662263900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\DualSPHysics.tlog\\link.read.1.tlog",
+      "bytes": 23448,
+      "mtime_ns": 1794223314655120500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\DualSPHysics.tlog\\CudaCompile.read.1u.tlog",
+      "bytes": 549162,
+      "mtime_ns": 1794222885683675100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\DualSPHysics.tlog\\CudaCompile.write.1u.tlog",
+      "bytes": 4694,
+      "mtime_ns": 1794222885690652900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsGeo3d_iker.h.obj",
+      "bytes": 139353,
+      "mtime_ns": 1794222894538527100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsMath_iker.h.obj",
+      "bytes": 341465,
+      "mtime_ns": 1794222894530479000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu_ker.cu.obj",
+      "bytes": 15052766,
+      "mtime_ns": 1794222910761183500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle_ker.cu.obj",
+      "bytes": 147170,
+      "mtime_ns": 1794222895306099300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips_ker.cu.obj",
+      "bytes": 223634,
+      "mtime_ns": 1794222894990330300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGauge_ker.cu.obj",
+      "bytes": 300190,
+      "mtime_ns": 1794222894695719600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReduSum_ker.cu.obj",
+      "bytes": 280643,
+      "mtime_ns": 1794222894669727200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZone_ker.cu.obj",
+      "bytes": 708749,
+      "mtime_ns": 1794222895131979500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting_ker.cu.obj",
+      "bytes": 276277,
+      "mtime_ns": 1794222894713819400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput_ker.cu.obj",
+      "bytes": 152440,
+      "mtime_ns": 1794222894985761100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSimple_ker.cu.obj",
+      "bytes": 4274064,
+      "mtime_ns": 1794222899270927200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu_ker.cu.obj",
+      "bytes": 361266,
+      "mtime_ns": 1794222894822955600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_ker.cu.obj",
+      "bytes": 141539980,
+      "mtime_ns": 1794223260787348300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveOrder2_ker.cu.obj",
+      "bytes": 156969,
+      "mtime_ns": 1794222895111310200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\Functions.obj",
+      "bytes": 1598161,
+      "mtime_ns": 1794223305655051100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsCuda.obj",
+      "bytes": 548647,
+      "mtime_ns": 1794223305684344600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunGeo3d.obj",
+      "bytes": 97541,
+      "mtime_ns": 1794223305703623700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunSphKernelsCfg.obj",
+      "bytes": 285787,
+      "mtime_ns": 1794223305723460300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JAppInfo.obj",
+      "bytes": 294259,
+      "mtime_ns": 1794223305746166200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysCpu.obj",
+      "bytes": 195202,
+      "mtime_ns": 1794223305765370600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JBinaryData.obj",
+      "bytes": 1725870,
+      "mtime_ns": 1794223305821859100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpu.obj",
+      "bytes": 331208,
+      "mtime_ns": 1794223305846815300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpuSingle.obj",
+      "bytes": 230393,
+      "mtime_ns": 1794223305868072300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu.obj",
+      "bytes": 312913,
+      "mtime_ns": 1794223305893072200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle.obj",
+      "bytes": 236665,
+      "mtime_ns": 1794223305914147600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCfgRunBase.obj",
+      "bytes": 887456,
+      "mtime_ns": 1794223305951309300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JChronoObjects.obj",
+      "bytes": 977538,
+      "mtime_ns": 1794223305992882000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JComputeMotionRef.obj",
+      "bytes": 259002,
+      "mtime_ns": 1794223306015710100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDamping.obj",
+      "bytes": 731435,
+      "mtime_ns": 1794223306047216200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysGpu.obj",
+      "bytes": 185764,
+      "mtime_ns": 1794223306066788500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDataArrays.obj",
+      "bytes": 729294,
+      "mtime_ns": 1794223306096353900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDebugSphGpu.obj",
+      "bytes": 397119,
+      "mtime_ns": 1794223306123601900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDcell.obj",
+      "bytes": 42162,
+      "mtime_ns": 1794223306140276700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsExtraData.obj",
+      "bytes": 283101,
+      "mtime_ns": 1794223297485185600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGpuInfo.obj",
+      "bytes": 240832,
+      "mtime_ns": 1794223297506756200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsphConfig.obj",
+      "bytes": 200101,
+      "mtime_ns": 1794223297525238300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips.obj",
+      "bytes": 337684,
+      "mtime_ns": 1794223297549197800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsTimers.obj",
+      "bytes": 298744,
+      "mtime_ns": 1794223297571291000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JException.obj",
+      "bytes": 231489,
+      "mtime_ns": 1794223297591828600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeItem.obj",
+      "bytes": 1029838,
+      "mtime_ns": 1794223297632490000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeSystem.obj",
+      "bytes": 658500,
+      "mtime_ns": 1794223297663033900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JFtMotionSave.obj",
+      "bytes": 197124,
+      "mtime_ns": 1794223297686695200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLinearValue.obj",
+      "bytes": 388900,
+      "mtime_ns": 1794223297711644600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLog2.obj",
+      "bytes": 993070,
+      "mtime_ns": 1794223297751214400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMLPistonsGpu.obj",
+      "bytes": 148577,
+      "mtime_ns": 1794223297770233700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMooredFloatings.obj",
+      "bytes": 530869,
+      "mtime_ns": 1794223297798542700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotion.obj",
+      "bytes": 809113,
+      "mtime_ns": 1794223297834428700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionList.obj",
+      "bytes": 171173,
+      "mtime_ns": 1794223297853386000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionMov.obj",
+      "bytes": 347168,
+      "mtime_ns": 1794223297876813300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionObj.obj",
+      "bytes": 794517,
+      "mtime_ns": 1794223297913776500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionPos.obj",
+      "bytes": 51986,
+      "mtime_ns": 1794223297931237800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObject.obj",
+      "bytes": 146530,
+      "mtime_ns": 1794223297947193900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObjectGpu.obj",
+      "bytes": 201628,
+      "mtime_ns": 1794223297966272000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JOutputCsv.obj",
+      "bytes": 757186,
+      "mtime_ns": 1794223290445400500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataBi4.obj",
+      "bytes": 524593,
+      "mtime_ns": 1794223290473909500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataHead.obj",
+      "bytes": 573209,
+      "mtime_ns": 1794223290501510800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartFloatBi4.obj",
+      "bytes": 425497,
+      "mtime_ns": 1794223290529326600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartNormalData.obj",
+      "bytes": 322225,
+      "mtime_ns": 1794223290551779000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartOutBi4Save.obj",
+      "bytes": 297789,
+      "mtime_ns": 1794223290575307600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartsLoad4.obj",
+      "bytes": 420558,
+      "mtime_ns": 1794223290606723600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRadixSort.obj",
+      "bytes": 495205,
+      "mtime_ns": 1794223290632927100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRangeFilter.obj",
+      "bytes": 328146,
+      "mtime_ns": 1794223290654770200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReadDatafile.obj",
+      "bytes": 689550,
+      "mtime_ns": 1794223290687252100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZonesGpu.obj",
+      "bytes": 186325,
+      "mtime_ns": 1794223290707264200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSaveCsv2.obj",
+      "bytes": 681467,
+      "mtime_ns": 1794223290738286100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsSaveDt.obj",
+      "bytes": 270744,
+      "mtime_ns": 1794223290760679100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVel.obj",
+      "bytes": 522574,
+      "mtime_ns": 1794223290788349400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVelAwas.obj",
+      "bytes": 397734,
+      "mtime_ns": 1794223290814255800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZsurf.obj",
+      "bytes": 420134,
+      "mtime_ns": 1794223290840113400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting.obj",
+      "bytes": 596999,
+      "mtime_ns": 1794223290872538600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSimpleNeigs.obj",
+      "bytes": 248017,
+      "mtime_ns": 1794223290893278400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseProperties.obj",
+      "bytes": 1131543,
+      "mtime_ns": 1794223290932710400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseUserVars.obj",
+      "bytes": 413228,
+      "mtime_ns": 1794223290958055900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseVtkOut.obj",
+      "bytes": 473199,
+      "mtime_ns": 1794223283718882100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput.obj",
+      "bytes": 563361,
+      "mtime_ns": 1794223283746597000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle_InOut.obj",
+      "bytes": 238611,
+      "mtime_ns": 1794223283768202300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_InOut.obj",
+      "bytes": 466093,
+      "mtime_ns": 1794223283796159900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFixedDt.obj",
+      "bytes": 203766,
+      "mtime_ns": 1794223283816907900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFtForcePoints.obj",
+      "bytes": 335457,
+      "mtime_ns": 1794223283839175000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle.obj",
+      "bytes": 1042152,
+      "mtime_ns": 1794223283897440100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle_InOut.obj",
+      "bytes": 245467,
+      "mtime_ns": 1794223283927129900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsInitialize.obj",
+      "bytes": 883440,
+      "mtime_ns": 1794223283962361800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOut.obj",
+      "bytes": 822010,
+      "mtime_ns": 1794223284000612600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutGridData.obj",
+      "bytes": 439575,
+      "mtime_ns": 1794223284028536000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutPoints.obj",
+      "bytes": 659887,
+      "mtime_ns": 1794223284061613900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZone.obj",
+      "bytes": 447923,
+      "mtime_ns": 1794223284088939300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphMk.obj",
+      "bytes": 282194,
+      "mtime_ns": 1794223284112746700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMotion.obj",
+      "bytes": 188616,
+      "mtime_ns": 1794223284133763800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsInit.obj",
+      "bytes": 153167,
+      "mtime_ns": 1794223284152828300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsViscoInput.obj",
+      "bytes": 203485,
+      "mtime_ns": 1794223284176067800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsOut.obj",
+      "bytes": 155233,
+      "mtime_ns": 1794223284194806400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassCpu.obj",
+      "bytes": 554934,
+      "mtime_ns": 1794223284221976000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu.obj",
+      "bytes": 197823,
+      "mtime_ns": 1794223284242281300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle.obj",
+      "bytes": 1537540,
+      "mtime_ns": 1794223273091437800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JTimeControl.obj",
+      "bytes": 318256,
+      "mtime_ns": 1794223273114136800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsOutputTime.obj",
+      "bytes": 385348,
+      "mtime_ns": 1794223273139489400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCfgRun.obj",
+      "bytes": 394898,
+      "mtime_ns": 1794223273164906200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseParts.obj",
+      "bytes": 810851,
+      "mtime_ns": 1794223273197710200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseCtes.obj",
+      "bytes": 437327,
+      "mtime_ns": 1794223273220519500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseEParms.obj",
+      "bytes": 613967,
+      "mtime_ns": 1794223273249306800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSph.obj",
+      "bytes": 4375553,
+      "mtime_ns": 1794223273376377200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu.obj",
+      "bytes": 6944541,
+      "mtime_ns": 1794223273635210500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_mdbc.obj",
+      "bytes": 2044504,
+      "mtime_ns": 1794223273720640700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu.obj",
+      "bytes": 1368278,
+      "mtime_ns": 1794223273770726700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_mdbc.obj",
+      "bytes": 621185,
+      "mtime_ns": 1794223273799203000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveSpectrumGpu.obj",
+      "bytes": 146260,
+      "mtime_ns": 1794223273817767400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JXml.obj",
+      "bytes": 1052139,
+      "mtime_ns": 1794223273884682600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\main.obj",
+      "bytes": 457738,
+      "mtime_ns": 1794223273911291500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\randomc.obj",
+      "bytes": 8944,
+      "mtime_ns": 1794223273923017700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinystr.obj",
+      "bytes": 27034,
+      "mtime_ns": 1794223273934703400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxml.obj",
+      "bytes": 251119,
+      "mtime_ns": 1794223273952590800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlerror.obj",
+      "bytes": 6012,
+      "mtime_ns": 1794223273967132900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlparser.obj",
+      "bytes": 145872,
+      "mtime_ns": 1794223273992934100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_preload_schema2_Debug_r1.log",
+      "bytes": 31551,
+      "mtime_ns": 1794223314666014500
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\lib\\x64\\cudart_static.lib",
+      "bytes": 2724710,
+      "mtime_ns": 1650681786000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\lib\\vs2022\\dsphchrono.lib",
+      "bytes": 647462,
+      "mtime_ns": 1778759198576765800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\lib\\vs2022\\LibJVtkLib_x64_v143_Debug.lib",
+      "bytes": 10316180,
+      "mtime_ns": 1778759198073603800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\lib\\vs2022\\LibJNumexLib_x64_v143_Debug.lib",
+      "bytes": 2267206,
+      "mtime_ns": 1778759197883992300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\lib\\vs2022\\LibJWaveGen_x64_v143_Debug.lib",
+      "bytes": 12111738,
+      "mtime_ns": 1778759198228744500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\src\\lib\\vs2022\\LibDSphMoorDyn_x64_v143_Debug.lib",
+      "bytes": 6970398,
+      "mtime_ns": 1778759197836991700
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\kernel32.Lib",
+      "bytes": 310466,
+      "mtime_ns": 1657870032000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\User32.Lib",
+      "bytes": 172382,
+      "mtime_ns": 1657869914000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\Gdi32.Lib",
+      "bytes": 135004,
+      "mtime_ns": 1657869682000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\WinSpool.Lib",
+      "bytes": 58676,
+      "mtime_ns": 1657894562000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\ComDlg32.Lib",
+      "bytes": 5838,
+      "mtime_ns": 1657894540000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\AdvAPI32.Lib",
+      "bytes": 187448,
+      "mtime_ns": 1657869970000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\shell32.lib",
+      "bytes": 266310,
+      "mtime_ns": 1657898458000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\Ole32.Lib",
+      "bytes": 120130,
+      "mtime_ns": 1657894490000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\OleAut32.Lib",
+      "bytes": 87058,
+      "mtime_ns": 1657870040000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\Uuid.Lib",
+      "bytes": 7501612,
+      "mtime_ns": 1657898356000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\odbc32.lib",
+      "bytes": 38082,
+      "mtime_ns": 1657894766000000000
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\um\\x64\\odbccp32.lib",
+      "bytes": 190230,
+      "mtime_ns": 1657872762000000000
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\lib\\x64\\cudart.lib",
+      "bytes": 105968,
+      "mtime_ns": 1650681786000000000
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\lib\\x64\\cudadevrt.lib",
+      "bytes": 927306,
+      "mtime_ns": 1650681786000000000
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\libcpmtd.lib",
+      "bytes": 20995930,
+      "mtime_ns": 1688102780096850400
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\libcmtd.lib",
+      "bytes": 6546244,
+      "mtime_ns": 1688102779412283600
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\oldnames.lib",
+      "bytes": 158706,
+      "mtime_ns": 1688102789734684300
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\vcompd.lib",
+      "bytes": 28512,
+      "mtime_ns": 1688102790187320700
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\libcmt.lib",
+      "bytes": 6543074,
+      "mtime_ns": 1688102779367910100
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\lib\\x64\\libvcruntimed.lib",
+      "bytes": 1799356,
+      "mtime_ns": 1688102780372428700
+    },
+    {
+      "path": "C:\\Program Files (x86)\\Windows Kits\\10\\Lib\\10.0.22000.0\\ucrt\\x64\\libucrtd.lib",
+      "bytes": 40778904,
+      "mtime_ns": 1657872698000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\DsphConfig.xml",
+      "bytes": 300,
+      "mtime_ns": 1697414720000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\ChronoEngine.dll",
+      "bytes": 6067712,
+      "mtime_ns": 1697414718000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\dsphchrono.dll",
+      "bytes": 772096,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\vcomp140.dll",
+      "bytes": 185144,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\msvcp140.dll",
+      "bytes": 578384,
+      "mtime_ns": 1688102775894223200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\vcruntime140.dll",
+      "bytes": 109440,
+      "mtime_ns": 1688102775972745900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\support\\runtime_r6\\vcruntime140_1.dll",
+      "bytes": 49560,
+      "mtime_ns": 1688102775982743700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\DsphConfig.xml",
+      "bytes": 300,
+      "mtime_ns": 1697414720000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\ChronoEngine.dll",
+      "bytes": 6067712,
+      "mtime_ns": 1697414718000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\dsphchrono.dll",
+      "bytes": 772096,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\vcomp140.dll",
+      "bytes": 185144,
+      "mtime_ns": 1697414722000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\msvcp140.dll",
+      "bytes": 578384,
+      "mtime_ns": 1688102775894223200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\vcruntime140.dll",
+      "bytes": 109440,
+      "mtime_ns": 1688102775972745900
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_preload_schema2_Debug_r1\\vcruntime140_1.dll",
+      "bytes": 49560,
+      "mtime_ns": 1688102775982743700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\c08_fs_normal_gpu_r1.cpp",
+      "bytes": 16938,
+      "mtime_ns": 1794611233272563300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\support\\upl_cubic_component_r2.cpp",
+      "bytes": 18781,
+      "mtime_ns": 1793913371404299500
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\bin\\nvcc.exe",
+      "bytes": 5425152,
+      "mtime_ns": 1651632187000000000
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\x64\\cl.exe",
+      "bytes": 663024,
+      "mtime_ns": 1688102785984818200
+    },
+    {
+      "path": "D:\\Program Files\\VS2022\\VC\\Tools\\MSVC\\14.36.32532\\bin\\Hostx86\\x64\\link.exe",
+      "bytes": 2023904,
+      "mtime_ns": 1688102786162286400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\JSphGpu_ker.cu.obj",
+      "bytes": 141560160,
+      "mtime_ns": 1794611757047946700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\fixture.obj",
+      "bytes": 2804637,
+      "mtime_ns": 1794611758237583000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.gpu.call.json",
+      "bytes": 3911,
+      "mtime_ns": 1794611757247289000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.gpu.log",
+      "bytes": 16,
+      "mtime_ns": 1794611743453246800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.entry.call.json",
+      "bytes": 3689,
+      "mtime_ns": 1794611758256760800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.entry.log",
+      "bytes": 94,
+      "mtime_ns": 1794611757313761500
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.Raw.link.call.json",
+      "bytes": 25608,
+      "mtime_ns": 1794611762308346000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.Raw.link.log",
+      "bytes": 10417,
+      "mtime_ns": 1794611759793236000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.Normal.link.call.json",
+      "bytes": 25628,
+      "mtime_ns": 1794611765713258600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_Debug_r1.Normal.link.log",
+      "bytes": 10423,
+      "mtime_ns": 1794611763395469600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\Raw.exe",
+      "bytes": 199305216,
+      "mtime_ns": 1794611760451866100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsGeo3d_iker.h.obj",
+      "bytes": 139353,
+      "mtime_ns": 1794222894538527100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsMath_iker.h.obj",
+      "bytes": 341465,
+      "mtime_ns": 1794222894530479000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu_ker.cu.obj",
+      "bytes": 15052766,
+      "mtime_ns": 1794222910761183500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle_ker.cu.obj",
+      "bytes": 147170,
+      "mtime_ns": 1794222895306099300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips_ker.cu.obj",
+      "bytes": 223634,
+      "mtime_ns": 1794222894990330300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGauge_ker.cu.obj",
+      "bytes": 300190,
+      "mtime_ns": 1794222894695719600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReduSum_ker.cu.obj",
+      "bytes": 280643,
+      "mtime_ns": 1794222894669727200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZone_ker.cu.obj",
+      "bytes": 708749,
+      "mtime_ns": 1794222895131979500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting_ker.cu.obj",
+      "bytes": 276277,
+      "mtime_ns": 1794222894713819400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput_ker.cu.obj",
+      "bytes": 152440,
+      "mtime_ns": 1794222894985761100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSimple_ker.cu.obj",
+      "bytes": 4274064,
+      "mtime_ns": 1794222899270927200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu_ker.cu.obj",
+      "bytes": 361266,
+      "mtime_ns": 1794222894822955600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_ker.cu.obj",
+      "bytes": 141539980,
+      "mtime_ns": 1794223260787348300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveOrder2_ker.cu.obj",
+      "bytes": 156969,
+      "mtime_ns": 1794222895111310200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\Functions.obj",
+      "bytes": 1598161,
+      "mtime_ns": 1794223305655051100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsCuda.obj",
+      "bytes": 548647,
+      "mtime_ns": 1794223305684344600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunGeo3d.obj",
+      "bytes": 97541,
+      "mtime_ns": 1794223305703623700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunSphKernelsCfg.obj",
+      "bytes": 285787,
+      "mtime_ns": 1794223305723460300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JAppInfo.obj",
+      "bytes": 294259,
+      "mtime_ns": 1794223305746166200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysCpu.obj",
+      "bytes": 195202,
+      "mtime_ns": 1794223305765370600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JBinaryData.obj",
+      "bytes": 1725870,
+      "mtime_ns": 1794223305821859100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpu.obj",
+      "bytes": 331208,
+      "mtime_ns": 1794223305846815300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpuSingle.obj",
+      "bytes": 230393,
+      "mtime_ns": 1794223305868072300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu.obj",
+      "bytes": 312913,
+      "mtime_ns": 1794223305893072200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle.obj",
+      "bytes": 236665,
+      "mtime_ns": 1794223305914147600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCfgRunBase.obj",
+      "bytes": 887456,
+      "mtime_ns": 1794223305951309300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JChronoObjects.obj",
+      "bytes": 977538,
+      "mtime_ns": 1794223305992882000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JComputeMotionRef.obj",
+      "bytes": 259002,
+      "mtime_ns": 1794223306015710100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDamping.obj",
+      "bytes": 731435,
+      "mtime_ns": 1794223306047216200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysGpu.obj",
+      "bytes": 185764,
+      "mtime_ns": 1794223306066788500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDataArrays.obj",
+      "bytes": 729294,
+      "mtime_ns": 1794223306096353900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDebugSphGpu.obj",
+      "bytes": 397119,
+      "mtime_ns": 1794223306123601900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDcell.obj",
+      "bytes": 42162,
+      "mtime_ns": 1794223306140276700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsExtraData.obj",
+      "bytes": 283101,
+      "mtime_ns": 1794223297485185600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGpuInfo.obj",
+      "bytes": 240832,
+      "mtime_ns": 1794223297506756200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsphConfig.obj",
+      "bytes": 200101,
+      "mtime_ns": 1794223297525238300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips.obj",
+      "bytes": 337684,
+      "mtime_ns": 1794223297549197800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsTimers.obj",
+      "bytes": 298744,
+      "mtime_ns": 1794223297571291000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JException.obj",
+      "bytes": 231489,
+      "mtime_ns": 1794223297591828600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeItem.obj",
+      "bytes": 1029838,
+      "mtime_ns": 1794223297632490000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeSystem.obj",
+      "bytes": 658500,
+      "mtime_ns": 1794223297663033900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JFtMotionSave.obj",
+      "bytes": 197124,
+      "mtime_ns": 1794223297686695200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLinearValue.obj",
+      "bytes": 388900,
+      "mtime_ns": 1794223297711644600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLog2.obj",
+      "bytes": 993070,
+      "mtime_ns": 1794223297751214400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMLPistonsGpu.obj",
+      "bytes": 148577,
+      "mtime_ns": 1794223297770233700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMooredFloatings.obj",
+      "bytes": 530869,
+      "mtime_ns": 1794223297798542700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotion.obj",
+      "bytes": 809113,
+      "mtime_ns": 1794223297834428700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionList.obj",
+      "bytes": 171173,
+      "mtime_ns": 1794223297853386000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionMov.obj",
+      "bytes": 347168,
+      "mtime_ns": 1794223297876813300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionObj.obj",
+      "bytes": 794517,
+      "mtime_ns": 1794223297913776500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionPos.obj",
+      "bytes": 51986,
+      "mtime_ns": 1794223297931237800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObject.obj",
+      "bytes": 146530,
+      "mtime_ns": 1794223297947193900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObjectGpu.obj",
+      "bytes": 201628,
+      "mtime_ns": 1794223297966272000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JOutputCsv.obj",
+      "bytes": 757186,
+      "mtime_ns": 1794223290445400500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataBi4.obj",
+      "bytes": 524593,
+      "mtime_ns": 1794223290473909500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataHead.obj",
+      "bytes": 573209,
+      "mtime_ns": 1794223290501510800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartFloatBi4.obj",
+      "bytes": 425497,
+      "mtime_ns": 1794223290529326600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartNormalData.obj",
+      "bytes": 322225,
+      "mtime_ns": 1794223290551779000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartOutBi4Save.obj",
+      "bytes": 297789,
+      "mtime_ns": 1794223290575307600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartsLoad4.obj",
+      "bytes": 420558,
+      "mtime_ns": 1794223290606723600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRadixSort.obj",
+      "bytes": 495205,
+      "mtime_ns": 1794223290632927100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRangeFilter.obj",
+      "bytes": 328146,
+      "mtime_ns": 1794223290654770200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReadDatafile.obj",
+      "bytes": 689550,
+      "mtime_ns": 1794223290687252100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZonesGpu.obj",
+      "bytes": 186325,
+      "mtime_ns": 1794223290707264200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSaveCsv2.obj",
+      "bytes": 681467,
+      "mtime_ns": 1794223290738286100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsSaveDt.obj",
+      "bytes": 270744,
+      "mtime_ns": 1794223290760679100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVel.obj",
+      "bytes": 522574,
+      "mtime_ns": 1794223290788349400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVelAwas.obj",
+      "bytes": 397734,
+      "mtime_ns": 1794223290814255800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZsurf.obj",
+      "bytes": 420134,
+      "mtime_ns": 1794223290840113400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting.obj",
+      "bytes": 596999,
+      "mtime_ns": 1794223290872538600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSimpleNeigs.obj",
+      "bytes": 248017,
+      "mtime_ns": 1794223290893278400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseProperties.obj",
+      "bytes": 1131543,
+      "mtime_ns": 1794223290932710400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseUserVars.obj",
+      "bytes": 413228,
+      "mtime_ns": 1794223290958055900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseVtkOut.obj",
+      "bytes": 473199,
+      "mtime_ns": 1794223283718882100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput.obj",
+      "bytes": 563361,
+      "mtime_ns": 1794223283746597000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle_InOut.obj",
+      "bytes": 238611,
+      "mtime_ns": 1794223283768202300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_InOut.obj",
+      "bytes": 466093,
+      "mtime_ns": 1794223283796159900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFixedDt.obj",
+      "bytes": 203766,
+      "mtime_ns": 1794223283816907900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFtForcePoints.obj",
+      "bytes": 335457,
+      "mtime_ns": 1794223283839175000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle.obj",
+      "bytes": 1042152,
+      "mtime_ns": 1794223283897440100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle_InOut.obj",
+      "bytes": 245467,
+      "mtime_ns": 1794223283927129900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsInitialize.obj",
+      "bytes": 883440,
+      "mtime_ns": 1794223283962361800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOut.obj",
+      "bytes": 822010,
+      "mtime_ns": 1794223284000612600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutGridData.obj",
+      "bytes": 439575,
+      "mtime_ns": 1794223284028536000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutPoints.obj",
+      "bytes": 659887,
+      "mtime_ns": 1794223284061613900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZone.obj",
+      "bytes": 447923,
+      "mtime_ns": 1794223284088939300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphMk.obj",
+      "bytes": 282194,
+      "mtime_ns": 1794223284112746700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMotion.obj",
+      "bytes": 188616,
+      "mtime_ns": 1794223284133763800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsInit.obj",
+      "bytes": 153167,
+      "mtime_ns": 1794223284152828300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsViscoInput.obj",
+      "bytes": 203485,
+      "mtime_ns": 1794223284176067800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsOut.obj",
+      "bytes": 155233,
+      "mtime_ns": 1794223284194806400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassCpu.obj",
+      "bytes": 554934,
+      "mtime_ns": 1794223284221976000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu.obj",
+      "bytes": 197823,
+      "mtime_ns": 1794223284242281300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle.obj",
+      "bytes": 1537540,
+      "mtime_ns": 1794223273091437800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JTimeControl.obj",
+      "bytes": 318256,
+      "mtime_ns": 1794223273114136800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsOutputTime.obj",
+      "bytes": 385348,
+      "mtime_ns": 1794223273139489400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCfgRun.obj",
+      "bytes": 394898,
+      "mtime_ns": 1794223273164906200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseParts.obj",
+      "bytes": 810851,
+      "mtime_ns": 1794223273197710200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseCtes.obj",
+      "bytes": 437327,
+      "mtime_ns": 1794223273220519500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseEParms.obj",
+      "bytes": 613967,
+      "mtime_ns": 1794223273249306800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSph.obj",
+      "bytes": 4375553,
+      "mtime_ns": 1794223273376377200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu.obj",
+      "bytes": 6944541,
+      "mtime_ns": 1794223273635210500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_mdbc.obj",
+      "bytes": 2044504,
+      "mtime_ns": 1794223273720640700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu.obj",
+      "bytes": 1368278,
+      "mtime_ns": 1794223273770726700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_mdbc.obj",
+      "bytes": 621185,
+      "mtime_ns": 1794223273799203000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveSpectrumGpu.obj",
+      "bytes": 146260,
+      "mtime_ns": 1794223273817767400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JXml.obj",
+      "bytes": 1052139,
+      "mtime_ns": 1794223273884682600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\fixture.obj",
+      "bytes": 2804637,
+      "mtime_ns": 1794611758237583000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\randomc.obj",
+      "bytes": 8944,
+      "mtime_ns": 1794223273923017700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinystr.obj",
+      "bytes": 27034,
+      "mtime_ns": 1794223273934703400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxml.obj",
+      "bytes": 251119,
+      "mtime_ns": 1794223273952590800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlerror.obj",
+      "bytes": 6012,
+      "mtime_ns": 1794223273967132900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlparser.obj",
+      "bytes": 145872,
+      "mtime_ns": 1794223273992934100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\Normal.exe",
+      "bytes": 199326208,
+      "mtime_ns": 1794611764089509800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsGeo3d_iker.h.obj",
+      "bytes": 139353,
+      "mtime_ns": 1794222894538527100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsMath_iker.h.obj",
+      "bytes": 341465,
+      "mtime_ns": 1794222894530479000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu_ker.cu.obj",
+      "bytes": 15052766,
+      "mtime_ns": 1794222910761183500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle_ker.cu.obj",
+      "bytes": 147170,
+      "mtime_ns": 1794222895306099300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips_ker.cu.obj",
+      "bytes": 223634,
+      "mtime_ns": 1794222894990330300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGauge_ker.cu.obj",
+      "bytes": 300190,
+      "mtime_ns": 1794222894695719600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReduSum_ker.cu.obj",
+      "bytes": 280643,
+      "mtime_ns": 1794222894669727200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZone_ker.cu.obj",
+      "bytes": 708749,
+      "mtime_ns": 1794222895131979500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting_ker.cu.obj",
+      "bytes": 276277,
+      "mtime_ns": 1794222894713819400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput_ker.cu.obj",
+      "bytes": 152440,
+      "mtime_ns": 1794222894985761100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSimple_ker.cu.obj",
+      "bytes": 4274064,
+      "mtime_ns": 1794222899270927200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu_ker.cu.obj",
+      "bytes": 361266,
+      "mtime_ns": 1794222894822955600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\JSphGpu_ker.cu.obj",
+      "bytes": 141560160,
+      "mtime_ns": 1794611757047946700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveOrder2_ker.cu.obj",
+      "bytes": 156969,
+      "mtime_ns": 1794222895111310200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\Functions.obj",
+      "bytes": 1598161,
+      "mtime_ns": 1794223305655051100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunctionsCuda.obj",
+      "bytes": 548647,
+      "mtime_ns": 1794223305684344600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunGeo3d.obj",
+      "bytes": 97541,
+      "mtime_ns": 1794223305703623700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\FunSphKernelsCfg.obj",
+      "bytes": 285787,
+      "mtime_ns": 1794223305723460300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JAppInfo.obj",
+      "bytes": 294259,
+      "mtime_ns": 1794223305746166200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysCpu.obj",
+      "bytes": 195202,
+      "mtime_ns": 1794223305765370600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JBinaryData.obj",
+      "bytes": 1725870,
+      "mtime_ns": 1794223305821859100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpu.obj",
+      "bytes": 331208,
+      "mtime_ns": 1794223305846815300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivCpuSingle.obj",
+      "bytes": 230393,
+      "mtime_ns": 1794223305868072300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpu.obj",
+      "bytes": 312913,
+      "mtime_ns": 1794223305893072200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCellDivGpuSingle.obj",
+      "bytes": 236665,
+      "mtime_ns": 1794223305914147600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCfgRunBase.obj",
+      "bytes": 887456,
+      "mtime_ns": 1794223305951309300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JChronoObjects.obj",
+      "bytes": 977538,
+      "mtime_ns": 1794223305992882000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JComputeMotionRef.obj",
+      "bytes": 259002,
+      "mtime_ns": 1794223306015710100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDamping.obj",
+      "bytes": 731435,
+      "mtime_ns": 1794223306047216200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JArraysGpu.obj",
+      "bytes": 185764,
+      "mtime_ns": 1794223306066788500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDataArrays.obj",
+      "bytes": 729294,
+      "mtime_ns": 1794223306096353900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDebugSphGpu.obj",
+      "bytes": 397119,
+      "mtime_ns": 1794223306123601900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsDcell.obj",
+      "bytes": 42162,
+      "mtime_ns": 1794223306140276700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsExtraData.obj",
+      "bytes": 283101,
+      "mtime_ns": 1794223297485185600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGpuInfo.obj",
+      "bytes": 240832,
+      "mtime_ns": 1794223297506756200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsphConfig.obj",
+      "bytes": 200101,
+      "mtime_ns": 1794223297525238300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPips.obj",
+      "bytes": 337684,
+      "mtime_ns": 1794223297549197800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsTimers.obj",
+      "bytes": 298744,
+      "mtime_ns": 1794223297571291000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JException.obj",
+      "bytes": 231489,
+      "mtime_ns": 1794223297591828600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeItem.obj",
+      "bytes": 1029838,
+      "mtime_ns": 1794223297632490000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsGaugeSystem.obj",
+      "bytes": 658500,
+      "mtime_ns": 1794223297663033900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JFtMotionSave.obj",
+      "bytes": 197124,
+      "mtime_ns": 1794223297686695200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLinearValue.obj",
+      "bytes": 388900,
+      "mtime_ns": 1794223297711644600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JLog2.obj",
+      "bytes": 993070,
+      "mtime_ns": 1794223297751214400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMLPistonsGpu.obj",
+      "bytes": 148577,
+      "mtime_ns": 1794223297770233700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMooredFloatings.obj",
+      "bytes": 530869,
+      "mtime_ns": 1794223297798542700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotion.obj",
+      "bytes": 809113,
+      "mtime_ns": 1794223297834428700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionList.obj",
+      "bytes": 171173,
+      "mtime_ns": 1794223297853386000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionMov.obj",
+      "bytes": 347168,
+      "mtime_ns": 1794223297876813300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionObj.obj",
+      "bytes": 794517,
+      "mtime_ns": 1794223297913776500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JMotionPos.obj",
+      "bytes": 51986,
+      "mtime_ns": 1794223297931237800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObject.obj",
+      "bytes": 146530,
+      "mtime_ns": 1794223297947193900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JObjectGpu.obj",
+      "bytes": 201628,
+      "mtime_ns": 1794223297966272000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JOutputCsv.obj",
+      "bytes": 757186,
+      "mtime_ns": 1794223290445400500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataBi4.obj",
+      "bytes": 524593,
+      "mtime_ns": 1794223290473909500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartDataHead.obj",
+      "bytes": 573209,
+      "mtime_ns": 1794223290501510800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartFloatBi4.obj",
+      "bytes": 425497,
+      "mtime_ns": 1794223290529326600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartNormalData.obj",
+      "bytes": 322225,
+      "mtime_ns": 1794223290551779000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartOutBi4Save.obj",
+      "bytes": 297789,
+      "mtime_ns": 1794223290575307600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JPartsLoad4.obj",
+      "bytes": 420558,
+      "mtime_ns": 1794223290606723600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRadixSort.obj",
+      "bytes": 495205,
+      "mtime_ns": 1794223290632927100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRangeFilter.obj",
+      "bytes": 328146,
+      "mtime_ns": 1794223290654770200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JReadDatafile.obj",
+      "bytes": 689550,
+      "mtime_ns": 1794223290687252100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JRelaxZonesGpu.obj",
+      "bytes": 186325,
+      "mtime_ns": 1794223290707264200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSaveCsv2.obj",
+      "bytes": 681467,
+      "mtime_ns": 1794223290738286100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsSaveDt.obj",
+      "bytes": 270744,
+      "mtime_ns": 1794223290760679100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVel.obj",
+      "bytes": 522574,
+      "mtime_ns": 1794223290788349400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutVelAwas.obj",
+      "bytes": 397734,
+      "mtime_ns": 1794223290814255800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZsurf.obj",
+      "bytes": 420134,
+      "mtime_ns": 1794223290840113400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphShifting.obj",
+      "bytes": 596999,
+      "mtime_ns": 1794223290872538600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSimpleNeigs.obj",
+      "bytes": 248017,
+      "mtime_ns": 1794223290893278400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseProperties.obj",
+      "bytes": 1131543,
+      "mtime_ns": 1794223290932710400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseUserVars.obj",
+      "bytes": 413228,
+      "mtime_ns": 1794223290958055900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseVtkOut.obj",
+      "bytes": 473199,
+      "mtime_ns": 1794223283718882100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsAccInput.obj",
+      "bytes": 563361,
+      "mtime_ns": 1794223283746597000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle_InOut.obj",
+      "bytes": 238611,
+      "mtime_ns": 1794223283768202300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_InOut.obj",
+      "bytes": 466093,
+      "mtime_ns": 1794223283796159900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFixedDt.obj",
+      "bytes": 203766,
+      "mtime_ns": 1794223283816907900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsFtForcePoints.obj",
+      "bytes": 335457,
+      "mtime_ns": 1794223283839175000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle.obj",
+      "bytes": 1042152,
+      "mtime_ns": 1794223283897440100
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpuSingle_InOut.obj",
+      "bytes": 245467,
+      "mtime_ns": 1794223283927129900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsInitialize.obj",
+      "bytes": 883440,
+      "mtime_ns": 1794223283962361800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOut.obj",
+      "bytes": 822010,
+      "mtime_ns": 1794223284000612600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutGridData.obj",
+      "bytes": 439575,
+      "mtime_ns": 1794223284028536000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutPoints.obj",
+      "bytes": 659887,
+      "mtime_ns": 1794223284061613900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphInOutZone.obj",
+      "bytes": 447923,
+      "mtime_ns": 1794223284088939300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphMk.obj",
+      "bytes": 282194,
+      "mtime_ns": 1794223284112746700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsMotion.obj",
+      "bytes": 188616,
+      "mtime_ns": 1794223284133763800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsInit.obj",
+      "bytes": 153167,
+      "mtime_ns": 1794223284152828300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsViscoInput.obj",
+      "bytes": 203485,
+      "mtime_ns": 1794223284176067800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsPartsOut.obj",
+      "bytes": 155233,
+      "mtime_ns": 1794223284194806400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassCpu.obj",
+      "bytes": 554934,
+      "mtime_ns": 1794223284221976000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphHourglassGpu.obj",
+      "bytes": 197823,
+      "mtime_ns": 1794223284242281300
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpuSingle.obj",
+      "bytes": 1537540,
+      "mtime_ns": 1794223273091437800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JTimeControl.obj",
+      "bytes": 318256,
+      "mtime_ns": 1794223273114136800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JDsOutputTime.obj",
+      "bytes": 385348,
+      "mtime_ns": 1794223273139489400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCfgRun.obj",
+      "bytes": 394898,
+      "mtime_ns": 1794223273164906200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseParts.obj",
+      "bytes": 810851,
+      "mtime_ns": 1794223273197710200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseCtes.obj",
+      "bytes": 437327,
+      "mtime_ns": 1794223273220519500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JCaseEParms.obj",
+      "bytes": 613967,
+      "mtime_ns": 1794223273249306800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSph.obj",
+      "bytes": 4375553,
+      "mtime_ns": 1794223273376377200
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu.obj",
+      "bytes": 6944541,
+      "mtime_ns": 1794223273635210500
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphCpu_mdbc.obj",
+      "bytes": 2044504,
+      "mtime_ns": 1794223273720640700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu.obj",
+      "bytes": 1368278,
+      "mtime_ns": 1794223273770726700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JSphGpu_mdbc.obj",
+      "bytes": 621185,
+      "mtime_ns": 1794223273799203000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JWaveSpectrumGpu.obj",
+      "bytes": 146260,
+      "mtime_ns": 1794223273817767400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\JXml.obj",
+      "bytes": 1052139,
+      "mtime_ns": 1794223273884682600
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_fs_normal_gpu_r1\\Debug\\fixture.obj",
+      "bytes": 2804637,
+      "mtime_ns": 1794611758237583000
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\randomc.obj",
+      "bytes": 8944,
+      "mtime_ns": 1794223273923017700
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinystr.obj",
+      "bytes": 27034,
+      "mtime_ns": 1794223273934703400
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxml.obj",
+      "bytes": 251119,
+      "mtime_ns": 1794223273952590800
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlerror.obj",
+      "bytes": 6012,
+      "mtime_ns": 1794223273967132900
+    },
+    {
+      "path": "C:\\Users\\syosh\\AppData\\Local\\Temp\\c08_schema2_build_r1\\Debug\\int\\tinyxmlparser.obj",
+      "bytes": 145872,
+      "mtime_ns": 1794223273992934100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.run.json",
+      "bytes": 5502,
+      "mtime_ns": 1794611867562804100
+    },
+    {
+      "path": "C:\\Program Files\\NVIDIA GPU Computing Toolkit\\CUDA\\v11.7\\compute-sanitizer\\compute-sanitizer.exe",
+      "bytes": 3827200,
+      "mtime_ns": 1649210963000000000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\Raw.exe",
+      "bytes": 199305216,
+      "mtime_ns": 1794611760451866100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.raw.run.call.json",
+      "bytes": 3425,
+      "mtime_ns": 1794611859235083400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.raw.run.log",
+      "bytes": 0,
+      "mtime_ns": 1794611850921601100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_raw\\completion.json",
+      "bytes": 1164,
+      "mtime_ns": 1794611858678576800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1_raw.memcheck.log",
+      "bytes": 121,
+      "mtime_ns": 1794611859228971700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_raw\\controls.csv",
+      "bytes": 429318,
+      "mtime_ns": 1794611858677575800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_raw\\nodes.csv",
+      "bytes": 49139,
+      "mtime_ns": 1794611858677575800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_raw\\free_off_rates.bin",
+      "bytes": 3240,
+      "mtime_ns": 1794611858677575800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_raw\\Run.out",
+      "bytes": 112,
+      "mtime_ns": 1794611858677575800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_Debug_r1_build\\Normal.exe",
+      "bytes": 199326208,
+      "mtime_ns": 1794611764089509800
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.normal.run.call.json",
+      "bytes": 3467,
+      "mtime_ns": 1794611867481886600
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1.normal.run.log",
+      "bytes": 0,
+      "mtime_ns": 1794611859240083000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_normal\\completion.json",
+      "bytes": 1168,
+      "mtime_ns": 1794611866951092200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_normal_gpu_r1_normal.memcheck.log",
+      "bytes": 121,
+      "mtime_ns": 1794611867475970700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_normal\\controls.csv",
+      "bytes": 429592,
+      "mtime_ns": 1794611866951092200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_normal\\nodes.csv",
+      "bytes": 49139,
+      "mtime_ns": 1794611866951092200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_normal\\free_off_rates.bin",
+      "bytes": 3240,
+      "mtime_ns": 1794611866951092200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_normal_gpu_r1_normal\\Run.out",
+      "bytes": 115,
+      "mtime_ns": 1794611866951092200
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.run.json",
+      "bytes": 4417,
+      "mtime_ns": 1794610671001051400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.build.json",
+      "bytes": 142525,
+      "mtime_ns": 1794610598856041000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.run.json",
+      "bytes": 4417,
+      "mtime_ns": 1794610671001051400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_build\\Raw.exe",
+      "bytes": 13287424,
+      "mtime_ns": 1794610597654218700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.raw.run.call.json",
+      "bytes": 1926,
+      "mtime_ns": 1794610669845356400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.raw.run.log",
+      "bytes": 204,
+      "mtime_ns": 1794610669838105000
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_raw\\completion.json",
+      "bytes": 971,
+      "mtime_ns": 1794610669749027100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_raw\\matrix.csv",
+      "bytes": 603891,
+      "mtime_ns": 1794610669749027100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_raw\\controls.csv",
+      "bytes": 313944,
+      "mtime_ns": 1794610669749027100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_raw\\nodes.csv",
+      "bytes": 48886,
+      "mtime_ns": 1794610669749027100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_build\\Normal.exe",
+      "bytes": 13245952,
+      "mtime_ns": 1794610598421373700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.normal.run.call.json",
+      "bytes": 1953,
+      "mtime_ns": 1794610670950124100
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\logs\\c08_fs_matrix_cpu_r2.normal.run.log",
+      "bytes": 204,
+      "mtime_ns": 1794610670939620700
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_normal\\completion.json",
+      "bytes": 974,
+      "mtime_ns": 1794610670922096300
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_normal\\matrix.csv",
+      "bytes": 603819,
+      "mtime_ns": 1794610670921095400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_normal\\controls.csv",
+      "bytes": 314126,
+      "mtime_ns": 1794610670921095400
+    },
+    {
+      "path": "D:\\MYF\\SPH\\GeoDualSPHysics_redevelop_f66777b\\examples\\Hydromechanic coupling\\08_LianSaturatedColumnCollapse_u_pl\\tests\\outputs\\c08_fs_matrix_cpu_r2_normal\\nodes.csv",
+      "bytes": 48886,
+      "mtime_ns": 1794610670921095400
+    }
+  ],
+  "consumed_stats_unchanged": true,
+  "physical_steps": 0,
+  "solver_invocations": 0,
+  "GPU_invocations": 0,
+  "native_decodes": 0,
+  "BI4_reads": 0,
+  "SHA_scans": 0,
+  "CPU_GPU_bitwise_agreement_claimed": false,
+  "Release_equivalence_claimed": false,
+  "unit_or_scientific_acceptance_claimed": false,
+  "physical_acceptance": false
+}
